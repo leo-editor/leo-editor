@@ -472,7 +472,7 @@ http://python.org/download/
             try:
                 # g.app.gui does not exist yet.
                 import Tkinter as Tk
-                #@+                << define emergency dialog class >>
+                #@+<< define emergency dialog class >>
                 #@+node:ekr.20080822065427.8: *4* << define emergency dialog class >>
                 class emergencyDialog:
 
@@ -574,7 +574,7 @@ http://python.org/download/
                         self.top.grab_set() # Make the dialog a modal dialog.
                         self.root.wait_window(self.top)
                     #@-others
-                #@-                << define emergency dialog class >>
+                #@-<< define emergency dialog class >>
                 d = emergencyDialog(
                     title='Python Version Error',
                     message=message)

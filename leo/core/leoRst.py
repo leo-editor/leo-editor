@@ -125,7 +125,7 @@ class rstCommands:
         global SilverCity
 
         self.c = c
-        #@+    << init ivars >>
+        #@+<< init ivars >>
         #@+node:ekr.20090502071837.36: *5* << init ivars >> (leoRst)
         self.silverCityWarningGiven = False
 
@@ -166,7 +166,7 @@ class rstCommands:
         self.path = '' # The path from any @path directive.
         self.source = None # The written source as a string.
         self.trialWrite = False # True if doing a trialWrite.
-        #@-    << init ivars >>
+        #@-<< init ivars >>
         self.createDefaultOptionsDict()
         self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
@@ -1003,7 +1003,7 @@ class rstCommands:
         # g.trace('n',n,repr(''.join(lines)))
 
         result = []
-        #@+    << Append whatever follows @doc or @space to result >>
+        #@+<< Append whatever follows @doc or @space to result >>
         #@+node:ekr.20090502071837.69: *5* << Append whatever follows @doc or @space to result >>
         if n > 0:
             line = lines[n-1]
@@ -1021,7 +1021,7 @@ class rstCommands:
 
             if s.strip():
                 result.append(s)
-        #@-    << Append whatever follows @doc or @space to result >>
+        #@-<< Append whatever follows @doc or @space to result >>
         while n < len(lines):
             s = lines [n] ; n += 1
             if g.match_word(s,0,'@code') or g.match_word(s,0,'@c'):

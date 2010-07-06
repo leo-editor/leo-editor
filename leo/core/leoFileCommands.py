@@ -59,7 +59,7 @@ class invalidPaste(Exception):
 #@-<< define exception classes >>
 
 if sys.platform != 'cli':
-    #@+    << define sax classes >>
+    #@+<< define sax classes >>
     #@+node:ekr.20060919145406: ** << define sax classes >>
     #@+others
     #@+node:ekr.20060919110638.19: *3* class saxContentHandler (XMLGenerator)
@@ -79,7 +79,7 @@ if sys.platform != 'cli':
             # Init the base class.
             xml.sax.saxutils.XMLGenerator.__init__(self)
 
-            #@+    << define dispatch dict >>
+            #@+<< define dispatch dict >>
             #@+node:ekr.20060919110638.21: *5* << define dispatch dict >>
             # There is no need for an 'end' method if all info is carried in attributes.
 
@@ -99,7 +99,7 @@ if sys.platform != 'cli':
                 'vh':                          (self.startVH,self.endVH),
                 'vnodes':                      (self.startVnodes,None), # Causes window to appear.
             }
-            #@-    << define dispatch dict >>
+            #@-<< define dispatch dict >>
 
             self.printElements = [] # 'all', 'v'
 
@@ -514,7 +514,7 @@ if sys.platform != 'cli':
             g.pr('attrs:',list(self.attributes.values()))
         #@-others
     #@-others
-    #@-    << define sax classes >>
+    #@-<< define sax classes >>
 
 class baseFileCommands:
     """A base class for the fileCommands subcommander."""
@@ -890,7 +890,7 @@ class baseFileCommands:
 
         c = self.c
 
-        #@+    << Set the default directory >>
+        #@+<< Set the default directory >>
         #@+node:ekr.20071211134300: *5* << Set the default directory >>
         #@+at
         # The most natural default directory is the directory containing the .leo file
@@ -902,7 +902,7 @@ class baseFileCommands:
 
         if len(theDir) > 0:
             c.openDirectory = c.frame.openDirectory = theDir
-        #@-    << Set the default directory >>
+        #@-<< Set the default directory >>
         ok, ratio = self.getLeoFile(theFile,fileName,readAtFileNodesFlag=False)
         c.redraw()
 
@@ -1591,7 +1591,7 @@ class baseFileCommands:
 
         # Always put positions, to trigger sax methods.
         self.put("<globals")
-        #@+    << put the body/outline ratios >>
+        #@+<< put the body/outline ratios >>
         #@+node:ekr.20031218072017.3038: *5* << put the body/outline ratios >>
         self.put(" body_outline_ratio=")
         self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
@@ -1603,9 +1603,9 @@ class baseFileCommands:
 
         if trace: g.trace('fixed or use_db',c.fixed or use_db,
             '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
-        #@-    << put the body/outline ratios >>
+        #@-<< put the body/outline ratios >>
         self.put(">") ; self.put_nl()
-        #@+    << put the position of this frame >>
+        #@+<< put the position of this frame >>
         #@+node:ekr.20031218072017.3039: *5* << put the position of this frame >>
         # New in Leo 4.5: support fixed .leo files.
 
@@ -1628,8 +1628,8 @@ class baseFileCommands:
         self.put(" height=") ; self.put_in_dquotes(str(height))
         self.put(" width=") ; self.put_in_dquotes(str(width))
         self.put("/>") ; self.put_nl()
-        #@-    << put the position of this frame >>
-        #@+    << put the position of the log window >>
+        #@-<< put the position of this frame >>
+        #@+<< put the position of the log window >>
         #@+node:ekr.20031218072017.3040: *5* << put the position of the log window >>
         top = left = height = width = 0 # no longer used
 
@@ -1640,7 +1640,7 @@ class baseFileCommands:
         self.put(" height=") ; self.put_in_dquotes(str(height))
         self.put(" width=") ; self.put_in_dquotes(str(width))
         self.put("/>") ; self.put_nl()
-        #@-    << put the position of the log window >>
+        #@-<< put the position of the log window >>
         self.put("</globals>") ; self.put_nl()
     #@+node:ekr.20031218072017.3041: *4* putHeader
     def putHeader (self):
@@ -1709,7 +1709,7 @@ class baseFileCommands:
         c = self.c
 
         self.put("<tnodes>\n")
-        #@+    << write only those tnodes that were referenced >>
+        #@+<< write only those tnodes that were referenced >>
         #@+node:ekr.20031218072017.1576: *5* << write only those tnodes that were referenced >>
         if self.usingClipboard: # write the current tree.
             theIter = c.p.self_and_subtree()
@@ -1751,7 +1751,7 @@ class baseFileCommands:
                 g.trace('can not happen: no vnode for',repr(index))
                 # This prevents the file from being written.
                 raise BadLeoFile('no vnode for %s' % repr(index))
-        #@-    << write only those tnodes that were referenced >>
+        #@-<< write only those tnodes that were referenced >>
         self.put("</tnodes>\n")
     #@+node:ekr.20031218072017.1863: *4* putVnode
     def putVnode (self,p,isIgnore=False):
@@ -1773,15 +1773,15 @@ class baseFileCommands:
         elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
         else:          forceWrite = True      # Write all other @<file> trees.
 
-        #@+    << Set gnx = vnode index >>
+        #@+<< Set gnx = vnode index >>
         #@+node:ekr.20031218072017.1864: *5* << Set gnx = vnode index >>
         gnx = g.app.nodeIndices.toString(v.fileIndex)
 
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
-        #@-    << Set gnx = vnode index >>
+        #@-<< Set gnx = vnode index >>
         attrs = []
-        #@+    << Append attribute bits to attrs >>
+        #@+<< Append attribute bits to attrs >>
         #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >> putVnode
         # These string catenations are benign because they rarely happen.
         attr = ""
@@ -1815,8 +1815,8 @@ class baseFileCommands:
                 # g.trace("clearing str_leo_pos",v)
                 del d['str_leo_pos']
                 v.unknownAttributes = d
-        #@-    << Append attribute bits to attrs >>
-        #@+    << Append unKnownAttributes to attrs >>
+        #@-<< Append attribute bits to attrs >>
+        #@+<< Append unKnownAttributes to attrs >>
         #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>> putVnode
         # v.unknownAttributes are now put in <t> elements.
 
@@ -1825,7 +1825,7 @@ class baseFileCommands:
             if not isAuto: # Bug fix: 2008/8/7.
                 attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
                 attrs.append(self.putDescendentAttributes(p))
-        #@-    << Append unKnownAttributes to attrs >>
+        #@-<< Append unKnownAttributes to attrs >>
         attrs = ''.join(attrs)
         v_head = '<v t="%s"%s>' % (gnx,attrs)
         if gnx in fc.vnodesDict:
@@ -1835,12 +1835,12 @@ class baseFileCommands:
             v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
             # The string catentation is faster than repeated calls to fc.put.
             if not self.usingClipboard:
-                #@+            << issue informational messages >>
+                #@+<< issue informational messages >>
                 #@+node:ekr.20040702085529: *5* << issue informational messages >>
                 if isOrphan and isThin:
                     g.es("writing erroneous:",p.h,color="blue")
                     p.clearOrphan()
-                #@-            << issue informational messages >>
+                #@-<< issue informational messages >>
             # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):
                 fc.put('%s\n' % v_head)

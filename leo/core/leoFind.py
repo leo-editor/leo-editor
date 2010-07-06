@@ -145,7 +145,7 @@ class leoFind:
         if title:
             self.title = title
         else:
-            #@+        << compute self.title >>
+            #@+<< compute self.title >>
             #@+node:ekr.20041121145452: *4* << compute self.title >>
             if not c.mFileName:
                 s = "untitled"
@@ -153,9 +153,9 @@ class leoFind:
                 path,s = g.os_path_split(c.mFileName)
 
             self.title = "Find/Change for %s" %  s
-            #@-        << compute self.title >>
+            #@-<< compute self.title >>
 
-        #@+    << init the gui-independent ivars >>
+        #@+<< init the gui-independent ivars >>
         #@+node:ekr.20031218072017.3054: *4* << init the gui-independent ivars >>
         self.backwardAttempts = 0
         self.wrapPosition = None
@@ -225,7 +225,7 @@ class leoFind:
         self.onlyPosition = None # The starting node for suboutline-only searches.
         self.wrapPos = None # The starting position of the wrapped search: persists between calls.
         self.errors = 0
-        #@-    << init the gui-independent ivars >>
+        #@-<< init the gui-independent ivars >>
 
     def init (self,c):
         self.oops()
@@ -407,7 +407,7 @@ class leoFind:
         # Update the node
         s = w.getAllText() # Used below.
         if self.in_headline:
-            #@+        << change headline >>
+            #@+<< change headline >>
             #@+node:ekr.20031218072017.2294: *5* << change headline >>
             if len(s) > 0 and s[-1]=='\n': s = s[:-1]
 
@@ -423,9 +423,9 @@ class leoFind:
                     c.setChanged(True)
 
                 u.afterChangeNodeContents(p,'Change Headline',undoData)
-            #@-        << change headline >>
+            #@-<< change headline >>
         else:
-            #@+        << change body >>
+            #@+<< change body >>
             #@+node:ekr.20031218072017.2295: *5* << change body >>
             if len(s) > 0 and s[-1]=='\n': s = s[:-1]
 
@@ -441,7 +441,7 @@ class leoFind:
                     c.setChanged(True)
 
                 u.afterChangeNodeContents(p,'Change Body',undoData)
-            #@-        << change body >>
+            #@-<< change body >>
     #@+node:ekr.20031218072017.3068: *4* change
     def change(self,event=None):
 
@@ -643,20 +643,20 @@ class leoFind:
                 # g.trace(self.p.v,self.p.h)
                 if not clones:
                     undoData = u.beforeInsertNode(c.p)
-                    #@+                << create the found node >>
+                    #@+<< create the found node >>
                     #@+node:ekr.20051113110735: *5* << create the found node >>
                     oldRoot = c.rootPosition()
                     found = oldRoot.insertAfter()
                     found.moveToRoot(oldRoot)
                     c.setHeadString(found,'Found: ' + self.find_text)
                     c.setRootPosition(found) # New in Leo 4.5.
-                    #@-                << create the found node >>
+                    #@-<< create the found node >>
                 clones.append(self.p.v)
-                #@+            << create a clone of p under the find node >>
+                #@+<< create a clone of p under the find node >>
                 #@+node:ekr.20051113110851: *5* << create a clone of p under the find node >>
                 q = self.p.clone()
                 q.moveToLastChildOf(found)
-                #@-            << create a clone of p under the find node >>
+                #@-<< create a clone of p under the find node >>
 
         if self.clone_find_all and clones:
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
@@ -784,7 +784,7 @@ class leoFind:
         if pos == -1:
             if trace: g.trace('** pos is -1',pos,newpos)
             return None,None
-        #@+    << fail if we are passed the wrap point >>
+        #@+<< fail if we are passed the wrap point >>
         #@+node:ekr.20060526140328: *5* << fail if we are passed the wrap point >>
         if self.wrapping and self.wrapPos is not None and self.wrapPosition and p == self.wrapPosition:
 
@@ -795,7 +795,7 @@ class leoFind:
             if not self.reverse and newpos > self.wrapPos:
                 if trace: g.trace('** wrap done',pos,newpos)
                 return None, None
-        #@-    << fail if we are passed the wrap point >>
+        #@-<< fail if we are passed the wrap point >>
         insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
         w.setSelectionRange(pos,newpos,insert=insert)
 
@@ -1525,7 +1525,7 @@ class nullFindTab (findTab):
             if svar: svar.set(val)
             #g.trace(key,val)
 
-        #@+    << set find/change widgets >>
+        #@+<< set find/change widgets >>
         #@+node:ekr.20070302090616.5: *5* << set find/change widgets >>
         self.find_ctrl.delete(0,"end")
         self.change_ctrl.delete(0,"end")
@@ -1538,8 +1538,8 @@ class nullFindTab (findTab):
             s = c.config.getString(setting)
             if not s: s = defaultText
             w.insert("end",s)
-        #@-    << set find/change widgets >>
-        #@+    << set radio buttons from ivars >>
+        #@-<< set find/change widgets >>
+        #@+<< set radio buttons from ivars >>
         #@+node:ekr.20070302090616.6: *5* << set radio buttons from ivars >>
         # In Tk, setting the var also sets the widget.
         # Here, we do so explicitly.
@@ -1574,8 +1574,8 @@ class nullFindTab (findTab):
             # self.svarDict["radio-search-scope"].set(key)
             # w = self.widgetsDict.get(key)
             # if w: w.set(True)
-        #@-    << set radio buttons from ivars >>
-        #@+    << set checkboxes from ivars >>
+        #@-<< set radio buttons from ivars >>
+        #@+<< set checkboxes from ivars >>
         #@+node:ekr.20070302090616.7: *5* << set checkboxes from ivars >>
         for ivar in (
             'ignore_case',
@@ -1593,7 +1593,7 @@ class nullFindTab (findTab):
                 svar.set(True)
                 # w = self.widgetsDict.get(ivar)
                 # if w: w.set(True)
-        #@-    << set checkboxes from ivars >>
+        #@-<< set checkboxes from ivars >>
     #@+node:ekr.20070302090616.15: *4* createBindings
     def createBindings (self):
         pass

@@ -397,7 +397,7 @@ class undoer:
         """Return a list of tuples with all info needed to handle a general undo operation."""
 
         # WARNING: read this before doing anything "clever"
-        #@+    << about u.saveTree >>
+        #@+<< about u.saveTree >>
         #@+node:EKR.20040530114124: *5* << about u.saveTree >>
         #@+at 
         # The old code made a free-standing copy of the tree using v.copy and t.copy. This
@@ -417,7 +417,7 @@ class undoer:
         # 
         # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
         # createUndoInfoDict info, but quite a bit uglier.
-        #@-    << about u.saveTree >>
+        #@-<< about u.saveTree >>
 
         u = self ; topLevel = (treeInfo == None)
         if topLevel: treeInfo = []
@@ -1014,7 +1014,7 @@ class undoer:
         u = self ; c = u.c
         trace = False and not g.unitTesting # Can cause unit tests to fail.
         verbose = False
-        #@+    << return if there is nothing to do >>
+        #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
             return None
@@ -1031,9 +1031,9 @@ class undoer:
             # g.trace("no change")
             u.setUndoTypes() # Must still recalculate the menu labels.
             return None
-        #@-    << return if there is nothing to do >>
+        #@-<< return if there is nothing to do >>
         if trace: g.trace(undo_type,oldSel,newSel,g.callers(5))
-        #@+    << init the undo params >>
+        #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
         # Clear all optional params.
         for ivar in u.optionalIvars:
@@ -1042,8 +1042,8 @@ class undoer:
         # Set the params.
         u.undoType = undo_type
         u.p = p.copy()
-        #@-    << init the undo params >>
-        #@+    << compute leading, middle & trailing  lines >>
+        #@-<< init the undo params >>
+        #@+<< compute leading, middle & trailing  lines >>
         #@+node:ekr.20031218072017.1491: *5* << compute leading, middle & trailing  lines >>
         #@+at
         # Incremental undo typing is similar to incremental syntax coloring. We compute
@@ -1103,8 +1103,8 @@ class undoer:
             #g.pr("old mid:",old_middle_lines)
             #g.pr("new mid:",new_middle_lines)
             g.pr("---------------------")
-        #@-    << compute leading, middle & trailing  lines >>
-        #@+    << save undo text info >>
+        #@-<< compute leading, middle & trailing  lines >>
+        #@+<< save undo text info >>
         #@+node:ekr.20031218072017.1492: *5* << save undo text info >>
         #@+at This is the start of the incremental undo algorithm.
         # 
@@ -1136,8 +1136,8 @@ class undoer:
         u.newMiddleLines = new_middle_lines
         u.oldNewlines = old_newlines
         u.newNewlines = new_newlines
-        #@-    << save undo text info >>
-        #@+    << save the selection and scrolling position >>
+        #@-<< save undo text info >>
+        #@+<< save the selection and scrolling position >>
         #@+node:ekr.20040324061854.2: *5* << save the selection and scrolling position >>
         # Remember the selection.
         u.oldSel = oldSel
@@ -1148,8 +1148,8 @@ class undoer:
             u.yview = oldYview
         else:
             u.yview = c.frame.body.getYScrollPosition()
-        #@-    << save the selection and scrolling position >>
-        #@+    << adjust the undo stack, clearing all forward entries >>
+        #@-<< save the selection and scrolling position >>
+        #@+<< adjust the undo stack, clearing all forward entries >>
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
         #@+at New in Leo 4.3. Instead of creating a new bead on every character, we may adjust the top bead:
         # 
@@ -1192,7 +1192,7 @@ class undoer:
             if granularity == 'word' and not newBead:
                 # Protect the method that may be changed by the user
                 try:
-                    #@+            << set newBead if the change does not continue a word >>
+                    #@+<< set newBead if the change does not continue a word >>
                     #@+node:ekr.20050125203937: *7* << set newBead if the change does not continue a word >>
                     old_start,old_end = oldSel
                     new_start,new_end = newSel
@@ -1230,7 +1230,7 @@ class undoer:
                                 newBead = self.recognizeStartOfTypingWord(
                                     old_lines,old_row,old_col,old_ch,
                                     new_lines,new_row,new_col,new_ch)
-                    #@-            << set newBead if the change does not continue a word >>
+                    #@-<< set newBead if the change does not continue a word >>
                 except Exception:
                     if 0:
                         g.trace('old_lines',old_lines)
@@ -1268,7 +1268,7 @@ class undoer:
         bunch.newSel=u.newSel
         bunch.newText=u.newText
         bunch.yview=u.yview
-        #@-    << adjust the undo stack, clearing all forward entries >>
+        #@-<< adjust the undo stack, clearing all forward entries >>
         return bunch
     #@+node:ekr.20031218072017.2030: *3* redo & helpers...
     def redo (self,event=None):
@@ -1864,7 +1864,7 @@ class undoer:
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 
-        #@+    << Compute the result using p's body text >>
+        #@+<< Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>
         # Recreate the text using the present body text.
         body = p.b
@@ -1889,7 +1889,7 @@ class undoer:
         if u.debug_print:
             g.pr("body:  ",body)
             g.pr("result:",result)
-        #@-    << Compute the result using p's body text >>
+        #@-<< Compute the result using p's body text >>
         p.setBodyString(result)
         w.setAllText(result)
         sel = g.choose(tag=='undo',u.oldSel,u.newSel)

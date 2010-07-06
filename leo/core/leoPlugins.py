@@ -43,7 +43,7 @@ def init():
 #@+others
 #@+node:ktenney.20060628092017.1: ** baseLeoPlugin
 class baseLeoPlugin(object):
-    #@+    <<docstring>>
+    #@+<<docstring>>
     #@+node:ktenney.20060628092017.2: *3* <<docstring>>
     """A Convenience class to simplify plugin authoring
 
@@ -151,11 +151,11 @@ class baseLeoPlugin(object):
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
 
     """
-    #@-    <<docstring>>
-    #@+    <<baseLeoPlugin declarations>>
+    #@-<<docstring>>
+    #@+<<baseLeoPlugin declarations>>
     #@+node:ktenney.20060628092017.3: *3* <<baseLeoPlugin declarations>>
     import leo.core.leoGlobals as g
-    #@-    <<baseLeoPlugin declarations>>
+    #@-<<baseLeoPlugin declarations>>
     #@+others
     #@+node:ktenney.20060628092017.4: *3* __init__
     def __init__(self, tag, keywords):

@@ -91,7 +91,7 @@ class bridgeController:
         This code is based on leo.run().'''
 
         if not self.isValidPython(): return
-        #@+    << import leoGlobals and leoApp >>
+        #@+<< import leoGlobals and leoApp >>
         #@+node:ekr.20070227093629.1: *4* << import leoGlobals and leoApp >>
         # Import leoGlobals, but do NOT set g.
         try:
@@ -113,10 +113,10 @@ class bridgeController:
 
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
-        #@-    << import leoGlobals and leoApp >>
+        #@-<< import leoGlobals and leoApp >>
         g.computeStandardDirectories()
         if not self.getLeoID(): return
-        #@+    << import leoNodes and leoConfig >>
+        #@+<< import leoNodes and leoConfig >>
         #@+node:ekr.20070227093629.2: *4* << import leoNodes and leoConfig >>
         try:
             import leo.core.leoNodes as leoNodes
@@ -129,7 +129,7 @@ class bridgeController:
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback ; traceback.print_exc()
-        #@-    << import leoNodes and leoConfig >>
+        #@-<< import leoNodes and leoConfig >>
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
         g.app.config = leoConfig.configClass()
@@ -228,7 +228,7 @@ class bridgeController:
         loadDir = g.app.loadDir
 
         verbose = False and not g.app.unitTesting
-        #@+    << try to get leoID from sys.leoID >>
+        #@+<< try to get leoID from sys.leoID >>
         #@+node:ekr.20070227094232.1: *5* << try to get leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
 
@@ -241,9 +241,9 @@ class bridgeController:
             g.app.leoID = getattr(sys,nonConstantAttr)
             if verbose and not g.app.silentMode:
                 g.es("leoID=",g.app.leoID,spaces=False,color='red')
-        #@-    << try to get leoID from sys.leoID >>
+        #@-<< try to get leoID from sys.leoID >>
         if not g.app.leoID:
-            #@+        << try to get leoID from "leoID.txt" >>
+            #@+<< try to get leoID from "leoID.txt" >>
             #@+node:ekr.20070227094232.2: *5* << try to get leoID from "leoID.txt" >>
             for theDir in (homeDir,globalConfigDir,loadDir):
                 # N.B. We would use the _working_ directory if theDir is None!
@@ -266,9 +266,9 @@ class bridgeController:
                         g.app.leoID = None
                         g.es('unexpected exception in app.setLeoID',color='red')
                         g.es_exception()
-            #@-        << try to get leoID from "leoID.txt" >>
+            #@-<< try to get leoID from "leoID.txt" >>
         if not g.app.leoID:
-            #@+        << try to get leoID from os.getenv('USER') >>
+            #@+<< try to get leoID from os.getenv('USER') >>
             #@+node:ekr.20070227094232.3: *5* << try to get leoID from os.getenv('USER') >>
             try:
                 theId = os.getenv('USER')
@@ -278,7 +278,7 @@ class bridgeController:
 
             except Exception:
                 pass
-            #@-        << try to get leoID from os.getenv('USER') >>
+            #@-<< try to get leoID from os.getenv('USER') >>
         return g.app.leoID
     #@+node:ekr.20070227093629.9: *4* reportDirectories
     def reportDirectories (self):

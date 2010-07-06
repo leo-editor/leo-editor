@@ -19,7 +19,7 @@ class parserBaseClass:
 
     """The base class for settings parsers."""
 
-    #@+    << parserBaseClass data >>
+    #@+<< parserBaseClass data >>
     #@+node:ekr.20041121130043: *3* << parserBaseClass data >>
     # These are the canonicalized names.  Case is ignored, as are '_' and '-' characters.
 
@@ -38,7 +38,7 @@ class parserBaseClass:
 
     # Keys are settings names, values are (type,value) tuples.
     settingsDict = {}
-    #@-    << parserBaseClass data >>
+    #@-<< parserBaseClass data >>
 
     #@+others
     #@+node:ekr.20041119204700: *3*  ctor (parserBaseClass)
@@ -1007,7 +1007,7 @@ class parserBaseClass:
 #@+node:ekr.20041119203941: ** class configClass
 class configClass:
     """A class to manage configuration settings."""
-    #@+    << class data >>
+    #@+<< class data >>
     #@+node:ekr.20041122094813: *3* <<  class data >> (g.app.config)
     #@+others
     #@+node:ekr.20041117062717.1: *4* defaultsDict
@@ -1126,7 +1126,7 @@ class configClass:
 
     # Keys are setting names, values are type names.
     warningsDict = {} # Used by get() or allies.
-    #@-    << class data >>
+    #@-<< class data >>
     #@+others
     #@+node:ekr.20041117083202: *3* Birth... (g.app.config)
     #@+node:ekr.20041117062717.2: *4* ctor (configClass)
@@ -1787,7 +1787,7 @@ class configClass:
         trace = False and not g.unitTesting
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
-        #@+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+        #@+<< define localDirectory, localConfigFile & myLocalConfigFile >>
         #@+node:ekr.20061028082834: *5* << define localDirectory, localConfigFile & myLocalConfigFile >>
         # This can't be done in initSettingsFiles because
         # the local directory does not yet exist.
@@ -1802,7 +1802,7 @@ class configClass:
         myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
         if not g.os_path_exists(myLocalConfigFile):
             myLocalConfigFile = None
-        #@-    << define localDirectory, localConfigFile & myLocalConfigFile >>
+        #@-<< define localDirectory, localConfigFile & myLocalConfigFile >>
 
         if trace: g.trace(g.callers(5))
         table = (

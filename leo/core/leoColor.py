@@ -870,7 +870,7 @@ class colorizer:
         self.states = []
         self.last_flag = "unknown"
         self.last_language = "unknown"
-        #@+    << define colorizer keywords >>
+        #@+<< define colorizer keywords >>
         #@+node:ekr.20031218072017.371: *4* << define colorizer keywords >>
         #@+others
         #@+node:ekr.20031218072017.372: *5* actionscript keywords
@@ -1851,8 +1851,8 @@ class colorizer:
             "variable",  "vwait",
             "while" ]
         #@-others
-        #@-    << define colorizer keywords >>
-        #@+    << ivars for communication between colorizeAnyLanguage and its allies >>
+        #@-<< define colorizer keywords >>
+        #@+<< ivars for communication between colorizeAnyLanguage and its allies >>
         #@+node:ekr.20031218072017.1606: *4* << ivars for communication between colorizeAnyLanguage and its allies >>
         # Copies of arguments.
         self.p = None
@@ -1877,8 +1877,8 @@ class colorizer:
         self.latex_cweb_docs     = c.config.getBool("color_cweb_doc_parts_with_latex")
         self.latex_cweb_comments = c.config.getBool("color_cweb_comments_with_latex")
         # g.pr("docs,comments",self.latex_cweb_docs,self.latex_cweb_comments)
-        #@-    << ivars for communication between colorizeAnyLanguage and its allies >>
-        #@+    << define dispatch dicts >>
+        #@-<< ivars for communication between colorizeAnyLanguage and its allies >>
+        #@+<< define dispatch dicts >>
         #@+node:ekr.20031218072017.1607: *4* << define dispatch dicts >>
         self.state_dict = {
             "blockComment" : self.continueBlockComment,
@@ -1891,7 +1891,7 @@ class colorizer:
             "doc"          : self.continueDocPart,
             "unknown"      : self.doNormalState, # 8/25/05
         }
-        #@-    << define dispatch dicts >>
+        #@-<< define dispatch dicts >>
         self.setFontFromConfig()
     #@+node:ekr.20080704085627.3: *4* splitList
     def splitList (self,ivar,fileName):
@@ -1954,7 +1954,7 @@ class colorizer:
             return
         try:
             # g.trace('incremental',self.incremental)
-            #@+        << initialize ivars & tags >>
+            #@+<< initialize ivars & tags >>
             #@+node:ekr.20031218072017.1602: *4* << initialize ivars & tags >> colorizeAnyLanguage
             # Copy the arguments.
             self.p = p
@@ -2146,17 +2146,17 @@ class colorizer:
             self.hyperCount = 0 # Number of hypertext tags
             self.count += 1
             lines = self.allBodyText.split('\n')
-            #@-        << initialize ivars & tags >>
+            #@-<< initialize ivars & tags >>
             g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
             if self.incremental and (
-                #@+            << all state ivars match >>
+                #@+<< all state ivars match >>
                 #@+node:ekr.20031218072017.1881: *4* << all state ivars match >>
                 self.flag == self.last_flag and
                 self.last_language == self.language
-                #@-            << all state ivars match >>
+                #@-<< all state ivars match >>
                 #@afterref
  ):
-                #@+            << incrementally color the text >>
+                #@+<< incrementally color the text >>
                 #@+node:ekr.20031218072017.1882: *4* << incrementally color the text >>
                 #@+at  Each line has a starting state.  The starting state for the first line is always "normal".
                 # 
@@ -2187,7 +2187,7 @@ class colorizer:
                     leading_lines = leading
                     trailing_lines = trailing
                 else:
-                    #@+    << compute leading, middle & trailing lines >>
+                    #@+<< compute leading, middle & trailing lines >>
                     #@+node:ekr.20031218072017.1883: *5* << compute leading, middle & trailing  lines >>
                     #@+at The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
                     #@@c
@@ -2214,7 +2214,7 @@ class colorizer:
                                 break
                             i += 1
                         trailing_lines = i
-                    #@-    << compute leading, middle & trailing lines >>
+                    #@-<< compute leading, middle & trailing lines >>
 
                 middle_lines = new_len - leading_lines - trailing_lines
                 # g.pr("middle lines", middle_lines)
@@ -2304,9 +2304,9 @@ class colorizer:
                 self.states = new_states
                 self.lines = new_lines
                 #@-<< colorize until the states match >>
-                #@-            << incrementally color the text >>
+                #@-<< incrementally color the text >>
             else:
-                #@+            << non-incrementally color the text >>
+                #@+<< non-incrementally color the text >>
                 #@+node:ekr.20031218072017.1887: *4* << non-incrementally color the text >>
                 if self.trace: g.trace("non-incremental",self.language)
 
@@ -2314,19 +2314,19 @@ class colorizer:
                 for s in lines:
                     state = self.colorizeLine(s,state)
                     self.line_index += 1
-                #@-            << non-incrementally color the text >>
-            #@+        << update state ivars >>
+                #@-<< non-incrementally color the text >>
+            #@+<< update state ivars >>
             #@+node:ekr.20031218072017.1888: *4* << update state ivars >>
             self.last_flag = self.flag
             self.last_language = self.language
-            #@-        << update state ivars >>
+            #@-<< update state ivars >>
             return "ok" # for testing.
         except:
-            #@+        << set state ivars to "unknown" >>
+            #@+<< set state ivars to "unknown" >>
             #@+node:ekr.20031218072017.1889: *4* << set state ivars to "unknown" >>
             self.last_flag = "unknown"
             self.last_language = "unknown"
-            #@-        << set state ivars to "unknown" >>
+            #@-<< set state ivars to "unknown" >>
             if self.c:
                 g.es_exception()
             else:
@@ -2407,7 +2407,7 @@ class colorizer:
 
         c = self.c ; state = "doc"
         if self.language == "cweb":
-            #@+        << handle cweb doc part >>
+            #@+<< handle cweb doc part >>
             #@+node:ekr.20031218072017.1615: *5* << handle cweb doc part >>
             word = self.getCwebWord(s,i)
             if word and len(word) > 0:
@@ -2441,9 +2441,9 @@ class colorizer:
                 if j == -1: j = len(s)
                 self.tag("docPart",i,j)
                 i = j
-            #@-        << handle cweb doc part >>
+            #@-<< handle cweb doc part >>
         else:
-            #@+        << handle noweb doc part >>
+            #@+<< handle noweb doc part >>
             #@+node:ekr.20031218072017.1616: *5* << handle noweb doc part >>
             if i == 0 and g.match(s,i,"<<"):
                 # Possible section definition line.
@@ -2469,7 +2469,7 @@ class colorizer:
                     colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="docPart"):
                     self.tag("docPart",i,j)
                 i = j # skip the rest of the line.
-            #@-        << handle noweb doc part >>
+            #@-<< handle noweb doc part >>
         return i,state
     #@+node:ekr.20031218072017.1894: *4* continueNocolor
     def continueNocolor (self,s,i):
@@ -2581,11 +2581,11 @@ class colorizer:
             (ch in '/&<>' and self.language=="html") or
             (ch == '$' and self.language=="rapidq")
         ):
-            #@+        << handle possible keyword >>
+            #@+<< handle possible keyword >>
             #@+middle:ekr.20031218072017.1897: *5* Valid regardless of latex mode
             #@+node:ekr.20031218072017.1898: *6* << handle possible  keyword >>
             if self.language == "latex":
-                #@+    << handle possible latex keyword >>
+                #@+<< handle possible latex keyword >>
                 #@+node:ekr.20031218072017.1899: *7* << handle possible latex keyword >>
                 if g.match(s,i,"\\"):
                     if i + 1 < len(s) and s[i+1] in self.latex_special_keyword_characters:
@@ -2600,9 +2600,9 @@ class colorizer:
                 else:
                     self.tag("latexBackground",i,i+1)
                     j = i + 1 # skip the character.
-                #@-    << handle possible latex keyword >>
+                #@-<< handle possible latex keyword >>
             elif self.language == "html":
-                #@+    << handle possible html keyword >>
+                #@+<< handle possible html keyword >>
                 #@+node:ekr.20031218072017.1900: *7* << handle possible html keyword >>
                 if g.match(s,i,"<!---") or g.match(s,i,"<!--"):
                     if g.match(s,i,"<!---"): k = 5
@@ -2625,9 +2625,9 @@ class colorizer:
                     self.tag("keyword",i,j)
                 else:
                     j = i + 1
-                #@-    << handle possible html keyword >>
+                #@-<< handle possible html keyword >>
             else:
-                #@+    << handle general keyword >>
+                #@+<< handle general keyword >>
                 #@+node:ekr.20031218072017.1901: *7* << handle general keyword >>
                 if self.language == "rapidq":
                     j = self.skip_id(s,i+1,chars="$")
@@ -2648,18 +2648,18 @@ class colorizer:
                     if word in self.php_paren_keywords and g.match(s,j,"()"):
                         self.tag("keyword",i,j+2)
                         j += 2
-                #@-    << handle general keyword >>
+                #@-<< handle general keyword >>
             i = j
-            #@-        << handle possible keyword >>
+            #@-<< handle possible keyword >>
         elif g.match(s,i,self.lb):
             i = self.doNowebSecRef(s,i)
         elif ch == '@':
-            #@+        << handle at keyword >>
+            #@+<< handle at keyword >>
             #@+middle:ekr.20031218072017.1897: *5* Valid regardless of latex mode
             #@+node:ekr.20031218072017.1902: *6* << handle at keyword >>
             if self.language == "cweb":
                 if g.match(s,i,"@(") or g.match(s,i,"@<"):
-                    #@+        << handle cweb ref or def >>
+                    #@+<< handle cweb ref or def >>
                     #@+node:ekr.20031218072017.1904: *7* << handle cweb ref or def >>
                     self.tag("nameBrackets",i,i+2)
 
@@ -2675,11 +2675,11 @@ class colorizer:
                         self.tag("cwebName",i+2,j)
                         self.tag("nameBrackets",j,j+k)
                         i = j + k
-                    #@-        << handle cweb ref or def >>
+                    #@-<< handle cweb ref or def >>
                 else:
                     word = self.getCwebWord(s,i)
                     if word:
-                        #@+            << Handle cweb control word >>
+                        #@+<< Handle cweb control word >>
                         #@+node:ekr.20031218072017.1903: *7* << Handle cweb control word >>
                         # Color and skip the word.
                         assert(self.language=="cweb")
@@ -2698,14 +2698,14 @@ class colorizer:
                                 self.tag("cwebName",i,j)
                                 self.tag("nameBrackets",j,j+2)
                                 i = j + 2
-                        #@-            << Handle cweb control word >>
+                        #@-<< Handle cweb control word >>
                     else:
                         i,state = self.doAtKeyword(s,i)
             else:
                 i,state = self.doAtKeyword(s,i)
-            #@-        << handle at keyword >>
+            #@-<< handle at keyword >>
         elif g.match(s,i,self.single_comment_start):
-            #@+        << handle single-line comment >>
+            #@+<< handle single-line comment >>
             #@+middle:ekr.20031218072017.1897: *5* Valid regardless of latex mode
             #@+node:ekr.20031218072017.1617: *6* << handle single-line comment >>
             # g.pr("single-line comment i,s:",i,s)
@@ -2723,9 +2723,9 @@ class colorizer:
                     colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="comment"):
                     self.tag("comment",i,j)
                 i = j
-            #@-        << handle single-line comment >>
+            #@-<< handle single-line comment >>
         elif g.match(s,i,self.block_comment_start):
-            #@+        << start block comment >>
+            #@+<< start block comment >>
             #@+middle:ekr.20031218072017.1897: *5* Valid regardless of latex mode
             #@+node:ekr.20031218072017.1619: *6* << start block comment >>
             k = len(self.block_comment_start)
@@ -2735,18 +2735,18 @@ class colorizer:
                 self.tag("comment",i,i+k)
 
             i += k ; state = "blockComment"
-            #@-        << start block comment >>
+            #@-<< start block comment >>
         elif ch == '%' and self.language=="cweb":
-            #@+        << handle latex line >>
+            #@+<< handle latex line >>
             #@+middle:ekr.20031218072017.1897: *5* Valid regardless of latex mode
             #@+node:ekr.20031218072017.1905: *6* << handle latex line >>
             self.tag("keyword",i,i+1)
             i += 1 # Skip the %
             self.doLatexLine(s,i,len(s))
             i = len(s)
-            #@-        << handle latex line >>
+            #@-<< handle latex line >>
         elif self.language=="latex":
-            #@+        << handle latex normal character >>
+            #@+<< handle latex normal character >>
             #@+middle:ekr.20031218072017.1906: *5* Vaid only in latex mode
             #@+node:ekr.20031218072017.1907: *6* << handle latex normal character >>
             if self.language=="cweb":
@@ -2754,10 +2754,10 @@ class colorizer:
             else:
                 self.tag("latexBackground",i,i+1)
             i += 1
-            #@-        << handle latex normal character >>
+            #@-<< handle latex normal character >>
         # ---- From here on self.language != "latex" -----
         elif ch in self.string_delims:
-            #@+        << handle string >>
+            #@+<< handle string >>
             #@+middle:ekr.20031218072017.1908: *5* Valid when not in latex_mode
             #@+node:ekr.20031218072017.1612: *6* << handle string >>
             # g.trace(self.language)
@@ -2779,9 +2779,9 @@ class colorizer:
                 j, state = self.skip_string(s,i)
                 self.tag("string",i,j)
                 i = j
-            #@-        << handle string >>
+            #@-<< handle string >>
         elif ch == '#' and self.has_pp_directives:
-            #@+        << handle C preprocessor line >>
+            #@+<< handle C preprocessor line >>
             #@+middle:ekr.20031218072017.1908: *5* Valid when not in latex_mode
             #@+node:ekr.20031218072017.1909: *6* << handle C preprocessor line >>
             # 10/17/02: recognize comments in preprocessor lines.
@@ -2792,10 +2792,10 @@ class colorizer:
                 else: i += 1
 
             self.tag("pp",j,i)
-            #@-        << handle C preprocessor line >>
+            #@-<< handle C preprocessor line >>
         elif self.language == "php" and (g.match(s,i,"<") or g.match(s,i,"?")):
             # g.trace("%3d" % i,php_re.match(s,i),s)
-            #@+        << handle special php keywords >>
+            #@+<< handle special php keywords >>
             #@+middle:ekr.20031218072017.1908: *5* Valid when not in latex_mode
             #@+node:ekr.20031218072017.1910: *6* << handle special php keywords >>
             if g.match(s.lower(),i,"<?php"):
@@ -2806,30 +2806,30 @@ class colorizer:
                 i += 2
             else:
                 i += 1
-            #@-        << handle special php keywords >>
+            #@-<< handle special php keywords >>
         elif ch == ' ':
-            #@+        << handle blank >>
+            #@+<< handle blank >>
             #@+middle:ekr.20031218072017.1908: *5* Valid when not in latex_mode
             #@+node:ekr.20031218072017.1911: *6* << handle blank >>
             if self.showInvisibles:
                 self.tag("blank",i,i+1)
             i += 1
-            #@-        << handle blank >>
+            #@-<< handle blank >>
         elif ch == '\t':
-            #@+        << handle tab >>
+            #@+<< handle tab >>
             #@+middle:ekr.20031218072017.1908: *5* Valid when not in latex_mode
             #@+node:ekr.20031218072017.1912: *6* << handle tab >>
             if self.showInvisibles:
                 self.tag("tab",i,i+1)
             i += 1
-            #@-        << handle tab >>
+            #@-<< handle tab >>
         else:
-            #@+        << handle normal character >>
+            #@+<< handle normal character >>
             #@+middle:ekr.20031218072017.1908: *5* Valid when not in latex_mode
             #@+node:ekr.20031218072017.1913: *6* << handle normal character >>
             # self.tag("normal",i,i+1)
             i += 1
-            #@-        << handle normal character >>
+            #@-<< handle normal character >>
 
         if 0: # This can fail harmlessly when using wxPython plugin.  Don't know exactly why.
             g.trace(self.progress,i,state)
@@ -2858,7 +2858,7 @@ class colorizer:
             if ref:
                 self.tag("link",i+2,j)
                 if self.use_hyperlinks:
-                    #@+                << set the hyperlink >>
+                    #@+<< set the hyperlink >>
                     #@+node:ekr.20031218072017.1915: *5* << set the hyperlink >>
                     # Set the bindings to vnode callbacks.
                     # Create the tag.
@@ -2873,7 +2873,7 @@ class colorizer:
                     c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
                     c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
                     c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
-                    #@-                << set the hyperlink >>
+                    #@-<< set the hyperlink >>
             elif k == 3: # a section definition
                 self.tag("link",i+2,j)
             else:

@@ -26,7 +26,7 @@ class leoGui:
 
     Subclasses are expected to override all do-nothing methods of this class."""
 
-    #@+    << define leoGui file types >>
+    #@+<< define leoGui file types >>
     #@+node:ekr.20040131103531: *3* << define leoGui file types >> (not used yet)
     allFullFiletypes = [
         ("All files",   "*"),
@@ -78,7 +78,7 @@ class leoGui:
     textAllFiletypes = [
         ("Text files","*.txt"),
         ("All files", "*")]
-    #@-    << define leoGui file types >>
+    #@-<< define leoGui file types >>
 
     #@+others
     #@+node:ekr.20031218072017.3721: *3* app.gui Birth & death

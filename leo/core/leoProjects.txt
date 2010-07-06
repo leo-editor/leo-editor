@@ -872,18 +872,36 @@ def readRef (self,s,i):
     if at.readVersion5:
         assert g.match(s,i,"+")
         i += 1 # Skip the new plus sign.
+
+        # New in Leo 4.8: Ignore the spellling in leadingWs.
+        # Instead, compute lws2, the regularized leading whitespace.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+    else:
+        lws2 = ''
+
     j = g.skip_ws(s,i)
     assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
+    if 1: # new read code
+        if at.readVersion5:
+            line = lws2 + s[j:]
+        elif len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
     else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
 
-    if at.readVersion5:
-        # Put the newline back: there is no longer an @nl sentinel.
-        line = line + '\n'
+        if len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
+
+        if at.readVersion5:
+            # Put the newline back: there is no longer an @nl sentinel.
+            line = line + '\n'
 
     # Undo the cweb hack.
     start = at.startSentinelComment
@@ -1280,18 +1298,36 @@ def readRef (self,s,i):
     if at.readVersion5:
         assert g.match(s,i,"+")
         i += 1 # Skip the new plus sign.
+
+        # New in Leo 4.8: Ignore the spellling in leadingWs.
+        # Instead, compute lws2, the regularized leading whitespace.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+    else:
+        lws2 = ''
+
     j = g.skip_ws(s,i)
     assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
+    if 1: # new read code
+        if at.readVersion5:
+            line = lws2 + s[j:]
+        elif len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
     else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
 
-    if at.readVersion5:
-        # Put the newline back: there is no longer an @nl sentinel.
-        line = line + '\n'
+        if len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
+
+        if at.readVersion5:
+            # Put the newline back: there is no longer an @nl sentinel.
+            line = line + '\n'
 
     # Undo the cweb hack.
     start = at.startSentinelComment
@@ -2246,7 +2282,8 @@ def putRefAt (self,s,i,n1,n2,p,delta):
 
     lws = at.leadingWs or ''
     if at.writeVersion5:
-        at.putSentinel("@+" + lws + name)
+        # at.putSentinel("@+" + lws + name)
+        at.putSentinel("@+" + name)
     else:
         at.putSentinel("@" + lws + name)
 
@@ -2266,7 +2303,8 @@ def putRefAt (self,s,i,n1,n2,p,delta):
             at.putCloseNodeSentinel(p2,middle=True)
 
     if at.writeVersion5:
-        at.putSentinel("@-" + lws + name)
+        # at.putSentinel("@-" + lws + name)
+        at.putSentinel("@-" + name)
 
     at.indent -= delta
 
@@ -3522,18 +3560,36 @@ def readRef (self,s,i):
     if at.readVersion5:
         assert g.match(s,i,"+")
         i += 1 # Skip the new plus sign.
+
+        # New in Leo 4.8: Ignore the spellling in leadingWs.
+        # Instead, compute lws2, the regularized leading whitespace.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+    else:
+        lws2 = ''
+
     j = g.skip_ws(s,i)
     assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
+    if 1: # new read code
+        if at.readVersion5:
+            line = lws2 + s[j:]
+        elif len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
     else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
 
-    if at.readVersion5:
-        # Put the newline back: there is no longer an @nl sentinel.
-        line = line + '\n'
+        if len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
+
+        if at.readVersion5:
+            # Put the newline back: there is no longer an @nl sentinel.
+            line = line + '\n'
 
     # Undo the cweb hack.
     start = at.startSentinelComment
@@ -4543,18 +4599,36 @@ def readRef (self,s,i):
     if at.readVersion5:
         assert g.match(s,i,"+")
         i += 1 # Skip the new plus sign.
+
+        # New in Leo 4.8: Ignore the spellling in leadingWs.
+        # Instead, compute lws2, the regularized leading whitespace.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+    else:
+        lws2 = ''
+
     j = g.skip_ws(s,i)
     assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
+    if 1: # new read code
+        if at.readVersion5:
+            line = lws2 + s[j:]
+        elif len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
     else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
 
-    if at.readVersion5:
-        # Put the newline back: there is no longer an @nl sentinel.
-        line = line + '\n'
+        if len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
+
+        if at.readVersion5:
+            # Put the newline back: there is no longer an @nl sentinel.
+            line = line + '\n'
 
     # Undo the cweb hack.
     start = at.startSentinelComment
@@ -6581,7 +6655,8 @@ def putRefAt (self,s,i,n1,n2,p,delta):
 
     lws = at.leadingWs or ''
     if at.writeVersion5:
-        at.putSentinel("@+" + lws + name)
+        # at.putSentinel("@+" + lws + name)
+        at.putSentinel("@+" + name)
     else:
         at.putSentinel("@" + lws + name)
 
@@ -6601,7 +6676,8 @@ def putRefAt (self,s,i,n1,n2,p,delta):
             at.putCloseNodeSentinel(p2,middle=True)
 
     if at.writeVersion5:
-        at.putSentinel("@-" + lws + name)
+        # at.putSentinel("@-" + lws + name)
+        at.putSentinel("@-" + name)
 
     at.indent -= delta
 
@@ -8028,18 +8104,36 @@ def readRef (self,s,i):
     if at.readVersion5:
         assert g.match(s,i,"+")
         i += 1 # Skip the new plus sign.
+
+        # New in Leo 4.8: Ignore the spellling in leadingWs.
+        # Instead, compute lws2, the regularized leading whitespace.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+    else:
+        lws2 = ''
+
     j = g.skip_ws(s,i)
     assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
+    if 1: # new read code
+        if at.readVersion5:
+            line = lws2 + s[j:]
+        elif len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
     else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
 
-    if at.readVersion5:
-        # Put the newline back: there is no longer an @nl sentinel.
-        line = line + '\n'
+        if len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
+        else:
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
+
+        if at.readVersion5:
+            # Put the newline back: there is no longer an @nl sentinel.
+            line = line + '\n'
 
     # Undo the cweb hack.
     start = at.startSentinelComment

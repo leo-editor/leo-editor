@@ -2562,7 +2562,7 @@ class editCommandsClass (baseEditCommandsClass):
                     w.delete(ins-1)
                     w.setSelectionRange(ins-1,ins-1,insert=ins-1)
                 else:
-                    #@+                << backspace with negative tab_width >>
+                    #@+<< backspace with negative tab_width >>
                     #@+node:ekr.20051026092746: *5* << backspace with negative tab_width >>
                     s = prev = w.getAllText()
                     ins = w.getInsertPoint()
@@ -2585,7 +2585,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i = ins-(max(1,count))
                     w.delete(i,ins)
                     w.setSelectionRange(i,i,insert=i)
-                    #@-                << backspace with negative tab_width >>
+                    #@-<< backspace with negative tab_width >>
             finally:
                 self.endCommand(changed=True,setLabel=False) # Necessary to make text changes stick.
         else:
@@ -2812,7 +2812,7 @@ class editCommandsClass (baseEditCommandsClass):
         verbose = True
         w = self.editWidget(event)
         if not w: return 'break'
-        #@+    << set local vars >>
+        #@+<< set local vars >>
         #@+node:ekr.20061103114242: *5* << set local vars >>
         c = self.c
         p = c.p
@@ -2831,7 +2831,7 @@ class editCommandsClass (baseEditCommandsClass):
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.toUnicode(ch) in brackets
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
-        #@-    << set local vars >>
+        #@-<< set local vars >>
         if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return "break" # The hook claims to have handled the event.
@@ -5310,7 +5310,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
         c = self.c
 
-        #@+    << define s >>
+        #@+<< define s >>
         #@+node:ekr.20070501092655.1: *4* << define s >>
         # @pagewidth 40
 
@@ -5333,7 +5333,7 @@ class helpCommandsClass (baseEditCommandsClass):
         Leo also has many debugging settings that enable and disable traces.
         For details, see the node: @settings-->Debugging in leoSettings.leo.
         '''
-        #@-    << define s >>
+        #@-<< define s >>
 
         # Remove indentation from s: a workaround of a Leo bug.
         s = g.adjustTripleString(s,c.tab_width)
@@ -5347,7 +5347,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
         c = self.c
 
-        #@+    << define s >>
+        #@+<< define s >>
         #@+node:ekr.20060209082023.1: *4* << define s >>
         #@@pagewidth 40
 
@@ -5557,7 +5557,7 @@ class helpCommandsClass (baseEditCommandsClass):
         You may use backspace to backtrack. To
         repeat an incremental search, type the
         shortcut for that command again.'''
-        #@-    << define s >>
+        #@-<< define s >>
 
         # Remove indentation from s: a workaround of a Leo bug.
         s = g.adjustTripleString(s,c.tab_width)
@@ -6008,7 +6008,7 @@ class leoCommandsClass (baseEditCommandsClass):
 
         k = self.k ; d2 = {}
 
-        #@+    << define dictionary d of names and Leo commands >>
+        #@+<< define dictionary d of names and Leo commands >>
         #@+node:ekr.20050920084036.189: *4* << define dictionary d of names and Leo commands >>
         c = self.c ; f = c.frame
 
@@ -6187,7 +6187,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
             'write-outline-only':           c.fileCommands.writeOutlineOnly,
         }
-        #@-    << define dictionary d of names and Leo commands >>
+        #@-<< define dictionary d of names and Leo commands >>
 
         # Create a callback for each item in d.
         for name in sorted(d):
@@ -8301,14 +8301,14 @@ class spellTabHandler (leoFind.leoFind):
                 if not p or not word:
                     alts = None
                     break
-                #@+            << Skip word if ignored or in local dictionary >>
+                #@+<< Skip word if ignored or in local dictionary >>
                 #@+node:ekr.20051025071455.46: *7* << Skip word if ignored or in local dictionary >>
                 #@+at We don't bother to call apell if the word is in our dictionary. The dictionary contains both locally 'allowed' words and 'ignored' words. We put the test before aspell rather than after aspell because the cost of checking aspell is higher than the cost of checking our local dictionary. For small local dictionaries this is probably not True and this code could easily be located after the aspell call
                 #@@c
 
                 if word.lower() in self.dictionary:
                     continue
-                #@-            << Skip word if ignored or in local dictionary >>
+                #@-<< Skip word if ignored or in local dictionary >>
                 alts = aspell.processWord(word)
                 if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
                 if alts:
@@ -8466,7 +8466,7 @@ class AspellClass:
             return
 
         try:
-            #@+        << define and configure aspell entry points >>
+            #@+<< define and configure aspell entry points >>
             #@+node:ekr.20061018111933: *6* << define and configure aspell entry points >>
             # new_aspell_config
             new_aspell_config = aspell.new_aspell_config 
@@ -8552,7 +8552,7 @@ class AspellClass:
             suggest.restype = c_void_p # 2010/05/11: was c_int
             suggest.argtypes = [c_void_p, c_char_p, c_int]
                 # 2010/05/11: was [c_int, c_char_p, c_int]
-            #@-        << define and configure aspell entry points >>
+            #@-<< define and configure aspell entry points >>
         except Exception:
             self.report('aspell checker not enabled')
             self.aspell = self.check = self.sc = None

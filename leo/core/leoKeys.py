@@ -506,7 +506,7 @@ class autoCompleterClass:
         # g.trace(self.leadinWord,obj)
 
         if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
-            #@+        << try to set s from a Python global function >>
+            #@+<< try to set s from a Python global function >>
             #@+node:ekr.20061031131434.21: *5* << try to set s from a Python global function >>
             # The first line of the docstring is good enough, except for classes.
             f = __builtins__.get(self.leadinWord)
@@ -519,10 +519,10 @@ class autoCompleterClass:
                 if i > -1: s = s [i:]
                 else: s = '(' + s
                 s = s and s.strip() or ''
-            #@-        << try to set s from a Python global function >>
+            #@-<< try to set s from a Python global function >>
 
         if not s:
-            #@+        << get s using inspect >>
+            #@+<< get s using inspect >>
             #@+node:ekr.20061031131434.22: *5* << get s using inspect >>
             isStringMethod = (
                 self.prevObjects and
@@ -544,17 +544,17 @@ class autoCompleterClass:
                 return # Not a function.  Just '('.
 
             s = args = inspect.formatargspec(s1,s2,s3,s4)
-            #@-        << get s using inspect >>
+            #@-<< get s using inspect >>
 
-        #@+    << remove 'self' from s, but not from args >>
+        #@+<< remove 'self' from s, but not from args >>
         #@+node:ekr.20061031131434.23: *5* << remove 'self' from s, but not from args >>
         if g.match(s,1,'self,'):
             s = s[0] + s[6:].strip()
         elif g.match_word(s,1,'self'):
             s = s[0] + s[5:].strip()
-        #@-    << remove 'self' from s, but not from args >>
+        #@-<< remove 'self' from s, but not from args >>
         if isStringMethod:
-            #@+        << remove 's' from s *and* args >>
+            #@+<< remove 's' from s *and* args >>
             #@+node:ekr.20061031131434.24: *5* << remove 's' from s *and* args >>
             if g.match(s,1,'s,'):
                 s = s[0] + s[3:]
@@ -562,16 +562,16 @@ class autoCompleterClass:
             elif g.match_word(s,1,'s'):
                 s = s[0] + s[2:]
                 args = args[0] + args[2:]
-            #@-        << remove 's' from s *and* args >>
+            #@-<< remove 's' from s *and* args >>
 
         # s = s.rstrip(')') # Not so convenient.
-        #@+    << insert the text and set j1 and j2 >>
+        #@+<< insert the text and set j1 and j2 >>
         #@+node:ekr.20061031131434.25: *5* << insert the text and set j1 and j2 >>
         junk,j = w.getSelectionRange() # Returns insert point if no selection.
         w.insert(j,s)
         c.frame.body.onBodyChanged('Typing')
         j1 = j + 1 ; j2 = j + len(s)
-        #@-    << insert the text and set j1 and j2 >>
+        #@-<< insert the text and set j1 and j2 >>
 
         # End autocompletion mode, putting the insertion point after the suggested calltip.
         self.finish()
@@ -580,7 +580,7 @@ class autoCompleterClass:
             w.setSelectionRange(j1,j2,insert=j2)
         else:
             w.setInsertPoint(j2)
-        #@+    << put the status line >>
+        #@+<< put the status line >>
         #@+node:ekr.20061031131434.26: *5* << put the status line >>
         c.frame.clearStatusLine()
         if obj:
@@ -588,7 +588,7 @@ class autoCompleterClass:
         else:
             name = self.leadinWord
         c.frame.putStatusLine('%s %s' % (name,args))
-        #@-    << put the status line >>
+        #@-<< put the status line >>
     #@+node:ekr.20061031131434.27: *4* chain
     def chain (self):
 
@@ -1592,7 +1592,7 @@ class keyHandlerClass:
         self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
         self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
-        #@+    << define externally visible ivars >>
+        #@+<< define externally visible ivars >>
         #@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
         self.abbrevOn = False # True: abbreviations are on.
         self.arg = '' # The value returned by k.getArg.
@@ -1611,8 +1611,8 @@ class keyHandlerClass:
         self.repeatCount = None
         self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
         self.state = g.bunch(kind=None,n=None,handler=None)
-        #@-    << define externally visible ivars >>
-        #@+    << define internal ivars >>
+        #@-<< define externally visible ivars >>
+        #@+<< define internal ivars >>
         #@+node:ekr.20061031131434.79: *5* << define internal ivars >>
         self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
 
@@ -1670,7 +1670,7 @@ class keyHandlerClass:
         self.insert_mode_fg_color = 'black'
         self.overwrite_mode_bg_color = 'white'
         self.overwrite_mode_fg_color = 'black'
-        #@-    << define internal ivars >>
+        #@-<< define internal ivars >>
 
         self.defineTkNames()
         self.defineSpecialKeys()
@@ -2074,7 +2074,7 @@ class keyHandlerClass:
         if not shortcut:
             # g.trace('No shortcut for %s' % commandName)
             return False
-        #@+    << give warning and return if we try to bind to Enter or Leave >>
+        #@+<< give warning and return if we try to bind to Enter or Leave >>
         #@+node:ekr.20061031131434.90: *5* << give warning and return if we try to bind to Enter or Leave >>
         if shortcut:
             for s in ('enter','leave'):
@@ -2082,7 +2082,7 @@ class keyHandlerClass:
                     g.es_print('ignoring invalid key binding:','%s = %s' % (
                         commandName,shortcut),color='blue')
                     return
-        #@-    << give warning and return if we try to bind to Enter or Leave >>
+        #@-<< give warning and return if we try to bind to Enter or Leave >>
         if pane.endswith('-mode'):
             g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
             return False
@@ -2091,7 +2091,7 @@ class keyHandlerClass:
         try:
             k.bindKeyToDict(pane,shortcut,callback,commandName)
             b = g.bunch(pane=pane,func=callback,commandName=commandName)
-            #@+        << remove previous conflicting definitions from bunchList >>
+            #@+<< remove previous conflicting definitions from bunchList >>
             #@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
             if not modeFlag and self.warn_about_redefined_shortcuts:
                 redefs = [str(b2.commandName) for b2 in bunchList
@@ -2106,7 +2106,7 @@ class keyHandlerClass:
 
             if not modeFlag:
                 bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
-            #@-        << remove previous conflicting definitions from bunchList >>
+            #@-<< remove previous conflicting definitions from bunchList >>
             bunchList.append(b)
             shortcut = g.stripBrackets(shortcut.strip())
             k.bindingsDict [shortcut] = bunchList
@@ -2381,7 +2381,7 @@ class keyHandlerClass:
         k.func = func
         k.funcReturn = None # For unit testing.
         commandName = commandName or func and func.__name__ or '<no function>'
-        #@+    << define specialKeysyms >>
+        #@+<< define specialKeysyms >>
         #@+node:ekr.20061031131434.106: *5* << define specialKeysyms >>
         specialKeysyms = (
             'Alt_L','Alt_R',
@@ -2390,7 +2390,7 @@ class keyHandlerClass:
             'Num_Lock',
             'Shift_L','Shift_R',
         )
-        #@-    << define specialKeysyms >>
+        #@-<< define specialKeysyms >>
         special = keysym in specialKeysyms
         interesting = func is not None
         inserted = not special
@@ -2403,7 +2403,7 @@ class keyHandlerClass:
 
         if inserted:
             # g.trace(stroke,keysym)
-            #@+        << add character to history >>
+            #@+<< add character to history >>
             #@+node:ekr.20061031131434.107: *5* << add character to history >>
             if stroke or len(ch) > 0:
                 if len(keyHandlerClass.lossage) > 99:
@@ -2411,7 +2411,7 @@ class keyHandlerClass:
 
                 # This looks like a memory leak, but isn't.
                 keyHandlerClass.lossage.insert(0,(ch,stroke),)
-            #@-        << add character to history >>
+            #@-<< add character to history >>
 
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
@@ -3023,7 +3023,7 @@ class keyHandlerClass:
             'completion',state==0 and completion or state!=0 and k.arg_completion)
         if state == 0:
             k.arg = ''
-            #@+        << init altX vars >>
+            #@+<< init altX vars >>
             #@+node:ekr.20061031131434.129: *5* << init altX vars >>
             k.argTabList = tabList and tabList[:] or []
             k.arg_completion = completion
@@ -3036,7 +3036,7 @@ class keyHandlerClass:
             # Clear the list: any non-tab indicates that a new prefix is in effect.
             k.mb_tabListPrefix = k.getLabel()
             k.oneCharacterArg = oneCharacter
-            #@-        << init altX vars >>
+            #@-<< init altX vars >>
             # Set the states.
             bodyCtrl = c.frame.body.bodyCtrl
             c.widgetWantsFocus(bodyCtrl)
@@ -3192,7 +3192,7 @@ class keyHandlerClass:
 
         '''This is the handler for almost all key bindings.'''
 
-        #@+    << define vars >>
+        #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
         k = self ; c = k.c ; gui = g.app.gui
 
@@ -3222,7 +3222,7 @@ class keyHandlerClass:
         self.master_key_count += 1
 
         isPlain =  k.isPlainKey(stroke)
-        #@-    << define vars >>
+        #@-<< define vars >>
         trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
@@ -4060,7 +4060,7 @@ class keyHandlerClass:
         # g.trace('state',state,'keysym',keysym)
         if state == 0:
             k.arg = ''
-            #@+        << init altX vars >>
+            #@+<< init altX vars >>
             #@+node:ekr.20061031131434.169: *5* << init altX vars >>
             k.filterExt = filterExt
             k.mb_prefix = (prefix or k.getLabel())
@@ -4072,7 +4072,7 @@ class keyHandlerClass:
             k.extendLabel(theDir,select=False,protect=False)
 
             k.mb_tabListPrefix = k.getLabel()
-            #@-        << init altX vars >>
+            #@-<< init altX vars >>
             # Set the states.
             k.getFileNameHandler = handler
             k.setState(tag,1,k.getFileName)
@@ -4307,7 +4307,7 @@ class keyHandlerClass:
         if not setting:return None
 
         s = g.stripBrackets(setting.strip())
-        #@+    << define cmd, ctrl, alt, shift >>
+        #@+<< define cmd, ctrl, alt, shift >>
         #@+node:ekr.20061031131434.185: *5* << define cmd, ctrl, alt, shift >>
         s2 = s.lower()
 
@@ -4316,24 +4316,24 @@ class keyHandlerClass:
         alt   = s2.find("alt") >= 0
         shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
         meta  = s2.find("meta") >= 0
-        #@-    << define cmd, ctrl, alt, shift >>
+        #@-<< define cmd, ctrl, alt, shift >>
         if k.swap_mac_keys and sys.platform == "darwin":
-            #@+        << swap cmd and ctrl keys >>
+            #@+<< swap cmd and ctrl keys >>
             #@+node:ekr.20061031131434.186: *5* << swap cmd and ctrl keys >>
             if ctrl and not cmd:
                 cmd = True ; ctrl = False
             if alt and not ctrl:
                 ctrl = True ; alt = False
-            #@-        << swap cmd and ctrl keys >>
-        #@+    << convert minus signs to plus signs >>
+            #@-<< swap cmd and ctrl keys >>
+        #@+<< convert minus signs to plus signs >>
         #@+node:ekr.20061031131434.187: *5* << convert minus signs to plus signs >>
         # Replace all minus signs by plus signs, except a trailing minus:
         if s.endswith('-'):
             s = s[:-1].replace('-','+') + '-'
         else:
             s = s.replace('-','+')
-        #@-    << convert minus signs to plus signs >>
-        #@+    << compute the last field >>
+        #@-<< convert minus signs to plus signs >>
+        #@+<< compute the last field >>
         #@+node:ekr.20061031131434.188: *5* << compute the last field >>
         if s.endswith('+'):
             last = '+'
@@ -4364,8 +4364,8 @@ class keyHandlerClass:
             # This is a *one-way* translation, done only here.
             d = k.settingsNameDict
             last = d.get(last.lower(),last)
-        #@-    << compute the last field >>
-        #@+    << compute shortcut >>
+        #@-<< compute the last field >>
+        #@+<< compute shortcut >>
         #@+node:ekr.20061031131434.189: *5* << compute shortcut >>
         table = (
             (alt, 'Alt+'),
@@ -4378,7 +4378,7 @@ class keyHandlerClass:
 
         # new in 4.4b3: convert all characters to unicode first.
         shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
-        #@-    << compute shortcut >>
+        #@-<< compute shortcut >>
         if trace: g.trace('%20s %s' % (setting,shortcut))
         return shortcut
 
@@ -4585,7 +4585,7 @@ class keyHandlerClass:
 
         '''Handle accumulation of universal argument.'''
 
-        #@+    << about repeat counts >>
+        #@+<< about repeat counts >>
         #@+node:ekr.20061031131434.201: *4* << about repeat counts >>
         #@@nocolor
 
@@ -4640,7 +4640,7 @@ class keyHandlerClass:
         # others may treat an argument of just a minus sign differently from an argument
         # of -1. These unusual cases will be described when they come up; they are always
         # to make the individual command more convenient to use.
-        #@-    << about repeat counts >>
+        #@-<< about repeat counts >>
 
         k = self ; gui = g.app.gui
         state = k.getState('u-arg')

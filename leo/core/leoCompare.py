@@ -256,7 +256,7 @@ class baseLeoCompare:
             self.show("2: " + name2)
             self.show("")
         s1 = s2 = None
-        #@+    << handle opening lines >>
+        #@+<< handle opening lines >>
         #@+node:ekr.20031218072017.3639: *4* << handle opening lines >>
         if self.ignoreSentinelLines:
 
@@ -277,13 +277,13 @@ class baseLeoCompare:
             if s2 == None:
                 g.readlineForceUnixNewline(f2) ; lines2 += 1
             s2 = None
-        #@-    << handle opening lines >>
+        #@-<< handle opening lines >>
         while 1:
             if s1 == None:
                 s1 = g.readlineForceUnixNewline(f1) ; lines1 += 1
             if s2 == None:
                 s2 = g.readlineForceUnixNewline(f2) ; lines2 += 1
-            #@+        << ignore blank lines and/or sentinels >>
+            #@+<< ignore blank lines and/or sentinels >>
             #@+node:ekr.20031218072017.3640: *4* << ignore blank lines and/or sentinels >>
             # Completely empty strings denotes end-of-file.
             if s1 and len(s1) > 0:
@@ -299,14 +299,14 @@ class baseLeoCompare:
 
                 if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(s2,sentinelComment2):
                     s2 = None ; continue
-            #@-        << ignore blank lines and/or sentinels >>
+            #@-<< ignore blank lines and/or sentinels >>
             n1 = len(s1) ; n2 = len(s2)
             if n1==0 and n2 != 0: self.show("1.eof***:")
             if n2==0 and n1 != 0: self.show("2.eof***:")
             if n1==0 or n2==0: break
             match = self.compare_lines(s1,s2)
             if not match: mismatches += 1
-            #@+        << print matches and/or mismatches >>
+            #@+<< print matches and/or mismatches >>
             #@+node:ekr.20031218072017.3641: *4* << print matches and/or mismatches >>
             if self.limitCount == 0 or mismatches <= self.limitCount:
 
@@ -325,8 +325,8 @@ class baseLeoCompare:
                     z2 = "2." + str(lines2)
                     self.dump(z1.rjust(6) + '*:',s1)
                     self.dump(z2.rjust(6) + '*:',s2)
-            #@-        << print matches and/or mismatches >>
-            #@+        << warn if mismatch limit reached >>
+            #@-<< print matches and/or mismatches >>
+            #@+<< warn if mismatch limit reached >>
             #@+node:ekr.20031218072017.3642: *4* << warn if mismatch limit reached >>
             if self.limitCount > 0 and mismatches >= self.limitCount:
 
@@ -335,9 +335,9 @@ class baseLeoCompare:
                     self.show("limit count reached")
                     self.show("")
                     printTrailing = False
-            #@-        << warn if mismatch limit reached >>
+            #@-<< warn if mismatch limit reached >>
             s1 = s2 = None # force a read of both lines.
-        #@+    << handle reporting after at least one eof is seen >>
+        #@+<< handle reporting after at least one eof is seen >>
         #@+node:ekr.20031218072017.3643: *4* << handle reporting after at least one eof is seen >>
         if n1 > 0: 
             lines1 += self.dumpToEndOfFile("1.",f1,s1,lines1,printTrailing)
@@ -349,7 +349,7 @@ class baseLeoCompare:
         self.show("lines1:" + str(lines1))
         self.show("lines2:" + str(lines2))
         self.show("mismatches:" + str(mismatches))
-        #@-    << handle reporting after at least one eof is seen >>
+        #@-<< handle reporting after at least one eof is seen >>
     #@+node:ekr.20031218072017.3644: *3* filecmp
     def filecmp (self,f1,f2):
 

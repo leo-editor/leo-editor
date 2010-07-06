@@ -97,7 +97,7 @@ class leoMenu:
             enable = frame.menu.enableMenu
             menu = frame.menu.getMenu("Edit")
             c.undoer.enableMenuItems()
-            #@+        << enable cut/paste >>
+            #@+<< enable cut/paste >>
             #@+node:ekr.20040130164211: *5* << enable cut/paste >>
             if frame.body.hasFocus():
                 data = w.getSelectedText()
@@ -112,7 +112,7 @@ class leoMenu:
             data = g.app.gui.getTextFromClipboard()
             canPaste = data and len(data) > 0
             enable(menu,"Paste",canPaste)
-            #@-        << enable cut/paste >>
+            #@-<< enable cut/paste >>
             if 0: # Always on for now.
                 menu = frame.menu.getMenu("Find...")
                 enable(menu,"Find Next",c.canFind())
@@ -146,7 +146,7 @@ class leoMenu:
 
         try:
             enable = frame.menu.enableMenu
-            #@+        << enable top level outline menu >>
+            #@+<< enable top level outline menu >>
             #@+node:ekr.20040131171020: *5* << enable top level outline menu >>
             menu = frame.menu.getMenu("Outline")
             if menu:
@@ -158,8 +158,8 @@ class leoMenu:
                 enable(menu,"Sort Siblings",c.canSortSiblings())
                 enable(menu,"Hoist",c.canHoist())
                 enable(menu,"De-Hoist",c.canDehoist())
-            #@-        << enable top level outline menu >>
-            #@+        << enable expand/contract submenu >>
+            #@-<< enable top level outline menu >>
+            #@+<< enable expand/contract submenu >>
             #@+node:ekr.20040131171020.1: *5* << enable expand/Contract submenu >>
             menu = frame.menu.getMenu("Expand/Contract...")
             if menu:
@@ -173,8 +173,8 @@ class leoMenu:
                 enable(menu,"Expand Or Go Right",hasChildren)
                 for i in range(2,9):
                     frame.menu.enableMenu(menu,"Expand To Level " + str(i), hasChildren)
-            #@-        << enable expand/contract submenu >>
-            #@+        << enable move submenu >>
+            #@-<< enable expand/contract submenu >>
+            #@+<< enable move submenu >>
             #@+node:ekr.20040131171020.2: *5* << enable move submenu >>
             menu = frame.menu.getMenu("Move...")
             if menu:
@@ -184,8 +184,8 @@ class leoMenu:
                 enable(menu,"Move Up",c.canMoveOutlineUp())
                 enable(menu,"Promote",c.canPromote())
                 enable(menu,"Demote",c.canDemote())
-            #@-        << enable move submenu >>
-            #@+        << enable go to submenu >>
+            #@-<< enable move submenu >>
+            #@+<< enable go to submenu >>
             #@+node:ekr.20040131171020.3: *5* << enable go to submenu >>
             menu = frame.menu.getMenu("Go To...")
             if menu:
@@ -202,8 +202,8 @@ class leoMenu:
                 enable(menu,"Go To Parent",hasParent)
                 enable(menu,"Go To Prev Sibling",hasBack)
                 enable(menu,"Go To Next Sibling",hasNext)
-            #@-        << enable go to submenu >>
-            #@+        << enable mark submenu >>
+            #@-<< enable go to submenu >>
+            #@+<< enable mark submenu >>
             #@+node:ekr.20040131171020.4: *5* << enable mark submenu >>
             menu = frame.menu.getMenu("Mark/Unmark...")
             if menu:
@@ -214,7 +214,7 @@ class leoMenu:
                     enable(menu,"Mark Changed Items",c.canMarkChangedHeadlines())
                     enable(menu,"Mark Changed Roots",c.canMarkChangedRoots())
                 enable(menu,"Mark Clones",isCloned)
-            #@-        << enable mark submenu >>
+            #@-<< enable mark submenu >>
         except:
             g.es("exception updating Outline menu")
             g.es_exception()
@@ -281,45 +281,45 @@ class leoMenu:
         self.createMenuEntries(fileMenu,self.fileMenuTopTable)
         self.createNewMenu("Open &With...","File")
         self.createMenuEntries(fileMenu,self.fileMenuTop2Table)
-        #@+    << create the recent files submenu >>
+        #@+<< create the recent files submenu >>
         #@+node:ekr.20031218072017.3791: *6* << create the recent files submenu >>
         self.createNewMenu("Recent &Files...","File")
         c.recentFiles = c.config.getRecentFiles()
 
         if 0: # Not needed, and causes problems in wxWindows...
             self.createRecentFilesMenuItems()
-        #@-    << create the recent files submenu >>
+        #@-<< create the recent files submenu >>
         self.add_separator(fileMenu)
-        #@+    << create the read/write submenu >>
+        #@+<< create the read/write submenu >>
         #@+node:ekr.20031218072017.3792: *6* << create the read/write submenu >>
         readWriteMenu = self.createNewMenu("&Read/Write...","File")
 
         self.createMenuEntries(readWriteMenu,self.fileMenuReadWriteMenuTable)
-        #@-    << create the read/write submenu >>
-        #@+    << create the tangle submenu >>
+        #@-<< create the read/write submenu >>
+        #@+<< create the tangle submenu >>
         #@+node:ekr.20031218072017.3793: *6* << create the tangle submenu >>
         tangleMenu = self.createNewMenu("Tan&gle...","File")
 
         self.createMenuEntries(tangleMenu,self.fileMenuTangleMenuTable)
-        #@-    << create the tangle submenu >>
-        #@+    << create the untangle submenu >>
+        #@-<< create the tangle submenu >>
+        #@+<< create the untangle submenu >>
         #@+node:ekr.20031218072017.3794: *6* << create the untangle submenu >>
         untangleMenu = self.createNewMenu("&Untangle...","File")
 
         self.createMenuEntries(untangleMenu,self.fileMenuUntangleMenuTable)
-        #@-    << create the untangle submenu >>
-        #@+    << create the import submenu >>
+        #@-<< create the untangle submenu >>
+        #@+<< create the import submenu >>
         #@+node:ekr.20031218072017.3795: *6* << create the import submenu >>
         importMenu = self.createNewMenu("&Import...","File")
 
         self.createMenuEntries(importMenu,self.fileMenuImportMenuTable)
-        #@-    << create the import submenu >>
-        #@+    << create the export submenu >>
+        #@-<< create the import submenu >>
+        #@+<< create the export submenu >>
         #@+node:ekr.20031218072017.3796: *6* << create the export submenu >>
         exportMenu = self.createNewMenu("&Export...","File")
 
         self.createMenuEntries(exportMenu,self.fileMenuExportMenuTable)
-        #@-    << create the export submenu >>
+        #@-<< create the export submenu >>
         self.add_separator(fileMenu)
         self.createMenuEntries(fileMenu,self.fileMenuTop3MenuTable)
     #@+node:ekr.20031218072017.3786: *5* createEditMenuFromTable
@@ -328,24 +328,24 @@ class leoMenu:
         editMenu = self.createNewMenu("&Edit")
         self.createMenuEntries(editMenu,self.editMenuTopTable)
 
-        #@+    << create the edit body submenu >>
+        #@+<< create the edit body submenu >>
         #@+node:ekr.20031218072017.3787: *6* << create the edit body submenu >>
         editBodyMenu = self.createNewMenu("Edit &Body...","Edit")
 
         self.createMenuEntries(editBodyMenu,self.editMenuEditBodyTable)
-        #@-    << create the edit body submenu >>
-        #@+    << create the edit headline submenu >>
+        #@-<< create the edit body submenu >>
+        #@+<< create the edit headline submenu >>
         #@+node:ekr.20031218072017.3788: *6* << create the edit headline submenu >>
         editHeadlineMenu = self.createNewMenu("Edit &Headline...","Edit")
 
         self.createMenuEntries(editHeadlineMenu,self.editMenuEditHeadlineTable)
-        #@-    << create the edit headline submenu >>
-        #@+    << create the find submenu >>
+        #@-<< create the edit headline submenu >>
+        #@+<< create the find submenu >>
         #@+node:ekr.20031218072017.3789: *6* << create the find submenu >>
         findMenu = self.createNewMenu("&Find...","Edit")
 
         self.createMenuEntries(findMenu,self.editMenuFindMenuTable)
-        #@-    << create the find submenu >>
+        #@-<< create the find submenu >>
 
         self.createMenuEntries(editMenu,self.editMenuTop2Table)
     #@+node:ekr.20031218072017.3797: *5* createOutlineMenuFromTable
@@ -355,36 +355,36 @@ class leoMenu:
 
         self.createMenuEntries(outlineMenu,self.outlineMenuTopMenuTable)
 
-        #@+    << create check submenu >>
+        #@+<< create check submenu >>
         #@+node:ekr.20040711140738.1: *6* << create check submenu >>
         checkOutlineMenu = self.createNewMenu("Chec&k...","Outline")
 
         self.createMenuEntries(checkOutlineMenu,self.outlineMenuCheckOutlineMenuTable)
-        #@-    << create check submenu >>
-        #@+    << create expand/contract submenu >>
+        #@-<< create check submenu >>
+        #@+<< create expand/contract submenu >>
         #@+node:ekr.20031218072017.3798: *6* << create expand/contract submenu >>
         expandMenu = self.createNewMenu("E&xpand/Contract...","Outline")
 
         self.createMenuEntries(expandMenu,self.outlineMenuExpandContractMenuTable)
-        #@-    << create expand/contract submenu >>
-        #@+    << create move submenu >>
+        #@-<< create expand/contract submenu >>
+        #@+<< create move submenu >>
         #@+node:ekr.20031218072017.3799: *6* << create move submenu >>
         moveSelectMenu = self.createNewMenu("&Move...","Outline")
 
         self.createMenuEntries(moveSelectMenu,self.outlineMenuMoveMenuTable)
-        #@-    << create move submenu >>
-        #@+    << create mark submenu >>
+        #@-<< create move submenu >>
+        #@+<< create mark submenu >>
         #@+node:ekr.20031218072017.3800: *6* << create mark submenu >>
         markMenu = self.createNewMenu("M&ark/Unmark...","Outline")
 
         self.createMenuEntries(markMenu,self.outlineMenuMarkMenuTable)
-        #@-    << create mark submenu >>
-        #@+    << create goto submenu >>
+        #@-<< create mark submenu >>
+        #@+<< create goto submenu >>
         #@+node:ekr.20031218072017.3801: *6* << create goto submenu >>
         gotoMenu = self.createNewMenu("&Go To...","Outline")
 
         self.createMenuEntries(gotoMenu,self.outlineMenuGoToMenuTable)
-        #@-    << create goto submenu >>
+        #@-<< create goto submenu >>
     #@+node:ekr.20050921103736: *5* createCmndsMenuFromTable
     def createCmndsMenuFromTable (self):
 
@@ -1227,7 +1227,7 @@ class leoMenu:
 
         trace = False
         for data in table:
-            #@+        << get label & command or continue >>
+            #@+<< get label & command or continue >>
             #@+node:ekr.20051021091958: *5* << get label & command or continue >>
             if g.isString(data):
                 # New in Leo 4.4.2: Can use the same string for both the label and the command string.
@@ -1256,8 +1256,8 @@ class leoMenu:
                 else:
                     g.trace('bad data in menu table: %s' % repr(data))
                     continue # Ignore bad data
-            #@-        << get label & command or continue >>
-            #@+        << compute commandName & accel from label & command >>
+            #@-<< get label & command or continue >>
+            #@+<< compute commandName & accel from label & command >>
             #@+node:ekr.20031218072017.1725: *5* << compute commandName & accel from label & command >>
             # New in 4.4b2: command can be a minibuffer-command name (a string)
             minibufferCommand = type(command) == type('')
@@ -1288,7 +1288,7 @@ class leoMenu:
                         accel = bunch and bunch.val ; break
                 # Second, get new-style name.
                 if not accel:
-                    #@+        << compute emacs_name >>
+                    #@+<< compute emacs_name >>
                     #@+node:ekr.20051021100806.1: *6* << compute emacs_name >>
                     #@+at One not-so-horrible kludge remains.
                     # 
@@ -1305,7 +1305,7 @@ class leoMenu:
                             emacs_name = k.inverseCommandsDict.get(command.__name__)
                         except Exception:
                             emacs_name = None
-                    #@-        << compute emacs_name >>
+                    #@-<< compute emacs_name >>
                         # Contains the not-so-horrible kludge.
                     if emacs_name:
                         commandName = emacs_name
@@ -1318,7 +1318,7 @@ class leoMenu:
                                 break
                     elif not dynamicMenu:
                         g.trace('No inverse for %s' % commandName)
-            #@-        << compute commandName & accel from label & command >>
+            #@-<< compute commandName & accel from label & command >>
             # Bug fix: 2009/09/30: use canonical stroke.
             accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
             stroke = k.shortcutFromSetting(accel,addKey=True) or ''
@@ -1334,14 +1334,14 @@ class leoMenu:
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&","")
             if sys.platform == 'darwin':
-                #@+            << clear accelerator if it is a plain key >>
+                #@+<< clear accelerator if it is a plain key >>
                 #@+node:ekr.20060216110502: *5* << clear accelerator if it is a plain key >>
                 for z in ('Alt','Ctrl','Command'):
                     if accelerator.find(z) != -1:
                         break # Found.
                 else:
                     accelerator = ''
-                #@-            << clear accelerator if it is a plain key >>
+                #@-<< clear accelerator if it is a plain key >>
 
             # c.add_command ensures that c.outerUpdate is called.
             if menu:
@@ -1458,7 +1458,7 @@ class leoMenu:
         if g.app.unitTesting: return
 
         for data in table:
-            #@+        << get label, accelerator & command or continue >>
+            #@+<< get label, accelerator & command or continue >>
             #@+node:ekr.20051022043713.1: *6* << get label, accelerator & command or continue >>
             ok = (
                 type(data) in (type(()), type([])) and
@@ -1475,7 +1475,7 @@ class leoMenu:
             else:
                 g.trace('bad data in Open With table: %s' % repr(data))
                 continue # Ignore bad data
-            #@-        << get label, accelerator & command or continue >>
+            #@-<< get label, accelerator & command or continue >>
             # g.trace(label,accelerator)
             realLabel = self.getRealMenuName(label)
             underline=realLabel.find("&")

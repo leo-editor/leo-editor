@@ -223,7 +223,7 @@ class baseCommands (object):
     def initIvars(self):
 
         c = self
-        #@+    << initialize ivars >>
+        #@+<< initialize ivars >>
         #@+node:ekr.20031218072017.2813: *5* << initialize ivars >> (commands)
         self._currentPosition = self.nullPosition()
         self._rootPosition    = self.nullPosition()
@@ -295,7 +295,7 @@ class baseCommands (object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
-        #@-    << initialize ivars >>
+        #@-<< initialize ivars >>
 
         self.config = configSettings(c)
         g.app.config.setIvarsFromSettings(c)
@@ -798,7 +798,7 @@ class baseCommands (object):
         '''Open a Leo window containing the contents of a .leo file.'''
 
         c = self
-        #@+    << Set closeFlag if the only open window is empty >>
+        #@+<< Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2822: *7* << Set closeFlag if the only open window is empty >>
         #@+at If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
         #@@c
@@ -807,7 +807,7 @@ class baseCommands (object):
             c.frame.startupWindow and # The window was open on startup
             not c.changed and not c.frame.saved and # The window has never been changed
             g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-        #@-    << Set closeFlag if the only open window is empty >>
+        #@-<< Set closeFlag if the only open window is empty >>
         table = [("All files","*"),("Leo files","*.leo"),
             ("Python files","*.py"),]
 
@@ -1394,7 +1394,7 @@ class baseCommands (object):
         if not name: return
 
         c = self ; v = c.currentVnode()
-        #@+    << Set closeFlag if the only open window is empty >>
+        #@+<< Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2082: *7* << Set closeFlag if the only open window is empty >>
         #@+at
         # If this is the only open window was opened when the app started, and the window
@@ -1406,7 +1406,7 @@ class baseCommands (object):
             c.frame.startupWindow and # The window was open on startup
             not c.changed and not c.frame.saved and # The window has never been changed
             g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-        #@-    << Set closeFlag if the only open window is empty >>
+        #@-<< Set closeFlag if the only open window is empty >>
 
         fileName = name
         if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
@@ -2845,7 +2845,7 @@ class baseCommands (object):
 
         line1 = '\n' + lines[0]
         headline = lines[0].strip() ; del lines[0]
-        #@+    << Set headline for extractSection >>
+        #@+<< Set headline for extractSection >>
         #@+node:ekr.20031218072017.1709: *7* << Set headline for extractSection >>
         if len(headline) < 5:
             oops = True
@@ -2859,7 +2859,7 @@ class baseCommands (object):
         if oops:
             g.es("selected text should start with a section name",color="blue")
             return
-        #@-    << Set headline for extractSection >>
+        #@-<< Set headline for extractSection >>
         if not lines:
             if not g.unitTesting:
                 g.es("nothing follows section name",color="blue")
@@ -2896,7 +2896,7 @@ class baseCommands (object):
         if 1: # In group...
             found = False
             for s in lines:
-                #@+            << Find the next section name >>
+                #@+<< Find the next section name >>
                 #@+node:ekr.20031218072017.1711: *7* << Find the next section name >>
                 head1 = s.find("<<")
                 if head1 > -1:
@@ -2910,7 +2910,7 @@ class baseCommands (object):
                     name = None
                 else:
                     name = s[head1:head2+2]
-                #@-            << Find the next section name >>
+                #@-<< Find the next section name >>
                 if name:
                     undoData = u.beforeInsertNode(current)
                     p = self.createLastChildNode(current,name,None)
@@ -2938,7 +2938,7 @@ class baseCommands (object):
         tail_lines = g.splitLines(tail)
 
         if 0:
-            #@+        << trace head_lines, ins, tail_lines >>
+            #@+<< trace head_lines, ins, tail_lines >>
             #@+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
             if 0:
                 g.pr("\nhead_lines")
@@ -2952,7 +2952,7 @@ class baseCommands (object):
                 g.es_print("head_lines: ",head_lines)
                 g.es_print("ins: ",ins)
                 g.es_print("tail_lines: ",tail_lines)
-            #@-        << trace head_lines, ins, tail_lines >>
+            #@-<< trace head_lines, ins, tail_lines >>
 
         # Scan backwards.
         i = len(head_lines)
@@ -3266,7 +3266,7 @@ class baseCommands (object):
             i,j = w.getSelectionRange()
             w.setInsertPoint(i)
 
-        #@+    << compute vars for reformatParagraph >>
+        #@+<< compute vars for reformatParagraph >>
         #@+node:ekr.20031218072017.1834: *7* << compute vars for reformatParagraph >>
         theDict = c.scanAllDirectives()
         pageWidth = theDict.get("pagewidth")
@@ -3277,9 +3277,9 @@ class baseCommands (object):
         oldYview = body.getYScrollPosition()
 
         head,lines,tail = c.findBoundParagraph()
-        #@-    << compute vars for reformatParagraph >>
+        #@-<< compute vars for reformatParagraph >>
         if lines:
-            #@+        << compute the leading whitespace >>
+            #@+<< compute the leading whitespace >>
             #@+node:ekr.20031218072017.1835: *7* << compute the leading whitespace >>
             indents = [0,0] ; leading_ws = ["",""]
 
@@ -3292,8 +3292,8 @@ class baseCommands (object):
             indents[1] = max(indents)
             if len(lines) == 1:
                 leading_ws[1] = leading_ws[0]
-            #@-        << compute the leading whitespace >>
-            #@+        << compute the result of wrapping all lines >>
+            #@-<< compute the leading whitespace >>
+            #@+<< compute the result of wrapping all lines >>
             #@+node:ekr.20031218072017.1836: *7* << compute the result of wrapping all lines >>
             trailingNL = lines and lines[-1].endswith('\n')
             lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
@@ -3312,8 +3312,8 @@ class baseCommands (object):
             # Convert the result to a string.
             result = '\n'.join(paddedResult)
             if trailingNL: result = result + '\n'
-            #@-        << compute the result of wrapping all lines >>
-            #@+        << update the body, selection & undo state >>
+            #@-<< compute the result of wrapping all lines >>
+            #@+<< update the body, selection & undo state >>
             #@+node:ekr.20031218072017.1837: *7* << update the body, selection & undo state >>
             # This destroys recoloring.
             junk, ins = body.setSelectionAreas(head,result,tail)
@@ -3339,7 +3339,7 @@ class baseCommands (object):
 
             w.setSelectionRange(ins,ins,insert=ins)
             w.see(ins)
-            #@-        << update the body, selection & undo state >>
+            #@-<< update the body, selection & undo state >>
     #@+node:ekr.20031218072017.1838: *6* updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
 
@@ -3535,7 +3535,7 @@ class baseCommands (object):
         isLeo = g.match(s,0,g.app.prolog_prefix_string)
         vnodeInfoDict = {}
         if pasteAsClone:
-            #@+        << remember all data for undo/redo Paste As Clone >>
+            #@+<< remember all data for undo/redo Paste As Clone >>
             #@+node:ekr.20050418084539: *8* << remember all data for undo/redo Paste As Clone >>
             #@+at
             # 
@@ -3552,7 +3552,7 @@ class baseCommands (object):
                 if v not in vnodeInfoDict:
                     vnodeInfoDict[v] = g.Bunch(
                         v=v,head=v.headString(),body=v.b)
-            #@-        << remember all data for undo/redo Paste As Clone >>
+            #@-<< remember all data for undo/redo Paste As Clone >>
         # create a *position* to be pasted.
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
@@ -3563,7 +3563,7 @@ class baseCommands (object):
 
         copiedBunchList = []
         if pasteAsClone:
-            #@+        << put only needed info in copiedBunchList >>
+            #@+<< put only needed info in copiedBunchList >>
             #@+node:ekr.20050418084539.2: *8* << put only needed info in copiedBunchList >>
             # Create a dict containing only copied tnodes.
             copiedVnodeDict = {}
@@ -3579,7 +3579,7 @@ class baseCommands (object):
                     copiedBunchList.append(bunch)
 
             # g.trace('copiedBunchList',copiedBunchList)
-            #@-        << put only needed info in copiedBunchList >>
+            #@-<< put only needed info in copiedBunchList >>
         undoData = u.beforeInsertNode(current,
             pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
@@ -3909,7 +3909,7 @@ class baseCommands (object):
         for p in iter():
             try:
                 count += 1
-                #@+            << remove tnodeList >>
+                #@+<< remove tnodeList >>
                 #@+node:ekr.20040313150633: *7* << remove tnodeList >>
                 # Empty tnodeLists are not errors.
                 v = p.v
@@ -3920,9 +3920,9 @@ class baseCommands (object):
                         g.es_print(s,color="blue")
                     delattr(v,"tnodeList")
                     v._p_changed = True
-                #@-            << remove tnodeList >>
+                #@-<< remove tnodeList >>
                 if full: # Unit tests usually set this false.
-                    #@+                << do full tests >>
+                    #@+<< do full tests >>
                     #@+node:ekr.20040323155951: *7* << do full tests >>
                     if not unittest:
                         if count % 1000 == 0:
@@ -3977,19 +3977,19 @@ class baseCommands (object):
 
                     assert parent_v.children[n] == p.v,'fail 1'
                     #@-others
-                    #@-                << do full tests >>
+                    #@-<< do full tests >>
             except AssertionError:
                 errors += 1
-                #@+            << give test failed message >>
+                #@+<< give test failed message >>
                 #@+node:ekr.20040314044652: *7* << give test failed message >>
                 junk, value, junk = sys.exc_info()
 
                 s = "test failed at position %s\n%s" % (repr(p),value)
 
                 g.es_print(s,color="red")
-                #@-            << give test failed message >>
+                #@-<< give test failed message >>
         if verbose or not unittest:
-            #@+        << print summary message >>
+            #@+<< print summary message >>
             #@+node:ekr.20040314043900: *7* <<print summary message >>
             if full:
                 g.enl()
@@ -3997,7 +3997,7 @@ class baseCommands (object):
             if errors or verbose:
                 color = g.choose(errors,'red','blue')
                 g.es_print('',count,'nodes checked',errors,'errors',color=color)
-            #@-        << print summary message >>
+            #@-<< print summary message >>
         return errors
     #@+node:ekr.20040723094220: *6* Check Outline commands & allies
     #@+node:ekr.20040723094220.1: *7* c.checkAllPythonCode
@@ -4010,14 +4010,14 @@ class baseCommands (object):
         for p in c.all_unique_positions():
             count += 1
             if not unittest:
-                #@+            << print dots >>
+                #@+<< print dots >>
                 #@+node:ekr.20040723094220.2: *8* << print dots >>
                 if count % 100 == 0:
                     g.es('','.',newline=False)
 
                 if count % 2000 == 0:
                     g.enl()
-                #@-            << print dots >>
+                #@-<< print dots >>
 
             if g.scanForAtLanguage(c,p) == "python":
                 if not g.scanForAtSettings(p) and (
@@ -4053,14 +4053,14 @@ class baseCommands (object):
 
             count += 1
             if not unittest and not checkOnSave:
-                #@+            << print dots >>
+                #@+<< print dots >>
                 #@+node:ekr.20040723094220.4: *8* << print dots >>
                 if count % 100 == 0:
                     g.es('','.',newline=False)
 
                 if count % 2000 == 0:
                     g.enl()
-                #@-            << print dots >>
+                #@-<< print dots >>
 
             if g.scanForAtLanguage(c,p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
@@ -4267,7 +4267,7 @@ class baseCommands (object):
             self.srow = self.scol = 0 # The starting row/col of the token.
             self.startline = True # True: the token starts a line.
             self.tracing = False
-            #@+    << define dispatch dict >>
+            #@+<< define dispatch dict >>
             #@+node:ekr.20041021100850: *9* << define dispatch dict >>
             self.dispatchDict = {
 
@@ -4283,7 +4283,7 @@ class baseCommands (object):
                 "op":         self.doOp,
                 "string":     self.doMultiLine,
             }
-            #@-    << define dispatch dict >>
+            #@-<< define dispatch dict >>
         #@+node:ekr.20040713093048: *8* clear
         def clear (self):
             self.lines = []
@@ -5141,7 +5141,7 @@ class baseCommands (object):
 
         c.endEditing()
         undoData = u.beforeMoveNode(p)
-        #@+    << Move p down & set moved if successful >>
+        #@+<< Move p down & set moved if successful >>
         #@+node:ekr.20031218072017.1769: *7* << Move p down & set moved if successful >>
         if next.hasChildren() and next.isExpanded():
             # Attempt to move p to the first child of next.
@@ -5160,7 +5160,7 @@ class baseCommands (object):
         if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
-        #@-    << Move p down & set moved if successful >>
+        #@-<< Move p down & set moved if successful >>
         if moved:
             if inAtIgnoreRange and not p.inAtIgnoreRange():
                 # The moved nodes have just become newly unignored.
@@ -5264,7 +5264,7 @@ class baseCommands (object):
         undoData = u.beforeMoveNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         moved = False
-        #@+    << Move p up >>
+        #@+<< Move p up >>
         #@+node:ekr.20031218072017.1773: *7* << Move p up >>
         if trace:
             g.trace("visBack",back)
@@ -5302,7 +5302,7 @@ class baseCommands (object):
         if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
-        #@-    << Move p up >>
+        #@-<< Move p up >>
         if moved:
             if inAtIgnoreRange and not p.inAtIgnoreRange():
                 # The moved nodes have just become newly unignored.

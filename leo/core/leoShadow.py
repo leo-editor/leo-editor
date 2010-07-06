@@ -289,7 +289,7 @@ class shadowController:
         # mapping tells which line of old_private_lines each line of old_public_lines comes from.
         old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
-        #@+    << init vars >>
+        #@+<< init vars >>
         #@+node:ekr.20080708094444.40: *5* << init vars >>
         new_private_lines_wtr = self.sourcewriter(self)
         # collects the contents of the new file.
@@ -307,8 +307,8 @@ class shadowController:
         old_old_j, old_i2_modified_lines = -1,-1
 
         tag = old_i = old_j = new_i = new_j = None
-        #@-    << init vars >>
-        #@+    << define print_tags >>
+        #@-<< init vars >>
+        #@+<< define print_tags >>
         #@+node:ekr.20080708094444.39: *5* << define print_tags >>
         def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
@@ -332,7 +332,7 @@ class shadowController:
                 g.pr(sep2)
 
 
-        #@-    << define print_tags >>
+        #@-<< define print_tags >>
 
         delim1,delim2 = marker.getDelims()
         sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
@@ -340,7 +340,7 @@ class shadowController:
 
         for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
 
-            #@+        << About this loop >>
+            #@+<< About this loop >>
             #@+node:ekr.20080708192807.2: *5* << about this loop >>
             #@+at
             # 
@@ -367,7 +367,7 @@ class shadowController:
             # As a result, the opcode handlers do not need to delete elements from the
             # old_private_lines_rdr explicitly. This explains why opcode handlers for the
             # 'insert' and 'delete' opcodes are identical.
-            #@-        << About this loop >>
+            #@-<< About this loop >>
 
             # Verify that SequenceMatcher never leaves gaps.
             if old_i != prev_old_j: # assert old_i == prev_old_j
@@ -375,7 +375,7 @@ class shadowController:
             if new_i != prev_new_j: # assert new_i == prev_new_j
                 x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
 
-            #@+        << Handle the opcode >>
+            #@+<< Handle the opcode >>
             #@+node:ekr.20080708192807.5: *5* << Handle the opcode >>
             # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
             # In this special case, we must do the insert before the sentinels.
@@ -435,7 +435,7 @@ class shadowController:
 
             if trace and verbose:
                 print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-            #@-        << Handle the opcode >>
+            #@-<< Handle the opcode >>
 
             # Remember the ends of the previous tag ranges.
             prev_old_j = old_j
@@ -451,7 +451,7 @@ class shadowController:
         # Get the result.
         result = new_private_lines_wtr.getlines()
         if 1:
-            #@+        << do final correctness check>>
+            #@+<< do final correctness check>>
             #@+node:ekr.20080708094444.45: *5* << do final correctness check >>
             t_sourcelines, t_sentinel_lines = self.separate_sentinels(
                 new_private_lines_wtr.lines, marker)
@@ -461,7 +461,7 @@ class shadowController:
                 new_public_lines    = new_public_lines,
                 sentinel_lines      = t_sentinel_lines,
                 marker              = marker)
-            #@-        << do final correctness check>>
+            #@-<< do final correctness check>>
         return result
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):

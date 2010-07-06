@@ -258,13 +258,13 @@ def computeLoadDir():
         # __file__ is randomly upper or lower case!
         # The made for an ugly recent files list.
         path = g.__file__ # was leo.__file__
-        #@+        << resolve symlinks >>
+        #@+<< resolve symlinks >>
         #@+node:ville.20090703102253.6160: *6* << resolve symlinks >>
         if path.endswith('pyc'):
             srcfile = path[:-1]
             if os.path.islink(srcfile):
                 path = os.path.realpath(srcfile)    
-        #@-        << resolve symlinks >>
+        #@-<< resolve symlinks >>
         if sys.platform=='win32':
             if len(path) > 2 and path[1]==':':
                 # Convert the drive name to upper case.
@@ -682,7 +682,7 @@ def scanAtRootOptions (s,i,err_flag=False):
 
     mode = None 
     while g.match(s,i,'-'):
-        #@+        << scan another @root option >>
+        #@+<< scan another @root option >>
         #@+node:ekr.20031218072017.3155: *5* << scan another @root option >>
         i += 1 ; err = -1
 
@@ -703,7 +703,7 @@ def scanAtRootOptions (s,i,err_flag=False):
             z_opt = s[err:i]
             z_line = g.get_line(s,i)
             g.es("unknown option:",z_opt,"in",z_line)
-        #@-        << scan another @root option >>
+        #@-<< scan another @root option >>
 
     if mode == None:
         doc = app.config.at_root_bodies_start_in_doc_mode
@@ -1029,7 +1029,7 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
             if len(line) > 0 and wordLen > 0: wordLen += len(" ")
             if wordLen + len(line) <= outputLineWidth:
                 if wordLen > 0:
-                    #@+                    << place blank and word on the present line >>
+                    #@+<< place blank and word on the present line >>
                     #@+node:ekr.20031218072017.3101: *4* << place blank and word on the present line >>
                     if len(line) == 0:
                         # Just add the word to the start of the line.
@@ -1037,10 +1037,10 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
                     else:
                         # Add the word, preceeded by a blank.
                         line = " ".join([line,word]) # DTHEIN 18-JAN-2004: better syntax
-                    #@-                    << place blank and word on the present line >>
+                    #@-<< place blank and word on the present line >>
                 else: pass # discard the trailing whitespace.
             else:
-                #@+                << place word on a new line >>
+                #@+<< place word on a new line >>
                 #@+node:ekr.20031218072017.3102: *4* << place word on a new line >>
                 # End the previous line.
                 if len(line) > 0:
@@ -1055,7 +1055,7 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
                     result.append(line)
                     outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
                     line = ""
-                #@-                << place word on a new line >>
+                #@-<< place word on a new line >>
     if len(line) > 0:
         result.append(line)
     # g.trace(result)
@@ -1308,7 +1308,7 @@ class redirectClass:
 
     """A class to redirect stdout and stderr to Leo's log pane."""
 
-    #@+    << redirectClass methods >>
+    #@+<< redirectClass methods >>
     #@+node:ekr.20031218072017.1656: *4* << redirectClass methods >>
     #@+others
     #@+node:ekr.20041012082437: *5* redirectClass.__init__
@@ -1368,7 +1368,7 @@ class redirectClass:
             # Can happen when g.batchMode is True.
             g.pr(s)
     #@-others
-    #@-    << redirectClass methods >>
+    #@-<< redirectClass methods >>
 
 # Create two redirection objects, one for each stream.
 redirectStdErrObj = redirectClass()
@@ -1415,7 +1415,7 @@ def rawPrint(s):
 #@-<< define convenience methods for redirecting streams >>
 
 if 0: # Test code: may be executed in the child node.
-    #@+    << test code >>
+    #@+<< test code >>
     #@+node:ekr.20031218072017.3123: *4* << test code >>
     import leo.core.leoGlobals as g ; import sys
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
@@ -1442,7 +1442,7 @@ if 0: # Test code: may be executed in the child node.
     g.redirectStdout()
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
     print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
-    #@-    << test code >>
+    #@-<< test code >>
 #@+node:ekr.20080729142651.1: *3* g.getIvarsDict and checkUnchangedIvars
 def getIvarsDict(obj):
 
@@ -2042,7 +2042,7 @@ def handleUrlInUrlNode(url):
     # Note: the UNL plugin has its own notion of what a good url is.
 
     if g.unitTesting: return
-    #@+    << check the url; return if bad >>
+    #@+<< check the url; return if bad >>
     #@+node:tbrown.20090219095555.62: *4* << check the url; return if bad >>
     #@+at A valid url is (according to D.T.Hein):
     # 
@@ -2066,8 +2066,8 @@ def handleUrlInUrlNode(url):
     if not re.match(urlPattern,url):
         g.es("invalid url:",url)
         return
-    #@-    << check the url; return if bad >>
-    #@+    << pass the url to the web browser >>
+    #@-<< check the url; return if bad >>
+    #@+<< pass the url to the web browser >>
     #@+node:tbrown.20090219095555.63: *4* << pass the url to the web browser >>
     #@+at Most browsers should handle the following urls:
     #   ftp://ftp.uu.net/public/whatever.
@@ -2088,7 +2088,7 @@ def handleUrlInUrlNode(url):
     except:
         g.es("exception opening",url)
         g.es_exception()
-    #@-    << pass the url to the web browser >>
+    #@-<< pass the url to the web browser >>
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file
 def is_binary_file (f):
 
@@ -2099,7 +2099,7 @@ def is_binary_file (f):
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel (line,delims):
 
-    #@+    << is_sentinel doc tests >>
+    #@+<< is_sentinel doc tests >>
     #@+node:ekr.20040719161756: *4* << is_sentinel doc tests >>
     """
 
@@ -2125,7 +2125,7 @@ def is_sentinel (line,delims):
     False
 
     """
-    #@-    << is_sentinel doc tests >>
+    #@-<< is_sentinel doc tests >>
 
     delim1,delim2,delim3 = delims
 
@@ -2746,7 +2746,7 @@ def printGcObjects(tag=''):
         if delta == 0: return
         lastObjectCount = n2
 
-        #@+        << print number of each type of object >>
+        #@+<< print number of each type of object >>
         #@+node:ekr.20040703054646: *4* << print number of each type of object >>
         global lastTypesDict
         typesDict = {}
@@ -2790,9 +2790,9 @@ def printGcObjects(tag=''):
 
         lastTypesDict = typesDict
         typesDict = {}
-        #@-        << print number of each type of object >>
+        #@-<< print number of each type of object >>
         if 0:
-            #@+            << print added functions >>
+            #@+<< print added functions >>
             #@+node:ekr.20040703065638: *4* << print added functions >>
             # import types
             import inspect
@@ -2823,7 +2823,7 @@ def printGcObjects(tag=''):
 
             lastFunctionsDict = funcDict
             funcDict = {}
-            #@-            << print added functions >>
+            #@-<< print added functions >>
 
     except Exception:
         traceback.print_exc()
@@ -3162,7 +3162,7 @@ def internalError (*args):
     g.es_print('Called from',','.join(callers[:-1]))
 #@+node:ekr.20090128083459.82: *3* g.posList
 class posList(list):
-    #@+    << docstring for posList >>
+    #@+<< docstring for posList >>
     #@+node:ekr.20090130114732.2: *4* << docstring for posList >>
     '''A subclass of list for creating and selecting lists of positions.
 
@@ -3185,7 +3185,7 @@ class posList(list):
             # Prints all positions in aList, sorted if sort is True.
             # Prints p.h, or repr(p) if verbose is True.
     '''
-    #@-    << docstring for posList >>
+    #@-<< docstring for posList >>
     def __init__ (self,c,aList=None):
         self.c = c
         list.__init__(self) # Init the base class
@@ -4234,7 +4234,7 @@ def executeFile(filename, options= ''):
     fdir, fname = g.os_path_split(filename)
 
     if subprocess: # Only exists in Python 2.4.
-        #@+        << define subprocess_wrapper >>
+        #@+<< define subprocess_wrapper >>
         #@+node:ekr.20050503112513.8: *4* << define subprocess_wrapper >>
         def subprocess_wrapper(cmdlst):
 
@@ -4247,7 +4247,7 @@ def executeFile(filename, options= ''):
 
             stdo, stde = p.communicate()
             return p.wait(), stdo, stde
-        #@-        << define subprocess_wrapper >>
+        #@-<< define subprocess_wrapper >>
         rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
         if rc:
             g.pr('return code', rc)
@@ -4350,7 +4350,7 @@ def handleScriptException (c,p,script,script1):
     if p and not script1 and fileName == "<string>":
         c.goToScriptLineNumber(p,script,n)
 
-    #@+    << dump the lines near the error >>
+    #@+<< dump the lines near the error >>
     #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
     if g.os_path_exists(fileName):
         f = open(fileName)
@@ -4370,7 +4370,7 @@ def handleScriptException (c,p,script,script1):
         s = "%s line %d: %s" % (ch,i+1,lines[i])
         g.es('',s,newline=False)
         i += 1
-    #@-    << dump the lines near the error >>
+    #@-<< dump the lines near the error >>
 #@+node:ekr.20031218072017.2418: *3* g.initScriptFind (set up dialog)
 def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     script_search=True,script_change=True):

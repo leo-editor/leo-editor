@@ -119,7 +119,7 @@ class LeoApp:
         # Global panels.  Destroyed when Leo ends.
         self.pythonFrame = None
 
-        #@+    << Define global constants >>
+        #@+<< Define global constants >>
         #@+node:ekr.20031218072017.1417: *3* << define global constants >>
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 
@@ -127,8 +127,8 @@ class LeoApp:
         self.prolog_postfix_string = "?>"
         self.prolog_namespace_string = \
             'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-        #@-    << Define global constants >>
-        #@+    << Define global data structures >>
+        #@-<< Define global constants >>
+        #@+<< Define global data structures >>
         #@+node:ekr.20031218072017.368: *3* << define global data structures >> (leoApp.py)
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
@@ -298,7 +298,7 @@ class LeoApp:
         }
 
         self.global_commands_dict = {}
-        #@-    << Define global data structures >>
+        #@-<< Define global data structures >>
     #@+node:ekr.20031218072017.2609: ** app.closeLeoWindow
     def closeLeoWindow (self,frame):
 
@@ -521,7 +521,7 @@ class LeoApp:
         if not fileName: fileName = ''
         if not relativeFileName: relativeFileName = ''
         if not gui: gui = g.app.gui
-        #@+    << compute the window title >>
+        #@+<< compute the window title >>
         #@+node:ekr.20031218072017.2189: *3* << compute the window title >>
         # Set the window title and fileName
         if fileName:
@@ -533,7 +533,7 @@ class LeoApp:
                 s += str(n)
             title = g.computeWindowTitle(s)
             g.app.numberOfWindows = n+1
-        #@-    << compute the window title >>
+        #@-<< compute the window title >>
 
         # g.trace(fileName,relativeFileName)
 
@@ -580,7 +580,7 @@ class LeoApp:
         loadDir = g.app.loadDir
 
         verbose = not g.app.unitTesting
-        #@+    << return if we can set leoID from sys.leoID >>
+        #@+<< return if we can set leoID from sys.leoID >>
         #@+node:ekr.20031218072017.1979: *3* << return if we can set leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
 
@@ -598,8 +598,8 @@ class LeoApp:
             return
         else:
             g.app.leoID = None
-        #@-    << return if we can set leoID from sys.leoID >>
-        #@+    << return if we can set leoID from "leoID.txt" >>
+        #@-<< return if we can set leoID from sys.leoID >>
+        #@+<< return if we can set leoID from "leoID.txt" >>
         #@+node:ekr.20031218072017.1980: *3* << return if we can set leoID from "leoID.txt" >>
         for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
@@ -627,8 +627,8 @@ class LeoApp:
                     g.app.leoID = None
                     g.es_print('unexpected exception in app.setLeoID',color='red')
                     g.es_exception()
-        #@-    << return if we can set leoID from "leoID.txt" >>
-        #@+    << return if we can set leoID from os.getenv('USER') >>
+        #@-<< return if we can set leoID from "leoID.txt" >>
+        #@+<< return if we can set leoID from os.getenv('USER') >>
         #@+node:ekr.20060211140947.1: *3* << return if we can set leoID from os.getenv('USER') >>
         try:
             theId = os.getenv('USER')
@@ -644,8 +644,8 @@ class LeoApp:
 
         except Exception:
             pass
-        #@-    << return if we can set leoID from os.getenv('USER') >>
-        #@+    << put up a dialog requiring a valid id >>
+        #@-<< return if we can set leoID from os.getenv('USER') >>
+        #@+<< put up a dialog requiring a valid id >>
         #@+node:ekr.20031218072017.1981: *3* << put up a dialog requiring a valid id >>
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
 
@@ -670,8 +670,8 @@ class LeoApp:
 
         # g.trace(g.app.leoID)
         g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
-        #@-    << put up a dialog requiring a valid id >>
-        #@+    << attempt to create leoID.txt >>
+        #@-<< put up a dialog requiring a valid id >>
+        #@+<< attempt to create leoID.txt >>
         #@+node:ekr.20031218072017.1982: *3* << attempt to create leoID.txt >>
         for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
@@ -688,7 +688,7 @@ class LeoApp:
                     pass
 
                 g.es('can not create',tag,'in',theDir,color='red')
-        #@-    << attempt to create leoID.txt >>
+        #@-<< attempt to create leoID.txt >>
     #@+node:ville.20090620122043.6275: ** app.setGlobalDb
     def setGlobalDb(self):
         """ Create global pickleshare db

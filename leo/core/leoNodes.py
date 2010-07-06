@@ -1225,12 +1225,12 @@ class position (object):
         childIndex = p._childIndex
 
         # g.trace(p,parent,pv)
-        #@+    << validate parent ivar >>
+        #@+<< validate parent ivar >>
         #@+node:ekr.20040303175026.14: *5* << validate parent ivar >>
         if parent != pv:
             p.invalidOutline( "Invalid parent link: " + repr(parent))
-        #@-    << validate parent ivar >>
-        #@+    << validate childIndex ivar >>
+        #@-<< validate parent ivar >>
+        #@+<< validate childIndex ivar >>
         #@+node:ekr.20040303175026.15: *5* << validate childIndex ivar >>
         if pv:
             if childIndex < 0:
@@ -1239,12 +1239,12 @@ class position (object):
                 p.invalidOutline ( "missing children entry for index: " + childIndex )
         elif childIndex < 0:
             p.invalidOutline ( "negative childIndex" + childIndex )
-        #@-    << validate childIndex ivar >>
-        #@+    << validate x ivar >>
+        #@-<< validate childIndex ivar >>
+        #@+<< validate x ivar >>
         #@+node:ekr.20040303175026.16: *5* << validate x ivar >>
         if not p.v and pv:
             self.invalidOutline ( "Empty t" )
-        #@-    << validate x ivar >>
+        #@-<< validate x ivar >>
 
         # Recursively validate all the children.
         for child in p.children():
@@ -1754,7 +1754,7 @@ else:
         pass
 
 class vnode (baseVnode):
-    #@+    << vnode constants >>
+    #@+<< vnode constants >>
     #@+node:ekr.20031218072017.951: *3* << vnode constants >>
     # Define the meaning of status bits in new vnodes.
 
@@ -1772,7 +1772,7 @@ class vnode (baseVnode):
     visitedBit  = 0x100
     dirtyBit    = 0x200
     writeBit    = 0x400
-    #@-    << vnode constants >>
+    #@-<< vnode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init

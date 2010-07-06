@@ -335,7 +335,7 @@ def printGc(message=None):
     g.pr("garbage: %d" % n)
     g.pr("%6d =%7d %s" % (delta,n2,"totals"))
 
-    #@+    << print number of each type of object >>
+    #@+<< print number of each type of object >>
     #@+node:ekr.20051104075904.21: *4* << print number of each type of object >>
     global lastTypesDict
     typesDict = {}
@@ -359,9 +359,9 @@ def printGc(message=None):
 
     lastTypesDict = typesDict
     typesDict = {}
-    #@-    << print number of each type of object >>
+    #@-<< print number of each type of object >>
     if 0:
-        #@+        << print added functions >>
+        #@+<< print added functions >>
         #@+node:ekr.20051104075904.22: *4* << print added functions >>
         import types
         import inspect
@@ -386,7 +386,7 @@ def printGc(message=None):
 
         lastFunctionsDict = funcDict
         funcDict = {}
-        #@-        << print added functions >>
+        #@-<< print added functions >>
 
     lastObjectCount = n2
     return delta
@@ -710,7 +710,7 @@ def runTestsExternally (c,all):
             self.copyRoot.initHeadString('All unit tests')
             c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
             self.seen = []
-            #@+    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+            #@+<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             #@+node:ekr.20070705065154: *5* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             if self.all:
                 # A single pass looks for all tags everywhere.
@@ -726,7 +726,7 @@ def runTestsExternally (c,all):
                     p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
                 else:
                     p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
-            #@-    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+            #@-<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 
             if trace: g.trace('all',self.all)
             self.copyRoot.expand()
@@ -883,7 +883,7 @@ def runAtFileTest(c,p):
         result = g.toUnicode(at.stringOutput)
         assert result == expected
     except AssertionError:
-        #@+        << dump result and expected >>
+        #@+<< dump result and expected >>
         #@+node:ekr.20051104075904.45: *4* << dump result and expected >>
         print('\n','-' * 20)
         print("result...")
@@ -894,7 +894,7 @@ def runAtFileTest(c,p):
         for line in g.splitLines(expected):
             print("%3d" % len(line),repr(line))
         print('-' * 20)
-        #@-        << dump result and expected >>
+        #@-<< dump result and expected >>
         raise
 #@+node:sps.20100531175334.10307: *3* root-File tangle test code (leoTest.py)
 def runRootFileTangleTest(c,p):
@@ -922,7 +922,7 @@ def runRootFileTangleTest(c,p):
         resultList = sorted(c.tangleCommands.tangle_output)
         assert(expectList == resultList)
     except AssertionError:
-        #@+        << dump result file names and expected >>
+        #@+<< dump result file names and expected >>
         #@+node:sps.20100531175334.10309: *4* << dump result file names and expected >>
         print('\n','-' * 20)
         print("expected files:")
@@ -933,7 +933,7 @@ def runRootFileTangleTest(c,p):
         for n in resultList:
             print("[%s]" % n, n.__class__)
         print('-' * 20)
-        #@-        << dump result file names and expected >>
+        #@-<< dump result file names and expected >>
         rootTestAfterP.doDelete()
         raise
 
@@ -942,7 +942,7 @@ def runRootFileTangleTest(c,p):
             result = g.toUnicode(c.tangleCommands.tangle_output[t])
             assert(expected[t] == result)
     except AssertionError:
-        #@+        << dump result and expected >>
+        #@+<< dump result and expected >>
         #@+node:sps.20100531175334.10308: *4* << dump result and expected >>
         print('\n','-' * 20)
         print("result for %s..." % t)
@@ -953,7 +953,7 @@ def runRootFileTangleTest(c,p):
         for line in g.splitLines(expected[t]):
             print("%3d" % len(line),repr(line))
         print('-' * 20)
-        #@-        << dump result and expected >>
+        #@-<< dump result and expected >>
         rootTestAfterP.doDelete()
         raise
 

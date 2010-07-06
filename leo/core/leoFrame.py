@@ -791,7 +791,7 @@ class leoBody:
         minSize = float(1.0/float(len(panes)))
 
         f = self.createEditorFrame(pane)
-        #@+    << create text widget w >>
+        #@+<< create text widget w >>
         #@+node:ekr.20060528110922: *7* << create text widget w >>
         w = self.createTextWidget(f,name=name,p=p)
         w.delete(0,'end')
@@ -804,7 +804,7 @@ class leoBody:
         c.k.completeAllBindingsForWidget(w)
 
         self.recolorWidget(p,w)
-        #@-    << create text widget w >>
+        #@-<< create text widget w >>
         self.editorWidgets[name] = w
 
         for pane in panes:
@@ -982,7 +982,7 @@ class leoBody:
         # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
         c.redraw(w.leo_p)
         c.recolor()
-        #@+    << restore the selection, insertion point and the scrollbar >>
+        #@+<< restore the selection, insertion point and the scrollbar >>
         #@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >>
         # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
 
@@ -1003,7 +1003,7 @@ class leoBody:
                 w.setSelectionRange(start,end)
             except Exception:
                 pass
-        #@-    << restore the selection, insertion point and the scrollbar >>
+        #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocusNow()
         return 'break'
     #@+node:ekr.20060528131618: *6* updateEditors
@@ -1155,7 +1155,7 @@ class leoBody:
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
         p.v.setBodyString(newText)
         p.v.insertSpot = body.getInsertPoint()
-        #@+    << recolor the body >>
+        #@+<< recolor the body >>
         #@+node:ekr.20051026083733.6: *5* << recolor the body >>
         body.colorizer.interrupt()
         c.frame.scanForTabWidth(p)
@@ -1164,10 +1164,10 @@ class leoBody:
 
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        #@-    << recolor the body >>
+        #@-<< recolor the body >>
         if not c.changed: c.setChanged(True)
         self.updateEditors()
-        #@+    << update icons if necessary >>
+        #@+<< update icons if necessary >>
         #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
 
         redraw_flag = False
@@ -1185,7 +1185,7 @@ class leoBody:
 
         if redraw_flag:
             c.redraw_after_icons_changed()
-        #@-    << update icons if necessary >>
+        #@-<< update icons if necessary >>
     #@+node:ekr.20061109095450.8: *4* onClick
     def onClick (self,event):
 
@@ -1542,7 +1542,7 @@ class leoFrame:
             return False # Don't save and don't veto.
         else:
             if not c.mFileName:
-                #@+            << Put up a file save dialog to set mFileName >>
+                #@+<< Put up a file save dialog to set mFileName >>
                 #@+node:ekr.20031218072017.3693: *5* << Put up a file save dialog to set mFileName >>
                 # Make sure we never pass None to the ctor.
                 if not c.mFileName:
@@ -1554,7 +1554,7 @@ class leoFrame:
                     filetypes=[("Leo files", "*.leo")],
                     defaultextension=".leo")
                 c.bringToFront()
-                #@-            << Put up a file save dialog to set mFileName >>
+                #@-<< Put up a file save dialog to set mFileName >>
             if c.mFileName:
                 ok = c.fileCommands.save(c.mFileName)
                 return not ok # New in 4.2: Veto if the save did not succeed.
@@ -2201,7 +2201,7 @@ class leoTree:
         if trace:
             g.trace('*** leoTree',g.callers(5))
             g.trace(p and p.h,'w',repr(w),'s',repr(s))
-        #@+    << truncate s if it has multiple lines >>
+        #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *6* << truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.
         for i in (0,1):
@@ -2222,7 +2222,7 @@ class leoTree:
             s = s[:limit]
 
         s = g.toUnicode(s or '')
-        #@-    << truncate s if it has multiple lines >>
+        #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
         oldRevert = self.revertHeadline
         changed = s != oldRevert
@@ -2325,7 +2325,7 @@ class leoTree:
 
         c = self.c
 
-        #@+    << define callbacks to be injected in the position class >>
+        #@+<< define callbacks to be injected in the position class >>
         #@+node:ekr.20040803072955.22: *5* << define callbacks to be injected in the position class >>
         # N.B. These vnode methods are entitled to know about details of the leoTkinterTree class.
 
@@ -2375,7 +2375,7 @@ class leoTree:
             except:
                 g.es_event_exception("hyperleave")
         #@-others
-        #@-    << define callbacks to be injected in the position class >>
+        #@-<< define callbacks to be injected in the position class >>
 
         for f in (OnHyperLinkControlClick,OnHyperLinkEnter,OnHyperLinkLeave):
 
@@ -2394,7 +2394,7 @@ class leoTree:
                 lines = p.b.split('\n')
                 url = lines and lines[0] or ''
             else:
-                #@+            << stop the url after any whitespace >>
+                #@+<< stop the url after any whitespace >>
                 #@+node:ekr.20031218072017.2313: *5* << stop the url after any whitespace  >>
                 # For safety, the URL string should end at the first whitespace, unless quoted.
                 # This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
@@ -2417,7 +2417,7 @@ class leoTree:
                             g.es("ignoring characters after space in url:",z_url)
                             g.es("use %20 instead of spaces")
                         url = url[:i]
-                #@-            << stop the url after any whitespace >>
+                #@-<< stop the url after any whitespace >>
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):
                 g.handleUrlInUrlNode(url)
             g.doHook("@url2",c=c,p=p,v=p)
@@ -2499,7 +2499,7 @@ class leoTree:
 
         if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             if old_p:
-                #@+            << unselect the old node >>
+                #@+<< unselect the old node >>
                 #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
                 # Remember the position of the scrollbar before making any changes.
                 if body:
@@ -2516,18 +2516,18 @@ class leoTree:
                 if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
                     old_p.v.scrollBarSpot = yview
                     old_p.v.insertSpot = insertSpot
-                #@-            << unselect the old node >>
+                #@-<< unselect the old node >>
 
         g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
         if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-            #@+        << select the new node >>
+            #@+<< select the new node >>
             #@+node:ekr.20040803072955.130: *5* << select the new node >>
             # Bug fix: we must always set this, even if we never edit the node.
             self.revertHeadline = p.h
             frame.setWrap(p)
             self.setBodyTextAfterSelect(p,old_p)
-            #@-        << select the new node >>
+            #@-<< select the new node >>
             if p and p != old_p: # Suppress duplicate call.
                 try: # may fail during initialization.
                     # p is NOT c.p here!
@@ -2541,7 +2541,7 @@ class leoTree:
                 except Exception: pass
             c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
-        #@+    << set the current node >>
+        #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >>
         self.setSelectedLabelState(p)
 
@@ -2558,7 +2558,7 @@ class leoTree:
             c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
-        #@-    << set the current node >>
+        #@-<< set the current node >>
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.
 

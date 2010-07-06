@@ -106,7 +106,7 @@ class leoImportCommands (scanUtility):
         lb = g.choose(self.webType=="cweb","@<","<<")
         rb = g.choose(self.webType=="cweb","@>",">>")
         h = v.headString().strip()
-        #@+    << put v's headline ref in head_ref >>
+        #@+<< put v's headline ref in head_ref >>
         #@+node:ekr.20031218072017.3291: *5* << put v's headline ref in head_ref>>
         #@+at We look for either noweb or cweb brackets. head_ref does not include these brackets.
         #@@c
@@ -124,12 +124,12 @@ class leoImportCommands (scanUtility):
             head_ref = h[j+2:k].strip()
             if len(head_ref) == 0:
                 head_ref = None
-        #@-    << put v's headline ref in head_ref >>
-        #@+    << put name following @root or @file in file_name >>
+        #@-<< put v's headline ref in head_ref >>
+        #@+<< put name following @root or @file in file_name >>
         #@+node:ekr.20031218072017.3292: *5* << put name following @root or @file in file_name >>
         if g.match(h,0,"@file") or g.match(h,0,"@root"):
             line = h[5:].strip()
-            #@+    << set file_name >>
+            #@+<< set file_name >>
             #@+node:ekr.20031218072017.3293: *6* << Set file_name >>
             # set j & k so line[j:k] is the file name.
             # g.trace(line)
@@ -146,13 +146,13 @@ class leoImportCommands (scanUtility):
             file_name = line[j:k].strip()
             if file_name and len(file_name) == 0:
                 file_name = None
-            #@-    << set file_name >>
+            #@-<< set file_name >>
         else:
             file_name = line = None
-        #@-    << put name following @root or @file in file_name >>
+        #@-<< put name following @root or @file in file_name >>
         if g.match_word(s,i,"@root"):
             i = g.skip_line(s,i)
-            #@+        << append ref to file_name >>
+            #@+<< append ref to file_name >>
             #@+node:ekr.20031218072017.3294: *5* << append ref to file_name >>
             if self.webType == "cweb":
                 if not file_name:
@@ -163,10 +163,10 @@ class leoImportCommands (scanUtility):
                 if not file_name:
                     file_name = "*"
                 result += lb + file_name + rb + "=" + nl
-            #@-        << append ref to file_name >>
+            #@-<< append ref to file_name >>
         elif g.match_word(s,i,"@c") or g.match_word(s,i,"@code"):
             i = g.skip_line(s,i)
-            #@+        << append head_ref >>
+            #@+<< append head_ref >>
             #@+node:ekr.20031218072017.3295: *5* << append head_ref >>
             if self.webType == "cweb":
                 if not head_ref:
@@ -183,10 +183,10 @@ class leoImportCommands (scanUtility):
                         head_ref = "@others"
 
                 result += lb + head_ref + rb + "=" + nl
-            #@-        << append head_ref >>
+            #@-<< append head_ref >>
         elif g.match_word(h,0,"@file"):
             # Only do this if nothing else matches.
-            #@+        << append ref to file_name >>
+            #@+<< append ref to file_name >>
             #@+node:ekr.20031218072017.3294: *5* << append ref to file_name >>
             if self.webType == "cweb":
                 if not file_name:
@@ -197,10 +197,10 @@ class leoImportCommands (scanUtility):
                 if not file_name:
                     file_name = "*"
                 result += lb + file_name + rb + "=" + nl
-            #@-        << append ref to file_name >>
+            #@-<< append ref to file_name >>
             i = g.skip_line(s,i) # 4/28/02
         else:
-            #@+        << append head_ref >>
+            #@+<< append head_ref >>
             #@+node:ekr.20031218072017.3295: *5* << append head_ref >>
             if self.webType == "cweb":
                 if not head_ref:
@@ -217,7 +217,7 @@ class leoImportCommands (scanUtility):
                         head_ref = "@others"
 
                 result += lb + head_ref + rb + "=" + nl
-            #@-        << append head_ref >>
+            #@-<< append head_ref >>
         i,result = self.copyPart(s,i,result)
         return i, result.strip() + nl
 
@@ -273,20 +273,20 @@ class leoImportCommands (scanUtility):
                 docSeen = True
             elif (g.match_word(s,i,"@code") or g.match_word(s,i,"@root") or
                 g.match_word(s,i,"@c") or g.match(s,i,lb)):
-                #@+            << Supply a missing doc part >>
+                #@+<< Supply a missing doc part >>
                 #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
                     result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
-                #@-            << Supply a missing doc part >>
+                #@-<< Supply a missing doc part >>
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             elif self.treeType == "@file" or startInCode:
-                #@+            << Supply a missing doc part >>
+                #@+<< Supply a missing doc part >>
                 #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
                     result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
-                #@-            << Supply a missing doc part >>
+                #@-<< Supply a missing doc part >>
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             else:
                 i,result = self.convertDocPartToWeb(s,i,result)
@@ -430,7 +430,7 @@ class leoImportCommands (scanUtility):
             s,e = g.readFileIntoString(fileName,self.encoding)
             if s is None: return
             if e: self.encoding = e
-            #@+        << set delims from the header line >>
+            #@+<< set delims from the header line >>
             #@+node:ekr.20031218072017.3302: *5* << set delims from the header line >>
             # Skip any non @+leo lines.
             i = 0
@@ -450,7 +450,7 @@ class leoImportCommands (scanUtility):
                 line_delim = None
             else:
                 line_delim,start_delim = start_delim,None
-            #@-        << set delims from the header line >>
+            #@-<< set delims from the header line >>
             # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
             s = self.removeSentinelLines(s,line_delim,start_delim,end_delim)
             ext = c.config.remove_sentinels_extension
@@ -464,7 +464,7 @@ class leoImportCommands (scanUtility):
             if toString:
                 return s
             else:
-                #@+            << Write s into newFileName >>
+                #@+<< Write s into newFileName >>
                 #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >>
                 try:
                     mode = c.config.output_newline
@@ -478,7 +478,7 @@ class leoImportCommands (scanUtility):
                 except Exception:
                     g.es("exception creating:",newFileName)
                     g.es_exception()
-                #@-            << Write s into newFileName >>
+                #@-<< Write s into newFileName >>
                 return None
     #@+node:ekr.20031218072017.3303: *4* removeSentinelLines
     # This does not handle @nonl properly, but that's a nit...
@@ -508,7 +508,7 @@ class leoImportCommands (scanUtility):
         p = c.p
         if not p: return
         self.setEncoding()
-        #@+    << open filename to f, or return >>
+        #@+<< open filename to f, or return >>
         #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >>
         try:
             # 10/14/02: support for output_newline setting.
@@ -520,13 +520,13 @@ class leoImportCommands (scanUtility):
             g.es("exception opening:",filename)
             g.es_exception()
             return
-        #@-    << open filename to f, or return >>
+        #@-<< open filename to f, or return >>
         for p in p.self_and_subtree():
             s = p.b
             s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
-                #@+            << write the context of p to f >>
+                #@+<< write the context of p to f >>
                 #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >>
                 # write the headlines of p, p's parent and p's grandparent.
                 context = [] ; p2 = p.copy() ; i = 0
@@ -544,7 +544,7 @@ class leoImportCommands (scanUtility):
                     line = g.toEncodedString(line,self.encoding,reportErrors=True)
                     f.write(line)
                     f.write(nl)
-                #@-            << write the context of p to f >>
+                #@-<< write the context of p to f >>
                 f.write("-" * 60) ; f.write(nl)
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
                 f.write(s.rstrip() + nl)
@@ -650,7 +650,7 @@ class leoImportCommands (scanUtility):
         theType = self.webType
         lb = g.choose(theType=="cweb","@<","<<")
         rb = g.choose(theType=="cweb","@>",">>")
-        #@+    << Remove most newlines from @space and @* sections >>
+        #@+<< Remove most newlines from @space and @* sections >>
         #@+node:ekr.20031218072017.3313: *5* << Remove most newlines from @space and @* sections >>
         i = 0
         while i < len(s):
@@ -686,8 +686,8 @@ class leoImportCommands (scanUtility):
                     i = start + len(doc)
             else: i = g.skip_line(s,i)
             assert (i > progress)
-        #@-    << Remove most newlines from @space and @* sections >>
-        #@+    << Replace abbreviated names with full names >>
+        #@-<< Remove most newlines from @space and @* sections >>
+        #@+<< Replace abbreviated names with full names >>
         #@+node:ekr.20031218072017.3314: *5* << Replace abbreviated names with full names >>
         i = 0
         while i < len(s):
@@ -705,7 +705,7 @@ class leoImportCommands (scanUtility):
                         i = j + len(name2)
             i = g.skip_line(s,i)
             assert (i > progress)
-        #@-    << Replace abbreviated names with full names >>
+        #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
     #@+node:ekr.20080211085914: *4* scanDefaultDirectory (leoImport)
@@ -854,7 +854,7 @@ class leoImportCommands (scanUtility):
         u.beforeChangeGroup(current,command)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
-            #@+        << set isThin if fileName is a thin derived file >>
+            #@+<< set isThin if fileName is a thin derived file >>
             #@+node:ekr.20040930135204: *5* << set isThin if fileName is a thin derived file >>
             fileName = g.os_path_normpath(fileName)
 
@@ -864,7 +864,7 @@ class leoImportCommands (scanUtility):
                 theFile.close()
             except IOError:
                 isThin = False
-            #@-        << set isThin if fileName is a thin derived file >>
+            #@-<< set isThin if fileName is a thin derived file >>
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
@@ -891,7 +891,7 @@ class leoImportCommands (scanUtility):
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
         if len(files) == 2:
-            #@+        << Create a parent for two files having a common prefix >>
+            #@+<< Create a parent for two files having a common prefix >>
             #@+node:ekr.20031218072017.3213: *5* << Create a parent for two files having a common prefix >>
             #@+at The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
             #@@c
@@ -905,7 +905,7 @@ class leoImportCommands (scanUtility):
                 # junk, nameExt = g.os_path_split(prefix1)
                 name,junk = g.os_path_splitext(prefix1)
                 current.initHeadString(name)
-            #@-        << Create a parent for two files having a common prefix >>
+            #@-<< Create a parent for two files having a common prefix >>
         for fileName in files:
             g.setGlobalOpenDir(fileName)
             v = self.createOutline(fileName,current)
@@ -943,7 +943,7 @@ class leoImportCommands (scanUtility):
             level,junk = self.moreHeadlineLevel(s)
             level -= firstLevel
             if level >= 0:
-                #@+            << Link a new position p into the outline >>
+                #@+<< Link a new position p into the outline >>
                 #@+node:ekr.20031218072017.3216: *6* << Link a new position p into the outline >>
                 assert(level >= 0)
                 if not last_p:
@@ -963,8 +963,8 @@ class leoImportCommands (scanUtility):
                     p = last_p.insertAfter()
                 last_p = p
                 lastLevel = level
-                #@-            << Link a new position p into the outline >>
-                #@+            << Set the headline string, skipping over the leader >>
+                #@-<< Link a new position p into the outline >>
+                #@+<< Set the headline string, skipping over the leader >>
                 #@+node:ekr.20031218072017.3217: *6* << Set the headline string, skipping over the leader >>
                 j = 0
                 while g.match(s,j,'\t'):
@@ -973,8 +973,8 @@ class leoImportCommands (scanUtility):
                     j += 2
 
                 p.initHeadString(s[j:])
-                #@-            << Set the headline string, skipping over the leader >>
-                #@+            << Count the number of following body lines >>
+                #@-<< Set the headline string, skipping over the leader >>
+                #@+<< Count the number of following body lines >>
                 #@+node:ekr.20031218072017.3218: *6* << Count the number of following body lines >>
                 bodyLines = 0
                 index += 1 # Skip the headline.
@@ -989,8 +989,8 @@ class leoImportCommands (scanUtility):
                         strings[index] = s[1:]
                     bodyLines += 1
                     index += 1
-                #@-            << Count the number of following body lines >>
-                #@+            << Add the lines to the body text of p >>
+                #@-<< Count the number of following body lines >>
+                #@+<< Add the lines to the body text of p >>
                 #@+node:ekr.20031218072017.3219: *6* << Add the lines to the body text of p >>
                 if bodyLines > 0:
                     body = ""
@@ -1001,7 +1001,7 @@ class leoImportCommands (scanUtility):
                             body += "\n"
                         n += 1
                     p.setBodyString(body)
-                #@-            << Add the lines to the body text of p >>
+                #@-<< Add the lines to the body text of p >>
                 p.setDirty()
             else: index += 1
             assert progress < index
@@ -1145,7 +1145,7 @@ class leoImportCommands (scanUtility):
     def scanBodyForHeadline (self,s):
 
         if self.webType == "cweb":
-            #@+        << scan cweb body for headline >>
+            #@+<< scan cweb body for headline >>
             #@+node:ekr.20031218072017.3229: *6* << scan cweb body for headline >>
             i = 0
             while i < len(s):
@@ -1172,9 +1172,9 @@ class leoImportCommands (scanUtility):
                     if k > -1 and (g.match(s,k+2,"+=") or g.match(s,k+2,"=")):
                         return s[j:k+2] # return the section ref.
                 i = g.skip_line(s,i)
-            #@-        << scan cweb body for headline >>
+            #@-<< scan cweb body for headline >>
         else:
-            #@+        << scan noweb body for headline >>
+            #@+<< scan noweb body for headline >>
             #@+node:ekr.20031218072017.3230: *6* << scan noweb body for headline >>
             i = 0
             while i < len(s):
@@ -1192,7 +1192,7 @@ class leoImportCommands (scanUtility):
                     if name:
                         return name
                 i = g.skip_line(s,i)
-            #@-        << scan noweb body for headline >>
+            #@-<< scan noweb body for headline >>
         return "@" # default.
     #@+node:ekr.20031218072017.3231: *5* scanWebFile (handles limbo)
     def scanWebFile (self,fileName,parent):
@@ -1204,7 +1204,7 @@ class leoImportCommands (scanUtility):
         s,e = g.readFileIntoString(fileName)
         if s is None: return
 
-        #@+    << Create a symbol table of all section names >>
+        #@+<< Create a symbol table of all section names >>
         #@+node:ekr.20031218072017.3232: *6* << Create a symbol table of all section names >>
         i = 0 ; self.web_st = []
 
@@ -1224,8 +1224,8 @@ class leoImportCommands (scanUtility):
             assert (i > progress)
 
         # g.trace(self.cstDump())
-        #@-    << Create a symbol table of all section names >>
-        #@+    << Create nodes for limbo text and the root section >>
+        #@-<< Create a symbol table of all section names >>
+        #@+<< Create nodes for limbo text and the root section >>
         #@+node:ekr.20031218072017.3233: *6* << Create nodes for limbo text and the root section >>
         i = 0
         while i < len(s):
@@ -1252,10 +1252,10 @@ class leoImportCommands (scanUtility):
             self.createHeadline(parent,s[j:i],g.angleBrackets(" @ "))
 
         # g.trace(g.get_line(s,i))
-        #@-    << Create nodes for limbo text and the root section >>
+        #@-<< Create nodes for limbo text and the root section >>
         while i < len(s):
             outer_progress = i
-            #@+        << Create a node for the next module >>
+            #@+<< Create a node for the next module >>
             #@+node:ekr.20031218072017.3234: *6* << Create a node for the next module >>
             if theType=="cweb":
                 assert(self.isModuleStart(s,i))
@@ -1268,7 +1268,7 @@ class leoImportCommands (scanUtility):
                         if self.isModuleStart(s,i): break
                         else: i = g.skip_line(s,i)
                         assert (i > progress)
-                #@+    << Handle cweb @d, @f, @c and @p directives >>
+                #@+<< Handle cweb @d, @f, @c and @p directives >>
                 #@+node:ekr.20031218072017.3235: *7* << Handle cweb @d, @f, @c and @p directives >>
                 if g.match(s,i,"@d") or g.match(s,i,"@f"):
                     i += 2 ; i = g.skip_line(s,i)
@@ -1296,7 +1296,7 @@ class leoImportCommands (scanUtility):
                         if self.isModuleStart(s,i):
                             break
                         assert (i > progress)
-                #@-    << Handle cweb @d, @f, @c and @p directives >>
+                #@-<< Handle cweb @d, @f, @c and @p directives >>
             else:
                 assert(self.isDocStart(s,i)) # isModuleStart == isDocStart for noweb.
                 start = i ; i = g.skip_line(s,i)
@@ -1311,7 +1311,7 @@ class leoImportCommands (scanUtility):
             body = self.massageWebBody(body)
             headline = self.scanBodyForHeadline(body)
             self.createHeadline(parent,body,headline)
-            #@-        << Create a node for the next module >>
+            #@-<< Create a node for the next module >>
             assert(i > outer_progress)
     #@+node:ekr.20031218072017.3236: *5* Symbol table
     #@+node:ekr.20031218072017.3237: *6* cstCanonicalize
