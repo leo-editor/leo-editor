@@ -2158,11 +2158,19 @@ class colorizer:
  ):
                 #@+<< incrementally color the text >>
                 #@+node:ekr.20031218072017.1882: *4* << incrementally color the text >>
-                #@+at  Each line has a starting state.  The starting state for the first line is always "normal".
+                #@+at
+                # Each line has a starting state. The starting state for the first line
+                # is always "normal".
                 # 
-                # We need remember only self.lines and self.states between colorizing.  It is not necessary to know where the text comes from, only what the previous text was!  We must always colorize everything when changing nodes, even if all lines match, because the context may be different.
+                # We need remember only self.lines and self.states between colorizing.
+                # It is not necessary to know where the text comes from, only what the
+                # previous text was! We must always colorize everything when changing
+                # nodes, even if all lines match, because the context may be different.
                 # 
-                # We compute the range of lines to be recolored by comparing leading lines and trailing lines of old and new text.  All other lines (the middle lines) must be colorized, as well as any trailing lines whose states may have changed as the result of changes to the middle lines.
+                # We compute the range of lines to be recolored by comparing leading
+                # lines and trailing lines of old and new text. All other lines (the
+                # middle lines) must be colorized, as well as any trailing lines whose
+                # states may have changed as the result of changes to the middle lines.
                 #@@c
 
                 if self.trace: g.trace("incremental",self.language)
@@ -2189,7 +2197,11 @@ class colorizer:
                 else:
                     #@+<< compute leading, middle & trailing lines >>
                     #@+node:ekr.20031218072017.1883: *5* << compute leading, middle & trailing  lines >>
-                    #@+at The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
+                    #@+at
+                    # The leading lines are the leading matching lines. The trailing lines
+                    # are the trailing matching lines. The middle lines are all other new
+                    # lines. We will color at least all the middle lines. There may be no
+                    # middle lines if we delete lines.
                     #@@c
 
                     min_len = min(old_len,new_len)
@@ -2221,7 +2233,9 @@ class colorizer:
 
                 #@+<< clear leading_lines if middle lines involve @color or @recolor  >>
                 #@+node:ekr.20031218072017.1884: *5* << clear leading_lines if middle lines involve @color or @recolor  >>
-                #@+at 11/19/02: Changing @color or @nocolor directives requires we recolor all leading states as well.
+                #@+at
+                # 11/19/02: Changing @color or @nocolor directives requires we recolor
+                # all leading states as well.
                 #@@c
 
                 if trailing_lines == 0:
@@ -3052,7 +3066,9 @@ class colorizer:
 
         return True
     #@+node:ekr.20031218072017.2806: *3* Utils
-    #@+at These methods are like the corresponding functions in leoGlobals.py except they issue no error messages.
+    #@+at
+    # These methods are like the corresponding functions in leoGlobals.py
+    # except they issue no error messages.
     #@+node:ekr.20031218072017.1609: *4* index & tag (leoColor)
     def index (self,i):
 

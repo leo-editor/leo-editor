@@ -893,7 +893,9 @@ class leoImportCommands (scanUtility):
         if len(files) == 2:
             #@+<< Create a parent for two files having a common prefix >>
             #@+node:ekr.20031218072017.3213: *5* << Create a parent for two files having a common prefix >>
-            #@+at The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
+            #@+at
+            # The two filenames have a common prefix everything before the last
+            # period is the same. For example, x.h and x.cpp.
             #@@c
 
             name0 = files[0]
@@ -1134,7 +1136,8 @@ class leoImportCommands (scanUtility):
             else: i += 1
         return None
     #@+node:ekr.20031218072017.3228: *5* scanBodyForHeadline
-    #@+at This method returns the proper headline text.
+    #@+at
+    # This method returns the proper headline text.
     # 
     # 1. If s contains a section def, return the section ref.
     # 2. cweb only: if s contains @c, return the function name following the @c.

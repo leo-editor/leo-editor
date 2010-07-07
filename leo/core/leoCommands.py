@@ -800,7 +800,11 @@ class baseCommands (object):
         c = self
         #@+<< Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2822: *7* << Set closeFlag if the only open window is empty >>
-        #@+at If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+        #@+at
+        # If this is the only open window was opened when the app started, and
+        # the window has never been written to or saved, then we will
+        # automatically close that window if this open command completes
+        # successfully.
         #@@c
 
         closeFlag = (

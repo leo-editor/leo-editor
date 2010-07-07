@@ -413,7 +413,11 @@ class baseLeoCompare:
         self.show(tag + str(trailingLines) + " trailing lines")
         return trailingLines
     #@+node:ekr.20031218072017.3649: *4* isLeoHeader & isSentinel
-    #@+at These methods are based on atFile.scanHeader().  They are simpler because we only care about the starting sentinel comment: any line starting with the starting sentinel comment is presumed to be a sentinel line.
+    #@+at
+    # These methods are based on atFile.scanHeader(). They are simpler
+    # because we only care about the starting sentinel comment: any line
+    # starting with the starting sentinel comment is presumed to be a
+    # sentinel line.
     #@@c
 
     def isLeoHeader (self,s):

@@ -572,7 +572,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
             g.es('can not create',fileName)
     #@-others
 #@+node:ekr.20050920084036.31: ** bufferCommandsClass
-#@+at An Emacs instance does not have knowledge of what is considered a buffer in the environment.
+#@+at
+# An Emacs instance does not have knowledge of what is considered a
+# buffer in the environment.
 # 
 # The call to setBufferInteractionMethods calls the buffer configuration methods.
 #@@c
@@ -8303,7 +8305,13 @@ class spellTabHandler (leoFind.leoFind):
                     break
                 #@+<< Skip word if ignored or in local dictionary >>
                 #@+node:ekr.20051025071455.46: *7* << Skip word if ignored or in local dictionary >>
-                #@+at We don't bother to call apell if the word is in our dictionary. The dictionary contains both locally 'allowed' words and 'ignored' words. We put the test before aspell rather than after aspell because the cost of checking aspell is higher than the cost of checking our local dictionary. For small local dictionaries this is probably not True and this code could easily be located after the aspell call
+                #@+at
+                # We don't bother to call apell if the word is in our dictionary. The
+                # dictionary contains both locally 'allowed' words and 'ignored' words.
+                # We put the test before aspell rather than after aspell because the
+                # cost of checking aspell is higher than the cost of checking our local
+                # dictionary. For small local dictionaries this is probably not True and
+                # this code could easily be located after the aspell call
                 #@@c
 
                 if word.lower() in self.dictionary:

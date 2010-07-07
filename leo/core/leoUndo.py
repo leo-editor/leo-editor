@@ -1151,7 +1151,9 @@ class undoer:
         #@-<< save the selection and scrolling position >>
         #@+<< adjust the undo stack, clearing all forward entries >>
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
-        #@+at New in Leo 4.3. Instead of creating a new bead on every character, we may adjust the top bead:
+        #@+at
+        # New in Leo 4.3. Instead of creating a new bead on every character, we
+        # may adjust the top bead:
         # 
         # word granularity: adjust the top bead if the typing would continue the word.
         # line granularity: adjust the top bead if the typing is on the same line.

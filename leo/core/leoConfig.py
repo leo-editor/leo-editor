@@ -263,9 +263,10 @@ class parserBaseClass:
         g.trace("'if' not supported yet")
         return None
     #@+node:ekr.20041121125416: *4* doIfGui (can never work)
-    #@+at Alas, @if-gui can't be made to work. The problem is that plugins can set
-    # g.app.gui, but plugins need settings so the leoSettings.leo files must be parsed
-    # before g.app.gui.guiName() is known.
+    #@+at
+    # Alas, @if-gui can't be made to work. The problem is that plugins can
+    # set g.app.gui, but plugins need settings so the leoSettings.leo files
+    # must be parsed before g.app.gui.guiName() is known.
     #@@c
 
     if 0:

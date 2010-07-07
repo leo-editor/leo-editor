@@ -386,10 +386,8 @@ class atFile:
             self.root.v._p_changed = True
     #@+node:ekr.20041005105605.17: ** at.Reading
     #@+node:ekr.20041005105605.18: *3* Reading (top level)
-    #@+at
-    # 
-    # All reading happens in the readOpenFile logic, so plugins should need to
-    # override only this method.
+    #@+at All reading happens in the readOpenFile logic, so plugins
+    # should need to override only this method.
     #@+node:ekr.20070919133659: *4* at.checkDerivedFile
     def checkDerivedFile (self, event=None):
 
@@ -3983,7 +3981,9 @@ class atFile:
         #@+node:ekr.20041005105605.189: *5* << remove comment delims from h if necessary >>
         #@+at Bug fix 1/24/03:
         # 
-        # If the present @language/@comment settings do not specify a single-line comment we remove all block comment delims from h.  This prevents headline text from interfering with the parsing of node sentinels.
+        # If the present @language/@comment settings do not specify a single-line comment
+        # we remove all block comment delims from h. This prevents headline text from
+        # interfering with the parsing of node sentinels.
         #@@c
 
         start = at.startSentinelComment
@@ -4114,7 +4114,8 @@ class atFile:
         #@+node:ekr.20041005105605.195: *5* << apply the cweb hack to s >>
         #@+at The cweb hack:
         # 
-        # If the opening comment delim ends in '@', double all '@' signs except the first, which is "doubled" by the trailing '@' in the opening comment delimiter.
+        # If the opening comment delim ends in '@', double all '@' signs except the first,
+        # which is "doubled" by the trailing '@' in the opening comment delimiter.
         #@@c
 
         start = at.startSentinelComment
@@ -4550,7 +4551,10 @@ class atFile:
 
         self.os(s)
     #@+node:ekr.20041005105605.206: *4* putDirective  (handles @delims,@comment,@language) 4.x
-    #@+at It is important for PHP and other situations that @first and @last directives get translated to verbatim lines that do _not_ include what follows the @first & @last directives.
+    #@+at
+    # It is important for PHP and other situations that \@first
+    # and \@last directives get translated to verbatim lines that
+    # do _not_ include what follows the @first & @last directives.
     #@@c
 
     def putDirective(self,s,i):

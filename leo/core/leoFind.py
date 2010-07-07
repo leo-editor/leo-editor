@@ -218,7 +218,13 @@ class leoFind:
         self.wrapping = False # True: wrapping is enabled.
             # This is _not_ the same as self.wrap for batch searches.
 
-        #@+at Initializing a wrapped search is tricky.  The search() method will fail if p==wrapPosition and pos >= wrapPos.  selectNextPosition() will fail if p == wrapPosition.  We set wrapPos on entry, before the first search.  We set wrapPosition in selectNextPosition after the first search fails.  We also set wrapPosition on exit if the first search suceeds.
+        #@+at
+        # Initializing a wrapped search is tricky. The search() method will fail
+        # if p==wrapPosition and pos >= wrapPos. selectNextPosition() will fail
+        # if p == wrapPosition. We set wrapPos on entry, before the first
+        # search. We set wrapPosition in selectNextPosition after the first
+        # search fails. We also set wrapPosition on exit if the first search
+        # suceeds.
         #@@c
 
         self.wrapPosition = None # The start of wrapped searches: persists between calls.
@@ -386,9 +392,14 @@ class leoFind:
         self.update_ivars()
     #@+node:ekr.20031218072017.3067: *3* Find/change utils
     #@+node:ekr.20031218072017.2293: *4* batchChange (sets start of change-all group)
-    #@+at This routine performs a single batch change operation, updating the head or body string of p and leaving the result in s_ctrl.  We update the body if we are changing the body text of c.currentVnode().
+    #@+at
+    # This routine performs a single batch change operation, updating the
+    # head or body string of p and leaving the result in s_ctrl. We update
+    # the body if we are changing the body text of c.currentVnode().
     # 
-    # s_ctrl contains the found text on entry and contains the changed text on exit.  pos and pos2 indicate the selection.  The selection will never be empty. NB: we can not assume that self.p is visible.
+    # s_ctrl contains the found text on entry and contains the changed text
+    # on exit. pos and pos2 indicate the selection. The selection will never
+    # be empty. NB: we can not assume that self.p is visible.
     #@@c
 
     def batchChange (self,pos1,pos2):

@@ -1794,8 +1794,11 @@ class keyHandlerClass:
             k.settingsNameDict [s.lower()] = s
 
 
-    #@+at  The following are not translated, so what appears in the menu is the same as what is passed to Tk.  Case is significant.
-    # Note: the Tk documentation states that not all of these may be available on all platforms.
+    #@+at
+    # The following are not translated, so what appears in the menu is the
+    # same as what is passed to Tk. Case is significant. Note: the Tk
+    # documentation states that not all of these may be available on all
+    # platforms.
     # 
     # Num_Lock, Pause, Scroll_Lock, Sys_Req,
     # KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,

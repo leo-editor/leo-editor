@@ -2,6 +2,7 @@
 #@+node:ekr.20100120072650.6089: * @thin leoProjects.txt
 #@+all
 #@+node:ekr.20100517130356.5809: ** (New sentinels)
+
 #@+node:ekr.20100619222623.5917: *3* Notes
 @nocolor
 
@@ -2528,11 +2529,19 @@ else:
 self.flag == self.last_flag and
 self.last_language == self.language
 #@+node:ekr.20031218072017.1882: *5* << incrementally color the text >>
-@  Each line has a starting state.  The starting state for the first line is always "normal".
+@
+Each line has a starting state. The starting state for the first line
+is always "normal".
 
-We need remember only self.lines and self.states between colorizing.  It is not necessary to know where the text comes from, only what the previous text was!  We must always colorize everything when changing nodes, even if all lines match, because the context may be different.
+We need remember only self.lines and self.states between colorizing.
+It is not necessary to know where the text comes from, only what the
+previous text was! We must always colorize everything when changing
+nodes, even if all lines match, because the context may be different.
 
-We compute the range of lines to be recolored by comparing leading lines and trailing lines of old and new text.  All other lines (the middle lines) must be colorized, as well as any trailing lines whose states may have changed as the result of changes to the middle lines.
+We compute the range of lines to be recolored by comparing leading
+lines and trailing lines of old and new text. All other lines (the
+middle lines) must be colorized, as well as any trailing lines whose
+states may have changed as the result of changes to the middle lines.
 @c
 
 if self.trace: g.trace("incremental",self.language)
@@ -2566,7 +2575,11 @@ middle_lines = new_len - leading_lines - trailing_lines
 << initialize new states >>
 << colorize until the states match >>
 #@+node:ekr.20031218072017.1883: *6* << compute leading, middle & trailing  lines >>
-@ The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
+@
+The leading lines are the leading matching lines. The trailing lines
+are the trailing matching lines. The middle lines are all other new
+lines. We will color at least all the middle lines. There may be no
+middle lines if we delete lines.
 @c
 
 min_len = min(old_len,new_len)
@@ -2592,7 +2605,9 @@ else:
         i += 1
     trailing_lines = i
 #@+node:ekr.20031218072017.1884: *6* << clear leading_lines if middle lines involve @color or @recolor  >>
-@ 11/19/02: Changing @color or @nocolor directives requires we recolor all leading states as well.
+@
+11/19/02: Changing @color or @nocolor directives requires we recolor
+all leading states as well.
 @c
 
 if trailing_lines == 0:
@@ -3372,8 +3387,9 @@ def terminateBody (self,v,postPass=False):
     # *Always delete tempBodyList.  Do not leave this lying around!
     if hasList: delattr(v,'tempBodyList')
 #@+node:ekr.20100702082421.5825: *3* lastRefNode suffices
-@ We don't need a stack for lastRefNode because at.readEndNode uses a stack to set at.v.
-In fact, Leo handles the nested section references properly.
+@
+We don't need a stack for lastRefNode because at.readEndNode uses a stack to set
+at.v. In fact, Leo handles the nested section references properly.
 @c
 
 if 0: # Shows nested section defs.
@@ -3593,7 +3609,9 @@ def nodeSentinelText(self,p):
 #@+node:ekr.20041005105605.189: *5* << remove comment delims from h if necessary >>
 @ Bug fix 1/24/03:
 
-If the present @language/@comment settings do not specify a single-line comment we remove all block comment delims from h.  This prevents headline text from interfering with the parsing of node sentinels.
+If the present @language/@comment settings do not specify a single-line comment
+we remove all block comment delims from h. This prevents headline text from
+interfering with the parsing of node sentinels.
 @c
 
 start = at.startSentinelComment
@@ -6819,7 +6837,9 @@ def nodeSentinelText(self,p):
 #@+node:ekr.20041005105605.189: *7* << remove comment delims from h if necessary >>
 @ Bug fix 1/24/03:
 
-If the present @language/@comment settings do not specify a single-line comment we remove all block comment delims from h.  This prevents headline text from interfering with the parsing of node sentinels.
+If the present @language/@comment settings do not specify a single-line comment
+we remove all block comment delims from h. This prevents headline text from
+interfering with the parsing of node sentinels.
 @c
 
 start = at.startSentinelComment
@@ -6935,7 +6955,8 @@ def putSentinel(self,s):
 #@+node:ekr.20041005105605.195: *7* << apply the cweb hack to s >>
 @ The cweb hack:
 
-If the opening comment delim ends in '@', double all '@' signs except the first, which is "doubled" by the trailing '@' in the opening comment delimiter.
+If the opening comment delim ends in '@', double all '@' signs except the first,
+which is "doubled" by the trailing '@' in the opening comment delimiter.
 @c
 
 start = at.startSentinelComment
@@ -7366,7 +7387,10 @@ def putBuffered (self,s):
 
     self.os(s)
 #@+node:ekr.20041005105605.206: *6* putDirective  (handles @delims,@comment,@language) 4.x
-@ It is important for PHP and other situations that @first and @last directives get translated to verbatim lines that do _not_ include what follows the @first & @last directives.
+@
+It is important for PHP and other situations that \@first
+and \@last directives get translated to verbatim lines that
+do _not_ include what follows the @first & @last directives.
 @c
 
 def putDirective(self,s,i):

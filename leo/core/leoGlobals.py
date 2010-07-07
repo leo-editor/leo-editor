@@ -992,7 +992,11 @@ def findDefaultDirectory(c):
 
     return default_dir
 #@+node:ekr.20031218072017.3100: *3* wrap_lines
-#@+at Important note: this routine need not deal with leading whitespace.  Instead, the caller should simply reduce pageWidth by the width of leading whitespace wanted, then add that whitespace to the lines returned here.
+#@+at
+# Important note: this routine need not deal with leading whitespace.
+# Instead, the caller should simply reduce pageWidth by the width of
+# leading whitespace wanted, then add that whitespace to the lines
+# returned here.
 # 
 # The key to this code is the invarient that line never ends in whitespace.
 #@@c
@@ -1647,7 +1651,10 @@ def init_sherlock (args):
     g.init_trace(args,echo=0)
     # g.trace("sys.argv:",sys.argv)
 #@+node:ekr.20031218072017.3131: *4* get_Sherlock_args
-#@+at It no args are given we attempt to get them from the "SherlockArgs" file.  If there are still no arguments we trace everything.  This default makes tracing much more useful in Python.
+#@+at
+# If no args are given we attempt to get them from the "SherlockArgs"
+# file. If there are still no arguments we trace everything. This
+# default makes tracing much more useful in Python.
 #@@c
 
 def get_Sherlock_args (args):
@@ -2488,7 +2495,10 @@ def readFileIntoString (fn,
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
 # 
-# The Unix readline() routine delivers "\r\n" line end strings verbatim, while the windows versions force the string to use the Unix convention of using only "\n".  This routine causes the Unix readline to do the same.
+# The Unix readline() routine delivers "\r\n" line end strings verbatim,
+# while the windows versions force the string to use the Unix convention
+# of using only "\n". This routine causes the Unix readline to do the
+# same.
 #@@c
 
 def readlineForceUnixNewline(f):
@@ -3624,7 +3634,11 @@ def scanf (s,pat):
 if 0: # testing
     g.scanf("1.0","%d.%d",)
 #@+node:ekr.20031218072017.3158: *3* Scanners: calling scanError
-#@+at These scanners all call g.scanError() directly or indirectly, so they will call g.es if they find an error.  g.scanError() also bumps c.tangleCommands.errors, which is harmless if we aren't tangling, and useful if we are.
+#@+at
+# These scanners all call g.scanError() directly or indirectly, so they
+# will call g.es if they find an error. g.scanError() also bumps
+# c.tangleCommands.errors, which is harmless if we aren't tangling, and
+# useful if we are.
 # 
 # These routines are called by the Import routines and the Tangle routines.
 #@+node:ekr.20031218072017.3159: *4* skip_block_comment
@@ -3641,7 +3655,10 @@ def skip_block_comment (s,i):
         return n
     else: return k + 2
 #@+node:ekr.20031218072017.3160: *4* skip_braces
-#@+at This code is called only from the import logic, so we are allowed to try some tricks.  In particular, we assume all braces are matched in #if blocks.
+#@+at
+# This code is called only from the import logic, so we are allowed to
+# try some tricks. In particular, we assume all braces are matched in
+# #if blocks.
 #@@c
 
 def skip_braces(s,i):
@@ -4063,7 +4080,11 @@ def skip_id(s,i,chars=None):
         i += 1
     return i
 #@+node:ekr.20031218072017.3187: *4* skip_line, skip_to_start/end_of_line
-#@+at These methods skip to the next newline, regardless of whether the newline may be preceeded by a backslash. Consequently, they should be used only when we know that we are not in a preprocessor directive or string.
+#@+at
+# These methods skip to the next newline, regardless of whether the
+# newline may be preceeded by a backslash. Consequently, they should be
+# used only when we know that we are not in a preprocessor directive or
+# string.
 #@@c
 
 def skip_line (s,i):
@@ -4870,13 +4891,18 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
     # didn't find a condition that we expected.
     raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 #@+node:ekr.20031218072017.3098: *3* class Bunch (object)
-#@+at From The Python Cookbook:  Often we want to just collect a bunch of stuff together, naming each item of the bunch; a dictionary's OK for that, but a small do-nothing class is even handier, and prettier to use.
+#@+at
+# From The Python Cookbook: Often we want to just collect a bunch of
+# stuff together, naming each item of the bunch; a dictionary's OK for
+# that, but a small do-nothing class is even handier, and prettier to
+# use.
 # 
 # Create a Bunch whenever you want to group a few variables:
 # 
 #     point = Bunch(datum=y, squared=y*y, coord=x)
 # 
-# You can read/write the named attributes you just created, add others, del some of them, etc:
+# You can read/write the named attributes you just created, add others,
+# del some of them, etc:
 #     if point.squared > threshold:
 #         point.isok = True
 #@@c
@@ -5197,9 +5223,12 @@ def getLine (s,i):
     # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j,k
 #@+node:ekr.20041219095213: *3* import wrappers
-#@+at 1/6/05: The problem with Tkinter is that imp.load_module is equivalent to reload.
+#@+at
+# 1/6/05: The problem with Tkinter is that imp.load_module is equivalent
+# to reload.
 # 
-# The solutions is easy: simply return sys.modules.get(moduleName) if moduleName is in sys.modules!
+# The solutions is easy: simply return sys.modules.get(moduleName) if
+# moduleName is in sys.modules!
 #@+node:ekr.20040917061619: *4* g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):
 

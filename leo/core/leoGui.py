@@ -277,11 +277,15 @@ class leoGui:
         """Create a new Leo frame."""
         self.oops()
     #@+node:ekr.20031218072017.3733: *4* app.gui utils
-    #@+at Subclasses are expected to subclass all of the following methods.
+    #@+at
+    # Subclasses are expected to subclass all of the following methods.
     # 
-    # These are all do-nothing methods: callers are expected to check for None returns.
+    # These are all do-nothing methods: callers are expected to check for
+    # None returns.
     # 
-    # The type of commander passed to methods depends on the type of frame or dialog being created.  The commander may be a Commands instance or one of its subcommanders.
+    # The type of commander passed to methods depends on the type of frame
+    # or dialog being created. The commander may be a Commands instance or
+    # one of its subcommanders.
     #@+node:ekr.20031218072017.3734: *5* Clipboard (leoGui)
     def replaceClipboardWith (self,s):
 
