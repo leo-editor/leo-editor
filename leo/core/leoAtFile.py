@@ -416,18 +416,18 @@ class atFile:
     # 
     # Other notes.
     # 
-    # - Leo no longer maints the "spelling" of whitespace before embedding constructs.
+    # - Leo no longer maintains the "spelling" of whitespace before embedding constructs.
     #   This can never cause any harm.
     # 
     # - Leo does not write @nonl or @nl sentinels when writing new sentinels. In
     #   effect, this "regularizes" body text so that it always ends with at least one
-    #   blanek. Again, this can never cause any harm, because nodes must be terminated
+    #   blank. Again, this can never cause any harm, because nodes must be terminated
     #   (in the external file), by a newline the precedes the next sentinel.
     #   Eliminating @nonl and @nl sentinels simplifies the appearance of the external
     #   file an reduces spurious sccs diffs.
     # 
     # - Leo always writes private @shadow files using old sentines. This guarantees
-    #   permanent compatitibility with older versions of Leo.
+    #   permanent compatibility with older versions of Leo.
     #@-<< about new sentinels >>
     #@+node:ekr.20041005105605.18: *3* Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
