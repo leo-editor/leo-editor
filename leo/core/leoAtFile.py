@@ -385,6 +385,50 @@ class atFile:
                 delattr(self.root.v,'tnodeList')
             self.root.v._p_changed = True
     #@+node:ekr.20041005105605.17: ** at.Reading
+    #@+<< about new sentinels >>
+    #@+node:ekr.20100619222623.5918: *3* << about new sentinels >>
+    #@@nocolor-node
+    #@+at
+    # 
+    # Surprisingly, it's easier to read new sentinels than to read old sentinels:
+    # 
+    # - There must be closing sentinels for section references and the @all and
+    #   @others directives, collectively known as **embedding constructs.** Indeed,
+    #   these constructs do not terminate the node in which they appear, so without a
+    #   closing sentinel there would be no way to know where the construct ended and
+    #   the following lines of the enclosing node began.
+    # 
+    # - The read code "accumulates" body text of node v in v.tempBodyList, a list of
+    #   lines. A post-pass assigns v.tempBodyString = ''.join(v.tempBodyList). This
+    #   assignment **terminates** the node.
+    # 
+    # - The new read code *never* terminates the body text of a node until the
+    #   post-pass. This is the crucial simplification that allows the read code not to
+    #   need @-node sentinels.
+    # 
+    # - An older version of the body text exists for v iff v has the tempBodyString
+    #   attribute. It is *essential* not to create this attribute until finalizing v.
+    #   The read code warns (creates a "Recovered Nodes" node) if the previous value
+    #   of v.tempBodyString does not match ''.join(tempBodyList) when v is terminated.
+    # 
+    # - The read code for new sentinels creates nodes using the node-level stars, by
+    #   making the new node at level N a child of of the previous node at level N-1.
+    # 
+    # Other notes.
+    # 
+    # - Leo no longer maints the "spelling" of whitespace before embedding constructs.
+    #   This can never cause any harm.
+    # 
+    # - Leo does not write @nonl or @nl sentinels when writing new sentinels. In
+    #   effect, this "regularizes" body text so that it always ends with at least one
+    #   blanek. Again, this can never cause any harm, because nodes must be terminated
+    #   (in the external file), by a newline the precedes the next sentinel.
+    #   Eliminating @nonl and @nl sentinels simplifies the appearance of the external
+    #   file an reduces spurious sccs diffs.
+    # 
+    # - Leo always writes private @shadow files using old sentines. This guarantees
+    #   permanent compatitibility with older versions of Leo.
+    #@-<< about new sentinels >>
     #@+node:ekr.20041005105605.18: *3* Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
     # should need to override only this method.
