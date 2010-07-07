@@ -831,9 +831,11 @@ class leoImportCommands (scanUtility):
             func = self.importDispatchDict.get(ext)
 
         if func and not c.config.getBool('suppress_import_parsing',default=False):
+            s = s.replace('\r','')
             func(s,p,atAuto=atAuto)
         else:
             # Just copy the file to the parent node.
+            s = s.replace('\r','')
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
         if atAuto:

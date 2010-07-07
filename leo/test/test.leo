@@ -546,6 +546,12 @@
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
 <v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
+<v t="ekr.20100707125453.2179"><vh>@test java import</vh>
+<v t="ekr.20100707125453.2180"><vh>newHeadline</vh>
+<v t="ekr.20100707125453.2181"><vh>class Mutable</vh></v>
+</v>
+</v>
+<v t="ekr.20100707131641.2185"><vh>@auto java_import_test.java</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -966,7 +972,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="16"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5874,7 +5880,7 @@ os.system('dir')
 &lt;&lt; ref &gt;&gt;
 
 # end</t>
-<t tx="ekr.20100526075442.2155" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355033d2b2a7104752e">@language rest
+<t tx="ekr.20100526075442.2155" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2b2a7104752e">@language rest
 @tabwidth -4
 @others
 
@@ -6418,6 +6424,50 @@ if 0:
     child.doDelete(newNode=p)
 c.redraw()
 
+</t>
+<t tx="ekr.20100707125453.2179"># Java code from org.apache.commons.lang.immutable
+s = '''
+public class MutableBoolean implements Mutable, Serializable, Comparable {
+
+   /**
+    * Required for serialization support.
+    *
+    * @see java.io.Serializable
+    */
+   private static final long serialVersionUID = -4830728138360036487L;
+
+}
+
+'''
+# If the string has DOS line endings then I see warnings like:
+# 'class class does not end in a newline; one will be added [nl]'
+# Without the DOS line endings (i.e. comment out this line), no warning seen
+
+if 1: # Dos line endings creates the error.
+    s = s.replace("\n", "\r\n")
+
+# Import the code to a child of the current one
+p.insertAsLastChild()
+p.moveToLastChild()
+c.importCommands.scanJavaText(s,p,atAuto=True)
+c.redraw()
+</t>
+<t tx="ekr.20100707125453.2180">@language java
+@tabwidth -4
+@others
+
+</t>
+<t tx="ekr.20100707125453.2181">
+public class MutableBoolean implements Mutable, Serializable, Comparable {
+
+   /**
+    * Required for serialization support.
+    *
+    * @see java.io.Serializable
+    */
+   private static final long serialVersionUID = -4830728138360036487L;
+
+}
 </t>
 <t tx="node:ekr.20100519083913.2158"># a before
 @others
