@@ -16,11 +16,11 @@ import leo.core.leoUndo as leoUndo
 
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
-#@+at
-# Leo must handle events or commands that change the text in the outline or body
-# panes. We must ensure that headline and body text corresponds to the vnode
-# corresponding to presently selected outline, and vice versa. For example, when
-# the user selects a new headline in the outline pane, we must ensure that:
+#@+at Leo must handle events or commands that change the text in the outline
+# or body panes. We must ensure that headline and body text corresponds
+# to the vnode corresponding to presently selected outline, and vice
+# versa. For example, when the user selects a new headline in the
+# outline pane, we must ensure that:
 # 
 # 1) All vnodes have up-to-date information and
 # 
@@ -78,8 +78,7 @@ class baseTextWidget:
         'onChar',
     )
     #@+node:ekr.20081031074455.4: *5* baseTextWidget: must be defined in subclasses
-    #@+at
-    # The subclass must implement all high-level wrappers or all low-level wrappers,
+    #@+at The subclass must implement all high-level wrappers or all low-level wrappers,
     # depending on the highLevelWrapper ivar. The ctor extends .mustBeDefinedInSubclasses
     # by one of the following lists:
     #@@c

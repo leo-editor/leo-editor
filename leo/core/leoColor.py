@@ -2158,8 +2158,7 @@ class colorizer:
  ):
                 #@+<< incrementally color the text >>
                 #@+node:ekr.20031218072017.1882: *4* << incrementally color the text >>
-                #@+at
-                # Each line has a starting state. The starting state for the first line
+                #@+at Each line has a starting state. The starting state for the first line
                 # is always "normal".
                 # 
                 # We need remember only self.lines and self.states between colorizing.
@@ -2197,8 +2196,7 @@ class colorizer:
                 else:
                     #@+<< compute leading, middle & trailing lines >>
                     #@+node:ekr.20031218072017.1883: *5* << compute leading, middle & trailing  lines >>
-                    #@+at
-                    # The leading lines are the leading matching lines. The trailing lines
+                    #@+at The leading lines are the leading matching lines. The trailing lines
                     # are the trailing matching lines. The middle lines are all other new
                     # lines. We will color at least all the middle lines. There may be no
                     # middle lines if we delete lines.
@@ -2233,8 +2231,7 @@ class colorizer:
 
                 #@+<< clear leading_lines if middle lines involve @color or @recolor  >>
                 #@+node:ekr.20031218072017.1884: *5* << clear leading_lines if middle lines involve @color or @recolor  >>
-                #@+at
-                # 11/19/02: Changing @color or @nocolor directives requires we recolor
+                #@+at 11/19/02: Changing @color or @nocolor directives requires we recolor
                 # all leading states as well.
                 #@@c
 

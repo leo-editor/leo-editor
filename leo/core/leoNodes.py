@@ -266,8 +266,9 @@ class position (object):
             # raise AttributeError(attr)
     #@+node:ekr.20040117173448: *4* p.__nonzero__ & __bool__
     #@+at
-    # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test whether a position p is valid.
-    # In particular, tests like 'if p is None' or 'if p is not None' will not work properly.
+    # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test
+    # whether a position p is valid. In particular, tests like 'if p is
+    # None' or 'if p is not None' will not work properly.
     #@@c
 
     if g.isPython3:
@@ -1253,8 +1254,7 @@ class position (object):
 
         return result
     #@+node:ekr.20080416161551.199: *3* p.moveToX
-    #@+at
-    # These routines change self to a new position "in place".
+    #@+at These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
     # 
     # When moving to a nonexistent position, these routines simply set p.v = None,

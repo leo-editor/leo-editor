@@ -8,9 +8,7 @@
 
 #@+<< How Leo implements unlimited undo >>
 #@+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
-#@+at
-# 
-# Think of the actions that may be Undone or Redone as a string of beads
+#@+at Think of the actions that may be Undone or Redone as a string of beads
 # (g.Bunches) containing all information needed to undo _and_ redo an operation.
 # 
 # A bead pointer points to the present bead. Undoing an operation moves the bead
@@ -399,21 +397,21 @@ class undoer:
         # WARNING: read this before doing anything "clever"
         #@+<< about u.saveTree >>
         #@+node:EKR.20040530114124: *5* << about u.saveTree >>
-        #@+at 
-        # The old code made a free-standing copy of the tree using v.copy and t.copy. This
-        # looks "elegant" and is WRONG. The problem is that it can not handle clones
-        # properly, especially when some clones were in the "undo" tree and some were not.
-        # Moreover, it required complex adjustments to t.vnodeLists.
+        #@+at The old code made a free-standing copy of the tree using v.copy and
+        # t.copy. This looks "elegant" and is WRONG. The problem is that it can
+        # not handle clones properly, especially when some clones were in the
+        # "undo" tree and some were not. Moreover, it required complex
+        # adjustments to t.vnodeLists.
         # 
-        # Instead of creating new nodes, the new code creates all information needed to
-        # properly restore the vnodes and tnodes. It creates a list of tuples, on tuple
-        # for each vnode in the tree. Each tuple has the form,
+        # Instead of creating new nodes, the new code creates all information
+        # needed to properly restore the vnodes and tnodes. It creates a list of
+        # tuples, on tuple for each vnode in the tree. Each tuple has the form,
         # 
         # (vnodeInfo, tnodeInfo)
         # 
-        # where vnodeInfo and tnodeInfo are dicts contain all info needed to recreate the
-        # nodes. The v.createUndoInfoDict and t.createUndoInfoDict methods correspond to
-        # the old v.copy and t.copy methods.
+        # where vnodeInfo and tnodeInfo are dicts contain all info needed to
+        # recreate the nodes. The v.createUndoInfoDict and t.createUndoInfoDict
+        # methods correspond to the old v.copy and t.copy methods.
         # 
         # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
         # createUndoInfoDict info, but quite a bit uglier.
@@ -1045,8 +1043,7 @@ class undoer:
         #@-<< init the undo params >>
         #@+<< compute leading, middle & trailing  lines >>
         #@+node:ekr.20031218072017.1491: *5* << compute leading, middle & trailing  lines >>
-        #@+at
-        # Incremental undo typing is similar to incremental syntax coloring. We compute
+        #@+at Incremental undo typing is similar to incremental syntax coloring. We compute
         # the number of leading and trailing lines that match, and save both the old and
         # new middle lines. NB: the number of old and new middle lines may be different.
         #@@c
@@ -1151,8 +1148,7 @@ class undoer:
         #@-<< save the selection and scrolling position >>
         #@+<< adjust the undo stack, clearing all forward entries >>
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
-        #@+at
-        # New in Leo 4.3. Instead of creating a new bead on every character, we
+        #@+at New in Leo 4.3. Instead of creating a new bead on every character, we
         # may adjust the top bead:
         # 
         # word granularity: adjust the top bead if the typing would continue the word.

@@ -392,8 +392,7 @@ class leoFind:
         self.update_ivars()
     #@+node:ekr.20031218072017.3067: *3* Find/change utils
     #@+node:ekr.20031218072017.2293: *4* batchChange (sets start of change-all group)
-    #@+at
-    # This routine performs a single batch change operation, updating the
+    #@+at This routine performs a single batch change operation, updating the
     # head or body string of p and leaving the result in s_ctrl. We update
     # the body if we are changing the body text of c.currentVnode().
     # 

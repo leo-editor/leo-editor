@@ -3124,8 +3124,6 @@ def es(*args,**keys):
             app.logWaiting.append((s,color),)
 #@+node:ekr.20071024101611: *4* mini test of es
 #@@nocolor
-#@@first
-#@@first
 #@+at
 # 
 # This doesn't work as an external unit test.
@@ -3634,8 +3632,7 @@ def scanf (s,pat):
 if 0: # testing
     g.scanf("1.0","%d.%d",)
 #@+node:ekr.20031218072017.3158: *3* Scanners: calling scanError
-#@+at
-# These scanners all call g.scanError() directly or indirectly, so they
+#@+at These scanners all call g.scanError() directly or indirectly, so they
 # will call g.es if they find an error. g.scanError() also bumps
 # c.tangleCommands.errors, which is harmless if we aren't tangling, and
 # useful if we are.
@@ -3655,8 +3652,7 @@ def skip_block_comment (s,i):
         return n
     else: return k + 2
 #@+node:ekr.20031218072017.3160: *4* skip_braces
-#@+at
-# This code is called only from the import logic, so we are allowed to
+#@+at This code is called only from the import logic, so we are allowed to
 # try some tricks. In particular, we assume all braces are matched in
 # #if blocks.
 #@@c
@@ -4080,8 +4076,7 @@ def skip_id(s,i,chars=None):
         i += 1
     return i
 #@+node:ekr.20031218072017.3187: *4* skip_line, skip_to_start/end_of_line
-#@+at
-# These methods skip to the next newline, regardless of whether the
+#@+at These methods skip to the next newline, regardless of whether the
 # newline may be preceeded by a backslash. Consequently, they should be
 # used only when we know that we are not in a preprocessor directive or
 # string.
@@ -4783,8 +4778,7 @@ def CheckVersionToInt (s):
         else:
             return 0
 #@+node:ekr.20060921100435.1: *4* oldCheckVersion (Dave Hein)
-#@+at
-# g.CheckVersion() is a generic version checker.  Assumes a
+#@+at g.CheckVersion() is a generic version checker.  Assumes a
 # version string of up to four parts, or tokens, with
 # leftmost token being most significant and each token
 # becoming less signficant in sequence to the right.
@@ -4891,8 +4885,7 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
     # didn't find a condition that we expected.
     raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 #@+node:ekr.20031218072017.3098: *3* class Bunch (object)
-#@+at
-# From The Python Cookbook: Often we want to just collect a bunch of
+#@+at From The Python Cookbook: Often we want to just collect a bunch of
 # stuff together, naming each item of the bunch; a dictionary's OK for
 # that, but a small do-nothing class is even handier, and prettier to
 # use.
@@ -5599,12 +5592,12 @@ def optimizeLeadingWhitespace (line,tab_width):
     s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
     return s
 #@+node:ekr.20040723093558: *3* regularizeTrailingNewlines
-#@+at
+#@+at The caller should call g.stripBlankLines before calling this routine
+# if desired.
 # 
-# The caller should call g.stripBlankLines before calling this routine if desired.
-# 
-# This routine does _not_ simply call rstrip(): that would delete all trailing whitespace-only lines, and in some cases that would change the meaning of program or data.
-# 
+# This routine does _not_ simply call rstrip(): that would delete all
+# trailing whitespace-only lines, and in some cases that would change
+# the meaning of program or data.
 #@@c
 
 def regularizeTrailingNewlines(s,kind):

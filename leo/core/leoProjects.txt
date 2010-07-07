@@ -857,8 +857,7 @@ def readEndRef (self,unused_s,unused_i):
         newLevel = at.endSentinelLevelStack.pop()
         at.changeLevel(oldLevel,newLevel)
 #@+node:ekr.20041005105605.111: *4* at.readRef (paired using new sentinels)
-@
-The sentinel contains an @ followed by a section name in angle brackets.
+@ The sentinel contains an @ followed by a section name in angle brackets.
 This code is different from the code for the @@ sentinel: the expansion
 of the reference does not include a trailing newline.
 @c
@@ -1262,8 +1261,7 @@ def parseThinNodeSentinel (self,s,i):
 
     return gnx,i,level,True
 #@+node:ekr.20041005105605.111: *6* at.readRef (paired using new sentinels)
-@
-The sentinel contains an @ followed by a section name in angle brackets.
+@ The sentinel contains an @ followed by a section name in angle brackets.
 This code is different from the code for the @@ sentinel: the expansion
 of the reference does not include a trailing newline.
 @c
@@ -2529,8 +2527,7 @@ else:
 self.flag == self.last_flag and
 self.last_language == self.language
 #@+node:ekr.20031218072017.1882: *5* << incrementally color the text >>
-@
-Each line has a starting state. The starting state for the first line
+@ Each line has a starting state. The starting state for the first line
 is always "normal".
 
 We need remember only self.lines and self.states between colorizing.
@@ -2575,8 +2572,7 @@ middle_lines = new_len - leading_lines - trailing_lines
 << initialize new states >>
 << colorize until the states match >>
 #@+node:ekr.20031218072017.1883: *6* << compute leading, middle & trailing  lines >>
-@
-The leading lines are the leading matching lines. The trailing lines
+@ The leading lines are the leading matching lines. The trailing lines
 are the trailing matching lines. The middle lines are all other new
 lines. We will color at least all the middle lines. There may be no
 middle lines if we delete lines.
@@ -2605,8 +2601,7 @@ else:
         i += 1
     trailing_lines = i
 #@+node:ekr.20031218072017.1884: *6* << clear leading_lines if middle lines involve @color or @recolor  >>
-@
-11/19/02: Changing @color or @nocolor directives requires we recolor
+@ 11/19/02: Changing @color or @nocolor directives requires we recolor
 all leading states as well.
 @c
 
@@ -3387,8 +3382,7 @@ def terminateBody (self,v,postPass=False):
     # *Always delete tempBodyList.  Do not leave this lying around!
     if hasList: delattr(v,'tempBodyList')
 #@+node:ekr.20100702082421.5825: *3* lastRefNode suffices
-@
-We don't need a stack for lastRefNode because at.readEndNode uses a stack to set
+@ We don't need a stack for lastRefNode because at.readEndNode uses a stack to set
 at.v. In fact, Leo handles the nested section references properly.
 @c
 
@@ -3510,8 +3504,7 @@ def readEndRef (self,unused_s,unused_i):
         newLevel = at.endSentinelLevelStack.pop()
         at.changeLevel(oldLevel,newLevel)
 #@+node:ekr.20041005105605.111: *5* at.readRef (paired using new sentinels)
-@
-The sentinel contains an @ followed by a section name in angle brackets.
+@ The sentinel contains an @ followed by a section name in angle brackets.
 This code is different from the code for the @@ sentinel: the expansion
 of the reference does not include a trailing newline.
 @c
@@ -4545,8 +4538,7 @@ def parseThinNodeSentinel (self,s,i):
 
     return gnx,i,level,True
 #@+node:ekr.20041005105605.111: *6* at.readRef (paired using new sentinels)
-@
-The sentinel contains an @ followed by a section name in angle brackets.
+@ The sentinel contains an @ followed by a section name in angle brackets.
 This code is different from the code for the @@ sentinel: the expansion
 of the reference does not include a trailing newline.
 @c
@@ -5289,9 +5281,7 @@ def putBody(self,p,oneNodeOnly=False,fromString=''):
             # New in Leo 4.6 rc1: ensure all @auto nodes end in a newline!
             at.onl()
 #@+node:ekr.20041005105605.162: *5* << Make sure all lines end in a newline >>
-@
-
-If we add a trailing newline, we'll generate an @nonl sentinel below.
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
 
 - We always ensure a newline in @file and @thin trees.
 - This code is not used used in @asis trees.
@@ -6238,9 +6228,7 @@ def putBody(self,p,oneNodeOnly=False,fromString=''):
             # New in Leo 4.6 rc1: ensure all @auto nodes end in a newline!
             at.onl()
 #@+node:ekr.20041005105605.162: *7* << Make sure all lines end in a newline >>
-@
-
-If we add a trailing newline, we'll generate an @nonl sentinel below.
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
 
 - We always ensure a newline in @file and @thin trees.
 - This code is not used used in @asis trees.
@@ -6375,8 +6363,7 @@ if s:
 else:
     trailingNewlineFlag = True # don't need to generate an @nonl
 #@+node:ekr.20041005105605.169: *8* putAtAllChild
-@
-This code puts only the first of two or more cloned siblings, preceding the
+@ This code puts only the first of two or more cloned siblings, preceding the
 clone with an @clone n sentinel.
 
 This is a debatable choice: the cloned tree appears only once in the external
@@ -7387,8 +7374,7 @@ def putBuffered (self,s):
 
     self.os(s)
 #@+node:ekr.20041005105605.206: *6* putDirective  (handles @delims,@comment,@language) 4.x
-@
-It is important for PHP and other situations that \@first
+@ It is important for PHP and other situations that \@first
 and \@last directives get translated to verbatim lines that
 do _not_ include what follows the @first & @last directives.
 @c
@@ -8014,8 +8000,7 @@ def readEndAll (self,unused_s,unused_i):
         newLevel = at.endSentinelLevelStack.pop()
         at.changeLevel(oldLevel,newLevel)
 #@+node:ekr.20041005105605.111: *5* at.readRef (paired using new sentinels)
-@
-The sentinel contains an @ followed by a section name in angle brackets.
+@ The sentinel contains an @ followed by a section name in angle brackets.
 This code is different from the code for the @@ sentinel: the expansion
 of the reference does not include a trailing newline.
 @c
@@ -8460,11 +8445,9 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
                 # This warning is given elsewhere.
                 # g.es("changed:",p.h,color="blue")
 #@+node:ekr.20100706155640.5723: *3* Don't write ws in @+<< and @+all sentinels
-@
-The at-others sentinels already were handled properly.
+@ The at-others sentinels already were handled properly.
 #@+node:ekr.20041005105605.111: *4* at.readRef (paired using new sentinels)
-@
-The sentinel contains an @ followed by a section name in angle brackets.
+@ The sentinel contains an @ followed by a section name in angle brackets.
 This code is different from the code for the @@ sentinel: the expansion
 of the reference does not include a trailing newline.
 @c

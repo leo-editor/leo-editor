@@ -1372,8 +1372,7 @@ class atFile:
 
         return gnx,i,level,True
     #@+node:ekr.20041005105605.111: *6* at.readRef (paired using new sentinels)
-    #@+at
-    # The sentinel contains an @ followed by a section name in angle brackets.
+    #@+at The sentinel contains an @ followed by a section name in angle brackets.
     # This code is different from the code for the @@ sentinel: the expansion
     # of the reference does not include a trailing newline.
     #@@c
@@ -3376,9 +3375,7 @@ class atFile:
         inCode = True
         #@+<< Make sure all lines end in a newline >>
         #@+node:ekr.20041005105605.162: *5* << Make sure all lines end in a newline >>
-        #@+at
-        # 
-        # If we add a trailing newline, we'll generate an @nonl sentinel below.
+        #@+at If we add a trailing newline, we'll generate an @nonl sentinel below.
         # 
         # - We always ensure a newline in @file and @thin trees.
         # - This code is not used used in @asis trees.
@@ -3535,8 +3532,7 @@ class atFile:
         if at.sentinels and not trailingNewlineFlag and not at.writeVersion5:
             at.putSentinel("@nonl")
     #@+node:ekr.20041005105605.169: *6* putAtAllChild
-    #@+at
-    # This code puts only the first of two or more cloned siblings, preceding the
+    #@+at This code puts only the first of two or more cloned siblings, preceding the
     # clone with an @clone n sentinel.
     # 
     # This is a debatable choice: the cloned tree appears only once in the external
@@ -4551,8 +4547,7 @@ class atFile:
 
         self.os(s)
     #@+node:ekr.20041005105605.206: *4* putDirective  (handles @delims,@comment,@language) 4.x
-    #@+at
-    # It is important for PHP and other situations that \@first
+    #@+at It is important for PHP and other situations that \@first
     # and \@last directives get translated to verbatim lines that
     # do _not_ include what follows the @first & @last directives.
     #@@c

@@ -342,9 +342,8 @@ class shadowController:
 
             #@+<< About this loop >>
             #@+node:ekr.20080708192807.2: *5* << about this loop >>
-            #@+at
-            # 
-            # This loop writes all output lines using a single writer: new_private_lines_wtr.
+            #@+at This loop writes all output lines using a single writer:
+            # new_private_lines_wtr.
             # 
             # The output lines come from two, and *only* two readers:
             # 
@@ -356,17 +355,19 @@ class shadowController:
             # 
             # Each time through the loop, the following are true:
             # 
-            # - old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+            # - old_i is the index into old_public_lines of the start of the present
+            #   SequenceMatcher opcode.
             # 
-            # - mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+            # - mapping[old_i] is the index into old_private_lines of the start of
+            #   the same opcode.
             # 
-            # At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-            # all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-            # is less than mapping[old_i].
+            # At the start of the loop, the call to copy_sentinels effectively skips
+            # (deletes) all previously unwritten non-sentinel lines in
+            # old_private_lines_rdr whose index is less than mapping[old_i].
             # 
-            # As a result, the opcode handlers do not need to delete elements from the
-            # old_private_lines_rdr explicitly. This explains why opcode handlers for the
-            # 'insert' and 'delete' opcodes are identical.
+            # As a result, the opcode handlers do not need to delete elements from
+            # the old_private_lines_rdr explicitly. This explains why opcode
+            # handlers for the 'insert' and 'delete' opcodes are identical.
             #@-<< About this loop >>
 
             # Verify that SequenceMatcher never leaves gaps.

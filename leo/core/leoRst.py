@@ -101,8 +101,7 @@ if docutils:
 else:
     code_block.options = {}
 #@+node:ekr.20090502071837.33: ** class rstCommands
-#@+at
-# This plugin optionally stores information for the http plugin. Each node can
+#@+at This plugin optionally stores information for the http plugin. Each node can
 # have one additional attribute, with the name rst_http_attributename, which is a
 # list. The first three elements are stack of tags, the rest is html code::
 # 

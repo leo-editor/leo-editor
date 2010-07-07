@@ -277,8 +277,7 @@ class leoGui:
         """Create a new Leo frame."""
         self.oops()
     #@+node:ekr.20031218072017.3733: *4* app.gui utils
-    #@+at
-    # Subclasses are expected to subclass all of the following methods.
+    #@+at Subclasses are expected to subclass all of the following methods.
     # 
     # These are all do-nothing methods: callers are expected to check for
     # None returns.

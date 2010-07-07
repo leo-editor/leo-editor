@@ -2924,8 +2924,7 @@ else:
 self.flag == self.last_flag and
 self.last_language == self.language
 #@+node:ekr.20031218072017.1882: *9* << incrementally color the text >>
-@
-Each line has a starting state. The starting state for the first line
+@ Each line has a starting state. The starting state for the first line
 is always "normal".
 
 We need remember only self.lines and self.states between colorizing.
@@ -2970,8 +2969,7 @@ middle_lines = new_len - leading_lines - trailing_lines
 << initialize new states >>
 << colorize until the states match >>
 #@+node:ekr.20031218072017.1883: *10* << compute leading, middle & trailing  lines >>
-@
-The leading lines are the leading matching lines. The trailing lines
+@ The leading lines are the leading matching lines. The trailing lines
 are the trailing matching lines. The middle lines are all other new
 lines. We will color at least all the middle lines. There may be no
 middle lines if we delete lines.
@@ -3000,8 +2998,7 @@ else:
         i += 1
     trailing_lines = i
 #@+node:ekr.20031218072017.1884: *10* << clear leading_lines if middle lines involve @color or @recolor  >>
-@
-11/19/02: Changing @color or @nocolor directives requires we recolor
+@ 11/19/02: Changing @color or @nocolor directives requires we recolor
 all leading states as well.
 @c
 
@@ -6315,8 +6312,7 @@ def openTempFileInExternalEditor(self,arg,fn,openType,testing=False):
         g.es_exception()
         return 'oops: %s' % command
 #@+node:ekr.20031218072017.1151: *5* tangle.put_all_roots
-@
-This is the top level method of the second pass. It creates a separate C file
+@ This is the top level method of the second pass. It creates a separate C file
 for each @root directive in the outline. The file is actually written only if
 the new version of the file is different from the old version,or if the file did
 not exist previously. If changed_only_flag FLAG is True only changed roots are
