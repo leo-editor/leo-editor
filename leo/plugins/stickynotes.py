@@ -50,7 +50,7 @@ from leo.core import leoPlugins
 
 g.assertUi('qt')
 
-import sys,os
+import sys,os,time
 import webbrowser
 
 encOK = False
@@ -331,6 +331,27 @@ if encOK:
             raise Exception("sn_getenckey failed to build key")
 #@-node:tbrown.20100120100336.7830:sn_de/encode
 #@+node:ville.20100703234124.9976:Tabula
+#@+node:ville.20100707205336.5610:def create_subnode
+def create_subnode(c, heading):
+    """  Find node with heading, then add new node as child under this heading 
+
+    Returns new position.
+
+
+    """
+    h = c.find_h(heading)
+    if not h:
+        p = c.rootPosition()
+        p.moveToNodeAfterTree()
+        p = p.insertAfter()
+        p.h = heading
+    else:
+        p = h[0]
+
+    chi = p.insertAsLastChild()
+    return chi.copy()
+#@nonl
+#@-node:ville.20100707205336.5610:def create_subnode
 #@+node:ville.20100703194946.5587:def mknote
 def mknote(c,p, parent=None):
     """ Launch editable 'sticky note' for the node """
@@ -398,7 +419,6 @@ def tabula_f(event):
     c= event['c']
     t = tabula_show(c)
     p = c.p
-    v = p.v
     t.add_note(p)
 
 
@@ -448,7 +468,7 @@ class Tabula(QMainWindow):
 
         def on_quit(tag, kw):
             # saving when hidden nukes all
-            if self.isVisisble():
+            if self.isVisible():
                 self.save_states()
         leoPlugins.registerHandler("end1",on_quit)
 
@@ -482,10 +502,18 @@ class Tabula(QMainWindow):
             p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
             self.c.selectPosition(p)
 
+        def do_new():
+            n = create_subnode(self.c, "Tabula")
+            n.h = time.asctime()
+            self.c.redraw()
+            self.add_note(n)
+
         self.tb.addAction("Tile", do_tile)
         self.tb.addAction("Cascade", do_cascade)
         self.tb.addAction("(Un)Tab", do_un_tab)
         self.tb.addAction("Go", do_go)
+        self.tb.addAction("New", do_new)
+
         self.tb.addSeparator()
         self.tb.addAction("Close All", do_close_all)
 
@@ -533,7 +561,11 @@ class Tabula(QMainWindow):
         ncache = dict((p.gnx, p.copy()) for p in self.c.all_unique_positions())
 
         for gnx, geom in stored.items():
-            po = ncache[gnx]
+            try:
+                po = ncache[gnx]
+            except KeyError:
+                print "lost note", gnx
+                continue
 
             n = self.add_note(ncache[gnx])
             n.parent().restoreGeometry(geom)
