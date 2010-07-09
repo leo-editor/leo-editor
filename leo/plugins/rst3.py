@@ -273,7 +273,7 @@ def runUnitTests(c):
 #     2. The second phase identifies all links and checks if these links need to be modified.
 # The first phase of scanning is done by the anchor_hmlParserClass. The second phase of this algorithm is
 # done with the link_htmlParserClass.
-#@@c
+#@@code
 
 #@+<< class linkAnchorParserClass >>
 #@+node:ekr.20050805162550.40: *3*  << class linkAnchorParserClass >> (subclass of HTMLParser.HTMLParser)
