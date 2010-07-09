@@ -1,6 +1,229 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @thin leoProjects.txt
 #@+all
+#@+node:ekr.20100709113505.6257: ** Leo 4.7.1 projects
+#@+node:ekr.20100709113505.6258: *3* Auto-convert thin-like external files
+@
+The fix involves disabling caching when a file has file-like sentinels,
+regardless of whether the root node is spelled @file or @thin.
+
+In addition, Leo's read code now issues a red warning message in the
+console when converting files.
+#@+node:ekr.20100709113505.6259: *4* Testing
+#@+node:ekr.20100709113505.6260: *5* at-File test code (leoTest.py)
+def runAtFileTest(c,p):
+
+    """Common code for testing output of @file, @thin, etc."""
+
+    at = c.atFileCommands
+    child1 = p.firstChild()
+    child2 = child1.next()
+    h1 = child1.h.lower().strip()
+    h2 = child2.h.lower().strip()
+    assert(g.match(h1,0,"#@"))
+    assert(g.match(h2,0,"output"))
+    expected = child2.b
+
+    # Compute the type from child1's headline.
+    j = g.skip_c_id(h1,2)
+    theType = h1[1:j]
+    assert theType in (
+        "@auto","@edit","@file","@thin","@nosent",
+        "@asis",), "bad type: %s" % type
+
+    thinFile = theType == "@thin"
+    nosentinels = theType in ("@asis","edit","@nosent")
+
+    if theType == "@asis":
+        at.asisWrite(child1,toString=True)
+    elif theType == "@auto":
+        at.writeOneAtAutoNode(child1,toString=True,force=True)
+    elif theType == "@edit":
+        at.writeOneAtEditNode(child1,toString=True)
+    else:
+        at.write(child1,thinFile=thinFile,nosentinels=nosentinels,toString=True)
+    try:
+        result = g.toUnicode(at.stringOutput)
+        assert(result == expected)
+    except AssertionError:
+        << dump result and expected >>
+        raise
+#@+node:ekr.20100709113505.6261: *6* << dump result and expected >>
+print('\n','-' * 20)
+print("result...")
+for line in g.splitLines(result):
+    print("%3d" % len(line),repr(line))
+print('-' * 20)
+print("expected...")
+for line in g.splitLines(expected):
+    print("%3d" % len(line),repr(line))
+print('-' * 20)
+#@+node:ekr.20100709113505.6291: ** Leo 4.8 devel projects
+#@+node:ekr.20100709113505.6292: *3* Bugs
+#@+node:ekr.20100709113505.6293: *4* Fixed save scrolling bug
+@nocolor-node
+
+- Open a node with long (multipage) body text
+- Move cursor towards the end of the node
+- Save (ctrl+s)
+- Observe how window is scrolled, cursor is moved
+#@+node:ekr.20100709113505.6321: *4* Fixed recent save-to bug
+#@+node:ekr.20100709113505.6322: *4* Fixed at-auto-rst crash
+#@+node:ekr.20100709113505.6324: *5* Original traceback
+@nocolor-node
+
+exception writing external files
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 2114, in writeAllAtFileNodesHelper
+    c.atFileCommands.writeAll()
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2491, in writeAll
+    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2540, in writeAllHelper
+    at.writeOneAtAutoNode(p,toString=toString,force=force)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2644, in writeOneAtAutoNode
+    ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 683, in writeAtAutoFile
+    self.writeNode(p) # side effect: advances p
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1509, in writeNode
+    self.writeHeadline(p)
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1438, in writeHeadline
+    self.writeHeadlineHelper(p)
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1477, in writeHeadlineHelper
+    self.write(self.underline(h,p)) # Used by @auto-rst.
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1364, in write
+    self.outputFile.write(s)
+TypeError: must be bytes or buffer, not str
+#@+node:ekr.20100709113505.6325: *5* Second traceback
+@nocolor-node
+
+exception writing external files
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 2114, in writeAllAtFileNodesHelper
+    c.atFileCommands.writeAll()
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2491, in writeAll
+    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2540, in writeAllHelper
+    at.writeOneAtAutoNode(p,toString=toString,force=force)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2652, in writeOneAtAutoNode
+    at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 4547, in replaceTargetFileIfDifferent
+    ignoreBlankLines=ignoreBlankLines):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 4040, in compareFiles
+    s1 = g.removeBlankLines(s1)
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 5992, in removeBlankLines
+    return ''.join(lines)
+TypeError: sequence item 0: expected str instance, bytes found
+saved: test.leo
+#@+node:ekr.20100709113505.6335: *4* Investigated at-auto-rst bug
+@nocolor-node
+https://bugs.launchpad.net/leo-editor/+bug/532085
+
+auto-rst isn't switching to a new title underline char. going from level 2 to 3
+in the outline.
+
+Changing to regular @rst and using the rst3 command to export works.
+
+Tree:
+
+Foo
+    Bar
+        This
+        That
+    Etc
+
+Output:
+
+Foo
+===
+
+Bar
++++
+
+This
+++++ <- still using '+' one level down
+
+--------------------------------------------------
+
+
+Another test and this seems as bad or worse,
+
+A-+
+    |
+   C-+
+       |
+      D
+
+is using '=' to underline all three levels.
+#@+node:ekr.20100709113505.6341: *4* Don't put &nbsp; in redirected log
+@nocolor-node
+@
+
+https://bugs.launchpad.net/leo-editor/+bug/549319
+
+Leo 4.7.1 final, build 3005, February 26, 2010
+Python 2.6.2, qt version 4.5.2
+Windows 5, 1, 2600, 2, Service Pack 3
+
+When redirecting the output to the Log pane using g.redirectStderr() and
+g.redirectStdout(), the output displays non-breaking space characters (&nbsp;)
+everywhere there is supposed to be a space.
+
+For example, if I run print 'Hello World' I get Hello&nbsp;World in the Log
+pane. This is really hard to read when you have 50 or 100 lines of numbers from
+the output of a program.
+#@+node:ekr.20100709113505.6357: *4* Fixed tangle bug
+#@+node:ekr.20100709113505.6360: *4* Fixed crash in log pane
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 366, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 284, in autoComplete
+    k.masterCommand(event,func=None,stroke=None,commandName=None)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2606, in masterCommand
+    val = k.handleDefaultChar(event,stroke)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2664, in handleDefaultChar
+    if stroke.lower() == 'return': stroke = '\n'
+AttributeError: 'NoneType' object has no attribute 'lower'
+#@+node:ekr.20100709113505.6363: *4* Patch for 64-bit aspell
+#@+node:ekr.20100709113505.6367: *4* Fixed at-auto-rst bug
+#@+node:ekr.20100709113505.6370: *4* Fixed erroneous error message in at-auto-rst read logic
+#@+node:ekr.20100709113505.6375: *4* Fixed crasher in openFileForReading
+#@+node:ekr.20100709113505.6383: *3* Features
+#@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
+#@+node:ekr.20100709113505.6386: *5* patch
+# Begin patch
+
+=== modified file 'leo/core/leoTest.py'
+@@ -697,9 +696,10 @@
+
+     # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+     leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+-    os.chdir(leoDir)
+-
+-    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+
++    #os.chdir(leoDir)
++    env = dict(os.environ)
++    env['PYTHONPATH'] = env.get('PYTHONPATH', '')+';'+leoDir
++    os.spawnve(os.P_NOWAIT,sys.executable,args,env)
+#@+node:ekr.20100709113505.6387: *4* Allow changing minibuffer colors
+@nocolor-node
+
+Added the following options with the indicated defaults.
+
+\@color minibuffer_background_color = lightblue
+\@color minibuffer_warning_color = lightgrey
+#@+node:ekr.20100709113505.6405: *4* Added legend for print-settings command
+#@+node:ekr.20100709113505.6407: *4* Added support for @string qt-toolbar-location
+Valid values are top,bottom,left,right
+#@+node:ekr.20100709113505.6408: *4* Added g.app.config.config_iter
+This simplifies the print-settings command.
+#@+node:ekr.20100709113505.6412: *4* Don't create @chapter node for new file
+@nocolor-node
+
+I think @chapters node shouldn't be in a new leo file, but it should
+be created when the first chapter is created.
+
+Ditto for the chapter selector toolbar button.
 #@+node:ekr.20100517130356.5809: ** (New sentinels)
 
 #@+node:ekr.20100629064952.5843: *3* Terminating doc parts properly
@@ -1614,8 +1837,8 @@ def readDirective (self,s,i):
         elif g.match_word(s,i,"@comment"):
             << handle @comment >>
 
-    # An @c or @code ends the doc part when using new sentinels.
-    if at.readVersion5 and s2 in ('@code','@code\n','@c','@c\n'):
+    # An @c ends the doc part when using new sentinels.
+    if at.readVersion5 and s2 in ('@c','@c\n','@code','@code\n'):
         if at.docOut:
             at.appendToOut(''.join(at.docOut))
             at.docOut = []
@@ -4887,8 +5110,8 @@ def readDirective (self,s,i):
         elif g.match_word(s,i,"@comment"):
             << handle @comment >>
 
-    # An @c or @code ends the doc part when using new sentinels.
-    if at.readVersion5 and s2 in ('@code','@code\n','@c','@c\n'):
+    # An @c ends the doc part when using new sentinels.
+    if at.readVersion5 and s2 in ('@c','@c\n','@code','@code\n'):
         if at.docOut:
             at.appendToOut(''.join(at.docOut))
             at.docOut = []

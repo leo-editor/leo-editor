@@ -181,6 +181,31 @@
 </v>
 <v t="ekr.20070224123943"></v>
 <v t="ekr.20071025193940"></v>
+<v t="ekr.20090309064612.3"><vh>New features</vh>
+<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
+<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
+</v>
+<v t="ekr.20090201162523.1"><vh>Macro test</vh>
+<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
+</v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
+<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
+<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
+<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
+<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
+<v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
+<v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
+</v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20100108090658.1958"><vh>generate key events</vh>
 <v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
@@ -452,29 +477,6 @@
 <v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
 </v>
 <v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
-<v t="ekr.20090309064612.3"><vh>New features</vh>
-<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
-<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
-</v>
-<v t="ekr.20090201162523.1"><vh>Macro test</vh>
-<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
-</v>
-<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
-<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
-<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
-<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
-</v>
-<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
-</v>
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 <v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
 <v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions (do not deletes)</vh></v>
@@ -502,14 +504,6 @@
 </v>
 </v>
 <v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
-</v>
-<v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
-<v t="ekr.20100507094542.2120"><vh>spam</vh></v>
-</v>
-<v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
-<v t="ekr.20100521121737.2148"><vh>start leo bridge</vh></v>
-<v t="ekr.20100521123308.2150"><vh>Run system code</vh></v>
-<v t="ekr.20100522091157.2152"><vh>@@thin test_verbatim_sentinel.py</vh></v>
 <v t="ekr.20100526075442.2155"><vh>@@auto-rst c:\prog\graphs.rst</vh>
 <v t="ekr.20100526092131.2157"><vh>DOT</vh>
 <v t="ekr.20100526092131.2158"><vh>Examples from User guide</vh></v>
@@ -532,26 +526,7 @@
 <v t="ekr.20100526092131.2171"><vh>pygraphviz</vh></v>
 <v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
 </v>
-<v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
-<v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
-<v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
-<v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
-<v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
-<v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
 </v>
-<v t="ekr.20100519083913.2161"><vh>1-1</vh>
-<v t="ekr.20100519083913.2162"><vh>2-1</vh></v>
-<v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
-</v>
-<v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
-</v>
-<v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
-<v t="ekr.20100707125453.2179"><vh>@test java import</vh>
-<v t="ekr.20100707125453.2180"><vh>newHeadline</vh>
-<v t="ekr.20100707125453.2181"><vh>class Mutable</vh></v>
-</v>
-</v>
-<v t="ekr.20100707131641.2185"><vh>@auto java_import_test.java</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -972,7 +947,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="16"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5800,12 +5775,6 @@ import string
 
 This is a [[test]] of something.</t>
 <t tx="ekr.20100330084954.2125"></t>
-<t tx="ekr.20100507094542.2119">@root-code at-root-code-test.py
-
-@others
-</t>
-<t tx="ekr.20100507094542.2120">def spam():
-    pass</t>
 <t tx="ekr.20100507151756.2123"></t>
 <t tx="ekr.20100516140428.2135">import base64
 import getpass
@@ -5819,30 +5788,6 @@ key = m.digest()
 key = base64.urlsafe_b64encode(str(key))
 print(key)
 </t>
-<t tx="ekr.20100519083913.2157">@first # first line
-@ This is a doc part.
-Line 2.
-@c
-if 1:
-    &lt;&lt; a &gt;&gt;
-# after ref
-if 0:
-    @others
-# after others.
-</t>
-<t tx="ekr.20100519083913.2159">a-1
-</t>
-<t tx="ekr.20100519083913.2160">a-2
-</t>
-<t tx="ekr.20100519083913.2161">1-1
-</t>
-<t tx="ekr.20100519083913.2162">2-1
-</t>
-<t tx="ekr.20100519083913.2163">2-2
-</t>
-<t tx="ekr.20100519083913.2164">1-2
-</t>
-<t tx="ekr.20100520125300.2146">@others</t>
 <t tx="ekr.20100521101729.2148"># Just playing with part of a template system, the (partial) mock up for "range()" is:
 
 def tabStopNaming (event=None):
@@ -5866,20 +5811,6 @@ def tabStopNaming (event=None):
       k.setLabelBlue('')
 
 tabStopNaming()</t>
-<t tx="ekr.20100521121737.2148">from leo.core import leoBridge
-bridge = leoBridge.controller(
-    gui='nullGui',verbose=False,
-    loadPlugins=False,readSettings=False)
-print(bridge)</t>
-<t tx="ekr.20100521123308.2150">import os
-os.system('cd c:\\')
-os.system('dir')
-</t>
-<t tx="ekr.20100522091157.2152"># A test
-
-&lt;&lt; ref &gt;&gt;
-
-# end</t>
 <t tx="ekr.20100526075442.2155" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2b2a7104752e">@language rest
 @tabwidth -4
 @others
@@ -6414,63 +6345,5 @@ leoPlugins.registerHandler("activate", on_activate)
 print('window events activated')</t>
 <t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
     print('%45s %s %s' % (name,letter,val))</t>
-<t tx="ekr.20100625072850.2179">at = c.atFileCommands
-child = c.insertChild()
-assert child
-child.h = '@thin sentinels_test.py'
-c.redraw()
-c.atFileCommands.read(child,force=True)
-if 0:
-    child.doDelete(newNode=p)
-c.redraw()
-
-</t>
-<t tx="ekr.20100707125453.2179"># Java code from org.apache.commons.lang.immutable
-s = '''
-public class MutableBoolean implements Mutable, Serializable, Comparable {
-
-   /**
-    * Required for serialization support.
-    *
-    * @see java.io.Serializable
-    */
-   private static final long serialVersionUID = -4830728138360036487L;
-
-}
-
-'''
-# If the string has DOS line endings then I see warnings like:
-# 'class class does not end in a newline; one will be added [nl]'
-# Without the DOS line endings (i.e. comment out this line), no warning seen
-
-if 1: # Dos line endings creates the error.
-    s = s.replace("\n", "\r\n")
-
-# Import the code to a child of the current one
-p.insertAsLastChild()
-p.moveToLastChild()
-c.importCommands.scanJavaText(s,p,atAuto=True)
-c.redraw()
-</t>
-<t tx="ekr.20100707125453.2180">@language java
-@tabwidth -4
-@others
-
-</t>
-<t tx="ekr.20100707125453.2181">
-public class MutableBoolean implements Mutable, Serializable, Comparable {
-
-   /**
-    * Required for serialization support.
-    *
-    * @see java.io.Serializable
-    */
-   private static final long serialVersionUID = -4830728138360036487L;
-
-}
-</t>
-<t tx="node:ekr.20100519083913.2158"># a before
-@others
-# a after</t>
 </tnodes>
 </leo_file>
