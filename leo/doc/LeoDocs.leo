@@ -9,9 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018"><vh>Startup</vh>
+<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627"><vh>Buttons</vh>
+<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
@@ -34,6 +34,10 @@
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
+<v t="sps.20100708203040.19008" a="E"><vh>@button generate-full-userguide</vh>
+<v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20091006063434.13802"><vh>@button rst3</vh></v>
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
@@ -55,6 +59,7 @@
 <v t="ekr.20050812123002.6"><vh>@bool rst3_massage_body = False</vh></v>
 <v t="ekr.20050812123002.7"><vh>@bool rst3_format_headlines = True</vh></v>
 <v t="ekr.20050812123002.8"><vh>@bool rst3_write_intermediate_file = True</vh></v>
+<v t="sps.20100708213227.44914"><vh>@string rst3_write_intermediate_extension = .html.txt</vh></v>
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
 </v>
 </v>
@@ -864,7 +869,7 @@
 </v>
 </v>
 <v t="ekr.20091111112709.6671"><vh>Glossary</vh>
-<v t="ekr.20091111112709.6672"><vh>@rst html\glossary.txt</vh>
+<v t="ekr.20091111112709.6672"><vh>@rst html\glossary.html</vh>
 <v t="ekr.20091111112709.6676"><vh>@rst-no-head links</vh></v>
 </v>
 <v t="ekr.20091111112709.6677"><vh>To be rewritten</vh></v>
@@ -34574,6 +34579,30 @@ node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
 relative to the external file, not to the curent node. The relation
 **fcol &gt;= col** is always true.</t>
+<t tx="sps.20100708203040.19008">@language python
+import os
+pos = c.find_h("Users Guide")[0]
+c.selectPosition(pos)
+c.k.simulateCommand('rst3')
+&lt;&lt; html manual &gt;&gt;
+&lt;&lt; pdf manual &gt;&gt;
+</t>
+<t tx="sps.20100708203040.19009">d = c.scanAllDirectives(p)
+mandir = d.get('path') + "/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make html')</t>
+<t tx="sps.20100708203040.19010"># you probably need to install several packages 
+# to create pdf (e.g. jadetex)
+mandir = d.get('path') + "/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make latex')
+os.chdir('_build/latex')
+os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
+os.system('make LeoDoc.pdf')
+</t>
+<t tx="sps.20100708213227.44914"></t>
 <t tx="tbrown.20091203211538.14165">Makes \@path nodes "active".
 
 With this plugin running, double clicking on \@path nodes
