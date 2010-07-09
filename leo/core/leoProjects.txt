@@ -125,7 +125,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
@@ -579,7 +578,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
@@ -1076,7 +1074,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
@@ -1810,7 +1807,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
@@ -3517,7 +3513,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
@@ -4027,7 +4022,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
@@ -4353,7 +4347,6 @@ def parseNodeSentinel (self,s,i,middle):
     if at.thinFile:
         gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
         if not ok: None,None,None,False
-        # g.trace(repr(gnx))
     else:
         gnx,level = None,None
 
