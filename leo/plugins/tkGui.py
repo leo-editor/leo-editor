@@ -6058,91 +6058,6 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-<< about drawing >>
 
     #@+others
-    #@+node:ekr.20081121110412.438: *4*   Notes
-    #@@killcolor
-    #@+node:ekr.20081121110412.439: *5* Changes made since first update
-    #@+at
-    # 
-    # - disabled drawing of user icons.  They weren't being hidden, which messed up scrolling.
-    # 
-    # - Expanded clickBox so all clicks fall inside it.
-    # 
-    # - Added binding for plugBox so it doesn't interfere with the clickBox.  Another weirdness.
-    # 
-    # - Re-enabled code in drawText that sets the headline state.
-    # 
-    # - eventToPosition now returns p.copy, which means that nobody can change the list.
-    # 
-    # - Likewise, clear self.iconIds so old icon id's don't confuse findVnodeWithIconId.
-    # 
-    # - All drawing methods must do p = p.copy() at the beginning if they make any changes to p.
-    #     - This ensures neither they nor their allies can change the caller's position.
-    #     - In fact, though, only drawTree changes position.  It makes a copy before calling drawNode.
-    #     *** Therefore, all positions in the drawing code are immutable!
-    # 
-    # - Fixed the race conditions that caused drawing sometimes to fail.  The essential idea is that we must not call w.config if we are about to do a redraw.  For full details, see the Notes node in the Race Conditions section.
-    #@+node:ekr.20081121110412.440: *5* Changes made since second update
-    #@+at
-    # 
-    # - Removed duplicate code in tree.select.  The following code was being called twice (!!):
-    #     self.endEditLabel()
-    #     self.setUnselectedLabelState(old_p)
-    # 
-    # - Add p.copy() instead of p when inserting nodes into data structures in select.
-    # 
-    # - Fixed a _major_ bug in Leo's core.  c.setCurrentPosition must COPY the position given to it!  It's _not_ enough to return a copy of position: it may already have changed!!
-    # 
-    # - Fixed a another (lesser??) bug in Leo's core.  handleUserClick should also make a copy.
-    # 
-    # - Fixed bug in mod_scripting.py.  The callback was failing if the script was empty.
-    # 
-    # - Put in the self.recycle ivar AND THE CODE STILL FAILS.
-    #     It seems to me that this shows there is a bug in my code somewhere, but where ???????????????????
-    #@+node:ekr.20081121110412.441: *5* Most recent changes
-    #@+at
-    # 
-    # - Added generation count.
-    #     - Incremented on each redraw.
-    #     - Potentially a barrior to race conditions, but it never seemed to do anything.
-    #     - This code is a candidate for elimination.
-    # 
-    # - Used vnodes rather than positions in several places.
-    #     - I actually don't think this was involved in the real problem, and it doesn't hurt.
-    # 
-    # - Added much better traces: the beginning of the end for the bugs :-)
-    #     - Added self.verbose option.
-    #     - Added align keyword option to g.trace.
-    #     - Separate each set of traces by a blank line.
-    #         - This makes clear the grouping of id's.
-    # 
-    # - Defensive code: Disable dragging at start of redraw code.
-    #     - This protects against race conditions.
-    # 
-    # - Fixed blunder 1: Fixed a number of bugs in the dragging code.
-    #     - I had never looked at this code!
-    #     - Eliminating false drags greatly simplifies matters.
-    # 
-    # - Fixed blunder 2: Added the following to eventToPosition:
-    #         x = canvas.canvasx(x)
-    #         y = canvas.canvasy(y)
-    #     - Apparently this was the cause of false associations between icons and id's.
-    #     - It's amazing that the code didn't fail earlier without these!
-    # 
-    # - Converted all module-level constants to ivars.
-    # 
-    # - Lines no longer interfere with eventToPosition.
-    #     - The problem was that find_nearest or find_overlapping don't depend on stacking order!
-    #     - Added p param to horizontal lines, but not vertical lines.
-    #     - EventToPosition adds 1 to the x coordinate of vertical lines, then recomputes the id.
-    # 
-    # - Compute indentation only in forceDrawNode.  Removed child_indent constant.
-    # 
-    # - Simplified drawTree to use indentation returned from forceDrawNode.
-    # 
-    # - setHeadlineText now ensures that state is "normal" before attempting to set the text.
-    #     - This is the robust way.
-    # 
-    # 7/31/04: newText must call setHeadlineText for all nodes allocated, even if p matches.
     #@+node:ekr.20081121110412.442: *4*  Birth... (tkTree)
     #@+node:ekr.20081121110412.443: *5* __init__ (tkTree)
     def __init__(self,c,frame,canvas):
@@ -8016,9 +7931,16 @@ class leoTkinterTree (leoFrame.leoTree):
 
         return "break"
     #@+node:ekr.20081121110412.535: *6* OnPopupFocusLost
-    #@+at On Linux we must do something special to make the popup menu "unpost" if the mouse is clicked elsewhere.  So we have to catch the <FocusOut> event and explicitly unpost.  In order to process the <FocusOut> event, we need to be able to find the reference to the popup window again, so this needs to be an attribute of the tree object; hence, "self.popupMenu".
+    #@+at
+    # On Linux we must do something special to make the popup menu "unpost" if the
+    # mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
+    # explicitly unpost. In order to process the <FocusOut> event, we need to be able
+    # to find the reference to the popup window again, so this needs to be an
+    # attribute of the tree object; hence, "self.popupMenu".
     # 
-    # Aside: though Tk tries to be muli-platform, the interaction with different window managers does cause small differences that will need to be compensated by system specific application code. :-(
+    # Aside: though Tk tries to be muli-platform, the interaction with different
+    # window managers does cause small differences that will need to be compensated by
+    # system specific application code. :-(
     #@@c
 
     # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.

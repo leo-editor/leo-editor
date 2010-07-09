@@ -6908,7 +6908,8 @@ class leoQtEventFilter(QtCore.QObject):
     #@@nocolor-node
     #@+at
     # 
-    # Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+    # Here are the rules for translating key bindings (in leoSettings.leo) into keys
+    # for k.bindingsDict:
     # 
     # 1.  The case of plain letters is significant:  a is not A.
     # 
@@ -8339,7 +8340,8 @@ class jEditColorizer:
     #@+at
     # 
     # The following jEdit matcher methods return the length of the matched text if the
-    # match succeeds, and zero otherwise.  In most cases, these methods colorize all the matched text.
+    # match succeeds, and zero otherwise. In most cases, these methods colorize all
+    # the matched text.
     # 
     # The following arguments affect matching:
     # 
@@ -8347,13 +8349,15 @@ class jEditColorizer:
     # - at_whitespace_end     True: sequence must be first non-whitespace text of the line.
     # - at_word_start         True: sequence must start a word.
     # - hash_char             The first character that must match in a regular expression.
-    # - no_escape:            True: ignore an 'end' string if it is preceded by the ruleset's escape character.
+    # - no_escape:            True: ignore an 'end' string if it is preceded by
+    #                         the ruleset's escape character.
     # - no_line_break         True: the match will not succeed across line breaks.
     # - no_word_break:        True: the match will not cross word breaks.
     # 
     # The following arguments affect coloring when a match succeeds:
     # 
-    # - delegate              A ruleset name. The matched text will be colored recursively by the indicated ruleset.
+    # - delegate              A ruleset name. The matched text will be colored recursively
+    #                         by the indicated ruleset.
     # - exclude_match         If True, the actual text that matched will not be colored.
     # - kind                  The color tag to be applied to colored text.
     #@+node:ekr.20090614134853.3716: *5* dump

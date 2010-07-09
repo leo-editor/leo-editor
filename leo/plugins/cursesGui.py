@@ -1,7 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20081121105001.12: * @thin cursesGui.py
-#@+at Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
-# are labeled: # undoc: where the AttributeError comes from ; other implementations of method
+#@+at
+# Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
+# are labeled: # undoc: where the AttributeError comes from other implementations
+# of method.
 #@@c
 
 #@+<< imports >>
