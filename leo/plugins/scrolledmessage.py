@@ -1,10 +1,10 @@
 
-#@+leo-ver=4-thin
-#@+node:leohag.20081204085551.1:@thin scrolledmessage.py
+#@+leo-ver=5-thin
+#@+node:leohag.20081204085551.1: * @thin scrolledmessage.py
 #@@first
 
-#@<< docstring >>
-#@+node:leohag.20081203143921.2:<< docstring >>
+#@+<< docstring >>
+#@+node:leohag.20081203143921.2: ** << docstring >>
 """
 Scrolled Message Dialog
 =======================
@@ -68,8 +68,7 @@ To Do
       if it is set to display any of these nodes.
 
 """
-#@-node:leohag.20081203143921.2:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -78,8 +77,8 @@ To Do
 controllers = {}
 globalPrinter = None
 
-#@<< imports >>
-#@+node:leohag.20081203143921.3:<< imports >>
+#@+<< imports >>
+#@+node:leohag.20081203143921.3: ** << imports >>
 import inspect 
 
 import leo.core.leoGlobals as g
@@ -93,11 +92,10 @@ except ImportError:
 
 #@+others
 #@-others
-#@-node:leohag.20081203143921.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:leohag.20081203143921.4:init
+#@+node:leohag.20081203143921.4: ** init
 def init():
 
     ok = g.app.gui.guiName().startswith("qt")
@@ -109,45 +107,36 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:leohag.20081203143921.4:init
-#@+node:leohag.20081203143921.5:onCreate
+#@+node:leohag.20081203143921.5: ** onCreate
 def onCreate (tag,key):
 
     c = key.get('c')
     if c and c.exists and c not in controllers:
         controllers[c] = ScrolledMessageController(c) 
 
-#@-node:leohag.20081203143921.5:onCreate
-#@+node:leohag.20081206052547.20:globalGetPrinter
+#@+node:leohag.20081206052547.20: ** globalGetPrinter
 def getGlobalPrinter():
     global globalPrinter
 
     if not globalPrinter:
         globalPrinter = QtGui.QPrinter()
     return globalPrinter
-#@-node:leohag.20081206052547.20:globalGetPrinter
-#@+node:leohag.20081203143921.6:scrolledMessageHandler
+#@+node:leohag.20081203143921.6: ** scrolledMessageHandler
 def scrolledMessageHandler(tag, keywords):
 
     c = keywords.get('c')
     if  c in controllers:
         return controllers[c].scrolledMessageHandler(tag, keywords)
-#@nonl
-#@-node:leohag.20081203143921.6:scrolledMessageHandler
-#@+node:leohag.20081207032616.20:selectHandler
+#@+node:leohag.20081207032616.20: ** selectHandler
 def selectHandler(tag, keywords):
 
     c = keywords.get('c')
     if  c in controllers:
         return controllers[c].selectHandler(tag, keywords)
-#@nonl
-#@-node:leohag.20081207032616.20:selectHandler
-#@+node:leohag.20081207032616.18:safe
+#@+node:leohag.20081207032616.18: ** safe
 def safe(msg):
     return msg.replace('&','&amp;').replace('<', '&lt;').replace('>', '&gt;')
-#@nonl
-#@-node:leohag.20081207032616.18:safe
-#@+node:leohag.20081203143921.9:class ScrolledMessageDialog
+#@+node:leohag.20081203143921.9: ** class ScrolledMessageDialog
 class ScrolledMessageDialog(object):
 
     # 'labels' with no sub menu are the names of actions without the 'action' prefix
@@ -174,8 +163,8 @@ class ScrolledMessageDialog(object):
         ])
     ]
 
-    #@    @+others
-    #@+node:leohag.20081203210510.1:__init__
+    #@+others
+    #@+node:leohag.20081203210510.1: *3* __init__
     def __init__(self, parent, kw ):
 
         self.parent = parent
@@ -202,44 +191,36 @@ class ScrolledMessageDialog(object):
 
         self.updateDialog(kw)
         self.ui.show()
-    #@-node:leohag.20081203210510.1:__init__
-    #@+node:leohag.20081206052547.14:Action Handlers (slots)
-    #@+node:leohag.20081206052547.35:File Menu
-    #@+node:leohag.20081206052547.19:_print
+    #@+node:leohag.20081206052547.14: *3* Action Handlers (slots)
+    #@+node:leohag.20081206052547.35: *4* File Menu
+    #@+node:leohag.20081206052547.19: *5* _print
     def _print(self, printer):
         g.trace( printer)
         self.ui.leo_webView.print_(printer)
 
-    #@-node:leohag.20081206052547.19:_print
-    #@+node:leohag.20081206052547.21:PageSetup
+    #@+node:leohag.20081206052547.21: *5* PageSetup
     def doActionPageSetup(self, checked):
 
         dialog = QtGui.QPageSetupDialog(getGlobalPrinter(), self.ui)
         dialog.exec_()
 
 
-    #@-node:leohag.20081206052547.21:PageSetup
-    #@+node:leohag.20081206052547.15:Print
+    #@+node:leohag.20081206052547.15: *5* Print
     def doActionPrint(self, checked):
         self._print(getGlobalPrinter())
-    #@nonl
-    #@-node:leohag.20081206052547.15:Print
-    #@+node:leohag.20081206052547.24:PrintDialog
+    #@+node:leohag.20081206052547.24: *5* PrintDialog
     def doActionPrintDialog(self, checked):
         #g.trace()
         dialog = QtGui.QPrintDialog(getGlobalPrinter(),self.ui)
         if dialog.exec_() == QtGui.QDialog.Accepted:
             self._print(getGlobalPrinter())
-    #@nonl
-    #@-node:leohag.20081206052547.24:PrintDialog
-    #@+node:leohag.20081206052547.23:PrintPreview
+    #@+node:leohag.20081206052547.23: *5* PrintPreview
     def doActionPrintPreview(self, checked):
         g.trace()
         dialog = QtGui.QPrintPreviewDialog(getGlobalPrinter(),self.ui)
         dialog.connect(dialog, QtCore.SIGNAL('paintRequested(QPrinter*)'), self._print )
         dialog.exec_()
-    #@-node:leohag.20081206052547.23:PrintPreview
-    #@+node:leohag.20081206052547.16:Save
+    #@+node:leohag.20081206052547.16: *5* Save
     def doActionSave(self):
         g.trace()
 
@@ -250,10 +231,8 @@ class ScrolledMessageDialog(object):
             f.write(self.convertMessage().encode('utf-8'))
             f.close()
 
-    #@-node:leohag.20081206052547.16:Save
-    #@-node:leohag.20081206052547.35:File Menu
-    #@+node:leohag.20081206052547.27:Outline Menu
-    #@+node:leohag.20081206052547.28:Show
+    #@+node:leohag.20081206052547.27: *4* Outline Menu
+    #@+node:leohag.20081206052547.28: *5* Show
     def doActionOutlineShow(self, checked):
 
         import leo.plugins.leo_to_html as html
@@ -276,8 +255,8 @@ class ScrolledMessageDialog(object):
 
         html.append('</ol>')
 
-        #@    << msg = html carcass>>
-        #@+node:leohag.20081207032616.16:<< msg = html carcass>>
+        #@+<< msg = html carcass>>
+        #@+node:leohag.20081207032616.16: *6* << msg = html carcass>>
         msg = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -291,21 +270,18 @@ class ScrolledMessageDialog(object):
         %s
         </body></html>
         """
-        #@-node:leohag.20081207032616.16:<< msg = html carcass>>
-        #@nl
-        #@    << label = filename >>
-        #@+node:leohag.20081207032616.19:<< label = filename >>
+        #@-<< msg = html carcass>>
+        #@+<< label = filename >>
+        #@+node:leohag.20081207032616.19: *6* << label = filename >>
         label = self.c.frame.shortFileName()
         if not label:
             label = 'untitiled'
-        #@nonl
-        #@-node:leohag.20081207032616.19:<< label = filename >>
-        #@nl
+        #@-<< label = filename >>
 
         msg = msg % (label, '\n'.join(html))
 
         g.doHook('scrolledMessage', c=self.c, name=self.name, msg=msg, label=label, flags='html')
-    #@+node:leohag.20081207032616.17:doNextLevel
+    #@+node:leohag.20081207032616.17: *6* doNextLevel
     def doNextLevel(self, p, html):
         """" Recursivley proccess an outline node into an html list."""
 
@@ -325,18 +301,12 @@ class ScrolledMessageDialog(object):
         html.append('</li>')
 
 
-    #@-node:leohag.20081207032616.17:doNextLevel
-    #@-node:leohag.20081206052547.28:Show
-    #@-node:leohag.20081206052547.27:Outline Menu
-    #@+node:leohag.20081206052547.36:Help Menu
-    #@+node:leohag.20081206052547.17:About
+    #@+node:leohag.20081206052547.36: *4* Help Menu
+    #@+node:leohag.20081206052547.17: *5* About
     def doActionAbout(self, checked):
         g.trace()
         pass
-    #@nonl
-    #@-node:leohag.20081206052547.17:About
-    #@-node:leohag.20081206052547.36:Help Menu
-    #@+node:leohag.20081207032616.24:RST3
+    #@+node:leohag.20081207032616.24: *4* RST3
     def doActionRST3(self, checked):
 
         rst3 = leoPlugins.getPluginModule('rst3')
@@ -353,10 +323,8 @@ class ScrolledMessageDialog(object):
                 g.doHook('scrolledMessage', c=self.c, msg='loading..', flags='text')
                 p,s = controller.writeNodeToString(ext='.html')
                 g.doHook('scrolledMessage', c=self.c, msg=s, flags='html')
-    #@-node:leohag.20081207032616.24:RST3
-    #@-node:leohag.20081206052547.14:Action Handlers (slots)
-    #@+node:leohag.20081206052547.12:Menu Bar
-    #@+node:leohag.20081206052547.34:createMenuBar
+    #@+node:leohag.20081206052547.12: *3* Menu Bar
+    #@+node:leohag.20081206052547.34: *4* createMenuBar
     def createMenuBar(self):
 
         self.menubar = mb = QtGui.QMenuBar(self.ui)
@@ -368,8 +336,7 @@ class ScrolledMessageDialog(object):
         self.ui.leo_menubar_frame.layout().insertWidget(0, mb)
         mb.show()
 
-    #@-node:leohag.20081206052547.34:createMenuBar
-    #@+node:leohag.20081206052547.13:createSubMenu
+    #@+node:leohag.20081206052547.13: *4* createSubMenu
     def createSubMenu(self, parent, title, menuList):
 
         #g.trace(title, menuList)
@@ -393,28 +360,24 @@ class ScrolledMessageDialog(object):
                 menu.addSeparator()
 
         return menu
-    #@-node:leohag.20081206052547.13:createSubMenu
-    #@-node:leohag.20081206052547.12:Menu Bar
-    #@+node:leohag.20081203143921.24:getUiPath
+    #@+node:leohag.20081203143921.24: *3* getUiPath
     def getUiPath(self):
 
         return g.os_path_join(g.app.loadDir,'..','plugins', 'ScrolledMessage.ui')
-    #@nonl
-    #@-node:leohag.20081203143921.24:getUiPath
-    #@+node:leohag.20081203143921.22:Create User Interface
+    #@+node:leohag.20081203143921.22: *3* Create User Interface
     def getGui(self):
 
         form_class, base_class = uic.loadUiType(self.getUiPath())
-        #@    << define class Base_UI>>
-        #@+node:leohag.20081203143921.23:<<define class Base_UI>>
+        #@+<< define class Base_UI>>
+        #@+node:leohag.20081203143921.23: *4* <<define class Base_UI>>
         class Base_UI(QtGui.QWidget, form_class):
             """Class to wrap QDesigner ui object and provide glue code to make it work."""
 
             def __init__(self, parent, *args):
                 QtGui.QWidget.__init__(self, *args)
                 self.leoParent = parent
-                #@        << inject action callbacks >>
-                #@+node:leohag.20081206052547.18:<< inject action callbacks >>
+                #@+<< inject action callbacks >>
+                #@+node:leohag.20081206052547.18: *5* << inject action callbacks >>
                 #@+at
                 # for name, method in inspect.getmembers(self.leoParent):
                 #     if name.startswith('doAction'):
@@ -422,9 +385,7 @@ class ScrolledMessageDialog(object):
                 #             getattr(self.leoParent, name)()
                 #         setattr(self.__class__, name, doAction)
                 # 
-                #@-at
-                #@-node:leohag.20081206052547.18:<< inject action callbacks >>
-                #@nl
+                #@-<< inject action callbacks >>
                 self.setupUi(self)
 
             def chkBtnChanged(self):
@@ -432,11 +393,9 @@ class ScrolledMessageDialog(object):
 
             def closeEvent(self, event):
                 self.leoParent.closeMe(event)
-        #@-node:leohag.20081203143921.23:<<define class Base_UI>>
-        #@nl
+        #@-<< define class Base_UI>>
         return Base_UI
-    #@-node:leohag.20081203143921.22:Create User Interface
-    #@+node:leohag.20081203205020.1:closeMe
+    #@+node:leohag.20081203205020.1: *3* closeMe
     def closeMe(self, visible):
             self.parent.onDialogClosing(self)
             self.dock.destroy()
@@ -444,35 +403,30 @@ class ScrolledMessageDialog(object):
             print(self.dock)
             print(self.ui)
 
-    #@-node:leohag.20081203205020.1:closeMe
-    #@+node:leohag.20081203143921.10:findChkControls
+    #@+node:leohag.20081203143921.10: *3* findChkControls
     def findChkControls(self):
         s = 'leo_chk_'; ls = len(s)
         for k, v in self.ui.__dict__.items():
             if k.startswith(s):
                 self.controls[k[ls:]] = v
 
-    #@-node:leohag.20081203143921.10:findChkControls
-    #@+node:leohag.20081203143921.11:setFlagsFromControls
+    #@+node:leohag.20081203143921.11: *3* setFlagsFromControls
     def setFlagsFromControls(self):
         for flag, control in self.controls.items():
             self.controlFlags[flag] = bool(control.isChecked())
 
-    #@-node:leohag.20081203143921.11:setFlagsFromControls
-    #@+node:leohag.20081203143921.12:setControlsFromFlags
+    #@+node:leohag.20081203143921.12: *3* setControlsFromFlags
     def setControlsFromFlags(self):
         for flag, value in self.controlFlags.items():
             self.controls[flag].setChecked(bool(value))
 
-    #@-node:leohag.20081203143921.12:setControlsFromFlags
-    #@+node:leohag.20081203143921.13:chkBtnClhanged
+    #@+node:leohag.20081203143921.13: *3* chkBtnClhanged
     def  chkBtnChanged(self,silent=False):
         self.setFlagsFromControls()
         if not silent:
             self.showMessage()
 
-    #@-node:leohag.20081203143921.13:chkBtnClhanged
-    #@+node:leohag.20081203143921.14:showMessage
+    #@+node:leohag.20081203143921.14: *3* showMessage
     def showMessage(self, show=True):
 
         html = self.convertMessage()
@@ -483,8 +437,7 @@ class ScrolledMessageDialog(object):
             self.dock.show()
             toggle = self.dock.toggleViewAction()
             toggle.setChecked(True)
-    #@-node:leohag.20081203143921.14:showMessage
-    #@+node:leohag.20081206052547.37:convertMessage
+    #@+node:leohag.20081206052547.37: *3* convertMessage
     def convertMessage(self):
 
         msg = self.msg
@@ -499,8 +452,7 @@ class ScrolledMessageDialog(object):
 
         return msg
 
-    #@-node:leohag.20081206052547.37:convertMessage
-    #@+node:leohag.20081203143921.15:rstToHtml
+    #@+node:leohag.20081203143921.15: *3* rstToHtml
     def rstToHtml( self, rst):
 
         try:
@@ -526,16 +478,14 @@ class ScrolledMessageDialog(object):
 
         return parts['whole']
 
-    #@-node:leohag.20081203143921.15:rstToHtml
-    #@+node:leohag.20081203143921.16:textToHtml
+    #@+node:leohag.20081203143921.16: *3* textToHtml
     def textToHtml(self, msg):
 
         return '<pre>%s<pre>'%safe(msg)
 
 
 
-    #@-node:leohag.20081203143921.16:textToHtml
-    #@+node:leohag.20081203143921.17:updateDialog
+    #@+node:leohag.20081203143921.17: *3* updateDialog
     def updateDialog(self, kw):
 
         # update ivars
@@ -582,37 +532,31 @@ class ScrolledMessageDialog(object):
         self.dock.setWindowTitle(self.title)
 
         self.showMessage()
-    #@-node:leohag.20081203143921.17:updateDialog
-    #@+node:leohag.20081207032616.23:afterDrawHandler
+    #@+node:leohag.20081207032616.23: *3* afterDrawHandler
     def afterDrawHandler():
 
         pass
         #if self.ui.actionFollowOutline
-    #@-node:leohag.20081207032616.23:afterDrawHandler
-    #@+node:leohag.20081203143921.18:show
+    #@+node:leohag.20081203143921.18: *3* show
     def show(self):
         self.ui.show()
-    #@nonl
-    #@-node:leohag.20081203143921.18:show
     #@-others
 
-#@-node:leohag.20081203143921.9:class ScrolledMessageDialog
-#@+node:leohag.20081203143921.19:class ScrolledMessageController
+#@+node:leohag.20081203143921.19: ** class ScrolledMessageController
 class ScrolledMessageController(object):
 
 
     kwDefaults = {'msg':'', 'flags':'', 'name':'', 'title':'Leo Message', 'label':''}
 
-    #@    @+others
-    #@+node:leohag.20081206052547.1:__init__
+    #@+others
+    #@+node:leohag.20081206052547.1: *3* __init__
     def __init__(self, c):
 
         self.dialogs = {}
         self.usedNames = set()
 
         self.c = c
-    #@-node:leohag.20081206052547.1:__init__
-    #@+node:leohag.20081203143921.20:updateDialog
+    #@+node:leohag.20081203143921.20: *3* updateDialog
     def updateDialog(self, kw):
 
         # print(self.c, self.dialogs)
@@ -627,15 +571,13 @@ class ScrolledMessageController(object):
         else:
             self.dialogs[kw['name']].updateDialog(kw)
 
-    #@-node:leohag.20081203143921.20:updateDialog
-    #@+node:leohag.20081203143921.21:createDialog
+    #@+node:leohag.20081203143921.21: *3* createDialog
     def createDialog(self, kw):
 
         self.dialogs[kw['name']] = ScrolledMessageDialog(self, kw)
         self.usedNames.add(kw['name'])
 
-    #@-node:leohag.20081203143921.21:createDialog
-    #@+node:leohag.20081203143921.25:getUniqueName
+    #@+node:leohag.20081203143921.25: *3* getUniqueName
     def getUniqueName(self):
 
         count = 0
@@ -646,8 +588,7 @@ class ScrolledMessageController(object):
                 return name
 
 
-    #@-node:leohag.20081203143921.25:getUniqueName
-    #@+node:leohag.20081203143921.26:scrolledMessageHandler
+    #@+node:leohag.20081203143921.26: *3* scrolledMessageHandler
     def scrolledMessageHandler(self, tag, keywords):   
 
         for k, v in self.kwDefaults.items():
@@ -659,22 +600,17 @@ class ScrolledMessageController(object):
 
         return keywords
 
-    #@-node:leohag.20081203143921.26:scrolledMessageHandler
-    #@+node:leohag.20081207032616.21:afterRedrawHandler
+    #@+node:leohag.20081207032616.21: *3* afterRedrawHandler
     def afterRedrawHandler(self, tag, keywords):   
 
         for name, dialog in dialogs:
             self.afterRedrawHandler()
-    #@-node:leohag.20081207032616.21:afterRedrawHandler
-    #@+node:leohag.20081203210510.3:onDialogClosing
+    #@+node:leohag.20081203210510.3: *3* onDialogClosing
     def onDialogClosing(self, dialog):
 
         del self.dialogs[dialog.name]
 
-    #@-node:leohag.20081203210510.3:onDialogClosing
     #@-others
 
-#@-node:leohag.20081203143921.19:class ScrolledMessageController
 #@-others
-#@-node:leohag.20081204085551.1:@thin scrolledmessage.py
 #@-leo
