@@ -1625,14 +1625,19 @@ In brief, derived XML files are not well-formed with respect to comments under s
 @first
 @language HTML
 <HiMom>
-@ This will produce, in the derived file, an XML comment with another XML comment embedded.  Or, if you prefer, it will produce an unclosed XML comment followed by a well-formed one, followed by a string of text containing a comment-close marker.
+@
+This will produce, in the derived file, an XML comment with another XML comment
+embedded. Or, if you prefer, it will produce an unclosed XML comment followed by
+a well-formed one, followed by a string of text containing a comment-close
+marker.
 
 This text is sitting in the inner comment, according to the first view.
 @c
 
 
 @
-This comment is well-formed, seemingly because its content does not begin on the same line as the at-sign.
+This comment is well-formed, seemingly because its content does not begin on the
+same line as the at-sign.
 @c
 </HiMom>
 #@+node:ekr.20040115165036.4: *6* xmlcommentbug.xml
