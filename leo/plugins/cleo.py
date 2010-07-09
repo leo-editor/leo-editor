@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20060828111141:@thin cleo.py
-#@<< docstring >>
-#@+node:tbrown.20060903211930:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20060828111141: * @thin cleo.py
+#@+<< docstring >>
+#@+node:tbrown.20060903211930: ** << docstring >>
 '''cleo.py  -- Coloured LEo Outlines
 
 Cleo adds time required, progress and priority settings for nodes.
@@ -15,29 +15,24 @@ For full documentation see:
   - http://leo.zwiki.org/Cleo 
   - http://leo.zwiki.org/cleodoc.html
 '''
-#@nonl
-#@-node:tbrown.20060903211930:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:tbrown.20060903121429.2:<< imports >>
+#@+<< imports >>
+#@+node:tbrown.20060903121429.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@-node:tbrown.20060903121429.2:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "0.25.2"
-#@<< version history >>
-#@+node:tbrown.20060903121429.3:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20060903121429.3: ** << version history >>
 #@@killcolor
 
-#@+at 
-#@nonl
-# Use and distribute under the same terms as leo itself.
+#@+at Use and distribute under the same terms as leo itself.
 # 
 # Original code by Mark Ng <z3r0.00@gmail.com>
 # 
@@ -52,23 +47,19 @@ __version__ = "0.25.2"
 # - Repackaged for leoPlugins.leo.
 #     - Define g.  Eliminate from x import *.
 # - Made code work with 4.3 code base:
-#     - Override tree.setUnselectedHeadlineColors instead of 
-# tree.setUnselectedLabelState
+#     - Override tree.setUnselectedHeadlineColors instead of tree.setUnselectedLabelState
 # - Create per-commander instances of cleoController in onCreate.
 # - Converted some c/java style to python style.
 # - Replaced string.find(s,...) by s.find(...) & removed import string.
-# - show_menu now returns 'break':  fixes the 'popup menu is not unposting 
-# bug)
+# - show_menu now returns 'break':  fixes the 'popup menu is not unposting bug)
 # 0.11 EKR:
 # - hasUD and getUD now make sure that the dict is actually a dict.
 # 0.12 EKR:
 # - Changed 'new_c' logic to 'c' logic.
 # 0.13 EKR:
-# - Installed patch roughly following code at 
-# http://sourceforge.net/forum/message.php?msg_id=3517080
+# - Installed patch roughly following code at http://sourceforge.net/forum/message.php?msg_id=3517080
 # - custom_colours now returns None for default.
-# - Added override of setDisabledHeadlineColors so that color changes in 
-# headlines happen immediately.
+# - Added override of setDisabledHeadlineColors so that color changes in headlines happen immediately.
 # - Removed checkmark menu item because there is no easy way to clear it.
 # 0.14 EKR: Installed further patch to clear checkmark.
 # 0.15 TNB:
@@ -85,8 +76,7 @@ __version__ = "0.25.2"
 # 0.17 TNB:
 # - don't write cleo.TkPickleVars into .leo file (but handle legacies)
 # - don't write empty / all default value dictionaries into .leo file
-# - added menu option to strip empty / all default value dictionaries from 
-# .leo file
+# - added menu option to strip empty / all default value dictionaries from .leo file
 # 0.17.1 TNB:
 # - added DanR's custom colour selection idea and progress bars
 # 0.18 TNB:
@@ -97,8 +87,7 @@ __version__ = "0.25.2"
 # - added Show time to show times on nodes
 # - added Find next todo
 # 0.20 EKR: applied patch by mstarzyk.
-# 0.21 EKR: protect access to c.frame.tree.canvas.  It may not exist during 
-# dynamic unit tests.
+# 0.21 EKR: protect access to c.frame.tree.canvas.  It may not exist during dynamic unit tests.
 # 0.22 EKR: fixed crasher in custom_colours.
 # 0.23 EKR: added 'c' arg to p.isVisible (v.isVisible no longer exists).
 # 0.24 EKR: removed bugs section.
@@ -109,17 +98,13 @@ __version__ = "0.25.2"
 # - make leo play nice with rclick and standard tree popup on linux
 #     - post menu with g.app.postPopupMenu
 #     - destroy menu with g.app.killPopupMenu
-# 0.25.2 TNB: highlight all nodes with altered background colors, minor bug 
-# fixes
-#@-at
-#@nonl
-#@-node:tbrown.20060903121429.3:<< version history >>
-#@nl
+# 0.25.2 TNB: highlight all nodes with altered background colors, minor bug fixes
+#@-<< version history >>
 
 ok = Tk is not None
 
 #@+others
-#@+node:tbrown.20060903121429.11:class TkPickleVar(Tk.Variable)
+#@+node:tbrown.20060903121429.11: ** class TkPickleVar(Tk.Variable)
 if ok: # Don't define this if import Tkinter failed.
 
     class TkPickleVar (Tk.Variable):
@@ -133,8 +118,7 @@ if ok: # Don't define this if import Tkinter failed.
             p = Tk.Variable.get(self)
             # Beware of returning False!
             return p
-#@-node:tbrown.20060903121429.11:class TkPickleVar(Tk.Variable)
-#@+node:tbrown.20060903121429.12:init
+#@+node:tbrown.20060903121429.12: ** init
 def init():
 
     if Tk is None: return False
@@ -149,22 +133,19 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:tbrown.20060903121429.12:init
-#@+node:tbrown.20060903121429.13:onCreate
+#@+node:tbrown.20060903121429.13: ** onCreate
 def onCreate (tag,key):
 
     c = key.get('c')
 
     cleoController(c)
-#@-node:tbrown.20060903121429.13:onCreate
-#@+node:tbrown.20060903121429.14:class cleoController
+#@+node:tbrown.20060903121429.14: ** class cleoController
 class cleoController:
 
     '''A per-commander class that recolors outlines.'''
 
-    #@    @+others
-    #@+node:tbrown.20080304230028:priority table
+    #@+others
+    #@+node:tbrown.20080304230028: *3* priority table
     priorities = {
       1: {'long': 'Urgent',    'short': '1', 'icon': 'pri1.png'},
       2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
@@ -186,8 +167,7 @@ class cleoController:
     }
 
     todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
-    #@-node:tbrown.20080304230028:priority table
-    #@+node:tbrown.20060903121429.15:birth
+    #@+node:tbrown.20060903121429.15: *3* birth
     def __init__ (self,c):
 
         self.c = c
@@ -198,8 +178,8 @@ class cleoController:
 
         self.marks = []   # list of marks made on canvas
 
-        #@    << set / read default values >>
-        #@+node:tbrown.20060913151952:<< set / read default values >>
+        #@+<< set / read default values >>
+        #@+node:tbrown.20060913151952: *4* << set / read default values >>
         self.progWidth = 18
         if c.config.getInt('cleo_prog_width'):
             self.progWidth = c.config.getInt('cleo_prog_width')
@@ -225,15 +205,14 @@ class cleoController:
         self.icon_location = 'beforeIcon'
         if c.config.getString('cleo_icon_location'):
             self.icon_location = c.config.getString('cleo_icon_location')
-        #@-node:tbrown.20060913151952:<< set / read default values >>
-        #@nl
+        #@-<< set / read default values >>
 
         # image ids should be a property of the node
         # use {marking,image id} as the kv pair.
         self.images = {}
 
-        #@    << define colors >>
-        #@+node:tbrown.20060903121429.16:<< define colors >>
+        #@+<< define colors >>
+        #@+node:tbrown.20060903121429.16: *4* << define colors >>
 
         # see docstring for related @settings
 
@@ -290,9 +269,7 @@ class cleoController:
             self.background_colour = c.frame.tree.canvas.cget('background')
         else:
             self.background_color = 'black'
-        #@nonl
-        #@-node:tbrown.20060903121429.16:<< define colors >>
-        #@nl
+        #@-<< define colors >>
 
         self.install_drawing_overrides()
 
@@ -306,7 +283,7 @@ class cleoController:
             leoPlugins.registerHandler(i[0], i[1])
 
         self.loadAllIcons()
-    #@+node:tbrown.20060903121429.17:install_drawing_overrides
+    #@+node:tbrown.20060903121429.17: *4* install_drawing_overrides
     def install_drawing_overrides (self):
 
         # g.pr("Cleo plugin: installing overrides for",self.c.shortFileName())
@@ -315,17 +292,13 @@ class cleoController:
 
         g.funcToMethod(self.setUnselectedHeadlineColors,tree)
         g.funcToMethod(self.setDisabledHeadlineColors,tree)
-    #@nonl
-    #@-node:tbrown.20060903121429.17:install_drawing_overrides
-    #@-node:tbrown.20060903121429.15:birth
-    #@+node:tbrown.20080303214305:loadAllIcons
+    #@+node:tbrown.20080303214305: *3* loadAllIcons
     def loadAllIcons(self):
         """Load icons to represent cleo state"""
 
         for p in self.c.all_positions():
             self.loadIcons(p)
-    #@-node:tbrown.20080303214305:loadAllIcons
-    #@+node:tbrown.20080303232514:loadIcons
+    #@+node:tbrown.20080303232514: *3* loadIcons
     def loadIcons(self, p):
         com = self.c.editCommands
         allIcons = com.getIconList(p)
@@ -350,8 +323,7 @@ class cleoController:
             if len(allIcons) != len(icons):  # something to remove
                 com.setIconList(p, icons)
 
-    #@-node:tbrown.20080303232514:loadIcons
-    #@+node:tbrown.20060903121429.18:close
+    #@+node:tbrown.20060903121429.18: *3* close
     def close(self, tag, key):
         "unregister handlers on closing commander"
 
@@ -359,19 +331,14 @@ class cleoController:
 
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
-    #@-node:tbrown.20060903121429.18:close
-    #@+node:tbrown.20060903121429.19:attributes...
+    #@+node:tbrown.20060903121429.19: *3* attributes...
     #@+at
-    # These methods should really be part of vnode in accordance with the 
-    # principles
+    # These methods should really be part of vnode in accordance with the principles
     # of encapsulation and information hiding.
     # 
-    # annotate was the previous name of this plugin, which is why the default 
-    # values
+    # annotate was the previous name of this plugin, which is why the default values
     # for several keyword args is 'annotate'.
-    #@-at
-    #@nonl
-    #@+node:tbrown.20060903121429.20:delUD
+    #@+node:tbrown.20060903121429.20: *4* delUD
     def delUD (self,node,udict="annotate"):
 
         ''' Remove our dict from the node'''
@@ -380,9 +347,7 @@ class cleoController:
                node.unknownAttributes.has_key(udict):
 
             del node.unknownAttributes[udict]
-    #@nonl
-    #@-node:tbrown.20060903121429.20:delUD
-    #@+node:tbrown.20060903121429.21:hasUD
+    #@+node:tbrown.20060903121429.21: *4* hasUD
     def hasUD (self,node,udict="annotate"):
 
         ''' Return True if the node has an UD.'''
@@ -394,12 +359,8 @@ class cleoController:
             node.unknownAttributes.has_key(udict) and
             type(node.unknownAttributes.get(udict)) == type({}) # EKR
         )
-    #@nonl
-    #@-node:tbrown.20060903121429.21:hasUD
-    #@+node:tbrown.20060903121429.22:getUD
-    #@+at 
-    #@nonl
-    # no longer required, use getat()
+    #@+node:tbrown.20060903121429.22: *4* getUD
+    #@+at no longer required, use getat()
     # 
     # def getUD (self,node,udict="annotate"):
     #     ''' Create or retrive the user dict'''
@@ -417,10 +378,7 @@ class cleoController:
     #             # g.es("cleo: converting old TkPickleVar attribute")
     #             d[ky] = vl.get()
     #     return d
-    #@-at
-    #@nonl
-    #@-node:tbrown.20060903121429.22:getUD
-    #@+node:tbrown.20060903174527:getat
+    #@+node:tbrown.20060903174527: *4* getat
     def getat(self, node, attrib):
         "new attrbiute getter"
 
@@ -440,9 +398,7 @@ class cleoController:
             return x.get()
         else:
             return x
-    #@nonl
-    #@-node:tbrown.20060903174527:getat
-    #@+node:tbrown.20060903204409:testDefault
+    #@+node:tbrown.20060903204409: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
 
@@ -450,9 +406,7 @@ class cleoController:
         # not needed as only dropEmpty would call with such a thing, and it checks first
 
         return attrib == "priority" and val == 9999 or val == ""
-    #@nonl
-    #@-node:tbrown.20060903204409:testDefault
-    #@+node:tbrown.20060903200946:setat
+    #@+node:tbrown.20060903200946: *4* setat
     def setat(self, node, attrib, val):
         "new attrbiute setter"
 
@@ -484,8 +438,7 @@ class cleoController:
 
         if isDefault:  # check if all default, if so drop dict.
             self.dropEmpty(node, dictOk = True)
-    #@-node:tbrown.20060903200946:setat
-    #@+node:tbrown.20060903204409.1:dropEmptyAll
+    #@+node:tbrown.20060903204409.1: *4* dropEmptyAll
     def dropEmptyAll(self):
         "search whole tree for empty nodes"
 
@@ -494,8 +447,7 @@ class cleoController:
             if self.dropEmpty(p.v): cnt += 1
 
         g.es("cleo: dropped %d empty dictionaries" % cnt)
-    #@-node:tbrown.20060903204409.1:dropEmptyAll
-    #@+node:tbrown.20060903204409.2:dropEmpty
+    #@+node:tbrown.20060903204409.2: *4* dropEmpty
     def dropEmpty(self, node, dictOk = False):
 
         if (dictOk or
@@ -517,16 +469,12 @@ class cleoController:
                 return True
 
         return False
-    #@-node:tbrown.20060903204409.2:dropEmpty
-    #@-node:tbrown.20060903121429.19:attributes...
-    #@+node:tbrown.20060903121429.23:safe_del
+    #@+node:tbrown.20060903121429.23: *3* safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
         if d.has_key(k): del d[k]
-    #@nonl
-    #@-node:tbrown.20060903121429.23:safe_del
-    #@+node:tbrown.20060903121429.24:colours...
-    #@+node:tbrown.20060903121429.25:remove_colours
+    #@+node:tbrown.20060903121429.24: *3* colours...
+    #@+node:tbrown.20060903121429.25: *4* remove_colours
     def remove_colours(self,v):
 
         self.setat(v, 'fg', '')
@@ -534,9 +482,7 @@ class cleoController:
         self.safe_del(self.pickles, 'fg')
         self.safe_del(self.pickles, 'bg')
         self.c.redraw()
-    #@nonl
-    #@-node:tbrown.20060903121429.25:remove_colours
-    #@+node:tbrown.20071008150126:subtree_colours
+    #@+node:tbrown.20071008150126: *4* subtree_colours
     def subtree_colours(self,p):
 
         fg = self.getat(p.v, 'fg')
@@ -545,8 +491,7 @@ class cleoController:
             self.setat(n.v, 'fg', fg)
             self.setat(n.v, 'bg', bg)
         self.c.redraw()
-    #@-node:tbrown.20071008150126:subtree_colours
-    #@+node:tbrown.20060912130940:add_colour
+    #@+node:tbrown.20060912130940: *4* add_colour
     def add_colour(self):
 
         import tkColorChooser
@@ -564,8 +509,7 @@ class cleoController:
             g.es("Added %s to the colour list" % (myColor))
         else:
             g.es("%s already on the colour list" % (myColor))
-    #@-node:tbrown.20060912130940:add_colour
-    #@+node:tbrown.20060903121429.26:custom_colours
+    #@+node:tbrown.20060903121429.26: *4* custom_colours
     # use return values to set the colours so no need to muck around when loading up files.
 
     def custom_colours(self,v,node_is_selected):
@@ -575,8 +519,8 @@ class cleoController:
         fg, bg = None, None
 
         # XXX This is ugly and inefficient !!
-        #@    << auto headline colours >>
-        #@+node:tbrown.20060903121429.27:<< auto headline colours >>
+        #@+<< auto headline colours >>
+        #@+node:tbrown.20060903121429.27: *5* << auto headline colours >>
         # set bg of @file type of nodes
         h = v and v.h or ''
 
@@ -588,29 +532,23 @@ class cleoController:
         if self.colorIgnore:
             if h.find("@ignore") == 0:
                 bg = self.node_colours['Comments']
-        #@nonl
-        #@-node:tbrown.20060903121429.27:<< auto headline colours >>
-        #@nl
-        #@    << node colours >>
-        #@+node:tbrown.20060903121429.28:<< node colours >>
+        #@-<< auto headline colours >>
+        #@+<< node colours >>
+        #@+node:tbrown.20060903121429.28: *5* << node colours >>
         # Node-based colouring --- bg only
         n = self.getat(v, 'node') # d.get('node')
         if n:
             bg = self.node_colours.get(n, bg)
-        #@nonl
-        #@-node:tbrown.20060903121429.28:<< node colours >>
-        #@nl
-        #@    << archetype colours >>
-        #@+node:tbrown.20060903121429.29:<< archetype colours >>
+        #@-<< node colours >>
+        #@+<< archetype colours >>
+        #@+node:tbrown.20060903121429.29: *5* << archetype colours >>
         # Archetype-based colouring --- fg only
         a = self.getat(v, 'archetype') # d.get('archetype')
         if a:
             fg = self.archetype_colours.get(a, fg)
-        #@nonl
-        #@-node:tbrown.20060903121429.29:<< archetype colours >>
-        #@nl
-        #@    << arbitary colours >>
-        #@+node:tbrown.20060903121429.30:<< arbitary colours >>
+        #@-<< archetype colours >>
+        #@+<< arbitary colours >>
+        #@+node:tbrown.20060903121429.30: *5* << arbitary colours >>
         # User defined colours overrides all
         fgv = self.getat(v, 'fg') # d.get('fg')
         if fgv:
@@ -623,17 +561,13 @@ class cleoController:
             b = bgv
             if b:
                 bg = b
-        #@nonl
-        #@-node:tbrown.20060903121429.30:<< arbitary colours >>
-        #@nl
+        #@-<< arbitary colours >>
 
         #g.pr("> (%s,%s) %s" % (fg,bg,v.h))
 
         return fg,bg
-    #@-node:tbrown.20060903121429.26:custom_colours
-    #@-node:tbrown.20060903121429.24:colours...
-    #@+node:tbrown.20060903121429.31:drawing...
-    #@+node:tbrown.20060903121429.32:redraw
+    #@+node:tbrown.20060903121429.31: *3* drawing...
+    #@+node:tbrown.20060903121429.32: *4* redraw
     def redraw(self):
         "redraw after menu used"
 
@@ -660,24 +594,20 @@ class cleoController:
         c = self.c
         c.setChanged(True)
         c.redraw_now()
-    #@-node:tbrown.20060903121429.32:redraw
-    #@+node:tbrown.20060903121429.33:clear_all
+    #@+node:tbrown.20060903121429.33: *4* clear_all
     def clear_all(self,v):
 
         self.delUD(v)
         self.pickles = {}
         self.redraw()
-    #@nonl
-    #@-node:tbrown.20060903121429.33:clear_all
-    #@+node:tbrown.20060903121429.34:clear_canvas
+    #@+node:tbrown.20060903121429.34: *4* clear_canvas
     def clear_canvas(self,tag,key):
         "Remove all marks placed on canvas previously"
 
         if key.get("c") != self.c: return  # not out problem
 
         self.clear_marks(self.c.frame.tree.canvas)
-    #@-node:tbrown.20060903121429.34:clear_canvas
-    #@+node:tbrown.20060903121429.35:clear_marks
+    #@+node:tbrown.20060903121429.35: *4* clear_marks
     def clear_marks(self, canvas):
         "Remove all marks placed on canvas previously"
 
@@ -685,9 +615,8 @@ class cleoController:
             canvas.delete(mark)
 
         self.marks = []
-    #@-node:tbrown.20060903121429.35:clear_marks
-    #@+node:tbrown.20060903121429.36:draw box area
-    #@+node:tbrown.20060903121429.37:draw
+    #@+node:tbrown.20060903121429.36: *4* draw box area
+    #@+node:tbrown.20060903121429.37: *5* draw
     def draw (self,tag,key):
 
         ''' Redraws all the indicators for the markups of v '''
@@ -719,9 +648,7 @@ class cleoController:
 
         # Archetype are not drawn here
         return None
-    #@nonl
-    #@-node:tbrown.20060903121429.37:draw
-    #@+node:tbrown.20060903121429.39:draw_box <1 'hours', 100%>
+    #@+node:tbrown.20060903121429.39: *5* draw_box <1 'hours', 100%>
     def draw_box (self,v,color,canvas):
 
         c = self.c
@@ -730,9 +657,7 @@ class cleoController:
             self.marks.append(
                 canvas.create_rectangle(x,y,x+10,y+10,fill=color)
                 )
-    #@nonl
-    #@-node:tbrown.20060903121429.39:draw_box <1 'hours', 100%>
-    #@+node:tbrown.20060903121429.40:draw_arrow
+    #@+node:tbrown.20060903121429.40: *5* draw_arrow
     # If too long can obscure +/- box
 
     def draw_arrow (self,v,colour='darkgreen'):
@@ -746,9 +671,7 @@ class cleoController:
         if not clear:
             self.marks.append(canvas.create_line(v.iconx-10,v.icony+8,v.iconx+5,v.icony+8,
                 arrow = "last", fill = colour, width = 4))
-    #@nonl
-    #@-node:tbrown.20060903121429.40:draw_arrow
-    #@+node:tbrown.20060903121429.41:draw_tick
+    #@+node:tbrown.20060903121429.41: *5* draw_tick
     def draw_tick (self,v,colour='salmon'):
 
         canvas = self.c.frame.tree.canvas
@@ -771,9 +694,7 @@ class cleoController:
         self.marks.append(
             canvas.create_line(XpointB,YpointB,XpointC,YpointC,fill=colour,width=2)
         )
-    #@nonl
-    #@-node:tbrown.20060903121429.41:draw_tick
-    #@+node:tbrown.20060912215129:draw_prog
+    #@+node:tbrown.20060912215129: *5* draw_prog
     def draw_prog (self, v, prop, progWidth):
 
         canvas = self.c.frame.tree.canvas
@@ -793,9 +714,7 @@ class cleoController:
         self.marks.append(
             canvas.create_line(XpointB,YpointB,XpointC,YpointC,fill=self.red,width=2)
         )
-    #@nonl
-    #@-node:tbrown.20060912215129:draw_prog
-    #@+node:tbrown.20060903121429.42:draw_invertedT
+    #@+node:tbrown.20060903121429.42: *5* draw_invertedT
     def draw_invertedT (self,v,color,canvas):
 
         '''Draw the symbol for data.'''
@@ -814,9 +733,7 @@ class cleoController:
             self.marks.append(
                 canvas.create_line(x+5,bottom-5,x+5,bottom,fill=color,width=2)
             )
-    #@nonl
-    #@-node:tbrown.20060903121429.42:draw_invertedT
-    #@+node:tbrown.20060903121429.43:draw_topT
+    #@+node:tbrown.20060903121429.43: *5* draw_topT
     def draw_topT (self,v,color,canvas):
 
         '''Draw the symbol for interfaces.'''
@@ -835,11 +752,8 @@ class cleoController:
             self.marks.append(
                 canvas.create_line(x+5,topl,x+5,topl+15,fill=color,width=2)
             )
-    #@nonl
-    #@-node:tbrown.20060903121429.43:draw_topT
-    #@-node:tbrown.20060903121429.36:draw box area
-    #@+node:tbrown.20060903121429.44:overrides of leoTkinterTree methods
-    #@+node:tbrown.20060903121429.45:setUnselectedHeadlineColors
+    #@+node:tbrown.20060903121429.44: *4* overrides of leoTkinterTree methods
+    #@+node:tbrown.20060903121429.45: *5* setUnselectedHeadlineColors
     def setUnselectedHeadlineColors (self,p):
 
         # unlike handlers, override commands don't need to check self.c against other c
@@ -859,9 +773,7 @@ class cleoController:
             w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg)
         except:
             g.es_exception()
-    #@nonl
-    #@-node:tbrown.20060903121429.45:setUnselectedHeadlineColors
-    #@+node:tbrown.20060903121429.46:setDisabledHeadlineColors
+    #@+node:tbrown.20060903121429.46: *5* setDisabledHeadlineColors
     def setDisabledHeadlineColors (self,p):
 
         c = self.c
@@ -885,19 +797,14 @@ class cleoController:
                 w.configure(state="disabled", highlightthickness=0, fg=fg, bg=bg)
         except:
             g.es_exception()
-    #@nonl
-    #@-node:tbrown.20060903121429.46:setDisabledHeadlineColors
-    #@-node:tbrown.20060903121429.44:overrides of leoTkinterTree methods
-    #@-node:tbrown.20060903121429.31:drawing...
-    #@+node:tbrown.20060903121429.47:menus...
-    #@+node:tbrown.20060903121429.48:prep_pickle
+    #@+node:tbrown.20060903121429.47: *3* menus...
+    #@+node:tbrown.20060903121429.48: *4* prep_pickle
     def prep_pickle(self, v, pkl, default = None):
         "prepare a TkPickleVar in self.pickles for a menu write back"
 
         self.pickles[pkl] = TkPickleVar()
         self.pickles[pkl].set(self.getat(v, pkl))
-    #@-node:tbrown.20060903121429.48:prep_pickle
-    #@+node:tbrown.20060903121429.49:archetype_menu
+    #@+node:tbrown.20060903121429.49: *4* archetype_menu
     def archetype_menu(self,parent,p):
 
         self.prep_pickle(p.v, "archetype")
@@ -919,9 +826,7 @@ class cleoController:
         parent.add_cascade(label='Code Archetypes',underline=6,menu=menu)
 
         return menu
-    #@nonl
-    #@-node:tbrown.20060903121429.49:archetype_menu
-    #@+node:tbrown.20060903121429.50:colours_menu
+    #@+node:tbrown.20060903121429.50: *4* colours_menu
     def colours_menu(self,parent, p):
 
         c = self.c
@@ -957,8 +862,7 @@ class cleoController:
 
         c.add_command(parent,label='New Colour', underline=0,
             command=cleoAddColorsMenuCallback)
-    #@-node:tbrown.20060903121429.50:colours_menu
-    #@+node:tbrown.20060903121429.51:node menu
+    #@+node:tbrown.20060903121429.51: *4* node menu
     def nodes_menu(self,parent,p):
 
         self.prep_pickle(p.v, 'node')
@@ -976,9 +880,7 @@ class cleoController:
                 command=self.redraw,variable=self.pickles['node'],value=value)
 
         parent.add_cascade(label='Node types',underline=0,menu=menu)
-    #@nonl
-    #@-node:tbrown.20060903121429.51:node menu
-    #@+node:tbrown.20061020145804:left_priority_menu
+    #@+node:tbrown.20061020145804: *4* left_priority_menu
     def left_priority_menu(self, menu, p):
         self.prep_pickle(p.v, 'priority', default=9999)
         for pri in self.priorities:
@@ -987,9 +889,7 @@ class cleoController:
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
                 command=self.redraw,underline=0)
-    #@nonl
-    #@-node:tbrown.20061020145804:left_priority_menu
-    #@+node:tbrown.20060903121429.52:priority_menu
+    #@+node:tbrown.20060903121429.52: *4* priority_menu
     def prikey(self, v):
         """key function for sorting by priority"""
         # getat returns 9999 for nodes without priority, so you'll only get -1
@@ -1099,8 +999,7 @@ class cleoController:
             command=lambda p=p:self.priority_clear(p.v),underline=0)
 
         return menu
-    #@-node:tbrown.20060903121429.52:priority_menu
-    #@+node:tbrown.20060912220630:progress_menu
+    #@+node:tbrown.20060912220630: *4* progress_menu
     def progress_menu(self,parent,p):
 
         self.prep_pickle(p.v, 'progress')
@@ -1131,9 +1030,7 @@ class cleoController:
             underline=0,command=toggle_scaling)
 
         return menu
-    #@nonl
-    #@-node:tbrown.20060912220630:progress_menu
-    #@+node:tbrown.20060913212017:time_menu
+    #@+node:tbrown.20060913212017: *4* time_menu
     def time_menu(self,parent,p):
 
         c = self.c ; v = p.v
@@ -1175,9 +1072,7 @@ class cleoController:
             underline=0,command=local_clear)
 
         return menu
-    #@nonl
-    #@-node:tbrown.20060913212017:time_menu
-    #@+node:tbrown.20060903121429.53:show_menu
+    #@+node:tbrown.20060903121429.53: *4* show_menu
     def show_menu (self,tag,k):
 
         g.app.gui.killPopupMenu()
@@ -1225,25 +1120,19 @@ class cleoController:
         g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
 
         return 'break' # EKR: Prevent other right clicks.
-    #@-node:tbrown.20060903121429.53:show_menu
-    #@-node:tbrown.20060903121429.47:menus...
-    #@+node:tbrown.20060903121429.54:priority_clear
+    #@+node:tbrown.20060903121429.54: *3* priority_clear
     def priority_clear(self,v):
 
         self.setat(v, 'priority', 9999)
         self.safe_del(self.pickles, 'priority')
         self.redraw()
-    #@nonl
-    #@-node:tbrown.20060903121429.54:priority_clear
-    #@+node:tbrown.20060912221139:progress_clear
+    #@+node:tbrown.20060912221139: *3* progress_clear
     def progress_clear(self,v):
 
         self.setat(v, 'progress', '')
         self.safe_del(self.pickles, 'progress')
         self.redraw()
-    #@nonl
-    #@-node:tbrown.20060912221139:progress_clear
-    #@+node:tbrown.20060913153851:set_time_req
+    #@+node:tbrown.20060913153851: *3* set_time_req
     def set_time_req(self,p):
         v = p.v
         tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
@@ -1263,9 +1152,7 @@ class cleoController:
             self.pickles['progress'].set(0)
 
         self.redraw()
-    #@nonl
-    #@-node:tbrown.20060913153851:set_time_req
-    #@+node:tbrown.20060913204451:show_times
+    #@+node:tbrown.20060913204451: *3* show_times
     def show_times(self, p, show=False):
 
         import re
@@ -1298,8 +1185,7 @@ class cleoController:
                         nd.setHeadStringOrHeadline(nd.h+ans)
                     else:
                         self.c.setHeadString(nd, nd.h+ans)
-    #@-node:tbrown.20060913204451:show_times
-    #@+node:tbrown.20060913133338:recalc_time
+    #@+node:tbrown.20060913133338: *3* recalc_time
     def recalc_time(self, p, clear=False):
         v = p.v
         time_totl = None
@@ -1355,17 +1241,14 @@ class cleoController:
         # if not s1: s1 = 0
         # sys.stderr.write('%s %g %g\n' % (p.h, float(s0), float(s1)))
         return (time_totl, time_done)
-    #@-node:tbrown.20060913133338:recalc_time
-    #@+node:tbrown.20060913104504.1:clear_time_req
+    #@+node:tbrown.20060913104504.1: *3* clear_time_req
     def clear_time_req(self,p):
 
         v = p.v
         self.setat(v, 'time_req', '')
         self.safe_del(self.pickles, 'time_req')
         self.redraw()
-    #@nonl
-    #@-node:tbrown.20060913104504.1:clear_time_req
-    #@+node:tbrown.20060914134553.376:update_project
+    #@+node:tbrown.20060914134553.376: *3* update_project
     def update_project(self, p):
         """Find highest parent with '@project' in headline and run recalc_time
         and maybe show_times (if headline has '@project time')"""
@@ -1380,8 +1263,7 @@ class cleoController:
             self.recalc_time(project)
             if project.h.find('@project time') > -1:
                 self.show_times(project, show=True)
-    #@-node:tbrown.20060914134553.376:update_project
-    #@+node:tbrown.20060919160306:find_todo
+    #@+node:tbrown.20060919160306: *3* find_todo
     def find_todo(self, p, stage = 0):
         """Recursively find the next todo"""
 
@@ -1412,11 +1294,6 @@ class cleoController:
         if stage == 0: g.es("None found")
 
         return False
-    #@-node:tbrown.20060919160306:find_todo
     #@-others
-#@nonl
-#@-node:tbrown.20060903121429.14:class cleoController
 #@-others
-#@nonl
-#@-node:tbrown.20060828111141:@thin cleo.py
 #@-leo

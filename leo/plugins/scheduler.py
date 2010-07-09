@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040331153923:@thin scheduler.py
-#@<< docstring >>
-#@+node:ekr.20040331153923.1:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040331153923: * @thin scheduler.py
+#@+<< docstring >>
+#@+node:ekr.20040331153923.1: ** << docstring >>
 '''A plugin to schedule commands for later execution. It's provides the ability to
 issue commands at a future time and to write messages that will be displayed at
 a later time.
@@ -20,15 +20,13 @@ Entry to place the time. View Queue will summon a view of The Queue. This dialog
 will show the commands that have been enqued. There is also the option to Cancel
 out any scheduled commands/messages.
 '''
-#@nonl
-#@-node:ekr.20040331153923.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050101090207.7:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.7: ** << imports >>
 import leo.core.leoGlobals as g
 # import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
@@ -38,24 +36,20 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 import sched
 import time
 import threading
-#@nonl
-#@-node:ekr.20050101090207.7:<< imports >>
-#@nl
-#@<< define scheduler data >>
-#@+node:ekr.20040331153923.2:<< define scheduler data >>
+#@-<< imports >>
+#@+<< define scheduler data >>
+#@+node:ekr.20040331153923.2: ** << define scheduler data >>
 record = False
 haveseen = []
 commands = []
 cmds = {}
 timepanel = None
 svs = []
-#@nonl
-#@-node:ekr.20040331153923.2:<< define scheduler data >>
-#@nl
+#@-<< define scheduler data >>
 
 __version__ = "0.6"
-#@<< version history >>
-#@+node:ekr.20050311090939:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050311090939: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -68,18 +62,14 @@ __version__ = "0.6"
 # - Changed 'lambda c=g.top():' to 'lambda c=c:' in addScheduleMenu.
 # 0.5 EKR:
 # - Removed call to g.top by creating doCommandCallback in startRecord.
-#   Note: Scheduling messages works, scheduling recordings does not seem to 
-# work.
+#   Note: Scheduling messages works, scheduling recordings does not seem to work.
 # 0.6 EKR: Added event args to commands.  This fixes crashers.
-#@-at
-#@nonl
-#@-node:ekr.20050311090939:<< version history >>
-#@nl
+#@-<< version history >>
 
 sc,sd,lk = None,None,None # To remove pylint complaint.
 
 #@+others
-#@+node:ekr.20050311102853.2:init
+#@+node:ekr.20050311102853.2: ** init
 def init ():
 
     ok = Tk is not None # Ok for unit testing: creates new menu.
@@ -94,16 +84,12 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050311102853.2:init
-#@+node:ekr.20040331153923.3:wait_sleep
+#@+node:ekr.20040331153923.3: ** wait_sleep
 def wait_sleep(i):
     lk.acquire()
     lk.wait(i)
     lk.release()
-#@nonl
-#@-node:ekr.20040331153923.3:wait_sleep
-#@+node:ekr.20040331153923.4:class Schedule
+#@+node:ekr.20040331153923.4: ** class Schedule
 class Schedule(threading.Thread):
 
     def __init__(self):
@@ -115,9 +101,7 @@ class Schedule(threading.Thread):
             lk.wait()
             lk.release()
             sc.run()
-#@nonl
-#@-node:ekr.20040331153923.4:class Schedule
-#@+node:ekr.20040331153923.5:viewQueue
+#@+node:ekr.20040331153923.5: ** viewQueue
 def viewQueue(event=None,c=None):
 
     '''Brings up a dialog showing qscheduled commands and messages'''
@@ -135,8 +119,8 @@ def viewQueue(event=None,c=None):
             s = "Message at " + time.ctime(z[0])
         lb.insert("end",s)
     lb.pack(fill="both")
-    #@    << define cancel and close callbacks >>
-    #@+node:ekr.20040331160627:<< define cancel and close callbacks >>
+    #@+<< define cancel and close callbacks >>
+    #@+node:ekr.20040331160627: *3* << define cancel and close callbacks >>
     def cancel(lb=lb):
 
         try:
@@ -151,9 +135,7 @@ def viewQueue(event=None,c=None):
 
         tl.withdraw()
         tl.destroy()
-    #@nonl
-    #@-node:ekr.20040331160627:<< define cancel and close callbacks >>
-    #@nl
+    #@-<< define cancel and close callbacks >>
     f2 = Tk.Frame(tl)
     f2.pack()
     b = Tk.Button(f2,text="Close",command=close)
@@ -163,9 +145,7 @@ def viewQueue(event=None,c=None):
     sh = tl.winfo_screenheight()/4
     sw = tl.winfo_screenwidth()/4
     tl.geometry(str(525)+"x"+str(400)+"+"+str(sw)+"+"+str(sh))
-#@nonl
-#@-node:ekr.20040331153923.5:viewQueue
-#@+node:ekr.20040331153923.6:popupMessage
+#@+node:ekr.20040331153923.6: ** popupMessage
 def popupMessage(message):
 
     '''Pops up a message when the time comes'''
@@ -176,15 +156,13 @@ def popupMessage(message):
     else:
         dialog = Tk.Toplevel()
         dialog.title("You've Got a Message!")
-        #@        << define close callback >>
-        #@+node:ekr.20040331155341:<< define close callback >>
+        #@+<< define close callback >>
+        #@+node:ekr.20040331155341: *3* << define close callback >>
         def close(dialog=dialog):
 
             dialog.withdraw()
             dialog.destroy()
-        #@nonl
-        #@-node:ekr.20040331155341:<< define close callback >>
-        #@nl
+        #@-<< define close callback >>
         l = Tk.Label(dialog,text=message,background='white')
         l.pack()
         b = Tk.Button(dialog,text='Close',command=close)
@@ -192,9 +170,7 @@ def popupMessage(message):
         sh = dialog.winfo_screenheight()/4
         sw = dialog.winfo_screenwidth()/4
         dialog.geometry(str(525)+"x"+str(400)+"+"+str(sw)+"+"+str(sh))
-#@nonl
-#@-node:ekr.20040331153923.6:popupMessage
-#@+node:ekr.20040331153923.7:createMessage
+#@+node:ekr.20040331153923.7: ** createMessage
 def createMessage(event=None,c=None):
     '''Creates dialog to enter message to self in'''
 
@@ -206,8 +182,8 @@ def createMessage(event=None,c=None):
     ts = Tk.StringVar()
     ti = Tk.Entry(dialog,text=ts,background='white')
     ti.pack()
-    #@    << define schedule callback >>
-    #@+node:ekr.20040331155341.1:<< define schedule callback >>
+    #@+<< define schedule callback >>
+    #@+node:ekr.20040331155341.1: *3* << define schedule callback >>
     def schedule(dialog=dialog,lk=lk,sc=sc):
 
         dialog.withdraw()
@@ -222,18 +198,14 @@ def createMessage(event=None,c=None):
             lk.notify()
             lk.release()
         dialog.destroy()
-    #@nonl
-    #@-node:ekr.20040331155341.1:<< define schedule callback >>
-    #@nl
+    #@-<< define schedule callback >>
     b = Tk.Button(dialog,text='Schedule',command=schedule)
     b.pack(side="bottom")  
     tv.focus_set()
     sh = dialog.winfo_screenheight()/4
     sw = dialog.winfo_screenwidth()/4
     dialog.geometry(str(525)+"x"+str(400)+"+"+str(sw)+"+"+str(sh))
-#@nonl
-#@-node:ekr.20040331153923.7:createMessage
-#@+node:ekr.20040331153923.8:startRecord
+#@+node:ekr.20040331153923.8: ** startRecord
 def startRecord(event,c):
 
     '''begins recording'''
@@ -247,9 +219,7 @@ def startRecord(event,c):
 
     c.doCommand = doCommandCallback
     record = True
-#@nonl
-#@-node:ekr.20040331153923.8:startRecord
-#@+node:ekr.20040331153923.9:setTime
+#@+node:ekr.20040331153923.9: ** setTime
 def setTime():
 
     '''adds Commands to the Queue for timely processing'''
@@ -273,13 +243,11 @@ def setTime():
     commands = []
     lk.notify()
     lk.release()
-#@nonl
-#@-node:ekr.20040331153923.9:setTime
-#@+node:ekr.20040331153923.10:endRecord
+#@+node:ekr.20040331153923.10: ** endRecord
 def endRecord(event,c):
     '''what happens when recording is ended.  To be cleaned up :) '''
-    #@    << setAll and set_time callbacks >>
-    #@+node:ekr.20040331155341.2:<< setAll and set_time callbacks >>
+    #@+<< setAll and set_time callbacks >>
+    #@+node:ekr.20040331155341.2: *3* << setAll and set_time callbacks >>
     def setAll():
         value = timepanel.e.get()
         for z in svs:
@@ -291,9 +259,7 @@ def endRecord(event,c):
         item = timepanel.lb.get(which)
         sv = svs[which]
         timepanel.e.config(textvariable=sv)
-    #@nonl
-    #@-node:ekr.20040331155341.2:<< setAll and set_time callbacks >>
-    #@nl
+    #@-<< setAll and set_time callbacks >>
     global record,timepanel
     record = False
     c.doCommand = cmds[c]
@@ -334,18 +300,14 @@ def endRecord(event,c):
         svs.append(sv)
         timepanel.lb.insert("end",s)
     timepanel.e.focus_set()    
-#@nonl
-#@-node:ekr.20040331153923.10:endRecord
-#@+node:ekr.20040331153923.11:prepareCom
+#@+node:ekr.20040331153923.11: ** prepareCom
 def prepareCom(p,c,command,label):
 
     ''' a simple method that executes commands'''
 
     c.selectPosition(p)
     command()
-#@nonl
-#@-node:ekr.20040331153923.11:prepareCom
-#@+node:ekr.20040331153923.12:doCommand
+#@+node:ekr.20040331153923.12: ** doCommand
 def doCommand (command,label,event=None,c=None):
 
     ''' a swap method.  When Leo is recording, most methods pass through here, we record them'''
@@ -364,9 +326,7 @@ def doCommand (command,label,event=None,c=None):
         return True
     else:
         return None
-#@nonl
-#@-node:ekr.20040331153923.12:doCommand
-#@+node:ekr.20040331153923.13:addScheduleMenu
+#@+node:ekr.20040331153923.13: ** addScheduleMenu
 def addScheduleMenu(tag,keywords):
 
     c = keywords.get('c')
@@ -389,9 +349,5 @@ def addScheduleMenu(tag,keywords):
     )
 
     men.createMenuItemsFromTable(name,table,dynamicMenu=True)
-#@nonl
-#@-node:ekr.20040331153923.13:addScheduleMenu
 #@-others
-#@nonl
-#@-node:ekr.20040331153923:@thin scheduler.py
 #@-leo

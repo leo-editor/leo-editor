@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20100226095909.12777:@thin leoscreen.py
-#@<< docstring >>
-#@+node:tbrown.20100226095909.12778:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20100226095909.12777: * @thin leoscreen.py
+#@+<< docstring >>
+#@+node:tbrown.20100226095909.12778: ** << docstring >>
 '''
 leoscreen.py - interact with shell apps. via screen
 ===================================================
@@ -117,14 +117,13 @@ Leo.
     screen, vs. a different stdout.  Although stdout is ignored,
     Popen() needs to ensure it's not just inherited.
 '''
-#@-node:tbrown.20100226095909.12778:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:tbrown.20100226095909.12779:<< imports >>
+#@+<< imports >>
+#@+node:tbrown.20100226095909.12779: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -138,27 +137,20 @@ try:
     import stickynotes
 except ImportError:
     stickynotes = None
-#@nonl
-#@-node:tbrown.20100226095909.12779:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "0.1"
-#@<< version history >>
-#@+node:tbrown.20100226095909.12780:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20100226095909.12780: ** << version history >>
 #@@killcolor
 
-#@+at 
-#@nonl
-# Use and distribute under the same terms as leo itself.
+#@+at Use and distribute under the same terms as leo itself.
 # 
 # 0.1 TNB
 #   - initial version
-#@-at
-#@nonl
-#@-node:tbrown.20100226095909.12780:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:tbrown.20100226095909.12781:init
+#@+node:tbrown.20100226095909.12781: ** init
 def init():
     """Leo plugin init. function"""
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
@@ -166,21 +158,19 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@-node:tbrown.20100226095909.12781:init
-#@+node:tbrown.20100226095909.12782:onCreate
+#@+node:tbrown.20100226095909.12782: ** onCreate
 def onCreate (tag,key):
     """Bind an instance of leoscreen_Controller to c"""
     c = key.get('c')
 
     leoscreen_Controller(c)
-#@-node:tbrown.20100226095909.12782:onCreate
-#@+node:tbrown.20100226095909.12783:class leoscreen_Controller
+#@+node:tbrown.20100226095909.12783: ** class leoscreen_Controller
 class leoscreen_Controller:
 
     '''A per-commander class that manages screen interaction.'''
 
-    #@    @+others
-    #@+node:tbrown.20100226095909.12784:__init__
+    #@+others
+    #@+node:tbrown.20100226095909.12784: *3* __init__
     def __init__ (self, c):
         """set up vars., prepare temporary file"""
 
@@ -214,17 +204,14 @@ class leoscreen_Controller:
         self._get_output()  # prime output diffing system
 
         self.popups = []  # store references to popup windows
-    #@-node:tbrown.20100226095909.12784:__init__
-    #@+node:tbrown.20100226095909.12785:__del__
+    #@+node:tbrown.20100226095909.12785: *3* __del__
     def __del__(self):
         """remove temporary file"""
         try:
             os.unlink(self.tmpfile)
         except IOError:
             pass
-    #@nonl
-    #@-node:tbrown.20100226095909.12785:__del__
-    #@+node:tbrown.20100226095909.12786:screen_cmd
+    #@+node:tbrown.20100226095909.12786: *3* screen_cmd
     def screen_cmd(self, cmds):
         """Execute a screen command via screen -X"""
         cmd = [
@@ -241,8 +228,7 @@ class leoscreen_Controller:
             stdout=subprocess.PIPE,  # don't just inherit, which alters
             stderr=subprocess.PIPE)  # screen's behavior
         proc.communicate()
-    #@-node:tbrown.20100226095909.12786:screen_cmd
-    #@+node:tbrown.20100226095909.12787:run_text
+    #@+node:tbrown.20100226095909.12787: *3* run_text
     def run_text(self, txt, c=None):
         """Send txt to screen"""
 
@@ -266,8 +252,7 @@ class leoscreen_Controller:
             'readbuf "%s"'%self.tmpfile,
             'paste .',
         ])
-    #@-node:tbrown.20100226095909.12787:run_text
-    #@+node:tbrown.20100421115534.21602:insert_line
+    #@+node:tbrown.20100421115534.21602: *3* insert_line
     def insert_line(self, line, c=None):
         """insert a line of text into the current body"""
 
@@ -280,9 +265,7 @@ class leoscreen_Controller:
         editor.insert(insert_point, self.get_line_prefix+line+'\n')
         editor.setInsertPoint(insert_point)
         c.setChanged(True)
-    #@nonl
-    #@-node:tbrown.20100421115534.21602:insert_line
-    #@+node:tbrown.20100528205637.5725:_get_output
+    #@+node:tbrown.20100528205637.5725: *3* _get_output
     def _get_output(self):
         """grab some output"""
         self.screen_cmd(['hardcopy -h "%s"'%self.tmpfile])
@@ -298,9 +281,7 @@ class leoscreen_Controller:
 
         self.output = f.read().strip().split('\n')
         self.next_unread_line = self.first_line
-    #@nonl
-    #@-node:tbrown.20100528205637.5725:_get_output
-    #@+node:tbrown.20100226095909.12788:get_line
+    #@+node:tbrown.20100226095909.12788: *3* get_line
     def get_line(self, c=None):
         """Get the next line of output from the last command"""
 
@@ -322,8 +303,7 @@ class leoscreen_Controller:
         self.next_unread_line -= 1
 
         return line
-    #@-node:tbrown.20100226095909.12788:get_line
-    #@+node:tbrown.20100422203442.5579:get_all
+    #@+node:tbrown.20100422203442.5579: *3* get_all
     def get_all(self, c=None):
         """Get all output from the last command"""
 
@@ -345,8 +325,7 @@ class leoscreen_Controller:
 
         return '\n'.join(ans[:self.first_line])
 
-    #@-node:tbrown.20100422203442.5579:get_all
-    #@+node:tbrown.20100502155649.5599:get_note
+    #@+node:tbrown.20100502155649.5599: *3* get_note
     def get_note(self, c=None):
         """Get all output from the last command"""
 
@@ -365,8 +344,7 @@ class leoscreen_Controller:
         c.setChanged(True)
         c.selectPosition(n)
         c.redraw()
-    #@-node:tbrown.20100502155649.5599:get_note
-    #@+node:tbrown.20100424115939.5735:show
+    #@+node:tbrown.20100424115939.5735: *3* show
     def show(self, what, title=None):
 
         try:
@@ -387,16 +365,14 @@ class leoscreen_Controller:
         te.moveCursor(QTextCursor.End)
         te.show()
         self.popups.append(te)
-    #@-node:tbrown.20100424115939.5735:show
-    #@+node:tbrown.20100502155649.5605:show_note
+    #@+node:tbrown.20100502155649.5605: *3* show_note
     def show_note(self):
         if stickynotes:
             stickynotes.stickynote_f({'c':self.c})
         else:
             g.es('stickynotes not available')
 
-    #@-node:tbrown.20100502155649.5605:show_note
-    #@+node:tbrown.20100421115534.14949:get_prefix
+    #@+node:tbrown.20100421115534.14949: *3* get_prefix
     def get_prefix(self):
         """get the prefix for insertions from get_line"""
 
@@ -405,39 +381,32 @@ class leoscreen_Controller:
 
         if x is not None:
             self.get_line_prefix = x
-    #@-node:tbrown.20100421115534.14949:get_prefix
     #@-others
-#@-node:tbrown.20100226095909.12783:class leoscreen_Controller
-#@+node:tbrown.20100226095909.12789:cmd_get_line
+#@+node:tbrown.20100226095909.12789: ** cmd_get_line
 def cmd_get_line(c):
     """get next line of results"""
     line = c.leo_screen.get_line(c)
     c.leo_screen.insert_line(line)
-#@-node:tbrown.20100226095909.12789:cmd_get_line
-#@+node:tbrown.20100423084809.19285:cmd_get_all
+#@+node:tbrown.20100423084809.19285: ** cmd_get_all
 def cmd_get_all(c):
     """get all of results"""
     line = c.leo_screen.get_all(c)
     c.leo_screen.insert_line(line)
-#@-node:tbrown.20100423084809.19285:cmd_get_all
-#@+node:tbrown.20100502155649.5597:cmd_get_note
+#@+node:tbrown.20100502155649.5597: ** cmd_get_note
 def cmd_get_note(c):
     """get all of results"""
     c.leo_screen.get_note()
-#@-node:tbrown.20100502155649.5597:cmd_get_note
-#@+node:tbrown.20100502155649.5603:cmd_show_note
+#@+node:tbrown.20100502155649.5603: ** cmd_show_note
 def cmd_show_note(c):
     """get all of results"""
     c.leo_screen.get_note()
     c.leo_screen.show_note()
-#@-node:tbrown.20100502155649.5603:cmd_show_note
-#@+node:tbrown.20100502155649.5595:cmd_show_all
+#@+node:tbrown.20100502155649.5595: ** cmd_show_all
 def cmd_show_all(c):
     """get all of results"""
     line = c.leo_screen.get_all(c)
     c.leo_screen.show(line)
-#@-node:tbrown.20100502155649.5595:cmd_show_all
-#@+node:tbrown.20100226095909.12790:cmd_run_text
+#@+node:tbrown.20100226095909.12790: ** cmd_run_text
 def cmd_run_text(c):
     """pass selected text to shell app. via screen"""
     txt = c.frame.body.getSelectedText()
@@ -453,8 +422,7 @@ def cmd_run_text(c):
         pass
 
     c.leo_screen.run_text(txt,c)
-#@-node:tbrown.20100226095909.12790:cmd_run_text
-#@+node:tbrown.20100226095909.12791:cmd_next,prev,other
+#@+node:tbrown.20100226095909.12791: ** cmd_next,prev,other
 def cmd_next(c):
     """execute screen command next"""
     c.leo_screen.screen_cmd(['next'])
@@ -466,13 +434,11 @@ def cmd_prev(c):
 def cmd_other(c):
     """execute screen command other"""
     c.leo_screen.screen_cmd(['other'])
-#@-node:tbrown.20100226095909.12791:cmd_next,prev,other
-#@+node:tbrown.20100421115534.14948:cmd_get_prefix
+#@+node:tbrown.20100421115534.14948: ** cmd_get_prefix
 def cmd_get_prefix(c):
     """call get_prefix"""
     c.leo_screen.get_prefix()
-#@-node:tbrown.20100421115534.14948:cmd_get_prefix
-#@+node:tbrown.20100424115939.5581:cmd_more/less prompt
+#@+node:tbrown.20100424115939.5581: ** cmd_more/less prompt
 def cmd_more_prompt(c):
     """call get_prefix"""
     c.leo_screen.first_line += 1
@@ -480,8 +446,5 @@ def cmd_more_prompt(c):
 def cmd_less_prompt(c):
     """call get_prefix"""
     c.leo_screen.first_line -= 1
-#@-node:tbrown.20100424115939.5581:cmd_more/less prompt
 #@-others
-#@nonl
-#@-node:tbrown.20100226095909.12777:@thin leoscreen.py
 #@-leo

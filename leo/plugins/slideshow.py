@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20060831165821:@thin slideshow.py
-#@<< docstring >>
-#@+node:ekr.20060831165845.1:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20060831165821: * @thin slideshow.py
+#@+<< docstring >>
+#@+node:ekr.20060831165845.1: ** << docstring >>
 '''A plugin to support slideshows in Leo outlines.
 
 It defines four new commands:
@@ -18,9 +18,7 @@ Slides shows consist of a root @slideshow node with descendent @slide nodes.
 
 All these commands ignore @ignore trees.
 '''
-#@nonl
-#@-node:ekr.20060831165845.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.4'
 
@@ -28,11 +26,10 @@ __version__ = '0.4'
 # To do:
 # - Add sound/script support for slides.
 # - Save/restore changes to slides when entering/leaving a slide.
-#@-at
 #@@c
 
-#@<< version history >>
-#@+node:ekr.20060831165845.2:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20060831165845.2: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -40,51 +37,41 @@ __version__ = '0.4'
 # 0.02 EKR: Improved docstring and added todo notes.
 # 0.03 EKR: Simplified createCommands.
 # 0.1  EKR: A big step forward.
-# The next/prev-slide-show commands allow easy management of multiple 
-# slideshows.
+# The next/prev-slide-show commands allow easy management of multiple slideshows.
 # 0.2  EKR: next/pref-slide-show commands work properly when
 # a) c.currentPosition changes and
 # b) @slideshow nodes inserted or deleted.
 # 0.3 EKR:
 # - Removed Tkinter import.
-# - next-slide and prev-slide now work more intuitively when current position 
-# changes.
+# - next-slide and prev-slide now work more intuitively when current position changes.
 # 0.4 EKR: Support @ignore nodes in all commands.
-#@-at
-#@-node:ekr.20060831165845.2:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20060831165845.3:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20060831165845.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-#@nonl
-#@-node:ekr.20060831165845.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20060831165845.4:init
+#@+node:ekr.20060831165845.4: ** init
 def init ():
 
     leoPlugins.registerHandler(('open2','new2'),onCreate)
     g.plugin_signon(__name__)
 
     return True
-#@nonl
-#@-node:ekr.20060831165845.4:init
-#@+node:ekr.20060831165845.5:onCreate
+#@+node:ekr.20060831165845.5: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
     if not c: return
 
     slideshowController(c)
-#@nonl
-#@-node:ekr.20060831165845.5:onCreate
-#@+node:ekr.20060831165845.6:class slideshowController
+#@+node:ekr.20060831165845.6: ** class slideshowController
 class slideshowController:
 
-    #@    @+others
-    #@+node:ekr.20060831165845.7:__init__
+    #@+others
+    #@+node:ekr.20060831165845.7: *3* __init__
     def __init__ (self,c):
 
         self.c = c
@@ -92,9 +79,7 @@ class slideshowController:
         self.slideShowRoot = None
         self.slide = None
         self.createCommands()
-    #@nonl
-    #@-node:ekr.20060831165845.7:__init__
-    #@+node:ekr.20060831171016:createCommands
+    #@+node:ekr.20060831171016: *3* createCommands
     def createCommands (self):
 
         c = self.c ; k = c.k
@@ -106,9 +91,7 @@ class slideshowController:
             ('prev-slide-show-command', self.prevSlideShow),
         ):
             k.registerCommand (name,shortcut=None,func=func,pane='all',verbose=False)
-    #@nonl
-    #@-node:ekr.20060831171016:createCommands
-    #@+node:ekr.20060901182318:findFirstSlideShow
+    #@+node:ekr.20060901182318: *3* findFirstSlideShow
     def findFirstSlideShow (self):
 
         c = self.c
@@ -122,9 +105,7 @@ class slideshowController:
 
         self.firstSlideShow = None
         return None
-    #@nonl
-    #@-node:ekr.20060901182318:findFirstSlideShow
-    #@+node:ekr.20060904110319:ignored
+    #@+node:ekr.20060904110319: *3* ignored
     def ignored (self,p):
 
         for p2 in p.self_and_parents():
@@ -132,9 +113,7 @@ class slideshowController:
                 return True
         else:
             return False
-    #@nonl
-    #@-node:ekr.20060904110319:ignored
-    #@+node:ekr.20060831171016.5:nextSlide
+    #@+node:ekr.20060831171016.5: *3* nextSlide
     def nextSlide (self,event=None):
 
         c = self.c ; p = c.p
@@ -161,9 +140,7 @@ class slideshowController:
             return g.es(g.choose(self.slideShowRoot,
                 'At end of slide show',
                 'Not in any slide show'))
-    #@nonl
-    #@-node:ekr.20060831171016.5:nextSlide
-    #@+node:ekr.20060901142848:nextSlideShow
+    #@+node:ekr.20060901142848: *3* nextSlideShow
     def nextSlideShow (self,event=None):
 
         c = self.c
@@ -188,8 +165,7 @@ class slideshowController:
                 p = p.threadNext()
         self.select(self.slideShowRoot)
         g.es('At start of last slide show')
-    #@-node:ekr.20060901142848:nextSlideShow
-    #@+node:ekr.20060831171016.4:prevSlide
+    #@+node:ekr.20060831171016.4: *3* prevSlide
     def prevSlide (self,event=None):
 
         c = self.c ; p = c.p
@@ -219,9 +195,7 @@ class slideshowController:
                 return g.es('At start of first slide show')
             else:
                 return g.es('No slide show found')
-    #@nonl
-    #@-node:ekr.20060831171016.4:prevSlide
-    #@+node:ekr.20060901142848.1:prevSlideShow
+    #@+node:ekr.20060901142848.1: *3* prevSlideShow
     def prevSlideShow (self,event=None):
 
         c = self.c
@@ -244,9 +218,7 @@ class slideshowController:
                 p = p.threadBack()
         self.select(self.firstSlideShow)
         g.es('At start of first slide show')
-    #@nonl
-    #@-node:ekr.20060901142848.1:prevSlideShow
-    #@+node:ekr.20060901145257:select
+    #@+node:ekr.20060901145257: *3* select
     def select (self,p):
 
         '''Make p the present slide, and set self.slide and maybe self.slideShowRoot.'''
@@ -264,12 +236,6 @@ class slideshowController:
             self.slideShowRoot = p.copy()
 
         self.slide = p.copy()
-    #@nonl
-    #@-node:ekr.20060901145257:select
     #@-others
-#@nonl
-#@-node:ekr.20060831165845.6:class slideshowController
 #@-others
-#@nonl
-#@-node:ekr.20060831165821:@thin slideshow.py
 #@-leo

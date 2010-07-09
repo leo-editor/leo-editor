@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517080049.1:@thin empty_leo_file.py
+#@+leo-ver=5-thin
+#@+node:EKR.20040517080049.1: * @thin empty_leo_file.py
 """Open any empty file as a minimal .leo file"""
 
 #@@language python
@@ -9,8 +9,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
 
-#@<< define minimal .leo file >>
-#@+node:EKR.20040517080049.2:<< define minimal .leo file >>
+#@+<< define minimal .leo file >>
+#@+node:EKR.20040517080049.2: ** << define minimal .leo file >>
 empty_leo_file = """<?xml version="1.0" encoding="UTF-8"?>
 <leo_file>
 <leo_header/>
@@ -21,12 +21,10 @@ empty_leo_file = """<?xml version="1.0" encoding="UTF-8"?>
 <tnodes/>
 </leo_file>
 """
-#@nonl
-#@-node:EKR.20040517080049.2:<< define minimal .leo file >>
-#@nl
+#@-<< define minimal .leo file >>
 
 #@+others
-#@+node:ekr.20100128073941.5372:init
+#@+node:ekr.20100128073941.5372: ** init
 def init():
 
     # Ok for unit testing.  Only rewrites empty files.
@@ -38,9 +36,7 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@nonl
-#@-node:ekr.20100128073941.5372:init
-#@+node:EKR.20040517080049.3:onOpen
+#@+node:EKR.20040517080049.3: ** onOpen
 def onOpen (tag,keywords):
 
     file_name = keywords.get('fileName')
@@ -53,7 +49,5 @@ def onOpen (tag,keywords):
         file.flush()
         file.close()
 
-#@-node:EKR.20040517080049.3:onOpen
 #@-others
-#@-node:EKR.20040517080049.1:@thin empty_leo_file.py
 #@-leo

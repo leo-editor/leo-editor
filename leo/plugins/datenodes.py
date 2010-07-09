@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20060807103814.1:@thin datenodes.py
-#@<< docstring >>
-#@+node:bobjack.20080615065747.4:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20060807103814.1: * @thin datenodes.py
+#@+<< docstring >>
+#@+node:bobjack.20080615065747.4: ** << docstring >>
 """
 This plugin allows 'date nodes' to be added to the outline.
 
@@ -25,15 +25,14 @@ The following commands are available for use via the minibuffer or in
     - datenodes-this-year
 
 """
-#@-node:bobjack.20080615065747.4:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.7"
-#@<< version history >>
-#@+node:gfunch.20041207100416.2:<< version history >>
+#@+<< version history >>
+#@+node:gfunch.20041207100416.2: ** << version history >>
 #@@nocolor
 #@+at
 # 
@@ -41,10 +40,8 @@ __version__ = "0.7"
 # 0.2: Improved menu structure. Added ini file.
 # 0.3: Changed docstring slightly.
 # 0.4: Added event=None to insert_xxx_node.
-# 0.5: Added options to omit saturdays and sundays. Use leoSettings.leo 
-# instead of datenodes.ini for storing options.
-# 0.6: Removed @c from most nodes: this is not needed.  Also removed .ini file 
-# from cvs.
+# 0.5: Added options to omit saturdays and sundays. Use leoSettings.leo instead of datenodes.ini for storing options.
+# 0.6: Removed @c from most nodes: this is not needed.  Also removed .ini file from cvs.
 # 0.7 bobjack:
 #     - added plugin init method
 #     - exposed the pluginController as c.theDateNodesController
@@ -55,12 +52,9 @@ __version__ = "0.7"
 #         - datenodes-today
 #         - datenodes-this-month
 #         - datenodes-this-year
-#@-at
-#@nonl
-#@-node:gfunch.20041207100416.2:<< version history >>
-#@nl
-#@<< todo >>
-#@+node:bobjack.20080615065747.5:<< todo >>
+#@-<< version history >>
+#@+<< todo >>
+#@+node:bobjack.20080615065747.5: ** << todo >>
 #@@nocolor
 #@+at
 # 
@@ -68,30 +62,25 @@ __version__ = "0.7"
 # 
 # - add a calendar widget to allow dates to be entered via gui
 # 
-# - add extra methods to controller to make it easier to use the plugin from 
-# scripts
+# - add extra methods to controller to make it easier to use the plugin from scripts
 # 
 # - allow date ranges to be specified
 # 
 # - add a dialog that allows all parameters to be slected prior to insertion
-#@-at
-#@nonl
-#@-node:bobjack.20080615065747.5:<< todo >>
-#@nl
+#@-<< todo >>
 
-#@<< imports >>
-#@+node:gfunch.20041207100416.3:<< imports >>
+#@+<< imports >>
+#@+node:gfunch.20041207100416.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 import calendar
 import codecs
 import datetime
-#@-node:gfunch.20041207100416.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:bobjack.20080615065747.2:init
+#@+node:bobjack.20080615065747.2: ** init
 def init():
     if 1: # OK for unit testing.
 
@@ -99,9 +88,7 @@ def init():
         g.plugin_signon(__name__)
 
         return True
-#@nonl
-#@-node:bobjack.20080615065747.2:init
-#@+node:gfunch.20041207100416.5:class DateNodes
+#@+node:gfunch.20041207100416.5: ** class DateNodes
 class DateNodes:
     """Main DateNodes class"""
 
@@ -129,8 +116,8 @@ class DateNodes:
 
     ascii_encoder = codecs.getencoder("ASCII")
 
-    #@    @+others
-    #@+node:gfunch.20041207100416.6:__init__
+    #@+others
+    #@+node:gfunch.20041207100416.6: *3* __init__
     def __init__(self, c):
         self.c = c
         self._get_settings()
@@ -141,8 +128,7 @@ class DateNodes:
             ('datenodes-this-year', self.insert_year_node),
         ):
             c.k.registerCommand(command, shortcut=None, func=method)
-    #@-node:gfunch.20041207100416.6:__init__
-    #@+node:gfunch.20041209073652:_get_settings
+    #@+node:gfunch.20041209073652: *3* _get_settings
     def _get_settings(self):
         """Get any configuration options."""
 
@@ -162,8 +148,7 @@ class DateNodes:
             settings[setting[10:]] = value  # Omit datenodes_ prefix
 
         self.settings = settings
-    #@-node:gfunch.20041209073652:_get_settings
-    #@+node:gfunch.20041208095742:_format_node_label
+    #@+node:gfunch.20041208095742: *3* _format_node_label
     def _format_node_label(self, date, fmt):
         """Format a node label (heading)."""
 
@@ -177,8 +162,7 @@ class DateNodes:
 
         return date.strftime(ascii_fmt)
 
-    #@-node:gfunch.20041208095742:_format_node_label
-    #@+node:dcb.20060806185031:_insert_date_node
+    #@+node:dcb.20060806185031: *3* _insert_date_node
     def _insert_date_node(self, parent, date, format):
 
         c = self.c
@@ -191,8 +175,7 @@ class DateNodes:
 
         return node
 
-    #@-node:dcb.20060806185031:_insert_date_node
-    #@+node:dcb.20060806183810:_insert_day_node
+    #@+node:dcb.20060806183810: *3* _insert_day_node
     def _insert_day_node(self, parent, date, day_fmt):
 
         c = self.c
@@ -201,9 +184,7 @@ class DateNodes:
         c.setBodyString(day_node,self.settings["body_text"])
 
         return day_node
-    #@nonl
-    #@-node:dcb.20060806183810:_insert_day_node
-    #@+node:gfunch.20041207100416.11:_insert_month_node
+    #@+node:gfunch.20041207100416.11: *3* _insert_month_node
     def _insert_month_node(self, parent, date, day_fmt, month_fmt, omit_saturdays, omit_sundays):
         """Insert a months-worth of date nodes into the outline ."""
 
@@ -223,8 +204,7 @@ class DateNodes:
             self._insert_day_node(parent = month_node, date = day_date, day_fmt = day_fmt)
 
         return month_node
-    #@-node:gfunch.20041207100416.11:_insert_month_node
-    #@+node:gfunch.20041207100416.12:_insert_year_node
+    #@+node:gfunch.20041207100416.12: *3* _insert_year_node
     def _insert_year_node(self, parent, date, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays):
         """Insert a years-worth of date nodes into the outline."""
 
@@ -240,9 +220,7 @@ class DateNodes:
 
 
         return year_node
-    #@nonl
-    #@-node:gfunch.20041207100416.12:_insert_year_node
-    #@+node:gfunch.20041208074734:insert_day_node
+    #@+node:gfunch.20041208074734: *3* insert_day_node
     def insert_day_node(self, event = None):
 
         today = datetime.date.today()
@@ -254,8 +232,7 @@ class DateNodes:
 
 
 
-    #@-node:gfunch.20041208074734:insert_day_node
-    #@+node:dcb.20060806183928:insert_month_node
+    #@+node:dcb.20060806183928: *3* insert_month_node
     def insert_month_node(self, event = None):
 
         today = datetime.date.today()
@@ -271,8 +248,7 @@ class DateNodes:
 
 
 
-    #@-node:dcb.20060806183928:insert_month_node
-    #@+node:dcb.20060806184117:insert_year_node
+    #@+node:dcb.20060806184117: *3* insert_year_node
     def insert_year_node(self, event = None):
 
         today = datetime.date.today()
@@ -287,10 +263,8 @@ class DateNodes:
 
         self.c.selectPosition(year_node)
 
-    #@-node:dcb.20060806184117:insert_year_node
     #@-others
-#@-node:gfunch.20041207100416.5:class DateNodes
-#@+node:gfunch.20041207100654:on_create
+#@+node:gfunch.20041207100654: ** on_create
 def on_create(tag, keywords):
 
     c = keywords.get("c")
@@ -304,8 +278,8 @@ def on_create(tag, keywords):
     # establish a class instance
     c.theDateNodesController = instance = DateNodes(c)
 
-    #@    << Create the plug-in menu. >>
-    #@+node:bobjack.20080615065747.3:<< Create the plug-in menu. >>
+    #@+<< Create the plug-in menu. >>
+    #@+node:bobjack.20080615065747.3: *3* << Create the plug-in menu. >>
     if not (
         c.config.getBool('suppress-datenodes-menus') or
         c.config.getBool('suppress-all-plugin-menus')
@@ -320,11 +294,8 @@ def on_create(tag, keywords):
 
         expandMenu = c.frame.menu.createNewMenu("Insert Date Nodes...", "Outline")
         c.frame.menu.createMenuEntries(expandMenu, table, dynamicMenu = True)
-    #@-node:bobjack.20080615065747.3:<< Create the plug-in menu. >>
-    #@nl
+    #@-<< Create the plug-in menu. >>
 
-#@-node:gfunch.20041207100654:on_create
 #@-others
 
-#@-node:ekr.20060807103814.1:@thin datenodes.py
 #@-leo

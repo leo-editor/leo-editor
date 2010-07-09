@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ville.20091009202416.10040:@thin leoremote.py
-#@<< docstring >>
-#@+node:ville.20091009202416.10041:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ville.20091009202416.10040: * @thin leoremote.py
+#@+<< docstring >>
+#@+node:ville.20091009202416.10041: ** << docstring >>
 ''' Remote control for leo
 
 Example client::
@@ -26,23 +26,19 @@ Example client::
     """)
 
 '''
-#@-node:ville.20091009202416.10041:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:ville.20091009202416.10042:<< version history >>
+#@+<< version history >>
+#@+node:ville.20091009202416.10042: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # Put notes about each version here.
-#@-at
-#@nonl
-#@-node:ville.20091009202416.10042:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:ville.20091009202416.10043:<< imports >>
+#@+<< imports >>
+#@+node:ville.20091009202416.10043: ** << imports >>
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins 
 from leo.external import lproto
@@ -53,12 +49,10 @@ import os, sys, tempfile
 #g.assertUi('qt')
 
 #from PyQt4 import QtGui, QtCore
-#@nonl
-#@-node:ville.20091009202416.10043:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20091009202416.10045:init
+#@+node:ville.20091009202416.10045: ** init
 def init ():
 
     ok = True
@@ -73,8 +67,7 @@ def init ():
 
 
     return ok
-#@-node:ville.20091009202416.10045:init
-#@+node:ville.20091010231411.5262:g.command('leoserv-start')
+#@+node:ville.20091010231411.5262: ** g.command('leoserv-start')
 @g.command('leoserv-start')
 def leoserv_start(event):
     c = event['c']
@@ -110,16 +103,12 @@ def leoserv_start(event):
 
 
 
-#@-node:ville.20091010231411.5262:g.command('leoserv-start')
-#@+node:ville.20091009211846.10039:script execution
+#@+node:ville.20091009211846.10039: ** script execution
 def run_remote_script(fname):
     # c and p are ambiguous for remote script
     print("rrs")
     d = {'g' : g }
 
     execfile(fname, d )
-#@-node:ville.20091009211846.10039:script execution
 #@-others
-#@nonl
-#@-node:ville.20091009202416.10040:@thin leoremote.py
 #@-leo

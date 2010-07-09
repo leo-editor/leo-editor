@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041018131258.1:@thin groupOperations.py
-#@<< docstring >>
-#@+node:ekr.20050912180223:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041018131258.1: * @thin groupOperations.py
+#@+<< docstring >>
+#@+node:ekr.20050912180223: ** << docstring >>
 '''A Leo Plugin that adds Group commands functionality. Restrictions currently
 apply to using Leo with a Tk frontend. There are several commands in this
 plugin:
@@ -19,15 +19,13 @@ plugin:
     The windows must all be spawned from the same Leo instance. 
     It allows the user to move all node marked for copying and moving from another window to this one.
 '''
-#@nonl
-#@-node:ekr.20050912180223:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:mork.20041018131258.2:<< imports >>
+#@+<< imports >>
+#@+node:mork.20041018131258.2: ** << imports >>
 import leo.core.leoPlugins as leoPlugins 
 import leo.core.leoGlobals as g      
 import leo.core.leoNodes as leoNodes
@@ -35,26 +33,21 @@ import copy
 import base64
 
 Tkinter = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@nonl
-#@-node:mork.20041018131258.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 lassoers = {} # Keys are commanders. Values are instances of class Lassoer.
 
 __version__ = ".10"
-#@<<version history>>
-#@+node:mork.20041021120027:<<version history>>
+#@+<<version history>>
+#@+node:mork.20041021120027: ** <<version history>>
 #@@killcolor
 #@+at 
 # .1 -- We have started almost from scratch from the previous group Move
 # operations. Many things are easier. We have a new way of marking things for
 # moving. Instead of marking all nodes and thugishly moving them as clones or
-# copies, the user can specify what type of operation he wants on the node. 
-# This
-# apparently works with Chapters, but I havent tested it enough to verify 
-# there
-# aren't bugs involved. Marks across chapters do not apparently move very well 
-# to
+# copies, the user can specify what type of operation he wants on the node. This
+# apparently works with Chapters, but I havent tested it enough to verify there
+# aren't bugs involved. Marks across chapters do not apparently move very well to
 # another window. Will work on for next version.
 # .2 EKR:
 # - Use g.importExtension to import Pmw.
@@ -67,25 +60,19 @@ __version__ = ".10"
 # - Major cleanup of code.
 # - Added support for minibuffer commands.
 # .6 EKR: Fixed a crasher introduced by 'the big reorg'.
-# .7 EKR: Defined images in initImages so there is no problem if the gui is 
-# not Tk.
+# .7 EKR: Defined images in initImages so there is no problem if the gui is not Tk.
 # .8 EKR: Added 'c' arg to p.isVisible.
-# - Removed references to aPosition.c.  Positions no longer have 'c' 
-# attributes.
+# - Removed references to aPosition.c.  Positions no longer have 'c' attributes.
 # .9 EKR:
 # - Made inter-outline moves & copies work again.
-# - Also, warn that inter-outline clones transfer have no effect.  An 
-# oversight.
+# - Also, warn that inter-outline clones transfer have no effect.  An oversight.
 # - Note: none of these operations are presently undoable.
 # .10 EKR: use menu2 hook to create menus.
-#@-at
-#@nonl
-#@-node:mork.20041021120027:<<version history>>
-#@nl
+#@-<<version history>>
 
 #@+others
-#@+node:ekr.20060325104949:Module level
-#@+node:ekr.20050226114442:init
+#@+node:ekr.20060325104949: ** Module level
+#@+node:ekr.20050226114442: *3* init
 def init ():
 
     if not (Tkinter and sets): return False
@@ -102,13 +89,11 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050226114442:init
-#@+node:ekr.20070301091021:initImages
+#@+node:ekr.20070301091021: *3* initImages
 def initImages ():
 
-    #@    << define images >>
-    #@+node:ekr.20070301105150:<< define images >>
+    #@+<< define images >>
+    #@+node:ekr.20070301105150: *4* << define images >>
     groupOps = r'''R0lGODlhZAAUAMZpAB8xvCAyvCEzvSIzvSM0vSM1vSQ2viU3viY3vig5vyk6vyo7vyo8vys8wCw9
     wC0+wDJDwjVFwztLxDxMxT1MxT5NxUBPxkJRx0NSx0RTx0VUx0dVyEhXyEpZyUtZyU1byk5cyk9d
     ylJgy1RhzFVizFVjzFdlzVhmzVpnzltozlxpzl5rz2Fu0GJu0GRw0GRx0WVy0WZy0Wh00ml10mp2
@@ -203,8 +188,7 @@ def initImages ():
     HUMA6BgiYFa5UFGoSLGxwgU5AFLu4VDBwkSPewScQJw2LeIAKFSeEHg2heU9hy/FUckBIMkPACgv
     UllAhAkHC/c0tHgCo0PMh9KoUJABJQZQnUdZkZP5JISBEhZGvHQ1Q4GBDUXuKcFAwIKSqFHJGZlA
     gII2qBhQYcqdS7eu3bt48+rdy7ev37+AAwvuFAgAOw=='''
-    #@-node:ekr.20070301105150:<< define images >>
-    #@nl
+    #@-<< define images >>
 
     global groupOpPI        ; groupOpPI = Tkinter.PhotoImage(data=groupOps)
     global bullseyePI       ; bullseyePI = Tkinter.PhotoImage(data=bullseye)
@@ -219,9 +203,7 @@ def initImages ():
     global operateOnMarkedPI ; operateOnMarkedPI = Tkinter.PhotoImage(data=operateOnMarked)
     global clearMarksPI     ; clearMarksPI = Tkinter.PhotoImage(data=clearMarks)
     global transferFromPI   ; transferFromPI = Tkinter.PhotoImage(data=transferFrom)
-#@nonl
-#@-node:ekr.20070301091021:initImages
-#@+node:mork.20041018131258.34:drawImages
+#@+node:mork.20041018131258.34: *3* drawImages
 def drawImages (tag,keywords):
     ''' draws a little yellow box on the node image to indicate selection'''
 
@@ -249,17 +231,14 @@ def drawImages (tag,keywords):
             #canvas.create_polygon( x -10 , y + 2  , x , y + 7, x -10, y + 12, fill = 'red', tag = 'movenode' )
     return None
 
-#@-node:mork.20041018131258.34:drawImages
-#@+node:mork.20041018131258.35:drawArrowImages
+#@+node:mork.20041018131258.35: *3* drawArrowImages
 def drawArrowImages (c,p,image,canvas):
 
     if p.isVisible(c):
         x = p.v.iconx
         y = p.v.icony
         canvas.create_image(x-5,y+7,image=image,tag='lnodes')
-#@nonl
-#@-node:mork.20041018131258.35:drawArrowImages
-#@+node:mork.20041018131258.36:addMenu & helper
+#@+node:mork.20041018131258.36: *3* addMenu & helper
 def addMenu (tag,keywords):
 
     global lassoers
@@ -290,8 +269,7 @@ def addMenu (tag,keywords):
     nrumenu.add_cascade(menu=imenu,image=transferFromPI)
     imenu.config(postcommand=lambda nm=imenu: createCommandsMenu(nm))
     imenu.lassoer = las
-#@nonl
-#@+node:mork.20041018131258.33:createCommandsMenu
+#@+node:mork.20041018131258.33: *4* createCommandsMenu
 def createCommandsMenu (menu):
 
     menu.delete('1','end')
@@ -307,15 +285,11 @@ def createCommandsMenu (menu):
             c.add_command(menu,
                 label=c.frame.getTitle(),
                 command=lambda frm=las,to=mlas: frm.transfer(event,to))
-#@nonl
-#@-node:mork.20041018131258.33:createCommandsMenu
-#@-node:mork.20041018131258.36:addMenu & helper
-#@-node:ekr.20060325104949:Module level
-#@+node:mork.20041018131258.5:class Lassoer
+#@+node:mork.20041018131258.5: ** class Lassoer
 class Lassoer(object):
 
-    #@	@+others
-    #@+node:mork.20041018131258.7:__init__
+    #@+others
+    #@+node:mork.20041018131258.7: *3* __init__
     def __init__ (self,c):
 
         self.nodes = []
@@ -338,9 +312,7 @@ class Lassoer(object):
             ('group-operations-transfer',self.transfer),
         ):
             k.registerCommand(commandName,None,func,pane='all',verbose=False)
-    #@nonl
-    #@-node:mork.20041018131258.7:__init__
-    #@+node:mork.20041018131258.6:__lcmp__
+    #@+node:mork.20041018131258.6: *3* __lcmp__
     def __lcmp__ (p1,p2):
 
         if   p1.v.icony >  p2.v.icony: return  1
@@ -348,17 +320,14 @@ class Lassoer(object):
         elif p1.v.icony == p2.v.icony: return  0
 
     __lcmp__ = staticmethod(__lcmp__)
-    #@nonl
-    #@-node:mork.20041018131258.6:__lcmp__
-    #@+node:mork.20041019124112:__len__
+    #@+node:mork.20041019124112: *3* __len__
     def __len__( self ):
 
         return len( self.mvForClone ) + \
                len( self.mvForCopy ) + \
                len( self.mvForM )
-    #@-node:mork.20041019124112:__len__
-    #@+node:ekr.20060325094821:Commands
-    #@+node:mork.20041018131258.9:addForMove
+    #@+node:ekr.20060325094821: *3* Commands
+    #@+node:mork.20041018131258.9: *4* addForMove
     def addForMove (self,event=None):
 
         c = self.c ; p = c.p
@@ -372,9 +341,7 @@ class Lassoer(object):
             self.canvases.add(c.frame.canvas)
             # if p.hasNext(): c.selectPosition(p.next())
         c.redraw()
-    #@nonl
-    #@-node:mork.20041018131258.9:addForMove
-    #@+node:mork.20041019102247:addForCopy
+    #@+node:mork.20041019102247: *4* addForCopy
     def addForCopy (self,event=None):
 
         c = self.c ; p = c.p
@@ -388,9 +355,7 @@ class Lassoer(object):
             self.canvases.add(self.c.frame.canvas)
             # if p.hasNext(): c.selectPosition(p.next())
         c.redraw()
-    #@nonl
-    #@-node:mork.20041019102247:addForCopy
-    #@+node:mork.20041019102247.1:addForClone
+    #@+node:mork.20041019102247.1: *4* addForClone
     def addForClone (self,event=None):
 
         c = self.c ; p = c.p
@@ -403,9 +368,7 @@ class Lassoer(object):
             self.canvases.add(c.frame.canvas)
             # if p.hasNext(): c.selectPosition(p.next())
         c.redraw()
-    #@nonl
-    #@-node:mork.20041019102247.1:addForClone
-    #@+node:mork.20041018131258.11:clear
+    #@+node:mork.20041018131258.11: *4* clear
     def clear (self,event=None):
 
         self.mvForM = []
@@ -416,8 +379,7 @@ class Lassoer(object):
             z.delete('lnodes')
             z.delete('movenode')
         self.canvases.clear()
-    #@-node:mork.20041018131258.11:clear
-    #@+node:mork.20041019121125:markTarget
+    #@+node:mork.20041019121125: *4* markTarget
     def markTarget (self,event=None):
 
         c = self.c ; p = c.p
@@ -429,9 +391,7 @@ class Lassoer(object):
             self.moveNode = p
 
         c.redraw()
-    #@nonl
-    #@-node:mork.20041019121125:markTarget
-    #@+node:ekr.20060325113340:operateOnMarked
+    #@+node:ekr.20060325113340: *4* operateOnMarked
     def operateOnMarked (self,event=None):
 
         c = self.c
@@ -444,9 +404,7 @@ class Lassoer(object):
             c.redraw()
         else:
             g.es('No valid move',color='blue')
-    #@nonl
-    #@-node:ekr.20060325113340:operateOnMarked
-    #@+node:mork.20041019125724.3:transfer
+    #@+node:mork.20041019125724.3: *4* transfer
     def transfer (self,event=None,lassoer=None):
 
         '''Inter-window transfer.'''
@@ -467,10 +425,8 @@ class Lassoer(object):
         c.redraw()
         lassoer.c.redraw() # Do this last so we select the target outline.
 
-    #@-node:mork.20041019125724.3:transfer
-    #@-node:ekr.20060325094821:Commands
-    #@+node:ekr.20060325103727:Utils
-    #@+node:mork.20041019125724:copyTo
+    #@+node:ekr.20060325103727: *3* Utils
+    #@+node:mork.20041019125724: *4* copyTo
     def copyTo( self, mN = None ):
 
         if not mN: mN = self.moveNode
@@ -478,9 +434,7 @@ class Lassoer(object):
             nn = mN.insertAfter()
             z.copyTreeFromSelfTo( nn )
             mN = nn
-    #@nonl
-    #@-node:mork.20041019125724:copyTo
-    #@+node:mork.20041019125724.1:cloneTo
+    #@+node:mork.20041019125724.1: *4* cloneTo
     def cloneTo (self,mN=None):
 
         if not mN: mN = self.moveNode
@@ -488,8 +442,7 @@ class Lassoer(object):
             clo = z.clone()
             clo.moveAfter(mN)
             mN = clo
-    #@-node:mork.20041019125724.1:cloneTo
-    #@+node:mork.20041019125724.2:moveTo
+    #@+node:mork.20041019125724.2: *4* moveTo
     def moveTo (self,mN=None,mvC=None):
 
         c = self.c # The source of the move.
@@ -513,15 +466,12 @@ class Lassoer(object):
                 mN = z
 
 
-    #@-node:mork.20041019125724.2:moveTo
-    #@+node:ekr.20060325113814:reset
+    #@+node:ekr.20060325113814: *4* reset
     def reset (self):
 
         self.clear()
         self.c.redraw()
-    #@nonl
-    #@-node:ekr.20060325113814:reset
-    #@+node:mork.20041018131258.10:remove
+    #@+node:mork.20041018131258.10: *4* remove
     def remove (self,p):
 
         c = self.c
@@ -531,24 +481,14 @@ class Lassoer(object):
 
         if p == self.moveNode:
             self.moveNode = None
-    #@nonl
-    #@-node:mork.20041018131258.10:remove
-    #@+node:mork.20041019121125.1:contains
+    #@+node:mork.20041019121125.1: *4* contains
     def contains (self,p):
 
         return p in self.mvForClone or p in self.mvForCopy or p in self.mvForM
-    #@nonl
-    #@-node:mork.20041019121125.1:contains
-    #@+node:mork.20041019151511:validMove
+    #@+node:mork.20041019151511: *4* validMove
     def validMove (self):
 
         return self.moveNode and self.c.positionExists(self.moveNode)
-    #@nonl
-    #@-node:mork.20041019151511:validMove
-    #@-node:ekr.20060325103727:Utils
     #@-others
-#@-node:mork.20041018131258.5:class Lassoer
 #@-others
-#@nonl
-#@-node:mork.20041018131258.1:@thin groupOperations.py
 #@-leo

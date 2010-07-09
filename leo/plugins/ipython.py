@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20080201143145:@thin ipython.py
+#@+leo-ver=5-thin
+#@+node:ekr.20080201143145: * @thin ipython.py
 #@@first
 
-#@<< docstring >>
-#@+node:ekr.20080201151802:<< docstring >>
+#@+<< docstring >>
+#@+node:ekr.20080201151802: ** << docstring >>
 ''' The ipython plugin provides two-way communication (a bridge) between Leo
 scripts and IPython running in the console from which Leo was launched.
 
@@ -14,12 +14,11 @@ In particular, scripts running in IPython can alter Leo outlines!
 There are too many details to cover in this docstring.  For full details,
 see: LeoDocs.leo or http://webpages.charter.net/edreamleo/IPythonBridge.html
 '''
-#@-node:ekr.20080201151802:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.9'
-#@<< version history >>
-#@+node:ekr.20080201143145.2:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20080201143145.2: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -56,12 +55,9 @@ __version__ = '0.9'
 #   This prevents IPython from trying to load the .leo file.
 # 
 # v 0.9 EKR: tell where the commands are coming from.
-#@-at
-#@nonl
-#@-node:ekr.20080201143145.2:<< version history >>
-#@nl
-#@<< to do >>
-#@+node:ekr.20080203092534:<< to do >>
+#@-<< version history >>
+#@+<< to do >>
+#@+node:ekr.20080203092534: ** << to do >>
 #@@nocolor
 #@+at
 # 
@@ -74,12 +70,9 @@ __version__ = '0.9'
 #     an idle-time handler.
 # 
 #     If it is possible several more settings would be possible.
-#@-at
-#@nonl
-#@-node:ekr.20080203092534:<< to do >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20080201143145.3:<< imports >>
+#@-<< to do >>
+#@+<< imports >>
+#@+node:ekr.20080201143145.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -92,8 +85,7 @@ try:
 except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
-#@-node:ekr.20080201143145.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 # Globals
 
@@ -101,8 +93,8 @@ except ImportError:
 gIP = None
 
 #@+others
-#@+node:ekr.20080201144219:Module-level functions
-#@+node:ekr.20080201143145.4:init
+#@+node:ekr.20080201144219: ** Module-level functions
+#@+node:ekr.20080201143145.4: *3* init
 def init ():
 
     if not import_ok: return
@@ -126,8 +118,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20080201143145.4:init
-#@+node:ekr.20080201143145.5:onCreate
+#@+node:ekr.20080201143145.5: *3* onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -149,23 +140,20 @@ def onCreate (tag, keys):
     if st:
         c.ipythonController.startIPython()
 
-#@-node:ekr.20080201143145.5:onCreate
-#@-node:ekr.20080201144219:Module-level functions
-#@+node:ekr.20080201143145.6:class ipythonController
+#@+node:ekr.20080201143145.6: ** class ipythonController
 class ipythonController:
 
     '''A per-commander controller that manages the
     singleton IPython ipshell instance.'''
 
-    #@    @+others
-    #@+node:ekr.20080204110426:Birth
-    #@+node:ekr.20080201143145.7:ctor
+    #@+others
+    #@+node:ekr.20080204110426: *3* Birth
+    #@+node:ekr.20080201143145.7: *4* ctor
     def __init__ (self,c):
 
         self.c = c
         self.createCommands()
-    #@-node:ekr.20080201143145.7:ctor
-    #@+node:ekr.20080204080848:createCommands
+    #@+node:ekr.20080204080848: *4* createCommands
     def createCommands(self):
 
         '''Create all of the ipython plugin's minibuffer commands.'''
@@ -184,10 +172,8 @@ class ipythonController:
 
         for commandName,func in table:
             k.registerCommand (commandName,shortcut,func,pane='all',verbose=True)
-    #@-node:ekr.20080204080848:createCommands
-    #@-node:ekr.20080204110426:Birth
-    #@+node:ekr.20080201151802.1:Commands
-    #@+node:ekr.20080201143319.10:startIPython
+    #@+node:ekr.20080201151802.1: *3* Commands
+    #@+node:ekr.20080201143319.10: *4* startIPython
     def startIPython(self,event=None):
 
         '''The start-ipython command'''
@@ -274,8 +260,7 @@ class ipythonController:
         except Exception:
             self.error('exception creating IPython shell')
             g.es_exception()
-    #@-node:ekr.20080201143319.10:startIPython
-    #@+node:ekr.20080204111314:pushToIPythonCommand
+    #@+node:ekr.20080204111314: *4* pushToIPythonCommand
     def pushToIPythonCommand(self,event=None):
 
         '''The push-to-ipython command.
@@ -283,10 +268,8 @@ class ipythonController:
         IPython must be started, but need not be inited.'''
 
         self.pushToIPython(script=None)
-    #@-node:ekr.20080204111314:pushToIPythonCommand
-    #@-node:ekr.20080201151802.1:Commands
-    #@+node:ekr.20080201151802.2:Utils...
-    #@+node:ekr.20080204075924:error & message
+    #@+node:ekr.20080201151802.2: *3* Utils...
+    #@+node:ekr.20080204075924: *4* error & message
     def error (self,s):
 
         g.es_print(s,color='red')
@@ -294,8 +277,7 @@ class ipythonController:
     def message (self,s):
 
         g.es_print(s,color='blue')
-    #@-node:ekr.20080204075924:error & message
-    #@+node:ekr.20080201150746.2:pushToIPython
+    #@+node:ekr.20080201150746.2: *4* pushToIPython
     def pushToIPython (self,script=None):
         ''' Push the node to IPython'''
         if not gIP:
@@ -309,15 +291,11 @@ class ipythonController:
             c.inCommand = False # Disable the command lockout logic
             push(p)
             return
-    #@-node:ekr.20080201150746.2:pushToIPython
-    #@+node:ekr.20080204083034:started
+    #@+node:ekr.20080204083034: *4* started
     def started (self):
         return gIP
-    #@-node:ekr.20080204083034:started
-    #@-node:ekr.20080201151802.2:Utils...
     #@-others
-#@-node:ekr.20080201143145.6:class ipythonController
-#@+node:ekr.20080204103804.3:class leoInterface
+#@+node:ekr.20080204103804.3: ** class leoInterface
 class leoInterface:
 
     '''A class to allow full access to Leo from Ipython.
@@ -327,8 +305,5 @@ class leoInterface:
 
     def __init__(self,c,g,tag='@ipython-results'):
         self.c, self.g = c,g
-#@-node:ekr.20080204103804.3:class leoInterface
 #@-others
-#@nonl
-#@-node:ekr.20080201143145:@thin ipython.py
 #@-leo

@@ -1,13 +1,13 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041022155742.1:@thin nodebar.py
+#@+leo-ver=5-thin
+#@+node:mork.20041022155742.1: * @thin nodebar.py
 """nodebar adds buttons at the bottom of the tree canvas.
 
 The buttons correspond to commands found in the Outline commands. It is intended
 to speed up a new users ability to use the outline. Experienced users may find
 value in being able to quickly execute commands they do not use very often"""
 
-#@<< imports >>
-#@+node:ekr.20041030084334:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20041030084334: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -25,13 +25,11 @@ try:
 except Exception as x:
     g.es( 'Could not load because of %s' % x )
     load_ok = False
-#@nonl
-#@-node:ekr.20041030084334:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = ".8"
-#@<<version>>
-#@+node:mork.20041023091529:<<version>>
+#@+<<version>>
+#@+node:mork.20041023091529: ** <<version>>
 #@@nocolor
 #@+at
 # 
@@ -41,13 +39,8 @@ __version__ = ".8"
 #     - Fixed hang when help dialog selected.
 #     - Write help string to status area on mouse over.
 #     - Added test for if g.app.gui.guiName() == "tkinter"
-# .25 added movement arrows.  These contrast with the move node arrows by 
-# being empty and on the other side of the nodebar.  A user may be able to do 
-# all the manipulations he needs of the outline at this point.  Note:  the bar 
-# is of such a size we may need to add some kind of scrolling mechanism.  Not 
-# sure if I like the hoist and dehoist icons yet. ????
-# --tried out scrollbar idea, what a terrible idea.  The user is just going to 
-# have to have a big enough screen to use it. :D
+# .25 added movement arrows.  These contrast with the move node arrows by being empty and on the other side of the nodebar.  A user may be able to do all the manipulations he needs of the outline at this point.  Note:  the bar is of such a size we may need to add some kind of scrolling mechanism.  Not sure if I like the hoist and dehoist icons yet. ????
+# --tried out scrollbar idea, what a terrible idea.  The user is just going to have to have a big enough screen to use it. :D
 # .3 Added balloon help.  Should help new users.  Added .config file machinery
 # .4 EKR: Put load_ok code in root.  Added string.atoi = int
 # .5 EKR: Defined __version__
@@ -57,18 +50,13 @@ __version__ = ".8"
 # .7 EKR:
 # - Removed 'start2' hook.
 # - Removed haveseen dict.  It is no longer needed.
-# .8 EKR: Defined images in initImages so there is no problem if the gui is 
-# not Tk.
-#@-at
-#@nonl
-#@-node:mork.20041023091529:<<version>>
-#@nl
-#@<<How To Configure>>
-#@+node:mork.20041026092203:<<How To Configure>>
+# .8 EKR: Defined images in initImages so there is no problem if the gui is not Tk.
+#@-<<version>>
+#@+<<How To Configure>>
+#@+node:mork.20041026092203: ** <<How To Configure>>
 #@+at
 # 
-# 1rst there needs to be a config file in the plugins directory called 
-# nodebar.ini
+# 1rst there needs to be a config file in the plugins directory called nodebar.ini
 # 
 # in this file there needs to be a section with this headline:
 # [ nodebar ]
@@ -92,22 +80,17 @@ __version__ = ".8"
 # usehelp=0
 # usehelp=1
 # 
-# 0, means do not use balloon help when the arrow goes over the nodebar( this 
-# is the default )
+# 0, means do not use balloon help when the arrow goes over the nodebar( this is the default )
 # 1, means use the balloon help when the arrow goes over the nodebar
 # 
 # ------
 # nodebar will create a .ini file for the user if there isn't one already.
 # 
-# If there are problems in the .ini file, nodebar should sail on using the 
-# default values.
-#@-at
-#@nonl
-#@-node:mork.20041026092203:<<How To Configure>>
-#@nl
+# If there are problems in the .ini file, nodebar should sail on using the default values.
+#@-<<How To Configure>>
 
 #@+others
-#@+node:ekr.20050311090939.5:init
+#@+node:ekr.20050311090939.5: ** init
 def init():
 
     if not load_ok: return False
@@ -125,13 +108,11 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050311090939.5:init
-#@+node:ekr.20070301091637:initImages
+#@+node:ekr.20070301091637: ** initImages
 def initImages ():
 
-    #@    << define bitmaps >>
-    #@+node:ekr.20070301091637.1:<< define bitmaps >>
+    #@+<< define bitmaps >>
+    #@+node:ekr.20070301091637.1: *3* << define bitmaps >>
     clone = r'''R0lGODlhEAAQAIABAP8AAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAsAAAAABAAEAAAAhaM
     j6nL7Q8jBDRWG8DThjvqSeJIlkgBADs='''
 
@@ -198,8 +179,7 @@ def initImages ():
 
     sortsiblings = r'''R0lGODlhEAAQAKECAAAAAB89vP/9/f/9/SH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAsAAAAABAA
     EAAAAiWUFalxbatcS7IiZh3NE2L+fOAGXpknal4JlAIAw2Br0Fksu1YBADs='''
-    #@-node:ekr.20070301091637.1:<< define bitmaps >>
-    #@nl
+    #@-<< define bitmaps >>
 
     global clonePI ; clonePI = Tk.PhotoImage(data=clone)
     global copyPI ; copyPI = Tk.PhotoImage(data=copy)
@@ -223,8 +203,7 @@ def initImages ():
     global questionPI ; questionPI = Tk.PhotoImage(data=question)
     global sortchildrenPI ; sortchildrenPI = Tk.PhotoImage(data=sortchildren)
     global sortsiblingsPI ; sortsiblingsPI = Tk.PhotoImage(data=sortsiblings)
-#@-node:ekr.20070301091637:initImages
-#@+node:mork.20041026090227:determineFrame
+#@+node:mork.20041026090227: ** determineFrame
 def determineFrame( c ):
     '''Returns the area in Leo where the user wants the nodebar.  Default to are 1'''
     cpos = config[ pos ]
@@ -237,9 +216,7 @@ def determineFrame( c ):
         frame = c.frame.iconFrame 
 
     return frame
-#@nonl
-#@-node:mork.20041026090227:determineFrame
-#@+node:mork.20041022160305:addNodeBar
+#@+node:mork.20041022160305: ** addNodeBar
 def addNodeBar( tag, keywords ):
     '''Add nodebar to new frame'''
     c = keywords.get( 'c' )
@@ -283,8 +260,8 @@ def addNodeBar( tag, keywords ):
     for i, z in enumerate( bcommands ):
         add( c, mbox ,i, *z )       
 
-    #@    << Create the help button >>
-    #@+node:mork.20041026100755:<< Create the help button >>
+    #@+<< Create the help button >>
+    #@+node:mork.20041026100755: *3* << Create the help button >>
     ques = Tk.Button( mbox, image = questionPI, 
         command = lambda c = c, items = bcommands: view_help(c,items) )    
     ques.grid( column = i + 1, row = 1 ) 
@@ -297,12 +274,8 @@ def addNodeBar( tag, keywords ):
         c.frame.putStatusLine("Open Help Dialog")
 
     c.bind2(ques,"<Enter>",callback, '+' )
-    #@nonl
-    #@-node:mork.20041026100755:<< Create the help button >>
-    #@nl
-#@nonl
-#@-node:mork.20041022160305:addNodeBar
-#@+node:mork.20041022172156:add
+    #@-<< Create the help button >>
+#@+node:mork.20041022172156: ** add
 def add( c, frame, column, command, image, text ):
     '''Add a button to the nodebar'''
     b = Tk.Button( frame, command = command , image = image )
@@ -315,9 +288,7 @@ def add( c, frame, column, command, image, text ):
         c.frame.putStatusLine(s)
 
     c.bind2(b,"<Enter>",callback, '+' )
-#@nonl
-#@-node:mork.20041022172156:add
-#@+node:mork.20041026083725:addBalloon
+#@+node:mork.20041026083725: ** addBalloon
 balloons = {}
 def addBalloon( frame, widget, text ):
     '''Help ballon is added to a frame and text is bound to a specific widget'''
@@ -327,9 +298,7 @@ def addBalloon( frame, widget, text ):
 
     balloon = balloons[ frame ]
     balloon.bind( widget, text )
-#@nonl
-#@-node:mork.20041026083725:addBalloon
-#@+node:mork.20041022175619:view_help
+#@+node:mork.20041022175619: ** view_help
 def view_help( c, items ):
     '''Opens the Help dialog up for the user to view'''
     dialog = Pmw.Dialog( c.frame.top, title = 'Button Help' )
@@ -346,8 +315,7 @@ def view_help( c, items ):
 
     dialog.activate()
 
-#@-node:mork.20041022175619:view_help
-#@+node:mork.20041026084314:configureNodebar
+#@+node:mork.20041026084314: ** configureNodebar
 config = {}
 pos = 'position'
 help = 'usehelp'
@@ -378,9 +346,7 @@ def configureNodebar():
             else:
                 g.es( "Bad value in nodebar.ini: %s" % p, color= 'red' )
                 g.es( "Was expecting a digit", color = 'red' )
-#@nonl
-#@-node:mork.20041026084314:configureNodebar
-#@+node:mork.20041026084509:readConfigFile
+#@+node:mork.20041026084509: ** readConfigFile
 def readConfigFile ():
 
     #reads the nodebar config file in.
@@ -407,9 +373,5 @@ usehelp=1
     except Exception as x:
         g.es( "Could not read nodebar.ini because of : %s "%x, color='red' )
         return None
-#@nonl
-#@-node:mork.20041026084509:readConfigFile
 #@-others
-#@nonl
-#@-node:mork.20041022155742.1:@thin nodebar.py
 #@-leo

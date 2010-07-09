@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040108062655:@thin nodenavigator.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040108062655: * @thin nodenavigator.py
 """Add "Recent" and "Marks" pulldown buttons to the toolbar."""
 
 #@@language python
@@ -8,8 +8,8 @@
 __plugin_name__ = "Node Navigator"
 __version__ = "0.15"
 
-#@<< version history >>
-#@+node:ekr.20040908093511.2:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040908093511.2: ** << version history >>
 #@+at
 # 0.4 EKR:
 # - Rewrote to handle multiple commanders correctly.
@@ -32,32 +32,26 @@ __version__ = "0.15"
 #     - Added init function.
 # 0.9 EKR: Make sure buttons appear in a new window.
 # 0.10 EKR: Make sure self.c == keywords.get('c') in all hook handlers.
-# 0.11 EKR: Disabled setting __name__ so that an entry is created for 
-# nodenavigator in the Plugins menu.
+# 0.11 EKR: Disabled setting __name__ so that an entry is created for nodenavigator in the Plugins menu.
 # 0.13 EKR: set __plugin_name__ rather than __name__.
 # 0.14 EKR: use c.nodeHistory.visitedPositions.
 # 0.15 EKR: added guards for c.nodeHistory.
-#@-at
-#@nonl
-#@-node:ekr.20040908093511.2:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040908094021.1:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040908094021.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import sys
-#@nonl
-#@-node:ekr.20040908094021.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 # Set this to 0 if the sizing of the toolbar controls doesn't look good on your platform. 
 USE_FIXED_SIZES = sys.platform != "darwin"
 
 #@+others
-#@+node:ekr.20050311090939.4:init
+#@+node:ekr.20050311090939.4: ** init
 def init ():
 
     ok = Tk is not None # OK for unit testing.
@@ -71,9 +65,7 @@ def init ():
             g.plugin_signon(__name__) #"nodenavigator")
 
     return ok
-#@nonl
-#@-node:ekr.20050311090939.4:init
-#@+node:ekr.20040909132810:onCreate
+#@+node:ekr.20040909132810: ** onCreate
 def onCreate(tag, keywords):
 
     # Not ok for unit testing: can't use unitTestGui.
@@ -87,15 +79,13 @@ def onCreate(tag, keywords):
     leoPlugins.registerHandler("set-mark",nav.addMark)
     leoPlugins.registerHandler("clear-mark",nav.clearMark)
     leoPlugins.registerHandler("select3",nav.updateRecent)
-#@nonl
-#@-node:ekr.20040909132810:onCreate
-#@+node:ekr.20040108062655.2:class Navigator
+#@+node:ekr.20040108062655.2: ** class Navigator
 class Navigator:
 
     """A node navigation aid for Leo"""
 
-    #@    @+others
-    #@+node:ekr.20040801062218:__init__
+    #@+others
+    #@+node:ekr.20040801062218: *3* __init__
     def __init__ (self,c):
 
         self.c = c
@@ -106,9 +96,7 @@ class Navigator:
             # Keys are commanders, values are marks menus.
         self.recentMenus = {}
             # Keys are commanders, values are recent menus.
-    #@nonl
-    #@-node:ekr.20040801062218:__init__
-    #@+node:ekr.20040108062655.4:_getSizer
+    #@+node:ekr.20040108062655.4: *3* _getSizer
     def _getSizer(self, parent, height, width):
 
         """Return a sizer object to force a Tk widget to be the right size"""
@@ -120,9 +108,7 @@ class Navigator:
             return sizer 
         else: 
             return parent 
-    #@nonl
-    #@-node:ekr.20040108062655.4:_getSizer
-    #@+node:ekr.20040108062655.6:addMark
+    #@+node:ekr.20040108062655.6: *3* addMark
     def addMark(self, tag, keywords):
 
         """Add a mark to the marks list"""
@@ -147,9 +133,7 @@ class Navigator:
 
         # Unlike the recent menu, which gets recreated each time, we remember the marks.
         self.markLists[c] = marks
-    #@nonl
-    #@-node:ekr.20040108062655.6:addMark
-    #@+node:ekr.20040108062655.3:addWidgets
+    #@+node:ekr.20040108062655.3: *3* addWidgets
     def addWidgets(self):
 
         """Add the widgets to the navigation bar"""
@@ -173,9 +157,7 @@ class Navigator:
         # Update the menus.
         self.updateRecent("tag",{"c":c})
         self.initMarks("tag",{"c":c})
-    #@nonl
-    #@-node:ekr.20040108062655.3:addWidgets
-    #@+node:ekr.20040730092357:initMarks
+    #@+node:ekr.20040730092357: *3* initMarks
     def initMarks(self, tag, keywords):
 
         """Initialize the marks list."""
@@ -200,9 +182,7 @@ class Navigator:
                 c.add_command(menu,label=name,command=callback)
                 marks.append(p.v)
         self.markLists[c] = marks
-    #@nonl
-    #@-node:ekr.20040730092357:initMarks
-    #@+node:ekr.20040730093250:clearMark
+    #@+node:ekr.20040730093250: *3* clearMark
     def clearMark(self, tag, keywords):
 
         """Remove a mark to the marks list"""
@@ -229,9 +209,7 @@ class Navigator:
 
         # Unlike the recent menu, which gets recreated each time, we remember the marks.
         self.markLists[c] = marks
-    #@nonl
-    #@-node:ekr.20040730093250:clearMark
-    #@+node:ekr.20040730094103:select
+    #@+node:ekr.20040730094103: *3* select
     def select(self,c,p):
 
         """Callback that selects position p."""
@@ -240,9 +218,7 @@ class Navigator:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
             c.redraw()
-    #@nonl
-    #@-node:ekr.20040730094103:select
-    #@+node:ekr.20040108091136:updateRecent
+    #@+node:ekr.20040108091136: *3* updateRecent
     def updateRecent(self,tag,keywords):
 
         """Add all entries to the recent nodes list."""
@@ -263,11 +239,6 @@ class Navigator:
                 def callback(event=None,self=self,c=c,p=p):
                     self.select(c,p)
                 c.add_command(menu,label=p.h[:40],command=callback)
-    #@nonl
-    #@-node:ekr.20040108091136:updateRecent
     #@-others
-#@-node:ekr.20040108062655.2:class Navigator
 #@-others
-#@nonl
-#@-node:ekr.20040108062655:@thin nodenavigator.py
 #@-leo

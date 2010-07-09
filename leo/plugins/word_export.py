@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517075715.14:@thin word_export.py
+#@+leo-ver=5-thin
+#@+node:EKR.20040517075715.14: * @thin word_export.py
 '''Use commands in the Plugins:Word Export:Export menu to formats and export
 the selected outline to a Word document, starting Word if necessary.
 '''
@@ -10,33 +10,26 @@ the selected outline to a Word document, starting Word if necessary.
 __plugin_name__ = "Word Export"
 __version__ = "0.8"
 
-#@<< version history >>
-#@+node:ekr.20040909110753:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040909110753: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.3 EKR:
-#     - Changed os.path.x to g.os_path_x for better handling of unicode 
-# filenames.
+#     - Changed os.path.x to g.os_path_x for better handling of unicode filenames.
 #     - Better error messages.
 # 0.4 EKR:
-#     - Added autostart code per 
-# http://sourceforge.net/forum/message.php?msg_id=2842589
+#     - Added autostart code per http://sourceforge.net/forum/message.php?msg_id=2842589
 # 0.5 EKR:
-#     - Added init function so that a proper message is given if win32com can 
-# not be imported.
+#     - Added init function so that a proper message is given if win32com can not be imported.
 # 0.6 EKR: (eliminated g.top)
 #     - Add c arg to writeNodeAndTree.
-#     - Set encoding to sys.getdefaultencoding() if there is no @encoding 
-# directive in effect.
+#     - Set encoding to sys.getdefaultencoding() if there is no @encoding directive in effect.
 # 0.7 EKR: cmd_ functions now get c arg.
 # 0.8 EKR: set __plugin_name__ rather than __name__
-#@-at
-#@nonl
-#@-node:ekr.20040909110753:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040909105522:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040909105522: ** << imports >>
 import leo.core.leoGlobals as g
 # import leo.core.leoPlugins as leoPlugins
 
@@ -53,12 +46,10 @@ else:
     import ConfigParser
 
 import sys
-#@nonl
-#@-node:ekr.20040909105522:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20050311165238:init
+#@+node:ekr.20050311165238: ** init
 def init ():
 
     ok = client is not None # Ok for unit test: just uses Plugins menu.
@@ -68,9 +59,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050311165238:init
-#@+node:EKR.20040517075715.15:getConfiguration
+#@+node:EKR.20040517075715.15: ** getConfiguration
 def getConfiguration():
 
     """Called when the user presses the "Apply" button on the Properties form"""
@@ -79,8 +68,7 @@ def getConfiguration():
     config = ConfigParser.ConfigParser()
     config.read(fileName)
     return config
-#@-node:EKR.20040517075715.15:getConfiguration
-#@+node:ekr.20041109085615:getWordConnection
+#@+node:ekr.20041109085615: ** getWordConnection
 def getWordConnection():
 
     """Get a connection to Word"""
@@ -96,9 +84,7 @@ def getWordConnection():
         g.es("Failed to connect to Word",color="blue")
         raise
         # return None
-#@nonl
-#@-node:ekr.20041109085615:getWordConnection
-#@+node:EKR.20040517075715.17:doPara
+#@+node:EKR.20040517075715.17: ** doPara
 def doPara(word, text, style=None):
 
     """Write a paragraph to word"""
@@ -112,9 +98,7 @@ def doPara(word, text, style=None):
             g.es("Unknown style: '%s'" % style)
     sel.TypeText(text)
     sel.TypeParagraph()
-#@nonl
-#@-node:EKR.20040517075715.17:doPara
-#@+node:EKR.20040517075715.18:writeNodeAndTree
+#@+node:EKR.20040517075715.18: ** writeNodeAndTree
 def writeNodeAndTree (c, word, header_style, level,
     maxlevel = 3,
     usesections = 1,
@@ -146,9 +130,7 @@ def writeNodeAndTree (c, word, header_style, level,
         h = g.toEncodedString(h,encoding,reportErrors=True)
         doPara(word,"%s %s" % (thishead,h),"%s %d" % (header_style,min(level,maxlevel)))
         writeNodeAndTree(c,word,header_style,level+1,maxlevel,usesections,thishead,child)
-#@nonl
-#@-node:EKR.20040517075715.18:writeNodeAndTree
-#@+node:EKR.20040517075715.19:cmd_Export
+#@+node:EKR.20040517075715.19: ** cmd_Export
 def cmd_Export(c):
 
     """Export the current node to Word"""
@@ -170,9 +152,5 @@ def cmd_Export(c):
     except Exception as err:
         g.es("Exception writing Word",color="blue")
         g.es_exception()
-#@nonl
-#@-node:EKR.20040517075715.19:cmd_Export
 #@-others
-#@nonl
-#@-node:EKR.20040517075715.14:@thin word_export.py
 #@-leo

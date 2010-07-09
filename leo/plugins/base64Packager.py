@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041020082242.1:@thin base64Packager.py
-#@<< docstring >>
-#@+node:ekr.20050307134613:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041020082242.1: * @thin base64Packager.py
+#@+<< docstring >>
+#@+node:ekr.20050307134613: ** << docstring >>
 '''This plugin allows the user to import binary data and store it in Leo as a
 base64 string.
 
@@ -27,11 +27,9 @@ Depending on the size of the image, you may have to scroll around to see it. For
 example, a leo clone icon will require scrolling to find. Id like to change this
 in the future.
 '''
-#@nonl
-#@-node:ekr.20050307134613:<< docstring >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20050307134613.1:<< imports >>
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20050307134613.1: ** << imports >>
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 # import leo.core.leoNodes as leoNodes
@@ -47,12 +45,10 @@ try:
 except Exception as x:
     g.es( "Cant Import %s" % x )
     importok = False
-#@nonl
-#@-node:ekr.20050307134613.1:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = '.4'
-#@<< version history >>
-#@+node:ekr.20050307135219:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050307135219: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -64,16 +60,13 @@ __version__ = '.4'
 # 
 # .3 EKR: Changed 'new_c' logic to 'c' logic.
 # .4 EKR: Use 'menu2' for creating menus. Improved exception handling.
-#@-at
-#@nonl
-#@-node:ekr.20050307135219:<< version history >>
-#@nl
+#@-<< version history >>
 
 pload = '<'+'<'+'payload>' + '>'
 b64 = "@base64"
 
 #@+others
-#@+node:mork.20041020082242.2:addMenu
+#@+node:mork.20041020082242.2: ** addMenu
 haveseen = weakref.WeakKeyDictionary()
 
 def addMenu( tag, keywords ):
@@ -95,8 +88,7 @@ def addMenu( tag, keywords ):
         if menu:
             c.add_command(menu,label=label,command=lambda c=c,func=func: func(c))
 
-#@-node:mork.20041020082242.2:addMenu
-#@+node:mork.20041020082907:base64Export
+#@+node:mork.20041020082907: ** base64Export
 def base64Export( c ):
 
     pos = c.p
@@ -112,8 +104,7 @@ def base64Export( c ):
         pdata = base64.decodestring( pdata )
         nfile.write( pdata )
         nfile.close()
-#@-node:mork.20041020082907:base64Export
-#@+node:mork.20041020082653:base64Import
+#@+node:mork.20041020082653: ** base64Import
 def base64Import( c ):
 
     pos = c.p
@@ -141,8 +132,7 @@ def base64Import( c ):
         p.setBodyString(b64_data)
         p.setHeadString(pload)
         c.redraw()
-#@-node:mork.20041020082653:base64Import
-#@+node:ekr.20050307135219.1:init
+#@+node:ekr.20050307135219.1: ** init
 def init ():
 
     if not importok: return False
@@ -157,9 +147,7 @@ def init ():
         g.plugin_signon( __name__ )   
 
     return ok
-#@nonl
-#@-node:ekr.20050307135219.1:init
-#@+node:mork.20041020092429:viewAsGif
+#@+node:mork.20041020092429: ** viewAsGif
 def viewAsGif (c):
 
     pos = c.p
@@ -180,8 +168,5 @@ def viewAsGif (c):
         g.es('bad data',repr(data),color='red')
 
 
-#@-node:mork.20041020092429:viewAsGif
 #@-others
-#@nonl
-#@-node:mork.20041020082242.1:@thin base64Packager.py
 #@-leo

@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:pap.20051010170720:@thin newButtons.py
-#@<< docstring >>
-#@+node:pap.20051010170720.1:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:pap.20051010170720: * @thin newButtons.py
+#@+<< docstring >>
+#@+node:pap.20051010170720.1: ** << docstring >>
 """Allows the use of template nodes for common tasks
 
 Template nodes can be create for any node. The template can then
@@ -53,17 +53,15 @@ AddRawTemplate
     at a later stage.
 
 """
-#@nonl
-#@-node:pap.20051010170720.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __plugin_name__ = "New Buttons"
 __version__ = "0.9"
 
 USE_FIXED_SIZES = 1
 
-#@<< version history >>
-#@+node:pap.20051010170720.2:<< version history >>
+#@+<< version history >>
+#@+node:pap.20051010170720.2: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -75,8 +73,7 @@ USE_FIXED_SIZES = 1
 # 0.6 EKR: Added support for template_path setting.
 # 0.7 EKR: removed g.top and improved the code.
 # - Added c args to most classes, but **not** to the Template class.
-# - Changed global helper to helpers: now a dict (keys are commanders, values 
-# are UIHelpers).
+# - Changed global helper to helpers: now a dict (keys are commanders, values are UIHelpers).
 # - Eliminated fromFile static method (now part of TemplateCollection ctor).
 # - Made getTemplateFromNode a regular method.
 # - Changed helper.commander to helper.c for consistency and clarity.
@@ -86,12 +83,9 @@ USE_FIXED_SIZES = 1
 # - cmd_ functions now get c arg.
 # - Added message when deleting template file.
 # 0.9 EKR: set __plugin_name__ rather than __name__
-#@-at
-#@nonl
-#@-node:pap.20051010170720.2:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:pap.20051010170720.3:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:pap.20051010170720.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -105,14 +99,13 @@ try:
     Pmw = g.importExtension("Pmw",    pluginName=__name__,verbose=True)    
 except ImportError:
     Tk = None
-#@-node:pap.20051010170720.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 helpers = {}
 
 #@+others
-#@+node:ekr.20060107123625:Module-level functions
-#@+node:pap.20051010170720.4:init
+#@+node:ekr.20060107123625: ** Module-level functions
+#@+node:pap.20051010170720.4: *3* init
 def init ():
 
     if g.app.gui is None:
@@ -125,9 +118,7 @@ def init ():
         g.plugin_signon("newButtons")
 
     return ok
-#@nonl
-#@-node:pap.20051010170720.4:init
-#@+node:pap.20051010170720.5:onCreate
+#@+node:pap.20051010170720.5: *3* onCreate
 def onCreate (tag, keywords):
 
     """
@@ -149,52 +140,40 @@ def onCreate (tag, keywords):
     c = keywords.get("c")
     helpers[c] = helper = UIHelperClass(c,folder)
     helper.addWidgets()
-#@nonl
-#@-node:pap.20051010170720.5:onCreate
-#@+node:pap.20051011221702:Commands exposed as menus
-#@+node:pap.20051010172840:cmd_MakeTemplateFrom
+#@+node:pap.20051011221702: *3* Commands exposed as menus
+#@+node:pap.20051010172840: *4* cmd_MakeTemplateFrom
 def cmd_MakeTemplateFrom(c):
     """Make a template from a node"""
     helper = helpers.get(c)
     if helper:
         helper.makeTemplate()
-#@nonl
-#@-node:pap.20051010172840:cmd_MakeTemplateFrom
-#@+node:pap.20051011153949:cmd_UpdateTemplateFrom
+#@+node:pap.20051011153949: *4* cmd_UpdateTemplateFrom
 def cmd_UpdateTemplateFrom(c):
     """Update a template from a node"""
 
     helper = helpers.get(c)
     if helper:
         helper.updateTemplate()
-#@nonl
-#@-node:pap.20051011153949:cmd_UpdateTemplateFrom
-#@+node:pap.20051011155514:cmd_DeleteTemplate
+#@+node:pap.20051011155514: *4* cmd_DeleteTemplate
 def cmd_DeleteTemplate(c):
     """Delete a template"""
     helper = helpers.get(c)
     if helper:
         helper.deleteTemplate()
-#@nonl
-#@-node:pap.20051011155514:cmd_DeleteTemplate
-#@+node:pap.20051011160100:cmd_AddRawTemplate
+#@+node:pap.20051011160100: *4* cmd_AddRawTemplate
 def cmd_AddRawTemplate(c):
 
     """Add a raw template"""
     helper = helpers.get(c)
     if helper:
         helper.addRawTemplate()
-#@nonl
-#@-node:pap.20051011160100:cmd_AddRawTemplate
-#@-node:pap.20051011221702:Commands exposed as menus
-#@-node:ekr.20060107123625:Module-level functions
-#@+node:pap.20051010171746:UI
-#@+node:pap.20051010171746.1:class FlatOptionMenu
+#@+node:pap.20051010171746: ** UI
+#@+node:pap.20051010171746.1: *3* class FlatOptionMenu
 class FlatOptionMenu(Tk.OptionMenu):
     """Flat version of OptionMenu which allows the user to select a value from a menu."""
 
-    #@    @+others
-    #@+node:ekr.20060107141254:ctor
+    #@+others
+    #@+node:ekr.20060107141254: *4* ctor
     def __init__(self, master, variable, value, *values, **kwargs):
         """Construct an optionmenu widget with the parent MASTER, with 
         the resource textvariable set to VARIABLE, the initially selected 
@@ -220,31 +199,24 @@ class FlatOptionMenu(Tk.OptionMenu):
         self.addMenuItem(value)
         for v in values:
             self.addMenuItem(v)
-    #@nonl
-    #@-node:ekr.20060107141254:ctor
-    #@+node:ekr.20060107141254.1:addMenuItem
+    #@+node:ekr.20060107141254.1: *4* addMenuItem
     def addMenuItem(self, name):
         """Add an item to the menu"""
         self.__menu.add_command(label=name,
                 command=Tk._setit(self.__variable, name, self.__callback))
-    #@-node:ekr.20060107141254.1:addMenuItem
     #@-others
-#@nonl
-#@-node:pap.20051010171746.1:class FlatOptionMenu
-#@+node:pap.20051010171746.2:class UIHelper
+#@+node:pap.20051010171746.2: *3* class UIHelper
 class UIHelperClass:
     """Helper class to collect all UI functions"""
 
-    #@    @+others
-    #@+node:pap.20051010173622:__init__
+    #@+others
+    #@+node:pap.20051010173622: *4* __init__
     def __init__(self, c, folder):
         """Initialize the helper"""
         self.c = c
         self.folder = folder
         self.templateCollection = TemplateCollection(c,folder)
-    #@nonl
-    #@-node:pap.20051010173622:__init__
-    #@+node:pap.20051010171746.3:addWidgets
+    #@+node:pap.20051010171746.3: *4* addWidgets
     def addWidgets(self):
         """Add the widgets to Leo"""
         c = self.c
@@ -276,8 +248,7 @@ class UIHelperClass:
             self.option_value, *options)
         self.option_value.set(options[0])
         self.options.pack(side="right", fill="both", expand=1)
-    #@-node:pap.20051010171746.3:addWidgets
-    #@+node:pap.20051010171746.4:newItemClicked
+    #@+node:pap.20051010171746.4: *4* newItemClicked
     def newItemClicked(self, event=None):
         """Generate a callback to call the specific adder"""
         nodename = self.option_value.get()
@@ -285,9 +256,7 @@ class UIHelperClass:
             pass
         else:
             self.addTemplate(nodename, self.text.get())
-    #@nonl
-    #@-node:pap.20051010171746.4:newItemClicked
-    #@+node:pap.20051011160416:addTemplate
+    #@+node:pap.20051011160416: *4* addTemplate
     def addTemplate (self,name,parameter=None):
         """Add a template node"""
         c = self.c ; p = c.p
@@ -296,8 +265,7 @@ class UIHelperClass:
             root = p.copy()
             template.addNodes(c,p,parameter,top=True)
             c.selectPosition(root.next())
-    #@-node:pap.20051011160416:addTemplate
-    #@+node:pap.20051010175537:makeTemplate
+    #@+node:pap.20051010175537: *4* makeTemplate
     def makeTemplate(self):
         """Make a template from the current node"""
         c = self.c
@@ -311,8 +279,7 @@ class UIHelperClass:
 
         form = MakeTemplateForm(c,makeit)
 
-    #@-node:pap.20051010175537:makeTemplate
-    #@+node:pap.20051011155041:updateTemplate
+    #@+node:pap.20051011155041: *4* updateTemplate
     def updateTemplate(self):
         """Update a template from the current node"""
         c = self.c
@@ -329,8 +296,7 @@ class UIHelperClass:
 
         form = SelectTemplateForm(self,updateit, "Update template")
 
-    #@-node:pap.20051011155041:updateTemplate
-    #@+node:pap.20051011160416.1:addRawTemplate
+    #@+node:pap.20051011160416.1: *4* addRawTemplate
     def addRawTemplate(self):
         """Add a template but don't convert the text"""
         c = self.c
@@ -339,9 +305,7 @@ class UIHelperClass:
                 self.addTemplate(result)
 
         form = SelectTemplateForm(self,addraw, "Add raw template")
-    #@nonl
-    #@-node:pap.20051011160416.1:addRawTemplate
-    #@+node:pap.20051011155642:deleteTemplate
+    #@+node:pap.20051011155642: *4* deleteTemplate
     def deleteTemplate(self):
         """Delete a template"""
         c = self.c
@@ -356,9 +320,7 @@ class UIHelperClass:
                 g.es('deleted template %s from %s' % (filename,folder),color='blue')
 
         form = SelectTemplateForm(self,deleteit, "Delete template")
-    #@nonl
-    #@-node:pap.20051011155642:deleteTemplate
-    #@+node:pap.20051010172432:_getSizer
+    #@+node:pap.20051010172432: *4* _getSizer
     def _getSizer(self, parent, height, width, pack="left"):
         """Return a sizer object to force a Tk widget to be the right size"""
         if USE_FIXED_SIZES:
@@ -368,16 +330,14 @@ class UIHelperClass:
             return sizer
         else:
             return parent
-    #@-node:pap.20051010172432:_getSizer
     #@-others
 
-#@-node:pap.20051010171746.2:class UIHelper
-#@+node:pap.20051011154233:class HelperForm
+#@+node:pap.20051011154233: *3* class HelperForm
 class HelperForm:
     """Base class for all forms"""
 
-    #@    @+others
-    #@+node:pap.20051011154400:__init__
+    #@+others
+    #@+node:pap.20051011154400: *4* __init__
     def __init__(self, c, callback, title):
         """Initialise the form"""
         self.c = c
@@ -396,8 +356,7 @@ class HelperForm:
                 command = self.formCommit,
         )
 
-    #@-node:pap.20051011154400:__init__
-    #@+node:pap.20051011154642:formCommit
+    #@+node:pap.20051011154642: *4* formCommit
     def formCommit(self, name):
         """The user closed the form"""
         if name == "OK":
@@ -406,16 +365,13 @@ class HelperForm:
             result = None
         self.dialog.destroy() 
         self.callback(result)
-    #@-node:pap.20051011154642:formCommit
     #@-others
-#@nonl
-#@-node:pap.20051011154233:class HelperForm
-#@+node:pap.20051010195044:class MakeTemplateForm
+#@+node:pap.20051010195044: *3* class MakeTemplateForm
 class MakeTemplateForm(HelperForm):
     """A form to initialize a template"""
 
-    #@    @+others
-    #@+node:pap.20051010195044.1:__init__
+    #@+others
+    #@+node:pap.20051010195044.1: *4* __init__
     def __init__(self, c, callback):
         """Initialise the form"""
 
@@ -445,16 +401,13 @@ class MakeTemplateForm(HelperForm):
 
         Pmw.alignlabels(entries)
 
-    #@-node:pap.20051010195044.1:__init__
     #@-others
-#@nonl
-#@-node:pap.20051010195044:class MakeTemplateForm
-#@+node:pap.20051011153949.1:class SelectTemplateForm
+#@+node:pap.20051011153949.1: *3* class SelectTemplateForm
 class SelectTemplateForm(HelperForm):
     """A form to select a template"""
 
-    #@    @+others
-    #@+node:pap.20051011154233.1:__init__
+    #@+others
+    #@+node:pap.20051011154233.1: *4* __init__
     def __init__(self, helper, callback, title):
         """Initialise the form"""
 
@@ -483,19 +436,14 @@ class SelectTemplateForm(HelperForm):
             entry.pack(fill='x', expand=1, padx=10, pady=5)
 
         Pmw.alignlabels(entries)
-    #@nonl
-    #@-node:pap.20051011154233.1:__init__
     #@-others
-#@nonl
-#@-node:pap.20051011153949.1:class SelectTemplateForm
-#@-node:pap.20051010171746:UI
-#@+node:pap.20051010173800:Implementation
-#@+node:pap.20051010173800.1:class TemplateCollection
+#@+node:pap.20051010173800: ** Implementation
+#@+node:pap.20051010173800.1: *3* class TemplateCollection
 class TemplateCollection(list):
     """Represents a collection of templates"""
 
-    #@    @+others
-    #@+node:pap.20051010173800.2:__init__
+    #@+others
+    #@+node:pap.20051010173800.2: *4* __init__
     def __init__(self, c, folder):
         """Initialize the collection"""
 
@@ -513,9 +461,7 @@ class TemplateCollection(list):
             except Exception:
                 g.es('Exception reading template file %s' % filename)
                 g.es_exception()
-    #@nonl
-    #@-node:pap.20051010173800.2:__init__
-    #@+node:ekr.20060107134001:add & remove
+    #@+node:ekr.20060107134001: *4* add & remove
     def add (self,template):
 
         name = template.name
@@ -528,18 +474,12 @@ class TemplateCollection(list):
         if name in self.templateNames:
             self.templateNames.remove(name)
             del self.templates [name]
-    #@nonl
-    #@-node:ekr.20060107134001:add & remove
-    #@+node:pap.20051010183939:find
+    #@+node:pap.20051010183939: *4* find
     def find(self, name):
         """Return the named template"""
         return self.templates.get(name)
-    #@nonl
-    #@-node:pap.20051010183939:find
     #@-others
-#@nonl
-#@-node:pap.20051010173800.1:class TemplateCollection
-#@+node:pap.20051010174103:class Template
+#@+node:pap.20051010174103: *3* class Template
 class Template:
     """Represents a template, with no association with any commander.
 
@@ -547,8 +487,8 @@ class Template:
     so changes in the ctor and the file format affect each other.
     """
 
-    #@    @+others
-    #@+node:pap.20051010180444:__init__
+    #@+others
+    #@+node:pap.20051010180444: *4* __init__
     def __init__(self, headline="", body="", children=None, name=None):
         """Initialize the template"""
         self.name = name
@@ -558,9 +498,7 @@ class Template:
             self.children = []
         else:
             self.children = children
-    #@nonl
-    #@-node:pap.20051010180444:__init__
-    #@+node:pap.20051010184315:addNodes
+    #@+node:pap.20051010184315: *4* addNodes
     def addNodes (self,c,parent,parameter="",top=False):
         """Add this template to the current"""
 
@@ -583,9 +521,7 @@ class Template:
         for child in children:
             child.addNodes(c,p,parameter)
         c.redraw()
-    #@nonl
-    #@-node:pap.20051010184315:addNodes
-    #@+node:ekr.20060107131019:getTemplateFromNode
+    #@+node:ekr.20060107131019: *4* getTemplateFromNode
     def getTemplateFromNode (self,p,name):
 
         self.name = name
@@ -599,9 +535,7 @@ class Template:
             children.append(Template().getTemplateFromNode(child,child.h))
             child = child.getNext()
         return self
-    #@nonl
-    #@-node:ekr.20060107131019:getTemplateFromNode
-    #@+node:pap.20051010182048:save
+    #@+node:pap.20051010182048: *4* save
     def save(self,c):
 
         """Save this template"""
@@ -621,9 +555,7 @@ class Template:
             f.write(repr(self))
         finally:
             f.close()
-    #@nonl
-    #@-node:pap.20051010182048:save
-    #@+node:pap.20051010181808:repr
+    #@+node:pap.20051010181808: *4* repr
     def __repr__(self):
         """Return representation of this node"""
         return "Template(%s, %s, %s, %s)" % (
@@ -631,9 +563,7 @@ class Template:
                 repr(self.body), 
                 repr(self.children),
                 repr(self.name))            
-    #@nonl
-    #@-node:pap.20051010181808:repr
-    #@+node:pap.20051010205823:convert
+    #@+node:pap.20051010205823: *4* convert
     def convert(self, text, parameter, p):
         """Return the converted text"""
 
@@ -662,13 +592,6 @@ class Template:
             oldtext = text
 
         return text
-    #@nonl
-    #@-node:pap.20051010205823:convert
     #@-others
-#@nonl
-#@-node:pap.20051010174103:class Template
-#@-node:pap.20051010173800:Implementation
 #@-others
-#@nonl
-#@-node:pap.20051010170720:@thin newButtons.py
 #@-leo

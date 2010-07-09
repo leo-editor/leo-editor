@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ville.20090314215508.4:@thin quicksearch.py
-#@<< docstring >>
-#@+node:ville.20090314215508.5:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ville.20090314215508.4: * @thin quicksearch.py
+#@+<< docstring >>
+#@+node:ville.20090314215508.5: ** << docstring >>
 ''' This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
@@ -18,23 +18,20 @@ syntax, as documented in
 http://docs.python.org/library/re.html#regular-expression-syntax
 
 '''
-#@-node:ville.20090314215508.5:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:ville.20090314215508.6:<< version history >>
+#@+<< version history >>
+#@+node:ville.20090314215508.6: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.1 Ville M. Vainio <vivainio@gmail.com>: Fully functional version,
 # 
-#@-at
-#@-node:ville.20090314215508.6:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:ville.20090314215508.7:<< imports >>
+#@+<< imports >>
+#@+node:ville.20090314215508.7: ** << imports >>
 import leo.core.leoGlobals as g
 
 g.assertUi('qt')
@@ -51,12 +48,10 @@ from PyQt4 import QtGui
 import fnmatch,re
 
 # Whatever other imports your plugins uses.
-#@nonl
-#@-node:ville.20090314215508.7:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20090314215508.8:init
+#@+node:ville.20090314215508.8: ** init
 def init ():
 
     ok = g.app.gui.guiName() == "qt"
@@ -67,8 +62,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ville.20090314215508.8:init
-#@+node:ville.20090314215508.9:onCreate
+#@+node:ville.20090314215508.9: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -76,8 +70,7 @@ def onCreate (tag, keys):
 
     install_qt_quicksearch_tab(c)
 
-#@-node:ville.20090314215508.9:onCreate
-#@+node:ville.20090314215508.2:class LeoQuickSearchWidget
+#@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget
 from leo.plugins import qt_quicksearch
 
 global qsWidget
@@ -148,8 +141,8 @@ def install_qt_quicksearch_tab(c):
 
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ 'Find in files'/grep style search widget """
-    #@    @+others
-    #@+node:ville.20090314215508.3:methods
+    #@+others
+    #@+node:ville.20090314215508.3: *3* methods
     def __init__(self, c, parent = None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
@@ -177,10 +170,8 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
         if self.scon.its:
             self.ui.listWidget.setFocus()
-    #@-node:ville.20090314215508.3:methods
     #@-others
-#@-node:ville.20090314215508.2:class LeoQuickSearchWidget
-#@+node:ville.20090314215508.12:QuickSearchController
+#@+node:ville.20090314215508.12: ** QuickSearchController
 
 def matchlines(b, miter):
     res = []
@@ -285,8 +276,5 @@ class QuickSearchController:
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
-#@-node:ville.20090314215508.12:QuickSearchController
 #@-others
-#@nonl
-#@-node:ville.20090314215508.4:@thin quicksearch.py
 #@-leo

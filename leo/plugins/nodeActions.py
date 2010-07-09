@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:TL.20090225102340.32:@thin nodeActions.py
-#@<< docstring >>
-#@+node:TL.20080507213950.3:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:TL.20090225102340.32: * @thin nodeActions.py
+#@+<< docstring >>
+#@+node:TL.20080507213950.3: ** << docstring >>
 """ A Leo plugin that permits the definition of actions for double-clicking on
 nodes. Written by TL. Derived from the fileActions plugin. Distributed under the same licence as Leo.
 
@@ -9,25 +9,22 @@ When a node is double-clicked, the nodeActions plugin checks for a match of the 
 
 Detailed documentations is provided in the "Plugins" section of the Leo Users Guide (Chapter 12).
 """
-#@-node:TL.20080507213950.3:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.4"
-#@<< version history >>
-#@+node:TL.20080507213950.4:<< version history >>
+#@+<< version history >>
+#@+node:TL.20080507213950.4: ** << version history >>
 #@@nocolor
 #@+at
 # 0.3 : 02-Apr-10 : TL : Support search all sub-nodes for pattern match
 # 0.2 : 02-Mar-09 : TL : Support for 'X', 'V', and  '>' directives added
 # 0.1 : 27-Feb-09 : TL : Initial code (modified from FileActions plugin)
-#@-at
-#@-node:TL.20080507213950.4:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040915110738.1:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040915110738.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -36,9 +33,7 @@ import os
 import re
 import sys
 import tempfile
-#@nonl
-#@-node:ekr.20040915110738.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 atFileTypes = [
     "@file", "@thin", "@file-thin",   "@thinfile",
@@ -48,7 +43,7 @@ atFileTypes = [
 ]
 
 #@+others
-#@+node:TL.20080507213950.8:onIconDoubleClickNA
+#@+node:TL.20080507213950.8: ** onIconDoubleClickNA
 def onIconDoubleClickNA(tag, keywords):
 
     c = keywords.get("c")
@@ -63,8 +58,7 @@ def onIconDoubleClickNA(tag, keywords):
         return None #No action taken - Let other double-click handlers run
 
 
-#@-node:TL.20080507213950.8:onIconDoubleClickNA
-#@+node:TL.20080507213950.7:init
+#@+node:TL.20080507213950.7: ** init
 def init():
 
 	 g.es("nodeActions: Init", color='blue')
@@ -73,9 +67,7 @@ def init():
 		  leoPlugins.registerHandler("icondclick1", onIconDoubleClickNA)
 		  g.plugin_signon(__name__)
 	 return ok
-#@nonl
-#@-node:TL.20080507213950.7:init
-#@+node:TL.20080507213950.9:doNodeAction
+#@+node:TL.20080507213950.9: ** doNodeAction
 def doNodeAction(pClicked, c):
 
    hClicked = pClicked.h.strip()
@@ -208,8 +200,7 @@ def doNodeAction(pClicked, c):
       if messageLevel >= 4:
          g.es("nA: The ""nodeActions"" node does not exist", color='blue')
       return False #TL - Inform onIconDoubleClick that no action was taken
-#@-node:TL.20080507213950.9:doNodeAction
-#@+node:TL.20080507213950.10:applyNodeAction
+#@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
 
    script = g.getScript(c, pScript)
@@ -243,42 +234,34 @@ def applyNodeAction(pScript, pClicked, c):
            g.es_exception(full=False,c=c)
 
        os.chdir(working_directory)
-#@-node:TL.20080507213950.10:applyNodeAction
-#@+node:TL.20080507213950.13:shellScriptInWindowNA
+#@+node:TL.20080507213950.13: ** shellScriptInWindowNA
 def shellScriptInWindowNA(c,script):
 
     if sys.platform == 'darwin':
-        #@        << write script to temporary MacOS file >>
-        #@+node:TL.20080507213950.14:<< write script to temporary MacOS file >>
+        #@+<< write script to temporary MacOS file >>
+        #@+node:TL.20080507213950.14: *3* << write script to temporary MacOS file >>
         handle, path = tempfile.mkstemp(text=True)
         directory = c.frame.openDirectory
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
         os.chmod(path,0x700)
-        #@nonl
-        #@-node:TL.20080507213950.14:<< write script to temporary MacOS file >>
-        #@nl
+        #@-<< write script to temporary MacOS file >>
         os.system("open -a /Applications/Utilities/Terminal.app " + path)
 
     elif sys.platform == 'win32':
         g.es("shellScriptInWindow not ready for Windows",color='red')
 
     else:
-        #@        << write script to temporary Unix file >>
-        #@+node:TL.20080507213950.15:<< write script to temporary Unix file >>
+        #@+<< write script to temporary Unix file >>
+        #@+node:TL.20080507213950.15: *3* << write script to temporary Unix file >>
         handle, path = tempfile.mkstemp(text=True)
         directory = c.frame.openDirectory
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
         os.chmod(path,0x700)
-        #@nonl
-        #@-node:TL.20080507213950.15:<< write script to temporary Unix file >>
-        #@nl
+        #@-<< write script to temporary Unix file >>
         os.system("xterm -e sh  " + path)
-#@-node:TL.20080507213950.13:shellScriptInWindowNA
 #@-others
-#@nonl
-#@-node:TL.20090225102340.32:@thin nodeActions.py
 #@-leo

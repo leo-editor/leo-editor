@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.736:@thin trace_keys.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.736: * @thin trace_keys.py
 """Trace keystrokes in the outline and body panes"""
 
 #@@language python
@@ -11,7 +11,7 @@ import leo.core.leoPlugins as leoPlugins
 __version__ = "1.2"
 
 #@+others
-#@+node:ekr.20100128091412.5387:newHeadline
+#@+node:ekr.20100128091412.5387: ** newHeadline
 def init():
 
     ok = not g.app.unitTesting # Not for unit testing.
@@ -22,16 +22,11 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20100128091412.5387:newHeadline
-#@+node:edream.110203113231.737:onKey
+#@+node:edream.110203113231.737: ** onKey
 def onKey (tag,keywords):
 
     ch = keywords.get("ch")
     if ch and len(ch) > 0:
         g.es("key",repr(ch))
-#@nonl
-#@-node:edream.110203113231.737:onKey
 #@-others
-#@-node:edream.110203113231.736:@thin trace_keys.py
 #@-leo

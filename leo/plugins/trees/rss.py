@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20050329082101.150:@thin trees\rss.py
-#@<< docstring >>
-#@+node:ekr.20050329082101.151:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20050329082101.150: * @thin trees\rss.py
+#@+<< docstring >>
+#@+node:ekr.20050329082101.151: ** << docstring >>
 """A handler that downloads RSS feeds
 
 The parameter in the @auto-rss headline is the URL to load from. The
@@ -21,8 +21,7 @@ Requires feedparser installed:
     http://sourceforge.net/projects/feedparser/
 
 """
-#@-node:ekr.20050329082101.151:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 from autotrees import BaseTreeHandler, TreeNode
 import feedparser
@@ -32,18 +31,15 @@ __version__ = "0.1"
 __plugin_requires__ = ["feedparser", "autotrees", "plugin_manager"]
 __plugin_group__ = "Network"
 
-#@<< version history >>
-#@+node:ekr.20050329082101.152:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050329082101.152: ** << version history >>
 #@+at
 # 
 # Version history
 # 
 # 0.1 Paul Paterson:
 #     - Initial version
-#@-at
-#@nonl
-#@-node:ekr.20050329082101.152:<< version history >>
-#@nl
+#@-<< version history >>
 
 class RSS(BaseTreeHandler):
     """RSS auto tree handler"""
@@ -80,5 +76,4 @@ class RSS(BaseTreeHandler):
                 item = item.get('value', item)
             text = text.replace(name, str(item))
         return text
-#@-node:ekr.20050329082101.150:@thin trees\rss.py
 #@-leo

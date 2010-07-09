@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20090701111504.5294:@thin contextmenu.py
-#@<< docstring >>
-#@+node:ville.20090630210947.5460:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20090701111504.5294: * @thin contextmenu.py
+#@+<< docstring >>
+#@+node:ville.20090630210947.5460: ** << docstring >>
 ''' Define various useful actions for context menus (for Qt ui)
 
 Examples are:
@@ -36,23 +36,20 @@ And call this in your plugin *once*::
     g.tree_popup_handlers.append(nextclone_rclick)    
 
 '''
-#@-node:ville.20090630210947.5460:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:ville.20090630210947.5461:<< version history >>
+#@+<< version history >>
+#@+node:ville.20090630210947.5461: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.1 Ville M. Vainio first version
 # 
-#@-at
-#@-node:ville.20090630210947.5461:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:ville.20090630210947.5462:<< imports >>
+#@+<< imports >>
+#@+node:ville.20090630210947.5462: ** << imports >>
 import leo.core.leoGlobals as g
 
 g.assertUi('qt')
@@ -63,17 +60,13 @@ import subprocess, os
 
 
 # Whatever other imports your plugins uses.
-#@nonl
-#@-node:ville.20090630210947.5462:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20090630210947.10190:globals
+#@+node:ville.20090630210947.10190: ** globals
 # print "Importing contextmenu"
 inited = False
-#@nonl
-#@-node:ville.20090630210947.10190:globals
-#@+node:ville.20090630210947.5465:openwith_rclick
+#@+node:ville.20090630210947.5465: ** openwith_rclick
 def openwith_rclick(c,p, menu):
     """ Show "Open with" in context menu for external file root nodes (@thin, @auto...) 
 
@@ -123,8 +116,7 @@ def openwith_rclick(c,p, menu):
 
     action = menu.addAction("Open " + path)
     action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
-#@-node:ville.20090630210947.5465:openwith_rclick
-#@+node:ville.20090630221949.5462:refresh_rclick
+#@+node:ville.20090630221949.5462: ** refresh_rclick
 def refresh_rclick(c,p, menu):
     h = p.h
     split = h.split(None,1)
@@ -150,8 +142,7 @@ def refresh_rclick(c,p, menu):
         #    c.readAtEditNodes()
 
     action.connect(action, QtCore.SIGNAL("triggered()"), refresh_rclick_cb)
-#@-node:ville.20090630221949.5462:refresh_rclick
-#@+node:ville.20090701110830.10215:editnode_rclick
+#@+node:ville.20090701110830.10215: ** editnode_rclick
 def editnode_rclick(c,p, menu):
     """ Provide "edit in EDITOR" context menu item """
 
@@ -168,8 +159,7 @@ def editnode_rclick(c,p, menu):
 
 
 
-#@-node:ville.20090701110830.10215:editnode_rclick
-#@+node:ville.20090702171015.5480:nextclone_rclick
+#@+node:ville.20090702171015.5480: ** nextclone_rclick
 def nextclone_rclick(c,p, menu):
     """ Go to next clone """
 
@@ -185,8 +175,7 @@ def nextclone_rclick(c,p, menu):
 
 
 
-#@-node:ville.20090702171015.5480:nextclone_rclick
-#@+node:ville.20090719202132.5248:marknodes_rclick
+#@+node:ville.20090719202132.5248: ** marknodes_rclick
 def marknodes_rclick(c,p, menu):
     """ Mark selected nodes """
 
@@ -222,8 +211,7 @@ def marknodes_rclick(c,p, menu):
 
 
 
-#@-node:ville.20090719202132.5248:marknodes_rclick
-#@+node:tbrown.20091203121808.15818:deletenodes_rclick
+#@+node:tbrown.20091203121808.15818: ** deletenodes_rclick
 def deletenodes_rclick(c,p, menu):
     """ Delete selected nodes """
 
@@ -276,8 +264,7 @@ def deletenodes_rclick(c,p, menu):
 
     action = menu.addAction("Delete")
     action.connect(action, QtCore.SIGNAL("triggered()"), deletenodes_rclick_cb)
-#@-node:tbrown.20091203121808.15818:deletenodes_rclick
-#@+node:ville.20091008192104.7691:configuredcommands_rclick
+#@+node:ville.20091008192104.7691: ** configuredcommands_rclick
 def configuredcommands_rclick(c,p, menu):
     """ Provide "edit in EDITOR" context menu item """
 
@@ -300,8 +287,7 @@ def configuredcommands_rclick(c,p, menu):
 
 
 
-#@-node:ville.20091008192104.7691:configuredcommands_rclick
-#@+node:ville.20090630210947.10189:install_handlers
+#@+node:ville.20090630210947.10189: ** install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
     hnd = [openwith_rclick, refresh_rclick, editnode_rclick,
@@ -312,8 +298,8 @@ def install_handlers():
 
     # just for kicks, the @commands
 
-    #@    << Add commands >>
-    #@+node:ville.20090701224704.9805:<< Add commands >>
+    #@+<< Add commands >>
+    #@+node:ville.20090701224704.9805: *3* << Add commands >>
     # cm is 'contextmenu' prefix
     @g.command('cm-external-editor')
     def cm_external_editor_f(event):    
@@ -335,12 +321,10 @@ def install_handlers():
 
 
 
-    #@-node:ville.20090701224704.9805:<< Add commands >>
-    #@nl
+    #@-<< Add commands >>
 
 
-#@-node:ville.20090630210947.10189:install_handlers
-#@+node:ville.20090701142447.5473:editnode_on_idle
+#@+node:ville.20090701142447.5473: ** editnode_on_idle
 # frame.OnOpenWith creates the dict with the following entries:
 # "body", "c", "encoding", "f", "path", "time" and "p".
 
@@ -365,8 +349,8 @@ def editnode_on_idle (tag,keywords):
                 if time and time != dict.get("time"):
                     dict["time"] = time # inhibit endless dialog loop.
                     # The file has changed.
-                    #@                    << set s to the file text >>
-                    #@+node:ville.20090701142447.5474:<< set s to the file text >>
+                    #@+<< set s to the file text >>
+                    #@+node:ville.20090701142447.5474: *3* << set s to the file text >>
                     try:
                         # Update v from the changed temp file.
                         f=open(path)
@@ -375,10 +359,9 @@ def editnode_on_idle (tag,keywords):
                     except:
                         g.es("can not open " + g.shortFileName(path))
                         break
-                    #@-node:ville.20090701142447.5474:<< set s to the file text >>
-                    #@nl
-                    #@                    << update p's body text >>
-                    #@+node:ville.20090701142447.5475:<< update p's body text >>
+                    #@-<< set s to the file text >>
+                    #@+<< update p's body text >>
+                    #@+node:ville.20090701142447.5475: *3* << update p's body text >>
                     # Convert body and s to whatever encoding is in effect.
                     body = p.b
                     body = g.toEncodedString(body,encoding,reportErrors=True)
@@ -409,15 +392,11 @@ def editnode_on_idle (tag,keywords):
                             c.save()
                     elif conflict:
                         g.es("not updated from: " + g.shortFileName(path),color="blue")
-                    #@nonl
-                    #@-node:ville.20090701142447.5475:<< update p's body text >>
-                    #@nl
+                    #@-<< update p's body text >>
             except Exception:
                 # g.es_exception()
                 pass
-#@nonl
-#@-node:ville.20090701142447.5473:editnode_on_idle
-#@+node:ville.20090630210947.5463:init
+#@+node:ville.20090630210947.5463: ** init
 def init ():
     global inited
     # print "contextmenu init()"
@@ -433,8 +412,5 @@ def init ():
     install_handlers()        
 
     return True
-#@-node:ville.20090630210947.5463:init
 #@-others
-#@nonl
-#@-node:ekr.20090701111504.5294:@thin contextmenu.py
 #@-leo

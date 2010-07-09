@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:rogererens.20041013082304:@thin UNL.py
-#@<< docstring >>
-#@+node:ekr.20050119144617:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:rogererens.20041013082304: * @thin UNL.py
+#@+<< docstring >>
+#@+node:ekr.20050119144617: ** << docstring >>
 '''This plugin supports Uniform Node Locators (UNL's). UNL's specify nodes within
 Leo files. UNL's are not limited to nodes within the present Leo file; you can
 use them to create cross-Leo-file links! UNL
@@ -51,24 +51,21 @@ navigate to the nodes 'by hand' by following the arrows in the UNL.
 
 - You don't have to replace spaces in URL's or UNL's by '%20'.
 '''
-#@nonl
-#@-node:ekr.20050119144617:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.11"
-#@<< version history >>
-#@+node:rogererens.20041014104353:<< version history >>
+#@+<< version history >>
+#@+node:rogererens.20041014104353: ** << version history >>
 #@+at
 # 
 # - 0.1 rogererens: Initial version.
 # - 0.2 ekr:  changes for new status line class.
 # - 0.3 ekr: Added support for url keyword in '@url1' hook.
 #            As a result, this plugin supports single and double quoted urls.
-# - 0.4 ekr: Fixed crasher by adding c argument to g.findTopLevelNode and 
-# g.findNodeInTree.
+# - 0.4 ekr: Fixed crasher by adding c argument to g.findTopLevelNode and g.findNodeInTree.
 # - 0.5 EKR: Convert %20 to ' ' in url's.
 # - 0.6 EKR: Made local UNL's work.
 # - 0.7 EKR: Set c.doubleClickFlag to keep focus in newly-opened window.
@@ -77,12 +74,9 @@ __version__ = "0.11"
 #     Replaced calls to findNodeInTree by findNodeInChildren.
 # - 0.10 TB: Added recursive search so that the longest match will be found.
 # - 0.11 EKR: This gui is now gui-independent.
-#@-at
-#@nonl
-#@-node:rogererens.20041014104353:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:rogererens.20041014110709.1:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:rogererens.20041014110709.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -94,19 +88,15 @@ if g.isPython3:
     import urllib.parse as urlparse
 else:
     import urlparse 
-#@nonl
-#@-node:rogererens.20041014110709.1:<< imports >>
-#@nl
-#@<< globals >>
-#@+node:rogererens.20041014111328:<< globals >>
+#@-<< imports >>
+#@+<< globals >>
+#@+node:rogererens.20041014111328: ** << globals >>
 #@+at
 # 
-#@-at
-#@-node:rogererens.20041014111328:<< globals >>
-#@nl
+#@-<< globals >>
 
 #@+others
-#@+node:ekr.20070112173134:init
+#@+node:ekr.20070112173134: ** init
 def init ():
 
     #if g.app.gui is None:
@@ -119,8 +109,7 @@ def init ():
 
     g.plugin_signon(__name__)
     return True
-#@-node:ekr.20070112173134:init
-#@+node:rogererens.20041013082304.1:createStatusLine
+#@+node:rogererens.20041013082304.1: ** createStatusLine
 def createStatusLine(tag,keywords):
 
     """Create a status line.""" # Might already be done by another plugin. Checking needed?
@@ -129,9 +118,7 @@ def createStatusLine(tag,keywords):
     statusLine = c.frame.createStatusLine()
     statusLine.clear()
     statusLine.put("...")
-#@nonl
-#@-node:rogererens.20041013082304.1:createStatusLine
-#@+node:tbrown.20070726135242:recursiveUNLSearch
+#@+node:tbrown.20070726135242: ** recursiveUNLSearch
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
     """try and move to unl in the commander c"""
 
@@ -167,8 +154,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
         g.es('Partial UNL match')
 
     return False, maxdepth, maxp
-#@-node:tbrown.20070726135242:recursiveUNLSearch
-#@+node:rogererens.20041021091837:onUrl1
+#@+node:rogererens.20041021091837: ** onUrl1
 def onUrl1 (tag,keywords):
     """Redefine the @url functionality of Leo Core: allows jumping to URL _and UNLs_.
     Spaces are now allowed in URLs."""
@@ -181,13 +167,10 @@ def onUrl1 (tag,keywords):
     url = keywords.get('url')
     url = url.replace('%20',' ')
 
-#@+at 
-#@nonl
-# Most browsers should handle the following urls:
+#@+at Most browsers should handle the following urls:
 #   ftp://ftp.uu.net/public/whatever.
 #   http://localhost/MySiteUnderDevelopment/index.html
 #   file://home/me/todolist.html
-#@-at
 #@@c
     if trace: g.trace(url)
 
@@ -195,16 +178,14 @@ def onUrl1 (tag,keywords):
         try:
             urlTuple = urlparse.urlsplit(url)
             if trace:
-                #@                << log url-stuff >>
-                #@+node:rogererens.20041125015212:<<log url-stuff>>
+                #@+<< log url-stuff >>
+                #@+node:rogererens.20041125015212: *3* <<log url-stuff>>
                 g.trace("scheme  : " + urlTuple[0])
                 g.trace("network : " + urlTuple[1])
                 g.trace("path    : " + urlTuple[2])
                 g.trace("query   : " + urlTuple[3])
                 g.trace("fragment: " + urlTuple[4])
-                #@nonl
-                #@-node:rogererens.20041125015212:<<log url-stuff>>
-                #@nl
+                #@-<< log url-stuff >>
         except:
             g.es("exception interpreting the url " + url)
             g.es_exception()
@@ -225,8 +206,8 @@ def onUrl1 (tag,keywords):
 
                 ok,frame = g.openWithFileName(filename, c)
                 if ok:
-                    #@                    << go to the node>>
-                    #@+node:rogererens.20041125015212.1:<<go to the node>>
+                    #@+<< go to the node>>
+                    #@+node:rogererens.20041125015212.1: *3* <<go to the node>>
                     c2 = frame.c
 
                     if urlTuple [4]: # we have a UNL!
@@ -234,18 +215,16 @@ def onUrl1 (tag,keywords):
 
                     # Disable later call to c.onClick so the focus stays in c2.
                     c.doubleClickFlag = True
-                    #@-node:rogererens.20041125015212.1:<<go to the node>>
-                    #@nl
+                    #@-<< go to the node>>
             elif urlTuple[0] == "":
-                #@                << go to node in present outline >>
-                #@+node:ekr.20060908105814:<< go to node in present outline >>
+                #@+<< go to node in present outline >>
+                #@+node:ekr.20060908105814: *3* << go to node in present outline >>
                 if urlTuple [2]:
                     recursiveUNLSearch(urlTuple[2].split("-->"), c)
-                #@-node:ekr.20060908105814:<< go to node in present outline >>
-                #@nl
+                #@-<< go to node in present outline >>
             else:
-                #@                <<invoke external browser>>
-                #@+node:ekr.20061023141204:<<invoke external browser>>
+                #@+<<invoke external browser>>
+                #@+node:ekr.20061023141204: *3* <<invoke external browser>>
                 import webbrowser
 
                 # Mozilla throws a weird exception, then opens the file!
@@ -253,11 +232,10 @@ def onUrl1 (tag,keywords):
                     webbrowser.open(url)
                 except:
                     pass
-                #@-node:ekr.20061023141204:<<invoke external browser>>
-                #@nl
+                #@-<<invoke external browser>>
         else:
-            #@            <<invoke external browser>>
-            #@+node:ekr.20061023141204:<<invoke external browser>>
+            #@+<<invoke external browser>>
+            #@+node:ekr.20061023141204: *3* <<invoke external browser>>
             import webbrowser
 
             # Mozilla throws a weird exception, then opens the file!
@@ -265,16 +243,14 @@ def onUrl1 (tag,keywords):
                 webbrowser.open(url)
             except:
                 pass
-            #@-node:ekr.20061023141204:<<invoke external browser>>
-            #@nl
+            #@-<<invoke external browser>>
         return True
             # PREVENTS THE EXECUTION OF LEO'S CORE CODE IN
             # Code-->Gui Base classes-->@thin leoFrame.py-->class leoTree-->tree.OnIconDoubleClick (@url)
     except:
         g.es("exception opening " + url)
         g.es_exception()
-#@-node:rogererens.20041021091837:onUrl1
-#@+node:rogererens.20041013084119:onSelect2
+#@+node:rogererens.20041013084119: ** onSelect2
 def onSelect2 (tag,keywords):
 
     """Shows the UNL in the status line whenever a node gets selected."""
@@ -293,8 +269,5 @@ def onSelect2 (tag,keywords):
     # Any suggestions for standardization?
     s = "-->".join(myList)
     c.frame.putStatusLine(s)
-#@nonl
-#@-node:rogererens.20041013084119:onSelect2
 #@-others
-#@-node:rogererens.20041013082304:@thin UNL.py
 #@-leo

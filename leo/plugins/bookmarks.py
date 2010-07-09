@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20070322113635:@thin bookmarks.py
-#@<< docstring >>
-#@+node:tbrown.20070322113635.1:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20070322113635: * @thin bookmarks.py
+#@+<< docstring >>
+#@+node:tbrown.20070322113635.1: ** << docstring >>
 '''
 Below a node with @bookmarks in the title, double-clicking
 any node will attempt to open the url in the first line of
@@ -11,31 +11,25 @@ For lists of bookmarks (including UNLs) this gives a clean
 presentation with no '@url' markup repeated on every line etc.
 
 '''
-#@nonl
-#@-node:tbrown.20070322113635.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.1"
-#@<< version history >>
-#@+node:tbrown.20070322113635.2:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20070322113635.2: ** << version history >>
 #@+at
 # 0.1 -- first release - TNB
-#@-at
-#@nonl
-#@-node:tbrown.20070322113635.2:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:tbrown.20070322113635.3:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:tbrown.20070322113635.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-#@-node:tbrown.20070322113635.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20100128073941.5371:init
+#@+node:ekr.20100128073941.5371: ** init
 def init():
 
     leoPlugins.registerHandler("icondclick1", onDClick1)
@@ -43,8 +37,7 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@-node:ekr.20100128073941.5371:init
-#@+node:tbrown.20070322113635.4:onDClick1
+#@+node:tbrown.20070322113635.4: ** onDClick1
 def onDClick1 (tag,keywords):
 
     c = keywords.get("c")
@@ -64,7 +57,5 @@ def onDClick1 (tag,keywords):
         return 'break'
     else:
         return None
-#@-node:tbrown.20070322113635.4:onDClick1
 #@-others
-#@-node:tbrown.20070322113635:@thin bookmarks.py
 #@-leo

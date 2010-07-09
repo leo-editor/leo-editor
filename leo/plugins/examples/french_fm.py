@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:EKR.20040517080202.3:@thin examples/french_fm.py
+#@+leo-ver=5-thin
+#@+node:EKR.20040517080202.3: * @thin examples/french_fm.py
 #@@first
 
 """traduit les menus en Français"""
@@ -14,7 +14,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 #@+others
-#@+node:EKR.20040517080202.4:onMenu
+#@+node:EKR.20040517080202.4: ** onMenu
 def onMenu (tag,keywords):
     c = keywords.get("c")
     table = (
@@ -168,7 +168,6 @@ def onMenu (tag,keywords):
     # Call the convenience routine to do the work.
     c.frame.menu.setRealMenuNamesFromTable(table)
 
-#@-node:EKR.20040517080202.4:onMenu
 #@-others
 
 if not g.app.unitTesting: # Unpleasant for unit testing.
@@ -178,6 +177,4 @@ if not g.app.unitTesting: # Unpleasant for unit testing.
 
     __version__ = "1.4" # Set version for the plugin handler.
     g.plugin_signon(__name__)
-#@nonl
-#@-node:EKR.20040517080202.3:@thin examples/french_fm.py
 #@-leo

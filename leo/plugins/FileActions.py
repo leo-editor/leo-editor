@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040915105758.13:@thin FileActions.py
-#@<< docstring >>
-#@+node:ekr.20050912180106:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040915105758.13: * @thin FileActions.py
+#@+<< docstring >>
+#@+node:ekr.20050912180106: ** << docstring >>
 r""" A Leo plugin that permits the definition of actions for double-clicking on
 file nodes. Written by Konrad Hinsen <konrad.hinsen@laposte.net> Distributed
 under the same licence as Leo.
@@ -36,16 +36,14 @@ File actions are implemented for @file nodes and all its variants (@file-nosent,
 purely for the purpose of file actions, Leo does not do anything with or to such
 files.
 """
-#@nonl
-#@-node:ekr.20050912180106:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.4"
-#@<< version history >>
-#@+node:ekr.20040915110738:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040915110738: ** << version history >>
 #@@nocolor
 #@+at
 # 
@@ -61,12 +59,9 @@ __version__ = "0.4"
 # 0.4 TL: Double-click does nothing for non @file/@thin etc. nodes.
 # 0.5 TL: Replaced logic for obtaining filename to fix problems with spaces
 #         Fixed problem with @file-ref feature created by 0.4 release
-#@-at
-#@nonl
-#@-node:ekr.20040915110738:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20090317093747.1:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20090317093747.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -74,18 +69,12 @@ import fnmatch
 import os
 import sys
 import tempfile
-#@nonl
-#@-node:ekr.20090317093747.1:<< imports >>
-#@nl
-#@<< define the directives that are handled by this plugin >>
-#@+node:ekr.20040915110738.2:<< define the directives that are handled by this plugin >>
-#@+at 
-#@nonl
-# The @file-ref directive is not used elsewhere by Leo. It is meant to
-# be used for actions on files that are not read or written by Leo at all, 
-# they
+#@-<< imports >>
+#@+<< define the directives that are handled by this plugin >>
+#@+node:ekr.20040915110738.2: ** << define the directives that are handled by this plugin >>
+#@+at The @file-ref directive is not used elsewhere by Leo. It is meant to
+# be used for actions on files that are not read or written by Leo at all, they
 # are just referenced to be possible targets of file actions.
-#@-at
 #@@c
 
 file_directives = [
@@ -95,12 +84,10 @@ file_directives = [
    "@nosent", "@file-nosent", "@nosentinelsfile",
    "@file-ref", "@shadow",
 ]
-#@nonl
-#@-node:ekr.20040915110738.2:<< define the directives that are handled by this plugin >>
-#@nl
+#@-<< define the directives that are handled by this plugin >>
 
 #@+others
-#@+node:ekr.20060108162524:init
+#@+node:ekr.20060108162524: ** init
 def init():
 
     ok = not g.app.unitTesting # Dangerous for unit testing.
@@ -108,9 +95,7 @@ def init():
         leoPlugins.registerHandler("icondclick1", onIconDoubleClick)
         g.plugin_signon(__name__)
     return ok
-#@nonl
-#@-node:ekr.20060108162524:init
-#@+node:ekr.20040915105758.14:onIconDoubleClick
+#@+node:ekr.20040915105758.14: ** onIconDoubleClick
 def onIconDoubleClick(tag, keywords):
 
     c = keywords.get("c")
@@ -140,8 +125,7 @@ def onIconDoubleClick(tag, keywords):
         return None #No action taken - Let other double-click handlers run
 
 
-#@-node:ekr.20040915105758.14:onIconDoubleClick
-#@+node:ekr.20040915105758.15:doFileAction
+#@+node:ekr.20040915105758.15: ** doFileAction
 def doFileAction(filename, c):
 
     p = g.findNodeAnywhere(c,"FileActions")
@@ -162,9 +146,7 @@ def doFileAction(filename, c):
     else:
         g.es("no FileActions node", color='blue')
         return False #TL - Inform onIconDoubleClick that no action was taken
-#@nonl
-#@-node:ekr.20040915105758.15:doFileAction
-#@+node:ekr.20040915105758.16:applyFileAction
+#@+node:ekr.20040915105758.16: ** applyFileAction
 def applyFileAction(p, filename, c):
 
     script = g.getScript(c, p)
@@ -173,15 +155,13 @@ def applyFileAction(p, filename, c):
         file_directory = c.frame.openDirectory
         os.chdir(file_directory)
         script += '\n'
-        #@        << redirect output >>
-        #@+node:ekr.20040915105758.17:<< redirect output >>
+        #@+<< redirect output >>
+        #@+node:ekr.20040915105758.17: *3* << redirect output >>
         if c.config.redirect_execute_script_output_to_log_pane:
 
             g.redirectStdout() # Redirect stdout
             g.redirectStderr() # Redirect stderr
-        #@nonl
-        #@-node:ekr.20040915105758.17:<< redirect output >>
-        #@nl
+        #@-<< redirect output >>
         try:
             namespace = {
                 'c':c, 'g':g,
@@ -189,67 +169,53 @@ def applyFileAction(p, filename, c):
                 'shellScriptInWindow': shellScriptInWindow }
             # exec script in namespace
             exec(script,namespace)
-            #@            << unredirect output >>
-            #@+node:ekr.20040915105758.18:<< unredirect output >>
+            #@+<< unredirect output >>
+            #@+node:ekr.20040915105758.18: *3* << unredirect output >>
             if c.config.redirect_execute_script_output_to_log_pane:
 
                 g.restoreStderr()
                 g.restoreStdout()
-            #@nonl
-            #@-node:ekr.20040915105758.18:<< unredirect output >>
-            #@nl
+            #@-<< unredirect output >>
         except:
-            #@            << unredirect output >>
-            #@+node:ekr.20040915105758.18:<< unredirect output >>
+            #@+<< unredirect output >>
+            #@+node:ekr.20040915105758.18: *3* << unredirect output >>
             if c.config.redirect_execute_script_output_to_log_pane:
 
                 g.restoreStderr()
                 g.restoreStdout()
-            #@nonl
-            #@-node:ekr.20040915105758.18:<< unredirect output >>
-            #@nl
+            #@-<< unredirect output >>
             g.es("exception in FileAction plugin")
             g.es_exception(full=False,c=c)
 
         os.chdir(working_directory)
-#@nonl
-#@-node:ekr.20040915105758.16:applyFileAction
-#@+node:ekr.20040915105758.20:shellScriptInWindow
+#@+node:ekr.20040915105758.20: ** shellScriptInWindow
 def shellScriptInWindow(c,script):
 
     if sys.platform == 'darwin':
-        #@        << write script to temporary MacOS file >>
-        #@+node:ekr.20040915105758.22:<< write script to temporary MacOS file >>
+        #@+<< write script to temporary MacOS file >>
+        #@+node:ekr.20040915105758.22: *3* << write script to temporary MacOS file >>
         handle, path = tempfile.mkstemp(text=True)
         directory = c.frame.openDirectory
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
         os.chmod(path,0x700)
-        #@nonl
-        #@-node:ekr.20040915105758.22:<< write script to temporary MacOS file >>
-        #@nl
+        #@-<< write script to temporary MacOS file >>
         os.system("open -a /Applications/Utilities/Terminal.app " + path)
 
     elif sys.platform == 'win32':
         g.es("shellScriptInWindow not ready for Windows",color='red')
 
     else:
-        #@        << write script to temporary Unix file >>
-        #@+node:ekr.20040915105758.25:<< write script to temporary Unix file >>
+        #@+<< write script to temporary Unix file >>
+        #@+node:ekr.20040915105758.25: *3* << write script to temporary Unix file >>
         handle, path = tempfile.mkstemp(text=True)
         directory = c.frame.openDirectory
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
         os.chmod(path,0x700)
-        #@nonl
-        #@-node:ekr.20040915105758.25:<< write script to temporary Unix file >>
-        #@nl
+        #@-<< write script to temporary Unix file >>
         os.system("xterm -e sh  " + path)
-#@nonl
-#@-node:ekr.20040915105758.20:shellScriptInWindow
 #@-others
-#@nonl
-#@-node:ekr.20040915105758.13:@thin FileActions.py
 #@-leo

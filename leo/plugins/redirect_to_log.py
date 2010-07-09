@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.924:@thin redirect_to_log.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.924: * @thin redirect_to_log.py
 """Send all output to the log pane"""
 
 #@@language python
@@ -19,5 +19,4 @@ def init():
 def onStart (tag,keywords):
     g.redirectStdout() # Redirect stdout
     g.redirectStderr() # Redirect stderr
-#@-node:edream.110203113231.924:@thin redirect_to_log.py
 #@-leo

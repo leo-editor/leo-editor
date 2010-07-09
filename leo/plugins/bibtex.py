@@ -1,8 +1,8 @@
-#@+leo-ver=4-thin
-#@+node:timo.20050213160555:@thin bibtex.py
+#@+leo-ver=5-thin
+#@+node:timo.20050213160555: * @thin bibtex.py
 
-#@<< docstring >>
-#@+node:ekr.20050912175750:<< docstring >>
+#@+<< docstring >>
+#@+node:ekr.20050912175750: ** << docstring >>
 r'''This plugin manages BibTeX files with Leo. Create a bibliographic database by
 putting '@bibtex filename' in a headline. Entries are added as nodes, with
 '@entrytype key' as the headline, and the contents of the entry in body text.
@@ -57,9 +57,7 @@ in the headline. Double-clicking it will read the file 'filename' and parse it
 into a @bibtex tree. No syntax checking is made, 'filename' is expected to be a
 valid BibTeX file.
 '''
-#@nonl
-#@-node:ekr.20050912175750:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -67,8 +65,8 @@ valid BibTeX file.
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 
 __version__ = "0.4" # Set version for the plugin handler.
-#@<< change log >>
-#@+node:timo.20050213160555.2:<<change log>>
+#@+<< change log >>
+#@+node:timo.20050213160555.2: ** <<change log>>
 #@+at 
 # 
 # Change log
@@ -95,22 +93,15 @@ __version__ = "0.4" # Set version for the plugin handler.
 # 0.4
 # ---
 # 
-# - Some changes in writeTreeAsBibTex (better format), added entrytypes in 
-# globals.
+# - Some changes in writeTreeAsBibTex (better format), added entrytypes in globals.
 # - Greatly simplified and enhanced the performance of readBibTexFileIntoTree.
-# - Fixed parsing of files in readBibTexFileIntoTree: they are now split at 
-# '\n@' (whitespace stripped) instead of '@', so that fields may contain '@' 
-# (like a 'mailto' field most likely would).
-# - Changed <<write template>> to move cursor to the entry point of first 
-# field (16 columns right).
+# - Fixed parsing of files in readBibTexFileIntoTree: they are now split at '\n@' (whitespace stripped) instead of '@', so that fields may contain '@' (like a 'mailto' field most likely would).
+# - Changed <<write template>> to move cursor to the entry point of first field (16 columns right).
 # - Bugfix: templates now include commas after each field
 #   Timo Honkasalo 2005/03/02
-#@-at
-#@nonl
-#@-node:timo.20050213160555.2:<<change log>>
-#@nl
-#@<< imports >>
-#@+node:timo.20050213193129:<<imports>>
+#@-<< change log >>
+#@+<< imports >>
+#@+node:timo.20050213193129: ** <<imports>>
 
 # import pdb ; pdb.set_trace()
 
@@ -118,11 +109,9 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 # import os
-#@nonl
-#@-node:timo.20050213193129:<<imports>>
-#@nl
-#@<< globals >>
-#@+node:timo.20050215183130:<<globals>>
+#@-<< imports >>
+#@+<< globals >>
+#@+node:timo.20050215183130: ** <<globals>>
 templates = {'@article':'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
              '@book':'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
              '@booklet':'title        = {}',
@@ -141,22 +130,16 @@ templates = {'@article':'author       = {},\ntitle        = {},\njournal      = 
 
 entrytypes = list(templates.keys())
 entrytypes.append('@string') 
-#@nonl
-#@-node:timo.20050215183130:<<globals>>
-#@nl
-#@<< to do >>
-#@+node:timo.20050213185039:<<to do>>
-#@+at 
-#@nonl
-# To do list (in approximate order of importance):
+#@-<< globals >>
+#@+<< to do >>
+#@+node:timo.20050213185039: ** <<to do>>
+#@+at To do list (in approximate order of importance):
 # 
-# - Translating between non-ascii characters and LaTeX code when 
-# reading/writing
+# - Translating between non-ascii characters and LaTeX code when reading/writing
 # - Checking for duplicate keys
 # - Checking for missing commas when writing the file
 # - Customisable config file (for defining the templates)
-# - Easy access to the tree as a Python object for scripting (maybe 
-# Pybliographer)
+# - Easy access to the tree as a Python object for scripting (maybe Pybliographer)
 # - Import/write in BibTeXml format
 # - Sorting by chosen fields
 # - Import/write in other bibliographic formats
@@ -164,12 +147,10 @@ entrytypes.append('@string')
 # - Syntax checking
 # - Syntax highligting
 # 
-#@-at
-#@-node:timo.20050213185039:<<to do>>
-#@nl
+#@-<< to do >>
 
 #@+others
-#@+node:ekr.20100128073941.5370:init
+#@+node:ekr.20100128073941.5370: ** init
 def init():
 
     ok = not g.app.unitTesting
@@ -180,9 +161,7 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20100128073941.5370:init
-#@+node:timo.20050213160555.3:onIconDoubleClick
+#@+node:timo.20050213160555.3: ** onIconDoubleClick
 #
 # this does not check for proper filename syntax.
 # path is the current dir, or the place @folder points to
@@ -200,19 +179,17 @@ def onIconDoubleClick(tag,keywords):
     if g.match_word(h,0,"@bibtex"):
         fname = h[8:]
         if v.hasChildren():
-            #@            << write bibtex file >>
-            #@+node:timo.20050213160555.6:<< write bibtex file >>
+            #@+<< write bibtex file >>
+            #@+node:timo.20050213160555.6: *3* << write bibtex file >>
             bibFile = file(fname,'w')
             writeTreeAsBibTex(bibFile, v, c)
 
             bibFile.close()
             g.es('written: '+str(fname))
-            #@nonl
-            #@-node:timo.20050213160555.6:<< write bibtex file >>
-            #@nl
+            #@-<< write bibtex file >>
         else:
-            #@            << read bibtex file >>
-            #@+node:timo.20050214174623:<< read bibtex file >>
+            #@+<< read bibtex file >>
+            #@+node:timo.20050214174623: *3* << read bibtex file >>
             g.es('reading: ' + str(fname))
             try: 
                 bibFile = file(fname,'r')
@@ -222,12 +199,10 @@ def onIconDoubleClick(tag,keywords):
             readBibTexFileIntoTree(bibFile, c)
 
             bibFile.close()
-            #@-node:timo.20050214174623:<< read bibtex file >>
-            #@nl
+            #@-<< read bibtex file >>
 
 
-#@-node:timo.20050213160555.3:onIconDoubleClick
-#@+node:timo.20050215222802:onHeadKey
+#@+node:timo.20050215222802: ** onHeadKey
 def onHeadKey(tag,keywords):
     """Write template for the entry in body pane.
 
@@ -241,17 +216,14 @@ def onHeadKey(tag,keywords):
     if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.b):
         for p in v.parents():
             if p.h[:8] == '@bibtex ':
-                #@                << write template >>
-                #@+node:timo.20050215232157:<< write template >>
+                #@+<< write template >>
+                #@+node:timo.20050215232157: *3* << write template >>
                 c.setBodyString(v,templates[h[:h.find(' ')]])
                 c.frame.body.setInsertPoint('1.16')
                 return
-                #@nonl
-                #@-node:timo.20050215232157:<< write template >>
-                #@nl
+                #@-<< write template >>
 
-#@-node:timo.20050215222802:onHeadKey
-#@+node:timo.20050213160555.7:writeTreeAsBibTex
+#@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(bibFile, vnode, c):
     """Write the tree under vnode to the file bibFile"""
 
@@ -283,8 +255,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     if strings:
         bibFile.write(strings + '\n\n')
     bibFile.write(entries)  
-#@-node:timo.20050213160555.7:writeTreeAsBibTex
-#@+node:timo.20050214174623.1:readBibTexFileIntoTree
+#@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(bibFile, c):
     """Read BibTeX file and parse it into @bibtex tree
 
@@ -320,8 +291,6 @@ def readBibTexFileIntoTree(bibFile, c):
 
 
 
-#@-node:timo.20050214174623.1:readBibTexFileIntoTree
 #@-others
 
-#@-node:timo.20050213160555:@thin bibtex.py
 #@-leo

@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ktenney.20041211072654.1:@thin at_view.py
-#@<< docstring >>
-#@+node:ekr.20041231104454:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ktenney.20041211072654.1: * @thin at_view.py
+#@+<< docstring >>
+#@+node:ekr.20041231104454: ** << docstring >>
 '''A plugin that supports ``@clip``, ``@view`` and ``@strip`` nodes.
 
 - Selecting a headline containing ``@clip`` appends the contents of the clipboard to
@@ -15,17 +15,15 @@
 
 This plugin also accumulates the effect of all ``@path`` nodes.
 '''
-#@nonl
-#@-node:ekr.20041231104454:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
 
 __version__ = "0.7"
-#@<< version history >>
-#@+node:ktenney.20041211072654.3:<< version history >>
+#@+<< version history >>
+#@+node:ktenney.20041211072654.3: ** << version history >>
 #@+at
 # 
 # 0.1 KT 2004/12/07 begin converting @button to plugin
@@ -49,23 +47,18 @@ __version__ = "0.7"
 #     - Added better error message if can't load extensions.
 # 0.7 EKR:
 #     - Simplified code, fixed bugs and improved error messages.
-#@-at
-#@nonl
-#@-node:ktenney.20041211072654.3:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ktenney.20041211072654.4:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ktenney.20041211072654.4: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 path           = g.importExtension('path',          pluginName=__name__,verbose=True)
 win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=True)
-#@nonl
-#@-node:ktenney.20041211072654.4:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ktenney.20041211072654.6:onCreate
+#@+node:ktenney.20041211072654.6: ** onCreate
 def onCreate(tag, keywords):
 
     c = keywords.get("c")
@@ -76,22 +69,18 @@ def onCreate(tag, keywords):
     leoPlugins.registerHandler("icondclick2", myView.icondclick2)
     leoPlugins.registerHandler("idle", myView.idle)
     g.plugin_signon(__name__)
-#@nonl
-#@-node:ktenney.20041211072654.6:onCreate
-#@+node:ktenney.20041211072654.7:class View
+#@+node:ktenney.20041211072654.7: ** class View
 class View:
 
     '''A class to support @view, @strip and @clip nodes.'''
 
-    #@    @+others
-    #@+node:ktenney.20041211072654.8:__init__
+    #@+others
+    #@+node:ktenney.20041211072654.8: *3* __init__
     def __init__ (self,c):
 
         self.c = c
         # g.trace('View')
-    #@nonl
-    #@-node:ktenney.20041211072654.8:__init__
-    #@+node:ktenney.20041211072654.9:icondclick2
+    #@+node:ktenney.20041211072654.9: *3* icondclick2
     def icondclick2 (self, tag, keywords):
 
         self.current = self.c.p
@@ -104,9 +93,7 @@ class View:
 
         if hs.startswith('@strip'):
             self.strip()
-    #@nonl
-    #@-node:ktenney.20041211072654.9:icondclick2
-    #@+node:ktenney.20041211203715:idle
+    #@+node:ktenney.20041211203715: *3* idle
     def idle(self, tag, keywords):
 
         try:
@@ -118,9 +105,7 @@ class View:
         s = self.current.h
         if s.startswith("@clip"):
             self.clip()
-    #@nonl
-    #@-node:ktenney.20041211203715:idle
-    #@+node:ktenney.20041211072654.10:view
+    #@+node:ktenney.20041211072654.10: *3* view
     def view(self):
 
         '''Place the contents of a file in the body pane
@@ -143,9 +128,7 @@ class View:
                 self.processDirectory(currentPath, self.current)
         else:
             g.es('path does not exist: %s' % (str(currentPath)),color='blue')
-    #@nonl
-    #@-node:ktenney.20041211072654.10:view
-    #@+node:ktenney.20041212102137:clip
+    #@+node:ktenney.20041212102137: *3* clip
     def clip(self):
 
         '''Watch the clipboard, and copy new items to the body.'''
@@ -170,9 +153,7 @@ class View:
             g.es('clipboard now holds %s' % clipboard)
             body.insert(0, clipboard)
             c.setBodyText(self.current,divider.join(body))
-    #@nonl
-    #@-node:ktenney.20041212102137:clip
-    #@+node:ktenney.20041211072654.15:strip
+    #@+node:ktenney.20041211072654.15: *3* strip
     def strip(self):
 
         '''Display a file with all sentinel lines removed'''
@@ -202,9 +183,7 @@ class View:
             c.setBodyText(self.current,''.join(lines))
         else:
             g.es('path does not exist: %s' % (str(currentPath)),color='blue')
-    #@nonl
-    #@-node:ktenney.20041211072654.15:strip
-    #@+node:ktenney.20041211072654.11:getCurrentPath
+    #@+node:ktenney.20041211072654.11: *3* getCurrentPath
     def getCurrentPath(self):
 
         """ traverse the current tree and build a path
@@ -226,9 +205,7 @@ class View:
                 currentPath = currentPath / path.path(pathFragments.pop())
 
         return currentPath.normpath()
-    #@nonl
-    #@-node:ktenney.20041211072654.11:getCurrentPath
-    #@+node:ktenney.20041211072654.12:getPathFragment
+    #@+node:ktenney.20041211072654.12: *3* getPathFragment
     def getPathFragment (self,p):
 
         """
@@ -244,9 +221,7 @@ class View:
                 return fragment
 
         return ''
-    #@nonl
-    #@-node:ktenney.20041211072654.12:getPathFragment
-    #@+node:ktenney.20041211072654.13:processFile
+    #@+node:ktenney.20041211072654.13: *3* processFile
     def processFile(self, path, node):
 
         """parameters are a path object and a node.
@@ -256,9 +231,7 @@ class View:
         g.trace(node)
 
         self.c.setBodyText(node,''.join(path.lines()))
-    #@nonl
-    #@-node:ktenney.20041211072654.13:processFile
-    #@+node:ktenney.20041211072654.14:processDirectory
+    #@+node:ktenney.20041211072654.14: *3* processDirectory
     def processDirectory(self, path, node):
 
         """
@@ -281,10 +254,7 @@ class View:
         for file in path.dirs():
             child = node.insertAsLastChild()
             c.setHeadString(child,'@view %s' % file.name)
-    #@-node:ktenney.20041211072654.14:processDirectory
     #@-others
-#@nonl
-#@-node:ktenney.20041211072654.7:class View
 #@-others
 
 if path and win32clipboard: # Ok for unit testing.
@@ -292,6 +262,4 @@ if path and win32clipboard: # Ok for unit testing.
 elif not g.app.unitTesting:
     s = 'at_view plugin not loaded: win32Clipboard not present.'
     g.es_print(s)
-#@nonl
-#@-node:ktenney.20041211072654.1:@thin at_view.py
 #@-leo

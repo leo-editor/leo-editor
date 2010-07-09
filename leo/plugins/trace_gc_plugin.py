@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.735:@thin trace_gc_plugin.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.735: * @thin trace_gc_plugin.py
 """Trace changes to Leo's objects at idle time"""
 
 #@@language python
@@ -14,7 +14,7 @@ g.debugGC = True # Force debugging on.
 gcCount = 0
 
 #@+others
-#@+node:ekr.20100128091412.5386:init
+#@+node:ekr.20100128091412.5386: ** init
 def init():
 
     ok = not g.app.unitTesting # Not for unit testing.
@@ -31,14 +31,11 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20100128091412.5386:init
-#@+node:ekr.20050111084900:printIdleRefs
+#@+node:ekr.20050111084900: ** printIdleRefs
 def printIdleRefs(tag,keywords):
 
     g.printGcRefs(verbose=False)
-#@nonl
-#@-node:ekr.20050111084900:printIdleRefs
-#@+node:ekr.20050111084900.1:printIdleGC
+#@+node:ekr.20050111084900.1: ** printIdleGC
 def printIdleGC(tag,keywords):
 
     # Calling printGc is too expensive to do on every idle call.
@@ -50,8 +47,5 @@ def printIdleGC(tag,keywords):
             g.printGc(tag,onlyPrintChanges=True)
     else:
         g.printGc(tag,onlyPrintChanges=False)
-#@nonl
-#@-node:ekr.20050111084900.1:printIdleGC
 #@-others
-#@-node:edream.110203113231.735:@thin trace_gc_plugin.py
 #@-leo

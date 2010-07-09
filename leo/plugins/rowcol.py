@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040108095351:@thin rowcol.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040108095351: * @thin rowcol.py
 """Add row/column indicators to the toolbar."""
 
 #@@language python
@@ -8,33 +8,27 @@
 __plugin_name__ = "Row/Column indicators"
 __version__ = "0.4"
 
-#@<< imports >>
-#@+node:ekr.20040908094021.2:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20040908094021.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@nonl
-#@-node:ekr.20040908094021.2:<< imports >>
-#@nl
-#@<< version history >>
-#@+node:ekr.20041120114651:<< version history >>
+#@-<< imports >>
+#@+<< version history >>
+#@+node:ekr.20041120114651: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.1 Initial version.
 # 
 # 0.2 EKR: Make sure this works properly with multiple windows.
-# 0.3 EKR: Removed call to g.top.  We now test whether c is valid using 
-# hasattr(c,'frame')
+# 0.3 EKR: Removed call to g.top.  We now test whether c is valid using hasattr(c,'frame')
 # 0.4 EKR: set __plugin_name__ rather than __name__
-#@-at
-#@nonl
-#@-node:ekr.20041120114651:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20041120114651.1:onCreate
+#@+node:ekr.20041120114651.1: ** onCreate
 def onCreate (tag,keywords):
 
     c = keywords.get("c")
@@ -42,22 +36,18 @@ def onCreate (tag,keywords):
         rowCol = rowColClass(c)
         rowCol.addWidgets()
         leoPlugins.registerHandler("idle",rowCol.update)
-#@nonl
-#@-node:ekr.20041120114651.1:onCreate
-#@+node:ekr.20040108095351.1:class rowColClass
+#@+node:ekr.20040108095351.1: ** class rowColClass
 class rowColClass:
 
     """Class that puts row/column indicators in the status bar."""
 
-    #@    @+others
-    #@+node:ekr.20040108100040:__init__
+    #@+others
+    #@+node:ekr.20040108100040: *3* __init__
     def __init__ (self,c):
 
         self.c = c
         self.lastRow,self.lastCol = -1,-1
-    #@nonl
-    #@-node:ekr.20040108100040:__init__
-    #@+node:ekr.20040108095351.2:addWidgets
+    #@+node:ekr.20040108095351.2: *3* addWidgets
     def addWidgets (self):
 
         c = self.c
@@ -75,9 +65,7 @@ class rowColClass:
 
         # Update the row/column indicators immediately to reserve a place.
         self.update()
-    #@nonl
-    #@-node:ekr.20040108095351.2:addWidgets
-    #@+node:ekr.20040108095351.4:update
+    #@+node:ekr.20040108095351.4: *3* update
     def update (self,*args,**keys):
 
         c = self.c
@@ -105,11 +93,7 @@ class rowColClass:
 
         if 0: # Done in idle handler.
             self.label.after(500,self.update)
-    #@nonl
-    #@-node:ekr.20040108095351.4:update
     #@-others
-#@nonl
-#@-node:ekr.20040108095351.1:class rowColClass
 #@-others
 
 if Tk: # OK for unit testing.
@@ -120,6 +104,4 @@ if Tk: # OK for unit testing.
     if g.app.gui.guiName() == "tkinter":
         leoPlugins.registerHandler("after-create-leo-frame",onCreate)
         g.plugin_signon("rowcol")
-#@nonl
-#@-node:ekr.20040108095351:@thin rowcol.py
 #@-leo

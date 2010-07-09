@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.738:@thin trace_tags.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.738: * @thin trace_tags.py
 '''Trace most common hooks, but not key, drag or idle hooks.'''
 
 #@@language python
@@ -9,8 +9,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.3" # Set version for the plugin handler.
-#@<< version history >>
-#@+node:ekr.20050303073056:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050303073056: ** << version history >>
 #@@killcolor
 
 #@+at
@@ -18,15 +18,12 @@ __version__ = "1.3" # Set version for the plugin handler.
 # 1.3 EKR:
 #     - Don't trace drawing events.
 #     - Added init function.
-#@-at
-#@nonl
-#@-node:ekr.20050303073056:<< version history >>
-#@nl
+#@-<< version history >>
 
 tagCount = 0
 
 #@+others
-#@+node:ekr.20050303073056.1:init
+#@+node:ekr.20050303073056.1: ** init
 def init ():
 
     ok = not g.app.unitTesting
@@ -36,9 +33,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050303073056.1:init
-#@+node:edream.110203113231.739:trace_tags
+#@+node:edream.110203113231.739: ** trace_tags
 def trace_tags (tag,keywords):
 
     global tagCount ; brief = True
@@ -79,9 +74,5 @@ def trace_tags (tag,keywords):
         for key,value in keys:
             g.pr(tagCount,tag,key,value)
         g.pr('')
-#@nonl
-#@-node:edream.110203113231.739:trace_tags
 #@-others
-#@nonl
-#@-node:edream.110203113231.738:@thin trace_tags.py
 #@-leo

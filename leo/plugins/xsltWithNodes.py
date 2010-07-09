@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041010095009:@thin xsltWithNodes.py
-#@<< docstring >>
-#@+node:ekr.20050226120104:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041010095009: * @thin xsltWithNodes.py
+#@+<< docstring >>
+#@+node:ekr.20050226120104: ** << docstring >>
 """Adds XSLT-Node Command submen item to the Outline menu.
 
 This menu contains the following items:
@@ -16,15 +16,13 @@ This menu contains the following items:
 
 Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 """
-#@nonl
-#@-node:ekr.20050226120104:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:mork.20041025113509:<< imports >>
+#@+<< imports >>
+#@+node:mork.20041025113509: ** << imports >>
 import leo.core.leoGlobals as g
 # import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
@@ -47,15 +45,13 @@ except ImportError:
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import weakref
-#@-node:mork.20041025113509:<< imports >>
-#@nl
-#@<<parser problems>>
-#@+node:mork.20041024091024:<<parser problems>>
+#@-<< imports >>
+#@+<<parser problems>>
+#@+node:mork.20041024091024: ** <<parser problems>>
 #@@killcolor
 
 #@+at 
-# 1. Having space before the start of the document caused it not to work.  I 
-# fixed this by striping the whitespace from the start
+# 1. Having space before the start of the document caused it not to work.  I fixed this by striping the whitespace from the start
 # and end of the data at xslt time.
 # 
 # 2. having a @ right before a tag causes it to not process.
@@ -64,24 +60,17 @@ import weakref
 #     but not:
 #     @</end>
 # 
-#     I dont know at this point if its just illegal xml, or its a problem in 
-# the parser. ??
-#@-at
-#@nonl
-#@-node:mork.20041024091024:<<parser problems>>
-#@nl
-#@<<future directions>>
-#@+node:mork.20041025101943:<<future directions>>
+#     I dont know at this point if its just illegal xml, or its a problem in the parser. ??
+#@-<<parser problems>>
+#@+<<future directions>>
+#@+node:mork.20041025101943: ** <<future directions>>
 #@+at
 # 1. Add more XSLT boilerplate insertions.( done in .3 )
 # 2. Maybe add a well-formedness check. (done in .3, test with minidom )
-#@-at
-#@nonl
-#@-node:mork.20041025101943:<<future directions>>
-#@nl
+#@-<<future directions>>
 __version__ = '0.6'
-#@<< version history >>
-#@+node:mork.20041025113211:<< version history >>
+#@+<< version history >>
+#@+node:mork.20041025113211: ** << version history >>
 #@@killcolor
 
 #@+at
@@ -90,8 +79,7 @@ __version__ = '0.6'
 # 
 # 0.2 EKR: Converted to outline.
 # 
-# 0.3: Added more XSLT boilerplate. Added Test with Minidom Discovered parser 
-# problem(?).
+# 0.3: Added more XSLT boilerplate. Added Test with Minidom Discovered parser problem(?).
 # 
 # 0.4 EKR:
 #     - Added init function.
@@ -101,13 +89,10 @@ __version__ = '0.6'
 #     - Use keywords.get('c') instead of g.top().
 # 0.6 EKR:
 #     - Removed g.top from example code.
-#@-at
-#@nonl
-#@-node:mork.20041025113211:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20050226120104.1:init
+#@+node:ekr.20050226120104.1: ** init
 def init():
 
     ok = Ft and Tk
@@ -123,9 +108,7 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050226120104.1:init
-#@+node:mork.20041025115037:xslt elements
+#@+node:mork.20041025115037: ** xslt elements
 #This dict contains elements that go into a stylesheet
 xslt = {
 
@@ -166,9 +149,7 @@ xslt = {
 'with-param': "<xsl:with-param name=''> </xsl:with-param>",
 
 }
-#@nonl
-#@-node:mork.20041025115037:xslt elements
-#@+node:mork.20041010095202:setStyleNode
+#@+node:mork.20041010095202: ** setStyleNode
 stylenodes = weakref.WeakKeyDictionary()
 
 def setStyleNode( c ):
@@ -177,8 +158,7 @@ def setStyleNode( c ):
     stylenodes[ c ] = position
 
 
-#@-node:mork.20041010095202:setStyleNode
-#@+node:mork.20041010095202.1:processDocumentNode
+#@+node:mork.20041010095202.1: ** processDocumentNode
 def processDocumentNode( c ):
     '''this executes the stylesheet node against the current node'''
     try:
@@ -213,9 +193,7 @@ def processDocumentNode( c ):
     except Exception as x:
         g.es( 'exception ' + str( x ))
     c.redraw()
-#@nonl
-#@-node:mork.20041010095202.1:processDocumentNode
-#@+node:mork.20041025121608:addXSLTNode
+#@+node:mork.20041025121608: ** addXSLTNode
 def addXSLTNode (c):
     '''creates a node and inserts some xslt boilerplate'''
     pos = c.p
@@ -233,8 +211,7 @@ def addXSLTNode (c):
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
     c.redraw()
-#@-node:mork.20041025121608:addXSLTNode
-#@+node:mork.20041010110121:addXSLTElement
+#@+node:mork.20041010110121: ** addXSLTElement
 def addXSLTElement( c , element):
     '''adds some xslt to the text node'''
     bodyCtrl = c.frame.body.bodyCtrl
@@ -242,8 +219,7 @@ def addXSLTElement( c , element):
     bodyCtrl.event_generate( '<Key>' )
     bodyCtrl.update_idletasks()
 
-#@-node:mork.20041010110121:addXSLTElement
-#@+node:mork.20041025113021:getString
+#@+node:mork.20041025113021: ** getString
 def getString (c):
     '''This def turns a node into a string based off of Leo's file-nosent write logic'''
     at = c.atFileCommands
@@ -267,9 +243,7 @@ def getString (c):
 
     cS.seek(0)
     return cleanString( cS.getvalue() )
-#@nonl
-#@-node:mork.20041025113021:getString
-#@+node:mork.20041025120706:doMinidomTest
+#@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest( c ):
     '''This def performs a simple test on a node.  Can the data be successfully parsed by minidom or not.  Results are output to the log'''
     s = getString( c )
@@ -279,8 +253,7 @@ def doMinidomTest( c ):
         g.es( "Minidom could not parse node because of:\n %s" % x, color='red' )
         return
     g.es( "Minidom could parse the node", color='blue'  )
-#@-node:mork.20041025120706:doMinidomTest
-#@+node:mork.20041025090303:cleanString
+#@+node:mork.20041025090303: ** cleanString
 def cleanString( data ):
     '''This method cleans a string up for the processor.  It currently just removes
        leading and trailing whitespace'''
@@ -288,8 +261,7 @@ def cleanString( data ):
     val = data.strip()
     return val
 
-#@-node:mork.20041025090303:cleanString
-#@+node:mork.20041010125444:jumpToStyleNode
+#@+node:mork.20041010125444: ** jumpToStyleNode
 def jumpToStyleNode( c ):
     '''Simple method that jumps us to the current XSLT node'''
     if not styleNodeSelected( c ): return
@@ -298,8 +270,7 @@ def jumpToStyleNode( c ):
     c.redraw()
 
 
-#@-node:mork.20041010125444:jumpToStyleNode
-#@+node:mork.20041010125444.1:styleNodeSelected
+#@+node:mork.20041010125444.1: ** styleNodeSelected
 def styleNodeSelected( c ):
     '''Determines if a XSLT Style node has not been selected'''
     if not stylenodes.has_key( c ):
@@ -308,8 +279,7 @@ def styleNodeSelected( c ):
     return True
 
 
-#@-node:mork.20041010125444.1:styleNodeSelected
-#@+node:mork.20041010100633:addMenu
+#@+node:mork.20041010100633: ** addMenu
 def addMenu( tag, keywords ):
     c = keywords.get('c')
     if not c: return
@@ -333,8 +303,7 @@ def addMenu( tag, keywords ):
 
 
 
-#@-node:mork.20041010100633:addMenu
-#@+node:mork.20041025100716:examples/tests
+#@+node:mork.20041025100716: ** examples/tests
 #@+at
 # table.leo contains the xml.  xslt is in the other node.
 # 
@@ -343,12 +312,11 @@ def addMenu( tag, keywords ):
 # Process it against the table.leo node.
 # 
 # 
-#@-at
 #@@c
 
 r'''
 #@+others
-#@+node:mork.20041025100851:table.leo
+#@+node:mork.20041025100851: *3* table.leo
 
 <?xml version="1.0" encoding="UTF-8"?>
 <leo_file>
@@ -490,7 +458,7 @@ def addMenu( tag, keywords ):
 
     arrays = []
 
-    #@    @+others
+    #@+others
     #@-others
 </t>
 <t tx="mork.20041015163641.1">def __init__( self, c ):
@@ -640,8 +608,7 @@ def addMenu( tag, keywords ):
 </t>
 </tnodes>
 </leo_file>
-#@-node:mork.20041025100851:table.leo
-#@+node:mork.20041025100851.1:xslt to turn leo file into html
+#@+node:mork.20041025100851.1: *3* xslt to turn leo file into html
 <?xml version="1.0"?>
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method = 'xml' />
@@ -696,12 +663,7 @@ def addMenu( tag, keywords ):
 
 
 </xsl:transform>
-#@-node:mork.20041025100851.1:xslt to turn leo file into html
 #@-others
 '''
-#@nonl
-#@-node:mork.20041025100716:examples/tests
 #@-others
-#@nonl
-#@-node:mork.20041010095009:@thin xsltWithNodes.py
 #@-leo

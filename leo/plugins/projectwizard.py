@@ -1,29 +1,25 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20090622063842.5264:@thin projectwizard.py
-#@<< docstring >>
-#@+node:ville.20090614224528.8136:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20090622063842.5264: * @thin projectwizard.py
+#@+<< docstring >>
+#@+node:ville.20090614224528.8136: ** << docstring >>
 ''' Simple @auto project wizard
 
 Open a file dialog and recursively creates @auto & @path nodes from the path where selected file is 
 (the selected file itself doesn't matter)
 '''
-#@-node:ville.20090614224528.8136:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:ville.20090614224528.8137:<< version history >>
+#@+<< version history >>
+#@+node:ville.20090614224528.8137: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.1 First released version (VMV)
-#@-at
-#@nonl
-#@-node:ville.20090614224528.8137:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:ville.20090614224528.8138:<< imports >>
+#@+<< imports >>
+#@+node:ville.20090614224528.8138: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -32,12 +28,10 @@ g.assertUi('qt')
 from PyQt4 import QtCore
 
 # Whatever other imports your plugins uses.
-#@nonl
-#@-node:ville.20090614224528.8138:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20090614224528.8139:init
+#@+node:ville.20090614224528.8139: ** init
 def init ():
 
     ok = True # This might depend on imports, etc.
@@ -47,8 +41,7 @@ def init ():
 
     install_contextmenu_handlers()
     return ok
-#@-node:ville.20090614224528.8139:init
-#@+node:ville.20090614224528.8141:auto_walk() and g.command('projectwizard')
+#@+node:ville.20090614224528.8141: ** auto_walk() and g.command('projectwizard')
 def auto_walk(c, directory, parent=None, isroot=True):
     """ source: http://leo.zwiki.org/CreateShadows
 
@@ -130,8 +123,7 @@ def project_wizard(event):
 
 
 #project_wizard()    
-#@-node:ville.20090614224528.8141:auto_walk() and g.command('projectwizard')
-#@+node:ville.20090910010217.5230:context menu import
+#@+node:ville.20090910010217.5230: ** context menu import
 def rclick_path_importfile(c,p,menu):
     if not p.h.startswith('@path'):
         return
@@ -156,8 +148,5 @@ def install_contextmenu_handlers():
     """ Install all the wanted handlers (menu creators) """
     hnd = [rclick_path_importfile]
     g.tree_popup_handlers.extend(hnd)
-#@-node:ville.20090910010217.5230:context menu import
 #@-others
-#@nonl
-#@-node:ekr.20090622063842.5264:@thin projectwizard.py
 #@-leo

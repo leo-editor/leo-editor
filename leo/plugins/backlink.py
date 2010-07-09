@@ -1,9 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20100225092634.1407:@thin backlink.py
+#@+leo-ver=5-thin
+#@+node:tbrown.20081223111325.3: * @thin backlink.py
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:ekr.20090616105756.3939:backlink declarations
+#@+node:ekr.20090616105756.3939: ** backlink declarations
 '''Backlink - allow arbitrary links between nodes
 '''
 
@@ -262,8 +262,7 @@ elif g.app.gui.guiName() == "qt":
         def enableDelete(self, enable):
             self.UI.deleteBtn.setChecked(False)
             self.UI.deleteBtn.setEnabled(enable)
-#@-node:ekr.20090616105756.3939:backlink declarations
-#@+node:ekr.20090616105756.3940:init
+#@+node:ekr.20090616105756.3940: ** init
 def init ():
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
@@ -271,20 +270,18 @@ def init ():
     g.plugin_signon(__name__)
 
     return True
-#@-node:ekr.20090616105756.3940:init
-#@+node:ekr.20090616105756.3941:onCreate
+#@+node:ekr.20090616105756.3941: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
     if not c: return
 
     backlinkController(c)
-#@-node:ekr.20090616105756.3941:onCreate
-#@+node:ekr.20090616105756.3942:class backlinkController
+#@+node:ekr.20090616105756.3942: ** class backlinkController
 class backlinkController(object):
     """Display and edit links in leo trees"""
-    #@    @+others
-    #@+node:ekr.20090616105756.3943:__init__
+    #@+others
+    #@+node:ekr.20090616105756.3943: *3* __init__
 
     def __init__ (self,c):
 
@@ -304,8 +301,7 @@ class backlinkController(object):
         leoPlugins.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
-    #@-node:ekr.20090616105756.3943:__init__
-    #@+node:tbrown.20091005145931.5227:fixIDs
+    #@+node:tbrown.20091005145931.5227: *3* fixIDs
     def fixIDs(self, c):
 
         update = {}
@@ -333,8 +329,7 @@ class backlinkController(object):
                     v.u['_bklnk']['links'].extend([
                         (i[0], update[i[1]]) for i in v.u['_bklnk']['links']
                         if i[1] in update])
-    #@-node:tbrown.20091005145931.5227:fixIDs
-    #@+node:ekr.20090616105756.3944:deleteLink
+    #@+node:ekr.20090616105756.3944: *3* deleteLink
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
@@ -365,8 +360,7 @@ class backlinkController(object):
         if gcc:
             gcc.update()
 
-    #@-node:ekr.20090616105756.3944:deleteLink
-    #@+node:ekr.20090616105756.3945:deleteSet
+    #@+node:ekr.20090616105756.3945: *3* deleteSet
     def deleteSet(self, enabled):
         """UI informing us that delete mode has been set to value of 'enabled'"""
 
@@ -375,8 +369,7 @@ class backlinkController(object):
             self.showMessage('Click a link to DELETE it', color='red')
         else:
             self.showMessage('Click a link to follow it')
-    #@-node:ekr.20090616105756.3945:deleteSet
-    #@+node:ekr.20090616105756.3946:initBacklink
+    #@+node:ekr.20090616105756.3946: *3* initBacklink
     def initBacklink(self, v):
         """set up a vnode to support links"""
 
@@ -387,8 +380,7 @@ class backlinkController(object):
             v.u['_bklnk'].update({'links':[]})
 
         self.vnode[v.gnx] = v
-    #@-node:ekr.20090616105756.3946:initBacklink
-    #@+node:ekr.20090616105756.3947:initIvars
+    #@+node:ekr.20090616105756.3947: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and loadLinks(Int)"""
 
@@ -398,8 +390,7 @@ class backlinkController(object):
         self.vnode = {}
         #X self.positions = {}
         self.messageUsed = False
-    #@-node:ekr.20090616105756.3947:initIvars
-    #@+node:ekr.20090616105756.3948:linkAction
+    #@+node:ekr.20090616105756.3948: *3* linkAction
     def linkAction(self, dir_, newChild=False):
         """link to/from current position from/to mark node"""
         if not self.linkMark or not self.c.positionExists(self.linkMark):
@@ -421,15 +412,13 @@ class backlinkController(object):
 
         self.updateTabInt()
         self.c.redraw()
-    #@-node:ekr.20090616105756.3948:linkAction
-    #@+node:ekr.20090616105756.3949:link
+    #@+node:ekr.20090616105756.3949: *3* link
     def link(self, from_, to, type_='directed'):
         """make a link"""
 
         self.vlink(from_.v, to.v, type_=type_)
 
-    #@-node:ekr.20090616105756.3949:link
-    #@+node:ekr.20090616105756.3950:vlink
+    #@+node:ekr.20090616105756.3950: *3* vlink
     def vlink(self, v0, v1, type_='directed'):
         self.initBacklink(v0)
         self.initBacklink(v1)
@@ -451,8 +440,7 @@ class backlinkController(object):
         if gcc:
             gcc.update()
 
-    #@-node:ekr.20090616105756.3950:vlink
-    #@+node:ekr.20090616105756.3951:linkClicked
+    #@+node:ekr.20090616105756.3951: *3* linkClicked
     def linkClicked(self, selected):
         """UI informs us that link number 'selected' (zero based) was clicked"""
 
@@ -468,8 +456,7 @@ class backlinkController(object):
                 self.dests[selected][0]
             )
             self.updateTabInt()
-    #@-node:ekr.20090616105756.3951:linkClicked
-    #@+node:ekr.20090616105756.3952:linkDst
+    #@+node:ekr.20090616105756.3952: *3* linkDst
     def linkDst(self):
         """link from current position to dest. node"""
         if not self.linkDestination or not self.c.positionExists(self.linkDestination):
@@ -479,8 +466,7 @@ class backlinkController(object):
         self.link(self.c.p, self.linkDestination)
 
         self.updateTabInt()
-    #@-node:ekr.20090616105756.3952:linkDst
-    #@+node:ekr.20090616105756.3953:linksFrom
+    #@+node:ekr.20090616105756.3953: *3* linksFrom
     def linksFrom(self, v, type_='S'):
         ans = []
         if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
@@ -493,12 +479,10 @@ class backlinkController(object):
 
         return ans
 
-    #@-node:ekr.20090616105756.3953:linksFrom
-    #@+node:ekr.20090616105756.3954:linksTo
+    #@+node:ekr.20090616105756.3954: *3* linksTo
     def linksTo(self, v):
         return self.linksFrom(v, type_='D')
-    #@-node:ekr.20090616105756.3954:linksTo
-    #@+node:ekr.20090616105756.3955:linkSrc
+    #@+node:ekr.20090616105756.3955: *3* linkSrc
     def linkSrc(self):
         """link from current position to source node"""
 
@@ -509,8 +493,7 @@ class backlinkController(object):
         self.link(self.linkSource, self.c.p)
 
         self.updateTabInt()
-    #@-node:ekr.20090616105756.3955:linkSrc
-    #@+node:ekr.20090616105756.3956:linkUnd
+    #@+node:ekr.20090616105756.3956: *3* linkUnd
     def linkUnd(self):
         """undirected link from current position to source node, use dest.
         if source not set."""
@@ -527,16 +510,14 @@ class backlinkController(object):
         self.link(source, self.c.p, type_='undirected')
 
         self.updateTabInt()
-    #@-node:ekr.20090616105756.3956:linkUnd
-    #@+node:ekr.20090616105756.3957:loadLinks
+    #@+node:ekr.20090616105756.3957: *3* loadLinks
     def loadLinks(self, tag, keywords):
         """load links after file opened"""
         if self.c != keywords['c']:
             return  # not our problem
 
         self.loadLinksInt()
-    #@-node:ekr.20090616105756.3957:loadLinks
-    #@+node:ekr.20090616105756.3958:loadLinksInt
+    #@+node:ekr.20090616105756.3958: *3* loadLinksInt
     def loadLinksInt(self):
         """load links after file opened or reload on request from UI"""
 
@@ -586,26 +567,22 @@ class backlinkController(object):
             self.vnode[vnode].u['_bklnk']['links'] = newlinks
 
         self.showMessage('Link info. loaded on %d nodes' % len(idsSeen))
-    #@-node:ekr.20090616105756.3958:loadLinksInt
-    #@+node:ekr.20090616105756.3959:mark
+    #@+node:ekr.20090616105756.3959: *3* mark
     def mark(self):
         """Mark current position as 'mark' (called by UI)"""
         self.linkMark = self.c.p.copy()
         self.showMessage('Marked')
-    #@-node:ekr.20090616105756.3959:mark
-    #@+node:ekr.20090616105756.3960:markDst
+    #@+node:ekr.20090616105756.3960: *3* markDst
     def markDst(self):
         """Mark current position as 'destination' (called by UI)"""
         self.linkDestination = self.c.p.copy()
         self.showMessage('Dest. marked')
-    #@-node:ekr.20090616105756.3960:markDst
-    #@+node:ekr.20090616105756.3961:markSrc
+    #@+node:ekr.20090616105756.3961: *3* markSrc
     def markSrc(self):
         """Mark current position as 'source' (called by UI)"""
         self.linkSource = self.c.p.copy()
         self.showMessage('Source marked')
-    #@-node:ekr.20090616105756.3961:markSrc
-    #@+node:ekr.20090616105756.3962:positionExistsSomewhere
+    #@+node:ekr.20090616105756.3962: *3* positionExistsSomewhere
     def positionExistsSomewhere(self,p,root=None):
         """A local copy of c.positionExists so that when the
         failure to check p._childIndex bug is fixed, that fixing
@@ -633,8 +610,7 @@ class backlinkController(object):
                 p.moveToBack()  # ???
 
         return False
-    #@-node:ekr.20090616105756.3962:positionExistsSomewhere
-    #@+node:ekr.20090616105756.3963:showLinksLog
+    #@+node:ekr.20090616105756.3963: *3* showLinksLog
     def showLinksLog(self,tag,k):
 
         # deprecated
@@ -668,8 +644,7 @@ class backlinkController(object):
                 for i in dests:
                     g.es("%s %s" %({'S':'->','D':'<-','U':'--'}[i[0]],
                         i[1].h))
-    #@-node:ekr.20090616105756.3963:showLinksLog
-    #@+node:ekr.20090616105756.3964:showMenu
+    #@+node:ekr.20090616105756.3964: *3* showMenu
     def showMenu(self,tag,k):
 
         # deprecated
@@ -739,8 +714,7 @@ class backlinkController(object):
         g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
 
         return None # 'break' # EKR: Prevent other right clicks.
-    #@-node:ekr.20090616105756.3964:showMenu
-    #@+node:ekr.20090616105756.3965:showMessage
+    #@+node:ekr.20090616105756.3965: *3* showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important
         message if this message is optional"""
@@ -752,8 +726,7 @@ class backlinkController(object):
             self.messageUsed = True
 
         self.ui.showMessage(msg, color=color)
-    #@-node:ekr.20090616105756.3965:showMessage
-    #@+node:ekr.20090616105756.3966:swap
+    #@+node:ekr.20090616105756.3966: *3* swap
     def swap(self):
         """Swap current pos. w. mark"""
         if not self.linkMark or not self.c.positionExists(self.linkMark):
@@ -762,15 +735,13 @@ class backlinkController(object):
         p = self.linkMark
         self.linkMark = self.c.p.copy()
         self.c.selectPosition(p)
-    #@-node:ekr.20090616105756.3966:swap
-    #@+node:ekr.20090616105756.3967:updateTab
+    #@+node:ekr.20090616105756.3967: *3* updateTab
     def updateTab(self,tag,k):
         """called by leo select position hook"""
         if k['c'] != self.c: return  # not our problem
 
         self.updateTabInt()
-    #@-node:ekr.20090616105756.3967:updateTab
-    #@+node:ekr.20090616105756.3968:updateTabInt
+    #@+node:ekr.20090616105756.3968: *3* updateTabInt
     def updateTabInt(self):
         """called on new position (leo hook) and when links added / deleted"""
         c = self.c
@@ -808,8 +779,7 @@ class backlinkController(object):
                     texts.append(txt)
 
         self.ui.loadList(texts) 
-    #@-node:ekr.20090616105756.3968:updateTabInt
-    #@+node:ekr.20090616105756.3969:vnodePosition
+    #@+node:ekr.20090616105756.3969: *3* vnodePosition
     def vnodePosition(self, v):
         """Return a position for vnode v, if there is one"""
 
@@ -840,9 +810,6 @@ class backlinkController(object):
                 return p.copy()
 
         return None
-    #@-node:ekr.20090616105756.3969:vnodePosition
     #@-others
-#@-node:ekr.20090616105756.3942:class backlinkController
 #@-others
-#@-node:tbrown.20100225092634.1407:@thin backlink.py
 #@-leo

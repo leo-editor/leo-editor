@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:pap.20050605183206:@thin leoupdate.py
-#@<< docstring >>
-#@+node:pap.20050605183206.1:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:pap.20050605183206: * @thin leoupdate.py
+#@+<< docstring >>
+#@+node:pap.20050605183206.1: ** << docstring >>
 """
 
 A plugin to automatically update Leo from the current CVS version
@@ -10,8 +10,7 @@ files and update your entire Leo installation directly without needing
 a CVS client.
 
 """
-#@-node:pap.20050605183206.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -22,8 +21,8 @@ __plugin_priority__ = 100
 __plugin_group__ = "Core"
 __plugin_requires__ = ["plugin_manager"]
 
-#@<< imports >>
-#@+node:pap.20050605183206.2:<< imports >>
+#@+<< imports >>
+#@+node:pap.20050605183206.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import re
@@ -31,11 +30,10 @@ import sys
 import glob
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@-node:pap.20050605183206.2:<< imports >>
-#@nl
+#@-<< imports >>
 
-#@<< version history >>
-#@+node:pap.20050605183206.3:<< version history >>
+#@+<< version history >>
+#@+node:pap.20050605183206.3: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -45,11 +43,9 @@ Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 # - Fixed crasher related to new c arg.
 # - Replaced SourceForge urls with tigris urls, but these do not work.
 # 
-#@-at
-#@-node:pap.20050605183206.3:<< version history >>
-#@nl
-#@<< todo >>
-#@+node:pap.20050605183206.4:<< todo >>
+#@-<< version history >>
+#@+<< todo >>
+#@+node:pap.20050605183206.4: ** << todo >>
 """
 
 Todo list:
@@ -63,16 +59,14 @@ Done:
 - allow block update
 
 """
-#@-node:pap.20050605183206.4:<< todo >>
-#@nl
+#@-<< todo >>
 
 #@+others
-#@+node:pap.20050605183206.5:Error Classes
+#@+node:pap.20050605183206.5: ** Error Classes
 class LeoUpdateError(Exception):
     """Something went wrong with the update"""
 
-#@-node:pap.20050605183206.5:Error Classes
-#@+node:pap.20050605183206.6:init
+#@+node:pap.20050605183206.6: ** init
 def init():
 
     ok = Tk and sets
@@ -93,9 +87,7 @@ def init():
             g.es("autotrees requires Tkinter",color='blue')
 
     return ok
-#@nonl
-#@-node:pap.20050605183206.6:init
-#@+node:pap.20050605183206.7:onCreate
+#@+node:pap.20050605183206.7: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -103,22 +95,18 @@ def onCreate (tag, keys):
 
     global thePluginController
     thePluginController = LeoUpdater(c)
-#@nonl
-#@-node:pap.20050605183206.7:onCreate
-#@+node:pap.20050605183206.8:topLevelMenu
+#@+node:pap.20050605183206.8: ** topLevelMenu
 # This is called from plugins_menu plugin.
 
 def topLevelMenu(c):   
     """Manage the tree handlers"""
     global thePluginController    
     thePluginController.showManagerDialog(c)
-#@nonl
-#@-node:pap.20050605183206.8:topLevelMenu
-#@+node:pap.20050605183206.17:class LeoUpdater
+#@+node:pap.20050605183206.17: ** class LeoUpdater
 class LeoUpdater:
 
-    #@    @+others
-    #@+node:pap.20050605183206.18:__init__
+    #@+others
+    #@+node:pap.20050605183206.18: *3* __init__
     def __init__ (self,c):
         """Initialise the commander"""
         self.c = c
@@ -129,8 +117,7 @@ class LeoUpdater:
         except ImportError as err:
             g.es("LeoUpdate did not load plugin manager: %s" % (err,), color="red")
             self.plugin_manager = None
-    #@-node:pap.20050605183206.18:__init__
-    #@+node:pap.20050605183206.27:showManagerDialog
+    #@+node:pap.20050605183206.27: *3* showManagerDialog
     def showManagerDialog(self,c):
         """Show the tree handler manager dialog"""
         if not self.plugin_manager:
@@ -140,15 +127,15 @@ class LeoUpdater:
             # The manager class is defined as a dynamic class because
             # we don't know if we will be able to import the 
             # base class!
-            #@        << class HandlerDialog >>
-            #@+node:pap.20050605183206.28:<< class HandlerDialog >>
+            #@+<< class HandlerDialog >>
+            #@+node:pap.20050605183206.28: *4* << class HandlerDialog >>
             class HandlerDialog(self.plugin_manager.ManagerDialog):
                 """A dialog to manager leo files"""
 
                 dialog_caption = "Leo File Manager"
 
-                #@    @+others
-                #@+node:pap.20050605184344:initLocalCollection
+                #@+others
+                #@+node:pap.20050605184344: *5* initLocalCollection
                 def initLocalCollection(self):
                     """Initialize the local file collection"""
 
@@ -156,8 +143,7 @@ class LeoUpdater:
                     self.local = plugin_manager.LocalPluginCollection(self.c)
                     self.local.initFrom(self.local_path)
 
-                #@-node:pap.20050605184344:initLocalCollection
-                #@+node:pap.20050605183206.29:setPaths
+                #@+node:pap.20050605183206.29: *5* setPaths
                 def setPaths(self):
                     """Set paths to the plugin locations"""
                     self.local_path = g.os_path_join(g.app.loadDir,"..","src")
@@ -167,9 +153,7 @@ class LeoUpdater:
                     self.has_enable_buttons = False
                     self.has_conflict_buttons = False
                     self.install_text = "Install all"
-                #@nonl
-                #@-node:pap.20050605183206.29:setPaths
-                #@+node:pap.20050605192322.1:installPlugin
+                #@+node:pap.20050605192322.1: *5* installPlugin
                 def installPlugin(self):
                     """Install all the files"""
 
@@ -189,18 +173,11 @@ class LeoUpdater:
                     self.remote_plugin_list.populateList()
                     self.messagebar.resetmessages('busy')
 
-                #@-node:pap.20050605192322.1:installPlugin
                 #@-others
-            #@nonl
-            #@-node:pap.20050605183206.28:<< class HandlerDialog >>
-            #@nl
+            #@-<< class HandlerDialog >>
             plugin_manager = self.plugin_manager
             dlg = HandlerDialog(c)    
-    #@-node:pap.20050605183206.27:showManagerDialog
     #@-others
-#@nonl
-#@-node:pap.20050605183206.17:class LeoUpdater
 #@-others
 
-#@-node:pap.20050605183206:@thin leoupdate.py
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040831115238:@thin URLloader.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040831115238: * @thin URLloader.py
 """This plugin uses Python's urllib module to download files and import them into Leo.
 """
 
@@ -7,8 +7,8 @@
 #@@tabwidth -4
 
 __version__ = ".5"
-#@<< Change log >>
-#@+node:ekr.20040831115918:<< Change log >>
+#@+<< Change log >>
+#@+node:ekr.20040831115918: ** << Change log >>
 #@+at
 # 
 # .2:  8/31/04 EKR:  Minor changes for 4.2 style.
@@ -20,12 +20,9 @@ __version__ = ".5"
 #     - Removed 'start2' hook and haveseen dict.
 # .5 EKR:
 #     - use c.frame.log.select.selectTab instead of TabbedLog plugin.
-#@-at
-#@nonl
-#@-node:ekr.20040831115918:<< Change log >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040831115918.1:<< imports >>
+#@-<< Change log >>
+#@+<< imports >>
+#@+node:ekr.20040831115918.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -35,12 +32,10 @@ Pmw = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 import os
 import urllib
 # import weakref
-#@nonl
-#@-node:ekr.20040831115918.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20050311090939.7:init
+#@+node:ekr.20050311090939.7: ** init
 def init ():
 
     ok = Tk and Pmw # Ok for unit test: adds tabbed pane to log.
@@ -56,9 +51,7 @@ def init ():
         g.plugin_signon( __name__ )
 
     return ok
-#@nonl
-#@-node:ekr.20050311090939.7:init
-#@+node:ekr.20040831115238.1:addURLPane
+#@+node:ekr.20040831115238.1: ** addURLPane
 def addURLPane (tag,keywords):
 
     c = keywords.get('c')
@@ -73,9 +66,7 @@ def addURLPane (tag,keywords):
     b = Tk.Button(x,text='Load')
     b.pack()
     c.bind(b,'<Button-1>',lambda event,entry=e,c=c: load(event,entry,c))
-#@nonl
-#@-node:ekr.20040831115238.1:addURLPane
-#@+node:ekr.20040831115238.2:load
+#@+node:ekr.20040831115238.2: ** load
 def load( event, entry, c ):
 
     txt = entry.get()
@@ -91,9 +82,5 @@ def load( event, entry, c ):
     cv = cv.nthChild( 0 )
     c.setHeadString(cv,txt )
     os.remove( tname )
-#@nonl
-#@-node:ekr.20040831115238.2:load
 #@-others
-#@nonl
-#@-node:ekr.20040831115238:@thin URLloader.py
 #@-leo

@@ -1,19 +1,17 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.724:@thin mod_autosave.py
-#@<< docstring >>
-#@+node:ekr.20060108123253:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.724: * @thin mod_autosave.py
+#@+<< docstring >>
+#@+node:ekr.20060108123253: ** << docstring >>
 """Autosave the Leo document every so often.
 
 The time between saves is given in seconds in autosave.ini."""
-#@nonl
-#@-node:ekr.20060108123253:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20060108123141:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20060108123141: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -24,11 +22,9 @@ else:
 
 import os
 import time
-#@nonl
-#@-node:ekr.20060108123141:<< imports >>
-#@nl
-#@<< version history >>
-#@+node:ekr.20060108123141.1:<< version history >>
+#@-<< imports >>
+#@+<< version history >>
+#@+node:ekr.20060108123141.1: ** << version history >>
 #@@nocolor
 #@+at
 # 
@@ -37,15 +33,12 @@ import time
 # - Removed calls to g.top.
 # - Added init function.
 # 0.4 EKR: call g.enableIdleTimeHook() in init.
-#@-at
-#@nonl
-#@-node:ekr.20060108123141.1:<< version history >>
-#@nl
+#@-<< version history >>
 
 __version__ = "0.4" # EKR: call g.enableIdleTimeHook()
 
 #@+others
-#@+node:ekr.20060108123141.2:init
+#@+node:ekr.20060108123141.2: ** init
 def init ():
 
     ok = not g.app.unitTesting # Don't want autosave after unit testing.
@@ -68,9 +61,7 @@ def init ():
             g.enableIdleTimeHook()
 
     return ok
-#@nonl
-#@-node:ekr.20060108123141.2:init
-#@+node:edream.110203113231.725:applyConfiguration
+#@+node:edream.110203113231.725: ** applyConfiguration
 def applyConfiguration(config=None):
 
     """Called when the user presses the "Apply" button on the Properties form"""
@@ -84,9 +75,7 @@ def applyConfiguration(config=None):
 
     ACTIVE = config.get("Main", "Active")
     AUTOSAVE_INTERVAL = int(config.get("Main", "Interval"))
-#@nonl
-#@-node:edream.110203113231.725:applyConfiguration
-#@+node:edream.110203113231.726:autosave
+#@+node:edream.110203113231.726: ** autosave
 def autosave(tag, keywords):
 
     """Save the current document if it has a name"""
@@ -105,9 +94,5 @@ def autosave(tag, keywords):
                 g.es("Autosave: %s" % time.ctime(),color="orange")
                 c.fileCommands.save(c.mFileName)
             LAST_AUTOSAVE = time.time()
-#@nonl
-#@-node:edream.110203113231.726:autosave
 #@-others
-#@nonl
-#@-node:edream.110203113231.724:@thin mod_autosave.py
 #@-leo

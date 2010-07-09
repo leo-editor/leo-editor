@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.925:@thin script_io_to_body.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.925: * @thin script_io_to_body.py
 """Send output from the Execute Script command to the end of the body pane"""
 
 #@@language python
@@ -7,28 +7,23 @@
 
 __version__ = "1.5"
 
-#@<< imports >>
-#@+node:ekr.20050101090207.4:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.4: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@nonl
-#@-node:ekr.20050101090207.4:<< imports >>
-#@nl
-#@<< version history >>
-#@+node:ekr.20071212114235:<< version history >>
+#@-<< imports >>
+#@+<< version history >>
+#@+node:ekr.20071212114235: ** << version history >>
 #@@nocolor
 #@+at
 # 
 # 1.5 EKR: A complete rewrite. Now works with Leo 4.4.5 code base.
-#@-at
-#@nonl
-#@-node:ekr.20071212114235:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20071025195133:init
+#@+node:ekr.20071025195133: ** init
 def init():
 
     ok = Tk and not g.app.unitTesting
@@ -45,8 +40,7 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@-node:ekr.20071025195133:init
-#@+node:ekr.20071212092332:onCreate
+#@+node:ekr.20071212092332: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -63,8 +57,7 @@ def onCreate (tag, keys):
         # Override c.executeScript.
         g.funcToMethod(newExecuteScript,c.__class__,'executeScript')
         c.k.overrideCommand('execute-script',c.executeScript)
-#@-node:ekr.20071212092332:onCreate
-#@+node:edream.110203113231.928:newPut and newPutNl
+#@+node:edream.110203113231.928: ** newPut and newPutNl
 # Same as frame.put except sends output to the end of the body text.
 def newPut (self,s,*args,**keys):
 
@@ -81,8 +74,7 @@ def newPut (self,s,*args,**keys):
 def newPutNl (self,s,*args,**keys):
 
     newPut (self,'\n')
-#@-node:edream.110203113231.928:newPut and newPutNl
-#@+node:ekr.20071212091008.1:newExecuteScript & helpers
+#@+node:ekr.20071212091008.1: ** newExecuteScript & helpers
 def newExecuteScript (self,
     event=None,p=None,script=None,
     useSelectedText=True,define_g=True,
@@ -101,24 +93,19 @@ def newExecuteScript (self,
         tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
         g.ecnl()
         g.es("end of script",color="purple",tabName=tabName)
-#@+node:ekr.20071212090128:redirect
+#@+node:ekr.20071212090128: *3* redirect
 def redirect (c):
 
     log = c.frame.log.__class__
 
     g.funcToMethod(newPut,log,"put")
     g.funcToMethod(newPutNl,log,"putnl")
-#@nonl
-#@-node:ekr.20071212090128:redirect
-#@+node:ekr.20071212091008:undirect
+#@+node:ekr.20071212091008: *3* undirect
 def undirect (c):
 
     log = c.frame.log.__class__
 
     g.funcToMethod(c.script_io_to_body_oldput,log,"put")
     g.funcToMethod(c.script_io_to_body_oldputnl,log,"putnl")
-#@-node:ekr.20071212091008:undirect
-#@-node:ekr.20071212091008.1:newExecuteScript & helpers
 #@-others
-#@-node:edream.110203113231.925:@thin script_io_to_body.py
 #@-leo

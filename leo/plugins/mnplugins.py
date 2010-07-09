@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040205071616:@thin mnplugins.py
-#@<< docstring >>
-#@+node:ekr.20050101090717:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040205071616: * @thin mnplugins.py
+#@+<< docstring >>
+#@+node:ekr.20050101090717: ** << docstring >>
 """
 mnplugins.py
 
@@ -18,11 +18,9 @@ insertOK:
 insertUser : Shift-F6
     insert a <user/date/time> stamp at the current location in bodytext
 """
-#@nonl
-#@-node:ekr.20050101090717:<< docstring >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20050101090717.1:<< imports >>
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20050101090717.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -30,16 +28,14 @@ import leo.core.leoCommands as leoCommands
 import time
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@nonl
-#@-node:ekr.20050101090717.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 OKFLAG='OK '  # Space required.
 __version__ = "0.2"
     # 0.2: EKR: added c arg to setOK: fixes bug reported by pylint.
 
 #@+others
-#@+node:ekr.20100128091412.5381:init
+#@+node:ekr.20100128091412.5381: ** init
 def init():
 
     ok = Tk and not g.app.unitTesting # Not (yet) for unit testing.
@@ -57,38 +53,32 @@ def init():
             g.es('mnplug OK+Commands+Menu aktiv',color='green')
 
     return ok
-#@nonl
-#@-node:ekr.20100128091412.5381:init
-#@+node:ekr.20040205071616.1:mnstamp
+#@+node:ekr.20040205071616.1: ** mnstamp
 def mnstamp():
 
     lt=time.localtime(time.time())
     mndatetime=time.strftime('%y%m%d %H:%M',(lt))
     return '### '+g.app.leoID+mndatetime
-#@-node:ekr.20040205071616.1:mnstamp
-#@+node:ekr.20040205071616.2:mnOKstamp
+#@+node:ekr.20040205071616.2: ** mnOKstamp
 def mnOKstamp():
 
     lt=time.localtime(time.time())
     mndatetime=time.strftime('%y%m%d %H:%M',(lt))
     return '###'+OKFLAG+g.app.leoID+mndatetime
-#@-node:ekr.20040205071616.2:mnOKstamp
-#@+node:ekr.20040205071616.3:onStart
+#@+node:ekr.20040205071616.3: ** onStart
 def onStart (tag,keywords):
 
     # insert function insertUser as method of class Commands at runtime
     g.funcToMethod(insertUser,leoCommands.Commands)
     g.funcToMethod(insertOKcmd,leoCommands.Commands)
 
-#@-node:ekr.20040205071616.3:onStart
-#@+node:ekr.20040205071616.4:setHeadOK
+#@+node:ekr.20040205071616.4: ** setHeadOK
 def setHeadOK(c,v):
 
     s = OKFLAG + v.h
     c.setHeadString(v,s)
 
-#@-node:ekr.20040205071616.4:setHeadOK
-#@+node:ekr.20040205071616.5:mnplugins.insertBodystamp
+#@+node:ekr.20040205071616.5: ** mnplugins.insertBodystamp
 def insertBodystamp (c,v):
 
     w = c.frame.body.bodyCtrl
@@ -96,8 +86,7 @@ def insertBodystamp (c,v):
     ins = w.getInsertPoint()
     w.insert(ins,stamp)
     c.frame.body.onBodyChanged("Typing")
-#@-node:ekr.20040205071616.5:mnplugins.insertBodystamp
-#@+node:ekr.20040205071616.6:is_subnodesOK
+#@+node:ekr.20040205071616.6: ** is_subnodesOK
 def is_subnodesOK(v):
 
     if not v.hasChildren():
@@ -112,17 +101,14 @@ def is_subnodesOK(v):
             child=child.next()
     return ok
 
-#@-node:ekr.20040205071616.6:is_subnodesOK
-#@+node:ekr.20040205071616.7:onRclick
+#@+node:ekr.20040205071616.7: ** onRclick
 def onRclick(tag,keywords):
 
     """Handle right click in body pane."""
 
     c=keywords.get('c')
     insertOKcmd(c)
-#@nonl
-#@-node:ekr.20040205071616.7:onRclick
-#@+node:ekr.20040205071616.8:insertOKcmd
+#@+node:ekr.20040205071616.8: ** insertOKcmd
 def insertOKcmd(self,event=None):
 
     c=self; v=c.currentVnode()  
@@ -132,9 +118,7 @@ def insertOKcmd(self,event=None):
         insertBodystamp(c,v)
     else: 
         g.es('OK in child missing')
-#@nonl
-#@-node:ekr.20040205071616.8:insertOKcmd
-#@+node:ekr.20040205071616.9:insertUser
+#@+node:ekr.20040205071616.9: ** insertUser
 def insertUser (self,event=None):
 
     """Handle the Insert User command."""
@@ -149,9 +133,7 @@ def insertUser (self,event=None):
     i = w.getInsertPoint()
     w.insert(i,stamp)
     c.frame.body.onBodyChanged("Typing",oldSel=oldSel)
-#@nonl
-#@-node:ekr.20040205071616.9:insertUser
-#@+node:ekr.20040205071616.10:create_UserMenu
+#@+node:ekr.20040205071616.10: ** create_UserMenu
 def create_UserMenu (tag,keywords):
 
     c = keywords.get("c")
@@ -163,8 +145,5 @@ def create_UserMenu (tag,keywords):
         ("insOK",'Ctrl+Shift+O',c.insertOKcmd)]
 
     c.frame.menu.createMenuEntries(c.pluginMenu,table,dynamicMenu=True)
-#@nonl
-#@-node:ekr.20040205071616.10:create_UserMenu
 #@-others
-#@-node:ekr.20040205071616:@thin mnplugins.py
 #@-leo

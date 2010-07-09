@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040915085351:@thin at_produce.py
-#@<< docstring >>
-#@+node:ekr.20050311110307:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040915085351: * @thin at_produce.py
+#@+<< docstring >>
+#@+node:ekr.20050311110307: ** << docstring >>
 '''
 Executes commands in nodes whose body text starts with @produce.
 To use, put in the body text of a node::
@@ -23,17 +23,15 @@ machinery is overkill.
 
 WARNING: trying to execute a non-existent command will hang Leo.
 '''
-#@nonl
-#@-node:ekr.20050311110307:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 from __future__ import generators # To make this plugin work with Python 2.2.
 
-#@<< imports >>
-#@+node:ekr.20040915085715:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20040915085715: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -45,11 +43,10 @@ import os
 import threading
 import time
 # import weakref
-#@-node:ekr.20040915085715:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = '.3'
-#@<< version history >>
-#@+node:ekr.20050311110629:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050311110629: ** << version history >>
 #@@killcolor
 
 #@+at
@@ -60,17 +57,13 @@ __version__ = '.3'
 #     - Use keywords dict to get c.  Removed haveseen dict.
 # 
 # .3 EKR:
-#     - Added from __future__ import generators to suppress warning in Python 
-# 2.2.
-#@-at
-#@nonl
-#@-node:ekr.20050311110629:<< version history >>
-#@nl
+#     - Added from __future__ import generators to suppress warning in Python 2.2.
+#@-<< version history >>
 
 pr = '@' + 'produce'
 
 #@+others
-#@+node:ekr.20050311110629.1:init
+#@+node:ekr.20050311110629.1: ** init
 def init ():
 
     ok = Tk is not None
@@ -82,9 +75,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050311110629.1:init
-#@+node:ekr.20040915085351.2:makeProduceList & allies
+#@+node:ekr.20040915085351.2: ** makeProduceList & allies
 def makeProduceList( c, root = True ):
 
     pl = []
@@ -103,13 +94,10 @@ def makeProduceList( c, root = True ):
             map( lambda i : pl.append( i ), body )
 
     return pl
-#@nonl
-#@+node:ekr.20040915085351.3:teststart
+#@+node:ekr.20040915085351.3: *3* teststart
 def teststart( a ):
     return a.startswith( pr )
-#@nonl
-#@-node:ekr.20040915085351.3:teststart
-#@+node:ekr.20040915085351.4:travel
+#@+node:ekr.20040915085351.4: *3* travel
 def travel(vn,stopnode):
 
     while vn:
@@ -117,16 +105,13 @@ def travel(vn,stopnode):
         vn = vn.threadNext()
         if vn == stopnode:
             vn = None
-#@nonl
-#@-node:ekr.20040915085351.4:travel
-#@-node:ekr.20040915085351.2:makeProduceList & allies
-#@+node:ekr.20040915085351.5:exeProduce
+#@+node:ekr.20040915085351.5: ** exeProduce
 def exeProduce(  c, root = True ):
 
     pl = makeProduceList(c, root)
     # Define the callback with argument bound to p1.
-    #@    @+others
-    #@+node:ekr.20040915085351.6:runPL
+    #@+others
+    #@+node:ekr.20040915085351.6: *3* runPL
     def runPL(pl=pl):
         f = open( 'produce.log', 'w+' )
         for z in pl:
@@ -154,15 +139,11 @@ def exeProduce(  c, root = True ):
         c.setHeadString(nv,'produce.log from %s' % time.asctime() )
         f.close()
         os.remove( 'produce.log' )
-    #@nonl
-    #@-node:ekr.20040915085351.6:runPL
     #@-others
     t = threading.Thread( target = runPL )
     t.setDaemon( True )
     t.start()
-#@nonl
-#@-node:ekr.20040915085351.5:exeProduce
-#@+node:ekr.20040915085351.7:addMenu
+#@+node:ekr.20040915085351.7: ** addMenu
 def addMenu( tag, keywords ):
 
     c = keywords.get('c')
@@ -177,9 +158,5 @@ def addMenu( tag, keywords ):
     c.add_command(men2,
         label = "Execute Tree Produce",
         command = lambda c = c: exeProduce( c, root = False ) )
-#@nonl
-#@-node:ekr.20040915085351.7:addMenu
 #@-others
-#@nonl
-#@-node:ekr.20040915085351:@thin at_produce.py
 #@-leo

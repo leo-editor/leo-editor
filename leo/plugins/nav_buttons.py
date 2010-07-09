@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.758:@thin nav_buttons.py
-#@<< docstring >>
-#@+node:bob.20080103150617:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.758: * @thin nav_buttons.py
+#@+<< docstring >>
+#@+node:bob.20080103150617: ** << docstring >>
 """
 Add navigation buttons to icon bar
 ==================================
@@ -61,9 +61,7 @@ rClick menu generator commands
             @item *    body = nav-prev-menu
 """
 
-#@+at 
-#@nonl
-# disabled last part of the docstring.
+#@+at disabled last part of the docstring.
 # 
 # 
 # Gui Support
@@ -79,17 +77,14 @@ rClick menu generator commands
 # Obviously these classes should mimic the behavior of the Tk classes for
 # the relevant gui.
 # 
-# The dialogs will be automatically detected by the plugin and used if 
-# supplied.
-#@-at
-#@-node:bob.20080103150617:<< docstring >>
-#@nl
+# The dialogs will be automatically detected by the plugin and used if supplied.
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050219114353:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050219114353: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -108,11 +103,10 @@ else:
     Tk = None
 
 import os
-#@-node:ekr.20050219114353:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "1.15" # EKR: Don't touch this code without my permission!
-#@<< version history >>
-#@+node:ekr.20050219114353.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050219114353.1: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -128,8 +122,7 @@ __version__ = "1.15" # EKR: Don't touch this code without my permission!
 # constants.
 # 1.4 EKR: 2 bug fixes
 # - Allways fill the box when clicking on the 'Recent' button.
-# - Use keywords.get('c') NOT self.c in hook handlers.  They may not be the 
-# same!
+# - Use keywords.get('c') NOT self.c in hook handlers.  They may not be the same!
 # - This is actually a bug in leoPlugins.registerHandler, but it can't be
 # fixed because there is no way to associate commanders with hook handlers.
 # 1.5 EKR: Fixed crasher in tkinterListBoxDialog.go().
@@ -158,20 +151,16 @@ __version__ = "1.15" # EKR: Don't touch this code without my permission!
 # - Moved hook registration to init.
 # 1.12 bobjack:
 #     - bind prev and next buttons together if Tk and toolbar plugin enabled
-# 1.13 EKR: Reverted to organization used in Leo 4.4.5, while retaining latest 
-# code.
+# 1.13 EKR: Reverted to organization used in Leo 4.4.5, while retaining latest code.
 # 1.14 EKR: Added guards for c.nodeHistory.
 # 1.15 EKR: Import from tkGui as needed.
-#@-at
-#@nonl
-#@-node:ekr.20050219114353.1:<< version history >>
-#@nl
+#@-<< version history >>
 
 marksInitiallyVisible = False
 recentInitiallyVisible = False
 
 #@+others
-#@+node:ekr.20050219114353.2:init
+#@+node:ekr.20050219114353.2: ** init
 def init ():
 
     if Tk is None: return False
@@ -186,8 +175,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20050219114353.2:init
-#@+node:ekr.20050219115116:onCreate
+#@+node:ekr.20050219115116: ** onCreate
 def onCreate (tag,keywords):
 
     # Not ok for unit testing: can't use unitTestGui.
@@ -208,14 +196,13 @@ def onCreate (tag,keywords):
     recent = recentSectionsDialog(c,images)
     recent.updateRecent()
     r('select2',recent.updateRecent)
-#@-node:ekr.20050219115116:onCreate
-#@+node:ekr.20050219115859:class imageClass
+#@+node:ekr.20050219115859: ** class imageClass
 class imageClass:
 
     """An image manager class."""
 
-    #@    @+others
-    #@+node:ekr.20050219115859.1:ctor
+    #@+others
+    #@+node:ekr.20050219115859.1: *3* ctor
     def __init__ (self):
 
         """Load the images needed for the module."""
@@ -234,8 +221,7 @@ class imageClass:
         ):
             image = self.createImage(icon)
             setattr(self,ivar,image)
-    #@-node:ekr.20050219115859.1:ctor
-    #@+node:ekr.20050219115859.2:createImage
+    #@+node:ekr.20050219115859.2: *3* createImage
     def createImage (self,iconName):
 
         """Load a single image from a file."""
@@ -249,16 +235,14 @@ class imageClass:
             image = None
 
         return image
-    #@-node:ekr.20050219115859.2:createImage
     #@-others
-#@-node:ekr.20050219115859:class imageClass
-#@+node:edream.110203113231.775:class marksDialog (listBoxDialog)
+#@+node:edream.110203113231.775: ** class marksDialog (listBoxDialog)
 class marksDialog (tkinterListBoxDialog):
 
     """A class to create the marks dialog."""
 
-    #@    @+others
-    #@+node:edream.110203113231.776: marksDialog.__init__
+    #@+others
+    #@+node:edream.110203113231.776: *3*  marksDialog.__init__
     def __init__ (self,c,images):
 
         """Create a Marks listbox dialog."""
@@ -286,8 +270,7 @@ class marksDialog (tkinterListBoxDialog):
 
         c.bind(self.top,"<Up>",self.up)
         c.bind(self.top,"<Down>",self.down)
-    #@-node:edream.110203113231.776: marksDialog.__init__
-    #@+node:ekr.20050219131752:addButtons
+    #@+node:ekr.20050219131752: *3* addButtons
     def addButtons (self):
 
         """Add extra buttons to the dialog."""
@@ -302,8 +285,7 @@ class marksDialog (tkinterListBoxDialog):
             text="Marks",command=marksButtonCallback)
 
         c.bind(btn,'<Button-3>', self.rClickMarks)
-    #@-node:ekr.20050219131752:addButtons
-    #@+node:bobjack.20080411192347.2:rClickMarks
+    #@+node:bobjack.20080411192347.2: *3* rClickMarks
     def rClickMarks(self, event):
 
         """Show a popup menu to select a mark."""
@@ -313,8 +295,7 @@ class marksDialog (tkinterListBoxDialog):
         menu_table = [('*', 'nav-marks-menu')]   
 
         g.doHook('rclick-popup', c=c, event=event, context_menu=menu_table)
-    #@-node:bobjack.20080411192347.2:rClickMarks
-    #@+node:ekr.20080311065442.2:addCommand
+    #@+node:ekr.20080311065442.2: *3* addCommand
     def addCommand (self):
 
         '''Create the show-marks-dialog command.'''
@@ -327,8 +308,7 @@ class marksDialog (tkinterListBoxDialog):
 
         c.k.registerCommand('show-marks-dialog',
             shortcut=None,func=showMarksDialogCallback)
-    #@-node:ekr.20080311065442.2:addCommand
-    #@+node:bobjack.20080411192347.8:addGeneratorCommands
+    #@+node:bobjack.20080411192347.8: *3* addGeneratorCommands
     def addGeneratorCommands(self):
 
         """Register rClick minibuffer generator commands."""
@@ -340,7 +320,7 @@ class marksDialog (tkinterListBoxDialog):
         ):    
             cb = getGeneratorCallback(self, c, command)
             c.k.registerCommand(command, shortcut=None, func=cb)
-    #@+node:bobjack.20080411192347.9:nav_marks_menu
+    #@+node:bobjack.20080411192347.9: *4* nav_marks_menu
     def nav_marks_menu(self, keywords):
 
         """Generate marks menu and prepend to menu_table."""
@@ -357,8 +337,7 @@ class marksDialog (tkinterListBoxDialog):
 
         keywords['rc_menu_table'][:0] = menu_table
 
-    #@-node:bobjack.20080411192347.9:nav_marks_menu
-    #@+node:bobjack.20080411192347.3:gotoNode
+    #@+node:bobjack.20080411192347.3: *4* gotoNode
     def gotoNode(self, p):
 
         """Select node `p`."""
@@ -369,9 +348,7 @@ class marksDialog (tkinterListBoxDialog):
            p.contract()
 
         c.treeSelectHelper(p)
-    #@-node:bobjack.20080411192347.3:gotoNode
-    #@-node:bobjack.20080411192347.8:addGeneratorCommands
-    #@+node:edream.110203113231.777:createFrame
+    #@+node:edream.110203113231.777: *3* createFrame
     def createFrame(self):
 
         """Create the frame for a Marks listbox dialog."""
@@ -382,9 +359,7 @@ class marksDialog (tkinterListBoxDialog):
         f.pack()
 
         self.addStdButtons(f)
-    #@nonl
-    #@-node:edream.110203113231.777:createFrame
-    #@+node:ekr.20080311065442.3:down/up
+    #@+node:ekr.20080311065442.3: *3* down/up
     def down (self,event):
 
         """Handle clicks on the dialogs 'down' button."""
@@ -415,8 +390,7 @@ class marksDialog (tkinterListBoxDialog):
         else:     n = 0
         self.box.selection_clear(n)
         self.box.selection_set(max(0,n-1))
-    #@-node:ekr.20080311065442.3:down/up
-    #@+node:edream.110203113231.779:updateMarks
+    #@+node:edream.110203113231.779: *3* updateMarks
     def updateMarks(self,tag=None,keywords=None):
 
         '''Recreate the Marks listbox. A hook handler.'''
@@ -438,17 +412,14 @@ class marksDialog (tkinterListBoxDialog):
                 i += 1
 
         self.box.selection_set(max(0,len(self.positionList)-1))
-    #@-node:edream.110203113231.779:updateMarks
     #@-others
-#@nonl
-#@-node:edream.110203113231.775:class marksDialog (listBoxDialog)
-#@+node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
+#@+node:edream.110203113231.780: ** class recentSectionsDialog (tkinterListBoxDialog)
 class recentSectionsDialog (tkinterListBoxDialog):
 
     """A class to create the recent sections dialog"""
 
-    #@    @+others
-    #@+node:edream.110203113231.781:__init__  recentSectionsDialog
+    #@+others
+    #@+node:edream.110203113231.781: *3* __init__  recentSectionsDialog
     def __init__ (self,c,images):
 
         """Create a Recent Sections listbox dialog."""
@@ -480,8 +451,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         c.bind(self.top,"<Up>",self.up)
         c.bind(self.top,"<Down>",self.down)
-    #@-node:edream.110203113231.781:__init__  recentSectionsDialog
-    #@+node:ekr.20080311065442.1:addCommand
+    #@+node:ekr.20080311065442.1: *3* addCommand
     def addCommand (self):
 
         '''Create the show-recent-sections-dialog command.'''
@@ -495,8 +465,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         c.k.registerCommand('show-recent-sections-dialog',
             shortcut=None,func=recentSectionsCommandCallback)
-    #@-node:ekr.20080311065442.1:addCommand
-    #@+node:bobjack.20080411192347.5:addGeneratorCommands
+    #@+node:bobjack.20080411192347.5: *3* addGeneratorCommands
     def addGeneratorCommands(self):
 
         """Register rClick minibuffer generator commands."""
@@ -511,7 +480,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
             cb = getGeneratorCallback(self, c, command)
             c.k.registerCommand(command, shortcut=None, func=cb)
-    #@+node:bobjack.20080411192347.7:nav_prev_menu
+    #@+node:bobjack.20080411192347.7: *4* nav_prev_menu
     def nav_prev_menu(self, keywords):
 
         """Handler for minibuffer command nav-prev-menu."""
@@ -532,8 +501,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         keywords['rc_menu_table'][:0] = menu_table
 
-    #@-node:bobjack.20080411192347.7:nav_prev_menu
-    #@+node:bobjack.20080411192347.11:nav_next_menu
+    #@+node:bobjack.20080411192347.11: *4* nav_next_menu
     def nav_next_menu(self, keywords):
 
         """Handler for minibuffer command nav-next-menu."""
@@ -553,8 +521,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
                 count += 1
 
         keywords['rc_menu_table'][:0] = menu_table
-    #@-node:bobjack.20080411192347.11:nav_next_menu
-    #@+node:bobjack.20080411162443.4:gotoNode
+    #@+node:bobjack.20080411162443.4: *4* gotoNode
     def gotoNode(self, ptr):
 
         '''Goto the node in the beadList indexed by ptr.'''
@@ -572,9 +539,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
             p.contract()
 
         c.treeSelectHelper(p)
-    #@-node:bobjack.20080411162443.4:gotoNode
-    #@-node:bobjack.20080411192347.5:addGeneratorCommands
-    #@+node:edream.110203113231.782:addFrameButtons
+    #@+node:edream.110203113231.782: *3* addFrameButtons
     def addFrameButtons (self):
 
         """Add buttons to the listbox dialog."""
@@ -612,8 +577,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
         self.delete_button = b =  Tk.Button(row3,text="Delete",
             width=6,command=self.deleteEntry)
         b.pack(side="left",pady=2,padx=5)
-    #@-node:edream.110203113231.782:addFrameButtons
-    #@+node:ekr.20050219131336:addIconBarButtons
+    #@+node:ekr.20050219131336: *3* addIconBarButtons
     def addIconBarButtons (self):
 
         """Create buttons and add them to the icon bar."""
@@ -672,8 +636,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         # Package these buttons for the recentSectionsDialog class in leoTkinterDialog.py
         self.nav_buttons = (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button)
-    #@-node:ekr.20050219131336:addIconBarButtons
-    #@+node:bobjack.20080411162443.2:rClickLeft
+    #@+node:bobjack.20080411162443.2: *3* rClickLeft
     def rClickLeft(self, event):
 
         """Show a popup menu to choose a previously visited node."""
@@ -682,8 +645,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         menu = [('*', 'nav-prev-menu')]
         g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
-    #@-node:bobjack.20080411162443.2:rClickLeft
-    #@+node:bobjack.20080411162443.3:rClickRight
+    #@+node:bobjack.20080411162443.3: *3* rClickRight
     def rClickRight(self,event):
 
         """Show a popup menu to choose a previously visited node."""
@@ -693,8 +655,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
         menu = [('*', 'nav-next-menu')]
         g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
 
-    #@-node:bobjack.20080411162443.3:rClickRight
-    #@+node:bobjack.20080413153103.3:rClickRecent
+    #@+node:bobjack.20080413153103.3: *3* rClickRecent
 
     #@+at
     # def rClickRecent(self,event):
@@ -711,10 +672,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
     #         ('*', 'nav-next-menu'),
     #     ]
     #     g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
-    #@-at
-    #@nonl
-    #@-node:bobjack.20080413153103.3:rClickRecent
-    #@+node:edream.110203113231.783:clearAll
+    #@+node:edream.110203113231.783: *3* clearAll
     def clearAll (self,event=None):
 
         """Handle clicks in the "Delete" button of the Recent Sections listbox dialog."""
@@ -727,17 +685,14 @@ class recentSectionsDialog (tkinterListBoxDialog):
         self.fillbox()
         self.updateButtons()
 
-    #@-node:edream.110203113231.783:clearAll
-    #@+node:edream.110203113231.784:createFrame
+    #@+node:edream.110203113231.784: *3* createFrame
     def createFrame(self):
 
         """Create the frame of a Recent Sections listbox dialog."""
 
         tkinterListBoxDialog.createFrame(self)
         self.addFrameButtons()
-    #@nonl
-    #@-node:edream.110203113231.784:createFrame
-    #@+node:edream.110203113231.785:deleteEntry
+    #@+node:edream.110203113231.785: *3* deleteEntry
     def deleteEntry (self,event=None):
 
         """Handle clicks in the "Delete" button of a Recent Sections listbox dialog."""
@@ -757,9 +712,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
             c.nodeHistory.remove(p)
             self.fillbox()
             self.updateButtons()
-    #@nonl
-    #@-node:edream.110203113231.785:deleteEntry
-    #@+node:edream.110203113231.786:destroy
+    #@+node:edream.110203113231.786: *3* destroy
     def destroy (self,event=None):
 
         """Hide a Recent Sections listbox dialog and mark it inactive.
@@ -768,8 +721,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         # This is enough to disable fillbox.
         self.top.withdraw()
-    #@-node:edream.110203113231.786:destroy
-    #@+node:ekr.20080311065442.4:down/up
+    #@+node:ekr.20080311065442.4: *3* down/up
     def down (self,event):
 
         """Handle clicks on the dialogs 'down' button."""
@@ -800,8 +752,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
         else:     n = 0
         self.box.selection_clear(n)
         self.box.selection_set(max(0,n-1))
-    #@-node:ekr.20080311065442.4:down/up
-    #@+node:edream.110203113231.787:fillbox
+    #@+node:edream.110203113231.787: *3* fillbox
     def fillbox(self,forceUpdate=False):
 
         """Update the Recent Sections listbox."""
@@ -826,8 +777,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
         n = len(c.nodeHistory.beadList)
         p = c.nodeHistory.beadPointer
         self.box.selection_set(max(0,(min(p,n-1))))
-    #@-node:edream.110203113231.787:fillbox
-    #@+node:ekr.20050219122657:updateButtons
+    #@+node:ekr.20050219122657: *3* updateButtons
     def updateButtons (self):
 
         """Update nav buttons to reflect current state."""
@@ -849,8 +799,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
             image = g.choose(cond,enabled_image,disabled_image)
             b.configure(image=image,state='normal')
             b2.configure(image=image,state='normal')
-    #@-node:ekr.20050219122657:updateButtons
-    #@+node:ekr.20050219162434:updateRecent
+    #@+node:ekr.20050219162434: *3* updateRecent
     def updateRecent(self,tag=None,keywords=None):
 
         """Recreate the Recent listbox. A hook handler"""
@@ -862,11 +811,8 @@ class recentSectionsDialog (tkinterListBoxDialog):
 
         self.fillbox(forceUpdate=False)
         self.updateButtons()
-    #@-node:ekr.20050219162434:updateRecent
     #@-others
-#@nonl
-#@-node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
-#@+node:bobjack.20080412173602.2:getGeneratorCallback
+#@+node:bobjack.20080412173602.2: ** getGeneratorCallback
 def getGeneratorCallback(obj, c, command):
 
     """Convert a call to  rClick generator command to a method call on `obj`.
@@ -886,8 +832,5 @@ def getGeneratorCallback(obj, c, command):
         cm.mb_retval = method(cm.mb_keywords)
 
     return cb
-#@-node:bobjack.20080412173602.2:getGeneratorCallback
 #@-others
-#@nonl
-#@-node:edream.110203113231.758:@thin nav_buttons.py
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.741:@thin add_directives.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.741: * @thin add_directives.py
 """Support new @direcives"""
 
 #@@language python
@@ -13,7 +13,7 @@ import leo.core.leoPlugins as leoPlugins
 directives = "markup", # A tuple with one string.
 
 #@+others
-#@+node:ekr.20070725103420:init
+#@+node:ekr.20070725103420: ** init
 def init ():
 
     ok = True # not  g.app.unitTesting:
@@ -24,9 +24,7 @@ def init ():
     g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20070725103420:init
-#@+node:edream.110203113231.742:addPluginDirectives
+#@+node:edream.110203113231.742: ** addPluginDirectives
 def addPluginDirectives (tag,keywords):
 
     """Add all new directives to g.globalDirectiveList"""
@@ -38,9 +36,7 @@ def addPluginDirectives (tag,keywords):
         if s not in g.globalDirectiveList:
             # g.trace(s)
             g.globalDirectiveList.append(s)
-#@nonl
-#@-node:edream.110203113231.742:addPluginDirectives
-#@+node:edream.110203113231.743:scanPluginDirectives (no longer used)
+#@+node:edream.110203113231.743: ** scanPluginDirectives (no longer used)
 def scanPluginDirectives (tag, keywords):
 
     """Add a tuple (d,v,s,k) to list for every directive d found"""
@@ -57,7 +53,5 @@ def scanPluginDirectives (tag, keywords):
             g.trace('s',s)
             kind = d
             pluginsList.append((kind,p.v,s),)
-#@-node:edream.110203113231.743:scanPluginDirectives (no longer used)
 #@-others
-#@-node:edream.110203113231.741:@thin add_directives.py
 #@-leo

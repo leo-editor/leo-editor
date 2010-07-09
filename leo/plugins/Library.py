@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20050328092641.4:@thin Library.py
-#@<< docstring >>
-#@+node:ekr.20050912180445:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20050328092641.4: * @thin Library.py
+#@+<< docstring >>
+#@+node:ekr.20050912180445: ** << docstring >>
 '''A plugin to store Leo trees in database files. This should help people
 develop templates that they want to reuse between Leo projects. For example, Id
 like a template of many Java interfaces to be easily accessable.
@@ -24,21 +24,19 @@ Closes the database.
 
 **Warning**: your database files may not be OS independent.
 '''
-#@nonl
-#@-node:ekr.20050912180445:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth-4
 
 __version__ = ".5"
 
-#@<< version history >>
-#@+node:ekr.20050328092641.6:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050328092641.6: ** << version history >>
 #@@color
 
-#@<< versions before .5 >>
-#@+node:ekr.20060108172052:<< versions before .5 >>
+#@+<< versions before .5 >>
+#@+node:ekr.20060108172052: *3* << versions before .5 >>
 #@@nocolor
 #@+at
 # 0.0 created by the plugin guy & posted to the Leo forums.
@@ -68,30 +66,22 @@ __version__ = ".5"
 #        because it can't open an existing zero len library22.dbm
 #        fails on a good library.dbm created in py2.4
 #        you'll feel better after you upgrade anyway.
-#     - rudimentart support for @setting Library_lib*= same as but overrides 
-# the ini
+#     - rudimentart support for @setting Library_lib*= same as but overrides the ini
 #     - fixed the false start of seperating library,libpath,extension
-#      -libN= where N can be any aschii chars in ini or @setting, (N is 0..5 
-# only)
+#      -libN= where N can be any aschii chars in ini or @setting, (N is 0..5 only)
 #      - default/ translates to leo/plugins/ ~/ is g.app.homeDir/
-#      - not sure it should respect Leo's don't create non existing 
-# directories
+#      - not sure it should respect Leo's don't create non existing directories
 #     - add dropdown for multiple libraries, select between them
 #      - you can edit the first entry, "libN {path}" to overwrite defaults.
-#      - it might be better to enable some extra lib entries and pick between 
-# them.
+#      - it might be better to enable some extra lib entries and pick between them.
 #      - if you mess with the format here or the ini or the @setting:
-#      - I continue to hope the worst that can happen on a bad entry is 
-# nothing.
+#      - I continue to hope the worst that can happen on a bad entry is nothing.
 #    - no provisions yet to update the @settings or ini on exit.
 # .029 e, http://rclick.netfirms.com/Library.htm
 #    - preserve users clipboard on paste item from database into outline
 #  on click the  dialog is *not* recreated,
 #  changed = change  *title
-#@-at
-#@nonl
-#@-node:ekr.20060108172052:<< versions before .5 >>
-#@nl
+#@-<< versions before .5 >>
 
 #@@nocolor
 #@+at
@@ -100,16 +90,11 @@ __version__ = ".5"
 # - Added c argument to all cmd_ functions.
 # - Created global dbs and libraries dicts.
 # - Used settings, not ini files.
-# **Note: the present code handle's unicode just fine (the old docstring was 
-# wrong).
-# - Put the 'Show Dialog' menu item with the other items in the 
-# Plugins:Library menu.
-#@-at
-#@nonl
-#@-node:ekr.20050328092641.6:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20050328092641.7:<< imports >>
+# **Note: the present code handle's unicode just fine (the old docstring was wrong).
+# - Put the 'Show Dialog' menu item with the other items in the Plugins:Library menu.
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20050328092641.7: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import anydbm
@@ -118,16 +103,15 @@ import zlib
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 Pmw  = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
-#@-node:ekr.20050328092641.7:<< imports >>
-#@nl
+#@-<< imports >>
 
 libraries = {}  # Keys are commanders, values are Library objects.
 dbs = {}        # Keys are full paths.  values are databases.
 validlibs = ['lib0', 'lib1', 'lib2', 'lib3', 'lib4', 'lib5',]
 
 #@+others
-#@+node:ekr.20060108171207:Moduel-level functions
-#@+node:ekr.20050328092641.38:init
+#@+node:ekr.20060108171207: ** Moduel-level functions
+#@+node:ekr.20050328092641.38: *3* init
 def init():
 
     ok = Tk and Pmw and zlib and not g.app.unitTesting
@@ -143,18 +127,14 @@ def init():
             g.plugin_signon(__name__ )
 
     return ok
-#@nonl
-#@-node:ekr.20050328092641.38:init
-#@+node:ekr.20050328092641.36:onCreate
+#@+node:ekr.20050328092641.36: *3* onCreate
 def onCreate (tag,keywords):
 
     c = keywords.get('c')
     if c and c.exists:
         global libraries
         libraries[c] = Library(c)
-#@nonl
-#@-node:ekr.20050328092641.36:onCreate
-#@+node:ekr.20050328092641.37:onCloseFrame
+#@+node:ekr.20050328092641.37: *3* onCloseFrame
 def onCloseFrame (tag,keywords):
 
     c = keywords.get('c')
@@ -165,33 +145,23 @@ def onCloseFrame (tag,keywords):
     if lib:
         del libraries [c]
         lib.destroySelf()
-#@nonl
-#@-node:ekr.20050328092641.37:onCloseFrame
-#@+node:ekr.20050328092641.28:cmd_ methods
-#@+node:ekr.20050328092641.30:cmd_Close_Database
+#@+node:ekr.20050328092641.28: *3* cmd_ methods
+#@+node:ekr.20050328092641.30: *4* cmd_Close_Database
 def cmd_Close_Database(c): 
 
     lib = libraries.get(c)
     if lib: lib.destroySelf()
-#@nonl
-#@-node:ekr.20050328092641.30:cmd_Close_Database
-#@+node:ekr.20060108191608:cmd_Show_Dialog
+#@+node:ekr.20060108191608: *4* cmd_Show_Dialog
 def cmd_Show_Dialog (c):
 
     lib = libraries.get(c)
     if lib: lib.showDialog()
-#@nonl
-#@-node:ekr.20060108191608:cmd_Show_Dialog
-#@+node:ekr.20050328092641.32:cmd_Show_Status
+#@+node:ekr.20050328092641.32: *4* cmd_Show_Status
 def cmd_Show_Status(c): 
 
     lib = libraries.get(c)
     if lib: lib.showStatus()
-#@nonl
-#@-node:ekr.20050328092641.32:cmd_Show_Status
-#@-node:ekr.20050328092641.28:cmd_ methods
-#@-node:ekr.20060108171207:Moduel-level functions
-#@+node:ekr.20050328092641.8:class Library
+#@+node:ekr.20050328092641.8: ** class Library
 class Library(object):
 
     '''This class presents an interface through which a Libray can be used.
@@ -202,9 +172,9 @@ class Library(object):
 
     '''
 
-    #@    @+others
-    #@+node:ekr.20060108184110:Birth & death
-    #@+node:ekr.20050328092641.9:__init__
+    #@+others
+    #@+node:ekr.20060108184110: *3* Birth & death
+    #@+node:ekr.20050328092641.9: *4* __init__
     def __init__ (self,c):
 
         self.c = c
@@ -218,11 +188,8 @@ class Library(object):
         self.startup()
         if self.db is not None:
             self.createDialog()
-    #@nonl
-    #@-node:ekr.20050328092641.9:__init__
-    #@+node:ekr.20060108184110.2:config
-    #@-node:ekr.20060108184110.2:config
-    #@+node:ekr.20060108185916:createDialog
+    #@+node:ekr.20060108184110.2: *4* config
+    #@+node:ekr.20060108185916: *4* createDialog
     def createDialog (self):
 
         c = self.c
@@ -255,27 +222,20 @@ class Library(object):
 
         self.addList(frame)
         self.dialog.withdraw()
-    #@nonl
-    #@-node:ekr.20060108185916:createDialog
-    #@+node:ekr.20060108174201:destroySelf
+    #@+node:ekr.20060108174201: *4* destroySelf
     def destroySelf (self):
 
         if self.dialog:
             self.dialog.destroy()
             self.dialog = None
-    #@nonl
-    #@-node:ekr.20060108174201:destroySelf
-    #@-node:ekr.20060108184110:Birth & death
-    #@+node:ekr.20060109122217:self.trace
+    #@+node:ekr.20060109122217: *3* self.trace
     def trace(self,*args,**keys):
 
         if self.verbose:
             keys ['color'] = 'blue'
             g.es(*args,**keys)
-    #@nonl
-    #@-node:ekr.20060109122217:self.trace
-    #@+node:ekr.20050328092641.10:buttons
-    #@+node:ekr.20050328092641.11:insert
+    #@+node:ekr.20050328092641.10: *3* buttons
+    #@+node:ekr.20050328092641.11: *4* insert
     def insert (self):
 
         c = self.c
@@ -289,9 +249,7 @@ class Library(object):
         g.app.gui.replaceClipboardWith(s)
         c.pasteOutline()
         g.app.gui.replaceClipboardWith(stext)
-    #@nonl
-    #@-node:ekr.20050328092641.11:insert
-    #@+node:ekr.20050328092641.12:delete
+    #@+node:ekr.20050328092641.12: *4* delete
     def delete (self):
 
         c = self.c
@@ -300,9 +258,7 @@ class Library(object):
             item = item [0]
             self.remove(item)
             self.setListContents()
-    #@nonl
-    #@-node:ekr.20050328092641.12:delete
-    #@+node:ekr.20050328092641.13:addCurrentNode
+    #@+node:ekr.20050328092641.13: *4* addCurrentNode
     def addCurrentNode (self):
 
         c = self.c ; p = c.p
@@ -310,11 +266,8 @@ class Library(object):
         s = c.fileCommands.putLeoOutline()
         self.add(hs,s)
         self.setListContents()
-    #@nonl
-    #@-node:ekr.20050328092641.13:addCurrentNode
-    #@-node:ekr.20050328092641.10:buttons
-    #@+node:ekr.20050328092641.15:GUI
-    #@+node:ekr.20050328092641.17:addList
+    #@+node:ekr.20050328092641.15: *3* GUI
+    #@+node:ekr.20050328092641.17: *4* addList
     def addList (self,frame):
 
         self.lbox = Pmw.ScrolledListBox(frame)
@@ -336,9 +289,7 @@ class Library(object):
         add.configure(background='white',foreground='blue')
         add.configure(command=self.addCurrentNode)
         add.pack()
-    #@nonl
-    #@-node:ekr.20050328092641.17:addList
-    #@+node:ekr.20050328092641.19:changeLibs & helper
+    #@+node:ekr.20050328092641.19: *4* changeLibs & helper
     def changeLibs (self,event):
         """whatevr is selected currently a tupple (libN, path)
          user can edit it in and screw it up probably
@@ -361,8 +312,7 @@ class Library(object):
             self.dialog.destroy()
             self.dialog = self.createDialog()
         self.showDialog()
-    #@nonl
-    #@+node:ekr.20050328092641.25:fixdefault
+    #@+node:ekr.20050328092641.25: *5* fixdefault
     def fixdefault (self,libN,libname):
 
         if libname == 'default': libname = 'default/library.dbm'
@@ -379,18 +329,13 @@ class Library(object):
             # setattr(libconfig,libN,libname)
 
         return libname
-    #@nonl
-    #@-node:ekr.20050328092641.25:fixdefault
-    #@-node:ekr.20050328092641.19:changeLibs & helper
-    #@+node:ekr.20050328092641.18:setListContents
+    #@+node:ekr.20050328092641.18: *4* setListContents
     def setListContents (self):
 
         items = self.names()
         items.sort()
         self.lbox.setlist(items)
-    #@nonl
-    #@-node:ekr.20050328092641.18:setListContents
-    #@+node:ekr.20050328092641.16:showDialog
+    #@+node:ekr.20050328092641.16: *4* showDialog
     def showDialog (self):
 
         c = self.c
@@ -399,9 +344,7 @@ class Library(object):
             if not self.dialog:
                 self.createDialog()
             self.dialog.deiconify()
-    #@nonl
-    #@-node:ekr.20050328092641.16:showDialog
-    #@+node:ekr.20060108174432:showStatus
+    #@+node:ekr.20060108174432: *4* showStatus
     def showStatus (self):
 
         try:
@@ -410,41 +353,30 @@ class Library(object):
             w = None
 
         g.es('whichdb is %s at %s'%(w, self.path))
-    #@nonl
-    #@-node:ekr.20060108174432:showStatus
-    #@-node:ekr.20050328092641.15:GUI
-    #@+node:ekr.20050328092641.20:db
-    #@+node:ekr.20050328092641.22:add
+    #@+node:ekr.20050328092641.20: *3* db
+    #@+node:ekr.20050328092641.22: *4* add
     def add (self,name,data):
 
         data = g.toEncodedString(data,reportErrors=True)
         data = zlib.compress(data,9)
         self.db [name] = data
         self.db.sync()
-    #@nonl
-    #@-node:ekr.20050328092641.22:add
-    #@+node:ekr.20050328092641.24:names
+    #@+node:ekr.20050328092641.24: *4* names
     def names (self):
 
         return self.db.keys()
-    #@nonl
-    #@-node:ekr.20050328092641.24:names
-    #@+node:ekr.20050328092641.21:remove
+    #@+node:ekr.20050328092641.21: *4* remove
     def remove (self,name):
 
         del self.db [name]
         self.db.sync()
-    #@nonl
-    #@-node:ekr.20050328092641.21:remove
-    #@+node:ekr.20050328092641.23:retrieve
+    #@+node:ekr.20050328092641.23: *4* retrieve
     def retrieve (self,name):
 
         data = self.db [name]
         data = zlib.decompress(data)
         return g.toUnicode(data,reportErrors=True)
-    #@nonl
-    #@-node:ekr.20050328092641.23:retrieve
-    #@+node:ekr.20050328092641.26:shutdown
+    #@+node:ekr.20050328092641.26: *4* shutdown
     def shutdown (self):
         '''Close self.db.'''
 
@@ -457,9 +389,7 @@ class Library(object):
             if hasattr(db,'close'): db.close()
 
         self.db = None
-    #@nonl
-    #@-node:ekr.20050328092641.26:shutdown
-    #@+node:ekr.20050328092641.27:startup
+    #@+node:ekr.20050328092641.27: *4* startup
     def startup (self):
 
         path = self.lib ; global dbs, libraries
@@ -489,13 +419,6 @@ class Library(object):
         else:
             g.es('problem starting Library: %s' % (path))
         return ok
-    #@nonl
-    #@-node:ekr.20050328092641.27:startup
-    #@-node:ekr.20050328092641.20:db
     #@-others
-#@nonl
-#@-node:ekr.20050328092641.8:class Library
 #@-others
-#@nonl
-#@-node:ekr.20050328092641.4:@thin Library.py
 #@-leo

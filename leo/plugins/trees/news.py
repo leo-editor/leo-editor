@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20050329082101.153:@thin trees\news.py
-#@<< docstring >>
-#@+node:ekr.20050329082101.154:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20050329082101.153: * @thin trees\news.py
+#@+<< docstring >>
+#@+node:ekr.20050329082101.154: ** << docstring >>
 """A handler that downloads messages from a news server
 
 The parameter in the @auto-rss headline is the news server followed
@@ -14,8 +14,7 @@ but message bodies are downloaded lazily, ie only when you click on the
 header. This is achieved by using the @auto-newsitem headline. 
 
 """
-#@-node:ekr.20050329082101.154:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 from autotrees import BaseTreeHandler, TreeNode
 import feedparser
@@ -26,26 +25,22 @@ __version__ = "0.1"
 __plugin_requires__ = ["autotrees"]
 __plugin_group__ = "Network"
 
-#@<< version history >>
-#@+node:ekr.20050329082101.155:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050329082101.155: ** << version history >>
 #@+at
 # 
 # Version history
 # 
 # 0.1 Paul Paterson:
 #     - Initial version
-#@-at
-#@nonl
-#@-node:ekr.20050329082101.155:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20050329082101.156:Error Classes
+#@+node:ekr.20050329082101.156: ** Error Classes
 class NewsTreeError(Exception):
     """Something went wrong with the tree"""
 
-#@-node:ekr.20050329082101.156:Error Classes
-#@+node:ekr.20050329082101.157:getConnection
+#@+node:ekr.20050329082101.157: ** getConnection
 def getConnection(parameter):
     """Return a connection to a news server group"""
     try:
@@ -67,14 +62,12 @@ def getConnection(parameter):
         raise NewsTreeError
     #
     return (connection, resp, count, first, last, name)
-#@nonl
-#@-node:ekr.20050329082101.157:getConnection
-#@+node:ekr.20050329082101.158:class News
+#@+node:ekr.20050329082101.158: ** class News
 class News(BaseTreeHandler):
     """News auto tree handler"""
 
-    #@    @+others
-    #@+node:ekr.20050329082101.159:initFrom
+    #@+others
+    #@+node:ekr.20050329082101.159: *3* initFrom
     def initFrom(self,c,parameter):
         """Initialize the tree"""
         self.c = c
@@ -96,19 +89,15 @@ class News(BaseTreeHandler):
             )
 
         connection.quit()
-    #@nonl
-    #@-node:ekr.20050329082101.159:initFrom
     #@-others
-#@nonl
-#@-node:ekr.20050329082101.158:class News
-#@+node:ekr.20050329082101.160:class NewsItem
+#@+node:ekr.20050329082101.160: ** class NewsItem
 class NewsItem(BaseTreeHandler):
     """Handlers news item bodies"""
 
     handles = set(["headclick1"])    
 
-    #@    @+others
-    #@+node:ekr.20050329082101.161:initFrom
+    #@+others
+    #@+node:ekr.20050329082101.161: *3* initFrom
     def initFrom(self,c,parameter):
         """Initialize the tree"""
         self.c = c
@@ -128,10 +117,6 @@ class NewsItem(BaseTreeHandler):
         #
         connection.quit()
 
-    #@-node:ekr.20050329082101.161:initFrom
     #@-others
-#@-node:ekr.20050329082101.160:class NewsItem
 #@-others
-#@nonl
-#@-node:ekr.20050329082101.153:@thin trees\news.py
 #@-leo

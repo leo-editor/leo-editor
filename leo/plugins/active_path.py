@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20080613095157.2:@thin active_path.py
-#@<< docstring >>
-#@+node:tbrown.20080613095157.3:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20080613095157.2: * @thin active_path.py
+#@+<< docstring >>
+#@+node:tbrown.20080613095157.3: ** << docstring >>
 '''Synchronize @path nodes with folders.
 
 If a node is named '@path path_to_folder', the content (file and folder names)
@@ -69,9 +69,7 @@ size file active_path will open without query.
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
-#@nonl
-#@-node:tbrown.20080613095157.3:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -89,18 +87,16 @@ testing = False
 
 __version__ = "0.2"
 
-#@<< version history >>
-#@+node:ekr.20090120065737.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20090120065737.1: ** << version history >>
 #@@nocolor-node
 #@+at
 # 
 # 0.2 EKR: replaced begin/endUpdate with c.redraw(p)
-#@-at
-#@-node:ekr.20090120065737.1:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:tbrown.20091128094521.15048:init
+#@+node:tbrown.20091128094521.15048: ** init
 if g.app.gui.guiName() == "qt":
     # for the right click context menu
     from PyQt4 import QtCore
@@ -115,8 +111,7 @@ def init():
         g.tree_popup_handlers.append(popup_entry)
 
     return True
-#@-node:tbrown.20091128094521.15048:init
-#@+node:tbrown.20091128094521.15047:attachToCommander
+#@+node:tbrown.20091128094521.15047: ** attachToCommander
 # defer binding event until c exists
 def attachToCommander(t,k):
     c = k.get('c')
@@ -150,8 +145,7 @@ def attachToCommander(t,k):
         c.__active_path['max_size'] = 1000000
 
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
-#@-node:tbrown.20091128094521.15047:attachToCommander
-#@+node:tbrown.20091128094521.15042:popup_entry
+#@+node:tbrown.20091128094521.15042: ** popup_entry
 def mkCmd(cmd, c):
 
     def f():
@@ -169,8 +163,7 @@ def popup_entry(c,p,menu):
             a = pathmenu.addAction(PlugIn.niceMenuName(i))
             CMD = globals()[i]
             a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
-#@-node:tbrown.20091128094521.15042:popup_entry
-#@+node:tbrown.20091128094521.15037:isDirNode
+#@+node:tbrown.20091128094521.15037: ** isDirNode
 def isDirNode(p):
 
     return (
@@ -179,8 +172,7 @@ def isDirNode(p):
         (not p.h.strip().startswith('@') and p.h.strip().endswith('/'))
         or p.h.strip().startswith('/')
         )
-#@-node:tbrown.20091128094521.15037:isDirNode
-#@+node:tbrown.20091128094521.15039:isFileNode
+#@+node:tbrown.20091128094521.15039: ** isFileNode
 def isFileNode(p):
     """really isEligibleToBecomeAFileNode"""
     return (not p.h.strip().startswith('@') and not p.hasChildren() and
@@ -188,8 +180,7 @@ def isFileNode(p):
       and (not p.b.strip() or # p.b.startswith(c.__active_path['DS_SENTINEL']
       p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
       ))
-#@-node:tbrown.20091128094521.15039:isFileNode
-#@+node:tbrown.20091129085043.9329:inReList
+#@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
 
     for pat in lst:
@@ -197,8 +188,7 @@ def inReList(txt, lst):
             return True
 
     return False
-#@-node:tbrown.20091129085043.9329:inReList
-#@+node:tbrown.20091128094521.15040:subDir
+#@+node:tbrown.20091128094521.15040: ** subDir
 def subDir(d, p):
 
     if p.h.strip().startswith('@path'):
@@ -217,8 +207,7 @@ def subDir(d, p):
         p = p.h.strip(' /')
 
     return os.path.join(d,p)
-#@-node:tbrown.20091128094521.15040:subDir
-#@+node:tbrown.20080613095157.4:onSelect
+#@+node:tbrown.20080613095157.4: ** onSelect
 def onSelect (tag,keywords):
     """Determine if a file or directory status-iconbox was clicked, and the path"""
     c = keywords.get('c') or keywords.get('new_c')
@@ -238,8 +227,7 @@ def onSelect (tag,keywords):
             return True
 
     return None
-#@-node:tbrown.20080613095157.4:onSelect
-#@+node:tbrown.20080616153649.4:getPath
+#@+node:tbrown.20080616153649.4: ** getPath
 def getPath(c, p):
 
     for n in p.self_and_parents():
@@ -257,8 +245,7 @@ def getPath(c, p):
         else:
             path = os.path.join(path, p.h.strip())
     return path
-#@-node:tbrown.20080616153649.4:getPath
-#@+node:tbrown.20090219133655.230:getPathOld
+#@+node:tbrown.20090219133655.230: ** getPathOld
 def getPathOld(p):
     # NOT USED, my version which does its own @path scanning
     p = p.copy()
@@ -285,8 +272,7 @@ def getPathOld(p):
         p = p.parent()
 
     return None
-#@-node:tbrown.20090219133655.230:getPathOld
-#@+node:tbrown.20080613095157.5:flattenOrganizers
+#@+node:tbrown.20080613095157.5: ** flattenOrganizers
 def flattenOrganizers(p):
     """Children of p, some of which may be in organizer nodes
 
@@ -307,9 +293,7 @@ def flattenOrganizers(p):
             and not n.h.startswith('@')):
             for i in flattenOrganizers(n):
                 yield i
-#@nonl
-#@-node:tbrown.20080613095157.5:flattenOrganizers
-#@+node:tbrown.20080613095157.6:sync_node_to_folder
+#@+node:tbrown.20080613095157.6: ** sync_node_to_folder
 def sync_node_to_folder(c,parent,d,updateOnly=False, recurse=False):
     """Decide whether we're opening or creating a file or a folder"""
 
@@ -338,8 +322,7 @@ def sync_node_to_folder(c,parent,d,updateOnly=False, recurse=False):
         return True  # even if it didn't happen, else get stuck in edit mode w/o focus
 
     return False
-#@-node:tbrown.20080613095157.6:sync_node_to_folder
-#@+node:tbrown.20080613095157.7:createDir
+#@+node:tbrown.20080613095157.7: ** createDir
 def createDir(c,parent,d):
     """Ask if we should create a new folder"""
     newd = parent.h.strip(' /')
@@ -355,8 +338,7 @@ def createDir(c,parent,d):
 
     os.mkdir(os.path.join(d, newd))
     return True
-#@-node:tbrown.20080613095157.7:createDir
-#@+node:tbrown.20080613095157.8:createFile
+#@+node:tbrown.20080613095157.8: ** createFile
 def createFile(c,parent,d):
     """Ask if we should create a new file"""
     directory = os.path.dirname(d)
@@ -373,9 +355,7 @@ def createFile(c,parent,d):
     c.setHeadString(parent, '@'+atType+' '+d)
     c.bodyWantsFocusNow()
     return True
-#@nonl
-#@-node:tbrown.20080613095157.8:createFile
-#@+node:tbrown.20080613095157.9:openFile
+#@+node:tbrown.20080613095157.9: ** openFile
 def openFile(c,parent,d, autoload=False):
     """Open an existing file"""
     # hdr = os.path.basename(d)
@@ -405,8 +385,7 @@ def openFile(c,parent,d, autoload=False):
     parent.h = '@' + atType + ' ' + parent.h
 
     c.bodyWantsFocusNow()
-#@-node:tbrown.20080613095157.9:openFile
-#@+node:tbrown.20080613095157.10:openDir
+#@+node:tbrown.20080613095157.10: ** openDir
 def openDir(c,parent,d):
     """Expand / refresh an existing folder"""
 
@@ -483,8 +462,7 @@ def openDir(c,parent,d):
                     c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
         if p.h != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
-#@-node:tbrown.20080613095157.10:openDir
-#@+node:tbrown.20100304090709.31081:loadDocstring
+#@+node:tbrown.20100304090709.31081: ** loadDocstring
 def loadDocstring(file_path):
     try:
         src = open(file_path).read()
@@ -503,8 +481,7 @@ def loadDocstring(file_path):
         doc_string = "**NO DOCSTRING**"
 
     return doc_string
-#@-node:tbrown.20100304090709.31081:loadDocstring
-#@+node:tbrown.20100401100336.24943:query
+#@+node:tbrown.20100401100336.24943: ** query
 def query(c, s):
     """Return yes/no answer from user for question s"""
 
@@ -513,9 +490,7 @@ def query(c, s):
         message = s)
 
     return ok == 'yes'
-#@nonl
-#@-node:tbrown.20100401100336.24943:query
-#@+node:tbrown.20090225191501.1:run_recursive
+#@+node:tbrown.20090225191501.1: ** run_recursive
 def run_recursive(c):
     """Recursive descent."""
     p = c.p
@@ -532,8 +507,7 @@ def run_recursive(c):
         yield s
 
     c.redraw(p)
-#@-node:tbrown.20090225191501.1:run_recursive
-#@+node:ville.20090223183051.1:act on node
+#@+node:ville.20090223183051.1: ** act on node
 def cmd_ActOnNode(c, p=None, event=None):
     """ act_on_node handler for active_path.py
     """
@@ -556,13 +530,11 @@ def cmd_ActOnNode(c, p=None, event=None):
         raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode
-#@-node:ville.20090223183051.1:act on node
-#@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
+#@+node:tbrown.20080616153649.2: ** cmd_ShowCurrentPath
 def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
     g.es(getPath(c, c.p))
-#@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
-#@+node:tbrown.20100401100336.13608:cmd_LoadRecursive
+#@+node:tbrown.20100401100336.13608: ** cmd_LoadRecursive
 def cmd_LoadRecursive(c):
     """Recursive update, with expansions."""
 
@@ -570,8 +542,7 @@ def cmd_LoadRecursive(c):
         path = getPath(c, s)
         if path:
             sync_node_to_folder(c,s,path,updateOnly=True,recurse=True)
-#@-node:tbrown.20100401100336.13608:cmd_LoadRecursive
-#@+node:tbrown.20080619080950.16:cmd_UpdateRecursive
+#@+node:tbrown.20080619080950.16: ** cmd_UpdateRecursive
 def cmd_UpdateRecursive(c):
     """Recursive update, no new expansions."""
 
@@ -579,15 +550,13 @@ def cmd_UpdateRecursive(c):
         path = getPath(c, s)
         if path:
             sync_node_to_folder(c,s,path,updateOnly=True)
-#@-node:tbrown.20080619080950.16:cmd_UpdateRecursive
-#@+node:tbrown.20091214212801.13475:cmd_SetNodeToAbsolutePathRecursive
+#@+node:tbrown.20091214212801.13475: ** cmd_SetNodeToAbsolutePathRecursive
 def cmd_SetNodeToAbsolutePathRecursive(c):
     """Change "/dirname/" to "@path /absolute/path/to/dirname", recursively"""
 
     for s in run_recursive(c):
         cmd_SetNodeToAbsolutePath(c, p=s)
-#@-node:tbrown.20091214212801.13475:cmd_SetNodeToAbsolutePathRecursive
-#@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
+#@+node:tbrown.20080616153649.5: ** cmd_SetNodeToAbsolutePath
 def cmd_SetNodeToAbsolutePath(c, p=None):
     """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
 
@@ -604,8 +573,7 @@ def cmd_SetNodeToAbsolutePath(c, p=None):
     else:
         type_ = "@auto "
     p.h = type_+path
-#@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
-#@+node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
+#@+node:tbrown.20080618141617.879: ** cmd_PurgeVanishedFiles
 def cond(p):
     return p.h.startswith('*') and p.h.endswith('*')
 
@@ -675,9 +643,8 @@ def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
                 child.doDelete()
     return _culls
 
-#@-node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
-#@+node:tbrown.20080619080950.14:testing
-#@+node:tbrown.20080619080950.15:makeTestHierachy
+#@+node:tbrown.20080619080950.14: ** testing
+#@+node:tbrown.20080619080950.15: *3* makeTestHierachy
 files="""
 a/
 a/a/
@@ -719,8 +686,5 @@ def deleteTestHierachy(c):
 if testing:
     cmd_MakeTestHierachy = makeTestHierachy
     cmd_DeleteFromTestHierachy = deleteTestHierachy
-#@-node:tbrown.20080619080950.15:makeTestHierachy
-#@-node:tbrown.20080619080950.14:testing
 #@-others
-#@-node:tbrown.20080613095157.2:@thin active_path.py
 #@-leo

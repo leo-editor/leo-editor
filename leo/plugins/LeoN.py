@@ -1,10 +1,10 @@
 ##!/usr/bin/env python2.2
-##@+leo-ver=4-thin
-##@+node:ekr.20050402080206.8:@thin LeoN.py
-##@@first
+#@+leo-ver=5-thin
+#@+node:ekr.20050402080206.8: * @thin LeoN.py
+#@@first
 #
-##@<< docstring >>
-##@+node:ekr.20050402080206.9:<< docstring >>
+#@+<< docstring >>
+#@+node:ekr.20050402080206.9: ** << docstring >>
 #"""
 #This code correspond to an implementation of a Concurrent Editable Text buffer.
 #
@@ -34,125 +34,97 @@
 #
 #rodrigob at elo dot utfsm dot cl
 #"""
-##@nonl
-##@-node:ekr.20050402080206.9:<< docstring >>
-##@nl
+#@-<< docstring >>
 #
-##@@language python
-##@@tabwidth -4
+#@@language python
+#@@tabwidth -4
 #
-##@<< version history >>
-##@+node:ekr.20050402080235:<< version history >>
-##@+at
-## release version 0.0.1 (major, minor, release)
-## 
-## this version is not supposed to be error prone, but it is good code base.
-## -------------------------------------------------------------------------
-## 
-## 25/06/03 Copying of the main algorithms into the code. RodrigoB.
-## 01/07/03 Programming. RodrigoB.
-## 02/07/03 Programming. RodrigoB.
-## 05/07/03 Reading about the garbage collector stuff. RodrigoB.
-## 07/07/03 Programming. RodrigoB.
-## 08/07/03 Programming, operations herit from dict, support splitted ops, 
-## working on tests, syntax debugging. RodrigoB.
-## 09/07/03 Implementing operations relations, starting debug iterations based 
-## on unittests.
-##          Added another parameters form for receive_operation. RodrigoB.
-## 10/07/03 Debugging conceptual aspects; management of timestamps on 
-## transformed operations. minor bugs fixed. Splitted special cases 
-## appears.RodrigoB.
-## 12/07/03 Searching bugs. bugfixes. RodrigoB.
-## 13/07/03 Implementing the garbage collector. Searching bugs. bugfixes. 
-## Testing garbage collector. RA problems. RodrigoB.
-## 14/07/03 (vive la France!) Testing an idea (__eq__). Little edit to the root 
-## docustring. RodrigoB.
-## 15/07/03 Hunting the Last Bug. Eureka. First successful execution. Code 
-## cleanup. Using unittest module. Release 1. RodrigoB.
-## 
-## 5/4/05 EKR: Converted tabs to blanks.
-## 
-## Todo
-## 
-## - Find a good TestConcurrentEditable2 to test LostInformation cases
-## 
-## - LI is absolutelly not verified
-## - Find the Recover_LI specifications.
-## - Find a better way to quit the ambiguities on the 'if else {}' operation 
-## pertenence. (save_RA, save_LI conditions ?)
-## 
-## - collect garbage do not work anymore exactly like in the example. (is this 
-## a problem ?)
-## 
-## - Implement ConcurrentEditableServer
-## - Implement the  client-server tests
-## 
-## - Debug.
-##@-at
-##@@c
-##@-node:ekr.20050402080235:<< version history >>
-##@nl
+#@+<< version history >>
+#@+node:ekr.20050402080235: ** << version history >>
+#@+at
+# release version 0.0.1 (major, minor, release)
+# 
+# this version is not supposed to be error prone, but it is good code base.
+# -------------------------------------------------------------------------
+# 
+# 25/06/03 Copying of the main algorithms into the code. RodrigoB.
+# 01/07/03 Programming. RodrigoB.
+# 02/07/03 Programming. RodrigoB.
+# 05/07/03 Reading about the garbage collector stuff. RodrigoB.
+# 07/07/03 Programming. RodrigoB.
+# 08/07/03 Programming, operations herit from dict, support splitted ops, working on tests, syntax debugging. RodrigoB.
+# 09/07/03 Implementing operations relations, starting debug iterations based on unittests.
+#          Added another parameters form for receive_operation. RodrigoB.
+# 10/07/03 Debugging conceptual aspects; management of timestamps on transformed operations. minor bugs fixed. Splitted special cases appears.RodrigoB.
+# 12/07/03 Searching bugs. bugfixes. RodrigoB.
+# 13/07/03 Implementing the garbage collector. Searching bugs. bugfixes. Testing garbage collector. RA problems. RodrigoB.
+# 14/07/03 (vive la France!) Testing an idea (__eq__). Little edit to the root docustring. RodrigoB.
+# 15/07/03 Hunting the Last Bug. Eureka. First successful execution. Code cleanup. Using unittest module. Release 1. RodrigoB.
+# 
+# 5/4/05 EKR: Converted tabs to blanks.
+# 
+# Todo
+# 
+# - Find a good TestConcurrentEditable2 to test LostInformation cases
+# 
+# - LI is absolutelly not verified
+# - Find the Recover_LI specifications.
+# - Find a better way to quit the ambiguities on the 'if else {}' operation pertenence. (save_RA, save_LI conditions ?)
+# 
+# - collect garbage do not work anymore exactly like in the example. (is this a problem ?)
+# 
+# - Implement ConcurrentEditableServer
+# - Implement the  client-server tests
+# 
+# - Debug.
+#@@c
+#@-<< version history >>
 #
-##@<<docs>>
-##@+node:ekr.20050402080206.10:<<docs>>
-##@+others
-##@+node:ekr.20050402080206.13:Big picture
-##@+at
-## Big picture
-## -----------
-## 
-## There is a concurrent editable object that receive commands (operations to 
-## realize) associated with the State Vector of the emisor.
-## 
-## The received command are 'received and delayed to preserve causality' or 
-## 'executed'.
-## 
-## When executed an undo/transform-do/transform-redo scheme is used.
-## 
-## The transformation of commands (operational transforms) is realized by the 
-## GOT algorithm.
-## 
-## The GOT algorithm use two application specific transformation functions IT, 
-## ET (inclusion and exclusion transform, respectively).
-## 
-## Tadaaa...
-##@-at
-##@@c
-##@-node:ekr.20050402080206.13:Big picture
-##@+node:ekr.20050402080206.14:Context (so what?)
-##@+at
-## so what? -> Why should you care about this code?
-## 
-## If you want to implement a collaborative text editing software.
-## You will need to care about three aspects:
-##     - network layer
-##     - editor user interface
-##     - core logic for collaborative editing
-## 
-## The python implementation allow a full cross platform usage and a very rapid 
-## deployment; considering that there already exist solutions for the network 
-## layer (Twisted) and tools to create easilly user interfaces (Tkinter, 
-## wxWindows).
-## 
-## I will enjoy to know about anyone using this code, so please feel free to 
-## mail me: <rodrigob at elo dot utfsm dot cl>.
-## 
-## This code is part of the devellopment of LeoN, the Collaborative Leo plugin. 
-## http://leo.sf.net
-##@-at
-##@@c
-##@-node:ekr.20050402080206.14:Context (so what?)
-##@-others
-##@nonl
-##@-node:ekr.20050402080206.10:<<docs>>
-##@nl
+#@+<<docs>>
+#@+node:ekr.20050402080206.10: ** <<docs>>
+#@+others
+#@+node:ekr.20050402080206.13: *3* Big picture
+#@+at
+# Big picture
+# -----------
+# 
+# There is a concurrent editable object that receive commands (operations to realize) associated with the State Vector of the emisor.
+# 
+# The received command are 'received and delayed to preserve causality' or 'executed'.
+# 
+# When executed an undo/transform-do/transform-redo scheme is used.
+# 
+# The transformation of commands (operational transforms) is realized by the GOT algorithm.
+# 
+# The GOT algorithm use two application specific transformation functions IT, ET (inclusion and exclusion transform, respectively).
+# 
+# Tadaaa...
+#@@c
+#@+node:ekr.20050402080206.14: *3* Context (so what?)
+#@+at
+# so what? -> Why should you care about this code?
+# 
+# If you want to implement a collaborative text editing software.
+# You will need to care about three aspects:
+#     - network layer
+#     - editor user interface
+#     - core logic for collaborative editing
+# 
+# The python implementation allow a full cross platform usage and a very rapid deployment; considering that there already exist solutions for the network layer (Twisted) and tools to create easilly user interfaces (Tkinter, wxWindows).
+# 
+# I will enjoy to know about anyone using this code, so please feel free to mail me: <rodrigob at elo dot utfsm dot cl>.
+# 
+# This code is part of the devellopment of LeoN, the Collaborative Leo plugin. http://leo.sf.net
+#@@c
+#@-others
+#@-<<docs>>
 #
 #import types
 #
 #dbg = 0 # debug level ;p
 #
-##@+others
-##@+node:ekr.20050402080206.15:ConcurrentEditable
+#@+others
+#@+node:ekr.20050402080206.15: ** ConcurrentEditable
 #class ConcurrentEditable:
 #
 #    """
@@ -482,13 +454,11 @@
 #        return self.gen_op(type, pos, data, **kws)
 #    #@-node:ekr.20050402080206.21:generate operations
 #    #@-others
-##@-node:ekr.20050402080206.15:ConcurrentEditable
-##@+node:ekr.20050402080206.22:operations relations
-##@+at
-## Function defined over the operation that return boolean values
-##@-at
-##@@c
-##@+node:ekr.20050402080206.23:causally-ready
+#@+node:ekr.20050402080206.22: ** operations relations
+#@+at
+# Function defined over the operation that return boolean values
+#@@c
+#@+node:ekr.20050402080206.23: *3* causally-ready
 #def is_causally_ready(t_O, t_site):
 #    """
 #    Definition 5: Conditions for executing remote operations
@@ -516,8 +486,7 @@
 #
 #
 #    return condition1 and condition2
-##@-node:ekr.20050402080206.23:causally-ready
-##@+node:ekr.20050402080206.24:total ordering relation
+#@+node:ekr.20050402080206.24: *3* total ordering relation
 #def check_total_ordering(Oa, Ob):
 #    """
 #    Check if Oa => Ob.
@@ -547,30 +516,24 @@
 #    condition2 = (sum(SVOa) == sum(SVOb)) and (i < j)
 #
 #    return condition1 or condition2
-##@-node:ekr.20050402080206.24:total ordering relation
-##@+node:ekr.20050402080206.25:dependent or independent
-##@+at
-## Definition 1: Causal ordering relation "->"
-## 
-## Given two operations Oa and Ob , generated at sites i and j, then Oa -> Ob , 
-## iff:
-##     1. i = j and the generation of Oa happened before the generation of Ob , 
-## or
-##     2. i != j and the execution of Oa at site j happened before the 
-## generation of Ob , or
-##     3. there exists an operation Ox, such that Oa -> Ox and Ox -> Ob.
-## 
-## Definition 2: Dependent and independent operations
-## 
-## Given any two operations Oa and Ob.
-##     1. Ob is said to be dependent on Oa iff Oa -> Ob.
-##     2. Oa and Ob are said to be independent (or concurrent) iff neither Oa 
-## -> Ob , nor Ob -> Oa , which is expressed as Oa || Ob.
-## 
-## (nor == not or; 0,0 => 1 , 0 else)
-## 
-##@-at
-##@@c
+#@+node:ekr.20050402080206.25: *3* dependent or independent
+#@+at
+# Definition 1: Causal ordering relation "->"
+# 
+# Given two operations Oa and Ob , generated at sites i and j, then Oa -> Ob , iff:
+#     1. i = j and the generation of Oa happened before the generation of Ob , or
+#     2. i != j and the execution of Oa at site j happened before the generation of Ob , or
+#     3. there exists an operation Ox, such that Oa -> Ox and Ox -> Ob.
+# 
+# Definition 2: Dependent and independent operations
+# 
+# Given any two operations Oa and Ob.
+#     1. Ob is said to be dependent on Oa iff Oa -> Ob.
+#     2. Oa and Ob are said to be independent (or concurrent) iff neither Oa -> Ob , nor Ob -> Oa , which is expressed as Oa || Ob.
+# 
+# (nor == not or; 0,0 => 1 , 0 else)
+# 
+#@@c
 #
 #def are_dependent(Oa,Ob):
 #    """
@@ -604,10 +567,7 @@
 #
 #
 #are_independent = are_concurrent # just an alias
-##@nonl
-##@-node:ekr.20050402080206.25:dependent or independent
-##@-node:ekr.20050402080206.22:operations relations
-##@+node:ekr.20050402080206.26:GOT
+#@+node:ekr.20050402080206.26: ** GOT
 #def GOT( Onew, HB):
 #    """
 #    Algorithm 2: The GOT control scheme (sun98generic)
@@ -659,9 +619,7 @@
 #                EOnew = LIT(Oonew, HB[k:])
 #
 #    return EOnew
-##@nonl
-##@-node:ekr.20050402080206.26:GOT
-##@+node:ekr.20050402080206.27:Transformations
+#@+node:ekr.20050402080206.27: ** Transformations
 #def LIT(O, OL):
 #    if OL==[]:
 #        Oo = O
@@ -688,8 +646,7 @@
 #    t_list.reverse() # in place operator
 #
 #    return t_list
-##@nonl
-##@+node:ekr.20050402080206.28:IT
+#@+node:ekr.20050402080206.28: *3* IT
 #def IT (Oa, Ob):
 #    """
 #    Inclusion Transform.
@@ -779,8 +736,7 @@
 #
 #
 #
-##@-node:ekr.20050402080206.28:IT
-##@+node:ekr.20050402080206.29:ET
+#@+node:ekr.20050402080206.29: *3* ET
 #def ET(Oa, Ob):
 #    """
 #    Exclusion Transform.
@@ -870,9 +826,7 @@
 #                        Op( "Delete", L(Oa) -(P(Ob) - P(Oa)), P(Ob) + L(Ob) ) )
 #    return Ooa
 #
-##@-node:ekr.20050402080206.29:ET
-##@-node:ekr.20050402080206.27:Transformations
-##@+node:ekr.20050402080206.30:Operations
+#@+node:ekr.20050402080206.30: ** Operations
 #class Operation(dict):
 #    """
 #    simple object that encapsulate the information and methods related to the operations.
@@ -952,10 +906,9 @@
 #
 ## end of class Operation
 #
-##@+at
-## Dummy function to shortcut the code.
-##@-at
-##@@c
+#@+at
+# Dummy function to shortcut the code.
+#@@c
 #
 #def Op(type, data, pos): # this one has a diferent parameters order
 #    """
@@ -970,11 +923,9 @@
 #    return Operation(type, pos, data)
 #
 #
-##@+at
-## Simple function used in the algorithm (enhance readability and paper 
-## notation matching)
-##@-at
-##@@c
+#@+at
+# Simple function used in the algorithm (enhance readability and paper notation matching)
+#@@c
 #
 #def T(O):
 #    """
@@ -1013,7 +964,7 @@
 #
 #    return O["data"]
 #
-##@+node:ekr.20050402080206.31:Splitted
+#@+node:ekr.20050402080206.31: *3* Splitted
 #def Splitted(O1, O2):
 #    """
 #    Return an operation that is splitted. (this should considered in function 'execute' and 'undo')
@@ -1038,9 +989,7 @@
 #        raise "Weird split P(O1) == P(O2) (%s,%s)"%(O1, O2)
 #
 #    return Oo
-##@nonl
-##@-node:ekr.20050402080206.31:Splitted
-##@+node:ekr.20050402080206.32:Lost Information
+#@+node:ekr.20050402080206.32: *3* Lost Information
 ## LI refers to "Lost Information".
 #
 #def Check_LI(Oa, Ob):
@@ -1072,9 +1021,7 @@
 #    """
 #
 #    return 	Oa["lost_information"]
-##@nonl
-##@-node:ekr.20050402080206.32:Lost Information
-##@+node:ekr.20050402080206.33:Relative Address
+#@+node:ekr.20050402080206.33: *3* Relative Address
 #def Check_RA(Oa):
 #    """
 #    Is Oa relatively addressed ?
@@ -1117,10 +1064,7 @@
 #    Oaa = op( Oa["type"],	Oa["delta_pos"] + Ob["pos"], Oa["data"] )
 #
 #    return Oaa
-##@nonl
-##@-node:ekr.20050402080206.33:Relative Address
-##@-node:ekr.20050402080206.30:Operations
-##@+node:ekr.20050402080206.34:ConcurrentEditableServer
+#@+node:ekr.20050402080206.34: ** ConcurrentEditableServer
 #class ConcurrentEditableServer:
 #    """
 #    Manage the request from different client, giving them the ilussion that there are only two sites. Here and There.
@@ -1147,12 +1091,10 @@
 #        """
 #        """
 #        return
-##@-node:ekr.20050402080206.34:ConcurrentEditableServer
-##@+node:ekr.20050402080206.35:Tests
-##@+at
-## The unit tests for concurrent editions.
-##@-at
-##@@c
+#@+node:ekr.20050402080206.35: ** Tests
+#@+at
+# The unit tests for concurrent editions.
+#@@c
 #
 #
 #def Tests():
@@ -1183,8 +1125,7 @@
 #    unittest.TextTestRunner().run(TestSuite)
 #
 #    return
-##@nonl
-##@+node:ekr.20050402080206.36:TestConcurrentEditable1
+#@+node:ekr.20050402080206.36: *3* TestConcurrentEditable1
 #def TestConcurrentEditable1():
 #    """
 #    The test case that we gonna use for debugging is the same case presented at "A generic operation transformation scheme for consistency maintenance in real-time cooperative editing systems", Fig 1; wich suggest an interesing scenario.
@@ -1272,8 +1213,7 @@
 #        print("\nTest FAILED. Expecting the same result at the three sites: 'ABCcD', and no delayed operations left in the buffer.")
 #
 #    return success
-##@-node:ekr.20050402080206.36:TestConcurrentEditable1
-##@+node:ekr.20050402080206.37:TestConcurrentEditable2
+#@+node:ekr.20050402080206.37: *3* TestConcurrentEditable2
 #def TestConcurrentEditable2():
 #    """
 #    Second test is similar to Test1 but with other operations. Try to test other code areas (i.e. Lost Information cases)
@@ -1360,22 +1300,16 @@
 #        print("\nTest FAILED. Expecting the same result at the three sites: 'ABCc', and no delayed operations left in the buffer.")
 #
 #    return success
-##@nonl
-##@-node:ekr.20050402080206.37:TestConcurrentEditable2
-##@+node:ekr.20050402080206.38:TestConcurrentEditableServer
+#@+node:ekr.20050402080206.38: *3* TestConcurrentEditableServer
 #def TestConcurrentEditableServer():
 #    """
 #    """
 #
 #    return 1
-##@nonl
-##@-node:ekr.20050402080206.38:TestConcurrentEditableServer
-##@-node:ekr.20050402080206.35:Tests
-##@-others
+#@-others
 #
 #if __name__ == "__main__":
 #
 #    Tests()
 #
-##@-node:ekr.20050402080206.8:@thin LeoN.py
-##@-leo
+#@-leo

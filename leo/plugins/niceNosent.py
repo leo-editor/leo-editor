@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040331151007:@thin niceNosent.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040331151007: * @thin niceNosent.py
 """Preprocess @file-nosent nodes: make sure each subnode ends
 with exactly one newline, replace all tabs with spaces, and
 add a newline before class and functions in the derived file.
@@ -9,8 +9,8 @@ add a newline before class and functions in the derived file.
 #@@tabwidth -4
 
 __version__ = "0.3"
-#@<< version history >>
-#@+node:ekr.20040909122647:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040909122647: ** << version history >>
 #@+at
 # 
 # 0.2 EKR:
@@ -21,25 +21,20 @@ __version__ = "0.3"
 #         - Use keywords.get('c') instead of g.top().
 #         - Use explicit positions everywhere.
 #         - removed reference to new_df.
-#@-at
-#@nonl
-#@-node:ekr.20040909122647:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040909122647.1:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040909122647.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 # import os
-#@nonl
-#@-node:ekr.20040909122647.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 NSPACES = ' '*4
 nosentNodes = []
 
 #@+others
-#@+node:ekr.20050917082031:init
+#@+node:ekr.20050917082031: ** init
 def init ():
 
     ok = not g.unitTesting
@@ -50,9 +45,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050917082031:init
-#@+node:ekr.20040331151007.1:onPreSave
+#@+node:ekr.20040331151007.1: ** onPreSave
 def onPreSave(tag=None, keywords=None):
 
     """Before saving a nosentinels file, make sure that all nodes have a blank line at the end."""
@@ -68,9 +61,7 @@ def onPreSave(tag=None, keywords=None):
                     lastline = s.split("\n")[-1]
                     if lastline.strip():
                         c.setBodyString(p2,s+"\n")
-#@nonl
-#@-node:ekr.20040331151007.1:onPreSave
-#@+node:ekr.20040331151007.2:onPostSave
+#@+node:ekr.20040331151007.2: ** onPostSave
 def onPostSave(tag=None, keywords=None):
     """After saving a nosentinels file, replace all tabs with spaces."""
 
@@ -86,8 +77,8 @@ def onPostSave(tag=None, keywords=None):
             f = open(fname,"r")
             lines = f.readlines()
             f.close()
-            #@            << add a newline before def or class >>
-            #@+node:ekr.20040331151007.3:<< add a newline before def or class >>
+            #@+<< add a newline before def or class >>
+            #@+node:ekr.20040331151007.3: *3* << add a newline before def or class >>
             for i in range(len(lines)):
                 ls = lines[i].lstrip()
                 if ls.startswith("def ") or ls.startswith("class "):
@@ -96,22 +87,15 @@ def onPostSave(tag=None, keywords=None):
                             lines[i] = "\n" + lines[i]
                     except IndexError:
                         pass
-            #@nonl
-            #@-node:ekr.20040331151007.3:<< add a newline before def or class >>
-            #@nl
-            #@            << replace tabs with spaces >>
-            #@+node:ekr.20040331151007.4:<< replace tabs with spaces >>
+            #@-<< add a newline before def or class >>
+            #@+<< replace tabs with spaces >>
+            #@+node:ekr.20040331151007.4: *3* << replace tabs with spaces >>
             s = ''.join(lines)
             fh = open(fname,"w")
             fh.write(s.replace("\t",NSPACES))
             fh.close()
-            #@nonl
-            #@-node:ekr.20040331151007.4:<< replace tabs with spaces >>
-            #@nl
+            #@-<< replace tabs with spaces >>
 
     nosentNodes = []
-#@nonl
-#@-node:ekr.20040331151007.2:onPostSave
 #@-others
-#@-node:ekr.20040331151007:@thin niceNosent.py
 #@-leo

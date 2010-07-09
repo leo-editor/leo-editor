@@ -1,12 +1,12 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20080707101341.1:@thin ../modes/forth.py
+#@+leo-ver=5-thin
+#@+node:ekr.20080707101341.1: * @thin ../modes/forth.py
 # Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
 
 import leo.core.leoGlobals as g
 
-#@<< define mode rules >>
-#@+node:ekr.20080707101341.2:<< define mode rules >>
+#@+<< define mode rules >>
+#@+node:ekr.20080707101341.2: ** << define mode rules >>
 # Rules for forth_main ruleset.
 
 def forth_block_comment_rule(colorer, s, i):
@@ -127,10 +127,9 @@ if 0:
 
     def forth_rule21(colorer, s, i):
         return colorer.match_keywords(s, i)
-#@-node:ekr.20080707101341.2:<< define mode rules >>
-#@nl
-#@<< define mode data >>
-#@+node:ekr.20080707101341.3:<< define mode data >>
+#@-<< define mode rules >>
+#@+<< define mode data >>
+#@+node:ekr.20080707101341.3: ** << define mode data >>
 
 # Properties for forth mode.
 properties = {
@@ -177,16 +176,15 @@ rulesDictDict = {
 # Import dict for forth mode.
 importDict = {}
 
-#@-node:ekr.20080707101341.3:<< define mode data >>
-#@nl
-#@<< define extendForth class >>
-#@+node:ekr.20080707101341.4:<< define extendForth class >>
+#@-<< define mode data >>
+#@+<< define extendForth class >>
+#@+node:ekr.20080707101341.4: ** << define extendForth class >>
 class extendForth:
 
     '''A helper class to extend the mode tables from @data forth-x settings.'''
 
-    #@    @+others
-    #@+node:ekr.20080707101341.5:ctor
+    #@+others
+    #@+node:ekr.20080707101341.5: *3* ctor
     def __init__ (self):
 
         self.c = None # set by pre_init_mode function.
@@ -237,8 +235,7 @@ class extendForth:
 
         self.verbose = False # True: tell when extending forth words.
         # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
-    #@-node:ekr.20080707101341.5:ctor
-    #@+node:ekr.20080707101341.6:init & helper
+    #@+node:ekr.20080707101341.6: *3* init & helper
     def init (self):
 
         '''Set our ivars from settings.'''
@@ -281,7 +278,7 @@ class extendForth:
             self.splitList (ivar,setting)
 
         # g.trace('keywords',self.keywords)
-    #@+node:ekr.20080707101341.7:splitList
+    #@+node:ekr.20080707101341.7: *4* splitList
     def splitList (self,ivar,setting):
 
         '''Process lines containing pairs of entries 
@@ -309,10 +306,7 @@ class extendForth:
         if 0:
             g.trace(name1,getattr(self,name1))
             g.trace(name2,getattr(self,name2))
-    #@nonl
-    #@-node:ekr.20080707101341.7:splitList
-    #@-node:ekr.20080707101341.6:init & helper
-    #@+node:ekr.20080707101341.8:createBracketRules & helper
+    #@+node:ekr.20080707101341.8: *3* createBracketRules & helper
     def createBracketRules (self):
 
         for z in self.brackets1:
@@ -331,8 +325,7 @@ class extendForth:
                 no_escape=False, no_line_break=False, no_word_break=True) # Require word.
 
         return forth_bracket_rule
-    #@-node:ekr.20080707101341.8:createBracketRules & helper
-    #@+node:ekr.20080707101341.9:createDefiningWordRules & helper
+    #@+node:ekr.20080707101341.9: *3* createDefiningWordRules & helper
     def createDefiningWordRules (self):
 
         for z in self.definingwords:
@@ -352,8 +345,7 @@ class extendForth:
                 exclude_match=False)
 
         return forth_defining_word_rule
-    #@-node:ekr.20080707101341.9:createDefiningWordRules & helper
-    #@+node:ekr.20080707101341.10:createKeywords
+    #@+node:ekr.20080707101341.10: *3* createKeywords
     def createKeywords (self):
 
         '''Create the mode keyword table and
@@ -383,8 +375,7 @@ class extendForth:
                 # Always make the entry.
                 d [z] = kind
                 self.extendRulesDict(ch=z[0],func=func)
-    #@-node:ekr.20080707101341.10:createKeywords
-    #@+node:ekr.20080707101341.11:createStringRule
+    #@+node:ekr.20080707101341.11: *3* createStringRule
     def createStringRule (self,d,pair):
 
         '''Create an entry in d for a string keyword.'''
@@ -403,8 +394,7 @@ class extendForth:
                 no_escape=False, no_line_break=False, no_word_break=False) # Don't require ending word.
 
         return forth_string_word_rule
-    #@-node:ekr.20080707101341.11:createStringRule
-    #@+node:ekr.20080707101341.12:extendRulesDict
+    #@+node:ekr.20080707101341.12: *3* extendRulesDict
     def extendRulesDict (self,ch,func):
 
         global rulesDict
@@ -416,10 +406,8 @@ class extendForth:
             rulesDict[ch] = aList
 
         # g.trace(z,kind)
-    #@-node:ekr.20080707101341.12:extendRulesDict
     #@-others
-#@-node:ekr.20080707101341.4:<< define extendForth class >>
-#@nl
+#@-<< define extendForth class >>
 
 e = extendForth()
 
@@ -430,6 +418,4 @@ def pre_init_mode(c):
     e.createKeywords()
     e.createBracketRules()
     e.createDefiningWordRules()
-#@nonl
-#@-node:ekr.20080707101341.1:@thin ../modes/forth.py
 #@-leo

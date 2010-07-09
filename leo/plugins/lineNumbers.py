@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040419105219:@thin lineNumbers.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040419105219: * @thin lineNumbers.py
 '''Adds #line directives in perl and perlpod programs.
 
 Over-rides two methods in leoAtFile.py to write #line directives after node
@@ -10,19 +10,17 @@ node name rather than the filename. Currently supports only perl and perlpod.
 # Use and distribute under the same terms as Leo.
 # Original code by Mark Ng <markn@cs.mu.oz.au>
 
-#@<< imports >>
-#@+node:ekr.20050105150253:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050105150253: ** << imports >>
 import leo.core.leoGlobals as g
 # import leo.core.leoPlugins as leoPlugins
 
 import leo.core.leoAtFile as leoAtFile
 import re
-#@nonl
-#@-node:ekr.20050105150253:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "0.3"
-#@<< version history >>
-#@+node:ekr.20050105150253.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050105150253.1: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -31,23 +29,19 @@ __version__ = "0.3"
 # 0.2 EKR:
 #     - Convert to new coding conventions.
 # 0.3 EKR:
-#     - Changed leoAtFile.newDerivedFile to leoAtFile.atFile when overriding 
-# methods.
+#     - Changed leoAtFile.newDerivedFile to leoAtFile.atFile when overriding methods.
 #       This is required because of changes in 4.3 to Leo's core code.
 # 0.4 EKR:
 #     - Used named sections to emphasize the dangerous nature of this code.
-#@-at
-#@nonl
-#@-node:ekr.20050105150253.1:<< version history >>
-#@nl
+#@-<< version history >>
 
 linere = re.compile("^#line 1 \".*\"$")
 
 def init():
     ok = not g.app.unitTesting # Not safe for unit testing.  Changes core class.
     if ok:
-        #@        << override write methods >>
-        #@+node:ekr.20040419105219.1:<< override write methods >>
+        #@+<< override write methods >>
+        #@+node:ekr.20040419105219.1: ** << override write methods >>
         oldOpenNodeSentinel = leoAtFile.atFile.putOpenNodeSentinel
 
         def putLineNumberDirective(self,v,inAtAll=False,inAtOthers=False,middle=False):
@@ -60,11 +54,9 @@ def init():
 
         g.funcToMethod(putLineNumberDirective,	
             leoAtFile.atFile,"putOpenNodeSentinel")
-        #@nonl
-        #@-node:ekr.20040419105219.1:<< override write methods >>
-        #@nl
-        #@        << override read methods >>
-        #@+node:ekr.20040419105219.2:<< override read methods >>
+        #@-<< override write methods >>
+        #@+<< override read methods >>
+        #@+node:ekr.20040419105219.2: ** << override read methods >>
         readNormalLine = leoAtFile.atFile.readNormalLine
 
         def skipLineNumberDirective(self, s, i):
@@ -76,11 +68,7 @@ def init():
 
         g.funcToMethod(skipLineNumberDirective,
             leoAtFile.atFile,"readNormalLine")
-        #@nonl
-        #@-node:ekr.20040419105219.2:<< override read methods >>
-        #@nl
+        #@-<< override read methods >>
         g.plugin_signon(__name__)
     return ok
-#@nonl
-#@-node:ekr.20040419105219:@thin lineNumbers.py
 #@-leo

@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:bobjack.20080321133958.6:@thin rClick.py
+#@+leo-ver=5-thin
+#@+node:bobjack.20080321133958.6: * @thin rClick.py
 #@@language python
 #@@tabwidth -4
 
-#@<< docstring >>
-#@+node:bobjack.20080320084644.2:<< docstring >>
+#@+<< docstring >>
+#@+node:bobjack.20080320084644.2: ** << docstring >>
 """
 Right Click Menus (rClick.py)
 =============================
@@ -505,14 +505,13 @@ The 'rclick-button' command is provided for convenience.  Plugins may provide th
 command to handle check and radio items, using rclick-button as a template.
 
 """
-#@-node:bobjack.20080320084644.2:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = "1.37"
 __plugin_name__ = 'Right Click Menus'
 
-#@<< version history >>
-#@+node:ekr.20040422081253:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040422081253: ** << version history >>
 #@+at
 # 0.1, 0.2: Created by 'e'.
 # 0.3 EKR:
@@ -616,24 +615,20 @@ __plugin_name__ = 'Right Click Menus'
 #     - fix k.funcReturn but in recentFoldersCallback
 # 1.35 bobjack:
 #     - convert to use class based commands
-#     - add menu generator commands to crate menu items to control find 
-# options
+#     - add menu generator commands to crate menu items to control find options
 #     - seperate out base classes pluginCommandClass and basePluginController
 # 1.36 EKR:
 #     - convert menu.add_command to c.add_command
 # 1.37 bobjack:
-#     - remove base classes to a seperate file so toolbar can be independant 
-# of rClick
+#     - remove base classes to a seperate file so toolbar can be independant of rClick
 #     - modify menu config to remove rClick load order sensitivity
 # 1.38 EKR: preliminary support for qt gui.  But it's not ready yet.
 # 
 # 
 # 
-#@-at
-#@-node:ekr.20040422081253:<< version history >>
-#@nl
-#@<< todo >>
-#@+node:bobjack.20080323095208.2:<< todo >>
+#@-<< version history >>
+#@+<< todo >>
+#@+node:bobjack.20080323095208.2: ** << todo >>
 #@+at
 # TODO:
 # 
@@ -652,12 +647,9 @@ __plugin_name__ = 'Right Click Menus'
 # - provide rclick-gen-open-with-list and @popup open-with-menu
 # 
 # - remove dependence on Tk.
-#@-at
-#@nonl
-#@-node:bobjack.20080323095208.2:<< todo >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20050101090207.2:<< imports >>
+#@-<< todo >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -673,26 +665,23 @@ except ImportError:
     Image = ImageTk = None
 
 import leo.plugins.rClickBasePluginClasses as baseClasses
-#@-node:ekr.20050101090207.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 controllers = {}
 default_context_menus = {}
 
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
 
-#@<< required ivars >>
-#@+node:bobjack.20080424195922.5:<< required ivars >>
+#@+<< required ivars >>
+#@+node:bobjack.20080424195922.5: ** << required ivars >>
 #@+at
-# This is a list of ivars that the pluginController must have and the type of 
-# objects they are allowed to contain.
+# This is a list of ivars that the pluginController must have and the type of objects they are allowed to contain.
 # 
 #     (ivar, type)
 # 
 # where type may be a tuple and False indicates any type will do
 # 
 # The list is used by unit tests.
-#@-at
 #@@c
 
 requiredIvars = (
@@ -707,12 +696,11 @@ requiredIvars = (
     ('commandList', (tuple, dict)),
     ('iconBasePath', g.choose(g.isPython3,str,basestring)),
 )
-#@-node:bobjack.20080424195922.5:<< required ivars >>
-#@nl
+#@-<< required ivars >>
 
 #@+others
-#@+node:ekr.20060108122501:Module-level
-#@+node:ekr.20060108122501.1:init
+#@+node:ekr.20060108122501: ** Module-level
+#@+node:ekr.20060108122501.1: *3* init
 def init ():
     """Initialize and register plugin."""
 
@@ -732,8 +720,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20060108122501.1:init
-#@+node:bobjack.20080323045434.18:onCreate
+#@+node:bobjack.20080323045434.18: *3* onCreate
 def onCreate (tag, keys):
     """Handle creation and initialization of the pluginController.
 
@@ -754,8 +741,7 @@ def onCreate (tag, keys):
 
         leoPlugins.registerHandler("bodyrclick1",rClicker)
         leoPlugins.registerHandler("rclick-popup",rClicker)
-#@-node:bobjack.20080323045434.18:onCreate
-#@+node:bobjack.20080424195922.4:onClose
+#@+node:bobjack.20080424195922.4: *3* onClose
 def onClose (tag, keys):
 
     """Tell controller to clean up then destroy it."""
@@ -778,8 +764,7 @@ def onClose (tag, keys):
         controller.onClose()
     finally:
         controller = None
-#@-node:bobjack.20080424195922.4:onClose
-#@+node:ekr.20080327061021.220:rClicker
+#@+node:ekr.20080327061021.220: *3* rClicker
 # EKR: it is not necessary to catch exceptions or to return "break".
 
 def rClicker(tag, keywords):
@@ -798,25 +783,21 @@ def rClicker(tag, keywords):
         return
 
     return controllers[c].rClicker(keywords)
-#@-node:ekr.20080327061021.220:rClicker
-#@-node:ekr.20060108122501:Module-level
-#@+node:bobjack.20080516105903.17:class rClickCommandClass
+#@+node:bobjack.20080516105903.17: ** class rClickCommandClass
 class rClickCommandClass(baseClasses.pluginCommandClass):
 
     """Base class for all commands defined in the rClick.py plugin."""
 
     pass
-#@nonl
-#@-node:bobjack.20080516105903.17:class rClickCommandClass
-#@+node:bobjack.20080516105903.18:class pluginController
+#@+node:bobjack.20080516105903.18: ** class pluginController
 class pluginController(baseClasses.basePluginController):
 
     """A per commander controller for right click menu functionality."""
 
     commandPrefix = 'rclick'
 
-    #@    << command list >>
-    #@+node:bobjack.20080617170156.6:<< command list >>
+    #@+<< command list >>
+    #@+node:bobjack.20080617170156.6: *3* << command list >>
     commandList = (
         'rclick-gen-recent-files-list',
         'rclick-gen-context-sensitive-commands',
@@ -845,11 +826,9 @@ class pluginController(baseClasses.basePluginController):
         'rclick-find-suboutline-only-button',
         'rclick-find-entire-outline-button',
     )
-    #@nonl
-    #@-node:bobjack.20080617170156.6:<< command list >>
-    #@nl
-    #@    << default context menus >>
-    #@+node:bobjack.20080617170156.7:<< default context menus >>
+    #@-<< command list >>
+    #@+<< default context menus >>
+    #@+node:bobjack.20080617170156.7: *3* << default context menus >>
     defaultContextMenus = {
 
         'rclick-find-controls-left': [
@@ -910,12 +889,9 @@ class pluginController(baseClasses.basePluginController):
     #     'plusbox': [],
     # 
     #     'edit-menu': [
-    #         ('Cut\nicon = Tango/16x16/actions/editcut.png', 
-    # 'rclick-cut-text'),
-    #         ('Copy\nicon = Tango/16x16/actions/editcopy.png', 
-    # 'rclick-copy-text'),
-    #         ('Paste\nicon = Tango/16x16/actions/editpaste.png', 
-    # 'rclick-paste-text'),
+    #         ('Cut\nicon = Tango/16x16/actions/editcut.png', 'rclick-cut-text'),
+    #         ('Copy\nicon = Tango/16x16/actions/editcopy.png', 'rclick-copy-text'),
+    #         ('Paste\nicon = Tango/16x16/actions/editpaste.png', 'rclick-paste-text'),
     #         ('-',''),
     #         ('Select All', 'rclick-select-all'),
     #     ],
@@ -941,14 +917,12 @@ class pluginController(baseClasses.basePluginController):
     #         ),
     #     ],
     # 
-    #@-at
     #@@c
     }
-    #@-node:bobjack.20080617170156.7:<< default context menus >>
-    #@nl
+    #@-<< default context menus >>
 
-    #@    @+others
-    #@+node:bobjack.20080516105903.19:__init__
+    #@+others
+    #@+node:bobjack.20080516105903.19: *3* __init__
     def __init__(self, c):
 
         """Initialize rclick functionality for this commander.
@@ -972,7 +946,7 @@ class pluginController(baseClasses.basePluginController):
         self.iconCache = {}
 
 
-    #@+node:bobjack.20080516105903.20:onCreate
+    #@+node:bobjack.20080516105903.20: *4* onCreate
     def onCreate(self):
 
         """Perform initialization for this per commander controller."""
@@ -981,14 +955,12 @@ class pluginController(baseClasses.basePluginController):
         super(self.__class__, self).onCreate()
 
         self.rSetupMenus()
-    #@-node:bobjack.20080516105903.20:onCreate
-    #@+node:bobjack.20080516105903.21:getButtonHandlers
+    #@+node:bobjack.20080516105903.21: *4* getButtonHandlers
     def getButtonHandlers(self):
 
         return self.button_handlers
 
-    #@-node:bobjack.20080516105903.21:getButtonHandlers
-    #@+node:bobjack.20080516105903.22:rSetupMenus
+    #@+node:bobjack.20080516105903.22: *4* rSetupMenus
     def rSetupMenus (self):
 
         """Set up c.context-menus with menus from @settings or default_context_menu."""
@@ -1004,8 +976,8 @@ class pluginController(baseClasses.basePluginController):
 
         self.handleLocalPopupMenus()
 
-        #@    << def config_to_rclick >>
-        #@+node:bobjack.20080516105903.23:<< def config_to_rclick >>
+        #@+<< def config_to_rclick >>
+        #@+node:bobjack.20080516105903.23: *5* << def config_to_rclick >>
         def config_to_rclick(menu_table):
 
             """Convert from config to rClick format"""
@@ -1049,8 +1021,7 @@ class pluginController(baseClasses.basePluginController):
                 out.append( (self.rejoin(label, pairs), cmd) )
 
             return out
-        #@-node:bobjack.20080516105903.23:<< def config_to_rclick >>
-        #@nl
+        #@-<< def config_to_rclick >>
 
         # convert config menus to rClick format
         menus = c.context_menus
@@ -1066,13 +1037,12 @@ class pluginController(baseClasses.basePluginController):
 
         return True
 
-    #@+node:bobjack.20080516105903.24:rejoin
+    #@+node:bobjack.20080516105903.24: *5* rejoin
     def rejoin(self, cmd, pairs):
         """Join two strings with a line separator."""
 
         return (cmd + '\n' + pairs).strip()
-    #@-node:bobjack.20080516105903.24:rejoin
-    #@+node:bobjack.20080516105903.25:handleLocalPopupMenus
+    #@+node:bobjack.20080516105903.25: *5* handleLocalPopupMenus
     def handleLocalPopupMenus(self):
 
         """Handle @popup menu items outside @settings trees."""
@@ -1111,7 +1081,7 @@ class pluginController(baseClasses.basePluginController):
             self.doPopupItems(p, aList)
 
             c.context_menus[name] = aList        
-    #@+node:bobjack.20080516105903.26:doPopupItems
+    #@+node:bobjack.20080516105903.26: *6* doPopupItems
     def doPopupItems (self,p,aList):
 
         p = p.copy() ; after = p.nodeAfterTree()
@@ -1140,13 +1110,8 @@ class pluginController(baseClasses.basePluginController):
             else:
                 # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
-    #@nonl
-    #@-node:bobjack.20080516105903.26:doPopupItems
-    #@-node:bobjack.20080516105903.25:handleLocalPopupMenus
-    #@-node:bobjack.20080516105903.22:rSetupMenus
-    #@-node:bobjack.20080516105903.19:__init__
-    #@+node:bobjack.20080516105903.27:Generator Minibuffer Commands
-    #@+node:bobjack.20080516105903.28:rclick-gen-recent-files-list
+    #@+node:bobjack.20080516105903.27: *3* Generator Minibuffer Commands
+    #@+node:bobjack.20080516105903.28: *4* rclick-gen-recent-files-list
     class genRecentFilesListCommandClass(rClickCommandClass):
 
         """Generate menu items that will open files from the recent files list.
@@ -1160,8 +1125,8 @@ class pluginController(baseClasses.basePluginController):
 
         """
 
-        #@    @+others
-        #@+node:bobjack.20080516105903.29:doCommand
+        #@+others
+        #@+node:bobjack.20080516105903.29: *5* doCommand
         def doCommand(self, keywords):
 
             c = self.c
@@ -1209,12 +1174,10 @@ class pluginController(baseClasses.basePluginController):
 
             # Must change menu table in situ.
             menu_table[:0] = fnList + [('|', '')] + pathList
-        #@-node:bobjack.20080516105903.29:doCommand
         #@-others
 
 
-    #@-node:bobjack.20080516105903.28:rclick-gen-recent-files-list
-    #@+node:bobjack.20080516105903.30:rclick-gen-context-sensitive-commands
+    #@+node:bobjack.20080516105903.30: *4* rclick-gen-context-sensitive-commands
     class genContextSensitiveCommandsCommandClass(rClickCommandClass):
 
         """Generate context-sensitive rclick items.
@@ -1238,8 +1201,8 @@ class pluginController(baseClasses.basePluginController):
 
         """
 
-        #@    @+others
-        #@+node:bobjack.20080516105903.31:doCommand
+        #@+others
+        #@+node:bobjack.20080516105903.31: *5* doCommand
         def doCommand(self, keywords):
 
             if self.minibufferPhaseError():
@@ -1267,8 +1230,7 @@ class pluginController(baseClasses.basePluginController):
             if contextCommands:
                 # Must change table is situ. 
                 menu_table += [("-", '')] + contextCommands
-        #@-node:bobjack.20080516105903.31:doCommand
-        #@+node:bobjack.20080516105903.32:get_urls
+        #@+node:bobjack.20080516105903.32: *5* get_urls
         def get_urls(self, text):
 
             """
@@ -1296,8 +1258,7 @@ class pluginController(baseClasses.basePluginController):
                 contextCommands.append( menu_item )
 
             return contextCommands
-        #@-node:bobjack.20080516105903.32:get_urls
-        #@+node:bobjack.20080516105903.33:get_sections
+        #@+node:bobjack.20080516105903.33: *5* get_sections
         def get_sections(self, text):
 
             """
@@ -1328,7 +1289,7 @@ class pluginController(baseClasses.basePluginController):
 
             return contextCommands
 
-        #@+node:bobjack.20080516105903.34:get_help
+        #@+node:bobjack.20080516105903.34: *6* get_help
         def get_help(self, word):
             """Create a menu item to apply python's help() to `word`.
 
@@ -1394,10 +1355,8 @@ class pluginController(baseClasses.basePluginController):
 
             menu_item=('Help on: '+ self.crop(word,30), help_command)
             return [ menu_item ]
-        #@-node:bobjack.20080516105903.34:get_help
-        #@-node:bobjack.20080516105903.33:get_sections
-        #@+node:bobjack.20080516105903.35:Utils for context sensitive commands
-        #@+node:bobjack.20080516105903.36:get_text_and_word_from_body_text
+        #@+node:bobjack.20080516105903.35: *5* Utils for context sensitive commands
+        #@+node:bobjack.20080516105903.36: *6* get_text_and_word_from_body_text
         def get_text_and_word_from_body_text(self, widget):
 
             """Get text and word from text control.
@@ -1421,8 +1380,7 @@ class pluginController(baseClasses.basePluginController):
                 word = s[i:j]
 
             return text, word
-        #@-node:bobjack.20080516105903.36:get_text_and_word_from_body_text
-        #@+node:bobjack.20080516105903.37:crop
+        #@+node:bobjack.20080516105903.37: *6* crop
         def crop(self, s,n=20,end="..."):
 
             """return a part of string s, no more than n characters; optionally add ... at the end"""
@@ -1431,8 +1389,7 @@ class pluginController(baseClasses.basePluginController):
                 return s
             else:
                 return s[:n]+end # EKR
-        #@-node:bobjack.20080516105903.37:crop
-        #@+node:bobjack.20080516105903.38:getword
+        #@+node:bobjack.20080516105903.38: *6* getword
         def getword(self, s,pos):
 
             """returns a word in string s around position pos"""
@@ -1441,8 +1398,7 @@ class pluginController(baseClasses.basePluginController):
                 if m.start()<=pos and m.end()>=pos:
                     return m.group()
             return None
-        #@-node:bobjack.20080516105903.38:getword
-        #@+node:bobjack.20080516105903.39:getdoc
+        #@+node:bobjack.20080516105903.39: *6* getdoc
         def getdoc(self, thing, title='Help on %s', forceload=0):
 
             #g.trace(thing)
@@ -1459,8 +1415,7 @@ class pluginController(baseClasses.basePluginController):
 
             # Return what was written to fo.
             return fo.get()
-        #@-node:bobjack.20080516105903.39:getdoc
-        #@+node:bobjack.20080516105903.40:show_message_as_html
+        #@+node:bobjack.20080516105903.40: *6* show_message_as_html
         def show_message_as_html(self, title, msg):
 
             """Show `msg` in an external browser using leo_to_html."""
@@ -1476,15 +1431,12 @@ class pluginController(baseClasses.basePluginController):
             oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
             oHTML.applyTemplate()
             oHTML.show()
-        #@-node:bobjack.20080516105903.40:show_message_as_html
-        #@-node:bobjack.20080516105903.35:Utils for context sensitive commands
         #@-others
 
 
-    #@-node:bobjack.20080516105903.30:rclick-gen-context-sensitive-commands
-    #@+node:bobjack.20080516105903.41:Chapter Menu Commands
+    #@+node:bobjack.20080516105903.41: *4* Chapter Menu Commands
     #@+others
-    #@+node:bobjack.20080516105903.42:chapterMenuCommandClass
+    #@+node:bobjack.20080516105903.42: *5* chapterMenuCommandClass
     class chapterMenuCommandClass(rClickCommandClass):
 
         """Create a menu item for each chapter to perform 'action'.
@@ -1494,7 +1446,7 @@ class pluginController(baseClasses.basePluginController):
         """
         action = None
 
-        #@    @+others
+        #@+others
         #@-others
 
         def doCommand(self, keywords):
@@ -1524,7 +1476,6 @@ class pluginController(baseClasses.basePluginController):
                     commandList.append( (chap, getChapterCallback(chap)) )
 
             keywords['rc_menu_table'][:0] = commandList
-    #@-node:bobjack.20080516105903.42:chapterMenuCommandClass
     #@-others
 
     class cloneNodeToChapterMenuCommandClass(chapterMenuCommandClass): 
@@ -1539,14 +1490,12 @@ class pluginController(baseClasses.basePluginController):
     class selectChapterMenuCommandClass(chapterMenuCommandClass):
         action = 'select'
 
-    #@-node:bobjack.20080516105903.41:Chapter Menu Commands
-    #@-node:bobjack.20080516105903.27:Generator Minibuffer Commands
-    #@+node:bobjack.20080516105903.43:Button Event Handlers
-    #@+node:bobjack.20080516105903.44:rclick-button
+    #@+node:bobjack.20080516105903.43: *3* Button Event Handlers
+    #@+node:bobjack.20080516105903.44: *4* rclick-button
     class buttonCommandClass(rClickCommandClass):
 
-        #@    @+others
-        #@+node:bobjack.20080516105903.45:do_radio_button_event
+        #@+others
+        #@+node:bobjack.20080516105903.45: *5* do_radio_button_event
         def do_radio_button_event(self, keywords, item_data):
 
             """Handle radio button events."""
@@ -1576,8 +1525,7 @@ class pluginController(baseClasses.basePluginController):
 
                 g.doHook('rclick-button-clicked',
                     kind='radio', group=group, selected=selected)
-        #@-node:bobjack.20080516105903.45:do_radio_button_event
-        #@+node:bobjack.20080516105903.46:do_check_button_event
+        #@+node:bobjack.20080516105903.46: *5* do_check_button_event
         def do_check_button_event(self, keywords, item_data):
 
             """Handle check button events."""
@@ -1608,7 +1556,6 @@ class pluginController(baseClasses.basePluginController):
                 g.doHook('rclick-button-clicked',
                     kind='check', name=name, selected=selected)
 
-        #@-node:bobjack.20080516105903.46:do_check_button_event
         #@-others
 
         def __init__(self, *args, **keys):
@@ -1631,9 +1578,8 @@ class pluginController(baseClasses.basePluginController):
             if kind in self.button_handlers:
                 self.button_handlers[kind](keywords, item_data)
 
-    #@-node:bobjack.20080516105903.44:rclick-button
-    #@+node:bobjack.20080516105903.109:Find Buttons
-    #@+node:bobjack.20080516105903.110:findButtonCommandClass
+    #@+node:bobjack.20080516105903.109: *4* Find Buttons
+    #@+node:bobjack.20080516105903.110: *5* findButtonCommandClass
     class findButtonCommandClass(rClickCommandClass):
 
 
@@ -1656,89 +1602,71 @@ class pluginController(baseClasses.basePluginController):
                     self.item_data['control_var'] = self.svarDict[idx]
                     self.controller.add_check_button(keywords)
 
-        #@    @+others
-        #@+node:bobjack.20080516105903.111:Properties
-        #@+node:bobjack.20080516105903.112:svarDict
+        #@+others
+        #@+node:bobjack.20080516105903.111: *6* Properties
+        #@+node:bobjack.20080516105903.112: *7* svarDict
         def getSvarDict(self):
 
             return self.c.searchCommands.findTabHandler.svarDict
 
         svarDict = property(getSvarDict)
-        #@-node:bobjack.20080516105903.112:svarDict
-        #@-node:bobjack.20080516105903.111:Properties
         #@-others
-    #@nonl
-    #@-node:bobjack.20080516105903.110:findButtonCommandClass
-    #@+node:bobjack.20080516105903.113:rclick-find-whole-word-button
+    #@+node:bobjack.20080516105903.113: *5* rclick-find-whole-word-button
     class findWholeWordButtonCommandClass(findButtonCommandClass):
 
         data =('check', 'Whole Word', 'whole_word')
 
-    #@-node:bobjack.20080516105903.113:rclick-find-whole-word-button
-    #@+node:bobjack.20080516105903.116:rclick-find-ignore-case-button
+    #@+node:bobjack.20080516105903.116: *5* rclick-find-ignore-case-button
     class findIgnoreCaseButtonCommandClass(findButtonCommandClass):
 
         data =('check', 'Ignore Case', 'ignore_case')
-    #@-node:bobjack.20080516105903.116:rclick-find-ignore-case-button
-    #@+node:bobjack.20080516105903.117:rclick-find-wrap-around-button
+    #@+node:bobjack.20080516105903.117: *5* rclick-find-wrap-around-button
     class findWrapAroundButtonCommandClass(findButtonCommandClass):
 
         data = ('check', 'Wrap Around', 'wrap')
-    #@-node:bobjack.20080516105903.117:rclick-find-wrap-around-button
-    #@+node:bobjack.20080516105903.118:rclick-find-reverse-button
+    #@+node:bobjack.20080516105903.118: *5* rclick-find-reverse-button
     class findReverseButtonCommandClass(findButtonCommandClass):
 
         data = ('check', 'Reverse Button', 'reverse')
 
-    #@-node:bobjack.20080516105903.118:rclick-find-reverse-button
-    #@+node:bobjack.20080516105903.119:rclick-find-regexp-button
+    #@+node:bobjack.20080516105903.119: *5* rclick-find-regexp-button
     class findRegexpButtonCommandClass(findButtonCommandClass):
 
         data = ('check', 'Regexp', 'pattern_match')
-    #@-node:bobjack.20080516105903.119:rclick-find-regexp-button
-    #@+node:bobjack.20080516105903.120:rclick-find-mark-finds-button
+    #@+node:bobjack.20080516105903.120: *5* rclick-find-mark-finds-button
     class findMarkFindsButtonCommandClass(findButtonCommandClass):
 
         data = ('check', 'Mark Finds', 'mark_finds')
-    #@-node:bobjack.20080516105903.120:rclick-find-mark-finds-button
-    #@+node:bobjack.20080516105903.121:rclick-find-mark-changes-button
+    #@+node:bobjack.20080516105903.121: *5* rclick-find-mark-changes-button
     class findMarkChangesButtonCommandClass(findButtonCommandClass):
 
         data = ('check', 'Mark Changes', 'mark_changes')
-    #@-node:bobjack.20080516105903.121:rclick-find-mark-changes-button
-    #@+node:bobjack.20080516105903.122:rclick-find-search-body-button
+    #@+node:bobjack.20080516105903.122: *5* rclick-find-search-body-button
     class findSearchBodyButtonCommandClass(findButtonCommandClass):
 
         data =('check', 'Search Body', 'search_body')
 
 
-    #@-node:bobjack.20080516105903.122:rclick-find-search-body-button
-    #@+node:bobjack.20080516105903.123:rclick-find-search-headline-button
+    #@+node:bobjack.20080516105903.123: *5* rclick-find-search-headline-button
     class findSearchHeadlineButtonCommandClass(findButtonCommandClass):
 
         data = ('check', 'Search Headline', 'search_headline')
-    #@-node:bobjack.20080516105903.123:rclick-find-search-headline-button
-    #@+node:bobjack.20080516105903.124:rclick-find-node-only-button
+    #@+node:bobjack.20080516105903.124: *5* rclick-find-node-only-button
     class findNodeOnlyButtonCommandClass(findButtonCommandClass):
 
         data = ('radio-search-scope', 'Node Only', 'node-only')
-    #@-node:bobjack.20080516105903.124:rclick-find-node-only-button
-    #@+node:bobjack.20080516105903.125:rclick-find-suboutline-only-button
+    #@+node:bobjack.20080516105903.125: *5* rclick-find-suboutline-only-button
     class findSuboutlineOnlyButtonCommandClass(findButtonCommandClass):
 
         data = ('radio-search-scope', 'Suboutline Only', 'suboutline-only')
-    #@-node:bobjack.20080516105903.125:rclick-find-suboutline-only-button
-    #@+node:bobjack.20080516105903.126:rclick-find-entire-outline-button
+    #@+node:bobjack.20080516105903.126: *5* rclick-find-entire-outline-button
     class findEntireOutlineButtonCommandClass(findButtonCommandClass):
 
         data = ('radio-search-scope', 'Entire Outline', 'entire-outline')
 
 
-    #@-node:bobjack.20080516105903.126:rclick-find-entire-outline-button
-    #@-node:bobjack.20080516105903.109:Find Buttons
-    #@-node:bobjack.20080516105903.43:Button Event Handlers
-    #@+node:bobjack.20080516105903.47:rClick Event Handler
-    #@+node:bobjack.20080516105903.48:add_menu_item
+    #@+node:bobjack.20080516105903.47: *3* rClick Event Handler
+    #@+node:bobjack.20080516105903.48: *4* add_menu_item
     def add_menu_item(self, rmenu, label, command, keywords):
 
         """Add an item to the menu being constructed."""
@@ -1754,8 +1682,8 @@ class pluginController(baseClasses.basePluginController):
             item_data['name'] = keywords['rc_label']
 
         if not kind or kind=='command':
-            #@        << add command item >>
-            #@+node:bobjack.20080516105903.49:<< add command item >>
+            #@+<< add command item >>
+            #@+node:bobjack.20080516105903.49: *5* << add command item >>
 
             label = keywords.get('rc_label')
 
@@ -1768,17 +1696,15 @@ class pluginController(baseClasses.basePluginController):
             self.add_optional_args(kws, item_data)
 
             c.add_command(rmenu, **kws)
-            #@nonl
-            #@-node:bobjack.20080516105903.49:<< add command item >>
-            #@nl
+            #@-<< add command item >>
             return
 
         self.mb_keywords = keywords
         self.mb_retval = None  
 
         if kind == 'radio':
-            #@        << add radio item >>
-            #@+node:bobjack.20080516105903.50:<< add radio item >>
+            #@+<< add radio item >>
+            #@+node:bobjack.20080516105903.50: *5* << add radio item >>
 
             # control variables for groups are stored in a dictionary
             #
@@ -1819,13 +1745,12 @@ class pluginController(baseClasses.basePluginController):
             self.add_optional_args(kws, item_data, selected)
 
             rmenu.add_radiobutton(**kws)
-            #@-node:bobjack.20080516105903.50:<< add radio item >>
-            #@nl
+            #@-<< add radio item >>
             return
 
         if kind == 'check':
-            #@        << add checkbutton item >>
-            #@+node:bobjack.20080516105903.51:<< add checkbutton item >>
+            #@+<< add checkbutton item >>
+            #@+node:bobjack.20080516105903.51: *5* << add checkbutton item >>
 
             control_var = item_data['control_var'] = Tk.IntVar()
             selected = self.check_button_data.get(name)
@@ -1848,13 +1773,10 @@ class pluginController(baseClasses.basePluginController):
             self.add_optional_args(kws, item_data, selected)
 
             rmenu.add_checkbutton(kws)
-            #@nonl
-            #@-node:bobjack.20080516105903.51:<< add checkbutton item >>
-            #@nl
+            #@-<< add checkbutton item >>
             return
 
-    #@-node:bobjack.20080516105903.48:add_menu_item
-    #@+node:bobjack.20080516105903.127:add_check_button
+    #@+node:bobjack.20080516105903.127: *4* add_check_button
     def add_check_button(self, keywords):
 
         rmenu = keywords['rc_rmenu']
@@ -1882,8 +1804,7 @@ class pluginController(baseClasses.basePluginController):
 
         rmenu.add_checkbutton(kws)
         rmenu.rc_columnbreak = 0
-    #@-node:bobjack.20080516105903.127:add_check_button
-    #@+node:bobjack.20080516105903.128:add_radio_item
+    #@+node:bobjack.20080516105903.128: *4* add_radio_item
     def add_radio_button(self, keywords):
 
         rmenu = keywords['rc_rmenu']
@@ -1911,8 +1832,7 @@ class pluginController(baseClasses.basePluginController):
 
         rmenu.add_radiobutton(**kws)
         rmenu.rc_columnbreak = 0
-    #@-node:bobjack.20080516105903.128:add_radio_item
-    #@+node:bobjack.20080516105903.52:add_optional_args
+    #@+node:bobjack.20080516105903.52: *4* add_optional_args
     def add_optional_args(self, kws, item_data, selected=False):
 
 
@@ -1940,8 +1860,7 @@ class pluginController(baseClasses.basePluginController):
                 if not compound in ('bottom', 'center', 'left', 'none', 'right', 'top'):
                     compound = 'left'
                 kws['compound'] = compound
-    #@-node:bobjack.20080516105903.52:add_optional_args
-    #@+node:bobjack.20080516105903.53:rClicker
+    #@+node:bobjack.20080516105903.53: *4* rClicker
     # EKR: it is not necessary to catch exceptions or to return "break".
 
     def rClicker(self, keywords):
@@ -1973,8 +1892,8 @@ class pluginController(baseClasses.basePluginController):
         name = c.widget_name(widget)
         c.widgetWantsFocusNow(widget)
         # g.pdb()
-        #@    << hack selections for text widgets >>
-        #@+node:bobjack.20080516105903.54:<< hack selections for text widgets >>
+        #@+<< hack selections for text widgets >>
+        #@+node:bobjack.20080516105903.54: *5* << hack selections for text widgets >>
         isText = g.app.gui.isTextWidget(widget)
         if isText:
             try:
@@ -1988,12 +1907,10 @@ class pluginController(baseClasses.basePluginController):
                 x,y = g.app.gui.eventXY(event)
                 i = widget.xyToPythonIndex(x,y)
                 widget.setSelectionRange(s1,s2,insert=i)
-        #@nonl
-        #@-node:bobjack.20080516105903.54:<< hack selections for text widgets >>
-        #@nl
+        #@-<< hack selections for text widgets >>
         top_menu_table = []
-        #@    << context menu => top_menu_table >>
-        #@+node:bobjack.20080516105903.55:<< context menu => top_menu_table >>
+        #@+<< context menu => top_menu_table >>
+        #@+node:bobjack.20080516105903.55: *5* << context menu => top_menu_table >>
         # The canvas should not have an explicit context menu set.
 
         context_menu = keywords.get('context_menu')
@@ -2018,10 +1935,9 @@ class pluginController(baseClasses.basePluginController):
                 if name.startswith(key):
                     top_menu_table = c.context_menus.get(key, [])[:]
                     break
-        #@-node:bobjack.20080516105903.55:<< context menu => top_menu_table >>
-        #@nl
-        #@    << def table_to_menu >>
-        #@+node:bobjack.20080516105903.56:<< def table_to_menu >>
+        #@-<< context menu => top_menu_table >>
+        #@+<< def table_to_menu >>
+        #@+node:bobjack.20080516105903.56: *5* << def table_to_menu >>
         def table_to_menu(parent, menu_table, level=0):
 
             """Generate a TK menu from a python list."""
@@ -2049,24 +1965,19 @@ class pluginController(baseClasses.basePluginController):
                     keywords[k] = v
 
                 if txt == '*':
-                    #@            << call a menu generator >>
-                    #@+node:bobjack.20080516105903.57:<< call a menu generator >>
+                    #@+<< call a menu generator >>
+                    #@+node:bobjack.20080516105903.57: *6* << call a menu generator >>
                     #@+at
-                    # All the data for the minibuffer command generator 
-                    # handler is in::
+                    # All the data for the minibuffer command generator handler is in::
                     # 
                     #     c.theContextMenuController.mb_keywords
                     # 
-                    # The handler should place any return data in 
-                    # self.mb_retval
+                    # The handler should place any return data in self.mb_retval
                     # 
-                    # The retval should normally be None, 'abandoned' will 
-                    # cause the current menu or
-                    # submenu to be abandoned, any other value will also cause 
-                    # the current menu to
+                    # The retval should normally be None, 'abandoned' will cause the current menu or
+                    # submenu to be abandoned, any other value will also cause the current menu to
                     # be abandoned but this may change in future.
                     # 
-                    #@-at
                     #@@c
 
                     self.mb_keywords = keywords
@@ -2082,26 +1993,20 @@ class pluginController(baseClasses.basePluginController):
                             self.mb_retval = None
                     finally:
                         self.mb_keywords = None
-                    #@nonl
-                    #@-node:bobjack.20080516105903.57:<< call a menu generator >>
-                    #@nl
+                    #@-<< call a menu generator >>
                     continue
                 elif txt == '-':
-                    #@            << add a separator >>
-                    #@+node:bobjack.20080516105903.58:<< add a separator >>
+                    #@+<< add a separator >>
+                    #@+node:bobjack.20080516105903.58: *6* << add a separator >>
                     rmenu.add_separator()
-                    #@nonl
-                    #@-node:bobjack.20080516105903.58:<< add a separator >>
-                    #@nl
+                    #@-<< add a separator >>
                 elif txt in ('', '"'):
                     continue
                 elif txt == '&':
-                    #@            << include a menu chunk >>
-                    #@+node:bobjack.20080516105903.59:<< include a menu chunk >>
+                    #@+<< include a menu chunk >>
+                    #@+node:bobjack.20080516105903.59: *6* << include a menu chunk >>
                     menu_table = self.copyMenuTable(c.context_menus.get(cmd, [])) + menu_table
-                    #@nonl
-                    #@-node:bobjack.20080516105903.59:<< include a menu chunk >>
-                    #@nl
+                    #@-<< include a menu chunk >>
                     continue
 
                 elif txt == '|':
@@ -2110,12 +2015,12 @@ class pluginController(baseClasses.basePluginController):
 
                 # elif isinstance(txt, basestring):
                 elif g.isString(txt):
-                    #@            << add a named item >>
-                    #@+node:bobjack.20080516105903.60:<< add a named item >>
+                    #@+<< add a named item >>
+                    #@+node:bobjack.20080516105903.60: *6* << add a named item >>
                     # if isinstance(cmd, basestring):
                     if g.isString(cmd):
-                        #@    << minibuffer command item >>
-                        #@+node:bobjack.20080516105903.61:<< minibuffer command item >>
+                        #@+<< minibuffer command item >>
+                        #@+node:bobjack.20080516105903.61: *7* << minibuffer command item >>
                         def invokeMinibufferMenuCommand(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
 
                             """Prepare for and execute a minibuffer command in response to a menu item being selected.
@@ -2145,11 +2050,10 @@ class pluginController(baseClasses.basePluginController):
                                 self.mb_keywords = None    
 
                         self.add_menu_item(rmenu, txt, invokeMinibufferMenuCommand, keywords)
-                        #@-node:bobjack.20080516105903.61:<< minibuffer command item >>
-                        #@nl
+                        #@-<< minibuffer command item >>
                     elif isinstance(cmd, list):
-                        #@    << cascade item >>
-                        #@+node:bobjack.20080516105903.62:<< cascade item >>
+                        #@+<< cascade item >>
+                        #@+node:bobjack.20080516105903.62: *7* << cascade item >>
                         submenu = table_to_menu(rmenu, cmd[:], level+1)
                         if submenu:
 
@@ -2162,11 +2066,10 @@ class pluginController(baseClasses.basePluginController):
                             rmenu.add_cascade(**kws)
                         else:
                             continue # to avoid reseting columnbreak
-                        #@-node:bobjack.20080516105903.62:<< cascade item >>
-                        #@nl
+                        #@-<< cascade item >>
                     else:
-                        #@    << function command item >>
-                        #@+node:bobjack.20080516105903.63:<< function command item >>
+                        #@+<< function command item >>
+                        #@+node:bobjack.20080516105903.63: *7* << function command item >>
                         def invokeMenuCallback(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
                             """Prepare for and execute a function in response to a menu item being selected.
 
@@ -2178,10 +2081,8 @@ class pluginController(baseClasses.basePluginController):
 
                         self.add_menu_item(rmenu, txt, invokeMenuCallback, keywords)
 
-                        #@-node:bobjack.20080516105903.63:<< function command item >>
-                        #@nl
-                    #@-node:bobjack.20080516105903.60:<< add a named item >>
-                    #@nl
+                        #@-<< function command item >>
+                    #@-<< add a named item >>
                 else:
                     continue
                 rmenu.rc_columnbreak = 0
@@ -2190,24 +2091,19 @@ class pluginController(baseClasses.basePluginController):
                 return rmenu
 
             rmenu.destroy()
-        #@nonl
-        #@-node:bobjack.20080516105903.56:<< def table_to_menu >>
-        #@nl
+        #@-<< def table_to_menu >>
         top_menu = m = table_to_menu(c.frame.top,top_menu_table)
         if not m: return
         g.app.gui.postPopupMenu(c, m,
             event.x_root-23, event.y_root+13)
         return 'break'
-    #@nonl
-    #@-node:bobjack.20080516105903.53:rClicker
-    #@-node:bobjack.20080516105903.47:rClick Event Handler
-    #@+node:bobjack.20080516105903.64:Invocation Minibuffer Commands
-    #@+node:bobjack.20080516105903.65:rclick-insert-newline
+    #@+node:bobjack.20080516105903.64: *3* Invocation Minibuffer Commands
+    #@+node:bobjack.20080516105903.65: *4* rclick-insert-newline
     class insertNewlineCommandClass(rClickCommandClass):
 
         """Insert a newline at the current cursor position of selected body editor."""
 
-        #@    @+others
+        #@+others
         #@-others
         def doCommand(self, keywords):
 
@@ -2219,13 +2115,12 @@ class pluginController(baseClasses.basePluginController):
                 ins = w.getInsertPoint()
                 w.insert(ins,'\n')
                 c.frame.body.onBodyChanged("Typing")
-    #@-node:bobjack.20080516105903.65:rclick-insert-newline
-    #@+node:bobjack.20080516105903.66:rclick-select-all
+    #@+node:bobjack.20080516105903.66: *4* rclick-select-all
     class selectAllCommandClass(rClickCommandClass):
 
         """Select the entire contents of the text widget."""
 
-        #@    @+others
+        #@+others
         #@-others
         def doCommand(self, keywords):
             event = keywords.get('event')
@@ -2235,44 +2130,39 @@ class pluginController(baseClasses.basePluginController):
             w.selectAllText(insert=insert)
             w.focus()
 
-    #@-node:bobjack.20080516105903.66:rclick-select-all
-    #@+node:bobjack.20080516105903.67:rclick-cut-text
+    #@+node:bobjack.20080516105903.67: *4* rclick-cut-text
     class cutTextCommandClass(rClickCommandClass):
 
         """Cut text from currently focused text widget."""
 
-        #@    @+others
+        #@+others
         #@-others
         def doCommand(self, keywords):
             event = keywords.get('event')
             self.c.frame.OnCutFromMenu(event)
 
-    #@-node:bobjack.20080516105903.67:rclick-cut-text
-    #@+node:bobjack.20080516105903.68:rclick-copy-text
+    #@+node:bobjack.20080516105903.68: *4* rclick-copy-text
     class copyTextCommandClass(rClickCommandClass):
         """Copy text from currently focused text widget."""
 
-        #@    @+others
+        #@+others
         #@-others
         def doCommand(self, keywords):
             event = keywords.get('event')
             self.c.frame.OnCopyFromMenu(event)
 
-    #@-node:bobjack.20080516105903.68:rclick-copy-text
-    #@+node:bobjack.20080516105903.69:rclick-paste-text
+    #@+node:bobjack.20080516105903.69: *4* rclick-paste-text
     class pasteTextCommandClass(rClickCommandClass):
         """Paste text into currently focused text widget."""
 
-        #@    @+others
+        #@+others
         #@-others
         def doCommand(self, keywords):
             event = keywords.get('event')
             self.c.frame.OnPasteFromMenu(event)
 
-    #@-node:bobjack.20080516105903.69:rclick-paste-text
-    #@-node:bobjack.20080516105903.64:Invocation Minibuffer Commands
-    #@+node:bobjack.20080516105903.70:Utility
-    #@+node:bobjack.20080516105903.71:getBodyData
+    #@+node:bobjack.20080516105903.70: *3* Utility
+    #@+node:bobjack.20080516105903.71: *4* getBodyData
     def getBodyData(self, cmd):
 
         """Get and precondition data from cmd.
@@ -2310,8 +2200,7 @@ class pluginController(baseClasses.basePluginController):
 
         pairs = '\n'.join(pairs)
         return cmds[0], pairs
-    #@-node:bobjack.20080516105903.71:getBodyData
-    #@+node:bobjack.20080516105903.72:split_cmd
+    #@+node:bobjack.20080516105903.72: *4* split_cmd
     def split_cmd(self, cmd):
 
         """Split string cmd into a cmd and dictionary of key value pairs."""
@@ -2325,8 +2214,7 @@ class pluginController(baseClasses.basePluginController):
             cmd_data[key] = value
 
         return cmd, cmd_data
-    #@-node:bobjack.20080516105903.72:split_cmd
-    #@+node:bobjack.20080516105903.74:copyMenuDict
+    #@+node:bobjack.20080516105903.74: *4* copyMenuDict
     def copyMenuDict(self, menu_dict):
 
         menus = {}
@@ -2335,10 +2223,6 @@ class pluginController(baseClasses.basePluginController):
 
         return menus
 
-    #@-node:bobjack.20080516105903.74:copyMenuDict
-    #@-node:bobjack.20080516105903.70:Utility
     #@-others
-#@-node:bobjack.20080516105903.18:class pluginController
 #@-others
-#@-node:bobjack.20080321133958.6:@thin rClick.py
 #@-leo

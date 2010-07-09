@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517080555.2:@thin plugins_menu.py
-#@<< docstring >>
-#@+node:ekr.20050101090207.9:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:EKR.20040517080555.2: * @thin plugins_menu.py
+#@+<< docstring >>
+#@+node:ekr.20050101090207.9: ** << docstring >>
 '''
 Create a Plugins menu
 =====================
@@ -67,8 +67,7 @@ Some names defined at the top level have special significance.
     is used internally for sorting alphabetically. Properties and INI files.
 
 '''
-#@-node:ekr.20050101090207.9:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
 # To do: add Revert button to each dialog.
@@ -76,8 +75,8 @@ Some names defined at the top level have special significance.
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050101090207.10:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -94,63 +93,49 @@ else:
 import glob
 import os
 import sys
-#@nonl
-#@-node:ekr.20050101090207.10:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "2.1"
-#@<< version history >>
-#@+node:ekr.20050101100033:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050101100033: ** << version history >>
 #@@nocolor
 #@+at
 # 
-# 1.4 EKR: Check at runtime to make sure that the plugin has been loaded 
-# before calling topLevelMenu function.
+# 1.4 EKR: Check at runtime to make sure that the plugin has been loaded before calling topLevelMenu function.
 # 1.5 EKR:
 # - Check for ImportError directly in Plugin.__init__.
 #   Alas, this can not report import problems without more work.
 #   This _really_ should be done, but it will have to wait.
-#   As a workaround, plugins_manager.py now has an init method and reports its 
-# own import problems.
+#   As a workaround, plugins_manager.py now has an init method and reports its own import problems.
 # 1.6 Paul Paterson:
 # - Add support for plugin groups. Each group gets its own sub menu now
 # - Set __plugin_group__ to "Core"
-# 1.7 EKR: Set default version in Plugin.__init__ so plugins without version 
-# still appear in plugin menu.
-# 1.8 Paul Paterson: Changed the names in the plugin menu to remove at_, mod_ 
-# and capitalized.
+# 1.7 EKR: Set default version in Plugin.__init__ so plugins without version still appear in plugin menu.
+# 1.8 Paul Paterson: Changed the names in the plugin menu to remove at_, mod_ and capitalized.
 # 1.9 Paul Paterson:
-# - Refactored to allow dynamically adding plugins to the menu after initial 
-# load
+# - Refactored to allow dynamically adding plugins to the menu after initial load
 # - Reformatted menu items for cmd_ThisIsIt to be "This Is It"
 # 1.10 EKR: Removed the g.app.dialog hack.
-# 1.11 EKR: Added event arg to cmd_callback.  This was causing crashes in 
-# several plugins.
-# 1.12 EKR: Fixed bug per 
-# http://sourceforge.net/forum/message.php?msg_id=3810157
+# 1.11 EKR: Added event arg to cmd_callback.  This was causing crashes in several plugins.
+# 1.12 EKR: Fixed bug per http://sourceforge.net/forum/message.php?msg_id=3810157
 # 1.13 EKR:
 # - Always Plugin.name and Plugin.realname for use by createPluginsMenu.
 # - Add plugins to Plugins menu *only* if they have been explicitly enabled.
-#   This solves the HTTP mystery: HTTP was being imported by mod_scripting 
-# plugin.
+#   This solves the HTTP mystery: HTTP was being imported by mod_scripting plugin.
 # 1.14 EKR: Added init function.
-# 1.15 plumloco: Separated out the gui elements of the 'properties' and 
-# 'about' dialogs to make the plugin gui independant.
+# 1.15 plumloco: Separated out the gui elements of the 'properties' and 'about' dialogs to make the plugin gui independant.
 # 1.16 bobjack:
 # - Added 'Text to HTML' and 'RST to HTML' buttons to TkScrolledMessageDialog.
 # - Converted docstring to RST.
 # 2.0 EKR: Now works with Python 3.x.
-#@-at
-#@nonl
-#@-node:ekr.20050101100033:<< version history >>
-#@nl
+#@-<< version history >>
 
 __plugin_name__ = "Plugins Menu"
 __plugin_priority__ = -100
 __plugin_group__ = "Core"
 
 #@+others
-#@+node:ekr.20060107091318:Functions
-#@+node:EKR.20040517080555.24:addPluginMenuItem
+#@+node:ekr.20060107091318: ** Functions
+#@+node:EKR.20040517080555.24: *3* addPluginMenuItem
 def addPluginMenuItem (p,c):
 
     # g.trace(p.name,g.callers())
@@ -171,14 +156,13 @@ def addPluginMenuItem (p,c):
         table = ((plugin_name,None,callback),)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
     elif p.hasconfig or p.othercmds:
-        #@        << Get menu location >>
-        #@+node:pap.20050305153147:<< Get menu location >>
+        #@+<< Get menu location >>
+        #@+node:pap.20050305153147: *4* << Get menu location >>
         if p.group:
             menu_location = p.group
         else:
             menu_location = "&Plugins"
-        #@-node:pap.20050305153147:<< Get menu location >>
-        #@nl
+        #@-<< Get menu location >>
         m = c.frame.menu.createNewMenu(plugin_name,menu_location)
         table = [("About...",None,p.about)]
         if p.hasconfig:
@@ -197,9 +181,7 @@ def addPluginMenuItem (p,c):
     else:
         table = ((plugin_name,None,p.about),)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
-#@nonl
-#@-node:EKR.20040517080555.24:addPluginMenuItem
-#@+node:EKR.20040517080555.23:createPluginsMenu
+#@+node:EKR.20040517080555.23: *3* createPluginsMenu
 def createPluginsMenu (tag,keywords):
 
     c = keywords.get("c")
@@ -227,30 +209,25 @@ def createPluginsMenu (tag,keywords):
         # g.trace('names',[p.name for p in plugins if p.name])
         # g.trace('moduleNamesnames',[p.moduleName for p in plugins if p.moduleName])
         if items:
-            #@            << Sort items >>
-            #@+node:pap.20041009133925:<< sort items >>
+            #@+<< Sort items >>
+            #@+node:pap.20041009133925: *4* << sort items >>
             dec = [(item[1].priority, item) for item in items]
             dec.sort()
             dec.reverse()
             items = [item[1] for item in dec]
-            #@nonl
-            #@-node:pap.20041009133925:<< sort items >>
-            #@nl
+            #@-<< Sort items >>
             c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
             PluginDatabase.setMenu("Default", pluginMenu)
-            #@            << Add group menus >>
-            #@+node:pap.20050305152223:<< Add group menus >>
+            #@+<< Add group menus >>
+            #@+node:pap.20050305152223: *4* << Add group menus >>
             for group_name in PluginDatabase.getGroups():
                 PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, "&Plugins"))
-            #@-node:pap.20050305152223:<< Add group menus >>
-            #@nl
+            #@-<< Add group menus >>
             for name,p in items:
                 addPluginMenuItem(p, c)
 
     sys.path = old_path
-#@nonl
-#@-node:EKR.20040517080555.23:createPluginsMenu
-#@+node:ekr.20070302175530:init
+#@+node:ekr.20070302175530: *3* init
 def init ():
     if g.app.unitTesting: return None
 
@@ -268,71 +245,56 @@ def init ():
         g.app.gui.runScrolledMessageDialog = runScrolledMessageDialog
 
     return True
-#@-node:ekr.20070302175530:init
-#@-node:ekr.20060107091318:Functions
-#@+node:pap.20050305152751:class PluginDatabase
+#@+node:pap.20050305152751: ** class PluginDatabase
 class _PluginDatabase:
     """Stores information on Plugins"""
 
-    #@    @+others
-    #@+node:pap.20050305152751.1:__init__
+    #@+others
+    #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self):
         """Initialize"""
         self.plugins_by_group = {}
         self.groups_by_plugin = {}
         self.menus = {}
         self.all_plugins = []
-    #@nonl
-    #@-node:pap.20050305152751.1:__init__
-    #@+node:pap.20050305152751.2:addPlugin
+    #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item, group):
         """Add a plugin"""
         if group:
             self.plugins_by_group.setdefault(group, []).append(item)
             self.groups_by_plugin[item] = group
-    #@-node:pap.20050305152751.2:addPlugin
-    #@+node:pap.20050305152751.3:getGroups
+    #@+node:pap.20050305152751.3: *3* getGroups
     def getGroups(self):
         """Return a list of groups"""
         groups = list(self.plugins_by_group.keys())
         groups.sort()
         return groups
-    #@nonl
-    #@-node:pap.20050305152751.3:getGroups
-    #@+node:pap.20050305153716:setMenu
+    #@+node:pap.20050305153716: *3* setMenu
     def setMenu(self, name, menu):
         """Store the menu for this group"""
         self.menus[name] = menu
-    #@nonl
-    #@-node:pap.20050305153716:setMenu
-    #@+node:pap.20050305153716.1:getMenu
+    #@+node:pap.20050305153716.1: *3* getMenu
     def getMenu(self, item):
         """Get the menu for a particular item"""
         try:
             return self.menus[item.group]
         except KeyError:
             return self.menus["Default"]
-    #@nonl
-    #@-node:pap.20050305153716.1:getMenu
-    #@+node:pap.20051008005012:storeAllPlugins
+    #@+node:pap.20051008005012: *3* storeAllPlugins
     def storeAllPlugins(self, files):
         """Store all the plugins for later reference if we need to enable them"""
         self.all_plugins = dict(
             [(g.os_path_splitext(g.os_path_basename(f))[0], f) for f in files])
-    #@nonl
-    #@-node:pap.20051008005012:storeAllPlugins
     #@-others
 
 PluginDatabase = _PluginDatabase()
-#@nonl
-#@-node:pap.20050305152751:class PluginDatabase
-#@+node:EKR.20040517080555.3:class Plugin
+#@+node:EKR.20040517080555.3: ** class Plugin
 class PlugIn:
 
     """A class to hold information about one plugin"""
 
-    #@    @+others
-    #@+node:EKR.20040517080555.4:__init__
+    #@+others
+    #@+node:EKR.20040517080555.4: *3* __init__
     def __init__(self, filename, c=None):
 
         """Initialize the plug-in"""
@@ -380,35 +342,24 @@ class PlugIn:
             g.es_print(s,color='red')
             return
         """
-        #@    << Check if this can be configured >>
-        #@+node:EKR.20040517080555.5:<< Check if this can be configured >>
+        #@+<< Check if this can be configured >>
+        #@+node:EKR.20040517080555.5: *4* << Check if this can be configured >>
         # Look for a configuration file
         self.configfilename = "%s.ini" % os.path.splitext(filename)[0]
         self.hasconfig = os.path.isfile(self.configfilename)
-        #@-node:EKR.20040517080555.5:<< Check if this can be configured >>
-        #@nl
-        #@    << Check if this has an apply >>
-        #@+node:EKR.20040517080555.6:<< Check if this has an apply >>
-        #@+at 
-        #@nonl
-        # Look for an apply function ("applyConfiguration") in the module.
+        #@-<< Check if this can be configured >>
+        #@+<< Check if this has an apply >>
+        #@+node:EKR.20040517080555.6: *4* << Check if this has an apply >>
+        #@+at Look for an apply function ("applyConfiguration") in the module.
         # 
-        # This is used to apply changes in configuration from the properties 
-        # window
-        #@-at
+        # This is used to apply changes in configuration from the properties window
         #@@c
 
         self.hasapply = hasattr(self.mod, "applyConfiguration")
-        #@-node:EKR.20040517080555.6:<< Check if this has an apply >>
-        #@nl
-        #@    << Look for additional commands >>
-        #@+node:EKR.20040517080555.7:<< Look for additional commands >>
-        #@+at 
-        #@nonl
-        # Additional commands can be added to the plugin menu by having 
-        # functions in the module called "cmd_whatever". These are added to 
-        # the main menu and will be called when clicked
-        #@-at
+        #@-<< Check if this has an apply >>
+        #@+<< Look for additional commands >>
+        #@+node:EKR.20040517080555.7: *4* << Look for additional commands >>
+        #@+at Additional commands can be added to the plugin menu by having functions in the module called "cmd_whatever". These are added to the main menu and will be called when clicked
         #@@c
 
         self.othercmds = {}
@@ -440,26 +391,18 @@ class PlugIn:
                 def wrapped(kw, cmd=cmd):
                     return cmd(kw['c'])
                 self.c.keyHandler.registerCommand(name, None, wrapped)
-        #@-node:EKR.20040517080555.7:<< Look for additional commands >>
-        #@nl
-        #@    << Look for toplevel menu item >>
-        #@+node:pap.20041009131822:<< Look for toplevel menu item >>
-        #@+at 
-        #@nonl
-        # Check to see if there is a toplevel menu item - this will be used 
-        # instead of the default About
-        #@-at
+        #@-<< Look for additional commands >>
+        #@+<< Look for toplevel menu item >>
+        #@+node:pap.20041009131822: *4* << Look for toplevel menu item >>
+        #@+at Check to see if there is a toplevel menu item - this will be used instead of the default About
         #@@c
 
         try:
             self.hastoplevel = self.mod.__dict__["topLevelMenu"]
         except KeyError:
             self.hastoplevel = False
-        #@nonl
-        #@-node:pap.20041009131822:<< Look for toplevel menu item >>
-        #@nl
-    #@-node:EKR.20040517080555.4:__init__
-    #@+node:EKR.20040517080555.8:about
+        #@-<< Look for toplevel menu item >>
+    #@+node:EKR.20040517080555.8: *3* about
     def about(self,event=None):
 
         """Put information about this plugin in a scrolledMessage dialog."""
@@ -473,8 +416,7 @@ class PlugIn:
             name='leo_system'
         )
 
-    #@-node:EKR.20040517080555.8:about
-    #@+node:pap.20050317183526:getNiceName
+    #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
         """Return a nice version of the plugin name
 
@@ -490,8 +432,7 @@ class PlugIn:
         elif lname.startswith("mod_"):
             name = name[4:]
         return name.capitalize()
-    #@-node:pap.20050317183526:getNiceName
-    #@+node:EKR.20040517080555.9:properties
+    #@+node:EKR.20040517080555.9: *3* properties
     def properties(self, event=None):
 
 
@@ -540,8 +481,7 @@ class PlugIn:
             self.updateConfiguration(data)
             self.writeConfiguration()
 
-    #@-node:EKR.20040517080555.9:properties
-    #@+node:bob.20071209102050:updateConfiguration
+    #@+node:bob.20071209102050: *3* updateConfiguration
     def updateConfiguration(self, data):
         """Update the config object from the dialog 'data' structure"""
 
@@ -552,8 +492,7 @@ class PlugIn:
             for option in data[section].keys():
                 # This is configParser.set, not g.app.config.set, so it is ok.
                 self.config.set(section, option, data[section][option])
-    #@-node:bob.20071209102050:updateConfiguration
-    #@+node:bob.20071208033759:writeConfiguration
+    #@+node:bob.20071208033759: *3* writeConfiguration
     def writeConfiguration(self):
         """Write the configuration to a file."""
 
@@ -562,8 +501,7 @@ class PlugIn:
             self.config.write(f)
         except:
             f.close()
-    #@-node:bob.20071208033759:writeConfiguration
-    #@+node:pap.20051011215345:niceMenuName
+    #@+node:pap.20051011215345: *3* niceMenuName
     @staticmethod
     def niceMenuName(name):
         """Return a nice version of the command name for the menu
@@ -581,21 +519,18 @@ class PlugIn:
                 text += " "
             text += char
         return text
-    #@nonl
-    #@-node:pap.20051011215345:niceMenuName
     #@-others
 
-#@-node:EKR.20040517080555.3:class Plugin
-#@+node:EKR.20040517080555.10:class TkPropertiesDialog
+#@+node:EKR.20040517080555.10: ** class TkPropertiesDialog
 class TkPropertiesDialog:
 
     """A class to create and run a Properties dialog"""
 
-    #@    @+others
-    #@+node:bob.20071208030419:__init__
+    #@+others
+    #@+node:bob.20071208030419: *3* __init__
     def __init__(self, title, data, callback=None, buttons=[]):
-        #@    << docstring >>
-        #@+node:bob.20071208211442:<< docstring >>
+        #@+<< docstring >>
+        #@+node:bob.20071208211442: *4* << docstring >>
         """ Initialize and show a Properties dialog.
 
             'buttons' should be a list of names for buttons.
@@ -627,8 +562,7 @@ class TkPropertiesDialog:
             if no callback was supplied.
 
         """
-        #@-node:bob.20071208211442:<< docstring >>
-        #@nl
+        #@-<< docstring >>
 
         if buttons is None:
             buttons = []
@@ -639,12 +573,12 @@ class TkPropertiesDialog:
         self.buttons = buttons
         self.data = data
 
-        #@    << create the frame from the configuration data >>
-        #@+node:bob.20071208030419.2:<< Create the frame from the configuration data >>
+        #@+<< create the frame from the configuration data >>
+        #@+node:bob.20071208030419.2: *4* << Create the frame from the configuration data >>
         root = g.app.root
 
-        #@<< Create the top level and the main frame >>
-        #@+node:bob.20071208030419.3:<< Create the top level and the main frame >>
+        #@+<< Create the top level and the main frame >>
+        #@+node:bob.20071208030419.3: *5* << Create the top level and the main frame >>
         self.top = top = Tk.Toplevel(root)
         g.app.gui.attachLeoIcon(self.top)
         #top.title("Properties of "+ plugin.name)
@@ -654,11 +588,9 @@ class TkPropertiesDialog:
 
         self.frame = frame = Tk.Frame(top)
         frame.pack(side="top")
-        #@nonl
-        #@-node:bob.20071208030419.3:<< Create the top level and the main frame >>
-        #@nl
-        #@<< Create widgets for each section and option >>
-        #@+node:bob.20071208030419.4:<< Create widgets for each section and option >>
+        #@-<< Create the top level and the main frame >>
+        #@+<< Create widgets for each section and option >>
+        #@+node:bob.20071208030419.4: *5* << Create widgets for each section and option >>
         # Create all the entry boxes on the screen to allow the user to edit the properties
 
         sections = data.keys()
@@ -687,10 +619,9 @@ class TkPropertiesDialog:
                 e.grid(row=row, column=1, sticky="ew", pady = 4)
                 row += 1
                 self.entries.append((section, option, e))
-        #@-node:bob.20071208030419.4:<< Create widgets for each section and option >>
-        #@nl
-        #@<< Create the buttons >>
-        #@+node:bob.20071208030419.5:<< Create the buttons >>
+        #@-<< Create widgets for each section and option >>
+        #@+<< Create the buttons >>
+        #@+node:bob.20071208030419.5: *5* << Create the buttons >>
         box = Tk.Frame(top, borderwidth=5)
         box.pack(side="bottom")
 
@@ -703,8 +634,7 @@ class TkPropertiesDialog:
                 command=lambda self=self, name=name: self.onButton(name)
             ).pack(side="left",padx=5)
 
-        #@-node:bob.20071208030419.5:<< Create the buttons >>
-        #@nl
+        #@-<< Create the buttons >>
 
         g.app.gui.center_dialog(top) # Do this after packing.
         top.grab_set() # Make the dialog a modal dialog.
@@ -713,12 +643,8 @@ class TkPropertiesDialog:
         self.result = ('Cancel', '')
 
         root.wait_window(top)
-        #@nonl
-        #@-node:bob.20071208030419.2:<< Create the frame from the configuration data >>
-        #@nl
-    #@nonl
-    #@-node:bob.20071208030419:__init__
-    #@+node:EKR.20040517080555.17:Event Handlers
+        #@-<< create the frame from the configuration data >>
+    #@+node:EKR.20040517080555.17: *3* Event Handlers
 
     def onButton(self, name):
         """Event handler for all button clicks."""
@@ -738,8 +664,7 @@ class TkPropertiesDialog:
                 self.result = ('Cancel', None)
 
 
-    #@-node:EKR.20040517080555.17:Event Handlers
-    #@+node:EKR.20040517080555.18:getData
+    #@+node:EKR.20040517080555.18: *3* getData
     def getData(self):
         """Return the modified configuration."""
 
@@ -754,19 +679,16 @@ class TkPropertiesDialog:
         return data
 
 
-    #@-node:EKR.20040517080555.18:getData
     #@-others
-#@nonl
-#@-node:EKR.20040517080555.10:class TkPropertiesDialog
-#@+node:EKR.20040517080555.19:class TkScrolledMessageDialog
+#@+node:EKR.20040517080555.19: ** class TkScrolledMessageDialog
 class TkScrolledMessageDialog:
 
     """A class to create and run a Scrolled Message dialog for Tk"""
 
     default_buttons = ["Text to HTML", "RST to HTML", "Close"]
 
-    #@    @+others
-    #@+node:EKR.20040517080555.20:__init__
+    #@+others
+    #@+node:EKR.20040517080555.20: *3* __init__
     def __init__(self, title='Message', label= '', msg='', callback=None, buttons=None):
 
         """Create and run a modal dialog showing 'msg' in a scrollable window."""
@@ -795,8 +717,8 @@ class TkScrolledMessageDialog:
         frame = Tk.Frame(top)
         frame.pack(side="top", expand=True, fill='both')
 
-        #@    << Create the contents of the about box >>
-        #@+node:EKR.20040517080555.21:<< Create the contents of the about box >>
+        #@+<< Create the contents of the about box >>
+        #@+node:EKR.20040517080555.21: *4* << Create the contents of the about box >>
         #Tk.Label(frame,text="Version " + version).pack()
 
         if label:
@@ -825,9 +747,7 @@ class TkScrolledMessageDialog:
         body.bind('<Return>',destroyCallback)
 
         g.app.gui.set_focus(None,body)
-        #@nonl
-        #@-node:EKR.20040517080555.21:<< Create the contents of the about box >>
-        #@nl
+        #@-<< Create the contents of the about box >>
 
         self.create_the_buttons(top, self.buttons)
 
@@ -836,8 +756,7 @@ class TkScrolledMessageDialog:
         top.focus_force() # Get all keystrokes.
 
         root.wait_window(top)
-    #@-node:EKR.20040517080555.20:__init__
-    #@+node:bobjack.20080320174907.4:create_the_buttons
+    #@+node:bobjack.20080320174907.4: *3* create_the_buttons
     def create_the_buttons(self, parent, buttons):
 
         """
@@ -852,10 +771,8 @@ class TkScrolledMessageDialog:
                 text=name,
                 command=lambda self=self, name=name: self.onButton(name)
             ).pack(side="left",padx=5)
-    #@-node:bobjack.20080320174907.4:create_the_buttons
-    #@+node:bobjack.20080320193548.2:get_default_buttons
-    #@-node:bobjack.20080320193548.2:get_default_buttons
-    #@+node:bob.20071209110304.1:Event Handlers
+    #@+node:bobjack.20080320193548.2: *3* get_default_buttons
+    #@+node:bob.20071209110304.1: *3* Event Handlers
 
     def onButton(self, name):
         """Event handler for all button clicks."""
@@ -880,8 +797,7 @@ class TkScrolledMessageDialog:
             self.result = ('Cancel', None)
 
 
-    #@-node:bob.20071209110304.1:Event Handlers
-    #@+node:bobjack.20080317174956.3:show_message_as_html
+    #@+node:bobjack.20080317174956.3: *3* show_message_as_html
     def show_message_as_html(self, name):
 
         try:
@@ -904,9 +820,7 @@ class TkScrolledMessageDialog:
             return
 
         return retval
-    #@nonl
-    #@-node:bobjack.20080317174956.3:show_message_as_html
-    #@+node:bobjack.20080320174907.2:show_rst_message
+    #@+node:bobjack.20080320174907.2: *3* show_rst_message
     def show_rst_message(self, oHTML):
 
         try:
@@ -930,8 +844,7 @@ class TkScrolledMessageDialog:
         oHTML.show()
 
         return 'close'
-    #@-node:bobjack.20080320174907.2:show_rst_message
-    #@+node:bobjack.20080320174907.3:show_text_message
+    #@+node:bobjack.20080320174907.3: *3* show_text_message
     def show_text_message(self, oHTML):
 
         oHTML.xhtml = '<pre>' + self.msg + '</pre>'
@@ -939,10 +852,8 @@ class TkScrolledMessageDialog:
         oHTML.show()
 
         return 'close'
-    #@-node:bobjack.20080320174907.3:show_text_message
     #@-others
-#@-node:EKR.20040517080555.19:class TkScrolledMessageDialog
-#@+node:bob.20071208211442.1:runPropertiesDialog
+#@+node:bob.20071208211442.1: ** runPropertiesDialog
 def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None):
     """Dispay a modal TkPropertiesDialog"""
 
@@ -950,15 +861,12 @@ def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None
     dialog = TkPropertiesDialog(title, data, callback, buttons)
 
     return dialog.result 
-#@-node:bob.20071208211442.1:runPropertiesDialog
-#@+node:bob.20071209110304:runScrolledMessageDialog
+#@+node:bob.20071209110304: ** runScrolledMessageDialog
 def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None, **kw):
     """Display a modal TkScrolledMessageDialog."""
 
     dialog = TkScrolledMessageDialog(title, label, msg, callback, buttons)
 
     return dialog.result
-#@-node:bob.20071209110304:runScrolledMessageDialog
 #@-others
-#@-node:EKR.20040517080555.2:@thin plugins_menu.py
 #@-leo

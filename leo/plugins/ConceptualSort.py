@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040916073636:@thin ConceptualSort.py
-#@<< docstring >>
-#@+node:ekr.20050912175951:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040916073636: * @thin ConceptualSort.py
+#@+<< docstring >>
+#@+node:ekr.20050912175951: ** << docstring >>
 '''This plugin is enhances the EditAttributes.py plugin. It puts a command in
 Outline called ConceptualSort. This will prompt you for a concept to sort by.
 This gives the user some more flexibility in how they want to arrange their
@@ -25,56 +25,40 @@ The dialog has been redone. The user can:
 where a and b are nodes and att is dictionary of the nodes and the respective
 value of the selected attribute. There is no need to indent on the first level
 since indentation is added at compile time.'''
-#@nonl
-#@-node:ekr.20050912175951:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< about this plugin >>
-#@+node:ekr.20040916073636.1:<< about this plugin >>
+#@+<< about this plugin >>
+#@+node:ekr.20040916073636.1: ** << about this plugin >>
 #@+at
 # 
-# This plugin is to be used with the EditAttributes.py plugin. What it does 
-# is:
-# 1. Puts a command in Outline called ConceptualSort. This will prompt you for 
-# a concept to sort by.
+# This plugin is to be used with the EditAttributes.py plugin. What it does is:
+# 1. Puts a command in Outline called ConceptualSort. This will prompt you for a concept to sort by.
 # 2. It will sort by uA's in all the siblings of the current node.
 # 
-# This gives the user some more flexibility in how they want to arrange their 
-# nodes. Nodes without the attribute in question go to the bottom of the sort. 
-# :)
+# This gives the user some more flexibility in how they want to arrange their nodes. Nodes without the attribute in question go to the bottom of the sort. :)
 # 
 # Version .2 improvements:
 # - Now supports level 0
 # 
 # New features:
 # 1. The dialog has been redone. The user can:
-# a. Select which attribute he wants to sort on by clicking on the Attribute 
-# box.
-# b. Select the type of sort he wants by clicking on the radio buttons. which 
-# are
+# a. Select which attribute he wants to sort on by clicking on the Attribute box.
+# b. Select the type of sort he wants by clicking on the radio buttons. which are
 # 1. Normal. just like the previous version
 # 2. Reversed. Like normal but the results are reversed.
-# 3. Used defined. For advanced users. The text box is where a user can type 
-# in their own python code to sort the nodes-attributes. There is no need for 
-# a def. That gets appended to the beginning of the code. It prototype looks 
-# like:
+# 3. Used defined. For advanced users. The text box is where a user can type in their own python code to sort the nodes-attributes. There is no need for a def. That gets appended to the beginning of the code. It prototype looks like:
 # def( a, b, att ):
 # 
-# where a and b are nodes and att is dictionary of the nodes and the 
-# respective value of the selected attribute.
+# where a and b are nodes and att is dictionary of the nodes and the respective value of the selected attribute.
 # 
-# There is no need to indent on the first level since indentation is added at 
-# compile time. :)
-#@-at
-#@nonl
-#@-node:ekr.20040916073636.1:<< about this plugin >>
-#@nl
+# There is no need to indent on the first level since indentation is added at compile time. :)
+#@-<< about this plugin >>
 __version__ = "0.4"
-#@<< version history >>
-#@+node:ekr.20040916075741:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040916075741: ** << version history >>
 #@+at
 # 
 # 0.3 EKR:
@@ -84,12 +68,9 @@ __version__ = "0.4"
 #     - Use 'new' instead of 'start2' hook.
 # 0.4 EKR:
 #     - Changed 'new_c' logic to 'c' logic.
-#@-at
-#@nonl
-#@-node:ekr.20040916075741:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040916073636.2:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040916073636.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -97,12 +78,10 @@ Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True
 Pmw = g.importExtension("Pmw",    pluginName=__name__,verbose=True,required=True)
 
 import weakref
-#@nonl
-#@-node:ekr.20040916073636.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20070301072310:init
+#@+node:ekr.20070301072310: ** init
 def init ():
 
     if not (Tk and Pmw): return False
@@ -118,13 +97,11 @@ def init ():
         g.plugin_signon( __name__ )
 
     return ok
-#@nonl
-#@-node:ekr.20070301072310:init
-#@+node:ekr.20040916074337:class CSFrontend:
+#@+node:ekr.20040916074337: ** class CSFrontend:
 class CSFrontend:
 
-    #@    @+others
-    #@+node:ekr.20040916074337.1:__init__
+    #@+others
+    #@+node:ekr.20040916074337.1: *3* __init__
     def __init__( self , c ):
         self.c = c
         self.dialog = Pmw.Dialog( buttons = ( 'Cancel', 'Sort' ),
@@ -167,9 +144,7 @@ class CSFrontend:
         txt.configure( background = 'white', foreground = 'blue' )
         self.stxt.pack( side = 'top' )
         self.dialog.activate( globalMode = 'nograb' )
-    #@nonl
-    #@-node:ekr.20040916074337.1:__init__
-    #@+node:ekr.20040916074337.2:_makeAttrList
+    #@+node:ekr.20040916074337.2: *3* _makeAttrList
     def _makeAttrList( self, nodes ):
         atts = set()
         for child in nodes:
@@ -177,9 +152,7 @@ class CSFrontend:
                 uAs = child.v.unknownAttributes.keys()
                 map( lambda a: atts.add( a ), uAs )
         return atts
-    #@nonl
-    #@-node:ekr.20040916074337.2:_makeAttrList
-    #@+node:ekr.20040916074337.3:execute
+    #@+node:ekr.20040916074337.3: *3* execute
     def execute( self, name ):
         if name == 'Cancel':
             self.dialog.destroy()
@@ -218,26 +191,20 @@ class CSFrontend:
                 root = self.c.rootVnode()
                 move2( self.c, self.children, root )
             self.dialog.destroy()
-    #@nonl
-    #@-node:ekr.20040916074337.3:execute
     #@-others
-#@nonl
-#@-node:ekr.20040916074337:class CSFrontend:
-#@+node:ekr.20040916074337.4:getConcept
+#@+node:ekr.20040916074337.4: ** getConcept
 def getConcept( c ):
 
     CSFrontend( c )
 
-#@-node:ekr.20040916074337.4:getConcept
-#@+node:ekr.20040916074337.5:move
+#@+node:ekr.20040916074337.5: ** move
 def move( c, children , parent):
 
     for n, ch in enumerate( children ):
         ch.moveToNthChildOf( parent, n )
     c.redraw()
 
-#@-node:ekr.20040916074337.5:move
-#@+node:ekr.20040916074337.6:move2
+#@+node:ekr.20040916074337.6: ** move2
 def move2( c, children , oroot):
 
     children[ 0 ].moveToRoot( oroot )
@@ -247,8 +214,7 @@ def move2( c, children , oroot):
         z1 = z
     c.redraw()
 
-#@-node:ekr.20040916074337.6:move2
-#@+node:ekr.20040916074337.7:buildAttList
+#@+node:ekr.20040916074337.7: ** buildAttList
 def buildAttList( children, concept ):
 
     atts = {}
@@ -259,8 +225,7 @@ def buildAttList( children, concept ):
             atts[ child ] = uA.get( concept )
     return atts
 
-#@-node:ekr.20040916074337.7:buildAttList
-#@+node:ekr.20040916074337.8:getChildren
+#@+node:ekr.20040916074337.8: ** getChildren
 def getChildren( v ):
 
     i = v.numberOfChildren()
@@ -270,8 +235,7 @@ def getChildren( v ):
         children.append( chi )
     return children
 
-#@-node:ekr.20040916074337.8:getChildren
-#@+node:ekr.20040916074337.9:csort
+#@+node:ekr.20040916074337.9: ** csort
 def csort( a, b, atdict ):
 
     a1 = atdict[ a ]
@@ -283,8 +247,7 @@ def csort( a, b, atdict ):
     else: return 0
 
 
-#@-node:ekr.20040916074337.9:csort
-#@+node:ekr.20040916074337.10:addCommand
+#@+node:ekr.20040916074337.10: ** addCommand
 def addCommand (tag,keywords):
 
     c = keywords.get('c')
@@ -293,11 +256,7 @@ def addCommand (tag,keywords):
     table = (("Conceptual Sort",None,lambda c=c: getConcept(c)),)
     men = c.frame.menu
     men.createMenuItemsFromTable("Outline",table,dynamicMenu=True)
-#@nonl
-#@-node:ekr.20040916074337.10:addCommand
 #@-others
 
 haveseen = weakref.WeakKeyDictionary()
-#@nonl
-#@-node:ekr.20040916073636:@thin ConceptualSort.py
 #@-leo

@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20070119094733.1:@thin dtest.py
-#@<< docstring >>
-#@+node:ekr.20070119094733.4:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20070119094733.1: * @thin dtest.py
+#@+<< docstring >>
+#@+node:ekr.20070119094733.4: ** << docstring >>
 """Sends code to the doctest module and reports the result.
 When the Dtest plugin is enabled, the ``dtest`` command is active.
 Typing:: 
@@ -24,19 +24,17 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
     Literate Testing:
     Automated Testing with doctest
 """    
-#@-node:ekr.20070119094733.4:<< docstring >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20070119094733.2:<<imports>>
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20070119094733.2: ** <<imports>>
 import leo.core.leoPlugins as leoPlugins
 from leo.core.leoPlugins import baseLeoPlugin
 import doctest
 import os
 import leo.core.leoGlobals as g
-#@-node:ekr.20070119094733.2:<<imports>>
-#@nl
-#@<< version history >>
-#@+node:ekr.20070119094733.3:<< version history >>
+#@-<< imports >>
+#@+<< version history >>
+#@+node:ekr.20070119094733.3: ** << version history >>
 #@@nocolor
 
 #@+at
@@ -44,21 +42,17 @@ import leo.core.leoGlobals as g
 # v 0.2 EKR: modified from mod_dtest by ktenney:
 # - Converted to @thin
 # - Use section references for code that must be in a particular place.
-#@-at
-#@nonl
-#@-node:ekr.20070119094733.3:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20070119094733.5:init
+#@+node:ekr.20070119094733.5: ** init
 def init ():
 
     leoPlugins.registerHandler('after-create-leo-frame', DT)
     g.plugin_signon(__name__)
 
     return True
-#@-node:ekr.20070119094733.5:init
-#@+node:ekr.20070119094733.6:class DT
+#@+node:ekr.20070119094733.6: ** class DT
 class DT(baseLeoPlugin):
 
     """Sends code to the doctest module and reports the result
@@ -76,8 +70,8 @@ class DT(baseLeoPlugin):
     >>>   
     """
 
-    #@    @+others
-    #@+node:ekr.20070119094733.8:__init__
+    #@+others
+    #@+node:ekr.20070119094733.8: *3* __init__
     def __init__(self, tag, keywords):
 
         """Init doctest plugin
@@ -86,8 +80,7 @@ class DT(baseLeoPlugin):
         self.setCommand('dt', self.dtest)
 
         self.c = keywords['c']
-    #@-node:ekr.20070119094733.8:__init__
-    #@+node:ekr.20070119094733.9:dtest
+    #@+node:ekr.20070119094733.9: *3* dtest
     def dtest(self, event):
         """The handler for dtest
         """
@@ -132,8 +125,8 @@ class DT(baseLeoPlugin):
         failures, tests = doctest.testfile(tempfilename, module_relative = False, 
                             optionflags = doctest.ELLIPSIS, globs = globals)
 
-        #@    <<report summary of results>>
-        #@+node:ekr.20070119094733.10:<<report summary of results>>
+        #@+<<report summary of results>>
+        #@+node:ekr.20070119094733.10: *4* <<report summary of results>>
         if selected:
             g.es('Result of running doctest on selected text;')
         else:
@@ -144,17 +137,13 @@ class DT(baseLeoPlugin):
             g.es("There was one failure in %s tests" % tests, color="red")    
         if failures > 1:
             g.es("%s failures in %s tests" % (failures, tests), color="red")
-        #@-node:ekr.20070119094733.10:<<report summary of results>>
-        #@nl
+        #@-<<report summary of results>>
 
         #clean up temp file
         os.remove(tempfilename)
-    #@-node:ekr.20070119094733.9:dtest
     #@-others
 
-#@-node:ekr.20070119094733.6:class DT
 #@-others
 
 
-#@-node:ekr.20070119094733.1:@thin dtest.py
 #@-leo

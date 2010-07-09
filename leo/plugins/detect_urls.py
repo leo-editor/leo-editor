@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20060506070443.1:@thin detect_urls.py
-#@<< docstring >>
-#@+node:vpe.20060426084738:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20060506070443.1: * @thin detect_urls.py
+#@+<< docstring >>
+#@+node:vpe.20060426084738: ** << docstring >>
 """
 Colorizes URLs everywhere in node's body on node selection or saving.
 
@@ -11,14 +11,13 @@ URL regex:  (http|https|file|ftp)://[^\s'"]+[\w=/]
 
 Related plugins:  color_markup.py; rClick.py
 """
-#@-node:vpe.20060426084738:<< docstring >>
-#@nl
+#@-<< docstring >>
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.3"
-#@<< version history >>
-#@+node:RV20090910.20100110154407.7439:<< version history >>
+#@+<< version history >>
+#@+node:RV20090910.20100110154407.7439: ** << version history >>
 #@+at
 # 
 # Originally written by ???
@@ -28,23 +27,19 @@ __version__ = "0.3"
 # 0.2 VR: Detect URLs with protocol type 'file' and detect a new URL also
 #         after a save operation.
 # 
-# 0.3 VR: Display info about this plugin, when executing cmd 
-# 'print-plugins-info'.
-#@-at
-#@-node:RV20090910.20100110154407.7439:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:RV20090910.20100110154407.7437:<< imports >>
+# 0.3 VR: Display info about this plugin, when executing cmd 'print-plugins-info'.
+#@-<< version history >>
+#@+<< imports >>
+#@+node:RV20090910.20100110154407.7437: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import re
-#@-node:RV20090910.20100110154407.7437:<< imports >>
-#@nl
+#@-<< imports >>
 
 url_regex = re.compile(r"""(http|https|file|ftp)://[^\s'"]+[\w=/]""")
 
 #@+others
-#@+node:RV20090910.20100110154407.7438:init()
+#@+node:RV20090910.20100110154407.7438: ** init()
 def init():
     ok = not g.app.unitTesting
     if ok:
@@ -53,8 +48,7 @@ def init():
         leoPlugins.registerHandler("save2", colorizeURLs)
         g.plugin_signon(__name__)
     return ok
-#@-node:RV20090910.20100110154407.7438:init()
-#@+node:vpe.20060305064323.5:openURL()
+#@+node:vpe.20060305064323.5: ** openURL()
 def openURL(tag,keywords):
     c = keywords.get("c")
 
@@ -81,8 +75,7 @@ def openURL(tag,keywords):
                     g.es("exception opening " + url)
                     g.es_exception()
             return url # force to skip word selection if url found
-#@-node:vpe.20060305064323.5:openURL()
-#@+node:vpe.20060426062042:colorizeURLs()
+#@+node:vpe.20060426062042: ** colorizeURLs()
 def colorizeURLs(tag,keywords):
     c = keywords.get("c")
     if not c: return
@@ -98,7 +91,5 @@ def colorizeURLs(tag,keywords):
             i,j = w.toGuiIndex(n+start),w.toGuiIndex(n+end)
             c.frame.body.tag_add('URL',i,j)
         n += len(line) + 1
-#@-node:vpe.20060426062042:colorizeURLs()
 #@-others
-#@-node:ekr.20060506070443.1:@thin detect_urls.py
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040915075530:@thin UASearch.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040915075530: * @thin UASearch.py
 """
 A plugin for searching unknownAttributes (uA's).
 """
@@ -8,8 +8,8 @@ A plugin for searching unknownAttributes (uA's).
 #@@tabwidth -4
 
 __version__ = ".4"
-#@<< version history >>
-#@+node:ekr.20040915075530.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040915075530.1: ** << version history >>
 #@+at
 # 
 # 0.1: Original
@@ -25,12 +25,9 @@ __version__ = ".4"
 #     - Removed 'start2' hook and haveseen dict.
 # 0.4 EKR:
 #     - use c.frame.log.select.selectTab instead of TabbedLog plugin.
-#@-at
-#@nonl
-#@-node:ekr.20040915075530.1:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040915075530.2:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040915075530.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -42,12 +39,10 @@ Pmw       = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 
 import re
 # import weakref
-#@nonl
-#@-node:ekr.20040915075530.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20050311090939.6:init
+#@+node:ekr.20050311090939.6: ** init
 def init ():
 
     if Tk is None: return # Ok for unit tests: adds menu.
@@ -62,9 +57,7 @@ def init ():
         g.plugin_signon( __name__ )
 
     return ok
-#@nonl
-#@-node:ekr.20050311090939.6:init
-#@+node:ekr.20040915075530.3:addPMenu
+#@+node:ekr.20040915075530.3: ** addPMenu
 def addPMenu (tag,keywords):
     c = keywords.get('c')
     if not c: return
@@ -93,8 +86,8 @@ def addPMenu (tag,keywords):
     b.pack()
     l = Tk.Label(x)
     l.pack()
-    #@    << define callbacks >>
-    #@+node:ekr.20040915075808:<< define callbacks >>
+    #@+<< define callbacks >>
+    #@+node:ekr.20040915075808: *3* << define callbacks >>
     def firesearch( event, rs = rs, ef = ef, ev = ev, c = c, l = l ):
 
         stype = rs.getvalue()
@@ -103,27 +96,20 @@ def addPMenu (tag,keywords):
         l.configure( text = "Searching    " )
         search( name, value, stype, c )
         l.configure( text = "" )
-    #@nonl
-    #@-node:ekr.20040915075808:<< define callbacks >>
-    #@nl
+    #@-<< define callbacks >>
     c.bind(b,'<Button-1>',firesearch)
-#@-node:ekr.20040915075530.3:addPMenu
-#@+node:ekr.20040915081837:found
+#@+node:ekr.20040915081837: ** found
 def found (porv,name):
 
     c = porv.c
     note("found: " + name)
     c.selectVnode(porv)
     c.redraw()
-#@nonl
-#@-node:ekr.20040915081837:found
-#@+node:ekr.20040915082303:note
+#@+node:ekr.20040915082303: ** note
 def note (s):
 
     g.es_print(s)
-#@nonl
-#@-node:ekr.20040915082303:note
-#@+node:ekr.20040915075530.4:search
+#@+node:ekr.20040915075530.4: ** search
 def search( name, value, stype, c ):
     cv = c.currentVnode().threadNext()
     if name.strip() == '':
@@ -154,18 +140,12 @@ def search( name, value, stype, c ):
                             return found(cv,name)
             cv = cv.threadNext()
     note ("not found: " + name)
-#@nonl
-#@-node:ekr.20040915075530.4:search
-#@+node:ekr.20040915075530.5:getV
+#@+node:ekr.20040915075530.5: ** getV
 # def getT( node ):
 
     # if str( node.__class__ )== 'leoNodes.vnode':
         # return node
     # else:
         # return node.v
-#@nonl
-#@-node:ekr.20040915075530.5:getV
 #@-others
-#@nonl
-#@-node:ekr.20040915075530:@thin UASearch.py
 #@-leo

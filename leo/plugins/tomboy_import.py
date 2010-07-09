@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ville.20090503124249.1:@thin tomboy_import.py
-#@<< docstring >>
-#@+node:ville.20090503124249.2:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ville.20090503124249.1: * @thin tomboy_import.py
+#@+<< docstring >>
+#@+node:ville.20090503124249.2: ** << docstring >>
 '''This plugin adds a possibility to import the notes created in Tomboy / gnote
 
 Usage:
@@ -13,12 +13,11 @@ Usage:
     be under 'tomboy' node anymore) and new notes added.
 
 '''
-#@-node:ville.20090503124249.2:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.1'
-#@<< version history >>
-#@+node:ville.20090503124249.3:<< version history >>
+#@+<< version history >>
+#@+node:ville.20090503124249.3: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -27,12 +26,10 @@ __version__ = '0.1'
 #     * Functional version, has unidirectional (import) support with
 #       updates. Strips html.
 # 
-#@-at
-#@-node:ville.20090503124249.3:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:ville.20090503124249.4:<< imports >>
+#@+<< imports >>
+#@+node:ville.20090503124249.4: ** << imports >>
 import leo.core.leoGlobals as g
 
 import xml.etree.ElementTree as ET
@@ -40,12 +37,10 @@ from leo.core import leoPlugins
 import HTMLParser
 
 # Whatever other imports your plugins uses.
-#@nonl
-#@-node:ville.20090503124249.4:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20090503124249.5:init
+#@+node:ville.20090503124249.5: ** init
 def init ():
 
     ok = True
@@ -56,8 +51,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ville.20090503124249.5:init
-#@+node:ville.20090503124249.6:onCreate
+#@+node:ville.20090503124249.6: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -67,8 +61,7 @@ def onCreate (tag, keys):
 
     tomboy_install()
 
-#@-node:ville.20090503124249.6:onCreate
-#@+node:ville.20090503124249.7:the code
+#@+node:ville.20090503124249.7: ** the code
 class MLStripper(HTMLParser.HTMLParser):
     def __init__(self):
         self.reset()
@@ -145,8 +138,5 @@ def tomboy_install():
 #print "capturing"
 #capturenotes(p)
 #tomboy_install()
-#@-node:ville.20090503124249.7:the code
 #@-others
-#@nonl
-#@-node:ville.20090503124249.1:@thin tomboy_import.py
 #@-leo

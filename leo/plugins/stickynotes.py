@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20100103093121.5329:@thin stickynotes.py
-#@<< docstring >>
-#@+node:vivainio2.20091008133028.5821:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20100103093121.5329: * @thin stickynotes.py
+#@+<< docstring >>
+#@+node:vivainio2.20091008133028.5821: ** << docstring >>
 '''Simple "sticky notes" feature (popout editors)
 
 Adds the following (``Alt-X``) commands:
@@ -26,23 +26,19 @@ The encrypted note is stored in base64 encoded *encrypted* text in the parent Le
 When **creating an encrypted note**, you should **start with and empty node**.  If you want to encrypt text that already exists in a node, select-all cut it to empty the node, then paste it into the note.
 
 '''
-#@-node:vivainio2.20091008133028.5821:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:vivainio2.20091008133028.5822:<< version history >>
+#@+<< version history >>
+#@+node:vivainio2.20091008133028.5822: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # Put notes about each version here.
-#@-at
-#@nonl
-#@-node:vivainio2.20091008133028.5822:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:vivainio2.20091008133028.5823:<< imports >>
+#@+<< imports >>
+#@+node:vivainio2.20091008133028.5823: ** << imports >>
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins
 
@@ -69,12 +65,10 @@ from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
         QPlainTextEdit, QInputDialog, QMainWindow, QMdiArea)
-#@nonl
-#@-node:vivainio2.20091008133028.5823:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:vivainio2.20091008140054.14555:styling
+#@+node:vivainio2.20091008140054.14555: ** styling
 stickynote_stylesheet = """
 /* The body pane */
 QPlainTextEdit {
@@ -94,8 +88,7 @@ def decorate_window(w):
     w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
 
-#@-node:vivainio2.20091008140054.14555:styling
-#@+node:vivainio2.20091008133028.5824:init
+#@+node:vivainio2.20091008133028.5824: ** init
 def init ():
 
     ok = True
@@ -106,8 +99,7 @@ def init ():
 
     g.app.stickynotes = {}    
     return ok
-#@-node:vivainio2.20091008133028.5824:init
-#@+node:ville.20091008210853.7616:class FocusingPlainTextEdit
+#@+node:ville.20091008210853.7616: ** class FocusingPlainTextEdit
 class FocusingPlaintextEdit(QPlainTextEdit):
 
     def __init__(self, focusin, focusout, closed = None, parent = None):
@@ -128,8 +120,7 @@ class FocusingPlaintextEdit(QPlainTextEdit):
         if self.closed:
             self.closed()
         self.focusout()
-#@-node:ville.20091008210853.7616:class FocusingPlainTextEdit
-#@+node:ville.20091023181249.5264:class SimpleRichText
+#@+node:ville.20091023181249.5264: ** class SimpleRichText
 class SimpleRichText(QTextEdit):
     def __init__(self, focusin, focusout):
         QTextEdit.__init__(self)        
@@ -201,8 +192,7 @@ class SimpleRichText(QTextEdit):
 
 
 
-#@-node:ville.20091023181249.5264:class SimpleRichText
-#@+node:vivainio2.20091008133028.5825:g.command('stickynote')
+#@+node:vivainio2.20091008133028.5825: ** g.command('stickynote')
 @g.command('stickynote')
 def stickynote_f(event):
     """ Launch editable 'sticky note' for the node """
@@ -216,8 +206,7 @@ def stickynote_f(event):
     nf = mknote(c,p)
 
     return
-#@-node:vivainio2.20091008133028.5825:g.command('stickynote')
-#@+node:ville.20091023181249.5266:g.command('stickynoter')
+#@+node:ville.20091023181249.5266: ** g.command('stickynoter')
 @g.command('stickynoter')
 def stickynoter_f(event):
     """ Launch editable 'sticky note' for the node """
@@ -260,8 +249,7 @@ def stickynoter_f(event):
     nf.show()
 
     g.app.stickynotes[p.gnx] = nf
-#@-node:ville.20091023181249.5266:g.command('stickynoter')
-#@+node:tbrown.20100120100336.7829:g.command('stickynoteenc')
+#@+node:tbrown.20100120100336.7829: ** g.command('stickynoteenc')
 if encOK:
     @g.command('stickynoteenc')
     def stickynoteenc_f(event):
@@ -303,8 +291,7 @@ if encOK:
         nf.focusout = focusout
         nf.focusin = focusin
         nf.setPlainText(sn_decode(v.b))
-#@-node:tbrown.20100120100336.7829:g.command('stickynoteenc')
-#@+node:tbrown.20100120100336.7830:sn_de/encode
+#@+node:tbrown.20100120100336.7830: ** sn_de/encode
 if encOK:
     def sn_decode(s):
         return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).strip()
@@ -329,9 +316,8 @@ if encOK:
         __ENCKEY[0] = sha.digest()[:16] + md5.digest()[:16]
         if len(__ENCKEY[0]) != 32:
             raise Exception("sn_getenckey failed to build key")
-#@-node:tbrown.20100120100336.7830:sn_de/encode
-#@+node:ville.20100703234124.9976:Tabula
-#@+node:ville.20100707205336.5610:def create_subnode
+#@+node:ville.20100703234124.9976: ** Tabula
+#@+node:ville.20100707205336.5610: *3* def create_subnode
 def create_subnode(c, heading):
     """  Find node with heading, then add new node as child under this heading 
 
@@ -350,9 +336,7 @@ def create_subnode(c, heading):
 
     chi = p.insertAsLastChild()
     return chi.copy()
-#@nonl
-#@-node:ville.20100707205336.5610:def create_subnode
-#@+node:ville.20100703194946.5587:def mknote
+#@+node:ville.20100703194946.5587: *3* def mknote
 def mknote(c,p, parent=None):
     """ Launch editable 'sticky note' for the node """
 
@@ -401,8 +385,7 @@ def mknote(c,p, parent=None):
 
     g.app.stickynotes[p.gnx] = nf
     return nf
-#@-node:ville.20100703194946.5587:def mknote
-#@+node:ville.20100704010850.5589:def tabula_show
+#@+node:ville.20100704010850.5589: *3* def tabula_show
 def tabula_show(c):
     try:
        t = c.tabula
@@ -411,8 +394,7 @@ def tabula_show(c):
     t.show()
     return t
 
-#@-node:ville.20100704010850.5589:def tabula_show
-#@+node:ville.20100703194946.5585:@g.command('tabula')
+#@+node:ville.20100703194946.5585: *3* @g.command('tabula')
 @g.command('tabula')
 def tabula_f(event):
     """ Show "tabula" - a MDI window with stickynotes that remember their status """
@@ -422,8 +404,7 @@ def tabula_f(event):
     t.add_note(p)
 
 
-#@-node:ville.20100703194946.5585:@g.command('tabula')
-#@+node:ville.20100704010850.5588:@g.command('tabula-show')
+#@+node:ville.20100704010850.5588: *3* @g.command('tabula-show')
 @g.command('tabula-show')
 def tabula_show_f(event):
     c= event['c']
@@ -432,8 +413,7 @@ def tabula_show_f(event):
 
 
 
-#@-node:ville.20100704010850.5588:@g.command('tabula-show')
-#@+node:ville.20100704125228.5592:@g.command('tabula-marked')
+#@+node:ville.20100704125228.5592: *3* @g.command('tabula-marked')
 @g.command('tabula-marked')
 def tabula_marked_f(event):
     """ Create tabula from all marked nodes """
@@ -445,8 +425,7 @@ def tabula_marked_f(event):
         if p.isMarked():
             t.add_note(p)
 
-#@-node:ville.20100704125228.5592:@g.command('tabula-marked')
-#@+node:ville.20100703194946.5584:class Tabula
+#@+node:ville.20100703194946.5584: *3* class Tabula
 class Tabula(QMainWindow):
 
     def __init__(self, c):
@@ -571,9 +550,5 @@ class Tabula(QMainWindow):
             n.parent().restoreGeometry(geom)
 
         #print stored
-#@-node:ville.20100703194946.5584:class Tabula
-#@-node:ville.20100703234124.9976:Tabula
 #@-others
-#@nonl
-#@-node:ekr.20100103093121.5329:@thin stickynotes.py
 #@-leo

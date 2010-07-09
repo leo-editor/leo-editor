@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20091029123555.5319:@thin attrib_edit.py
-#@<< docstring >>
-#@+node:tbrown.20091009210724.10972:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20091029123555.5319: * @thin attrib_edit.py
+#@+<< docstring >>
+#@+node:tbrown.20091009210724.10972: ** << docstring >>
 '''
 
 attrib_edit.py - Edit attributes in v.u
@@ -105,14 +105,13 @@ plugins, here are some points of interest:
   ``attrib_edit_placement`` to 'tab'.
 
 '''
-#@-node:tbrown.20091009210724.10972:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:tbrown.20091009210724.10973:<< imports >>
+#@+<< imports >>
+#@+node:tbrown.20091009210724.10973: ** << imports >>
 import leo.core.leoGlobals as g
 import re
 if g.app.gui.guiName() == "qt":
@@ -121,26 +120,20 @@ if g.app.gui.guiName() == "qt":
 
     from PyQt4 import QtCore, QtGui
     Qt = QtCore.Qt
-#@-node:tbrown.20091009210724.10973:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "0.1"
-#@<< version history >>
-#@+node:tbrown.20091009210724.10974:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20091009210724.10974: ** << version history >>
 #@@killcolor
 
-#@+at 
-#@nonl
-# Use and distribute under the same terms as leo itself.
+#@+at Use and distribute under the same terms as leo itself.
 # 
 # 0.1 TNB
 #   - initial version
-#@-at
-#@nonl
-#@-node:tbrown.20091009210724.10974:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:tbrown.20091009210724.10975:init
+#@+node:tbrown.20091009210724.10975: ** init
 def init():
 
     if g.app.gui.guiName() != "qt":
@@ -150,15 +143,13 @@ def init():
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
-#@-node:tbrown.20091009210724.10975:init
-#@+node:tbrown.20091009210724.10976:onCreate
+#@+node:tbrown.20091009210724.10976: ** onCreate
 def onCreate (tag,key):
 
     c = key.get('c')
 
     attrib_edit_Controller(c)
-#@-node:tbrown.20091009210724.10976:onCreate
-#@+node:tbrown.20091103080354.1400:class AttributeGetter
+#@+node:tbrown.20091103080354.1400: ** class AttributeGetter
 class AttributeGetter(object):
 
     implementations = []
@@ -199,17 +190,15 @@ class AttributeGetter(object):
         E.g. attribute named 'count' might be described as 'address.people.count'
         """
         raise NotImplemented
-#@-node:tbrown.20091103080354.1400:class AttributeGetter
-#@+node:tbrown.20091103080354.1402:class AttributeGetterUA
+#@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
 
-    #@    @+others
-    #@+node:tbrown.20091103080354.6240:__init__
+    #@+others
+    #@+node:tbrown.20091103080354.6240: *3* __init__
     def __init__(self, c):
 
         AttributeGetter.__init__(self, c)
-    #@-node:tbrown.20091103080354.6240:__init__
-    #@+node:tbrown.20091103080354.1409:recSearch
+    #@+node:tbrown.20091103080354.1409: *3* recSearch
     def recSearch(self, d, path, ans):
         """recursive search of tree of dicts for values whose
         key path is like [*][*][*]['_edit'][*] or
@@ -234,8 +223,7 @@ class AttributeGetterUA(AttributeGetter):
                         else:
                             ans.append((self,
                                 ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
-    #@-node:tbrown.20091103080354.1409:recSearch
-    #@+node:tbrown.20091103080354.1410:getAttribs
+    #@+node:tbrown.20091103080354.1410: *3* getAttribs
     def getAttribs(self, v):
         """Return a list of tuples describing editable uAs.
 
@@ -258,8 +246,7 @@ class AttributeGetterUA(AttributeGetter):
         self.recSearch(d, [], ans)
 
         return ans
-    #@-node:tbrown.20091103080354.1410:getAttribs
-    #@+node:tbrown.20091103080354.1430:setAttrib
+    #@+node:tbrown.20091103080354.1430: *3* setAttrib
     def setAttrib(self, v, path, value):
         """copy value into dict a on path,
         e.g. a['one']['more']['level'] = value
@@ -270,8 +257,7 @@ class AttributeGetterUA(AttributeGetter):
         for i in path[:-1]:
             a = a.setdefault(i, {})
         a[path[-1]] = value
-    #@-node:tbrown.20091103080354.1430:setAttrib
-    #@+node:tbrown.20091103080354.1438:delAttrib
+    #@+node:tbrown.20091103080354.1438: *3* delAttrib
     def delAttrib(self, v, path):
         a = v.u
         for i in path[:-1]:
@@ -283,19 +269,14 @@ class AttributeGetterUA(AttributeGetter):
             del a[path[-1]]
         except KeyError:
             pass
-    #@-node:tbrown.20091103080354.1438:delAttrib
-    #@+node:tbrown.20091103080354.1411:name
+    #@+node:tbrown.20091103080354.1411: *3* name
     def name(self):
         return "v.u mode"
-    #@nonl
-    #@-node:tbrown.20091103080354.1411:name
-    #@+node:tbrown.20091103080354.1431:helpCreate
+    #@+node:tbrown.20091103080354.1431: *3* helpCreate
     def helpCreate(self):
         """does the Getter need to help the user create an attribute?"""
         return True
-    #@nonl
-    #@-node:tbrown.20091103080354.1431:helpCreate
-    #@+node:tbrown.20091103080354.1432:createAttrib
+    #@+node:tbrown.20091103080354.1432: *3* createAttrib
     def createAttrib(self, v, gui_parent=None):
 
         path,ok = QtGui.QInputDialog.getText(gui_parent, "Enter attribute path",
@@ -322,27 +303,22 @@ class AttributeGetterUA(AttributeGetter):
             self.setAttrib(v, ns, '')
 
             #FIXME self.attrPaths.add(tuple(ns))
-    #@-node:tbrown.20091103080354.1432:createAttrib
-    #@+node:tbrown.20091103080354.1433:longDescrip
+    #@+node:tbrown.20091103080354.1433: *3* longDescrip
     def longDescrip(self, path):
 
         return '.'.join([j for j in path if j not in ('_edit','_view')])
-    #@nonl
-    #@-node:tbrown.20091103080354.1433:longDescrip
     #@-others
 
 AttributeGetter.register(AttributeGetterUA)
-#@-node:tbrown.20091103080354.1402:class AttributeGetterUA
-#@+node:tbrown.20091103080354.1420:class AttributeGetterAt
+#@+node:tbrown.20091103080354.1420: ** class AttributeGetterAt
 class AttributeGetterAt(AttributeGetter):
 
-    #@    @+others
-    #@+node:tbrown.20091103080354.6238:__init__
+    #@+others
+    #@+node:tbrown.20091103080354.6238: *3* __init__
     def __init__(self, c):
 
         AttributeGetter.__init__(self, c)
-    #@-node:tbrown.20091103080354.6238:__init__
-    #@+node:tbrown.20091103080354.1422:getAttribs
+    #@+node:tbrown.20091103080354.1422: *3* getAttribs
     def getAttribs(self, v):
         """Return a list of tuples describing editable uAs.
 
@@ -370,8 +346,7 @@ class AttributeGetterAt(AttributeGetter):
                     words.append('')
                 ans.append( (self, words[0], words[1], words[0], str, False) )
         return ans
-    #@-node:tbrown.20091103080354.1422:getAttribs
-    #@+node:tbrown.20091103080354.6237:setAttrib
+    #@+node:tbrown.20091103080354.6237: *3* setAttrib
     def setAttrib(self, v, path, value):
 
 
@@ -387,8 +362,7 @@ class AttributeGetterAt(AttributeGetter):
             p = self.c.vnode2position(v)
             n = p.insertAsLastChild()
             n.h = "@%s %s" % (path, value)
-    #@-node:tbrown.20091103080354.6237:setAttrib
-    #@+node:tbrown.20091103080354.6244:delAttrib
+    #@+node:tbrown.20091103080354.6244: *3* delAttrib
     def delAttrib(self, v, path):
 
         for n in v.children:
@@ -400,37 +374,28 @@ class AttributeGetterAt(AttributeGetter):
                     p = self.c.vnode2position(n)
                     p.doDelete()
                     break
-    #@-node:tbrown.20091103080354.6244:delAttrib
-    #@+node:tbrown.20091103080354.1423:name
+    #@+node:tbrown.20091103080354.1423: *3* name
     def name(self):
         return "@Child"
-    #@nonl
-    #@-node:tbrown.20091103080354.1423:name
-    #@+node:tbrown.20091103080354.1443:helpCreate
+    #@+node:tbrown.20091103080354.1443: *3* helpCreate
     def helpCreate(self):
         return "Add a child named '@AttributeName'"
-    #@nonl
-    #@-node:tbrown.20091103080354.1443:helpCreate
-    #@+node:tbrown.20091103080354.1435:longName
+    #@+node:tbrown.20091103080354.1435: *3* longName
     def longDescrip(self, path):
 
         return path
-    #@nonl
-    #@-node:tbrown.20091103080354.1435:longName
     #@-others
 
 AttributeGetter.register(AttributeGetterAt)
-#@-node:tbrown.20091103080354.1420:class AttributeGetterAt
-#@+node:tbrown.20091103080354.1427:class AttributeGetterColon
+#@+node:tbrown.20091103080354.1427: ** class AttributeGetterColon
 class AttributeGetterColon(AttributeGetter):
 
-    #@    @+others
-    #@+node:tbrown.20091103080354.6242:__init__
+    #@+others
+    #@+node:tbrown.20091103080354.6242: *3* __init__
     def __init__(self, c):
 
         AttributeGetter.__init__(self, c)
-    #@-node:tbrown.20091103080354.6242:__init__
-    #@+node:tbrown.20091103080354.1428:getAttribs
+    #@+node:tbrown.20091103080354.1428: *3* getAttribs
     def getAttribs(self, v):
 
         ans = []
@@ -446,8 +411,7 @@ class AttributeGetterColon(AttributeGetter):
                 ans.append( (self, words[0][:-1], words[1], words[0][:-1], str, False) )
 
         return ans
-    #@-node:tbrown.20091103080354.1428:getAttribs
-    #@+node:tbrown.20091103080354.6246:setAttrib
+    #@+node:tbrown.20091103080354.6246: *3* setAttrib
     def setAttrib(self, v, path, value):
 
         parts = v.b.split('\n',100)
@@ -460,8 +424,7 @@ class AttributeGetterColon(AttributeGetter):
                 break
         else:
             v.b = "%s: %s\n%s" % (path, value, v.b)
-    #@-node:tbrown.20091103080354.6246:setAttrib
-    #@+node:tbrown.20091103080354.6248:delAttrib
+    #@+node:tbrown.20091103080354.6248: *3* delAttrib
     def delAttrib(self, v, path):
 
         parts = v.b.split('\n',100)
@@ -472,32 +435,24 @@ class AttributeGetterColon(AttributeGetter):
                 del parts[n]
                 v.b = '\n'.join(parts)
                 break
-    #@-node:tbrown.20091103080354.6248:delAttrib
-    #@+node:tbrown.20091103080354.1429:name
+    #@+node:tbrown.20091103080354.1429: *3* name
     def name(self):
         return "Field:"
-    #@nonl
-    #@-node:tbrown.20091103080354.1429:name
-    #@+node:tbrown.20091103080354.1441:helpCreate
+    #@+node:tbrown.20091103080354.1441: *3* helpCreate
     def helpCreate(self):
         return "Add 'AttributeName:' to the text"
-    #@nonl
-    #@-node:tbrown.20091103080354.1441:helpCreate
-    #@+node:tbrown.20091103080354.1437:longName
+    #@+node:tbrown.20091103080354.1437: *3* longName
     def longDescrip(self, path):
 
         return path
-    #@nonl
-    #@-node:tbrown.20091103080354.1437:longName
     #@-others
 
 AttributeGetter.register(AttributeGetterColon)
-#@-node:tbrown.20091103080354.1427:class AttributeGetterColon
-#@+node:tbrown.20091028131637.1353:class ListDialog
+#@+node:tbrown.20091028131637.1353: ** class ListDialog
 class ListDialog(QtGui.QDialog):
 
-    #@    @+others
-    #@+node:tbrown.20091028131637.1354:__init__
+    #@+others
+    #@+node:tbrown.20091028131637.1354: *3* __init__
     def __init__(self, parent, title, text, entries):
 
         self.entries = entries
@@ -541,18 +496,15 @@ class ListDialog(QtGui.QDialog):
         self.setLayout(vbox)
 
 
-    #@-node:tbrown.20091028131637.1354:__init__
-    #@+node:tbrown.20091028131637.1359:writeBack
+    #@+node:tbrown.20091028131637.1359: *3* writeBack
     def writeBack(self, event=None):
 
         for n,i in enumerate(self.buttons):
             self.entries[n][1] = (i.checkState() == Qt.Checked)
 
         self.accept()
-    #@-node:tbrown.20091028131637.1359:writeBack
     #@-others
-#@-node:tbrown.20091028131637.1353:class ListDialog
-#@+node:tbrown.20091010211613.5257:class editWatcher
+#@+node:tbrown.20091010211613.5257: ** class editWatcher
 class editWatcher(object):
     """class to supply widget for editing attribute and handle
     its textChanged signal"""
@@ -606,14 +558,13 @@ class editWatcher(object):
     #X     for i in path[:-1]:
     #X         a = a.setdefault(i, {})
     #X     a[path[-1]] = value
-#@-node:tbrown.20091010211613.5257:class editWatcher
-#@+node:tbrown.20091009210724.10979:class attrib_edit_Controller
+#@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
 class attrib_edit_Controller:
 
     '''A per-commander class that manages attribute editing.'''
 
-    #@    @+others
-    #@+node:tbrown.20091009210724.10981:__init__
+    #@+others
+    #@+node:tbrown.20091009210724.10981: *3* __init__
     def __init__ (self, c):
 
         self.c = c
@@ -654,13 +605,11 @@ class attrib_edit_Controller:
             self.holder = QtGui.QHBoxLayout()
             self.parent.setLayout(self.holder)
             c.frame.log.createTab('Attribs', widget = self.parent)
-    #@-node:tbrown.20091009210724.10981:__init__
-    #@+node:tbrown.20091009210724.10983:__del__
+    #@+node:tbrown.20091009210724.10983: *3* __del__
     def __del__(self):
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
-    #@-node:tbrown.20091009210724.10983:__del__
-    #@+node:tbrown.20091009210724.11210:initForm
+    #@+node:tbrown.20091009210724.11210: *3* initForm
     def initForm(self):
         """set up self.form, the blank form layout before adding edit widgets"""
         self.editors = []
@@ -679,16 +628,14 @@ class attrib_edit_Controller:
         pnl.setLayout(self.form)
         pnl.setAutoFillBackground(True)
         w.addWidget(pnl)
-    #@-node:tbrown.20091009210724.11210:initForm
-    #@+node:tbrown.20091009210724.11047:updateEditor
+    #@+node:tbrown.20091009210724.11047: *3* updateEditor
     def updateEditor(self,tag,k):
         """update edit panel when new node selected"""
 
         if k['c'] != self.c: return  # not our problem
 
         self.updateEditorInt()
-    #@-node:tbrown.20091009210724.11047:updateEditor
-    #@+node:tbrown.20091028100922.1493:updateEditorInt
+    #@+node:tbrown.20091028100922.1493: *3* updateEditorInt
     def updateEditorInt(self):
 
         c = self.c
@@ -705,8 +652,7 @@ class attrib_edit_Controller:
                 self.editors.append(editor)
 
                 self.form.addRow(QtGui.QLabel(name), editor.widget())
-    #@-node:tbrown.20091028100922.1493:updateEditorInt
-    #@+node:tbrown.20091103080354.1405:recSearch
+    #@+node:tbrown.20091103080354.1405: *3* recSearch
     def JUNKrecSearch(self, d, path, ans):
         """recursive search of tree of dicts for values whose
         key path is like [*][*][*]['_edit'][*] or
@@ -729,8 +675,7 @@ class attrib_edit_Controller:
                                     type_, k != '_edit'))
                         else:
                             ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
-    #@-node:tbrown.20091103080354.1405:recSearch
-    #@+node:tbrown.20091103080354.1406:getAttribs
+    #@+node:tbrown.20091103080354.1406: *3* getAttribs
     def getAttribs(self, v = None):
         """Return a list of tuples describing editable uAs.
 
@@ -763,26 +708,21 @@ class attrib_edit_Controller:
             self.attrPaths.add( (ns[0], ns[1], ns[3]) )  # class, name, path
 
         return ans
-    #@-node:tbrown.20091103080354.1406:getAttribs
-    #@+node:tbrown.20091029101116.1413:addAttrib
+    #@+node:tbrown.20091029101116.1413: *3* addAttrib
     def addAttrib(self, attrib):
 
         attrib[0].setAttrib(self.c.currentPosition().v, attrib[2], '')
-    #@-node:tbrown.20091029101116.1413:addAttrib
-    #@+node:tbrown.20091029101116.1414:delAttrib
+    #@+node:tbrown.20091029101116.1414: *3* delAttrib
     def delAttrib(self, attrib):
 
         attrib[0].delAttrib(self.c.currentPosition().v, attrib[2])
-    #@-node:tbrown.20091029101116.1414:delAttrib
-    #@+node:tbrown.20091029101116.1424:scanAttribs
+    #@+node:tbrown.20091029101116.1424: *3* scanAttribs
     def scanAttribs(self):
         """scan all of c for attrbutes"""
         for v in self.c.all_unique_nodes():
             self.getAttribs(v)  # updates internal list of attribs
         g.es("%d attributes found" % len(self.attrPaths))
-    #@nonl
-    #@-node:tbrown.20091029101116.1424:scanAttribs
-    #@+node:tbrown.20091011151836.14788:createAttrib
+    #@+node:tbrown.20091011151836.14788: *3* createAttrib
     def createAttrib(self, event=None, readonly=False):
 
         ans = []
@@ -804,8 +744,7 @@ class attrib_edit_Controller:
             self.updateEditorInt()
             self.c.currentPosition().v.setDirty()
             self.c.redraw()
-    #@-node:tbrown.20091011151836.14788:createAttrib
-    #@+node:tbrown.20091028131637.1358:manageAttrib
+    #@+node:tbrown.20091028131637.1358: *3* manageAttrib
     def manageAttrib(self):
 
         attribs = [(i[0],i[1],i[3]) for i in self.getAttribs()]
@@ -854,8 +793,7 @@ class attrib_edit_Controller:
         self.updateEditorInt()
         self.c.redraw()
 
-    #@-node:tbrown.20091028131637.1358:manageAttrib
-    #@+node:tbrown.20091103080354.1415:manageModes
+    #@+node:tbrown.20091103080354.1415: *3* manageModes
     def manageModes(self):
 
         modes = [ [i[0].name(), i[1]] for i in self.getsetters ]
@@ -873,30 +811,21 @@ class attrib_edit_Controller:
             self.getsetters[n][1] = i[1]
 
         self.updateEditorInt()
-    #@-node:tbrown.20091103080354.1415:manageModes
     #@-others
-#@-node:tbrown.20091009210724.10979:class attrib_edit_Controller
-#@+node:tbrown.20091029101116.1415:cmd_Modes
+#@+node:tbrown.20091029101116.1415: ** cmd_Modes
 def cmd_Modes(c):
    c.attribEditor.manageModes()
-#@-node:tbrown.20091029101116.1415:cmd_Modes
-#@+node:tbrown.20091103080354.1413:cmd_Manage
+#@+node:tbrown.20091103080354.1413: ** cmd_Manage
 def cmd_Manage(c):
    c.attribEditor.manageAttrib()
-#@-node:tbrown.20091103080354.1413:cmd_Manage
-#@+node:tbrown.20091029101116.1419:cmd_Create
+#@+node:tbrown.20091029101116.1419: ** cmd_Create
 def cmd_Create(c):
    c.attribEditor.createAttrib()
-#@-node:tbrown.20091029101116.1419:cmd_Create
-#@+node:tbrown.20091029101116.1421:cmd_CreateReadonly
+#@+node:tbrown.20091029101116.1421: ** cmd_CreateReadonly
 def Xcmd_CreateReadonly(c):
    c.attribEditor.createAttrib(readonly=True)
-#@-node:tbrown.20091029101116.1421:cmd_CreateReadonly
-#@+node:tbrown.20091029101116.1426:cmd_Scan
+#@+node:tbrown.20091029101116.1426: ** cmd_Scan
 def cmd_Scan(c):
    c.attribEditor.scanAttribs()
-#@-node:tbrown.20091029101116.1426:cmd_Scan
 #@-others
-#@nonl
-#@-node:tbrown.20091029123555.5319:@thin attrib_edit.py
 #@-leo

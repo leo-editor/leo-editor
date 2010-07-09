@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20050301083306:@thin mod_read_dir_outline.py
+#@+leo-ver=5-thin
+#@+node:ekr.20050301083306: * @thin mod_read_dir_outline.py
 #@@first
 
-#@<< docstring >>
-#@+node:ekr.20050301084207:<< docstring >>
+#@+<< docstring >>
+#@+node:ekr.20050301084207: ** << docstring >>
 '''This plugin allows Leo to read a complete directory's outline into a Leo's
 Outline. Directories are converted into headlines and files names are listed
 into the bodies.
@@ -19,14 +19,13 @@ Feedback on this plugin can be sent to::
     Frédéric Momméja
     <frederic [point] mommeja [at] laposte [point] net>
 '''
-#@-node:ekr.20050301084207:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050301083306.2:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050301083306.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -36,13 +35,11 @@ import leo.core.leoPlugins as leoPlugins
 tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
 
 import os
-#@nonl
-#@-node:ekr.20050301083306.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = '1.6'
-#@<< version history >>
-#@+node:ekr.20050301083306.3:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050301083306.3: ** << version history >>
 #@@killcolor
 
 #@+at
@@ -56,8 +53,7 @@ __version__ = '1.6'
 #     - Use g.importExtension to import Tkinter
 #     - Changed true/false to True/False.
 #     - Used g.os_path functions to support Unicode properly.
-#     - Added '@first # -*- coding: utf-8 -*-' to suppress deprecation 
-# warning.
+#     - Added '@first # -*- coding: utf-8 -*-' to suppress deprecation warning.
 # 1.5 EKR:
 #     - use g.importExtension to import tkFileDialog.
 #     - Redraw the screen only once (in readDir instead of importDir).
@@ -65,15 +61,12 @@ __version__ = '1.6'
 # 1.6 EKR:
 #     - Changed 'new_c' logic to 'c' logic.
 #     - Added init function.
-#@-at
-#@nonl
-#@-node:ekr.20050301083306.3:<< version history >>
-#@nl
+#@-<< version history >>
 
 language = 'english' # Anything except 'french' uses english.
 
 #@+others
-#@+node:ekr.20050301083306.4:init
+#@+node:ekr.20050301083306.4: ** init
 def init ():
 
     if tkFileDialog is None: return False
@@ -88,9 +81,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050301083306.4:init
-#@+node:ekr.20050301083306.5:onCreate
+#@+node:ekr.20050301083306.5: ** onCreate
 def onCreate (tag, keywords):
 
     c = keywords.get('c')
@@ -108,19 +99,15 @@ def onCreate (tag, keywords):
         (mess1, "Shift+Ctrl+Alt+D",cc.readDir))
 
     c.frame.menu.createMenuEntries(menu,table,dynamicMenu=True)
-#@nonl
-#@-node:ekr.20050301083306.5:onCreate
-#@+node:ekr.20050301083306.6:class controller
+#@+node:ekr.20050301083306.6: ** class controller
 class controller:
 
-    #@    @+others
-    #@+node:ekr.20050301083306.7:ctor
+    #@+others
+    #@+node:ekr.20050301083306.7: *3* ctor
     def __init__ (self,c):
 
         self.c = c
-    #@nonl
-    #@-node:ekr.20050301083306.7:ctor
-    #@+node:ekr.20050301083306.8:readDir
+    #@+node:ekr.20050301083306.8: *3* readDir
     def readDir (self,event=None):
 
         # fr - Modifier pour adapter à votre environnement
@@ -145,8 +132,7 @@ class controller:
                 g.es(str(compteurglobal)+" fichiers traités.")
             else:
                 g.es(str(compteurglobal)+" files outlined.")
-    #@-node:ekr.20050301083306.8:readDir
-    #@+node:ekr.20050301083306.9:esfm
+    #@+node:ekr.20050301083306.9: *3* esfm
     def esfm (self,chaine,**keys):
 
         """ Pour imprimer une chaîne de caractères sans retour à la ligne """
@@ -160,9 +146,7 @@ class controller:
             else:
                 g.app.logWaiting.append((chaine,color),)
                 g.pr(chaine,newline=False)
-    #@nonl
-    #@-node:ekr.20050301083306.9:esfm
-    #@+node:ekr.20050301083306.10:importDir
+    #@+node:ekr.20050301083306.10: *3* importDir
     def importDir (self,dir,compteur,compteurglobal):
 
         """ La routine récursive de lecture des fichiers """
@@ -179,8 +163,8 @@ class controller:
         try:
             #ici, on liste le contenu du répertoire
             body=""
-            #@        << listdir >>
-            #@+node:ekr.20050301083306.11:<< listdir >>
+            #@+<< listdir >>
+            #@+node:ekr.20050301083306.11: *4* << listdir >>
             try:
                 fichiers = os.listdir(dir)
                 dossiers = []
@@ -206,8 +190,7 @@ class controller:
                 else:
                     g.es("os.listdir error...")
                 g.es_exception()
-            #@-node:ekr.20050301083306.11:<< listdir >>
-            #@nl
+            #@-<< listdir >>
             retour = c.importCommands.createHeadline(v,body,tail)
             #sélectionne le noeud nouvellement créé
             c.selectVnode(retour)
@@ -225,12 +208,6 @@ class controller:
             g.es_exception()
 
         return compteur, compteurglobal
-    #@nonl
-    #@-node:ekr.20050301083306.10:importDir
     #@-others
-#@nonl
-#@-node:ekr.20050301083306.6:class controller
 #@-others
-#@nonl
-#@-node:ekr.20050301083306:@thin mod_read_dir_outline.py
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.916:@thin examples/__overrideClasses.py
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.916: * @thin examples/__overrideClasses.py
 """A plugin showing how to override Leo's core classes."""
 
 #@@language python
@@ -16,8 +16,8 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
     # Override classes & methods...
 
     if 0:
-        #@        << override the LeoFrame class >>
-        #@+node:edream.110203113231.917:<< override the LeoFrame class >>
+        #@+<< override the LeoFrame class >>
+        #@+node:edream.110203113231.917: ** << override the LeoFrame class >>
         # g.pr("overriding LeoFrame class")
 
         import leo.core.leoFrame as leoFrame
@@ -34,13 +34,11 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
                     leoFrame.leoCoreFrame.__init__(self,title)
 
         leoFrame.LeoFrame = myLeoFrame
-        #@nonl
-        #@-node:edream.110203113231.917:<< override the LeoFrame class >>
-        #@nl
+        #@-<< override the LeoFrame class >>
 
     if 0:
-        #@        << override methods of the LeoApp class >>
-        #@+node:edream.110203113231.918:<< override methods of the LeoApp class >>
+        #@+<< override methods of the LeoApp class >>
+        #@+node:edream.110203113231.918: ** << override methods of the LeoApp class >>
         import leo.core.leoApp as leoApp
 
         # g.pr("overriding g.app.closeLeoWindow")
@@ -55,12 +53,8 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
             g.pr("after closeLeoWindow")
 
         g.funcToMethod(myAppCloseLeoWindow,leoApp.LeoApp,"closeLeoWindow")
-        #@nonl
-        #@-node:edream.110203113231.918:<< override methods of the LeoApp class >>
-        #@nl
+        #@-<< override methods of the LeoApp class >>
 
     __version__ = "1.2"
     g.plugin_signon(__name__)
-#@nonl
-#@-node:edream.110203113231.916:@thin examples/__overrideClasses.py
 #@-leo

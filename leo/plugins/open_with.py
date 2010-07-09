@@ -1,21 +1,19 @@
-#@+leo-ver=4-thin
-#@+node:bob.20071218121513:@thin open_with.py
-#@<< docstring >>
-#@+node:ekr.20050910140846:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:bob.20071218121513: * @thin open_with.py
+#@+<< docstring >>
+#@+node:ekr.20050910140846: ** << docstring >>
 '''Create menu for Open With command and handle the resulting commands.
 
 @openwith settings nodes specify entries.
 See the documentation for @openwith nodes in leoSettings.leo for details.
 '''
-#@nonl
-#@-node:ekr.20050910140846:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050101090207.8:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.8: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -24,39 +22,30 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 import os
 import subprocess
 import sys
-#@nonl
-#@-node:ekr.20050101090207.8:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = '1.13'
-#@<< version history >>
-#@+node:ekr.20050311110052:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050311110052: ** << version history >>
 #@@killcolor
 
 #@+at
 # 
 # 1.5 EKR: Use only 'new' and 'open2' hooks to create menu.
-# 1.6 EKR: Installed patches from Jim Sizelove to use subprocess module if 
-# possible.
+# 1.6 EKR: Installed patches from Jim Sizelove to use subprocess module if possible.
 # 1.7 EKR: Set subprocess = None if import fails.
 # 1.8 EKR:
-# - Document how install subproces, and use g.importExtension to import 
-# subprocess.
+# - Document how install subproces, and use g.importExtension to import subprocess.
 # - Import subprocess with g.importExtension.
 # 1.9 EKR: Removed key bindings from default table.
 # 1.10 EKR: The init code now explicitly calls g.enableIdleTimeHook.
 # 1.11 EKR: Get the table from @openwith settings if possible.
-# 1.12 EKR: Installed patch from Terry Brown: support for @bool 
-# open_with_save_on_update setting.
-# 1.13 EKR: Remove hard-coded path from default table.  These are *very* 
-# rarely used.
-#@-at
-#@nonl
-#@-node:ekr.20050311110052:<< version history >>
-#@nl
+# 1.12 EKR: Installed patch from Terry Brown: support for @bool open_with_save_on_update setting.
+# 1.13 EKR: Remove hard-coded path from default table.  These are *very* rarely used.
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20050311090939.8:init
+#@+node:ekr.20050311090939.8: ** init
 def init():
 
     if not g.app.gui:
@@ -75,8 +64,7 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@-node:ekr.20050311090939.8:init
-#@+node:EKR.20040517075715.5:on_idle
+#@+node:EKR.20040517075715.5: ** on_idle
 # frame.OnOpenWith creates the dict with the following entries:
 # "body", "c", "encoding", "f", "path", "time" and "p".
 
@@ -103,8 +91,8 @@ def on_idle (tag,keywords):
                 if time and time != dict.get("time"):
                     dict["time"] = time # inhibit endless dialog loop.
                     # The file has changed.
-                    #@                    << set s to the file text >>
-                    #@+node:EKR.20040517075715.7:<< set s to the file text >>
+                    #@+<< set s to the file text >>
+                    #@+node:EKR.20040517075715.7: *3* << set s to the file text >>
                     try:
                         # Update v from the changed temp file.
                         f=open(path)
@@ -113,10 +101,9 @@ def on_idle (tag,keywords):
                     except:
                         g.es("can not open " + g.shortFileName(path))
                         break
-                    #@-node:EKR.20040517075715.7:<< set s to the file text >>
-                    #@nl
-                    #@                    << update p's body text >>
-                    #@+node:EKR.20040517075715.6:<< update p's body text >>
+                    #@-<< set s to the file text >>
+                    #@+<< update p's body text >>
+                    #@+node:EKR.20040517075715.6: *3* << update p's body text >>
                     # Convert body and s to whatever encoding is in effect.
                     body = p.b
                     body = g.toEncodedString(body,encoding,reportErrors=True)
@@ -147,28 +134,20 @@ def on_idle (tag,keywords):
                             c.save()
                     elif conflict:
                         g.es("not updated from: " + g.shortFileName(path),color="blue")
-                    #@nonl
-                    #@-node:EKR.20040517075715.6:<< update p's body text >>
-                    #@nl
+                    #@-<< update p's body text >>
             except Exception:
                 if 1:
                     g.es_exception()
 
-#@-node:EKR.20040517075715.5:on_idle
-#@+node:EKR.20040517075715.8:create_open_with_menu & helpers
-#@+at 
-#@nonl
-# Entries in the following table are the tuple (commandName,shortcut,data).
+#@+node:EKR.20040517075715.8: ** create_open_with_menu & helpers
+#@+at Entries in the following table are the tuple (commandName,shortcut,data).
 # 
 # - data is the tuple (command,arg,ext).
-# - command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or 
-# "exec".
+# - command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
 # 
 # Leo executes command(arg+path) where path is the full path to the temp file.
 # If ext is not None, the temp file has the extension ext,
-# Otherwise, Leo computes an extension based on what @language directive is in 
-# effect.
-#@-at
+# Otherwise, Leo computes an extension based on what @language directive is in effect.
 #@@c
 
 def create_open_with_menu (tag,keywords):
@@ -190,7 +169,7 @@ def create_open_with_menu (tag,keywords):
             table = doDefaultTable()
 
     c.frame.menu.createOpenWithMenuFromTable(table)
-#@+node:ekr.20070411165142:doDefaultTable
+#@+node:ekr.20070411165142: *3* doDefaultTable
 def doDefaultTable ():
 
     if 1: # Default table.
@@ -210,8 +189,7 @@ def doDefaultTable ():
         table = ("X&Emacs", "Ctrl+E", ("os.spawnl","/usr/bin/gnuclient", None)),
 
     return table
-#@-node:ekr.20070411165142:doDefaultTable
-#@+node:ekr.20070411165142.1:doOpenWithSettings
+#@+node:ekr.20070411165142.1: *3* doOpenWithSettings
 def doOpenWithSettings (aList):
 
     '''Create an open-with table from a list of dictionaries.'''
@@ -236,8 +214,7 @@ def doOpenWithSettings (aList):
             return None
 
     return table
-#@-node:ekr.20070411165142.1:doOpenWithSettings
-#@+node:ekr.20070411165142.2:doSubprocessTable
+#@+node:ekr.20070411165142.2: *3* doSubprocessTable
 def doSubprocessTable ():
 
     if 1:
@@ -277,10 +254,5 @@ def doSubprocessTable ():
         )
 
     return table
-#@nonl
-#@-node:ekr.20070411165142.2:doSubprocessTable
-#@-node:EKR.20040517075715.8:create_open_with_menu & helpers
 #@-others
-#@nonl
-#@-node:bob.20071218121513:@thin open_with.py
 #@-leo

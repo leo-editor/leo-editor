@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:danr7.20060902083957:@thin leo_to_rtf.py
+#@+leo-ver=5-thin
+#@+node:danr7.20060902083957: * @thin leo_to_rtf.py
 #@@language python
 #@@tabwidth -4
 
-#@<< docstring >>
-#@+node:danr7.20060902085340:<< docstring >>
+#@+<< docstring >>
+#@+node:danr7.20060902085340: ** << docstring >>
 '''leoToRTF 1.0 plugin by Dan Rahmel
 
 This plugin takes an outline stored in LEO and outputs it as a numbered list to
@@ -21,10 +21,9 @@ in your Leo\plugins folder.
 The default export path is also stored in the INI file. By default, it's set to c:\ so
 you may need to modify it depending on your system.
 '''
-#@-node:danr7.20060902085340:<< docstring >>
-#@nl
-#@<< version history >>
-#@+node:danr7.20060902085055:<< version history >>
+#@-<< docstring >>
+#@+<< version history >>
+#@+node:danr7.20060902085055: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -32,12 +31,9 @@ you may need to modify it depending on your system.
 # 0.92 - Added INI file settings
 # 0.91 - Added RTF output code
 # 0.90 - Created initial plug-in framework
-#@-at
-#@nonl
-#@-node:danr7.20060902085055:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:danr7.20060902083957.1:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:danr7.20060902083957.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -47,22 +43,19 @@ else:
     import ConfigParser
 
 
-#@-node:danr7.20060902083957.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = "1.0"
 
 #@+others
-#@+node:ekr.20100128073941.5373:newHeadline
+#@+node:ekr.20100128073941.5373: ** newHeadline
 def init():
 
     # Ok for unit testing: creates menu.
     leoPlugins.registerHandler("create-optional-menus",createExportMenu)
     g.plugin_signon(__name__)
     return True
-#@nonl
-#@-node:ekr.20100128073941.5373:newHeadline
-#@+node:danr7.20060902083957.2:createExportMenu (leo_to_rtf)
+#@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)
 def createExportMenu (tag,keywords):
 
     c = keywords.get("c")
@@ -71,8 +64,7 @@ def createExportMenu (tag,keywords):
     c.frame.menu.insert('Export...',3,
         label = 'Outline to Microsoft RTF',
         command = lambda c = c: export_rtf(c))
-#@-node:danr7.20060902083957.2:createExportMenu (leo_to_rtf)
-#@+node:danr7.20060902083957.3:export_rtf
+#@+node:danr7.20060902083957.3: ** export_rtf
 def export_rtf( c ):
 
     g.es("Exporting...")
@@ -97,8 +89,8 @@ def export_rtf( c ):
     f.write("{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\n\n")
 
     # Write RTF list table that provides numbered list formatting
-    #@    << listtable >>
-    #@+node:danr7.20060902085826:<< listtable >>
+    #@+<< listtable >>
+    #@+node:danr7.20060902085826: *3* << listtable >>
     f.write("{\\*\\listtable{\\list\\listtemplateid1723346216\\listhybrid\n")
 
     f.write("{\\listlevel\\levelnfc0\\levelnfcn0\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0\n")
@@ -139,8 +131,7 @@ def export_rtf( c ):
     f.write("{\\listname ;}\\listid127936308}}\n\n")
 
     f.write("{\\*\\listoverridetable{\\listoverride\\listid127936308\\listoverridecount0\\ls1}}\n\n")
-    #@-node:danr7.20060902085826:<< listtable >>
-    #@nl
+    #@-<< listtable >>
 
     # Write text formatting foundation
     f.write("\\viewkind4\\uc1\\pard\\f0\\fs20\n\n")
@@ -183,7 +174,5 @@ def export_rtf( c ):
     # Close file
     f.close()
     g.es(" Leo -> RTF completed.",color="turquoise4")
-#@-node:danr7.20060902083957.3:export_rtf
 #@-others
-#@-node:danr7.20060902083957:@thin leo_to_rtf.py
 #@-leo

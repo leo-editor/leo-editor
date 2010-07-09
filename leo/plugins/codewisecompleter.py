@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ville.20091204224145.5355:@thin codewisecompleter.py
-#@<< docstring >>
-#@+node:ville.20091204224145.5356:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ville.20091204224145.5355: * @thin codewisecompleter.py
+#@+<< docstring >>
+#@+node:ville.20091204224145.5356: ** << docstring >>
 ''' This plugin uses ctags to provide autocompletion list
 
 Instructions:
@@ -16,23 +16,19 @@ Instructions:
     Press alt-0 to start completion in leo
 
 '''
-#@-node:ville.20091204224145.5356:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.2'
-#@<< version history >>
-#@+node:ville.20091204224145.5357:<< version history >>
+#@+<< version history >>
+#@+node:ville.20091204224145.5357: ** << version history >>
 #@@nocolor-node
 #@+at
 # 
 # 0.1 EKR: place helpers as children of callers.
 # 0.2 EKR: Don't crash if the ctags file doesn't exist.
-#@-at
-#@nonl
-#@-node:ville.20091204224145.5357:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ville.20091204224145.5358:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ville.20091204224145.5358: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -46,8 +42,7 @@ try:
 except ImportError:
     # no qt available - some functionality should still exist
     pass
-#@-node:ville.20091204224145.5358:<< imports >>
-#@nl
+#@-<< imports >>
 
 # Global variables
 tagLines = []
@@ -65,7 +60,7 @@ keep_tag_lines = True
     #        tags file many times.
 
 #@+others
-#@+node:ville.20091204224145.5359:init & helper
+#@+node:ville.20091204224145.5359: ** init & helper
 def init ():
 
     global tagLines
@@ -77,8 +72,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ville.20091204224145.5359:init & helper
-#@+node:ville.20091205173337.10141:class ContextSniffer
+#@+node:ville.20091205173337.10141: ** class ContextSniffer
 class ContextSniffer:
     """ Class to analyze surrounding context and guess class
 
@@ -113,8 +107,7 @@ class ContextSniffer:
     def set_small_context(self, body):
         """ Set immediate function """
         self.push_declarations(body)
-#@-node:ville.20091205173337.10141:class ContextSniffer
-#@+node:ville.20091205173337.10142:class guessing heuristics
+#@+node:ville.20091205173337.10142: ** class guessing heuristics
 def get_current_line(w):
     s = w.getAllText() ; ins = w.getInsertPoint()
     i,j = g.getLine(s,ins)
@@ -150,15 +143,14 @@ def guess_class(c, p, varname):
     sn.set_small_context(p.b)
     cl = sn.vars.get(varname, [])
     return cl
-#@-node:ville.20091205173337.10142:class guessing heuristics
-#@+node:ville.20091204224145.5361:onCreate & helper
+#@+node:ville.20091204224145.5361: ** onCreate & helper
 def onCreate (tag, keys):
 
     c = keys.get('c')
     if not c: return
 
     install_codewise_completer(c)
-#@+node:ville.20091204224145.5362:install_codewise_completer
+#@+node:ville.20091204224145.5362: *3* install_codewise_completer
 def install_codewise_completer(c):
 
     c.k.registerCommand(
@@ -167,9 +159,7 @@ def install_codewise_completer(c):
     c.k.registerCommand(
             'codewise-suggest',None, codewise_suggest)
 
-#@-node:ville.20091204224145.5362:install_codewise_completer
-#@-node:ville.20091204224145.5361:onCreate & helper
-#@+node:ville.20091204224145.5363:codewise_complete & helpers (for Qt)
+#@+node:ville.20091204224145.5363: ** codewise_complete & helpers (for Qt)
 def codewise_complete(event):
 
     c = event.get('c')
@@ -203,7 +193,7 @@ def codewise_complete(event):
     cpl.setCompletionPrefix(txt)
     cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
     cpl.complete()
-#@+node:ville.20091204224145.5365:mkins
+#@+node:ville.20091204224145.5365: *3* mkins
 def mkins(completer, body):
 
     def insertCompletion(completion):
@@ -217,9 +207,7 @@ def mkins(completer, body):
         body.setTextCursor(tc)
 
     return insertCompletion
-#@-node:ville.20091204224145.5365:mkins
-#@-node:ville.20091204224145.5363:codewise_complete & helpers (for Qt)
-#@+node:ville.20091205173337.10140:codewise_lookup_methods
+#@+node:ville.20091205173337.10140: ** codewise_lookup_methods
 def codewise_lookup_methods(klasses, prefix):
 
 
@@ -247,8 +235,7 @@ def codewise_lookup_methods(klasses, prefix):
     aList = list(set(desc))
     aList.sort()
     return aList
-#@-node:ville.20091205173337.10140:codewise_lookup_methods
-#@+node:ville.20091204224145.5364:codewise_lookup
+#@+node:ville.20091204224145.5364: ** codewise_lookup
 def codewise_lookup(prefix):
 
     trace = True
@@ -268,8 +255,7 @@ def codewise_lookup(prefix):
     aList = list(set(desc))
     aList.sort()
     return aList
-#@-node:ville.20091204224145.5364:codewise_lookup
-#@+node:vivainio.20091217144258.5737:codewise_suggest
+#@+node:vivainio.20091217144258.5737: ** codewise_suggest
 def codewise_suggest(event):
 
     c = event.get('c')
@@ -308,8 +294,5 @@ def codewise_suggest(event):
     #cpl.setCompletionPrefix(txt)
     #cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
     #cpl.complete()
-#@-node:vivainio.20091217144258.5737:codewise_suggest
 #@-others
-#@nonl
-#@-node:ville.20091204224145.5355:@thin codewisecompleter.py
 #@-leo

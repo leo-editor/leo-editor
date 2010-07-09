@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20091118065749.5261:@thin ctagscompleter.py
-#@<< docstring >>
-#@+node:ville.20090317180704.8:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20091118065749.5261: * @thin ctagscompleter.py
+#@+<< docstring >>
+#@+node:ville.20090317180704.8: ** << docstring >>
 ''' This plugin uses ctags to provide autocompletion list
 
 Requirements:
@@ -24,23 +24,19 @@ functions/methods starting with 'ba'. 'foo->' portion is ignored in completion
 search.
 
 '''
-#@-node:ville.20090317180704.8:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.2'
-#@<< version history >>
-#@+node:ville.20090317180704.9:<< version history >>
+#@+<< version history >>
+#@+node:ville.20090317180704.9: ** << version history >>
 #@@nocolor-node
 #@+at
 # 
 # 0.1 EKR: place helpers as children of callers.
 # 0.2 EKR: Don't crash if the ctags file doesn't exist.
-#@-at
-#@nonl
-#@-node:ville.20090317180704.9:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ville.20090317180704.10:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ville.20090317180704.10: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -50,9 +46,7 @@ from PyQt4 import QtGui
 
 import os
 import re
-#@nonl
-#@-node:ville.20090317180704.10:<< imports >>
-#@nl
+#@-<< imports >>
 
 # Global variables
 tagLines = []
@@ -70,7 +64,7 @@ keep_tag_lines = True
     #        tags file many times.
 
 #@+others
-#@+node:ville.20090317180704.11:init & helper
+#@+node:ville.20090317180704.11: ** init & helper
 def init ():
 
     global tagLines
@@ -90,7 +84,7 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
-#@+node:ekr.20091015185801.5245:read_tags_file
+#@+node:ekr.20091015185801.5245: *3* read_tags_file
 def read_tags_file():
 
     '''Return the lines of ~/.leo/tags.
@@ -112,9 +106,7 @@ def read_tags_file():
         return lines
     except IOError:
         return []
-#@-node:ekr.20091015185801.5245:read_tags_file
-#@-node:ville.20090317180704.11:init & helper
-#@+node:ville.20090317180704.12:onCreate & helper
+#@+node:ville.20090317180704.12: ** onCreate & helper
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -122,14 +114,12 @@ def onCreate (tag, keys):
 
     install_ctags_completer(c)
 
-#@+node:ville.20090317180704.16:install_ctags_completer
+#@+node:ville.20090317180704.16: *3* install_ctags_completer
 def install_ctags_completer(c):
 
     c.k.registerCommand(
             'ctags-complete','Alt-0',ctags_complete)
-#@-node:ville.20090317180704.16:install_ctags_completer
-#@-node:ville.20090317180704.12:onCreate & helper
-#@+node:ekr.20091015185801.5243:ctags_complete & helpers
+#@+node:ekr.20091015185801.5243: ** ctags_complete & helpers
 def ctags_complete(event):
 
     c = event.get('c')
@@ -147,7 +137,7 @@ def ctags_complete(event):
     cpl.setCompletionPrefix(txt)
     cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
     cpl.complete()
-#@+node:ville.20090321223959.2:ctags_lookup
+#@+node:ville.20090321223959.2: *3* ctags_lookup
 def ctags_lookup(prefix):
 
     trace = False ; verbose = False
@@ -177,8 +167,7 @@ def ctags_lookup(prefix):
     aList = list(set(desc))
     aList.sort()
     return aList
-#@-node:ville.20090321223959.2:ctags_lookup
-#@+node:ekr.20091015185801.5242:mkins
+#@+node:ekr.20091015185801.5242: *3* mkins
 def mkins(completer, body):
 
     def insertCompletion(completion):
@@ -192,9 +181,5 @@ def mkins(completer, body):
         body.setTextCursor(tc)
 
     return insertCompletion
-#@-node:ekr.20091015185801.5242:mkins
-#@-node:ekr.20091015185801.5243:ctags_complete & helpers
 #@-others
-#@nonl
-#@-node:ekr.20091118065749.5261:@thin ctagscompleter.py
 #@-leo

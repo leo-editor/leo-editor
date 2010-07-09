@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040916084945:@thin macros.py
-#@<< docstring >>
-#@+node:ekr.20061102090532:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040916084945: * @thin macros.py
+#@+<< docstring >>
+#@+node:ekr.20061102090532: ** << docstring >>
 '''
 Creates new nodes containing parameterized section references.
 
@@ -58,13 +58,11 @@ Go to Outline Menu and select Parameterize Section Reference command.
 
 It's a lot easier to use than to explain!
 '''
-#@nonl
-#@-node:ekr.20061102090532:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = "1.8"
-#@<< version history >>
-#@+node:ekr.20040916091520:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040916091520: ** << version history >>
 #@+at
 # 
 # 1.2 EKR:
@@ -79,10 +77,7 @@ __version__ = "1.8"
 # 1.6 EKR: imported leoNodes and changed tnode to leoNodes.tnode.
 # 1.7 Rich Ries: improved the docstring.
 # 1.8 EKR: Add the menu only for the tkinter gui.
-#@-at
-#@nonl
-#@-node:ekr.20040916091520:<< version history >>
-#@nl
+#@-<< version history >>
 
 import leo.core.leoGlobals as g
 # import leo.core.leoNodes as leoNodes
@@ -90,27 +85,23 @@ import leo.core.leoPlugins as leoPlugins
 import re
 
 #@+others
-#@+node:ekr.20070302121133:init
+#@+node:ekr.20070302121133: ** init
 def init ():
 
     # Ok for unit testing: adds command to Outline menu.
     leoPlugins.registerHandler( ('new','open2') ,onCreate)
     g.plugin_signon(__name__)
-#@nonl
-#@-node:ekr.20070302121133:init
-#@+node:ekr.20040916091520.1:onCreate
+#@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag,keywords):
 
     c = keywords.get("c")
     if c:
         paramClass(c)
-#@nonl
-#@-node:ekr.20040916091520.1:onCreate
-#@+node:ekr.20040916091520.2:class paramClass
+#@+node:ekr.20040916091520.2: ** class paramClass
 class paramClass:
 
-    #@    @+others
-    #@+node:ekr.20040916091520.3:__init__
+    #@+others
+    #@+node:ekr.20040916091520.3: *3* __init__
     def __init__ (self,c):
 
         self.c = c
@@ -121,8 +112,7 @@ class paramClass:
 
         if g.app.gui.guiName() == 'tkinter':
             self.addMenu()
-    #@-node:ekr.20040916091520.3:__init__
-    #@+node:ekr.20040916084945.1:macros.parameterize
+    #@+node:ekr.20040916084945.1: *3* macros.parameterize
     def parameterize (self,event=None):
 
         c = self.c
@@ -178,9 +168,7 @@ class paramClass:
             v.setBodyString(bod)
             v.setHeadString(head)
         c.redraw()
-    #@nonl
-    #@-node:ekr.20040916084945.1:macros.parameterize
-    #@+node:ekr.20040916084945.2:findParameters
+    #@+node:ekr.20040916084945.2: *3* findParameters
     def findParameters (self,v):
 
         tag = "Parameterized Nodes"
@@ -201,19 +189,12 @@ class paramClass:
             nnode = nnode.next()
 
         return None
-    #@nonl
-    #@-node:ekr.20040916084945.2:findParameters
-    #@+node:ekr.20040916084945.3:addMenu
+    #@+node:ekr.20040916084945.3: *3* addMenu
     def addMenu(self):
 
         c = self.c
         table = ("Parameterize Section Reference",None,self.parameterize),
         c.frame.menu.createMenuItemsFromTable("Outline",table,dynamicMenu=True)
-    #@nonl
-    #@-node:ekr.20040916084945.3:addMenu
     #@-others
-#@nonl
-#@-node:ekr.20040916091520.2:class paramClass
 #@-others
-#@-node:ekr.20040916084945:@thin macros.py
 #@-leo

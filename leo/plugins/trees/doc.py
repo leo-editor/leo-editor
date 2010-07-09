@@ -1,14 +1,13 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20050329082101.165:@thin trees\doc.py
-#@<< docstring >>
-#@+node:ekr.20050329082101.166:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20050329082101.165: * @thin trees\doc.py
+#@+<< docstring >>
+#@+node:ekr.20050329082101.166: ** << docstring >>
 """A handler that documents a module
 
 The parameter in the @auto-doc headline is the module to document.
 
 """
-#@-node:ekr.20050329082101.166:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 from autotrees import BaseTreeHandler, TreeNode
 import inspect
@@ -19,17 +18,15 @@ __version__ = "0.1"
 __plugin_requires__ = ["autotrees"]
 __plugin_group__ = "Coding"
 
-#@<< version history >>
-#@+node:ekr.20050329082101.167:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050329082101.167: ** << version history >>
 #@+at
 # 
 # Version history
 # 
 # 0.1 - Paul Paterson:
 #       Initial version
-#@-at
-#@-node:ekr.20050329082101.167:<< version history >>
-#@nl
+#@-<< version history >>
 
 
 class Doc(BaseTreeHandler):
@@ -73,5 +70,4 @@ class Doc(BaseTreeHandler):
                 )
         return children
 
-#@-node:ekr.20050329082101.165:@thin trees\doc.py
 #@-leo

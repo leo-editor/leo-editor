@@ -1,9 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20090513125417.5244:@thin interact.py
+#@+leo-ver=5-thin
+#@+node:tbrown.20090513125417.5244: * @thin interact.py
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:tbrown.20090603104805.4937:interact declarations
+#@+node:tbrown.20090603104805.4937: ** interact declarations
 """Add buttons so leo can interact with command line environments.
 
 :20100226: see also leoscreen.py for a simpler approach.
@@ -42,50 +42,41 @@ from mod_scripting import scriptingController
 import pexpect
 import time
 import os
-#@-node:tbrown.20090603104805.4937:interact declarations
-#@+node:tbrown.20090603104805.4938:init
+#@+node:tbrown.20090603104805.4938: ** init
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 
-#@-node:tbrown.20090603104805.4938:init
-#@+node:tbrown.20090603104805.4939:onCreate
+#@+node:tbrown.20090603104805.4939: ** onCreate
 def onCreate(tag, keywords):
     InteractController(keywords['c'])
-#@-node:tbrown.20090603104805.4939:onCreate
-#@+node:tbrown.20090603104805.4940:class Interact
+#@+node:tbrown.20090603104805.4940: ** class Interact
 class Interact(object):
-    #@    @+others
-    #@+node:tbrown.20090603104805.4941:__init__
+    #@+others
+    #@+node:tbrown.20090603104805.4941: *3* __init__
     def __init__(self, c):
         self.c = c
-    #@-node:tbrown.20090603104805.4941:__init__
-    #@+node:tbrown.20090603104805.4942:available
+    #@+node:tbrown.20090603104805.4942: *3* available
     def available(self):
         raise NotImplementedError
-    #@-node:tbrown.20090603104805.4942:available
-    #@+node:tbrown.20090603104805.4943:run
+    #@+node:tbrown.20090603104805.4943: *3* run
     def run(self, p):
         raise NotImplementedError
-    #@-node:tbrown.20090603104805.4943:run
-    #@+node:tbrown.20090603104805.4944:buttonText
+    #@+node:tbrown.20090603104805.4944: *3* buttonText
     def buttonText(self):
         raise NotImplementedError
-    #@-node:tbrown.20090603104805.4944:buttonText
-    #@+node:tbrown.20090603104805.4945:statusText
+    #@+node:tbrown.20090603104805.4945: *3* statusText
     def statusText(self):
         raise NotImplementedError
-    #@-node:tbrown.20090603104805.4945:statusText
     #@-others
-#@-node:tbrown.20090603104805.4940:class Interact
-#@+node:tbrown.20090603104805.4946:class InteractPSQL
+#@+node:tbrown.20090603104805.4946: ** class InteractPSQL
 class InteractPSQL(Interact):
 
     prompt = '__psql-leo__'
 
-    #@    @+others
-    #@+node:tbrown.20090603104805.4947:__init__
+    #@+others
+    #@+node:tbrown.20090603104805.4947: *3* __init__
     def __init__(self, c):
         Interact.__init__(self, c)
         prompts = ' '.join(['--set PROMPT%d=%s'%(i,self.prompt) for i in range(1,4)])
@@ -99,22 +90,18 @@ class InteractPSQL(Interact):
         except pexpect.ExceptionPexpect:
             self._available = False
 
-    #@-node:tbrown.20090603104805.4947:__init__
-    #@+node:tbrown.20090603104805.4948:available
+    #@+node:tbrown.20090603104805.4948: *3* available
     def available(self):
         return self._available
 
-    #@-node:tbrown.20090603104805.4948:available
-    #@+node:tbrown.20090603104805.4949:buttonText
+    #@+node:tbrown.20090603104805.4949: *3* buttonText
     def buttonText(self):
         return "psql"
-    #@-node:tbrown.20090603104805.4949:buttonText
-    #@+node:tbrown.20090603104805.4950:statusText
+    #@+node:tbrown.20090603104805.4950: *3* statusText
     def statusText(self):
         return "send headline or body to psql session"
 
-    #@-node:tbrown.20090603104805.4950:statusText
-    #@+node:tbrown.20090603104805.4951:run
+    #@+node:tbrown.20090603104805.4951: *3* run
     def run(self, p):
         c = self.c
         q = p.b
@@ -145,8 +132,7 @@ class InteractPSQL(Interact):
                 c.selectPosition(n)
             c.redraw()
 
-    #@-node:tbrown.20090603104805.4951:run
-    #@+node:tbrown.20090603104805.4952:psqlReader
+    #@+node:tbrown.20090603104805.4952: *3* psqlReader
     def psqlReader(self, proc):
         cnt = 0
         timeout = False
@@ -178,16 +164,14 @@ class InteractPSQL(Interact):
                     #X     timeout = True
                     #X else:
                     yield d.replace(self.prompt,'# ') # '%4d: %s' % (cnt,d)
-    #@-node:tbrown.20090603104805.4952:psqlReader
     #@-others
-#@-node:tbrown.20090603104805.4946:class InteractPSQL
-#@+node:tbrown.20090603104805.4953:class InteractBASH
+#@+node:tbrown.20090603104805.4953: ** class InteractBASH
 class InteractBASH(Interact):
 
     prompt = '__bash-leo__'
 
-    #@    @+others
-    #@+node:tbrown.20090603104805.4954:__init__
+    #@+others
+    #@+node:tbrown.20090603104805.4954: *3* __init__
     def __init__(self, c):
         Interact.__init__(self, c)
         self._available = True
@@ -204,22 +188,18 @@ class InteractBASH(Interact):
         except pexpect.ExceptionPexpect:
             self._available = False
 
-    #@-node:tbrown.20090603104805.4954:__init__
-    #@+node:tbrown.20090603104805.4955:buttonText
+    #@+node:tbrown.20090603104805.4955: *3* buttonText
     def buttonText(self):
         return "bash"
-    #@-node:tbrown.20090603104805.4955:buttonText
-    #@+node:tbrown.20090603104805.4956:statusText
+    #@+node:tbrown.20090603104805.4956: *3* statusText
     def statusText(self):
         return "send headline or body to bash session"
 
-    #@-node:tbrown.20090603104805.4956:statusText
-    #@+node:tbrown.20090603104805.4957:available
+    #@+node:tbrown.20090603104805.4957: *3* available
     def available(self):
         return self._available
 
-    #@-node:tbrown.20090603104805.4957:available
-    #@+node:tbrown.20090603104805.4958:run
+    #@+node:tbrown.20090603104805.4958: *3* run
     def run(self, p):
         c = self.c
         q = p.b
@@ -255,8 +235,7 @@ class InteractBASH(Interact):
                 c.selectPosition(n)
             c.redraw()
 
-    #@-node:tbrown.20090603104805.4958:run
-    #@+node:tbrown.20090603104805.4959:bashReader
+    #@+node:tbrown.20090603104805.4959: *3* bashReader
     def bashReader(self, proc):
         cnt = 0
         timeout = False
@@ -289,8 +268,7 @@ class InteractBASH(Interact):
                     #X else:
                     yield d.replace(self.prompt,'# ') # '%4d: %s' % (cnt,d)
 
-    #@-node:tbrown.20090603104805.4959:bashReader
-    #@+node:tbrown.20090603104805.4960:getPath
+    #@+node:tbrown.20090603104805.4960: *3* getPath
     def getPath(self, c, p):
         for n in p.self_and_parents():
             if n.h.startswith('@path'):
@@ -301,17 +279,15 @@ class InteractBASH(Interact):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         return path
-    #@-node:tbrown.20090603104805.4960:getPath
     #@-others
-#@-node:tbrown.20090603104805.4953:class InteractBASH
-#@+node:tbrown.20090603104805.4961:class InteractController
+#@+node:tbrown.20090603104805.4961: ** class InteractController
 class InteractController:
 
     """quickMove binds to a controller, adds menu entries for
        creating buttons, and creates buttons as needed
     """
-    #@    @+others
-    #@+node:tbrown.20090603104805.4962:__init__
+    #@+others
+    #@+node:tbrown.20090603104805.4962: *3* __init__
 
     def __init__(self, c):
 
@@ -326,17 +302,14 @@ class InteractController:
 
         self.addButton(InteractPSQL)
         self.addButton(InteractBASH)
-    #@-node:tbrown.20090603104805.4962:__init__
-    #@+node:tbrown.20090603104805.4963:addToFirstChildButton
+    #@+node:tbrown.20090603104805.4963: *3* addToFirstChildButton
     def addToFirstChildButton (self,event=None):
         self.addButton(first=True)
 
-    #@-node:tbrown.20090603104805.4963:addToFirstChildButton
-    #@+node:tbrown.20090603104805.4964:addToLastChildButton
+    #@+node:tbrown.20090603104805.4964: *3* addToLastChildButton
     def addToLastChildButton (self,event=None):
         self.addButton(first=False)
-    #@-node:tbrown.20090603104805.4964:addToLastChildButton
-    #@+node:tbrown.20090603104805.4965:addButton
+    #@+node:tbrown.20090603104805.4965: *3* addButton
     def addButton(self, class_):
 
         '''Add a button for an interact class.'''
@@ -354,22 +327,19 @@ class InteractController:
                 statusLine = mb.interactor.statusText(),
                 bg = "LightBlue",
             )
-    #@-node:tbrown.20090603104805.4965:addButton
     #@-others
-#@-node:tbrown.20090603104805.4961:class InteractController
-#@+node:tbrown.20090603104805.4966:class InteractButton
+#@+node:tbrown.20090603104805.4966: ** class InteractButton
 class InteractButton:
 
     """contains target data and function for moving node"""
-    #@    @+others
-    #@+node:tbrown.20090603104805.4967:__init__
+    #@+others
+    #@+node:tbrown.20090603104805.4967: *3* __init__
 
     def __init__(self, c, class_):
 
         self.c = c
         self.interactor = class_(c)
-    #@-node:tbrown.20090603104805.4967:__init__
-    #@+node:tbrown.20090603104805.4968:run
+    #@+node:tbrown.20090603104805.4968: *3* run
     def run(self):
 
         '''Move the current position to the last child of self.target.'''
@@ -378,13 +348,9 @@ class InteractButton:
         p = c.p
         self.interactor.run(p)
         c.redraw()
-    #@-node:tbrown.20090603104805.4968:run
-    #@+node:tbrown.20090603104805.4969:available
+    #@+node:tbrown.20090603104805.4969: *3* available
     def available(self):
         return self.interactor.available()
-    #@-node:tbrown.20090603104805.4969:available
     #@-others
-#@-node:tbrown.20090603104805.4966:class InteractButton
 #@-others
-#@-node:tbrown.20090513125417.5244:@thin interact.py
 #@-leo

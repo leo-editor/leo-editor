@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20100318101414.5990:@thin viewrendered.py
-#@<< docstring >>
-#@+node:tbrown.20100318101414.5991:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20100318101414.5990: * @thin viewrendered.py
+#@+<< docstring >>
+#@+node:tbrown.20100318101414.5991: ** << docstring >>
 '''Rendered rst, html, etc., *live*, in another window.  Qt only.
 
 viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
@@ -30,23 +30,19 @@ will look something like:
     `This` is **really** a line of text.
 
 '''
-#@-node:tbrown.20100318101414.5991:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:tbrown.20100318101414.5992:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20100318101414.5992: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # Put notes about each version here.
-#@-at
-#@nonl
-#@-node:tbrown.20100318101414.5992:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:tbrown.20100318101414.5993:<< imports >>
+#@+<< imports >>
+#@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins
 
@@ -69,12 +65,10 @@ from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
         QPlainTextEdit, QInputDialog)
-#@nonl
-#@-node:tbrown.20100318101414.5993:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:tbrown.20100318101414.5994:styling
+#@+node:tbrown.20100318101414.5994: ** styling
 stickynote_stylesheet = """
 /* The body pane */
 QPlainTextEdit {
@@ -94,8 +88,7 @@ def decorate_window(w):
     w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
 
-#@-node:tbrown.20100318101414.5994:styling
-#@+node:tbrown.20100318101414.5995:init
+#@+node:tbrown.20100318101414.5995: ** init
 def init ():
 
     ok = True
@@ -107,8 +100,7 @@ def init ():
         g.viewrendered_count = 0
 
     return ok
-#@-node:tbrown.20100318101414.5995:init
-#@+node:tbrown.20100318101414.5997:class ViewRendered
+#@+node:tbrown.20100318101414.5997: ** class ViewRendered
 class ViewRendered(QTextEdit):
 
     def __init__(self, c):
@@ -178,8 +170,7 @@ class ViewRendered(QTextEdit):
                     return
 
         self.setHtml(b)
-#@-node:tbrown.20100318101414.5997:class ViewRendered
-#@+node:tbrown.20100318101414.5998:g.command('viewrendered')
+#@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
     """Open render view for commander"""
@@ -187,8 +178,5 @@ def viewrendered(event):
     c = event['c']
 
     ViewRendered(c)
-#@-node:tbrown.20100318101414.5998:g.command('viewrendered')
 #@-others
-#@nonl
-#@-node:tbrown.20100318101414.5990:@thin viewrendered.py
 #@-leo

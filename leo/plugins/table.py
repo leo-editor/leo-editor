@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20041017035937:@thin table.py
-#@<< docstring >>
-#@+node:ekr.20050912180921:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20041017035937: * @thin table.py
+#@+<< docstring >>
+#@+node:ekr.20050912180921: ** << docstring >>
 '''This plugin puts the View Table command in the Outline menu.
 
 This command checks the current node using the csv (comma separated values) mods
@@ -11,15 +11,13 @@ a dialog with the data presented as in a table for the user to see it.
 
 Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable
 '''
-#@nonl
-#@-node:ekr.20050912180921:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20041017035937.1:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20041017035937.1: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 # import leo.core.leoNodes as leoNodes
@@ -37,13 +35,11 @@ else:
 
 import csv
 import weakref
-#@nonl
-#@-node:ekr.20041017035937.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = ".14"
-#@<< version history >>
-#@+node:ekr.20050311103711:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050311103711: ** << version history >>
 #@@killcolor
 
 #@+at
@@ -52,15 +48,12 @@ __version__ = ".14"
 #     - Added init function.
 #     - Use only 'new' and 'open2' hooks.
 # .14 EKR: Fixed bug reported by pylint.
-#@-at
-#@nonl
-#@-node:ekr.20050311103711:<< version history >>
-#@nl
+#@-<< version history >>
 
 haveseen = weakref.WeakKeyDictionary()
 
 #@+others
-#@+node:ekr.20050311103711.1:init
+#@+node:ekr.20050311103711.1: ** init
 def init ():
 
     ok = Pmw and Tk and tktab # Ok for unit testing.
@@ -76,14 +69,13 @@ def init ():
             g.plugin_signon( __name__ )
 
     return ok
-#@-node:ekr.20050311103711.1:init
-#@+node:ekr.20041017035937.2:class CSVVisualizer
+#@+node:ekr.20041017035937.2: ** class CSVVisualizer
 class CSVVisualizer:
 
     arrays = []
 
-    #@    @+others
-    #@+node:ekr.20041017035937.3:CSVVisualizer.__init__
+    #@+others
+    #@+node:ekr.20041017035937.3: *3* CSVVisualizer.__init__
     def __init__( self, c ):
 
         self.c = c
@@ -91,8 +83,7 @@ class CSVVisualizer:
         CSVVisualizer.arrays.append( self.arr )
         self.rows = 0
         self.columns = 0
-    #@-node:ekr.20041017035937.3:CSVVisualizer.__init__
-    #@+node:ekr.20041017035937.4:addData
+    #@+node:ekr.20041017035937.4: *3* addData
     def addData( self ):
 
         arr = self.arr
@@ -105,8 +96,7 @@ class CSVVisualizer:
         self.columns = n1 + 1
         self.rows = n + 1
         return self.columns, self.rows
-    #@-node:ekr.20041017035937.4:addData
-    #@+node:ekr.20041017035937.5:readData
+    #@+node:ekr.20041017035937.5: *3* readData
     def readData( self ):
 
         c = self.c
@@ -119,8 +109,7 @@ class CSVVisualizer:
         self.type = sniff.sniff( data ) 
         reader = csv.reader( cS, self.type ) 
         return reader
-    #@-node:ekr.20041017035937.5:readData
-    #@+node:ekr.20041017035937.6:writeData
+    #@+node:ekr.20041017035937.6: *3* writeData
     def writeData( self, save ):
 
         pos = self.c.p
@@ -146,8 +135,7 @@ class CSVVisualizer:
         else:
             pos.setTnodeText( cS.getvalue() )
         self.c.redraw()
-    #@-node:ekr.20041017035937.6:writeData
-    #@+node:ekr.20041017035937.7:addRow
+    #@+node:ekr.20041017035937.7: *3* addRow
     def addRow( self , tab ):
 
         self.rows = self.rows + 1
@@ -157,19 +145,15 @@ class CSVVisualizer:
             self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
         tab.activate( rc )
         tab.focus_set()
-    #@-node:ekr.20041017035937.7:addRow
-    #@+node:ekr.20041017035937.8:deleteRow
+    #@+node:ekr.20041017035937.8: *3* deleteRow
     def deleteRow( self, tab ):
 
         i = tab.index( 'active' )
         if i:
             tab.delete_rows( i[ 0 ], 1 )
             self.rows = self.rows - 1
-    #@nonl
-    #@-node:ekr.20041017035937.8:deleteRow
     #@-others
-#@-node:ekr.20041017035937.2:class CSVVisualizer
-#@+node:ekr.20041017035937.9:viewTable
+#@+node:ekr.20041017035937.9: ** viewTable
 def viewTable( c ):
 
     pos = c.p
@@ -187,8 +171,8 @@ def viewTable( c ):
     createBBox( dialog.interior(), csvv, tab )
     n = csvv.addData()
     tab.configure( cols = n[ 0 ], rows = n[ 1 ] )
-    #@    << define fire_button callback >>
-    #@+node:ekr.20041017035937.10:<< define fire_button callback >>
+    #@+<< define fire_button callback >>
+    #@+node:ekr.20041017035937.10: *3* << define fire_button callback >>
     def fire_button( name ):
         if name == "Close":
             dialog.deactivate()
@@ -197,14 +181,10 @@ def viewTable( c ):
             csvv.writeData( False )
         elif name == "Save To Current":
             csvv.writeData( True )
-    #@nonl
-    #@-node:ekr.20041017035937.10:<< define fire_button callback >>
-    #@nl
+    #@-<< define fire_button callback >>
     dialog.configure( command = fire_button )
     dialog.activate()
-#@nonl
-#@-node:ekr.20041017035937.9:viewTable
-#@+node:ekr.20041017035937.11:createTable
+#@+node:ekr.20041017035937.11: ** createTable
 def createTable( parent , arr ):
 
     tab = tktab.Table(
@@ -217,8 +197,7 @@ def createTable( parent , arr ):
     tab.tag_configure( 'sel', background = '#FFE7C6', foreground = 'blue', bd=2 )
     tab.pack()
     return tab 
-#@-node:ekr.20041017035937.11:createTable
-#@+node:ekr.20041017035937.12:createBBox
+#@+node:ekr.20041017035937.12: ** createBBox
 def createBBox( parent, csvv, tab ):
 
     bbox = Pmw.ButtonBox( parent )
@@ -230,8 +209,7 @@ def createBBox( parent, csvv, tab ):
         bbox.add( z[ 0 ], command = z[ 1 ], background = 'white', foreground = 'blue' )
     bbox.pack()     
 
-#@-node:ekr.20041017035937.12:createBBox
-#@+node:ekr.20041017035937.13:addMenu
+#@+node:ekr.20041017035937.13: ** addMenu
 def addMenu (tag,keywords):
 
     c = keywords.get('c')
@@ -242,9 +220,5 @@ def addMenu (tag,keywords):
     men = c.frame.menu
     men = men.getMenu('Outline')
     c.add_command(men,label="Edit Node With Table",command=lambda c=c: viewTable(c))
-#@nonl
-#@-node:ekr.20041017035937.13:addMenu
 #@-others
-#@nonl
-#@-node:ekr.20041017035937:@thin table.py
 #@-leo

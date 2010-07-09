@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:danr7.20061010105952.1:@thin word_count.py
+#@+leo-ver=5-thin
+#@+node:danr7.20061010105952.1: * @thin word_count.py
 #@@language python
 #@@tabwidth -4
 
-#@<< docstring >>
-#@+node:danr7.20061010105952.2:<< docstring >>
+#@+<< docstring >>
+#@+node:danr7.20061010105952.2: ** << docstring >>
 '''Word Count 1.0 plugin by Dan Rahmel
 
 This plugin displays a messagebox with information about the body text of the current node 
@@ -13,10 +13,9 @@ to the bottom of the Edit menu that will activate the messagebox.
 
 The Word Count... menu has a shortcut key of 'W'.
 '''
-#@-node:danr7.20061010105952.2:<< docstring >>
-#@nl
-#@<< version history >>
-#@+node:danr7.20061010105952.3:<< version history >>
+#@-<< docstring >>
+#@+<< version history >>
+#@+node:danr7.20061010105952.3: ** << version history >>
 #@@killcolor
 #@+at
 # 1.00 - Finalized 1st version of plug-in & added return focus line
@@ -27,23 +26,19 @@ The Word Count... menu has a shortcut key of 'W'.
 # 0.91 - Created word count routine
 # 0.90 - Created initial plug-in framework
 # 1.1 - Load this plugin only if the Tkinter is in effect.
-#@-at
-#@nonl
-#@-node:danr7.20061010105952.3:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:danr7.20061010105952.4:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:danr7.20061010105952.4: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import tkMessageBox
 
-#@-node:danr7.20061010105952.4:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = "1.1"
 
 #@+others
-#@+node:ekr.20070301062245:init
+#@+node:ekr.20070301062245: ** init
 def init ():
 
     ok = tkMessageBox is not None
@@ -59,9 +54,7 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20070301062245:init
-#@+node:danr7.20061010105952.5:createWordCountMenu
+#@+node:danr7.20061010105952.5: ** createWordCountMenu
 def createWordCountMenu (tag,keywords):
 
     c = keywords.get("c")
@@ -77,8 +70,7 @@ def createWordCountMenu (tag,keywords):
     # Add 'Word Count...' to the bottom of the Edit menu.
     menu = c.frame.menu.getMenu('Edit')
     c.add_command(menu,label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
-#@-node:danr7.20061010105952.5:createWordCountMenu
-#@+node:danr7.20061010105952.6:word_count
+#@+node:danr7.20061010105952.6: ** word_count
 def word_count( c ):
     myBody = c.p.b
     charNum = len(myBody)
@@ -95,7 +87,5 @@ def word_count( c ):
     # Return focus to Commander window
     c.bringToFront()
 
-#@-node:danr7.20061010105952.6:word_count
 #@-others
-#@-node:danr7.20061010105952.1:@thin word_count.py
 #@-leo

@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.873:@thin at_folder.py
-#@<< docstring >>
-#@+node:edream.110203113231.874:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:edream.110203113231.873: * @thin at_folder.py
+#@+<< docstring >>
+#@+node:edream.110203113231.874: ** << docstring >>
 '''Synchronize @folder nodes with folders.
 
 If a node is named '@folder path_to_folder', the content (filenames) of the
@@ -15,9 +15,7 @@ children of another group. This will help when there are many files in that
 folder. You can logically group it in leo (or even clone it to many groups),
 while keep every files in a flat/single directory on your computer.
 '''
-#@nonl
-#@-node:edream.110203113231.874:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -29,7 +27,7 @@ import os  # added JD 2004-09-10
 __version__ = "1.4"
 
 #@+others
-#@+node:edream.110203113231.875:sync_node_to_folder
+#@+node:edream.110203113231.875: ** sync_node_to_folder
 def sync_node_to_folder(c,parent,d):
 
     oldlist = {}
@@ -57,7 +55,6 @@ def sync_node_to_folder(c,parent,d):
     #warn for orphan oldlist
     if len(oldlist)>0:
         g.es('missing: '+','.join(oldlist.keys()))
-#@-node:edream.110203113231.875:sync_node_to_folder
 #@-others
 
 def onSelect (tag,keywords):
@@ -71,6 +68,4 @@ def onSelect (tag,keywords):
 def init():
     leoPlugins.registerHandler("select1", onSelect)
     g.plugin_signon(__name__)
-#@nonl
-#@-node:edream.110203113231.873:@thin at_folder.py
 #@-leo

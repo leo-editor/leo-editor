@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20050329082101.147:@thin trees\test.py
-#@<< docstring >>
-#@+node:ekr.20050329082101.148:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20050329082101.147: * @thin trees\test.py
+#@+<< docstring >>
+#@+node:ekr.20050329082101.148: ** << docstring >>
 """A Test handler.
 
 This defines
@@ -11,8 +11,7 @@ This defines
 
 """
 
-#@-node:ekr.20050329082101.148:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 from autotrees import BaseTreeHandler, TreeNode
 
@@ -20,18 +19,15 @@ __version__ = "0.1"
 __plugin_requires__ = ["autotrees"]
 __plugin_group__ = "Test"
 
-#@<< version history >>
-#@+node:ekr.20050329082101.149:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050329082101.149: ** << version history >>
 #@+at
 # 
 # Version history
 # 
 # 0.1 Paul Paterson:
 #     - Initial version
-#@-at
-#@nonl
-#@-node:ekr.20050329082101.149:<< version history >>
-#@nl
+#@-<< version history >>
 
 
 # This module contains multiple handlers for testing only
@@ -65,5 +61,4 @@ class Test3(Test):
         """Override the default deleting of child nodes"""
         pass
 
-#@-node:ekr.20050329082101.147:@thin trees\test.py
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517075715.1:@thin mod_tempfname.py
+#@+leo-ver=5-thin
+#@+node:EKR.20040517075715.1: * @thin mod_tempfname.py
 """Replace Commands.openWithTempFilePath to create alternate temporary
 directory paths.  Two alternates are supported.  Default method creates temporary
 files with a filename that begins with the headline text, and
@@ -22,7 +22,7 @@ import tempfile
 __version__ = "1.3"
 
 #@+others
-#@+node:ekr.20100128091412.5382:init
+#@+node:ekr.20100128091412.5382: ** init
 def init():
 
     ok = not g.app.unitTesting
@@ -34,16 +34,13 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20100128091412.5382:init
-#@+node:EKR.20040517075715.2:onStart
+#@+node:EKR.20040517075715.2: ** onStart
 def onStart (tag,keywords):
 
     # g.trace("replacing openWithTempFilePath")
 
     g.funcToMethod(openWithTempFilePath,leoCommands.Commands,"openWithTempFilePath")
-#@-node:EKR.20040517075715.2:onStart
-#@+node:EKR.20040517075715.3:openWithTempFilePath
+#@+node:EKR.20040517075715.3: ** openWithTempFilePath
 def openWithTempFilePath (self,v,ext):
 
     """Return the path to the temp file corresponding to v and ext.
@@ -128,7 +125,5 @@ def openWithTempFilePath (self,v,ext):
 
     return path
 
-#@-node:EKR.20040517075715.3:openWithTempFilePath
 #@-others
-#@-node:EKR.20040517075715.1:@thin mod_tempfname.py
 #@-leo

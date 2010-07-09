@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:dan.20090217132953.1:@thin mime.py
-#@<< docstring >>
-#@+node:dan.20090203174248.27:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:dan.20090217132953.1: * @thin mime.py
+#@+<< docstring >>
+#@+node:dan.20090203174248.27: ** << docstring >>
 '''Open files with their default platform program.
 
 Double-clicking @mime nodes will attempt to open the named file as if opened
@@ -36,16 +36,15 @@ association handler" and either define a default _mime_open_cmd string, where
 "%s" will be replaced with the filename, or define a function taking the
 filename string as its only argument and set as open_func.
 '''
-#@-node:dan.20090203174248.27:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = '0.2'
 
-#@<< version history >>
-#@+node:dan.20090203174248.28:<< version history >>
+#@+<< version history >>
+#@+node:dan.20090203174248.28: ** << version history >>
 #@+at
 # 
 # Contributed by Dan White <etihwnad _at_ gmail _dot_ com>.
@@ -56,12 +55,10 @@ __version__ = '0.2'
 # 0.3 - DJW:  -remove explicit "__name__" assignment
 #             -quiet signon
 #             -rearrange sections for easier reading
-#@-at
-#@-node:dan.20090203174248.28:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:dan.20090203174248.29:<< imports >>
+#@+<< imports >>
+#@+node:dan.20090203174248.29: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -70,11 +67,10 @@ import mimetypes
 import os
 import subprocess
 import sys
-#@-node:dan.20090203174248.29:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:dan.20090210183435.1:exec_full_cmd
+#@+node:dan.20090210183435.1: ** exec_full_cmd
 def exec_full_cmd(cmd):
     '''Accept a command string including filename and return a function
     which executes the command.'''
@@ -83,8 +79,7 @@ def exec_full_cmd(cmd):
         return subprocess.Popen(cmd, shell=True)
 
     return f
-#@-node:dan.20090210183435.1:exec_full_cmd
-#@+node:dan.20090210180636.27:exec_string_cmd
+#@+node:dan.20090210180636.27: ** exec_string_cmd
 def exec_string_cmd(cmd):
     '''Accept a command string and return a function which opens executes the command,
     replacing %s with the full file path.'''
@@ -97,8 +92,7 @@ def exec_string_cmd(cmd):
         return subprocess.Popen(s, shell=True)
 
     return f
-#@-node:dan.20090210180636.27:exec_string_cmd
-#@+node:dan.20090203174248.30:init
+#@+node:dan.20090203174248.30: ** init
 def init ():
 
     ok = not g.app.unitTesting
@@ -112,8 +106,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:dan.20090203174248.30:init
-#@+node:dan.20090203174248.31:open_mimetype
+#@+node:dan.20090203174248.31: ** open_mimetype
 def open_mimetype(tag, keywords, val=None):
     '''Simulate double-clicking on the filename in a file manager.  Order of
     preference is:
@@ -184,19 +177,15 @@ def open_mimetype(tag, keywords, val=None):
     # not an @mime node
     return val
 
-#@-node:dan.20090203174248.31:open_mimetype
 #@-others
 
-#@<< guess file association handler >>
-#@+node:dan.20090203174248.35:<< guess file association handler >>
-#@+at 
-#@nonl
-# Search for the best method of opening files.  If running a desktop manager,
+#@+<< guess file association handler >>
+#@+node:dan.20090203174248.35: ** << guess file association handler >>
+#@+at Search for the best method of opening files.  If running a desktop manager,
 # do the action corresponding to a double-click in the file manager.
 # 
 # Helper functions return a function f(fpath) which takes the full file path,
 # launches the viewer and returns immediately.
-#@-at
 #@@c
 
 
@@ -223,7 +212,5 @@ elif sys.platform == 'win32':
     #use this directly as 1-arg fn, default action is 'open'
     open_func = os.startfile
 
-#@-node:dan.20090203174248.35:<< guess file association handler >>
-#@nl
-#@-node:dan.20090217132953.1:@thin mime.py
+#@-<< guess file association handler >>
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:pap.20041020001240:@thin footprints.py
+#@+leo-ver=5-thin
+#@+node:pap.20041020001240: * @thin footprints.py
 """ 
 A plugin to leave footprints! This colours the Leo nodes so that the ones you
 have visited most and most recently will stand out.
@@ -10,8 +10,8 @@ have visited most and most recently will stand out.
 __version__ = "0.3" 
 __plugin_name__ = "Footprints" 
 
-#@<< version history >>
-#@+node:pap.20041020001240.1:<< version history >>
+#@+<< version history >>
+#@+node:pap.20041020001240.1: ** << version history >>
 #@@killcolor
 #@+at 
 # 
@@ -23,12 +23,9 @@ __plugin_name__ = "Footprints"
 # 
 # 0.3 EKR:
 #     - Declared click_registry and coloured_nodes global in init.
-#@-at
-#@nonl
-#@-node:pap.20041020001240.1:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:pap.20041020001240.2:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:pap.20041020001240.2: ** << imports >>
 import leo.core.leoGlobals as g 
 import leo.core.leoPlugins as leoPlugins 
 
@@ -48,10 +45,9 @@ else:
 import threading 
 import time 
 
-#@-node:pap.20041020001240.2:<< imports >>
-#@nl
-#@<< todo >>
-#@+node:pap.20041020001240.3:<< todo >>
+#@-<< imports >>
+#@+<< todo >>
+#@+node:pap.20041020001240.3: ** << todo >>
 """ 
 
 Todo list: 
@@ -59,11 +55,10 @@ Todo list:
 - pretty much everything 
 
 """ 
-#@-node:pap.20041020001240.3:<< todo >>
-#@nl
+#@-<< todo >>
 
 #@+others
-#@+node:ekr.20050310105438:init
+#@+node:ekr.20050310105438: ** init
 def init ():
 
     ok = Tk and not g.app.unitTesting # Not safe for unit testing because of lock.
@@ -87,21 +82,17 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20050310105438:init
-#@+node:pap.20041020001240.5:Error Classes
+#@+node:pap.20041020001240.5: ** Error Classes
 pass 
-#@nonl
-#@-node:pap.20041020001240.5:Error Classes
-#@+node:pap.20041020001240.55:Implementation
-#@+node:pap.20041020012447:getConfiguration
+#@+node:pap.20041020001240.55: ** Implementation
+#@+node:pap.20041020012447: *3* getConfiguration
 def getConfiguration(): 
     """Return the config object""" 
     fileName = g.os_path_join(g.app.loadDir,"../","plugins","footprints.ini") 
     config = ConfigParser.ConfigParser() 
     config.read(fileName) 
     return config 
-#@-node:pap.20041020012447:getConfiguration
-#@+node:pap.20041020012723:applyConfiguration
+#@+node:pap.20041020012723: *3* applyConfiguration
 def applyConfiguration(config): 
     """Called when the user selects Properties from the menu""" 
     global REFRESH, COLD_FG, HOT_FG, HITS_TO_HOT 
@@ -109,8 +100,7 @@ def applyConfiguration(config):
     COLD_FG = config.get("Main", "ColdColour") 
     HOT_FG = config.get("Main", "HotColour") 
     HITS_TO_HOT = config.getint("Main", "HitsToHeatUp") 
-#@-node:pap.20041020012723:applyConfiguration
-#@+node:pap.20041020001800:installDrawMethod
+#@+node:pap.20041020001800: *3* installDrawMethod
 registered = False 
 
 def installDrawMethod(tags, kw): 
@@ -130,8 +120,7 @@ def installDrawMethod(tags, kw):
 
     global lock 
     lock = threading.Lock() 
-#@-node:pap.20041020001800:installDrawMethod
-#@+node:pap.20041020001841:doFootprint
+#@+node:pap.20041020001841: *3* doFootprint
 def doFootprint(self, p):  
     """Do the colouring"""
     c = self.c
@@ -152,8 +141,7 @@ def doFootprint(self, p):
                 state="disabled",highlightthickness=0, fg=fg, bg=bg) 
         except: 
          g.es_exception()
-#@-node:pap.20041020001841:doFootprint
-#@+node:pap.20041020002741:storeHeadlineClick
+#@+node:pap.20041020002741: *3* storeHeadlineClick
 def storeHeadlineClick(tag, keywords): 
     """A node headline was clicked""" 
     lock.acquire() 
@@ -163,9 +151,7 @@ def storeHeadlineClick(tag, keywords):
         #g.pr("adding to ", node, click_registry[node.v] )
     finally: 
         lock.release() 
-#@nonl
-#@-node:pap.20041020002741:storeHeadlineClick
-#@+node:pap.20041020004243:updateNodes
+#@+node:pap.20041020004243: *3* updateNodes
 def updateNodes(): 
     """Update the colour of nodes""" 
     config = g.app.config 
@@ -201,8 +187,5 @@ def updateNodes():
             # 
         finally: 
             lock.release() 
-#@-node:pap.20041020004243:updateNodes
-#@-node:pap.20041020001240.55:Implementation
 #@-others
-#@-node:pap.20041020001240:@thin footprints.py
 #@-leo

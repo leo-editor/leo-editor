@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041018091414.1:@thin fastGotoNode.py
-#@<< docstring >>
-#@+node:ekr.20050226120947:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041018091414.1: * @thin fastGotoNode.py
+#@+<< docstring >>
+#@+node:ekr.20050226120947: ** << docstring >>
 '''A Leo plugin that adds the fast-goto-node minibuffer command that creates a
 popup menu. You can summon this menu in two ways, depending on the
 ``fastgotonode_useKeyBinding`` setting:
@@ -28,17 +28,15 @@ the new user easy access to the different directives and ways to write a file.
 3. Moving Nodes( experimental feature ). You can quickly move a node to its
 parent's parent or after a sibling, if they exist.
 '''
-#@nonl
-#@-node:ekr.20050226120947:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
 from __future__ import generators # To make this plugin work with Python 2.2.
 
-#@<< imports >>
-#@+node:mork.20041018091414.2:<< imports >>
+#@+<< imports >>
+#@+node:mork.20041018091414.2: ** << imports >>
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 
@@ -46,12 +44,10 @@ import copy
 import Tkinter
 import tkFileDialog
 import os
-#@nonl
-#@-node:mork.20041018091414.2:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = ".107"
-#@<< version history >>
-#@+node:ekr.20050226120947.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050226120947.1: ** << version history >>
 #@@nocolor
 #@+at
 # 
@@ -63,8 +59,7 @@ __version__ = ".107"
 # .103 EKR: Fixed crasher in addLanguageMenu.
 # .104 EKR:
 # - Define the fast-goto-node minibuffer command.
-# - Use the useKeyBinding constant to specify whether to use a key binding or 
-# <Button-3>.
+# - Use the useKeyBinding constant to specify whether to use a key binding or <Button-3>.
 # - Changed the docstring accordingly.
 # - Corrected the imports to reflect standard usage.
 # - Removed some strange code in getWindowMenu.
@@ -74,19 +69,14 @@ __version__ = ".107"
 # - Use g.app.windowList to init windows.  This should be done dynamically.
 # - Removed langdict stuff, but left the disabled code as a guide in case
 #   somebody wants to implement langdict settings in leoSettings.leo.
-# .106 EKR: Added from __future__ import generators to suppress warning in 
-# Python 2.2.
+# .106 EKR: Added from __future__ import generators to suppress warning in Python 2.2.
 # .107 EKR: Define smenu in init, **not** at the top level.
-# This was the plugin that caused a Tk window to appear, regardless of the 
-# gui.
+# This was the plugin that caused a Tk window to appear, regardless of the gui.
 # .108 EKR: Replaced leoColor.leoKeywords by g.globalDirectiveList.
-#@-at
-#@nonl
-#@-node:ekr.20050226120947.1:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20050226120947.2:init & helpers
+#@+node:ekr.20050226120947.2: ** init & helpers
 def init ():
 
     if Tkinter is None: return False
@@ -109,17 +99,14 @@ def init ():
             if os.path.exists(lkpm):
                 loadLanguages(lkpm)
     return ok
-#@nonl
-#@+node:mork.20041018091414.20:calculateMenuSize
+#@+node:mork.20041018091414.20: *3* calculateMenuSize
 def calculateMenuSize ():
     global maxmenu
     x = Tkinter.Menu()
     h = (x.winfo_screenheight()*.90) / 25
     maxmenu = int(h)
     x.destroy()
-#@nonl
-#@-node:mork.20041018091414.20:calculateMenuSize
-#@+node:mork.20041018091414.19:registerPopupMenu
+#@+node:mork.20041018091414.19: *3* registerPopupMenu
 def registerPopupMenu (tag,keywords):
 
     c = keywords.get('c')
@@ -138,9 +125,7 @@ def registerPopupMenu (tag,keywords):
         if not binding.startswith('<'): binding = '<%s>' % binding # Add < and >
         c.keyHandler.registerCommand ('fast-goto-node',None,popper,pane='all',verbose=True)
         c.bind(c.frame.top,binding,popper)
-#@nonl
-#@-node:mork.20041018091414.19:registerPopupMenu
-#@+node:mork.20041018091414.21:loadLanguages (not used)
+#@+node:mork.20041018091414.21: *3* loadLanguages (not used)
 if 0:
 
     langdict = {}
@@ -175,10 +160,7 @@ if 0:
                 if z2.strip() == 'binder':
                     binder = cp.get(which2,z2)
                     break
-#@nonl
-#@-node:mork.20041018091414.21:loadLanguages (not used)
-#@-node:ekr.20050226120947.2:init & helpers
-#@+node:mork.20041018091414.3:disappear
+#@+node:mork.20041018091414.3: ** disappear
 maxmenu = 0
 menus = []
 
@@ -188,8 +170,7 @@ def disappear (event,c):
     smenu.unpost()
     smenu.unbind_all("<Button-3>")
     c.frame.body.bodyCtrl.focus_set()
-#@-node:mork.20041018091414.3:disappear
-#@+node:mork.20041018091414.4:pop
+#@+node:mork.20041018091414.4: ** pop
 lastwidg = None
 
 def pop (event,c):
@@ -247,9 +228,8 @@ def pop (event,c):
 
     smenu.post(event.x_root,event.y_root)
     smenu.focus_set()
-#@-node:mork.20041018091414.4:pop
-#@+node:ekr.20060110203946.1:Menus
-#@+node:mork.20041018091414.5:getSectionReferenceMenu
+#@+node:ekr.20060110203946.1: ** Menus
+#@+node:mork.20041018091414.5: *3* getSectionReferenceMenu
 def getSectionReferenceMenu (pmenu,c):
     p = c.p
     nc = p.numberOfChildren()
@@ -274,9 +254,7 @@ def getSectionReferenceMenu (pmenu,c):
                 paster(label,c,''), columnbreak = sb.next())
 
     return srmenu
-#@nonl
-#@-node:mork.20041018091414.5:getSectionReferenceMenu
-#@+node:mork.20041018091414.6:getWindowMenu
+#@+node:mork.20041018091414.6: *3* getWindowMenu
 def getWindowMenu (pmenu,c):
     wl = g.app.windowList
     winmenu = Tkinter.Menu(pmenu,tearoff=0)
@@ -292,9 +270,7 @@ def getWindowMenu (pmenu,c):
             command = lambda frame = z: bTF(frame),
             columnbreak = sb.next())
     return winmenu
-#@nonl
-#@-node:mork.20041018091414.6:getWindowMenu
-#@+node:mork.20041018091414.7:getChildrenMenu
+#@+node:mork.20041018091414.7: *3* getChildrenMenu
 def getChildrenMenu (pmenu,c):
     p = c.p
     nchildren = p.numberOfChildren()
@@ -320,8 +296,7 @@ def getChildrenMenu (pmenu,c):
                 columnbreak = sb.next())
         map(adder,childnames)
     return chimenu
-#@-node:mork.20041018091414.7:getChildrenMenu
-#@+node:mork.20041018091414.8:getSiblingsMenu
+#@+node:mork.20041018091414.8: *3* getSiblingsMenu
 def getSiblingsMenu (pmenu,c):
     siblings = []
     p = c.p
@@ -344,8 +319,7 @@ def getSiblingsMenu (pmenu,c):
                 columnbreak = sb.next())
 
     return sibmenu
-#@-node:mork.20041018091414.8:getSiblingsMenu
-#@+node:mork.20041018113134:getSiblingList
+#@+node:mork.20041018113134: *3* getSiblingList
 def getSiblingList (p):
 
     siblings = []
@@ -359,9 +333,7 @@ def getSiblingList (p):
         siblings.append(nnod)
         nnod = nnod.next()
     return siblings
-#@nonl
-#@-node:mork.20041018113134:getSiblingList
-#@+node:mork.20041018091414.9:getAncestorsMenu
+#@+node:mork.20041018091414.9: *3* getAncestorsMenu
 def getAncestorsMenu (pmenu,c):
         ancmenu = None
         alist = getAncestorList(c.p)
@@ -377,8 +349,7 @@ def getAncestorsMenu (pmenu,c):
                     columnbreak = sb.next())
 
         return ancmenu
-#@-node:mork.20041018091414.9:getAncestorsMenu
-#@+node:mork.20041018114908:getAncestorList
+#@+node:mork.20041018114908: *3* getAncestorList
 def getAncestorList (p):
 
     alist = []
@@ -387,9 +358,7 @@ def getAncestorList (p):
         alist.append(parent)
         parent = parent.parent()
     return alist
-#@nonl
-#@-node:mork.20041018114908:getAncestorList
-#@+node:mork.20041018091414.10:addLanguageMenu
+#@+node:mork.20041018091414.10: *3* addLanguageMenu
 def addLanguageMenu (pmenu,c,haveseen={}):
     colorizer = c.frame.body.getColorizer()
     if not colorizer.language: return None, None
@@ -420,9 +389,7 @@ def addLanguageMenu (pmenu,c,haveseen={}):
             columnbreak = sb.next())
 
     return lmenu, colorizer.language
-#@nonl
-#@-node:mork.20041018091414.10:addLanguageMenu
-#@+node:mork.20041018120620:getMoveAMenu
+#@+node:mork.20041018120620: *3* getMoveAMenu
 def getMoveAMenu (pmenu,c):
 
     mvmenu = None
@@ -445,8 +412,7 @@ def getMoveAMenu (pmenu,c):
                 mvchild(p,p2),
                 columnbreak = sb.next())
     return mvmenu
-#@-node:mork.20041018120620:getMoveAMenu
-#@+node:mork.20041018120620.1:getMoveSMenu
+#@+node:mork.20041018120620.1: *3* getMoveSMenu
 def getMoveSMenu (pmenu,c):
 
     smenu = None
@@ -465,9 +431,7 @@ def getMoveSMenu (pmenu,c):
                             command = lambda p = p, p2 = z: mafter(p,p2),
                             columnbreak = sb.next())
     return smenu
-#@nonl
-#@-node:mork.20041018120620.1:getMoveSMenu
-#@+node:mork.20041018092814:getHeadlineMenu
+#@+node:mork.20041018092814: *3* getHeadlineMenu
 def getHeadlineMenu (pmenu,c):
 
     p = c.p
@@ -493,9 +457,7 @@ def getHeadlineMenu (pmenu,c):
     c.add_command(hmenu,label='remove @',command=lambda c=c,nm=names:
                                             removeFileDirective(c,nm))
     return hmenu
-#@nonl
-#@-node:mork.20041018092814:getHeadlineMenu
-#@+node:mork.20041018091414.13:getDirectiveInsert
+#@+node:mork.20041018091414.13: *3* getDirectiveInsert
 def getDirectiveInsert (pm,c,directives=[],directives2=[]):
     m = Tkinter.Menu(pm,tearoff=0)
     sb = shouldBreak()
@@ -512,10 +474,8 @@ def getDirectiveInsert (pm,c,directives=[],directives2=[]):
           paster(label,c))
 
     return m
-#@-node:mork.20041018091414.13:getDirectiveInsert
-#@-node:ekr.20060110203946.1:Menus
-#@+node:ekr.20060110203946.2:Utilities
-#@+node:mork.20041018100044.1:getCleanHeadString
+#@+node:ekr.20060110203946.2: ** Utilities
+#@+node:mork.20041018100044.1: *3* getCleanHeadString
 def getCleanHeadString (hS,names):
 
     def sT (a,b):
@@ -531,17 +491,13 @@ def getCleanHeadString (hS,names):
             hS = hS.lstrip()
             return hS
     return hS
-#@nonl
-#@-node:mork.20041018100044.1:getCleanHeadString
-#@+node:mork.20041018091414.11:needsSeparator
+#@+node:mork.20041018091414.11: *3* needsSeparator
 def needsSeparator( menu ):
     yield None
     while 1:
         menu.add_separator()
         yield None
-#@nonl
-#@-node:mork.20041018091414.11:needsSeparator
-#@+node:mork.20041018091414.12:shouldBreak
+#@+node:mork.20041018091414.12: *3* shouldBreak
 def shouldBreak():
     i = 0
     while 1:
@@ -550,8 +506,7 @@ def shouldBreak():
             i = 0
             yield True
         else: yield False
-#@-node:mork.20041018091414.12:shouldBreak
-#@+node:mork.20041018095448:setFileDirective
+#@+node:mork.20041018095448: *3* setFileDirective
 def setFileDirective( c , directive, names ):
 
     p = c.p
@@ -562,9 +517,7 @@ def setFileDirective( c , directive, names ):
     c.frame.body.bodyCtrl.focus_set()  
     c.frame.body.bodyCtrl.update_idletasks()
     c.redraw()
-#@nonl
-#@-node:mork.20041018095448:setFileDirective
-#@+node:mork.20041018100044:removeFileDirective
+#@+node:mork.20041018100044: *3* removeFileDirective
 def removeFileDirective (c,names):
 
     p = c.p
@@ -574,9 +527,7 @@ def removeFileDirective (c,names):
     c.frame.body.bodyCtrl.focus_set()
     c.frame.body.bodyCtrl.update_idletasks()
     c.redraw()
-#@nonl
-#@-node:mork.20041018100044:removeFileDirective
-#@+node:mork.20041018091414.14:addGL
+#@+node:mork.20041018091414.14: *3* addGL
 def addGL (c):
     vnode = c.currentVnode()
     hs = vnode.h
@@ -585,18 +536,14 @@ def addGL (c):
     c.frame.body.bodyCtrl.focus_set()
     c.frame.body.bodyCtrl.update_idletasks()
     c.redraw()
-#@nonl
-#@-node:mork.20041018091414.14:addGL
-#@+node:mork.20041018091414.15:insertHeadline
+#@+node:mork.20041018091414.15: *3* insertHeadline
 def insertHeadline (directive,c):
     vnode = c.currentVnode()
     hs = vnode.h
     nhs = directive + " " + hs
     c.setHeadString(vnode,nhs)
     c.redraw()
-#@nonl
-#@-node:mork.20041018091414.15:insertHeadline
-#@+node:mork.20041018091414.16:paster
+#@+node:mork.20041018091414.16: *3* paster
 def paster (directive,c,end=' '):
     bdy = c.frame.body
     bdy.insertAtInsertPoint(directive+end)
@@ -605,25 +552,18 @@ def paster (directive,c,end=' '):
     bdy.bodyCtrl.update_idletasks()
     c.redraw()
     bdy.bodyCtrl.focus_set()
-#@nonl
-#@-node:mork.20041018091414.16:paster
-#@+node:mork.20041018091414.17:clear
+#@+node:mork.20041018091414.17: *3* clear
 def clear ():
     global menus
     smenu.delete(0,Tkinter.END)
     for z in menus:
         z.destroy()
     menus = []
-#@-node:mork.20041018091414.17:clear
-#@+node:mork.20041018091414.18:jumpto
+#@+node:mork.20041018091414.18: *3* jumpto
 def jumpto (vnode,c):
     smenu.unpost()
     c.frame.tree.expandAllAncestors(vnode)
     c.selectVnode(vnode)
     c.redraw()
-#@-node:mork.20041018091414.18:jumpto
-#@-node:ekr.20060110203946.2:Utilities
 #@-others
-#@nonl
-#@-node:mork.20041018091414.1:@thin fastGotoNode.py
 #@-leo

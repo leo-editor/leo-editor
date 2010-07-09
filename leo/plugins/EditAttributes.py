@@ -1,22 +1,20 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041018162155.1:@thin EditAttributes.py
-#@<< docstring >>
-#@+node:ekr.20050226091502:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041018162155.1: * @thin EditAttributes.py
+#@+<< docstring >>
+#@+node:ekr.20050226091502: ** << docstring >>
 '''A plugin that lets the user to associate text with a specific node.
 
 Summon it by pressing button-2 or button-3 on an icon Box in the outline. This
 will create an attribute editor where the user can add, remove and edit
 attributes. Since attributes use the underlying tnode, clones will share the
 attributes of one another.'''
-#@nonl
-#@-node:ekr.20050226091502:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:mork.20041018162155.2:<< imports >>
+#@+<< imports >>
+#@+node:mork.20041018162155.2: ** << imports >>
 # import leo.core.leoPlugins as leoPlugins
 
 import leo.core.leoGlobals as g
@@ -25,13 +23,11 @@ import leo.plugins.tkGui as tkGui
 leoTkinterFrame = tkGui.leoTkinterFrame   
 
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True,required=True)
-#@nonl
-#@-node:mork.20041018162155.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = ".5"
-#@<< version history >>
-#@+node:ekr.20050226091502.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050226091502.1: ** << version history >>
 #@@killcolor
 
 #@+at
@@ -43,16 +39,12 @@ __version__ = ".5"
 # 
 # 0.4 EKR:
 #     - Corrected dispatch logic in newCreateCanvas.
-#     - Corrected AttrEditor.__init__ so the Pmw.Dialog is a child of 
-# c.frame.top.
+#     - Corrected AttrEditor.__init__ so the Pmw.Dialog is a child of c.frame.top.
 #       (Without this the dialog hangs).
-#@-at
-#@nonl
-#@-node:ekr.20050226091502.1:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20050226091648:init
+#@+node:ekr.20050226091648: ** init
 def init ():
 
     # At present there is a problem with the interaction of this plugin and the chapters2 plugin.
@@ -71,11 +63,10 @@ def init ():
 
 
 
-#@-node:ekr.20050226091648:init
-#@+node:mork.20041018162155.3:class AttrEditor
+#@+node:mork.20041018162155.3: ** class AttrEditor
 class AttrEditor:
-    #@	@+others
-    #@+node:mork.20041018162155.4:__init__
+    #@+others
+    #@+node:mork.20041018162155.4: *3* __init__
     def __init__ (self,c,p):
 
         self.c = c
@@ -89,17 +80,14 @@ class AttrEditor:
         group.pack(side='top')
         self._mkGui(group.interior())
         self.dialog.activate()
-    #@nonl
-    #@-node:mork.20041018162155.4:__init__
-    #@+node:mork.20041018162155.5:buttonCommands
+    #@+node:mork.20041018162155.5: *3* buttonCommands
     def buttonCommands( self, name ):
         if name == 'Add Attribute': return self.add() 
         elif name == 'Remove Attribute': return self.rmv()
         else:
             self.dialog.deactivate()
             self.dialog.destroy()
-    #@-node:mork.20041018162155.5:buttonCommands
-    #@+node:mork.20041018162155.6:_mkGui
+    #@+node:mork.20041018162155.6: *3* _mkGui
     def _mkGui( self, frame ):
 
         c = self.c
@@ -127,8 +115,7 @@ class AttrEditor:
         if bk:
             lb.setvalue( bk[ 0 ] )
             self.selcommand()
-    #@-node:mork.20041018162155.6:_mkGui
-    #@+node:mork.20041018162155.7:setText
+    #@+node:mork.20041018162155.7: *3* setText
     def setText( self, event):
         if event.char == '': return
         cs = self.lb.getcurselection() 
@@ -136,8 +123,7 @@ class AttrEditor:
         cs = cs[ 0 ]
         txt = self.tx.get( '1.0', 'end -1c' ) 
         self.uAs[ cs ] = txt + event.char
-    #@-node:mork.20041018162155.7:setText
-    #@+node:mork.20041018162155.8:selcommand
+    #@+node:mork.20041018162155.8: *3* selcommand
     def selcommand( self ):
         cs = self.lb.getcurselection()
         if len( cs ) != 0: cs = cs[ 0 ]
@@ -145,8 +131,7 @@ class AttrEditor:
         txt = self.uAs[ cs ]
         self.tx.delete( '1.0', 'end' ) 
         self.tx.insert( '1.0' ,txt) 
-    #@-node:mork.20041018162155.8:selcommand
-    #@+node:mork.20041018162155.9:add
+    #@+node:mork.20041018162155.9: *3* add
     def add( self ):
         txt = self.attEnt.getvalue()
         if txt.strip() == '': return
@@ -157,8 +142,7 @@ class AttrEditor:
         self.lb.setlist( bk )
         self.lb.setvalue( txt ) 
         self.tx.delete( '1.0', 'end' )
-    #@-node:mork.20041018162155.9:add
-    #@+node:mork.20041018162155.10:rmv
+    #@+node:mork.20041018162155.10: *3* rmv
     def rmv( self ):
         cs = self.lb.curselection() 
         if len( cs ) != 0 : cs = cs[ 0 ]
@@ -168,10 +152,8 @@ class AttrEditor:
         bk.sort()
         self.lb.setlist( bk )
         self.tx.delete( '1.0', 'end' )  
-    #@-node:mork.20041018162155.10:rmv
     #@-others
-#@-node:mork.20041018162155.3:class AttrEditor
-#@+node:mork.20041018193158:newCreateCanvas
+#@+node:mork.20041018193158: ** newCreateCanvas
 olCreateCanvas = leoTkinterFrame.createCanvas
 
 def newCreateCanvas (self,parentFrame,pageName=None):
@@ -211,7 +193,5 @@ def newCreateCanvas (self,parentFrame,pageName=None):
 
 tkGui.leoTkinterFrame.createCanvas = newCreateCanvas
 
-#@-node:mork.20041018193158:newCreateCanvas
 #@-others
-#@-node:mork.20041018162155.1:@thin EditAttributes.py
 #@-leo

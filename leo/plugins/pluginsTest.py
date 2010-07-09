@@ -1,26 +1,24 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517080555.25:@thin pluginsTest.py
+#@+leo-ver=5-thin
+#@+node:EKR.20040517080555.25: * @thin pluginsTest.py
 """Test file for Plugins menu protocols"""
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050101090207.11:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.11: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import os
-#@nonl
-#@-node:ekr.20050101090207.11:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = "1.1"
 
 #@+others
-#@+node:ekr.20100128091412.5384:init
+#@+node:ekr.20100128091412.5384: ** init
 def init():
 
     ok = Tk and not g.app.unitTesting
@@ -37,8 +35,7 @@ def init():
             g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20100128091412.5384:init
-#@+node:EKR.20040517080555.26:applyConfiguration
+#@+node:EKR.20040517080555.26: ** applyConfiguration
 def applyConfiguration(config):
 
     sections = config.sections()
@@ -49,8 +46,7 @@ def applyConfiguration(config):
         options.sort()
         for option in options:
             g.pr(section, option, config.get(section, option))
-#@-node:EKR.20040517080555.26:applyConfiguration
-#@+node:EKR.20040517080555.27:cmd_fn1/2/3
+#@+node:EKR.20040517080555.27: ** cmd_fn1/2/3
 def cmd_fn1(event=None):
     g.es("Fn1",color="blue")
 
@@ -59,16 +55,15 @@ def cmd_fn2(event=None):
 
 def cmd_fn3(event=None):
     g.es("Fn3",color="blue")
-#@-node:EKR.20040517080555.27:cmd_fn1/2/3
-#@+node:EKR.20040517080555.28:onSelect
+#@+node:EKR.20040517080555.28: ** onSelect
 def onSelect (tag,keywords):
 
     new_v = keywords.get("new_v")
     h = new_v.h
     if h[:7] == "@image ":
         filename = h[7:]
-        #@        << Select Image >>
-        #@+node:EKR.20040517080555.29:<< Select Image >>
+        #@+<< Select Image >>
+        #@+node:EKR.20040517080555.29: *3* << Select Image >>
         # Display the image file in the text pane, if you can find the file
         a = g.app
         c = keywords.get("c")
@@ -92,12 +87,8 @@ def onSelect (tag,keywords):
             a.gsimage = body.bodyCtrl.image_create("1.0",image=photo,padx=padding)
         else:
             g.es("warning: missing image file")
-        #@nonl
-        #@-node:EKR.20040517080555.29:<< Select Image >>
-        #@nl
-#@nonl
-#@-node:EKR.20040517080555.28:onSelect
-#@+node:EKR.20040517080555.30:onUnselect
+        #@-<< Select Image >>
+#@+node:EKR.20040517080555.30: ** onUnselect
 def onUnselect (tag,keywords):
 
     a = g.app
@@ -109,8 +100,8 @@ def onUnselect (tag,keywords):
     if old_v:
         h = old_v.h
         if h[:7] == "@image ":
-            #@            << Unselect Image >>
-            #@+node:EKR.20040517080555.31:<< Unselect Image >>
+            #@+<< Unselect Image >>
+            #@+node:EKR.20040517080555.31: *3* << Unselect Image >>
             # Erase image if it was previously displayed
             if a.gsimage:
                 try:
@@ -121,13 +112,9 @@ def onUnselect (tag,keywords):
             # And forget about it
             a.gsimage = None
             a.gsphoto = None
-            #@-node:EKR.20040517080555.31:<< Unselect Image >>
-            #@nl
+            #@-<< Unselect Image >>
     else: # Leo is initializing.
         a.gsphoto = None # Holds our photo file
         a.gsimage = None # Holds our image instance within the text pane
-#@nonl
-#@-node:EKR.20040517080555.30:onUnselect
 #@-others
-#@-node:EKR.20040517080555.25:@thin pluginsTest.py
 #@-leo

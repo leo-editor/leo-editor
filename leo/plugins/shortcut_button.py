@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20060601151845:@thin shortcut_button.py
-#@<<docstring>>
-#@+node:bobjack.20080614084120.6:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20060601151845: * @thin shortcut_button.py
+#@+<<docstring>>
+#@+node:bobjack.20080614084120.6: ** << docstring >>
 '''A plugin to create a 'shortcut' button in the icon area.
 
 Pressing the 'shortcut' button creates *another* button which when pressed will
@@ -80,14 +80,13 @@ The following minibuffer commands are provided::
 
 
 '''
-#@-node:bobjack.20080614084120.6:<< docstring >>
-#@nl
+#@-<<docstring>>
 
 
 
 
-#@<< imports >>
-#@+node:ekr.20060601151845.2:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20060601151845.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -96,36 +95,29 @@ import mod_scripting
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import rClickBasePluginClasses as baseClasses
-#@nonl
-#@-node:ekr.20060601151845.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = "0.6"
-#@<< version history >>
-#@+node:ekr.20060601151845.3:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20060601151845.3: ** << version history >>
 #@@nocolor
 #@+at
 # 
 # 0.1 Initial version.  Suggested by Brian Theado.
 # 0.2 EKR: Improved docstring.
 # 0.3 EKR: Rewritten to used latest mod_scripting plugin.
-# As a result, it creates the shortcut-button command, and commands for every 
-# button created.
-# 0.4 EKR: The created commands now have the form: go-x-node to reduce chance 
-# of conflicts with other commands.
+# As a result, it creates the shortcut-button command, and commands for every button created.
+# 0.4 EKR: The created commands now have the form: go-x-node to reduce chance of conflicts with other commands.
 # 0.5 bobjack:
 #     - Updated to be compatible with toolbar.py plugin extensions
 #     - Added support for @data shortcut-button-data which allow
 #       setting of forground/background colors and rClick menus
 # 0.6 bobjack:
 #     - added support for icon, iconbar and hide settings
-#@-at
-#@nonl
-#@-node:ekr.20060601151845.3:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20060601151845.4:init
+#@+node:ekr.20060601151845.4: ** init
 def init ():
 
     ok = Tk and mod_scripting and not g.app.unitTesting
@@ -145,8 +137,7 @@ def init ():
 
 
     return ok
-#@-node:ekr.20060601151845.4:init
-#@+node:ekr.20060601151845.5:onCreate
+#@+node:ekr.20060601151845.5: ** onCreate
 def onCreate (tag, keys):
 
     """Handle the onCreate event in the shortcut_button plugin."""
@@ -155,13 +146,11 @@ def onCreate (tag, keys):
 
     if c and c.exists and not hasattr(c, 'theShortcutButtonController'):
         c.theShortcutButtonController = shortcutButton(c)
-#@nonl
-#@-node:ekr.20060601151845.5:onCreate
-#@+node:ekr.20060601151845.6:class shortcutButton
+#@+node:ekr.20060601151845.6: ** class shortcutButton
 class shortcutButton(object):
 
-    #@    @+others
-    #@+node:ekr.20060601151845.7: ctor
+    #@+others
+    #@+node:ekr.20060601151845.7: *3*  ctor
     def __init__ (self, c):
 
         self.c = c
@@ -203,8 +192,7 @@ class shortcutButton(object):
         ]:
 
             c.k.registerCommand(command,shortcut=None,func=method,wrap=True)
-    #@-node:ekr.20060601151845.7: ctor
-    #@+node:bobjack.20080618205453.2:add-shortcut-button
+    #@+node:bobjack.20080618205453.2: *3* add-shortcut-button
     def addShortcutButton(self, keywords):
 
         c = self.c
@@ -228,8 +216,7 @@ class shortcutButton(object):
                     barName = None
 
         self.createShortcutButtonButton(barName)
-    #@-node:bobjack.20080618205453.2:add-shortcut-button
-    #@+node:bobjack.20080618205453.3:add-shortcut
+    #@+node:bobjack.20080618205453.3: *3* add-shortcut
     def addShortcut(self, keywords):
 
         phase = keywords.get('phase')
@@ -241,8 +228,7 @@ class shortcutButton(object):
 
         if bar:
             self.createShortcutButton(bar)
-    #@-node:bobjack.20080618205453.3:add-shortcut
-    #@+node:bobjack.20080613173457.11:get_item_data
+    #@+node:bobjack.20080613173457.11: *3* get_item_data
     def get_item_data(self):
 
         c = self.c
@@ -260,8 +246,7 @@ class shortcutButton(object):
                 item_data[k] = v
 
         return item_data
-    #@-node:bobjack.20080613173457.11:get_item_data
-    #@+node:ekr.20060601153526:createShortcutButtonButton
+    #@+node:ekr.20060601153526: *3* createShortcutButtonButton
     def createShortcutButtonButton(self, barName=None):
 
         c = self.c
@@ -309,8 +294,7 @@ class shortcutButton(object):
 
         if self.icon:
             b.configure(image=self.icon)
-    #@-node:ekr.20060601153526:createShortcutButtonButton
-    #@+node:ekr.20060601151845.10:createShortcutButton
+    #@+node:ekr.20060601151845.10: *3* createShortcutButton
     def createShortcutButton (self, b):
 
         '''Create a button which selects the present position (when the button was created).'''
@@ -365,11 +349,6 @@ class shortcutButton(object):
         menu = data.get('slave-menu')
         if menu:
             b.context_menu = menu
-    #@-node:ekr.20060601151845.10:createShortcutButton
     #@-others
-#@nonl
-#@-node:ekr.20060601151845.6:class shortcutButton
 #@-others
-#@nonl
-#@-node:ekr.20060601151845:@thin shortcut_button.py
 #@-leo

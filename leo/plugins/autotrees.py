@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20050329082101.115:@thin autotrees.py
-#@<< docstring >>
-#@+node:ekr.20050329082101.116:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20050329082101.115: * @thin autotrees.py
+#@+<< docstring >>
+#@+node:ekr.20050329082101.116: ** << docstring >>
 """The AutoTrees plugin is a helper plugin designed to make it very easy to write
 "hanlder" plugins to manage dynamic content in Leo outlines. AutoTrees provides:
 
@@ -56,8 +56,7 @@ bodies.
 
 For example handlers, see the source code in leoPlugins.leo
 """
-#@-node:ekr.20050329082101.116:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -67,8 +66,8 @@ __plugin_name__ = "AutoTrees"
 __plugin_priority__ = 100
 __plugin_group__ = "Helpers"
 
-#@<< imports >>
-#@+node:ekr.20050329082101.117:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050329082101.117: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import re
@@ -76,11 +75,10 @@ import sys
 import glob
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@-node:ekr.20050329082101.117:<< imports >>
-#@nl
+#@-<< imports >>
 
-#@<< version history >>
-#@+node:ekr.20050329082101.118:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050329082101.118: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -90,12 +88,9 @@ Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #     - Set ok in init function.
 # 0.3 EKR:
 #     - Add c argument to topLevelMenu function and showManagerDialog ctor.
-#@-at
-#@nonl
-#@-node:ekr.20050329082101.118:<< version history >>
-#@nl
-#@<< todo >>
-#@+node:ekr.20050329082101.119:<< todo >>
+#@-<< version history >>
+#@+<< todo >>
+#@+node:ekr.20050329082101.119: ** << todo >>
 """
 
 Todo list:
@@ -113,19 +108,16 @@ Done:
 - allow them to be turned off
 
 """
-#@-node:ekr.20050329082101.119:<< todo >>
-#@nl
+#@-<< todo >>
 
 #@+others
-#@+node:ekr.20050329082101.120:Error Classes
+#@+node:ekr.20050329082101.120: ** Error Classes
 class AutoTreeError(Exception):
     """Something went wrong with the tree"""
 
 class BadHandler(AutoTreeError):
     """The handler could not be loaded"""
-#@nonl
-#@-node:ekr.20050329082101.120:Error Classes
-#@+node:ekr.20050329082101.121:init
+#@+node:ekr.20050329082101.121: ** init
 def init():
 
     ok = Tk is not None
@@ -146,9 +138,7 @@ def init():
             g.es("autotrees requires Tkinter",color='blue')
 
     return ok
-#@nonl
-#@-node:ekr.20050329082101.121:init
-#@+node:ekr.20050329082101.122:onCreate
+#@+node:ekr.20050329082101.122: ** onCreate
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -156,51 +146,42 @@ def onCreate (tag, keys):
 
     global thePluginController
     thePluginController = pluginController(c)
-#@nonl
-#@-node:ekr.20050329082101.122:onCreate
-#@+node:ekr.20050329082101.123:topLevelMenu
+#@+node:ekr.20050329082101.123: ** topLevelMenu
 # This is called from plugins_menu plugin.
 
 def topLevelMenu(c):   
     """Manage the tree handlers"""
     global thePluginController    
     thePluginController.showManagerDialog(c)
-#@nonl
-#@-node:ekr.20050329082101.123:topLevelMenu
-#@+node:ekr.20050329082101.124:class TreeNode
+#@+node:ekr.20050329082101.124: ** class TreeNode
 class TreeNode:
     """Represents a child on the tree"""
 
     headline = "A headline"
     body = "A body"
 
-    #@    @+others
-    #@+node:ekr.20050329082101.125:__init__
+    #@+others
+    #@+node:ekr.20050329082101.125: *3* __init__
     def __init__(self, headline, body="", children=None):
         """Initialize the node"""
         self.headline = headline
         self.body = body
         self.children = children or []
-    #@nonl
-    #@-node:ekr.20050329082101.125:__init__
     #@-others
-#@-node:ekr.20050329082101.124:class TreeNode
-#@+node:ekr.20050329082101.126:class BaseTreeHandler
+#@+node:ekr.20050329082101.126: ** class BaseTreeHandler
 class BaseTreeHandler:
     """Base handler for all trees"""
 
     # Set this to every event you want to handle
     handles = set(["icondclick1"])
 
-    #@    @+others
-    #@+node:ekr.20050329082101.127:__init__
+    #@+others
+    #@+node:ekr.20050329082101.127: *3* __init__
     def __init__(self,node):
         """Initialise the handler"""
         self.c = None # set in initFrom.
         self.node = node
-    #@nonl
-    #@-node:ekr.20050329082101.127:__init__
-    #@+node:ekr.20050329082101.128:refresh
+    #@+node:ekr.20050329082101.128: *3* refresh
     def refresh(self):
         """Refresh the node"""
         #
@@ -209,8 +190,7 @@ class BaseTreeHandler:
         #
         # Add children
         self.addChildren(self.children, self.node)   
-    #@-node:ekr.20050329082101.128:refresh
-    #@+node:ekr.20050329082101.129:preprocessNode
+    #@+node:ekr.20050329082101.129: *3* preprocessNode
     def preprocessNode(self):
         """Pre-process the node
 
@@ -221,15 +201,12 @@ class BaseTreeHandler:
         """
         while self.node.firstChild():
             self.node.firstChild().doDelete(self.node)
-    #@-node:ekr.20050329082101.129:preprocessNode
-    #@+node:ekr.20050329082101.130:initFrom
+    #@+node:ekr.20050329082101.130: *3* initFrom
     def initFrom(self,c,parameter):
         """Perform any initialization here"""
         self.c = c
         self.children = []
-    #@nonl
-    #@-node:ekr.20050329082101.130:initFrom
-    #@+node:ekr.20050329082101.131:addChildren
+    #@+node:ekr.20050329082101.131: *3* addChildren
     def addChildren(self, child_list, add_to_node):
         """Add all the children"""
         #import pdb; pdb.set_trace()
@@ -239,14 +216,12 @@ class BaseTreeHandler:
             c.setHeadString(new_node,child.headline)
             c.setBodyString(new_node,child.body)
             self.addChildren(child.children, new_node)
-    #@-node:ekr.20050329082101.131:addChildren
     #@-others
-#@-node:ekr.20050329082101.126:class BaseTreeHandler
-#@+node:ekr.20050329082101.132:class pluginController
+#@+node:ekr.20050329082101.132: ** class pluginController
 class pluginController:
 
-    #@    @+others
-    #@+node:ekr.20050329082101.133:__init__
+    #@+others
+    #@+node:ekr.20050329082101.133: *3* __init__
     def __init__ (self,c):
         """Initialise the commander"""
         self.c = c
@@ -260,9 +235,7 @@ class pluginController:
         # Load tree handlers
         self.handlers = {}
         self.loadTreeHandlers()
-    #@nonl
-    #@-node:ekr.20050329082101.133:__init__
-    #@+node:ekr.20050329082101.134:loadTreeHandlers
+    #@+node:ekr.20050329082101.134: *3* loadTreeHandlers
     def loadTreeHandlers(self):
         """Load all the handler for tree items"""
         #
@@ -279,18 +252,17 @@ class pluginController:
             old_path = sys.path[:]
             sys.path.insert(0, plugin_path)
             sys.path.insert(0, handler_path)
-            #@        << Get plugin manager module >>
-            #@+node:ekr.20050329082101.135:<< Get plugin manager module >>
+            #@+<< Get plugin manager module >>
+            #@+node:ekr.20050329082101.135: *4* << Get plugin manager module >>
             # Get the manager
             try:
                 self.plugin_manager = __import__("plugin_manager")
             except ImportError as err:
                 g.es("Autotrees did not load plugin manager: %s" % (err,), color="red")
                 self.plugin_manager = None
-            #@-node:ekr.20050329082101.135:<< Get plugin manager module >>
-            #@nl
-            #@        << Find all handlers >>
-            #@+node:ekr.20050329082101.136:<< Find all handlers >>
+            #@-<< Get plugin manager module >>
+            #@+<< Find all handlers >>
+            #@+node:ekr.20050329082101.136: *4* << Find all handlers >>
             # Find all handlers
             for filename in glob.glob(g.os_path_join(handler_path, "*.py")):
                 handler_name = g.os_path_splitext(g.os_path_split(filename)[1])[0]
@@ -299,13 +271,10 @@ class pluginController:
                     self.loadHandlersFrom(handler_name)
                 except BadHandler as err:
                     g.es("... unable to load '%s' handler: %s" % (handler_name, err), color="red")
-            #@nonl
-            #@-node:ekr.20050329082101.136:<< Find all handlers >>
-            #@nl
+            #@-<< Find all handlers >>
             # Restore
             sys.path = old_path
-    #@-node:ekr.20050329082101.134:loadTreeHandlers
-    #@+node:ekr.20050329082101.137:loadHandlersFrom
+    #@+node:ekr.20050329082101.137: *3* loadHandlersFrom
     def loadHandlersFrom(self, name):
         """Load handlers from a module"""
         try:
@@ -324,8 +293,7 @@ class pluginController:
                 g.es("... found handler '%s'" % (cls_name,), color="blue")
                 self.handlers[cls_name.lower()] = object
 
-    #@-node:ekr.20050329082101.137:loadHandlersFrom
-    #@+node:ekr.20050329082101.138:isActive
+    #@+node:ekr.20050329082101.138: *3* isActive
     def isActive(self, handler):
         """Return True if the named handler is active"""
         if self.plugin_manager:
@@ -334,20 +302,15 @@ class pluginController:
             return handler.__module__ in enable_manager.actives
         else:
             return True   
-    #@nonl
-    #@-node:ekr.20050329082101.138:isActive
-    #@+node:ekr.20050329082101.139:onHeadlineClick
+    #@+node:ekr.20050329082101.139: *3* onHeadlineClick
     def onHeadlineClick(self, tag, keywords):
         """Handler the headline click event"""
         self.handleEvent("headclick1", tag, keywords)    
-    #@-node:ekr.20050329082101.139:onHeadlineClick
-    #@+node:ekr.20050329082101.140:onIconDoubleClick
+    #@+node:ekr.20050329082101.140: *3* onIconDoubleClick
     def onIconDoubleClick(self, tag, keywords):
         """Update the tree view"""
         self.handleEvent("icondclick1", tag, keywords)
-    #@nonl
-    #@-node:ekr.20050329082101.140:onIconDoubleClick
-    #@+node:ekr.20050329082101.141:handleEvent
+    #@+node:ekr.20050329082101.141: *3* handleEvent
     def handleEvent(self, event_type, tag, keywords):
         """Handler a particular event"""
         #
@@ -377,9 +340,7 @@ class pluginController:
                                     (handler_name, event_type), color="blue")
                     else:
                         g.es("Handler '%s' is disabled" % (handler_name,), color="red")    
-    #@nonl
-    #@-node:ekr.20050329082101.141:handleEvent
-    #@+node:ekr.20050329082101.142:showManagerDialog
+    #@+node:ekr.20050329082101.142: *3* showManagerDialog
     def showManagerDialog(self,c):
         """Show the tree handler manager dialog"""
         if not self.plugin_manager:
@@ -389,39 +350,28 @@ class pluginController:
             # The manager class is defined as a dynamic class because
             # we don't know if we will be able to import the 
             # base class!
-            #@        << class HandlerDialog >>
-            #@+node:ekr.20050329082101.143:<< class HandlerDialog >>
+            #@+<< class HandlerDialog >>
+            #@+node:ekr.20050329082101.143: *4* << class HandlerDialog >>
             class HandlerDialog(self.plugin_manager.ManagerDialog):
                 """A dialog to manager tree handlers"""
 
                 dialog_caption = "AutoTree Handler Manager"
 
-                #@    @+others
-                #@+node:ekr.20060107092231:ctor
+                #@+others
+                #@+node:ekr.20060107092231: *5* ctor
                 def __init__ (self,c):
 
                     self.c = c
-                #@nonl
-                #@-node:ekr.20060107092231:ctor
-                #@+node:ekr.20050329082101.144:setPaths
+                #@+node:ekr.20050329082101.144: *5* setPaths
                 def setPaths(self):
 
                     """Set paths to the plugin locations"""
                     self.local_path = g.os_path_join(g.app.loadDir,"..","plugins","trees")
                     # self.remote_path = r"cvs.sourceforge.net/viewcvs.py/leo/leo/plugins/trees"
                     self.remote_path = r'leo.tigris.org/source/browse/leo/plugins/trees'
-                #@nonl
-                #@-node:ekr.20050329082101.144:setPaths
                 #@-others
-            #@nonl
-            #@-node:ekr.20050329082101.143:<< class HandlerDialog >>
-            #@nl
+            #@-<< class HandlerDialog >>
             dlg = HandlerDialog(c)    
-    #@-node:ekr.20050329082101.142:showManagerDialog
     #@-others
-#@nonl
-#@-node:ekr.20050329082101.132:class pluginController
 #@-others
-#@nonl
-#@-node:ekr.20050329082101.115:@thin autotrees.py
 #@-leo

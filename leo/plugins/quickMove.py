@@ -1,9 +1,9 @@
 # coding: utf-8
-#@+leo-ver=4-thin
-#@+node:tbrown.20070117104409:@thin quickMove.py
+#@+leo-ver=5-thin
+#@+node:tbrown.20070117104409: * @thin quickMove.py
 #@@first
-#@<< docstring >>
-#@+node:tbrown.20070117104409.1:<< docstring >>
+#@+<< docstring >>
+#@+node:tbrown.20070117104409.1: ** << docstring >>
 """Create buttons to quickly move nodes to other nodes
 
 Quickly move nodes from around the tree to one or more target nodes.
@@ -21,13 +21,11 @@ node 'Foo'.
 as the first child of the target node.
 
 """
-#@nonl
-#@-node:tbrown.20070117104409.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.7'
-#@<< version history >>
-#@+node:tbrown.20070117104409.6:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20070117104409.6: ** << version history >>
 #@+at
 # 0.1 by Terry Brown, 2007-01-12
 # 0.2 EKR:
@@ -41,13 +39,10 @@ __version__ = '0.7'
 # 0.5 EKR: Added c arg to p.visNext & p.visBack.
 # 0.6 TNB: Store vnodes rather than positions, vnodes are more durable
 # 0.7 TNB: Added "clone to" as well as "move to"
-#@-at
-#@nonl
-#@-node:tbrown.20070117104409.6:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:tbrown.20070117104409.2:<< imports >>
+#@+<< imports >>
+#@+node:tbrown.20070117104409.2: ** << imports >>
 import types
 
 import leo.core.leoGlobals as g
@@ -56,11 +51,10 @@ from mod_scripting import scriptingController
 if g.app.gui.guiName() == "qt":
     # for the right click context menu
     from PyQt4 import QtCore
-#@-node:tbrown.20070117104409.2:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:tbrown.20070117104409.3:init and onCreate
+#@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
@@ -68,9 +62,7 @@ def init():
 
 def onCreate(tag, keywords):
     quickMove(keywords['c'])
-#@nonl
-#@-node:tbrown.20070117104409.3:init and onCreate
-#@+node:tbrown.20070117104409.4:class quickMove
+#@+node:tbrown.20070117104409.4: ** class quickMove
 class quickMove(object):
 
     """quickMove binds to a controller, adds menu entries for
@@ -88,8 +80,8 @@ class quickMove(object):
       ('jump', False, "Jump to", ""),
     ]
 
-    #@    @+others
-    #@+node:ekr.20070117113133:ctor
+    #@+others
+    #@+node:ekr.20070117113133: *3* ctor
     def __init__(self, c):
 
         self.table = (
@@ -148,14 +140,12 @@ class quickMove(object):
 
         if g.app.gui.guiName() == "qt":
                 g.tree_popup_handlers.append(self.popup)
-    #@-node:ekr.20070117113133:ctor
-    #@+node:tbrown.20091207120031.5356:dtor
+    #@+node:tbrown.20091207120031.5356: *3* dtor
     def __del__(self, c):
 
         if g.app.gui.guiName() == "qt":
                 g.tree_popup_handlers.remove(self.popup)
-    #@-node:tbrown.20091207120031.5356:dtor
-    #@+node:ekr.20070117113133.2:addButton
+    #@+node:ekr.20070117113133.2: *3* addButton
     def addButton (self, first, type_="move", v=None):
 
         '''Add a button that creates a target for future moves.'''
@@ -190,8 +180,7 @@ class quickMove(object):
             but.insertAction(but.actions()[-1], rc)  # insert rc before Remove Button
 
         self.buttons.append((mb,b))
-    #@-node:ekr.20070117113133.2:addButton
-    #@+node:tbrown.20091217114654.5372:permanentButton
+    #@+node:tbrown.20091217114654.5372: *3* permanentButton
     def permanentButton (self,event=None):
         """make buttons on this node permanent
 
@@ -207,16 +196,14 @@ class quickMove(object):
                 p.v.u['quickMove'].append((mover.first, mover.type_))
 
         g.es('Set {0} buttons'.format(len(p.v.u['quickMove'])))
-    #@-node:tbrown.20091217114654.5372:permanentButton
-    #@+node:tbrown.20091217114654.5374:clearButton
+    #@+node:tbrown.20091217114654.5374: *3* clearButton
     def clearButton (self,event=None):
         """clear permanent buttons specs from uA"""
         c = self.c ; p = c.p
         g.es('Removing {0} buttons'.format(len(p.v.u.get('quickMove',[]))))
         if 'quickMove' in p.v.u:
             del p.v.u['quickMove']
-    #@-node:tbrown.20091217114654.5374:clearButton
-    #@+node:tbrown.20091207102637.11494:popup
+    #@+node:tbrown.20091207102637.11494: *3* popup
     def popup(self, c, p, menu):
         """make popup menu entry"""
 
@@ -228,17 +215,15 @@ class quickMove(object):
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
             a.connect(a, QtCore.SIGNAL("triggered()"), command)
-    #@-node:tbrown.20091207102637.11494:popup
     #@-others
 
-#@-node:tbrown.20070117104409.4:class quickMove
-#@+node:tbrown.20070117104409.5:class quickMoveButton
+#@+node:tbrown.20070117104409.5: ** class quickMoveButton
 class quickMoveButton:
 
     """contains target data and function for moving node"""
 
-    #@    @+others
-    #@+node:ekr.20070117121326:ctor
+    #@+others
+    #@+node:ekr.20070117121326: *3* ctor
     def __init__(self, owner, target, first, type_):
 
         self.c = owner.c
@@ -247,8 +232,7 @@ class quickMoveButton:
         self.targetHeadString = target.h
         self.first = first
         self.type_ = type_
-    #@-node:ekr.20070117121326:ctor
-    #@+node:ekr.20070117121326.1:moveCurrentNodeToTarget
+    #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self):
 
         '''Move the current position to the last child of self.target.'''
@@ -322,8 +306,7 @@ class quickMoveButton:
         c.setChanged(True)
 
         c.redraw()
-    #@-node:ekr.20070117121326.1:moveCurrentNodeToTarget
-    #@+node:ekr.20070123061606:checkMove
+    #@+node:ekr.20070123061606: *3* checkMove
     def checkMove (self,p,p2):
 
         c = self.c
@@ -336,8 +319,7 @@ class quickMoveButton:
             c.checkMoveWithParentWithWarning (p,p2,warningFlag=False) and
             c.checkMoveWithParentWithWarning (p2,p,warningFlag=False)
         )
-    #@-node:ekr.20070123061606:checkMove
-    #@+node:tbrown.20100114111020.15726:computeUNL
+    #@+node:tbrown.20100114111020.15726: *3* computeUNL
     def computeUNL(self, p):
 
         p = p.copy()
@@ -346,9 +328,6 @@ class quickMoveButton:
             heads.insert(0, p.h)
             p = p.parent()
         return "@url "+"-->".join(heads)
-    #@-node:tbrown.20100114111020.15726:computeUNL
     #@-others
-#@-node:tbrown.20070117104409.5:class quickMoveButton
 #@-others
-#@-node:tbrown.20070117104409:@thin quickMove.py
 #@-leo

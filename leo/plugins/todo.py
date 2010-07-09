@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:tbrown.20090119215428.2:@thin todo.py
-#@<< docstring >>
-#@+node:tbrown.20090119215428.3:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:tbrown.20090119215428.2: * @thin todo.py
+#@+<< docstring >>
+#@+node:tbrown.20090119215428.3: ** << docstring >>
 '''todo.py  -- ToDo and simple task management for leo
 
 (todo is the Qt version of the Tk cleo plugin)
@@ -15,15 +15,13 @@ For full documentation see:
   - http://leo.zwiki.org/ToDo 
   - http://leo.zwiki.org/tododoc.html
 '''
-#@nonl
-#@-node:tbrown.20090119215428.3:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:tbrown.20090119215428.4:<< imports >>
+#@+<< imports >>
+#@+node:tbrown.20090119215428.4: ** << imports >>
 import leo.core.leoGlobals as g
 import re
 if g.app.gui.guiName() == "qt":
@@ -32,26 +30,21 @@ if g.app.gui.guiName() == "qt":
 
     from PyQt4 import QtCore, QtGui, uic
     Qt = QtCore.Qt
-#@-node:tbrown.20090119215428.4:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "0.30"
-#@<< version history >>
-#@+node:tbrown.20090119215428.5:<< version history >>
+#@+<< version history >>
+#@+node:tbrown.20090119215428.5: ** << version history >>
 #@@killcolor
 
-#@+at 
-#@nonl
-# Use and distribute under the same terms as leo itself.
+#@+at Use and distribute under the same terms as leo itself.
 # 
 # 0.30 TNB
 #   - fork from cleo.py to todo.py
 #   - Qt interface in a tab
-#@-at
-#@-node:tbrown.20090119215428.5:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:tbrown.20090119215428.6:init
+#@+node:tbrown.20090119215428.6: ** init
 def init():
 
     if g.app.gui.guiName() != "qt":
@@ -64,19 +57,16 @@ def init():
     g.tree_popup_handlers.append(popup_entry)
     return True
 
-#@-node:tbrown.20090119215428.6:init
-#@+node:tbrown.20090119215428.7:onCreate
+#@+node:tbrown.20090119215428.7: ** onCreate
 def onCreate (tag,key):
 
     c = key.get('c')
 
     todoController(c)
-#@-node:tbrown.20090119215428.7:onCreate
-#@+node:tbrown.20090630144958.5318:popup_entry
+#@+node:tbrown.20090630144958.5318: ** popup_entry
 def popup_entry(c,p,menu):
     c.cleo.addPopupMenu(c,p,menu)
-#@-node:tbrown.20090630144958.5318:popup_entry
-#@+node:tbrown.20090119215428.8:class todoQtUI
+#@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
     class cleoQtUI(QtGui.QWidget):
 
@@ -163,14 +153,13 @@ if g.app.gui.guiName() == "qt":
             m.addAction('Delete Todo from node', o.clear_all)
             m.addAction('Delete Todo from subtree', lambda:o.clear_all(recurse=True))
             m.addAction('Delete Todo from all', lambda:o.clear_all(all=True))
-#@-node:tbrown.20090119215428.8:class todoQtUI
-#@+node:tbrown.20090119215428.9:class todoController
+#@+node:tbrown.20090119215428.9: ** class todoController
 class todoController:
 
     '''A per-commander class that manages tasks.'''
 
-    #@    @+others
-    #@+node:tbrown.20090119215428.10:priority table
+    #@+others
+    #@+node:tbrown.20090119215428.10: *3* priority table
     priorities = {
       1: {'long': 'Urgent',    'short': '1', 'icon': 'pri1.png'},
       2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
@@ -192,8 +181,7 @@ class todoController:
     }
 
     todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
-    #@-node:tbrown.20090119215428.10:priority table
-    #@+node:tbrown.20090119215428.11:__init__
+    #@+node:tbrown.20090119215428.11: *3* __init__
     def __init__ (self,c):
 
         self.c = c
@@ -204,8 +192,8 @@ class todoController:
         #X self.smiley = None
         self.redrawLevels = 0
 
-        #@    << set / read default values >>
-        #@+node:tbrown.20090119215428.12:<< set / read default values >>
+        #@+<< set / read default values >>
+        #@+node:tbrown.20090119215428.12: *4* << set / read default values >>
         self.time_name = 'days'
         if c.config.getString('todo_time_name'):
             self.time_name = c.config.getString('todo_time_name')
@@ -221,8 +209,7 @@ class todoController:
         self.icon_order = 'pri-first'
         if c.config.getString('todo_icon_order'):
             self.icon_order = c.config.getString('todo_icon_order')
-        #@-node:tbrown.20090119215428.12:<< set / read default values >>
-        #@nl
+        #@-<< set / read default values >>
 
         self.handlers = [
            ("close-frame",self.close),
@@ -240,13 +227,11 @@ class todoController:
             leoPlugins.registerHandler(i[0], i[1])
 
         self.loadAllIcons()
-    #@-node:tbrown.20090119215428.11:__init__
-    #@+node:tbrown.20090522142657.7894:__del__
+    #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
-    #@-node:tbrown.20090522142657.7894:__del__
-    #@+node:tbrown.20090630144958.5319:addPopupMenu
+    #@+node:tbrown.20090630144958.5319: *3* addPopupMenu
     def addPopupMenu(self,c,p,menu):
 
         def rnd(x): return re.sub('.0$', '', '%.1f' % x)
@@ -293,8 +278,7 @@ class todoController:
 
 
         cleoQtUI.populateMenu(taskmenu, self)
-    #@-node:tbrown.20090630144958.5319:addPopupMenu
-    #@+node:tbrown.20090630144958.5320:menuicon
+    #@+node:tbrown.20090630144958.5320: *3* menuicon
     def menuicon(self, pri, progress=False):
         """return icon from cache, placing it there if needed"""
 
@@ -318,8 +302,7 @@ class todoController:
             self.menuicons[pri] = QtGui.QIcon(fn)
 
         return self.menuicons[pri]
-    #@-node:tbrown.20090630144958.5320:menuicon
-    #@+node:tbrown.20090119215428.13:redrawer
+    #@+node:tbrown.20090119215428.13: *3* redrawer
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""
         def new(self, *args, **kargs):
@@ -334,8 +317,7 @@ class todoController:
 
             return ans
         return new
-    #@-node:tbrown.20090119215428.13:redrawer
-    #@+node:tbrown.20090119215428.14:projectChanger
+    #@+node:tbrown.20090119215428.14: *3* projectChanger
     def projectChanger(fn):
         """decorator for methods which change projects"""
         def new(self, *args, **kargs):
@@ -343,17 +325,14 @@ class todoController:
             self.update_project()
             return ans
         return new
-    #@nonl
-    #@-node:tbrown.20090119215428.14:projectChanger
-    #@+node:tbrown.20090119215428.15:loadAllIcons
+    #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
     def loadAllIcons(self, tag=None, k=None, clear=None):
         """Load icons to represent cleo state"""
 
         for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)
-    #@-node:tbrown.20090119215428.15:loadAllIcons
-    #@+node:tbrown.20090119215428.16:loadIcons
+    #@+node:tbrown.20090119215428.16: *3* loadIcons
     @redrawer
     def loadIcons(self, p, clear=False):
 
@@ -401,8 +380,7 @@ class todoController:
         if len(allIcons) != len(icons):  # something to add / remove
             com.setIconList(p, icons)
 
-    #@-node:tbrown.20090119215428.16:loadIcons
-    #@+node:tbrown.20090119215428.17:close
+    #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag, key):
         "unregister handlers on closing commander"
 
@@ -410,20 +388,14 @@ class todoController:
 
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
-    #@-node:tbrown.20090119215428.17:close
-    #@+node:tbrown.20090119215428.18:showHelp
+    #@+node:tbrown.20090119215428.18: *3* showHelp
     def showHelp(self):
         g.es('Check the Plugins menu Todo entry')
-    #@nonl
-    #@-node:tbrown.20090119215428.18:showHelp
-    #@+node:tbrown.20090119215428.19:attributes...
+    #@+node:tbrown.20090119215428.19: *3* attributes...
     #@+at
-    # annotate was the previous name of this plugin, which is why the default 
-    # values
+    # annotate was the previous name of this plugin, which is why the default values
     # for several keyword args is 'annotate'.
-    #@-at
-    #@nonl
-    #@+node:tbrown.20090119215428.20:delUD
+    #@+node:tbrown.20090119215428.20: *4* delUD
     def delUD (self,node,udict="annotate"):
 
         ''' Remove our dict from the node'''
@@ -432,8 +404,7 @@ class todoController:
             and udict in node.unknownAttributes):
 
             del node.unknownAttributes[udict]
-    #@-node:tbrown.20090119215428.20:delUD
-    #@+node:tbrown.20090119215428.21:hasUD
+    #@+node:tbrown.20090119215428.21: *4* hasUD
     def hasUD (self,node,udict="annotate"):
 
         ''' Return True if the node has an UD.'''
@@ -443,9 +414,7 @@ class todoController:
             udict in node.unknownAttributes and
             type(node.unknownAttributes.get(udict)) == type({}) # EKR
         )
-    #@nonl
-    #@-node:tbrown.20090119215428.21:hasUD
-    #@+node:tbrown.20090119215428.22:getat
+    #@+node:tbrown.20090119215428.22: *4* getat
     def getat(self, node, attrib):
         "new attrbiute getter"
 
@@ -461,16 +430,12 @@ class todoController:
 
         x = node.unknownAttributes["annotate"][attrib]
         return x
-    #@nonl
-    #@-node:tbrown.20090119215428.22:getat
-    #@+node:tbrown.20090119215428.23:testDefault
+    #@+node:tbrown.20090119215428.23: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
 
         return attrib == "priority" and val == 9999 or val == ""
-    #@nonl
-    #@-node:tbrown.20090119215428.23:testDefault
-    #@+node:tbrown.20090119215428.24:setat
+    #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):
         "new attrbiute setter"
 
@@ -506,8 +471,7 @@ class todoController:
 
         if isDefault:  # check if all default, if so drop dict.
             self.dropEmpty(node, dictOk = True)
-    #@-node:tbrown.20090119215428.24:setat
-    #@+node:tbrown.20090119215428.25:dropEmpty
+    #@+node:tbrown.20090119215428.25: *4* dropEmpty
     def dropEmpty(self, node, dictOk = False):
 
         if (dictOk or
@@ -528,22 +492,17 @@ class todoController:
                 return True
 
         return False
-    #@-node:tbrown.20090119215428.25:dropEmpty
-    #@+node:tbrown.20090119215428.26:safe_del
+    #@+node:tbrown.20090119215428.26: *4* safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
         if k in d: del d[k]
-    #@nonl
-    #@-node:tbrown.20090119215428.26:safe_del
-    #@-node:tbrown.20090119215428.19:attributes...
-    #@+node:tbrown.20090119215428.27:drawing...
-    #@+node:tbrown.20090119215428.28:redraw
+    #@+node:tbrown.20090119215428.27: *3* drawing...
+    #@+node:tbrown.20090119215428.28: *4* redraw
     def redraw(self):
 
         self.updateUI()
         self.c.redraw_now()
-    #@-node:tbrown.20090119215428.28:redraw
-    #@+node:tbrown.20090119215428.29:clear_all
+    #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):
 
@@ -559,17 +518,14 @@ class todoController:
             self.loadIcons(p)
             self.show_times(p)
 
-    #@-node:tbrown.20090119215428.29:clear_all
-    #@-node:tbrown.20090119215428.27:drawing...
-    #@+node:tbrown.20090119215428.30:Progress/time/project...
-    #@+node:tbrown.20090119215428.31:progress_clear
+    #@+node:tbrown.20090119215428.30: *3* Progress/time/project...
+    #@+node:tbrown.20090119215428.31: *4* progress_clear
     @redrawer
     @projectChanger
     def progress_clear(self,v=None):
 
         self.setat(self.c.currentPosition().v, 'progress', '')
-    #@-node:tbrown.20090119215428.31:progress_clear
-    #@+node:tbrown.20090119215428.32:set_progress
+    #@+node:tbrown.20090119215428.32: *4* set_progress
     @redrawer
     @projectChanger
     def set_progress(self,p=None, val=None):
@@ -580,8 +536,7 @@ class todoController:
         if val == None: return
 
         self.setat(v, 'progress', val)
-    #@-node:tbrown.20090119215428.32:set_progress
-    #@+node:tbrown.20090119215428.33:set_time_req
+    #@+node:tbrown.20090119215428.33: *4* set_time_req
     @redrawer
     @projectChanger
     def set_time_req(self,p=None, val=None):
@@ -595,8 +550,7 @@ class todoController:
 
         if self.getat(v, 'progress') == '':
             self.setat(v, 'progress', 0)
-    #@-node:tbrown.20090119215428.33:set_time_req
-    #@+node:tbrown.20090119215428.34:show_times
+    #@+node:tbrown.20090119215428.34: *4* show_times
     @redrawer
     def show_times(self, p=None, show=False):
 
@@ -628,8 +582,7 @@ class todoController:
                     self.c.setHeadString(nd, nd.headString()+ans)
                 self.loadIcons(nd)  # update progress icon
 
-    #@-node:tbrown.20090119215428.34:show_times
-    #@+node:tbrown.20090119215428.35:recalc_time
+    #@+node:tbrown.20090119215428.35: *4* recalc_time
     def recalc_time(self, p=None, clear=False):
 
         if p is None:
@@ -680,8 +633,7 @@ class todoController:
                     self.setat(v, 'progress', 0)
 
         return (time_totl, time_done)
-    #@-node:tbrown.20090119215428.35:recalc_time
-    #@+node:tbrown.20090119215428.36:clear_time_req
+    #@+node:tbrown.20090119215428.36: *4* clear_time_req
     @redrawer
     @projectChanger
     def clear_time_req(self, p=None):
@@ -690,8 +642,7 @@ class todoController:
             p = self.c.currentPosition()
         v = p.v
         self.setat(v, 'time_req', '')
-    #@-node:tbrown.20090119215428.36:clear_time_req
-    #@+node:tbrown.20090119215428.37:update_project
+    #@+node:tbrown.20090119215428.37: *4* update_project
     @redrawer
     def update_project(self, p=None):
         """Find highest parent with '@project' in headline and run recalc_time
@@ -713,20 +664,16 @@ class todoController:
                 self.show_times(p, show=True)
         else:
             self.show_times(p, show=False)
-    #@-node:tbrown.20090119215428.37:update_project
-    #@+node:tbrown.20090119215428.38:local_recalc
+    #@+node:tbrown.20090119215428.38: *4* local_recalc
     @redrawer
     def local_recalc(self, p=None):
         self.recalc_time(p)
-    #@-node:tbrown.20090119215428.38:local_recalc
-    #@+node:tbrown.20090119215428.39:local_clear
+    #@+node:tbrown.20090119215428.39: *4* local_clear
     @redrawer
     def local_clear(self, p=None):
         self.recalc_time(p, clear=True)
-    #@-node:tbrown.20090119215428.39:local_clear
-    #@-node:tbrown.20090119215428.30:Progress/time/project...
-    #@+node:tbrown.20090119215428.40:ToDo icon related...
-    #@+node:tbrown.20090119215428.41:childrenTodo
+    #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
+    #@+node:tbrown.20090119215428.41: *4* childrenTodo
     @redrawer
     def childrenTodo(self, p=None):
         if p is None:
@@ -735,9 +682,7 @@ class todoController:
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
-    #@nonl
-    #@-node:tbrown.20090119215428.41:childrenTodo
-    #@+node:tbrown.20090119215428.42:find_todo
+    #@+node:tbrown.20090119215428.42: *4* find_todo
     @redrawer
     def find_todo(self, p=None, stage = 0):
         """Recursively find the next todo"""
@@ -769,8 +714,7 @@ class todoController:
         if stage == 0: g.es("None found")
 
         return False
-    #@-node:tbrown.20090119215428.42:find_todo
-    #@+node:tbrown.20090119215428.43:prikey
+    #@+node:tbrown.20090119215428.43: *4* prikey
     def prikey(self, v):
         """key function for sorting by priority"""
         # getat returns 9999 for nodes without priority, so you'll only get -1
@@ -782,9 +726,7 @@ class todoController:
             pa = -1
 
         return pa
-    #@nonl
-    #@-node:tbrown.20090119215428.43:prikey
-    #@+node:tbrown.20090119215428.44:priority_clear
+    #@+node:tbrown.20090119215428.44: *4* priority_clear
     @redrawer
     def priority_clear(self,v=None):
 
@@ -792,17 +734,14 @@ class todoController:
             v = self.c.currentPosition().v
         self.setat(v, 'priority', 9999)
         self.loadIcons(self.c.currentPosition())
-    #@-node:tbrown.20090119215428.44:priority_clear
-    #@+node:tbrown.20090119215428.45:priSort
+    #@+node:tbrown.20090119215428.45: *4* priSort
     @redrawer
     def priSort(self, p=None):
         if p is None:
             p = self.c.currentPosition()
         self.c.selectPosition(p)
         self.c.sortSiblings(key=self.prikey)
-    #@nonl
-    #@-node:tbrown.20090119215428.45:priSort
-    #@+node:tbrown.20090119215428.46:reclassify
+    #@+node:tbrown.20090119215428.46: *4* reclassify
     @redrawer
     def reclassify(self, p=None):
         """change priority codes"""
@@ -858,8 +797,7 @@ class todoController:
                 cnt += 1
         g.es('\n%d priorities reclassified, new distribution:' % cnt)
         self.showDist()
-    #@-node:tbrown.20090119215428.46:reclassify
-    #@+node:tbrown.20090119215428.47:setPri
+    #@+node:tbrown.20090119215428.47: *4* setPri
     @redrawer
     def setPri(self,pri):
 
@@ -871,8 +809,7 @@ class todoController:
         p = self.c.currentPosition()
         self.setat(p.v, 'priority', pri)
         self.loadIcons(p)
-    #@-node:tbrown.20090119215428.47:setPri
-    #@+node:tbrown.20090119215428.48:showDist
+    #@+node:tbrown.20090119215428.48: *4* showDist
     def showDist(self, p=None):
         """show distribution of priority levels in subtree"""
         if p is None:
@@ -889,10 +826,7 @@ class todoController:
             if pri[0] in self.priorities:
                 g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long']))
-    #@nonl
-    #@-node:tbrown.20090119215428.48:showDist
-    #@-node:tbrown.20090119215428.40:ToDo icon related...
-    #@+node:tbrown.20090119215428.49:updateUI
+    #@+node:tbrown.20090119215428.49: *3* updateUI
     def updateUI(self,tag=None,k=None):
 
         if k and k['c'] != self.c:
@@ -901,10 +835,8 @@ class todoController:
         v = self.c.currentPosition().v
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
-    #@-node:tbrown.20090119215428.49:updateUI
     #@-others
-#@-node:tbrown.20090119215428.9:class todoController
-#@+node:tbrown.20100701093750.13800:command inc/dec priority
+#@+node:tbrown.20100701093750.13800: ** command inc/dec priority
 @g.command('todo-dec-pri')
 def todo_dec_pri(event, direction=1):
 
@@ -927,9 +859,5 @@ def todo_dec_pri(event, direction=1):
 @g.command('todo-inc-pri')
 def todo_inc_pri(event):
     todo_dec_pri(event, direction=-1)
-#@nonl
-#@-node:tbrown.20100701093750.13800:command inc/dec priority
 #@-others
-#@nonl
-#@-node:tbrown.20090119215428.2:@thin todo.py
 #@-leo

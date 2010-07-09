@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:danr7.20060902215215.1:@thin leo_to_html.py
+#@+leo-ver=5-thin
+#@+node:danr7.20060902215215.1: * @thin leo_to_html.py
 #@@language python
 #@@tabwidth -4
 
-#@<< docstring >>
-#@+node:danr7.20060902215215.2:<< docstring >>
+#@+<< docstring >>
+#@+node:danr7.20060902215215.2: ** << docstring >>
 '''
 leo_to_html
 ===========
@@ -137,16 +137,14 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 In particular, the default export path, "c:\" must be changed for *nix systems.
 
 '''
-#@-node:danr7.20060902215215.2:<< docstring >>
-#@nl
-#@<< version history >>
-#@+node:danr7.20060902215215.3:<< version history >>
+#@-<< docstring >>
+#@+<< version history >>
+#@+node:danr7.20060902215215.3: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 1.00 - Finished testing with 4 different options & outlines
-# 0.91 - Got initial headline export code working. Resolved bug in INI file 
-# checking
+# 0.91 - Got initial headline export code working. Resolved bug in INI file checking
 # 0.90 - Created initial plug-in framework
 # 1.1 ekr: Added init method.
 # 2.0 plumloco:
@@ -161,8 +159,7 @@ In particular, the default export path, "c:\" must be changed for *nix systems.
 #     - added extra menu items to save/show current node only
 #     - added export-html-*-* commands
 #     - added show-html-*-* commands
-#     - added Leo_to_HTML object so all the plugins functionality can be 
-# scripted.
+#     - added Leo_to_HTML object so all the plugins functionality can be scripted.
 # 2.1 plumloco:
 #     - fixed bug in export of single nodes
 #     - fixed to use tempdir to get a temp dir
@@ -176,17 +173,14 @@ In particular, the default export path, "c:\" must be changed for *nix systems.
 #     - adopt 'every method must have a docstring' ( however inane :) ) rule
 #     - added support for @string leo_to_html_no_menus setting.
 #     - changed browser_command property default to empty string
-#     - use webbrowser module if browser_command property is empty or does not 
-# work.
+#     - use webbrowser module if browser_command property is empty or does not work.
 # 
 # 
 # 
 # 
-#@-at
-#@-node:danr7.20060902215215.3:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:danr7.20060902215215.4:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:danr7.20060902215215.4: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -199,14 +193,13 @@ import webbrowser
 import tempfile
 import os
 
-#@-node:danr7.20060902215215.4:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = '2.3'
 
 #@+others
-#@+node:bob.20080107154936:module level functions
-#@+node:bob.20080107154936.1:init
+#@+node:bob.20080107154936: ** module level functions
+#@+node:bob.20080107154936.1: *3* init
 
 def init ():
     """Initialize and register plugin.
@@ -220,21 +213,18 @@ def init ():
     # I think this should be ok for unit testing.
     return True
 
-#@-node:bob.20080107154936.1:init
-#@+node:bob.20080107154936.2:safe
+#@+node:bob.20080107154936.2: *3* safe
 def safe(s):
     """Convert special characters to html entities."""
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
-#@-node:bob.20080107154936.2:safe
-#@+node:bob.20080110210953:abspath
+#@+node:bob.20080110210953: *3* abspath
 def abspath(*args):
     """Join the arguments and convert to an absolute file path."""
     # return g.os_path_abspath(g.os_path_join(*args))
 
     return g.os_path_finalize_join(*args)
-#@-node:bob.20080110210953:abspath
-#@+node:bob.20080107154936.3:onCreate
+#@+node:bob.20080107154936.3: *3* onCreate
 def onCreate (tag, keys):
 
     """
@@ -245,8 +235,7 @@ def onCreate (tag, keys):
     if not c: return
 
     thePluginController = pluginController(c)
-#@-node:bob.20080107154936.3:onCreate
-#@+node:bob.20080107154936.4:createExportMenus
+#@+node:bob.20080107154936.4: *3* createExportMenus
 def createExportMenus (tag,keywords):
 
     """Create menu items in File -> Export menu.
@@ -276,16 +265,14 @@ def createExportMenus (tag,keywords):
             label = item,
             command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
         )
-#@-node:bob.20080107154936.4:createExportMenus
-#@-node:bob.20080107154936:module level functions
-#@+node:bob.20080107154757:class pluginController
+#@+node:bob.20080107154757: ** class pluginController
 class pluginController:
     """A per commander plugin controller to create and handle
     minibuffer commands that control the plugins functions.
     """
 
-    #@    @+others
-    #@+node:bob.20080107154757.1:__init__
+    #@+others
+    #@+node:bob.20080107154757.1: *3* __init__
     def __init__ (self,c):
 
         """
@@ -317,8 +304,7 @@ class pluginController:
         ):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
-    #@-node:bob.20080107154757.1:__init__
-    #@+node:bob.20080107154757.3:export_html
+    #@+node:bob.20080107154757.3: *3* export_html
     # EXPORT ALL
 
     def export_html(self, event=None, bullet=None, show=False, node=False):
@@ -395,11 +381,8 @@ class pluginController:
     def show_html_node_head(self, event=None):
         """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html_node(bullet='head')
-    #@-node:bob.20080107154757.3:export_html
     #@-others
-#@nonl
-#@-node:bob.20080107154757:class pluginController
-#@+node:bob.20080107154746:class Leo_to_HTML
+#@+node:bob.20080107154746: ** class Leo_to_HTML
 class Leo_to_HTML(object):
 
     """
@@ -408,8 +391,8 @@ class Leo_to_HTML(object):
     See the docstring for the leo_to_html module for details.
     """
 
-    #@    @+others
-    #@+node:bob.20080107154746.1:__init__
+    #@+others
+    #@+node:bob.20080107154746.1: *3* __init__
 
     def __init__(self, c=None):
 
@@ -423,8 +406,7 @@ class Leo_to_HTML(object):
         self.fileColor = 'turquoise4'
         self.msgPrefix = 'leo_to_html: '
 
-    #@-node:bob.20080107154746.1:__init__
-    #@+node:bob.20080107154746.2:do_xhtml
+    #@+node:bob.20080107154746.2: *3* do_xhtml
     def do_xhtml(self, node=False):
         """Convert the tree to xhtml.
 
@@ -466,7 +448,7 @@ class Leo_to_HTML(object):
         self.xhtml = '\n'.join(xhtml)
 
 
-    #@+node:bob.20080107160008:doItemHeadlineTags
+    #@+node:bob.20080107160008: *4* doItemHeadlineTags
     def doItemHeadlineTags(self, p, level=1):
         """" Recursivley proccess an outline node into an xhtml list."""
 
@@ -483,8 +465,7 @@ class Leo_to_HTML(object):
 
 
 
-    #@-node:bob.20080107160008:doItemHeadlineTags
-    #@+node:bob.20080107165629:doItemBulletList
+    #@+node:bob.20080107165629: *4* doItemBulletList
     def doItemBulletList(self, p):
         """" Recursivley proccess an outline node into an xhtml list."""
 
@@ -503,8 +484,7 @@ class Leo_to_HTML(object):
             xhtml.append(self.closeLevelString)
 
         xhtml.append(self.closeItemString)
-    #@-node:bob.20080107165629:doItemBulletList
-    #@+node:bob.20080107154746.5:doHeadline
+    #@+node:bob.20080107154746.5: *4* doHeadline
     def doHeadline(self, p, level=None):
         """Append wrapped headstring to output stream."""
 
@@ -516,8 +496,7 @@ class Leo_to_HTML(object):
 
         h = '%s' % min(level, 6)
         self.xhtml.append( self.openHeadlineString % h + headline + self.closeHeadlineString % h)
-    #@-node:bob.20080107154746.5:doHeadline
-    #@+node:bob.20080107154746.6:doBodyElement
+    #@+node:bob.20080107154746.6: *4* doBodyElement
     def doBodyElement(self, pp, level=None):
         """Append wrapped body string to output stream."""
 
@@ -529,8 +508,7 @@ class Leo_to_HTML(object):
             + self.closeBodyString
         )
 
-    #@-node:bob.20080107154746.6:doBodyElement
-    #@+node:bob.20080107175336:showSubtree
+    #@+node:bob.20080107175336: *4* showSubtree
     def showSubtree(self, p):
 
         """Return True if subtree should be shown.
@@ -543,9 +521,7 @@ class Leo_to_HTML(object):
         s = p.h
         if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
             return True 
-    #@-node:bob.20080107175336:showSubtree
-    #@-node:bob.20080107154746.2:do_xhtml
-    #@+node:bob.20080107154746.9:main
+    #@+node:bob.20080107154746.9: *3* main
     def main(self, bullet=None, show=False, node=False):
         """Generate the html and write the files.
 
@@ -581,8 +557,7 @@ class Leo_to_HTML(object):
         self.announce_end()
 
 
-    #@-node:bob.20080107154746.9:main
-    #@+node:bob.20080109063110.7:announce
+    #@+node:bob.20080109063110.7: *3* announce
     def announce(self, msg, prefix=None, color=None, silent=None):
 
         """Print a message if flags allow."""    
@@ -603,8 +578,7 @@ class Leo_to_HTML(object):
 
     def announce_fail(self, msg='failed', prefix=None, color=None):
         self.announce(msg, prefix, color= color or self.errorColor, silent=False) 
-    #@-node:bob.20080109063110.7:announce
-    #@+node:bob.20080107154746.11:loadConfig
+    #@+node:bob.20080107154746.11: *3* loadConfig
     def loadConfig(self):
 
         """Load configuration from a .ini file."""
@@ -645,8 +619,7 @@ class Leo_to_HTML(object):
 
 
 
-    #@-node:bob.20080107154746.11:loadConfig
-    #@+node:bob.20080109063110.8:setup
+    #@+node:bob.20080109063110.8: *3* setup
     def setup(self):
 
         """Set various parameters."""
@@ -696,8 +669,7 @@ class Leo_to_HTML(object):
             myFileName = myFileName[:-4]            # Remove .leo suffix
 
         self.myFileName = myFileName + '.html'
-    #@-node:bob.20080109063110.8:setup
-    #@+node:bob.20080107154746.10:applyTemplate
+    #@+node:bob.20080107154746.10: *3* applyTemplate
     def applyTemplate(self, template=None):
 
         """
@@ -719,8 +691,7 @@ class Leo_to_HTML(object):
             self.title,
             xhtml
         )
-    #@-node:bob.20080107154746.10:applyTemplate
-    #@+node:bob.20080109063110.9:show
+    #@+node:bob.20080109063110.9: *3* show
 
     def show(self):
 
@@ -767,14 +738,12 @@ class Leo_to_HTML(object):
             self.announce_fail(msg)
 
         webbrowser.open(url)
-    #@-node:bob.20080109063110.9:show
-    #@+node:bob.20080107171331:writeall
+    #@+node:bob.20080107171331: *3* writeall
     def writeall(self):
         """Write all the files"""
 
         self.write(self.myFileName, self.xhtml)
-    #@-node:bob.20080107171331:writeall
-    #@+node:bob.20080107154746.13:write
+    #@+node:bob.20080107154746.13: *3* write
     def write(self, name, data, basedir=None, path=None):
         """Write a single file.
 
@@ -818,8 +787,7 @@ class Leo_to_HTML(object):
 
         self.announce_fail('failed writing to %s' % filepath)
         return False
-    #@-node:bob.20080107154746.13:write
-    #@+node:bob.20080107175154:getXHTMLTemplate
+    #@+node:bob.20080107175154: *3* getXHTMLTemplate
     def getXHTMLTemplate(self):
         """Returns a string containing a template for the outline page.
 
@@ -842,8 +810,7 @@ class Leo_to_HTML(object):
     </body></html>
     """
 
-    #@-node:bob.20080107175154:getXHTMLTemplate
-    #@+node:bob.20080107175336.1:getPlainTemplate
+    #@+node:bob.20080107175336.1: *3* getPlainTemplate
     def getPlainTemplate(self):
         """Returns a string containing a template for the outline page.
 
@@ -862,10 +829,6 @@ class Leo_to_HTML(object):
     %s
     </body></html>
     """
-    #@-node:bob.20080107175336.1:getPlainTemplate
     #@-others
-#@-node:bob.20080107154746:class Leo_to_HTML
 #@-others
-#@nonl
-#@-node:danr7.20060902215215.1:@thin leo_to_html.py
 #@-leo

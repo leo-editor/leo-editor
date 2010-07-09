@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040828122150:@thin pie_menus.py
+#@+leo-ver=5-thin
+#@+node:ekr.20040828122150: * @thin pie_menus.py
 '''Adds pie menus: http://www.piemenus.com/'''
 
 #@@language python
@@ -7,8 +7,8 @@
 
 __version__ = ".29"
 
-#@<< pie_menus imports >>
-#@+node:ekr.20040828122150.1:<< pie_menus imports >>
+#@+<< pie_menus imports >>
+#@+node:ekr.20040828122150.1: ** << pie_menus imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -20,19 +20,14 @@ Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 tkFont = g.importExtension('tkFont', pluginName=__name__,verbose=True)
 
 import weakref
-#@nonl
-#@-node:ekr.20040828122150.1:<< pie_menus imports >>
-#@nl
-#@<< version history >>
-#@+node:ekr.20050518065635:<< version history >>
+#@-<< pie_menus imports >>
+#@+<< version history >>
+#@+node:ekr.20050518065635: ** << version history >>
 #@+at
 # 
 # .28 EKR: Added import for tkFont.
 # .29 EKR: import tkGui as needed.
-#@-at
-#@nonl
-#@-node:ekr.20050518065635:<< version history >>
-#@nl
+#@-<< version history >>
 
 timeids = weakref.WeakKeyDictionary()
 fas = weakref.WeakKeyDictionary()
@@ -40,7 +35,7 @@ fas = weakref.WeakKeyDictionary()
 createCanvas = leoTkinterFrame.createCanvas
 
 #@+others
-#@+node:ekr.20100128091412.5383:init
+#@+node:ekr.20100128091412.5383: ** init
 def init():
 
     ok = Tk and not g.app.unitTesting # Changes Leo's core.
@@ -50,9 +45,7 @@ def init():
         g.plugin_signon( __name__ )
 
     return ok
-#@nonl
-#@-node:ekr.20100128091412.5383:init
-#@+node:ekr.20040828122150.2:moving
+#@+node:ekr.20040828122150.2: ** moving
 def moving( event, c ):
 
     canvas = event.widget
@@ -82,18 +75,15 @@ def moving( event, c ):
             timeids[ canvas ] = id
             return
     if fas[ canvas ].visible: fas[ canvas ].leave( event )
-#@nonl
-#@-node:ekr.20040828122150.2:moving
-#@+node:ekr.20040828122150.3:time_draw
+#@+node:ekr.20040828122150.3: ** time_draw
 def time_draw( fa, bbox, id, z ):
     if timeids.has_key( fa ):
         del timeids[ fa ]
     fa.draw( bbox[ 0 ], bbox[ 1 ], id , z)
-#@-node:ekr.20040828122150.3:time_draw
-#@+node:ekr.20040828122150.4:class PieMenu
+#@+node:ekr.20040828122150.4: ** class PieMenu
 class PieMenu:
-    #@	@+others
-    #@+node:ekr.20040828122150.5:__init__
+    #@+others
+    #@+node:ekr.20040828122150.5: *3* __init__
     def __init__( self, can, c ):
 
         self.canvas = can
@@ -107,9 +97,7 @@ class PieMenu:
         self.bind()
         self.id = 0 
         self.sid = 0
-    #@nonl
-    #@-node:ekr.20040828122150.5:__init__
-    #@+node:ekr.20040828122150.6:drawString
+    #@+node:ekr.20040828122150.6: *3* drawString
     def drawString( self, event ):
 
         self.message.after_cancel( self.sid )
@@ -126,8 +114,7 @@ class PieMenu:
             self.message_box.delete( id )
             self.message.withdraw()
         self.sid = self.message.after( 2500, rmv )
-    #@-node:ekr.20040828122150.6:drawString
-    #@+node:ekr.20040828122150.7:construct
+    #@+node:ekr.20040828122150.7: *3* construct
     def construct( self ):
 
         f = tkFont.Font( weight = tkFont.BOLD, size = -15, family = 'courier')
@@ -142,8 +129,8 @@ class PieMenu:
         h = self.help
         c = self.c
 
-        #@    << create h1 area >>
-        #@+node:ekr.20040828131454:<< create h1 area >>
+        #@+<< create h1 area >>
+        #@+node:ekr.20040828131454: *4* << create h1 area >>
         if 1: # old code
             self.copy = copy = Tk.Canvas( l1, background = 'orange', width = 15,height = 15 )
             h[ copy ] = 'copy'
@@ -187,11 +174,9 @@ class PieMenu:
                     w.create_line( 8, 0, 8, 15, fill = fc, width = 2 )
                 w.pack( side = 'left' ) 
                 c.bind(w, '<Enter>', self.drawString)
-        #@nonl
-        #@-node:ekr.20040828131454:<< create h1 area >>
-        #@nl
-        #@    << create h3 area >>
-        #@+node:ekr.20040828131454.1:<< create h3 area >>
+        #@-<< create h1 area >>
+        #@+<< create h3 area >>
+        #@+node:ekr.20040828131454.1: *4* << create h3 area >>
         self.dele = dele = Tk.Canvas( l3, background = 'red', width = 15, height = 15 )
         h[ dele ] = 'delete'
         dele.create_text( 5, 6, text = 'D' , anchor = 'center', fill = 'white',font = f)
@@ -210,11 +195,9 @@ class PieMenu:
         promote.create_text( 5, 6, text = 'P' , anchor = 'center', fill = 'white',font = f)
         promote.pack()
         c.bind(promote, '<Enter>', self.drawString )
-        #@nonl
-        #@-node:ekr.20040828131454.1:<< create h3 area >>
-        #@nl
-        #@    << create h2 area >>
-        #@+node:ekr.20040828131454.2:<< create h2 area >>
+        #@-<< create h3 area >>
+        #@+<< create h2 area >>
+        #@+node:ekr.20040828131454.2: *4* << create h2 area >>
         self.iclone = iclone = Tk.Canvas( l2, background = 'white', width =15, height = 15 )
         h[ iclone ] = 'clone'
         iclone.create_text( 5, 6, text = 'C' , anchor = 'center', fill = 'red',font = f)
@@ -245,11 +228,9 @@ class PieMenu:
         ichild.create_text( 5, 6, text = 'C' , anchor = 'center', fill = 'white',font = f)
         ichild.pack( side = 'left' )
         c.bind(ichild, '<Enter>', self.drawString )
-        #@nonl
-        #@-node:ekr.20040828131454.2:<< create h2 area >>
-        #@nl
-        #@    << create h4 area >>
-        #@+node:ekr.20040828131454.3:<< create h4 area >>
+        #@-<< create h2 area >>
+        #@+<< create h4 area >>
+        #@+node:ekr.20040828131454.3: *4* << create h4 area >>
         self.uhoist = uhoist = Tk.Canvas( l4 , background = 'yellow', width= 15, height = 15 )
         h[ uhoist ] = 'unhoist'
         uhoist.create_text( 5, 6, text = 'U' , anchor = 'center', fill = 'green',font = f)
@@ -268,31 +249,25 @@ class PieMenu:
         demote.create_text( 5, 6, text = 'D' , anchor = 'center', fill = 'white',font = f)
         demote.pack()
         c.bind(demote, '<Enter>', self.drawString )
-        #@nonl
-        #@-node:ekr.20040828131454.3:<< create h4 area >>
-        #@nl
-        #@    << create h5 area >>
-        #@+node:ekr.20040828131454.4:<< create h5 area >>
+        #@-<< create h4 area >>
+        #@+<< create h5 area >>
+        #@+node:ekr.20040828131454.4: *4* << create h5 area >>
         self.sorts = sorts = Tk.Canvas( l5 , background = 'red', width = 15,height = 15 )
         h[ sorts ] = 's_siblings'
         sorts.create_text( 5, 6, text = 'S' , anchor = 'center', fill = 'white',font = f)
         sorts.pack()
         c.bind(sorts, '<Enter>', self.drawString )
-        #@nonl
-        #@-node:ekr.20040828131454.4:<< create h5 area >>
-        #@nl
-        #@    << create h6 area >>
-        #@+node:ekr.20040828131454.5:<< create h6 area >>
+        #@-<< create h5 area >>
+        #@+<< create h6 area >>
+        #@+node:ekr.20040828131454.5: *4* << create h6 area >>
         self.sort = sort = Tk.Canvas( l6, background = 'red', width = 15, height= 15 )
         h[ sort ] = 's_children'
         sort.create_text( 5, 6, text = 's' , anchor = 'center', fill = 'white',font = f)
         sort.pack()
         c.bind(sort, '<Enter>', self.drawString )
-        #@nonl
-        #@-node:ekr.20040828131454.5:<< create h6 area >>
-        #@nl
-        #@    << create h7 area >>
-        #@+node:ekr.20040828131454.6:<< create h7 area >>
+        #@-<< create h6 area >>
+        #@+<< create h7 area >>
+        #@+node:ekr.20040828131454.6: *4* << create h7 area >>
         self.u1 =  u1 = Tk.Canvas( l7, background = 'grey', width = 15, height= 15 )
         h[ u1 ] = 'user one '
         u1.create_text( 5,6, text = '1', anchor = 'center', fill = 'black',font = f )
@@ -310,11 +285,9 @@ class PieMenu:
         u3.create_text( 5,6, text = '3', anchor = 'center', fill = 'black',font = f )
         u3.pack( side = 'left' )
         u3.bind( '<Enter>', self.drawString )
-        #@nonl
-        #@-node:ekr.20040828131454.6:<< create h7 area >>
-        #@nl
-        #@    << create message area >>
-        #@+node:ekr.20040828131454.7:<< create message area >>
+        #@-<< create h7 area >>
+        #@+<< create message area >>
+        #@+node:ekr.20040828131454.7: *4* << create message area >>
         self.message = message =  Tk.Toplevel()
         self.message.withdraw()
         self.message.overrideredirect( 1 )
@@ -322,12 +295,8 @@ class PieMenu:
         self.message_box =Tk.Canvas( self.message , width = 95, height = 15,background = 'white' )
         c.bind(self.message_box, '<Enter>', lambda event, self = self: self.clean())
         self.message_box.pack()
-        #@nonl
-        #@-node:ekr.20040828131454.7:<< create message area >>
-        #@nl
-    #@nonl
-    #@-node:ekr.20040828122150.7:construct
-    #@+node:ekr.20040828122150.8:bind
+        #@-<< create message area >>
+    #@+node:ekr.20040828122150.8: *3* bind
     def bind( self ):
         c = self.c 
         def left( event ):           
@@ -406,8 +375,7 @@ class PieMenu:
             c.selectVnode( self.vnode )
             c.sortChildren()
         c.bind(self.sort, '<Button-1>', srt)
-    #@-node:ekr.20040828122150.8:bind
-    #@+node:ekr.20040828122150.9:clean
+    #@+node:ekr.20040828122150.9: *3* clean
     def clean( self ):
 
         if hasattr( self, 'ri2' ):
@@ -424,8 +392,7 @@ class PieMenu:
             self.canvas.delete( self.ri4 )
             self.canvas.delete( self.ri5 )
             self.visible = False
-    #@-node:ekr.20040828122150.9:clean
-    #@+node:ekr.20040828122150.10:leave
+    #@+node:ekr.20040828122150.10: *3* leave
     def leave( self, event ):
 
         x, y = event.x, event.y
@@ -437,8 +404,7 @@ class PieMenu:
             if self.rmvgroup.has_key( z ):
                 return
         self.clean() 
-    #@-node:ekr.20040828122150.10:leave
-    #@+node:ekr.20040828122150.11:draw
+    #@+node:ekr.20040828122150.11: *3* draw
     def draw( self, x, y, v, z ):
 
         if not v: return # EKR
@@ -463,8 +429,8 @@ class PieMenu:
             w.deiconify()
             i += 1
         if 0:
-            #@        << old code >>
-            #@+node:ekr.20040828131759:<< old code >>
+            #@+<< old code >>
+            #@+node:ekr.20040828131759: *4* << old code >>
             self.l1.geometry( '+%s+%s' %( self.x1,      self.y1 ) )
             self.l3.geometry( '+%s+%s' %( self.x1,      self.y1 + 16 ) )
             self.l2.geometry( '+%s+%s' %( self.x1,      self.y1 + 64 ) )
@@ -479,9 +445,7 @@ class PieMenu:
             self.l5.deiconify()
             self.l6.deiconify()
             self.l7.deiconify()
-            #@nonl
-            #@-node:ekr.20040828131759:<< old code >>
-            #@nl
+            #@-<< old code >>
         bb = can.bbox( z )
         bx, by, bx1, by1 = bb
         self.ri2 = can.create_rectangle( bx - 15, y - 16,  x + 31,   by + 1,   width = 0 )
@@ -492,11 +456,8 @@ class PieMenu:
         self.rmvgroup[ self.ri3 ] = None  
         self.rmvgroup[ self.ri4 ] = None
         self.rmvgroup[ self.ri5 ] = None
-    #@nonl
-    #@-node:ekr.20040828122150.11:draw
     #@-others
-#@-node:ekr.20040828122150.4:class PieMenu
-#@+node:ekr.20040828122150.12:addPMenu
+#@+node:ekr.20040828122150.12: ** addPMenu
 def addPMenu( self, parentFrame ):
 
     can = createCanvas( self, parentFrame )
@@ -507,8 +468,5 @@ def addPMenu( self, parentFrame ):
     fa = PieMenu( can, c )
     fas[ can ] = fa
     return can
-#@nonl
-#@-node:ekr.20040828122150.12:addPMenu
 #@-others
-#@-node:ekr.20040828122150:@thin pie_menus.py
 #@-leo

@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040831122004:@thin UniversalScrolling.py
-#@<< docstring >>
-#@+node:ekr.20050913084245:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040831122004: * @thin UniversalScrolling.py
+#@+<< docstring >>
+#@+node:ekr.20050913084245: ** << docstring >>
 '''A plugin that enables the user to scroll down with a left mouse click and
 hold, and to scroll up with a right mouse click and hold. Scrolling continues
 until the user releases the mouse. 
@@ -19,11 +19,9 @@ simple.
 Important: this plugin requires @bool expanded_click_area = False
 in leoSettings.leo.
 '''
-#@nonl
-#@-node:ekr.20050913084245:<< docstring >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20050101090207.5:<< imports >>
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.5: ** << imports >>
 import leo.core.leoGlobals as g
 
 import leo.plugins.tkGui as tkGui
@@ -34,31 +32,25 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import threading
 import time
-#@nonl
-#@-node:ekr.20050101090207.5:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "0.4"
-#@<< version history >>
-#@+node:ekr.20050526121340:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050526121340: ** << version history >>
 #@@nocolor
 #@+at
 # 
 # 0.2 EKR: Added init method and implified the code.
 # 
-# Note: This code appears to work. At present it suffers from re-binding 
-# Button-1.
+# Note: This code appears to work. At present it suffers from re-binding Button-1.
 # The solution is to pick another binding :-)
 # 
-# 0.3 EKR: Added warning in docstring that @bool expanded_click_area must be 
-# False.
+# 0.3 EKR: Added warning in docstring that @bool expanded_click_area must be False.
 # 
 # 0.4 Rich Ries: Changed bindings in addUThreading.
-#@-at
-#@-node:ekr.20050526121340:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20050526121026:init
+#@+node:ekr.20050526121026: ** init
 def init ():
 
     ok = Tk and not g.app.unitTesting
@@ -74,9 +66,7 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050526121026:init
-#@+node:ekr.20040915104230:addUThreading & callbacks
+#@+node:ekr.20040915104230: ** addUThreading & callbacks
 def addUThreading (tkFrame,parentFrame):
 
     '''Replaces createCanvas, adding UniversalScolling'''
@@ -89,8 +79,8 @@ def addUThreading (tkFrame,parentFrame):
     presentDirection = directionClass()
 
     # Define callbacks.
-    #@    @+others
-    #@+node:ekr.20040915104230.2:run
+    #@+others
+    #@+node:ekr.20040915104230.2: *3* run
     # Watch for events to begin scrolling.  This is also the target of the thread.
     def run( ev = ev):
 
@@ -103,8 +93,7 @@ def addUThreading (tkFrame,parentFrame):
             else:
                 canvas.yview( Tk.SCROLL, -1, Tk.UNITS )
             time.sleep(.1)
-    #@-node:ekr.20040915104230.2:run
-    #@+node:ekr.20050526094449.2:scroll & helpers
+    #@+node:ekr.20050526094449.2: *3* scroll & helpers
     def scroll(event,way):
 
         """A callback that starts scrolling."""
@@ -125,16 +114,12 @@ def addUThreading (tkFrame,parentFrame):
 
     def scrollUp(event):
         scroll(event,'Up')
-    #@nonl
-    #@-node:ekr.20050526094449.2:scroll & helpers
-    #@+node:ekr.20040915104230.4:stopScrolling
+    #@+node:ekr.20040915104230.4: *3* stopScrolling
     def stopScrolling (event,ev=ev):
 
         """A callback that stops scrolling."""
 
         ev.clear()
-    #@nonl
-    #@-node:ekr.20040915104230.4:stopScrolling
     #@-others
 
     # Start the thread.
@@ -151,8 +136,5 @@ def addUThreading (tkFrame,parentFrame):
     canvas.bind( '<ButtonRelease-1>', stopScrolling)
     canvas.bind( '<ButtonRelease-3>', stopScrolling)
     return canvas
-#@-node:ekr.20040915104230:addUThreading & callbacks
 #@-others
-#@nonl
-#@-node:ekr.20040831122004:@thin UniversalScrolling.py
 #@-leo

@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ville.20090815203828.5235:@thin spydershell.py
-#@<< docstring >>
-#@+node:ville.20090815203828.5236:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ville.20090815203828.5235: * @thin spydershell.py
+#@+<< docstring >>
+#@+node:ville.20090815203828.5236: ** << docstring >>
 ''' Launch spyder environment with access to Leo instance
 
 http://source.pythonxy.com/spyder/doc/
@@ -15,24 +15,21 @@ interactive session. spyder-update also shows the window
 if it was closed before.
 
 '''
-#@-node:ville.20090815203828.5236:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 __version__ = '0.0'
-#@<< version history >>
-#@+node:ville.20090815203828.5237:<< version history >>
+#@+<< version history >>
+#@+node:ville.20090815203828.5237: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.1 VMV First version
 # 
 # 0.2 VMV name changed to "spyder' (was "pydee")
-#@-at
-#@-node:ville.20090815203828.5237:<< version history >>
-#@nl
+#@-<< version history >>
 
-#@<< imports >>
-#@+node:ville.20090815203828.5238:<< imports >>
+#@+<< imports >>
+#@+node:ville.20090815203828.5238: ** << imports >>
 import sys
 
 import leo.core.leoGlobals as g
@@ -42,18 +39,15 @@ g.assertUi('qt')
 import leo.core.leoPlugins as leoPlugins
 
 # Whatever other imports your plugins uses.
-#@nonl
-#@-node:ville.20090815203828.5238:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20090815203828.5239:init
+#@+node:ville.20090815203828.5239: ** init
 def init ():
     ok = g.app.gui.guiName() == 'qt'    
     return ok
 
-#@-node:ville.20090815203828.5239:init
-#@+node:ville.20090815203828.5240:Leo commands
+#@+node:ville.20090815203828.5240: ** Leo commands
 @g.command('spyder-launch')
 def spyder_launch(event):
     """ Launch spyder """
@@ -91,8 +85,5 @@ def spyder_update(event):
     ns['g'] = g
     ns['p'] = c.p
     g.spyder.show()
-#@-node:ville.20090815203828.5240:Leo commands
 #@-others
-#@nonl
-#@-node:ville.20090815203828.5235:@thin spydershell.py
 #@-leo

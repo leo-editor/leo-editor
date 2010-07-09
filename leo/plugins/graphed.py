@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20071004090250:@thin graphed.py
-#@<< docstring >>
-#@+node:ekr.20071004090250.1:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20071004090250: * @thin graphed.py
+#@+<< docstring >>
+#@+node:ekr.20071004090250.1: ** << docstring >>
 """
 graphed.py  -- Edit graphs visually
 
@@ -13,8 +13,7 @@ Gato Graph Animation Toolbox at http://gato.sourceforge.net/
 
 Leo plugin by Terry Brown terry_n_brown@yahoo.com
 """
-#@-node:ekr.20071004090250.1:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -22,8 +21,8 @@ Leo plugin by Terry Brown terry_n_brown@yahoo.com
 
 __version__ = "0.4"
 
-#@<< imports >>
-#@+node:ekr.20071004090250.2:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20071004090250.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -41,15 +40,12 @@ try:
     Gato_ok = True
 except:
     Gato_ok = False
-#@-node:ekr.20071004090250.2:<< imports >>
-#@nl
-#@<< version history >>
-#@+node:ekr.20071004090250.3:<< version history >>
+#@-<< imports >>
+#@+<< version history >>
+#@+node:ekr.20071004090250.3: ** << version history >>
 #@@killcolor
 
-#@+at 
-#@nonl
-# Use and distribute under the same terms as leo itself.
+#@+at Use and distribute under the same terms as leo itself.
 # 
 # 0.0 - initial version
 # 
@@ -70,12 +66,10 @@ except:
 #   - ask user if they want headings split into lines on spaces
 #   - @graph headString text to indicate container node
 # 0.4 EKR: changed p.link to p._link, and p.unlink to p._unlink
-#@-at
-#@-node:ekr.20071004090250.3:<< version history >>
-#@nl
+#@-<< version history >>
 
 #@+others
-#@+node:ekr.20071004090250.9:init
+#@+node:ekr.20071004090250.9: ** init
 def init():
 
     if not Gato_ok:
@@ -85,12 +79,10 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@-node:ekr.20071004090250.9:init
-#@+node:ekr.20071004090250.10:onCreate
+#@+node:ekr.20071004090250.10: ** onCreate
 def onCreate (tag,key):
     GraphEd(key['c'])
-#@-node:ekr.20071004090250.10:onCreate
-#@+node:tbrown.20071007201356:class gNode
+#@+node:tbrown.20071007201356: ** class gNode
 class gNode(object):
     """Simple graph node.  Acts as a dictionary, although not by descent, as
      it needs to be hashable.
@@ -101,15 +93,14 @@ class gNode(object):
        - title label for node in graph, headString for leo node
        - body bodText for leo node
      """
-    #@    @+others
-    #@+node:tbrown.20071007213346:__init__
+    #@+others
+    #@+node:tbrown.20071007213346: *3* __init__
     def __init__(self, *args, **kwds):
         self._dict = {}
         self.x = self.y = 10
         self.body = self.label = ""
         self.attr = {}
-    #@-node:tbrown.20071007213346:__init__
-    #@+node:tbrown.20071007213346.1:readtnode
+    #@+node:tbrown.20071007213346.1: *3* readtnode
     def readtnode(self, tn, splitLabels = True, vnode = None):
         if splitLabels:
             self.title = tn.h.replace(' ', '\n')
@@ -120,8 +111,7 @@ class gNode(object):
         self.y = getattr(tn,'unknownAttributes',{}).get('graphed',{}).get('y',0)
         self.attr.update(getattr(tn,'unknownAttributes',{}))
         self.vnode = vnode
-    #@-node:tbrown.20071007213346.1:readtnode
-    #@+node:tbrown.20071007220740:writetnode
+    #@+node:tbrown.20071007220740: *3* writetnode
     def writetnode(self, nd, vnode = None):
         nd.setHeadString(self.title.replace('\n', ' '))
         nd.setTnodeText(self.body)
@@ -139,40 +129,33 @@ class gNode(object):
             if not hasattr(nd,'unknownAttributes'): nd.unknownAttributes = {}
             nd.unknownAttributes.setdefault('graphed',{}).update(
                 {'x': self.x, 'y': self.y})
-    #@-node:tbrown.20071007220740:writetnode
     #@-others
-#@-node:tbrown.20071007201356:class gNode
-#@+node:tbrown.20071004135224.1:class tGraph
+#@+node:tbrown.20071004135224.1: ** class tGraph
 class tGraph:
     """Minimalist graph-of-tnodes wrapper"""
-    #@    @+others
-    #@+node:tbrown.20071004135224.2:__init__
+    #@+others
+    #@+node:tbrown.20071004135224.2: *3* __init__
     def __init__(self):
         self._nodes = set()
         self._edges = set()
         self._gnxStr2tnode = {}
-    #@-node:tbrown.20071004135224.2:__init__
-    #@+node:tbrown.20071004135224.3:nodes
+    #@+node:tbrown.20071004135224.3: *3* nodes
     def nodes(self):
         """Return set of nodes"""
         return self._nodes
-    #@-node:tbrown.20071004135224.3:nodes
-    #@+node:tbrown.20071004135224.4:edges
+    #@+node:tbrown.20071004135224.4: *3* edges
     def edges(self):
         """Return set of (node0, node1) tuples"""
         return self._edges
-    #@-node:tbrown.20071004135224.4:edges
-    #@+node:tbrown.20071004135224.5:addNode
+    #@+node:tbrown.20071004135224.5: *3* addNode
     def addNode(self, n):
         """Add n as a node"""
         self._nodes.add(n)
-    #@-node:tbrown.20071004135224.5:addNode
-    #@+node:tbrown.20071004135224.6:addDirectedEdge
+    #@+node:tbrown.20071004135224.6: *3* addDirectedEdge
     def addDirectedEdge(self, n0, n1):
         """Add an edge from n0 and n1 as a node"""
         self._edges.add((n0, n1))
-    #@-node:tbrown.20071004135224.6:addDirectedEdge
-    #@+node:tbrown.20071004141737:addGraphFromPosition
+    #@+node:tbrown.20071004141737: *3* addGraphFromPosition
     def addGraphFromPosition(self, p, splitLabels = True):
         """
         *Add* nodes and edges from the position and its descendants.
@@ -189,8 +172,7 @@ class tGraph:
         else:
             self._addNodesLinks(p)
             self._addLinks(p)
-    #@-node:tbrown.20071004141737:addGraphFromPosition
-    #@+node:tbrown.20071004152905:createTreeFromGraph
+    #@+node:tbrown.20071004152905: *3* createTreeFromGraph
     def createTreeFromGraph(self, p):
         """Build tree representing graph after p, assuming our nodes are gNodes"""
 
@@ -280,8 +262,7 @@ class tGraph:
             pos._unlink()
 
         return ans
-    #@-node:tbrown.20071004152905:createTreeFromGraph
-    #@+node:tbrown.20071004141737.1:_addNodesLinks
+    #@+node:tbrown.20071004141737.1: *3* _addNodesLinks
     def _addNodesLinks(self, p):
         """Add nodes and simple descendent links from p"""
 
@@ -296,8 +277,7 @@ class tGraph:
             self.addDirectedEdge(gn, gn1)
 
         return gn
-    #@-node:tbrown.20071004141737.1:_addNodesLinks
-    #@+node:tbrown.20071004141737.2:_addLinks
+    #@+node:tbrown.20071004141737.2: *3* _addLinks
     def _addLinks(self, p):
         """Collect the @links from p, now we know the nodes are in
         self._gnxStr2tnode"""
@@ -315,34 +295,29 @@ class tGraph:
                     raise
             else:
                 self._addLinks(nd0)
-    #@-node:tbrown.20071004141737.2:_addLinks
-    #@+node:tbrown.20071004141911:_setIndex
+    #@+node:tbrown.20071004141911: *3* _setIndex
     def _setIndex(self, p):
         """fresh tnodes may not have .fileIndex, this adds it"""
         try:
             theId,time,n = p.v.fileIndex
         except TypeError:
             p.v.fileIndex = g.app.nodeIndices.getNewIndex()
-    #@-node:tbrown.20071004141911:_setIndex
-    #@+node:tbrown.20071004141931:_indexStrFromStr
+    #@+node:tbrown.20071004141931: *3* _indexStrFromStr
     def _indexStrFromStr(self, s):
         """isolate the '(...)' part of s"""
         return s[s.find('(') : s.find(')')+1]
-    #@-node:tbrown.20071004141931:_indexStrFromStr
-    #@+node:tbrown.20071004155803:_formatLink
+    #@+node:tbrown.20071004155803: *3* _formatLink
     def _formatLink(self, tid, hs):
         """format @link headString,
         strips '(' and ')' so _indexStrFromStr works"""
         return '@link %s %s' % (hs.replace('(','[').replace(')',']'),str(tid))
-    #@-node:tbrown.20071004155803:_formatLink
     #@-others
-#@-node:tbrown.20071004135224.1:class tGraph
-#@+node:tbrown.20071004225829:class tGraphUtil
+#@+node:tbrown.20071004225829: ** class tGraphUtil
 class tGraphUtil(tGraph):
     """Misc. utility functions on a tGraph"""
 
-    #@    @+others
-    #@+node:tbrown.20071004225829.1:dotStrFromPosition
+    #@+others
+    #@+node:tbrown.20071004225829.1: *3* dotStrFromPosition
     def dotStrFromPosition(self,p, includeXY = True):
         """return complete Graphviz dot format graph text"""
         self.addGraphFromPosition(p)
@@ -368,16 +343,14 @@ class tGraphUtil(tGraph):
             edges.append('n%d -> n%d' % (node[f],node[t]))
 
         return 'digraph G {\n%s\n\n%s\n}' % ('\n'.join(nodes), '\n'.join(edges))
-    #@-node:tbrown.20071004225829.1:dotStrFromPosition
     #@-others
-#@-node:tbrown.20071004225829:class tGraphUtil
-#@+node:ekr.20071004090250.11:class GraphEd
+#@+node:ekr.20071004090250.11: ** class GraphEd
 class GraphEd:
 
     '''A per-commander class that recolors outlines.'''
 
-    #@    @+others
-    #@+node:ekr.20071004090250.12:__init__
+    #@+others
+    #@+node:ekr.20071004090250.12: *3* __init__
     def __init__ (self,c):
 
         self.dictName = 'graphed'  # for uA dictionary
@@ -395,8 +368,7 @@ class GraphEd:
                  )
         c.frame.menu.createNewMenu('Graph', 'Outline')
         c.frame.menu.createMenuItemsFromTable('Graph', table)
-    #@-node:ekr.20071004090250.12:__init__
-    #@+node:ekr.20071004090250.13:close
+    #@+node:ekr.20071004090250.13: *3* close
     def close(self, tag, key):
         "unregister handlers on closing commander"
 
@@ -405,21 +377,18 @@ class GraphEd:
         # for i in self.handlers:
         #     pass # FIXME no handlers?
 
-    #@-node:ekr.20071004090250.13:close
-    #@+node:ekr.20071004090250.14:setIndex
+    #@+node:ekr.20071004090250.14: *3* setIndex
     def setIndex(self, p):
         try:
             theId,time,n = p.v.fileIndex
         except TypeError:
             p.v.fileIndex = g.app.nodeIndices.getNewIndex()
-    #@-node:ekr.20071004090250.14:setIndex
-    #@+node:ekr.20071004090250.15:indexStrFromStr
+    #@+node:ekr.20071004090250.15: *3* indexStrFromStr
     def indexStrFromStr(self, s):
         """isolate the '(...)' part of s"""
         return s[s.find('(') : s.find(')')+1]
-    #@-node:ekr.20071004090250.15:indexStrFromStr
-    #@+node:ekr.20071004090250.16:attributes...
-    #@+node:ekr.20071004090250.17:getat
+    #@+node:ekr.20071004090250.16: *3* attributes...
+    #@+node:ekr.20071004090250.17: *4* getat
     def getat(self, node, attrib):
 
         if (not hasattr(node,'unknownAttributes') or
@@ -430,9 +399,7 @@ class GraphEd:
             return None
 
         return node.unknownAttributes[self.dictName][attrib]
-    #@nonl
-    #@-node:ekr.20071004090250.17:getat
-    #@+node:ekr.20071004090250.18:setat
+    #@+node:ekr.20071004090250.18: *4* setat
     def setat(self, node, attrib, val):
         "new attrbiute setter"
 
@@ -464,15 +431,11 @@ class GraphEd:
 
         #X if isDefault:  # check if all default, if so drop dict.
         #X     self.dropEmpty(node, dictOk = True)
-    #@-node:ekr.20071004090250.18:setat
-    #@-node:ekr.20071004090250.16:attributes...
-    #@+node:ekr.20071004090250.25:safe_del
+    #@+node:ekr.20071004090250.25: *3* safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
         if d.has_key(k): del d[k]
-    #@nonl
-    #@-node:ekr.20071004090250.25:safe_del
-    #@+node:ekr.20071004090250.26:editGraph
+    #@+node:ekr.20071004090250.26: *3* editGraph
     def editGraph(self, event=None, pos = None):
 
         c = self.c
@@ -528,8 +491,7 @@ class GraphEd:
         # self.editor.grab_set()
         # self.editor.focus_force()
         # g.app.root.wait_window(self.editor)
-    #@-node:ekr.20071004090250.26:editGraph
-    #@+node:ekr.20071004090250.27:editWholeTree
+    #@+node:ekr.20071004090250.27: *3* editWholeTree
     #@+at
     # 
     # This doesn't work
@@ -538,9 +500,7 @@ class GraphEd:
     #     c = self.c
     #     g.pr(c.rootPosition().h)
     #     self.editGraph(pos = c.rootPosition())
-    #@-at
-    #@-node:ekr.20071004090250.27:editWholeTree
-    #@+node:ekr.20071004090250.28:loadGraph
+    #@+node:ekr.20071004090250.28: *3* loadGraph
     def loadGraph(self, graph, tgraph):
 
         for nd in tgraph.nodes():
@@ -552,8 +512,7 @@ class GraphEd:
         for nd0, nd1 in tgraph.edges():
             graph.AddEdge(self.tnode2gnode[nd0],
                           self.tnode2gnode[nd1])
-    #@-node:ekr.20071004090250.28:loadGraph
-    #@+node:ekr.20071004090250.30:exiting
+    #@+node:ekr.20071004090250.30: *3* exiting
     def exiting(self):
         ans = g.app.gui.runAskYesNoCancelDialog(
             self.c, 'Load changes?',
@@ -564,8 +523,7 @@ class GraphEd:
             self.editor.destroy()
             self.editor.master.withdraw()  # ???
         # if ans == cancel do nothing
-    #@-node:ekr.20071004090250.30:exiting
-    #@+node:ekr.20071004090250.31:saveGraph
+    #@+node:ekr.20071004090250.31: *3* saveGraph
     def saveGraph(self, p, graph):
 
         def label(i):
@@ -601,8 +559,7 @@ class GraphEd:
         c.selectPosition(newp)
         c.setChanged(True)
         c.redraw()
-    #@-node:ekr.20071004090250.31:saveGraph
-    #@+node:ekr.20071004090250.32:copyLink
+    #@+node:ekr.20071004090250.32: *3* copyLink
     def copyLink(self, event = None):
         c = self.c
         p = c.p
@@ -613,8 +570,7 @@ class GraphEd:
         c.cutOutline()
         c.selectPosition(p)
         g.es('Link copied to clipboard')
-    #@-node:ekr.20071004090250.32:copyLink
-    #@+node:ekr.20071004090250.33:followLink
+    #@+node:ekr.20071004090250.33: *3* followLink
     def followLink(self, event = None):
         c = self.c
         s = c.p.h
@@ -624,12 +580,10 @@ class GraphEd:
                 c.selectPosition(p)
                 break
         g.es('Not found')
-    #@-node:ekr.20071004090250.33:followLink
-    #@+node:ekr.20071004090250.34:formatLink
+    #@+node:ekr.20071004090250.34: *3* formatLink
     def formatLink(self, tid, hs):
         return '@link %s %s' % (hs.replace('(','[').replace(')',']'),str(tid))
-    #@-node:ekr.20071004090250.34:formatLink
-    #@+node:tbrown.20071004225829.2:dotNode
+    #@+node:tbrown.20071004225829.2: *3* dotNode
     def dotNode(self, event=None):
         c = self.c
         p = c.p
@@ -640,8 +594,7 @@ class GraphEd:
         c.setHeadString(p, 'DOT FORMAT: ' + t)
         c.setBodyString(p, dot)
         c.selectPosition(p)
-    #@-node:tbrown.20071004225829.2:dotNode
-    #@+node:tbrown.20071005092239:dotFile
+    #@+node:tbrown.20071005092239: *3* dotFile
     def dotFile(self, event=None):
         c = self.c
         p = c.p
@@ -658,15 +611,10 @@ class GraphEd:
             fn += '.dot'
         file(fn, 'w').write(dot)
         g.es('Wrote %s' % fn)
-    #@-node:tbrown.20071005092239:dotFile
-    #@+node:ekr.20071004090250.35:undone
+    #@+node:ekr.20071004090250.35: *3* undone
     def undone(self, event = None):
         g.app.gui.runAskOkDialog(self.c, 'Not implemented',
             "Sorry, that's not implemented yet.")
-    #@-node:ekr.20071004090250.35:undone
     #@-others
-#@nonl
-#@-node:ekr.20071004090250.11:class GraphEd
 #@-others
-#@-node:ekr.20071004090250:@thin graphed.py
 #@-leo

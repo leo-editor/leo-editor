@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517075715.12:@thin xemacs.py
+#@+leo-ver=5-thin
+#@+node:EKR.20040517075715.12: * @thin xemacs.py
 '''This plugin allows you to edit nodes in emacs/xemacs.
 
 Important: the open_with plugin must be enabled for this plugin to work properly.
@@ -11,18 +11,16 @@ changes will appear in Leo. '''
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050218024153:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050218024153: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
 import sys
-#@nonl
-#@-node:ekr.20050218024153:<< imports >>
-#@nl
+#@-<< imports >>
 __version__ = "1.11"
-#@<< version history >>
-#@+node:ekr.20050218024153.1:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050218024153.1: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -43,15 +41,10 @@ __version__ = "1.11"
 #     - Installed patch from mackal to find client on Linux.
 #       See http://sourceforge.net/forum/message.php?msg_id=3219471
 # 1.10 EKR:
-#     - Corrected the call to openWith.  It must now use data=data due to a 
-# new event param.
+#     - Corrected the call to openWith.  It must now use data=data due to a new event param.
 # 1.11 EKR:
-#     - The docstring now states that the open_with plugin must be enabled for 
-# this to work.
-#@-at
-#@nonl
-#@-node:ekr.20050218024153.1:<< version history >>
-#@nl
+#     - The docstring now states that the open_with plugin must be enabled for this to work.
+#@-<< version history >>
 
 useDoubleClick = True
 
@@ -75,7 +68,7 @@ else:
     _emacs_cmd = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
 
 #@+others
-#@+node:ekr.20050218023308:init
+#@+node:ekr.20050218023308: ** init
 def init ():
 
     ok = True
@@ -95,9 +88,7 @@ def init ():
     g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20050218023308:init
-#@+node:ekr.20050313071202:open_in_emacs
+#@+node:ekr.20050313071202: ** open_in_emacs
 def open_in_emacs (tag,keywords):
 
     c = keywords.get('c')
@@ -138,8 +129,5 @@ def open_in_emacs (tag,keywords):
 def open_in_emacs_return_true(tag,keywords):
     open_in_emacs(tag,keywords)
     return True
-#@-node:ekr.20050313071202:open_in_emacs
 #@-others
-#@nonl
-#@-node:EKR.20040517075715.12:@thin xemacs.py
 #@-leo

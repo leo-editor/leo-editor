@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20040107092135.2:@thin searchbox.py
-#@<< doc string >>
-#@+node:ekr.20040108060748:<< doc string >>
+#@+leo-ver=5-thin
+#@+node:ekr.20040107092135.2: * @thin searchbox.py
+#@+<< doc string >>
+#@+node:ekr.20040108060748: ** << doc string >>
 '''Add a quick search to Leo's toolbar.
 
 A search box which behaves like a web site search is added, along with
@@ -23,17 +23,15 @@ Still to do:
 - persist recent searches across Leo sessions
 - use INI file to set options for list size etc
 '''
-#@nonl
-#@-node:ekr.20040108060748:<< doc string >>
-#@nl
+#@-<< doc string >>
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.9"
 
-#@<< version history >>
-#@+node:ekr.20040908094021.3:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20040908094021.3: ** << version history >>
 #@+at
 # 0.4 EKR: Don't mess with button width on MacOS/darwin.
 # 
@@ -51,15 +49,12 @@ __version__ = "0.9"
 # - Changed init_s_text to init_s_ctrl.
 #     - Changed s_text to s_ctrl.
 # 0.7 EKR: Fixed crasher in Leo 4.4 by initing self.p in Quickfind ctor.
-# 0.8 EKR: Fixed crasher by making QuickFind.s_ctrl a leoTkTextWidget and by 
-# adding
+# 0.8 EKR: Fixed crasher by making QuickFind.s_ctrl a leoTkTextWidget and by adding
 #          ins argument to init_s_ctrl.
 # 0.9 EKR: Import tkGui as needed.
-#@-at
-#@-node:ekr.20040908094021.3:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20040908093511.3:<< imports >>
+#@-<< version history >>
+#@+<< imports >>
+#@+node:ekr.20040908093511.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -71,11 +66,9 @@ import leo.core.leoFind as leoFind
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import sys
-#@nonl
-#@-node:ekr.20040908093511.3:<< imports >>
-#@nl
-#@<< vars >>
-#@+node:ekr.20040108054555.14:<< vars >>
+#@-<< imports >>
+#@+<< vars >>
+#@+node:ekr.20040108054555.14: ** << vars >>
 # Set this to 0 if the sizing of the toolbar controls doesn't look good on 
 # your platform 
 USE_FIXED_SIZES = sys.platform != "darwin"
@@ -98,12 +91,10 @@ OPTION_LIST = [
 ]
 
 OPTION_DICT = dict(OPTION_LIST)
-#@nonl
-#@-node:ekr.20040108054555.14:<< vars >>
-#@nl
+#@-<< vars >>
 
 #@+others
-#@+node:ekr.20040909132007:onCreate
+#@+node:ekr.20040909132007: ** onCreate
 def onCreate(tag, keywords):
 
     # Not ok for unit testing: can't use unitTestGui.
@@ -113,9 +104,7 @@ def onCreate(tag, keywords):
     c = keywords.get("c")
     search = SearchBox(c)
     search.addWidgets()
-#@nonl
-#@-node:ekr.20040909132007:onCreate
-#@+node:ekr.20080707161756.1:init
+#@+node:ekr.20080707161756.1: ** init
 def init():
 
     if not Tk:
@@ -130,20 +119,17 @@ def init():
         return True
     else:
         return False
-#@-node:ekr.20080707161756.1:init
-#@+node:ekr.20040107092135.3:class SearchBox
+#@+node:ekr.20040107092135.3: ** class SearchBox
 class SearchBox:
 
     """A search box for Leo"""
 
-    #@    @+others
-    #@+node:ekr.20040909132007.1:ctor
+    #@+others
+    #@+node:ekr.20040909132007.1: *3* ctor
     def __init__ (self,c):
 
         self.c = c
-    #@nonl
-    #@-node:ekr.20040909132007.1:ctor
-    #@+node:ekr.20040108054555.4:_getSizer
+    #@+node:ekr.20040108054555.4: *3* _getSizer
     def _getSizer(self, parent, height, width):
         """Return a sizer object to force a Tk widget to be the right size"""
         if USE_FIXED_SIZES: 
@@ -153,9 +139,7 @@ class SearchBox:
             return sizer
         else:
             return parent
-    #@nonl
-    #@-node:ekr.20040108054555.4:_getSizer
-    #@+node:ekr.20040108054555.3:addWidgets
+    #@+node:ekr.20040108054555.3: *3* addWidgets
     def addWidgets(self):
         """Add the widgets to the navigation bar"""
 
@@ -177,8 +161,7 @@ class SearchBox:
         c.bind(self.search,"<Return>", self.onKey)
         # Store a list of the last searches.
         self.search_list = []
-    #@-node:ekr.20040108054555.3:addWidgets
-    #@+node:ekr.20040107092135.5:doSearch
+    #@+node:ekr.20040107092135.5: *3* doSearch
     def doSearch(self,*args,**keys):
 
         """Do the actual search"""
@@ -200,19 +183,14 @@ class SearchBox:
         self.updateRecentList(text, search_mode) 
         if 0: # This doesn't work yet: the user can't see the match.
             self.search.focus_set()
-    #@nonl
-    #@-node:ekr.20040107092135.5:doSearch
-    #@+node:ekr.20040107111307:onBackSpace
+    #@+node:ekr.20040107111307: *3* onBackSpace
     def onBackSpace (self,event=None):
         g.trace()
-    #@-node:ekr.20040107111307:onBackSpace
-    #@+node:ekr.20040108054555.5:onKey
+    #@+node:ekr.20040108054555.5: *3* onKey
     def onKey (self,event=None): 
         """Called when the user presses Return in the text entry box"""
         self.search.after_idle(self.doSearch)
-    #@nonl
-    #@-node:ekr.20040108054555.5:onKey
-    #@+node:ekr.20040108054555.8:searchRecent
+    #@+node:ekr.20040108054555.8: *3* searchRecent
     def searchRecent(self, *args, **kw):
         """Do a search on a recently used item"""
         # Find the item.
@@ -228,9 +206,7 @@ class SearchBox:
         else:
             g.pr(name, self.search_list )
             g.es("Recent search item not found! Looks like a bug ...", color="red")
-    #@nonl
-    #@-node:ekr.20040108054555.8:searchRecent
-    #@+node:ekr.20040108054555.7:updateRecentList
+    #@+node:ekr.20040108054555.7: *3* updateRecentList
     def updateRecentList(self, text, search_mode):
         """Update the list of recently searched items"""
 
@@ -250,18 +226,14 @@ class SearchBox:
         for name, mode in self.search_list:
             c.add_command(menu,
                 label=name,command=Tk._setit(self.option_value,name,self.searchRecent))
-    #@nonl
-    #@-node:ekr.20040108054555.7:updateRecentList
     #@-others
-#@nonl
-#@-node:ekr.20040107092135.3:class SearchBox
-#@+node:ekr.20040107092135.6:class QuickFind
+#@+node:ekr.20040107092135.6: ** class QuickFind
 class QuickFind(leoFind.leoFind):
 
     """A class for quick searching"""
 
-    #@    @+others
-    #@+node:ekr.20040107092135.7:__init__
+    #@+others
+    #@+node:ekr.20040107092135.7: *3* __init__
     def __init__(self,c,text,search_option=""):
 
         """Initialize the finder"""
@@ -274,9 +246,7 @@ class QuickFind(leoFind.leoFind):
         self.s_ctrl = leoTkinterFrame.leoTkTextWidget() # Tk.Text() # Used by find.search()
         self.__find_text = text
         self.search_option = search_option
-    #@nonl
-    #@-node:ekr.20040107092135.7:__init__
-    #@+node:ekr.20040107092135.8:update_ivars
+    #@+node:ekr.20040107092135.8: *3* update_ivars
     # Modified from leoTkinterFind.update_ivars.
 
     def update_ivars (self):
@@ -300,9 +270,7 @@ class QuickFind(leoFind.leoFind):
                 name = flag_name
             # g.trace('settattr',name,value)
             setattr(self, name, value)
-    #@nonl
-    #@-node:ekr.20040107092135.8:update_ivars
-    #@+node:ekr.20040107103252:init_s_ctrl
+    #@+node:ekr.20040107103252: *3* init_s_ctrl
     def init_s_ctrl (self,s,ins=None):
 
         t = self.s_ctrl
@@ -316,15 +284,10 @@ class QuickFind(leoFind.leoFind):
             t.mark_set("insert",ins)
 
         return t
-    #@-node:ekr.20040107103252:init_s_ctrl
-    #@+node:ekr.20040107103339:gui_search
+    #@+node:ekr.20040107103339: *3* gui_search
     def gui_search (self,t,*args,**keys):
 
         return t.search(*args,**keys)
-    #@nonl
-    #@-node:ekr.20040107103339:gui_search
     #@-others
-#@-node:ekr.20040107092135.6:class QuickFind
 #@-others
-#@-node:ekr.20040107092135.2:@thin searchbox.py
 #@-leo

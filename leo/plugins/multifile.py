@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041018204908.1:@thin multifile.py
-#@<< docstring >>
-#@+node:ekr.20050226114732:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041018204908.1: * @thin multifile.py
+#@+<< docstring >>
+#@+node:ekr.20050226114732: ** << docstring >>
 r'''Multipath enables the ability to write a file to multiple locations.
 
 It acts as a post-write mechanism, a file must be written to the filesystem for
@@ -46,14 +46,13 @@ The @multiprefix stays in effect for the entire tree until reset with another
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
 '''
-#@-node:ekr.20050226114732:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050226114732.1:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050226114732.1: ** << imports >>
 import leo.core.leoGlobals as g 
 
 import leo.core.leoAtFile as leoAtFile
@@ -70,13 +69,11 @@ try:
     ok = True
 except ImportError:
     ok = False
-#@nonl
-#@-node:ekr.20050226114732.1:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = ".9"
-#@<< version history >>
-#@+node:ekr.20050226115130:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050226115130: ** << version history >>
 #@@killcolor
 #@+at
 # 0.3 EKR:
@@ -89,17 +86,12 @@ __version__ = ".9"
 # - Simplified code by using g.funcToMethod in init code.
 # - Renamed decoratedOpenFileForWriting to match openFileForWriting.
 # - Rewrote stop and scanForMultiPath methods.
-# 0.7 EKR: Use absolute filename for original file to avoid problems with 
-# current directory.
+# 0.7 EKR: Use absolute filename for original file to avoid problems with current directory.
 # 0.8 EKR:
 # * The path separator in @multipath directives is ';', not ':' as previously.
 # - Fixed several bugs in scanForMultiPath.
-# 0.9 EKR: add entries to g.globalDirectiveList so that this plugin will work 
-# with the new colorizer.
-#@-at
-#@nonl
-#@-node:ekr.20050226115130:<< version history >>
-#@nl
+# 0.9 EKR: add entries to g.globalDirectiveList so that this plugin will work with the new colorizer.
+#@-<< version history >>
 
 multiprefix = '@multiprefix'   
 multipath = '@multipath'
@@ -108,7 +100,7 @@ files = {}
 originalOpenFileForWriting = None
 
 #@+others
-#@+node:ekr.20050226115130.1:init & helpers
+#@+node:ekr.20050226115130.1: ** init & helpers
 def init ():
 
     global ok
@@ -132,8 +124,7 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@+node:mork.20041019091317:addMenu
+#@+node:mork.20041019091317: *3* addMenu
 haveseen = weakref.WeakKeyDictionary()
 
 def addMenu (tag,keywords):
@@ -147,9 +138,7 @@ def addMenu (tag,keywords):
     c.add_command(men,
         label = "Insert Directory String",
         command = lambda c = c: insertDirectoryString(c))
-#@nonl
-#@-node:mork.20041019091317:addMenu
-#@+node:mork.20041019091524:insertDirectoryString
+#@+node:mork.20041019091524: *3* insertDirectoryString
 def insertDirectoryString (c):
 
     dir = tkFileDialog.askdirectory()
@@ -158,10 +147,7 @@ def insertDirectoryString (c):
         w.insert('insert',dir)
         w.event_generate('<Key>')
         w.update_idletasks()
-#@nonl
-#@-node:mork.20041019091524:insertDirectoryString
-#@-node:ekr.20050226115130.1:init & helpers
-#@+node:mork.20041018204908.3:decoratedOpenFileForWriting
+#@+node:mork.20041018204908.3: ** decoratedOpenFileForWriting
 def decoratedOpenFileForWriting (self,root,fileName,toString):
 
     c = self.c
@@ -175,8 +161,7 @@ def decoratedOpenFileForWriting (self,root,fileName,toString):
 
     # Return whatever the original method returned.
     return val 
-#@-node:mork.20041018204908.3:decoratedOpenFileForWriting
-#@+node:mork.20041018204908.6:stop
+#@+node:mork.20041018204908.6: ** stop
 def stop (tag,keywords):
 
     c = keywords.get('c')
@@ -200,9 +185,7 @@ def stop (tag,keywords):
                 g.es("multifile:\nCant write %s to %s" % (fileName,path),color="red")
                 g.es_exception_type()
     files.clear()
-#@nonl
-#@-node:mork.20041018204908.6:stop
-#@+node:mork.20041018204908.5:scanForMultiPath
+#@+node:mork.20041018204908.5: ** scanForMultiPath
 def scanForMultiPath (c):
 
     '''Return a dictionary whose keys are fileNames and whose values are
@@ -240,9 +223,5 @@ def scanForMultiPath (c):
                     # g.trace(fileName,aList)
                     d[fileName] = aList
     return d
-#@nonl
-#@-node:mork.20041018204908.5:scanForMultiPath
 #@-others
-#@nonl
-#@-node:mork.20041018204908.1:@thin multifile.py
 #@-leo

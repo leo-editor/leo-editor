@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:mork.20041022090036.1:@thin templates.py
-#@<<docstring>>
-#@+node:ekr.20041109173848:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:mork.20041022090036.1: * @thin templates.py
+#@+<<docstring>>
+#@+node:ekr.20041109173848: ** << docstring >>
 '''This plugin lets you add customizable templates to an outline. Templates are
 like any other node except that the plugin replaces %s in the body text by
 values that you specify when using template. Templates may have section
@@ -25,16 +25,14 @@ sessions.
 
 This plugin requires the simplified atFile write code that is new in 4.2.1.
 '''
-#@nonl
-#@-node:ekr.20041109173848:<< docstring >>
-#@nl
+#@-<<docstring>>
 
 #@@language python 
 #@@tabwidth -4
 
 __version__ = ".5"
-#@<<version history>>
-#@+node:ekr.20041109171952:<< version history >>
+#@+<<version history>>
+#@+node:ekr.20041109171952: ** << version history >>
 #@@killcolor 
 #@+at
 # 
@@ -49,12 +47,9 @@ __version__ = ".5"
 #     - Replaced 'start2' hook with 'new' hook.
 # 0.4 EKR: Added init function.
 # 0.5 EKR: Created initImages so Tk calls are not made at the top level.
-#@-at
-#@nonl
-#@-node:ekr.20041109171952:<< version history >>
-#@nl
-#@<<imports>>
-#@+node:ekr.20041022165647:<< imports >>
+#@-<<version history>>
+#@+<<imports>>
+#@+node:ekr.20041022165647: ** << imports >>
 import leo.core.leoNodes as leoNodes 
 import leo.core.leoPlugins as leoPlugins 
 import leo.core.leoGlobals as g
@@ -69,15 +64,13 @@ try:
 except Exception as x:
     g.es("Cant load plugin %s: %s"%(__name__,x))
     import_succeed = False 
-#@nonl
-#@-node:ekr.20041022165647:<< imports >>
-#@nl
+#@-<<imports>>
 
 templates = set()
 haveseen = weakref.WeakKeyDictionary()
 
 #@+others
-#@+node:ekr.20070125124515:init
+#@+node:ekr.20070125124515: ** init
 def init ():
 
     if not import_succeed: return False # OK for unit testing.
@@ -95,9 +88,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
-#@-node:ekr.20070125124515:init
-#@+node:ekr.20070301110439:initImages
+#@+node:ekr.20070301110439: ** initImages
 def initImages ():
 
     # Image data.
@@ -110,15 +101,14 @@ def initImages ():
     # Create the images from the data.
     global templatePI ; templatePI = Tkinter.PhotoImage(data=template)
     global tempwizPI ; tempwizPI = Tkinter.PhotoImage(data=tempwiz)
-#@-node:ekr.20070301110439:initImages
-#@+node:mork.20041022093042:getSelectDialog
+#@+node:mork.20041022093042: ** getSelectDialog
 def getSelectDialog (c):
 
     global templates 
 
     if templates:
-        #@        <<ask the user what template to use>>
-        #@+node:ekr.20041109175757:<< ask the user what template to use >>
+        #@+<<ask the user what template to use>>
+        #@+node:ekr.20041109175757: *3* << ask the user what template to use >>
         hlines ={}
         for z in templates:
             hlines[str(z.h)] = z 
@@ -139,8 +129,8 @@ def getSelectDialog (c):
         sbox.setlist(hlis)
         sbox.setvalue(hlis[0])
         sbox.pack(side='left')
-        #@<<define the select callback>>
-        #@+node:ekr.20041022170322:<< define the select callback >>
+        #@+<<define the select callback>>
+        #@+node:ekr.20041022170322: *4* << define the select callback >>
         def select (name):
 
             if name=="Select":
@@ -154,19 +144,13 @@ def getSelectDialog (c):
             else:
                 dialog.deactivate()
                 dialog.destroy()
-        #@nonl
-        #@-node:ekr.20041022170322:<< define the select callback >>
-        #@nl
+        #@-<<define the select callback>>
         dialog.configure(command=select)
         dialog.activate()
-        #@nonl
-        #@-node:ekr.20041109175757:<< ask the user what template to use >>
-        #@nl
+        #@-<<ask the user what template to use>>
     else:
         getNoTemplates(c)
-#@nonl
-#@-node:mork.20041022093042:getSelectDialog
-#@+node:mork.20041022093042.1:getTemplateDialog
+#@+node:mork.20041022093042.1: ** getTemplateDialog
 def getTemplateDialog (pos,c):
 
     """Put up a dialog that asks the user to enter template params."""
@@ -177,8 +161,8 @@ def getTemplateDialog (pos,c):
     num = bS.count('%s')
     ok = True 
     if num:
-        #@        <<create a dialog for%s strings>>
-        #@+node:ekr.20041109165734:<< create a dialog for %s strings >>
+        #@+<<create a dialog for%s strings>>
+        #@+node:ekr.20041109165734: *3* << create a dialog for %s strings >>
         values =[]
         dialog = Pmw.Dialog(c.frame.top,# EKR
             title='Enter Template Parameters',buttons=['Ok','Cancel'])
@@ -198,8 +182,8 @@ def getTemplateDialog (pos,c):
         colorize(stext.component('text'))
         stext.pack(side='right')
 
-        #@<<define the action callback>>
-        #@+node:ekr.20041109180357:<< define the action callback >>
+        #@+<<define the action callback>>
+        #@+node:ekr.20041109180357: *4* << define the action callback >>
         def action (name,dialog=dialog,efs=efs,values=values):
             if name=='Ok':
                 for z in efs:
@@ -208,9 +192,7 @@ def getTemplateDialog (pos,c):
                     values.append(value)
             dialog.deactivate()
             dialog.destroy()
-        #@nonl
-        #@-node:ekr.20041109180357:<< define the action callback >>
-        #@nl
+        #@-<<define the action callback>>
         dialog.configure(command=action)
         dialog.activate()
 
@@ -220,9 +202,7 @@ def getTemplateDialog (pos,c):
             bS = bS%values 
         except:
             ok = False 
-        #@nonl
-        #@-node:ekr.20041109165734:<< create a dialog for %s strings >>
-        #@nl
+        #@-<<create a dialog for%s strings>>
     else:
         hS = '<'+'<%s>'%hS+'>'
 
@@ -236,9 +216,7 @@ def getTemplateDialog (pos,c):
         bodyCtrl.event_generate('<Key>')
         bodyCtrl.update_idletasks()
         c.redraw()
-#@nonl
-#@-node:mork.20041022093042.1:getTemplateDialog
-#@+node:mork.20041022143127:colorize
+#@+node:mork.20041022143127: ** colorize
 def colorize (text):
 
     """Colorize the template so we can see where the templates are going to be inserted."""
@@ -251,9 +229,7 @@ def colorize (text):
         if i:
             text.tag_add('template',i,'%s +2c'%i)
             i = '%s +2c'%i       
-#@nonl
-#@-node:mork.20041022143127:colorize
-#@+node:mork.20041022105558:addEntries
+#@+node:mork.20041022105558: ** addEntries
 def addEntries (parent,num):
 
     """Factory for creating Pmw.EntryField instances."""
@@ -268,9 +244,7 @@ def addEntries (parent,num):
         ef.pack()
 
     return efs 
-#@nonl
-#@-node:mork.20041022105558:addEntries
-#@+node:mork.20041022105954:getNoTemplates
+#@+node:mork.20041022105954: ** getNoTemplates
 def getNoTemplates (c):
 
     """Put up a dialog when no nodes are marked as templates."""
@@ -282,9 +256,7 @@ def getNoTemplates (c):
         message_text="No nodes have been marked as templates")
 
     md.activate()
-#@nonl
-#@-node:mork.20041022105954:getNoTemplates
-#@+node:mork.20041022114642:getNodeAsString
+#@+node:mork.20041022114642: ** getNodeAsString
 def getNodeAsString (c,p):
 
     """Return position p's tree written to a string.
@@ -296,9 +268,7 @@ def getNodeAsString (c,p):
     at.write(p.copy(),nosentinels=True,toString=True,scriptWrite=True)
 
     return at.stringOutput 
-#@nonl
-#@-node:mork.20041022114642:getNodeAsString
-#@+node:mork.20041022091020:markAsTemplate
+#@+node:mork.20041022091020: ** markAsTemplate
 def markAsTemplate (c):
 
     """Mark or unmark the present node as a template."""
@@ -321,9 +291,7 @@ def markAsTemplate (c):
         templates.add(pos.copy())
 
     c.frame.tree.redraw()
-#@nonl
-#@-node:mork.20041022091020:markAsTemplate
-#@+node:mork.20041022110551:drawImages
+#@+node:mork.20041022110551: ** drawImages
 def drawImages (tag,keywords):
 
     """Draw the %s image to the far left of each template node."""
@@ -340,9 +308,7 @@ def drawImages (tag,keywords):
             x = z.v.iconx 
             y = z.v.icony 
             canvas.create_image(x-30,y+7,image=templatePI,tag='template')
-#@nonl
-#@-node:mork.20041022110551:drawImages
-#@+node:mork.20041022090036.2:addButtons
+#@+node:mork.20041022090036.2: ** addButtons
 def addButtons (tags,keywords):
 
     """Add the "%s" and "---> %s" buttons to the icon area."""
@@ -358,9 +324,7 @@ def addButtons (tags,keywords):
         command=lambda c=c:markAsTemplate(c),image=templatePI)
     bbox.add(r"%s wizard",
         command=lambda c=c:getSelectDialog(c),image=tempwizPI)
-#@nonl
-#@-node:mork.20041022090036.2:addButtons
-#@+node:mork.20041022122959:scanForTemplates
+#@+node:mork.20041022122959: ** scanForTemplates
 def scanForTemplates (tag,keywords):
 
     """Scans the entire outline looking for template nodes."""
@@ -380,8 +344,5 @@ def scanForTemplates (tag,keywords):
                 templates.add(p.copy())
 
     c.frame.tree.redraw()
-#@nonl
-#@-node:mork.20041022122959:scanForTemplates
 #@-others
-#@-node:mork.20041022090036.1:@thin templates.py
 #@-leo

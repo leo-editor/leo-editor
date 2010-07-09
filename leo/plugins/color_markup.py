@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:edream.110403140857.8:@thin color_markup.py
-#@<< docstring >>
-#@+node:ekr.20050912182434:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:edream.110403140857.8: * @thin color_markup.py
+#@+<< docstring >>
+#@+node:ekr.20050912182434: ** << docstring >>
 '''Handle coloring for markup in doc parts and Python triple-double-quoted strings.
 
 Important notes:
@@ -32,15 +32,13 @@ https://url # Underline the url: double clicking the url will open it in the def
 
 By default, once the text has been markup up, the actual tags (e.g. __ for bold) are not displayed anymore. You can choose to display them selecting "Show Invisibles" from the Edit menu.
 '''
-#@-node:ekr.20050912182434:<< docstring >>
-#@nl
-#@<< example >>
-#@+node:edream.110403140857.5:<< example >>
+#@-<< docstring >>
+#@+<< example >>
+#@+node:edream.110403140857.5: ** << example >>
 #@@color
 #@@markup wiki
-#@+doc 
-#@nonl
-# (this turns on a doc section; a '@ ' would do too)
+#@+at (this turns on a doc section; a '@ ' would do too)
+# 
 # 
 # This should be ''italic'' text
 # This should be __bold__ text
@@ -50,21 +48,19 @@ By default, once the text has been markup up, the actual tags (e.g. __ for bold)
 # 
 # You can also have wiki markups in python triple-double-quoted strings:
 # 
-#@-doc
 #@@c
 
 if 0:
     def __dummy():
         """This is a __very important__ function."""
         return None
-#@-node:edream.110403140857.5:<< example >>
-#@nl
+#@-<< example >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20050101090207.3:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20050101090207.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import tkFileDialog
@@ -79,13 +75,11 @@ except ImportError:
 
 import os
 import string  # zfill does not exist in Python 2.2.1
-#@nonl
-#@-node:ekr.20050101090207.3:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = "1.8"
-#@<< version history >>
-#@+node:ekr.20050311104330:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20050311104330: ** << version history >>
 #@@nocolor
 #@+at
 # 
@@ -104,23 +98,19 @@ __version__ = "1.8"
 # 1.6 EKR:
 # - Removed call to g.top.
 # - Used positions and p args instead of vnodes and v args.
-# - Added to docs: text to be colored must be in range of ``@markup wiki`` 
-# kdirective
+# - Added to docs: text to be colored must be in range of ``@markup wiki`` kdirective
 # 1.7 EKR:
 # - Improved docstring.
 # - Added support for 4.3 code base and new colorizer.
 # - Added support for PIL if it exists: this allows many more kinds of images.
 # 1.8 EKR: fixed crasher in getUrl.
-#@-at
-#@nonl
-#@-node:ekr.20050311104330:<< version history >>
-#@nl
+#@-<< version history >>
 
 wikiColoredText = None
 
 #@+others
-#@+node:ekr.20060108112937:Module-level
-#@+node:ekr.20050311104330.1:init
+#@+node:ekr.20060108112937: ** Module-level
+#@+node:ekr.20050311104330.1: *3* init
 def init ():
 
     ok = Tk and tkColorChooser # Ok for unit tests.
@@ -146,8 +136,7 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20050311104330.1:init
-#@+node:edream.110403140857.9:initAnyMarkup
+#@+node:edream.110403140857.9: *3* initAnyMarkup
 def initAnyMarkup (tag,keywords):
 
     """initialize colorer.markup_string
@@ -173,8 +162,7 @@ def initAnyMarkup (tag,keywords):
                 return
 
     colorer.markup_string = "unknown" # default
-#@-node:edream.110403140857.9:initAnyMarkup
-#@+node:edream.110403140857.17:onBodydclick1 & allies
+#@+node:edream.110403140857.17: *3* onBodydclick1 & allies
 def onBodydclick1(tag,keywords):
 
     """Handle double clicks on a hyperlink."""
@@ -189,7 +177,7 @@ def onBodydclick1(tag,keywords):
         except:
             g.es("exception opening " + url)
             g.es_exception()
-#@+node:edream.110403140857.18:getUrl
+#@+node:edream.110403140857.18: *4* getUrl
 def getUrl(c, *tags):
     """See if the current text belongs to a hyperlink tag and, if so, return the url."""
 
@@ -207,9 +195,7 @@ def getUrl(c, *tags):
                     url = w.get(hyperStart,hyperEnd)
                     return url
     return None
-#@-node:edream.110403140857.18:getUrl
-#@-node:edream.110403140857.17:onBodydclick1 & allies
-#@+node:edream.110403140857.20:onCreate
+#@+node:edream.110403140857.20: *3* onCreate
 def onCreate (tag,keywords):
 
     """Create menu entries under Edit->Edit Body to insert wiki tags."""
@@ -227,8 +213,8 @@ def onCreate (tag,keywords):
     c.frame.menu.createMenuEntries(editBodyMenu,separator)
 
     wikiMenu = c.frame.menu.createNewMenu(wikiMenuName,editBodyMenuName)
-    #@    << define menu callbacks >>
-    #@+node:ekr.20060108113303:<< define menu callbacks >>
+    #@+<< define menu callbacks >>
+    #@+node:ekr.20060108113303: *4* << define menu callbacks >>
     def doWikiBoldCallback (event,c=c):
         doWikiBold(c)
 
@@ -243,9 +229,7 @@ def onCreate (tag,keywords):
 
     def doWikiChooseColorCallback (event,c=c):
         doWikiChooseColor(c)
-    #@nonl
-    #@-node:ekr.20060108113303:<< define menu callbacks >>
-    #@nl
+    #@-<< define menu callbacks >>
 
     newEntries = (
         ("&Bold","Alt+Shift+B",doWikiBoldCallback),
@@ -256,8 +240,7 @@ def onCreate (tag,keywords):
     )
 
     c.frame.menu.createMenuEntries(wikiMenu,newEntries,dynamicMenu=True)
-#@-node:edream.110403140857.20:onCreate
-#@+node:edream.110403140857.10:colorWikiMarkup & helper
+#@+node:edream.110403140857.10: *3* colorWikiMarkup & helper
 def colorWikiMarkup (tag,keywords):
 
     keys = ("colorer","v","s","i","j","colortag")
@@ -276,7 +259,7 @@ def colorWikiMarkup (tag,keywords):
     # g.trace('**not colored')
     colorer.removeAllImages()
     return None # We have not colored the text.
-#@+node:edream.110403140857.11:doWikiText
+#@+node:edream.110403140857.11: *4* doWikiText
 def doWikiText (colorer,s,i,end,colortag):
 
     firsti = i
@@ -285,8 +268,8 @@ def doWikiText (colorer,s,i,end,colortag):
     # g.trace(i,end,colortag) # ,repr(s[i:end]))
 
     while i < end:
-        #@        << set first to a tuple describing the first tag to be handled >>
-        #@+node:edream.110403140857.12:<< set first to a tuple describing the first tag to be handled >>
+        #@+<< set first to a tuple describing the first tag to be handled >>
+        #@+node:edream.110403140857.12: *5* << set first to a tuple describing the first tag to be handled >>
         first = None
 
         for tag,delim1,delim2 in (
@@ -315,13 +298,12 @@ def doWikiText (colorer,s,i,end,colortag):
                 if s[k:k2] and not first or (first and k < first[1]):
                     # g.trace('delim1',k,k2,s[k:k2])
                     first = tag,k,k2,delim1,delim2
-        #@-node:edream.110403140857.12:<< set first to a tuple describing the first tag to be handled >>
-        #@nl
+        #@-<< set first to a tuple describing the first tag to be handled >>
         if first:
             tag,n1,n2,delim1,delim2 = first
             i = n2 + len(delim2)
-            #@            << handle the tag using n1,n2,delim1,delim2 >>
-            #@+node:edream.110403140857.13:<< handle the tag using n1,n2,delim1,delim2 >>
+            #@+<< handle the tag using n1,n2,delim1,delim2 >>
+            #@+node:edream.110403140857.13: *5* << handle the tag using n1,n2,delim1,delim2 >>
             # g.trace(tag,i,n1,n2,s[n1:n2])
 
             if tag =="picture":
@@ -331,8 +313,8 @@ def doWikiText (colorer,s,i,end,colortag):
                 filename = os.path.normpath(filename)
                 insertWikiPicture(colorer,filename,s,n2+len(delim2))
             elif tag == "color":
-                #@    << parse and handle color field >>
-                #@+node:edream.110403140857.14:<< parse and handle color field >>
+                #@+<< parse and handle color field >>
+                #@+node:edream.110403140857.14: *6* << parse and handle color field >>
                 # Parse the color value.
                 j = n1+len(delim1)
                 n = s.find(":",j,n2)
@@ -355,9 +337,7 @@ def doWikiText (colorer,s,i,end,colortag):
                             colorer.tag("elide",n2,n2+len(delim2))
                         except: # an invalid color name: elide nothing.
                             pass # g.es_exception()
-                #@nonl
-                #@-node:edream.110403140857.14:<< parse and handle color field >>
-                #@nl
+                #@-<< parse and handle color field >>
             elif tag == "http" or tag == "https":
                 colorer.tag(tag,n1,n2)
             else:
@@ -382,16 +362,12 @@ def doWikiText (colorer,s,i,end,colortag):
                     colorer.tag("elide",n1,n1+len(delim1))
                     colorer.tag("elide",n2,n2+len(delim2))
                     colorer.tag(tag,n1+len(delim1),n2)
-            #@nonl
-            #@-node:edream.110403140857.13:<< handle the tag using n1,n2,delim1,delim2 >>
-            #@nl
+            #@-<< handle the tag using n1,n2,delim1,delim2 >>
         else: i = end
 
     # g.trace('tag',colortag,firsti,end)
     colorer.tag(colortag,firsti,end)
-#@-node:edream.110403140857.11:doWikiText
-#@-node:edream.110403140857.10:colorWikiMarkup & helper
-#@+node:ekr.20070724095125:insertWikiPicture
+#@+node:ekr.20070724095125: *3* insertWikiPicture
 def insertWikiPicture (colorer,filename,s,i):
 
     '''Insert the picture with the given filename.'''
@@ -432,28 +408,22 @@ def insertWikiPicture (colorer,filename,s,i):
             g.es_print('PIL not loaded: wiki images must be .gif or .pgm files.',color='blue')
         else:
             g.es_exception()
-#@-node:ekr.20070724095125:insertWikiPicture
-#@-node:ekr.20060108112937:Module-level
-#@+node:edream.110403140857.19:Menu commands
-#@+node:edream.110403140857.21:doWikiBold
+#@+node:edream.110403140857.19: ** Menu commands
+#@+node:edream.110403140857.21: *3* doWikiBold
 def doWikiBold(c):
 
     insertWikiMarkup(c,"__","__")
-#@-node:edream.110403140857.21:doWikiBold
-#@+node:edream.110403140857.22:doWikiItalic
+#@+node:edream.110403140857.22: *3* doWikiItalic
 def doWikiItalic(c):
 
     insertWikiMarkup(c,"''","''")
-#@nonl
-#@-node:edream.110403140857.22:doWikiItalic
-#@+node:edream.110403140857.23:doWikiColor
+#@+node:edream.110403140857.23: *3* doWikiColor
 def doWikiColor(c):
 
     global wikiColoredText
 
     insertWikiMarkup(c,"~~%s:" % wikiColoredText,"~~")
-#@-node:edream.110403140857.23:doWikiColor
-#@+node:edream.110403140857.24:doWikiChooseColor
+#@+node:edream.110403140857.24: *3* doWikiChooseColor
 def doWikiChooseColor(c):
 
     global wikiColoredText
@@ -463,8 +433,7 @@ def doWikiChooseColor(c):
         if val:
             wikiColoredText = val
             doWikiColor(c)
-#@-node:edream.110403140857.24:doWikiChooseColor
-#@+node:edream.110403140857.25:doWikiPicture
+#@+node:edream.110403140857.25: *3* doWikiPicture
 def doWikiPicture(c):
 
     if c and c.exists:
@@ -474,8 +443,7 @@ def doWikiPicture(c):
         )
         if name:
             insertWikiMarkup(c,"{picture file=%s}" % name,"")
-#@-node:edream.110403140857.25:doWikiPicture
-#@+node:edream.110403140857.26:insertWikiMarkup
+#@+node:edream.110403140857.26: *3* insertWikiMarkup
 def insertWikiMarkup(c,leftTag,rightTag):
 
     if not c or not c.exists: return
@@ -483,8 +451,8 @@ def insertWikiMarkup(c,leftTag,rightTag):
     body = c.frame.body ; w = body.bodyCtrl
     oldSel = w.getSelectionRange()
     if oldSel:
-        #@        << apply markup to selection >>
-        #@+node:edream.110403140857.27:<< apply markup to selection >>
+        #@+<< apply markup to selection >>
+        #@+node:edream.110403140857.27: *4* << apply markup to selection >>
         start,end = oldSel
         w.insert(start, leftTag)
         start,end = w.getSelectionRange()
@@ -492,11 +460,10 @@ def insertWikiMarkup(c,leftTag,rightTag):
         w.setSelectionRange(start-len(leftTag),end+len(rightTag))
         newSel = w.getSelectionRange()
         c.frame.body.onBodyChanged("Change",oldSel=oldSel)
-        #@-node:edream.110403140857.27:<< apply markup to selection >>
-        #@nl
+        #@-<< apply markup to selection >>
     else:
-        #@        << handle no selection >>
-        #@+node:edream.110403140857.28:<< handle no selection >>
+        #@+<< handle no selection >>
+        #@+node:edream.110403140857.28: *4* << handle no selection >>
         # Note: this does not currently handle mixed nested tags,
         # e.g. <b><i>text</b></i>. One should always close the
         # tags in the order they were opened, as in <b><i>text</i></b>.
@@ -513,13 +480,8 @@ def insertWikiMarkup(c,leftTag,rightTag):
         body.setSelectionRange(newPos, newPos)
         newSel = body.getSelectionRange()
         c.frame.body.onBodyChanged("Typing",oldSel=oldSel)
-        #@-node:edream.110403140857.28:<< handle no selection >>
-        #@nl
+        #@-<< handle no selection >>
 
     body.setFocus()
-#@-node:edream.110403140857.26:insertWikiMarkup
-#@-node:edream.110403140857.19:Menu commands
 #@-others
-#@nonl
-#@-node:edream.110403140857.8:@thin color_markup.py
 #@-leo

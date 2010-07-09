@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:EKR.20040517080250.1:@thin mod_http.py
-#@<< docstring >>
-#@+node:ekr.20050111111238:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:EKR.20040517080250.1: * @thin mod_http.py
+#@+<< docstring >>
+#@+node:ekr.20050111111238: ** << docstring >>
 '''A minimal http plugin for LEO, based on AsyncHttpServer.py.
 
 Use this plugin is as follows:
@@ -27,8 +27,7 @@ To enable this plugin:
 must match the character encoding used in the browser. If it does not, non-ascii
 characters will look strange.
 '''
-#@-node:ekr.20050111111238:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
@@ -42,8 +41,8 @@ __version__ = "0.99"
 # If it does not, non-ascii characters will look very strange.
 browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
 
-#@<< imports >>
-#@+node:EKR.20040517080250.3:<< imports >>
+#@+<< imports >>
+#@+node:EKR.20040517080250.3: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -81,58 +80,48 @@ import sys
 import time
 import urllib
 
-#@-node:EKR.20040517080250.3:<< imports >>
-#@nl
-#@<< version history >>
-#@+node:ekr.20050328104558:<< version history >>
+#@-<< imports >>
+#@+<< version history >>
+#@+node:ekr.20050328104558: ** << version history >>
 #@@killcolor
 #@+at
 # 
 # 0.93 EKR:
 #     - Added 'version history' section.
 #     - Removed vestigial sections.
-#     - Changed docstring to mention @string rst_http_attributename = 
-# 'rst_http_attribute'
+#     - Changed docstring to mention @string rst_http_attributename = 'rst_http_attribute'
 # 0.93 EKR: Added init function.
 # But http was in the Plugins menu because the rst3 plugin imports it.
 # The fix was to the plugins manager, not this plugin or rst3.
 # 0.94 BWM
-# 0.95 EKR: Changed headline from applyConfiguration to getConfiguration to 
-# match name of method.
+# 0.95 EKR: Changed headline from applyConfiguration to getConfiguration to match name of method.
 # 0.96 EKR: suppress all pychecker warnings.
 # 0.97 EKR:
 # - Call g.signon in init so users can see that the plugin is enabled.
 # - Removed the old @page line from the docstring.
 # 0.98 EKR: Handle unicode characters properly.
-# 0.99 Lauri Ojansivu <lauri.ojansivu@gmail.com>: Many change for better html 
-# generation.
-#@-at
-#@nonl
-#@-node:ekr.20050328104558:<< version history >>
-#@nl
+# 0.99 Lauri Ojansivu <lauri.ojansivu@gmail.com>: Many change for better html generation.
+#@-<< version history >>
 
 sockets_to_close = []
 
-#@<< config >>
-#@+node:bwmulder.20050326191345:<< config >>
+#@+<< config >>
+#@+node:bwmulder.20050326191345: ** << config >>
 class config:
     http_active = False
     http_timeout = 0
     http_port = 8080
     rst2_http_attributename = 'rst_http_attribute'
-#@-node:bwmulder.20050326191345:<< config >>
-#@nl
+#@-<< config >>
 #@+others
-#@+node:ekr.20060830091349:init
+#@+node:ekr.20060830091349: ** init
 def init ():
 
     leoPlugins.registerHandler("open2", onFileOpen)
     g.plugin_signon(__name__)
 
     return True
-#@nonl
-#@-node:ekr.20060830091349:init
-#@+node:bwmulder.20050326191345.1:onFileOpen
+#@+node:bwmulder.20050326191345.1: ** onFileOpen
 def onFileOpen(tag, keywords):
     c = keywords.get("new_c")
 
@@ -146,9 +135,8 @@ def onFileOpen(tag, keywords):
         leoPlugins.registerHandler("idle", plugin_wrapper)
 
         g.es("http serving enabled on port %s, version %s" % (config.http_port, __version__), color="purple")
-#@-node:bwmulder.20050326191345.1:onFileOpen
-#@+node:bwmulder.20050322132919:rst_related
-#@+node:bwmulder.20050322134325:reconstruct_html_from_attrs
+#@+node:bwmulder.20050322132919: ** rst_related
+#@+node:bwmulder.20050322134325: *3* reconstruct_html_from_attrs
 def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
     """
     Given an attribute, reconstruct the html for this node.
@@ -168,17 +156,14 @@ def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
         result.append(stack[1])
         stack = stack[2]
     return result
-#@nonl
-#@-node:bwmulder.20050322134325:reconstruct_html_from_attrs
-#@+node:bwmulder.20050322132919.2:get_http_attribute
+#@+node:bwmulder.20050322132919.2: *3* get_http_attribute
 def get_http_attribute(p):
     vnode = p.v
     if hasattr(vnode, 'unknownAttributes'):
         return vnode.unknownAttributes.get(config.rst2_http_attributename, None)
     return None
 
-#@-node:bwmulder.20050322132919.2:get_http_attribute
-#@+node:bwmulder.20050322133050:set_http_attribute
+#@+node:bwmulder.20050322133050: *3* set_http_attribute
 def set_http_attribute(p, value):
     vnode = p.v
     if hasattr(vnode, 'unknownAttributes'):
@@ -186,32 +171,26 @@ def set_http_attribute(p, value):
     else:
         vnode.unknownAttributes = {config.rst2_http_attributename: value}
 
-#@-node:bwmulder.20050322133050:set_http_attribute
-#@+node:bwmulder.20050322135114:node_reference
+#@+node:bwmulder.20050322135114: *3* node_reference
 def node_reference(vnode):
     """
     Use by the rst2 plugin.
     """
     return leo_interface().node_reference(vnode)
-#@nonl
-#@-node:bwmulder.20050322135114:node_reference
-#@-node:bwmulder.20050322132919:rst_related
-#@+node:EKR.20040517080250.4:class delayedSocketStream
+#@+node:EKR.20040517080250.4: ** class delayedSocketStream
 class delayedSocketStream(asyncore.dispatcher_with_send):
-    #@    @+others
-    #@+node:EKR.20040517080250.5:__init__
+    #@+others
+    #@+node:EKR.20040517080250.5: *3* __init__
     def __init__(self,sock):
         self._map = asyncore.socket_map
         self.socket=sock
         self.socket.setblocking(0)
         self.closed=1   # compatibility with SocketServer
         self.buffer = []
-    #@-node:EKR.20040517080250.5:__init__
-    #@+node:EKR.20040517080250.6:write
+    #@+node:EKR.20040517080250.6: *3* write
     def write(self,data):
         self.buffer.append(data)
-    #@-node:EKR.20040517080250.6:write
-    #@+node:EKR.20040517080250.7:initiate_sending
+    #@+node:EKR.20040517080250.7: *3* initiate_sending
     def initiate_sending(self):
         self.out_buffer = ''.join(self.buffer)
         del self.buffer
@@ -223,37 +202,30 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         except socket.error:
             # The addr isn't crucial
             pass
-    #@-node:EKR.20040517080250.7:initiate_sending
-    #@+node:EKR.20040517080250.8:handle_read
+    #@+node:EKR.20040517080250.8: *3* handle_read
     def handle_read(self):
         pass
-    #@nonl
-    #@-node:EKR.20040517080250.8:handle_read
-    #@+node:EKR.20040517080250.9:writable
+    #@+node:EKR.20040517080250.9: *3* writable
     def writable(self):
         result = (not self.connected) or len(self.out_buffer)
         if not result:
             sockets_to_close.append(self)
         return result
-    #@-node:EKR.20040517080250.9:writable
     #@-others
-#@-node:EKR.20040517080250.4:class delayedSocketStream
-#@+node:EKR.20040517080250.10:class nodeNotFound
+#@+node:EKR.20040517080250.10: ** class nodeNotFound
 class nodeNotFound(Exception):
     pass
-#@-node:EKR.20040517080250.10:class nodeNotFound
-#@+node:bwmulder.20061014153544:class noLeoNodePath
+#@+node:bwmulder.20061014153544: ** class noLeoNodePath
 class noLeoNodePath(Exception):
     """
     Raised if the path can not be converted a filename and a series of numbers.
     Most likely a reference to a picture.
     """
     pass
-#@-node:bwmulder.20061014153544:class noLeoNodePath
-#@+node:EKR.20040517080250.11:class escaped_StringIO
+#@+node:EKR.20040517080250.11: ** class escaped_StringIO
 class escaped_StringIO(StringIOClass):
-    #@    @+others
-    #@+node:EKR.20040517080250.12:write_escaped
+    #@+others
+    #@+node:EKR.20040517080250.12: *3* write_escaped
     def write_escaped(self, s):
         s = s.replace('&', "&amp;")
         s = s.replace('<', "&lt;")
@@ -288,21 +260,17 @@ class escaped_StringIO(StringIOClass):
         # 8/9/2007
         s = g.toEncodedString(s,encoding=browser_encoding,reportErrors=False)
         StringIO.write(self, s)
-    #@-node:EKR.20040517080250.12:write_escaped
-    #@+node:ekr.20070809085322:write
+    #@+node:ekr.20070809085322: *3* write
     def write (self,str):
 
         str = g.toEncodedString(str,encoding=browser_encoding,reportErrors=False)
         # g.trace('str',str)
         return StringIO.write(self,str)
-    #@-node:ekr.20070809085322:write
     #@-others
-#@nonl
-#@-node:EKR.20040517080250.11:class escaped_StringIO
-#@+node:EKR.20040517080250.20:class leo_interface
+#@+node:EKR.20040517080250.20: ** class leo_interface
 class leo_interface(object):
-    #@    @+others
-    #@+node:EKR.20040517080250.21:add_leo_links
+    #@+others
+    #@+node:EKR.20040517080250.21: *3* add_leo_links
     def add_leo_links(self, window, node, f):
         """
         Given a node 'node', add links to:
@@ -362,30 +330,25 @@ class leo_interface(object):
                 self.create_leo_reference(window, child, child.h, f)
                 f.write("</li>\n")
             f.write("</ol>\n")
-    #@nonl
-    #@-node:EKR.20040517080250.21:add_leo_links
-    #@+node:EKR.20040517080250.22:create_href
+    #@+node:EKR.20040517080250.22: *3* create_href
     def create_href(self, href, text, f):
         f.write('<a href="%s">' % href)
         f.write_escaped(text)
         f.write("</a>\n")
 
-    #@-node:EKR.20040517080250.22:create_href
-    #@+node:bwmulder.20050319134815:create_leo_h_reference
+    #@+node:bwmulder.20050319134815: *3* create_leo_h_reference
     def create_leo_h_reference(self, window, node):
         parts = [window.shortFileName()] + self.get_leo_nameparts(node)
         href = '/' + '/'.join(parts)
         return href
-    #@-node:bwmulder.20050319134815:create_leo_h_reference
-    #@+node:EKR.20040517080250.23:create_leo_reference
+    #@+node:EKR.20040517080250.23: *3* create_leo_reference
     def create_leo_reference(self, window, node, text, f):
         """
         Create a reference to 'node' in 'window', displaying 'text'
         """
         href = self.create_leo_h_reference(window, node)
         self.create_href(href, text, f)
-    #@-node:EKR.20040517080250.23:create_leo_reference
-    #@+node:EKR.20040517080250.24:format_leo_node
+    #@+node:EKR.20040517080250.24: *3* format_leo_node
     def format_leo_node(self, window, node):
         """
         Given a node 'node', return the contents of that node as html text.
@@ -431,9 +394,7 @@ class leo_interface(object):
         # f.write("</span>\n")
         write("\n</body>\n</html>\n")
         return f
-    #@nonl
-    #@-node:EKR.20040517080250.24:format_leo_node
-    #@+node:EKR.20040517080250.25:get_leo_nameparts
+    #@+node:EKR.20040517080250.25: *3* get_leo_nameparts
     def get_leo_nameparts(self, node):
         """
         Given a 'node', construct a list of sibling numbers to get to that node.
@@ -459,9 +420,7 @@ class leo_interface(object):
             result.append(str(i))
             result.reverse()
         return result
-    #@nonl
-    #@-node:EKR.20040517080250.25:get_leo_nameparts
-    #@+node:EKR.20040517080250.26:get_leo_node
+    #@+node:EKR.20040517080250.26: *3* get_leo_node
     def get_leo_node(self, path):
         """
         given a path of the form:
@@ -499,9 +458,7 @@ class leo_interface(object):
         else:
             node = None
         return w, node
-    #@nonl
-    #@-node:EKR.20040517080250.26:get_leo_node
-    #@+node:EKR.20040517080250.27:get_leo_windowlist
+    #@+node:EKR.20040517080250.27: *3* get_leo_windowlist
     def get_leo_windowlist(self):
         """
 
@@ -524,8 +481,7 @@ class leo_interface(object):
         write("</ul>\n")
         write("<hr />\n")
         return f
-    #@-node:EKR.20040517080250.27:get_leo_windowlist
-    #@+node:bwmulder.20050319135316:node_reference
+    #@+node:bwmulder.20050319135316: *3* node_reference
     def node_reference(self, vnode):
         """
         Given a position p, return the name of the node.
@@ -545,8 +501,7 @@ class leo_interface(object):
 
         result = self.create_leo_h_reference(window, vnode)
         return result
-    #@-node:bwmulder.20050319135316:node_reference
-    #@+node:bwmulder.20050322224921:send_head
+    #@+node:bwmulder.20050322224921: *3* send_head
     def send_head(self):
         """Common code for GET and HEAD commands.
 
@@ -589,8 +544,7 @@ class leo_interface(object):
             traceback.print_exc()
             raise
 
-    #@-node:bwmulder.20050322224921:send_head
-    #@+node:EKR.20040517080250.30:split_leo_path
+    #@+node:EKR.20040517080250.30: *3* split_leo_path
     def split_leo_path(self, path):
         """
         A leo node is represented by a string of the form:
@@ -602,9 +556,7 @@ class leo_interface(object):
         if path.startswith("/"):
             path = path[1:]
         return path.split('/')
-    #@nonl
-    #@-node:EKR.20040517080250.30:split_leo_path
-    #@+node:EKR.20040517080250.28:write_path
+    #@+node:EKR.20040517080250.28: *3* write_path
     def write_path(self, node, f):
         result = []
         while node:
@@ -623,19 +575,15 @@ class leo_interface(object):
             f.write("<h2>")
             f.write_escaped(result[-1])
             f.write("</h2>\n")
-    #@nonl
-    #@-node:EKR.20040517080250.28:write_path
     #@-others
-#@nonl
-#@-node:EKR.20040517080250.20:class leo_interface
-#@+node:EKR.20040517080250.13:class RequestHandler
+#@+node:EKR.20040517080250.13: ** class RequestHandler
 class RequestHandler(
     leo_interface
     ,asynchat.async_chat,
     SimpleHTTPServer.SimpleHTTPRequestHandler
     ):
-    #@    @+others
-    #@+node:EKR.20040517080250.14:__init__
+    #@+others
+    #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self,conn,addr,server):
         asynchat.async_chat.__init__(self,conn)
         self.client_address=addr
@@ -648,8 +596,7 @@ class RequestHandler(
         self.set_terminator ('\r\n\r\n')
         self.buffer=StringIO()
         self.found_terminator=self.handle_request_line
-    #@-node:EKR.20040517080250.14:__init__
-    #@+node:EKR.20040517080250.15:copyfile
+    #@+node:EKR.20040517080250.15: *3* copyfile
     def copyfile(self, source, outputfile):
         """Copy all data between two file objects.
 
@@ -664,8 +611,7 @@ class RequestHandler(
         to copy binary data as well.
          """
         shutil.copyfileobj(source, outputfile, length=255)
-    #@-node:EKR.20040517080250.15:copyfile
-    #@+node:EKR.20040517080250.16:log_message
+    #@+node:EKR.20040517080250.16: *3* log_message
     def log_message(self, format, *args):
         """Log an arbitrary message.
 
@@ -687,13 +633,11 @@ class RequestHandler(
             self.log_date_time_string(),
             format%args)
         g.es(message)
-    #@-node:EKR.20040517080250.16:log_message
-    #@+node:EKR.20040517080250.17:collect_incoming_data
+    #@+node:EKR.20040517080250.17: *3* collect_incoming_data
     def collect_incoming_data(self,data):
         """Collects the data arriving on the connexion"""
         self.buffer.write(data)
-    #@-node:EKR.20040517080250.17:collect_incoming_data
-    #@+node:EKR.20040517080250.18:prepare_POST
+    #@+node:EKR.20040517080250.18: *3* prepare_POST
     def prepare_POST(self):
         """Prepare to read the request body"""
         bytesToRead = int(self.headers.getheader('content-length'))
@@ -702,21 +646,18 @@ class RequestHandler(
         self.buffer=StringIO()
         # control will be passed to a new found_terminator
         self.found_terminator=self.handle_post_data
-    #@-node:EKR.20040517080250.18:prepare_POST
-    #@+node:EKR.20040517080250.19:handle_post_data
+    #@+node:EKR.20040517080250.19: *3* handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
         self.rfile=StringIO(self.buffer.getvalue())
         self.do_POST()
         self.finish()
-    #@-node:EKR.20040517080250.19:handle_post_data
-    #@+node:EKR.20040517080250.31:do_GET
+    #@+node:EKR.20040517080250.31: *3* do_GET
     def do_GET(self):
         """Begins serving a GET request"""
         # nothing more to do before handle_data()
         self.handle_data()
-    #@-node:EKR.20040517080250.31:do_GET
-    #@+node:EKR.20040517080250.32:do_POST
+    #@+node:EKR.20040517080250.32: *3* do_POST
     def do_POST(self):
         """Begins serving a POST request. The request data must be readable
          on a file-like object called self.rfile"""
@@ -736,8 +677,7 @@ class RequestHandler(
 
         self.QUERY.update(self.query(query))
         self.handle_data()
-    #@-node:EKR.20040517080250.32:do_POST
-    #@+node:EKR.20040517080250.33:query
+    #@+node:EKR.20040517080250.33: *3* query
     def query(self,parsedQuery):
         """Returns the QUERY dictionary, similar to the result of cgi.parse_qs
          except that :
@@ -755,15 +695,13 @@ class RequestHandler(
                     else:
                         res[item]=value[0]
         return res
-    #@-node:EKR.20040517080250.33:query
-    #@+node:EKR.20040517080250.34:handle_data
+    #@+node:EKR.20040517080250.34: *3* handle_data
     def handle_data(self):
         """Class to override"""
         f = self.send_head()
         if f:
             self.copyfile(f, self.wfile)
-    #@-node:EKR.20040517080250.34:handle_data
-    #@+node:EKR.20040517080250.35:handle_request_line
+    #@+node:EKR.20040517080250.35: *3* handle_request_line
     def handle_request_line(self):
         """Called when the http request line and headers have been received"""
 
@@ -790,22 +728,18 @@ class RequestHandler(
             self.prepare_POST()
         else:
             self.send_error(501, "Unsupported method (%s)" %self.command)
-    #@-node:EKR.20040517080250.35:handle_request_line
-    #@+node:EKR.20040517080250.36:finish
+    #@+node:EKR.20040517080250.36: *3* finish
     def finish(self):
         """Reset terminator (required after POST method), then close"""
         self.set_terminator ('\r\n\r\n')
         self.wfile.initiate_sending()
         # self.close()
-    #@nonl
-    #@-node:EKR.20040517080250.36:finish
     #@-others
-#@-node:EKR.20040517080250.13:class RequestHandler
-#@+node:EKR.20040517080250.37:class Server
+#@+node:EKR.20040517080250.37: ** class Server
 class Server(asyncore.dispatcher):
     """Copied from http_server in medusa"""
-    #@    @+others
-    #@+node:EKR.20040517080250.38:__init__
+    #@+others
+    #@+node:EKR.20040517080250.38: *3* __init__
     def __init__ (self, ip, port,handler):
         self.ip = ip
         self.port = port
@@ -818,8 +752,7 @@ class Server(asyncore.dispatcher):
 
         # lower this to 5 if your OS complains
         self.listen (1024)
-    #@-node:EKR.20040517080250.38:__init__
-    #@+node:EKR.20040517080250.39:handle_accept
+    #@+node:EKR.20040517080250.39: *3* handle_accept
     def handle_accept (self):
         try:
             conn, addr = self.accept()
@@ -832,10 +765,8 @@ class Server(asyncore.dispatcher):
         # creates an instance of the handler class to handle the request/response
         # on the incoming connexion
         self.handler(conn,addr,self)
-    #@-node:EKR.20040517080250.39:handle_accept
     #@-others
-#@-node:EKR.20040517080250.37:class Server
-#@+node:EKR.20040517080250.40:poll
+#@+node:EKR.20040517080250.40: ** poll
 def poll(timeout=0.0):
     global sockets_to_close
     map = asyncore.socket_map
@@ -856,8 +787,8 @@ def poll(timeout=0.0):
     if [] == r == w == e:
         time.sleep(timeout)
     else:
-        #@        << try r, w, e = select.select >>
-        #@+node:EKR.20040517080250.41:<< try r, w, e = select.select >>
+        #@+<< try r, w, e = select.select >>
+        #@+node:EKR.20040517080250.41: *3* << try r, w, e = select.select >>
         try:
             r, w, e = select.select(r, w, e, timeout)
         except select.error as err:
@@ -865,29 +796,23 @@ def poll(timeout=0.0):
                 raise
             else:
                 return False # EKR: added return value.
-        #@nonl
-        #@-node:EKR.20040517080250.41:<< try r, w, e = select.select >>
-        #@nl
+        #@-<< try r, w, e = select.select >>
     for fd in r:
-        #@        << asyncore.read(map.get(fd)) >>
-        #@+node:EKR.20040517080250.42:<< asyncore.read(map.get(fd)) >>
+        #@+<< asyncore.read(map.get(fd)) >>
+        #@+node:EKR.20040517080250.42: *3* << asyncore.read(map.get(fd)) >>
         obj = map.get(fd)
         if obj is not None:
             asyncore.read(obj)
-        #@nonl
-        #@-node:EKR.20040517080250.42:<< asyncore.read(map.get(fd)) >>
-        #@nl
+        #@-<< asyncore.read(map.get(fd)) >>
     for fd in w:
-        #@        << asyncore.write(map.get(fd)) >>
-        #@+node:EKR.20040517080250.43:<< asyncore.write(map.get(fd)) >>
+        #@+<< asyncore.write(map.get(fd)) >>
+        #@+node:EKR.20040517080250.43: *3* << asyncore.write(map.get(fd)) >>
          obj = map.get(fd)
          if obj is not None:
             asyncore.write(obj)
-        #@-node:EKR.20040517080250.43:<< asyncore.write(map.get(fd)) >>
-        #@nl
+        #@-<< asyncore.write(map.get(fd)) >>
     return len(r) > 0 or len(w) > 0
-#@-node:EKR.20040517080250.40:poll
-#@+node:EKR.20040517080250.44:loop
+#@+node:EKR.20040517080250.44: ** loop
 def loop(timeout=5.0, use_poll=0, map=None):
     """
     Override the loop function of asynchore.
@@ -895,9 +820,7 @@ def loop(timeout=5.0, use_poll=0, map=None):
     write request pending.
     """
     return poll(timeout)
-#@nonl
-#@-node:EKR.20040517080250.44:loop
-#@+node:EKR.20040517080250.45:plugin_wrapper
+#@+node:EKR.20040517080250.45: ** plugin_wrapper
 def plugin_wrapper(tag, keywords):
 
     if g.app.killed: return
@@ -905,10 +828,8 @@ def plugin_wrapper(tag, keywords):
     first = True
     while loop(config.http_timeout):
         pass
-#@nonl
-#@-node:EKR.20040517080250.45:plugin_wrapper
-#@+node:EKR.20040517080250.46:asynchore_overrides
-#@+node:EKR.20040517080250.47:a_read
+#@+node:EKR.20040517080250.46: ** asynchore_overrides
+#@+node:EKR.20040517080250.47: *3* a_read
 def a_read(obj):
     try:
         obj.handle_read_event()
@@ -918,9 +839,7 @@ def a_read(obj):
         obj.handle_error()
 
 
-#@-node:EKR.20040517080250.47:a_read
-#@-node:EKR.20040517080250.46:asynchore_overrides
-#@+node:EKR.20040517080250.48:getConfiguration
+#@+node:EKR.20040517080250.48: ** getConfiguration
 def getConfiguration(c):
 
     """Called when the user opens a new file."""
@@ -938,9 +857,5 @@ def getConfiguration(c):
     new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
-#@nonl
-#@-node:EKR.20040517080250.48:getConfiguration
 #@-others
-#@nonl
-#@-node:EKR.20040517080250.1:@thin mod_http.py
 #@-leo

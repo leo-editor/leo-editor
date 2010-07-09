@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20041021120118:@thin pretty_print.py
-#@<< docstring >>
-#@+node:ekr.20050912180735:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20041021120118: * @thin pretty_print.py
+#@+<< docstring >>
+#@+node:ekr.20050912180735: ** << docstring >>
 '''A plugin that helps customize pretty printing. It creates a do-nothing subclass
 of the default pretty printer. To customize, simply override in this file the
 methods of the base prettyPrinter class in leoCommands.py. You would typically
@@ -10,29 +10,25 @@ been provided. You may, however, override any methods you like. You could even
 define your own class entirely, provided you implement the prettyPrintNode
 method.
 '''
-#@nonl
-#@-node:ekr.20050912180735:<< docstring >>
-#@nl
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-#@<< imports >>
-#@+node:ekr.20041021120859:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20041021120859: ** << imports >>
 import leo.core.leoGlobals as g
 
 import leo.core.leoCommands as leoCommands
 import leo.core.leoPlugins as leoPlugins
-#@nonl
-#@-node:ekr.20041021120859:<< imports >>
-#@nl
+#@-<< imports >>
 
 __version__ = "1.1" # 8/1/05: updated example code to match latest code in leoCommands.py.
 
 oldPrettyPrinter = leoCommands.Commands.prettyPrinter
 
 #@+others
-#@+node:ekr.20100128073941.5378:init
+#@+node:ekr.20100128073941.5378: ** init
 def init():
 
     ok = not g.app.unitTesting # Not for unit testing:  modifies core.
@@ -42,8 +38,7 @@ def init():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:ekr.20100128073941.5378:init
-#@+node:ekr.20041021120454:class myPrettyPrinter
+#@+node:ekr.20041021120454: ** class myPrettyPrinter
 class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
     '''An example subclass of Leo's prettyPrinter class.
@@ -51,8 +46,8 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
     Not all the base class methods are shown here:
     just the ones you are likely to want to override.'''
 
-    #@    @+others
-    #@+node:ekr.20041021123018:myPrettyPrinter.__init__
+    #@+others
+    #@+node:ekr.20041021123018: *3* myPrettyPrinter.__init__
     def __init__ (self,c):
 
         # Init the base class.
@@ -60,9 +55,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
         self.tracing = False
 
         # g.pr("Overriding class leoCommands.prettyPrinter")
-    #@nonl
-    #@-node:ekr.20041021123018:myPrettyPrinter.__init__
-    #@+node:ekr.20041021123018.1:putNormalToken & allies
+    #@+node:ekr.20041021123018.1: *3* putNormalToken & allies
     if 0: # The orignal code...
 
         def putNormalToken (self,token5tuple):
@@ -83,17 +76,13 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
             f = self.dispatchDict.get(self.name,self.oops)
             self.trace()
             f()
-    #@nonl
-    #@-node:ekr.20041021123018.1:putNormalToken & allies
-    #@+node:ekr.20041021123018.2:doEndMarker
+    #@+node:ekr.20041021123018.2: *3* doEndMarker
     if 0: # The orignal code...
 
         def doEndMarker (self):
 
             self.putArray()
-    #@nonl
-    #@-node:ekr.20041021123018.2:doEndMarker
-    #@+node:ekr.20041021123018.3:doErrorToken
+    #@+node:ekr.20041021123018.3: *3* doErrorToken
     if 0: # The orignal code...
 
         def doErrorToken (self):
@@ -106,9 +95,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                 ws = self.s[self.scol+1:i]
                 if ws:
                     self.array.append(ws)
-    #@nonl
-    #@-node:ekr.20041021123018.3:doErrorToken
-    #@+node:ekr.20041021123018.4:doIndent & doDedent
+    #@+node:ekr.20041021123018.4: *3* doIndent & doDedent
     if 0: # The orignal code...
 
         def doDedent (self):
@@ -118,8 +105,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
         def doIndent (self):
 
             self.array.append(self.val)
-    #@-node:ekr.20041021123018.4:doIndent & doDedent
-    #@+node:ekr.20041021123018.5:doMultiLine
+    #@+node:ekr.20041021123018.5: *3* doMultiLine
     if 0: # The orignal code...
 
         def doMultiLine (self):
@@ -146,9 +132,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
             # Suppress start-of-line logic.
             self.line = self.erow
-    #@nonl
-    #@-node:ekr.20041021123018.5:doMultiLine
-    #@+node:ekr.20041021123018.6:doName
+    #@+node:ekr.20041021123018.6: *3* doName
     if 0: # The orignal code...
 
         def doName(self):
@@ -169,9 +153,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                 self.array.append(' ') # Retain the blank before '('.
 
             self.prevName = self.val
-    #@nonl
-    #@-node:ekr.20041021123018.6:doName
-    #@+node:ekr.20041021123018.7:doNewline
+    #@+node:ekr.20041021123018.7: *3* doNewline
     if 0: # The orignal code...
 
         def doNewline (self):
@@ -183,16 +165,13 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
             self.array.append('\n')
             self.putArray()
-    #@nonl
-    #@-node:ekr.20041021123018.7:doNewline
-    #@+node:ekr.20041021123018.8:doNumber
+    #@+node:ekr.20041021123018.8: *3* doNumber
     if 0: # The orignal code...
 
         def doNumber (self):
 
             self.array.append(self.val)
-    #@-node:ekr.20041021123018.8:doNumber
-    #@+node:ekr.20041021123018.9:doOp
+    #@+node:ekr.20041021123018.9: *3* doOp
     if 0: # The orignal code...
 
         def doOp (self):
@@ -251,9 +230,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                     self.put(val)
             else:
                 self.put(val)
-    #@nonl
-    #@-node:ekr.20041021123018.9:doOp
-    #@+node:ekr.20041021123018.10:doStartLine
+    #@+node:ekr.20041021123018.10: *3* doStartLine
     if 0: # The orignal code...
 
         def doStartLine (self):
@@ -264,17 +241,13 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
             if self.ws:
                 self.array.append(self.ws)
-    #@nonl
-    #@-node:ekr.20041021123018.10:doStartLine
-    #@+node:ekr.20041021123018.11:oops
+    #@+node:ekr.20041021123018.11: *3* oops
     if 0: # The orignal code...
 
         def oops(self):
 
             g.pr("unknown PrettyPrinting code: %s" % (self.name))
-    #@nonl
-    #@-node:ekr.20041021123018.11:oops
-    #@+node:ekr.20041021123018.12:trace
+    #@+node:ekr.20041021123018.12: *3* trace
     if 0: # The orignal code...
 
         def trace(self):
@@ -285,11 +258,6 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                     self.name,
                     repr(g.toEncodedString(self.val))
                 ))
-    #@nonl
-    #@-node:ekr.20041021123018.12:trace
     #@-others
-#@nonl
-#@-node:ekr.20041021120454:class myPrettyPrinter
 #@-others
-#@-node:ekr.20041021120118:@thin pretty_print.py
 #@-leo
