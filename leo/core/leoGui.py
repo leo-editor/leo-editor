@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3719:@thin leoGui.py
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.3719: * @thin leoGui.py
 #@@first
 
 """A module containing the base leoGui class.
@@ -19,15 +19,15 @@ import leo.core.leoFind as leoFind # for nullFindTab.
 import leo.core.leoFrame as leoFrame # for nullGui.
 
 #@+others
-#@+node:ekr.20031218072017.3720:class leoGui
+#@+node:ekr.20031218072017.3720: ** class leoGui
 class leoGui:
 
     """The base class of all gui classes.
 
     Subclasses are expected to override all do-nothing methods of this class."""
 
-    #@    << define leoGui file types >>
-    #@+node:ekr.20040131103531:<< define leoGui file types >> (not used yet)
+    #@+<< define leoGui file types >>
+    #@+node:ekr.20040131103531: *3* << define leoGui file types >> (not used yet)
     allFullFiletypes = [
         ("All files",   "*"),
         ("C/C++ files", "*.c"),
@@ -78,12 +78,11 @@ class leoGui:
     textAllFiletypes = [
         ("Text files","*.txt"),
         ("All files", "*")]
-    #@-node:ekr.20040131103531:<< define leoGui file types >> (not used yet)
-    #@nl
+    #@-<< define leoGui file types >>
 
-    #@    @+others
-    #@+node:ekr.20031218072017.3721:app.gui Birth & death
-    #@+node:ekr.20031218072017.3722: leoGui.__init__
+    #@+others
+    #@+node:ekr.20031218072017.3721: *3* app.gui Birth & death
+    #@+node:ekr.20031218072017.3722: *4*  leoGui.__init__
     def __init__ (self,guiName):
 
         # g.trace("leoGui",guiName,g.callers())
@@ -102,17 +101,14 @@ class leoGui:
 
         # To keep pylint happy.
         self.ScriptingControllerClass = nullScriptingControllerClass
-    #@-node:ekr.20031218072017.3722: leoGui.__init__
-    #@+node:ekr.20061109211054:leoGui.mustBeDefinedOnlyInBaseClass
+    #@+node:ekr.20061109211054: *4* leoGui.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
         'guiName',
         'oops',
         'setScript',
         'widget_name',
     )
-    #@nonl
-    #@-node:ekr.20061109211054:leoGui.mustBeDefinedOnlyInBaseClass
-    #@+node:ekr.20061109211022:leoGui.mustBeDefinedInSubclasses
+    #@+node:ekr.20061109211022: *4* leoGui.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
         # Startup & shutdown
         'attachLeoIcon',
@@ -155,27 +151,22 @@ class leoGui:
         #'setIdleTimeHook',             # optional       
         #'setIdleTimeHookAfterDelay',   # optional
     )
-    #@-node:ekr.20061109211022:leoGui.mustBeDefinedInSubclasses
-    #@-node:ekr.20031218072017.3721:app.gui Birth & death
-    #@+node:ekr.20061109212618.1:Must be defined only in base class
-    #@+node:ekr.20031218072017.3740:guiName
+    #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
+    #@+node:ekr.20031218072017.3740: *4* guiName
     def guiName(self):
 
         try:
             return self.mGuiName
         except:
             return "invalid gui name"
-    #@-node:ekr.20031218072017.3740:guiName
-    #@+node:ekr.20031218072017.2231:setScript
+    #@+node:ekr.20031218072017.2231: *4* setScript
     def setScript (self,script=None,scriptFileName=None):
 
         self.script = script
         self.scriptFileName = scriptFileName
-    #@-node:ekr.20031218072017.2231:setScript
-    #@-node:ekr.20061109212618.1:Must be defined only in base class
-    #@+node:ekr.20061109212618:Must be defined in subclasses
-    #@+node:ekr.20031218072017.3723:app.gui create & destroy
-    #@+node:ekr.20031218072017.3724:createRootWindow
+    #@+node:ekr.20061109212618: *3* Must be defined in subclasses
+    #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy
+    #@+node:ekr.20031218072017.3724: *5* createRootWindow
     def createRootWindow(self):
 
         """Create the hidden root window for the gui.
@@ -183,13 +174,11 @@ class leoGui:
         Nothing needs to be done if the root window need not exist."""
 
         self.oops()
-    #@-node:ekr.20031218072017.3724:createRootWindow
-    #@+node:ekr.20031218072017.3725:destroySelf
+    #@+node:ekr.20031218072017.3725: *5* destroySelf
     def destroySelf (self):
 
         self.oops()
-    #@-node:ekr.20031218072017.3725:destroySelf
-    #@+node:ekr.20031218072017.3727:killGui
+    #@+node:ekr.20031218072017.3727: *5* killGui
     def killGui(self,exitFlag=True):
 
         """Destroy the gui.
@@ -197,24 +186,20 @@ class leoGui:
         The entire Leo application should terminate if exitFlag is True."""
 
         self.oops()
-    #@-node:ekr.20031218072017.3727:killGui
-    #@+node:ekr.20031218072017.3728:recreateRootWindow
+    #@+node:ekr.20031218072017.3728: *5* recreateRootWindow
     def recreateRootWindow(self):
 
         """Create the hidden root window of the gui
         after a previous gui has terminated with killGui(False)."""
 
         self.oops()
-    #@-node:ekr.20031218072017.3728:recreateRootWindow
-    #@+node:ekr.20031218072017.3729:runMainLoop
+    #@+node:ekr.20031218072017.3729: *5* runMainLoop
     def runMainLoop(self):
 
         """Run the gui's main loop."""
 
         self.oops()
-    #@-node:ekr.20031218072017.3729:runMainLoop
-    #@-node:ekr.20031218072017.3723:app.gui create & destroy
-    #@+node:ekr.20031218072017.3730:app.gui dialogs
+    #@+node:ekr.20031218072017.3730: *4* app.gui dialogs
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run Leo's About Leo dialog."""
         self.oops()
@@ -247,9 +232,7 @@ class leoGui:
     def runPropertiesDialog(self,title='Properties', data={}, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
-    #@nonl
-    #@-node:ekr.20031218072017.3730:app.gui dialogs
-    #@+node:ekr.20061031173016:app.gui.createKeyHandlerClass
+    #@+node:ekr.20061031173016: *4* app.gui.createKeyHandlerClass
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
         self.oops()
@@ -257,9 +240,7 @@ class leoGui:
         # import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         # return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@nonl
-    #@-node:ekr.20061031173016:app.gui.createKeyHandlerClass
-    #@+node:ekr.20031218072017.3731:app.gui file dialogs
+    #@+node:ekr.20031218072017.3731: *4* app.gui file dialogs
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
         """Create and run an open file dialog ."""
@@ -271,8 +252,7 @@ class leoGui:
         """Create and run a save file dialog ."""
 
         self.oops()
-    #@-node:ekr.20031218072017.3731:app.gui file dialogs
-    #@+node:ekr.20031218072017.3732:app.gui panels
+    #@+node:ekr.20031218072017.3732: *4* app.gui panels
     def createColorPanel(self,c):
         """Create a color panel"""
         self.oops()
@@ -296,21 +276,16 @@ class leoGui:
     def createLeoFrame(self,title):
         """Create a new Leo frame."""
         self.oops()
-    #@-node:ekr.20031218072017.3732:app.gui panels
-    #@+node:ekr.20031218072017.3733:app.gui utils
-    #@+at 
-    #@nonl
-    # Subclasses are expected to subclass all of the following 
-    # methods.
+    #@+node:ekr.20031218072017.3733: *4* app.gui utils
+    #@+at Subclasses are expected to subclass all of the following methods.
     # 
-    # These are all do-nothing methods: callers are expected to 
-    # check for None returns.
+    # These are all do-nothing methods: callers are expected to check for
+    # None returns.
     # 
-    # The type of commander passed to methods depends on the type of 
-    # frame or dialog being created.  The commander may be a 
-    # Commands instance or one of its subcommanders.
-    #@-at
-    #@+node:ekr.20031218072017.3734:Clipboard (leoGui)
+    # The type of commander passed to methods depends on the type of frame
+    # or dialog being created. The commander may be a Commands instance or
+    # one of its subcommanders.
+    #@+node:ekr.20031218072017.3734: *5* Clipboard (leoGui)
     def replaceClipboardWith (self,s):
 
         self.oops()
@@ -318,16 +293,14 @@ class leoGui:
     def getTextFromClipboard (self):
 
         self.oops()
-    #@-node:ekr.20031218072017.3734:Clipboard (leoGui)
-    #@+node:ekr.20061031132712.1:color
+    #@+node:ekr.20061031132712.1: *5* color
     # g.es calls gui.color to do the translation,
     # so most code in Leo's core can simply use Tk color names.
 
     def color (self,color):
         '''Return the gui-specific color corresponding to the Tk color name.'''
         return color # Do not call oops: this method is essential for the config classes.
-    #@-node:ekr.20061031132712.1:color
-    #@+node:ekr.20031218072017.3735:Dialog utils
+    #@+node:ekr.20031218072017.3735: *5* Dialog utils
     def attachLeoIcon (self,window):
         """Attach the Leo icon to a window."""
         self.oops()
@@ -343,8 +316,7 @@ class leoGui:
     def get_window_info (self,window):
         """Return the window information."""
         self.oops()
-    #@-node:ekr.20031218072017.3735:Dialog utils
-    #@+node:ekr.20061031132907:Events (leoGui)
+    #@+node:ekr.20061031132907: *5* Events (leoGui)
     def event_generate(self,w,kind,*args,**keys):
         '''Generate an event.'''
         # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
@@ -370,13 +342,11 @@ class leoGui:
             return event.x,event.y
         else:
             return 0,0
-    #@-node:ekr.20061031132907:Events (leoGui)
-    #@+node:ekr.20070212145124:getFullVersion
+    #@+node:ekr.20070212145124: *5* getFullVersion
     def getFullVersion (self,c=None):
 
         return 'leoGui: dummy version'
-    #@-node:ekr.20070212145124:getFullVersion
-    #@+node:ekr.20031218072017.3737:Focus
+    #@+node:ekr.20031218072017.3737: *5* Focus
     def get_focus(self,frame):
         """Return the widget that has focus, or the body widget if None."""
         self.oops()
@@ -384,14 +354,12 @@ class leoGui:
     def set_focus(self,commander,widget):
         """Set the focus of the widget in the given commander if it needs to be changed."""
         self.oops()
-    #@-node:ekr.20031218072017.3737:Focus
-    #@+node:ekr.20031218072017.3736:Font (leoGui)
+    #@+node:ekr.20031218072017.3736: *5* Font (leoGui)
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
         # g.trace('g.app.gui',g.callers()) # 'family',family,'size',size,'defaultSize',defaultSize,
         self.oops()
-    #@-node:ekr.20031218072017.3736:Font (leoGui)
-    #@+node:ekr.20031218072017.3739:Idle time
+    #@+node:ekr.20031218072017.3739: *5* Idle time
     def setIdleTimeHook (self,idleTimeHookHandler):
 
         # g.pr('leoGui:setIdleTimeHook')
@@ -401,8 +369,7 @@ class leoGui:
 
         # g.pr('leoGui:setIdleTimeHookAfterDelay')
         pass # Not an error.
-    #@-node:ekr.20031218072017.3739:Idle time
-    #@+node:ekr.20070212070820:makeScriptButton
+    #@+node:ekr.20070212070820: *5* makeScriptButton
     def makeScriptButton (self,c,
         args=None,
         p=None,
@@ -417,25 +384,19 @@ class leoGui:
     ):
 
         self.oops()
-    #@-node:ekr.20070212070820:makeScriptButton
-    #@-node:ekr.20031218072017.3733:app.gui utils
-    #@-node:ekr.20061109212618:Must be defined in subclasses
-    #@+node:ekr.20070228154059:May be defined in subclasses
-    #@+node:ekr.20070219084912:finishCreate (may be overridden in subclasses)
+    #@+node:ekr.20070228154059: *3* May be defined in subclasses
+    #@+node:ekr.20070219084912: *4* finishCreate (may be overridden in subclasses)
     def finishCreate (self):
 
         pass
-    #@nonl
-    #@-node:ekr.20070219084912:finishCreate (may be overridden in subclasses)
-    #@+node:ekr.20031218072017.3741:oops
+    #@+node:ekr.20031218072017.3741: *4* oops
     def oops (self):
 
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
             g.pr("leoGui oops", g.callers(4), "should be overridden in subclass")
-    #@-node:ekr.20031218072017.3741:oops
-    #@+node:ekr.20051206103652:widget_name (leoGui)
+    #@+node:ekr.20051206103652: *4* widget_name (leoGui)
     def widget_name (self,w):
 
         # First try the widget's getName method.
@@ -447,8 +408,7 @@ class leoGui:
             return w._name
         else:
             return repr(w)
-    #@-node:ekr.20051206103652:widget_name (leoGui)
-    #@+node:ekr.20070228160107:class leoKeyEvent (leoGui)
+    #@+node:ekr.20070228160107: *4* class leoKeyEvent (leoGui)
     class leoKeyEvent:
 
         '''A gui-independent wrapper for gui events.'''
@@ -485,19 +445,15 @@ class leoGui:
             else:
                 return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                     repr(self.char),repr(self.keysym))
-    #@nonl
-    #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
-    #@-node:ekr.20070228154059:May be defined in subclasses
     #@-others
-#@-node:ekr.20031218072017.3720:class leoGui
-#@+node:ekr.20031218072017.2223:class nullGui (leoGui)
+#@+node:ekr.20031218072017.2223: ** class nullGui (leoGui)
 class nullGui(leoGui):
 
     """Null gui class."""
 
-    #@    @+others
-    #@+node:ekr.20031218072017.2224:Birth & death
-    #@+node:ekr.20031218072017.2225: nullGui.__init__
+    #@+others
+    #@+node:ekr.20031218072017.2224: *3* Birth & death
+    #@+node:ekr.20031218072017.2225: *4*  nullGui.__init__
     def __init__ (self,guiName):
 
         leoGui.__init__ (self,guiName) # init the base class.
@@ -510,16 +466,13 @@ class nullGui(leoGui):
         self.isNullGui = True
         self.bodyTextWidget  = leoFrame.stringTextWidget
         self.plainTextWidget = leoFrame.stringTextWidget
-    #@-node:ekr.20031218072017.2225: nullGui.__init__
-    #@+node:ekr.20070123092623:nullGui.createKeyHandlerClass
+    #@+node:ekr.20070123092623: *4* nullGui.createKeyHandlerClass
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
         import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@nonl
-    #@-node:ekr.20070123092623:nullGui.createKeyHandlerClass
-    #@+node:ekr.20031218072017.2229:runMainLoop
+    #@+node:ekr.20031218072017.2229: *4* runMainLoop
     def runMainLoop(self):
 
         """Run the gui's main loop."""
@@ -532,16 +485,13 @@ class nullGui(leoGui):
             # g.es("\nend of batch script")
 
         # Getting here will terminate Leo.
-    #@-node:ekr.20031218072017.2229:runMainLoop
-    #@-node:ekr.20031218072017.2224:Birth & death
-    #@+node:ekr.20070228155807:isTextWidget
+    #@+node:ekr.20070228155807: *3* isTextWidget
     def isTextWidget (self,w):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
 
         return w and isinstance(w,leoFrame.baseTextWidget)
-    #@-node:ekr.20070228155807:isTextWidget
-    #@+node:ekr.20031218072017.2230:oops
+    #@+node:ekr.20031218072017.2230: *3* oops
     def oops(self):
 
         """Default do-nothing method for nullGui class.
@@ -552,8 +502,7 @@ class nullGui(leoGui):
         # However, this message is useful when writing gui plugins.
         if 1:
             g.trace("nullGui",g.callers(4))
-    #@-node:ekr.20031218072017.2230:oops
-    #@+node:ekr.20070301171901:do nothings
+    #@+node:ekr.20070301171901: *3* do nothings
     def alert (self,message):
         pass
 
@@ -593,8 +542,7 @@ class nullGui(leoGui):
 
     def set_focus(self,commander,widget):
         self.focusWidget = widget
-    #@-node:ekr.20070301171901:do nothings
-    #@+node:ekr.20070301172456:app.gui panels
+    #@+node:ekr.20070301172456: *3* app.gui panels
     def createComparePanel(self,c):
         """Create Compare panel."""
         self.oops()
@@ -612,8 +560,7 @@ class nullGui(leoGui):
         gui = self
         self.lastFrame = leoFrame.nullFrame(title,gui)
         return self.lastFrame
-    #@-node:ekr.20070301172456:app.gui panels
-    #@+node:ekr.20031218072017.3744:dialogs (nullGui)
+    #@+node:ekr.20031218072017.3744: *3* dialogs (nullGui)
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         return self.simulateDialog("aboutLeoDialog")
 
@@ -644,15 +591,13 @@ class nullGui(leoGui):
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         return self.simulateDialog("yesNoCancelDialog","cancel")
-    #@-node:ekr.20031218072017.3744:dialogs (nullGui)
-    #@+node:ekr.20100521090440.5893:onActivate/DeactivateEvent
+    #@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent
     def onActivateEvent (self,*args,**keys):
         pass
 
     def onDeactivateEvent(self,*args,**keys):
         pass
-    #@-node:ekr.20100521090440.5893:onActivate/DeactivateEvent
-    #@+node:ekr.20031218072017.3747:simulateDialog
+    #@+node:ekr.20031218072017.3747: *3* simulateDialog
     def simulateDialog (self,key,defaultVal=None):
 
         val = self.theDict.get(key,defaultVal)
@@ -661,10 +606,8 @@ class nullGui(leoGui):
             g.pr(key, val)
 
         return val
-    #@-node:ekr.20031218072017.3747:simulateDialog
     #@-others
-#@-node:ekr.20031218072017.2223:class nullGui (leoGui)
-#@+node:ekr.20080707150137.5:class nullScriptingControllerClass
+#@+node:ekr.20080707150137.5: ** class nullScriptingControllerClass
 class nullScriptingControllerClass:
 
     '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
@@ -680,16 +623,15 @@ class nullScriptingControllerClass:
 
         pass
 
-#@-node:ekr.20080707150137.5:class nullScriptingControllerClass
-#@+node:ekr.20031218072017.3742:class unitTestGui (nullGui)
+#@+node:ekr.20031218072017.3742: ** class unitTestGui (nullGui)
 class unitTestGui(nullGui):
 
     '''A gui class for use by unit tests.'''
 
     # Presently used only by the import/export unit tests.
 
-    #@    @+others
-    #@+node:ekr.20031218072017.3743: ctor (unitTestGui)
+    #@+others
+    #@+node:ekr.20031218072017.3743: *3*  ctor (unitTestGui)
     def __init__ (self,theDict=None,trace=False):
 
         self.oldGui = g.app.gui
@@ -709,22 +651,17 @@ class unitTestGui(nullGui):
     def destroySelf (self):
 
         g.app.gui = self.oldGui
-    #@-node:ekr.20031218072017.3743: ctor (unitTestGui)
-    #@+node:ekr.20071128094234.1:createSpellTab
+    #@+node:ekr.20071128094234.1: *3* createSpellTab
     def createSpellTab(self,c,spellHandler,tabName):
 
         pass # This method keeps pylint happy.
-    #@-node:ekr.20071128094234.1:createSpellTab
-    #@+node:ekr.20081119083601.1:toUnicode
+    #@+node:ekr.20081119083601.1: *3* toUnicode
     def toUnicode (self,s):
 
         if g.isPython3:
             return str(s)
         else:
             return unicode(s)
-    #@-node:ekr.20081119083601.1:toUnicode
     #@-others
-#@-node:ekr.20031218072017.3742:class unitTestGui (nullGui)
 #@-others
-#@-node:ekr.20031218072017.3719:@thin leoGui.py
 #@-leo

@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-#@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2605:@thin runLeo.py 
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.2605: * @thin runLeo.py 
 #@@first
 
 """Entry point for Leo in Python."""
@@ -8,8 +8,8 @@
 #@@language python
 #@@tabwidth -4
 
-#@<< imports and inits >>
-#@+node:ekr.20080921091311.1:<< imports and inits >>
+#@+<< imports and inits >>
+#@+node:ekr.20080921091311.1: ** << imports and inits >>
 # import pdb ; pdb = pdb.set_trace
 import optparse
 import os
@@ -71,11 +71,10 @@ leoPlugins.init()
 
 # Do all other imports.
 import leo.core.leoGui as leoGui
-#@-node:ekr.20080921091311.1:<< imports and inits >>
-#@nl
+#@-<< imports and inits >>
 
 #@+others
-#@+node:ekr.20031218072017.1934:run & helpers
+#@+node:ekr.20031218072017.1934: ** run & helpers
 def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
@@ -95,7 +94,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # Phase 3: after loading plugins. Create a frame.
     ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
     if ok and not versionFlag: g.app.gui.runMainLoop()
-#@+node:ekr.20090519143741.5915:doPrePluginsInit & helpers
+#@+node:ekr.20090519143741.5915: *3* doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
     '''
@@ -129,7 +128,7 @@ def doPrePluginsInit(fileName,pymacs):
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
     return fileName,relativeFileName,script,versionFlag
-#@+node:ekr.20080921060401.4:createSpecialGui & helper
+#@+node:ekr.20080921060401.4: *4* createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
     tag = ''
@@ -152,15 +151,13 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
     elif gui == 'qt':   g.app.createQtGui(tag)
     elif gui == 'tk':   g.app.createTkGui(tag)
     elif gui == 'wx':   g.app.createWxGui(tag)
-#@+node:ekr.20031218072017.1938:createNullGuiWithScript
+#@+node:ekr.20031218072017.1938: *5* createNullGuiWithScript
 def createNullGuiWithScript (script):
 
     g.app.batchMode = True
     g.app.gui = leoGui.nullGui("nullGui")
     g.app.gui.setScript(script)
-#@-node:ekr.20031218072017.1938:createNullGuiWithScript
-#@-node:ekr.20080921060401.4:createSpecialGui & helper
-#@+node:ekr.20070306085724:adjustSysPath
+#@+node:ekr.20070306085724: *4* adjustSysPath
 def adjustSysPath ():
 
     '''Adjust sys.path to enable imports as usual with Leo.
@@ -173,8 +170,7 @@ def adjustSysPath ():
 
     2  Plugins now do fully qualified imports.
     '''
-#@-node:ekr.20070306085724:adjustSysPath
-#@+node:ekr.20071117060958:getFileName & helper
+#@+node:ekr.20071117060958: *4* getFileName & helper
 def getFileName (fileName,script):
 
     '''Return the filename from sys.argv.'''
@@ -189,7 +185,7 @@ def getFileName (fileName,script):
             fileName = len(sys.argv) > 1 and sys.argv[-1]
 
     return completeFileName(fileName)
-#@+node:ekr.20041124083125:completeFileName
+#@+node:ekr.20041124083125: *5* completeFileName
 def completeFileName (fileName):
 
     trace = False
@@ -215,17 +211,14 @@ def completeFileName (fileName):
     if trace: print('completeFileName',fileName)
 
     return fileName,relativeFileName
-#@-node:ekr.20041124083125:completeFileName
-#@-node:ekr.20071117060958:getFileName & helper
-#@+node:ekr.20080921091311.2:initApp
+#@+node:ekr.20080921091311.2: *4* initApp
 def initApp (verbose):
 
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
     g.app.config = leoConfig.configClass()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-#@-node:ekr.20080921091311.2:initApp
-#@+node:ekr.20041130093254:reportDirectories
+#@+node:ekr.20041130093254: *4* reportDirectories
 def reportDirectories(verbose):
 
     if verbose:
@@ -235,8 +228,7 @@ def reportDirectories(verbose):
             ("home",g.app.homeDir),
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
-#@-node:ekr.20041130093254:reportDirectories
-#@+node:ekr.20091007103358.6061:scanOptions
+#@+node:ekr.20091007103358.6061: *4* scanOptions
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
@@ -330,9 +322,7 @@ def scanOptions():
         print('scanOptions: fileName',fileName)
         print('scanOptions: argv',sys.argv)
     return fileName,gui,script,versionFlag,windowFlag
-#@-node:ekr.20091007103358.6061:scanOptions
-#@-node:ekr.20090519143741.5915:doPrePluginsInit & helpers
-#@+node:ekr.20090519143741.5917:doPostPluginsInit & helpers
+#@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers
 def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
 
     '''Return True if the frame was created properly.'''
@@ -367,7 +357,7 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
         g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
     return True
-#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
+#@+node:ekr.20031218072017.1624: *4* createFrame (runLeo.py)
 def createFrame (fileName,relativeFileName,script):
 
     """Create a LeoFrame during Leo's startup process."""
@@ -415,8 +405,7 @@ def createFrame (fileName,relativeFileName,script):
         g.es_print("file not found:",fileName,color='red')
 
     return c,frame
-#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
-#@+node:ekr.20080921060401.5:finishInitApp (runLeo.py)
+#@+node:ekr.20080921060401.5: *4* finishInitApp (runLeo.py)
 def finishInitApp(c):
 
     g.app.trace_gc          = c.config.getBool('trace_gc')
@@ -426,8 +415,7 @@ def finishInitApp(c):
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
 
-#@-node:ekr.20080921060401.5:finishInitApp (runLeo.py)
-#@+node:ekr.20080921060401.6:initFocusAndDraw
+#@+node:ekr.20080921060401.6: *4* initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 
     w = g.app.gui.get_focus(c)
@@ -441,8 +429,7 @@ def initFocusAndDraw(c,fileName):
         c.k.showStateAndMode(w)
 
     c.outerUpdate()
-#@-node:ekr.20080921060401.6:initFocusAndDraw
-#@+node:ekr.20040411081633:startPsyco
+#@+node:ekr.20040411081633: *4* startPsyco
 def startPsyco ():
 
     try:
@@ -462,9 +449,7 @@ def startPsyco ():
         g.pr("unexpected exception importing psyco")
         g.es_exception()
         g.app.use_psyco = False
-#@-node:ekr.20040411081633:startPsyco
-#@-node:ekr.20090519143741.5917:doPostPluginsInit & helpers
-#@+node:ekr.20031218072017.1936:isValidPython
+#@+node:ekr.20031218072017.1936: *3* isValidPython
 def isValidPython():
 
     if sys.platform == 'cli':
@@ -487,14 +472,14 @@ http://python.org/download/
             try:
                 # g.app.gui does not exist yet.
                 import Tkinter as Tk
-                #@                << define emergency dialog class >>
-                #@+node:ekr.20080822065427.8:<< define emergency dialog class >>
+                #@+<< define emergency dialog class >>
+                #@+node:ekr.20080822065427.8: *4* << define emergency dialog class >>
                 class emergencyDialog:
 
                     """A class that creates an Tkinter dialog with a single OK button."""
 
-                    #@    @+others
-                    #@+node:ekr.20080822065427.9:__init__ (emergencyDialog)
+                    #@+others
+                    #@+node:ekr.20080822065427.9: *5* __init__ (emergencyDialog)
                     def __init__(self,title,message):
 
                         """Constructor for the leoTkinterDialog class."""
@@ -516,8 +501,7 @@ http://python.org/download/
                             # Singleton tuple.
                         self.createButtons(buttons)
                         self.top.bind("<Key>", self.onKey)
-                    #@-node:ekr.20080822065427.9:__init__ (emergencyDialog)
-                    #@+node:ekr.20080822065427.12:createButtons
+                    #@+node:ekr.20080822065427.12: *5* createButtons
                     def createButtons (self,buttons):
 
                         """Create a row of buttons.
@@ -548,8 +532,7 @@ http://python.org/download/
                                 self.defaultButtonCommand = command
 
                         return buttonList
-                    #@-node:ekr.20080822065427.12:createButtons
-                    #@+node:ekr.20080822065427.14:createTopFrame
+                    #@+node:ekr.20080822065427.14: *5* createTopFrame
                     def createTopFrame(self):
 
                         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
@@ -564,8 +547,7 @@ http://python.org/download/
 
                         label = Tk.Label(self.frame,text=message,bg='white')
                         label.pack(pady=10)
-                    #@-node:ekr.20080822065427.14:createTopFrame
-                    #@+node:ekr.20080822065427.10:okButton
+                    #@+node:ekr.20080822065427.10: *5* okButton
                     def okButton(self):
 
                         """Do default click action in ok button."""
@@ -573,8 +555,7 @@ http://python.org/download/
                         self.top.destroy()
                         self.top = None
 
-                    #@-node:ekr.20080822065427.10:okButton
-                    #@+node:ekr.20080822065427.21:onKey
+                    #@+node:ekr.20080822065427.21: *5* onKey
                     def onKey(self,event):
 
                         """Handle Key events in askOk dialogs."""
@@ -582,8 +563,7 @@ http://python.org/download/
                         self.okButton()
 
                         return "break"
-                    #@-node:ekr.20080822065427.21:onKey
-                    #@+node:ekr.20080822065427.16:run
+                    #@+node:ekr.20080822065427.16: *5* run
                     def run (self):
 
                         """Run the modal emergency dialog."""
@@ -593,10 +573,8 @@ http://python.org/download/
 
                         self.top.grab_set() # Make the dialog a modal dialog.
                         self.root.wait_window(self.top)
-                    #@-node:ekr.20080822065427.16:run
                     #@-others
-                #@-node:ekr.20080822065427.8:<< define emergency dialog class >>
-                #@nl
+                #@-<< define emergency dialog class >>
                 d = emergencyDialog(
                     title='Python Version Error',
                     message=message)
@@ -608,20 +586,14 @@ http://python.org/download/
         print("isValidPython: unexpected exception: g.CheckVersion")
         traceback.print_exc()
         return 0
-#@-node:ekr.20031218072017.1936:isValidPython
-#@-node:ekr.20031218072017.1934:run & helpers
-#@+node:ekr.20031218072017.2607:profile_leo
-#@+at 
-#@nonl
-# To gather statistics, do the following in a Python window, not 
-# idle:
+#@+node:ekr.20031218072017.2607: ** profile_leo
+#@+at To gather statistics, do the following in a Python window, not idle:
 # 
 #     import leo
 #     import leo.core.runLeo as runLeo
 #     runLeo.profile_leo()  (this runs leo)
 #     load leoDocs.leo (it is very slow)
 #     quit Leo.
-#@-at
 #@@c
 
 def profile_leo ():
@@ -646,11 +618,9 @@ def profile_leo ():
     p.print_stats(reFiles)
 
 prof = profile_leo
-#@-node:ekr.20031218072017.2607:profile_leo
 #@-others
 
 if __name__ == "__main__":
     run()
 
-#@-node:ekr.20031218072017.2605:@thin runLeo.py 
 #@-leo

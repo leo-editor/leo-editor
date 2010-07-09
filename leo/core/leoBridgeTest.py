@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20080730161153.2:@thin leoBridgeTest.py
+#@+leo-ver=5-thin
+#@+node:ekr.20080730161153.2: * @thin leoBridgeTest.py
 '''A program to run unit tests with the leoBridge module.'''
 
 import leo.core.leoBridge as leoBridge
@@ -10,7 +10,7 @@ import optparse
 # Do not define g here.  Use the g returned by the bridge.
 
 #@+others
-#@+node:ekr.20080730161153.3:main & helpers
+#@+node:ekr.20080730161153.3: ** main & helpers
 def main (gui='nullGui'):
 
     trace = False
@@ -27,7 +27,7 @@ def main (gui='nullGui'):
         runUnitTests(c,g)
 
     g.pr(tag,'done')
-#@+node:ekr.20080730161153.4:runUnitTests
+#@+node:ekr.20080730161153.4: *3* runUnitTests
 def runUnitTests (c,g):
 
     nodeName = 'All unit tests' # The tests to run.
@@ -46,9 +46,7 @@ def runUnitTests (c,g):
         g.es('unexpected exception')
         g.es_exception()
         raise
-#@nonl
-#@-node:ekr.20080730161153.4:runUnitTests
-#@+node:ekr.20090121164439.6177:scanOptions
+#@+node:ekr.20090121164439.6177: *3* scanOptions
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
@@ -71,13 +69,10 @@ def scanOptions():
     silent = options.silent
 
     return gui,silent
-#@-node:ekr.20090121164439.6177:scanOptions
-#@-node:ekr.20080730161153.3:main & helpers
 #@-others
 
 if __name__ == '__main__':
     print ('leoBridgeTest.py: argv: %s' % repr(sys.argv))
     gui = scanOptions()
     main(gui=gui)
-#@-node:ekr.20080730161153.2:@thin leoBridgeTest.py
 #@-leo

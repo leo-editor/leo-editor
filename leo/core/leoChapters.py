@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20070317085508.1:@thin leoChapters.py
+#@+leo-ver=5-thin
+#@+node:ekr.20070317085508.1: * @thin leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 
 #@@language python
@@ -11,14 +11,14 @@ import leo.core.leoGlobals as g
 # To do later or never: Make body editors persistent. Create @body-editor node?
 
 #@+others
-#@+node:ekr.20070317085437:class chapterController
+#@+node:ekr.20070317085437: ** class chapterController
 class chapterController:
 
     '''A per-commander controller that manages chapters and related nodes.'''
 
-    #@    @+others
-    #@+node:ekr.20070530075604:Birth
-    #@+node:ekr.20070317085437.2: ctor: chapterController
+    #@+others
+    #@+node:ekr.20070530075604: *3* Birth
+    #@+node:ekr.20070317085437.2: *4*  ctor: chapterController
     def __init__ (self,c):
 
         self.c = c
@@ -34,8 +34,7 @@ class chapterController:
         self.use_tabs = c.config.getBool('use_chapter_tabs')
 
         # g.trace('chapterController',g.callers())
-    #@-node:ekr.20070317085437.2: ctor: chapterController
-    #@+node:ekr.20070325104904:cc.finishCreate
+    #@+node:ekr.20070325104904: *4* cc.finishCreate
     def finishCreate (self):
 
         '''Find or make the @chapters and @chapter trash nodes.'''
@@ -73,10 +72,8 @@ class chapterController:
         # Always select the main chapter.
         # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main')
-    #@-node:ekr.20070325104904:cc.finishCreate
-    #@-node:ekr.20070530075604:Birth
-    #@+node:ekr.20070317085437.30:Commands (chapters)
-    #@+node:ekr.20070317085437.50:cc.cloneNodeToChapter & helper
+    #@+node:ekr.20070317085437.30: *3* Commands (chapters)
+    #@+node:ekr.20070317085437.50: *4* cc.cloneNodeToChapter & helper
     def cloneNodeToChapter (self,event=None):
 
         '''Prompt for a chapter name,
@@ -95,8 +92,7 @@ class chapterController:
             k.resetLabel()
             if k.arg:
                 cc.cloneNodeToChapterHelper(k.arg)
-    #@nonl
-    #@+node:ekr.20070604155815.1:cc.cloneToChapterHelper
+    #@+node:ekr.20070604155815.1: *5* cc.cloneToChapterHelper
     def cloneNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ;  u = c.undoer ; undoType = 'Clone Node To Chapter'
@@ -131,9 +127,7 @@ class chapterController:
         toChapter.p = clone.copy()
         toChapter.select()
         fromChapter.p = p.copy()
-    #@-node:ekr.20070604155815.1:cc.cloneToChapterHelper
-    #@-node:ekr.20070317085437.50:cc.cloneNodeToChapter & helper
-    #@+node:ekr.20070608072116:cc.convertNodeToChapter
+    #@+node:ekr.20070608072116: *4* cc.convertNodeToChapter
     def convertNodeToChapter (self,event=None):
 
         '''convert-node-to-chapter command.
@@ -160,8 +154,7 @@ class chapterController:
             if k.arg:
                 cc.createChapterByName(k.arg,p=c.p,
                     undoType='Convert Node To Chapter')
-    #@-node:ekr.20070608072116:cc.convertNodeToChapter
-    #@+node:ekr.20070317085437.51:cc.copyNodeToChapter & helper
+    #@+node:ekr.20070317085437.51: *4* cc.copyNodeToChapter & helper
     def copyNodeToChapter (self,event=None):
 
         '''Prompt for a chapter name,
@@ -180,8 +173,7 @@ class chapterController:
             k.resetLabel()
             if k.arg:
                 cc.copyNodeToChapterHelper(k.arg)
-    #@nonl
-    #@+node:ekr.20070604155815.2:cc.copyNodeToChapterHelper
+    #@+node:ekr.20070604155815.2: *5* cc.copyNodeToChapterHelper
     def copyNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Copy Node To Chapter'
@@ -208,9 +200,7 @@ class chapterController:
         toChapter.p = p2.copy()
         toChapter.select()
         fromChapter.p = p.copy()
-    #@-node:ekr.20070604155815.2:cc.copyNodeToChapterHelper
-    #@-node:ekr.20070317085437.51:cc.copyNodeToChapter & helper
-    #@+node:ekr.20070317085437.31:cc.createChapter
+    #@+node:ekr.20070317085437.31: *4* cc.createChapter
     def createChapter (self,event=None):
 
         '''create-chapter command.
@@ -229,9 +219,7 @@ class chapterController:
             if k.arg:
                 cc.createChapterByName(k.arg,p=None,
                     undoType='Create Chapter')
-    #@nonl
-    #@-node:ekr.20070317085437.31:cc.createChapter
-    #@+node:ekr.20070603190617:cc.createChapterByName
+    #@+node:ekr.20070603190617: *4* cc.createChapterByName
     def createChapterByName (self,name,p,undoType):
 
         cc = self ; c = cc.c
@@ -262,8 +250,7 @@ class chapterController:
 
         # g.es('created chapter',name,color='blue')
         return True
-    #@-node:ekr.20070603190617:cc.createChapterByName
-    #@+node:ekr.20070607092909:cc.createChapterFromNode
+    #@+node:ekr.20070607092909: *4* cc.createChapterFromNode
     def createChapterFromNode (self,event=None):
 
         '''create-chapter-from-node command.
@@ -288,8 +275,7 @@ class chapterController:
             if k.arg:
                 cc.createChapterByName(k.arg,p=p,
                     undoType='Create Chapter From Node')
-    #@-node:ekr.20070607092909:cc.createChapterFromNode
-    #@+node:ekr.20070604155815.3:cc.moveNodeToChapter & helper
+    #@+node:ekr.20070604155815.3: *4* cc.moveNodeToChapter & helper
     def moveNodeToChapter (self,event=None):
 
         '''Prompt for a chapter name,
@@ -308,8 +294,7 @@ class chapterController:
             k.resetLabel()
             if k.arg:
                 cc.moveNodeToChapterHelper(k.arg)
-    #@nonl
-    #@+node:ekr.20070317085437.52:cc.moveNodeToChapterHelper
+    #@+node:ekr.20070317085437.52: *5* cc.moveNodeToChapterHelper
     def moveNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Move Node To Chapter'
@@ -355,9 +340,7 @@ class chapterController:
             fromChapter.p = sel.copy()
         else:
             cc.error('Can not move the last node of a chapter.')
-    #@-node:ekr.20070317085437.52:cc.moveNodeToChapterHelper
-    #@-node:ekr.20070604155815.3:cc.moveNodeToChapter & helper
-    #@+node:ekr.20070317085437.40:cc.removeChapter
+    #@+node:ekr.20070317085437.40: *4* cc.removeChapter
     def removeChapter (self,event=None):
 
         cc = self ; c = cc.c
@@ -371,8 +354,7 @@ class chapterController:
             return cc.error('Can not remove the main chapter')
         else:
             cc.removeChapterByName(name)
-    #@-node:ekr.20070317085437.40:cc.removeChapter
-    #@+node:ekr.20070606075434:cc.removeChapterByName
+    #@+node:ekr.20070606075434: *4* cc.removeChapterByName
     def removeChapterByName (self,name):
 
         cc = self ; c = cc.c ; tt = cc.tt
@@ -388,8 +370,7 @@ class chapterController:
         cc.selectChapterByName('main')
         cc.afterRemoveChapter(bunch,c.p)
         c.redraw()
-    #@-node:ekr.20070606075434:cc.removeChapterByName
-    #@+node:ekr.20070317085437.41:cc.renameChapter
+    #@+node:ekr.20070317085437.41: *4* cc.renameChapter
     # newName is for unitTesting.
 
     def renameChapter (self,event=None,newName=None):
@@ -426,8 +407,7 @@ class chapterController:
                     tt.destroyTab(oldChapterName)
                     tt.createTab(k.arg)
                 c.redraw()
-    #@-node:ekr.20070317085437.41:cc.renameChapter
-    #@+node:ekr.20070604165126:cc.selectChapter
+    #@+node:ekr.20070604165126: *4* cc.selectChapter
     def selectChapter (self,event=None):
 
         '''Use the minibuffer to get a chapter name,
@@ -447,8 +427,7 @@ class chapterController:
             k.resetLabel()
             if k.arg:
                 cc.selectChapterByName(k.arg)
-    #@-node:ekr.20070604165126:cc.selectChapter
-    #@+node:ekr.20070317130250:cc.selectChapterByName & helper
+    #@+node:ekr.20070317130250: *4* cc.selectChapterByName & helper
     def selectChapterByName (self,name,collapse=True):
 
         '''Select a chapter.  Return True if a redraw is needed.'''
@@ -466,7 +445,7 @@ class chapterController:
                 self.selectChapterByNameHelper(chapter,collapse=collapse)
             else:
                 cc.error('no main chapter!')
-    #@+node:ekr.20090306060344.2:selectChapterHelper
+    #@+node:ekr.20090306060344.2: *5* selectChapterHelper
     def selectChapterByNameHelper (self,chapter,collapse=True):
 
         cc = self ; c = cc.c
@@ -487,11 +466,8 @@ class chapterController:
 
             # New in Leo 4.6 b2: *do* call c.redraw.
             c.redraw()
-    #@-node:ekr.20090306060344.2:selectChapterHelper
-    #@-node:ekr.20070317130250:cc.selectChapterByName & helper
-    #@-node:ekr.20070317085437.30:Commands (chapters)
-    #@+node:ekr.20070511081405:Creating/deleting nodes (chapterController)
-    #@+node:ekr.20070325101652:cc.createChaptersNode
+    #@+node:ekr.20070511081405: *3* Creating/deleting nodes (chapterController)
+    #@+node:ekr.20070325101652: *4* cc.createChaptersNode
     def createChaptersNode (self):
 
         cc = self ; c = cc.c ; root = c.rootPosition()
@@ -507,8 +483,7 @@ class chapterController:
         v = p.v
         assert(v.fileIndex)
         c.setChanged(True)
-    #@-node:ekr.20070325101652:cc.createChaptersNode
-    #@+node:ekr.20070325063303.2:cc.createChapterNode
+    #@+node:ekr.20070325063303.2: *4* cc.createChapterNode
     def createChapterNode (self,chapterName,p=None):
 
         '''Create an @chapter node for the named chapter.
@@ -538,8 +513,7 @@ class chapterController:
         c.setChanged(True)
 
         return root
-    #@-node:ekr.20070325063303.2:cc.createChapterNode
-    #@+node:ekr.20070509081915.1:cc.createChild
+    #@+node:ekr.20070509081915.1: *4* cc.createChild
     def createChild (self,parent,s):
 
         '''Create a child node of parent without changing the undo stack.
@@ -551,8 +525,7 @@ class chapterController:
         c.setChanged(True)
 
         return p
-    #@-node:ekr.20070509081915.1:cc.createChild
-    #@+node:ekr.20070325063303.4:cc.deleteChapterNode
+    #@+node:ekr.20070325063303.4: *4* cc.deleteChapterNode
     def deleteChapterNode (self,chapterName):
 
         '''Delete the @chapter with the given name.'''
@@ -567,15 +540,12 @@ class chapterController:
             chapter.root.doDelete()
             # The chapter selection logic will select a new node.
             c.setChanged(True)
-    #@-node:ekr.20070325063303.4:cc.deleteChapterNode
-    #@-node:ekr.20070511081405:Creating/deleting nodes (chapterController)
-    #@+node:ekr.20070317130648:Utils
-    #@+node:ekr.20070320085610:cc.error
+    #@+node:ekr.20070317130648: *3* Utils
+    #@+node:ekr.20070320085610: *4* cc.error
     def error (self,s):
 
         g.es_print(s,color='red')
-    #@-node:ekr.20070320085610:cc.error
-    #@+node:ekr.20070325093617:cc.findChapterNode
+    #@+node:ekr.20070325093617: *4* cc.findChapterNode
     def findChapterNode (self,chapterName,giveError=True):
 
         '''Return the position of the @chapter node with the given name.'''
@@ -595,8 +565,7 @@ class chapterController:
             cc.error('*** findChapterNode: no @chapter node for: %s' % (chapterName))
 
         return None
-    #@-node:ekr.20070325093617:cc.findChapterNode
-    #@+node:ekr.20070325094401:cc.findChaptersNode
+    #@+node:ekr.20070325094401: *4* cc.findChaptersNode
     def findChaptersNode (self):
 
         '''Return the position of the @chapters node.'''
@@ -610,16 +579,14 @@ class chapterController:
 
         # This is *not* an error.
         return None
-    #@-node:ekr.20070325094401:cc.findChaptersNode
-    #@+node:ekr.20070605124356:cc.inChapter
+    #@+node:ekr.20070605124356: *4* cc.inChapter
     def inChapter (self):
 
         cc = self
 
         theChapter = cc.getSelectedChapter()
         return theChapter and theChapter.name != 'main'
-    #@-node:ekr.20070605124356:cc.inChapter
-    #@+node:ekr.20070325115102:cc.getChapterNode
+    #@+node:ekr.20070325115102: *4* cc.getChapterNode
     def getChapterNode (self,chapterName,p=None):
 
         '''Return the position of the @chapter node with the given name.'''
@@ -633,22 +600,19 @@ class chapterController:
                 cc.findChapterNode(chapterName,giveError=False) or
                 cc.createChapterNode(chapterName,p=p))
             return val
-    #@-node:ekr.20070325115102:cc.getChapterNode
-    #@+node:ekr.20070318124004:cc.getChapter
+    #@+node:ekr.20070318124004: *4* cc.getChapter
     def getChapter(self,name):
 
         cc = self
 
         return cc.chaptersDict.get(name)
-    #@-node:ekr.20070318124004:cc.getChapter
-    #@+node:ekr.20070318122708:cc.getSelectedChapter
+    #@+node:ekr.20070318122708: *4* cc.getSelectedChapter
     def getSelectedChapter (self):
 
         cc = self
 
         return cc.selectedChapter
-    #@-node:ekr.20070318122708:cc.getSelectedChapter
-    #@+node:ekr.20070510064813:cc.printChaptersTree
+    #@+node:ekr.20070510064813: *4* cc.printChaptersTree
     def printChaptersTree(self,tag=''):
 
         cc = self ; c = cc.c ; root = cc.chaptersNode
@@ -668,9 +632,7 @@ class chapterController:
             g.pr('@chapters tree...','(in main tree: %s)' % inTree)
             for p in root.self_and_subtree():
                 g.pr('.'*p.level(),p.v)
-    #@nonl
-    #@-node:ekr.20070510064813:cc.printChaptersTree
-    #@+node:ekr.20070615075643:cc.selectChapterForPosition
+    #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition
     def selectChapterForPosition (self,p):
 
         '''
@@ -704,8 +666,7 @@ class chapterController:
         else:
             if trace: g.trace('select main')
             cc.selectChapterByName('main')
-    #@-node:ekr.20070615075643:cc.selectChapterForPosition
-    #@+node:ekr.20071028091719:cc.findChapterNameForPosition
+    #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
     def findChapterNameForPosition (self,p):
 
         '''
@@ -723,10 +684,8 @@ class chapterController:
                     return name
         else:
             return 'main'
-    #@-node:ekr.20071028091719:cc.findChapterNameForPosition
-    #@-node:ekr.20070317130648:Utils
-    #@+node:ekr.20070610100031:Undo
-    #@+node:ekr.20070606075125:afterCreateChapter
+    #@+node:ekr.20070610100031: *3* Undo
+    #@+node:ekr.20070606075125: *4* afterCreateChapter
     def afterCreateChapter (self,bunch,p):
 
         cc = self ; u = cc.c.undoer
@@ -740,8 +699,7 @@ class chapterController:
         bunch.redoHelper = cc.redoInsertChapter
 
         u.pushBead(bunch)
-    #@-node:ekr.20070606075125:afterCreateChapter
-    #@+node:ekr.20070610091608:afterRemoveChapter
+    #@+node:ekr.20070610091608: *4* afterRemoveChapter
     def afterRemoveChapter (self,bunch,p):
 
         cc = self ; u = cc.c.undoer
@@ -755,8 +713,7 @@ class chapterController:
         bunch.redoHelper = cc.redoRemoveChapter
 
         u.pushBead(bunch)
-    #@-node:ekr.20070610091608:afterRemoveChapter
-    #@+node:ekr.20070606082729:beforeCreateChapter
+    #@+node:ekr.20070606082729: *4* beforeCreateChapter
     def beforeCreateChapter (self,p,oldChapterName,newChapterName,undoType):
 
         cc = self ; u = cc.c.undoer
@@ -769,8 +726,7 @@ class chapterController:
         bunch.undoType = undoType
 
         return bunch
-    #@-node:ekr.20070606082729:beforeCreateChapter
-    #@+node:ekr.20070610091608.1:beforeRemoveChapter
+    #@+node:ekr.20070610091608.1: *4* beforeRemoveChapter
     def beforeRemoveChapter (self,p,newChapterName,savedRoot):
 
         cc = self ; u = cc.c.undoer
@@ -782,8 +738,7 @@ class chapterController:
         bunch.undoType = 'Remove Chapter'
 
         return bunch
-    #@-node:ekr.20070610091608.1:beforeRemoveChapter
-    #@+node:ekr.20070606081341:redoInsertChapter
+    #@+node:ekr.20070606081341: *4* redoInsertChapter
     def redoInsertChapter (self):
 
         cc = self ; c = cc.c ; u = c.undoer
@@ -803,17 +758,14 @@ class chapterController:
             firstChild._linkAsNthChild(root,0)
         else:
             return g.trace('Can not happen: bad undoType: %s' % u.undoType)
-    #@-node:ekr.20070606081341:redoInsertChapter
-    #@+node:ekr.20070610100555:redoRemoveChapter
+    #@+node:ekr.20070610100555: *4* redoRemoveChapter
     def redoRemoveChapter (self):
 
         cc = self ; u = cc.c.undoer
 
         cc.removeChapterByName(u.newChapterName)
         cc.selectChapterByName('main')
-    #@nonl
-    #@-node:ekr.20070610100555:redoRemoveChapter
-    #@+node:ekr.20070606074705:undoInsertChapter
+    #@+node:ekr.20070606074705: *4* undoInsertChapter
     def undoInsertChapter (self):
 
         cc = self ; c = cc.c ; u = c.undoer
@@ -831,8 +783,7 @@ class chapterController:
 
         cc.removeChapterByName(u.newChapterName)
         cc.selectChapterByName('main')
-    #@-node:ekr.20070606074705:undoInsertChapter
-    #@+node:ekr.20070610100555.1:undoRemoveChapter
+    #@+node:ekr.20070610100555.1: *4* undoRemoveChapter
     def undoRemoveChapter (self):
 
         cc = self ; c = cc.c ; u = c.undoer
@@ -846,18 +797,14 @@ class chapterController:
         name = u.newChapterName
         cc.chaptersDict[name] = chapter(c=c,chapterController=cc,name=name,root=u.savedRoot)
         cc.selectChapterByName(name)
-    #@-node:ekr.20070610100555.1:undoRemoveChapter
-    #@-node:ekr.20070610100031:Undo
     #@-others
-#@nonl
-#@-node:ekr.20070317085437:class chapterController
-#@+node:ekr.20070317085708:class chapter
+#@+node:ekr.20070317085708: ** class chapter
 class chapter:
 
     '''A class representing the non-gui data of a single chapter.'''
 
-    #@    @+others
-    #@+node:ekr.20070317085708.1: ctor: chapter
+    #@+others
+    #@+node:ekr.20070317085708.1: *3*  ctor: chapter
     def __init__ (self,c,chapterController,name,root):
 
         self.c = c 
@@ -879,9 +826,7 @@ class chapter:
 
         if cc.tt:
             cc.tt.createTab(name)
-    #@nonl
-    #@-node:ekr.20070317085708.1: ctor: chapter
-    #@+node:ekr.20070317085708.2:__str__ and __repr__(chapter)
+    #@+node:ekr.20070317085708.2: *3* __str__ and __repr__(chapter)
     def __str__ (self):
 
         return '<chapter id: %s name: %s p: %s>' % (
@@ -890,14 +835,11 @@ class chapter:
             self.p and self.p.h or '<no p>')
 
     __repr__ = __str__
-    #@-node:ekr.20070317085708.2:__str__ and __repr__(chapter)
-    #@+node:ekr.20070325155208.1:chapter.error
+    #@+node:ekr.20070325155208.1: *3* chapter.error
     def error (self,s):
 
         self.cc.error(s)
-    #@nonl
-    #@-node:ekr.20070325155208.1:chapter.error
-    #@+node:ekr.20070317131205.1:chapter.select & helpers
+    #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
     def select (self,w=None,selectEditor=True):
 
         '''Restore chapter information and redraw the tree when a chapter is selected.'''
@@ -911,7 +853,7 @@ class chapter:
                 self.cc.tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False
-    #@+node:ekr.20070423102603.1:chapterSelectHelper
+    #@+node:ekr.20070423102603.1: *4* chapterSelectHelper
     def chapterSelectHelper (self,w=None,selectEditor=True):
 
         c = self.c ; cc = self.cc ; name = self.name
@@ -945,9 +887,7 @@ class chapter:
         c.redraw_after_select(p)
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
-    #@nonl
-    #@-node:ekr.20070423102603.1:chapterSelectHelper
-    #@+node:ekr.20070317131708:chapter.findPositionInChapter
+    #@+node:ekr.20070317131708: *4* chapter.findPositionInChapter
     def findPositionInChapter (self,p1,strict=False):
 
         '''Return a valid position p such that p.v == v.'''
@@ -989,8 +929,7 @@ class chapter:
             g.trace(g.callers())
 
         return self.p.copy()
-    #@-node:ekr.20070317131708:chapter.findPositionInChapter
-    #@+node:ekr.20070425175522:chapter.findEditorInChapter
+    #@+node:ekr.20070425175522: *4* chapter.findEditorInChapter
     def findEditorInChapter (self,p):
 
         '''return w, an editor displaying position p.'''
@@ -1001,26 +940,20 @@ class chapter:
         w.leo_chapter = chapter
         w.leo_p = p and p.copy()
         return w
-    #@nonl
-    #@-node:ekr.20070425175522:chapter.findEditorInChapter
-    #@+node:ekr.20070615065222:chapter.positionIsInChapter
+    #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
     def positionIsInChapter (self,p):
 
         p2 = self.findPositionInChapter (p,strict=True)
 
         # g.trace(self.name,'returns',p2)
         return p2
-    #@nonl
-    #@-node:ekr.20070615065222:chapter.positionIsInChapter
-    #@+node:ekr.20070529171934.1:chapter.rename (not used)
+    #@+node:ekr.20070529171934.1: *4* chapter.rename (not used)
     def rename (self,newName):
 
         p = self.root
         s = '@chapter ' + newName
         p.setHeadString(s)
-    #@-node:ekr.20070529171934.1:chapter.rename (not used)
-    #@-node:ekr.20070317131205.1:chapter.select & helpers
-    #@+node:ekr.20070320091806.1:chapter.unselect
+    #@+node:ekr.20070320091806.1: *3* chapter.unselect
     def unselect (self):
 
         '''Remember chapter info when a chapter is about to be unselected.'''
@@ -1029,11 +962,6 @@ class chapter:
         self.hoistStack = c.hoistStack[:]
         self.p = c.p
         if self.trace: g.trace('chapter',self.name,'p',self.p.h)
-    #@-node:ekr.20070320091806.1:chapter.unselect
     #@-others
-#@nonl
-#@-node:ekr.20070317085708:class chapter
 #@-others
-#@nonl
-#@-node:ekr.20070317085508.1:@thin leoChapters.py
 #@-leo

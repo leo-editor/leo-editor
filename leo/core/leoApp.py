@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2608:@thin leoApp.py
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.2608: * @thin leoApp.py
 #@@first
 
 #@@language python
@@ -22,8 +22,8 @@ class LeoApp:
 
     Ivars of this class are Leo's global variables."""
 
-    #@    @+others
-    #@+node:ekr.20031218072017.1416:app.__init__
+    #@+others
+    #@+node:ekr.20031218072017.1416: ** app.__init__
     def __init__(self):
 
         # These ivars are the global vars of this program.
@@ -119,19 +119,17 @@ class LeoApp:
         # Global panels.  Destroyed when Leo ends.
         self.pythonFrame = None
 
-        #@    << Define global constants >>
-        #@+node:ekr.20031218072017.1417:<< define global constants >>
+        #@+<< Define global constants >>
+        #@+node:ekr.20031218072017.1417: *3* << define global constants >>
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
         self.prolog_namespace_string = \
             'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-        #@nonl
-        #@-node:ekr.20031218072017.1417:<< define global constants >>
-        #@nl
-        #@    << Define global data structures >>
-        #@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+        #@-<< Define global constants >>
+        #@+<< Define global data structures >>
+        #@+node:ekr.20031218072017.368: *3* << define global data structures >> (leoApp.py)
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
             # Keys are languages, values are 1,2 or 3-tuples of delims.
@@ -300,10 +298,8 @@ class LeoApp:
         }
 
         self.global_commands_dict = {}
-        #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-        #@nl
-    #@-node:ekr.20031218072017.1416:app.__init__
-    #@+node:ekr.20031218072017.2609:app.closeLeoWindow
+        #@-<< Define global data structures >>
+    #@+node:ekr.20031218072017.2609: ** app.closeLeoWindow
     def closeLeoWindow (self,frame):
 
         """Attempt to close a Leo window.
@@ -349,8 +345,7 @@ class LeoApp:
             g.app.finishQuit()
 
         return True # The window has been closed.
-    #@-node:ekr.20031218072017.2609:app.closeLeoWindow
-    #@+node:ekr.20090202191501.5:app.createNullGui
+    #@+node:ekr.20090202191501.5: ** app.createNullGui
     def createNullGui (self):
 
         # Don't import this at the top level:
@@ -358,9 +353,7 @@ class LeoApp:
         import leo.core.leoGui as leoGui
 
         g.app.gui = leoGui.nullGui("nullGui")
-    #@nonl
-    #@-node:ekr.20090202191501.5:app.createNullGui
-    #@+node:ekr.20090619065122.8593:app.createDefaultGui
+    #@+node:ekr.20090619065122.8593: ** app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
 
         """A convenience routines for plugins to create the default gui class."""
@@ -376,8 +369,7 @@ class LeoApp:
             self.createQtGui(fileName, verbose=verbose)
         else:
             self.createTkGui(fileName, verbose = verbose)
-    #@-node:ekr.20090619065122.8593:app.createDefaultGui
-    #@+node:ekr.20090202191501.1:app.createQtGui
+    #@+node:ekr.20090202191501.1: ** app.createQtGui
     def createQtGui (self,fileName='',verbose=False):
 
         # Do NOT omit fileName param: it is used in plugin code.
@@ -390,8 +382,7 @@ class LeoApp:
         #leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
 
         if fileName and verbose: print('qtGui created in %s' % fileName)
-    #@-node:ekr.20090202191501.1:app.createQtGui
-    #@+node:ekr.20031218072017.2610:app.createTkGui
+    #@+node:ekr.20031218072017.2610: ** app.createTkGui
     def createTkGui (self,fileName='',verbose=False):
 
         """A convenience routines for plugins to 
@@ -400,8 +391,7 @@ class LeoApp:
         leoPlugins.loadOnePlugin ('leo.plugins.tkGui',verbose=verbose)
 
         if fileName and verbose: print('tkGui created in %s' % fileName)
-    #@-node:ekr.20031218072017.2610:app.createTkGui
-    #@+node:ekr.20090126063121.3:app.createWxGui
+    #@+node:ekr.20090126063121.3: ** app.createWxGui
     def createWxGui (self,fileName='',verbose=False):
 
         # Do NOT omit fileName param: it is used in plugin code.
@@ -411,8 +401,7 @@ class LeoApp:
         leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
 
         if fileName and verbose: print('wxGui created in %s' % fileName)
-    #@-node:ekr.20090126063121.3:app.createWxGui
-    #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
+    #@+node:ekr.20031218072017.2612: ** app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
 
         """Try to remove temp files created with the Open With command.
@@ -428,8 +417,7 @@ class LeoApp:
 
         # Delete the list so the gc can recycle Leo windows!
         g.app.openWithFiles = []
-    #@-node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
-    #@+node:ekr.20031218072017.2613:app.destroyOpenWithFilesForFrame
+    #@+node:ekr.20031218072017.2613: ** app.destroyOpenWithFilesForFrame
     def destroyOpenWithFilesForFrame (self,frame):
 
         """Close all "Open With" files associated with frame
@@ -444,8 +432,7 @@ class LeoApp:
             c = theDict.get("c")
             if c.frame == frame:
                 g.app.destroyOpenWithFileWithDict(theDict)
-    #@-node:ekr.20031218072017.2613:app.destroyOpenWithFilesForFrame
-    #@+node:ekr.20031218072017.2614:app.destroyOpenWithFileWithDict
+    #@+node:ekr.20031218072017.2614: ** app.destroyOpenWithFileWithDict
     def destroyOpenWithFileWithDict (self,theDict):
 
         '''
@@ -463,8 +450,7 @@ class LeoApp:
 
         # Remove theDict from the list so the gc can recycle the Leo window!
         g.app.openWithFiles.remove(theDict)
-    #@-node:ekr.20031218072017.2614:app.destroyOpenWithFileWithDict
-    #@+node:ekr.20031218072017.2615:app.destroyWindow
+    #@+node:ekr.20031218072017.2615: ** app.destroyWindow
     def destroyWindow (self,frame):
 
         # g.trace(frame in g.app.windowList,frame)
@@ -477,8 +463,7 @@ class LeoApp:
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@-node:ekr.20031218072017.2615:app.destroyWindow
-    #@+node:ekr.20031218072017.1732:app.finishQuit
+    #@+node:ekr.20031218072017.1732: ** app.finishQuit
     def finishQuit(self):
 
         # forceShutdown may already have fired the "end1" hook.
@@ -504,8 +489,7 @@ class LeoApp:
             if g.app.gui and g.app.gui.guiName() == "tkinter":
                 self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
-    #@-node:ekr.20031218072017.1732:app.finishQuit
-    #@+node:ekr.20031218072017.2616:app.forceShutdown
+    #@+node:ekr.20031218072017.2616: ** app.forceShutdown
     def forceShutdown (self):
 
         """Forces an immediate shutdown of Leo at any time.
@@ -522,8 +506,7 @@ class LeoApp:
             self.destroyWindow(w)
 
         self.finishQuit()
-    #@-node:ekr.20031218072017.2616:app.forceShutdown
-    #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+    #@+node:ekr.20031218072017.2188: ** app.newLeoCommanderAndFrame
     def newLeoCommanderAndFrame(self,
         fileName=None,
         relativeFileName=None,
@@ -538,8 +521,8 @@ class LeoApp:
         if not fileName: fileName = ''
         if not relativeFileName: relativeFileName = ''
         if not gui: gui = g.app.gui
-        #@    << compute the window title >>
-        #@+node:ekr.20031218072017.2189:<< compute the window title >>
+        #@+<< compute the window title >>
+        #@+node:ekr.20031218072017.2189: *3* << compute the window title >>
         # Set the window title and fileName
         if fileName:
             title = g.computeWindowTitle(fileName)
@@ -550,8 +533,7 @@ class LeoApp:
                 s += str(n)
             title = g.computeWindowTitle(s)
             g.app.numberOfWindows = n+1
-        #@-node:ekr.20031218072017.2189:<< compute the window title >>
-        #@nl
+        #@-<< compute the window title >>
 
         # g.trace(fileName,relativeFileName)
 
@@ -574,8 +556,7 @@ class LeoApp:
         c.undoer.clearUndoState() # Menus must exist at this point.
 
         return c,frame
-    #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
-    #@+node:ekr.20031218072017.2617:app.onQuit
+    #@+node:ekr.20031218072017.2617: ** app.onQuit
     def onQuit (self,event=None):
 
         '''Exit Leo, prompting to save unsaved outlines first.'''
@@ -590,8 +571,7 @@ class LeoApp:
 
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
-    #@-node:ekr.20031218072017.2617:app.onQuit
-    #@+node:ekr.20031218072017.1978:app.setLeoID
+    #@+node:ekr.20031218072017.1978: ** app.setLeoID
     def setLeoID (self,verbose=True):
 
         tag = ".leoID.txt"
@@ -600,8 +580,8 @@ class LeoApp:
         loadDir = g.app.loadDir
 
         verbose = not g.app.unitTesting
-        #@    << return if we can set leoID from sys.leoID >>
-        #@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+        #@+<< return if we can set leoID from sys.leoID >>
+        #@+node:ekr.20031218072017.1979: *3* << return if we can set leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
 
         # Use hasattr & getattr to suppress pylint warning.
@@ -618,10 +598,9 @@ class LeoApp:
             return
         else:
             g.app.leoID = None
-        #@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
-        #@nl
-        #@    << return if we can set leoID from "leoID.txt" >>
-        #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+        #@-<< return if we can set leoID from sys.leoID >>
+        #@+<< return if we can set leoID from "leoID.txt" >>
+        #@+node:ekr.20031218072017.1980: *3* << return if we can set leoID from "leoID.txt" >>
         for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
@@ -648,10 +627,9 @@ class LeoApp:
                     g.app.leoID = None
                     g.es_print('unexpected exception in app.setLeoID',color='red')
                     g.es_exception()
-        #@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
-        #@nl
-        #@    << return if we can set leoID from os.getenv('USER') >>
-        #@+node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+        #@-<< return if we can set leoID from "leoID.txt" >>
+        #@+<< return if we can set leoID from os.getenv('USER') >>
+        #@+node:ekr.20060211140947.1: *3* << return if we can set leoID from os.getenv('USER') >>
         try:
             theId = os.getenv('USER')
             if theId:
@@ -666,10 +644,9 @@ class LeoApp:
 
         except Exception:
             pass
-        #@-node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
-        #@nl
-        #@    << put up a dialog requiring a valid id >>
-        #@+node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+        #@-<< return if we can set leoID from os.getenv('USER') >>
+        #@+<< put up a dialog requiring a valid id >>
+        #@+node:ekr.20031218072017.1981: *3* << put up a dialog requiring a valid id >>
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
 
         # Create an emergency gui and a Tk root window.
@@ -693,10 +670,9 @@ class LeoApp:
 
         # g.trace(g.app.leoID)
         g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
-        #@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
-        #@nl
-        #@    << attempt to create leoID.txt >>
-        #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+        #@-<< put up a dialog requiring a valid id >>
+        #@+<< attempt to create leoID.txt >>
+        #@+node:ekr.20031218072017.1982: *3* << attempt to create leoID.txt >>
         for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
@@ -712,10 +688,8 @@ class LeoApp:
                     pass
 
                 g.es('can not create',tag,'in',theDir,color='red')
-        #@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-        #@nl
-    #@-node:ekr.20031218072017.1978:app.setLeoID
-    #@+node:ville.20090620122043.6275:app.setGlobalDb
+        #@-<< attempt to create leoID.txt >>
+    #@+node:ville.20090620122043.6275: ** app.setGlobalDb
     def setGlobalDb(self):
         """ Create global pickleshare db
 
@@ -728,8 +702,7 @@ class LeoApp:
         g.app.db = leoCache.cacher()
         g.app.db.initGlobalDB()
 
-    #@-node:ville.20090620122043.6275:app.setGlobalDb
-    #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
+    #@+node:ekr.20031218072017.1847: ** app.setLog, lockLog, unlocklog
     def setLog (self,log):
 
         """set the frame to which log messages will go"""
@@ -745,8 +718,7 @@ class LeoApp:
     def unlockLog(self):
         """Enable changes to the log"""
         self.logIsLocked = False
-    #@-node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
-    #@+node:ekr.20090717112235.6007:app.computeSignon
+    #@+node:ekr.20090717112235.6007: ** app.computeSignon
     def computeSignon (self):
 
         app = self
@@ -769,9 +741,7 @@ class LeoApp:
             leoVer,build,date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1,n2,n3,guiVersion,sysVersion)
-    #@nonl
-    #@-node:ekr.20090717112235.6007:app.computeSignon
-    #@+node:ekr.20031218072017.2619:app.writeWaitingLog
+    #@+node:ekr.20031218072017.2619: ** app.writeWaitingLog
     def writeWaitingLog (self,c,forceLog=False):
 
         app = self
@@ -804,13 +774,10 @@ class LeoApp:
             app.logWaiting = []
         else:
             print('writeWaitingLog: still no log!')
-    #@-node:ekr.20031218072017.2619:app.writeWaitingLog
-    #@+node:ville.20090602181814.6219:app.commanders
+    #@+node:ville.20090602181814.6219: ** app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
 
         return [f.c for f in g.app.windowList]    
-    #@-node:ville.20090602181814.6219:app.commanders
     #@-others
-#@-node:ekr.20031218072017.2608:@thin leoApp.py
 #@-leo

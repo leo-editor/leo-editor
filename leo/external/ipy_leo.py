@@ -1,9 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20100120092047.6087:@thin ../external/ipy_leo.py
+#@+leo-ver=5-thin
+#@+node:ekr.20100120092047.6087: * @thin ../external/ipy_leo.py
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:ekr.20100120092047.6088:ipy_leo declarations
+#@+node:ekr.20100120092047.6088: ** ipy_leo declarations
 """ ILeo - Leo plugin for IPython
 
 """
@@ -20,8 +20,7 @@ import IPython.Shell
 _leo_push_history = set()
 
 wb = None
-#@-node:ekr.20100120092047.6088:ipy_leo declarations
-#@+node:ekr.20100120092047.6089:init_ipython
+#@+node:ekr.20100120092047.6089: ** init_ipython
 def init_ipython(ipy):
     """ This will be run by _ip.load('ipy_leo') 
 
@@ -50,8 +49,7 @@ def init_ipython(ipy):
     global wb
     wb = LeoWorkbook()
     ip.user_ns['wb'] = wb
-#@-node:ekr.20100120092047.6089:init_ipython
-#@+node:ekr.20100120092047.6090:update_commander
+#@+node:ekr.20100120092047.6090: ** update_commander
 first_launch = True
 
 c,g = None, None
@@ -83,16 +81,14 @@ def update_commander(new_leox):
     new_leox.push = push_position_from_leo
     run_leo_startup_node()
     ip.user_ns['_prompt_title'] = 'ileo'
-#@-node:ekr.20100120092047.6090:update_commander
-#@+node:ekr.20100120092047.6091:es
+#@+node:ekr.20100120092047.6091: ** es
 from IPython.external.simplegeneric import generic 
 import pprint
 
 def es(s):    
     g.es(s, tabName = 'IPython')
     pass
-#@-node:ekr.20100120092047.6091:es
-#@+node:ekr.20100120092047.6092:format_for_leo
+#@+node:ekr.20100120092047.6092: ** format_for_leo
 @generic
 def format_for_leo(obj):
     """ Convert obj to string representiation (for editing in Leo)"""
@@ -103,14 +99,12 @@ def format_for_leo(obj):
 #@format_for_leo.when_type(list)
 #def format_list(obj):
 #    return "\n".join(str(s) for s in obj)
-#@-node:ekr.20100120092047.6092:format_for_leo
-#@+node:ekr.20100120092047.6093:valid_attribute
+#@+node:ekr.20100120092047.6093: ** valid_attribute
 attribute_re = re.compile('^[a-zA-Z_][a-zA-Z0-9_]*$')
 
 def valid_attribute(s):
     return attribute_re.match(s)    
-#@-node:ekr.20100120092047.6093:valid_attribute
-#@+node:ekr.20100120092047.6094:rootnode
+#@+node:ekr.20100120092047.6094: ** rootnode
 _rootnode = None
 
 def rootnode():
@@ -127,8 +121,7 @@ def rootnode():
         return _rootnode
     _rootnode = None
     return None  
-#@-node:ekr.20100120092047.6094:rootnode
-#@+node:ekr.20100120092047.6095:all_cells
+#@+node:ekr.20100120092047.6095: ** all_cells
 def all_cells():
     global _rootnode
     d = {}
@@ -152,8 +145,7 @@ def all_cells():
             continue 
         d[h] = p.copy()
     return d    
-#@-node:ekr.20100120092047.6095:all_cells
-#@+node:ekr.20100120092047.6096:eval_node
+#@+node:ekr.20100120092047.6096: ** eval_node
 def eval_node(n):
     body = n.b    
     if not body.startswith('@cl'):
@@ -176,8 +168,7 @@ def eval_node(n):
     xformer = ip.ev(hd.strip())
     es('Transform w/ %s' % repr(xformer))
     return xformer(rest, n)
-#@-node:ekr.20100120092047.6096:eval_node
-#@+node:ekr.20100120092047.6097:class LeoNode
+#@+node:ekr.20100120092047.6097: ** class LeoNode
 class LeoNode(object, UserDict.DictMixin):
     """ Node in Leo outline
 
@@ -202,19 +193,17 @@ class LeoNode(object, UserDict.DictMixin):
      mb save-to-file
 
     """
-    #@    @+others
-    #@+node:ekr.20100120092047.6098:__init__
+    #@+others
+    #@+node:ekr.20100120092047.6098: *3* __init__
     def __init__(self,p):
         self.p = p.copy()
 
-    #@-node:ekr.20100120092047.6098:__init__
-    #@+node:ekr.20100120092047.6099:__str__
+    #@+node:ekr.20100120092047.6099: *3* __str__
     def __str__(self):
         return "<LeoNode %s>" % str(self.p)
 
     __repr__ = __str__
-    #@-node:ekr.20100120092047.6099:__str__
-    #@+node:ekr.20100120092047.6101:__get_h and _set_h
+    #@+node:ekr.20100120092047.6101: *3* __get_h and _set_h
     def __get_h(self):
         return self.p.headString()
 
@@ -225,8 +214,7 @@ class LeoNode(object, UserDict.DictMixin):
         c.redraw()
 
     h = property( __get_h, __set_h, doc = "Node headline string")  
-    #@-node:ekr.20100120092047.6101:__get_h and _set_h
-    #@+node:ekr.20100120092047.6103:_get_b and __set_b
+    #@+node:ekr.20100120092047.6103: *3* _get_b and __set_b
     def __get_b(self):
         return self.p.bodyString()
 
@@ -236,29 +224,25 @@ class LeoNode(object, UserDict.DictMixin):
         c.redraw()
 
     b = property(__get_b, __set_b, doc = "Nody body string")
-    #@-node:ekr.20100120092047.6103:_get_b and __set_b
-    #@+node:ekr.20100120092047.6104:__set_val
+    #@+node:ekr.20100120092047.6104: *3* __set_val
     def __set_val(self, val):        
         self.b = format_for_leo(val)
 
     v = property(lambda self: eval_node(self), __set_val,
         doc = "Node evaluated value")
-    #@-node:ekr.20100120092047.6104:__set_val
-    #@+node:ekr.20100120092047.6105:__set_l
+    #@+node:ekr.20100120092047.6105: *3* __set_l
     def __set_l(self,val):
         self.b = '\n'.join(val )
 
     l = property(lambda self : IPython.genutils.SList(self.b.splitlines()), 
                  __set_l, doc = "Node value as string list")
-    #@-node:ekr.20100120092047.6105:__set_l
-    #@+node:ekr.20100120092047.6106:__iter__
+    #@+node:ekr.20100120092047.6106: *3* __iter__
     def __iter__(self):
         """ Iterate through nodes direct children """
 
         return (LeoNode(p) for p in self.p.children_iter())
 
-    #@-node:ekr.20100120092047.6106:__iter__
-    #@+node:ekr.20100120092047.6107:__children
+    #@+node:ekr.20100120092047.6107: *3* __children
     def __children(self):
         d = {}
         for child in self:
@@ -272,13 +256,11 @@ class LeoNode(object, UserDict.DictMixin):
                 d[head] = child
                 continue
         return d
-    #@-node:ekr.20100120092047.6107:__children
-    #@+node:ekr.20100120092047.6108:keys
+    #@+node:ekr.20100120092047.6108: *3* keys
     def keys(self):
         d = self.__children()
         return list(d.keys()) # 2010/02/04: per 2to3
-    #@-node:ekr.20100120092047.6108:keys
-    #@+node:ekr.20100120092047.6109:__getitem__
+    #@+node:ekr.20100120092047.6109: *3* __getitem__
     def __getitem__(self, key):
         """ wb.foo['Some stuff']
         Return a child node with headline 'Some stuff'
@@ -289,8 +271,7 @@ class LeoNode(object, UserDict.DictMixin):
         key = str(key)
         d = self.__children()
         return d[key]
-    #@-node:ekr.20100120092047.6109:__getitem__
-    #@+node:ekr.20100120092047.6110:__setitem__
+    #@+node:ekr.20100120092047.6110: *3* __setitem__
     def __setitem__(self, key, val):
         """ You can do wb.foo['My Stuff'] = 12 to create children 
 
@@ -318,8 +299,7 @@ class LeoNode(object, UserDict.DictMixin):
         p = c.createLastChildNode(self.p, head, '')
         LeoNode(p).v = val
 
-    #@-node:ekr.20100120092047.6110:__setitem__
-    #@+node:ekr.20100120092047.6111:__delitem__
+    #@+node:ekr.20100120092047.6111: *3* __delitem__
     def __delitem__(self, key):
         """ Remove child
 
@@ -328,14 +308,12 @@ class LeoNode(object, UserDict.DictMixin):
         self[key].p.doDelete()
         c.redraw()
 
-    #@-node:ekr.20100120092047.6111:__delitem__
-    #@+node:ekr.20100120092047.6112:ipush
+    #@+node:ekr.20100120092047.6112: *3* ipush
     def ipush(self):
         """ Does push-to-ipython on the node """
         push_from_leo(self)
 
-    #@-node:ekr.20100120092047.6112:ipush
-    #@+node:ekr.20100120092047.6113:go
+    #@+node:ekr.20100120092047.6113: *3* go
     def go(self):
         """ Set node as current node (to quickly see it in Outline) """
         #c.setCurrentPosition(self.p)
@@ -345,14 +323,12 @@ class LeoNode(object, UserDict.DictMixin):
         #s = self.p.bodyString()
         #c.setBodyString(self.p,s)
         c.selectPosition(self.p)
-    #@-node:ekr.20100120092047.6113:go
-    #@+node:ekr.20100120092047.6114:append
+    #@+node:ekr.20100120092047.6114: *3* append
     def append(self):
         """ Add new node as the last child, return the new node """
         p = self.p.insertAsLastChild()
         return LeoNode(p)
-    #@-node:ekr.20100120092047.6114:append
-    #@+node:ekr.20100120092047.6115:script
+    #@+node:ekr.20100120092047.6115: *3* script
     def script(self):
         """ Method to get the 'tangled' contents of the node
 
@@ -361,8 +337,7 @@ class LeoNode(object, UserDict.DictMixin):
 
         return g.getScript(c,self.p,useSelectedText=False,useSentinels=False)
 
-    #@-node:ekr.20100120092047.6115:script
-    #@+node:ekr.20100120092047.6116:__get_uA
+    #@+node:ekr.20100120092047.6116: *3* __get_uA
     def __get_uA(self):
         p = self.p
 
@@ -375,12 +350,10 @@ class LeoNode(object, UserDict.DictMixin):
         d = p.v.unknownAttributes.setdefault('ipython', {})
         return d        
 
-    #@-node:ekr.20100120092047.6116:__get_uA
     #@-others
     uA = property(__get_uA,
         doc = "Access persistent unknownAttributes of node")
-#@-node:ekr.20100120092047.6097:class LeoNode
-#@+node:ekr.20100120092047.6117:class LeoWorkbook
+#@+node:ekr.20100120092047.6117: ** class LeoWorkbook
 class LeoWorkbook:
     """ class for 'advanced' node access 
 
@@ -392,8 +365,8 @@ class LeoWorkbook:
     If it has a child '@a foo', it is visible as foo.
 
     """
-    #@    @+others
-    #@+node:ekr.20100120092047.6118:__getattr__
+    #@+others
+    #@+node:ekr.20100120092047.6118: *3* __getattr__
     def __getattr__(self, key):
         if key.startswith('_') or key == 'trait_names' or not valid_attribute(key):
             raise AttributeError
@@ -404,34 +377,28 @@ class LeoWorkbook:
 
         return LeoNode(p)
 
-    #@-node:ekr.20100120092047.6118:__getattr__
-    #@+node:ekr.20100120092047.6119:__str__
+    #@+node:ekr.20100120092047.6119: *3* __str__
     def __str__(self):
         return "<LeoWorkbook>"
 
     __repr__ = __str__
-    #@nonl
-    #@-node:ekr.20100120092047.6119:__str__
-    #@+node:ekr.20100120092047.6120:__setattr__
+    #@+node:ekr.20100120092047.6120: *3* __setattr__
     def __setattr__(self,key, val):
         raise AttributeError(
             "Direct assignment to workbook denied, try wb.%s.v = %s" % (
                 key,val))
 
-    #@-node:ekr.20100120092047.6120:__setattr__
-    #@+node:ekr.20100120092047.6121:__iter__
+    #@+node:ekr.20100120092047.6121: *3* __iter__
     def __iter__(self):
         """ Iterate all (even non-exposed) nodes """
         cells = all_cells()
         return (LeoNode(p) for p in c.allNodes_iter())
 
-    #@-node:ekr.20100120092047.6121:__iter__
-    #@+node:ekr.20100120092047.6152:current
+    #@+node:ekr.20100120092047.6152: *3* current
     current = property(
         lambda self: LeoNode(c.currentPosition()),
         doc = "Currently selected node")
-    #@-node:ekr.20100120092047.6152:current
-    #@+node:ekr.20100120092047.6122:match_h
+    #@+node:ekr.20100120092047.6122: *3* match_h
     def match_h(self, regex):
         cmp = re.compile(regex)
         res = PosList()
@@ -440,8 +407,7 @@ class LeoWorkbook:
                 res.append(node)
         return res
 
-    #@-node:ekr.20100120092047.6122:match_h
-    #@+node:ekr.20100120092047.6123:require
+    #@+node:ekr.20100120092047.6123: *3* require
     def require(self, req):
         """ Used to control node push dependencies 
 
@@ -455,10 +421,8 @@ class LeoWorkbook:
         if req not in _leo_push_history:
             es('Require: ' + req)
             getattr(self,req).ipush()
-    #@-node:ekr.20100120092047.6123:require
     #@-others
-#@-node:ekr.20100120092047.6117:class LeoWorkbook
-#@+node:ekr.20100120092047.6124:class PosList
+#@+node:ekr.20100120092047.6124: ** class PosList
 class PosList(list):
 
     def select(self, pat):
@@ -470,15 +434,13 @@ class PosList(list):
                 if re.match(pat, chi_p.headString()):
                     res.append(LeoNode(chi_p))
         return res
-#@-node:ekr.20100120092047.6124:class PosList
-#@+node:ekr.20100120092047.6126:workbook_complete
+#@+node:ekr.20100120092047.6126: ** workbook_complete
 @IPython.generics.complete_object.when_type(LeoWorkbook)
 def workbook_complete(obj, prev):
     # 2010/02/04: per 2to3
     return list(all_cells().keys()) + [
         s for s in prev if not s.startswith('_')]
-#@-node:ekr.20100120092047.6126:workbook_complete
-#@+node:ekr.20100120092047.6127:add_var
+#@+node:ekr.20100120092047.6127: ** add_var
 def add_var(varname):
     r = rootnode()
     try:
@@ -499,19 +461,16 @@ def add_var(varname):
         return LeoNode(p2)
     finally:
         c.redraw()
-#@-node:ekr.20100120092047.6127:add_var
-#@+node:ekr.20100120092047.6128:add_file
+#@+node:ekr.20100120092047.6128: ** add_file
 def add_file(self,fname):
     p2 = c.currentPosition().insertAfter()
-#@-node:ekr.20100120092047.6128:add_file
-#@+node:ekr.20100120092047.6129:expose_ileo_push
+#@+node:ekr.20100120092047.6129: ** expose_ileo_push
 push_from_leo = CommandChainDispatcher()
 
 def expose_ileo_push(f, prio = 0):
     push_from_leo.add(f, prio)
 
-#@-node:ekr.20100120092047.6129:expose_ileo_push
-#@+node:ekr.20100120092047.6130:push_ipython_script
+#@+node:ekr.20100120092047.6130: ** push_ipython_script
 def push_ipython_script(node):
     """ Execute the node body in IPython,
     as if it was entered in interactive prompt """
@@ -545,8 +504,7 @@ def push_ipython_script(node):
             es('ipy run: %s (%d LL)' %( node.h,len(script)))
     finally:
         c.redraw()
-#@-node:ekr.20100120092047.6130:push_ipython_script
-#@+node:ekr.20100120092047.6131:eval_body
+#@+node:ekr.20100120092047.6131: ** eval_body
 def eval_body(body):
     try:
         val = ip.ev(body)
@@ -555,8 +513,7 @@ def eval_body(body):
         val = IPython.genutils.SList(body.splitlines())
     return val 
 
-#@-node:ekr.20100120092047.6131:eval_body
-#@+node:ekr.20100120092047.6132:push_plain_python
+#@+node:ekr.20100120092047.6132: ** push_plain_python
 def push_plain_python(node):
     if not node.h.endswith('P'):
         raise TryNext
@@ -570,8 +527,7 @@ def push_plain_python(node):
         print(" -- Exception in script:\n"+script + "\n --")
         raise
     es('ipy plain: %s (%d LL)' % (node.h,lines))
-#@-node:ekr.20100120092047.6132:push_plain_python
-#@+node:ekr.20100120092047.6133:push_cl_node
+#@+node:ekr.20100120092047.6133: ** push_cl_node
 def push_cl_node(node):
     """ If node starts with @cl, eval it
 
@@ -587,8 +543,7 @@ def push_cl_node(node):
         LeoNode(p2).v = val
     es(val)
 
-#@-node:ekr.20100120092047.6133:push_cl_node
-#@+node:ekr.20100120092047.6134:push_ev_node
+#@+node:ekr.20100120092047.6134: ** push_ev_node
 def push_ev_node(node):
     """ If headline starts with @ev, eval it and put result in body """
     if not node.h.startswith('@ev '):
@@ -598,8 +553,7 @@ def push_ev_node(node):
     res = ip.ev(expr)
     node.v = res
 
-#@-node:ekr.20100120092047.6134:push_ev_node
-#@+node:ekr.20100120092047.6136:push_position_from_leo
+#@+node:ekr.20100120092047.6136: ** push_position_from_leo
 def push_position_from_leo(p):
     try:
         push_from_leo(LeoNode(p))
@@ -612,8 +566,7 @@ def push_position_from_leo(p):
         else:
             raise
 
-#@-node:ekr.20100120092047.6136:push_position_from_leo
-#@+node:ekr.20100120092047.6135:push_mark_req
+#@+node:ekr.20100120092047.6135: ** push_mark_req
 def push_mark_req(node):
     """ This should be the first one that gets called.
 
@@ -621,8 +574,7 @@ def push_mark_req(node):
     """
     _leo_push_history.add(node.h)
     raise TryNext
-#@-node:ekr.20100120092047.6135:push_mark_req
-#@+node:ekr.20100120092047.6137:edit_object_in_leo
+#@+node:ekr.20100120092047.6137: ** edit_object_in_leo
 @generic
 def edit_object_in_leo(obj, varname):
     """ Make it @cl node so it can be pushed back directly by alt+I """
@@ -633,8 +585,7 @@ def edit_object_in_leo(obj, varname):
     node.b = formatted 
     node.go()
 
-#@-node:ekr.20100120092047.6137:edit_object_in_leo
-#@+node:ekr.20100120092047.6138:edit_macro
+#@+node:ekr.20100120092047.6138: ** edit_macro
 @edit_object_in_leo.when_type(IPython.macro.Macro)
 def edit_macro(obj,varname):
     bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
@@ -642,8 +593,7 @@ def edit_macro(obj,varname):
     node.b = bod
     node.go()
 
-#@-node:ekr.20100120092047.6138:edit_macro
-#@+node:ekr.20100120092047.6139:get_history
+#@+node:ekr.20100120092047.6139: ** get_history
 def get_history(hstart = 0):
     res = []
     ohist = ip.IP.output_hist 
@@ -658,8 +608,7 @@ def get_history(hstart = 0):
             res.append(pprint.pformat(val))
             res.append('\n')    
     return ''.join(res)
-#@-node:ekr.20100120092047.6139:get_history
-#@+node:ekr.20100120092047.6140:lee_f
+#@+node:ekr.20100120092047.6140: ** lee_f
 def lee_f(self,s):
     """ Open file(s)/objects in Leo
 
@@ -707,8 +656,7 @@ def lee_f(self,s):
             press ctrl+shift+w in Leo to write @auto nodes")
     finally:
         c.redraw()
-#@-node:ekr.20100120092047.6140:lee_f
-#@+node:ekr.20100120092047.6141:leoref_f
+#@+node:ekr.20100120092047.6141: ** leoref_f
 def leoref_f(self,s):
     """ Quick reference for ILeo """
     import textwrap
@@ -725,8 +673,7 @@ def leoref_f(self,s):
 
     """
     ))
-#@-node:ekr.20100120092047.6141:leoref_f
-#@+node:ekr.20100120092047.6142:mb_f
+#@+node:ekr.20100120092047.6142: ** mb_f
 def mb_f(self, arg):
     """ Execute leo minibuffer commands 
 
@@ -734,8 +681,7 @@ def mb_f(self, arg):
      mb save-to-file
     """
     c.executeMinibufferCommand(arg)
-#@-node:ekr.20100120092047.6142:mb_f
-#@+node:ekr.20100120092047.6143:mb_completer
+#@+node:ekr.20100120092047.6143: ** mb_completer
 def mb_completer(self,event):
     """ Custom completer for minibuffer """
     cmd_param = event.line.split()
@@ -749,8 +695,7 @@ def mb_completer(self,event):
     cmds.sort()
     return cmds
 
-#@-node:ekr.20100120092047.6143:mb_completer
-#@+node:ekr.20100120092047.6144:ileo_pre_prompt_hook
+#@+node:ekr.20100120092047.6144: ** ileo_pre_prompt_hook
 def ileo_pre_prompt_hook(self):
     # this will fail if leo is not running yet
     try:
@@ -759,8 +704,7 @@ def ileo_pre_prompt_hook(self):
         pass
     raise TryNext
 
-#@-node:ekr.20100120092047.6144:ileo_pre_prompt_hook
-#@+node:ekr.20100120092047.6145:show_welcome
+#@+node:ekr.20100120092047.6145: ** show_welcome
 def show_welcome():
     print("------------------")
     print("Welcome to Leo-enabled IPython session!")
@@ -769,8 +713,7 @@ def show_welcome():
     IPython.platutils.set_term_title('ILeo')
     IPython.platutils.freeze_term_title()
 
-#@-node:ekr.20100120092047.6145:show_welcome
-#@+node:ekr.20100120092047.6146:run_leo_startup_node
+#@+node:ekr.20100120092047.6146: ** run_leo_startup_node
 def run_leo_startup_node():
     p = g.findNodeAnywhere(c,'@ipy-startup')
     if p:
@@ -778,8 +721,7 @@ def run_leo_startup_node():
         for n in LeoNode(p):
             push_from_leo(n)
 
-#@-node:ekr.20100120092047.6146:run_leo_startup_node
-#@+node:ekr.20100120092047.6147:lleo_f
+#@+node:ekr.20100120092047.6147: ** lleo_f
 def lleo_f(selg,  args):
     """ Launch leo from within IPython
 
@@ -809,8 +751,7 @@ def lleo_f(selg,  args):
     import leo.core.runLeo
     leo.core.runLeo.run()
 
-#@-node:ekr.20100120092047.6147:lleo_f
-#@+node:ekr.20100120092047.6148:lno_f
+#@+node:ekr.20100120092047.6148: ** lno_f
 def lno_f(self, arg):
     """ %lno [note text]
 
@@ -832,8 +773,7 @@ def lno_f(self, arg):
         child = scr[arg]
 
     child.go()
-#@-node:ekr.20100120092047.6148:lno_f
-#@+node:ekr.20100120092047.6149:lshadow_f
+#@+node:ekr.20100120092047.6149: ** lshadow_f
 def lshadow_f(self, arg):
     """ lshadow [path] 
 
@@ -847,8 +787,7 @@ def lshadow_f(self, arg):
     c.setCurrentPosition(p)
     shadow_walk(arg)
     c.redraw()
-#@-node:ekr.20100120092047.6149:lshadow_f
-#@+node:ekr.20100120092047.6150:shadow_walk
+#@+node:ekr.20100120092047.6150: ** shadow_walk
 def shadow_walk(directory, parent=None, isroot=True):
     """ source: http://leo.zwiki.org/CreateShadows
 
@@ -898,13 +837,10 @@ def shadow_walk(directory, parent=None, isroot=True):
             child.initHeadString(headline)
             child.initBodyString(body)
             shadow_walk(path, parent=child, isroot=False)
-#@-node:ekr.20100120092047.6150:shadow_walk
-#@+node:ekr.20100120092047.6151:mkbutton
+#@+node:ekr.20100120092047.6151: ** mkbutton
 def mkbutton(text, node_to_push):
     ib = c.frame.getIconBarObject()
     ib.add(text = text, command = node_to_push.ipush)
 
-#@-node:ekr.20100120092047.6151:mkbutton
 #@-others
-#@-node:ekr.20100120092047.6087:@thin ../external/ipy_leo.py
 #@-leo

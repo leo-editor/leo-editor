@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3439:@thin leoPlugins.py
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.3439: * @thin leoPlugins.py
 """Install and run Leo plugins.
 
 On startup:
@@ -41,10 +41,10 @@ def init():
     g.tree_popup_handlers = []
 
 #@+others
-#@+node:ktenney.20060628092017.1:baseLeoPlugin
+#@+node:ktenney.20060628092017.1: ** baseLeoPlugin
 class baseLeoPlugin(object):
-    #@    <<docstring>>
-    #@+node:ktenney.20060628092017.2:<<docstring>>
+    #@+<<docstring>>
+    #@+node:ktenney.20060628092017.2: *3* <<docstring>>
     """A Convenience class to simplify plugin authoring
 
     .. contents::
@@ -151,15 +151,13 @@ class baseLeoPlugin(object):
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
 
     """
-    #@-node:ktenney.20060628092017.2:<<docstring>>
-    #@nl
-    #@    <<baseLeoPlugin declarations>>
-    #@+node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
+    #@-<<docstring>>
+    #@+<<baseLeoPlugin declarations>>
+    #@+node:ktenney.20060628092017.3: *3* <<baseLeoPlugin declarations>>
     import leo.core.leoGlobals as g
-    #@-node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
-    #@nl
-    #@    @+others
-    #@+node:ktenney.20060628092017.4:__init__
+    #@-<<baseLeoPlugin declarations>>
+    #@+others
+    #@+node:ktenney.20060628092017.4: *3* __init__
     def __init__(self, tag, keywords):
 
         """Set self.c to be the ``commander`` of the active node
@@ -167,8 +165,7 @@ class baseLeoPlugin(object):
 
         self.c = keywords['c']
         self.commandNames = []
-    #@-node:ktenney.20060628092017.4:__init__
-    #@+node:ktenney.20060628092017.5:setCommand
+    #@+node:ktenney.20060628092017.5: *3* setCommand
     def setCommand(self, commandName, handler, 
                     shortcut = None, pane = 'all', verbose = True):
 
@@ -183,8 +180,7 @@ class baseLeoPlugin(object):
         self.handler = handler
         self.c.k.registerCommand (commandName, shortcut, handler, 
                                 pane, verbose)
-    #@-node:ktenney.20060628092017.5:setCommand
-    #@+node:ktenney.20060628092017.6:setMenuItem
+    #@+node:ktenney.20060628092017.6: *3* setMenuItem
     def setMenuItem(self, menu, commandName = None, handler = None):
 
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
@@ -204,8 +200,7 @@ class baseLeoPlugin(object):
 
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
-    #@-node:ktenney.20060628092017.6:setMenuItem
-    #@+node:ktenney.20060628092017.7:setButton
+    #@+node:ktenney.20060628092017.7: *3* setButton
     def setButton(self, buttonText = None, commandName = None, color = None):
 
         """Associate an existing command with a 'button'
@@ -228,10 +223,8 @@ class baseLeoPlugin(object):
             args=None,
             script=script, 
             buttonText = buttonText, bg = color)
-    #@-node:ktenney.20060628092017.7:setButton
     #@-others
-#@-node:ktenney.20060628092017.1:baseLeoPlugin
-#@+node:ekr.20050102094729:callTagHandler
+#@+node:ekr.20050102094729: ** callTagHandler
 def callTagHandler (bunch,tag,keywords):
 
     handler = bunch.fn ; moduleName = bunch.moduleName
@@ -259,8 +252,7 @@ def callTagHandler (bunch,tag,keywords):
         result = None
     loadingModuleNameStack.pop()
     return result
-#@-node:ekr.20050102094729:callTagHandler
-#@+node:ekr.20031218072017.3442:doHandlersForTag
+#@+node:ekr.20031218072017.3442: ** doHandlersForTag
 def doHandlersForTag (tag,keywords):
 
     """Execute all handlers for a given tag, in alphabetical order.
@@ -287,8 +279,7 @@ def doHandlersForTag (tag,keywords):
             callTagHandler(bunch,tag,keywords)
 
     return None
-#@-node:ekr.20031218072017.3442:doHandlersForTag
-#@+node:ekr.20041001161108:doPlugins
+#@+node:ekr.20041001161108: ** doPlugins
 ignoringMessageGiven = False
 
 def doPlugins(tag,keywords):
@@ -302,8 +293,7 @@ def doPlugins(tag,keywords):
         loadHandlers(tag)
 
     return doHandlersForTag(tag,keywords)
-#@-node:ekr.20041001161108:doPlugins
-#@+node:ekr.20041111124831:getHandlersForTag
+#@+node:ekr.20041111124831: ** getHandlersForTag
 def getHandlersForTag(tags):
 
     import types
@@ -324,22 +314,19 @@ def getHandlersForOneTag (tag):
     aList = handlers.get(tag,[])
     return aList
     # return [bunch.fn for bunch in aList]
-#@-node:ekr.20041111124831:getHandlersForTag
-#@+node:ekr.20041114113029:getPluginModule
+#@+node:ekr.20041114113029: ** getPluginModule
 def getPluginModule (moduleName):
 
     global loadedModules
 
     return loadedModules.get(moduleName)
-#@-node:ekr.20041114113029:getPluginModule
-#@+node:ekr.20041001160216:isLoaded
+#@+node:ekr.20041001160216: ** isLoaded
 def isLoaded (name):
 
     if name.endswith('.py'): name = name[:-3]
 
     return name in g.app.loadedPlugins
-#@-node:ekr.20041001160216:isLoaded
-#@+node:ekr.20031218072017.3440:loadHandlers & helper
+#@+node:ekr.20031218072017.3440: ** loadHandlers & helper
 def loadHandlers(tag):
 
     """Load all enabled plugins from the plugins directory"""
@@ -386,7 +373,7 @@ def loadHandlers(tag):
     if 0:
         if g.app.loadedPlugins:
             pr("%d plugins loaded" % (len(g.app.loadedPlugins)), color="blue")
-#@+node:ekr.20070224082131:getEnabledFiles
+#@+node:ekr.20070224082131: *3* getEnabledFiles
 def getEnabledFiles (s,plugins_path = None):
 
     '''Return a list of plugins mentioned in non-comment lines of s.'''
@@ -401,9 +388,7 @@ def getEnabledFiles (s,plugins_path = None):
             #enabled_files.append(path)
 
     return enabled_files
-#@-node:ekr.20070224082131:getEnabledFiles
-#@-node:ekr.20031218072017.3440:loadHandlers & helper
-#@+node:ekr.20041113113140:loadOnePlugin
+#@+node:ekr.20041113113140: ** loadOnePlugin
 def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     trace = False # and not g.unitTesting
@@ -500,8 +485,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
                 g.trace('can not load enabled plugin:',moduleName,color="red")
 
     return result
-#@-node:ekr.20041113113140:loadOnePlugin
-#@+node:ekr.20050110191444:printHandlers
+#@+node:ekr.20050110191444: ** printHandlers
 def printHandlers (c,moduleName=None):
 
     tabName = 'Plugins'
@@ -534,8 +518,7 @@ def printHandlers (c,moduleName=None):
     lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
     g.es('',''.join(lines),tabName=tabName)
 
-#@-node:ekr.20050110191444:printHandlers
-#@+node:ekr.20070429090122:printPlugins
+#@+node:ekr.20070429090122: ** printPlugins
 def printPlugins (c):
 
     tabName = 'Plugins'
@@ -548,8 +531,7 @@ def printPlugins (c):
 
     lines = ['%s\n' % (s) for s in data]
     g.es('',''.join(lines),tabName=tabName)
-#@-node:ekr.20070429090122:printPlugins
-#@+node:ekr.20081123080346.2:printPluginsInfo
+#@+node:ekr.20081123080346.2: ** printPluginsInfo
 def printPluginsInfo (c):
 
     '''Print the file name responsible for loading a plugin.
@@ -573,8 +555,7 @@ def printPluginsInfo (c):
 
     lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
     g.es('',''.join(lines),tabName=tabName)
-#@-node:ekr.20081123080346.2:printPluginsInfo
-#@+node:ekr.20031218072017.3444:registerExclusiveHandler
+#@+node:ekr.20031218072017.3444: ** registerExclusiveHandler
 def registerExclusiveHandler(tags, fn):
 
     """ Register one or more exclusive handlers"""
@@ -608,8 +589,7 @@ def registerOneExclusiveHandler(tag, fn):
     else:
         bunch = g.Bunch(fn=fn,moduleName=moduleName,tag='handler')
         handlers = [bunch]
-#@-node:ekr.20031218072017.3444:registerExclusiveHandler
-#@+node:ekr.20031218072017.3443:registerHandler
+#@+node:ekr.20031218072017.3443: ** registerHandler
 def registerHandler(tags,fn):
 
     """ Register one or more handlers"""
@@ -644,8 +624,7 @@ def registerOneHandler(tag,fn):
 
     # g.trace(tag) ; g.printList(items)
     handlers[tag] = items
-#@-node:ekr.20031218072017.3443:registerHandler
-#@+node:ekr.20050110182317:unloadOnePlugin
+#@+node:ekr.20050110182317: ** unloadOnePlugin
 def unloadOnePlugin (moduleOrFileName,verbose=False):
 
     if moduleOrFileName [-3:] == ".py":
@@ -663,8 +642,7 @@ def unloadOnePlugin (moduleOrFileName,verbose=False):
         bunches = handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
         handlers[tag] = bunches
-#@-node:ekr.20050110182317:unloadOnePlugin
-#@+node:ekr.20041111123313:unregisterHandler
+#@+node:ekr.20041111123313: ** unregisterHandler
 def unregisterHandler(tags,fn):
 
     import types
@@ -690,8 +668,7 @@ def unregisterOneHandler (tag,fn):
                 fn_list.remove(fn)
             handlers[tag] = fn_list
             # g.trace(handlers.get(tag))
-#@-node:ekr.20041111123313:unregisterHandler
-#@+node:ville.20090222141717.2:TryNext (exception)
+#@+node:ville.20090222141717.2: ** TryNext (exception)
 class TryNext(Exception):
     """Try next hook exception.
 
@@ -704,8 +681,7 @@ class TryNext(Exception):
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
-#@-node:ville.20090222141717.2:TryNext (exception)
-#@+node:ville.20090222141717.1:class CommandChainDispatcher
+#@+node:ville.20090222141717.1: ** class CommandChainDispatcher
 class CommandChainDispatcher:
     """ Dispatch calls to a chain of commands until some func can handle it
 
@@ -753,7 +729,5 @@ class CommandChainDispatcher:
         Handy if the objects are not callable.
         """
         return iter(self.chain)
-#@-node:ville.20090222141717.1:class CommandChainDispatcher
 #@-others
-#@-node:ekr.20031218072017.3439:@thin leoPlugins.py
 #@-leo

@@ -1,16 +1,13 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20081121105001.12:@thin cursesGui.py
-#@+at 
-#@nonl
-# Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, 
-# etc)
-# are labeled: # undoc: where the AttributeError comes from ; other 
-# implementations of method
-#@-at
+#@+leo-ver=5-thin
+#@+node:ekr.20081121105001.12: * @thin cursesGui.py
+#@+at
+# Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
+# are labeled: # undoc: where the AttributeError comes from other implementations
+# of method.
 #@@c
 
-#@<< imports >>
-#@+node:ekr.20081121105001.13:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20081121105001.13: ** << imports >>
 import leo.core.leoGlobals as g
 
 import leo.core.leoChapters as leoChapters
@@ -20,10 +17,9 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
-#@-node:ekr.20081121105001.13:<< imports >>
-#@nl
-#@<< TODO >>
-#@+node:ekr.20081121105001.14:<< TODO >>
+#@-<< imports >>
+#@+<< TODO >>
+#@+node:ekr.20081121105001.14: ** << TODO >>
 #@+at
 # Body text:
 # Is the "signature" of the typing event right?
@@ -34,8 +30,7 @@ import leo.core.leoNodes as leoNodes
 # What does the GUI need to do for Leo's undo features?
 # What about that minibuffer thing? (I've never used it.)
 # When should runMainLoop return?
-# What kind of newlines does the body text control get? How should it treat 
-# them?
+# What kind of newlines does the body text control get? How should it treat them?
 # Headline editing?
 # Body text selection.
 # (Strip trailing whitespace from this file. :P)
@@ -45,13 +40,10 @@ import leo.core.leoNodes as leoNodes
 # Comments in the body reflect current status only.
 # Ideally, comments in the body go away as the "leoGUI interface" improves.
 # Written on a hundred-column terminal. :S
-#@-at
-#@nonl
-#@-node:ekr.20081121105001.14:<< TODO >>
-#@nl
+#@-<< TODO >>
 __version__ = '0.2'
-#@<< version history >>
-#@+node:ekr.20081121105001.15:<< version history >>
+#@+<< version history >>
+#@+node:ekr.20081121105001.15: ** << version history >>
 #@@nocolor
 #@+at
 # 
@@ -60,12 +52,8 @@ __version__ = '0.2'
 # - Fixed several crashers related to Leo 4.x code base.
 # - textBodyCtrl is now just leoFrame.stringTextWidget.
 # - Improved main input loop.
-# - You can now enter menu accelerators instead of menu indices in the menu 
-# menu.
-#@-at
-#@nonl
-#@-node:ekr.20081121105001.15:<< version history >>
-#@nl
+# - You can now enter menu accelerators instead of menu indices in the menu menu.
+#@-<< version history >>
 
 if g.isPython3: get_input = input
 else:           get_input = raw_input
@@ -74,7 +62,7 @@ else:           get_input = raw_input
 #@@tabwidth -2
 
 #@+others
-#@+node:ekr.20081121105001.16:init
+#@+node:ekr.20081121105001.16: ** init
 def init ():
 
     ok = not g.app.gui and not g.app.unitTesting # Not Ok for unit testing!
@@ -90,70 +78,57 @@ def init ():
         g.es_print(s,color="red")
 
     return ok
-#@-node:ekr.20081121105001.16:init
-#@+node:ekr.20081121105001.17:underline
+#@+node:ekr.20081121105001.17: ** underline
 def underline(s, idx):
 
   if idx < 0 or idx > len(s) - 1:
     return s
 
   return s[:idx] + '&' + s[idx:]
-#@-node:ekr.20081121105001.17:underline
-#@+node:ekr.20081121105001.18:class textGui
+#@+node:ekr.20081121105001.18: ** class textGui
 class textGui(leoGui.leoGui):
-  #@	@+others
-  #@+node:ekr.20081121105001.19:__init__
+  #@+others
+  #@+node:ekr.20081121105001.19: *3* __init__
   def __init__(self):
     leoGui.leoGui.__init__(self, "text")
 
     self.frames = []
     self.killed = False
     # TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
-  #@-node:ekr.20081121105001.19:__init__
-  #@+node:ekr.20081121105001.20:createKeyHandlerClass
+  #@+node:ekr.20081121105001.20: *3* createKeyHandlerClass
   def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
       # import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
       return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-  #@nonl
-  #@-node:ekr.20081121105001.20:createKeyHandlerClass
-  #@+node:ekr.20081121105001.21:createLeoFrame
+  #@+node:ekr.20081121105001.21: *3* createLeoFrame
   def createLeoFrame(self, title):
     ret = textFrame(self, title)
     self.frames.append(ret)
     return ret
-  #@-node:ekr.20081121105001.21:createLeoFrame
-  #@+node:ekr.20081121105001.22:createRootWindow
+  #@+node:ekr.20081121105001.22: *3* createRootWindow
   def createRootWindow(self):
     pass # N/A
 
-  #@-node:ekr.20081121105001.22:createRootWindow
-  #@+node:ekr.20081121105001.23:destroySelf
+  #@+node:ekr.20081121105001.23: *3* destroySelf
   def destroySelf (self):
     self.killed = True
-  #@nonl
-  #@-node:ekr.20081121105001.23:destroySelf
-  #@+node:ekr.20081121105001.24:finishCreate
+  #@+node:ekr.20081121105001.24: *3* finishCreate
   def finishCreate(self):
     pass
-  #@-node:ekr.20081121105001.24:finishCreate
-  #@+node:ekr.20081121105001.25:isTextWidget
+  #@+node:ekr.20081121105001.25: *3* isTextWidget
   def isTextWidget (self,w):
 
       '''Return True if w is a Text widget suitable for text-oriented commands.'''
 
       return w and isinstance(w,leoFrame.baseTextWidget)
-  #@-node:ekr.20081121105001.25:isTextWidget
-  #@+node:ekr.20081121105001.26:oops
+  #@+node:ekr.20081121105001.26: *3* oops
   def oops(self):
     g.pr("textGui oops", g.callers(), "should be implemented")
-  #@-node:ekr.20081121105001.26:oops
-  #@+node:ekr.20081121105001.27:runMainLoop
+  #@+node:ekr.20081121105001.27: *3* runMainLoop
   def runMainLoop(self):
     self.text_run()
-  #@-node:ekr.20081121105001.27:runMainLoop
-  #@+node:ekr.20081121105001.28:runOpenFileDialog
+  #@+node:ekr.20081121105001.28: *3* runOpenFileDialog
   def runOpenFileDialog(self, title, filetypes, defaultextension, multiple=False):
     import os
 
@@ -167,15 +142,13 @@ class textGui(leoGui.leoGui):
     if multiple:
       return [ret,]
     return ret
-  #@-node:ekr.20081121105001.28:runOpenFileDialog
-  #@+node:ekr.20081121105001.29:get/set_focus
+  #@+node:ekr.20081121105001.29: *3* get/set_focus
   def get_focus(self,c):
     pass
 
   def set_focus(self,c,w):
     pass
-  #@-node:ekr.20081121105001.29:get/set_focus
-  #@+node:ekr.20081121105001.30:text_run & helper
+  #@+node:ekr.20081121105001.30: *3* text_run & helper
   def text_run(self):
     frame_idx = 0
 
@@ -197,7 +170,7 @@ class textGui(leoGui.leoGui):
         self.doChoice(f,s)
       except Exception:
           g.es_exception()
-  #@+node:ekr.20081121105001.31:doChoice
+  #@+node:ekr.20081121105001.31: *4* doChoice
   def doChoice(self,f,s):
 
     if s in ('m','menu'):
@@ -220,27 +193,22 @@ class textGui(leoGui.leoGui):
       f.tree.text_draw_tree()
     elif s in ('q','quit'):
       self.killed = True
-  #@-node:ekr.20081121105001.31:doChoice
-  #@-node:ekr.20081121105001.30:text_run & helper
-  #@+node:ekr.20081121105001.32:widget_name
+  #@+node:ekr.20081121105001.32: *3* widget_name
   def widget_name(self, w):
     if isinstance(w, textBodyCtrl):
       return 'body'
     return leoGui.leoGui.widget_name(self, w)
-  #@-node:ekr.20081121105001.32:widget_name
   #@-others
-#@-node:ekr.20081121105001.18:class textGui
-#@+node:ekr.20081121105001.33:class textFrame
+#@+node:ekr.20081121105001.33: ** class textFrame
 class textFrame(leoFrame.leoFrame):
-  #@	@+others
-  #@+node:ekr.20081121105001.34:__init__
+  #@+others
+  #@+node:ekr.20081121105001.34: *3* __init__
   def __init__(self, gui, title):
 
     leoFrame.leoFrame.__init__(self, gui)
 
     self.title = title # Per leoFrame.__init__
-  #@-node:ekr.20081121105001.34:__init__
-  #@+node:ekr.20081121105001.35:createFirstTreeNode
+  #@+node:ekr.20081121105001.35: *3* createFirstTreeNode
   # From leoTkinterFrame.py
   def createFirstTreeNode (self):
 
@@ -264,17 +232,13 @@ class textFrame(leoFrame.leoFrame):
     # p.moveToRoot(oldRoot=None)
     # c.setRootPosition(p) # New in 4.4.2.
     # c.editPosition(p)
-  #@-node:ekr.20081121105001.35:createFirstTreeNode
-  #@+node:ekr.20081121105001.36:deiconify
+  #@+node:ekr.20081121105001.36: *3* deiconify
   def deiconify(self): pass # N/A
   def lift(self): pass # N/A
-  #@-node:ekr.20081121105001.36:deiconify
-  #@+node:ekr.20081121105001.37:destroySelf
+  #@+node:ekr.20081121105001.37: *3* destroySelf
   def destroySelf (self):
       pass
-  #@nonl
-  #@-node:ekr.20081121105001.37:destroySelf
-  #@+node:ekr.20081121105001.38:finishCreate
+  #@+node:ekr.20081121105001.38: *3* finishCreate
   def finishCreate(self, c):
     f = self ; f.c = c
 
@@ -294,18 +258,15 @@ class textFrame(leoFrame.leoFrame):
 
     # So updateRecentFiles will update our menus.
     g.app.windowList.append(f)
-  #@-node:ekr.20081121105001.38:finishCreate
-  #@+node:ekr.20081121105001.39:setInitialWindowGeometry
+  #@+node:ekr.20081121105001.39: *3* setInitialWindowGeometry
   def setInitialWindowGeometry(self): pass # N/A
-  #@-node:ekr.20081121105001.39:setInitialWindowGeometry
-  #@+node:ekr.20081121105001.40:setMinibufferBindings
+  #@+node:ekr.20081121105001.40: *3* setMinibufferBindings
   def setMinibufferBindings(self):
     pass
 
   def setTopGeometry(self, w, h, x, y):
     pass # N/A
-  #@-node:ekr.20081121105001.40:setMinibufferBindings
-  #@+node:ekr.20081121105001.41:text_key
+  #@+node:ekr.20081121105001.41: *3* text_key
   def text_key(self):
     c = self.c ; k = c.k ; w = self.body.bodyCtrl
 
@@ -333,17 +294,14 @@ class textFrame(leoFrame.leoFrame):
 
     e = leoTypingEvent(c,w,char,stroke)
     k.masterKeyHandler(event=e,stroke=key)
-  #@-node:ekr.20081121105001.41:text_key
-  #@+node:ekr.20081121105001.42:update
+  #@+node:ekr.20081121105001.42: *3* update
   def update(self): pass
   def resizePanesToRatio(self, ratio, ratio2): pass # N/A
-  #@-node:ekr.20081121105001.42:update
   #@-others
-#@-node:ekr.20081121105001.33:class textFrame
-#@+node:ekr.20081121105001.43:class textBody
+#@+node:ekr.20081121105001.43: ** class textBody
 class textBody(leoFrame.leoBody):
-  #@	@+others
-  #@+node:ekr.20081121105001.44:__init__
+  #@+others
+  #@+node:ekr.20081121105001.44: *3* __init__
   def __init__(self, frame, parentFrame):
     leoFrame.leoBody.__init__(self, frame, parentFrame)
 
@@ -351,82 +309,68 @@ class textBody(leoFrame.leoBody):
 
     self.bodyCtrl = textBodyCtrl(c,name)
     self.colorizer = leoColor.nullColorizer(self.c)
-  #@-node:ekr.20081121105001.44:__init__
-  #@+node:ekr.20081121105001.45:bind
+  #@+node:ekr.20081121105001.45: *3* bind
   # undoc: newLeoCommanderAndFrame -> c.finishCreate -> k.finishCreate -> k.completeAllBindings -> k.makeMasterGuiBinding -> 2156 w.bind ; nullBody 
   def bind(self, bindStroke, callback): 
     # Quiet, please.    
     ##self.oops()
     pass
-  #@-node:ekr.20081121105001.45:bind
-  #@+node:ekr.20081121105001.46:setEditorColors
+  #@+node:ekr.20081121105001.46: *3* setEditorColors
   # TODO Tkinter onBodyChanged undo call and many others. =(
 
   def setEditorColors(self, bg, fg): pass # N/A
   def createBindings(self, w=None): pass
-  #@-node:ekr.20081121105001.46:setEditorColors
-  #@+node:ekr.20081121105001.47:text_show
+  #@+node:ekr.20081121105001.47: *3* text_show
   def text_show(self):
 
     w = self.bodyCtrl
     g.pr('--- body ---')
     g.pr('ins',w.ins,'sel',w.sel)
     g.pr(w.s)
-  #@-node:ekr.20081121105001.47:text_show
   #@-others
-#@-node:ekr.20081121105001.43:class textBody
-#@+node:ekr.20081121105001.48:class textBodyCtrl (stringTextWidget)
+#@+node:ekr.20081121105001.48: ** class textBodyCtrl (stringTextWidget)
 class textBodyCtrl (leoFrame.stringTextWidget):
   pass
-#@-node:ekr.20081121105001.48:class textBodyCtrl (stringTextWidget)
-#@+node:ekr.20081121105001.49:class textMenuCascade
+#@+node:ekr.20081121105001.49: ** class textMenuCascade
 class textMenuCascade:
-  #@	@+others
-  #@+node:ekr.20081121105001.50:__init__
+  #@+others
+  #@+node:ekr.20081121105001.50: *3* __init__
   def __init__(self, menu, label, underline):
     self.menu = menu
     self.label = label
     self.underline = underline
-  #@-node:ekr.20081121105001.50:__init__
-  #@+node:ekr.20081121105001.51:display
+  #@+node:ekr.20081121105001.51: *3* display
   def display(self):      
     ret = underline(self.label, self.underline)
     if len(self.menu.entries) == 0:
       ret += ' [Submenu with no entries]'
     return ret
-  #@-node:ekr.20081121105001.51:display
   #@-others
-#@-node:ekr.20081121105001.49:class textMenuCascade
-#@+node:ekr.20081121105001.52:class textMenuEntry
+#@+node:ekr.20081121105001.52: ** class textMenuEntry
 class textMenuEntry:
-  #@	@+others
-  #@+node:ekr.20081121105001.53:__init__
+  #@+others
+  #@+node:ekr.20081121105001.53: *3* __init__
   def __init__(self, label, underline, accel, callback):
     self.label = label
     self.underline = underline
     self.accel = accel
     self.callback = callback
-  #@-node:ekr.20081121105001.53:__init__
-  #@+node:ekr.20081121105001.54:display
+  #@+node:ekr.20081121105001.54: *3* display
   def display(self):
     return "%s %s" % (underline(self.label, self.underline), self.accel,)
-  #@-node:ekr.20081121105001.54:display
   #@-others
-#@-node:ekr.20081121105001.52:class textMenuEntry
-#@+node:ekr.20081121105001.55:class textMenuSep
+#@+node:ekr.20081121105001.55: ** class textMenuSep
 class textMenuSep:  
-  #@	@+others
-  #@+node:ekr.20081121105001.56:display
+  #@+others
+  #@+node:ekr.20081121105001.56: *3* display
   def display(self): 
     return '-' * 5
-  #@-node:ekr.20081121105001.56:display
   #@-others
-#@-node:ekr.20081121105001.55:class textMenuSep
-#@+node:ekr.20081121105001.57:class textLeoMenu (leoMenu)
+#@+node:ekr.20081121105001.57: ** class textLeoMenu (leoMenu)
 class textLeoMenu(leoMenu.leoMenu):
 
-  #@	@+others
-  #@+node:ekr.20081121105001.58:ctor (textLeoMenu)
+  #@+others
+  #@+node:ekr.20081121105001.58: *3* ctor (textLeoMenu)
   def __init__ (self,frame):
 
 
@@ -435,8 +379,7 @@ class textLeoMenu(leoMenu.leoMenu):
 
       # Init the base class
       leoMenu.leoMenu.__init__(self,frame)
-  #@-node:ekr.20081121105001.58:ctor (textLeoMenu)
-  #@+node:ekr.20081121105001.59:createMenuBar
+  #@+node:ekr.20081121105001.59: *3* createMenuBar
   def createMenuBar(self, frame):
 
     g.trace(frame.c)
@@ -444,8 +387,7 @@ class textLeoMenu(leoMenu.leoMenu):
     self._top_menu = textLeoMenu(frame)
 
     self.createMenusFromTables()
-  #@-node:ekr.20081121105001.59:createMenuBar
-  #@+node:ekr.20081121105001.60:new_menu
+  #@+node:ekr.20081121105001.60: *3* new_menu
   def new_menu(self, parent,tearoff=False):
 
     if tearoff != False: raise NotImplementedError(repr(tearoff))
@@ -456,8 +398,7 @@ class textLeoMenu(leoMenu.leoMenu):
     menu = textLeoMenu(parent or self.frame)
     menu.entries = []
     return menu
-  #@-node:ekr.20081121105001.60:new_menu
-  #@+node:ekr.20081121105001.61:add_cascade
+  #@+node:ekr.20081121105001.61: *3* add_cascade
   def add_cascade(self, parent, label, menu, underline):
 
     # g.trace('parent',parent)
@@ -465,8 +406,7 @@ class textLeoMenu(leoMenu.leoMenu):
     if parent == None:
         parent = self._top_menu
     parent.entries.append(textMenuCascade(menu, label, underline,))
-  #@-node:ekr.20081121105001.61:add_cascade
-  #@+node:ekr.20081121105001.62:add_command
+  #@+node:ekr.20081121105001.62: *3* add_command
   ### def add_command(self, menu, label, underline, command, accelerator=''):
 
   def add_command(self,**keys):
@@ -489,17 +429,14 @@ class textLeoMenu(leoMenu.leoMenu):
 
     entry = textMenuEntry(label, underline, accelerator, command)
     menu.entries.append(entry)
-  #@-node:ekr.20081121105001.62:add_command
-  #@+node:ekr.20081121105001.63:add_separator
+  #@+node:ekr.20081121105001.63: *3* add_separator
   def add_separator(self, menu):
     menu.entries.append(textMenuSep())
-  #@-node:ekr.20081121105001.63:add_separator
-  #@+node:ekr.20081121105001.64:delete_range
+  #@+node:ekr.20081121105001.64: *3* delete_range
   def delete_range (self,*args,**keys):
 
     pass
-  #@-node:ekr.20081121105001.64:delete_range
-  #@+node:ekr.20081121105001.65:show_menu
+  #@+node:ekr.20081121105001.65: *3* show_menu
   def show_menu(self):
     last_menu = self._top_menu
 
@@ -537,45 +474,36 @@ class textLeoMenu(leoMenu.leoMenu):
         last_menu = menu.menu
       else:        
         pass
-  #@-node:ekr.20081121105001.65:show_menu
   #@-others
-#@-node:ekr.20081121105001.57:class textLeoMenu (leoMenu)
-#@+node:ekr.20081121105001.66:class textLog
+#@+node:ekr.20081121105001.66: ** class textLog
 class textLog(leoFrame.leoLog):
 	# undoc: leoKeys.py makeAllBindings c.frame.log.setTabBindings('Log') ; nullLog 
-  #@	@+others
-  #@+node:ekr.20081121105001.67:setTabBindings
+  #@+others
+  #@+node:ekr.20081121105001.67: *3* setTabBindings
   def setTabBindings(self, tabName):
     pass  
-  #@-node:ekr.20081121105001.67:setTabBindings
-  #@+node:ekr.20081121105001.68:put
+  #@+node:ekr.20081121105001.68: *3* put
   def put(self, s, color=None, tabName='log'):
     g.pr(s,newline=False)
-  #@-node:ekr.20081121105001.68:put
-  #@+node:ekr.20081121105001.69:putnl
+  #@+node:ekr.20081121105001.69: *3* putnl
   def putnl(self, tabName='log'):
     g.pr('')
-  #@-node:ekr.20081121105001.69:putnl
-  #@+node:ekr.20081121105001.70:createControl
+  #@+node:ekr.20081121105001.70: *3* createControl
   # < < HACK Quiet, oops. >>
   def createControl(self, parentFrame): pass
   def setFontFromConfig(self): pass # N/A
-  #@-node:ekr.20081121105001.70:createControl
-  #@+node:ekr.20081121105001.71:setColorFromConfig
+  #@+node:ekr.20081121105001.71: *3* setColorFromConfig
   def setColorFromConfig(self): pass
 
-  #@-node:ekr.20081121105001.71:setColorFromConfig
   #@-others
-#@-node:ekr.20081121105001.66:class textLog
-#@+node:ekr.20081121105001.72:class textTree
+#@+node:ekr.20081121105001.72: ** class textTree
 class textTree(leoFrame.leoTree):
 	# undoc: k.makeAllBindings ; nullTree 
-  #@	@+others
-  #@+node:ekr.20081121105001.73:setBindings
+  #@+others
+  #@+node:ekr.20081121105001.73: *3* setBindings
   def setBindings(self):
     pass
-  #@-node:ekr.20081121105001.73:setBindings
-  #@+node:ekr.20081121105001.74:begin/endUpdate & redraw/now
+  #@+node:ekr.20081121105001.74: *3* begin/endUpdate & redraw/now
   def beginUpdate(self):
     pass # N/A
 
@@ -589,17 +517,14 @@ class textTree(leoFrame.leoTree):
   def redraw_now(self,scroll=True,forceDraw=True):
     if forceDraw:
       self.redraw()
-  #@-node:ekr.20081121105001.74:begin/endUpdate & redraw/now
-  #@+node:ekr.20081121105001.75:endUpdate
-  #@-node:ekr.20081121105001.75:endUpdate
-  #@+node:ekr.20081121105001.76:__init__
+  #@+node:ekr.20081121105001.75: *3* endUpdate
+  #@+node:ekr.20081121105001.76: *3* __init__
   def __init__(self, frame):
     # undoc: openWithFileName -> treeWantsFocusNow -> c.frame.tree.canvas
     self.canvas = None
 
     leoFrame.leoTree.__init__(self, frame)
-  #@-node:ekr.20081121105001.76:__init__
-  #@+node:ekr.20081121105001.77:select
+  #@+node:ekr.20081121105001.77: *3* select
   def select(self,p,scroll=True):
     # TODO Much more here: there's four hooks and all sorts of other things called in the TK version. 
 
@@ -612,16 +537,13 @@ class textTree(leoFrame.leoTree):
     # Always do this.  Otherwise there can be problems with trailing hewlines.
     w.setAllText(p.b)
     # and something to do with undo?
-  #@-node:ekr.20081121105001.77:select
-  #@+node:ekr.20081121105001.78:editLabel & edit_widget
+  #@+node:ekr.20081121105001.78: *3* editLabel & edit_widget
   def editLabel(self,p,selectAll=False):
     pass # N/A?
 
   def edit_widget(self,p):
     return None
-  #@nonl
-  #@-node:ekr.20081121105001.78:editLabel & edit_widget
-  #@+node:ekr.20081121105001.79:text_draw_tree & helper
+  #@+node:ekr.20081121105001.79: *3* text_draw_tree & helper
   def text_draw_tree (self):
 
     # g.trace(g.callers())
@@ -647,9 +569,6 @@ class textTree(leoFrame.leoTree):
 
       if p.isExpanded() and p.hasChildren():
         self.draw_tree_helper(p.firstChild(),indent+1)
-  #@-node:ekr.20081121105001.79:text_draw_tree & helper
   #@-others
-#@-node:ekr.20081121105001.72:class textTree
 #@-others
-#@-node:ekr.20081121105001.12:@thin cursesGui.py
 #@-leo

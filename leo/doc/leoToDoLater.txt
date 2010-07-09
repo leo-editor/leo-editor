@@ -1,27 +1,20 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20060207133601:@thin ../doc/leoToDoLater.txt
+#@+leo-ver=5-thin
+#@+node:ekr.20060207133601: * @thin ../doc/leoToDoLater.txt
 #@+all
-#@+node:ekr.20060824110846:Colorizing
-#@+node:ekr.20060813121814:Add colorizer files for cweb, rapidq
-#@+node:ekr.20060824103837:Notes
+#@+node:ekr.20060824110846: ** Colorizing
+#@+node:ekr.20060813121814: *3* Add colorizer files for cweb, rapidq
+#@+node:ekr.20060824103837: *4* Notes
 @nocolor
 
 Renamed pl-sql.* to plsql.* (This required rerunning jEdit2py.)
 
 Forth is going to be a problem, because keywords can be extensible.
 Perhaps the user should be responsible for updating forth.xml.
-#@nonl
-#@-node:ekr.20060824103837:Notes
-#@-node:ekr.20060813121814:Add colorizer files for cweb, rapidq
-#@-node:ekr.20060824110846:Colorizing
-#@+node:ekr.20060227142119:Drawing, printing and rendering
-#@+node:ekr.20060822162521:Make headlines scroll
+#@+node:ekr.20060227142119: ** Drawing, printing and rendering
+#@+node:ekr.20060822162521: *3* Make headlines scroll
 Limit the with of the headline to the width of the outline pane.
-#@nonl
-#@-node:ekr.20060822162521:Make headlines scroll
-#@+node:ekr.20050512031131:Use global_log_window_position to specify outline/log ratio?
-#@-node:ekr.20050512031131:Use global_log_window_position to specify outline/log ratio?
-#@+node:ekr.20060227123536:Tiddlywiki and related comments about rendering body text
+#@+node:ekr.20050512031131: *3* Use global_log_window_position to specify outline/log ratio?
+#@+node:ekr.20060227123536: *3* Tiddlywiki and related comments about rendering body text
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3578252
 By: bwmulder
@@ -55,8 +48,7 @@ language before doing anything in this direction.
 As an intermediate step, maybe we could allow mixing RST processing with regular
 program text.  Leo would produce two documents out of a source file: a version
 for the compiler in plain ascii, and an HTML file for reading the source.
-#@-node:ekr.20060227123536:Tiddlywiki and related comments about rendering body text
-#@+node:ekr.20050127110221:Printing & flash
+#@+node:ekr.20050127110221: *3* Printing & flash
 @killcolor
 https://sourceforge.net/forum/message.php?msg_id=2962825
 By: jasonic
@@ -176,10 +168,8 @@ to aid printing woudl go a long way. Thesse scripts anyone coiuld be called
 by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list.
 Or they can just insert the appropriate script  into an outline giving finer
 grained print control on the fly.
-#@nonl
-#@-node:ekr.20050127110221:Printing & flash
-#@+node:EKR.20040512082621:HTML widgets
-#@+node:EKR.20040512082621.1:htmllib.tcl
+#@+node:EKR.20040512082621: *3* HTML widgets
+#@+node:EKR.20040512082621.1: *4* htmllib.tcl
 http://sourceforge.net/forum/message.php?msg_id=2565345
 By: nobody
 
@@ -198,9 +188,8 @@ routine. It should be not hard pythonize this process.
 see http://www.usenix.org/publications/login/1999-8/features/tclsh.html,
 ftp://ftp.scriptics.com/pub/tcl/misc/html_library-0.3.tar.gz
 or just google for htmllib.tcl
-#@-node:EKR.20040512082621.1:htmllib.tcl
-#@+node:ekr.20031218072017.729:HTML rendering in Leo's body pane
-#@+node:ekr.20031218072017.731:HTML plugin: opml
+#@+node:ekr.20031218072017.729: *4* HTML rendering in Leo's body pane
+#@+node:ekr.20031218072017.731: *5* HTML plugin: opml
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=2283466
 By: billp9619
@@ -233,20 +222,14 @@ output.
 
 regards,
 bill p
-#@nonl
-#@-node:ekr.20031218072017.731:HTML plugin: opml
-#@-node:ekr.20031218072017.729:HTML rendering in Leo's body pane
-#@-node:EKR.20040512082621:HTML widgets
-#@+node:ekr.20041228092223:Play with wiki markup
+#@+node:ekr.20041228092223: *3* Play with wiki markup
 http://sourceforge.net/forum/message.php?msg_id=2205285
 From: Rich
 
 Color ''and'' italic/bold characters with @markup. One thing I'd like to
 ''not'' see are the markup characters in @file-nosent files.  "~~red:NOTE:~~"
 does nothing for readability in plain text.
-#@nonl
-#@-node:ekr.20041228092223:Play with wiki markup
-#@+node:ekr.20041201084142:Add convenience methods to change individual headlines color directly
+#@+node:ekr.20041201084142: *3* Add convenience methods to change individual headlines color directly
 @killcolor
 
 http://sourceforge.net/forum/message.php?msg_id=2877106
@@ -264,25 +247,15 @@ Footprints: http://sourceforge.net/forum/message.php?msg_id=2813450
 Between the two of them there should be enough information to help you achieve what you want. 
 
 It is possible to do pretty much anything you want but you will have to provide the infrastructure yourself because Leo doesn't natively support it.  
-#@nonl
-#@-node:ekr.20041201084142:Add convenience methods to change individual headlines color directly
-#@-node:ekr.20060227142119:Drawing, printing and rendering
-#@+node:ekr.20041228091154:Commands
-#@+node:ekr.20061021131443:Emacs support
-#@+node:ekr.20060628103226.3:Make sure repeat counts work on basic editing commands
-#@-node:ekr.20060628103226.3:Make sure repeat counts work on basic editing commands
-#@+node:ekr.20060628094329.2:Test/Fix macros
-#@-node:ekr.20060628094329.2:Test/Fix macros
-#@+node:ekr.20060628103226.2:Alt-x handlers should add to lossage
-#@-node:ekr.20060628103226.2:Alt-x handlers should add to lossage
-#@+node:ekr.20060123091352:Incremental search in switch-to-buffer
-#@-node:ekr.20060123091352:Incremental search in switch-to-buffer
-#@+node:ekr.20060116090428:Expand 'point' so it indicates node as well as text location
-#@-node:ekr.20060116090428:Expand 'point' so it indicates node as well as text location
-#@+node:ekr.20051021074728:Space completion
-#@-node:ekr.20051021074728:Space completion
-#@-node:ekr.20061021131443:Emacs support
-#@+node:ekr.20051110155735.1:Improve Spell tab
+#@+node:ekr.20041228091154: ** Commands
+#@+node:ekr.20061021131443: *3* Emacs support
+#@+node:ekr.20060628103226.3: *4* Make sure repeat counts work on basic editing commands
+#@+node:ekr.20060628094329.2: *4* Test/Fix macros
+#@+node:ekr.20060628103226.2: *4* Alt-x handlers should add to lossage
+#@+node:ekr.20060123091352: *4* Incremental search in switch-to-buffer
+#@+node:ekr.20060116090428: *4* Expand 'point' so it indicates node as well as text location
+#@+node:ekr.20051021074728: *4* Space completion
+#@+node:ekr.20051110155735.1: *3* Improve Spell tab
 @nocolor
 
 - Per-pane key bindings. (arrows, etc.)
@@ -290,9 +263,7 @@ It is possible to do pretty much anything you want but you will have to provide 
 - Select the first entry.
 
 @color
-#@nonl
-#@-node:ekr.20051110155735.1:Improve Spell tab
-#@+node:ekr.20061006165447:Let import commands decide what kind of import to do
+#@+node:ekr.20061006165447: *3* Let import commands decide what kind of import to do
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3940843
 By: ktenney
@@ -309,10 +280,8 @@ I want to bring a file into a node, just
 
 An emergency measure could be available in a 
 'File Special' menu.
-#@nonl
-#@-node:ekr.20061006165447:Let import commands decide what kind of import to do
-#@+node:ekr.20041022083833.1:Easy
-#@+node:ekr.20040315060557:Declone command
+#@+node:ekr.20041022083833.1: *3* Easy
+#@+node:ekr.20040315060557: *4* Declone command
 By: nobody ( Nobody/Anonymous ) 
  having a declone() method for vnodes?   
 2004-03-15 04:36  
@@ -324,9 +293,7 @@ Ive had a use for a declone() method in vnodes recently. Have you ever thought a
 1. Making a clone node a normal node.
 
 I can see this happening when cutting a node and pasting a node that is a clone. But there doesn't seem to be a dedicated function to do the operation. :)  
-#@nonl
-#@-node:ekr.20040315060557:Declone command
-#@+node:ekr.20041219162724:Add dialog to insert recent directories
+#@+node:ekr.20041219162724: *4* Add dialog to insert recent directories
 http://sourceforge.net/forum/message.php?msg_id=2903742
 By: nobody
 
@@ -346,8 +313,7 @@ simple, short and quite helpful.  Thoughts? :)
 
 Time to create a directory class??
 
-#@-node:ekr.20041219162724:Add dialog to insert recent directories
-#@+node:ekr.20031218072017.800:Improve extract section command
+#@+node:ekr.20031218072017.800: *4* Improve extract section command
 Read and respond to this message at: 
 https://sourceforge.net/forum/message.php?msg_id=1858824
 By: gilshwartz
@@ -401,8 +367,7 @@ As an enhancement, the dialog can show the first line of the selection as the
 default section name, which obviously can be changed.
 
 - Rajiv Bhagwat
-#@-node:ekr.20031218072017.800:Improve extract section command
-#@+node:ekr.20041130123243:Clear Undo command
+#@+node:ekr.20041130123243: *4* Clear Undo command
 @killcolor
 
 http://sourceforge.net/forum/message.php?msg_id=2859273
@@ -459,9 +424,7 @@ editing and running scrips.
 and when I exit python and restart leo everything returns to normal.
 more a supporting anomaly report 
 than a bug report or feature request.
-#@nonl
-#@-node:ekr.20041130123243:Clear Undo command
-#@+node:ekr.20031218072017.790:Import dialog improvements
+#@+node:ekr.20031218072017.790: *4* Import dialog improvements
 @nocolor
 
 Other options I though would be really handy:
@@ -480,8 +443,7 @@ that's easy in Python. Rebol is great at that too.
 That's probably a much bigger project like Leo 3.10  
 
 Jason
-#@-node:ekr.20031218072017.790:Import dialog improvements
-#@+node:ekr.20031218072017.807:Put up file dialog on empty @url, etc.
+#@+node:ekr.20031218072017.807: *4* Put up file dialog on empty @url, etc.
 @nocolor
 
 Open Discussion
@@ -501,23 +463,14 @@ probably be specified in some guidelines for writing new plugins -see e.g. the
 jedit plugin guidelines).
 
 Davide
-#@-node:ekr.20031218072017.807:Put up file dialog on empty @url, etc.
-#@+node:ekr.20040217153407:User customizeable tangling and untangling
+#@+node:ekr.20040217153407: *4* User customizeable tangling and untangling
 @template plugin does some (most?) of this.
-#@nonl
-#@-node:ekr.20040217153407:User customizeable tangling and untangling
-#@-node:ekr.20041022083833.1:Easy
-#@+node:ekr.20040329094003:Apply patch command
-#@-node:ekr.20040329094003:Apply patch command
-#@+node:ekr.20031218072017.748:Import/Export to yaml
+#@+node:ekr.20040329094003: *3* Apply patch command
+#@+node:ekr.20031218072017.748: *3* Import/Export to yaml
 Need a good yaml parser first: I don't want to write another parser by hand.
-#@nonl
-#@-node:ekr.20031218072017.748:Import/Export to yaml
-#@+node:ekr.20041016134312.2:Standard Weave command
+#@+node:ekr.20041016134312.2: *3* Standard Weave command
 Use noweb and TeX, or maybe Pyx.
-#@nonl
-#@-node:ekr.20041016134312.2:Standard Weave command
-#@+node:ekr.20060227124411:Import/export from wiki's
+#@+node:ekr.20060227124411: *3* Import/export from wiki's
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3583737
 By: Offray
@@ -557,9 +510,7 @@ http://www.el-directorio.org:8080/Leo
 and when I have enough knowledge about Leo (and time) I hope to start making
 contribs in the spanish documentation (for the moment I'm only workind in the
 evangelism here).
-#@nonl
-#@-node:ekr.20060227124411:Import/export from wiki's
-#@+node:ekr.20060227131611:Two ideas from Kent
+#@+node:ekr.20060227131611: *3* Two ideas from Kent
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
@@ -599,9 +550,7 @@ I think this holds lots of promise.
 
 Thanks,
 Kent
-#@nonl
-#@-node:ekr.20060227131611:Two ideas from Kent
-#@+node:ekr.20061011111007:@bool autoload_most_recent_leo_file
+#@+node:ekr.20061011111007: *3* @bool autoload_most_recent_leo_file
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=3957908
@@ -609,11 +558,8 @@ http://sourceforge.net/forum/message.php?msg_id=3957908
 > Is there a setting for autmoatically loading most recent file or files.
 
 @color
-#@nonl
-#@-node:ekr.20061011111007:@bool autoload_most_recent_leo_file
-#@-node:ekr.20041228091154:Commands
-#@+node:ekr.20041022083226:Directives
-#@+node:ekr.20031218072017.833:Use @file extension by default if no @language
+#@+node:ekr.20041022083226: ** Directives
+#@+node:ekr.20031218072017.833: *3* Use @file extension by default if no @language
 @nocolor
 
 Open discussion
@@ -630,22 +576,17 @@ For example any @file ending with a suffix as defined in the language extensions
 ".as" for actionscript etc.. 
 
 Should anyone need to over-ride those, they could use @language.
-#@nonl
-#@-node:ekr.20031218072017.833:Use @file extension by default if no @language
-#@+node:ekr.20041016134312.1:Allow multiple @language directives in a single node
+#@+node:ekr.20041016134312.1: *3* Allow multiple @language directives in a single node
 @killcolor
 
 Treat @language like @color: ambiguous nodes (nodes containing more than one
 @language directive) should not affect descendent nodes.
-#@nonl
-#@-node:ekr.20041016134312.1:Allow multiple @language directives in a single node
-#@+node:ekr.20031218072017.805:Allow other section delims besides << and >>
+#@+node:ekr.20031218072017.805: *3* Allow other section delims besides << and >>
 Maybe the section operator could be customizable, 
 I personally prefer the wiki way [[name of section]]. 
 
 @setlink-tag [[ ]] 
-#@-node:ekr.20031218072017.805:Allow other section delims besides << and >>
-#@+node:ekr.20031218072017.745:@@first <n>
+#@+node:ekr.20031218072017.745: *3* @@first <n>
 @nocolor
 
 Hate to break into the grand design discussions, but here's a hopefully small thing. If you need to place a good sized copyright statement at the top of your files, LEO doesn't handle this case very cleanly. As I'm sure you're aware, you wind up with a matching number of @@first lines for each leading line in your source. 
@@ -742,9 +683,7 @@ Type tag instead? So one '@@first 5' could represent all 5 of the above @@first 
 Thanks. 
 
 - ordinarius 
-#@nonl
-#@-node:ekr.20031218072017.745:@@first <n>
-#@+node:ekr.20031218072017.795:Metatags
+#@+node:ekr.20031218072017.795: *3* Metatags
 @nocolor
 
 By: nobody ( Nobody/Anonymous ) 
@@ -759,8 +698,7 @@ Here are some features I'd like to see:
 
 There are quite a few of these now.  It would be good to generalize:
 - Register @node type.
-#@-node:ekr.20031218072017.795:Metatags
-#@+node:ekr.20041130104552:(Support bird-track programs/comments?)
+#@+node:ekr.20041130104552: *3* (Support bird-track programs/comments?)
 @killcolor
 
 By: Guenther Enthaler - genthaler
@@ -770,9 +708,7 @@ RE: Haskell support
 There's a literate programming mode in Haskell (and in a number of other functional programming languages such as Clean & Curry), where the program is in a comment, usually where the line starts with ">" (bird track style, I think it's called), and the comments/documentation are freeform. It would be difficult but cool if Leo could support it, if only because the sentinels in the derived files wouldn't make whole file look so busy. 
 
 Günther 
-#@nonl
-#@-node:ekr.20041130104552:(Support bird-track programs/comments?)
-#@+node:ekr.20031218072017.797:Allow @file http & @file ftp
+#@+node:ekr.20031218072017.797: *3* Allow @file http & @file ftp
 @nocolor
 
 I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
@@ -788,8 +724,7 @@ while we are at it, what about xmlrpc/soap?
 should there be new directive, like @source ?
 
 @color
-#@nonl
-#@+node:ekr.20031218072017.810:Remote access Scott Powell
+#@+node:ekr.20031218072017.810: *4* Remote access Scott Powell
 I will wait. Here's clarification, when you're ready for it:
 
 All of my projects are stored on remote computers, and accessed via FTP. 
@@ -809,11 +744,8 @@ consideration.
 
 Scott Powell
 CEO, Dev Designs
-#@-node:ekr.20031218072017.810:Remote access Scott Powell
-#@-node:ekr.20031218072017.797:Allow @file http & @file ftp
-#@-node:ekr.20041022083226:Directives
-#@+node:ekr.20060527184335:Gui
-#@+node:ekr.20031218072017.793:Keep right panes constant when tiling horizontally (Tix)
+#@+node:ekr.20060527184335: ** Gui
+#@+node:ekr.20031218072017.793: *3* Keep right panes constant when tiling horizontally (Tix)
 This is done automatically now!  I may have to use configure events.
 
 > When I have the 'split mode' set to display tree and log on left, and viewpane
@@ -822,9 +754,8 @@ on right, I sometimes need to increase the width of the window.
 When I do the resize, the tree/log panes grow in proportion. I don't know about
 others, but I'd much prefer if the tree/log panes stayed at the same width,
 and only the view pane grew.
-#@-node:ekr.20031218072017.793:Keep right panes constant when tiling horizontally (Tix)
-#@+node:ekr.20060213151918:Add baloons
-#@+node:ekr.20060212125650:createBalloon
+#@+node:ekr.20060213151918: *3* Add baloons
+#@+node:ekr.20060212125650: *4* createBalloon
 def createBalloon (tab,sv):
 
     'Create a balloon for a widget.' ''
@@ -837,12 +768,8 @@ def createBalloon (tab,sv):
              hull.withdraw()
     hull.bind('<Expose>',blockExpose,'+')
     balloon._label.configure(textvariable=sv)
-#@nonl
-#@-node:ekr.20060212125650:createBalloon
-#@-node:ekr.20060213151918:Add baloons
-#@+node:ekr.20060116083043.1:Add context-menus on nodes or text
-#@-node:ekr.20060116083043.1:Add context-menus on nodes or text
-#@+node:ekr.20051207130144:Investigate Tk DnD
+#@+node:ekr.20060116083043.1: *3* Add context-menus on nodes or text
+#@+node:ekr.20051207130144: *3* Investigate Tk DnD
 @nocolor
 https://sourceforge.net/forum/message.php?msg_id=3460955
 By: nobody
@@ -855,12 +782,9 @@ so if Edward is interested in adding drag and drop support for regular leo,
 this might be a path to do so.  It looks like an active project.
 
 leouser
-#@+node:ekr.20051207130144.1:@url http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
-#@-node:ekr.20051207130144.1:@url http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
-#@-node:ekr.20051207130144:Investigate Tk DnD
-#@-node:ekr.20060527184335:Gui
-#@+node:ekr.20050509085713:Installer
-#@+node:ekr.20050328093147.1:Report: improving installer
+#@+node:ekr.20051207130144.1: *4* @url http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
+#@+node:ekr.20050509085713: ** Installer
+#@+node:ekr.20050328093147.1: *3* Report: improving installer
 @killcolor
 http://sourceforge.net/forum/message.php?msg_id=3064212
 By: djsg
@@ -947,9 +871,7 @@ Let me know what you think. I won't be able to start work for a week or so,
 so there's no rush.
 
 -- David
-#@nonl
-#@-node:ekr.20050328093147.1:Report: improving installer
-#@+node:ekr.20070929125944:Emulate Orange's download philosophy
+#@+node:ekr.20070929125944: *3* Emulate Orange's download philosophy
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=4543089
@@ -965,22 +887,16 @@ Leo should copy this download philosophy.
 
 
 
-#@-node:ekr.20070929125944:Emulate Orange's download philosophy
-#@-node:ekr.20050509085713:Installer
-#@+node:ekr.20041228085245:Options & settings
-#@+node:ekr.20031218072017.740:Disallow writes outside a "top-level" folder
+#@+node:ekr.20041228085245: ** Options & settings
+#@+node:ekr.20031218072017.740: *3* Disallow writes outside a "top-level" folder
 1. Warn when creating _any_ new file.
 
 2. Warn when rewriting any file that was not read properly.
 
 This prevents "hijacking" an already existing file.
-#@nonl
-#@-node:ekr.20031218072017.740:Disallow writes outside a "top-level" folder
-#@+node:ekr.20040311022923:Make sentinel name in @-node optional
-#@-node:ekr.20040311022923:Make sentinel name in @-node optional
-#@-node:ekr.20041228085245:Options & settings
-#@+node:ekr.20080807111553.1:Scripting
-#@+node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+#@+node:ekr.20040311022923: *3* Make sentinel name in @-node optional
+#@+node:ekr.20080807111553.1: ** Scripting
+#@+node:ekr.20031218072017.753: *3* Emacs comint-mode:  The improved Execute Script command does most of this
 @nocolor
 
 Michael Manti
@@ -1001,8 +917,7 @@ its children evaluated in an interpreter running in a separate window or pane,
 much as Leo can open a Python shell now. Users of those languages could build
 plug-ins specific to their language atop that layer, and the @language directive
 could activate that. I think that would be very cool.
-#@-node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
-#@+node:ekr.20070627151457:--runCommand option
+#@+node:ekr.20070627151457: *3* --runCommand option
 @
 
 --runCommand "leo-command-name" runs the command at idle-time after loading the file.
@@ -1010,11 +925,8 @@ could activate that. I think that would be very cool.
 I am not going to do this: this, in conjunction with @command nodes, is a big security hole, equivalent to @script.
 
 The only safe thing would be to disallow user-defined commands from being executed by --runCommand, but then what is the point of --runCommand.
-#@nonl
-#@-node:ekr.20070627151457:--runCommand option
-#@-node:ekr.20080807111553.1:Scripting
-#@+node:ekr.20041228092223.4:Windows
-#@+node:ekr.20050108051818:Add hyperlinks for url's
+#@+node:ekr.20041228092223.4: ** Windows
+#@+node:ekr.20050108051818: *3* Add hyperlinks for url's
 @killcolor
 
 http://sourceforge.net/forum/message.php?msg_id=2928436
@@ -1037,21 +949,15 @@ Supporting hyperlinks to urls would be similar.  They could appear in the follow
 This would make a straightforward plugin.  Mind you, this should be in Leo's core, but a plugin would get my attention :-)  Perhaps the reason I haven't done this is that I keep thinking a generalized syntax colorer is near ;-)
 
 Edward
-#@nonl
-#@-node:ekr.20050108051818:Add hyperlinks for url's
-#@+node:ekr.20041022083005.2:add a Stop button for find/change
-#@-node:ekr.20041022083005.2:add a Stop button for find/change
-#@+node:ekr.20040908104644:Leo splash screen
+#@+node:ekr.20041022083005.2: *3* add a Stop button for find/change
+#@+node:ekr.20040908104644: *3* Leo splash screen
 To create a splash screen:
 
 - Draw the screen.
 - Erase the screen with self.after(5000, self.destroy)
-#@+node:ekr.20040908221501:@url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
-#@-node:ekr.20040908221501:@url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
-#@-node:ekr.20040908104644:Leo splash screen
-#@-node:ekr.20041228092223.4:Windows
-#@+node:ekr.20041228084143:Maybe never
-#@+node:ekr.20070426092031:Consider another way to compute home directory
+#@+node:ekr.20040908221501: *4* @url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
+#@+node:ekr.20041228084143: ** Maybe never
+#@+node:ekr.20070426092031: *3* Consider another way to compute home directory
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=4281562
 By: ktenney
@@ -1073,14 +979,11 @@ http://murl.se/24202
 >>> print homedir.find(os_key) > -1
 True
 
-#@-node:ekr.20070426092031:Consider another way to compute home directory
-#@+node:ekr.20060930110925:Fix arrow keys (if possible)
+#@+node:ekr.20060930110925: *3* Fix arrow keys (if possible)
 Up/down arrow keys should move straight up/down, but this is difficult with Tk.
 Still the present way is very bad.
-#@nonl
-#@-node:ekr.20060930110925:Fix arrow keys (if possible)
-#@+node:ekr.20041022070154:(options for setting working directory during startup)
-#@+node:ekr.20041022070154.1:Request & response
+#@+node:ekr.20041022070154: *3* (options for setting working directory during startup)
+#@+node:ekr.20041022070154.1: *4* Request & response
 @killcolor
 
 http://sourceforge.net/forum/message.php?msg_id=2815599
@@ -1113,10 +1016,7 @@ I don't have much control over how plugins were "meant" to work.  However, an im
 This is a non-trivial issue;   Leo uses and sets paths in many places in the code.  It seems dubious to have plugins change the working directory at random times.  Perhaps an option that inits the working directory would be good.  The new config system will allow per-outline options as well as global option. I believe such options could be loaded before plugins.
 
 Edward
-#@nonl
-#@-node:ekr.20041022070154.1:Request & response
-#@-node:ekr.20041022070154:(options for setting working directory during startup)
-#@+node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
+#@+node:ekr.20051104051733: *3* Make Focus-in in minibuffer widget equivalent to Alt-x
 FocusIn does nothing for Label widgets.
 
 http://sourceforge.net/forum/message.php?msg_id=3412640
@@ -1128,13 +1028,9 @@ command mode.
 
 It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
 to Alt-x.
-#@nonl
-#@-node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
-#@-node:ekr.20041228084143:Maybe never
-#@+node:ekr.20040123102724:Can't or won't
-#@+node:ekr.20080822065427.3:Create desktop icon or start menu item
-#@-node:ekr.20080822065427.3:Create desktop icon or start menu item
-#@+node:ekr.20080815174457.5:Consider deleting private shadow files
+#@+node:ekr.20040123102724: ** Can't or won't
+#@+node:ekr.20080822065427.3: *3* Create desktop icon or start menu item
+#@+node:ekr.20080815174457.5: *3* Consider deleting private shadow files
 @nocolor
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/e86796831635311b
@@ -1148,8 +1044,7 @@ Answer:
 My second thought is that this is too dangerous--shadow files might
 turn out to be useful emergency backups.  I would prefer to have Leo
 mess with the file system as little as possible.
-#@-node:ekr.20080815174457.5:Consider deleting private shadow files
-#@+node:ekr.20100121050224.6140:Delete resurrected nodes
+#@+node:ekr.20100121050224.6140: *3* Delete resurrected nodes
 @nocolor-node
 
 This would be a dangerous thing to do. Resurrected nodes are a serious problem,
@@ -1158,14 +1053,11 @@ can be studied. The last thing we want is to mess things up further with little
 used, highly complex error recovery code.
 
 The message about resurrected nodes is in atFile.read().
-#@nonl
-#@-node:ekr.20100121050224.6140:Delete resurrected nodes
-#@+node:ekr.20060329102951:@ref
+#@+node:ekr.20060329102951: *3* @ref
 @nocolor
 
 The graph world is a better solution.
-#@nonl
-#@+node:ekr.20060329102951.1:My summary post
+#@+node:ekr.20060329102951.1: *4* My summary post
 http://sourceforge.net/forum/message.php?msg_id=3598136
 
 > It appears that @ref nodes introduce a flexibility that can not be simulated (at all?) with clones.  
@@ -1189,8 +1081,7 @@ This is not possible with clones! No more mumbling about being able to represent
 I suspect other essential uses of @ref will appear. I am sure we can declare the 'post-leo LP tool' project a great success already :-) 
 
 Edward 
-#@-node:ekr.20060329102951.1:My summary post
-#@+node:ekr.20060329102951.2:Reply
+#@+node:ekr.20060329102951.2: *4* Reply
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3650005
 By: itsme213
@@ -1210,9 +1101,7 @@ node.
 Tree traversals will be tree traversals.
 
 Hope that did not muddy the waters even more ... 
-#@-node:ekr.20060329102951.2:Reply
-#@-node:ekr.20060329102951:@ref
-#@+node:ekr.20040220110030:Change cursor when caps lock is down
+#@+node:ekr.20040220110030: *3* Change cursor when caps lock is down
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=2431552
@@ -1232,9 +1121,7 @@ is active ( "CAPS" on a status line, for instance).
   Another way: I don't know if this goes against an "anti-modalism rule," but
 only allowing Ctrl-Shift-x|c|v in the outline pane would also be acceptable
 to me.
-#@nonl
-#@-node:ekr.20040220110030:Change cursor when caps lock is down
-#@+node:ekr.20031218072017.743:Note window for each node
+#@+node:ekr.20031218072017.743: *3* Note window for each node
 http://sourceforge.net/forum/message.php?msg_id=2205285
 From: Rich
 
@@ -1243,9 +1130,7 @@ and comments about the code, such as "Test this harder" or "Find a better way of
 phrasing this". This is currently available in uSoft Office and the Eclipse IDE
 (http://www.eclipse.org). Perhaps a numeric reference, such as "<<1>>" could be
 used.
-#@nonl
-#@-node:ekr.20031218072017.743:Note window for each node
-#@+node:ekr.20060610193837:open python window does not appear to work on Solaris
+#@+node:ekr.20060610193837: *3* open python window does not appear to work on Solaris
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=3771068
@@ -1260,9 +1145,7 @@ from what I could see it looked like it was trying to start the shell up with
 a location that pointed to a nonexistent path.
 
 @color
-#@nonl
-#@-node:ekr.20060610193837:open python window does not appear to work on Solaris
-#@+node:ekr.20040216054459:@h @f @endh and @endf directives
+#@+node:ekr.20040216054459: *3* @h @f @endh and @endf directives
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=2424151
@@ -1270,9 +1153,13 @@ By: ksejlod ( Peter Barrel )
  I Have a (maybe) great idea!   
 2004-02-15 04:29
 
-I've been using LEO for a while and finding surprinsingly powerfull new uses now and then, (hey, not a week passes that i dont think to myself : "why did'nt anyone thought of that kind of tool that is LEO. It's so stupid to program such a tool, yet no one thought of doing such a thing ! ")
+I've been using LEO for a while and finding surprinsingly powerfull new uses now
+and then, (hey, not a week passes that i dont think to myself : "why did'nt
+anyone thought of that kind of tool that is LEO. It's so stupid to program such
+a tool, yet no one thought of doing such a thing ! ")
 
-I was wondering if there was a leo keyword (beginning with "@") that would do a feature I thought would be great: something such as :
+I was wondering if there was a leo keyword (beginning with "@") that would do a
+feature I thought would be great: something such as :
 @h
 @endh
 and of course, similarily...
@@ -1281,7 +1168,11 @@ and of course, similarily...
 
 Standing for "Header", "End Header", "Footer" and "End Footer". Let me please explain ...
 
-When creating files with @file (or nosentinels) I use the keyword "@others" in the starting node body of the file and place in the file, as it's decendants (children, grand-children & so on) some clones of other stuff somewhere else outside of this file (usualy, clones of parts of program regrouped as children of a "components" node up in the leo outline. Typical Example:
+When creating files with @file (or nosentinels) I use the keyword "@others" in
+the starting node body of the file and place in the file, as it's decendants
+(children, grand-children & so on) some clones of other stuff somewhere else
+outside of this file (usualy, clones of parts of program regrouped as children
+of a "components" node up in the leo outline. Typical Example:
 
 -Introduction
 -+components
@@ -1322,14 +1213,12 @@ By: ksejlod ( Peter Barrel )
  RE: I Have a (maybe) great idea!   
 2004-02-15 04:35  
 
- The tree i tried to draw in ascii did not came out the way i did it, sourceforge "eated" leading spaces sorry a, b and c are children of their "+" node just above them		.
---
-k  
-#@nonl
-#@-node:ekr.20040216054459:@h @f @endh and @endf directives
-#@+node:ekr.20040329185649:Known Bugs: can't be fixed or can wait
-#@+node:ekr.20031218072017.663:Bug: can't be fixed
-#@+node:ekr.20031218072017.664:Cut/paste bug on X windows (waiting for help)
+ The tree i tried to draw in ascii did not came out the way i did it,
+sourceforge "eated" leading spaces sorry a, b and c are children of their "+"
+node just above them . -- k
+#@+node:ekr.20040329185649: *3* Known Bugs: can't be fixed or can wait
+#@+node:ekr.20031218072017.663: *4* Bug: can't be fixed
+#@+node:ekr.20031218072017.664: *5* Cut/paste bug on X windows (waiting for help)
 @nocolor
 
 Under X Window system, when text is selected, it is automatically entered into a buffer and can be pasted with the middle button of the mouse.
@@ -1339,9 +1228,8 @@ In Leo, when this is done, the text is rendered in right place, but it doesn't s
 Doing copy and paste works normally when done through the edit menu.
 
 @color
-#@nonl
-#@+node:ekr.20031218072017.665:(Cut & Paste ) (Middle-button bug reported by Timo)
-#@+node:ekr.20031218072017.666: Paste bug report
+#@+node:ekr.20031218072017.665: *6* (Cut & Paste ) (Middle-button bug reported by Timo)
+#@+node:ekr.20031218072017.666: *7*  Paste bug report
 @nocolor
 
 By: riotnrrrd ( Timo Honkasalo ) 
@@ -1364,13 +1252,9 @@ If your text should have color in it, you can see that right before you "click",
 the text has no color and the color back on right after you click the control.
 
 It maybe a clue to someone, but seems strange to me. 
-#@-node:ekr.20031218072017.666: Paste bug report
-#@+node:ekr.20031218072017.667: Test
+#@+node:ekr.20031218072017.667: *7*  Test
 abc bbb bbbxyz bbb
-#@nonl
-#@-node:ekr.20031218072017.667: Test
-#@-node:ekr.20031218072017.665:(Cut & Paste ) (Middle-button bug reported by Timo)
-#@+node:ekr.20031218072017.668:Automatic select & Paste bug (Linux?)
+#@+node:ekr.20031218072017.668: *6* Automatic select & Paste bug (Linux?)
 @nocolor
 
 Bumping the thread because the bug still persists. 
@@ -1382,10 +1266,7 @@ Maybe this is related to the non-sticking bug?
 ----
 
 This may be a Linux-only bug related to the control-v workaround.
-#@nonl
-#@-node:ekr.20031218072017.668:Automatic select & Paste bug (Linux?)
-#@-node:ekr.20031218072017.664:Cut/paste bug on X windows (waiting for help)
-#@+node:ekr.20050514171429:Glitch pasting into headlines
+#@+node:ekr.20050514171429: *5* Glitch pasting into headlines
 
 @killcolor
 
@@ -1421,20 +1302,15 @@ You are receiving this email because you elected to monitor this forum.
 To stop monitoring this forum, login to SourceForge.net and visit: 
 https://sourceforge.net/forum/unmonitor.php?forum_id=10226
 
-#@-node:ekr.20050514171429:Glitch pasting into headlines
-#@+node:ekr.20031218072017.669:Linux-only Bugs
+#@+node:ekr.20031218072017.669: *5* Linux-only Bugs
 These may indicate problems with Tk on Linux.  I can not reproduce them on XP.
-#@nonl
-#@+node:ekr.20031218072017.670:Possible webbrowser bug
+#@+node:ekr.20031218072017.670: *6* Possible webbrowser bug
 (In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field. 
-#@nonl
-#@-node:ekr.20031218072017.670:Possible webbrowser bug
-#@+node:ekr.20031218072017.671:Fix horiz scrollbar bug when tiling horizontally
+#@+node:ekr.20031218072017.671: *6* Fix horiz scrollbar bug when tiling horizontally
 When in 'vertical split' mode (with viewpane on right, and tree pane over log pane on left), the horixontal scrollbar at bottom of screen is at full width, despite the fact that not all of the tree pane area is displayed. 
 
 Another way of saying this - I narrow the tree and log panes, to the extent that the display of tree node headings is truncated. But the horizontal scrollbar at the bottom doesn't contract, and doesn't allow me to horizontally scroll the tree pane to expose the rest of the node headings. 
-#@-node:ekr.20031218072017.671:Fix horiz scrollbar bug when tiling horizontally
-#@+node:ekr.20031218072017.672:Control-V doesn't work on Linux
+#@+node:ekr.20031218072017.672: *6* Control-V doesn't work on Linux
 This has been and continues to be a known issue with Tk. Has been logged as a bug; no response from the Tk folks. 
 
 Here is a link to the Tk bug report: 
@@ -1442,20 +1318,13 @@ Here is a link to the Tk bug report:
 http://sourceforge.net/tracker/?func=detail&aid=605277&group_id=12997&atid=112997 
 
 Note the work-around/patch in the followup post at the bottom of that page. Commenting out some statements in text.tcl removes the problem. 
-#@-node:ekr.20031218072017.672:Control-V doesn't work on Linux
-#@-node:ekr.20031218072017.669:Linux-only Bugs
-#@+node:ekr.20050202073944:Mac bugs
-#@+node:ekr.20050201175325.2:Can't delete script buttons
-#@-node:ekr.20050201175325.2:Can't delete script buttons
-#@+node:ekr.20050201175325.1:Icon buttons are not colored, nor do they have square borders, etc.
-#@-node:ekr.20050201175325.1:Icon buttons are not colored, nor do they have square borders, etc.
-#@+node:ekr.20050202052911.1:Find Text in Find Panel gets focus only if it contains text
-#@-node:ekr.20050202052911.1:Find Text in Find Panel gets focus only if it contains text
-#@-node:ekr.20050202073944:Mac bugs
-#@+node:ekr.20031218072017.673:Tk bugs
+#@+node:ekr.20050202073944: *5* Mac bugs
+#@+node:ekr.20050201175325.2: *6* Can't delete script buttons
+#@+node:ekr.20050201175325.1: *6* Icon buttons are not colored, nor do they have square borders, etc.
+#@+node:ekr.20050202052911.1: *6* Find Text in Find Panel gets focus only if it contains text
+#@+node:ekr.20031218072017.673: *5* Tk bugs
 The following bugs can not be fixed because they are Tk bugs.
-#@nonl
-#@+node:ekr.20041201071145:Tk Freezes on debean when libtk is compiled with thread support
+#@+node:ekr.20041201071145: *6* Tk Freezes on debean when libtk is compiled with thread support
 http://sourceforge.net/forum/message.php?msg_id=2876797
 By: skal
 
@@ -1471,9 +1340,8 @@ This is a known bug in debian bugtrack:
 http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=171353 
 
 Skal
-#@-node:ekr.20041201071145:Tk Freezes on debean when libtk is compiled with thread support
-#@+node:EKR.20040523192553:(Crash when pasting large text into headlines)
-#@+node:EKR.20040606104355:Report
+#@+node:EKR.20040523192553: *6* (Crash when pasting large text into headlines)
+#@+node:EKR.20040606104355: *7* Report
 @nocolor
 
 From: <eltronic@juno.com>
@@ -1522,22 +1390,16 @@ Subject: fatal bug in Leo headline handling
 > 
 > 
 > e
-#@-node:EKR.20040606104355:Report
-#@-node:EKR.20040523192553:(Crash when pasting large text into headlines)
-#@+node:ekr.20031218072017.674:Caps lock affects keyboard shortcuts on Windows
+#@+node:ekr.20031218072017.674: *6* Caps lock affects keyboard shortcuts on Windows
 Using leo under Windows, the keyboard shortcuts seem to use the "Caps Lock" state in determining the shift state when executing a shortcut.   For example, if the caps-lock key is on, then Ctrl-X is interpreted as Shift-Ctrl-X and cuts a node rather than selected text, and Shift-Ctrl-X is interpreted as Ctrl-X and cuts text.
-#@-node:ekr.20031218072017.674:Caps lock affects keyboard shortcuts on Windows
-#@+node:ekr.20031218072017.675:Tree problems
+#@+node:ekr.20031218072017.675: *6* Tree problems
 1. The border of the tree control is gray, and it is overwritten with large headlines.  This may be a Tk or Tkinter bug.
 
 2. Adding trailing whitespace to a line in body text does not set the file-dirty mark.  This can never cause a derived file to become "out-of-synch" because the read code does not compare body text.
 
 Apparently there is no way to fix this glitch because of holes in Tk's event mechanism.  Specifically, tree.idle_body_key has no way to tell directly what keystroke caused it to be entered.
-#@nonl
-#@-node:ekr.20031218072017.675:Tree problems
-#@+node:ekr.20031218072017.676:Control-T can't be overridden in canvas text.
-#@-node:ekr.20031218072017.676:Control-T can't be overridden in canvas text.
-#@+node:ekr.20031218072017.677:(Alt-ctrl = Alt)
+#@+node:ekr.20031218072017.676: *6* Control-T can't be overridden in canvas text.
+#@+node:ekr.20031218072017.677: *6* (Alt-ctrl = Alt)
 @nocolor
 
 Read and respond to this message at: 
@@ -1634,9 +1496,8 @@ end up at the next upper node etc...
 
 - Josef
 
-#@-node:ekr.20031218072017.677:(Alt-ctrl = Alt)
-#@+node:ekr.20031218072017.718:(tab bug)
-#@+node:ekr.20040117092727:This is definitely a Tk bug
+#@+node:ekr.20031218072017.718: *6* (tab bug)
+#@+node:ekr.20040117092727: *7* This is definitely a Tk bug
 By: dthein ( Dave Hein ) 
  RE: BUG: Non-leading tabs not working properl   
 2004-01-17 14:40  
@@ -1650,8 +1511,7 @@ More details on this page, along with a patch for an earlier version.
 http://www.qs.co.nz/Tcl/TkTabs.html
 
 The Tk folks fixed a bug I reported with Ctrl-V behavior, but it took about a year for them to get to it. I don't have high expectations with this problem either, but I'll probably put together a patch for some of the recent version of Tk and submit the patches and bug report.  
-#@-node:ekr.20040117092727:This is definitely a Tk bug
-#@+node:ekr.20040118090055:Patch and bug report
+#@+node:ekr.20040118090055: *7* Patch and bug report
 https://sourceforge.net/forum/message.php?msg_id=2380238
 By: dthein
 
@@ -1678,9 +1538,7 @@ or note-taking ... this fix really helped my sanity when making those tables
 inside Leo.
 
 Dave Hein
-#@nonl
-#@-node:ekr.20040118090055:Patch and bug report
-#@+node:ekr.20031218072017.719:Report
+#@+node:ekr.20031218072017.719: *7* Report
 @nocolor
 
 Read and respond to this message at: 
@@ -1689,8 +1547,7 @@ By: dspeed
 Open Discussion
 
 -- Tabs are not expanded correctly in .c files, when language in preferences is set to c, and when the tabs occur in the middle of a line. The tabs are expanded as spaces until the next tab location is reached, then the tabs are expanded correctly. 
-#@-node:ekr.20031218072017.719:Report
-#@+node:ekr.20040105070023.5:Report 2
+#@+node:ekr.20040105070023.5: *7* Report 2
 Leo 4.1 rc3, build 1.62 , December 19, 2003
 Python 2.3.0, Tk 8.4.2
 Linux 2.4.22-21mdkenterprise
@@ -1723,13 +1580,9 @@ Here is the two-tab \t\t behavior.
 I hope this is a Leo bug and not a Tk bug. 
 
 Dave Hein 
-#@nonl
-#@-node:ekr.20040105070023.5:Report 2
-#@+node:ekr.20031218072017.720:Minimal test
+#@+node:ekr.20031218072017.720: *7* Minimal test
 This is a test line.
-#@nonl
-#@-node:ekr.20031218072017.720:Minimal test
-#@+node:ekr.20031218072017.721:Test File for Non Expanding Tabs
+#@+node:ekr.20031218072017.721: *7* Test File for Non Expanding Tabs
 This is a test line.
 put the text insertion point in the space between 'a' and 'test' above. Enter 3 tabs in a row and watch it not work.
 
@@ -1742,10 +1595,7 @@ Pyton 2.2.2, Tk 8.3.2
 reading d:\test.leo
 
 
-#@-node:ekr.20031218072017.721:Test File for Non Expanding Tabs
-#@-node:ekr.20031218072017.718:(tab bug)
-#@-node:ekr.20031218072017.673:Tk bugs
-#@+node:ekr.20040129133809.8:top node not saved
+#@+node:ekr.20040129133809.8: *5* top node not saved
 @nocolor
 
 When opening a .leo file Leo selects the correct node but it is no longer the top most node in the window.
@@ -1757,18 +1607,13 @@ What I did:
 - Made sure Leo writes a="T" entries.  However, Leo really can't use this easily.
 
 Another possibility would be to save the scrolling state, but that is very gui-dependent.
-#@nonl
-#@-node:ekr.20040129133809.8:top node not saved
-#@-node:ekr.20031218072017.663:Bug: can't be fixed
-#@+node:ekr.20040105064959:Bugs: can wait
+#@+node:ekr.20040105064959: *4* Bugs: can wait
 @nocolor
-#@nonl
-#@+node:ekr.20040115165036:bug in xml doc parts (hard to fix?)
+#@+node:ekr.20040115165036: *5* bug in xml doc parts (hard to fix?)
 @language html
 @ignore
 @color
-#@nonl
-#@+node:ekr.20040115165036.1:Demo XML comment bug
+#@+node:ekr.20040115165036.1: *6* Demo XML comment bug
 @ 
 This document demonstrates what appears to be a bug in Leo 4.1 rc3, build 1.62 of December 19, 2003.
 
@@ -1776,9 +1621,7 @@ It has manifested when Leo is executed under Python 2.3.3, Tk 8.4.3 under Window
 
 In brief, derived XML files are not well-formed with respect to comments under some conditions.  Comments can wind up nested, which looks okay to humans but not to XML parsers.
 @c
-#@nonl
-#@-node:ekr.20040115165036.1:Demo XML comment bug
-#@+node:ekr.20040115165036.3:@file xmlcommentbug.xml
+#@+node:ekr.20040115165036.3: *6* @file xmlcommentbug.xml
 @first
 @language HTML
 <HiMom>
@@ -1792,9 +1635,7 @@ This text is sitting in the inner comment, according to the first view.
 This comment is well-formed, seemingly because its content does not begin on the same line as the at-sign.
 @c
 </HiMom>
-#@nonl
-#@-node:ekr.20040115165036.3:@file xmlcommentbug.xml
-#@+node:ekr.20040115165036.4:xmlcommentbug.xml
+#@+node:ekr.20040115165036.4: *6* xmlcommentbug.xml
 <?xml version='1.0'?>
 <!--@+leo-ver=4-->
 <!--@+node:@file xmlcommentbug.xml-->
@@ -1826,10 +1667,7 @@ the same line as the at-sign.
 <!--@nonl-->
 <!--@-node:@file xmlcommentbug.xml-->
 <!--@-leo-->
-#@nonl
-#@-node:ekr.20040115165036.4:xmlcommentbug.xml
-#@-node:ekr.20040115165036:bug in xml doc parts (hard to fix?)
-#@+node:ekr.20040125114453:Import bug?control-alt-f of python code misalloctes code (waiting for answer)
+#@+node:ekr.20040125114453: *5* Import bug?control-alt-f of python code misalloctes code (waiting for answer)
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=2391076
 By: thyrsus
@@ -1902,28 +1740,21 @@ structure it.  Given the perversity of perl syntax ("Nothing but perl can parse
 Perl." - Tom Christiansen), that's probably the right thing to do.  It's a judgement
 call for whomever wants to take responsibility for the python importer as to
 whether that may be the right thing to do for python.
-#@nonl
-#@-node:ekr.20040125114453:Import bug?control-alt-f of python code misalloctes code (waiting for answer)
-#@+node:ekr.20040129133809.5:Expand/contract may not work after drag (works for me)
+#@+node:ekr.20040129133809.5: *5* Expand/contract may not work after drag (works for me)
 sometimes after a drag of a node, 
 then the expand/contract doesnt work.
 click or menu has no effect.
 in an open leo
 maybe it is ok after you save the file
 other times only fix is to exit & restart.
-#@nonl
-#@-node:ekr.20040129133809.5:Expand/contract may not work after drag (works for me)
-#@-node:ekr.20040105064959:Bugs: can wait
-#@-node:ekr.20040329185649:Known Bugs: can't be fixed or can wait
-#@+node:ekr.20040217153407.1:Unify @root and @file
+#@+node:ekr.20040217153407.1: *3* Unify @root and @file
 @nocolor
 
 - There is no way to unify the syntax: a different syntax is needed to specify sections that may appear in pieces.
 
 - I have little interest in this project, even if a better read logic for @root derived files might make automatic untangling possible.
-#@-node:ekr.20040217153407.1:Unify @root and @file
-#@+node:ekr.20060228072202:New undoer
-#@+node:ekr.20060201161901.2:@url http://sourceforge.net/forum/message.php?msg_id=3332355
+#@+node:ekr.20060228072202: *3* New undoer
+#@+node:ekr.20060201161901.2: *4* @url http://sourceforge.net/forum/message.php?msg_id=3332355
 @nocolor
 
 By: Edward K. Ream - edream 
@@ -1960,10 +1791,5 @@ We store attributes for vnode v in v.t.unknownAttributes, along with the travers
 Glad you asked :-) . I have been willing to live without v.uA's in thin derived files. I never thought much about this until you asked, but necessity is the mother... So this is good. A way exists to treat all vnodes as first-class citizens. 
 
 Edward 
-#@-node:ekr.20060201161901.2:@url http://sourceforge.net/forum/message.php?msg_id=3332355
-#@-node:ekr.20060228072202:New undoer
-#@-node:ekr.20040123102724:Can't or won't
 #@-all
-#@nonl
-#@-node:ekr.20060207133601:@thin ../doc/leoToDoLater.txt
 #@-leo
