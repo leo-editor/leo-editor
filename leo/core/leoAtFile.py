@@ -888,17 +888,20 @@ class atFile:
 
         #@+<< handle first and last lines >>
         #@+node:ekr.20041005105605.28: *5* << handle first and last lines >> (at.readOpenFile)
-        tempString = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
-        tempList = hasattr(at.v,'tempBodyList') and ''.join(at.v.tempBodyList) or ''
+        # The code below only deals with the root node!
+        # We terminate the root's body text if it exists.
+        # This is a hack to allow us to handle @first and @last.
+        v = root.v
+        tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
+        tempList = hasattr(v,'tempBodyList') and ''.join(v.tempBodyList) or ''
 
         if at.readVersion5:
-            # Terminate the previous body text if it exists.
-            if hasattr(at.v,'tempBodyList'):
+            if hasattr(v,'tempBodyList'):
                 body = tempList
-                delattr(at.v,'tempBodyList') # So the change below "takes".
-            elif hasattr(at.v,'tempBodyString'):
+                delattr(v,'tempBodyList') # So the change below "takes".
+            elif hasattr(v,'tempBodyString'):
                 body = tempString
-                delattr(at.v,'tempBodyString')
+                delattr(v,'tempBodyString')
             else:
                 body = ''
         else:
@@ -912,7 +915,7 @@ class atFile:
         s = '\n'.join(lines).replace('\r', '')
 
         # *Always* put the temp body text into at.v.tempBodyString.
-        root.v.tempBodyString = s
+        v.tempBodyString = s
         #@-<< handle first and last lines >>
 
         return thinFile
@@ -1230,7 +1233,6 @@ class atFile:
 
         at = self
         gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
-        # g.trace('%25s %s' % (gnx,repr(s[:40])))
         if not ok: return
         at.root_seen = True
 
@@ -2132,12 +2134,11 @@ class atFile:
         if trace:
             g.trace('%4s %25s %s' % (
                 g.choose(at.inCode,'code','doc'),at.v.h,repr(s)))
-            # g.trace(g.listToString(at.out))
     #@+node:ekr.20050301105854: *4* at.copyAllTempBodyStringsToVnodes
     def copyAllTempBodyStringsToVnodes (self,root,thinFile):
 
         trace = False and not g.unitTesting
-        if trace: g.trace('*****',root.h,g.callers(4))
+        if trace: g.trace('*****',root.h)
         at = self ; c = at.c
         for p in root.self_and_subtree():
             hasList = hasattr(p.v,'tempBodyList')
@@ -2434,9 +2435,7 @@ class atFile:
         # Compute the new text.
         new = g.choose(at.readVersion5,tempList,''.join(at.out))
         new = g.toUnicode(new)
-        if trace:
-            # g.trace('%28s %s' % (v.h,g.callers(5)))
-            g.trace('%28s %s' % (v.h,repr(new)))
+        if trace: g.trace('%28s %s' % (v.h,repr(new)))
 
         if at.importing:
             v._bodyString = new # Allowed use of _bodyString.

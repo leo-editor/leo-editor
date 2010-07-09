@@ -1757,39 +1757,69 @@ other times only fix is to exit & restart.
 #@+node:ekr.20060201161901.2: *4* @url http://sourceforge.net/forum/message.php?msg_id=3332355
 @nocolor
 
-By: Edward K. Ream - edream 
-   RE: Dividing The Undo: doing w/o v.uA 
-2005-09-09 14:17  
-> If we can open up how [Leo] reads xml, it may make it simpler to start developing a stash scheme. 
+By: Edward K. Ream - edream RE: Dividing The Undo: doing w/o v.uA 2005-09-09
+   14:17 > If we can open up how [Leo] reads xml, it may make it simpler to
+   start developing a stash scheme.
 
-I agree that reading xml more properly would be A Good Thing (tm). As we shall see, however, it is not the main issue. 
+I agree that reading xml more properly would be A Good Thing (tm). As we shall
+see, however, it is not the main issue.
 
-> DOM seems like a good path to start out on. 
+> DOM seems like a good path to start out on.
 
-This is not the path I would have chosen. The new colorizer at in leoPlugins.leo at: 
+This is not the path I would have chosen. The new colorizer at in leoPlugins.leo
+at:
 
-Plugins-->Experimental/unfinished-->New colorizer-->@thin __jEdit_colorizer__.py 
+Plugins-->Experimental/unfinished-->New colorizer-->@thin __jEdit_colorizer__.py
 
-uses sax. I like the light-weight approach. I would rather do a bit more work in the initial parsing and create the data structures myself then relying on DOM. 
+uses sax. I like the light-weight approach. I would rather do a bit more work in
+the initial parsing and create the data structures myself then relying on DOM.
 
-But parsing is irrelevant. The problem is the design of *thin* derived files and the code that reads such files. Let us consider how we can "do without" v.unknownAttributes in thin derived files. I **shall not** change the format of thin derived files, so some trickery is required. The first step is read this section of Leo's new docs: 
+But parsing is irrelevant. The problem is the design of *thin* derived files and
+the code that reads such files. Let us consider how we can "do without"
+v.unknownAttributes in thin derived files. I **shall not** change the format of
+thin derived files, so some trickery is required. The first step is read this
+section of Leo's new docs:
 
-http://webpages.charter.net/edreamleo/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files  /> 
-The key here is the so-called 'hidden machinery'. This is an essential feature of the code that reads and writes thin derived files and it **will not** change. **Note**: Leo has two sets of read code: the code that reads .leo files has no trouble whatever recreating vnodes. It is only vnodes in thin derived files that may not have attributes. 
+http://webpages.charter.net/edreamleo/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+/> The key here is the so-called 'hidden machinery'. This is an essential
+feature of the code that reads and writes thin derived files and it **will not**
+change. **Note**: Leo has two sets of read code: the code that reads .leo files
+has no trouble whatever recreating vnodes. It is only vnodes in thin derived
+files that may not have attributes.
 
-**Important**: for @thin trees (in the outline) Leo saves *only* the <v> element corresponding to the @thin node itself. It is this <v> element that contains the 'hidden machinery'. Don't even think about having Leo write the whole tree of <v> elements: the 4.0 read code is made possible because these <v> elements do *not* exist. This eliminates all the error 'recovery' schemes that can not, if fact, be robust enough. 
+**Important**: for @thin trees (in the outline) Leo saves *only* the <v> element
+corresponding to the @thin node itself. It is this <v> element that contains the
+'hidden machinery'. Don't even think about having Leo write the whole tree of
+<v> elements: the 4.0 read code is made possible because these <v> elements do
+*not* exist. This eliminates all the error 'recovery' schemes that can not, if
+fact, be robust enough.
 
-So the only real alternative is to add uA's sufficient to recreate elements in the *reconstituted* vnodes that Leo creates in the leoAtFile read logic. Happily, we can do this as follows. When writing, a plugin (or an extended Leo) would 'piggyback' the vnode attributes in the corresponding **t**.unknownAttributes field. When reading, the plugin (or Leo) would put the vnode attributes "where they belong" in the appropriate vnode. We associate a 'vnode traversal index' with each vnode. This is simply how many previous "same" vnodes appeared in the traversal before getting to the desired vnode. Something like this:: 
+So the only real alternative is to add uA's sufficient to recreate elements in
+the *reconstituted* vnodes that Leo creates in the leoAtFile read logic.
+Happily, we can do this as follows. When writing, a plugin (or an extended Leo)
+would 'piggyback' the vnode attributes in the corresponding
+**t**.unknownAttributes field. When reading, the plugin (or Leo) would put the
+vnode attributes "where they belong" in the appropriate vnode. We associate a
+'vnode traversal index' with each vnode. This is simply how many previous "same"
+vnodes appeared in the traversal before getting to the desired vnode. Something
+like this::
 
-vx = {} # traversal indices for vnodes. 
-for p in c.all_positions(): 
-....n = vx.get(p.v.t,0) # n is the traversal index for vnode p.v. 
-....vx[p.v.t] = n+1 # bump the index for the next v such that v.t == p.v.t 
+vx = {} # traversal indices for vnodes. for p in c.all_positions(): ....n =
+vx.get(p.v.t,0) # n is the traversal index for vnode p.v. ....vx[p.v.t] = n+1 #
+bump the index for the next v such that v.t == p.v.t
 
-We store attributes for vnode v in v.t.unknownAttributes, along with the traversal index. The read code uses the traversal index to copy vnode attributes from t.unknownAttributes to v.unknownAttrutes. Rather than forcing each plugin to do this, Leo should probably have support for this in the leoFileCommands read/write code. In short, the t.unknownAttributes machinery suffices in theory, and in practice a bit of support code would be good. 
+We store attributes for vnode v in v.t.unknownAttributes, along with the
+traversal index. The read code uses the traversal index to copy vnode attributes
+from t.unknownAttributes to v.unknownAttrutes. Rather than forcing each plugin
+to do this, Leo should probably have support for this in the leoFileCommands
+read/write code. In short, the t.unknownAttributes machinery suffices in theory,
+and in practice a bit of support code would be good.
 
-Glad you asked :-) . I have been willing to live without v.uA's in thin derived files. I never thought much about this until you asked, but necessity is the mother... So this is good. A way exists to treat all vnodes as first-class citizens. 
+Glad you asked :-) . I have been willing to live without v.uA's in thin derived
+files. I never thought much about this until you asked, but necessity is the
+mother... So this is good. A way exists to treat all vnodes as first-class
+citizens.
 
-Edward 
+Edward
 #@-all
 #@-leo

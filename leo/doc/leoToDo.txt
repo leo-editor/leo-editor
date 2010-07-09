@@ -4,6 +4,7 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 4.8 vim, cleanups, your mission...
 #@+node:ekr.20100223123910.5836: *3* Immediately
+#@+node:ekr.20100707124440.5870: *4* Fix at-root unit tests
 #@+node:ekr.20100521090440.5891: *4* Urgent new features 3
 #@+node:ekr.20100204052559.5791: *5* Mac TOC sidebar collapsible
 @nocolor-node
