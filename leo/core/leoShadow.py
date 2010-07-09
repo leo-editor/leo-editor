@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20080708094444.1:@thin leoShadow.py
+#@+leo-ver=5-thin
+#@+node:ekr.20080708094444.1: * @thin leoShadow.py
 #@@first
 
-#@<< docstring >>
-#@+node:ekr.20080708094444.78:<< docstring >>
+#@+<< docstring >>
+#@+node:ekr.20080708094444.78: ** << docstring >>
 '''
 leoShadow.py
 
@@ -30,30 +30,28 @@ Settings:
   This prefix allows the shadow file and the original file to have different names.
   This is useful for name-based tools like py.test.
 '''
-#@-node:ekr.20080708094444.78:<< docstring >>
-#@nl
-#@<< imports >>
-#@+node:ekr.20080708094444.52:<< imports >>
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20080708094444.52: ** << imports >>
 import leo.core.leoGlobals as g
 
 import difflib
 import os
 import unittest
-#@-node:ekr.20080708094444.52:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
 
 #@+others
-#@+node:ekr.20080708094444.80:class shadowController
+#@+node:ekr.20080708094444.80: ** class shadowController
 class shadowController:
 
     '''A class to manage @shadow files'''
 
-    #@    @+others
-    #@+node:ekr.20080708094444.79: x.ctor
+    #@+others
+    #@+node:ekr.20080708094444.79: *3*  x.ctor
     def __init__ (self,c,trace=False,trace_writers=False):
 
         self.c = c
@@ -75,9 +73,8 @@ class shadowController:
 
         # Support for goto-line.
         self.line_mapping = []
-    #@-node:ekr.20080708094444.79: x.ctor
-    #@+node:ekr.20080711063656.1:x.File utils
-    #@+node:ekr.20080711063656.7:x.baseDirName
+    #@+node:ekr.20080711063656.1: *3* x.File utils
+    #@+node:ekr.20080711063656.7: *4* x.baseDirName
     def baseDirName (self):
 
         x = self ; c = x.c ; filename = c.fileName()
@@ -87,9 +84,7 @@ class shadowController:
         else:
             self.error('Can not compute shadow path: .leo file has not been saved')
             return None
-    #@nonl
-    #@-node:ekr.20080711063656.7:x.baseDirName
-    #@+node:ekr.20080711063656.4:x.dirName and pathName
+    #@+node:ekr.20080711063656.4: *4* x.dirName and pathName
     def dirName (self,filename):
 
         '''Return the directory for filename.'''
@@ -105,16 +100,13 @@ class shadowController:
         x = self ; c = x.c ; theDir = x.baseDirName()
 
         return theDir and c.os_path_finalize_join(theDir,filename)
-    #@nonl
-    #@-node:ekr.20080711063656.4:x.dirName and pathName
-    #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
+    #@+node:ekr.20080712080505.3: *4* x.isSignificantPublicFile
     def isSignificantPublicFile (self,fn):
 
         '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
 
         return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
-    #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
-    #@+node:ekr.20080710082231.19:x.makeShadowDirectory
+    #@+node:ekr.20080710082231.19: *4* x.makeShadowDirectory
     def makeShadowDirectory (self,fn):
 
         '''Make a shadow directory for the **public** fn.'''
@@ -127,8 +119,7 @@ class shadowController:
             g.makeAllNonExistentDirectories(path,c=None,force=True)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
-    #@-node:ekr.20080710082231.19:x.makeShadowDirectory
-    #@+node:ekr.20080713091247.1:x.replaceFileWithString
+    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -173,8 +164,7 @@ class shadowController:
             x.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@-node:ekr.20080713091247.1:x.replaceFileWithString
-    #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
+    #@+node:ekr.20080711063656.6: *4* x.shadowDirName and shadowPathName
     def shadowDirName (self,filename):
 
         '''Return the directory for the shadow file corresponding to filename.'''
@@ -197,8 +187,7 @@ class shadowController:
                 fileDir, # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
                 x.shadow_prefix + g.shortFileName(filename))
-    #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
-    #@+node:ekr.20080711063656.3:x.unlink
+    #@+node:ekr.20080711063656.3: *4* x.unlink
     def unlink (self, filename,silent=False):
 
         '''Unlink filename from the file system.
@@ -211,10 +200,8 @@ class shadowController:
             x.error('can not delete %s' % (filename),silent=silent)
 
         return ok
-    #@-node:ekr.20080711063656.3:x.unlink
-    #@-node:ekr.20080711063656.1:x.File utils
-    #@+node:ekr.20080708192807.1:x.Propagation
-    #@+node:ekr.20080708094444.35:x.check_the_final_output
+    #@+node:ekr.20080708192807.1: *3* x.Propagation
+    #@+node:ekr.20080708094444.35: *4* x.check_the_final_output
     def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
         """
         Check that we produced a valid output.
@@ -258,8 +245,7 @@ class shadowController:
                 lines2_message = "new sentinels")
 
         # if ok: g.trace("success!")
-    #@-node:ekr.20080708094444.35:x.check_the_final_output
-    #@+node:ekr.20080708094444.37:x.copy_sentinels
+    #@+node:ekr.20080708094444.37: *4* x.copy_sentinels
     def copy_sentinels(self,reader,writer,marker,limit):
 
         '''Copy sentinels from reader to writer while reader.index() < limit.'''
@@ -282,8 +268,7 @@ class shadowController:
                 else:
                     # g.trace('put line',repr(line))
                     writer.put(line,tag='copy sent %s:%s' % (start,limit))
-    #@-node:ekr.20080708094444.37:x.copy_sentinels
-    #@+node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
+    #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (the main loop)
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
         '''Propagate changes from 'new_public_lines' to 'old_private_lines.
@@ -304,8 +289,8 @@ class shadowController:
         # mapping tells which line of old_private_lines each line of old_public_lines comes from.
         old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
-        #@    << init vars >>
-        #@+node:ekr.20080708094444.40:<< init vars >>
+        #@+<< init vars >>
+        #@+node:ekr.20080708094444.40: *5* << init vars >>
         new_private_lines_wtr = self.sourcewriter(self)
         # collects the contents of the new file.
 
@@ -322,11 +307,9 @@ class shadowController:
         old_old_j, old_i2_modified_lines = -1,-1
 
         tag = old_i = old_j = new_i = new_j = None
-        #@nonl
-        #@-node:ekr.20080708094444.40:<< init vars >>
-        #@nl
-        #@    << define print_tags >>
-        #@+node:ekr.20080708094444.39:<< define print_tags >>
+        #@-<< init vars >>
+        #@+<< define print_tags >>
+        #@+node:ekr.20080708094444.39: *5* << define print_tags >>
         def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
             sep1 = '=' * 10 ; sep2 = '-' * 20
@@ -349,8 +332,7 @@ class shadowController:
                 g.pr(sep2)
 
 
-        #@-node:ekr.20080708094444.39:<< define print_tags >>
-        #@nl
+        #@-<< define print_tags >>
 
         delim1,delim2 = marker.getDelims()
         sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
@@ -358,47 +340,35 @@ class shadowController:
 
         for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
 
-            #@        << About this loop >>
-            #@+node:ekr.20080708192807.2:<< about this loop >>
-            #@+at
+            #@+<< About this loop >>
+            #@+node:ekr.20080708192807.2: *5* << about this loop >>
+            #@+at This loop writes all output lines using a single writer:
+            # new_private_lines_wtr.
             # 
-            # This loop writes all output lines using a single 
-            # writer: new_private_lines_wtr.
+            # The output lines come from two, and *only* two readers:
             # 
-            # The output lines come from two, and *only* two 
-            # readers:
+            # 1. old_private_lines_rdr delivers the complete original sources. All
+            #    sentinels and unchanged regular lines come from this reader.
             # 
-            # 1. old_private_lines_rdr delivers the complete 
-            # original sources. All
-            #    sentinels and unchanged regular lines come from 
-            # this reader.
-            # 
-            # 2. new_public_lines_rdr delivers the new, changed 
-            # sources. All inserted or
+            # 2. new_public_lines_rdr delivers the new, changed sources. All inserted or
             #    replacement text comes from this reader.
             # 
             # Each time through the loop, the following are true:
             # 
-            # - old_i is the index into old_public_lines of the 
-            # start of the present SequenceMatcher opcode.
+            # - old_i is the index into old_public_lines of the start of the present
+            #   SequenceMatcher opcode.
             # 
-            # - mapping[old_i] is the index into old_private_lines 
-            # of the start of the same opcode.
+            # - mapping[old_i] is the index into old_private_lines of the start of
+            #   the same opcode.
             # 
-            # At the start of the loop, the call to copy_sentinels 
-            # effectively skips (deletes)
-            # all previously unwritten non-sentinel lines in 
-            # old_private_lines_rdr whose index
-            # is less than mapping[old_i].
+            # At the start of the loop, the call to copy_sentinels effectively skips
+            # (deletes) all previously unwritten non-sentinel lines in
+            # old_private_lines_rdr whose index is less than mapping[old_i].
             # 
-            # As a result, the opcode handlers do not need to delete 
-            # elements from the
-            # old_private_lines_rdr explicitly. This explains why 
-            # opcode handlers for the
-            # 'insert' and 'delete' opcodes are identical.
-            #@-at
-            #@-node:ekr.20080708192807.2:<< about this loop >>
-            #@nl
+            # As a result, the opcode handlers do not need to delete elements from
+            # the old_private_lines_rdr explicitly. This explains why opcode
+            # handlers for the 'insert' and 'delete' opcodes are identical.
+            #@-<< About this loop >>
 
             # Verify that SequenceMatcher never leaves gaps.
             if old_i != prev_old_j: # assert old_i == prev_old_j
@@ -406,8 +376,8 @@ class shadowController:
             if new_i != prev_new_j: # assert new_i == prev_new_j
                 x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
 
-            #@        << Handle the opcode >>
-            #@+node:ekr.20080708192807.5:<< Handle the opcode >>
+            #@+<< Handle the opcode >>
+            #@+node:ekr.20080708192807.5: *5* << Handle the opcode >>
             # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
             # In this special case, we must do the insert before the sentinels.
             limit=mapping[old_i]
@@ -466,8 +436,7 @@ class shadowController:
 
             if trace and verbose:
                 print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-            #@-node:ekr.20080708192807.5:<< Handle the opcode >>
-            #@nl
+            #@-<< Handle the opcode >>
 
             # Remember the ends of the previous tag ranges.
             prev_old_j = old_j
@@ -483,8 +452,8 @@ class shadowController:
         # Get the result.
         result = new_private_lines_wtr.getlines()
         if 1:
-            #@        << do final correctness check>>
-            #@+node:ekr.20080708094444.45:<< do final correctness check >>
+            #@+<< do final correctness check>>
+            #@+node:ekr.20080708094444.45: *5* << do final correctness check >>
             t_sourcelines, t_sentinel_lines = self.separate_sentinels(
                 new_private_lines_wtr.lines, marker)
 
@@ -493,11 +462,9 @@ class shadowController:
                 new_public_lines    = new_public_lines,
                 sentinel_lines      = t_sentinel_lines,
                 marker              = marker)
-            #@-node:ekr.20080708094444.45:<< do final correctness check >>
-            #@nl
+            #@-<< do final correctness check>>
         return result
-    #@-node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
-    #@+node:ekr.20080708094444.36:x.propagate_changes
+    #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
 
         '''Propagate the changes from the public file (without_sentinels)
@@ -535,8 +502,7 @@ class shadowController:
             # g.trace('ok',ok,'writing private file',fn)
 
         return copy
-    #@-node:ekr.20080708094444.36:x.propagate_changes
-    #@+node:ekr.20080708094444.34:x.strip_sentinels_with_map
+    #@+node:ekr.20080708094444.34: *4* x.strip_sentinels_with_map
     def strip_sentinels_with_map (self, lines, marker):
 
         '''Strip sentinels from lines, a list of lines with sentinels.
@@ -570,8 +536,7 @@ class shadowController:
 
         mapping.append(len(lines)) # To terminate loops.
         return results, mapping 
-    #@-node:ekr.20080708094444.34:x.strip_sentinels_with_map
-    #@+node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
+    #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
     def updatePublicAndPrivateFiles (self,fn,shadow_fn):
 
         '''handle crucial @shadow read logic.
@@ -593,10 +558,8 @@ class shadowController:
                 # # Create the public file from the private shadow file.
                 # x.copy_file_removing_sentinels(shadow_fn,fn)
                 # x.message("created public %s from private %s " % (fn, shadow_fn))
-    #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
-    #@-node:ekr.20080708192807.1:x.Propagation
-    #@+node:ekr.20080708094444.89:x.Utils...
-    #@+node:ekr.20080708094444.85:x.error & message & verbatim_error
+    #@+node:ekr.20080708094444.89: *3* x.Utils...
+    #@+node:ekr.20080708094444.85: *4* x.error & message & verbatim_error
     def error (self,s,silent=False):
 
         x = self
@@ -618,8 +581,7 @@ class shadowController:
 
         x.error('file syntax error: nothing follows verbatim sentinel')
         g.trace(g.callers())
-    #@-node:ekr.20080708094444.85:x.error & message & verbatim_error
-    #@+node:ekr.20090529125512.6122:x.markerFromFileLines & helper
+    #@+node:ekr.20090529125512.6122: *4* x.markerFromFileLines & helper
     def markerFromFileLines (self,lines,fn):  # fn used only for traces.
 
         '''Return the sentinel delimiter comment to be used for filename.'''
@@ -639,7 +601,7 @@ class shadowController:
 
         marker = x.markerClass(delims)
         return marker
-    #@+node:ekr.20090529125512.6125:x.findLeoLine
+    #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
     def findLeoLine (self,lines):
 
         '''Return the @+leo line, or ''.'''
@@ -650,9 +612,7 @@ class shadowController:
                 return line
         else:
             return ''
-    #@-node:ekr.20090529125512.6125:x.findLeoLine
-    #@-node:ekr.20090529125512.6122:x.markerFromFileLines & helper
-    #@+node:ekr.20080708094444.9:x.markerFromFileName
+    #@+node:ekr.20080708094444.9: *4* x.markerFromFileName
     def markerFromFileName (self,filename):
 
         '''Return the sentinel delimiter comment to be used for filename.'''
@@ -666,8 +626,7 @@ class shadowController:
         delims = g.comment_delims_from_extension(filename)
         marker = self.markerClass(delims)
         return marker
-    #@-node:ekr.20080708094444.9:x.markerFromFileName
-    #@+node:ekr.20080708094444.30:x.push_filter_mapping
+    #@+node:ekr.20080708094444.30: *4* x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
         """
         Given the lines of a file, filter out all
@@ -696,8 +655,7 @@ class shadowController:
             i += 1
 
         return mapping 
-    #@-node:ekr.20080708094444.30:x.push_filter_mapping
-    #@+node:ekr.20080708094444.29:x.separate_sentinels
+    #@+node:ekr.20080708094444.29: *4* x.separate_sentinels
     def separate_sentinels (self, lines, marker):
 
         '''
@@ -725,8 +683,7 @@ class shadowController:
             i += 1
 
         return regular_lines, sentinel_lines 
-    #@-node:ekr.20080708094444.29:x.separate_sentinels
-    #@+node:ekr.20080708094444.33:x.show_error
+    #@+node:ekr.20080708094444.33: *4* x.show_error
     def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
 
         x = self
@@ -745,7 +702,7 @@ class shadowController:
         g.es_print('\n@shadow did not pick up the external changes correctly')
 
         # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
-    #@+node:ekr.20080822065427.4:show_error_lines
+    #@+node:ekr.20080822065427.4: *5* show_error_lines
     def show_error_lines (self,lines,fileName):
 
         for line in lines:
@@ -760,10 +717,7 @@ class shadowController:
             except IOError:
                 g.es_exception()
                 g.es_print('can not open',fileName)
-    #@-node:ekr.20080822065427.4:show_error_lines
-    #@-node:ekr.20080708094444.33:x.show_error
-    #@-node:ekr.20080708094444.89:x.Utils...
-    #@+node:ekr.20080709062932.2:atShadowTestCase
+    #@+node:ekr.20080709062932.2: *3* atShadowTestCase
     class atShadowTestCase (unittest.TestCase):
 
         '''Support @shadow-test nodes.
@@ -772,8 +726,8 @@ class shadowController:
 
         '''
 
-        #@    @+others
-        #@+node:ekr.20080709062932.6:__init__
+        #@+others
+        #@+node:ekr.20080709062932.6: *4* __init__
         def __init__ (self,c,p,shadowController,lax,trace=False):
 
              # Init the base class.
@@ -793,8 +747,7 @@ class shadowController:
 
             # Debugging
             self.trace = trace
-        #@-node:ekr.20080709062932.6:__init__
-        #@+node:ekr.20080709062932.7: fail
+        #@+node:ekr.20080709062932.7: *4*  fail
         def fail (self,msg=None):
 
             """Mark a unit test as having failed."""
@@ -802,8 +755,7 @@ class shadowController:
             import leo.core.leoGlobals as g
 
             g.app.unitTestDict["fail"] = g.callers()
-        #@-node:ekr.20080709062932.7: fail
-        #@+node:ekr.20080709062932.8:setUp & helpers
+        #@+node:ekr.20080709062932.8: *4* setUp & helpers
         def setUp (self):
 
             c = self.c ; p = self.p ; x = self.shadowController
@@ -820,16 +772,14 @@ class shadowController:
             # We must change node:new to node:old
             self.expected_private_lines = self.mungePrivateLines(self.new_private_lines,'node:new','node:old')
 
-        #@+node:ekr.20080709062932.19:findNode
+        #@+node:ekr.20080709062932.19: *5* findNode
         def findNode(self,c,p,headline):
             p = g.findNodeInTree(c,p,headline)
             if not p:
                 g.es_print('can not find',headline)
                 assert False
             return p
-        #@nonl
-        #@-node:ekr.20080709062932.19:findNode
-        #@+node:ekr.20080709062932.20:createSentinelNode
+        #@+node:ekr.20080709062932.20: *5* createSentinelNode
         def createSentinelNode (self,root,p):
 
             '''Write p's tree to a string, as if to a file.'''
@@ -839,8 +789,7 @@ class shadowController:
             p2.setHeadString(h + '-sentinels')
             return p2
 
-        #@-node:ekr.20080709062932.20:createSentinelNode
-        #@+node:ekr.20080709062932.21:makePrivateLines
+        #@+node:ekr.20080709062932.21: *5* makePrivateLines
         def makePrivateLines (self,p):
 
             c = self.c ; at = c.atFileCommands
@@ -853,8 +802,7 @@ class shadowController:
 
             s = at.stringOutput
             return g.splitLines(s)
-        #@-node:ekr.20080709062932.21:makePrivateLines
-        #@+node:ekr.20080709062932.22:makePublicLines
+        #@+node:ekr.20080709062932.22: *5* makePublicLines
         def makePublicLines (self,lines):
 
             x = self.shadowController
@@ -862,8 +810,7 @@ class shadowController:
             lines,mapping = x.strip_sentinels_with_map(lines,self.marker)
 
             return lines
-        #@-node:ekr.20080709062932.22:makePublicLines
-        #@+node:ekr.20080709062932.23:mungePrivateLines
+        #@+node:ekr.20080709062932.23: *5* mungePrivateLines
         def mungePrivateLines (self,lines,find,replace):
 
             x = self.shadowController ; marker = self.marker
@@ -886,17 +833,14 @@ class shadowController:
                 i += 1
 
             return results
-        #@-node:ekr.20080709062932.23:mungePrivateLines
-        #@-node:ekr.20080709062932.8:setUp & helpers
-        #@+node:ekr.20080709062932.9:tearDown
+        #@+node:ekr.20080709062932.9: *4* tearDown
         def tearDown (self):
 
             pass
 
             # No change is made to the outline.
             # self.c.redraw()
-        #@-node:ekr.20080709062932.9:tearDown
-        #@+node:ekr.20080709062932.10:runTest (atShadowTestCase)
+        #@+node:ekr.20080709062932.10: *4* runTest (atShadowTestCase)
         def runTest (self,define_g = True):
 
             x = self.shadowController
@@ -920,23 +864,19 @@ class shadowController:
 
             assert self.ok
             return self.ok
-        #@nonl
-        #@-node:ekr.20080709062932.10:runTest (atShadowTestCase)
-        #@+node:ekr.20080709062932.11:shortDescription
+        #@+node:ekr.20080709062932.11: *4* shortDescription
         def shortDescription (self):
 
             return self.p and self.p.h or '@test-shadow: no self.p'
-        #@-node:ekr.20080709062932.11:shortDescription
         #@-others
 
-    #@-node:ekr.20080709062932.2:atShadowTestCase
-    #@+node:ekr.20090529061522.5727:class marker
+    #@+node:ekr.20090529061522.5727: *3* class marker
     class markerClass:
 
         '''A class representing comment delims in @shadow files.'''
 
-        #@    @+others
-        #@+node:ekr.20090529061522.6257:markerClass.ctor & repr
+        #@+others
+        #@+node:ekr.20090529061522.6257: *4* markerClass.ctor & repr
         def __init__(self,delims):
 
             delim1,delim2,delim3 = delims
@@ -954,16 +894,14 @@ class shadowController:
                 delims = '%s %s' % (self.delim2,self.delim2)
 
             return '<markerClass: delims: %s>' % repr(delims)
-        #@-node:ekr.20090529061522.6257:markerClass.ctor & repr
-        #@+node:ekr.20090529061522.6258:getDelims
+        #@+node:ekr.20090529061522.6258: *4* getDelims
         def getDelims(self):
 
             if self.delim1:
                 return self.delim1,''
             else:
                 return self.delim2,self.delim3
-        #@-node:ekr.20090529061522.6258:getDelims
-        #@+node:ekr.20090529061522.6259:isSentinel
+        #@+node:ekr.20090529061522.6259: *4* isSentinel
         def isSentinel(self,s,suffix=''):
             '''Return True is line s contains a valid sentinel comment.'''
 
@@ -974,17 +912,13 @@ class shadowController:
                 return s.startswith(self.delim2+'@'+suffix) and s.endswith(self.delim3)
             else:
                 return False
-        #@-node:ekr.20090529061522.6259:isSentinel
-        #@+node:ekr.20090529061522.6260:isVerbatimSentinel
+        #@+node:ekr.20090529061522.6260: *4* isVerbatimSentinel
         def isVerbatimSentinel(self,s):
 
             return self.isSentinel(s,suffix='verbatim')
-        #@nonl
-        #@-node:ekr.20090529061522.6260:isVerbatimSentinel
         #@-others
 
-    #@-node:ekr.20090529061522.5727:class marker
-    #@+node:ekr.20080708094444.12:class sourcereader
+    #@+node:ekr.20080708094444.12: *3* class sourcereader
     class sourcereader:
         """
         A class to read lines sequentially.
@@ -999,21 +933,18 @@ class shadowController:
 
         The line numbering starts from 0.
         """
-        #@    @+others
-        #@+node:ekr.20080708094444.13:__init__
+        #@+others
+        #@+node:ekr.20080708094444.13: *4* __init__
         def __init__ (self,shadowController,lines):
 
             self.lines = lines 
             self.length = len(self.lines)
             self.i = 0
             self.shadowController=shadowController
-        #@nonl
-        #@-node:ekr.20080708094444.13:__init__
-        #@+node:ekr.20080708094444.14:index
+        #@+node:ekr.20080708094444.14: *4* index
         def index (self):
             return self.i
-        #@-node:ekr.20080708094444.14:index
-        #@+node:ekr.20080708094444.15:get
+        #@+node:ekr.20080708094444.15: *4* get
         def get (self):
 
             trace = False and not g.unitTesting
@@ -1026,27 +957,21 @@ class shadowController:
 
             if trace: g.trace(repr(result))
             return result 
-        #@-node:ekr.20080708094444.15:get
-        #@+node:ekr.20080708094444.16:sync
+        #@+node:ekr.20080708094444.16: *4* sync
         def sync (self,i):
             self.i = i 
-        #@-node:ekr.20080708094444.16:sync
-        #@+node:ekr.20080708094444.17:size
+        #@+node:ekr.20080708094444.17: *4* size
         def size (self):
             return self.length 
-        #@-node:ekr.20080708094444.17:size
-        #@+node:ekr.20080708094444.18:atEnd
+        #@+node:ekr.20080708094444.18: *4* atEnd
         def atEnd (self):
             return self.index>=self.length 
-        #@-node:ekr.20080708094444.18:atEnd
-        #@+node:ekr.20080708094444.19:clone
+        #@+node:ekr.20080708094444.19: *4* clone
         def clone(self):
             sr = self.shadowController.sourcereader(shadowController,self.lines)
             sr.i = self.i
             return sr
-        #@nonl
-        #@-node:ekr.20080708094444.19:clone
-        #@+node:ekr.20080708094444.20:dump
+        #@+node:ekr.20080708094444.20: *4* dump
         def dump(self, title):
 
             g.pr(title)
@@ -1054,27 +979,23 @@ class shadowController:
             for i, line in enumerate(self.lines):
                 marker = g.choose(i==self.i,'**','  ')
                 g.pr("%s %3s:%s" % (marker, i, repr(line)),)
-        #@nonl
-        #@-node:ekr.20080708094444.20:dump
         #@-others
-    #@-node:ekr.20080708094444.12:class sourcereader
-    #@+node:ekr.20080708094444.21:class sourcewriter
+    #@+node:ekr.20080708094444.21: *3* class sourcewriter
     class sourcewriter:
         """
         Convenience class to capture output to a file.
 
         Similar to class sourcereader.
         """
-        #@	@+others
-        #@+node:ekr.20080708094444.22:__init__
+        #@+others
+        #@+node:ekr.20080708094444.22: *4* __init__
         def __init__ (self,shadowController):
 
             self.i = 0
             self.lines =[]
             self.shadowController=shadowController
             self.trace = False or self.shadowController.trace_writers
-        #@-node:ekr.20080708094444.22:__init__
-        #@+node:ekr.20080708094444.23:put
+        #@+node:ekr.20080708094444.23: *4* put
         def put(self, line, tag=''):
 
             trace = (False or self.trace) and not g.unitTesting
@@ -1090,18 +1011,15 @@ class shadowController:
             self.i+=1
 
             if trace: g.trace('%30s %s' % (tag,repr(line)))
-        #@-node:ekr.20080708094444.23:put
-        #@+node:ekr.20080708094444.24:index
+        #@+node:ekr.20080708094444.24: *4* index
         def index (self):
 
             return self.i 
-        #@-node:ekr.20080708094444.24:index
-        #@+node:ekr.20080708094444.25:getlines
+        #@+node:ekr.20080708094444.25: *4* getlines
         def getlines (self):
 
             return self.lines 
-        #@-node:ekr.20080708094444.25:getlines
-        #@+node:ekr.20080708094444.26:dump
+        #@+node:ekr.20080708094444.26: *4* dump
         def dump(self, title):
 
             '''Dump lines for debugging.'''
@@ -1110,11 +1028,7 @@ class shadowController:
             for i, line in enumerate(self.lines):
                 marker = '  '
                 g.es("%s %3s:%s" % (marker, i, line),newline=False)
-        #@-node:ekr.20080708094444.26:dump
         #@-others
-    #@-node:ekr.20080708094444.21:class sourcewriter
     #@-others
-#@-node:ekr.20080708094444.80:class shadowController
 #@-others
-#@-node:ekr.20080708094444.1:@thin leoShadow.py
 #@-leo

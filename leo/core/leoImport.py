@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3206:@thin leoImport.py
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.3206: * @thin leoImport.py
 #@@first
     # Required so non-ascii characters will be valid in unit tests.
 
@@ -9,8 +9,8 @@
 #@@pagewidth 70
 #@@encoding utf-8
 
-#@<< imports >>
-#@+node:ekr.20091224155043.6539:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20091224155043.6539: ** << imports >>
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
@@ -22,14 +22,13 @@ if g.isPython3:
 else:
     import StringIO
     StringIO = StringIO.StringIO
-#@-node:ekr.20091224155043.6539:<< imports >>
-#@nl
-#@<< class scanUtility >>
-#@+node:sps.20081112093624.1:<< class scanUtility >>
+#@-<< imports >>
+#@+<< class scanUtility >>
+#@+node:sps.20081112093624.1: ** << class scanUtility >>
 class scanUtility:
 
-    #@    @+others
-    #@+node:sps.20081111154528.5:escapeFalseSectionReferences
+    #@+others
+    #@+node:sps.20081111154528.5: *3* escapeFalseSectionReferences
     def escapeFalseSectionReferences(self,s):
 
         result = []
@@ -42,16 +41,14 @@ class scanUtility:
             else:
                 result.append(line)
         return ''.join(result)
-    #@-node:sps.20081111154528.5:escapeFalseSectionReferences
     #@-others
-#@-node:sps.20081112093624.1:<< class scanUtility >>
-#@nl
-#@<< class leoImportCommands >>
-#@+node:ekr.20071127175948:<< class leoImportCommands >>
+#@-<< class scanUtility >>
+#@+<< class leoImportCommands >>
+#@+node:ekr.20071127175948: ** << class leoImportCommands >>
 class leoImportCommands (scanUtility):
 
-    #@    @+others
-    #@+node:ekr.20031218072017.3207:import.__init__ & helper
+    #@+others
+    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helper
     def __init__ (self,c):
 
         self.c = c
@@ -70,7 +67,7 @@ class leoImportCommands (scanUtility):
         self.web_st = [] # noweb symbol table.
 
         self.createImportDispatchDict()
-    #@+node:ekr.20080825131124.3:createImportDispatchDict
+    #@+node:ekr.20080825131124.3: *4* createImportDispatchDict
     def createImportDispatchDict (self):
 
         self.importDispatchDict = {
@@ -98,10 +95,8 @@ class leoImportCommands (scanUtility):
             # '.rst':     self.scanRstText,
             '.xml':     self.scanXmlText,
         }
-    #@-node:ekr.20080825131124.3:createImportDispatchDict
-    #@-node:ekr.20031218072017.3207:import.__init__ & helper
-    #@+node:ekr.20031218072017.3289:Export
-    #@+node:ekr.20031218072017.3290:convertCodePartToWeb
+    #@+node:ekr.20031218072017.3289: *3* Export
+    #@+node:ekr.20031218072017.3290: *4* convertCodePartToWeb
     # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
 
     def convertCodePartToWeb (self,s,i,v,result):
@@ -111,13 +106,9 @@ class leoImportCommands (scanUtility):
         lb = g.choose(self.webType=="cweb","@<","<<")
         rb = g.choose(self.webType=="cweb","@>",">>")
         h = v.headString().strip()
-        #@    << put v's headline ref in head_ref >>
-        #@+node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
-        #@+at 
-        #@nonl
-        # We look for either noweb or cweb brackets. head_ref does 
-        # not include these brackets.
-        #@-at
+        #@+<< put v's headline ref in head_ref >>
+        #@+node:ekr.20031218072017.3291: *5* << put v's headline ref in head_ref>>
+        #@+at We look for either noweb or cweb brackets. head_ref does not include these brackets.
         #@@c
 
         head_ref = None
@@ -133,14 +124,13 @@ class leoImportCommands (scanUtility):
             head_ref = h[j+2:k].strip()
             if len(head_ref) == 0:
                 head_ref = None
-        #@-node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
-        #@nl
-        #@    << put name following @root or @file in file_name >>
-        #@+node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
+        #@-<< put v's headline ref in head_ref >>
+        #@+<< put name following @root or @file in file_name >>
+        #@+node:ekr.20031218072017.3292: *5* << put name following @root or @file in file_name >>
         if g.match(h,0,"@file") or g.match(h,0,"@root"):
             line = h[5:].strip()
-            #@    << set file_name >>
-            #@+node:ekr.20031218072017.3293:<< Set file_name >>
+            #@+<< set file_name >>
+            #@+node:ekr.20031218072017.3293: *6* << Set file_name >>
             # set j & k so line[j:k] is the file name.
             # g.trace(line)
 
@@ -156,16 +146,14 @@ class leoImportCommands (scanUtility):
             file_name = line[j:k].strip()
             if file_name and len(file_name) == 0:
                 file_name = None
-            #@-node:ekr.20031218072017.3293:<< Set file_name >>
-            #@nl
+            #@-<< set file_name >>
         else:
             file_name = line = None
-        #@-node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
-        #@nl
+        #@-<< put name following @root or @file in file_name >>
         if g.match_word(s,i,"@root"):
             i = g.skip_line(s,i)
-            #@        << append ref to file_name >>
-            #@+node:ekr.20031218072017.3294:<< append ref to file_name >>
+            #@+<< append ref to file_name >>
+            #@+node:ekr.20031218072017.3294: *5* << append ref to file_name >>
             if self.webType == "cweb":
                 if not file_name:
                     result += "@<root@>=" + nl
@@ -175,12 +163,11 @@ class leoImportCommands (scanUtility):
                 if not file_name:
                     file_name = "*"
                 result += lb + file_name + rb + "=" + nl
-            #@-node:ekr.20031218072017.3294:<< append ref to file_name >>
-            #@nl
+            #@-<< append ref to file_name >>
         elif g.match_word(s,i,"@c") or g.match_word(s,i,"@code"):
             i = g.skip_line(s,i)
-            #@        << append head_ref >>
-            #@+node:ekr.20031218072017.3295:<< append head_ref >>
+            #@+<< append head_ref >>
+            #@+node:ekr.20031218072017.3295: *5* << append head_ref >>
             if self.webType == "cweb":
                 if not head_ref:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
@@ -196,12 +183,11 @@ class leoImportCommands (scanUtility):
                         head_ref = "@others"
 
                 result += lb + head_ref + rb + "=" + nl
-            #@-node:ekr.20031218072017.3295:<< append head_ref >>
-            #@nl
+            #@-<< append head_ref >>
         elif g.match_word(h,0,"@file"):
             # Only do this if nothing else matches.
-            #@        << append ref to file_name >>
-            #@+node:ekr.20031218072017.3294:<< append ref to file_name >>
+            #@+<< append ref to file_name >>
+            #@+node:ekr.20031218072017.3294: *5* << append ref to file_name >>
             if self.webType == "cweb":
                 if not file_name:
                     result += "@<root@>=" + nl
@@ -211,12 +197,11 @@ class leoImportCommands (scanUtility):
                 if not file_name:
                     file_name = "*"
                 result += lb + file_name + rb + "=" + nl
-            #@-node:ekr.20031218072017.3294:<< append ref to file_name >>
-            #@nl
+            #@-<< append ref to file_name >>
             i = g.skip_line(s,i) # 4/28/02
         else:
-            #@        << append head_ref >>
-            #@+node:ekr.20031218072017.3295:<< append head_ref >>
+            #@+<< append head_ref >>
+            #@+node:ekr.20031218072017.3295: *5* << append head_ref >>
             if self.webType == "cweb":
                 if not head_ref:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
@@ -232,17 +217,12 @@ class leoImportCommands (scanUtility):
                         head_ref = "@others"
 
                 result += lb + head_ref + rb + "=" + nl
-            #@-node:ekr.20031218072017.3295:<< append head_ref >>
-            #@nl
+            #@-<< append head_ref >>
         i,result = self.copyPart(s,i,result)
         return i, result.strip() + nl
 
-    #@+at 
-    #@nonl
-    # %defs a b c
-    #@-at
-    #@-node:ekr.20031218072017.3290:convertCodePartToWeb
-    #@+node:ekr.20031218072017.3296:convertDocPartToWeb (handle @ %def)
+    #@+at %defs a b c
+    #@+node:ekr.20031218072017.3296: *4* convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb (self,s,i,result):
 
         nl = self.output_newline
@@ -265,19 +245,14 @@ class leoImportCommands (scanUtility):
             # All nodes should start with '@', even if the doc part is empty.
             result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
         return i, result
-    #@-node:ekr.20031218072017.3296:convertDocPartToWeb (handle @ %def)
-    #@+node:ekr.20031218072017.3297:convertVnodeToWeb
-    #@+at 
-    #@nonl
-    # This code converts a vnode to noweb text as follows:
+    #@+node:ekr.20031218072017.3297: *4* convertVnodeToWeb
+    #@+at This code converts a vnode to noweb text as follows:
     # 
     # Convert @doc to @
-    # Convert @root or @code to < < name > >=, assuming the headline 
-    # contains < < name > >
+    # Convert @root or @code to < < name > >=, assuming the headline contains < < name > >
     # Ignore other directives
     # Format doc parts so they fit in pagewidth columns.
     # Output code parts as is.
-    #@-at
     #@@c
 
     def convertVnodeToWeb (self,v):
@@ -298,22 +273,20 @@ class leoImportCommands (scanUtility):
                 docSeen = True
             elif (g.match_word(s,i,"@code") or g.match_word(s,i,"@root") or
                 g.match_word(s,i,"@c") or g.match(s,i,lb)):
-                #@            << Supply a missing doc part >>
-                #@+node:ekr.20031218072017.3298:<< Supply a missing doc part >>
+                #@+<< Supply a missing doc part >>
+                #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
                     result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
-                #@-node:ekr.20031218072017.3298:<< Supply a missing doc part >>
-                #@nl
+                #@-<< Supply a missing doc part >>
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             elif self.treeType == "@file" or startInCode:
-                #@            << Supply a missing doc part >>
-                #@+node:ekr.20031218072017.3298:<< Supply a missing doc part >>
+                #@+<< Supply a missing doc part >>
+                #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
                     result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
-                #@-node:ekr.20031218072017.3298:<< Supply a missing doc part >>
-                #@nl
+                #@-<< Supply a missing doc part >>
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             else:
                 i,result = self.convertDocPartToWeb(s,i,result)
@@ -323,8 +296,7 @@ class leoImportCommands (scanUtility):
         if len(result) > 0:
             result += nl
         return result
-    #@-node:ekr.20031218072017.3297:convertVnodeToWeb
-    #@+node:ekr.20031218072017.3299:copyPart
+    #@+node:ekr.20031218072017.3299: *4* copyPart
     # Copies characters to result until the end of the present section is seen.
 
     def copyPart (self,s,i,result):
@@ -364,8 +336,7 @@ class leoImportCommands (scanUtility):
                 result += line
             assert(progress < i)
         return i, result.rstrip()
-    #@-node:ekr.20031218072017.3299:copyPart
-    #@+node:ekr.20031218072017.1462:exportHeadlines
+    #@+node:ekr.20031218072017.1462: *4* exportHeadlines
     def exportHeadlines (self,fileName):
 
         c = self.c ; nl = g.u(self.output_newline)
@@ -386,8 +357,7 @@ class leoImportCommands (scanUtility):
             s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
             theFile.write(s)
         theFile.close()
-    #@-node:ekr.20031218072017.1462:exportHeadlines
-    #@+node:ekr.20031218072017.1147:flattenOutline
+    #@+node:ekr.20031218072017.1147: *4* flattenOutline
     def flattenOutline (self,fileName):
 
         c = self.c ; nl = g.u(self.output_newline)
@@ -415,8 +385,7 @@ class leoImportCommands (scanUtility):
                 s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
                 theFile.write(s)
         theFile.close()
-    #@-node:ekr.20031218072017.1147:flattenOutline
-    #@+node:ekr.20031218072017.1148:outlineToWeb
+    #@+node:ekr.20031218072017.1148: *4* outlineToWeb
     def outlineToWeb (self,fileName,webType):
 
         c = self.c ; nl = self.output_newline
@@ -448,8 +417,7 @@ class leoImportCommands (scanUtility):
                 theFile.write(s)
                 if s[-1] != '\n': theFile.write(nl)
         theFile.close()
-    #@-node:ekr.20031218072017.1148:outlineToWeb
-    #@+node:ekr.20031218072017.3300:removeSentinelsCommand
+    #@+node:ekr.20031218072017.3300: *4* removeSentinelsCommand
     def removeSentinelsCommand (self,paths,toString=False):
 
         c = self.c
@@ -462,8 +430,8 @@ class leoImportCommands (scanUtility):
             s,e = g.readFileIntoString(fileName,self.encoding)
             if s is None: return
             if e: self.encoding = e
-            #@        << set delims from the header line >>
-            #@+node:ekr.20031218072017.3302:<< set delims from the header line >>
+            #@+<< set delims from the header line >>
+            #@+node:ekr.20031218072017.3302: *5* << set delims from the header line >>
             # Skip any non @+leo lines.
             i = 0
             while i < len(s) and g.find_on_line(s,i,"@+leo") == -1:
@@ -482,8 +450,7 @@ class leoImportCommands (scanUtility):
                 line_delim = None
             else:
                 line_delim,start_delim = start_delim,None
-            #@-node:ekr.20031218072017.3302:<< set delims from the header line >>
-            #@nl
+            #@-<< set delims from the header line >>
             # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
             s = self.removeSentinelLines(s,line_delim,start_delim,end_delim)
             ext = c.config.remove_sentinels_extension
@@ -497,8 +464,8 @@ class leoImportCommands (scanUtility):
             if toString:
                 return s
             else:
-                #@            << Write s into newFileName >>
-                #@+node:ekr.20031218072017.1149:<< Write s into newFileName >>
+                #@+<< Write s into newFileName >>
+                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >>
                 try:
                     mode = c.config.output_newline
                     mode = g.choose(mode=="platform",'w','wb')
@@ -511,11 +478,9 @@ class leoImportCommands (scanUtility):
                 except Exception:
                     g.es("exception creating:",newFileName)
                     g.es_exception()
-                #@-node:ekr.20031218072017.1149:<< Write s into newFileName >>
-                #@nl
+                #@-<< Write s into newFileName >>
                 return None
-    #@-node:ekr.20031218072017.3300:removeSentinelsCommand
-    #@+node:ekr.20031218072017.3303:removeSentinelLines
+    #@+node:ekr.20031218072017.3303: *4* removeSentinelLines
     # This does not handle @nonl properly, but that's a nit...
 
     def removeSentinelLines(self,s,line_delim,start_delim,unused_end_delim):
@@ -536,16 +501,15 @@ class leoImportCommands (scanUtility):
                 verbatimFlag = False
         result = ''.join(result)
         return result
-    #@-node:ekr.20031218072017.3303:removeSentinelLines
-    #@+node:ekr.20031218072017.1464:weave
+    #@+node:ekr.20031218072017.1464: *4* weave
     def weave (self,filename):
 
         c = self.c ; nl = self.output_newline
         p = c.p
         if not p: return
         self.setEncoding()
-        #@    << open filename to f, or return >>
-        #@+node:ekr.20031218072017.1150:<< open filename to f, or return >>
+        #@+<< open filename to f, or return >>
+        #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >>
         try:
             # 10/14/02: support for output_newline setting.
             mode = c.config.output_newline
@@ -556,15 +520,14 @@ class leoImportCommands (scanUtility):
             g.es("exception opening:",filename)
             g.es_exception()
             return
-        #@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
-        #@nl
+        #@-<< open filename to f, or return >>
         for p in p.self_and_subtree():
             s = p.b
             s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
-                #@            << write the context of p to f >>
-                #@+node:ekr.20031218072017.1465:<< write the context of p to f >>
+                #@+<< write the context of p to f >>
+                #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >>
                 # write the headlines of p, p's parent and p's grandparent.
                 context = [] ; p2 = p.copy() ; i = 0
                 while i < 3:
@@ -581,17 +544,14 @@ class leoImportCommands (scanUtility):
                     line = g.toEncodedString(line,self.encoding,reportErrors=True)
                     f.write(line)
                     f.write(nl)
-                #@-node:ekr.20031218072017.1465:<< write the context of p to f >>
-                #@nl
+                #@-<< write the context of p to f >>
                 f.write("-" * 60) ; f.write(nl)
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
                 f.write(s.rstrip() + nl)
         f.flush()
         f.close()
-    #@-node:ekr.20031218072017.1464:weave
-    #@-node:ekr.20031218072017.3289:Export
-    #@+node:ekr.20031218072017.3305:Utilities
-    #@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (leoImport)
+    #@+node:ekr.20031218072017.3305: *3* Utilities
+    #@+node:ekr.20090122201952.4: *4* appendStringToBody & setBodyString (leoImport)
     def appendStringToBody (self,p,s):
 
         '''Similar to c.appendStringToBody,
@@ -626,8 +586,7 @@ class leoImportCommands (scanUtility):
             p.setDirty()
             if not c.isChanged():
                 c.setChanged(True)
-    #@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (leoImport)
-    #@+node:ekr.20031218072017.3306:createHeadline (leoImport)
+    #@+node:ekr.20031218072017.3306: *4* createHeadline (leoImport)
     def createHeadline (self,parent,body,headline):
 
         # g.trace("parent,headline:",parent,headline)
@@ -642,12 +601,10 @@ class leoImportCommands (scanUtility):
             self.setBodyString(p,body)
 
         return p
-    #@-node:ekr.20031218072017.3306:createHeadline (leoImport)
-    #@+node:ekr.20031218072017.3307:error
+    #@+node:ekr.20031218072017.3307: *4* error
     def error (self,s):
         g.es('',s)
-    #@-node:ekr.20031218072017.3307:error
-    #@+node:ekr.20041126042730:getTabWidth
+    #@+node:ekr.20041126042730: *4* getTabWidth
     def getTabWidth (self,p=None):
 
         c = self.c
@@ -662,8 +619,7 @@ class leoImportCommands (scanUtility):
                 return w
             else:
                 return self.c.tab_width
-    #@-node:ekr.20041126042730:getTabWidth
-    #@+node:ekr.20031218072017.3309:isDocStart and isModuleStart
+    #@+node:ekr.20031218072017.3309: *4* isDocStart and isModuleStart
     # The start of a document part or module in a noweb or cweb file.
     # Exporters may have to test for @doc as well.
 
@@ -688,15 +644,14 @@ class leoImportCommands (scanUtility):
             return self.webType == "cweb" and (
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
-    #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3312:massageWebBody
+    #@+node:ekr.20031218072017.3312: *4* massageWebBody
     def massageWebBody (self,s):
 
         theType = self.webType
         lb = g.choose(theType=="cweb","@<","<<")
         rb = g.choose(theType=="cweb","@>",">>")
-        #@    << Remove most newlines from @space and @* sections >>
-        #@+node:ekr.20031218072017.3313:<< Remove most newlines from @space and @* sections >>
+        #@+<< Remove most newlines from @space and @* sections >>
+        #@+node:ekr.20031218072017.3313: *5* << Remove most newlines from @space and @* sections >>
         i = 0
         while i < len(s):
             progress = i
@@ -731,10 +686,9 @@ class leoImportCommands (scanUtility):
                     i = start + len(doc)
             else: i = g.skip_line(s,i)
             assert (i > progress)
-        #@-node:ekr.20031218072017.3313:<< Remove most newlines from @space and @* sections >>
-        #@nl
-        #@    << Replace abbreviated names with full names >>
-        #@+node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
+        #@-<< Remove most newlines from @space and @* sections >>
+        #@+<< Replace abbreviated names with full names >>
+        #@+node:ekr.20031218072017.3314: *5* << Replace abbreviated names with full names >>
         i = 0
         while i < len(s):
             progress = i
@@ -751,12 +705,10 @@ class leoImportCommands (scanUtility):
                         i = j + len(name2)
             i = g.skip_line(s,i)
             assert (i > progress)
-        #@-node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
-        #@nl
+        #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
-    #@-node:ekr.20031218072017.3312:massageWebBody
-    #@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
+    #@+node:ekr.20080211085914: *4* scanDefaultDirectory (leoImport)
     def scanDefaultDirectory(self,p):
 
         """Set the default_directory ivar by looking for @path directives."""
@@ -766,8 +718,7 @@ class leoImportCommands (scanUtility):
         self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
 
         if error: self.error(error)
-    #@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
-    #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
+    #@+node:ekr.20031218072017.1463: *4* setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
         # c.scanAllDirectives checks the encoding: may return None.
@@ -783,10 +734,8 @@ class leoImportCommands (scanUtility):
             self.encoding = 'utf-8'
 
         # g.trace(self.encoding)
-    #@-node:ekr.20031218072017.1463:setEncoding (leoImport)
-    #@-node:ekr.20031218072017.3305:Utilities
-    #@+node:ekr.20031218072017.3209:Import
-    #@+node:ekr.20031218072017.3210:createOutline (leoImport)
+    #@+node:ekr.20031218072017.3209: *3* Import
+    #@+node:ekr.20031218072017.3210: *4* createOutline (leoImport)
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None):
 
@@ -850,8 +799,7 @@ class leoImportCommands (scanUtility):
         w.setInsertPoint(0)
         w.seeInsertPoint()
         return p
-    #@-node:ekr.20031218072017.3210:createOutline (leoImport)
-    #@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
+    #@+node:ekr.20070806111212: *4* readAtAutoNodes (importCommands) & helper
     def readAtAutoNodes (self):
 
         c = self.c
@@ -873,7 +821,7 @@ class leoImportCommands (scanUtility):
         g.es(message,color='blue')
         c.redraw()
 
-    #@+node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+    #@+node:ekr.20070807084545: *5* readOneAtAutoNode (leoImport)
     def readOneAtAutoNode(self,p):
 
         '''Read the @auto node at p'''
@@ -897,9 +845,7 @@ class leoImportCommands (scanUtility):
         # Force an update of the body pane.
         self.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
-    #@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
-    #@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
-    #@+node:ekr.20031218072017.1810:importDerivedFiles
+    #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None):
         # Not a command.  It must *not* have an event arg.
 
@@ -910,8 +856,8 @@ class leoImportCommands (scanUtility):
         u.beforeChangeGroup(current,command)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
-            #@        << set isThin if fileName is a thin derived file >>
-            #@+node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+            #@+<< set isThin if fileName is a thin derived file >>
+            #@+node:ekr.20040930135204: *5* << set isThin if fileName is a thin derived file >>
             fileName = g.os_path_normpath(fileName)
 
             try:
@@ -920,8 +866,7 @@ class leoImportCommands (scanUtility):
                 theFile.close()
             except IOError:
                 isThin = False
-            #@-node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
-            #@nl
+            #@-<< set isThin if fileName is a thin derived file >>
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
@@ -936,8 +881,7 @@ class leoImportCommands (scanUtility):
         c.setChanged(True)
         u.afterChangeGroup(p,command)
         c.redraw(current)
-    #@-node:ekr.20031218072017.1810:importDerivedFiles
-    #@+node:ekr.20031218072017.3212:importFilesCommand
+    #@+node:ekr.20031218072017.3212: *4* importFilesCommand
     def importFilesCommand (self,files=None,treeType=None):
         # Not a command.  It must *not* have an event arg.
 
@@ -949,14 +893,10 @@ class leoImportCommands (scanUtility):
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
         if len(files) == 2:
-            #@        << Create a parent for two files having a common prefix >>
-            #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-            #@+at 
-            #@nonl
-            # The two filenames have a common prefix everything 
-            # before the last period is the same.  For example, x.h 
-            # and x.cpp.
-            #@-at
+            #@+<< Create a parent for two files having a common prefix >>
+            #@+node:ekr.20031218072017.3213: *5* << Create a parent for two files having a common prefix >>
+            #@+at The two filenames have a common prefix everything before the last
+            # period is the same. For example, x.h and x.cpp.
             #@@c
 
             name0 = files[0]
@@ -968,8 +908,7 @@ class leoImportCommands (scanUtility):
                 # junk, nameExt = g.os_path_split(prefix1)
                 name,junk = g.os_path_splitext(prefix1)
                 current.initHeadString(name)
-            #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-            #@nl
+            #@-<< Create a parent for two files having a common prefix >>
         for fileName in files:
             g.setGlobalOpenDir(fileName)
             v = self.createOutline(fileName,current)
@@ -982,9 +921,8 @@ class leoImportCommands (scanUtility):
         c.validateOutline()
         current.expand()
         c.redraw(current)
-    #@-node:ekr.20031218072017.3212:importFilesCommand
-    #@+node:ekr.20031218072017.3214:importFlattenedOutline & allies
-    #@+node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
+    #@+node:ekr.20031218072017.3214: *4* importFlattenedOutline & allies
+    #@+node:ekr.20031218072017.3215: *5* convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
 
     def convertMoreStringToOutlineAfter (self,s,first_p):
@@ -1008,8 +946,8 @@ class leoImportCommands (scanUtility):
             level,junk = self.moreHeadlineLevel(s)
             level -= firstLevel
             if level >= 0:
-                #@            << Link a new position p into the outline >>
-                #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
+                #@+<< Link a new position p into the outline >>
+                #@+node:ekr.20031218072017.3216: *6* << Link a new position p into the outline >>
                 assert(level >= 0)
                 if not last_p:
                     # g.trace(first_p)
@@ -1028,10 +966,9 @@ class leoImportCommands (scanUtility):
                     p = last_p.insertAfter()
                 last_p = p
                 lastLevel = level
-                #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
-                #@nl
-                #@            << Set the headline string, skipping over the leader >>
-                #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                #@-<< Link a new position p into the outline >>
+                #@+<< Set the headline string, skipping over the leader >>
+                #@+node:ekr.20031218072017.3217: *6* << Set the headline string, skipping over the leader >>
                 j = 0
                 while g.match(s,j,'\t'):
                     j += 1
@@ -1039,10 +976,9 @@ class leoImportCommands (scanUtility):
                     j += 2
 
                 p.initHeadString(s[j:])
-                #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
-                #@nl
-                #@            << Count the number of following body lines >>
-                #@+node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                #@-<< Set the headline string, skipping over the leader >>
+                #@+<< Count the number of following body lines >>
+                #@+node:ekr.20031218072017.3218: *6* << Count the number of following body lines >>
                 bodyLines = 0
                 index += 1 # Skip the headline.
                 while index < len(strings):
@@ -1056,10 +992,9 @@ class leoImportCommands (scanUtility):
                         strings[index] = s[1:]
                     bodyLines += 1
                     index += 1
-                #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
-                #@nl
-                #@            << Add the lines to the body text of p >>
-                #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
+                #@-<< Count the number of following body lines >>
+                #@+<< Add the lines to the body text of p >>
+                #@+node:ekr.20031218072017.3219: *6* << Add the lines to the body text of p >>
                 if bodyLines > 0:
                     body = ""
                     n = index - bodyLines
@@ -1069,8 +1004,7 @@ class leoImportCommands (scanUtility):
                             body += "\n"
                         n += 1
                     p.setBodyString(body)
-                #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
-                #@nl
+                #@-<< Add the lines to the body text of p >>
                 p.setDirty()
             else: index += 1
             assert progress < index
@@ -1080,8 +1014,7 @@ class leoImportCommands (scanUtility):
         c.redraw()
 
         return theRoot
-    #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
-    #@+node:ekr.20031218072017.3220:importFlattenedOutline
+    #@+node:ekr.20031218072017.3220: *5* importFlattenedOutline
     def importFlattenedOutline (self,files): # Not a command, so no event arg.
 
         c = self.c ; u = c.undoer ; current = c.p
@@ -1107,8 +1040,7 @@ class leoImportCommands (scanUtility):
             u.afterInsertNode(p,'Import',undoData)
         else:
             g.es("not a valid MORE file",fileName)
-    #@-node:ekr.20031218072017.3220:importFlattenedOutline
-    #@+node:ekr.20031218072017.3222:moreHeadlineLevel
+    #@+node:ekr.20031218072017.3222: *5* moreHeadlineLevel
     # return the headline level of s,or -1 if the string is not a MORE headline.
     def moreHeadlineLevel (self,s):
 
@@ -1121,8 +1053,7 @@ class leoImportCommands (scanUtility):
             return level, plusFlag
         else:
             return -1, plusFlag
-    #@-node:ekr.20031218072017.3222:moreHeadlineLevel
-    #@+node:ekr.20031218072017.3223:stringIs/stringsAreValidMoreFile
+    #@+node:ekr.20031218072017.3223: *5* stringIs/stringsAreValidMoreFile
     # Used by paste logic.
 
     def stringIsValidMoreFile (self,s):
@@ -1152,10 +1083,8 @@ class leoImportCommands (scanUtility):
                     lastLevel = level
                     plusFlag = newFlag
         return True
-    #@-node:ekr.20031218072017.3223:stringIs/stringsAreValidMoreFile
-    #@-node:ekr.20031218072017.3214:importFlattenedOutline & allies
-    #@+node:ekr.20031218072017.3224:importWebCommand & allies
-    #@+node:ekr.20031218072017.3225:createOutlineFromWeb
+    #@+node:ekr.20031218072017.3224: *4* importWebCommand & allies
+    #@+node:ekr.20031218072017.3225: *5* createOutlineFromWeb
     def createOutlineFromWeb (self,path,parent):
 
         c = self.c ; u = c.undoer
@@ -1175,8 +1104,7 @@ class leoImportCommands (scanUtility):
         u.afterInsertNode(p,'Import',undoData)
 
         return p
-    #@-node:ekr.20031218072017.3225:createOutlineFromWeb
-    #@+node:ekr.20031218072017.3226:importWebCommand
+    #@+node:ekr.20031218072017.3226: *5* importWebCommand
     def importWebCommand (self,files,webType):
 
         c = self.c ; current = c.p
@@ -1193,8 +1121,7 @@ class leoImportCommands (scanUtility):
             c.setChanged(True)
 
         c.redraw(current)
-    #@-node:ekr.20031218072017.3226:importWebCommand
-    #@+node:ekr.20031218072017.3227:findFunctionDef
+    #@+node:ekr.20031218072017.3227: *5* findFunctionDef
     def findFunctionDef (self,s,i):
 
         # Look at the next non-blank line for a function name.
@@ -1209,25 +1136,20 @@ class leoImportCommands (scanUtility):
                 else: break
             else: i += 1
         return None
-    #@-node:ekr.20031218072017.3227:findFunctionDef
-    #@+node:ekr.20031218072017.3228:scanBodyForHeadline
-    #@+at 
-    #@nonl
-    # This method returns the proper headline text.
+    #@+node:ekr.20031218072017.3228: *5* scanBodyForHeadline
+    #@+at This method returns the proper headline text.
     # 
     # 1. If s contains a section def, return the section ref.
-    # 2. cweb only: if s contains @c, return the function name 
-    # following the @c.
+    # 2. cweb only: if s contains @c, return the function name following the @c.
     # 3. cweb only: if s contains @d name, returns @d name.
     # 4. Otherwise, returns "@"
-    #@-at
     #@@c
 
     def scanBodyForHeadline (self,s):
 
         if self.webType == "cweb":
-            #@        << scan cweb body for headline >>
-            #@+node:ekr.20031218072017.3229:<< scan cweb body for headline >>
+            #@+<< scan cweb body for headline >>
+            #@+node:ekr.20031218072017.3229: *6* << scan cweb body for headline >>
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s,i)
@@ -1253,11 +1175,10 @@ class leoImportCommands (scanUtility):
                     if k > -1 and (g.match(s,k+2,"+=") or g.match(s,k+2,"=")):
                         return s[j:k+2] # return the section ref.
                 i = g.skip_line(s,i)
-            #@-node:ekr.20031218072017.3229:<< scan cweb body for headline >>
-            #@nl
+            #@-<< scan cweb body for headline >>
         else:
-            #@        << scan noweb body for headline >>
-            #@+node:ekr.20031218072017.3230:<< scan noweb body for headline >>
+            #@+<< scan noweb body for headline >>
+            #@+node:ekr.20031218072017.3230: *6* << scan noweb body for headline >>
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s,i)
@@ -1274,11 +1195,9 @@ class leoImportCommands (scanUtility):
                     if name:
                         return name
                 i = g.skip_line(s,i)
-            #@-node:ekr.20031218072017.3230:<< scan noweb body for headline >>
-            #@nl
+            #@-<< scan noweb body for headline >>
         return "@" # default.
-    #@-node:ekr.20031218072017.3228:scanBodyForHeadline
-    #@+node:ekr.20031218072017.3231:scanWebFile (handles limbo)
+    #@+node:ekr.20031218072017.3231: *5* scanWebFile (handles limbo)
     def scanWebFile (self,fileName,parent):
 
         theType = self.webType
@@ -1288,8 +1207,8 @@ class leoImportCommands (scanUtility):
         s,e = g.readFileIntoString(fileName)
         if s is None: return
 
-        #@    << Create a symbol table of all section names >>
-        #@+node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+        #@+<< Create a symbol table of all section names >>
+        #@+node:ekr.20031218072017.3232: *6* << Create a symbol table of all section names >>
         i = 0 ; self.web_st = []
 
         while i < len(s):
@@ -1308,10 +1227,9 @@ class leoImportCommands (scanUtility):
             assert (i > progress)
 
         # g.trace(self.cstDump())
-        #@-node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
-        #@nl
-        #@    << Create nodes for limbo text and the root section >>
-        #@+node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+        #@-<< Create a symbol table of all section names >>
+        #@+<< Create nodes for limbo text and the root section >>
+        #@+node:ekr.20031218072017.3233: *6* << Create nodes for limbo text and the root section >>
         i = 0
         while i < len(s):
             progress = i
@@ -1337,12 +1255,11 @@ class leoImportCommands (scanUtility):
             self.createHeadline(parent,s[j:i],g.angleBrackets(" @ "))
 
         # g.trace(g.get_line(s,i))
-        #@-node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
-        #@nl
+        #@-<< Create nodes for limbo text and the root section >>
         while i < len(s):
             outer_progress = i
-            #@        << Create a node for the next module >>
-            #@+node:ekr.20031218072017.3234:<< Create a node for the next module >>
+            #@+<< Create a node for the next module >>
+            #@+node:ekr.20031218072017.3234: *6* << Create a node for the next module >>
             if theType=="cweb":
                 assert(self.isModuleStart(s,i))
                 start = i
@@ -1354,8 +1271,8 @@ class leoImportCommands (scanUtility):
                         if self.isModuleStart(s,i): break
                         else: i = g.skip_line(s,i)
                         assert (i > progress)
-                #@    << Handle cweb @d, @f, @c and @p directives >>
-                #@+node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+                #@+<< Handle cweb @d, @f, @c and @p directives >>
+                #@+node:ekr.20031218072017.3235: *7* << Handle cweb @d, @f, @c and @p directives >>
                 if g.match(s,i,"@d") or g.match(s,i,"@f"):
                     i += 2 ; i = g.skip_line(s,i)
                     # Place all @d and @f directives in the same node.
@@ -1382,8 +1299,7 @@ class leoImportCommands (scanUtility):
                         if self.isModuleStart(s,i):
                             break
                         assert (i > progress)
-                #@-node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
-                #@nl
+                #@-<< Handle cweb @d, @f, @c and @p directives >>
             else:
                 assert(self.isDocStart(s,i)) # isModuleStart == isDocStart for noweb.
                 start = i ; i = g.skip_line(s,i)
@@ -1398,12 +1314,10 @@ class leoImportCommands (scanUtility):
             body = self.massageWebBody(body)
             headline = self.scanBodyForHeadline(body)
             self.createHeadline(parent,body,headline)
-            #@-node:ekr.20031218072017.3234:<< Create a node for the next module >>
-            #@nl
+            #@-<< Create a node for the next module >>
             assert(i > outer_progress)
-    #@-node:ekr.20031218072017.3231:scanWebFile (handles limbo)
-    #@+node:ekr.20031218072017.3236:Symbol table
-    #@+node:ekr.20031218072017.3237:cstCanonicalize
+    #@+node:ekr.20031218072017.3236: *5* Symbol table
+    #@+node:ekr.20031218072017.3237: *6* cstCanonicalize
     # We canonicalize strings before looking them up, but strings are entered in the form they are first encountered.
 
     def cstCanonicalize (self,s,lower=True):
@@ -1415,8 +1329,7 @@ class leoImportCommands (scanUtility):
         s = s.replace("\n"," ").replace("  "," ")
 
         return s.strip()
-    #@-node:ekr.20031218072017.3237:cstCanonicalize
-    #@+node:ekr.20031218072017.3238:cstDump
+    #@+node:ekr.20031218072017.3238: *6* cstDump
     def cstDump (self):
 
         s = "Web Symbol Table...\n\n"
@@ -1424,8 +1337,7 @@ class leoImportCommands (scanUtility):
         for name in sorted(self.web_st):
             s += name + "\n"
         return s
-    #@-node:ekr.20031218072017.3238:cstDump
-    #@+node:ekr.20031218072017.3239:cstEnter
+    #@+node:ekr.20031218072017.3239: *6* cstEnter
     # We only enter the section name into the symbol table if the ... convention is not used.
 
     def cstEnter (self,s):
@@ -1441,8 +1353,7 @@ class leoImportCommands (scanUtility):
             if name.lower() == lower:
                 return
         self.web_st.append(upper)
-    #@-node:ekr.20031218072017.3239:cstEnter
-    #@+node:ekr.20031218072017.3240:cstLookup
+    #@+node:ekr.20031218072017.3240: *6* cstLookup
     # This method returns a string if the indicated string is a prefix of an entry in the web_st.
 
     def cstLookup (self,target):
@@ -1463,10 +1374,7 @@ class leoImportCommands (scanUtility):
                     found = True ; result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@-node:ekr.20031218072017.3240:cstLookup
-    #@-node:ekr.20031218072017.3236:Symbol table
-    #@-node:ekr.20031218072017.3224:importWebCommand & allies
-    #@+node:ekr.20070713075450:Unit tests
+    #@+node:ekr.20070713075450: *4* Unit tests
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
     def cUnitTest(self,p,fileName=None,s=None,showTree=False):
@@ -1507,7 +1415,7 @@ class leoImportCommands (scanUtility):
 
     def defaultImporterUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.xxx')
-    #@+node:ekr.20070713082220:scannerUnitTest
+    #@+node:ekr.20070713082220: *5* scannerUnitTest
     def scannerUnitTest (self,p,atAuto=False,ext=None,fileName=None,s=None,showTree=False):
 
         '''Run a unit test of an import scanner,
@@ -1557,74 +1465,61 @@ class leoImportCommands (scanUtility):
             assert ok
 
         return ok
-    #@-node:ekr.20070713082220:scannerUnitTest
-    #@-node:ekr.20070713075450:Unit tests
-    #@-node:ekr.20031218072017.3209:Import
-    #@+node:ekr.20071127175948.1:Import scanners
-    #@+node:edreamleo.20070710110153:scanCText
+    #@+node:ekr.20071127175948.1: *3* Import scanners
+    #@+node:edreamleo.20070710110153: *4* scanCText
     def scanCText (self,s,parent,atAuto=False):
 
         scanner = cScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:edreamleo.20070710110153:scanCText
-    #@+node:ekr.20071008130845.1:scanCSharpText
+    #@+node:ekr.20071008130845.1: *4* scanCSharpText
     def scanCSharpText (self,s,parent,atAuto=False):
 
         scanner = cSharpScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:ekr.20071008130845.1:scanCSharpText
-    #@+node:ekr.20070711060107.1:scanElispText
+    #@+node:ekr.20070711060107.1: *4* scanElispText
     def scanElispText (self,s,parent,atAuto=False):
 
         scanner = elispScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:ekr.20070711060107.1:scanElispText
-    #@+node:edreamleo.20070710110114.2:scanJavaText
+    #@+node:edreamleo.20070710110114.2: *4* scanJavaText
     def scanJavaText (self,s,parent,atAuto=False):
 
         scanner = javaScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:edreamleo.20070710110114.2:scanJavaText
-    #@+node:ekr.20071027111225.1:scanJavaScriptText
+    #@+node:ekr.20071027111225.1: *4* scanJavaScriptText
     def scanJavaScriptText (self,s,parent,atAuto=False):
 
         scanner = javaScriptScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:ekr.20071027111225.1:scanJavaScriptText
-    #@+node:ekr.20070711104241.2:scanPascalText
+    #@+node:ekr.20070711104241.2: *4* scanPascalText
     def scanPascalText (self,s,parent,atAuto=False):
 
         scanner = pascalScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@nonl
-    #@-node:ekr.20070711104241.2:scanPascalText
-    #@+node:ekr.20070711090122:scanPHPText
+    #@+node:ekr.20070711090122: *4* scanPHPText
     def scanPHPText (self,s,parent,atAuto=False):
 
         scanner = phpScanner(importCommands=self,atAuto=atAuto)
         scanner.run(s,parent)
-    #@-node:ekr.20070711090122:scanPHPText
-    #@+node:ekr.20070703122141.99:scanPythonText
+    #@+node:ekr.20070703122141.99: *4* scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
 
         scanner = pythonScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:ekr.20070703122141.99:scanPythonText
-    #@+node:ekr.20090501095634.48:scanRstText
+    #@+node:ekr.20090501095634.48: *4* scanRstText
     def scanRstText (self,s,parent,atAuto=False):
 
         scanner = rstScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:ekr.20090501095634.48:scanRstText
-    #@+node:ekr.20071214072145:scanXmlText
+    #@+node:ekr.20071214072145: *4* scanXmlText
     def scanXmlText (self,s,parent,atAuto=False):
 
         # g.trace(atAuto,parent.h)
@@ -1632,8 +1527,7 @@ class leoImportCommands (scanUtility):
         scanner = xmlScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@-node:ekr.20071214072145:scanXmlText
-    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+    #@+node:ekr.20070713075352: *4* scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
         c = self.c
@@ -1653,7 +1547,7 @@ class leoImportCommands (scanUtility):
                 c.setChanged(False)
 
         g.app.unitTestDict = {'result':True}
-    #@+node:ekr.20080811174246.1:languageForExtension
+    #@+node:ekr.20080811174246.1: *5* languageForExtension
     def languageForExtension (self,ext):
 
         '''Return the language corresponding to the extensiion ext.'''
@@ -1677,21 +1571,17 @@ class leoImportCommands (scanUtility):
 
         # Return the language even if there is no colorizer mode for it.
         return language
-    #@-node:ekr.20080811174246.1:languageForExtension
-    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
-    #@-node:ekr.20071127175948.1:Import scanners
     #@-others
-#@-node:ekr.20071127175948:<< class leoImportCommands >>
-#@nl
-#@<< class baseScannerClass >>
-#@+node:ekr.20070703122141.65:<< class baseScannerClass >>
+#@-<< class leoImportCommands >>
+#@+<< class baseScannerClass >>
+#@+node:ekr.20070703122141.65: ** << class baseScannerClass >>
 class baseScannerClass (scanUtility):
 
     '''The base class for all import scanner classes.
     This class contains common utility methods.'''
 
-    #@    @+others
-    #@+node:ekr.20070703122141.66:baseScannerClass.__init__
+    #@+others
+    #@+node:ekr.20070703122141.66: *3* baseScannerClass.__init__
     def __init__ (self,importCommands,atAuto,language):
 
         ic = importCommands
@@ -1767,9 +1657,8 @@ class baseScannerClass (scanUtility):
             # For example, ';' and '=' in C.
 
         self.strict = False # True if leading whitespace is very significant.
-    #@-node:ekr.20070703122141.66:baseScannerClass.__init__
-    #@+node:ekr.20070808115837:Checking
-    #@+node:ekr.20070703122141.102:check
+    #@+node:ekr.20070808115837: *3* Checking
+    #@+node:ekr.20070703122141.102: *4* check
     def check (self,unused_s,unused_parent):
 
         '''Make sure the generated nodes are equivalent to the original file.
@@ -1784,8 +1673,7 @@ class baseScannerClass (scanUtility):
             return self.checkTrialWrite()
         else:
             return True
-    #@-node:ekr.20070703122141.102:check
-    #@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+    #@+node:ekr.20070703122141.104: *4* checkTrialWrite (baseScannerClass)
     def checkTrialWrite (self,s1=None,s2=None):
 
         '''Return True if a trial write produces the original file.'''
@@ -1840,8 +1728,7 @@ class baseScannerClass (scanUtility):
             self.reportMismatch(lines1,lines2,bad_i)
 
         return ok
-    #@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
-    #@+node:ekr.20070730093735:compareHelper & helpers
+    #@+node:ekr.20070730093735: *4* compareHelper & helpers
     def compareHelper (self,lines1,lines2,i,strict):
 
         '''Compare lines1[i] and lines2[i].
@@ -1916,7 +1803,7 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-    #@+node:ekr.20091227115606.6468:adjustRstLines
+    #@+node:ekr.20091227115606.6468: *5* adjustRstLines
     def adjustRstLines(self,lines):
 
         '''Ignore newlines.
@@ -1924,8 +1811,7 @@ class baseScannerClass (scanUtility):
         This fudge allows the rst code generators to insert needed newlines freely.'''
 
         return [z for z in lines if z.strip() != '']
-    #@-node:ekr.20091227115606.6468:adjustRstLines
-    #@+node:ekr.20090513073632.5735:compareRstUnderlines
+    #@+node:ekr.20090513073632.5735: *5* compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):
 
         s1,s2 = s1.rstrip(),s2.rstrip()
@@ -1943,9 +1829,7 @@ class baseScannerClass (scanUtility):
             s2 == ch2 * n2)
 
         return val
-    #@-node:ekr.20090513073632.5735:compareRstUnderlines
-    #@-node:ekr.20070730093735:compareHelper & helpers
-    #@+node:ekr.20071110144948:checkLeadingWhitespace
+    #@+node:ekr.20071110144948: *4* checkLeadingWhitespace
     def checkLeadingWhitespace (self,line):
 
         tab_width = self.tab_width
@@ -1958,8 +1842,7 @@ class baseScannerClass (scanUtility):
             g.es_print('line:',repr(line),color='red')
 
         return ok
-    #@-node:ekr.20071110144948:checkLeadingWhitespace
-    #@+node:ekr.20070911110507:reportMismatch
+    #@+node:ekr.20070911110507: *4* reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i):
 
         kind = g.choose(self.atAuto,'@auto','import command')
@@ -1979,16 +1862,10 @@ class baseScannerClass (scanUtility):
             g.es_print('\n'.join(aList),color='blue')
 
         return False
-    #@-node:ekr.20070911110507:reportMismatch
-    #@-node:ekr.20070808115837:Checking
-    #@+node:ekr.20070706084535:Code generation
-    #@+at 
-    #@nonl
-    # None of these methods should ever need to be overridden in 
-    # subclasses.
+    #@+node:ekr.20070706084535: *3* Code generation
+    #@+at None of these methods should ever need to be overridden in subclasses.
     # 
-    #@-at
-    #@+node:ekr.20090512080015.5800:adjustParent
+    #@+node:ekr.20090512080015.5800: *4* adjustParent
     def adjustParent (self,parent,headline):
 
         '''Return the effective parent.
@@ -1996,8 +1873,7 @@ class baseScannerClass (scanUtility):
         This is overridden by the rstScanner class.'''
 
         return parent
-    #@-node:ekr.20090512080015.5800:adjustParent
-    #@+node:ekr.20070707073044.1:addRef
+    #@+node:ekr.20070707073044.1: *4* addRef
     def addRef (self,parent):
 
         '''Create an unindented @others or section reference in the parent node.'''
@@ -2013,8 +1889,7 @@ class baseScannerClass (scanUtility):
         if self.treeType == '@root' and self.methodsSeen:
             self.appendStringToBody(parent,
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
-    #@-node:ekr.20070707073044.1:addRef
-    #@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+    #@+node:ekr.20090122201952.6: *4* appendStringToBody & setBodyString (baseScannerClass)
     def appendStringToBody (self,p,s):
 
         '''Similar to c.appendStringToBody,
@@ -2028,8 +1903,7 @@ class baseScannerClass (scanUtility):
         but does not recolor the text or redraw the screen.'''
 
         return self.importCommands.setBodyString(p,s)
-    #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
-    #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+    #@+node:ekr.20090512153903.5806: *4* computeBody (baseScannerClass)
     def computeBody (self,s,start,sigStart,codeEnd):
 
         trace = False and not g.unitTesting
@@ -2053,8 +1927,7 @@ class baseScannerClass (scanUtility):
                 self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
         return body
-    #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
-    #@+node:ekr.20090513073632.5737:createDeclsNode
+    #@+node:ekr.20090513073632.5737: *4* createDeclsNode
     def createDeclsNode (self,parent,s):
 
         '''Create a child node of parent containing s.'''
@@ -2063,8 +1936,7 @@ class baseScannerClass (scanUtility):
         headline = '%s declarations' % self.methodName
         body = self.undentBody(s)
         self.createHeadline(parent,body,headline)
-    #@-node:ekr.20090513073632.5737:createDeclsNode
-    #@+node:ekr.20070707085612:createFunctionNode
+    #@+node:ekr.20070707085612: *4* createFunctionNode
     def createFunctionNode (self,headline,body,parent):
 
         # Create the prefix line for @root trees.
@@ -2077,19 +1949,16 @@ class baseScannerClass (scanUtility):
         # Create the node.
         return self.createHeadline(parent,prefix + body,headline)
 
-    #@-node:ekr.20070707085612:createFunctionNode
-    #@+node:ekr.20070703122141.77:createHeadline (baseScannerClass)
+    #@+node:ekr.20070703122141.77: *4* createHeadline (baseScannerClass)
     def createHeadline (self,parent,body,headline):
 
         return self.importCommands.createHeadline(parent,body,headline)
-    #@-node:ekr.20070703122141.77:createHeadline (baseScannerClass)
-    #@+node:ekr.20090502071837.1:endGen
+    #@+node:ekr.20090502071837.1: *4* endGen
     def endGen (self,s):
 
         '''Do any language-specific post-processing.'''
         pass
-    #@-node:ekr.20090502071837.1:endGen
-    #@+node:ekr.20070703122141.79:getLeadingIndent
+    #@+node:ekr.20070703122141.79: *4* getLeadingIndent
     def getLeadingIndent (self,s,i,ignoreComments=True):
 
         '''Return the leading whitespace of a line.
@@ -2111,8 +1980,7 @@ class baseScannerClass (scanUtility):
 
         # g.trace('returns:',width)
         return width
-    #@-node:ekr.20070703122141.79:getLeadingIndent
-    #@+node:ekr.20070709094002:indentBody
+    #@+node:ekr.20070709094002: *4* indentBody
     def indentBody (self,s,lws=None):
 
         '''Add whitespace equivalent to one tab for all non-blank lines of s.'''
@@ -2128,16 +1996,14 @@ class baseScannerClass (scanUtility):
 
         result = ''.join(result)
         return result
-    #@-node:ekr.20070709094002:indentBody
-    #@+node:ekr.20070705085335:insertIgnoreDirective
+    #@+node:ekr.20070705085335: *4* insertIgnoreDirective
     def insertIgnoreDirective (self,parent):
 
         self.appendStringToBody(parent,'@ignore')
 
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
-    #@-node:ekr.20070705085335:insertIgnoreDirective
-    #@+node:ekr.20070707113832.1:putClass & helpers
+    #@+node:ekr.20070707113832.1: *4* putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
         '''Creates a child node c of parent for the class,
@@ -2208,14 +2074,13 @@ class baseScannerClass (scanUtility):
         # Exit the new class: restore the previous class info.
         self.methodName = oldMethodName
         self.startSigIndent = oldStartSigIndent
-    #@+node:ekr.20070707190351:appendTextToClassNode
+    #@+node:ekr.20070707190351: *5* appendTextToClassNode
     def appendTextToClassNode (self,class_node,s):
 
         c = self.c
 
         self.appendStringToBody(class_node,s) 
-    #@-node:ekr.20070707190351:appendTextToClassNode
-    #@+node:ekr.20070703122141.105:createClassNodePrefix
+    #@+node:ekr.20070703122141.105: *5* createClassNodePrefix
     def createClassNodePrefix (self):
 
         '''Create the class node prefix.'''
@@ -2227,8 +2092,7 @@ class baseScannerClass (scanUtility):
             self.methodsSeen = True
 
         return prefix
-    #@-node:ekr.20070703122141.105:createClassNodePrefix
-    #@+node:ekr.20070703122141.106:getClassNodeRef
+    #@+node:ekr.20070703122141.106: *5* getClassNodeRef
     def getClassNodeRef (self,class_name):
 
         '''Insert the proper body text in the class_vnode.'''
@@ -2239,8 +2103,7 @@ class baseScannerClass (scanUtility):
             s = g.angleBrackets(' class %s methods ' % (class_name))
 
         return '%s\n' % (s)
-    #@-node:ekr.20070703122141.106:getClassNodeRef
-    #@+node:ekr.20070707171329:putClassHelper
+    #@+node:ekr.20070707171329: *5* putClassHelper
     def putClassHelper(self,s,i,end,class_node):
 
         '''s contains the body of a class, not including the signature.
@@ -2283,9 +2146,7 @@ class baseScannerClass (scanUtility):
         # Return the results.
         trailing = s[start:end]
         return putRef,bodyIndent,classDelim,decls,trailing
-    #@-node:ekr.20070707171329:putClassHelper
-    #@-node:ekr.20070707113832.1:putClass & helpers
-    #@+node:ekr.20070707082432:putFunction (baseScannerClass)
+    #@+node:ekr.20070707082432: *4* putFunction (baseScannerClass)
     def putFunction (self,s,sigStart,codeEnd,start,parent):
 
         '''Create a node of parent for a function defintion.'''
@@ -2315,18 +2176,15 @@ class baseScannerClass (scanUtility):
 
         # Exit the function: restore the function info.
         self.startSigIndent = oldStartSigIndent
-    #@-node:ekr.20070707082432:putFunction (baseScannerClass)
-    #@+node:ekr.20070705094630:putRootText
+    #@+node:ekr.20070705094630: *4* putRootText
     def putRootText (self,p):
 
         c = self.c
 
         self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
             self.rootLine,self.language,self.tab_width))
-    #@-node:ekr.20070705094630:putRootText
-    #@+node:ekr.20090122201952.5:setBodyString
-    #@-node:ekr.20090122201952.5:setBodyString
-    #@+node:ekr.20070703122141.88:undentBody
+    #@+node:ekr.20090122201952.5: *4* setBodyString
+    #@+node:ekr.20070703122141.88: *4* undentBody
     def undentBody (self,s,ignoreComments=True):
 
         '''Remove the first line's leading indentation from all lines of s.'''
@@ -2345,8 +2203,7 @@ class baseScannerClass (scanUtility):
             result = self.undentBy(s,undentVal)
             if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
             return result
-    #@-node:ekr.20070703122141.88:undentBody
-    #@+node:ekr.20081216090156.1:undentBy
+    #@+node:ekr.20081216090156.1: *4* undentBy
     def undentBy (self,s,undentVal):
 
         '''Remove leading whitespace equivalent to undentVal from each line.
@@ -2373,8 +2230,7 @@ class baseScannerClass (scanUtility):
 
         return ''.join(result)
 
-    #@-node:ekr.20081216090156.1:undentBy
-    #@+node:ekr.20070801074524:underindentedComment & underindentedLine
+    #@+node:ekr.20070801074524: *4* underindentedComment & underindentedLine
     def underindentedComment (self,line):
 
         if self.atAutoWarnsAboutLeadingWhitespace:
@@ -2385,9 +2241,7 @@ class baseScannerClass (scanUtility):
 
         self.error(
             'underindented line.\nExtra leading whitespace will be added\n' + line)
-    #@-node:ekr.20070801074524:underindentedComment & underindentedLine
-    #@-node:ekr.20070706084535:Code generation
-    #@+node:ekr.20070703122141.78:error, oops, report and warning
+    #@+node:ekr.20070703122141.78: *3* error, oops, report and warning
     def error (self,s):
         self.errors += 1
         self.importCommands.errors += 1
@@ -2411,21 +2265,16 @@ class baseScannerClass (scanUtility):
     def warning (self,s):
         if not g.unitTesting:
             g.es_print('warning:',s,color='red')
-    #@-node:ekr.20070703122141.78:error, oops, report and warning
-    #@+node:ekr.20070706084535.1:Parsing
-    #@+at 
-    #@nonl
-    # Scan and skipDecls would typically not be overridden.
-    #@-at
-    #@+node:ekr.20071201072917:adjustDefStart
+    #@+node:ekr.20070706084535.1: *3* Parsing
+    #@+at Scan and skipDecls would typically not be overridden.
+    #@+node:ekr.20071201072917: *4* adjustDefStart
     def adjustDefStart (self,unused_s,i):
 
         '''A hook to allow the Python importer to adjust the 
         start of a class or function to include decorators.'''
 
         return i
-    #@-node:ekr.20071201072917:adjustDefStart
-    #@+node:ekr.20070707150022:extendSignature
+    #@+node:ekr.20070707150022: *4* extendSignature
     def extendSignature(self,unused_s,i):
 
         '''Extend the signature line if appropriate.
@@ -2434,16 +2283,13 @@ class baseScannerClass (scanUtility):
         For example, the Python scanner appends docstrings if they exist.'''
 
         return i
-    #@-node:ekr.20070707150022:extendSignature
-    #@+node:ekr.20071017132056:getIndent
+    #@+node:ekr.20071017132056: *4* getIndent
     def getIndent (self,s,i):
 
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
-    #@nonl
-    #@-node:ekr.20071017132056:getIndent
-    #@+node:ekr.20070706101600:scan & scanHelper
+    #@+node:ekr.20070706101600: *4* scan & scanHelper
     def scan (self,s,parent):
 
         '''A language independent scanner: it uses language-specific helpers.
@@ -2477,7 +2323,7 @@ class baseScannerClass (scanUtility):
 
         # Do any language-specific post-processing.
         self.endGen(s)
-    #@+node:ekr.20071018084830:scanHelper
+    #@+node:ekr.20071018084830: *5* scanHelper
     def scanHelper(self,s,i,end,parent,kind):
 
         '''Common scanning code used by both scan and putClassHelper.'''
@@ -2514,9 +2360,7 @@ class baseScannerClass (scanUtility):
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
         return start,putRef,bodyIndent
-    #@-node:ekr.20071018084830:scanHelper
-    #@-node:ekr.20070706101600:scan & scanHelper
-    #@+node:ekr.20070712075148:skipArgs
+    #@+node:ekr.20070712075148: *4* skipArgs
     def skipArgs (self,s,i,kind):
 
         '''Skip the argument or class list.  Return i, ok
@@ -2534,8 +2378,7 @@ class baseScannerClass (scanUtility):
             return start,False
         else:
             return i,True 
-    #@-node:ekr.20070712075148:skipArgs
-    #@+node:ekr.20070707073859:skipBlock
+    #@+node:ekr.20070707073859: *4* skipBlock
     def skipBlock(self,s,i,delim1=None,delim2=None):
 
         '''Skip from the opening delim to *past* the matching closing delim.
@@ -2601,8 +2444,7 @@ class baseScannerClass (scanUtility):
         else:
             if trace: g.trace('** no block')
         return start
-    #@-node:ekr.20070707073859:skipBlock
-    #@+node:ekr.20070712091019:skipCodeBlock
+    #@+node:ekr.20070712091019: *4* skipCodeBlock
     def skipCodeBlock (self,s,i,kind):
 
         '''Skip the code block in a function or class definition.'''
@@ -2626,8 +2468,7 @@ class baseScannerClass (scanUtility):
             g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
 
         return i,True
-    #@-node:ekr.20070712091019:skipCodeBlock
-    #@+node:ekr.20070711104014:skipComment & helper
+    #@+node:ekr.20070711104014: *4* skipComment & helper
     def skipComment (self,s,i):
 
         '''Skip a comment and return the index of the following character.'''
@@ -2636,7 +2477,7 @@ class baseScannerClass (scanUtility):
             return g.skip_to_end_of_line(s,i)
         else:
             return self.skipBlockComment(s,i)
-    #@+node:ekr.20070707074541:skipBlockComment
+    #@+node:ekr.20070707074541: *5* skipBlockComment
     def skipBlockComment (self,s,i):
 
         '''Skip past a block comment.'''
@@ -2660,9 +2501,7 @@ class baseScannerClass (scanUtility):
             return len(s)
         else:
             return k + len(delim2)
-    #@-node:ekr.20070707074541:skipBlockComment
-    #@-node:ekr.20070711104014:skipComment & helper
-    #@+node:ekr.20070707080042:skipDecls
+    #@+node:ekr.20070707080042: *4* skipDecls
     def skipDecls (self,s,i,end,inClass):
 
         '''Skip everything until the start of the next class or function.
@@ -2724,14 +2563,11 @@ class baseScannerClass (scanUtility):
             return i
         else: # Ignore empty decls.
             return start
-    #@-node:ekr.20070707080042:skipDecls
-    #@+node:ekr.20070707094858.1:skipId
+    #@+node:ekr.20070707094858.1: *4* skipId
     def skipId (self,s,i):
 
         return g.skip_id(s,i,chars=self.extraIdChars)
-    #@nonl
-    #@-node:ekr.20070707094858.1:skipId
-    #@+node:ekr.20070730134936:skipNewline
+    #@+node:ekr.20070730134936: *4* skipNewline
     def skipNewline(self,s,i,kind):
 
         '''Skip whitespace and comments up to a newline, then skip the newline.
@@ -2755,21 +2591,18 @@ class baseScannerClass (scanUtility):
             # g.trace(g.callers())
 
         return i
-    #@-node:ekr.20070730134936:skipNewline
-    #@+node:ekr.20070712081451:skipParens
+    #@+node:ekr.20070712081451: *4* skipParens
     def skipParens (self,s,i):
 
         '''Skip a parenthisized list, that might contain strings or comments.'''
 
         return self.skipBlock(s,i,delim1='(',delim2=')')
-    #@-node:ekr.20070712081451:skipParens
-    #@+node:ekr.20070707073627.2:skipString
+    #@+node:ekr.20070707073627.2: *4* skipString
     def skipString (self,s,i):
 
         # Returns len(s) on unterminated string.
         return g.skip_string(s,i,verbose=False)
-    #@-node:ekr.20070707073627.2:skipString
-    #@+node:ekr.20070711132314:startsClass/Function (baseClass) & helpers
+    #@+node:ekr.20070711132314: *4* startsClass/Function (baseClass) & helpers
     # We don't expect to override this code, but subclasses may override the helpers.
 
     def startsClass (self,s,i):
@@ -2783,7 +2616,7 @@ class baseScannerClass (scanUtility):
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
         val = self.hasFunctions and self.startsHelper(s,i,kind='function',tags=self.functionTags)
         return val
-    #@+node:ekr.20070711134534:getSigId
+    #@+node:ekr.20070711134534: *5* getSigId
     def getSigId (self,ids):
 
         '''Return the signature's id.
@@ -2791,8 +2624,7 @@ class baseScannerClass (scanUtility):
         By default, this is the last id in the ids list.'''
 
         return ids and ids[-1]
-    #@-node:ekr.20070711134534:getSigId
-    #@+node:ekr.20070711140703:skipSigStart
+    #@+node:ekr.20070711140703: *5* skipSigStart
     def skipSigStart (self,s,i,kind,tags):
 
         '''Skip over the start of a function/class signature.
@@ -2823,8 +2655,7 @@ class baseScannerClass (scanUtility):
 
         if trace: g.trace('*exit ',kind,i,i < len(s) and s[i],ids,classId)
         return i, ids, classId
-    #@-node:ekr.20070711140703:skipSigStart
-    #@+node:ekr.20070712082913:skipSigTail
+    #@+node:ekr.20070712082913: *5* skipSigTail
     def skipSigTail(self,s,i,kind):
 
         '''Skip from the end of the arg list to the start of the block.'''
@@ -2846,8 +2677,7 @@ class baseScannerClass (scanUtility):
                 i += 1
         if trace: g.trace('no block delim')
         return i,False
-    #@-node:ekr.20070712082913:skipSigTail
-    #@+node:ekr.20070712112008:startsHelper
+    #@+node:ekr.20070712112008: *5* startsHelper
     def startsHelper(self,s,i,kind,tags):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -2948,9 +2778,7 @@ class baseScannerClass (scanUtility):
 
         if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
         return True
-    #@-node:ekr.20070712112008:startsHelper
-    #@-node:ekr.20070711132314:startsClass/Function (baseClass) & helpers
-    #@+node:ekr.20070711104014.1:startsComment
+    #@+node:ekr.20070711104014.1: *4* startsComment
     def startsComment (self,s,i):
 
         return (
@@ -2959,19 +2787,15 @@ class baseScannerClass (scanUtility):
             g.match(s,i,self.blockCommentDelim1) or
             g.match(s,i,self.blockCommentDelim1_2)
         )
-    #@-node:ekr.20070711104014.1:startsComment
-    #@+node:ekr.20070707094858.2:startsId
+    #@+node:ekr.20070707094858.2: *4* startsId
     def startsId(self,s,i):
 
         return g.is_c_id(s[i:i+1])
-    #@-node:ekr.20070707094858.2:startsId
-    #@+node:ekr.20070707172732.1:startsString
+    #@+node:ekr.20070707172732.1: *4* startsString
     def startsString(self,s,i):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
-    #@-node:ekr.20070707172732.1:startsString
-    #@-node:ekr.20070706084535.1:Parsing
-    #@+node:ekr.20070707072749:run (baseScannerClass)
+    #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
 
         c = self.c
@@ -3021,7 +2845,7 @@ class baseScannerClass (scanUtility):
         else:
             root.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
-    #@+node:ekr.20071110105107:checkBlanksAndTabs
+    #@+node:ekr.20071110105107: *4* checkBlanksAndTabs
     def checkBlanksAndTabs(self,s):
 
         '''Check for intermixed blank & tabs.'''
@@ -3040,8 +2864,7 @@ class baseScannerClass (scanUtility):
             self.report('intermixed blanks and tabs')
 
         return ok
-    #@-node:ekr.20071110105107:checkBlanksAndTabs
-    #@+node:ekr.20070808115837.1:regularizeWhitespace
+    #@+node:ekr.20070808115837.1: *4* regularizeWhitespace
     def regularizeWhitespace (self,s):
 
         '''Regularize leading whitespace in s:
@@ -3068,17 +2891,14 @@ class baseScannerClass (scanUtility):
             self.report(message)
 
         return ''.join(result)
-    #@-node:ekr.20070808115837.1:regularizeWhitespace
-    #@-node:ekr.20070707072749:run (baseScannerClass)
     #@-others
-#@-node:ekr.20070703122141.65:<< class baseScannerClass >>
-#@nl
-#@<< scanner classes >>
-#@+node:ekr.20031218072017.3241:<< scanner classes >>
+#@-<< class baseScannerClass >>
+#@+<< scanner classes >>
+#@+node:ekr.20031218072017.3241: ** << scanner classes >>
 # All these classes are subclasses of baseScannerClass.
 
 #@+others
-#@+node:edreamleo.20070710093042:class cScanner
+#@+node:edreamleo.20070710093042: *3* class cScanner
 class cScanner (baseScannerClass):
 
     def __init__ (self,importCommands,atAuto):
@@ -3101,8 +2921,7 @@ class cScanner (baseScannerClass):
         self.outerBlockEndsDecls = False # To handle extern statement.
         self.sigHeadExtraTokens = ['*']
         self.sigFailTokens = [';','=']
-#@-node:edreamleo.20070710093042:class cScanner
-#@+node:ekr.20071008130845.2:class cSharpScanner
+#@+node:ekr.20071008130845.2: *3* class cSharpScanner
 class cSharpScanner (baseScannerClass):
 
     def __init__ (self,importCommands,atAuto):
@@ -3124,12 +2943,11 @@ class cSharpScanner (baseScannerClass):
         self.outerBlockDelim2 = '}'
         self.sigHeadExtraTokens = []
         self.sigFailTokens = [';','='] # Just like C.
-#@-node:ekr.20071008130845.2:class cSharpScanner
-#@+node:ekr.20070711060113:class elispScanner
+#@+node:ekr.20070711060113: *3* class elispScanner
 class elispScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20070711060113.1: __init__
+    #@+others
+    #@+node:ekr.20070711060113.1: *4*  __init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3144,11 +2962,9 @@ class elispScanner (baseScannerClass):
         self.blockDelim2 = ')'
         self.extraIdChars = '-'
 
-    #@-node:ekr.20070711060113.1: __init__
-    #@+node:ekr.20070711060113.2:Overrides
+    #@+node:ekr.20070711060113.2: *4* Overrides
     # skipClass/Function/Signature are defined in the base class.
-    #@nonl
-    #@+node:ekr.20070711060113.3:startsClass/Function & skipSignature
+    #@+node:ekr.20070711060113.3: *5* startsClass/Function & skipSignature
     def startsClass (self,unused_s,unused_i):
         '''Return True if s[i:] starts a class definition.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -3180,21 +2996,17 @@ class elispScanner (baseScannerClass):
         self.sigEnd = sigEnd
         self.sigId = word
         return True
-    #@-node:ekr.20070711060113.3:startsClass/Function & skipSignature
-    #@+node:ekr.20070711063339:startsString
+    #@+node:ekr.20070711063339: *5* startsString
     def startsString(self,s,i):
 
         # Single quotes are not strings.
         return g.match(s,i,'"')
-    #@-node:ekr.20070711063339:startsString
-    #@-node:ekr.20070711060113.2:Overrides
     #@-others
-#@-node:ekr.20070711060113:class elispScanner
-#@+node:edreamleo.20070710085115:class javaScanner
+#@+node:edreamleo.20070710085115: *3* class javaScanner
 class javaScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20071019171430:javaScanner.__init__
+    #@+others
+    #@+node:ekr.20071019171430: *4* javaScanner.__init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3209,8 +3021,7 @@ class javaScanner (baseScannerClass):
         self.classTags = ['class','interface']
         self.functionTags = []
         self.sigFailTokens = [';','='] # Just like c.
-    #@-node:ekr.20071019171430:javaScanner.__init__
-    #@+node:ekr.20071019170943:javaScanner.getSigId
+    #@+node:ekr.20071019170943: *4* javaScanner.getSigId
     def getSigId (self,ids):
 
         '''Return the signature's id.
@@ -3227,16 +3038,14 @@ class javaScanner (baseScannerClass):
             ids.append(z)
 
         return ids and ids[-1]
-    #@-node:ekr.20071019170943:javaScanner.getSigId
     #@-others
-#@-node:edreamleo.20070710085115:class javaScanner
-#@+node:ekr.20071027111225.2:class javaScriptScanner
+#@+node:ekr.20071027111225.2: *3* class javaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
 class javaScriptScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20071027111225.3:javaScriptScanner.__init__
+    #@+others
+    #@+node:ekr.20071027111225.3: *4* javaScriptScanner.__init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3257,8 +3066,7 @@ class javaScriptScanner (baseScannerClass):
         self.classTags = []
         self.functionTags = ['function']
         self.sigFailTokens = [';',] # ','=',] # Just like Java.
-    #@-node:ekr.20071027111225.3:javaScriptScanner.__init__
-    #@+node:ekr.20071102150937:startsString
+    #@+node:ekr.20071102150937: *4* startsString
     def startsString(self,s,i):
 
         if g.match(s,i,'"') or g.match(s,i,"'"):
@@ -3279,8 +3087,7 @@ class javaScriptScanner (baseScannerClass):
             return s[i-1] in (',([{=')
         else:
             return False
-    #@-node:ekr.20071102150937:startsString
-    #@+node:ekr.20071102161115:skipString
+    #@+node:ekr.20071102161115: *4* skipString
     def skipString (self,s,i):
 
         # Returns len(s) on unterminated string.
@@ -3299,15 +3106,12 @@ class javaScriptScanner (baseScannerClass):
                 else:
                     i += 1
             return i
-    #@nonl
-    #@-node:ekr.20071102161115:skipString
     #@-others
-#@-node:ekr.20071027111225.2:class javaScriptScanner
-#@+node:ekr.20070711104241.3:class pascalScanner
+#@+node:ekr.20070711104241.3: *3* class pascalScanner
 class pascalScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20080211065754:skipArgs
+    #@+others
+    #@+node:ekr.20080211065754: *4* skipArgs
     def skipArgs (self,s,i,kind):
 
         '''Skip the argument or class list.  Return i, ok
@@ -3329,8 +3133,7 @@ class pascalScanner (baseScannerClass):
             return start,False
         else:
             return i,True 
-    #@-node:ekr.20080211065754:skipArgs
-    #@+node:ekr.20080211065906:ctor
+    #@+node:ekr.20080211065906: *4* ctor
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3350,8 +3153,7 @@ class pascalScanner (baseScannerClass):
         self.hasClasses = True
         self.lineCommentDelim = '//'
         self.strict = False
-    #@-node:ekr.20080211065906:ctor
-    #@+node:ekr.20080211070816:skipCodeBlock
+    #@+node:ekr.20080211070816: *4* skipCodeBlock
     def skipCodeBlock (self,s,i,kind):
 
         '''Skip the code block in a function or class definition.'''
@@ -3379,8 +3181,7 @@ class pascalScanner (baseScannerClass):
             g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
 
         return i,True
-    #@-node:ekr.20080211070816:skipCodeBlock
-    #@+node:ekr.20080211070945:skipInterface
+    #@+node:ekr.20080211070945: *4* skipInterface
     def skipInterface(self,s,i):
 
         '''Skip from the opening delim to *past* the matching closing delim.
@@ -3433,8 +3234,7 @@ class pascalScanner (baseScannerClass):
         else:
             if trace: g.trace('** no interface')
         return start
-    #@-node:ekr.20080211070945:skipInterface
-    #@+node:ekr.20080211070056:skipSigTail
+    #@+node:ekr.20080211070056: *4* skipSigTail
     def skipSigTail(self,s,i,kind):
 
         '''Skip from the end of the arg list to the start of the block.'''
@@ -3461,8 +3261,7 @@ class pascalScanner (baseScannerClass):
                 i += 1
         if trace: g.trace('no block delim')
         return i,False
-    #@-node:ekr.20080211070056:skipSigTail
-    #@+node:ekr.20080211071959:putClass & helpers
+    #@+node:ekr.20080211071959: *4* putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
         '''Create a node containing the entire interface.'''
@@ -3493,15 +3292,12 @@ class pascalScanner (baseScannerClass):
         # Exit the new class: restore the previous class info.
         self.methodName = oldMethodName
         self.startSigIndent = oldStartSigIndent
-    #@-node:ekr.20080211071959:putClass & helpers
     #@-others
-#@nonl
-#@-node:ekr.20070711104241.3:class pascalScanner
-#@+node:ekr.20100219075946.5742:class phpScanner
+#@+node:ekr.20100219075946.5742: *3* class phpScanner
 class phpScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20100219075946.5743: __init__
+    #@+others
+    #@+node:ekr.20100219075946.5743: *4*  __init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3524,8 +3320,7 @@ class phpScanner (baseScannerClass):
         self.chars = list(string.ascii_letters + string.digits)
         extra = [chr(z) for z in range(127,256)]
         self.chars.extend(extra)
-    #@-node:ekr.20100219075946.5743: __init__
-    #@+node:ekr.20100219075946.5744:isPurePHP
+    #@+node:ekr.20100219075946.5744: *4* isPurePHP
     def isPurePHP (self,s):
 
         '''Return True if the file begins with <?php and ends with ?>'''
@@ -3537,10 +3332,9 @@ class phpScanner (baseScannerClass):
             s[2:3] in ('P','p','=','\n','\r',' ','\t') and
             s.endswith('?>'))
 
-    #@-node:ekr.20100219075946.5744:isPurePHP
-    #@+node:ekr.20100219075946.5745:Overrides
+    #@+node:ekr.20100219075946.5745: *4* Overrides
     # Does not create @first/@last nodes
-    #@+node:ekr.20100219075946.5746:startsString skipString
+    #@+node:ekr.20100219075946.5746: *5* startsString skipString
     def startsString(self,s,i):
         return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
 
@@ -3549,8 +3343,7 @@ class phpScanner (baseScannerClass):
             return g.skip_string(s,i)
         else:
             return g.skip_heredoc_string(s,i)
-    #@-node:ekr.20100219075946.5746:startsString skipString
-    #@+node:ekr.20100219075946.5747:getSigId
+    #@+node:ekr.20100219075946.5747: *5* getSigId
     def getSigId (self,ids):
 
         '''Return the signature's id.
@@ -3560,15 +3353,12 @@ class phpScanner (baseScannerClass):
         For Php, the first id is better.'''
 
         return ids and ids[1]
-    #@-node:ekr.20100219075946.5747:getSigId
-    #@-node:ekr.20100219075946.5745:Overrides
     #@-others
-#@-node:ekr.20100219075946.5742:class phpScanner
-#@+node:ekr.20070703122141.100:class pythonScanner
+#@+node:ekr.20070703122141.100: *3* class pythonScanner
 class pythonScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20070703122141.101: __init__
+    #@+others
+    #@+node:ekr.20070703122141.101: *4*  __init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3583,8 +3373,7 @@ class pythonScanner (baseScannerClass):
             # The check is done in skipSigTail.
         self.strict = True
 
-    #@-node:ekr.20070703122141.101: __init__
-    #@+node:ekr.20071201073102.1:adjustDefStart (python)
+    #@+node:ekr.20071201073102.1: *4* adjustDefStart (python)
     def adjustDefStart (self,s,i):
 
         '''A hook to allow the Python importer to adjust the 
@@ -3611,8 +3400,7 @@ class pythonScanner (baseScannerClass):
                 assert i < progress
             else:
                 return i
-    #@-node:ekr.20071201073102.1:adjustDefStart (python)
-    #@+node:ekr.20070707113839:extendSignature
+    #@+node:ekr.20070707113839: *4* extendSignature
     def extendSignature(self,s,i):
 
         '''Extend the text to be added to the class node following the signature.
@@ -3631,14 +3419,12 @@ class pythonScanner (baseScannerClass):
                     return j + 1
 
         return i
-    #@-node:ekr.20070707113839:extendSignature
-    #@+node:ekr.20070707073627.4:skipString
+    #@+node:ekr.20070707073627.4: *4* skipString
     def skipString (self,s,i):
 
         # Returns len(s) on unterminated string.
         return g.skip_python_string(s,i,verbose=False)
-    #@-node:ekr.20070707073627.4:skipString
-    #@+node:ekr.20070712090019.1:skipCodeBlock (python) & helpers
+    #@+node:ekr.20070712090019.1: *4* skipCodeBlock (python) & helpers
     def skipCodeBlock (self,s,i,kind):
 
         trace = False ; verbose = True
@@ -3695,7 +3481,7 @@ class pythonScanner (baseScannerClass):
         if (trace or self.trace) and s[start:i].strip():
             g.trace('%s returns\n' % (kind) + s[start:i])
         return i,True
-    #@+node:ekr.20070801080447:pythonNewlineHelper
+    #@+node:ekr.20070801080447: *5* pythonNewlineHelper
     def pythonNewlineHelper (self,s,i,parenCount,startIndent,underIndentedStart):
 
         trace = False
@@ -3743,8 +3529,7 @@ class pythonScanner (baseScannerClass):
                 underIndentedStart = None
         if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
         return i,underIndentedStart,breakFlag
-    #@-node:ekr.20070801080447:pythonNewlineHelper
-    #@+node:ekr.20100223094350.5834:skipToTheNextClassOrFunction (New in 4.8)
+    #@+node:ekr.20100223094350.5834: *5* skipToTheNextClassOrFunction (New in 4.8)
     def skipToTheNextClassOrFunction(self,s,i,lastIndent):
 
         '''Skip to the next python def or class.
@@ -3832,9 +3617,7 @@ class pythonScanner (baseScannerClass):
                 return last_comment
         else:
             return i1
-    #@-node:ekr.20100223094350.5834:skipToTheNextClassOrFunction (New in 4.8)
-    #@-node:ekr.20070712090019.1:skipCodeBlock (python) & helpers
-    #@+node:ekr.20070803101619:skipSigTail
+    #@+node:ekr.20070803101619: *4* skipSigTail
     # This must be overridden in order to handle newlines properly.
 
     def skipSigTail(self,s,i,kind):
@@ -3853,14 +3636,12 @@ class pythonScanner (baseScannerClass):
                 break
 
         return i,g.match(s,i,':')
-    #@-node:ekr.20070803101619:skipSigTail
     #@-others
-#@-node:ekr.20070703122141.100:class pythonScanner
-#@+node:ekr.20090501095634.41:class rstScanner
+#@+node:ekr.20090501095634.41: *3* class rstScanner
 class rstScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20090501095634.42: __init__
+    #@+others
+    #@+node:ekr.20090501095634.42: *4*  __init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3888,8 +3669,7 @@ class rstScanner (baseScannerClass):
         self.underlines = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" # valid rst underlines.
         self.underlines1 = [] # Underlining characters for underlines.
         self.underlines2 = [] # Underlining characters for over/underlines.
-    #@-node:ekr.20090501095634.42: __init__
-    #@+node:ekr.20090512080015.5798:adjustParent
+    #@+node:ekr.20090512080015.5798: *4* adjustParent
     def adjustParent (self,parent,headline):
 
         '''Return the proper parent of the new node.'''
@@ -3930,8 +3710,7 @@ class rstScanner (baseScannerClass):
         #self.lastSectionLevel = self.sectionLevel
         self.lastParent = parent.copy()
         return parent.copy()
-    #@-node:ekr.20090512080015.5798:adjustParent
-    #@+node:ekr.20091229090857.11694:computeBody (rst)
+    #@+node:ekr.20091229090857.11694: *4* computeBody (rst)
     def computeBody (self,s,start,sigStart,codeEnd):
 
         trace = False and not g.unitTesting
@@ -3951,8 +3730,7 @@ class rstScanner (baseScannerClass):
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
         return body
-    #@-node:ekr.20091229090857.11694:computeBody (rst)
-    #@+node:ekr.20090512080015.5797:computeSectionLevel
+    #@+node:ekr.20090512080015.5797: *4* computeSectionLevel
     def computeSectionLevel (self,ch,kind):
 
         '''Return the section level of the underlining character ch.'''
@@ -3969,8 +3747,7 @@ class rstScanner (baseScannerClass):
                 level,kind,ch,self.underlines2,self.underlines1))
 
         return level
-    #@-node:ekr.20090512080015.5797:computeSectionLevel
-    #@+node:ekr.20090512153903.5810:createDeclsNode
+    #@+node:ekr.20090512153903.5810: *4* createDeclsNode
     def createDeclsNode (self,parent,s):
 
         '''Create a child node of parent containing s.'''
@@ -3979,8 +3756,7 @@ class rstScanner (baseScannerClass):
         headline = '@rst-no-head %s declarations' % self.methodName
         body = self.undentBody(s)
         self.createHeadline(parent,body,headline)
-    #@-node:ekr.20090512153903.5810:createDeclsNode
-    #@+node:ekr.20090502071837.2:endGen
+    #@+node:ekr.20090502071837.2: *4* endGen
     def endGen (self,s):
 
         '''Remember the underlining characters in the root's uA.'''
@@ -4007,8 +3783,7 @@ class rstScanner (baseScannerClass):
         lines = ['.. %s' % (z) for z in warningLines]
         warning = '\n%s\n' % '\n'.join(lines)
         self.root.b = self.root.b + warning
-    #@-node:ekr.20090502071837.2:endGen
-    #@+node:ekr.20090501095634.46:isUnderLine
+    #@+node:ekr.20090501095634.46: *4* isUnderLine
     def isUnderLine(self,s):
 
         '''Return True if s consists of only the same rST underline character.'''
@@ -4024,8 +3799,7 @@ class rstScanner (baseScannerClass):
                 return False
 
         return True
-    #@-node:ekr.20090501095634.46:isUnderLine
-    #@+node:ekr.20090501095634.50:startsComment/ID/String
+    #@+node:ekr.20090501095634.50: *4* startsComment/ID/String
     # These do not affect parsing.
 
     def startsComment (self,s,i):
@@ -4036,8 +3810,7 @@ class rstScanner (baseScannerClass):
 
     def startsString (self,s,i):
         return False
-    #@-node:ekr.20090501095634.50:startsComment/ID/String
-    #@+node:ekr.20090501095634.45:startsHelper
+    #@+node:ekr.20090501095634.45: *4* startsHelper
     def startsHelper(self,s,i,kind,tags):
 
         '''return True if s[i:] starts an rST section.
@@ -4077,8 +3850,7 @@ class rstScanner (baseScannerClass):
             else:
                 g.trace('level %s %s' % (self.sectionLevel,self.sigId))
         return True
-    #@-node:ekr.20090501095634.45:startsHelper
-    #@+node:ekr.20090501095634.47:startsSection & helper
+    #@+node:ekr.20090501095634.47: *4* startsSection & helper
     def startsSection (self,s,i):
 
         '''Scan a line and possible one or two other lines,
@@ -4143,7 +3915,7 @@ class rstScanner (baseScannerClass):
                 if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
                     repr(name),repr(line2))) # ,'\n',g.callers(4))
         return kind,name,i,ch
-    #@+node:ekr.20091229075924.6234:getLine
+    #@+node:ekr.20091229075924.6234: *5* getLine
     def getLine (self,s,i):
 
         i,j = g.getLine(s,i)
@@ -4152,15 +3924,12 @@ class rstScanner (baseScannerClass):
         line = line.strip()
 
         return i,j,nows,line
-    #@-node:ekr.20091229075924.6234:getLine
-    #@-node:ekr.20090501095634.47:startsSection & helper
     #@-others
-#@-node:ekr.20090501095634.41:class rstScanner
-#@+node:ekr.20071214072145.1:class xmlScanner
+#@+node:ekr.20071214072145.1: *3* class xmlScanner
 class xmlScanner (baseScannerClass):
 
-    #@    @+others
-    #@+node:ekr.20071214072451: __init__ (xmlScanner)
+    #@+others
+    #@+node:ekr.20071214072451: *4*  __init__ (xmlScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4190,9 +3959,7 @@ class xmlScanner (baseScannerClass):
         self.trace = False
 
         self.addTags()
-    #@nonl
-    #@-node:ekr.20071214072451: __init__ (xmlScanner)
-    #@+node:ekr.20071214131818:addTags
+    #@+node:ekr.20071214131818: *4* addTags
     def addTags (self):
 
         '''Add items to self.class/functionTags and from settings.'''
@@ -4208,13 +3975,9 @@ class xmlScanner (baseScannerClass):
             aList2 = c.config.getData(setting) or []
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
-    #@-node:ekr.20071214131818:addTags
-    #@+node:ekr.20091230062012.6238:skipId (override base class) & helper
-    #@+at  
-    #@nonl
-    # For characters valid in names see:
+    #@+node:ekr.20091230062012.6238: *4* skipId (override base class) & helper
+    #@+at  For characters valid in names see:
     #    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
-    #@-at
     #@@c
 
     def skipId (self,s,i):
@@ -4225,21 +3988,17 @@ class xmlScanner (baseScannerClass):
         while i < n and (self.isWordChar(s[i]) or s[i] in chars):
             i += 1
         return i
-    #@nonl
-    #@+node:ekr.20091230062012.6239:isWordChar
-    #@+at 
-    #@nonl
-    # From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+    #@+node:ekr.20091230062012.6239: *5* isWordChar
+    #@+at From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     # 
-    # NameStartChar	::= ":" | [A-Z] | "_" | [a-z] |
+    # NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
     #     [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
     #     [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
     #     [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
     #     [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
     # 
-    # NameChar	::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    # NameChar    ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
     #     [#x0300-#x036F] | [#x203F-#x2040]
-    #@-at
     #@@c
 
     def isWordChar(self,ch):
@@ -4247,9 +4006,7 @@ class xmlScanner (baseScannerClass):
         # At present, same as g.isWordChar.
         # This is not correct.
         return ch and (ch.isalnum() or ch == '_')
-    #@-node:ekr.20091230062012.6239:isWordChar
-    #@-node:ekr.20091230062012.6238:skipId (override base class) & helper
-    #@+node:ekr.20071214072924.4:startsHelper & helpers
+    #@+node:ekr.20071214072924.4: *4* startsHelper & helpers
     def startsHelper(self,s,i,kind,tags):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -4319,7 +4076,7 @@ class xmlScanner (baseScannerClass):
 
         if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
         return True
-    #@+node:ekr.20071214072924.3:skipToEndOfTag
+    #@+node:ekr.20071214072924.3: *5* skipToEndOfTag
     def skipToEndOfTag(self,s,i):
 
         '''Skip to the end of an open tag.'''
@@ -4339,8 +4096,7 @@ class xmlScanner (baseScannerClass):
             assert progress < i
 
         return i,False
-    #@-node:ekr.20071214072924.3:skipToEndOfTag
-    #@+node:ekr.20071214075117:skipToMatchingTag
+    #@+node:ekr.20071214075117: *5* skipToMatchingTag
     def skipToMatchingTag (self,s,i,tag):
 
         while i < len(s):
@@ -4359,13 +4115,7 @@ class xmlScanner (baseScannerClass):
             assert progress < i
 
         return i,False
-    #@-node:ekr.20071214075117:skipToMatchingTag
-    #@-node:ekr.20071214072924.4:startsHelper & helpers
     #@-others
-#@-node:ekr.20071214072145.1:class xmlScanner
 #@-others
-#@nonl
-#@-node:ekr.20031218072017.3241:<< scanner classes >>
-#@nl
-#@-node:ekr.20031218072017.3206:@thin leoImport.py
+#@-<< scanner classes >>
 #@-leo
