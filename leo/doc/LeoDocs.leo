@@ -9,9 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
+<v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
+<v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
@@ -34,7 +34,7 @@
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
-<v t="sps.20100708203040.19008" a="E"><vh>@button generate-full-userguide</vh>
+<v t="sps.20100708203040.19008"><vh>@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -246,21 +246,28 @@
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
 <v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.27"><vh>Cloning nodes</vh></v>
-<v t="EKR.20040524104904.36"><vh>Creating and destroying nodes</vh></v>
-<v t="ekr.20060920145745"><vh>Creating and destroying multiple body editors</vh></v>
-<v t="EKR.20040524104904.37"><vh>Cutting, pasting and deleting nodes</vh></v>
-<v t="EKR.20040524104904.38"><vh>Dragging nodes</vh></v>
-<v t="EKR.20040524104904.39"><vh>Editing body text</vh></v>
-<v t="EKR.20040524104904.40"><vh>Expanding &amp; contracting nodes</vh></v>
-<v t="EKR.20040524104904.41"><vh>Indenting body text automatically</vh></v>
-<v t="EKR.20040524104904.43"><vh>Marking nodes</vh></v>
-<v t="EKR.20040524104904.44"><vh>Moving &amp; Reorganizing nodes</vh></v>
+<v t="sps.20100710110337.12186"><vh>@rst-ignore-node DO NOT SORT THESE HEADLINES</vh></v>
+<v t="sps.20100710110337.12187"><vh>Outline Related</vh>
 <v t="ekr.20060929040750"><vh>Navigating through the outline</vh></v>
-<v t="EKR.20040524104904.45"><vh>Opening URL's automatically</vh></v>
-<v t="EKR.20040524104904.47"><vh>Resizing panes</vh></v>
+<v t="EKR.20040524104904.40"><vh>Expanding &amp; contracting nodes</vh></v>
+<v t="EKR.20040524104904.36"><vh>Creating and destroying nodes</vh></v>
+<v t="EKR.20040524104904.37"><vh>Cutting, pasting and deleting nodes</vh></v>
+<v t="EKR.20040524104904.44"><vh>Moving &amp; Reorganizing nodes</vh></v>
+<v t="EKR.20040524104904.27"><vh>Cloning nodes</vh></v>
+<v t="EKR.20040524104904.43"><vh>Marking nodes</vh></v>
+<v t="EKR.20040524104904.38"><vh>Dragging nodes</vh></v>
+</v>
+<v t="sps.20100710110337.12188"><vh>Body Related</vh>
+<v t="EKR.20040524104904.39"><vh>Editing body text</vh></v>
+<v t="EKR.20040524104904.41"><vh>Indenting body text automatically</vh></v>
+<v t="ekr.20060920145745"><vh>Creating and destroying multiple body editors</vh></v>
+</v>
+<v t="sps.20100710110337.12189"><vh>Miscellaneous</vh>
 <v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
+<v t="EKR.20040524104904.47"><vh>Resizing panes</vh></v>
+<v t="EKR.20040524104904.45"><vh>Opening URL's automatically</vh></v>
 <v t="ekr.20070623145346.2"><vh>Using chapters</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
@@ -4954,15 +4961,17 @@ create a new bead. The list of beads does not branch; all undoable operations
 (except the Undo and Redo commands themselves) delete any beads following the
 newly created bead. I did not invent this model of unlimited undo.
 I first came across it in the documentation for Apple's Yellow Box classes.</t>
-<t tx="EKR.20040524104904.27">A cloned node is a copy of a node that changes when the original changes. Not
+<t tx="EKR.20040524104904.27">A cloned node is a copy of a node that changes when the original changes. One may also think of it as a single node with multiple positions within the outline.  Not
 only are changes maintained across all the the clones of a node, changes to its
-offspring (children, grandchildren, etc). are simultaneously made to the
+offspring (children, grandchildren, etc.) are simultaneously made to the
 corresponding offspring of all of those clones. A small red arrow in the icon
 box marks cloned nodes. There is no real distinction between the "original" node
-and any of its clones. This makes it possible to update any of the clones and
-the original node will change as well. A cloned nodes becomes a regular node
+and any of its clones.  Any update of a clone affects all of its clones simultaneously.  A cloned nodes becomes a regular node
 again when its penultimate clone is deleted. Clones are useful for making
-alternate views of a program. See `Clones and views`_ for full details.</t>
+alternate views of a program. See `Clones and views`_ for full details.
+
+The command ``clone-node``, (Clone Node in the Outline menu, bound to Control-`) creates a clone as the immediate sibling of a selected node.
+</t>
 <t tx="EKR.20040524104904.274">@language rest</t>
 <t tx="EKR.20040524104904.282">To convert an @root tree to an @file tree, choose the root of the tree to be
 converted, then do the following in the Python window::
@@ -5309,24 +5318,21 @@ These elements must appear in this order.
     Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
     See `Chapter 13: Writing plugins`_ for details.
 </t>
-<t tx="EKR.20040524104904.36">The Insert Node command inserts a new node into the outline. The
-Delete Node command deletes a node and all its children.
+<t tx="EKR.20040524104904.36">The ``insert-node`` command inserts a new node into the outline; it is bound to Control-I and the Insert key. The
+``delete-node`` command deletes a node and all its children; it is initially unbound.
 </t>
-<t tx="EKR.20040524104904.37">The Cut Outline, Paste Outline, Copy Outline and Delete Outline commands work on
+<t tx="EKR.20040524104904.37">The ``cut-node``, ``paste-node``, ``copy-node`` and ``delete-node`` commands work on
 nodes rather than text. For example, to delete a node, select the node and
-choose the Cut Outline or Delete Outline command. The Cut Outline and Copy
-Outline commands copy a text representation of the outline to the clipboard.
+choose the Cut Outline or Delete Outline command in the menu, use Alt-X to invoke the command in the mini-buffer, or use Control-Shift-X (which cuts the node; delete node is not bound). The ``cut-node`` and ``copy-node`` commands copy a text representation of the outline to the clipboard.
 This representation is the same as Leo's .leo file format with some information
 deleted. You may copy this text representation into a body pane (or into any
-other text editor) using the Edit:Paste command.
+other text editor) using Edit-&gt;Paste in the menus, Ctrl-V, or Alt-X paste-text.
 
-**Warning**: In practice, it is almost always wiser to move clones rather than
-cutting or pasting them. Cutting and pasting outlines preserves clones, but the
-links between clones only exist within the part of the outline that was pasted.
-Therefore, if you are cutting and pasting an outline containing clones it is
-best to cut and paste the *entire* outline. Alternatively, you can paste part of
-an outline, then delete all clones.</t>
-<t tx="EKR.20040524104904.38">You may drag an node (including all its descendants) from one place to another
+**Warning**: If you want to preserve the "cloned" attribute of a node, or want to paste the node as a clone of the node you cut or copied, use the ``past-retaining-clones`` command, which in the Outline menu is called "Paste Node as Clone".  The ``paste-node`` command instead creates a new, distinct version of the node you previously cut or copied, though if there were descendant nodes which were clones of each other, the new version will have parallel, distinct nodes that are also clones of each other (just not of the originals).  You may paste a node between .leo files, but there can be no clone relationship across files.
+
+There are places to which you are prevented from ``paste-retaining-clones``, because it would cause a node to become a parent of itself, and thus cause outline traversals like ``@thin`` expansion to loop until they consumed all memory and crashed the program.  The Leo outline is thus mathematically a *directed acyclic graph*: clones make it more flexible than a tree, but not a generalized graph.
+</t>
+<t tx="EKR.20040524104904.38">In the Tk GUI only, you may drag a node (including all its descendants) from one place to another
 in an outline. To start a drag, press the main (left) mouse button while the
 cursor is over the icon for a node. The cursor will change to a hand icon. If
 you release the mouse button while the hand cursor is above the icon for another
@@ -5335,12 +5341,7 @@ button when the hand cursor is not over an icon, Leo will leave the outline pane
 as it is. Leo scrolls the outline pane as the result of mouse-moved events, so
 to continue scrolling you must keep moving the mouse.</t>
 <t tx="EKR.20040524104904.380">@language rest</t>
-<t tx="EKR.20040524104904.39">Leo auto indents unless @nocolor is in effect. Typing a newline
-automatically inserts the same leading whitespace present on the previous line.
-If Python is the present language, Leo inserts an additional tab if the previous
-line ends with a colon.
-
-The default features of Leo's body text derive from the Tk.Text widget,
+<t tx="EKR.20040524104904.39">The default features of Leo's body text derive from the Tk.Text widget,
 described at: http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm Not all these features
 are found on all platforms.
 The following features are derived from the Tk Text widget. Some default
@@ -5358,10 +5359,12 @@ behaviors have been changed because they conflict with other Leo features.
     the Shift key is down; this will adjust the end of the selection that was
     nearest to the mouse cursor when button 1 was pressed. 
 
--   Clicking mouse button 1 with the Control key down will reposition the insertion
+-   Tk GUI only: clicking mouse button 1 with the Control key down will reposition the insertion
     cursor without affecting the selection. 
 
--   Normal printing characters are inserted at the point of the insertion cursor. 
+-   If there is no selection, normal printing characters are inserted at the point of the insertion cursor. 
+
+-   If there is a selection, normal printing characters replace the selection.
 
 -   If the mouse is dragged out of the body pane while button 1 is pressed, the
     entry will automatically scroll to make more text visible.
@@ -5369,7 +5372,7 @@ behaviors have been changed because they conflict with other Leo features.
 -   Left Arrow and Right Arrow move the cursor one character to the left or right
     and clear any selection in the text.
 
--   Shift Left or Shift Right move the cursor and extend the selection.
+-   Shift Left or Shift Right move the cursor and modify the selection.
 
 -   Control-Left and Control-Right move the insertion cursor by words,
     and Control-Shift-Left and Control-Shift-Right move the insertion
@@ -5383,10 +5386,8 @@ behaviors have been changed because they conflict with other Leo features.
 -   Control-Up and Control-Down move the insertion cursor by paragraphs.
 
 -   Control-Shift-Up and Control-Shift-Down move the insertion cursor by
-    paragraphs and extend the selection. Control-p and Control-n behave
-    the same as Up and Down, respectively. **Note**: by default, Leo
-    binds Control-p and control-n to commands.
-
+    paragraphs and extend the selection.
+    
 -   Next (Page Down) and Prior (Page Up) keys move the
     insertion cursor one screen and clear any text selection.
 
@@ -5401,7 +5402,7 @@ behaviors have been changed because they conflict with other Leo features.
 
 -   Shift-Home moves the insertion cursor to the beginning of the line and extends the selection. 
 
--   End moves the insertion cursor to the end of the line and clear any selection in
+-   End moves the insertion cursor to the end of the line and clears any selection in
     the widget.
 
 -   Shift-End moves the cursor to the end of the line and extends the selection. 
@@ -5423,10 +5424,6 @@ behaviors have been changed because they conflict with other Leo features.
     insertion cursor, selecting from the anchor to the insertion cursor if there was
     no previous selection. 
 
--   Control-/ selects the entire contents of the widget. 
-
--   Control-\ clears any selection in the widget. 
-
 -   F16  (Copy on many Sun workstations) or Control-c copies the
     selection in the widget to the clipboard, if there is a selection.
 
@@ -5440,64 +5437,64 @@ behaviors have been changed because they conflict with other Leo features.
 -   Delete deletes the text selection, or the character to the right of the cursor
     if there is no text selection.
 
--   Backspace deletes the selection, or character to the left of the cursor
+-   Backspace deletes the selection, or the character to the left of the cursor
     if there is no text selection.</t>
-<t tx="EKR.20040524104904.40">You can expand or contract a node by clicking in the standard Windows Tree
-View icon to the left of the status icon. Expanding a node shows its immediate
-children; contracting a node hides all its children. The Expand All Subheads
-command expands all of a nodes offspring (children, grandchildren, etc.)</t>
-<t tx="EKR.20040524104904.41">Leo auto indents body text following colons when @language Python is in
-effect. When the smart_auto_indent setting is True, Leo uses Emacs-style
-auto-indentation instead. This style of auto-indent aligns newly created lines
-with unmatched ( [ or { brackets in the previous line.</t>
+<t tx="EKR.20040524104904.40">You can expand or contract a node by clicking in the tree
+view icon to the left of the headline.  The icon in the Qt gui is a triangle pointing right or down, in the Tk gui a square containing a plus or minus.  Expanding a node shows its immediate
+children; contracting a node hides all its children.  The corresponding commands are ``expand-node`` and ``contract-node``.  For more convenient navigation, there are ``expand-and-go-right`` and ``contract-or-go-up`` which are bound to Alt-Right and Alt-Left.
+
+The ``expand-all-subheads`` command expands all of a nodes offspring (children, grandchildren, etc.).  ``expand-all`` expands every node in the outline.  ``contract-all`` contracts every node in the outline.  Both commands are availble in the Outline-&gt;Expand/Contract... submenu.  ``contract-all`` is bound to Atl-- (Alt modifying a single hyphen).  In all but the smallest outlines, ``expand-all`` is rarely used, and is does not have a key binding.
+
+
+
+</t>
+<t tx="EKR.20040524104904.41">Leo auto indents unless @nocolor is in effect.  Typing a newline
+automatically inserts the same leading whitespace present on the previous line.
+
+If Python is the present language, Leo inserts an additional tab if the previous
+line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style
+auto-indentation instead.  This style of auto-indent aligns newly created lines
+with unmatched ( [ or { brackets in the previous line.
+</t>
 <t tx="EKR.20040524104904.43">You can mark nodes in several ways:
 
-- With the Mark commands.
+- With the Mark commands: ``mark``, ``mark-changed-items``, ``mark-changed-roots``, ``mark-subheads``.  These are found in the Outline-&gt;Mark... submenu; ``mark`` is bound to Control-M .
 
-- With the Find or Change commands.
+- With the Find or Change commands.  The "mark changes" and "mark finds" options are intially cleared; you can change them with the ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option`` commands.  Using those commands will put focus in the Find tab of the log pane.  When the Find tab is visible, Alt in combination with the underlined option character will put focus on that option, and then the space bar will toggle the option.  You can also change the options by clicking on them in the Find tab.
 
-- With the Untangle command.
+- With the ``untangle``, ``untangle-all`` and ``untangle-marked`` commands: nodes altered because of changes to external files get marked.  These commands are available in the File-&gt;Untangle... submenu.
 
-The Go To Next Marked command selects the next marked node, if any.
-The Mark command unmarks the selected headline if it is already marked.</t>
-<t tx="EKR.20040524104904.44">The Move Up, Move Down, Move Left and Move Right commands move the currently
-selected node. The Promote command makes all the children of a node
-siblings of the node. The Demote command makes all following siblings of a
-node children of the node.
+The ``goto-next-marked`` command selects the next marked node, if any; it is available in the Outline-&gt;Go to... submenu.
 
-You can cut and paste any part of a tree. If a node contains selected text,
-the cut, copy, clear or paste operation affects only the selected text.
-Otherwise, the cut, copy, clear or paste operations acts on the node and all
-nodes contained by it. For example, you can move a node by cutting it,
-selecting another location in the outline and pasting the node in the new
-location.
+The ``mark`` command unmarks the selected headline if it is already marked.</t>
+<t tx="EKR.20040524104904.44">The ``move-outline-up``, ``move-outline-down``, ``move-outline-left``, and  ``move-outline-right`` commands move the currently
+selected node. In the Outline-&gt;Move... menu, they're called Move Up, Move Down, Move Left and Move Right; they're bound to Control-U, Control-D, Control-L and Control R.  The ``promote`` command makes all the children of a node
+siblings of the node. The ``demote`` command makes all following siblings of a
+node children of the node.  These are also found in the Outline-&gt;Move... menu, and are bound to Control-Shift-[ and Control-Shift-] .
 
-**Warning**: In practice, it is almost always wiser to move clones rather than
-cutting or pasting them. Cutting and pasting outlines preserves clones, but the
-links between clones only exist within the part of the outline that was pasted.
-Therefore, if you are cutting and pasting an outline containing clones it is
-best to cut and paste the _entire_ outline. Alternatively, you can paste part of
-an outline, then delete all clones. 
+Nodes moved in the above manner retain any clone characteristics.  Moves are limited to retain the directed acyclic graph property.
 </t>
 <t tx="EKR.20040524104904.45">Double-clicking the icon box of a node whose headline has the form::
 
     @url &lt;any url&gt;
 
-executes the url in your default web browser.
+executes the URL in your default web browser.
 
-Leo checks that the url is valid before doing so. A valid url is:
+Leo checks that the URL is valid before doing so. A valid URL is:
 
 -   3 or more lowercase alphas
 -   followed by one :
 -   followed by one or more of:
--   $%&amp;'()*+,-./0-9:=?@A-Z_a-z{}~
--   followed by one of: $%&amp;'()*+/0-9:=?@A-Z_a-z}~
+-   ``$%&amp;'()*+,-./0-9:=?@A-Z_a-z{}~``
+-   followed by one of: ``$%&amp;'()*+/0-9:=?@A-Z_a-z}~`` (i.e., comma, hyphen and open curly brace may not be the last character)
 
-Url's should contain no spaces: use %20 to indicate spaces. You may use any
-type of url that your browser supports: http, mailto, ftp, file, etc.</t>
+URL's should contain no spaces: use %20 to indicate spaces. You may use any
+type of URL that your browser supports: http, mailto, ftp, file, etc.
+</t>
 <t tx="EKR.20040524104904.47">You can change the relative sizes of the outline and body panes by dragging the
-splitter bar. The Equal Sized Panes command resizes the panes so that each
-fills half of the main window.</t>
+splitter bar. The ``equal-sized-panes`` (Window-&gt;Equal Sized Panes) command resizes the panes so that each
+fills half of the main window.
+</t>
 <t tx="EKR.20040524104904.48">Leo supports unlimited undo for all typing and all commands. The
 'undo_granularity' setting controls the granularity of undo. There are four
 possible values:
@@ -5515,13 +5512,13 @@ char (not recommended)
     Starts a new undo unit for each character typed.
     This wastes lots of computer memory.
 
-setUndoTypingParams calls recognizeStartOfTypingWord to recognize the
-start of words. Plugins can modify recognizeStartOfTypingWord. It should
+Internally, setUndoTypingParams() calls recognizeStartOfTypingWord() to recognize the
+start of words. Plugins can modify recognizeStartOfTypingWord(). It should
 return True if the typing indicated by the params starts a new 'word' for the
-purposes of undo with 'word' granularity. setUndoTypingParams calls this
+purposes of undo with 'word' granularity. setUndoTypingParams() calls this
 method only when the typing could possibly continue a previous word. In other
 words, undo will work safely regardless of the value returned. See the actual
-code for recognizeStartOfTypingWord for more details.</t>
+code for recognizeStartOfTypingWord() for more details.</t>
 <t tx="EKR.20040524104904.92">An @asis tree is a tree whose root headline starts with @asis &lt;filename&gt;.  Similarly, for @noref and @nosent trees.
 
 New in 4.2:  The following terms are equivalent.  The first form is preferred in each case.
@@ -13564,7 +13561,7 @@ not possibly be what it is today without Python.</t>
 Chapter 3: Using Outlines
 ##########################################
 
-This chapter tells how to use Leo's outlines.
+This chapter tells how to use Leo's outlines.  Most of the commands can be invoked by clicking with the pointer in the outline pane or by using the pointer to select the command from the ``Outline`` menu.  The key bindings mentioned here are those of the default EKR bindings.
 
 .. .. contents::</t>
 <t tx="ekr.20050901101608.1">.. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
@@ -20806,10 +20803,13 @@ The default values are shown.
 - @bool opml_write_uAs = True
 
   If True, Leo writes unknown attributes (uA's) in &lt;:uA&gt; sub-elements of &lt;outline&gt; elements.</t>
-<t tx="ekr.20060920145745">Three commands in the Cmds:Body Editors menu allow to create and destroy separate editors in the body pane.
-The Add Body Editor (add-editor) command adds a new editor in the body pane.
-The Delete Body Editor (delete-editor) command deletes the presently selected editor,
-The Change Body Editor (cycle-editor-focus) command cycles focus between editors in the body text.</t>
+<t tx="ekr.20060920145745">Three commands in the Cmds-&gt;Body Editors menu allow one to create and destroy separate editors in the body pane.
+- The ``add-editor`` (Cmds-&gt;Body Editors-&gt;Add Body Editor) command adds a new editor in the body pane and gives it the body editor focus.
+- The ``delete-editor`` (Cmds-&gt;Body Editors-&gt;Delete Body Editor) command deletes the editor with body editor focus.
+- The ``cycle-editor-focus`` (Cmds-&gt;Body Editors-&gt;Change Body Editor) command cycles body editor focus between editors in the body text.
+
+There is a single body editor focus which determines which body editor shows the content of the selected outline node and which allows that node to be edited; other body editors continue to show the node contents they last had when they had the body editor focus.
+</t>
 <t tx="ekr.20060921064744.1">This section describe the format of external files.
 Leo's `sentinel lines`_ are comments, and this section describes those comments.
 
@@ -21339,7 +21339,9 @@ All these commands ignore @ignore trees.</t>
 <t tx="ekr.20060929040750">Leo has many commands that select nodes in the outline. These commands can be
 found in the Outline:Go To menu.
 
-When focus is in the outline Pane, you can move to from
+As described in the tutorial, you can move about the outline by clicking on the headlines or using Alt+arrow keys.
+
+When focus is in the outline Pane, you can move from
 node to node by typing the first letter of a headline. For example, typing 'a'
 will go to the next visible headline that starts with either 'a' or 'A',
 wrapping around to the start of the outline if needed. Typing an uppercase 'A'
@@ -21348,7 +21350,7 @@ visible (expanding its ancestors) if the node was not visible.
 
 When keystrokes (in the outline pane) are typed 'close' together in time Leo
 first looks for prefix + ch, where ch is the character just typed and prefix is
-the previous match. The term 'close together' is defined by the setting: 
+the previous match. The term 'close together' is defined in seconds by the setting: 
 
 @float outline_nav_extend_delay = 2.0 
 
@@ -23528,29 +23530,29 @@ You can also type multiple `&lt;alt-ctrl-keys&gt;` to toggle multiple checkboxes
 <t tx="ekr.20070623145346"></t>
 <t tx="ekr.20070623145346.1">Leo's setup.py script is intended only to create source distributions. It can't
 be used to install Leo because Leo is not a Python package.</t>
-<t tx="ekr.20070623145346.2">Chapters are regions of a Leo outline whose root is an @chapter node. @chapter
-nodes may appear anywhere in an outline, but the create-chapter command (see
-below) creates @chapter nodes as children of the first @chapters node in the outline.
+<t tx="ekr.20070623145346.2">Chapters are regions of a Leo outline whose root is an ``@chapter`` node. They are available in an outline if the ``@bool usechapters`` option is True.  ``@chapter``
+nodes may appear anywhere in an outline, but the ``create-chapter`` command (see
+below) creates ``@chapter`` nodes as children of the first ``@chapters`` (note the ``s``) node in the outline.
 
-Selecting a chapter shows only then nodes in the selected chapter; in this
-respect, chapters are like hoists. The main chapter represents the entire
+One selects a chapter with the ``select-chapter`` command, after which Leo shows only the nodes in the selected chapter; in this
+respect, chapters are like hoists. The ``main`` chapter represents the entire
 outline and can not be deleted by name. When chapters are in effect, Leo
-creates a hidden @chapters node containing one @chapter node for every chapter
-except the 'main' chapter.
+creates an ``@chapters`` node for the use of ``create-chapter``.
 
 Associated settings:
 
-- The @bool use_chapters setting determines whether chapters are enabled.
-- The @bool use_chapter_tabs setting determines whether the chapters
-  pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
+- The ``@bool use_chapters`` setting determines whether chapters are enabled.
+- The ``@bool use_chapter_tabs`` setting determines whether the chapters
+  pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.  Currently, this works in Qt, but a bug in Tk prevents it from functioning correctly in that GUI.
 
-When chapters are enabled, the Cmds:Chapters menu shows all available chapter commands:
+When chapters are enabled, the Cmds-&gt;Chapters menu shows all available chapter commands:
 
-- The create-chapter command creates an @chapter node and with a single node.
-- The delete-chapter command deletes the presently selected chapter.
-- The select-chapter command makes only the nodes of the selected chapter visible.
-- The move-node-to-chapter, clone-node-to-chapter and copy-node-to-chapter commands
-  add a node (and its descendants) to another chapter.</t>
+- The ``chapter-create`` command creates an @chapter node and populates it with a single node.
+- The ``chapter-remove`` command deletes the currently selected chapter.
+- The ``chapter-select`` command promptes for a chapter name and makes only the nodes of the selected chapter visible.
+- The ``chapter-move-node-to``, ``chapter-clone-node-to`` and ``chapter-copy-node-to`` commands
+  prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
+</t>
 <t tx="ekr.20070626082732">Leo 4.4.3 final                                  June 26, 2006
 
 Leo 4.4.3 final is available at:
@@ -34603,6 +34605,11 @@ os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
 <t tx="sps.20100708213227.44914"></t>
+<t tx="sps.20100710110337.12186">I've ordered these sections in approximate ascending complexity of concepts and descending importance.
+</t>
+<t tx="sps.20100710110337.12187"></t>
+<t tx="sps.20100710110337.12188"></t>
+<t tx="sps.20100710110337.12189"></t>
 <t tx="tbrown.20091203211538.14165">Makes \@path nodes "active".
 
 With this plugin running, double clicking on \@path nodes
