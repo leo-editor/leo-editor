@@ -6877,7 +6877,7 @@ self.atEdit = atEdit
 self.atShadow = atShadow
 self.shortFileName = "" # short version of file name used for messages.
 self.thinFile = False
-self.writeVersion5 = new_write and not atShadow
+self.writeVersion5 = self.new_write and not atShadow
 
 self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
     'force_newlines_in_at_nosent_bodies')
