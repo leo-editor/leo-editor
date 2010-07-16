@@ -11,8 +11,8 @@ import string
 
 #@+<< about Tangle and Untangle >>
 #@+node:ekr.20031218072017.2411: ** << About Tangle and Untangle >>
-#@+at
 #@@root directive. The stack never becomes empty because of the entry
+#@+at
 # The Tangle command translates the selected @root tree into one or more
 # well-formatted source files. The outline should contain directives,
 # sections references and section definitions, as described in Chapter
@@ -1003,7 +1003,7 @@ class baseTangleCommands:
         # g.trace("****start****\n"+self.st_dump())
         c = self.c
         s = p.b
-        code_seen = False ; code = doc = None ; i = 0
+        code = doc = None ; i = 0
         anyChanged = False
 
         if self.start_mode == "code":
@@ -1025,7 +1025,6 @@ class baseTangleCommands:
                             head = s[:j] ; tail = s[i:]
                             s,i,changed = self.update_def(self.header,part,head,code,tail)
                             if changed: anyChanged = True
-                    code_seen = True
                     code = doc = None
 
                 # leading code without a header name gets silently dropped
@@ -1068,25 +1067,38 @@ class baseTangleCommands:
                 # Skip the section definition line.
                 k = i ; i, kind, junk = self.skip_section_name(s,i)
                 section_name = s[k:i]
-                # g.trace(section_name)
                 assert(kind == section_def)
                 i = g.skip_to_end_of_line(s,i)
 
                 # Tangle code: enter the section name even if the code part is empty.
+                #@+<<process normal section>>
+                #@+node:sps.20100716120121.12132: *7* <<process normal section>>
+                # Tangle code.
                 j = g.skip_blank_lines(s,i)
                 i, code, new_delims, reflist = self.skip_code(s,j,delims)
-                # g.trace('=======\n%s======' % code)
+                if False: #debug
+                    g.trace('=======\n%s======' % code)
                 part = self.st_enter_section_name(section_name,code,doc,delims,new_delims)
                 delims = new_delims
 
-                if not self.tangling: # Untangle code.
-                    if self.untangle_stage1:
-                        section = self.st_lookup(section_name)
-                        section.parts[part-1].reflist(refs=reflist)
-                    else:
-                        head = s[:j] ; tail = s[i:]
-                        s,i,changed = self.update_def(section_name,part,head,code,tail)
-                        if changed: anyChanged = True
+                # Untangle code
+                if not self.tangling:
+                    # part may be zero if there was an empty code section (doc part only)
+                    # In untangle stage1 such code produces no reference list,
+                    #    thus nothing to do.
+                    # In untangle stage2, such code cannot be updated because it
+                    # was either not emitted to the external file or emitted as a doc part only
+                    #     in either case, there is no code section to update, and we don't
+                    #     update doc parts.
+                    if part > 0:
+                        if self.untangle_stage1:
+                            section = self.st_lookup(section_name)
+                            section.parts[part-1].reflist(refs=reflist)
+                        else:
+                            head = s[:j] ; tail = s[i:]
+                            s,i,changed = self.update_def(section_name,part,head,code,tail)
+                            if changed: anyChanged = True
+                #@-<<process normal section>>
 
                 code = None
                 doc = ''
@@ -1098,25 +1110,38 @@ class baseTangleCommands:
                 #@+node:sps.20100618004337.20955: *6* << Scan and define an @code defininition >>
                 # All @c or @code directives denote < < headline_name > > =
                 if self.header_name:
-
+                    section_name = self.header_name
+                    #@+<<process normal section>>
+                    #@+node:sps.20100716120121.12132: *7* <<process normal section>>
                     # Tangle code.
                     j = g.skip_blank_lines(s,i)
                     i, code, new_delims, reflist = self.skip_code(s,j,delims)
-                    part = self.st_enter_section_name(self.header_name,code,doc,delims,new_delims)
+                    if False: #debug
+                        g.trace('=======\n%s======' % code)
+                    part = self.st_enter_section_name(section_name,code,doc,delims,new_delims)
                     delims = new_delims
-                    # Untangle code.
+
+                    # Untangle code
                     if not self.tangling:
-                        if self.untangle_stage1:
-                            section = self.st_lookup(self.header_name)
-                            section.parts[part-1].reflist(refs=reflist)
-                        else:
-                            head = s[:j] ; tail = s[i:]
-                            s,i,changed = self.update_def(self.header,part,head,code,tail)
-                            if changed: anyChanged = True
+                        # part may be zero if there was an empty code section (doc part only)
+                        # In untangle stage1 such code produces no reference list,
+                        #    thus nothing to do.
+                        # In untangle stage2, such code cannot be updated because it
+                        # was either not emitted to the external file or emitted as a doc part only
+                        #     in either case, there is no code section to update, and we don't
+                        #     update doc parts.
+                        if part > 0:
+                            if self.untangle_stage1:
+                                section = self.st_lookup(section_name)
+                                section.parts[part-1].reflist(refs=reflist)
+                            else:
+                                head = s[:j] ; tail = s[i:]
+                                s,i,changed = self.update_def(section_name,part,head,code,tail)
+                                if changed: anyChanged = True
+                    #@-<<process normal section>>
                 else:
                     self.error("@c expects the headline: " + self.header + " to contain a section name")
 
-                code_seen = True
                 code = None
                 doc = ''
                 #@-<< Scan and define an @code defininition >>
@@ -2410,7 +2435,7 @@ class baseTangleCommands:
                         result = self.compare_comments(s1[first1:p1],s2[first2:p2])
                     else: result = False
                     if not result:
-                        self.mismatch("Mismatched alternalte block comments")
+                        self.mismatch("Mismatched alternate block comments")
                 else:
                     #@+<< Compare single characters >>
                     #@+node:ekr.20031218072017.3553: *6* << Compare single characters >>
@@ -2652,7 +2677,7 @@ class baseTangleCommands:
                         elif g.is_nl(s,i):
                             k = g.skip_nl(s,i)
                             k = g.skip_ws(s,k)
-                            if g.is_sentinel_line(s,k):
+                            if self.is_sentinel_line(s,k):
                                 break
                             else:
                                 i = g.choose(k+1 <= len(s), k+1, len(s))
