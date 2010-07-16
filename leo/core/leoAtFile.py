@@ -145,6 +145,8 @@ class atFile:
             'check-python-code-on-write',default=True)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
+        self.new_write = new_write and c.config.getBool(
+            'simplified-sentinels-4-8',default=True)
 
         #@+<< define the dispatch dictionary used by scanText4 >>
         #@+node:ekr.20041005105605.9: *4* << define the dispatch dictionary used by scanText4 >>
@@ -337,7 +339,7 @@ class atFile:
         self.atShadow = atShadow
         self.shortFileName = "" # short version of file name used for messages.
         self.thinFile = False
-        self.writeVersion5 = new_write and not atShadow
+        self.writeVersion5 = self.new_write and not atShadow
 
         self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
             'force_newlines_in_at_nosent_bodies')

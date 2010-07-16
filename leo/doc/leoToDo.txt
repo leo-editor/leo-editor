@@ -1953,7 +1953,7 @@ def createActualFile (self,fileName,toOPML,toZip):
             theActualFile = None
 
     return fileName,theActualFile
-#@+node:ekr.20031218072017.3047: *7* createBackupFile (fileCommands)
+#@+node:ekr.20031218072017.3047: *7* << create backup file >>
 def createBackupFile (self,fileName):
 
     '''
@@ -6877,7 +6877,7 @@ self.atEdit = atEdit
 self.atShadow = atShadow
 self.shortFileName = "" # short version of file name used for messages.
 self.thinFile = False
-self.writeVersion5 = new_write and not atShadow
+self.writeVersion5 = self.new_write and not atShadow
 
 self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
     'force_newlines_in_at_nosent_bodies')
@@ -8318,6 +8318,339 @@ So that's clean.  This will happen in Leo 4.5.
 #@+node:ekr.20061002093442: *5* Add opml support to new,open, save commands
 #@+node:ekr.20071003104917: *5* Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@+node:ekr.20031218072017.1417: *6* << define global constants >>
+# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+self.prolog_postfix_string = "?>"
+self.prolog_namespace_string = \
+    'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+#@+node:ekr.20040324080819.1: *6* putLeoFile & helpers
+def putLeoFile (self):
+
+    self.updateFixedStatus()
+    self.putProlog()
+    self.putHeader()
+    self.putGlobals()
+    self.putPrefs()
+    self.putFindSettings()
+    #start = g.getTime()
+    self.putVnodes()
+    #start = g.printDiffTime("vnodes ",start)
+    self.putTnodes()
+    #start = g.printDiffTime("tnodes ",start)
+    self.putPostlog()
+#@+node:ekr.20031218072017.3035: *7* putFindSettings
+def putFindSettings (self):
+
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("<find_panel_settings/>")
+    self.put_nl()
+#@+node:ekr.20031218072017.3037: *7* putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    c = self.c
+    self.put("<globals")
+    << put the body/outline ratio >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20031218072017.3038: *8* << put the body/outline ratio >>
+# Puts an innumerate number of digits
+
+self.put(" body_outline_ratio=")
+
+# New in Leo 4.5: support fixed .leo files.
+self.put_in_dquotes(
+    str(g.choose(c.fixed,0.5,c.frame.ratio)))
+#@+node:ekr.20031218072017.3039: *8* << put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@+node:ekr.20031218072017.3040: *8* << put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@+node:ekr.20031218072017.3041: *7* putHeader
+def putHeader (self):
+
+    tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
+
+    if 1: # For compatibility with versions before Leo 4.5.
+        self.put("<leo_header")
+        self.put(" file_format=") ; self.put_in_dquotes("2")
+        self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
+        self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
+        self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
+        self.put("/>") ; self.put_nl()
+
+    else:
+        self.put('<leo_header file_format="2"/>\n')
+#@+node:ekr.20031218072017.3042: *7* putPostlog
+def putPostlog (self):
+
+    self.put("</leo_file>") ; self.put_nl()
+#@+node:ekr.20031218072017.2066: *7* putPrefs
+def putPrefs (self):
+
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("<preferences/>")
+    self.put_nl()
+#@+node:ekr.20031218072017.1246: *7* putProlog
+def putProlog (self):
+
+    c = self.c
+
+    self.putXMLLine()
+
+    if c.config.stylesheet or c.frame.stylesheet:
+        self.putStyleSheetLine()
+
+    self.put("<leo_file>") ; self.put_nl()
+#@+node:ekr.20031218072017.1248: *7* putStyleSheetLine
+def putStyleSheetLine (self):
+
+    c = self.c
+
+    # The stylesheet in the .leo file takes precedence over the default stylesheet.
+    self.put("<?xml-stylesheet ")
+    self.put(c.frame.stylesheet or c.config.stylesheet)
+    self.put("?>")
+    self.put_nl()
+#@+node:ekr.20031218072017.1577: *7* putTnode
+def putTnode (self,t):
+
+    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+    if not t.fileIndex:
+        g.trace('can not happen: no index for tnode',t)
+        t.fileIndex = g.app.nodeIndices.getNewIndex()
+
+    # New in Leo 4.4.2 b2: call put just once.
+    gnx = g.app.nodeIndices.toString(t.fileIndex)
+    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
+    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
+    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
+#@+node:ekr.20031218072017.1575: *7* putTnodes
+def putTnodes (self):
+
+    """Puts all tnodes as required for copy or save commands"""
+
+    c = self.c
+
+    self.put("<tnodes>\n")
+    << write only those tnodes that were referenced >>
+    self.put("</tnodes>\n")
+#@+node:ekr.20031218072017.1576: *8* << write only those tnodes that were referenced >>
+if self.usingClipboard: # write the current tree.
+    theIter = c.currentPosition().self_and_subtree_iter()
+else: # write everything
+    theIter = c.all_positions_with_unique_tnodes_iter()
+
+# Populate tnodes
+tnodes = {}
+nodeIndices = g.app.nodeIndices
+for p in theIter:
+    # New in Leo 4.4.8: assign file indices here.
+    if not p.v.t.fileIndex:
+        p.v.t.fileIndex = nodeIndices.getNewIndex()
+    tnodes[p.v.t.fileIndex] = p.v.t
+
+# Put all tnodes in index order.
+for index in sorted(tnodes):
+    # g.trace(index)
+    t = tnodes.get(index)
+    if not t:
+        g.trace('can not happen: no tnode for',index)
+    # Write only those tnodes whose vnodes were written.
+    if t.isWriteBit():
+        self.putTnode(t)
+#@+node:ekr.20031218072017.1863: *7* putVnode
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isShadow = p.isAtShadowFileNode()
+    isThin = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
+    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
+    else:          forceWrite = True      # Write all other @file trees.
+
+    << Set gnx = tnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append tnodeList and unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s>' % (gnx,attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head+'</v>\n')
+    else:
+        fc.vnodesDict[gnx]=True
+        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            << issue informational messages >>
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('</v>\n')
+        else:
+            fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864: *8* << Set gnx = tnode index >>
+# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+if not v.t.fileIndex:
+    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+
+gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@+node:ekr.20031218072017.1865: *8* << Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+
+    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
+    # Almost 30% of the entire writing time came from here!!!
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    if not c.fixed:
+        d['str_leo_pos'] = ','.join(aList)
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@+node:ekr.20040324082713: *8* << Append tnodeList and unKnownAttributes to attrs>> fc.put
+# Write the tnodeList only for @file nodes.
+# New in 4.2: tnode list is in tnode.
+
+if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
+    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
+        if isThin or isShadow: # Never issue warning for @auto.
+            if g.app.unitTesting:
+                g.app.unitTestDict["warning"] = True
+            g.es("deleting tnode list for",p.headString(),color="blue")
+        # This is safe: cloning can't change the type of this node!
+        delattr(v.t,"tnodeList")
+    else:
+        attrs.append(fc.putTnodeList(v)) # New in 4.0
+
+if hasattr(v,"unknownAttributes"): # New in 4.0
+    # g.trace('v',v,'v.uA',v.unknownAttributes)
+    attrs.append(self.putUnknownAttributes(v))
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentTnodeUas(p))
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
+#@+node:ekr.20040702085529: *8* << issue informational messages >>
+if isOrphan and isThin:
+    g.es("writing erroneous:",p.headString(),color="blue")
+    p.clearOrphan()
+#@+node:ekr.20031218072017.1579: *7* putVnodes
+def putVnodes (self):
+
+    """Puts all <v> elements in the order in which they appear in the outline."""
+
+    c = self.c
+    c.clearAllVisited()
+
+    self.put("<vnodes>\n")
+
+    # Make only one copy for all calls.
+    self.currentPosition = c.currentPosition() 
+    self.rootPosition    = c.rootPosition()
+    # self.topPosition     = c.topPosition()
+    self.vnodesDict={}
+
+    if self.usingClipboard:
+        self.putVnode(self.currentPosition) # Write only current tree.
+    else:
+        for p in c.rootPosition().self_and_siblings_iter():
+            # New in Leo 4.4.2 b2 An optimization:
+            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
+
+    self.put("</vnodes>\n")
+#@+node:ekr.20031218072017.1247: *7* putXMLLine
+def putXMLLine (self):
+
+    '''Put the **properly encoded** <?xml> element.'''
+
+    # Use self.leo_file_encoding encoding.
+    self.put('%s"%s"%s\n' % (
+        g.app.prolog_prefix_string,
+        self.leo_file_encoding,
+        g.app.prolog_postfix_string))
+#@+node:ekr.20031218072017.1246: *6* putProlog
+def putProlog (self):
+
+    c = self.c
+
+    self.putXMLLine()
+
+    if c.config.stylesheet or c.frame.stylesheet:
+        self.putStyleSheetLine()
+
+    self.put("<leo_file>") ; self.put_nl()
 #@+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
 @nocolor-node
 
@@ -8427,8 +8760,11 @@ to also be read by non Leo users.
 #@+node:ekr.20080919085541.3: *5* Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
 #@+node:ekr.20090210093316.1: *4* Optional features
-#@+node:ekr.20080922115725.1: *5* Minor @shadow stuff
-#@+node:ekr.20081004102201.2: *6* Create a log file for @shadow?
+#@+node:ekr.20080922115725.1: *5* Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@+node:ekr.20081004102201.2: *6* Log file for @shadow
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
@@ -8441,6 +8777,180 @@ between the node, file and shadow? It might provide useful clues.
 http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
 
 @color
+#@+node:ekr.20080708094444.38: *7* x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+       New at 2010/01/07: Replacements preserve sentinel locations.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    x = self
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40: *8* << init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@+node:ekr.20080708094444.39: *8* << define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@+node:ekr.20080708192807.2: *8* << about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@+node:ekr.20080708192807.5: *8* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@+node:ekr.20080708094444.45: *8* << do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
 #@+node:ekr.20090402072059.13: *6* Create a general mechanism for aux (shadow, _db) files
 @nocolor-node
 
