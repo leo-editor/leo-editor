@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -270,8 +270,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831184021.5" a="E"><vh>Chapter 4: Programming with Leo</vh>
-<v t="ekr.20050828061213" a="E"><vh>@rst html\directives.html</vh>
+<v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
+<v t="ekr.20050828061213"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
 <v t="sps.20100712151944.7128"><vh>A Brief and Inaccurate History of Leo for Programming</vh></v>
@@ -285,12 +285,12 @@
 </v>
 <v t="sps.20100712151944.7147"><vh>List of @root Family Directives</vh></v>
 </v>
-<v t="sps.20100712151944.7183" a="E"><vh>All About Directives</vh>
+<v t="sps.20100712151944.7183"><vh>All About Directives</vh>
 <v t="sps.20100712151944.7184"><vh>Body pane modifiers</vh>
 <v t="sps.20100712151944.7185"><vh>@color, @nocolor, @nocolor-node and @killcolor</vh></v>
 <v t="sps.20100712151944.7186"><vh>@wrap and @nowrap</vh></v>
 </v>
-<v t="sps.20100712151944.7187" a="E"><vh>\@&lt;file&gt; Directive Family</vh>
+<v t="sps.20100712151944.7187"><vh>\@&lt;file&gt; Directive Family</vh>
 <v t="sps.20100712151944.7188"><vh>External file directives</vh>
 <v t="sps.20100712151944.7189"><vh>\@asis</vh></v>
 <v t="sps.20100712151944.7190"><vh>\@auto</vh>
@@ -304,7 +304,7 @@
 <v t="sps.20100712151944.7197"><vh>\@shadow</vh></v>
 <v t="sps.20100712151944.7198"><vh>\@thin</vh></v>
 </v>
-<v t="sps.20100712151944.7199" a="E"><vh>Text generation modifiers</vh>
+<v t="sps.20100712151944.7199"><vh>Text generation modifiers</vh>
 <v t="sps.20100712151944.7200"><vh>@ and @doc</vh></v>
 <v t="sps.20100712151944.7201"><vh>@c and @code</vh></v>
 <v t="sps.20100712151944.7202"><vh>@comment</vh></v>
@@ -327,7 +327,7 @@
 <v t="sps.20100712151944.7217"><vh>@others</vh></v>
 </v>
 </v>
-<v t="sps.20100712151944.7218" a="E"><vh>\@root Directive Family</vh>
+<v t="sps.20100712151944.7218"><vh>\@root Directive Family</vh>
 <v t="sps.20100712151944.7259"><vh>\@root Explained</vh>
 <v t="sps.20100712151944.7260"><vh>Sections and section definitions</vh></v>
 <v t="sps.20100712151944.7261"><vh>Tangling @root trees with the Tangle commands</vh></v>
@@ -34583,7 +34583,7 @@ described by *language* ``.py`` in the ``leo/modes`` directory.  Currently, the 
     velocity                verilog                 vhdl                    xml
     xsl                     zpt
 
-If you choose to use a language for which the comment delimiters are unknown, use an ``@comment`` directive to inform Leo so that it may generate sentinels.
+If you choose to use a language for which the comment delimiters are unknown, use an ``@comment`` directive to inform Leo so that it may generate appropriate sentinels.
 
 Case is ignored in the language specifiers, but not in the @language itself.
 Thus, the following are equivalent::
@@ -34968,7 +34968,8 @@ In that example, the different section definitions are destined for different fi
     @comment &lt;!-- --&gt;
 
 Note that ``@comment`` and ``@language`` take effect in both doc and code parts, and they apply from that point forward to the sentinels of the *defined* section; they **DO NOT** apply to *referenced* sections: referenced sections must be defined under the influence of ``@comment`` or ``@language`` directives appropriate to the context in which they will be referenced.  Note how the javascript section in the example ends with an ``@comment`` that prepares for the transition back to html.
-</t>
+
+The ``@comment`` and ``@language`` directives do not appear in external files; if untangle is applied to such files, the ``@comment`` and ``@language`` are recovered into potentially modified code sections (doc sections do not change) by placing them as the last line of the code section.  The effect on sentinels is the same regardless of where in the code section the ``@comment`` or ``@language`` directive appear.  An attempt to retain the former position within the code would be ambiguous if the context around the directive changed.  Putting ``@comment`` and ``@language`` directives at the end of the code section will lead to the fewest surprises.  In doc sections, their position may be anything that communicates clearly to the reader.</t>
 <t tx="sps.20100716120121.22542">The ``@lineending`` directive sets the line endings for individual external files.
 This directive will override the ``@string output_newline`` setting.
 The ``@lineending`` *never* affects the line endings in .leo files themselves:

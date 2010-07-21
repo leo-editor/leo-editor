@@ -455,10 +455,7 @@ class testUtils:
                 g.pr('p1.head', p1.h)
                 g.pr('p2.head', p2.h)
             if p1.b != p2.b:
-                g.pr('p1.body')
-                g.pr(repr(p1.b))
-                g.pr('p2.body')
-                g.pr(repr(p2.b))
+                self.showTwoBodies(p1.h,p1.b,p2.b)
             if p1.isCloned() != p2.isCloned():
                 g.pr('p1.isCloned() == p2.isCloned()')
 
@@ -523,6 +520,17 @@ class testUtils:
         """Returns the total number of nodes in an outline"""
 
         return len([p for p in self.c.all_positions()])
+    #@+node:sps.20100720205345.26316: *3* showTwoBodies
+    def showTwoBodies(self,t,b1,b2):
+        print('\n','-' * 20)
+        print("expected for %s..." % t)
+        for line in g.splitLines(b1):
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
+        print("result for %s..." % t)
+        for line in g.splitLines(b2):
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
     #@+node:ekr.20051104075904.36: *3* testUtils.writeNode/sToNode
     #@+node:ekr.20051104075904.37: *4* writeNodesToNode
     def writeNodesToNode (self,c,input,output,sentinels=True):
@@ -935,32 +943,21 @@ def runRootFileTangleTest(c,p):
         rootTestAfterP.doDelete()
         raise
 
+    tu = testUtils(c)
     try:
         for t in expectList:
             result = g.toUnicode(c.tangleCommands.tangle_output[t])
             assert(expected[t] == result)
     except AssertionError:
-        #@+<< dump result and expected >>
-        #@+node:sps.20100531175334.10308: *4* << dump result and expected >>
-        print('\n','-' * 20)
-        print("result for %s..." % t)
-        for line in g.splitLines(result):
-            print("%3d" % len(line),repr(line))
-        print('-' * 20)
-        print("expected for %s..." % t)
-        for line in g.splitLines(expected[t]):
-            print("%3d" % len(line),repr(line))
-        print('-' * 20)
-        #@-<< dump result and expected >>
+        tu.showTwoBodies(t,expected[t],result)
         rootTestAfterP.doDelete()
         raise
 
     try:
         if not (c.tangleCommands.print_mode in ("quiet","silent")):
-            t = testUtils(c)
             # untangle relies on c.tangleCommands.tangle_output filled by the above
             c.tangleCommands.untangle(event=None, p=rootTestAfterP)
-            assert(t.compareOutlines(rootTestBeforeP, rootTestAfterP))
+            assert(tu.compareOutlines(rootTestBeforeP, rootTestAfterP))
             # report produced by compareOutlines() if appropriate
     finally:
         rootTestAfterP.doDelete()
