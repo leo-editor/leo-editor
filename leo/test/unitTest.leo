@@ -2781,11 +2781,19 @@
 </v>
 <v t="sps.20100715131351.6759"><vh>root_bug.c</vh></v>
 </v>
+<v t="sps.20100720210022.5737"><vh>@test @root with @terse</vh>
+<v t="sps.20100720210022.5738"><vh>#@root</vh></v>
+<v t="sps.20100720210022.5739"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100715131351.6762"><vh>failing</vh>
 <v t="sps.20100624231018.21082"><vh>@test @root with @language html and @comment</vh>
 <v t="sps.20100624231018.21083"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21084"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100715131351.6762"><vh>failing</vh>
+<v t="sps.20100720210022.5743"><vh>@@test @root</vh>
+<v t="sps.20100720210022.5744"><vh>@root 'root-test'</vh></v>
+<v t="sps.20100720210022.5745"><vh>'root-test'</vh></v>
 </v>
 </v>
 <v t="sps.20100624231018.21090"><vh>supposed to fail</vh>
@@ -2801,6 +2809,10 @@
 <v t="sps.20100624231018.21096"><vh>@test @root with @silent</vh>
 <v t="sps.20100624231018.21097"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21098"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100720205345.16593"><vh>@test @root with @quiet</vh>
+<v t="sps.20100720205345.16594"><vh>#@root</vh></v>
+<v t="sps.20100720205345.16595"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
@@ -24840,8 +24852,11 @@ abc
 xyz
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100624231018.21082"># Fails because untangle misplaces the recovered @comment directives.
-# It would be nice to fix this.
+<t tx="sps.20100624231018.21082"># untangle places the recovered @comment directives as the very last line
+# in a code section.  A blank line following an @comment is part of the
+# code section, and the recovered @comment line gets put after it; if you
+# want a blank line to survive a round trip, use an @ at the beginning of
+# the line to make it a doc part belonging to the following section
 import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)
@@ -24857,12 +24872,12 @@ leoTest.runRootFileTangleTest(c,p)
 Hi.  This is html text.
 &lt;script language="javascript"&gt;&lt;!--
 @comment //
-
+@
 &lt;&lt;Javascript section&gt;&gt;=
 var s = "string";
 --&gt;&lt;/script&gt;
 @comment &lt;!-- --&gt;
-
+@
 &lt;&lt;Second text section&gt;&gt;=
 This is a second piece of html text. </t>
 <t tx="sps.20100624231018.21084">&lt;!-- &lt;&lt;Text section&gt;&gt; --&gt;
@@ -25705,6 +25720,58 @@ it
 // -- end -- &lt;&lt;foo&gt;&gt;
 </t>
 <t tx="sps.20100715131351.6762"></t>
+<t tx="sps.20100720205345.16593">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100720205345.16594">@quiet
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100720205345.16595"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+</t>
+<t tx="sps.20100720210022.5737">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100720210022.5738">@terse
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100720210022.5739"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100720210022.5743">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100720210022.5744">&lt;&lt;*&gt;&gt;=
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100720210022.5745"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
