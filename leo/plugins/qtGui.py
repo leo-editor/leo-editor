@@ -3780,6 +3780,13 @@ class leoQtFrame (leoFrame.leoFrame):
                 QtCore.QObject.connect(button.button,
                     QtCore.SIGNAL("clicked()"),command)
 
+                if not hasattr(command, 'p'):
+                    # can get here from @buttons in the current outline, in which
+                    # case p exists, or from @buttons in @settings elsewhere, in
+                    # which case it doesn't
+
+                    return
+
                 # 20100518 - TNB command is instance of callable class with
                 #   a c and p attribute, so we can add a context menu item...
                 def goto_command(command = command):
