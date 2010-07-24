@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -243,11 +243,11 @@
 <v t="ekr.20091130111843.6843"><vh>Further study</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
-<v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
+<v t="EKR.20040524104904.26" a="E"><vh>Chapter 3: Using Outlines</vh>
+<v t="ekr.20050901101608" a="E"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
 <v t="sps.20100710110337.12186"><vh>@rst-ignore-node DO NOT SORT THESE HEADLINES</vh></v>
-<v t="sps.20100710110337.12187"><vh>Outline Related</vh>
+<v t="sps.20100710110337.12187" a="E"><vh>Outline Related</vh>
 <v t="ekr.20060929040750"><vh>Navigating through the outline</vh></v>
 <v t="EKR.20040524104904.40"><vh>Expanding &amp; contracting nodes</vh></v>
 <v t="EKR.20040524104904.36"><vh>Creating and destroying nodes</vh></v>
@@ -4996,16 +4996,25 @@ create a new bead. The list of beads does not branch; all undoable operations
 (except the Undo and Redo commands themselves) delete any beads following the
 newly created bead. I did not invent this model of unlimited undo.
 I first came across it in the documentation for Apple's Yellow Box classes.</t>
-<t tx="EKR.20040524104904.27">A cloned node is a copy of a node that changes when the original changes. One may also think of it as a single node with multiple positions within the outline.  Not
-only are changes maintained across all the the clones of a node, changes to its
-offspring (children, grandchildren, etc.) are simultaneously made to the
-corresponding offspring of all of those clones. A small red arrow in the icon
-box marks cloned nodes. There is no real distinction between the "original" node
-and any of its clones.  Any update of a clone affects all of its clones simultaneously.  A cloned nodes becomes a regular node
-again when its penultimate clone is deleted. Clones are useful for making
-alternate views of a program. See `Clones and views`_ for full details.
+<t tx="EKR.20040524104904.27">A cloned node is a copy of a node that changes when the original
+changes. One may also think of it as a single node that is hooked into
+the outline at multiple positions.  Because that single node brings
+along all its descendants, changes are maintained across all the the
+clones of a node, along with changes to its offspring (children,
+grandchildren, etc.), i.e., any changes are simultaneously made to the
+corresponding offspring of all of those clones.  A small red arrow in
+the icon box marks cloned nodes.  You can think of the arrow as
+pointing out that there are other paths to get to this same node.
+There is no real distinction between the "original" node and any of
+its clones.  Any headline or body update of a clone headed subtree
+affects all of its clones simultaneously.  A cloned node becomes a
+regular node whenever deletion of its other clones makes it the only
+one left. Clones are useful for making alternate views of a program.
+See `Clones and views`_ for full details.
 
 The command ``clone-node``, (Clone Node in the Outline menu, bound to Control-`) creates a clone as the immediate sibling of a selected node.
+You have to place it where you want it by either using move
+commands, or cutting and paste the clone.
 </t>
 <t tx="EKR.20040524104904.274">@language rest</t>
 <t tx="EKR.20040524104904.282">To convert an \@root tree to an @file tree, choose the root of the tree to be
@@ -5353,9 +5362,13 @@ These elements must appear in this order.
     Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
     See `Chapter 13: Writing plugins`_ for details.
 </t>
-<t tx="EKR.20040524104904.36">The ``insert-node`` command inserts a new node into the outline; it is bound to Control-I and the Insert key. The
+<t tx="EKR.20040524104904.36">The ``insert-node`` command inserts a new node into the outline; it is bound to Control-I and the Insert key. When invoked, (from any pane),
+it inserts a new node below the presently selected node, and at the
+same level as that node, or at the child level if it has a child
+vissible.  The
 ``delete-node`` command deletes a node and all its children; it is initially unbound.
-</t>
+ If you want to retain the children you must
+promote all the children before you do the delete. </t>
 <t tx="EKR.20040524104904.37">The ``cut-node``, ``paste-node``, ``copy-node`` and ``delete-node`` commands work on
 nodes rather than text. For example, to delete a node, select the node and
 choose the Cut Outline or Delete Outline command in the menu, use Alt-X to invoke the command in the mini-buffer, or use Control-Shift-X (which cuts the node; delete node is not bound). The ``cut-node`` and ``copy-node`` commands copy a text representation of the outline to the clipboard.
@@ -5367,14 +5380,17 @@ other text editor) using Edit-&gt;Paste in the menus, Ctrl-V, or Alt-X paste-tex
 
 There are places to which you are prevented from ``paste-retaining-clones``, because it would cause a node to become a parent of itself, and thus cause outline traversals like ``@thin`` expansion to loop until they consumed all memory and crashed the program.  The Leo outline is thus mathematically a *directed acyclic graph*: clones make it more flexible than a tree, but not a generalized graph.
 </t>
-<t tx="EKR.20040524104904.38">In the Tk GUI only, you may drag a node (including all its descendants) from one place to another
+<t tx="EKR.20040524104904.38">In the Tk GUI, you may drag a node (including all its descendants) from one place to another
 in an outline. To start a drag, press the main (left) mouse button while the
 cursor is over the icon for a node. The cursor will change to a hand icon. If
 you release the mouse button while the hand cursor is above the icon for another
 node, Leo will move the dragged node after that node. If you release the mouse
 button when the hand cursor is not over an icon, Leo will leave the outline pane
 as it is. Leo scrolls the outline pane as the result of mouse-moved events, so
-to continue scrolling you must keep moving the mouse.</t>
+to continue scrolling you must keep moving the mouse.
+
+This is not yet implemented in the (default) Qt GUI.
+</t>
 <t tx="EKR.20040524104904.380">@language rest</t>
 <t tx="EKR.20040524104904.39">The default features of Leo's body text derive from the Tk.Text widget,
 described at: http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm Not all these features
@@ -5475,10 +5491,13 @@ behaviors have been changed because they conflict with other Leo features.
 -   Backspace deletes the selection, or the character to the left of the cursor
     if there is no text selection.</t>
 <t tx="EKR.20040524104904.40">You can expand or contract a node by clicking in the tree
-view icon to the left of the headline.  The icon in the Qt gui is a triangle pointing right or down, in the Tk gui a square containing a plus or minus.  Expanding a node shows its immediate
+view icon to the left of the headline.  The icon in the Qt gui matches the native
+OS's tree view icon, i.e. for Mac's, a triangle pointing right or
+down; on Windows (also when using the Tk gui), a square containing a
+plus or minus.  Expanding a node shows its immediate
 children; contracting a node hides all its children.  The corresponding commands are ``expand-node`` and ``contract-node``.  For more convenient navigation, there are ``expand-and-go-right`` and ``contract-or-go-up`` which are bound to Alt-Right and Alt-Left.
 
-The ``expand-all-subheads`` command expands all of a nodes offspring (children, grandchildren, etc.).  ``expand-all`` expands every node in the outline.  ``contract-all`` contracts every node in the outline.  Both commands are availble in the Outline-&gt;Expand/Contract... submenu.  ``contract-all`` is bound to Atl-- (Alt modifying a single hyphen).  In all but the smallest outlines, ``expand-all`` is rarely used, and is does not have a key binding.
+The ``expand-all`` command expands every node in the outline.  ``contract-all`` contracts every node in the outline.  Both commands are availble in the Outline-&gt;Expand/Contract... submenu.  ``contract-all`` is bound to Atl-- (Alt modifying a single hyphen).  In all but the smallest outlines, ``expand-all`` is rarely used, and is does not have a key binding.
 
 
 
@@ -20066,7 +20085,7 @@ The default values are shown.
 - @bool opml_write_uAs = True
 
   If True, Leo writes unknown attributes (uA's) in &lt;:uA&gt; sub-elements of &lt;outline&gt; elements.</t>
-<t tx="ekr.20060920145745">Three commands in the Cmds-&gt;Body Editors menu allow one to create and destroy separate editors in the body pane.
+<t tx="ekr.20060920145745">Three commands in the Cmds-&gt;Body Editors menu allow one to create, destroy, or focus on separate editors in the body pane.
 - The ``add-editor`` (Cmds-&gt;Body Editors-&gt;Add Body Editor) command adds a new editor in the body pane and gives it the body editor focus.
 - The ``delete-editor`` (Cmds-&gt;Body Editors-&gt;Delete Body Editor) command deletes the editor with body editor focus.
 - The ``cycle-editor-focus`` (Cmds-&gt;Body Editors-&gt;Change Body Editor) command cycles body editor focus between editors in the body text.
@@ -20604,7 +20623,7 @@ found in the Outline:Go To menu.
 
 As described in the tutorial, you can move about the outline by clicking on the headlines or using Alt+arrow keys.
 
-When focus is in the outline Pane, you can move from
+When using the Tk GUI and focus is in the outline Pane, you can move from
 node to node by typing the first letter of a headline. For example, typing 'a'
 will go to the next visible headline that starts with either 'a' or 'A',
 wrapping around to the start of the outline if needed. Typing an uppercase 'A'
@@ -20619,7 +20638,10 @@ the previous match. The term 'close together' is defined in seconds by the setti
 
 The outline nav search reverts to a single-character search if the extended
 search fails, so in fact the delay is not too significant. In practice
-everything works well without thinking about what is happening. </t>
+everything works well without thinking about what is happening.
+
+This character search navigation is not currently implemented for the Qt interface.
+</t>
 <t tx="ekr.20060929043325">Leo's vnode and tnode classes are now completely independent of the rest of Leo.
 Some api's have been changed.  This 'big reorg' and may affect scripts and plugins.</t>
 <t tx="ekr.20060929043325.1">Leo's vnode and tnode classes can optionally be compatible with ZODB databases,
