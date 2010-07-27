@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -243,11 +243,11 @@
 <v t="ekr.20091130111843.6843"><vh>Further study</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.26" a="E"><vh>Chapter 3: Using Outlines</vh>
-<v t="ekr.20050901101608" a="E"><vh>@rst html\outlines.html</vh>
+<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
+<v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
 <v t="sps.20100710110337.12186"><vh>@rst-ignore-node DO NOT SORT THESE HEADLINES</vh></v>
-<v t="sps.20100710110337.12187" a="E"><vh>Outline Related</vh>
+<v t="sps.20100710110337.12187"><vh>Outline Related</vh>
 <v t="ekr.20060929040750"><vh>Navigating through the outline</vh></v>
 <v t="EKR.20040524104904.40"><vh>Expanding &amp; contracting nodes</vh></v>
 <v t="EKR.20040524104904.36"><vh>Creating and destroying nodes</vh></v>
@@ -5012,9 +5012,10 @@ regular node whenever deletion of its other clones makes it the only
 one left. Clones are useful for making alternate views of a program.
 See `Clones and views`_ for full details.
 
-The command ``clone-node``, (Clone Node in the Outline menu, bound to Control-`) creates a clone as the immediate sibling of a selected node.
-You have to place it where you want it by either using move
-commands, or cutting and paste the clone.
+The command ``clone-node``, (Clone Node in the Outline menu, bound to Control-\`)
+creates a clone as the immediate sibling of a selected node. You have to place
+it where you want it by either using move commands, or cutting and paste the
+clone.
 </t>
 <t tx="EKR.20040524104904.274">@language rest</t>
 <t tx="EKR.20040524104904.282">To convert an \@root tree to an @file tree, choose the root of the tree to be
@@ -5362,13 +5363,12 @@ These elements must appear in this order.
     Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
     See `Chapter 13: Writing plugins`_ for details.
 </t>
-<t tx="EKR.20040524104904.36">The ``insert-node`` command inserts a new node into the outline; it is bound to Control-I and the Insert key. When invoked, (from any pane),
-it inserts a new node below the presently selected node, and at the
-same level as that node, or at the child level if it has a child
-vissible.  The
-``delete-node`` command deletes a node and all its children; it is initially unbound.
- If you want to retain the children you must
-promote all the children before you do the delete. </t>
+<t tx="EKR.20040524104904.36">The ``insert-node`` command inserts a new node into the outline; it is bound to
+Control-I and the Insert key. When invoked, (from any pane), it inserts a new
+node below the presently selected node, and at the same level as that node, or
+at the child level if it has a child vissible. The ``delete-node`` command
+deletes a node and all its children; it is initially unbound. If you want to
+retain the children you must promote all the children before you do the delete.</t>
 <t tx="EKR.20040524104904.37">The ``cut-node``, ``paste-node``, ``copy-node`` and ``delete-node`` commands work on
 nodes rather than text. For example, to delete a node, select the node and
 choose the Cut Outline or Delete Outline command in the menu, use Alt-X to invoke the command in the mini-buffer, or use Control-Shift-X (which cuts the node; delete node is not bound). The ``cut-node`` and ``copy-node`` commands copy a text representation of the outline to the clipboard.
@@ -5490,17 +5490,20 @@ behaviors have been changed because they conflict with other Leo features.
 
 -   Backspace deletes the selection, or the character to the left of the cursor
     if there is no text selection.</t>
-<t tx="EKR.20040524104904.40">You can expand or contract a node by clicking in the tree
-view icon to the left of the headline.  The icon in the Qt gui matches the native
-OS's tree view icon, i.e. for Mac's, a triangle pointing right or
-down; on Windows (also when using the Tk gui), a square containing a
-plus or minus.  Expanding a node shows its immediate
-children; contracting a node hides all its children.  The corresponding commands are ``expand-node`` and ``contract-node``.  For more convenient navigation, there are ``expand-and-go-right`` and ``contract-or-go-up`` which are bound to Alt-Right and Alt-Left.
+<t tx="EKR.20040524104904.40">You can expand or contract a node by clicking in the tree view icon to the left
+of the headline. The icon in the Qt gui matches the native OS's tree view icon,
+i.e. for Mac's, a triangle pointing right or down; on Windows (also when using
+the Tk gui), a square containing a plus or minus. Expanding a node shows its
+immediate children; contracting a node hides all its children. The corresponding
+commands are ``expand-node`` and ``contract-node``. For more convenient
+navigation, there are ``expand-and-go-right`` and ``contract-or-go-up`` which
+are bound to Alt-Right and Alt-Left.
 
-The ``expand-all`` command expands every node in the outline.  ``contract-all`` contracts every node in the outline.  Both commands are availble in the Outline-&gt;Expand/Contract... submenu.  ``contract-all`` is bound to Atl-- (Alt modifying a single hyphen).  In all but the smallest outlines, ``expand-all`` is rarely used, and is does not have a key binding.
-
-
-
+The ``expand-all`` command expands every node in the outline. ``contract-all``
+contracts every node in the outline. Both commands are availble in the
+Outline-&gt;Expand/Contract... submenu. ``contract-all`` is bound to Atl-- (Alt
+modifying a single hyphen). In all but the smallest outlines, ``expand-all`` is
+rarely used, and is does not have a key binding.
 </t>
 <t tx="EKR.20040524104904.41">Leo auto indents unless @nocolor is in effect.  Typing a newline
 automatically inserts the same leading whitespace present on the previous line.
@@ -6734,7 +6737,7 @@ This chapter tells how to install and run_ Leo.
 If you have *any* problems installing Leo,
 please ask for help on `Leo's help forum`_.
 </t>
-<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.5 or later and Tk 8.4 or later. For
+<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.6 or later and Tk 8.4 or later. For
 Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
 
 -   Download the latest version of Leo from `Leo's download page`_.
@@ -6775,7 +6778,7 @@ You now have two choices:
 The install script will instruct you to add /usr/local/bin to your path.
 You can, instead, add the following link::
 
-    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
 
 Now you are ready to `run Leo`_.
 </t>
@@ -12843,7 +12846,10 @@ not possibly be what it is today without Python.</t>
 Chapter 3: Using Outlines
 ##########################################
 
-This chapter tells how to use Leo's outlines.  Most of the commands can be invoked by clicking with the pointer in the outline pane or by using the pointer to select the command from the ``Outline`` menu.  The key bindings mentioned here are those of the default EKR bindings.
+This chapter tells how to use Leo's outlines. Most of the commands can be
+invoked by clicking with the pointer in the outline pane or by using the pointer
+to select the command from the ``Outline`` menu. The key bindings mentioned here
+are those of the default EKR bindings.
 
 .. .. contents::</t>
 <t tx="ekr.20050901101608.1">.. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
@@ -20621,7 +20627,8 @@ All these commands ignore @ignore trees.</t>
 <t tx="ekr.20060929040750">Leo has many commands that select nodes in the outline. These commands can be
 found in the Outline:Go To menu.
 
-As described in the tutorial, you can move about the outline by clicking on the headlines or using Alt+arrow keys.
+As described in the tutorial, you can move about the outline by clicking on the
+headlines or using Alt+arrow keys.
 
 When using the Tk GUI and focus is in the outline Pane, you can move from
 node to node by typing the first letter of a headline. For example, typing 'a'
@@ -29981,7 +29988,7 @@ methods of the commander to insert, delete or clone nodes. Finally, the
 execute-script commands predefines p to be the presently selected position.
 </t>
 <t tx="ekr.20091111112709.6671">@language rest</t>
-<t tx="ekr.20091111112709.6672">.. _glossary:
+<t tx="ekr.20091111112709.6672">.. ..glossary::
 
 #########
 Glossary
@@ -29990,7 +29997,7 @@ Glossary
 We often refer to outline nodes by the directives they contain.
 For example, an ``@file`` node is a node whose headline starts with ``@file``, etc.
 
-.. glossary::
+.. .. _glossary::
 
     @&lt;file&gt; node
         A node whose headline starts with
@@ -34071,7 +34078,7 @@ determines the language using the file's extension.  Notes:
 - Use the ``@data import_xml_tags`` setting to specify the xml tags that create outline nodes. By default, the **organizer tags** are html, body, head, and div.
 </t>
 <t tx="sps.20100712151944.7191">Leo performs several checks to ensure that the result of importing an external
-file will be equivalent to the file that writing the ``@auto ``tree would produce.
+file will be equivalent to the file that writing the ``@auto`` tree would produce.
 
 These checks can produces **errors** or **warnings**. Errors indicate a
 potentially serious problem. Leo inserts an ``@ignore`` directive in the ``@auto`` tree
