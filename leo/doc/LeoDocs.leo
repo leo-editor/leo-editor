@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -243,8 +243,8 @@
 <v t="ekr.20091130111843.6843"><vh>Further study</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.26" a="E"><vh>Chapter 3: Using Outlines</vh>
-<v t="ekr.20050901101608" a="E"><vh>@rst html\outlines.html</vh>
+<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
+<v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
 <v t="sps.20100710110337.12186"><vh>@rst-ignore-node DO NOT SORT THESE HEADLINES</vh></v>
 <v t="sps.20100710110337.12187"><vh>Outline Related</vh>
@@ -262,7 +262,7 @@
 <v t="EKR.20040524104904.41"><vh>Indenting body text automatically</vh></v>
 <v t="ekr.20060920145745"><vh>Creating and destroying multiple body editors</vh></v>
 </v>
-<v t="sps.20100710110337.12189" a="E"><vh>Miscellaneous</vh>
+<v t="sps.20100710110337.12189"><vh>Miscellaneous</vh>
 <v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
 <v t="EKR.20040524104904.47"><vh>Resizing panes</vh></v>
 <v t="EKR.20040524104904.45"><vh>Opening URL's automatically</vh></v>
@@ -270,13 +270,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831184021.5" a="E"><vh>Chapter 4: Programming with Leo</vh>
-<v t="ekr.20050828061213" a="E"><vh>@rst html\directives.html</vh>
+<v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
+<v t="ekr.20050828061213"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
 <v t="sps.20100712151944.7128"><vh>A Brief and Inaccurate History of Leo for Programming</vh></v>
 <v t="sps.20100712151944.7132"><vh>Creating and using external files: recommendations</vh></v>
-<v t="sps.20100712151944.7141" a="E"><vh>Overview: summary of directives</vh>
+<v t="sps.20100712151944.7141"><vh>Overview: summary of directives</vh>
 <v t="sps.20100712151944.7142"><vh>Body pane modifiers</vh></v>
 <v t="sps.20100712151944.7143"><vh>List of @&lt;file&gt; Family Directives</vh>
 <v t="sps.20100712151944.7144"><vh>External File Directives</vh></v>
@@ -285,7 +285,7 @@
 </v>
 <v t="sps.20100712151944.7147"><vh>List of @root Family Directives</vh></v>
 </v>
-<v t="sps.20100712151944.7183" a="E"><vh>All About Directives</vh>
+<v t="sps.20100712151944.7183"><vh>All About Directives</vh>
 <v t="sps.20100712151944.7184"><vh>Body pane modifiers</vh>
 <v t="sps.20100712151944.7185"><vh>@color, @nocolor, @nocolor-node and @killcolor</vh></v>
 <v t="sps.20100712151944.7186"><vh>@wrap and @nowrap</vh></v>
@@ -26511,27 +26511,25 @@ Step 3 is the clever part. To see all the details of how the algorithm works,
 please study the x.propagate_changed_lines method in leoShadow.py. This code is
 heavily commented.
 </t>
-<t tx="ekr.20080730212711.42">The first step in creating an @shadow tree is to create a node whose headline is
-@shadow *&lt;filename&gt;*. This is always safe, even if *&lt;filename&gt;* already
-exists: Leo writes the @shadow tree to the public and private files only if the
-@shadow tree contains a **significant** amount of information. An @shadow tree
-contains a significant amount of information if it has children or if the @shadow node
-node contains more than 10 characters, excluding Leo directives.
+<t tx="ekr.20080730212711.42">The first step in creating an @shadow tree is to create a node whose headline is @shadow *&lt;filename&gt;*.
 
-Thus, you can create an @shadow node and save your outline, regardless of whether the original file exists.
-The next time Leo reads the @shadow node, Leo will **create** the entire @shadow tree
-using the same logic as for `@auto trees`_.
-You can cause Leo to read the @shadow node in two ways:
-1) by closing and reloading the Leo outline or
-2) by selecting the @shadow node and executing the File:Read/Write:Read @shadow Node command.
+Thus, you can create an @shadow node and save your outline, regardless of
+whether the original file exists. The next time Leo reads the @shadow node, Leo
+will **create** the entire @shadow tree using the same logic as for `@auto
+trees`_. You can cause Leo to read the @shadow node in two ways: 1) by closing
+and reloading the Leo outline or 2) by selecting the @shadow node and executing
+the File:Read/Write:Read @shadow Node command.
 
 **Important**: Leo imports the private file into the @shadow tree only if
-a) the public file exists and b) the private file does *not* exist.
-Thus, Leo will import code into each @shadow node at most once.
-After the first import, updates are made using the update algorithm.
 
-**Note**: just as for @auto, Leo will never read (import) or write an @shadow tree if
-the @shadow node is under the influence of an @ignore directive.
+a) the public file exists and
+b) the private file does *not* exist.
+
+Thus, Leo will import code into each @shadow node at most once. After the first
+import, updates are made using the update algorithm.
+
+**Note**: just as for @auto, Leo will never read (import) or write an @shadow
+tree if the @shadow node is under the influence of an @ignore directive.
 </t>
 <t tx="ekr.20080730212711.52">There is one boundary case that the update algorithm can not resolve.
 If a line is inserted at the boundary between nodes,
@@ -34122,18 +34120,11 @@ sentinels in the files Leo generates. In contrast to ``@nosent``, ``@auto`` tree
 change when the corresponding file changes outside of Leo.
 
 Leo automatically recreates (imports) all ``@auto`` trees when reading a .leo
-file, and writes all dirty ``@auto`` trees when saving a .leo file. There are
-two exceptions to this statement:
-
-1. Leo will not read (import) or write an ``@auto`` tree if the ``@auto`` node or its parents contain an ``@ignore`` directive.  ``@ignore`` in the descendants of a node only affect the node containing the ``@ignore`` directive and the descendants of that node.
-
-2. Saving a .leo file does not save ``@auto`` nodes if:
-
-    a) they haven't changed or,
-
-    b) they do not contain a **significant** amount of information. An ``@auto`` tree
-       contains a significant amount of information if it has  children or if the
-       root node contains more than 10 characters.
+file, and writes all dirty ``@auto`` trees when saving a .leo file. However, Leo
+will not read (import) or write an ``@auto`` tree if the ``@auto`` node or its
+parents contain an ``@ignore`` directive. ``@ignore`` in the descendants of a
+node only affect the node containing the ``@ignore`` directive and the
+descendants of that node.
 
 Leo creates ``@auto`` trees by parsing the corresponding external file. Parsers
 create descendant nodes of the @auto tree: one node for each class, method and
@@ -34190,21 +34181,33 @@ File comparison mismatches can arise for several reasons:
 
 Leo will issue a warning (not an error) for underindented Python comment lines.
 Such lines can not change the meaning of Python programs.</t>
-<t tx="sps.20100712151944.7192">Three commands allow you to manually read and write ``@auto`` nodes from the presently selected outline. As always, an ``@ignore`` directive in the ``@auto`` node or its ancestors will suppress any of these commands.  Invokw the following in the minibuffer with Alt-x:
+<t tx="sps.20100712151944.7192">Three commands allow you to manually read and write ``@auto`` nodes from the
+presently selected outline. As always, an ``@ignore`` directive in the ``@auto``
+node or its ancestors will suppress any of these commands. Invokw the following
+in the minibuffer with Alt-x:
 
-- The ``read-at-auto-nodes`` command reads all ``@auto`` nodes in the
-  presently selected outline. An ``@ignore`` directive will suppress this import.
+- The ``read-at-auto-nodes`` command reads all ``@auto`` nodes in the presently
+  selected outline. An ``@ignore`` directive will suppress this import.
 
-- The ``write-at-auto-nodes`` command writes all ``@auto`` nodes. An
-  ``@ignore`` directive will suppress this write. Caution: if the node contains the "significant" content described above, the write will occur even if Leo has not previously read the ``@auto`` node.
-
-- The ``write-dirty-at-auto-nodes`` is the same as the ``write-at-auto-nodes`` command, except that only changed ``@auto`` trees are written.
+- The ``write-at-auto-nodes`` command writes all ``@auto`` nodes. An ``@ignore``
+  directive will suppress this write.
+  
+- The ``write-dirty-at-auto-nodes`` is the same as the ``write-at-auto-nodes``
+  command, except that only changed ``@auto`` trees are written.
 
 Most users will rarely use these explicit commands, because reading and writing
 .leo files handles ``@auto`` nodes well enough. However, you can use the
-``read-at-auto-nodes`` command to update ``@auto`` nodes changed outside of Leo (e.g., by a text editor or version control system) without having to reload the .leo file.
+``read-at-auto-nodes`` command to update ``@auto`` nodes changed outside of Leo
+(e.g., by a text editor or version control system) without having to reload the
+.leo file.
 </t>
-<t tx="sps.20100712151944.7193">When Leo starts, an ``@edit`` node reads a file into its body without any child nodes, possibly with appropriate ``@language`` or ``@nocolor`` directives.  Like ``@auto``, Leo writes no sentinels when writing the external file.  ``@edit`` is also similar to ``@auto`` in that saving a .leo file does not save a dirty ``@edit`` node unless it contains a **significant** amount of information.  An ``@edit`` noe contains a significant amount of information if it has children or if the root node contains more than 10 characters.  In an ``@edit`` noe, Leo interprets text generation and tree walk directives in the manner of an ``@file`` or ``@thin`` subtree, but any such structure is lost once you close the Leo window.
+<t tx="sps.20100712151944.7193">When Leo starts, an ``@edit`` node reads a file into its body without any child
+nodes, possibly with appropriate ``@language`` or ``@nocolor`` directives. Like
+``@auto``, Leo writes no sentinels when writing the external file.
+
+In an ``@edit`` node, Leo interprets text generation and tree walk directives in
+the manner of an ``@file`` or ``@thin`` subtree, but any such structure is lost
+once you close the Leo window.
 </t>
 <t tx="sps.20100712151944.7194">.. _`file reference`:
 
@@ -34252,21 +34255,14 @@ sentinels, and a **private** file (by default in the ``.leo_shadow`` subfolder)
 containing sentinels. The primary sources for ``@shadow`` trees are the private
 files, updated by changes to the public file.
 
-When reading an ``@shadow`` tree, Leo will import the tree from the public file if
-the private file does not exist.  **Important**: just as for ``@auto``, the following
-exceptions apply:
+When reading an ``@shadow`` tree, Leo will import the tree from the public file
+if the private file does not exist. Leo will not read (import) or write an
+``@shadow`` tree if the ``@shadow`` node or its parents contain an ``@ignore``
+directive. ``@ignore`` in the descendants of a node only affect the node
+containing the ``@ignore`` directive and the descendants of that node.
 
-1. Leo will not read (import) or write an ``@shadow`` tree if the ``@shadow`` node or its parents contain an ``@ignore`` directive.  ``@ignore`` in the descendants of a node only affect the node containing the ``@ignore`` directive and the descendants of that node.
-
-2. Saving a .leo file does not save ``@shadow`` nodes if:
-
-   a) they haven't been changed or,
-
-   b) they do not contain a **significant** amount of information. An ``@shadow`` tree
-      contains a significant amount of information if it has children or if the
-      root node contains more than 10 characters.
-
-Leo can do an initial import of ``@shadow`` trees by parsing the corresponding public file, exactly as is done for ``@auto`` node. See the discussion of `@auto reference`_ for details.
+Leo can do an initial import of ``@shadow`` trees by parsing the corresponding
+public file, exactly as is done for ``@auto`` node. See the discussion of `@auto reference`_ for details.
 </t>
 <t tx="sps.20100712151944.7198">``@thin`` creates an external file containing sentinels.  An ``@thin`` external file contains all the
 information needed to recreate the ``@thin`` tree in the outline.  In a collaborative environment,

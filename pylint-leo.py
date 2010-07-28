@@ -108,16 +108,19 @@ pluginsTable = getPluginsTable()
 tkPass = getTkPass()
 #@-<< defines >>
 
-recentList = ()
+recentList = (
+    ('leoAtFile',''),
+    ('leoFileCommands',''),
+)
 
 tables_table = (
-    # (recentList,'core'),
-    (coreList,'core'),
-    (guiPluginsTable,'plugins'),
-    (tkPass,'plugins'),
-    (passList,'plugins'),
-    (externalList,'external'),
-    (pluginsTable,'plugins'),
+    (recentList,'core'),
+    # (coreList,'core'),
+    # (guiPluginsTable,'plugins'),
+    # (tkPass,'plugins'),
+    # (passList,'plugins'),
+    # (externalList,'external'),
+    # (pluginsTable,'plugins'),
 )
 
 for table,theDir in tables_table:

@@ -6342,9 +6342,14 @@ def writeOneAtShadowNode(self,p,toString,force):
     if not private_fn:
         return False
 
-    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
-        if trace: g.trace('ignoring',fn)
-        return False
+    if not toString and not hasattr(root.v,'at_read') and exists:
+        # Prompt if writing a new @shadow node would overwrite the existing public file.
+        ok = self.promptForDangerousWrite(fn,kind='@shadow')
+        if ok:
+            root.v.at_read = True # Create the attribute for all clones.
+        else:
+            g.es("not written:",fn)
+            return
 
     c.endEditing() # Capture the current headline.
     at.initWriteIvars(root,targetFileName=None, # Not used.
@@ -6398,36 +6403,6 @@ def writeOneAtShadowNode(self,p,toString,force):
         root.setDirty() # New in Leo 4.4.8.
 
     return at.errors == 0
-#@+node:ekr.20080711093251.6: *6* shouldWriteAtShadowNode
-@ Much thought went into this decision tree:
-
-- We do not want decisions to depend on past history.  That's too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @shadow x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
-- We don't want minor import imperfections to be written to the @shadow file.
-- The explicit commands that read and write @shadow trees must always be honored.
-@c
-
-def shouldWriteAtShadowNode (self,p,exists,force,fn):
-
-    '''Return True if we should write the @shadow node at p.'''
-
-    at = self ; x = at.c.shadowController
-
-    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
-        return True
-    elif not exists: # We can write a non-existent file without danger.
-        return True
-    elif not p.isDirty(): # There is nothing new to write.
-        return False
-    elif not self.isSignificantTree(p): # There is noting of value to write.
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
-        return False
-    else: # The @shadow tree is dirty and contains significant info.
-        return True
 #@+node:ekr.20080819075811.13: *6* adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
 
