@@ -4340,229 +4340,27 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-#@+node:ekr.20070418075804: *3* printSettingsHelper (no longer used)
-def printSettingsHelper(self,settings,d,letter=None):
+#@+node:ekr.20080620095343.1: *3* at.shouldWriteAtNosentNode (no longer used)
+@ Much thought went into this decision tree:
 
-    suppressKind = ('shortcut','shortcuts','openwithtable')
-    suppressKeys = (None,'_hash','shortcut')
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @nosent x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- The explicit commands that read and write @nosent trees must always be honored.
+@c
 
-    if d:
-        << set letter >>
-        for key in d:
-            if key not in suppressKeys and key not in settings:
-                bunch = d.get(key)
-                if bunch.kind not in suppressKind:
-                    settings[key] = (letter,bunch.val)
-#@+node:ekr.20070418084502: *4* << set letter >>
-theHash = d.get('_hash').lower()
+def shouldWriteAtNosentNode (self,p,exists):
 
-if letter:
-    pass
-elif theHash.endswith('myleosettings.leo'):
-    letter = '[M]'
-elif theHash.endswith('leosettings.leo'):
-    letter = ' ' * 3
-else:
-    letter = '[D]'
+    '''Return True if we should write the @nosent node at p.'''
 
-# g.trace(letter,theHash)
-#@+node:ekr.20100518100915.5901: *3* needClosingSentinel (not used)
-# We don't need this.  The closing sentinels for @others and section references suffice.
-
-def needClosingSentinel(self,p):
-
-    '''Return true if p's body text contains @others or a section reference.'''
-
-    at = self
-
-    lines = g.splitLines(p.b)
-    for s in lines:
-        if s.find('@others') > -1: return True
-        i = s.find('<<')
-        j = s.find('>>')
-        if -1 < i < j: return True
-    return False
-#@+node:ekr.20100624082003.5943: *3* Unused from readNormalLine
-# Now in appendToDocPart
-#@+node:ekr.20041005105605.78: *4* << Skip the leading stuff >>
-if len(at.endSentinelComment) == 0:
-    # Skip the single comment delim and a blank.
-    i = g.skip_ws(s,0)
-    if g.match(s,i,at.startSentinelComment):
-        i += len(at.startSentinelComment)
-        if g.match(s,i," "): i += 1
-else:
-    i = at.skipIndent(s,0,at.indent)
-#@+node:ekr.20041005105605.79: *4* << Append s to docOut >> (unused)
-line = s[i:-1] # remove newline for rstrip.
-
-if line == line.rstrip():
-    # no trailing whitespace: the newline is real.
-    at.docOut.append(line + '\n')
-else:
-    # trailing whitespace: the newline is fake.
-    at.docOut.append(line)
-#@+node:ekr.20100625085138.5954: *3* Not used from readStartNode
-#@+node:ekr.20041005105605.86: *4* << set gnx and bump i >>
-j = s.find(':',i)
-if j == -1:
-    g.trace("no closing colon",g.get_line(s,i))
-    at.readError("Expecting gnx in @+node sentinel")
-    return
-
-gnx = s[i:j]
-
-if newNode:
-    if not g.match(s,j,': '):
-        at.readError('Expecting space after gnx')
-        return
-    i = j + 2
-    level = 0
-    while i < len(s) and s[i] == '*':
-        i += 1
-        level += 1
-    if level == 0:
-        at.readError('No level stars')
-        return
-    if not g.match(s,i,' '):
-        at.readError('No space after level stars')
-        return
-    i += 1
-else:
-    i = j + 1 # Skip the i
-#@+node:ekr.20041005105605.87: *4* << Set headline, undoing the CWEB hack >>
-# Set headline to the rest of the line.
-# Don't strip leading whitespace."
-
-if len(at.endSentinelComment) == 0:
-    headline = s[i:-1].rstrip()
-else:
-    k = s.rfind(at.endSentinelComment,i)
-    headline = s[i:k].rstrip() # works if k == -1
-
-# Undo the CWEB hack: undouble @ signs if\
-# the opening comment delim ends in '@'.
-if at.startSentinelComment[-1:] == '@':
-    headline = headline.replace('@@','@')
-#@+node:ekr.20100518100915.5900: *3* do_end_nodes
-def do_end_nodes (self,n):
-
-    '''Remove n node sentinels from the sentinel stack,
-    and possibly sentinels for @others ranges.'''
-
-    trace = True and not g.unitTesting
-    at = self
-    s,i = '',0 # dummy params for calls to at.readEndX below
-    assert n > 0
-    if trace: g.trace('***** n: %s' % n)
-    while at.endSentinelStack and n > 0:
-        top  = at.endSentinelStack[-1]
-        if trace: g.trace(at.sentinelName(top))
-        if top == at.endNode:
-            at.readEndNode(s,i) # Pops the stack
-            n -= 1
-        # elif top == at.endOthers:
-            # at.readEndOthers(s,i) # Pops the stack
-        else:
-            g.trace('unexpected top: %s' % at.sentinelName(top))
-            break
-#@+node:ekr.20041005105605.96: *3* << indicate that the node has been changed >>
-if at.perfectImportRoot:
-    << bump at.correctedLines and tell about the correction >>
-    at.v._bodyString = s # Allowed use of _bodyString.
-        # Just setting at.v.tempBodyString won't work here.
-    at.v.setDirty()
-        # Mark the node dirty. Ancestors will be marked dirty later.
-    at.c.setChanged(True)
-else:
-    # 2010/02/05: removed special case for @all.
-    c.nodeConflictList.append(g.bunch(
-        tag='(uncached)',
-        gnx=at.v.gnx,
-        fileName = at.root.h,
-        b_old=old,
-        b_new=s,
-        h_old=at.v._headString,
-        h_new=at.v._headString,
-    ))
-
-    g.es_print("uncached read node changed",at.v.h,color="red")
-
-    at.v.setDirty()
-        # Just set the dirty bit. Ancestors will be marked dirty later.
-    c.changed = True
-        # Important: the dirty bits won't stick unless we set c.changed here.
-        # Do *not* call c.setChanged(True) here: that would be too slow.
-#@+node:ekr.20041005105605.97: *4* << bump at.correctedLines and tell about the correction >>
-# Report the number of corrected nodes.
-at.correctedLines += 1
-
-found = False
-for p in at.perfectImportRoot.self_and_subtree():
-    if p.v == at.v:
-        found = True ; break
-
-if found:
-    if 0: # For debugging.
-        g.pr('\n','-' * 40)
-        g.pr("old",len(old))
-        for line in g.splitLines(old):
-            #line = line.replace(' ','< >').replace('\t','<TAB>')
-            g.pr(repr(str(line)))
-        g.pr('\n','-' * 40)
-        g.pr("new",len(s))
-        for line in g.splitLines(s):
-            #line = line.replace(' ','< >').replace('\t','<TAB>')
-            g.pr(repr(str(line)))
-        g.pr('\n','-' * 40)
-else:
-    # This should never happen.
-    g.es("correcting hidden node: v=",repr(at.v),color="red")
-#@+node:ekr.20100630062622.5831: *3* readDocPart (not used)
-# It's too difficult to communicate with scanText4.
-def readDocPart (self):
-
-    at = self
-
-    while True:
-        s = at.readLine(theFile)
-        if trace and verbose: g.trace(repr(s))
-        at.lineNumber += 1
-        if len(s) == 0:
-            at.done = True
-            break
-        kind = at.sentinelKind4(s)
-        if kind ==at.cDirective:
-            at.readLastDocLine("@")
-            break
-        elif kind == at.codeDirective:
-            at.readLastDocLine("@doc")
-            break
-        else:
-            at.readNormalLine(s)
-#@+node:ekr.20100629190135.5829: *3* putDocPart (new)
-def putDocPart (self,s,i,docKind,next_i):
-
-    trace = True and not g.unitTesting
-    at = self
-
-    at.putStartDocLine(s,i,docKind)
-    i = next_i
-
-    while i < len(s):
-        next_i = g.skip_line(s,i)
-        assert(next_i > i)
-        kind = at.directiveKind4(s,i)
-        # Only @c and @code end the doc part.
-        if kind in (at.cDirective,at.codeDirective):
-            at.putEndDocLine() 
-            at.putDirective(s,i)
-            i = next_i
-            break
-        else:
-            at.putDocLine(s,i)
-            i = next_i
-    return i
-#@+node:ekr.20100624082003.5944: *3* at.closePreviousNode (not used)
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
 #@-all
 #@-leo

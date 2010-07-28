@@ -713,7 +713,13 @@ class atFile:
                     p.setDirty() # Expensive, but it can't be helped.
                     c.setChanged(True)
                 p.moveToNodeAfterTree()
-            else: p.moveToThreadNext()
+            else:
+                # 2010/7/28: set v.at_read bit if the @asis or @nosent
+                # **node** exists.  We'll prompt for dangerous writes
+                # if a) this bit is clear and b) the file exists.
+                if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                   p.v.at_read = True # Remember that we have seen this node.
+                p.moveToThreadNext()
         # Clear all orphan bits.
         for v in c.all_unique_nodes():
             v.clearOrphan()
@@ -2570,8 +2576,15 @@ class atFile:
             eventualFileName = c.os_path_finalize_join(
                 at.default_directory,at.targetFileName)
             exists = g.os_path_exists(eventualFileName)
-            if not toString and not self.shouldWriteAtAsisNode(root,exists):
-                return
+            # if not toString and not self.shouldWriteAtAsisNode(root,exists):
+            if not hasattr(root.v,'at_read') and exists:
+                # Prompt if writing a new @asis node would overwrite the existing file.
+                ok = self.promptForDangerousWrite(eventualFileName,kind='@asis')
+                if ok:
+                    root.v.at_read = True # Create the attribute for all clones.
+                else:
+                    g.es("not written:",eventualFileName)
+                    return
             if at.errors: return
             if not at.openFileForWriting(root,targetFileName,toString):
                 # openFileForWriting calls root.setDirty() if there are errors.
@@ -2601,28 +2614,6 @@ class atFile:
             at.writeException(root) # Sets dirty and orphan bits.
 
     silentWrite = asisWrite # Compatibility with old scripts.
-    #@+node:ekr.20100728074713.5837: *5* at.shouldWriteAtAsisNode
-    #@+at Much thought went into this decision tree:
-    # 
-    # - We do not want decisions to depend on past history. That' s too confusing.
-    # - We must ensure that the file will be written if the user does significant work.
-    # - We must ensure that the user can create an @asis x node at any time
-    #   without risk of of replacing x with empty or insignificant information.
-    # - The explicit commands that read and write @asis trees must always be honored.
-    #@@c
-
-    def shouldWriteAtAsisNode (self,p,exists):
-
-        '''Return True if we should write the @nosent node at p.'''
-
-        if not exists: # We can write a non-existent file without danger.
-            return True
-        elif self.isSignificantTree(p):
-            return True # Assume the tree contains what should be written.
-        else:
-            g.es_print(p.h,'not written:',color='red')
-            g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
-            return False
     #@+node:ekr.20041005105605.142: *4* at.openFileForWriting & helper
     def openFileForWriting (self,root,fileName,toString):
 
@@ -2755,14 +2746,11 @@ class atFile:
         eventualFileName = c.os_path_finalize_join(
             at.default_directory,at.targetFileName)
         exists = g.os_path_exists(eventualFileName)
-        # g.trace('eventualFileName',eventualFileName,
-            # 'at.targetFileName',at.targetFileName)
 
         if not scriptWrite and not toString:
-            if nosentinels:
-                if not self.shouldWriteAtNosentNode(root,exists):
-                    return
-            elif not hasattr(root.v,'at_read') and exists:
+            # 2010/7/28: The read logic now sets the at_read bit for @nosent nodes,
+            # so we can just use promptForDangerousWrite.
+            if not hasattr(root.v,'at_read') and exists:
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind)
@@ -2811,28 +2799,6 @@ class atFile:
                 root.v._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
-    #@+node:ekr.20080620095343.1: *5* at.shouldWriteAtNosentNode
-    #@+at Much thought went into this decision tree:
-    # 
-    # - We do not want decisions to depend on past history.That ' s too confusing.
-    # - We must ensure that the file will be written if the user does significant work.
-    # - We must ensure that the user can create an @nosent x node at any time
-    #   without risk of of replacing x with empty or insignificant information.
-    # - The explicit commands that read and write @nosent trees must always be honored.
-    #@@c
-
-    def shouldWriteAtNosentNode (self,p,exists):
-
-        '''Return True if we should write the @nosent node at p.'''
-
-        if not exists: # We can write a non-existent file without danger.
-            return True
-        elif self.isSignificantTree(p):
-            return True # Assume the tree contains what should be written.
-        else:
-            g.es_print(p.h,'not written:',color='red')
-            g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
-            return False
     #@+node:ekr.20041005105605.147: *4* at.writeAll & helper
     def writeAll(self,
         writeAtFileNodesFlag=False,

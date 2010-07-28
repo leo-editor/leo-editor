@@ -5582,8 +5582,15 @@ def asisWrite(self,root,toString=False):
         eventualFileName = c.os_path_finalize_join(
             at.default_directory,at.targetFileName)
         exists = g.os_path_exists(eventualFileName)
-        if not toString and not self.shouldWriteAtAsisNode(root,exists):
-            return
+        # if not toString and not self.shouldWriteAtAsisNode(root,exists):
+        if not hasattr(root.v,'at_read') and exists:
+            # Prompt if writing a new @asis node would overwrite the existing file.
+            ok = self.promptForDangerousWrite(eventualFileName,kind='@asis')
+            if ok:
+                root.v.at_read = True # Create the attribute for all clones.
+            else:
+                g.es("not written:",eventualFileName)
+                return
         if at.errors: return
         if not at.openFileForWriting(root,targetFileName,toString):
             # openFileForWriting calls root.setDirty() if there are errors.
@@ -5611,28 +5618,6 @@ s = p.b
 if s:
     s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
     at.outputStringWithLineEndings(s)
-#@+node:ekr.20100728074713.5837: *8* at.shouldWriteAtAsisNode
-@ Much thought went into this decision tree:
-
-- We do not want decisions to depend on past history. That' s too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @asis x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- The explicit commands that read and write @asis trees must always be honored.
-@c
-
-def shouldWriteAtAsisNode (self,p,exists):
-
-    '''Return True if we should write the @nosent node at p.'''
-
-    if not exists: # We can write a non-existent file without danger.
-        return True
-    elif self.isSignificantTree(p):
-        return True # Assume the tree contains what should be written.
-    else:
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
-        return False
 #@+node:ekr.20041005105605.142: *7* at.openFileForWriting & helper
 def openFileForWriting (self,root,fileName,toString):
 
@@ -5752,14 +5737,11 @@ def write (self,root,
     eventualFileName = c.os_path_finalize_join(
         at.default_directory,at.targetFileName)
     exists = g.os_path_exists(eventualFileName)
-    # g.trace('eventualFileName',eventualFileName,
-        # 'at.targetFileName',at.targetFileName)
 
     if not scriptWrite and not toString:
-        if nosentinels:
-            if not self.shouldWriteAtNosentNode(root,exists):
-                return
-        elif not hasattr(root.v,'at_read') and exists:
+        # 2010/7/28: The read logic now sets the at_read bit for @nosent nodes,
+        # so we can just use promptForDangerousWrite.
+        if not hasattr(root.v,'at_read') and exists:
             # Prompt if writing a new @file or @thin node would
             # overwrite an existing file.
             ok = self.promptForDangerousWrite(eventualFileName,kind)
@@ -5819,28 +5801,6 @@ root.setDirty()
 # Delete the temp file.
 self.remove(at.outputFileName) 
 
-#@+node:ekr.20080620095343.1: *8* at.shouldWriteAtNosentNode
-@ Much thought went into this decision tree:
-
-- We do not want decisions to depend on past history.That ' s too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @nosent x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- The explicit commands that read and write @nosent trees must always be honored.
-@c
-
-def shouldWriteAtNosentNode (self,p,exists):
-
-    '''Return True if we should write the @nosent node at p.'''
-
-    if not exists: # We can write a non-existent file without danger.
-        return True
-    elif self.isSignificantTree(p):
-        return True # Assume the tree contains what should be written.
-    else:
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
-        return False
 #@+node:ekr.20041005105605.147: *7* at.writeAll & helper
 def writeAll(self,
     writeAtFileNodesFlag=False,
