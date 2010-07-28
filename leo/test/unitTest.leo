@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -875,18 +875,11 @@
 </v>
 <v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
 <v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
-<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
+<v t="ekr.20090627070131.4975" a="E"><vh>#@auto</vh>
 <v t="ekr.20090627070131.4976"><vh>spam</vh></v>
 <v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
 </v>
 <v t="ekr.20090627070131.4978"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090627071704.4986"><vh>@@test @auto (no newlines at end of nodes)</vh>
-<v t="ekr.20090627071704.4987"><vh>#@auto</vh>
-<v t="ekr.20090627071704.4988"><vh>spam</vh></v>
-<v t="ekr.20090627071704.4989"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20090627071704.4990"><vh>Output</vh></v>
 </v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
 <v t="ekr.20090225102051.2"><vh>@test @edit</vh>
@@ -1245,7 +1238,7 @@
 <v t="ekr.20100131171342.5592"><vh>leoDialogs</vh>
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20071113192611" a="E"><vh>leoEditCommands</vh>
 <v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
 <v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
 <v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
@@ -1253,47 +1246,6 @@
 </v>
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
-</v>
-<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
-<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
-</v>
-<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
-<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
-<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
-</v>
-</v>
-<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
-<v t="ekr.20080907123324.3"></v>
-</v>
-<v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
-<v t="ekr.20080904110148.1"><vh>Startup</vh></v>
-<v t="ekr.20080904110148.4"><vh>Docs</vh></v>
-<v t="ekr.20080904110148.5"><vh>Scripts</vh></v>
-<v t="ekr.20080904113003.2"><vh> Test files</vh></v>
-</v>
-<v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
-<v t="ekr.20080904120258.6"><vh>Startup</vh></v>
-<v t="ekr.20080905130723.1"><vh>Docs</vh></v>
-</v>
-<v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
-<v t="ekr.20080907122804.3"><vh>Startup</vh></v>
-</v>
-<v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
-<v t="ekr.20080907123324.5"><vh>Startup</vh></v>
-</v>
-<v t="ekr.20080905113550.4"><vh>General tests</vh>
-<v t="ekr.20080905165432.1"><vh>Startup</vh></v>
-<v t="ekr.20080905165432.3"><vh>Docs</vh></v>
-<v t="ekr.20080904120258.2"><vh>Scripts</vh></v>
-<v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
-</v>
-<v t="ekr.20081111084046.6"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
@@ -1543,7 +1495,7 @@
 </v>
 <v t="ekr.20081111082931.1"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
+<v t="ekr.20070131175538.1" a="E"><vh> Commands F-L</vh>
 <v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
 <v t="ekr.20061101121602.219"><vh>work</vh></v>
 <v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
@@ -1615,8 +1567,49 @@
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
 </v>
 <v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
+<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
+<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+</v>
+<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
+<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
+<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+</v>
+</v>
+<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
+<v t="ekr.20080907123324.3"></v>
+</v>
+<v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
+<v t="ekr.20080904110148.1"><vh>Startup</vh></v>
+<v t="ekr.20080904110148.4"><vh>Docs</vh></v>
+<v t="ekr.20080904110148.5"><vh>Scripts</vh></v>
+<v t="ekr.20080904113003.2"><vh> Test files</vh></v>
+</v>
+<v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
+<v t="ekr.20080904120258.6"><vh>Startup</vh></v>
+<v t="ekr.20080905130723.1"><vh>Docs</vh></v>
+</v>
+<v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
+<v t="ekr.20080907122804.3"><vh>Startup</vh></v>
+</v>
+<v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
+<v t="ekr.20080907123324.5"><vh>Startup</vh></v>
+</v>
+<v t="ekr.20080905113550.4"><vh>General tests</vh>
+<v t="ekr.20080905165432.1"><vh>Startup</vh></v>
+<v t="ekr.20080905165432.3"><vh>Docs</vh></v>
+<v t="ekr.20080904120258.2"><vh>Scripts</vh></v>
+<v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
+</v>
+<v t="ekr.20081111084046.6"><vh>@test zz restore the screen</vh></v>
 <v t="ekr.20100216142240.5371"><vh>@test goto-global-line with @auto</vh>
 <v t="ekr.20100216142240.5372"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
+</v>
 </v>
 <v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
 <v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
@@ -2039,7 +2032,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2089,10 +2082,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2103,41 +2096,41 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2168,11 +2161,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2192,7 +2185,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2290,13 +2283,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2311,7 +2304,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2319,13 +2312,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2572,14 +2565,14 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="sps.20100624231018.20956" a="E"><vh>leoTangle</vh>
-<v t="sps.20100624231018.20957" a="E"><vh>support routines</vh>
+<v t="sps.20100624231018.20956"><vh>leoTangle</vh>
+<v t="sps.20100624231018.20957"><vh>support routines</vh>
 <v t="sps.20100624231018.20968"><vh>@test setRootFromText</vh></v>
 <v t="sps.20100625103510.5658"><vh>@test skip_section_name</vh></v>
 <v t="sps.20100624231018.20970"><vh>@test st_enter</vh></v>
 <v t="sps.20100624231018.20972"><vh>@test st_enter_root_name</vh></v>
 <v t="sps.20100624231018.20966"><vh>@test token_type</vh></v>
-<v t="sps.20100627223129.5655" a="E"><vh>parent_language_comment_settings</vh>
+<v t="sps.20100627223129.5655"><vh>parent_language_comment_settings</vh>
 <v t="sps.20100627223129.5656"><vh>@test plcs 1</vh>
 <v t="sps.20100627223129.5657"><vh>c1</vh></v>
 </v>
@@ -2595,7 +2588,7 @@
 </v>
 </v>
 </v>
-<v t="sps.20100624231018.20988" a="E"><vh>put_all_roots</vh>
+<v t="sps.20100624231018.20988"><vh>put_all_roots</vh>
 <v t="sps.20100624231018.20989"><vh>@test put_all_roots</vh>
 <v t="sps.20100624231018.20990"><vh>#@root</vh></v>
 </v>
@@ -2603,7 +2596,7 @@
 <v t="sps.20100624231018.20992"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100624231018.20958" a="E"><vh>scanAllDirectives</vh>
+<v t="sps.20100624231018.20958"><vh>scanAllDirectives</vh>
 <v t="sps.20100624231018.20959"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="sps.20100624231018.20960"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="sps.20100624231018.20961"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
@@ -2613,7 +2606,7 @@
 <v t="sps.20100624231018.20964"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100624231018.20973" a="E"><vh>skip_body</vh>
+<v t="sps.20100624231018.20973"><vh>skip_body</vh>
 <v t="sps.20100624231018.20974"><vh>@test skip_body</vh>
 <v t="sps.20100624231018.20975"><vh>#@root</vh></v>
 </v>
@@ -2621,7 +2614,7 @@
 <v t="sps.20100624231018.20977"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100624231018.20978" a="E"><vh>tanglePass1</vh>
+<v t="sps.20100624231018.20978"><vh>tanglePass1</vh>
 <v t="sps.20100624231018.20979"><vh>@test tanglePass1</vh>
 <v t="sps.20100624231018.20980"><vh>#@root</vh></v>
 </v>
@@ -2637,7 +2630,7 @@
 </v>
 </v>
 </v>
-<v t="sps.20100624231018.20983" a="E"><vh>tanglePass2</vh>
+<v t="sps.20100624231018.20983"><vh>tanglePass2</vh>
 <v t="sps.20100624231018.20984"><vh>@test tanglePass2</vh>
 <v t="sps.20100624231018.20985"><vh>#@root</vh></v>
 </v>
@@ -2646,10 +2639,10 @@
 </v>
 </v>
 </v>
-<v t="sps.20100624231018.20993" a="E"><vh>top level</vh>
-<v t="sps.20100624231018.20994" a="E"><vh>tangle</vh>
-<v t="sps.20100624231018.20995" a="E"><vh>with sentinels</vh>
-<v t="sps.20100624231018.20996" a="E"><vh>now working</vh>
+<v t="sps.20100624231018.20993"><vh>top level</vh>
+<v t="sps.20100624231018.20994"><vh>tangle</vh>
+<v t="sps.20100624231018.20995"><vh>with sentinels</vh>
+<v t="sps.20100624231018.20996"><vh>now working</vh>
 <v t="sps.20100624231018.20997"><vh>@test @root with @language c</vh>
 <v t="sps.20100624231018.20998"><vh>#@root</vh></v>
 <v t="sps.20100624231018.20999"><vh>'root-test'</vh></v>
@@ -2746,7 +2739,7 @@
 <v t="sps.20100624231018.21087"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21089"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100624231018.21061" a="E"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100624231018.21061"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
 <v t="sps.20100624231018.21062"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
 <v t="sps.20100624231018.21063"><vh>#@root</vh>
 <v t="sps.20100624231018.21064"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
@@ -2805,7 +2798,7 @@
 </v>
 </v>
 </v>
-<v t="sps.20100624231018.21095" a="E"><vh>without sentinels</vh>
+<v t="sps.20100624231018.21095"><vh>without sentinels</vh>
 <v t="sps.20100624231018.21096"><vh>@test @root with @silent</vh>
 <v t="sps.20100624231018.21097"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21098"><vh>'root-test'</vh></v>
@@ -2816,7 +2809,7 @@
 </v>
 </v>
 </v>
-<v t="sps.20100624231018.21099" a="E"><vh>untangle</vh>
+<v t="sps.20100624231018.21099"><vh>untangle</vh>
 <v t="sps.20100624231018.21100"><vh>@test simplest untangle</vh>
 <v t="sps.20100624231018.21101"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21102"><vh>#@root</vh></v>
@@ -2840,12 +2833,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -15973,11 +15966,9 @@ for s in table:
 pass
 pass
 </t>
-<t tx="ekr.20080904095020.1">@ Notes
+<t tx="ekr.20080904095020.1">@nocolor-node
 
-1. I removed the old goto-line-number command.  It's too awful too use a dialog to get the line number.
-
-2. c.gotoLineNumber is called in just two ways:
+c.gotoLineNumber is called in just two ways:
     
 - from goto-global-line with root=None,lines=None and scriptFile = False.
 - from c.goToScriptLineNumber with valid root and lines and scriptFile = True.
@@ -16036,9 +16027,7 @@ if 0:
     print('root:%s, n:%s, len(lines): %s' % (
         root and root.h,n,len(lines)))</t>
 <t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)</t>
-<t tx="ekr.20080904120258.3"># c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
-
-c.goToLineNumber(c).showResults(
+<t tx="ekr.20080904120258.3">c.goToLineNumber(c).showResults(
     found=False,p=p,n=3,n2=3,lines=['a','b'])
 
 
@@ -20664,9 +20653,7 @@ leoTest.runAtFileTest(c,p)</t>
 @others
 #end
 </t>
-<t tx="ekr.20090627070131.4976"># Test of goto-global-line command
-
-def spam(cheese):
+<t tx="ekr.20090627070131.4976">def spam(cheese):
 
     print(cheese)
 </t>
@@ -20674,38 +20661,7 @@ def spam(cheese):
 
     pass
 </t>
-<t tx="ekr.20090627070131.4978"># Test of goto-global-line command
-
-def spam(cheese):
-
-    print(cheese)
-def cheese():
-
-    pass
-#end
-</t>
-<t tx="ekr.20090627071704.4986"># No longer a valid test.
-# With new sentinels, all nodes end with a newline.
-
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)</t>
-<t tx="ekr.20090627071704.4987">@language python
-@tabwidth -4
-@others
-#end
-</t>
-<t tx="ekr.20090627071704.4988"># Test of goto-global-line command
-
-def spam(cheese):
-
-    print(cheese)</t>
-<t tx="ekr.20090627071704.4989">def cheese():
-
-    pass</t>
-<t tx="ekr.20090627071704.4990"># Test of goto-global-line command
-
-def spam(cheese):
+<t tx="ekr.20090627070131.4978">def spam(cheese):
 
     print(cheese)
 def cheese():
