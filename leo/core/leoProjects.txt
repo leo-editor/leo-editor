@@ -5578,6 +5578,12 @@ def asisWrite(self,root,toString=False):
         # so there can be no orphan or ignored nodes.
         targetFileName = root.atAsisFileNodeName()
         at.initWriteIvars(root,targetFileName,toString=toString)
+        # "look ahead" computation of eventual fileName.
+        eventualFileName = c.os_path_finalize_join(
+            at.default_directory,at.targetFileName)
+        exists = g.os_path_exists(eventualFileName)
+        if not toString and not self.shouldWriteAtAsisNode(root,exists):
+            return
         if at.errors: return
         if not at.openFileForWriting(root,targetFileName,toString):
             # openFileForWriting calls root.setDirty() if there are errors.
@@ -5605,6 +5611,28 @@ s = p.b
 if s:
     s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
     at.outputStringWithLineEndings(s)
+#@+node:ekr.20100728074713.5837: *8* at.shouldWriteAtAsisNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history. That' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @asis x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- The explicit commands that read and write @asis trees must always be honored.
+@c
+
+def shouldWriteAtAsisNode (self,p,exists):
+
+    '''Return True if we should write the @nosent node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
 #@+node:ekr.20041005105605.142: *7* at.openFileForWriting & helper
 def openFileForWriting (self,root,fileName,toString):
 
@@ -5796,16 +5824,14 @@ self.remove(at.outputFileName)
 
 - We do not want decisions to depend on past history.That ' s too confusing.
 - We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @auto x node at any time
+- We must ensure that the user can create an @nosent x node at any time
   without risk of of replacing x with empty or insignificant information.
-- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
-- We don't want minor import imperfections to be written to the @auto file.
-- The explicit commands that read and write @auto trees must always be honored.
+- The explicit commands that read and write @nosent trees must always be honored.
 @c
 
 def shouldWriteAtNosentNode (self,p,exists):
 
-    '''Return True if we should write the @auto node at p.'''
+    '''Return True if we should write the @nosent node at p.'''
 
     if not exists: # We can write a non-existent file without danger.
         return True
