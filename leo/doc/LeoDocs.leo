@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -243,8 +243,8 @@
 <v t="ekr.20091130111843.6843"><vh>Further study</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
-<v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
+<v t="EKR.20040524104904.26" a="E"><vh>Chapter 3: Using Outlines</vh>
+<v t="ekr.20050901101608" a="E"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
 <v t="sps.20100710110337.12186"><vh>@rst-ignore-node DO NOT SORT THESE HEADLINES</vh></v>
 <v t="sps.20100710110337.12187"><vh>Outline Related</vh>
@@ -262,7 +262,7 @@
 <v t="EKR.20040524104904.41"><vh>Indenting body text automatically</vh></v>
 <v t="ekr.20060920145745"><vh>Creating and destroying multiple body editors</vh></v>
 </v>
-<v t="sps.20100710110337.12189"><vh>Miscellaneous</vh>
+<v t="sps.20100710110337.12189" a="E"><vh>Miscellaneous</vh>
 <v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
 <v t="EKR.20040524104904.47"><vh>Resizing panes</vh></v>
 <v t="EKR.20040524104904.45"><vh>Opening URL's automatically</vh></v>
@@ -270,13 +270,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
-<v t="ekr.20050828061213"><vh>@rst html\directives.html</vh>
+<v t="ekr.20050831184021.5" a="E"><vh>Chapter 4: Programming with Leo</vh>
+<v t="ekr.20050828061213" a="E"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
 <v t="sps.20100712151944.7128"><vh>A Brief and Inaccurate History of Leo for Programming</vh></v>
 <v t="sps.20100712151944.7132"><vh>Creating and using external files: recommendations</vh></v>
-<v t="sps.20100712151944.7141"><vh>Overview: summary of directives</vh>
+<v t="sps.20100712151944.7141" a="E"><vh>Overview: summary of directives</vh>
 <v t="sps.20100712151944.7142"><vh>Body pane modifiers</vh></v>
 <v t="sps.20100712151944.7143"><vh>List of @&lt;file&gt; Family Directives</vh>
 <v t="sps.20100712151944.7144"><vh>External File Directives</vh></v>
@@ -285,7 +285,7 @@
 </v>
 <v t="sps.20100712151944.7147"><vh>List of @root Family Directives</vh></v>
 </v>
-<v t="sps.20100712151944.7183"><vh>All About Directives</vh>
+<v t="sps.20100712151944.7183" a="E"><vh>All About Directives</vh>
 <v t="sps.20100712151944.7184"><vh>Body pane modifiers</vh>
 <v t="sps.20100712151944.7185"><vh>@color, @nocolor, @nocolor-node and @killcolor</vh></v>
 <v t="sps.20100712151944.7186"><vh>@wrap and @nowrap</vh></v>
@@ -358,6 +358,7 @@
 <v t="sps.20100712151944.7250"><vh>@verbose, @terse, @quiet and @silent</vh></v>
 </v>
 </v>
+<v t="ekr.20100728075142.7238"><vh>\@chapters and \@chapter</vh></v>
 </v>
 <v t="EKR.20040524104904.282"><vh>@rst-ignore-node Converting @root trees to @file trees</vh></v>
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
@@ -10982,6 +10983,7 @@ color_cweb_doc_parts_with_latex and color_cweb_comments_with_latex settings.
 .. _`Leo's tutorial`:       intro.html
 .. _`Leo and reStructuredText`: rstplugin3.html
 .. _`History of Leo`:       history.html
+.. _`Using Chapters`:       outlines.html#using-chapters
 
 .. Relative links...
 .. _`@auto reference`:      `auto reference`_
@@ -22822,20 +22824,24 @@ You can also type multiple `&lt;alt-ctrl-keys&gt;` to toggle multiple checkboxes
 <t tx="ekr.20070623145346"></t>
 <t tx="ekr.20070623145346.1">Leo's setup.py script is intended only to create source distributions. It can't
 be used to install Leo because Leo is not a Python package.</t>
-<t tx="ekr.20070623145346.2">Chapters are regions of a Leo outline whose root is an ``@chapter`` node. They are available in an outline if the ``@bool usechapters`` option is True.  ``@chapter``
-nodes may appear anywhere in an outline, but the ``create-chapter`` command (see
-below) creates ``@chapter`` nodes as children of the first ``@chapters`` (note the ``s``) node in the outline.
+<t tx="ekr.20070623145346.2">Chapters are regions of a Leo outline whose root is an ``@chapter`` node. They
+are available in an outline if the ``@bool usechapters`` option is True.
+``@chapter`` nodes may appear anywhere in an outline, but the ``create-chapter``
+command (see below) creates ``@chapter`` nodes as children of the first
+``@chapters`` (note the ``s``) node in the outline.
 
-One selects a chapter with the ``select-chapter`` command, after which Leo shows only the nodes in the selected chapter; in this
-respect, chapters are like hoists. The ``main`` chapter represents the entire
-outline and can not be deleted by name. When chapters are in effect, Leo
-creates an ``@chapters`` node for the use of ``create-chapter``.
+One selects a chapter with the ``select-chapter`` command, after which Leo shows
+only the nodes in the selected chapter; in this respect, chapters are like
+hoists. The ``main`` chapter represents the entire outline and can not be
+deleted by name. When chapters are in effect, Leo creates an ``@chapters`` node
+for the use of ``create-chapter``.
 
 Associated settings:
 
 - The ``@bool use_chapters`` setting determines whether chapters are enabled.
 - The ``@bool use_chapter_tabs`` setting determines whether the chapters
-  pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.  Currently, this works in Qt, but a bug in Tk prevents it from functioning correctly in that GUI.
+  pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
+  Currently, this works in Qt, but a bug in Tk prevents it from functioning correctly in that GUI.
 
 When chapters are enabled, the Cmds-&gt;Chapters menu shows all available chapter commands:
 
@@ -33671,6 +33677,9 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an
 AttributeError as c has no .cleo when the @script is executed. Deferring it by
 using registerHandler() avoids the problem.
 </t>
+<t tx="ekr.20100728075142.7238">A node whose headline starts with @chapter denotes a region of the outline
+corresponding to a chapter. All such @chapter nodes should be contained in an
+@chapters node.  For more details, see `Using Chapters`_.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
@@ -33711,32 +33720,92 @@ os.system('make LeoDoc.pdf')
 <t tx="sps.20100710110337.12187"></t>
 <t tx="sps.20100710110337.12188"></t>
 <t tx="sps.20100710110337.12189"></t>
-<t tx="sps.20100712151944.7128">Leo has an initially bewildering array of ways to turn outlines into external files.  This history, simplified to the point of inaccuracy, may help you decide which of the varieties are appropriate to your project.  For a better and more detailed history, see the chapter `History of Leo`_.
+<t tx="sps.20100712151944.7128">Leo has an initially bewildering array of ways to turn outlines into external
+files. This history, simplified to the point of inaccuracy, may help you decide
+which of the varieties are appropriate to your project. For a better and more
+detailed history, see the chapter `History of Leo`_.
 
-The earliest variety of file generation was the ``@root`` directive, designed to work with either `CWEB`_ or `noweb`_ markup.  The model for CWEB and noweb were for a person to edit a text ("web") file containing code and markup, and then "tangle" the file into a source code file appropriate for the compiler or interpreter, and to "weave" the text file into a beautifully typeset narrative which explained all the inner workings of the code.  Leo's innovation was to realize that a lot of what the markup was doing was to expose the often hidden conceptual structure of the code, and that this could be done better with an outline.  Thus in Leo, "tangling" creates the source files from the outline, "weaving" is dropped, and "untangling" turns source files into outlines.  That last trick nearly always requires some assistance from the source file, in the form of special comments called "sentinels" which help Leo discover the names of outline headlines and the boundaries in the chunks of text (bodies) corresponding to those headlines - and which chunks are subheads to other subheads.  As with CWEB and noweb, the specifications for how to assemble the nodes into the program source code are explicit: ``&lt;&lt;`` *section* ``&gt;&gt;`` specifies the location where Leo emits the section, and ``&lt;&lt;`` *section* ``&gt;&gt;=`` *code* adds snippets of code to the end of the section definition.
+The earliest variety of file generation was the ``@root`` directive, designed to
+work with either `CWEB`_ or `noweb`_ markup. The model for CWEB and noweb were
+for a person to edit a text ("web") file containing code and markup, and then
+"tangle" the file into a source code file appropriate for the compiler or
+interpreter, and to "weave" the text file into a beautifully typeset narrative
+which explained all the inner workings of the code. Leo's innovation was to
+realize that a lot of what the markup was doing was to expose the often hidden
+conceptual structure of the code, and that this could be done better with an
+outline. Thus in Leo, "tangling" creates the source files from the outline,
+"weaving" is dropped, and "untangling" turns source files into outlines. That
+last trick nearly always requires some assistance from the source file, in the
+form of special comments called "sentinels" which help Leo discover the names of
+outline headlines and the boundaries in the chunks of text (bodies)
+corresponding to those headlines - and which chunks are subheads to other
+subheads. As with CWEB and noweb, the specifications for how to assemble the
+nodes into the program source code are explicit: ``&lt;&lt;`` *section* ``&gt;&gt;``
+specifies the location where Leo emits the section, and ``&lt;&lt;`` *section* ``&gt;&gt;=``
+*code* adds snippets of code to the end of the section definition.
 
-Patterns in how ``@root`` trees were used suggested a different and easier way of deriving code from the outline: ``@file``.  This directive occurs in the headline.  Instead of explicitly naming each section, one puts an ``@others`` directive where Leo interpolates the otherwise unplaced child sections; if you want a section put in a more specific place, specifying ``&lt;&lt;`` *section* ``&gt;&gt;`` will put it at that location in the body, and consequently require that ``&lt;&lt;`` *section* ``&gt;&gt;`` appear as a child headline defining that section.  The other innovation with ``@file`` is what happens when Leo starts: there is an immediate "untangle" of each ``@file``, thus incorporating changes from outside Leo into Leo's model of the file.  Correspondingly, when Leo exits, you're prompted to "save" (tangle) any altered ``@file`` (including alterations to child nodes).
+Patterns in how ``@root`` trees were used suggested a different and easier way
+of deriving code from the outline: ``@file``. This directive occurs in the
+headline. Instead of explicitly naming each section, one puts an ``@others``
+directive where Leo interpolates the otherwise unplaced child sections; if you
+want a section put in a more specific place, specifying ``&lt;&lt;`` *section* ``&gt;&gt;``
+will put it at that location in the body, and consequently require that ``&lt;&lt;``
+*section* ``&gt;&gt;`` appear as a child headline defining that section. The other
+innovation with ``@file`` is what happens when Leo starts: there is an immediate
+"untangle" of each ``@file``, thus incorporating changes from outside Leo into
+Leo's model of the file. Correspondingly, when Leo exits, you're prompted to
+"save" (tangle) any altered ``@file`` (including alterations to child nodes).
 
-The next innovation was ``@thin``.  ``@file`` created source code with sentinels containing almost, but not all, of what was needed to recreate the outline for the ``@file``.  That same information was in the .leo file.  Situations could arise where that information was inconsistent, and created headaches.  ``@thin`` was like ``@file``, except that *everything* needed to create the ``@thin`` outline goes into the sentinels, and *does not* go into the .leo file, thus severely reducing opportunities for inconsistency.  This has been so successful that the old ``@file`` directive now forcibly converts ``@file`` derived source code to ``@thin`` style sentinels, and otherwise acts as a synonym for ``@thin``.  (Beware, however, if you use both pre-4.7 and 4.7 *et post* versions of Leo with ``@file``: change each ``@file`` headline to ``@thin`` immediately, otherwise the incompatible sentinels for ``@file`` between the versions will be most painful.)
+The next innovation was ``@thin``. ``@file`` created source code with sentinels
+containing almost, but not all, of what was needed to recreate the outline for
+the ``@file``. That same information was in the .leo file. Situations could
+arise where that information was inconsistent, and created headaches. ``@thin``
+was like ``@file``, except that *everything* needed to create the ``@thin``
+outline goes into the sentinels, and *does not* go into the .leo file, thus
+severely reducing opportunities for inconsistency. This has been so successful
+that the old ``@file`` directive now forcibly converts ``@file`` derived source
+code to ``@thin`` style sentinels, and otherwise acts as a synonym for
+``@thin``. (Beware, however, if you use both pre-4.7 and 4.7 *et post* versions
+of Leo with ``@file``: change each ``@file`` headline to ``@thin`` immediately,
+otherwise the incompatible sentinels for ``@file`` between the versions will be
+most painful.)
 
-If you look at source code managed with ``@thin``, the sentinels will stand silently in their commented multitudes - which may be reassuring to the Leo user, but appear to the non-Leo reader as a massive invasion.  The sentinels are almost necessary for pulling in changes from external files, but if those sentinels are banished, any number of compromise approaches can be imagined - and most of them seem to have been implemented.  All these directives can appear in a headline and create files without sentinels: 
+If you look at source code managed with ``@thin``, the sentinels will stand
+silently in their commented multitudes - which may be reassuring to the Leo
+user, but appear to the non-Leo reader as a massive invasion. The sentinels are
+almost necessary for pulling in changes from external files, but if those
+sentinels are banished, any number of compromise approaches can be imagined -
+and most of them seem to have been implemented. All these directives can appear
+in a headline and create files without sentinels:
 
 \@auto
-  parses the external file to put language apppropriate nodes (modules, classes, methods, functions...) into an @thin-like outline
+  parses the external file to put language apppropriate nodes (modules, classes,
+  methods, functions...) into an @thin-like outline
   
 \@asis
-  does a strict tree walk to generate the file, ignoring ``@others`` and ``&lt;&lt;`` *section* ``&gt;&gt;`` references, keeps everything in the .leo file and ignores changes from outside Leo
+  does a strict tree walk to generate the file, ignoring ``@others`` and ``&lt;&lt;``
+  *section* ``&gt;&gt;`` references, keeps everything in the .leo file and ignores
+  changes from outside Leo
 
 \@edit
-  honors markup directives like ``@others`` when writing the external file, but when opening the .leo file, the contents of the external file all go into one node, which *might* have a language directive (e.g., ``@language python``), but never any children
+  honors markup directives like ``@others`` when writing the external file, but
+  when opening the .leo file, the contents of the external file all go into one
+  node, which *might* have a language directive (e.g., ``@language python``),
+  but never any children
 
 \@nosent
-  writes files honoring the directives in the manner of ``@thin``, keeps copies of everything in the .leo file, and ignores changes introduced into the external file
+  writes files honoring the directives in the manner of ``@thin``, keeps copies
+  of everything in the .leo file, and ignores changes introduced into the
+  external file
 
 \@shadow
-  reads and writes two versions of each file, one without sentinels, and a hidden one with sentinels as if it were ``@thin``, then uses the sentinels in the hidden file to make sense of externally introduced changes to the unsentineled file
+  reads and writes two versions of each file, one without sentinels, and a
+  hidden one with sentinels as if it were ``@thin``, then uses the sentinels in
+  the hidden file to make sense of externally introduced changes to the
+  unsentineled file
 
-There are subtleties and crucial details to each of these external file generation directives: read the descriptive sections carefully.</t>
+There are subtleties and crucial details to each of these external file
+generation directives: read the descriptive sections carefully.</t>
 <t tx="sps.20100712151944.7132">Differing external file directives are appropriate in different situations:
 
 \@asis
@@ -33769,12 +33838,13 @@ There are subtleties and crucial details to each of these external file generati
   file (by default in the ``.leo_shadow`` subfolder) containing sentinels.
 
 \@root
-  Use this directive when you need to create different pieces of multiple files within a single node.
-  This directive is the most flexible, the most difficult to use, and behaves
-  differently from every other file generating directive. It comes closest
-  in spirit to traditional literate programming tools.
-  Avoid using ``@root`` unless you have a compelling reason.  Forget nearly everything
-  you've read about ``@&lt;file&gt;`` family file generation as you carefully study the `@root Directive Family`_.</t>
+  Use this directive when you need to create different pieces of multiple files
+  within a single node. This directive is the most flexible, the most difficult
+  to use, and behaves differently from every other file generating directive. It
+  comes closest in spirit to traditional literate programming tools. Avoid using
+  ``@root`` unless you have a compelling reason. Forget nearly everything you've
+  read about ``@&lt;file&gt;`` family file generation as you carefully study the
+  `@root Directive Family`_.</t>
 <t tx="sps.20100712151944.7141">Here is a brief summary of each directive.  Directives valid in the node body text usually must occur at the start of a line.  Those directives that cause code to be interpolated may be preceded by whitespace, wich becomes the indentation for that code in the intepolation.  Some directives are valid in a headline; others are valid only in a headline.
 
 </t>
@@ -33957,13 +34027,15 @@ They have no effect on the tangle process.
 By default, the ``@bool body_pane_wraps`` setting controls whether body text wraps.  You may override this setting for a particular tree using the ``@wrap`` and ``@nowrap`` directives.  Only the first ``@wrap`` or ``@nowrap`` directive in a node has any effect.  ``@wrap`` and ``@nowrap`` are recognized in both headlines and the body.  In the body, these directives are recognized only in the first column of body text.
 
 </t>
-<t tx="sps.20100712151944.7187">Here's an simple example using ``@thin`` to create a file.  The bodies of the three nodes can be seen in the three screenshots:
+<t tx="sps.20100712151944.7187">Here's an simple example using ``@thin`` to create a file. The bodies of the
+three nodes can be seen in the three screenshots:
 
 |leoAtFileMainNode|
 |leoAtFileFirstChild|
 |leoAtFileNamedChild|
 
-Saving the .leo file creates not only the .leo file but also creates the file ``/var/tmp/example.py`` containing the following text::
+Saving the .leo file creates not only the .leo file but also creates the file
+``/var/tmp/example.py`` containing the following text::
 
     #@+leo-ver=5-thin
     #@+node:sps.20100713093238.7252: * @thin /var/tmp/example.py
@@ -34462,22 +34534,32 @@ are remembered as sentinels but have no other content.
 </t>
 <t tx="sps.20100712151944.7218">.. _`root reference`:
 </t>
-<t tx="sps.20100712151944.7220">The ``@root`` directive specifies the name of a file to create.  The remaining lines of the node body, until the next section definition or ``@`` doc part specify the contents of the file.  Normally, there is a combination of literal text and section references.  The sections referenced must be defined either within the node body (not recommended), within a descendant node body, or within the descendants of an (optional) ancesetor ``@unit`` directive.
+<t tx="sps.20100712151944.7220">The ``@root`` directive specifies the name of a file to create. The remaining
+lines of the node body, until the next section definition or ``@`` doc part
+specify the contents of the file. Normally, there is a combination of literal
+text and section references. The sections referenced must be defined either
+within the node body (not recommended), within a descendant node body, or within
+the descendants of an (optional) ancesetor ``@unit`` directive.
 </t>
 <t tx="sps.20100712151944.7222">Leo allows you to choose whether body text in ``@root`` trees will start in code
-mode or doc mode by default. The ``@root-doc`` *filename* and ``@root-code`` *filename*
-directives specify that body text is assumed to start in doc mode or code mode
-respectively. The options (-doc and -code) must follow @root immediately with no
-intervening whitespace. In effect, @root-code and @root-doc are two new
-directives.
+mode or doc mode by default. The ``@root-doc`` *filename* and ``@root-code``
+*filename* directives specify that body text is assumed to start in doc mode or
+code mode respectively. The options (-doc and -code) must follow @root
+immediately with no intervening whitespace. In effect, @root-code and @root-doc
+are two new directives.
 
-These ``@root`` options override the ``@bool at_root_bodies_start_in_doc_mode`` setting, which affects only ``@root`` trees without options.  It is better style to use the explicit
-``@root-code`` or ``@root-doc`` directive, since the meaning of plain
-``@root`` trees will depend on the ``@bool at_root_bodies_start_in_doc_mode setting``.  By default, ``@bool at_root_bodies_start_in_doc_mode = True`` for
-compatibility with earlier Leo ``@root`` trees.  The distinction in whether to expect doc or code at the beginning of a node applies only to descendants of the ``@root`` node; the node containing the ``@root`` directive always effectively begins in doc mode.</t>
-<t tx="sps.20100712151944.7224">The ``@`` directive starts a doc part.
-Doc parts continue until an ``@c`` directive, a section definition of the form ``&lt;&lt;`` *section* ``&gt;&gt;=``, or the end of the body text.
-For example, in a node headlined ``&lt;&lt; careful open &gt;&gt;``::
+These ``@root`` options override the ``@bool at_root_bodies_start_in_doc_mode``
+setting, which affects only ``@root`` trees without options. It is better style
+to use the explicit ``@root-code`` or ``@root-doc`` directive, since the meaning
+of plain ``@root`` trees will depend on the ``@bool
+at_root_bodies_start_in_doc_mode setting``. By default, ``@bool
+at_root_bodies_start_in_doc_mode = True`` for compatibility with earlier Leo
+``@root`` trees. The distinction in whether to expect doc or code at the
+beginning of a node applies only to descendants of the ``@root`` node; the node
+containing the ``@root`` directive always effectively begins in doc mode.</t>
+<t tx="sps.20100712151944.7224">The ``@`` directive starts a doc part. Doc parts continue until an ``@c``
+directive, a section definition of the form ``&lt;&lt;`` *section* ``&gt;&gt;=``, or the end
+of the body text. For example, in a node headlined ``&lt;&lt; careful open &gt;&gt;``::
 
     @ Exit with an error if we
     can't open the file
@@ -34498,7 +34580,12 @@ For example, in a node headlined ``&lt;&lt; careful open &gt;&gt;``::
 
 ``@doc`` is a synonym for ``@``, but ``@`` is preferred.
 </t>
-<t tx="sps.20100712151944.7226">If the headline is of the form ``&lt;&lt;`` *section* ``&gt;&gt;``, the ``@c`` directive ends a doc part and begins a code part.  Multiple parts may occur in the node; each of the ``@c`` will add another code part to the code section named in the headline.  If the headline does not contain a double angle bracketed section name, attempts to tangle or untangle the ``@root`` tree will generate an error.  ``@code`` is a synonym for ``@c``, but ``@c`` is preferred.
+<t tx="sps.20100712151944.7226">If the headline is of the form ``&lt;&lt;`` *section* ``&gt;&gt;``, the ``@c`` directive
+ends a doc part and begins a code part. Multiple parts may occur in the node;
+each of the ``@c`` will add another code part to the code section named in the
+headline. If the headline does not contain a double angle bracketed section
+name, attempts to tangle or untangle the ``@root`` tree will generate an error.
+``@code`` is a synonym for ``@c``, but ``@c`` is preferred.
 </t>
 <t tx="sps.20100712151944.7228">The ``@comment`` directive is followed by zero to three delimiters, separated by
 whitespace. This directive sets the single-line comment delimiter and the
@@ -34516,28 +34603,32 @@ opening and closing block comment delimiters as follows:
 
 For example, the directive ``@comment { }`` could be used to tangle Pascal files.
 
-Leo will convert underscores in the @comment directives to significant spaces.  For example::
+Leo will convert underscores in the @comment directives to significant spaces.
+For example::
 
     @comment REM_
 
-causes the comment delimiter to be "REM " (Note the trailing space).  Leo interprets a double underscore as a newline so that ``@comment __=pod__ __=cut__`` could support perl's POD facility.
+causes the comment delimiter to be "REM " (Note the trailing space). Leo
+interprets a double underscore as a newline so that ``@comment __=pod__
+__=cut__`` could support perl's POD facility.
 </t>
-<t tx="sps.20100712151944.7230">You may use the @encoding directive to specify the encoding used in an external file.
-You can't mix encodings in a single external file.  For example::
+<t tx="sps.20100712151944.7230">You may use the @encoding directive to specify the encoding used in an external
+file. You can't mix encodings in a single external file. For example::
 
     @encoding iso-8859-1
 
-If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
+If the encoding used in an external file is not "utf-8" it is represented in the
+@+leo sentinel line, like this::
 
     #@+leo-encoding=iso-8859-1.
 
-The utf-8 encoding is used by default.
-The utf-8 encoding is a "lossless" encoding (it can represent all unicode code points),
-so encoding and decoding to and from utf-8 plain strings will never cause a problem.
-When reading or writing a character not in a "lossy" encoding (such as iso-8859-1),
-Leo converts such characters to '?' and issues a warning. </t>
-<t tx="sps.20100712151944.7232">The @first directive allows you to place vebatim lines at the very start of external files.
-For example, the body text of ``foo.py`` nmight begin::
+The utf-8 encoding is used by default. The utf-8 encoding is a "lossless"
+encoding (it can represent all unicode code points), so encoding and decoding to
+and from utf-8 plain strings will never cause a problem. When reading or writing
+a character not in a "lossy" encoding (such as iso-8859-1), Leo converts such
+characters to '?' and issues a warning.</t>
+<t tx="sps.20100712151944.7232">The @first directive allows you to place vebatim lines at the very start of
+external files. For example, the body text of ``foo.py`` nmight begin::
 
 	@first #! /usr/bin/env python
 
@@ -34545,19 +34636,22 @@ The first line of body text of ``@file foo.pl`` might be::
 
 	@first #/usr/bin/perl
 
-``@first`` directives are recognized only at the start of the body text of external
-file directive nodes.  No text may precede ``@first`` directives.
-More than one ``@first`` directive may exist, like this::
+``@first`` directives are recognized only at the start of the body text of
+external file directive nodes. No text may precede ``@first`` directives. More
+than one ``@first`` directive may exist, like this::
 
 	@first #!/bin/sh -- # perl, to stop looping
 	@first eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
 	@first     if 0;
 </t>
-<t tx="sps.20100712151944.7234">Generally speaking, the ``@ignore`` directive prevents tangle and untangle from processing a node and its descendants.  It is recognized in both the headline and body text.
+<t tx="sps.20100712151944.7234">Generally speaking, the ``@ignore`` directive prevents tangle and untangle from
+processing a node and its descendants. It is recognized in both the headline and
+body text.
 </t>
-<t tx="sps.20100712151944.7236">The ``@language`` directive specifies the comment delimiters and string types recognized by the
-tangle and untangle processes.  This directive over-rides the default specified ``@string target-language`` setting.
-The languages for which comment delimiters are known for the tangle and untangle processes are::
+<t tx="sps.20100712151944.7236">The ``@language`` directive specifies the comment delimiters and string types
+recognized by the tangle and untangle processes. This directive over-rides the
+default specified ``@string target-language`` setting. The languages for which
+comment delimiters are known for the tangle and untangle processes are::
 
     actionscript                ada                     autohotkey              batch
     c                           config                  cpp                     csharp
@@ -34572,8 +34666,9 @@ The languages for which comment delimiters are known for the tangle and untangle
     unknown_language            vim                     vimoutline              xml
     xslt
 
-The ``@language`` directive also specifies how the colorizer operates.  The languages supported by the colorizer are
-described by *language* ``.py`` in the ``leo/modes`` directory.  Currently, the list of languages there is::
+The ``@language`` directive also specifies how the colorizer operates. The
+languages supported by the colorizer are described by *language* ``.py`` in the
+``leo/modes`` directory. Currently, the list of languages there is::
 
     actionscript            ada95                   ahk                     antlr
     apacheconf              apdl                    applescript             aspect_j
@@ -34612,7 +34707,9 @@ described by *language* ``.py`` in the ``leo/modes`` directory.  Currently, the 
     velocity                verilog                 vhdl                    xml
     xsl                     zpt
 
-If you choose to use a language for which the comment delimiters are unknown, use an ``@comment`` directive to inform Leo so that it may generate appropriate sentinels.
+If you choose to use a language for which the comment delimiters are unknown,
+use an ``@comment`` directive to inform Leo so that it may generate appropriate
+sentinels.
 
 Case is ignored in the language specifiers, but not in the @language itself.
 Thus, the following are equivalent::
@@ -34625,7 +34722,8 @@ but the following is invalid::
 
     @LANGUAGE html
 
-For the purposes of colorization, only the first ``@language`` directive in a node or its nearest ancestor is effective.
+For the purposes of colorization, only the first ``@language`` directive in a
+node or its nearest ancestor is effective.
 </t>
 <t tx="sps.20100712151944.7238">**SCHAEFER, IMPLEMENT THIS FOR @ROOT**
 
@@ -34638,23 +34736,38 @@ PHP file might be set up::
 	@first &lt;?php
 	...
 	@last ?&gt;</t>
-<t tx="sps.20100712151944.7242">``@path`` directives override the ``@directory default_tangle_directory`` setting.
+<t tx="sps.20100712151944.7242">``@path`` directives override the ``@directory default_tangle_directory``
+setting.
 
-``@path`` only influences ``@root`` directives which specify a relative path for their filename.
+``@path`` only influences ``@root`` directives which specify a relative path for
+their filename.
 
-The form of the ``@path`` directive is ``@path`` *direcotryname*,
-where *directoryname* is taken to be everything following ``@path`` to the end of the line.  ``@path`` may occur in both body text and headlines; only the first occurrence in a node is effective effective, with the headline taking precedence over the body.  The ``@path`` directive may occur in the same node with the ``@root`` directive.
+The form of the ``@path`` directive is ``@path`` *direcotryname*, where
+*directoryname* is taken to be everything following ``@path`` to the end of the
+line. ``@path`` may occur in both body text and headlines; only the first
+occurrence in a node is effective effective, with the headline taking precedence
+over the body. The ``@path`` directive may occur in the same node with the
+``@root`` directive.
 
-If *directoryname* is an absolute path (e.g., beginning with ``C:\\`` or ``/``) the location of the external file is specified only by that directory name and any relative ``@path`` directives intervening between the absolute name node and the ``@root`` directive.  If *directoryname* is relative, the location of the external file is relative to:
+If *directoryname* is an absolute path (e.g., beginning with ``C:\\`` or ``/``)
+the location of the external file is specified only by that directory name and
+any relative ``@path`` directives intervening between the absolute name node and
+the ``@root`` directive. If *directoryname* is relative, the location of the
+external file is relative to:
 
 1. the directory specified by all applicable ancestor ``@path`` directives, or
 2. the ``@directory default_tangle_directory``, or
 3. the directory in which the .leo file resides if the .leo file has ever been saved.
 
-An error occurs if no absolute path can be computed according to these rules,
-or if *filename* does not exist.
+An error occurs if no absolute path can be computed according to these rules, or
+if *filename* does not exist.
 
-It is usually advisable to have the Leo outline parallel the file system structure - which one hopes was chosen to be meaningful.  Put the .leo file in the topmost directory where it will be generating a file, and for all subdirectories where it will be generating files, have an ``@path`` directive in a node for that subdirectory.  For example (designating nodes by their function)::
+It is usually advisable to have the Leo outline parallel the file system
+structure - which one hopes was chosen to be meaningful. Put the .leo file in
+the topmost directory where it will be generating a file, and for all
+subdirectories where it will be generating files, have an ``@path`` directive in
+a node for that subdirectory. For example (designating nodes by their
+function)::
 
     + @root README
     + @root Makefile
@@ -34686,44 +34799,60 @@ would correspond to the files::
     lib/sublib/zazaz.c
     lib/sublib/zazaz.h
 
-If the conceptual structure does not follow the file system structure, use an ``@unit`` directive as a parent to all the ``@root`` directives, then define the named sections of the files in a structure beneath the ``@unit`` directive that *is* faithful to the concepts.  Alternatively, one may use clones to pull out nodes into sibling non-``@root`` trees that expose concepts, e.g., call-into or call-out diagrams.
+If the conceptual structure does not follow the file system structure, use an
+``@unit`` directive as a parent to all the ``@root`` directives, then define the
+named sections of the files in a structure beneath the ``@unit`` directive that
+*is* faithful to the concepts. Alternatively, one may use clones to pull out
+nodes into sibling non-``@root`` trees that expose concepts, e.g., call-into or
+call-out diagrams.
 </t>
-<t tx="sps.20100712151944.7244">The ``@pagewidth`` directive overrides the ``@int page_width`` setting.
-The form of the ``@pagewidth`` directive is ``@pagewidth`` *n*,
-where *n* is a positive integer that indicates the width of tangled pages in columns.
-For example::
+<t tx="sps.20100712151944.7244">The ``@pagewidth`` directive overrides the ``@int page_width`` setting. The form
+of the ``@pagewidth`` directive is ``@pagewidth`` *n*, where *n* is a positive
+integer that indicates the width of tangled pages in columns. For example::
 
     @pagewidth 100
 
-This setting only affects how Leo tangles doc parts into block comments when ``@bool output-doc-flag = True``.
+This setting only affects how Leo tangles doc parts into block comments when
+``@bool output-doc-flag = True``.
 </t>
-<t tx="sps.20100712151944.7246">The ``@tabwidth`` directive overrides the ``@int tab_width`` setting.
-The form of the ``@tabwidth`` directive is ``@tabwidth`` *n*,
-where the absolute value of *n* is the width of tabs in spaces.
-For example::
+<t tx="sps.20100712151944.7246">The ``@tabwidth`` directive overrides the ``@int tab_width`` setting. The form
+of the ``@tabwidth`` directive is ``@tabwidth`` *n*, where the absolute value of
+*n* is the width of tabs in spaces. For example::
 
     @tabwidth -4
 
 Negative values cause Leo to convert tabs to spaces.
 </t>
-<t tx="sps.20100712151944.7248">The ``@unit`` directive is placed as an ancestor to``@root`` trees so that a section defined anywhere in its descendants may be referenced in any of its descendant ``@root`` trees.  There is no equivalent for ``@&lt;file&gt;`` trees.
+<t tx="sps.20100712151944.7248">The ``@unit`` directive is placed as an ancestor to``@root`` trees so that a
+section defined anywhere in its descendants may be referenced in any of its
+descendant ``@root`` trees. There is no equivalent for ``@&lt;file&gt;`` trees.
 </t>
-<t tx="sps.20100712151944.7250">Whem the ``@verbose``, ``@terse``, ``@quiet`` and ``@silent`` directives appear in body text, they determine
-how the tangle process puts comments in ``@root`` derived files.
-Comments written by the user in code sections (which must of course use the native comment syntax) are always output.
-These directives control only:
-a) the comments containing doc sections and
-b) sentinel comments that delimit the beginning and end of code sections.
+<t tx="sps.20100712151944.7250">Whem the ``@verbose``, ``@terse``, ``@quiet`` and ``@silent`` directives appear
+in body text, they determine how the tangle process puts comments in ``@root``
+derived files. Comments written by the user in code sections (which must of
+course use the native comment syntax) are always output. These directives
+control only: a) the comments containing doc sections and b) sentinel comments
+that delimit the beginning and end of code sections.
 
-When ``@verbose`` is in effect, the tangle process emits the sentinels necessary for the untangle process.  If ``@bool print_doc_flag = True``, the tangle process also puts doc parts in the derived file as comments.
+When ``@verbose`` is in effect, the tangle process emits the sentinels necessary
+for the untangle process. If ``@bool print_doc_flag = True``, the tangle process
+also puts doc parts in the derived file as comments.
 
-When ``@quiet`` is in effect, the tangle process emits comments indicating section names, **BUT** does not emit the section end comments necessary for the untangle process.  If ``@bool print_doc_flag = True``, the tangle process also puts the doc parts in the derived file as comments.
+When ``@quiet`` is in effect, the tangle process emits comments indicating
+section names, **BUT** does not emit the section end comments necessary for the
+untangle process. If ``@bool print_doc_flag = True``, the tangle process also
+puts the doc parts in the derived file as comments.
 
-When ``@terse`` is in effect, tangle outputs only those comments necessary for untangle to work; it *does not* emit doc parts, regardless of the value of ``@bool print_doc_flag``.
+When ``@terse`` is in effect, tangle outputs only those comments necessary for
+untangle to work; it *does not* emit doc parts, regardless of the value of
+``@bool print_doc_flag``.
 
-When ``@silent`` is in effect tangle adds no additional comments, does not emit doc parts (regardless of ``@bool print_doc_flag``), and suppresses generation of whitespace not explicitly present in section definitions.
+When ``@silent`` is in effect tangle adds no additional comments, does not emit
+doc parts (regardless of ``@bool print_doc_flag``), and suppresses generation of
+whitespace not explicitly present in section definitions.
 
-``@verbose`` is the default.  If more than one of these directives appear in the same body text the "most verbose" of these options will be in effect.</t>
+``@verbose`` is the default. If more than one of these directives appear in the
+same body text the "most verbose" of these options will be in effect.</t>
 <t tx="sps.20100712151944.7253"></t>
 <t tx="sps.20100712151944.7254"></t>
 <t tx="sps.20100712151944.7259">This section discusses ``@root`` trees.  Every code sction in an ``@root`` tree must be part of t
@@ -34753,26 +34882,36 @@ However, ``@root`` trees are more flexible than ``@&lt;file&gt;`` trees:
 
 - The meaning of section definitions in ``@root`` trees are independent of their position within the tree, except for the influence of ancestor ``@language`` and ``@comment`` directives.
 </t>
-<t tx="sps.20100712151944.7260">Just as with ``@file`` trees, ``@root`` trees may contain code parts and doc parts, but their delineation is different.
-Code parts start with section definition lines (see below) or the ``@c`` directive.
-Doc parts start with ``@`` directive.  Parts continue until the end of body text or until the next section definition, ``@c`` or ``@`` directive.
+<t tx="sps.20100712151944.7260">Just as with ``@file`` trees, ``@root`` trees may contain code parts and doc
+parts, but their delineation is different. Code parts start with section
+definition lines (see below) or the ``@c`` directive. Doc parts start with ``@``
+directive. Parts continue until the end of body text or until the next section
+definition, ``@c`` or ``@`` directive.
 
-Body text in ``@root`` trees contain zero or more code and doc parts in any order.
-The ``@c`` directive starts a named code section if the node's headline starts with ``&lt;&lt;`` *section name* ``&gt;&gt;``.
-Otherwise, the ``@c`` directive is invalid.
+Body text in ``@root`` trees contain zero or more code and doc parts in any
+order. The ``@c`` directive starts a named code section if the node's headline
+starts with ``&lt;&lt;`` *section name* ``&gt;&gt;``. Otherwise, the ``@c`` directive is
+invalid.
 
 **Section definition lines** are lines of the form::
 
 	&lt;&lt; section name&gt;&gt;=
 
-(note the equal sign).
-Such lines also start named code parts.
-Named code parts in ``@root`` trees may be defined in several places.
-The definition of a named code part is the concatenation of all code parts with the same name.
-Body text that defines no code part is considered the doc part; it is associated with the following code section, but unless the output mode directive ``@verbose`` governs the external file generation, the doc part is ignored.
-At least one non-blank line must follow at least one section definition line for the named section; empty sections generate an error and prevent any update to the external file. 
+(note the equal sign). Such lines also start named code parts. Named code parts
+in ``@root`` trees may be defined in several places. The definition of a named
+code part is the concatenation of all code parts with the same name. Body text
+that defines no code part is considered the doc part; it is associated with the
+following code section, but unless the output mode directive ``@verbose``
+governs the external file generation, the doc part is ignored. At least one
+non-blank line must follow at least one section definition line for the named
+section; empty sections generate an error and prevent any update to the external
+file.
 
-Paired &lt;&lt; and &gt;&gt; characters on the same line always denote a section name, even within comments and strings.  Thus, &lt;&lt; and &gt;&gt; characters that do not delimit a section name must be placed on separate lines.  Specifically, the ``@raw`` and ``@end_raw`` directives are not available.  If &lt;&lt; and &gt;&gt; are not paired on a line, they are treated as ordinary &lt;&lt; and &gt;&gt; characters.
+Paired &lt;&lt; and &gt;&gt; characters on the same line always denote a section name, even
+within comments and strings. Thus, &lt;&lt; and &gt;&gt; characters that do not delimit a
+section name must be placed on separate lines. Specifically, the ``@raw`` and
+``@end_raw`` directives are not available. If &lt;&lt; and &gt;&gt; are not paired on a
+line, they are treated as ordinary &lt;&lt; and &gt;&gt; characters.
 
 Here is a typical example of the body text within an ``@root`` tree::
 
@@ -34785,9 +34924,12 @@ Here is a typical example of the body text within an ``@root`` tree::
             s = self.nodeSentinelText(v)
             self.putSentinel("@+node:" + s)
 
-The example adds a part consisting of a documentation line and six lines of code to the ``&lt;&lt;atFile methods&gt;&gt;`` code section.  Elsewhere within the ``@root`` tree, other parts may be added to the ``&lt;&lt;atFile methods&gt;&gt;`` definition.
+The example adds a part consisting of a documentation line and six lines of code
+to the ``&lt;&lt;atFile methods&gt;&gt;`` code section. Elsewhere within the ``@root`` tree,
+other parts may be added to the ``&lt;&lt;atFile methods&gt;&gt;`` definition.
 
-If we have a node with a headline starting with ``&lt;&lt;atFile methods&gt;&gt;``, an equivalent to the example above is::
+If we have a node with a headline starting with ``&lt;&lt;atFile methods&gt;&gt;``, an
+equivalent to the example above is::
 
     @ This method puts an open node sentinel for node v.
     @c
@@ -34809,29 +34951,38 @@ If we convert the doc part to a comment we have::
             s = self.nodeSentinelText(v)
             self.putSentinel("@+node:" + s)
 
+The following escape convention applies only in @root trees. Within a code part
+``@@@`` in the first column (and only in the first column) stands for a single
+``@`` sign.</t>
+<t tx="sps.20100712151944.7261">Each ``@root`` directive corresponds to an external file. **Tangling** is a
+process of creating external files from ``@&lt;file&gt;`` or ``@root`` trees. Leo
+tangles ``@&lt;file&gt;`` trees automatically whenever an outline is saved. The user
+must tangle ``@root`` trees explicitly using one of the Tangle commands.
 
-The following escape convention applies only in @root trees.
-Within a code part ``@@@`` in the first column (and only in the first column) stands for a single ``@`` sign.</t>
-<t tx="sps.20100712151944.7261">Each ``@root`` directive corresponds to an external file. **Tangling** is a process
-of creating external files from ``@&lt;file&gt;`` or ``@root`` trees.  Leo tangles ``@&lt;file&gt;``
-trees automatically whenever an outline is saved. The user must tangle
-``@root`` trees explicitly using one of the Tangle commands.
+The tangle process for ``@root`` directives is quite different from that for
+``@&lt;file&gt;`` directives, reflecting the differing semantics of ``@root``
+directives. Leo creates external files by expanding all section references in an
+``@root`` node. Leo expands a section reference by substituting the code section
+itself for the section reference. This is a recursive process: the substituted
+code section may contain other code references which are themselves expanded,
+and so on.
 
-The tangle process for ``@root`` directives is quite different from that for ``@&lt;file&gt;`` directives, reflecting the differing semantics of ``@root`` directives.  Leo creates external files by expanding all section references in an ``@root`` node.  Leo expands a section reference by substituting the code section itself for the
-section reference. This is a recursive process: the substituted code section may
-contain other code references which are themselves expanded, and so on.
+The outline provides a natural way of organizing by placing the definition of a
+section S in a child of the node containing the reference to S. However, if a
+section is referenced in more than one node, it may be placed in an ancestor of
+all the nodes that refer to it. Usually these rules of thumb creates an outline
+whose structure mirrors the intrinsic organization of a program. If not, use a
+separate tree not containing ``@root`` directives but containing clones of the
+source code nodes along with organizing and documentation nodes to explain the
+program files.
 
-The outline provides a natural way of organizing by placing the definition of a section S in a child of the node containing the reference to S.  However, if a section is referenced in more than one node, it may be placed in an ancestor of all the nodes that refer to it. Usually these rules of thumb
-creates an outline whose structure mirrors the intrinsic organization of a
-program.  If not, use a separate tree not containing ``@root`` directives but containing clones of the source code nodes along with organizing and documentation nodes to explain the program files.
-
-The Tangle command creates external files from an ``@root`` node. The ``@root`` directive
-indicates which sections constitute an output file. The text following an ``@root``
-directive forms the entire content of the file, that is, after section
-references are expanded. An outline can contain arbitrarily many ``@root``
-directives: Leo's ``tangle-all``  command will create one output file for each. The
-process of creating external files is called "tangling" because the code from
-the outline is rearranged to create the external files.
+The Tangle command creates external files from an ``@root`` node. The ``@root``
+directive indicates which sections constitute an output file. The text following
+an ``@root`` directive forms the entire content of the file, that is, after
+section references are expanded. An outline can contain arbitrarily many
+``@root`` directives: Leo's ``tangle-all`` command will create one output file
+for each. The process of creating external files is called "tangling" because
+the code from the outline is rearranged to create the external files.
 
 For example, the following @root section shows a typical way of specifying a
 header file xx.h::
@@ -34846,8 +34997,9 @@ header file xx.h::
     #endif
 
 The Tangle commands will create the file xx.h from this body text by expanding
-all the section references.  Any text preceding the ``@root`` directive is treated
-just like the doc part of a section definition and does not appear in the external file.
+all the section references. Any text preceding the ``@root`` directive is
+treated just like the doc part of a section definition and does not appear in
+the external file.
 
 As another example, the following shows a typical way of specifying the
 corresponding xx.c file::
@@ -34859,9 +35011,11 @@ corresponding xx.c file::
     &lt;&lt; private function prototypes of the xx class &gt;&gt;
     &lt;&lt; methods of the xx class &gt;&gt;
 
-Three commands tangle an outline: ``tangle``, ``tangle-all``, and ``tangle-marked``; they appear in the File-&gt;Tangle submenu.  These commands are identical except for how much of the outline
-is tangled.  ``tangle`` processes only the selected portion of the outline;
-``tangle-all`` processes the entire outline, and ``tangle-marked`` processes only marked headlines.
+Three commands tangle an outline: ``tangle``, ``tangle-all``, and
+``tangle-marked``; they appear in the File-&gt;Tangle submenu. These commands are
+identical except for how much of the outline is tangled. ``tangle`` processes
+only the selected portion of the outline; ``tangle-all`` processes the entire
+outline, and ``tangle-marked`` processes only marked headlines.
 
 The ``@root`` directive has three forms. All three forms mean exactly the same
 thing::
@@ -34870,8 +35024,9 @@ thing::
     @root "filename"
     @root &lt;filename&gt;
 
-If *filename* is an absolute filename the location of the external file is specified only by the filename.
-Otherwise, when ``@root`` is given a relative filename, the location of the external file is relative to:
+If *filename* is an absolute filename the location of the external file is
+specified only by the filename. Otherwise, when ``@root`` is given a relative
+filename, the location of the external file is relative to:
 
 1. the directory specified by ``@path`` directives in parent nodes, or
 2. the ``@directory default_tangle_directory`` if no ``@path`` directive is in effect, or
@@ -34882,15 +35037,16 @@ or if the filename or directory does not exist.
 
 The scope of a definition is the tree in which the definition is known. By
 default, tangle commands look for section definitions only in the suboutline of
-the ``@root`` directive being tangled. That is, all sections are assumed to be defined
-either in the body text of the node, say with headline *h*, containing the ``@root`` directive,
-or in the body texts of the descendants of *h*. The ``@unit`` directive explicitly
-indicates the scope of section definitions. When a tangle command encounters the
-``@unit`` directive it treats the suboutline containing the ``@unit`` command as the
-scope for all enclosed roots. This ensures that the group of roots in the
-subtree use the same section definitions.
+the ``@root`` directive being tangled. That is, all sections are assumed to be
+defined either in the body text of the node, say with headline *h*, containing
+the ``@root`` directive, or in the body texts of the descendants of *h*. The
+``@unit`` directive explicitly indicates the scope of section definitions. When
+a tangle command encounters the ``@unit`` directive it treats the suboutline
+containing the ``@unit`` command as the scope for all enclosed roots. This
+ensures that the group of roots in the subtree use the same section definitions.
 
-For example, suppose we have a tree organized as follows with nodes indicated by their body contents::
+For example, suppose we have a tree organized as follows with nodes indicated by
+their body contents::
 
 	+ @unit
 		+ @root A
@@ -34909,38 +35065,41 @@ error messages.  It also ensures that part of the outline does not contribute a 
 definition to another part of the outline by mistake.
 </t>
 <t tx="sps.20100712151944.7262">The ``untangle``, ``untangle-all``, and ``untangle-marked`` commands are the
-reverse of the corresponding tangle commands. They are found in the File-&gt;Untangle
-submenu.  They update one or more ``@root`` nodes based on
-changes made to the corresponding external files.
+reverse of the corresponding tangle commands. They are found in the
+File-&gt;Untangle submenu. They update one or more ``@root`` nodes based on changes
+made to the corresponding external files.
 
 For example, suppose you create a new part of the outline and tangle it for the
-first time. When you compile the external files you may get
-syntax errors.  You could fix those errors in the outline and tangle the
-outline again, but you may also fix the errors in the
-external files using the compiler's editor, then run the untangle command on the
-part of the outline that created the external files. The untangle command uses the sentinels in the external files to update the outline to match the changes in the external files.  The untangle command marks all the nodes in the outline
-that it updates, so by doing ``unmark-all`` before the untangle you can review all such nodes with the ``goto-next-marked`` command (menu Outline-&gt;Go To...-&gt;Go To Next Marked).
+first time. When you compile the external files you may get syntax errors. You
+could fix those errors in the outline and tangle the outline again, but you may
+also fix the errors in the external files using the compiler's editor, then run
+the untangle command on the part of the outline that created the external files.
+The untangle command uses the sentinels in the external files to update the
+outline to match the changes in the external files. The untangle command marks
+all the nodes in the outline that it updates, so by doing ``unmark-all`` before
+the untangle you can review all such nodes with the ``goto-next-marked`` command
+(menu Outline-&gt;Go To...-&gt;Go To Next Marked).
 
-You cannot use Untangle to update doc parts, since those are not present in
-the external file.
+You cannot use Untangle to update doc parts, since those are not present in the
+external file.
 
-Untangle does not change the structure of an outline; it never inserts, deletes or
-moves nodes.  Don't attempt to change the structure of an outline by modifying
-external files; it won't work.  Also, never delete, move or alter the sentinel
-lines in external files written by the tangle command.  Such lines start with the
+Untangle does not change the structure of an outline; it never inserts, deletes
+or moves nodes. Don't attempt to change the structure of an outline by modifying
+external files; it won't work. Also, never delete, move or alter the sentinel
+lines in external files written by the tangle command. Such lines start with the
 comment delimiter followed by a section name, and are easily recognizable.
 
 If you change the section name in a sentinel line untangle will not update the
 code in the outline (with the old name) that generated the renamed section.
 Untangle warns about sections that appear in an external file but not in the
-outline.  Untangle has no trouble with changed section references in external
+outline. Untangle has no trouble with changed section references in external
 files; it is only changed sentinel lines that cause problems.
 
 Cloned nodes that generate code in several files may cause problems for
-untangle.  Untangle will update all cloned nodes each time it is encounters
-the code section referenced, so only the code in the last encountered referenced
-section will take effect. Therefore, the safe way to update text in cloned
-nodes is to make the change in the .leo file rather than the external files.
+untangle. Untangle will update all cloned nodes each time it is encounters the
+code section referenced, so only the code in the last encountered referenced
+section will take effect. Therefore, the safe way to update text in cloned nodes
+is to make the change in the .leo file rather than the external files.
 </t>
 <t tx="sps.20100714141211.16549"># run this node with Control-b to discover Leo's current list of languages
 for lang in sorted(g.app.language_delims_dict.keys()):
@@ -34950,7 +35109,15 @@ for lang in sorted(g.app.language_delims_dict.keys()):
 <t tx="sps.20100716120121.18081">The following sections are ordered for didactic clarity.
 </t>
 <t tx="sps.20100716120121.18082"></t>
-<t tx="sps.20100716120121.18083">Leo puts special comments into the derived files called *sentinels*.  Their purpose is to guide the untangle process as it incorporates changes made to the external file into the Leo outline.  If a node contains section definitions destined for different files with different languages, you may need to change comment conventions in the midst of a node.  This is now possible by preceding a section definition with an ``@language`` or ``@comment`` directive appropriate to that section's syntax; the new syntax will remain in effect for the remainder of the node and for all descendants until the next ``@language`` or ``@comment`` directive.  For example, one might have a node containing::
+<t tx="sps.20100716120121.18083">Leo puts special comments into the derived files called *sentinels*. Their
+purpose is to guide the untangle process as it incorporates changes made to the
+external file into the Leo outline. If a node contains section definitions
+destined for different files with different languages, you may need to change
+comment conventions in the midst of a node. This is now possible by preceding a
+section definition with an ``@language`` or ``@comment`` directive appropriate
+to that section's syntax; the new syntax will remain in effect for the remainder
+of the node and for all descendants until the next ``@language`` or ``@comment``
+directive. For example, one might have a node containing::
 
     @language java
     &lt;&lt; invoke stored procedure normalize_time_period_limit &gt;&gt;=
@@ -34978,7 +35145,10 @@ for lang in sorted(g.app.language_delims_dict.keys()):
     END;
     $$ LANGUAGE PLPGSQL;
 
-In that example, the different section definitions are destined for different files, and each begins and ends with the same comment convention.  Sometimes one needs to mix languages within a single file; for example, here is javascript embedded in html::
+In that example, the different section definitions are destined for different
+files, and each begins and ends with the same comment convention. Sometimes one
+needs to mix languages within a single file; for example, here is javascript
+embedded in html::
 
     @language html
     &lt;&lt;head&gt;&gt;=
@@ -34996,13 +35166,28 @@ In that example, the different section definitions are destined for different fi
     --&gt;&lt;/script&gt;
     @comment &lt;!-- --&gt;
 
-Note that ``@comment`` and ``@language`` take effect in both doc and code parts, and they apply from that point forward to the sentinels of the *defined* section; they **DO NOT** apply to *referenced* sections: referenced sections must be defined under the influence of ``@comment`` or ``@language`` directives appropriate to the context in which they will be referenced.  Note how the javascript section in the example ends with an ``@comment`` that prepares for the transition back to html.
+Note that ``@comment`` and ``@language`` take effect in both doc and code parts,
+and they apply from that point forward to the sentinels of the *defined*
+section; they **DO NOT** apply to *referenced* sections: referenced sections
+must be defined under the influence of ``@comment`` or ``@language`` directives
+appropriate to the context in which they will be referenced. Note how the
+javascript section in the example ends with an ``@comment`` that prepares for
+the transition back to html.
 
-The ``@comment`` and ``@language`` directives do not appear in external files; if untangle is applied to such files, the ``@comment`` and ``@language`` are recovered into potentially modified code sections (doc sections do not change) by placing them as the last line of the code section.  The effect on sentinels is the same regardless of where in the code section the ``@comment`` or ``@language`` directive appear.  An attempt to retain the former position within the code would be ambiguous if the context around the directive changed.  Putting ``@comment`` and ``@language`` directives at the end of the code section will lead to the fewest surprises.  In doc sections, their position may be anything that communicates clearly to the reader.</t>
-<t tx="sps.20100716120121.22542">The ``@lineending`` directive sets the line endings for individual external files.
-This directive will override the ``@string output_newline`` setting.
-The ``@lineending`` *never* affects the line endings in .leo files themselves:
-.leo files must have consistent line endings!
+The ``@comment`` and ``@language`` directives do not appear in external files;
+if untangle is applied to such files, the ``@comment`` and ``@language`` are
+recovered into potentially modified code sections (doc sections do not change)
+by placing them as the last line of the code section. The effect on sentinels is
+the same regardless of where in the code section the ``@comment`` or
+``@language`` directive appear. An attempt to retain the former position within
+the code would be ambiguous if the context around the directive changed. Putting
+``@comment`` and ``@language`` directives at the end of the code section will
+lead to the fewest surprises. In doc sections, their position may be anything
+that communicates clearly to the reader.</t>
+<t tx="sps.20100716120121.22542">The ``@lineending`` directive sets the line endings for individual external
+files. This directive will override the ``@string output_newline`` setting. The
+``@lineending`` *never* affects the line endings in .leo files themselves: .leo
+files must have consistent line endings!
 
 The valid forms of the @lineending directive are:
 
