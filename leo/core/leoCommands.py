@@ -2113,12 +2113,7 @@ class baseCommands (object):
             if isRaw:
                 p,n2,found = self.countLines(root,n)
                 n2 += 1 # Convert to one-based.
-            # elif n<=1
-                # p,n2,found = root,1,True
-            # elif n > len(lines):
-                # p,n2,found = root,root.b.count('\n'),False
             else:
-                # if n == 0: n = 1
                 vnodeName,gnx,n2,delim = self.findVnode(root,lines,n,ignoreSentinels)
                 p,found = self.findGnx(delim,root,gnx,vnodeName)
 
@@ -2133,7 +2128,7 @@ class baseCommands (object):
             i is the offset of the line within the node.
             found is True if the line was found.'''
 
-            trace = False # and not g.unitTesting
+            trace = False and not g.unitTesting
             c = self.c
 
             # Start the recursion.
@@ -2238,12 +2233,16 @@ class baseCommands (object):
 
             return (p,found)'''
 
+            trace = False and not g.unitTesting
+
             if delim and gnx:
                 gnx = g.app.nodeIndices.scanGnx(gnx,0)
                 for p in root.self_and_subtree():
                     if p.matchHeadline(vnodeName):
                         if p.v.fileIndex == gnx:
                             return p.copy(),True
+
+                if trace: g.trace('not found! %s, %s' % (gnx,repr(vnodeName)))
                 return None,False
             else:
                 return root,False
@@ -2285,24 +2284,26 @@ class baseCommands (object):
             delim:      the comment delim from the @+leo sentinel.
             '''
 
+            trace = False and not g.unitTesting
             c = self.c
             # g.trace('lines...\n',g.listToString(lines))
             gnx = None
-            delim,thinFile = self.setDelimFromLines(lines)
+            delim,readVersion5,thinFile = self.setDelimFromLines(lines)
             if not delim:
                 g.es('no sentinels in:',root.h)
                 return None,None,None,None
 
             nodeLine,offset = self.findNodeSentinel(delim,lines,n)
             if nodeLine == -1:
-                # The line precedes the first @+node sentinel
-                g.trace('no @+node!!')
+                if n < len(lines):
+                    # The line precedes the first @+node sentinel
+                    g.trace('no @+node!!')
                 return root.h,gnx,1,delim
 
             s = lines[nodeLine]
-            gnx,vnodeName = self.getNodeLineInfo(s,thinFile)
+            gnx,vnodeName = self.getNodeLineInfo(readVersion5,s,thinFile)
             if delim and vnodeName:
-                # g.trace('offset',offset)
+                if trace: g.trace('offset: %s, vnodeName: %s' % (offset,vnodeName))
                 return vnodeName,gnx,offset,delim
             else:
                 g.es("bad @+node sentinel")
@@ -2322,7 +2323,7 @@ class baseCommands (object):
             offset = 0 # This is essentially the Tk line number.
             nodeSentinelLine = -1
             line = n - 1 # Start with the requested line.
-            while line >= 0 and nodeSentinelLine == -1:
+            while len(lines) > line >= 0 and nodeSentinelLine == -1:
                 progress = line
                 s = lines[line]
                 i = g.skip_ws(s,0)
@@ -2330,9 +2331,6 @@ class baseCommands (object):
                     line,nodeSentinelLine,offset = self.handleDelim(
                         delim,s,i,line,lines,n,offset)
                 else:
-                    # offset += 1
-                        # Assume the line is real.
-                        # A dubious assumption.
                     line -= 1
                 assert nodeSentinelLine > -1 or line < progress
             return nodeSentinelLine,offset
@@ -2341,34 +2339,34 @@ class baseCommands (object):
 
             '''Handle the delim while scanning backward.'''
 
+            trace = False and not g.unitTesting
             c = self.c
             if line == n:
                 g.es("line",str(n),"is a sentinel line")
             i += len(delim)
             nodeSentinelLine = -1
 
+            # This code works for both old and new sentinels.
             if g.match(s,i,"-node"):
                 # The end of a nested section.
                 old_line = line
                 line = self.skipToMatchingNodeSentinel(lines,line,delim)
                 assert line < old_line
-                # g.trace('found',repr(lines[line]))
+                if trace: g.trace('found',repr(lines[line]))
                 nodeSentinelLine = line
                 offset = n-line
             elif g.match(s,i,"+node"):
-                # g.trace('found',repr(lines[line]))
+                if trace: g.trace('found',repr(lines[line]))
                 nodeSentinelLine = line
                 offset = n-line
             elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-                # if not ignoreSentinels:
-                    # offset += 1 # Count these as a "real" lines.
                 line -= 1
             else:
                 line -= 1
                 nodeSentinelLine = -1
             return line,nodeSentinelLine,offset
-        #@+node:ekr.20100216141722.5631: *8* getNodeLineInfo
-        def getNodeLineInfo (self,s,thinFile):
+        #@+node:ekr.20100216141722.5631: *8* getNodeLineInfo & helper
+        def getNodeLineInfo (self,readVersion5,s,thinFile):
 
             i = 0 ; gnx = None ; vnodeName = None
 
@@ -2383,20 +2381,42 @@ class baseCommands (object):
                 else:
                     i = len(s) # Force an error.
 
-            # vnode name is everything following the first or second':'
+            # old sentinels: vnode name is everything following the first or second':'
             i = s.find(':',i)
             if i > -1:
                 vnodeName = s[i+1:].strip()
+                if readVersion5: # new sentinels: remove level stars.
+                    vnodeName = self.removeLevelStars(vnodeName)
             else:
                 vnodeName = None
                 g.es_print("bad @+node sentinel",color='red')
 
             return gnx,vnodeName
+        #@+node:ekr.20100728074713.5843: *9* removeLevelStars
+        def removeLevelStars (self,s):
+
+            i = g.skip_ws(s,0)
+
+            # Remove leading stars.
+            while i < len(s) and s[i] == '*':
+                i += 1
+            # Remove optional level number.
+            while i < len(s) and s[i].isdigit():
+                i += 1
+            # Remove trailing stars.
+            while i < len(s) and s[i] == '*':
+                i += 1
+            # Remove one blank.
+            if i < len(s) and s[i] == ' ':
+                i += 1
+
+            return s[i:]
         #@+node:ekr.20100216141722.5632: *8* setDelimFromLines
         def setDelimFromLines (self,lines):
 
-            # Find the @+leo line.
             c = self.c ; at = c.atFileCommands
+
+            # Find the @+leo line.
             i = 0 
             while i < len(lines) and lines[i].find("@+leo")==-1:
                 i += 1
@@ -2408,12 +2428,16 @@ class baseCommands (object):
             if leoLine < len(lines):
                 s = lines[leoLine]
                 valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
+                readVersion5 = at.readVersion5
+
                 # New in Leo 4.5.1: only support 4.x files.
                 if valid and newDerivedFile:
                     delim = start + '@'
+            else:
+                readVersion5 = False
 
-            return delim,thinFile
-        #@+node:ekr.20100216141722.5633: *8* skipToMatchingNodeSentinel
+            return delim,readVersion5,thinFile
+        #@+node:ekr.20100216141722.5633: *8* skipToMatchingNodeSentinel (no longer used)
         def skipToMatchingNodeSentinel (self,lines,n,delim):
 
             s = lines[n]
@@ -2534,7 +2558,7 @@ class baseCommands (object):
         #@+node:ekr.20100216141722.5638: *7* showResults
         def showResults(self,found,p,n,n2,lines):
 
-            trace = False
+            trace = False and not g.unitTesting
             c = self.c ; w = c.frame.body.bodyCtrl
 
             # Select p and make it visible.
@@ -2543,15 +2567,16 @@ class baseCommands (object):
             # Put the cursor on line n2 of the body text.
             s = w.getAllText()
             if found:
-                ins = g.convertRowColToPythonIndex(s,n2-1,0)    
+                ins = g.convertRowColToPythonIndex(s,n2-1,0)
             else:
                 ins = len(s)
                 if len(lines) < n and not g.unitTesting:
                     g.es('only',len(lines),'lines',color="blue")
 
-            if trace and g.unitTesting:
+            if trace:
                 i,j = g.getLine(s,ins)
-                g.trace('%2s %2s %15s %s' % (n,n2,p.h,repr(s[i:j])))
+                g.trace('found: %5s %2s %2s %15s %s' % (
+                    found,n,n2,p.h,repr(s[i:j])))  
 
             w.setInsertPoint(ins)
             c.bodyWantsFocusNow()
