@@ -921,6 +921,7 @@ def showResults(self,found,p,n,n2,lines):
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
     w.seeInsertPoint()
+#@+node:ekr.20100729045510.5825: *4* Fixed hard crash in delete_aspell_config
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
 #@+node:ekr.20100709113505.6386: *5* patch
@@ -958,7 +959,7 @@ I think @chapters node shouldn't be in a new leo file, but it should
 be created when the first chapter is created.
 
 Ditto for the chapter selector toolbar button.
-#@+node:ekr.20100728074713.5838: *4* Remember whether @asis/@nosent existed at read time 
+#@+node:ekr.20100728074713.5838: *4* Remember whether @asis/@nosent existed at read time
 @nocolor-node
 @
 
