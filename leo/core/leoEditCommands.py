@@ -8521,7 +8521,8 @@ class AspellClass:
                 g.pr(aspell_config_retrieve(sc, "lang"))
 
             possible_err = aspell.new_aspell_speller(sc)
-            aspell.delete_aspell_config(c_int(sc))
+            ### aspell.delete_aspell_config(c_int(sc))
+            aspell.delete_aspell_config(c_void_p(sc)) # 2010/07/29
             possible_err = new_aspell_speller(sc) # 2010/05/11
             aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
 
