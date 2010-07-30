@@ -206,8 +206,8 @@
 <v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
 </v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
-<v t="ekr.20100108090658.1958"><vh>generate key events</vh>
+<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20100108090658.1958" a="E"><vh>generate key events</vh>
 <v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
 <v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
 <v t="ekr.20100108102030.1962"><vh>&lt;&lt; imports&gt;&gt;</vh></v>
@@ -292,7 +292,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070630142904"><vh>Prototype of pyrex</vh>
+<v t="ekr.20070630142904" a="E"><vh>Prototype of pyrex</vh>
 <v t="ekr.20070630142904.2"><vh>gcc build docs</vh></v>
 <v t="ekr.20070630142904.3"><vh>pyrexc command-line options</vh></v>
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
@@ -528,6 +528,7 @@
 </v>
 </v>
 <v t="ekr.20100728114551.2149"><vh>@asis at-asis-test.txt</vh></v>
+<v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -948,7 +949,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -979,7 +980,8 @@ if 0: # This can not be run locally: leoBridge.controller starts a Tk event loop
         n += 1
     g.pr('%d nodes in %s' % (n,path))
     # g.app.closeLeoWindow(c.frame)</t>
-<t tx="ekr.20070517160058.1"></t>
+<t tx="ekr.20070517160058.1">@language python
+</t>
 <t tx="ekr.20070528111805"># FrontWindowCapture.pyw
 # Version 0.1
 # Date    20070526
@@ -6347,5 +6349,8 @@ print('window events activated')</t>
 <t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
     print('%45s %s %s' % (name,letter,val))</t>
 <t tx="ekr.20100728114551.2149">Changed again.</t>
+<t tx="ekr.20100729114420.2152">@language plain
+
+This is a test.</t>
 </tnodes>
 </leo_file>

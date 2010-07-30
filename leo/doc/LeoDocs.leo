@@ -3543,6 +3543,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100730083234.7241"><vh>Fix newbie stuff</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -33678,6 +33679,101 @@ using registerHandler() avoids the problem.
 <t tx="ekr.20100728075142.7238">A node whose headline starts with @chapter denotes a region of the outline
 corresponding to a chapter. All such @chapter nodes should be contained in an
 @chapters node.  For more details, see `Using Chapters`_.</t>
+<t tx="ekr.20100730083234.7241">@nocolor-node
+
+From http://mail.google.com/mail/#inbox/129f8635de2674b7
+
+- (Done) In home page, added link to Install page, just above the Beginner's Guide.
+
+2. When I discovered the Beginner's Guide did not have install
+instructions, I next went direct to the Downloads link. The readme.txt
+file for 4.7.1-final does not mention that Python and PyQt is
+required. But readme.txt does say it has a new Windows installer. This
+led me to believe -- erroneously -- that the Windows installer is all
+I would need to download and install, since it's typical for most open
+source programs I've used to have everything needed for the install
+(for example. .NET) in the single Windows download.
+
+2a. Could the description at the SourceForge download page that begins
+with, "Leo is, an outlining editor for programmers, a general data
+management environment..." be updated to indicate that Python and PyQt
+are needed, and not just the single .exe download?
+
+2b. And perhaps the readme.txt file as well?
+
+3. Step 6 of the Windows install steps looks like this:
+
+ftype LeoFile=C:\Python26\pythonw.exe “C:\Python26\Lib\site-packages
+\leo\launchLeo.py” “%1” assoc .leo=LeoFile
+
+The problem is the "assoc .leo=LeoFile" should be typed on a line by
+itself.
+
+Can the web page be updated to make this clearer?
+
+4. When I first went to the Install page, I clicked on the link for
+"Installing Leo on Windows", got to the end of the steps and saw the
+next section was "Tracking the development version" which I wasn't
+interested in doing so I didn't read any further. I was EXCITED to try
+Leo out and wanted to get it up and running as quickly as possible.
+Clicking on the installer-created Windows link for Leo on the Start
+Menu did nothing. Eventually I found the Windows section under
+"Running Leo" and learned it was required to run Leo the first time
+from a console window and not by launching it from Windows.
+
+4a. Could this section about running Leo from the console window to
+assign the unique identifier be moved to the "Installing Leo on
+Windows" section instead, especially since it appears setting the
+unique identifier only needs to be done once (right after
+installation), and not each time a user runs Leo?
+
+4b. Could you also explain in the same section how/what the unique
+identifier is used for, especially when a user is not using cvs?
+
+5. Somewhat related, could the FAQ for "Nothing (or almost nothing)
+happens when I start Leo. What should I do?" be updated to explain
+that another reason nothing might happen -- under Windows -- is
+because you MUST run Leo from a console window  the first time after
+installing in order to assign the unique identifier. I would suggest
+this be listed first, above "Missing modules." How about something
+like this:
+
+-----
+
+Nothing (or almost nothing...)
+
+If you install Leo under Windows, be sure the first time you run Leo
+is from a console window to assign a unique identifier which is used
+for ???????.
+
+Missing modules can cause installation problems. If the installer
+doesn’t work (or puts up a dialog containing no text), you may install
+Leo from the .zip file as described at How to install Leo on Windows.
+However you are installing Leo, [if you have problems] be sure to run
+Leo in a console window. because as a last resort Leo prints error
+messages to the console.
+
+-----
+
+The "Missing modules..." paragraph remains the same except for the
+text I'm suggesting [between the brackets].
+
+6. The batch file example given under "Running Leo" does not match the
+one given in the Install instructions.
+
+Running Leo:
+cd &lt;path-to-leo&gt;
+c:\\Python26\\python &lt;path-to-leo&gt;launchLeo.py %1
+
+Installing Leo:
+@C:\Python26\python.exe -i “C:\Python26\Lib\site-packages\leo
+\launchLeo.py” %*
+
+6a. There's a difference between "%1" and "%*".
+
+6b. is the "-i" parameter needed?
+
+6c. The double backslashes are not needed.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
