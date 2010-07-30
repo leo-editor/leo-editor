@@ -209,9 +209,11 @@
 </v>
 </v>
 <v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
+<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
+<v t="ekr.20100730085341.7245"><vh>Installing Qt</vh></v>
+<v t="ekr.20100730085341.7244"><vh>Installing Tk</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
 <v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh></v>
 <v t="ekr.20090622091845.5623"><vh>Installing Leo on MacOS X</vh></v>
@@ -1055,7 +1057,8 @@
 </v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"
+expanded="ekr.20080301082848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
@@ -3543,7 +3546,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100730083234.7241"><vh>Fix newbie stuff</vh></v>
+<v t="ekr.20100730083234.7241" a="E"><vh>Fix newbie stuff</vh>
+<v t="ekr.20100730085341.7246" a="E"><vh>From Leo's home page</vh>
+<v t="ekr.20080301082848" a="E"><vh>&lt;&lt; center area &gt;&gt;</vh>
+<v t="ekr.20080301083325"><vh>&lt;&lt; what is Leo list &gt;&gt;</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -6739,23 +6748,16 @@ This chapter tells how to install and run_ Leo.
 If you have *any* problems installing Leo,
 please ask for help on `Leo's help forum`_.
 </t>
-<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.6 or later and Tk 8.4 or later. For
-Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
+<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above.
+To install Python, see the instructions at http://python.org/
 
--   Download the latest version of Leo from `Leo's download page`_.
+Download the latest version of Leo from `Leo's download page`_.
 
--   Download Python from: http://python.org/
+Leo also requires either the Qt or Tk widget set. Qt is strongly recommended. In
+particular, Leo does not work with Tk and Python 3k.
 
--   Most installations of Python have Tk pre-installed.
-    If your doesn't, you may download it from: http://tcl.activestate.com/software/tcltk/
-
-    **Warning**: When building Tcl on Linux, do **not** specify
-    "--enable-threads".
-    Only use Tcl with the default "threads not enabled" case.
-
--   Leo uses `Pmw`_ (Python Mega Widgets). Leo's extensions folder contains a copy
-    of Pmw for use if needed. Leo first tries to import Pmw normally. If that
-    fails, Leo will use the version of Pmw in the extensions folder.</t>
+The following sections describe how to install Qt or Tk.
+</t>
 <t tx="edream.110203163054.50">If you are using Debian/Ubuntu, find and install the debian package. This
 provides the best integration with your desktop (file associations, icons, launcher
 item). Failing that, follow the instructions below.
@@ -6775,7 +6777,6 @@ You now have two choices:
     cd ~/leo-4-4-3-final
     chmod u+x install
     sudo ./install
-
 
 The install script will instruct you to add /usr/local/bin to your path.
 You can, instead, add the following link::
@@ -22627,10 +22628,7 @@ Using g.getTestVars eliminates pychecker warnings about undefined c and p variab
 <t tx="ekr.20070622090350.9"># Created menu-command-key command that just returns 'continue'.</t>
 <t tx="ekr.20070622141457">1. Install Python from http://www.python.org/download/releases/
 
-2. Install PyQt. Get binary package from
-   http://www.riverbankcomputing.co.uk/software/pyqt/download which
-   matches installed Python version.
-   Then run the installer.
+2. Install either Tk or Qt, as described above.
 
 3. Install Leo.  Get Leo's .zip file from http://sourceforge.net/projects/leo/
    You can unpack the .zip file anywhere, including Python's *site-packages* folder,
@@ -22642,20 +22640,19 @@ Using g.getTestVars eliminates pychecker warnings about undefined c and p variab
       cd C:\Python26\Lib\site-packages\
       junction leo leo-4-6-2-final
 
-5. Create windows shortcut (edit paths as necessary):
+5. Create windows shortcut (edit paths as necessary)::
 
-      Target   =  C:\\Python26\\pythonw.exe "C:\\Python26\\Lib\\site-packages\\leo\\launchLeo.py"
-      Start in =  D:\\code
+      Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+      Start in =  D:\code
 
-6. Associate .leo filetype batch file:
+6. Associate .leo filetype batch file::
 
-      ftype LeoFile=C:\\Python26\\pythonw.exe "C:\\Python26\\Lib\\site-packages\\leo\\launchLeo.py" "%1"
+      ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%1"
       assoc .leo=LeoFile
 
-7. [optional] Put this leo.bat in %PATH%:
+7. [optional] Put this leo.bat in %PATH%::
 
-      @C:\\Python26\\python.exe -i "C:\\Python26\\Lib\\site-packages\\leo\\launchLeo.py" %*
-
+      @C:\Python26\python.exe -i "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
 
 For more information see::
 
@@ -25391,6 +25388,43 @@ located in the python- imaging-tk package.</t>
 <t tx="ekr.20080218154129"></t>
 <t tx="ekr.20080218154129.1"></t>
 <t tx="ekr.20080301071818"></t>
+<t tx="ekr.20080301082848">&lt;h2&gt; Leo is...&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;&lt; what is Leo list &gt;&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+Leo has an active community of helpful users and developers.&lt;br&gt;
+Please use the &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
+group to ask questions and make suggestions.
+&lt;/p&gt;
+
+&lt;p&gt;
+Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;
+&lt;/p&gt;</t>
+<t tx="ekr.20080301083325">&lt;li&gt;
+    An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
+    programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
+    You can organize your data in as many ways as you like within a &lt;i&gt;single&lt;/i&gt; outline.&lt;/li&gt;
+&lt;li&gt;
+    A &lt;i&gt;programmer's editor&lt;/i&gt; that supports optional
+    &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt; and
+    &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
+&lt;li&gt;
+    &lt;i&gt;Fully scriptable&lt;/i&gt; using &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
+    Leo's core is 100% pure Python.&lt;/li&gt;
+&lt;li&gt;
+    &lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;br&gt;
+    Leo requires either the
+    &lt;a HREF="http://docs.python.org/library/tkinter.html"&gt;Tkinter&lt;/a&gt; or
+    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt; widget set.&lt;br&gt;
+    Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
+&lt;li&gt;
+    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+    distributed under the
+    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
+</t>
 <t tx="ekr.20080304112802.1">http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
 Leo now contains minimal support for arguments to minibuffer commands.
@@ -25815,7 +25849,6 @@ Leo uses os.expanduser('~') to determine the HOME directory if no HOME environme
 
 Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-
 </t>
 <t tx="ekr.20080411111008.1">Leo ignores any subtree of an @settings tree whose headline starts with @ignore.
 
@@ -28311,6 +28344,7 @@ http://vvtools.googlecode.com/files/Leodocumentation.pdf </t>
 <t tx="ekr.20090622091845.5623">Installing Leo on MacOS 10.5 (Leopard) is straightforward.
 
 1. MacOS 10.5 comes with Python pre-installed.
+
    See http://www.python.org/download/mac/ and
    http://wiki.python.org/moin/MacPython/Leopard
    for information about using the latest version of Python.
@@ -33683,12 +33717,18 @@ corresponding to a chapter. All such @chapter nodes should be contained in an
 
 From http://mail.google.com/mail/#inbox/129f8635de2674b7
 
-- (Done) In home page, added link to Install page, just above the Beginner's Guide.
+- (Done) In home page, added link to Install page,
+         just above the Beginner's Guide.
 
-2. When I discovered the Beginner's Guide did not have install
-instructions, I next went direct to the Downloads link. The readme.txt
-file for 4.7.1-final does not mention that Python and PyQt is
-required. But readme.txt does say it has a new Windows installer. This
+- (Done) Added more explicit instructions for installing Tk and Qt.
+
+- (Done) In step 6 of the Windows install steps, the "assoc .leo=LeoFile"
+         should be on a line by itself.
+
+2. The readme.txt file for 4.7.1-final does not mention that Python and PyQt is
+   required.
+
+readme.txt does say it has a new Windows installer. This
 led me to believe -- erroneously -- that the Windows installer is all
 I would need to download and install, since it's typical for most open
 source programs I've used to have everything needed for the install
@@ -33701,13 +33741,6 @@ are needed, and not just the single .exe download?
 
 2b. And perhaps the readme.txt file as well?
 
-3. Step 6 of the Windows install steps looks like this:
-
-ftype LeoFile=C:\Python26\pythonw.exe “C:\Python26\Lib\site-packages
-\leo\launchLeo.py” “%1” assoc .leo=LeoFile
-
-The problem is the "assoc .leo=LeoFile" should be typed on a line by
-itself.
 
 Can the web page be updated to make this clearer?
 
@@ -33774,6 +33807,33 @@ Installing Leo:
 6b. is the "-i" parameter needed?
 
 6c. The double backslashes are not needed.</t>
+<t tx="ekr.20100730085341.7244">When using Tk, you must install Tk 8.4 or later. As explained later in this
+section, the Tk version of Leo does not work with Python 3.0 or later.
+
+Some installations of Python have Tk pre-installed. If yours doesn't, download
+it from: http://tcl.activestate.com/software/tcltk/
+
+Follow the installation instructions. **Warning**: When building Tcl on Linux,
+do **not** specify "--enable-threads". Only use Tcl with the default "threads
+not enabled" case.
+
+Leo uses `Pmw`_ (Python Mega Widgets). Leo's extensions folder contains a copy
+of Pmw for use if needed. Leo first tries to import Pmw normally. If that
+fails, Leo will use the version of Pmw in the extensions folder.
+
+At present, Pmw does not work with Python 3.0, which means that you can not use
+the Tk gui with Leo when using Python 3.0.</t>
+<t tx="ekr.20100730085341.7245">To install Qt, get the binary package of PyQt from: 
+http://www.riverbankcomputing.co.uk/software/pyqt/download
+
+The version of PyQt that you download must match your installed Python version.
+Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run
+the binary PyQt installer.
+
+Special care may be needed to install PyQt on MacOs. See `Installing Leo on
+MacOs X`_ below.</t>
+<t tx="ekr.20100730085341.7246">@language html
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
