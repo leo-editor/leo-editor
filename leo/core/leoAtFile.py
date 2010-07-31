@@ -1456,13 +1456,27 @@ class atFile:
         j = g.skip_ws(s,i)
         assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-        if at.readVersion5:
-            line = lws2 + s[j:]
-        elif len(at.endSentinelComment) == 0:
-            line = s[i:-1] # No trailing newline
+        # g.trace(repr(at.endSentinelComment))
+        if len(at.endSentinelComment) == 0:
+            if at.readVersion5:
+                line = lws2 + s[i:]
+            else:
+                line = s[i:-1] # No trailing newline
         else:
             k = s.find(at.endSentinelComment,i)
-            line = s[i:k] # No trailing newline, whatever k is.
+            if at.readVersion5:
+                line = lws2 + s[i:k] + '\n' # Restore the newline.
+            else:
+                line = s[i:k] # No trailing newline, whatever k is.
+            # g.trace(repr(line))
+
+        # if at.readVersion5:
+            # line = lws2 + s[j:] ### Wrong:
+        # elif len(at.endSentinelComment) == 0:
+            # line = s[i:-1] # No trailing newline
+        # else:
+            # k = s.find(at.endSentinelComment,i)
+            # line = s[i:k] # No trailing newline, whatever k is.
 
         # Undo the cweb hack.
         start = at.startSentinelComment
