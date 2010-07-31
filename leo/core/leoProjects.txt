@@ -301,5 +301,57 @@ so it *must* be set before we load any Leo file!  Thus, alas, it is not possible
 @nocolor-node
 
 g.app.setLeoID now calls createDefaultGui instead of createTkGui.
+#@+node:ekr.20100731114918.5843: *4* Improved install instructions & logic
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a5a47afa65af9a37
+
+The following changes are on the trunk, and also on Leo's web site:
+
+- In home page, added link to Install page, just above the Beginner's Guide.
+
+- Added more explicit instructions for installing Tk and Qt.
+
+- In step 6 of the Windows install steps, the "assoc .leo=LeoFile"
+  is on a line by itself.
+
+- Updated home page to indicate that Leo requires Python and PyQt.
+  I also revised and simplified the introduction in other ways.
+  Ditto for description of Leo on SourceForge.
+
+- Changed "%1" to "%*" throughout the installation instructions.
+
+- Made batch files given in Installing Leo and Running Leo the same.
+
+- The dialogs that ask for the Leo ID now tells why Leo needs it.
+
+- Just before raising the dialog that asks for the Leo ID, Leo attempts
+  to create the Qt Qui first, and then the Tk Gui if Qt does not exist.
+  This should make it much less likely that a prompt for the id
+  will be sent to the console.
+
+
+2. The readme.txt file for 4.7.1-final does not mention that Python and PyQt is
+   required.
+
+readme.txt does say it has a new Windows installer. This
+led me to believe -- erroneously -- that the Windows installer is all
+I would need to download and install, since it's typical for most open
+source programs I've used to have everything needed for the install
+(for example. .NET) in the single Windows download.
+
+2b. And perhaps the readme.txt file as well?
+
+Can the [install] page be updated to make this clearer?
+
+4. When I first went to the Install page, I clicked on the link for
+"Installing Leo on Windows", got to the end of the steps and saw the
+next section was "Tracking the development version" which I wasn't
+interested in doing so I didn't read any further.
+
+Clicking on the installer-created Windows link for Leo on the Start
+Menu did nothing. Eventually I found the Windows section under
+"Running Leo" and learned it was required to run Leo the first time
+from a console window and not by launching it from Windows.
 #@-all
 #@-leo

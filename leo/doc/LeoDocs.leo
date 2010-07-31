@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -1057,8 +1057,7 @@
 </v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1" a="E"
-expanded="ekr.20080301075734.4,ekr.20080301082848,"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
@@ -3543,13 +3542,6 @@ expanded="ekr.20080301075734.4,ekr.20080301082848,"><vh>@thin html/front.html</v
 <v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20100225102026.7139"><vh>4.7.1 final</vh>
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20100730083234.7241" a="E"><vh>Fix newbie stuff</vh>
-<v t="ekr.20100730085341.7246"><vh>From Leo's home page</vh>
-<v t="ekr.20080301082848" a="E"><vh>&lt;&lt; center area &gt;&gt;</vh>
-<v t="ekr.20080301083325"><vh>&lt;&lt; what is Leo list &gt;&gt;</vh></v>
 </v>
 </v>
 </v>
@@ -25220,44 +25212,6 @@ located in the python- imaging-tk package.</t>
 <t tx="ekr.20080218154129"></t>
 <t tx="ekr.20080218154129.1"></t>
 <t tx="ekr.20080301071818"></t>
-<t tx="ekr.20080301082848">&lt;h2&gt; Leo is...&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;&lt; what is Leo list &gt;&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;
-Leo has an active community of helpful users and developers.&lt;br&gt;
-Please use the &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
-group to ask questions and make suggestions.
-&lt;/p&gt;
-
-&lt;p&gt;
-Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;
-&lt;/p&gt;
-</t>
-<t tx="ekr.20080301083325">&lt;li&gt;
-    An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
-    programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
-    You can organize your data in as many ways as you like within a &lt;i&gt;single&lt;/i&gt; outline.&lt;/li&gt;
-&lt;li&gt;
-    A &lt;i&gt;programmer's editor&lt;/i&gt; that supports optional
-    &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt; and
-    &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
-&lt;li&gt;
-    &lt;i&gt;Fully scriptable&lt;/i&gt; using &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
-    Leo's core is 100% pure Python.&lt;/li&gt;
-&lt;li&gt;
-    &lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;br&gt;
-    Leo requires either the
-    &lt;a HREF="http://docs.python.org/library/tkinter.html"&gt;Tkinter&lt;/a&gt; or
-    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt; widget set.&lt;br&gt;
-    Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
-&lt;li&gt;
-    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-    distributed under the
-    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
-</t>
 <t tx="ekr.20080304112802.1">http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
 Leo now contains minimal support for arguments to minibuffer commands.
@@ -33482,58 +33436,6 @@ using registerHandler() avoids the problem.
 <t tx="ekr.20100728075142.7238">A node whose headline starts with @chapter denotes a region of the outline
 corresponding to a chapter. All such @chapter nodes should be contained in an
 @chapters node.  For more details, see `Using Chapters`_.</t>
-<t tx="ekr.20100730083234.7241">@nocolor-node
-
-From http://mail.google.com/mail/#inbox/129f8635de2674b7
-
-- (Done) In home page, added link to Install page,
-         just above the Beginner's Guide.
-
-- (Done) Added more explicit instructions for installing Tk and Qt.
-
-- (Done) In step 6 of the Windows install steps, the "assoc .leo=LeoFile"
-         should be on a line by itself.
-         
--------------
-
-- (Done) Updated home page to indicate that Leo requires Python and PyQt.
-
-- (Done) Ditto for description of Leo on SourceForge.
-
-- (Done) Changed "%1" to "%*" throughout the instructions.
-
-- (Done) Made batch files given in Installing Leo and Running Leo the same.
-
-- (Done) The dialog that asks for the ID now tells why Leo needs it.
-
-- (Done) The dialog that asks for the ID now runs after the gui is firmly established,
-         so it should never happen that running Leo from a console is necessary.
-
-2. The readme.txt file for 4.7.1-final does not mention that Python and PyQt is
-   required.
-
-readme.txt does say it has a new Windows installer. This
-led me to believe -- erroneously -- that the Windows installer is all
-I would need to download and install, since it's typical for most open
-source programs I've used to have everything needed for the install
-(for example. .NET) in the single Windows download.
-
-2b. And perhaps the readme.txt file as well?
-
-Can the [install] page be updated to make this clearer?
-
-4. When I first went to the Install page, I clicked on the link for
-"Installing Leo on Windows", got to the end of the steps and saw the
-next section was "Tracking the development version" which I wasn't
-interested in doing so I didn't read any further.
-
-Clicking on the installer-created Windows link for Leo on the Start
-Menu did nothing. Eventually I found the Windows section under
-"Running Leo" and learned it was required to run Leo the first time
-from a console window and not by launching it from Windows.
-</t>
-<t tx="ekr.20100730085341.7246">@language html
-</t>
 <t tx="ekr.20100731112744.7267">@language rest</t>
 <t tx="ekr.20100731112744.7268">##########################################
 Chapter 1: Installing Leo
