@@ -1534,6 +1534,142 @@ def adjustTargetLanguage (self,fn):
         else:
             # An unknown language.
             pass # Use the default language, **not** 'unknown_language'
+#@+node:ekr.20100731091712.5828: *4* Can we put up the LeoID dialog later?
+@nocolor-node
+
+It is needed to set g.app.nodeIndices, which is used in the read logic for outlines,
+so it *must* be set before we load any Leo file!  Thus, alas, it is not possible.
+#@+node:ekr.20100731091712.5829: *4* Be more clever in putting up the Leo id dialog
+#@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
+def createDefaultGui (self,fileName='',verbose=False):
+
+    """A convenience routines for plugins to create the default gui class."""
+
+    try:
+        # Take care to try the same imports as in qtGui.py.
+        import PyQt4.QtCore
+        import PyQt4.QtGui            
+        have_qt = True
+    except ImportError:
+        have_qt = False
+        print("PyQt not installed - reverting to Tk UI")        
+
+    if have_qt:        
+        self.createQtGui(fileName, verbose=verbose)
+    else:
+        self.createTkGui(fileName, verbose = verbose)
+#@+node:ekr.20031218072017.1978: *5* app.setLeoID
+def setLeoID (self,verbose=True):
+
+    tag = ".leoID.txt"
+    homeLeoDir = g.app.homeLeoDir # was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = not g.app.unitTesting
+    << return if we can set leoID from sys.leoID >>
+    << return if we can set leoID from "leoID.txt" >>
+    << return if we can set leoID from os.getenv('USER') >>
+    << put up a dialog requiring a valid id >>
+    << attempt to create leoID.txt >>
+#@+node:ekr.20031218072017.1979: *6* << return if we can set leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# Use hasattr & getattr to suppress pylint warning.
+# Use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.silentMode and not g.app.unitTesting:
+        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+    # Careful: periods in the id field of a gnx will corrupt the .leo file!
+    g.app.leoID = g.app.leoID.replace('.','-')
+    return
+else:
+    g.app.leoID = None
+#@+node:ekr.20031218072017.1980: *6* << return if we can set leoID from "leoID.txt" >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Careful: periods in the id field of a gnx
+                # will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.silentMode and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',
+                        spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,
+                    color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@+node:ekr.20060211140947.1: *6* << return if we can set leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose and not g.app.unitTesting:
+            g.es("setting leoID from os.getenv('USER'):",
+                repr(theId),color='blue')
+        g.app.leoID = theId
+        # Careful: periods in the id field of a gnx
+        # will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
+        return
+
+except Exception:
+    pass
+#@+node:ekr.20031218072017.1981: *6* << put up a dialog requiring a valid id >>
+# New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
+if g.app.gui is None:
+    # # Create the Qt gui if it exists, otherwise the Tk gui.
+    g.app.createDefaultGui(fileName='g.app.setLeoId',verbose=True)
+
+if g.app.gui is None: # Neither gui could be created: this should never happen.
+    print("Please enter LeoID (e.g. your username, 'johndoe'...)")
+    if g.isPython3: # 2010/02/04.
+        leoid = input('LeoID: ')
+    else:
+        leoid = raw_input('LeoID: ')
+else:
+    leoid = g.app.gui.runAskLeoIDDialog()
+
+# Bug fix: 2/6/05: put result in g.app.leoID.
+g.app.leoID = leoid
+
+# Careful: periods in the id field of a gnx will corrupt the .leo file!
+g.app.leoID = g.app.leoID.replace('.','-')
+
+# g.trace(g.app.leoID)
+g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+#@+node:ekr.20031218072017.1982: *6* << attempt to create leoID.txt >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
 #@+node:ekr.20100517130356.5809: *3* (New sentinels)
 
 #@+node:ekr.20100629064952.5843: *4* Terminating doc parts properly

@@ -358,11 +358,13 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default gui class."""
 
-        have_qt = False
         try:
-            import PyQt4.QtGui                
+            # Take care to try the same imports as in qtGui.py.
+            import PyQt4.QtCore
+            import PyQt4.QtGui            
             have_qt = True
         except ImportError:
+            have_qt = False
             print("PyQt not installed - reverting to Tk UI")        
 
         if have_qt:        
@@ -648,12 +650,11 @@ class LeoApp:
         #@+<< put up a dialog requiring a valid id >>
         #@+node:ekr.20031218072017.1981: *3* << put up a dialog requiring a valid id >>
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
-
-        # Create an emergency gui and a Tk root window.
-        g.app.createTkGui("startup")
-
         if g.app.gui is None:
-            # tkinter broken/doesn't exist. Print error
+            # # Create the Qt gui if it exists, otherwise the Tk gui.
+            g.app.createDefaultGui(fileName='g.app.setLeoId',verbose=True)
+
+        if g.app.gui is None: # Neither gui could be created: this should never happen.
             print("Please enter LeoID (e.g. your username, 'johndoe'...)")
             if g.isPython3: # 2010/02/04.
                 leoid = input('LeoID: ')
