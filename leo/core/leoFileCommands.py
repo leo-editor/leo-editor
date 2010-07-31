@@ -1782,7 +1782,7 @@ class baseFileCommands:
         #@-<< Set gnx = vnode index >>
         attrs = []
         #@+<< Append attribute bits to attrs >>
-        #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >> putVnode
+        #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >>
         # These string catenations are benign because they rarely happen.
         attr = ""
         # New in Leo 4.5: support fixed .leo files.
@@ -1817,7 +1817,7 @@ class baseFileCommands:
                 v.unknownAttributes = d
         #@-<< Append attribute bits to attrs >>
         #@+<< Append unKnownAttributes to attrs >>
-        #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>> putVnode
+        #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>> fc.put
         # v.unknownAttributes are now put in <t> elements.
 
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -2038,7 +2038,7 @@ class baseFileCommands:
                 theActualFile = None
 
         return fileName,theActualFile
-    #@+node:ekr.20031218072017.3047: *5* createBackupFile (fileCommands)
+    #@+node:ekr.20031218072017.3047: *5* createBackupFile
     def createBackupFile (self,fileName):
 
         '''

@@ -208,8 +208,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
+<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
+<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20100730085341.7245"><vh>Installing Qt</vh></v>
@@ -218,10 +218,10 @@
 <v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh></v>
 <v t="ekr.20090622091845.5623"><vh>Installing Leo on MacOS X</vh></v>
 <v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh></v>
+<v t="vivainio.20080409164902.1"><vh>Tracking the development version</vh></v>
 <v t="ekr.20050901174937"><vh>Running Leo</vh></v>
 <v t="ekr.20090705111443.10370"><vh>Running Leo from a console window</vh></v>
 <v t="ekr.20070629130418"><vh>Running Leo in batch mode</vh></v>
-<v t="vivainio.20080409164902.1"><vh>Tracking the development version</vh></v>
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
@@ -1072,7 +1072,7 @@ expanded="ekr.20080301082848,"><vh>@thin html/front.html</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090526102407.10028"><vh>Important notes about Leo's code</vh>
 <v t="ekr.20090526102407.10029"><vh>How to profile Leo</vh></v>
-<v t="ekr.20090526102407.10030" a="E"><vh>High-level code notes</vh>
+<v t="ekr.20090526102407.10030"><vh>High-level code notes</vh>
 <v t="ekr.20090526102407.10031"><vh>leoFileCommands.py and leoAtFile.py</vh></v>
 <v t="ekr.20090526102407.10032"><vh>Leo's MVC architecture</vh></v>
 </v>
@@ -3546,13 +3546,12 @@ expanded="ekr.20080301082848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20100730083234.7241" a="E"><vh>Fix problems with install docs</vh>
-<v t="ekr.20100730085341.7246"><vh>From Leo's home page</vh>
+<v t="ekr.20100730083234.7241" a="E"><vh>Fix newbie stuff</vh>
+<v t="ekr.20100730085341.7246" a="E"><vh>From Leo's home page</vh>
 <v t="ekr.20080301082848" a="E"><vh>&lt;&lt; center area &gt;&gt;</vh>
 <v t="ekr.20080301083325"><vh>&lt;&lt; what is Leo list &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.2" a="E"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -13024,7 +13023,7 @@ splitSentences(c,p)</t>
 Another way to run Leo is as follows::
 
     cd &lt;path-to-launchLeo.py&gt;
-    python launchLeo.py %*
+    python launchLeo.py %1
 
 Here are some tips that may make running Leo easier:
 
@@ -13042,11 +13041,11 @@ Here are some tips that may make running Leo easier:
     Put the following .bat file in c:\\Windows::
 
         cd &lt;path-to-leo&gt;
-        c:\Python26\python &lt;path-to-leo&gt;launchLeo.py %*
+        c:\\Python26\\python &lt;path-to-leo&gt;launchLeo.py %1
 
     where &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory.
 
-    This opens the file specified by the first argument.
+    This opens the file specified by the first argument (%1).
 
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
@@ -22648,12 +22647,12 @@ Using g.getTestVars eliminates pychecker warnings about undefined c and p variab
 
 6. Associate .leo filetype batch file::
 
-      ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+      ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%1"
       assoc .leo=LeoFile
 
 7. [optional] Put this leo.bat in %PATH%::
 
-      @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+      @C:\Python26\python.exe -i "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
 
 For more information see::
 
@@ -25403,8 +25402,7 @@ group to ask questions and make suggestions.
 
 &lt;p&gt;
 Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;
-&lt;/p&gt;
-</t>
+&lt;/p&gt;</t>
 <t tx="ekr.20080301083325">&lt;li&gt;
     An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
     programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
@@ -25478,8 +25476,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7.1 final]&lt;/a&gt;
-</t>
+    Download Leo[4.7.1 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -33727,20 +33724,6 @@ From http://mail.google.com/mail/#inbox/129f8635de2674b7
 
 - (Done) In step 6 of the Windows install steps, the "assoc .leo=LeoFile"
          should be on a line by itself.
-         Also removed double back-slashes.
-         
-- (Done) Updated home page to indicate that Leo requires Python and PyQt.
-
-- (Done) Ditto for description of Leo on SourceForge.
-
-- (Done) Changed "%1" to "%*" throughout the instructions.
-
-- (Done) Made batch files given in Installing Leo and Running Leo the same.
-
-- (Done) The dialog that asks for the ID now tells why Leo needs it.
-
-- (Done) The dialog that asks for the ID now runs after the gui is firmly established,
-         so it should never happen that running Leo from a console is necessary.
 
 2. The readme.txt file for 4.7.1-final does not mention that Python and PyQt is
    required.
@@ -33751,20 +33734,79 @@ I would need to download and install, since it's typical for most open
 source programs I've used to have everything needed for the install
 (for example. .NET) in the single Windows download.
 
+2a. Could the description at the SourceForge download page that begins
+with, "Leo is, an outlining editor for programmers, a general data
+management environment..." be updated to indicate that Python and PyQt
+are needed, and not just the single .exe download?
+
 2b. And perhaps the readme.txt file as well?
 
-Can the [install] page be updated to make this clearer?
+
+Can the web page be updated to make this clearer?
 
 4. When I first went to the Install page, I clicked on the link for
 "Installing Leo on Windows", got to the end of the steps and saw the
 next section was "Tracking the development version" which I wasn't
-interested in doing so I didn't read any further.
-
+interested in doing so I didn't read any further. I was EXCITED to try
+Leo out and wanted to get it up and running as quickly as possible.
 Clicking on the installer-created Windows link for Leo on the Start
 Menu did nothing. Eventually I found the Windows section under
 "Running Leo" and learned it was required to run Leo the first time
 from a console window and not by launching it from Windows.
-</t>
+
+4a. Could this section about running Leo from the console window to
+assign the unique identifier be moved to the "Installing Leo on
+Windows" section instead, especially since it appears setting the
+unique identifier only needs to be done once (right after
+installation), and not each time a user runs Leo?
+
+4b. Could you also explain in the same section how/what the unique
+identifier is used for, especially when a user is not using cvs?
+
+5. Somewhat related, could the FAQ for "Nothing (or almost nothing)
+happens when I start Leo. What should I do?" be updated to explain
+that another reason nothing might happen -- under Windows -- is
+because you MUST run Leo from a console window  the first time after
+installing in order to assign the unique identifier. I would suggest
+this be listed first, above "Missing modules." How about something
+like this:
+
+-----
+
+Nothing (or almost nothing...)
+
+If you install Leo under Windows, be sure the first time you run Leo
+is from a console window to assign a unique identifier which is used
+for ???????.
+
+Missing modules can cause installation problems. If the installer
+doesn’t work (or puts up a dialog containing no text), you may install
+Leo from the .zip file as described at How to install Leo on Windows.
+However you are installing Leo, [if you have problems] be sure to run
+Leo in a console window. because as a last resort Leo prints error
+messages to the console.
+
+-----
+
+The "Missing modules..." paragraph remains the same except for the
+text I'm suggesting [between the brackets].
+
+6. The batch file example given under "Running Leo" does not match the
+one given in the Install instructions.
+
+Running Leo:
+cd &lt;path-to-leo&gt;
+c:\\Python26\\python &lt;path-to-leo&gt;launchLeo.py %1
+
+Installing Leo:
+@C:\Python26\python.exe -i “C:\Python26\Lib\site-packages\leo
+\launchLeo.py” %*
+
+6a. There's a difference between "%1" and "%*".
+
+6b. is the "-i" parameter needed?
+
+6c. The double backslashes are not needed.</t>
 <t tx="ekr.20100730085341.7244">When using Tk, you must install Tk 8.4 or later. As explained later in this
 section, the Tk version of Leo does not work with Python 3.0 or later.
 

@@ -215,6 +215,7 @@ def completeFileName (fileName):
 def initApp (verbose):
 
     # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
     g.app.config = leoConfig.configClass()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
 #@+node:ekr.20041130093254: *4* reportDirectories
@@ -347,8 +348,7 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
     if not frame: return False
 
     # Do the final inits.
-    verbose = script is None
-    finishInitApp(c,verbose)
+    finishInitApp(c)
     p = c.p
 
     g.app.initComplete = True
@@ -406,7 +406,7 @@ def createFrame (fileName,relativeFileName,script):
 
     return c,frame
 #@+node:ekr.20080921060401.5: *4* finishInitApp (runLeo.py)
-def finishInitApp(c,verbose):
+def finishInitApp(c):
 
     g.app.trace_gc          = c.config.getBool('trace_gc')
     g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
@@ -415,9 +415,6 @@ def finishInitApp(c,verbose):
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
 
-    # 2010/07/31: It's much better to raise the dialog here,
-    # *after* the gui has firmly been established.
-    g.app.setLeoID(verbose=verbose)
 #@+node:ekr.20080921060401.6: *4* initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 

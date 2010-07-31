@@ -652,10 +652,8 @@ class LeoApp:
         # Create an emergency gui and a Tk root window.
         g.app.createTkGui("startup")
 
-
         if g.app.gui is None:
-            # 2010/07/31: This should never happen now that Leo calls
-            # this method after the gui has been firmly established.
+            # tkinter broken/doesn't exist. Print error
             print("Please enter LeoID (e.g. your username, 'johndoe'...)")
             if g.isPython3: # 2010/02/04.
                 leoid = input('LeoID: ')
