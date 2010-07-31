@@ -67,6 +67,7 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20100731160906.11716" a="EO"><vh>@thin leoUserGuide.txt</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -1043,6 +1044,7 @@
 <v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
 <v t="ekr.20060620140130"><vh>New and improved plugins</vh></v>
 <v t="ekr.20060620140228"><vh>New and improved settings</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -5042,7 +5044,7 @@ To convert @root trees to @file trees by hand:
 2. Add @ to the start of all doc parts. Leo starts syntax coloring in code mode
    rather than doc mode, so if a doc part starts body text it should start with
    an '@' sign.
-   
+
 3. Replace all section definition lines (like &lt;&lt;name&gt;&gt;=) by @c. This results in
    the node being added to the expansion of @others.
 
@@ -5441,7 +5443,7 @@ behaviors have been changed because they conflict with other Leo features.
 
 -   Control-Shift-Up and Control-Shift-Down move the insertion cursor by
     paragraphs and extend the selection.
-    
+
 -   Next (Page Down) and Prior (Page Up) keys move the
     insertion cursor one screen and clear any text selection.
 
@@ -5492,7 +5494,8 @@ behaviors have been changed because they conflict with other Leo features.
     if there is no text selection.
 
 -   Backspace deletes the selection, or the character to the left of the cursor
-    if there is no text selection.</t>
+    if there is no text selection.
+</t>
 <t tx="EKR.20040524104904.40">You can expand or contract a node by clicking in the tree view icon to the left
 of the headline. The icon in the Qt gui matches the native OS's tree view icon,
 i.e. for Mac's, a triangle pointing right or down; on Windows (also when using
@@ -6150,7 +6153,7 @@ Format commands::
     gwap        Split long line into separate lines
     gqq         Split long line into separate lines
     gww         Split long line into separate lines
-    
+
     Note: 'gwap' and 'gww' should not move cursor but do.
 
 Scroll commands::
@@ -6463,7 +6466,7 @@ Patterns:
    The headline of the double-clicked node is matched against the patterns
    starting from the first sub-node under the "nodeActions" node to the last
    sub-node.
-   
+
    Only the script associated with the first matching pattern is
    invoked unless overwritten by the "V" `pattern directive`__.
 
@@ -7683,7 +7686,7 @@ This script makes a list of all the nodes in an outline::
 
     nodes = list(c.all_positions())
     print("This outline contains %d nodes" % len(nodes))
-    
+
 The c.all_unique_positions generator returns a list of all unique positions in the outline.
 For each vnode v in the outline, exactly one position p is returned such that p.v == v.
 
@@ -7979,22 +7982,23 @@ another. You can use the generator directly, like this::
 
     for p  in c.all_positions():
         print(p.h)
-        
+
 You can create actual lists from generators in several ways::
 
     aList = list(c.all_positions()] # Use the list built-in function.
     print(aList)
-    
+
 or::
 
     aList = [p.copy() for p in c.all_positions()] # Use list comprehension.
     print(aList)
 
-    
+
 Using the list is simpler, but list comprehensions can be more flexible.  For example::
 
     aList = [p.copy().h for p in c.all_positions() if p.h.startswith('@thin')]
-    print(aList)</t>
+    print(aList)
+</t>
 <t tx="ekr.20040403175157.1" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3722206e616d653d22687474702d6e6f64652d6d61726b65722d37223e710158040000003c2f613e71025d71032858350000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58460000003c64697620636c6173733d2273656374696f6e222069643d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e0a7110588e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643422206e616d653d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e6170702e77696e646f774c6973743a20746865206c697374206f6620616c6c206f70656e206672616d65733c2f613e3c2f68313e0a7111652e">The windowlist attribute of the application instance contains the list of the
 frames of all open windows. The commands ivar of the frame gives the commander
 for that frame::
@@ -8039,16 +8043,17 @@ commanders directly.</t>
     outlines. For any vnode v, v.h is the node's headline, and v.b
     is the node's body text. As a convenience, for any position p, p.h
     and p.b are synonyms for p.v.h and p.v.b.
-    
+
 Later sections will discuss other classes, objects and utility functions, but
-most scripts will need only the objects and classes described above.</t>
+most scripts will need only the objects and classes described above.
+</t>
 <t tx="ekr.20040411151245" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343522206e616d653d22687474702d6e6f64652d6d61726b65722d3435223e710158040000003c2f613e71025d71032858440000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558250000003c64697620636c6173733d2273656374696f6e222069643d226974657261746f7273223e0a710f584c0000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323322206e616d653d226974657261746f7273223e4974657261746f72733c2f613e3c2f68323e0a7110652e">Here is the list of Leo's generators::
 
     c.all_nodes             # all vnodes in c.
     c.all_unique_nodes      # all unique vnodes in c.
     c.all_positions         # all positions in c.
     c.all_unique_positions  # all unique positions in c.
-    
+
     p.children              # all children of p.
     p.following_siblings    # all siblings of p that follow p.
     p.nodes                 # all vnodes in p's subtree.
@@ -8059,7 +8064,7 @@ most scripts will need only the objects and classes described above.</t>
     p.self_and_subtree      # all positions in p's subtree, including p.
     p.unique_nodes          # all unique vnodes in p's subtree.
     p.unique_subtree        # all unique positions in p's subtree.
-    
+
 **Note**: A generator that returns **unique positions** is a generator that returns
 a list of positions such that p.v == v at most once for any vnode v.
 Similarly, a generator that returns **unique nodes** is a generator that returns
@@ -8067,29 +8072,22 @@ a list that contains any vnode at most once.
 
 **Note**: The names given above are the recommended names for Leo's generators.
 Leo continues to support the names of iterators used before Leo 4.7.
-These names typically end with the _iter suffix.</t>
-<t tx="ekr.20040414161647">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
+These names typically end with the _iter suffix.
+</t>
+<t tx="ekr.20040414161647">@nocolor-node
+
+These are the sources for the html version of Leo's users guide, as well as the
+documentation for the rst3 plugin used to create the actual html files.
+
+These sources contain reStructuredText_ (rST) markup that is easy to read. See
+http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an
+introduction to rST.
+
+See the node "How to generate Leo's Sphinx docs" for details about making these
+docs.
 @c
 
-@language rest
-@tabwidth -4
-
-These are the sources for the html version of Leo's users guide,
-as well as the documentation for the rst3 plugin used to create the actual html files.
-
-These sources contain reStructuredText_ (rST) markup that is easy to read.
-See http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an introduction to rST.
-
-See the node "How to generate Leo's Sphinx docs" for details about making these docs.</t>
+@all</t>
 <t tx="ekr.20040414172212">############
 Front Matter
 ############
@@ -9406,7 +9404,7 @@ The v.u Python property allows plugins to get and set v.unknownAttributes easily
 
     d = v.u # gets uA (the outer dict) for v
     v.u = d # sets uA (the outer dict) for v
-    
+
 For example:
 
     plugin_name = 'xyzzy'
@@ -9416,7 +9414,7 @@ For example:
     inner_d ['notes'] "This is a note."
     d [plugin_name] = inner_d
     v.u = d
-    
+
 No corresponding Python properties exist for v.tempAttributes,
 so the corresponding example would be::
 
@@ -9456,7 +9454,8 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
   if the corresponding vnode contains an unknownAttributes ivar.
 
 - Leo performs the usual xml escapes on these strings when reading or writing
-  the unknownAttributes ivars.</t>
+  the unknownAttributes ivars.
+</t>
 <t tx="ekr.20050313101229">Leo 4.3 alpha 4                 March 15, 2005
 
 Leo 4.3 is the culmination of more than five months of work. This alpha 4
@@ -12965,7 +12964,7 @@ For example, the following creates a dictionary of saved positions::
     d = {}
     for p in c.all_positions():
         d[p.v] = p.copy()
-        
+
 </t>
 <t tx="ekr.20050902080416"># Start at the top.
 b = c.frame.body.bodyCtrl
@@ -17991,10 +17990,11 @@ Notes:
   In particular, if the presently selected tree does not contain an @rst node the search continues in parent trees.
   When an @rst node is found, it converts the node (and descendants) to html and returns p,
   the found @rst node and s, the html itself.
-  
+
 - Valid values for the ext argument are ".html", ".tex" or None (specifies rst output)
 
-- There is some support for ext=".pdf", but this is experimental code.  Expect crashes.</t>
+- There is some support for ext=".pdf", but this is experimental code.  Expect crashes.
+</t>
 <t tx="ekr.20060527105211">@language rest</t>
 <t tx="ekr.20060527105617">#######################################
 Chapter 16: Debugging with Leo
@@ -27340,7 +27340,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**</t>
 <t tx="ekr.20090223065025.3">Let::
 
     w = c.frame.body.bodyCtrl # Leo's body pane.
-    
+
 Scripts can get or change the context of the body as follows::
 
     w.appendText(s)                     # Append s to end of body text.
@@ -27706,8 +27706,9 @@ What's New in Leo 4.6
 
 - Leo issues an error message if a non-existent plugin appears
   in an @enabled-plugin node.
-  
-- New plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.</t>
+
+- New plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.
+</t>
 <t tx="ekr.20090401113141.1">To generate .odt or .rtf or .pdf files, you create an intermediate file and
 ignore the the "official" output file, in this case test.html. The intermediate
 file contains the rST text corresponding to the @rst tree.
@@ -29375,7 +29376,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     **Note**:
     For compatibility with old (pre-4.2) scripts, c.currentVnode and
     c.rootVnode methods return *positions* not vnodes.
-    
+
 **Important**: With the exception of the p.v ivar, scripts should be careful to
 use only the methods of the position and vnode classes rather than the internal
 ivars of these classes. Doing so will ensure that the script is as simple as
@@ -29386,30 +29387,33 @@ to the internals of these classes.
     Positions can become *invalid* when the structure of the outline changes.
     As discussed below, plugins and scripts that store positions for use at a later time should make sure the
     position p is still valid by calling c.positionExists(p)
-    
+
 **baseTextWidget** and its subclasses
     Leo's body pane, c.frame.body.bodyCtrl, is a subclass of baseTextWidget.
     Gui plugins implement Leo's body pane by subclassing baseTextWidget.
-    
+
 **frame**
     Frames contain the internal data needed to manage a Leo window. Given a
     commander c, c.frame is commander's frame. Given a frame f,
     f.c is the frame's commander.
-    
+
 **g.app.gui**
-    This object represents gui-specific subclasses of Leo's base gui code.</t>
+    This object represents gui-specific subclasses of Leo's base gui code.
+</t>
 <t tx="ekr.20091105080104.11492">@font nodes only work with the Tk gui. When using the Qt gui, you specify fonts
 using the node in leoSettings.leo called::
 
     @data qt-gui-plugin-style-sheet
-    
-As usual, you will probably want to put this node in your myLeoSettings.leo file.</t>
+
+As usual, you will probably want to put this node in your myLeoSettings.leo file.
+</t>
 <t tx="ekr.20091105080104.9031">@font nodes only work with the Tk gui. When using the Qt gui, you specify fonts
 using the node in leoSettings.leo called::
 
     @data qt-gui-plugin-style-sheet
-    
-As usual, you will probably want to put this node in your myLeoSettings.leo file.</t>
+
+As usual, you will probably want to put this node in your myLeoSettings.leo file.
+</t>
 <t tx="ekr.20091107093823.6790">This is the rST version of the Tech Report handed out at EuroPython in 2005.
 
 **Important**: Leo's tutorial is now a clearer explanation of the basics.
@@ -29764,7 +29768,7 @@ For example, an ``@file`` node is a node whose headline starts with ``@file``, e
     @&lt;file&gt; node
         A node whose headline starts with
         ``@asis``, ``@edit``, ``@file``, ``@nosent``, ``@shadow``, ``@thin``, or their longer forms.
-   
+
     @all directive
         Cause Leo to copy the body text of all nodes in an @thin tree to the corresponding external file.
         For more information, see `directives for programming`_ in `Leo's tutorial`_.
@@ -29976,7 +29980,7 @@ The outline pane
     node contains children, a smaller icon appears to the left of the icon box.
     This icon contains a '+' or '-' symbol. Clicking this **expansion box**
     expands or contracts the node.
-    
+
 Nodes
     Nodes have two parts, a **headline** and **body text**. The outline pane
     shows headlines. Selecting a headline selects the entire node; the node's
@@ -30065,12 +30069,12 @@ To create a new view of the data in your outline, just do the following:
 
 1. Create an *ordinary* node, that will represent the view. We call these nodes
    **view nodes** merely to indicate they represent a view.
-   
+
 2. Clone all the nodes from the outline that you want the view to contain. Move
    these clones so they become children of the view node.
-   
+
 3. (Optional) You can add regular nodes as children of the view node too.
-   
+
 For example, when I fix a bug in Leo, I create an ordinary node to represent the
 bug. This **bug node** is my view of all the data in Leo's source code that
 relates to the bug. As I discover code related to the bug, I clone their nodes
@@ -30224,7 +30228,7 @@ other files on your file system.
 
     @thin leoNodes.py
     @thin ../../notes.text
-    
+
 The file name can be an absolute path or a relative path to the file that starts
 at Leo's **load directory**, the directory containing the .leo file.
 
@@ -30255,23 +30259,23 @@ the directive. Here are some of Leo's directives::
     @color
     @nocolor
     @killcolor
-    
+
 Most directives must start with the '@' in the leftmost column, but whitespace
 may appear before the '@others' and '@all' directives. As we have seen, such
 whitespace is significant.
-    
+
 Directives apply until overridden in a subtree. All of these directives apply to
 the node they are contained in, and also to the entire tree of descendant nodes,
 unless **over-ridden** by a similar directive in a descendant node. For example,
 the directive::
 
     @language python
-    
+
 tells Leo to syntax color the node and all descendant nodes as Python code.
 However, some descendant node mignt contain::
 
     @language rest
-    
+
 which tells Leo to color that node and all of *its* decendants as
 reStructureText. This principle applies to almost all of Leo's directives: the
 directive is in effect throughout a tree, unless overridden in some subtree.
@@ -30290,11 +30294,11 @@ directive is in effect throughout a tree, unless overridden in some subtree.
 
     This directive may only appear in \@&lt;file&gt; nodes. A common use of \@first
     directives is to add shebang lines::
-    
+
         @first #! /usr/bin/env python
-        
+
     or Python encoding specifications::
-    
+
         @first # -*- coding: utf-8 -*-
 
 - **\@language** Sets the language used for syntax coloring **and** sets the
@@ -30348,14 +30352,14 @@ will explain this process in detail.
 <t tx="ekr.20091201091455.6813">A **section reference** is a line of body text of the form::
 
     &lt;&lt; a section name &gt;&gt;
-    
+
 Here, "a section name" can be any descriptive text not containing "&gt;&gt;". When Leo
 encounters a section reference, Leo searches all the descendants of the node
 containing the reference looking for a node whose headline matches the section
 reference. That is, Leo looks for a descendant node whose headline starts with::
 
      &lt;&lt; a section name &gt;&gt;
-     
+
 We call such nodes **named nodes**. Leo doesn't require an exact match. Leo
 ignores whitespace and the case of letters when comparing headlines to section
 reference. Also, Leo ignores anything that may follow the section name in a
@@ -30405,7 +30409,7 @@ is a common way of representing a Python class::
     class myClass:
         '''a docstring'''
         @others
-        
+
 When Leo writes this node to an external file, Leo will write the first two
 lines to the external file, with the indentation in effect for the node. Leo
 will then write all descendant nodes to the external files, with *additional*
@@ -30451,10 +30455,11 @@ as the first child of the target node.
   to the external file. Directives such as \@tabwidth and \@language provide other
   information to Leo. Leo's \@thin trees allow you to organize your scripts
   and programs with Leo's outline structure.
-  
+
 - You can execute Python scripts from any node in a Leo outline. Leo scripts
   have full, easy, access to all the information in the outline. Using scripts
-  and plugins, you can easily add new features to Leo.</t>
+  and plugins, you can easily add new features to Leo.
+</t>
 <t tx="ekr.20100118181428.7557"></t>
 <t tx="ekr.20100118181428.7559">They wiped out the newly-inserted selection range.</t>
 <t tx="ekr.20100118181428.7570">My biggest annoyance is the invalid bug 409442, I have to use the tk
@@ -33413,17 +33418,17 @@ For example, the following modifies the cleo.py plugin after Leo has completed l
             pa = int(self.getat(v, 'priority'))
         except ValueError:
             pa = -1
-        
+
         if pa == 24:
             pa = -1
         if pa == 10:
             pa = -2
-        
+
         return pa
-    
+
     import types
     from leo.core import leoPlugins
-    
+
     def on_create(tag, keywords):
         c.cleo.prikey = types.MethodType(prikey, c.cleo, c.cleo.__class__)
 
@@ -33737,6 +33742,23 @@ to be reviewed and merged to trunk.</t>
 2.  Specify the location of the Aspell and Aspell/bin directories using
     the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
 </t>
+<t tx="ekr.20100731160906.11716">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+verbose=True
+@c
+
+@language rest
+@tabwidth -4
+
+@others
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
@@ -33838,7 +33860,7 @@ in a headline and create files without sentinels:
 \@auto
   parses the external file to put language apppropriate nodes (modules, classes,
   methods, functions...) into an @thin-like outline
-  
+
 \@asis
   does a strict tree walk to generate the file, ignoring ``@others`` and ``&lt;&lt;``
   *section* ``&gt;&gt;`` references, keeps everything in the .leo file and ignores
@@ -33862,7 +33884,8 @@ in a headline and create files without sentinels:
   unsentineled file
 
 There are subtleties and crucial details to each of these external file
-generation directives: read the descriptive sections carefully.</t>
+generation directives: read the descriptive sections carefully.
+</t>
 <t tx="sps.20100712151944.7132">Differing external file directives are appropriate in different situations:
 
 \@asis
@@ -34000,7 +34023,7 @@ generation directives: read the descriptive sections carefully.</t>
 - **\@all**
   Copies *all* descendant nodes to the external file, with node sentinels.
   No further descendant directives are honored.
- 
+
 - **\@ignore**
   Causes Leo to skip conversion to and from all or part of an external file.
 
@@ -34250,7 +34273,7 @@ in the minibuffer with Alt-x:
 
 - The ``write-at-auto-nodes`` command writes all ``@auto`` nodes. An ``@ignore``
   directive will suppress this write.
-  
+
 - The ``write-dirty-at-auto-nodes`` is the same as the ``write-at-auto-nodes``
   command, except that only changed ``@auto`` trees are written.
 
@@ -35309,15 +35332,16 @@ active_path is a rewrite of the at_directory plugin to use \@path directives (wh
 '''</t>
 <t tx="tbrown.20091203211538.20637">  @string active_path_attype = auto
     Change to load file nodes as something other than @auto
-  
+
   @string active_path_event = icondclick1
     The default is probably the most useful event binding here
-  
+
   @data active_path_ignore
     List of regex expressions active_path doesn't list in folders
-    
+
   @data active_path_autoload
-    List of regex expressions active_path @auto loads automatically</t>
+    List of regex expressions active_path @auto loads automatically
+</t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090520232138.11304">Qt version of nav_buttons.py (history navigation)</t>
 <t tx="ville.20090520232138.11305">This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors.
