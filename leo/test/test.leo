@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E"><vh>Startup</vh>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20100118190256.2014"><vh> Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -157,8 +157,10 @@
 <v t="edward.20081127113749.15"></v>
 </v>
 </v>
-<v t="ekr.20071026102420.3"><vh>Scripts</vh>
-<v t="ekr.20100127111425.2062"><vh>search script (do not delete)</vh></v>
+<v t="ekr.20071026102420.3" a="E"><vh>Scripts</vh>
+<v t="ekr.20100127111425.2062" a="E"><vh>search script (do not delete)</vh>
+<v t="ekr.20100731123441.2155"><vh>searchDir</vh></v>
+</v>
 <v t="ekr.20090309064612.2"><vh> Example scripts</vh>
 <v t="ekr.20080701130406.1"><vh>Run pylint on plugins</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
@@ -206,8 +208,8 @@
 <v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
 </v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
-<v t="ekr.20100108090658.1958" a="E"><vh>generate key events</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20100108090658.1958"><vh>generate key events</vh>
 <v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
 <v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
 <v t="ekr.20100108102030.1962"><vh>&lt;&lt; imports&gt;&gt;</vh></v>
@@ -292,7 +294,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070630142904" a="E"><vh>Prototype of pyrex</vh>
+<v t="ekr.20070630142904"><vh>Prototype of pyrex</vh>
 <v t="ekr.20070630142904.2"><vh>gcc build docs</vh></v>
 <v t="ekr.20070630142904.3"><vh>pyrexc command-line options</vh></v>
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
@@ -949,7 +951,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,3,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5198,33 +5200,21 @@ aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccc dddddddddddddddddddd
 import glob
 import os
 
-pattern = 'Exception'
+@others
+
+pattern = "idxTitle = output.find('&lt;title&gt;&lt;/title&gt;')"
 ignoreCase = True
 paths = (
-    'C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint',
-    'C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\checkers',
+    # r'C:\Python31\Lib\site-packages\docutils',
+    # r'C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint',
+    # r'C:\Python31\Lib\site-packages\docutils',
+    r'C:\Python26\Lib\site-packages\docutils-0.6-py2.6.egg\docutils',
 )
 
 os.system('CLS')
-print('\n','-'*20,pattern)
+print('\n%s pattern: %s' % ('-'*20,pattern))
 for path in paths:
-    files = glob.glob(g.os_path_join(path,'*.py'))
-    for fn in files:
-        found = False
-        s,e = g.readFileIntoString(fn)
-        if ignoreCase:
-            s = s.lower()
-            pattern = pattern.lower()
-        i = 0
-        while i &lt; len(s):
-            i = s.find(pattern,i)
-            if i == -1: break
-            n1,n2 = g.getLine(s,i)
-            i = n2
-            if not found:
-                g.pr('\n','-' * 10,g.shortFileName(fn))
-                found = True
-            g.pr(s[n1:n2-1])
+    searchDir(path,pattern)
 </t>
 <t tx="ekr.20100127122240.2063">@nocolor
 
@@ -6352,5 +6342,30 @@ print('window events activated')</t>
 <t tx="ekr.20100729114420.2152">@language plain
 
 This is a test.</t>
+<t tx="ekr.20100731123441.2155">def searchDir(path,pattern):
+    print('\ndir',path)
+    paths = glob.glob(g.os_path_join(path,'*'))
+    files = [z for z in paths if not g.os_path_isdir(z)]
+    dirs  = [z for z in paths if g.os_path_isdir(z)]
+    for fn in files:
+        if not fn.endswith('.pyc'):
+            print(g.shortFileName(fn))
+            found = False
+            s,e = g.readFileIntoString(fn)
+            if ignoreCase:
+                s = s.lower()
+                pattern = pattern.lower()
+            i = 0
+            while i &lt; len(s):
+                i = s.find(pattern,i)
+                if i == -1: break
+                n1,n2 = g.getLine(s,i)
+                i = n2
+                if not found:
+                    g.pr('\n','-' * 10,g.shortFileName(fn))
+                    found = True
+                g.pr(s[n1:n2-1])
+    for fn in dirs:
+        searchDir(g.os_path_join(path,fn),pattern)</t>
 </tnodes>
 </leo_file>

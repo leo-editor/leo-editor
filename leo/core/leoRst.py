@@ -813,6 +813,9 @@ class rstCommands:
         if ok:
             if isHtml:
                 import re
+                # g.trace(repr(output)) # Type is byte for Python3.
+                if g.isBytes(output):
+                    output = g.toUnicode(output)
                 idxTitle = output.find('<title></title>')
                 if idxTitle > -1:
                     m = re.search('<h1>([^<]*)</h1>', output)
@@ -823,7 +826,6 @@ class rstCommands:
                             '<title></title>',
                             '<title>%s</title>' % m.group(1)
                         )
-
 
             if toString:
                 self.stringOutput = output
