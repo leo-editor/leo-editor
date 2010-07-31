@@ -5269,8 +5269,10 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     if trace: g.trace(theFile,moduleName,pathname)
                     module = imp.load_module(moduleName,theFile,pathname,description)
                     if module: break
-                except ImportError:
-                    if trace: g.trace('not found',moduleName,findPath)
+                # except ImportError:
+                    # if trace: g.trace('not found',moduleName,findPath)
+                except Exception:
+                    g.es('Exception loading %s module' % (moduleName),color='blue')
         except Exception: # Importing a module can throw exceptions other than ImportError.
             g.es_exception()
     finally:
