@@ -1748,6 +1748,7 @@ class tkinterAskLeoID (leoTkinterDialog):
             "leoID.txt not found\n\n" +
             "Please enter an id that identifies you uniquely.\n" +
             "Your cvs login name is a good choice.\n\n" +
+            "Leo uses this id to uniquely identify nodes.\n\n" +
             "Your id must contain only letters and numbers\n" +
             "and must be at least 3 characters in length.")
         self.createFrame(message)
