@@ -3442,14 +3442,19 @@ class atFile:
             i = next_i
         if not inCode:
             at.putEndDocLine()
-        if at.writeVersion5:
-            pass # Never write @nonl sentinels.
-        elif not trailingNewlineFlag:
-            if at.sentinels:
-                at.putSentinel("@nonl")
-            elif at.atAuto and not at.atEdit:
-                # New in Leo 4.6 rc1: ensure all @auto nodes end in a newline!
-                at.onl()
+
+        if not trailingNewlineFlag:
+            if at.writeVersion5:
+                if at.sentinels:
+                    pass # Never write @nonl
+                elif at.atAuto and not at.atEdit:
+                    at.onl() # 2010/08/01: bug fix: ensure newline here.
+            else:
+                if at.sentinels:
+                    at.putSentinel("@nonl")
+                elif at.atAuto and not at.atEdit:
+                    # Ensure all @auto nodes end in a newline!
+                    at.onl()
     #@+node:ekr.20041005105605.164: *4* writing code lines...
     #@+node:ekr.20041005105605.165: *5* @all
     #@+node:ekr.20041005105605.166: *6* putAtAllLine
