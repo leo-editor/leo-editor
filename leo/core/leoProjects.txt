@@ -430,5 +430,24 @@ Clicking on the installer-created Windows link for Leo on the Start
 Menu did nothing. Eventually I found the Windows section under
 "Running Leo" and learned it was required to run Leo the first time
 from a console window and not by launching it from Windows.
+#@+node:ekr.20100801112314.11718: *4* Improved handling of history
+@nocolor-node
+
+nav_qt.py just uses these:
+
+    c.goPrevVisitedNode()
+    c.goNextVisitedNode()
+
+and these subsequently use leoCommand.py / class nodeHistory.
+
+The fix would have to happen in leoFrame.py / selectHelper() which does this:
+
+    c.nodeHistory.update(p) # Remember this position.
+
+It shouldn't call update() there. Rather, the call should be moved to
+wherever body focus code is.
+
+The fix was to leoTree.selectHelper and qtBody.onFocusIn.
+
 #@-all
 #@-leo

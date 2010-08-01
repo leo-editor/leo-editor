@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E"><vh>Startup</vh>
+<v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20100118190256.2014"><vh> Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -157,8 +157,8 @@
 <v t="edward.20081127113749.15"></v>
 </v>
 </v>
-<v t="ekr.20071026102420.3" a="E"><vh>Scripts</vh>
-<v t="ekr.20100127111425.2062" a="E"><vh>search script (do not delete)</vh>
+<v t="ekr.20071026102420.3"><vh>Scripts</vh>
+<v t="ekr.20100127111425.2062"><vh>search script (do not delete)</vh>
 <v t="ekr.20100731123441.2155"><vh>searchDir</vh></v>
 </v>
 <v t="ekr.20090309064612.2"><vh> Example scripts</vh>
@@ -951,7 +951,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,3,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1566,7 +1566,7 @@ mod_scripting.py
 # Other interesting plugins
 # leo_to_html.py
 # leoOPML.py
-# nav_qt.py
+nav_qt.py
 # graphed.py
 
 # Tk plugins...

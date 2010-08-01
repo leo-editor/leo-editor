@@ -3014,14 +3014,18 @@ class leoQtBody (leoFrame.leoBody):
         item = layout.itemAt(index)
         item.setGeometry(QtCore.QRect(0,0,0,0))
         layout.removeItem(item)
-    #@+node:ekr.20090406071640.13: *4* Event handlers (qtBody) (not used)
+    #@+node:ekr.20090406071640.13: *4* Event handlers (qtBody)
     def onFocusIn (self,obj):
 
         '''Handle a focus-in event in the body pane.'''
 
         trace = False and not g.unitTesting
 
-        if trace: g.trace(obj,obj.objectName())
+        c = self.c
+        if trace: g.trace(c.p.h) # obj,obj.objectName())
+
+        # 2010/08/01: Update the history only on focus in events.
+        c.nodeHistory.update(c.p)
 
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper

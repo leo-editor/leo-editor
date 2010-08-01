@@ -2538,7 +2538,10 @@ class leoTree:
                             self.scrollTo(p)
                         self.canvas.after(100,scrollCallback)
                 except Exception: pass
-            c.nodeHistory.update(p) # Remember this position.
+            # 2010/08/01: (qt only) update history when body text gets focus.
+            # This is done in qtGui.py: onFocusIn.
+            if g.app.gui.guiName() != 'qt':
+                c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >>

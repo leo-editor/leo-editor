@@ -7649,12 +7649,9 @@ class nodeHistory:
         self.beadList.append(data)
         self.beadPointer = len(self.beadList) - 1
 
-
         if self.trace:    
             g.trace('bead list',p.h)
             g.pr([z[0].h for z in self.beadList])
-
-
     #@+node:ekr.20070615140655: *3* visitedPositions
     def visitedPositions (self):
 
