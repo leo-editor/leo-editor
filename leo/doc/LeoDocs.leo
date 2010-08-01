@@ -66,8 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
-<v t="ekr.20100731160906.11716" a="EO"><vh>@thin leoUserGuide.txt</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -1044,7 +1043,6 @@
 <v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
 <v t="ekr.20060620140130"><vh>New and improved plugins</vh></v>
 <v t="ekr.20060620140228"><vh>New and improved settings</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -8074,20 +8072,18 @@ a list that contains any vnode at most once.
 Leo continues to support the names of iterators used before Leo 4.7.
 These names typically end with the _iter suffix.
 </t>
-<t tx="ekr.20040414161647">@nocolor-node
-
-These are the sources for the html version of Leo's users guide, as well as the
-documentation for the rst3 plugin used to create the actual html files.
-
-These sources contain reStructuredText_ (rST) markup that is easy to read. See
-http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an
-introduction to rST.
-
-See the node "How to generate Leo's Sphinx docs" for details about making these
-docs.
+<t tx="ekr.20040414161647">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+verbose=True
 @c
-
-@all</t>
+</t>
 <t tx="ekr.20040414172212">############
 Front Matter
 ############
@@ -12101,7 +12097,20 @@ The benefits of the new workflow:
 - test.leo is the perfect place to develop test.
   I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.</t>
 <t tx="ekr.20050831184021.1">@language rest</t>
-<t tx="ekr.20050831184021.3">@language rest</t>
+<t tx="ekr.20050831184021.3">@language rest
+@tabwidth -4
+
+@others
+
+These are the sources for the html version of Leo's users guide, as well as the
+documentation for the rst3 plugin used to create the actual html files.
+
+These sources contain reStructuredText_ (rST) markup that is easy to read. See
+http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an
+introduction to rST.
+
+See the node "How to generate Leo's Sphinx docs" for details about making these
+docs.</t>
 <t tx="ekr.20050831184021.4">@language rest</t>
 <t tx="ekr.20050831184021.5">@language rest</t>
 <t tx="ekr.20050831195331.1">@language rest</t>
@@ -33741,23 +33750,6 @@ to be reviewed and merged to trunk.</t>
 
 2.  Specify the location of the Aspell and Aspell/bin directories using
     the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
-</t>
-<t tx="ekr.20100731160906.11716">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-@language rest
-@tabwidth -4
-
-@others
 </t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a

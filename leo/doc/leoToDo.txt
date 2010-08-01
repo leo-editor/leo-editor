@@ -8,7 +8,6 @@
 @nocolor-node
 
 The actual fix might be more flexible than this.
-#@+node:ekr.20100731160906.11718: *4* Create unit test for html section references
 #@+node:ekr.20100707124440.5870: *4* Fix at-root unit tests
 #@+node:ekr.20100521090440.5888: *4* Fix tangle/untangle problems
 #@+node:ekr.20100521130114.5903: *5* Allow @root only in headlines
