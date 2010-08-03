@@ -567,7 +567,7 @@ class atFile:
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
-            at.warnAboutUnvisitedNodes(root)
+            at.deleteUnvisitedNodes(root)
             at.deleteTnodeList(root)
         if at.errors == 0 and not at.importing:
             # Used by mod_labels plugin.
@@ -607,6 +607,43 @@ class atFile:
 
             delattr(v,"tnodeList")
             v._p_changed = True
+    #@+node:ekr.20071105164407: *5* at.deleteUnvisitedNodes
+    def deleteUnvisitedNodes (self,root):
+
+        if 1:
+            # Find the last top-level node.
+            last = self.c.rootPosition()
+            while last.hasNext():
+                last.moveToNext()
+            # Create the 'Ressurrected Nodes' node after last.
+            r = last.insertAfter()
+            r.setHeadString('Resurrected Nodes')
+            r.expand()
+            # Traverse root's subtree, moving nodes.
+            p = root.copy()
+            after = p.nodeAfterTree()
+            p.moveToFirstChild()
+            while p and p != after:
+                if p.isVisited():
+                    p.moveToThreadNext()
+                else:
+                    # Move p (and its subtree).
+                    next = p.nodeAfterTree()
+                    p.moveToLastChildOf(r)
+                    p = next
+                    if not g.unitTesting:
+                        g.es('ressurrected node:',p.h,color='red')
+                        g.es('in file:',root.h,color='blue')
+        else: # old code
+            resurrected = 0
+            for p in root.self_and_subtree():
+                if not p.v.isVisited():
+                    g.trace('**** not visited',p.v,p.h)
+                    g.es('resurrected node:',p.h,color='blue')
+                    g.es('in file:',root.h,color='blue')
+                    resurrected += 1
+            if resurrected:
+                g.es('you may want to delete ressurected nodes')
     #@+node:ekr.20041005105605.22: *5* at.initFileName
     def initFileName (self,fromString,importFileName,root):
 
@@ -640,20 +677,6 @@ class atFile:
             if trace: g.trace('found: True isThin:',
                 isThin,repr(line))
             return not isThin
-    #@+node:ekr.20071105164407: *5* at.warnAboutUnvisitedNodes
-    def warnAboutUnvisitedNodes (self,root):
-
-        resurrected = 0
-
-        for p in root.self_and_subtree():
-            if not p.v.isVisited():
-                g.trace('**** not visited',p.v,p.h)
-                g.es('resurrected node:',p.h,color='blue')
-                g.es('in file:',root.h,color='blue')
-                resurrected += 1
-
-        if resurrected:
-            g.es('you may want to delete ressurected nodes')
     #@+node:ekr.20041005105605.26: *4* at.readAll
     def readAll(self,root,partialFlag=False):
 
@@ -1278,6 +1301,9 @@ class atFile:
             at.v = at.createNewThinNode(gnx,headline,level)
         else:
             at.v = at.findChild4(headline)
+
+        if not at.v:
+            return # 2010/08/02: This can happen when reading strange files.
 
         at.v.setVisited()
             # Indicate that the vnode has been set in the external file.

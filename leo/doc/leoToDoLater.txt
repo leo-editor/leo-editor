@@ -1044,15 +1044,6 @@ Answer:
 My second thought is that this is too dangerous--shadow files might
 turn out to be useful emergency backups.  I would prefer to have Leo
 mess with the file system as little as possible.
-#@+node:ekr.20100121050224.6140: *3* Delete resurrected nodes
-@nocolor-node
-
-This would be a dangerous thing to do. Resurrected nodes are a serious problem,
-and rare. If they do happen, we want to keep things *as they are* so the problem
-can be studied. The last thing we want is to mess things up further with little
-used, highly complex error recovery code.
-
-The message about resurrected nodes is in atFile.read().
 #@+node:ekr.20060329102951: *3* @ref
 @nocolor
 

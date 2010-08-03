@@ -2932,6 +2932,22 @@
 <v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
 </v>
 </v>
+<v t="ekr.20050112095306.1"></v>
+<v t="ekr.20100802220019.5794"><vh>@@test at.deleteUnvisitedNodes</vh></v>
+<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh>
+<v t="ekr.20100802221529.5804"><vh>root</vh>
+<v t="ekr.20100802221529.5805"><vh>child1</vh>
+<v t="ekr.20100802221529.5808"><vh>child11</vh></v>
+</v>
+<v t="ekr.20100802221529.5807"><vh>child3</vh></v>
+</v>
+</v>
+<v t="ekr.20100802221529.5811" a="E"><vh>Resurrected Nodes</vh>
+<v t="ekr.20100802221529.5806"><vh>child2</vh>
+<v t="ekr.20100802221529.5809"><vh>child21</vh></v>
+</v>
+<v t="ekr.20100802221529.5810"><vh>child31</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23392,6 +23408,108 @@ def cheese():
     pass
 #end
 </t>
+<t tx="ekr.20100802220019.5794">def make (parent,n,h):
+    child = parent.insertAsNthChild(n)
+    child.h = h
+    return child
+    
+def delete_r():
+    '''Delete all 'Resurrected Nodes' nodes.'''
+    while True:
+        r = g.findNodeAnywhere(c,'Resurrected Nodes')
+        if r: r.doDelete(newNode=p)
+        else: break
+        
+def delete_children():
+    # Delete all children of p.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=p)
+        
+delete_r()
+delete_children()
+    
+# Create some children.
+root = make(p,0,'root')
+child1 = make(root,0,'child1')
+child2 = make(root,1,'child2')
+child3 = make(root,2,'child3')
+child11 = make(child1,0,'child11')
+child21 = make(child2,0,'child21')
+child31 = make(child3,0,'child31')
+
+c.clearAllVisited()
+for z in child1,child11,child21,child3:
+    # Unvisited and to be deleted. child2,child31.
+    z.setVisited()
+
+c.atFileCommands.deleteUnvisitedNodes(root)
+
+r = g.findNodeAnywhere(c,'Resurrected Nodes')
+assert r,'r'
+r1 = r.firstChild()
+r2 = r1.next()
+assert r1.h == 'child2','r1'
+assert r2.h == 'child31','r2'
+    
+if 1:
+    delete_r()
+    delete_children()
+c.redraw_now()</t>
+<t tx="ekr.20100802220019.5795">def make (parent,n,h):
+    child = parent.insertAsNthChild(n)
+    child.h = h
+    return child
+    
+def delete_r():
+    '''Delete all 'Resurrected Nodes' nodes.'''
+    while True:
+        r = g.findNodeAnywhere(c,'Resurrected Nodes')
+        if r: r.doDelete(newNode=p)
+        else: break
+        
+def delete_children():
+    # Delete all children of p.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=p)
+        
+delete_r()
+delete_children()
+    
+# Create some children.
+root = make(p,0,'root')
+child1 = make(root,0,'child1')
+child2 = make(root,1,'child2')
+child3 = make(root,2,'child3')
+child11 = make(child1,0,'child11')
+child21 = make(child2,0,'child21')
+child31 = make(child3,0,'child31')
+
+c.clearAllVisited()
+for z in child1,child11,child21,child3:
+    # Unvisited and to be deleted. child2,child31.
+    z.setVisited()
+
+c.atFileCommands.deleteUnvisitedNodes(root)
+
+r = g.findNodeAnywhere(c,'Resurrected Nodes')
+assert r,'r'
+r1 = r.firstChild()
+r2 = r1.next()
+assert r1.h == 'child2','r1'
+assert r2.h == 'child31','r2'
+    
+if 1:
+    delete_r()
+    delete_children()
+c.redraw_now()</t>
+<t tx="ekr.20100802221529.5804"></t>
+<t tx="ekr.20100802221529.5805"></t>
+<t tx="ekr.20100802221529.5806"></t>
+<t tx="ekr.20100802221529.5807"></t>
+<t tx="ekr.20100802221529.5808"></t>
+<t tx="ekr.20100802221529.5809"></t>
+<t tx="ekr.20100802221529.5810"></t>
+<t tx="ekr.20100802221529.5811"></t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
