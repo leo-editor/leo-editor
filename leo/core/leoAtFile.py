@@ -623,12 +623,15 @@ class atFile:
 
         # Carefully set up the arguments.
         aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+        if not aList: return
+
         r = at.createResurrectedNodesNode()
         afterLastNode=root.nodeAfterTree() # Do this *after* creating r!
         callback=at.defineResurrectedNodeCallback(r,root)
 
         # Now move the nodes.
-        root.firstChild().deletePositionsInList(afterLastNode,aList,callback)
+        root.firstChild().deletePositionsInList(
+            afterLastNode,aList,callback)
     #@+node:ekr.20100803073751.5817: *6* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
 
@@ -645,7 +648,7 @@ class atFile:
             # The 'Resurrected Nodes' node already exists.
             p = last
         else:
-            # Create the 'Ressurrected Nodes' node after 'last'.
+            # Create the 'Resurrected Nodes' node after 'last'.
             p = last.insertAfter()
             p.setHeadString(tag)
 

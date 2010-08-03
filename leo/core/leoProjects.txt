@@ -443,6 +443,233 @@ elif kind == at.miscDirective:
     at.putDirective(s,i)
 else:
     assert(0) # Unknown directive.
+#@+node:ekr.20100121050224.6140: *4* Fixed vampire nodes and created p.deletePositionsInList
+# Also, created a "Resurrected Nodes" node to handle such nodes cleanly and safely.
+#@+node:ekr.20100802121531.5802: *5* Post re vampire nodes
+@language rest
+
+Vampire nodes from cvs
+
+I've just discovered a major problem with cvs updates.  It is a subtle
+consequence of how Leo writes outlines and reads derived files.  This
+is a big bug in Leo, not cvs.  The effect of the bug is that nodes can
+appear in derived files that were never written to them!
+
+The discovery of this 'big bug' came about as the result of the
+following Aha:
+
+**@thin files that contain @all directives should be a cvs binary (-kb) files.**
+
+The reason is straightforward:  cvs doesn't know enough to merge such
+files.  Maybe all @thin derived files should be -kb files, but Leo's
+users will never agree to that!
+
+Anyway, leoProjects.txt is now a binary file as far as cvs is
+concerned.  Other .txt files, like leoScripts.txt, should also be
+binary files.  As we shall see, the fact that leoProjects.txt is now a
+-kb file means that we can not possibly blame the cvs merge algorithm
+for what is about to happen.
+
+Ok, back to the 'big bug'.  Here is how I got bitten:
+
+- I changed leoProjects.txt in two sandboxes 1 and 2.  In sandbox 1 I
+added a node called 'changed in the main line'.  In sandbox 2 I added
+a node called 'changed2'.
+
+- I changed LeoPyRef.leo in sandbox 2, but *not* in sandbox 1.
+
+- I did a update in sandbox 2.
+
+As expected (now that leoProjects.txt is a binary file) I got the
+following from cvs:
+
+M src/LeoPyRef.leo
+...
+cvs update: nonmergeable file needs merge
+cvs update: revision 1.448 from repository is now in src/
+leoProjects.txt
+cvs update: file from working directory is now in .#leoProjects.txt.
+1.447
+
+To summarize the update:
+
+- LeoPyRef.leo has been marked as modified (M), but it has **not**
+been changed by cvs.
+
+- As expected, leoProjects.txt contains the version from sandbox **1**.
+
+So far, so good.  But when I opened LeoPyRef.leo I got a huge
+surprise: the outline contains **both** the node 'changed in main-
+line' and the node 'changed2'!
+
+How did this happen?  Well, obviously the 'changed in main-line' node
+came from the cvs update.  I expected that.  The 'changed2' line must
+have come from the local copy of LeoPyRef.leo.
+
+Once I knew what to look for it wasn't too hard to discover what had
+happened.  The 'changed2' is a descendant of a cloned node called '4.4
+projects'.
+
+- One clone of '4.4 projects' node is a descendant of the @thin
+leoProjects.txt node.
+
+- Another clone of the '4.4 project' is in the LeoPyRef.leo file but
+outside of any @thin node.
+
+So the 'resurrection' of the 'changed2' node happened while Leo was
+reading leoProjects.txt into LeoPyRef.leo.  The '4.4 projects' node
+**already existed in the outline** before Leo read leoProjects.txt,
+and the present atFile read logic only **adds** nodes, it never
+deletes nodes.  Thus, the 'changed2' node 'survived' the atFile read
+logic.  The 'changed2' node became a 'vampire' node that couldn't be
+killed.
+
+The problem is far from benign.  Because of clones, the vampire node
+became an orphan node in **another** file, namely leoKeys.py.  I tried
+two or three times to remove the vampire/orphan node before realizing
+what had happened.
+
+The fix (there is *always* a fix) will require some care.  The present
+atFile.read logic is robust because it *doesn't* delete nodes.  It is
+essential that the read logic remain robust.  I suspect the solutions
+will be as follows:
+
+A. The atFile.read code can not delete the subtree of @thin nodes
+initially, because it doesn't know whether there will be read errors
+later.  If there are read errors absolutely nothing must change.  This
+ensures that read errors never destroy information.
+
+B. A new post-pass will look for vampire nodes: nodes that were not
+actually read from the derived file.  I think (but haven't proven)
+that all descendents of vampire nodes are also vampire nodes.  If that
+is so the post-pass will simply delete vampire nodes without worrying
+about whether they have descendents.
+
+Warning: the new scheme will mean that cvs update can destroy
+information that previously existed in the outline.  I believe this is
+correct: we assume that derived files are the 'truly meaningful'
+files.  Hey, if we are wrong we can always get the old info from
+cvs :-)
+QQQ
+
+At present, atFile.read contains code to warn of "resurrected" nodes,
+and I did indeed get such a warning when the recent problem arose.
+
+After a quick look at atFile.read, I strongly suspect that the problem
+remains today pretty much exactly as it was in 2003.  The only
+difference is that the caching code (the call to
+root.v.createOutlineFromCacheList(c,aList)) doesn't do the check:
+\<\< advise user to delete all unvisited nodes \>\>
+that is done later in read(). That probably should be fixed.
+
+Finding a better solution to vampire nodes has been on the list since
+2003.  It's not easy because it involves the dreaded "multiple delete"
+problem.
+
+Hmm.  The present read code *does* delete the tree before reading thin
+external files.  So it appears that vampire nodes could only be
+expected in external files derived from @file nodes.  It may be that
+part of the problem is that somehow Leo thinks that it is reading an
+@file node?? That's pretty weird, but messages about resurrected nodes
+and missing tnode lists did happen.  It's quite a puzzle.
+
+Edward
+#@+node:ekr.20071105164407: *5* at.deleteUnvisitedNodes & helpers
+def deleteUnvisitedNodes (self,root):
+
+    '''Delete unvisited nodes in root's subtree, not including root.
+
+    Actually, instead of deleting the nodes, we move them to be children of the
+    'Resurrected Nodes' r.
+    '''
+
+    at = self
+
+    if not root.hasChildren():
+        return
+
+    # Carefully set up the arguments.
+    aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+    if not aList: return
+
+    r = at.createResurrectedNodesNode()
+    afterLastNode=root.nodeAfterTree() # Do this *after* creating r!
+    callback=at.defineResurrectedNodeCallback(r,root)
+
+    # Now move the nodes.
+    root.firstChild().deletePositionsInList(
+        afterLastNode,aList,callback)
+#@+node:ekr.20100803073751.5817: *6* createResurrectedNodesNode
+def createResurrectedNodesNode(self):
+
+    '''Create a 'Resurrected Nodes' node as the last top-level node.'''
+
+    at = self ; c = at.c ; tag = 'Resurrected Nodes'
+
+    # Find the last top-level node.
+    last = c.rootPosition()
+    while last.hasNext():
+        last.moveToNext()
+
+    if last.h == tag:
+        # The 'Resurrected Nodes' node already exists.
+        p = last
+    else:
+        # Create the 'Resurrected Nodes' node after 'last'.
+        p = last.insertAfter()
+        p.setHeadString(tag)
+
+    p.expand()
+    return p
+#@+node:ekr.20100803073751.5818: *6* defineResurrectedNodeCallback
+def defineResurrectedNodeCallback (self,r,root):
+
+    '''Define a callback that moves node p as r's last child.'''
+
+    def callback(p,r=r.copy(),root=root):
+
+        '''The resurrected nodes callback.'''
+
+        child = r.insertAsLastChild()
+        child.h = 'From %s' % root.h
+        p.moveToLastChildOf(child)
+
+        if g.unitTesting:
+            # g.trace(p.h,r.h)
+            pass 
+        else:
+            g.es('resurrected node:',p.h,color='red')
+            g.es('in file:',root.h,color='blue')
+
+    return callback
+
+
+#@+node:ekr.20100802121531.5804: *5* p.deletePositionsInList
+def deletePositionsInList (self,afterLastNode,aList,callback):
+
+    '''Traverse the nodes from self up to but *not* including afterLastNode. The
+    traversal continues to the end of the outline if afterLastNode is None. The
+    **range** of the traversal is the set of nodes from self to the node
+    *before* afterLastNode.
+
+    This method calls the callback for any position in aList found in the range,
+    excluding any node whose ancestor has already been passed to the callback.
+
+    The callback takes one explicit argument, p. As usual, the callback can bind
+    values using keyword arguments. The callback may delete p or move p out of
+    the range. The callback **must not** move p within range.
+    '''
+
+    p = self.copy()
+    after = afterLastNode and afterLastNode.copy()
+    while p and p != after:
+        # g.trace(repr(p))
+        if p in aList:
+            next = p.nodeAfterTree()
+            callback(p.copy())
+            p = next
+        else:
+            p.moveToThreadNext()
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
