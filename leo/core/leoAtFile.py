@@ -626,12 +626,11 @@ class atFile:
         if not aList: return
 
         r = at.createResurrectedNodesNode()
-        afterLastNode=root.nodeAfterTree() # Do this *after* creating r!
+        assert r not in aList
         callback=at.defineResurrectedNodeCallback(r,root)
 
         # Now move the nodes.
-        root.firstChild().deletePositionsInList(
-            afterLastNode,aList,callback)
+        root.firstChild().deletePositionsInList(aList,callback)
     #@+node:ekr.20100803073751.5817: *6* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
 

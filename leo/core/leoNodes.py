@@ -1079,26 +1079,27 @@ class position (object):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
     #@+node:ekr.20100802121531.5804: *4* p.deletePositionsInList
-    def deletePositionsInList (self,afterLastNode,aList,callback):
+    def deletePositionsInList (self,aList,callback):
 
-        '''Traverse the nodes from self up to but *not* including afterLastNode. The
-        traversal continues to the end of the outline if afterLastNode is None. The
-        **range** of the traversal is the set of nodes from self to the node
-        *before* afterLastNode.
+        '''Traverse the tree starting from self until all nodes in aList have been
+        found.
 
         This method calls the callback for any position in aList found in the range,
         excluding any node whose ancestor has already been passed to the callback.
 
         The callback takes one explicit argument, p. As usual, the callback can bind
         values using keyword arguments. The callback may delete p or move p out of
-        the range. The callback **must not** move p within range.
+        the range. The callback **must not** move p within range of the traversal.
         '''
 
         p = self.copy()
-        after = afterLastNode and afterLastNode.copy()
-        while p and p != after:
+        while p and aList:
             # g.trace(repr(p))
             if p in aList:
+                aList.remove(p)
+                for z in aList:
+                    if p.isAncestorOf(z):
+                        aList.remove(z)
                 next = p.nodeAfterTree()
                 callback(p.copy())
                 p = next
