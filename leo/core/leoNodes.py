@@ -1078,6 +1078,32 @@ class position (object):
         for child in p.children():
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
+    #@+node:ekr.20100802121531.5804: *4* p.deletePositionsInList
+    def deletePositionsInList (self,afterLastNode,aList,callback):
+
+        '''Traverse the nodes from self up to but *not* including afterLastNode. The
+        traversal continues to the end of the outline if afterLastNode is None. The
+        **range** of the traversal is the set of nodes from self to the node
+        *before* afterLastNode.
+
+        This method calls the callback for any position in aList found in the range,
+        excluding any node whose ancestor has already been passed to the callback.
+
+        The callback takes one explicit argument, p. As usual, the callback can bind
+        values using keyword arguments. The callback may delete p or move p out of
+        the range. The callback **must not** move p within range.
+        '''
+
+        p = self.copy()
+        after = afterLastNode and afterLastNode.copy()
+        while p and p != after:
+            # g.trace(repr(p))
+            if p in aList:
+                next = p.nodeAfterTree()
+                callback(p.copy())
+                p = next
+            else:
+                p.moveToThreadNext()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
     #@+at This is the main delete routine.
     # It deletes the receiver's entire tree from the screen.

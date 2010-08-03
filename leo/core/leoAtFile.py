@@ -607,43 +607,73 @@ class atFile:
 
             delattr(v,"tnodeList")
             v._p_changed = True
-    #@+node:ekr.20071105164407: *5* at.deleteUnvisitedNodes
+    #@+node:ekr.20071105164407: *5* at.deleteUnvisitedNodes & helpers
     def deleteUnvisitedNodes (self,root):
 
-        if 1:
-            # Find the last top-level node.
-            last = self.c.rootPosition()
-            while last.hasNext():
-                last.moveToNext()
-            # Create the 'Ressurrected Nodes' node after last.
-            r = last.insertAfter()
-            r.setHeadString('Resurrected Nodes')
-            r.expand()
-            # Traverse root's subtree, moving nodes.
-            p = root.copy()
-            after = p.nodeAfterTree()
-            p.moveToFirstChild()
-            while p and p != after:
-                if p.isVisited():
-                    p.moveToThreadNext()
-                else:
-                    # Move p (and its subtree).
-                    next = p.nodeAfterTree()
-                    p.moveToLastChildOf(r)
-                    p = next
-                    if not g.unitTesting:
-                        g.es('ressurrected node:',p.h,color='red')
-                        g.es('in file:',root.h,color='blue')
-        else: # old code
-            resurrected = 0
-            for p in root.self_and_subtree():
-                if not p.v.isVisited():
-                    g.trace('**** not visited',p.v,p.h)
-                    g.es('resurrected node:',p.h,color='blue')
-                    g.es('in file:',root.h,color='blue')
-                    resurrected += 1
-            if resurrected:
-                g.es('you may want to delete ressurected nodes')
+        '''Delete unvisited nodes in root's subtree, not including root.
+
+        Actually, instead of deleting the nodes, we move them to be children of the
+        'Resurrected Nodes' r.
+        '''
+
+        at = self
+
+        if not root.hasChildren():
+            return
+
+        # Carefully set up the arguments.
+        aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+        r = at.createResurrectedNodesNode()
+        afterLastNode=root.nodeAfterTree() # Do this *after* creating r!
+        callback=at.defineResurrectedNodeCallback(r,root)
+
+        # Now move the nodes.
+        root.firstChild().deletePositionsInList(afterLastNode,aList,callback)
+    #@+node:ekr.20100803073751.5817: *6* createResurrectedNodesNode
+    def createResurrectedNodesNode(self):
+
+        '''Create a 'Resurrected Nodes' node as the last top-level node.'''
+
+        at = self ; c = at.c ; tag = 'Resurrected Nodes'
+
+        # Find the last top-level node.
+        last = c.rootPosition()
+        while last.hasNext():
+            last.moveToNext()
+
+        if last.h == tag:
+            # The 'Resurrected Nodes' node already exists.
+            p = last
+        else:
+            # Create the 'Ressurrected Nodes' node after 'last'.
+            p = last.insertAfter()
+            p.setHeadString(tag)
+
+        p.expand()
+        return p
+    #@+node:ekr.20100803073751.5818: *6* defineResurrectedNodeCallback
+    def defineResurrectedNodeCallback (self,r,root):
+
+        '''Define a callback that moves node p as r's last child.'''
+
+        def callback(p,r=r.copy(),root=root):
+
+            '''The resurrected nodes callback.'''
+
+            child = r.insertAsLastChild()
+            child.h = 'From %s' % root.h
+            p.moveToLastChildOf(child)
+
+            if g.unitTesting:
+                # g.trace(p.h,r.h)
+                pass 
+            else:
+                g.es('resurrected node:',p.h,color='red')
+                g.es('in file:',root.h,color='blue')
+
+        return callback
+
+
     #@+node:ekr.20041005105605.22: *5* at.initFileName
     def initFileName (self,fromString,importFileName,root):
 
