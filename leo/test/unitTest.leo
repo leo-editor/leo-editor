@@ -2100,7 +2100,7 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 <v t="ekr.20090529141856.4717"><vh>C tests</vh>
@@ -2122,6 +2122,9 @@
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
+</v>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
 <v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
@@ -2941,8 +2944,7 @@
 <v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
 </v>
 </v>
-<v t="ekr.20050112095306.1"></v>
-<v t="ekr.20100802220019.5795"></v>
+<v t="ekr.20090529141856.4716" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23471,6 +23473,23 @@ c.redraw_now()</t>
 <t tx="ekr.20100803172123.5807"></t>
 <t tx="ekr.20100803172123.5808"></t>
 <t tx="ekr.20100803172123.5810"></t>
+<t tx="ekr.20100803234640.5804"></t>
+<t tx="ekr.20100803234640.5805">s = '''\
+; last modified 1 April 2001 by John Doe
+[owner]
+name=John Doe
+organization=Acme Widgets Inc.
+ 
+[database]
+server=192.0.2.62     ; use IP address in case network name resolution is not working
+port=143
+file = "payroll.dat"
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.iniUnitTest(p,s=s,showTree=False)
+</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)

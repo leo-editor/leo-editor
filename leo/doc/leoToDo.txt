@@ -4649,7 +4649,7 @@ def skipDecls (self,s,i,end,inClass):
 
     The decls *must* end in a newline.'''
 
-    trace = False or self.trace
+    trace = True or self.trace
     start = i ; prefix = None
     classOrFunc = False
     if trace: g.trace(g.callers())
