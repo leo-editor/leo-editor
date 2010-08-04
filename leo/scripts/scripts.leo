@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="70" left="678" height="921" width="1124"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -31,9 +31,9 @@
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"
-expanded="ekr.20051110105027.69,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
+<v t="ekr.20051110111150" a="E"
+expanded="ekr.20051204180404,ekr.20040723065021,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="edward.20081226095234.1"><vh>@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
@@ -851,7 +851,7 @@ g.es('%s nodes checked' % count)</t>
 </t>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="1,0,9,12,0"></t>
 <t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:
@@ -896,6 +896,7 @@ os.system('git add *')
 out = os.popen('git commit -m "Leo autocommit"').read()
 g.es("committed")
 g.es(out)
-g.es('Outline in ' + os.path.abspath(titlename))</t>
+g.es('Outline in ' + os.path.abspath(titlename))
+</t>
 </tnodes>
 </leo_file>
