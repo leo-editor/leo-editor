@@ -4,6 +4,8 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 4.8 vim, cleanups, your mission...
 #@+node:ekr.20100223123910.5836: *3* First
+#@+node:ekr.20100804095820.5811: *4* Add @thin nodes to Users Guide
+#@+node:ekr.20100804095820.5812: *4* Fix thumb drive spec problem
 #@+node:ekr.20100731160906.11717: *4* Allow proportional font for @language plain
 @nocolor-node
 

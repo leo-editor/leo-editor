@@ -66,7 +66,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -273,7 +273,7 @@
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
-<v t="ekr.20050828061213"><vh>@rst html\directives.html</vh>
+<v t="ekr.20050828061213" a="E"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
 <v t="sps.20100712151944.7128"><vh>A Brief and Inaccurate History of Leo for Programming</vh></v>
@@ -287,8 +287,8 @@
 </v>
 <v t="sps.20100712151944.7147"><vh>List of @root Family Directives</vh></v>
 </v>
-<v t="sps.20100712151944.7183"><vh>All About Directives</vh>
-<v t="sps.20100712151944.7184"><vh>Body pane modifiers</vh>
+<v t="sps.20100712151944.7183" a="E"><vh>All About Directives</vh>
+<v t="sps.20100712151944.7184" a="E"><vh>Body pane modifiers</vh>
 <v t="sps.20100712151944.7185"><vh>@color, @nocolor, @nocolor-node and @killcolor</vh></v>
 <v t="sps.20100712151944.7186"><vh>@wrap and @nowrap</vh></v>
 </v>
@@ -913,11 +913,19 @@
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 </v>
 </v>
-<v t="ekr.20091111112709.6671"><vh>Glossary</vh>
-<v t="ekr.20091111112709.6672"><vh>@rst html\glossary.html</vh>
-<v t="ekr.20091111112709.6676"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20091111112709.6671" a="E"><vh>Glossary</vh>
+<v t="ekr.20091111112709.6672" a="E"><vh>@rst html\glossary.html</vh>
+<v t="ekr.20100804133903.7258"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20100804133903.7259" a="E"><vh>@rst-no-head glossary</vh>
+<v t="ekr.20100804133903.7250"><vh>@rst-no-head @</vh></v>
+<v t="ekr.20100804133903.7251"><vh>@rst-no-head A - C</vh></v>
+<v t="ekr.20100804133903.7252"><vh>@rst-no-head D - G</vh></v>
+<v t="ekr.20100804133903.7253"><vh>@rst-no-head H - L</vh></v>
+<v t="ekr.20100804133903.7254"><vh>@rst-no-head M - O</vh></v>
+<v t="ekr.20100804133903.7255"><vh>@rst-no-head P - R</vh></v>
+<v t="ekr.20100804133903.7256"><vh>@rst-no-head S - Z</vh></v>
 </v>
-<v t="ekr.20091111112709.6677"><vh>To be rewritten</vh></v>
+</v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20100129054823.11924"><vh>What's New in Leo 4.7</vh>
@@ -1049,8 +1057,8 @@
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20090428101858.1"><vh> How to generate Leo's Sphinx docs</vh></v>
-<v t="EKR.20040524104904.380"><vh>OLD Glossary</vh>
-<v t="ekr.20050901071041"><vh>@@rst html\glossary.html</vh>
+<v t="EKR.20040524104904.380" a="E"><vh>OLD Glossary</vh>
+<v t="ekr.20050901071041" a="E"><vh>@@rst html\glossary.html</vh>
 <v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
 </v>
@@ -12192,7 +12200,6 @@ Glossary
 .. _`@asis`:                    directives.html#asis-and-noref
 .. _`@auto`:                    directives.html#auto
 .. _`@file`:                    directives.html#file-and-thin
-.. _`@noref`:                   directives.html#asis-and-noref
 .. _`@nosent`:                  directives.html#nosent
 .. _`@root`:                    directives.html#root
 .. _`@thin`:                    directives.html#file-and-thin
@@ -12224,7 +12231,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 @file node
     An @file node_ is a node whose *headline* starts with @file.
     **Important**: Headlines_ that start with @file-asis, @file-noref, @file-nosent
-    (and their abbreviations @asis, @noref, @nosent) are collectively called @file nodes.
+    (and their abbreviations @asis, @nosent) are collectively called @file nodes.
 
 .. _`@auto tree`:
 .. _`@file tree`:
@@ -12238,15 +12245,13 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 @file tree, @others tree, @root tree, etc.
     An @file tree_ is a tree whose root_ is an @file node, etc.
 
-@asis, @auto, @file, @noref, @nosent, @thin
+@asis, @auto, @file, @nosent, @thin
     Headlines_ that start with one of these create (correspond to) `external files`_.
     The following synonyms exist::
 
-        @asis, @file-asis
-        @noref, @file-noref
-        @nosent, @file-nosent
+        @asis, @file-asis, @nosent, @file-nosent
 
-    For more information, see the documentation for `@asis`_, `@auto`_, `@file`_, `@noref`_, `@nosent`_ and `@thin`_
+    For more information, see the documentation for `@asis`_, `@auto`_, `@file`_, `@nosent`_ and `@thin`_
     in Leo's `programming reference`_ chapter.
 
     \@auto trees allow you to edit external files that contain no sentinels.
@@ -29494,7 +29499,6 @@ root of a tree that generates a derived file::
 
     @asis filename    Creates a derived file. Ignores all markup in body text.
     @file filename    Creates a derived file. Duplicates outline structure in .leo file.
-    @noref filename   Creates a derived file. Ignores all section references.
     @nosent filename  Creates a derived file without sentinels.
     @thin filename    (Recommended) Like @file, but thin derived files contain all outline structure.
 
@@ -29763,65 +29767,10 @@ methods of the commander to insert, delete or clone nodes. Finally, the
 execute-script commands predefines p to be the presently selected position.
 </t>
 <t tx="ekr.20091111112709.6671">@language rest</t>
-<t tx="ekr.20091111112709.6672">.. ..glossary::
-
-#########
+<t tx="ekr.20091111112709.6672">#########
 Glossary
 #########
-
-We often refer to outline nodes by the directives they contain.
-For example, an ``@file`` node is a node whose headline starts with ``@file``, etc.
-
-.. .. _glossary::
-
-    @&lt;file&gt; node
-        A node whose headline starts with
-        ``@asis``, ``@edit``, ``@file``, ``@nosent``, ``@shadow``, ``@thin``, or their longer forms.
-
-    @all directive
-        Cause Leo to copy the body text of all nodes in an @thin tree to the corresponding external file.
-        For more information, see `directives for programming`_ in `Leo's tutorial`_.
-
-    outline order
-        Were you to expand every node in a Leo outline (``expand-all``), then nodes would be in the
-        outline panel in outline order from top to bottom.  Specifically, a node; its descendants in
-        outline order, then each of its siblings with their descendants in outline order.
 </t>
-<t tx="ekr.20091111112709.6676">.. Links used in this document.
-
-.. ----- External links.
-
-.. _`CWEB language`:                    http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _`literate programming web page`:    http://www.literateprogramming.com/
-.. _`noweb language`:                   http://www.eecs.harvard.edu/~nr/noweb/
-.. _`rST primer`:                       http://docutils.sourceforge.net/docs/user/rst/quickstart.html
-
-.. ----- Relative links.
-
-.. _`Chapter 8: Customizing Leo`:   customizing.html
-.. _`Writing plugins and hooks`:    writingPlugins.html
-
-.. _`programming reference`:    directives.html
-.. _`@asis`:                    directives.html#asis
-.. _`@auto`:                    directives.html#auto
-.. _`@file`:                    directives.html#file-and-thin
-.. _`@nosent`:                  directives.html#nosent
-.. _`@root`:                    directives.html#root
-.. _`@thin`:                    directives.html#file-and-thin
-.. _`@unit documentation`:      directives.html#root
-.. _`tangling @root trees`:     directives.html#tangling-root-trees-with-the-tangle-commands
-.. _`untangling @root trees`:   directives.html#untangling-root-trees-with-the-untangle-commands
-
-.. ----- References to the tutorial.
-.. _`clones &amp; views`:               intro.html#clones-views
-.. _`leo's tutorial`:               intro.html
-.. _`external files section`:        intro.html#derived-files
-.. _`directives for programming`:   intro.html#directives-for-programming
-.. _`leo directives`:               intro.html#leo-directives
-.. _`quick start for programmers`:  intro.html#quick-start-for-programmers
-.. _`sentinels lines`:              intro.html#sentinel-lines
-</t>
-<t tx="ekr.20091111112709.6677"></t>
 <t tx="ekr.20091112060950.6677">s = p.bodyString()
 
 s = s.replace('\n\n','***2***')
@@ -29982,6 +29931,8 @@ very top, a **status area** and a **mini-buffer** at the very bottom.
 
 |leoMainWindow|
 
+.. index:: Outline pane
+
 The outline pane
     The outline pane shows your project as an outline. The outline
     contains all your project's data. An outline consists of **nodes**. The
@@ -29989,31 +29940,44 @@ The outline pane
     node contains children, a smaller icon appears to the left of the icon box.
     This icon contains a '+' or '-' symbol. Clicking this **expansion box**
     expands or contracts the node.
+    
+.. index:: Node,Headline,Body text
 
-Nodes
-    Nodes have two parts, a **headline** and **body text**. The outline pane
+Node
+    Each outline node has two two parts, a **headline** and **body text**. The outline pane
     shows headlines. Selecting a headline selects the entire node; the node's
     body text appears in the body pane. Leo uses standard terminology to
     describe the relationships of nodes in an outline. We speak of **parent**
     nodes, **child** nodes, **ancestor** nodes and **descendant** nodes.
+    
+.. index:: Body pane
 
 Body pane
     The body pane contains the body text of the node selected in the
     outline pane.
+    
+.. index:: Log pane
 
 Log pane
     The log pane contains informational messages from Leo or your scripts.
+    
+.. index:: Icon area
 
-Icon area Depending on what plugins are enabled, the icon area may contain
+Icon area
+    Depending on what plugins are enabled, the icon area may contain
     buttons and other widgets that extend what Leo can do. The scripting plugin
     makes it easy to add buttons to the icon area.
+    
+.. index:: Status area
 
 Status area
     The status area shows the line and column containing the body text's cursor,
     and the **UNL** (Uniform Node Location), the path from the top of the outline
     to the selected node.  This path will change as you change outline nodes.
+    
+.. index:: Minibuffer
 
-Mini-buffer
+Minibuffer
     You can type command and search strings in the minibuffer. It works much
     like the Emacs mini-buffer. To enter a command, type &lt;Alt-x&gt; followed by the
     command name and then &lt;return&gt;. To type a search string, type &lt;ctrl-f&gt;
@@ -30055,7 +30019,9 @@ You enter body text for any node by selecting the node's headline in the outline
 pane and then typing in the body pane. Leo has a full range of `editing
 commands`_ that apply to the body pane.
 </t>
-<t tx="ekr.20091130111843.6817">A **clone** is a node that appears in more than one place in a Leo outline.
+<t tx="ekr.20091130111843.6817">.. index:: Clone
+
+A **clone** is a node that appears in more than one place in a Leo outline.
 Clones are marked with a small red arrow in the icon box. All clones of a node
 are actually *the same node*, so any change to one clone affects all clones. For
 example, inserting, moving or deleting any child of a clone will change all
@@ -30083,6 +30049,8 @@ To create a new view of the data in your outline, just do the following:
    these clones so they become children of the view node.
 
 3. (Optional) You can add regular nodes as children of the view node too.
+
+.. index:: Bug node
 
 For example, when I fix a bug in Leo, I create an ordinary node to represent the
 bug. This **bug node** is my view of all the data in Leo's source code that
@@ -30226,17 +30194,22 @@ here. This file will repay close study. For full details on all aspects of Leo
 see LeoDocs.leo or `Leo's Users Guide`_.
 </t>
 <t tx="ekr.20091130111843.6846">.. _`external files`:
+.. index:: External files,.leo files,XML
 
 Leo stores outline data on your file system in **.leo files**. The format of
 these files is `XML`_. You don't have to store all your data in .leo files: Leo
 allows you to store parts of your outline data **external files**, that is,
 other files on your file system.
 
+.. index:: @thin nodes
+
 **@thin nodes** create external files. \@thin nodes have headlines starting with
 \@thin followed by a file name. Some examples::
 
     @thin leoNodes.py
     @thin ../../notes.text
+    
+.. index:: Load directory
 
 The file name can be an absolute path or a relative path to the file that starts
 at Leo's **load directory**, the directory containing the .leo file.
@@ -30256,7 +30229,9 @@ outline:
   The only nodes that gets written to the .leo file are nodes that are not
   contained in any \@thin tree.
 </t>
-<t tx="ekr.20091130194648.6811">Leo's **directives** control such things as syntax coloring, line wrapping
+<t tx="ekr.20091130194648.6811">.. index:: Directives
+
+Leo's **directives** control such things as syntax coloring, line wrapping
 within the body pane and the width of tabs. Leo directives may appear in
 headlines or body text. Leo directives start with '@', followed by the name of
 the directive. Here are some of Leo's directives::
@@ -30288,6 +30263,8 @@ However, some descendant node mignt contain::
 which tells Leo to color that node and all of *its* decendants as
 reStructureText. This principle applies to almost all of Leo's directives: the
 directive is in effect throughout a tree, unless overridden in some subtree.
+
+.. index:: @color, @nocolor, @killcolor
 
 - **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
 
@@ -30338,7 +30315,9 @@ Leo treats lines starting with \@ as a normal code line unless the \@ starts a
 Leo directive. In particular, Leo will output Python decorators correctly,
 provided the name of the decorator does not conflict with a Leo directive.
 </t>
-<t tx="ekr.20091201091455.6809">We come now to one of Leo's most important and unusual features. When Leo writes
+<t tx="ekr.20091201091455.6809">.. index:: Leo markup
+
+We come now to one of Leo's most important and unusual features. When Leo writes
 an external file, it does so in a flexible manner, directed by **outline-based
 markup**. This markup tells Leo exactly how to create the external file from an
 \@thin node.
@@ -30347,6 +30326,8 @@ The **obvious** way to write an external file would be to write the ``@thin`` no
 itself followed by all the descendant nodes in **outline order** (the order in
 which nodes appear in the outline). But Leo does *not* write external files
 exactly this way.
+
+.. index:: @all,@others
 
 Yes, Leo does indeed start by writing the \@thin node itself. But Leo writes the
 ``@thin`` node's descendants only when it sees one of three kinds of Leo
@@ -33751,6 +33732,452 @@ to be reviewed and merged to trunk.</t>
 2.  Specify the location of the Aspell and Aspell/bin directories using
     the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
 </t>
+<t tx="ekr.20100804133903.7250">.. index:: @&lt;file&gt; node
+
+\@&lt;file&gt; node
+    A node whose headline starts with
+    @asis, @edit, @file, @nosent, @shadow, @thin, or their longer forms.
+    We often refer to outline nodes by the directives they contain.
+    For example, an @file node is a node whose headline starts with @file, etc.
+    
+.. index::  @all
+
+\@all
+    Copies the body text of all nodes in an @thin tree to the external file.
+    For more information, see `directives for programming`_ in `Leo's tutorial`_.
+    
+.. index:: @asis
+
+\@asis &lt;filename&gt;
+    Creates an external file containing no Leo sentinels directly from the @asis tree.
+    
+.. index:: @auto
+
+\@auto &lt;filename&gt;
+    Imports an external file into the Leo outline, splitting the file into pieces if
+    an importer exists for the give filetype.
+    Importers presently exist for the following languages:
+    C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.
+    
+.. index:: @color
+    
+\@color
+    Enables syntax coloring in a node and its descendants until the next @nocolor directive.
+    
+.. index:: @file
+
+\@file &lt;filename&gt;
+    Creates an external file containing Leo sentinels.
+    At present, a synonym for @thin.
+    
+.. index:: @killcolor
+    
+\@killcolor
+    Completely disables syntax coloring in a node, regardless of other directives.
+    
+.. index:: @nocolor
+    
+\@nocolor
+    Disables syntax coloring in a node and its descendants until the next @color directive.
+    
+.. index:: @nosent
+
+\@nosent
+    Creates an external file containing no sentinels.
+    Unlike @asis, sections references and the @all and @others directives are valid in @nosent trees.
+    
+.. index:: @others
+
+\@others
+    A directive that copies the body text of all nodes *except* section definition nodes
+    in an @thin tree to the corresponding external file.
+    For more information, see `directives for programming`_ in `Leo's tutorial`_.
+    
+.. index:: @unit
+
+\@unit
+    Expands the scope of definitions in @root trees.
+    For more information, see the `@unit documentation` in Leo's `programming reference`_.
+</t>
+<t tx="ekr.20100804133903.7251">.. index:: Body pane
+
+Body pane
+    The pane containing the body text of the currently selected headline in the outline pane.
+    
+.. index:: Body text
+
+Body text
+    The text in the body pane.  That is, the contents of a node.
+
+.. index:: Body text box
+
+Body text box
+    A small blue box in the icon box indicating that the node contains body text.
+
+.. index:: Child
+
+Child
+    The direct descendant of a node.
+
+.. index:: Chunk
+
+Chunk
+    A synonym for a section in `noweb`_ terminology.
+    
+.. index:: Clone
+
+Clone
+    A copy of a tree that changes whenever the original changes.
+    The original and all clones are treated equally:
+    no special status is given to the "original" node.
+    
+.. index:: Clone arrow
+
+Clone arrow
+    A small red arrow in the icon box indicating that the node is a clone.
+
+.. index:: Code part
+
+Code part
+    A part of a section definition that contains code. 
+    Code parts start with @c or @code directives and continue until the next doc part.
+    
+.. index:: Contract
+
+Contract:
+    To hide all descendants of a node.
+    
+.. index:: CWEB
+
+CWEB
+    A `literate programming`_ language invented by Donald Knuth and Silvio Levy.
+    The `CWEB`_ language produces external files for the C language.
+</t>
+<t tx="ekr.20100804133903.7252">.. index:: Demote
+
+Demote
+    To move all siblings that follow a node so that they become children of the node.
+    
+.. index:: Descendant
+    
+Descendant
+    An offspring of a node.  That is, a child, grandchild, etc. of a node.
+    
+.. index:: Directive
+
+Directive
+    A keyword, preceded by an '@' sign, in body text that controls Leo's operation.
+    The keyword is empty for the @ directive.
+    For more information, set the `Leo directives`_ section of `Leo's tutorial`_.
+    
+.. index:: Doc part
+
+Doc part
+    A part of a section definition that contains comments.
+    Doc parts start with @ and continue until the @c directive or the end of the body text.
+    In @root trees, doc parts are associated with the immediately following code part, if any.
+    
+.. index:: Escape convention
+
+Escape convention
+    A convention for representing sequences of characters that would otherwise have special meaning.
+    Leo has only one such convention:
+    in @root trees only, @@ in the leftmost column of a code part stands for a single @ character.
+    **Important**: Leo does not support escape conventions used by `noweb`_.
+    Any line containing matched &lt;\&lt; and &gt;\&gt; is a section reference, regardless of context.
+    To use &lt;\&lt; and &gt;\&gt; as ordinary characters, place them on separate lines.
+    
+.. index:: Expand
+
+Expand
+    To make the children of a node visible.
+    
+.. index:: External file
+
+External file
+    The file created as the result of tangling a node containing an @root directive.
+    The file consists of the expansion of the text following the @root directive.
+    For more information, see the `external files section`_ of `Leo's tutorial`_.
+
+.. index:: Grandchild
+
+Grandchild
+    The child of a child of a node.
+</t>
+<t tx="ekr.20100804133903.7253">.. index:: Headline
+
+Headline
+    The headline text of a node.  The part of the node visible in the outline pane.
+    
+.. index:: Hoist, Dehoist
+
+Hoist &amp; dehoist
+    Hoisting a node redraws the screen that node and its descendants becomes the only visible part of the outline.
+    Leo prevents the you from moving nodes outside the hoisted outline.  Dehoisting a node restores the outline.
+    Multiple hoists may be in effect: each dehoist undoes the effect of the immediately preceding hoist.
+
+.. index:: Icon box
+
+Icon box
+    An icon just to the left of headline text of a node indicating whether the node is cloned, marked or dirty,
+    and indicating whether the node contains body text.
+    
+.. index:: LaTeX
+
+LaTeX
+    A markup language often used in `literate programming`_ environments.
+    See: http://www.latex-project.org/
+
+.. index:: Literate programing
+
+Literate programming
+    A style of programming that aims at producing the highest quality program listings.
+    Literate programming languages apply two fundamental operations to text: weaving and tangling.
+    Leo supports two literate programming languages, `CWEB`_ and `noweb`_.
+    For more details, see the http://www.literateprogramming.com.
+
+.. index:: Log pane
+
+Log Pane
+    The part of Leo's main window that shows informational messages from Leo.
+    It also contains the Find tab, the Spell tab, the autocompletion tab.
+</t>
+<t tx="ekr.20100804133903.7254">.. index:: Mark
+
+Mark
+    A red vertical line in the icon box of a node.
+
+.. index:: Node
+
+Node
+    The organizational unit of an outline. The combination of headline text and body text.
+    Sometimes used as a synonym for tree.
+
+.. index:: noweb
+
+noweb
+    A literate programming language invented by Norman Ramsey.
+    The `noweb`_ language can produce external files for any text-based programming language.
+
+.. index:: Offspring
+
+Offspring
+    A synonym for the descendants of a node.
+    The children, grandchildren, etc. of a node.
+
+.. index:: Organizer node
+
+Organizer node
+    A node containing no body text.
+    Organizing nodes may appear anywhere in an @file tree; they do not affect the external file in any way.
+    In particular, organizing nodes do not affect indentation in external files.
+
+.. index:: Orphan node
+
+Orphan node
+    A node that would not be copied to a external file.
+    Orphan nodes can arise because an @thin tree has no @others or @all directives.
+    Sections that are defined but not used also create orphan nodes.
+
+    Leo issues a warning when attempting to write an @thin tree containing orphan nodes,
+    and does not save the external file.
+    No information is lost; Leo saves the information in the @thin tree in the .leo file.
+    Leo will load the @thin tree from the .leo file the next time Leo opens the .leo file.
+    
+.. index:: Outline
+
+Outline
+    A node and its descendants. A tree. All the nodes of a .leo file.
+    
+.. index:: Outline order
+
+Outline order
+    The order that nodes appear on the screen when all nodes are expanded.
+    
+.. index:: Outline pane
+
+Outline pane
+    The pane containing a visual representation of the entire outline,
+    or a part of the outline if the outline is hoisted.
+</t>
+<t tx="ekr.20100804133903.7255">.. index:: Parent
+
+Parent
+    The node that directly contains a node.
+
+.. index:: Part
+
+Part
+    A synonym for section.  See also code part and doc part.
+
+.. index:: Plugin
+
+Plugin
+    A way to modify and extend Leo without changing Leo's core code.
+    See `Writing plugins and hooks`_.
+
+.. index:: Promote
+
+Promote
+    To move all children of a node in an outline so that they become siblings of the node.
+
+.. index:: reStructuredText,rST
+
+reStructuredText (rST)
+    A simple, yet powerful markup language for creating .html, or LaTeX output files.
+    See the `rST primer`_.
+
+.. index:: Root
+
+Root
+    The first node of a .leo file. The first node of an @&lt;file&gt; tree.
+
+.. index:: rst3 plugin
+
+rst3 plugin
+    A plugin that supports reStructuredText and allows per-node options.
+</t>
+<t tx="ekr.20100804133903.7256">.. index:: Scope
+
+Scope
+    The portion of the outline in which a section definition is known.
+
+.. index:: Section
+
+Section
+    A fragment of text that can be incorporated into external files.
+    See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+
+.. index:: Section definition
+
+Section definition
+    The body text of a section definition node.
+    See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+
+.. index:: Section definition node
+
+Section definition node
+    A node whose headline starts with a section name and whose body text defines a section.
+    See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+
+.. index:: Section name
+
+Section name
+    A name enclosed in &lt;\&lt; and &gt;\&gt;.
+    Section names may contain any characters except newlines and "&gt;&gt;".
+    See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+
+.. index:: Section reference
+
+Section reference
+    A section name appearing in a code part.
+    Tangling replaces all references by their definitions.
+    See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+
+.. index:: Sentinels
+
+Sentinel
+    Comment lines in external files used to represent Leo's outline structure.
+    Such lines start with an @ following the opening comment delimiter.
+    Sentinels embed outline structure into external files.
+    **Do not alter sentinel lines**.  Doing so can corrupt the outline structure.
+    
+.. index:: Settings
+
+Settings:
+    Plugins and other parts of Leo can get options from @settings trees,
+    outlines whose headline is @settings. When opening a .leo file, Leo looks
+    for @settings trees in the outline being opened and also in various
+    leoSettings.leo files. @settings trees allow plugins to get options without
+    any further support from Leo's core code. For a full discussion of
+    @settings trees, see `Chapter 8: Customizing Leo`_.
+    
+.. index:: Sibling
+
+Sibling
+    Two nodes are siblings if they have the same parent.
+    Siblings of the root node have the hidden root node as their parent.
+    
+.. index:: Tangle, Tangling
+
+Tangling
+    The process of creating external files from @root trees.
+    For more information, see `Tangling @root trees`_ in Leo's `programming reference`_.
+    
+.. index:: Target language
+
+Target language
+    The language used to syntax color text.
+    This determines the default comment delimiters used during tangling and untangling.
+    
+.. index:: Tree
+
+Tree
+    An outline. A node and its descendants.
+    
+.. index:: Untangle, Untangling
+
+Untangling
+    Updating an outline based on changes to external files.
+    Untangling allows changes to be propagated from external files back to the outline.
+    Especially useful when fixing syntax errors outside Leo.
+    For more information, see `Untangling @root trees`_ in Leo's `programming reference`_.
+    
+.. index:: View node
+
+View node
+    A node that represents a view of an outline.
+    View nodes are typically ordinary, non-cloned nodes that contain cloned descendant nodes.
+    The cloned descendant nodes comprise most of the data of the view.
+    Other non-cloned nodes may add additional information to the view.
+    See `clones &amp; views`_ in `Leo's tutorial`_ for more information.
+    
+.. index:: Weave, Weaving
+
+Weaving
+    The process of creating typeset documentation from a `noweb`_ or `CWEB`_
+    source file. Weaving creates documentation. Tangling creates external
+    files. Leo does not support weaving directly. To weave a file you can create
+    noweb or CWEB files using Leo's Export commands, then use the noweb or
+    CWEB systems to weave those files.
+</t>
+<t tx="ekr.20100804133903.7258">.. Links used in this document.
+
+.. ----- External links.
+
+.. _`CWEB`:                 http://www-cs-faculty.stanford.edu/~knuth/cweb.html
+.. _`literate programming`: http://www.literateprogramming.com/
+.. _`noweb`:                http://www.eecs.harvard.edu/~nr/noweb/
+.. _`rST primer`:           http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+
+.. ----- Relative links.
+
+.. _`Chapter 8: Customizing Leo`:   customizing.html
+.. _`Writing plugins and hooks`:    writingPlugins.html
+
+.. _`programming reference`:    directives.html
+.. _`@asis`:                    directives.html#asis-and-noref
+.. _`@auto`:                    directives.html#auto
+.. _`@file`:                    directives.html#file-and-thin
+.. _`@nosent`:                  directives.html#nosent
+.. _`@root`:                    directives.html#root
+.. _`@thin`:                    directives.html#file-and-thin
+.. _`@unit documentation`:      directives.html#root
+.. _`tangling @root trees`:     directives.html#tangling-root-trees-with-the-tangle-commands
+.. _`untangling @root trees`:   directives.html#untangling-root-trees-with-the-untangle-commands
+
+.. ----- References to the tutorial.
+.. _`clones &amp; views`:               intro.html#clones-views
+.. _`leo's tutorial`:               intro.html
+.. _`external files section`:        intro.html#derived-files
+.. _`directives for programming`:   intro.html#directives-for-programming
+.. _`leo directives`:               intro.html#leo-directives
+.. _`quick start for programmers`:  intro.html#quick-start-for-programmers
+.. _`sentinels lines`:              intro.html#sentinel-lines
+</t>
+<t tx="ekr.20100804133903.7259">.. glossary::
+    :sorted:
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
@@ -34062,7 +34489,9 @@ generation directives: read the descriptive sections carefully.
 <t tx="sps.20100712151944.7183">The following sections give full details about each directive.  The same directive may have different effects depending on whether it is governed by an ``@&lt;file&gt;`` directive or an ``@root`` directive.
 </t>
 <t tx="sps.20100712151944.7184"></t>
-<t tx="sps.20100712151944.7185">Syntax coloring is on by default in all body text.
+<t tx="sps.20100712151944.7185">.. index:: @color,@nocolor,@killcolor,@nocolor-node
+
+Syntax coloring is on by default in all body text.
 Leo formats comments and documentation parts in red,
 directives and C keywords in blue,
 strings and character constants in green and all other text in code parts in black.
