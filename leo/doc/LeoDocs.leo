@@ -225,13 +225,13 @@
 <v t="ekr.20100731112744.7281"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
+<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20091130111843.6788" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
 <v t="ekr.20091130111843.6846"><vh>External files and @thin nodes</vh></v>
-<v t="ekr.20091201091455.6809"><vh>Creating external files from outlines</vh>
+<v t="ekr.20091201091455.6809" a="E"><vh>Creating external files from outlines</vh>
 <v t="ekr.20091201091455.6813"><vh>Section references</vh></v>
 <v t="ekr.20091201091455.6814"><vh>The @others directive</vh></v>
 <v t="ekr.20091201091455.6815"><vh>The @all directive</vh></v>
@@ -245,7 +245,7 @@
 <v t="ekr.20091130111843.6843"><vh>Further study</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
+<v t="EKR.20040524104904.26" a="E"><vh>Chapter 3: Using Outlines</vh>
 <v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
 <v t="sps.20100710110337.12186"><vh>@rst-ignore-node DO NOT SORT THESE HEADLINES</vh></v>
@@ -272,7 +272,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
+<v t="ekr.20050831184021.5" a="E"><vh>Chapter 4: Programming with Leo</vh>
 <v t="ekr.20050828061213" a="E"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
@@ -600,8 +600,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -612,7 +612,7 @@
 <v t="ekr.20050912125735.942"><vh>color_markup.py</vh></v>
 <v t="ekr.20050912125735.974"><vh>script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050912125735.26"><vh>Commands &amp; directives</vh>
+<v t="ekr.20050912125735.26" a="E"><vh>Commands &amp; directives</vh>
 <v t="ekr.20050912125735.82"><vh>add_directives.py</vh></v>
 <v t="ekr.20050912125735.85"><vh>bibtex.py</vh></v>
 <v t="ekr.20050912125735.98"><vh>ConceptualSort.py</vh></v>
@@ -5527,11 +5527,22 @@ with unmatched ( [ or { brackets in the previous line.
 </t>
 <t tx="EKR.20040524104904.43">You can mark nodes in several ways:
 
-- With the Mark commands: ``mark``, ``mark-changed-items``, ``mark-changed-roots``, ``mark-subheads``.  These are found in the Outline-&gt;Mark... submenu; ``mark`` is bound to Control-M .
+- With the Mark commands: ``mark``, ``mark-changed-items``,
+  ``mark-changed-roots``, ``mark-subheads``. These are found in the
+  Outline-&gt;Mark... submenu; ``mark`` is bound to Control-M .
 
-- With the Find or Change commands.  The "mark changes" and "mark finds" options are intially cleared; you can change them with the ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option`` commands.  Using those commands will put focus in the Find tab of the log pane.  When the Find tab is visible, Alt in combination with the underlined option character will put focus on that option, and then the space bar will toggle the option.  You can also change the options by clicking on them in the Find tab.
+- With the Find or Change commands. The "mark changes" and "mark finds" options
+  are intially cleared; you can change them with the
+  ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option``
+  commands. Using those commands will put focus in the Find tab of the log pane.
+  When the Find tab is visible, Alt in combination with the underlined option
+  character will put focus on that option, and then the space bar will toggle
+  the option. You can also change the options by clicking on them in the Find
+  tab.
 
-- With the ``untangle``, ``untangle-all`` and ``untangle-marked`` commands: nodes altered because of changes to external files get marked.  These commands are available in the File-&gt;Untangle... submenu.
+- With the ``untangle``, ``untangle-all`` and ``untangle-marked`` commands:
+  nodes altered because of changes to external files get marked. These commands
+  are available in the File-&gt;Untangle... submenu.
 
 The ``goto-next-marked`` command selects the next marked node, if any; it is available in the Outline-&gt;Go to... submenu.
 
@@ -10903,11 +10914,14 @@ For example, the root of the file that generated this documentation contains::
 Chapter 4: Writing Programs in Leo
 #####################################
 </t>
-<t tx="ekr.20050828061501.1">This chapter is a guide to computer programming with Leo, specifically, to interacting with external files intended for use with other programs, such as C or python source code, the CVS data for a spreadsheet, or a markup language such as nroff, TeX or XML.  For reStructuredText, there are special facilities detailed in the chapter `Leo and reStructuredText`_.  This chapter does *not* teach you how to use Leo:
-for that you should read `Leo's tutorial`_.
-You should be thoroughly familiar with the terminology introduced in that tutorial.
-
-.. .. contents::</t>
+<t tx="ekr.20050828061501.1">This chapter is a guide to computer programming with Leo, specifically, to
+interacting with external files intended for use with other programs, such as C
+or python source code, the CVS data for a spreadsheet, or a markup language such
+as nroff, TeX or XML. For reStructuredText, there are special facilities
+detailed in the chapter `Leo and reStructuredText`_. This chapter does *not*
+teach you how to use Leo: for that you should read `Leo's tutorial`_. You should
+be thoroughly familiar with the terminology introduced in that tutorial.
+</t>
 <t tx="ekr.20050828061501.43">See `CWEB`_ for a discussion of the CWEB language. CWEB mode refers to how Leo
 tangles an outline when @language cweb is in effect or the cweb setting is in
 effect. Leo treats *all* cweb code in cweb mode as unevaluated text. That is,
@@ -29840,20 +29854,6 @@ learn more about Leo's many advanced features in `Leo's Users Guide`_.
 .. _`reStructuredText`:         http://docutils.sourceforge.net/rst.html
 .. _`XML`:                      http://en.wikipedia.org/wiki/XML
 
-.. ----- Relative links....
-
-.. _`external file`:        `external files`_
-.. _glossary:               glossary.html
-.. _`Good style and bad`:   `style`_
-.. _outline:                `Leo's main window`_
-.. _outlines:               `Leo's main window`_
-.. _plugin:                 `extending`_
-.. _plugins:                `extending`_
-.. .. _quickstart:             `Quick start for programmers`_
-.. _scripts:                `scripting`_
-.. _settings:               `config`_
-.. _`Configuring Leo`:      `config`_
-
 .. ----- References to other chapters.
 
 .. _`What people are saying about Leo`:             testimonials.html
@@ -29875,63 +29875,24 @@ learn more about Leo's many advanced features in `Leo's Users Guide`_.
 .. _`Chapter 7: Scripting Leo with Python`:         scripting.html
 .. _`Chapter 8: Customizing Leo`:                   customizing.html
 
-.. ----- References to the glossary
-
-.. _`@auto`:                    glossary.html#auto
-.. _`@file`:                    glossary.html#file
-.. _`@nosent`:                  glossary.html#nosent
-.. _`@others`:                  glossary.html#others
-.. _`@thin`:                    glossary.html#thin
-.. _`@thin trees`:              glossary.html#thin-trees
-.. _`body text`:                glossary.html#body-text
-.. _ancestor:                   glossary.html#ancestor
-.. _children:                   glossary.html#child
-.. _clone:                      glossary.html#clone
-.. _cloned:                     glossary.html#cloned
-.. _cloning:                    glossary.html#clone
-.. _clones:                     glossary.html#clones
-.. _`code part`:                glossary.html#code-part
-.. _`doc part`:                 glossary.html#doc-part
-.. _descendant:                 glossary.html#descendant
-.. _descendants:                glossary.html#descendants
-.. _`doc part`:                 glossary.html#doc-part
-.. _grandchildren:              glossary.html#grandchildren
-.. _headline:                   glossary.html#headline
-.. _headlines:                  glossary.html#headlines
-.. _`organizer node`:           glossary.html#organizer-node
-.. _`organizer nodes`:          glossary.html#organizer-nodes
-.. _`outline order`:            glossary.html#outline-order
-.. _node:                       glossary.html#node
-.. _nodes:                      glossary.html#nodes
-.. _reference:                  glossary.html#reference
-.. _references:                 glossary.html#references
-.. _root:                       glossary.html#root
-.. _`root node`:   	            glossary.html#root
-.. _section:                    glossary.html#section
-.. _sections:                   glossary.html#section
-.. _`section definition`:       glossary.html#section-definition
-.. _`section definitions`:      glossary.html#section-definitions
-.. _`section definition nodes`: glossary.html#section-definition-nodes
-.. _`section name`:             glossary.html#section-name
-.. _`section names`:            glossary.html#section-names
-.. _`section reference`:        glossary.html#section-reference
-.. _`section references`:       glossary.html#section-references
-.. _siblings:                   glossary.html#siblings
-
 .. For reasons unknown, this image must appear in the _images folder on the web site.
 .. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
 
 </t>
-<t tx="ekr.20091130111843.6814">Let's start looking at Leo in detail. We'll start with what you see when you
+<t tx="ekr.20091130111843.6814">.. index:: Outline pane, Body pane
+
+Let's start looking at Leo in detail. We'll start with what you see when you
 first open Leo, Leo's main window. Leo's main window, shown below, represents an
 entire project. As you can see, the main window contains three panes: the
 **outline pane** at the top left, the **log pane** at the top right, and the
 **body pane** at the bottom. The window also contains an **icon area** at the
 very top, a **status area** and a **mini-buffer** at the very bottom.
 
+.. index:: Main Window
+
 |leoMainWindow|
 
-.. index:: Outline pane
+.. index:: Outline pane, Icon box, Expansion box
 
 The outline pane
     The outline pane shows your project as an outline. The outline
@@ -29942,6 +29903,7 @@ The outline pane
     expands or contracts the node.
     
 .. index:: Node,Headline,Body text
+.. index:: Parent, Child, Ancestor, Descendant
 
 Node
     Each outline node has two two parts, a **headline** and **body text**. The outline pane
@@ -29984,7 +29946,9 @@ Minibuffer
     followed by the search string and then &lt;return&gt;. For full details, see
     `Chapter 5: Using Leo's Commands`_.
 </t>
-<t tx="ekr.20091130111843.6816">You can use Leo as fairly typical outliner. Play around with some of the
+<t tx="ekr.20091130111843.6816">.. index:: Outline commands
+
+You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:
 
 - Click the expansion box of nodes to show and hide their children.
@@ -30016,8 +29980,8 @@ commands from the Outline menu:
 - We'll discuss the Clone Node command in the next section.
 
 You enter body text for any node by selecting the node's headline in the outline
-pane and then typing in the body pane. Leo has a full range of `editing
-commands`_ that apply to the body pane.
+pane and then typing in the body pane. Leo has a full range of
+`editing commands`_ that apply to the body pane.
 </t>
 <t tx="ekr.20091130111843.6817">.. index:: Clone
 
@@ -30041,6 +30005,8 @@ exist **within a single outline**. With Leo, there is no such thing as a single,
 "correct" view of data. You can have as many views of data as you like.
 
 To create a new view of the data in your outline, just do the following:
+
+.. index:: View node
 
 1. Create an *ordinary* node, that will represent the view. We call these nodes
    **view nodes** merely to indicate they represent a view.
@@ -30077,7 +30043,7 @@ attention on some smaller set of nodes. For example, I often create view nodes
 when studying other people's code. The view node helps me concentrate on just
 the part of the code that interests me at the moment.
 </t>
-<t tx="ekr.20091130111843.6838">.. _style:
+<t tx="ekr.20091130111843.6838">.. index:: Style
 
 Newcomers to Leo frequently ask when to use the \@others directive and when to
 use sections. It is good style to use section references only when the order of
@@ -30086,8 +30052,8 @@ docstrings and imports at the start of files. So the body text of
 \@thin nodes typically look something like this::
 
     &lt;&lt; docstring &gt;&gt;
-    @language python
-    @tabwidth -4
+    \@language python
+    \@tabwidth -4
     &lt;&lt; imports &gt;&gt;
     @others
 
@@ -30151,7 +30117,7 @@ mistake: you just might cause a bit more work for yourself than was strictly
 necessary. Feel free to invent your own style of using Leo. Still, it would be
 wise to "know the rules before you break them."
 </t>
-<t tx="ekr.20091130111843.6840">.. _scripting:
+<t tx="ekr.20091130111843.6840">.. index:: Scripting Leo
 
 Leo is fully scriptable using the Python language. Leo can execute any body text
 as a Python script. To run the entire body text as a script, simply choose the
@@ -30174,27 +30140,26 @@ example, the following script will print all the headlines in an outline::
 The example above is only the beginning of what scripts can do. See `Chapter 7:
 Scripting Leo with Python`_ for a complete discussion of scripting Leo.
 
-.. _extending:
+.. index:: Extending Leo
 
 **Plugins** are Python modules that change how Leo works. Leo's user have
 contributed dozens of plugins that have extended Leo's capabilities in many new
 directions. The file leoPlugins.leo contains all plugins that are included in
 Leo distributions.
 
-.. _config:
+.. index:: Configuring Leo
 
 Plugins and other parts of Leo can get options from **@settings** trees.
 \@settings trees allow plugins to get options without any further support from
-Leo's core code. For a full discussion of \@settings trees, see `Chapter 8:
-Customizing Leo`_.
+Leo's core code. For a full discussion of \@settings trees,
+see `Chapter 8: Customizing Leo`_.
 </t>
 <t tx="ekr.20091130111843.6843">LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
 Leo's source code. It provides hundreds of examples of everything discussed
 here. This file will repay close study. For full details on all aspects of Leo
 see LeoDocs.leo or `Leo's Users Guide`_.
 </t>
-<t tx="ekr.20091130111843.6846">.. _`external files`:
-.. index:: External files,.leo files,XML
+<t tx="ekr.20091130111843.6846">.. index:: External files,.leo files,XML
 
 Leo stores outline data on your file system in **.leo files**. The format of
 these files is `XML`_. You don't have to store all your data in .leo files: Leo
@@ -30221,6 +30186,8 @@ outline:
   by the \@thin nodes in the outline. If you have changed an external file
   outside of Leo, Leo will update the corresponding \@thin tree to reflect those
   changes when Leo next opens the outline.
+  
+.. index:: Dirty nodes
 
 - When you save your outline, Leo writes all **dirty** \@thin nodes. An \@thin
   is dirty if the node or any of its descendant nodes has changed.
@@ -30272,8 +30239,12 @@ directive is in effect throughout a tree, unless overridden in some subtree.
   directives apply to descendant nodes only if they are **unambiguous**, that
   is, only if the ancestor node contains exactly one \@color or \@nocolor
   directive.
+  
+.. index:: @encoding
 
 - **\@encoding** Sets the Unicode encoding used in external files.
+
+.. index:: @first
 
 - **\@first** directives orces lines to appear before the first sentinel of a
   external file.
@@ -30286,6 +30257,8 @@ directive is in effect throughout a tree, unless overridden in some subtree.
     or Python encoding specifications::
 
         @first # -*- coding: utf-8 -*-
+        
+.. index:: @language
 
 - **\@language** Sets the language used for syntax coloring **and** sets the
   comment delimiters used in sentinel lines and in doc parts. Some examples::
@@ -30294,20 +30267,32 @@ directive is in effect throughout a tree, unless overridden in some subtree.
     @language c
     @language rest # restructured text
     @language plain # text, that is, no syntax coloring.
+    
+.. index:: @last
 
 - **\@last** Forces lines to appear after the last sentinel of a external file.
 
+.. index:: @lineending
+
 - **\@lineending** Specifies the line ending to be used in external files.
+
+.. index:: @pagewidth
 
 - **\@pagewidth** Sets the page width used to break doc parts into lines.
 
+.. index:: @path
+
 - **\@path** Sets the path to be prepended to filenames in descendant \@thin
   nodes.
+  
+.. index:: @tabwidth, Negative tab widths
 
 - **\@tabwidth** sets the width of tabs.
 
   Negative tab widths cause Leo to convert tabs to spaces and are highly
   recommended for Python programming.
+  
+.. index:: @wrap, @nowrap
 
 - **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
 
@@ -30322,19 +30307,21 @@ an external file, it does so in a flexible manner, directed by **outline-based
 markup**. This markup tells Leo exactly how to create the external file from an
 \@thin node.
 
-The **obvious** way to write an external file would be to write the ``@thin`` node
+.. index:: Outline order
+
+The **obvious** way to write an external file would be to write the @thin node
 itself followed by all the descendant nodes in **outline order** (the order in
 which nodes appear in the outline). But Leo does *not* write external files
 exactly this way.
 
-.. index:: @all,@others
+.. index:: @all, @others
 
 Yes, Leo does indeed start by writing the \@thin node itself. But Leo writes the
-``@thin`` node's descendants only when it sees one of three kinds of Leo
-markup: section references, the ``@others`` directive and the ``@all`` directive.
+@thin node's descendants only when it sees one of three kinds of Leo
+markup: section references, the @others directive and the @all directive.
 We'll discuss these three kinds of markup in the next section.
 
-Section references and the ``@others`` and ``@all`` directives tell Leo to write the
+Section references and the @others and @all directives tell Leo to write the
 **expansion** of one or more descendant nodes to the external file. Programmers
 will recognize this process as akin to macro expansion. The following sections
 will explain this process in detail.
