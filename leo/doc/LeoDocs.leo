@@ -518,7 +518,7 @@
 <v t="ekr.20050912125735.942"><vh>color_markup.py</vh></v>
 <v t="ekr.20050912125735.974"><vh>script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050912125735.26" a="E"><vh>Commands &amp; directives</vh>
+<v t="ekr.20050912125735.26"><vh>Commands &amp; directives</vh>
 <v t="ekr.20050912125735.82"><vh>add_directives.py</vh></v>
 <v t="ekr.20050912125735.85"><vh>bibtex.py</vh></v>
 <v t="ekr.20050912125735.98"><vh>ConceptualSort.py</vh></v>
@@ -949,8 +949,8 @@
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20090428101858.1"><vh> How to generate Leo's Sphinx docs</vh></v>
-<v t="EKR.20040524104904.380" a="E"><vh>OLD Glossary</vh>
-<v t="ekr.20050901071041" a="E"><vh>@@rst html\glossary.html</vh>
+<v t="EKR.20040524104904.380"><vh>OLD Glossary</vh>
+<v t="ekr.20050901071041"><vh>@@rst html\glossary.html</vh>
 <v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
 </v>
@@ -3445,10 +3445,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091111112709.6671" a="E"><vh>Glossary</vh>
+<v t="ekr.20091111112709.6671"><vh>Glossary</vh>
 <v t="ekr.20091111112709.6672"><vh>@rst html\glossary.html</vh>
 <v t="ekr.20100804133903.7258"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20100804133903.7259" a="E"><vh>@rst-no-head glossary</vh>
+<v t="ekr.20100804133903.7259"><vh>@rst-no-head glossary</vh>
 <v t="ekr.20100804133903.7250"><vh>@rst-no-head @</vh></v>
 <v t="ekr.20100804133903.7251"><vh>@rst-no-head A - C</vh></v>
 <v t="ekr.20100804133903.7252"><vh>@rst-no-head D - G</vh></v>
@@ -3465,81 +3465,40 @@
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro</vh></v>
 <v t="ekr.20100804133903.7267"><vh>Summary of ways to create external files</vh></v>
 <v t="sps.20100712151944.7214"><vh>Section references</vh></v>
-<v t="ekr.20100804133903.7262" a="E"><vh>Directives reference</vh>
-<v t="ekr.20100804133903.7275"><vh>@rst-no-head All directives</vh></v>
-</v>
-<v t="ekr.20100804133903.7260" a="E"><vh>@rst-ignore-tree</vh>
-<v t="ekr.20100804133903.7278"><vh>Not used</vh>
-<v t="sps.20100712151944.7128"><vh>A Brief and Inaccurate History of Leo for Programming</vh></v>
-<v t="EKR.20040524104904.282"><vh>Converting @root trees to @file trees</vh></v>
-</v>
-<v t="sps.20100712151944.7146"><vh>Tree Walk Modifiers</vh></v>
-<v t="sps.20100712151944.7186"><vh>@wrap and @nowrap</vh></v>
-<v t="sps.20100712151944.7187"><vh>\@&lt;file&gt; Directive Family</vh></v>
-<v t="sps.20100712151944.7188"><vh>External file directives</vh>
-<v t="sps.20100712151944.7190"><vh>\@auto</vh>
-<v t="sps.20100712151944.7192"><vh>Commands related to @auto</vh></v>
-</v>
-<v t="sps.20100712151944.7193"><vh>\@edit</vh></v>
-<v t="sps.20100712151944.7195"><vh>\@nosent</vh></v>
-<v t="sps.20100712151944.7196"><vh>\@path</vh></v>
-<v t="sps.20100712151944.7197"><vh>\@shadow</vh></v>
-<v t="sps.20100712151944.7198"><vh>\@thin</vh></v>
-</v>
-<v t="sps.20100712151944.7200"><vh>@ and @doc</vh></v>
-<v t="sps.20100712151944.7201"><vh>@c and @code</vh></v>
-<v t="sps.20100712151944.7202"><vh>@comment</vh></v>
-<v t="sps.20100712151944.7203"><vh>@delims</vh></v>
-<v t="sps.20100712151944.7204"><vh>@encoding</vh></v>
-<v t="sps.20100712151944.7205"><vh>@first</vh></v>
-<v t="sps.20100712151944.7206"><vh>@language</vh>
-<v t="sps.20100714141211.16549"><vh>@rst-ignore-node</vh></v>
-</v>
-<v t="sps.20100712151944.7207"><vh>@last</vh></v>
-<v t="sps.20100712151944.7208"><vh>@lineending</vh></v>
-<v t="sps.20100712151944.7209"><vh>@pagewidth</vh></v>
-<v t="sps.20100712151944.7210"><vh>@raw and @end_raw</vh></v>
-<v t="sps.20100712151944.7211"><vh>@tabwidth</vh></v>
-<v t="sps.20100712151944.7213"><vh>Tree walk modifiers</vh>
-<v t="sps.20100712151944.7215"><vh>@all</vh></v>
-<v t="sps.20100712151944.7216"><vh>@ignore</vh></v>
-<v t="sps.20100712151944.7217"><vh>@others</vh></v>
-</v>
-<v t="ekr.20100728075142.7238"><vh>\@chapters and \@chapter</vh></v>
-</v>
-<v t="ekr.20100804133903.7261"><vh>Special topics</vh>
-<v t="sps.20100712151944.7185"><vh>Controlling syntax coloring</vh></v>
-<v t="sps.20100712151944.7191"><vh>Perfect import checks</vh></v>
-<v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
+<v t="sps.20100712151944.7260"><vh>Sections and section definitions</vh></v>
 <v t="sps.20100712151944.7259"><vh>Using @root trees</vh>
-<v t="sps.20100712151944.7253"><vh>External file directives</vh>
 <v t="sps.20100712151944.7220"><vh>\@root</vh></v>
 <v t="sps.20100712151944.7222"><vh>\@root-code and @root-doc</vh></v>
-<v t="sps.20100712151944.7242"><vh>\@path</vh></v>
-</v>
-<v t="sps.20100712151944.7254"><vh>Text generation modifiers</vh>
-<v t="sps.20100716120121.18081"><vh>@rst-ignore-node DO NOT SORT</vh></v>
-<v t="sps.20100712151944.7224"><vh>@ and @doc</vh></v>
 <v t="sps.20100712151944.7226"><vh>\&lt;&lt; named section &gt;&gt;, @c and @code</vh></v>
-<v t="sps.20100716120121.18082"><vh>@language, @comment, and sentinels</vh>
-<v t="sps.20100712151944.7236"><vh>@language</vh></v>
-<v t="sps.20100712151944.7228"><vh>@comment</vh></v>
-<v t="sps.20100716120121.18083"><vh>sentinels</vh></v>
-</v>
 <v t="sps.20100712151944.7248"><vh>@unit</vh></v>
-<v t="sps.20100712151944.7232"><vh>@first</vh></v>
-<v t="sps.20100712151944.7230"><vh>@encoding</vh></v>
-<v t="sps.20100712151944.7234"><vh>@ignore</vh></v>
-<v t="sps.20100716120121.22542"><vh>@lineending</vh></v>
-<v t="sps.20100712151944.7244"><vh>@pagewidth</vh></v>
-<v t="sps.20100712151944.7246"><vh>@tabwidth</vh></v>
-<v t="sps.20100712151944.7238"><vh>@rst-ignore-node @last</vh></v>
 <v t="sps.20100712151944.7250"><vh>@verbose, @terse, @quiet and @silent</vh></v>
-</v>
-<v t="sps.20100712151944.7260"><vh>Sections and section definitions</vh></v>
 <v t="sps.20100712151944.7261"><vh>Tangling @root trees with the Tangle commands</vh></v>
 <v t="sps.20100712151944.7262"><vh>Untangling @root trees with the Untangle commands</vh></v>
 </v>
+<v t="ekr.20100804133903.7261" a="E"><vh>Special topics</vh>
+<v t="sps.20100712151944.7185"><vh>Controlling syntax coloring</vh></v>
+<v t="sps.20100712151944.7191"><vh>Perfect import checks</vh></v>
+<v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
+<v t="sps.20100716120121.18083"><vh>sentinels</vh></v>
+<v t="ekr.20100805001344.7250"><vh>Using @comment</vh></v>
+<v t="ekr.20100805001344.7251"><vh>Using @delims</vh></v>
+</v>
+<v t="ekr.20100804133903.7260"><vh>@rst-ignore-tree</vh>
+<v t="ekr.20100804133903.7278"><vh>Not used</vh>
+<v t="sps.20100712151944.7128"><vh>A Brief and Inaccurate History of Leo for Programming</vh></v>
+<v t="EKR.20040524104904.282"><vh>Converting @root trees to @file trees</vh></v>
+<v t="sps.20100712151944.7192"><vh>Commands related to @auto</vh></v>
+</v>
+<v t="sps.20100712151944.7146"><vh>Tree Walk Modifiers</vh></v>
+<v t="sps.20100712151944.7187"><vh>\@&lt;file&gt; Directive Family</vh></v>
+</v>
+<v t="ekr.20100804133903.7262" a="E"><vh>Directives reference</vh>
+<v t="ekr.20100804133903.7275"><vh>@rst-no-head All directives</vh></v>
+<v t="sps.20100712151944.7196"><vh>@path</vh></v>
+<v t="sps.20100712151944.7242"><vh>@path</vh></v>
+<v t="sps.20100712151944.7197"><vh>@shadow</vh></v>
+<v t="sps.20100712151944.7246"><vh>@tabwidth</vh></v>
+<v t="sps.20100712151944.7211"><vh>@tabwidth</vh></v>
 </v>
 </v>
 </v>
@@ -12134,7 +12093,8 @@ introduction to rST.
 See the node "How to generate Leo's Sphinx docs" for details about making these
 docs.</t>
 <t tx="ekr.20050831184021.4">@language rest</t>
-<t tx="ekr.20050831184021.5">@language rest</t>
+<t tx="ekr.20050831184021.5">@language rest
+</t>
 <t tx="ekr.20050831195331.1">@language rest</t>
 <t tx="ekr.20050831195331.4">@language rest</t>
 <t tx="ekr.20050831195449">@nocolor
@@ -33422,7 +33382,6 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an
 AttributeError as c has no .cleo when the @script is executed. Deferring it by
 using registerHandler() avoids the problem.
 </t>
-<t tx="ekr.20100728075142.7238"></t>
 <t tx="ekr.20100731112744.7267">@language rest</t>
 <t tx="ekr.20100731112744.7268">##########################################
 Chapter 1: Installing Leo
@@ -34213,37 +34172,51 @@ and a **private** file with sentinels.
 </t>
 <t tx="ekr.20100804133903.7275">.. index:: @, @doc
 
-\@
-    Ends any code part and starts a doc part. \@doc is a deprecated synonym.
+\@ and \@doc
+    The \@ directive starts a doc part. Doc parts continue until an \@c
+    directive or the end of the body text. For example::
+
+        @ This is a comment in a doc part.
+        Doc parts can span multiple lines.
+        The next line ends the doc part
+        @c
+
+    \@doc is a synonym for \@, but \@ is preferred.
+
+    When writing external files, Leo writes doc parts as comments.
+
+    Leo does not recognize \@ or \@doc in \@asis trees or when the \@all or
+    \@delims directives are in effect. In those cases Leo simply writes what
+    looks like the doc part to the file as is.
 
 .. index:: @all
 
 \@all
-  Copies all descendant nodes to the external file, with node sentinels.
-  No further descendant directives are honored.
-  
-.. index:: @c, @code
+    Copies *all* descendant nodes to the external file. Use \@all
+    to place unrelated data in an external file.
 
-\@c
-    Ends any doc part and starts a code part. \@code is a deprecated synonym.
-  
+    The \@all directive is valid only in the body of \@thin trees.
+
+    Within the range of an \@all directive, Leo ignores the \@others directive
+    and section references, so Leo will not complain about orphan nodes.
+
 .. index:: @asis, @file-asis, @silent
 .. index:: @@ convention for headlines
 
 \@asis &lt;filename&gt;
     Use this directive only when you must have complete control over every
     character of the external file.  It is inconvenient to use.
-    
+
     When writing \@asis nodes, writes the body text of all nodes in outline
     order. Leo writes the body text *as is*, without recognizing section
     definitions, without expanding section references, and without treating
     directives specially in any way. In particular, Leo copies all directives,
     including \@ or \@c directives, to the external file as text.
-    
+
     **Important**: within \@asis trees only, if a headline starts with \@@, Leo
     writes everything in the headline following the \@@ just before the
     corresponding body text.
-    
+
     Files created from \@asis trees contain *nothing* not contained in body text
     (or \@@ headlines). In particular, if body text does not end in a newline,
     the first line from the next node will concatenated to the last line of the
@@ -34253,13 +34226,13 @@ and a **private** file with sentinels.
     outline using changes to the external file. When reading .leo files, Leo
     does *not* read external files created from \@asis nodes. Instead, all data
     in an \@asis tree is stored in the .leo file.
-    
+
     Leo recognizes the \@ignore directive only in the *ancestors* of \@asis
     nodes. This allows you to use the \@ignore directive to prevent Leo from
     writing \@asis trees.
-    
+
     This directive must appear in the node's headline.
-    
+
     \@file-asis and \@silent are deprecated synonyms for \@asis.
 
 .. index:: @auto, importers, organizer tags
@@ -34273,35 +34246,46 @@ and a **private** file with sentinels.
     parsers that create an outline with nodes for each class, method and
     function in the external file. Some importers create other kinds of nodes as
     well.
-    
+
     Importers presently exist for C, elisp, HTML, Java, Javascript, Pascal, PHP,
     Python and xml. Leo determines the language using the file's extension. If
     no parser exists for a language, Leo copies the entire body of the external
     file into the \@auto node.
-    
+
     **Note**: the \@data import_xml_tags setting specifies the **organizer
     tags** that cause the HTML and XML importers to create outline nodes. By
     default, the **organizer tags** are html, body, head, and div.
-    
+
     When writing \@auto nodes, Leo writes the external file without sentinels.
     This allows you to use Leo in collaborative environments without disturbing
     colleagues. Leo does not expand section references when writing \@auto
     nodes: Leo genereates \@verbatim sentinels for lines that look like section
     references.
-    
+
     This directive must appear in the node's headline.
     
+.. index:: @c, @code
+
+\@c and \@code
+    Ends any doc part and starts a code part.
+
+    \@code is a deprecated synonym for \@.
+
+    Leo does not recognize this directive in \@asis trees or when the
+    \@all or \@raw directives are in effect.
+
+
 .. index:: @chapter, @chapters
 
 \@chapter and \@chapter
     An \@chapter tree represents a chapter. All @chapter nodes should be
     contained in an \@chapters node.
-    
+
     These directives are too complex to describe here. For full details, see
     `Using Chapters`_.
 
     These directives must appear in the node's headline.
-    
+
 .. index:: @color
 
 \@color
@@ -34312,15 +34296,38 @@ and a **private** file with sentinels.
 
 .. index:: @comment
 
-\@comment
-    Sets comment delimiters in \@thin, \@file and \@shadow files.
-  
+    The \@comment directive sets comment delimiters in \@thin, \@file and
+    \@shadow files. **Important**: Use \@comment for unusual situations only. In
+    most cases, you should use the \@language directive to set comment
+    delimiters.
+
+    **Warning**: the \@comment and \@delims directives **must not** appear in
+    the same node. Doing so may create a file that Leo can not read.
+    
+    The \@comment directive is too complex to describe here.
+    See `Using \@comment`_ below for full details.
+
 .. index:: @delims
 
 \@delims
   Sets comment delimiters in \@thin, \@file and \@shadow trees.
   
+  **Warning**: the \@comment and \@delims directives **must not** appear in
+  the same node. Doing so may create a file that Leo can not read.
+  
+  The \@delims directive is too complex to describe here.
+  See `Using \@delims`_ below for full details.
+
 .. index:: @encoding
+
+\@encoding &lt;encoding&gt;
+    The \@encoding directive specifies the Unicode encoding for an external file.
+    For example::
+
+        @encoding iso-8859-1
+    
+    When reading external files, the encoding given must match the encoding
+    acutally used in the external file or "byte hash" will result.
 
 .. index:: @edit
 
@@ -34330,48 +34337,163 @@ and a **private** file with sentinels.
     \@edit nodes, Leo writes expands section references, \@all and \@others just
     as with \@thin trees.  However, Leo writes no sentinels, so the structure
     created by sections references, \@all and \@others is not preserved.
-    
+
     This directive must appear in the node's headline.
 
 .. index:: @encoding
 
 \@encoding
     Sets the Unicode encoding used in external files.
-    
+
 .. index:: @endraw
 
 \@end_raw
     Ends a section of 'raw' text.
-  
+
 .. index:: @file, @thin
 
 \@file &lt;filename&gt;
-    A synonym for \@thin. This directive must appear in the node's headline.
-    
+    A synonym for \@thin.
+
     Prior to Leo 4.7, \@file worked differently from \@thin. However, this
     should not be a problem: Leo 4.7 can read external files written by Leo 4.6
     from \@file nodes.
-  
+
+    This directive must appear in the node's headline.
+
 .. index:: @first
 
 \@first &lt;text&gt;
-    Forces lines to appear before the first sentinel of an external file.
-  
+    The \@first directive allows you to place lines at the very start of an
+    external file. Here is a typical example::
+    
+	    @first #! /usr/bin/env python
+        
+    If present, \@first lines must be the first lines in an \@&lt;file&gt; node.
+
+    More than one \@first directive may exist, like this::
+
+        @first #!/bin/sh -- # perl, to stop looping
+        @first eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
+        @first     if 0;
+        
+\@ignore
+    The \@ignore directive tells Leo to ignore the subtree in which it appears.
+    
+    In the body text of most top-level @&lt;file&gt; nodes, the \@ignore directive
+    causes Leo now to write the tree. However, Leo ignores \@ignore directives
+    in \@asis trees.
+    
+    Plugins and other parts of Leo sometimes @ignore for their own purposes. For
+    example, Leo's unit testing commands will ignore trees containing @ignore.
+    In such cases, the \@ignore directive may appear in the headline or body
+    text.
+
 .. index:: @last
 
 \@last &lt;text&gt;
   Forces lines to appear after the last sentinel of an external file.
-  
+
 .. index:: @language
 
-\@language
-  Sets the language used for syntax coloring *and*
-  sets the comment delimiters used in sentinel lines and doc parts.
-  
+\@language &lt;language name&gt;
+    The \@language directive specifies the comment delimiters.
+    If no \@langue directive is in effect, Leo uses the defaults specified
+    by the \@string target-language setting.
+    
+    A node may contain at most one \@language directive.
+    
+    The valid language names are:
+    actionscript,ada,autohotkey, batch, c, config, cpp, csharp, 
+    css, cweb, elisp, forth, fortran, fortran90, haskell, haxe, html,
+    ini, java, javascript, kshell, latex, lua, noweb, pascal, perl,
+    perlpod, php, plain, plsql, python, rapidq, rebol, rest, rst, ruby,
+    shell, tcltk, tex, unknown, unknown_language, vim, vimoutline, xml, xslt.
+
+    Shell files have comments that start with #.
+    
+    Case is ignored in the language names. For example, the following are
+    equivalent::
+    
+        @language html
+        @language HTML
+
+    The \@language directive also specifies how the colorizer operates.
+    For language x, the file leo/modes/x.py describes how to colorize the language.
+    To see the languages presently supported, look in the leo/modes directory.
+    There are over 100 such languges.
+    
+..  actionscript            ada95                   ahk                     antlr
+..  apacheconf              apdl                    applescript             aspect_j
+..  asp                     assembly_macro32        assembly_mcs51          assembly_parrot
+..  assembly_r2000          assembly_x86            awk                     batch
+..  bbj                     bcel                    bibtex                  b
+..  chill                   cobol                   coldfusion              cplusplus
+..  c                       csharp                  css                     cvs_commit
+..  doxygen                 d                       dsssl                   eiffel
+..  embperl                 erlang                  factor                  forth
+..  fortran90               fortran                 foxpro                  freemarker
+..  gettext                 groovy                  haskell                 haxe
+..  hex                     html                    i4gl                    icon
+..  idl                     inform                  ini                     inno_setup
+..  interlis                io                      java                    javascript
+..  jcl                     jhtml                   jmk                     jsp
+..  latex                   lilypond                lisp                    lotos
+..  lua                     mail                    makefile                maple
+..  matlab                  ml                      modula3                 moin
+..  mqsc                    netrexx                 nqc                     nsis2
+..  objective_c             objectrexx              occam                   omnimark
+..  pascal                  patch                   perl                    php
+..  phpsection              pike                    pl1                     plain
+..  plsql                   pop11                   postscript              povray
+..  powerdynamo             progress                prolog                  props
+..  pseudoplain             psp                     ptl                     pvwave
+..  pyrex                   python                  rebol                   redcode
+..  relax_ng_compact        rest                    rhtml                   rib
+..  rpmspec                 r                       rtf                     ruby
+..  rview                   sas                     scheme                  sdl_pr
+..  sgml                    shell                   shellscript             shtml
+..  smalltalk               smi_mib                 splus                   sqr
+..  squidconf               ssharp                  svn_commit              swig
+..  tcl                     texinfo                 tex                     text
+..  tpl                     tsql                    uscript                 vbscript
+..  velocity                verilog                 vhdl                    xml
+..  xsl                     zpt
+
+..  # run this node with Control-b to discover Leo's current list of languages
+..  for lang in sorted(g.app.language_delims_dict.keys()):
+..    g.es("    @language %s" % lang)
+
+.. index:: @last
+    The \@last directive allows you to place lines at the very end of external
+    files.  This directive must occur at the very end of top-level \@&lt;file&gt; nodes.
+    More than one \@last directive may exist. For example::
+    
+        @first &lt;?php
+        ...
+        @last ?&gt;
+        
+    Leo does not recognize \@last directive in \@asis trees.
+
 .. index:: @lineending
 
 \@lineending
-    Sets the line ending to be used in external files.
+    The \@lineending directive sets the line endings for individual external files.
+    This directive overrides the \@string output_newline setting.
+    
+    The valid forms of the @lineending directive are:
+    
+    ========================   ======================================================
+    \@lineending nl            The default, Linux.
+    ------------------------   ------------------------------------------------------
+    \@lineending cr            Mac
+    ------------------------   ------------------------------------------------------
+    \@lineending crlf          Windows
+    ------------------------   ------------------------------------------------------
+    \@lineending lf            Same as 'nl', not recommended
+    ------------------------   ------------------------------------------------------
+    \@lineending platform      Same as platform value for output_newline setting.
+    ========================   ======================================================
     
 .. index:: @nosent
 
@@ -34379,112 +34501,252 @@ and a **private** file with sentinels.
     When writing an \@nosent tree, Leo expands section references, \@all and
     \@others directives, but Leo writes no sentinels to the external file. Thus,
     Leo can not update \@nosent trees from changes made to the external file.
-    
+
     When reading an outline, Leo does *not* read the external file. Instead, all
     the data in the \@nosent tree is stored in the .leo file.
-    
+
     For these reasons, you should use \@nosent only as a last resort: \@auto or
     \@shadow are usually better choices if you can not tolerate sentinels in
     your external files.
-    
+
+    **Note**: The \@bool force_newlines_in_at_nosent_bodies setting controls
+    whether Leo writes a trailing newline if non-empty body text does not end in
+    a newline. The default is True.
+
+    This directive must appear in the node's headline.
+
 .. index:: @nowrap
 
 \@nowrap
     Disables line wrapping the Leo's body pane.
-    
+
+    Only the first \@wrap or \@nowrap directive in a node has any effect.
+
+    \@nowrap may appear in either headlines or body text.
+
 .. index:: @others
 
 \@others
+    The \@others directive writes the body text of all descendant non-section definition
+    nodes into the external file.  Nodes are written in outline order.
 
-    This directive copies all descendant nodes except section definition nodes
-    to the external file. The indentation of the \@others directive itself is
-    significant. Whitespace appearing before the \@others directive cause all
-    nodes written as the result of the \@others directive to be indented
-    additionally by the amount of the whitespace.
+    Whitespace appearing before \@others directive itself adds to the indentation
+    of all nodes added by the \@others directive.
+    
+    A single node may contain only one \@others directive, but descendant nodes
+    may have other \@others directives.
 
-  
+    ..  If \@others occurs multiple times in the same node, all non-section nodes
+    ..  appear at the location of the first instance of the \@others directive; the
+    ..  remainder are remembered as sentinels but have no other content.
+
 .. index:: @path
 
 \@path &lt;path&gt;
   Sets the path prefix for relative filenames for all descendant \@&lt;file&gt; directives.
-  May appear in headlines.
-  
+  May appear either in body text or in headlines.
+
 .. index:: @pagewidth
 
 \@pagewidth &lt;n&gt;
-  Sets the page width used to break doc parts into lines.
+   Sets the page width used to break doc parts into lines.
+   &lt;n&gt; should be a positive integer.  For example::
   
+      @pagewidth 100
+  
+  The \@pagewidth directive overrides the \@int page_width setting.
+
+.. index:: @quiet
+
+\@quiet
+    This directive is valid only in \@root trees.
+    See `Using @root trees`_ for full details.
+
 .. index:: @raw
 
 \@raw
-    Starts a section of 'raw' text.
-    
+    The \@raw directive starts a section of "raw" text that ends *only* with the
+    \@end_raw directive or the end of the body text containing the \@raw
+    directive. Within this range, Leo ignores all section references and
+    directives, and Leo generates no additional leading whitespace.
+
 .. index:: @root, @root-code, @root-doc
-.. index:: @verbose,@terse,@quiet,@silent
+.. index:: @verbose, @terse, @quiet, @silent
 
 \@root
   Use this directive when you need to create different pieces of multiple files
   within a single node. This directive is the most flexible, the most difficult
   to use, and behaves differently from all other \@&lt;file&gt; directives. It comes
   closest in spirit to traditional literate programming tools.
-  
+
   Using \@root trees is too complex to describe here. See `Using @root trees`_
   for full details.
-  
-  **Note**: The following directives have effect only within \@root trees:
-  \@root-code, \@root-doc, \@verbose, \@terse, \@quiet and \@silent.
-  See `Using @root trees`_ for full details.
-  
-.. index:: @shadow,private files,public files
 
-\@shadow
+  **Note**: The following directives have effect only within \@root trees:
+  \@root-code, \@root-doc, \@unit, \@verbose, \@terse, \@quiet and \@silent.
+  See `Using @root trees`_ for full details.
+
+  This directive must appear in the node's headline.
+
+.. index:: @shadow, private files, public files
+
+\@shadow &lt;filename&gt;
     When writing an \@shadow node, Leo writes *two* external files, a **public**
     file without sentinels, and a **private** file containing sentinels.
-    
+
     When reading an \@shadow node, Leo uses a brilliant algorithm devised by
     Bernhard Mulder that compares the public and private files, and then updates
     the outline based on changes to the *public* file. In this way, \@shadow
     provides many of the benefits of \@thin trees without writing sentinels in
     the (public) external file.
 
+    This directive must appear in the node's headline.
+
+.. index:: @silent
+
+\@silent
+    This directive is valid only in \@root trees.
+    See `Using @root trees`_ for full details.
+
 .. index:: @tabwidth, Negative tab widths
 
 \@tabwidth
   Sets the width of tabs.
   Negative tab widths cause Leo to convert tabs to spaces.
-  
+
+.. index:: @terse
+
+\@terse
+    This directive is valid only in \@root trees.
+    See `Using @root trees`_ for full details.
+
 .. index:: @thin
 
 \@thin &lt;filename&gt;
     \@thin creates an external file containing sentinels. When writing \@thin
     trees, Leo expands section references and \@all and \@others directives.
-    
+
     When reading external files created by \@thin, the sentinels allow Leo to
     recreate all aspects of the outline. In particular, Leo can update the
     outline based on changes made to the file by another editor. 
-    
+
     **Important**: \@thin is the recommended way to create and edit most files.
     Use \@thin unless you have a very good reason not to do so. In particular,
     using \@thin nodes is **highly recommended** when sharing external in a
     collaborative environment.
 
     This directive must appear in the node's headline.
-    
-\@unit
-    Change the scope within which \@root section names are valid.
-    See `Using @root trees`_ for full details.
-  
-.. index:: @verbose
 
-\@verbose**, **@terse**, **@quiet** and **@silent**
-    Set the verbosity of sentinels used in \@root trees.
+.. index:: @unit
+
+\@unit
+    This directive is valid only in \@root trees.
+    See `Using @root trees`_ for full details.
+
+\@verbose
+    This directive is valid only in \@root trees.
+    See `Using @root trees`_ for full details.
 
 .. index:: @wrap
 
 \@wrap
     Enables line wrapping the Leo's body pane.
+
+    Only the first \@wrap or \@nowrap directive in a node has any effect.
+
+    \@wrap may appear in either headlines or body text.
 </t>
 <t tx="ekr.20100804133903.7278"></t>
+<t tx="ekr.20100805001344.7250">.. index:: @comment
+
+The \@comment directive sets comment delimiters in \@thin, \@file and \@shadow
+files. **Important**: Use \@comment for unusual situations only. In most cases,
+you should use the \@language directive to set comment delimiters.
+
+\@language and \@comment may appear in the same node, provided that \@comment
+appears *after* the \@language directive.
+
+**Warning**: the \@comment and \@delims directives **must not** appear in the same node.
+Doing so may create a file that Leo can not read.
+
+However,
+sometimes using both \@language and \@comment is useful. For this to be
+effective the \@comment directive should appear after the \@language directive
+(in outline order). In such cases \@comment overrides the comment delimiters
+normally used by \@language. Even in this case, you will generally do better
+combining \@language and \@delims.
+
+\@comment controls the text used to designate comment strings in the external
+file. By default, saving an \@thin style tree produces C-language comments.
+Single-line comments generated during generation start with //, while
+documentation parts are surrounded by /\* and \*/. The \@comment directive allows
+you to work with source code for almost any programming languages.
+
+The \@comment directive may be followed by zero to three delimiters, separated
+by whitespace. This directive sets the single-line comment delimiter and the
+opening and closing block comment delimiters as follows:
+
+========================  =====================================================================
+\@comment                 no args\: restores the defaults to //, /\* and \*/
+------------------------  ---------------------------------------------------------------------
+\@comment //              \1 arg\: sets the single-line comment and clears the other delims.
+------------------------  ---------------------------------------------------------------------
+\@comment /\* \*/         \2 args\: sets the block comment delims; clears the single-line delim.
+------------------------  ---------------------------------------------------------------------
+\@comment // /\* \*/      \3 args\: sets all three delimiters.
+========================  =====================================================================
+
+If only one delimiter is given, Leo uses it to begin each line of a recognized
+documentation part (that is, one ungoverned by something like \@all).
+
+If two delimiters are given, Leo uses block-style comments instead of
+single-line comments. For example, \@comment { } could be used with Pascal
+files.
+
+The \@comment directive must precede the first section name or \@c directive.
+
+Leo will convert underscores in the \@comment directives to significant spaces.
+For example::
+
+    @comment REM_
+
+causes the comment delimiter to be "REM " (Note the trailing space). Leo
+interprets a double underscore as a newline so that \@comment __=pod__
+__=cut__ could support perl's POD facility.
+</t>
+<t tx="ekr.20100805001344.7251">The \@delims directive changes the comment strings used to mark sentinel lines
+from that point forward in the body text. This directive is often used to place
+Javascript text inside XML or HTML files.
+
+**Warning**: the \@comment and \@delims directives **must not** appear in
+the same node. Doing so may create a file that Leo can not read.
+
+The \@delims directive contains one or two delimiters, separated by whitespace.
+If only one delim is present it delimits single-line comments. If two delims are
+present they delimit block comments. The \@delims directive can not be used to
+change the comment strings at the start of the external file, that is, the
+comment strings for the \@+leo sentinel and the initial \@+body and \@+node
+sentinels.
+
+The \@delims directive inserts \@@delims sentinels into the external file. The
+new delimiter strings continue in effect until the next \@@delims sentinel in
+the external file or the end of the external file.
+
+**Note**: Leo can not revert to previous delimiters automatically; you must
+change back to previous delimiters using another \@delims directive. For
+example::
+
+    @delims /* */
+    Javascript stuff
+    @delims &lt;-- --&gt;
+    HTML stuff
+
+Adding, deleting or changing \@delims sentinels will destroy Leo's ability to
+read the external file. \@delims affects only external files, having no effect
+on Leo's colorizer or internal data representation. Incorrect use will
+thoroughly corrupt the external file as far as compilers, HTML renderers, etc.
+are concerned. Do not mix \@delims with \@comment.
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
@@ -34610,7 +34872,7 @@ generation directives: read the descriptive sections carefully.
 - **\@ignore**
   Causes Leo to skip conversion to and from all or part of an external file.
   </t>
-<t tx="sps.20100712151944.7185">.. index:: @color,@nocolor,@killcolor
+<t tx="sps.20100712151944.7185">.. index:: @color, @nocolor, @killcolor
 
 Syntax coloring is on by default in all body text. Leo formats comments and
 documentation parts in red, directives and C keywords in blue, strings and
@@ -34653,16 +34915,6 @@ does influence descendant nodes.
 Leo recognizes the color directives only in the first column of body text, not
 in headlines. They have no effect on the tangle process.
 </t>
-<t tx="sps.20100712151944.7186">@nowrap
-
-By default, the \@bool body_pane_wraps setting controls whether body text
-wraps. You may override this setting for a particular tree using the \@wrap
-and \@nowrap directives. Only the first \@wrap or \@nowrap directive in a
-node has any effect. \@wrap and \@nowrap are recognized in both headlines
-and the body. In the body, these directives are recognized only in the first
-column of body text.
-
-</t>
 <t tx="sps.20100712151944.7187">Here's an simple example using \@thin to create a file. The bodies of the
 three nodes can be seen in the three screenshots:
 
@@ -34686,38 +34938,6 @@ Saving the .leo file creates not only the .leo file but also creates the file
     #@-others
     #@-leo
 </t>
-<t tx="sps.20100712151944.7188">These file directives are valid only in headlines, with the exception of \@path,
-which may appear in both a headline or a body.
-
-In the following table all terms in each row are equivalent. The spelling in the
-first column is preferred:
-
-=========== =============== =================
-\@asis      \@file-asis     \@silent
------------ --------------- -----------------
-\@nosent    \@file-nosent   \@nosentinelsfile
-=========== =============== =================
-
-The following table summarizes the differences between
-the various kinds of external file directives.
-
-
-The \@all directive in any environment supercedes \@others and section
-expansion.
-
-Leo uses a variety of means to create the outline structure for external files.
-For \@thin and \@file external files, it uses the sentinels embedded in the
-external file. For \@auto external files, it relies on a parser for the source
-code to infer meaningful structure. For \@shadow trees, Leo creates *two* files,
-a **public** file without sentinels, and a **private** file (by default in the
-.leo_shadow subfolder) containing sentinels. The primary sources for \@shadow
-trees are the private files, updated by changes to the public file. The source
-for \@nosent and \@asis trees are the .leo file from which those files were
-created. For \@edit files, the external file goes into a single node body. One
-may temporarily structure an \@edit node in the manner of an \@thin node, but
-that structure vanishes once you close the .leo file.
-</t>
-<t tx="sps.20100712151944.7190"></t>
 <t tx="sps.20100712151944.7191">Leo performs several checks to ensure that the result of importing an external
 file will be equivalent to the file that writing the \@auto tree would produce.
 
@@ -34780,16 +35000,6 @@ read-at-auto-nodes command to update \@auto nodes changed outside of Leo
 (e.g., by a text editor or version control system) without having to reload the
 .leo file.
 </t>
-<t tx="sps.20100712151944.7193"></t>
-<t tx="sps.20100712151944.7195">Leo writes \@nosent trees just as for \@thin trees, except it writes no
-sentinels at all. All the information for the \@nosent tree is kept in the .leo
-file, and Leo incorporates no changes from the external file.
-
-The \@bool force_newlines_in_at_nosent_bodies setting controls whether Leo
-writes a trailing newline if non-empty body text does not end in a newline. The
-default is True. In effect, the default value of this setting was False in early
-versions of Leo.
-</t>
 <t tx="sps.20100712151944.7196">\@path directives override the deprecated \@directory default_tangle_directory
 setting.
 
@@ -34809,7 +35019,11 @@ Leo derives the directory to which that name is relative as follows:
 2. the \@directory default_tangle_directory if no \@path directive is in effect, or
 3. the directory in which the .leo file resides if the .leo file has ever been saved.
 
-As parent nodes are examined beginning with the closest, Leo prepends relative path components, and finishes when prepending an absolute path.  In other words, \@path directives specifying relative directory names are relative to their parent nodes.  If no \@path directive gives an absolute directory name, then the topmost \@path is relative to either (2) or (3) in the list above.
+As parent nodes are examined beginning with the closest, Leo prepends relative
+path components, and finishes when prepending an absolute path. In other words,
+\@path directives specifying relative directory names are relative to their
+parent nodes. If no \@path directive gives an absolute directory name, then the
+topmost \@path is relative to either (2) or (3) in the list above.
 
 An error occurs if no absolute path can be computed according to these rules,
 or if the derived directory name does not exist.
@@ -34828,251 +35042,6 @@ containing the \@ignore directive and the descendants of that node.
 Leo can do an initial import of \@shadow trees by parsing the corresponding
 public file, exactly as is done for \@auto node. See the discussion of `@auto reference`_ for details.
 </t>
-<t tx="sps.20100712151944.7198"></t>
-<t tx="sps.20100712151944.7200">The \@ directive starts a doc part. Doc parts continue until an \@c directive or
-the end of the body text. For example::
-
-    @ This is a comment in a doc part.
-    Doc parts can span multiple lines.
-    The next line ends the doc part
-    @c
-
-\@doc is a synonym for \@, but \@ is preferred.
-
-The directive is only recognized in the first column.
-
-In \@thin style external files, such documentation sections appear as comments,
-using comment characters appropriate to the language, or as specified by the
-prevailing \@comment or \@delims directive.
-
-A governing \@asis, \@all, or \@raw directive causes the directive to be
-uninterpreted and simply copied to the external file.
-</t>
-<t tx="sps.20100712151944.7201">The \@c directive ends a doc part and begins a code part. \@code is a synonym
-for \@c, but \@c is preferred.
-
-The directive is only recognized in the first column.
-
-A governing \@asis, \@all, or \@raw directive causes the directive to be
-uninterpreted and simply copied to the external file.
-</t>
-<t tx="sps.20100712151944.7202">**Note**: You should use the \@language directive whenever possible. However,
-sometimes using both \@language and \@comment is useful. For this to be
-effective the \@comment directive should appear after the \@language directive
-(in outline order). In such cases \@comment overrides the comment delimiters
-normally used by \@language. Even in this case, you will generally do better
-combining \@language and \@delims. See `@delims`_. **DO NOT** combine \@comment
-with \@delims: the result is undefined and often generates a file which Leo
-cannot read and from which **data will be lost** after any subsequent ''save''.
-
-\@comment controls the text used to designate comment strings in the external
-file. By default, saving an \@thin style tree produces C-language comments.
-Single-line comments generated during generation start with //, while
-documentation parts are surrounded by /* and */. The \@comment directive allows
-you to work with source code for almost any programming languages.
-
-The \@comment directive may be followed by zero to three delimiters, separated
-by whitespace. This directive sets the single-line comment delimiter and the
-opening and closing block comment delimiters as follows:
-
-========================  =====================================================================
-\@comment                 no args\: restores the defaults to //, /* and */
-------------------------  ---------------------------------------------------------------------
-\@comment //              \1 arg\: sets the single-line comment and clears the other delims.
-------------------------  ---------------------------------------------------------------------
-\@comment /* */           \2 args\: sets the block comment delims; clears the single-line delim.
-------------------------  ---------------------------------------------------------------------
-\@comment // /* */        \3 args\: sets all three delimiters.
-========================  =====================================================================
-
-If only one delimiter is given, Leo uses it to begin each line of a recognized
-documentation part (that is, one ungoverned by something like \@all).
-
-If two delimiters are given, Leo uses block-style comments instead of
-single-line comments. For example, \@comment { } could be used with Pascal
-files.
-
-The \@comment directive must precede the first section name or \@c directive.
-
-Leo will convert underscores in the \@comment directives to significant spaces.
-For example::
-
-    @comment REM_
-
-causes the comment delimiter to be "REM " (Note the trailing space).
-</t>
-<t tx="sps.20100712151944.7203">.. _`delims reference`:
-
-The \@delims directive changes the comment strings used to mark sentinel lines
-from that point forward in the body text. This directive is often used to place
-Javascript text inside XML or HTML files.
-
-The \@delims directive contains one or two delimiters, separated by whitespace.
-If only one delim is present it delimits single-line comments. If two delims are
-present they delimit block comments. The \@delims directive can not be used to
-change the comment strings at the start of the external file, that is, the
-comment strings for the \@+leo sentinel and the initial \@+body and \@+node
-sentinels.
-
-The \@delims directive inserts \@@delims sentinels into the external file. The
-new delimiter strings continue in effect until the next \@@delims sentinel in
-the external file or the end of the external file.
-
-**Note**: Leo can not revert to previous delimiters automatically; you must
-change back to previous delimiters using another \@delims directive. For
-example::
-
-    @delims /* */
-    Javascript stuff
-    @delims &lt;-- --&gt;
-    HTML stuff
-
-Adding, deleting or changing \@delims sentinels will destroy Leo's ability to
-read the external file. \@delims affects only external files, having no effect
-on Leo's colorizer or internal data representation. Incorrect use will
-thoroughly corrupt the external file as far as compilers, HTML renderers, etc.
-are concerned. Do not mix \@delims with \@comment.
-</t>
-<t tx="sps.20100712151944.7204">You may use the \@encoding directive to specify the encoding used in an external
-file. You can't mix encodings in a single external file. For example::
-
-    @encoding iso-8859-1
-
-If the encoding used in an external file is not "utf-8" it is represented in the
-\@+leo sentinel line, like this::
-
-    #@+leo-encoding=iso-8859-1.
-
-The utf-8 encoding is used by default. The utf-8 encoding is a "lossless"
-encoding (it can represent all unicode code points), so encoding and decoding to
-and from utf-8 plain strings will never cause a problem. When reading or writing
-a character not in a "lossy" encoding (such as iso-8859-1), Leo converts such
-characters to '?' and issues a warning.
-</t>
-<t tx="sps.20100712151944.7205">The \@first directive allows you to place lines at the very start of external
-files. (Like all directives, it is not interpreted in \@asis nodes.) For
-example, the first line of body text of \@file spam.py might be::
-
-	@first #! /usr/bin/env python
-
-The first line of body text of \@file foo.pl might be::
-
-	@first #/usr/bin/perl
-
-\@first directives are recognized only at the start of the body text of external
-file directive nodes. No text may precede \@first directives. More than one
-\@first directive may exist, like this::
-
-	@first #!/bin/sh -- # perl, to stop looping
-	@first eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
-	@first     if 0;
-
-</t>
-<t tx="sps.20100712151944.7206">The \@language directive specifies the comment delimiters and string types used
-by the tangle and untangle processes. The \@language directive over-rides the
-default specified in the \@string targetlanguage setting.
-
-The valid \@language directives are::
-
-    @language actionscript
-    @language ada
-    @language autohotkey
-    @language batch
-    @language c
-    @language config
-    @language cpp
-    @language csharp
-    @language css
-    @language cweb
-    @language elisp
-    @language forth
-    @language fortran
-    @language fortran90
-    @language haskell
-    @language haxe
-    @language html
-    @language ini
-    @language java
-    @language javascript
-    @language kshell
-    @language latex
-    @language lua
-    @language noweb
-    @language pascal
-    @language perl
-    @language perlpod
-    @language php
-    @language plain
-    @language plsql
-    @language python
-    @language rapidq
-    @language rebol
-    @language rest
-    @language rst
-    @language ruby
-    @language shell
-    @language tcltk
-    @language tex
-    @language unknown
-    @language unknown_language
-    @language vim
-    @language vimoutline
-    @language xml
-    @language xslt
-
-Shell files have comments that start with #. Case is ignored in the language
-specifiers, but not in the \@language itself. Thus, the following are
-equivalent::
-
-    @language html
-    @language HTML
-    @language hTmL
-
-but the following is invalid::
-
-    @LANGUAGE html</t>
-<t tx="sps.20100712151944.7207">The \@last directive allows you to place lines at the very end of external
-files (except those constructed with \@asis). The \@last directive is
-recognized only at the end of body text of the node with the external file
-directive in its headline (e.g., the \@thin node). No text may follow \@last
-directives. More than one \@last directive may exist. For example, here is how
-a PHP file might be set up::
-
-	@first &lt;?php
-	...
-	@last ?&gt;
-</t>
-<t tx="sps.20100712151944.7208">The \@lineending directive sets the line endings for individual external files.
-This directive will override the \@string output_newline setting. The
-\@lineending *never* affects the line endings in .leo files themselves: .leo
-files must have consistent line endings!
-
-The valid forms of the @lineending directive are:
-
-========================   ======================================================
-\@lineending nl            The default, Linux.
-------------------------   ------------------------------------------------------
-\@lineending cr            Mac
-------------------------   ------------------------------------------------------
-\@lineending crlf          Windows
-------------------------   ------------------------------------------------------
-\@lineending lf            Same as 'nl', not recommended
-------------------------   ------------------------------------------------------
-\@lineending platform      Same as platform value for output_newline setting.
-========================   ======================================================</t>
-<t tx="sps.20100712151944.7209">The \@pagewidth directive overrides the \@int page_width setting.
-The form of the \@pagewidth directive is \@pagewidth *n*,
-where *n* is a positive integer that indicates the width of tangled pages in columns.
-For example::
-
-    @pagewidth 100
-
-This setting only affects how Leo tangles doc parts into block comments.
-
-</t>
-<t tx="sps.20100712151944.7210">The \@raw directive starts a section of "raw" text. The \@end_raw directive ends
-such a section, as does the end of body text.  In this way, content that might otherwise be mistaken for a section definition or directive can be escaped.  None of the leading whitespace which is normally generated by the position of \@others or a section reference gets inserted within raw text when writing the external file.
-</t>
 <t tx="sps.20100712151944.7211">The \@tabwidth directive overrides the \@int tab_width setting.
 The form of the \@tabwidth directive is \@tabwidth *n*,
 where the absolute value of *n* is the width of tabs in spaces.
@@ -35082,7 +35051,6 @@ For example::
 
 Negative values cause Leo to convert tabs to spaces.
 </t>
-<t tx="sps.20100712151944.7213"></t>
 <t tx="sps.20100712151944.7214">In the \@auto, \@edit, \@file, \@nosent, \@shadow and \@thin trees, &lt;&lt; *section*
 &gt;&gt; in the headline specifies that this node and its descendants define a named
 section. In the body of a node, it specifies the location at which the text of a
@@ -35092,39 +35060,6 @@ whitespace.
 
 As with nearly all other directives, sections are ignored in \@asis trees or
 when governed by \@all.
-</t>
-<t tx="sps.20100712151944.7215">The \@all directive is valid only in the body of \@thin style trees. The \@all
-directive is similar to \@others in that it interpolates descendant nodes at the
-location where it appears, but it is less fastidious: it writes *all* descendant
-nodes in outline order to the external file, including \@ignore nodes and nodes
-that in an \@others tree would be considered to be orphan nodes, generally
-ceasing to interpret any further tree walk or text generation modifying
-directives. Node headlines become part of sentinels in the external file.
-
-The \@all directive is used for nodes such as \@thin leoProjects.txt in
-LeoPy.leo. leoProjects.txt contains so-called project nodes. It doesn't
-have any meaning as a program file: it is simply a collection of unrelated data.
-\@others would not work at all: it would complain about lots of orphan nodes.
-</t>
-<t tx="sps.20100712151944.7216">Generally speaking, an \@ignore directive in the body of a node prevents that node and its descendants from being processed.  It is not recognized in headlines.
-
-#. In the body of the root node of any \@auto, \@edit, \@file, \@nosent, \@thin or \@shadow tree, 
-   the \@ignore directive prevents Leo from writing the external file. 
-
-#. \@auto trees are an exception.  Everything, including \@ignore directives occuring in descendants of the root node, are written.
-   However, you can disable the writing of an \@auto tree by putting an \@ignore directive in the body of the \@auto node or in an
-   ancestor of the \@auto tree.
-
-#. Extensions to Leo such as plugins and scripts should preserve the behavior in item 1 above.
-</t>
-<t tx="sps.20100712151944.7217">The \@others directive in the node body specifies where to interpolate the body text of all nodes *except* section
-definition nodes.  Section definition nodes are those with headlines that do not contain the patter &lt;&lt; *section* &gt;&gt;.   The \@others directive places the body text of non-section definition nodes into the external file in outline order.
-
-An  \@&lt;file&gt; tree may contain more than one \@others directive. \@others
-directives that descend from other \@others directives refer only to non-section
-nodes that descend from them.  The \@others directive that occurs highest in the
-\@&lt;file&gt; tree refers to all other unnamed nodes.  If \@others occurs multiple times in the same node, all non-section nodes appear at the location of the first instance of the \@others directive; the remainder
-are remembered as sentinels but have no other content.
 </t>
 <t tx="sps.20100712151944.7220">The \@root directive specifies the name of a file to create. The remaining
 lines of the node body, until the next section definition or \@ doc part
@@ -35149,29 +35084,6 @@ at_root_bodies_start_in_doc_mode = True for compatibility with earlier Leo
 \@root trees. The distinction in whether to expect doc or code at the
 beginning of a node applies only to descendants of the \@root node; the node
 containing the \@root directive always effectively begins in doc mode.</t>
-<t tx="sps.20100712151944.7224">The \@ directive starts a doc part. Doc parts continue until an \@c
-directive, a section definition of the form &lt;&lt; *section* &gt;&gt;=, or the end
-of the body text. For example, in a node headlined &lt;&lt; careful open &gt;&gt;::
-
-    @ Exit with an error if we
-    can't open the file
-    @c
-    FILE *
-    careful_open(char *s) {
-        FILE *f;
-        f = fopen(s,"r");
-        if (f == NULL) {
-            fprintf(stderr,"File open of %s failed.\n",s);
-            exit(1);
-        }
-        return f;
-    }
-    @ we need stdio
-    &lt;&lt; includes &gt;&gt;=
-    #include &lt;stdio.h&gt;
-
-\@doc is a synonym for \@, but \@ is preferred.
-</t>
 <t tx="sps.20100712151944.7226">If the headline is of the form &lt;&lt; *section* &gt;&gt;, the \@c directive
 ends a doc part and begins a code part. Multiple parts may occur in the node;
 each of the \@c will add another code part to the code section named in the
@@ -35179,155 +35091,6 @@ headline. If the headline does not contain a double angle bracketed section
 name, attempts to tangle or untangle the \@root tree will generate an error.
 \@code is a synonym for \@c, but \@c is preferred.
 </t>
-<t tx="sps.20100712151944.7228">The \@comment directive is followed by zero to three delimiters, separated by
-whitespace. This directive sets the single-line comment delimiter and the
-opening and closing block comment delimiters as follows:
-
-====================== =====================================================================
-\@comment              no args\: restores the defaults to //, /* and */
----------------------- ---------------------------------------------------------------------
-\@comment //           \1 arg\: sets the single-line comment and clears the other delims.
----------------------- ---------------------------------------------------------------------
-\@comment /* */        \2 args\: sets the block comment delims; clears the single-line delim.
----------------------- ---------------------------------------------------------------------
-\@comment // /* */     \3 args\: sets all three delimiters.
-====================== =====================================================================
-
-For example, the directive \@comment { } could be used to tangle Pascal files.
-
-Leo will convert underscores in the @comment directives to significant spaces.
-For example::
-
-    @comment REM_
-
-causes the comment delimiter to be "REM " (Note the trailing space). Leo
-interprets a double underscore as a newline so that \@comment __=pod__
-__=cut__ could support perl's POD facility.
-</t>
-<t tx="sps.20100712151944.7230">You may use the @encoding directive to specify the encoding used in an external
-file. You can't mix encodings in a single external file. For example::
-
-    @encoding iso-8859-1
-
-If the encoding used in an external file is not "utf-8" it is represented in the
-@+leo sentinel line, like this::
-
-    #@+leo-encoding=iso-8859-1.
-
-The utf-8 encoding is used by default. The utf-8 encoding is a "lossless"
-encoding (it can represent all unicode code points), so encoding and decoding to
-and from utf-8 plain strings will never cause a problem. When reading or writing
-a character not in a "lossy" encoding (such as iso-8859-1), Leo converts such
-characters to '?' and issues a warning.</t>
-<t tx="sps.20100712151944.7232">The @first directive allows you to place vebatim lines at the very start of
-external files. For example, the body text of foo.py nmight begin::
-
-	@first #! /usr/bin/env python
-
-The first line of body text of \@file foo.pl might be::
-
-	@first #/usr/bin/perl
-
-\@first directives are recognized only at the start of the body text of
-external file directive nodes. No text may precede \@first directives. More
-than one \@first directive may exist, like this::
-
-	@first #!/bin/sh -- # perl, to stop looping
-	@first eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
-	@first     if 0;
-</t>
-<t tx="sps.20100712151944.7234">Generally speaking, the \@ignore directive prevents tangle and untangle from
-processing a node and its descendants. It is recognized in both the headline and
-body text.
-</t>
-<t tx="sps.20100712151944.7236">The \@language directive specifies the comment delimiters and string types
-recognized by the tangle and untangle processes. This directive over-rides the
-default specified \@string target-language setting. The languages for which
-comment delimiters are known for the tangle and untangle processes are::
-
-    actionscript                ada                     autohotkey              batch
-    c                           config                  cpp                     csharp
-    css                         cweb                    elisp                   forth
-    fortran                     fortran90               haskell                 haxe
-    html                        ini                     java                    javascript
-    kshell                      latex                   lua                     noweb
-    pascal                      perl                    perlpod                 php
-    plain                       plsql                   python                  rapidq
-    rebol                       rest                    rst                     ruby
-    shell                       tcltk                   tex                     unknown
-    unknown_language            vim                     vimoutline              xml
-    xslt
-
-The \@language directive also specifies how the colorizer operates. The
-languages supported by the colorizer are described by *language* .py in the
-leo/modes directory. Currently, the list of languages there is::
-
-    actionscript            ada95                   ahk                     antlr
-    apacheconf              apdl                    applescript             aspect_j
-    asp                     assembly_macro32        assembly_mcs51          assembly_parrot
-    assembly_r2000          assembly_x86            awk                     batch
-    bbj                     bcel                    bibtex                  b
-    chill                   cobol                   coldfusion              cplusplus
-    c                       csharp                  css                     cvs_commit
-    doxygen                 d                       dsssl                   eiffel
-    embperl                 erlang                  factor                  forth
-    fortran90               fortran                 foxpro                  freemarker
-    gettext                 groovy                  haskell                 haxe
-    hex                     html                    i4gl                    icon
-    idl                     inform                  ini                     inno_setup
-    interlis                io                      java                    javascript
-    jcl                     jhtml                   jmk                     jsp
-    latex                   lilypond                lisp                    lotos
-    lua                     mail                    makefile                maple
-    matlab                  ml                      modula3                 moin
-    mqsc                    netrexx                 nqc                     nsis2
-    objective_c             objectrexx              occam                   omnimark
-    pascal                  patch                   perl                    php
-    phpsection              pike                    pl1                     plain
-    plsql                   pop11                   postscript              povray
-    powerdynamo             progress                prolog                  props
-    pseudoplain             psp                     ptl                     pvwave
-    pyrex                   python                  rebol                   redcode
-    relax_ng_compact        rest                    rhtml                   rib
-    rpmspec                 r                       rtf                     ruby
-    rview                   sas                     scheme                  sdl_pr
-    sgml                    shell                   shellscript             shtml
-    smalltalk               smi_mib                 splus                   sqr
-    squidconf               ssharp                  svn_commit              swig
-    tcl                     texinfo                 tex                     text
-    tpl                     tsql                    uscript                 vbscript
-    velocity                verilog                 vhdl                    xml
-    xsl                     zpt
-
-If you choose to use a language for which the comment delimiters are unknown,
-use an \@comment directive to inform Leo so that it may generate appropriate
-sentinels.
-
-Case is ignored in the language specifiers, but not in the @language itself.
-Thus, the following are equivalent::
-
-    @language html
-    @language HTML
-    @language hTmL
-
-but the following is invalid::
-
-    @LANGUAGE html
-
-For the purposes of colorization, only the first \@language directive in a
-node or its nearest ancestor is effective.
-</t>
-<t tx="sps.20100712151944.7238">**SCHAEFER, IMPLEMENT THIS FOR @ROOT**
-
-The @last directive allows you to place lines at the very end of external files
-created from @file and @thin nodes. The @last directive is recognized only at
-the end of body text of @file and @thin nodes. No text may follow @last
-directives. More than one @last directive may exist. For example, here is how a
-PHP file might be set up::
-
-	@first &lt;?php
-	...
-	@last ?&gt;</t>
 <t tx="sps.20100712151944.7242">\@path directives override the \@directory default_tangle_directory
 setting.
 
@@ -35398,15 +35161,6 @@ named sections of the files in a structure beneath the \@unit directive that
 nodes into sibling non-\@root trees that expose concepts, e.g., call-into or
 call-out diagrams.
 </t>
-<t tx="sps.20100712151944.7244">The \@pagewidth directive overrides the \@int page_width setting. The form
-of the \@pagewidth directive is \@pagewidth *n*, where *n* is a positive
-integer that indicates the width of tangled pages in columns. For example::
-
-    @pagewidth 100
-
-This setting only affects how Leo tangles doc parts into block comments when
-\@bool output-doc-flag = True.
-</t>
 <t tx="sps.20100712151944.7246">The \@tabwidth directive overrides the \@int tab_width setting. The form
 of the \@tabwidth directive is \@tabwidth *n*, where the absolute value of
 *n* is the width of tabs in spaces. For example::
@@ -35445,8 +35199,6 @@ whitespace not explicitly present in section definitions.
 
 \@verbose is the default. If more than one of these directives appear in the
 same body text the "most verbose" of these options will be in effect.</t>
-<t tx="sps.20100712151944.7253"></t>
-<t tx="sps.20100712151944.7254"></t>
 <t tx="sps.20100712151944.7259">This section discusses \@root trees. Every code sction in an \@root tree must be
 part of t \@root directives must appear in body text, not headlines (though this
 may change in the future).
@@ -35701,14 +35453,6 @@ code section referenced, so only the code in the last encountered referenced
 section will take effect. Therefore, the safe way to update text in cloned nodes
 is to make the change in the .leo file rather than the external files.
 </t>
-<t tx="sps.20100714141211.16549"># run this node with Control-b to discover Leo's current list of languages
-for lang in sorted(g.app.language_delims_dict.keys()):
-    g.es("    @language %s" % lang)
-
-</t>
-<t tx="sps.20100716120121.18081">The following sections are ordered for didactic clarity.
-</t>
-<t tx="sps.20100716120121.18082"></t>
 <t tx="sps.20100716120121.18083">Leo puts special comments into the derived files called *sentinels*. Their
 purpose is to guide the untangle process as it incorporates changes made to the
 external file into the Leo outline. If a node contains section definitions
@@ -35784,24 +35528,6 @@ the code would be ambiguous if the context around the directive changed. Putting
 \@comment and \@language directives at the end of the code section will
 lead to the fewest surprises. In doc sections, their position may be anything
 that communicates clearly to the reader.</t>
-<t tx="sps.20100716120121.22542">The \@lineending directive sets the line endings for individual external
-files. This directive will override the \@string output_newline setting. The
-\@lineending *never* affects the line endings in .leo files themselves: .leo
-files must have consistent line endings!
-
-The valid forms of the @lineending directive are:
-
-========================   ======================================================
-\@lineending nl            The default, Linux.
-------------------------   ------------------------------------------------------
-\@lineending cr            Mac
-------------------------   ------------------------------------------------------
-\@lineending crlf          Windows
-------------------------   ------------------------------------------------------
-\@lineending lf            Same as 'nl', not recommended
-------------------------   ------------------------------------------------------
-\@lineending platform      Same as platform value for output_newline setting.
-========================   ======================================================</t>
 <t tx="tbrown.20091203211538.14165">Makes \@path nodes "active".
 
 With this plugin running, double clicking on \@path nodes
