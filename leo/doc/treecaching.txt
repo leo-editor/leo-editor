@@ -1,6 +1,5 @@
-###################################################
 Python list based description of trees ('objtrees')
-###################################################
+===================================================
 
 Positions and trees are objects that exists only within Leo instance. However, trees can have "serialized"
 representation in .leo xml files (where structure is described by xml hierarchy), or @thin nodes (where
@@ -35,7 +34,7 @@ Where `children` is a recursive tree. Here's an example objtree (from ILeo sessi
        u'ch2 body',
        'ville.20090609184451.5682',
        [[u'ch2.1 head', u'', 'ville.20090609184451.5683', []]]]]]
-    
+
 Note that these trees are constructed using `g.tree_at_position(pos)`. These objtrees can be re-incorporated to 
 Leo document using `g.create_tree_at_vnode(c, v, tree)`, which rebuilds the structure at position p. The "vnode"
 is available as p.v attribute. This functions also creates clones if necessary (according to gnx). If 
@@ -46,7 +45,7 @@ create_tree_at_position also server as a trivial example for recursing through o
         """ Like create_tree_at_vnode, but slower, simpler, without clone/gnx support
         """
         h,b,gnx,chi = tree
-    
+
         p.h = h
         p.b = b
 
@@ -54,7 +53,7 @@ create_tree_at_position also server as a trivial example for recursing through o
             chpos = p.insertAsLastChild().copy()
             # recurse
             create_tree_at_position(chpos, el)
-    
+
 `g.create_tree_at_vnode` is more complex, but faster and supports clones. It relies on 
 `g.fast_add_last_child(c, parent_v, gnxString)`, which adds a new node to the tree
 as last child of parent_v (vnode), It either returns the created vnode, or None 
@@ -62,9 +61,8 @@ if it created a clone (i.e. a node with same gnx was already found in the docume
 This is a conscious design choice, as it prevents you from accidentally manipulating
 the tree of the clone (since it already has a tree of its own!).
 
-##########################
 Using objtrees for caching
-##########################
+==========================
 
 Objtrees are not without real life applications. They are used to implement the content hash 
 based node cache that radically speeds up Leo's startup (effectively eliminating the delay
@@ -84,9 +82,8 @@ In brief,
   ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
 - Now, on the next startup, Leo *will* find the cached pickle, read it in and execute `g.create_tree_at_vnode`
 
-###################################
 The `Leo database` (c.db, g.app.db)
-###################################
+===================================
 
 Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but 
 uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is 
@@ -99,10 +96,10 @@ always associated with one specific Leo document, and is available through c.db.
     else:
         tree = g.tree_at_position(pos)
         c.db[cachename] = tree
-       
+
 Pickleshare (as used by Leo) stores the pickles in zlib-compressed form, which yields 
 significant size benefits for large pickles like objtrees.
-        
+
 Note that c.db is available to all plugins and scripts, and in no way limited to this 
 specific caching purpose. In practice, it's useful for data you want to persist
 through Leo sessions, but not added to .leo document (which is what unknownAttributes
@@ -112,7 +109,7 @@ In addition to c.db, there is g.app.db that can be used for global (non-document
 persisted data. E.g.::
 
     g.app.db['foo'] = [1,2,3]  
- 
+
 The underlying files for c.db are at under ~/.leo/db/somedocument.leo_somehash.
 
 Files for g.app.db are at ~/.leo/db/global.

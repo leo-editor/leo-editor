@@ -1,0 +1,1149 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100805165051.7155: * @thin commands.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20050901101608.2: ** @rst html\commands.html
+##########################################
+Chapter 5: Using Leo's Commands
+##########################################
+
+This chapter discusses all of Leo's menu commands.
+It starts with a discussion of the Emacs-like minibuffer,
+then continues with a discussion of commands in each of Leo's menus.
+
+.. .. contents::
+.. @+node:ekr.20050901101852: *3* @rst-no-head links
+.. External links...
+.. _CWEB:       http://www-cs-faculty.stanford.edu/~knuth/cweb.html
+.. _noweb:      http://www.eecs.harvard.edu/~nr/noweb/
+
+.. Relative links...
+.. _`Chapter 4\: Writing Programs in Leo`:              directives.html
+.. _`Chapter 6\: Leo and Literate Programming`:         design.html
+.. _`Chapter 8: Customizing Leo`:                       customizing.html
+.. _`Clones and views`:                                 intro.html#clones-views
+.. _`Creating script buttons`:                          scripting.html#creating-script-buttons
+.. _`Tangling @root trees with the Tangle commands`:    directives.html#tangling-root-trees-with-the-tangle-commands
+.. @+node:ekr.20060227102028.111: *3* Autocompletion
+Typing a period when @language python is in effect starts autocompletion. Typing
+Return or Control-g (keyboard-quit) exits autocompletion.
+
+Autocompletion shows what may follow a period in code. (Actually you can specify
+any character using the auto-complete shortcut setting.) For example, after
+typing g. Leo will show a list of all the global functions in leoGlobals.py.
+Autocompletion works much like tab completion in the minibuffer. Unlike the
+minibuffer, the presently selected completion appears directly in the body
+pane.
+
+A leading period brings up 'Autocomplete Modules'. (The period goes away.) You
+can also get any module by typing its name. If more than 25 items would appear
+in the Autocompleter tab, Leo shows only the valid starting characters. At this
+point, typing an exclamation mark shows the complete list. Thereafter, typing
+further exclamation marks toggles between full and abbreviated modes.
+
+If x is a list 'x.!' shows all its elements, and if x is a Python dictionary,
+'x.!' shows x.keys(). For example, 'sys.modules.!' Again, further exclamation
+marks toggles between full and abbreviated modes.
+
+During autocompletion, typing a question mark shows the docstring for the
+object. For example: 'g.app?' shows the docstring for g.app. This doesn't work
+(yet) directly for Python globals, but '__builtin__.f?' does. Example:
+'__builtin__.pow?' shows the docstring for pow.
+
+Autocompletion works in the Find tab; you can use <Tab> to cycle through the
+choices. The 'Completion' tab appears while you are doing this; the Find tab
+reappears once the completion is finished.
+.. @+node:ekr.20100504092040.17423: *3* Calltips
+Calltips appear after you type an open parenthesis in code. Calltips shows the
+expected arguments to a function or method. Calltips work for any Python
+function or method, including Python's global functions. Typing Return or
+Control-g (keyboard-quit) exits calltips.
+
+Examples:
+
+a)  'g.toUnicode('  gives 'g.toUnicode(s, encoding, reportErrors=False'
+b) 'c.widgetWantsFocusNow' gives 'c.widgetWantsFocusNow(w'
+c) 'reduce(' gives 'reduce(function, sequence[, initial]) -> value'
+
+The calltips appear directly in the text and the argument list is highlighted so
+you can just type to replace it. The calltips appear also in the status line for
+reference after you have started to replace the args.
+
+Options
+
+Both autocompletion and calltips are initially enabled or disabled by the
+enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
+enable or disable these features at any time with these commands:
+enable-auto-completer-command, enable-calltips-command,
+disable-auto-completer-command and disable-calltips-command.
+.. @+node:ekr.20060420094611: *3* The minibuffer
+The mini-buffer is a text area at the bottom of the body pane.
+You use it like the Emacs mini-buffer to invoke commands by their so-called *long name*.
+The following commands affect the minibuffer:
+
+- **full-command**: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
+  full command name, then hit <Return> to execute the command. Tab completion
+  works, but not yet for file names.
+
+.. - **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
+..   defined in leoSettings.leo. It is useful for commonly-used commands.
+
+- **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat
+  count for later command. Ctrl-u 999 a adds 999 a's.
+
+- **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
+  the focus in the body pane.
+
+For example, to print a list of all commands type Alt-X print-commands <Return>.
+
+The following sections list the various commands that you can invoke from the minibuffer.
+**Important**: you may bind keystrokes to any of these commands.
+See `Chapter 8: Customizing Leo`_ for full details.
+.. @+node:ekr.20060613062025.6: *4* Basic editing commands
+The following basic editing commands are typically bound to key strokes::
+
+    back-char
+    back-char-extend-selection
+    back-paragraph
+    back-paragraph-extend-selection
+    back-sentence
+    back-sentence-extend-selection
+    back-to-indentation
+    back-word
+    back-word-extend-selection
+    backward-delete-char
+    backward-kill-paragraph
+    backward-kill-sentence
+    backward-kill-word
+    beginning-of-buffer
+    beginning-of-buffer-extend-selection
+    beginning-of-line
+    beginning-of-line-extend-selection
+    cut-text
+    delete-char
+    end-of-buffer
+    end-of-buffer-extend-selection
+    end-of-line
+    end-of-line-extend-selection
+    exchange-point-mark
+    extend-to-word
+    forward-char
+    forward-char-extend-selection
+    forward-paragraph
+    forward-paragraph-extend-selection
+    forward-sentence
+    forward-sentence-extend-selection
+    forward-word
+    forward-word-extend-selection
+    insert-newline
+    move-lines-down
+    move-lines-up
+    move-past-close
+    move-past-close-extend-selection
+    newline-and-indent
+    next-line
+    next-line-extend-selection
+    paste-text
+    previous-line
+    previous-line-extend-selection
+    redo
+    select-all
+    set-mark-command
+    undo
+.. @+node:ekr.20060613062025.1: *4* Debugging commands
+These commands are for debugging Leo itself::
+
+    collect-garbage
+    debug
+    disable-gc-trace
+    dump-all-objects
+    dump-new-objects
+    dump-outline
+    enable-gc-trace
+    free-tree-widgets
+    print-focus
+    print-gc-summary
+    print-stats
+    verbose-dump-objects
+.. @+node:ekr.20060613062025.4: *4* Emacs commands
+The following commands work just like their Emacs counterparts.
+Use the help-for-command command for further details::
+
+    abbrev-mode
+    add-global-abbrev
+    add-space-to-lines
+    add-tab-to-lines
+    advertised-undo
+    append-to-buffer
+    append-to-register
+    call-last-keyboard-macro
+    capitalize-word
+    center-line
+    center-region
+    clean-lines
+    clear-extend-mode
+    clear-kill-ring
+    clear-rectangle
+    clear-selected-text
+    close-rectangle
+    copy-rectangle-to-register
+    copy-text
+    copy-to-register
+    count-region
+    dabbrev-completion
+    dabbrev-expands
+    delete-comments
+    delete-file
+    delete-indentation
+    delete-rectangle
+    delete-spaces
+    diff
+    digit-argument
+    downcase-region
+    downcase-word
+    end-kbd-macro
+    escape
+    eval-expression
+    expand-region-abbrevs
+    fill-paragraph
+    fill-region
+    fill-region-as-paragraph
+    flush-lines
+    full-command
+    goto-char
+    how-many
+    increment-register
+    indent-region
+    indent-relative
+    indent-rigidly
+    indent-to-comment-column
+    insert-body-time
+    insert-file
+    insert-keyboard-macro
+    insert-parentheses
+    insert-register
+    inverse-add-global-abbrev
+    jump-to-register
+    keep-lines
+    keyboard-quit
+    kill-all-abbrevs
+    kill-buffer
+    kill-line
+    kill-paragraph
+    kill-rectangle
+    kill-region
+    kill-region-save
+    kill-sentence
+    kill-word
+    line-number
+    list-abbrevs
+    list-buffers-alphabetically
+    load-file
+    make-directory
+    match-bracket
+    name-last-kbd-macro
+    negative-argument
+    number-command
+    number-command-0
+    number-command-1
+    number-command-2
+    number-command-3
+    number-command-4
+    number-command-5
+    number-command-6
+    number-command-7
+    number-command-8
+    number-command-9
+    open-rectangle
+    point-to-register
+    prepend-to-buffer
+    prepend-to-register
+    read-abbrev-file
+    remove-blank-lines
+    remove-directory
+    remove-sentinels
+    remove-space-from-lines
+    remove-tab-from-lines
+    rename-buffer
+    repeat-complex-command
+    reverse-region
+    run-unit-tests
+    select-paragraph
+    set-comment-column
+    set-fill-column
+    set-fill-prefix
+    shell-command
+    shell-command-on-region
+    sort-columns
+    sort-fields
+    sort-lines
+    split-line
+    start-kbd-macro
+    string-rectangle
+    suspend
+    switch-to-buffer
+    tabify
+    transpose-chars
+    transpose-lines
+    transpose-words
+    unindent-region
+    universal-argument
+    unmark-all
+    untabify
+    upcase-region
+    upcase-word
+    view-lossage
+    view-register
+    what-line
+    yank
+    yank-pop
+    yank-rectangle
+    zap-to-character
+.. @+node:ekr.20060613062025.5: *4* Find commands
+Here is a list of all of Leo's find commands.
+The apropos-find-commands command will print a detailed
+help message discussing these commands::
+
+    clone-find-all
+    find-character
+    find-tab-change
+    find-tab-change-all
+    find-tab-change-then-find
+    find-tab-find
+    find-tab-find-all
+    find-tab-find-prev
+    find-word
+    isearch-backward
+    isearch-backward-regexp
+    isearch-forward
+    isearch-forward-regexp
+    isearch-with-present-options
+    query-replace
+    query-replace-regex
+    re-search-backward
+    re-search-forward
+    replace-string
+    search-again
+    search-backward
+    search-forward
+    search-with-present-options
+    set-find-everywhere
+    set-find-node-only
+    set-find-suboutline-only
+    toggle-find-ignore-case-option
+    toggle-find-in-body-option
+    toggle-find-in-headline-option
+    toggle-find-mark-changes-option
+    toggle-find-mark-finds-option
+    toggle-find-regex-option
+    toggle-find-reverse-option
+    toggle-find-word-option
+    toggle-find-wrap-around-option
+    word-search-backward
+    word-search-forward
+.. @+node:ekr.20060613062025.9: *4* Gui commands
+The following commands simulate mouse clicks, double-clicks or drags::
+
+    abort-edit-headline
+    activate-cmds-menu
+    activate-edit-menu
+    activate-file-menu
+    activate-help-menu
+    activate-outline-menu
+    activate-plugins-menu
+    activate-window-menu
+    add-editor
+    cascade-windows
+    click-click-box
+    click-headline
+    click-icon-box
+    close-window
+    contract-body-pane
+    contract-log-pane
+    contract-outline-pane
+    contract-pane
+    cycle-editor-focus
+    cycle-focus
+    delete-editor
+    double-click-headline
+    double-click-icon-box
+    edit-headline
+    end-edit-headline
+    equal-sized-panes
+    expand-body-pane
+    expand-log-pane
+    expand-outline-pane
+    expand-pane
+    focus-to-body
+    focus-to-log
+    focus-to-minibuffer
+    focus-to-tree
+    fully-expand-body-pane
+    fully-expand-log-pane
+    fully-expand-outline-pane
+    fully-expand-pane
+    hide-body-pane
+    hide-find-tab
+    hide-invisibles
+    hide-log-pane
+    hide-mini-buffer
+    hide-outline-pane
+    hide-pane
+    hide-spell-tab
+    iconify-frame
+    minimize-all
+    open-compare-window
+    open-find-dialog
+    open-find-tab
+    open-spell-tab
+    press-rst3-button
+    press-save-button
+    press-spell-button
+    resize-to-screen
+    scroll-down
+    scroll-down-extend-selection
+    scroll-outline-down-line
+    scroll-outline-down-page
+    scroll-outline-up-line
+    scroll-outline-up-page
+    scroll-up
+    scroll-up-extend-selection
+    show-mini-buffer
+    simulate-begin-drag
+    simulate-end-drag
+    toggle-active-pane
+    toggle-invisibles
+    toggle-mini-buffer
+    toggle-split-direction
+.. @+node:ekr.20060613062025.2: *4* Help commands
+The following commands print various helpful messages.
+Apropos commands print longer discussions of specific topics.
+The help-for-command command prompts for a command name
+(you can use typing completion to specify the command)
+and then prints a brief description of that command::
+
+    apropos-autocompletion
+    apropos-bindings
+    apropos-find-commands
+    help
+    help-for-command
+    mode-help
+    print-bindings
+    print-commands
+    python-help
+.. @+node:ekr.20060613062025.10: *4* Mode commands
+These commands put Leo into various kinds of modes.
+
+- The enter-x-mode commands enter modes defined by \@mode nodes in leoSettings.leo
+  (or in other .leo files).
+
+- The set-command-state, set-insert-state, set-overwrite-state commands
+  determine how treats unbound plain keys. Leo ignores such keys in command
+  state, inserts them into the body pane in insert state, and overwrites the
+  character at the cursor position in overwrite state.
+
+- Other commands determine whether autocompletion or calltips are in effect.
+
+- When extend mode is effect, basic editing commands that move the cursor also
+  extend the selected text.
+  For example, in extend mode the back-char command works the same as the
+  back-char-extend-selection command.
+
+Here is the full list of mode-related commands::
+
+    auto-complete
+    auto-complete-force
+    disable-autocompleter
+    disable-calltips
+    enable-autocompleter
+    enable-calltips
+    enter-apropos-mode
+    enter-commands-mode
+    enter-edit-mode
+    enter-emacs-mode
+    enter-extract-mode
+    enter-file-mode
+    enter-gui-mode
+    enter-help-mode
+    enter-kill-mode
+    enter-modes-mode
+    enter-move-outline-mode
+    enter-outline-mode
+    enter-quick-command-mode
+    enter-toggle-find-mode
+    exit-named-mode
+    set-command-state
+    set-extend-mode
+    set-insert-state
+    set-overwrite-state
+    set-silent-mode
+    show-calltips
+    show-calltips-force
+    toggle-autocompleter
+    toggle-calltips
+    toggle-extend-mode
+    toggle-input-state
+.. @+node:ekr.20060613062025.7: *4* Outline commands
+The following commands invoke Leo's outline commands::
+
+    clone-node
+    contract-all
+    contract-node
+    contract-or-go-left
+    contract-parent
+    copy-node
+    cut-node
+    de-hoist
+    delete-node
+    demote
+    expand-to-level-1
+    expand-to-level-2
+    expand-to-level-3
+    expand-to-level-4
+    expand-to-level-5
+    expand-to-level-6
+    expand-to-level-7
+    expand-to-level-8
+    expand-to-level-9
+    expand-all
+    expand-and-go-right
+    expand-next-level
+    expand-node
+    expand-or-go-right
+    expand-prev-level
+    go-back
+    go-forward
+    goto-first-node
+    goto-first-sibling
+    goto-last-node
+    goto-last-sibling
+    goto-last-visible
+    goto-line
+    goto-line-number
+    goto-next-changed
+    goto-next-clone
+    goto-next-marked
+    goto-next-node
+    goto-next-sibling
+    goto-next-visible
+    goto-parent
+    goto-prev-node
+    goto-prev-sibling
+    goto-prev-visible
+    hoist
+    insert-node
+    mark
+    mark-changed-items
+    mark-changed-roots
+    mark-clones
+    mark-subheads
+    move-outline-down
+    move-outline-left
+    move-outline-right
+    move-outline-up
+    outline-to-CWEB
+    outline-to-noweb
+    paste-node
+    paste-retaining-clones
+    promote
+    sort-children
+    sort-siblings
+.. @+node:ekr.20060613062025.8: *4* Miscellaneous commands
+Here are various miscellaneous minibuffer commands::
+
+    about-leo
+    add-comments
+    check-all-python-code
+    check-outline
+    check-python-code
+    clear-recent-files
+    convert-all-blanks
+    convert-all-tabs
+    convert-blanks
+    convert-tabs
+    execute-script
+    export-headlines
+    exit-leo
+    extract
+    extract-names
+    extract-section
+    flatten-outline
+    goto-global-line
+    import-at-file
+    import-at-root
+    import-cweb-files
+    import-derived-file
+    import-flattened-outline
+    import-noweb-files
+    insert-headline-time
+    new
+    open-leoDocs-leo
+    open-leoPlugins-leo
+    open-leoSettings-leo
+    open-offline-tutorial
+    open-online-home
+    open-online-tutorial
+    open-outline
+    open-outline-by-name
+    open-python-window
+    open-with
+    open-with-idle
+    open-with-word
+    open-with-wordpad
+    pretty-print-all-python-code
+    pretty-print-python-code
+    read-at-file-nodes
+    read-outline-only
+    reformat-paragraph
+    revert
+    save-buffers-kill-leo
+    save-file
+    save-file-as
+    save-file-to
+    settings
+    set-colors
+    set-font
+    show-colors
+    show-find-options
+    show-fonts
+    show-invisibles
+    spell-change
+    spell-change-then-find
+    spell-find
+    spell-ignore
+    tangle
+    tangle-all
+    tangle-marked
+    toggle-angle-brackets
+    untangle
+    untangle-all
+    untangle-marked
+    weave
+    write-abbrev-file
+    write-at-file-nodes
+    write-dirty-at-file-nodes
+    write-missing-at-file-nodes
+    write-outline-only
+.. @+node:EKR.20040524104904.100: *3* The File Menu
+.. @+node:EKR.20040524104904.101: *4* Loading, Saving and Reverting Files
+-   The New command creates a new Leo main window.
+
+-   The Open command opens an existing Leo file and shows it in a main window.
+
+-   The Close command closes the topmost Leo window,
+    giving you an opportunity to save your work if you haven't yet done so.
+
+-   The Save, Save As and Save To commands save the Leo window to a file.
+    The Save As command changes the name of the outline being edited;
+    the Save To command does not.
+
+    The Save File As Zipped command is the same as the
+    Save As command except that the resulting .leo file is compressed with Python's zipfile module.
+    Similarly, the Save File As Unzipped command is the same as the Save As command
+    except that the resulting .leo file is not compressed.
+    The Save, Save As and Save To commands compress the file if it was originally compressed.
+    **Note**: Leo writes files with .leo extension, regardless of whether the file is zipped or not.
+    Zipped .leo files contain a single archive, whose name is the same as the .leo file itself.
+    Outside of Leo you can change the extension to .leo.zip and use stuffit or other program to expand the .leo file
+    contained within.
+
+-   The Revert command reloads a file, discarding any changes made to the file since it was last saved.
+
+-   The Recent Files command brings up a submenu containing a list of recently
+    opened files. Choosing an item in this submenu opens the selected file or brings
+    it to the front.
+
+-   The Clear Recent Files command deletes all entries in the Recent
+    Files submenu except the most recent file. The files themselves are not
+    affected, just the menu entries.
+
+The following commands are located in the Read/Write menu, part of the File
+menu.
+
+-   The Read Outline Only command reads an outline using only the .leo file, not any files derived
+    from @file nodes. This command is useful for reverting a project to a
+    previously saved state.
+
+-   The Read @file Nodes command updates all @file nodes in an outline.
+    This ensures that the state of an outline matches all files derived
+    from @file nodes. 
+
+-   The Write Outline Only command saves an outline without writing any @file
+    trees. Useful for inserting an @file node into an outline without modifying a
+    external file with the same name.
+
+-   The Write @file Nodes command forces an update of all @file trees.
+
+-   The Write Dirty @file Nodes command writes all @file trees that have been changed.
+.. @+node:EKR.20040524104904.102: *4* Communicating with external editors
+The Open With command allows you to communicate with external editor. When
+you select this command Leo creates a temporary file and invokes an external
+program. Leo periodically checks whether this temporary file has changed; Leo
+changes the corresponding node in the outline if so. You must create the entries
+in the Open With submenu. This would typically be done in a hook routine, using
+the createOpenWithMenuFromTable routine described in the child of this node. The
+@file mod_open_with.py node in LeoPlugins.leo gives a complete example
+of handling the Open With menu.
+.. @+node:EKR.20040524104904.105: *4* Tangling an outline: Producing external files
+The Tangle, Tangle All and Tangle Marked commands create derived
+files from portions of an outline. These commands indent and format the derived
+files so that they are easy to read and so that it is clear what sections
+produced the code. The .c file in the Examples folder shows the code produced by
+the Tangle commands. The Tangle command tangles only the selected portion of
+the outline, the Tangle All command tangles the entire outline, and the
+Tangle Marked command tangles only marked headlines.
+
+The Tangle commands create a external file, call it F, from each @root
+node. This process is like macro expansion. The contents of F are simply the
+body text of the @root node, with each section reference replaced by its
+definition. Substitution continues until all references to sections are replaced
+with their definitions. By default, Tangle commands look for section
+definitions only in the suboutline containing the @root directive being
+tangled. That is, all sections are assumed to be defined either in the body text
+of the headline, say h, containing the
+@root directive, or in the body texts of the descendants of h.
+The @unit directive changes the default scope of the tangle command, while
+the @ignore directive causes the tangle commands to ignore a subtree. For
+more details, see: `Tangling @root trees with the Tangle commands`_
+.. @+node:EKR.20040524104904.106: *4* Untangling: updating an outline
+The Untangle, Untangle All and Untangle Marked commands are the
+reverse of the corresponding Tangle commands. They update an outline based
+on changes made to one or more external files. These are exceptionally useful
+commands. For example, suppose you create a new part of the outline and
+Tangle it for the first time. When you compile the resulting external files
+for the first time, you are likely to get many syntax errors. You could fix
+those errors in the outline and Tangle the outline again, but there is a much
+easier way: you fix the errors in the external files using the compiler's editor,
+then run the untangle command on the part of the outline that created the
+external file. The Untangle command updates the selected outline to match the
+changes in the external files. It's as simple as that. The Untangle command
+marks all the nodes in the outline that it updates; you can examine all such
+nodes with the Go To Next Marked command in the Outline menu. You cannot use
+Untangle to update doc parts, or leading comments in code parts or "trivial"
+whitespace in code parts. This is a limitation of the Untangle command that
+cannot be fixed; Untangle has no way of knowing whether leading comments
+came from doc parts or are just leading comments.
+
+Untangle never changes the structure of an outline; it never inserts,
+deletes or moves nodes. Don't attempt to change the structure of an outline by
+modifying external files; it won't work. Also, never delete, move or alter the
+sentinel lines in external files written by the Tangle command. Such lines start
+with /// followed by a section name. If you change the section name in a
+sentinel line Untangle will not update the code in the outline (with the old
+name) that generated the renamed section. Untangle now warns about sections that
+appear in a external file but not in the outline. Untangle has no trouble with
+changed section references in external files; it is only changed sentinel lines
+that cause problems. Cloned nodes that generate code in several files may cause
+problems for Untangle if not all the code is changed the same way in derived
+files. If Untangle is run separately on these external files, Untangle will
+update all cloned nodes each time it is run, so only the code in the last
+Untangle run will take effect. Therefore, the only reliable way to update
+text in cloned nodes is to make the change in the .leo file rather than the
+external files.
+.. @+node:EKR.20040524104904.108: *4* Importing Files into Leo Outlines
+The Import commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:
+
+-   The Import to @file command creates an @file node from a file.
+
+-   The Import to @root command creates an @root node from a file.
+
+-   The Import CWEB Files command creates an @file node from a `CWEB`_ file.
+
+-   The Import noweb Files command creates an @file node from a `noweb`_ file.
+
+-   The Import External File command imports all the nodes in a external file into the outline.
+    Unlike the read commands, the command preserves no outline structure.
+
+-   The Import Flattened Outline command converts plain text written in MORE format to an outline.
+
+The Import Flattened Outline command brings up a dialog which will accept at
+most one file. If that file contains MORE-format text it creates an outline
+corresponding to that text. MORE is a now-defunct outliner program. MORE
+represents outlines as follows. Headlines are denoted by a leading + or
+- character, preceding by zero or more tabs that denote the level of the
+headline. Body text follows its headline, with no indentation. The original
+MORE format did not escape lines in the body text that started with + or -.
+Leo escapes such characters by preceding +, - or backslash with a
+backslash.
+.. @+node:EKR.20040524104904.109: *4* Exporting Files from Leo Outlines
+-   The Outline To CWEB command creates a `CWEB`_ file from the selected outline.
+
+-   The Outline TO noweb command creates a `noweb`_ file from the selected outline.
+
+-   The Flatten Outline command creates a text file in MORE format from the selected outline.
+    See the previous section for a discussion of MORE format.
+
+-   The Remove Sentinels command removes all sentinel lines from a file derived from an @file node.
+
+-   The Weave Command formats the selected text and writes it to a file.
+.. @+node:EKR.20040524104904.110: *4* Quitting Leo
+The Quit command causes Leo to exit. You may also exit Leo by closing the
+main window. You will be prompted to save any file that has been altered but not
+saved.
+.. @+node:EKR.20040524104904.111: *3* The Edit Menu
+.. @+node:EKR.20040524104904.112: *4* Undoing changes
+Leo supports unlimited undo and redo. Think of actions that may be undone or
+redone as a string of beads. A "bead pointer" points to the present bead.
+Performing an operation creates a new bead after the present bead and removes
+all following beads. Undoing an operation moves the bead pointer backwards;
+redoing an operation moves the bead pointer forwards. The Undo command is
+disabled when the bead pointer moves in front of the first bead; the Redo
+command is disabled when the bead pointer points to the last bead.
+.. @+node:EKR.20040524104904.113: *4* Cutting, pasting and selecting text
+Leo supports the standard editing commands: Cut, Copy, Paste,
+Clear and Select All. These commands work with either headline or body
+text.
+.. @+node:EKR.20040524104904.114: *4* Shifting body text
+The Shift Left and Shift Right commands shift selected lines in the body
+text left or right one tab position. These commands shift the entire line if any
+characters in that line are selected.
+.. @+node:ekr.20050313102319: *4* Adding and deleting comments in body text
+-   The Add Comments command puts comments around a block of code.
+    This command uses single-line comments if possible.
+
+-   The Delete Comments command deletes the comments specified by the Add Comments command.
+.. @+node:EKR.20040524104904.115: *4* Creating nodes from body text
+The Extract, Extract Section and Extract Section Names commands create child nodes whose headline is the first line of the selected body text.
+
+-   The Extract command creates a new node whose headline is the first line of selected body text and
+    whose body is all other lines of selected text.
+    Previously selected text is deleted from the original body text. 
+
+-   The Extract Section command creates a new node whose headline is the first line of selected text and
+    whose body is @code followed by all the other lines of selected text.
+    All selected text lines except the first line are deleted from the original body text.
+    This command is enabled only if the first line contains nothing but section name.
+
+-   The Extract Section Names command creates one or more child nodes,
+    one for each section name in the selected body text.
+    The headline of each created node is the section name; the body text is @code followed by a newline.
+.. @+node:EKR.20040524104904.116: *4* Converting leading blanks and tabs in body text
+-   The Convert Tabs command converts leading tabs to blanks in a single node.
+-   The Convert Blanks command converts blanks to tabs in a single node.
+-   The Convert All Tabs converts leading tabs to blanks throughout the selected tree.
+-   The Convert All Blanks command converts leading blanks to tabs throughout the selected tree.
+
+All these commands convert between tabs and blanks using the tab width presently in effect.
+.. @+node:EKR.20040524104904.117: *4* Executing Python scripts in body text
+The Execute Script command executes body text as a Python script. Leo
+execute the selected text, or the entire body text if no text is selected. The
+Execute Script command pre-defines the values c, g and p as
+follows:
+
+- c is the commander of the outline containing the script.
+- g is the leoGlobals modules.
+- p is c.p, that is, c.currentPosition().
+
+**Important**: Body text may contain Leo directives and section references. You
+can now use all of Leo's features to organize scripts that you execute
+interactively. Section definitions must appear in the node containing the script
+or in descendant nodes.
+
+Leo preprocesses all scripts by simulating the writing of a external file to a
+string. The Execute Script command sets app.scriptDict["script1"] to the
+value of the script before preprocessing, and sets app.scriptDict["script2"]
+to the value of the script after preprocessing. Scripts may examine and change
+app.scriptDict as they please.
+.. @+node:EKR.20040524104904.118: *4* Finding and changing text
+The following check boxes options appear in the search dialog and control the operations of the find and change commands.
+
+Clone Find All
+    When checked, the the Find All command creates a new root node called Found: *<your search pattern>*.
+    This node contains clones of the nodes found by the Find All command.
+    It is your responsibility to navigate to this new node and to clean it up when it's no longer needed.
+
+Ignore Case
+    When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
+
+Mark Changes
+    When checked, the Change command marks all headlines whose headline or body text are changed by the command.
+
+Mark Matches
+    When checked, the Find and Change commands mark all headlines in which a match is found with the pattern.
+
+Pattern Match
+    When checked, the Find and Change commands treat several characters specially in the find pattern.
+
+    - '*'  matches any sequence of zero or more characters.
+    - '.'  matches any single character.
+    - '^'  matches a newline at the start of a pattern.
+    - '$'  matches a newline at the end of a pattern.
+
+Examples::
+
+    "^abc$" matches lines that only contain "abc".
+    "^a" matches any line starting with "A".
+    "a$" matches any line ending with "a".
+    "^*$" matches any line at all.
+
+Reverse
+    When checked, the Find and Change commands search backward through the file.
+
+Search Body Text
+    When checked, the Find and Change commands search body text.
+
+Search Headline Text
+    When checked, the Find and Change commands search headline text.
+
+Show Context
+    When checked, the Find All command shows additional context information when printing matches.
+
+Suboutline Only
+    When checked, the Find and Change commands search only the currently selected headline and its offspring.
+
+Whole Word
+    When checked, the find pattern must match an entire word.
+    Words consist of an alphabetic character or underscore, followed by zero or more
+    alphabetic characters, numbers or underscores.
+
+Wrap Around
+    When checked, the Find and Change commands continues at the top of the file when
+    the command reaches the bottom of the file.
+    For reverse searches, the find or change command continues at the bottom of the file when
+    the command reaches the top of the file.
+.. @+node:ekr.20050902160924: *4* Script search
+**Important**: Script buttons are easier to use than the script-oriented
+find/change commands described next. I recommend using script buttons whenever
+possible. See `Creating script buttons`_.
+You are not likely to need all the firepower that script-orient find/change commands,
+but it could save you lots of time for complex jobs.
+
+Leo's find panel contains the Script Search radio button and the Script
+Change checkbox. When the Script Search radio button is selected Leo treats the
+contents of the Search Text as a script to execute whenever any kind of Find
+command is executed. Similarly, when the Script Change checkbox is selected Leo
+treats the context of the Change Text as a script to execute whenever any kind
+of Change command is executed.
+
+Script-based find-change turns Leo's Find/Change panel into a platform for
+running scripts interactively. The script writer need not write code to control
+interactive searches.
+
+Here's how it works. Leo dedicates g.app.searchDict for
+communication between Leo and the search and change scripts. The search and
+change scripts may also use g.app.searchDict for communication between themselves.
+Leo sets g.app.searchDict["type"] to "find", "change", "findAll" or "changeAll" to
+indicate the kind of command being executed. Scripts may use all other entries
+in g.app.searchDict as they please.
+
+Here is what Leo does when the user presses buttons with Script Search enable:
+
+Find and Change, then Find buttons
+    Leo executes the find script once. Typically, the find script would traverse
+    the tree and highlight the found text or otherwise indicate to the user that
+    the find operation has succeeded. However, the script can do anything it
+    pleases.
+
+Find All button
+    Leo executes the find script repeatedly until g.app.searchDict["continue"] evaluates
+    to False. Initially there is no entry for g.app.searchDict["continue"], so the
+    find script must set g.app.searchDict["continue"] = True if it wants Leo call it again.
+
+Change button
+    Leo executes the change script once. Typically, the change script would change
+    the selected text. Usually the change script will compute the new value of body
+    text and call c.setBodyString(p,newText) to make that change permanent. 
+    To handle undo, the change script can call
+    c.frame.onBodyChanged(v,"Change",oldText=oldText).
+
+Change All button
+    Leo executes the change script repeatedly
+    until g.app.searchDict["continue"] evaluates to false.
+
+Most find and change scripts will ignore settings in the Find Panel like "whole
+word", "pattern match", and "reverse". However, these settings are available to
+the scripts via ivars such as c.whole_word_flag, etc. if desired.
+
+The initScriptFind script in LeoPy.leo makes it easy to set up script based searches:
+
+1. Put the following code in the root of a tree that will contain your script search::
+
+    # Initialize Leo's find panel using the named children of this node.
+    import leo.core.leoGlobals as g.
+    g.initScriptFind("Find script","Change script") # Second argument is optional.
+    # Start searching at the top.
+    c.selectPosition(c.rootPosition())
+
+2. Put the search script in a child node called "Find script" (no quotes).
+
+3. (Optional) Put the change script in a child node called "Change script"
+
+4.  Execute the code above.  Leo does the following:
+
+- Puts the body of the "Find script" into the find text of Leo's Find/Change dialog.
+- Puts the body of the "Change script" into the change text of Leo's Find/Change dialog.
+- Selects the Script Find radio button.
+- Selects the Script Change checkbox if the change script exists.
+- Selects the root of the entire outline.
+
+Presto! Leo is ready for a script search. **Note**: you could also consider creating a
+script button to set up complex find/change scripts.
+
+Here are some ideas for using script find/change.
+
+-   Find and change scripts may use Python's re module.  For
+    example, the find script could set g.app.searchDict["m"] to the match object
+    returned by re's match method.  The change script would then compute the
+    result, change the text and set the undo info as usual.
+
+-   Find and change scripts may operate on data outside any Leo outline.
+    For example, script-find scripts could traverse your file system.
+    Scripts could even pull data from the file system
+    into the outline so that you can see the effects of changes as the scripts
+    operate.
+.. @+node:EKR.20040524104904.134: *4* Go To Line Number
+The Go To Line Number command selects the locations in your outlines corresponding to a line in a external file.
+.. @+node:EKR.20040524104904.136: *4* Inserting the date and time
+The Insert Body Time/Date and Insert Headline Time/Date commands insert
+formatted time and date into body or headline text. You must be editing a
+headline to be able to insert the time/date into the headline.
+The  body_time_format_string and headline_time_format_string settings
+specify the format of the inserted text. These settings are the format string
+passed to time.strftime. For a complete list of the format options see
+http://www.python.org/doc/current/lib/module-time.html
+If the format specified by either of these two settings is erroneous the
+"%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date
+format like::
+
+    1/30/2003 8:31:55
+.. @+node:EKR.20040524104904.137: *4* Reformatting paragraphs in body text
+The Reformat Paragraph command rearranges the words in a text paragraph to fill
+each line as full as possible, up to the @pagewidth setting. A paragraph is
+delimited by blank lines, Leo directives, and (of course) start and end of text
+in a node. The width of the line used by the reformatting operation is governed
+by @pagewidth and the indentation that would be applied to the node when
+tangled (as part of a @root) or written (as part of a @file).
+
+The command operates on the paragraph containing the insert cursor. If the
+insert cursor is on a blank line or directive, nothing happens. If the cursor is
+on a line containing text, then the paragraph containing that text line is
+reformatted and the insert cursor is moved to the next paragraph.
+
+**Note**: Hanging indentation is preserved. This is most useful for bulleted or
+numbered lists, such as::
+
+  1. This is the first paragraph,
+     and it has a hanging indentation.
+
+  2. This is the second paragraph,
+     and it too has a hanging indentation.
+.. @+node:EKR.20040524104904.139: *4* Matching brackets and parenthesis
+The Match Brackets command is enabled if the cursor is next to one of the
+following characters in the body pane:
+
+    ( ) [ ] { } < >
+
+This command looks for the matching character, searching backwards through the
+body text if the cursor is next to `)` `]` `}` or `>` and searching forward through the
+text otherwise. If the cursor is between two brackets the search is made for the
+bracket matching the leftmost bracket. If a match is found, the entire range of
+characters delimited by the brackets is highlighted and the cursor is placed
+just to the left of the matching characters. Thus, executing this command twice
+highlights the range of matched characters without changing the cursor.
+.. @+node:EKR.20040524104904.143: *3* The Outline Menu
+.. @+node:EKR.20040524104904.144: *4*  Checking outlines
+-   The Check Outline command checks the outline for consistency.
+
+-   The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors.
+    These commands mark erroneous nodes and ignore any nodes for which:
+
+        - @ignore is in effect or
+        - @language python is in not effect.
+
+-   The Check Python Code and Pretty Print Python Code pretty print body text.
+    You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
+
+        putOperator:      puts whitespace around operators.
+        putNormalToken:   puts whitespace around everything else.
+.. @+node:EKR.20040524104904.145: *4*  Creating & cloning nodes
+-   The Insert Headline command inserts a new headline after the presently selected headline,
+    either as the next sibling or the first child of the presently selected headline
+    if the presently selected headline has children and is expanded.
+
+-   The Clone Node creates a clone of the selected node.
+    See `Clones and views`_ for full details about clones.
+.. @+node:EKR.20040524104904.146: *4*  Cutting, pasting and deleting nodes
+-   The Cut Outline and Copy Outline commands copy a text
+    representation of the outline to the clipboard. This representation is the same
+    as the file format with some information deleted.
+
+-   The Paste command (in the Edit menu) copies this representation into the *body* pane.
+
+-   The Paste Node As Clone command pastes the node from the clipboard, retaining the
+    identity of nodes.  Thus, if the pasted node already exists in the outline the newly
+    pasted node will become of a clone of the already-existing node.
+
+-   The Paste Outline command creates nodes with new identities (new gnx's).
+.. @+node:EKR.20040524104904.147: *4*  Expanding and contracting nodes
+-   The Expand command expands the currently selected node so that all its children are visible.
+-   The Expand All Subheads command expands the currently selected node so that all its offspring are visible.
+-   The Expand All command expands all the nodes of the entire tree.
+-   The Contract Parent contracts the selected node's parent and selects the parent node.
+.. @+node:EKR.20040524104904.149: *4*  Marking nodes
+-   The Mark Headline command marks a headline with a red marker  near the leader characters.
+-   The Unmark Headline command removes such a mark.
+-   The Mark Subheads command marks all offspring of the currently selected node.
+-   The Unmark All command removes the marks from the entire tree.
+-   The Mark Changed Items command marks all headlines whose headline or
+    body text has been changed since the file was last saved.
+-   The Mark Changed Roots command marks all changed headlines whose body text contains the @root directive.
+    This command is especially useful with the Tangle Marked command.
+.. @+node:EKR.20040524104904.150: *4*  Moving, sorting and reorganizing nodes
+-   The Move Up, Move Down, Move Left and Move Right commands move the currently selected node.
+
+-   The Promote command makes all the children of a node siblings of the node.
+
+-   The Demote command makes all the siblings that follow a node children of the node.
+
+-   The Sort Children command sorts all children of the present node in alphabetical order of their headlines.
+
+-   The Sort Siblings command sorts all siblings of the present node in alphabetical order.
+.. @+node:EKR.20040524104904.148: *4*  Hoisting & De-hoisting nodes
+-   The Hoist command redraws the screen so presently selected tree becomes the only visible part of the outline.
+    Hoist commands may be nested.  
+
+-   The De-hoist command restores the outline.
+.. @+node:EKR.20040524104904.151: *3* The Window Menu
+-   The Equal Sized Panes command adjusts the sizes of the outline and body
+    panes so that they are the same height.
+-   The Cascade command cleans up the screen by cascading all Leo windows.
+-   The Minimize All command minimizes all Leo windows.
+-   The Toggle Active Pane command toggles keyboard focus between the outline and body panes.
+-   The Toggle Split Direction command switches between vertical and horizontal
+    orientations of the Leo window. In the vertical orientation, the body pane
+    appears below the pane containing the outline and log panes. In the horizontal
+    orientation, the body pane appears to the left the pane containing the outline
+    and log panes. By default, the ratio of pane outline pane to the body pane is
+    0.5 in the vertical orientation and 0.3 in the horizontal orientation. These two
+    ratios may be changed using settings.
+-   The Open Compare Window command opens a dialog that allows you to compare
+    two files, one containing sentinels and one not.
+.. @+node:EKR.20040524104904.157: *3* The Help Menu
+-   The About Leo command puts up a dialog box showing the version of Leo.
+-   The Online Home Page command opens Leo's home page at http://webpages.charter.net/edreamleo/front.html.
+-   The Open Online Tutorial command opens Joe Orr's excellent ScreenBook tutorial at
+    http://www.evisa.com/e/sbooks/leo/sbframetoc_ie.htm.
+-   The Open Offline Tutorial command opens the file sbooks.chm if it exists.
+    Otherwise, you will be asked whether you want to download it from Leo's SourceForge web site.
+    If you say yes, the page http://sourceforge.net/project/showfiles.php?group_id=3458 will open.
+    You may then download sbooks.sbm to the folder containing leo.py.
+-   The Open LeoDocs.leo command opens LeoDocs.leo.
+-   The Open LeoPlugins.leo command opens LeoPlugins.leo.
+-   The Open LeoSettings.leo command opens LeoSettings.leo.
+
+.. @-all
+.. @-leo

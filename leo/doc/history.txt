@@ -1,0 +1,516 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100805165051.7159: * @thin history.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20050901101608.5: ** @rst html\history.html
+##########################################
+Chapter 9: History of Leo
+##########################################
+
+This chapter discusses the history of Leo and tells the essential features of each version.
+Here are the most important dates in Leo's history:
+
+.. .. contents::
+.. @+node:ekr.20050901102147: *3* @rst-no-head links
+.. Relative links...
+.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+.. _`Chapter 8\: Customizing Leo`:              customizing.html
+.. _`Chapter 10\: Theory of Operation`:         theory.html
+.. _`Chapter 15\: Controlling Syntax Coloring`:     coloring.html
+.. _`Chapter 16\: Debugging with Leo`:              debuggers.html
+.. _`Chapter 17\: Using ZODB with Leo`:             zodb.html
+.. _`Chapter 18\: Leo and Emacs`:                   emacs.html
+.. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
+.. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
+.. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
+
+.. Absolute links..
+.. _OPML:   http://en.wikipedia.org/wiki/OPML
+.. @+node:ekr.20050902105852: *3* Beginnings
+Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured
+documentation." I had known of literate programming since the mid 1980's, but I
+never understood how to make it work for me. In November 1995 I started thinking
+about literate programming in earnest. Over the holidays I mused about making
+literate programs more understandable. In January 1996 the fog of confusion
+suddenly cleared. I summarized my thinking with the phrase, **web are outlines
+in disguise**. I suspected that outline views were the key to literate
+programming, but many details remained obscure.
+.. @+node:ekr.20050902105852.1: *3* Breakthrough
+March 5, 1996, is the most important date in Leo's history. While returning from
+a day of skiing, I discussed my thoughts with Rebecca. During that conversation
+I realized that I could use the MORE outliner as a prototype for a "literate
+outliner." I immediately started work on my first literate outline. It quickly
+became apparent that outlines work: all my old problems with literate
+programming vanished. The @others directive dates from this day. I realized
+that MORE's outlines could form the basis for Leo's screen design. Rather
+than opening body text within the outline, as MORE does, I decided to use a
+separate body pane.
+
+I hacked a translator called M2C which allowed me to use MORE to write
+real code. I would write code in MORE, copy the text to the clipboard in
+MORE format, then run M2C, which would tangle the outline into C code.
+This process was useful, if clumsy. I called the language used in the outline
+SWEB, for simplified CWEB. Much later Leo started supporting the noweb
+language.
+.. @+node:ekr.20050902105852.2: *3* Apple and YellowBox
+Throughout 1996 I created a version of Leo on the Macintosh in plain C and the
+native Mac Toolbox. This was a poor choice; I wasted a huge amount of time
+programming with these primitive tools. However, this effort convinced me that
+Leo was a great way to program.
+
+Late in 1997 I wrote a Print command to typeset an outline. Printing (Weaving)
+is supposedly a key feature of literate programming. Imagine my surprise when I
+realized that such a "beautiful" program listing was almost unintelligible; all
+the structure inherent in the outline was lost! I saw clearly that typesetting,
+no matter how well done, is no substitute for explicit structure.
+
+In 1998 I created a version of Leo using Apple's YellowBox environment. Alas,
+Apple broke its promises to Apple developers. I had to start again.
+.. @+node:ekr.20050902105852.3: *3* Borland C++
+I rewrote Leo for Borland C++ starting in May 1999. Borland C++ was much better
+than CodeWarrior C, but it was still C++. This version of Leo was the first
+version to use xml as the format of .leo files. The last version of Borland Leo,
+3.12 Final went out the door July 17, 2003.
+.. @+node:ekr.20050902105852.4: *3* Discovering Python
+I attended the Python conference in early 2001. In May of 2000 I began work on
+an wxWindows version of Leo. This did not work out, but something good did come
+from this effort. I spent a lot of time adding Python scripting to the wxWindows
+code and I became familiar with Python and its internals.
+
+I really started to 'get' Python in September 2001. I wrote the white papers at
+about this time. Python solved *all* my programming problems. I rewrote Leo in
+Python in about two months! For the first time in my career I was no longer
+anxious while programming; it simply isn't possible to create bad bugs in
+Python. The Python version of Leo was the first officially OpenSoftware version of
+Leo. The first functional version of Leo in Python was 0.05 alpha, December 17,
+2001.
+.. @+node:ekr.20050902105852.5: *3* SourceForge
+I registered the Leo project on SourceForge on March 10, 2003. It is certainly
+no accident that Leo started a new life shortly thereafter. Prior to SourceForge
+my interest in Leo had been waning.
+.. @+node:ekr.20050902105852.6: *3* Allowing sentinel lines in external files
+In the summer of 2001 I began to consider using sentinel lines in external files.
+Previously I had thought that outline structure must be 'protected' by remaining
+inside .leo files. Accepting the possibility that sentinels might be corrupted
+opened vast new design possibilities. In retrospect, problems with sentinel
+almost never happen, but that wasn't obvious at the time! The result of this
+design was known at first as Leo2. That terminology is extinct. I think of
+this version as the first version to support @file and automatic tangling
+and untangling.
+.. @+node:ekr.20050902105852.7: *3* Untangling @file is easy!
+The biggest surprise in Leo's history was the realization it is **much** easier
+to untangle files derived from @file. Indeed, @root creates all sorts of
+problems that just disappear when using @file. The new Python version of Leo
+became fully operational in early 2002. It was probably about this time that I chose
+noweb as Leo's preferred markup language. My decision not to support noweb's
+escape sequences made Leo's read code much more robust.
+.. @+node:ekr.20050902105852.8: *3* Leo 3.x: Continuous improvement
+I spent 2002 taking advantages of Python's tremendous power and safety.
+Many improvements were at last easy enough to do:
+
+- Nested @others directives appeared in 3.2.
+- Unicode support started in 3.3.
+- @first and @last appeared in 3.7
+- @asis and @nosent appeared in 3.8.
+- Incremental syntax coloring and incremental undo appeared in 3.9.
+- Paul Paterson created Leo's plugin architecture sometime during this period.
+  Plugins have been a driving force in Leo's development because people can
+  change how Leo works without altering Leo's core.
+- 3.12 fixed a huge memory leak.
+- 3.12 Final, the last 3.x version, appeared July 17, 2003.
+.. @+node:ekr.20050902105852.9: *3* Leo 4.0: Eliminating error 'recovery'
+In late 2002 and throughout 2003 I worked on an entirely new file format.
+4.0 final went out the door October 17, 2003 after almost a year intense
+design work trying to improve error recovery scheme used while reading
+external files. In the summer of 2003 I realized that orphan and @ignore'd
+nodes must be prohibited in @file trees. With this restriction, Leo
+could finally recreate @file trees in outlines using **only** the
+information in external files. This made the read code much more robust, and
+eliminated all the previous unworkable error recovery schemes. At last Leo
+was on a completely firm foundation.
+.. @+node:ekr.20050902105852.10: *3* Leo 4.1: The debut of gnx's
+Leo first used gnx's (global node indices) as a foolproof way of associating
+nodes in .leo files with nodes in external files. At the time, there was
+still intense discussions about protecting the logical consistency of
+outlines. @thin was later to solve all those problems, but nobody knew
+that then.
+.. @+node:ekr.20050902105852.11: *3* Leo 4.2: Complete at last
+Leo 4.2 Final went out the door September 20, 2004.
+This surely is one of the most significant dates in Leo's history:
+
+-   This marked the end worries about consistency of outlines and external files:
+    Leo recreates all essential information from thin external files,
+    so *there is nothing left in the .leo file to get out of synch*.
+
+- Thin external files use gnx's extensively. This simplifies the file format and
+    makes thin external files more cvs friendly.
+
+-   A sensational scripting plugin showed how to create script buttons.
+    This has lead to improvements in the Execute Script command and
+    other significant improvements in Unit testing.
+
+-   As if this were not enough, 4.2 marked the 'great divide' in Leo's internal
+    data structures. Before 4.2, Leo every node in the outline had its own
+    vnode. This was a big performance problem: clone operations had to
+    traverse the entire outline! 4.2 represents clones by sharing subtrees.
+    Changing Leo's fundamental data structures while retaining compatibility
+    with old scripts was engineering work of which the entire Leo community can
+    be proud. `Chapter 7: Scripting Leo with Python`_ tells how the position
+    class makes this happen.
+    This was a cooperative effort. Kent Tenney and Bernhard Mulder made
+    absolutely crucial contributions. Kent pointed out that it is a tnode,
+    not a vnode that must form the root of the shared data. Bernhard showed
+    that iterators are the way to avoid creating huge numbers of positions.
+
+Leo 4.2 marked so many significant changes. I often find it hard to remember
+what life with Leo was like before it.
+.. @+node:ekr.20050902105852.12: *3* Leo 4.3 Settings
+Leo 4.3 corrected many problems with leoConfig.txt. Instead, Leo gets
+settings from one or more leoSettings.leo files. This version also
+introduced a way to changed settings using a settings dialog.  However,
+the settings dialog proved not to be useful (worse, it inhibited design) and
+the settings dialog was retired in Leo 4.4.
+.. @+node:ekr.20060629083935: *3* Leo 4.4 The minibuffer and key bindings
+Leo 4.4 was a year-long effort to incorporate an Emacs-style minibuffer and
+related commands into Leo. Thinking in terms of minibuffer commands frees my
+thinking. Leo 4.4 also featured many improvements in how keys are bound to
+commands, including per-pane bindings and user-defined key-binding modes.
+
+Development on long-delayed projects accelerated after 4.4 final went out the door.
+Recent projects include:
+
+- Controlling syntax coloring with jEdit's xml language-description files.
+  See Chapter 15.
+- Support for debugging scripts using external debuggers.
+  See Chapter 16.
+- Modifying Leo's vnodes and tnodes so that Leo's data can be used with ZODB.
+  See Chapter 17.
+- Using pymacs to write Leo scripts within Emacs.
+  See Chapter 18.
+- Using the leoBridge module to embed Leo support in other programs.
+  See Chapter 19.
+- Using Leo to run unit tests.
+  See Chapter 20.
+.. @+node:ekr.20080315115427.568: *3* Leo 4.4.4 Improvements
+Leo 4.4.1 through 4.4.8 contained many incremental improvements,
+as documented in Chapters 15 through 21 of this Users Guide.
+.. @+node:ekr.20080315115427.569: *4* Leo 4.4.1
+- Supported multiple editors in body pane.
+- Added the jEdit_colorizer plugin. See `Chapter 15: Controlling Syntax Coloring`_.
+- Added the slideshow plugin.
+.. @+node:ekr.20080315115427.570: *4* Leo 4.4.2
+- Added support for myLeoSettings.leo
+- The 'Big Reorg' made Leo's vnodes and tnode classes independent of the rest of Leo.
+- Added support for ZODB. See `Chapter 17: Using ZODB with Leo`_.
+- Added leoPymacs module. See `Chapter 18: Leo and Emacs`_.
+- Added the leoOPML, leo_to_rtf and leo_to_html plugins.
+- Added outline navigation: typing a letter selects the next outline node that starts with that letter.
+- Added autocontract during finds.
+- Added new commands and options to make Leo usable without a mouse.
+- Added an option sax parser for reading .leo files.
+.. @+node:ekr.20080315115427.571: *4* Leo 4.4.3
+- Added support for chapters in Leo's core.
+- Added support for zipped .leo files.
+- Added the leoBridge module. See `Chapter 19: Embedding Leo with the leoBridge Module`_.
+- Removed all gui-dependent code from Leo's core.
+- Added better support for the winpdb debugger.
+- Added support for @enabled-plugins and @open-with nodes in settings files.
+.. @+node:ekr.20080315115427.572: *4* Leo 4.4.4
+- The Great Graph Aha: Outlines don't have to *be* graphs to *represent* graphs.
+  This Aha meant that there is no need for a separate 'graph world'.  
+- Added support for @menus and @buttons trees in settings files.
+- Added perfect import of foreign files with @auto nodes.
+- Added new commands for resolving cvs conflicts.
+- Replaced the jEdit_colorizer plugin with the threading_colorizer plugin.
+- Made Leo compatible with jython.
+- Added better support for icons in headlines.
+.. @+node:ekr.20080315115427.573: *4* Leo 4.4.5
+- Leo now recognizes directives in headlines.
+- Added support for @rst-preformat nodes to the rst3 plugin.
+.. @+node:ekr.20080315115427.574: *4* Leo 4.4.7 and Leo 4.4.8
+- Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
+- Added support for translating messages to Leo's log.
+.. @+node:ekr.20050902100834: *3* @rst-ignore-tree Details
+This following information may be of interest to historians. It is not of
+general enough interest to put in Leo's Users Guide on the web. I am including
+this mass of detail here to indicate the complexities that were involved in
+designing Leo's simple-looking mechanisms.
+.. @+node:EKR.20040524104904.247: *4* Versions
+In May of 1999 I began work on the Borland version of Leo for Windows.  The Borland Delphi classes were a pleasure to use and free of bugs.  I redesigned Leo's file format for the Windows version of Leo;  the Yellow Box file format is a binary format that requires the Yellow Box runtime.  Fortunately, I choose to use XML for Leo's file format. I have Marc-Antoine Parent to thank for this decision; he urged me to use XML and patiently explained how to use XML properly.  However, there are two significant problems with the Borland version of Leo.  First, it works only on Windows.  Second, it can never be Open software, because it uses Borland's Delphi classes and a commercial syntax coloring component.
+
+In October of 2001 I began work on the leo.py, an Open Software version of leo.py, a version of Leo written in Python and Tk.  At last I have found the proper platform for Leo.  leo.py naturally supports scripting in Python.  The combination of Python and Tk is incredibly powerful, very easy to use, and truly cross platform.  I rewrote Leo in Python in about two months!  For the first time in my career I no longer am anxious while programming; it simply isn't possible to create bad bugs in Python.
+.. @+node:EKR.20040524104904.248: *4* Designing @file trees
+The following sections give a pseudo-chronological list of the major Aha's
+involved in creating Leo2. These Aha's form the real design and theory of
+operation of Leo. See the "Diary", "Notes" and "Letters to Speed Ream" sections
+in LeoDocs.leo for a more accurate and less tidy history of Leo2.
+
+I am writing these notes for several reasons. First, the initial design and
+coding of Leo2, spanning a period of about 8 weeks, was some of the most
+creative and rewarding work I have ever done. The result is elegant and simple.
+I'm proud of it. Second, much of the design work is not reflected in the code,
+because improved design often eliminated code entirely. The final code is so
+elegant that it obscures the hard work that created it. Third, you must
+understand this design in order to understand the implementation of @file trees
+and their external files. Someday someone else may take charge of Leo. That
+person should know what really makes Leo2 work.
+.. @+node:EKR.20040524104904.249: *5* Deciding to do Leo2
+In the summer of 2001 I began work on a project that for a long time I had
+considered impossible. I had long considered that "private" file formats such as
+.leo files were the only way to represent an outline properly and safely. I'm
+not sure exactly what changed my mind, but I finally was willing to consider
+that information embedded in external files might be useful. This meant accepting
+the possibility that sentinel lines might be corrupted. This was a crucial first
+step. If we can trust the user not to corrupt sentinel lines than we can embed
+almost any kind of information into a external file.
+
+There were several motivations for this work. I wanted to eliminate the need for
+explicit Tangle and Untangle commands. I thought of this as "Untangle on
+Read/Tangle on Write." If tangling and untangling could be made automatic it
+would save the user a lot of work. I also wanted to make external files the
+primary sources files. .leo files might be made much smaller external files
+contained the primary source information. This hope turned out to be false.
+
+The result of this design work was something I originally called Leo2, though I
+now usually prefer to talk about @file trees. Initially most design issues were
+unresolved or unknown. I resolved to attempt a robust error-recovery scheme, not
+knowing in advance what that might involve. I also wanted to solve what I
+thought of as the "cross-file clone" problem: clones that point from a .leo
+outline into a external file. With Leo1 cross-file clones do not exist;
+everything is in the same .leo file. It was clear that Leo2 would have to change
+some aspects of clones, but all details were fuzzy.
+.. @+node:EKR.20040524104904.250: *5* A prototype
+The next step was also crucial. I started to use Leo1 as a prototype to design
+what the new body pane would look like to the user. In retrospect, using Leo1 as
+a prototype for Leo2 was just as inspired as using MORE as a prototype for Leo1.
+Both prototypes marked the true beginning of their respective projects. The Leo2
+prototype was a mockup in Python of the code for reading and writing derived
+files. The file LeoDocs.leo contain these first prototype nodes.
+
+Writing the prototype got me thinking about improving noweb. With my experience
+with Leo1, I was able to create a new markup language that took advantage of
+outline structure. I called the new language "simplified noweb", though that
+terminology is obsolete. I created @file nodes to distinguish between the old
+and new ways of creating external files. In Leo1, the @code directive is simply
+an abbreviation for a section definition line. Simplified noweb used @c as an
+abbreviation for @code. More importantly, simplified noweb used @c to separate
+doc parts from code parts without necessarily specifying a section name. It
+quickly became apparent that most nodes could be unnamed. All I needed was the
+@others directive to specify the location for all such unnamed nodes.
+
+From the start, simplified noweb was a joy to use. Indeed, the @others directive
+could replace all section definition lines. Furthermore, I could make @doc
+directive optional if the body pane started in "code mode". But this meant that
+plain body text could become a "literate" program! This was an amazing
+discovery. These Aha's got me excited about Leo2. This was important, as it
+motivated me to do a lot of difficult design work.
+.. @+node:EKR.20040524104904.251: *5* User interaction
+In spite of this excitement, I was uneasy. After much "daydreaming" I realized
+that I was afraid that reading and writing external files would be interrupted by
+a long series of alerts. I saw that designing the "user interaction" during
+reading and writing would be very important. The next Aha was that I could
+replace a long series of alerts with messages to the log window, followed by a
+single "summary" alert. Much later I saw how to eliminate alerts entirely.
+
+At this time I thought there would be two kinds of "errors" while reading
+external files. Warnings would alert the user that something non-serious had
+happened. True errors would alert the user that data might have been lost.
+Indeed, if Leo2 saves orphan and ignored nodes in a .leo file under an @file
+node, then read errors could endanger such nodes. Much later I saw that a robust
+error recovery scheme demands that @file nodes not contain orphan and @ignored
+nodes. (More on this subject later.) But if orphan and @ignored nodes are moved
+out of @file trees, there are no read errors that can cause data loss! So the
+distinction between warnings and errors finally went away.
+.. @+node:EKR.20040524104904.252: *5* The write code
+I next turned my attention to writing @file nodes. A huge Aha: I realized that
+sentinel lines must contain both a leading and a trailing newline. The general
+principle is this: the write code must contain absolutely no "conditional"
+logic, because otherwise the read code could not figure out whether the
+condition should be true or false. So external files contain blank lines between
+sentinel lines. These "extra" newlines are very useful, because the read
+(untangle) code can now easily determine exactly where every blank, tab and
+newline of the external file came from. It would be hard to overstate how
+important this simplifying principle was in practice.
+
+Much later, with urging from a customer, I realized that the write code could
+safely remove "extra" newlines between sentinels with a caching scheme in the
+low level atFile::os() routine. This scheme does not alter the body of the write
+code in any way: in effect, sentinels still contain leading and trailing
+"logical" newlines. The read code had to be modified to handle "missing" leading
+newlines, but this can always be done assuming that sentinels still contain
+logical leading and trailing newlines!
+
+At about this time I designed a clever way of having the write code tell the
+read code which newlines were inserted in doc parts. (The whole point of doc
+parts is to have the write code format long comments by splitting long lines.)
+To quote from my diary:
+
+"We can use the following convention to determine where putDocPart has inserted
+line breaks: A line in a doc part is followed by an inserted newline if and only
+if the newline is preceded by whitespace. This is a really elegant convention,
+and is essentially invisible to the user. Tangle outputs words until the line
+would become too long, and then it inserts a newline. To preserve all
+whitespace, tangle always includes the whitespace that terminates a word on the
+same line as the word itself. Therefore, split lines always end in whitespace.
+To make this convention work, tangle only has to delete the trailing whitespace
+of all lines that are followed by a 'real' newline."
+.. @+node:EKR.20040524104904.253: *5* The read code
+After the write code was working I turned my attention to the read (untangle)
+code. Leo's Untangle command is the most complex and difficult code I have ever
+written. Imagine my surprise when I realized that the Leo2 read code is
+essentially trivial! Indeed, the Leo2 untangle code is like an assembler. The
+read code scans lines of a external files looking for "opcodes", that is,
+sentinel lines, and executes some simple code for each separate opcode. The
+heart of this code is the scanText routine in atFile.cpp.
+
+The read code was written and debugged in less than two days! It is the most
+elegant code I have ever written. While perfecting the read code I realized that
+sentinel lines should show the complete nesting structure found in the outline,
+even if this information seems redundant. For example, I was tempted to use a
+single sentinel to represent an @other directive, but finally abandoned this
+plan in favor of the @+other and @-other sentinels.
+
+This redundancy greatly simplified the read code and made the structure of
+external files absolutely clear. Moreover, it turned out that we need, in
+general, all the information created by the present sentinel lines. In short,
+sentinels are as simple as they can be, and no simpler.
+
+The atFile::createNthChild method is a very important: it ensures that nodes
+will be correctly inserted into the outline. createNthChild must be bullet-proof
+if the Read code is to be robust. Note that the write code outputs @node
+sentinels, that is, section definitions, in the order in which sections are
+referenced in the outline, not the order in which sections appear in the
+outline. So createNthChild must insert the n'th node of parent p properly even
+if p contains fewer than n-1 children! The write code ensures that section
+references are properly nested: @node sentinels are enclosed in @node sentinels
+for all their ancestors in the @file tree. createNthChild creates dummy siblings
+as needed, then replaces the dummy siblings later when their actual definitions,
+that is, @node sentinels, are encountered.
+
+At this point the fundamental read/write code was complete. I found three minor
+bugs in the code over the next week or so, but it was clear that the read/write
+code formed a rock-solid base from which to continue design and implementation.
+This was an entirely unexpected surprise.
+.. @+node:EKR.20040524104904.254: *5* The load/save code
+At this point I could read and write external files "by hand", using temporary
+Read and Write commands. The next step was to integrate the reading and writing
+of external files with the loading and saving of .leo files. From time to time I
+made minor changes to the drivers for the read/write code to accommodate the
+Load and Save code, but at no time did I significantly alter the read or write
+code itself.
+
+The user interaction of the Load and Save commands drove the design and
+implementation of the load/store code. The most important questions were: "what
+do we tell the user?", and "what does the user do with the information?" It
+turns out that the user can't make any complex decision during error recovery
+because the user doesn't have nearly enough information to make an informed
+choice. In turn, this means that certain kinds of error recovery schemes are out
+of the question...
+.. @+node:EKR.20040524104904.255: *5* Attributes, mirroring and dummy nodes
+I now turned my attention to "attributes" of nodes. Most attributes, like user
+marks, are non-essential. However, clone information is essential; we must never
+lose clone links. At this time I had a preliminary design for cross-file clones
+that involved a two part "pointer" consisting of a full path name and an
+immutable clone index within the external file. Eventually such pointers
+completely disappeared, but the immutable clone indices remain.
+
+My first thought was that it would be good to store all attributes in @node
+sentinels in the external file, but experience showed that would be irritating.
+Indeed, one wants Leo2 to rewrite external files only if something essential has
+changed. For example, one doesn't want to rewrite the external file just because
+a different node as been selected.
+
+At this point I had another Aha: we can use the .leo file to store all
+non-essential attributes. For example, this means that the .leo file, not the
+external files, will change if we select a new node. In effect, the .leo file
+mirrors the external file. The only reason to store nodes in the .leo file under
+an @file node is to carry these attributes, so Leo2 wrote dummy nodes that do
+not reference body text. Much later I saw that dummy nodes were dangerous and
+that .leo files should contain all information found in external files.
+.. @+node:EKR.20040524104904.256: *5* Clones
+The concept of mirroring created a huge breakthrough with cross-file clones:
+Here is an excerpt of an email i sent to my brother Speed:
+
+"I realized this morning that since a .leo file contains dummy vnodes for all
+nodes in a external file, those dummy nodes can carry clone info! I changed one
+line to make sure that the write code always writes clone info in dummy vnodes
+and voila! Cross-file clones worked!"
+
+All of Leo1's clone code could be used completely unchanged. Everything "just
+works".
+.. @+node:EKR.20040524104904.257: *5* Error recovery, at last
+At first I thought we could make sure that the .leo file always correctly
+mirrors all external file, but disastrous experience showed that is a completely
+false hope. Indeed, backup .leo files will almost never mirror external file
+correctly. So it became urgent to find a completely fool-proof error recovery
+scheme.
+
+I had known for quite a while that error recovery should work "as if" the
+mirroring nodes were deleted, then recreated afresh. Several failed attempts at
+an error recovery scheme convinced me that error recovery would actually have to
+delete all dummy nodes and then do a complete reread. This is what Leo2 does.
+
+But erasing dummy nodes would destroy any orphan and ignored nodes--by
+definition such nodes appear nowhere in the external file. Therefore, I had to
+enforce the rule that @file nodes should contain no such nodes. Here is an email
+I wrote to my brother, Speed Ream discussing what turned out to be the
+penultimate error recovery scheme:
+
+"The error recovery saga continues. After much pondering and some trial coding I
+have changed my mind about orphans and @ignored nodes. They simply should never
+appear as descendants of @file nodes. Fortunately, this simplifies all aspects
+of Leo2. Leo2 will issue a warning (not an error) if an orphan or @ignored node
+appears as the descendant of an @file node when a .leo file is being saved. If
+any warnings occur while writing the external file, Leo2 will write the
+"offending" @file tree to the .leo file instead of the external file. This has
+several advantages:
+
+1. The user gets warned about orphan nodes. These are useful warnings! Orphan
+nodes arise from missing @others directives or missing section references.
+
+2. The user doesn't have to change anything immediately in order to save an
+outline. This is very important. Besides warnings about orphans, Leo2 will also
+warn about undefined or unreferenced sections. User's shouldn't have to fix
+these warnings to do a Save!
+
+3. No errors or alerts will occur during Reading or Writing, so the user's
+anxiety level goes way down. At worst, some informational message will be sent
+to the log. The user will never have to make important decisions during Loads or
+Saves. [At last the dubious distinction between errors and warnings disappears.]
+
+4. Error recovery can be bullet-proof. Simple code will guarantee that after any
+read operation the structure of an @file node will match the structure of the
+external file. Also, sentinels in external files will now account for all children
+of an @file node. There are no more "missing nodes" that must be filled in using
+the .leo file. Finally, error recovery will never change the @file tree in any
+way: no more "recovered nodes" nodes.
+
+5. The present read code can be used almost unchanged. The only addition is the
+posting of a warning if the structure of the .leo file does not match the
+structure of the external file. We need a warning because non-essential attribute
+of nodes (like user marks) may be altered."
+
+This ends the original history of Leo2. In fact, it took quite a while before
+Leo recovered properly from all errors. I finally saw that .leo files should
+duplicate all information in external files. This allows a .leo file to be used a
+single backup file and allows maximal error recovery in all situations. It took
+several months to stamp out several subtle bugs involving clones that caused
+spurious read errors. Such errors undermine confidence in Leo and can cause
+disastrous reversions. See my diary entries for January 2002 in leo.py for
+details.
+.. @-all
+.. @-leo

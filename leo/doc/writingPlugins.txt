@@ -1,0 +1,300 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100805165051.7163: * @thin writingPlugins.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20060612103240: ** @rst html\writingPlugins.html
+####################################
+Chapter 13: Writing Plugins
+####################################
+
+.. .. contents::
+.. @+node:ekr.20060612103824: *3* @rst-no-head links
+.. External links...
+.. _docutils:             http://docutils.sourceforge.net
+.. _LaTeX:                http://www.latex-project.org/
+.. _reStructuredText:     http://docutils.sourceforge.net/rst.html
+.. _SilverCity:           http://silvercity.sourceforge.net
+
+.. Relative links...
+.. _`Event handlers`:                           scripting.html#event-handlers
+.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+.. _`Chapter 8\: Customizing Leo`:              customizing.html
+.. @+node:ekr.20050903075144: *3* Overview
+A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
+modify how Leo works. With plugins you can give Leo new commands, modify how
+existing commands work, or change any other aspect of Leo's look and feel.
+leoPlugins.leo contains all of Leo's official plugins. Studying this file is
+a good way to learn how to write plugins.
+
+You **enable** plugins using @enabled-plugins nodes in leoSettings.leo or
+myLeoSettings.leo. For more details, see the @enabled-plugins node in
+leoSettings.leo. Leo imports all enabled plugins at startup time. Plugins become
+**active** if importing the plugin was successful.
+
+Writing plugins is quite similar to writing any other Leo script.  See
+`Chapter 7\: Scripting Leo with Python`_. In particular:
+
+1. Plugins can use any of Leo's source code simply by importing any module
+   defined in leoPy.leo.
+
+2. Plugins can register event handlers just like any other Leo script. For full
+   details, see the section called `event handlers`_ in Leo's scripting chapter.
+
+The rest of this chapters discusses topics related specifically to plugins.
+.. @+node:EKR.20040524104904.240: *3* Support for unit testing
+The plugins test suite creates a new convention: if a plugin has a function at
+the outer (module) level called unitTest, Leo will call that function when
+doing unit testing for plugins. So it would be good if writers of plugins would
+create such a unitTest function. To indicate a failure the unitTest just
+throws an exception. Leo's plugins test suite takes care of the rest.
+.. @+node:ekr.20060621075135: *3* Turning script buttons into plugins
+This section provides step-by-step instructions for turning a script button into a plugin.
+The plugin will define a minibuffer command that does the same thing as pressing the button.
+
+We shall start with a script button whose script is::
+
+    g.es_print('c: %s' % (c.fileName()),color='red')
+    g.es_print('p: %s' % (p.h),color='red')
+
+Not very exciting, but it uses the predefined c and p constants.
+Our plugin will create a minibuffer command called print-cp.
+
+Here are the step-by-step instructions:
+
+1. Open leoPlugins.leo and use the Copy Node command to copy the tree at:
+
+Plugins--> Templates: these show recommended ways of defining plugins.-->Template for Tk plugin with per-commander controller class
+
+2. Paste the tree somewhere else and rename it to @thin print_cp.py.
+   I copied the tree to::
+
+    Plugins-->Example code-->@thin print_cp.py
+
+3. Update the docstring, the __version__ constant and the << imports >> section.
+   Note that unlike when using script buttons, you must have the following imports::
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
+
+4. Because this plugin doesn't require any gui interface, we simplify the init function::
+
+    def init ():
+        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        return True
+
+   The init function registers the onCreate hook and
+   returns True to indicate that it loaded properly.
+
+5. Leave the onCreate function unchanged.
+   It creates a per-commander instance of the pluginController class.
+   This class exists mainly to bind self.c properly to a commander.
+
+6. Change the constructor (__init__ method) of the pluginController class to this::
+
+    def __init__ (self,c):
+        self.c = c
+        c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
+        script = "c.k.simulateCommand('print-cp')"
+        g.app.gui.makeScriptButton(c,script=script,buttonText='Print c & p',bg='red')
+
+   This registers the print_cp *method* of the pluginController class as the print-cp minibuffer command,
+   and creates a script button with the following script::
+
+       c.k.simulateCommand('print-cp')
+
+7. Define the print_cp method as follows::
+
+    def print_cp (self,event=None):
+        c = self.c ; p = c.p
+        g.es_print('c: %s' % (c.fileName()),color='red')
+        g.es_print('p: %s' % (p.h),color='red')
+
+   The print_cp method must have the event argument as shown because it implements a minibuffer command.
+   The print_cp method gets the proper commander from the c ivar (instance variable) and computes
+   the current position p as shown.
+
+8. Enable the print_cp plugin by putting the following in an @enabled-plugins node::
+
+    print_cp.py
+
+9. Test the plugin by restarting Leo (I just start test.leo).
+   You can test the plugin by pressing the 'Print c&p' button
+   or by typing <Alt-x> print-cp <Return>.
+
+That's all.  You can find the completed version of the print_cp plugin in leoPlugins.leo,
+or leoPluginsRef.leo if you are using cvs.
+.. @+node:EKR.20040524104904.224: *3* Important security warnings
+Naively using plugins can expose you and your .leo files to malicious attacks.
+The fundamental principles are::
+
+    Scripts and plugins must never blindly execute code from untrusted sources.
+
+and::
+
+    .leo files obtained from other people may potentially contain hostile code.
+
+Stephen Schaefer summarizes the danger this way::
+
+    I foresee a future in which the majority of leo projects come from
+    marginally trusted sources...a world of leo documents sent hither and yon -
+    resumes, project proposals, textbooks, magazines, contracts - and as a race
+    of Pandora's, we cannot resist wanting to see "What's in the box?" And are
+    we going to fire up a text editor to make a detailed examination of the
+    ASCII XML? Never! We're going to double click on the cute leo file icon, and
+    leo will fire up in all its raging glory. Just like Word (and its macros) or
+    Excel (and its macros).
+
+In other words::
+
+    When we share "our" .leo files we can NOT assume that
+    we know what is in our "own" documents!
+
+Not all environments are untrustworthy. Code in a commercial cvs repository is
+probably trustworthy: employees might be terminated for posting malicious code.
+Still, the potential for abuse exists anywhere.
+
+In Python it is very easy to write a script that will blindly execute other scripts::
+
+    # Warning: extremely dangerous code
+
+    # Execute the body text of all nodes that start with `@script`.
+    def onLoadFile():
+        for p in c.all_positions():
+            h = p.h.lower()
+            if g.match_word(h,0,"@script"):
+                s = p.b
+                if s and len(s) > 0:
+                    try: # SECURITY BREACH: s may be malicious!
+                        exec(s + '\n')
+                    except:
+                        es_exception()
+
+Executing this kind of code is typically an intolerable security risk.
+**Important**: rexec provides *no protection whatever*.
+Leo is a repository of source code, so any text operation is potentially malicious.
+For example, consider the following script, which is valid in rexec mode::
+
+    badNode = c.p
+    for p in c.all_positions():
+        << change `rexec` to `exec` in p's body >>
+    << delete badNode >>
+    << clear the undo stack >>
+
+This script will introduce a security hole the .leo file without doing anything
+prohibited by rexec, and without leaving any traces of the perpetrating script
+behind. The damage will become permanent *outside* this script when the user
+saves the .leo file.
+.. @+node:ekr.20071021101506: *3* @rst-ignore menu convenience routines
+Hurray--these are no longer needed.
+
+The following methods exist for the convenience of plugins.
+
+**g.enableIdleTimeHook(idleTimeDelay=100)**
+
+Enables the "idle" hook. Afterwards, Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
+Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
+
+**g.disableIdleTimeHook()**
+
+Disables the "idle" hook.
+
+
+**c.frame.menu.createMenuItemsFromTable (self,menuName,table,openWith=0)**
+
+This method adds items to the menu whose name is menuName.
+The table argument describes the entries to be created.
+This table is a sequence of items of the form (name,None,command):
+
+- name is the command name.
+- None was a shortcut in previous versions of Leo, but shortcuts for user-defined commands
+  should now be defined in @shortcuts nodes.
+- command is the routine to execute when the menu item is selected.
+- An entry of the form ("-",None,None) creates a separator line between menu items.
+
+
+For example::
+
+    table =
+        ("Toggle Active Pane",None,self.OnToggleActivePane),
+        ("-",None,None),
+        ("Toggle Split Direction",None,self.OnToggleSplitDirection))
+    c.frame.menu.createMenuItemsFromTable("Window",table)
+
+If the openWith keyword argument is 1 the items are added to a submenu of the Open With menu.
+However, it will be more convenient to use the createOpenWithMenuFromTable method to create the Open With menu.
+
+**c.frame.menu.createNewMenu (self,menuName,parentName="top")**
+
+This method creates a new menu:
+
+- menuName is the name of the menu to be created.
+- parentName is the name of the parent menu, or "top" if the menu is to created in the menu bar.
+
+This method returns the menu object that was created, or None if there was a problem.
+Your code need not remember the value returned by this method.  Instead, your code will refer to menus by name.
+
+**c.frame.menu.createOpenWithMenuFromTable (self,table)**
+
+This method adds items to submenu of the Open With menu item in the File menu.
+The table argument describes the entries to be created.
+This table is a sequence of items of the form (name,shortcut,data):
+
+- name is the command name
+- shortcut is the shortcut, or None to indicate no shortcut.
+- data is a tuple of the form (command,arg,ext)
+- command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+- arg is an argument to be passed to the given command.
+- ext is a file extension or None.
+
+When the user selects the Open With item corresponding to the table item Leo executes command(arg).
+If ext is not None, the temp file has the given extension.
+Otherwise, Leo computes an extension based on what @language directive is in effect.
+For example::
+
+    table = (
+        ("Idle",   "Alt+Shift+I",("os.system",idle_arg,".py")),
+        ("Word",   "Alt+Shift+W",("os.startfile",None,".doc")),
+        ("Wordpad","Alt+Shift+T",("os.startfile",None,".txt")))
+
+    top().frame.createOpenWithMenuFromTable(table)
+
+**c.frame.menu.deleteMenu (self,menuName)**
+
+Deletes the menu whose name is given, including all entries in the menu.
+
+**c.frame.menu.deleteMenuItem (self,itemName,menuName="top")**
+
+Deletes the item whose name is itemName from the menu whose name is menuName.
+To delete a menu in the menubar, specify menuName="top".
+
+**c.frame.menu.setRealMenuNamesFromTable(table)**
+
+Translates names of menus and menu items into another language.  For example::
+
+    table = (
+        ("Help", "&Aide"),
+        ("About Leo...", "Au &sujet de Leo..."),
+        ("Online Home Page", "&Page d'Accueil en ligne"),
+        ("Open Online Tutorial", "Ouvrir &Tutoriel en ligne"),
+        ("Open LeoDocs.leo", "Ouvrir Leo&Docs.leo"),
+        ("Open LeoConfig.leo", "Ouvrir Leo&Config.leo"),
+        ("Apply Settings", "Appliquer les &Réglages"),
+    )
+
+    c.frame.menu.setRealMenuNamesFromTable(table)
+.. @-all
+.. @-leo

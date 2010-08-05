@@ -1,0 +1,1229 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100805165051.7157: * @thin scripting.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20040403171740: ** @rst html\scripting.html
+@ @rst-options
+.. A very cool option: doc parts will be rendered properly,
+.. but will be ignored by the Execute script command.
+..
+show_doc_parts_as_paragraphs = True
+@c
+
+####################################
+Chapter 7: Scripting Leo with Python
+####################################
+
+This chapter describes how to write Python scripts that control Leo and access
+the data in Leo outlines. To write such scripts, you must understand the basics
+of Leo's internal data structures. As we shall see, these basics are quite simple.
+
+Although this chapter discussses everything you will need to write most scripts,
+please keep in mind that your scripts have complete access to all of Leo's
+source code, that is, all the code in LeoPy.leo.
+
+**Note**: If you are reading this documentation in leoDocs.leo you can execute
+all code examples in this chapter by running the Execute Script command
+(Ctrl-B). You may have to select the actual code to execute if a node contains
+comments interspersed with the code.
+
+.. .. contents::
+.. @+node:ekr.20091104200540.6566: *3* @rst-ignore
+.. @+node:ekr.20091107181442.26607: *4* old, too complicated intro
+Leo's **vnode** classe represents all the data in a particular node.
+In the simplied data model, a single vnode represents all clones on the screen.
+When Leo clones a vnode v, alters data structures in v and v's parent vnode,
+but Leo does *not* create another vnode to represent the clone.
+Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
+
+Leo's **position** class represents a position (spot) in Leo's outline pane.
+More exactly, a position represents the state of a tree traversal of Leo's data.
+Vnode's may appear several times in a traversal, which is another way of saying
+that vnodes may appear several times in Leo's outline pane.
+
+Leo's **generators** generate lists of positions.
+For example, c.all_positions() generates a list of all positions in the outline.
+As another example, given a position p,
+p.self_and_subtree() generates a list of all descendants of the vnode at position p.
+
+Leo' **position methods** provide other ways ways of finding positions.
+Given a position p, p.parent() is the p's parent position,
+p.firstChild() is the position of p's first child (if it exists),
+and p.next() is the position of p's next sibling (again, if it exists).
+Many other position methods exist, as discussed below.
+
+Leo's execute-script command predefines several symbols.  This makes it easy to
+access the data in Leo outlines and the Leo's own source code. g is predefined
+to the leoGlobals module. Scripts commonly use utility functions such as g.es,
+g.trace, etc. The g.app object represents Leo itself. The instance vars (ivars)
+of g.app are Leo's global variables and constants. The execute-script command
+predefines c to be the commander (see below) of the Leo outline in which the
+script is contained. Whenever possible, scripts should use the high-level
+methods of the commander to insert, delete or clone nodes. Finally, the
+execute-script commands predefines p to be the presently selected position.
+.. @+node:ekr.20091104200540.6567: *4* details for later
+
+    **Note**:
+    For compatibility with old (pre-4.2) scripts, c.currentVnode and
+    c.rootVnode methods return *positions* not vnodes.
+
+**Important**: With the exception of the p.v ivar, scripts should be careful to
+use only the methods of the position and vnode classes rather than the internal
+ivars of these classes. Doing so will ensure that the script is as simple as
+possible and that the script will continue to work regardless of future changes
+to the internals of these classes.
+
+ **Important**:
+    Positions can become *invalid* when the structure of the outline changes.
+    As discussed below, plugins and scripts that store positions for use at a later time should make sure the
+    position p is still valid by calling c.positionExists(p)
+
+**baseTextWidget** and its subclasses
+    Leo's body pane, c.frame.body.bodyCtrl, is a subclass of baseTextWidget.
+    Gui plugins implement Leo's body pane by subclassing baseTextWidget.
+
+**frame**
+    Frames contain the internal data needed to manage a Leo window. Given a
+    commander c, c.frame is commander's frame. Given a frame f,
+    f.c is the frame's commander.
+
+**g.app.gui**
+    This object represents gui-specific subclasses of Leo's base gui code.
+.. @+node:ekr.20050812134441.1: *3* @rst-no-head Links
+.. Links used in this document.
+.. _front:          front.html
+.. _chapter6:       design.html
+.. _chapter8:       customizing.html
+.. _`rst3 plugin`:  rstplugin3.html
+.. @+node:ekr.20040403183229: *3* Leo's most import objects
+Leo scripts typically use the following objects:
+
+**g**
+    The predefined constant g is the leo.core.leoGlobals module. This
+    module contains several dozen utilty functions and classes.
+
+**g.app**
+    g.app is the **application object** representing the entire Leo application.
+    The instance variables (ivars) of g.app represent Leo's global variables.
+
+**commander**
+    The predefined constant c is the commander of the window containing the
+    script. Commanders represent all aspects of a single Leo window. For any
+    commander c, c.p is the presently selected position (see below), and
+    c.rootPosition() is the root (first) position in the outline. Given
+    c, Leo scripts can gain access to all data present while Leo is running,
+    including all of Leo's classes, functions and data.
+
+**position**
+    The predefined constant p is the position of the presently selected
+    node. Positions represent locations in Leo outlines. For any position p,
+    p.v is the vnode at that position.
+
+**vnode**
+    A vnode represents a single outline node. Because of clones, a vnode may
+    appear in several places on the screen. Vnodes hold most of the data in Leo
+    outlines. For any vnode v, v.h is the node's headline, and v.b
+    is the node's body text. As a convenience, for any position p, p.h
+    and p.b are synonyms for p.v.h and p.v.b.
+
+Later sections will discuss other classes, objects and utility functions, but
+most scripts will need only the objects and classes described above.
+.. @+node:ekr.20070120075236: *3* Predefined objects
+Leo's execute script command predefines the c, g and p constants
+when it runs any script inside Leo:
+
+- c is the commander of the outline containing the script.
+- g is Leo's leo.core.leoGlobals module.
+- p is the presently selected position, the same as c.p.
+
+Leo scripts can use c and g to gain access to all of Leo's source code.
+.. @+node:ekr.20040403173920.3: *3* g.es writes to the log pane
+The g.es method prints its arguments to the Log tab of the log pane::
+
+    g.es("Hello world")
+
+g.es converts non-string arguments using repr::
+
+    g.es(c)
+
+g.es prints multiple arguments separated by commas::
+
+    g.es("Hello","world")
+
+To create a tab named 'Test' or make it visible if it already exists::
+
+    c.frame.log.selectTab('Test')
+
+When first created, a tab contains a Tk.Text widget.
+To write to this widget, add the tabName argument to g.es::
+
+    g.es('Test',color='blue',tabName='Test')
+.. @+node:ekr.20040403175157.1: *3* app.windowList: the list of all open frames
+The windowlist attribute of the application instance contains the list of the
+frames of all open windows. The commands ivar of the frame gives the commander
+for that frame::
+
+    windows = g.app.windowList # get the list of all open frames.
+    g.es("windows...")
+    for f in windows:
+        c = f.c # c is f's commander
+        g.es(f)
+        g.es(f.shortFileName())
+        g.es(c)
+        g.es(c.rootPosition())
+
+There is also g.app.commandrs() method, that gives the list of all active
+commanders directly.
+.. @+node:ekr.20040403173920.6: *3* Getting and setting headline and body text
+Here is how to access the data of a Leo window::
+
+    g.es(p) # p is already defined.
+    p = c.p # get the current position.
+    g.es(p)
+    g.es("head:",p.h)
+    g.es("body:",p.b)
+
+Here is how to access data at position p.
+**Note**: these methods work whether or not p is the current position::
+
+    body = p.b # get the body text.
+    head = p.h # get the headline text.
+    p.b = body # set body text of p to body.
+    p.h = head # set headline text of p to head.
+
+**Note**: Sometimes you want to use text that *looks* like a section reference, but isn't.
+In such cases, you can use g.angleBrackets.  For example::
+
+    g.es(g.angleBrackets('abc'))
+.. @+node:ekr.20090223065025.3: *3* Getting and setting body text directly
+Let::
+
+    w = c.frame.body.bodyCtrl # Leo's body pane.
+
+Scripts can get or change the context of the body as follows::
+
+    w.appendText(s)                     # Append s to end of body text.
+    w.delete(i,j=None)                  # Delete characters from i to j.
+    w.deleteTextSelection()             # Delete the selected text, if any.
+    s = w.get(i,j=None)                 # Return the text from i to j.
+    s = w.getAllText                    # Return the entire body text.
+    i = w.getInsertPoint()              # Return the location of the cursor.
+    s = w.getSelectedText()             # Return the selected text, if any.
+    i,j = w.getSelectionRange (sort=True) # Return the range of selected text.
+    w.replace(i,j,s)                    # Replace the text from i to j by s.
+    w.setAllText(s)                     # Set the entire body text to s.
+    w.setBackgroundColor(color)         # Set the background color.
+    w.setSelectionRange(i,j,insert=None) # Select the text.
+    w.setForegroundColor(color)         # Set the foreground color.
+
+**Notes**:
+
+- These are only the most commonly-used methods.
+  For more information, consult Leo's source code.
+
+- i and j are zero-based indices into the the text.
+  When j is not specified, it defaults to i.
+  When the sort parameter is in effect, getSelectionRange
+  ensures i <= j.
+
+- color is a tk color name, even when using the qt gui plugin.
+.. @+node:ekr.20070122093626: *3* Ensuring that positions are valid
+Positions become invalid whenever the outline changes. Plugins and scripts that
+can make sure the position p is still valid by calling c.positionExists(p).
+
+The following code will find a position p2 having the same vnode as p::
+
+    if not c.positionExists(p):
+        for p2 in c.all_positions():
+            if p2.v == p.v: # found
+                c.selectPosition(p2)
+        else:
+            print('position no longer exists')
+.. @+node:ekr.20050902073404: *3* About copying positions
+Scripts must wary of saving positions because positions become invalid
+whenever the user moves, inserts or deletes nodes.  It is valid to store
+positions **only** when a script knows that the stored position will be used
+before the outline's stucture changes.
+
+To store a postion, the script must use the p.copy() method::
+
+    p2 = p.copy()   # Correct: p2 will not change when p changes later.
+
+The following **will not work**::
+
+    p2 = p  # Wrong.  p2 will change if p changes later.
+
+For example, the following creates a dictionary of saved positions::
+
+    d = {}
+    for p in c.all_positions():
+        d[p.v] = p.copy()
+
+.. @+node:ekr.20040403173920.9: *3* Traversing outlines
+Leo scripts can easily access any node of an outline with generators. Leo's
+generators return positions or nodes, one after another. Generators do not
+return lists, but you can make lists from generators easily. For example, the
+c.all_positions() generator returns every position in c's tree, one after
+another. You can use the generator directly, like this::
+
+    for p  in c.all_positions():
+        print(p.h)
+
+You can create actual lists from generators in several ways::
+
+    aList = list(c.all_positions()] # Use the list built-in function.
+    print(aList)
+
+or::
+
+    aList = [p.copy() for p in c.all_positions()] # Use list comprehension.
+    print(aList)
+
+
+Using the list is simpler, but list comprehensions can be more flexible.  For example::
+
+    aList = [p.copy().h for p in c.all_positions() if p.h.startswith('@thin')]
+    print(aList)
+.. @+node:ekr.20040403173920.10: *4* c.all_positions & c.all_unique_positions
+The c.all_positions generator returns a list of all positions in the outline.
+This script makes a list of all the nodes in an outline::
+
+    nodes = list(c.all_positions())
+    print("This outline contains %d nodes" % len(nodes))
+
+The c.all_unique_positions generator returns a list of all unique positions in the outline.
+For each vnode v in the outline, exactly one position p is returned such that p.v == v.
+
+This script prints the *distinct* vnodes of an outline::
+
+    for p in c.all_unique_positions():
+        sep = g.choose(p.hasChildren(),'+','-')
+        print('%s%s %s' % (' '*p.level(),sep,p.h))
+.. @+node:ekr.20040403173920.13: *4* p.children
+The p.children generator returns a list of all children of position p::
+
+    parent = p.parent()
+    print("children of %s" % parent.h)
+    for p in parent.children():
+        print(p.h)
+.. @+node:ekr.20040403173920.14: *4* p.parents & p.self_and_parents
+The p.parents generator returns a list of all parents of position p,
+excluding p::
+
+    current = p.copy()
+    print("exclusive of %s" % (current.h),color="purple")
+    for p in current.parents():
+        print(p.h)
+
+The p.self_and_parents generator returns a list of all parents of position
+p, including p::
+
+    current = p.copy()
+    print("inclusive parents of %s" % (current.h),color="purple")
+    for p in current.self_and_parents():
+        print(p.h)    
+.. @+node:ekr.20040403173920.15: *4* p.siblings & p.following_siblings
+The p.siblings generator returns a list of all siblings of position p::
+
+    current = c.p
+    print("all siblings of %s" % (current.h),color="purple")
+    for p in current.self_and_siblings():
+        print(p.h)
+
+The p.following_siblings generator returns a list of all siblings that
+follow position p::
+
+    current = c.p
+    print("following siblings of %s" % (current.h),color="purple")
+    for p in current.following_siblings():
+        print(p.h)
+.. @+node:ekr.20040403173920.16: *4* p.subtree & p.self_and_subtree
+The p.subtree generator returns a list of all positions in p's subtree, excluding p::
+
+    parent = p.parent()
+    print("exclusive subtree of %s" % (parent.h),color="purple")
+    for p in parent.subtree():
+        print(p.h)
+
+The p.self_and_subtree generator returns a list of all positions in p's subtree, including p::
+
+    parent = p.parent()
+    print("inclusive subtree of %s" % (parent.h),color="purple")
+    for p in parent.self_and_subtree():
+        print(p.h)
+.. @+node:ekr.20040903100514: *4* Testing whether a position is valid
+The tests::
+
+    if p:       # Right
+    if not p:   # Right
+
+are the **only** correct ways to test whether a position p is valid.
+In particular, the following **will not work**::
+
+    if p is None:       # Wrong
+    if p is not None:   # Wrong
+.. @+node:ekr.20040403173920.17: *3* Updating the screen
+You can use c.redraw_now to redraw the entire screen immediately::
+
+    c.redraw_now()
+
+However, it is usually better to *request* a redraw to be done later as follows::
+
+    c.redraw()
+
+Leo actually redraws the screen in c.outerUpdate, provided that a redraw has been requested.
+Leo will call c.outerUpdate at the end of each script, event handler and Leo command.
+.. @+node:ekr.20040403173920.18: *3* Invoking commands from scripts
+Leo dispatches commands using c.doCommand,
+which calls the "command1" and "command2" hook routines for the given label.
+c.doCommand catches all exceptions thrown by the command::
+
+    c.doCommand(c.markHeadline,label="markheadline")
+
+You can also call command handlers directly so that hooks will not be called::
+
+    c.markHeadline()
+
+You can invoke minibuffer commands by name.  For example::
+
+    c.executeMinibufferCommand('open-outline')
+
+c.keyHandler.funcReturn contains the value returned from the command.
+In many cases, as above, this value is simply 'break'.
+.. @+node:ekr.20050907094633: *3* Getting settings from @settings trees
+Any .leo file may contain an @settings tree, so settings may be different for each commander.
+Plugins and other scripts can get the value of settings as follows::
+
+    format_headlines = c.config.getBool('rst3_format_headlines')
+    print('format_headlines',format_headlines)
+
+The c.config class has the following getters.
+See the configSettings in leoCommands.py for details::
+
+    c.config.getBool(settingName,default=None)
+    c.config.getColor(settingName)
+    c.config.getDirectory(settingName)
+    c.config.getFloat(settingName)
+    c.config.getInt(settingName)
+    c.config.getLanguage(settingName)
+    c.config.getRatio(settingName)
+    c.config.getShortcut(settingName)
+    c.config.getString(settingName)
+
+These methods return None if no setting exists.
+The getBool 'default' argument to getBool gives the value to be returned if the setting does not exist.
+
+You can set any *existing* item in an @settings tree with c.config.set(p,setting,val).
+For example::
+
+    for val in (False,True):
+        c.config.set(p,'rst3_format_headlines',val)
+        format_headlines = c.config.getBool('rst3_format_headlines')
+        print('format_headlines',format_headlines)
+
+c.config.set does not change the @settings tree; it simply changes the values returned by the getters.
+.. @+node:ekr.20040403173920.19: *3* Getting and setting preferences
+Each commander maintains its own preferences.
+Your scripts can get the following ivars::
+
+    ivars = (
+        'output_doc_flag',
+        'page_width',
+        'page_width',
+        'tab_width',
+        'tangle_batch_flag',
+        'tangle_directory',
+        'target_language',
+        'untangle_batch_flag',
+        'use_header_flag',
+    )
+
+    print("Prefs ivars...\n",color="purple")
+    for ivar in ivars:
+        print(getattr(c,ivar))
+
+If your script sets c.tab_width your script may call f.setTabWidth to redraw the screen::
+
+    c.tab_width = -4    # Change this and see what happens.
+    c.frame.setTabWidth(c.tab_width)
+.. @+node:ekr.20040403173920.21: *3* Functions for finding and changing text from scripts
+The file leoFindScript.py contains functions for finding and changing text
+from within scripts.  See leoFindScript.py in LeoPy.leo for full details.
+
+The findall function returns a list of tuples (v,pos) describing matches in
+c's entire tree::
+
+    import leo.scripts.leoFindScript as leoFindScript
+
+    pattern="import leo.core.leoGlobals as g"
+    result = leoFindScript.findAll(c,pattern,bodyFlag=1)
+
+    print("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
+
+    for v,pos in result:
+        body = v.b
+        print('\n%-4d %s' % (pos,v.h))
+        print(g.get_line_after(body,pos))
+
+The reFindall function returns a list of tuples (v,mo,pos), where mo
+is a MatchObject. The reFlags argument are flags to re.search::
+
+    import leo.scripts.leoFindScript as leoFindScript
+
+    pattern="from .* import"
+    result = leoFindScript.reFindAll(c,pattern,bodyFlag=1,reFlags=None)
+
+    print("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
+    for v,mo,pos in result:
+        body = v.b
+        print('\n%-4d %s' % (pos,v.h))
+        print(g.get_line_after(body,pos))
+.. @+node:ekr.20040403173920.25: *3* Functions defined in leoGlobals.py
+leoGlobals.py contains many utility functions and constants.
+The following script prints all the names defined in leoGlobals.py::
+
+    print("Names defined in leoGlobals.py",color="purple")
+    names = g.__dict__.keys()
+    names.sort()
+    for name in names:
+        print(name)
+.. @+node:ekr.20050903074833: *3* Event handlers
+Plugins and other scripts can register event handlers (also known as hooks) with code such as::
+
+    leoPlugins.registerHandler("after-create-leo-frame",onCreate)
+    leoPlugins.registerHandler("idle", on_idle) 
+    leoPlugins.registerHandler(("start2","open2","command2"), create_open_with_menu) 
+
+As shown above, a plugin may register one or more event handlers with a single call to
+leoPlugins.registerHandler. Once a hook is registered, Leo will call the
+registered function' at the named **hook time**. For example::
+
+    leoPlugins.registerHandler("idle", on_idle)
+
+causes Leo to call on_idle at "idle" time.
+
+Event handlers must have the following signature::
+
+    def myHook (tag, keywords):
+        whatever
+
+-   tag is the name of the hook (a string).
+-   keywords is a Python dictionary containing additional information.
+    The following section describes the contents of the keywords dictionary in detail.
+
+**Important**: hooks should get the proper commander this way::
+
+    c = keywords.get('c')
+.. @+node:ekr.20050903074833.1: *4* @rst-no-head Summary of event handlers
+The following table tells about each event handler: its name, when it is called,
+and the additional arguments passed to the hook in the keywords dictionary.
+For some kind of hooks, Leo will skip its own normal processing if the hook
+returns anything *other* than None. The table indicates such hooks with 'yes' in
+the 'Stop?' column.
+
+**Important**: Ever since Leo 4.2, the v, old_v and new_v keys in
+the keyword dictionary contain *positions*, not vnodes. These keys are
+deprecated. The new_c key is also deprecated. Plugins should use the c key instead.
+
+============================= ======== =================================== =============================
+Event name (tag argument)     Stop?    When called                         Keys in keywords dict
+============================= ======== =================================== =============================
+'after-auto'                           after each @auto file loaded        c,p (note 14)
+'after-create-leo-frame'               after creating any frame            c
+'after-redraw-outline'                 end of tree.redraw                  c (note 6)
+'before-create-leo-frame'              before frame.finishCreate           c
+'bodyclick1'                   yes     before normal click in body         c,p,v,event
+'bodyclick2'                           after normal click in body          c,p,v,event
+'bodydclick1'                  yes     before double click in body         c,p,v,event
+'bodydclick2'                          after  double click in body         c,p,v,event
+'bodykey1'                     yes     before body keystrokes              c,p,v,ch,oldSel,undoType
+'bodykey2'                             after  body keystrokes              c,p,v,ch,oldSel,undoType
+'bodyrclick1'                  yes     before right click in body          c,p,v,event
+'bodyrclick2'                          after  right click in body          c,p,v,event
+'boxclick1'                    yes     before click in +- box              c,p,v,event
+'boxclick2'                            after  click in +- box              c,p,v,event
+'clear-all-marks'                      after clear-all-marks command       c,p,v
+'clear-mark'                           when mark is set                    c,p,v
+'close-frame'                          in app.closeLeoWindow               c
+'color-optional-markup'        yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
+'command1'                     yes     before each command                 c,p,v,label (note 2)
+'command2'                             after  each command                 c,p,v,label (note 2)
+'create-optional-menus'                (note 8)                            c (note 8)
+'create-popup-menu-items'              in tree.OnPopup                     c,p,v,event (new)
+'destroy-all-global-windows'           (note 12)                           None
+'draw-outline-box'             yes     when drawing +- box                 tree,p,v,x,y
+'draw-outline-icon'            yes     when drawing icon                   tree,p,v,x,y
+'draw-outline-node'            yes     when drawing node                   tree,p,v,x,y
+'draw-outline-text-box'        yes     when drawing headline               tree,p,v,x,y
+'drag1'                        yes     before start of drag                c,p,v,event
+'drag2'                                after  start of drag                c,p,v,event
+'dragging1'                    yes     before continuing to drag           c,p,v,event
+'dragging2'                            after  continuing to drag           c,p,v,event
+'enable-popup-menu-items'              in tree.OnPopup                     c,p,v,event
+'end1'                                 start of app.quit()                 None
+'enddrag1'                     yes     before end of drag                  c,p,v,event
+'enddrag2'                             after  end of drag                  c,p,v,event
+'headclick1'                   yes     before normal click in headline     c,p,v,event
+'headclick2'                           after  normal click in headline     c,p,v,event
+'headrclick1'                  yes     before right click in headline      c,p,v,event
+'headrclick2'                          after  right click in headline      c,p,v,event
+'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 13)
+'headkey2'                             after  headline keystrokes          c,p,v,ch (note 13)
+'hoist-changed'                        whenever the hoist stack changes    c
+'hypercclick1'                 yes     before control click in hyperlink   c,p,v,event
+'hypercclick2'                         after  control click in hyperlink   c,p,v,event
+'hyperenter1'                  yes     before entering hyperlink           c,p,v,event
+'hyperenter2'                          after  entering hyperlink           c,p,v,event
+'hyperleave1'                  yes     before leaving  hyperlink           c,p,v,event
+'hyperleave2'                          after  leaving  hyperlink           c,p,v,event
+'iconclick1'                   yes     before single click in icon box     c,p,v,event
+'iconclick2'                           after  single click in icon box     c,p,v,event
+'iconrclick1'                  yes     before right click in icon box      c,p,v,event
+'iconrclick2'                          after  right click in icon box      c,p,v,event
+'icondclick1'                  yes     before double click in icon box     c,p,v,event
+'icondclick2'                          after  double click in icon box     c,p,v,event
+'idle'                                 periodically (at idle time)         c
+'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
+'menu1'                        yes     before creating menus               c,p,v (note 3)
+'menu2'                        yes     during creating menus               c,p,v (note 3)
+'menu-update'                  yes     before updating menus               c,p,v
+'new'                                  start of New command                c,old_c,new_c (note 9)
+'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
+'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
+'openwith1'                    yes     before Open With command            c,p,v,openType,arg,ext
+'openwith2'                            after  Open With command            c,p,v,openType,arg,ext
+'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
+'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
+'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
+'save1'                        yes     before any Save command             c,p,v,fileName
+'save2'                                after  any Save command             c,p,v,fileName
+'scan-directives'                      in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
+'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,new_v
+'select2'                              after  selecting a position         c,new_p,old_p,new_v,old_v
+'select3'                              after  selecting a position         c,new_p,old_p,new_v,old_v
+'set-mark'                             when a mark is set                  c,p,v
+'show-popup-menu'                      in tree.OnPopup                     c,p,v,event
+'start1'                               after app.finishCreate()            None
+'start2'                               after opening first Leo window      c,p,v,fileName
+'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
+'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
+'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
+'\@url2'                                after  double-click @url node       c,p,v(note 5)
+============================= ======== =================================== =============================
+
+**Notes**:
+
+1.  'activate' and 'deactivate' hooks have been removed because they do not work as expected.
+
+2.  'commands' hooks: The label entry in the keywords dict contains the
+    'canonicalized' form of the command, that is, the lowercase name of the command
+    with all non-alphabetic characters removed.
+    Commands hooks now set the label for undo and redo commands 'undo' and 'redo'
+    rather than 'cantundo' and 'cantredo'.
+
+3.  'menu1' hook: Setting g.app.realMenuNameDict in this hook is an easy way of
+    translating menu names to other languages. **Note**: the 'new' names created this
+    way affect only the actual spelling of the menu items, they do *not* affect how
+    you specify shortcuts settings, nor do they affect the 'official'
+    command names passed in g.app.commandName. For example::
+
+        app().realMenuNameDict['Open...'] = 'Ouvre'.
+
+4.  'open1' and 'open2' hooks: These are called with a keywords dict containing the following entries:
+
+    - c:          The commander of the newly opened window.
+    - old_c:      The commander of the previously open window.
+    - new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.
+    - fileName:   The name of the file being opened.
+
+    You can use old_c.p and c.p to get the current position in the old and new windows.
+    Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
+    will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
+    Recent Files menu and b) the file is not already open.
+
+5.  '\@url1' and '\@url2' hooks are only executed if the 'icondclick1' hook returns None.
+
+6.  These hooks are useful for testing.
+
+7.  These hooks allow plugins to parse and handle markup within doc parts,
+    comments and Python ''' strings. Note that these hooks are *not* called in
+    Python ''' strings. See the color_markup plugin for a complete example of how to
+    use these hooks.
+
+8.  Leo calls the 'create-optional-menus' hook when creating menus. This hook need
+    only create new menus in the correct order, without worrying about the placement
+    of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
+    examples of how to use this hook.
+
+9.  The New command calls 'new'.
+    The 'new_c' key is deprecated.  Use the 'c' key instead.
+
+10. g.scanDirectives calls 'scan-directives' hook.
+    g.scanDirectives returns a dictionary, say d.
+    d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
+
+    - d is the spelling of the @directive, without the leading @.
+    - v is the vnode containing the directive, _not_ the original vnode.
+    - s[k:] is a string containing whatever follows the @directive.
+      k has already been moved past any whitespace that follows the @directive.
+
+    See the add_directives plugins directive for a complete example of how to use
+    the 'scan-directives' hook.
+
+11. g.app.closeLeoWindow calls the 'close-frame' hook just before
+    removing the window from g.app.windowList. The hook code may remove the window
+    from app.windowList to prevent g.app.closeLeoWindow from destroying the window.
+
+12. g.app.destroyAllGlobalWindows calls the 'destroy-all-global-windows' hook.
+    This hook gives plugins the chance to clean up after themselves when Leo shuts down.
+
+13. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
+
+14. p is the new node (position) containing '@auto filename.ext'
+.. @+node:ekr.20071021102946: *4* Enabling idle time event handlers
+Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
+**g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
+Afterwards, Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
+Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
+**g.disableIdleTimeHook()** disables the "idle" hook.
+.. @+node:ekr.20050417072710.1: *3* How to make operations undoable
+Plugins and scripts should call u.beforeX and u.afterX methods ato
+describe the operation that is being performed. **Note**: u is shorthand for
+c.undoer. Most u.beforeX methods return undoData that the client
+code merely passes to the corresponding u.afterX method. This data contains
+the 'before' snapshot. The u.afterX methods then create a bead containing
+both the 'before' and 'after' snapshots.
+
+u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to
+u.beforeX and u.afterX methods to be treated as a single undoable entry.
+See the code for the Change All, Sort, Promote and Demote
+commands for examples. The u.beforeChangeGroup and u.afterChangeGroup
+methods substantially reduce the number of u.beforeX and afterX methods
+needed.
+
+Plugins and scripts may define their own u.beforeX and afterX methods. Indeed,
+u.afterX merely needs to set the bunch.undoHelper and
+bunch.redoHelper ivars to the methods used to undo and redo the operation.
+See the code for the various u.beforeX and afterX methods for guidance.
+
+p.setDirty and p.setAllAncestorAtFileNodesDirty now return a
+dirtyVnodeList that all vnodes that became dirty as the result of an
+operation. More than one list may be generated: client code is responsible for
+merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
+
+See the section << How Leo implements unlimited undo >> in leoUndo.py
+for more details. In general, the best way to see how to implement undo is to
+see how Leo's core calls the u.beforeX and afterX methods.
+.. @+node:ekr.20040403173920.5: *3* Redirecting output from scripts
+leoGlobals.py defines 6 convenience methods for redirecting stdout and stderr::
+
+    g.redirectStderr() # Redirect stderr to the current log pane.
+    g.redirectStdout() # Redirect stdout to the current log pane.
+    g.restoreStderr()  # Restores stderr so it prints to the console window.
+    g.restoreStdout()  # Restores stdout so it prints to the console window.
+    g.stdErrIsRedirected() # Returns True if the stderr stream is redirected to the log pane.
+    g.stdOutIsRedirected() # Returns True if the stdout stream is redirected to the log pane.
+
+Calls need *not* be paired. Redundant calls are ignored and the last call made
+controls where output for each stream goes.
+**Note**: you must execute Leo in a console window to see non-redirected output from the print statement::
+
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
+
+    g.redirectStderr()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
+
+    g.redirectStdout()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
+
+    g.restoreStderr()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
+
+    g.restoreStdout()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
+.. @+node:ekr.20061003204952: *3* Writing to different log tabs
+Plugins and scripts can create new tabs in the log panel.
+The following creates a tab named test or make it visible if it already exists::
+
+    c.frame.log.selectTab('Test')
+
+g.es, g.enl, g.ecnl, g.ecnls write to the log tab specified by the optional
+tabName argument. The default for tabName is 'Log'. The put and putnl methods of
+the tkinterLog class also take an optional tabName argument which defaults to
+'Log'.
+
+Plugins and scripts may call the
+c.frame.canvas.createCanvas method to create a log tab containing a Tk.Canvas
+widget. Here is an example script::
+
+    log = c.frame.log ; tag = 'my-canvas'
+    w = log.canvasDict.get(tag)
+    if not w:
+        w = log.createCanvas(tag)
+        w.configure(bg='yellow')
+    log.selectTab(tag)
+.. @+node:ekr.20071026183116: *3* Invoking dialogs using the g.app.gui class
+Scripts can invoke various dialogs using the following methods of the g.app.gui object.
+Here is a partial list. You can use typing completion(default bindings: Alt-1 and Alt-2) to get the full list!
+::
+
+    g.app.gui.runAskOkCancelNumberDialog(c,title,message)
+    g.app.gui.runAskOkCancelStringDialog(c,title,message)
+    g.app.gui.runAskOkDialog(c,title,message=None,text='Ok')
+    g.app.gui.runAskYesNoCancelDialog(c,title,message=None,
+        yesMessage='Yes',noMessage='No',defaultButton='Yes')
+    g.app.gui.runAskYesNoDialog(c,title,message=None)
+
+The values returned are in ('ok','yes','no','cancel'), as indicated by the
+method names. Some dialogs also return strings or numbers, again as indicated by
+their names.
+
+Scripts can run File Open and Save dialogs with these methods::
+
+    g.app.gui.runOpenFileDialog(title,filetypes,defaultextension,multiple=False)
+    g.app.gui.runSaveFileDialog(initialfile,title,filetypes,defaultextension)
+
+For details about how to use these file dialogs, look for examples in Leo's own
+source code. The runOpenFileDialog returns a list of file names.
+.. @+node:ekr.20080109074102: *3* Inserting and deleting icons
+You can add an icon to the presently selected node with
+c.editCommands.insertIconFromFile(path). path is an absolute path or a path
+relative to the leo/Icons folder. A relative path is recommended if you plan to
+use the icons on machines with different directory structures.
+
+For example::
+
+    path = 'rt_arrow_disabled.gif' 
+    c.editCommands.insertIconFromFile(path) 
+
+Scripts can delete icons from the presently selected node using the following methods::
+
+    c.editCommands.deleteFirstIcon() 
+    c.editCommands.deleteLastIcon() 
+    c.editCommands.deleteNodeIcons() 
+.. @+node:ekr.20051101171734: *3* Customizing panes with different widgets
+Tk/Tkinter make it easy to customize the contents of any of Leo's panes. The
+following sections will discuss the 'official' ivars that make it possible for
+scripts to access and alter the contents of panes. The next three sections will
+give examples of modifying each pane.
+.. @+node:ekr.20061003204952.1: *4* Official ivars
+The c.frame.log class contains the following 'official' ivars::
+
+    g.es('tabName',c.frame.log.tabName)     # The name of the active tab.
+    g.es('tabFrame',c.frame.log.tabFrame)   # The Tk.Frame containing all the other widgets of the tab.
+    g.es('logCtrl',c.frame.log.logCtrl)     # Tk.Text widget containing the log text.
+
+The following ivars provide access to the body pane::
+
+    g.es('bodyFrame',c.frame.body.frame)    # The Tk.Frame widget containing the c.frame.body.bodyCtrl
+
+The following ivars provide access to the outline pane::
+
+    g.es('canvas',c.frame.tree.canvas) # The Tk.Canvas on which Leo's outline is drawn.
+
+Tkinter provides a way of determining the enclosing widget of any widget.
+The body text is enclosed in a Pmw.PanedWidget to support multiple editors.
+
+    w = c.frame.body.bodyCtrl
+    parent = w.pack_info().get('in') 
+    g.es('bodyCtrl.parent',parent) # The Tk.Frame containing the body text.
+.. @+node:ekr.20061003212136: *4* Common operations on Tk.Text widgets
+The following is no substitute for a full discussion of programming the Tk.Text
+widget: it can do lots.
+
+To clear the log::
+
+    w = c.frame.log.logCtrl
+    w.delete('1.0','end')
+
+To write a line to the end of the log::
+
+    w = c.frame.log.logCtrl
+    w.insert('end','This is a test\n')
+
+To get the entire contents of the log::
+
+    w = c.frame.log.logCtrl
+    g.es(w.get('1.0','end')+'\n')
+.. @+node:ekr.20061003204952.2: *4* Customizing the log pane
+The following line removes the initial text widget::
+
+    c.frame.log.logCtrl.pack_forget()
+
+To make the text widget visible again::
+
+    c.frame.log.logCtrl.pack(side='top',expand=1,fill='both')
+
+Plugins and scripts can pack any other widgets into c.frame.log.tabFrame.
+For example, the following replaces the default text widget with a red box::
+
+    import Tkinter as Tk
+
+    # Remove the old contents.
+    w = c.frame.log.logCtrl
+    parent =  w.pack_info().get('in')
+    w.pack_forget()
+
+    # Replace with a red frame.
+    f = c.frame.newLog = Tk.Frame(parent,background='red')
+    f.pack(side='left',expand=1,fill='both')
+
+And the following will restore the original pane::
+
+    c.frame.newLog.pack_forget()
+    w = c.frame.log.logCtrl
+    w.pack(side='left',expand=1,fill='both')
+.. @+node:ekr.20061003204952.3: *4* Customizing the body pane
+Warning: you will find it hard to execute scripts after removing the body pane,
+so you had best make the following two scripts into script buttons before
+executing them :-)
+
+Plugins and scripts can pack any other widgets into c.frame.log.tabFrame.
+For example, the following replaces the default text widget with a red box::
+
+    import Tkinter as Tk
+
+    w = c.frame.body.bodyCtrl
+    parent =  w.pack_info().get('in')
+    w.pack_forget()
+
+    f = c.frame.newBody = Tk.Frame(parent,background='red')
+    f.pack(side='left',expand=1,fill='both')
+
+To restore::
+
+    c.frame.newBody.pack_forget()
+    w = c.frame.body.bodyCtrl
+    w.pack(side='left',expand=1,fill='both')
+.. @+node:ekr.20061003204952.4: *4* Customizing the outine pane
+The following replaces the outline pane with a red frame::
+
+    import Tkinter as Tk
+
+    w = c.frame.tree.canvas
+    parent =  w.pack_info().get('in')
+    w.pack_forget()
+
+    f = c.frame.newTree = Tk.Frame(parent,background='red')
+    f.pack(side='left',expand=1,fill='both')
+
+And this script restores the outline::
+
+    c.frame.newTree.pack_forget()
+    c.frame.tree.canvas.pack(side='left',expand=1,fill='both')
+.. @+node:ekr.20081205084002.2: *3* Working with directives and paths
+Scripts can easily determine what directives are in effect at a particular
+position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose
+keys are directive names and whose values are the value in effect at position p.
+For example::
+
+    d = c.scanAllDirectives(p)
+    g.es(g.dictToString(d))
+
+In particular, d.get('path') returns the full, absolute path created by all
+\@path directives that are in ancestors of node p. If p is any kind of @file node
+(including @thin, @auto, @nosent, @shadow, etc.), the following script will
+print the full path to the created file::
+
+    path = d.get('path')
+    name = p.anyAtFileNodeName()
+    if name:
+       name = g.os_path_finalize_join(path,name)
+       g.es(name)
+.. @+node:ekr.20040403173920.26: *3* Summary of the vnode and position classes
+Most scripts will use methods of the position class to access information in an
+outline. The following sections summarizes the most useful methods that your
+scripts can use. For a complete list, see the leoNodes.py in of LeoPy.leo.
+.. @+node:ekr.20040411151245: *4* generators
+Here is the list of Leo's generators::
+
+    c.all_nodes             # all vnodes in c.
+    c.all_unique_nodes      # all unique vnodes in c.
+    c.all_positions         # all positions in c.
+    c.all_unique_positions  # all unique positions in c.
+
+    p.children              # all children of p.
+    p.following_siblings    # all siblings of p that follow p.
+    p.nodes                 # all vnodes in p's subtree.
+    p.parents               # all parents of p.
+    p.self_and_parents      # p and all parents of p.
+    p.siblings              # all siblings of p, including p.
+    p.subtree               # all positions in p's subtree, excluding p.
+    p.self_and_subtree      # all positions in p's subtree, including p.
+    p.unique_nodes          # all unique vnodes in p's subtree.
+    p.unique_subtree        # all unique positions in p's subtree.
+
+**Note**: A generator that returns **unique positions** is a generator that returns
+a list of positions such that p.v == v at most once for any vnode v.
+Similarly, a generator that returns **unique nodes** is a generator that returns
+a list that contains any vnode at most once.
+
+**Note**: The names given above are the recommended names for Leo's generators.
+Leo continues to support the names of iterators used before Leo 4.7.
+These names typically end with the _iter suffix.
+.. @+node:ekr.20040403173920.27: *4* Getters
+Here are the most useful getters of the vnode and position classes.
+
+Returning strings::
+
+    p.b # the body string of p.
+    p.h # the headline string of p. A property.
+
+Returning ints::
+
+    p.childIndex()
+    p.numberOfChildren()
+    p.level()
+
+Returning bools representing property bits::
+
+    p.hasChildren()
+    p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isVisible()
+    p.isVisited()
+.. @+node:ekr.20040403173920.28: *4* Setters
+Here are the most useful setters of the Commands and position classes.
+The following setters of the position class regardless of whether
+p is the presently selected position::
+
+    c.setBodyString(p,s)  # Sets the body text of p.
+    c.setHeadString(p,s)  # Sets the headline text of p.
+
+Moving nodes::
+
+    p.moveAfter(v2)           # move p after v2
+    p.moveToNthChildOf(v2,n)  # move p to the n'th child of v2
+    p.moveToRoot(oldRoot)     # make p the root position.
+                              # oldRoot must be the old root position if it exists.
+
+The "visited" bit may be used by commands or scripts for any purpose.
+Many commands use this bits for tree traversal, so these bits do not persist::
+
+    c.clearAllVisited() # Clears all visited bits in c's tree.
+    p.clearVisited()
+    p.setVisited()
+.. @+node:ekr.20050903161843: *3* Creating script buttons
+Creating a script button should be your first thought whenever you want to
+automate any task. The scripting plugin, mod_scripting.py, puts two buttons
+in the icon menu, a pink Run Script button and a yellow Script Button
+button. The Run Script button does the same thing as the Execute Script
+command. The Script Button button is the interesting one. It creates a
+button, confusingly called a **script button** in the icon area. A script button
+executes a script when you push it.
+
+Suppose node N is selected. When you press the Script Button button a new
+(pink) script button is created. The name of the new button is N's headline
+text. The script associated with the new button is N's body text. Now whenever
+you press the new button, N's script is executed on the **presently** selected
+node. Script buttons are extraordinarily useful. In effect, each script button
+defines an instant command! For example, sometimes my fingers get tired of
+saving a file. I simply put Save in a node's headline and c.save() in
+the body text. I hit the Script Button button and I get a new button called
+Save that will save the outline when I press it.
+
+Here's a more interesting example. The following script searches the present
+node and its ancestors looking for an @rst node. When such a node is found the
+script uses Leo's core c.rstCommands.processTree method to format it. I don't have
+to select the actual \@rst node; I can select any of its children::
+
+    for p in p.self_and_parents():
+        if p.h.startswith('@rst '):
+            c.rstCommands.processTree(p)
+            break
+
+**Notes**:
+
+- The scripting plugin pre-defines the c, g and p symbols just as the Execute
+  Script command does.
+
+- By default a script button executes the **present** body text of the node that
+  original created the script button. This is very handy: you can modify a
+  script button's script at any time without having to recreate the script
+  button.
+
+- You can delete any script button by right-clicking on it.
+
+- On startup, the scripting plugin scans the entire .leo file and creates a
+  script button for every node whose headline starts with @button scriptName.
+  **Warning**: this is indeed a security risk of the kind discussed later. This
+  feature can be disabled by setting atButtonNodes = True at the start of
+  mod_scripting.py.
+.. @+node:ekr.20040403173920.24: *3* Running Leo in batch mode
+On startup, Leo looks for two arguments of the form::
+
+    --script scriptFile
+
+If found, Leo enters batch mode. In batch mode Leo does not show any windows.
+Leo assumes the scriptFile contains a Python script and executes the contents of
+that file using Leo's Execute Script command. By default, Leo sends all
+output to the console window. Scripts in the scriptFile may disable or enable
+this output by calling app.log.disable or app.log.enable
+
+Scripts in the scriptFile may execute any of Leo's commands except the Edit Body
+and Edit Headline commands. Those commands require interaction with the user.
+For example, the following batch script reads a Leo file and prints all the
+headlines in that file::
+
+    path = r"c:\prog\leoCVS\leo\test\test.leo"
+
+    g.app.log.disable() # disable reading messages while opening the file
+    flag,newFrame = g.openWithFileName(path,None)
+    g.app.log.enable() # re-enable the log.
+
+    for p in newFrame.c.all_positions():
+        g.es(g.toEncodedString(p.h,"utf-8"))
+.. @+node:ekr.20080922124033.1: *3* Getting interactive input from scripts
+The following code can be run from a script to get input from the user using the minibuffer::
+
+    def getInput (event=None):
+
+       stateName = 'get-input'
+       k = c.k
+       state = k.getState(stateName)
+
+       if state == 0:
+           k.setLabelBlue('Input: ',protect=True)
+           k.getArg(event,stateName,1,getInput)
+       else:
+           k.clearState()
+           g.es_print('input: %s' % k.arg)
+
+    getInput()
+
+Let's look at this in detail.  The lines::
+
+    stateName = 'get-input'
+    k = c.k
+    state = k.getState(stateName)
+
+define a state *name*, 'get-input', unique to this code.
+k.getState returns the present state (an int) associated with this state.
+
+When getInput() is first called, the state returned by k.getState will be 0,
+so the following lines are executed::
+
+    if state == 0:
+        k.setLabelBlue('Input: ',protect=True)
+        k.getArg(event,stateName,1,getInput)
+
+These lines put a protected label in the minibuffer:
+the user can't delete the label by backspacing.
+getArg, and the rest of Leo's key handling code, take care of the extremely
+complex details of handling key strokes in states.
+The call to getArg never returns.
+Instead, when the user has finished entering the input by typing <Return>
+getArg calls getInput so that k.getState will return state 1, the value
+passed as the third argument to k.getArg.
+The following lines handle state 1::
+
+    else:
+        k.clearState()
+        g.es_print('input: %s' % k.arg)
+
+k.arg is the value returned by k.getArg.
+This example code just prints the value of k.arg and clears the input state.
+.. @+node:ville.20090603183524.5672: *3* Creating Leo commands with the @g.command decorator
+You can use the @g.command decorator to create new commands. This is an easy-to-use
+wrapper for c.k.registerCommand(), with the following advantages over it:
+
+* The new command is automatically created for all Leo controllers (open Leo documents).
+
+* The new command is also automatically available on all new Leo controllers 
+  (documents that will be opened in the future).
+
+* Prettier syntax.
+
+Therefore, @g.command can be naturally 
+prototyped with execute-script (Ctrl+b) in Leo node.
+
+As an example, you can execute this script to make command hello available::
+
+    @g.command('hello')
+    def hello_f(event):
+        # use even['c'] to access controller
+        c = event['c']
+        pos = c.currentPosition()
+        g.es('hello from', pos.h)
+
+If you want to create a plugin that only exposes new commands, this is basically all you need in the plugins .py file.
+There is no need to hook up for 'after-create-leo-frame' just to make your commands available.
+
+If you want to create a command in object oriented style (so that the commands deal with your own objects), 
+create them using closures like this (note how self is available inside command functions)::
+
+    class MyCommands:
+        def create(self):        
+            @g.command('foo1')
+            def foo1_f(event):
+               self.foo = 1
+
+            @g.command('foo2')
+            def foo2_f(event):
+               self.foo = 2
+
+            @g.command('foo-print')
+            def foo_print_f(event):
+               g.es('foo is', self.foo)
+
+    o = MyCommands()
+    o.create()
+
+Note that running create() in this example in `after-create-leo-frame` is pointless - the
+newly created commands will override the commands in all previous controllers. You should consider 
+this in your plugin design, and create your commands only once per Leo session.
+.. @+node:ekr.20100506062734.11593: *3* Modifying plugins with @script scripts
+The mod_scripting plugin runs @scripts before plugin initiation is complete.
+Thus, such scripts can not directly modify plugins. Instead, a script can create
+an event handler for the after-create-leo-frame that will modify the plugin.
+
+For example, the following modifies the cleo.py plugin after Leo has completed loading it::
+
+    def prikey(self, v):
+        try:
+            pa = int(self.getat(v, 'priority'))
+        except ValueError:
+            pa = -1
+
+        if pa == 24:
+            pa = -1
+        if pa == 10:
+            pa = -2
+
+        return pa
+
+    import types
+    from leo.core import leoPlugins
+
+    def on_create(tag, keywords):
+        c.cleo.prikey = types.MethodType(prikey, c.cleo, c.cleo.__class__)
+
+    leoPlugins.registerHandler("after-create-leo-frame",on_create)
+
+Attempting to modify c.cleo.prikey immediately in the @script gives an
+AttributeError as c has no .cleo when the @script is executed. Deferring it by
+using registerHandler() avoids the problem.
+.. @-all
+.. @-leo

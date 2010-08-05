@@ -1,0 +1,610 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100805165051.7161: * @thin whitepapers.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20050901092232: ** @rst html\whitepapers.html
+##########################
+Chapter 11: White Papers
+##########################
+
+..  I wrote the first two white papers soon after discovering Python.
+..  The conclusions in these papers have remained largely unchanged.
+..  I wrote the third in November 2004, and rewrote it in February 2006.
+
+I wrote this white paper soon after discovering Python in 2001.
+The conclusions are still valid today.
+
+.. .. contents::
+.. @+node:ekr.20050901092232.1: *3* @rst-no-head links
+.. External links...
+.. _pychecker:              http://pychecker.sourceforge.net/
+.. _`region inference`:     http://en.wikipedia.org/wiki/Region_inference
+
+.. Relative links...
+.. _chapter10:              theory.html
+.. _appendices:             appendices.html
+.. _`Rst3 plugin`:          rstplugin3.html
+.. _`Scripting plugin`:     plugins.html#mod-scripting
+.. _`test buttons`:         scripting.html#test-and-suite-nodes
+.. @+node:EKR.20040524104904.259: *3* @rst-ignore Tk is the future of Leo
+The more I look at Tk, the more convinced I am that Python + Tk (aka Tkinter)
+is, by far, the best way to go with Leo. I now have Open Source code for tree
+widgets and splitter windows, and have intensely studied how to modify that code
+for use in Leo. It is clear, even at this early date, that this code will
+provide a very pleasant base on which to build Leo.
+
+The tree code is based on code in IDLE, the Python IDE. This code is simple,
+good and plenty fast enough. The tree code draws directly to a Tk canvas object.
+The look and feel matches Windows exactly. It would be trivial to use Mac
+triangle icons instead of the Windows plus and minus icons. It would also be
+trivial to modify the look and feel for Linux.
+
+The tree widget code solves several intractable problems with wxTreeCtrl.
+Moving nodes becomes trivial. Bugs in wxTreeCtrl involving editing and
+redrawing disappear. Using Python/Tk code simplifies the vnode class, and having
+access to the vnode class simplifies and speeds up the tree widget code. It will
+now be possible to bind keystrokes properly; this simply can not be done in
+wxWindows. The tree widget code shows just how trivial the Windows native
+tree control is. The Tk canvas is a splendid example of higher-level code being
+superior, in every way, to lower level code.
+
+Another big win comes from using the Tk text widget. This widget is
+extraordinarily powerful. The only text control that rivals it is the
+MacOS/Yellow Box text control. Indeed, the Tk text widget does everything that
+Leo could possibly want. One can even embed images in text.
+
+In short, using Tk for Leo will be fast enough and will greatly increase what is
+possible in Leo while at the same time greatly simplifying Leo's code. I am
+about to convert Leo from wxPython to Python + Tk.
+Edward K. Ream, November 4, 2001
+.. @+node:EKR.20040524104904.260: *3* Why I like Python
+I've known for a while that Python was interesting; I attended a Python
+conference last year and added Python support to Leo. But last week I got that
+Python is something truly remarkable. I wanted to convert Leo from wxWindows to
+wxPython, so I began work on c2py, a Python script that would help convert from
+C++ syntax to Python. While doing so, I had an Aha experience. Python is more
+than an incremental improvement over Smalltalk or C++ or objective-C; it is
+"something completely different". The rest of this post tries to explain this
+difference.
+.. @+node:ekr.20050901092232.2: *4* Clarity
+What struck me first as I converted C++ code to Python is how much less blah,
+blah, blah there is in Python. No braces, no stupid semicolons and most
+importantly, *no declarations*. No more pointless distinctions between
+const, char \*, char const \*, char \* and wxString.
+No more wondering whether a variable should be signed, unsigned, short or long.
+
+Declarations add clutter, declarations are never obviously right and
+declarations don't prevent memory allocation tragedies. Declarations also hinder
+prototyping. In C++, if I change the type of something I must change all related
+declarations; this can be a huge and dangerous task. With Python, I can change
+the type of an object without changing the code at all! It's no accident that
+Leo's new log pane was created first in Python.
+
+Functions returning tuples are a "minor" feature with a huge impact on code
+clarity. No more passing pointers to data, no more defining (and allocating and
+deallocating) temporary structs to hold multiple values.
+
+Python can't check declarations because there aren't any. However, there is a
+really nifty tool called Pychecker that does many of the checks typically done
+by compilers. See `pychecker`_ for details.
+.. @+node:ekr.20050901092232.3: *4* Power
+Python is much more powerful than C++, not because Python has more features, but
+because Python needs *less* features. Some examples:
+
+-   Python does everything that the C++ Standard Template Library (STL) does,
+    without any of the blah, blah, blah needed by STL.
+    No fuss, no muss, no code bloat.
+
+-   Python's slicing mechanism is very powerful and applies to any sequence (string, list or tuple).
+    Python's string library does more with far less functions because slices replace many functions
+    typically found in other string libraries.
+
+-   Writing dict = {} creates a dictionary (hash table).
+    Hash tables can contain anything, including lists and other hash tables.
+
+-   Python's special functions,  __init__, __del__, __repr__, __cmp__, etc.
+    are an elegant way to handle any special need that might arise.
+.. @+node:ekr.20050901092232.4: *4* Safety
+Before using Python I never fully realized how difficult and dangerous memory allocation is in C++.
+Try doing::
+
+        aList[i:j] = list(aString)
+
+in C.  You will write about 20 lines of C code.
+Any error in this code will create a memory allocation crash or leak.
+
+Python is fundamentally safe. C++ is fundamentally unsafe. When I am using
+Python I am free from worry and anxiety. When I am using C++ I must be
+constantly "on guard." A momentary lapse can create a hard-to-find pointer bug.
+With Python, almost nothing serious can ever go wrong, so I can work late at
+night, or after a beer. The Python debugger is always available. If an exception
+occurs, the debugger/interpreter tells me just what went wrong. I don't have to
+plan a debugging strategy! Finally, Python recovers from exceptions, so Leo can
+keep right on going even after a crash!
+.. @+node:ekr.20050901092232.5: *4* Speed
+Python has almost all the speed of C. Other interpretive environments such as
+icon and Smalltalk have clarity, power and safety similar to Python. What makes
+Python unique is its seamless way of making C code look like Python code.
+Python executes at essentially the speed of C code because most Python modules
+are written in C. The overhead in calling such modules is negligible. Moreover,
+if code is too slow, one can always create a C module to do the job.
+
+In fact, Python encourages optimization by moving to higher levels of
+expression. For example, Leo's Open command reads an XML file. If this command
+is too slow I can use Python's XML parser module. This will speed up Leo while
+at the same time raising the level of the code.
+.. @+node:ekr.20050901092232.6: *4* Conclusions
+Little of Python is completely new. What stands out is the superb engineering
+judgment evident in Python's design. Python is extremely powerful, yet small,
+simple and elegant. Python allows me to express my intentions clearly and at the
+highest possible level.
+
+The only hope of making Leo all it can be is to use the best possible tools. I
+believe Python (possibly with Tkinter) will allow me to add, at long last, the
+new features that Leo should have.
+
+Edward K. Ream, October 25, 2001.  P.S., September, 2005:
+
+Four years of experience have only added to my admiration for Python. Leo could
+not possibly be what it is today without Python.
+.. @+node:ekr.20060218085144: *3* @rst-ignore Why Leo is special
+
+This white paper originally appeared in November 2003 as a series of postings to comp.lang.python.
+Many features have been added since then.
+I rewrote this paper in February 2006.
+
+Those who use Leo know that it is a superb environment for
+programming, authoring and managing data and project.
+Leo's power comes from combining just two basic elements:
+
+- The organization power of outlines, including clones.
+- The power and simplicity of the Python language.
+
+This paper explains in detail how combining these two features can, in fact,
+create immense and largely unexpected power and flexibility.
+To summarize:
+
+- Outlines with clones are a superb filing cabinet for organizing text,
+  including programs and scripts, or in fact any other information.
+  This is the obvious aspect of outlines, but it is by no means the most powerful.
+
+- Scripts can be composed of multiple nodes using noweb markup.
+  Not only do outlines organize scripts, but scripts can be composed of outlines.
+  In other words, Leo can *compose* scripts by concatenating descendant nodes and sections.
+  Leo uses the noweb markup language to compose scripts in a flexible manner.
+
+- Outline nodes split text, including programs and scripts, into *easily accessible*, discreet parts.
+  Scripts may access nodes and their headlines and body text without any parsing.
+
+- Nodes provide an easy associating the *description* of data with the data itself.
+  Indeed, headlines naturally describe the node's body text.
+  Leo's users have discovered many ways to take advantage of the unification of data and its description.
+
+- Programs may treat nodes as *separate objects*, no matter what data the nodes contain.
+  Because nodes are truly separate objects,
+  it becomes easy and natural to define new *operations* on those objects,
+  **based on the description of those outline found in the node's headline**.
+
+The combination of these features created a chain reaction of creative uses for outlines.
+The result has been an explosion of new ideas and capabilities.
+
+Leo supports the following kinds of 'special' nodes:
+@test, @suite, @script, @url, @button, @button timer, @rst, @command, etc.
+Each of these kinds of nodes defines new objects and new operations on those objects.
+The following paragraph show how Leo's users can use these new objects and their operations
+
+Scripting
+
+- The execute script command executes the body text of the presently selected node
+  in an environment containing three variables: c, g and p.
+  Thus, all scripts have full and *easy* access to all data in the outline containing the script.
+
+- The scripting plugin creates support for script nodes.
+  We can treat a node as a script, and *apply that script to any other part of an outline*.
+  This is called 'bringing scripts to data'.
+  Leo's users can do this using script buttons as follows.
+  Any @button node creates a script button in Leo's icon area.
+  The name of the button is the node's headline; the script is the node's body text.
+  The user can also create new script buttons using the 'Script Button' button.
+  Pressing the 'Script Button' button creates a new script button,
+  just as if the presently selected node were an @button node.
+  Bringing scripts to data is an immensely powerful and useful feature:
+  it has eliminated the need for Leo's previous script-find features.
+
+- @command nodes create new minibuffer commands, complete with keyboard shortcuts.
+  The headline defines the command name and an optional keyboard shortcut;
+  the body text defines the command.
+
+Unit testing
+
+- We can treat a node as an individual unit test,
+  and *automatically* create a subclass of UnitTest.TestCase for the script in that node.
+  This is Leo's @test node feature.
+  Leo will convert the body text of any @test node into a unit tests.
+
+- Similarly, @suite nodes create suites of unit tests using the script in the @suite node.
+
+- A unit test can get test data from any node in the outline in which it resides.
+  Thus, outlines can contain not only unit tests, but the data for those tests.
+
+Text formatting
+
+- The rst3 plugin creates support for @rst nodes.
+  @rst trees use outline structure to create document structure.
+  This is a revolution in organizing documents.
+  Full details [ref]
+
+Organizing data
+
+- @url nodes contain references to web addresses, including files on a local disk.
+  Double-clicking an @url node opens a web browser on the given URL.
+
+Plugins
+
+- Plugins support many other kinds of user-defined objects and their associated operations.
+  Some examples are @view, @read-only, @folder, @produce, @run, @startfile, etc.
+  Writing plugins is easy.
+  Python makes the programming as easy as possible;
+  and Leo provides plugins with easy access to outlines and their data.
+.. @+node:ekr.20060218085144.1: *4* 1. You can execute Python scripts directly from anywhere in a Leo outline
+The body text of any Leo node may contain a Python script.
+The Execute Script commands executes this script in a in an environment,
+that predefines three variables: c, g and p.
+These variables allow easy access to all the data in the present outline.
+For example: the following script prints all the node of the
+outline in which the script is embedded::
+
+    for p in c.all_positions():
+        indent = ' '*p.level()
+        print '%s + %s' % (indent,p.h) # print the node's headline.
+        print p.b # print the node's body.
+
+For that matter, scripts can access any data anywhere on your hard drive, or all
+the data available on the web, for that matter. You knew that, but this
+"innocent" fact will be important later.
+
+**Result 1**:  Leo is a great environment in which to write Python scripts.
+.. @+node:ekr.20060218085144.2: *4* 2. Leo's outlines are the perfect tool for organizing scripts
+Leo's outline can organize any text (or other data for that matter).
+
+**Result 2**:  Leo is a great way to organize standalone scripts.
+
+This seemingly simple result will turn out to have important implications.
+.. @+node:ekr.20060218085144.3: *4* 3. Scripts can access the structure of Leo's outlines
+As shown in the example above, scripts may get access to the
+headline or body text of any node in a Leo outline.  Therefore, scripts may
+use the *structure* of the outline to gain access to
+
+a) other scripts,
+b) fragments of code for exec or eval or
+c) other data.
+
+**Result 3**: Scripts have can treat outline structure as first-class data.
+
+The first "big" reason why the combination of Python & Leo is spectacular.
+It gets better...
+.. @+node:ekr.20060218085144.4: *4* 4. Leo's nodes naturally separate data from meta-data
+The body text of a node is the perfect place data itself (including other
+scripts).  The headline of the node is the perfect place to *describe* the
+data.  That is, headlines are a natural place for meta-data.  Scripts can
+use this meta-data in many creative ways.
+
+**Result 4**: Scripts have easy access to user-definable meta-data.
+.. @+node:ekr.20060218085144.5: *4* 5. Leo is the ultimate platform for unit testing
+I first saw the power of results 2, 3 and 4 when creating unit tests for Leo.
+Indeed, the body text of a node is the perfect place for putting regression test
+data. Headlines describe the data, which is exactly what is needed for
+organizing tests. Indeed, I use a script to create regression tests based on the
+structure of the outline of the children of the node containing the script (!)
+
+For example, I run the following script to create and run unit tests of
+Leo's colorizer::
+
+    import unittest,leoTest
+    suite = leoTest.makeColorSuite("colorizerTests","tempNode")
+    runner = unittest.TextTestRunner()
+    runner.run(suite)
+
+This works as follows:  the arguments to makeColorSuite tell it to look up
+the tree for of an ancestor of the present node (the node containing this
+script) for a node whose headline is "colorizerTests".  makeColorSuite then
+looks for children of *that* node for nodes containing test data.  The node
+whose headline is "tempNode" is used by the colorizer during the tests.
+Here is the actual code of makeColorSuite::
+
+    def makeColorSuite(testParentHeadline,tempHeadline):
+        """Create a colorizer test for every descendant of testParentHeadline."""
+        u = testUtils() ; c = top() ; v = c.currentVnode()
+        root = u.findRootNode(v)
+        temp_v = u.findNodeInTree(root,tempHeadline)
+        vList = u.findSubnodesOf(testParentHeadline)
+        # Create the suite and add all test cases.
+        suite = unittest.makeSuite(unittest.TestCase)
+        for v in vList:
+            test = colorTestCase(c,v,temp_v)
+            suite.addTest(test)
+        return suite
+
+The power and simplicity of this code is breathtaking.  All that is required
+are two utility routines, findNodeInTree and findSubnodesOf that find
+various nodes in an outline based on the outline structure and the headlines
+of the nodes:
+
+- findNodeInTree(root,tempHeadline) returns the node in the entire tree
+  contain the current node whose headline is tempHeadline.
+
+- u.findSubnodesOf(testParentHeadline) returns a list of all children of the
+  node whose name is testParentHeadline.
+
+In short, it is absolutely trivial for a script embedded in a Leo outline to
+generate unit tests based on the data in the outline in which the script is
+embedded!
+
+Notice, please, what does *not* have to be done:
+
+A. No unit tests are created statically: everything is driven by data (the
+   outline itself)
+
+B. No Python test data is created *at all*.   Before I saw this approach, I
+   was putting text for the syntax-coloring text in Python strings and passing
+   those strings to the regression tests.  Now, the *unchanged* data in the
+   body text of nodes becomes the regression test data.
+
+C.  There is no need to mark meta-data as separate from test data: headlines
+are naturally distinct from body text.
+
+We see now that Reasons 2, 3 and 4 are a lot more potent than they might
+appear at first.  Indeed, Leo plus Python is the ultimate merging of code,
+structure and data.   Scripts can use data organized in outlines.  Outlines
+organize scripts.  Outlines (particularly their structure) are *data* for
+scripts.  Outlines contains metadata for scripts.  Outlines naturally keep
+data and meta-data separate.
+
+Please notice, this discussion merely hints at all the games that scripts
+could play with outline structure.  Just for example, scripts can easily
+insert, delete and reorganize nodes.  And the uses to which outline
+structure may be put are practically unlimited, as we shall see later...
+
+Let's turn now to a completely separate topic...
+.. @+node:ekr.20060218085144.6: *4* 6. Leo is the ultimate platform for finding and changing text.
+A few days ago I have added a script-based option to Leo's Find/Change
+panel.  For more than 30 years I have been disgusted with tools like regular
+expressions.  Calling re powerful is an utter joke; it's way too complex and
+way too wimpy.  Script-based find-change is infinitely more powerful.
+Instead of containing find text or change *text*, Leo's Find/Change panel
+may contains find or change *scripts*.  This becomes possible because scripts
+have complete access to both the structure of the outline and all of Leo's
+code.
+
+It all works so smoothly:   The find script is responsible for traversing
+the tree and for highlighting the found text or otherwise indicating to the
+change script what the found text was.  Leo dedicates a Python dict called
+app.searchDict for communication between the search script and the change
+script.  The change script is responsible for:
+
+-  changing the text, typically by using c.setBodyString(p,newText), and
+
+-  implementing undo, typically by calling c.frame.onBodyChanged(p,"Change",oldText=oldText).
+
+Some details:
+
+- When executing the search and change scripts when the user selects the Find
+  All or Change All commands, Leo executes the find or change scripts repeatedly
+  only if app.searchDict.get("continue") evaluates to True. Otherwise these
+  scripts are only executed once. Otherwise, scripts can use app.searchDict as
+  they please.
+
+- For simplicity, most find and change scripts will ignore settings in the Find
+  Panel like "whole word", "pattern match", and "reverse": the scripts know what
+  to do! However, these settings are available to the scripts via ivars such as
+  c.whole_word_flag, etc. if desired.
+
+- Either the find and change scripts may use Python's re module. For example,
+  the find script could set app.searchDict["m"] to the match object returned by
+  re's match method. The change script would then compute the result, change the
+  text and set the undo info as usual.
+
+In effect, Leo's Find/Change panel becomes a new platform for running
+scripts interactively.  Leo now has all the find/change capability of
+pattern matching languages like Snobol and Icon, using the capabilities of
+the plain Python language.  Moreover, Leo can deliver these capabilities
+interactively or not depending which buttons you push in Leo's Find/Change
+panel.
+
+One last point.  As I mentioned much earlier, there is no reason to confine
+the find and change scripts to operate on data only within a Leo outline.
+These scripts could as easily traverse your file system as the Leo outline.
+But notice: scripts could pull data from the file system into the outline so
+that you can see the effects of changes as the scripts operate.  Again, this
+can all happen interactively if you like.
+
+No, one more last point.  It's convenient to defined an initScriptFind
+utility very similar to the makeColorSuite utility, used like this::
+
+    # Initialize Leo's find panel using the named children of this node.
+    from leoGlobals import *
+    initScriptFind("Find script","Change script")
+    # Start searching at the top.
+    top().selectVnode(c.rootVnode())
+
+Put the search script in a child node called "Find script" (no quotes), put
+the change script in a child node called "Change script", execute this
+script and the following happens:
+
+- The body text of "Find script" node gets put in the find text of Leo's Find/Change dialog.
+
+- The body text of "Change script" node gets put in the find text of Leo's Find/Change dialog.
+
+- The Script Find radio buttons gets selected, as does the Script Change checkbox.
+
+- The root of the outline becomes the selected node.
+
+Presto!  Leo is ready for a script search.
+.. @+node:ekr.20060218085144.7: *4* 7. Leo outlines are the ultimate filing cabinet
+One more feature greatly expands the generality and power of
+Leo's outlines combined with Python.  Plugins may now attach arbitrary data
+to any node of a Leo outline.  This is done merely by "injecting" an ivar
+called  unknownAttributes ivar into Leo's fundamental vnode or tnode objects
+(or adding items to the unknownAttributes dict if it already exists).  The
+unknownAttributes ivar should be a Python dictionary whose keys are xml
+attribute names and whose values are the values of those attributes.
+
+When writing a file, Leo will write "foreign" attributes in the <v> or <t>
+xml elements of Leo's .leo file if the corresponding vnode or tnode contains
+this unknownAttributes ivar.  Similarly, Leo will create an
+unknownAttributes ivar for a vnode or tnode if the corresponding <v> or <t>
+element contains an attribute not normally used by Leo.  Leo performs the
+standard xml escapes when writing unknown attributes, so plugins can put
+*anything* in the unknownAttributes dictionary.  In particular, plugins may
+put xml in v.unknownAttributes or t.unknownAttributes.
+
+This means, for example, that plugins may add anything that can be
+represented by xml (and that is *everything*) in any node of a Leo outline.
+In effect, Leo's file format is now completely extensible.  BTW, plugins can
+override any aspect of Leo's behavior, so not only can Leo passively accept
+the data in "extended" .leo files, but plugins can extend Leo to *use* this
+data!
+.. @+node:ekr.20060218095651: *4* 8: Script buttons
+Script buttons are a quick way of automating any task.  Extremely useful.
+See the `Scripting plugin`_ for details.
+
+Leo's core provides additional support for @test, @suite, @timer nodes.
+For details, see the documentation for `test buttons`_.
+.. @+node:ekr.20060218092725: *4* 9: The rst3 plugin
+See the documentation for the `Rst3 plugin`_ for details.
+.. @+node:ekr.20060218085144.8: *4* Conclusion
+All the power of Leo derives directly from the power, flexibility and
+dynamism of Python.  But making structure explicit as Leo outlines do adds
+an important new dimension, literally and figuratively, to Python.
+Moreover, Leo's Find/Change dialog creates a new environment from which to
+run Python scripts. At long last the full power of the unification of code
+and data is becoming apparent.
+.. @+node:ekr.20061129170454: *3* @rst-ignore Allocating storage using lifetimes
+This white paper describes the storage allocation used in a commercial
+optimizing C compiler written for Tuple, Inc. ca. 1993. The last section
+discusses tantalizing possibilities for the pypy project. These possibilities
+are why I wrote this paper.
+
+Storage allocation is crucial to any compiler because of the number, size and
+complexity of data which must be allocated. You might event say that a compiler
+consists of storage allocation and everything else. I paid a lot of attention to
+storage allocation in CC2, and that work paid off. The resulting compiler was a
+few percent faster than the CodeWarrior C compiler, perhaps the fastest C
+compiler in existence at that time. The original notes were written around 1993,
+so I would do some things differently today. However, the design discussed below
+still seems relevant today. Indeed, attention to low-level details can make a
+huge difference.
+.. @+node:ekr.20061129170155.2: *4* Lifetime allocation
+CC2 allocated objects one-at-a-time (simple allocation), in blocks of
+fixed-sized objects (block allocation) or in blocks of variable-sized objects
+(lifetime-based allocation). Simple-allocation was used for short-lived objects
+and will not be discussed further. Block allocation was used in several ways, the
+most interesting of which was to allocate "cons cells" used to represent lists.
+These cons cells could be reused by placing them on a global avail list. Thus,
+the blocks holding cons cells could (and did) have permanent lifetime: they were
+never deallocated.
+
+The most interesting aspect of CC2's storage allocation scheme was what I
+eventually came to call **lifetime-based** storage allocation. This was, for me,
+an new discovery, though clearly I was not the first to discover it. The Aha is
+that a lifetime is defined by the time (or equivalently by the place in program
+code) at which objects are **deallocated**. A lifetime may hold many different
+kinds of objects that were allocated at many different times. The essence of
+lifetime-based allocation is that **the proper time to specify when an object
+will be deallocated is when the object is created**.
+
+Lifetime-based allocation is a superb invention:
+
+- It becomes an effective design tool. Thinking of objects in terms of their
+  lifetimes often shows the essence of a design problem.
+
+- It can be used for any kind of object, regardless of its size or type.
+
+- It reduces the number of calls to calloc and free by one or two orders of
+  magnitude over naive schemes. Furthermore, it typically requests
+  standard-sized blocks (say 8K or more) from calloc, further easing the burden
+  on calloc and free.
+
+- CC2 could allocate objects with a particular lifetime using small, extremely fast, macros.
+  The macros expanded to C code something like this::
+
+    if lifetime -> avail >= sizeof(theObjectKind) {
+        // Allocate the storage.
+        theObject = lifetime -> ptr 
+        lifetime -> ptr += sizeof(theObjectKind)
+    }
+    else {
+        << allocate theObject in another block >>
+    }
+
+Importantly, the speed of the else clause makes absolutely no difference because
+it is so seldom executed. Thus, it uses a function call. Clearly then, this code
+is optimal: it could not be improved even if coded in assembly language.
+
+.. @+node:ekr.20061129175952: *4* Typical lifetimes
+What makes lifetime-based allocation so powerful is that so few lifetimes are
+typically required. Indeed, CC2 had only the following lifetimes:
+
+- Permanent: These objects were never deallocated. Examples were list pointers
+  held in cons cells and other kinds of application-wide objects.
+
+- Tokenizer: Tokenizing in C is complex due to C's various preprocessing
+  directives and macro expansion. Objects with tokenizer lifetime are
+  deallocated before the parser starts.
+
+- Function: Objects with function lifetime are deallocated after the compiler
+  generates code for the function.
+
+- File: Objects with file lifetime are deallocated after the compiler completes
+  a source file.
+
+That's all. Similarly, if Leo were recast as a C program only the following
+lifetimes would be needed:
+
+- Permanent: application-wide objects.
+
+- Window/outline: All data associated with a single Leo outline. This is a
+  'semi-permanent' lifetime. Leo has unlimited undo, so it is essentially
+  impossible to delete any data object (an object that could be written to an
+  output file) until the entire outline closes.
+
+- Dialog: data associated with a temporary dialog.
+
+- Function/method: data not used outside a single function or method.
+
+The remarkable thing about dynamic languages like Python is how often objects
+can, in fact, be assigned static lifetimes.
+.. @+node:ekr.20061129202238: *4* Implications for pypy
+Lifetime allocation isn't used in Java, Python, etc. because these languages
+have no way of knowing (in general) what the lifetime of any object will be.
+Furthermore, translating Python to C would be straightforward were it not for
+storage allocation issues. For example, most of Leo's code could easily be
+translated into C, **provided** that the lifetime of all objects were known.
+Again, just for example, the prospect of translating the Python version of Leo
+to a fully optimized C version is tantalizing.
+
+This is where pypy comes in: its extensive flow analysis may be sufficient to
+discover lifetimes for a significant percentage of objects. Perhaps user hints
+may be effective. For example, pypy offers the chance to make something like
+`region inference`_ truly useful. Note that the pypy project might benefit from
+deducing lifetimes even if not all objects could be assigned a static
+lifetime. Another reason why lifetimes are not a standard technique is that they
+are a potentially dangerous optimization. Errors in specifying lifetimes will
+result in dangling pointer references. But this danger might disappear if pypy
+could deduce lifetimes automatically.
+.. @-all
+.. @-leo

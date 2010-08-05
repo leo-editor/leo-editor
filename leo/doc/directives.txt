@@ -1,6 +1,20 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100805001344.7253: * @thin directives.txt
 .. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
 .. @+all
 .. @+node:ekr.20050828061213: ** @rst html/directives.html
 #####################################
