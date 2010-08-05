@@ -1,0 +1,327 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100805165051.7152: * @thin install.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20100731112744.7268: ** @rst html\install.html
+##########################################
+Chapter 1: Installing Leo
+##########################################
+
+.. index:: Installing Leo
+
+This chapter tells how to install and run_ Leo.
+
+**Important**:
+
+If you have *any* problems installing Leo,
+please ask for help on `Leo's help forum`_.
+.. @+node:ekr.20100731112744.7269: *3* @rst-no-head links
+.. Links used in this document...
+.. _`Pmw`:                  http://pmw.sourceforge.net/
+.. _run:                    `Running Leo`_
+.. _`run Leo`:              `Running Leo`_
+.. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
+
+.. .. _`associating leo with .leo files`:   `How to associate Leo with .leo files on Windows`_
+.. .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
+.. @+node:ekr.20100731112744.7270: *3* System requirements
+Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above.
+To install Python, see the instructions at http://python.org/
+
+Download the latest version of Leo from `Leo's download page`_.
+
+Leo also requires either the Qt or Tk widget set. Qt is strongly recommended. In
+particular, Leo does not work with Tk and Python 3k.
+
+The following sections describe how to install Qt or Tk.
+.. @+node:ekr.20100731112744.7271: *3* Installing Qt
+To install Qt, get the binary package of PyQt from: 
+http://www.riverbankcomputing.co.uk/software/pyqt/download
+
+The version of PyQt that you download must match your installed Python version.
+Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run
+the binary PyQt installer.
+
+Special care may be needed to install PyQt on MacOs. See `Installing Leo on
+MacOs X`_ below.
+.. @+node:ekr.20100731112744.7272: *3* Installing Tk
+When using Tk, you must install Tk 8.4 or later. As explained later in this
+section, the Tk version of Leo does not work with Python 3.0 or later.
+
+Some installations of Python have Tk pre-installed. If yours doesn't, download
+it from: http://tcl.activestate.com/software/tcltk/
+
+Follow the installation instructions. **Warning**: When building Tcl on Linux,
+do **not** specify "--enable-threads". Only use Tcl with the default "threads
+not enabled" case.
+
+Leo uses `Pmw`_ (Python Mega Widgets). Leo's extensions folder contains a copy
+of Pmw for use if needed. Leo first tries to import Pmw normally. If that
+fails, Leo will use the version of Pmw in the extensions folder.
+
+At present, Pmw does not work with Python 3.0, which means that you can not use
+the Tk gui with Leo when using Python 3.0.
+.. @+node:ekr.20100731112744.7273: *3* Leo's HOME directory
+Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+.. @+node:ekr.20100731112744.7274: *3* How to install Leo on Linux
+If you are using Debian/Ubuntu, find and install the debian package. This
+provides the best integration with your desktop (file associations, icons, launcher
+item). Failing that, follow the instructions below.
+
+Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+
+Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
+The unpacked folder will be called something like leo-4-5.
+
+You now have two choices:
+
+1. You can run Leo from your home directory.
+   Just add  ~/leo-4-5 to your path.
+
+2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
+
+    cd ~/leo-4-4-3-final
+    chmod u+x install
+    sudo ./install
+
+The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link::
+
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
+
+Now you are ready to `run Leo`_.
+.. @+node:ekr.20100731112744.7275: *3* Installing Leo on MacOS X
+Installing Leo on MacOS 10.5 (Leopard) is straightforward.
+
+1. MacOS 10.5 comes with Python pre-installed.
+
+   See http://www.python.org/download/mac/ and
+   http://wiki.python.org/moin/MacPython/Leopard
+   for information about using the latest version of Python.
+
+2. Download and install bzr:
+
+   - Download bzr from http://bazaar-vcs.org/Download
+
+   - Install bzr using the file just downloaded.
+
+3. Get Leo's sources from Leo's trunk::
+
+    cd ~
+    mkdir leo.repo
+    cd leo.repo
+    bzr init
+    bzr branch lp:leo-editor
+    cd leo-editor
+
+4. You can run the tk version of Leo as follows::
+
+    python launchLeo.py --gui=tk
+
+5. If you already have Qt and PyQt installed, you can run the qt version of Leo as follows::
+
+    python launchLeo.py --gui=qt
+
+6. If you don't have Qt or PyQt installed, you will have to install Qt and PyQt
+    from sources. There does not seem to be any pre-built binaries.
+
+    A: You may need to install XCode from http://developer.apple.com/mac/
+       in order to get a development environment.
+
+    B: Download and install the sip package, following the direction at
+       http://www.riverbankcomputing.co.uk/software/sip/download
+
+    C: Download the OpenSource Qt libraries for Mac from
+       http://www.qtsoftware.com/downloads
+
+    D: At various points along the way you will need to build the sources::
+
+         python configure.py 
+         make
+         sudo make install
+.. @+node:ekr.20100731112744.7276: *3* Installing Leo on Windows
+1. Install Python from http://www.python.org/download/releases/
+
+2. Install either Tk or Qt, as described above.
+
+3. Install Leo.  Get Leo's .zip file from http://sourceforge.net/projects/leo/
+   You can unpack the .zip file anywhere, including Python's *site-packages* folder,
+   for example, C:\\Python26\\Lib\\site-packages
+
+4. [optional] Generate/update a junction link from unpacked
+   leo folder to ...\\site-packages\\leo::
+
+      cd C:\Python26\Lib\site-packages\
+      junction leo leo-4-6-2-final
+
+5. Create windows shortcut (edit paths as necessary)::
+
+      Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+      Start in =  D:\code
+
+6. Associate .leo filetype batch file::
+
+      ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+      assoc .leo=LeoFile
+
+7. [optional] Put this leo.bat in %PATH%::
+
+      @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+
+For more information see::
+
+    Junction links:
+        http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+        http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+    ftype:
+        http://ss64.com/nt/ftype.html
+    assoc:
+        http://ss64.com/nt/assoc.html
+.. @+node:ekr.20100731112744.7277: *3* Running Leo
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+
+Another way to run Leo is as follows::
+
+    cd <path-to-launchLeo.py>
+    python launchLeo.py %*
+
+Here are some tips that may make running Leo easier:
+
+**Linux**
+    The following shell script will allow you to open foo.leo files by typing leo foo::
+
+        #!/bin/sh 
+        python <leopath>launchLeo.py $1
+
+    where <leopath> is the path to the directory containing the leo directory. 
+
+**Windows**
+    If you have associated .leo files with Leo you may run Leo by double-clicking any .leo file.
+    You can also use a batch file.
+    Put the following .bat file in c:\\Windows::
+
+        cd <path-to-leo>
+        c:\Python26\python <path-to-leo>launchLeo.py %*
+
+    where <path-to-leo> is the path to the directory *containing* the leo directory.
+
+    This opens the file specified by the first argument.
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file .leoID.txt. Leo attempts to create
+leoID.txt in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing .leoID.txt.
+.. @+node:ekr.20100731112744.7278: *3* Running Leo from a console window
+Leo sends more detailed error messages to stderr,
+the output stream that goes to the console window. In Linux and MacOS
+environments, python programs normally execute with the console window visible.
+On Windows, can run Leo with the console window visible by associating .leo
+files with python.exe *not* pythonw.exe. 
+
+.. For full instructions about how
+.. to do this, see `Associating Leo with .leo Files`_.
+.. @+node:ekr.20100731112744.7279: *3* Running Leo in batch mode
+On startup, Leo looks for two arguments of the form::
+
+    --script scriptFile
+
+If found, Leo enters batch mode. In batch mode Leo does not show any windows.
+Leo assumes the scriptFile contains a Python script and executes the contents of
+that file using Leo's Execute Script command. By default, Leo sends all
+output to the console window. Scripts in the scriptFile may disable or enable
+this output by calling app.log.disable or app.log.enable
+
+Scripts in the scriptFile may execute any of Leo's commands except the Edit Body
+and Edit Headline commands. Those commands require interaction with the user.
+For example, the following batch script reads a Leo file and prints all the
+headlines in that file::
+
+    path = r"<path-to-folder-containing-the-leo-folder>\\leo\\test\\test.leo"
+
+    g.app.log.disable() # disable reading messages while opening the file
+    flag,newFrame = g.openWithFileName(path,None)
+    g.app.log.enable() # re-enable the log.
+
+    for p in newFrame.c.all_positions():
+        g.es(g.toEncodedString(p.h,"utf-8"))
+.. @+node:ekr.20100731112744.7280: *3* Tracking the development version
+Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bugfixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   bzr qlog, bzr qannotate etc.
+
+2. Get Leo from launchpad by doing::
+
+     bzr branch lp:leo-editor
+
+And that's it! You can run leo/core/leo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run bzr pull.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing bzr checkin.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this in Windows using puttygen and pageant at
+http://showmedo.com/videos/video?name=1510070&fromSeriesID=151.
+
+After your Launchpad account is set up, go to
+https://launchpad.net/leo-editor, choose "Code" tab -> Register Branch,
+select Branch type "Hosted" and fill in descriptive details about the branch.
+After that, go to the branch home page from Code tab again, and copy-paste the
+push command line to terminal. For example, for branch::
+
+    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+The push command is::
+
+    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute bzr push.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
+.. @+node:ekr.20100731112744.7281: *3* How to install the Aspell spell checker
+You must install the Aspell package if you want to use Leo's Spell tab.
+
+1.  Download and install the Aspell package from http://aspell.sourceforge.net/
+    Typically this will create a directory called Aspell/bin
+
+2.  Specify the location of the Aspell and Aspell/bin directories using
+    the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
+.. @-all
+.. @-leo
