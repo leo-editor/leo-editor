@@ -4,12 +4,28 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 4.8 vim, cleanups, your mission...
 #@+node:ekr.20100223123910.5836: *3* First
-#@+node:ekr.20100804095820.5811: *4* Add @thin nodes to Users Guide
-#@+node:ekr.20100804095820.5812: *4* Fix thumb drive spec problem
-#@+node:ekr.20100731160906.11717: *4* Allow proportional font for @language plain
+#@+node:ekr.20100204052559.5791: *4* Make TOC sidebar collapsible
 @nocolor-node
+@wrap
 
-The actual fix might be more flexible than this.
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+includes code for the CSS stylesheet (sidebar.js) to do make the sidebar collapsable.
+
+EKR:
+
+1. Place sidebar.js in leo\doc\html\_build\html\_static
+
+2. Add the following line in the <head> section of all .html files in leo\doc\html\_build\html:
+
+    <script type="text/javascript" src="sidebar.js"></script>
+
+Now the sidebar is collapsable. Mousing over the divider shows a << icon. When
+the sidebar is collapsed, mousing over the left edge shows a >> button.
+
+The question is, how to do this automatically?
 #@+node:ekr.20100707124440.5870: *4* Fix at-root unit tests
 #@+node:ekr.20100521090440.5888: *4* Fix tangle/untangle problems
 #@+node:ekr.20100521130114.5903: *5* Allow @root only in headlines
@@ -1129,6 +1145,83 @@ It's not clear whether this bug is worth fixing, and it's not clear whether
 there would be side effects of any potential fix.
 
 The simplest fix appears to be in handleCodeMode.
+#@+node:ekr.20090502071837.72: *5* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *6* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *6* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    s = '\n'.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *6* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
 #@+node:ekr.20100220204150.5627: *5* @@rst hello.html
 @ @rst-options
 verbose=True
@@ -1198,28 +1291,12 @@ with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
 #@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
 # Just make the test.  It doesn't have to pass.
-#@+node:ekr.20100204052559.5791: *4* Make TOC sidebar collapsible
+#@+node:ekr.20100804095820.5811: *4* Add @thin nodes to Users Guide
+#@+node:ekr.20100804095820.5812: *4* Fix thumb drive spec problem
+#@+node:ekr.20100731160906.11717: *4* Allow proportional font for @language plain
 @nocolor-node
-@wrap
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-includes code for the CSS stylesheet (sidebar.js) to do make the sidebar collapsable.
-
-EKR:
-
-1. Place sidebar.js in leo\doc\html\_build\html\_static
-
-2. Add the following line in the <head> section of all .html files in leo\doc\html\_build\html:
-
-    <script type="text/javascript" src="sidebar.js"></script>
-
-Now the sidebar is collapsable. Mousing over the divider shows a << icon. When
-the sidebar is collapsed, mousing over the left edge shows a >> button.
-
-The question is, how to do this automatically?
+The actual fix might be more flexible than this.
 #@+node:ekr.20080603052650.466: *3* Fix vim problems
 @nocolor
 
