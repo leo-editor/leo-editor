@@ -59,6 +59,19 @@ Glossary
 .. glossary::
     :sorted:
 .. @+node:ekr.20100804133903.7250: *4* @rst-no-head @
+.. index:: @
+
+\@
+    Starts a doc part. Doc parts continue until an \@c
+    directive or the end of the body text.
+
+.. index:: @@ convention for headlines
+
+\@@ convention for headlines
+    Wthin \@asis trees only, if a headline starts with \@@, Leo
+    writes everything in the headline following the \@@ just before the
+    corresponding body text.
+
 .. index:: @<file> node
 
 \@<file> node
@@ -86,32 +99,107 @@ Glossary
     Importers presently exist for the following languages:
     C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.
 
+.. index:: @c, @code
+
+\@c and \@code
+    Ends a doc part and starts a code part.
+
+.. index:: @chapter, @chapters
+
+\@chapter and \@chapters
+    An \@chapter tree represents a chapter. All @chapter nodes should be
+    contained in an \@chapters node.
+
 .. index:: @color
 
 \@color
     Enables syntax coloring in a node and its descendants until the next @nocolor directive.
 
+.. index:: @comment
+
+\@comment
+    Sets the comment delimiters in \@thin, \@file and \@shadow files.
+
+.. index:: @delims.
+
+\@delims
+  Sets the comment delimiters in \@thin, \@file and \@shadow files.
+
+.. index:: @edit
+
+\@edit <filename>
+    Reads an entire external file into a single node.
+
+.. index:: @encoding
+
+\@encoding <encoding>
+    Specifies the Unicode encoding for an external file.
+
+.. index:: @end_raw
+
+\@end_raw
+    Ends a section of 'raw' text.
+
 .. index:: @file
 
 \@file <filename>
     Creates an external file containing Leo sentinels.
-    At present, a synonym for @thin.
+    A synonym for @thin.
+
+.. index:: @first
+
+\@first <text>
+    The \@first directive allows you to place one or more lines at the very start of an
+    external file, before the first sentinel. For example::
+
+	    @first #! /usr/bin/env python
 
 .. index:: @killcolor
 
 \@killcolor
     Completely disables syntax coloring in a node, regardless of other directives.
 
+.. index:: @language
+
+\@language <language name>
+    Specifies the source language, which affects syntax coloring and the
+    comments delimiters used in external files and syntax coloring.
+
+.. index:: @last
+
+\@last <text>
+    Allows you to place lines at the very end of external files, after the last
+    sentinel. For example::
+
+        @first <?php
+        ...
+        @last ?>
+
+.. index:: @lineending
+
+\@lineending cr/lf/nl/crlf
+    Sets the line endings for external files.
+
 .. index:: @nocolor
 
 \@nocolor
     Disables syntax coloring in a node and its descendants until the next @color directive.
+
+.. index:: @nocolor-node
+
+\@nocolor-node
+    Completely disables coloring for one node. Descedant nodes are not affected.
 
 .. index:: @nosent
 
 \@nosent
     Creates an external file containing no sentinels.
     Unlike @asis, sections references and the @all and @others directives are valid in @nosent trees.
+
+.. index:: @nowrap
+
+\@nowrap
+    Disables line wrapping the Leo's body pane.
 
 .. index:: @others
 
@@ -120,11 +208,74 @@ Glossary
     in an @thin tree to the corresponding external file.
     For more information, see `directives for programming`_ in `Leo's tutorial`_.
 
+.. index:: @pagewidth
+
+\@pagewidth <n>
+   Sets the page width used to break doc parts into lines.
+
+.. index:: @path
+
+\@path <path>
+  Sets the path prefix for relative filenames for descendant \@<file> directives.
+
+.. index:: @quiet
+
+\@quiet
+    Sets the verbosity of sentinels in \@root trees.
+
+.. index:: @raw
+
+\@raw
+    Starts a section of "raw" text that ends *only* with the
+    \@end_raw directive or the end of the body text.
+
+.. index:: @root, @root-code, @root-doc
+
+\@root, \@root-code and \@root-doc
+    Each of these directives starts an \@root tree. Such trees are harder to
+    use, but more flexible, than other kinds of @<file> trees.
+
+.. index:: @silent
+
+\@silent
+    Sets the verbosity of sentinels in \@root trees.
+
+.. index:: @tabwidth
+
+\@tabwidth <n>
+  Sets the width of tabs.
+  Negative tab widths cause Leo to convert tabs to spaces.
+
+.. index:: @terse
+
+\@terse
+    Sets the verbosity of sentinels in \@root trees.
+
+.. index:: @thin
+
+\@thin <filename>
+    \@thin creates an external file containing sentinels. When writing \@thin
+    trees, Leo expands section references and \@all and \@others directives.
+
+    **Important**: \@thin is the recommended way to create and edit most files.
+    Using \@thin trees is **highly recommended** when sharing external files in
+    a collaborative environment.
+
 .. index:: @unit
 
 \@unit
     Expands the scope of definitions in @root trees.
     For more information, see the `@unit documentation` in Leo's `programming reference`_.
+
+.. index:: @verbose
+
+\@verbose
+    Sets the verbosity of sentinels in \@root trees.
+
+.. index:: @wrap
+
+\@wrap
+    Enables line wrapping in Leo's body pane.
 .. @+node:ekr.20100804133903.7251: *4* @rst-no-head A - C
 .. index:: Body pane
 

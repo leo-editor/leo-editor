@@ -892,7 +892,7 @@ column of body text.
     Within the range of an \@all directive, Leo ignores the \@others directive
     and section references, so Leo will not complain about orphan nodes.
 
-.. index:: @asis(r), @file-asis(r), @silent(r)
+.. index:: @asis(r)
 .. index:: @@ convention for headlines(r)
 
 \@asis <filename>
@@ -966,10 +966,9 @@ column of body text.
     Leo does not recognize this directive in \@asis trees or when the
     \@all or \@raw directives are in effect.
 
-
 .. index:: @chapter(r), @chapters(r)
 
-\@chapter and \@chapter
+\@chapter and \@chapters
     An \@chapter tree represents a chapter. All @chapter nodes should be
     contained in an \@chapters node.
 
@@ -1011,17 +1010,6 @@ column of body text.
   The \@delims directive is too complex to describe here.
   See `Using \@delims`_ below for full details.
 
-.. index:: @encoding(r)
-
-\@encoding <encoding>
-    The \@encoding directive specifies the Unicode encoding for an external file.
-    For example::
-
-        @encoding iso-8859-1
-
-    When reading external files, the encoding given must match the encoding
-    acutally used in the external file or "byte hash" will result.
-
 .. index:: @edit(r)
 
 \@edit <filename>
@@ -1035,10 +1023,16 @@ column of body text.
 
 .. index:: @encoding(r)
 
-\@encoding
-    Sets the Unicode encoding used in external files.
+\@encoding <encoding>
+    The \@encoding directive specifies the Unicode encoding for an external file.
+    For example::
 
-.. index:: @endraw(r)
+        @encoding iso-8859-1
+
+    When reading external files, the encoding given must match the encoding
+    acutally used in the external file or "byte hash" will result.
+
+.. index:: @end_raw(r)
 
 \@end_raw
     Ends a section of 'raw' text.
@@ -1058,7 +1052,7 @@ column of body text.
 
 \@first <text>
     The \@first directive allows you to place lines at the very start of an
-    external file. Here is a typical example::
+    external file, before any Leo sentinels. Here is a typical example::
 
 	    @first #! /usr/bin/env python
 
@@ -1159,7 +1153,7 @@ column of body text.
 
 .. index:: @last(r)
 
-\@last
+\@last <text>
     The \@last directive allows you to place lines at the very end of external
     files.  This directive must occur at the very end of top-level \@<file> nodes.
     More than one \@last directive may exist. For example::
@@ -1172,8 +1166,8 @@ column of body text.
 
 .. index:: @lineending(r)
 
-\@lineending
-    The \@lineending directive sets the line endings for individual external files.
+\@lineending cr/lf/nl/crlf
+    The \@lineending directive sets the line endings for external files.
     This directive overrides the \@string output_newline setting.
 
     The valid forms of the @lineending directive are:
@@ -1235,12 +1229,6 @@ column of body text.
     ..  appear at the location of the first instance of the \@others directive; the
     ..  remainder are remembered as sentinels but have no other content.
 
-.. index:: @path(r)
-
-\@path <path>
-  Sets the path prefix for relative filenames for all descendant \@<file> directives.
-  May appear either in body text or in headlines.
-
 .. index:: @pagewidth(r)
 
 \@pagewidth <n>
@@ -1250,6 +1238,12 @@ column of body text.
       @pagewidth 100
 
   The \@pagewidth directive overrides the \@int page_width setting.
+
+.. index:: @path(r)
+
+\@path <path>
+  Sets the path prefix for relative filenames for all descendant \@<file> directives.
+  May appear either in body text or in headlines.
 
 .. index:: @quiet(r)
 
@@ -1305,7 +1299,7 @@ column of body text.
 
 .. index:: @tabwidth(r), Negative tab width(r)
 
-\@tabwidth
+\@tabwidth <n>
   Sets the width of tabs.
   Negative tab widths cause Leo to convert tabs to spaces.
 
@@ -1327,8 +1321,8 @@ column of body text.
 
     **Important**: \@thin is the recommended way to create and edit most files.
     Use \@thin unless you have a very good reason not to do so. In particular,
-    using \@thin nodes is **highly recommended** when sharing external in a
-    collaborative environment.
+    using \@thin nodes is **highly recommended** when sharing external files in
+    a collaborative environment.
 
     This directive must appear in the node's headline.
 
@@ -1345,7 +1339,7 @@ column of body text.
 .. index:: @wrap(r)
 
 \@wrap
-    Enables line wrapping the Leo's body pane.
+    Enables line wrapping in Leo's body pane.
 
     Only the first \@wrap or \@nowrap directive in a node has any effect.
 
