@@ -151,35 +151,31 @@
 <v t="ekr.20100805165051.7173"><vh>@thin atShadow.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
-<v t="ekr.20100805165051.7174" a="E"
-expanded="ekr.20050831231852,"><vh>@thin appendices.txt</vh></v>
+<v t="ekr.20100805165051.7174"><vh>@thin appendices.txt</vh></v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20100805165051.7175"><vh>@thin whatsnew.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
-<v t="ekr.20100805165051.7176"
-expanded="ekr.20050901071041,"><vh>@thin other_docs.txt</vh></v>
+<v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
-<v t="ekr.20100805001344.7253" a="E"
-expanded="ekr.20050828061213,ekr.20100804133903.7261,"><vh>@thin directives.txt</vh></v>
+<v t="ekr.20100805001344.7253"><vh>@thin directives.txt</vh></v>
 </v>
 <v t="ekr.20091111112709.6671"><vh>Glossary</vh>
-<v t="ekr.20100805165051.7147"
-expanded="ekr.20100804133903.7259,"><vh>@thin glossary.txt</vh></v>
+<v t="ekr.20100805165051.7147"><vh>@thin glossary.txt</vh></v>
 </v>
 <v t="ekr.20100805224645.4406"><vh>Recent</vh>
 <v t="EKR.20040524104904.380"><vh>OLD Glossary</vh>
-<v t="ekr.20050901071041" a="E"><vh>@@rst html\glossary.html</vh>
+<v t="ekr.20050901071041"><vh>@@rst html\glossary.html</vh>
 <v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
 </v>
 </v>
 <v t="ekr.20100804133903.7275"><vh>@rst-no-head All directives</vh></v>
-<v t="ekr.20100804133903.7259" a="E"><vh>@rst-no-head glossary</vh>
+<v t="ekr.20100804133903.7259"><vh>@rst-no-head glossary</vh>
 <v t="ekr.20100804133903.7250"><vh>@rst-no-head @</vh></v>
 <v t="ekr.20100804133903.7251"><vh>@rst-no-head A - C</vh></v>
 <v t="ekr.20100804133903.7252"><vh>@rst-no-head D - G</vh></v>
@@ -1042,14 +1038,14 @@ p.setBodyString(s)</t>
 \@
     Starts a doc part. Doc parts continue until an \@c
     directive or the end of the body text.
-    
+
 .. index:: @@ convention for headlines
-    
+
 \@@ convention for headlines
     Wthin \@asis trees only, if a headline starts with \@@, Leo
     writes everything in the headline following the \@@ just before the
     corresponding body text.
-    
+
 .. index:: @&lt;file&gt; node
 
 \@&lt;file&gt; node
@@ -1076,45 +1072,45 @@ p.setBodyString(s)</t>
     an importer exists for the give filetype.
     Importers presently exist for the following languages:
     C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.
-    
+
 .. index:: @c, @code
 
 \@c and \@code
     Ends a doc part and starts a code part.
-    
+
 .. index:: @chapter, @chapters
 
 \@chapter and \@chapters
     An \@chapter tree represents a chapter. All @chapter nodes should be
     contained in an \@chapters node.
-    
+
 .. index:: @color
 
 \@color
     Enables syntax coloring in a node and its descendants until the next @nocolor directive.
-    
+
 .. index:: @comment
-    
+
 \@comment
     Sets the comment delimiters in \@thin, \@file and \@shadow files.
-    
+
 .. index:: @delims.
-    
+
 \@delims
   Sets the comment delimiters in \@thin, \@file and \@shadow files.
-  
+
 .. index:: @edit
-  
+
 \@edit &lt;filename&gt;
     Reads an entire external file into a single node.
-  
+
 .. index:: @encoding
 
 \@encoding &lt;encoding&gt;
     Specifies the Unicode encoding for an external file.
-    
+
 .. index:: @end_raw
-    
+
 \@end_raw
     Ends a section of 'raw' text.
 
@@ -1123,7 +1119,7 @@ p.setBodyString(s)</t>
 \@file &lt;filename&gt;
     Creates an external file containing Leo sentinels.
     A synonym for @thin.
-    
+
 .. index:: @first
 
 \@first &lt;text&gt;
@@ -1136,13 +1132,13 @@ p.setBodyString(s)</t>
 
 \@killcolor
     Completely disables syntax coloring in a node, regardless of other directives.
-    
+
 .. index:: @language
 
 \@language &lt;language name&gt;
     Specifies the source language, which affects syntax coloring and the
     comments delimiters used in external files and syntax coloring.
-    
+
 .. index:: @last
 
 \@last &lt;text&gt;
@@ -1152,7 +1148,7 @@ p.setBodyString(s)</t>
         @first &lt;?php
         ...
         @last ?&gt;
-        
+
 .. index:: @lineending
 
 \@lineending cr/lf/nl/crlf
@@ -1162,7 +1158,7 @@ p.setBodyString(s)</t>
 
 \@nocolor
     Disables syntax coloring in a node and its descendants until the next @color directive.
-    
+
 .. index:: @nocolor-node
 
 \@nocolor-node
@@ -1173,9 +1169,9 @@ p.setBodyString(s)</t>
 \@nosent
     Creates an external file containing no sentinels.
     Unlike @asis, sections references and the @all and @others directives are valid in @nosent trees.
-    
+
 .. index:: @nowrap
-    
+
 \@nowrap
     Disables line wrapping the Leo's body pane.
 
@@ -1185,52 +1181,52 @@ p.setBodyString(s)</t>
     A directive that copies the body text of all nodes *except* section definition nodes
     in an @thin tree to the corresponding external file.
     For more information, see `directives for programming`_ in `Leo's tutorial`_.
-    
+
 .. index:: @pagewidth
 
 \@pagewidth &lt;n&gt;
    Sets the page width used to break doc parts into lines.
-   
+
 .. index:: @path
-   
+
 \@path &lt;path&gt;
   Sets the path prefix for relative filenames for descendant \@&lt;file&gt; directives.
-  
+
 .. index:: @quiet
-  
+
 \@quiet
     Sets the verbosity of sentinels in \@root trees.
-    
+
 .. index:: @raw
 
 \@raw
     Starts a section of "raw" text that ends *only* with the
     \@end_raw directive or the end of the body text.
-    
+
 .. index:: @root, @root-code, @root-doc
 
 \@root, \@root-code and \@root-doc
     Each of these directives starts an \@root tree. Such trees are harder to
     use, but more flexible, than other kinds of @&lt;file&gt; trees.
-    
+
 .. index:: @silent
-  
+
 \@silent
     Sets the verbosity of sentinels in \@root trees.
-    
+
 .. index:: @tabwidth
-    
+
 \@tabwidth &lt;n&gt;
   Sets the width of tabs.
   Negative tab widths cause Leo to convert tabs to spaces.
-  
+
 .. index:: @terse
 
 \@terse
     Sets the verbosity of sentinels in \@root trees.
-    
+
 .. index:: @thin
-    
+
 \@thin &lt;filename&gt;
     \@thin creates an external file containing sentinels. When writing \@thin
     trees, Leo expands section references and \@all and \@others directives.
@@ -1244,12 +1240,12 @@ p.setBodyString(s)</t>
 \@unit
     Expands the scope of definitions in @root trees.
     For more information, see the `@unit documentation` in Leo's `programming reference`_.
-    
+
 .. index:: @verbose
-  
+
 \@verbose
     Sets the verbosity of sentinels in \@root trees.
-    
+
 .. index:: @wrap
 
 \@wrap
@@ -1976,7 +1972,7 @@ Weaving
       @pagewidth 100
 
   The \@pagewidth directive overrides the \@int page_width setting.
-  
+
 .. index:: @path(r)
 
 \@path &lt;path&gt;
