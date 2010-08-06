@@ -22,14 +22,14 @@
 Chapter 2: The Leo Tutorial
 ############################
 
-.. index:: Leo's tutorial(t)
+.. index:: Leo's tutorial
 
 Leo is a power tool for people who want to organize, study and work with data,
 especially complex data like computer programs, books, web sites and data bases.
 Superficially, Leo may look like other outlining programs, code folding editors
 or class browsers, but it most certainly is not.
 
-.. index:: Leonine(t)
+.. index:: Leonine(Tutorial)
 
 People say Leo is a revolutionary tool, and that Leo is fun to use, even
 additive. There is a unique "Leo way" of managing data; the term **Leonine**
@@ -103,7 +103,7 @@ The `Glossary`_ is also worth reading.
 .. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
 
 .. @+node:ekr.20091130111843.6814: *3* Leo's main window
-.. index:: Outline pane(t), Body pane(t)
+.. index:: Outline pane(Tutorial), Body pane(Tutorial)
 
 Let's start looking at Leo in detail. We'll start with what you see when you
 first open Leo, Leo's main window. Leo's main window, shown below, represents an
@@ -112,11 +112,11 @@ entire project. As you can see, the main window contains three panes: the
 **body pane** at the bottom. The window also contains an **icon area** at the
 very top, a **status area** and a **mini-buffer** at the very bottom.
 
-.. index:: Main Window(t)
+.. index:: Main Window(Tutorial)
 
 |leoMainWindow|
 
-.. index:: Outline pane(t), Icon box(t), Expansion box(t)
+.. index:: Outline pane(Tutorial), Icon box(Tutorial), Expansion box(Tutorial)
 
 The outline pane
     The outline pane shows your project as an outline. The outline
@@ -126,8 +126,8 @@ The outline pane
     This icon contains a '+' or '-' symbol. Clicking this **expansion box**
     expands or contracts the node.
 
-.. index:: Node(t),Headline(t),Body text(t)
-.. index:: Parent(t), Child(t), Ancestor(t), Descendant(t)
+.. index:: Node(Tutorial),Headline(Tutorial),Body text(Tutorial)
+.. index:: Parent(Tutorial), Child(Tutorial), Ancestor(Tutorial), Descendant(Tutorial)
 
 Node
     Each outline node has two two parts, a **headline** and **body text**. The outline pane
@@ -136,32 +136,32 @@ Node
     describe the relationships of nodes in an outline. We speak of **parent**
     nodes, **child** nodes, **ancestor** nodes and **descendant** nodes.
 
-.. index:: Body pane(t)
+.. index:: Body pane(Tutorial)
 
 Body pane
     The body pane contains the body text of the node selected in the
     outline pane.
 
-.. index:: Log pane(t)
+.. index:: Log pane(Tutorial)
 
 Log pane
     The log pane contains informational messages from Leo or your scripts.
 
-.. index:: Icon area(t)
+.. index:: Icon area(Tutorial)
 
 Icon area
     Depending on what plugins are enabled, the icon area may contain
     buttons and other widgets that extend what Leo can do. The scripting plugin
     makes it easy to add buttons to the icon area.
 
-.. index:: Status area(t)
+.. index:: Status area(Tutorial)
 
 Status area
     The status area shows the line and column containing the body text's cursor,
     and the **UNL** (Uniform Node Location), the path from the top of the outline
     to the selected node.  This path will change as you change outline nodes.
 
-.. index:: Minibuffer(t)
+.. index:: Minibuffer(Tutorial)
 
 Minibuffer
     You can type command and search strings in the minibuffer. It works much
@@ -170,7 +170,7 @@ Minibuffer
     followed by the search string and then <return>. For full details, see
     `Chapter 5: Using Leo's Commands`_.
 .. @+node:ekr.20091130111843.6816: *3* Outline commands
-.. index:: Outline commands(t)
+.. index:: Outline commands(Tutorial)
 
 You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:
@@ -207,14 +207,14 @@ You enter body text for any node by selecting the node's headline in the outline
 pane and then typing in the body pane. Leo has a full range of
 `editing commands`_ that apply to the body pane.
 .. @+node:ekr.20091130111843.6846: *3* External files and @thin nodes
-.. index:: External file(t),.leo file(t),XML(t)
+.. index:: External file(Tutorial),.leo file(Tutorial),XML(Tutorial)
 
 Leo stores outline data on your file system in **.leo files**. The format of
 these files is `XML`_. You don't have to store all your data in .leo files: Leo
 allows you to store parts of your outline data **external files**, that is,
 other files on your file system.
 
-.. index:: @thin node(t)
+.. index:: @thin(Tutorial)
 
 **@thin nodes** create external files. \@thin nodes have headlines starting with
 \@thin followed by a file name. Some examples::
@@ -222,7 +222,7 @@ other files on your file system.
     @thin leoNodes.py
     @thin ../../notes.text
 
-.. index:: Load directory(t)
+.. index:: Load directory(Tutorial)
 
 The file name can be an absolute path or a relative path to the file that starts
 at Leo's **load directory**, the directory containing the .leo file.
@@ -235,7 +235,7 @@ outline:
   outside of Leo, Leo will update the corresponding \@thin tree to reflect those
   changes when Leo next opens the outline.
 
-.. index:: Dirty node(t)
+.. index:: Dirty node(Tutorial)
 
 - When you save your outline, Leo writes all **dirty** \@thin nodes. An \@thin
   is dirty if the node or any of its descendant nodes has changed.
@@ -244,21 +244,21 @@ outline:
   The only nodes that gets written to the .leo file are nodes that are not
   contained in any \@thin tree.
 .. @+node:ekr.20091201091455.6809: *3* Creating external files from outlines
-.. index:: Leo markup(t)
+.. index:: Leo markup(Tutorial)
 
 We come now to one of Leo's most important and unusual features. When Leo writes
 an external file, it does so in a flexible manner, directed by **outline-based
 markup**. This markup tells Leo exactly how to create the external file from an
 \@thin node.
 
-.. index:: Outline order(t)
+.. index:: Outline order(Tutorial)
 
 The **obvious** way to write an external file would be to write the @thin node
 itself followed by all the descendant nodes in **outline order** (the order in
 which nodes appear in the outline). But Leo does *not* write external files
 exactly this way.
 
-.. index:: @all(t), @others(t)
+.. index:: @all(Tutorial), @others(Tutorial)
 
 Yes, Leo does indeed start by writing the \@thin node itself. But Leo writes the
 @thin node's descendants only when it sees one of three kinds of Leo
@@ -270,13 +270,13 @@ Section references and the @others and @all directives tell Leo to write the
 will recognize this process as akin to macro expansion. The following sections
 will explain this process in detail.
 .. @+node:ekr.20091201091455.6813: *4* Section references
-.. index:: Section reference(t)
+.. index:: Section reference(Tutorial)
 
 A **section reference** is a line of body text of the form::
 
     << a section name >>
 
-.. index:: Section name(t)
+.. index:: Section name(Tutorial)
 
 Here, "a section name" can be any descriptive text not containing ">>". When Leo
 encounters a section reference, Leo searches all the descendants of the node
@@ -285,7 +285,7 @@ reference. That is, Leo looks for a descendant node whose headline starts with::
 
      << a section name >>
 
-.. index:: Named node(t)
+.. index:: Named node(Tutorial)
 
 We call such nodes **named nodes**. Leo doesn't require an exact match. Leo
 ignores whitespace and the case of letters when comparing headlines to section
@@ -316,7 +316,7 @@ whitespace that occurs before the section reference. Note also that you can't
 write something after a section reference and expect it to end up on the same
 line after expansion--Leo always writes a newline after the expansion.
 .. @+node:ekr.20091201091455.6814: *4* The @others directive
-.. index:: @others(t)
+.. index:: @others(Tutorial)
 
 The **@others directive** is the second (and most common) way of including
 descendant nodes in an external files. When Leo encounters the \@others
@@ -345,7 +345,7 @@ will then write all descendant nodes to the external files, with *additional*
 indentation equal to the leading whitespace appearing before the \@others
 directive.
 .. @+node:ekr.20091201091455.6815: *4* The @all directive
-.. index:: @all(t)
+.. index:: @all(Tutorial)
 
 The \@all directive is the third, simplest (and least common) way of including
 descendant nodes. This directive causes Leo to write all descendant nodes in
@@ -360,7 +360,7 @@ typically contain snippets of programming source code, but there is no real
 relationships between the snippets--the file is simply a grab bag of
 information. The \@all directive is designed for this situation.
 .. @+node:ekr.20091130111843.6838: *4* Choosing between @others and sections
-.. index:: Style(t)
+.. index:: Style(Tutorial)
 
 Newcomers to Leo frequently ask when to use the \@others directive and when to
 use sections. It is good style to use section references only when the order of
@@ -434,7 +434,7 @@ mistake: you just might cause a bit more work for yourself than was strictly
 necessary. Feel free to invent your own style of using Leo. Still, it would be
 wise to "know the rules before you break them."
 .. @+node:ekr.20091130111843.6817: *3* Clones & views
-.. index:: Clone(t)
+.. index:: Clone(Tutorial)
 
 A **clone** is a node that appears in more than one place in a Leo outline.
 Clones are marked with a small red arrow in the icon box. All clones of a node
@@ -457,7 +457,7 @@ exist **within a single outline**. With Leo, there is no such thing as a single,
 
 To create a new view of the data in your outline, just do the following:
 
-.. index:: View node(t)
+.. index:: View node(Tutorial)
 
 1. Create an *ordinary* node, that will represent the view. We call these nodes
    **view nodes** merely to indicate they represent a view.
@@ -467,7 +467,7 @@ To create a new view of the data in your outline, just do the following:
 
 3. (Optional) You can add regular nodes as children of the view node too.
 
-.. index:: Bug node(t)
+.. index:: Bug node(Tutorial)
 
 For example, when I fix a bug in Leo, I create an ordinary node to represent the
 bug. This **bug node** is my view of all the data in Leo's source code that
@@ -494,7 +494,7 @@ attention on some smaller set of nodes. For example, I often create view nodes
 when studying other people's code. The view node helps me concentrate on just
 the part of the code that interests me at the moment.
 .. @+node:ekr.20091130194648.6811: *3* More about directives
-.. index:: Directive(t)
+.. index:: Directive(Tutorial)
 
 Leo's **directives** control such things as syntax coloring, line wrapping
 within the body pane and the width of tabs. Leo directives may appear in
@@ -529,7 +529,7 @@ which tells Leo to color that node and all of *its* decendants as
 reStructureText. This principle applies to almost all of Leo's directives: the
 directive is in effect throughout a tree, unless overridden in some subtree.
 
-.. index:: @color(t), @nocolor(t), @killcolor(t)
+.. index:: @color(Tutorial), @nocolor(Tutorial), @killcolor(Tutorial)
 
 - **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
 
@@ -538,11 +538,11 @@ directive is in effect throughout a tree, unless overridden in some subtree.
   is, only if the ancestor node contains exactly one \@color or \@nocolor
   directive.
 
-.. index:: @encoding(t)
+.. index:: @encoding(Tutorial)
 
 - **\@encoding** Sets the Unicode encoding used in external files.
 
-.. index:: @first(t)
+.. index:: @first(Tutorial)
 
 - **\@first** directives orces lines to appear before the first sentinel of a
   external file.
@@ -556,7 +556,7 @@ directive is in effect throughout a tree, unless overridden in some subtree.
 
         @first # -*- coding: utf-8 -*-
 
-.. index:: @language(t)
+.. index:: @language(Tutorial)
 
 - **\@language** Sets the language used for syntax coloring **and** sets the
   comment delimiters used in sentinel lines and in doc parts. Some examples::
@@ -566,31 +566,31 @@ directive is in effect throughout a tree, unless overridden in some subtree.
     @language rest # restructured text
     @language plain # text, that is, no syntax coloring.
 
-.. index:: @last(t)
+.. index:: @last(Tutorial)
 
 - **\@last** Forces lines to appear after the last sentinel of a external file.
 
-.. index:: @lineending(t)
+.. index:: @lineending(Tutorial)
 
 - **\@lineending** Specifies the line ending to be used in external files.
 
-.. index:: @pagewidth(t)
+.. index:: @pagewidth(Tutorial)
 
 - **\@pagewidth** Sets the page width used to break doc parts into lines.
 
-.. index:: @path(t)
+.. index:: @path(Tutorial)
 
 - **\@path** Sets the path to be prepended to filenames in descendant \@thin
   nodes.
 
-.. index:: @tabwidth(t), Negative tab width(t)
+.. index:: @tabwidth(Tutorial), Negative tab width(Tutorial)
 
 - **\@tabwidth** sets the width of tabs.
 
   Negative tab widths cause Leo to convert tabs to spaces and are highly
   recommended for Python programming.
 
-.. index:: @wrap(t), @nowrap(t)
+.. index:: @wrap(Tutorial), @nowrap(Tutorial)
 
 - **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
 
@@ -598,7 +598,7 @@ Leo treats lines starting with \@ as a normal code line unless the \@ starts a
 Leo directive. In particular, Leo will output Python decorators correctly,
 provided the name of the decorator does not conflict with a Leo directive.
 .. @+node:ekr.20091130111843.6840: *3* Scripting, extending and customizing Leo
-.. index:: Scripting Leo(t)
+.. index:: Scripting Leo(Tutorial)
 
 Leo is fully scriptable using the Python language. Leo can execute any body text
 as a Python script. To run the entire body text as a script, simply choose the
@@ -621,14 +621,14 @@ example, the following script will print all the headlines in an outline::
 The example above is only the beginning of what scripts can do. See `Chapter 7:
 Scripting Leo with Python`_ for a complete discussion of scripting Leo.
 
-.. index:: Extending Leo(t)
+.. index:: Extending Leo(Tutorial)
 
 **Plugins** are Python modules that change how Leo works. Leo's user have
 contributed dozens of plugins that have extended Leo's capabilities in many new
 directions. The file leoPlugins.leo contains all plugins that are included in
 Leo distributions.
 
-.. index:: @asis(t)
+.. index:: @asis(Tutorial)
 
 Plugins and other parts of Leo can get options from **@settings** trees.
 \@settings trees allow plugins to get options without any further support from

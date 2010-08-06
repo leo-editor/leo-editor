@@ -59,20 +59,20 @@ Glossary
 .. glossary::
     :sorted:
 .. @+node:ekr.20100804133903.7250: *4* @rst-no-head @
-.. index:: @
+.. index:: @(Glossary)
 
 \@
     Starts a doc part. Doc parts continue until an \@c
     directive or the end of the body text.
 
-.. index:: @@ convention for headlines
+.. index:: @@ convention for headlines(Glossary)
 
 \@@ convention for headlines
     Wthin \@asis trees only, if a headline starts with \@@, Leo
     writes everything in the headline following the \@@ just before the
     corresponding body text.
 
-.. index:: @<file> node
+.. index:: @<file> node(Glossary)
 
 \@<file> node
     A node whose headline starts with
@@ -80,18 +80,18 @@ Glossary
     We often refer to outline nodes by the directives they contain.
     For example, an @file node is a node whose headline starts with @file, etc.
 
-.. index::  @all
+.. index::  @all(Glossary)
 
 \@all
     Copies the body text of all nodes in an @thin tree to the external file.
     For more information, see `directives for programming`_ in `Leo's tutorial`_.
 
-.. index:: @asis
+.. index:: @asis(Glossary)
 
 \@asis <filename>
     Creates an external file containing no Leo sentinels directly from the @asis tree.
 
-.. index:: @auto
+.. index:: @auto(Glossary)
 
 \@auto <filename>
     Imports an external file into the Leo outline, splitting the file into pieces if
@@ -99,54 +99,54 @@ Glossary
     Importers presently exist for the following languages:
     C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.
 
-.. index:: @c, @code
+.. index:: @c(Glossary), @code(Glossary)
 
 \@c and \@code
     Ends a doc part and starts a code part.
 
-.. index:: @chapter, @chapters
+.. index:: @chapter(Glossary), @chapters(Glossary)
 
 \@chapter and \@chapters
     An \@chapter tree represents a chapter. All @chapter nodes should be
     contained in an \@chapters node.
 
-.. index:: @color
+.. index:: @color(Glossary)
 
 \@color
     Enables syntax coloring in a node and its descendants until the next @nocolor directive.
 
-.. index:: @comment
+.. index:: @comment(Glossary)
 
 \@comment
     Sets the comment delimiters in \@thin, \@file and \@shadow files.
 
-.. index:: @delims.
+.. index:: @delims.(Glossary)
 
 \@delims
   Sets the comment delimiters in \@thin, \@file and \@shadow files.
 
-.. index:: @edit
+.. index:: @edit(Glossary)
 
 \@edit <filename>
     Reads an entire external file into a single node.
 
-.. index:: @encoding
+.. index:: @encoding(Glossary)
 
 \@encoding <encoding>
     Specifies the Unicode encoding for an external file.
 
-.. index:: @end_raw
+.. index:: @end_raw(Glossary)
 
 \@end_raw
     Ends a section of 'raw' text.
 
-.. index:: @file
+.. index:: @file(Glossary)
 
 \@file <filename>
     Creates an external file containing Leo sentinels.
     A synonym for @thin.
 
-.. index:: @first
+.. index:: @first(Glossary)
 
 \@first <text>
     The \@first directive allows you to place one or more lines at the very start of an
@@ -154,18 +154,18 @@ Glossary
 
 	    @first #! /usr/bin/env python
 
-.. index:: @killcolor
+.. index:: @killcolor(Glossary)
 
 \@killcolor
     Completely disables syntax coloring in a node, regardless of other directives.
 
-.. index:: @language
+.. index:: @language(Glossary)
 
 \@language <language name>
     Specifies the source language, which affects syntax coloring and the
     comments delimiters used in external files and syntax coloring.
 
-.. index:: @last
+.. index:: @last(Glossary)
 
 \@last <text>
     Allows you to place lines at the very end of external files, after the last
@@ -175,83 +175,84 @@ Glossary
         ...
         @last ?>
 
-.. index:: @lineending
+.. index:: @lineending(Glossary)
 
 \@lineending cr/lf/nl/crlf
     Sets the line endings for external files.
 
-.. index:: @nocolor
+.. index:: @nocolor(Glossary)
 
 \@nocolor
     Disables syntax coloring in a node and its descendants until the next @color directive.
 
-.. index:: @nocolor-node
+.. index:: @nocolor-node(Glossary)
 
 \@nocolor-node
     Completely disables coloring for one node. Descedant nodes are not affected.
 
-.. index:: @nosent
+.. index:: @nosent(Glossary)
 
 \@nosent
     Creates an external file containing no sentinels.
     Unlike @asis, sections references and the @all and @others directives are valid in @nosent trees.
 
-.. index:: @nowrap
+.. index:: @nowrap(Glossary)
 
 \@nowrap
     Disables line wrapping the Leo's body pane.
 
-.. index:: @others
+.. index:: @others(Glossary)
 
 \@others
     A directive that copies the body text of all nodes *except* section definition nodes
     in an @thin tree to the corresponding external file.
     For more information, see `directives for programming`_ in `Leo's tutorial`_.
 
-.. index:: @pagewidth
+.. index:: @pagewidth(Glossary)
 
 \@pagewidth <n>
    Sets the page width used to break doc parts into lines.
 
-.. index:: @path
+.. index:: @path(Glossary)
 
 \@path <path>
   Sets the path prefix for relative filenames for descendant \@<file> directives.
 
-.. index:: @quiet
+.. index:: @quiet(Glossary)
 
 \@quiet
     Sets the verbosity of sentinels in \@root trees.
 
-.. index:: @raw
+.. index:: @raw(Glossary)
 
 \@raw
     Starts a section of "raw" text that ends *only* with the
     \@end_raw directive or the end of the body text.
 
-.. index:: @root, @root-code, @root-doc
+.. index:: @root(Glossary)
+.. index:: @root-code(Glossary), @root-doc(Glossary)
 
 \@root, \@root-code and \@root-doc
     Each of these directives starts an \@root tree. Such trees are harder to
     use, but more flexible, than other kinds of @<file> trees.
 
-.. index:: @silent
+.. index:: @silent(Glossary)
 
 \@silent
     Sets the verbosity of sentinels in \@root trees.
 
-.. index:: @tabwidth
+.. index:: @tabwidth(Glossary)
 
 \@tabwidth <n>
   Sets the width of tabs.
   Negative tab widths cause Leo to convert tabs to spaces.
 
-.. index:: @terse
+.. index:: @terse(Glossary)
 
 \@terse
     Sets the verbosity of sentinels in \@root trees.
 
-.. index:: @thin
+.. index:: @thin(Glossary)
 
 \@thin <filename>
     \@thin creates an external file containing sentinels. When writing \@thin
@@ -261,101 +262,101 @@ Glossary
     Using \@thin trees is **highly recommended** when sharing external files in
     a collaborative environment.
 
-.. index:: @unit
+.. index:: @unit(Glossary)
 
 \@unit
     Expands the scope of definitions in @root trees.
     For more information, see the `@unit documentation` in Leo's `programming reference`_.
 
-.. index:: @verbose
+.. index:: @verbose(Glossary)
 
 \@verbose
     Sets the verbosity of sentinels in \@root trees.
 
-.. index:: @wrap
+.. index:: @wrap(Glossary)
 
 \@wrap
     Enables line wrapping in Leo's body pane.
 .. @+node:ekr.20100804133903.7251: *4* @rst-no-head A - C
-.. index:: Body pane
+.. index:: Body pane(Glossary)
 
 Body pane
     The pane containing the body text of the currently selected headline in the outline pane.
 
-.. index:: Body text
+.. index:: Body text(Glossary)
 
 Body text
     The text in the body pane.  That is, the contents of a node.
 
-.. index:: Body text box
+.. index:: Body text box(Glossary)
 
 Body text box
     A small blue box in the icon box indicating that the node contains body text.
 
-.. index:: Child
+.. index:: Child(Glossary)
 
 Child
     The direct descendant of a node.
 
-.. index:: Chunk
+.. index:: Chunk(Glossary)
 
 Chunk
     A synonym for a section in `noweb`_ terminology.
 
-.. index:: Clone
+.. index:: Clone(Glossary)
 
 Clone
     A copy of a tree that changes whenever the original changes.
     The original and all clones are treated equally:
     no special status is given to the "original" node.
 
-.. index:: Clone arrow
+.. index:: Clone arrow(Glossary)
 
 Clone arrow
     A small red arrow in the icon box indicating that the node is a clone.
 
-.. index:: Code part
+.. index:: Code part(Glossary)
 
 Code part
     A part of a section definition that contains code. 
     Code parts start with @c or @code directives and continue until the next doc part.
 
-.. index:: Contract
+.. index:: Contract(Glossary)
 
 Contract:
     To hide all descendants of a node.
 
-.. index:: CWEB
+.. index:: CWEB(Glossary)
 
 CWEB
     A `literate programming`_ language invented by Donald Knuth and Silvio Levy.
     The `CWEB`_ language produces external files for the C language.
 .. @+node:ekr.20100804133903.7252: *4* @rst-no-head D - G
-.. index:: Demote
+.. index:: Demote(Glossary)
 
 Demote
     To move all siblings that follow a node so that they become children of the node.
 
-.. index:: Descendant
+.. index:: Descendant(Glossary)
 
 Descendant
     An offspring of a node.  That is, a child, grandchild, etc. of a node.
 
-.. index:: Directive
+.. index:: Directive(Glossary)
 
 Directive
     A keyword, preceded by an '@' sign, in body text that controls Leo's operation.
     The keyword is empty for the @ directive.
     For more information, set the `Leo directives`_ section of `Leo's tutorial`_.
 
-.. index:: Doc part
+.. index:: Doc part(Glossary)
 
 Doc part
     A part of a section definition that contains comments.
     Doc parts start with @ and continue until the @c directive or the end of the body text.
     In @root trees, doc parts are associated with the immediately following code part, if any.
 
-.. index:: Escape convention
+.. index:: Escape convention(Glossary)
 
 Escape convention
     A convention for representing sequences of characters that would otherwise have special meaning.
@@ -365,48 +366,48 @@ Escape convention
     Any line containing matched <\< and >\> is a section reference, regardless of context.
     To use <\< and >\> as ordinary characters, place them on separate lines.
 
-.. index:: Expand
+.. index:: Expand(Glossary)
 
 Expand
     To make the children of a node visible.
 
-.. index:: External file
+.. index:: External file(Glossary)
 
 External file
     The file created as the result of tangling a node containing an @root directive.
     The file consists of the expansion of the text following the @root directive.
     For more information, see the `external files section`_ of `Leo's tutorial`_.
 
-.. index:: Grandchild
+.. index:: Grandchild(Glossary)
 
 Grandchild
     The child of a child of a node.
 .. @+node:ekr.20100804133903.7253: *4* @rst-no-head H - L
-.. index:: Headline
+.. index:: Headline(Glossary)
 
 Headline
     The headline text of a node.  The part of the node visible in the outline pane.
 
-.. index:: Hoist, Dehoist
+.. index:: Hoist(Glossary), Dehoist(Glossary)
 
 Hoist & dehoist
     Hoisting a node redraws the screen that node and its descendants becomes the only visible part of the outline.
     Leo prevents the you from moving nodes outside the hoisted outline.  Dehoisting a node restores the outline.
     Multiple hoists may be in effect: each dehoist undoes the effect of the immediately preceding hoist.
 
-.. index:: Icon box
+.. index:: Icon box(Glossary)
 
 Icon box
     An icon just to the left of headline text of a node indicating whether the node is cloned, marked or dirty,
     and indicating whether the node contains body text.
 
-.. index:: LaTeX
+.. index:: LaTeX(Glossary)
 
 LaTeX
     A markup language often used in `literate programming`_ environments.
     See: http://www.latex-project.org/
 
-.. index:: Literate programing
+.. index:: Literate programing(Glossary)
 
 Literate programming
     A style of programming that aims at producing the highest quality program listings.
@@ -414,43 +415,43 @@ Literate programming
     Leo supports two literate programming languages, `CWEB`_ and `noweb`_.
     For more details, see the http://www.literateprogramming.com.
 
-.. index:: Log pane
+.. index:: Log pane(Glossary)
 
 Log Pane
     The part of Leo's main window that shows informational messages from Leo.
     It also contains the Find tab, the Spell tab, the autocompletion tab.
 .. @+node:ekr.20100804133903.7254: *4* @rst-no-head M - O
-.. index:: Mark
+.. index:: Mark(Glossary)
 
 Mark
     A red vertical line in the icon box of a node.
 
-.. index:: Node
+.. index:: Node(Glossary)
 
 Node
     The organizational unit of an outline. The combination of headline text and body text.
     Sometimes used as a synonym for tree.
 
-.. index:: noweb
+.. index:: noweb(Glossary)
 
 noweb
     A literate programming language invented by Norman Ramsey.
     The `noweb`_ language can produce external files for any text-based programming language.
 
-.. index:: Offspring
+.. index:: Offspring(Glossary)
 
 Offspring
     A synonym for the descendants of a node.
     The children, grandchildren, etc. of a node.
 
-.. index:: Organizer node
+.. index:: Organizer node(Glossary)
 
 Organizer node
     A node containing no body text.
     Organizing nodes may appear anywhere in an @file tree; they do not affect the external file in any way.
     In particular, organizing nodes do not affect indentation in external files.
 
-.. index:: Orphan node
+.. index:: Orphan node(Glossary)
 
 Orphan node
     A node that would not be copied to a external file.
@@ -462,97 +463,97 @@ Orphan node
     No information is lost; Leo saves the information in the @thin tree in the .leo file.
     Leo will load the @thin tree from the .leo file the next time Leo opens the .leo file.
 
-.. index:: Outline
+.. index:: Outline(Glossary)
 
 Outline
     A node and its descendants. A tree. All the nodes of a .leo file.
 
-.. index:: Outline order
+.. index:: Outline order(Glossary)
 
 Outline order
     The order that nodes appear on the screen when all nodes are expanded.
 
-.. index:: Outline pane
+.. index:: Outline pane(Glossary)
 
 Outline pane
     The pane containing a visual representation of the entire outline,
     or a part of the outline if the outline is hoisted.
 .. @+node:ekr.20100804133903.7255: *4* @rst-no-head P - R
-.. index:: Parent
+.. index:: Parent(Glossary)
 
 Parent
     The node that directly contains a node.
 
-.. index:: Part
+.. index:: Part(Glossary)
 
 Part
     A synonym for section.  See also code part and doc part.
 
-.. index:: Plugin
+.. index:: Plugin(Glossary)
 
 Plugin
     A way to modify and extend Leo without changing Leo's core code.
     See `Writing plugins and hooks`_.
 
-.. index:: Promote
+.. index:: Promote(Glossary)
 
 Promote
     To move all children of a node in an outline so that they become siblings of the node.
 
-.. index:: reStructuredText,rST
+.. index:: reStructuredText(Glossary),rST(Glossary)
 
 reStructuredText (rST)
     A simple, yet powerful markup language for creating .html, or LaTeX output files.
     See the `rST primer`_.
 
-.. index:: Root
+.. index:: Root(Glossary)
 
 Root
     The first node of a .leo file. The first node of an @<file> tree.
 
-.. index:: rst3 plugin
+.. index:: rst3 plugin(Glossary)
 
 rst3 plugin
     A plugin that supports reStructuredText and allows per-node options.
 .. @+node:ekr.20100804133903.7256: *4* @rst-no-head S - Z
-.. index:: Scope
+.. index:: Scope(Glossary)
 
 Scope
     The portion of the outline in which a section definition is known.
 
-.. index:: Section
+.. index:: Section(Glossary)
 
 Section
     A fragment of text that can be incorporated into external files.
     See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
 
-.. index:: Section definition
+.. index:: Section definition(Glossary)
 
 Section definition
     The body text of a section definition node.
     See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
 
-.. index:: Section definition node
+.. index:: Section definition node(Glossary)
 
 Section definition node
     A node whose headline starts with a section name and whose body text defines a section.
     See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
 
-.. index:: Section name
+.. index:: Section name(Glossary)
 
 Section name
     A name enclosed in <\< and >\>.
     Section names may contain any characters except newlines and ">>".
     See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
 
-.. index:: Section reference
+.. index:: Section reference(Glossary)
 
 Section reference
     A section name appearing in a code part.
     Tangling replaces all references by their definitions.
     See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
 
-.. index:: Sentinel
+.. index:: Sentinel(Glossary)
 
 Sentinel
     Comment lines in external files used to represent Leo's outline structure.
@@ -560,7 +561,7 @@ Sentinel
     Sentinels embed outline structure into external files.
     **Do not alter sentinel lines**.  Doing so can corrupt the outline structure.
 
-.. index:: Setting
+.. index:: Setting(Glossary)
 
 Settings:
     Plugins and other parts of Leo can get options from @settings trees,
@@ -570,30 +571,30 @@ Settings:
     any further support from Leo's core code. For a full discussion of
     @settings trees, see `Chapter 8: Customizing Leo`_.
 
-.. index:: Sibling
+.. index:: Sibling(Glossary)
 
 Sibling
     Two nodes are siblings if they have the same parent.
     Siblings of the root node have the hidden root node as their parent.
 
-.. index:: Tangle, Tangling
+.. index:: Tangle(Glossary), Tangling(Glossary)
 
 Tangling
     The process of creating external files from @root trees.
     For more information, see `Tangling @root trees`_ in Leo's `programming reference`_.
 
-.. index:: Target language
+.. index:: Target language(Glossary)
 
 Target language
     The language used to syntax color text.
     This determines the default comment delimiters used during tangling and untangling.
 
-.. index:: Tree
+.. index:: Tree(Glossary)
 
 Tree
     An outline. A node and its descendants.
 
-.. index:: Untangle, Untangling
+.. index:: Untangle(Glossary), Untangling(Glossary)
 
 Untangling
     Updating an outline based on changes to external files.
@@ -601,7 +602,7 @@ Untangling
     Especially useful when fixing syntax errors outside Leo.
     For more information, see `Untangling @root trees`_ in Leo's `programming reference`_.
 
-.. index:: View node
+.. index:: View node(Glossary)
 
 View node
     A node that represents a view of an outline.
@@ -610,7 +611,7 @@ View node
     Other non-cloned nodes may add additional information to the view.
     See `clones & views`_ in `Leo's tutorial`_ for more information.
 
-.. index:: Weave, Weaving
+.. index:: Weave(Glossary), Weaving(Glossary)
 
 Weaving
     The process of creating typeset documentation from a `noweb`_ or `CWEB`_

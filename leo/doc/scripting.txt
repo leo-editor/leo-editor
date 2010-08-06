@@ -33,7 +33,7 @@ This chapter describes how to write Python scripts that control Leo and access
 the data in Leo outlines. To write such scripts, you must understand the basics
 of Leo's internal data structures. As we shall see, these basics are quite simple.
 
-Although this chapter discussses everything you will need to write most scripts,
+Although this chapter discusses everything you will need to write most scripts,
 please keep in mind that your scripts have complete access to all of Leo's
 source code, that is, all the code in LeoPy.leo.
 
@@ -45,8 +45,8 @@ comments interspersed with the code.
 .. .. contents::
 .. @+node:ekr.20091104200540.6566: *3* @rst-ignore
 .. @+node:ekr.20091107181442.26607: *4* old, too complicated intro
-Leo's **vnode** classe represents all the data in a particular node.
-In the simplied data model, a single vnode represents all clones on the screen.
+Leo's **vnode** class represents all the data in a particular node.
+In the simplified data model, a single vnode represents all clones on the screen.
 When Leo clones a vnode v, alters data structures in v and v's parent vnode,
 but Leo does *not* create another vnode to represent the clone.
 Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
@@ -115,7 +115,7 @@ Leo scripts typically use the following objects:
 
 **g**
     The predefined constant g is the leo.core.leoGlobals module. This
-    module contains several dozen utilty functions and classes.
+    module contains several dozen utility functions and classes.
 
 **g.app**
     g.app is the **application object** representing the entire Leo application.
@@ -187,7 +187,7 @@ for that frame::
         g.es(c)
         g.es(c.rootPosition())
 
-There is also g.app.commandrs() method, that gives the list of all active
+There is also g.app.commanders() method, that gives the list of all active
 commanders directly.
 .. @+node:ekr.20040403173920.6: *3* Getting and setting headline and body text
 Here is how to access the data of a Leo window::
@@ -258,9 +258,9 @@ The following code will find a position p2 having the same vnode as p::
 Scripts must wary of saving positions because positions become invalid
 whenever the user moves, inserts or deletes nodes.  It is valid to store
 positions **only** when a script knows that the stored position will be used
-before the outline's stucture changes.
+before the outline's structure changes.
 
-To store a postion, the script must use the p.copy() method::
+To store a position, the script must use the p.copy() method::
 
     p2 = p.copy()   # Correct: p2 will not change when p changes later.
 

@@ -93,9 +93,8 @@
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
 <v t="ekr.20100805165051.7153"><vh>@thin outlines.txt</vh></v>
 </v>
-<v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
-<v t="ekr.20100805001344.7253" a="E"
-expanded="ekr.20050828061213,"><vh>@thin directives.txt</vh></v>
+<v t="ekr.20050831184021.5"><vh>Chapter 4: Leo's Reference</vh>
+<v t="ekr.20100805001344.7253"><vh>@thin directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Chapter 5: Using Leo's Commands</vh>
 <v t="ekr.20100805165051.7155"><vh>@thin commands.txt</vh></v>
