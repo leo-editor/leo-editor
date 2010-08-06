@@ -4,6 +4,7 @@
 .. @@tabwidth -4
 
 .. @+at @rst-options
+..  call_docutils=False
 ..  code_mode=False
 ..  generate_rst=True
 ..  http_server_support = False

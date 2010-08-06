@@ -287,6 +287,10 @@ def writeSpecialTree (self,p,toString,justOneFile):
             f.close()
             self.report(name)
 
+    # g.trace('call_docutils',self.getOption('call_docutils'))
+    if not self.getOption('call_docutils'):
+        return False
+
     try:
         output = self.writeToDocutils(self.source)
         ok = output is not None

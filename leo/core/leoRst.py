@@ -259,6 +259,7 @@ class rstCommands:
                 'rst3_stylesheet_embed': True,
             'rst3_publish_argv_for_missing_stylesheets': None,
             # Global options...
+            'rst3_call_docutils': True, # 2010/08/05
             'rst3_code_block_string': '',
             'rst3_number_code_lines': True,
             'rst3_underline_characters': '''#=+*^~"'`-:><_''',
@@ -801,6 +802,10 @@ class rstCommands:
                 f.write(self.source)
                 f.close()
                 self.report(name)
+
+        # g.trace('call_docutils',self.getOption('call_docutils'))
+        if not self.getOption('call_docutils'):
+            return False
 
         try:
             output = self.writeToDocutils(self.source)
