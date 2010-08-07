@@ -26,9 +26,9 @@ Glossary
 
 .. ----- External links.
 
-.. _`CWEB`:                 http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _`literate programming`: http://www.literateprogramming.com/
-.. _`noweb`:                http://www.eecs.harvard.edu/~nr/noweb/
+..  .. _`CWEB`:                 http://www-cs-faculty.stanford.edu/~knuth/cweb.html
+..  .. _`literate programming`: http://www.literateprogramming.com/
+..  .. _`noweb`:                http://www.eecs.harvard.edu/~nr/noweb/
 .. _`rST primer`:           http://docutils.sourceforge.net/docs/user/rst/quickstart.html
 
 .. ----- Relative links.
@@ -44,8 +44,8 @@ Glossary
 .. _`@root`:                    directives.html#root
 .. _`@thin`:                    directives.html#file-and-thin
 .. _`@unit documentation`:      directives.html#root
-.. _`tangling @root trees`:     directives.html#tangling-root-trees-with-the-tangle-commands
-.. _`untangling @root trees`:   directives.html#untangling-root-trees-with-the-untangle-commands
+..  .. _`tangling @root trees`:     directives.html#tangling-root-trees-with-the-tangle-commands
+..  .. _`untangling @root trees`:   directives.html#untangling-root-trees-with-the-untangle-commands
 
 .. ----- References to the tutorial.
 .. _`clones & views`:               intro.html#clones-views
@@ -115,6 +115,14 @@ Chunk
 
 In @root trees, doc parts are associated with the immediately following code
 part, if any.
+
+.. index::
+    pair: CWEB; Glossary
+
+CWEB
+
+    A `literate programming`_ language invented by Donald Knuth and Silvio Levy.
+    The `CWEB`_ language produces external files for the C language.
 
 .. index::
     pair:  Literate programing(Glossary)
@@ -497,14 +505,6 @@ Code part
 Contract:
 
     To hide all descendants of a node.
-
-.. index::
-    pair: CWEB; Glossary
-
-CWEB
-
-    A `literate programming`_ language invented by Donald Knuth and Silvio Levy.
-    The `CWEB`_ language produces external files for the C language.
 .. @+node:ekr.20100804133903.7252: *4* @rst-no-head D - G
 .. index::
     pair: Demote; Glossary
@@ -580,7 +580,7 @@ Headline
 
 .. index::
     pair: Hoist; Glossary
-    pair: Dehoist(Glossary)
+    pair: Dehoist; Glossary
 
 Hoist & dehoist
 

@@ -26,6 +26,8 @@ This chapter is a reference for all of Leo's directives.
 
 This chapter does *not* teach how to use Leo. It assumes you are *thoroughly*
 familiar with `Leo's tutorial`_.
+
+.. contents::
 .. @+node:ekr.20050828160132: *3* @rst-no-head links
 .. External links...
 .. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
@@ -692,35 +694,40 @@ color_cweb_comments_with_latex settings.
     Only the first \@wrap or \@nowrap directive in a node has any effect.
 
     \@wrap may appear in either headlines or body text.
-.. @+node:ekr.20100806170836.4392: *3* \@<file> directives
+.. @+node:ekr.20100806170836.4392: *3* Part 1: \@<file> directives
+.. index::
+    pair: @<file>, Reference
+
 This section discusses the \@<file> directives. These directives create or
 import external files.
 
-**Important**: Newcomers to Leo are *highly encouraged* to use either \@thin or
-\@auto files at first.
+**Important**: Newcomers to Leo should create external files with \@auto or
+\@thin. Use \@auto if your external files must not contain sentinel lines. Use
+\@thin otherwise. In particular, \@thin is **highly recommended** when sharing
+external files in a collaborative environment.
 
 **Note**: All these directive must appear in headlines.
 
 The following table summarizes the various ways of creating external files.
 
 +---------+------------+------------------+-----------------+
-|         | Sentinels  | Sections and     | Sections and    |
-| Kind    | in external| @others expanded | @others created |
-|         | files?     | on write?        | on read?        |
+|         | Sentinels  | Sections and     | File data stored|
+| Kind    | in external| @others expanded | in .leo file?   |
+|         | file?      | on write?        |                 |
 +---------+------------+------------------+-----------------+
-| @asis   | no         | no               | no              |
+| @asis   | no         | no               | yes             |
 +---------+------------+------------------+-----------------+
-| @auto   | no         | yes              | yes             |
+| @auto   | no         | yes              | no              |
 +---------+------------+------------------+-----------------+
-| @edit   | no         | yes              | no              |
+| @edit   | no         | yes: note 3      | no              |
 +---------+------------+------------------+-----------------+
-| @nosent | no         | yes              | no              |
+| @nosent | no         | yes              | yes             |
 +---------+------------+------------------+-----------------+
-| @shadow | Note 1     | yes              | yes             |
+| @shadow | Note 1     | yes              | no              |
 +---------+------------+------------------+-----------------+
-| @file   | yes        | yes              | .leo file       |
-| @thin   |            |                  | updated by      |
-| Note 2  |            |                  | external file   |
+| @file   | yes        | yes              |                 |
+| @thin   |            |                  | no              |
+| Note 2  |            |                  |                 |
 +---------+------------+------------------+-----------------+
 
 **Note 1**: \@shadow nodes create two files, a **public** file without sentinels
@@ -728,10 +735,12 @@ and a **private** file with sentinels.
 
 **Note 2**: \@file and \@thin nodes are synonyms.
 
+**Note 3**: Outline structure created in \@edit nodes is not saved in the
+external file.
+
 .. @+node:ekr.20100806170836.4393: *4* \@asis <path>
 .. index::
     pair: @asis; Reference
-    pair: @@ convention for headlines; Reference
 
 The \@asis directive creates an external file without sentinels and without any
 expansions.
@@ -743,34 +752,39 @@ section definitions, without expanding section references, and without treating
 directives specially in any way. In particular, Leo copies all directives,
 including \@ or \@c directives, to the external file as text.
 
-**The @@ convention in headlines**: Within \@asis trees only, if a headline
-starts with \@@, Leo writes everything in the headline following the \@@ just
-before the corresponding body text.
+.. index::
+    pair: @@ convention in @asis trees; Reference
+
+**The @@ convention**: Within \@asis trees only, if a headline starts with \@@,
+Leo writes everything in the headline following the \@@ just before the
+corresponding body text.
 
 Files created from \@asis trees contain *nothing* not contained in body text (or
 \@@ headlines). In particular, if body text does not end in a newline, the first
 line from the next node will concatenated to the last line of the preceding
 node.
 
-Leo writes no sentinels to the external file, so Leo can not update the outline
+Within \@asis trees, Leo writes no sentinels to the external file, so Leo can not update the outline
 using changes to the external file. When reading .leo files, Leo does *not* read
 external files created from \@asis nodes. Instead, all data in an \@asis tree is
 stored in the .leo file.
 
-Leo recognizes the \@ignore directive only in the *ancestors* of \@asis nodes.
-This allows you to use the \@ignore directive to prevent Leo from writing \@asis
-trees.
+Within \@asis trees, Leo recognizes the \@ignore directive only in the
+*ancestors* of \@asis nodes. This allows you to use the \@ignore directive to
+prevent Leo from writing \@asis trees.
 
 **Note**: \@file-asis and \@silent are deprecated synonyms for \@asis.
 .. @+node:ekr.20100806170836.4396: *4* \@auto <path>
 .. index::
     pair: @auto; Reference
-    pair: importer; Reference
-    pair: organizer tag; Reference
+    pair: Importer; Reference
+    pair: Organizer tag; Reference
     pair: Strict language; Reference
     pair: Underindented line; Reference
 
-The \@auto directive imports an external file into a tree of nodes.
+The \@auto directive imports an external file into a tree of nodes. Using \@auto
+is *highly recommended* when using external files that must not contain Leo
+sentinels.
 
 \@auto trees allow people to use Leo in collaborative environments without using
 sentinels in external files. Even without sentinels, \@auto trees can change
@@ -832,7 +846,7 @@ lines. Such lines can not change the meaning of Python programs.
 .. index::
     pair: @edit; Reference
 
-The \@edit directive Imports an external file into a single node.
+The \@edit directive imports an external file into a single node.
 
 When reading \@edit nodes, Leo reads the entire file into the \@edit node. Lines
 that look like sentinels will be read just as they are.
@@ -848,7 +862,7 @@ structure created by sections references, \@all and \@others is not preserved.
 The \@file directive is a synonym for \@thin.
 
 Prior to Leo 4.7, \@file worked differently from \@thin. This should not be
-a problem: Leo 4.7 can read external all files written by Leo 4.6.
+a problem: Leo 4.7 can read all external files written by Leo 4.6.
 .. @+node:ekr.20100806170836.4399: *4* \@nosent <path>
 .. index::
     pair: @nosent; Reference
@@ -859,7 +873,7 @@ When writing an \@nosent tree, Leo expands section references, \@all and
 \@others directives, but Leo writes no sentinels to the external file. Thus, Leo
 can not update \@nosent trees from changes made to the external file.
 
-When reading an outline, Leo does *not* read the external file. Instead, all the
+When reading an \@nosent node, Leo does *not* read the external file. Instead, all the
 data in the \@nosent tree is stored in the .leo file.
 
 **Note**: \@auto or \@shadow are usually better choices than \@nosent for
@@ -896,11 +910,10 @@ When reading external files created by \@thin, the sentinels allow Leo to
 recreate all aspects of the outline. In particular, Leo can update the
 outline based on changes made to the file by another editor. 
 
-**Important**: \@thin is the recommended way to create and edit most files.
-Use \@thin unless you have a very good reason not to do so. In particular,
-using \@thin nodes is **highly recommended** when sharing external files in
-a collaborative environment.
-.. @+node:ekr.20100806170836.4411: *3* \@all and \@others
+**Important**: \@thin is the recommended way to create and edit most files. In
+particular, using \@thin nodes is **highly recommended** when sharing external
+files in a collaborative environment.
+.. @+node:ekr.20100806170836.4411: *3* Part 2: \@all and \@others
 These control how Leo places text when writing external files.
 They are two of the most important directives in Leo.
 
@@ -933,58 +946,52 @@ They are two of the most important directives in Leo.
 
     A single node may contain only one \@others directive, but descendant nodes
     may have other \@others directives.
-.. @+node:ekr.20100806170836.4398: *3* Syntax coloring directives
+.. @+node:ekr.20100806170836.4398: *3* Part 3: Syntax coloring directives
+The \@color, \@killcolor, \@nocolor and \@nocolor-node directives control how
+Leo colors text in the body pane.
+
+.. index::
+    pair: Ambiguous node; Reference
+
+These directives typically affect the node in which they appear and all
+descendant nodes. Exception: an **ambiguous node**, a node containing both
+\@color and \@nocolor directives, has no effect on how Leo colors text in
+descendant nodes.
+
 .. glossary::
     :sorted:
 
 .. index::
     pair: @color; Reference
-    pair: Ambiguous node; Reference
 
 \@color
 
     Enables syntax coloring until the next \@nocolor directive.
-
-    The \@killcolor and \@nocolor-node directives override the \@color
-    directive.
-
-    An **ambiguous node** is a node containing both \@color and \@nocolor
-    directives. Such a node has no effect on the syntax coloring of descendant
-    nodes.
 
 .. index::
     pair: @killcolor; Reference
 
 \@killcolor
 
-    Disables syntax coloring in a node, regardless of other \@color,
-    \@nocolor or \@nocolor-node directives in that node.
+    Disables syntax coloring in a node, overriding all \@color, \@nocolor or
+    \@nocolor-node directives in the same node.
 
 .. index::
     pair:  @nocolor; Reference
 
 \@nocolor
 
-    Disables syntax coloring until the next \@killcolor, \@nocolor or
-    \@nocolor-node directive.
-
-    The \@killcolor and \@nocolor-node override \@nocolor.
-
-    Ambiguous nodes (nodes containing both \@color and \@nocolor directives)
-    have no effect on the syntax coloring of descendant nodes.
+    Disables syntax coloring until the next \@nocolor directive.
 
 .. index::
     pair:  @nocolor-node; Reference
 
 \@nocolor-node
 
-    The \@nocolor-node directive disables coloring for only the node containing
-    it.
-
-    The \@killcolor directive overrides the \@nocolor-node directive.
-
-    The @nocolor-node directive overrides the \@color directive.
-.. @+node:ekr.20100806170836.4408: *3* Directives that change sentinel comments
+    Disables coloring for only the node containing it. The \@nocolor-node
+    directive overrides the \@color and \@nocolor directives within the same
+    node.
+.. @+node:ekr.20100806170836.4408: *3* Part 4: Dangerous directives
 These directives alter how Leo represents data in external files. They are
 **dangerous**--mistakes in using these sentinels can make it impossible for Leo
 to read the resulting external file. Use them with care!
@@ -1069,7 +1076,7 @@ Nevertheless, these sentinels can be useful in special situations.
     or the end of the body text containing the \@raw directive. Within this
     range, Leo ignores all section references and directives, and Leo generates
     no additional leading whitespace.
-.. @+node:ekr.20100804133903.7262: *3* All other directives
+.. @+node:ekr.20100804133903.7262: *3* Part 5: All other directives
 This section is a reference guide for all other Leo directives, organized
 alphabetically.
 
