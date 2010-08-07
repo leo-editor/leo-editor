@@ -883,8 +883,6 @@ outline based on changes to the *public* file. In this way, \@shadow provides
 many of the benefits of \@thin trees without writing sentinels in the (public)
 external file.
 
-This directive must appear in the node's headline.
-
 Leo can do an initial import of \@shadow trees by parsing the corresponding
 public file, exactly as is done for \@auto nodes.
 .. @+node:ekr.20100806170836.4401: *4* \@thin <path>
@@ -988,8 +986,8 @@ They are two of the most important directives in Leo.
     The @nocolor-node directive overrides the \@color directive.
 .. @+node:ekr.20100806170836.4408: *3* Directives that change sentinel comments
 These directives alter how Leo represents data in external files. They are
-dangerous--mistakes in using these sentinels can make it impossible for Leo to
-read the resulting external file. Use them with care!
+**dangerous**--mistakes in using these sentinels can make it impossible for Leo
+to read the resulting external file. Use them with care!
 
 Nevertheless, these sentinels can be useful in special situations.
 
@@ -999,7 +997,7 @@ Nevertheless, these sentinels can be useful in special situations.
 .. index::
     pair:  @comment; Reference
 
-\@comment <1, 2 or three delimiters>
+\@comment <1, 2 or three comment delims>
 
     Sets the comment delimiters in \@thin, \@file and \@shadow files.
     **Important**: Use \@comment for unusual situations only. In most cases, you
@@ -1033,7 +1031,7 @@ Nevertheless, these sentinels can be useful in special situations.
 .. index::
     pair:  @delims; Reference
 
-\@delims <1 or 2 comment delimiters>
+\@delims <1 or 2 comment delims>
 
     Sets comment delimiters in external files containing sentinel lines.
 
@@ -1062,18 +1060,12 @@ Nevertheless, these sentinels can be useful in special situations.
     the \@+leo sentinel and the initial \@+body and \@+node sentinels.
 
 .. index::
+    pair:  @raw; Reference
     pair:  @end_raw; Reference
 
-\@end_raw
+\@raw and \@end_raw
 
-    Ends a section of 'raw' text that started with an \@raw directive.
-
-.. index::
-    pair:  @raw; Reference
-
-\@raw
-
-    Starts a section of "raw" text that ends *only* with the \@end_raw directive
+    \@raw starts a section of "raw" text that ends *only* with the \@end_raw directive
     or the end of the body text containing the \@raw directive. Within this
     range, Leo ignores all section references and directives, and Leo generates
     no additional leading whitespace.
@@ -1194,7 +1186,7 @@ and they must start at the leftmost column of the node.
 
     A node may contain at most one \@language directive.
 
-    The valid language names are: actionscript,ada,autohotkey, batch, c, config,
+    The valid language names are: actionscript, ada, autohotkey, batch, c, config,
     cpp, csharp, css, cweb, elisp, forth, fortran, fortran90, haskell, haxe,
     html, ini, java, javascript, kshell, latex, lua, noweb, pascal, perl,
     perlpod, php, plain, plsql, python, rapidq, rebol, rest, rst, ruby, shell,
@@ -1208,10 +1200,10 @@ and they must start at the leftmost column of the node.
         @language html
         @language HTML
 
-    The \@language directive also specifies how the colorizer operates.
-    For language x, the file leo/modes/x.py describes how to colorize the language.
-    To see the languages presently supported, look in the leo/modes directory.
-    There are over 100 such languages.
+    The \@language directive also controls syntax coloring. For language x, the
+    file leo/modes/x.py describes how to colorize the language. To see the
+    languages presently supported, look in the leo/modes directory. There are
+    over 100 such languages.
 
 .. index::
     pair:  @last; Reference
