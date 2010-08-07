@@ -34,7 +34,6 @@ then continues with a discussion of commands in each of Leo's menus.
 
 .. Relative links...
 .. _`Chapter 4\: Writing Programs in Leo`:              directives.html
-.. _`Chapter 6\: Leo and Literate Programming`:         design.html
 .. _`Chapter 8: Customizing Leo`:                       customizing.html
 .. _`Clones and views`:                                 intro.html#clones-views
 .. _`Creating script buttons`:                          scripting.html#creating-script-buttons
