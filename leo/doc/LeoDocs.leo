@@ -164,6 +164,10 @@
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
+<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+</v>
 <v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
@@ -447,6 +451,10 @@ else:
 <t tx="ekr.20070628083442"></t>
 <t tx="ekr.20070701101808"></t>
 <t tx="ekr.20080203101507"></t>
+<t tx="ekr.20080301071818"></t>
+<t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+    Download Leo[4.7.1 final]&lt;/a&gt;
+</t>
 <t tx="ekr.20080412124815.1"></t>
 <t tx="ekr.20080730212711.14"></t>
 <t tx="ekr.20080923181012.1">@ @rst-options
