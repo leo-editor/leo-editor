@@ -103,10 +103,10 @@ had become used to. -- Anon
 "[Leo] should either replace or greatly augment the development tools that I
 use." -- Zak Greant
 
-"Leo is a marriage of outlining and literate programming. Pure genius. The main
-reason I am impressed with this tool is that it doesn't affect your choice of
-tools. You can use whatever IDE for whatever language and switch back and forth
-between Leo and it." -- Austin King
+"Leo is a marriage of outlining and programming. Pure genius. The main reason I
+am impressed with this tool is that it doesn't affect your choice of tools. You
+can use whatever IDE for whatever language and switch back and forth between Leo
+and it." -- Austin King
 
 "Leo is the best IDE that I have had the pleasure to use. I have been using it
 now for about 2--3 months. It has totally changed not only the way that I
@@ -144,10 +144,10 @@ hierarchy of folders and text nesting within the files." -- Alex Abacus
 
 "Leo reminds me a great deal of things I loved when I used Userland's Frontier
 (an outlining cms with a native oodb) - but Frontier wasn't hackable enough for
-me, and it wasn't oriented towards coding and literate programming, and you
-couldn't round-trip rendered pages (big Leo win). This is really a super tool -
-in a matter of days I've started to use it on all my projects and I still
-haven't figured out how I lived without it." -- John Sequeira
+me, and it wasn't oriented towards coding..., and you couldn't round-trip
+rendered pages (big Leo win). This is really a super tool - in a matter of days
+I've started to use it on all my projects and I still haven't figured out how I
+lived without it." -- John Sequeira
 
 "Leo is EXACTLY the kind of outliner I was looking for--fantastic job!"
 -- Steve Allen
@@ -180,24 +180,6 @@ views on the CFA course material. My main view follows the prescribed study
 guide. Another view is organized like the textbooks. Yet another gives me a
 glossary of terms. And when I'm done, I'll have some nice libraries...I can
 re-use later in other projects." -- Michael Manti
-.. @+node:ekr.20050830074815.7: *3* Leo extends, completes and simplifies literate programming
-"I've tried Literate Programming tools off and on for more than 10 years, mainly
-because the promise was so great. I've abandoned them every time because working
-with the various Cweb-like tools was so awkward. Leo changes all that. The most
-important benefits promised by Literate Programming are realized by using Leo,
-without the awkwardness of the other tools." -- Dave Hein
-
-"[Leo] has enabled me to use Literate Programming in production for the first
-time. When I figured out I could do it in plain text and export to DocBook for
-automated typesetting, I was on my way. Because I only do business and utility
-software, I don't need the sophistication of LaTeX markup. Writing the
-documentation and the code in the same outline at the same time improves the
-whole product. Being able to automatically export both with just two key presses
-(tangle and export-to-DocBook) is a real luxury." -- Michael Dawson
-
-I wanted to thank you for the effort you've put into Leo. It looks fantastic.
-I've always though that Literate Programming was a good idea, but the tools were
-completely un-workable. -- Bob Hustead
 .. @+node:ekr.20050830074815.8: *3* Leo is a superb documentation tool
 "I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful documents,

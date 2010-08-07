@@ -45,21 +45,20 @@ Here are the most important dates in Leo's history:
 Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured
 documentation." I had known of literate programming since the mid 1980's, but I
 never understood how to make it work for me. In November 1995 I started thinking
-about literate programming in earnest. Over the holidays I mused about making
-literate programs more understandable. In January 1996 the fog of confusion
-suddenly cleared. I summarized my thinking with the phrase, **web are outlines
-in disguise**. I suspected that outline views were the key to literate
-programming, but many details remained obscure.
+about programming in earnest. Over the holidays I mused about making programs
+more understandable. In January 1996 the fog of confusion suddenly cleared. I
+summarized my thinking with the phrase, **web are outlines in disguise**. I
+suspected that outline views were the key to programming, but many details
+remained obscure.
 .. @+node:ekr.20050902105852.1: *3* Breakthrough
 March 5, 1996, is the most important date in Leo's history. While returning from
 a day of skiing, I discussed my thoughts with Rebecca. During that conversation
-I realized that I could use the MORE outliner as a prototype for a "literate
-outliner." I immediately started work on my first literate outline. It quickly
-became apparent that outlines work: all my old problems with literate
-programming vanished. The @others directive dates from this day. I realized
-that MORE's outlines could form the basis for Leo's screen design. Rather
-than opening body text within the outline, as MORE does, I decided to use a
-separate body pane.
+I realized that I could use the MORE outliner as a prototype for a "programming
+outliner." I immediately started work on my first outlined program. It quickly
+became apparent that outlines work: all my old problems with programming
+vanished. The @others directive dates from this day. I realized that MORE's
+outlines could form the basis for Leo's screen design. Rather than opening body
+text within the outline, as MORE does, I decided to use a separate body pane.
 
 I hacked a translator called M2C which allowed me to use MORE to write
 real code. I would write code in MORE, copy the text to the clipboard in
@@ -316,9 +315,9 @@ quickly became apparent that most nodes could be unnamed. All I needed was the
 From the start, simplified noweb was a joy to use. Indeed, the @others directive
 could replace all section definition lines. Furthermore, I could make @doc
 directive optional if the body pane started in "code mode". But this meant that
-plain body text could become a "literate" program! This was an amazing
-discovery. These Aha's got me excited about Leo2. This was important, as it
-motivated me to do a lot of difficult design work.
+plain body text could become a program! This was an amazing discovery. These
+Aha's got me excited about Leo2. This was important, as it motivated me to do a
+lot of difficult design work.
 .. @+node:EKR.20040524104904.251: *5* User interaction
 In spite of this excitement, I was uneasy. After much "daydreaming" I realized
 that I was afraid that reading and writing external files would be interrupted by

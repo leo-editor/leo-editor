@@ -430,11 +430,6 @@ More than one @first directive may exist, like this::
 
     @first #! /usr/bin/env python
     @first # more comments.
-.. @+node:ekr.20050830115714.22: *5* How do I use Leo to create CWEB files?
-Leo has good support for `CWEB`_.
-@thin trees can organize any part of CWEB code using *noweb* sections.
-You can also use @asis or @nosent trees to create cweb files.
-See `CWEB mode`_ for full details.
 .. @+node:ekr.20050830115714.24: *5* Can @file trees contain material not in the external file?
 No. Everything in an @thin trees must be part of the external file: orphan and
 \@ignore nodes are invalid in @thin trees. This restriction should not be

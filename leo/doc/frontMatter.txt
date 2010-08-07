@@ -90,13 +90,14 @@ Steve Zatz.
 .. @+node:ekr.20040416080538: *4* @rst-no-head special mentions
 The following deserve special mention:
 David Brock wrote TSyntaxMemo.
-The late Bob Fitzwater kept me focused on design. Donald Knuth invented literate programming and the CWEB language.
+The late Bob Fitzwater kept me focused on design.
+Donald Knuth invented the CWEB language.
 Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
 Joe Orr created XSLT stylesheets for Leo; see http://www.jserv.com/jk_orr/xml/leo.htm.
 Joe Orr also created an outstanding set of tutorials for Leo; see http://www.evisa.com/e/sb.htm.
 LeoUser (B.H.) contributed numerous plugins and was the inspiration for Leo's minibuffer.
 LeoUser also wrote jyLeo: Leo for Jython.
-Bernhard Mulder proposed a new way of untangling external files.
+The late Bernhard Mulder proposed a new way of untangling external files.
 John K. Ousterhout created tcl/Tk. Neal Norwitz wrote PyChecker.
 Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 Paul Paterson suggested the plugin architecture,
@@ -109,7 +110,7 @@ Gil Shwartz helped with unicode support.
 Phil Straus has been a great friend and constant support.
 Guido van Rossum created Python, Tkinter and the Python License.
 Dave Winer created MORE.
-Ville M. Vainio created ILeo.
+Ville M. Vainio created ILeo and has made many other valuable contributions to Leo.
 Dan Winkler helped support Leo on the Mac.
 
 Special thanks to my family.

@@ -29,10 +29,6 @@ familiar with `Leo's tutorial`_.
 
 .. contents::
 .. @+node:ekr.20050828160132: *3* @rst-no-head links
-.. External links...
-.. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _`noweb`:    http://www.eecs.harvard.edu/~nr/noweb/
-
 .. Links to other chapters
 .. _front:                  front.html
 .. _`Leo's tutorial`:       intro.html

@@ -9,7 +9,7 @@
 ..  generate_rst=True
 ..  http_server_support = False
 ..  show_organizer_nodes=True
-..  show_headlines=True
+..  show_headlines=False
 ..  show_leo_directives=True
 ..  stylesheet_path=..\doc
 ..  write_intermediate_file = True
@@ -22,43 +22,19 @@
 Glossary
 #########
 
-.. glossary::
-    :sorted:
-.. @+node:ekr.20100804133903.7258: *3* @rst-no-head links
-.. Links used in this document.
-
-.. ----- External links.
-
-..  .. _`CWEB`:                 http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-..  .. _`literate programming`: http://www.literateprogramming.com/
-..  .. _`noweb`:                http://www.eecs.harvard.edu/~nr/noweb/
-.. _`rST primer`:           http://docutils.sourceforge.net/docs/user/rst/quickstart.html
-
-.. ----- Relative links.
-
+.. Links
 .. _`Chapter 8: Customizing Leo`:   customizing.html
 .. _`Writing plugins and hooks`:    writingPlugins.html
+.. _`Leo's reference`:  directives.html
+.. _`leo's tutorial`:   intro.html
 
-.. _`programming reference`:    directives.html
-.. _`@asis`:                    directives.html#asis-and-noref
-.. _`@auto`:                    directives.html#auto
-.. _`@file`:                    directives.html#file-and-thin
-.. _`@nosent`:                  directives.html#nosent
-.. _`@root`:                    directives.html#root
-.. _`@thin`:                    directives.html#file-and-thin
-.. _`@unit documentation`:      directives.html#root
-..  .. _`tangling @root trees`:     directives.html#tangling-root-trees-with-the-tangle-commands
-..  .. _`untangling @root trees`:   directives.html#untangling-root-trees-with-the-untangle-commands
+This is a short glossary of important terms in Leo's world. For more information
+about terms, look in the index for links to discussions in other places,
+especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 
-.. ----- References to the tutorial.
-.. _`clones & views`:               intro.html#clones-views
-.. _`leo's tutorial`:               intro.html
-.. _`external files section`:        intro.html#derived-files
-.. _`directives for programming`:   intro.html#directives-for-programming
-.. _`leo directives`:               intro.html#leo-directives
-.. _`quick start for programmers`:  intro.html#quick-start-for-programmers
-.. _`sentinels lines`:              intro.html#sentinel-lines
-.. @+node:ekr.20100804133903.7250: *3* @rst-no-head @
+.. glossary::
+    :sorted:
+.. @+node:ekr.20100804133903.7250: *3* \@
 .. index::
     pair: @; Glossary
 
@@ -88,7 +64,6 @@ Glossary
 
 \@all
     Copies the body text of all nodes in an @thin tree to the external file.
-    For more information, see `directives for programming`_ in `Leo's tutorial`_.
 
 .. index::
     pair: @asis; Glossary
@@ -254,8 +229,7 @@ Glossary
 \@others
 
     Copies the body text of all nodes *except* section definition nodes in an
-    @thin tree to the corresponding external file. For more information, see
-    `directives for programming`_ in `Leo's tutorial`_.
+    @thin tree to the corresponding external file.
 
 .. index::
     pair: @pagewidth; Glossary
@@ -304,7 +278,7 @@ Glossary
 \@wrap
 
     Enables line wrapping in Leo's body pane.
-.. @+node:ekr.20100804133903.7251: *3* @rst-no-head A - C
+.. @+node:ekr.20100804133903.7251: *3* A - C
 .. index::
     pair: Body pane; Glossary
 
@@ -364,7 +338,7 @@ Code part
 Contract:
 
     To hide all descendants of a node.
-.. @+node:ekr.20100804133903.7252: *3* @rst-no-head D - G
+.. @+node:ekr.20100804133903.7252: *3* D - G
 .. index::
     pair: Demote; Glossary
 
@@ -383,8 +357,7 @@ Descendant
 Directive
 
     A keyword, preceded by an '@' sign, in body text that controls Leo's
-    operation. The keyword is empty for the @ directive. For more information,
-    set the `Leo directives`_ section of `Leo's tutorial`_.
+    operation. The keyword is empty for the \@ directive.
 
 .. index::
     pair: Doc part; Glossary
@@ -396,6 +369,8 @@ Doc part
 
 .. index::
     pair: Escape convention; Glossary
+
+.. _`noweb`: http://www.eecs.harvard.edu/~nr/noweb/
 
 Escape convention
 
@@ -420,8 +395,7 @@ Expand
 
 External file
 
-    The file created as the result writing an \@<file> node.
-    For more information, see the `external files section`_ of `Leo's tutorial`_.
+    A file outside of Leo that is connected to Leo by an \@<file> node.
 
 .. index::
     pair: Grandchild; Glossary
@@ -429,7 +403,7 @@ External file
 Grandchild
 
     The child of a child of a node.
-.. @+node:ekr.20100804133903.7253: *3* @rst-no-head H - L
+.. @+node:ekr.20100804133903.7253: *3* H - L
 .. index::
     pair: Headline; Glossary
 
@@ -465,7 +439,7 @@ Log Pane
 
     The part of Leo's main window that shows informational messages from Leo. It
     also contains the Find tab, the Spell tab, the autocompletion tab.
-.. @+node:ekr.20100804133903.7254: *3* @rst-no-head M - O
+.. @+node:ekr.20100804133903.7254: *3* M - O
 .. index::
     pair: Mark; Glossary
 
@@ -533,7 +507,7 @@ Outline pane
 
     The pane containing a visual representation of the entire outline, or a part
     of the outline if the outline is hoisted.
-.. @+node:ekr.20100804133903.7255: *3* @rst-no-head P - R
+.. @+node:ekr.20100804133903.7255: *3* P - R
 .. index::
     pair: Parent; Glossary
 
@@ -561,6 +535,8 @@ Promote
     pair: reStructuredText; Glossary
     pair: rST; Glossary
 
+.. _`rST primer`: http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+
 reStructuredText (rST)
 
     A simple, yet powerful markup language for creating .html, or LaTeX output
@@ -572,22 +548,20 @@ reStructuredText (rST)
 Root
 
     The first node of a .leo file, outline, suboutline or @<file> tree.
-.. @+node:ekr.20100804133903.7256: *3* @rst-no-head S - Z
+.. @+node:ekr.20100804133903.7256: *3* S - Z
 .. index::
     pair: Section; Glossary
 
 Section
 
-    A fragment of text that can be incorporated into external files. See the
-    `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+    A fragment of text that can be incorporated into external files.
 
 .. index::
     pair: Section definition; Glossary
 
 Section definition
 
-    The body text of a section definition node. See the
-    `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+    The body text of a section definition node.
 
 .. index::
     pair: Section definition node; Glossary
@@ -595,8 +569,7 @@ Section definition
 Section definition node
 
     A node whose headline starts with a section name and whose body text defines
-    a section. See the `Quick start for programmers`_ in `Leo's tutorial`_ for
-    more details.
+    a section.
 
 .. index::
     pair: Section name; Glossary
@@ -604,8 +577,7 @@ Section definition node
 Section name
 
     A name enclosed in <\< and >\>. Section names may contain any characters
-    except newlines and ">>". See the `Quick start for programmers`_ in `Leo's
-    tutorial`_ for more details.
+    except newlines and ">>".
 
 .. index::
     pair: Section reference; Glossary
@@ -613,8 +585,7 @@ Section name
 Section reference
 
     A section name appearing in a code part. When writing to an external file,
-    Leo replaces all references by their definitions. See the
-    `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
+    Leo replaces all references by their definitions.
 
 .. index::
     pair: Sentinel; Glossary
@@ -681,7 +652,6 @@ View node
     A node that represents a view of an outline. View nodes are typically
     ordinary, non-cloned nodes that contain cloned descendant nodes. The cloned
     descendant nodes comprise most of the data of the view. Other non-cloned
-    nodes may add additional information to the view. See `clones & views`_ in
-    `Leo's tutorial`_ for more information.
+    nodes may add additional information to the view.
 .. @-all
 .. @-leo
