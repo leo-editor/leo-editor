@@ -56,6 +56,48 @@ Writing plugins is quite similar to writing any other Leo script.  See
    details, see the section called `event handlers`_ in Leo's scripting chapter.
 
 The rest of this chapters discusses topics related specifically to plugins.
+.. @+node:ville.20100807185755.4510: *3* enabled-plugins
+@enabled-plugins node is as list of plugins to load. If you have @enabled-plugins
+node in your myLeoSettings.leo, the plugins are loaded from there. If such a
+node doesn't exist, the global leoSettings.leo is used instead.
+
+The @enabled-plugins bundled in leoSettings.leo contains a list of default
+(recommended) plugins. For your own @enabled-plugins in myLeoSettings.leo, you
+should use the node in leoSettings.leo as a starting point unless you are
+certain you want to disable a recommended plugin.
+
+@enabled-plugins nodes contain the list of enabled plugins, one per line.
+
+Comment lines starting with '#' are ignored.
+
+Plugins are essentially normal python modules, and loading a plugin basically
+means importing it and running the "init" function in the module's root level
+namespace. A line in @enabled-plugins is a module name that leo should import.
+
+Here's an example @enabled-plugins node::
+
+    # Standard plugins enabled in official distributions....
+
+    plugins_menu.py
+    quicksearch.py
+
+    # third party plugins
+
+    # 'leoplugin' module inside python package 'foo'
+    foo.leoplugin
+
+    # top-level module
+    barplugin
+
+Note that some entries end with .py. This is done to retain backwards
+compatibility - if an entry ends with .py, it means a plugin in Leo's 'plugins'
+directory (package) and is translated to e.g. "leo.plugins.plugins_menu" before
+importing.
+
+Normally, a third party plugin should be a basic python module that is installed
+globally for the python interpreter with "python setup.py install". Installing 
+plugins to Leo's 'plugins' directory is not recommended, as such plugins 
+can disappear when Leo is upgraded. 
 .. @+node:EKR.20040524104904.240: *3* Support for unit testing
 The plugins test suite creates a new convention: if a plugin has a function at
 the outer (module) level called unitTest, Leo will call that function when
