@@ -68,12 +68,9 @@ The `Glossary`_ is also worth reading.
 
 .. ----- External references.
 
-.. _`LaTeX`:                    http://www.latex-project.org/
 .. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
 .. _`Leo's home page`:          http://webpages.charter.net/edreamleo/front.html
-.. _`Literate Programming`:     http://www.literateprogramming.com/
 .. _`MySQL`:                    http://www.mysql.com/
-.. _`noweb`:                    http://www.eecs.harvard.edu/~nr/noweb/
 .. _`Python`:                   http://www.python.org/
 .. _`reStructuredText`:         http://docutils.sourceforge.net/rst.html
 .. _`XML`:                      http://en.wikipedia.org/wiki/XML
@@ -95,14 +92,12 @@ The `Glossary`_ is also worth reading.
 .. _`Leo's Installation Guide`:                     install.html
 .. _`Chapter 4: Writing Programs in Leo`:           directives.html
 .. _`Chapter 5: Using Leo's Commands`:              commands.html
-.. _`Chapter 6: Leo and Literate Programming`:      design.html
 .. _`Chapter 7: Scripting Leo with Python`:         scripting.html
 .. _`Chapter 8: Customizing Leo`:                   customizing.html
 .. _`Glossary`:                                     genindex.html
 
-.. For reasons unknown, this image must appear in the _images folder on the web site.
+.. This image must appear in the _images folder on the web site.
 .. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
-
 .. @+node:ekr.20091130111843.6814: *3* Leo's main window
 .. index::
     pair: Outline pane; Tutorial
@@ -125,7 +120,8 @@ very top, a **status area** and a **mini-buffer** at the very bottom.
     pair:  Icon box; Tutorial
     pair:  Expansion box; Tutorial
 
-The outline pane
+Outline pane
+
     The outline pane shows your project as an outline. The outline
     contains all your project's data. An outline consists of **nodes**. The
     **icon box** is a small icon directly to the left of the headline text. If a
@@ -143,6 +139,7 @@ The outline pane
     pair:  Descendant; Tutorial
 
 Node
+
     Each outline node has two two parts, a **headline** and **body text**. The outline pane
     shows headlines. Selecting a headline selects the entire node; the node's
     body text appears in the body pane. Leo uses standard terminology to
@@ -153,6 +150,7 @@ Node
     pair: Body pane; Tutorial
 
 Body pane
+
     The body pane contains the body text of the node selected in the
     outline pane.
 
@@ -160,12 +158,14 @@ Body pane
     pair: Log pane; Tutorial
 
 Log pane
+
     The log pane contains informational messages from Leo or your scripts.
 
 .. index::
     pair: Icon area; Tutorial
 
 Icon area
+
     Depending on what plugins are enabled, the icon area may contain
     buttons and other widgets that extend what Leo can do. The scripting plugin
     makes it easy to add buttons to the icon area.
@@ -174,6 +174,7 @@ Icon area
     pair: Status area; Tutorial
 
 Status area
+
     The status area shows the line and column containing the body text's cursor,
     and the **UNL** (Uniform Node Location), the path from the top of the outline
     to the selected node.  This path will change as you change outline nodes.
@@ -182,6 +183,7 @@ Status area
     pair: Minibuffer; Tutorial
 
 Minibuffer
+
     You can type command and search strings in the minibuffer. It works much
     like the Emacs mini-buffer. To enter a command, type <Alt-x> followed by the
     command name and then <return>. To type a search string, type <ctrl-f>
@@ -191,40 +193,83 @@ Minibuffer
 .. index::
     pair: Outline commands; Tutorial
 
-You can use Leo as fairly typical outliner. Play around with some of the
-commands from the Outline menu:
+You can use Leo as fairly typical outliner. Click the expansion box of nodes to
+show and hide their children.
 
-- Click the expansion box of nodes to show and hide their children.
+.. index::
+    pair: Tab completion: Tutorial
 
-- The Insert Node command (Ctrl+I) inserts a new headline into the outline.
+Play around with some of the commands from the Outline menu or from the
+minibuffer. The keyboard shortcut and minibuffer key sequence appear in
+parentheses. **Note**: as usual, you can use tab completion in the minibuffer.
 
-- The Cut Node command (Ctrl+Shift+X) deletes a headline and all its children,
-  and copies the structure to clipboard - ready to paste with Paste Node command
-  (Ctrl+Shift+V). Use the Copy Node command (Ctrl+Shift+C) to copy node to
-  clipboard without deleting it from outline. Copy-paste command family works
-  across different Leo documents.
+Edit Headline (Ctrl+H or <Alt-x>edit-headline<return>)
 
-- The Move Up (Ctrl+U), Move Down (Ctrl+D), Move Left (Ctrl+L) and Move Right
-  (Ctrl+R) commands move the currently selected node, along with all its
-  descendants.
+    Begins editing of the headline text of a node.
+    To end editing, hit <return> or <Ctrl-g>
 
-- The Promote (Ctrl+}) command makes all the children of a headline siblings of
-  the headline. The Demote (Ctrl+{) command makes all following siblings of a
-  headline children of the headline.
+Insert Node (Ctrl+I or <Alt-x>insert-node<return>)
 
-- Move around the tree and expand/collapse nodes by pressing Alt + arrow keys.
-  This also moves the focus to tree, so, after pressing Alt + arrow, you can
-  move around by using arrow keys alone. Return the focus to the body control by
-  pressing Enter.
+    Inserts a new headline into the outline.
 
-- To edit the headline, use press Ctrl+H. This works regardless of whether body
-  or headline has focus.
+Cut Node (Ctrl+Shift+X or <Alt-x>cut-node<return>)
 
-- We'll discuss the Clone Node command in the next section.
+    Deletes a node and all its descendants, copying them to the clipboard.
 
-You enter body text for any node by selecting the node's headline in the outline
-pane and then typing in the body pane. Leo has a full range of
-`editing commands`_ that apply to the body pane.
+Paste Node (Ctrl+Shift+V or <Alt-x>paste-node<return>)
+
+    Pastes a tree copied by the Cut Node command.
+
+Copy Node (Ctrl+Shift+C or <Alt-x>copy-node<return>)
+
+    Copies a node and all its descendants to clipboard without deleting it from
+    outline. You can copy a tree from one Leo outline to another using Copy Node
+    and Paste Node.
+
+Contract or Go Left (Alt-Left-Arrow or <Alt-x>contract-or-go-left<return)
+
+    Contracts a node if it is expanded, otherwise selects its parent.
+
+Expand and Go Right (Alt-Right-Arrow or <Alt-x>expand-and-go-right<return>)
+
+    Select a node's first child, expanding the original node if needed.
+
+Goto Prev Visible (Alt-Up-Arrow or <Alt-x>goto-prev-visible<return>)
+
+    Select the previous visible node.
+
+Goto Next Visible (Alt-Down-Arrow or <Alt-x>goto-next-visible<return>)
+
+    Select the next visible node.
+
+Move Up (Ctrl+U or <Alt-x>move-outline-up<return>)
+
+    Moves a node up in the outline.
+
+Move Down (Ctrl+D or <Alt-x>move-outline-down<return>)
+
+    Moves a node down.
+
+Move Left (Ctrl+L or <Alt-x>move-outline-left<return>)
+
+    Moves a node left.
+
+Move Right (Ctrl+R or <Alt-x>move-outline-right<return>)
+
+    Moves a node right.
+
+Promote (Ctrl+} or <Alt-x>promote<return>) 
+
+    Makes all the children of a node to be siblings of the node.
+
+Demote (Ctrl+{ or <Alt-x>demote<return>)
+
+    Makes all following siblings of a node to be children of the headline.
+
+Please experiment with Leo's outline now. Move around the tree and
+expand/collapse nodes by pressing Alt + arrow keys. This also moves the focus to
+tree, so, after pressing Alt + arrow, you can move around by using arrow keys
+alone. Return the focus to the body control by pressing Enter.
 .. @+node:ekr.20091130111843.6846: *3* External files and @thin nodes
 .. index::
     pair: External file; Tutorial
@@ -365,7 +410,7 @@ than one \@others directive. However, nodes may contain as many section
 references as you like.
 
 As with section references, the indentation of the \@others directive matters.
-This allows Leo to handle Python source code properly. For exmple, the following
+This allows Leo to handle Python source code properly. For example, the following
 is a common way of representing a Python class::
 
     class myClass:
@@ -538,7 +583,12 @@ the part of the code that interests me at the moment.
 Leo's **directives** control such things as syntax coloring, line wrapping
 within the body pane and the width of tabs. Leo directives may appear in
 headlines or body text. Leo directives start with '@', followed by the name of
-the directive. Here are some of Leo's directives::
+the directive.
+
+**Note**: Leo handles Python decorators properly, providing they don't conflict
+with Leo's directives.  
+
+Here are some of Leo's directives::
 
     @language python
     @tabwidth -4
@@ -560,96 +610,96 @@ the directive::
     @language python
 
 tells Leo to syntax color the node and all descendant nodes as Python code.
-However, some descendant node mignt contain::
+However, some descendant node might contain::
 
     @language rest
 
-which tells Leo to color that node and all of *its* decendants as
+which tells Leo to color that node and all of *its* descendants as
 reStructureText. This principle applies to almost all of Leo's directives: the
 directive is in effect throughout a tree, unless overridden in some subtree.
 
 .. index::
     pair: @color; Tutorial
-    pair:  @nocolor; Tutorial
-    pair:  @killcolor; Tutorial
+    pair: @nocolor; Tutorial
+    pair: @killcolor; Tutorial
+    pair: Ambiguous Node; Tutorial
 
-- **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
+.. glossary::
 
-  You can mix \@nocolor and \@color directives in a single node, but these
-  directives apply to descendant nodes only if they are **unambiguous**, that
-  is, only if the ancestor node contains exactly one \@color or \@nocolor
-  directive.
+\@color, \@nocolor and \@killcolor
 
-.. index::
-    pair: @encoding; Tutorial
-
-- **\@encoding** Sets the Unicode encoding used in external files.
+    These directives control how Leo colors body text. You can mix \@nocolor and
+    \@color directives in a single node. This directives affect descendant
+    nodes unless a node contains both \@color and \@color.  Such **ambiguous**
+    nodes do not affect the coloring of descendant nodes.
 
 .. index::
     pair: @first; Tutorial
 
-- **\@first** directives orces lines to appear before the first sentinel of a
-  external file.
+\@first
 
-    This directive may only appear in \@<file> nodes. A common use of \@first
-    directives is to add shebang lines::
+    This directive forces a lines to appear before the first sentinel of a
+    external file. Here is a common way to start a Python file:
 
         @first #! /usr/bin/env python
-
-    or Python encoding specifications::
-
         @first # -*- coding: utf-8 -*-
 
 .. index::
     pair: @language; Tutorial
 
-- **\@language** Sets the language used for syntax coloring **and** sets the
-  comment delimiters used in sentinel lines and in doc parts. Some examples::
+\@language
 
-    @language python
-    @language c
-    @language rest # restructured text
-    @language plain # text, that is, no syntax coloring.
+    Sets the language in effect for a tree. This affects how Leo colors body
+    text. It also sets the comment delimiters used in external files. Leo
+    supports dozens of languages. See `Leo's reference` for a complete list.
+    Here are a few::
 
-.. index::
-    pair: @last; Tutorial
-
-- **\@last** Forces lines to appear after the last sentinel of a external file.
-
-.. index::
-    pair: @lineending; Tutorial
-
-- **\@lineending** Specifies the line ending to be used in external files.
+        @language python
+        @language c
+        @language rest # restructured text
+        @language plain # plain text: no syntax coloring.
 
 .. index::
     pair: @pagewidth; Tutorial
 
-- **\@pagewidth** Sets the page width used to break doc parts into lines.
+\@pagewidth <n>
+
+    Sets the page width used to format break doc::
+
+        @pagewidth 100
 
 .. index::
     pair: @path; Tutorial
 
-- **\@path** Sets the path to be prepended to filenames in descendant \@thin
-  nodes.
+\@path <path>
+
+    This directive is a convenience.  Rather than specifying long paths
+    in @thin nodes, you can specify a path in an ancestor @path node.
+    For example, suppose three nodes have the following headlines::
+
+        @path a
+            @path b
+                @thin c/d.py
+
+    Because of the ancestor @path nodes, the @thin node creates the file
+    a/b/c/d.py
 
 .. index::
     pair: @tabwidth; Tutorial
     pair:  Negative tab width; Tutorial
 
-- **\@tabwidth** sets the width of tabs.
+\@tabwidth
 
-  Negative tab widths cause Leo to convert tabs to spaces and are highly
-  recommended for Python programming.
+    Sets the width of tabs. Negative tab widths cause Leo to convert tabs to
+    spaces and are highly recommended for Python programming.
 
 .. index::
     pair: @wrap; Tutorial
     pair:  @nowrap; Tutorial
 
-- **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
+\@wrap and \@nowrap.
 
-Leo treats lines starting with \@ as a normal code line unless the \@ starts a
-Leo directive. In particular, Leo will output Python decorators correctly,
-provided the name of the decorator does not conflict with a Leo directive.
+    These enable or disable line wrapping the Leo's body pane.
 .. @+node:ekr.20091130111843.6840: *3* Scripting, extending and customizing Leo
 .. index::
     pair: Scripting Leo; Tutorial
