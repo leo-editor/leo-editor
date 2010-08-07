@@ -117,8 +117,8 @@ very top, a **status area** and a **mini-buffer** at the very bottom.
 
 .. index::
     pair: Outline pane; Tutorial
-    pair:  Icon box; Tutorial
-    pair:  Expansion box; Tutorial
+    pair: Icon box; Tutorial
+    pair: Expansion box; Tutorial
 
 Outline pane
 
@@ -134,9 +134,9 @@ Outline pane
     pair: Headline; Tutorial
     pair: Body text; Tutorial
     pair: Parent; Tutorial
-    pair:  Child; Tutorial
-    pair:  Ancestor; Tutorial
-    pair:  Descendant; Tutorial
+    pair: Child; Tutorial
+    pair: Ancestor; Tutorial
+    pair: Descendant; Tutorial
 
 Node
 
@@ -197,7 +197,7 @@ You can use Leo as fairly typical outliner. Click the expansion box of nodes to
 show and hide their children.
 
 .. index::
-    pair: Tab completion: Tutorial
+    pair: Tab completion; Tutorial
 
 Play around with some of the commands from the Outline menu or from the
 minibuffer. The keyboard shortcut and minibuffer key sequence appear in
@@ -332,7 +332,7 @@ exactly this way.
 
 .. index::
     pair: @all; Tutorial
-    pair:  @others; Tutorial
+    pair: @others; Tutorial
 
 Yes, Leo does indeed start by writing the \@thin node itself. But Leo writes the
 @thin node's descendants only when it sees one of three kinds of Leo
@@ -686,7 +686,7 @@ directive is in effect throughout a tree, unless overridden in some subtree.
 
 .. index::
     pair: @tabwidth; Tutorial
-    pair:  Negative tab width; Tutorial
+    pair: Negative tab width; Tutorial
 
 \@tabwidth
 
@@ -695,7 +695,7 @@ directive is in effect throughout a tree, unless overridden in some subtree.
 
 .. index::
     pair: @wrap; Tutorial
-    pair:  @nowrap; Tutorial
+    pair: @nowrap; Tutorial
 
 \@wrap and \@nowrap.
 

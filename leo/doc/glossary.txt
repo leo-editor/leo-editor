@@ -21,6 +21,9 @@
 #########
 Glossary
 #########
+
+.. glossary::
+    :sorted:
 .. @+node:ekr.20100804133903.7258: *3* @rst-no-head links
 .. Links used in this document.
 
@@ -55,151 +58,7 @@ Glossary
 .. _`leo directives`:               intro.html#leo-directives
 .. _`quick start for programmers`:  intro.html#quick-start-for-programmers
 .. _`sentinels lines`:              intro.html#sentinel-lines
-.. @+node:ekr.20100804133903.7259: *3* @rst-no-head glossary
-.. glossary::
-    :sorted:
-.. @+node:ekr.20100806170836.4413: *4* @rst-ignore unused @root & LP stuff
-.. index::
-    pair: @quiet; Glossary
-
-\@quiet
-
-    Sets the verbosity of sentinels in \@root trees.
-
-.. index::
-    pair: @root; Glossary
-    pair: @root-code; Glossary
-    pair: @root-doc(Glossary)
-
-\@root, \@root-code and \@root-doc
-
-    Each of these directives starts an \@root tree. Such trees are harder to
-    use, but more flexible, than other kinds of @<file> trees.
-
-.. index::
-    pair: @silent(Glossary)
-
-\@silent
-
-    Sets the verbosity of sentinels in \@root trees.
-
-.. index::
-    pair:  @terse(Glossary)
-
-\@terse
-
-    Sets the verbosity of sentinels in \@root trees.
-
-.. index::
-    pair:  @unit(Glossary)
-
-\@unit
-
-    Expands the scope of definitions in @root trees. For more information, see
-    the `@unit documentation` in Leo's `programming reference`_.
-
-.. index::
-    pair:  @verbose(Glossary)
-
-\@verbose
-
-    Sets the verbosity of sentinels in \@root trees.
-
-.. index::
-    pair:  Chunk(Glossary)
-
-Chunk
-
-    A synonym for a section in `noweb`_ terminology.
-
-
-In @root trees, doc parts are associated with the immediately following code
-part, if any.
-
-.. index::
-    pair: CWEB; Glossary
-
-CWEB
-
-    A `literate programming`_ language invented by Donald Knuth and Silvio Levy.
-    The `CWEB`_ language produces external files for the C language.
-
-.. index::
-    pair:  Literate programing(Glossary)
-
-Literate programming
-
-    A style of programming that aims at producing the highest quality program
-    listings. Literate programming languages apply two fundamental operations to
-    text: weaving and tangling. Leo supports two literate programming languages,
-    `CWEB`_ and `noweb`_. For more details, see the
-    http://www.literateprogramming.com.
-
-.. index::
-    pair:  LaTeX(Glossary)
-
-LaTeX
-
-    A markup language often used in `literate programming`_ environments. See:
-    http://www.latex-project.org/
-
-.. index::
-    pair:  noweb(Glossary)
-
-noweb
-
-    A literate programming language invented by Norman Ramsey.
-    The `noweb`_ language can produce external files for any text-based programming language.
-
-.. index::
-    pair:  Part(Glossary)
-
-Part
-
-    A synonym for section.  See also code part and doc part.
-
-.. index::
-    pair:  rst3 plugin(Glossary)
-
-rst3 plugin
-
-    A plugin that supports reStructuredText and allows per-node options.
-
-.. index::
-    pair:  Scope(Glossary)
-
-Scope
-    The portion of the outline in which a section definition is known.
-
-.. index::
-    pair:  Tangle(Glossary), Tangling(Glossary)
-
-Tangling
-
-    The process of creating external files from @root trees.
-    For more information, see `Tangling @root trees`_ in Leo's `programming reference`_.
-
-.. index::
-    pair:  Untangle(Glossary), Untangling(Glossary)
-
-Untangling
-
-    Updating an outline based on changes to external files.
-    Untangling allows changes to be propagated from external files back to the outline.
-    Especially useful when fixing syntax errors outside Leo.
-    For more information, see `Untangling @root trees`_ in Leo's `programming reference`_.
-
-.. index::
-    pair:  Weave(Glossary), Weaving(Glossary)
-
-Weaving
-
-    The process of creating typeset documentation from a `noweb`_ or `CWEB`_
-    source file. Weaving creates documentation. Tangling creates external
-    files. Leo does not support weaving directly. To weave a file you can create
-    noweb or CWEB files using Leo's Export commands, then use the noweb or
-    CWEB systems to weave those files.
-.. @+node:ekr.20100804133903.7250: *4* @rst-no-head @
+.. @+node:ekr.20100804133903.7250: *3* @rst-no-head @
 .. index::
     pair: @; Glossary
 
@@ -445,7 +304,7 @@ Weaving
 \@wrap
 
     Enables line wrapping in Leo's body pane.
-.. @+node:ekr.20100804133903.7251: *4* @rst-no-head A - C
+.. @+node:ekr.20100804133903.7251: *3* @rst-no-head A - C
 .. index::
     pair: Body pane; Glossary
 
@@ -505,7 +364,7 @@ Code part
 Contract:
 
     To hide all descendants of a node.
-.. @+node:ekr.20100804133903.7252: *4* @rst-no-head D - G
+.. @+node:ekr.20100804133903.7252: *3* @rst-no-head D - G
 .. index::
     pair: Demote; Glossary
 
@@ -570,7 +429,7 @@ External file
 Grandchild
 
     The child of a child of a node.
-.. @+node:ekr.20100804133903.7253: *4* @rst-no-head H - L
+.. @+node:ekr.20100804133903.7253: *3* @rst-no-head H - L
 .. index::
     pair: Headline; Glossary
 
@@ -606,7 +465,7 @@ Log Pane
 
     The part of Leo's main window that shows informational messages from Leo. It
     also contains the Find tab, the Spell tab, the autocompletion tab.
-.. @+node:ekr.20100804133903.7254: *4* @rst-no-head M - O
+.. @+node:ekr.20100804133903.7254: *3* @rst-no-head M - O
 .. index::
     pair: Mark; Glossary
 
@@ -674,7 +533,7 @@ Outline pane
 
     The pane containing a visual representation of the entire outline, or a part
     of the outline if the outline is hoisted.
-.. @+node:ekr.20100804133903.7255: *4* @rst-no-head P - R
+.. @+node:ekr.20100804133903.7255: *3* @rst-no-head P - R
 .. index::
     pair: Parent; Glossary
 
@@ -713,7 +572,7 @@ reStructuredText (rST)
 Root
 
     The first node of a .leo file, outline, suboutline or @<file> tree.
-.. @+node:ekr.20100804133903.7256: *4* @rst-no-head S - Z
+.. @+node:ekr.20100804133903.7256: *3* @rst-no-head S - Z
 .. index::
     pair: Section; Glossary
 
@@ -802,6 +661,17 @@ Target language
 Tree
 
     An outline. A node and its descendants.
+
+.. index::
+    pair: Underindented Line; Glossary
+
+Underindent line
+
+    A line of body text that is indented less then the starting line of the
+    class, method or function in which it appears. Leo outlines can not
+    represent such lines exactly: every line in an external file will have at
+    least the indentation of any unindented line of the corresponding node in
+    the outline.
 
 .. index::
     pair: View node; Glossary

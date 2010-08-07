@@ -53,7 +53,7 @@ familiar with `Leo's tutorial`_.
 .. |leoAtFileNamedChild| image:: screen-shots/leo-qt-at-file-named-child.JPG
 .. @+node:ekr.20100806170836.4392: *3* Part 1: \@<file> directives
 .. index::
-    pair: @<file>, Reference
+    pair: @<file>; Reference
 
 This section discusses the \@<file> directives. These directives create or
 import external files.
@@ -134,10 +134,6 @@ prevent Leo from writing \@asis trees.
 .. @+node:ekr.20100806170836.4396: *4* \@auto <path>
 .. index::
     pair: @auto; Reference
-    pair: Importer; Reference
-    pair: Organizer tag; Reference
-    pair: Strict language; Reference
-    pair: Underindented line; Reference
 
 The \@auto directive imports an external file into a tree of nodes. Using \@auto
 is *highly recommended* when using external files that must not contain Leo
@@ -147,6 +143,9 @@ sentinels.
 sentinels in external files. Even without sentinels, \@auto trees can change
 when the corresponding external file changes outside of Leo.
 
+.. index::
+    pair: Importer; Reference
+
 When reading \@auto nodes, Leo creates the \@auto tree using **importers**,
 parsers that create an outline with nodes for each class, method and function in
 the external file. Some importers create other kinds of nodes as well.
@@ -155,6 +154,9 @@ Importers presently exist for C, elisp, HTML, Java, Javascript, Pascal, PHP,
 Python and xml. Leo determines the language using the file's extension. If no
 parser exists for a language, Leo copies the entire body of the external file
 into the \@auto node.
+
+.. index::
+    pair: Organizer tag; Reference
 
 **Note**: the \@data import_xml_tags setting specifies the **organizer tags**
 that cause the HTML and XML importers to create outline nodes. By default, the
@@ -170,6 +172,9 @@ that writing the imported file will produce exactly the same file. These checks
 can produces **errors** or **warnings**. Errors indicate a potentially serious
 problem. Leo inserts an \@ignore directive in the \@auto tree if any error is
 found. This prevents the \@auto tree from modifying the external file.
+
+.. index::
+    pair: Strict language; Reference
 
 Before importing a file, Leo **regularizes** the leading whitespace of all
 lines of the original source file. That is, Leo converts blanks to tabs or
@@ -193,12 +198,15 @@ File comparison mismatches can arise for several reasons:
 
 2. Underindented lines in classes, methods or function.
 
-An **underindented line** is a line that is indented less then the starting
-line of the class, method or function in which it appears. Leo outlines can
-not represent such lines exactly: every line of node will have, in the
-external file, at least the indentation of any unindented line of the node.
-Leo will issue a warning (not an error) for underindented Python comment
-lines. Such lines can not change the meaning of Python programs.
+.. index::
+    pair: Underindented line; Reference
+
+An **underindented line** is a line of body text that is indented less then the
+starting line of the class, method or function in which it appears. Leo outlines
+can not represent such lines exactly: every line in an external file will have
+at least the indentation of any unindented line of the corresponding node in the
+outline. Leo will issue a warning (not an error) for underindented Python
+comment lines. Such lines can not change the meaning of Python programs.
 .. @+node:ekr.20100806170836.4395: *4* \@edit <path>
 .. index::
     pair: @edit; Reference
@@ -214,7 +222,6 @@ structure created by sections references, \@all and \@others is not preserved.
 .. @+node:ekr.20100806170836.4403: *4* \@file <path>
 .. index::
     pair: @file; Reference
-    pair: @thin; Reference
 
 The \@file directive is a synonym for \@thin.
 
@@ -334,14 +341,14 @@ descendant nodes.
     \@nocolor-node directives in the same node.
 
 .. index::
-    pair:  @nocolor; Reference
+    pair: @nocolor; Reference
 
 \@nocolor
 
     Disables syntax coloring until the next \@nocolor directive.
 
 .. index::
-    pair:  @nocolor-node; Reference
+    pair: @nocolor-node; Reference
 
 \@nocolor-node
 
@@ -359,7 +366,7 @@ Nevertheless, these sentinels can be useful in special situations.
     :sorted:
 
 .. index::
-    pair:  @comment; Reference
+    pair: @comment; Reference
 
 \@comment <1, 2 or three comment delims>
 
@@ -393,7 +400,7 @@ Nevertheless, these sentinels can be useful in special situations.
     directive.
 
 .. index::
-    pair:  @delims; Reference
+    pair: @delims; Reference
 
 \@delims <1 or 2 comment delims>
 
@@ -424,8 +431,8 @@ Nevertheless, these sentinels can be useful in special situations.
     the \@+leo sentinel and the initial \@+body and \@+node sentinels.
 
 .. index::
-    pair:  @raw; Reference
-    pair:  @end_raw; Reference
+    pair: @raw; Reference
+    pair: @end_raw; Reference
 
 \@raw and \@end_raw
 
@@ -444,11 +451,11 @@ and they must start at the leftmost column of the node.
      :sorted:
 
 .. index::
-    pair:  @; Reference
+    pair: @; Reference
 .. index::
-    pair:  @doc; Reference
+    pair: @doc; Reference
 .. index::
-    pair:  Doc part; Reference
+    pair: Doc part; Reference
 
 \@ and \@doc
 
@@ -466,9 +473,9 @@ and they must start at the leftmost column of the node.
     \@delims directives are in effect.
 
 .. index::
-    pair:  @c; Reference
+    pair: @c; Reference
 .. index::
-    pair:  @code; Reference
+    pair: @code; Reference
 
 \@c and \@code
 
@@ -480,9 +487,9 @@ and they must start at the leftmost column of the node.
     \@all or \@raw directives are in effect.
 
 .. index::
-    pair:  @chapter; Reference
+    pair: @chapter; Reference
 .. index::
-    pair:  @chapters; Reference
+    pair: @chapters; Reference
 
 \@chapter and \@chapters
 
@@ -495,7 +502,7 @@ and they must start at the leftmost column of the node.
     These directives must appear in the node's headline.
 
 .. index::
-    pair:  @encoding; Reference
+    pair: @encoding; Reference
 
 \@encoding <encoding>
 
@@ -507,7 +514,7 @@ and they must start at the leftmost column of the node.
     actually used in the external file or "byte hash" will result.
 
 .. index::
-    pair:  @first; Reference
+    pair: @first; Reference
 
 \@first <text>
 
@@ -540,7 +547,7 @@ and they must start at the leftmost column of the node.
     text.
 
 .. index::
-    pair:  @language; Reference
+    pair: @language; Reference
 
 \@language <language name>
 
@@ -570,7 +577,7 @@ and they must start at the leftmost column of the node.
     over 100 such languages.
 
 .. index::
-    pair:  @last; Reference
+    pair: @last; Reference
 
 \@last <text>
 
@@ -586,7 +593,7 @@ and they must start at the leftmost column of the node.
     Leo does not recognize \@last directive in \@asis trees.
 
 .. index::
-    pair:  @lineending; Reference
+    pair: @lineending; Reference
 
 \@lineending cr/lf/nl/crlf
 
@@ -608,7 +615,7 @@ and they must start at the leftmost column of the node.
     ========================   ======================================================
 
 .. index::
-    pair:  @nowrap; Reference
+    pair: @nowrap; Reference
 
 \@nowrap
 
@@ -623,7 +630,7 @@ and they must start at the leftmost column of the node.
 ..  remainder are remembered as sentinels but have no other content.
 
 .. index::
-    pair:  @pagewidth; Reference
+    pair: @pagewidth; Reference
 
 \@pagewidth <n>
 
@@ -635,11 +642,11 @@ and they must start at the leftmost column of the node.
   The \@pagewidth directive overrides the \@int page_width setting.
 
 .. index::
-    pair:  @path; Reference
+    pair: @path; Reference
 .. index::
-    pair:  Absolute path; Reference
+    pair: Absolute path; Reference
 .. index::
-    pair:  Path prefix; Reference
+    pair: Path prefix; Reference
 
 \@path <path>
 
@@ -663,9 +670,9 @@ and they must start at the leftmost column of the node.
    the .leo file is used as the default.
 
 .. index::
-    pair:  @tabwidth; Reference
+    pair: @tabwidth; Reference
 .. index::
-    pair:  Negative tab width; Reference
+    pair: Negative tab width; Reference
 
 \@tabwidth <n>
 
@@ -673,7 +680,7 @@ and they must start at the leftmost column of the node.
   Negative tab widths cause Leo to convert tabs to spaces.
 
 .. index::
-    pair:  @wrap; Reference
+    pair: @wrap; Reference
 
 \@wrap
 
