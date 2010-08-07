@@ -792,23 +792,26 @@ Sibling
     pair: Target language; Glossary
 
 Target language
-    The language used to syntax color text.
-    This determines the default comment delimiters used during tangling and untangling.
+
+    The language used to syntax color text. This determines the default comment
+    delimiters used when writing external files.
 
 .. index::
     pair: Tree; Glossary
 
 Tree
+
     An outline. A node and its descendants.
 
 .. index::
     pair: View node; Glossary
 
 View node
-    A node that represents a view of an outline.
-    View nodes are typically ordinary, non-cloned nodes that contain cloned descendant nodes.
-    The cloned descendant nodes comprise most of the data of the view.
-    Other non-cloned nodes may add additional information to the view.
-    See `clones & views`_ in `Leo's tutorial`_ for more information.
+
+    A node that represents a view of an outline. View nodes are typically
+    ordinary, non-cloned nodes that contain cloned descendant nodes. The cloned
+    descendant nodes comprise most of the data of the view. Other non-cloned
+    nodes may add additional information to the view. See `clones & views`_ in
+    `Leo's tutorial`_ for more information.
 .. @-all
 .. @-leo
