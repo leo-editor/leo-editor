@@ -2604,7 +2604,7 @@ class baseScannerClass (scanUtility):
 
         The decls *must* end in a newline.'''
 
-        trace = True or self.trace
+        trace = False or self.trace
         start = i ; prefix = None
         classOrFunc = False
         if trace: g.trace(g.callers())

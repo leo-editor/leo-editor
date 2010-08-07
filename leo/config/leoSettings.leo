@@ -94,18 +94,25 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
-<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407"><vh>@buttons</vh>
-<v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
-<v t="ekr.20090610164636.8489"><vh>@@button add-test @key=alt-9</vh></v>
-<v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
-<v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
+<v t="ekr.20100806211331.8331"><vh>Unused settings</vh>
+<v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
+<v t="ekr.20070925144534.26"><vh>@item *tangle-&amp;all</vh></v>
+<v t="ekr.20070925144534.27"><vh>@item *tangle-&amp;marked</vh></v>
+<v t="ekr.20070925144534.28"><vh>@item *&amp;tangle</vh></v>
+</v>
+<v t="ekr.20070925144534.29"><vh>@menu &amp;Untangle...</vh>
+<v t="ekr.20070925144534.30"><vh>@item *untangle-&amp;all</vh></v>
+<v t="ekr.20070925144534.31"><vh>@item *untangle-&amp;marked</vh></v>
+<v t="ekr.20070925144534.32"><vh>@item *&amp;untangle</vh></v>
+</v>
+<v t="ekr.20100806210935.8331"><vh>Tangle/Untangle preferences</vh>
+<v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
+<v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
+<v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
+<v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
-<v t="ekr.20080312075451.2"><vh>@commands</vh></v>
-</v>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
@@ -243,6 +250,17 @@
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo_granularity = None</vh></v>
+</v>
+<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
+<v t="ekr.20070926082407"><vh>@buttons</vh>
+<v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
+<v t="ekr.20090610164636.8489"><vh>@@button add-test @key=alt-9</vh></v>
+<v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
+<v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
+</v>
+</v>
+<v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
+<v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
 <v t="ekr.20041119034357.16"><vh>Compare panel</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
@@ -475,16 +493,6 @@
 <v t="ekr.20070925144534.22"><vh>@item write-dirty-at-file-nodes</vh></v>
 <v t="ekr.20080801104153.4"><vh>@@@item write-dirty-at-shadow-nodes</vh></v>
 <v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
-</v>
-<v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
-<v t="ekr.20070925144534.26"><vh>@item *tangle-&amp;all</vh></v>
-<v t="ekr.20070925144534.27"><vh>@item *tangle-&amp;marked</vh></v>
-<v t="ekr.20070925144534.28"><vh>@item *&amp;tangle</vh></v>
-</v>
-<v t="ekr.20070925144534.29"><vh>@menu &amp;Untangle...</vh>
-<v t="ekr.20070925144534.30"><vh>@item *untangle-&amp;all</vh></v>
-<v t="ekr.20070925144534.31"><vh>@item *untangle-&amp;marked</vh></v>
-<v t="ekr.20070925144534.32"><vh>@item *&amp;untangle</vh></v>
 </v>
 <v t="ekr.20070925144534.33"><vh>@menu &amp;Import...</vh>
 <v t="ekr.20070925144534.34"><vh>@item *import-&amp;derived-file</vh></v>
@@ -1022,7 +1030,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1201,10 +1209,6 @@
 <v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041119034357.31"></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
-<v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
-<v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
-<v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 <v t="ekr.20051025084017"><vh>Spell tab</vh>
 <v t="ekr.20071025161551"><vh>@bool diagnose-aspell-installation = True</vh></v>
@@ -8031,6 +8035,8 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100313080341.8370"></t>
 <t tx="ekr.20100313080341.8371"></t>
 <t tx="ekr.20100507153425.8304">Valid values are top,bottom,left,right</t>
+<t tx="ekr.20100806210935.8331"># @root and the related Tangle/Untange commands are deprecated.</t>
+<t tx="ekr.20100806211331.8331"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

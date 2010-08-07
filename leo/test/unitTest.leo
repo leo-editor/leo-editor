@@ -292,10 +292,6 @@
 </v>
 <v t="ekr.20051104081502.547"><vh>Test of warnings of conflicting shortcuts</vh></v>
 <v t="ekr.20051104081502.551"><vh>test k.registerCommand</vh></v>
-<v t="ekr.20051104081502.170"><vh>Tests of @root</vh>
-<v t="ekr.20051104081502.171"><vh>atRootTest1.txt</vh></v>
-<v t="ekr.20051104081502.172"><vh>atRootTest2.txt</vh></v>
-</v>
 <v t="ekr.20051104081502.226"><vh>Tests of leoGlobals</vh>
 <v t="ekr.20051104081502.227"><vh>@test g.rawPrint</vh></v>
 <v t="ekr.20051104081502.232"><vh>test of g.pdb</vh></v>
@@ -711,10 +707,6 @@
 <v t="ekr.20090704085350.5035"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20090704085350.5062"><vh>@root ../test/unittest/at-root-test.py</vh>
-<v t="ekr.20090704085350.5063"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5064"><vh>eggs</vh></v>
-</v>
 <v t="ekr.20090704085350.5014"><vh>@shadow ../test/unittest/at-shadow-test.py</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
 <v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
@@ -729,6 +721,304 @@
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
 <v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
 <v t="ekr.20100203163606.5365"><vh>2to3 script</vh></v>
+</v>
+<v t="ekr.20100806211747.5792"><vh>Unused tests</vh>
+<v t="ekr.20100806211605.5810"><vh>@ignore</vh>
+<v t="ekr.20100806211747.5793"><vh>Tests of tangle, untangle and @root</vh>
+<v t="sps.20100624231018.20956"><vh>leoTangle</vh>
+<v t="sps.20100624231018.20957"><vh>support routines</vh>
+<v t="sps.20100624231018.20968"><vh>@test setRootFromText</vh></v>
+<v t="sps.20100625103510.5658"><vh>@test skip_section_name</vh></v>
+<v t="sps.20100624231018.20970"><vh>@test st_enter</vh></v>
+<v t="sps.20100624231018.20972"><vh>@test st_enter_root_name</vh></v>
+<v t="sps.20100624231018.20966"><vh>@test token_type</vh></v>
+<v t="sps.20100627223129.5655"><vh>parent_language_comment_settings</vh>
+<v t="sps.20100627223129.5656"><vh>@test plcs 1</vh>
+<v t="sps.20100627223129.5657"><vh>c1</vh></v>
+</v>
+<v t="sps.20100627223129.5660"><vh>@test plcs 2</vh>
+<v t="sps.20100627223129.5661"><vh>c1</vh></v>
+</v>
+<v t="sps.20100627225153.5667"><vh>@test plcs 3</vh>
+<v t="sps.20100627225153.5668"><vh>c1</vh></v>
+</v>
+<v t="sps.20100627232933.5673"><vh>@test plcs 4</vh>
+<v t="sps.20100627232933.5677"><vh>'root-test'</vh>
+<v t="sps.20100627232933.5674"><vh>c1</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.20988"><vh>put_all_roots</vh>
+<v t="sps.20100624231018.20989"><vh>@test put_all_roots</vh>
+<v t="sps.20100624231018.20990"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100624231018.20991"><vh>@test put_all_roots, multiple root</vh>
+<v t="sps.20100624231018.20992"><vh>#@root</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.20958"><vh>scanAllDirectives</vh>
+<v t="sps.20100624231018.20959"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
+<v t="sps.20100624231018.20960"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
+<v t="sps.20100624231018.20961"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
+<v t="sps.20100624231018.20962"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100624231018.20963"><vh>@test t.scanAllDirectives 4</vh>
+<v t="sps.20100624231018.20964"><vh>#@root</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.20973"><vh>skip_body</vh>
+<v t="sps.20100624231018.20974"><vh>@test skip_body</vh>
+<v t="sps.20100624231018.20975"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100624231018.20976"><vh>@test skip_body, multiple root</vh>
+<v t="sps.20100624231018.20977"><vh>#@root</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.20978"><vh>tanglePass1</vh>
+<v t="sps.20100624231018.20979"><vh>@test tanglePass1</vh>
+<v t="sps.20100624231018.20980"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100624231018.20981"><vh>@test tanglePass1, multiple root</vh>
+<v t="sps.20100624231018.20982"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100625103510.5793"><vh>@test tanglePass1, less simple</vh>
+<v t="sps.20100625103510.5794"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100628022850.5677"><vh>@test tanglePass1, less simple 2</vh>
+<v t="sps.20100628022850.5679"><vh>@language html</vh>
+<v t="sps.20100628022850.5678"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.20983"><vh>tanglePass2</vh>
+<v t="sps.20100624231018.20984"><vh>@test tanglePass2</vh>
+<v t="sps.20100624231018.20985"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100624231018.20986"><vh>@test tanglePass2, multiple root</vh>
+<v t="sps.20100624231018.20987"><vh>#@root</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.20993"><vh>top level</vh>
+<v t="sps.20100624231018.20994"><vh>tangle</vh>
+<v t="sps.20100624231018.20995"><vh>with sentinels</vh>
+<v t="sps.20100624231018.20996"><vh>now working</vh>
+<v t="sps.20100624231018.20997"><vh>@test @root with @language c</vh>
+<v t="sps.20100624231018.20998"><vh>#@root</vh></v>
+<v t="sps.20100624231018.20999"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21000"><vh>@test @root</vh>
+<v t="sps.20100624231018.21001"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21002"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629094515.16515"><vh>@test @root - trivial</vh>
+<v t="sps.20100629094515.16516"><vh>#@root</vh></v>
+<v t="sps.20100629094515.16517"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21003"><vh>NOTE:</vh></v>
+<v t="sps.20100624231018.21004"><vh>@test @root-doc</vh>
+<v t="sps.20100624231018.21005"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21006"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21007"><vh>@test @root-doc with subnodes</vh>
+<v t="sps.20100624231018.21008"><vh>#@root</vh>
+<v t="sps.20100624231018.21009"><vh>further definition</vh></v>
+</v>
+<v t="sps.20100624231018.21010"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21011"><vh>@test @root-code with subnodes</vh>
+<v t="sps.20100624231018.21012"><vh>#@root</vh>
+<v t="sps.20100624231018.21013"><vh>further definition</vh></v>
+</v>
+<v t="sps.20100624231018.21014"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21015"><vh>@test @root with multiple sections</vh>
+<v t="sps.20100624231018.21016"><vh>#@root</vh>
+<v t="sps.20100624231018.21017"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21018"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21019"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21020"><vh>@test @root with filled multiple sections</vh>
+<v t="sps.20100624231018.21021"><vh>#@root</vh>
+<v t="sps.20100624231018.21022"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21023"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21024"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21025"><vh>@test @root-doc with multiple sections</vh>
+<v t="sps.20100624231018.21026"><vh>#@root</vh>
+<v t="sps.20100624231018.21027"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21028"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21029"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21030"><vh>@test @root-code with multiple sections</vh>
+<v t="sps.20100624231018.21031"><vh>#@root</vh>
+<v t="sps.20100624231018.21032"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21033"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21034"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21035"><vh>@test @root with @comment #</vh>
+<v t="sps.20100624231018.21036"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21037"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21038"><vh>@test @root with @comment /* */</vh>
+<v t="sps.20100624231018.21039"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21040"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21041"><vh>@test @root with @comment // /* */</vh>
+<v t="sps.20100624231018.21042"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21043"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21044"><vh>@test @root with @language html</vh>
+<v t="sps.20100624231018.21045"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21046"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21047"><vh>@test @root with @path directive (relative) in parent node</vh>
+<v t="sps.20100624231018.21048"><vh>root</vh>
+<v t="sps.20100624231018.21049"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21050"><vh>foo/'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.21051"><vh>@test @root with @path directive, relative</vh>
+<v t="sps.20100624231018.21052"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21053"><vh>foo/'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21054"><vh>@test @root with @path directive, absolute</vh>
+<v t="sps.20100624231018.21055"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21056"><vh>/tmp/'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21057"><vh>@test multiple @root directives</vh>
+<v t="sps.20100624231018.21058"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21059"><vh>'root-test-one'</vh></v>
+<v t="sps.20100624231018.21060"><vh>'root-test-two'</vh></v>
+</v>
+<v t="sps.20100624231018.21086"><vh>@test @root with @language html and @comment  //</vh>
+<v t="sps.20100624231018.21087"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21089"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21061"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100624231018.21062"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
+<v t="sps.20100624231018.21063"><vh>#@root</vh>
+<v t="sps.20100624231018.21064"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
+<v t="sps.20100624231018.21065"><vh>secref &gt;&gt;= definition - this works</vh></v>
+</v>
+<v t="sps.20100624231018.21066"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21067"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
+<v t="sps.20100624231018.21068"><vh>#@root</vh>
+<v t="sps.20100624231018.21069"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
+</v>
+<v t="sps.20100624231018.21070"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21071"><vh>@test @root-doc with subnodes - body &lt;&lt; secref &gt;&gt;= first</vh>
+<v t="sps.20100624231018.21072"><vh>#@root</vh>
+<v t="sps.20100624231018.21073"><vh>secref &gt;&gt;= definition - this works</vh></v>
+<v t="sps.20100624231018.21074"><vh>&lt;&lt; secref &gt;&gt; this fails</vh></v>
+</v>
+<v t="sps.20100624231018.21075"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21076"><vh>@test @root-doc with subnodes - two headline &lt;&lt; secref &gt;&gt;s</vh>
+<v t="sps.20100624231018.21077"><vh>#@root</vh>
+<v t="sps.20100624231018.21078"><vh>&lt;&lt; secref &gt;&gt; part 1</vh></v>
+<v t="sps.20100624231018.21079"><vh>&lt;&lt; secref &gt;&gt; part 2</vh></v>
+</v>
+<v t="sps.20100624231018.21080"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100715131351.6756"><vh>@test @root section with doc but no code</vh>
+<v t="sps.20100715131351.6758"><vh>#@root</vh>
+<v t="sps.20100715131351.6757"><vh>&lt;&lt;foo&gt;&gt;</vh></v>
+</v>
+<v t="sps.20100715131351.6759"><vh>root_bug.c</vh></v>
+</v>
+<v t="sps.20100720210022.5737"><vh>@test @root with @terse</vh>
+<v t="sps.20100720210022.5738"><vh>#@root</vh></v>
+<v t="sps.20100720210022.5739"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21082"><vh>@test @root with @language html and @comment</vh>
+<v t="sps.20100624231018.21083"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21084"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100715131351.6762"><vh>failing</vh>
+<v t="sps.20100720210022.5743"><vh>@@test @root</vh>
+<v t="sps.20100720210022.5744"><vh>@root 'root-test'</vh></v>
+<v t="sps.20100720210022.5745"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.21090"><vh>supposed to fail</vh>
+<v t="sps.20100624231018.21091"><vh>@@test @root with @language html and @comment  //</vh>
+<v t="sps.20100624231018.21092"><vh>#@root</vh>
+<v t="sps.20100624231018.21093"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21094"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.21095"><vh>without sentinels</vh>
+<v t="sps.20100624231018.21096"><vh>@test @root with @silent</vh>
+<v t="sps.20100624231018.21097"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21098"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100720205345.16593"><vh>@test @root with @quiet</vh>
+<v t="sps.20100720205345.16594"><vh>#@root</vh></v>
+<v t="sps.20100720205345.16595"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.21099"><vh>untangle</vh>
+<v t="sps.20100624231018.21100"><vh>@test simplest untangle</vh>
+<v t="sps.20100624231018.21101"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21102"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21103"><vh>foo</vh></v>
+</v>
+<v t="sps.20100629164540.5728"><vh>@test @root with @language html and @comment  //; 1</vh>
+<v t="sps.20100629164540.5729"><vh>#@root</vh></v>
+<v t="sps.20100629164540.5733"><vh>#@root</vh></v>
+<v t="sps.20100629164540.5730"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629184507.5695"><vh>@test @root with @language html and @comment  //; 2</vh>
+<v t="sps.20100629184507.5696"><vh>#@root</vh></v>
+<v t="sps.20100629184507.5697"><vh>#@root</vh></v>
+<v t="sps.20100629184507.5698"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629215924.5705"><vh>@test @root with @language html and @comment  //; 3</vh>
+<v t="sps.20100629215924.5706"><vh>#@root</vh></v>
+<v t="sps.20100629215924.5707"><vh>#@root</vh></v>
+<v t="sps.20100629215924.5708"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20090704085350.5062"><vh>@@root ../test/unittest/at-root-test.py</vh>
+<v t="ekr.20090704085350.5063"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5064"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20051104081502.170"><vh>Tests of @root</vh>
+<v t="ekr.20051104081502.171"><vh>atRootTest1.txt</vh></v>
+<v t="ekr.20051104081502.172"><vh>atRootTest2.txt</vh></v>
+</v>
+<v t="ekr.20090704093658.5061"><vh>@test @root: shape of tree</vh></v>
+<v t="ekr.20090704093658.5062"><vh>@test @root: tangle works</vh></v>
+<v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
+<v t="sps.20100609154419.5460"><vh>g.scanAtRootOptions</vh>
+<v t="sps.20100609154419.5450"><vh>@test g.scanAtRootOptions none with filename</vh></v>
+<v t="sps.20100609154419.5452"><vh>@test g.scanAtRootOptions -doc with filename</vh></v>
+<v t="sps.20100609154419.5453"><vh>@test g.scanAtRootOptions -doc with missing filename</vh></v>
+<v t="sps.20100609154419.5454"><vh>@test g.scanAtRootOptions -code with filename</vh></v>
+<v t="sps.20100609154419.5455"><vh>@test g.scanAtRootOptions -code with missing filename</vh></v>
+<v t="sps.20100609154419.5456"><vh>@test g.scanAtRootOptions -doc and -code with filename</vh></v>
+<v t="sps.20100609154419.5457"><vh>@test g.scanAtRootOptions -doc and -code with missing filename</vh></v>
+<v t="sps.20100609154419.5458"><vh>@test g.scanAtRootOptions -code and -doc with filename</vh></v>
+<v t="sps.20100609154419.5459"><vh>@test g.scanAtRootOptions -code and -doc with missing filename</vh></v>
+<v t="sps.20100609154419.5451"><vh>@test g.scanAtRootOptions none with missing filename</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
@@ -845,7 +1135,7 @@
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20100421102506.6282"><vh>@test rst.write with unicode character</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
@@ -907,8 +1197,6 @@
 <v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
 <v t="ekr.20090225102051.4"><vh>Output</vh></v>
 </v>
-<v t="ekr.20090704093658.5061"><vh>@test @root: shape of tree</vh></v>
-<v t="ekr.20090704093658.5062"><vh>@test @root: tangle works</vh></v>
 <v t="ekr.20090704085350.5018"><vh>@test @shadow: shape of tree</vh></v>
 <v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
 <v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
@@ -916,15 +1204,7 @@
 </v>
 <v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
 <v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
-<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh>
-<v t="ekr.20100803172123.5804"><vh>root</vh>
-<v t="ekr.20100803172123.5805"><vh>child1</vh>
-<v t="ekr.20100803172123.5808"><vh>child11</vh></v>
-</v>
-<v t="ekr.20100803172123.5807"><vh>child3</vh></v>
-<v t="ekr.20100803172123.5810"><vh>child31</vh></v>
-</v>
-</v>
+<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
 <v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
 <v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
 <v t="ekr.20071113143844.5"><vh>@test at.isSignificantTree</vh></v>
@@ -1233,8 +1513,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
-<v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
 <v t="ekr.20040802065214"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
 <v t="ekr.20040802065214.1"><vh>bogus</vh></v>
 </v>
@@ -2013,18 +2291,6 @@
 <v t="ekr.20080917151620.26"><vh>@thin at-path-test2.py</vh></v>
 </v>
 </v>
-<v t="sps.20100609154419.5460"><vh>g.scanAtRootOptions</vh>
-<v t="sps.20100609154419.5450"><vh>@test g.scanAtRootOptions none with filename</vh></v>
-<v t="sps.20100609154419.5451"><vh>@test g.scanAtRootOptions none with missing filename</vh></v>
-<v t="sps.20100609154419.5452"><vh>@test g.scanAtRootOptions -doc with filename</vh></v>
-<v t="sps.20100609154419.5453"><vh>@test g.scanAtRootOptions -doc with missing filename</vh></v>
-<v t="sps.20100609154419.5454"><vh>@test g.scanAtRootOptions -code with filename</vh></v>
-<v t="sps.20100609154419.5455"><vh>@test g.scanAtRootOptions -code with missing filename</vh></v>
-<v t="sps.20100609154419.5456"><vh>@test g.scanAtRootOptions -doc and -code with filename</vh></v>
-<v t="sps.20100609154419.5457"><vh>@test g.scanAtRootOptions -doc and -code with missing filename</vh></v>
-<v t="sps.20100609154419.5458"><vh>@test g.scanAtRootOptions -code and -doc with filename</vh></v>
-<v t="sps.20100609154419.5459"><vh>@test g.scanAtRootOptions -code and -doc with missing filename</vh></v>
-</v>
 <v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
@@ -2050,7 +2316,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2103,7 +2369,7 @@
 <v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2114,44 +2380,44 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
 <v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2182,11 +2448,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2206,7 +2472,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2304,13 +2570,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2325,7 +2591,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2333,13 +2599,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2586,280 +2852,12 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="sps.20100624231018.20956"><vh>leoTangle</vh>
-<v t="sps.20100624231018.20957"><vh>support routines</vh>
-<v t="sps.20100624231018.20968"><vh>@test setRootFromText</vh></v>
-<v t="sps.20100625103510.5658"><vh>@test skip_section_name</vh></v>
-<v t="sps.20100624231018.20970"><vh>@test st_enter</vh></v>
-<v t="sps.20100624231018.20972"><vh>@test st_enter_root_name</vh></v>
-<v t="sps.20100624231018.20966"><vh>@test token_type</vh></v>
-<v t="sps.20100627223129.5655"><vh>parent_language_comment_settings</vh>
-<v t="sps.20100627223129.5656"><vh>@test plcs 1</vh>
-<v t="sps.20100627223129.5657"><vh>c1</vh></v>
-</v>
-<v t="sps.20100627223129.5660"><vh>@test plcs 2</vh>
-<v t="sps.20100627223129.5661"><vh>c1</vh></v>
-</v>
-<v t="sps.20100627225153.5667"><vh>@test plcs 3</vh>
-<v t="sps.20100627225153.5668"><vh>c1</vh></v>
-</v>
-<v t="sps.20100627232933.5673"><vh>@test plcs 4</vh>
-<v t="sps.20100627232933.5677"><vh>'root-test'</vh>
-<v t="sps.20100627232933.5674"><vh>c1</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100624231018.20988"><vh>put_all_roots</vh>
-<v t="sps.20100624231018.20989"><vh>@test put_all_roots</vh>
-<v t="sps.20100624231018.20990"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100624231018.20991"><vh>@test put_all_roots, multiple root</vh>
-<v t="sps.20100624231018.20992"><vh>#@root</vh></v>
-</v>
-</v>
-<v t="sps.20100624231018.20958"><vh>scanAllDirectives</vh>
-<v t="sps.20100624231018.20959"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
-<v t="sps.20100624231018.20960"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
-<v t="sps.20100624231018.20961"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
-<v t="sps.20100624231018.20962"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100624231018.20963"><vh>@test t.scanAllDirectives 4</vh>
-<v t="sps.20100624231018.20964"><vh>#@root</vh></v>
-</v>
-</v>
-<v t="sps.20100624231018.20973"><vh>skip_body</vh>
-<v t="sps.20100624231018.20974"><vh>@test skip_body</vh>
-<v t="sps.20100624231018.20975"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100624231018.20976"><vh>@test skip_body, multiple root</vh>
-<v t="sps.20100624231018.20977"><vh>#@root</vh></v>
-</v>
-</v>
-<v t="sps.20100624231018.20978"><vh>tanglePass1</vh>
-<v t="sps.20100624231018.20979"><vh>@test tanglePass1</vh>
-<v t="sps.20100624231018.20980"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100624231018.20981"><vh>@test tanglePass1, multiple root</vh>
-<v t="sps.20100624231018.20982"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100625103510.5793"><vh>@test tanglePass1, less simple</vh>
-<v t="sps.20100625103510.5794"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100628022850.5677"><vh>@test tanglePass1, less simple 2</vh>
-<v t="sps.20100628022850.5679"><vh>@language html</vh>
-<v t="sps.20100628022850.5678"><vh>'root-test'</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100624231018.20983"><vh>tanglePass2</vh>
-<v t="sps.20100624231018.20984"><vh>@test tanglePass2</vh>
-<v t="sps.20100624231018.20985"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100624231018.20986"><vh>@test tanglePass2, multiple root</vh>
-<v t="sps.20100624231018.20987"><vh>#@root</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100624231018.20993"><vh>top level</vh>
-<v t="sps.20100624231018.20994"><vh>tangle</vh>
-<v t="sps.20100624231018.20995"><vh>with sentinels</vh>
-<v t="sps.20100624231018.20996"><vh>now working</vh>
-<v t="sps.20100624231018.20997"><vh>@test @root with @language c</vh>
-<v t="sps.20100624231018.20998"><vh>#@root</vh></v>
-<v t="sps.20100624231018.20999"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21000"><vh>@test @root</vh>
-<v t="sps.20100624231018.21001"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21002"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100629094515.16515"><vh>@test @root - trivial</vh>
-<v t="sps.20100629094515.16516"><vh>#@root</vh></v>
-<v t="sps.20100629094515.16517"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21003"><vh>NOTE:</vh></v>
-<v t="sps.20100624231018.21004"><vh>@test @root-doc</vh>
-<v t="sps.20100624231018.21005"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21006"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21007"><vh>@test @root-doc with subnodes</vh>
-<v t="sps.20100624231018.21008"><vh>#@root</vh>
-<v t="sps.20100624231018.21009"><vh>further definition</vh></v>
-</v>
-<v t="sps.20100624231018.21010"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21011"><vh>@test @root-code with subnodes</vh>
-<v t="sps.20100624231018.21012"><vh>#@root</vh>
-<v t="sps.20100624231018.21013"><vh>further definition</vh></v>
-</v>
-<v t="sps.20100624231018.21014"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21015"><vh>@test @root with multiple sections</vh>
-<v t="sps.20100624231018.21016"><vh>#@root</vh>
-<v t="sps.20100624231018.21017"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100624231018.21018"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100624231018.21019"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21020"><vh>@test @root with filled multiple sections</vh>
-<v t="sps.20100624231018.21021"><vh>#@root</vh>
-<v t="sps.20100624231018.21022"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100624231018.21023"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100624231018.21024"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21025"><vh>@test @root-doc with multiple sections</vh>
-<v t="sps.20100624231018.21026"><vh>#@root</vh>
-<v t="sps.20100624231018.21027"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100624231018.21028"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100624231018.21029"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21030"><vh>@test @root-code with multiple sections</vh>
-<v t="sps.20100624231018.21031"><vh>#@root</vh>
-<v t="sps.20100624231018.21032"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100624231018.21033"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100624231018.21034"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21035"><vh>@test @root with @comment #</vh>
-<v t="sps.20100624231018.21036"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21037"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21038"><vh>@test @root with @comment /* */</vh>
-<v t="sps.20100624231018.21039"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21040"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21041"><vh>@test @root with @comment // /* */</vh>
-<v t="sps.20100624231018.21042"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21043"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21044"><vh>@test @root with @language html</vh>
-<v t="sps.20100624231018.21045"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21046"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21047"><vh>@test @root with @path directive (relative) in parent node</vh>
-<v t="sps.20100624231018.21048"><vh>root</vh>
-<v t="sps.20100624231018.21049"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21050"><vh>foo/'root-test'</vh></v>
-</v>
-</v>
-<v t="sps.20100624231018.21051"><vh>@test @root with @path directive, relative</vh>
-<v t="sps.20100624231018.21052"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21053"><vh>foo/'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21054"><vh>@test @root with @path directive, absolute</vh>
-<v t="sps.20100624231018.21055"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21056"><vh>/tmp/'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21057"><vh>@test multiple @root directives</vh>
-<v t="sps.20100624231018.21058"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21059"><vh>'root-test-one'</vh></v>
-<v t="sps.20100624231018.21060"><vh>'root-test-two'</vh></v>
-</v>
-<v t="sps.20100624231018.21086"><vh>@test @root with @language html and @comment  //</vh>
-<v t="sps.20100624231018.21087"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21089"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21061"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
-<v t="sps.20100624231018.21062"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
-<v t="sps.20100624231018.21063"><vh>#@root</vh>
-<v t="sps.20100624231018.21064"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
-<v t="sps.20100624231018.21065"><vh>secref &gt;&gt;= definition - this works</vh></v>
-</v>
-<v t="sps.20100624231018.21066"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21067"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
-<v t="sps.20100624231018.21068"><vh>#@root</vh>
-<v t="sps.20100624231018.21069"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
-</v>
-<v t="sps.20100624231018.21070"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21071"><vh>@test @root-doc with subnodes - body &lt;&lt; secref &gt;&gt;= first</vh>
-<v t="sps.20100624231018.21072"><vh>#@root</vh>
-<v t="sps.20100624231018.21073"><vh>secref &gt;&gt;= definition - this works</vh></v>
-<v t="sps.20100624231018.21074"><vh>&lt;&lt; secref &gt;&gt; this fails</vh></v>
-</v>
-<v t="sps.20100624231018.21075"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21076"><vh>@test @root-doc with subnodes - two headline &lt;&lt; secref &gt;&gt;s</vh>
-<v t="sps.20100624231018.21077"><vh>#@root</vh>
-<v t="sps.20100624231018.21078"><vh>&lt;&lt; secref &gt;&gt; part 1</vh></v>
-<v t="sps.20100624231018.21079"><vh>&lt;&lt; secref &gt;&gt; part 2</vh></v>
-</v>
-<v t="sps.20100624231018.21080"><vh>'root-test'</vh></v>
-</v>
-</v>
-<v t="sps.20100715131351.6756"><vh>@test @root section with doc but no code</vh>
-<v t="sps.20100715131351.6758"><vh>#@root</vh>
-<v t="sps.20100715131351.6757"><vh>&lt;&lt;foo&gt;&gt;</vh></v>
-</v>
-<v t="sps.20100715131351.6759"><vh>root_bug.c</vh></v>
-</v>
-<v t="sps.20100720210022.5737"><vh>@test @root with @terse</vh>
-<v t="sps.20100720210022.5738"><vh>#@root</vh></v>
-<v t="sps.20100720210022.5739"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100624231018.21082"><vh>@test @root with @language html and @comment</vh>
-<v t="sps.20100624231018.21083"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21084"><vh>'root-test'</vh></v>
-</v>
-</v>
-<v t="sps.20100715131351.6762"><vh>failing</vh>
-<v t="sps.20100720210022.5743"><vh>@@test @root</vh>
-<v t="sps.20100720210022.5744"><vh>@root 'root-test'</vh></v>
-<v t="sps.20100720210022.5745"><vh>'root-test'</vh></v>
-</v>
-</v>
-<v t="sps.20100624231018.21090"><vh>supposed to fail</vh>
-<v t="sps.20100624231018.21091"><vh>@@test @root with @language html and @comment  //</vh>
-<v t="sps.20100624231018.21092"><vh>#@root</vh>
-<v t="sps.20100624231018.21093"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100624231018.21094"><vh>'root-test'</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100624231018.21095"><vh>without sentinels</vh>
-<v t="sps.20100624231018.21096"><vh>@test @root with @silent</vh>
-<v t="sps.20100624231018.21097"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21098"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100720205345.16593"><vh>@test @root with @quiet</vh>
-<v t="sps.20100720205345.16594"><vh>#@root</vh></v>
-<v t="sps.20100720205345.16595"><vh>'root-test'</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100624231018.21099"><vh>untangle</vh>
-<v t="sps.20100624231018.21100"><vh>@test simplest untangle</vh>
-<v t="sps.20100624231018.21101"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21102"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21103"><vh>foo</vh></v>
-</v>
-<v t="sps.20100629164540.5728"><vh>@test @root with @language html and @comment  //; 1</vh>
-<v t="sps.20100629164540.5729"><vh>#@root</vh></v>
-<v t="sps.20100629164540.5733"><vh>#@root</vh></v>
-<v t="sps.20100629164540.5730"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100629184507.5695"><vh>@test @root with @language html and @comment  //; 2</vh>
-<v t="sps.20100629184507.5696"><vh>#@root</vh></v>
-<v t="sps.20100629184507.5697"><vh>#@root</vh></v>
-<v t="sps.20100629184507.5698"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100629215924.5705"><vh>@test @root with @language html and @comment  //; 3</vh>
-<v t="sps.20100629215924.5706"><vh>#@root</vh></v>
-<v t="sps.20100629215924.5707"><vh>#@root</vh></v>
-<v t="sps.20100629215924.5708"><vh>'root-test'</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -2934,17 +2932,6 @@
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
-<v t="ekr.20100223094723.5380"><vh>Failing tests</vh>
-<v t="ekr.20090529141856.4753"></v>
-<v t="ekr.20090529141856.4758"></v>
-<v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
-<v t="sps.20100602033555.5433"><vh>#@root</vh>
-<v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
-</v>
-</v>
-<v t="ekr.20090529141856.4716" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23276,8 +23263,6 @@ i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
 </t>
-<t tx="ekr.20100223094723.5380"># These fail with the new python import hacks
-</t>
 <t tx="ekr.20100223123103.5382"># These commands are implemented by qtGui.py
 
 def closeEnough(f1,f2):
@@ -23468,11 +23453,6 @@ if 1:
     delete_children()
 
 c.redraw_now()</t>
-<t tx="ekr.20100803172123.5804"></t>
-<t tx="ekr.20100803172123.5805"></t>
-<t tx="ekr.20100803172123.5807"></t>
-<t tx="ekr.20100803172123.5808"></t>
-<t tx="ekr.20100803172123.5810"></t>
 <t tx="ekr.20100803234640.5804"></t>
 <t tx="ekr.20100803234640.5805">s = '''\
 ; last modified 1 April 2001 by John Doe
@@ -23490,6 +23470,9 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.iniUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20100806211605.5810"></t>
+<t tx="ekr.20100806211747.5792"></t>
+<t tx="ekr.20100806211747.5793"></t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
@@ -23502,40 +23485,6 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 <t tx="sps.20100531034136.20111"></t>
 <t tx="sps.20100531034136.20112"></t>
 <t tx="sps.20100531034136.20113"></t>
-<t tx="sps.20100602033555.5432">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100602033555.5433">@language html
-@root 'root-test'
-
-&lt;!-- A less simple test of @root. --&gt;
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc
-
-&lt;script type="text/javascript"&gt;
-@comment //
-&lt;&lt; javascript section &gt;&gt;
-&lt;/script&gt;
-@comment &lt;!-- --&gt;
-</t>
-<t tx="sps.20100602033555.5434">&lt;!-- A less simple test of @root. --&gt;
-
-&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
-abc
-
-&lt;script type="text/javascript"&gt;
-// @comment //
-// &lt;&lt; javascript section &gt;&gt;
-var i;
-// -- end -- &lt;&lt; javascript section &gt;&gt;
-&lt;/script&gt;
-&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
-</t>
-<t tx="sps.20100602033555.5435">var i;
-</t>
 <t tx="sps.20100609154419.5450">i,mode = g.scanAtRootOptions("@root foo",0,err_flag=True)
 assert(i == 6)
 assert(mode == 'doc')
