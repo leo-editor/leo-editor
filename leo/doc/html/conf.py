@@ -37,8 +37,9 @@ source_suffix = '.html.txt'
 master_doc = 'leo_toc' # don't use any prefix.
 
 # General information about the project.
-project = u'Leo'
-copyright = u'2010, Edward K. Ream'
+project = 'Leo'
+
+copyright = '2010, Edward K. Ream'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -101,7 +102,9 @@ html_theme_options = {
 	#  footerbgcolor (CSS color): Background color for the footer line.
 	#  footertextcolor (CSS color): Text color for the footer line.
 	#  sidebarbgcolor (CSS color): Background color for the sidebar.
-	'sidebarbgcolor': "#fffdbc",
+	'sidebarbgcolor': "#fffdbc", # typical yellow. 
+    ## 'sidebarbgcolor': "#cbf5b1", # 203,245,177 # green1 harsh
+    ##'sidebarbgcolor': "#e2fad3", # 226, 250, 211 # green2
 	#  sidebartextcolor (CSS color): Text color for the sidebar.
 	'sidebartextcolor': 'black',
 	#  sidebarlinkcolor (CSS color): Link color for the sidebar.
@@ -110,7 +113,8 @@ html_theme_options = {
 	#  relbartextcolor (CSS color): Text color for the relation bar.
 	#  relbarlinkcolor (CSS color): Link color for the relation bar.
 	#  bgcolor (CSS color): Body background color.
-	'bgcolor': "#fffbdc",
+	'bgcolor': "#fffbdc", # r = 256, g = 253, b = 220
+
 	#  textcolor (CSS color): Body text color.
 	#  linkcolor (CSS color): Body link color.
 	#  headbgcolor (CSS color): Background color for headings.
@@ -135,6 +139,7 @@ html_theme_options = {
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 #html_logo = None
+html_logo = 'Leo4-80-border.jpg'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -156,19 +161,20 @@ html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
 # html_sidebars = {'FAQ':'noSideBar.txt'}
+# collapsiblesidebar = True
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-html_use_modindex = True
+html_use_modindex = False
 
 # If false, no index is generated.
 html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
-html_split_index = False
+html_split_index = True
 
 # If true, links to the reST sources are added to the pages.
 html_show_sourcelink = True
@@ -196,8 +202,8 @@ latex_paper_size = 'a4'
 # Grouping the document tree into LaTeX files. List of tuples
 # tex_documents(source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('leo_toc', 'Leodocumentation.tex', u'Leo',
-   u'Edward K. Ream', 'manual'),
+  ('leo_toc', 'Leodocumentation.tex', 'Leo',
+   'Edward K. Ream', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
