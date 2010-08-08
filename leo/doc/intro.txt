@@ -32,12 +32,14 @@ or class browsers, but it most certainly is not.
 .. index::
     pair: Leonine; Tutorial
 
+.. _`Leo in a nutshell`: nutshell.html
+
 People say Leo is a revolutionary tool, and that Leo is fun to use, even
 additive. There is a unique "Leo way" of managing data; the term **Leonine**
 describes how people treat data in "the world according to Leo". Leo definitely
 takes a bit of work to understand. Leo's users speak of an "Aha" moment, when
 they see how these pieces fit together: outline structure is significant
-everywhere.
+everywhere.  For a slightly more detailed introduction, see `Leo in a nutshell`_.
 
 Leo is freely available in source or binary form for all major platforms. You
 may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open
@@ -58,7 +60,7 @@ feature of Leo, or even every commonly used feature. Instead, it introduces many
 of Leo's most noteworthy features, and will give you a good idea of Leo's flavor
 and style. After reading it, you will be able to use Leo in basic ways to create
 external files, organize data and run simple scripts. You will then be ready to
-learn more about Leo's many advanced features in `Leo's Users Guide`_.
+learn more about Leo's many advanced features.
 
 The `Glossary`_ is also worth reading.
 
@@ -66,35 +68,26 @@ The `Glossary`_ is also worth reading.
 .. @+node:ekr.20091130111843.6810: *3* @rst-no-head links
 .. Links used in this document...
 
-.. ----- External references.
-
-.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
-.. _`Leo's home page`:          http://webpages.charter.net/edreamleo/front.html
-.. _`MySQL`:                    http://www.mysql.com/
 .. _`Python`:                   http://www.python.org/
-.. _`reStructuredText`:         http://docutils.sourceforge.net/rst.html
 .. _`XML`:                      http://en.wikipedia.org/wiki/XML
 
-.. ----- References to other chapters.
-
-.. _`What people are saying about Leo`:             testimonials.html
-.. _`@auto trees`:                                  directives.html#auto-trees
-.. _command:                                        commands.html
-.. _commands:                                       commands.html
-.. _directive:                                      directives.html
-.. _directives:                                     directives.html
-.. _`Leo directives`:                               directives.html
-.. _`editing commands`:                             commands.html#the-edit-menu
-.. _front:                                          front.html
-.. _`install Leo`:                                  install.html
-.. _`launch Leo`:                                   install.html#running-leo
-.. _`Leo's Users Guide`:                            leo_TOC.html
 .. _`Leo's Installation Guide`:                     install.html
-.. _`Chapter 4: Writing Programs in Leo`:           directives.html
 .. _`Chapter 5: Using Leo's Commands`:              commands.html
 .. _`Chapter 7: Scripting Leo with Python`:         scripting.html
 .. _`Chapter 8: Customizing Leo`:                   customizing.html
 .. _`Glossary`:                                     genindex.html
+
+.. ----- References to other chapters.
+..  .. _command:                                        commands.html
+..  .. _commands:                                       commands.html
+..  .. _directive:                                      directives.html
+..  .. _directives:                                     directives.html
+..  .. _`Leo directives`:                               directives.html
+..  .. _`editing commands`:                             commands.html#the-edit-menu
+..  .. _front:                                          front.html
+..  .. _`install Leo`:                                  install.html
+..  .. _`launch Leo`:                                   install.html#running-leo
+
 
 .. This image must appear in the _images folder on the web site.
 .. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
@@ -189,87 +182,6 @@ Minibuffer
     command name and then <return>. To type a search string, type <ctrl-f>
     followed by the search string and then <return>. For full details, see
     `Chapter 5: Using Leo's Commands`_.
-.. @+node:ekr.20091130111843.6816: *3* Outline commands
-.. index::
-    pair: Outline commands; Tutorial
-
-You can use Leo as fairly typical outliner. Click the expansion box of nodes to
-show and hide their children.
-
-.. index::
-    pair: Tab completion; Tutorial
-
-Play around with some of the commands from the Outline menu or from the
-minibuffer. The keyboard shortcut and minibuffer key sequence appear in
-parentheses. **Note**: as usual, you can use tab completion in the minibuffer.
-
-Edit Headline (Ctrl+H or <Alt-x>edit-headline<return>)
-
-    Begins editing of the headline text of a node.
-    To end editing, hit <return> or <Ctrl-g>
-
-Insert Node (Ctrl+I or <Alt-x>insert-node<return>)
-
-    Inserts a new headline into the outline.
-
-Cut Node (Ctrl+Shift+X or <Alt-x>cut-node<return>)
-
-    Deletes a node and all its descendants, copying them to the clipboard.
-
-Paste Node (Ctrl+Shift+V or <Alt-x>paste-node<return>)
-
-    Pastes a tree copied by the Cut Node command.
-
-Copy Node (Ctrl+Shift+C or <Alt-x>copy-node<return>)
-
-    Copies a node and all its descendants to clipboard without deleting it from
-    outline. You can copy a tree from one Leo outline to another using Copy Node
-    and Paste Node.
-
-Contract or Go Left (Alt-Left-Arrow or <Alt-x>contract-or-go-left<return)
-
-    Contracts a node if it is expanded, otherwise selects its parent.
-
-Expand and Go Right (Alt-Right-Arrow or <Alt-x>expand-and-go-right<return>)
-
-    Select a node's first child, expanding the original node if needed.
-
-Goto Prev Visible (Alt-Up-Arrow or <Alt-x>goto-prev-visible<return>)
-
-    Select the previous visible node.
-
-Goto Next Visible (Alt-Down-Arrow or <Alt-x>goto-next-visible<return>)
-
-    Select the next visible node.
-
-Move Up (Ctrl+U or <Alt-x>move-outline-up<return>)
-
-    Moves a node up in the outline.
-
-Move Down (Ctrl+D or <Alt-x>move-outline-down<return>)
-
-    Moves a node down.
-
-Move Left (Ctrl+L or <Alt-x>move-outline-left<return>)
-
-    Moves a node left.
-
-Move Right (Ctrl+R or <Alt-x>move-outline-right<return>)
-
-    Moves a node right.
-
-Promote (Ctrl+} or <Alt-x>promote<return>) 
-
-    Makes all the children of a node to be siblings of the node.
-
-Demote (Ctrl+{ or <Alt-x>demote<return>)
-
-    Makes all following siblings of a node to be children of the headline.
-
-Please experiment with Leo's outline now. Move around the tree and
-expand/collapse nodes by pressing Alt + arrow keys. This also moves the focus to
-tree, so, after pressing Alt + arrow, you can move around by using arrow keys
-alone. Return the focus to the body control by pressing Enter.
 .. @+node:ekr.20091130111843.6846: *3* External files and @thin nodes
 .. index::
     pair: External file; Tutorial
@@ -722,8 +634,8 @@ example, the following script will print all the headlines in an outline::
     for p in c.all_positions():
         print ' '*p.level(),p.h
 
-The example above is only the beginning of what scripts can do. See `Chapter 7:
-Scripting Leo with Python`_ for a complete discussion of scripting Leo.
+The example above is only the beginning of what scripts can do.
+See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripting Leo.
 
 .. index::
     pair: Extending Leo; Tutorial
@@ -759,6 +671,6 @@ Using Leo quickly becomes second nature:
 LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
 Leo's source code. It provides hundreds of examples of everything discussed
 here. This file will repay close study. For full details on all aspects of Leo
-see LeoDocs.leo or `Leo's Users Guide`_.
+see LeoDocs.leo.
 .. @-all
 .. @-leo
