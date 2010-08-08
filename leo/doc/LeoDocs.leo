@@ -164,12 +164,10 @@
 </v>
 </v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,ekr.20100808060203.4286,"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
-<v t="ekr.20100805165051.7176" a="E"
-expanded="ekr.20080301075734.4,ekr.20080301075734.6,ekr.20080301082848,"><vh>@thin other_docs.txt</vh></v>
+<v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
