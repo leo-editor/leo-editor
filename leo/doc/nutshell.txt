@@ -22,39 +22,38 @@
 Leo in a Nutshell
 #################
 
-Leo combines outlines, files and scripting in a unique way. As a result, it
-takes some time to "get" what Leo is all about. This page provides an overview
-of Leo's features and provides strong evidence that Leo is a unique tool.
+Leo combines outlines, data, files and scripting in a unique way. As a result,
+it takes some time to get the Leo Aha. This page introduces Leo's features and
+argues that Leo truly is a unique tool.
 
 **Outlines and organization**: Leo's outlines are far more flexible and powerful
 than any other outline you have ever used, for at least three reasons:
 
 1. Unlike other browsers, you, not the browser, are in complete control of the
-   outline. You can orgnnize it however you like, and Leo will *remember* what
+   outline. You can organize it however you like, and Leo will *remember* what
    you have done and will show it to you just that way when come back next time.
-   If you don't think this is important you have never used Leo.
+   If you don't think this is important you have never used Leo :-)
 
 2. Leo outlines may *look* like other outlines, but in fact Leo outlines are
    views of a more general underlying graph structure. Nodes in Leo's outlines
    may appear in many places in the same outline. We call such nodes **clones**.
    Using clones, it is easy to create as many **views** of the data in the
    outline as you like. In effect, Leo becomes a supremely flexible filing
-   cabinet: any outline node may be filed in many places in this cabinet. People
-   typically create new folders (plain nodes!) for every task that arises.
+   cabinet: any outline node may be filed anyplace in this cabinet.
 
 3. Leo outlines are intimately connected to both external files and Python
    scripting, as explained next.
 
 **External files**: Any outline node (and its descendants) can be "connected" to
-so-called external files on your file system. Several kinds of connections
-exist. The three most common kinds are:
+any file on your file system. Several kinds of connections exist. The three most
+common kinds are:
 
 1. @edit: Leo reads the entire external file into the @edit node's body text.
 
 2. @auto: Leo parses the external file and creates an outline that shows the
    structure of the external file, just as in typical class browsers.
 
-3. @file: Leo makes a two way connection between the @file node (and its
+3. @file: Leo makes a two-way connection between the @file node (and its
    descendants) and the external file. You can update the external file by
    writing the Leo outline connected to it, or you can update the outline by
    changing the external file. Moreover, you can easily control how Leo writes
@@ -62,16 +61,15 @@ exist. The three most common kinds are:
    uses comments in the external file called **sentinels** that represent the
    outline structure *in the external file itself*.
 
-All three types of connections allow you to share external files with others in
-a collaborative environment. With @file, you can also **share outline
-structure** with others. Thus, a single Leo outline can contain an entire
-project with dozens or even hundreds of external files. Using Leo, you never
-have to open these files by hand, Leo does so automatically when it opens the
-Leo outline. Theses connections with external files creates a unique new kind of
-IDE.
+All of these connections allow you to share external files with others in a
+collaborative environment. With @file, you can also **share outline structure**
+with others. Thus, a single Leo outline can contain an entire project with
+dozens or even hundreds of external files. Using Leo, you never have to open
+these files by hand, Leo does so automatically when it opens the Leo outline.
+Leo is a unique new kind of IDE.
 
 **Scripting**: Every outline node can contain Python scripts. Moreover, each
-node in a Leo outline is a programmable object, which is **easily** available to
+node in a Leo outline is a programmable object, which is *easily* available to
 any Leo script. Furthermore, the structure of the outline is *also* easily
 available to any script. Thus, nodes can contain programs, or data, or both!
 
@@ -82,8 +80,9 @@ button**, that is, a Python script that can be applied to any node in an
 outline!
 
 Unifying scripting, data and outline structure creates a new world. We use the
-term **Leonine** to denote the Leo-centric view of this world. Here are some of the
-implications of of this new world:
+term **Leonine** to denote the Leo-centric (outline-centric) view of
+programming, data and scripting. Here are some of the implications of of this
+new world:
 
 **Data organization**: Leo's clones allow unprecedented flexibility in
 organizing data. Leo outlines have been used as an entirely new kind of
@@ -95,24 +94,24 @@ as you like. But this makes outlines ideal for representing designs. In fact,
 Leo outlines don't just represent designs, they *are* the designs. For example,
 all of Leo's source code reside in just a few Leo outlines. There is no need for
 separate design tools because creating a Leo outlines simultaneously embodies
-both the design and the resulting code. Furthermore, as yet another view of
-data, Leo outlines can also represent input data to other design tools. Leo is
-unique design environment.
+both the design and the resulting code. Furthermore, Leo outlines can also
+represent input data to other design tools.
 
 **Programming/Coding**: It's much easier to program when the design is always
 easily visible. Nodes provide the perfect way to organize large modules, classes
-and functions. Nodes provide unlimited room to save as many details an notes as
-you like, **without** cluttering your overall view of the task, or rather tasks,
-at hand.
+and functions. Nodes also provide unlimited room to save as many details an
+notes as you like, *without* cluttering your overall view of the task, or rather
+tasks, at hand.
 
 **Testing**: Leo is a supremely powerful unit-testing framework:
 
 1. You can make node a unit test simply by putting @test at the start of its
    headline. Leo will then automatically generate all the blah-blah-blah needed
-   to turn the node's script into a fully-functional unit test.
+   to turn the node's script into a fully-functional unit test. Oh yes,
+   the headline becomes the name of the unit test.
 
 2. Unit tests can use data in children of @test nodes. Typical tests put input
-   data in a child node, and the expected results of running the test in another
+   data in one child node, and the expected results of running the test in another
    child node. The test simply compares the actual and expected results.
 
 3. You can easily run tests in the entire outline or just in the selected
@@ -120,7 +119,7 @@ at hand.
    in as many ways as you like. For example, it is trivial to run only those
    tests that are failing.
 
-**Maintanance and support**: Leo's ability to contain multiple views of data is
+**Maintenance and support**: Leo's ability to contain multiple views of data is
 *precisely* what is needed while maintaining any large project. For every new
 support task and every new bug, a new (plain) **task node** will contain all the
 data needed for that task, notes, test data, whatever. Furthermore, when fixing
@@ -129,22 +128,29 @@ related to the bug. Fixing a node in the task node fixes the node in the
 external file! And as always, you can use all of Leo's outlining features
 (including clones) to organize your task nodes.
 
+**Organization everywhere**: Have you noticed that Leo's organizational prowess
+applies to *everything*? Indeed, you can use outlines and clones in new ways to
+organize files, projects, data, design, programming, testing, and tasks. Leo
+doesn't need lots of features--outlines, clones and scripts suffice.  The more
+complex your data, designs, program and tasks, the better Leo is suited to them.
+
 **Scripting everything**: Let's step back a moment. A single outline can contain
 databases, designs, actual computer code, unit tests, test scripts and task
 nodes. But Leo scripts will work on any kind of node. Thus, it is *easy* to run
-scripts on designs, programs, tests and any other task! Examples:
+scripts on *anything*! Examples:
 
 - Data: The @kind convention for headlines tells scripts what a node contains
   without having to parse the node's contents.  The possibilities are endless.
 
 - Design: scripts can verify properties of design based on either the contents
-  of design nodes or their outline structure!
+  of design nodes or their outline structure.
 
-- Coding: scripts routlinely make massive changes to outlines. Scripts can also
-  verify arbitrarily complex properties of outlines.
+- Coding: scripts routinely make massive changes to outlines. Scripts and unit
+  tests can (and do!) verify arbitrarily complex properties of outlines.
 
-- Testing: scripts can (and have!) create @test nodes themselves.
+- Testing: scripts can (and do!) create @test nodes themselves.
 
-- Maintanance: scripts could gather statistics about tasks, provided some simple
+- Maintenance: scripts could gather statistics about tasks using simple @kind
+  conventions.
 .. @-all
 .. @-leo
