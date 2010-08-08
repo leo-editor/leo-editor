@@ -551,5 +551,136 @@ to write your own plugins.
 - Leo’s home page:  google edreamleo or http://webpages.charter.net/edreamleo/front.html
 
 - Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766
+.. @+node:ekr.20080301071818.1: ** Old home page @@@thin html/front.html
+@first <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+@language html
+@tabwidth -4
+
+<!-- Last Modified: July 31, 2008 -->
+<!-- Author: Edward K. Ream, edreamleo@gmail.com -->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <<head>>
+</head>
+
+<body bgcolor="#fffbdc">
+<< main table >>
+</body>
+</html>
+
+.. @+node:ekr.20080301075734.1: *3* <<head>>
+<title>Leo's Home Page</title>
+
+<meta http-equiv="Content-Type"
+    content="text/html; charset=UTF-8"/>
+
+<meta name="description"
+    content="This page describes Leo, a programmer's outliner."/>
+
+<meta name="keywords"
+    content="Leo, Outlines, Programming, Edward K. Ream, Open software"/>
+
+<!-- for GeoUrl -->
+<meta name="ICBM" content="43.0713768, -89.4188004" />
+<meta name="DC.title" content="Leo's Home Page" />
+.. @+node:ekr.20080301075734.4: *3* << main table >>
+<table border="0" bgcolor="#fffbdc">
+    <tr>
+        <td width="22%" bgcolor="#FFFDBC">
+        << left table >>
+        </td>
+
+        <td width="78%" bgcolor="#fffbdc" border=3>
+        << right table >>
+        </td>
+    </tr>
+</table>
+.. @+node:ekr.20080301075734.6: *4* << left table >>
+<table border="0" width="100%" bgcolor="#fffdbc">
+    <tr><td><b><font size="4">Leo's Home</font></b></td></tr>
+    <tr><td width="50%">
+        <a href="http://www.python.org/"><img border="0" vspace="10"
+            src="PythonPowered.gif" width="110" height="44" /></a></td></tr>
+
+
+    <tr><td width="50%" bgcolor="#f2f2f2"><b>Documentation</b></td></tr>
+    <tr><td width="50%"><a href="http:screen-shots.html">Screen Shots</a></td></tr>
+    <tr><td width="50%"><a href="install.html">Installing Leo</a></td></tr>
+    <tr><td width="50%"><a href="intro.html">Beginners Guide</a></td></tr>
+    <tr><td width="50%"><a href="leo_toc.html">Users Guide</a></td></tr>
+    <tr><td width="50%"><a href="FAQ.html">FAQ</a></td></tr>
+    <tr><td width="50%">
+        <a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm">Online tutorial</a>
+    </td></tr>
+    <tr><td width="50%"><a href="testimonials.html">Quotes</a></td></tr>
+
+
+    <tr><td width="50%" bgcolor="#f2f2f2"><b>Links</b></td></tr>
+    <tr><td width="50%"> 
+    << download ref >>  </td></tr>
+    <!--<tr><td width="50%"><a href="http://sourceforge.net/project/?group_id=3458"> Leo at SourceForge</a></td></tr>-->
+    <tr><td width="50%"><a href="http://groups.google.com/group/leo-editor">Leo at Google Groups</a></td></tr>
+    <tr><td width="50%"><a href="http://www.mind-mapping.org/">mind-mapping.org</a></td></tr>
+    <!--<tr><td width="50%"><a href="http://groups.google.com/group/leo-editor-users">Leo's help forum</a></td></tr>-->
+    <tr><td width="50%"><a href="http://launchpad.net/leo-editor">Leo at launchpad</a></td></tr>
+    <tr><td width="50%">Leo's <a href="http://leo.zwiki.org">Wiki</a></td></tr>
+    <tr><td width="50%">Leo's <a href="http://www.greygreen.org/leo/">Daily snapshots</a></td></tr>
+    <tr><td width="50%"><a href="leoLinks.html">More links</a></td></tr>
+
+
+    <tr><td width="50%" bgcolor="#f2f2f2"><b>Edward K. Ream</b></td></tr>
+    <tr><td width="50%"><a href="ekr.html">Home</a></td></tr>
+    <tr><td width="50%"><a href="mailto:edreamleo@gmail.com">Contact</a></td></tr>
+</table>
+.. @+node:ekr.20080306071848: *5* << download ref >> (contains version number)
+<a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">
+    Download Leo[4.7.1 final]</a>
+.. @+node:ekr.20080301082848: *4* << right table >>
+<table border="0" bgcolor="#FFFBDC">
+
+<tr>
+    <td width="25%"><img src="_static/Leo4-80-border.jpg"/></td>
+    <td width="75%" align="left" valign="bottom"><h2> Leo is...</h2></td>
+</tr>
+
+<tr><td colspan=2>
+    <ul>
+    << what is Leo list >>
+    </ul>
+</td></tr>
+</table>
+
+<p>Leo has an active community of helpful users and developers.<br>
+Please use the <a href="http://groups.google.com/group/leo-editor">leo-editor</a>
+group to ask questions and make suggestions.</p>
+
+<p>Leo's author is <a HREF="ekr.html">Edward K. Ream</a></p>
+
+.. @+node:ekr.20080301083325: *5* << what is Leo list >>
+<li>
+    An outline-oriented <i>browser</i> and <i>project manager</i> that organizes<br>
+    programs, web sites, URL's, pictures, movies or any other kind of data.<br>
+    You can organize your data in as many ways as you like within a <i>single</i> outline.</li>
+<li>
+    A <i>programmer's editor</i> that fully integrates outline structure with programming.
+    <!--
+    <a HREF="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> and
+    <a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> markup.</li>
+    -->
+<li>
+    <i>Fully scriptable</i> using <a HREF="http://www.python.org/">Python</a>.
+    Leo's core is 100% pure Python.</li>
+<li>
+    <i>Portable</i>. Leo runs on Windows, Linux and MacOS X.<br>
+    Leo requires either the
+    <a HREF="http://docs.python.org/library/tkinter.html">Tkinter</a> or
+    <a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt</a> widget set.<br>
+    Leo's outline files are <a HREF="http://www.w3.org/XML/">XML</a> format.</li>
+<li>
+    <a href="http://www.opensource.org/"><i>Open Software</i></a>,
+    distributed under the
+    <a href="http://www.opensource.org/licenses/mit-license.php/">MIT License</a>.</li>
 .. @-all
 .. @-leo

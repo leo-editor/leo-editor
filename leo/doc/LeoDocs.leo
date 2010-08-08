@@ -65,7 +65,7 @@
 </v>
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
-<v t="ekr.20100805171546.4412" a="E"><vh>Files</vh>
+<v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
@@ -163,13 +163,13 @@
 <v t="ekr.20100805165051.7175"><vh>@thin whatsnew.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20080301071818"><vh>Home page</vh>
-<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,ekr.20100808060203.4286,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20100805165051.7176"
-expanded="ekr.20090526102407.10030,"><vh>@thin other_docs.txt</vh></v>
+<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20100805165051.7176" a="E"
+expanded="ekr.20080301075734.4,ekr.20080301075734.6,ekr.20080301082848,"><vh>@thin other_docs.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
@@ -455,9 +455,8 @@ else:
 <t tx="ekr.20070628083442"></t>
 <t tx="ekr.20070701101808"></t>
 <t tx="ekr.20080203101507"></t>
-<t tx="ekr.20080301071818"></t>
-<t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7.1 final]&lt;/a&gt;
+<t tx="ekr.20080301071818">&lt;img src="Leo4-80-border.jpg" alt="Logo: Leo4-80-border.jpg" /&gt;
+
 </t>
 <t tx="ekr.20080412124815.1"></t>
 <t tx="ekr.20080730212711.14"></t>
