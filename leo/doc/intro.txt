@@ -39,7 +39,7 @@ additive. There is a unique "Leo way" of managing data; the term **Leonine**
 describes how people treat data in "the world according to Leo". Leo definitely
 takes a bit of work to understand. Leo's users speak of an "Aha" moment, when
 they see how these pieces fit together: outline structure is significant
-everywhere.  For a slightly more detailed introduction, see `Leo in a nutshell`_.
+everywhere.  For a more detailed introduction to Leo, see `Leo in a nutshell`_.
 
 Leo is freely available in source or binary form for all major platforms. You
 may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open

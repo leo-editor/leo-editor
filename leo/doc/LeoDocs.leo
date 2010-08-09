@@ -65,7 +65,7 @@
 </v>
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
-<v t="ekr.20100805171546.4412" a="E"><vh>Files</vh>
+<v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
@@ -89,6 +89,11 @@
 </v>
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
 <v t="ekr.20100805165051.7153"><vh>@thin outlines.txt</vh></v>
+</v>
+<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20100805165051.7146"><vh>@thin intro.txt</vh></v>
+<v t="ekr.20100808120531.4280"><vh>@thin outline-commands.txt</vh></v>
+<v t="ekr.20100808120531.4283"><vh>@thin nutshell.txt</vh></v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Leo's Reference</vh>
 <v t="ekr.20100805001344.7253"><vh>@thin directives.txt</vh></v>
@@ -165,16 +170,9 @@
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
-<v t="ekr.20100805165051.7177" a="E"
-expanded="edream.110203163054.63,ekr.20100225102026.7139,"><vh>@thin release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20100805165051.7146" a="E"
-expanded="ekr.20091130111843.6788,"><vh>@thin intro.txt</vh></v>
-<v t="ekr.20100808120531.4280" a="E"><vh>@thin outline-commands.txt</vh></v>
-<v t="ekr.20100808120531.4283" a="E"><vh>@thin nutshell.txt</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
