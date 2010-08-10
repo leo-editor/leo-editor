@@ -207,7 +207,7 @@ As always with Leo, you organize your work with outlines. By default, (that is,
 with the recommended options discussed in Step 2) the rst3 command will produce
 the following output:
 
-1. Each node becomes an (rST/Sphinx) section.
+1. Each node becomes an rST/Sphinx section.
 
    The level of each section corresponds to the level of the node in the
    headline. Children of the @rst node create level 1 sections. Grandchidren of
