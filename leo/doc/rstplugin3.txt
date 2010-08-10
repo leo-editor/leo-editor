@@ -90,7 +90,7 @@ Here is how to use the rst3 command:
    rst3 command, and global settings for the rst3 command.
 
 2. Write your documentation in the descendants of the \@rst node. Within the
-   \@rst tree **headlines represent section headings**. Body text contain your
+   \@rst tree, **headlines represent section headings**. Body text contain your
    writing, possibly including rST or sphinx markup.
 
 3. Run the rst3 command on an outline containing one or more \@rst nodes. When
@@ -102,7 +102,7 @@ Here is how to use the rst3 command:
 
 That's all there is to it! The organization of the \@rst tree *is* the organization
 of your document. To reorganize your document, you just reorganize the nodes in
-the \@rst tree!  When you are done writing, you update external
+the \@rst tree!  When you are done writing, create your output using the rst3 command.
 
 The next sections will discuss these three steps in more detail. As you
 will see, after you set up the @rst node, you can focus exclusively on writing
@@ -113,11 +113,10 @@ The headline of the @rst node has the form::
 
         @rst <filename>
 
-Depending on options, the rst3 command will write one or two files:
-the **output file** (<filename>), and the **intermediate file** (<filename>.txt)
-
-For example, The rst3 command applied to the
-node \@rst abc.html will write abc.html or abc.html.txt or both.
+Depending on options, the rst3 command will write one or two files: the **output
+file** (<filename>), and the **intermediate file** (<filename>.txt). For
+example, The rst3 command applied to the node \@rst abc.html will write abc.html
+or abc.html.txt or both.
 
 Docutils requires the output file--the intermediate file is optional (it's useful
 when tracking down docutils error messages).  In contrast, Sphinx requires only
@@ -193,7 +192,7 @@ options for docutils is the line::
 
     call_docutils=False
 
-However, the following line is no longer optional: it is required::
+However, the following line is no longer optional--it is required::
 
     write_intermediate_file=True
 .. @+node:ekr.20100809162244.4297: *5* Setting your document's title
@@ -221,7 +220,7 @@ Now comes the "interesting" part--actually writing your novel, short story,
 design document or other documentation.
 
 As always with Leo, you organize your work with outlines. By default,
-that is, with the options we have specified in the body of the \@rst node,
+(that is, with the options we have specified in the body of the \@rst node)
 the rst3 command will produce the following output:
 
 1. Each node becomes an (rST/Sphinx) section.
@@ -250,7 +249,7 @@ Well almost. There are two "power features" that you should know about:
     no section.  Leo's docs use such node to contain rST links.  We want
     to put those links mostly out of sight.
 
- \@rst-ignore
+\@rst-ignore
 
     The rst3 command skips any node whose headline starts with \@rst-ignore.
     Such nodes might contain notes that you want to keep with the @rst tree, but
@@ -263,7 +262,7 @@ the last minibuffer command was the rst3 command.
 The rst3 command writes its output to either the output file or the intermediate file, or both.
 
 If you are using docutils, the call_docutils option will cause the rst3 command
-run docutils automatically, producing the output file as the result.
+to run docutils automatically, producing the output file as the result.
 
 If you are using Sphinx, the rst3 command will generate the intermediate file.
 You must then run Sphinx's make utility to turn the intermediate file into the
@@ -272,13 +271,13 @@ final output file.
 This tutorial has attempted to explain all that you need to know to start using
 the rst3 command effectively. Some possible next steps are:
 
-1. Look at Leo's own documentation in LeoDocs.leo.  It's in the
-   node "@rst html\rstplugin3.html".  Discover how the nodes in
-   this tree correspond to the documentation you see before you.
+1. Look at Leo's own documentation in LeoDocs.leo. It's in the node "@rst
+   html\rstplugin3.html". Discover how the nodes in this tree correspond to the
+   documentation you see before you.
 
-2. Create your own @rst nodes. Run the rst3 command on them and
-   see what happens.  If you get stuck, you can always ask for
-   help at `Leo's Google Group`_.
+2. Create your own @rst nodes. Run the rst3 command on them and see what
+   happens. If you get stuck, you please ask for help at
+   `Leo's Google Group`_.
 .. @+node:ekr.20100809162244.4302: *3* Advanced features
 Most of the rest of this chapter discuss advanced features.
 .. @+node:ekr.20050818163826.4: *4* Options
