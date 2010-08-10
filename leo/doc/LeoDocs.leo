@@ -71,7 +71,7 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -87,13 +87,13 @@
 <v t="ekr.20100731112744.7267"><vh>Chapter 1: Installing Leo</vh>
 <v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005806000000302e302e313071017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@thin install.txt</vh></v>
 </v>
-<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
-<v t="ekr.20100805165051.7153"><vh>@thin outlines.txt</vh></v>
-</v>
 <v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"><vh>@thin intro.txt</vh></v>
 <v t="ekr.20100808120531.4280"><vh>@thin outline-commands.txt</vh></v>
 <v t="ekr.20100808120531.4283"><vh>@thin nutshell.txt</vh></v>
+</v>
+<v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
+<v t="ekr.20100805165051.7153"><vh>@thin outlines.txt</vh></v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Leo's Reference</vh>
 <v t="ekr.20100805001344.7253"><vh>@thin directives.txt</vh></v>
@@ -125,8 +125,9 @@
 <v t="ekr.20060612102055"><vh>Chapter 13: Writing Plugins</vh>
 <v t="ekr.20100805165051.7163"><vh>@thin writingPlugins.txt</vh></v>
 </v>
-<v t="ekr.20050831184021.1"><vh>Chapter 14: Leo and reStructuredText</vh>
-<v t="ekr.20100805165051.7164"><vh>@thin rstplugin3.txt</vh></v>
+<v t="ekr.20050831184021.1" a="E"><vh>Chapter 14: Leo and reStructuredText</vh>
+<v t="ekr.20100805165051.7164" a="E"
+expanded="ekr.20050818163826,ekr.20100809162244.4289,ekr.20100809162244.4298,ekr.20100809162244.4302,ekr.20050818163826.4,"><vh>@thin rstplugin3.txt</vh></v>
 </v>
 <v t="ekr.20060430221745"><vh>Chapter 15: Controlling syntax coloring</vh>
 <v t="ekr.20100805165051.7165"><vh>@thin coloring.txt</vh></v>
@@ -158,14 +159,14 @@
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
 <v t="ekr.20100805165051.7174"><vh>@thin appendices.txt</vh></v>
 </v>
-<v t="ekr.20091111112709.6671"><vh>Glossary</vh>
-<v t="ekr.20100805165051.7147"><vh>@thin glossary.txt</vh></v>
+<v t="ekr.20091111112709.6671" a="E"><vh>Glossary</vh>
+<v t="ekr.20100805165051.7147" a="E"><vh>@thin glossary.txt</vh></v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20100805165051.7175"><vh>@thin whatsnew.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
@@ -173,6 +174,8 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
+<v t="ekr.20100808120531.4284"><vh>@rst html/nutshell.html</vh></v>
+<v t="ekr.20050831184021.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -506,6 +509,169 @@ p.setBodyString(s)</t>
 Rewrite chapter 6.
 
 Revise Tutorial.</t>
+<t tx="ekr.20100808120531.4284">#################
+Leo in a Nutshell
+#################
+
+This page introduces Leo's features and shows why Leo is a unique tool for
+understanding and manipulating data.
+
+**Outlines and organization**: Leo's outlines are more flexible and powerful
+than any other outline, for at least three reasons:
+
+1. Unlike class browsers, you are in complete control of the outline's
+   structure. You can organize it however you like, and Leo will *remember* what
+   you have done and will show it to you just that way when come back next time.
+   This seems like a minor feature. After you use Leo, you will see that it is
+   not.
+
+2. Leo outlines may *look* like other outlines, but in fact Leo outlines are
+   views of a more general underlying data (graph) structure. Nodes in Leo's
+   outlines may appear in many places in the same outline. We call such nodes
+   **clones**. Using clones, it is easy to create as many **views** of the data
+   in the outline as you like. In effect, Leo becomes a supremely flexible
+   filing cabinet: any outline node may be filed any place in this cabinet.
+
+3. Leo outlines are intimately connected to both external files and Python
+   scripting, as explained next.
+
+.. index::
+    pair: External file; Nutshell
+
+**External files**: Any outline node (and its descendants) can be "connected" to
+any file on your file system. Three common kinds of connection are:
+
+1. @edit: Leo reads the entire external file into the @edit node's body text.
+
+2. @auto: Leo parses the external file and automatically creates an outline that
+   shows the structure of the external file, just as in typical class browsers.
+
+3. @file: Leo makes a two-way connection between the @file tree (the @file node
+   and its descendants) and the external file. You can update the external file
+   by writing the Leo outline connected to it, or you can update the outline by
+   changing the external file. To do this Leo uses comments in the external file
+   called **sentinels** that represent the outline structure *in the external
+   file itself*.
+
+\@edit, \@auto and \@file allow you to share external files with others in a
+collaborative environment. With \@file, you also **share outline structure**.
+
+A single Leo outline can connect to dozens or even hundreds of external files.
+Using Leo, you never have to open these files by hand, Leo does so automatically
+when it opens the Leo outline. Outlines connected to external files make Leo a
+new kind of IDE (Integrated Development Environment).
+
+**Scripting**: Every outline node can contain Python scripts. Moreover, each
+node in a Leo outline is a programmable object. All nodes are *easily* available
+to any Leo script. The structure of the outline is *also* easily available to
+any script.  Scripts can *easily* determine the parents and children of any node.
+Finally, Leo makes it easy for scripts to visit any or all nodes of an outline.
+
+.. index::
+    pair: @kind convention; Nutshell
+    pair: User-defined types; Nutshell
+
+Leo's headlines provide a natural place to indicate the **type** of data
+contained in nodes. By *convention*, @test in a headline denotes a unit test,
+@command creates a new Leo command. The \@kind convention creates 
+**user-defined types** that turn any outline Node into a true programming
+object.
+
+.. index::
+    pair: Leonine; Nutshell
+
+Unifying scripting, data and outline structure creates a new world. We use the
+term **Leonine** to denote the Leo-centric (outline-centric) view of
+programming, data and scripting. Here are some of the implications of this
+new world:
+
+**Data organization**: Leo's clones allow unprecedented flexibility in
+organizing data. Leo outlines have been used as an entirely new kind of
+database. It is easily scriptable. As my brother has shown, it is possible to
+design Leo outlines so that parts of the outline *are* SQL queries!
+
+**Design**: With Leo, you always see the big picture, and as many of the details
+as you like. But this makes outlines ideal for representing designs. In fact,
+Leo outlines don't just represent designs, they *are* the designs. For example,
+all of Leo's source code reside in just a few Leo outlines. And Leo outlines can
+represent input data to other design tools.
+
+**Programming/Coding**: It's much easier to program when the design is always
+easily visible. Nodes provide the perfect way to organize large modules, classes
+and functions. Nodes also provide unlimited room to save as many details as you
+like, *without* cluttering your overall view of the task, or rather tasks, at
+hand.
+
+**Testing**: Leo is a supremely powerful unit-testing framework:
+
+1. You can make a node a unit test simply by putting @test at the start of its
+   headline. Leo will then automatically generate all the blah-blah-blah needed
+   to turn the node's script into a fully-functional unit test. Oh yes,
+   the headline becomes the name of the unit test.
+
+2. Unit tests can use data in children of @test nodes. Typical tests put input
+   data in one child node, and the expected results of running the test in another
+   child node. The test simply compares the actual and expected results.
+
+3. You can easily run tests in the entire outline or just in the selected
+   outline. Because tests reside in nodes, you can use clones to organize tests
+   in as many ways as you like. For example, it is trivial to run only those
+   tests that are failing.
+
+**Maintenance and support**: Leo's ability to contain multiple views of data is
+*precisely* what is needed while maintaining any large project. For every new
+support task and every new bug, a new (plain) **task node** will contain all the
+data needed for that task, notes, test data, whatever. Furthermore, when fixing
+bugs, the task node can contain clones of all classes, methods or functions
+related to the bug. Fixing a node in the task node fixes the node in the
+external file! And as always, you can use all of Leo's outlining features
+(including clones) to organize your task nodes.
+
+**Organization everywhere**: Have you noticed that Leo's organizational prowess
+applies to *everything*? Indeed, you can use outlines and clones in new ways to
+organize files, projects, data, design, programs, testing, and tasks. Leo
+doesn't need lots of features--outlines, clones and scripts suffice.  The more
+complex your data, designs, program and tasks, the better Leo is suited to them.
+
+It's time to mention one of Leo's most unique features.  Simple, *optional*
+markup makes it possible to synthesize (build) scripts and entire computer programs
+from outlines. Leo is more than a filing cabinet for scripts and programs, Leo
+is a build tool for scripts and outlines!
+
+**Scripting everything**: Let's step back a moment. A single outline can contain
+databases, designs, actual computer code, unit tests, test scripts and task
+nodes. But Leo scripts will work on any kind of node. Thus, it is *easy* to run
+scripts on *anything*! Examples:
+
+- Scripting itself: @button nodes creates a **script button**, a Python script
+  that can be applied to any node in an outline! Script buttons have been
+  written (in Python) that will execute Leo scripts in other languages.
+
+- Data: The @kind convention for headlines tells scripts what a node contains
+  without having to parse the node's contents.  The possibilities are endless.
+
+- Design: scripts can verify properties of design based on either the contents
+  of design nodes or their outline structure.
+
+- Coding: scripts routinely make massive changes to outlines. Scripts and unit
+  tests can (and do!) verify arbitrarily complex properties of outlines.
+
+- Scientific programming: Leo scripts can run experiments many times using
+  different starting points. Nodes are the perfect place to store results and
+  notes. Many scientists use the IPython shell-- Using Leo's **IPython bridge**,
+  Leo can execute IPython scripts, and scripts in IPython have full access to
+  all nodes in Leo outlines.
+
+- Testing: scripts can (and do!) create @test nodes themselves.
+
+- Maintenance: scripts could gather statistics about tasks using simple @kind
+  conventions.
+
+The Leo Aha is just this: Leo outlines are far more than eye candy. Leo outlines
+revolutionize your view of data--Leo outlines can organize *anything*. Leo
+outlines create a new kind of programming environment, one in which outline
+structure and user-defined data types create totally new opportunities.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
