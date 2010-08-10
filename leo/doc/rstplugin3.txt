@@ -2,6 +2,7 @@
 .. @+node:ekr.20100805165051.7164: * @thin rstplugin3.txt
 .. @@language rest
 .. @@tabwidth -4
+
 .. @+all
 .. @+node:ekr.20050818163826: ** @rst html\rstplugin3.html
 .. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
@@ -40,16 +41,16 @@ Chapter 14: Leo and ReStructuredText
 .. _ListManagerDocs.html: http://webpages.charter.net/edreamleo/ListManagerDocs.html
 .. _wxListManager.leo:    http://webpages.charter.net/edreamleo/wxListManager.leo
 .. @+node:ekr.20050818163826.2: *3* Overview
-reStructuredText_ (rST) is a simple, powerful, popular markup language for
-writing documents. All of Leo's documentation is written in rST, and then
-processed by `Sphinx`_ to produce Leo's web pages.
+This chapter discusses Leo's rst3 command. The rst3 command creates HTML, PDF,
+LaTeX and other kinds of documents from Leo outlines containing
+`reStructuredText`_ (rST) or `Sphinx`_ markup.
 
-This chapter discusses Leo's rst3 command. The rst3 command converts an \@rst
-tree to rST text, and then optionally sends this text to `docutils`_ or
-`Sphinx`_ for further processing. The rst3 command can optionally use
-`SilverCity`_ syntax coloring package.
+**Note**: `docutils`_ is a document processing system using rST markup.
+`Sphinx`_ extends docutils: sphinx markup is a superset of rST markup. All of
+Leo's documentation is written in Sphinx and processed with the rst3 command to
+produce HTML files.
 
-Leo makes writing rST documents a *lot* easier:
+Leo and rst3 make writing rST/Sphinx documents a *lot* easier:
 
 1. Leo outlines organize writing in all the usual ways. You always see the
    structure of your writing clearly no matter how large it is. You can
@@ -58,93 +59,76 @@ Leo makes writing rST documents a *lot* easier:
    features, all by themselves, would make Leo an excellent choice for
    editing rST documents.
 
-2. The rst3 command automatically creates rST sections from headlines. Without
-   Leo, changing the level of a section is clumsy and error prone: you must
-   carefully change the section's underlining character. The rst3 command
-   eliminates all this bother.
+2. But the rst3 command does more: it automatically creates rST sections from
+   headlines. Without Leo, changing the level of a section is clumsy and error
+   prone: you must carefully change the section's underlining character. Leo's
+   rst3 command eliminates all this bother.
 
-In addition to these basic features, Leo provides capabilities for power users:
+3. The rst3 command converts an \@rst tree to rST and then sends this text to
+   docutils or Sphinx for further processing.
 
-3. You can edit existing rST files using @auto-rst nodes. The imported outline
-   structure mirrors the level of the rST section headings.
-
-4. You can control how Leo formats @rst trees on a node-by-node basis.
-   See the `Options`_ section below for full details.
-
-5. For those desiring the ultimate in flexible formatting, Leo scripts can
-   convert any Leo outline into rST text. This chapter concludes by telling how
-   to write such scripts.
+In addition to these basic features, the rst3 command provides *many* other
+capabilities for power users. We'll discuss these features later.
 .. @+node:ekr.20100809162244.4289: *3* Tutorial
-This following sections tell how to get started with Leo's rst3 command. It
-will ignore most of power-user features described later in this chapter.
+This tutorial tells how to get started with Leo's rst3 command. The tutorial
+covers only rst3's basic features. You can do a *lot* with these features--Leo's
+documentation uses only the features described here!
 
-You can do a *lot* with just the basic features of the rst3 command. In fact,
-Leo's documentation just uses the features described in this tutorial!
-LeoDocs.leo contains all this documentation.  
-You can see all this documentation in the node called "Users Guide."
+Step-by-step, here is how to use the rst3 command:
 
-Here is how to use the rst3 command:
-
-1. Create an @rst node. This node specifies general information about your
-   documentation, including its title, one or more external files created by the
-   rst3 command, and global settings for the rst3 command.
+1. Create an \@rst node. This node and its descendants will contain your
+   document. The \@rst node itself is a good place to specify general
+   information about your documentation, including its title, one or more
+   external files created by the rst3 command, and global settings for the rst3
+   command.
 
 2. Write your documentation in the descendants of the \@rst node. Within the
    \@rst tree, **headlines represent section headings**. Body text contain your
-   writing, possibly including rST or sphinx markup.
+   writing, including rST or Sphinx markup.
 
-3. Run the rst3 command on an outline containing one or more \@rst nodes. When
-   processing an \@rst tree, the rst3 command creates properly underlined rST
-   markup for section headings from each headline. The rst3 command then copies
-   the body text *as is* to the output. The rst3 command can handle headlines
-   and body text in many other ways, but this is how the rst3 command works with
-   the default settings.
+3. To create your documents, run the rst3 command on an outline containing one
+   or more \@rst nodes. 
 
 That's all there is to it! The organization of the \@rst tree *is* the organization
 of your document. To reorganize your document, you just reorganize the nodes in
 the \@rst tree!  When you are done writing, create your output using the rst3 command.
 
-The next sections will discuss these three steps in more detail. As you
-will see, after you set up the @rst node, you can focus exclusively on writing
-and organizing. Leo's rst3 command, combined with either docutils or Sphinx,
-will take care of the rest.
+The next sections will discuss these three steps in more detail. As you will
+see, after you set up the \@rst node, you can focus exclusively on writing and
+organizing. Leo's rst3 command will take care of the rest.
 .. @+node:ekr.20100809162244.4292: *4* Step 1: Create the @rst node
-The headline of the @rst node has the form::
+The headline of the \@rst node has the form::
 
         @rst <filename>
 
-Depending on options, the rst3 command will write one or two files: the **output
-file** (<filename>), and the **intermediate file** (<filename>.txt). For
-example, The rst3 command applied to the node \@rst abc.html will write abc.html
-or abc.html.txt or both.
+Depending on options to be discussed later, the rst3 command will write one or two files:
+the **output file** (<filename>), and the **intermediate file** (<filename>.txt).
 
-Docutils requires the output file--the intermediate file is optional (it's useful
-when tracking down docutils error messages).  In contrast, Sphinx requires only
-the intermediate file.
+For example, the rst3 command applied to \@rst abc.html will write
+abc.html or abc.html.txt or both.
 
-Now that we know what the headline of an \@rst node does, let's turn our
-attention the the body of the \@rst node. Typically you use the body text of the
-\@rst node to set your document's title and to set options for rst3 command
-itself...
+**Important**: The rst3 command creates the intermediate file, and then passes
+this file to docutils or Sphinx. The intermediate file *always* contains
+rST/Sphinx markup *regardless* of the type of the final output files. When in
+doubt about what the rst3 command does, you can examine the intermediate file to
+find out what markup the rst3 command has generated.
+
+Let's turn our attention to the the body of the \@rst node...
 .. @+node:ekr.20100809162244.4298: *5* Global options in the @rst node
-The body text of \@rst nodes typically starts with markup that specifies global
-options used by the rst3 command. In most situations, you won't override these
-options later--you will just set these options once and then completely forget
-about them.
+You may set rst3 options in the body text of any node. The \@rst3 node itself is
+a good place for options that apply to the entire \@rst3 tree. Typically, you
+will just set these options once and then completely forget about them.
 
-You set rst3 options this way::
+In body parts, you set rst3 options like this::
 
     @ @rst-options
+    rst3 options, one per line
+    @c
 
-This is a real doc part: it starts with '@'. The doc part ends with the \@c
-directive, or the end of the body text. **Note**: Specifying options with doc
-parts looks a bit clumsy, but it turns out to be more convenient for power
-users.
-
-Following this line is a list of options and their values. The next two sections
-discuss the options you use to generate rST or Sphinx markup.
-.. @+node:ekr.20100809162244.4299: *6* Standard options for docutils
-The following are the standard options to generate an rST file for docutils::
+This is a Leo doc part: the '@' must appear in the leftmost column. As usual,
+the doc part ends with the \@c directive, or the end of the body text.
+.. @+node:ekr.20100809162244.4299: *6* Recommended options for docutils
+The following are the recommended options when using docutils::
 
     @ @rst-options
     call_docutils=True
@@ -160,18 +144,13 @@ The following are the standard options to generate an rST file for docutils::
     verbose=True
     @c
 
-**Important**: All of these options are the same as the standard default values
-for the corresponding settings in leoSettings.leo.  Thus, we could omit them all.
-This would be bad style, however, because any node, including a parent of the \@rst node,
-could override any of these options.  Specifying these options here ensures that the rst3
-command will produce the same results for the \@rst node even if we later move the node
-somewhere else in the outline.
+**Important**: You don't have to understand these options now!
 
-**Note**: As noted above, we could set write_intermediate_file = False. This
-might save a little time, but the intermediate file is useful for debugging, so
-I typically generate it.
-.. @+node:ekr.20100809162244.4300: *6* Standard options for Shinx
-The following are the standard options to generate the input for Shinx::
+**Important**: It is good style to specify all these options explicitly, even if
+they are the same as the standard default values. This ensures that the rst3
+command will produce the same results no matter where the \@rst node is located.
+.. @+node:ekr.20100809162244.4300: *6* Recommended options for Sphinx
+The following are the recommended options when using for Shinx::
 
     @ @rst-options
     call_docutils=False
@@ -187,26 +166,31 @@ The following are the standard options to generate the input for Shinx::
     verbose=True
     @c
 
-**Note**: the only difference between this set of options and the
-options for docutils is the line::
+**Important**: You don't have to understand these options now!
+
+**Important**: It is good style to specify all these options explicitly, even if
+they are the same as the standard default values. This ensures that the rst3
+command will produce the same results no matter where the \@rst node is located.
+
+**Note**: The only differences between this set of options and the recommended
+docutils options is the line::
 
     call_docutils=False
 
-However, the following line is no longer optional--it is required::
-
-    write_intermediate_file=True
+Generating the output file (call_docutils=True) would not be wrong, but it would
+be a waste of time.
 .. @+node:ekr.20100809162244.4297: *5* Setting your document's title
-You must specify the title explicitly using standard rST syntax. Typically you
-would do this in the \@rst node, just after specifying your global options.
+You must specify the title explicitly. A good place to do this is in the body of
+the \@rst node, just after specifying global options.
 
-The rst3 command reserves the '#' character for the underlining character for
-titles. Like this::
+The rst3 command reserves the '#' character for the setting titles. You set the
+document's title like this::
 
     #############
     War and Peace
     #############
 
-Sometimes I put the introductory words of a Chapter in the \@rst node::
+Sometimes I put the first words of a document in the \@rst node::
 
     Well, Prince, so Genoa and Lucca are now just family estates of the
     Buonapartes. But I warn you, if you don't tell me that this means war, if
@@ -217,20 +201,22 @@ Sometimes I put the introductory words of a Chapter in the \@rst node::
     down and tell me all the news.
 .. @+node:ekr.20100809162244.4295: *4* Step 2: Write your document
 Now comes the "interesting" part--actually writing your novel, short story,
-design document or other documentation.
+documentation or whatever.
 
-As always with Leo, you organize your work with outlines. By default,
-(that is, with the options we have specified in the body of the \@rst node)
-the rst3 command will produce the following output:
+As always with Leo, you organize your work with outlines. By default, (that is,
+with the recommended options discussed in Step 2) the rst3 command will produce
+the following output:
 
 1. Each node becomes an (rST/Sphinx) section.
-   The level of each section corresponds to the level of the node in the headline.
-   Children of the @rst node create level 1 sections.  Grandchidren of the
-   \@rst node create level 2 sections, and so on.
 
-2. The headline of each node becomes the section headline.
+   The level of each section corresponds to the level of the node in the
+   headline. Children of the @rst node create level 1 sections. Grandchidren of
+   the \@rst node create level 2 sections, and so on.
+
+2. The headline of each node becomes the section heading.
 
 3. The body text of each node becomes the contents of the node's section.
+
    **Note**: The body text of any node in an \@rst tree contains plain text,
    with optional rST or Sphinx markup. Sphinx markup is a superset of rST
    markup. For more details on markup, see the `Sphinx`_ or `reStructuredText`_
@@ -238,35 +224,40 @@ the rst3 command will produce the following output:
 
 That's all there is to it!
 
-Well almost. There are two "power features" that you should know about:
+Well almost. There is one other feature you should know about. Headlines that
+start with \@rst- control the rst3 command.  The three most useful are: 
 
 .. glossary::
 
 \@rst-no-head
 
-    A headline that starts with \@rst-no-head causes the rst3 command
-    to copy just the body text of the node.  Thus, this node creates
-    no section.  Leo's docs use such node to contain rST links.  We want
-    to put those links mostly out of sight.
+    Causes the rst3 command to copy just the body text of the node. In other
+    words, the node's body text become part of the previous section. Leo's docs
+    use such nodes for rST links and other "invisible" markup.
 
 \@rst-ignore
 
-    The rst3 command skips any node whose headline starts with \@rst-ignore.
-    Such nodes might contain notes that you want to keep with the @rst tree, but
-    which you do not want to become part of the actual document.
+    The rst3 command ignores any \@rst-ignore node. Neither the headline nor the
+    body text becomes part of the output. You can use such nodes for notes that
+    you do not want to become part of the actual document.
+
+\@rst-ignore-tree
+
+    The rst3 command ignores the \@rst-ignore-tree node and all its descendants.
 .. @+node:ekr.20100809162244.4296: *4* Step 3: Run the @rst3 command
 This step is easy. Select an outline containing one or more \@rst trees. Now do
 <Alt-X>rst3<Return>. You can use <Ctrl-P> (repeat-complex-command) instead if
 the last minibuffer command was the rst3 command.
 
-The rst3 command writes its output to either the output file or the intermediate file, or both.
+The rst3 command writes its output to either the output file or the intermediate
+file, or both:
 
-If you are using docutils, the call_docutils option will cause the rst3 command
-to run docutils automatically, producing the output file as the result.
+- With the recommended settings for docutils, the rst3 command will run docutils
+  automatically, producing the output file as the result.
 
-If you are using Sphinx, the rst3 command will generate the intermediate file.
-You must then run Sphinx's make utility to turn the intermediate file into the
-final output file.
+- With the recommended settings for Sphinx, the rst3 command will generate the
+  intermediate file. You must then run Sphinx's make utility to turn the
+  intermediate file into the final output file.
 .. @+node:ekr.20100809162244.4301: *4* Go forth and experiment
 This tutorial has attempted to explain all that you need to know to start using
 the rst3 command effectively. Some possible next steps are:
@@ -280,6 +271,18 @@ the rst3 command effectively. Some possible next steps are:
    `Leo's Google Group`_.
 .. @+node:ekr.20100809162244.4302: *3* Advanced features
 Most of the rest of this chapter discuss advanced features.
+
+- You can edit existing rST files using @auto-rst nodes. The imported outline
+   structure mirrors the level of the rST section headings.
+
+- You can control how Leo formats @rst trees on a node-by-node basis.
+   See the `Options`_ section below for full details.
+
+- For those desiring the ultimate in flexible formatting, Leo scripts can
+   convert any Leo outline into rST text. This chapter concludes by telling how
+   to write such scripts.
+
+Docutils can use the `SilverCity`_ syntax coloring package if desired.
 .. @+node:ekr.20050818163826.4: *4* Options
 .. @+node:ekr.20050818163826.3: *5* Overview of options
 1. The rst3 command allows much more flexible control over its operations using
