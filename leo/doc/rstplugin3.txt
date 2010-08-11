@@ -4,153 +4,6 @@
 .. @@tabwidth -4
 
 .. @+all
-.. @+node:ekr.20100810091118.4303: ** What options are required for rst mode?
-    @ @rst-options
-    call_docutils=True
-    code_mode=False
-    stylesheet_path=..\doc
-    write_intermediate_file=True
-    @c
-
-    http_server_support = False
-    show_organizer_nodes=True
-    show_headlines=True
-    show_leo_directives=True
-    show_options_doc_parts=False
-    verbose=True
-
-Definitely needed:
-
-    code_mode=False
-
-
-doc_only_mode (default: False)
-    True: process nodes in doc_only mode.
-    False: process nodes in rst mode or code_mode, depending on options.
-    In doc_only mode, the rst3 command outputs only regular doc parts and @ @rst-markup doc parts.
-    Headlines create section in doc_only mode only if
-    a\) the node contains a doc part or b\) the show_organizer_nodes option is in effect.
-    As always can use @ @rst-options for per-node control of the process,
-    especially node-by-node control of the show_organizer_nodes option.
-
-default_path (default: '')
-    The path to be prepended to filenames given in root nodes.
-
-default_encoding (default: utf-8)
-    The default encoding to be used for non-ascii (unicode characters).
-
-encoding (default: the default_encoding setting)
-    The encoding to be used for non-ascii (unicode) characters.
-    **Important**: this option has effect only in @rst-options doc parts
-    in root @rst nodes.
-
-generate_rst (default: True)
-    A master switch.
-    True: generate rST markup for rST sections and rST code-blocks.
-    False: don't generate rST markup and ignore @ @rst-markup doc parts.
-
-generate_rst_header_comment (default: True)
-
-    This option has effect only if the generate_rst and write_intermediate_file
-    options are both True. When this option is in effect, Leo writes a comment
-    line of the form::
-
-        .. rst3: filename: <filename>
-
-    at the start of intermediate files.
-
-
-show_doc_parts_in_rst_mode (default: True)
-    This option is most useful for rst documents which are not computer code.
-    It allows you to use doc parts to make comments on the draft document
-    which are either excluded from the output or formatted in a way that highlights
-    their nature as comments rather than contet.  For example, you're writing a book, and
-    you want to use a doc part at the top of a section to remind yourself "need
-    to explain how Ted got to Sally's".    Note: you may need to add
-    CSS to have them formatted differently.  The option can be `True`, `False`,
-    or one or more class names.
-
-    True: doc parts have no special significance in rst mode.
-    That is, the entire doc part from the opening '@' to the closing '@c
-    and everything in between are treated as normal rST markup.
-
-    False: doc parts are removed from the output in rst mode
-
-    class name(s):
-
-      The contents of the doc part is processed as it if was in an rst `container`
-      directive.  For example::
-
-         @ @rst-options
-         show_doc_parts_in_rst_mode = notes literal
-         @c
-
-      would wrap the doc part contents in the output in a div with classes
-      "container notes literal".  Furthermore, if one of the class names is
-      `literal`, then the doc part content will be output as a literal block
-      wrapped in a container as described above.  This allows you to use text
-      which is not valid rst as rough notes for annotating a draft document.
-
-show_headlines (default: True)
-    True: automatically generate rST sections from headlines.
-    Applies to both code mode and rst mode.
-    The level of the node in the outline determines the level of the section
-    underling in the rST markup. Higher-level headlines in the outline
-    correspond to higher-level section headings; lower-level headlines in the
-    outline correspond to lower-level section headings.
-
-
-show_markup_doc_parts (default: False)
-    True: include markup doc parts in code mode.
-    This option has no effect in rst mode.
-
-show_options_doc_parts (default: False)
-    True: include options doc parts in code mode.
-    This option has no effect in rst mode.
-
-show_options_nodes (default: False)
-    True: show @rst-options nodes.
-
-show_organizer_nodes (default: True)
-    True: generate rST sections for nodes that do not contain body text.
-    This option has no effect unless the rST section would otherwise be written.
-
-show_sections (default: True)
-    True: generate rST sections corresponding to headlines.
-    False: don't generate sections.  Instead, generate lines of the form::
-
-        **headline**
-
-strip_at_file_prefixes (default: True)
-    True: remove @auto, @file, @nosent and @thin from the start of headlines.
-
-stylesheet_name (default: 'default.css')
-    The name of the stylesheet passed to docutils.
-
-stylesheet_path (default: '')
-    The directory containing the stylesheet passed to docutils.
-
-    :Note:
-        If the stylesheet_embed option is True, specify a path relative
-        to the location of the Leo file.  If the stylesheet_embed option is
-        False, specify a path relative to the location of the HTML file.
-
-stylesheet_embed (default: True)
-    | True: The content of the stylesheet file will be embedded in the HTML file.
-    | False: The HTML file will link to an external stylesheet file.
-
-underline_characters (default: \'\'\'#=+*^~"'\`-:><\_\'\'\')
-    The underlining characters to be used to specify rST sections.
-    The first character is reserved so you can specify the top-level section explicitly.
-
-verbose (default: True)
-    True: write informational messages.
-
-write_intermediate_file (default: False)
-    True: writes intermediate files before sending them to docutils.
-    This option only applies to .htm, .html and .tex files.
-    The name of the intermediate file has the name of the output file with .txt appended.
-    This option has effect only if the generate_rst option is True.
 .. @+node:ekr.20050818163826: ** @rst html\rstplugin3.html
 .. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
@@ -187,6 +40,39 @@ Chapter 14: Leo and ReStructuredText
 .. Hard links to Leo's web site...
 .. _ListManagerDocs.html: http://webpages.charter.net/edreamleo/ListManagerDocs.html
 .. _wxListManager.leo:    http://webpages.charter.net/edreamleo/wxListManager.leo
+.. @+node:ekr.20100810203016.4296: *3* @rst-ignore
+.. @+node:ekr.20050818163826.6: *4* Options that set command names
+.. EKR: This kind of "flexibility" is a really bad idea.
+
+The following options specify the 'spelling' of headline commands. The
+option_prefix and option_prefixes command also define the spelling of special
+doc parts.
+
+You can change these to make them shorter or to avoid conflicts with headlines
+in your Leo files. The list below merely gives the default value for each
+setting.
+
+`code_prefix`: '\@rst-code'
+
+`ignore_headline_prefix`: '\@rst-no-head'
+
+`ignore_headlines_prefix`: '\@rst-no-headlines'
+
+`ignore_prefix_tree`: '\@rst-ignore'
+
+`ignore_node_prefix`: '\@rst-ignore-node'
+
+`ignore_tree_prefix`: '\@rst-ignore-tree'
+
+`option_prefix`: '\@rst-option'
+
+`options_prefix`: '\@rst-options'
+
+`preformat_prefix`: '\@rst-preformat'
+
+`rst_prefix`: '\@rst'
+
+`show_headline_prefix`: '\@rst-head'
 .. @+node:ekr.20050818163826.2: *3* Overview
 This chapter discusses Leo's rst3 command. The rst3 command creates HTML, PDF,
 LaTeX and other kinds of documents from Leo outlines containing
@@ -387,108 +273,34 @@ Some possible next steps are:
 2. Create your own @rst nodes. Run the rst3 command on them and see what
    happens. If you get stuck, you please ask for help at
    `Leo's Google Group`_.
-.. @+node:ekr.20050818163826.4: *3* Options & modes
-You can control the rst3 command using **options**.
-The defaults for these options come from @settings trees in leoSettings.leo or myLeoSettings.leo.
+.. @+node:ekr.20100810203016.4297: *3* Intermediate topics
+The following topics are generally useful, and do not involve the complications
+discussed in the advanced topics section.
+.. @+node:ekr.20050818163826.8: *4* Option doc parts
+**Option doc parts** set rst3 options. Option doc parts start with \@
+\@rst-options followed by lines of the form name=value. (Comments lines starting
+with '..' are allowed) For example::
 
-Besides these default settngs, any node may set options. In most cases, options apply to a node and
-all its descendants until overridden in a descendant node.
+    @ @rst-options
+    .. This comment line is ignored.
+    show_headlines=False
+    show_leo_directives=False
+    verbose=True
+    @c
 
-You can set options in headlines or body text.
-
-**Headlines**: Headlines that start with \@rst- control the rst3 command.
-`Headline commands`_ for details.
-
-**Body text**: The rst3 command sets options form Leo doc parts of the form::
-
-        @ @rst-options
-        list of rst options, one per line
-        @c
-
-Such **option doc parts** are valid in all nodes and in all modes.
-.. @+node:ekr.20050818163826.6: *4* @rst-ignore Options that set command names
-.. EKR: This kind of "flexibility" is a really bad idea.
-
-The following options specify the 'spelling' of headline commands. The
-option_prefix and option_prefixes command also define the spelling of special
-doc parts.
-
-You can change these to make them shorter or to avoid conflicts with headlines
-in your Leo files. The list below merely gives the default value for each
-setting.
-
-`code_prefix`: '\@rst-code'
-
-`ignore_headline_prefix`: '\@rst-no-head'
-
-`ignore_headlines_prefix`: '\@rst-no-headlines'
-
-`ignore_prefix_tree`: '\@rst-ignore'
-
-`ignore_node_prefix`: '\@rst-ignore-node'
-
-`ignore_tree_prefix`: '\@rst-ignore-tree'
-
-`option_prefix`: '\@rst-option'
-
-`options_prefix`: '\@rst-options'
-
-`preformat_prefix`: '\@rst-preformat'
-
-`rst_prefix`: '\@rst'
-
-`show_headline_prefix`: '\@rst-head'
-.. @+node:ekr.20100810091118.4302: *4* Modes
-The rst3 command is said to be working in one of three modes, code-mode,
-doc-mode or doc_only_mode depending on which options are in effect.
-
-**Important**
-
-**rst mode**: The rst3 command handles copies the body text of all nodes *as is*
-
-generate_rst (default: True)
-    A master switch.
-    True: generate rST markup for rST sections and rST code-blocks.
-    False: don't generate rST markup and ignore @ @rst-markup doc parts.
-
-rst_mode (default: True)
-
-    This is the usual way of using the rst3 command.
-    In rst mode the rst3 simply copies the body text of the node to the output. That
-    is, the rst3 command assumes that body text is already valid rST markup.
-    However, 
-
-
-code_mode (default: False)
-
-    True: process nodes in code mode.  False: process nodes in rst mode.
-    In code mode, the rst3 command automatically creates rST markup to display the body text as an
-    rst code-block. In rst mode the rst3 simply copies the body text of the node to the output. That
-    is, the rst3 command assumes that body text is already valid rST markup.
-
-doc_only_mode (default: False)
-
-    True: process nodes in doc_only mode.
-    False: process nodes in rst mode or code_mode, depending on options.
-    In doc_only mode, the rst3 command outputs only regular doc parts and @ @rst-markup doc parts.
-    Headlines create section in doc_only mode only if
-    a\) the node contains a doc part or b\) the show_organizer_nodes option is in effect.
-    As always can use @ @rst-options for per-node control of the process,
-    especially node-by-node control of the show_organizer_nodes option.
-
+This is a real Leo doc part. Like all other doc parts an option doc part starts
+with the \@ directive and continues until the end of body text or until the next
+\@c directive.
 .. @+node:ekr.20050818163826.7: *4* Headline commands
 Any headline that starts with @rst- controls the rst3 command.
 
 .. glossary::
     :sorted:
 
-@rst <section>
-
-    Enter rst mode. Create a section if the show_headlines option is True.
-
 @rst-code <section> 
 
-    Enter code mode.  Create a section if the show_headlines option is True.
+    Enter code mode. (Code mode is covered in the advanced topics sections)
+    Create a section if the show_headlines option is True.
 
 @rst-ignore <ignored-text>
 
@@ -524,16 +336,42 @@ Any headline that starts with @rst- controls the rst3 command.
 
 @rst-preformat <ignored-text>
 
-    Preformat the body text of the node. In effect, this options adds a line
-    containing '::' the start of the body text. The option then indents all
-    following lines.
+    Format the body text of the node as computer source code. In effect, this
+    options adds a line containing '::' the start of the body text. The option
+    then indents all following lines.
 
     This option has no effect on descendant nodes.
+
+@rst-rst
+
+    Enter rst mode. (Rst mode is the mode of operation discussed in the tutorial.)
+    Create a section if the show_headlines option is True.
+
+.. @+node:ekr.20050818163826.11: *4* Required cascading style sheets
+HTML files generated by the rst3 command assume that three .css (cascading style
+sheet) files exist in the same directory. For the HTML output to look good the
+following .css files should exist:
+
+- default.css is the default style sheet that docutils expects to exist.
+
+- leo_rst.css contains some style improvements based on Gunnar Schwant's DocFactory.
+
+- silver_city.css is the style sheet that controls the syntax highlighting generated by SilverCity.
+
+The latter two style sheets are imported at the end of the default.css.
+
+**Important:** You can use cascading style sheets to do things that otherwise
+wouldn't be possible with "plain" rST. For instance, the background color of
+this page was specified in a body style.
 .. @+node:ekr.20100809122216.4286: *4* General options
 The following options are valid in any mode:
 
 .. glossary::
     :sorted:
+
+call_docutils (default: True):
+
+    Call docutils to process the intermediate file.
 
 default_path (default: '')
 
@@ -548,6 +386,12 @@ encoding (default: the default_encoding setting)
     The encoding to be used for non-ascii (unicode) characters.
     **Important**: this option has effect only in @rst-options doc parts
     in root @rst nodes.
+
+generate_rst (default: True)
+
+    A master switch.
+    True: generate rST markup for rST sections and rST code-blocks.
+    False: don't generate rST markup and ignore @ @rst-markup doc parts.
 
 generate_rst_header_comment (default: True)
 
@@ -625,9 +469,72 @@ verbose (default: True)
 
 write_intermediate_file (default: False)
 
-    True: writes intermediate files. The name of the intermediate file has the
-    name of the output file with .txt appended. This option has effect only if
-    the generate_rst option is True.
+    **Important**: the rst3 command *always* creates an intermediate file.
+    This options controls whether that file is an internal Python object
+    or an actual file on the external file system.
+
+    True: writes the intermediate file to the external file system. The name of
+    the intermediate file has the name of the output file with .txt appended.
+    This option has effect only if the generate_rst option is True.
+
+    False: writes the intermediate file to an internal Python object.
+.. @+node:ekr.20050818163826.9: *4* Setting defaults for options
+Settings in leoSettings.leo or myLeoSettings.leo specify the defaults
+to be used for all rst3 options.  The form of these settings is::
+
+    @bool rst3_<option name> = True/False
+    @string rst3_<option name> = aString
+
+That is, to create a default value for an rst3 setting, you must
+prefix the option name with 'rst3\_'.  For example::
+
+    @bool rst3_write_intermediate_file = True
+.. @+node:ekr.20050818163826.4: *3* Advanced topics
+The material covered so far in this chapter suffices to create most books
+and documentation, including Leo's own documentation.
+
+The rest of this chapter covers advanced typics. These can seem bewilderingly
+complex. Alas, they are complex! However, they all arose from a single problem::
+
+    How to generate documentation from computer source code in a Leo outline.
+
+or quivalently::
+
+    How to embed documentation in computer source code in a Leo outline.
+
+This is an interesting problem, but it has little general interest. Please stop
+reading now if this problem doesn't interest you!
+.. @+node:ekr.20100810203016.4298: *4* Modes
+By default, the rst3 command operates in **rst mode**. In rst mode, the rst3
+command treats body text as rST (or Sphinx) markup. This is the mode of
+operation discussed in the Tutorial.
+
+In **code mode** the rst3 command treats body text as computer source code.
+**Note**: both rST and Sphinx have markup designed to represent computer
+programs. The rst3 command generates that markup automatically in code mode.
+
+Code mode is inherently complex. As we shall see, there are *many* possible
+options in code mode. This can hardly be helped--this is truly an advanced
+topic!
+
+In **doc_only_mode**, rst3 command outputs only regular doc parts and @
+@rst-markup doc parts. Headlines create section in doc_only mode only if:
+
+1. The node contains a doc part or
+
+2. The show_organizer_nodes option is in effect.
+
+The code_mode and doc_only_mode options determine the mode as follows:
+
+- By default (code_code=False; doc_only_mode=False), the rst3 command is in
+  rst mode.
+
+- Setting code_mode=True causes the rst3 command to enter code mode.
+
+- Setting code_mode=False cause the rst3 command to enter rst mode.
+
+- Setting doc_only_mode=True causes the rst3 command to enter doc_only mode.
+
 .. @+node:ekr.20100810091118.4301: *4* Code mode options
 The following options have effect only in code mode.
 
@@ -664,45 +571,7 @@ show_options_nodes (default: False)
 
     True: show @rst-options nodes.
     False: Ignore @
-.. @+node:ekr.20050818163826.8: *5* @ @rst-options
-**Option doc parts** are doc parts that start with @ @rst-options.
-Option doc parts set rst3 options, regardless of mode.
-
-All other lines of option doc parts should be of the form name=value. (rST
-comments lines starting with '..' are allowed). Like all other doc parts an
-option doc starts with the \@ directive and continues until the end of body text
-or until the next \@c directive. For example::
-
-    @ @rst-options
-    .. This comment line is ignored.
-    show_headlines=False
-    show_leo_directives=False
-    verbose=True
-    @c
-
-Option doc parts are especially useful in code mode. For example, nodes in a
-computer program can control how the rst3 command formats themselves.
-.. @+node:ekr.20100810091118.4298: *5* @ @rst-markup
-You can embed markup in the body text of any node using doc parts of the form::
-
-    @ @rst-markup
-    any rST markup
-    @c
-
-Such **markup doc parts** are valid in all nodes and in all modes.
-
-Markup doc parts are especially useful in code mode. For example, nodes in a
-computer program can control how the rst3 command formats themselves.
-
-**Important**: In code mode, rST markup in *ordinary* doc parts will be
-rendered properly when the show_doc_parts_as_paragraphs option is in effect.
-
-*Important*: Regardless of the show_doc_parts_as_paragraphs option, doc parts
-have no special significance in rst mode. That is, the entire doc part from
-the opening '@' to the closing '@c and everything in between are treated as normal
-rST markup.  *Update:* you can now use the `show_doc_parts_in_rst_mode` option
-to change this behavior and control the processing of doc parts in rst mode.
-.. @+node:ekr.20100810091118.4306: *4* Rst-mode options
+.. @+node:ekr.20100810091118.4306: *4* Rst mode options
 The following option has effect only in rst mode.
 
 .. glossary::
@@ -736,6 +605,55 @@ show_doc_parts_in_rst_mode [True,False or class names] (default: True)
     `literal`, then the doc part content will be output as a literal block
     wrapped in a container as described above. This allows you to use text which
     is not valid rst as rough notes for annotating a draft document.
+.. @+node:ekr.20100810091118.4298: *4* Markup doc parts
+**Markup doc parts** have the following form::
+
+    @ @rst-markup
+    any rST markup
+    @c
+
+Markup doc parts are valid in all nodes and in all modes, but they are mostly
+useful in code mode. For example, nodes in a computer program can control how
+the rst3 command formats themselves.
+
+Notes:
+
+- In code mode, rST markup in *ordinary* doc parts will be
+  rendered properly when the show_doc_parts_as_paragraphs option is in effect.
+
+- In rst mode, the show_doc_parts_as_paragraphs option has no effect.
+
+- The show_doc_parts_in_rst_mode option *does* have effect in rst mode.
+.. @+node:ekr.20050818163826.10: *4* The code-block directive
+The rst3 command defines a code-block rST directive. The primary purpose of this
+directive is to show formatted source code.
+
+In rst mode you can insert the code-block directive like any other rST markup.
+
+The rst3 command generates code-block directives automatically in code mode.
+
+This directive takes one argument, a language name.  Like this::
+
+    .. code-block:: Python
+
+        import leo.core.leoPlugins as leoPlugins
+        import leo.core.leoGlobals as g
+
+This directive syntax colors the code in the indented code block that follows the directive.
+The result looks like this if the SilverCity syntax coloring module has been installed.
+
+.. .. code-block:: Python
+
+    .. import leo.core.leoPlugins as leoPlugins
+    .. import leo.core.leoGlobals as g
+
+.. Otherwise, the output looks like this::
+
+    .. import leo.core.leoPlugins as leoPlugins
+    .. import leo.core.leoGlobals as g
+
+See the Scripting chapter in LeoDocs.leo for many examples of how to use
+code-blocks.
 .. @+node:ekr.20050818163826.5: *4* Http plugin options
 The following options are for the use of Bernhard Mulder's http plugin. The http
 plugin creates an http server running on a local port, typically 8080. When the
@@ -792,64 +710,7 @@ clear_http_attributes (default: False)
 node_begin_marker (default: 'http-node-marker-')
 
     The string used for node markers.
-.. @+node:ekr.20050818163826.9: *4* @settings options
-Settings in leoSettings.leo or myLeoSettings.leo specify the defaults
-to be used for all options.  The form of these settings is::
-
-    @bool rst3_<option name> = True/False
-    @string rst3_<option name> = aString
-
-That is, to create a default value for an rst3 setting, you must
-prefix the option name with 'rst3\_'.  For example::
-
-    @bool rst3_write_intermediate_file = True
-.. @+node:ekr.20050818163826.11: *3* Required cascading style sheets
-HTML files generated by the rst3 command assume that three .css (cascading style
-sheet) files exist in the same directory. For the HTML output to look good the
-following .css files should exist:
-
-- default.css is the default style sheet that docutils expects to exist.
-
-- leo_rst.css contains some style improvements based on Gunnar Schwant's DocFactory.
-
-- silver_city.css is the style sheet that controls the syntax highlighting generated by SilverCity.
-
-The latter two style sheets are imported at the end of the default.css.
-
-**Important:** You can use cascading style sheets to do things that otherwise
-wouldn't be possible with "plain" rST. For instance, the background color of
-this page was specified in a body style.
-.. @+node:ekr.20050818163826.10: *3* The code-block directive
-The rst3 command defines a code-block rST directive. The primary purpose of this
-directive is to show formatted source code.
-
-In rst mode you can insert the code-block directive like any other rST markup.
-
-The rst3 command generates code-block directives automatically in code mode.
-
-This directive takes one argument, a language name.  Like this::
-
-    .. code-block:: Python
-
-        import leo.core.leoPlugins as leoPlugins
-        import leo.core.leoGlobals as g
-
-This directive syntax colors the code in the indented code block that follows the directive.
-The result looks like this if the SilverCity syntax coloring module has been installed.
-
-.. .. code-block:: Python
-
-    .. import leo.core.leoPlugins as leoPlugins
-    .. import leo.core.leoGlobals as g
-
-.. Otherwise, the output looks like this::
-
-    .. import leo.core.leoPlugins as leoPlugins
-    .. import leo.core.leoGlobals as g
-
-See the Scripting chapter in LeoDocs.leo for many examples of how to use
-code-blocks.
-.. @+node:ekr.20060527103630: *3* Controlling the rst3 command from scripts
+.. @+node:ekr.20060527103630: *4* Controlling the rst3 command from scripts
 A new method has been added to make it more easily to write rST code from scripts::
 
     c.rstCommands.writeNodeToString(p)
