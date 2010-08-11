@@ -36,34 +36,31 @@ fn = '%s.rst.txt' % (g.sanitize_filename(p.h))
 
 defaultOptionsDict = {
 
-    # The following options is the most important.
+    # The following options are the most important visually.
     'show_doc_parts_as_paragraphs': True,
+    'number-code-lines': False,
 
     # The following options are definitely used in the script.
     'generate-rst-header-comment': True,
-    'number-code-lines': True,
     'output-file-name': fn,
-
-    'show_sections': True, # Used.
+    'show_headlines': True,
+    'show_options_nodes': False,
+    'show_organizer_nodes': True,
+    'show_sections': True,
     'underline_characters': '''#=+*^~"'`-:><_''',
     'verbose': True,
 
-    # The following are not used, but should be used.
+    # The following are not used, but probably should be used.
     'code_block_string': '::',
     'default_path': None, # Must be None, not ''.
     'encoding': 'utf-8',
-
-    # The status of these is unclear.
     'publish_argv_for_missing_stylesheets': None,
-    'show_headlines': True,
-    'show_leo_directives': False,
-    'show_markup_doc_parts': False,
-    'show_options_doc_parts': False,
-    'show_options_nodes': False,
-    'show_organizer_nodes': True,
     'stylesheet_embed': True,
     'stylesheet_name': 'default.css',
     'stylesheet_path': None, # Must be None, not ''.
+
+    # The following are not used. Their status is unclear.
+    'show_leo_directives': False,
 }
 #@-<< options >>
 
@@ -161,22 +158,10 @@ class formatController:
 
         for key in sorted(d):
             self.setOption(key,d.get(key),'initOptionsFromSettings')
-
-        # c = self.c
-        # for key in keys:
-            # for getter,kind in (
-                # (c.config.getBool,'@bool'),
-                # (c.config.getString,'@string'),
-                # (d.get,'default'),
-            # ):
-                # val = getter(key)
-                # if kind == 'default' or val is not None:
-                    # self.setOption(key,val,'initOptionsFromSettings')
-                    # break
     #@+node:ekr.20100811091636.5946: *5* handleSingleNodeOptions
     def handleSingleNodeOptions (self,p):
 
-        '''Init the settings of single-node options from the tnodeOptionsDict.
+        '''Init the settings of single-node options from the vnodeOptionsDict.
 
         All such options default to False.'''
 
@@ -270,12 +255,7 @@ class formatController:
         if p == self.topNode:
             return {} # Don't mess with the root node.
 
-        ###
-        # elif g.match_word(h,0,self.getOption('option_prefix')):
-            # s = h[len('option_prefix'):]
-            # return self.scanOption(p,s)
-
-        elif g.match_word(h,0,self.getOption('@rst-options')): 
+        if g.match_word(h,0,self.getOption('@rst-options')): 
             return self.scanOptions(p,p.b)
         else:
             # Careful: can't use g.match_word because options may have '-' chars.
@@ -388,7 +368,7 @@ class formatController:
     #@+node:ekr.20100811091636.5976: *4* writeBody & helpers
     def writeBody (self,p):
 
-        trace = True
+        trace = False
         self.p = p.copy() # for traces.
         if not p.b.strip():
             return # No need to write any more newlines.
@@ -478,24 +458,23 @@ class formatController:
         Remove headline commands from the headline first,
         and never generate an rST section for @rst-option and @rst-options.'''
 
-        if 1: ### Testing
 
-            docOnly             = self.getOption('doc_only_mode')
-            ignore              = self.getOption('ignore_this_headline')
-            showHeadlines       = self.getOption('show_headlines')
-            showThisHeadline    = self.getOption('show_this_headline')
-            showOrganizers      = self.getOption('show_organizer_nodes')
+        docOnly             = self.getOption('doc_only_mode')
+        ignore              = self.getOption('ignore_this_headline')
+        showHeadlines       = self.getOption('show_headlines')
+        showThisHeadline    = self.getOption('show_this_headline')
+        showOrganizers      = self.getOption('show_organizer_nodes')
 
-            if (
-                p == self.topNode or
-                ignore or
-                docOnly or # handleDocOnlyMode handles this.
-                not showHeadlines and not showThisHeadline or
-                # docOnly and not showOrganizers and not thisHeadline or
-                not p.h.strip() and not showOrganizers or
-                not p.b.strip() and not showOrganizers
-            ):
-                return
+        if (
+            p == self.topNode or
+            ignore or
+            docOnly or # handleDocOnlyMode handles this.
+            not showHeadlines and not showThisHeadline or
+            # docOnly and not showOrganizers and not thisHeadline or
+            not p.h.strip() and not showOrganizers or
+            not p.b.strip() and not showOrganizers
+        ):
+            return
 
         self.writeHeadlineHelper(p)
     #@+node:ekr.20100811091636.5978: *5* writeHeadlineHelper
