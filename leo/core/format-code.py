@@ -7,7 +7,6 @@
 # Leo's code markup script
 # ########################
 #@@c
-
 '''A script showing how to convert code in Leo outlines to rST/Sphinx code.
 
 The defaultOptions dict specifies default options.'''
@@ -16,12 +15,7 @@ The defaultOptions dict specifies default options.'''
 #@+node:ekr.20100811091636.5919: *3* << imports >>
 #@+at Here are the imports.
 #@@c
-
 import leo.core.leoGlobals as g
-
-import os
-import pprint
-import sys
 
 if g.isPython3:
     import io
@@ -29,11 +23,10 @@ if g.isPython3:
 else:
     import StringIO
     StringIO = StringIO.StringIO
-
 #@-<< imports >>
-
-h = '@button format-code'
-p = g.findNodeAnywhere(c,h)
+if 1: # Format a fixed node.
+    h = '@button format-code'
+    p = g.findNodeAnywhere(c,h)
 #@+<< options >>
 #@+node:ekr.20100811091636.5995: *3* << options >>
 fn = '%s.rst.txt' % (g.sanitize_filename(p.h))
@@ -42,29 +35,36 @@ fn = '%s.rst.txt' % (g.sanitize_filename(p.h))
 # g.es('output file',repr(fn))
 
 defaultOptionsDict = {
-    'code_block_string': '<***code block string***>',
-    # 'default_path': None, # Must be None, not ''.
-    'encoding': 'utf-8', ### Not used ???
-    'generate-rst-header-comment': True, # used.
-    'number-code-lines': False,
+
+    # The following options is the most important.
+    'show_doc_parts_as_paragraphs': True,
+
+    # The following options are definitely used in the script.
+    'generate-rst-header-comment': True,
+    'number-code-lines': True,
     'output-file-name': fn,
+
+    'show_sections': True, # Used.
+    'underline_characters': '''#=+*^~"'`-:><_''',
+    'verbose': True,
+
+    # The following are not used, but should be used.
+    'code_block_string': '::',
+    'default_path': None, # Must be None, not ''.
+    'encoding': 'utf-8',
+
+    # The status of these is unclear.
     'publish_argv_for_missing_stylesheets': None,
-    'show_doc_parts_as_paragraphs': True, # used.
-    # 'show_doc_parts_in_rst_mode': True,
     'show_headlines': True,
     'show_leo_directives': False,
     'show_markup_doc_parts': False,
     'show_options_doc_parts': False,
     'show_options_nodes': False,
     'show_organizer_nodes': True,
-    'show_sections': True, # Used.
-    # 'strip_at_file_prefixes': True,
     'stylesheet_embed': True,
     'stylesheet_name': 'default.css',
     'stylesheet_path': None, # Must be None, not ''.
-    'underline_characters': '''#=+*^~"'`-:><_''',
-    'verbose': True,
-    }
+}
 #@-<< options >>
 
 class formatController:
@@ -335,12 +335,21 @@ class formatController:
 
         return d
     #@+node:ekr.20100811091636.6000: *3* Writing
+    #@+node:ekr.20100811091636.5984: *4* encode
+    def encode (self,s):
+
+        # g.trace(self.encoding)
+
+        return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
     #@+node:ekr.20100811091636.5930: *4* run
     def run (self,event=None):
 
         fn = self.defaultOptionsDict.get('output-file-name','format-code.rst.txt')
         self.outputFileName = g.os_path_finalize_join(g.app.loadDir,fn)
-        self.outputFile = StringIO()
+        self.outputFile = StringIO() # Not a binary file.
+
+        print('\n\n\n==========')
+
         self.writeTree(self.p.copy())
         s = self.outputFile.getvalue()
         self.outputFile = open(self.outputFileName,'w')
@@ -367,6 +376,8 @@ class formatController:
 
         # g.trace('%20s %20s %20s %s' % (self.p.h[:20],repr(s)[:20],repr(s)[-20:],g.callers(2)))
 
+        # g.trace('%20s %40s %s' % (self.p.h[:20],repr(s)[:40],g.callers(2)))
+
         if g.isPython3:
             if g.is_binary_file(self.outputFile):
                 s = self.encode(s)
@@ -377,13 +388,14 @@ class formatController:
     #@+node:ekr.20100811091636.5976: *4* writeBody & helpers
     def writeBody (self,p):
 
-        trace = False
+        trace = True
         self.p = p.copy() # for traces.
         if not p.b.strip():
             return # No need to write any more newlines.
 
+        showDocsAsParagraphs = self.getOption('show_doc_parts_as_paragraphs')
         lines = g.splitLines(p.b)
-        parts = self.split_parts(lines)
+        parts = self.split_parts(lines,showDocsAsParagraphs)
         result = []
         for kind,lines in parts:
             if trace: g.trace(kind,len(lines),p.h)
@@ -393,10 +405,10 @@ class formatController:
                 lines.extend('\n')
                 result.extend(lines)
             elif kind == '@doc':
-                if self.getOption('show_doc_parts_as_paragraphs'):
+                if showDocsAsParagraphs:
                     result.extend(lines)
+                    result.append('\n')
                 else:
-                    lines.insert(0,'@\n')
                     result.extend(self.write_code_block(lines))
             elif kind == 'code':
                 result.extend(self.write_code_block(lines))
@@ -407,7 +419,7 @@ class formatController:
         s = ''.join(result).rstrip() + '\n\n'
         self.write(s)
     #@+node:ekr.20100811091636.6003: *5* split_parts
-    def split_parts (self,lines):
+    def split_parts (self,lines,showDocsAsParagraphs):
 
         '''Split a list of body lines into a list of tuples (kind,lines).'''
 
@@ -423,11 +435,18 @@ class formatController:
                 if part_lines: parts.append((kind,part_lines[:]),)
                 kind,part_lines = '@rst-option',[s] # part_lines will be ignored.
             elif s.startswith('@ ') or s.startswith('@\n') or s.startswith('@doc'):
-                if part_lines: parts.append((kind,part_lines[:]),)
-                kind,part_lines = '@doc',['\\' + s]
+                if showDocsAsParagraphs:
+                    if part_lines: parts.append((kind,part_lines[:]),)
+                    kind = '@doc'
+                    # Put only what follows @ or @doc
+                    n = g.choose(s.startswith('@doc'),4,1)
+                    after = s[n:].lstrip()
+                    part_lines = g.choose(after,[after],[])
+                else:
+                    part_lines.append(s) # still in code mode.
             elif g.match_word(s,0,'@c') and kind != 'code':
-                if kind == '@doc':
-                    part_lines.extend('\\' + s) # The @c is part of the doc part.
+                if kind == '@doc' and not showDocsAsParagraphs:
+                        part_lines.append(s) # Show the @c as code.
                 parts.append((kind,part_lines[:]),)
                 kind,part_lines = 'code',[]
             else:
@@ -441,8 +460,17 @@ class formatController:
     def write_code_block (self,lines):
 
         result = ['::\n\n'] # ['[**code block**]\n\n']
-        result.extend(['    %s' % (z) for z in lines])
-        return result
+
+        if self.getOption('number-code-lines'):
+            i = 1
+            for s in lines:
+                result.append('    %d: %s' % (i,s))
+                i += 1
+        else:
+            result.extend(['    %s' % (z) for z in lines])
+
+        s = ''.join(result).rstrip()+'\n\n'
+        return g.splitLines(s)
     #@+node:ekr.20100811091636.5977: *4* writeHeadline & helper
     def writeHeadline (self,p):
 
@@ -532,8 +560,6 @@ class formatController:
     def writeTree(self,p):
 
         '''Write p's tree to self.outputFile.'''
-
-        # print('\n\n\n==========')
 
         self.scanAllOptions(p) # So we can get the next option.
 
