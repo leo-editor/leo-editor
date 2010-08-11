@@ -490,6 +490,62 @@ That is, to create a default value for an rst3 setting, you must
 prefix the option name with 'rst3\_'.  For example::
 
     @bool rst3_write_intermediate_file = True
+.. @+node:ekr.20050818163826.5: *4* Http plugin options
+The following options are for the use of Bernhard Mulder's http plugin. The http
+plugin creates an http server running on a local port, typically 8080. When the
+http plugin is running you will see a purple message in the log window that
+looks something like this::
+
+    http serving enabled on port 8080, version 0.91
+
+To use the http plugin, start a web browser and enter this url::
+
+    http://localhost:8080/
+
+You will see a a top level page containing one link for every open .leo file.
+Clicking on link will cause the http server to pass a new page to the browser.
+You can use the browser's refresh button to update the top-level view in the
+browser after you have opened or closed files.
+
+**Important**: See the docstring for the http plugin for information on
+configuring the plugin. Some of the following rst3 settings must match values of
+settings for the http plugin.
+
+Here are the rst3 options that support the http plugin:
+
+.. glossary::
+
+http_server_support (default: False)
+
+    A master switch: none of the following options have any effect unless this
+    option is True. If True, the rst3 command does the following:
+
+    1. Writes **node markers** in the rst output for use by the http plugin.
+       Node markers are rst named hyperlink targets. By default they look like::
+
+            .. _http-node-marker-N
+
+       where N is a unique node number.
+
+    2. Adds additional information to all nodes of the tree being formatted using
+       Leo's unknownAttributes mechanism.
+
+http_attributename (default: 'rst_http_attribute')
+
+    The name of the attribute name written to the unknownAttributes attribute of
+    each each outline node in the rst root tree. The default is
+    'rst_http_attribute'; it should match the following setting of the http
+    plugin::
+
+        @string rst_http_attributename = 'rst_http_attribute'
+
+clear_http_attributes (default: False)
+
+    If True the rst3 command initially clears the fields specified by `http_attributename`.  
+
+node_begin_marker (default: 'http-node-marker-')
+
+    The string used for node markers.
 .. @+node:ekr.20050818163826.4: *3* Advanced topics
 The material covered so far in this chapter suffices to create most books
 and documentation, including Leo's own documentation.
@@ -655,62 +711,6 @@ The result looks like this if the SilverCity syntax coloring module has been ins
 
 See the Scripting chapter in LeoDocs.leo for many examples of how to use
 code-blocks.
-.. @+node:ekr.20050818163826.5: *4* Http plugin options
-The following options are for the use of Bernhard Mulder's http plugin. The http
-plugin creates an http server running on a local port, typically 8080. When the
-http plugin is running you will see a purple message in the log window that
-looks something like this::
-
-    http serving enabled on port 8080, version 0.91
-
-To use the http plugin, start a web browser and enter this url::
-
-    http://localhost:8080/
-
-You will see a a top level page containing one link for every open .leo file.
-Clicking on link will cause the http server to pass a new page to the browser.
-You can use the browser's refresh button to update the top-level view in the
-browser after you have opened or closed files.
-
-**Important**: See the docstring for the http plugin for information on
-configuring the plugin. Some of the following rst3 settings must match values of
-settings for the http plugin.
-
-Here are the rst3 options that support the http plugin:
-
-.. glossary::
-
-http_server_support (default: False)
-
-    A master switch: none of the following options have any effect unless this
-    option is True. If True, the rst3 command does the following:
-
-    1. Writes **node markers** in the rst output for use by the http plugin.
-       Node markers are rst named hyperlink targets. By default they look like::
-
-            .. _http-node-marker-N
-
-       where N is a unique node number.
-
-    2. Adds additional information to all nodes of the tree being formatted using
-       Leo's unknownAttributes mechanism.
-
-http_attributename (default: 'rst_http_attribute')
-
-    The name of the attribute name written to the unknownAttributes attribute of
-    each each outline node in the rst root tree. The default is
-    'rst_http_attribute'; it should match the following setting of the http
-    plugin::
-
-        @string rst_http_attributename = 'rst_http_attribute'
-
-clear_http_attributes (default: False)
-
-    If True the rst3 command initially clears the fields specified by `http_attributename`.  
-
-node_begin_marker (default: 'http-node-marker-')
-
-    The string used for node markers.
 .. @+node:ekr.20060527103630: *4* Controlling the rst3 command from scripts
 A new method has been added to make it more easily to write rST code from scripts::
 

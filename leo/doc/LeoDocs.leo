@@ -71,7 +71,7 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -125,8 +125,8 @@
 <v t="ekr.20060612102055"><vh>Chapter 13: Writing Plugins</vh>
 <v t="ekr.20100805165051.7163"><vh>@thin writingPlugins.txt</vh></v>
 </v>
-<v t="ekr.20050831184021.1" a="E"><vh>Chapter 14: Creating documents with Leo</vh>
-<v t="ekr.20100805165051.7164" a="E"><vh>@thin rstplugin3.txt</vh></v>
+<v t="ekr.20050831184021.1"><vh>Chapter 14: Creating documents with Leo</vh>
+<v t="ekr.20100805165051.7164"><vh>@thin rstplugin3.txt</vh></v>
 </v>
 <v t="ekr.20060430221745"><vh>Chapter 15: Controlling syntax coloring</vh>
 <v t="ekr.20100805165051.7165"><vh>@thin coloring.txt</vh></v>
