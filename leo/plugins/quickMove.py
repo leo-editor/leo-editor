@@ -6,19 +6,79 @@
 #@+node:tbrown.20070117104409.1: ** << docstring >>
 """Create buttons to quickly move nodes to other nodes
 
-Quickly move nodes from around the tree to one or more target nodes.
+Quickly move/copy/clone nodes from around the tree to one or more target nodes.  It can also create
+bookmark and tagging functionality in an outline (see `Set Parent Notes`_ below).
 
-Adds 'Move/Clone/Copy To Last Child Button' and 'Move/Clone/Copy To First Child
-Button' commands to the Move submenu on the Outline menu, and the context menu,
-if contextmenu.py is enabled.
+Adds `Move/Clone/Copy To Last Child Button` and `Move/Clone/Copy To First Child
+Button`, `Link To/From` and `Jump To` commands to the Move sub-menu on the
+Outline menu, and each node's context menu, if the `contextmenu` plugin is enabled.
 
-Select a node 'Foo' and then use the 'To Last Child Button' command. The adds a
-'to Foo' button to the button bar. Now select another node and click the 'to
-Foo' button. The selected node will be moved or cloned to the last child of the
-node 'Foo'.
+Select a node ``Foo`` and then use the `Move To Last Child Button` command.
+This adds a 'to Foo' button to the button bar. Now select another node and click
+the 'to Foo' button. The selected node will be moved to the last child
+of the node 'Foo'.
 
-'To First Child Button' works the same way, except that moved nodes are inserted
+`To First Child Button` works the same way, except that moved nodes are inserted
 as the first child of the target node.
+
+`Clone` and `Copy` variants are like `Move`, but clone or copy instead of moving.
+
+`Link` works in conjunction with the `backlink` plugin (and also the
+`graphcanvas` plugin) creating a link to/from the target and current nodes.
+
+`Jump` buttons act as bookmarks, taking you to the target node.
+
+You can right click on any of these buttons to access their context menu:
+
+  Goto Target
+    takes you to the target node (like a `Jump` button).
+  Make Permanent
+    makes the button permanent, it will reappear
+    when the file is saved / closed / re-opened.
+  Set Parent
+    allows you to move buttons to sub-menu items of other
+    `quickMove` buttons.  This implicitly makes the moved button
+    permanent.  It also causes the moved button to lose its context menu.
+  Remove Button
+    comes from the `mod_scripting` plugin, and just
+    removes the button for the rest of the current session.
+
+Set Parent Notes
+----------------
+
+`Set Parent` doesn't allow you to do anything with `quickMove` you couldn't
+do with a long strip of separate buttons, but it collects quickMove buttons
+as sub-menu items of one quickMove button, saving a lot of toolbar space.
+
+Bookmarks 
+  Create somewhere out of the way in your outline a node called
+  `Bookmarks`. Use the quickMove menu to make it a `Jump To` button, and use its
+  context menu to make it permanent. There is no particular reason to jump to
+  it, but it needs to be a `quickMove` button of some kind.
+
+  Now, when you want to bookmark a node, first use the quickMove menu to make
+  the node a `Jump To` button, and then use the context menu on the button to
+  set its parent to your `Bookmarks` button.  It becomes a sub-menu item
+  of the `Bookmarks` button.
+
+Tags
+  In conjunction with the `backlinks` plugin you can use `quickMove` to
+  tag nodes.   The `backlinks` plugin adds a `Links` tab to the `Log pane`.
+
+  Create somewhere in your outline a node called `Tags`. Use the quickMove menu
+  to make it a `Jump To` button, and use its context menu to make it permanent.
+  Clicking on it will jump you to your tag list. Now create a node under the
+  `Tags` node for each tag you want. The node's name will be the tag name, and
+  can be changed later. Then use the quickMove menu to make each of these nodes
+  a `Link To` button, and then use the context menu on the button to set its
+  parent to your `Tags` button. It becomes a sub-menu item of the `Tags` button.
+
+  To see the tags on a node, you need to be looking at the `Links` tab in the
+  `Log pane`.  To see all the nodes with a particular tag, click on the `Tags`
+  button to jump to the tag list, and select the node which names the tag of
+  interest.  The nodes with that tag will be listed in th `Links` tab in the
+  `Log pane`.
+
 
 """
 #@-<< docstring >>
@@ -49,8 +109,9 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from mod_scripting import scriptingController
 if g.app.gui.guiName() == "qt":
-    # for the right click context menu
-    from PyQt4 import QtCore
+    # for the right click context menu, and child items
+    from PyQt4 import QtGui, QtCore
+    from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
 
 #@+others
@@ -85,8 +146,8 @@ class quickMove(object):
     def __init__(self, c):
 
         self.table = (
-            ("Make Buttons Here Permanent",None,self.permanentButton),
-            ("Clear Permanent Buttons Here",None,self.clearButton),
+            ("Make ALL Buttons Here Permanent",None,self.permanentButton),
+            ("Clear ALL Permanent Buttons Here",None,self.clearButton),
         )
 
         self.imps = []  # implementations, (func,name,text)
@@ -121,13 +182,29 @@ class quickMove(object):
 
         self.buttons = []
 
+        buttons_todo = []  # get whole list for container buttons
+
         for nd in c.all_unique_nodes():
             if 'quickMove' in nd.u:
-                for rec in nd.u['quickMove']:
-                    if len(rec) != 2:
-                        continue  # silently drop old style permanent button
-                    first,type_ = rec
-                    self.addButton(first,type_,v=nd)
+                if 'buttons' in nd.u['quickMove']:  # new dict based storage
+                    for rec in nd.u['quickMove']['buttons']:
+                        buttons_todo.append(rec.copy())
+                        buttons_todo[-1].update({'v':nd})
+                else:  # read old list format and convert
+                    new_dicts = []
+                    for rec in nd.u['quickMove']:
+                        if len(rec) != 2:
+                            continue  # silently drop even older style permanent button
+                        first,type_ = rec
+                        buttons_todo.append({'type': type_, 'first': first})
+                        new_dicts.append(buttons_todo[-1].copy())
+                        buttons_todo[-1].update({'v':nd})
+                    nd.u['quickMove'] = {'buttons': new_dicts}
+
+        for i in [b for b in buttons_todo if 'parent' not in b]:
+            self.addButton(i['first'], i['type'], v=i['v'])
+        for i in reversed([b for b in buttons_todo if 'parent' in b]):
+            self.addButton(i['first'], i['type'], v=i['v'], parent=i['parent'])
 
         c.frame.menu.createNewMenu('Move', 'Outline')
 
@@ -146,7 +223,7 @@ class quickMove(object):
         if g.app.gui.guiName() == "qt":
                 g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton
-    def addButton (self, first, type_="move", v=None):
+    def addButton (self, first, type_="move", v=None, parent=None):
 
         '''Add a button that creates a target for future moves.'''
 
@@ -159,50 +236,109 @@ class quickMove(object):
 
         txt=self.txts[type_]
 
-        b = sc.createIconButton(
-            text = txt + ":" + v.h, # createButton truncates text.
-            command = mb.moveCurrentNodeToTarget,
-            shortcut = None,
-            statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),v.h),
-            bg = "LightBlue"
-        )
+        if parent:  # find parent button
+            for i in self.buttons:
+                if i[0].target.gnx == parent:
+                    parent = i[1]
+                    break
+            else:
+                g.es('Move to button parent not found, placing at top level')
+                parent = None
 
-        if g.app.gui.guiName() == "qt":
-            from PyQt4 import QtGui, QtCore
-            def cb(event=None, c=c, v=v):
-                p = c.vnode2position(v)
-                c.selectPosition(p)
-                c.redraw()
+        text = txt + ":" + v.h if txt else v.h
+        # createButton truncates text.  
 
-            but = b.button
-            rc = QtGui.QAction('Goto target', but)
-            rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
-            but.insertAction(but.actions()[-1], rc)  # insert rc before Remove Button
+        if parent and g.app.gui.guiName() == "qt":
+            # see qtGui.py/class leoQtFrame/class qtIconBarClass/setCommandForButton
+            pb = parent.button
+            rc = QtGui.QAction(text, pb)
+            rc.connect(rc, QtCore.SIGNAL("triggered()"), mb.moveCurrentNodeToTarget)
+            pb.insertAction(pb.actions()[0], rc)  # insert at top
+            b = None
+            mb.has_parent = True
+
+            t = QtCore.QString(c.config.getString('mod_scripting_subtext') or '')
+            if not unicode(pb.text()).endswith(unicode(t)):
+                pb.setText(pb.text()+t)
+
+        else:
+            b = sc.createIconButton(
+                text,
+                command = mb.moveCurrentNodeToTarget,
+                shortcut = None,
+                statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),v.h),
+                bg = "LightBlue"
+            )
+
+            if g.app.gui.guiName() == "qt":
+
+                def cb_goto_target(event=None, c=c, v=v):
+                    p = c.vnode2position(v)
+                    c.selectPosition(p)
+                    c.redraw()
+
+                def cb_set_parent(event=None, c=c, v=v, first=first, type_=type_):
+                    c.quickMove.set_parent(v, first, type_)
+
+                def cb_permanent(event=None, c=c, v=v, type_=type_, first=first):
+                    c.quickMove.permanentButton(v=v, type_=type_, first=first)
+
+                # def cb_clear(event=None, c=c, v=v):
+                #     c.quickMove.clearButton(v)
+
+                for cb, txt in [
+                    (cb_goto_target, 'Goto target'),
+                    (cb_permanent, 'Make permanent'),
+                    # (cb_clear, 'Clear permanent'),
+                    (cb_set_parent, 'Set parent'), 
+                    ]:
+                    but = b.button
+                    rc = QtGui.QAction(txt, but)
+                    rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+                    but.insertAction(but.actions()[-1], rc)  # insert rc before Remove Button
 
         self.buttons.append((mb,b))
     #@+node:tbrown.20091217114654.5372: *3* permanentButton
-    def permanentButton (self,event=None):
+    def permanentButton (self, event=None, v=None, type_=None, first=None):
         """make buttons on this node permanent
 
-        WARNING: includes buttons deleted"""
+        NOTE: includes buttons deleted"""
 
-        c = self.c ; p = c.p
+        c = self.c
+        if not v:
+            p = c.p
+            v = p.v
 
         qm = c.quickMove
 
-        p.v.u['quickMove'] = []
-        for mover, button in qm.buttons:
-            if mover.target == p.v:
-                p.v.u['quickMove'].append((mover.first, mover.type_))
+        if 'quickMove' not in v.u or 'buttons' not in v.u['quickMove']:
+            # possibly deleting old style list
+            v.u['quickMove'] = {'buttons':[]}
 
-        g.es('Set {0} buttons'.format(len(p.v.u['quickMove'])))
+        cnt = 0
+        for mover, button in qm.buttons:
+            if (mover.target == v and
+                (not type_ or mover.type_ == type_) and
+                (not first or mover.first == first)):
+                cnt += 1
+                v.u['quickMove']['buttons'].append(
+                    {'first':mover.first, 'type': mover.type_})
+
+        if cnt:
+            g.es('Made buttons permanent')
+        else:
+            g.es("Didn't find button")
     #@+node:tbrown.20091217114654.5374: *3* clearButton
-    def clearButton (self,event=None):
+    def clearButton (self, event=None, v=None):
         """clear permanent buttons specs from uA"""
-        c = self.c ; p = c.p
-        g.es('Removing {0} buttons'.format(len(p.v.u.get('quickMove',[]))))
-        if 'quickMove' in p.v.u:
-            del p.v.u['quickMove']
+        c = self.c
+        if not v:
+            p = c.p
+            v = p.v
+
+        g.es('Removing buttons - reload to apply')
+        if 'quickMove' in v.u:
+            del v.u['quickMove']
     #@+node:tbrown.20091207102637.11494: *3* popup
     def popup(self, c, p, menu):
         """make popup menu entry"""
@@ -215,6 +351,62 @@ class quickMove(object):
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
             a.connect(a, QtCore.SIGNAL("triggered()"), command)
+    #@+node:tbrown.20100810095317.24878: *3* set_parent
+    def set_parent(self, v, first, type_):
+
+        ans = []
+        for i in self.buttons:
+            if i[0].target is v and i[0].first == first and i[0].type_ == type_:
+                ans.append(i)
+
+        if not ans:
+            g.es("Didn't find button")
+            return
+        elif len(ans) != 1:
+            g.es("Note: found multiple %s/first=%s buttons, using first"%(type_,first))
+
+        qmb, b = ans[0]
+
+        # need to set 'parent' key in v.u['quickMove'] list item to gnx of parent
+
+        parents = [[i[0].targetHeadString, False, i[0]] for i in self.buttons
+                   if i[0] is not qmb and not i[0].has_parent]
+
+        if not parents:
+            g.es("No suitable Move buttons found")
+            return
+
+        ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
+        ld.exec_()
+
+        if ld.result() == QtGui.QDialog.Rejected:
+            return
+
+        for i in parents:
+            if i[1]:
+                parent = i[2].target
+                break
+        else:
+            return
+
+        if 'quickMove' not in v.u or 'buttons' not in v.u['quickMove']:
+            # make button permanent first
+            self.permanentButton(v=v, type_=type_, first=first)
+
+        for i in v.u['quickMove']['buttons']:
+            if i['type'] == qmb.type_ and i['first'] == qmb.first:
+                i['parent'] = parent.gnx
+                break
+        else:
+            v.u['quickMove']['buttons'].append({'type':qmb.type_,
+                'first':qmb.first, 'parent':parent.gnx})
+
+        self.addButton(qmb.first, qmb.type_, v=qmb.target, parent=parent.gnx)
+        self.buttons = [i for i in self.buttons if i[0] is not qmb]
+        print b
+        b.button.parent().layout().removeWidget(b.button)
+
+        g.es('Moved to parent')
     #@-others
 
 #@+node:tbrown.20070117104409.5: ** class quickMoveButton
@@ -232,6 +424,7 @@ class quickMoveButton:
         self.targetHeadString = target.h
         self.first = first
         self.type_ = type_
+        self.has_parent = False
     #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self):
 
@@ -240,7 +433,8 @@ class quickMoveButton:
         c = self.c
         p = c.p
         p2 = c.vnode2position(self.target)
-        u = c.undoer
+
+        needs_undo = self.type_ != "jump"
 
         if not c.positionExists(p2):
             g.es('Target no longer exists: %s' % self.targetHeadString,color='red')
@@ -251,7 +445,9 @@ class quickMoveButton:
                 g.es('Invalid move: %s' % (self.targetHeadString),color='red')
                 return
 
-        bunch = c.undoer.beforeMoveNode(p)
+        if needs_undo:
+            bunch = c.undoer.beforeMoveNode(p)
+
         p2.expand()
         nxt = p.visNext(c) or p.visBack(c)
         nxt = nxt.v
@@ -302,8 +498,10 @@ class quickMoveButton:
 
         if nxt is not None and c.positionExists(nxt):
             c.selectPosition(nxt)
-        c.undoer.afterMoveNode(p,'Quick Move', bunch)
-        c.setChanged(True)
+
+        if needs_undo:
+            c.undoer.afterMoveNode(p,'Quick Move', bunch)
+            c.setChanged(True)
 
         c.redraw()
     #@+node:ekr.20070123061606: *3* checkMove
