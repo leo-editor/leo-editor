@@ -131,6 +131,7 @@ class rstCommands:
         # The options dictionary.
         self.optionsDict = {}
         self.option_prefix = '@rst-option'
+        self.scriptSettingsDict = {} # 2010/08/12: for format-code command.
 
         # Formatting...
         self.code_block_string = ''
@@ -242,18 +243,19 @@ class rstCommands:
 
         self.processTopTree(self.c.p)
     #@+node:ekr.20100812082517.5938: *3* code-to-rst command
-    def format_code (self,event=None,initialSettingsDict=None):
+    #@+node:ekr.20100812082517.5945: *4* format_code
+    def format_code (self,event=None,scriptSettingsDict=None):
 
         '''Format the presently selected node as computer code.
 
         When run from the minibuffer, initial settings come from the tree, as usual.
 
-        When called from a script, initial setting may come from initialSettingsDict.'''
+        When called from a script, initial setting may come from scriptSettingsDict.'''
 
         c = self.c
 
         # Set the settings dict for initOptionsFromSettings.
-        self.initialSettingsDict = initialSettingsDict
+        self.scriptSettingsDict = scriptSettingsDict
 
         # From processTree:
         self.ext = '.rst'
@@ -262,7 +264,7 @@ class rstCommands:
         # From writeSpecialTree
         self.initWrite(p)
         self.outputFile = StringIO()
-        self.formatTree(p)
+        self.format_tree(p)
         self.source = self.outputFile.getvalue()
         self.outputFile = None
 
@@ -351,6 +353,9 @@ class rstCommands:
             g.es('rst-format: wrote',self.outputFileName)
 
     #@+node:ekr.20100812082517.5939: *4* format_tree
+    def format_tree (self,p):
+
+        pass
     #@+node:ekr.20090502071837.41: *3* options...
     #@+node:ekr.20090502071837.42: *4* createDefaultOptionsDict
     def createDefaultOptionsDict(self):
@@ -663,12 +668,17 @@ class rstCommands:
     #@+node:ekr.20090502071837.55: *5* initOptionsFromSettings
     def initOptionsFromSettings (self):
 
-        c = self.c ; d = self.defaultOptionsDict
+        c = self.c
 
+        # 2010/08/12: Script settings override everything else.
+        d2 = self.scriptSettingsDict or {}
+
+        d = self.defaultOptionsDict
         keys = sorted(d)
 
         for key in keys:
             for getter,kind in (
+                (d2.get,'script'), # 2010/08/12
                 (c.config.getBool,'@bool'),
                 (c.config.getString,'@string'),
                 (d.get,'default'),
