@@ -278,6 +278,7 @@ def writeSpecialTree (self,p,toString,justOneFile):
 
         if self.getOption('write_intermediate_file'):
             ext = self.getOption('write_intermediate_extension')
+            if not ext.startswith('.'): ext = '.' + ext
             name = self.outputFileName.rsplit('.',1)[0] + ext 
             if g.isPython3: # 2010/04/21
                 f = open(name,'w',encoding=self.encoding)
@@ -293,6 +294,8 @@ def writeSpecialTree (self,p,toString,justOneFile):
 
     try:
         output = self.writeToDocutils(self.source)
+        if g.isBytes(output):
+            output = g.toUnicode(output)
         ok = output is not None
     except Exception:
         g.pr('Exception in docutils')
@@ -303,8 +306,6 @@ def writeSpecialTree (self,p,toString,justOneFile):
         if isHtml:
             import re
             # g.trace(repr(output)) # Type is byte for Python3.
-            if g.isBytes(output):
-                output = g.toUnicode(output)
             idxTitle = output.find('<title></title>')
             if idxTitle > -1:
                 m = re.search('<h1>([^<]*)</h1>', output)

@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="115" left="726" height="852" width="1073"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.36">
+	<global_window_position top="30" left="461" height="1011" width="1198"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -531,6 +531,27 @@
 </v>
 <v t="ekr.20100728114551.2149"><vh>@asis at-asis-test.txt</vh></v>
 <v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
+<v t="ekr.20100812102648.2193" a="E"><vh>@button format-code</vh>
+<v t="ekr.20100812102648.2195"><vh>&lt;&lt; options &gt;&gt;</vh></v>
+<v t="ekr.20100812114823.2176"><vh>The code-to-rst command</vh>
+<v t="ekr.20100812114823.2177"><vh>code_to_rst_command &amp; helpers</vh>
+<v t="ekr.20100812114823.2178"><vh>write_code_body &amp; helpers</vh>
+<v t="ekr.20100812114823.2179"><vh>split_parts</vh></v>
+<v t="ekr.20100812114823.2180"><vh>write_code_block</vh></v>
+</v>
+<v t="ekr.20100812114823.2181"><vh>write_code_headline &amp; helper</vh>
+<v t="ekr.20100812114823.2182"><vh>write_code_headline_helper</vh></v>
+</v>
+<v t="ekr.20100812114823.2183"><vh>write_code_node</vh></v>
+<v t="ekr.20100812114823.2184"><vh>write_code_tree</vh></v>
+</v>
+<v t="ekr.20100812114823.2185"><vh>Changed methods</vh>
+<v t="ekr.20100812114823.2186"><vh>getOption &amp; setOption</vh></v>
+<v t="ekr.20100812114823.2187"><vh>initOptionsFromSettings</vh></v>
+<v t="ekr.20100812114823.2188"><vh>writeSpecialTree</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -951,7 +972,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -6367,5 +6388,473 @@ This is a test.</t>
                 g.pr(s[n1:n2-1])
     for fn in dirs:
         searchDir(g.os_path_join(path,fn),pattern)</t>
+<t tx="ekr.20100812102648.2193">@ @rst-markup
+########################
+Leo's code markup script
+########################
+@c
+'''A script showing how to convert code in Leo outlines to rST/Sphinx code.
+
+The defaultOptions dict specifies default options.
+
+This script uses leoRst.py:code_to_rst_command.'''
+
+if 1: # Format a particular node.
+    h = '@button format-code'
+    p = g.findNodeAnywhere(c,h)
+
+&lt;&lt; options &gt;&gt;
+
+if p:
+    c.rstCommands.code_to_rst_command(scriptSettingsDict=scriptSettingsDict)
+else:
+    print('not found',h)
+</t>
+<t tx="ekr.20100812102648.2195">@ Here are the options
+@c
+fn = '%s.html' % (g.sanitize_filename(p.h))
+
+# g.es('output file',repr(fn))
+
+scriptSettingsDict = {
+    'output-file-name': 'format-code-output.html', # fn,
+    'call-docutils': True,
+    'number-code-lines': True,
+    'show_doc_parts_as_paragraphs': True,
+    'stylesheet_name': 'default.css',
+    # 'stylesheet_path': '../doc', # Must be None, not ''.
+    'write-intermediate-file': True,
+    'write_intermediate_extension': 'txt'
+}
+
+# old_dict = {
+
+    # # The following options are definitely used in the script.
+    # 'generate-rst-header-comment': True,
+    # 'output-file-name': fn,
+    # 'show_headlines': True,
+    # 'show_options_nodes': False,
+    # 'show_organizer_nodes': True,
+    # 'show_sections': True,
+    # 'underline_characters': '''#=+*^~"'`-:&gt;&lt;_''',
+    # 'verbose': True,
+
+    # # The following are not used, but probably should be used.
+    # 'code_block_string': '::',
+    # 'default_path': None, # Must be None, not ''.
+    # 'encoding': 'utf-8',
+    # 'publish_argv_for_missing_stylesheets': None,
+    # 'stylesheet_embed': True,
+    # 'stylesheet_name': 'default.css',
+    # 'stylesheet_path': None, # Must be None, not ''.
+
+    # # The following are not used. Their status is unclear.
+    # 'show_leo_directives': False,
+# }
+</t>
+<t tx="ekr.20100812114823.2176"></t>
+<t tx="ekr.20100812114823.2177">def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None):
+
+    '''Format the presently selected node as computer code.
+
+    When run from the minibuffer, initial settings come from the outline, as usual.
+
+    When called from a script, initial setting may come from scriptSettingsDict.
+
+    Return true and set self.source and self.output if all requested files were written.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if p: p = p.copy()
+    else: p = c.p
+
+    # **Important**: This command works as much like the rst3 command as possible.
+    # Difference arise because there is no @rst node to specify a filename.
+    # Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
+
+    # Capture the settings, munging all settings.
+    self.scriptSettingsDict = {}
+    d = scriptSettingsDict
+    if d:
+        for key in d.keys():
+            self.scriptSettingsDict[self.munge(key)] = d.get(key)
+
+    # From processTree...
+    self.topLevel = p.level() # Define toplevel separately for each rst file.
+    self.preprocessTree(p)
+    self.scanAllOptions(p) # So we can get the next options.
+
+    # getOption will not work until scanAllOptions::initOptionsFromSettings has been called.
+    callDocutils = self.getOption('call_docutils')
+    writeIntermediateFile = self.getOption('write_intermediate_file')
+    g.trace(self.getOption('output-file-name'))
+    outputFileName = self.getOption('output-file-name') or 'code_to_rst.html'
+    junk,self.ext = g.os_path_splitext(outputFileName)
+    isHtml = self.ext in ('.html','.htm')
+
+    # From writeSpecialTree...
+    self.initWrite(p)
+    self.outputFile = StringIO()
+    self.write_code_tree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if callDocutils or writeIntermediateFile:
+        # **Note**: self.outputFileName does not exist.
+        self.outputFileName = self.computeOutputFileName(outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+    if writeIntermediateFile:
+        ext = self.getOption('write_intermediate_extension') or '.txt' # .txt by default.
+        if not ext.startswith('.'): ext = '.' + ext
+        name = self.outputFileName.rsplit('.',1)[0] + ext
+        if trace: g.trace('intermediate file',name)
+        if g.isPython3:
+            f = open(name,'w',encoding=self.encoding)
+        else:
+            f = open(name,'w')
+        f.write(self.source)
+        f.close()
+        self.report(name)
+
+    if callDocutils:
+        if trace: g.trace('calling docutils')
+        try:
+            output = self.writeToDocutils(self.source)
+            if g.isBytes(output):
+                output = g.toUnicode(output)
+        except Exception:
+            g.pr('Exception in docutils')
+            g.es_exception()
+            return False
+
+        if isHtml:
+            import re
+            if g.isBytes(output):
+                output = g.toUnicode(output)
+            idxTitle = output.find('&lt;title&gt;&lt;/title&gt;')
+            if idxTitle &gt; -1:
+                m = re.search('&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;', output)
+                if not m:
+                    m = re.search('&lt;h1&gt;&lt;[^&gt;]+&gt;([^&lt;]*)&lt;/a&gt;&lt;/h1&gt;', output)
+                if m:
+                    output = output.replace(
+                        '&lt;title&gt;&lt;/title&gt;',
+                        '&lt;title&gt;%s&lt;/title&gt;' % m.group(1)
+                    )
+
+        self.stringOutput = output # Always useful for scripts.
+
+        # Write the file to the directory containing the .leo file.
+        f = open(self.outputFileName,'w')
+        f.write(output)
+        f.close()
+        self.report(self.outputFileName)
+
+    return True
+</t>
+<t tx="ekr.20100812114823.2178">def write_code_body (self,p):
+
+    trace = False
+    self.p = p.copy() # for traces.
+    if not p.b.strip():
+        return # No need to write any more newlines.
+
+    showDocsAsParagraphs = self.getOption('show_doc_parts_as_paragraphs')
+    lines = g.splitLines(p.b)
+    parts = self.split_parts(lines,showDocsAsParagraphs)
+    result = []
+    for kind,lines in parts:
+        if trace: g.trace(kind,len(lines),p.h)
+        if kind == '@rst-option': # Also handles '@rst-options'
+            pass # The prepass has already handled the options.
+        elif kind == '@rst-markup':
+            lines.extend('\n')
+            result.extend(lines)
+        elif kind == '@doc':
+            if showDocsAsParagraphs:
+                result.extend(lines)
+                result.append('\n')
+            else:
+                result.extend(self.write_code_block(lines))
+        elif kind == 'code':
+            result.extend(self.write_code_block(lines))
+        else:
+            g.trace('Can not happen',kind)
+
+    # Write the lines with exactly two trailing newlines.
+    s = ''.join(result).rstrip() + '\n\n'
+    self.write(s)
+</t>
+<t tx="ekr.20100812114823.2179">def split_parts (self,lines,showDocsAsParagraphs):
+
+    '''Split a list of body lines into a list of tuples (kind,lines).'''
+
+    kind,parts,part_lines = 'code',[],[]
+    for s in lines:
+        if g.match_word(s,0,'@ @rst-markup'):
+            if part_lines: parts.append((kind,part_lines[:]),)
+            kind = '@rst-markup'
+            n = len('@ @rst-markup')
+            after = s[n:].strip()
+            part_lines = g.choose(after,[after],[])
+        elif s.startswith('@ @rst-option'):
+            if part_lines: parts.append((kind,part_lines[:]),)
+            kind,part_lines = '@rst-option',[s] # part_lines will be ignored.
+        elif s.startswith('@ ') or s.startswith('@\n') or s.startswith('@doc'):
+            if showDocsAsParagraphs:
+                if part_lines: parts.append((kind,part_lines[:]),)
+                kind = '@doc'
+                # Put only what follows @ or @doc
+                n = g.choose(s.startswith('@doc'),4,1)
+                after = s[n:].lstrip()
+                part_lines = g.choose(after,[after],[])
+            else:
+                part_lines.append(s) # still in code mode.
+        elif g.match_word(s,0,'@c') and kind != 'code':
+            if kind == '@doc' and not showDocsAsParagraphs:
+                    part_lines.append(s) # Show the @c as code.
+            parts.append((kind,part_lines[:]),)
+            kind,part_lines = 'code',[]
+        else:
+            part_lines.append(s)
+
+    if part_lines:
+        parts.append((kind,part_lines[:]),)
+
+    return parts
+</t>
+<t tx="ekr.20100812114823.2180">def write_code_block (self,lines):
+
+    result = ['::\n\n'] # ['[**code block**]\n\n']
+
+    if self.getOption('number-code-lines'):
+        i = 1
+        for s in lines:
+            result.append('    %d: %s' % (i,s))
+            i += 1
+    else:
+        result.extend(['    %s' % (z) for z in lines])
+
+    s = ''.join(result).rstrip()+'\n\n'
+    return g.splitLines(s)
+</t>
+<t tx="ekr.20100812114823.2181">def write_code_headline (self,p):
+
+    '''Generate an rST section if options permit it.
+    Remove headline commands from the headline first,
+    and never generate an rST section for @rst-option and @rst-options.'''
+
+
+    docOnly             = self.getOption('doc_only_mode')
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    if (
+        p == self.topNode or
+        ignore or
+        docOnly or # handleDocOnlyMode handles this.
+        not showHeadlines and not showThisHeadline or
+        # docOnly and not showOrganizers and not thisHeadline or
+        not p.h.strip() and not showOrganizers or
+        not p.b.strip() and not showOrganizers
+    ):
+        return
+
+    self.write_code_headline_helper(p)
+</t>
+<t tx="ekr.20100812114823.2182">def write_code_headline_helper (self,p):
+
+    h = p.h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_ws(h,0)
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i].strip()
+    if word:
+        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+        if word in ('@rst-option','@rst-options','@rst-no-head','@rst-no-headlines'):
+            return
+
+        for prefix in ('@rst-ignore-node','@rst-ignore-tree','@rst-ignore'):
+            if word == prefix:
+                h = h [len(word):].strip()
+                break
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        self.write(self.underline(h,p))
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+</t>
+<t tx="ekr.20100812114823.2183">def write_code_node (self,p):
+
+    '''Format a node according to the options presently in effect.
+
+    Side effect: advance p'''
+
+    h = p.h.strip()
+    self.scanAllOptions(p)
+
+    if self.getOption('ignore_this_tree'):
+        p.moveToNodeAfterTree()
+    elif self.getOption('ignore_this_node'):
+        p.moveToThreadNext()
+    elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
+        p.moveToThreadNext()
+    else:
+        self.write_code_headline(p)
+        self.write_code_body(p)
+        p.moveToThreadNext()
+</t>
+<t tx="ekr.20100812114823.2184">def write_code_tree (self,p):
+
+    '''Write p's tree as code to self.outputFile.'''
+
+    self.scanAllOptions(p) # So we can get the next option.
+
+    if self.getOption('generate_rst_header_comment'):
+        self.write('.. rst3: filename: %s\n\n' % self.outputFileName)
+
+    # We can't use an iterator because we may skip parts of the tree.
+    p = p.copy() # Only one copy is needed for traversal.
+    self.topNode = p.copy() # Indicate the top of this tree.
+    after = p.nodeAfterTree()
+    while p and p != after:
+        self.write_code_node(p) # Side effect: advances p.
+</t>
+<t tx="ekr.20100812114823.2185"></t>
+<t tx="ekr.20100812114823.2186">def getOption (self,name):
+
+    # 2010/08/12: munging names here is safe because setOption munges.
+    return self.optionsDict.get(self.munge(name))
+
+def setOption (self,name,val,tag):
+
+    self.optionsDict [self.munge(name)] = val
+</t>
+<t tx="ekr.20100812114823.2187">def initOptionsFromSettings (self):
+
+    c = self.c
+
+    d = self.defaultOptionsDict
+    keys = sorted(d)
+
+    for key in keys:
+        for getter,kind in (
+            (c.config.getBool,'@bool'),
+            (c.config.getString,'@string'),
+            (d.get,'default'),
+        ):
+            val = getter(key)
+            if kind == 'default' or val is not None:
+                self.setOption(key,val,'initOptionsFromSettings')
+                break
+
+    # 2010/08/12: Script settings override everything else.
+    d2 = self.scriptSettingsDict or {}
+    for key in d2.keys():
+        val = d2.get(key)
+        # g.trace(key,val)
+        self.setOption(key,val,'initOptionsFromSettings')
+
+    # Special case.
+    if self.getOption('http_server_support') and not mod_http:
+        g.es('No http_server_support: can not import mod_http plugin',color='red')
+        self.setOption('http_server_support',False)
+</t>
+<t tx="ekr.20100812114823.2188">def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        if self.getOption('write_intermediate_file'):
+            ext = self.getOption('write_intermediate_extension')
+            if not ext.startswith('.'): ext = '.' + ext
+            name = self.outputFileName.rsplit('.',1)[0] + ext 
+            if g.isPython3: # 2010/04/21
+                f = open(name,'w',encoding=self.encoding)
+            else:
+                f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    # g.trace('call_docutils',self.getOption('call_docutils'))
+    if not self.getOption('call_docutils'):
+        return False
+
+    try:
+        output = self.writeToDocutils(self.source)
+        if g.isBytes(output):
+            output = g.toUnicode(output)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            # g.trace(repr(output)) # Type is byte for Python3.
+            idxTitle = output.find('&lt;title&gt;&lt;/title&gt;')
+            if idxTitle &gt; -1:
+                m = re.search('&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;', output)
+                if not m:
+                    m = re.search('&lt;h1&gt;&lt;[^&gt;]+&gt;([^&lt;]*)&lt;/a&gt;&lt;/h1&gt;', output)
+                if m:
+                    output = output.replace(
+                        '&lt;title&gt;&lt;/title&gt;',
+                        '&lt;title&gt;%s&lt;/title&gt;' % m.group(1)
+                    )
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+</t>
 </tnodes>
 </leo_file>

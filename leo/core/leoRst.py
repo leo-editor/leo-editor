@@ -178,7 +178,7 @@ class rstCommands:
 
         return {
             'rst3': self.rst3, # Formerly write-restructured-text.
-            'code-to-rst': self.format_code,
+            'code-to-rst': self.code_to_rst_command,
         }
     #@+node:ekr.20090511055302.5792: *4* finishCreate
     def finishCreate(self):
@@ -242,35 +242,57 @@ class rstCommands:
         # This used to be the called the write-restructured-text command.
 
         self.processTopTree(self.c.p)
-    #@+node:ekr.20100812082517.5938: *3* code-to-rst command
-    #@+node:ekr.20100812082517.5945: *4* format_code
-    def format_code (self,event=None,scriptSettingsDict=None):
+    #@+node:ekr.20100812082517.5945: *3* code_to_rst_command & helpers
+    def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None):
 
         '''Format the presently selected node as computer code.
 
-        When run from the minibuffer, initial settings come from the tree, as usual.
+        When run from the minibuffer, initial settings come from the outline, as usual.
 
-        When called from a script, initial setting may come from scriptSettingsDict.'''
+        When called from a script, initial setting may come from scriptSettingsDict.
 
+        Return true and set self.source and self.output if all requested files were written.
+        '''
+
+        trace = False and not g.unitTesting
         c = self.c
+        if p: p = p.copy()
+        else: p = c.p
 
-        # Set the settings dict for initOptionsFromSettings.
-        self.scriptSettingsDict = scriptSettingsDict
+        # **Important**: This command works as much like the rst3 command as possible.
+        # Difference arise because there is no @rst node to specify a filename.
+        # Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
 
-        # From processTree:
-        self.ext = '.rst'
+        # Capture the settings, munging all settings.
+        self.scriptSettingsDict = {}
+        d = scriptSettingsDict
+        if d:
+            for key in d.keys():
+                self.scriptSettingsDict[self.munge(key)] = d.get(key)
+
+        # From processTree...
         self.topLevel = p.level() # Define toplevel separately for each rst file.
+        self.preprocessTree(p)
+        self.scanAllOptions(p) # So we can get the next options.
 
-        # From writeSpecialTree
+        # getOption will not work until scanAllOptions::initOptionsFromSettings has been called.
+        callDocutils = self.getOption('call_docutils')
+        writeIntermediateFile = self.getOption('write_intermediate_file')
+        g.trace(self.getOption('output-file-name'))
+        outputFileName = self.getOption('output-file-name') or 'code_to_rst.html'
+        junk,self.ext = g.os_path_splitext(outputFileName)
+        isHtml = self.ext in ('.html','.htm')
+
+        # From writeSpecialTree...
         self.initWrite(p)
         self.outputFile = StringIO()
-        self.format_tree(p)
+        self.write_code_tree(p)
         self.source = self.outputFile.getvalue()
         self.outputFile = None
 
-        if not toString:
-            # Compute this here for use by intermediate file.
-            self.outputFileName = self.computeOutputFileName(self.outputFileName)
+        if callDocutils or writeIntermediateFile:
+            # **Note**: self.outputFileName does not exist.
+            self.outputFileName = self.computeOutputFileName(outputFileName)
 
             # Create the directory if it doesn't exist.
             theDir, junk = g.os_path_split(self.outputFileName)
@@ -281,33 +303,35 @@ class rstCommands:
                     g.es_print('did not create:',theDir,color='red')
                     return False
 
-            if self.getOption('write_intermediate_file'):
-                ext = self.getOption('write_intermediate_extension')
-                name = self.outputFileName.rsplit('.',1)[0] + ext 
-                if g.isPython3: # 2010/04/21
-                    f = open(name,'w',encoding=self.encoding)
-                else:
-                    f = open(name,'w')
-                f.write(self.source)
-                f.close()
-                self.report(name)
+        if writeIntermediateFile:
+            ext = self.getOption('write_intermediate_extension') or '.txt' # .txt by default.
+            if not ext.startswith('.'): ext = '.' + ext
+            # name = self.outputFileName.rsplit('.',1)[0] + ext
+            name,junk = g.os_path_splitext(self.outputFileName)
+            intermediateFileName = name + ext
 
-        # g.trace('call_docutils',self.getOption('call_docutils'))
-        if not self.getOption('call_docutils'):
-            return False
+            if trace: g.trace('intermediate file',intermediateFileName)
+            if g.isPython3:
+                f = open(intermediateFileName,'w',encoding=self.encoding)
+            else:
+                f = open(intermediateFileName,'w')
+            f.write(self.source)
+            f.close()
+            self.report(intermediateFileName)
 
-        try:
-            output = self.writeToDocutils(self.source)
-            ok = output is not None
-        except Exception:
-            g.pr('Exception in docutils')
-            g.es_exception()
-            ok = False
+        if callDocutils:
+            if trace: g.trace('calling docutils')
+            try:
+                output = self.writeToDocutils(self.source)
+                if g.isBytes(output):
+                    output = g.toUnicode(output)
+            except Exception:
+                g.pr('Exception in docutils')
+                g.es_exception()
+                return False
 
-        if ok:
             if isHtml:
                 import re
-                # g.trace(repr(output)) # Type is byte for Python3.
                 if g.isBytes(output):
                     output = g.toUnicode(output)
                 idxTitle = output.find('<title></title>')
@@ -321,41 +345,188 @@ class rstCommands:
                             '<title>%s</title>' % m.group(1)
                         )
 
-            if toString:
-                self.stringOutput = output
+            self.stringOutput = output # Always useful for scripts.
+
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.report(self.outputFileName)
+
+        return True
+    #@+node:ekr.20100812082517.5963: *4* write_code_body & helpers
+    def write_code_body (self,p):
+
+        trace = False
+        self.p = p.copy() # for traces.
+        if not p.b.strip():
+            return # No need to write any more newlines.
+
+        showDocsAsParagraphs = self.getOption('show_doc_parts_as_paragraphs')
+        lines = g.splitLines(p.b)
+        parts = self.split_parts(lines,showDocsAsParagraphs)
+        result = []
+        for kind,lines in parts:
+            if trace: g.trace(kind,len(lines),p.h)
+            if kind == '@rst-option': # Also handles '@rst-options'
+                pass # The prepass has already handled the options.
+            elif kind == '@rst-markup':
+                lines.extend('\n')
+                result.extend(lines)
+            elif kind == '@doc':
+                if showDocsAsParagraphs:
+                    result.extend(lines)
+                    result.append('\n')
+                else:
+                    result.extend(self.write_code_block(lines))
+            elif kind == 'code':
+                result.extend(self.write_code_block(lines))
             else:
-                # Write the file to the directory containing the .leo file.
-                f = open(self.outputFileName,'w')
-                f.write(output)
-                f.close()
-                self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+                g.trace('Can not happen',kind)
 
-        return ok
+        # Write the lines with exactly two trailing newlines.
+        s = ''.join(result).rstrip() + '\n\n'
+        self.write(s)
+    #@+node:ekr.20100812082517.5964: *5* split_parts
+    def split_parts (self,lines,showDocsAsParagraphs):
+
+        '''Split a list of body lines into a list of tuples (kind,lines).'''
+
+        kind,parts,part_lines = 'code',[],[]
+        for s in lines:
+            if g.match_word(s,0,'@ @rst-markup'):
+                if part_lines: parts.append((kind,part_lines[:]),)
+                kind = '@rst-markup'
+                n = len('@ @rst-markup')
+                after = s[n:].strip()
+                part_lines = g.choose(after,[after],[])
+            elif s.startswith('@ @rst-option'):
+                if part_lines: parts.append((kind,part_lines[:]),)
+                kind,part_lines = '@rst-option',[s] # part_lines will be ignored.
+            elif s.startswith('@ ') or s.startswith('@\n') or s.startswith('@doc'):
+                if showDocsAsParagraphs:
+                    if part_lines: parts.append((kind,part_lines[:]),)
+                    kind = '@doc'
+                    # Put only what follows @ or @doc
+                    n = g.choose(s.startswith('@doc'),4,1)
+                    after = s[n:].lstrip()
+                    part_lines = g.choose(after,[after],[])
+                else:
+                    part_lines.append(s) # still in code mode.
+            elif g.match_word(s,0,'@c') and kind != 'code':
+                if kind == '@doc' and not showDocsAsParagraphs:
+                        part_lines.append(s) # Show the @c as code.
+                parts.append((kind,part_lines[:]),)
+                kind,part_lines = 'code',[]
+            else:
+                part_lines.append(s)
+
+        if part_lines:
+            parts.append((kind,part_lines[:]),)
+
+        return parts
+    #@+node:ekr.20100812082517.5965: *5* write_code_block
+    def write_code_block (self,lines):
+
+        result = ['::\n\n'] # ['[**code block**]\n\n']
+
+        if self.getOption('number-code-lines'):
+            i = 1
+            for s in lines:
+                result.append('    %d: %s' % (i,s))
+                i += 1
+        else:
+            result.extend(['    %s' % (z) for z in lines])
+
+        s = ''.join(result).rstrip()+'\n\n'
+        return g.splitLines(s)
+    #@+node:ekr.20100812082517.5966: *4* write_code_headline & helper
+    def write_code_headline (self,p):
+
+        '''Generate an rST section if options permit it.
+        Remove headline commands from the headline first,
+        and never generate an rST section for @rst-option and @rst-options.'''
 
 
+        docOnly             = self.getOption('doc_only_mode')
+        ignore              = self.getOption('ignore_this_headline')
+        showHeadlines       = self.getOption('show_headlines')
+        showThisHeadline    = self.getOption('show_this_headline')
+        showOrganizers      = self.getOption('show_organizer_nodes')
 
-        # From end of processTree
-        self.scanAllOptions(p) # Restore the top-level verbose setting.
+        if (
+            p == self.topNode or
+            ignore or
+            docOnly or # handleDocOnlyMode handles this.
+            not showHeadlines and not showThisHeadline or
+            # docOnly and not showOrganizers and not thisHeadline or
+            not p.h.strip() and not showOrganizers or
+            not p.b.strip() and not showOrganizers
+        ):
+            return
 
-        if 0: ### From format-code
+        self.write_code_headline_helper(p)
+    #@+node:ekr.20100812082517.5967: *5* write_code_headline_helper
+    def write_code_headline_helper (self,p):
 
-            fn = self.defaultOptionsDict.get('output-file-name','format-code.rst.txt')
-            self.outputFileName = g.os_path_finalize_join(g.app.loadDir,fn)
-            self.outputFile = StringIO() # Not a binary file.
+        h = p.h.strip()
 
-            print('\n\n\n==========')
+        # Remove any headline command before writing the headline.
+        i = g.skip_ws(h,0)
+        i = g.skip_id(h,0,chars='@-')
+        word = h [:i].strip()
+        if word:
+            # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+            if word in ('@rst-option','@rst-options','@rst-no-head','@rst-no-headlines'):
+                return
 
-            self.writeTree(self.p.copy())
-            s = self.outputFile.getvalue()
-            self.outputFile = open(self.outputFileName,'w')
-            self.outputFile.write(s)
-            self.outputFile.close()
-            g.es('rst-format: wrote',self.outputFileName)
+            for prefix in ('@rst-ignore-node','@rst-ignore-tree','@rst-ignore'):
+                if word == prefix:
+                    h = h [len(word):].strip()
+                    break
 
-    #@+node:ekr.20100812082517.5939: *4* format_tree
-    def format_tree (self,p):
+        if not h.strip(): return
 
-        pass
+        if self.getOption('show_sections'):
+            self.write(self.underline(h,p))
+        else:
+            self.write('\n**%s**\n\n' % h.replace('*',''))
+    #@+node:ekr.20100812082517.5968: *4* write_code_node
+    def write_code_node (self,p):
+
+        '''Format a node according to the options presently in effect.
+
+        Side effect: advance p'''
+
+        h = p.h.strip()
+        self.scanAllOptions(p)
+
+        if self.getOption('ignore_this_tree'):
+            p.moveToNodeAfterTree()
+        elif self.getOption('ignore_this_node'):
+            p.moveToThreadNext()
+        elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
+            p.moveToThreadNext()
+        else:
+            self.write_code_headline(p)
+            self.write_code_body(p)
+            p.moveToThreadNext()
+    #@+node:ekr.20100812082517.5939: *4* write_code_tree
+    def write_code_tree (self,p):
+
+        '''Write p's tree as code to self.outputFile.'''
+
+        self.scanAllOptions(p) # So we can get the next option.
+
+        if self.getOption('generate_rst_header_comment'):
+            self.write('.. rst3: filename: %s\n\n' % self.outputFileName)
+
+        # We can't use an iterator because we may skip parts of the tree.
+        p = p.copy() # Only one copy is needed for traversal.
+        self.topNode = p.copy() # Indicate the top of this tree.
+        after = p.nodeAfterTree()
+        while p and p != after:
+            self.write_code_node(p) # Side effect: advances p.
     #@+node:ekr.20090502071837.41: *3* options...
     #@+node:ekr.20090502071837.42: *4* createDefaultOptionsDict
     def createDefaultOptionsDict(self):
@@ -381,7 +552,7 @@ class rstCommands:
             'rst3_underline_characters': '''#=+*^~"'`-:><_''',
             'rst3_verbose':True,
             'rst3_write_intermediate_file': False, # Used only if generate_rst is True.
-            'rst3_write_intermediate_extension': 'txt',
+            'rst3_write_intermediate_extension': '.txt',
             # Mode options...
             'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
             'rst3_doc_only_mode': False, # True: generate only from @doc parts.
@@ -670,15 +841,11 @@ class rstCommands:
 
         c = self.c
 
-        # 2010/08/12: Script settings override everything else.
-        d2 = self.scriptSettingsDict or {}
-
         d = self.defaultOptionsDict
         keys = sorted(d)
 
         for key in keys:
             for getter,kind in (
-                (d2.get,'script'), # 2010/08/12
                 (c.config.getBool,'@bool'),
                 (c.config.getString,'@string'),
                 (d.get,'default'),
@@ -687,6 +854,13 @@ class rstCommands:
                 if kind == 'default' or val is not None:
                     self.setOption(key,val,'initOptionsFromSettings')
                     break
+
+        # 2010/08/12: Script settings override everything else.
+        d2 = self.scriptSettingsDict or {}
+        for key in d2.keys():
+            val = d2.get(key)
+            # g.trace(key,val)
+            self.setOption(key,val,'initOptionsFromSettings')
 
         # Special case.
         if self.getOption('http_server_support') and not mod_http:
@@ -901,6 +1075,7 @@ class rstCommands:
 
             if self.getOption('write_intermediate_file'):
                 ext = self.getOption('write_intermediate_extension')
+                if not ext.startswith('.'): ext = '.' + ext
                 name = self.outputFileName.rsplit('.',1)[0] + ext 
                 if g.isPython3: # 2010/04/21
                     f = open(name,'w',encoding=self.encoding)
@@ -916,6 +1091,8 @@ class rstCommands:
 
         try:
             output = self.writeToDocutils(self.source)
+            if g.isBytes(output):
+                output = g.toUnicode(output)
             ok = output is not None
         except Exception:
             g.pr('Exception in docutils')
@@ -926,8 +1103,6 @@ class rstCommands:
             if isHtml:
                 import re
                 # g.trace(repr(output)) # Type is byte for Python3.
-                if g.isBytes(output):
-                    output = g.toUnicode(output)
                 idxTitle = output.find('<title></title>')
                 if idxTitle > -1:
                     m = re.search('<h1>([^<]*)</h1>', output)
