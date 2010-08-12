@@ -177,6 +177,7 @@ class rstCommands:
 
         return {
             'rst3': self.rst3, # Formerly write-restructured-text.
+            'code-to-rst': self.format_code,
         }
     #@+node:ekr.20090511055302.5792: *4* finishCreate
     def finishCreate(self):
@@ -240,6 +241,116 @@ class rstCommands:
         # This used to be the called the write-restructured-text command.
 
         self.processTopTree(self.c.p)
+    #@+node:ekr.20100812082517.5938: *3* code-to-rst command
+    def format_code (self,event=None,initialSettingsDict=None):
+
+        '''Format the presently selected node as computer code.
+
+        When run from the minibuffer, initial settings come from the tree, as usual.
+
+        When called from a script, initial setting may come from initialSettingsDict.'''
+
+        c = self.c
+
+        # Set the settings dict for initOptionsFromSettings.
+        self.initialSettingsDict = initialSettingsDict
+
+        # From processTree:
+        self.ext = '.rst'
+        self.topLevel = p.level() # Define toplevel separately for each rst file.
+
+        # From writeSpecialTree
+        self.initWrite(p)
+        self.outputFile = StringIO()
+        self.formatTree(p)
+        self.source = self.outputFile.getvalue()
+        self.outputFile = None
+
+        if not toString:
+            # Compute this here for use by intermediate file.
+            self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+            # Create the directory if it doesn't exist.
+            theDir, junk = g.os_path_split(self.outputFileName)
+            theDir = c.os_path_finalize(theDir)
+            if not g.os_path_exists(theDir):
+                ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+                if not ok:
+                    g.es_print('did not create:',theDir,color='red')
+                    return False
+
+            if self.getOption('write_intermediate_file'):
+                ext = self.getOption('write_intermediate_extension')
+                name = self.outputFileName.rsplit('.',1)[0] + ext 
+                if g.isPython3: # 2010/04/21
+                    f = open(name,'w',encoding=self.encoding)
+                else:
+                    f = open(name,'w')
+                f.write(self.source)
+                f.close()
+                self.report(name)
+
+        # g.trace('call_docutils',self.getOption('call_docutils'))
+        if not self.getOption('call_docutils'):
+            return False
+
+        try:
+            output = self.writeToDocutils(self.source)
+            ok = output is not None
+        except Exception:
+            g.pr('Exception in docutils')
+            g.es_exception()
+            ok = False
+
+        if ok:
+            if isHtml:
+                import re
+                # g.trace(repr(output)) # Type is byte for Python3.
+                if g.isBytes(output):
+                    output = g.toUnicode(output)
+                idxTitle = output.find('<title></title>')
+                if idxTitle > -1:
+                    m = re.search('<h1>([^<]*)</h1>', output)
+                    if not m:
+                        m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                    if m:
+                        output = output.replace(
+                            '<title></title>',
+                            '<title>%s</title>' % m.group(1)
+                        )
+
+            if toString:
+                self.stringOutput = output
+            else:
+                # Write the file to the directory containing the .leo file.
+                f = open(self.outputFileName,'w')
+                f.write(output)
+                f.close()
+                self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+        return ok
+
+
+
+        # From end of processTree
+        self.scanAllOptions(p) # Restore the top-level verbose setting.
+
+        if 0: ### From format-code
+
+            fn = self.defaultOptionsDict.get('output-file-name','format-code.rst.txt')
+            self.outputFileName = g.os_path_finalize_join(g.app.loadDir,fn)
+            self.outputFile = StringIO() # Not a binary file.
+
+            print('\n\n\n==========')
+
+            self.writeTree(self.p.copy())
+            s = self.outputFile.getvalue()
+            self.outputFile = open(self.outputFileName,'w')
+            self.outputFile.write(s)
+            self.outputFile.close()
+            g.es('rst-format: wrote',self.outputFileName)
+
+    #@+node:ekr.20100812082517.5939: *4* format_tree
     #@+node:ekr.20090502071837.41: *3* options...
     #@+node:ekr.20090502071837.42: *4* createDefaultOptionsDict
     def createDefaultOptionsDict(self):
@@ -307,15 +418,15 @@ class rstCommands:
         g.pr('present settings...')
         for key in keys:
             g.pr('%20s %s' % (key,d.get(key)))
-    #@+node:ekr.20090502071837.44: *4* getOption
+    #@+node:ekr.20090502071837.44: *4* getOption & setOption
     def getOption (self,name):
 
-        bwm = False
-        if bwm:
-            g.trace("bwm: getOption self:%s, name:%s, value:%s" % (
-                self, name, self.optionsDict.get(name)))
+        # 2010/08/12: munging names here is safe because setOption munges.
+        return self.optionsDict.get(self.munge(name))
 
-        return self.optionsDict.get(name)
+    def setOption (self,name,val,tag):
+
+        self.optionsDict [self.munge(name)] = val
     #@+node:ekr.20090502071837.45: *4* initCodeBlockString
     def initCodeBlockString(self,p):
 
@@ -553,6 +664,7 @@ class rstCommands:
     def initOptionsFromSettings (self):
 
         c = self.c ; d = self.defaultOptionsDict
+
         keys = sorted(d)
 
         for key in keys:
@@ -565,6 +677,7 @@ class rstCommands:
                 if kind == 'default' or val is not None:
                     self.setOption(key,val,'initOptionsFromSettings')
                     break
+
         # Special case.
         if self.getOption('http_server_support') and not mod_http:
             g.es('No http_server_support: can not import mod_http plugin',color='red')
@@ -583,22 +696,6 @@ class rstCommands:
             #g.trace('%24s %8s %s' % (ivar,val,p.h))
             self.setOption(ivar,val,p.h)
 
-    #@+node:ekr.20090502071837.57: *4* setOption
-    def setOption (self,name,val,tag):
-
-        # if name == 'rst3_underline_characters':
-            # g.trace(name,val,g.callers(4))
-
-        ivar = self.munge(name)
-
-        # bwm = False
-        # if bwm:
-            # if ivar not in self.optionsDict:
-                # g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
-            # elif self.optionsDict.get(ivar) != val:
-                # g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
-
-        self.optionsDict [ivar] = val
     #@+node:ekr.20090502071837.59: *3* Top-level write code
     #@+node:ekr.20090502071837.60: *4* initWrite (rstCommands)
     def initWrite (self,p):
