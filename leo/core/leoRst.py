@@ -123,6 +123,7 @@ class rstCommands:
 
         global SilverCity
 
+        # g.trace(c)
         self.c = c
         #@+<< init ivars >>
         #@+node:ekr.20090502071837.36: *5* << init ivars >> (leoRst)
@@ -1021,7 +1022,7 @@ class rstCommands:
                     found = True
                     self.topLevel = p.level() # Define toplevel separately for each rst file.
                     if toString:
-                        self.ext = ext
+                        self.ext = ext or '.html' # 2010/08/12: Unit test found this.
                         if not self.ext.startswith('.'):
                             self.ext = '.'+self.ext
                     else:

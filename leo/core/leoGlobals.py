@@ -4657,6 +4657,20 @@ def getTestVars ():
     # This is an indirect test that some unit test has run.
     d['getTestVars'] = True
     return c,p and p.copy()
+#@+node:ekr.20100812172650.5909: *3* g.findTestScript
+def findTestScript(c,h,where=None):
+
+    if where:
+        p = g.findNodeAnywhere(c,where)
+        if p:
+            p = g.findNodeInTree(c,p,h)
+    else:
+        p = g.findNodeAnywhere(c,h)
+
+    if p:
+        return g.getScript(c,p)
+    else:
+        return None
 #@+node:EKR.20040612114220: ** Utility classes, functions & objects...
 #@+node:ekr.20050315073003: *3*  Index utilities... (leoGlobals)
 #@+node:ekr.20050314140957: *4* g.convertPythonIndexToRowCol
