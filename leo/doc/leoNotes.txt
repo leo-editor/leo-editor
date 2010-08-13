@@ -4340,114 +4340,47 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-#@+node:ekr.20080620095343.1: *3* at.shouldWriteAtNosentNode (no longer used)
-@ Much thought went into this decision tree:
+#@+node:ekr.20100813041139.5911: *3* addTestScript
+def addTestScript(c,h,where=None,d=None):
 
-- We do not want decisions to depend on past history.That ' s too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @nosent x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- The explicit commands that read and write @nosent trees must always be honored.
-@c
 
-def shouldWriteAtNosentNode (self,p,exists):
-
-    '''Return True if we should write the @nosent node at p.'''
-
-    if not exists: # We can write a non-existent file without danger.
-        return True
-    elif self.isSignificantTree(p):
-        return True # Assume the tree contains what should be written.
+    if where:
+        p = g.findNodeAnywhere(c,where)
+        if p:
+            p = g.findNodeInTree(c,p,h)
     else:
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
-        return False
-#@+node:ekr.20071019141745: *3* at.shouldWriteAtAutoNode (no longer used)
-@ Much thought went into this decision tree:
+        p = g.findNodeAnywhere(c,h)
 
-- We do not want decisions to depend on past history.  That's too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @auto x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
-- We don't want minor import imperfections to be written to the @auto file.
-- The explicit commands that read and write @auto trees must always be honored.
-@c
+    if p:
+        s = g.getScript(c,p)
+        d = None # To put it in locals
+        d = locals().copy()
+        exec(s)
+        added = [z for z in locals() if not z in d]
+        for z in added: print(locals().get(z))
+    else:
+        return None
+#@+node:ekr.20090502071837.61: *3* writeNormalTree (no longer used)
+def writeNormalTree (self,p,toString=False):
 
-def shouldWriteAtAutoNode (self,p,exists,force):
+    '''Create the rst sources for p in self.source.'''
 
-    '''Return True if we should write the @auto node at p.'''
+    self.initWrite(p) # Options for p are valid after this call.
 
-    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
-        return True
-    elif not exists: # We can write a non-existent file without danger.
-        return True
-    elif not p.isDirty(): # There is nothing new to write.
-        return False
-    elif not self.isSignificantTree(p): # There is noting of value to write.
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
-        return False
-    else: # The @auto tree is dirty and contains significant info.
-        return True
-#@+node:ekr.20090225080846.6: *3* at.shouldWriteAtEditNode (no longer used)
-@ Much thought went into this decision tree:
+    # Write the rst sources to self.source.
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue() # The rst sources.
+    self.stringOutput = None # No docutils sources.
 
-- We do not want decisions to depend on past history.  That's too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @edit x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- We want the user to be able to create an @edit node which will be read
-  the next time the .leo file is opened.
-- We don't want minor import imperfections to be written to the @edit file.
-- The explicit commands that read and write @edit trees must always be honored.
-@c
+    if toString:
+        return # self.source contains rst sources.
 
-def shouldWriteAtEditNode (self,p,exists,force):
-
-    '''Return True if we should write the @auto node at p.'''
-
-    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
-        return True
-    elif not exists: # We can write a non-existent file without danger.
-        return True
-    elif not p.isDirty(): # There is nothing new to write.
-        return False
-    elif not self.isSignificantTree(p): # There is noting of value to write.
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
-        return False
-    else: # The @auto tree is dirty and contains significant info.
-        return True
-#@+node:ekr.20080711093251.6: *3* at.shouldWriteAtShadowNode (no longer used)
-@ Much thought went into this decision tree:
-
-- We do not want decisions to depend on past history.  That's too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @shadow x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
-- We don't want minor import imperfections to be written to the @shadow file.
-- The explicit commands that read and write @shadow trees must always be honored.
-@c
-
-def shouldWriteAtShadowNode (self,p,exists,force,fn):
-
-    '''Return True if we should write the @shadow node at p.'''
-
-    at = self ; x = at.c.shadowController
-
-    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
-        return True
-    elif not exists: # We can write a non-existent file without danger.
-        return True
-    elif not p.isDirty(): # There is nothing new to write.
-        return False
-    elif not self.isSignificantTree(p): # There is noting of value to write.
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
-        return False
-    else: # The @shadow tree is dirty and contains significant info.
-        return True
+    # Comput the output file name *after* calling writeTree.
+    fn = self.computeOutputFileName(self.outputFileName)
+    f = open(fn,'w')
+    f.write(self.stringOutput)
+    f.close()
+    self.report(fn)
 #@-all
 #@-leo

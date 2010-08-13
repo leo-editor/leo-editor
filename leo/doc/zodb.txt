@@ -34,7 +34,7 @@ To enable zodb scripting within Leo, you must set use_zodb = True in the root no
 You must also install ZODB itself.  See `Installing ZODB`_ for details.
 
 When ZODB is installed and use_zodb is True
-Leo's vnode and tnode classes become subclasses of ZODB.Persistence.Persistent.
+Leo's vnode classes becomes a subclasses of ZODB.Persistence.Persistent.
 This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.
 
 **Important notes**:
@@ -42,11 +42,10 @@ This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.
 - Scripts **should not** store or retrieve positions using the ZODB!
   Doing so makes sense neither from Leo's point of view nor from ZODB's point of view.
 
-- The examples below show how to store or retrieve Leo data by accessing
-  the so-called root of a ZODB connection.
-  However, these are only examples.
-  Scripts are free to do with Leo's vnodes and tnodes *anything* that can
-  be done with ZODB.Persistence.Persistent objects.
+- The examples below show how to store or retrieve Leo data by accessing the
+  so-called root of a ZODB connection. However, these are only examples. Scripts
+  are free to do with Leo's vnodes *anything* that can be done with
+  ZODB.Persistence.Persistent objects.
 .. @+node:ekr.20060913170403: *3* Initing zodb
 Scripts should call g.init_zodb to open a ZODB.Storage file.
 g.init_zodb returns an instance of ZODB.DB.  For example::
@@ -70,7 +69,7 @@ The following script writes v, a tree of vnodes, to zodb::
 
 Notes:
 
-- v must be a vnode (or a tnode).
+- v must be a vnode.
   Scripts should *not* attempt to store Leo positions in the zodb.
   v can be the root of an entire outline or a subtree.
   For example, either of the following would be reasonable::

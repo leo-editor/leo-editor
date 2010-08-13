@@ -2602,9 +2602,8 @@
 <v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
-<v t="ekr.20100812175329.5800"><vh>addTestScript</vh></v>
-<v t="ekr.20100812172232.5800" a="E"><vh>@common leoRst test code</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20100812172232.5800"><vh>@common leoRst test code</vh>
 <v t="ekr.20100812182942.5804"><vh>rst3Test</vh></v>
 </v>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
@@ -2614,11 +2613,11 @@
 <v t="ekr.20100812182942.5808"><vh>section</vh></v>
 </v>
 </v>
-<v t="ekr.20100812213445.5814" a="E"><vh>expected</vh>
+<v t="ekr.20100812213445.5814"><vh>expected</vh>
 <v t="ekr.20100812213445.5817"><vh>child</vh></v>
 </v>
 </v>
-<v t="ekr.20100812213445.5824" a="E"><vh>@test rst3 test show_doc_parts_as_paragraphs</vh>
+<v t="ekr.20100812213445.5824"><vh>@test rst3 test show_doc_parts_as_paragraphs</vh>
 <v t="ekr.20100812213445.5825"><vh>source</vh>
 <v t="ekr.20100812213445.5826"><vh>@rst test.html</vh>
 <v t="ekr.20100812213445.5827"><vh>section</vh></v>
@@ -2954,7 +2953,7 @@
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"></v>
+<v t="ekr.20091219122958.5066"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23500,29 +23499,6 @@ c.importCommands.iniUnitTest(p,s=s,showTree=False)
 <t tx="ekr.20100812172232.5801">exec(g.findTestScript(c,'@common leoRst test code'))
 
 rst3Test(c,p)
-</t>
-<t tx="ekr.20100812175329.5800">def addTestScript(c,h,where=None,d=None):
-    
-    # def dump(d):
-        # for z in d: print(z)
-
-    if where:
-        p = g.findNodeAnywhere(c,where)
-        if p:
-            p = g.findNodeInTree(c,p,h)
-    else:
-        p = g.findNodeAnywhere(c,h)
-
-    if p:
-        _addTestScript_s = g.getScript(c,p)
-        _addTestScript_d = None # To put it in locals
-        _addTestScript_d = locals().copy()
-        exec(_addTestScript_s)
-        added = [z for z in locals() if not z in _addTestScript_d]
-        print(added)
-        for z in added: print(locals().get(z))
-    else:
-        return None
 </t>
 <t tx="ekr.20100812182942.5804">def rst3Test(c,p):
     

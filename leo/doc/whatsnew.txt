@@ -2,6 +2,20 @@
 .. @+node:ekr.20100805165051.7175: * @thin whatsnew.txt
 .. @@language rest
 .. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=False
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
 .. @+all
 .. @+node:ekr.20100129054823.11924: ** What's New in Leo 4.7
 @language rest
