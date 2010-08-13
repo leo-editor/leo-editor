@@ -457,14 +457,13 @@ class rstCommands:
 
         '''Write all @rst nodes.'''
 
-        # This used to be the called the write-restructured-text command.
-
         self.processTopTree(self.c.p)
     #@+node:ekr.20090502071837.62: *5* processTopTree
     def processTopTree (self,p,justOneFile=False):
 
         c = self.c ; current = p.copy()
 
+        # This strange looking code looks up and down the tree for @rst nodes.
         for p in current.self_and_parents():
             h = p.h
             if h.startswith('@rst') and not h.startswith('@rst-'):
