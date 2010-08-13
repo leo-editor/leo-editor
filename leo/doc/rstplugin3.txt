@@ -483,7 +483,7 @@ generate_rst (default: True)
 
     A master switch.
     True: generate rST markup for rST sections and rST code-blocks.
-    False: don't generate rST markup and ignore @ @rst-markup doc parts.
+    False: generate plain text and ignore @ @rst-markup doc parts.
 
 generate_rst_header_comment (default: True)
 

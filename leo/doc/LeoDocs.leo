@@ -158,11 +158,11 @@
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
 <v t="ekr.20100805165051.7174"><vh>@thin appendices.txt</vh></v>
 </v>
-<v t="ekr.20091111112709.6671" a="E"><vh>Glossary</vh>
+<v t="ekr.20091111112709.6671"><vh>Glossary</vh>
 <v t="ekr.20100805165051.7147"><vh>@thin glossary.txt</vh></v>
 </v>
-<v t="ekr.20060620094033" a="E"><vh>What's New...</vh>
-<v t="ekr.20100805165051.7175" a="E"><vh>@thin whatsnew.txt</vh></v>
+<v t="ekr.20060620094033"><vh>What's New...</vh>
+<v t="ekr.20100805165051.7175"><vh>@thin whatsnew.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20080301071818"><vh>Home page</vh>

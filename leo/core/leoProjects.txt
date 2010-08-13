@@ -801,5 +801,11 @@ def isSectionLine(self,s,i):
         return True,s[i:j+1],i
     else:
         return False,None,i
+#@+node:ekr.20100812082517.5943: *4* Added code-to-rst command
+# And deprecated code mode.
+#@+node:ekr.20100813041139.5917: *4* Added g.findTestScript
+The typical usage::
+
+    g.findTestScript(c,'@common code for tests of x')
 #@-all
 #@-leo
