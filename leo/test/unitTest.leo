@@ -2609,46 +2609,59 @@
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 <v t="ekr.20100812172232.5801"><vh>@test rst3 defaults</vh>
 <v t="ekr.20100812182942.5805"><vh>source</vh>
-<v t="ekr.20100812182942.5807" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100812182942.5807"><vh>@rst test.html</vh>
 <v t="ekr.20100812182942.5808"><vh>section</vh></v>
 </v>
 </v>
-<v t="ekr.20100812213445.5814" a="E"><vh>expected</vh>
+<v t="ekr.20100812213445.5814"><vh>expected</vh>
 <v t="ekr.20100813100841.5848"><vh>rst</vh></v>
 <v t="ekr.20100813100841.5849"><vh> html</vh></v>
 </v>
 </v>
 <v t="ekr.20100813100841.5850"><vh>@test rst3 @no-head</vh>
-<v t="ekr.20100813100841.5854"><vh>source</vh>
-<v t="ekr.20100813100841.5855" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100813100841.5854" a="E"><vh>source</vh>
+<v t="ekr.20100813100841.5855"><vh>@rst test.html</vh>
 <v t="ekr.20100813100841.5856"><vh>@rst-no-head section</vh></v>
 </v>
 </v>
-<v t="ekr.20100813100841.5857" a="E"><vh>expected</vh>
+<v t="ekr.20100813100841.5857"><vh>expected</vh>
 <v t="ekr.20100813100841.5858"><vh>rst</vh></v>
 <v t="ekr.20100813100841.5859"><vh> html</vh></v>
 </v>
 </v>
-<v t="ekr.20100813100841.5824"><vh>@test doc_only_mode</vh>
+<v t="ekr.20100813100841.5824"><vh>@test doc_only_mode (set in headline)</vh>
 <v t="ekr.20100813100841.5839"><vh>source</vh>
 <v t="ekr.20100813100841.5840" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100813124317.5868" a="E"><vh>@rst-option doc_only_mode=True</vh>
 <v t="ekr.20100813100841.5841"><vh>section</vh></v>
 </v>
 </v>
+</v>
 <v t="ekr.20100813100841.5842"><vh>expected</vh>
-<v t="ekr.20100813100841.5862"><vh>rst</vh></v>
-<v t="ekr.20100813100841.5863"><vh> html</vh></v>
+<v t="ekr.20100813124317.5869"><vh>rst</vh></v>
+<v t="ekr.20100813124317.5870"><vh> html</vh></v>
+</v>
+</v>
+<v t="ekr.20100813124317.5879"><vh>@test doc_only_mode (set in options doc part)</vh>
+<v t="ekr.20100813124317.5880" a="E"><vh>source</vh>
+<v t="ekr.20100813124317.5881" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100813124317.5883"><vh>section</vh></v>
+</v>
+</v>
+<v t="ekr.20100813124317.5884"><vh>expected</vh>
+<v t="ekr.20100813124317.5889"><vh>rst</vh></v>
+<v t="ekr.20100813124317.5890"><vh> html</vh></v>
 </v>
 </v>
 <v t="ekr.20100813100841.5825"><vh>@test show_doc_parts_in_rst_mode</vh></v>
 <v t="ekr.20100813100841.5847"><vh>@ignore</vh>
-<v t="ekr.20100812213445.5824" a="E"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
-<v t="ekr.20100812213445.5825" a="E"><vh>source</vh>
-<v t="ekr.20100812213445.5826" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
+<v t="ekr.20100812213445.5825"><vh>source</vh>
+<v t="ekr.20100812213445.5826"><vh>@rst test.html</vh>
 <v t="ekr.20100812213445.5827"><vh>section</vh></v>
 </v>
 </v>
-<v t="ekr.20100812213445.5828" a="E"><vh>expected</vh>
+<v t="ekr.20100812213445.5828"><vh>expected</vh>
 <v t="ekr.20100813100841.5843"><vh>rst</vh></v>
 <v t="ekr.20100813100841.5844"><vh> html</vh></v>
 </v>
@@ -23594,11 +23607,7 @@ rst3Test(c,p)
 <t tx="ekr.20100813100841.5828"></t>
 <t tx="ekr.20100813100841.5829"></t>
 <t tx="ekr.20100813100841.5839">@language rest</t>
-<t tx="ekr.20100813100841.5840">@ @rst-options
-doc-only-mode=True
-@c
-
-#####
+<t tx="ekr.20100813100841.5840">#####
 Title
 #####
 
@@ -23606,7 +23615,6 @@ This is test.html</t>
 <t tx="ekr.20100813100841.5841">@ This is a doc part
 it has two lines.
 @c
-
 This is the body of the section.</t>
 <t tx="ekr.20100813100841.5842"></t>
 <t tx="ekr.20100813100841.5843">.. rst3: filename: test.html
@@ -24474,27 +24482,31 @@ hr { /* EKR */
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20100813100841.5862">.. rst3: filename: test.html
+<t tx="ekr.20100813124317.5868"></t>
+<t tx="ekr.20100813124317.5869">.. rst3: filename: test.html
 
-@rst test.html
-=========
+#####
+Title
+#####
+
+This is test.html
 
 
 
 section
-+++++++
+*******
 
 This is a doc part
 it has two lines.
 
 </t>
-<t tx="ekr.20100813100841.5863">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+<t tx="ekr.20100813124317.5870">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 &lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
-&lt;title&gt;&amp;#64;rst test.html&lt;/title&gt;
+&lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
 /*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
@@ -24738,21 +24750,312 @@ hr { /* EKR */
 &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-&lt;div class="document" id="rst-test-html"&gt;
-&lt;h1 class="title"&gt;&amp;#64;rst test.html&lt;/h1&gt;
-&lt;h2 class="subtitle" id="section"&gt;section&lt;/h2&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
 
 &lt;!-- rst3: filename: test.html --&gt;
-&lt;div class="system-message"&gt;
-&lt;p class="system-message-title"&gt;System Message: WARNING/2 (&lt;tt class="docutils"&gt;&amp;lt;string&amp;gt;&lt;/tt&gt;, line 4)&lt;/p&gt;
-&lt;p&gt;Title underline too short.&lt;/p&gt;
-&lt;pre class="literal-block"&gt;
-&amp;#64;rst test.html
-=========
-&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
 &lt;p&gt;This is a doc part
 it has two lines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100813124317.5879">exec(g.findTestScript(c,'@common leoRst test code'))
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100813124317.5880">@language rest</t>
+<t tx="ekr.20100813124317.5881">#####
+Title
+#####
+
+This is test.html</t>
+<t tx="ekr.20100813124317.5883">@ @rst-options
+doc_only_mode=True
+@c
+@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.</t>
+<t tx="ekr.20100813124317.5884"></t>
+<t tx="ekr.20100813124317.5889">.. rst3: filename: test.html
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+This is a doc part
+it has two lines.
+
+</t>
+<t tx="ekr.20100813124317.5890">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;This is a doc part
+it has two lines.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;
