@@ -1084,59 +1084,45 @@ class rstCommands:
     #@+node:ekr.20090502071837.42: *4* createDefaultOptionsDict
     def createDefaultOptionsDict(self):
 
-        # Warning: changing the names of options changes the names of the corresponding ivars.
-
+        # Important: these must be munged names.
         self.defaultOptionsDict = {
             # Http options...
-            'rst3_clear_http_attributes':   False,
-            'rst3_http_server_support':     False,
-            'rst3_http_attributename':      'rst_http_attribute',
-            'rst3_node_begin_marker':       'http-node-marker-',
+            'clear_http_attributes':   False,
+            'http_server_support':     False,
+            'http_attributename':      'rst_http_attribute',
+            'node_begin_marker':       'http-node-marker-',
             # Path options...
-            'rst3_default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
-            'rst3_stylesheet_name': 'default.css',
-            'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
-                'rst3_stylesheet_embed': True,
-            'rst3_publish_argv_for_missing_stylesheets': None,
+            'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+            'stylesheet_name': 'default.css',
+            'stylesheet_path': None, # Bug fix: must be None, not ''.
+            'stylesheet_embed': True,
+            'publish_argv_for_missing_stylesheets': None,
             # Global options...
-            'rst3_call_docutils': True, # 2010/08/05
-            'rst3_code_block_string': '',
-            'rst3_number_code_lines': True,
-            'rst3_underline_characters': '''#=+*^~"'`-:><_''',
-            'rst3_verbose':True,
-            'rst3_write_intermediate_file': False, # Used only if generate_rst is True.
-            'rst3_write_intermediate_extension': '.txt',
+            'call_docutils': True, # 2010/08/05
+            'code_block_string': '',
+            'number_code_lines': True,
+            'underline_characters': '''#=+*^~"'`-:><_''',
+            'verbose':True,
+            'write_intermediate_file': False, # Used only if generate_rst is True.
+            'write_intermediate_extension': '.txt',
             # Mode options...
-            'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
-            'rst3_doc_only_mode': False, # True: generate only from @doc parts.
-            'rst3_generate_rst': True, # True: generate rst markup.  False: generate plain text.
-            'rst3_generate_rst_header_comment': True,
+            'code_mode': False, # True: generate rst markup from @code and @doc parts.
+            'doc_only_mode': False, # True: generate only from @doc parts.
+            'generate_rst': True, # True: generate rst markup.  False: generate plain text.
+            'generate_rst_header_comment': True,
                 # True generate header comment (requires generate_rst option)
             # Formatting options that apply to both code and rst modes....
-            'rst3_show_headlines': True,  # Can be set by @rst-no-head headlines.
-            'rst3_show_organizer_nodes': True,
-            'rst3_show_options_nodes': False,
-            'rst3_show_sections': True,
-            'rst3_strip_at_file_prefixes': True,
-            'rst3_show_doc_parts_in_rst_mode': True,
+            'show_headlines': True,  # Can be set by @rst-no-head headlines.
+            'show_organizer_nodes': True,
+            'show_options_nodes': False,
+            'show_sections': True,
+            'strip_at_file_prefixes': True,
+            'show_doc_parts_in_rst_mode': True,
             # Formatting options that apply only to code mode.
-            'rst3_show_doc_parts_as_paragraphs': False,
-            'rst3_show_leo_directives': True,
-            'rst3_show_markup_doc_parts': False,
-            'rst3_show_options_doc_parts': False,
-            # *Names* of headline commands...
-            # 'rst3_code_prefix':             '@rst-code',     # Enter code mode.
-            # 'rst3_doc_only_prefix':         '@rst-doc-only', # Enter doc-only mode.
-            # 'rst3_rst_prefix':              '@rst',          # Enter rst mode.
-            # 'rst3_ignore_headline_prefix':  '@rst-no-head',
-            # 'rst3_ignore_headlines_prefix': '@rst-no-headlines',
-            # 'rst3_ignore_node_prefix':      '@rst-ignore-node',
-            # 'rst3_ignore_prefix':           '@rst-ignore',
-            # 'rst3_ignore_tree_prefix':      '@rst-ignore-tree',
-            # 'rst3_option_prefix':           '@rst-option',
-            # 'rst3_options_prefix':          '@rst-options',
-            # 'rst3_preformat_prefix':        '@rst-preformat',
-            # 'rst3_show_headline_prefix':    '@rst-head',
+            'show_doc_parts_as_paragraphs': False,
+            'show_leo_directives': True,
+            'show_markup_doc_parts': False,
+            'show_options_doc_parts': False,
         }
     #@+node:ekr.20090502071837.43: *4* dumpSettings (debugging)
     def dumpSettings (self):
@@ -1151,6 +1137,7 @@ class rstCommands:
     def getOption (self,name):
 
         # 2010/08/12: munging names here is safe because setOption munges.
+        # g.trace(name,self.optionsDict.get(self.munge(name)))
         return self.optionsDict.get(self.munge(name))
 
     def setOption (self,name,val,tag):
@@ -1332,8 +1319,7 @@ class rstCommands:
 
         if data:
             name,val = data
-            fullName = 'rst3_' + self.munge(name)
-            if fullName in list(self.defaultOptionsDict.keys()):
+            if self.munge(name) in list(self.defaultOptionsDict.keys()):
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
                 # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
@@ -1382,7 +1368,6 @@ class rstCommands:
                     val = d.get(key)
                     self.setOption(key,val,p.h)
 
-        # self.dumpSettings()
         if self.rst3_all:
             self.setOption("generate_rst", True, "rst3_all")
             self.setOption("generate_rst_header_comment",True, "rst3_all")
@@ -1661,7 +1646,8 @@ class rstCommands:
         ext = ext or '.txt' # .txt by default.
         if not ext.startswith('.'): ext = '.' + ext
 
-        fn,junk = g.os_path_splitext(fn)
+        ### name = fn.rsplit('.',1)[0] + ext
+        ### fn,junk = g.os_path_splitext(fn)
         fn = fn + ext
 
         # g.trace('intermediate file',fn)

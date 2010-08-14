@@ -17,7 +17,7 @@ show_headlines=True
 show_leo_directives=True
 show_options_doc_parts=False
 stylesheet_path=..\doc
-write_intermediate_file = True
+write_intermediate_file=True
 verbose=True
 @c
 
