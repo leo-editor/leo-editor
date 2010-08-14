@@ -53,7 +53,7 @@ This tutorial introduces the reader to the basic concepts and features of Leo.
 It helps to have Leo running for hands-on experience, but all examples here are
 self-contained, so the tutorial can be read off-line as well.
 See `Leo's Installation Guide`_. for detailed installation instructions. If you
-have problems installing Leo, please ask for help on `Leo's help forum`_. 
+have problems installing Leo, please ask for help on `Leo's forum`_. 
 
 This tutorial does not attempt to be comprehensive and cover every single
 feature of Leo, or even every commonly used feature. Instead, it introduces many
@@ -68,8 +68,10 @@ The `Glossary`_ is also worth reading.
 .. @+node:ekr.20091130111843.6810: *3* @rst-no-head links
 .. Links used in this document...
 
-.. _`Python`:                   http://www.python.org/
-.. _`XML`:                      http://en.wikipedia.org/wiki/XML
+.. _`Leo's forum`:      http://groups.google.com/group/leo-editor
+.. _`Leo's home page`:  http://webpages.charter.net/edreamleo/front.html
+.. _`Python`:           http://www.python.org/
+.. _`XML`:              http://en.wikipedia.org/wiki/XML
 
 .. _`Leo's Installation Guide`:                     install.html
 .. _`Chapter 5: Using Leo's Commands`:              commands.html

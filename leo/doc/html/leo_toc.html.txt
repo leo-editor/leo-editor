@@ -18,7 +18,6 @@ Contents:
    FAQ
    install
    intro
-        outline-commands
    outlines
    directives
    commands
