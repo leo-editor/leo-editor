@@ -2205,7 +2205,6 @@ leo/scripts/scripts.leo
 leo/scripts/tangle_done.py
 leo/scripts/untangle_done.py
 leo/test/
-leo/test/.leo/
 leo/test/at-auto-unit-test.py
 leo/test/cgi-bin/
 leo/test/cgi-bin/edward.py

@@ -56,33 +56,30 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
+<v t="ekr.20100815092343.1489"><vh>Installer to do</vh></v>
 <v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901092556.1573"><vh>genHead</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
-<v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
-<v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
-<v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
-<v t="ekr.20090901092556.1606"><vh>genAdditionalIcons</vh></v>
-<v t="ekr.20090901092556.1607"><vh>genPost</vh></v>
-<v t="ekr.20090901092556.1611"><vh>genUninstallSettings</vh></v>
-<v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
-</v>
-</v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
-<v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
-<v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1575"><vh>genMiddle</vh>
+<v t="ekr.20090901092556.1606"><vh>genAdditionalIcons</vh></v>
+<v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
+<v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
+<v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
+<v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
+<v t="ekr.20090901092556.1607"><vh>genPost</vh></v>
+<v t="ekr.20090901092556.1611"><vh>genUninstallSettings</vh></v>
+</v>
+<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -91,7 +88,7 @@
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
 </v>
-<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
+<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
 <v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
@@ -629,6 +626,8 @@ def deleteFiles (self,lines,deleteList):
 
     trace = False
     ignoreDirs = ('.bzr',)
+    # Important: this adds all directories on EKR's machine,
+    # regardless of whether they appear in the manifest!
     result = [] ; n = len(rootDir)
     for z in os.walk(rootDir): # top-down traversal.
         dirpath, dirnames, filenames = z
@@ -636,15 +635,17 @@ def deleteFiles (self,lines,deleteList):
         if len(dirpath) &gt; n:
             path = dirpath[n+1:].replace('\\','/')
             result.append(path)
-    result = [ z for z in result if not z in ignoreDirs]
+    for z2 in ignoreDirs:
+        result = [ z for z in result if not z.startswith(z2)]
     if trace:
-        g.trace('=' * 40)
+        g.trace('-' * 40)
         g.trace(g.listToString(result))
     return result
 </t>
 <t tx="ekr.20090831172520.1551">def put (self,s,adjust=True,substitute=False):
 
-    '''Output s to the nsi file.'''
+    '''Output s to the nsi file, optionally making
+    the substitutions given in substitutionDict.'''
 
     trace = False
     if adjust:
@@ -704,9 +705,11 @@ def deleteFiles (self,lines,deleteList):
         '.bzrignore',
         'bzr-manifest.txt',
         'bzr-small-manifest.txt',
+        'setup.py',
         'leo/test/unittest/.leo_shadow/',
         'nsi.log.txt', # Can't write log while we are creating it.
         'leo/core/leoPy.leo',
+        'leo/core/ekrLeoPy.leo',
     )
     lines = self.deleteFiles(lines,deleteList)
     if lines and lines[0].endswith('bzr ls -R'):
@@ -787,8 +790,8 @@ def deleteFiles (self,lines,deleteList):
 
     '''Generate the .nsi installer script.'''
 
-    self.f = self.openNsi()
-    if not self.f: return
+    self.f = f = self.openNsi()
+    if not f: return
 
     try:
         self.genHead()
@@ -796,7 +799,7 @@ def deleteFiles (self,lines,deleteList):
         self.genMiddle()
         self.genUninstallData(dirs,dirDict,filesDict)
     finally:
-        self.f.close()
+        f.close()
 
     g.es_print('make-leo-nsi done. no errors')
 </t>
@@ -1050,9 +1053,6 @@ SectionEnd
 
     self.put(s,substitute=True)
 </t>
-<t tx="ekr.20090901092556.1608"></t>
-<t tx="ekr.20090901092556.1609"></t>
-<t tx="ekr.20090901092556.1610"></t>
 <t tx="ekr.20090901092556.1611">def genUninstallSettings(self):
 
     path = g.os_path_finalize_join(
@@ -1111,29 +1111,37 @@ FunctionEnd
 </t>
 <t tx="ekr.20090901121423.1569">def getDeleteFiles (self,dirs,dirDict,filesDict):
 
+    wildcard_delete = True
     result = []
     result.append('; Uninstall files...\n\n')
 
     # top-level files.
     result.append('; Delete top-level files...\n')
     aList = dirDict.get('**top',[])
+    # Warning: **never** delete all files in the top-level directory.
     for fn in aList:
         result.append('Delete "$INSTDIR\\%s"\n' % fn)
+    if wildcard_delete:
+        result.append('\n')
 
     for theDir in dirs:
         if theDir:
-            aList = dirDict.get(theDir,[])
             dir2 = theDir.replace('/','\\')
-            if aList:
-                result.append('\n')
-                result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-            for fn in aList:
-                result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                    dir2,fn))
+            if wildcard_delete:
+                result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
+            else:
+                aList = dirDict.get(theDir,[])
+                if aList:
+                    result.append('\n')
+                    result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                    result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                for fn in aList:
+                    result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
+                        dir2,fn))
 
     # special case for created file:
-    result.append('Delete "$INSTDIR\\uninst.exe"\n')
+    if not wildcard_delete:
+        result.append('Delete "$INSTDIR\\uninst.exe"\n')
 
     result = [self.indent(z) for z in result]
     return ''.join(result)
@@ -1252,7 +1260,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.7.1-final'</t>
+app_version = version = '4.8-d1'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
@@ -1274,7 +1282,7 @@ app_uninst_key = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 app_uninst_root_key = 'HKLM'
 app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
 
-nsi_name = 'leo.nsi'
+nsi_name = 'leo-%s.nsi' % app_version
 target_file = 'LeoSetup-%s.exe' % app_version
 
 substitutionDict = {
@@ -1434,6 +1442,9 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</t>
+<t tx="ekr.20100815092343.1489"># Distribute leoPy.leo, ignore ekrLeoPy.leo.
+
 </t>
 </tnodes>
 </leo_file>
