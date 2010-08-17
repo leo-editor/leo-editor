@@ -1341,6 +1341,7 @@ class editCommandsClass (baseEditCommandsClass):
             'back-word':                            self.backwardWord,
             'back-word-extend-selection':           self.backwardWordExtendSelection,
             'backward-delete-char':                 self.backwardDeleteCharacter,
+            'backward-delete-word':                 self.backwardDeleteWord,
             'backward-kill-paragraph':              self.backwardKillParagraph,
             'backward-find-character':              self.backwardFindCharacter,
             'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
@@ -1377,6 +1378,7 @@ class editCommandsClass (baseEditCommandsClass):
             'delete-last-icon':                     self.deleteLastIcon,
             'delete-node-icons':                    self.deleteNodeIcons,
             'delete-spaces':                        self.deleteSpaces,
+            'delete-word':                          self.deleteWord,
             'do-nothing':                           self.doNothing,
             'downcase-region':                      self.downCaseRegion,
             'downcase-word':                        self.downCaseWord,
@@ -2669,6 +2671,27 @@ class editCommandsClass (baseEditCommandsClass):
         w.setInsertPoint(i)
 
         self.endCommand(changed=True,setLabel=True)
+    #@+node:ekr.20100817125519.5833: *4* delete-word & backward-delete-word
+    def deleteWord(self,event=None):
+        self.deleteWordHelper(event,forward=True)
+
+    def backwardDeleteWord(self,event=None):
+        self.deleteWordHelper(event,forward=False)
+
+    def deleteWordHelper(self,event,forward):
+        c = self.c ; w = self.editWidget(event)
+        if not w: return
+        u = c.undoer
+        undoType = "delete-word"
+        self.beginCommand(undoType=undoType)
+
+        from_pos = w.getInsertPoint()
+        c.editCommands.moveWordHelper(None,extend=False,forward=forward)
+        to_pos = w.getInsertPoint()
+
+        w.delete(from_pos, to_pos)
+        c.frame.body.forceFullRecolor()
+        self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20050920084036.87: *4* deleteNextChar
     def deleteNextChar (self,event):
 

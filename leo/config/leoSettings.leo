@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
@@ -412,14 +412,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -427,13 +427,13 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -1469,7 +1469,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20060603215208"></v>
+<v t="ekr.20060603215208" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4676,6 +4676,7 @@ back-to-indentation                 = None
 back-word                           = None
 back-word-extend-selection          = None
 backward-delete-char                = None
+backward-delete-word                = None
 backward-find-character                     = None
 backward-find-character-extend-selection    = None
 backward-kill-paragraph             = None
@@ -4754,6 +4755,7 @@ delete-last-icon                    = None
 delete-node                         = None
 delete-rectangle                    = None
 delete-spaces                       = None
+delete-word                         = None
 demote                              = None
 diff                                = None
 digit-argument                      = None
@@ -6291,12 +6293,14 @@ promote                     = Ctrl-{
 promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
 backward-delete-char                = BackSpace
-backward-kill-word                  = Alt-Delete
+backward-delete-word                = Ctrl-BackSpace
+backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
 delete-char                         = Delete
 delete-comments                     = Ctrl-parenright
 delete-comments                     = Shift-Ctrl-0
+delete-word                         = Ctrl-Delete
 delete-spaces                       = None
 kill-line                           = Ctrl-k
 newline-and-indent                  = Ctrl-j
