@@ -62,15 +62,15 @@
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
-<v t="ekr.20090901092556.1573"><vh>genHead</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901092556.1573" a="E"><vh>genHead</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
-<v t="ekr.20090901092556.1575"><vh>genMiddle</vh>
+<v t="ekr.20090901092556.1575" a="E"><vh>genMiddle</vh>
 <v t="ekr.20090901092556.1606"><vh>genAdditionalIcons</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -79,7 +79,7 @@
 <v t="ekr.20090901092556.1607"><vh>genPost</vh></v>
 <v t="ekr.20090901092556.1611"><vh>genUninstallSettings</vh></v>
 </v>
-<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -88,7 +88,7 @@
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
 </v>
-<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
 <v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
@@ -581,6 +581,7 @@ Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environme
 </t>
 <t tx="ekr.20090826220933.1565"># **Important**
 #   Before running this script you must create bzr-manifest as follows::
+#       cd to trunk
 #       bzr ls -R &gt;bzr-manifest.txt
 
 '''Create the installer script using bzr-manifest.txt.'''
@@ -821,6 +822,7 @@ def deleteFiles (self,lines,deleteList):
     '''Generate the boilerplate appearing before
     the manifest-specific install data.'''
 
+    self.put('!include MUI2.nsh\n')
     self.putSettings()
     self.putOnInit()</t>
 <t tx="ekr.20090901092556.1574">def genInstallData(self,dirs,dirDict,filesDict):
@@ -858,15 +860,17 @@ Section Uninstall
 
     DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
 
+    ; Delete files &amp; directories only if we own them!
     ReadRegStr $$1 HKCR "${ext}" ""
-    StrCmp $$1 "${name}File" 0 NoOwn ; only do this if we own it.
+    StrCmp $$1 "${name}File" 0 FinishUninstall
 
+    ; Delete files &amp; directories only if there is no backup_val key.
     ReadRegStr $$1 HKCR "${ext}" "backup_val"
-    StrCmp $$1 "" 0 RestoreBackup ; if backup == "" then delete the whole key
+    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
       DeleteRegKey HKCR "${ext}"
-    Goto NoOwn
+    Goto FinishUninstall
 
-RestoreBackup:
+DeleteLeoKeysAndFiles:
     WriteRegStr HKCR "${ext}" "" $$1
     DeleteRegValue HKCR "${ext}" "backup_val"
 
@@ -883,11 +887,11 @@ RestoreBackup:
     s = r'''
     ; ---- End of manifest related data.
 
-NoOwn:
-    MessageBox MB_YESNO|MB_ICONQUESTION \
-        "Delete all files in ${INSTDIR}?" IDNO NoDelete
+FinishUninstall:
+    ; MessageBox MB_YESNO|MB_ICONQUESTION \
+    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
+; NoDelete:
 
-NoDelete:
   Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
   RMDir "${SMPROGRAMS}\${name}-${version}"
   Delete "${DESKTOP}\${name}.lnk"
@@ -1118,6 +1122,8 @@ FunctionEnd
     # top-level files.
     result.append('; Delete top-level files...\n')
     aList = dirDict.get('**top',[])
+    # special case.
+    aList.append('uninst.exe')
     # Warning: **never** delete all files in the top-level directory.
     for fn in aList:
         result.append('Delete "$INSTDIR\\%s"\n' % fn)
@@ -1138,10 +1144,6 @@ FunctionEnd
                 for fn in aList:
                     result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
                         dir2,fn))
-
-    # special case for created file:
-    if not wildcard_delete:
-        result.append('Delete "$INSTDIR\\uninst.exe"\n')
 
     result = [self.indent(z) for z in result]
     return ''.join(result)
@@ -1443,7 +1445,22 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </t>
-<t tx="ekr.20100815092343.1489"># Distribute leoPy.leo, ignore ekrLeoPy.leo.
+<t tx="ekr.20100815092343.1489">@nocolor-node
+
+To do:
+- Use new interface.
+- Distribute leoPy.leo, ignore ekrLeoPy.leo.
+
+- Create reasonable list of installations places:
+    pythonXY/Lib/site-packages/leo for all found XY
+    "Program Files/Leo"
+    (Replaces "Found Python" message box.)
+
+
+Done
+- Make sure the uninstaller gets deleted.
+- Test that uninstall from control panel removes top-level folder.
+- Eliminate duplicate prompt
 
 </t>
 </tnodes>
