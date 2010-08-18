@@ -2685,9 +2685,12 @@ class editCommandsClass (baseEditCommandsClass):
         undoType = "delete-word"
         self.beginCommand(undoType=undoType)
 
-        from_pos = w.getInsertPoint()
-        c.editCommands.moveWordHelper(None,extend=False,forward=forward)
-        to_pos = w.getInsertPoint()
+        if w.hasSelection():
+            from_pos,to_pos = w.getSelectionRange()
+        else:
+            from_pos = w.getInsertPoint()
+            c.editCommands.moveWordHelper(None,extend=False,forward=forward)
+            to_pos = w.getInsertPoint()
 
         w.delete(from_pos, to_pos)
         c.frame.body.forceFullRecolor()
