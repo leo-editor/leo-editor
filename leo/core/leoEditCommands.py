@@ -2681,15 +2681,13 @@ class editCommandsClass (baseEditCommandsClass):
     def deleteWordHelper(self,event,forward):
         c = self.c ; w = self.editWidget(event)
         if not w: return
-        u = c.undoer
-        undoType = "delete-word"
-        self.beginCommand(undoType=undoType)
 
+        self.beginCommand(undoType="delete-word")
         if w.hasSelection():
             from_pos,to_pos = w.getSelectionRange()
         else:
             from_pos = w.getInsertPoint()
-            c.editCommands.moveWordHelper(None,extend=False,forward=forward)
+            self.moveWordHelper(event=None,extend=False,forward=forward)
             to_pos = w.getInsertPoint()
 
         w.delete(from_pos, to_pos)
