@@ -1597,7 +1597,7 @@ class rstCommands:
                 f.write(s)
                 f.close()
                 self.report(fn)
-                self.http_endTree(fn,p,justOneFile=justOneFile)
+                # self.http_endTree(fn,p,justOneFile=justOneFile)
     #@+node:ekr.20100813041139.5913: *5* addTitleToHtml
     def addTitleToHtml(self,s):
 
