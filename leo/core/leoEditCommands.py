@@ -2690,6 +2690,10 @@ class editCommandsClass (baseEditCommandsClass):
             self.moveWordHelper(event,extend=False,forward=forward)
             to_pos = w.getInsertPoint()
 
+        # For Tk GUI, make sure to_pos > from_pos
+        if from_pos > to_pos:
+            from_pos,to_pos = to_pos,from_pos
+
         w.delete(from_pos,to_pos)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
