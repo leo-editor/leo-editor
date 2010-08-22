@@ -469,6 +469,8 @@ class rstCommands:
             if h.startswith('@rst') and not h.startswith('@rst-'):
                 self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
                 break
+            elif h.startswith('@slides'):
+                self.processTree(p,ext=None,toString=False,justOneFile=False)
         else:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
@@ -496,9 +498,13 @@ class rstCommands:
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
+            elif g.match(h,0,"@slides"):
+                self.write_slides(p)
+                found = True
+                p.moveToNodeAfterTree()
             else: p.moveToThreadNext()
         if not found:
-            g.es('No @rst nodes in selected tree',color='blue')
+            g.es('No @rst or @slides nodes in selected tree',color='blue')
         return None,None
     #@+node:ekr.20090502071837.64: *5* write_rst_tree
     def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
@@ -536,6 +542,44 @@ class rstCommands:
 
         if callDocutils or writeIntermediateFile:
             self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
+    #@+node:ekr.20100822092546.5835: *5* write_slides
+    def write_slides (self,p,toString=False):
+
+        '''Convert p's tree to rst sources.
+        Optionally call docutils to convert rst to output.
+
+        On exit:
+            self.source contains rst sources
+            self.stringOutput contains docutils output if docutils called.
+        '''
+
+        c = self.c ; p = p.copy() ; h = p.h
+        i = g.skip_id(h,1) # Skip the '@'
+        kind = h[:i]
+        fn = h[i:].strip()
+        if not fn:
+            g.es('%s requires file name' % (kind),color='red')
+            return
+
+        # Init options...
+        self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+        self.scanAllOptions(p) # Settings for p are valid after this call.
+        callDocutils = self.getOption('call_docutils')
+        writeIntermediateFile = self.getOption('write_intermediate_file')
+
+        n = 1
+        for child in p.children():
+            # Compute the slide's file name.
+            fn2,ext = g.os_path_splitext(fn)
+            fn2 = '%s-%s%s' % (fn2,n,ext)
+            n += 1
+            # Write the rst sources to self.source.
+            self.outputFile = StringIO()
+            self.writeHeadline(child)
+            self.writeBody(child)
+            self.source = self.outputFile.getvalue() # the rST sources.
+            self.outputFile, self.stringOutput = None,None
+            self.write_files(ext,fn2,callDocutils,toString,writeIntermediateFile)
     #@+node:ekr.20090502071837.58: *5* write methods (rst3 command)
     #@+node:ekr.20090502071837.68: *6* getDocPart
     def getDocPart (self,lines,n):

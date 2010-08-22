@@ -16,6 +16,7 @@ Contents:
    preface
    testimonials
    FAQ
+   slides
    install
    intro
    outlines
