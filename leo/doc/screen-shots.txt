@@ -1,0 +1,118 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100821182153.4344: * @thin screen-shots.txt
+.. @@language rest
+.. @@tabwidth -4
+.. @+all
+.. @+node:ekr.20100821182153.4343: ** @rst html/slides.html
+@ @rst-options
+call_docutils=False
+stylesheet_path=..\doc
+write_intermediate_file = True
+@c
+
+This is the front page for various slide shows about Leo.
+
+.. There must be someplace to insert the toctree. The nearest parent @rst node
+.. seems good.
+
+.. The make-slides command will add a .. toctree:: directive.
+
+.. toctree::
+    :maxdepth: 1
+    :glob:
+
+    slideshow-installation
+    slideshow-what-is-leo
+.. @+node:ekr.20100821182153.4345: *3* @slideshow html/installation
+.. The body of this node is ignored.
+.. The headline gives the prefix for slines.
+.. In this case, installation-slide-1.html, installation-slide-2.html, etc.
+.. As usual, intermediate files will be .html.txt files.
+.. @+node:ekr.20100821182153.4347: *4* Two versions
+Windows Users:
+
+    Installing Leo requires two steps:
+
+       1. Install Python: click here, save to your desktop, then double-click on the saved file.
+       2. Install Leo: click here, save to your desktop, then double-click on the saved file. 
+
+    (Python is a type of software for creating and running computer programs.) 
+
+Unix and Mac Users:
+
+    Please continue to next page.
+
+
+Also, if you are a programmer and want to get the Leo files without using an
+installer, continue to the next page.
+.. @+node:ekr.20100821182153.4348: *4* Full installation
+Full installation of Leo requires that you:
+
+   1. Install Python
+   2. Install the Leo files 
+
+To install Python, follow the directions on this page.
+
+To install Leo, go to this page and download the most recent zip file under the
+heading "Leo2.py". Download the zip file to your desktop or other location, and
+then unzip it to the folder of your choice.
+
+To run Leo, double-click on the file leo.py that you have just unzipped.
+.. @+node:ekr.20100821182153.4349: *4* leoconfig.txt
+Once you have installed Leo, you can configure Leo using the leoconfig.txt file.
+For more information about this see the documentation distributed with Leo.
+.. @+node:ekr.20100821182153.4350: *4* Leo is a free program
+Leo is a free program distributed under the MIT license. This means that not
+only can you use the program freely including commercially, the full
+installation comes with source code that you can modify as you wish, as long as
+you give credit to the author of the program, `Edward K. Ream`_.
+
+Leo is written in Python--a full featured, powerful programming language that
+is comparatively easy to learn and use. For an excellent introduction to Python
+for non-programmers, see the `Python Tutorial`_. Not only is Leo written in Python, it is
+scriptable via Python, meaning that you can embed Python commands in your
+outlines and execute them.
+
+Leo is under active development and all are welcome to contribute. For more
+information, see the `leo-editor`_ Google Group.
+
+Not only is Leo free software, it is supported software. Post questions and bug
+reports to `leo-editor`_ Google Group.
+.. @+node:ekr.20100821182153.4346: *3* @slideshow what-is-leo
+.. @+node:ekr.20100821182153.4351: *4* Leo
+Leo is a unique, powerful computer program that you can use to organize, analyze
+and describe text and text files. Leo is a free program written by Edward K.
+Ream. For information about downloading Leo, see installation tutorial in this
+series. Leo runs on Windows, Mac, or Linux.
+
+Use Leo:
+
+- to brainstorm a new project
+- as a Personal Information Manager
+- to add multiple outlines and commentary to any text file
+- as a tool to facilitate a new kind of programming.
+
+Because Leo is unlike other tools you may have used, a series of examples may be
+the best way to demonstrate what can be done with Leo.
+.. @+node:ekr.20100821182153.4352: *4* Leo is an outlining editor
+From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
+You create an outline in the top left pane. (A later tutorial explains how to
+create an outline like the one in the screenshot).
+.. @+node:ekr.20100821182153.4353: *4* Open a node
+Here the node has been opened. Clicking on the box again will close the node.
+.. @+node:ekr.20100821182153.4354: *4* Close a node
+Here the node has been opened. Clicking on the box again will close the node.
+.. @+node:ekr.20100821182153.4355: *4* The node is closed
+Here the indicated node has been closed.
+.. @+node:ekr.20100821182153.4356: *4* Headline and body text
+Clicking on a node headline (1) will show the text for that node in the body
+pane (2) below. The body pane is a text editor--you can enter, delete or change
+text here by typing it in.
+.. @+node:ekr.20100821182153.4357: *4* File:Save
+You can save the outline in a leo file. Click File - Save.
+.. @+node:ekr.20100821182153.4358: *4* Save as
+.. @+node:ekr.20100821182153.4359: *4* File name in title bar
+.. @+node:ekr.20100821182153.4360: *4* Leo is a meta-text editor
+.. @+node:ekr.20100821182153.4361: *4* The @file directive
+.. @-all
+.. @-leo
