@@ -545,13 +545,7 @@ class rstCommands:
     #@+node:ekr.20100822092546.5835: *5* write_slides
     def write_slides (self,p,toString=False):
 
-        '''Convert p's tree to rst sources.
-        Optionally call docutils to convert rst to output.
-
-        On exit:
-            self.source contains rst sources
-            self.stringOutput contains docutils output if docutils called.
-        '''
+        '''Convert p's children to slides.'''
 
         c = self.c ; p = p.copy() ; h = p.h
         i = g.skip_id(h,1) # Skip the '@'
@@ -571,14 +565,14 @@ class rstCommands:
         for child in p.children():
             # Compute the slide's file name.
             fn2,ext = g.os_path_splitext(fn)
-            fn2 = '%s-%s%s' % (fn2,n,ext)
+            fn2 = '%s-%03d%s' % (fn2,n,ext) # Use leading zeros for :glob:.
             n += 1
             # Write the rst sources to self.source.
             self.outputFile = StringIO()
             self.writeHeadline(child)
             self.writeBody(child)
             self.source = self.outputFile.getvalue() # the rST sources.
-            self.outputFile, self.stringOutput = None,None
+            self.outputFile,self.stringOutput = None,None
             self.write_files(ext,fn2,callDocutils,toString,writeIntermediateFile)
     #@+node:ekr.20090502071837.58: *5* write methods (rst3 command)
     #@+node:ekr.20090502071837.68: *6* getDocPart

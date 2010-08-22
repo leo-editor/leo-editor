@@ -15,6 +15,12 @@ Slides
 ######
 
 This is the front page for various slide shows about Leo.
+
+.. toctree::
+    :maxdepth: 1
+
+    installation-001
+    what-is-leo-001
 .. @+node:ekr.20100821182153.4346: ** @slideshow html/what-is-leo.html
 .. The body of this node is ignored except for options.
 
@@ -24,15 +30,14 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
-..  .. toctree::
-    ..  :maxdepth: 2
+.. @+node:ekr.20100822164918.4365: *3* What is Leo?
+This slideshow introduces you to Leo.
 
-    ..  slideshow-what-is-leo-1
-    ..  slideshow-what-is-leo-2
-    ..  slideshow-what-is-leo-3
-    ..  slideshow-what-is-leo-4
+.. toctree::
+    :hidden:
+    :glob:
 
-..  .. contents::
+    what-is-leo-0*
 .. @+node:ekr.20100821182153.4351: *3* Leo
 Leo is a unique, powerful computer program that you can use to organize, analyze
 and describe text and text files. Leo is a free program written by Edward K.
@@ -76,6 +81,16 @@ call_docutils=False
 stylesheet_path=..\doc
 write_intermediate_file = True
 @c
+.. @+node:ekr.20100822164918.4364: *3* Installing Leo
+This slideshow tells how to install Leo.
+
+.. toctree::
+    :hidden:
+    :glob:
+
+    installation-0*
+
+
 .. @+node:ekr.20100821182153.4347: *3* Two versions
 Windows Users:
 

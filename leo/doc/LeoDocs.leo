@@ -65,13 +65,13 @@
 </v>
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
-<v t="ekr.20100805171546.4412" a="E"><vh>Files</vh>
+<v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -182,7 +182,8 @@
 <v t="ekr.20100820100735.4427"><vh>@thin slides.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100821182153.4344" a="E"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4344" a="E"
+expanded="ekr.20100821182153.4345,"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
