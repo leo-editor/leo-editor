@@ -71,7 +71,7 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -174,13 +174,12 @@
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
 <v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100819163514.4364"><vh>@button screenshot</vh>
+<v t="ekr.20100819163514.4364" a="E"><vh>@button screenshot</vh>
 <v t="ekr.20100823105601.4365"><vh>ctor</vh></v>
 <v t="ekr.20100823105601.4364"><vh>run</vh></v>
 </v>
-<v t="ekr.20100821182153.4344"
-marks="ekr.20100821182153.4352,"
-expanded="ekr.20100821182153.4346,ekr.20100821182153.4352,ekr.20100823092839.7004,ekr.20100823092839.7005,ekr.20100823092839.7006,"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4344" a="E"
+expanded="ekr.20100821182153.4346,ekr.20100821182153.4353,ekr.20100823141121.4382,ekr.20100823141121.4383,ekr.20100823141121.4389,ekr.20100823141121.4411,ekr.20100823141121.4412,ekr.20100823141121.4418,ekr.20100823141121.4434,ekr.20100823141121.4440,"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -568,7 +567,9 @@ controller(c,p).run()
 
     # Take the screenshot.
     fn = '%s.png' % (p.gnx.replace('.','-'))
-    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html','screen-shots',fn)
+    # path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html','screen-shots',fn)
+    path = g.os_path_finalize_join(g.app.loadDir,'..','..','..','screen-shots',fn)
+    # path = g.os_path_finalize_join('c:','leo.repo','screen-shots',fn)
     x = pix.grabWindow(app.activeWindow().winId())
     x.save(path,'png')
     g.es('created %s' % path)

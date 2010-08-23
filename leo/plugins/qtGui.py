@@ -1071,6 +1071,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             assert p.h.startswith('@image')
             s = p.h[6:].strip()
 
+        s = g.os_path_finalize_join(g.app.loadDir,s)
+
         if not s.startswith('"'): s = '"' + s
         if not s.endswith('"'): s = s + '"'
 
