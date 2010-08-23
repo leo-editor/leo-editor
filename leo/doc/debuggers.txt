@@ -60,15 +60,15 @@ uses the console for all interaction, so you must `run Leo in a console window`_
 See `the FAQ`_ for a discussion of both g.trace and g.pdb.
 .. @+node:ekr.20060527112801: *3* Settings for winpdb
 The following settings in leoSettings.leo control debugger operation.
-The settings shown here will be assumed to be in effect throughout this chapter.
+The settings shown here will be assumed to be in effect throughout this chapter::
 
-@string debugger_kind = winpdb
+    @string debugger_kind = winpdb
 
 This setting controls what debugger the 'Debug Script' script button uses.
-Eventually this setting will control what debugger the debug command uses.
+Eventually this setting will control what debugger the debug command uses::
 At present the only valid value is 'winpdb'
 
-@bool write_script_file = True
+    @bool write_script_file = True
 
 True: The execute script command writes the script to be executed to a file,
 then executes the script using Python's execFile function. The script_file_path

@@ -26,6 +26,7 @@ This is the front page for various slide shows about Leo.
 
 @ @rst-options
 call_docutils=False
+show_headlines=True
 stylesheet_path=..\doc
 write_intermediate_file = True
 @c
@@ -57,6 +58,22 @@ the best way to demonstrate what can be done with Leo.
 From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
+
+.. image:: screen-shots\ekr-20100821182153-4352.png
+.. @+node:ekr.20100823105601.4368: *4* @image C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4352.png
+.. @+node:ekr.20100823092839.7004: *4* @screenshot-tree To Do List
+.. @+node:ekr.20100823092839.7005: *5* Organizer
+Organizer node.
+.. @+node:ekr.20100823092839.7006: *6* To Do List
+My to-do list.
+.. @+node:ekr.20100823092839.7007: *7* Urgent
+.. @+node:ekr.20100823092839.7008: *7* Important
+.. @+node:ekr.20100823092839.7009: *7* Soon
+.. @+node:ekr.20100823092839.7010: *7* Whenever
+.. @+node:ekr.20100823092839.7011: *6* Diary
+.. @+node:ekr.20100823092839.7013: *7* 2009
+.. @+node:ekr.20100823092839.7015: *8* Jan 1
+.. @+node:ekr.20100823092839.7014: *7* 2010
 .. @+node:ekr.20100821182153.4353: *3* Open a node
 Here the node has been opened. Clicking on the box again will close the node.
 .. @+node:ekr.20100821182153.4354: *3* Close a node
@@ -73,11 +90,13 @@ You can save the outline in a leo file. Click File - Save.
 .. @+node:ekr.20100821182153.4359: *3* File name in title bar
 .. @+node:ekr.20100821182153.4360: *3* Leo is a meta-text editor
 .. @+node:ekr.20100821182153.4361: *3* The @file directive
+.. @+node:ekr.20100822171103.4365: *3* End
 .. @+node:ekr.20100821182153.4345: ** @slideshow html/installation.html
 .. The body of this node is ignored except for options.
 
 @ @rst-options
 call_docutils=False
+show_headlines=True
 stylesheet_path=..\doc
 write_intermediate_file = True
 @c
@@ -89,8 +108,6 @@ This slideshow tells how to install Leo.
     :glob:
 
     installation-0*
-
-
 .. @+node:ekr.20100821182153.4347: *3* Two versions
 Windows Users:
 

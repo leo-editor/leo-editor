@@ -82,7 +82,7 @@ Finally, Leo makes it easy for scripts to visit any or all nodes of an outline.
 
 Leo's headlines provide a natural place to indicate the **type** of data
 contained in nodes. By *convention*, @test in a headline denotes a unit test,
-@command creates a new Leo command. The \@kind convention creates 
+\@command creates a new Leo command. The \@kind convention creates 
 **user-defined types** that turn any outline Node into a true programming
 object.
 

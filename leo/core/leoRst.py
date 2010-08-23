@@ -542,38 +542,45 @@ class rstCommands:
 
         if callDocutils or writeIntermediateFile:
             self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-    #@+node:ekr.20100822092546.5835: *5* write_slides
+    #@+node:ekr.20100822092546.5835: *5* write_slides & helper
     def write_slides (self,p,toString=False):
 
         '''Convert p's children to slides.'''
 
         c = self.c ; p = p.copy() ; h = p.h
         i = g.skip_id(h,1) # Skip the '@'
-        kind = h[:i]
-        fn = h[i:].strip()
-        if not fn:
-            g.es('%s requires file name' % (kind),color='red')
-            return
-
-        # Init options...
-        self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
-        self.scanAllOptions(p) # Settings for p are valid after this call.
-        callDocutils = self.getOption('call_docutils')
-        writeIntermediateFile = self.getOption('write_intermediate_file')
+        kind,fn = h[:i].strip(),h[i:].strip()
+        if not fn: return g.es('%s requires file name' % (kind),color='red')
+        title = p and p.firstChild().h or '<no slide>'
+        title = title.strip().capitalize()
 
         n = 1
         for child in p.children():
+            self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+            self.scanAllOptions(child) # Settings for child are valid after this call.
             # Compute the slide's file name.
             fn2,ext = g.os_path_splitext(fn)
             fn2 = '%s-%03d%s' % (fn2,n,ext) # Use leading zeros for :glob:.
             n += 1
             # Write the rst sources to self.source.
             self.outputFile = StringIO()
-            self.writeHeadline(child)
+            self.writeSlideTitle(title)
             self.writeBody(child)
             self.source = self.outputFile.getvalue() # the rST sources.
             self.outputFile,self.stringOutput = None,None
-            self.write_files(ext,fn2,callDocutils,toString,writeIntermediateFile)
+            self.write_files(ext,fn2,
+                callDocutils=self.getOption('call_docutils'),
+                toString=toString,
+                writeIntermediateFile=self.getOption('write_intermediate_file'))
+    #@+node:ekr.20100822174725.5836: *6* writeSlideTitle
+    def writeSlideTitle (self,title):
+
+        '''Write the title, underlined with the '#' character.'''
+
+        n = max(4,len(g.toEncodedString(title,
+            encoding=self.encoding,reportErrors=False)))
+
+        self.write('%s\n%s\n\n' % (title,'#'*n))
     #@+node:ekr.20090502071837.58: *5* write methods (rst3 command)
     #@+node:ekr.20090502071837.68: *6* getDocPart
     def getDocPart (self,lines,n):

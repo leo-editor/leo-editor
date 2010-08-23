@@ -4382,5 +4382,22 @@ def writeNormalTree (self,p,toString=False):
     f.write(self.stringOutput)
     f.close()
     self.report(fn)
+#@+node:ekr.20100822174725.5835: *3* disableElement (doesn't work)
+def disableElement (self,element):
+
+
+    s = '''\
+
+.. raw:: html
+
+    <style type="text/css">
+        %s {display: none;}
+    </style>
+
+''' % element
+
+    s = g.adjustTripleString(s,self.c.tab_width)
+
+    self.write(s)
 #@-all
 #@-leo

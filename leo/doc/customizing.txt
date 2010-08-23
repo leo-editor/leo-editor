@@ -229,9 +229,9 @@ are created in the icon area of all .leo files.
 All @button nodes in the @commands tree create global buttons.
 All @button nodes outside the commands tree create buttons local to the settings file.
 .. @+node:ekr.20090116094356.6: *5* \@commands
-An @commands tree in a settings file defines global commands.
-All @command nodes in the @commands tree create global commands.
-All @command nodes outside the commands tree create commands local to the settings file.
+An \@commands tree in a settings file defines global commands.
+All \@command nodes in the @commands tree create global commands.
+All \@command nodes outside the commands tree create commands local to the settings file.
 .. @+node:ekr.20090116094356.7: *5* \@data
 The body text contains a list of strings, one per line.
 Lines starting with '#' are ignored.

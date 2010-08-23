@@ -29,16 +29,16 @@
 <v t="ekr.20060525110135.1"><vh>@@button rst-&gt;tex</vh></v>
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
-<v t="ekr.20091112060950.6677"><vh>@button Remove newlines</vh></v>
-<v t="ville.20090705224948.5734"><vh>@button generate-userguide</vh>
+<v t="ekr.20091112060950.6677"><vh>@@button Remove newlines</vh></v>
+<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
-<v t="sps.20100708203040.19008"><vh>@button generate-full-userguide</vh>
+<v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20091006063434.13802"><vh>@button rst3</vh></v>
+<v t="ekr.20091006063434.13802"><vh>@@button rst3</vh></v>
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
@@ -71,7 +71,7 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -173,17 +173,14 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100819163514.4362"><vh>screenbook scripts</vh>
-<v t="ekr.20100819163514.4363"><vh>resize to 640 x 480 (or any other standard size)</vh></v>
-<v t="ekr.20100819163514.4364"><vh>@button screenshot</vh></v>
-<v t="ekr.20100820100735.4428"><vh>print p.gnx</vh></v>
-</v>
-<v t="ekr.20100820100321.4438"><vh>Slides prototype</vh>
-<v t="ekr.20100820100735.4427"><vh>@thin slides.txt</vh></v>
-</v>
 <v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100821182153.4344" a="E"
-expanded="ekr.20100821182153.4345,"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100819163514.4364"><vh>@button screenshot</vh>
+<v t="ekr.20100823105601.4365"><vh>ctor</vh></v>
+<v t="ekr.20100823105601.4364"><vh>run</vh></v>
+</v>
+<v t="ekr.20100821182153.4344"
+marks="ekr.20100821182153.4352,"
+expanded="ekr.20100821182153.4346,ekr.20100821182153.4352,ekr.20100823092839.7004,ekr.20100823092839.7005,ekr.20100823092839.7006,"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -518,21 +515,77 @@ p.setBodyString(s)</t>
 Rewrite chapter 6.
 
 Revise Tutorial.</t>
-<t tx="ekr.20100819163514.4362"></t>
-<t tx="ekr.20100819163514.4363">c.frame.top.resize(640,480)</t>
 <t tx="ekr.20100819163514.4364">import PyQt4.QtGui
 import os
+import time
 
-pix = PyQt4.QtGui.QPixmap
-app = g.app.gui.qtApp
-fn = '%s.png' % (p.gnx.replace('.','-'))
-path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html','screen-shots',fn)
-pix.grabWindow(app.activeWindow().winId()).save(path,'png')
-g.es('created %s' % path)
-# os.system(path)</t>
-<t tx="ekr.20100820100321.4438"></t>
-<t tx="ekr.20100820100735.4428">print(p.gnx)</t>
+class controller:
+    @others
+
+controller(c,p).run()
+</t>
 <t tx="ekr.20100821182153.4341"></t>
+<t tx="ekr.20100823105601.4364">def run (self):
+
+    pix = PyQt4.QtGui.QPixmap
+    app = g.app.gui.qtApp
+    c,p = self.c, self.p
+    p1 = p.copy()
+
+    # If a child starts with @screenshot-tree, hoist that child.
+    for root in p.children():
+        tag = '@screenshot-tree'
+        if root.h.startswith(tag):
+            # Get the node to select if something follows @screenshot-tree
+            h2 = root.h[len(tag):].strip()
+            hoist = True
+            break
+    else:
+        hoist,h2,root = False,None,None
+
+    # Hoist the first child of the @screenshot-tree node.
+    if hoist:
+        assert root
+        if root.hasChildren(): root = root.firstChild()
+        c.selectPosition(root)
+        c.hoist()
+        if h2: # Select the requested node.
+            p2 = g.findNodeInTree(c,root,h2)
+            assert p2
+            if p2:
+                assert h2 == p2.h
+                assert c.positionExists(p2,root=root)
+                c.selectPosition(p2)
+            else:
+                print('*** not found ***',h2)
+                return
+
+    # Create the screenshot and save it to a file.
+    c.frame.top.resize(1000,800)
+    c.k.simulateCommand('equal-sized-panes')
+    c.redraw()
+    c.frame.top.repaint() # Essential
+
+    # Take the screenshot.
+    fn = '%s.png' % (p.gnx.replace('.','-'))
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html','screen-shots',fn)
+    x = pix.grabWindow(app.activeWindow().winId())
+    x.save(path,'png')
+    g.es('created %s' % path)
+    # Restore the tree.
+    c.dehoist()
+    # Create an @image node
+    c.selectPosition(p1)
+    p3 = p1.insertAsNthChild(0)
+    p3.h = '@image %s' % path
+    p1.expand()
+    c.redraw_now(p=p1)
+</t>
+<t tx="ekr.20100823105601.4365">def __init__ (self,c,p):
+
+    self.c = c
+    self.p = p.copy()
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
