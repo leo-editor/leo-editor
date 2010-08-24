@@ -554,6 +554,7 @@ class rstCommands:
         if not fn: return g.es('%s requires file name' % (kind),color='red')
         title = p and p.firstChild().h or '<no slide>'
         title = title.strip().capitalize()
+        n_tot = p.numberOfChildren()
 
         n = 1
         for child in p.children():
@@ -565,7 +566,7 @@ class rstCommands:
             n += 1
             # Write the rst sources to self.source.
             self.outputFile = StringIO()
-            self.writeSlideTitle(title)
+            self.writeSlideTitle(title,n-1,n_tot)
             self.writeBody(child)
             self.source = self.outputFile.getvalue() # the rST sources.
             self.outputFile,self.stringOutput = None,None
@@ -574,14 +575,17 @@ class rstCommands:
                 toString=toString,
                 writeIntermediateFile=self.getOption('write_intermediate_file'))
     #@+node:ekr.20100822174725.5836: *6* writeSlideTitle
-    def writeSlideTitle (self,title):
+    def writeSlideTitle (self,title,n,n_tot):
 
         '''Write the title, underlined with the '#' character.'''
 
-        n = max(4,len(g.toEncodedString(title,
+        if n != 1:
+            title = '%s (%s of %s)' % (title,n,n_tot)
+
+        width = max(4,len(g.toEncodedString(title,
             encoding=self.encoding,reportErrors=False)))
 
-        self.write('%s\n%s\n\n' % (title,'#'*n))
+        self.write('%s\n%s \n\n' % (title,('#'*width)))
     #@+node:ekr.20090502071837.58: *5* write methods (rst3 command)
     #@+node:ekr.20090502071837.68: *6* getDocPart
     def getDocPart (self,lines,n):
