@@ -35,17 +35,24 @@ leo/dist/*.zip
 leo/dist/*.exe
 
 leo/doc/leoTechReport.*
-leo/doc/_build/*
+
 leo/doc/_build
+leo/doc/_build/*
 leo/doc/_static
 leo/doc/_templates
 leo/doc/html/*.html
 leo/doc/html/*.html.txt
+leo/doc/html/build
+leo/doc/html/_build
 leo/doc/html/_static
+leo/doc/html/screen-shots/*
+leo/doc/html/screen-shots/arrows/
+leo/doc/html/screen-shots/arrows/*
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
+leo/test/*.css
 leo/test/at_ignore_test.txt
 leo/test/dynamicUnitTest.leo
 leo/test/clean
@@ -70,8 +77,6 @@ leo/test/unicode-ä-test
 leo/test/under_indent.py
 ekr-macros.txt
 annotate.txt
-leo/doc/html/build
-leo/doc/html/_build
+
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
-leo/test/*.css
