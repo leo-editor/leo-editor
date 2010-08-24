@@ -471,6 +471,7 @@ class rstCommands:
                 break
             elif h.startswith('@slides'):
                 self.processTree(p,ext=None,toString=False,justOneFile=False)
+                break
         else:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
