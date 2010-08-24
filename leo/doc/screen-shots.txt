@@ -64,7 +64,7 @@ create an outline like the one in the screenshot).
 .. Relative to the source file.
 
 .. image:: screen-shots/ekr-20100821182153-4352.png
-.. @+node:ekr.20100823141121.4399: *4* @image c:/leo.repo/screen-shots/ekr-20100821182153-4352.png
+.. @+node:ekr.20100823141121.4399: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4352.png
 .. @+node:ekr.20100823092839.7004: *4* @screenshot-tree To Do List
 .. @+node:ekr.20100823092839.7005: *5* Organizer
 Organizer node.
@@ -83,7 +83,7 @@ Clicking on the indicated triangle will open the indicated node.
 
 .. image:: screen-shots/ekr-20100821182153-4353.png
 
-.. @+node:ekr.20100823132841.4383: *4* @image c:/leo.repo/screen-shots/ekr-20100821182153-4353.png
+.. @+node:ekr.20100823132841.4383: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4353.png
 .. @+node:ekr.20100823132841.4367: *4* @screenshot-tree Diary
 .. @+node:ekr.20100823132841.4368: *5* Organizer
 Organizer node.
@@ -102,7 +102,7 @@ Here the node has been opened. Clicking on the box again will close the node.
 
 .. image:: screen-shots/ekr-20100823132841-4379.png
 
-.. @+node:ekr.20100823141121.4395: *4* @image c:/leo.repo/screen-shots/ekr-20100823132841-4379.png
+.. @+node:ekr.20100823141121.4395: *4* @image ../doc/html/screen-shots/ekr-20100823132841-4379.png
 .. @+node:ekr.20100823141121.4382: *4* @screenshot-tree Diary
 .. @+node:ekr.20100823141121.4383: *5* Organizer
 Organizer node.
@@ -121,7 +121,7 @@ Here the node has been opened. Clicking on the box again will close the node.
 
 .. image:: screen-shots/ekr-20100821182153-4354.png
 
-.. @+node:ekr.20100823141121.4444: *4* @image C:\leo.repo\screen-shots\ekr-20100821182153-4354.png
+.. @+node:ekr.20100823141121.4444: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4354.png
 .. @+node:ekr.20100823141121.4411: *4* @screenshot-tree Diary
 .. @+node:ekr.20100823141121.4412: *5* Organizer
 Organizer node.
@@ -140,7 +140,7 @@ Here the indicated node has been closed.
 
 .. image:: screen-shots/ekr-20100821182153-4355.png
 
-.. @+node:ekr.20100823141121.4445: *4* @image C:\leo.repo\screen-shots\ekr-20100821182153-4355.png
+.. @+node:ekr.20100823141121.4445: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4355.png
 .. @+node:ekr.20100823141121.4433: *4* @screenshot-tree Diary
 .. @+node:ekr.20100823141121.4434: *5* Organizer
 Organizer node.
@@ -154,10 +154,27 @@ My to-do list.
 .. @+node:ekr.20100823141121.4441: *7* 2009
 .. @+node:ekr.20100823141121.4442: *8* Jan 1
 .. @+node:ekr.20100823141121.4443: *7* 2010
-.. @+node:ekr.20100821182153.4356: *3* Headline and body text
+.. @+node:ekr.20100821182153.4356: *3* 6 Headline and body text
 Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
+.. @+node:ekr.20100824093905.4452: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
+.. @+node:ekr.20100824093905.4433: *4* @screenshot-tree Urgent
+.. @+node:ekr.20100824093905.4434: *5* Organizer
+Organizer node.
+.. @+node:ekr.20100824093905.4435: *6* To Do List
+My to-do list.
+.. @+node:ekr.20100824093905.4436: *7* Urgent
+1. Make Leo Tutorial: the world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20100824093905.4437: *7* Important
+.. @+node:ekr.20100824093905.4438: *7* Soon
+.. @+node:ekr.20100824093905.4439: *7* Whenever
+.. @+node:ekr.20100824093905.4440: *6* Diary
+.. @+node:ekr.20100824093905.4441: *7* 2009
+.. @+node:ekr.20100824093905.4442: *8* Jan 1
+.. @+node:ekr.20100824093905.4443: *7* 2010
 .. @+node:ekr.20100821182153.4357: *3* File:Save
 You can save the outline in a leo file. Click File - Save.
 .. @+node:ekr.20100821182153.4358: *3* Save as
