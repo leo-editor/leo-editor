@@ -39,7 +39,7 @@ This slideshow introduces you to Leo.
     :glob:
 
     what-is-leo-0*
-.. @+node:ekr.20100821182153.4351: *3* Leo
+.. @+node:ekr.20100821182153.4351: *3* Summary
 Leo is a unique, powerful computer program that you can use to organize, analyze
 and describe text and text files. Leo is a free program written by Edward K.
 Ream. For information about downloading Leo, see installation tutorial in this
@@ -63,7 +63,7 @@ create an outline like the one in the screenshot).
 
 .. Relative to the source file.
 
-.. image:: c:/leo.repo/screen-shots/ekr-20100821182153-4352.png
+.. image:: screen-shots/ekr-20100821182153-4352.png
 .. @+node:ekr.20100823141121.4399: *4* @image c:/leo.repo/screen-shots/ekr-20100821182153-4352.png
 .. @+node:ekr.20100823092839.7004: *4* @screenshot-tree To Do List
 .. @+node:ekr.20100823092839.7005: *5* Organizer
@@ -81,7 +81,7 @@ My to-do list.
 .. @+node:ekr.20100821182153.4353: *3* Open a node
 Clicking on the indicated triangle will open the indicated node.
 
-.. image:: c:/leo.repo/screen-shots/ekr-20100821182153-4353.png
+.. image:: screen-shots/ekr-20100821182153-4353.png
 
 .. @+node:ekr.20100823132841.4383: *4* @image c:/leo.repo/screen-shots/ekr-20100821182153-4353.png
 .. @+node:ekr.20100823132841.4367: *4* @screenshot-tree Diary
@@ -100,7 +100,7 @@ My to-do list.
 .. @+node:ekr.20100823132841.4379: *3* The node has been opened
 Here the node has been opened. Clicking on the box again will close the node.
 
-.. image:: c:/leo.repo/screen-shots/ekr-20100823132841-4379.png
+.. image:: screen-shots/ekr-20100823132841-4379.png
 
 .. @+node:ekr.20100823141121.4395: *4* @image c:/leo.repo/screen-shots/ekr-20100823132841-4379.png
 .. @+node:ekr.20100823141121.4382: *4* @screenshot-tree Diary
@@ -119,7 +119,7 @@ My to-do list.
 .. @+node:ekr.20100821182153.4354: *3* Close a node
 Here the node has been opened. Clicking on the box again will close the node.
 
-.. image:: c:/leo.repo/screen-shots/ekr-20100821182153-4354.png
+.. image:: screen-shots/ekr-20100821182153-4354.png
 
 .. @+node:ekr.20100823141121.4444: *4* @image C:\leo.repo\screen-shots\ekr-20100821182153-4354.png
 .. @+node:ekr.20100823141121.4411: *4* @screenshot-tree Diary
@@ -138,7 +138,7 @@ My to-do list.
 .. @+node:ekr.20100821182153.4355: *3* The node is closed
 Here the indicated node has been closed.
 
-.. image:: c:/leo.repo/screen-shots/ekr-20100821182153-4355.png
+.. image:: screen-shots/ekr-20100821182153-4355.png
 
 .. @+node:ekr.20100823141121.4445: *4* @image C:\leo.repo\screen-shots\ekr-20100821182153-4355.png
 .. @+node:ekr.20100823141121.4433: *4* @screenshot-tree Diary
@@ -161,10 +161,82 @@ text here by typing it in.
 .. @+node:ekr.20100821182153.4357: *3* File:Save
 You can save the outline in a leo file. Click File - Save.
 .. @+node:ekr.20100821182153.4358: *3* Save as
+Here we will save our outline in a file name "pim.leo".
 .. @+node:ekr.20100821182153.4359: *3* File name in title bar
+The file is now saved, and the file name appears in the title bar.
+
 .. @+node:ekr.20100821182153.4360: *3* Leo is a meta-text editor
+You've just seen an introduction to Leo as an outlining editor. You can use Leo
+to make an outline, with optional text for each outline element. You can save
+the outline to a file. Outlines are explained more in a later tutorial in this
+series. The outlining capability of Leo goes far beyond what has just been
+demonstrated, including multipath outlines, and multiple outlines in one file .
+
+What we've shown so far is no different from other outlining editors. What makes
+Leo unique is the addition of a new feature. Using simple directives, you can
+instruct Leo to extract text from any number of nodes, in any order, and write
+the text to a new file. You can also embed outline information in the second
+file, giving Leo the ability to read the text pieces back into the Leo outline,
+even if they have been changed.
+
+In effect, Leo is a meta-text editor . It gives you the ability to create a
+structural document for a non structured document, or a document that is
+structured in some other way.
+
+What does this mean in practice? Some examples should help clarify things...
 .. @+node:ekr.20100821182153.4361: *3* The @file directive
-.. @+node:ekr.20100822171103.4365: *3* End
+Here is the "pim.leo" file again. We've:
+
+1. Selected the "2000" node.
+
+2. Entered a couple of directives. The second (@file) tells Leo the file name
+that we want to derive (extract to).
+
+3. Entered some node text. 
+.. @+node:ekr.20100823164432.4405: *3* 12
+Now we tell Leo to tangle the node. This means Leo should 
+
+   1. Start at the current node and look for a @root directive.
+   2. Create the file named in the @root directive or open it if it already exists.
+   3. Write all of the node text to the file named in the root directive. 
+
+Why is this operation called tangling? We'll see that a few pages from now.
+.. @+node:ekr.20100823164432.4406: *3* 13
+Leo has written the external file to the disk
+.. @+node:ekr.20100823164432.4407: *3* 14 External file in Windows Explorer
+Here the file is listed in Windows Explorer.
+.. @+node:ekr.20100823164432.4408: *3* 15 External file in a Scite
+And here is the file displayed in a text editor.
+.. @+node:ekr.20100823164432.4409: *3* 16 Tangling
+That example wasn't very interesting. All that we extracted was the text "This
+is my diary." We'll probably want to extract more than that.
+
+In fact, when tangling, we can extract not only the node text as we just saw,
+but also all or part of the text of any subnode. And we can put these extracted
+pieces into the derived file in any order. That is why the process of extraction
+is called tangling.
+
+Let's try this. Select the "Jul" node.
+.. @+node:ekr.20100823164432.4411: *3* 17 Add section ref
+   1. We add << >> angle brackets to the headline. This tells Leo that the node is a section.
+   2. We add the @c directive. This tells Leo where to start extracting text from this node. 
+.. @+node:ekr.20100823164432.4412: *3* 18 Section name
+Now we go back to the 2000 node. We enter the section name << Jul >> into the
+node text where we want the << Jul >> section text to be output. When tangling,
+Leo will replace this section name with the section text. This operation is
+recursive, so if a section text contains a section name, this also will be
+replaced with the named section's text.
+
+Note: when we put a << section name >> into node text, the section name must
+correspond to a section located under the current node. Leo only looks in
+subnodes for section names.
+.. @+node:ekr.20100823164432.4413: *3* 19 Save the file
+Chose Save
+.. @+node:ekr.20100823164432.4414: *3* 20
+.. @+node:ekr.20100823164432.4415: *3* 21
+.. @+node:ekr.20100823164432.4410: *3* 22
+.. @+node:ekr.20100823164432.4416: *3* 23
+.. @+node:ekr.20100823164432.4417: *3* 24
 .. @+node:ekr.20100821182153.4345: ** @slideshow html/installation.html
 .. The body of this node is ignored except for options.
 

@@ -174,12 +174,12 @@
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
 <v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100819163514.4364" a="E"><vh>@button screenshot</vh>
+<v t="ekr.20100819163514.4364"><vh>@button screenshot</vh>
 <v t="ekr.20100823105601.4365"><vh>ctor</vh></v>
 <v t="ekr.20100823105601.4364"><vh>run</vh></v>
 </v>
 <v t="ekr.20100821182153.4344" a="E"
-expanded="ekr.20100821182153.4346,ekr.20100821182153.4353,ekr.20100823141121.4382,ekr.20100823141121.4383,ekr.20100823141121.4389,ekr.20100823141121.4411,ekr.20100823141121.4412,ekr.20100823141121.4418,ekr.20100823141121.4434,ekr.20100823141121.4440,"><vh>@thin screen-shots.txt</vh></v>
+expanded="ekr.20100821182153.4346,"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
