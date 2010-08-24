@@ -158,7 +158,10 @@ My to-do list.
 Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
-.. @+node:ekr.20100824093905.4452: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
+
+.. image:: screen-shots/ekr-20100821182153-4356.png
+
+.. @+node:ekr.20100824104707.4442: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
 .. @+node:ekr.20100824093905.4433: *4* @screenshot-tree Urgent
 .. @+node:ekr.20100824093905.4434: *5* Organizer
 Organizer node.

@@ -174,8 +174,9 @@
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
 <v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100819163514.4364"><vh>@button screenshot</vh>
+<v t="ekr.20100819163514.4364" a="E"><vh>@button screenshot</vh>
 <v t="ekr.20100823105601.4365"><vh> ctor</vh></v>
+<v t="ekr.20100824104707.4439"><vh>add_image_directive</vh></v>
 <v t="ekr.20100824093905.4419"><vh>adjust_leo_window</vh></v>
 <v t="ekr.20100824093905.4421"><vh>find_screenshot_node</vh></v>
 <v t="ekr.20100824093905.4420"><vh>hoist_and_select</vh></v>
@@ -183,8 +184,7 @@
 <v t="ekr.20100824093905.4417"><vh>make_screen_shot</vh></v>
 <v t="ekr.20100823105601.4364"><vh>run</vh></v>
 </v>
-<v t="ekr.20100821182153.4344"
-expanded="ekr.20100824093905.4433,ekr.20100824093905.4434,ekr.20100824093905.4435,ekr.20100824093905.4440,ekr.20100821182153.4345,"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -534,16 +534,16 @@ controller(c,p).run()
     c,p = self.c,self.p
 
     root,h = self.find_screenshot_node(p)
-    if root:
-        self.hoist_and_select(root,h)
+
+    if root: self.hoist_and_select(root,h)
 
     self.adjust_leo_window()
     path = self.make_screen_shot(p)
 
-    if root:
-        c.dehoist()
+    if root: c.dehoist()
 
     self.make_image_node(p,path)
+    self.add_image_directive(p,path)
 </t>
 <t tx="ekr.20100823105601.4365">def __init__ (self,c,p):
 
@@ -639,6 +639,15 @@ controller(c,p).run()
         root,h = None,''
 
     return root,h
+</t>
+<t tx="ekr.20100824104707.4439">def add_image_directive (self,p,path):
+    
+    '''Add ".. image:: &lt;path&gt;" to p.b if it is not already there.'''
+
+    s = '.. image:: %s' % path
+
+    if p.b.find(s) == -1:
+        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
