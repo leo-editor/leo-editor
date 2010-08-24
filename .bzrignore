@@ -74,3 +74,4 @@ leo/doc/html/build
 leo/doc/html/_build
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
+leo/test/*.css
