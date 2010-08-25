@@ -173,17 +173,7 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100819163514.4364" a="E"><vh>@button screenshot</vh>
-<v t="ekr.20100823105601.4365"><vh> ctor</vh></v>
-<v t="ekr.20100824104707.4439"><vh>add_image_directive</vh></v>
-<v t="ekr.20100824093905.4419"><vh>adjust_leo_window</vh></v>
-<v t="ekr.20100824093905.4421"><vh>find_screenshot_node</vh></v>
-<v t="ekr.20100824093905.4420"><vh>hoist_and_select</vh></v>
-<v t="ekr.20100824093905.4418"><vh>make_image_node</vh></v>
-<v t="ekr.20100824093905.4417"><vh>make_screen_shot</vh></v>
-<v t="ekr.20100823105601.4364"><vh>run</vh></v>
-</v>
+<v t="ekr.20100821182153.4341"><vh>Leo Screenshots</vh>
 <v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
@@ -519,136 +509,7 @@ p.setBodyString(s)</t>
 Rewrite chapter 6.
 
 Revise Tutorial.</t>
-<t tx="ekr.20100819163514.4364">import PyQt4.QtGui
-import os
-import time
-
-class controller:
-    @others
-
-controller(c,p).run()
-</t>
 <t tx="ekr.20100821182153.4341"></t>
-<t tx="ekr.20100823105601.4364">def run (self):
-
-    c,p = self.c,self.p
-
-    root,h = self.find_screenshot_node(p)
-
-    if root: self.hoist_and_select(root,h)
-
-    self.adjust_leo_window()
-    path = self.make_screen_shot(p)
-
-    if root: c.dehoist()
-
-    self.make_image_node(p,path)
-    self.add_image_directive(p,path)
-</t>
-<t tx="ekr.20100823105601.4365">def __init__ (self,c,p):
-
-    self.c = c
-    self.p = p.copy()
-</t>
-<t tx="ekr.20100824093905.4417">def make_screen_shot (self,p):
-
-    app = g.app.gui.qtApp
-    pix = PyQt4.QtGui.QPixmap
-    fn = '%s.png' % (p.gnx.replace('.','-'))
-    relative_path = True
-
-    if relative_path:
-        # html/screen-shots
-        path = g.os_path_finalize_join(g.app.loadDir,
-            '..','doc','html','screen-shots',fn)
-        short_path = g.os_path_join('screen-shots',fn)
-    else:
-        # c:/leo-repo/screen-shots
-        path = short_path = g.os_path_finalize_join(g.app.loadDir,
-            '..','..','..','screen-shots',fn)
-
-    pix.grabWindow(app.activeWindow().winId()).save(path,'png')
-
-    path = path.replace('\\','/')
-    short_path = short_path.replace('\\','/')
-
-    g.es('created %s' % short_path)
-
-    return g.choose(relative_path,short_path,path)
-</t>
-<t tx="ekr.20100824093905.4418">def make_image_node (self,p,path):
-
-    '''Create an @image node as the first child of p.'''
-
-    # This should work for both absolute and relative paths.
-    path = g.os_path_join('..','doc','html',path)
-    path = path.replace('\\','/')
-
-    c.selectPosition(p)
-    p2 = p.insertAsNthChild(0)
-    p2.h = '@image %s' % path
-    p.expand()
-    c.redraw_now(p=p)
-</t>
-<t tx="ekr.20100824093905.4419">def adjust_leo_window(self):
-
-    '''Resize the Leo window to the standard size and
-    make both panes the same size.'''
-
-    c = self.c ; w = c.frame.top
-
-    w.resize(1000,800)
-    c.k.simulateCommand('equal-sized-panes')
-    c.redraw()
-    w.repaint() # Essential
-</t>
-<t tx="ekr.20100824093905.4420">def hoist_and_select(self,root,h):
-
-    '''root is an @screenshot-tree node.
-    Hoist root.firstChild() and select h in root's tree.'''
-
-    if root.hasChildren(): root = root.firstChild()
-
-    c.selectPosition(root)
-    c.hoist()
-
-    if not h: return
-    # Select the requested node.
-    p = g.findNodeInTree(c,root,h)
-    if p:
-        assert h == p.h
-        assert c.positionExists(p,root=root)
-        c.selectPosition(p)
-    else:
-        print('*** not found ***',h)
-</t>
-<t tx="ekr.20100824093905.4421">def find_screenshot_node(self,p):
-
-    '''
-    Set root to the first @screenshot-tree node.
-    Set h to whatever follows @screenshot-tree in the headline.
-    '''
-
-    tag = '@screenshot-tree'
-
-    for root in p.children():
-        if root.h.startswith(tag):
-            h = root.h[len(tag):].strip()
-            break
-    else:
-        root,h = None,''
-
-    return root,h
-</t>
-<t tx="ekr.20100824104707.4439">def add_image_directive (self,p,path):
-    
-    '''Add ".. image:: &lt;path&gt;" to p.b if it is not already there.'''
-
-    s = '.. image:: %s' % path
-
-    if p.b.find(s) == -1:
-        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
-</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

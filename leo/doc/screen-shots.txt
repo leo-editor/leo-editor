@@ -3,6 +3,161 @@
 .. @@language rest
 .. @@tabwidth -4
 .. @+all
+.. @+node:ekr.20100819163514.4364: ** @button screenshot
+import PyQt4.QtGui
+import os
+import time
+
+class controller:
+    @others
+
+controller(c,p).run()
+.. @+node:ekr.20100823105601.4365: *3*  ctor
+def __init__ (self,c,p):
+
+    self.c = c
+    self.p = p.copy()
+
+    self.relative_path = True
+        # Use relative paths in @image nodes and
+        # .. image:: directives.
+.. @+node:ekr.20100824104707.4439: *3* add_image_directive
+def add_image_directive (self,p,path):
+
+    '''Add ".. image:: <path>" to p.b if it is not already there.'''
+
+    path = path.replace('\\','/')
+    s = '.. image:: %s' % path
+
+    if p.b.find(s) == -1:
+        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+.. @+node:ekr.20100824093905.4419: *3* adjust_leo_window
+def adjust_leo_window(self):
+
+    '''Resize the Leo window to the standard size and
+    make both panes the same size.'''
+
+    c = self.c ; w = c.frame.top
+
+    w.resize(1000,800)
+    c.k.simulateCommand('equal-sized-panes')
+    c.redraw()
+    w.repaint() # Essential
+.. @+node:ekr.20100824201641.4443: *3* compute_paths
+def compute_paths (self,p):
+
+    '''Compute the path for @image nodes and .. image:: directives.'''
+
+    fn = '%s.png' % (p.gnx.replace('.','-'))
+
+    if self.relative_path:
+        directive_path = g.os_path_join(
+            'screen-shots',fn)
+        path = g.os_path_join(
+            '..','doc','html','screen-shots',fn)
+        short_path = g.os_path_join('screen-shots',fn)
+    else:
+        # c:/leo-repo/screen-shots
+        path = g.os_path_finalize_join(g.app.loadDir,
+            '..','..','..','screen-shots',fn)
+        directive_path = short_path = path
+
+    directive_path = directive_path.replace('\\','/')
+    path = path.replace('\\','/')
+    short_path = short_path.replace('\\','/')
+
+    return directive_path,path,short_path
+.. @+node:ekr.20100824093905.4421: *3* find_screenshot_node
+def find_screenshot_node(self,p):
+
+    '''
+    Set root to the first @screenshot-tree node.
+    Set h to whatever follows @screenshot-tree in the headline.
+    '''
+
+    tag1,tag2 = '@screenshot-tree','@screenshot-tree-setup'
+
+    for root in p.children():
+        if root.h.startswith(tag1):
+            setup = root.h.startswith(tag2)
+            tag = g.choose(setup,tag2,tag1)
+            h = root.h[len(tag):].strip()
+            break
+    else:
+        root,h,setup = None,'',False
+
+    return root,h,setup
+.. @+node:ekr.20100824093905.4420: *3* hoist_and_select
+def hoist_and_select(self,root,h):
+
+    '''root is an @screenshot-tree node.
+    Hoist root.firstChild() and select h in root's tree.'''
+
+    if root.hasChildren(): root = root.firstChild()
+
+    c.selectPosition(root)
+    c.hoist()
+
+    if not h: return
+    # Select the requested node.
+    p = g.findNodeInTree(c,root,h)
+    if p:
+        assert h == p.h
+        assert c.positionExists(p,root=root)
+        c.selectPosition(p)
+    else:
+        print('*** not found ***',h)
+.. @+node:ekr.20100824093905.4418: *3* make_image_node
+def make_image_node (self,p,path):
+
+    '''Create an @image node as the first child of p.'''
+
+    h = '@image %s' % path
+
+    # Create the node if it doesn't exist.
+    for child in p.children():
+        if child.h == h:
+            # print('already exists: %s' % h)
+            break
+    else:
+        c.selectPosition(p)
+        p2 = p.insertAsNthChild(0)
+        p2.h = h
+
+    p.expand()
+    c.redraw_now(p=p)
+.. @+node:ekr.20100824093905.4417: *3* make_screen_shot
+def make_screen_shot (self,path):
+
+    app = g.app.gui.qtApp
+    pix = PyQt4.QtGui.QPixmap
+
+    w = pix.grabWindow(app.activeWindow().winId())
+
+    # This generates an incorrect Qt error.
+    # The file is, in fact, saved correctly.
+    w.save(path,'png')
+.. @+node:ekr.20100823105601.4364: *3* run
+def run (self):
+
+    c,p = self.c,self.p
+    size = c.frame.top.size()
+    root,h,setup = self.find_screenshot_node(p)
+
+    if root: self.hoist_and_select(root,h)
+
+    self.adjust_leo_window()
+    directive_path,path,short_path = self.compute_paths(p)
+
+    if not setup:
+        # Take the shot even if the @image node already exists.
+        self.make_screen_shot(path)
+        g.es('created %s' % short_path)
+        if root: c.dehoist()
+        c.frame.top.resize(size)
+
+    self.make_image_node(p,path)
+    self.add_image_directive(p,directive_path)
 .. @+node:ekr.20100821182153.4343: ** @rst html/slides.html
 @ @rst-options
 call_docutils=False
@@ -21,6 +176,73 @@ This is the front page for various slide shows about Leo.
 
     installation-001
     what-is-leo-001
+.. @+node:ekr.20100821182153.4345: ** @slideshow html/installation.html
+.. The body of this node is ignored except for options.
+
+@ @rst-options
+call_docutils=False
+show_headlines=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+@c
+.. @+node:ekr.20100822164918.4364: *3* Installing Leo
+This slideshow tells how to install Leo.
+
+.. toctree::
+    :hidden:
+    :glob:
+
+    installation-0*
+.. @+node:ekr.20100821182153.4347: *3* Two versions
+Windows Users:
+
+    Installing Leo requires two steps:
+
+       1. Install Python: click here, save to your desktop, then double-click on the saved file.
+       2. Install Leo: click here, save to your desktop, then double-click on the saved file. 
+
+    (Python is a type of software for creating and running computer programs.) 
+
+Unix and Mac Users:
+
+    Please continue to next page.
+
+
+Also, if you are a programmer and want to get the Leo files without using an
+installer, continue to the next page.
+.. @+node:ekr.20100821182153.4348: *3* Full installation
+Full installation of Leo requires that you:
+
+   1. Install Python
+   2. Install the Leo files 
+
+To install Python, follow the directions on this page.
+
+To install Leo, go to this page and download the most recent zip file under the
+heading "Leo2.py". Download the zip file to your desktop or other location, and
+then unzip it to the folder of your choice.
+
+To run Leo, double-click on the file leo.py that you have just unzipped.
+.. @+node:ekr.20100821182153.4349: *3* leoconfig.txt
+Once you have installed Leo, you can configure Leo using the leoconfig.txt file.
+For more information about this see the documentation distributed with Leo.
+.. @+node:ekr.20100821182153.4350: *3* Leo is a free program
+Leo is a free program distributed under the MIT license. This means that not
+only can you use the program freely including commercially, the full
+installation comes with source code that you can modify as you wish, as long as
+you give credit to the author of the program, `Edward K. Ream`_.
+
+Leo is written in Python--a full featured, powerful programming language that
+is comparatively easy to learn and use. For an excellent introduction to Python
+for non-programmers, see the `Python Tutorial`_. Not only is Leo written in Python, it is
+scriptable via Python, meaning that you can embed Python commands in your
+outlines and execute them.
+
+Leo is under active development and all are welcome to contribute. For more
+information, see the `leo-editor`_ Google Group.
+
+Not only is Leo free software, it is supported software. Post questions and bug
+reports to `leo-editor`_ Google Group.
 .. @+node:ekr.20100821182153.4346: ** @slideshow html/what-is-leo.html
 .. The body of this node is ignored except for options.
 
@@ -31,15 +253,7 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
-.. @+node:ekr.20100822164918.4365: *3* What is Leo?
-This slideshow introduces you to Leo.
-
-.. toctree::
-    :hidden:
-    :glob:
-
-    what-is-leo-0*
-.. @+node:ekr.20100821182153.4351: *3* Summary
+.. @+node:ekr.20100821182153.4351: *3* What is Leo
 Leo is a unique, powerful computer program that you can use to organize, analyze
 and describe text and text files. Leo is a free program written by Edward K.
 Ream. For information about downloading Leo, see installation tutorial in this
@@ -54,7 +268,13 @@ Use Leo:
 
 Because Leo is unlike other tools you may have used, a series of examples may be
 the best way to demonstrate what can be done with Leo.
-.. @+node:ekr.20100821182153.4352: *3* Leo is an outlining editor
+
+.. toctree::
+    :hidden:
+    :glob:
+
+    what-is-leo-0*
+.. @+node:ekr.20100821182153.4352: *3* Outlining editor
 From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
@@ -78,8 +298,8 @@ My to-do list.
 .. @+node:ekr.20100823092839.7013: *7* 2009
 .. @+node:ekr.20100823092839.7015: *8* Jan 1
 .. @+node:ekr.20100823092839.7014: *7* 2010
-.. @+node:ekr.20100821182153.4353: *3* Open a node
-Clicking on the indicated triangle will open the indicated node.
+.. @+node:ekr.20100821182153.4353: *3* Expand a node
+Clicking on the indicated triangle will expand the indicated node.
 
 .. image:: screen-shots/ekr-20100821182153-4353.png
 
@@ -97,8 +317,8 @@ My to-do list.
 .. @+node:ekr.20100823132841.4375: *7* 2009
 .. @+node:ekr.20100823132841.4376: *8* Jan 1
 .. @+node:ekr.20100823132841.4377: *7* 2010
-.. @+node:ekr.20100823132841.4379: *3* The node has been opened
-Here the node has been opened. Clicking on the box again will close the node.
+.. @+node:ekr.20100823132841.4379: *3* The expanded node
+Here the node is expanded. Clicking on the box again will contract the node.
 
 .. image:: screen-shots/ekr-20100823132841-4379.png
 
@@ -116,26 +336,7 @@ My to-do list.
 .. @+node:ekr.20100823141121.4390: *7* 2009
 .. @+node:ekr.20100823141121.4391: *8* Jan 1
 .. @+node:ekr.20100823141121.4392: *7* 2010
-.. @+node:ekr.20100821182153.4354: *3* Close a node
-Here the node has been opened. Clicking on the box again will close the node.
-
-.. image:: screen-shots/ekr-20100821182153-4354.png
-
-.. @+node:ekr.20100823141121.4444: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4354.png
-.. @+node:ekr.20100823141121.4411: *4* @screenshot-tree Diary
-.. @+node:ekr.20100823141121.4412: *5* Organizer
-Organizer node.
-.. @+node:ekr.20100823141121.4413: *6* To Do List
-My to-do list.
-.. @+node:ekr.20100823141121.4414: *7* Urgent
-.. @+node:ekr.20100823141121.4415: *7* Important
-.. @+node:ekr.20100823141121.4416: *7* Soon
-.. @+node:ekr.20100823141121.4417: *7* Whenever
-.. @+node:ekr.20100823141121.4418: *6* Diary
-.. @+node:ekr.20100823141121.4419: *7* 2009
-.. @+node:ekr.20100823141121.4420: *8* Jan 1
-.. @+node:ekr.20100823141121.4421: *7* 2010
-.. @+node:ekr.20100821182153.4355: *3* The node is closed
+.. @+node:ekr.20100821182153.4355: *3* The contracted node
 Here the indicated node has been closed.
 
 .. image:: screen-shots/ekr-20100821182153-4355.png
@@ -154,14 +355,13 @@ My to-do list.
 .. @+node:ekr.20100823141121.4441: *7* 2009
 .. @+node:ekr.20100823141121.4442: *8* Jan 1
 .. @+node:ekr.20100823141121.4443: *7* 2010
-.. @+node:ekr.20100821182153.4356: *3* 6 Headline and body text
+.. @+node:ekr.20100821182153.4356: *3* Headline and body text
 Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
 
 .. image:: screen-shots/ekr-20100821182153-4356.png
-
-.. @+node:ekr.20100824104707.4442: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
+.. @+node:ekr.20100824201641.4454: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
 .. @+node:ekr.20100824093905.4433: *4* @screenshot-tree Urgent
 .. @+node:ekr.20100824093905.4434: *5* Organizer
 Organizer node.
@@ -180,8 +380,27 @@ My to-do list.
 .. @+node:ekr.20100824093905.4443: *7* 2010
 .. @+node:ekr.20100821182153.4357: *3* File:Save
 You can save the outline in a leo file. Click File - Save.
-.. @+node:ekr.20100821182153.4358: *3* Save as
-Here we will save our outline in a file name "pim.leo".
+
+.. image:: C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4357.png
+
+.. @+node:ekr.20100824162707.4438: *4* @screenshot-tree-setup Urgent
+.. @+node:ekr.20100824162707.4439: *5* Organizer
+Organizer node.
+.. @+node:ekr.20100824162707.4440: *6* To Do List
+My to-do list.
+.. @+node:ekr.20100824162707.4441: *7* Urgent
+1. Make Leo Tutorial: the world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20100824162707.4442: *7* Important
+.. @+node:ekr.20100824162707.4443: *7* Soon
+.. @+node:ekr.20100824162707.4444: *7* Whenever
+.. @+node:ekr.20100824162707.4445: *6* Diary
+.. @+node:ekr.20100824162707.4446: *7* 2009
+.. @+node:ekr.20100824162707.4447: *8* Jan 1
+.. @+node:ekr.20100824162707.4448: *7* 2010
+.. @+node:ekr.20100821182153.4358: *3* File:Save as
+Here we will save our outline with a file name of "pim.leo".
 .. @+node:ekr.20100821182153.4359: *3* File name in title bar
 The file is now saved, and the file name appears in the title bar.
 
@@ -257,72 +476,5 @@ Chose Save
 .. @+node:ekr.20100823164432.4410: *3* 22
 .. @+node:ekr.20100823164432.4416: *3* 23
 .. @+node:ekr.20100823164432.4417: *3* 24
-.. @+node:ekr.20100821182153.4345: ** @slideshow html/installation.html
-.. The body of this node is ignored except for options.
-
-@ @rst-options
-call_docutils=False
-show_headlines=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-.. @+node:ekr.20100822164918.4364: *3* Installing Leo
-This slideshow tells how to install Leo.
-
-.. toctree::
-    :hidden:
-    :glob:
-
-    installation-0*
-.. @+node:ekr.20100821182153.4347: *3* Two versions
-Windows Users:
-
-    Installing Leo requires two steps:
-
-       1. Install Python: click here, save to your desktop, then double-click on the saved file.
-       2. Install Leo: click here, save to your desktop, then double-click on the saved file. 
-
-    (Python is a type of software for creating and running computer programs.) 
-
-Unix and Mac Users:
-
-    Please continue to next page.
-
-
-Also, if you are a programmer and want to get the Leo files without using an
-installer, continue to the next page.
-.. @+node:ekr.20100821182153.4348: *3* Full installation
-Full installation of Leo requires that you:
-
-   1. Install Python
-   2. Install the Leo files 
-
-To install Python, follow the directions on this page.
-
-To install Leo, go to this page and download the most recent zip file under the
-heading "Leo2.py". Download the zip file to your desktop or other location, and
-then unzip it to the folder of your choice.
-
-To run Leo, double-click on the file leo.py that you have just unzipped.
-.. @+node:ekr.20100821182153.4349: *3* leoconfig.txt
-Once you have installed Leo, you can configure Leo using the leoconfig.txt file.
-For more information about this see the documentation distributed with Leo.
-.. @+node:ekr.20100821182153.4350: *3* Leo is a free program
-Leo is a free program distributed under the MIT license. This means that not
-only can you use the program freely including commercially, the full
-installation comes with source code that you can modify as you wish, as long as
-you give credit to the author of the program, `Edward K. Ream`_.
-
-Leo is written in Python--a full featured, powerful programming language that
-is comparatively easy to learn and use. For an excellent introduction to Python
-for non-programmers, see the `Python Tutorial`_. Not only is Leo written in Python, it is
-scriptable via Python, meaning that you can embed Python commands in your
-outlines and execute them.
-
-Leo is under active development and all are welcome to contribute. For more
-information, see the `leo-editor`_ Google Group.
-
-Not only is Leo free software, it is supported software. Post questions and bug
-reports to `leo-editor`_ Google Group.
 .. @-all
 .. @-leo
