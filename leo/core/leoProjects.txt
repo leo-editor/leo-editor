@@ -599,6 +599,157 @@ def deletePositionsInList (self,aList,callback=None):
             p = next
         else:
             p.moveToThreadNext()
+#@+node:ekr.20100827095120.5871: *4* fixed bug 618474: show_leo_directives
+@language python
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/618474
+
+in core/leoRst the method removeLeoDirectives seems not to remove the leo directives.
+which results in @leo directives inside generated rst code.
+
+The problematic code line is the statement "g.match_word(s, 0,key)" in the following block:
+
+                for key in self.leoDirectivesList:
+                    if g.match_word(s, 0,key):
+                        #g.trace('removing %s' % s)
+                        break
+
+As far as I understand the function match_word, it returns 1 if s contains key at index 0,
+The self.leoDirectivesList contains all directive like color, language, ... (without @) but
+s is a complete body line that looks like:
+@language rest
+
+That means language starts at index 1 not at 0.
+changing the line to
+  g.match_word(s, 1,key)
+
+let it work correctly in my installation (4.7.1)
+#@+node:ekr.20090502071837.80: *5* removeLeoDirectives
+def removeLeoDirectives (self,lines):
+
+    '''Remove all Leo directives, except within literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
+            for key in self.leoDirectivesList:
+                if g.match_word(s,1,key):
+                    # g.trace('removing %s' % s)
+                    break
+            else:
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+#@+node:ekr.20100827095120.5869: *4* fixed bug 618482: code-mode line feeds
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/618482
+
+in leoRst.py:
+
+the method "handleCodeMode" does not preserve line linefeeds of the original code. While this is only annoying for code
+parts it is fatal for doc parts, because rst directives does not work anymore.
+
+The problem is in the line "elif not z.rstrip(): pass" of the following code block at the end of the method
+        for z in result:
+            if z == '': result2.append('\n\n')
+            elif not z.rstrip(): pass
+            elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+            else: result2.append('%s\n' % z.rstrip())
+
+Commenting this line out, preserves the linefeeds in the doc part but doubles them in the code part.
+
+The method "rstripList" is responsible for the doubling linefeeds:
+   The lines arguments is a list of lines with (!) trainling linefeeds (\n),
+
+   The statement s = '\n'.join(theList).rstrip() doubles therefore the linefeeds
+    replacing the line with s = ''.join(theList).rstrip() works.
+#@+node:ekr.20090502071837.72: *5* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *6* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *6* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *6* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic

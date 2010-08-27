@@ -665,7 +665,8 @@ class rstCommands:
         result2 = []
         for z in result:
             if z == '': result2.append('\n\n')
-            elif not z.rstrip(): pass
+            # 2010/08/27: Fix bug 618482.
+            # elif not z.rstrip(): pass
             elif z.endswith('\n\n'): result2.append(z) # Leave alone.
             else: result2.append('%s\n' % z.rstrip())
 
@@ -684,7 +685,8 @@ class rstCommands:
 
         '''Removed trailing blank lines from theList.'''
 
-        s = '\n'.join(theList).rstrip()
+        # 2010/08/27: fix bug 618482.
+        s = ''.join(theList).rstrip()
         return s.split('\n')
     #@+node:ekr.20090502071837.75: *7* finishCodePart
     def finishCodePart (self,result,code):

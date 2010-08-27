@@ -2628,29 +2628,29 @@
 </v>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 <v t="ekr.20100812172232.5801"><vh>@test rst3 defaults</vh>
-<v t="ekr.20100812182942.5805" a="E"><vh>source</vh>
-<v t="ekr.20100812182942.5807" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100812182942.5805"><vh>source</vh>
+<v t="ekr.20100812182942.5807"><vh>@rst test.html</vh>
 <v t="ekr.20100812182942.5808"><vh>section</vh></v>
 </v>
 </v>
-<v t="ekr.20100812213445.5814" a="E"><vh>expected</vh>
+<v t="ekr.20100812213445.5814"><vh>expected</vh>
 <v t="ekr.20100813100841.5848"><vh>rst</vh></v>
 <v t="ekr.20100813100841.5849"><vh> html</vh></v>
 </v>
 </v>
 <v t="ekr.20100813100841.5850"><vh>@test rst3 @no-head</vh>
-<v t="ekr.20100813100841.5854"><vh>source</vh>
-<v t="ekr.20100813100841.5855"><vh>@rst test.html</vh>
+<v t="ekr.20100813100841.5854" a="E"><vh>source</vh>
+<v t="ekr.20100813100841.5855" a="E"><vh>@rst test.html</vh>
 <v t="ekr.20100813100841.5856"><vh>@rst-no-head section</vh></v>
 </v>
 </v>
-<v t="ekr.20100813100841.5857"><vh>expected</vh>
+<v t="ekr.20100813100841.5857" a="E"><vh>expected</vh>
 <v t="ekr.20100813100841.5858"><vh>rst</vh></v>
 <v t="ekr.20100813100841.5859"><vh> html</vh></v>
 </v>
 </v>
-<v t="ekr.20100813100841.5824"><vh>@test doc_only_mode (set in headline)</vh>
-<v t="ekr.20100813100841.5839" a="E"><vh>source</vh>
+<v t="ekr.20100813100841.5824" a="E"><vh>@test doc_only_mode (set in headline)</vh>
+<v t="ekr.20100813100841.5839"><vh>source</vh>
 <v t="ekr.20100813100841.5840"><vh>@rst test.html</vh>
 <v t="ekr.20100813124317.5868"><vh>@rst-option doc_only_mode=True</vh>
 <v t="ekr.20100813100841.5841"><vh>section</vh></v>
@@ -2663,8 +2663,8 @@
 </v>
 </v>
 <v t="ekr.20100813124317.5879"><vh>@test doc_only_mode (set in options doc part)</vh>
-<v t="ekr.20100813124317.5880" a="E"><vh>source</vh>
-<v t="ekr.20100813124317.5881" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20100813124317.5880"><vh>source</vh>
+<v t="ekr.20100813124317.5881"><vh>@rst test.html</vh>
 <v t="ekr.20100813124317.5883"><vh>section</vh></v>
 </v>
 </v>
@@ -2675,12 +2675,12 @@
 </v>
 <v t="ekr.20100813100841.5825"><vh>@test show_doc_parts_in_rst_mode</vh></v>
 <v t="ekr.20100827140832.5913"><vh>@test show_leo_directives=False</vh>
-<v t="ekr.20100827140832.5917" a="E"><vh>source</vh>
+<v t="ekr.20100827140832.5917"><vh>source</vh>
 <v t="ekr.20100827140832.5918"><vh>@rst test.html</vh>
 <v t="ekr.20100827140832.5919"><vh>section</vh></v>
 </v>
 </v>
-<v t="ekr.20100827140832.5926" a="E"><vh>expected</vh>
+<v t="ekr.20100827140832.5926"><vh>expected</vh>
 <v t="ekr.20100827140832.5929"><vh>rst</vh></v>
 <v t="ekr.20100827140832.5930"><vh> html</vh></v>
 </v>
@@ -23583,6 +23583,7 @@ rst3Test(c,p)
     
     source = g.findNodeInTree(c,p,'source')
     expected = g.findNodeInTree(c,p,'expected')
+    got = g.findNodeInTree(c,p,'got')
     assert source,'source'
     assert expected,'expected'
     rc = c.rstCommands
@@ -23591,8 +23592,26 @@ rst3Test(c,p)
     assert rst,'rst'
     assert html,'html'
     if expected.hasChildren():
-        assert rst == expected.firstChild().b,'rst mismatch'
-        assert html == expected.firstChild().next().b,'html mismatch'
+        child1 = expected.firstChild()
+        child2 = expected.firstChild().next()
+        ok = rst == child1.b and html == child2.b
+        if not ok:
+            if got:
+                rst_p = g.findNodeInTree(c,got,'rst')
+                html_p = g.findNodeInTree(c,got,'html')
+                assert rst_p
+                assert html_p
+            else:
+                got = p.insertAsLastChild()
+                got.h = 'got'
+                rst_p = got.insertAsNthChild(0)
+                rst_p.h = 'rst'
+                html_p = got.insertAsNthChild(1)
+                html_p.h = 'html'
+            rst_p.b = rst
+            html_p.b = html
+        assert rst == child1.b,'rst mismatch'
+        assert html == child2.b,'html mismatch'
     else:
         child = expected.insertAsNthChild(0)
         child.h,child.b = 'rst',rst
@@ -23936,7 +23955,6 @@ it has two lines.
 <t tx="ekr.20100813100841.5847"></t>
 <t tx="ekr.20100813100841.5848">.. rst3: filename: test.html
 
-@language rest
 
 #####
 Title
@@ -23949,7 +23967,6 @@ section
 
 @ This is a doc part
 it has two lines.
-@c
 This is the body of the section.
 
 </t>
@@ -24203,21 +24220,16 @@ hr { /* EKR */
 &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-&lt;div class="document"&gt;
-
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
 
 &lt;!-- rst3: filename: test.html --&gt;
-&lt;p&gt;&amp;#64;language rest&lt;/p&gt;
-&lt;div class="section" id="title"&gt;
-&lt;h1&gt;Title&lt;/h1&gt;
 &lt;p&gt;This is test.html&lt;/p&gt;
 &lt;div class="section" id="section"&gt;
-&lt;h2&gt;section&lt;/h2&gt;
+&lt;h1&gt;section&lt;/h1&gt;
 &lt;p&gt;&amp;#64; This is a doc part
 it has two lines.
-&amp;#64;c
 This is the body of the section.&lt;/p&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/body&gt;
@@ -24238,7 +24250,6 @@ This is test.html</t>
 <t tx="ekr.20100813100841.5857"></t>
 <t tx="ekr.20100813100841.5858">.. rst3: filename: test.html
 
-@language rest
 
 #####
 Title
@@ -24499,16 +24510,12 @@ hr { /* EKR */
 &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-&lt;div class="document"&gt;
-
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
 
 &lt;!-- rst3: filename: test.html --&gt;
-&lt;p&gt;&amp;#64;language rest&lt;/p&gt;
-&lt;div class="section" id="title"&gt;
-&lt;h1&gt;Title&lt;/h1&gt;
 &lt;p&gt;This is test.html&lt;/p&gt;
 &lt;p&gt;This is the body of the section.&lt;/p&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;

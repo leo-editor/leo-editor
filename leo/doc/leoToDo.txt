@@ -104,30 +104,6 @@ looks like a sentinel but isn't "verbatim".
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
 #@+node:ekr.20100827114047.5897: *5* Easy bug fixes
-#@+node:ekr.20100827095120.5869: *6* fix code-mode bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/618482
-
-in leoRst.py:
-
-the method "handleCodeMode" does not preserve line linefeeds of the original code. While this is only annoying for code
-parts it is fatal for doc parts, because rst directives does not work anymore.
-
-The problem is in the line "elif not z.rstrip(): pass" of the following code block at the end of the method
-        for z in result:
-            if z == '': result2.append('\n\n')
-            elif not z.rstrip(): pass
-            elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-            else: result2.append('%s\n' % z.rstrip())
-
-Commenting this line out, preserves the linefeeds in the doc part but doubles them in the code part.
-
-The method "rstripList" is responsible for the doubling linefeeds:
-   The lines arguments is a list of lines with (!) trainling linefeeds (\n),
-
-   The statement s = '\n'.join(theList).rstrip() doubles therefore the linefeeds
-    replacing the line with s = ''.join(theList).rstrip() works.
 #@+node:ekr.20100826110728.5843: *6* Fix weave (and similar) commands
 #@+node:ekr.20100827095120.5862: *6* Fix script problem
 @nocolor-node
@@ -245,7 +221,8 @@ def handleCodeMode (self,lines):
     result2 = []
     for z in result:
         if z == '': result2.append('\n\n')
-        elif not z.rstrip(): pass
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
         elif z.endswith('\n\n'): result2.append(z) # Leave alone.
         else: result2.append('%s\n' % z.rstrip())
 
@@ -264,7 +241,8 @@ def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
 
-    s = '\n'.join(theList).rstrip()
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
     return s.split('\n')
 #@+node:ekr.20090502071837.75: *8* finishCodePart
 def finishCodePart (self,result,code):
