@@ -549,7 +549,6 @@ The following commands invoke Leo's outline commands::
     mark
     mark-changed-items
     mark-changed-roots
-    mark-clones
     mark-subheads
     move-outline-down
     move-outline-left

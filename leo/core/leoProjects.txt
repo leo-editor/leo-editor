@@ -58,7 +58,7 @@ print("expected...")
 for line in g.splitLines(expected):
     print("%3d" % len(line),repr(line))
 print('-' * 20)
-#@+node:ekr.20100709113505.6291: ** Leo 4.8 devel projects
+#@+node:ekr.20100709113505.6291: ** Leo 4.8 a1
 #@+node:ekr.20100709113505.6292: *3* Bugs
 #@+node:ekr.20100709113505.6293: *4* Fixed save scrolling bug
 @nocolor-node
@@ -807,5 +807,7 @@ def isSectionLine(self,s,i):
 The typical usage::
 
     g.findTestScript(c,'@common code for tests of x')
+#@+node:ekr.20100827114047.5891: *4* Removed mark-clones command
+It is useless in the one-node world.
 #@-all
 #@-leo

@@ -4994,31 +4994,6 @@ class baseCommands (object):
 
         c.redraw_after_icons_changed()
 
-    #@+node:ekr.20031218072017.2927: *6* markClones
-    def markClones (self,event=None):
-
-        '''Mark all clones of the selected node.'''
-
-        c = self ; u = c.undoer ; undoType = 'Mark Clones'
-        current = c.p
-        if not current or not current.isCloned():
-            g.es('the current node is not a clone',color='blue')
-            return
-
-        c.endEditing()
-        u.beforeChangeGroup(current,undoType)
-        dirtyVnodeList = []
-        for p in c.all_unique_positions():
-            if p.v == current.v:
-                bunch = u.beforeMark(p,undoType)
-                c.setMarked(p)
-                c.setChanged(True)
-                dirtyVnodeList2 = p.setDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
-                u.afterMark(p,undoType,bunch)
-        u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-
-        c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2928: *6* markHeadline
     def markHeadline (self,event=None):
 

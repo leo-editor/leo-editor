@@ -6134,7 +6134,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'mark':                         c.markHeadline,
             'mark-changed-items':           c.markChangedHeadlines,
             'mark-changed-roots':           c.markChangedRoots,
-            'mark-clones':                  c.markClones,
+            # 'mark-clones':                c.markClones,
             'mark-subheads':                c.markSubheads,
             'match-brackets':               c.findMatchingBracket,
             'minimize-all':                 f.minimizeAll,
