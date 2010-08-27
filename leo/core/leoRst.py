@@ -808,7 +808,7 @@ class rstCommands:
                 result.extend(lit)
             elif s.startswith('@') and not self.isAnySpecialDocPart(s):
                 for key in self.leoDirectivesList:
-                    if g.match_word(s,0,key):
+                    if g.match_word(s,1,key):
                         # g.trace('removing %s' % s)
                         break
                 else:

@@ -104,31 +104,6 @@ looks like a sentinel but isn't "verbatim".
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
 #@+node:ekr.20100827114047.5897: *5* Easy bug fixes
-#@+node:ekr.20100827095120.5871: *6* fix removeLeoDirective bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/618474
-
-in core/leoRst the method removeLeoDirectives seems not to remove the leo directives.
-which results in @leo directives inside generated rst code.
-
-The problematic code line is the statement "g.match_word(s, 0,key)" in the following block:
-
-                for key in self.leoDirectivesList:
-                    if g.match_word(s, 0,key):
-                        #g.trace('removing %s' % s)
-                        break
-
-As far as I understand the function match_word, it returns 1 if s contains key at index 0,
-The self.leoDirectivesList contains all directive like color, language, ... (without @) but
-s is a complete body line that looks like:
-@language rest
-
-That means language starts at index 1 not at 0.
-changing the line to
-  g.match_word(s, 1,key)
-
-let it work correctly in my installation (4.7.1)
 #@+node:ekr.20100827095120.5869: *6* fix code-mode bug
 @nocolor-node
 
