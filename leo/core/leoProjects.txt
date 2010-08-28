@@ -633,6 +633,455 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
+#@+node:ekr.20100826110728.5843: *4* Fixed weave (and many similar) commands
+#@+node:ekr.20100827114047.8412: *5* Found: .write
+#@+node:ekr.20031218072017.1982: *6* << attempt to create leoID.txt >> (changed)
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            s = g.app.leoID
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
+            f.write()
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@+node:ekr.20031218072017.1149: *6* << Write s into newFileName >> (remove-sentinels) (changed)
+# Remove sentinels command.
+
+try:
+    # mode = c.config.output_newline
+    # mode = g.choose(mode=="platform",'w','wb')
+    # theFile = open(newFileName,mode)
+    theFile = open(newFileName,'w')
+    if not g.isPython3: # 2010/08/27
+        s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    theFile.write(s)
+    theFile.close()
+    if not g.unitTesting:
+        g.es("created:",newFileName)
+except Exception:
+    g.es("exception creating:",newFileName)
+    g.es_exception()
+#@+node:ekr.20051025071455.37: *6* add (spellTab) (changed)
+def add(self,event=None):
+    """Add the selected suggestion to the dictionary."""
+
+    if not self.currentWord: return
+
+    # g.trace(self.currentWord)
+
+    try:
+        f = None
+        try:
+            # Rewrite the dictionary in alphabetical order.
+            f = open(self.dictionaryFileName, "r")
+            words = f.readlines()
+            f.close()
+            words = [word.strip() for word in words]
+            words.append(self.currentWord)
+            words.sort()
+            f = open(self.dictionaryFileName, "w")
+            for word in words:
+                s = '%s\n' % word
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,reportErrors=True)
+                f.write(s)
+            f.flush()
+            f.close()
+            if 1:
+                s = 'Spell: added %s' % self.currentWord
+                self.messages.append(s)
+            else: # Too distracting.
+                g.es("adding ", color= "blue", newline= False) 
+                g.es('','%s' % self.currentWord)
+        except IOError:
+            g.es("can not add",self.currentWord,"to dictionary",color="red")
+    finally:
+        if f: f.close()
+
+    self.dictionary[self.currentWord.lower()] = 0
+    self.tab.onFindButton()
+#@+node:ekr.20100813041139.5912: *6* createIntermediateFile (changed)
+def createIntermediateFile(self,fn,s):
+
+    '''Write s to to the file whose name is fn.'''
+
+    ext = self.getOption('write_intermediate_extension')
+    ext = ext or '.txt' # .txt by default.
+    if not ext.startswith('.'): ext = '.' + ext
+
+    fn = fn + ext
+
+    # g.trace('intermediate file',fn)
+    if g.isPython3:
+        f = open(fn,'w',encoding=self.encoding)
+    else:
+        f = open(fn,'w')
+    if not g.isPython3: # 2010/08/27
+        s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+    f.write(s)
+    f.close()
+    self.report(fn)
+#@+node:ekr.20031218072017.1462: *6* exportHeadlines (changed)
+def exportHeadlines (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+    # mode = c.config.output_newline
+    # mode = g.choose(mode=="platform",'w','wb')
+    try:
+        # theFile = open(fileName,mode)
+        theFile = open(fileName,'w')
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = head + nl
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+#@+node:ekr.20031218072017.1147: *6* flattenOutline (changed)
+def flattenOutline (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.currentVnode()
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    # 10/14/02: support for output_newline setting.
+    # mode = c.config.output_newline
+    # mode = g.choose(mode=="platform",'w','wb')
+    try:
+        # theFile = open(fileName,mode)
+        theFile = open(fileName,'w')
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel)
+        s = head + nl
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+        body = p.moreBody() # Inserts escapes.
+        if len(body) > 0:
+            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+            theFile.write(s)
+    theFile.close()
+#@+node:ekr.20031218072017.1148: *6* outlineToWeb (changed)
+def outlineToWeb (self,fileName,webType):
+
+    c = self.c ; nl = self.output_newline
+    current = c.p
+    if not current: return
+    self.setEncoding()
+    self.webType = webType
+    # 10/14/02: support for output_newline setting.
+    # mode = c.config.output_newline
+    # mode = g.choose(mode=="platform",'w','wb')
+    try:
+        # theFile = open(fileName,mode)
+        theFile = open(fileName,'w')
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    self.treeType = "@file"
+    # Set self.treeType to @root if p or an ancestor is an @root node.
+    for p in current.parents():
+        flag,junk = g.is_special(p.b,0,"@root")
+        if flag:
+            self.treeType = "@root"
+            break
+    for p in current.self_and_subtree():
+        s = self.convertVnodeToWeb(p)
+        if len(s) > 0:
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,self.encoding,reportErrors=True)
+            theFile.write(s)
+            if s[-1] != '\n': theFile.write(nl)
+    theFile.close()
+#@+node:ekr.20050920084036.170: *6* saveFile (changed)
+def saveFile (self,event):
+
+    '''Prompt for the name of a file and put the body text of the selected node into it..'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='save-file',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'w')
+        s = w.getAllText()
+        if not g.isPython3: # 2010/08/27
+             s = g.toEncodedString(s,self.encoding,reportErrors=True)
+        f.write(s)
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@+node:ekr.20031218072017.3650: *6* show (leoCompare) (not changed)
+def show (self,s):
+
+    # g.pr(s)
+    if self.outputFile:
+        # self.outputFile is opened in 'wb' mode.
+        s = g.toEncodedString(s + '\n')
+        self.outputFile.write(s)
+    elif self.c:
+        g.es(s)
+    else:
+        g.pr(s)
+        g.pr('')
+#@+node:ekr.20080822065427.4: *6* show_error_lines (changed)
+def show_error_lines (self,lines,fileName):
+
+    for line in lines:
+        g.es_print(line)
+
+    if False: # Only for major debugging.
+        try:
+            f1 = open(fileName, "w")
+            for s in lines:
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+                f1.write(s)
+            f1.close()
+        except IOError:
+            g.es_exception()
+            g.es_print('can not open',fileName)
+#@+node:ekr.20031218072017.1464: *6* weave (changed)
+def weave (self,filename):
+
+    c = self.c ; nl = self.output_newline
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    << open filename to f, or return >>
+    for p in p.self_and_subtree():
+        s = p.b
+        s2 = s.strip()
+        if s2 and len(s2) > 0:
+            f.write("-" * 60) ; f.write(nl)
+            << write the context of p to f >>
+            f.write("-" * 60) ; f.write(nl)
+            if not g.isPython3:
+                s = g.toEncodedString(s,self.encoding,reportErrors=True)
+            f.write(s.rstrip() + nl)
+    f.flush()
+    f.close()
+#@+node:ekr.20031218072017.1150: *7* << open filename to f, or return >> (weave)
+try:
+    # 10/14/02: support for output_newline setting.
+        # mode = c.config.output_newline
+        # mode = g.choose(mode=="platform",'w','wb')
+        # f = open(filename,mode)
+        # if not f: return
+
+    # 2010/08/27.
+    if g.isPython3:
+        f = open(filename,'w',encoding=self.encoding)
+    else:
+        f = open(filename,'w')
+
+except Exception:
+    g.es("exception opening:",filename)
+    g.es_exception()
+    return
+#@+node:ekr.20031218072017.1465: *7* << write the context of p to f >> (weave)
+# write the headlines of p, p's parent and p's grandparent.
+context = [] ; p2 = p.copy() ; i = 0
+while i < 3:
+    i += 1
+    if not p2: break
+    context.append(p2.h)
+    p2.moveToParent()
+
+context.reverse()
+indent = ""
+for line in context:
+    f.write(indent)
+    indent += '\t'
+    if not g.isPython3: # 2010/08/27.
+        line = g.toEncodedString(line,self.encoding,reportErrors=True)
+    f.write(line)
+    f.write(nl)
+#@+node:ekr.20050920084036.24: *6* writeAbbreviations (changed)
+def writeAbbreviations (self,event):
+
+    '''Write abbreviations to a file.'''
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='Write Abbreviations',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'w')
+        for x in self.abbrevs:
+            s = '%s=%s\n' % (x,self.abbrevs[x])
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,reportErrors=True)
+            f.write(s)
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@+node:ekr.20070915142635: *6* writeFileFromNode (changed)
+def writeFileFromNode (self,event=None):
+
+    # If node starts with @read-file-into-node, use the full path name in the headline.
+    # Otherwise, prompt for a file name.
+
+    c = self ; p = c.p
+    c.endEditing()
+
+    h = p.h.rstrip()
+    s = p.b
+    tag = '@read-file-into-node'
+
+    if h.startswith(tag):
+        fileName = h[len(tag):].strip()
+    else:
+        fileName = None
+
+    if not fileName:
+        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+        fileName = g.app.gui.runSaveFileDialog(
+            initialfile=None,
+            title='Write File From Node',
+            filetypes=filetypes,
+            defaultextension=None)
+    if fileName:
+        try:
+            theFile = open(fileName,'w')
+            g.chdir(fileName)
+        except IOError:
+            theFile = None
+        if theFile:
+            if s.startswith('@nocolor\n'):
+                s = s[len('@nocolor\n'):]
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,reportErrors=True)
+            theFile.write(s)
+            theFile.flush()
+            g.es_print('wrote:',fileName,color='blue')
+            theFile.close()
+        else:
+            g.es('can not write %s',fileName,color='red')
+#@+node:ekr.20070115135502: *6* writeScriptFile (changed)
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')                    
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@+node:ekr.20080713091247.1: *6* x.replaceFileWithString (@shadow) (not changed)
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    x = self
+    exists = g.os_path_exists(fn)
+
+    if exists:
+        # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s2 is None:
+            return False
+        if s == s2:
+            if not g.unitTesting: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            x.error('not written: %s directory not found' % fn)
+        return False
+
+    # Replace the file.
+    try:
+        f = open(fn,'wb')
+        f.write(g.toEncodedString(s))
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
+        f.close()
+        if not g.unitTesting:
+            # g.trace('created:',fn,g.callers())
+            if exists:  g.es('wrote:',fn)
+            else:       g.es('created:',fn)
+        return True
+    except IOError:
+        x.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
