@@ -2675,7 +2675,8 @@ class atFile:
                 if g.match(s,0,"@@"):
                     s = s[2:]
                     if s and len(s) > 0:
-                        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+                        # at.outputFile is a fileLikeObject.
+                        s = g.toEncodedString(s,at.encoding,reportErrors=True)
                         at.outputFile.write(s)
                 #@-<< Write p's headline if it starts with @@ >>
                 #@+<< Write p's body >>
@@ -4505,6 +4506,7 @@ class atFile:
             try:
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
+                # at.outputFile is a fileLikeObject.
                 # Bug fix: this must be done last.
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
                 if trace: g.trace(repr(s),g.callers(5))

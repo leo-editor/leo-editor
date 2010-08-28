@@ -1689,7 +1689,7 @@ class rstCommands:
             if not ok:
                 g.es_print('did not create:',theDir,color='red')
             return ok
-    #@+node:ekr.20100813041139.5912: *5* createIntermediateFile
+    #@+node:ekr.20100813041139.5912: *5* createIntermediateFile (changed)
     def createIntermediateFile(self,fn,s):
 
         '''Write s to to the file whose name is fn.'''
@@ -1698,8 +1698,6 @@ class rstCommands:
         ext = ext or '.txt' # .txt by default.
         if not ext.startswith('.'): ext = '.' + ext
 
-        ### name = fn.rsplit('.',1)[0] + ext
-        ### fn,junk = g.os_path_splitext(fn)
         fn = fn + ext
 
         # g.trace('intermediate file',fn)
@@ -1707,6 +1705,8 @@ class rstCommands:
             f = open(fn,'w',encoding=self.encoding)
         else:
             f = open(fn,'w')
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
         f.write(s)
         f.close()
         self.report(fn)

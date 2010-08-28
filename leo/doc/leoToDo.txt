@@ -104,7 +104,6 @@ looks like a sentinel but isn't "verbatim".
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
 #@+node:ekr.20100827114047.5897: *5* Easy bug fixes
-#@+node:ekr.20100826110728.5843: *6* Fix weave (and similar) commands
 #@+node:ekr.20100827095120.5862: *6* Fix script problem
 @nocolor-node
 
@@ -1026,14 +1025,6 @@ We also need the following functions:
 
 - g.openFileForReading.
 - g.openFileForWriting.
-#@+node:ekr.20100209224508.5744: *5* Calls to .write
-@nocolor-node
-
-All calls to .write these could be considered potential Python 3.x bugs.  Most are not.
-
-It is likely invalid to create an input or output stream which could be either binary or not.
-
-For example, we probably can not choose between "w" and "wb" (or "r" and "rb" at runtime.)
 #@+node:ekr.20100202145902.6106: *4* Init all settings in c.initConfigSettings
 @nocolor-node
 

@@ -673,14 +673,17 @@ class LeoApp:
         g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
         #@-<< put up a dialog requiring a valid id >>
         #@+<< attempt to create leoID.txt >>
-        #@+node:ekr.20031218072017.1982: *3* << attempt to create leoID.txt >>
+        #@+node:ekr.20031218072017.1982: *3* << attempt to create leoID.txt >> (changed)
         for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:
                     fn = g.os_path_join(theDir,tag)
                     f = open(fn,'w')
-                    f.write(g.app.leoID)
+                    s = g.app.leoID
+                    if not g.isPython3: # 2010/08/27
+                        s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
+                    f.write()
                     f.close()
                     if g.os_path_exists(fn):
                         g.es_print('',tag,'created in',theDir,color='red')

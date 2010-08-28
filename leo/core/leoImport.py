@@ -423,7 +423,7 @@ class leoImportCommands (scanUtility):
                 result += line
             assert(progress < i)
         return i, result.rstrip()
-    #@+node:ekr.20031218072017.1462: *4* exportHeadlines
+    #@+node:ekr.20031218072017.1462: *4* exportHeadlines (changed)
     def exportHeadlines (self,fileName):
 
         c = self.c ; nl = g.u(self.output_newline)
@@ -431,20 +431,23 @@ class leoImportCommands (scanUtility):
         if not p: return
         self.setEncoding()
         firstLevel = p.level()
-        mode = c.config.output_newline
-        mode = g.choose(mode=="platform",'w','wb')
+        # mode = c.config.output_newline
+        # mode = g.choose(mode=="platform",'w','wb')
         try:
-            theFile = open(fileName,mode)
+            # theFile = open(fileName,mode)
+            theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")
             leoTest.fail()
             return
         for p in p.self_and_subtree():
             head = p.moreHead(firstLevel,useVerticalBar=True)
-            s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
+            s = head + nl
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
             theFile.write(s)
         theFile.close()
-    #@+node:ekr.20031218072017.1147: *4* flattenOutline
+    #@+node:ekr.20031218072017.1147: *4* flattenOutline (changed)
     def flattenOutline (self,fileName):
 
         c = self.c ; nl = g.u(self.output_newline)
@@ -454,10 +457,11 @@ class leoImportCommands (scanUtility):
         firstLevel = p.level()
 
         # 10/14/02: support for output_newline setting.
-        mode = c.config.output_newline
-        mode = g.choose(mode=="platform",'w','wb')
+        # mode = c.config.output_newline
+        # mode = g.choose(mode=="platform",'w','wb')
         try:
-            theFile = open(fileName,mode)
+            # theFile = open(fileName,mode)
+            theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")
             leoTest.fail()
@@ -465,14 +469,16 @@ class leoImportCommands (scanUtility):
 
         for p in p.self_and_subtree():
             head = p.moreHead(firstLevel)
-            s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
+            s = head + nl
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
             theFile.write(s)
             body = p.moreBody() # Inserts escapes.
             if len(body) > 0:
                 s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
                 theFile.write(s)
         theFile.close()
-    #@+node:ekr.20031218072017.1148: *4* outlineToWeb
+    #@+node:ekr.20031218072017.1148: *4* outlineToWeb (changed)
     def outlineToWeb (self,fileName,webType):
 
         c = self.c ; nl = self.output_newline
@@ -481,10 +487,11 @@ class leoImportCommands (scanUtility):
         self.setEncoding()
         self.webType = webType
         # 10/14/02: support for output_newline setting.
-        mode = c.config.output_newline
-        mode = g.choose(mode=="platform",'w','wb')
+        # mode = c.config.output_newline
+        # mode = g.choose(mode=="platform",'w','wb')
         try:
-            theFile = open(fileName,mode)
+            # theFile = open(fileName,mode)
+            theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")
             leoTest.fail()
@@ -500,7 +507,8 @@ class leoImportCommands (scanUtility):
         for p in current.self_and_subtree():
             s = self.convertVnodeToWeb(p)
             if len(s) > 0:
-                s = g.toEncodedString(s,self.encoding,reportErrors=True)
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,self.encoding,reportErrors=True)
                 theFile.write(s)
                 if s[-1] != '\n': theFile.write(nl)
         theFile.close()
@@ -552,12 +560,16 @@ class leoImportCommands (scanUtility):
                 return s
             else:
                 #@+<< Write s into newFileName >>
-                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >>
+                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels) (changed)
+                # Remove sentinels command.
+
                 try:
-                    mode = c.config.output_newline
-                    mode = g.choose(mode=="platform",'w','wb')
-                    theFile = open(newFileName,mode)
-                    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+                    # mode = c.config.output_newline
+                    # mode = g.choose(mode=="platform",'w','wb')
+                    # theFile = open(newFileName,mode)
+                    theFile = open(newFileName,'w')
+                    if not g.isPython3: # 2010/08/27
+                        s = g.toEncodedString(s,self.encoding,reportErrors=True)
                     theFile.write(s)
                     theFile.close()
                     if not g.unitTesting:
@@ -588,7 +600,7 @@ class leoImportCommands (scanUtility):
                 verbatimFlag = False
         result = ''.join(result)
         return result
-    #@+node:ekr.20031218072017.1464: *4* weave
+    #@+node:ekr.20031218072017.1464: *4* weave (changed)
     def weave (self,filename):
 
         c = self.c ; nl = self.output_newline
@@ -596,13 +608,20 @@ class leoImportCommands (scanUtility):
         if not p: return
         self.setEncoding()
         #@+<< open filename to f, or return >>
-        #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >>
+        #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >> (weave)
         try:
             # 10/14/02: support for output_newline setting.
-            mode = c.config.output_newline
-            mode = g.choose(mode=="platform",'w','wb')
-            f = open(filename,mode)
-            if not f: return
+                # mode = c.config.output_newline
+                # mode = g.choose(mode=="platform",'w','wb')
+                # f = open(filename,mode)
+                # if not f: return
+
+            # 2010/08/27.
+            if g.isPython3:
+                f = open(filename,'w',encoding=self.encoding)
+            else:
+                f = open(filename,'w')
+
         except Exception:
             g.es("exception opening:",filename)
             g.es_exception()
@@ -614,7 +633,7 @@ class leoImportCommands (scanUtility):
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
                 #@+<< write the context of p to f >>
-                #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >>
+                #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
                 # write the headlines of p, p's parent and p's grandparent.
                 context = [] ; p2 = p.copy() ; i = 0
                 while i < 3:
@@ -628,12 +647,14 @@ class leoImportCommands (scanUtility):
                 for line in context:
                     f.write(indent)
                     indent += '\t'
-                    line = g.toEncodedString(line,self.encoding,reportErrors=True)
+                    if not g.isPython3: # 2010/08/27.
+                        line = g.toEncodedString(line,self.encoding,reportErrors=True)
                     f.write(line)
                     f.write(nl)
                 #@-<< write the context of p to f >>
                 f.write("-" * 60) ; f.write(nl)
-                s = g.toEncodedString(s,self.encoding,reportErrors=True)
+                if not g.isPython3:
+                    s = g.toEncodedString(s,self.encoding,reportErrors=True)
                 f.write(s.rstrip() + nl)
         f.flush()
         f.close()

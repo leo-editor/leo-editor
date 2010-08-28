@@ -550,7 +550,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit(event)
         k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
-    #@+node:ekr.20050920084036.24: *4* writeAbbreviations
+    #@+node:ekr.20050920084036.24: *4* writeAbbreviations (changed)
     def writeAbbreviations (self,event):
 
         '''Write abbreviations to a file.'''
@@ -566,7 +566,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
         try:
             f = open(fileName,'w')
             for x in self.abbrevs:
-                f.write('%s=%s\n' % (x,self.abbrevs[x]))
+                s = '%s=%s\n' % (x,self.abbrevs[x])
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,reportErrors=True)
+                f.write(s)
             f.close()
         except IOError:
             g.es('can not create',fileName)
@@ -5023,7 +5026,7 @@ class editFileCommandsClass (baseEditCommandsClass):
                 k.setLabel('Removed: %s' % k.arg)
             except Exception:
                 k.setLabel('Not Remove: %s' % k.arg)
-    #@+node:ekr.20050920084036.170: *3* saveFile
+    #@+node:ekr.20050920084036.170: *3* saveFile (changed)
     def saveFile (self,event):
 
         '''Prompt for the name of a file and put the body text of the selected node into it..'''
@@ -5040,8 +5043,10 @@ class editFileCommandsClass (baseEditCommandsClass):
         if not fileName: return
 
         try:
-            s = w.getAllText()
             f = open(fileName,'w')
+            s = w.getAllText()
+            if not g.isPython3: # 2010/08/27
+                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
             f.write(s)
             f.close()
         except IOError:
@@ -8216,7 +8221,7 @@ class spellTabHandler (leoFind.leoFind):
 
         return d
     #@+node:ekr.20051025071455.36: *4* Commands
-    #@+node:ekr.20051025071455.37: *5* add (spellTab)
+    #@+node:ekr.20051025071455.37: *5* add (spellTab) (changed)
     def add(self,event=None):
         """Add the selected suggestion to the dictionary."""
 
@@ -8236,7 +8241,10 @@ class spellTabHandler (leoFind.leoFind):
                 words.sort()
                 f = open(self.dictionaryFileName, "w")
                 for word in words:
-                    f.write("%s\n" % g.toEncodedString(word,reportErrors=True))
+                    s = '%s\n' % word
+                    if not g.isPython3: # 2010/08/27
+                        s = g.toEncodedString(s,reportErrors=True)
+                    f.write(s)
                 f.flush()
                 f.close()
                 if 1:

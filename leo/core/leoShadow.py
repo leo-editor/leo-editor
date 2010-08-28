@@ -119,7 +119,7 @@ class shadowController:
             g.makeAllNonExistentDirectories(path,c=None,force=True)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
-    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString
+    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString (@shadow) (not changed)
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -702,7 +702,7 @@ class shadowController:
         g.es_print('\n@shadow did not pick up the external changes correctly')
 
         # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
-    #@+node:ekr.20080822065427.4: *5* show_error_lines
+    #@+node:ekr.20080822065427.4: *5* show_error_lines (changed)
     def show_error_lines (self,lines,fileName):
 
         for line in lines:
@@ -711,8 +711,10 @@ class shadowController:
         if False: # Only for major debugging.
             try:
                 f1 = open(fileName, "w")
-                for line in lines:
-                    f1.write(g.toEncodedString(line))
+                for s in lines:
+                    if not g.isPython3: # 2010/08/27
+                        s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+                    f1.write(s)
                 f1.close()
             except IOError:
                 g.es_exception()

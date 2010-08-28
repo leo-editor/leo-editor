@@ -1622,7 +1622,7 @@ class baseCommands (object):
         if names:
             g.chdir(names[0])
             c.importCommands.importDerivedFiles(parent=p,paths=names)
-    #@+node:ekr.20070915142635: *6* writeFileFromNode
+    #@+node:ekr.20070915142635: *6* writeFileFromNode (changed)
     def writeFileFromNode (self,event=None):
 
         # If node starts with @read-file-into-node, use the full path name in the headline.
@@ -1656,6 +1656,8 @@ class baseCommands (object):
             if theFile:
                 if s.startswith('@nocolor\n'):
                     s = s[len('@nocolor\n'):]
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,reportErrors=True)
                 theFile.write(s)
                 theFile.flush()
                 g.es_print('wrote:',fileName,color='blue')
@@ -2037,7 +2039,7 @@ class baseCommands (object):
 
             g.restoreStderr()
             g.restoreStdout()
-    #@+node:ekr.20070115135502: *7* writeScriptFile
+    #@+node:ekr.20070115135502: *7* writeScriptFile (changed)
     def writeScriptFile (self,script):
 
         # Get the path to the file.
@@ -2065,7 +2067,10 @@ class baseCommands (object):
                 f = open(path,encoding='utf-8',mode='w')
             else:
                 f = open(path,'w')
-            f.write(script)
+            s = script
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,reportErrors=True)
+            f.write(s)
             f.close()
         except Exception:
             g.es_exception()

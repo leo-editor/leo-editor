@@ -459,11 +459,12 @@ class baseLeoCompare:
                 self.outputFile = None
                 self.show("exception opening output file")
                 g.es_exception()
-    #@+node:ekr.20031218072017.3650: *4* show
+    #@+node:ekr.20031218072017.3650: *4* show (leoCompare) (not changed)
     def show (self,s):
 
         # g.pr(s)
         if self.outputFile:
+            # self.outputFile is opened in 'wb' mode.
             s = g.toEncodedString(s + '\n')
             self.outputFile.write(s)
         elif self.c:
