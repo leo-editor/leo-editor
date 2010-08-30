@@ -1535,6 +1535,9 @@
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20100830114008.5967"><vh>@common leoEditCommands test code</vh>
+<v t="ekr.20100830114008.5968"><vh>runEditCommandTest</vh></v>
+</v>
 <v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
 <v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
 <v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
@@ -1734,15 +1737,15 @@
 <v t="ekr.20070131162935.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131162935.3"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20100817131738.5902"><vh>@test delete-word (no selection)</vh>
-<v t="ekr.20100817131738.5903"><vh>work</vh></v>
-<v t="ekr.20100817131738.5904"><vh>before sel=1.10,1.10</vh></v>
-<v t="ekr.20100817131738.5905"><vh>after sel=1.10,1.10</vh></v>
+<v t="ekr.20100830113702.5969"><vh>@test delete-word (no selection)</vh>
+<v t="ekr.20100830113702.5970"><vh>work</vh></v>
+<v t="ekr.20100830113702.5971"><vh>before sel=1.10,1.10</vh></v>
+<v t="ekr.20100830113702.5972"><vh>after sel=1.10,1.10</vh></v>
 </v>
-<v t="ekr.20100818073344.5910"><vh>@test delete-word (selection)</vh>
-<v t="ekr.20100818073344.5911"><vh>work</vh></v>
-<v t="ekr.20100818073344.5912"><vh>before sel=1.7,1.12</vh></v>
-<v t="ekr.20100818073344.5913"><vh>after sel=1.7,1.7</vh></v>
+<v t="ekr.20100830113702.5977"><vh>@test delete-word (selection)</vh>
+<v t="ekr.20100830113702.5978"><vh>work</vh></v>
+<v t="ekr.20100830113702.5979"><vh>before sel=1.7,1.12</vh></v>
+<v t="ekr.20100830113702.5980"><vh>after sel=1.7,1.7</vh></v>
 </v>
 <v t="ekr.20061101121602.170"><vh>@test do-nothing</vh>
 <v t="ekr.20061101121602.171"><vh>work</vh></v>
@@ -25098,16 +25101,6 @@ leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20100817131738.5895">aaaa bbcc dddd</t>
 <t tx="ekr.20100817131738.5896">aaaa bbbb cccc dddd</t>
 <t tx="ekr.20100817131738.5897">aaaa bbcc dddd</t>
-<t tx="ekr.20100817131738.5902">import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20100817131738.5903">aaaa bbbb dddd</t>
-<t tx="ekr.20100817131738.5904">aaaa bbbb cccc dddd</t>
-<t tx="ekr.20100817131738.5905">aaaa bbbb dddd</t>
-<t tx="ekr.20100818073344.5910">import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20100818073344.5911">aaaa bbcc dddd</t>
-<t tx="ekr.20100818073344.5912">aaaa bbbb cccc dddd</t>
-<t tx="ekr.20100818073344.5913">aaaa bbcc dddd</t>
 <t tx="ekr.20100827140832.5913">exec(g.findTestScript(c,'@common leoRst test code'))
 rst3Test(c,p)
 </t>
@@ -26883,6 +26876,118 @@ This is the body of the section.&lt;/p&gt;
         print ('%3d %s' % (i,repr(expected_lines[i])))
         print ('%3d %s' % (i,repr(got_lines[i])))
         if expected_lines[i] != got_lines[i]: break</t>
+<t tx="ekr.20100830113702.5969">exec(g.findTestScript(c,'@common leoEditCommands test code'))
+runEditCommandTest(c,p,inHeadline=False)
+runEditCommandTest(c,p,inHeadline=True)
+</t>
+<t tx="ekr.20100830113702.5970">aaaa bbbb dddd</t>
+<t tx="ekr.20100830113702.5971">aaaa bbbb cccc dddd</t>
+<t tx="ekr.20100830113702.5972">aaaa bbbb dddd</t>
+<t tx="ekr.20100830113702.5977">exec(g.findTestScript(c,'@common leoEditCommands test code'))
+runEditCommandTest(c,p,inHeadline=False)
+runEditCommandTest(c,p,inHeadline=True)
+</t>
+<t tx="ekr.20100830113702.5978">aaaa bbcc dddd</t>
+<t tx="ekr.20100830113702.5979">aaaa bbbb cccc dddd</t>
+<t tx="ekr.20100830113702.5980">aaaa bbcc dddd</t>
+<t tx="ekr.20100830114008.5967">@others</t>
+<t tx="ekr.20100830114008.5968">import leo.core.leoTest as leoTest
+
+@
+This is an updated version of leo.core.leoTest.runEditCommandTest,
+moved here to take advantage of EKR's new common-test-code-sharing
+mechanism. It should be okay to delete the old code and replace
+all uses with:
+
+    exec(g.findTestScript(c,'@common leoEditCommands test code'))
+    runEditCommandTest(c,p)
+@c
+
+def runEditCommandTest (c,p,inHeadline=False):
+    '''
+    This is a helper for testing edit commands. It takes the name of the
+    command from the title of the test and the before and after conditions
+    from child nodes.
+    
+    :param inHeadline: if True, tests the command in the headline; if False,
+    tests the command in the body.
+    '''
+    
+    u = leoTest.testUtils(c) ; atTest = p.copy()
+
+    h = atTest.h
+    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
+    commandName = h[6:].strip()
+    # Ignore everything after the actual command name.
+    i = g.skip_id(commandName, 0, chars='-')
+    commandName = commandName[:i]
+    assert commandName, 'empty command name'
+    command = c.commandsDict.get(commandName)
+    assert command, 'no command: %s' % (commandName)
+
+    work,before,after = u.findChildrenOf(atTest)
+    before_h = 'before sel='
+    after_h = 'after sel='
+    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
+        h2 = node.h
+        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
+
+    sels = []
+    for node,h in ((before,before_h),(after,after_h)):
+        sel = node.h[len(h):].strip()
+        aList = [str(z) for z in sel.split(',')]
+        sels.append(tuple(aList))
+    sel1,sel2 = sels
+    #g.trace(repr(sels))
+
+    c.selectPosition(work)
+    
+    if inHeadline:
+        c.setHeadString(work,before.b)
+        # To make the node visible, and edit the label
+        c.redrawAndEdit(work)
+        w = c.edit_widget(work)
+        g.app.gui.set_focus(c,w)
+    else:
+        w = c.frame.body.bodyCtrl
+        c.setBodyString(work,before.b)
+    
+    try:
+        #g.trace(repr(sel1[0]),repr(sel1[1]))
+        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+        if inHeadline:
+            # simulateCommand doesn't seem to work when editing a headline
+            c.k.manufactureKeyPressForCommandName(w,commandName)
+        else:
+            c.k.simulateCommand(commandName)
+
+        # Exit headline-editing mode
+        if inHeadline: w.event_generate('&lt;Return&gt;')
+                
+        location = 'headline' if inHeadline else 'body'
+        s1 = work.h if inHeadline else work.b
+        s2 = after.b
+        
+        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
+        sel3 = w.getSelectionRange()
+        ins = w.toGuiIndex(w.getInsertPoint())
+        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
+        # Convert both selection ranges to gui indices.
+        sel2_orig = sel2
+        # g.trace(w)
+        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+        c.selectPosition(atTest)
+        atTest.contract()
+        # Don't redraw.
+    finally:
+        # Make sure to restore the headline so it can be used for future tests
+        if inHeadline:
+            c.setHeadString(work,'work')
+</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)

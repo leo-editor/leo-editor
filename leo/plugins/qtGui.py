@@ -1488,7 +1488,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
     def hasSelection(self):
 
         if self.check():
-            return self.widget.hasSelection()
+            return self.widget.hasSelectedText()
         else:
             return False
     #@+node:ekr.20090603073641.3856: *5* see & seeInsertPoint

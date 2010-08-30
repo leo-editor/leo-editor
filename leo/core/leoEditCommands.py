@@ -2690,12 +2690,16 @@ class editCommandsClass (baseEditCommandsClass):
             from_pos,to_pos = w.getSelectionRange()
         else:
             from_pos = w.getInsertPoint()
-            self.moveWordHelper(event=None,extend=False,forward=forward)
+            self.moveWordHelper(event,extend=False,forward=forward)
             to_pos = w.getInsertPoint()
 
-        w.delete(from_pos, to_pos)
+        # For Tk GUI, make sure to_pos > from_pos
+        if from_pos > to_pos:
+            from_pos,to_pos = to_pos,from_pos
+
+        w.delete(from_pos,to_pos)
         c.frame.body.forceFullRecolor()
-        self.endCommand(changed=True, setLabel=True)
+        self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20050920084036.87: *4* deleteNextChar
     def deleteNextChar (self,event):
 

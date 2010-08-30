@@ -2966,7 +2966,11 @@ class keyHandlerClass:
             g.app.gui.set_focus(c,w)
             g.app.gui.event_generate(w,stroke)
         else:
-            g.trace('no shortcut for %s' % (commandName),color='red')
+            message = 'no shortcut for %s' % (commandName)
+            if g.app.unitTesting:
+                raise AttributeError(message)
+            else:
+                g.trace(message,color='red')
     #@+node:ekr.20061031131434.127: *4* simulateCommand
     def simulateCommand (self,commandName):
 
