@@ -1029,6 +1029,8 @@ command mode.
 It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
 to Alt-x.
 #@+node:ekr.20040123102724: ** Can't or won't
+#@+node:ekr.20100128094926.6222: *3*  port pmw to py3k
+Pmw should be deprecated.
 #@+node:ekr.20080822065427.3: *3* Create desktop icon or start menu item
 #@+node:ekr.20080815174457.5: *3* Consider deleting private shadow files
 @nocolor

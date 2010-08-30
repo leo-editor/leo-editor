@@ -1331,6 +1331,9 @@ class configClass:
 
         """Get the setting and make sure its type matches the expected type."""
 
+        trace = False and not g.unitTesting and setting == 'create_nonexistent_directories'
+        if trace: g.pdb()
+
         isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
 
         # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -1389,7 +1392,6 @@ class configClass:
             isNone = val in (
                 unicode('None'),unicode('none'),unicode(''),
                 'None','none','',None)
-
 
         if not self.typesMatch(bunch.kind,requestedType):
             # New in 4.4: make sure the types match.
@@ -1690,18 +1692,20 @@ class configClass:
 
         return result
     #@+node:ekr.20041118084146: *3* Setters (g.app.config)
-    #@+node:ekr.20041118084146.1: *4* set (g.app.config) To be deleted??
+    #@+node:ekr.20041118084146.1: *4* set (g.app.config)
     def set (self,c,setting,kind,val):
 
         '''Set the setting.  Not called during initialization.'''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and setting == 'create_nonexistent_directories'
+        # if trace: g.pdb()
+
         found = False ;  key = self.munge(setting)
         if trace: g.trace(setting,kind,val)
 
         if c:
             d = self.localOptionsDict.get(c.hash())
-            if d: found = True
+            found = True # Bug fix: 2010/08/30.
 
         if not found:
             theHash = c.hash()

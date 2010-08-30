@@ -3,10 +3,76 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 4.8 vim, cleanups, your mission...
-#@+node:ekr.20100223123910.5836: *3* First
-#@+node:ekr.20100827095120.5870: *4* Before a1
-#@+node:ekr.20100826110728.5845: *5* Urgent: fix aspell
-#@+node:ekr.20100827095120.5863: *5* Urgent: fix @shadow problem
+#@+node:ekr.20060306194040: *3* Leo Video & slide show
+@nocolor
+
+The curse of knowledge
+http://groups.google.com/group/leo-editor/browse_thread/thread/3e75787223ee9303
+
+(Rich) I'd like to see something like:
+
+[Buttons]
+...[What are Buttons good for?]
+...[How do I make my own buttons?]
+......[Some commands you can use with buttons]
+......[Where to find button commands]
+#@+node:ekr.20100828074347.5828: *4* Resources
+http://sourceforge.net/forum/message.php?msg_id=3615177
+By: ktenney
+
+High on my ToLearn list is vnc2swf
+http://www.unixuser.org/~euske/vnc2swf/
+
+http://sourceforge.net/forum/message.php?msg_id=3615278
+By: James
+
+A lot of people are now using Wink for demonstrations
+(http://www.debugmode.com/wink/), it's is free and seems to work well.
+
+Check out http://murl.se/11332
+At the bottom they talk about tools and techniques.
+http://showmedo.com seems like it would be a good
+place to host vids also.
+
+I've listened/watched a fair number of things like this;
+my recomendation is to get a good microphone and
+pre-amp to record your voice, and prepare the audio
+track carefully. It is so aggravating when
+it's hard to discern the words being spoken.
+
+http://sourceforge.net/forum/message.php?msg_id=3758271
+
+From: Rich
+
+Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
+and it has a very good tutorial -- leads the beginner by the hand through much
+of the language. Also the help file has working code snippets
+to cut-n-paste-n-play-with. 
+#@+node:ekr.20100827095120.5870: *3* Before a1
+#@+node:ekr.20100828110445.5824: *4* Finish installer
+@nocolor-node
+
+Docs and installer should have top priority
+http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
+
+2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
+unrelated to Leo, I'll presumably need to reinstall Leo as well. It
+would be nice not to have to.
+
+These goals could possibly be achieved by installing Leo in an
+independent directory (chosen by the user as part of the installation)
+and adding a .pth file into Python's site-packages directory (see
+documentation for the site module). Then the leo script can be
+installed alongside the package - so you have
+
+    ... Program Files\Leo\
+            leo.bat
+            package\leo\...
+
+leo.pth:
+...\Program Files\Leo\package 
+#@+node:ekr.20100826110728.5845: *4* Urgent: fix aspell
+#@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
@@ -41,7 +107,7 @@ within SourceForge, but I contribute these thoughts in the hope that
 an active contributor may be able to make something of them.
 
 Nick
-#@+node:ekr.20100221142603.5620: *5* Fix bug 524890: Incomplete derived file
+#@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
 @nocolor-node
 
 This is the @others bug
@@ -56,7 +122,7 @@ Content (clone)
 I got just:
 
 Content (clone)
-#@+node:ekr.20100221142603.5625: *6* @@shadow clone-bug-test.py@
+#@+node:ekr.20100221142603.5625: *5* @@shadow clone-bug-test.py@
 # This buglet has been around for a long long time.
 # It's not clear what Leo can do to fix it.
 # In the meantime, don't put clones under two different
@@ -66,16 +132,17 @@ Content (clone)
 << B >>
 @others
 # end
-#@+node:ekr.20100221142603.5626: *7* << a >>
+#@+node:ekr.20100221142603.5626: *6* << a >>
 # Node a
 @others
-#@+node:ekr.20100221142603.5629: *8* clone
+#@+node:ekr.20100221142603.5629: *7* clone
 # Content (clone)
-#@+node:ekr.20100221142603.5628: *7* << b >>
+#@+node:ekr.20100221142603.5628: *6* << b >>
 # Node b
 @others
-#@+node:ekr.20100221142603.5629: *8* clone
+#@+node:ekr.20100221142603.5629: *7* clone
 # Content (clone)
+#@+node:ekr.20100827114047.5897: *4* Easy bug fixes
 #@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
 @nocolor-node
 
@@ -103,65 +170,9 @@ looks like a sentinel but isn't "verbatim".
 2. Leo does appear to read @raw and @end_raw properly in @thin files,
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20100827114047.5897: *5* Easy bug fixes
-#@+node:ekr.20100827095120.5862: *6* Fix script problem
-@nocolor-node
-
-seeking help with broken script node after upgrade to 4.7
-http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
-
-The following is a better listing:
-
-=============================
-from mod_scripting import scriptingController
-sc = scriptingController(c)
-
-c.frame.addIconRow()
-first = True
-for node in p.following_siblings_iter():
-   if first:
-       first = False
-       continue
-   h = node.headString()
-   buttonText = sc.getButtonText(h)
-   statusLine = "Hoist %s" % h
-   b = sc.createIconButton(text=buttonText,
-                           command=None,
-                           shortcut=None,
-                           statusLine=statusLine,
-                           bg='yellow')
-   def deleteButtonCallback(event=None,sc=sc,b=b):
-       sc.deleteButton(b)
-
-   def hoistButtonCallback (event=None,c=c,p=node.copy()):
-       while (c.canDehoist()):
-           c.dehoist()
-       c.selectPosition(p)
-       c.hoist()
-
-   b.configure(command=hoistButtonCallback)
-   b.bind('<3>',deleteButtonCallback)
-=============================
-
-On Windows, I have determined that the problem occurs at
-c.frame.addIconRow(). The traceback I get is:
-
-exception executing script
-AttributeError: 'ToolbarTkIconBarClass' object has no attribute
-'iconFrameContainerFrame'
---------------------
- line 4324:
-* line 4325:             w =
-Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
- line 4326:             w.pack(fill="x",pady=2)
- line 4327:             self.iconFrame = w
-
-Is there some other object I should be using instead of c.frame? I
-simply don't understand the connection between the error and my
-script.
-#@+node:ekr.20100220190251.5616: *6* Fix rst bug?
+#@+node:ekr.20100220190251.5616: *5* Fix rst bug?
 # See handleCodeMode
-#@+node:ekr.20100220190251.5617: *7* report
+#@+node:ekr.20100220190251.5617: *6* report
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
@@ -173,7 +184,7 @@ It's not clear whether this bug is worth fixing, and it's not clear whether
 there would be side effects of any potential fix.
 
 The simplest fix appears to be in handleCodeMode.
-#@+node:ekr.20090502071837.72: *7* handleCodeMode & helper
+#@+node:ekr.20090502071837.72: *6* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -226,7 +237,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-#@+node:ekr.20090502071837.73: *8* formatCodeModeLine
+#@+node:ekr.20090502071837.73: *7* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -235,7 +246,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-#@+node:ekr.20090502071837.74: *8* rstripList
+#@+node:ekr.20090502071837.74: *7* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -243,7 +254,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-#@+node:ekr.20090502071837.75: *8* finishCodePart
+#@+node:ekr.20090502071837.75: *7* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -252,7 +263,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-#@+node:ekr.20100220204150.5627: *7* @@rst hello.html
+#@+node:ekr.20100220204150.5627: *6* @@rst hello.html
 @ @rst-options
 verbose=True
 code_mode=True
@@ -261,7 +272,7 @@ number_code_lines=True
 write_intermediate_file=True
 @c
 
-#@+node:ekr.20100220204150.5628: *8* Greet the world
+#@+node:ekr.20100220204150.5628: *7* Greet the world
 @
 Greet the world, politely
 @c
@@ -272,12 +283,12 @@ g.es ("Hello, world")
     Was that polite enough?
     Indentation.
 @c
-#@+node:ekr.20100827095120.5867: *6* What to do about UiTypeException?
-#@+node:ekr.20100827114047.5898: *5* plugins
-#@+node:ekr.20100827095120.5866: *6* Check imports of all plugins
-#@+node:ekr.20100827095120.5859: *6* Remove or fix LeoN
-#@+node:ekr.20100827114047.5896: *5* Docs
-#@+node:ekr.20100826110728.5846: *6* Add explanation of icon box to tutorial
+#@+node:ekr.20100827095120.5867: *5* What to do about UiTypeException?
+#@+node:ekr.20100827114047.5898: *4* plugins
+#@+node:ekr.20100827095120.5866: *5* Check imports of all plugins
+#@+node:ekr.20100827095120.5859: *5* Remove or fix LeoN
+#@+node:ekr.20100827114047.5896: *4* Docs
+#@+node:ekr.20100826110728.5846: *5* Add explanation of icon box to tutorial
 > 1) Is there a place I can go to find what indicators could appear in
 > the icon box, and also what they mean?
 
@@ -287,7 +298,7 @@ Blue box: node contains text.
 Red vertical bar: node is marked.
 Circular arrow: node is cloned.
 Outer box is black: node is dirty.
-#@+node:ekr.20100827114047.5894: *6* Fix documentation for expand-all-subheads
+#@+node:ekr.20100827114047.5894: *5* Fix documentation for expand-all-subheads
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/604037
@@ -296,7 +307,7 @@ The manual mentions "Expand All Subheads", and it is implemented in
 leoCommands.py, but it is not present in leoEditCommands.py, and is thus
 unavailable except in python scripts. If this was intended, I'll remove it from
 the manual; if not, I'll add it to leoEditCommands.py.
-#@+node:ekr.20100827095120.5860: *6* Fix chapter 14 typos
+#@+node:ekr.20100827095120.5860: *5* Fix chapter 14 typos
 @nocolor-node
 
 I've recreated my feedback notes using the online service Diigo.
@@ -362,7 +373,7 @@ account, go to My Library, find your highlighted text and choose the
 
 Phew, been working on this and the Chapter 14 edits for hours. Time to
 take a break.
-#@+node:ekr.20100827095120.5864: *6* Clarify read @file node command
+#@+node:ekr.20100827095120.5864: *5* Clarify read @file node command
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
@@ -375,14 +386,14 @@ The "Read @<file> Nodes" works to incorporate external changes in the select
 tree, though it does generate an incorrect message:
 
     "no @<file> nodes in the selected tree".
-#@+node:ekr.20100521130114.5904: *6* Plugins documentation thread
+#@+node:ekr.20100521130114.5904: *5* Plugins documentation thread
 @nocolor-node
 
 We want better docs, automatically, and a way to update @enabled-plugins.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
-#@+node:ekr.20100827114047.5899: *5* Installation
-#@+node:ekr.20100826110728.5844: *6* Fix install problem 
+#@+node:ekr.20100827114047.5899: *4* Installation
+#@+node:ekr.20100826110728.5844: *5* Fix install problem 
 @nocolor-node
 
 I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
@@ -395,13 +406,13 @@ which works. (whooppee)
 
 However the shortcuts that the "leo install" created don't work they
 abort.
-#@+node:ekr.20100827114047.5900: *6* Convert to leoPy.leo EKRleoPy.leo, etc.
-#@+node:ekr.20100827114047.5895: *4* Before b1
-#@+node:ekr.20100827114047.5892: *5* Fix toggle-split-direction
+#@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
+#@+node:ekr.20100827114047.5895: *3* Before b1
+#@+node:ekr.20100827114047.5892: *4* Fix toggle-split-direction
 Should preserve scrollbar location and appropriate window ratio.
 
 https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
-#@+node:ekr.20100827114047.5893: *5* Fix rst file problem
+#@+node:ekr.20100827114047.5893: *4* Fix rst file problem
 @nocolor-node
 
 Reported by TL:
@@ -420,7 +431,7 @@ There appears to be two problems:
 1) Leo always adds a newline even if the already has one.
 2) After Leo has added the newline it mistakenly marks the buffer as
 modified.
-#@+node:ekr.20100826110728.5839: *5* Relocating .leo_shadow directories
+#@+node:ekr.20100826110728.5839: *4* Relocating .leo_shadow directories
 @nocolor-node
 
 2008
@@ -490,8 +501,8 @@ self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
 
 This looks like a Windows-only solution because of ':'.  It might fail
 in strange ways on other platforms.
-#@+node:ekr.20100827095120.5858: *5* Improve .ini installer
-#@+node:ekr.20100826110728.5840: *5* rst with show-comments-as-paragraph
+#@+node:ekr.20100827095120.5858: *4* Improve .ini installer
+#@+node:ekr.20100826110728.5840: *4* rst with show-comments-as-paragraph
 @nocolor-node
 
 derwish
@@ -612,7 +623,7 @@ We can test any one of these solutions starting early in the Leo 4.8
 release cycle, but none  is safe enough to include in Leo 4.7 final.
 
 If you would, please test fix #3 and report your results.  Thanks.
-#@+node:ekr.20100826110728.5842: *5* g.redirect breaks ipython
+#@+node:ekr.20100826110728.5842: *4* g.redirect breaks ipython
 @nocolor-node
 
 I am using the ipython bridge more and more. Its great.   I noticed
@@ -629,7 +640,7 @@ rod
 Thanks for this report.  Please do submit a bug.  Thanks.
 
 Edward
-#@+node:ekr.20100826110728.5841: *5* Allow proportional fonts in plain text
+#@+node:ekr.20100826110728.5841: *4* Allow proportional fonts in plain text
 @nocolor-node
 
 
@@ -668,8 +679,8 @@ I'd like to see this happen in the next day or so.  It would be a
 really good feature.
 
 Edward
-#@+node:ekr.20100223133351.5998: *5* show-invisibles doesn't work for blank lines
-#@+node:ekr.20081208102356.1: *5* Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
+#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
@@ -680,10 +691,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
-#@+node:ekr.20100131161507.6303: *5* Unit tests that all commands have docstrings
+#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
 # Just make the test.  It doesn't have to pass.
-#@+node:ekr.20100521090440.5885: *5* Fix mac unicode crasher
-#@+node:ekr.20100521090440.5886: *6* Report
+#@+node:ekr.20100521090440.5885: *4* Fix mac unicode crasher
+#@+node:ekr.20100521090440.5886: *5* Report
 @nocolor-node
 
 I put the following in qtGui.py after
@@ -721,8 +732,8 @@ nonetheless the special characters were inserted as expected.
 
 I think all this is quite a hack, but ... thanks for the hack, most
 important for me it's working for now. 
-#@+node:ekr.20100804095820.5812: *5* Fix thumb drive spec problem
-#@+node:ekr.20100204052559.5791: *4* Make TOC sidebar collapsible
+#@+node:ekr.20100804095820.5812: *4* Fix thumb drive spec problem
+#@+node:ekr.20100204052559.5791: *3* Make TOC sidebar collapsible
 @nocolor-node
 @wrap
 
@@ -744,7 +755,7 @@ Now the sidebar is collapsable. Mousing over the divider shows a << icon. When
 the sidebar is collapsed, mousing over the left edge shows a >> button.
 
 The question is, how to do this automatically?
-#@+node:ekr.20080603052650.466: *3* Fix vim problems
+#@+node:ekr.20080603052650.466: ** 4.9 Vim stuff
 @nocolor
 
 All problems appear to be easy.
@@ -752,6 +763,7 @@ All problems appear to be easy.
 http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 
 Vim mode users: your top 3 complaints, please
+#@+node:ekr.20100828074347.5827: *3* Vim bindings
 #@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
 Just playing with part of a template system, the (partial) mock up for
 "range()" is:
@@ -1183,18 +1195,20 @@ def __init__ (self,c):
     for key in g.app.config.ivarsDict:
         if key != '_hash':
             self.initIvar(key)
-#@+node:ekr.20041118084146.1: *6* set (g.app.config) To be deleted??
+#@+node:ekr.20041118084146.1: *6* set (g.app.config)
 def set (self,c,setting,kind,val):
 
     '''Set the setting.  Not called during initialization.'''
 
-    trace = False and not g.unitTesting
+    trace = False and not g.unitTesting # and setting == 'create_nonexistent_directories'
+    # if trace: g.pdb()
+
     found = False ;  key = self.munge(setting)
     if trace: g.trace(setting,kind,val)
 
     if c:
         d = self.localOptionsDict.get(c.hash())
-        if d: found = True
+        found = True # Bug fix: 2010/08/30.
 
     if not found:
         theHash = c.hash()
@@ -3999,7 +4013,6 @@ for p in c.all_positions():
 - Playing back the macro just calls k.masterKeyHandler.
 - Pickle the minimal representation of a key event, namely the stroke.
 
-#@+node:ekr.20100205152016.5837: *4* do @view nodes
 #@+node:ekr.20100211072044.5754: *4* Dubious usages of .unitTesting
 #@+node:ekr.20031218072017.1723: *5* createMenuEntries
 def createMenuEntries (self,menu,table,dynamicMenu=False):
@@ -5498,9 +5511,6 @@ def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
 #@+node:ekr.20090811141250.5955: *3* Most important features
 @ Important: There is another features list for 4.9.
 #@+node:ekr.20100520070413.5878: *4* Drag and drop for qt gui
-#@+node:ekr.20100128094926.6222: *4*  port pmw to py3k
-- Check web site first!
-- Create new branch for pmw work.
 #@+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 
@@ -5806,9 +5816,7 @@ in the 2000 steps which transformed 5 into 6 (just suggested this feature to
 the bazaar people). This happens actually quite often to me, since I use the
 SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
-#@+node:ekr.20100209114432.5750: *3* Better screen shots
-- Better screen shots.
-#@+node:ekr.20100206074650.5843: ** 4.9 Autocompletion
+#@+node:ekr.20100206074650.5843: ** 4.10 Autocompletion
 #@+node:ekr.20100827095120.5861: *3* Improve format of .leo files?
 http://groups.google.com/group/leo-editor/browse_thread/thread/be5052957b21ad97
 
@@ -7138,77 +7146,5 @@ def is_a_child_of_b(a, b):
         if is_a_child_of_b(a, child):
             return True
     return False
-#@+node:ekr.20060306194040: ** Leo Video & slide show
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3615177
-By: ktenney
-
-High on my ToLearn list is vnc2swf
-http://www.unixuser.org/~euske/vnc2swf/
-
-
-http://sourceforge.net/forum/message.php?msg_id=3615278
-By: James
-
-A lot of people are now using Wink for demonstrations
-(http://www.debugmode.com/wink/), it's is free and seems to work well.
-
-Check out http://murl.se/11332
-At the bottom they talk about tools and techniques.
-http://showmedo.com seems like it would be a good
-place to host vids also.
-
-I've listened/watched a fair number of things like this;
-my recomendation is to get a good microphone and
-pre-amp to record your voice, and prepare the audio
-track carefully. It is so aggravating when
-it's hard to discern the words being spoken.
-
-Thanks,
-Kent
-#@+node:ekr.20060531134434: *3* Tutorials
-http://sourceforge.net/forum/message.php?msg_id=3758271
-
-From: Rich
-
-Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
-and it has a very good tutorial -- leads the beginner by the hand through much
-of the language. Also the help file has working code snippets
-to cut-n-paste-n-play-with. I'd like to see something like:
-
-[Buttons]
-...[What are Buttons good for?]
-...[How do I make my own buttons?]
-......[Some commands you can use with buttons]
-......[Where to find button commands]
-#@+node:ekr.20091006063434.16252: *3* A slide show for newbies
-#@+node:ekr.20060531134434.1: *3* Screencasts
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3758303
-By: ktenney
-
-My sense is that documentation/screencasts has the
-greatest potential for expanding Leo's mindshare.
-
-I really like those produced by the good folks
-at Dabo;
-http://leafe.com/screencasts/
-http://leafe.com/screencasts/populategrid.html
-
-The TurboGears people have taken this to the extreme;
-http://www.turbogears.org/ultimate.html
-
-Leo is different enough that it warrants a 
-demonstration of it's advantages.
-
--------------------
-
-https://sourceforge.net/forum/message.php?msg_id=4396251
-By: ktenney
-
-2 good screencasts on making screencasts;
-
-http://murl.se/26296
-#@+node:ekr.20060829103523: *3* Render Leo slideshows
 #@-all
 #@-leo

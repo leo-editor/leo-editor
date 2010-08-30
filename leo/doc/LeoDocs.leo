@@ -72,8 +72,9 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
-<v t="ekr.20050831184021.3"><vh>Front matter</vh>
-<v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
+<v t="ekr.20050831184021.3" a="E"><vh>Front matter</vh>
+<v t="ekr.20100805165051.7148" a="E"
+expanded="ekr.20040414172212,"><vh>@thin frontMatter.txt</vh></v>
 </v>
 <v t="ekr.20070701101808"><vh>Preface</vh>
 <v t="ekr.20100805165051.7149"><vh>@thin preface.txt</vh></v>
@@ -173,8 +174,9 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341"><vh>Leo Screenshots</vh>
-<v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
+<v t="ekr.20100821182153.4344" a="E"
+expanded="ekr.20100821182153.4345,ekr.20100821182153.4346,ekr.20100821182153.4357,"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -508,8 +510,32 @@ p.setBodyString(s)</t>
 
 Rewrite chapter 6.
 
-Revise Tutorial.</t>
-<t tx="ekr.20100821182153.4341"></t>
+Revise Tutorial.
+
+Create screen shots.</t>
+<t tx="ekr.20100821182153.4341">@language python
+
+@
+
+To do:
+    
+** Make each slideshow distinct.
+
+To create a distinct slideshow:
+    
+cd leo\doc\html
+mkdir slideshow-name
+copy conf.py slideshow-name
+copy leo_toc
+copy make.bat slideshow-name
+copy Makefile slideshow-name
+copy Leo4-80-border.jpg slideshow-name
+
+cd slideshow-name
+mkdir _build
+mkdir _static
+mkdir screenshots
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

@@ -3,7 +3,13 @@
 .. @@language rest
 .. @@tabwidth -4
 .. @+all
+.. @+node:ekr.20100828111722.4429: ** @button std-size
+@language python
+
+c.frame.top.resize(1000,800)
 .. @+node:ekr.20100819163514.4364: ** @button screenshot
+@language python
+
 import PyQt4.QtGui
 import os
 import time
@@ -171,12 +177,14 @@ Slides
 
 This is the front page for various slide shows about Leo.
 
-.. toctree::
-    :maxdepth: 1
+.. _`Installing Leo`: installation/installation-001.html
+.. _`What is Leo`:    what-is-leo/what-is-leo-001.html
 
-    installation-001
-    what-is-leo-001
-.. @+node:ekr.20100821182153.4345: ** @slideshow html/installation.html
+`Installing Leo`_
+
+`What is Leo`_
+
+.. @+node:ekr.20100821182153.4345: ** @slideshow html/installation/installation.html
 .. The body of this node is ignored except for options.
 
 @ @rst-options
@@ -188,37 +196,43 @@ write_intermediate_file = True
 .. @+node:ekr.20100822164918.4364: *3* Installing Leo
 This slideshow tells how to install Leo.
 
-.. toctree::
-    :hidden:
-    :glob:
-
-    installation-0*
+..  .. toctree::
+..    ..  :hidden:
+..    ..  :glob:
+..
+..    installation-0*
 .. @+node:ekr.20100821182153.4347: *3* Two versions
+.. _`the Python web site`:  http://www.python.org/
+.. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
+
 Windows Users:
 
     Installing Leo requires two steps:
 
-       1. Install Python: click here, save to your desktop, then double-click on the saved file.
-       2. Install Leo: click here, save to your desktop, then double-click on the saved file. 
+    1. Install Python: download the Windows MSI installer (a .msi file) from
+       `the Python web site`_, and double-click on the installer. (Python is a
+       type of software for creating and running computer programs.)
 
-    (Python is a type of software for creating and running computer programs.) 
+    2. Install Leo: download Leo's executable installer (an .exe file) from
+       `Leo's download page`_, then double-click on the .exe file.
 
 Unix and Mac Users:
 
     Please continue to next page.
 
-
 Also, if you are a programmer and want to get the Leo files without using an
 installer, continue to the next page.
 .. @+node:ekr.20100821182153.4348: *3* Full installation
+.. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
+
 Full installation of Leo requires that you:
 
-   1. Install Python
-   2. Install the Leo files 
+   1. **Install Python**
+   2. **Install the Leo files**
 
-To install Python, follow the directions on this page.
+To install Python, follow the directions on the previous page.
 
-To install Leo, go to this page and download the most recent zip file under the
+To install Leo, go to `Leo's download page`_ and download the most recent zip file under the
 heading "Leo2.py". Download the zip file to your desktop or other location, and
 then unzip it to the folder of your choice.
 
@@ -227,6 +241,10 @@ To run Leo, double-click on the file leo.py that you have just unzipped.
 Once you have installed Leo, you can configure Leo using the leoconfig.txt file.
 For more information about this see the documentation distributed with Leo.
 .. @+node:ekr.20100821182153.4350: *3* Leo is a free program
+.. _`Edward K. Ream`:   http://webpages.charter.net/edreamleo/ekr.html
+.. _`leo-editor`:       http://groups.google.com/group/leo-editor
+.. _`Python Tutorial`:  http://docs.python.org/tutorial/
+
 Leo is a free program distributed under the MIT license. This means that not
 only can you use the program freely including commercially, the full
 installation comes with source code that you can modify as you wish, as long as
@@ -243,7 +261,7 @@ information, see the `leo-editor`_ Google Group.
 
 Not only is Leo free software, it is supported software. Post questions and bug
 reports to `leo-editor`_ Google Group.
-.. @+node:ekr.20100821182153.4346: ** @slideshow html/what-is-leo.html
+.. @+node:ekr.20100821182153.4346: ** @slideshow html/what-is-leo/what-is-leo.html
 .. The body of this node is ignored except for options.
 
 @ @rst-options
@@ -381,7 +399,7 @@ My to-do list.
 .. @+node:ekr.20100821182153.4357: *3* File:Save
 You can save the outline in a leo file. Click File - Save.
 
-.. image:: C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4357.png
+.. .. image:: C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4357.png
 
 .. @+node:ekr.20100824162707.4438: *4* @screenshot-tree-setup Urgent
 .. @+node:ekr.20100824162707.4439: *5* Organizer
@@ -477,4 +495,5 @@ Chose Save
 .. @+node:ekr.20100823164432.4416: *3* 23
 .. @+node:ekr.20100823164432.4417: *3* 24
 .. @-all
+
 .. @-leo
