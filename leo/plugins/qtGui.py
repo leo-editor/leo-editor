@@ -6461,7 +6461,7 @@ class leoQtGui(leoGui.leoGui):
         """Dispay a modal TkPropertiesDialog"""
 
         # g.trace(data)
-        g.es_print('Properies menu not supported for Qt gui',color='blue')
+        g.es_print('Properties menu not supported for Qt gui',color='blue')
         result = 'Cancel'
         return result,data
 
