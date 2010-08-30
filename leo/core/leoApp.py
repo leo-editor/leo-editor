@@ -683,7 +683,7 @@ class LeoApp:
                     s = g.app.leoID
                     if not g.isPython3: # 2010/08/27
                         s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
-                    f.write()
+                    f.write(s)
                     f.close()
                     if g.os_path_exists(fn):
                         g.es_print('',tag,'created in',theDir,color='red')

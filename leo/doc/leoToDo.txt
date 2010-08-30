@@ -48,6 +48,7 @@ Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.co
 and it has a very good tutorial -- leads the beginner by the hand through much
 of the language. Also the help file has working code snippets
 to cut-n-paste-n-play-with. 
+#@+node:ekr.20100830094511.5826: *3* Deprecate tk
 #@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20100828110445.5824: *4* Finish installer
 @nocolor-node
@@ -284,6 +285,61 @@ g.es ("Hello, world")
     Indentation.
 @c
 #@+node:ekr.20100827095120.5867: *5* What to do about UiTypeException?
+#@+node:ekr.20100827095120.5862: *5* Fix script problem
+@nocolor-node
+
+seeking help with broken script node after upgrade to 4.7
+http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
+
+The following is a better listing:
+
+=============================
+from mod_scripting import scriptingController
+sc = scriptingController(c)
+
+c.frame.addIconRow()
+first = True
+for node in p.following_siblings_iter():
+   if first:
+       first = False
+       continue
+   h = node.headString()
+   buttonText = sc.getButtonText(h)
+   statusLine = "Hoist %s" % h
+   b = sc.createIconButton(text=buttonText,
+                           command=None,
+                           shortcut=None,
+                           statusLine=statusLine,
+                           bg='yellow')
+   def deleteButtonCallback(event=None,sc=sc,b=b):
+       sc.deleteButton(b)
+
+   def hoistButtonCallback (event=None,c=c,p=node.copy()):
+       while (c.canDehoist()):
+           c.dehoist()
+       c.selectPosition(p)
+       c.hoist()
+
+   b.configure(command=hoistButtonCallback)
+   b.bind('<3>',deleteButtonCallback)
+=============================
+
+On Windows, I have determined that the problem occurs at
+c.frame.addIconRow(). The traceback I get is:
+
+exception executing script
+AttributeError: 'ToolbarTkIconBarClass' object has no attribute
+'iconFrameContainerFrame'
+--------------------
+ line 4324:
+* line 4325:             w =
+Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
+ line 4326:             w.pack(fill="x",pady=2)
+ line 4327:             self.iconFrame = w
+
+Is there some other object I should be using instead of c.frame? I
+simply don't understand the connection between the error and my
+script.
 #@+node:ekr.20100827114047.5898: *4* plugins
 #@+node:ekr.20100827095120.5866: *5* Check imports of all plugins
 #@+node:ekr.20100827095120.5859: *5* Remove or fix LeoN
