@@ -2042,7 +2042,8 @@ class DynamicWindow(QtGui.QMainWindow):
     def createTreeWidget (self,parent,name):
 
         c = self.leo_c
-        w = QtGui.QTreeWidget(parent)
+        # w = QtGui.QTreeWidget(parent)
+        w = LeoQTreeWidget(c,parent)
         self.setSizePolicy(w)
 
         # 12/01/07: add new config setting.
@@ -5156,6 +5157,235 @@ class leoQtMenu (leoMenu.leoMenu):
     def getMacHelpMenu (self,table):
 
         return None
+    #@-others
+#@+node:ekr.20100830205422.3714: *3* class LeoQTreeWidget
+class LeoQTreeWidget(QtGui.QTreeWidget):
+
+    def __init__(self,c,parent):
+
+        QtGui.QTreeWidget.__init__(self, parent)
+        self.setAcceptDrops(True)
+        self.setDragEnabled(True)
+        self.c = c
+
+    def dragMoveEvent(self,ev):
+        pass
+
+    #@+others
+    #@+node:ekr.20100830205422.3715: *4* dragEnter
+    def dragEnterEvent(self,ev):
+
+        '''Export c.p's tree as a Leo mime-data.'''
+
+        c = self.c ; tree = c.frame.tree
+        if not ev: return
+
+        md = ev.mimeData()
+        if not md: return
+
+        ev.accept()
+        c.endEditing()
+        s = c.fileCommands.putLeoOutline()
+        fn = c.fileName()
+        md.setText('%s,%s' % (fn,s))
+        # s = '%s,%s' % (fn,s)
+        # s = g.toEncodedString(s,encoding='utf-8',reportErrors=False)
+        # md.setData(self.format,s)
+    #@+node:ekr.20100830205422.3716: *4* dropEvent & helpers
+    def dropEvent(self,ev):
+
+        if not ev: return
+        c = self.c ; tree = c.frame.tree ; u = c.undoer
+
+        item = self.itemAt(ev.pos())
+        if not item: return
+
+        ev.setDropAction(QtCore.Qt.IgnoreAction)
+        ev.accept()
+
+        md = ev.mimeData()
+        if not md: return
+
+        if md.hasUrls():
+            self.urlDrop(md)
+        else:
+            s = md.text()
+            if s:
+                self.outlineDrop(ev,s)
+    #@+node:ekr.20100830205422.3717: *5* insertHelper
+    def insertHelper (self,p1,p2):
+
+        '''Insert p1 after (or as first child of) p2.'''
+
+        undoData = u.beforeInsertNode(p1,
+            pasteAsClone=False,copiedBunchList=[])
+        c.validateOutline()
+        c.selectPosition(pasted)
+        pasted.setDirty()
+        c.setChanged(True)
+        back = pasted.back()
+        if back and back.isExpanded():
+            pasted.moveToNthChildOf(back,0)
+        c.setRootPosition(c.findRootPosition(pasted))
+
+        # if pasteAsClone:
+            # # Set dirty bits for ancestors of *all* pasted nodes.
+            # # Note: the setDescendentsDirty flag does not do what we want.
+            # for p in pasted.self_and_subtree():
+                # p.setAllAncestorAtFileNodesDirty(
+                    # setDescendentsDirty=False)
+
+        u.afterInsertNode(pasted,'Drag',undoData)
+        c.redraw_now(pasted)
+        c.recolor()
+    #@+node:ekr.20100830205422.3718: *5* interFileDrop
+    def interFileDrop (self,fn,p,s):
+
+        '''Paste the mime data after (or as the first child of) p.'''
+
+        c = self.c ; tree = c.frame.tree ; u = c.undoer
+        # g.trace(len(s),p.h)
+
+        isLeo = g.match(s,0,g.app.prolog_prefix_string)
+        if not isLeo: return
+
+        c.selectPosition(p)
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(
+            s,reassignIndices=True)
+        if not pasted: return
+
+        undoData = u.beforeInsertNode(p,
+            pasteAsClone=False,copiedBunchList=[])
+        c.validateOutline()
+        c.selectPosition(pasted)
+        pasted.setDirty()
+        c.setChanged(True)
+        back = pasted.back()
+        if back and back.isExpanded():
+            pasted.moveToNthChildOf(back,0)
+        c.setRootPosition(c.findRootPosition(pasted))
+
+        # if pasteAsClone:
+            # # Set dirty bits for ancestors of *all* pasted nodes.
+            # # Note: the setDescendentsDirty flag does not do what we want.
+            # for p in pasted.self_and_subtree():
+                # p.setAllAncestorAtFileNodesDirty(
+                    # setDescendentsDirty=False)
+
+        u.afterInsertNode(pasted,'Drag',undoData)
+        c.redraw_now(pasted)
+        c.recolor()
+    #@+node:ekr.20100830205422.3719: *5* intraFileDrop
+    def intraFileDrop (self,fn,p1,p2):
+
+        '''Move p1 after (or as the first child of) p2.'''
+
+        c = self.c ; u = c.undoer
+        c.selectPosition(p1)
+
+        if p2.hasChildren() and p2.isExpanded():
+            # Attempt to move p1 to the first child of p2.
+            parent = p2
+            def move(p1,p2):
+                p1.moveToNthChildOf(p2,0)
+        else:
+            # Attempt to move p1 after p2.
+            parent = p2.parent()
+            def move(p1,p2):
+                p1.moveAfter(p2)
+
+        ok = c.checkMoveWithParentWithWarning(p1,parent,True)
+        if ok:
+            undoData = u.beforeMoveNode(p1)
+            dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+            move(p1,p2)
+            c.setChanged(True)
+            u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
+            c.redraw_now(p1)
+    #@+node:ekr.20100830205422.3720: *5* outlineDrop
+    def outlineDrop (self,ev,s):
+
+        c = self.c ; tree = c.frame.tree
+
+        i = s.find(',')
+        if i == -1: return
+        fn = s[:i] ; s = s[i+1:]
+        if not fn: return
+
+        # g.trace(type(s),len(s),fn)
+        item = self.itemAt(ev.pos())
+        if not item: return
+
+        itemHash = tree.itemHash(item)
+        p = tree.item2positionDict.get(itemHash)
+
+        if p and p != c.p:
+            if fn == c.fileName():
+                self.intraFileDrop(fn,c.p,p)
+            else:
+                self.interFileDrop(fn,p,s)
+    #@+node:ekr.20100830205422.3721: *5* urlDrop & helpers
+    def urlDrop (self,mimeData):
+
+        c = self.c ; u = c.undoer
+
+        urls = mimeData.urls()
+        if not urls: return
+
+        changed = False
+        c.undoer.beforeChangeGroup(c.p,'Drag')
+        for z in urls:
+            url = QtCore.QUrl(z)
+            if url.scheme() == 'file':
+                fn = url.path()
+                changed |= self.createAtEditNode(fn)
+            else:
+                # g.trace(url.scheme(),url)
+                pass
+
+        if changed:
+            c.setChanged(True)
+            u.afterChangeGroup(c.p,'Drag',reportFlag=False,dirtyVnodeList=[])
+            c.redraw_now()
+    #@+node:ekr.20100830205422.3722: *6* createAtEditNode & helper
+    def createAtEditNode (self,fn):
+
+        if sys.platform.lower().startswith('win'):
+            if fn.startswith('/'):
+                fn = fn[1:]
+
+        changed = False
+        if g.os_path_exists(fn):
+            try:
+                f = open(fn,'r')
+            except IOError:
+                f = None
+            if f:
+                s = f.read()
+                f.close()
+                self.createAtEditNodeHelper(fn,s)
+                return True
+
+        g.es_print('not found: %s' % (fn))
+        return False
+    #@+node:ekr.20100830205422.3723: *7* createAtEditNodeHelper
+    def createAtEditNodeHelper (self,fn,s):
+
+        '''Insert s in an @edit node after c.p.'''
+
+        c = self.c ; p = c.p ; u = c.undoer
+
+        undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+        if p.hasChildren() and p.isExpanded():
+            p2 = p.insertAsNthChild(0)
+        else:
+            p2 = p.insertAfter()
+
+        p2.h,p2.b = '@edit %s' % (fn),s
+        p2.clearDirty() # Don't automatically rewrite this node.
+
+        u.afterInsertNode(p2,'Drag',undoData)
     #@-others
 #@+node:ekr.20081121105001.379: *3* class leoQtSpellTab
 class leoQtSpellTab:
