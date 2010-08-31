@@ -1082,6 +1082,1059 @@ def replaceFileWithString (self,fn,s):
         x.error('unexpected exception writing file: %s' % (fn))
         g.es_exception()
         return False
+#@+node:ekr.20100831090251.5839: *4* Take more care with inititing gui
+#@+node:ekr.20031218072017.1416: *5* app.__init__
+def __init__(self):
+
+    # These ivars are the global vars of this program.
+    self.afterHandler = None
+    self.atPathInBodyWarning = None # Set by get_directives_dict
+        # The headline of the @<file> node containing
+        # an @path directive in the body.
+    self.batchMode = False # True: run in batch mode.
+    self.commandName = None # The name of the command being executed.
+    self.config = None # The leoConfig instance.
+    self.count = 0 # General purpose debugging count.
+    self.db = None # Set to a leoCacher later.
+    self.debug = False
+        # True: enable extra debugging tests (not used at present).
+        # WARNING: this could greatly slow things down.
+    self.debugSwitch = 0
+        # 0: default behavior
+        # 1: full traces in g.es_exception.
+        # 2: call pdb.set_trace in g.es_exception, etc.
+    self.disableSave = False
+    self.enableUnitTest = True
+    self.extensionsDir = None
+    self.globalConfigDir = None
+        # The directory assumed to contain the global configuration files.
+    self.globalOpenDir = None # The directory last used to open a file.
+    self.gui = None # The gui class.
+    self.guiArgName = None # The gui name given in --gui option.
+    self.hasOpenWithMenu = False # True: open with plugin has been loaded.
+    self.hookError = False # True: suppress further calls to hooks.
+    self.hookFunction = None # Application wide hook function.
+    self.homeDir = None # The user's home directory.
+    self.homeLeoDir = None
+        # The '.leo' subdirectory of the user's home directory.
+    self.homeSettingsPrefix = '.'
+        # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
+    self.idle_imported = False # True: we have done an import idle
+    self.idleTimeDelay = 100
+        # Delay in msec between calls to "idle time" hook.
+    self.idleTimeHook = False
+        # True: the global idleTimeHookHandler will reshedule itself.
+    self.inBridge = False # True: running from leoBridge module.
+    self.initing = True # True: we are initiing the app.
+    self.killed = False # True: we are about to destroy the root window.
+    self.leoID = None # The id part of gnx's.
+    self.loadDir = None # The directory from which Leo was loaded.
+    self.loadedPlugins = [] # List of loaded plugins that have signed on.
+    self.log = None # The LeoFrame containing the present log.
+    self.logInited = False # False: all log message go to logWaiting list.
+    self.logIsLocked = False # True: no changes to log are allowed.
+    self.logWaiting = [] # List of messages waiting to go to a log.
+    self.menuWarningsGiven = False # True: supress warnings in menu code.
+    self.nodeIndices = None # Singleton node indices instance.
+    self.numberOfWindows = 0 # Number of opened windows.
+    self.oneConfigFilename = ''
+        # If non-empty, the name of a single configuration file.
+    self.openWithFiles = [] # List of data used by Open With command.
+    self.openWithFileNum = 0
+        # Used to generate temp file names for Open With command.
+    self.openWithTable = None
+        # The table passed to createOpenWithMenuFromTable.
+    self.positions = 0 # Count of the number of positions generated.
+    self.printWaiting = [] # Queue of messages to be sent to the printer.
+    self.qt_use_tabs = False # True: allow tabbed main window.
+    self.quitting = False # True if quitting.  Locks out some events.
+    self.realMenuNameDict = {}
+        # Contains translations of menu names and menu item names.
+    self.root = None # The hidden main window. Set later.
+    self.searchDict = {} # For communication between find/change scripts.
+    self.scanErrors = 0 # The number of errors seen by g.scanError.
+    self.scriptDict = {}
+        # For communication between Execute Script command and scripts.
+    self.silentMode = False # True if signon is more silent.
+    self.statsDict = {}
+        # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
+    self.trace = False # True: enable debugging traces.
+    self.trace_gc = False # defined in run()
+    self.trace_gc_calls = False # defined in run()
+    self.trace_gc_verbose = False # defined in run()
+    self.trace_gc_inited = False
+    self.tracePositions = False
+    self.trace_list = [] # "Sherlock" argument list for tracing().
+    self.translateToUpperCase = False
+    self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
+    self.unitTestDict = {} # For communication between unit tests and code.
+    self.unitTesting = False # True if unit testing.
+    self.useIpython = False
+    self.use_psyco = False
+        # Can't be a config param because it is used
+        # before config module can be inited.
+    self.user_xresources_path = None # Resource file for Tk/tcl.
+    self.windowList = []
+        # Global list of all frames.  Does not include hidden root window.
+
+    # Global panels.  Destroyed when Leo ends.
+    self.pythonFrame = None
+
+    << Define global constants >>
+    << Define global data structures >>
+#@+node:ekr.20031218072017.1417: *6* << define global constants >>
+# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+self.prolog_postfix_string = "?>"
+self.prolog_namespace_string = \
+    'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+#@+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@+node:ekr.20100831090251.5838: *5* app.createXGui
+#@+node:ekr.20100831090251.5840: *6* app.createCursesGui
+def createCursesGui (self,fileName='',verbose=False):
+
+    app = self
+
+    leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
+#@+node:ekr.20090619065122.8593: *6* app.createDefaultGui
+def createDefaultGui (self,fileName='',verbose=False):
+
+    """A convenience routines for plugins to create the default gui class."""
+
+    app = self ; argName = app.guiArgName
+
+    # This method can be called twice if we had to get .leoID.txt.
+    if app.gui: return
+
+    if argName == 'qt':
+        app.createQtGui(fileName,verbose=verbose)
+        if not app.gui:
+            print('Can not create Qt gui: trying Tk gui')
+            app.createTkGui(fileName,verbose=verbose)  
+    elif argName == 'tk':
+        app.createTkGui(fileName,verbose=verbose)
+        if not app.gui:
+            print('Can not create Tk gui: trying Qt gui')
+            app.createQtGui(fileName,verbose=verbose)
+    elif argName == 'null':
+        app.createNullGui()
+    elif argName == 'curses':
+        app.createCursesGui()
+
+    if not app.gui:
+        print('Leo requires either Tk or Qt to be installed.')
+#@+node:ekr.20090202191501.5: *6* app.createNullGui
+def createNullGui (self):
+
+    # Don't import this at the top level:
+    # it might interfere with Leo's startup logic.
+
+    app = self
+
+    try:
+        import leo.core.leoGui as leoGui
+    except ImportError:
+        leoGui = None
+
+    if leoGui:
+        app.gui = leoGui.nullGui("nullGui")
+#@+node:ekr.20031218072017.1938: *6* app.createNullGuiWithScript
+def createNullGuiWithScript (self,script=None):
+
+    app = self
+
+    try:
+        import leo.core.leoGui as leoGui
+    except ImportError:
+        leoGui = None
+
+    if leoGui:
+        app.batchMode = True
+        app.gui = leoGui.nullGui("nullGui")
+        app.gui.setScript(script)
+#@+node:ekr.20090202191501.1: *6* app.createQtGui
+def createQtGui (self,fileName='',verbose=False):
+
+    # Do NOT omit fileName param: it is used in plugin code.
+
+    """A convenience routines for plugins to create the Qt gui class."""
+
+    app = self
+
+    try:
+        # Take care to try the same imports as in qtGui.py.
+        import PyQt4.QtCore
+        import PyQt4.QtGui            
+        import leo.plugins.qtGui as qtGui
+    except ImportError:
+        qtGui = None
+
+    if qtGui:
+        qtGui.init()
+        if app.gui and fileName and verbose:
+            print('qtGui created in %s' % fileName)
+#@+node:ekr.20031218072017.2610: *6* app.createTkGui
+def createTkGui (self,fileName='',verbose=False):
+
+    """A convenience routines for plugins to 
+    create the default Tk gui class."""
+
+    app = self
+
+    try:
+        import tkinter as Tk
+    except ImportError:
+        try:
+            import Tkinter as Tk
+        except ImportError:
+            Tk = None
+
+    Pmw = g.importExtension('Pmw',pluginName='startup',verbose=False)
+
+    if Tk and Pmw:
+        leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
+        if app.gui and fileName and verbose:
+            print('tkGui created in %s' % fileName)
+#@+node:ekr.20090126063121.3: *6* app.createWxGui
+def createWxGui (self,fileName='',verbose=False):
+
+    # Do NOT omit fileName param: it is used in plugin code.
+
+    """A convenience routines for plugins to create the wx gui class."""
+
+    leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
+
+    if fileName and verbose:
+
+        print('wxGui created in %s' % fileName)
+#@+node:ekr.20031218072017.1934: *5* run & helpers
+def run(fileName=None,pymacs=None,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    trace = False and not g.unitTesting
+    if trace: print('runLeo.run: sys.argv %s' % sys.argv)
+
+    # Phase 1: before loading plugins.
+    # Scan options, set directories and read settings.
+    if not isValidPython(): return
+    fn,relFn,script,versionFlag = doPrePluginsInit(fileName,pymacs)
+
+    # We can't print the signon until we know the gui.
+    g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    if versionFlag:
+        print(g.app.signon) ; return
+    if not g.app.gui: return
+
+    # Phase 2: load plugins: the gui has already been set.
+    g.doHook("start1")
+    if g.app.killed: return
+
+    # Phase 3: after loading plugins. Create a frame.
+    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
+    if ok and not versionFlag: g.app.gui.runMainLoop()
+#@+node:ekr.20090519143741.5915: *6* doPrePluginsInit & helpers
+def doPrePluginsInit(fileName,pymacs):
+
+    '''
+    Scan options, set directories and read settings.'''
+
+    trace = False
+    g.computeStandardDirectories()
+    adjustSysPath()
+    fileName2,gui,script,versionFlag,windowFlag = scanOptions()
+    if fileName2: fileName = fileName2
+    if trace:
+        print('runLeo.doPrePluginsInit: sys.argv %s' % sys.argv)
+        print('runLeo.doPrePluginsInit: fileName %s' % fileName)
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    initApp(verbose)
+    fileName,relativeFileName = getFileName(fileName,script)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    # New in Leo 4.7: the default encoding is always 'utf-8'.
+    # g.app.setEncoding()
+    g.app.setGlobalDb()
+    if g.app.gui:
+        pass # initApp (setLeoID) created the gui.
+    elif gui is None:
+        if script and not windowFlag:
+            # Always use null gui for scripts.
+            g.app.createNullGuiWithScript(script)
+        else:
+            g.app.createDefaultGui(__file__)
+    else:
+        createSpecialGui(gui,pymacs,script,windowFlag)
+
+    return fileName,relativeFileName,script,versionFlag
+#@+node:ekr.20080921060401.4: *7* createSpecialGui
+def createSpecialGui(gui,pymacs,script,windowFlag):
+
+    if pymacs:
+        g.app.createNullGuiWithScript(script=None)
+    elif script:
+        if windowFlag:
+            g.app.createDefaultGui()
+            g.app.gui.setScript(script=script)
+            sys.args = []
+        else:
+            g.app.createNullGuiWithScript(script=script)
+    else:
+        assert g.app.guiArgName
+        g.app.createDefaultGui() 
+#@+node:ekr.20070306085724: *7* adjustSysPath
+def adjustSysPath ():
+
+    '''Adjust sys.path to enable imports as usual with Leo.
+
+    This method is no longer needed:
+
+    1. g.importModule will import from the
+       'external' or 'extensions' folders as needed
+       without altering sys.path.
+
+    2  Plugins now do fully qualified imports.
+    '''
+#@+node:ekr.20071117060958: *7* getFileName & helper
+def getFileName (fileName,script):
+
+    '''Return the filename from sys.argv.'''
+
+    if not fileName and not script:
+        if sys.platform.startswith('win'):
+            if len(sys.argv) > 1:
+                fileName = ' '.join(sys.argv[1:])
+            else:
+                fileName = None
+        else:
+            fileName = len(sys.argv) > 1 and sys.argv[-1]
+
+    return completeFileName(fileName)
+#@+node:ekr.20041124083125: *8* completeFileName
+def completeFileName (fileName):
+
+    trace = False
+    if trace: print('completeFileName',fileName)
+
+    if not (fileName and fileName.strip()):
+        return None,None
+
+    fileName = g.toUnicode(fileName)
+
+    relativeFileName = fileName
+    fileName = g.os_path_finalize(fileName)
+
+    junk,ext = g.os_path_splitext(fileName)
+
+    # Bug fix: don't add .leo to existing files.
+    if g.os_path_exists(fileName):
+        pass # use the fileName as is.
+    elif ext != '.leo':
+        fileName = fileName + ".leo"
+        relativeFileName = relativeFileName + ".leo"
+
+    if trace: print('completeFileName',fileName)
+
+    return fileName,relativeFileName
+#@+node:ekr.20080921091311.2: *7* initApp
+def initApp (verbose):
+
+    assert g.app.guiArgName
+
+    # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
+    g.app.config = leoConfig.configClass()
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+#@+node:ekr.20041130093254: *7* reportDirectories
+def reportDirectories(verbose):
+
+    if verbose:
+        for kind,theDir in (
+            ("load",g.app.loadDir),
+            ("global config",g.app.globalConfigDir),
+            ("home",g.app.homeDir),
+        ):
+            g.es("%s dir:" % (kind),theDir,color="blue")
+#@+node:ekr.20091007103358.6061: *7* scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+    trace = False
+
+    # Note: this automatically implements the --help option.
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--debug',        action="store_true",dest="debug")
+    parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--gui',
+        dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #parser.add_option('--help',
+        # action="store_true",dest="help_option")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+    parser.add_option('--no-cache',     action="store_true",dest='no_cache')
+    parser.add_option('--silent',       action="store_true",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--version',      action="store_true",dest="version")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    if trace: print('scanOptions',sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --debug
+    if options.debug:
+        g.debug = True
+        g.trace('*** debug mode on')
+
+    # -f or --file
+    fileName = options.fileName
+
+    # --gui
+    gui = options.gui
+    g.app.qt_use_tabs = False
+
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            gui = g.app.guiArgName = 'qt'
+            g.app.qt_use_tabs = True
+        elif gui in ('curses','tk','qt','null'): # 'wx',
+            g.app.guiArgName = gui
+        else:
+            g.trace('unknown gui: %s' % gui)
+            g.app.guiArgName = gui = 'qt'
+    else:
+        gui = g.app.guiArgName = 'qt'
+
+    assert gui == g.app.guiArgName
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # --no-cache
+    if options.no_cache:
+        g.trace('disabling caching')
+        g.enableDB = False
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        script,e = g.readFileIntoString(script_name,kind='script:')
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+
+    # --silent
+    g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
+
+    # --version: print the version and exit.
+    versionFlag = options.version
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    if trace:
+        print('scanOptions: fileName',fileName)
+        print('scanOptions: argv',sys.argv)
+    return fileName,gui,script,versionFlag,windowFlag
+#@+node:ekr.20090519143741.5917: *6* doPostPluginsInit & helpers
+def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
+
+    '''Return True if the frame was created properly.'''
+
+    # if g.app.gui == None:
+        # g.app.createQtGui(fileName='core')
+
+    # # We can't print the signon until we know the gui.
+    # g.app.computeSignon() # Set app.signon/signon2 for commanders.
+
+    # if versionFlag:
+        # print(g.app.signon)
+        # return
+
+    g.init_sherlock(args)  # Init tracing and statistics.
+    if g.app and g.app.use_psyco: startPsyco()
+
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName,script)
+    if not frame: return False
+
+    # Do the final inits.
+    finishInitApp(c)
+    p = c.p
+
+    g.app.initComplete = True
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    initFocusAndDraw(c,fileName)
+    return True
+#@+node:ekr.20031218072017.1624: *7* createFrame (runLeo.py)
+def createFrame (fileName,relativeFileName,script):
+
+    """Create a LeoFrame during Leo's startup process."""
+
+    # New in Leo 4.6: support for 'default_leo_file' setting.
+    defaultFileName = None
+    if not fileName and not script:
+        fileName = g.app.config.getString(c=None,setting='default_leo_file')
+        fileName = g.os_path_finalize(fileName)
+        if fileName and g.os_path_exists(fileName):
+            g.es_print('opening default_leo_file:',fileName,color='blue')
+            defaultFileName = fileName
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    if not fileName: fileName = defaultFileName
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+
+    g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
+
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False)
+            # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    g.createMenu(c,fileName)
+    g.finishOpen(c) # Calls c.redraw.
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es_print("file not found:",fileName,color='red')
+
+    return c,frame
+#@+node:ekr.20080921060401.5: *7* finishInitApp (runLeo.py)
+def finishInitApp(c):
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+
+#@+node:ekr.20080921060401.6: *7* initFocusAndDraw
+def initFocusAndDraw(c,fileName):
+
+    w = g.app.gui.get_focus(c)
+
+    if not fileName:
+        c.redraw()
+
+    # Respect c's focus wishes if posssible.
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+
+    c.outerUpdate()
+#@+node:ekr.20040411081633: *7* startPsyco
+def startPsyco ():
+
+    try:
+        import psyco
+        if 0:
+            theFile = r"c:\prog\test\psycoLog.txt"
+            g.es("psyco now logging to:",theFile,color="blue")
+            psyco.log(theFile)
+            psyco.profile()
+        psyco.full()
+        g.es("psyco now running",color="blue")
+
+    except ImportError:
+        g.app.use_psyco = False
+
+    except:
+        g.pr("unexpected exception importing psyco")
+        g.es_exception()
+        g.app.use_psyco = False
+#@+node:ekr.20031218072017.1936: *6* isValidPython
+def isValidPython():
+
+    if sys.platform == 'cli':
+        return True
+
+    minimum_python_version = '2.4'
+
+    message = """\
+Leo requires Python %s or higher.
+You may download Python from
+http://python.org/download/
+""" % minimum_python_version
+
+    try:
+        version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+        # ok = g.CheckVersion(version,'2.4.0') # Soon.
+        ok = g.CheckVersion(version,minimum_python_version)
+        if not ok:
+            print(message)
+            try:
+                # g.app.gui does not exist yet.
+                import Tkinter as Tk
+                << define emergency dialog class >>
+                d = emergencyDialog(
+                    title='Python Version Error',
+                    message=message)
+                d.run()
+            except Exception:
+                pass
+        return ok
+    except Exception:
+        print("isValidPython: unexpected exception: g.CheckVersion")
+        traceback.print_exc()
+        return 0
+#@+node:ekr.20080822065427.8: *7* << define emergency dialog class >>
+class emergencyDialog:
+
+    """A class that creates an Tkinter dialog with a single OK button."""
+
+    @others
+#@+node:ekr.20080822065427.9: *8* __init__ (emergencyDialog)
+def __init__(self,title,message):
+
+    """Constructor for the leoTkinterDialog class."""
+
+    self.answer = None # Value returned from run()
+    self.title = title
+    self.message=message
+
+    self.buttonsFrame = None # Frame to hold typical dialog buttons.
+    self.defaultButtonCommand = None
+        # Command to call when user closes the window
+        # by clicking the close box.
+    self.frame = None # The outermost frame.
+    self.root = None # Created in createTopFrame.
+    self.top = None # The toplevel Tk widget.
+
+    self.createTopFrame()
+    buttons = {"text":"OK","command":self.okButton,"default":True},
+        # Singleton tuple.
+    self.createButtons(buttons)
+    self.top.bind("<Key>", self.onKey)
+#@+node:ekr.20080822065427.12: *8* createButtons
+def createButtons (self,buttons):
+
+    """Create a row of buttons.
+
+    buttons is a list of dictionaries containing
+    the properties of each button."""
+
+    assert(self.frame)
+    self.buttonsFrame = f = Tk.Frame(self.top)
+    f.pack(side="top",padx=30)
+
+    # Buttons is a list of dictionaries, with an empty dictionary
+    # at the end if there is only one entry.
+    buttonList = []
+    for d in buttons:
+        text = d.get("text","<missing button name>")
+        isDefault = d.get("default",False)
+        underline = d.get("underline",0)
+        command = d.get("command",None)
+        bd = g.choose(isDefault,4,2)
+
+        b = Tk.Button(f,width=6,text=text,bd=bd,
+            underline=underline,command=command)
+        b.pack(side="left",padx=5,pady=10)
+        buttonList.append(b)
+
+        if isDefault and command:
+            self.defaultButtonCommand = command
+
+    return buttonList
+#@+node:ekr.20080822065427.14: *8* createTopFrame
+def createTopFrame(self):
+
+    """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+
+    self.root = Tk.Tk()
+    self.top = Tk.Toplevel(self.root)
+    self.top.title(self.title)
+    self.root.withdraw()
+
+    self.frame = Tk.Frame(self.top)
+    self.frame.pack(side="top",expand=1,fill="both")
+
+    label = Tk.Label(self.frame,text=message,bg='white')
+    label.pack(pady=10)
+#@+node:ekr.20080822065427.10: *8* okButton
+def okButton(self):
+
+    """Do default click action in ok button."""
+
+    self.top.destroy()
+    self.top = None
+
+#@+node:ekr.20080822065427.21: *8* onKey
+def onKey(self,event):
+
+    """Handle Key events in askOk dialogs."""
+
+    self.okButton()
+
+    return "break"
+#@+node:ekr.20080822065427.16: *8* run
+def run (self):
+
+    """Run the modal emergency dialog."""
+
+    self.top.geometry("%dx%d%+d%+d" % (300,200,50,50))
+    self.top.lift()
+
+    self.top.grab_set() # Make the dialog a modal dialog.
+    self.root.wait_window(self.top)
+#@+node:ekr.20100831090251.5841: *4* Shorter warnings about incompatible gui type
+#@+node:ekr.20031218072017.2278: *5* g.importFromPath
+def importFromPath (name,path,pluginName=None,verbose=False):
+
+    trace = False and not g.unitTesting
+    fn = g.shortFileName(name)
+    moduleName,ext = g.os_path_splitext(fn)
+    path = g.os_path_normpath(path)
+    path = g.toEncodedString(path)
+    module = sys.modules.get(moduleName)
+    if module:
+        if trace: g.trace('already loaded',moduleName,module)
+        return module
+
+    try:
+        theFile = None
+        import imp
+        try:
+            data = imp.find_module(moduleName,[path]) # This can open the file.
+            theFile,pathname,description = data
+            module = imp.load_module(moduleName,theFile,pathname,description)
+        except ImportError:
+            if trace: # or verbose:
+                g.es_print("exception in g.importFromPath",color='blue')
+                g.es_exception()
+        except UiTypeException:
+            if not g.unitTesting and not g.app.batchMode:
+                g.es_print('Plugin %s does not support %s gui' % (
+                    name,g.app.gui.guiName()))          
+        except Exception:
+            g.es_print("unexpected exception in g.importFromPath(%s)" %
+                (name),color='blue')
+            g.es_exception()
+    # Put no return statements before here!
+    finally: 
+        if theFile: theFile.close()
+
+    if module:
+        if trace: g.trace('loaded',moduleName)
+    else:
+        g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
+
+    return module
+#@+node:ekr.20041113113140: *5* loadOnePlugin
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False # and not g.unitTesting
+
+    global loadedModules,loadingModuleNameStack
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
+
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    #moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    #plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    #print "imp", moduleName
+    try:
+        toplevel = __import__(moduleName)
+        # need to look up through sys.modules, __import__ returns toplevel package
+        result = sys.modules[moduleName]
+
+    except g.UiTypeException:
+        if not g.unitTesting and not g.app.batchMode:
+            g.es_print('Plugin %s does not support %s gui' % (
+                moduleName,g.app.gui.guiName()))
+        result = None  
+
+    except Exception as e:
+        g.es_print('exception importing plugin ' + moduleName,color='red')
+        g.es_exception()
+        result = None
+
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
