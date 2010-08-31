@@ -973,7 +973,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1553,16 +1553,7 @@ row,col = g.convertPythonIndexToRowCol(s,ins)
 g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
-<t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
-# if you enable the cursesGui plugin here
-
-# Important: if you want to specify a gui plugin here,
-# enable that plugin first.
-
-# qtGui.py
-# tkGui.py
-
-# attrib_edit.py
+<t tx="ekr.20071025193940"># attrib_edit.py
 # ctagscompleter.py
 codewisecompleter.py
 # rst3.py
