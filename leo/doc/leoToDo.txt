@@ -464,6 +464,34 @@ However the shortcuts that the "leo install" created don't work they
 abort.
 #@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
 #@+node:ekr.20100827114047.5895: *3* Before b1
+#@+node:ekr.20100830120622.5829: *4* Fix python import problems
+@nocolor-node
+
+> > Hmm, I guess that would be more clear, although I think I'd like an option to include it in the following def to avoid
+> >
+> > Decoration
+> > index
+> > Decoration
+> > add_user
+>
+> Sure.  Decorations must always be part of a definition.
+
+Well, personally I'd like to have them included in the definition, but I think Kent's preference for a separate node is reasonable to.  If your function and hence definition node is called "pluralize", and it's decorated with something like "@authenticate_user", you may never check the innocent looking pluralize definition to find out what on earth's triggering the mysterious network database call.  And this isn't a completely specious example, authentication may have been added to stop pluralize being used in a user existence detection exploit or something.  OTOH in well behaved code like CherryPy apps you don't want a separate node for every @cherrypy.expose.
+
+Bottom line is I think we're asking for a set of @settings to fine tune python import behavior:
+
+@python_import_interdef = previous | next | own_node | ai
+@python_import_decoration = next | own_node
+
+I'm not sure I believe the AI option is possible / practical, and am not asking for it, just listing it :-)
+
+I'd also like
+
+@python_import_init_in_class_node = true | false
+
+as often there's more docs on a class in the __init__ than the class docstring.
+
+I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20100827114047.5892: *4* Fix toggle-split-direction
 Should preserve scrollbar location and appropriate window ratio.
 
