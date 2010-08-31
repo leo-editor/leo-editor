@@ -5209,19 +5209,21 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
 
-        mods = ev.keyboardModifiers()
         md = ev.mimeData()
         if not md: return
 
         if md.hasUrls():
-            self.urlDrop(md,p)
+            self.urlDrop(ev,p)
         else:
-            self.outlineDrop(mods,p,md.text())
+            self.outlineDrop(ev,p)
     #@+node:ekr.20100830205422.3720: *5* outlineDrop & helpers
-    def outlineDrop (self,mods,p,s):
+    def outlineDrop (self,ev,p):
 
         c = self.c ; tree = c.frame.tree
+        mods = ev.keyboardModifiers()
+        md = ev.mimeData()
 
+        s = str(md.text()) # Safe: md.text() is a QString.
         if not s: return
         i = s.find(',')
         if i == -1: return
@@ -5309,10 +5311,11 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
             c.redraw_now(p1)
     #@+node:ekr.20100830205422.3721: *5* urlDrop & helpers
-    def urlDrop (self,mimeData,p):
+    def urlDrop (self,ev,p):
 
         c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
-        urls = mimeData.urls()
+        md = ev.mimeData()
+        urls = md.urls()
         if not urls: return
 
         c.undoer.beforeChangeGroup(c.p,undoType)
@@ -5334,7 +5337,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20100830205422.3722: *6* doFileUrl & helper
     def doFileUrl (self,p,url):
 
-        fn = url.path()
+        fn = str(url.path())
         if sys.platform.lower().startswith('win'):
             if fn.startswith('/'):
                 fn = fn[1:]
@@ -5378,7 +5381,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         c = self.c ; u = c.undoer ; undoType = 'Drag Url'
 
-        s = url.toString().strip()
+        s = str(url.toString()).strip()
         if not s: return False
 
         undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
