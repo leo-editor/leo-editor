@@ -5249,7 +5249,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         c.selectPosition(p)
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
-            s,reassignIndices=True)
+            s,reassignIndices=not cloneDrag)
         if not pasted: return
 
         undoData = u.beforeInsertNode(p,
@@ -5263,12 +5263,12 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             pasted.moveToNthChildOf(back,0)
         c.setRootPosition(c.findRootPosition(pasted))
 
-        # if pasteAsClone:
-            # # Set dirty bits for ancestors of *all* pasted nodes.
-            # # Note: the setDescendentsDirty flag does not do what we want.
-            # for p in pasted.self_and_subtree():
-                # p.setAllAncestorAtFileNodesDirty(
-                    # setDescendentsDirty=False)
+        if cloneDrag:
+            # Set dirty bits for ancestors of *all* pasted nodes.
+            # Note: the setDescendentsDirty flag does not do what we want.
+            for p in pasted.self_and_subtree():
+                p.setAllAncestorAtFileNodesDirty(
+                    setDescendentsDirty=False)
 
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw_now(pasted)
@@ -5285,18 +5285,28 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             # Attempt to move p1 to the first child of p2.
             parent = p2
             def move(p1,p2):
+                if cloneDrag: p1 = p1.clone()
                 p1.moveToNthChildOf(p2,0)
+                return p1
         else:
             # Attempt to move p1 after p2.
             parent = p2.parent()
             def move(p1,p2):
+                if cloneDrag: p1 = p1.clone()
                 p1.moveAfter(p2)
+                return p1
 
         ok = c.checkMoveWithParentWithWarning(p1,parent,True)
         if ok:
             undoData = u.beforeMoveNode(p1)
             dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
-            move(p1,p2)
+            p1 = move(p1,p2)
+            if cloneDrag:
+                # Set dirty bits for ancestors of *all* cloned nodes.
+                # Note: the setDescendentsDirty flag does not do what we want.
+                for z in p1.self_and_subtree():
+                    z.setAllAncestorAtFileNodesDirty(
+                        setDescendentsDirty=False)
             c.setChanged(True)
             u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
             c.redraw_now(p1)
