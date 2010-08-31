@@ -1335,5 +1335,12 @@ def setCommandForButton(self,button,command):
 def packEditorLabelWidget (self,w):
 
     '''Create a qt label widget.'''
+#@+node:ekr.20100830213035.3724: *3* drag modifiers
+e = QtCore.Qt
+alt   = (int(mods) & e.AltModifier) != 0
+ctrl  = (int(mods) & e.ControlModifier) != 0
+meta  = (int(mods) & e.MetaModifier) != 0
+shift = (int(mods) & e.ShiftModifier) != 0
+g.trace(alt,ctrl,metat,shift)
 #@-all
 #@-leo

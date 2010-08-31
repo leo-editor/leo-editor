@@ -5161,6 +5161,10 @@ class leoQtMenu (leoMenu.leoMenu):
 #@+node:ekr.20100830205422.3714: *3* class LeoQTreeWidget
 class LeoQTreeWidget(QtGui.QTreeWidget):
 
+    # To do:
+    # - Ctrl-drags of outlines create clones
+    # - Generate @auto or @thin nodes when appropriate.
+
     def __init__(self,c,parent):
 
         QtGui.QTreeWidget.__init__(self, parent)
@@ -5207,15 +5211,16 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
 
+        mods = ev.keyboardModifiers()
         md = ev.mimeData()
         if not md: return
 
         if md.hasUrls():
             self.urlDrop(md,p)
         else:
-            self.outlineDrop(p,s=md.text())
+            self.outlineDrop(mods,p,md.text())
     #@+node:ekr.20100830205422.3720: *5* outlineDrop & helpers
-    def outlineDrop (self,p,s):
+    def outlineDrop (self,mods,p,s):
 
         c = self.c ; tree = c.frame.tree
 
@@ -5225,12 +5230,14 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         fn = s[:i] ; s = s[i+1:]
         if not fn or not p or p == c.p: return
 
+        cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
+
         if fn == c.fileName():
-            self.intraFileDrop(fn,c.p,p)
+            self.intraFileDrop(cloneDrag,fn,c.p,p)
         else:
-            self.interFileDrop(fn,p,s)
+            self.interFileDrop(cloneDrag,fn,p,s)
     #@+node:ekr.20100830205422.3718: *6* interFileDrop
-    def interFileDrop (self,fn,p,s):
+    def interFileDrop (self,cloneDrag,fn,p,s):
 
         '''Paste the mime data after (or as the first child of) p.'''
 
@@ -5267,7 +5274,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c.redraw_now(pasted)
         c.recolor()
     #@+node:ekr.20100830205422.3719: *6* intraFileDrop
-    def intraFileDrop (self,fn,p1,p2):
+    def intraFileDrop (self,cloneDrag,fn,p1,p2):
 
         '''Move p1 after (or as the first child of) p2.'''
 
