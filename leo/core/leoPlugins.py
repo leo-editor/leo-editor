@@ -433,6 +433,12 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
         # need to look up through sys.modules, __import__ returns toplevel package
         result = sys.modules[moduleName]
 
+    except g.UiTypeException:
+        if not g.unitTesting and not g.app.batchMode:
+            g.es_print('Plugin %s does not support %s gui' % (
+                moduleName,g.app.gui.guiName()))
+        result = None  
+
     except Exception as e:
         g.es_print('exception importing plugin ' + moduleName,color='red')
         g.es_exception()

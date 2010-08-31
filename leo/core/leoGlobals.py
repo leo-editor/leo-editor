@@ -5437,7 +5437,7 @@ def get_window_info (top):
 #@+node:ekr.20031218072017.2278: *4* g.importFromPath
 def importFromPath (name,path,pluginName=None,verbose=False):
 
-    trace = False # and not g.unitTesting
+    trace = False and not g.unitTesting
     fn = g.shortFileName(name)
     moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
@@ -5459,8 +5459,9 @@ def importFromPath (name,path,pluginName=None,verbose=False):
                 g.es_print("exception in g.importFromPath",color='blue')
                 g.es_exception()
         except UiTypeException:
-            g.es_print("Ui type not compatible for plugin (%s)" %
-                (name),color='blue')            
+            if not g.unitTesting and not g.app.batchMode:
+                g.es_print('Plugin %s does not support %s gui' % (
+                    name,g.app.gui.guiName()))          
         except Exception:
             g.es_print("unexpected exception in g.importFromPath(%s)" %
                 (name),color='blue')

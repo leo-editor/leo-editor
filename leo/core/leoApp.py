@@ -50,6 +50,7 @@ class LeoApp:
             # The directory assumed to contain the global configuration files.
         self.globalOpenDir = None # The directory last used to open a file.
         self.gui = None # The gui class.
+        self.guiArgName = None # The gui name given in --gui option.
         self.hasOpenWithMenu = False # True: open with plugin has been loaded.
         self.hookError = False # True: suppress further calls to hooks.
         self.hookFunction = None # Application wide hook function.
@@ -345,55 +346,113 @@ class LeoApp:
             g.app.finishQuit()
 
         return True # The window has been closed.
-    #@+node:ekr.20090202191501.5: ** app.createNullGui
-    def createNullGui (self):
+    #@+node:ekr.20100831090251.5838: ** app.createXGui
+    #@+node:ekr.20100831090251.5840: *3* app.createCursesGui
+    def createCursesGui (self,fileName='',verbose=False):
 
-        # Don't import this at the top level:
-        # it might interfere with Leo's startup logic.
-        import leo.core.leoGui as leoGui
+        app = self
 
-        g.app.gui = leoGui.nullGui("nullGui")
-    #@+node:ekr.20090619065122.8593: ** app.createDefaultGui
+        leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
+    #@+node:ekr.20090619065122.8593: *3* app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
 
         """A convenience routines for plugins to create the default gui class."""
 
-        try:
-            # Take care to try the same imports as in qtGui.py.
-            import PyQt4.QtCore
-            import PyQt4.QtGui            
-            have_qt = True
-        except ImportError:
-            have_qt = False
-            print("PyQt not installed - reverting to Tk UI")        
+        app = self ; argName = app.guiArgName
 
-        if have_qt:        
-            self.createQtGui(fileName, verbose=verbose)
-        else:
-            self.createTkGui(fileName, verbose = verbose)
-    #@+node:ekr.20090202191501.1: ** app.createQtGui
+        # This method can be called twice if we had to get .leoID.txt.
+        if app.gui: return
+
+        if argName == 'qt':
+            app.createQtGui(fileName,verbose=verbose)
+            if not app.gui:
+                print('Can not create Qt gui: trying Tk gui')
+                app.createTkGui(fileName,verbose=verbose)  
+        elif argName == 'tk':
+            app.createTkGui(fileName,verbose=verbose)
+            if not app.gui:
+                print('Can not create Tk gui: trying Qt gui')
+                app.createQtGui(fileName,verbose=verbose)
+        elif argName == 'null':
+            app.createNullGui()
+        elif argName == 'curses':
+            app.createCursesGui()
+
+        if not app.gui:
+            print('Leo requires either Tk or Qt to be installed.')
+    #@+node:ekr.20090202191501.5: *3* app.createNullGui
+    def createNullGui (self):
+
+        # Don't import this at the top level:
+        # it might interfere with Leo's startup logic.
+
+        app = self
+
+        try:
+            import leo.core.leoGui as leoGui
+        except ImportError:
+            leoGui = None
+
+        if leoGui:
+            app.gui = leoGui.nullGui("nullGui")
+    #@+node:ekr.20031218072017.1938: *3* app.createNullGuiWithScript
+    def createNullGuiWithScript (self,script=None):
+
+        app = self
+
+        try:
+            import leo.core.leoGui as leoGui
+        except ImportError:
+            leoGui = None
+
+        if leoGui:
+            app.batchMode = True
+            app.gui = leoGui.nullGui("nullGui")
+            app.gui.setScript(script)
+    #@+node:ekr.20090202191501.1: *3* app.createQtGui
     def createQtGui (self,fileName='',verbose=False):
 
         # Do NOT omit fileName param: it is used in plugin code.
 
         """A convenience routines for plugins to create the Qt gui class."""
 
-        import leo.plugins.qtGui
-        leo.plugins.qtGui.init()
+        app = self
 
-        #leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
+        try:
+            # Take care to try the same imports as in qtGui.py.
+            import PyQt4.QtCore
+            import PyQt4.QtGui            
+            import leo.plugins.qtGui as qtGui
+        except ImportError:
+            qtGui = None
 
-        if fileName and verbose: print('qtGui created in %s' % fileName)
-    #@+node:ekr.20031218072017.2610: ** app.createTkGui
+        if qtGui:
+            qtGui.init()
+            if app.gui and fileName and verbose:
+                print('qtGui created in %s' % fileName)
+    #@+node:ekr.20031218072017.2610: *3* app.createTkGui
     def createTkGui (self,fileName='',verbose=False):
 
         """A convenience routines for plugins to 
         create the default Tk gui class."""
 
-        leoPlugins.loadOnePlugin ('leo.plugins.tkGui',verbose=verbose)
+        app = self
 
-        if fileName and verbose: print('tkGui created in %s' % fileName)
-    #@+node:ekr.20090126063121.3: ** app.createWxGui
+        try:
+            import tkinter as Tk
+        except ImportError:
+            try:
+                import Tkinter as Tk
+            except ImportError:
+                Tk = None
+
+        Pmw = g.importExtension('Pmw',pluginName='startup',verbose=False)
+
+        if Tk and Pmw:
+            leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
+            if app.gui and fileName and verbose:
+                print('tkGui created in %s' % fileName)
+    #@+node:ekr.20090126063121.3: *3* app.createWxGui
     def createWxGui (self,fileName='',verbose=False):
 
         # Do NOT omit fileName param: it is used in plugin code.
@@ -402,7 +461,9 @@ class LeoApp:
 
         leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
 
-        if fileName and verbose: print('wxGui created in %s' % fileName)
+        if fileName and verbose:
+
+            print('wxGui created in %s' % fileName)
     #@+node:ekr.20031218072017.2612: ** app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
 
@@ -727,7 +788,7 @@ class LeoApp:
 
         app = self
         build,date  = leoVersion.build,leoVersion.date
-        guiVersion  = app.gui.getFullVersion()
+        guiVersion  = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer      = leoVersion.version
         n1,n2,n3,junk,junk=sys.version_info
 

@@ -5161,9 +5161,7 @@ class leoQtMenu (leoMenu.leoMenu):
 #@+node:ekr.20100830205422.3714: *3* class LeoQTreeWidget
 class LeoQTreeWidget(QtGui.QTreeWidget):
 
-    # To do:
-    # - Ctrl-drags of outlines create clones
-    # - Generate @auto or @thin nodes when appropriate.
+    # To do: Generate @auto or @thin nodes when appropriate.
 
     def __init__(self,c,parent):
 

@@ -87,8 +87,14 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not isValidPython(): return
     fn,relFn,script,versionFlag = doPrePluginsInit(fileName,pymacs)
 
-    # Phase 2: load plugins.
-    g.doHook("start1") # Plugins may create a gui.
+    # We can't print the signon until we know the gui.
+    g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    if versionFlag:
+        print(g.app.signon) ; return
+    if not g.app.gui: return
+
+    # Phase 2: load plugins: the gui has already been set.
+    g.doHook("start1")
     if g.app.killed: return
 
     # Phase 3: after loading plugins. Create a frame.
@@ -119,44 +125,33 @@ def doPrePluginsInit(fileName,pymacs):
     # New in Leo 4.7: the default encoding is always 'utf-8'.
     # g.app.setEncoding()
     g.app.setGlobalDb()
-    if gui is None:
+    if g.app.gui:
+        pass # initApp (setLeoID) created the gui.
+    elif gui is None:
         if script and not windowFlag:
-            # Bug fix: 2009/10/1: use null gui for scripts.
-            createNullGuiWithScript(script)
+            # Always use null gui for scripts.
+            g.app.createNullGuiWithScript(script)
         else:
             g.app.createDefaultGui(__file__)
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
+
     return fileName,relativeFileName,script,versionFlag
-#@+node:ekr.20080921060401.4: *4* createSpecialGui & helper
+#@+node:ekr.20080921060401.4: *4* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    tag = ''
-
-    if False and g.isPython3:
-        # Create the curses gui.
-        leoPlugins.loadOnePlugin ('leo.plugins.cursesGui',verbose=True)
-    elif pymacs:
-        createNullGuiWithScript(None)
-    # elif jyLeo:
-        # import leo.core.leoSwingGui as leoSwingGui
-        # g.app.gui = leoSwingGui.swingGui()
+    if pymacs:
+        g.app.createNullGuiWithScript(script=None)
     elif script:
         if windowFlag:
-            g.app.createTkGui(tag) # Creates global windows.
-            g.app.gui.setScript(script)
+            g.app.createDefaultGui()
+            g.app.gui.setScript(script=script)
             sys.args = []
         else:
-            createNullGuiWithScript(script)
-    elif gui == 'qt':   g.app.createQtGui(tag)
-    elif gui == 'tk':   g.app.createTkGui(tag)
-    elif gui == 'wx':   g.app.createWxGui(tag)
-#@+node:ekr.20031218072017.1938: *5* createNullGuiWithScript
-def createNullGuiWithScript (script):
-
-    g.app.batchMode = True
-    g.app.gui = leoGui.nullGui("nullGui")
-    g.app.gui.setScript(script)
+            g.app.createNullGuiWithScript(script=script)
+    else:
+        assert g.app.guiArgName
+        g.app.createDefaultGui() 
 #@+node:ekr.20070306085724: *4* adjustSysPath
 def adjustSysPath ():
 
@@ -213,6 +208,8 @@ def completeFileName (fileName):
     return fileName,relativeFileName
 #@+node:ekr.20080921091311.2: *4* initApp
 def initApp (verbose):
+
+    assert g.app.guiArgName
 
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
@@ -277,15 +274,21 @@ def scanOptions():
     # --gui
     gui = options.gui
     g.app.qt_use_tabs = False
+
     if gui:
         gui = gui.lower()
         if gui == 'qttabs':
-            gui = 'qt'
+            gui = g.app.guiArgName = 'qt'
             g.app.qt_use_tabs = True
-
-        if gui not in ('tk','qt','wx'):
+        elif gui in ('curses','tk','qt','null'): # 'wx',
+            g.app.guiArgName = gui
+        else:
             g.trace('unknown gui: %s' % gui)
-            gui = None
+            g.app.guiArgName = gui = 'qt'
+    else:
+        gui = g.app.guiArgName = 'qt'
+
+    assert gui == g.app.guiArgName
 
     # --ipython
     g.app.useIpython = options.use_ipython
@@ -327,15 +330,15 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
 
     '''Return True if the frame was created properly.'''
 
-    if g.app.gui == None:
-        g.app.createQtGui(fileName='core')
+    # if g.app.gui == None:
+        # g.app.createQtGui(fileName='core')
 
-    # We can't print the signon until we know the gui.
-    g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    # # We can't print the signon until we know the gui.
+    # g.app.computeSignon() # Set app.signon/signon2 for commanders.
 
-    if versionFlag:
-        print(g.app.signon)
-        return
+    # if versionFlag:
+        # print(g.app.signon)
+        # return
 
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
