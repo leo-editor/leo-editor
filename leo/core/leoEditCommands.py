@@ -587,7 +587,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         self.abbrevs = {}
     #@+node:ekr.20050920084036.19: *4* listAbbrevs
-    def listAbbrevs (self,event):
+    def listAbbrevs (self,event=None):
 
         '''List all abbreviations.'''
 
@@ -596,14 +596,16 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if self.abbrevs:
             g.es('Abbreviations...')
             for z in self.abbrevs:
-                s = self.abbrevs.get(z)
+                s = self.abbrevs.get(z).replace('\n','\\n') # 2010/09/01
                 g.es('','%s=%s' % (z,s))
         else:
             g.es('No present abbreviations')
     #@+node:ekr.20050920084036.20: *4* readAbbreviations
-    def readAbbreviations (self,event):
+    def readAbbreviations (self,event=None):
 
         '''Read abbreviations from a file.'''
+
+        k = self.c.k
 
         fileName = g.app.gui.runOpenFileDialog(
             title = 'Open Abbreviation File',
@@ -616,9 +618,12 @@ class abbrevCommandsClass (baseEditCommandsClass):
             f = open(fileName)
             for x in f:
                 a, b = x.split('=')
-                b = b [:-1]
+                b = b [:-1].replace('\\n','\n') # 2010/09/01.
                 self.abbrevs [a] = b
             f.close()
+            k.abbrevOn = True
+            g.es("Abbreviations on")
+            self.listAbbrevs()
         except IOError:
             g.es('can not open',fileName)
     #@+node:ekr.20050920084036.23: *4* toggleAbbrevMode
@@ -630,7 +635,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit(event)
         k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
-    #@+node:ekr.20050920084036.24: *4* writeAbbreviations (changed)
+    #@+node:ekr.20050920084036.24: *4* writeAbbreviation
     def writeAbbreviations (self,event):
 
         '''Write abbreviations to a file.'''
@@ -646,7 +651,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         try:
             f = open(fileName,'w')
             for x in self.abbrevs:
-                s = '%s=%s\n' % (x,self.abbrevs[x])
+                val = self.abbrevs.get(x).replace('\n','\\n')  # 2010/09/01.
+                s = '%s=%s\n' % (x,val)
                 if not g.isPython3: # 2010/08/27
                     s = g.toEncodedString(s,reportErrors=True)
                 f.write(s)

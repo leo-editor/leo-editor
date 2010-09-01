@@ -931,7 +931,7 @@ for line in context:
         line = g.toEncodedString(line,self.encoding,reportErrors=True)
     f.write(line)
     f.write(nl)
-#@+node:ekr.20050920084036.24: *6* writeAbbreviations (changed)
+#@+node:ekr.20050920084036.24: *6* writeAbbreviation
 def writeAbbreviations (self,event):
 
     '''Write abbreviations to a file.'''
@@ -947,7 +947,8 @@ def writeAbbreviations (self,event):
     try:
         f = open(fileName,'w')
         for x in self.abbrevs:
-            s = '%s=%s\n' % (x,self.abbrevs[x])
+            val = self.abbrevs.get(x).replace('\n','\\n')  # 2010/09/01.
+            s = '%s=%s\n' % (x,val)
             if not g.isPython3: # 2010/08/27
                 s = g.toEncodedString(s,reportErrors=True)
             f.write(s)
