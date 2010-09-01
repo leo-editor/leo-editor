@@ -513,6 +513,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         # Find the word at the cursor.
         s = w.getAllText()
         i = w.getInsertPoint()
+        if 0 < i < len(s) and s[i] == ' ': i -= 1
         if 0 < i < len(s) and not g.isWordChar(s[i]): i -= 1
         i,j = g.getWord(s,i)
         word = s[i:j+1].strip()
