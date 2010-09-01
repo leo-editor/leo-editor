@@ -550,7 +550,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         try:
             name,val = s.split('=')
             name = name.strip()
-            val = val [:-1].lstrip().replace('\\n','\n') # 2010/09/01.
+            val = val [:-1].replace('\\n','\n') # 2010/09/01.
             self.abbrevs [name] = val
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
