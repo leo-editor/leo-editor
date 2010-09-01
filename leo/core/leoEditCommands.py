@@ -542,7 +542,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
-            if trace: g.trace(w)
             if not w: return
             k.setLabelBlue('Add Abbreviation: ',protect=True)
             k.getArg(event,'add-abbr',1,self.addAbbreviation)
