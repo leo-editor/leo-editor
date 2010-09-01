@@ -5377,7 +5377,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20100830205422.3724: *6* doHttpUrl
     def doHttpUrl (self,p,url):
 
-        '''Insert s in an @url node after p.'''
+        '''Insert the url in an @url node after p.'''
 
         c = self.c ; u = c.undoer ; undoType = 'Drag Url'
 

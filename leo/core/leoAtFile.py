@@ -2903,16 +2903,7 @@ class atFile:
             p =  c.rootPosition()
             after = c.nullPosition()
 
-        #@+<< Clear all orphan bits >>
-        #@+node:ekr.20041005105605.148: *5* << Clear all orphan bits >>
-        #@+at We must clear these bits because they may have been set on a previous write.
-        # Calls to atFile::write may set the orphan bits in @file nodes.
-        # If so, write_Leo_file will write the entire @file tree.
-        #@@c
-
-        for v2 in p.self_and_subtree():
-            v2.clearOrphan()
-        #@-<< Clear all orphan bits >>
+        at.clearAllOrphanBits(p)
         while p and p != after:
             if p.isAnyAtFileNode() or p.isAtIgnoreNode():
                 self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
@@ -2933,6 +2924,16 @@ class atFile:
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
 
+    #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
+    #@+at We must clear these bits because they may have been set on a previous write.
+    # Calls to atFile::write may set the orphan bits in @file nodes.
+    # If so, write_Leo_file will write the entire @file tree.
+    #@@c
+
+    def clearAllOrphanBits (self,p):
+
+        for v2 in p.self_and_subtree():
+            v2.clearOrphan()
     #@+node:ekr.20041005105605.149: *5* at.writeAllHelper
     def writeAllHelper (self,p,
         force,toString,writeAtFileNodesFlag,writtenFiles

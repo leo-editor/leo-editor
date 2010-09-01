@@ -1598,6 +1598,7 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
         self.abbrevOn = False # True: abbreviations are on.
         self.arg = '' # The value returned by k.getArg.
+        self.argSelectedText = '' # The selected text in state 0.
         self.commandName = None # The name of the command being executed.
         self.funcReturn = None # For k.simulateCommand
         self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
@@ -2102,7 +2103,7 @@ class keyHandlerClass:
                     if b2.commandName != commandName and pane in ('button','all',b2.pane)
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
-                    g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+                    g.es_print ('redefining shortcut %s from %s to %s in %s' % (
                         shortcut,
                         g.choose(pane=='button',z,commandName),
                         g.choose(pane=='button',commandName,z),
@@ -3033,6 +3034,8 @@ class keyHandlerClass:
             k.arg = ''
             #@+<< init altX vars >>
             #@+node:ekr.20061031131434.129: *5* << init altX vars >>
+            k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
+                # 2010/09/01: remember the selected text for abbreviations.
             k.argTabList = tabList and tabList[:] or []
             k.arg_completion = completion
             # g.trace('completion',completion,'tabList',tabList)
