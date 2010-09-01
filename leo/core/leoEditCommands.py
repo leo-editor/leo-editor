@@ -284,10 +284,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         baseEditCommandsClass.finishCreate(self)
 
         c = self.c ; k = c.k
-        aList = c.config.getData('abbreviations')
-        if aList:
-            for s in aList:
-                self.addAbbrevHelper(s)
+        for tag in ('global-abbreviations','abbreviations'):
+            aList = c.config.getData(tag)
+            if aList:
+                for s in aList:
+                    self.addAbbrevHelper(s)
+
+        if self.abbrevs:
             self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
@@ -548,10 +551,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not s.strip(): return
 
         try:
+            d = self.abbrevs
             name,val = s.split('=')
             name = name.strip()
             val = val [:-1].replace('\\n','\n') # 2010/09/01.
-            self.abbrevs [name] = val
+            old = d.get(name)
+            if old: g.es_print('redefining abbreviation',name,'\nfrom',repr(old),'to',repr(val))
+            d [name] = val
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
     #@+node:ekr.20050920084036.25: *4* addAbbreviation
