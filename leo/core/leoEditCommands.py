@@ -262,7 +262,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
     See apropos-abbreviations for details.'''
 
     #@+others
-    #@+node:ekr.20050920084036.14: *3*  ctor & finishCreate
+    #@+node:ekr.20100901080826.6002: *3*  Birth
+    #@+node:ekr.20100901080826.6003: *4* ctor
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -271,17 +272,27 @@ class abbrevCommandsClass (baseEditCommandsClass):
         self.abbrevs ={}
         self.daRanges = []
         self.event = None
-        self.dynaregex = re.compile(
+        self.dynaregex = re.compile( # For dynamic abbreviations
             r'[%s%s\-_]+'%(string.ascii_letters,string.digits))
             # Not a unicode problem.
-            # For dynamic abbreviations
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.store ={'rlist':[], 'stext':''} # For dynamic expansion.
         self.w = None
-
+    #@+node:ekr.20100901080826.6004: *4* finishCreate
     def finishCreate(self):
 
         baseEditCommandsClass.finishCreate(self)
+
+        c = self.c ; k = c.k
+        aList = c.config.getData('abbreviations')
+        if aList:
+            for s in aList:
+                self.addAbbrevHelper(s)
+            self.listAbbrevs()
+
+        k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
+        if k.abbrevOn:
+             g.es('Abbreviations are on')
     #@+node:ekr.20050920084036.15: *3*  getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -531,6 +542,18 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         return val is not None
     #@+node:ekr.20070531103114: *3* static abbrevs
+    #@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
+    def addAbbrevHelper (self,s):
+
+        if not s.strip(): return
+
+        try:
+            name,val = s.split('=')
+            name = name.strip()
+            val = val [:-1].lstrip().replace('\\n','\n') # 2010/09/01.
+            self.abbrevs [name] = val
+        except ValueError:
+            g.es_print('bad abbreviation: %s' % s)
     #@+node:ekr.20050920084036.25: *4* addAbbreviation
     def addAbbreviation (self,event):
 
@@ -617,10 +640,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         try:
             f = open(fileName)
-            for x in f:
-                a, b = x.split('=')
-                b = b [:-1].replace('\\n','\n') # 2010/09/01.
-                self.abbrevs [a] = b
+            for s in f:
+                self.addAbbrevHelper(s)
             f.close()
             k.abbrevOn = True
             g.es("Abbreviations on")
@@ -635,7 +656,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k = self.k
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit(event)
-        k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
+        # k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
+        g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
     #@+node:ekr.20050920084036.24: *4* writeAbbreviation
     def writeAbbreviations (self,event):
 
