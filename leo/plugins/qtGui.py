@@ -5410,10 +5410,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         at.readOneAtAutoNode(fn,p)
 
-        # if at.errors:
-            # # p.b = ''
-            # while p.hasChildren():
-                # p.firstChild().doDelete(newNode=p)
+        # No error recovery should be needed here.
 
         p.clearDirty() # Don't automatically rewrite this node.
     #@+node:ekr.20100902095952.3743: *9* createAtThinNode
