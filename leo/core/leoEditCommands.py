@@ -590,14 +590,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         try:
             d = self.abbrevs
-            # name,val = s.split('=')
             data = s.split('=')
             name = data[0].strip()
             val = '='.join(data[1:])
             if val.endswith('\n'): val = val[:-1]
             val = val.replace('\\n','\n')
             old = d.get(name)
-            if old: g.es_print('redefining abbreviation',name,'\nfrom',repr(old),'to',repr(val))
+            if old and not g.unitTesting:
+                g.es_print('redefining abbreviation',name,
+                    '\nfrom',repr(old),'to',repr(val))
             d [name] = val
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)

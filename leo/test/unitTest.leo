@@ -2144,14 +2144,15 @@
 <v t="ekr.20081111084046.4"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20061104172236.1"><vh> Function tests</vh>
+<v t="ekr.20100902074747.5970"><vh>@test addAbbrevHelper</vh></v>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
-<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
-<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
 <v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
+<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
 <v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
+<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231"><vh> Typing</vh>
@@ -3057,6 +3058,7 @@
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
+<v t="ekr.20100902074747.5970"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -26988,6 +26990,29 @@ def runEditCommandTest (c,p,inHeadline=False):
         if inHeadline:
             c.setHeadString(work,'work')
 </t>
+<t tx="ekr.20100902074747.5970">f = c.abbrevCommands.addAbbrevHelper
+d = c.abbrevCommands.abbrevs
+
+table = (
+    ('ut1','ut1=aa','aa'),
+    ('ut2','ut2 =bb','bb'),
+    ('ut3','ut3=cc=dd','cc=dd'),
+    ('ut4','ut4= ee',' ee'),
+    ('ut5','ut5= ff = gg',' ff = gg'),
+    ('ut6','ut6= hh==ii',' hh==ii'),
+    ('ut7','ut7=j=k','j=k'),
+    ('ut8','ut8=l==m','l==m'),
+)
+
+for name,s,expected in table:
+    f(s)
+    result = d.get(name)
+    assert result == expected, '(no nl) expected &lt;%s&gt;, got &lt;%s&gt;' % (
+        expected,result)
+    f(s+'\n')
+    result = d.get(name)
+    assert result == expected, '(nl) expected &lt;%s&gt;, got &lt;%s&gt;' % (
+        expected,result)</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
