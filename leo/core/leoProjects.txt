@@ -2707,5 +2707,504 @@ def readOneAtAutoNode(self,p):
     # Force an update of the body pane.
     self.setBodyString(p,p.b)
     c.frame.body.onBodyChanged(undoType=None)
+#@+node:ekr.20100901080826.5851: *4* Improved abbreviation commands
+@nocolor-node
+
+- Space activates abbreviations.
+- Multi-line abbreviations handled properly.
+- add-global-abbrev command uses entire selected text as the value of the abbreviation.
+- Inserted abbreviations are undoable.
+- Added support for @data abbreviations and @data global-abbreviations.
+- Added support for @bool enable-abbreviations
+#@+node:ekr.20050920084036.13: *5* abbrevCommandsClass
+class abbrevCommandsClass (baseEditCommandsClass):
+
+    '''A class to handle user-defined abbreviations.
+
+    See apropos-abbreviations for details.'''
+
+    @others
+#@+node:ekr.20100901080826.6002: *6*  Birth
+#@+node:ekr.20100901080826.6003: *7* ctor
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    # Set local ivars.
+    self.abbrevs ={}
+    self.daRanges = []
+    self.event = None
+    self.dynaregex = re.compile( # For dynamic abbreviations
+        r'[%s%s\-_]+'%(string.ascii_letters,string.digits))
+        # Not a unicode problem.
+    self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
+    self.store ={'rlist':[], 'stext':''} # For dynamic expansion.
+    self.w = None
+#@+node:ekr.20100901080826.6004: *7* finishCreate
+def finishCreate(self):
+
+    baseEditCommandsClass.finishCreate(self)
+
+    c = self.c ; k = c.k
+    for tag in ('global-abbreviations','abbreviations'):
+        aList = c.config.getData(tag)
+        if aList:
+            for s in aList:
+                self.addAbbrevHelper(s)
+
+    if self.abbrevs:
+        self.listAbbrevs()
+
+    k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
+    if k.abbrevOn:
+         g.es('Abbreviations are on')
+#@+node:ekr.20050920084036.15: *7* getPublicCommands & getStateCommands
+def getPublicCommands (self):
+
+    return {
+        'apropos-abbreviations':        self.aproposAbbreviations,
+        # 'expand-abbrev':              self.expandAbbrev, # Not a command.
+
+        # Dynamic...
+        'dabbrev-completion':           self.dynamicCompletion,
+        'dabbrev-expands':              self.dynamicExpansion,
+
+        # Static...
+        'abbrev-mode':                  self.toggleAbbrevMode,
+        'add-global-abbrev':            self.addAbbreviation,
+        # 'expand-region-abbrevs':        self.regionalExpandAbbrev,
+        'inverse-add-global-abbrev':    self.addInverseAbbreviation,
+        'kill-all-abbrevs':             self.killAllAbbrevs,
+        'list-abbrevs':                 self.listAbbrevs,
+        'read-abbrev-file':             self.readAbbreviations,
+        'write-abbrev-file':            self.writeAbbreviations,
+    }
+#@+node:ekr.20100901080826.6155: *6*  Entry point
+#@+node:ekr.20050920084036.27: *7* expandAbbrev
+def expandAbbrev (self,event):
+
+    '''Not a command.  Called from k.masterCommand to expand
+    abbreviations in event.widget.'''
+
+    trace = False and not g.unitTesting
+    k = self.k ; c = self.c ; ch = event.char.strip()
+    w = self.editWidget(event)
+    if not w: return
+    if w.hasSelection(): return
+
+    # Find the word at the cursor.
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    if 0 < i < len(s) and s[i] == ' ': i -= 1
+    if 0 < i < len(s) and not g.isWordChar(s[i]): i -= 1
+    i,j = g.getWord(s,i)
+    word = s[i:j+1].strip()
+    if ch: word = word + ch
+    if trace: g.trace(i,j,repr(word))
+    if not word: return
+
+    val = self.abbrevs.get(word)
+    if val:
+        oldSel = j,j
+        c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
+        if i != j: w.delete(i,j)
+        w.insert(i,val)
+        c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
+
+    return val is not None
+#@+node:ekr.20100901080826.5850: *6* aproposAbbreviations
+@pagewidth 45
+
+def aproposAbbreviations (self,event=None):
+
+    s = '''\
+
+apropos-abbreviations
+=====================
+
+When abbreviation mode is on (abbrev-mode
+toggles this mode) Leo will expand
+abbreviations as you type. Type the name of
+an abbreviation, followed by a space. As soon
+as you type the space, Leo will replace the
+name by the abbreviations value. You can undo
+the replacement as usual.
+
+Note that defining any abbreviation
+automatically turns on abbreviation mode.
+
+The add-global-abbreviation command
+(<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the
+abbreviation. The minibuffer prompts you for
+the name of the abbreviation.
+
+Settings
+========
+
+As usual, the following settings have effect
+only in @settings trees:
+
+@bool enable-abbreviations (default: False)
+
+When true, enables substitution of
+abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+In both cases, body text contains lines of
+the form::
+
+   name=value
+
+name is the abbreviation name, value is the
+substituted text. Whitespace is ignore around
+the name, but is significant in the value.
+
+By *convention* @data global-abbreviations
+setting should be defined in
+myLeoSettings.leo, while @data abbreviations
+should be defined in other .leo files.
+Regardless of where they are defined,
+abbreviations in @data abbreviation nodes
+will override settings (with the same name)
+in @data global-abbreviations nodes.
+
+Commands
+========
+
+apropos-abbreviations
+
+Prints this summary.
+
+dabbrev-completion
+
+Insert the common prefix of all dynamic
+abbreviations matching the present word.
+Similar C-M-/ in Emacs.
+
+dabbrev-expands
+
+Expand the word in the buffer before point as
+a dynamic abbrev, by searching in the buffer
+for words starting with that abbreviation
+(dabbrev-expand). Similar to M-/ in Emacs
+
+abbrev-mode
+
+Toggles abbreviation mode. Abbreviations are
+only active when this mode is on.
+
+add-global-abbrev
+
+Adds an abbreviation for the selected text.
+The minibuffer prompts for the abbreviation
+name.
+
+inverse-add-global-abbrev
+
+Adds an abbreviation. The selected text is
+the abbreviation name. The minibuffer prompts
+for the value of the abbreviation.
+
+kill-all-abbrevs
+
+Removes all abbreviations.
+
+list-abbrevs
+
+Lists all active abbreviations.
+
+read-abbrev-file
+
+Read an external file containing
+abbreviations.
+
+write-abbrev-file
+
+Writes abbreviations to an external file.
+
+Scripting
+=========
+
+Leo scripts may read abbreviations from a file with::
+
+    c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+'''
+
+    if not g.app.unitTesting:
+        g.es(g.adjustTripleString(s.rstrip(),
+            self.c.tab_width))
+#@+node:ekr.20050920084036.58: *6* dynamic abbreviation...
+#@+node:ekr.20050920084036.60: *7* dynamicCompletion
+def dynamicCompletion (self,event=None):
+
+    '''Insert the common prefix of all dynamic abbrev's matching the present word.
+    This corresponds to C-M-/ in Emacs.'''
+
+    c = self.c ; k = c.k ; p = c.p ; u = c.undoer
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
+    i,j = g.getWord(s,ins)
+    txt = w.get(i,j)
+    rlist = []
+    self.getDynamicList(w,txt,rlist)
+    if rlist:
+        prefix = reduce(g.longestCommonPrefix,rlist)
+        if prefix:
+            b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
+            w.delete(i,j)
+            w.insert(i,prefix)
+            p.b = w.getAllText()
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
+#@+node:ekr.20050920084036.59: *7* dynamicExpansion
+def dynamicExpansion (self,event=None):
+
+    '''Expand the word in the buffer before point as a dynamic abbrev,
+    by searching in the buffer for words starting with that abbreviation (dabbrev-expand).
+    This corresponds to M-/ in Emacs.'''
+
+    c = self.c ; k = c.k ; p = c.p ; u = c.undoer
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
+    i,j = g.getWord(s,ins)
+    txt = w.get(i,j)
+    rlist = []
+    self.getDynamicList(w,txt,rlist)
+    if not rlist: return
+    prefix = reduce(g.longestCommonPrefix,rlist)
+    if prefix and prefix != txt:
+        b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
+        w.delete(i,j)
+        w.insert(i,prefix)
+        p.b = w.getAllText()
+        c.undoer.afterChangeNodeContents(p,
+            command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
+    else:
+        self.dynamicExpandHelper(prefix,rlist,w)
+#@+node:ekr.20070605110441: *8* dynamicExpandHelper
+def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
+
+    k = self.k ; tag = 'dabbrev-expand'
+    state = k.getState(tag)
+
+    if state == 0:
+        self.w = w
+        if w:
+            names = rlist ; event = None
+            prefix2 = 'dabbrev-expand: '
+            k.setLabelBlue(prefix2+prefix,protect=True)
+            k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
+    else:
+        k.clearState()
+        k.resetLabel()
+        if k.arg:
+            w = self.w
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i,j = g.getWord(s,ins)
+            w.delete(i,j)
+            w.insert(i,k.arg)
+#@+node:ekr.20050920084036.61: *7* getDynamicList (helper)
+def getDynamicList (self,w,txt,rlist):
+
+    items = []
+    if self.globalDynamicAbbrevs:
+        for p in self.c.all_positions():
+            s = p.b
+            if s:
+                items.extend(self.dynaregex.findall(s))
+    else:
+        # Make a big list of what we are considering a 'word'
+        s = w.getAllText()
+        items.append(self.dynaregex.findall(s))
+
+    # g.trace('txt',repr(txt),'len(items)',len(items))
+
+    if items:
+        for word in items:
+            if not word.startswith(txt) or word == txt:
+                continue
+                # dont need words that dont match or == the pattern
+            if word not in rlist:
+                rlist.append(word)
+            else:
+                rlist.remove(word)
+                rlist.append(word)
+
+    # g.trace('rlist',rlist)
+#@+node:ekr.20070531103114: *6* static abbrevs
+#@+node:ekr.20100901080826.6001: *7* addAbbrevHelper
+def addAbbrevHelper (self,s):
+
+    if not s.strip(): return
+
+    try:
+        d = self.abbrevs
+        name,val = s.split('=')
+        name = name.strip()
+        val = val [:-1].replace('\\n','\n') # 2010/09/01.
+        old = d.get(name)
+        if old: g.es_print('redefining abbreviation',name,'\nfrom',repr(old),'to',repr(val))
+        d [name] = val
+    except ValueError:
+        g.es_print('bad abbreviation: %s' % s)
+#@+node:ekr.20050920084036.25: *7* addAbbreviation
+def addAbbreviation (self,event):
+
+    '''Add an abbreviation:
+    The selected text is the abbreviation;
+    the minibuffer prompts you for the name of the abbreviation.
+    Also sets abbreviations on.'''
+
+    k = self.k ; state = k.getState('add-abbr')
+
+    if state == 0:
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+        k.setLabelBlue('Add Abbreviation: ',protect=True)
+        k.getArg(event,'add-abbr',1,self.addAbbreviation)
+    else:
+        w = self.w
+        k.clearState()
+        k.resetLabel()
+        value = k.argSelectedText # 2010/09/01.
+        if k.arg.strip():
+            self.abbrevs [k.arg] = value
+            k.abbrevOn = True
+            k.setLabelGrey(
+                "Abbreviation (on): '%s' = '%s'" % (
+                    k.arg,value))
+#@+node:ekr.20051004080550: *7* addInverseAbbreviation
+def addInverseAbbreviation (self,event):
+
+    '''Add an inverse abbreviation:
+    The selected text is the abbreviation name;
+    the minibuffer prompts you for the value of the abbreviation.'''
+
+    k = self.k ; state = k.getState('add-inverse-abbr')
+
+    if state == 0:
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+        k.setLabelBlue('Add Inverse Abbreviation: ',protect=True)
+        k.getArg(event,'add-inverse-abbr',1,self.addInverseAbbreviation)
+    else:
+        w = self.w
+        k.clearState()
+        k.resetLabel()
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i,j = g.getWord(s,i-1)
+        word = s[i:j]
+        if word:
+            self.abbrevs [word] = k.arg
+#@+node:ekr.20050920084036.18: *7* killAllAbbrevs
+def killAllAbbrevs (self,event):
+
+    '''Delete all abbreviations.'''
+
+    self.abbrevs = {}
+#@+node:ekr.20050920084036.19: *7* listAbbrevs
+def listAbbrevs (self,event=None):
+
+    '''List all abbreviations.'''
+
+    k = self.k
+
+    if self.abbrevs:
+        g.es('Abbreviations...')
+        for z in self.abbrevs:
+            s = self.abbrevs.get(z).replace('\n','\\n') # 2010/09/01
+            g.es('','%s=%s' % (z,s))
+    else:
+        g.es('No present abbreviations')
+#@+node:ekr.20050920084036.20: *7* readAbbreviations & helper
+def readAbbreviations (self,event=None):
+
+    '''Read abbreviations from a file.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title = 'Open Abbreviation File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if fileName:
+        self.readAbbreviationsFromFile(fileName)
+#@+node:ekr.20100901080826.6156: *8* readAbbreviationsFromFile
+def readAbbreviationsFromFile(self,fileName):
+
+    k = self.c.k
+
+    try:
+        f = open(fileName)
+        for s in f:
+            self.addAbbrevHelper(s)
+        f.close()
+        k.abbrevOn = True
+        g.es("Abbreviations on")
+        self.listAbbrevs()
+    except IOError:
+        g.es('can not open',fileName)
+#@+node:ekr.20050920084036.23: *7* toggleAbbrevMode
+def toggleAbbrevMode (self,event):
+
+    '''Toggle abbreviation mode.'''
+
+    k = self.k
+    k.abbrevOn = not k.abbrevOn
+    k.keyboardQuit(event)
+    # k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
+    g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
+#@+node:ekr.20050920084036.24: *7* writeAbbreviation
+def writeAbbreviations (self,event):
+
+    '''Write abbreviations to a file.'''
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='Write Abbreviations',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'w')
+        for x in self.abbrevs:
+            val = self.abbrevs.get(x).replace('\n','\\n')  # 2010/09/01.
+            s = '%s=%s\n' % (x,val)
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,reportErrors=True)
+            f.write(s)
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@+node:ekr.20100901080826.6001: *6* addAbbrevHelper
+def addAbbrevHelper (self,s):
+
+    if not s.strip(): return
+
+    try:
+        d = self.abbrevs
+        name,val = s.split('=')
+        name = name.strip()
+        val = val [:-1].replace('\\n','\n') # 2010/09/01.
+        old = d.get(name)
+        if old: g.es_print('redefining abbreviation',name,'\nfrom',repr(old),'to',repr(val))
+        d [name] = val
+    except ValueError:
+        g.es_print('bad abbreviation: %s' % s)
 #@-all
 #@-leo
