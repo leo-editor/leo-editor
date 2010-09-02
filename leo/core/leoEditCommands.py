@@ -332,7 +332,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         Words start with '@'.
         '''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self.k ; c = self.c ; ch = event.char.strip()
         w = self.editWidget(event)
         if not w: return
@@ -408,6 +408,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
     name is the abbreviation name, value is the
     substituted text. Whitespace is ignore around
     the name, but is significant in the value.
+    Abbreviation names may contain only
+    alphabetic characters, but may start with the
+    '@' sign.
 
     By *convention* @data global-abbreviations
     setting should be defined in
