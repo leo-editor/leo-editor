@@ -4784,7 +4784,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
     if g.app.unitTesting:
         exceptions = ('public_s','private_s','sentinels','stringOutput')
-        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions),'writeOneAtShadowNode'
 
     if at.errors == 0 and not toString:
         # Write the public and private files.
@@ -5364,7 +5364,7 @@ def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
 
     try:
         ok = at.openFileForWriting(root,at.targetFileName,toString=True)
-        if g.app.unitTesting: assert ok # string writes never fail.
+        if g.app.unitTesting: assert ok,'writeFromString' # string writes never fail.
         # Simulate writing the entire file so error recovery works.
         at.writeOpenFile(root,nosentinels=not useSentinels,toString=True,fromString=s)
         at.closeWriteFile()

@@ -5351,15 +5351,15 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if f:
                 s = f.read()
                 f.close()
-                self.createAtEditNodeHelper(fn,p,s)
+                self.doFileUrlHelper(fn,p,s)
                 return True
 
         g.es_print('not found: %s' % (fn))
         return False
-    #@+node:ekr.20100830205422.3723: *7* createAtEditNodeHelper
-    def createAtEditNodeHelper (self,fn,p,s):
+    #@+node:ekr.20100830205422.3723: *7* doFileUrlHelper & helper
+    def doFileUrlHelper (self,fn,p,s):
 
-        '''Insert s in an @edit node after p.'''
+        '''Insert s in an @thin, @auto or @edit node after p.'''
 
         c = self.c ; u = c.undoer ; undoType = 'Drag File'
 
@@ -5370,10 +5370,112 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             p2 = p.insertAfter()
 
-        p2.h,p2.b = '@edit %s' % (fn),s
-        p2.clearDirty() # Don't automatically rewrite this node.
+        self.createAtFileNode(fn,p2,s)
 
         u.afterInsertNode(p2,undoType,undoData)
+
+        c.selectPosition(p2)
+    #@+node:ekr.20100902095952.3740: *8* createAtFileNode & helpers
+    def createAtFileNode (self,fn,p,s):
+
+        '''Set p's headline, body text and possibly descendants
+        based on the file's name fn and contents s.
+
+        If the file is an thin file, create an @thin tree.
+        Othewise, create an @auto tree.
+        If all else fails, create an @auto node.
+
+        Give a warning if a node with the same headline already exists.
+        '''
+
+        c = self.c ; d = c.importCommands.importDispatchDict
+        if self.isThinFile(fn,s):
+            self.createAtThinTree(fn,p,s)
+        elif self.isAutoFile(fn,s):
+            self.createAtAutoTree(fn,p,s)
+        else:
+            p.h,p.b = '@edit %s' % (fn),s
+            p.clearDirty() # Don't automatically rewrite this node.
+        self.warnIfNodeExists(p)
+    #@+node:ekr.20100902095952.3744: *9* createAtAutoTree
+    def createAtAutoTree (self,fn,p,s):
+
+        '''Make p an @auto node and create the tree using
+        s, the file's contents.
+        '''
+
+        c = self.c ; at = c.atFileCommands
+
+        p.h = '@auto %s' % (fn)
+
+        at.readOneAtAutoNode(fn,p)
+
+        # if at.errors:
+            # # p.b = ''
+            # while p.hasChildren():
+                # p.firstChild().doDelete(newNode=p)
+
+        p.clearDirty() # Don't automatically rewrite this node.
+    #@+node:ekr.20100902095952.3743: *9* createAtThinNode
+    def createAtThinTree (self,fn,p,s):
+
+        '''Make p an @thin node and create the tree using
+        s, the file's contents.
+        '''
+
+        c = self.c ; at = c.atFileCommands
+
+        p.h = '@thin %s' % (fn)
+
+        # Read the file into p.
+        ok = at.read(root=p.copy(),
+            importFileName=None,
+            fromString=s,
+            atShadow=False,
+            force=True) # Disable caching.
+
+        if not ok:
+            g.es_print('Error reading',fn,color='red')
+            p.b = '' # Safe: will not cause a write later.
+            p.clearDirty() # Don't automatically rewrite this node.
+    #@+node:ekr.20100902095952.3741: *9* isThinFile
+    def isThinFile (self,fn,s):
+
+        '''Return true if the file whose contents is s
+        was created from an @thin tree.'''
+
+        c = self. c ; at = c.atFileCommands
+
+        # Skip lines before the @+leo line.
+        i = s.find('@+leo')
+        if i == -1:
+            return False
+        else:
+            # Like at.isFileLike.
+            j,k = g.getLine(s,i)
+            line = s[j:k]
+            valid,new_df,start,end,isThin = at.parseLeoSentinel(line)
+            # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
+            return valid and new_df and isThin
+    #@+node:ekr.20100902095952.3742: *9* isAutoFile
+    def isAutoFile (self,fn,unused_s):
+
+        '''Return true if the file whose name is fn
+        can be parsed with an @auto parser.
+        '''
+
+        c = self.c
+        d = c.importCommands.importDispatchDict
+        junk,ext = g.os_path_splitext(fn)
+        return d.get(ext)
+    #@+node:ekr.20100902095952.3745: *9* warnIfNodeExists
+    def warnIfNodeExists (self,p):
+
+        c = self.c ; h = p.h
+        for p2 in c.all_unique_positions():
+            if p2.h == h and p2 != p:
+                g.es('Warning: duplicate node:',h,color='blue')
+                break
     #@+node:ekr.20100830205422.3724: *6* doHttpUrl
     def doHttpUrl (self,p,url):
 
