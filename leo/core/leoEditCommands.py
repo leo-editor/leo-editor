@@ -254,7 +254,7 @@ def initAllEditCommanders (c):
     for name, theClass in classesList:
         theInstance = getattr(c,name)
         theInstance.init()
-#@+node:ekr.20050920084036.13: ** abbrevCommandsClass (test)
+#@+node:ekr.20050920084036.13: ** abbrevCommandsClass
 class abbrevCommandsClass (baseEditCommandsClass):
 
     '''A class to handle user-defined abbreviations.
@@ -296,7 +296,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
         if k.abbrevOn:
              g.es('Abbreviations are on')
-    #@+node:ekr.20050920084036.15: *3*  getPublicCommands & getStateCommands
+    #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
         return {
@@ -317,32 +317,97 @@ class abbrevCommandsClass (baseEditCommandsClass):
             'read-abbrev-file':             self.readAbbreviations,
             'write-abbrev-file':            self.writeAbbreviations,
         }
+    #@+node:ekr.20100901080826.6155: *3*  Entry point
+    #@+node:ekr.20050920084036.27: *4* expandAbbrev
+    def expandAbbrev (self,event):
+
+        '''Not a command.  Called from k.masterCommand to expand
+        abbreviations in event.widget.'''
+
+        trace = False and not g.unitTesting
+        k = self.k ; c = self.c ; ch = event.char.strip()
+        w = self.editWidget(event)
+        if not w: return
+        if w.hasSelection(): return
+
+        # Find the word at the cursor.
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        if 0 < i < len(s) and s[i] == ' ': i -= 1
+        if 0 < i < len(s) and not g.isWordChar(s[i]): i -= 1
+        i,j = g.getWord(s,i)
+        word = s[i:j+1].strip()
+        if ch: word = word + ch
+        if trace: g.trace(i,j,repr(word))
+        if not word: return
+
+        val = self.abbrevs.get(word)
+        if val:
+            oldSel = j,j
+            c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
+            if i != j: w.delete(i,j)
+            w.insert(i,val)
+            c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
+
+        return val is not None
     #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
-    #@@pagewidth 40
+    #@@pagewidth 45
 
     def aproposAbbreviations (self,event=None):
 
         s = '''\
 
-    When abbreviation mode is on
-    (abbrev-mode toggles this mode) Leo will
-    expand abbreviations as you type. Note
-    that defining any abbreviation
-    automatically turns on abbreviation
-    mode.
+    apropos-abbreviations
+    =====================
+
+    When abbreviation mode is on (abbrev-mode
+    toggles this mode) Leo will expand
+    abbreviations as you type. Type the name of
+    an abbreviation, followed by a space. As soon
+    as you type the space, Leo will replace the
+    name by the abbreviations value. You can undo
+    the replacement as usual.
+
+    Note that defining any abbreviation
+    automatically turns on abbreviation mode.
 
     The add-global-abbreviation command
     (<alt-x>add-gl<tab><return>) takes the
-    selected text as the replacement value
-    of the abbreviation. The minibuffer
-    prompts you for the name of the
-    abbreviation.
+    selected text as the replacement value of the
+    abbreviation. The minibuffer prompts you for
+    the name of the abbreviation.
 
-    Once an abbreviation is defined, Leo
-    will automatically replace the name of
-    an abbreviation by its value as you
-    type. You can undo the replacement as
-    usual.
+    Settings
+    ========
+
+    As usual, the following settings have effect
+    only in @settings trees:
+
+    @bool enable-abbreviations (default: False)
+
+    When true, enables substitution of
+    abbreviations.
+
+    @data global-abbreviations
+    @data abbreviations
+
+    In both cases, body text contains lines of
+    the form::
+
+       name=value
+
+    name is the abbreviation name, value is the
+    substituted text. Whitespace is ignore around
+    the name, but is significant in the value.
+
+    By *convention* @data global-abbreviations
+    setting should be defined in
+    myLeoSettings.leo, while @data abbreviations
+    should be defined in other .leo files.
+    Regardless of where they are defined,
+    abbreviations in @data abbreviation nodes
+    will override settings (with the same name)
+    in @data global-abbreviations nodes.
 
     Commands
     ========
@@ -359,29 +424,27 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
     dabbrev-expands
 
-    Expand the word in the buffer before
-    point as a dynamic abbrev, by searching
-    in the buffer for words starting with
-    that abbreviation (dabbrev-expand).
-    Similar to M-/ in Emacs
+    Expand the word in the buffer before point as
+    a dynamic abbrev, by searching in the buffer
+    for words starting with that abbreviation
+    (dabbrev-expand). Similar to M-/ in Emacs
 
     abbrev-mode
 
-    Toggles abbreviation mode. Abbreviations
-    are only active when this mode is on.
+    Toggles abbreviation mode. Abbreviations are
+    only active when this mode is on.
 
     add-global-abbrev
 
-    Adds an abbreviation for the selected
-    text. The minibuffer prompts for the
-    abbreviation name.
+    Adds an abbreviation for the selected text.
+    The minibuffer prompts for the abbreviation
+    name.
 
     inverse-add-global-abbrev
 
-    Adds an abbreviation. The selected text
-    is the abbreviation name. The minibuffer
-    prompts for the value of the
-    abbreviation.
+    Adds an abbreviation. The selected text is
+    the abbreviation name. The minibuffer prompts
+    for the value of the abbreviation.
 
     kill-all-abbrevs
 
@@ -389,7 +452,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
     list-abbrevs
 
-    Lists all active abbrebiations.
+    Lists all active abbreviations.
 
     read-abbrev-file
 
@@ -398,13 +461,20 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
     write-abbrev-file
 
-    Writes abbreviations to an external
-    file.
+    Writes abbreviations to an external file.
+
+    Scripting
+    =========
+
+    Leo scripts may read abbreviations from a file with::
+
+        c.abbrevCommands.readAbbreviationsFromFile(fn)
 
     '''
 
         if not g.app.unitTesting:
-            g.es(g.adjustTripleString(s.rstrip(),self.c.tab_width))
+            g.es(g.adjustTripleString(s.rstrip(),
+                self.c.tab_width))
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion
     def dynamicCompletion (self,event=None):
@@ -512,38 +582,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     rlist.append(word)
 
         # g.trace('rlist',rlist)
-    #@+node:ekr.20050920084036.27: *3* expandAbbrev (called from k.masterCommand)
-    def expandAbbrev (self,event):
-
-        '''Not a command.  Called from k.masterCommand to expand
-        abbreviations in event.widget.'''
-
-        trace = False and not g.unitTesting
-        k = self.k ; c = self.c ; ch = event.char.strip()
-        w = self.editWidget(event)
-        if not w: return
-        if w.hasSelection(): return
-
-        # Find the word at the cursor.
-        s = w.getAllText()
-        i = w.getInsertPoint()
-        if 0 < i < len(s) and s[i] == ' ': i -= 1
-        if 0 < i < len(s) and not g.isWordChar(s[i]): i -= 1
-        i,j = g.getWord(s,i)
-        word = s[i:j+1].strip()
-        if ch: word = word + ch
-        if trace: g.trace(i,j,repr(word))
-        if not word: return
-
-        val = self.abbrevs.get(word)
-        if val:
-            oldSel = j,j
-            c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
-            if i != j: w.delete(i,j)
-            w.insert(i,val)
-            c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
-
-        return val is not None
     #@+node:ekr.20070531103114: *3* static abbrevs
     #@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
     def addAbbrevHelper (self,s):
@@ -630,19 +668,22 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 g.es('','%s=%s' % (z,s))
         else:
             g.es('No present abbreviations')
-    #@+node:ekr.20050920084036.20: *4* readAbbreviations
+    #@+node:ekr.20050920084036.20: *4* readAbbreviations & helper
     def readAbbreviations (self,event=None):
 
         '''Read abbreviations from a file.'''
-
-        k = self.c.k
 
         fileName = g.app.gui.runOpenFileDialog(
             title = 'Open Abbreviation File',
             filetypes = [("Text","*.txt"), ("All files","*")],
             defaultextension = ".txt")
 
-        if not fileName: return
+        if fileName:
+            self.readAbbreviationsFromFile(fileName)
+    #@+node:ekr.20100901080826.6156: *5* readAbbreviationsFromFile
+    def readAbbreviationsFromFile(self,fileName):
+
+        k = self.c.k
 
         try:
             f = open(fileName)
