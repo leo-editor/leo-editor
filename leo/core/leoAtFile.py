@@ -303,6 +303,7 @@ class atFile:
         if self.errors: return
 
         # Init state from arguments.
+        self.fromString = False
         self.perfectImportRoot = perfectImportRoot
         self.importing = importing
         self.root = root
@@ -523,7 +524,7 @@ class atFile:
         """Read an @thin or @file tree."""
 
         trace = False and not g.unitTesting
-        if trace: g.trace(root.h,len(root.b))
+        if trace: g.trace(root.h)
         at = self ; c = at.c
         fileName = at.initFileName(fromString,importFileName,root)
         if not fileName:
@@ -531,17 +532,25 @@ class atFile:
             return False
         at.initReadIvars(root,fileName,
             importFileName=importFileName,atShadow=atShadow)
+        at.fromString = fromString
         if at.errors:
+            if trace: g.trace('Init error')
             return False
         fileName = at.openFileForReading(fromString=fromString)
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
+        elif fromString: # 2010/09/02.
+            pass
         else:
+            g.trace('No inputFile')
             return False
         root.v.at_read = True # Remember that we have read this file.
 
         # Get the file from the cache if possible.
-        s,loaded,fileKey = c.cacher.readFile(fileName,root)
+        if fromString:
+            s,loaded,fileKey = fromString,False,None
+        else:
+            s,loaded,fileKey = c.cacher.readFile(fileName,root)
         # 2010/02/24: Never read an external file
         # with file-like sentinels from the cache.
         isFileLike = loaded and at.isFileLike(s)
@@ -578,11 +587,10 @@ class atFile:
             # be written automatically when saving the file.
             root.setDirty()
             c.setChanged(True) # Essential, to keep dirty bit set.
-        if at.errors == 0 and not isFileLike:
+        if at.errors == 0 and not isFileLike and not fromString:
             c.cacher.writeFile(root,fileKey)
 
-        if trace: g.trace('root.isDirty',root.isDirty())
-
+        if trace: g.trace('at.errors',at.errors)
         return at.errors == 0
     #@+node:ekr.20041005105605.25: *5* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
@@ -1211,7 +1219,10 @@ class atFile:
                 func(s,i)
         except AssertionError:
             junk, message, junk = sys.exc_info()
-            at.error('unexpected assertion failure in',fileName,'\n',message)
+            at.error('scanText4: unexpected assertion failure in',
+                g.choose(at.fromString,'fromString',fileName),
+                '\n',message)
+            g.trace(g.callers(5))
             if g.unitTesting:
                 raise
 
@@ -1314,7 +1325,7 @@ class atFile:
             # Important: with new sentinels we *never*
             # terminate nodes until the post-pass.
         else:
-            assert not at.docOut # Cleared by @-node sentinel.
+            assert not at.docOut,'not at.docOut' # Cleared by @-node sentinel.
             at.outStack.append(at.out)
             at.out = []
 
@@ -1350,19 +1361,20 @@ class atFile:
         at = self ; c = at.c
 
         # Crucial: we must be using new-style sentinels.
-        assert at.readVersion5
-        assert at.thinFile and not at.importing
+        assert at.readVersion5,'at.readVersion5'
+        assert at.thinFile,'at.thinFile'
+        assert not at.importing,'not at.importing'
 
         if newLevel > oldLevel:
-            assert newLevel == oldLevel + 1
+            assert newLevel == oldLevel + 1,'newLevel == oldLevel + 1'
         else:
             while oldLevel > newLevel:
                 oldLevel -= 1
                 at.indentStack.pop()
                 at.thinNodeStack.pop()
                 at.vStack.pop()
-            assert oldLevel == newLevel
-            assert len(at.thinNodeStack) == newLevel
+            assert oldLevel == newLevel,'oldLevel == newLevel'
+            assert len(at.thinNodeStack) == newLevel,'len(at.thinNodeStack) == newLevel'
 
         # The last node is the node at the top of the stack.
         at.lastThinNode = at.thinNodeStack[-1]
@@ -1376,7 +1388,7 @@ class atFile:
             if at.readVersion5:
                 oldLevel = len(at.thinNodeStack)
                 newLevel = level - 1
-                assert newLevel >= 0
+                assert newLevel >= 0,'newLevel >= 0'
                 if trace: g.trace('old',oldLevel,'new',newLevel,headline)
                 at.changeLevel(oldLevel,newLevel)
                 v = at.createThinChild4(gnx,headline)
@@ -1501,7 +1513,7 @@ class atFile:
         at = self
 
         if at.readVersion5:
-            assert g.match(s,i,"+")
+            assert g.match(s,i,"+"),'g.match(s,i,"+")'
             i += 1 # Skip the new plus sign.
 
             # New in Leo 4.8: Ignore the spellling in leadingWs.
@@ -1721,7 +1733,7 @@ class atFile:
 
         at = self ; c = at.c
 
-        assert not at.readVersion5
+        assert not at.readVersion5,'not at.readVersion5'
             # Must not be called for new sentinels.
 
         at.raw = False # End raw mode.
@@ -2189,15 +2201,15 @@ class atFile:
         """Skip the start of a sentinel."""
 
         start = self.startSentinelComment
-        assert(start and len(start)>0)
+        assert start and len(start)>0,'skipSentinelStart4 1'
 
         i = g.skip_ws(s,i)
-        assert(g.match(s,i,start))
+        assert g.match(s,i,start),'skipSentinelStart4 2'
         i += len(start)
 
         # 7/8/02: Support for REM hack
         i = g.skip_ws(s,i)
-        assert(i < len(s) and s[i] == '@')
+        assert i < len(s) and s[i] == '@','skipSentinelStart4 3'
         return i + 1
     #@+node:ekr.20041005105605.116: *3* Reading utils...
     #@+node:ekr.20100625092449.5963: *4* at.appendToOut
@@ -2236,8 +2248,8 @@ class atFile:
             if hasList:
                 at.terminateNode(v=p.v)
                     # Sets v.tempBodyString and clears v.tempBodyList.
-                assert not hasattr(p.v,'tempBodyList')
-                assert hasattr(p.v,'tempBodyString')
+                assert not hasattr(p.v,'tempBodyList'),'copyAllTempBodyStringsToVnodes 1'
+                assert hasattr(p.v,'tempBodyString'),'copyAllTempBodyStringsToVnodes 2'
             s = p.v.tempBodyString
             delattr(p.v,'tempBodyString') # essential.
             old_body = p.b
@@ -2295,6 +2307,7 @@ class atFile:
         if j < i:
             start = s[j:i]
         else:
+            if trace: g.trace('no opening delim')
             valid = False
 
         #@-<< set the opening comment delim >>
@@ -2313,11 +2326,16 @@ class atFile:
 
         if g.match(s,i,tag):
             i += len(tag)
-        else: valid = False
+        else:
+            if trace: g.trace('no @+leo')
+            valid = False
         #@-<< make sure we have @+leo >>
         #@+<< read optional version param >>
         #@+node:ekr.20041005105605.123: *5* << read optional version param >>
         new_df = g.match(s,i,version_tag)
+
+        if trace and not new_df:
+            g.trace('not new_df',repr(s[0:100]))
 
         if new_df:
             # Pre Leo 4.4.1: Skip to the next minus sign or end-of-line.
@@ -2334,6 +2352,7 @@ class atFile:
             if j < i:
                 pass
             else:
+                if trace: g.trace('no version')
                 valid = False
         #@-<< read optional version param >>
         #@+<< read optional thin param >>
@@ -2371,6 +2390,7 @@ class atFile:
                 else:
                     g.es_print("bad encoding in derived file:",encoding)
             else:
+                if trace: g.trace('no encoding')
                 valid = False
         #@-<< read optional encoding param >>
         #@+<< set the closing comment delim >>
@@ -2381,9 +2401,8 @@ class atFile:
             i += 1
         end = s[j:i]
         #@-<< set the closing comment delim >>
-        if trace and not new_df:
-            g.trace('not new_df(!)',repr(s))
-        if trace: g.trace('valid',valid,'isThin',isThinDerivedFile)
+        if trace:
+            g.trace('valid',valid,'isThin',isThinDerivedFile)
         return valid,new_df,start,end,isThinDerivedFile
     #@+node:ekr.20041005105605.127: *4* at.readError
     def readError(self,message):
@@ -2511,7 +2530,7 @@ class atFile:
         if at.readVersion5:
             # A vital assertion.
             # We must *never* terminate a node before the post pass.
-            assert postPass
+            assert postPass,'terminateNode'
 
         # Get the temp attributes.
         hasString  = hasattr(v,'tempBodyString')
@@ -2845,7 +2864,7 @@ class atFile:
 
         try:
             at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
-            assert root==at.root
+            assert root==at.root,'write'
             if toString:
                 at.closeWriteFile() # sets self.stringOutput
                 # Major bug: failure to clear this wipes out headlines!
@@ -3202,7 +3221,7 @@ class atFile:
 
         if g.app.unitTesting:
             exceptions = ('public_s','private_s','sentinels','stringOutput')
-            assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+            assert g.checkUnchangedIvars(at,ivars_dict,exceptions),'writeOneAtShadowNode'
 
         if at.errors == 0 and not toString:
             # Write the public and private files.
@@ -3263,7 +3282,7 @@ class atFile:
 
         try:
             ok = at.openFileForWriting(root,at.targetFileName,toString=True)
-            if g.app.unitTesting: assert ok # string writes never fail.
+            if g.app.unitTesting: assert ok,'writeFromString' # string writes never fail.
             # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root,nosentinels=not useSentinels,toString=True,fromString=s)
             at.closeWriteFile()
@@ -3303,7 +3322,7 @@ class atFile:
                                 at.write(p,kind='@nosent',nosentinels=True)
                             elif p.isAtFileNode():
                                 at.write(p,kind='@file')
-                            else: assert(0)
+                            else: assert 0,'writeMissing'
 
                             writtenFiles = True
                             #@-<< write the @file node >>
@@ -3444,7 +3463,7 @@ class atFile:
         i = 0
         while i < len(s):
             next_i = g.skip_line(s,i)
-            assert(next_i > i)
+            assert next_i > i,'putBody'
             kind = at.directiveKind4(s,i)
             #@+<< handle line at s[i] >>
             #@+node:ekr.20041005105605.163: *5* << handle line at s[i] >> (putBody)
@@ -3461,7 +3480,7 @@ class atFile:
                     else:
                         at.putDocLine(s,i)
             elif kind in (at.docDirective,at.atDirective):
-                assert(not at.pending)
+                assert not at.pending,'putBody at.pending'
                 if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
                     at.putEndDocLine() 
                 at.putStartDocLine(s,i,kind)
@@ -3497,7 +3516,7 @@ class atFile:
                 # g.trace('miscDirective')
                 at.putDirective(s,i)
             else:
-                assert(0) # Unknown directive.
+                assert 0,'putBody: unknown directive'
             #@-<< handle line at s[i] >>
             i = next_i
         if not inCode:
