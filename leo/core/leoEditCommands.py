@@ -269,7 +269,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         baseEditCommandsClass.__init__(self,c) # init the base class.
 
         # Set local ivars.
-        self.abbrevs ={}
+        self.abbrevs ={} # Keys are names, values are (abbrev,tag).
         self.daRanges = []
         self.event = None
         self.dynaregex = re.compile( # For dynamic abbreviations
@@ -284,14 +284,19 @@ class abbrevCommandsClass (baseEditCommandsClass):
         baseEditCommandsClass.finishCreate(self)
 
         c = self.c ; k = c.k
-        for tag in ('global-abbreviations','abbreviations'):
-            aList = c.config.getData(tag)
+        table = (
+            ('global-abbreviations','global'),
+            ('abbreviations','local'),
+        )
+        for source,tag in table:
+            aList = c.config.getData(source)
             if aList:
                 for s in aList:
-                    self.addAbbrevHelper(s)
+                    self.addAbbrevHelper(s,tag)
 
-        if self.abbrevs:
-            self.listAbbrevs()
+        if 0: # Quickly becomes annoying.
+            if self.abbrevs:
+                self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
         if k.abbrevOn:
@@ -322,9 +327,12 @@ class abbrevCommandsClass (baseEditCommandsClass):
     def expandAbbrev (self,event):
 
         '''Not a command.  Called from k.masterCommand to expand
-        abbreviations in event.widget.'''
+        abbreviations in event.widget.
 
-        trace = False and not g.unitTesting
+        Words start with '@'.
+        '''
+
+        trace = True and not g.unitTesting
         k = self.k ; c = self.c ; ch = event.char.strip()
         w = self.editWidget(event)
         if not w: return
@@ -336,12 +344,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if 0 < i < len(s) and s[i] == ' ': i -= 1
         if 0 < i < len(s) and not g.isWordChar(s[i]): i -= 1
         i,j = g.getWord(s,i)
+        if 0 < i < len(s) and s[i-1] == '@': i -= 1
         word = s[i:j+1].strip()
         if ch: word = word + ch
         if trace: g.trace(i,j,repr(word))
         if not word: return
 
-        val = self.abbrevs.get(word)
+        val,tag = self.abbrevs.get(word,(None,None))
         if val:
             oldSel = j,j
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
@@ -584,7 +593,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         # g.trace('rlist',rlist)
     #@+node:ekr.20070531103114: *3* static abbrevs
     #@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
-    def addAbbrevHelper (self,s):
+    def addAbbrevHelper (self,s,tag=''):
 
         if not s.strip(): return
 
@@ -595,11 +604,11 @@ class abbrevCommandsClass (baseEditCommandsClass):
             val = '='.join(data[1:])
             if val.endswith('\n'): val = val[:-1]
             val = val.replace('\\n','\n')
-            old = d.get(name)
-            if old and not g.unitTesting:
+            old,tag = d.get(name,(None,None),)
+            if old and old != val and not g.unitTesting:
                 g.es_print('redefining abbreviation',name,
                     '\nfrom',repr(old),'to',repr(val))
-            d [name] = val
+            d [name] = val,tag
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
     #@+node:ekr.20050920084036.25: *4* addAbbreviation
@@ -623,7 +632,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             value = k.argSelectedText # 2010/09/01.
             if k.arg.strip():
-                self.abbrevs [k.arg] = value
+                self.abbrevs [k.arg] = value,'dynamic'
                 k.abbrevOn = True
                 k.setLabelGrey(
                     "Abbreviation (on): '%s' = '%s'" % (
@@ -651,7 +660,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             i,j = g.getWord(s,i-1)
             word = s[i:j]
             if word:
-                self.abbrevs [word] = k.arg
+                self.abbrevs [word] = k.arg,'add-inverse-abbr'
     #@+node:ekr.20050920084036.18: *4* killAllAbbrevs
     def killAllAbbrevs (self,event):
 
@@ -663,13 +672,16 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         '''List all abbreviations.'''
 
-        k = self.k
+        k = self.k ; d = self.abbrevs
 
         if self.abbrevs:
             g.es('Abbreviations...')
-            for z in self.abbrevs:
-                s = self.abbrevs.get(z).replace('\n','\\n') # 2010/09/01
-                g.es('','%s=%s' % (z,s))
+            keys = list(d.keys())
+            keys.sort()
+            for name in keys:
+                val,tag = self.abbrevs.get(name)
+                val = val.replace('\n','\\n')
+                g.es('','%s: %s=%s' % (tag,name,val))
         else:
             g.es('No present abbreviations')
     #@+node:ekr.20050920084036.20: *4* readAbbreviations & helper
@@ -692,11 +704,11 @@ class abbrevCommandsClass (baseEditCommandsClass):
         try:
             f = open(fileName)
             for s in f:
-                self.addAbbrevHelper(s)
+                self.addAbbrevHelper(s,'file')
             f.close()
             k.abbrevOn = True
             g.es("Abbreviations on")
-            self.listAbbrevs()
+            # self.listAbbrevs()
         except IOError:
             g.es('can not open',fileName)
     #@+node:ekr.20050920084036.23: *4* toggleAbbrevMode
@@ -723,11 +735,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not fileName: return
 
         try:
+            d = self.abbrevs
             f = open(fileName,'w')
-            for x in self.abbrevs:
-                val = self.abbrevs.get(x).replace('\n','\\n')  # 2010/09/01.
+            keys = list(d.keys)
+            keys.sort()
+            for name in keys:
+                val,tag = self.abbrevs.get(name)
+                val=val.replace('\n','\\n')
                 s = '%s=%s\n' % (x,val)
-                if not g.isPython3: # 2010/08/27
+                if not g.isPython3:
                     s = g.toEncodedString(s,reportErrors=True)
                 f.write(s)
             f.close()
