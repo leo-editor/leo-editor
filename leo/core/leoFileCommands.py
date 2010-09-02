@@ -1760,7 +1760,9 @@ class baseFileCommands:
 
         fc = self ; c = fc.c ; v = p.v
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
-        isEdit = p.isAtEditNode() and p.atEditNodeName().strip()
+        isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+            # 2010/09/02: @edit nodes must not have children.
+            # If they do, the entire tree is written to the outline.
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
         isOrphan = p.isOrphan()

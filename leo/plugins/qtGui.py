@@ -5394,8 +5394,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         elif self.isAutoFile(fn,s):
             self.createAtAutoTree(fn,p,s)
         else:
-            p.h,p.b = '@edit %s' % (fn),s
-            p.clearDirty() # Don't automatically rewrite this node.
+            self.createAtEditNode(fn,p,s)
         self.warnIfNodeExists(p)
     #@+node:ekr.20100902095952.3744: *9* createAtAutoTree
     def createAtAutoTree (self,fn,p,s):
@@ -5413,7 +5412,17 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         # No error recovery should be needed here.
 
         p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20100902095952.3743: *9* createAtThinNode
+    #@+node:ekr.20100902165040.3738: *9* createAtEditNode
+    def createAtEditNode(self,fn,p,s):
+
+        c = self.c ; at = c.atFileCommands
+
+        # Use the full @edit logic, so dragging will be
+        # exactly the same as reading.
+        at.readOneAtEditNode(fn,p)
+        p.h = '@edit %s' % (fn)
+        p.clearDirty() # Don't automatically rewrite this node.
+    #@+node:ekr.20100902095952.3743: *9* createAtThinTree
     def createAtThinTree (self,fn,p,s):
 
         '''Make p an @thin node and create the tree using

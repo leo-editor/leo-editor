@@ -3338,55 +3338,57 @@ class atFile:
         else:
             g.es("no @file node in the selected tree")
     #@+node:ekr.20090225080846.5: *4* at.writeOneAtEditNode
-    # Similar to writeOneAtAutoNode.
-
     def writeOneAtEditNode(self,p,toString,force=False):
 
-        '''Write p, an @edit node.
-
-        File indices *must* have already been assigned.'''
+        '''Write one @edit node.'''
 
         at = self ; c = at.c ; root = p.copy()
+        c.endEditing()
 
         fn = p.atEditNodeName()
+        if not fn and not toString: return False
 
-        if fn:
-            at.scanDefaultDirectory(p,importing=True) # Set default_directory
-            fn = c.os_path_finalize_join(at.default_directory,fn)
-            exists = g.os_path_exists(fn)
-            if not hasattr(root.v,'at_read') and exists:
-                # Prompt if writing a new @edit node would overwrite the existing file.
-                ok = self.promptForDangerousWrite(fn,kind='@edit')
-                if ok:
-                    root.v.at_read = True # Create the attribute for all clones.
-                else:
-                    g.es("not written:",fn)
-                    return
-        elif not toString:
+        if p.hasChildren():
+            g.es('@edit nodes must not have children',color='red')
+            g.es('To save your work, convert @edit to @auto or @thin')
             return False
 
-        # This code is similar to code in at.write.
-        c.endEditing() # Capture the current headline.
-        at.targetFileName = g.choose(toString,"<string-file>",fn)
-        at.initWriteIvars(root,at.targetFileName,
-            atAuto=True,
-            atEdit=True,
-            nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString)
-
-        ok = at.openFileForWriting(root,fileName=fn,toString=toString)
-        if ok:
-            at.writeOpenFile(root,nosentinels=True,toString=toString)
-            at.closeWriteFile() # Sets stringOutput if toString is True.
-            if at.errors == 0:
-                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        fn = c.os_path_finalize_join(at.default_directory,fn)
+        exists = g.os_path_exists(fn)
+        if not hasattr(root.v,'at_read') and exists:
+            # Prompt if writing a new @edit node would overwrite the existing file.
+            ok = self.promptForDangerousWrite(fn,kind='@edit')
+            if ok:
+                root.v.at_read = True # Create the attribute for all clones.
             else:
-                g.es("not written:",at.outputFileName)
-                root.setDirty()
+                g.es("not written:",fn)
+                return False
 
-        elif not toString:
-            root.setDirty() # Make _sure_ we try to rewrite this file.
+        at.targetFileName = fn
+        at.initWriteIvars(root,at.targetFileName,
+            atAuto=True, atEdit=True,
+            nosentinels=True,thinFile=False,
+            scriptWrite=False,toString=toString)
+
+        # Compute the file's contents.
+        # Unlike the @nosent file logic it does not add a final newline.
+        contents = ''.join([s for s in g.splitLines(p.b)
+            if at.directiveKind4(s,0) == at.noDirective])
+
+        if toString:
+            at.stringOutput = contents
+            return True
+
+        ok = at.openFileForWriting(root,fileName=fn,toString=False)
+        if ok:
+            self.os(contents)
+            at.closeWriteFile()
+        if ok and at.errors == 0:
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        else:
             g.es("not written:",at.outputFileName)
+            root.setDirty()
 
         return ok
     #@+node:ekr.20041005105605.157: *4* at.writeOpenFile
