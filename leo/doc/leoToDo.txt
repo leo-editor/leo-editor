@@ -2,7 +2,7 @@
 #@+node:ekr.20100119205347.6015: * @thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
-4.8 vim, cleanups, your mission...
+
 #@+node:ekr.20060306194040: *3* Leo Video & slide show
 @nocolor
 
@@ -48,9 +48,9 @@ Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.co
 and it has a very good tutorial -- leads the beginner by the hand through much
 of the language. Also the help file has working code snippets
 to cut-n-paste-n-play-with. 
-#@+node:ekr.20100830094511.5826: *3* Deprecate tk
 #@+node:ekr.20100827095120.5870: *3* Before a1
-#@+node:ekr.20100828110445.5824: *4* Finish installer
+#@+node:ekr.20100827114047.5899: *4* Installer, etc.
+#@+node:ekr.20100828110445.5824: *5* Finish installer
 @nocolor-node
 
 Docs and installer should have top priority
@@ -72,6 +72,20 @@ installed alongside the package - so you have
 
 leo.pth:
 ...\Program Files\Leo\package 
+#@+node:ekr.20100826110728.5844: *5* Fix install problem 
+@nocolor-node
+
+I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
+I figured out on my own to make a shortcut to launchLeo.py at this
+location:
+
+C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
+
+which works. (whooppee)
+
+However the shortcuts that the "leo install" created don't work they
+abort.
+#@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
 #@+node:ekr.20100826110728.5845: *4* Urgent: fix aspell
 #@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
 @nocolor-node
@@ -340,9 +354,6 @@ Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
 Is there some other object I should be using instead of c.frame? I
 simply don't understand the connection between the error and my
 script.
-#@+node:ekr.20100827114047.5898: *4* plugins
-#@+node:ekr.20100827095120.5866: *5* Check imports of all plugins
-#@+node:ekr.20100827095120.5859: *5* Remove or fix LeoN
 #@+node:ekr.20100827114047.5896: *4* Docs
 #@+node:ekr.20100826110728.5846: *5* Add explanation of icon box to tutorial
 > 1) Is there a place I can go to find what indicators could appear in
@@ -448,21 +459,6 @@ tree, though it does generate an incorrect message:
 We want better docs, automatically, and a way to update @enabled-plugins.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
-#@+node:ekr.20100827114047.5899: *4* Installation
-#@+node:ekr.20100826110728.5844: *5* Fix install problem 
-@nocolor-node
-
-I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
-I figured out on my own to make a shortcut to launchLeo.py at this
-location:
-
-C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
-
-which works. (whooppee)
-
-However the shortcuts that the "leo install" created don't work they
-abort.
-#@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
 #@+node:ekr.20100827114047.5895: *3* Before b1
 #@+node:ekr.20100830120622.5829: *4* Fix python import problems
 @nocolor-node
@@ -842,7 +838,7 @@ The question is, how to do this automatically?
 #@+node:ekr.20080603052650.466: ** 4.9 Vim stuff
 @nocolor
 
-All problems appear to be easy.
+4.8 vim, cleanups, your mission...
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 

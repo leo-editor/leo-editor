@@ -403,7 +403,7 @@ class quickMove(object):
 
         self.addButton(qmb.first, qmb.type_, v=qmb.target, parent=parent.gnx)
         self.buttons = [i for i in self.buttons if i[0] is not qmb]
-        print b
+        print(b)
         b.button.parent().layout().removeWidget(b.button)
 
         g.es('Moved to parent')
