@@ -8391,22 +8391,25 @@ class spellTabHandler (leoFind.leoFind):
         and so that in future a Python only solution could be developed."""
 
         d = {}
-
         try:
             f = open(fileName,"r")
         except IOError:
             g.es("can not open local dictionary",fileName,"using a blank one instead")
             return d
-
         try:
-            # Create the dictionary - there are better ways to do this
-            # in later Python's but we stick with this method for compatibility
-            for word in f.readlines():
-                word = g.toUnicode(word,reportErrors=True)
-                d [word.strip().lower()] = 0
+            try:
+                s = f.read()
+                f.close()
+                # This works with Py2k on Ubuntu and Windows.
+                # This works with Py3k only on Windows.
+                if not g.isPython3:
+                    s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
+                for word in g.splitLines(s):
+                    d [word.strip().lower()] = 0
+            except Exception:
+                if 1: g.es_exception()
         finally:
             f.close()
-
         return d
     #@+node:ekr.20051025071455.36: *4* Commands
     #@+node:ekr.20051025071455.37: *5* add (spellTab) (changed)
