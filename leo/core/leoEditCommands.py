@@ -8361,9 +8361,12 @@ class spellTabHandler (leoFind.leoFind):
 
         self.local_language_code = c.config.getString('aspell_local_language_code') or 'en'
 
-        self.dictionaryFileName = dictionaryFileName = (
+        fn = (
             c.config.getString('spell_local_dictionary') or
             os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+
+        fn = g.os_path_finalize(fn)
+        self.dictionaryFileName = dictionaryFileName = fn
 
         if not dictionaryFileName or not g.os_path_exists(dictionaryFileName):
             g.es_print('can not open dictionary file:',dictionaryFileName, color='red')
@@ -8650,33 +8653,12 @@ class AspellClass:
         if ctypes:
             self.getAspellWithCtypes()
         else:
-            self.getAspell() # Should never be needed.
-    #@+node:ekr.20061017125710: *5* getAspell
-    def getAspell (self):
-
-        # if sys.platform.startswith('linux'):
-            # self.report('You must be using Python 2.5 or above to use aspell on Linux')
-            # return
-
-        try:
-            import aspell
-        except ImportError:
-            # Specify the path to the top-level Aspell directory.
-            theDir = g.choose(sys.platform=='darwin',self.aspell_dir,self.aspell_bin_dir)
-            aspell = g.importFromPath('aspell',theDir,pluginName=None,verbose=False)
-
-        # if not aspell:
-            # self.report('can not import aspell')
-
-        self.aspell = aspell
-        self.sc = aspell and aspell.spell_checker(prefix=self.aspell_dir,lang=self.local_language_code)
+            g.trace('no ctypes!')
+            # self.getAspell()
     #@+node:ekr.20061018111331: *5* getAspellWithCtypes
     def getAspellWithCtypes (self):
 
         try:
-            c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
-            c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
-
             if sys.platform.startswith('win'):
                 path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
                 self.aspell = aspell = ctypes.CDLL(path)
@@ -8694,24 +8676,48 @@ class AspellClass:
             #@+<< define and configure aspell entry points >>
             #@+node:ekr.20061018111933: *6* << define and configure aspell entry points >>
             # new_aspell_config
-            new_aspell_config = aspell.new_aspell_config 
-            new_aspell_config.restype = c_void_p # 2010/05/11 was c_int
+            new_args = False
+            new_aspell_config = aspell.new_aspell_config
+
+            c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
+
+            ### These are dubious!
+            c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
+
+            if new_args:
+                new_aspell_config.restype = c_void_p
+                    # 2010/05/11 was c_int
+            else:
+                new_aspell_config.restype = c_int
 
             # aspell_config_replace
-            aspell_config_replace = aspell.aspell_config_replace 
-            aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
-                # 2010/05/11: was [c_int, c_char_p, c_char_p]
+            aspell_config_replace = aspell.aspell_config_replace
+
+            if new_args:
+                aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
+                    # 2010/05/11: was [c_int, c_char_p, c_char_p]
+            else:
+                aspell_config_replace.argtypes = [c_int, c_char_p, c_char_p]
 
             # aspell_config_retrieve
             aspell_config_retrieve = aspell.aspell_config_retrieve 
-            aspell_config_retrieve.restype = c_char_p  
-            aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
-                # 2010/05/11: was [c_int, c_char_p]
+            aspell_config_retrieve.restype = c_char_p 
+
+            if new_args: 
+                aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
+                    # 2010/05/11: was [c_int, c_char_p]
+            else:
+                aspell_config_retrieve.argtypes = [c_int, c_char_p]
 
             # aspell_error_message
             aspell_error_message = aspell.aspell_error_message 
             aspell_error_message.restype = c_char_p
-            aspell_error_message.argtypes = [c_void_p] # 2010/05/11: was [c_int]
+
+            if new_args:
+                aspell_error_message.argtypes = [c_void_p]
+                    # 2010/05/11: was [c_int]
+            else:
+                 aspell_error_message.argtypes = [c_int]
 
             # new_aspell_speller
             new_aspell_speller = aspell.new_aspell_speller
@@ -8738,10 +8744,18 @@ class AspellClass:
                 g.pr(aspell_config_retrieve(sc, "lang"))
 
             possible_err = aspell.new_aspell_speller(sc)
-            ### aspell.delete_aspell_config(c_int(sc))
-            aspell.delete_aspell_config(c_void_p(sc)) # 2010/07/29
+
+            if new_args:
+                aspell.delete_aspell_config(c_void_p(sc)) # 2010/07/29
+            else:
+                aspell.delete_aspell_config(c_int(sc))
+
             possible_err = new_aspell_speller(sc) # 2010/05/11
-            aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
+
+            if new_args:
+                aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
+            else:
+                aspell.delete_aspell_config(sc)
 
             # Rudimentary error checking, needs more.  
             if aspell_error_number(possible_err) != 0: # 2010/05/11
@@ -8759,14 +8773,26 @@ class AspellClass:
 
             # word_list_elements
             word_list_elements = aspell.aspell_word_list_elements
-            word_list_elements.restype = c_void_p # 2010/05/11: was c_int
-            word_list_elements.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+            if new_args:
+                word_list_elements.restype = c_void_p
+                    # 2010/05/11: was c_int
+                word_list_elements.argtypes = [c_void_p,]
+                    # 2010/05/11: was [c_int,]
+            else:
+                word_list_elements.restype = c_int
+                word_list_elements.argtypes = [c_int,]
 
 
             # string_enumeration_next
             string_enumeration_next = aspell.aspell_string_enumeration_next
             string_enumeration_next.restype = c_char_p
-            string_enumeration_next.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+            if new_args:
+                string_enumeration_next.argtypes = [c_void_p,]
+                    # 2010/05/11: was [c_int,]
+            else:
+                 string_enumeration_next.argtypes = [c_int,]
 
             # check
             check = aspell.aspell_speller_check
@@ -8775,11 +8801,18 @@ class AspellClass:
 
             # suggest
             suggest = aspell.aspell_speller_suggest
-            suggest.restype = c_void_p # 2010/05/11: was c_int
-            suggest.argtypes = [c_void_p, c_char_p, c_int]
-                # 2010/05/11: was [c_int, c_char_p, c_int]
+
+            if new_args:
+                suggest.restype = c_void_p
+                    # 2010/05/11: was c_int
+                suggest.argtypes = [c_void_p, c_char_p, c_int]
+                    # 2010/05/11: was [c_int, c_char_p, c_int]
+            else:
+                suggest.restype = c_int
+                suggest.argtypes = [c_int, c_char_p, c_int]
             #@-<< define and configure aspell entry points >>
         except Exception:
+            # g.es_exception()
             self.report('aspell checker not enabled')
             self.aspell = self.check = self.sc = None
             return
@@ -8822,10 +8855,13 @@ class AspellClass:
             else:
                 return self.suggestions(word)
         else:
-            if self.sc.check(word):
-                return None
-            else:
-                return self.sc.suggest(word)
+            g.trace('ctypes not installed')
+            return None
+        # else:
+            # if self.sc.check(word):
+                # return None
+            # else:
+                # return self.sc.suggest(word)
     #@+node:ekr.20061018101455.4: *4* suggestions
     def suggestions(self,word):
 
@@ -8855,6 +8891,7 @@ class AspellClass:
                 "%s --lang=%s create master %s.wl < %s.txt" %
                 (self.aspell_bin_dir, self.local_language_code, basename,basename))
             os.popen(cmd)
+            g.trace(self.local_dictionary)
             return True
 
         except Exception:

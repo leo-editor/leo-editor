@@ -3,7 +3,8 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
-#@+node:ekr.20060306194040: *3* Leo Video & slide show
+#@+node:ekr.20100827095120.5870: *3* Before a1
+#@+node:ekr.20060306194040: *4* Leo Video & slide show
 @nocolor
 
 The curse of knowledge
@@ -16,7 +17,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3e75787223ee9303
 ...[How do I make my own buttons?]
 ......[Some commands you can use with buttons]
 ......[Where to find button commands]
-#@+node:ekr.20100828074347.5828: *4* Resources
+#@+node:ekr.20100828074347.5828: *5* Resources
 http://sourceforge.net/forum/message.php?msg_id=3615177
 By: ktenney
 
@@ -48,7 +49,6 @@ Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.co
 and it has a very good tutorial -- leads the beginner by the hand through much
 of the language. Also the help file has working code snippets
 to cut-n-paste-n-play-with. 
-#@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20100827114047.5899: *4* Installer, etc.
 #@+node:ekr.20100828110445.5824: *5* Finish installer
 @nocolor-node
@@ -86,42 +86,6 @@ which works. (whooppee)
 However the shortcuts that the "leo install" created don't work they
 abort.
 #@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
-#@+node:ekr.20100826110728.5845: *4* Urgent: fix aspell
-#@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
-
-I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
-just noticed a bug in propagate_changed_lines within leoShadow.py.
-I haven't worked out the complete fix for this, but thought I'd
-mention it now so that others don't stumble over it unawares.
-It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
-which does not handle the case when the number of new lines is
-different from the number of old lines. In fact the number of new
-lines can be either greater or less than the number of old lines, so
-the code needs a little more complexity to deal with this. Currently
-it only replaces the same number of lines as were in the old file.
-There's an added twist in that if sentinels occur in the middle of the
-old lines, it won't be clear how to distribute the new lines on either
-side of the sentinels.
-I'll comment further when I've thought about this some more, but for
-now, this is just a road cone to mark the spot.
-
-==========================
-
-After a little more thought, I suspect that the simple approach is
-likely to be the best, at least initially.
-I'd suggest placing a condition (if new_public_lines_rdr.index() <
-new_j) on the copying of new public lines to new private lines, then
-finishing off with a loop copied from the 'insert' tag above -- (while
-new_public_lines_rdr.index() < new_j ...).
-
-I'm not in a position to get involved with direct editing of the code
-within SourceForge, but I contribute these thoughts in the hope that
-an active contributor may be able to make something of them.
-
-Nick
 #@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
 @nocolor-node
 
@@ -157,203 +121,6 @@ Content (clone)
 @others
 #@+node:ekr.20100221142603.5629: *7* clone
 # Content (clone)
-#@+node:ekr.20100827114047.5897: *4* Easy bug fixes
-#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
-@nocolor-node
-
-> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
-> not @root), you can prevent any interpretation of the immediately
-> following line with the "@verbatim" directive
-
-This is not true, although it might appear to be true.
-
-There is an @verbatim *sentinel*, but no @verbatim *directive*.
-
-For example, I have just verified that the following does not work:
-
-@verbatim
-<< undefined ref >>
-
-@raw and @end_raw do work as described.
-
-There appear to be several bugs in this area:
-
-1. Leo probably should warn that @verbatim does not exist as a
-directive, although technically Leo is supposed to write anything that
-looks like a sentinel but isn't "verbatim".
-
-2. Leo does appear to read @raw and @end_raw properly in @thin files,
-but Leo improperly issues the (red) log message,
-converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20100220190251.5616: *5* Fix rst bug?
-# See handleCodeMode
-#@+node:ekr.20100220190251.5617: *6* report
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-
-The indentation of the second @doc causes the doc part to look like
-a continuation of the code:: directive.
-
-It's not clear whether this bug is worth fixing, and it's not clear whether
-there would be side effects of any potential fix.
-
-The simplest fix appears to be in handleCodeMode.
-#@+node:ekr.20090502071837.72: *6* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or (
-                self.getOption('show_doc_parts_as_paragraphs') and
-                self.isSpecialDocPart(s,None)
-            )
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            # A fix, perhaps dubious, to a bug discussed at
-            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-            # lines2 = [z.lstrip() for z in lines2]
-            # g.trace('lines2',lines2)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        elif not code: # Start the code block.
-            result.append('')
-            result.append(self.code_block_string)
-            code.append(s)
-        else: # Continue the code block.
-            code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-
-    # Munge the result so as to keep docutils happy.
-    # Don't use self.rstripList: it's not the same.
-    # g.trace(result)
-    result2 = []
-    for z in result:
-        if z == '': result2.append('\n\n')
-        # 2010/08/27: Fix bug 618482.
-        # elif not z.rstrip(): pass
-        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-        else: result2.append('%s\n' % z.rstrip())
-
-    return result2
-#@+node:ekr.20090502071837.73: *7* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-#@+node:ekr.20090502071837.74: *7* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    # 2010/08/27: fix bug 618482.
-    s = ''.join(theList).rstrip()
-    return s.split('\n')
-#@+node:ekr.20090502071837.75: *7* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-#@+node:ekr.20100220204150.5627: *6* @@rst hello.html
-@ @rst-options
-verbose=True
-code_mode=True
-show_doc_parts_as_paragraphs=True
-number_code_lines=True
-write_intermediate_file=True
-@c
-
-#@+node:ekr.20100220204150.5628: *7* Greet the world
-@
-Greet the world, politely
-@c
-
-g.es ("Hello, world")
-
-@
-    Was that polite enough?
-    Indentation.
-@c
-#@+node:ekr.20100827095120.5867: *5* What to do about UiTypeException?
-#@+node:ekr.20100827095120.5862: *5* Fix script problem
-@nocolor-node
-
-seeking help with broken script node after upgrade to 4.7
-http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
-
-The following is a better listing:
-
-=============================
-from mod_scripting import scriptingController
-sc = scriptingController(c)
-
-c.frame.addIconRow()
-first = True
-for node in p.following_siblings_iter():
-   if first:
-       first = False
-       continue
-   h = node.headString()
-   buttonText = sc.getButtonText(h)
-   statusLine = "Hoist %s" % h
-   b = sc.createIconButton(text=buttonText,
-                           command=None,
-                           shortcut=None,
-                           statusLine=statusLine,
-                           bg='yellow')
-   def deleteButtonCallback(event=None,sc=sc,b=b):
-       sc.deleteButton(b)
-
-   def hoistButtonCallback (event=None,c=c,p=node.copy()):
-       while (c.canDehoist()):
-           c.dehoist()
-       c.selectPosition(p)
-       c.hoist()
-
-   b.configure(command=hoistButtonCallback)
-   b.bind('<3>',deleteButtonCallback)
-=============================
-
-On Windows, I have determined that the problem occurs at
-c.frame.addIconRow(). The traceback I get is:
-
-exception executing script
-AttributeError: 'ToolbarTkIconBarClass' object has no attribute
-'iconFrameContainerFrame'
---------------------
- line 4324:
-* line 4325:             w =
-Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
- line 4326:             w.pack(fill="x",pady=2)
- line 4327:             self.iconFrame = w
-
-Is there some other object I should be using instead of c.frame? I
-simply don't understand the connection between the error and my
-script.
 #@+node:ekr.20100827114047.5896: *4* Docs
 #@+node:ekr.20100826110728.5846: *5* Add explanation of icon box to tutorial
 > 1) Is there a place I can go to find what indicators could appear in
@@ -459,8 +226,297 @@ tree, though it does generate an incorrect message:
 We want better docs, automatically, and a way to update @enabled-plugins.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
-#@+node:ekr.20100827114047.5895: *3* Before b1
-#@+node:ekr.20100830120622.5829: *4* Fix python import problems
+#@+node:ekr.20100827114047.5895: *3* Bugs
+#@+node:ekr.20100827095120.5862: *4* First: Fix script problem
+@nocolor-node
+
+seeking help with broken script node after upgrade to 4.7
+http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
+
+The following is a better listing:
+
+=============================
+from mod_scripting import scriptingController
+sc = scriptingController(c)
+
+c.frame.addIconRow()
+first = True
+for node in p.following_siblings_iter():
+   if first:
+       first = False
+       continue
+   h = node.headString()
+   buttonText = sc.getButtonText(h)
+   statusLine = "Hoist %s" % h
+   b = sc.createIconButton(text=buttonText,
+                           command=None,
+                           shortcut=None,
+                           statusLine=statusLine,
+                           bg='yellow')
+   def deleteButtonCallback(event=None,sc=sc,b=b):
+       sc.deleteButton(b)
+
+   def hoistButtonCallback (event=None,c=c,p=node.copy()):
+       while (c.canDehoist()):
+           c.dehoist()
+       c.selectPosition(p)
+       c.hoist()
+
+   b.configure(command=hoistButtonCallback)
+   b.bind('<3>',deleteButtonCallback)
+=============================
+
+On Windows, I have determined that the problem occurs at
+c.frame.addIconRow(). The traceback I get is:
+
+exception executing script
+AttributeError: 'ToolbarTkIconBarClass' object has no attribute
+'iconFrameContainerFrame'
+--------------------
+ line 4324:
+* line 4325:             w =
+Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
+ line 4326:             w.pack(fill="x",pady=2)
+ line 4327:             self.iconFrame = w
+
+Is there some other object I should be using instead of c.frame? I
+simply don't understand the connection between the error and my
+script.
+#@+node:ekr.20100826110728.5841: *4* Cool: Allow proportional fonts in plain text
+@nocolor-node
+
+
+I have an outline with the default target language set to plain, but
+with imported @shadow source code nodes.
+The default body font is set to a mono-spaced font for the benefit of
+the source code, but I'd really like all my plain-text descriptive
+nodes to be in a proportional font.
+Can I set a proportional font to use in all "@language plain" nodes
+while retaining the mono-spaced font for all @language csharp" nodes?
+
+=====================
+Actually, almost all the machinery is in place to do this.  For
+example, see in leoSettings.leo, the node
+
+@settings-->Colors-->Syntax colors & options-->Options for jEdit
+colorer-->Language-specific colors
+
+As I have just verified, these will work for the Qt colorizer.  For example:
+
+@font python keyword1 fonts
+
+with body text:
+
+python_keyword1_font_family = DejaVu Sans Mono
+python_keyword1_font_size = 20
+python_keyword1_font_slant = roman
+   # roman, italic
+python_keyword1_font_weight = bold
+   # normal, bold
+
+Produces quite big keyword :-)
+
+There are some issues that may have to be addressed re defaults, but
+I'd like to see this happen in the next day or so.  It would be a
+really good feature.
+
+Edward
+#@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
+
+I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
+just noticed a bug in propagate_changed_lines within leoShadow.py.
+I haven't worked out the complete fix for this, but thought I'd
+mention it now so that others don't stumble over it unawares.
+It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
+which does not handle the case when the number of new lines is
+different from the number of old lines. In fact the number of new
+lines can be either greater or less than the number of old lines, so
+the code needs a little more complexity to deal with this. Currently
+it only replaces the same number of lines as were in the old file.
+There's an added twist in that if sentinels occur in the middle of the
+old lines, it won't be clear how to distribute the new lines on either
+side of the sentinels.
+I'll comment further when I've thought about this some more, but for
+now, this is just a road cone to mark the spot.
+
+==========================
+
+After a little more thought, I suspect that the simple approach is
+likely to be the best, at least initially.
+I'd suggest placing a condition (if new_public_lines_rdr.index() <
+new_j) on the copying of new public lines to new private lines, then
+finishing off with a loop copied from the 'insert' tag above -- (while
+new_public_lines_rdr.index() < new_j ...).
+
+I'm not in a position to get involved with direct editing of the code
+within SourceForge, but I contribute these thoughts in the hope that
+an active contributor may be able to make something of them.
+
+Nick
+#@+node:ekr.20100903090944.5850: *4* Other bugs
+#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
+@nocolor-node
+
+> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
+> not @root), you can prevent any interpretation of the immediately
+> following line with the "@verbatim" directive
+
+This is not true, although it might appear to be true.
+
+There is an @verbatim *sentinel*, but no @verbatim *directive*.
+
+For example, I have just verified that the following does not work:
+
+@verbatim
+<< undefined ref >>
+
+@raw and @end_raw do work as described.
+
+There appear to be several bugs in this area:
+
+1. Leo probably should warn that @verbatim does not exist as a
+directive, although technically Leo is supposed to write anything that
+looks like a sentinel but isn't "verbatim".
+
+2. Leo does appear to read @raw and @end_raw properly in @thin files,
+but Leo improperly issues the (red) log message,
+converting @file format in @thin test_verbatim_sentinel.py
+#@+node:ekr.20100827114047.5893: *5* Fix rst file problems
+@nocolor-node
+
+Reported by TL:
+
+When editing a Docutils file in an external editor (exported from
+Leo), I always get a "Replace changed outline with external changes?"
+dialog box when I save the file in the external editor. This appears
+to occur because a newline is added to the end of the file when it is
+imported back into Leo.
+
+Note: The addition of a newline occurs even if the imported file
+already has a newline at the end of the file.
+
+There appears to be two problems:
+
+1) Leo always adds a newline even if the already has one.
+2) After Leo has added the newline it mistakenly marks the buffer as
+modified.
+#@+node:ekr.20100220190251.5616: *6* Fix rst bug?
+# See handleCodeMode
+#@+node:ekr.20100220190251.5617: *7* report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+
+The indentation of the second @doc causes the doc part to look like
+a continuation of the code:: directive.
+
+It's not clear whether this bug is worth fixing, and it's not clear whether
+there would be side effects of any potential fix.
+
+The simplest fix appears to be in handleCodeMode.
+#@+node:ekr.20090502071837.72: *7* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *8* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *8* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *8* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@+node:ekr.20100220204150.5627: *7* @@rst hello.html
+@ @rst-options
+verbose=True
+code_mode=True
+show_doc_parts_as_paragraphs=True
+number_code_lines=True
+write_intermediate_file=True
+@c
+
+#@+node:ekr.20100220204150.5628: *8* Greet the world
+@
+Greet the world, politely
+@c
+
+g.es ("Hello, world")
+
+@
+    Was that polite enough?
+    Indentation.
+@c
+#@+node:ekr.20100830120622.5829: *5* Fix python import problems
 @nocolor-node
 
 > > Hmm, I guess that would be more clear, although I think I'd like an option to include it in the following def to avoid
@@ -488,30 +544,11 @@ I'd also like
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
-#@+node:ekr.20100827114047.5892: *4* Fix toggle-split-direction
+#@+node:ekr.20100827114047.5892: *5* Fix toggle-split-direction
 Should preserve scrollbar location and appropriate window ratio.
 
 https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
-#@+node:ekr.20100827114047.5893: *4* Fix rst file problem
-@nocolor-node
-
-Reported by TL:
-
-When editing a Docutils file in an external editor (exported from
-Leo), I always get a "Replace changed outline with external changes?"
-dialog box when I save the file in the external editor. This appears
-to occur because a newline is added to the end of the file when it is
-imported back into Leo.
-
-Note: The addition of a newline occurs even if the imported file
-already has a newline at the end of the file.
-
-There appears to be two problems:
-
-1) Leo always adds a newline even if the already has one.
-2) After Leo has added the newline it mistakenly marks the buffer as
-modified.
-#@+node:ekr.20100826110728.5839: *4* Relocating .leo_shadow directories
+#@+node:ekr.20100826110728.5839: *5* Relocating .leo_shadow directories
 @nocolor-node
 
 2008
@@ -581,8 +618,8 @@ self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
 
 This looks like a Windows-only solution because of ':'.  It might fail
 in strange ways on other platforms.
-#@+node:ekr.20100827095120.5858: *4* Improve .ini installer
-#@+node:ekr.20100826110728.5840: *4* rst with show-comments-as-paragraph
+#@+node:ekr.20100827095120.5858: *5* Improve .ini importer
+#@+node:ekr.20100826110728.5840: *5* rst with show-comments-as-paragraph
 @nocolor-node
 
 derwish
@@ -703,7 +740,7 @@ We can test any one of these solutions starting early in the Leo 4.8
 release cycle, but none  is safe enough to include in Leo 4.7 final.
 
 If you would, please test fix #3 and report your results.  Thanks.
-#@+node:ekr.20100826110728.5842: *4* g.redirect breaks ipython
+#@+node:ekr.20100826110728.5842: *5* g.redirect breaks ipython
 @nocolor-node
 
 I am using the ipython bridge more and more. Its great.   I noticed
@@ -720,47 +757,8 @@ rod
 Thanks for this report.  Please do submit a bug.  Thanks.
 
 Edward
-#@+node:ekr.20100826110728.5841: *4* Allow proportional fonts in plain text
-@nocolor-node
-
-
-I have an outline with the default target language set to plain, but
-with imported @shadow source code nodes.
-The default body font is set to a mono-spaced font for the benefit of
-the source code, but I'd really like all my plain-text descriptive
-nodes to be in a proportional font.
-Can I set a proportional font to use in all "@language plain" nodes
-while retaining the mono-spaced font for all @language csharp" nodes?
-
-=====================
-Actually, almost all the machinery is in place to do this.  For
-example, see in leoSettings.leo, the node
-
-@settings-->Colors-->Syntax colors & options-->Options for jEdit
-colorer-->Language-specific colors
-
-As I have just verified, these will work for the Qt colorizer.  For example:
-
-@font python keyword1 fonts
-
-with body text:
-
-python_keyword1_font_family = DejaVu Sans Mono
-python_keyword1_font_size = 20
-python_keyword1_font_slant = roman
-   # roman, italic
-python_keyword1_font_weight = bold
-   # normal, bold
-
-Produces quite big keyword :-)
-
-There are some issues that may have to be addressed re defaults, but
-I'd like to see this happen in the next day or so.  It would be a
-really good feature.
-
-Edward
-#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20100223133351.5998: *5* show-invisibles doesn't work for blank lines
+#@+node:ekr.20081208102356.1: *5* Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
@@ -771,10 +769,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
-#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
+#@+node:ekr.20100131161507.6303: *5* Unit tests that all commands have docstrings
 # Just make the test.  It doesn't have to pass.
-#@+node:ekr.20100521090440.5885: *4* Fix mac unicode crasher
-#@+node:ekr.20100521090440.5886: *5* Report
+#@+node:ekr.20100521090440.5885: *5* Fix mac unicode crasher
+#@+node:ekr.20100521090440.5886: *6* Report
 @nocolor-node
 
 I put the following in qtGui.py after
@@ -812,7 +810,7 @@ nonetheless the special characters were inserted as expected.
 
 I think all this is quite a hack, but ... thanks for the hack, most
 important for me it's working for now. 
-#@+node:ekr.20100804095820.5812: *4* Fix thumb drive spec problem
+#@+node:ekr.20100804095820.5812: *5* Fix thumb drive spec problem
 #@+node:ekr.20100204052559.5791: *3* Make TOC sidebar collapsible
 @nocolor-node
 @wrap

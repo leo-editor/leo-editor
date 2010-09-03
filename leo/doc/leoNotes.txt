@@ -4392,5 +4392,17 @@ def OLDwriteOneAtEditNode(self,p,toString,force=False):
         g.es("not written:",at.outputFileName)
 
     return ok
+#@+node:ekr.20061017125710: *3* getAspell (no longer used)
+def getAspell (self):
+
+    try:
+        import aspell
+    except ImportError:
+        # Specify the path to the top-level Aspell directory.
+        theDir = g.choose(sys.platform=='darwin',self.aspell_dir,self.aspell_bin_dir)
+        aspell = g.importFromPath('aspell',theDir,pluginName=None,verbose=False)
+
+    self.aspell = aspell
+    self.sc = aspell and aspell.spell_checker(prefix=self.aspell_dir,lang=self.local_language_code)
 #@-all
 #@-leo
