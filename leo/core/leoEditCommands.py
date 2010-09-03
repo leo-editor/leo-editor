@@ -8636,6 +8636,10 @@ class AspellClass:
         """Ctor for the Aspell class."""
 
         self.c = c
+        self.aspell = self.sc = None # Must always be defined.
+
+        self.enable = c.config.getBool('enable-aspell',default=False)
+        if not self.enable: return
 
         self.aspell_dir = c.os_path_finalize(c.config.getString('aspell_dir'))
         self.aspell_bin_dir = c.os_path_finalize(c.config.getString('aspell_bin_dir'))
@@ -8647,8 +8651,6 @@ class AspellClass:
 
         # g.trace('code',self.local_language_code,'dict',self.local_dictionary_file)
         # g.trace('dir',self.aspell_dir,'bin_dir',self.aspell_bin_dir)
-
-        self.aspell = self.sc = None
 
         if ctypes:
             self.getAspellWithCtypes()

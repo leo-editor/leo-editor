@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
@@ -1209,7 +1209,8 @@
 <v t="ekr.20041119034357.31"></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 </v>
-<v t="ekr.20051025084017"><vh>Spell tab</vh>
+<v t="ekr.20051025084017" a="E"><vh>Spell tab</vh>
+<v t="ekr.20100903090944.8362"><vh>@bool enable-aspell = True</vh></v>
 <v t="ekr.20071025161551"><vh>@bool diagnose-aspell-installation = True</vh></v>
 <v t="ekr.20051025084017.1"><vh>@string aspell_local_language_code = en</vh></v>
 <v t="ekr.20051025084017.2"><vh>@string aspell_local_dictionary = None</vh></v>
@@ -8037,6 +8038,8 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100507153425.8304">Valid values are top,bottom,left,right</t>
 <t tx="ekr.20100806210935.8331"># @root and the related Tangle/Untange commands are deprecated.</t>
 <t tx="ekr.20100806211331.8331"></t>
+<t tx="ekr.20100903090944.8362">True: attempt to load Aspell package.
+False: do not attempt to load or use the Aspell package.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
