@@ -5169,6 +5169,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         self.setAcceptDrops(True)
         self.setDragEnabled(True)
         self.c = c
+        self.trace = False
 
     def dragMoveEvent(self,ev):
         pass
@@ -5179,38 +5180,55 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         '''Export c.p's tree as a Leo mime-data.'''
 
+        trace = False and not g.unitTesting
         c = self.c ; tree = c.frame.tree
-        if not ev: return
+        if not ev:
+            g.trace('no event!')
+            return
 
         md = ev.mimeData()
-        if not md: return
+        if not md:
+            g.trace('No mimeData!') ; return
 
-        ev.accept()
         c.endEditing()
-        s = c.fileCommands.putLeoOutline()
-        fn = c.fileName()
-        md.setText('%s,%s' % (fn,s))
-        # s = '%s,%s' % (fn,s)
-        # s = g.toEncodedString(s,encoding='utf-8',reportErrors=False)
-        # md.setData(self.format,s)
+        if g.app.dragging:
+            if trace or self.trace: g.trace('** already dragging')
+        else:
+            g.app.dragging = True
+            if self.trace: g.trace('set g.app.dragging')
+            self.setText(md)
+            if self.trace: self.dump(ev,c.p,'enter')
+
+        # Always accept the drag, even if we are already dragging.
+        ev.accept()
     #@+node:ekr.20100830205422.3716: *4* dropEvent & helpers
     def dropEvent(self,ev):
 
+        trace = False and not g.unitTesting
         if not ev: return
         c = self.c ; tree = c.frame.tree ; u = c.undoer
+
+        # Always clear the dragging flag, no matter what happens.
+        g.app.dragging = False
+        if self.trace: g.trace('clear g.app.dragging')
 
         # Set p to the target of the drop.
         item = self.itemAt(ev.pos())
         if not item: return
         itemHash = tree.itemHash(item)
         p = tree.item2positionDict.get(itemHash)
-        if not p: return
+        if not p:
+            if trace or self.trace: g.trace('no p!')
+            return
+
+        md = ev.mimeData()
+        if not md:
+            g.trace('no mimeData!') ; return
 
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
 
-        md = ev.mimeData()
-        if not md: return
+        if trace or self.trace: self.dump(ev,p,'drop ')
 
         if md.hasUrls():
             self.urlDrop(ev,p)
@@ -5219,25 +5237,27 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20100830205422.3720: *5* outlineDrop & helpers
     def outlineDrop (self,ev,p):
 
+        trace = False and not g.unitTesting
         c = self.c ; tree = c.frame.tree
         mods = ev.keyboardModifiers()
         md = ev.mimeData()
 
-        s = str(md.text()) # Safe: md.text() is a QString.
-        if not s: return
-        i = s.find(',')
-        if i == -1: return
-        fn = s[:i] ; s = s[i+1:]
-        if not fn or not p or p == c.p: return
+        fn,s = self.parseText(md)
+        if not s or not fn:
+            if trace or self.trace: g.trace('no fn or no s')
+            return
 
-        cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
-
-        if fn == c.fileName():
-            self.intraFileDrop(cloneDrag,fn,c.p,p)
+        if fn == self.fileName():
+            if p and p == c.p:
+                if trace or self.trace: g.trace('same node')
+            else:
+                cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
+                self.intraFileDrop(cloneDrag,fn,c.p,p)
         else:
-            self.interFileDrop(cloneDrag,fn,p,s)
+            # Clone dragging between files is not allowed.
+            self.interFileDrop(fn,p,s)
     #@+node:ekr.20100830205422.3718: *6* interFileDrop
-    def interFileDrop (self,cloneDrag,fn,p,s):
+    def interFileDrop (self,fn,p,s):
 
         '''Paste the mime data after (or as the first child of) p.'''
 
@@ -5249,7 +5269,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         c.selectPosition(p)
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
-            s,reassignIndices=not cloneDrag)
+            s,reassignIndices=True)
         if not pasted: return
 
         undoData = u.beforeInsertNode(p,
@@ -5262,13 +5282,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
         c.setRootPosition(c.findRootPosition(pasted))
-
-        if cloneDrag:
-            # Set dirty bits for ancestors of *all* pasted nodes.
-            # Note: the setDescendentsDirty flag does not do what we want.
-            for p in pasted.self_and_subtree():
-                p.setAllAncestorAtFileNodesDirty(
-                    setDescendentsDirty=False)
 
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw_now(pasted)
@@ -5310,6 +5323,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             c.setChanged(True)
             u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
             c.redraw_now(p1)
+        else:
+            g.trace('** move failed')
     #@+node:ekr.20100830205422.3721: *5* urlDrop & helpers
     def urlDrop (self,ev,p):
 
@@ -5504,6 +5519,49 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         u.afterInsertNode(p2,undoType,undoData)
         return True
+    #@+node:ekr.20100902190250.3743: *4* utils...
+    #@+node:ekr.20100902190250.3741: *5* dump
+    def dump (self,ev,p,tag):
+
+        if ev:
+            md = ev.mimeData()
+            assert md,'dump: no md'
+            fn,s = self.parseText(md)
+            if fn:
+                g.trace('',tag,'fn',repr(g.shortFileName(fn)),
+                    'len(s)',len(s),p and p.h)
+            else:
+                g.trace('',tag,'no fn! s:',repr(s))
+        else:
+            g.trace('',tag,'** no event!')
+    #@+node:ekr.20100902190250.3740: *5* parseText
+    def parseText (self,md):
+
+        '''Parse md.text() into (fn,s)'''
+
+        fn = ''
+        s = str(md.text()) # Safe: md.text() is a QString.
+
+        if s:
+            i = s.find(',')
+            if i == -1:
+                pass
+            else:
+                fn = s[:i]
+                s = s[i+1:]
+
+        return fn,s
+    #@+node:ekr.20100902190250.3742: *5* setText & fileName
+    def fileName (self):
+
+        return self.c.fileName() or '<unsaved file>'
+
+    def setText (self,md):
+
+        c = self.c
+        fn = self.fileName()
+        s = c.fileCommands.putLeoOutline()
+        md.setText('%s,%s' % (fn,s))
     #@-others
 #@+node:ekr.20081121105001.379: *3* class leoQtSpellTab
 class leoQtSpellTab:

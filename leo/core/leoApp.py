@@ -44,6 +44,7 @@ class LeoApp:
             # 1: full traces in g.es_exception.
             # 2: call pdb.set_trace in g.es_exception, etc.
         self.disableSave = False
+        self.dragging = False # Application-wide dragging flag.
         self.enableUnitTest = True
         self.extensionsDir = None
         self.globalConfigDir = None
