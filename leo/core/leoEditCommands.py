@@ -8397,17 +8397,20 @@ class spellTabHandler (leoFind.leoFind):
             g.es("can not open local dictionary",fileName,"using a blank one instead")
             return d
         try:
-            try:
-                s = f.read()
-                f.close()
-                # This works with Py2k on Ubuntu and Windows.
-                # This works with Py3k only on Windows.
-                if not g.isPython3:
+            errors = 0
+            while True:
+                try:
+                    s = f.readline() # Can fail with unicode problems.
+                    if not s: break
                     s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
-                for word in g.splitLines(s):
-                    d [word.strip().lower()] = 0
-            except Exception:
-                if 1: g.es_exception()
+                    d [s.strip().lower()] = 0
+                    # s = f.read() # Fails with Py3k on Ubuntu, but not Windows!
+                    # s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
+                    # for word in g.splitLines(s):
+                        # d [word.strip().lower()] = 0
+                except Exception:
+                    errors += 1
+            if errors: g.trace('errors',errors)
         finally:
             f.close()
         return d
