@@ -3,6 +3,171 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
+#@+node:ekr.20100903162809.5866: *3* First
+#@+node:ekr.20100827095120.5862: *4* First: Fix script problem
+@nocolor-node
+
+seeking help with broken script node after upgrade to 4.7
+http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
+
+The following is a better listing:
+
+=============================
+from mod_scripting import scriptingController
+sc = scriptingController(c)
+
+c.frame.addIconRow()
+first = True
+for node in p.following_siblings_iter():
+   if first:
+       first = False
+       continue
+   h = node.headString()
+   buttonText = sc.getButtonText(h)
+   statusLine = "Hoist %s" % h
+   b = sc.createIconButton(text=buttonText,
+                           command=None,
+                           shortcut=None,
+                           statusLine=statusLine,
+                           bg='yellow')
+   def deleteButtonCallback(event=None,sc=sc,b=b):
+       sc.deleteButton(b)
+
+   def hoistButtonCallback (event=None,c=c,p=node.copy()):
+       while (c.canDehoist()):
+           c.dehoist()
+       c.selectPosition(p)
+       c.hoist()
+
+   b.configure(command=hoistButtonCallback)
+   b.bind('<3>',deleteButtonCallback)
+=============================
+
+On Windows, I have determined that the problem occurs at
+c.frame.addIconRow(). The traceback I get is:
+
+exception executing script
+AttributeError: 'ToolbarTkIconBarClass' object has no attribute
+'iconFrameContainerFrame'
+--------------------
+ line 4324:
+* line 4325:             w =
+Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
+ line 4326:             w.pack(fill="x",pady=2)
+ line 4327:             self.iconFrame = w
+
+Is there some other object I should be using instead of c.frame? I
+simply don't understand the connection between the error and my
+script.
+#@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
+@nocolor-node
+
+This is the @others bug
+
+1. Create the following tree
+
+Instead of the expected test1.c file of:
+
+Content (clone)
+Content (clone)
+
+I got just:
+
+Content (clone)
+#@+node:ekr.20100221142603.5625: *5* @@shadow clone-bug-test.py@
+# This buglet has been around for a long long time.
+# It's not clear what Leo can do to fix it.
+# In the meantime, don't put clones under two different
+# @others directives :-)
+
+<< A >>
+<< B >>
+@others
+# end
+#@+node:ekr.20100221142603.5626: *6* << a >>
+# Node a
+@others
+#@+node:ekr.20100221142603.5629: *7* clone
+# Content (clone)
+#@+node:ekr.20100221142603.5628: *6* << b >>
+# Node b
+@others
+#@+node:ekr.20100221142603.5629: *7* clone
+# Content (clone)
+#@+node:ekr.20100826110728.5841: *4* Cool: Allow proportional fonts in plain text
+@nocolor-node
+
+
+I have an outline with the default target language set to plain, but
+with imported @shadow source code nodes.
+The default body font is set to a mono-spaced font for the benefit of
+the source code, but I'd really like all my plain-text descriptive
+nodes to be in a proportional font.
+Can I set a proportional font to use in all "@language plain" nodes
+while retaining the mono-spaced font for all @language csharp" nodes?
+
+=====================
+Actually, almost all the machinery is in place to do this.  For
+example, see in leoSettings.leo, the node
+
+@settings-->Colors-->Syntax colors & options-->Options for jEdit
+colorer-->Language-specific colors
+
+As I have just verified, these will work for the Qt colorizer.  For example:
+
+@font python keyword1 fonts
+
+with body text:
+
+python_keyword1_font_family = DejaVu Sans Mono
+python_keyword1_font_size = 20
+python_keyword1_font_slant = roman
+   # roman, italic
+python_keyword1_font_weight = bold
+   # normal, bold
+
+Produces quite big keyword :-)
+
+There are some issues that may have to be addressed re defaults, but
+I'd like to see this happen in the next day or so.  It would be a
+really good feature.
+
+Edward
+#@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
+
+I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
+just noticed a bug in propagate_changed_lines within leoShadow.py.
+I haven't worked out the complete fix for this, but thought I'd
+mention it now so that others don't stumble over it unawares.
+It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
+which does not handle the case when the number of new lines is
+different from the number of old lines. In fact the number of new
+lines can be either greater or less than the number of old lines, so
+the code needs a little more complexity to deal with this. Currently
+it only replaces the same number of lines as were in the old file.
+There's an added twist in that if sentinels occur in the middle of the
+old lines, it won't be clear how to distribute the new lines on either
+side of the sentinels.
+I'll comment further when I've thought about this some more, but for
+now, this is just a road cone to mark the spot.
+
+==========================
+
+After a little more thought, I suspect that the simple approach is
+likely to be the best, at least initially.
+I'd suggest placing a condition (if new_public_lines_rdr.index() <
+new_j) on the copying of new public lines to new private lines, then
+finishing off with a loop copied from the 'insert' tag above -- (while
+new_public_lines_rdr.index() < new_j ...).
+
+I'm not in a position to get involved with direct editing of the code
+within SourceForge, but I contribute these thoughts in the hope that
+an active contributor may be able to make something of them.
+
+Nick
 #@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20060306194040: *4* Leo Video & slide show
 @nocolor
@@ -86,41 +251,6 @@ which works. (whooppee)
 However the shortcuts that the "leo install" created don't work they
 abort.
 #@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
-#@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
-@nocolor-node
-
-This is the @others bug
-
-1. Create the following tree
-
-Instead of the expected test1.c file of:
-
-Content (clone)
-Content (clone)
-
-I got just:
-
-Content (clone)
-#@+node:ekr.20100221142603.5625: *5* @@shadow clone-bug-test.py@
-# This buglet has been around for a long long time.
-# It's not clear what Leo can do to fix it.
-# In the meantime, don't put clones under two different
-# @others directives :-)
-
-<< A >>
-<< B >>
-@others
-# end
-#@+node:ekr.20100221142603.5626: *6* << a >>
-# Node a
-@others
-#@+node:ekr.20100221142603.5629: *7* clone
-# Content (clone)
-#@+node:ekr.20100221142603.5628: *6* << b >>
-# Node b
-@others
-#@+node:ekr.20100221142603.5629: *7* clone
-# Content (clone)
 #@+node:ekr.20100827114047.5896: *4* Docs
 #@+node:ekr.20100826110728.5846: *5* Add explanation of icon box to tutorial
 > 1) Is there a place I can go to find what indicators could appear in
@@ -227,135 +357,6 @@ We want better docs, automatically, and a way to update @enabled-plugins.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
 #@+node:ekr.20100827114047.5895: *3* Bugs
-#@+node:ekr.20100827095120.5862: *4* First: Fix script problem
-@nocolor-node
-
-seeking help with broken script node after upgrade to 4.7
-http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
-
-The following is a better listing:
-
-=============================
-from mod_scripting import scriptingController
-sc = scriptingController(c)
-
-c.frame.addIconRow()
-first = True
-for node in p.following_siblings_iter():
-   if first:
-       first = False
-       continue
-   h = node.headString()
-   buttonText = sc.getButtonText(h)
-   statusLine = "Hoist %s" % h
-   b = sc.createIconButton(text=buttonText,
-                           command=None,
-                           shortcut=None,
-                           statusLine=statusLine,
-                           bg='yellow')
-   def deleteButtonCallback(event=None,sc=sc,b=b):
-       sc.deleteButton(b)
-
-   def hoistButtonCallback (event=None,c=c,p=node.copy()):
-       while (c.canDehoist()):
-           c.dehoist()
-       c.selectPosition(p)
-       c.hoist()
-
-   b.configure(command=hoistButtonCallback)
-   b.bind('<3>',deleteButtonCallback)
-=============================
-
-On Windows, I have determined that the problem occurs at
-c.frame.addIconRow(). The traceback I get is:
-
-exception executing script
-AttributeError: 'ToolbarTkIconBarClass' object has no attribute
-'iconFrameContainerFrame'
---------------------
- line 4324:
-* line 4325:             w =
-Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
- line 4326:             w.pack(fill="x",pady=2)
- line 4327:             self.iconFrame = w
-
-Is there some other object I should be using instead of c.frame? I
-simply don't understand the connection between the error and my
-script.
-#@+node:ekr.20100826110728.5841: *4* Cool: Allow proportional fonts in plain text
-@nocolor-node
-
-
-I have an outline with the default target language set to plain, but
-with imported @shadow source code nodes.
-The default body font is set to a mono-spaced font for the benefit of
-the source code, but I'd really like all my plain-text descriptive
-nodes to be in a proportional font.
-Can I set a proportional font to use in all "@language plain" nodes
-while retaining the mono-spaced font for all @language csharp" nodes?
-
-=====================
-Actually, almost all the machinery is in place to do this.  For
-example, see in leoSettings.leo, the node
-
-@settings-->Colors-->Syntax colors & options-->Options for jEdit
-colorer-->Language-specific colors
-
-As I have just verified, these will work for the Qt colorizer.  For example:
-
-@font python keyword1 fonts
-
-with body text:
-
-python_keyword1_font_family = DejaVu Sans Mono
-python_keyword1_font_size = 20
-python_keyword1_font_slant = roman
-   # roman, italic
-python_keyword1_font_weight = bold
-   # normal, bold
-
-Produces quite big keyword :-)
-
-There are some issues that may have to be addressed re defaults, but
-I'd like to see this happen in the next day or so.  It would be a
-really good feature.
-
-Edward
-#@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
-
-I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
-just noticed a bug in propagate_changed_lines within leoShadow.py.
-I haven't worked out the complete fix for this, but thought I'd
-mention it now so that others don't stumble over it unawares.
-It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
-which does not handle the case when the number of new lines is
-different from the number of old lines. In fact the number of new
-lines can be either greater or less than the number of old lines, so
-the code needs a little more complexity to deal with this. Currently
-it only replaces the same number of lines as were in the old file.
-There's an added twist in that if sentinels occur in the middle of the
-old lines, it won't be clear how to distribute the new lines on either
-side of the sentinels.
-I'll comment further when I've thought about this some more, but for
-now, this is just a road cone to mark the spot.
-
-==========================
-
-After a little more thought, I suspect that the simple approach is
-likely to be the best, at least initially.
-I'd suggest placing a condition (if new_public_lines_rdr.index() <
-new_j) on the copying of new public lines to new private lines, then
-finishing off with a loop copied from the 'insert' tag above -- (while
-new_public_lines_rdr.index() < new_j ...).
-
-I'm not in a position to get involved with direct editing of the code
-within SourceForge, but I contribute these thoughts in the hope that
-an active contributor may be able to make something of them.
-
-Nick
 #@+node:ekr.20100903090944.5850: *4* Other bugs
 #@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
 @nocolor-node

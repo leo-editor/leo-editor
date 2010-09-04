@@ -4,7 +4,14 @@
 #@+node:ekr.20060108123253: ** << docstring >>
 """Autosave the Leo document every so often.
 
-The time between saves is given in seconds in autosave.ini."""
+The time between saves is given by the setting, with default as shown::
+
+    @int mod_autosave_interval = 300
+
+This plugin is active only if::
+
+    @bool mod_autosave_active = True
+ """
 #@-<< docstring >>
 
 #@@language python
@@ -14,12 +21,6 @@ The time between saves is given in seconds in autosave.ini."""
 #@+node:ekr.20060108123141: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-
 import os
 import time
 #@-<< imports >>
@@ -33,66 +34,80 @@ import time
 # - Removed calls to g.top.
 # - Added init function.
 # 0.4 EKR: call g.enableIdleTimeHook() in init.
+# 1.0 EKR: A complete rewrite:
+#     - Don't use .ini file.  Use Leo settings, as described in the docstring.
+#     - Separate the code into onCreate (handles settings) and onIdle.
+#     - Use the global gDict to maintain per-commander values.
 #@-<< version history >>
 
-__version__ = "0.4" # EKR: call g.enableIdleTimeHook()
+__version__ = "1.0" # EKR: a complete rewrite using only Leo settings.
+
+# The global settings dict.
+gDict = {} # Keys are commanders, values are settings dicts.
 
 #@+others
 #@+node:ekr.20060108123141.2: ** init
 def init ():
 
     ok = not g.app.unitTesting # Don't want autosave after unit testing.
+
     if ok:
         # Register the handlers...
-        global LAST_AUTOSAVE, ACTIVE, AUTOSAVE_INTERVAL
-
-        AUTOSAVE_INTERVAL = 600
-        ACTIVE = "Yes"
-        LAST_AUTOSAVE = time.time()
-        applyConfiguration()
-
-        # Register the handlers...
-        leoPlugins.registerHandler("idle", autosave)
-        g.es("auto save enabled",color="orange")
+        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon( __name__ )
 
-        # Bug fix: 2009/10/06
-        if ACTIVE == "Yes":
-            g.enableIdleTimeHook()
-
     return ok
-#@+node:edream.110203113231.725: ** applyConfiguration
-def applyConfiguration(config=None):
+#@+node:edream.110203113231.726: ** onCreate
+def onCreate(tag, keywords):
 
-    """Called when the user presses the "Apply" button on the Properties form"""
+    """Handle the per-Leo-file settings."""
 
-    global LAST_AUTOSAVE, ACTIVE, AUTOSAVE_INTERVAL
+    global gDict
 
-    if config is None:
-        fileName = os.path.join(g.app.loadDir,"../","plugins","mod_autosave.ini")
-        config = ConfigParser.ConfigParser()
-        config.read(fileName)
+    c = keywords.get('c')
+    if g.app.killed or not c or not c.exists: return
 
-    ACTIVE = config.get("Main", "Active")
-    AUTOSAVE_INTERVAL = int(config.get("Main", "Interval"))
-#@+node:edream.110203113231.726: ** autosave
-def autosave(tag, keywords):
+    active = c.config.getBool('mod_autosave_active',default=False)
+    interval = c.config.getInt('mod_autosave_interval')
+
+    if active:
+        # Create an entry in the global settings dict.
+        d = {
+            'last':time.time(),
+            'interval':interval,
+        }
+        gDict[c.hash()] = d
+        g.es("auto save enabled every %s sec." % (
+            interval),color="orange")
+        leoPlugins.registerHandler('idle',onIdle)
+        g.enableIdleTimeHook()
+    else:
+         g.es("@bool mod_autosave_active=False",color='orange')
+#@+node:ekr.20100904062957.10654: ** onIdle
+def onIdle (tag,keywords):
 
     """Save the current document if it has a name"""
 
-    global LAST_AUTOSAVE
+    global gDict
 
+    trace = False and not g.unitTesting
     c = keywords.get('c')
-
     if g.app.killed or not c or not c.exists: return
-
-    ACTIVE = c.config.getBool('mod_autosave_active')
-    AUTOSAVE_INTERVAL = c.config.getInt('mod_autosave_interval')
-    if ACTIVE:
-        if time.time() - LAST_AUTOSAVE > AUTOSAVE_INTERVAL:
-            if c.mFileName and c.changed:
-                g.es("Autosave: %s" % time.ctime(),color="orange")
-                c.fileCommands.save(c.mFileName)
-            LAST_AUTOSAVE = time.time()
+    d = gDict.get(c.hash())
+    last = d.get('last')
+    interval = d.get('interval')
+    if time.time()-last >= interval:
+        if c.mFileName and c.changed:
+            s = "Autosave: %s" % time.ctime()
+            g.es(s,color="orange")
+            if trace: g.trace(s)
+            c.fileCommands.save(c.mFileName)
+        elif trace:
+            g.trace('not changed')
+        # Update the global dict.
+        d['last'] = time.time()
+        gDict[c.hash()] = d
+    elif trace:
+        g.trace('not time',c.shortFileName())
 #@-others
 #@-leo

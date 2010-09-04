@@ -1029,7 +1029,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1198,9 +1198,9 @@
 <v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
 <v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
 </v>
-<v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
+<v t="vitalije.20100306144625.8944" a="E"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
-<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 20</vh></v>
+<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 300</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.28"><vh>Preferences panel</vh>
@@ -1209,7 +1209,7 @@
 <v t="ekr.20041119034357.31"></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 </v>
-<v t="ekr.20051025084017" a="E"><vh>Spell tab</vh>
+<v t="ekr.20051025084017"><vh>Spell tab</vh>
 <v t="ekr.20100903090944.8362"><vh>@bool enable-aspell = True</vh></v>
 <v t="ekr.20071025161551"><vh>@bool diagnose-aspell-installation = True</vh></v>
 <v t="ekr.20051025084017.1"><vh>@string aspell_local_language_code = en</vh></v>
@@ -8102,7 +8102,7 @@ a single @data contextmenu_commands node. </t>
 </t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
-<t tx="vitalije.20100306144625.8946"></t>
+<t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

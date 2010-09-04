@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.53">
-	<global_window_position top="35" left="1010" height="546" width="849"/>
+	<global_window_position top="57" left="275" height="962" width="1132"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -553,6 +553,7 @@
 </v>
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
+<v t="ekr.20100904061757.2193"><vh>pyEnchant</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1562,6 +1563,7 @@ plugins_menu.py
 # open_with.py
 quicksearch.py
 # ipython.py
+# mod_autosave.py
 # templates.py
 scrolledmessage.py
 UNL.py
@@ -7039,5 +7041,9 @@ def setOption (self,name,val,tag):
             print('v %s icon %s %s' % (id(v),id(icon),fn))
 print('done')
 </t>
+<t tx="ekr.20100904061757.2193">import enchant
+print(enchant)
+for z in dir(enchant):
+    print(z)</t>
 </tnodes>
 </leo_file>
