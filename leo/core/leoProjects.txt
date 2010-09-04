@@ -3676,5 +3676,348 @@ def writeOneAtEditNode(self,p,toString,force=False):
         root.setDirty()
 
     return ok
+#@+node:ekr.20100903162809.5920: *4* Leo now uses PyEnchant to check spelling
+This is much safer than the old Aspell wrapper.
+#@+node:ekr.20051025071455: *5* Spell classes
+@others
+#@+node:ekr.20051025071455.1: *6* class spellCommandsClass
+class spellCommandsClass (baseEditCommandsClass):
+
+    '''Commands to support the Spell Tab.'''
+
+    @others
+#@+node:ekr.20051025080056: *7* ctor
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    self.handler = None
+
+    # All the work happens when we first open the frame.
+#@+node:ekr.20051025080420: *7* getPublicCommands (searchCommandsClass)
+def getPublicCommands (self):
+
+    return {
+        'open-spell-tab':           self.openSpellTab,
+        'spell-find':               self.find,
+        'spell-change':             self.change,
+        'spell-change-then-find':   self.changeThenFind,
+        'spell-ignore':             self.ignore,
+        'hide-spell-tab':           self.hide,
+    }
+#@+node:ekr.20051025080633: *7* openSpellTab
+def openSpellTab (self,event=None):
+
+    '''Open the Spell Checker tab in the log pane.'''
+
+    c = self.c ; log = c.frame.log ; tabName = 'Spell'
+
+    if log.frameDict.get(tabName):
+        log.selectTab(tabName)
+    else:
+        log.selectTab(tabName)
+        self.handler = spellTabHandler(c,tabName)
+        if not self.handler.loaded:
+            log.deleteTab(tabName,force=True)
+#@+node:ekr.20051025080420.1: *7* commands...(spellCommandsClass)
+# Just open the Spell tab if it has never been opened.
+# For minibuffer commands, we must also force the Spell tab to be visible.
+# self.handler is a spellTabHandler object (inited by openSpellTab)
+
+def find (self,event=None):
+    '''Simulate pressing the 'Find' button in the Spell tab.'''
+    if self.handler:
+        self.openSpellTab()
+        self.handler.find()
+    else:
+        self.openSpellTab()
+
+def change(self,event=None):
+    '''Simulate pressing the 'Change' button in the Spell tab.'''
+    if self.handler:
+        self.openSpellTab()
+        self.handler.change()
+    else:
+        self.openSpellTab()
+
+def changeThenFind (self,event=None):
+    '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
+    if self.handler:
+        self.openSpellTab()
+        # A workaround for a pylint warning:
+        # self.handler.changeThenFind()
+        f = getattr(self.handler,'changeThenFind')
+        f()
+    else:
+        self.openSpellTab()
+
+def hide (self,event=None):
+    '''Hide the Spell tab.'''
+    if self.handler:
+        self.c.frame.log.selectTab('Log')
+        self.c.bodyWantsFocus()
+
+def ignore (self,event=None):
+    '''Simulate pressing the 'Ignore' button in the Spell tab.'''
+    if self.handler:
+        self.openSpellTab()
+        self.handler.ignore()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20051025071455.18: *6* class spellTabHandler (leoFind.leoFind)
+class spellTabHandler (leoFind.leoFind):
+
+    """A class to create and manage Leo's Spell Check dialog."""
+
+    @others
+#@+node:ekr.20051025071455.19: *7* Birth & death
+#@+node:ekr.20051025071455.20: *8* spellTabHandler.__init__
+def __init__(self,c,tabName):
+
+    """Ctor for the Leo Spelling dialog."""
+
+    leoFind.leoFind.__init__(self,c) # Call the base ctor.
+
+    self.c = c
+    self.body = c.frame.body
+    self.currentWord = None
+    self.outerScrolledFrame = None
+    self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
+        # A text widget for scanning.
+        # Must have a parent frame even though it is not packed.
+
+    if enchant:
+        self.spellController = EnchantClass(c)
+        # self.controller = self.spellController 
+        self.tab = g.app.gui.createSpellTab(c,self,tabName)
+        self.loaded = True
+    else:
+        self.spellController = None
+        self.tab = None
+        self.loaded = False
+#@+node:ekr.20051025071455.36: *7* Commands
+#@+node:ekr.20051025071455.37: *8* add (spellTab)
+def add(self,event=None):
+    """Add the selected suggestion to the dictionary."""
+
+    w = self.currentWord
+
+    if w:
+        self.spellController.add(w)
+        # self.dictionary[w] = 0
+        self.tab.onFindButton()
+#@+node:ekr.20051025071455.38: *8* change (spellTab)
+def change(self,event=None):
+    """Make the selected change to the text"""
+
+    c = self.c ; body = self.body ; w = body.bodyCtrl
+
+    selection = self.tab.getSuggestion()
+    if selection:
+        if hasattr(self.tab,'change_i') and self.tab.change_i is not None:
+            start,end = oldSel = self.tab.change_i,self.tab.change_j
+            # g.trace('using',start,end)
+        else:
+            start,end = oldSel = w.getSelectionRange()
+        if start is not None:
+            if start > end: start,end = end,start
+            w.delete(start,end)
+            w.insert(start,selection)
+            w.setSelectionRange(start,start+len(selection))
+            c.frame.body.onBodyChanged("Change",oldSel=oldSel)
+            c.invalidateFocus()
+            c.bodyWantsFocusNow()
+            return True
+
+    # The focus must never leave the body pane.
+    c.invalidateFocus()
+    c.bodyWantsFocusNow()
+    return False
+#@+node:ekr.20051025071455.40: *8* find & helpers
+def find (self,event=None):
+    """Find the next unknown word."""
+
+    c = self.c ; body = c.frame.body ; w = body.bodyCtrl
+
+    # Reload the work pane from the present node.
+    s = w.getAllText().rstrip()
+    self.workCtrl.delete(0,"end")
+    self.workCtrl.insert("end",s)
+
+    # Reset the insertion point of the work widget.
+    ins = w.getInsertPoint()
+    self.workCtrl.setInsertPoint(ins)
+
+    alts, word = self.findNextMisspelledWord()
+    self.currentWord = word # Need to remember this for 'add' and 'ignore'
+
+    if alts:
+        # Save the selection range.
+        ins = w.getInsertPoint()
+        i,j = w.getSelectionRange()
+        self.tab.fillbox(alts,word)
+        c.invalidateFocus()
+        c.bodyWantsFocusNow()
+        # Restore the selection range.
+        w.setSelectionRange(i,j,insert=ins)
+        w.see(ins)
+    else:
+        g.es("no more misspellings")
+        self.tab.fillbox([])
+        c.invalidateFocus()
+        c.bodyWantsFocusNow()
+#@+node:ekr.20051025071455.45: *9* findNextMisspelledWord
+def findNextMisspelledWord(self):
+    """Find the next unknown word."""
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    w = c.frame.body.bodyCtrl
+    sc = self.spellController
+    alts = None ; word = None
+    try:
+        while 1:
+            i,j,p,word = self.findNextWord(p)
+            # g.trace(i,j,p and p.h or '<no p>')
+            if not p or not word:
+                alts = None
+                break
+            alts = sc.processWord(word)
+            if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
+            if alts:
+                redraw = not p.isVisible(c)
+                # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                if c.sparse_spell and not c.p.isAncestorOf(p):
+                    for p2 in c.p.self_and_parents():
+                        p2.contract()
+                        redraw = True
+                for p2 in p.parents():
+                    if not p2.isExpanded():
+                        p2.expand()
+                        redraw = True
+                if redraw:
+                    c.redraw(p)
+                else:
+                    c.selectPosition(p)
+                w.setSelectionRange(i,j,insert=j)
+                break
+    except Exception:
+        g.es_exception()
+    return alts, word
+#@+node:ekr.20051025071455.47: *9* findNextWord (spellTab)
+def findNextWord(self,p):
+    """Scan for the next word, leaving the result in the work widget"""
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = p.copy()
+    while 1:
+        s = self.workCtrl.getAllText()
+        i = self.workCtrl.getInsertPoint()
+        while i < len(s) and not g.isWordChar1(s[i]):
+            i += 1
+        # g.trace('p',p and p.h,'i',i,'len(s)',len(s))
+        if i < len(s):
+            # A non-empty word has been found.
+            j = i
+            while j < len(s) and g.isWordChar(s[j]):
+                j += 1
+            word = s[i:j]
+            # This trace verifies that all words have been checked.
+            # g.trace(repr(word))
+            for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(i,j,insert=j)
+            if trace: g.trace(i,j,word,p.h)
+            return i,j,p,word
+        else:
+            # End of the body text.
+            p.moveToThreadNext()
+            if not p: break
+            self.workCtrl.delete(0,'end')
+            self.workCtrl.insert(0,p.b)
+            for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(0,0,insert=0)
+            if trace: g.trace(0,0,'-->',p.h)
+
+    return None,None,None,None
+#@+node:ekr.20051025121408: *8* hide
+def hide (self,event=None):
+
+    self.c.frame.log.selectTab('Log')
+
+    # for message in self.messages:
+        # g.es(message,color='blue')
+
+    # self.messages = []
+#@+node:ekr.20051025071455.41: *8* ignore
+def ignore(self,event=None):
+
+    """Ignore the incorrect word for the duration of this spell check session."""
+
+    w = self.currentWord
+
+    if w:
+        self.spellController.ignore(w)
+        self.tab.onFindButton()
+#@+node:ekr.20100904095239.5914: *6* class EnchantClass
+class EnchantClass:
+
+    """A wrapper class for PyEnchant spell checker"""
+
+    @others
+#@+node:ekr.20100904095239.5916: *7*  __init__ (EnchantClass)
+def __init__ (self,c):
+
+    """Ctor for the EnchantClass class."""
+
+    self.c = c
+    language = c.config.getString('enchant_language')
+
+    # Set the base language
+    if language and not enchant.dict_exists(language):
+        g.es_print('Invalid language code for Enchant',language_code,color='blue')
+        g.es('Using "en_US" instead')
+        language = 'en_US'
+
+    # Compute fn, the full path to the local dictionary.
+    fn = g.os_path_finalize(
+        c.config.getString('enchant_local_dictionary') or
+        os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+
+    if fn and g.os_path_exists(fn):
+        # Merge the local and global dictionaries.
+        try:
+            self.d = enchant.DictWithPWL(language,fn)
+        except Exception:
+            g.es_exception()
+            g.es_print('not a valid dictionary file',fn,color='red')
+            self.d = enchant.Dict(language) 
+    else:
+        self.d = enchant.Dict(language) 
+#@+node:ekr.20100904095239.5927: *7* add
+def add (self,word):
+
+    '''Add a word to the user dictionary.'''
+
+    self.d.add(word)
+#@+node:ekr.20100904095239.5928: *7* ignore
+def ignore (self,word):
+
+    self.d.add_to_session(word)
+#@+node:ekr.20100904095239.5920: *7* processWord
+def processWord(self, word):
+
+    """Check the word. Return None if the word is properly spelled.
+    Otherwise, return a list of alternatives."""
+
+    d = self.d 
+
+    if not d:
+        return None
+    elif d.check(word):
+        return None
+    else:
+        return d.suggest(word)
 #@-all
 #@-leo

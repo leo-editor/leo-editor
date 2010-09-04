@@ -1198,7 +1198,7 @@
 <v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
 <v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
 </v>
-<v t="vitalije.20100306144625.8944" a="E"><vh>autosave plugin</vh>
+<v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
 <v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 300</vh></v>
 </v>
@@ -1209,13 +1209,9 @@
 <v t="ekr.20041119034357.31"></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 </v>
-<v t="ekr.20051025084017"><vh>Spell tab</vh>
-<v t="ekr.20100903090944.8362"><vh>@bool enable-aspell = True</vh></v>
-<v t="ekr.20071025161551"><vh>@bool diagnose-aspell-installation = True</vh></v>
-<v t="ekr.20051025084017.1"><vh>@string aspell_local_language_code = en</vh></v>
-<v t="ekr.20051025084017.2"><vh>@string aspell_local_dictionary = None</vh></v>
-<v t="ekr.20051025085144"><vh>@string aspell_dir = c:\aspell</vh></v>
-<v t="ekr.20051025085144.1"><vh>@string aspell_bin_dir = c:\aspell\bin</vh></v>
+<v t="ekr.20051025084017" a="E"><vh>Spell tab</vh>
+<v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
+<v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20080212084020"></v>
@@ -4525,55 +4521,8 @@ p.setBodyString(result)</t>
 #d2cad0
 #c6d3d7
 #ffffec # Same as outline.</t>
-<t tx="ekr.20051025084017">How to install the Aspell spell checker for the Spell tab
-
-Linux:
-    
-You must be using Python 2.5 or later.
-
-1. Download and install the aspell package.
-
-2. Leo will find the aspell package automatically using Python's ctypes module.
-   You must specify the locations of the aspell and aspell/bin directories using
-   the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
-   This allows Leo to find the aspell dictionaries.
-
-Windows:
-
-1. Download and install the Aspell package from http://aspell.sourceforge.net
-   Typically this will create a directory called Aspell/bin
-   
-2a. If you are using Python 2.5 or later that's all you need to do.
-    Leo will find the aspell package automatically using Python's ctypes module.
-
-2b. If you are using Python 2.3 or Python 2.4 you must copy a dll to the Aspell/bin directory.
-   This step is *not* needed if you are using Python 2.5 or later.
-   Leo's extensions folder comes with two dll's: aspell23.pyd and aspell24.pyd, for Python 2.3 and 2.4 respectively.
-   Make a copy of the appropriate dll, **rename it** to be aspell.pyd, and copy the renamed aspell.pyd file to Aspell/bin.
-
-   Specify the location of the Aspell and Aspell/bin directories using
-   the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.</t>
-<t tx="ekr.20051025084017.1"></t>
-<t tx="ekr.20051025084017.2">The full path to the spelling dictionary.</t>
-<t tx="ekr.20051025085144">@color
-
-# The top-level aspell directory.
-
-if sys.platform == 'darwin':
-    aspell_dir = '/sw/lib'
-else:
-    aspell_dir = r'c:\Aspell'</t>
-<t tx="ekr.20051025085144.1">@color
-
-# The directory containing the executable
-
-if sys.platform == 'darwin':
-   
-    aspell_bin_dir = '/sw/lib/bin'
-        # NOT TESTED YET.
-else:
-    aspell_bin_dir = r'c:\Aspell\bin'
-        # The directory continaing apell.pyd and aspell-15.dll</t>
+<t tx="ekr.20051025084017">Leo's spell checker requires PyEnchant to be installed.
+See: http://www.rfk.id.au/software/pyenchant/tutorial.html#installation</t>
 <t tx="ekr.20051027175030">True: When typing an opening bracket '(','[' or '{', immediately type the
 corresponding closing bracket.  To move past the closing bracket, just type it.</t>
 <t tx="ekr.20051101160257">A shortcut specification has the form:
@@ -7164,7 +7113,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20071010123223.1">打开</t>
 <t tx="ekr.20071024145953">False (legacy): Top pane contains outline and log panes.
 True: Top pane contains only outline.  Bottom pane contains body and log panes.</t>
-<t tx="ekr.20071025161551">True: a message will be printed if aspell fails to load.</t>
 <t tx="ekr.20071110153046">This option has effect only when importing so-called non-strict languages,
 for which leading whitespace is not terribly significant.
 
@@ -8038,8 +7986,11 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100507153425.8304">Valid values are top,bottom,left,right</t>
 <t tx="ekr.20100806210935.8331"># @root and the related Tangle/Untange commands are deprecated.</t>
 <t tx="ekr.20100806211331.8331"></t>
-<t tx="ekr.20100903090944.8362">True: attempt to load Aspell package.
-False: do not attempt to load or use the Aspell package.</t>
+<t tx="ekr.20100904095239.8440">The language code for Enchant.
+
+See http://www.rfk.id.au/software/pyenchant/tutorial.html#installation-dicts
+for information about supported languages.</t>
+<t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
