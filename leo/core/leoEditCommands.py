@@ -15,12 +15,18 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
+try:
+    import enchant
+except ImportError:
+    enchant = None
+
 import ctypes
 import ctypes.util
 import difflib
 import os
 import re
-import string   
+import string
+import subprocess # Always exists in Python 2.6 and above.
 import sys
 
 if g.isPython3:
@@ -31,7 +37,7 @@ else:
 if g.isPython3:
     from functools import reduce
 
-subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
+# subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-<< imports >>
 
 #@+<< define class baseEditCommandsClass >>
@@ -8344,115 +8350,31 @@ class spellTabHandler (leoFind.leoFind):
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
-        self.suggestions = []
-        self.messages = [] # List of message to be displayed when hiding the tab.
         self.outerScrolledFrame = None
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
             # A text widget for scanning.
             # Must have a parent frame even though it is not packed.
 
-        self.loaded = self.init_aspell(c)
-        if self.loaded:
+        if enchant:
+            self.spellController = EnchantClass(c)
+            # self.controller = self.spellController 
             self.tab = g.app.gui.createSpellTab(c,self,tabName)
-    #@+node:ekr.20051025094004: *5* init_aspell
-    def init_aspell (self,c):
-
-        '''Init aspell and related ivars.  Return True if all went well.'''
-
-        self.local_language_code = c.config.getString('aspell_local_language_code') or 'en'
-
-        fn = (
-            c.config.getString('spell_local_dictionary') or
-            os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
-
-        fn = g.os_path_finalize(fn)
-        self.dictionaryFileName = dictionaryFileName = fn
-
-        if not dictionaryFileName or not g.os_path_exists(dictionaryFileName):
-            g.es_print('can not open dictionary file:',dictionaryFileName, color='red')
-            return False
-
-        self.aspell = AspellClass(c,dictionaryFileName,self.local_language_code)
-
-        if self.aspell.aspell:
-            self.dictionary = self.readDictionary(dictionaryFileName)
+            self.loaded = True
         else:
-            self.dictionary = False
-            # g.es_print('can not open Aspell',color='red')
-
-        return self.aspell.aspell
-    #@+node:ekr.20051025071455.16: *5* readDictionary
-    def readDictionary (self,fileName):
-
-        """Read the dictionary of words which we use as a local dictionary
-
-        Although Aspell itself has the functionality to handle this kind of things
-        we duplicate it here so that we can also use it for the "ignore" functionality
-        and so that in future a Python only solution could be developed."""
-
-        d = {}
-        try:
-            f = open(fileName,"r")
-        except IOError:
-            g.es("can not open local dictionary",fileName,"using a blank one instead")
-            return d
-        try:
-            errors,firstLine,line = 0,False,1
-            while True:
-                try:
-                    s = f.readline() # Can fail with unicode problems.
-                    line += 1
-                    if not s: break
-                    s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
-                    d [s.strip().lower()] = 0
-                except Exception:
-                    errors += 1
-                    if not firstLine: firstLine = line
-            if errors:
-                g.trace('errors',errors,'first error at line',firstLine)
-        finally:
-            f.close()
-        return d
+            self.spellController = None
+            self.tab = None
+            self.loaded = False
     #@+node:ekr.20051025071455.36: *4* Commands
-    #@+node:ekr.20051025071455.37: *5* add (spellTab) (changed)
+    #@+node:ekr.20051025071455.37: *5* add (spellTab)
     def add(self,event=None):
         """Add the selected suggestion to the dictionary."""
 
-        if not self.currentWord: return
+        w = self.currentWord
 
-        # g.trace(self.currentWord)
-
-        try:
-            f = None
-            try:
-                # Rewrite the dictionary in alphabetical order.
-                f = open(self.dictionaryFileName, "r")
-                words = f.readlines()
-                f.close()
-                words = [word.strip() for word in words]
-                words.append(self.currentWord)
-                words.sort()
-                f = open(self.dictionaryFileName, "w")
-                for word in words:
-                    s = '%s\n' % word
-                    if not g.isPython3: # 2010/08/27
-                        s = g.toEncodedString(s,reportErrors=True)
-                    f.write(s)
-                f.flush()
-                f.close()
-                if 1:
-                    s = 'Spell: added %s' % self.currentWord
-                    self.messages.append(s)
-                else: # Too distracting.
-                    g.es("adding ", color= "blue", newline= False) 
-                    g.es('','%s' % self.currentWord)
-            except IOError:
-                g.es("can not add",self.currentWord,"to dictionary",color="red")
-        finally:
-            if f: f.close()
-
-        self.dictionary[self.currentWord.lower()] = 0
-        self.tab.onFindButton()
+        if w:
+            self.spellController.add(w)
+            # self.dictionary[w] = 0
+            self.tab.onFindButton()
     #@+node:ekr.20051025071455.38: *5* change (spellTab)
     def change(self,event=None):
         """Make the selected change to the text"""
@@ -8520,7 +8442,8 @@ class spellTabHandler (leoFind.leoFind):
         trace = False and not g.unitTesting
         c = self.c ; p = c.p
         w = c.frame.body.bodyCtrl
-        aspell = self.aspell ; alts = None ; word = None
+        sc = self.spellController
+        alts = None ; word = None
         try:
             while 1:
                 i,j,p,word = self.findNextWord(p)
@@ -8528,21 +8451,7 @@ class spellTabHandler (leoFind.leoFind):
                 if not p or not word:
                     alts = None
                     break
-                #@+<< Skip word if ignored or in local dictionary >>
-                #@+node:ekr.20051025071455.46: *7* << Skip word if ignored or in local dictionary >>
-                #@+at
-                # We don't bother to call apell if the word is in our dictionary. The
-                # dictionary contains both locally 'allowed' words and 'ignored' words.
-                # We put the test before aspell rather than after aspell because the
-                # cost of checking aspell is higher than the cost of checking our local
-                # dictionary. For small local dictionaries this is probably not True and
-                # this code could easily be located after the aspell call
-                #@@c
-
-                if word.lower() in self.dictionary:
-                    continue
-                #@-<< Skip word if ignored or in local dictionary >>
-                alts = aspell.processWord(word)
+                alts = sc.processWord(word)
                 if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
                 if alts:
                     redraw = not p.isVisible(c)
@@ -8606,305 +8515,131 @@ class spellTabHandler (leoFind.leoFind):
 
         self.c.frame.log.selectTab('Log')
 
-        for message in self.messages:
-            g.es(message,color='blue')
+        # for message in self.messages:
+            # g.es(message,color='blue')
 
-        self.messages = []
+        # self.messages = []
     #@+node:ekr.20051025071455.41: *5* ignore
     def ignore(self,event=None):
 
         """Ignore the incorrect word for the duration of this spell check session."""
 
-        if not self.currentWord: return
+        w = self.currentWord
 
-        if 1: # Somewhat helpful: applies until the tab is destroyed.
-            s = 'Spell: ignore %s' % self.currentWord
-            self.messages.append(s)
-
-        if 0: # Too distracting
-            g.es("ignoring ",color= "blue", newline= False)
-            g.es('','%s' % self.currentWord)
-
-        self.dictionary[self.currentWord.lower()] = 0
-        self.tab.onFindButton()
+        if w:
+            self.spellController.ignore(w)
+            self.tab.onFindButton()
     #@-others
-#@+node:ekr.20051025071455.6: *3* class AspellClass
-class AspellClass:
+#@+node:ekr.20100904095239.5914: *3* class EnchantClass
+class EnchantClass:
 
-    """A wrapper class for Aspell spell checker"""
+    """A wrapper class for PyEnchant spell checker"""
 
     #@+others
-    #@+node:ekr.20051025071455.7: *4* Birth & death
-    #@+node:ekr.20051025071455.8: *5* __init__
-    def __init__ (self,c,local_dictionary_file,local_language_code):
+    #@+node:ekr.20100904095239.5916: *4*  __init__ (EnchantClass)
+    def __init__ (self,c):
 
-        """Ctor for the Aspell class."""
+        """Ctor for the EnchantClass class."""
 
         self.c = c
-        self.aspell = self.sc = None # Must always be defined.
-
-        self.enable = c.config.getBool('enable-aspell',default=False)
-        if not self.enable: return
-
-        self.aspell_dir = c.os_path_finalize(c.config.getString('aspell_dir'))
-        self.aspell_bin_dir = c.os_path_finalize(c.config.getString('aspell_bin_dir'))
-        self.diagnose = c.config.getBool('diagnose-aspell-installation')
-
-        self.local_language_code = local_language_code or 'en'
-        self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
-        self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
-
-        # g.trace('code',self.local_language_code,'dict',self.local_dictionary_file)
-        # g.trace('dir',self.aspell_dir,'bin_dir',self.aspell_bin_dir)
-
-        if ctypes:
-            self.getAspellWithCtypes()
-        else:
-            g.trace('no ctypes!')
-            # self.getAspell()
-    #@+node:ekr.20061018111331: *5* getAspellWithCtypes
-    def getAspellWithCtypes (self):
+        language_code = c.config.getString('enchant_local_language_code') or 'en_US'
+        fn = (
+            c.config.getString('enchant_local_dictionary') or
+            os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+        fn = g.os_path_finalize(fn)
+        fn = self.dictionaryFileName = fn and g.os_path_exists(fn) or None
 
         try:
-            if sys.platform.startswith('win'):
-                path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
-                self.aspell = aspell = ctypes.CDLL(path)
-            else:
-                path = 'aspell'
-                libname = ctypes.util.find_library(path)
-                assert(libname)
-                self.aspell = aspell = ctypes.CDLL(libname)
-        except Exception:
-            self.report('Can not load %s' % (path))
-            self.aspell = self.check = self.sc = None
-            return
+            self.d = enchant.Dict(language_code)
+        except enchant.errors.DictNotFoundError:
+            g.es_print('Invalid language code for Enchant',language_code,color='blue')
+            g.es('Using "en_US" instead')
+            self.d = enchant.Dict('en_US')
 
-        try:
-            #@+<< define and configure aspell entry points >>
-            #@+node:ekr.20061018111933: *6* << define and configure aspell entry points >>
-            # new_aspell_config
-            new_args = False
-            new_aspell_config = aspell.new_aspell_config
+        # self.enable = self.d and c.config.getBool('enable-enchant',default=False)
+        # self.local_language_code = language_code or 'en'
+        # self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
+        # self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
+    #@+node:ekr.20100904095239.5927: *4* add (EnchantClass) (To do)
+    def add (self,word):
 
-            c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
+        '''Add a word to the dictionary.'''
 
-            ### These are dubious!
-            c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
+        g.trace(word)
 
-            if new_args:
-                new_aspell_config.restype = c_void_p
-                    # 2010/05/11 was c_int
-            else:
-                new_aspell_config.restype = c_int
+        # try:
+            # f = None
+            # try:
+                # # Rewrite the dictionary in alphabetical order.
+                # f = open(self.dictionaryFileName, "r")
+                # words = f.readlines()
+                # f.close()
+                # words = [word.strip() for word in words]
+                # words.append(self.currentWord)
+                # words.sort()
+                # f = open(self.dictionaryFileName, "w")
+                # for word in words:
+                    # s = '%s\n' % word
+                    # if not g.isPython3: # 2010/08/27
+                        # s = g.toEncodedString(s,reportErrors=True)
+                    # f.write(s)
+                # f.flush()
+                # f.close()
+            # except IOError:
+                # g.es("can not add",self.currentWord,"to dictionary",color="red")
+        # finally:
+            # if f: f.close()
+    #@+node:ekr.20100904095239.5928: *4* ignore (EnchantClass) (To do)
+    def ignore (self,word):
 
-            # aspell_config_replace
-            aspell_config_replace = aspell.aspell_config_replace
+        g.trace(word)
 
-            if new_args:
-                aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
-                    # 2010/05/11: was [c_int, c_char_p, c_char_p]
-            else:
-                aspell_config_replace.argtypes = [c_int, c_char_p, c_char_p]
-
-            # aspell_config_retrieve
-            aspell_config_retrieve = aspell.aspell_config_retrieve 
-            aspell_config_retrieve.restype = c_char_p 
-
-            if new_args: 
-                aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
-                    # 2010/05/11: was [c_int, c_char_p]
-            else:
-                aspell_config_retrieve.argtypes = [c_int, c_char_p]
-
-            # aspell_error_message
-            aspell_error_message = aspell.aspell_error_message 
-            aspell_error_message.restype = c_char_p
-
-            if new_args:
-                aspell_error_message.argtypes = [c_void_p]
-                    # 2010/05/11: was [c_int]
-            else:
-                 aspell_error_message.argtypes = [c_int]
-
-            # new_aspell_speller
-            new_aspell_speller = aspell.new_aspell_speller
-            new_aspell_speller.argtypes = [c_void_p]
-            new_aspell_speller.restype = c_void_p
-
-            # aspell_error_number
-            aspell_error_number = aspell.aspell_error_number
-            aspell_error_number.argtypes = [c_void_p]
-            aspell_error_number.restype = c_uint
-
-            # to_aspell_speller
-            to_aspell_speller = aspell.to_aspell_speller
-            to_aspell_speller.argtypes = [c_void_p]
-            to_aspell_speller.restype = c_void_p
-
-            sc = new_aspell_config()
-            if 0:
-                g.pr(sc )
-                g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
-                g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
-                g.pr(aspell_config_retrieve(sc, "lang"))
-                g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
-                g.pr(aspell_config_retrieve(sc, "lang"))
-
-            possible_err = aspell.new_aspell_speller(sc)
-
-            if new_args:
-                aspell.delete_aspell_config(c_void_p(sc)) # 2010/07/29
-            else:
-                aspell.delete_aspell_config(c_int(sc))
-
-            possible_err = new_aspell_speller(sc) # 2010/05/11
-
-            if new_args:
-                aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
-            else:
-                aspell.delete_aspell_config(sc)
-
-            # Rudimentary error checking, needs more.  
-            if aspell_error_number(possible_err) != 0: # 2010/05/11
-                self.report(aspell_error_message(possible_err))
-                spell_checker = None
-            else: 
-                spell_checker = to_aspell_speller(possible_err) # 2010/05/11
-
-            if not spell_checker:
-                raise Exception('aspell checker not enabled')
-
-            word_list_size = aspell.aspell_word_list_size
-            word_list_size.restype = c_uint # 2010/05/11: was c_int
-            word_list_size.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
-
-            # word_list_elements
-            word_list_elements = aspell.aspell_word_list_elements
-
-            if new_args:
-                word_list_elements.restype = c_void_p
-                    # 2010/05/11: was c_int
-                word_list_elements.argtypes = [c_void_p,]
-                    # 2010/05/11: was [c_int,]
-            else:
-                word_list_elements.restype = c_int
-                word_list_elements.argtypes = [c_int,]
-
-
-            # string_enumeration_next
-            string_enumeration_next = aspell.aspell_string_enumeration_next
-            string_enumeration_next.restype = c_char_p
-
-            if new_args:
-                string_enumeration_next.argtypes = [c_void_p,]
-                    # 2010/05/11: was [c_int,]
-            else:
-                 string_enumeration_next.argtypes = [c_int,]
-
-            # check
-            check = aspell.aspell_speller_check
-            check.restype = c_int 
-            check.argtypes = [c_int, c_char_p, c_int]
-
-            # suggest
-            suggest = aspell.aspell_speller_suggest
-
-            if new_args:
-                suggest.restype = c_void_p
-                    # 2010/05/11: was c_int
-                suggest.argtypes = [c_void_p, c_char_p, c_int]
-                    # 2010/05/11: was [c_int, c_char_p, c_int]
-            else:
-                suggest.restype = c_int
-                suggest.argtypes = [c_int, c_char_p, c_int]
-            #@-<< define and configure aspell entry points >>
-        except Exception:
-            # g.es_exception()
-            self.report('aspell checker not enabled')
-            self.aspell = self.check = self.sc = None
-            return
-
-        # Remember these functions (bound methods).
-        # No other ctypes data is known outside this method.
-        self.check = check
-        self.spell_checker = spell_checker
-        self.string_enumeration_next = string_enumeration_next
-        self.suggest = suggest
-        self.word_list_elements = word_list_elements
-        self.word_list_size = word_list_size
-    #@+node:ekr.20071111153009: *5* report
-    def report (self,message):
-
-        if self.diagnose:
-            g.es_print(message,color='blue')
-    #@+node:ekr.20051025071455.10: *4* processWord AspellClass
+        # self.dictionary[self.currentWord.lower()] = 0
+    #@+node:ekr.20100904095239.5920: *4* processWord
     def processWord(self, word):
-        """Pass a word to aspell and return the list of alternatives.
-        OK: 
-        * 
-        Suggestions: 
-        & <original> <count> <offset>: <miss>, <miss>, ... 
-        None: 
-        # <original> <offset> 
-        simplifyed to not create the string then make a list from it
-        """
 
-        # g.trace('word',word)
+        """Check the word. Return None if the word is properly spelled.
+        Otherwise, return a list of alternatives."""
 
-        if not self.aspell:
-            g.trace('aspell not installed')
+        d = self.d
+
+        if not d:
             return None
-        elif ctypes:
-            # g.trace(type(word),word)
-            word = g.toEncodedString(word)
-            if self.check(self.spell_checker,word,len(word)):
-                return None
-            else:
-                return self.suggestions(word)
+        elif d.check(word):
+            return None
         else:
-            g.trace('ctypes not installed')
-            return None
-        # else:
-            # if self.sc.check(word):
-                # return None
-            # else:
-                # return self.sc.suggest(word)
-    #@+node:ekr.20061018101455.4: *4* suggestions
-    def suggestions(self,word):
+            return d.suggest(word)
+    #@+node:ekr.20100904095239.5926: *4* readDictionary (to do)
+    def readDictionary (self,fileName):
 
-        "return list of words found"
+        """Read the dictionary of words which we use as a local dictionary."""
 
-        aList = []
-        sw = self.suggest(self.spell_checker, word, len(word))
+        g.trace(fileName)
+        return {} ####
 
-        if self.word_list_size(sw):
-            ewords = self.word_list_elements(sw)
-            while 1: 
-                x = self.string_enumeration_next(ewords)
-                if x is None: break
-                aList.append(x)
-        return aList
-    #@+node:ekr.20051025071455.11: *4* updateDictionary
-    def updateDictionary(self):
-
-        """Update the aspell dictionary from a list of words.
-
-        Return True if the dictionary was updated correctly."""
-
+        d = {}
         try:
-            # Create master list
-            basename = os.path.splitext(self.local_dictionary)[0]
-            cmd = (
-                "%s --lang=%s create master %s.wl < %s.txt" %
-                (self.aspell_bin_dir, self.local_language_code, basename,basename))
-            os.popen(cmd)
-            g.trace(self.local_dictionary)
-            return True
-
-        except Exception:
-            junk, err, junk = sys.exc_info()
-            g.pr("unable to update local aspell dictionary:",err)
-            return False
+            f = open(fileName,"r")
+        except IOError:
+            g.es("can not open local dictionary",fileName,"using a blank one instead")
+            return d
+        try:
+            errors,firstLine,line = 0,False,1
+            while True:
+                try:
+                    s = f.readline() # Can fail with unicode problems.
+                    line += 1
+                    if not s: break
+                    s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
+                    d [s.strip().lower()] = 0
+                except Exception:
+                    errors += 1
+                    if not firstLine: firstLine = line
+            if errors:
+                g.trace('errors',errors,'first error at line',firstLine)
+        finally:
+            f.close()
+        return d
     #@-others
 #@-others
 #@-others

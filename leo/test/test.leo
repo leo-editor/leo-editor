@@ -974,7 +974,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7044,6 +7044,8 @@ print('done')
 <t tx="ekr.20100904061757.2193">import enchant
 print(enchant)
 for z in dir(enchant):
-    print(z)</t>
+    print(z)
+    
+Helo, Hello, Hxello,</t>
 </tnodes>
 </leo_file>

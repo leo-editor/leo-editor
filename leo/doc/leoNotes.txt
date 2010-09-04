@@ -4392,7 +4392,8 @@ def OLDwriteOneAtEditNode(self,p,toString,force=False):
         g.es("not written:",at.outputFileName)
 
     return ok
-#@+node:ekr.20061017125710: *3* getAspell (no longer used)
+#@+node:ekr.20100904095239.5923: *3* Unused Aspell stuff
+#@+node:ekr.20061017125710: *4* getAspell (no longer used)
 def getAspell (self):
 
     try:
@@ -4404,5 +4405,535 @@ def getAspell (self):
 
     self.aspell = aspell
     self.sc = aspell and aspell.spell_checker(prefix=self.aspell_dir,lang=self.local_language_code)
+#@+node:ekr.20051025071455.6: *4* class AspellClass (no longer used)
+class AspellClass:
+
+    """A wrapper class for Aspell spell checker"""
+
+    @others
+#@+node:ekr.20051025071455.7: *5* Birth & death
+#@+node:ekr.20051025071455.8: *6* __init__
+def __init__ (self,c,local_dictionary_file,local_language_code):
+
+    """Ctor for the Aspell class."""
+
+    self.c = c
+    self.aspell = self.sc = None # Must always be defined.
+
+    self.enable = c.config.getBool('enable-aspell',default=False)
+    if not self.enable: return
+
+    self.aspell_dir = c.os_path_finalize(c.config.getString('aspell_dir'))
+    self.aspell_bin_dir = c.os_path_finalize(c.config.getString('aspell_bin_dir'))
+    self.diagnose = c.config.getBool('diagnose-aspell-installation')
+
+    self.local_language_code = local_language_code or 'en'
+    self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
+    self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
+
+    # g.trace('code',self.local_language_code,'dict',self.local_dictionary_file)
+    # g.trace('dir',self.aspell_dir,'bin_dir',self.aspell_bin_dir)
+
+    if ctypes:
+        self.getAspellWithCtypes()
+    else:
+        g.trace('no ctypes!')
+        # self.getAspell()
+#@+node:ekr.20061018111331: *6* getAspellWithCtypes
+def getAspellWithCtypes (self):
+
+    try:
+        if sys.platform.startswith('win'):
+            path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
+            self.aspell = aspell = ctypes.CDLL(path)
+        else:
+            path = 'aspell'
+            libname = ctypes.util.find_library(path)
+            assert(libname)
+            self.aspell = aspell = ctypes.CDLL(libname)
+    except Exception:
+        self.report('Can not load %s' % (path))
+        self.aspell = self.check = self.sc = None
+        return
+
+    try:
+        << define and configure aspell entry points >>
+    except Exception:
+        # g.es_exception()
+        self.report('aspell checker not enabled')
+        self.aspell = self.check = self.sc = None
+        return
+
+    # Remember these functions (bound methods).
+    # No other ctypes data is known outside this method.
+    self.check = check
+    self.spell_checker = spell_checker
+    self.string_enumeration_next = string_enumeration_next
+    self.suggest = suggest
+    self.word_list_elements = word_list_elements
+    self.word_list_size = word_list_size
+#@+node:ekr.20061018111933: *7* << define and configure aspell entry points >>
+# new_aspell_config
+new_args = False
+new_aspell_config = aspell.new_aspell_config
+
+c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
+
+### These are dubious!
+c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
+
+if new_args:
+    new_aspell_config.restype = c_void_p
+        # 2010/05/11 was c_int
+else:
+    new_aspell_config.restype = c_int
+
+# aspell_config_replace
+aspell_config_replace = aspell.aspell_config_replace
+
+if new_args:
+    aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
+        # 2010/05/11: was [c_int, c_char_p, c_char_p]
+else:
+    aspell_config_replace.argtypes = [c_int, c_char_p, c_char_p]
+
+# aspell_config_retrieve
+aspell_config_retrieve = aspell.aspell_config_retrieve 
+aspell_config_retrieve.restype = c_char_p 
+
+if new_args: 
+    aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
+        # 2010/05/11: was [c_int, c_char_p]
+else:
+    aspell_config_retrieve.argtypes = [c_int, c_char_p]
+
+# aspell_error_message
+aspell_error_message = aspell.aspell_error_message 
+aspell_error_message.restype = c_char_p
+
+if new_args:
+    aspell_error_message.argtypes = [c_void_p]
+        # 2010/05/11: was [c_int]
+else:
+     aspell_error_message.argtypes = [c_int]
+
+# new_aspell_speller
+new_aspell_speller = aspell.new_aspell_speller
+new_aspell_speller.argtypes = [c_void_p]
+new_aspell_speller.restype = c_void_p
+
+# aspell_error_number
+aspell_error_number = aspell.aspell_error_number
+aspell_error_number.argtypes = [c_void_p]
+aspell_error_number.restype = c_uint
+
+# to_aspell_speller
+to_aspell_speller = aspell.to_aspell_speller
+to_aspell_speller.argtypes = [c_void_p]
+to_aspell_speller.restype = c_void_p
+
+sc = new_aspell_config()
+if 0:
+    g.pr(sc )
+    g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
+    g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
+    g.pr(aspell_config_retrieve(sc, "lang"))
+    g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+    g.pr(aspell_config_retrieve(sc, "lang"))
+
+possible_err = aspell.new_aspell_speller(sc)
+
+if new_args:
+    aspell.delete_aspell_config(c_void_p(sc)) # 2010/07/29
+else:
+    aspell.delete_aspell_config(c_int(sc))
+
+possible_err = new_aspell_speller(sc) # 2010/05/11
+
+if new_args:
+    aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
+else:
+    aspell.delete_aspell_config(sc)
+
+# Rudimentary error checking, needs more.  
+if aspell_error_number(possible_err) != 0: # 2010/05/11
+    self.report(aspell_error_message(possible_err))
+    spell_checker = None
+else: 
+    spell_checker = to_aspell_speller(possible_err) # 2010/05/11
+
+if not spell_checker:
+    raise Exception('aspell checker not enabled')
+
+word_list_size = aspell.aspell_word_list_size
+word_list_size.restype = c_uint # 2010/05/11: was c_int
+word_list_size.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+# word_list_elements
+word_list_elements = aspell.aspell_word_list_elements
+
+if new_args:
+    word_list_elements.restype = c_void_p
+        # 2010/05/11: was c_int
+    word_list_elements.argtypes = [c_void_p,]
+        # 2010/05/11: was [c_int,]
+else:
+    word_list_elements.restype = c_int
+    word_list_elements.argtypes = [c_int,]
+
+
+# string_enumeration_next
+string_enumeration_next = aspell.aspell_string_enumeration_next
+string_enumeration_next.restype = c_char_p
+
+if new_args:
+    string_enumeration_next.argtypes = [c_void_p,]
+        # 2010/05/11: was [c_int,]
+else:
+     string_enumeration_next.argtypes = [c_int,]
+
+# check
+check = aspell.aspell_speller_check
+check.restype = c_int 
+check.argtypes = [c_int, c_char_p, c_int]
+
+# suggest
+suggest = aspell.aspell_speller_suggest
+
+if new_args:
+    suggest.restype = c_void_p
+        # 2010/05/11: was c_int
+    suggest.argtypes = [c_void_p, c_char_p, c_int]
+        # 2010/05/11: was [c_int, c_char_p, c_int]
+else:
+    suggest.restype = c_int
+    suggest.argtypes = [c_int, c_char_p, c_int]
+#@+node:ekr.20071111153009: *6* report
+def report (self,message):
+
+    if self.diagnose:
+        g.es_print(message,color='blue')
+#@+node:ekr.20051025071455.10: *5* processWord AspellClass
+def processWord(self, word):
+    """Pass a word to aspell and return the list of alternatives.
+    OK: 
+    * 
+    Suggestions: 
+    & <original> <count> <offset>: <miss>, <miss>, ... 
+    None: 
+    # <original> <offset> 
+    simplifyed to not create the string then make a list from it
+    """
+
+    # g.trace('word',word)
+
+    if not self.aspell:
+        g.trace('aspell not installed')
+        return None
+    elif ctypes:
+        # g.trace(type(word),word)
+        word = g.toEncodedString(word)
+        if self.check(self.spell_checker,word,len(word)):
+            return None
+        else:
+            return self.suggestions(word)
+    else:
+        g.trace('ctypes not installed')
+        return None
+    # else:
+        # if self.sc.check(word):
+            # return None
+        # else:
+            # return self.sc.suggest(word)
+#@+node:ekr.20061018101455.4: *5* suggestions
+def suggestions(self,word):
+
+    "return list of words found"
+
+    aList = []
+    sw = self.suggest(self.spell_checker, word, len(word))
+
+    if self.word_list_size(sw):
+        ewords = self.word_list_elements(sw)
+        while 1: 
+            x = self.string_enumeration_next(ewords)
+            if x is None: break
+            aList.append(x)
+    return aList
+#@+node:ekr.20051025071455.11: *5* updateDictionary
+def updateDictionary(self):
+
+    """Update the aspell dictionary from a list of words.
+
+    Return True if the dictionary was updated correctly."""
+
+    try:
+        # Create master list
+        basename = os.path.splitext(self.local_dictionary)[0]
+        cmd = (
+            "%s --lang=%s create master %s.wl < %s.txt" %
+            (self.aspell_bin_dir, self.local_language_code, basename,basename))
+        os.popen(cmd)
+        g.trace(self.local_dictionary)
+        return True
+
+    except Exception:
+        junk, err, junk = sys.exc_info()
+        g.pr("unable to update local aspell dictionary:",err)
+        return False
+#@+node:ekr.20051025094004: *4* init_aspell & helper (no longer used)
+def init_aspell (self,c):
+
+    '''Init aspell and related ivars.  Return True if all went well.'''
+
+    self.local_language_code = c.config.getString('aspell_local_language_code') or 'en'
+
+    fn = (
+        c.config.getString('spell_local_dictionary') or
+        os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+
+    fn = g.os_path_finalize(fn)
+    self.dictionaryFileName = dictionaryFileName = fn
+
+    if not dictionaryFileName or not g.os_path_exists(dictionaryFileName):
+        g.es_print('can not open dictionary file:',dictionaryFileName, color='red')
+        return False
+
+    self.aspell = AspellClass(c,dictionaryFileName,self.local_language_code)
+
+    if self.aspell.aspell:
+        self.dictionary = self.readDictionary(dictionaryFileName)
+    else:
+        self.dictionary = False
+        # g.es_print('can not open Aspell',color='red')
+
+    return self.aspell.aspell
+#@+node:ekr.20051025071455.16: *5* readDictionary
+def readDictionary (self,fileName):
+
+    """Read the dictionary of words which we use as a local dictionary
+
+    Although Aspell itself has the functionality to handle this kind of things
+    we duplicate it here so that we can also use it for the "ignore" functionality
+    and so that in future a Python only solution could be developed."""
+
+    d = {}
+    try:
+        f = open(fileName,"r")
+    except IOError:
+        g.es("can not open local dictionary",fileName,"using a blank one instead")
+        return d
+    try:
+        errors,firstLine,line = 0,False,1
+        while True:
+            try:
+                s = f.readline() # Can fail with unicode problems.
+                line += 1
+                if not s: break
+                s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
+                d [s.strip().lower()] = 0
+            except Exception:
+                errors += 1
+                if not firstLine: firstLine = line
+        if errors:
+            g.trace('errors',errors,'first error at line',firstLine)
+    finally:
+        f.close()
+    return d
+#@+node:ekr.20100904095239.5917: *4* getAspellWithCtypes (no longer used)
+def getAspellWithCtypes (self):
+
+    try:
+        if sys.platform.startswith('win'):
+            path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
+            self.aspell = aspell = ctypes.CDLL(path)
+        else:
+            path = 'aspell'
+            libname = ctypes.util.find_library(path)
+            assert(libname)
+            self.aspell = aspell = ctypes.CDLL(libname)
+    except Exception:
+        self.report('Can not load %s' % (path))
+        self.aspell = self.check = self.sc = None
+        return
+
+    try:
+        << define and configure aspell entry points >>
+    except Exception:
+        # g.es_exception()
+        self.report('aspell checker not enabled')
+        self.aspell = self.check = self.sc = None
+        return
+
+    # Remember these functions (bound methods).
+    # No other ctypes data is known outside this method.
+    self.check = check
+    self.spell_checker = spell_checker
+    self.string_enumeration_next = string_enumeration_next
+    self.suggest = suggest
+    self.word_list_elements = word_list_elements
+    self.word_list_size = word_list_size
+#@+node:ekr.20100904095239.5918: *5* << define and configure aspell entry points >>
+# new_aspell_config
+new_args = False
+new_aspell_config = aspell.new_aspell_config
+
+c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
+
+### These are dubious!
+c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
+
+if new_args:
+    new_aspell_config.restype = c_void_p
+        # 2010/05/11 was c_int
+else:
+    new_aspell_config.restype = c_int
+
+# aspell_config_replace
+aspell_config_replace = aspell.aspell_config_replace
+
+if new_args:
+    aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
+        # 2010/05/11: was [c_int, c_char_p, c_char_p]
+else:
+    aspell_config_replace.argtypes = [c_int, c_char_p, c_char_p]
+
+# aspell_config_retrieve
+aspell_config_retrieve = aspell.aspell_config_retrieve 
+aspell_config_retrieve.restype = c_char_p 
+
+if new_args: 
+    aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
+        # 2010/05/11: was [c_int, c_char_p]
+else:
+    aspell_config_retrieve.argtypes = [c_int, c_char_p]
+
+# aspell_error_message
+aspell_error_message = aspell.aspell_error_message 
+aspell_error_message.restype = c_char_p
+
+if new_args:
+    aspell_error_message.argtypes = [c_void_p]
+        # 2010/05/11: was [c_int]
+else:
+     aspell_error_message.argtypes = [c_int]
+
+# new_aspell_speller
+new_aspell_speller = aspell.new_aspell_speller
+new_aspell_speller.argtypes = [c_void_p]
+new_aspell_speller.restype = c_void_p
+
+# aspell_error_number
+aspell_error_number = aspell.aspell_error_number
+aspell_error_number.argtypes = [c_void_p]
+aspell_error_number.restype = c_uint
+
+# to_aspell_speller
+to_aspell_speller = aspell.to_aspell_speller
+to_aspell_speller.argtypes = [c_void_p]
+to_aspell_speller.restype = c_void_p
+
+sc = new_aspell_config()
+if 0:
+    g.pr(sc )
+    g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
+    g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
+    g.pr(aspell_config_retrieve(sc, "lang"))
+    g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+    g.pr(aspell_config_retrieve(sc, "lang"))
+
+possible_err = aspell.new_aspell_speller(sc)
+
+if new_args:
+    aspell.delete_aspell_config(c_void_p(sc)) # 2010/07/29
+else:
+    aspell.delete_aspell_config(c_int(sc))
+
+possible_err = new_aspell_speller(sc) # 2010/05/11
+
+if new_args:
+    aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
+else:
+    aspell.delete_aspell_config(sc)
+
+# Rudimentary error checking, needs more.  
+if aspell_error_number(possible_err) != 0: # 2010/05/11
+    self.report(aspell_error_message(possible_err))
+    spell_checker = None
+else: 
+    spell_checker = to_aspell_speller(possible_err) # 2010/05/11
+
+if not spell_checker:
+    raise Exception('aspell checker not enabled')
+
+word_list_size = aspell.aspell_word_list_size
+word_list_size.restype = c_uint # 2010/05/11: was c_int
+word_list_size.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+# word_list_elements
+word_list_elements = aspell.aspell_word_list_elements
+
+if new_args:
+    word_list_elements.restype = c_void_p
+        # 2010/05/11: was c_int
+    word_list_elements.argtypes = [c_void_p,]
+        # 2010/05/11: was [c_int,]
+else:
+    word_list_elements.restype = c_int
+    word_list_elements.argtypes = [c_int,]
+
+
+# string_enumeration_next
+string_enumeration_next = aspell.aspell_string_enumeration_next
+string_enumeration_next.restype = c_char_p
+
+if new_args:
+    string_enumeration_next.argtypes = [c_void_p,]
+        # 2010/05/11: was [c_int,]
+else:
+     string_enumeration_next.argtypes = [c_int,]
+
+# check
+check = aspell.aspell_speller_check
+check.restype = c_int 
+check.argtypes = [c_int, c_char_p, c_int]
+
+# suggest
+suggest = aspell.aspell_speller_suggest
+
+if new_args:
+    suggest.restype = c_void_p
+        # 2010/05/11: was c_int
+    suggest.argtypes = [c_void_p, c_char_p, c_int]
+        # 2010/05/11: was [c_int, c_char_p, c_int]
+else:
+    suggest.restype = c_int
+    suggest.argtypes = [c_int, c_char_p, c_int]
+#@+node:ekr.20100904095239.5921: *4* suggestions (not used)
+def suggestions(self,word):
+
+    "return list of words found"
+
+    aList = []
+    sw = self.suggest(self.spell_checker, word, len(word))
+
+    if self.word_list_size(sw):
+        ewords = self.word_list_elements(sw)
+        while 1: 
+            x = self.string_enumeration_next(ewords)
+            if x is None: break
+            aList.append(x)
+    return aList
+#@+node:ekr.20100904095239.5919: *4* report
+def report (self,message):
+
+    if self.diagnose:
+        g.es_print(message,color='blue')
+#@+node:ekr.20051025071455.46: *4* << Skip word if ignored or in local dictionary >>
+# Don't bother to call the spellController if the word is in our dictionary. The
+# dictionary contains both locally 'allowed' words and 'ignored' words.
+
+if word.lower() in self.dictionary:
+    continue
 #@-all
 #@-leo
