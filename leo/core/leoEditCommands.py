@@ -8542,66 +8542,46 @@ class EnchantClass:
         """Ctor for the EnchantClass class."""
 
         self.c = c
-        language_code = c.config.getString('enchant_local_language_code') or 'en_US'
-        fn = (
-            c.config.getString('enchant_local_dictionary') or
-            os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
-        fn = g.os_path_finalize(fn)
-        fn = self.dictionaryFileName = fn and g.os_path_exists(fn) or None
+        language = c.config.getString('enchant_local_language_code')
 
-        try:
-            self.d = enchant.Dict(language_code)
-        except enchant.errors.DictNotFoundError:
+        # Set the base language
+        if language and not enchant.dict_exists(language):
             g.es_print('Invalid language code for Enchant',language_code,color='blue')
             g.es('Using "en_US" instead')
-            self.d = enchant.Dict('en_US')
+            language = 'en_US'
 
-        # self.enable = self.d and c.config.getBool('enable-enchant',default=False)
-        # self.local_language_code = language_code or 'en'
-        # self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
-        # self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
-    #@+node:ekr.20100904095239.5927: *4* add (EnchantClass) (To do)
+        # Compute fn, the full path to the local dictionary.
+        fn = g.os_path_finalize(
+            c.config.getString('enchant_local_dictionary') or
+            os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+
+        if fn and g.os_path_exists(fn):
+            # Merge the local and global dictionaries.
+            try:
+                self.d = enchant.DictWithPWL(language,fn)
+            except Exception:
+                g.es_exception()
+                g.es_print('not a valid dictionary file',fn,color='red')
+                self.d = enchant.Dict(language) 
+        else:
+            self.d = enchant.Dict(language) 
+    #@+node:ekr.20100904095239.5927: *4* add
     def add (self,word):
 
-        '''Add a word to the dictionary.'''
+        '''Add a word to the user dictionary.'''
 
-        g.trace(word)
-
-        # try:
-            # f = None
-            # try:
-                # # Rewrite the dictionary in alphabetical order.
-                # f = open(self.dictionaryFileName, "r")
-                # words = f.readlines()
-                # f.close()
-                # words = [word.strip() for word in words]
-                # words.append(self.currentWord)
-                # words.sort()
-                # f = open(self.dictionaryFileName, "w")
-                # for word in words:
-                    # s = '%s\n' % word
-                    # if not g.isPython3: # 2010/08/27
-                        # s = g.toEncodedString(s,reportErrors=True)
-                    # f.write(s)
-                # f.flush()
-                # f.close()
-            # except IOError:
-                # g.es("can not add",self.currentWord,"to dictionary",color="red")
-        # finally:
-            # if f: f.close()
-    #@+node:ekr.20100904095239.5928: *4* ignore (EnchantClass) (To do)
+        self.d.add(word)
+    #@+node:ekr.20100904095239.5928: *4* ignore
     def ignore (self,word):
 
-        g.trace(word)
-
-        # self.dictionary[self.currentWord.lower()] = 0
+        self.d.add_to_session(word)
     #@+node:ekr.20100904095239.5920: *4* processWord
     def processWord(self, word):
 
         """Check the word. Return None if the word is properly spelled.
         Otherwise, return a list of alternatives."""
 
-        d = self.d
+        d = self.d 
 
         if not d:
             return None
@@ -8609,37 +8589,6 @@ class EnchantClass:
             return None
         else:
             return d.suggest(word)
-    #@+node:ekr.20100904095239.5926: *4* readDictionary (to do)
-    def readDictionary (self,fileName):
-
-        """Read the dictionary of words which we use as a local dictionary."""
-
-        g.trace(fileName)
-        return {} ####
-
-        d = {}
-        try:
-            f = open(fileName,"r")
-        except IOError:
-            g.es("can not open local dictionary",fileName,"using a blank one instead")
-            return d
-        try:
-            errors,firstLine,line = 0,False,1
-            while True:
-                try:
-                    s = f.readline() # Can fail with unicode problems.
-                    line += 1
-                    if not s: break
-                    s = g.toUnicode(s,encoding='utf-8',reportErrors=True)
-                    d [s.strip().lower()] = 0
-                except Exception:
-                    errors += 1
-                    if not firstLine: firstLine = line
-            if errors:
-                g.trace('errors',errors,'first error at line',firstLine)
-        finally:
-            f.close()
-        return d
     #@-others
 #@-others
 #@-others

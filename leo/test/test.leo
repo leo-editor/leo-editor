@@ -7046,6 +7046,7 @@ print(enchant)
 for z in dir(enchant):
     print(z)
     
+françois
 Helo, Hello, Hxello,</t>
 </tnodes>
 </leo_file>

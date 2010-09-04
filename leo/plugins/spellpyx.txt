@@ -491,7 +491,6 @@ ValueError
 Vickroy
 Vignaux
 Vleck
-Voil√
 Voth
 W2k
 W3C
@@ -3354,13 +3353,6 @@ wxTreeCtrl
 wxWidgets
 wxWindows
 wx_gui
-x0169B170
-x016F2E70
-x01865EB8
-x03510288
-x044B6D90
-x04E219F0
-x04E7E490
 x1
 x16
 x2
@@ -3401,13 +3393,10 @@ yoffset
 yoffsetTree
 ypad
 yyyymmddhhmmss
-z1
-zZ
-zgrep
 zipfile
 zlib
 zn
 znafets
 zodb
 zwiki
-zzz
+fran√ßois
