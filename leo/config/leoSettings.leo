@@ -113,6 +113,11 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
+<v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
+<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
+<v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
+</v>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
@@ -1029,7 +1034,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1209,7 +1214,7 @@
 <v t="ekr.20041119034357.31"></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 </v>
-<v t="ekr.20051025084017" a="E"><vh>Spell tab</vh>
+<v t="ekr.20051025084017"><vh>Spell tab</vh>
 <v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
 <v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
 </v>
@@ -7991,6 +7996,30 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 See http://www.rfk.id.au/software/pyenchant/tutorial.html#installation-dicts
 for information about supported languages.</t>
 <t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
+<t tx="ekr.20100904134301.11000"></t>
+<t tx="ekr.20100904134301.11002"># Comments lines (lines starting with '#') are ignored.
+# Non-comment lines should have the form::
+#
+#    name=definition
+
+# Definitions in @data abbreviation nodes override definitions in @data
+# global-abbreviation nodes. Typically you would define @data abbreviation nodes
+# in myLeoSettings.leo
+</t>
+<t tx="ekr.20100904134301.11004"># Comments lines (lines starting with '#') are ignored.
+# Non-comment lines should have the form::
+#
+#    name=definition
+
+# Definitions in @data abbreviation nodes override definitions in @data
+# global-abbreviation nodes. Typically you would define @data abbreviation nodes
+# in myLeoSettings.leo
+</t>
+<t tx="ekr.20100904134301.11006">True: enable abbreviations
+False disable abbreviations
+
+Typically you would enable abbreviations in myLeoSettings.leo or in individual
+.leo files.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

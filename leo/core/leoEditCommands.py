@@ -344,19 +344,24 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not w: return
         if w.hasSelection(): return
 
-        # Find the word at the cursor.
+        # Get the text and insert point.
         s = w.getAllText()
-        i = w.getInsertPoint()
-        if 0 < i < len(s) and s[i] == ' ': i -= 1
-        if 0 < i < len(s) and not g.isWordChar(s[i]): i -= 1
-        i,j = g.getWord(s,i)
-        if 0 < i < len(s) and s[i-1] == '@': i -= 1
-        word = s[i:j+1].strip()
+        i = i1 = w.getInsertPoint()
+
+        # Find the word to the left of the insert point.
+        j = i ; i -= 1
+        while 0 <= i < len(s) and g.isWordChar(s[i]):
+            i -= 1
+        if 0 <= i < len(s) and s[i] == '@':
+            i -= 1
+        i += 1
+        word = s[i:j].strip()
         if ch: word = word + ch
         if trace: g.trace(i,j,repr(word))
         if not word: return
 
         val,tag = self.abbrevs.get(word,(None,None))
+        if trace: g.trace(word,val,tag)
         if val:
             oldSel = j,j
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
@@ -690,7 +695,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
             for name in keys:
                 val,tag = self.abbrevs.get(name)
                 val = val.replace('\n','\\n')
-                g.es('','%s: %s=%s' % (tag,name,val))
+                tag = tag or ''
+                tag = g.choose(tag,tag+': ','')
+                g.es('','%s%s=%s' % (tag,name,val))
         else:
             g.es('No present abbreviations')
     #@+node:ekr.20050920084036.20: *4* readAbbreviations & helper

@@ -4,61 +4,6 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20100903162809.5866: *3* First
-#@+node:ekr.20100827095120.5862: *4* First: Fix script problem
-@nocolor-node
-
-seeking help with broken script node after upgrade to 4.7
-http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
-
-The following is a better listing:
-
-=============================
-from mod_scripting import scriptingController
-sc = scriptingController(c)
-
-c.frame.addIconRow()
-first = True
-for node in p.following_siblings_iter():
-   if first:
-       first = False
-       continue
-   h = node.headString()
-   buttonText = sc.getButtonText(h)
-   statusLine = "Hoist %s" % h
-   b = sc.createIconButton(text=buttonText,
-                           command=None,
-                           shortcut=None,
-                           statusLine=statusLine,
-                           bg='yellow')
-   def deleteButtonCallback(event=None,sc=sc,b=b):
-       sc.deleteButton(b)
-
-   def hoistButtonCallback (event=None,c=c,p=node.copy()):
-       while (c.canDehoist()):
-           c.dehoist()
-       c.selectPosition(p)
-       c.hoist()
-
-   b.configure(command=hoistButtonCallback)
-   b.bind('<3>',deleteButtonCallback)
-=============================
-
-On Windows, I have determined that the problem occurs at
-c.frame.addIconRow(). The traceback I get is:
-
-exception executing script
-AttributeError: 'ToolbarTkIconBarClass' object has no attribute
-'iconFrameContainerFrame'
---------------------
- line 4324:
-* line 4325:             w =
-Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
- line 4326:             w.pack(fill="x",pady=2)
- line 4327:             self.iconFrame = w
-
-Is there some other object I should be using instead of c.frame? I
-simply don't understand the connection between the error and my
-script.
 #@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
 @nocolor-node
 
@@ -168,6 +113,8 @@ within SourceForge, but I contribute these thoughts in the hope that
 an active contributor may be able to make something of them.
 
 Nick
+#@+node:ekr.20100904134301.8337: *4* Document leoremote in a new chapter
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
 #@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20060306194040: *4* Leo Video & slide show
 @nocolor
