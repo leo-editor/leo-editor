@@ -112,8 +112,8 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
@@ -399,6 +399,10 @@
 </v>
 <v t="ekr.20071214132254"><vh>Import options</vh>
 <v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
+</v>
+<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
+<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
+<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
@@ -8020,6 +8024,10 @@ False disable abbreviations
 
 Typically you would enable abbreviations in myLeoSettings.leo or in individual
 .leo files.</t>
+<t tx="ekr.20100907092300.6957"></t>
+<t tx="ekr.20100907092300.6958">Path to inkscape template file
+</t>
+<t tx="ekr.20100907092300.6959">Path to Inkscape executable</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
