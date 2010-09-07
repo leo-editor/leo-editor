@@ -2006,153 +2006,6 @@ class LeoInkscapeCommands(object):
         self.xlink = "{http://www.w3.org/1999/xlink}"
         self.NS = {'svg': "http://www.w3.org/2000/svg"}
 
-    #@+node:ekr.20100906165118.5971: *3* apropos-inkscape
-    def aproposInkscape (self,event=None):
-
-        s = """\
-
-    InkCall - screen shot call out utility using Inkscape
-    =====================================================
-
-    InkCall can be used from the command line or from a python script.  It
-    works in three stages:
-
-        - generate SVG from template, screen shot filename, list of text (speech
-          balloon) callouts, and list of numeric (black circle) markers
-
-        - Invoke Inkscape interactively on the SVG so the user can position the
-          markers and drag out the balloon tails as required
-
-        - Invoke Inkscape non-interactively to render a .png from the edited SVG
-
-    Prerequisites
-    -------------
-
-    Inkscape
-      The SVG editor, from http://www.inkscape.org/
-    lxml
-      | The Python module for XML DOM manipulation, from ``easy_install lxml``
-      | *Important:* You may have to add a version number,as in ``easy_install lxml==2.2.4``
-      | See http://codespeak.net/lxml/installation.html for details.
-    PIL (recommended, not essential)
-      The Python Imaging Library (http://www.pythonware.com/products/pil/) can be
-      used to fix screenshot size in the SVG to avoid rescaling, see `Details`_.
-
-    Usage
-    -----
-
-    The user is responsible for generating the initial screen shot, a bitmap image,
-    probably PNG format, although others should work. **InkCall will derive file
-    names from the file name of the screenshot** for all its operations, unless
-    alternative file names are supplied.  Derived names are::
-
-        myshot.png -> myshot.svg -> myshot.co.png
-
-    Step 1 - generate SVG
-    +++++++++++++++++++++
-
-    To place three text balloon callouts and three black circle numeric
-    markers on a screenshot::
-
-        from inkcall import InkCall
-
-        inkcall = InkCall()
-
-        filename = "some_screen_shot.png"  # will create some_screen_shot.svg
-
-        callouts = [
-            "This goes here",
-            "These are those, but slightly longer",
-            "Then you pull this, but this text needs to be longer for testing",
-        ]
-        numbers = [2,4,17]
-
-        inkcall.make_svg(filename, callouts, numbers)
-
-    Step 2 - edit SVG
-    +++++++++++++++++
-
-    You can edit the SVG in Inkscape directly, or invoke it like this::
-
-        inkcall.edit_svg(filename)
-
-    The above will disable filters in the SVG file (by tweaking the @style
-    attribute) before editing and re-enable them afterward. Drop shadow rendering
-    on multiple balloons really kills performance, and while you can disable filter
-    display in Inkscape, it's easier if you don't need to.
-
-
-    Step 3 - render PNG
-    +++++++++++++++++++
-
-    Make the final output with::
-
-        inkcall.make_png(filename)  # will create some_screen_shot.co.png
-
-
-    Configuring InkCall
-    +++++++++++++++++++
-
-    InkCall supports the following options::
-
-        Usage: inkcall.py [options] <screenshotimage>
-
-        Options:
-          -h, --help           show this help message and exit
-          --template=TEMPLATE  filename for SVG template [default: template.svg]
-          --svg=SVG            filename for SVG working file [default:
-                               <screenshotimage>.svg]
-          --png=PNG            filename for OUTPUT PNG file [default:
-                               <screenshotimage>.co.png]
-          --callout=CALLOUT    add a callout text to the list
-          --number=NUMBER      add a callout number to the list
-          --no-resize          don't resize balloons etc. to fit text
-          --inkscape=INKSCAPE  Inkscape executeable, with path, if needed
-          --no-svg             Don't do SVG creation step
-          --no-edit            Don't do SVG edit creation step
-          --no-png             Don't do final PNG render step
-
-    For use from within python, only some of these make sense for manipulation; ``template``,
-    ``svg``, ``png``, ``no_resize``, and ``inkscape``.  For example::
-
-        inkcall = InkCall({
-            'template': "/path/to/mytemplate.svg",
-            'svg': "temp.svg",
-            'no_resize': True,
-            'inkscape': "c:\\Program Files (x86)\\Inkscape\\inkscape.exe",
-        })
-
-    To do
-    -----
-
-        - [done] Tweak screenshot image size to avoid rescaling, using PIL
-        - Add new callouts to an existing SVG
-        - Improve resizing of balloons
-        - Special callout template for single line callouts?
-
-    Details
-    -------
-
-    InkCall does some tricky things behind the scenes.  If the Python Imaging Library (PIL)
-    is available, it sets the image size in the SVG based on the true image size, to get
-    pixel perfect rendering of the screenshot (as long as it's aligned on pixel boundaries
-    in the template).  Without PIL the screenshot may be rescaled, although if you know
-    all your screenshots will be the same size, you can set up the template appropriately.  
-    PIL is also used to remove transparent borders from images.
-
-    InkCall also writes a temporary version of the SVG and invokes Inkscape non-interactively
-    to get the rendered (wrapped) dimension of the text.  It then edits the balloon path to
-    make the balloon fit the text (somewhat crudely at present).
-
-    As mentioned above, it also temporarily hides the filter references so drop shadow
-    rendering doesn't slow down balloon editing.  It does this by munging and unmunging
-    the @style attribute.
-
-    """
-
-        if not g.app.unitTesting:
-            g.es(g.adjustTripleString(s.rstrip(),
-                self.c.tab_width))
     #@+node:ekr.20100906164425.5883: *3* lxml replacements
     #@+node:ekr.20100906164425.5884: *4* getElementsWithAttrib
     def getElementsWithAttrib (self,e,attr_name,aList=None):
@@ -2243,7 +2096,7 @@ class LeoInkscapeCommands(object):
         if template_fn:
             fn = template_fn
         else:
-            fn = c.config.getString('inkscape-template') or 'inkscape-template'
+            fn = c.config.getString('inkscape-template') or 'inkscape-template.png'
 
         fn = self.finalize(fn)
         if g.os_path_exists(fn):
@@ -2271,8 +2124,8 @@ class LeoInkscapeCommands(object):
     #@+node:ekr.20100906165118.5877: *3* run & helpers
     def run (self,
         fn, # Required: the name of the screenshot file (.png) file.
-        callouts=[], # A possibly empty list of callouts.
-        numbers=[], # A possibly empty list of callouts.
+        callouts=[], # A possibly empty list of strings.
+        markers=[], # A possibly empty list of numbers.
         edit_flag = True, # True: call inkscape to edit the working file.
         png_fn=None, # Optional: Name of output png file.
         svg_fn=None, # Optional: Name of working svg file.
@@ -2293,8 +2146,10 @@ class LeoInkscapeCommands(object):
         png_fn = self.finalize(png_fn)
         svg_fn = self.finalize(svg_fn and svg_fn.strip() or 'working_file.svg')
 
-        template = self.make_svg(fn,svg_fn,template_fn,callouts,numbers)
+        template = self.make_svg(fn,svg_fn,template_fn,callouts,markers)
         if not template: return
+
+        if g.unitTesting: return
 
         if edit_flag:
             self.edit_svg(svg_fn)
@@ -2302,20 +2157,20 @@ class LeoInkscapeCommands(object):
         if png_fn:
             self.make_png(svg_fn,png_fn)
     #@+node:ekr.20100906164425.5891: *4* step 1: make_svg & make_dom
-    def make_svg(self,fn,output_fn,template_fn,callouts,numbers):
+    def make_svg(self,fn,output_fn,template_fn,callouts,markers):
 
         outfile = open(output_fn,'w')
 
-        template = self.make_dom(fn,template_fn,callouts,numbers)
+        template = self.make_dom(fn,template_fn,callouts,markers)
 
         if template:
             template.write(outfile)
 
         return template
     #@+node:ekr.20100906164425.5892: *5* make_dom & helpers
-    def make_dom(self,fn,template_fn,callouts, numbers):
+    def make_dom(self,fn,template_fn,callouts,markers):
 
-        trace = True
+        trace = True and not g.unitTesting
         template = self.get_template(template_fn)
         if not template: return None
         root = template.getroot()
@@ -2356,7 +2211,7 @@ class LeoInkscapeCommands(object):
             self.move_element(z, 20*n, 20*n)
             part_parent.append(z)
 
-        for n,number in enumerate(numbers):
+        for n,number in enumerate(markers):
             if trace: g.trace('number %s: %s' % (n,number))
             if len(str(number)) == 2:
                 use_g,use_t = 'co_g_bc_2', 'co_bc_text_2'
@@ -2604,6 +2459,144 @@ class LeoInkscapeCommands(object):
              # found no content
              raise ValueError("cannot trim; image was empty")
     #@-others
+
+#@+node:ekr.20100906165118.5971: ** apropos-inkscape
+#@@pagewidth 45
+
+@g.command('apropos-inkscape')
+def aproposInkscape (event=None):
+
+    c = event.get('c')
+    if not c: return
+
+    #@+<< define s >>
+    #@+node:ekr.20100907115157.5940: *3* << define s >>
+    s = """\
+
+    Using Inkscape with Leo
+    =======================
+
+    Inkscape, http://inkscape.org/, is an Open
+    Source vector graphics editor, with
+    capabilities similar to Illustrator,
+    CorelDraw, or Xara X, using the SVG (Scalable
+    Vector Graphics) file format. See
+    http://www.w3.org/Graphics/SVG/.
+
+    Leo scripts can control Inkscape using the
+    c.inkscapeCommands.run method (run for
+    short), a method of the LeoInkscapeCommands
+    class defined in leoRst.py.
+
+    The primary input to the run method is the
+    **screeshot file**. This must be a bitmap.
+    Typically the screenshot file will be a PNG
+    format file, though other kinds of bitmap
+    files should work. The user, or perhaps
+    another script must generate the screenshot
+    file before calling run().
+
+    The run method works in three stages:
+
+    1. Convert the screenshot (bitmap) file to
+       the **working file**. The working file is
+       a SVG (vector graphic) file. Besides the
+       image from the original screenshot, the
+       working file may contain text **callouts**
+       (text ballons) and **markers** (black
+       circles containing numbers). You specify
+       callouts and markers using arguments to
+       the run method.
+
+    2. (Optional) Edit the working file using
+       Inkscape. Inkscape will appear on the
+       screen. You can edit and position callouts
+       and markers, then save the working file.
+
+    3. (Optional) Use Inkscape behind the scenes
+       to render a final PNG image from the
+       working file.
+
+    Prerequisites
+    -------------
+
+    Inkscape
+      The SVG editor, from http://www.inkscape.org/
+
+    PIL
+      The Python Imaging Library,
+      http://www.pythonware.com/products/pil/, is
+      optional but highly recommended. If
+      present, PIL will improve the quality of
+      the generated images.
+
+    Usage
+    -----
+
+    The run method has the following signature::
+
+        def run (self,fn,callouts=[],markers=[],edit_flag=True,
+        png_fn=None,svg_fn=None,template_fn=None)
+
+            fn  The name of the bitmap screenshot file.
+      callouts  A possibly empty list of strings.
+       markers  A possibly empty list of numbers.
+     edit_flag  If True, run calls Inkscape so you can
+                edit the working file interactively.
+        png_fn  The name of final png image file.
+                No image is generated if this argument is None.
+        svg_fn  The name of working svg file.
+                If no name is given, ``working_file.svg`` is used.
+    template_fn The name of the **template svg file**.
+                This file contains the patterns to be used for
+                callouts and markers.  If no name is given,
+                inkscape-template.svg is used.
+
+    For example, to place three text balloon
+    callouts and three black circle numeric
+    markers on a screenshot::
+
+        fn = "some_screen_shot.png"
+        callouts = (
+            "This goes here",
+            "These are those, but slightly longer",
+            "Then you pull this")
+        markers = (2,4,17)
+
+        c.inkscapeCommands.run(fn,
+            callouts=callouts,markers=markers,
+            png='final_screen_shot.png')
+
+    Details
+    -------
+
+    The run method does some tricky things behind
+    the scenes by calling Inkscape
+    non-interactively.
+
+    If the Python Imaging Library (PIL) is
+    available, the run method sets the image size
+    in the SVG based on the true image size, to
+    get pixel perfect rendering of the screenshot
+    (as long as it's aligned on pixel boundaries
+    in the template). Without PIL the screenshot
+    may be rescaled, although if you know all
+    your screenshots will be the same size, you
+    can set up the template appropriately. PIL
+    also removes transparent borders from images.
+
+    The run method gets the rendered (wrapped)
+    dimension of the text from Inkscape. Run then
+    edits the balloon path to make the balloon
+    fit the text (somewhat crudely at present).
+    """
+    #@-<< define s >>
+
+    if g.app.unitTesting:
+        g.app.unitTestDict ['apropos-inkscape'] = s
+    else:
+        g.es(g.adjustTripleString(s.rstrip(),
+            c.tab_width))
 
 #@-others
 #@-leo
