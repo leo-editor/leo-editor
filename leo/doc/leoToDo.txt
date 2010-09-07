@@ -4,6 +4,107 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20100903162809.5866: *3* First
+#@+node:ekr.20100904134301.8333: *4* Rewrite inkcall to avoid lxml
+import xml.etree.ElementTree as etree
+path = r'C:\leo.repo\inkcall\template.svg'
+root = etree.parse(path).getroot()
+print('='*30)
+parents = {}
+def computeParents(d,e):
+    for child in e.getchildren():
+        d[child] = e
+        computeParents(d,child)
+
+def getId(e):
+    return e.attrib.get('id')
+
+ids = {}
+def computeIds(d,e):
+    i = getId(e)
+    if i: d[i] = e
+    for child in e.getchildren():
+        computeIds(d,child)
+
+computeParents(parents,root)
+computeIds(ids,root)
+
+for key in parents.keys():
+    val = parents.get(key)
+    print('child: %9s parent: %9s' % (id(key),id(val)))
+# for key in ids.keys():
+    # val = ids.get(key)
+    # print('id: %9s element: %9s' % (key,val))
+
+names = (
+    "co_bc_1",        # 1 digit black circle
+    "co_bc_2",        # 2 digit black circle
+    "co_bc_text_1",   # text holder for 1 digit black circle
+    "co_bc_text_2",   # text holder for 2 digit black circle
+    "co_frame",       # frame for speech balloon callout
+    "co_g_bc_1",      # group for 1 digit black circle
+    "co_g_bc_2",      # group for 2 digit black circle
+    "co_g_co",        # group for speech balloon callout
+    "co_shot",        # image for screen shot
+    "co_text_holder", # text holder for speech balloon callout
+)
+
+for name in names:
+    print(name,ids.get(name))
+#@+node:ekr.20100827095120.5862: *4* First: Fix script problem
+@nocolor-node
+
+seeking help with broken script node after upgrade to 4.7
+http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
+
+The following is a better listing:
+
+=============================
+from mod_scripting import scriptingController
+sc = scriptingController(c)
+
+c.frame.addIconRow()
+first = True
+for node in p.following_siblings_iter():
+   if first:
+       first = False
+       continue
+   h = node.headString()
+   buttonText = sc.getButtonText(h)
+   statusLine = "Hoist %s" % h
+   b = sc.createIconButton(text=buttonText,
+                           command=None,
+                           shortcut=None,
+                           statusLine=statusLine,
+                           bg='yellow')
+   def deleteButtonCallback(event=None,sc=sc,b=b):
+       sc.deleteButton(b)
+
+   def hoistButtonCallback (event=None,c=c,p=node.copy()):
+       while (c.canDehoist()):
+           c.dehoist()
+       c.selectPosition(p)
+       c.hoist()
+
+   b.configure(command=hoistButtonCallback)
+   b.bind('<3>',deleteButtonCallback)
+=============================
+
+On Windows, I have determined that the problem occurs at
+c.frame.addIconRow(). The traceback I get is:
+
+exception executing script
+AttributeError: 'ToolbarTkIconBarClass' object has no attribute
+'iconFrameContainerFrame'
+--------------------
+ line 4324:
+* line 4325:             w =
+Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
+ line 4326:             w.pack(fill="x",pady=2)
+ line 4327:             self.iconFrame = w
+
+Is there some other object I should be using instead of c.frame? I
+simply don't understand the connection between the error and my
+script.
 #@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
 @nocolor-node
 
@@ -113,8 +214,76 @@ within SourceForge, but I contribute these thoughts in the hope that
 an active contributor may be able to make something of them.
 
 Nick
-#@+node:ekr.20100904134301.8337: *4* Document leoremote in a new chapter
+#@+node:ekr.20100904134301.11007: *4* Document leoremote plugin
+@nocolor-node
+
+Ville's server code to interact with a running Leo
 http://mail.google.com/mail/#inbox/12adebe2ffe80572
+
+Reusing Emacs instances with gnuserv
+http://www.debian-administration.org/articles/257
+
+#@+node:ekr.20100904134301.8336: *4* Generate pdf on Linux
+El 01/05/09 15:12, Ville M. Vainio escribió:
+
+- make latex
+- cd _build/latex
+- make all-pdf
+#@+node:ekr.20100906091349.5848: *4* Allow @url nodes to specify urls in body text
+@nocolor-node
+
+Having to type the url after @url in headline is annoying.
+
+The @url handler should look into the first line of body for url, if the text in
+the headline is not an url. This way, the headline could actually be
+descriptive.
+
+I know some plugin does this, but there is no reason why this couldn't be the
+default behavior.
+#@+node:ekr.20100906091349.5849: *4* Reorganize Leo docs
+@nocolor-node
+
+Structure of Leo's User Documentation
+http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
+
+Re-arranging the documentation along those lines would lead to the
+following:
+
+* Front Matter
+* Preface
+* What People Are Saying About Leo
+* FAQ
+* Slides
+* Chapter 1: Installing Leo
+* Chapter 2: The Leo Tutorial
+* Chapter 3: Using Outlines
+* Chapter 5: Using Leo’s Commands
+* Chapter 6: Designing with Leo
+* Chapter 14: Creating Documents with Leo
+* Chapter 7: Scripting Leo with Python
+* Chapter 8: Customizing Leo
+* Chapter 12: Plugins
+* Chapter 13: Writing Plugins
+* Chapter 20: Unit testing with Leo
+* Chapter 16: Debugging with Leo
+* Chapter 17: Using ZODB with Leo
+* Chapter 18: Leo and Emacs
+* Chapter 19: Embedding Leo with the leoBridge module
+* Chapter 21: IPython and Leo
+* Chapter 22: Using Vim Bindings with Leo
+* Chapter 23: Eliminating sentinel lines with @shadow
+* Chapter 15: Controlling Syntax Coloring
+* Chapter 4: Leo’s Reference
+* Chapter 9: History of Leo
+* Chapter 10: Theory of Operation
+* Chapter 11: White Papers
+* Appendices
+* Glossary
+* What’s New in Leo 
+
+At the risk of being repetitious, I've never found any documentation as
+accessible as Django's, from this starting point:
+http://docs.djangoproject.com/en/dev/ 
 #@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20060306194040: *4* Leo Video & slide show
 @nocolor

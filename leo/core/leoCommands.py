@@ -106,6 +106,7 @@ class baseCommands (object):
         import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
+        import leo.core.leoInkscape as leoInkscape
         import leo.core.leoRst as leoRst
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
@@ -117,6 +118,8 @@ class baseCommands (object):
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
+        self.inkscapeCommands = leoInkscape.LeoInkscapeCommands(c)
+            # 2010/09/06.
         self.rstCommands    = leoRst.rstCommands(c)
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
