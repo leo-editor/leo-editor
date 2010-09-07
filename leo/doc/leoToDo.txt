@@ -37,6 +37,66 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
+#@+node:ekr.20100907092144.6077: *4* Urgent: make sure filenames with unicode characters open
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/7ec80c1fbb9547b5
+Bug: not opening leo file when there are non-english characters in the path
+
+I created a file time.leo. When it's in the dir d:/Dmitry it's being
+opened fine. But when I put it into the dir with russian characters:
+D:/Личное/Время leo prints squares at the window header and doesn't
+open the file correctly. This problem existed in one of the revisions,
+then it was fixed in the last official release. Now it emerged again
+in my Leo 4.8 devel, build 3005
+#@+node:ekr.20100907092144.6078: *4* Urgent: Investigate problem with makeAllNonExistent directories
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/24f38ef9f2077b4b
+getPathFromDirectives doesn't pass a directory creation flag
+
+> Pull the latest trunk (there was a bug in g.app.config.set) and do the
+> following:
+
+> tag = 'create_nonexistent_directories'
+> old = c.config.getBool(tag)
+> g.app.config.set(c,tag,'bool',False)
+> try:
+>     << do your thing >>
+> finally:
+>     g.app.config.set(c,tag,'bool',old)  
+
+I think this is kind of clutzy when a simple optional kwarg on the relevant
+methods would cover it, but ok:
+
+    # harmless set up
+    tag = 'create_nonexistent_directories'
+    old_cnd = c.config.getBool(tag)
+
+    try:
+        # mess with reality
+        g.app.config.set(c,tag,'bool',False)
+
+        nd = p.insertAsLastChild()
+        nd.h = "@auto \\project\\foo.bar"
+        g.es(repr(g.getAbsPathFromNode(c,nd)))
+
+        nd.doDelete()
+
+    finally:
+        # restore reality
+        g.app.config.set(c,tag,'bool',old_cnd)
+
+this is the start of a unit test for the windows drive relative path patch.
+
+If fails with
+
+Traceback (most recent call last):
+  File "/mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/core/leoGlobals.py", line 2205, in makeAllNonExistentDirectories
+    os.mkdir(path)
+OSError: [Errno 13] Permission denied: '/project'
+
+so it seems directory creation isn't being suppressed...? 
 #@+node:ekr.20100827095120.5862: *4* First: Fix script problem
 @nocolor-node
 
@@ -318,6 +378,35 @@ and it has a very good tutorial -- leads the beginner by the hand through much
 of the language. Also the help file has working code snippets
 to cut-n-paste-n-play-with. 
 #@+node:ekr.20100827114047.5899: *4* Installer, etc.
+#@+node:ekr.20100907092144.6076: *5* Make sure distribution contains correct files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
+Status of 'make-leo-zip' in Outline 'leoDist' ?
+
+On Sep 6, 2:39 pm, VR <viktor.ransm...@gmail.com> wrote:
+
+> * The file 'INSTALL.TXT' contains the outline text with sentinels from
+> 'Chapter 1: Installing Leo'
+
+That can't be good.  I'll make sure sentinels don't appear in the distro.
+
+> * The file 'PKG-INFO.TXT' is OK. - However it uses an old version,
+> i.e. '4.7.1-final'
+
+> * The file 'README' is OK. - However it also uses this old version.
+
+The script isn't meant to update these automatically.  I use a checklist to remind me to do such things.
+
+> * However neither of these files are not added to the archive ...
+
+I'll check this.  I'm not sure this is a problem, but it could be.
+
+Thanks for your careful checking.  Such checking is essential when preparing for releases.
+
+I've added this discussion to my internal distribution checklist.
+
+Edward
 #@+node:ekr.20100828110445.5824: *5* Finish installer
 @nocolor-node
 
@@ -2226,6 +2315,9 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
+    if moduleOrFileName.startswith('@'):
+        return False # Allow Leo directives in @enabled-plugins nodes.
+
     if moduleOrFileName.endswith('.py'):
         moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
     else:
@@ -2246,8 +2338,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
-    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
-    #print "imp", moduleName
+
     try:
         toplevel = __import__(moduleName)
         # need to look up through sys.modules, __import__ returns toplevel package
@@ -2257,7 +2348,12 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
         if not g.unitTesting and not g.app.batchMode:
             g.es_print('Plugin %s does not support %s gui' % (
                 moduleName,g.app.gui.guiName()))
-        result = None  
+        result = None
+
+    except ImportError:
+        if tag == 'open0': # Just give the warning once.
+            g.es_print('plugin does not exist:',moduleName,color='red')
+        result = None
 
     except Exception as e:
         g.es_print('exception importing plugin ' + moduleName,color='red')
@@ -5016,6 +5112,9 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
+    if moduleOrFileName.startswith('@'):
+        return False # Allow Leo directives in @enabled-plugins nodes.
+
     if moduleOrFileName.endswith('.py'):
         moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
     else:
@@ -5036,8 +5135,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
-    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
-    #print "imp", moduleName
+
     try:
         toplevel = __import__(moduleName)
         # need to look up through sys.modules, __import__ returns toplevel package
@@ -5047,7 +5145,12 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
         if not g.unitTesting and not g.app.batchMode:
             g.es_print('Plugin %s does not support %s gui' % (
                 moduleName,g.app.gui.guiName()))
-        result = None  
+        result = None
+
+    except ImportError:
+        if tag == 'open0': # Just give the warning once.
+            g.es_print('plugin does not exist:',moduleName,color='red')
+        result = None
 
     except Exception as e:
         g.es_print('exception importing plugin ' + moduleName,color='red')

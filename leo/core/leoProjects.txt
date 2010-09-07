@@ -2017,6 +2017,9 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
+    if moduleOrFileName.startswith('@'):
+        return False # Allow Leo directives in @enabled-plugins nodes.
+
     if moduleOrFileName.endswith('.py'):
         moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
     else:
@@ -2037,8 +2040,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
-    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
-    #print "imp", moduleName
+
     try:
         toplevel = __import__(moduleName)
         # need to look up through sys.modules, __import__ returns toplevel package
@@ -2048,7 +2050,12 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
         if not g.unitTesting and not g.app.batchMode:
             g.es_print('Plugin %s does not support %s gui' % (
                 moduleName,g.app.gui.guiName()))
-        result = None  
+        result = None
+
+    except ImportError:
+        if tag == 'open0': # Just give the warning once.
+            g.es_print('plugin does not exist:',moduleName,color='red')
+        result = None
 
     except Exception as e:
         g.es_print('exception importing plugin ' + moduleName,color='red')
