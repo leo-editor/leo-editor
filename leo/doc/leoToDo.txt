@@ -4,52 +4,39 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20100903162809.5866: *3* First
-#@+node:ekr.20100904134301.8333: *4* Rewrite inkcall to avoid lxml
-import xml.etree.ElementTree as etree
-path = r'C:\leo.repo\inkcall\template.svg'
-root = etree.parse(path).getroot()
-print('='*30)
-parents = {}
-def computeParents(d,e):
-    for child in e.getchildren():
-        d[child] = e
-        computeParents(d,child)
+#@+node:ekr.20100906165118.5908: *4* Finish inkscape work
+@nocolor-node
 
-def getId(e):
-    return e.attrib.get('id')
+To do:
 
-ids = {}
-def computeIds(d,e):
-    i = getId(e)
-    if i: d[i] = e
-    for child in e.getchildren():
-        computeIds(d,child)
+- self.finalize should make things relative to input file.
 
-computeParents(parents,root)
-computeIds(ids,root)
+- Numbers do not seem to be working.
 
-for key in parents.keys():
-    val = parents.get(key)
-    print('child: %9s parent: %9s' % (id(key),id(val)))
-# for key in ids.keys():
-    # val = ids.get(key)
-    # print('id: %9s element: %9s' % (key,val))
-
-names = (
-    "co_bc_1",        # 1 digit black circle
-    "co_bc_2",        # 2 digit black circle
-    "co_bc_text_1",   # text holder for 1 digit black circle
-    "co_bc_text_2",   # text holder for 2 digit black circle
-    "co_frame",       # frame for speech balloon callout
-    "co_g_bc_1",      # group for 1 digit black circle
-    "co_g_bc_2",      # group for 2 digit black circle
-    "co_g_co",        # group for speech balloon callout
-    "co_shot",        # image for screen shot
-    "co_text_holder", # text holder for speech balloon callout
+- Rewrite the docstring in apropos-inkscape & add the apropos-inkscape command.
+#@+node:ekr.20100906165118.5909: *5* To do
+#@+node:ekr.20100907092144.5901: *5* Unit tests
+#@+node:ekr.20100906165118.5879: *6* @test ink.giv_pil_warning
+c.inkscapeCommands.give_pil_warning()
+#@+node:ekr.20100906165118.5915: *6* @test leoInkCommands
+ic = c.inkscapeCommands
+screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
+template_fn = r'c:\leo.repo\inkcall\template.svg'
+png_fn = r'c:\leo.repo\inkcall\output.png'
+svg_fn = r'c:\leo.repo\inkcall\temp.svg'
+ic.run(
+    screenshot,
+    callouts = [
+        "This goes here",
+        "These are those, but slightly longer",
+        "Then you pull this, but this text needs to be longer for testing",
+    ],
+    numbers = [2,4,17],
+    edit_flag = True, # True: call inkscape to edit the working file.
+    png_fn=png_fn, # Optional: Name of output png file.
+    svg_fn=svg_fn, # Optional: Name of working svg file.
+    template_fn=template_fn, # Optional: Name of template svg file.
 )
-
-for name in names:
-    print(name,ids.get(name))
 #@+node:ekr.20100827095120.5862: *4* First: Fix script problem
 @nocolor-node
 
