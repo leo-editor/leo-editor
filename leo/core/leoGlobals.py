@@ -1071,7 +1071,7 @@ def alert(message):
     g.es(message)
     g.app.gui.alert(message)
 #@+node:ekr.20051023083258: *3* callers & _callerName
-def callers (n=8,count=0,excludeCaller=True,files=False):
+def callers (n=4,count=0,excludeCaller=True,files=False):
 
     '''Return a list containing the callers of the function that called g.callerList.
 

@@ -2109,6 +2109,8 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
                 g.trace('can not load enabled plugin:',moduleName,color="red")
 
     return result
+#@+node:ekr.20100907092144.6079: *4* Improved @enabled-plugins: ignore lines starting with '@'
+Also give calmer messages for non-existent plugins.
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic

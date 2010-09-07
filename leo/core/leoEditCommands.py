@@ -284,7 +284,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.store ={'rlist':[], 'stext':''} # For dynamic expansion.
         self.w = None
-    #@+node:ekr.20100901080826.6004: *4* finishCreate
+    #@+node:ekr.20100901080826.6004: *4* finishCreate (abbrevClass)
     def finishCreate(self):
 
         baseEditCommandsClass.finishCreate(self)
@@ -305,8 +305,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
-        if k.abbrevOn:
-             g.es('Abbreviations are on')
+        if k.abbrevOn and not g.unitTesting and not g.app.batchMode:
+            g.es('Abbreviations are on',color='red')
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -736,7 +736,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit(event)
         # k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
-        g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
+        if not g.unitTesting and not g.app.batchMode:
+            g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
     #@+node:ekr.20050920084036.24: *4* writeAbbreviation
     def writeAbbreviations (self,event):
 
