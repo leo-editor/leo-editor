@@ -131,16 +131,22 @@ class LProtoObsoleteClient:
 #@+node:ville.20091010233144.10051: ** class LProtoClient
 class LProtoClient:
 
-    def __init__(self, fname):
+    def __init__(self,fname):
 
-        self.socket = socket.socket( socket.AF_UNIX, socket.SOCK_STREAM)
-        self.socket.connect (fname)
+        if hasattr(socket,'AF_UNIX'):
+            self.socket = socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+            self.socket.connect(fname)
+        else:
+            host = '172.16.0.0' # host is a local address.
+            port = 1
+            self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            self.socket.connect((host,port),)
+
         self.recvbuf = LProtoBuf()
 
     def send(self, msg):
         byts = mk_send_bytes(msg)
         self.socket.sendall(byts)
-
 
 #@-others
 #@-leo

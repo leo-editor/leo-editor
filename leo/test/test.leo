@@ -974,7 +974,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1554,20 +1554,27 @@ row,col = g.convertPythonIndexToRowCol(s,ins)
 g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
-<t tx="ekr.20071025193940"># attrib_edit.py
+<t tx="ekr.20071025193940"># Standard plugins
+mod_scripting.py
+nav_qt.py
+plugins_menu.py
+quicksearch.py
+scrolledmessage.py
+UNL.py
+
+# Other useful plugins
+# codewisecompleter.py
+leoremote.py
+
+# attrib_edit.py
 # ctagscompleter.py
-codewisecompleter.py
 # rst3.py
 # contextmenu.py
-plugins_menu.py
 # open_with.py
-quicksearch.py
 # ipython.py
 # mod_autosave.py
 # templates.py
-scrolledmessage.py
-UNL.py
-mod_scripting.py
+
 # stickynotes.py # requires Python 3.0
 # stickynotes_plus.py
 # pydeeshell.py
@@ -1581,7 +1588,7 @@ mod_scripting.py
 # Other interesting plugins
 # leo_to_html.py
 # leoOPML.py
-nav_qt.py
+
 # graphed.py
 
 # Tk plugins...
