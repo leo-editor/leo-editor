@@ -553,7 +553,7 @@
 </v>
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
-<v t="ekr.20100904061757.2193"><vh>pyEnchant</vh></v>
+<v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -974,7 +974,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7048,12 +7048,22 @@ def setOption (self,name,val,tag):
             print('v %s icon %s %s' % (id(v),id(icon),fn))
 print('done')
 </t>
-<t tx="ekr.20100904061757.2193">import enchant
-print(enchant)
-for z in dir(enchant):
-    print(z)
-    
-françois
-Helo, Hello, Hxello,</t>
+<t tx="ekr.20100907114225.2209">from leo.external import lproto
+import os
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+print("will connect to",addr)
+pc  = lproto.LProtoClient(addr)
+pc.send("""
+
+g.es("hello world from remote") 
+c = g.app.commanders()[0]
+
+""")
+
+# note how c persists between calls
+pc.send("""
+c.k.simulateCommand('stickynote')
+""")</t>
 </tnodes>
 </leo_file>
