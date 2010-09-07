@@ -2565,7 +2565,7 @@ def aproposInkscape (event=None):
 
         c.inkscapeCommands.run(fn,
             callouts=callouts,markers=markers,
-            png='final_screen_shot.png')
+            png_fn='final_screen_shot.png')
 
     Details
     -------
