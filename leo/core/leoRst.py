@@ -2493,7 +2493,7 @@ def aproposInkscape (event=None):
     Typically the screenshot file will be a PNG
     format file, though other kinds of bitmap
     files should work. The user, or perhaps
-    another script must generate the screenshot
+    another script, must generate the screenshot
     file before calling run().
 
     The run method works in three stages:
@@ -2527,10 +2527,11 @@ def aproposInkscape (event=None):
 
     PIL
       The Python Imaging Library,
-      http://www.pythonware.com/products/pil/, is
-      optional but highly recommended. If
-      present, PIL will improve the quality of
-      the generated images.
+      http://www.pythonware.com/products/pil/
+
+      Optional but highly recommended. If present,
+      PIL will improve the quality of the generated
+      images.
 
     Settings
     --------
@@ -2544,8 +2545,9 @@ def aproposInkscape (event=None):
 
     The run method has the following signature::
 
-        def run (self,fn,callouts=[],markers=[],edit_flag=True,
-        png_fn=None,svg_fn=None,template_fn=None)
+        def run (self,fn,
+            callouts=[],markers=[],edit_flag=True,
+            png_fn=None,svg_fn=None,template_fn=None)
 
             fn  The name of the bitmap screenshot file.
       callouts  A possibly empty list of strings.
@@ -2557,15 +2559,16 @@ def aproposInkscape (event=None):
         svg_fn  The name of working svg file.
                 If no name is given, ``working_file.svg`` is used.
     template_fn The name of the **template svg file**.
-                This file contains the patterns to be used for
+                This file contains images to be used for
                 callouts and markers.  If no name is given,
                 inkscape-template.svg is used.
 
-    For example, to place three text balloon
-    callouts and three black circle numeric
-    markers on a screenshot::
+    For example, the following places three text
+    balloon callouts and three black circle
+    numeric markers on a screenshot::
 
         fn = "some_screen_shot.png"
+        png_fn = "final_screen_shot.png"
         callouts = (
             "This goes here",
             "These are those, but slightly longer",
@@ -2574,7 +2577,7 @@ def aproposInkscape (event=None):
 
         c.inkscapeCommands.run(fn,
             callouts=callouts,markers=markers,
-            png_fn='final_screen_shot.png')
+            png_fn=png_fn)
 
     """
     #@-<< define s >>
