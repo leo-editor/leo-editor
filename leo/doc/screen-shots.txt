@@ -164,6 +164,21 @@ def run (self):
 
     self.make_image_node(p,path)
     self.add_image_directive(p,directive_path)
+.. @+node:ekr.20100907133106.4452: ** @button edit-screenshot
+'''Edit a screenshot using Inkscape and special markup in a slide node.'''
+
+@language python
+@tabwidth -4
+
+class EditController:
+    @others
+
+EditController(c,p).run()
+
+.. @+node:ekr.20100907133106.4453: *3* class controller
+class EditController:
+
+    pass
 .. @+node:ekr.20100821182153.4343: ** @rst html/slides.html
 @ @rst-options
 call_docutils=False
@@ -494,6 +509,6 @@ Chose Save
 .. @+node:ekr.20100823164432.4410: *3* 22
 .. @+node:ekr.20100823164432.4416: *3* 23
 .. @+node:ekr.20100823164432.4417: *3* 24
-.. @-all
 
+.. @-all
 .. @-leo

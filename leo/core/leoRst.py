@@ -2154,16 +2154,6 @@ class LeoInkscapeCommands(object):
             g.es(g.adjustTripleString(s.rstrip(),
                 self.c.tab_width))
     #@+node:ekr.20100906164425.5883: *3* lxml replacements
-    #@+node:ekr.20100906164425.5890: *4* dumpMismatch
-    def dumpMismatch(self,caller,aList,aList2):
-
-        print('\n\n',caller)
-
-        print('****aList...')
-        for z in aList: print(z)
-
-        print('\n\n****aList2')
-        for z in aList2: print(z)
     #@+node:ekr.20100906164425.5884: *4* getElementsWithAttrib
     def getElementsWithAttrib (self,e,attr_name,aList=None):
 
@@ -2232,64 +2222,6 @@ class LeoInkscapeCommands(object):
     def finalize (self,fn):
 
         return g.os_path_abspath(g.os_path_finalize(fn))
-    #@+node:ekr.20100906165118.5878: *4* give_pil_warning
-    pil_message_given = False
-
-    def give_pil_warning(self):
-
-        if self.pil_message_given:
-            return # Warning already given.
-
-        if got_pil:
-            return # The best situation
-
-        self.pil_message_given = True
-
-        if got_qt:
-            self.warning('PIL not found: images may have transparent borders')
-        else:
-            self.warning('PIL and Qt both not found: images may be less clear')
-    #@+node:ekr.20100906165118.5877: *3* run & helpers
-    def run (self,
-        fn, # Required: the name of the screenshot file (.png) file.
-        callouts, # A possibly empty list of callouts.
-        numbers, # A possibly empty list of callouts.
-        edit_flag = True, # True: call inkscape to edit the working file.
-        png_fn=None, # Optional: Name of output png file.
-        svg_fn=None, # Optional: Name of working svg file.
-        template_fn=None, # Optional: Name of template svg file.
-    ):
-
-        c = self.c
-        self.errors = 0
-
-        self.give_pil_warning()
-
-        fn = self.get_screenshot_fn(fn)
-        if not fn: return
-
-        template_fn = self.get_template_fn(template_fn)
-        if not template_fn: return
-
-        png_fn = self.finalize(png_fn)
-        svg_fn = self.finalize(svg_fn and svg_fn.strip() or 'working_file.svg')
-
-        if 0: # Testing only
-            fn = "some_screen_shot.png"
-            callouts = [
-                "This goes here",
-                "These are those, but slightly longer",
-                "Then you pull this, but this text needs to be longer for testing",
-            ]
-            numbers = [2,4,17]
-
-        self.make_svg(fn,svg_fn,template_fn,callouts,numbers)
-
-        if edit_flag:
-            self.edit_svg(svg_fn)
-
-        if png_fn:
-            self.make_png(svg_fn,png_fn)
     #@+node:ekr.20100906165118.5913: *4* get_screenshot_fn
     def get_screenshot_fn (self,fn):
 
@@ -2319,22 +2251,73 @@ class LeoInkscapeCommands(object):
         else:
             self.error('template file not found:',fn)
             return None
+    #@+node:ekr.20100906165118.5878: *4* give_pil_warning
+    pil_message_given = False
+
+    def give_pil_warning(self):
+
+        if self.pil_message_given:
+            return # Warning already given.
+
+        if got_pil:
+            return # The best situation
+
+        self.pil_message_given = True
+
+        if got_qt:
+            self.warning('PIL not found: images may have transparent borders')
+        else:
+            self.warning('PIL and Qt both not found: images may be less clear')
+    #@+node:ekr.20100906165118.5877: *3* run & helpers
+    def run (self,
+        fn, # Required: the name of the screenshot file (.png) file.
+        callouts=[], # A possibly empty list of callouts.
+        numbers=[], # A possibly empty list of callouts.
+        edit_flag = True, # True: call inkscape to edit the working file.
+        png_fn=None, # Optional: Name of output png file.
+        svg_fn=None, # Optional: Name of working svg file.
+        template_fn=None, # Optional: Name of template svg file.
+    ):
+
+        c = self.c
+        self.errors = 0
+
+        self.give_pil_warning()
+
+        fn = self.get_screenshot_fn(fn)
+        if not fn: return
+
+        template_fn = self.get_template_fn(template_fn)
+        if not template_fn: return
+
+        png_fn = self.finalize(png_fn)
+        svg_fn = self.finalize(svg_fn and svg_fn.strip() or 'working_file.svg')
+
+        template = self.make_svg(fn,svg_fn,template_fn,callouts,numbers)
+        if not template: return
+
+        if edit_flag:
+            self.edit_svg(svg_fn)
+
+        if png_fn:
+            self.make_png(svg_fn,png_fn)
     #@+node:ekr.20100906164425.5891: *4* step 1: make_svg & make_dom
     def make_svg(self,fn,output_fn,template_fn,callouts,numbers):
 
-        # if self.opt.svg:
-            # outfile = open(self.opt.svg, 'w')
-        # elif not outfile:
-            # outfile = open(os.path.splitext(filename)[0] + ".svg", 'w')
-
         outfile = open(output_fn,'w')
 
-        self.make_dom(fn,template_fn,callouts,numbers).write(outfile)
+        template = self.make_dom(fn,template_fn,callouts,numbers)
+
+        if template:
+            template.write(outfile)
+
+        return template
     #@+node:ekr.20100906164425.5892: *5* make_dom & helpers
     def make_dom(self,fn,template_fn,callouts, numbers):
 
         trace = True
         template = self.get_template(template_fn)
+        if not template: return None
         root = template.getroot()
         ids_d = self.getIds(root)
         parents_d = self.getParents(root)
@@ -2353,7 +2336,7 @@ class LeoInkscapeCommands(object):
             parent.remove(i)
 
         for n,callout in enumerate(callouts):
-            if trace: print('make_dom',n,callout)
+            if trace: g.trace('callout %s: %s' % (n,callout))
             z = copy.deepcopy(part['co_g_co'])
             ids_d = self.getIds(z)
             text = ids_d.get('co_text_holder')
@@ -2374,6 +2357,7 @@ class LeoInkscapeCommands(object):
             part_parent.append(z)
 
         for n,number in enumerate(numbers):
+            if trace: g.trace('number %s: %s' % (n,number))
             if len(str(number)) == 2:
                 use_g,use_t = 'co_g_bc_2', 'co_bc_text_2'
             else:
@@ -2384,7 +2368,7 @@ class LeoInkscapeCommands(object):
             bc_text = ids_d.get(use_t) 
             bc_text.text = str(number)
             self.move_element(z, 20*n, 20*n)
-            parent.append(z)
+            part_parent.append(z)
 
         # point to the right screen shot
         ids_d = self.getIds(template.getroot())
@@ -2428,7 +2412,7 @@ class LeoInkscapeCommands(object):
             del z.attrib['id']
 
         return x
-    #@+node:ekr.20100906164425.5894: *6* get_template (revise)
+    #@+node:ekr.20100906164425.5894: *6* get_template
     def get_template(self,template_fn):
 
         """Load and check the template SVG and return DOM"""
@@ -2439,11 +2423,11 @@ class LeoInkscapeCommands(object):
 
         # check all IDs we expect are present
         ids = list(ids_d.keys())
-        if not set(self.ids) <= set(ids):
-            raise Exception(
-                "inkcall: template did not include all required IDs")
-
-        return template
+        if set(self.ids) <= set(ids):
+            return template
+        else:
+            self.error('template did not include all required IDs:',template_fn)
+            return None
     #@+node:ekr.20100906164425.5895: *6* move_element
     def move_element(self,element,x,y):
 
@@ -2478,10 +2462,9 @@ class LeoInkscapeCommands(object):
                     type_ = 'l'
                 i += 1
 
-        # print '\n'.join([repr(i) for i in pnts])
-
-        # print self.get_dim(fn, text_id, 'width'), self.get_dim(fn, text_id, 'height')
-        # print self.get_dim(fn, frame_id, 'width'), self.get_dim(fn, frame_id, 'height')
+        # g.trace('\n'.join([repr(i) for i in pnts])_
+        # g.trace(self.get_dim(fn, text_id, 'width'), self.get_dim(fn, text_id, 'height'))
+        # g.trace(self.get_dim(fn, frame_id, 'width'), self.get_dim(fn, frame_id, 'height'))
 
         # kludge for now
         h0 = 12  # index of vertical component going down right side
@@ -2490,9 +2473,9 @@ class LeoInkscapeCommands(object):
         present = 5  # components present initially
         h = pnts[h0][2]  # height of one component
         th = self.get_dim(fn, text_id, 'height')  # text height
-        # print '  ', present, h, present*h, th
+        # g.trace('  ', present, h, present*h, th)
         while present > min_ and present * h + 15 > th:
-            # print '  ', present, h, present*h, th
+            # g.trace('  ', present, h, present*h, th)
             del pnts[h0]
             del pnts[h1]
             present -= 1
@@ -2509,8 +2492,6 @@ class LeoInkscapeCommands(object):
         d.append('z')
 
         frame.set('d', ' '.join(d))
-        # print
-        # print frame.get('d')
     #@+node:ekr.20100906164425.5897: *7* get_dim
     def get_dim(self, fn, Id, what):
         """return dimension of element in fn with @id Id, what is
@@ -2538,7 +2519,6 @@ class LeoInkscapeCommands(object):
         aList = s.replace('\\r','').replace('\\n','\n').split('\n')
         for line in aList:
             if not line.strip(): continue
-            # print(repr(line))
             id_,x,y,w,h = line.split(',')
             for part in ('x',x), ('y',y), ('width',w), ('height',h):
                 hsh2 = fn+id_+part[0]
@@ -2612,7 +2592,7 @@ class LeoInkscapeCommands(object):
                 img = self.trim(img, (255,255,255,0))
                 img.save(png_fn)
             except IOError:
-                print('Can not open %s' % png_fn)
+                g.trace('Can not open %s' % png_fn)
     #@+node:ekr.20100906164425.5901: *5* trim
     def trim(self, im, border):
          bg = Image.new(im.mode, im.size, border)

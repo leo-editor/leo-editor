@@ -4340,5 +4340,15 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
+#@+node:ekr.20100906164425.5890: *3* dumpMismatch
+def dumpMismatch(self,aList,aList2):
+
+    g.trace('\n\n',g.caller(1))
+
+    print('****aList...')
+    for z in aList: print(z)
+
+    print('\n\n****aList2')
+    for z in aList2: print(z)
 #@-all
 #@-leo
