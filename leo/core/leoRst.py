@@ -2515,7 +2515,9 @@ def aproposInkscape (event=None):
 
     3. (Optional) Use Inkscape behind the scenes
        to render a final PNG image from the
-       working file.
+       working file.  If PIL is installed, this
+       step adjusts the image in various subtle
+       ways.
 
     Prerequisites
     -------------
@@ -2529,6 +2531,13 @@ def aproposInkscape (event=None):
       optional but highly recommended. If
       present, PIL will improve the quality of
       the generated images.
+
+    Settings
+    --------
+
+    @string inkscape-bin
+
+    This setting tells Leo the location of the Inkscape executable.
 
     Usage
     -----
@@ -2567,28 +2576,6 @@ def aproposInkscape (event=None):
             callouts=callouts,markers=markers,
             png_fn='final_screen_shot.png')
 
-    Details
-    -------
-
-    The run method does some tricky things behind
-    the scenes by calling Inkscape
-    non-interactively.
-
-    If the Python Imaging Library (PIL) is
-    available, the run method sets the image size
-    in the SVG based on the true image size, to
-    get pixel perfect rendering of the screenshot
-    (as long as it's aligned on pixel boundaries
-    in the template). Without PIL the screenshot
-    may be rescaled, although if you know all
-    your screenshots will be the same size, you
-    can set up the template appropriately. PIL
-    also removes transparent borders from images.
-
-    The run method gets the rendered (wrapped)
-    dimension of the text from Inkscape. Run then
-    edits the balloon path to make the balloon
-    fit the text (somewhat crudely at present).
     """
     #@-<< define s >>
 
