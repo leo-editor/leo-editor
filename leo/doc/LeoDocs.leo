@@ -521,9 +521,10 @@ Create screen shots.</t>
 <t tx="ekr.20100819163514.4364">@language python
 
 if not c.screenshotController:
-    m = g.loadOnePlugin(c,'screenshots',verbose=True) # calls onCreate.
+    m = g.loadOnePlugin(c,'screenshots',verbose=True)
+        # calls onCreate if it exists.
     
-    # c.k.simulateCommand('apropos-screen-shots')
+c.k.simulateCommand('apropos-screen-shots')
 </t>
 <t tx="ekr.20100821182153.4341">@language python
 
