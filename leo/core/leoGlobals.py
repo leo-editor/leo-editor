@@ -3034,6 +3034,37 @@ class command:
         return func
 
 
+#@+node:ekr.20100908125007.5975: *3* g.load_plugin
+def load_one_plugin (c,pluginName,tag='open0',verbose=False):
+
+    '''A convenience method to load a plugin by name.
+    This method calls the plugins onCreate method if it exists.'''
+
+    # This import must not appear at the top level.
+    import leo.core.leoPlugins as leoPlugins
+
+    loadedModules = list(leoPlugins.loadedModules.keys())
+
+    m = leoPlugins.loadOnePlugin(pluginName,verbose=False)
+
+    loadedModules2 = list(leoPlugins.loadedModules.keys())
+
+    if not m:
+        if verbose: g.es_print('not found',pluginName)
+        return None
+
+    if loadedModules == loadedModules2:
+        if verbose: g.es_print('already loaded',pluginName)
+        return None,'already loaded' # already loaded
+
+    g.es_print('loaded plugin:',pluginName,color='red')
+    if m and hasattr(m,'onCreate'):
+        if verbose: g.es_print('calling %s.onCreate()' % pluginName)
+        m.onCreate(tag='load-one-plugin',keys={'c':c})
+
+    return m,'loaded'
+
+loadOnePlugin = load_one_plugin
 #@+node:ekr.20031218072017.3145: ** Most common functions...
 # These are guaranteed always to exist for scripts.
 #@+node:ekr.20031218072017.3147: *3* g.choose

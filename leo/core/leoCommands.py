@@ -117,8 +117,8 @@ class baseCommands (object):
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
-        self.inkscapeCommands = leoRst.LeoInkscapeCommands(c)
         self.rstCommands    = leoRst.rstCommands(c)
+        self.screenshotController = None # Set by screenshots.py plugin.
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)
@@ -6972,7 +6972,7 @@ class baseCommands (object):
         c.changed = changedFlag
         if c.loading: return # don't update while loading.
 
-        if trace: g.trace('Commands',changedFlag,c,g.callers(4))
+        if trace: g.trace(changedFlag,g.callers())
 
         # Clear all dirty bits _before_ setting the caption.
         if not changedFlag:

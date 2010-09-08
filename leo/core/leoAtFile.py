@@ -3461,7 +3461,9 @@ class atFile:
             trailingNewlineFlag = True # don't need to generate an @nonl
         #@-<< Make sure all lines end in a newline >>
         at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
-        s = self.cleanLines(p,s)
+        if not fromString:
+            # 2010/10/08: cleanLines calls c.setChanged(!)
+            s = self.cleanLines(p,s)
         i = 0
         while i < len(s):
             next_i = g.skip_line(s,i)

@@ -407,13 +407,15 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     if moduleOrFileName.startswith('@'):
+        if trace: g.trace('ignoring Leo directive')
         return False # Allow Leo directives in @enabled-plugins nodes.
 
     if moduleOrFileName.endswith('.py'):
         moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
-    else:
+    elif moduleOrFileName.startswith('leo.plugins.'):
         moduleName = moduleOrFileName
-    #moduleName = g.shortFileName(moduleName)
+    else:
+        moduleName = 'leo.plugins.' + moduleOrFileName
 
     if isLoaded(moduleName):
         module = loadedModules.get(moduleName)
@@ -423,7 +425,6 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     assert g.app.loadDir
 
-    #plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
     moduleName = g.toUnicode(moduleName)
 
     # This import will typically result in calls to registerHandler.
@@ -442,7 +443,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
         result = None
 
     except ImportError:
-        if tag == 'open0': # Just give the warning once.
+        if trace or tag == 'open0': # Just give the warning once.
             g.es_print('plugin does not exist:',moduleName,color='red')
         result = None
 
@@ -619,7 +620,7 @@ def registerOneHandler(tag,fn):
 
     """Register one handler"""
 
-    global handlers, loadingModuleNameStack
+    global generateEventsFlag,handlers,loadingModuleNameStack
     try:
         moduleName = loadingModuleNameStack[-1]
     except IndexError:

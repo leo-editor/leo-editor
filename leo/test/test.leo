@@ -11,20 +11,22 @@
 <vnodes>
 <v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070224123943"><vh>@settings</vh>
-<v t="ekr.20100118190256.2014"><vh> Chapters</vh>
+<v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20100118190256.2014"><vh>Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 </v>
-<v t="ekr.20100118190256.2015"><vh> Files &amp; directories</vh>
+<v t="ekr.20100118190256.2015"><vh>Files &amp; directories</vh>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 </v>
-<v t="ekr.20080729153237.1"><vh> Gc settings</vh>
+<v t="ekr.20080729153237.1"><vh>Gc settings</vh>
 <v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
 <v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
-<v t="ekr.20080529111617.1"><vh> Plugins</vh>
+<v t="ekr.20080529111617.1"><vh>Plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int</vh>
@@ -43,7 +45,7 @@
 <v t="ekr.20080529111617.10"><vh>@string cleo_time_name = 'days'</vh></v>
 </v>
 </v>
-<v t="ekr.20100118190256.2012"><vh> Syntax coloring</vh>
+<v t="ekr.20100118190256.2012"><vh>Syntax coloring</vh>
 <v t="ekr.20100118141712.2011"><vh>@@int qt_tab_width = 80</vh></v>
 <v t="ekr.20100118122048.2003"><vh>@@font python keyword1 fonts</vh></v>
 <v t="ekr.20100118133026.2008"><vh>@@font python keyword3 fonts</vh></v>
@@ -51,17 +53,15 @@
 <v t="ekr.20100119100926.2046"><vh>@font rest keyword4 fonts</vh></v>
 <v t="ekr.20100330084954.2125"><vh>@color pseudoplain_operator_color = blue</vh></v>
 </v>
-<v t="ekr.20100118190256.2016"><vh> Vim</vh>
+<v t="ekr.20100118190256.2016"><vh>Vim</vh>
 <v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20100118190256.2013"><vh> Windows</vh>
+<v t="ekr.20100118190256.2013"><vh>Windows</vh>
 <v t="ekr.20100507151756.2123"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 </v>
-<v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
@@ -974,7 +974,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1565,6 +1565,7 @@ UNL.py
 # Other useful plugins
 # codewisecompleter.py
 leoremote.py
+screenshots.py
 
 # attrib_edit.py
 # ctagscompleter.py

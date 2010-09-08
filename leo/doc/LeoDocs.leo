@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
+<v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -41,7 +41,8 @@
 <v t="ekr.20091006063434.13802"><vh>@@button rst3</vh></v>
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
-<v t="ekr.20050407144417" a="E"><vh>@settings</vh>
+<v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="ekr.20100908122026.4443"><vh>@@enabled_plugins</vh></v>
 <v t="ekr.20100907092300.4440"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.4441"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.4442"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
@@ -69,6 +70,7 @@
 </v>
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
+<v t="ekr.20100908122026.4443"></v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -180,6 +182,7 @@
 <v t="ekr.20100821182153.4341"><vh>Leo Screenshots</vh>
 <v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
 </v>
+<v t="ekr.20100819163514.4364"><vh>@button screenshot</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -515,6 +518,13 @@ Rewrite chapter 6.
 Revise Tutorial.
 
 Create screen shots.</t>
+<t tx="ekr.20100819163514.4364">@language python
+
+if not c.screenshotController:
+    m = g.loadOnePlugin(c,'screenshots',verbose=True) # calls onCreate.
+    
+    # c.k.simulateCommand('apropos-screen-shots')
+</t>
 <t tx="ekr.20100821182153.4341">@language python
 
 @
@@ -542,6 +552,18 @@ mkdir screenshots
 <t tx="ekr.20100907092300.4441">Path to inkscape template file
 </t>
 <t tx="ekr.20100907092300.4442">Path to Inkscape executable</t>
+<t tx="ekr.20100908122026.4443"># Standard plugins
+mod_scripting.py
+nav_qt.py
+plugins_menu.py
+quicksearch.py
+scrolledmessage.py
+UNL.py
+
+# Other useful plugins
+# codewisecompleter.py
+leoremote.py
+screenshots.py</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
