@@ -42,7 +42,7 @@
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
-<v t="ekr.20100908122026.4443"><vh>@@enabled_plugins</vh></v>
+<v t="ekr.20100908122026.4443"><vh>@enabled_plugins</vh></v>
 <v t="ekr.20100907092300.4440"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.4441"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.4442"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
