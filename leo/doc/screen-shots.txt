@@ -3,6 +3,11 @@
 .. @@language rest
 .. @@tabwidth -4
 .. @+all
+.. @+node:ekr.20100819163514.4364: ** @button screenshot
+@language python
+
+g.loadOnePlugin(c,'screenshots')
+c.k.simulateCommand('apropos-screen-shots')
 .. @+node:ekr.20100828111722.4429: ** @button std-size
 @language python
 

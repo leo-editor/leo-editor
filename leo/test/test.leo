@@ -554,6 +554,29 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
+<v t="ekr.20100909154940.2225"><vh>@mark-for-unit-tests</vh>
+<v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
+<v t="ekr.20100909154940.2227"><vh>Headline and body text</vh>
+<v t="ekr.20100909154940.2228"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100909154940.2229"><vh>Organizer</vh>
+<v t="ekr.20100909154940.2230"><vh>To Do List</vh>
+<v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
+<v t="ekr.20100909154940.2232"><vh>Important</vh></v>
+<v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
+<v t="ekr.20100909154940.2234"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20100909154940.2235"><vh>Diary</vh>
+<v t="ekr.20100909154940.2236"><vh>2009</vh>
+<v t="ekr.20100909154940.2237"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100909154940.2238"><vh>2010</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100909154713.2210"><vh>@button screenshot</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -974,7 +997,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7066,5 +7089,40 @@ c = g.app.commanders()[0]
 pc.send("""
 c.k.simulateCommand('stickynote')
 """)</t>
+<t tx="ekr.20100909154713.2210">g.loadOnePlugin(c,'screenshots')
+sc = c.screenshotController
+
+# Select the screenshot node.
+h = 'Headline and body text'
+p2 = g.findNodeAnywhere(c,h)
+assert p2
+c.selectPosition(p2)
+
+sc.screen_shot_command()
+</t>
+<t tx="ekr.20100909154940.2225"># Add the tree to the external unit test</t>
+<t tx="ekr.20100909154940.2226"></t>
+<t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
+pane (2) below. The body pane is a text editor--you can enter, delete or change
+text here by typing it in.
+
+.. image:: screen-shots/ekr-20100821182153-4356.png
+</t>
+<t tx="ekr.20100909154940.2228"></t>
+<t tx="ekr.20100909154940.2229">Organizer node.
+</t>
+<t tx="ekr.20100909154940.2230">My to-do list.
+</t>
+<t tx="ekr.20100909154940.2231">1. Make Leo Tutorial: the world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20100909154940.2232"></t>
+<t tx="ekr.20100909154940.2233"></t>
+<t tx="ekr.20100909154940.2234"></t>
+<t tx="ekr.20100909154940.2235"></t>
+<t tx="ekr.20100909154940.2236"></t>
+<t tx="ekr.20100909154940.2237"></t>
+<t tx="ekr.20100909154940.2238"></t>
 </tnodes>
 </leo_file>
