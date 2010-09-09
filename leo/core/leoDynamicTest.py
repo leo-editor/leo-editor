@@ -88,6 +88,5 @@ if __name__ == '__main__':
     if False:
         print('leoDynamicTest.py: argv...')
         for z in sys.argv[2:]: print('  %s' % repr(z))
-    leoPlugins.init() # Necessary.
     main()
 #@-leo

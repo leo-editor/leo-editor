@@ -7,10 +7,8 @@
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
-import glob
 import bisect
 import sys
-import types
 
 #@+others
 #@+node:ekr.20100908125007.6041: ** Top-level functions
@@ -25,11 +23,6 @@ def registerHandler(tags,fn):
     '''A wrapper so plugins can still call leoPlugins.registerHandler.'''
 
     return g.app.pluginsController.registerHandler(tags,fn)
-#@+node:ekr.20100908125007.5979: *3* init
-
-#@+node:ekr.20100908125007.6039: *3* registerHandler
-
-
 #@+node:ville.20090222141717.2: ** TryNext (exception)
 class TryNext(Exception):
 
@@ -275,23 +268,26 @@ class baseLeoPlugin(object):
 class LeoPluginsController:
 
     #@+others
-    #@+node:ekr.20100908125007.6034: *3* ctor
+    #@+node:ekr.20100909065501.5954: *3* Birth
+    #@+node:ekr.20100908125007.6034: *4* ctor
     def __init__ (self):
 
         self.handlers = {}
         self.loadedModulesFilesDict = {}
-            # Keys are module names, values are the names of .leo files
+            # Keys are regularized module names, values are the names of .leo files
             # containing @enabled-plugins nodes that caused the plugin to be loaded
         self.loadedModules = {}
-            # Keys are module names, values are modules.
+            # Keys are regularized module names, values are modules.
         self.loadingModuleNameStack = []
             # The stack of module names.
             # The top is the module being loaded.
 
+        assert(g)
         g.act_on_node = CommandChainDispatcher()
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
-    #@+node:ekr.20100908125007.6016: *3* callTagHandler
+    #@+node:ekr.20100909065501.5952: *3* Event handlers
+    #@+node:ekr.20100908125007.6016: *4* callTagHandler
     def callTagHandler (self,bunch,tag,keywords):
 
         handler = bunch.fn ; moduleName = bunch.moduleName
@@ -318,7 +314,7 @@ class LeoPluginsController:
             result = None
         self.loadingModuleNameStack.pop()
         return result
-    #@+node:ekr.20100908125007.6017: *3* doHandlersForTag
+    #@+node:ekr.20100908125007.6017: *4* doHandlersForTag
     def doHandlersForTag (self,tag,keywords):
 
         """Execute all handlers for a given tag, in alphabetical order.
@@ -343,7 +339,7 @@ class LeoPluginsController:
                 self.callTagHandler(bunch,tag,keywords)
 
         return None
-    #@+node:ekr.20100908125007.6018: *3* doPlugins
+    #@+node:ekr.20100908125007.6018: *4* doPlugins
     def doPlugins(self,tag,keywords):
 
         if g.app.killed:
@@ -353,7 +349,8 @@ class LeoPluginsController:
             self.loadHandlers(tag)
 
         return self.doHandlersForTag(tag,keywords)
-    #@+node:ekr.20100908125007.6019: *3* getHandlersForTag
+    #@+node:ekr.20100909065501.5950: *3* Information
+    #@+node:ekr.20100908125007.6019: *4* getHandlersForTag
     def getHandlersForTag(self,tags):
 
         if type(tags) in (type((),),type([])):
@@ -369,17 +366,89 @@ class LeoPluginsController:
 
         aList = self.handlers.get(tag,[])
         return aList
-    #@+node:ekr.20100908125007.6020: *3* getPluginModule
+    #@+node:ekr.20100908125007.6020: *4* getPluginModule
     def getPluginModule (self,moduleName):
 
         return self.loadedModules.get(moduleName)
-    #@+node:ekr.20100908125007.6021: *3* isLoaded
+    #@+node:ekr.20100908125007.6021: *4* isLoaded
     def isLoaded (self,name):
 
         if name.endswith('.py'): name = name[:-3]
 
         return name in g.app.loadedPlugins
-    #@+node:ekr.20100908125007.6022: *3* loadHandlers & helper
+    #@+node:ekr.20100908125007.6025: *4* printHandlers
+    def printHandlers (self,c,moduleName=None):
+
+        tabName = 'Plugins'
+        c.frame.log.selectTab(tabName)
+
+        if moduleName:
+            s = 'handlers for %s...\n' % (moduleName)
+        else:
+            s = 'all plugin handlers...\n'
+        g.es(s+'\n',tabName=tabName)
+
+        data = []
+        modules = {}
+        for tag in self.handlers:
+            bunches = self.handlers.get(tag)
+            for bunch in bunches:
+                name = bunch.moduleName
+                tags = modules.get(name,[])
+                tags.append(tag)
+                modules[name] = tags
+
+        n = 4
+        for key in sorted(modules):
+            tags = modules.get(key)
+            if moduleName in (None,key):
+                for tag in tags:
+                    n = max(n,len(tag))
+                    data.append((tag,key),)
+
+        lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
+        g.es('',''.join(lines),tabName=tabName)
+    #@+node:ekr.20100908125007.6026: *4* printPlugins
+    def printPlugins (self,c):
+
+        tabName = 'Plugins'
+        c.frame.log.selectTab(tabName)
+
+        data = []
+        data.append('enabled plugins...\n')
+        for z in sorted(self.loadedModules):
+            data.append(z)
+
+        lines = ['%s\n' % (s) for s in data]
+        g.es('',''.join(lines),tabName=tabName)
+    #@+node:ekr.20100908125007.6027: *4* printPluginsInfo
+    def printPluginsInfo (self,c):
+
+        '''Print the file name responsible for loading a plugin.
+
+        This is the first .leo file containing an @enabled-plugins node
+        that enables the plugin.'''
+
+        d = self.loadedModulesFilesDict
+        tabName = 'Plugins'
+        c.frame.log.selectTab(tabName)
+
+        data = [] ; n = 4
+        for moduleName in d:
+            fileName = d.get(moduleName)
+            n = max(n,len(moduleName))
+            data.append((moduleName,fileName),)
+
+        lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
+        g.es('',''.join(lines),tabName=tabName)
+    #@+node:ekr.20100909065501.5949: *4* regularizeName
+    def regularizeName (self,fn):
+
+        '''Return the name used as a key to this modules dictionaries.'''
+
+        return fn
+    #@+node:ekr.20100909065501.5953: *3* Load & unload
+    #@+node:ekr.20100908125007.6022: *4* loadHandlers
     def loadHandlers(self,tag):
 
         """Load all enabled plugins from the plugins directory"""
@@ -401,37 +470,7 @@ class LeoPluginsController:
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag = tag)
-
-        if 0: # Load plugins in the order they appear in the enabled_files list.
-            if files and enabled_files:
-                for theFile in enabled_files:
-                    if theFile in files:
-                        loadOnePlugin(theFile,tag=tag)
-
-        if 0: # Warn about any non-existent enabled file.
-            if warn_on_failure and tag == 'open0':
-                for z in enabled_files:
-                    if z not in files:
-                        g.es_print('plugin does not exist:',
-                            g.shortFileName(z),color="red")
-
-        # Note: g.plugin_signon adds module names to g.app.loadedPlugins
-        if 0:
-            if g.app.loadedPlugins:
-                pr("%d plugins loaded" % (len(g.app.loadedPlugins)), color="blue")
-    #@+node:ekr.20100908125007.6023: *4* getEnabledFiles
-    def getEnabledFiles (self,s,plugins_path=None):
-
-        '''Return a list of plugins mentioned in non-comment lines of s.'''
-
-        enabled_files = []
-        for s in g.splitLines(s):
-            s = s.strip()
-            if s and not s.lstrip().startswith('#'):
-                enabled_files.append(s)
-
-        return enabled_files
-    #@+node:ekr.20100908125007.6024: *3* loadOnePlugin
+    #@+node:ekr.20100908125007.6024: *4* loadOnePlugin
     def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
 
         trace = False # and not g.unitTesting
@@ -540,72 +579,26 @@ class LeoPluginsController:
                     g.trace('can not load enabled plugin:',moduleName,color="red")
 
         return result
-    #@+node:ekr.20100908125007.6025: *3* printHandlers
-    def printHandlers (self,c,moduleName=None):
+    #@+node:ekr.20100908125007.6030: *4* unloadOnePlugin
+    def unloadOnePlugin (self,moduleOrFileName,verbose=False):
 
-        tabName = 'Plugins'
-        c.frame.log.selectTab(tabName)
-
-        if moduleName:
-            s = 'handlers for %s...\n' % (moduleName)
+        if moduleOrFileName [-3:] == ".py":
+            moduleName = moduleOrFileName [:-3]
         else:
-            s = 'all plugin handlers...\n'
-        g.es(s+'\n',tabName=tabName)
+            moduleName = moduleOrFileName
+        moduleName = g.shortFileName(moduleName)
 
-        data = []
-        modules = {}
+        if moduleName in g.app.loadedPlugins:
+            if verbose:
+                g.pr('unloading',moduleName)
+            g.app.loadedPlugins.remove(moduleName)
+
         for tag in self.handlers:
             bunches = self.handlers.get(tag)
-            for bunch in bunches:
-                name = bunch.moduleName
-                tags = modules.get(name,[])
-                tags.append(tag)
-                modules[name] = tags
-
-        n = 4
-        for key in sorted(modules):
-            tags = modules.get(key)
-            if moduleName in (None,key):
-                for tag in tags:
-                    n = max(n,len(tag))
-                    data.append((tag,key),)
-
-        lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
-        g.es('',''.join(lines),tabName=tabName)
-    #@+node:ekr.20100908125007.6026: *3* printPlugins
-    def printPlugins (self,c):
-
-        tabName = 'Plugins'
-        c.frame.log.selectTab(tabName)
-
-        data = []
-        data.append('enabled plugins...\n')
-        for z in sorted(self.loadedModules):
-            data.append(z)
-
-        lines = ['%s\n' % (s) for s in data]
-        g.es('',''.join(lines),tabName=tabName)
-    #@+node:ekr.20100908125007.6027: *3* printPluginsInfo
-    def printPluginsInfo (self,c):
-
-        '''Print the file name responsible for loading a plugin.
-
-        This is the first .leo file containing an @enabled-plugins node
-        that enables the plugin.'''
-
-        d = self.loadedModulesFilesDict
-        tabName = 'Plugins'
-        c.frame.log.selectTab(tabName)
-
-        data = [] ; n = 4
-        for moduleName in d:
-            fileName = d.get(moduleName)
-            n = max(n,len(moduleName))
-            data.append((moduleName,fileName),)
-
-        lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
-        g.es('',''.join(lines),tabName=tabName)
-    #@+node:ekr.20100908125007.6028: *3* registerExclusiveHandler
+            bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
+            self.handlers[tag] = bunches
+    #@+node:ekr.20100909065501.5951: *3* Registration
+    #@+node:ekr.20100908125007.6028: *4* registerExclusiveHandler
     def registerExclusiveHandler(self,tags, fn):
 
         """ Register one or more exclusive handlers"""
@@ -636,7 +629,7 @@ class LeoPluginsController:
         else:
             bunch = g.Bunch(fn=fn,moduleName=moduleName,tag='handler')
             self.handlers = [bunch]
-    #@+node:ekr.20100908125007.6029: *3* registerHandler
+    #@+node:ekr.20100908125007.6029: *4* registerHandler
     def registerHandler(self,tags,fn):
 
         """ Register one or more handlers"""
@@ -666,25 +659,7 @@ class LeoPluginsController:
             items.append(bunch)
 
         self.handlers[tag] = items
-    #@+node:ekr.20100908125007.6030: *3* unloadOnePlugin
-    def unloadOnePlugin (self,moduleOrFileName,verbose=False):
-
-        if moduleOrFileName [-3:] == ".py":
-            moduleName = moduleOrFileName [:-3]
-        else:
-            moduleName = moduleOrFileName
-        moduleName = g.shortFileName(moduleName)
-
-        if moduleName in g.app.loadedPlugins:
-            if verbose:
-                g.pr('unloading',moduleName)
-            g.app.loadedPlugins.remove(moduleName)
-
-        for tag in self.handlers:
-            bunches = handlers.get(tag)
-            bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
-            self.handlers[tag] = bunches
-    #@+node:ekr.20100908125007.6031: *3* unregisterHandler
+    #@+node:ekr.20100908125007.6031: *4* unregisterHandler
     def unregisterHandler(self,tags,fn):
 
         if type(tags) in (type((),),type([])):
@@ -698,7 +673,6 @@ class LeoPluginsController:
         bunches = self.handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch.fn != fn]
         self.handlers[tag] = bunches
-
     #@-others
 #@-others
 #@-leo

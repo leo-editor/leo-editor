@@ -114,6 +114,9 @@ class bridgeController:
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
         #@-<< import leoGlobals and leoApp >>
+        # 2010/09/09: create the g.app.pluginsController here.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.init() # Necessary. Sets g.app.pluginsController.
         g.computeStandardDirectories()
         if not self.getLeoID(): return
         #@+<< import leoNodes and leoConfig >>

@@ -109,8 +109,7 @@ tkPass = getTkPass()
 #@-<< defines >>
 
 recentList = (
-    ('leoAtFile',''),
-    ('leoFileCommands',''),
+    ('leoPlugins',''),
 )
 
 tables_table = (

@@ -3510,5 +3510,17 @@ def dumpMismatch(self,aList,aList2):
 
     print('\n\n****aList2')
     for z in aList2: print(z)
+#@+node:ekr.20100908125007.6023: *3* getEnabledFiles (not used)
+def getEnabledFiles (self,s,plugins_path=None):
+
+    '''Return a list of plugins mentioned in non-comment lines of s.'''
+
+    enabled_files = []
+    for s in g.splitLines(s):
+        s = s.strip()
+        if s and not s.lstrip().startswith('#'):
+            enabled_files.append(s)
+
+    return enabled_files
 #@-all
 #@-leo
