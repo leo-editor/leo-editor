@@ -35,8 +35,8 @@ except ImportError:
 #@-<< leoTest imports >>
 
 if g.app: # Make sure we can import this module stand-alone.
-    import leo.core.leoPlugins as leoPlugins
-    newAtFile = leoPlugins.isLoaded("___proto_atFile")
+    ### import leo.core.leoPlugins as leoPlugins
+    newAtFile = g.app.leoPlugins.isLoaded("___proto_atFile")
 else:
     newAtFile = False
 

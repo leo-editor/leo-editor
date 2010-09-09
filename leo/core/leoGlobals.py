@@ -2980,8 +2980,8 @@ def doHook(tag,*args,**keywords):
         g.trace('tag',tag,'f',f and f.__name__)
 
     if not f:
-        import leo.core.leoPlugins as leoPlugins
-        g.app.hookFunction = f = leoPlugins.doPlugins
+        ### import leo.core.leoPlugins as leoPlugins
+        g.app.hookFunction = f = g.app.leoPlugins.doPlugins
 
     try:
         # Pass the hook to the hook handler.
@@ -3041,7 +3041,9 @@ def load_one_plugin (c,pluginName,tag='open0',verbose=False):
     This method calls the plugins onCreate method if it exists.'''
 
     # This import must not appear at the top level.
-    import leo.core.leoPlugins as leoPlugins
+    ### import leo.core.leoPlugins as leoPlugins
+
+    leoPlugins = g.app.leoPlugins
 
     loadedModules = list(leoPlugins.loadedModules.keys())
 

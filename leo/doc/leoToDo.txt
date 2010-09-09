@@ -2252,8 +2252,8 @@ def doHook(tag,*args,**keywords):
         g.trace('tag',tag,'f',f and f.__name__)
 
     if not f:
-        import leo.core.leoPlugins as leoPlugins
-        g.app.hookFunction = f = leoPlugins.doPlugins
+        ### import leo.core.leoPlugins as leoPlugins
+        g.app.hookFunction = f = g.app.leoPlugins.doPlugins
 
     try:
         # Pass the hook to the hook handler.

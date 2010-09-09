@@ -1331,7 +1331,7 @@ def createCursesGui (self,fileName='',verbose=False):
 
     app = self
 
-    leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
+    app.leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
 #@+node:ekr.20090619065122.8593: *6* app.createDefaultGui
 def createDefaultGui (self,fileName='',verbose=False):
 
@@ -1428,7 +1428,7 @@ def createTkGui (self,fileName='',verbose=False):
     Pmw = g.importExtension('Pmw',pluginName='startup',verbose=False)
 
     if Tk and Pmw:
-        leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
+        app.leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
         if app.gui and fileName and verbose:
             print('tkGui created in %s' % fileName)
 #@+node:ekr.20090126063121.3: *6* app.createWxGui
@@ -1438,7 +1438,9 @@ def createWxGui (self,fileName='',verbose=False):
 
     """A convenience routines for plugins to create the wx gui class."""
 
-    leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
+    app = self
+
+    app.leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
 
     if fileName and verbose:
 

@@ -1160,15 +1160,15 @@ class controlCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20070429090859: *3* print plugins info...
     def printPluginHandlers (self,event=None):
 
-        leoPlugins.printHandlers(self.c)
+        g.app.leoPlugins.printHandlers(self.c)
 
     def printPlugins (self,event=None):
 
-        leoPlugins.printPlugins(self.c)
+        g.app.leoPlugins.printPlugins(self.c)
 
     def printPluginsInfo (self,event=None):
 
-        leoPlugins.printPluginsInfo(self.c)
+        g.app.leoPlugins.printPluginsInfo(self.c)
     #@+node:ekr.20060603161041: *3* setSilentMode
     def setSilentMode (self,event=None):
 

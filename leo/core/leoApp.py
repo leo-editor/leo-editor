@@ -9,7 +9,7 @@
 
 import leo.core.leoGlobals as g
 import leo.core.leoCache as leoCache
-import leo.core.leoPlugins as leoPlugins
+# import leo.core.leoPlugins as leoPlugins
 import leo.core.leoVersion as leoVersion
 
 import os
@@ -353,7 +353,7 @@ class LeoApp:
 
         app = self
 
-        leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
+        app.leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
     #@+node:ekr.20090619065122.8593: *3* app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
 
@@ -450,7 +450,7 @@ class LeoApp:
         Pmw = g.importExtension('Pmw',pluginName='startup',verbose=False)
 
         if Tk and Pmw:
-            leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
+            app.leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
             if app.gui and fileName and verbose:
                 print('tkGui created in %s' % fileName)
     #@+node:ekr.20090126063121.3: *3* app.createWxGui
@@ -460,7 +460,9 @@ class LeoApp:
 
         """A convenience routines for plugins to create the wx gui class."""
 
-        leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
+        app = self
+
+        app.leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
 
         if fileName and verbose:
 

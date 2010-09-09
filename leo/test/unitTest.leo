@@ -21896,7 +21896,8 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoKeys tests.')</t>
 <t tx="ekr.20100131171342.5610"></t>
-<t tx="ekr.20100131171342.5611">import leo.core.leoPlugins as leoPlugins
+<t tx="ekr.20100131171342.5611"># import leo.core.leoPlugins as leoPlugins
+leoPlugins = g.app.leoPluginsController
 
 aList1 = leoPlugins.getHandlersForTag('select1')
 aList2 = leoPlugins.getHandlersForOneTag('select1')
