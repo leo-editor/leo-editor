@@ -385,11 +385,9 @@ class LeoPluginsController:
 
         return self.loadedModules.get(moduleName)
     #@+node:ekr.20100908125007.6021: *4* isLoaded
-    def isLoaded (self,name):
+    def isLoaded (self,fn):
 
-        if name.endswith('.py'): name = name[:-3]
-
-        return name in g.app.loadedPlugins
+        return self.regularizeName(fn) in g.app.loadedPlugins
     #@+node:ekr.20100908125007.6025: *4* printHandlers
     def printHandlers (self,c,moduleName=None):
 
@@ -467,6 +465,11 @@ class LeoPluginsController:
            fn = 'leo.plugins.' + fn
 
         return fn
+    #@+node:ekr.20100909104341.5979: *4* setLoaded
+    def setLoaded (self,fn,m):
+
+        self.loadedModules[self.regularizeName(fn)] = m
+
     #@+node:ekr.20100909065501.5953: *3* Load & unload
     #@+node:ekr.20100908125007.6022: *4* loadHandlers
     def loadHandlers(self,tag):
