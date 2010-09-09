@@ -1702,16 +1702,6 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
 
     '''Return True if the frame was created properly.'''
 
-    # if g.app.gui == None:
-        # g.app.createQtGui(fileName='core')
-
-    # # We can't print the signon until we know the gui.
-    # g.app.computeSignon() # Set app.signon/signon2 for commanders.
-
-    # if versionFlag:
-        # print(g.app.signon)
-        # return
-
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
 
@@ -4032,5 +4022,14 @@ def processWord(self, word):
         return None
     else:
         return d.suggest(word)
+#@+node:ekr.20100909065501.5975: *4* Simplified leoPlugins code
+@nocolor-node
+
+There are some tricky issues here:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4da36f0d897a25e8
+
+Important: g.loadOnePlugin calls the plugins onCreate method to make up for
+events that have already been generated. pc.loadOnePlugin does not.
 #@-all
 #@-leo

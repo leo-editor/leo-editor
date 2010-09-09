@@ -3034,7 +3034,7 @@ class command:
         return func
 
 
-#@+node:ekr.20100908125007.5975: *3* g.load_plugin
+#@+node:ekr.20100908125007.5975: *3* g.loadOnePlugin
 def loadOnePlugin (c,pluginName):
 
     '''A convenience method to load a plugin by name.
