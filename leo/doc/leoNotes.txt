@@ -3522,5 +3522,12 @@ def getEnabledFiles (self,s,plugins_path=None):
             enabled_files.append(s)
 
     return enabled_files
+#@+node:ekr.20100909065501.5976: *3* from pc.loadOnePlugin
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
 #@-all
 #@-leo

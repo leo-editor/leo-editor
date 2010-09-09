@@ -215,6 +215,7 @@ def initApp (verbose):
     g.app.setLeoID(verbose=verbose)
     g.app.config = leoConfig.configClass()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.pluginsController.finishCreate() # 2010/09/09
 #@+node:ekr.20041130093254: *4* reportDirectories
 def reportDirectories(verbose):
 

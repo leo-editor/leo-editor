@@ -269,8 +269,10 @@ class LeoPluginsController:
 
     #@+others
     #@+node:ekr.20100909065501.5954: *3* Birth
-    #@+node:ekr.20100908125007.6034: *4* ctor
+    #@+node:ekr.20100908125007.6034: *4* pc.ctor
     def __init__ (self):
+
+        # g.trace('LeoPluginsController',g.callers())
 
         self.handlers = {}
         self.loadedModulesFilesDict = {}
@@ -282,10 +284,22 @@ class LeoPluginsController:
             # The stack of module names.
             # The top is the module being loaded.
 
+        # Settings.  Set these here in case finishCreate is never called.
+        self.warn_on_failure = True
+
         assert(g)
         g.act_on_node = CommandChainDispatcher()
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
+    #@+node:ekr.20100909065501.5974: *4* pc.finishCreate
+    def finishCreate (self):
+
+        '''Set configuration settings for LeoPluginsController.
+
+        Nothing bad will happen if this is never called.'''
+
+        self.warn_on_failure = g.app.config.getBool(c=None,
+            setting='warn_when_plugins_fail_to_load')
     #@+node:ekr.20100909065501.5952: *3* Event handlers
     #@+node:ekr.20100908125007.6016: *4* callTagHandler
     def callTagHandler (self,bunch,tag,keywords):
@@ -446,14 +460,18 @@ class LeoPluginsController:
 
         '''Return the name used as a key to this modules dictionaries.'''
 
+        if fn.endswith('.py'):
+            fn = fn [:-3]
+
+        if not fn.startswith('leo.plugins.'):
+           fn = 'leo.plugins.' + fn
+
         return fn
     #@+node:ekr.20100909065501.5953: *3* Load & unload
     #@+node:ekr.20100908125007.6022: *4* loadHandlers
     def loadHandlers(self,tag):
 
         """Load all enabled plugins from the plugins directory"""
-
-        warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
         def pr (*args,**keys):
             if not g.app.unitTesting:
@@ -475,27 +493,11 @@ class LeoPluginsController:
 
         trace = False # and not g.unitTesting
 
-        # Prevent Leo from crashing if .leoID.txt does not exist.
-        if g.app.config is None:
-            print ('No g.app.config, making stub...')
-            class StubConfig(g.nullObject):
-                pass
-            g.app.config = StubConfig()
-
-        # Fixed reversion: do this after possibly creating stub config class.
-        verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
-        warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
-
         if moduleOrFileName.startswith('@'):
             if trace: g.trace('ignoring Leo directive')
             return False # Allow Leo directives in @enabled-plugins nodes.
 
-        if moduleOrFileName.endswith('.py'):
-            moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
-        elif moduleOrFileName.startswith('leo.plugins.'):
-            moduleName = moduleOrFileName
-        else:
-            moduleName = 'leo.plugins.' + moduleOrFileName
+        moduleName = self.regularizeName(moduleOrFileName)
 
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
@@ -543,7 +545,6 @@ class LeoPluginsController:
                 try:
                     # Indicate success only if init_result is True.
                     init_result = result.init()
-                    # g.trace('result',result,'init_result',init_result)
                     if init_result:
                         self.loadedModules[moduleName] = result
                         self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
@@ -574,7 +575,7 @@ class LeoPluginsController:
             if trace or verbose:
                 g.trace('loaded plugin:',moduleName,color="blue")
         else:
-            if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or self.warn_on_failure or (verbose and not g.app.initing):
                 if trace or tag == 'open0':
                     g.trace('can not load enabled plugin:',moduleName,color="red")
 

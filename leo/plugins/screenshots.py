@@ -154,18 +154,8 @@ def init ():
 def onCreate (tag,keys):
 
     c = keys.get('c')
-    if not c: return
-
-    c.screenshotController = sc = ScreenShotController(c)
-
-        # aList = (
-            # ('apropos-screen-shots',sc.apropos_screen_shots),
-            # ('take-screenshot',sc.take_screen_shot),
-        # )
-
-        # shortcut = None
-        # for name,func in aList:
-            # c.k.registerCommand(name,shortcut,func)
+    if c:
+        c.screenshotController = sc = ScreenShotController(c)
 #@+node:ekr.20100908110845.5580: ** Commands
 #@+node:ekr.20100908110845.5581: *3* apropos_screen_shots
 # @pagewidth 45
