@@ -5790,7 +5790,7 @@ class baseCommands (object):
             webbrowser.open_new(url)
         except:
             g.es("not found:",url)
-    #@+node:ekr.20050130152008: *5* leoPlugins
+    #@+node:ekr.20050130152008: *5* openLeoPlugins
     def openLeoPlugins (self,event=None):
 
         '''Open leoPlugins.leo in a new Leo window.'''
