@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.3" # Set version for the plugin handler.
 #@+<< version history >>
@@ -29,7 +28,7 @@ def init ():
     ok = not g.app.unitTesting
 
     if ok:
-        leoPlugins.registerHandler("all",trace_tags)
+        g.app.pluginsController.registerHandler("all",trace_tags)
         g.plugin_signon(__name__)
 
     return ok

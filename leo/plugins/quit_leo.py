@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.2"
 
@@ -23,7 +22,7 @@ def init():
         # Force a shutdown at any other time, even "idle" time.
         # Exception: do not call g.app.forceShutdown in a "start2" hook.
         g.pr(__doc__)
-        leoPlugins.registerHandler("idle",forceLeoToQuit)
+        g.app.pluginsController.registerHandler("idle",forceLeoToQuit)
         g.plugin_signon(__name__)
 
     return ok

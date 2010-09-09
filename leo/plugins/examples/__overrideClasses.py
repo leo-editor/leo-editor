@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@-others

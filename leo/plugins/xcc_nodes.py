@@ -141,11 +141,6 @@
 # Here is what I have done in detail:
 # 
 # - Eliminated * imports:
-#     ``* imports`` are bad style in complex code.
-#     Replaced ``from leoPlugins import *`` by ``import leo.core.leoPlugins as leoPlugins``
-#     Replaced ``from leoGlobals import *`` by ``import leo.core.leoGlobals as g``
-#     Replaced ``from Tkinter import *`` by import Tkinter as Tk.
-#         Replaced Tk constants like END, FLAT, NW, etc. by 'end','flat','nw', etc.
 # 
 # - Created the module-level init function that registers all hooks.
 #   This is the recommended style: it shows in one place where all the hooks are.
@@ -201,11 +196,10 @@
 #@-<< what I did >>
 #@+<< imports >>
 #@+node:ekr.20060513122450.4: ** << imports >>
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 
-# from Tkinter import *
 import Tkinter as Tk
+
 from winsound import Beep as beep
 import traceback
 import os,sys,thread,threading,time,string,re
@@ -327,7 +321,7 @@ def init ():
     )
 
     for hook,f in data:
-        leoPlugins.registerHandler(hook,f)
+        g.app.pluginsController.registerHandler(hook,f)
         g.plugin_signon(__name__)
 
     return True

@@ -74,14 +74,12 @@ __version__ = '0.9'
 #@+<< imports >>
 #@+node:ekr.20080201143145.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import sys
 
-import_ok = True
-
 try:
     import IPython.ipapi
+    import_ok = True
 except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
@@ -114,7 +112,7 @@ def init ():
     if ok:
 
         # Call onCreate after the commander and the key handler exist.
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

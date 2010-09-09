@@ -24,7 +24,6 @@ __version__ = "0.4"
 #@+<< imports >>
 #@+node:ekr.20071004090250.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -75,7 +74,7 @@ def init():
     if not Gato_ok:
         g.es('graphed: Gato import failed, functions reduced',color='red')
 
-    leoPlugins.registerHandler('after-create-leo-frame', onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
 
     return True

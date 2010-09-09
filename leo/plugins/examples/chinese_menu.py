@@ -24,7 +24,6 @@ Translate a few menu items into Simplified Chinese
 # Note 2 (EKR):  The menu names themselves did not translate on my XP machine.
 # All the headlines appear as "??".
 
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 
 #@+others
@@ -215,7 +214,7 @@ def onMenu (tag,keywords):
 if not g.app.unitTesting: # Unpleasant for unit testing.
 
     # Register the handlers...
-    leoPlugins.registerHandler("menu2", onMenu)
+    g.app.pluginsController.registerHandler("menu2", onMenu)
 
     __version__ = "1.1" # Set version for the plugin handler.
     g.plugin_signon(__name__)

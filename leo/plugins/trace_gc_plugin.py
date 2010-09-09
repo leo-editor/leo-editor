@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.3"
 
@@ -22,11 +21,11 @@ def init():
     if ok: # Register the handlers...
 
         if 1: # Very effective.
-            leoPlugins.registerHandler("idle", printIdleGC)
+            g.app.pluginsController.registerHandler("idle", printIdleGC)
         else: # Very precise.
-            leoPlugins.registerHandler("all", printIdleGC)
+            g.app.pluginsController.registerHandler("all", printIdleGC)
         if 0: # Another idea.
-            leoPlugins.registerHandler("command2", printIdleRefs)
+            g.app.pluginsController.registerHandler("command2", printIdleRefs)
 
         g.plugin_signon(__name__)
 

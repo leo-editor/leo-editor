@@ -15,7 +15,6 @@ See the documentation for @openwith nodes in leoSettings.leo for details.
 #@+<< imports >>
 #@+node:ekr.20050101090207.8: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -58,9 +57,9 @@ def init():
 
     g.app.hasOpenWithMenu = True
     g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
-    leoPlugins.registerHandler("idle", on_idle)
-    # leoPlugins.registerHandler(('new','open2'), create_open_with_menu)
-    leoPlugins.registerHandler('menu2', create_open_with_menu)
+    g.app.pluginsController.registerHandler("idle", on_idle)
+    # g.app.pluginsController.registerHandler(('new','open2'), create_open_with_menu)
+    g.app.pluginsController.registerHandler('menu2', create_open_with_menu)
     g.plugin_signon(__name__)
 
     return True

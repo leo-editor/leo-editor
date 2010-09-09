@@ -24,6 +24,7 @@ __version__ = '0.1'
 #@+node:ville.20090310191936.13: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+    # Uses leoPlugins.TryNext.
 
 # Whatever other imports your plugins uses.
 #@-<< imports >>

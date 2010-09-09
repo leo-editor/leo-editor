@@ -36,8 +36,6 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-import leo.core.leoPlugins as leoPlugins
-
 # Whatever other imports your plugins uses.
 #@-<< imports >>
 

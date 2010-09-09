@@ -35,7 +35,6 @@ you may need to modify it depending on your system.
 #@+<< imports >>
 #@+node:danr7.20060902083957.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if g.isPython3:
     import configparser as ConfigParser
@@ -52,7 +51,7 @@ __version__ = "1.0"
 def init():
 
     # Ok for unit testing: creates menu.
-    leoPlugins.registerHandler("create-optional-menus",createExportMenu)
+    g.app.pluginsController.registerHandler("create-optional-menus",createExportMenu)
     g.plugin_signon(__name__)
     return True
 #@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)

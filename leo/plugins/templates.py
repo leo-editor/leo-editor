@@ -50,8 +50,6 @@ __version__ = ".5"
 #@-<<version history>>
 #@+<<imports>>
 #@+node:ekr.20041022165647: ** << imports >>
-import leo.core.leoNodes as leoNodes 
-import leo.core.leoPlugins as leoPlugins 
 import leo.core.leoGlobals as g
 
 import weakref 
@@ -82,9 +80,9 @@ def init ():
 
     if ok:
         initImages()
-        leoPlugins.registerHandler("after-create-leo-frame",addButtons)
-        leoPlugins.registerHandler("after-redraw-outline",drawImages)
-        leoPlugins.registerHandler(("new","open2"),scanForTemplates)
+        g.app.pluginsController.registerHandler("after-create-leo-frame",addButtons)
+        g.app.pluginsController.registerHandler("after-redraw-outline",drawImages)
+        g.app.pluginsController.registerHandler(("new","open2"),scanForTemplates)
         g.plugin_signon(__name__)
 
     return ok

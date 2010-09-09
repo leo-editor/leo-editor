@@ -36,10 +36,8 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-import leo.core.leoPlugins as leoPlugins
 from leo.core import leoNodes
-
-
+    # Uses leoNodes.posList.
 
 from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore
@@ -58,7 +56,7 @@ def init ():
 
     if ok:
 
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

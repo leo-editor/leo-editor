@@ -16,7 +16,7 @@ For the @text and @expfolder nodes to interact correctly, the textnode plugin mu
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import os
 import os.path
 
@@ -35,7 +35,7 @@ textexts = []
 #@+node:ajones.20070122154835: ** init
 def init():
     g.plugin_signon(__name__)
-    leoPlugins.registerHandler("icondclick1", on_icondclick)
+    g.app.pluginsController.registerHandler("icondclick1", on_icondclick)
 
     fileName = os.path.join(g.app.loadDir,"../","plugins","expfolder.ini")
     config = ConfigParser.ConfigParser()

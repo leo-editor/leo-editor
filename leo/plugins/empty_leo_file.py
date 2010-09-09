@@ -6,7 +6,7 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import os
 
 #@+<< define minimal .leo file >>
@@ -30,7 +30,7 @@ def init():
     # Ok for unit testing.  Only rewrites empty files.
 
     # Register the handlers...
-    leoPlugins.registerHandler("open1", onOpen)
+    g.app.pluginsController.registerHandler("open1", onOpen)
 
     __version__ = "1.2"
     g.plugin_signon(__name__)

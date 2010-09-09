@@ -11,7 +11,7 @@ Example client::
 
 
     addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
-    print "will connect to",addr
+    print("will connect to",addr)
     pc  = lproto.LProtoClient(addr)
     pc.send("""
 
@@ -40,7 +40,7 @@ __version__ = '0.0'
 #@+<< imports >>
 #@+node:ville.20091009202416.10043: ** << imports >>
 import leo.core.leoGlobals as g
-from leo.core import leoPlugins 
+
 from leo.external import lproto
 import os, sys, tempfile
 
@@ -59,7 +59,7 @@ def init ():
 
 
     if ok:
-        #leoPlugins.registerHandler('start2',onStart2)
+        #g.app.pluginsController.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
     #serve_thread()

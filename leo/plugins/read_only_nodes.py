@@ -56,9 +56,7 @@ Davide Salomoni
 
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>
-
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if g.isPython3:
     import io
@@ -114,13 +112,13 @@ def init ():
 
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            leoPlugins.registerHandler(('new','open2'), on_open)
-            leoPlugins.registerHandler("bodykey1", on_bodykey1)
-            leoPlugins.registerHandler("headkey2", on_headkey2)
+            g.app.pluginsController.registerHandler(('new','open2'), on_open)
+            g.app.pluginsController.registerHandler("bodykey1", on_bodykey1)
+            g.app.pluginsController.registerHandler("headkey2", on_headkey2)
 
             if 0: # doesn't work: the cursor stops blinking.
-                leoPlugins.registerHandler("select1", on_select1)
-                leoPlugins.registerHandler("select2", on_select2)
+                g.app.pluginsController.registerHandler("select1", on_select1)
+                g.app.pluginsController.registerHandler("select2", on_select2)
 
             g.plugin_signon(__name__)
 

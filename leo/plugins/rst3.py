@@ -50,7 +50,6 @@ __version__ = '1.23'
 #@+<< imports >>
 #@+node:ekr.20050805162550.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
 if g.isPython3:
@@ -194,7 +193,7 @@ def init ():
     ok = docutils is not None # Ok for unit testing.
 
     if ok:
-        leoPlugins.registerHandler('after-create-leo-frame', onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
         s = 'rst3 plugin not loaded: can not load docutils'

@@ -27,10 +27,6 @@ Feedback on this plugin can be sent to::
 #@+<< imports >>
 #@+node:ekr.20050301083306.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-
-# import leo.core.leoImport as leoImport
-# import leo.core.leoCommands as leoCommands
 
 tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
 
@@ -77,7 +73,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler(("new2","open2"), onCreate)
+        g.app.pluginsController.registerHandler(("new2","open2"), onCreate)
         g.plugin_signon(__name__)
 
     return ok

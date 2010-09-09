@@ -74,14 +74,13 @@ __version__ = "1.8"
 # 1.3 EKR: Changed 'new_c' logic to 'c' logic.
 # 1.4 EKR: Replaced tree.begin/endUpdate by c.beginEndUpdate.
 # 1.5 EKR: Added event param to parameterize.
-# 1.6 EKR: imported leoNodes and changed tnode to leoNodes.tnode.
+# 1.6 EKR: imported leoNodes.
 # 1.7 Rich Ries: improved the docstring.
 # 1.8 EKR: Add the menu only for the tkinter gui.
 #@-<< version history >>
 
 import leo.core.leoGlobals as g
-# import leo.core.leoNodes as leoNodes
-import leo.core.leoPlugins as leoPlugins
+
 import re
 
 #@+others
@@ -89,7 +88,7 @@ import re
 def init ():
 
     # Ok for unit testing: adds command to Outline menu.
-    leoPlugins.registerHandler( ('new','open2') ,onCreate)
+    g.app.pluginsController.registerHandler( ('new','open2') ,onCreate)
     g.plugin_signon(__name__)
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag,keywords):
@@ -156,14 +155,12 @@ class paramClass:
             return
 
         bodys = node.b
-        # tn = leoNodes.tnode(bodys,sr)
         v = current.insertAsNthChild(0) #,tn)
         v.setBodyString(bodys)
         v.setHeadString(sr)
         for z in range(0,len(sections)):
             head = g.angleBrackets(str(z+1)+"$")
             bod = sections [z]
-            # t = leoNodes.tnode(bod,head)
             v.insertAsNthChild(0) #,t)
             v.setBodyString(bod)
             v.setHeadString(head)

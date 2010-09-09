@@ -34,7 +34,6 @@ All created sections are alphabetically ordered.
 #@+<< imports >>
 #@+node:ekr.20050111085909: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
 #@-<< imports >>
@@ -63,7 +62,7 @@ def init ():
             g.app.createTkGui(__file__)
 
         if g.app.gui.guiName() == "tkinter":
-            leoPlugins.registerHandler(('new','open2'),create_import_cisco_menu)
+            g.app.pluginsController.registerHandler(('new','open2'),create_import_cisco_menu)
             g.plugin_signon(__name__)
 
     return ok

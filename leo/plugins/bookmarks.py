@@ -25,14 +25,14 @@ __version__ = "0.1"
 #@+<< imports >>
 #@+node:tbrown.20070322113635.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 #@-<< imports >>
 
 #@+others
 #@+node:ekr.20100128073941.5371: ** init
 def init():
 
-    leoPlugins.registerHandler("icondclick1", onDClick1)
+    g.app.pluginsController.registerHandler("icondclick1", onDClick1)
 
     g.plugin_signon(__name__)
 

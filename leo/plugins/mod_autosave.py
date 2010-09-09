@@ -20,7 +20,7 @@ This plugin is active only if::
 #@+<< imports >>
 #@+node:ekr.20060108123141: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import os
 import time
 #@-<< imports >>
@@ -53,7 +53,7 @@ def init ():
 
     if ok:
         # Register the handlers...
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon( __name__ )
 
     return ok
@@ -79,7 +79,7 @@ def onCreate(tag, keywords):
         gDict[c.hash()] = d
         g.es("auto save enabled every %s sec." % (
             interval),color="orange")
-        leoPlugins.registerHandler('idle',onIdle)
+        g.app.pluginsController.registerHandler('idle',onIdle)
         g.enableIdleTimeHook()
     else:
          g.es("@bool mod_autosave_active=False",color='orange')

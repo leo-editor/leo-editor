@@ -125,7 +125,6 @@ Leo.
 #@+<< imports >>
 #@+node:tbrown.20100226095909.12779: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import subprocess
 import os
@@ -153,7 +152,7 @@ __version__ = "0.1"
 #@+node:tbrown.20100226095909.12781: ** init
 def init():
     """Leo plugin init. function"""
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
 
     g.plugin_signon(__name__)
 

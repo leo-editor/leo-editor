@@ -31,7 +31,7 @@ the Edit menu directly under the existing Paste option.
 #@+<< imports >>
 #@+node:danr7.20060912105041.4: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 #@-<< imports >>
 
 __version__ = "1.1"
@@ -40,7 +40,7 @@ __version__ = "1.1"
 #@+node:ekr.20100128073941.5377: ** init
 def init():
 
-    leoPlugins.registerHandler("create-optional-menus",
+    g.app.pluginsController.registerHandler("create-optional-menus",
         createPasteAsHeadlinesMenu)
 
     g.plugin_signon(__name__)

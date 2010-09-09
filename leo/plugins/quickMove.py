@@ -106,8 +106,9 @@ __version__ = '0.7'
 import types
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 from mod_scripting import scriptingController
+
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items
     from PyQt4 import QtGui, QtCore
@@ -117,7 +118,7 @@ if g.app.gui.guiName() == "qt":
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
-    leoPlugins.registerHandler('after-create-leo-frame', onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 

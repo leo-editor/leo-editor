@@ -115,7 +115,7 @@ plugins, here are some points of interest:
 import leo.core.leoGlobals as g
 import re
 if g.app.gui.guiName() == "qt":
-    import leo.core.leoPlugins as leoPlugins
+
     import os
 
     from PyQt4 import QtCore, QtGui
@@ -140,7 +140,7 @@ def init():
         print('attrib_edit.py plugin not loading because gui is not Qt')
         return False
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:tbrown.20091009210724.10976: ** onCreate
@@ -588,7 +588,7 @@ class attrib_edit_Controller:
         ]
 
         for i in self.handlers:
-            leoPlugins.registerHandler(i[0], i[1])
+            g.app.pluginsController.registerHandler(i[0], i[1])
 
         # 'body' or 'tab' mode
         self.guiMode = c.config.getString('attrib_edit_placement') or 'body'
@@ -608,7 +608,7 @@ class attrib_edit_Controller:
     #@+node:tbrown.20091009210724.10983: *3* __del__
     def __del__(self):
         for i in self.handlers:
-            leoPlugins.unregisterHandler(i[0], i[1])
+            g.app.pluginsController.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20091009210724.11210: *3* initForm
     def initForm(self):
         """set up self.form, the blank form layout before adding edit widgets"""

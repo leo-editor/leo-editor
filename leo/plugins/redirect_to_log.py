@@ -6,13 +6,13 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 __version__ = "1.3"
 
 def init():
     ok = not g.app.unitTesting # Not for unit tests.
     if ok: # Register the handlers...
-        leoPlugins.registerHandler("start2", onStart)
+        g.app.pluginsController.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
     return ok
 

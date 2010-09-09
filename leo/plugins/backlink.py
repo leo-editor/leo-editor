@@ -34,11 +34,6 @@ __version__ = '0.1.1'
 # 0.1.1 - both UIs work - TNB
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-
-# can this happen?
-# if g.app.gui is None:
-#     g.app.createTkGui(__file__)
 
 Tk = None
 Qt = None
@@ -265,7 +260,7 @@ elif g.app.gui.guiName() == "qt":
 #@+node:ekr.20090616105756.3940: ** init
 def init ():
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
 
@@ -296,9 +291,9 @@ class backlinkController(object):
         elif Qt:
             self.ui = backlinkQtUI(self)
 
-        leoPlugins.registerHandler('select3', self.updateTab)
+        g.app.pluginsController.registerHandler('select3', self.updateTab)
 
-        leoPlugins.registerHandler('open2', self.loadLinks)
+        g.app.pluginsController.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
     #@+node:tbrown.20091005145931.5227: *3* fixIDs

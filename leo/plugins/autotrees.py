@@ -69,7 +69,7 @@ __plugin_group__ = "Helpers"
 #@+<< imports >>
 #@+node:ekr.20050329082101.117: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import re
 import sys
 import glob
@@ -130,9 +130,9 @@ def init():
 
         if ok:
             if 0: # Use this if you want to create the commander class before the frame is fully created.
-                leoPlugins.registerHandler('before-create-leo-frame',onCreate)
+                g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
             else: # Use this if you want to create the commander class after the frame is fully created.
-                leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+                g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
         else:
             g.es("autotrees requires Tkinter",color='blue')
@@ -226,8 +226,8 @@ class pluginController:
         """Initialise the commander"""
         self.c = c
         # Register handlers
-        leoPlugins.registerHandler("icondclick1", self.onIconDoubleClick)  
-        leoPlugins.registerHandler("headclick1", self.onHeadlineClick)  
+        g.app.pluginsController.registerHandler("icondclick1", self.onIconDoubleClick)  
+        g.app.pluginsController.registerHandler("headclick1", self.onHeadlineClick)  
         #
         # Prepare regular expressions
         self.getdetails = re.compile(r"@(\w+)-(\w+)\s+(.*)")

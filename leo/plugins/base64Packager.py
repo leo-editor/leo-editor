@@ -30,9 +30,8 @@ in the future.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050307134613.1: ** << imports >>
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
-# import leo.core.leoNodes as leoNodes
+
 import os.path
 import base64
 import weakref
@@ -123,11 +122,9 @@ def base64Import( c ):
 
             %s 
                 '''% ( "killcolor", size, ltime, pload)
-        # tnode = leoNodes.tnode( body, "%s %s" % ( b64, name ) )
         npos = pos.insertAfter() #  tnode )
         npos.setBodyString(body)
         npos.setHeadString("%s %s" % ( b64, name ))
-        # payload = leoNodes.tnode( b64_data, pload)
         p = npos.insertAsNthChild(0) # , payload)
         p.setBodyString(b64_data)
         p.setHeadString(pload)
@@ -143,7 +140,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler('menu2', addMenu)
+        g.app.pluginsController.registerHandler('menu2', addMenu)
         g.plugin_signon( __name__ )   
 
     return ok

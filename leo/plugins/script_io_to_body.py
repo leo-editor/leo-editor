@@ -10,7 +10,6 @@ __version__ = "1.5"
 #@+<< imports >>
 #@+node:ekr.20050101090207.4: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
@@ -35,7 +34,7 @@ def init():
 
     if g.app.gui.guiName() != "tkinter": return False
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
 
     g.plugin_signon(__name__)
 

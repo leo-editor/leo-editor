@@ -9,9 +9,7 @@
 
 #@+<< imports >>
 #@+node:ekr.20050111115429: ** << imports >>
-
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import glob
 import os
@@ -81,6 +79,6 @@ def createScriptsMenu (tag,keywords):
 #@-others
 
 if 1: # Ok for unit testing: creates menu.
-    leoPlugins.registerHandler("create-optional-menus",createScriptsMenu)
+    g.app.pluginsController.registerHandler("create-optional-menus",createScriptsMenu)
     g.plugin_signon(__name__)
 #@-leo

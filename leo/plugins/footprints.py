@@ -27,7 +27,6 @@ __plugin_name__ = "Footprints"
 #@+<< imports >>
 #@+node:pap.20041020001240.2: ** << imports >>
 import leo.core.leoGlobals as g 
-import leo.core.leoPlugins as leoPlugins 
 
 import leo.plugins.tkGui as tkGui
 leoTkinterTree = tkGui.leoTkinterTree
@@ -77,8 +76,8 @@ def init ():
             coloured_nodes = set() 
             applyConfiguration(getConfiguration()) 
             # 
-            leoPlugins.registerHandler("start2", installDrawMethod) 
-            leoPlugins.registerHandler("headclick1", storeHeadlineClick) 
+            g.app.pluginsController.registerHandler("start2", installDrawMethod) 
+            g.app.pluginsController.registerHandler("headclick1", storeHeadlineClick) 
             g.plugin_signon(__name__)
 
     return ok

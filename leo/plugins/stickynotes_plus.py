@@ -21,7 +21,6 @@ __version__ = '0.0'
 #@+<< imports >>
 #@+node:ekr.20100103100944.5391: ** << imports >>
 import leo.core.leoGlobals as g
-from leo.core import leoPlugins
 
 # Whatever other imports your plugins uses.
 
@@ -69,7 +68,7 @@ def init ():
     ok = True
 
     if ok:
-        #leoPlugins.registerHandler('start2',onStart2)
+        #g.app.pluginsController.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
     g.app.stickynotes = {}    

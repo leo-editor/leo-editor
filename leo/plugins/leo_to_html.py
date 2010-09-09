@@ -182,7 +182,6 @@ In particular, the default export path, "c:\" must be changed for *nix systems.
 #@+<< imports >>
 #@+node:danr7.20060902215215.4: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if g.isPython3:
     import configparser as ConfigParser
@@ -207,8 +206,8 @@ def init ():
     Hooks create-optional-menus and after-create-leo-frame.
 
     """
-    leoPlugins.registerHandler("create-optional-menus",createExportMenus)
-    leoPlugins.registerHandler('after-create-leo-frame', onCreate)
+    g.app.pluginsController.registerHandler("create-optional-menus",createExportMenus)
+    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     # I think this should be ok for unit testing.
     return True

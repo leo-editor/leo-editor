@@ -28,7 +28,9 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@+<< imports >>
 #@+node:ekr.20070119094733.2: ** <<imports>>
 import leo.core.leoPlugins as leoPlugins
+    # Uses baseLeoPlugin.
 from leo.core.leoPlugins import baseLeoPlugin
+
 import doctest
 import os
 import leo.core.leoGlobals as g
@@ -48,7 +50,7 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20070119094733.5: ** init
 def init ():
 
-    leoPlugins.registerHandler('after-create-leo-frame', DT)
+    g.app.pluginsController.registerHandler('after-create-leo-frame', DT)
     g.plugin_signon(__name__)
 
     return True

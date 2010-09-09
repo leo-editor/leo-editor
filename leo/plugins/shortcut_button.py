@@ -88,7 +88,6 @@ The following minibuffer commands are provided::
 #@+<< imports >>
 #@+node:ekr.20060601151845.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import mod_scripting
 
@@ -131,7 +130,7 @@ def init ():
         if ok:
             # Note: call onCreate _after_ reading the .leo file.
             # That is, the 'after-create-leo-frame' hook is too early!
-            leoPlugins.registerHandler(('new','open2'),onCreate)
+            g.app.pluginsController.registerHandler(('new','open2'),onCreate)
             g.plugin_signon(__name__)
 
 

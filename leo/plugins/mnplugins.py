@@ -22,7 +22,6 @@ insertUser : Shift-F6
 #@+<< imports >>
 #@+node:ekr.20050101090717.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import leo.core.leoCommands as leoCommands
 import time
@@ -46,9 +45,9 @@ def init():
             g.app.createTkGui(__file__)
 
         if g.app.gui.guiName() == "tkinter":
-            leoPlugins.registerHandler("start1", onStart)
-            leoPlugins.registerHandler("create-optional-menus",create_UserMenu)
-            leoPlugins.registerHandler("iconrclick2", onRclick)
+            g.app.pluginsController.registerHandler("start1", onStart)
+            g.app.pluginsController.registerHandler("create-optional-menus",create_UserMenu)
+            g.app.pluginsController.registerHandler("iconrclick2", onRclick)
             g.plugin_signon(__name__)
             g.es('mnplug OK+Commands+Menu aktiv',color='green')
 

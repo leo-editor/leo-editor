@@ -87,7 +87,6 @@ USE_FIXED_SIZES = 1
 #@+<< imports >>
 #@+node:pap.20051010170720.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import os
 import glob
@@ -114,7 +113,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon("newButtons")
 
     return ok

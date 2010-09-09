@@ -54,10 +54,8 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-import leo.core.leoPlugins as leoPlugins
 from PyQt4 import QtCore
 import subprocess, os
-
 
 # Whatever other imports your plugins uses.
 #@-<< imports >>
@@ -294,7 +292,7 @@ def install_handlers():
         nextclone_rclick, marknodes_rclick,
         configuredcommands_rclick, deletenodes_rclick]
     g.tree_popup_handlers.extend(hnd)
-    leoPlugins.registerHandler("idle", editnode_on_idle)
+    g.app.pluginsController.registerHandler("idle", editnode_on_idle)
 
     # just for kicks, the @commands
 

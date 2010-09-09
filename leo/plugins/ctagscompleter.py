@@ -38,7 +38,6 @@ __version__ = '0.2'
 #@+<< imports >>
 #@+node:ville.20090317180704.10: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 from PyQt4.QtGui import QCompleter
 from PyQt4 import QtCore
@@ -80,7 +79,7 @@ def init ():
                 ok = False
 
         if ok:
-            leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+            g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
 
     return ok

@@ -7,7 +7,6 @@
 
 # By Paul Paterson.
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import time
 
@@ -18,7 +17,7 @@ __version__ = "0.1"
 def init():
 
     # Register the handlers...
-    leoPlugins.registerHandler("command1", timestamp)
+    g.app.pluginsController.registerHandler("command1", timestamp)
 
     g.plugin_signon(__name__)
 

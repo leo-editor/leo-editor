@@ -14,7 +14,6 @@
 #@+<< imports >>
 #@+node:ekr.20050101090207.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -59,8 +58,8 @@ def init ():
     # g.pr('image.init')
 
     if ok:
-        leoPlugins.registerHandler("select2", onSelect)
-        leoPlugins.registerHandler("unselect1", onUnselect)
+        g.app.pluginsController.registerHandler("select2", onSelect)
+        g.app.pluginsController.registerHandler("unselect1", onUnselect)
         g.plugin_signon(__name__)
 
     return ok

@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.2" # Set version for the plugin handler.
 
@@ -19,7 +18,7 @@ def init():
     if ok:
 
         # Register the handlers...
-        leoPlugins.registerHandler("start2", onStart)
+        g.app.pluginsController.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
 
     return ok

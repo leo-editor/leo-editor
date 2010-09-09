@@ -60,7 +60,6 @@ __version__ = '0.2'
 #@+<< imports >>
 #@+node:dan.20090203174248.29: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import mailcap
 import mimetypes
@@ -101,7 +100,7 @@ def init ():
         #print('mime.py enabled')
 
         # Open on double click
-        leoPlugins.registerHandler('icondclick1', open_mimetype)
+        g.app.pluginsController.registerHandler('icondclick1', open_mimetype)
 
         g.plugin_signon(__name__)
 

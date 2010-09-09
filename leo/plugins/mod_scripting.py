@@ -119,7 +119,6 @@ will set sys.argv to [u'a',u'b',u'c']
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGui as leoGui
 
 # May be set in init
@@ -172,7 +171,7 @@ def init ():
 
         # Note: call onCreate _after_ reading the .leo file.
         # That is, the 'after-create-leo-frame' hook is too early!
-        leoPlugins.registerHandler(('new','open2'),onCreate)
+        g.app.pluginsController.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
 
     return ok

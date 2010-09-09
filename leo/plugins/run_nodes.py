@@ -62,12 +62,10 @@ __version__ = "0.15"
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-
 
 import os
 import string
-# import sys
+
 if g.isPython3:
     import threading
 else:
@@ -105,10 +103,10 @@ OwnIdleHook = False
 def init ():
 
     if 1: # Ok for unit testing.
-        leoPlugins.registerHandler("bodykey2",OnBodyKey)
-        leoPlugins.registerHandler("icondclick2",OnIconDoubleClick)
-        leoPlugins.registerHandler("end1",OnQuit)
-        leoPlugins.registerHandler("idle",OnIdle)
+        g.app.pluginsController.registerHandler("bodykey2",OnBodyKey)
+        g.app.pluginsController.registerHandler("icondclick2",OnIconDoubleClick)
+        g.app.pluginsController.registerHandler("end1",OnQuit)
+        g.app.pluginsController.registerHandler("idle",OnIdle)
         g.plugin_signon(__name__)
 
     return True

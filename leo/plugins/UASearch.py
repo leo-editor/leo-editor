@@ -29,16 +29,12 @@ __version__ = ".4"
 #@+<< imports >>
 #@+node:ekr.20040915075530.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
-# import leo.plugins.tkGui as tkGui
-# leoTkinterFrame = tkGui.leoTkinterFrame
-
-Tk        = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
-Pmw       = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
+Tk  = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
+Pmw = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 
 import re
-# import weakref
+
 #@-<< imports >>
 
 #@+others
@@ -53,7 +49,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler(('new','open2'),addPMenu)
+        g.app.pluginsController.registerHandler(('new','open2'),addPMenu)
         g.plugin_signon( __name__ )
 
     return ok
@@ -140,12 +136,5 @@ def search( name, value, stype, c ):
                             return found(cv,name)
             cv = cv.threadNext()
     note ("not found: " + name)
-#@+node:ekr.20040915075530.5: ** getV
-# def getT( node ):
-
-    # if str( node.__class__ )== 'leoNodes.vnode':
-        # return node
-    # else:
-        # return node.v
 #@-others
 #@-leo

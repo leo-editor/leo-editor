@@ -5,7 +5,7 @@ __version__ = '0.1'
 # 0.1 - initial release - TNB
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 from math import atan2, sin, cos
 
 g.assertUi('qt')
@@ -17,7 +17,7 @@ def init ():
     if g.app.gui.guiName() != "qt":
         return False
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
 
@@ -152,11 +152,11 @@ class graphcanvasController(object):
         self.c.graphcanvasController = self
         self.ui = graphcanvasUI(self)
 
-        leoPlugins.registerHandler('headkey2', lambda a,b: self.update())
+        g.app.pluginsController.registerHandler('headkey2', lambda a,b: self.update())
 
         self.initIvars()
 
-        # leoPlugins.registerHandler('open2', self.loadLinks)
+        # g.app.pluginsController.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
         # self.loadLinksInt()
     def initIvars(self):

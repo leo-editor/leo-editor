@@ -78,7 +78,6 @@ Some names defined at the top level have special significance.
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if g.isPython3:
     pass
@@ -237,7 +236,7 @@ def init ():
     if g.app.gui.guiName() not in ("tkinter",'qt'):
         return False
 
-    leoPlugins.registerHandler("create-optional-menus",createPluginsMenu)
+    g.app.pluginsController.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
 
     if g.app.gui.guiName() == 'tkinter':

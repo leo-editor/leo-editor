@@ -19,7 +19,6 @@ __version__ = '0.1'
 #@+<< imports >>
 #@+node:ekr.20060621123339.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if 0:
     Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)
@@ -38,8 +37,8 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        # leoPlugins.registerHandler('after-create-leo-frame',onCreate)
-        leoPlugins.registerHandler(('new','open2'),onCreate)
+        # g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler(('new','open2'),onCreate)
 
     return ok
 #@+node:ekr.20060621123339.5: ** onCreate

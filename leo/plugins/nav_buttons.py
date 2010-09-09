@@ -86,7 +86,6 @@ rClick menu generator commands
 #@+<< imports >>
 #@+node:ekr.20050219114353: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if g.app.gui.guiName() == 'tkinter':
 
@@ -123,7 +122,7 @@ __version__ = "1.15" # EKR: Don't touch this code without my permission!
 # 1.4 EKR: 2 bug fixes
 # - Allways fill the box when clicking on the 'Recent' button.
 # - Use keywords.get('c') NOT self.c in hook handlers.  They may not be the same!
-# - This is actually a bug in leoPlugins.registerHandler, but it can't be
+# - This is actually a bug in registerHandler, but it can't be
 # fixed because there is no way to associate commanders with hook handlers.
 # 1.5 EKR: Fixed crasher in tkinterListBoxDialog.go().
 # updateMarks must set positionList ivar in the base class.
@@ -171,7 +170,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok
@@ -183,7 +182,7 @@ def onCreate (tag,keywords):
         return
 
     c = keywords.get("c")
-    r = leoPlugins.registerHandler
+    r = g.app.pluginsController.registerHandler
 
     images = imageClass()
 

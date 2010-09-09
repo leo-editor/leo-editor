@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@+node:edream.110203113231.920: ** onCommand
@@ -20,7 +19,7 @@ def onCommand (tag,keywords):
 if not g.app.unitTesting: # Not for unit testing: overrides core methods.
 
     # Register the handlers...
-    leoPlugins.registerHandler("command1", onCommand)
+    g.app.pluginsController.registerHandler("command1", onCommand)
 
     __version__ = "1.2"
     g.plugin_signon(__name__)

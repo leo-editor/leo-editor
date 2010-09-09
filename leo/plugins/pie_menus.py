@@ -10,7 +10,6 @@ __version__ = ".29"
 #@+<< pie_menus imports >>
 #@+node:ekr.20040828122150.1: ** << pie_menus imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.tkGui as tkGui
 leoTkinterTree  = tkGui.leoTkinterTree

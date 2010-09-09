@@ -1031,7 +1031,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -1107,7 +1107,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100205223124.5377"><vh>Syntax checking</vh>
+<v t="ekr.20100205223124.5377" a="E"><vh>Syntax checking</vh>
 <v t="ekr.20040712101813"><vh>@@test c.checkAllPythonCode</vh></v>
 <v t="ekr.20100205231441.5386"><vh>@test at.checkPythonSyntax</vh></v>
 <v t="ekr.20100205233116.5387"><vh>@test at.tabNannyNode</vh></v>
@@ -22953,6 +22953,7 @@ passList = (
     'quicksearch','redirect_to_log','rClickBasePluginClasses',
     'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
     'rst3',
+    'screenshots',
     'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
     'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
     'vim','xemacs',

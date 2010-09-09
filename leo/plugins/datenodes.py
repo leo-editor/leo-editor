@@ -72,7 +72,6 @@ __version__ = "0.7"
 #@+<< imports >>
 #@+node:gfunch.20041207100416.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import calendar
 import codecs
@@ -84,7 +83,7 @@ import datetime
 def init():
     if 1: # OK for unit testing.
 
-        leoPlugins.registerHandler("after-create-leo-frame", on_create)
+        g.app.pluginsController.registerHandler("after-create-leo-frame", on_create)
         g.plugin_signon(__name__)
 
         return True

@@ -111,10 +111,11 @@ numeric markers on a screenshot::
 """
 #@-<< docstring >>
 
+__version__ = '0.1'
+
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import copy
 import os
@@ -146,7 +147,7 @@ def init ():
     ok = got_qt
 
     if ok:
-        # leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

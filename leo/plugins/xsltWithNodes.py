@@ -24,8 +24,7 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 #@+<< imports >>
 #@+node:mork.20041025113509: ** << imports >>
 import leo.core.leoGlobals as g
-# import leo.core.leoNodes as leoNodes
-import leo.core.leoPlugins as leoPlugins
+
 from xml.dom import minidom
 
 if g.isPython3:
@@ -104,7 +103,7 @@ def init():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler(('open2',"new"),addMenu)
+        g.app.pluginsController.registerHandler(('open2',"new"),addMenu)
         g.plugin_signon(__name__)
 
     return ok
@@ -184,7 +183,6 @@ def processDocumentNode( c ):
         xmlsource = InputSource.DefaultFactory.fromString( xIO, uri = xhead ) 
         result = proc.run( xmlsource )
         nhline = "xsl:transform of " + str( xmlnode.headString )
-        # tnode = leoNodes.tnode( result, nhline )
         p2 = pos.insertAfter() # tnode )
         p2.setBodyString(result)
         p2.setHeadString(nhline)
@@ -206,7 +204,6 @@ def addXSLTNode (c):
 <xsl:transform xmlns:xsl="http:///www.w3.org/1999/XSL/Transform" version="1.0">    
 </xsl:transform>'''
 
-    # tnode = leoNodes.tnode(body,"xslt stylesheet")
     p2 = pos.insertAfter() # tnode)
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
@@ -369,8 +366,7 @@ else:
 import Tkinter as Tk
 import tktable as tktab
 import leo.core.leoGlobals as g
-from leoPlugins import *
-import leo.core.leoNodes as leoNodes
+
 import csv
 import weakref
 import Pmw
@@ -491,7 +487,6 @@ def addMenu( tag, keywords ):
     cS.seek( 0 )
 
     if not save:
-        # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.h ) )
         p2 = pos.insertAfter() #  tnd )
         p2.setBodyString(cS.getvalue())
         p2.setHeadString("Save of Edited " + str( pos.h))
@@ -565,7 +560,6 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041017105444">def newTable( c ):
 
-    # tnd = leoNodes.tnode( "", "New Table" )
     pos = c.p
     npos = pos.insertAfter() # tnd )
     npos.setHeadString('New Table')

@@ -38,7 +38,6 @@ import leo.core.leoGlobals as g
 
 import leo.core.leoAtFile as leoAtFile
 import leo.core.leoCommands as leoCommands
-import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.tkGui as tkGui
 leoTkinterDialog = tkGui.leoTkinterDialog
@@ -96,7 +95,7 @@ def init ():
             g.app.createTkGui(__file__)
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            leoPlugins.registerHandler('before-create-leo-frame',onCreate)
+            g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
 
     return ok
@@ -112,7 +111,7 @@ def onCreate (tag,keywords):
     # EKR: Add an ivar to the commander for use by atFile.
     c.mod_label_controller = controller
 
-    leoPlugins.registerHandler("create-optional-menus",controller.onCreateOptionalMenus)
+    g.app.pluginsController.registerHandler("create-optional-menus",controller.onCreateOptionalMenus)
 #@+node:ekr.20050301095332.3: ** class Pmw_combobox
 class Pmw_combobox:
 

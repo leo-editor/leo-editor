@@ -30,7 +30,7 @@ The Word Count... menu has a shortcut key of 'W'.
 #@+<< imports >>
 #@+node:danr7.20061010105952.4: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import tkMessageBox
 
 #@-<< imports >>
@@ -50,7 +50,7 @@ def init ():
         ok = g.app.gui.guiName() == "tkinter"
 
         if ok:
-            leoPlugins.registerHandler("create-optional-menus",createWordCountMenu)
+            g.app.pluginsController.registerHandler("create-optional-menus",createWordCountMenu)
             g.plugin_signon(__name__)
 
     return ok

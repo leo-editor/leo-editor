@@ -78,9 +78,6 @@ __version__ = "0.11"
 #@+<< imports >>
 #@+node:rogererens.20041014110709.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-
-#Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import os
 
@@ -102,10 +99,10 @@ def init ():
     #if g.app.gui is None:
     #    g.app.createTkGui(__file__)
 
-    leoPlugins.registerHandler(
+    g.app.pluginsController.registerHandler(
         "after-create-leo-frame", createStatusLine)
-    leoPlugins.registerHandler("select2", onSelect2) # show UNL
-    leoPlugins.registerHandler("@url1", onUrl1) # jump to URL or UNL
+    g.app.pluginsController.registerHandler("select2", onSelect2) # show UNL
+    g.app.pluginsController.registerHandler("@url1", onUrl1) # jump to URL or UNL
 
     g.plugin_signon(__name__)
     return True

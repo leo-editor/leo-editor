@@ -24,12 +24,12 @@ __plugin_requires__ = ["plugin_manager"]
 #@+<< imports >>
 #@+node:pap.20050605183206.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import re
 import sys
 import glob
 
-Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
 
 #@+<< version history >>
@@ -79,9 +79,9 @@ def init():
 
         if ok:
             if 0: # Use this if you want to create the commander class before the frame is fully created.
-                leoPlugins.registerHandler('before-create-leo-frame',onCreate)
+                g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
             else: # Use this if you want to create the commander class after the frame is fully created.
-                leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+                g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
         else:
             g.es("autotrees requires Tkinter",color='blue')

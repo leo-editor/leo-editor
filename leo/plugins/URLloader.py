@@ -24,14 +24,13 @@ __version__ = ".5"
 #@+<< imports >>
 #@+node:ekr.20040831115918.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk  = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
 Pmw = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 
 import os
 import urllib
-# import weakref
+
 #@-<< imports >>
 
 #@+others
@@ -47,7 +46,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler(('new','open2'), addURLPane)
+        g.app.pluginsController.registerHandler(('new','open2'), addURLPane)
         g.plugin_signon( __name__ )
 
     return ok

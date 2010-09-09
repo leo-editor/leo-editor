@@ -14,7 +14,7 @@ changes will appear in Leo. '''
 #@+<< imports >>
 #@+node:ekr.20050218024153: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import os
 import sys
 #@-<< imports >>
@@ -79,9 +79,9 @@ def init ():
         return False
 
     if useDoubleClick: # Open on double click
-        leoPlugins.registerHandler("icondclick2", open_in_emacs)
+        g.app.pluginsController.registerHandler("icondclick2", open_in_emacs)
     else: # Open on single click: interferes with dragging.
-        leoPlugins.registerHandler("iconclick2", open_in_emacs_return_true)
+        g.app.pluginsController.registerHandler("iconclick2", open_in_emacs_return_true)
 
     if g.app.unitTesting:
         os.system(_emacs_cmd)

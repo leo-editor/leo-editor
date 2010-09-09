@@ -33,16 +33,13 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 #@+<< imports >>
 #@+node:ekr.20040915085715: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-
-from leoNodes import *
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import os
 import threading
 import time
-# import weakref
+
 #@-<< imports >>
 __version__ = '.3'
 #@+<< version history >>
@@ -70,7 +67,7 @@ def init ():
 
     if ok: # Ok for unit testing: adds menu and new directive.
 
-        leoPlugins.registerHandler(('new','open2'),addMenu)
+        g.app.pluginsController.registerHandler(('new','open2'),addMenu)
         g.globalDirectiveList.append('produce')
         g.plugin_signon(__name__)
 

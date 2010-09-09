@@ -19,7 +19,6 @@ Otherwise the path is relative to the Leo file.
 
 __version__ = "1.4"
 
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 import os
 
@@ -59,7 +58,7 @@ def init():
 
     if ok:
         # Register the handlers...
-        leoPlugins.registerHandler("icondclick1",onIconDoubleClick)
+        g.app.pluginsController.registerHandler("icondclick1",onIconDoubleClick)
         g.plugin_signon(__name__)
 
     return ok

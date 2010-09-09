@@ -161,7 +161,7 @@ __version__ = "1.17"
 #@+<< imports >>
 #@+node:ekr.20050226184411.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import os
 import subprocess
 import sys
@@ -198,7 +198,7 @@ def init ():
         # Register the handlers...
 
         event = 'open2'
-        leoPlugins.registerHandler(event,on_open_window)
+        g.app.pluginsController.registerHandler(event,on_open_window)
 
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
@@ -225,7 +225,7 @@ def on_open_window (tag,keywords):
 
     event = c.config.getString('vim_trigger_event') or 'icondclick1'
 
-    leoPlugins.registerHandler(event,open_in_vim)
+    g.app.pluginsController.registerHandler(event,open_in_vim)
 
     # g.trace('trigger event:',event,repr(c))
 #@+node:EKR.20040517075715.11: ** open_in_vim

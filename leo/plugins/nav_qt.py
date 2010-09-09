@@ -29,7 +29,6 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-import leo.core.leoPlugins as leoPlugins
 from PyQt4 import QtGui, QtCore
 
 # Whatever other imports your plugins uses.
@@ -44,9 +43,9 @@ def init ():
 
     if ok:
         if 0: # Use this if you want to create the commander class before the frame is fully created.
-            leoPlugins.registerHandler('before-create-leo-frame',onCreate)
+            g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
         else: # Use this if you want to create the commander class after the frame is fully created.
-            leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+            g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

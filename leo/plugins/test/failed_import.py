@@ -3,7 +3,6 @@
 '''A plugin to test import problems.'''
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.0"
 
@@ -16,6 +15,6 @@ try:
 except ImportError:
     g.cantImport('xyzzy',pluginName='failed_import')
 
-leoPlugins.registerHandler("start2", onStart) # Needed to have the plugin show in the Plugin Manager list.
+g.app.pluginsController.registerHandler("start2", onStart) # Needed to have the plugin show in the Plugin Manager list.
 g.plugin_signon(__name__)
 #@-leo

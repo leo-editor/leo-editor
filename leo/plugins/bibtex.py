@@ -102,13 +102,8 @@ __version__ = "0.4" # Set version for the plugin handler.
 #@-<< change log >>
 #@+<< imports >>
 #@+node:timo.20050213193129: ** <<imports>>
-
-# import pdb ; pdb.set_trace()
-
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
-# import os
 #@-<< imports >>
 #@+<< globals >>
 #@+node:timo.20050215183130: ** <<globals>>
@@ -156,8 +151,8 @@ def init():
     ok = not g.app.unitTesting
     if ok:
         # Register the handlers...
-        leoPlugins.registerHandler("icondclick1",onIconDoubleClick)
-        leoPlugins.registerHandler("headkey2",onHeadKey)
+        g.app.pluginsController.registerHandler("icondclick1",onIconDoubleClick)
+        g.app.pluginsController.registerHandler("headkey2",onHeadKey)
         g.plugin_signon(__name__)
 
     return ok

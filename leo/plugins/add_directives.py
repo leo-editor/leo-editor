@@ -8,7 +8,6 @@
 __version__ = "1.2"
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 directives = "markup", # A tuple with one string.
 
@@ -19,8 +18,8 @@ def init ():
     ok = True # not  g.app.unitTesting:
 
     # Register the handlers...
-    leoPlugins.registerHandler("start1",addPluginDirectives)
-    # leoPlugins.registerHandler("scan-directives",scanPluginDirectives)
+    g.app.pluginsController.registerHandler("start1",addPluginDirectives)
+    # g.app.pluginsController.registerHandler("scan-directives",scanPluginDirectives)
     g.plugin_signon(__name__)
 
     return ok

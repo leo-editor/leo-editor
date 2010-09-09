@@ -21,8 +21,8 @@ while keep every files in a flat/single directory on your computer.
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-import os  # added JD 2004-09-10
+
+import os
 
 __version__ = "1.4"
 
@@ -66,6 +66,6 @@ def onSelect (tag,keywords):
         sync_node_to_folder(c,v,h[8:])
 
 def init():
-    leoPlugins.registerHandler("select1", onSelect)
+    g.app.pluginsController.registerHandler("select1", onSelect)
     g.plugin_signon(__name__)
 #@-leo

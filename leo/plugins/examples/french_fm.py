@@ -11,7 +11,6 @@
 # French translation completed by Frédéric Momméja, Spring 2003
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@+node:EKR.20040517080202.4: ** onMenu
@@ -173,7 +172,7 @@ def onMenu (tag,keywords):
 if not g.app.unitTesting: # Unpleasant for unit testing.
 
     # Register the handlers...
-    leoPlugins.registerHandler("menu2", onMenu)
+    g.app.pluginsController.registerHandler("menu2", onMenu)
 
     __version__ = "1.4" # Set version for the plugin handler.
     g.plugin_signon(__name__)

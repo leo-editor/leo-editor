@@ -44,7 +44,6 @@ browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
 #@+<< imports >>
 #@+node:EKR.20040517080250.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import asynchat
 import asyncore
@@ -117,7 +116,7 @@ class config:
 #@+node:ekr.20060830091349: ** init
 def init ():
 
-    leoPlugins.registerHandler("open2", onFileOpen)
+    g.app.pluginsController.registerHandler("open2", onFileOpen)
     g.plugin_signon(__name__)
 
     return True
@@ -132,7 +131,7 @@ def onFileOpen(tag, keywords):
 
         s=Server('',config.http_port,RequestHandler)
         asyncore.read = a_read
-        leoPlugins.registerHandler("idle", plugin_wrapper)
+        g.app.pluginsController.registerHandler("idle", plugin_wrapper)
 
         g.es("http serving enabled on port %s, version %s" % (config.http_port, __version__), color="purple")
 #@+node:bwmulder.20050322132919: ** rst_related

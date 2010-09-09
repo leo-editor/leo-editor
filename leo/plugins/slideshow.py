@@ -49,14 +49,14 @@ __version__ = '0.4'
 #@+<< imports >>
 #@+node:ekr.20060831165845.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 #@-<< imports >>
 
 #@+others
 #@+node:ekr.20060831165845.4: ** init
 def init ():
 
-    leoPlugins.registerHandler(('open2','new2'),onCreate)
+    g.app.pluginsController.registerHandler(('open2','new2'),onCreate)
     g.plugin_signon(__name__)
 
     return True

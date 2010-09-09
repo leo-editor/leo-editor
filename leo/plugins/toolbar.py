@@ -282,24 +282,13 @@ controllers = {}
 #@+<< imports >>
 #@+node:bobjack.20080424190906.15: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.tkGui as tkGui
 leoTkinterFrame = tkGui.leoTkinterFrame
 leoTkinterTreeTab = tkGui.leoTkinterTreeTab
 
-# import re
-# import sys
-# import os
-
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
 Pmw = g.importExtension("Pmw",pluginName=__name__,verbose=True,required=True)
-
-# try:
-    # from PIL import Image
-    # from PIL import ImageTk
-# except ImportError:
-    # Image = ImageTk = None
 
 #mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
 from leo.plugins import mod_scripting
@@ -349,7 +338,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        r = leoPlugins.registerHandler
+        r = g.app.pluginsController.registerHandler
         r('before-create-leo-frame',onPreCreate)
         r('after-create-leo-frame', onCreate)
         r('close-frame', onClose)

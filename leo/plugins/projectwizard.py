@@ -21,7 +21,6 @@ __version__ = '0.0'
 #@+<< imports >>
 #@+node:ville.20090614224528.8138: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 g.assertUi('qt')
 

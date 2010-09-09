@@ -63,7 +63,6 @@ __version__ = "0.4"
 #@+<< imports >>
 #@+node:ekr.20090317093747.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import fnmatch
 import os
@@ -92,7 +91,7 @@ def init():
 
     ok = not g.app.unitTesting # Dangerous for unit testing.
     if ok:
-        leoPlugins.registerHandler("icondclick1", onIconDoubleClick)
+        g.app.pluginsController.registerHandler("icondclick1", onIconDoubleClick)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20040915105758.14: ** onIconDoubleClick

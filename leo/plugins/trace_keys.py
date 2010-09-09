@@ -6,7 +6,6 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.2"
 
@@ -18,7 +17,7 @@ def init():
 
     if ok:
         # Register the handlers...
-        leoPlugins.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
+        g.app.pluginsController.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
         g.plugin_signon(__name__)
 
     return ok

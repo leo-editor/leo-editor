@@ -33,7 +33,10 @@ __version__ = '0.1'
 import leo.core.leoGlobals as g
 
 import xml.etree.ElementTree as ET
+
 from leo.core import leoPlugins
+    # Uses leoPlugins.TryNext
+
 import HTMLParser
 
 # Whatever other imports your plugins uses.
@@ -47,7 +50,7 @@ def init ():
 
     if ok:
 
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

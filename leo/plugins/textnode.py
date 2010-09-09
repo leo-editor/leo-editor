@@ -10,7 +10,7 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 import os.path
 __version__ = "1.1"
     # Terry Brown: support for @path ancestors and uses universal newline mode for opening.
@@ -18,10 +18,10 @@ __version__ = "1.1"
 #@+others
 #@+node:ajones.20070122160142.2: ** init
 def init():
-    leoPlugins.registerHandler(('new','open2'), on_open)
-    leoPlugins.registerHandler("save1", on_save)
-    leoPlugins.registerHandler("save2", on_open)
-    leoPlugins.registerHandler("icondclick1", on_icondclick)
+    g.app.pluginsController.registerHandler(('new','open2'), on_open)
+    g.app.pluginsController.registerHandler("save1", on_save)
+    g.app.pluginsController.registerHandler("save2", on_open)
+    g.app.pluginsController.registerHandler("icondclick1", on_icondclick)
 
     g.plugin_signon(__name__)
 

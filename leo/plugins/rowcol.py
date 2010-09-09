@@ -11,7 +11,6 @@ __version__ = "0.4"
 #@+<< imports >>
 #@+node:ekr.20040908094021.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
@@ -35,7 +34,7 @@ def onCreate (tag,keywords):
     if c:
         rowCol = rowColClass(c)
         rowCol.addWidgets()
-        leoPlugins.registerHandler("idle",rowCol.update)
+        g.app.pluginsController.registerHandler("idle",rowCol.update)
 #@+node:ekr.20040108095351.1: ** class rowColClass
 class rowColClass:
 
@@ -102,6 +101,6 @@ if Tk: # OK for unit testing.
         g.app.createTkGui(__file__)
 
     if g.app.gui.guiName() == "tkinter":
-        leoPlugins.registerHandler("after-create-leo-frame",onCreate)
+        g.app.pluginsController.registerHandler("after-create-leo-frame",onCreate)
         g.plugin_signon("rowcol")
 #@-leo

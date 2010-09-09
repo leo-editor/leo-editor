@@ -54,14 +54,10 @@ beginning of the line and by themselves.
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
 import leo.core.leoGlobals as g 
-
 import leo.core.leoAtFile as leoAtFile
-import leo.core.leoPlugins as leoPlugins
-
 
 import os.path
 import shutil
-# import sys
 import weakref
 
 try:
@@ -118,9 +114,9 @@ def init ():
             global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
             g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
 
-            # leoPlugins.registerHandler('save1',start)
-            leoPlugins.registerHandler('save2',stop)
-            leoPlugins.registerHandler(('new','start2'),addMenu)
+            # g.app.pluginsController.registerHandler('save1',start)
+            g.app.pluginsController.registerHandler('save2',stop)
+            g.app.pluginsController.registerHandler(('new','start2'),addMenu)
             g.plugin_signon(__name__)
 
     return ok

@@ -15,8 +15,6 @@ attributes of one another.'''
 
 #@+<< imports >>
 #@+node:mork.20041018162155.2: ** << imports >>
-# import leo.core.leoPlugins as leoPlugins
-
 import leo.core.leoGlobals as g
 
 import leo.plugins.tkGui as tkGui
@@ -48,7 +46,7 @@ __version__ = ".5"
 def init ():
 
     # At present there is a problem with the interaction of this plugin and the chapters2 plugin.
-    ok = Pmw is not None # and 'chapters2' not in leoPlugins.loadedModules
+    ok = Pmw is not None
     if not ok: return
 
     if g.app.gui is None:

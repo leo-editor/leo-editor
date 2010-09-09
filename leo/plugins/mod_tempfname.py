@@ -12,7 +12,6 @@ makes it easier to see which temporary file is related to which outline node."""
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import leo.core.leoCommands as leoCommands
 import getpass
@@ -30,7 +29,7 @@ def init():
 
     if ok:
         # Register the handlers...
-        leoPlugins.registerHandler("start2", onStart)
+        g.app.pluginsController.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
 
     return ok

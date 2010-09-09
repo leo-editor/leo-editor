@@ -32,7 +32,6 @@ __version__ = "1.2"
 #@+<< imports >>
 #@+node:ekr.20040908093511.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter')
 
@@ -63,7 +62,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler("after-create-leo-frame",onCreate)
+        g.app.pluginsController.registerHandler("after-create-leo-frame",onCreate)
         g.plugin_signon(__name__)
 
     return ok
@@ -86,7 +85,7 @@ def onCreate (tag,keys):
         else:
             hoist.addWidgets()
 
-        leoPlugins.registerHandler("hoist-changed", onHoistChanged)
+        g.app.pluginsController.registerHandler("hoist-changed", onHoistChanged)
 #@+node:bobjack.20080503151427.7: ** onHoistChanged
 def onHoistChanged(tag, keywords):
 

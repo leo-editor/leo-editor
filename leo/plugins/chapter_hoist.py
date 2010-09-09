@@ -18,7 +18,7 @@ Requires at least version 0.19 of mod_scripting
 #@+<< imports >>
 #@+node:ekr.20060328125925.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 from mod_scripting import scriptingController
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -51,7 +51,7 @@ def init ():
         if ok:
             # Note: call onCreate _after_ reading the .leo file.
             # That is, the 'after-create-leo-frame' hook is too early!
-            leoPlugins.registerHandler(('new','open2'),onCreate)
+            g.app.pluginsController.registerHandler(('new','open2'),onCreate)
             g.plugin_signon(__name__)
 
     return ok

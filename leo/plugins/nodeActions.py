@@ -26,7 +26,6 @@ __version__ = "0.4"
 #@+<< imports >>
 #@+node:ekr.20040915110738.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import fnmatch
 import os
@@ -64,7 +63,7 @@ def init():
 	 g.es("nodeActions: Init", color='blue')
 	 ok = not g.app.unitTesting # Dangerous for unit testing.
 	 if ok:
-		  leoPlugins.registerHandler("icondclick1", onIconDoubleClickNA)
+		  g.app.pluginsController.registerHandler("icondclick1", onIconDoubleClickNA)
 		  g.plugin_signon(__name__)
 	 return ok
 #@+node:TL.20080507213950.9: ** doNodeAction

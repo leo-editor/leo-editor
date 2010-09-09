@@ -38,9 +38,7 @@ __version__ = "0.7"
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040909100226: ** << imports >>
-
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import os
 import sys
@@ -62,7 +60,7 @@ def init ():
     if 1: # Ok for unit testing: creates a new menu.
 
         # Register the handlers...
-        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
+        g.app.pluginsController.registerHandler("after-create-leo-frame", onCreate)
 
         g.plugin_signon(__name__)
 

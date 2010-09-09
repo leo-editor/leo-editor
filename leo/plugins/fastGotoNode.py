@@ -37,7 +37,6 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 
 #@+<< imports >>
 #@+node:mork.20041018091414.2: ** << imports >>
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 
 import copy
@@ -90,7 +89,7 @@ def init ():
         global smenu
         smenu = Tkinter.Menu(tearoff=0,activeforeground='blue',activebackground='white')
         calculateMenuSize()
-        leoPlugins.registerHandler(('open2','new'),registerPopupMenu)
+        g.app.pluginsController.registerHandler(('open2','new'),registerPopupMenu)
         g.plugin_signon(__name__)
 
         if 0: # We now use leoSettings.leo to get all settings.

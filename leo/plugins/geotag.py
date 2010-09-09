@@ -17,7 +17,7 @@ geotag.py - Tag nodes with lat/long. info
 #@+<< imports >>
 #@+node:tbrown.20091214233510.5349: ** << imports >>
 import leo.core.leoGlobals as g
-from leo.core import leoPlugins
+
 from leo.plugins.pygeotag import pygeotag
 #@-<< imports >>
 __version__ = "0.1"
@@ -35,7 +35,7 @@ __version__ = "0.1"
 #@+node:tbrown.20091214233510.5351: ** init
 def init():
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
 
     g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
@@ -62,7 +62,7 @@ class geotag_Controller:
     #@+node:tbrown.20091214233510.5355: *3* __del__
     def __del__(self):
         for i in self.handlers:
-            leoPlugins.unregisterHandler(i[0], i[1])
+            g.app.pluginsController.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20091215204347.11403: *3* getAttr
     @staticmethod
     def getAttr(p):

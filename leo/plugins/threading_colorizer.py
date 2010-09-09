@@ -17,20 +17,14 @@ trace_leo_matches = False
 #@+<< imports >>
 #@+node:ekr.20071010193720.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
-# import os
 import re
 import string
 import threading
 import traceback
 
-# import xml.sax
-# import xml.sax.saxutils
-
 import Tkinter as Tk
 
-# php_re = re.compile("<?(\s|=|[pP][hH][pP])")
 php_re = re.compile("<?(\s[pP][hH][pP])")
 #@-<< imports >>
 #@+<< version history >>
@@ -156,7 +150,7 @@ def init ():
 
     if ok:
 
-        leoPlugins.registerHandler('start1',onStart1)
+        g.app.pluginsController.registerHandler('start1',onStart1)
         g.plugin_signon(__name__)
 
     return ok

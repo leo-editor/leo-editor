@@ -30,7 +30,6 @@ __version__ = '0.2'
 #@+<< imports >>
 #@+node:ville.20091204224145.5358: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import os
 import re
@@ -68,7 +67,8 @@ def init ():
     ok = g.app.gui.guiName() == "qt"
 
     if ok:
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler(
+            'after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

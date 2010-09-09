@@ -25,9 +25,7 @@ __version__ = "0.3"
 #@+<< imports >>
 #@+node:ekr.20040909122647.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
-# import os
 #@-<< imports >>
 
 NSPACES = ' '*4
@@ -40,8 +38,8 @@ def init ():
     ok = not g.unitTesting
 
     if ok:
-        leoPlugins.registerHandler("save1",onPreSave)
-        leoPlugins.registerHandler("save2",onPostSave)
+        g.app.pluginsController.registerHandler("save1",onPreSave)
+        g.app.pluginsController.registerHandler("save2",onPostSave)
         g.plugin_signon(__name__)
 
     return ok

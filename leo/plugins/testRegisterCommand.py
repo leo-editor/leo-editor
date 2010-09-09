@@ -5,7 +5,6 @@
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 
 __version__ = '0.1'
@@ -14,7 +13,7 @@ __version__ = '0.1'
 #@+node:ekr.20051016161205: ** init
 def init():
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20051016161205.1: ** onCreate

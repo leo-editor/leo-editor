@@ -62,7 +62,6 @@ if 0:
 #@+<< imports >>
 #@+node:ekr.20050101090207.3: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 import tkFileDialog
 
 Tk =             g.importExtension('Tkinter',       pluginName=__name__,verbose=True)
@@ -128,11 +127,11 @@ def init ():
             # default value for color-tagged wiki text
             global wikiColoredText
             wikiColoredText = "blue"
-            leoPlugins.registerHandler("color-optional-markup", colorWikiMarkup)
-            leoPlugins.registerHandler("init-color-markup", initAnyMarkup)
-            #leoPlugins.registerHandler("bodykey1", onBodykey1)
-            leoPlugins.registerHandler("bodydclick1", onBodydclick1)
-            leoPlugins.registerHandler(('new','open2'), onCreate)
+            g.app.pluginsController.registerHandler("color-optional-markup", colorWikiMarkup)
+            g.app.pluginsController.registerHandler("init-color-markup", initAnyMarkup)
+            #g.app.pluginsController.registerHandler("bodykey1", onBodykey1)
+            g.app.pluginsController.registerHandler("bodydclick1", onBodydclick1)
+            g.app.pluginsController.registerHandler(('new','open2'), onCreate)
             g.plugin_signon(__name__)
 
     return ok

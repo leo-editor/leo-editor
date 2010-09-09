@@ -96,7 +96,6 @@ __version__ = ".5"
 #@+<< imports >>
 #@+node:ekr.20050328092641.7: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 import anydbm
 import whichdb
 import zlib
@@ -122,8 +121,8 @@ def init():
         ok = g.app.gui.guiName() == "tkinter"
 
         if ok:
-            leoPlugins.registerHandler("after-create-leo-frame", onCreate)
-            leoPlugins.registerHandler("close-frame", onCloseFrame)
+            g.app.pluginsController.registerHandler("after-create-leo-frame", onCreate)
+            g.app.pluginsController.registerHandler("close-frame", onCloseFrame)
             g.plugin_signon(__name__ )
 
     return ok

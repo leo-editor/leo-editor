@@ -18,9 +18,7 @@ method.
 #@+<< imports >>
 #@+node:ekr.20041021120859: ** << imports >>
 import leo.core.leoGlobals as g
-
 import leo.core.leoCommands as leoCommands
-import leo.core.leoPlugins as leoPlugins
 #@-<< imports >>
 
 __version__ = "1.1" # 8/1/05: updated example code to match latest code in leoCommands.py.

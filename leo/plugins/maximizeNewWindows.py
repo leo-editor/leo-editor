@@ -25,8 +25,6 @@ __version__ = "1.3"
 #@+<< imports >>
 #@+node:ekr.20070602072200: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-# import sys
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
@@ -36,8 +34,8 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 def init():
     ok = Tk and not g.app.unitTesting
     if ok:
-        # leoPlugins.registerHandler("after-create-leo-frame", maximize_window)
-        leoPlugins.registerHandler(('new','open2'), maximize_window)
+        # g.app.pluginsController.registerHandler("after-create-leo-frame", maximize_window)
+        g.app.pluginsController.registerHandler(('new','open2'), maximize_window)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20070602072200.2: ** maximize_window

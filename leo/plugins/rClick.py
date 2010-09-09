@@ -651,7 +651,6 @@ __plugin_name__ = 'Right Click Menus'
 #@+<< imports >>
 #@+node:ekr.20050101090207.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 import re
 import sys
@@ -711,11 +710,11 @@ def init ():
     ok = g.app.gui.guiName() in ("tkinter") # ,"qt")
 
     if ok:
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
-        leoPlugins.registerHandler('close-frame',onClose)
+        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+        g.app.pluginsController.registerHandler('close-frame',onClose)
 
-        leoPlugins.registerHandler("bodyrclick1",rClicker)
-        leoPlugins.registerHandler("rclick-popup",rClicker)
+        g.app.pluginsController.registerHandler("bodyrclick1",rClicker)
+        g.app.pluginsController.registerHandler("rclick-popup",rClicker)
 
         g.plugin_signon(__name__)
 
@@ -739,8 +738,8 @@ def onCreate (tag, keys):
 
         c.theContextMenuController = controller
 
-        leoPlugins.registerHandler("bodyrclick1",rClicker)
-        leoPlugins.registerHandler("rclick-popup",rClicker)
+        g.app.pluginsController.registerHandler("bodyrclick1",rClicker)
+        g.app.pluginsController.registerHandler("rclick-popup",rClicker)
 #@+node:bobjack.20080424195922.4: *3* onClose
 def onClose (tag, keys):
 

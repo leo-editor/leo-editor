@@ -51,7 +51,6 @@ __version__ = "0.7"
 #@+<< imports >>
 #@+node:ktenney.20041211072654.4: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 path           = g.importExtension('path',          pluginName=__name__,verbose=True)
 win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=True)
@@ -66,8 +65,8 @@ def onCreate(tag, keywords):
     myView = View(c)
 
     # Register the handlers...
-    leoPlugins.registerHandler("icondclick2", myView.icondclick2)
-    leoPlugins.registerHandler("idle", myView.idle)
+    g.app.pluginsController.registerHandler("icondclick2", myView.icondclick2)
+    g.app.pluginsController.registerHandler("idle", myView.idle)
     g.plugin_signon(__name__)
 #@+node:ktenney.20041211072654.7: ** class View
 class View:
@@ -258,7 +257,7 @@ class View:
 #@-others
 
 if path and win32clipboard: # Ok for unit testing.
-    leoPlugins.registerHandler("after-create-leo-frame",onCreate)
+    g.app.pluginsController.registerHandler("after-create-leo-frame",onCreate)
 elif not g.app.unitTesting:
     s = 'at_view plugin not loaded: win32Clipboard not present.'
     g.es_print(s)

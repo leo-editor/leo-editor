@@ -37,14 +37,15 @@ Requires `pexpect` module.
 """
 # 0.1 by Terry Brown, 2009-05-12
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
 from mod_scripting import scriptingController
+
 import pexpect
 import time
 import os
 #@+node:tbrown.20090603104805.4938: ** init
 def init():
-    leoPlugins.registerHandler('after-create-leo-frame', onCreate)
+    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 

@@ -40,7 +40,6 @@ __version__ = "0.15"
 #@+<< imports >>
 #@+node:ekr.20040908094021.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -61,7 +60,7 @@ def init ():
             g.app.createTkGui(__file__)
 
         if g.app.gui.guiName() == "tkinter":
-            leoPlugins.registerHandler(('new','open2'), onCreate)
+            g.app.pluginsController.registerHandler(('new','open2'), onCreate)
             g.plugin_signon(__name__) #"nodenavigator")
 
     return ok
@@ -76,9 +75,9 @@ def onCreate(tag, keywords):
     nav = Navigator(c)
     nav.addWidgets()
 
-    leoPlugins.registerHandler("set-mark",nav.addMark)
-    leoPlugins.registerHandler("clear-mark",nav.clearMark)
-    leoPlugins.registerHandler("select3",nav.updateRecent)
+    g.app.pluginsController.registerHandler("set-mark",nav.addMark)
+    g.app.pluginsController.registerHandler("clear-mark",nav.clearMark)
+    g.app.pluginsController.registerHandler("select3",nav.updateRecent)
 #@+node:ekr.20040108062655.2: ** class Navigator
 class Navigator:
 

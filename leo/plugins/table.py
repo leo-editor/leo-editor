@@ -19,8 +19,6 @@ Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable
 #@+<< imports >>
 #@+node:ekr.20041017035937.1: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-# import leo.core.leoNodes as leoNodes
 
 Pmw    = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -65,7 +63,7 @@ def init ():
 
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            leoPlugins.registerHandler(('new','open2'),addMenu )
+            g.app.pluginsController.registerHandler(('new','open2'),addMenu )
             g.plugin_signon( __name__ )
 
     return ok
@@ -128,7 +126,6 @@ class CSVVisualizer:
         cS.seek( 0 )
 
         if not save:
-            # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.h ) )
             p2 = pos.insertAfter() # tnd )
             p2.setBodyString(cS.getvalue())
             p2.setHeadString("Save of Edited " + str(pos.h))

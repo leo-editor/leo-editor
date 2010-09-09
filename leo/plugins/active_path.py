@@ -75,7 +75,10 @@ active_path is a rewrite of the at_directory plugin to use @path directives (whi
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
+
 import leo.core.leoPlugins as leoPlugins
+    # uses leoPlugins.TryNext
+
 import os
 import re
 import ast # for docstring loading
@@ -102,7 +105,7 @@ if g.app.gui.guiName() == "qt":
     from PyQt4 import QtCore
 
 def init():
-    leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
+    g.app.pluginsController.registerHandler('after-create-leo-frame', attachToCommander)
     g.act_on_node.add(active_path_act_on_node, priority = 90)
 
     g.plugin_signon(__name__)
@@ -116,7 +119,7 @@ def init():
 def attachToCommander(t,k):
     c = k.get('c')
     event = c.config.getString('active_path_event') or "icondclick1"
-    leoPlugins.registerHandler(event, lambda t,k: onSelect(t,k))
+    g.app.pluginsController.registerHandler(event, lambda t,k: onSelect(t,k))
 
     # not using a proper class, so
     c.__active_path = {'ignore': [], 'autoload': []}
@@ -526,7 +529,6 @@ def cmd_ActOnNode(c, p=None, event=None):
         return True
 
     else:
-
         raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode

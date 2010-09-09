@@ -26,9 +26,8 @@ plugin:
 
 #@+<< imports >>
 #@+node:mork.20041018131258.2: ** << imports >>
-import leo.core.leoPlugins as leoPlugins 
 import leo.core.leoGlobals as g      
-import leo.core.leoNodes as leoNodes
+
 import copy
 import base64
 
@@ -83,8 +82,8 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler('menu2',addMenu)
-        leoPlugins.registerHandler("after-redraw-outline",drawImages)
+        g.app.pluginsController.registerHandler('menu2',addMenu)
+        g.app.pluginsController.registerHandler("after-redraw-outline",drawImages)
         initImages()
         g.plugin_signon(__name__)
 

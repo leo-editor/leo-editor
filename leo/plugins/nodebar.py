@@ -9,7 +9,6 @@ value in being able to quickly execute commands they do not use very often"""
 #@+<< imports >>
 #@+node:ekr.20041030084334: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
 
 if g.isPython3:
     import configparser as ConfigParser
@@ -104,7 +103,7 @@ def init():
     if ok:
         initImages()
         configureNodebar()
-        leoPlugins.registerHandler(('open2',"new"),addNodeBar )
+        g.app.pluginsController.registerHandler(('open2',"new"),addNodeBar )
         g.plugin_signon(__name__)
 
     return ok
