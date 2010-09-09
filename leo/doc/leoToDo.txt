@@ -2253,7 +2253,7 @@ def doHook(tag,*args,**keywords):
 
     if not f:
         ### import leo.core.leoPlugins as leoPlugins
-        g.app.hookFunction = f = g.app.leoPlugins.doPlugins
+        g.app.hookFunction = f = g.app.pluginsController.doPlugins
 
     try:
         # Pass the hook to the hook handler.

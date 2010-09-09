@@ -353,7 +353,7 @@ class LeoApp:
 
         app = self
 
-        app.leoPlugins.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
+        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
     #@+node:ekr.20090619065122.8593: *3* app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
 
@@ -450,7 +450,7 @@ class LeoApp:
         Pmw = g.importExtension('Pmw',pluginName='startup',verbose=False)
 
         if Tk and Pmw:
-            app.leoPlugins.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
+            app.pluginsController.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
             if app.gui and fileName and verbose:
                 print('tkGui created in %s' % fileName)
     #@+node:ekr.20090126063121.3: *3* app.createWxGui
@@ -462,7 +462,7 @@ class LeoApp:
 
         app = self
 
-        app.leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
+        app.pluginsController.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
 
         if fileName and verbose:
 

@@ -2594,7 +2594,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
@@ -2623,10 +2623,10 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20100812172232.5800"><vh>@common leoRst test code</vh>
 <v t="ekr.20100812182942.5804"><vh>class rst3Test</vh>
 <v t="ekr.20100827194549.5963"><vh>report</vh></v>
@@ -2731,7 +2731,7 @@
 <v t="ekr.20100813100841.5829"><vh>@test code_mode: show_options_doc_parts</vh></v>
 </v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2978,7 +2978,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
@@ -21896,8 +21896,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoKeys tests.')</t>
 <t tx="ekr.20100131171342.5610"></t>
-<t tx="ekr.20100131171342.5611"># import leo.core.leoPlugins as leoPlugins
-leoPlugins = g.app.leoPluginsController
+<t tx="ekr.20100131171342.5611">leoPlugins = g.app.pluginsController
 
 aList1 = leoPlugins.getHandlersForTag('select1')
 aList2 = leoPlugins.getHandlersForOneTag('select1')
