@@ -93,7 +93,7 @@ def init ():
     ok = True
 
     if ok:
-        #g.app.pluginsController.registerHandler('start2',onStart2)
+        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
         g.viewrendered_count = 0
@@ -112,8 +112,8 @@ class ViewRendered(QTextEdit):
         self.c = c
         c.viewrendered = self
 
-        g.app.pluginsController.registerHandler('select2',self.update)
-        g.app.pluginsController.registerHandler('idle',self.update)
+        g.registerHandler('select2',self.update)
+        g.registerHandler('idle',self.update)
         g.enableIdleTimeHook(idleTimeDelay=1000)
         g.viewrendered_count += 1
 
@@ -131,8 +131,8 @@ class ViewRendered(QTextEdit):
             g.viewrendered_count -= 1
         if g.viewrendered_count <= 0:
             g.disableIdleTimeHook()
-        g.app.pluginsController.unregisterHandler('select2',self.update)
-        g.app.pluginsController.unregisterHandler('idle',self.update)
+        g.unregisterHandler('select2',self.update)
+        g.unregisterHandler('idle',self.update)
         self.setVisible(False)
         self.destroy()  # if this doesn't work, hopefully it's hidden
         if hasattr(self.c, 'viewrendered'):

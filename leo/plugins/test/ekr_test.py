@@ -4,9 +4,9 @@ import leo.core.leoGlobals as g
 
 def init():
     if g.app.unitTesting: return False
-    g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
-    g.app.pluginsController.registerHandler('menu2',onmenu2)
+    g.registerHandler('before-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('menu2',onmenu2)
     return True
 
 def ekrCommand1(self,event=None):

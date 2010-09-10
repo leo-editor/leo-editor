@@ -13,7 +13,7 @@ __version__ = '0.1'
 #@+node:ekr.20051016161205: ** init
 def init():
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20051016161205.1: ** onCreate

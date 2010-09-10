@@ -17,7 +17,7 @@ __version__ = "0.1"
 def init():
 
     # Register the handlers...
-    g.app.pluginsController.registerHandler("command1", timestamp)
+    g.registerHandler("command1", timestamp)
 
     g.plugin_signon(__name__)
 

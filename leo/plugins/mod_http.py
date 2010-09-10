@@ -116,7 +116,7 @@ class config:
 #@+node:ekr.20060830091349: ** init
 def init ():
 
-    g.app.pluginsController.registerHandler("open2", onFileOpen)
+    g.registerHandler("open2", onFileOpen)
     g.plugin_signon(__name__)
 
     return True
@@ -131,7 +131,7 @@ def onFileOpen(tag, keywords):
 
         s=Server('',config.http_port,RequestHandler)
         asyncore.read = a_read
-        g.app.pluginsController.registerHandler("idle", plugin_wrapper)
+        g.registerHandler("idle", plugin_wrapper)
 
         g.es("http serving enabled on port %s, version %s" % (config.http_port, __version__), color="purple")
 #@+node:bwmulder.20050322132919: ** rst_related

@@ -18,8 +18,8 @@ def init ():
     ok = True # not  g.app.unitTesting:
 
     # Register the handlers...
-    g.app.pluginsController.registerHandler("start1",addPluginDirectives)
-    # g.app.pluginsController.registerHandler("scan-directives",scanPluginDirectives)
+    g.registerHandler("start1",addPluginDirectives)
+    # g.registerHandler("scan-directives",scanPluginDirectives)
     g.plugin_signon(__name__)
 
     return ok

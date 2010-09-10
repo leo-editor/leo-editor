@@ -51,7 +51,7 @@ __version__ = "1.0"
 def init():
 
     # Ok for unit testing: creates menu.
-    g.app.pluginsController.registerHandler("create-optional-menus",createExportMenu)
+    g.registerHandler("create-optional-menus",createExportMenu)
     g.plugin_signon(__name__)
     return True
 #@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)

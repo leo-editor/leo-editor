@@ -150,7 +150,7 @@ def init ():
 
     if ok:
 
-        g.app.pluginsController.registerHandler('start1',onStart1)
+        g.registerHandler('start1',onStart1)
         g.plugin_signon(__name__)
 
     return ok

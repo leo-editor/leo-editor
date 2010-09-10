@@ -12,6 +12,8 @@ import leo.core.leoGlobals as g
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
 
+__version__ = "1.2"
+
 #@+others
 #@+node:edream.110203113231.922: ** onStart
 #@+at This code illustrates how to redefine _any_ method of Leo.
@@ -58,9 +60,6 @@ def newPutNl (self):
 
 if Tk and not g.app.unitTesting: # Not for unit testing: overrides core methods.
 
-    # Register the handlers...
-    g.app.pluginsController.registerHandler("start2", onStart)
-
-    __version__ = "1.2"
+    g.registerHandler("start2", onStart)
     g.plugin_signon(__name__)
 #@-leo

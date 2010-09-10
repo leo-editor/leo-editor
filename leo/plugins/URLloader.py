@@ -46,7 +46,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.app.pluginsController.registerHandler(('new','open2'), addURLPane)
+        g.registerHandler(('new','open2'), addURLPane)
         g.plugin_signon( __name__ )
 
     return ok

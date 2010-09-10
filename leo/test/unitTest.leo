@@ -21452,13 +21452,12 @@ assert hasattr(g.app,'homeDir') # May well be None.</t>
 <t tx="ekr.20100131171342.5482">
 ivars = (
     # These are non-official and might be removed...
-        # 'afterHandler','count','positions',
-        # 'menuWarningsGiven','unicodeErrorGiven',
     'batchMode','config',
     'debug','debugSwitch','disableSave',
     'gui','hasOpenWithMenu','hookError','hookFunction',
     'idle_imported','idleTimeDelay','idleTimeHook','initing','killed',
-    'leoID','loadedPlugins','log','logIsLocked','logWaiting',
+    # 'loadedPlugins',
+    'leoID','log','logIsLocked','logWaiting',
     'nodeIndices','numberOfWindows',
     'quitting','realMenuNameDict','searchDict','scriptDict',
     'trace','tracePositions','trace_list',

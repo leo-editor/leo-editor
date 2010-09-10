@@ -83,7 +83,7 @@ import datetime
 def init():
     if 1: # OK for unit testing.
 
-        g.app.pluginsController.registerHandler("after-create-leo-frame", on_create)
+        g.registerHandler("after-create-leo-frame", on_create)
         g.plugin_signon(__name__)
 
         return True

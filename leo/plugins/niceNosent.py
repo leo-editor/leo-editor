@@ -38,8 +38,8 @@ def init ():
     ok = not g.unitTesting
 
     if ok:
-        g.app.pluginsController.registerHandler("save1",onPreSave)
-        g.app.pluginsController.registerHandler("save2",onPostSave)
+        g.registerHandler("save1",onPreSave)
+        g.registerHandler("save2",onPostSave)
         g.plugin_signon(__name__)
 
     return ok

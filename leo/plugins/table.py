@@ -63,7 +63,7 @@ def init ():
 
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            g.app.pluginsController.registerHandler(('new','open2'),addMenu )
+            g.registerHandler(('new','open2'),addMenu )
             g.plugin_signon( __name__ )
 
     return ok

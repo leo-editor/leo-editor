@@ -79,7 +79,7 @@ def init ():
                 ok = False
 
         if ok:
-            g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+            g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
 
     return ok

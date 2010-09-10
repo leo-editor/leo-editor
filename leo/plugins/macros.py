@@ -88,7 +88,7 @@ import re
 def init ():
 
     # Ok for unit testing: adds command to Outline menu.
-    g.app.pluginsController.registerHandler( ('new','open2') ,onCreate)
+    g.registerHandler( ('new','open2') ,onCreate)
     g.plugin_signon(__name__)
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag,keywords):

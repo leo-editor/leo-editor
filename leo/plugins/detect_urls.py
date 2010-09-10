@@ -43,9 +43,9 @@ url_regex = re.compile(r"""(http|https|file|ftp)://[^\s'"]+[\w=/]""")
 def init():
     ok = not g.app.unitTesting
     if ok:
-        g.app.pluginsController.registerHandler("bodydclick1", openURL)
-        g.app.pluginsController.registerHandler("select2", colorizeURLs)
-        g.app.pluginsController.registerHandler("save2", colorizeURLs)
+        g.registerHandler("bodydclick1", openURL)
+        g.registerHandler("select2", colorizeURLs)
+        g.registerHandler("save2", colorizeURLs)
         g.plugin_signon(__name__)
     return ok
 #@+node:vpe.20060305064323.5: ** openURL()

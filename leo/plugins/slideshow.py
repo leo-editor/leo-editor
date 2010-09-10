@@ -56,7 +56,7 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20060831165845.4: ** init
 def init ():
 
-    g.app.pluginsController.registerHandler(('open2','new2'),onCreate)
+    g.registerHandler(('open2','new2'),onCreate)
     g.plugin_signon(__name__)
 
     return True

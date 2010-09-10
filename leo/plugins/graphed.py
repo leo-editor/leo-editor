@@ -74,7 +74,7 @@ def init():
     if not Gato_ok:
         g.es('graphed: Gato import failed, functions reduced',color='red')
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
 
     return True

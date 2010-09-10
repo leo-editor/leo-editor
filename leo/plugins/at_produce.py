@@ -67,7 +67,7 @@ def init ():
 
     if ok: # Ok for unit testing: adds menu and new directive.
 
-        g.app.pluginsController.registerHandler(('new','open2'),addMenu)
+        g.registerHandler(('new','open2'),addMenu)
         g.globalDirectiveList.append('produce')
         g.plugin_signon(__name__)
 

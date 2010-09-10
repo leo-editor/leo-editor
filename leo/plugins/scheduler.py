@@ -78,7 +78,7 @@ def init ():
         lk = threading.Condition(threading.RLock())
         sd = Schedule()
         sd.start()
-        g.app.pluginsController.registerHandler(('open2','new'),addScheduleMenu)
+        g.registerHandler(('open2','new'),addScheduleMenu)
         g.plugin_signon(__name__)
 
     return ok

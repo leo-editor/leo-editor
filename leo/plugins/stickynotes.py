@@ -93,7 +93,7 @@ def init ():
     ok = True
 
     if ok:
-        #g.app.pluginsController.registerHandler('start2',onStart2)
+        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
     g.app.stickynotes = {}    
@@ -448,7 +448,7 @@ class Tabula(QMainWindow):
             # saving when hidden nukes all
             if self.isVisible():
                 self.save_states()
-        g.app.pluginsController.registerHandler("end1",on_quit)
+        g.registerHandler("end1",on_quit)
 
     def create_actions(self):
         self.tb = self.addToolBar("toolbar")

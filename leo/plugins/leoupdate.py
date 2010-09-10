@@ -79,9 +79,9 @@ def init():
 
         if ok:
             if 0: # Use this if you want to create the commander class before the frame is fully created.
-                g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
+                g.registerHandler('before-create-leo-frame',onCreate)
             else: # Use this if you want to create the commander class after the frame is fully created.
-                g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+                g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
         else:
             g.es("autotrees requires Tkinter",color='blue')

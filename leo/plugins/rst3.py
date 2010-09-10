@@ -193,7 +193,7 @@ def init ():
     ok = docutils is not None # Ok for unit testing.
 
     if ok:
-        g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
         s = 'rst3 plugin not loaded: can not load docutils'

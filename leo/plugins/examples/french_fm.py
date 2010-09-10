@@ -172,7 +172,7 @@ def onMenu (tag,keywords):
 if not g.app.unitTesting: # Unpleasant for unit testing.
 
     # Register the handlers...
-    g.app.pluginsController.registerHandler("menu2", onMenu)
+    g.registerHandler("menu2", onMenu)
 
     __version__ = "1.4" # Set version for the plugin handler.
     g.plugin_signon(__name__)

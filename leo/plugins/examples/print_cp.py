@@ -37,8 +37,8 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        # g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
-        g.app.pluginsController.registerHandler(('new','open2'),onCreate)
+        # g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler(('new','open2'),onCreate)
 
     return ok
 #@+node:ekr.20060621123339.5: ** onCreate

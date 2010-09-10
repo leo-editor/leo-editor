@@ -260,7 +260,7 @@ elif g.app.gui.guiName() == "qt":
 #@+node:ekr.20090616105756.3940: ** init
 def init ():
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
 
@@ -291,9 +291,9 @@ class backlinkController(object):
         elif Qt:
             self.ui = backlinkQtUI(self)
 
-        g.app.pluginsController.registerHandler('select3', self.updateTab)
+        g.registerHandler('select3', self.updateTab)
 
-        g.app.pluginsController.registerHandler('open2', self.loadLinks)
+        g.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
     #@+node:tbrown.20091005145931.5227: *3* fixIDs

@@ -32,7 +32,7 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20100128073941.5371: ** init
 def init():
 
-    g.app.pluginsController.registerHandler("icondclick1", onDClick1)
+    g.registerHandler("icondclick1", onDClick1)
 
     g.plugin_signon(__name__)
 

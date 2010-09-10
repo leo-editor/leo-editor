@@ -236,7 +236,7 @@ def init ():
     if g.app.gui.guiName() not in ("tkinter",'qt'):
         return False
 
-    g.app.pluginsController.registerHandler("create-optional-menus",createPluginsMenu)
+    g.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
 
     if g.app.gui.guiName() == 'tkinter':

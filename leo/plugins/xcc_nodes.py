@@ -321,7 +321,7 @@ def init ():
     )
 
     for hook,f in data:
-        g.app.pluginsController.registerHandler(hook,f)
+        g.registerHandler(hook,f)
         g.plugin_signon(__name__)
 
     return True

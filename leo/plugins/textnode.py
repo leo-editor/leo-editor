@@ -18,10 +18,10 @@ __version__ = "1.1"
 #@+others
 #@+node:ajones.20070122160142.2: ** init
 def init():
-    g.app.pluginsController.registerHandler(('new','open2'), on_open)
-    g.app.pluginsController.registerHandler("save1", on_save)
-    g.app.pluginsController.registerHandler("save2", on_open)
-    g.app.pluginsController.registerHandler("icondclick1", on_icondclick)
+    g.registerHandler(('new','open2'), on_open)
+    g.registerHandler("save1", on_save)
+    g.registerHandler("save2", on_open)
+    g.registerHandler("icondclick1", on_icondclick)
 
     g.plugin_signon(__name__)
 

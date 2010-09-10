@@ -21,11 +21,11 @@ def init():
     if ok: # Register the handlers...
 
         if 1: # Very effective.
-            g.app.pluginsController.registerHandler("idle", printIdleGC)
+            g.registerHandler("idle", printIdleGC)
         else: # Very precise.
-            g.app.pluginsController.registerHandler("all", printIdleGC)
+            g.registerHandler("all", printIdleGC)
         if 0: # Another idea.
-            g.app.pluginsController.registerHandler("command2", printIdleRefs)
+            g.registerHandler("command2", printIdleRefs)
 
         g.plugin_signon(__name__)
 

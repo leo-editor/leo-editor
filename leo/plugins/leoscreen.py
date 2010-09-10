@@ -152,7 +152,7 @@ __version__ = "0.1"
 #@+node:tbrown.20100226095909.12781: ** init
 def init():
     """Leo plugin init. function"""
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
 
     g.plugin_signon(__name__)
 

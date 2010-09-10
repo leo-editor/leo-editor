@@ -34,8 +34,8 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 def init():
     ok = Tk and not g.app.unitTesting
     if ok:
-        # g.app.pluginsController.registerHandler("after-create-leo-frame", maximize_window)
-        g.app.pluginsController.registerHandler(('new','open2'), maximize_window)
+        # g.registerHandler("after-create-leo-frame", maximize_window)
+        g.registerHandler(('new','open2'), maximize_window)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20070602072200.2: ** maximize_window

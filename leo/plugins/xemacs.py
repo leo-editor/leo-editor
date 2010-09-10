@@ -79,9 +79,9 @@ def init ():
         return False
 
     if useDoubleClick: # Open on double click
-        g.app.pluginsController.registerHandler("icondclick2", open_in_emacs)
+        g.registerHandler("icondclick2", open_in_emacs)
     else: # Open on single click: interferes with dragging.
-        g.app.pluginsController.registerHandler("iconclick2", open_in_emacs_return_true)
+        g.registerHandler("iconclick2", open_in_emacs_return_true)
 
     if g.app.unitTesting:
         os.system(_emacs_cmd)

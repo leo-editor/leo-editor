@@ -15,6 +15,6 @@ try:
 except ImportError:
     g.cantImport('xyzzy',pluginName='failed_import')
 
-g.app.pluginsController.registerHandler("start2", onStart) # Needed to have the plugin show in the Plugin Manager list.
+g.registerHandler("start2", onStart) # Needed to have the plugin show in the Plugin Manager list.
 g.plugin_signon(__name__)
 #@-leo

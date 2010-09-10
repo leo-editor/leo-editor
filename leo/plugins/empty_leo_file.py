@@ -6,8 +6,9 @@
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-
 import os
+
+__version__ = "1.2"
 
 #@+<< define minimal .leo file >>
 #@+node:EKR.20040517080049.2: ** << define minimal .leo file >>
@@ -27,15 +28,13 @@ empty_leo_file = """<?xml version="1.0" encoding="UTF-8"?>
 #@+node:ekr.20100128073941.5372: ** init
 def init():
 
-    # Ok for unit testing.  Only rewrites empty files.
+    ok = not g.unitTesting
 
-    # Register the handlers...
-    g.app.pluginsController.registerHandler("open1", onOpen)
+    if ok:
+        g.registerHandler("open1", onOpen)
+        g.plugin_signon(__name__)
 
-    __version__ = "1.2"
-    g.plugin_signon(__name__)
-
-    return True
+    return ok
 #@+node:EKR.20040517080049.3: ** onOpen
 def onOpen (tag,keywords):
 

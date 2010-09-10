@@ -118,7 +118,7 @@ if g.app.gui.guiName() == "qt":
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
-    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 

@@ -34,8 +34,7 @@ def init():
 
     if g.app.gui.guiName() != "tkinter": return False
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
-
+    g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
 
     return True

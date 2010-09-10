@@ -28,7 +28,7 @@ def init ():
     ok = not g.app.unitTesting
 
     if ok:
-        g.app.pluginsController.registerHandler("all",trace_tags)
+        g.registerHandler("all",trace_tags)
         g.plugin_signon(__name__)
 
     return ok

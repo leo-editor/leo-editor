@@ -151,8 +151,8 @@ def init():
     ok = not g.app.unitTesting
     if ok:
         # Register the handlers...
-        g.app.pluginsController.registerHandler("icondclick1",onIconDoubleClick)
-        g.app.pluginsController.registerHandler("headkey2",onHeadKey)
+        g.registerHandler("icondclick1",onIconDoubleClick)
+        g.registerHandler("headkey2",onHeadKey)
         g.plugin_signon(__name__)
 
     return ok

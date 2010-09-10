@@ -66,6 +66,6 @@ def onSelect (tag,keywords):
         sync_node_to_folder(c,v,h[8:])
 
 def init():
-    g.app.pluginsController.registerHandler("select1", onSelect)
+    g.registerHandler("select1", onSelect)
     g.plugin_signon(__name__)
 #@-leo

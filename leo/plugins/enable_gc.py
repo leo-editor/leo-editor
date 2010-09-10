@@ -16,8 +16,7 @@ def init():
     ok = not g.app.unitTesting # Not for unit testing.
 
     if ok:
-        # Register the handlers...
-        g.app.pluginsController.registerHandler("start2", onStart)
+        g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
 
     return ok

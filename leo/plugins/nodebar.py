@@ -103,7 +103,7 @@ def init():
     if ok:
         initImages()
         configureNodebar()
-        g.app.pluginsController.registerHandler(('open2',"new"),addNodeBar )
+        g.registerHandler(('open2',"new"),addNodeBar )
         g.plugin_signon(__name__)
 
     return ok

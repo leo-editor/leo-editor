@@ -76,8 +76,8 @@ def init ():
             coloured_nodes = set() 
             applyConfiguration(getConfiguration()) 
             # 
-            g.app.pluginsController.registerHandler("start2", installDrawMethod) 
-            g.app.pluginsController.registerHandler("headclick1", storeHeadlineClick) 
+            g.registerHandler("start2", installDrawMethod) 
+            g.registerHandler("headclick1", storeHeadlineClick) 
             g.plugin_signon(__name__)
 
     return ok

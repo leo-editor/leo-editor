@@ -35,7 +35,7 @@ __version__ = "0.1"
 #@+node:tbrown.20091214233510.5351: ** init
 def init():
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
 
     g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
@@ -62,7 +62,7 @@ class geotag_Controller:
     #@+node:tbrown.20091214233510.5355: *3* __del__
     def __del__(self):
         for i in self.handlers:
-            g.app.pluginsController.unregisterHandler(i[0], i[1])
+            g.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20091215204347.11403: *3* getAttr
     @staticmethod
     def getAttr(p):

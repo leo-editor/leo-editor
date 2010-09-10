@@ -103,10 +103,10 @@ OwnIdleHook = False
 def init ():
 
     if 1: # Ok for unit testing.
-        g.app.pluginsController.registerHandler("bodykey2",OnBodyKey)
-        g.app.pluginsController.registerHandler("icondclick2",OnIconDoubleClick)
-        g.app.pluginsController.registerHandler("end1",OnQuit)
-        g.app.pluginsController.registerHandler("idle",OnIdle)
+        g.registerHandler("bodykey2",OnBodyKey)
+        g.registerHandler("icondclick2",OnIconDoubleClick)
+        g.registerHandler("end1",OnQuit)
+        g.registerHandler("idle",OnIdle)
         g.plugin_signon(__name__)
 
     return True

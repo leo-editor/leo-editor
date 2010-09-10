@@ -198,7 +198,7 @@ def init ():
         # Register the handlers...
 
         event = 'open2'
-        g.app.pluginsController.registerHandler(event,on_open_window)
+        g.registerHandler(event,on_open_window)
 
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
@@ -225,7 +225,7 @@ def on_open_window (tag,keywords):
 
     event = c.config.getString('vim_trigger_event') or 'icondclick1'
 
-    g.app.pluginsController.registerHandler(event,open_in_vim)
+    g.registerHandler(event,open_in_vim)
 
     # g.trace('trigger event:',event,repr(c))
 #@+node:EKR.20040517075715.11: ** open_in_vim

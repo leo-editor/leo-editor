@@ -16,8 +16,7 @@ def init():
     ok = not g.app.unitTesting # Not for unit testing.
 
     if ok:
-        # Register the handlers...
-        g.app.pluginsController.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
+        g.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
         g.plugin_signon(__name__)
 
     return ok

@@ -62,7 +62,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.app.pluginsController.registerHandler("after-create-leo-frame",onCreate)
+        g.registerHandler("after-create-leo-frame",onCreate)
         g.plugin_signon(__name__)
 
     return ok
@@ -85,7 +85,7 @@ def onCreate (tag,keys):
         else:
             hoist.addWidgets()
 
-        g.app.pluginsController.registerHandler("hoist-changed", onHoistChanged)
+        g.registerHandler("hoist-changed", onHoistChanged)
 #@+node:bobjack.20080503151427.7: ** onHoistChanged
 def onHoistChanged(tag, keywords):
 

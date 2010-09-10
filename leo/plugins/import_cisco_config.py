@@ -62,7 +62,7 @@ def init ():
             g.app.createTkGui(__file__)
 
         if g.app.gui.guiName() == "tkinter":
-            g.app.pluginsController.registerHandler(('new','open2'),create_import_cisco_menu)
+            g.registerHandler(('new','open2'),create_import_cisco_menu)
             g.plugin_signon(__name__)
 
     return ok

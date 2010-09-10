@@ -171,7 +171,7 @@ def init ():
 
         # Note: call onCreate _after_ reading the .leo file.
         # That is, the 'after-create-leo-frame' hook is too early!
-        g.app.pluginsController.registerHandler(('new','open2'),onCreate)
+        g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
 
     return ok

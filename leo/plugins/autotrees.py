@@ -130,9 +130,9 @@ def init():
 
         if ok:
             if 0: # Use this if you want to create the commander class before the frame is fully created.
-                g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
+                g.registerHandler('before-create-leo-frame',onCreate)
             else: # Use this if you want to create the commander class after the frame is fully created.
-                g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+                g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
         else:
             g.es("autotrees requires Tkinter",color='blue')
@@ -226,8 +226,8 @@ class pluginController:
         """Initialise the commander"""
         self.c = c
         # Register handlers
-        g.app.pluginsController.registerHandler("icondclick1", self.onIconDoubleClick)  
-        g.app.pluginsController.registerHandler("headclick1", self.onHeadlineClick)  
+        g.registerHandler("icondclick1", self.onIconDoubleClick)  
+        g.registerHandler("headclick1", self.onHeadlineClick)  
         #
         # Prepare regular expressions
         self.getdetails = re.compile(r"@(\w+)-(\w+)\s+(.*)")

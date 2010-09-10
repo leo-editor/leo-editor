@@ -7,6 +7,8 @@
 
 import leo.core.leoGlobals as g
 
+__version__ = "1.2"
+
 #@+others
 #@+node:edream.110203113231.920: ** onCommand
 def onCommand (tag,keywords):
@@ -19,8 +21,6 @@ def onCommand (tag,keywords):
 if not g.app.unitTesting: # Not for unit testing: overrides core methods.
 
     # Register the handlers...
-    g.app.pluginsController.registerHandler("command1", onCommand)
-
-    __version__ = "1.2"
+    g.registerHandler("command1", onCommand)
     g.plugin_signon(__name__)
 #@-leo

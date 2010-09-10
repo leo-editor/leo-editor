@@ -26,6 +26,8 @@ Translate a few menu items into Simplified Chinese
 
 import leo.core.leoGlobals as g
 
+__version__ = "1.1" # Set version for the plugin handler.
+
 #@+others
 #@+node:ekr.20040828105233.1: ** onMenu
 def onMenu (tag,keywords):
@@ -212,10 +214,6 @@ def onMenu (tag,keywords):
 #@-others
 
 if not g.app.unitTesting: # Unpleasant for unit testing.
-
-    # Register the handlers...
-    g.app.pluginsController.registerHandler("menu2", onMenu)
-
-    __version__ = "1.1" # Set version for the plugin handler.
+    g.registerHandler("menu2", onMenu)
     g.plugin_signon(__name__)
 #@-leo

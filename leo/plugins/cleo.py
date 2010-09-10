@@ -128,7 +128,7 @@ def init():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.app.pluginsController.registerHandler(('open2','new'), onCreate)
+        g.registerHandler(('open2','new'), onCreate)
         g.plugin_signon(__name__)
 
     return ok
@@ -279,7 +279,7 @@ class cleoController:
             ("close-frame",self.close),
         ]
         for i in self.handlers:
-            g.app.pluginsController.registerHandler(i[0], i[1])
+            g.registerHandler(i[0], i[1])
 
         self.loadAllIcons()
     #@+node:tbrown.20060903121429.17: *4* install_drawing_overrides
@@ -329,7 +329,7 @@ class cleoController:
         if self.c != key['c']: return  # not our problem
 
         for i in self.handlers:
-            g.app.pluginsController.unregisterHandler(i[0], i[1])
+            g.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20060903121429.19: *3* attributes...
     #@+at
     # These methods should really be part of vnode in accordance with the principles

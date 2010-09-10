@@ -45,9 +45,9 @@ def init():
             g.app.createTkGui(__file__)
 
         if g.app.gui.guiName() == "tkinter":
-            g.app.pluginsController.registerHandler("start1", onStart)
-            g.app.pluginsController.registerHandler("create-optional-menus",create_UserMenu)
-            g.app.pluginsController.registerHandler("iconrclick2", onRclick)
+            g.registerHandler("start1", onStart)
+            g.registerHandler("create-optional-menus",create_UserMenu)
+            g.registerHandler("iconrclick2", onRclick)
             g.plugin_signon(__name__)
             g.es('mnplug OK+Commands+Menu aktiv',color='green')
 

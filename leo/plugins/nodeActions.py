@@ -63,7 +63,7 @@ def init():
 	 g.es("nodeActions: Init", color='blue')
 	 ok = not g.app.unitTesting # Dangerous for unit testing.
 	 if ok:
-		  g.app.pluginsController.registerHandler("icondclick1", onIconDoubleClickNA)
+		  g.registerHandler("icondclick1", onIconDoubleClickNA)
 		  g.plugin_signon(__name__)
 	 return ok
 #@+node:TL.20080507213950.9: ** doNodeAction

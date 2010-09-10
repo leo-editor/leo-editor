@@ -95,7 +95,7 @@ def init ():
             g.app.createTkGui(__file__)
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            g.app.pluginsController.registerHandler('before-create-leo-frame',onCreate)
+            g.registerHandler('before-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
 
     return ok
@@ -111,7 +111,7 @@ def onCreate (tag,keywords):
     # EKR: Add an ivar to the commander for use by atFile.
     c.mod_label_controller = controller
 
-    g.app.pluginsController.registerHandler("create-optional-menus",controller.onCreateOptionalMenus)
+    g.registerHandler("create-optional-menus",controller.onCreateOptionalMenus)
 #@+node:ekr.20050301095332.3: ** class Pmw_combobox
 class Pmw_combobox:
 

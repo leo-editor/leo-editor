@@ -113,7 +113,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon("newButtons")
 
     return ok

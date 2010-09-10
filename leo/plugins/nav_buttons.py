@@ -170,7 +170,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok
@@ -182,7 +182,7 @@ def onCreate (tag,keywords):
         return
 
     c = keywords.get("c")
-    r = g.app.pluginsController.registerHandler
+    r = g.registerHandler
 
     images = imageClass()
 

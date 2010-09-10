@@ -50,7 +50,7 @@ def init ():
         ok = g.app.gui.guiName() == "tkinter"
 
         if ok:
-            g.app.pluginsController.registerHandler("create-optional-menus",createWordCountMenu)
+            g.registerHandler("create-optional-menus",createWordCountMenu)
             g.plugin_signon(__name__)
 
     return ok

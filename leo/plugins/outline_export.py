@@ -18,7 +18,7 @@ def init():
     if ok:
 
         # Register the handlers...
-        g.app.pluginsController.registerHandler("start2", onStart)
+        g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
 
     return ok

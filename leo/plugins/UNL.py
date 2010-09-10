@@ -99,10 +99,9 @@ def init ():
     #if g.app.gui is None:
     #    g.app.createTkGui(__file__)
 
-    g.app.pluginsController.registerHandler(
-        "after-create-leo-frame", createStatusLine)
-    g.app.pluginsController.registerHandler("select2", onSelect2) # show UNL
-    g.app.pluginsController.registerHandler("@url1", onUrl1) # jump to URL or UNL
+    g.registerHandler("after-create-leo-frame", createStatusLine)
+    g.registerHandler("select2", onSelect2) # show UNL
+    g.registerHandler("@url1", onUrl1) # jump to URL or UNL
 
     g.plugin_signon(__name__)
     return True

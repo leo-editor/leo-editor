@@ -35,7 +35,7 @@ textexts = []
 #@+node:ajones.20070122154835: ** init
 def init():
     g.plugin_signon(__name__)
-    g.app.pluginsController.registerHandler("icondclick1", on_icondclick)
+    g.registerHandler("icondclick1", on_icondclick)
 
     fileName = os.path.join(g.app.loadDir,"../","plugins","expfolder.ini")
     config = ConfigParser.ConfigParser()

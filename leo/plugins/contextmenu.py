@@ -292,7 +292,7 @@ def install_handlers():
         nextclone_rclick, marknodes_rclick,
         configuredcommands_rclick, deletenodes_rclick]
     g.tree_popup_handlers.extend(hnd)
-    g.app.pluginsController.registerHandler("idle", editnode_on_idle)
+    g.registerHandler("idle", editnode_on_idle)
 
     # just for kicks, the @commands
 

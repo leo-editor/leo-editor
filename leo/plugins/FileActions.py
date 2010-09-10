@@ -91,7 +91,7 @@ def init():
 
     ok = not g.app.unitTesting # Dangerous for unit testing.
     if ok:
-        g.app.pluginsController.registerHandler("icondclick1", onIconDoubleClick)
+        g.registerHandler("icondclick1", onIconDoubleClick)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20040915105758.14: ** onIconDoubleClick

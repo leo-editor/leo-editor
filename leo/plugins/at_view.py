@@ -65,8 +65,8 @@ def onCreate(tag, keywords):
     myView = View(c)
 
     # Register the handlers...
-    g.app.pluginsController.registerHandler("icondclick2", myView.icondclick2)
-    g.app.pluginsController.registerHandler("idle", myView.idle)
+    g.registerHandler("icondclick2", myView.icondclick2)
+    g.registerHandler("idle", myView.idle)
     g.plugin_signon(__name__)
 #@+node:ktenney.20041211072654.7: ** class View
 class View:
@@ -257,7 +257,7 @@ class View:
 #@-others
 
 if path and win32clipboard: # Ok for unit testing.
-    g.app.pluginsController.registerHandler("after-create-leo-frame",onCreate)
+    g.registerHandler("after-create-leo-frame",onCreate)
 elif not g.app.unitTesting:
     s = 'at_view plugin not loaded: win32Clipboard not present.'
     g.es_print(s)

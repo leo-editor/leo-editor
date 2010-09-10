@@ -52,7 +52,7 @@ def init():
         print('todo.py plugin not loading because gui is not Qt')
         return False
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
     g.tree_popup_handlers.append(popup_entry)
@@ -225,13 +225,13 @@ class todoController:
         os.chdir(owd)
 
         for i in self.handlers:
-            g.app.pluginsController.registerHandler(i[0], i[1])
+            g.registerHandler(i[0], i[1])
 
         self.loadAllIcons()
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:
-            g.app.pluginsController.unregisterHandler(i[0], i[1])
+            g.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20090630144958.5319: *3* addPopupMenu
     def addPopupMenu(self,c,p,menu):
 
@@ -388,7 +388,7 @@ class todoController:
         if self.c != key['c']: return  # not our problem
 
         for i in self.handlers:
-            g.app.pluginsController.unregisterHandler(i[0], i[1])
+            g.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20090119215428.18: *3* showHelp
     def showHelp(self):
         g.es('Check the Plugins menu Todo entry')

@@ -17,7 +17,7 @@ def init ():
     if g.app.gui.guiName() != "qt":
         return False
 
-    g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
 
@@ -152,11 +152,11 @@ class graphcanvasController(object):
         self.c.graphcanvasController = self
         self.ui = graphcanvasUI(self)
 
-        g.app.pluginsController.registerHandler('headkey2', lambda a,b: self.update())
+        g.registerHandler('headkey2', lambda a,b: self.update())
 
         self.initIvars()
 
-        # g.app.pluginsController.registerHandler('open2', self.loadLinks)
+        # g.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
         # self.loadLinksInt()
     def initIvars(self):

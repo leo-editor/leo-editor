@@ -80,9 +80,9 @@ def init ():
 
     if ok:
         initImages()
-        g.app.pluginsController.registerHandler("after-create-leo-frame",addButtons)
-        g.app.pluginsController.registerHandler("after-redraw-outline",drawImages)
-        g.app.pluginsController.registerHandler(("new","open2"),scanForTemplates)
+        g.registerHandler("after-create-leo-frame",addButtons)
+        g.registerHandler("after-redraw-outline",drawImages)
+        g.registerHandler(("new","open2"),scanForTemplates)
         g.plugin_signon(__name__)
 
     return ok

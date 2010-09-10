@@ -68,7 +68,7 @@ def init ():
     ok = True
 
     if ok:
-        #g.app.pluginsController.registerHandler('start2',onStart2)
+        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
     g.app.stickynotes = {}    

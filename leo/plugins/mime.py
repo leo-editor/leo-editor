@@ -100,7 +100,7 @@ def init ():
         #print('mime.py enabled')
 
         # Open on double click
-        g.app.pluginsController.registerHandler('icondclick1', open_mimetype)
+        g.registerHandler('icondclick1', open_mimetype)
 
         g.plugin_signon(__name__)
 

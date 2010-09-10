@@ -79,6 +79,6 @@ def createScriptsMenu (tag,keywords):
 #@-others
 
 if 1: # Ok for unit testing: creates menu.
-    g.app.pluginsController.registerHandler("create-optional-menus",createScriptsMenu)
+    g.registerHandler("create-optional-menus",createScriptsMenu)
     g.plugin_signon(__name__)
 #@-leo

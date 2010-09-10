@@ -53,7 +53,7 @@ def init ():
 
     if ok:
         # Register the handlers...
-        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon( __name__ )
 
     return ok
@@ -79,7 +79,7 @@ def onCreate(tag, keywords):
         gDict[c.hash()] = d
         g.es("auto save enabled every %s sec." % (
             interval),color="orange")
-        g.app.pluginsController.registerHandler('idle',onIdle)
+        g.registerHandler('idle',onIdle)
         g.enableIdleTimeHook()
     else:
          g.es("@bool mod_autosave_active=False",color='orange')

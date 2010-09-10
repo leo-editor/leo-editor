@@ -710,12 +710,10 @@ def init ():
     ok = g.app.gui.guiName() in ("tkinter") # ,"qt")
 
     if ok:
-        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
-        g.app.pluginsController.registerHandler('close-frame',onClose)
-
-        g.app.pluginsController.registerHandler("bodyrclick1",rClicker)
-        g.app.pluginsController.registerHandler("rclick-popup",rClicker)
-
+        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('close-frame',onClose)
+        g.registerHandler("bodyrclick1",rClicker)
+        g.registerHandler("rclick-popup",rClicker)
         g.plugin_signon(__name__)
 
     return ok
@@ -738,8 +736,8 @@ def onCreate (tag, keys):
 
         c.theContextMenuController = controller
 
-        g.app.pluginsController.registerHandler("bodyrclick1",rClicker)
-        g.app.pluginsController.registerHandler("rclick-popup",rClicker)
+        g.registerHandler("bodyrclick1",rClicker)
+        g.registerHandler("rclick-popup",rClicker)
 #@+node:bobjack.20080424195922.4: *3* onClose
 def onClose (tag, keys):
 

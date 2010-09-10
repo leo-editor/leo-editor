@@ -40,7 +40,7 @@ __version__ = "1.1"
 #@+node:ekr.20100128073941.5377: ** init
 def init():
 
-    g.app.pluginsController.registerHandler("create-optional-menus",
+    g.registerHandler("create-optional-menus",
         createPasteAsHeadlinesMenu)
 
     g.plugin_signon(__name__)

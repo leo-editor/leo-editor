@@ -34,7 +34,7 @@ def onCreate (tag,keywords):
     if c:
         rowCol = rowColClass(c)
         rowCol.addWidgets()
-        g.app.pluginsController.registerHandler("idle",rowCol.update)
+        g.registerHandler("idle",rowCol.update)
 #@+node:ekr.20040108095351.1: ** class rowColClass
 class rowColClass:
 
@@ -101,6 +101,6 @@ if Tk: # OK for unit testing.
         g.app.createTkGui(__file__)
 
     if g.app.gui.guiName() == "tkinter":
-        g.app.pluginsController.registerHandler("after-create-leo-frame",onCreate)
+        g.registerHandler("after-create-leo-frame",onCreate)
         g.plugin_signon("rowcol")
 #@-leo

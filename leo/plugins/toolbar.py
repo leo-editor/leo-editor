@@ -338,7 +338,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        r = g.app.pluginsController.registerHandler
+        r = g.registerHandler
         r('before-create-leo-frame',onPreCreate)
         r('after-create-leo-frame', onCreate)
         r('close-frame', onClose)

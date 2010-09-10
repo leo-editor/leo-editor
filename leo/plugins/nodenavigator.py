@@ -60,7 +60,7 @@ def init ():
             g.app.createTkGui(__file__)
 
         if g.app.gui.guiName() == "tkinter":
-            g.app.pluginsController.registerHandler(('new','open2'), onCreate)
+            g.registerHandler(('new','open2'), onCreate)
             g.plugin_signon(__name__) #"nodenavigator")
 
     return ok
@@ -75,9 +75,9 @@ def onCreate(tag, keywords):
     nav = Navigator(c)
     nav.addWidgets()
 
-    g.app.pluginsController.registerHandler("set-mark",nav.addMark)
-    g.app.pluginsController.registerHandler("clear-mark",nav.clearMark)
-    g.app.pluginsController.registerHandler("select3",nav.updateRecent)
+    g.registerHandler("set-mark",nav.addMark)
+    g.registerHandler("clear-mark",nav.clearMark)
+    g.registerHandler("select3",nav.updateRecent)
 #@+node:ekr.20040108062655.2: ** class Navigator
 class Navigator:
 

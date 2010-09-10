@@ -67,8 +67,7 @@ def init ():
     ok = g.app.gui.guiName() == "qt"
 
     if ok:
-        g.app.pluginsController.registerHandler(
-            'after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

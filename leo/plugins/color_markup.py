@@ -127,11 +127,11 @@ def init ():
             # default value for color-tagged wiki text
             global wikiColoredText
             wikiColoredText = "blue"
-            g.app.pluginsController.registerHandler("color-optional-markup", colorWikiMarkup)
-            g.app.pluginsController.registerHandler("init-color-markup", initAnyMarkup)
-            #g.app.pluginsController.registerHandler("bodykey1", onBodykey1)
-            g.app.pluginsController.registerHandler("bodydclick1", onBodydclick1)
-            g.app.pluginsController.registerHandler(('new','open2'), onCreate)
+            g.registerHandler("color-optional-markup", colorWikiMarkup)
+            g.registerHandler("init-color-markup", initAnyMarkup)
+            #g.registerHandler("bodykey1", onBodykey1)
+            g.registerHandler("bodydclick1", onBodydclick1)
+            g.registerHandler(('new','open2'), onCreate)
             g.plugin_signon(__name__)
 
     return ok

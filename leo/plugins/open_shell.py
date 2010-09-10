@@ -60,10 +60,8 @@ def init ():
     if 1: # Ok for unit testing: creates a new menu.
 
         # Register the handlers...
-        g.app.pluginsController.registerHandler("after-create-leo-frame", onCreate)
-
+        g.registerHandler("after-create-leo-frame", onCreate)
         g.plugin_signon(__name__)
-
         return True
 #@+node:ekr.20060107110126.1: ** onCreate
 def onCreate (tag, keywords):

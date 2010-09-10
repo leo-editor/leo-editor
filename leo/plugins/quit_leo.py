@@ -22,7 +22,7 @@ def init():
         # Force a shutdown at any other time, even "idle" time.
         # Exception: do not call g.app.forceShutdown in a "start2" hook.
         g.pr(__doc__)
-        g.app.pluginsController.registerHandler("idle",forceLeoToQuit)
+        g.registerHandler("idle",forceLeoToQuit)
         g.plugin_signon(__name__)
 
     return ok

@@ -112,13 +112,13 @@ def init ():
 
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            g.app.pluginsController.registerHandler(('new','open2'), on_open)
-            g.app.pluginsController.registerHandler("bodykey1", on_bodykey1)
-            g.app.pluginsController.registerHandler("headkey2", on_headkey2)
+            g.registerHandler(('new','open2'), on_open)
+            g.registerHandler("bodykey1", on_bodykey1)
+            g.registerHandler("headkey2", on_headkey2)
 
             if 0: # doesn't work: the cursor stops blinking.
-                g.app.pluginsController.registerHandler("select1", on_select1)
-                g.app.pluginsController.registerHandler("select2", on_select2)
+                g.registerHandler("select1", on_select1)
+                g.registerHandler("select2", on_select2)
 
             g.plugin_signon(__name__)
 

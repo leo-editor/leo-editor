@@ -112,7 +112,7 @@ def init ():
     if ok:
 
         # Call onCreate after the commander and the key handler exist.
-        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok

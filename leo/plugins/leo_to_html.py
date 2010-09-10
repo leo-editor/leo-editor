@@ -206,8 +206,8 @@ def init ():
     Hooks create-optional-menus and after-create-leo-frame.
 
     """
-    g.app.pluginsController.registerHandler("create-optional-menus",createExportMenus)
-    g.app.pluginsController.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler("create-optional-menus",createExportMenus)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     # I think this should be ok for unit testing.
     return True

@@ -58,7 +58,7 @@ def init():
 
     if ok:
         # Register the handlers...
-        g.app.pluginsController.registerHandler("icondclick1",onIconDoubleClick)
+        g.registerHandler("icondclick1",onIconDoubleClick)
         g.plugin_signon(__name__)
 
     return ok

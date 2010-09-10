@@ -58,8 +58,8 @@ def init ():
     # g.pr('image.init')
 
     if ok:
-        g.app.pluginsController.registerHandler("select2", onSelect)
-        g.app.pluginsController.registerHandler("unselect1", onUnselect)
+        g.registerHandler("select2", onSelect)
+        g.registerHandler("unselect1", onUnselect)
         g.plugin_signon(__name__)
 
     return ok
