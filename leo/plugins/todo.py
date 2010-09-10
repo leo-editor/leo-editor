@@ -465,7 +465,8 @@ class todoController:
         # dictionary exists
 
 
-        if node.unknownAttributes["annotate"][attrib] != val:
+        if (attrib not in node.unknownAttributes["annotate"] or
+            node.unknownAttributes["annotate"][attrib] != val):
             self.c.setChanged(True)
 
         node.unknownAttributes["annotate"][attrib] = val
