@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.53">
-	<global_window_position top="57" left="275" height="962" width="1132"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.47">
+	<global_window_position top="57" left="275" height="962" width="1313"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -554,18 +554,21 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
-<v t="ekr.20100909154940.2225"><vh>@mark-for-unit-tests</vh>
-<v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
-<v t="ekr.20100909154940.2227"><vh>Headline and body text</vh>
-<v t="ekr.20100909154940.2228"><vh>@screenshot-tree Urgent</vh>
-<v t="ekr.20100909154940.2229"><vh>Organizer</vh>
-<v t="ekr.20100909154940.2230"><vh>To Do List</vh>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
+<v t="ekr.20100909154940.2227" a="E"><vh>Headline and body text</vh>
+<v t="ekr.20100909215037.2245"><vh>@image C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100909154940-2227.png</vh></v>
+<v t="ekr.20100909210124.2239"><vh>@callout This is a headline</vh></v>
+<v t="ekr.20100909210124.2240"><vh>@callout This is the body pane</vh></v>
+<v t="ekr.20100909210124.2241"><vh>@markers 1,2</vh></v>
+<v t="ekr.20100909154940.2228" a="E"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100909154940.2229" a="E"><vh>Organizer</vh>
+<v t="ekr.20100909154940.2230" a="E"><vh>To Do List</vh>
 <v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
 <v t="ekr.20100909154940.2232"><vh>Important</vh></v>
 <v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
 <v t="ekr.20100909154940.2234"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20100909154940.2235"><vh>Diary</vh>
+<v t="ekr.20100909154940.2235" a="E"><vh>Diary</vh>
 <v t="ekr.20100909154940.2236"><vh>2009</vh>
 <v t="ekr.20100909154940.2237"><vh>Jan 1</vh></v>
 </v>
@@ -575,8 +578,7 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20100909154713.2210"><vh>@button screenshot</vh></v>
+<v t="ekr.20100909154713.2210"><vh>@button screenshot @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -997,7 +999,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11,0,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7099,14 +7101,16 @@ assert p2
 c.selectPosition(p2)
 
 sc.screen_shot_command()
+
+c.selectPosition(p)
 </t>
-<t tx="ekr.20100909154940.2225"># Add the tree to the external unit test</t>
 <t tx="ekr.20100909154940.2226"></t>
 <t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
 
-.. image:: screen-shots/ekr-20100821182153-4356.png
+.. image:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100909154940-2227.png
+
 </t>
 <t tx="ekr.20100909154940.2228"></t>
 <t tx="ekr.20100909154940.2229">Organizer node.
@@ -7124,5 +7128,9 @@ text here by typing it in.
 <t tx="ekr.20100909154940.2236"></t>
 <t tx="ekr.20100909154940.2237"></t>
 <t tx="ekr.20100909154940.2238"></t>
+<t tx="ekr.20100909210124.2239"></t>
+<t tx="ekr.20100909210124.2240"></t>
+<t tx="ekr.20100909210124.2241"></t>
+<t tx="ekr.20100909215037.2245"></t>
 </tnodes>
 </leo_file>

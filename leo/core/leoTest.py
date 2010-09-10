@@ -672,187 +672,187 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
 
     if trace: g.trace('*** spawning test process',path)
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
-#@+node:ekr.20070627135407: ** runTestsExternally & helper class
+#@+node:ekr.20070627135407: ** runTestsExternally
 def runTestsExternally (c,all):
 
+    runner = runTestExternallyHelperClass(c,all)
+    runner.runTests()
+#@+node:ekr.20070627140344: ** class runTestExternallyHelperClass
+class runTestExternallyHelperClass:
+
+    '''A helper class to run tests externally.'''
+
     #@+others
-    #@+node:ekr.20070627140344: *3* class runTestHelperClass
-    class runTestHelperClass:
+    #@+node:ekr.20070627140344.1: *3*  ctor: runTestHelperClass
+    def __init__(self,c,all):
 
-        '''A helper class to run tests externally.'''
+        self.c = c
+        self.all = all
 
-        #@+others
-        #@+node:ekr.20070627140344.1: *4*  ctor: runTestHelperClass
-        def __init__(self,c,all):
+        self.copyRoot = None # The root of copied tree.
+        self.fileName = 'dynamicUnitTest.leo'
+        self.root = None # The root of the tree to copy when self.all is False.
+        self.tags = ('@test','@suite','@unittests','@unit-tests')
+    #@+node:ekr.20070627135336.10: *3* createFileFromOutline
+    def createFileFromOutline (self,c2):
 
-            self.c = c
-            self.all = all
+        '''Write c's outline to test/dynamicUnitTest.leo.'''
 
-            self.copyRoot = None # The root of copied tree.
-            self.fileName = 'dynamicUnitTest.leo'
-            self.root = None # The root of the tree to copy when self.all is False.
-            self.tags = ('@test','@suite','@unittests','@unit-tests')
-        #@+node:ekr.20070627135336.10: *4* createFileFromOutline
-        def createFileFromOutline (self,c2):
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
 
-            '''Write c's outline to test/dynamicUnitTest.leo.'''
+        c2.selectPosition(c2.rootPosition())
+        c2.mFileName = path
+        c2.fileCommands.save(path)
+        c2.close()
+    #@+node:ekr.20070627135336.9: *3* createOutline & helpers
+    def createOutline (self,c2):
 
-            path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
+        '''Create a unit test ouline containing
 
-            c2.selectPosition(c2.rootPosition())
-            c2.mFileName = path
-            c2.fileCommands.save(path)
-            c2.close()
-        #@+node:ekr.20070627135336.9: *4* createOutline & helpers
-        def createOutline (self,c2):
+        - all children of any @mark-for-unit-tests node anywhere in the outline.
+        - all @test and @suite nodes in p's outline.'''
 
-            '''Create a unit test ouline containing
-
-            - all children of any @mark-for-unit-tests node anywhere in the outline.
-            - all @test and @suite nodes in p's outline.'''
-
-            trace = False ; verbose = False
-            c = self.c ; markTag = '@mark-for-unit-tests'
-            self.copyRoot = c2.rootPosition()
-            self.copyRoot.initHeadString('All unit tests')
-            c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-            self.seen = []
-            #@+<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-            #@+node:ekr.20070705065154: *5* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-            if self.all:
-                # A single pass looks for all tags everywhere.
-                p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
+        trace = False ; verbose = False
+        c = self.c ; markTag = '@mark-for-unit-tests'
+        self.copyRoot = c2.rootPosition()
+        self.copyRoot.initHeadString('All unit tests')
+        c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+        self.seen = []
+        #@+<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+        #@+node:ekr.20070705065154: *4* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+        if self.all:
+            # A single pass looks for all tags everywhere.
+            p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
+            p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+        else:
+            # The first pass looks everywhere for only for @mark-for-unit-tests,
+            p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
+            # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
+            # There is no second pass if the present node is an @mark-for-unit-test node.
+            p = c.p
+            if p.h.startswith(markTag):
                 p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
             else:
-                # The first pass looks everywhere for only for @mark-for-unit-tests,
-                p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
-                # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
-                # There is no second pass if the present node is an @mark-for-unit-test node.
-                p = c.p
-                if p.h.startswith(markTag):
-                    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+                p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+        #@-<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+
+        if trace: g.trace('all',self.all)
+        self.copyRoot.expand()
+        for n,p,limit,lookForMark,lookForNodes in (
+            (1,p1,limit1,lookForMark1,lookForNodes1),
+            (2,p2,limit2,lookForMark2,lookForNodes2),
+        ):
+            if n == 2 and self.all: return
+            if trace and verbose: g.trace(
+                'pass %s: mark %s nodes %s root %s limit %s' % (
+                    n,lookForMark,lookForNodes,
+                    p and p.h or '<none>',
+                    limit and limit.h or '<none>'))
+            while p and p != limit:
+                if g.match_word(p.h,0,'@ignore'):
+                    if trace: g.trace('ignoring tree',p.h)
+                    p.moveToNodeAfterTree()
+                elif p.v in self.seen:
+                    if trace: g.trace('seen',p.h)
+                    p.moveToNodeAfterTree()
+                elif lookForMark and p.h.startswith(markTag):
+                    if trace: g.trace('add mark tree',p.h)
+                    self.addMarkTree(p)
+                    p.moveToNodeAfterTree()
+                elif lookForNodes and self.isUnitTestNode(p):
+                    if trace: g.trace('add node',p.h)
+                    self.addNode(p)
+                    p.moveToNodeAfterTree()
                 else:
-                    p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
-            #@-<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+                    if trace and verbose: g.trace('skip',p.h)
+                    p.moveToThreadNext()
+    #@+node:ekr.20070705080413: *4* addMarkTree
+    def addMarkTree (self,p):
 
-            if trace: g.trace('all',self.all)
-            self.copyRoot.expand()
-            for n,p,limit,lookForMark,lookForNodes in (
-                (1,p1,limit1,lookForMark1,lookForNodes1),
-                (2,p2,limit2,lookForMark2,lookForNodes2),
-            ):
-                if n == 2 and self.all: return
-                if trace and verbose: g.trace(
-                    'pass %s: mark %s nodes %s root %s limit %s' % (
-                        n,lookForMark,lookForNodes,
-                        p and p.h or '<none>',
-                        limit and limit.h or '<none>'))
-                while p and p != limit:
-                    if g.match_word(p.h,0,'@ignore'):
-                        if trace: g.trace('ignoring tree',p.h)
-                        p.moveToNodeAfterTree()
-                    elif p.v in self.seen:
-                        if trace: g.trace('seen',p.h)
-                        p.moveToNodeAfterTree()
-                    elif lookForMark and p.h.startswith(markTag):
-                        if trace: g.trace('add mark tree',p.h)
-                        self.addMarkTree(p)
-                        p.moveToNodeAfterTree()
-                    elif lookForNodes and self.isUnitTestNode(p):
-                        if trace: g.trace('add node',p.h)
-                        self.addNode(p)
-                        p.moveToNodeAfterTree()
-                    else:
-                        if trace and verbose: g.trace('skip',p.h)
-                        p.moveToThreadNext()
-        #@+node:ekr.20070705080413: *5* addMarkTree
-        def addMarkTree (self,p):
+        # Add the entire @mark-for-unit-tests tree.
+        self.addNode(p)
+    #@+node:ekr.20070705065154.1: *4* addNode
+    def addNode(self,p):
 
-            # Add the entire @mark-for-unit-tests tree.
-            self.addNode(p)
-        #@+node:ekr.20070705065154.1: *5* addNode
-        def addNode(self,p):
+        '''
+        Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+        '''
 
-            '''
-            Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
-            '''
+        # g.trace(p.h)
 
-            # g.trace(p.h)
+        p2 = p.copyTreeAfter()
+        p2.moveToLastChildOf(self.copyRoot)
 
-            p2 = p.copyTreeAfter()
-            p2.moveToLastChildOf(self.copyRoot)
+        for p2 in p.self_and_subtree():
+            self.seen.append(p2.v)
+    #@+node:ekr.20070705075604.3: *4* isUnitTestNode
+    def isUnitTestNode (self,p):
 
-            for p2 in p.self_and_subtree():
-                self.seen.append(p2.v)
-        #@+node:ekr.20070705075604.3: *5* isUnitTestNode
-        def isUnitTestNode (self,p):
+        for tag in self.tags:
+            if p.h.startswith(tag):
+                return True
+        else:
+            return False
+    #@+node:ekr.20070627140344.2: *3* runTests
+    def runTests (self,trace=False):
+        # 2010/09/09: removed the gui arg: there is no way to set it.
 
-            for tag in self.tags:
-                if p.h.startswith(tag):
+        '''
+        Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
+        in a separate process.
+        '''
+
+        trace = False or trace
+        import time
+        kind = g.choose(self.all,'all ','selected')
+        c = self.c ; p = c.p
+        t1 = time.time()
+        found = self.searchOutline(p.copy())
+        if found:
+            theGui = leoGui.nullGui("nullGui")
+            c2 = c.new(gui=theGui)
+            found = self.createOutline(c2)
+            self.createFileFromOutline(c2)
+            t2 = time.time()
+            print('created %s unit tests in %0.2fsec in %s' % (
+                kind,t2-t1,self.fileName))
+            g.es('created %s unit tests' % (kind),color='blue')
+            # 2010/09/09: allow a way to specify the 
+            gui = g.app.unitTestGui or 'nullGui'
+            runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
+            c.selectPosition(p.copy())
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(self.all,'entire','selected')),color='red')
+    #@+node:ekr.20070627135336.8: *3* searchOutline
+    def searchOutline (self,p):
+
+        c = self.c ; p = c.p
+        iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
+
+        # First, look down the tree.
+        for p in iter():
+            for s in self.tags:
+                if p.h.startswith(s):
+                    self.root = c.p
                     return True
-            else:
-                return False
-        #@+node:ekr.20070627140344.2: *4* runTests
-        def runTests (self,gui='nullGui',trace=False):
 
-            '''
-            Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
-            in a separate process.
-            '''
-
-            trace = False or trace
-            import time
-            kind = g.choose(self.all,'all ','selected')
-            c = self.c ; p = c.p
-            t1 = time.time()
-            found = self.searchOutline(p.copy())
-            if found:
-                theGui = leoGui.nullGui("nullGui")
-                c2 = c.new(gui=theGui)
-                found = self.createOutline(c2)
-                self.createFileFromOutline(c2)
-                t2 = time.time()
-                print('created %s unit tests in %0.2fsec in %s' % (
-                    kind,t2-t1,self.fileName))
-                g.es('created %s unit tests' % (kind),color='blue')
-                runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
-                c.selectPosition(p.copy())
-            else:
-                g.es_print('no @test or @suite nodes in %s outline' % (
-                    g.choose(self.all,'entire','selected')),color='red')
-        #@+node:ekr.20070627135336.8: *4* searchOutline
-        def searchOutline (self,p):
-
-            c = self.c ; p = c.p
-            iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
-
-            # First, look down the tree.
-            for p in iter():
+        # Next, look up the tree.
+        if not self.all:   
+            for p in c.p.parents():
                 for s in self.tags:
                     if p.h.startswith(s):
-                        self.root = c.p
+                        c.selectPosition(p)
+                        self.root = p.copy()
                         return True
 
-            # Next, look up the tree.
-            if not self.all:   
-                for p in c.p.parents():
-                    for s in self.tags:
-                        if p.h.startswith(s):
-                            c.selectPosition(p)
-                            self.root = p.copy()
-                            return True
+        # Finally, look for all @mark-for-unit-test nodes.
+        for p in c.all_unique_positions():
+            if p.h.startswith('@mark-for-unit-test'):
+                return True
 
-            # Finally, look for all @mark-for-unit-test nodes.
-            for p in c.all_unique_positions():
-                if p.h.startswith('@mark-for-unit-test'):
-                    return True
-
-            return False
-        #@-others
+        return False
     #@-others
-
-    runner = runTestHelperClass(c,all)
-    runner.runTests()
 #@+node:ekr.20051104075904.43: ** Specific to particular unit tests...
 #@+node:ekr.20051104075904.44: *3* at-File test code (leoTest.py)
 def runAtFileTest(c,p):

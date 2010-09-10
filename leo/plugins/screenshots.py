@@ -134,6 +134,7 @@ except ImportError:
     got_qt = False
 
 import subprocess
+import tempfile
 
 import xml.etree.ElementTree as etree
 #@-<< imports >>
@@ -307,8 +308,11 @@ class ScreenShotController(object):
         self.c = c
 
         # Non-changing settings.
-        self.inkscape_bin = c.config.getString('inkscape-bin') or \
-            r'c:\Program Files (x86)\Inkscape\inkscape.exe' ### testing.
+        self.inkscape_bin = r'c:\Program Files (x86)\Inkscape\inkscape.exe' ### testing.
+
+        # c.config.getString('inkscape-bin') or \
+
+        assert g.os_path_exists(self.inkscape_bin)
 
         # Dimension cache.
         self.dimCache = {}
@@ -329,12 +333,82 @@ class ScreenShotController(object):
             "co_text_holder", # text holder for speech balloon callout
         ]
 
-        self.relative_path = True
-            # Use relative paths in @image nodes and
-            # .. image:: directives.
-
         self.xlink = "{http://www.w3.org/1999/xlink}"
         # self.namespace = {'svg': "http://www.w3.org/2000/svg"}
+    #@+node:ekr.20100908110845.5533: *3*  lxml replacements
+    #@+node:ekr.20100908110845.5534: *4* getElementsWithAttrib
+    def getElementsWithAttrib (self,e,attr_name,aList=None):
+
+        if aList is None: aList = []
+
+        val = e.attrib.get(attr_name)
+        if val: aList.append(e)
+
+        for child in e.getchildren():
+            self.getElementsWithAttrib(child,attr_name,aList)
+
+        return aList
+    #@+node:ekr.20100908110845.5535: *4* getElementsWithAttribList (not used)
+    def getElementsWithAttribList (self,e,attr_names,aList=None):
+
+        if aList is None: aList = []
+
+        for z in attr_names:
+            if not e.attrib.get(z):
+                break
+        else:
+            aList.append(e)
+
+        for child in e.getchildren():
+            self.getElementsWithAttribList(child,attr_names,aList)
+
+        return aList
+    #@+node:ekr.20100908110845.5536: *4* getIds
+    def getIds (self,e,d=None):
+
+        '''Return a dict d. Keys are ids, values are elements.'''
+
+        aList = self.getElementsWithAttrib(e,'id')
+        return dict([(e.attrib.get('id'),e) for e in aList])
+
+        # if d is None: d = {}
+        # i = e.attrib.get('id')
+        # if i: d[i] = e
+        # for child in e.getchildren():
+            # self.getIds(child,d)
+        # return d
+    #@+node:ekr.20100908110845.5537: *4* getParents
+    def getParents (self,e,d=None):
+
+        if d is None:
+            d = {}
+            d[e] = None
+
+        for child in e.getchildren():
+            d[child] = e
+            self.getParents(child,d)
+
+        return d
+    #@+node:ekr.20100908110845.5538: *3*  utilities
+    #@+node:ekr.20100908110845.5539: *4* error & warning
+    def error (self,*args):
+
+        if not g.app.unitTesting:
+            g.es_print('Error:',*args,color='red')
+
+    def warning (self,*args):
+
+        if not g.app.unitTesting:
+            g.es_print('Warning:',*args,color='blue')
+    #@+node:ekr.20100908110845.5540: *4* finalize
+    def finalize (self,fn):
+
+        '''Return the absolute path to fn in the screenshot folder.'''
+
+        s = g.os_path_finalize_join(g.app.loadDir,
+            '..','doc','html','screen-shots',fn)
+
+        return s.replace('\\','/')
     #@+node:ekr.20100908115707.5555: *3* screen_shot_command & helpers
     def screen_shot_command (self):
 
@@ -342,11 +416,15 @@ class ScreenShotController(object):
 
         if self.inSlideShow(p):
 
+            self.give_pil_warning()
+
             # Take the screenshot and update the tree.
             fn = self.take_screen_shot(p)
 
             # Call Inkscape to post-process the slide.
-            self.post_process(fn)
+            self.post_process(fn,p)
+            c.selectPosition(p)
+            c.redraw()
     #@+node:ekr.20100908110845.5592: *4* inSlideShow
     def inSlideShow (self,p):
 
@@ -355,20 +433,35 @@ class ScreenShotController(object):
                 return True
         else:
             return False
+    #@+node:ekr.20100908110845.5543: *4* give_pil_warning
+    pil_message_given = False
+
+    def give_pil_warning(self):
+
+        if self.pil_message_given:
+            return # Warning already given.
+
+        if got_pil:
+            return # The best situation
+
+        self.pil_message_given = True
+
+        if got_qt:
+            self.warning('PIL not found: images may have transparent borders')
+        else:
+            self.warning('PIL and Qt both not found: images may be less clear')
     #@+node:ekr.20100909121239.6117: *4* take_screen_shot & helpers
     def take_screen_shot(self,p):
 
         directive_path = self.get_directive_path(p)
         path = self.get_path(p)
-        short_path = self.get_short_path(p)
         root,h = self.find_at_screenshot_tree_node(p)
 
-        g.pdb()
-
-        self.make_screen_shot(path,root,h)
-        g.es('created %s' % short_path)
-        self.make_image_node(p,path)
-        self.add_image_directive(p,directive_path)
+        if 1:
+            self.make_screen_shot(path,root,h)
+            g.es('created %s' % path)
+            self.make_image_node(p,path)
+            self.add_image_directive(p,directive_path)
 
         return path
     #@+node:ekr.20100908110845.5594: *5* add_image_directive
@@ -406,13 +499,7 @@ class ScreenShotController(object):
 
         fn = '%s.png' % (p.gnx.replace('.','-'))
 
-        if self.relative_path:
-            s = g.os_path_join('screen-shots',fn)
-        else:
-            s = g.os_path_finalize_join(g.app.loadDir,
-                '..','..','..','screen-shots',fn)
-
-        return s.replace('\\','/')
+        return self.finalize(fn)
     #@+node:ekr.20100909121239.5723: *5* get_path
     def get_path (self,p):
 
@@ -420,29 +507,7 @@ class ScreenShotController(object):
 
         fn = '%s.png' % (p.gnx.replace('.','-'))
 
-        if self.relative_path:
-            s = g.os_path_join(
-                '..','doc','html','screen-shots',fn)
-        else:
-            # c:/leo-repo/screen-shots
-            s = g.os_path_finalize_join(g.app.loadDir,
-                '..','..','..','screen-shots',fn)
-
-        return s.replace('\\','/')
-    #@+node:ekr.20100909121239.5722: *5* get_short_path
-    def get_short_path (self,p):
-
-        '''Compute the path for error messages.'''
-
-        fn = '%s.png' % (p.gnx.replace('.','-'))
-
-        if self.relative_path:
-            s = g.os_path_join('screen-shots',fn)
-        else:
-            s = g.os_path_finalize_join(g.app.loadDir,
-                '..','..','..','screen-shots',fn)
-
-        return s.replace('\\','/')
+        return self.finalize(fn)
     #@+node:ekr.20100908110845.5599: *5* make_image_node
     def make_image_node (self,p,path):
 
@@ -515,6 +580,8 @@ class ScreenShotController(object):
         # This generates an incorrect Qt error.
         # The file is, in fact, saved correctly.
         w.save(path,'png')
+
+        g.trace('wrote',path)
     #@+node:ekr.20100908110845.5603: *6* resize_leo_window
     def resize_leo_window(self):
 
@@ -528,32 +595,27 @@ class ScreenShotController(object):
         c.redraw()
         w.repaint() # Essential
     #@+node:ekr.20100908110845.5544: *4* post_process & helpers
-    def post_process (self,fn):
+    def post_process (self,fn,p):
 
         '''Post-process the slide fn.'''
 
         c = self.c
 
-        self.give_pil_warning()
-
-        fn = self.get_screenshot_fn(fn)
-        if not fn: return
-
-        template_fn = self.get_template_fn(template_fn)
+        template_fn = self.get_template_fn()
         if not template_fn: return
 
         png_fn = fn # Use output file is the same as the input file.
         svg_fn = self.finalize('screenshot_working_file.svg')
 
-        callouts = self.get_callouts()
-        markers = self.get_markers()
+        callouts = self.get_callouts(p)
+        markers = self.get_markers(p)
         template = self.make_svg(fn,svg_fn,template_fn,callouts,markers)
         if not template: return
 
-        if g.unitTesting: return
-
         if callouts or markers:
             self.edit_svg(svg_fn)
+        else:
+            self.warning('No callouts or markers')
 
         self.make_png(svg_fn,png_fn)
     #@+node:ekr.20100908110845.5596: *5* get_callouts & helper
@@ -563,9 +625,11 @@ class ScreenShotController(object):
 
         aList = []
         for child in p.children():
-            if p.h.startswith('@callout'):
-                callout = self.get_callout(p)
+            # g.trace(child.h)
+            if child.h.startswith('@callout'):
+                callout = self.get_callout(child)
                 if callout: aList.append(callout)
+        g.trace(aList)
         return aList
 
     #@+node:ekr.20100909121239.6096: *6* get_callout
@@ -579,7 +643,8 @@ class ScreenShotController(object):
             s = p.h ; assert s.startswith('@callout')
             i = g.skip_id(s,0,chars='@')
                 # Match @callout or @callouts, etc.
-            return s[i:].strip()
+            s = s[i:].strip()
+            return s
     #@+node:ekr.20100908110845.5597: *5* get_markers & helper
     def get_markers (self,p):
 
@@ -588,9 +653,10 @@ class ScreenShotController(object):
 
         aList = []
         for child in p.children():
-            if p.h.startswith('@marker'):
-                callout = self.get_marker(p)
+            if child.h.startswith('@marker'):
+                callout = self.get_marker(child)
                 if callout: aList.extend(callout)
+        # g.trace(aList)
         return aList
     #@+node:ekr.20100909121239.6097: *6* get_marker
     def get_marker (self,p):
@@ -601,22 +667,7 @@ class ScreenShotController(object):
         i = g.skip_id(s,0,chars='@')
             # Match @marker or @markers, etc.
         s = s[i:].strip()
-        return s.split(',')
-    #@+node:ekr.20100908110845.5541: *5* get_screenshot_fn
-    def get_screenshot_fn (self,fn):
-
-        fn = fn.strip()
-
-        if fn:
-            fn = self.finalize(fn)
-            if g.os_path_exists(fn):
-                return fn
-            else:
-                self.error('screenshot file not found:',fn)
-                return None
-        else:
-            self.error('missing screenshot_fn arg')
-            return None
+        return [z.strip() for z in s.split(',')]
     #@+node:ekr.20100908110845.5542: *5* get_template_fn
     def get_template_fn (self,template_fn=None):
 
@@ -625,31 +676,15 @@ class ScreenShotController(object):
         if template_fn:
             fn = template_fn
         else:
-            fn = c.config.getString('inkscape-template') or 'inkscape-template.png'
+            # fn = c.config.getString('inkscape-template') or 'inkscape-template.png'
+            fn = g.os_path_finalize_join(g.app.loadDir,
+                '..','doc','inkscape-template.svg')
 
-        fn = self.finalize(fn)
         if g.os_path_exists(fn):
             return fn
         else:
             self.error('template file not found:',fn)
             return None
-    #@+node:ekr.20100908110845.5543: *5* give_pil_warning
-    pil_message_given = False
-
-    def give_pil_warning(self):
-
-        if self.pil_message_given:
-            return # Warning already given.
-
-        if got_pil:
-            return # The best situation
-
-        self.pil_message_given = True
-
-        if got_qt:
-            self.warning('PIL not found: images may have transparent borders')
-        else:
-            self.warning('PIL and Qt both not found: images may be less clear')
     #@+node:ekr.20100908110845.5545: *5* step 1: make_svg & make_dom
     def make_svg(self,fn,output_fn,template_fn,callouts,markers):
 
@@ -659,6 +694,8 @@ class ScreenShotController(object):
 
         if template:
             template.write(outfile)
+
+        outfile.close()
 
         return template
     #@+node:ekr.20100908110845.5546: *6* make_dom & helpers
@@ -882,7 +919,7 @@ class ScreenShotController(object):
         self.enable_filters(svg_fn, False)
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()
-        self.enable_filters(svg_fn, True)
+        # self.enable_filters(svg_fn, True)
     #@+node:ekr.20100908110845.5553: *6* enable_filters
     def enable_filters(self,svgfile,enable):
         """Disable/enable filters in SVG at the XML level
@@ -923,6 +960,9 @@ class ScreenShotController(object):
 
         '''Create png_fn from svg_fn.'''
 
+        # png_fn = self.finalize('output.png')
+        # png_fn = os.path.splitext(png_fn)[0] + ".co.png"
+
         cmd = [
             self.inkscape_bin,
             "--without-gui",
@@ -942,6 +982,8 @@ class ScreenShotController(object):
                 img.save(png_fn)
             except IOError:
                 g.trace('Can not open %s' % png_fn)
+
+        # os.system(png_fn)
     #@+node:ekr.20100908110845.5555: *6* trim
     def trim(self, im, border):
          bg = Image.new(im.mode, im.size, border)
@@ -952,80 +994,18 @@ class ScreenShotController(object):
          else:
              # found no content
              raise ValueError("cannot trim; image was empty")
-    #@+node:ekr.20100908110845.5533: *3* lxml replacements
-    #@+node:ekr.20100908110845.5534: *4* getElementsWithAttrib
-    def getElementsWithAttrib (self,e,attr_name,aList=None):
+    #@+node:ekr.20100909193826.5600: *4* select_at_image_node
+    def select_at_image_node (self,p):
 
-        if aList is None: aList = []
-
-        val = e.attrib.get(attr_name)
-        if val: aList.append(e)
-
-        for child in e.getchildren():
-            self.getElementsWithAttrib(child,attr_name,aList)
-
-        return aList
-    #@+node:ekr.20100908110845.5535: *4* getElementsWithAttribList (not used)
-    def getElementsWithAttribList (self,e,attr_names,aList=None):
-
-        if aList is None: aList = []
-
-        for z in attr_names:
-            if not e.attrib.get(z):
+        c = self.c
+        for child in p.children():
+            if child.h.startswith('@image'):
+                c.selectPosition(child)
+                c.redraw_now(child)
                 break
         else:
-            aList.append(e)
-
-        for child in e.getchildren():
-            self.getElementsWithAttribList(child,attr_names,aList)
-
-        return aList
-    #@+node:ekr.20100908110845.5536: *4* getIds
-    def getIds (self,e,d=None):
-
-        '''Return a dict d. Keys are ids, values are elements.'''
-
-        aList = self.getElementsWithAttrib(e,'id')
-        return dict([(e.attrib.get('id'),e) for e in aList])
-
-        # if d is None: d = {}
-        # i = e.attrib.get('id')
-        # if i: d[i] = e
-        # for child in e.getchildren():
-            # self.getIds(child,d)
-        # return d
-    #@+node:ekr.20100908110845.5537: *4* getParents
-    def getParents (self,e,d=None):
-
-        if d is None:
-            d = {}
-            d[e] = None
-
-        for child in e.getchildren():
-            d[child] = e
-            self.getParents(child,d)
-
-        return d
-    #@+node:ekr.20100908110845.5538: *3* Utilities
-    #@+node:ekr.20100908110845.5539: *4* error & warning
-    def error (self,*args):
-
-        if not g.app.unitTesting:
-            g.es_print('Error',*args,color='red')
-
-    def warning (self,*args):
-
-        if not g.app.unitTesting:
-            g.es_print('Warning',*args,color='blue')
-    #@+node:ekr.20100908110845.5540: *4* finalize
-    def finalize (self,fn):
-
-        '''Return the path to fn relative to the
-        directory containing the screenshot file.'''
-
-        #### return fn
-
-        return g.os_path_abspath(g.os_path_finalize(fn))
+            c.selectPosition(p)
+            c.redraw_now(p)
     #@-others
 
 #@-others

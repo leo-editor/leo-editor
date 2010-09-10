@@ -16,7 +16,6 @@ if 1:
 
 import time
 import leo.core.leoBridge as leoBridge
-import leo.core.leoPlugins as leoPlugins
 
 # Do not define g here. Use the g returned by the bridge.
 

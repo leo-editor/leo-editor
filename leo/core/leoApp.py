@@ -109,6 +109,7 @@ class LeoApp:
         self.translateToUpperCase = False
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
         self.unitTestDict = {} # For communication between unit tests and code.
+        self.unitTestGui = None # A way to override the gui in external unit tests.
         self.unitTesting = False # True if unit testing.
         self.useIpython = False
         self.use_psyco = False
