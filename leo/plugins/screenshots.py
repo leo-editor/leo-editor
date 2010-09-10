@@ -140,25 +140,17 @@ import xml.etree.ElementTree as etree
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20100908110845.5605: ** Top-level
-#@+node:ekr.20100908110845.5606: *3* init
+#@+node:ekr.20100908110845.5606: ** init
 def init ():
 
     ok = got_qt
 
     if ok:
-        g.app.pluginsController.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
 
     return ok
-#@+node:ekr.20100908110845.5607: *3* onCreate
-def onCreate (tag,keys):
-
-    c = keys.get('c')
-    if c:
-        c.screenshotController = sc = ScreenShotController(c)
 #@+node:ekr.20100908110845.5580: ** Commands
-#@+node:ekr.20100908110845.5581: *3* apropos_screen_shots
+#@+node:ekr.20100908110845.5581: *3* g.command(apropos-screen-shots)
 # @pagewidth 45
 
 @g.command('apropos-screen-shots')
@@ -288,12 +280,7 @@ def take_screen_shot_command (event):
     c = event.get('c')
     if not c: return
 
-    # Defensive code: work even if onCreate has not been called.
-    sc = c.screenshotController
-    if not sc:
-        c.screenshotController = sc = ScreenShotController(c)
-
-    sc.screen_shot_command()
+    ScreenShotController(c).screen_shot_command()
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController(object):
 

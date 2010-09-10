@@ -2992,25 +2992,6 @@ def doHook(tag,*args,**keywords):
         g.app.hookError = True # Supress this function.
         g.app.idleTimeHook = False # Supress idle-time hook
         return None # No return value
-#@+node:ekr.20031218072017.1318: *3* g.plugin_signon
-def plugin_signon(module_name,verbose=False):
-
-    # To keep pylint happy.
-    m = g.Bunch()
-    m.__name__=''
-    m.__version__=''
-
-    exec("import %s ; m = %s" % (module_name,module_name))
-
-    # g.pr('plugin_signon',module_name # ,'gui',g.app.gui)
-
-    if verbose:
-        g.es('',"...%s.py v%s: %s" % (
-            m.__name__, m.__version__, g.plugin_date(m)))
-
-        g.pr(m.__name__, m.__version__)
-
-    g.app.loadedPlugins.append(module_name)
 #@+node:ville.20090521164644.5924: *3* g.command (decorator for creating global commands)
 class command:
     """ Decorator to create global commands """
@@ -3034,29 +3015,46 @@ class command:
         return func
 
 
-#@+node:ekr.20100908125007.5975: *3* g.loadOnePlugin
-def loadOnePlugin (c,pluginName):
+#@+node:ekr.20100910075900.5950: *3* Wrappers for g.app.pluginController methods
+# Important: we can not define g.pc here!
 
-    '''A convenience method to load a plugin by name.
-    This method calls the plugins onCreate method if it exists.'''
-
+#@+node:ekr.20100910075900.5951: *4* Loading & registration
+def loadOnePlugin (pluginName):
     pc = g.app.pluginsController
+    return pc.loadOnePlugin(pluginName)
 
-    m = pc.isLoaded(pluginName)
-    if m: return m
+def registerExclusiveHandler(tags,fn):
+    pc = g.app.pluginsController
+    return pc.registerExclusiveHandler(tags,fn)
 
-    m = pc.loadOnePlugin(pluginName,verbose=False)
-    if m:
-        g.es_print('loaded plugin:',pluginName,color='red')
-        if m and hasattr(m,'onCreate'):
-            # g.es_print('calling %s.onCreate()' % pluginName)
-            m.onCreate(tag='load-one-plugin',keys={'c':c})
-    else:
-        g.es_print('not found',pluginName)
+def registerHandler (tags,fn):
+    pc = g.app.pluginsController
+    return pc.registerHandler(tags,fn)
 
-    return m
+def plugin_signon(module_name,verbose=False):
+    pc = g.app.pluginsController
+    return pc.plugin_signon(module_name,verbose)
 
-load_one_plugin = loadOnePlugin
+def unloadOnePlugin (moduleOrFileName,verbose=False):
+    pc = g.app.pluginsController
+    return pc.unloadOnePlugin(moduleOrFileName,verbose)
+#@+node:ekr.20100910075900.5952: *4* Information
+def getHandlersForTag(tags):
+    pc = g.app.pluginsController
+    return pc.getHandlersForTag(tags)
+
+def getLoadedPlugins():
+    pc = g.app.pluginsController
+    return pc.getLoadedPlugins()
+
+def getPluginModule(moduleName):
+    pc = g.app.pluginsController
+    return pc.getPluginModule(moduleName)
+
+def pluginIsLoaded(fn):
+    pc = g.app.pluginsController
+    return pc.isLoaded(fn)
+
 #@+node:ekr.20031218072017.3145: ** Most common functions...
 # These are guaranteed always to exist for scripts.
 #@+node:ekr.20031218072017.3147: *3* g.choose

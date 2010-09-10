@@ -6,8 +6,8 @@
 .. @+node:ekr.20100819163514.4364: ** @button screenshot
 @language python
 
-g.loadOnePlugin(c,'screenshots')
-c.k.simulateCommand('apropos-screen-shots')
+m = g.app.pluginsController.loadOnePlugin('screenshots')
+m.take_screen_shot_command({'c':c})
 .. @+node:ekr.20100828111722.4429: ** @button std-size
 @language python
 
@@ -306,6 +306,10 @@ Now we tell Leo to tangle the node. This means Leo should
    3. Write all of the node text to the file named in the root directive. 
 
 Why is this operation called tangling? We'll see that a few pages from now.
+
+.. image:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png
+
+.. @+node:ekr.20100910075532.4447: *4* @image C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png
 .. @+node:ekr.20100823164432.4406: *3* 13
 Leo has written the external file to the disk
 .. @+node:ekr.20100823164432.4407: *3* 14 External file in Windows Explorer

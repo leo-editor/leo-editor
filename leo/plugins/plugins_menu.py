@@ -147,8 +147,8 @@ def addPluginMenuItem (p,c):
         def callback (event,c=c,p=p):
             path, name = g.os_path_split(p.filename)
             name, ext = g.os_path_splitext(name)
-            # g.trace(name,g.app.loadedPlugins)
-            if name in g.app.loadedPlugins:
+            # if name in g.app.loadedPlugins:
+            if g.isLoaded(name):
                 p.hastoplevel(c)
             else:
                 p.about()
@@ -198,7 +198,7 @@ def createPluginsMenu (tag,keywords):
         modules = ['leo.plugins.' + os.path.basename(f[:-3]) for f in files]
         plugins = [PlugIn(m, c) for m in modules]
         PluginDatabase.storeAllPlugins(modules)
-        loaded = [z.lower() for z in g.app.loadedPlugins]
+        loaded = [z.lower() for z in g.getLoadedPlugins()] # g.app.loadedPlugins]
         #print "loaded",loaded
         # items = [(p.name,p) for p in plugins if p.version]
         items = [(p.name,p) for p in plugins if p.moduleName and p.moduleName.lower() in loaded]

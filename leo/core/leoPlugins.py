@@ -283,6 +283,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack = []
             # The stack of module names.
             # The top is the module being loaded.
+        self.signonModule = [] # A hack for plugin_signon.
 
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
@@ -380,6 +381,10 @@ class LeoPluginsController:
 
         aList = self.handlers.get(tag,[])
         return aList
+    #@+node:ekr.20100910075900.10204: *4* getLoadedPlugins
+    def getLoadedPlugins (self):
+
+        return list(self.loadedModules.keys())
     #@+node:ekr.20100908125007.6020: *4* getPluginModule
     def getPluginModule (self,moduleName):
 
@@ -387,7 +392,9 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6021: *4* isLoaded
     def isLoaded (self,fn):
 
-        return self.regularizeName(fn) in g.app.loadedPlugins
+        # return self.regularizeName(fn) in g.app.loadedPlugins
+
+        return self.regularizeName(fn) in self.loadedModules
     #@+node:ekr.20100908125007.6025: *4* printHandlers
     def printHandlers (self,c,moduleName=None):
 
@@ -540,6 +547,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack.pop()
 
         if result:
+            self.signonModule = result # for self.plugin_signon.
             self.loadingModuleNameStack.append(moduleName)
 
             if tag == 'unit-test-load':
@@ -583,19 +591,50 @@ class LeoPluginsController:
                     g.trace('can not load enabled plugin:',moduleName,color="red")
 
         return result
+    #@+node:ekr.20031218072017.1318: *4* plugin_signon
+    def plugin_signon(self,module_name,verbose=False):
+
+        # This is called from as the result of the imports
+        # in self.loadOnePlugin
+
+        m = self.signonModule
+
+        if 0: # Horrible!
+
+            # To keep pylint happy.
+            m = g.Bunch()
+            m.__name__=''
+            m.__version__=''
+
+            exec("import %s ; m = %s" % (module_name,module_name))
+
+            # g.pr('plugin_signon',module_name # ,'gui',g.app.gui)
+
+        if verbose:
+            g.es('',"...%s.py v%s: %s" % (
+                m.__name__, m.__version__, g.plugin_date(m)))
+
+            g.pr(m.__name__, m.__version__)
+
+        ### g.app.loadedPlugins.append(module_name)
+        # self.loadedPlugins.append(module_name)
     #@+node:ekr.20100908125007.6030: *4* unloadOnePlugin
     def unloadOnePlugin (self,moduleOrFileName,verbose=False):
 
-        if moduleOrFileName [-3:] == ".py":
-            moduleName = moduleOrFileName [:-3]
-        else:
-            moduleName = moduleOrFileName
-        moduleName = g.shortFileName(moduleName)
+        # if moduleOrFileName [-3:] == ".py":
+            # moduleName = moduleOrFileName [:-3]
+        # else:
+            # moduleName = moduleOrFileName
+        # moduleName = g.shortFileName(moduleName)
 
-        if moduleName in g.app.loadedPlugins:
+        moduleName = self.regularizeName(moduleOrFileName)
+
+        # if moduleName in g.app.loadedPlugins:
+        if self.isloaded(moduleName):
             if verbose:
                 g.pr('unloading',moduleName)
-            g.app.loadedPlugins.remove(moduleName)
+            # g.app.loadedPlugins.remove(moduleName)
+            del self.loadedModules[moduleName]
 
         for tag in self.handlers:
             bunches = self.handlers.get(tag)

@@ -179,7 +179,8 @@
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
 <v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100821182153.4344" a="E"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4344" a="E"
+expanded="ekr.20100821182153.4346,ekr.20100823164432.4405,"><vh>@thin screen-shots.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
