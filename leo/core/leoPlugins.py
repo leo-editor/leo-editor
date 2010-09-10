@@ -392,8 +392,6 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6021: *4* isLoaded
     def isLoaded (self,fn):
 
-        # return self.regularizeName(fn) in g.app.loadedPlugins
-
         return self.regularizeName(fn) in self.loadedModules
     #@+node:ekr.20100908125007.6025: *4* printHandlers
     def printHandlers (self,c,moduleName=None):
@@ -599,41 +597,21 @@ class LeoPluginsController:
 
         m = self.signonModule
 
-        if 0: # Horrible!
-
-            # To keep pylint happy.
-            m = g.Bunch()
-            m.__name__=''
-            m.__version__=''
-
-            exec("import %s ; m = %s" % (module_name,module_name))
-
-            # g.pr('plugin_signon',module_name # ,'gui',g.app.gui)
-
         if verbose:
             g.es('',"...%s.py v%s: %s" % (
                 m.__name__, m.__version__, g.plugin_date(m)))
 
             g.pr(m.__name__, m.__version__)
 
-        ### g.app.loadedPlugins.append(module_name)
-        # self.loadedPlugins.append(module_name)
+        self.signonModule = None # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* unloadOnePlugin
     def unloadOnePlugin (self,moduleOrFileName,verbose=False):
 
-        # if moduleOrFileName [-3:] == ".py":
-            # moduleName = moduleOrFileName [:-3]
-        # else:
-            # moduleName = moduleOrFileName
-        # moduleName = g.shortFileName(moduleName)
-
         moduleName = self.regularizeName(moduleOrFileName)
 
-        # if moduleName in g.app.loadedPlugins:
         if self.isloaded(moduleName):
             if verbose:
                 g.pr('unloading',moduleName)
-            # g.app.loadedPlugins.remove(moduleName)
             del self.loadedModules[moduleName]
 
         for tag in self.handlers:
