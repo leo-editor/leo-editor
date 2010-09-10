@@ -568,7 +568,7 @@
 <v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
 <v t="ekr.20100909154940.2234"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20100909154940.2235" a="E"><vh>Diary</vh>
+<v t="ekr.20100909154940.2235"><vh>Diary</vh>
 <v t="ekr.20100909154940.2236"><vh>2009</vh>
 <v t="ekr.20100909154940.2237"><vh>Jan 1</vh></v>
 </v>
@@ -999,7 +999,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7091,8 +7091,7 @@ c = g.app.commanders()[0]
 pc.send("""
 c.k.simulateCommand('stickynote')
 """)</t>
-<t tx="ekr.20100909154713.2210">g.loadOnePlugin(c,'screenshots')
-sc = c.screenshotController
+<t tx="ekr.20100909154713.2210">m = g.loadOnePlugin('screenshots')
 
 # Select the screenshot node.
 h = 'Headline and body text'
@@ -7100,7 +7099,7 @@ p2 = g.findNodeAnywhere(c,h)
 assert p2
 c.selectPosition(p2)
 
-sc.screen_shot_command()
+m.take_screen_shot_command({'c':c})
 
 c.selectPosition(p)
 </t>

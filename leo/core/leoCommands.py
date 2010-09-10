@@ -118,7 +118,6 @@ class baseCommands (object):
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
         self.rstCommands    = leoRst.rstCommands(c)
-        self.screenshotController = None # Set by screenshots.py plugin.
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)

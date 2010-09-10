@@ -149,8 +149,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@+node:ekr.20100908110845.5580: ** Commands
-#@+node:ekr.20100908110845.5581: *3* g.command(apropos-screen-shots)
+#@+node:ekr.20100908110845.5581: ** g.command(apropos-screen-shots)
 # @pagewidth 45
 
 @g.command('apropos-screen-shots')
@@ -160,7 +159,7 @@ def apropos_screen_shots(event):
     if not c: return
 
     #@+<< define s >>
-    #@+node:ekr.20100908110845.5582: *4* << define s >>
+    #@+node:ekr.20100908110845.5582: *3* << define s >>
     s = """\
 
     Using Inkscape to take screen shots
@@ -273,7 +272,7 @@ def apropos_screen_shots(event):
     #@-<< define s >>
 
     g.es(g.adjustTripleString(s.rstrip(),c.tab_width))
-#@+node:ekr.20100908110845.5583: *3* g.command(take_screen_shot)
+#@+node:ekr.20100908110845.5583: ** g.command(take_screen_shot)
 @g.command('take-screen-shot')
 def take_screen_shot_command (event):
 
@@ -294,12 +293,19 @@ class ScreenShotController(object):
 
         self.c = c
 
-        # Non-changing settings.
-        self.inkscape_bin = r'c:\Program Files (x86)\Inkscape\inkscape.exe' ### testing.
+        # Settings.
+        self.edit_flag = c.config.getBool('edit-screenshots',default=True)
 
-        # c.config.getString('inkscape-bin') or \
-
-        assert g.os_path_exists(self.inkscape_bin)
+        self.inkscape_bin = None
+        bin = c.config.getString('screenshot-bin').strip('"').strip("'")
+        if bin:
+            if g.os_path_exists(bin):
+                self.inkscape_bin = bin
+            else:
+                self.warning('Invalid @string screenshot-bin:',bin)
+                self.edit_flag = False
+        if not self.inkscape_bin:
+            self.warning('Inkscape not found. No editing is possible.')
 
         # Dimension cache.
         self.dimCache = {}
@@ -379,12 +385,14 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5538: *3*  utilities
     #@+node:ekr.20100908110845.5539: *4* error & warning
     def error (self,*args):
-
         if not g.app.unitTesting:
             g.es_print('Error:',*args,color='red')
 
-    def warning (self,*args):
+    def note (self,*args):
+        if not g.app.unitTesting:
+            g.es_print(*args)
 
+    def warning (self,*args):
         if not g.app.unitTesting:
             g.es_print('Warning:',*args,color='blue')
     #@+node:ekr.20100908110845.5540: *4* finalize
@@ -412,6 +420,7 @@ class ScreenShotController(object):
             self.post_process(fn,p)
             c.selectPosition(p)
             c.redraw()
+            self.note('screen-shot-command finished')
     #@+node:ekr.20100908110845.5592: *4* inSlideShow
     def inSlideShow (self,p):
 
@@ -599,10 +608,8 @@ class ScreenShotController(object):
         template = self.make_svg(fn,svg_fn,template_fn,callouts,markers)
         if not template: return
 
-        if callouts or markers:
+        if self.edit_flag and (callouts or markers):
             self.edit_svg(svg_fn)
-        else:
-            self.warning('No callouts or markers')
 
         self.make_png(svg_fn,png_fn)
     #@+node:ekr.20100908110845.5596: *5* get_callouts & helper
