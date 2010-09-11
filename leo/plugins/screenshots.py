@@ -312,6 +312,15 @@ def take_screen_shot_command (event):
 
     sc.select_at_image_node(p)
     sc.note('take-screen-shot command finished')
+#@+node:ekr.20100911044508.5634: ** g.command(make-slide-show)
+@g.command('make-slide-show')
+def make_slide_show_command(event=None):
+
+    c = event.get('c')
+    if c:
+        sc = ScreenShotController(c)
+        sc.make_slide_show(c.p)
+        sc.note('make-slide-show command finished')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController(object):
 
@@ -610,6 +619,11 @@ class ScreenShotController(object):
         return c.config.getBool(
             'write-screenshot-output-file',default=True)
     #@+node:ekr.20100911044508.5618: *3* utilities
+    #@+node:ekr.20100911044508.5637: *4* clear_cache
+    def clear_cache (self):
+
+        self.dimCache = {}
+        self.is_reads,self.is_cache = 0,0
     #@+node:ekr.20100908110845.5539: *4* error, note & warning
     def error (self,*args):
         if not g.app.unitTesting:
@@ -665,6 +679,18 @@ class ScreenShotController(object):
                 return True
         else:
             return False
+    #@+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
+    def open_inkscape_with_list (self,aList):
+
+        #self.enable_filters(working_fn, False)
+
+        cmd = [self.inkscape_bin,"--with-gui"]
+        cmd.extend(aList)
+
+        proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
+        proc.communicate() # Wait for Inkscape to terminate.
+
+        #self.enable_filters(working_fn, True)
     #@+node:ekr.20100909193826.5600: *4* select_at_image_node
     def select_at_image_node (self,p):
 
@@ -677,6 +703,24 @@ class ScreenShotController(object):
         else:
             c.selectPosition(p)
             c.redraw_now(p)
+    #@+node:ekr.20100911044508.5635: *3* make_slide_show & helper
+    def make_slide_show (self,p):
+
+        sc = self
+
+        if not p.h.startswith('@slideshow'):
+            return sc.error('Not an @slideshow node:',p.h)
+
+        sc.note('sphinx-path',sc.get_sphinx_path(None))
+
+        aList = []
+        for child in p.children():
+            sc.run(child,
+                callouts=sc.get_callouts(child),
+                markers=sc.get_markers(child),
+                edit_flag=True,
+                force_edit_flag=False,
+                output_flag=True)
     #@+node:ekr.20100911044508.5616: *3* run & helpers
     def run (self,p,
         callouts=[],markers=[],
@@ -688,6 +732,7 @@ class ScreenShotController(object):
         sc.edit_flag = edit_flag
         sc.force_edit_flag = force_edit_flag
         sc.output_flag = output_flag
+        sc.clear_cache()
 
         # Compute paths and file names.
         sphinx_path = sc.get_sphinx_path(sphinx_path)
@@ -696,18 +741,26 @@ class ScreenShotController(object):
         output_fn = sc.get_output_fn(p,output_fn)
         screenshot_fn = sc.get_screenshot_fn(p,screenshot_fn)
         working_fn = sc.get_working_fn(p,working_fn)
+        if not working_fn: return
 
         # Compute these after omputing sphinx_path and screenshot_fn...
         image_fn = self.get_at_image_fn(screenshot_fn)
         directive_fn = sc.get_directive_fn(p,sphinx_path,screenshot_fn)
+        template_fn = self.get_template_fn()
 
         # Take the screenshot and update the tree.
-        fn = sc.take_screen_shot(p,directive_fn,image_fn,screenshot_fn)
+        sc.take_screen_shot(p,directive_fn,image_fn,screenshot_fn)
 
-        # Post-process the slide with inkscape.
-        if force_edit_flag or (sc.edit_flag and (callouts or markers)):
-            sc.give_pil_warning()
-            sc.post_process(p,callouts,markers,screenshot_fn,working_fn)
+        # Create the working file from the template.
+        sc.give_pil_warning()
+        template = sc.make_dom(callouts,markers,screenshot_fn,template_fn)
+        if not template:
+            return sc.error('Can not make template from:',template_fn)
+
+        self.make_working_file(template,working_fn)
+
+        if sc.force_edit_flag or (sc.edit_flag and (callouts or markers)):
+            sc.edit_working_file(working_fn)
 
         # Create the output file.
         if sc.output_flag:
@@ -715,6 +768,8 @@ class ScreenShotController(object):
 
         if 0: # Restore the screen.
             sc.select_at_image_node(p)
+
+        return screenshot_fn
     #@+node:ekr.20100909121239.6117: *4* 1: take_screen_shot & helpers
     def take_screen_shot(self,p,directive_fn,image_fn,screenshot_fn):
 
@@ -723,7 +778,8 @@ class ScreenShotController(object):
 
         root,h = self.find_at_screenshot_tree_node(p)
         self.make_screen_shot(screenshot_fn,root,h)
-        g.es('created %s' % screenshot_fn)
+        g.es('slide node:  %s' % p.h)
+        g.es('output file: %s' % g.shortFileName(screenshot_fn))
         self.make_image_node(p,image_fn)
         self.add_image_directive(p,directive_fn)
     #@+node:ekr.20100908110845.5594: *5* add_image_directive
@@ -819,27 +875,10 @@ class ScreenShotController(object):
         c.k.simulateCommand('equal-sized-panes')
         c.redraw()
         w.repaint() # Essential
-    #@+node:ekr.20100908110845.5544: *4* 2: post_process & helpers
-    def post_process (self,p,callouts,markers,screenshot_fn,working_fn):
-
-        '''Post-process the slide at p with filename fn.'''
-
-        c = self.c
-
-        template_fn = self.get_template_fn()
-        if not template_fn: return
-
-        template = self.make_dom(callouts,markers,screenshot_fn,template_fn)
-        if not template: return
-
-        self.make_working_file(template,working_fn) 
-
-        if self.edit_flag and (callouts or markers):
-            self.edit_working_file(working_fn)
-    #@+node:ekr.20100908110845.5546: *5* make_dom & helpers
+    #@+node:ekr.20100908110845.5546: *4* 2: make_dom & helpers
     def make_dom(self,callouts,markers,screenshot_fn,template_fn):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         template = self.get_template(template_fn)
         if not template: return None
         root = template.getroot()
@@ -905,9 +944,6 @@ class ScreenShotController(object):
             img_element.set('width', str(img.size[0]))
             img_element.set('height', str(img.size[1]))
 
-        # if self.opt.no_resize:
-            # return template
-
         # write temp file to get size info
         fh, fp = tempfile.mkstemp()
         os.close(fh)
@@ -918,11 +954,11 @@ class ScreenShotController(object):
 
         # resize things to fit text
         for n,callout in enumerate(callouts):
-            self.resize_curve_box(fp, template, n)
+            self.resize_curve_box(fp,template,n)
 
         os.unlink(fp)
         return template
-    #@+node:ekr.20100908110845.5547: *6* clear_id
+    #@+node:ekr.20100908110845.5547: *5* clear_id
     def clear_id(self,x):
 
         """recursively clear @id on element x and descendants"""
@@ -936,7 +972,7 @@ class ScreenShotController(object):
             del z.attrib['id']
 
         return x
-    #@+node:ekr.20100908110845.5548: *6* get_template
+    #@+node:ekr.20100908110845.5548: *5* get_template
     def get_template(self,template_fn):
 
         """Load and check the template SVG and return DOM"""
@@ -952,7 +988,7 @@ class ScreenShotController(object):
         else:
             self.error('template did not include all required IDs:',template_fn)
             return None
-    #@+node:ekr.20100908110845.5549: *6* move_element
+    #@+node:ekr.20100908110845.5549: *5* move_element
     def move_element(self,element,x,y):
 
         if not element.get('transform'):
@@ -964,7 +1000,7 @@ class ScreenShotController(object):
 
             element.set('transform', "translate(%f,%f)" %
                 (float(ox)+x, float(oy)+y))
-    #@+node:ekr.20100908110845.5550: *6* resize_curve_box & helper
+    #@+node:ekr.20100908110845.5550: *5* resize_curve_box & helper
     def resize_curve_box(self,fn,template,n):
 
         d = self.getIds(template.getroot())
@@ -986,17 +1022,15 @@ class ScreenShotController(object):
                     type_ = 'l'
                 i += 1
 
-        # g.trace('\n'.join([repr(i) for i in pnts])_
-        # g.trace(self.get_dim(fn, text_id, 'width'), self.get_dim(fn, text_id, 'height'))
-        # g.trace(self.get_dim(fn, frame_id, 'width'), self.get_dim(fn, frame_id, 'height'))
-
         # kludge for now
         h0 = 12  # index of vertical component going down right side
         h1 = -4  # index of vertical component coming up left side
         min_ = 0  # must leave this many
         present = 5  # components present initially
         h = pnts[h0][2]  # height of one component
-        th = self.get_dim(fn, text_id, 'height')  # text height
+        th = self.get_dim(fn,text_id,'height')  # text height
+        if not th:
+            g.trace('no th')
         # g.trace('  ', present, h, present*h, th)
         while present > min_ and present * h + 15 > th:
             # g.trace('  ', present, h, present*h, th)
@@ -1016,13 +1050,15 @@ class ScreenShotController(object):
         d.append('z')
 
         frame.set('d', ' '.join(d))
-    #@+node:ekr.20100908110845.5551: *7* get_dim
+    #@+node:ekr.20100908110845.5551: *6* get_dim
     def get_dim(self, fn, Id, what):
         """return dimension of element in fn with @id Id, what is
         x, y, width, or height
         """
 
+        trace = False
         hsh = fn+Id+what
+        if trace: g.trace('hsh',repr(fn),repr(Id),repr(what))
         if hsh in self.dimCache:
             self.is_cache += 1
             return self.dimCache[hsh]
@@ -1033,8 +1069,8 @@ class ScreenShotController(object):
             stdout = subprocess.PIPE,
             stderr = subprocess.PIPE)
 
-        # make new pipe for stderr to supress chatter from inkscape
-        stdout, stderr = proc.communicate()
+        # make new pipe for stderr to supress chatter from inkscape.
+        stdout, stderr = proc.communicate() # Wait for Inkscape to terminate.
         s = str(stdout).strip()
 
         # Necessary for Python 3k.
@@ -1046,11 +1082,13 @@ class ScreenShotController(object):
             id_,x,y,w,h = line.split(',')
             for part in ('x',x), ('y',y), ('width',w), ('height',h):
                 hsh2 = fn+id_+part[0]
+                if trace: g.trace('hsh2',repr(id_),repr(part[0]))
                 self.dimCache[hsh2] = float(part[1])
         self.is_reads += 1
 
-        return self.dimCache[hsh]
-    #@+node:ekr.20100908110845.5545: *5* make_working_file
+        assert self.dimCache.get(hsh)
+        return self.dimCache.get(hsh)
+    #@+node:ekr.20100908110845.5545: *4* 3: make_working_file
     def make_working_file(self,template,working_fn):
 
         '''Create the working file from the template.'''
@@ -1058,7 +1096,7 @@ class ScreenShotController(object):
         outfile = open(working_fn,'w')
         template.write(outfile)
         outfile.close()
-    #@+node:ekr.20100908110845.5552: *5* edit_working_file & helper
+    #@+node:ekr.20100908110845.5552: *4* 4: edit_working_file & helper
     def edit_working_file(self,working_fn):
 
         '''Invoke Inkscape on the working file.'''
@@ -1067,10 +1105,10 @@ class ScreenShotController(object):
 
         cmd = [self.inkscape_bin,"--with-gui",working_fn]
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
-        proc.communicate()
+        proc.communicate()  # Wait for Inkscape to terminate.
 
         self.enable_filters(working_fn, True)
-    #@+node:ekr.20100908110845.5553: *6* enable_filters
+    #@+node:ekr.20100908110845.5553: *5* enable_filters
     def enable_filters(self,svgfile,enable):
         """Disable/enable filters in SVG at the XML level
 
@@ -1105,10 +1143,12 @@ class ScreenShotController(object):
                     'filter:url(', '_filter:url('))
 
         doc.write(open(svgfile, 'w'))
-    #@+node:ekr.20100908110845.5554: *4* 3: make_png & helper
+    #@+node:ekr.20100908110845.5554: *4* 5: make_output_file & helper
     def make_output_file(self,output_fn,working_fn):
 
         '''Create the output file from the working file.'''
+
+        # g.trace('work',working_fn,'output',output_fn)
 
         cmd = (
             self.inkscape_bin,
@@ -1117,8 +1157,9 @@ class ScreenShotController(object):
             "--export-area-drawing",
             "--export-area-snap",
             working_fn)
+
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
-        proc.communicate()
+        proc.communicate() # Wait for Inkscape to terminate.
 
         if got_pil: # trim transparent border
             try:

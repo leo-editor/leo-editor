@@ -119,7 +119,8 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
-.. @+node:ekr.20100821182153.4351: *3* What is Leo
+.. @+node:ekr.20100911162138.4481: *3* newHeadline
+.. @+node:ekr.20100821182153.4351: *4* What is Leo
 Leo is a unique, powerful computer program that you can use to organize, analyze
 and describe text and text files. Leo is a free program written by Edward K.
 Ream. For information about downloading Leo, see installation tutorial in this
@@ -140,7 +141,7 @@ the best way to demonstrate what can be done with Leo.
     :glob:
 
     what-is-leo-0*
-.. @+node:ekr.20100821182153.4352: *3* Outlining editor
+.. @+node:ekr.20100821182153.4352: *4* Outlining editor
 From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
@@ -150,127 +151,127 @@ create an outline like the one in the screenshot).
 .. Relative to the source file.
 
 .. image:: screen-shots/ekr-20100821182153-4352.png
-.. @+node:ekr.20100823141121.4399: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4352.png
-.. @+node:ekr.20100823092839.7004: *4* @screenshot-tree To Do List
-.. @+node:ekr.20100823092839.7005: *5* Organizer
+.. @+node:ekr.20100823141121.4399: *5* @image ../doc/html/screen-shots/ekr-20100821182153-4352.png
+.. @+node:ekr.20100823092839.7004: *5* @screenshot-tree To Do List
+.. @+node:ekr.20100823092839.7005: *6* Organizer
 Organizer node.
-.. @+node:ekr.20100823092839.7006: *6* To Do List
+.. @+node:ekr.20100823092839.7006: *7* To Do List
 My to-do list.
-.. @+node:ekr.20100823092839.7007: *7* Urgent
-.. @+node:ekr.20100823092839.7008: *7* Important
-.. @+node:ekr.20100823092839.7009: *7* Soon
-.. @+node:ekr.20100823092839.7010: *7* Whenever
-.. @+node:ekr.20100823092839.7011: *6* Diary
-.. @+node:ekr.20100823092839.7013: *7* 2009
-.. @+node:ekr.20100823092839.7015: *8* Jan 1
-.. @+node:ekr.20100823092839.7014: *7* 2010
-.. @+node:ekr.20100821182153.4353: *3* Expand a node
+.. @+node:ekr.20100823092839.7007: *8* Urgent
+.. @+node:ekr.20100823092839.7008: *8* Important
+.. @+node:ekr.20100823092839.7009: *8* Soon
+.. @+node:ekr.20100823092839.7010: *8* Whenever
+.. @+node:ekr.20100823092839.7011: *7* Diary
+.. @+node:ekr.20100823092839.7013: *8* 2009
+.. @+node:ekr.20100823092839.7015: *9* Jan 1
+.. @+node:ekr.20100823092839.7014: *8* 2010
+.. @+node:ekr.20100821182153.4353: *4* Expand a node
 Clicking on the indicated triangle will expand the indicated node.
 
 .. image:: screen-shots/ekr-20100821182153-4353.png
 
-.. @+node:ekr.20100823132841.4383: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4353.png
-.. @+node:ekr.20100823132841.4367: *4* @screenshot-tree Diary
-.. @+node:ekr.20100823132841.4368: *5* Organizer
+.. @+node:ekr.20100823132841.4383: *5* @image ../doc/html/screen-shots/ekr-20100821182153-4353.png
+.. @+node:ekr.20100823132841.4367: *5* @screenshot-tree Diary
+.. @+node:ekr.20100823132841.4368: *6* Organizer
 Organizer node.
-.. @+node:ekr.20100823132841.4369: *6* To Do List
+.. @+node:ekr.20100823132841.4369: *7* To Do List
 My to-do list.
-.. @+node:ekr.20100823132841.4370: *7* Urgent
-.. @+node:ekr.20100823132841.4371: *7* Important
-.. @+node:ekr.20100823132841.4372: *7* Soon
-.. @+node:ekr.20100823132841.4373: *7* Whenever
-.. @+node:ekr.20100823132841.4374: *6* Diary
-.. @+node:ekr.20100823132841.4375: *7* 2009
-.. @+node:ekr.20100823132841.4376: *8* Jan 1
-.. @+node:ekr.20100823132841.4377: *7* 2010
-.. @+node:ekr.20100823132841.4379: *3* The expanded node
+.. @+node:ekr.20100823132841.4370: *8* Urgent
+.. @+node:ekr.20100823132841.4371: *8* Important
+.. @+node:ekr.20100823132841.4372: *8* Soon
+.. @+node:ekr.20100823132841.4373: *8* Whenever
+.. @+node:ekr.20100823132841.4374: *7* Diary
+.. @+node:ekr.20100823132841.4375: *8* 2009
+.. @+node:ekr.20100823132841.4376: *9* Jan 1
+.. @+node:ekr.20100823132841.4377: *8* 2010
+.. @+node:ekr.20100823132841.4379: *4* The expanded node
 Here the node is expanded. Clicking on the box again will contract the node.
 
 .. image:: screen-shots/ekr-20100823132841-4379.png
 
-.. @+node:ekr.20100823141121.4395: *4* @image ../doc/html/screen-shots/ekr-20100823132841-4379.png
-.. @+node:ekr.20100823141121.4382: *4* @screenshot-tree Diary
-.. @+node:ekr.20100823141121.4383: *5* Organizer
+.. @+node:ekr.20100823141121.4395: *5* @image ../doc/html/screen-shots/ekr-20100823132841-4379.png
+.. @+node:ekr.20100823141121.4382: *5* @screenshot-tree Diary
+.. @+node:ekr.20100823141121.4383: *6* Organizer
 Organizer node.
-.. @+node:ekr.20100823141121.4384: *6* To Do List
+.. @+node:ekr.20100823141121.4384: *7* To Do List
 My to-do list.
-.. @+node:ekr.20100823141121.4385: *7* Urgent
-.. @+node:ekr.20100823141121.4386: *7* Important
-.. @+node:ekr.20100823141121.4387: *7* Soon
-.. @+node:ekr.20100823141121.4388: *7* Whenever
-.. @+node:ekr.20100823141121.4389: *6* Diary
-.. @+node:ekr.20100823141121.4390: *7* 2009
-.. @+node:ekr.20100823141121.4391: *8* Jan 1
-.. @+node:ekr.20100823141121.4392: *7* 2010
-.. @+node:ekr.20100821182153.4355: *3* The contracted node
+.. @+node:ekr.20100823141121.4385: *8* Urgent
+.. @+node:ekr.20100823141121.4386: *8* Important
+.. @+node:ekr.20100823141121.4387: *8* Soon
+.. @+node:ekr.20100823141121.4388: *8* Whenever
+.. @+node:ekr.20100823141121.4389: *7* Diary
+.. @+node:ekr.20100823141121.4390: *8* 2009
+.. @+node:ekr.20100823141121.4391: *9* Jan 1
+.. @+node:ekr.20100823141121.4392: *8* 2010
+.. @+node:ekr.20100821182153.4355: *4* The contracted node
 Here the indicated node has been closed.
 
 .. image:: screen-shots/ekr-20100821182153-4355.png
 
-.. @+node:ekr.20100823141121.4445: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4355.png
-.. @+node:ekr.20100823141121.4433: *4* @screenshot-tree Diary
-.. @+node:ekr.20100823141121.4434: *5* Organizer
+.. @+node:ekr.20100823141121.4445: *5* @image ../doc/html/screen-shots/ekr-20100821182153-4355.png
+.. @+node:ekr.20100823141121.4433: *5* @screenshot-tree Diary
+.. @+node:ekr.20100823141121.4434: *6* Organizer
 Organizer node.
-.. @+node:ekr.20100823141121.4435: *6* To Do List
+.. @+node:ekr.20100823141121.4435: *7* To Do List
 My to-do list.
-.. @+node:ekr.20100823141121.4436: *7* Urgent
-.. @+node:ekr.20100823141121.4437: *7* Important
-.. @+node:ekr.20100823141121.4438: *7* Soon
-.. @+node:ekr.20100823141121.4439: *7* Whenever
-.. @+node:ekr.20100823141121.4440: *6* Diary
-.. @+node:ekr.20100823141121.4441: *7* 2009
-.. @+node:ekr.20100823141121.4442: *8* Jan 1
-.. @+node:ekr.20100823141121.4443: *7* 2010
-.. @+node:ekr.20100821182153.4356: *3* Headline and body text
+.. @+node:ekr.20100823141121.4436: *8* Urgent
+.. @+node:ekr.20100823141121.4437: *8* Important
+.. @+node:ekr.20100823141121.4438: *8* Soon
+.. @+node:ekr.20100823141121.4439: *8* Whenever
+.. @+node:ekr.20100823141121.4440: *7* Diary
+.. @+node:ekr.20100823141121.4441: *8* 2009
+.. @+node:ekr.20100823141121.4442: *9* Jan 1
+.. @+node:ekr.20100823141121.4443: *8* 2010
+.. @+node:ekr.20100821182153.4356: *4* Headline and body text
 Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
 
 .. image:: screen-shots/ekr-20100821182153-4356.png
-.. @+node:ekr.20100824201641.4454: *4* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
-.. @+node:ekr.20100824093905.4433: *4* @screenshot-tree Urgent
-.. @+node:ekr.20100824093905.4434: *5* Organizer
+.. @+node:ekr.20100824201641.4454: *5* @image ../doc/html/screen-shots/ekr-20100821182153-4356.png
+.. @+node:ekr.20100824093905.4433: *5* @screenshot-tree Urgent
+.. @+node:ekr.20100824093905.4434: *6* Organizer
 Organizer node.
-.. @+node:ekr.20100824093905.4435: *6* To Do List
+.. @+node:ekr.20100824093905.4435: *7* To Do List
 My to-do list.
-.. @+node:ekr.20100824093905.4436: *7* Urgent
+.. @+node:ekr.20100824093905.4436: *8* Urgent
 1. Make Leo Tutorial: the world is waiting.
 
 2. Pay phone bill or the world will never know.
-.. @+node:ekr.20100824093905.4437: *7* Important
-.. @+node:ekr.20100824093905.4438: *7* Soon
-.. @+node:ekr.20100824093905.4439: *7* Whenever
-.. @+node:ekr.20100824093905.4440: *6* Diary
-.. @+node:ekr.20100824093905.4441: *7* 2009
-.. @+node:ekr.20100824093905.4442: *8* Jan 1
-.. @+node:ekr.20100824093905.4443: *7* 2010
-.. @+node:ekr.20100821182153.4357: *3* File:Save
+.. @+node:ekr.20100824093905.4437: *8* Important
+.. @+node:ekr.20100824093905.4438: *8* Soon
+.. @+node:ekr.20100824093905.4439: *8* Whenever
+.. @+node:ekr.20100824093905.4440: *7* Diary
+.. @+node:ekr.20100824093905.4441: *8* 2009
+.. @+node:ekr.20100824093905.4442: *9* Jan 1
+.. @+node:ekr.20100824093905.4443: *8* 2010
+.. @+node:ekr.20100821182153.4357: *4* File:Save
 You can save the outline in a leo file. Click File - Save.
 
 .. .. image:: C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4357.png
 
-.. @+node:ekr.20100824162707.4438: *4* @screenshot-tree-setup Urgent
-.. @+node:ekr.20100824162707.4439: *5* Organizer
+.. @+node:ekr.20100824162707.4438: *5* @screenshot-tree-setup Urgent
+.. @+node:ekr.20100824162707.4439: *6* Organizer
 Organizer node.
-.. @+node:ekr.20100824162707.4440: *6* To Do List
+.. @+node:ekr.20100824162707.4440: *7* To Do List
 My to-do list.
-.. @+node:ekr.20100824162707.4441: *7* Urgent
+.. @+node:ekr.20100824162707.4441: *8* Urgent
 1. Make Leo Tutorial: the world is waiting.
 
 2. Pay phone bill or the world will never know.
-.. @+node:ekr.20100824162707.4442: *7* Important
-.. @+node:ekr.20100824162707.4443: *7* Soon
-.. @+node:ekr.20100824162707.4444: *7* Whenever
-.. @+node:ekr.20100824162707.4445: *6* Diary
-.. @+node:ekr.20100824162707.4446: *7* 2009
-.. @+node:ekr.20100824162707.4447: *8* Jan 1
-.. @+node:ekr.20100824162707.4448: *7* 2010
-.. @+node:ekr.20100821182153.4358: *3* File:Save as
+.. @+node:ekr.20100824162707.4442: *8* Important
+.. @+node:ekr.20100824162707.4443: *8* Soon
+.. @+node:ekr.20100824162707.4444: *8* Whenever
+.. @+node:ekr.20100824162707.4445: *7* Diary
+.. @+node:ekr.20100824162707.4446: *8* 2009
+.. @+node:ekr.20100824162707.4447: *9* Jan 1
+.. @+node:ekr.20100824162707.4448: *8* 2010
+.. @+node:ekr.20100821182153.4358: *4* File:Save as
 Here we will save our outline with a file name of "pim.leo".
-.. @+node:ekr.20100821182153.4359: *3* File name in title bar
+.. @+node:ekr.20100821182153.4359: *4* File name in title bar
 The file is now saved, and the file name appears in the title bar.
 
-.. @+node:ekr.20100821182153.4360: *3* Leo is a meta-text editor
+.. @+node:ekr.20100821182153.4360: *4* Leo is a meta-text editor
 You've just seen an introduction to Leo as an outlining editor. You can use Leo
 to make an outline, with optional text for each outline element. You can save
 the outline to a file. Outlines are explained more in a later tutorial in this
@@ -289,7 +290,7 @@ structural document for a non structured document, or a document that is
 structured in some other way.
 
 What does this mean in practice? Some examples should help clarify things...
-.. @+node:ekr.20100821182153.4361: *3* The @file directive
+.. @+node:ekr.20100821182153.4361: *4* The @file directive
 Here is the "pim.leo" file again. We've:
 
 1. Selected the "2000" node.
@@ -298,7 +299,7 @@ Here is the "pim.leo" file again. We've:
 that we want to derive (extract to).
 
 3. Entered some node text. 
-.. @+node:ekr.20100823164432.4405: *3* 12
+.. @+node:ekr.20100823164432.4405: *4* 12
 Now we tell Leo to tangle the node. This means Leo should 
 
    1. Start at the current node and look for a @root directive.
@@ -309,14 +310,14 @@ Why is this operation called tangling? We'll see that a few pages from now.
 
 .. image:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png
 
-.. @+node:ekr.20100910075532.4447: *4* @image C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png
-.. @+node:ekr.20100823164432.4406: *3* 13
+.. @+node:ekr.20100910075532.4447: *5* @image C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png
+.. @+node:ekr.20100823164432.4406: *4* 13
 Leo has written the external file to the disk
-.. @+node:ekr.20100823164432.4407: *3* 14 External file in Windows Explorer
+.. @+node:ekr.20100823164432.4407: *4* 14 External file in Windows Explorer
 Here the file is listed in Windows Explorer.
-.. @+node:ekr.20100823164432.4408: *3* 15 External file in a Scite
+.. @+node:ekr.20100823164432.4408: *4* 15 External file in a Scite
 And here is the file displayed in a text editor.
-.. @+node:ekr.20100823164432.4409: *3* 16 Tangling
+.. @+node:ekr.20100823164432.4409: *4* 16 Tangling
 That example wasn't very interesting. All that we extracted was the text "This
 is my diary." We'll probably want to extract more than that.
 
@@ -326,10 +327,10 @@ pieces into the derived file in any order. That is why the process of extraction
 is called tangling.
 
 Let's try this. Select the "Jul" node.
-.. @+node:ekr.20100823164432.4411: *3* 17 Add section ref
+.. @+node:ekr.20100823164432.4411: *4* 17 Add section ref
    1. We add << >> angle brackets to the headline. This tells Leo that the node is a section.
    2. We add the @c directive. This tells Leo where to start extracting text from this node. 
-.. @+node:ekr.20100823164432.4412: *3* 18 Section name
+.. @+node:ekr.20100823164432.4412: *4* 18 Section name
 Now we go back to the 2000 node. We enter the section name << Jul >> into the
 node text where we want the << Jul >> section text to be output. When tangling,
 Leo will replace this section name with the section text. This operation is
@@ -339,13 +340,13 @@ replaced with the named section's text.
 Note: when we put a << section name >> into node text, the section name must
 correspond to a section located under the current node. Leo only looks in
 subnodes for section names.
-.. @+node:ekr.20100823164432.4413: *3* 19 Save the file
+.. @+node:ekr.20100823164432.4413: *4* 19 Save the file
 Chose Save
-.. @+node:ekr.20100823164432.4414: *3* 20
-.. @+node:ekr.20100823164432.4415: *3* 21
-.. @+node:ekr.20100823164432.4410: *3* 22
-.. @+node:ekr.20100823164432.4416: *3* 23
-.. @+node:ekr.20100823164432.4417: *3* 24
+.. @+node:ekr.20100823164432.4414: *4* 20
+.. @+node:ekr.20100823164432.4415: *4* 21
+.. @+node:ekr.20100823164432.4410: *4* 22
+.. @+node:ekr.20100823164432.4416: *4* 23
+.. @+node:ekr.20100823164432.4417: *4* 24
 
 .. @-all
 .. @-leo

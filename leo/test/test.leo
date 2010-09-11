@@ -559,15 +559,38 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20100910124218.2257"></v>
-<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
-<v t="ekr.20100909154940.2227" a="E"><vh>Headline and body text</vh>
+<v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
+<v t="ekr.20100911162102.2361"><vh>What is Leo</vh>
+<v t="ekr.20100911182248.2421"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2361.png</vh></v>
+</v>
+<v t="ekr.20100911162102.2362"><vh>Outlining editor</vh>
+<v t="ekr.20100911182248.2422"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2362.png</vh></v>
+<v t="ekr.20100911162102.2363"><vh>@image ../doc/html/screen-shots/ekr-20100821182153-4352.png</vh></v>
+<v t="ekr.20100911162102.2364"><vh>@screenshot-tree To Do List</vh>
+<v t="ekr.20100911162102.2365"><vh>Organizer</vh>
+<v t="ekr.20100911162102.2366"><vh>To Do List</vh>
+<v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
+<v t="ekr.20100911162102.2368"><vh>Important</vh></v>
+<v t="ekr.20100911162102.2369"><vh>Soon</vh></v>
+<v t="ekr.20100911162102.2370"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20100911162102.2371"><vh>Diary</vh>
+<v t="ekr.20100911162102.2372"><vh>2009</vh>
+<v t="ekr.20100911162102.2373"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100911162102.2374"><vh>2010</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100909154940.2227"><vh>Headline and body text</vh>
 <v t="ekr.20100911122628.2261"><vh>@image ../doc/html/screen-shots/ekr-20100909154940-2227.png</vh></v>
 <v t="ekr.20100909210124.2239"><vh>@callout This is a headline</vh></v>
 <v t="ekr.20100909210124.2240"><vh>@callout This is the body pane</vh></v>
 <v t="ekr.20100909210124.2241"><vh>@markers 1,2</vh></v>
-<v t="ekr.20100909154940.2228" a="E"><vh>@screenshot-tree Urgent</vh>
-<v t="ekr.20100909154940.2229" a="E"><vh>Organizer</vh>
-<v t="ekr.20100909154940.2230" a="E"><vh>To Do List</vh>
+<v t="ekr.20100909154940.2228"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100909154940.2229"><vh>Organizer</vh>
+<v t="ekr.20100909154940.2230"><vh>To Do List</vh>
 <v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
 <v t="ekr.20100909154940.2232"><vh>Important</vh></v>
 <v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
@@ -582,10 +605,103 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100911162102.2427"><vh>File:Save</vh>
+<v t="ekr.20100911182248.2423"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2427.png</vh></v>
+<v t="ekr.20100911162102.2428"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100911162102.2429"><vh>Organizer</vh>
+<v t="ekr.20100911162102.2430"><vh>To Do List</vh>
+<v t="ekr.20100911162102.2431"><vh>Urgent</vh></v>
+<v t="ekr.20100911162102.2432"><vh>Important</vh></v>
+<v t="ekr.20100911162102.2433"><vh>Soon</vh></v>
+<v t="ekr.20100911162102.2434"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20100909154713.2210"><vh>@button screenshot @key=Alt-8</vh>
+<v t="ekr.20100911162102.2435"><vh>Diary</vh>
+<v t="ekr.20100911162102.2436"><vh>2009</vh>
+<v t="ekr.20100911162102.2437"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100911162102.2438"><vh>2010</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100911162102.2458"><vh>Other slides</vh>
+<v t="ekr.20100911162102.2401"><vh>The contracted node</vh>
+<v t="ekr.20100911162102.2402"><vh>@image ../doc/html/screen-shots/ekr-20100821182153-4355.png</vh></v>
+<v t="ekr.20100911162102.2403"><vh>@screenshot-tree Diary</vh>
+<v t="ekr.20100911162102.2404"><vh>Organizer</vh>
+<v t="ekr.20100911162102.2405"><vh>To Do List</vh>
+<v t="ekr.20100911162102.2406"><vh>Urgent</vh></v>
+<v t="ekr.20100911162102.2407"><vh>Important</vh></v>
+<v t="ekr.20100911162102.2408"><vh>Soon</vh></v>
+<v t="ekr.20100911162102.2409"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20100911162102.2410"><vh>Diary</vh>
+<v t="ekr.20100911162102.2411"><vh>2009</vh>
+<v t="ekr.20100911162102.2412"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100911162102.2413"><vh>2010</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100911162102.2375"><vh>Expand a node</vh>
+<v t="ekr.20100911162102.2376"><vh>@image ../doc/html/screen-shots/ekr-20100821182153-4353.png</vh></v>
+<v t="ekr.20100911162102.2377"><vh>@screenshot-tree Diary</vh>
+<v t="ekr.20100911162102.2378"><vh>Organizer</vh>
+<v t="ekr.20100911162102.2379"><vh>To Do List</vh>
+<v t="ekr.20100911162102.2380"><vh>Urgent</vh></v>
+<v t="ekr.20100911162102.2381"><vh>Important</vh></v>
+<v t="ekr.20100911162102.2382"><vh>Soon</vh></v>
+<v t="ekr.20100911162102.2383"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20100911162102.2384"><vh>Diary</vh>
+<v t="ekr.20100911162102.2385"><vh>2009</vh>
+<v t="ekr.20100911162102.2386"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100911162102.2387"><vh>2010</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100911162102.2388"><vh>The expanded node</vh>
+<v t="ekr.20100911162102.2389"><vh>@image ../doc/html/screen-shots/ekr-20100823132841-4379.png</vh></v>
+<v t="ekr.20100911162102.2390"><vh>@screenshot-tree Diary</vh>
+<v t="ekr.20100911162102.2391"><vh>Organizer</vh>
+<v t="ekr.20100911162102.2392"><vh>To Do List</vh>
+<v t="ekr.20100911162102.2393"><vh>Urgent</vh></v>
+<v t="ekr.20100911162102.2394"><vh>Important</vh></v>
+<v t="ekr.20100911162102.2395"><vh>Soon</vh></v>
+<v t="ekr.20100911162102.2396"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20100911162102.2397"><vh>Diary</vh>
+<v t="ekr.20100911162102.2398"><vh>2009</vh>
+<v t="ekr.20100911162102.2399"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100911162102.2400"><vh>2010</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100911162102.2439"><vh>File:Save as</vh></v>
+<v t="ekr.20100911162102.2440"><vh>File name in title bar</vh></v>
+<v t="ekr.20100911162102.2441"><vh>Leo is a meta-text editor</vh></v>
+<v t="ekr.20100911162102.2442"><vh>The @file directive</vh></v>
+<v t="ekr.20100911162102.2443"><vh>12</vh>
+<v t="ekr.20100911162102.2444"><vh>@image C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png</vh></v>
+</v>
+<v t="ekr.20100911162102.2445"><vh>13</vh></v>
+<v t="ekr.20100911162102.2446"><vh>14 External file in Windows Explorer</vh></v>
+<v t="ekr.20100911162102.2447"><vh>15 External file in a Scite</vh></v>
+<v t="ekr.20100911162102.2448"><vh>16 Tangling</vh></v>
+<v t="ekr.20100911162102.2449"><vh>17 Add section ref</vh></v>
+<v t="ekr.20100911162102.2450"><vh>18 Section name</vh></v>
+<v t="ekr.20100911162102.2451"><vh>19 Save the file</vh></v>
+</v>
+<v t="ekr.20100909154713.2210"><vh>@button screenshot</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
+<v t="ekr.20100911161733.2261"><vh>@button slideshow @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1006,7 +1122,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7101,8 +7217,8 @@ c.k.simulateCommand('stickynote')
 <t tx="ekr.20100909154713.2210">m = g.loadOnePlugin('screenshots')
 
 # Select the screenshot node.
-h = 'Headline and body text'
-p = g.findNodeAnywhere(c,h)
+#h = 'Headline and body text'
+#p = g.findNodeAnywhere(c,h)
 if p:
     c.selectPosition(p)
     if 1: # Test scripting.
@@ -7159,5 +7275,227 @@ text here by typing it in.
 <t tx="ekr.20100910124218.2259"></t>
 <t tx="ekr.20100911122628.2261"></t>
 <t tx="ekr.20100911131544.2259"></t>
+<t tx="ekr.20100911161733.2261">m = g.loadOnePlugin('screenshots')
+
+# Select the screenshot node.
+h = '@slideshow ../test/screenshot-unit-test.html'
+p = g.findNodeAnywhere(c,h)
+if p:
+    c.selectPosition(p)
+    m.make_slide_show_command(event={'c':c})
+else:
+    g.es_print('not found',h,color='red')
+</t>
+<t tx="ekr.20100911162102.2361">Leo is a unique, powerful computer program that you can use to organize, analyze
+and describe text and text files. Leo is a free program written by Edward K.
+Ream. For information about downloading Leo, see installation tutorial in this
+series. Leo runs on Windows, Mac, or Linux.
+
+Use Leo:
+
+- to brainstorm a new project,
+- as a Personal Information Manager,
+- to add multiple outlines and commentary to any text file,
+- as a tool to facilitate a new kind of programming.
+
+Because Leo is unlike other tools you may have used, a series of examples may be
+the best way to demonstrate what can be done with Leo.
+
+.. toctree::
+    :hidden:
+    :glob:
+
+    what-is-leo-0*
+
+.. image:: screen-shots/ekr-20100911162102-2361.png
+
+</t>
+<t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
+You create an outline in the top left pane. (A later tutorial explains how to
+create an outline like the one in the screenshot).
+
+.. screen-shots will be a separate project.
+
+.. Relative to the source file.
+
+.. image:: screen-shots/ekr-20100821182153-4352.png
+
+.. image:: screen-shots/ekr-20100911162102-2362.png
+
+</t>
+<t tx="ekr.20100911162102.2363"></t>
+<t tx="ekr.20100911162102.2364"></t>
+<t tx="ekr.20100911162102.2365">Organizer node.
+</t>
+<t tx="ekr.20100911162102.2366">My to-do list.
+</t>
+<t tx="ekr.20100911162102.2367"></t>
+<t tx="ekr.20100911162102.2368"></t>
+<t tx="ekr.20100911162102.2369"></t>
+<t tx="ekr.20100911162102.2370"></t>
+<t tx="ekr.20100911162102.2371"></t>
+<t tx="ekr.20100911162102.2372"></t>
+<t tx="ekr.20100911162102.2373"></t>
+<t tx="ekr.20100911162102.2374"></t>
+<t tx="ekr.20100911162102.2375">Clicking on the indicated triangle will expand the indicated node.
+
+.. image:: screen-shots/ekr-20100821182153-4353.png
+
+</t>
+<t tx="ekr.20100911162102.2376"></t>
+<t tx="ekr.20100911162102.2377"></t>
+<t tx="ekr.20100911162102.2378">Organizer node.
+</t>
+<t tx="ekr.20100911162102.2379">My to-do list.
+</t>
+<t tx="ekr.20100911162102.2380"></t>
+<t tx="ekr.20100911162102.2381"></t>
+<t tx="ekr.20100911162102.2382"></t>
+<t tx="ekr.20100911162102.2383"></t>
+<t tx="ekr.20100911162102.2384"></t>
+<t tx="ekr.20100911162102.2385"></t>
+<t tx="ekr.20100911162102.2386"></t>
+<t tx="ekr.20100911162102.2387"></t>
+<t tx="ekr.20100911162102.2388">Here the node is expanded. Clicking on the box again will contract the node.
+
+.. image:: screen-shots/ekr-20100823132841-4379.png
+
+</t>
+<t tx="ekr.20100911162102.2389"></t>
+<t tx="ekr.20100911162102.2390"></t>
+<t tx="ekr.20100911162102.2391">Organizer node.
+</t>
+<t tx="ekr.20100911162102.2392">My to-do list.
+</t>
+<t tx="ekr.20100911162102.2393"></t>
+<t tx="ekr.20100911162102.2394"></t>
+<t tx="ekr.20100911162102.2395"></t>
+<t tx="ekr.20100911162102.2396"></t>
+<t tx="ekr.20100911162102.2397"></t>
+<t tx="ekr.20100911162102.2398"></t>
+<t tx="ekr.20100911162102.2399"></t>
+<t tx="ekr.20100911162102.2400"></t>
+<t tx="ekr.20100911162102.2401">Here the indicated node has been closed.
+
+.. image:: screen-shots/ekr-20100821182153-4355.png
+
+</t>
+<t tx="ekr.20100911162102.2402"></t>
+<t tx="ekr.20100911162102.2403"></t>
+<t tx="ekr.20100911162102.2404">Organizer node.
+</t>
+<t tx="ekr.20100911162102.2405">My to-do list.
+</t>
+<t tx="ekr.20100911162102.2406"></t>
+<t tx="ekr.20100911162102.2407"></t>
+<t tx="ekr.20100911162102.2408"></t>
+<t tx="ekr.20100911162102.2409"></t>
+<t tx="ekr.20100911162102.2410"></t>
+<t tx="ekr.20100911162102.2411"></t>
+<t tx="ekr.20100911162102.2412"></t>
+<t tx="ekr.20100911162102.2413"></t>
+<t tx="ekr.20100911162102.2427">You can save the outline in a leo file. Click File - Save.
+
+.. .. image:: C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4357.png
+
+.. image:: screen-shots/ekr-20100911162102-2427.png
+
+</t>
+<t tx="ekr.20100911162102.2428"></t>
+<t tx="ekr.20100911162102.2429">Organizer node.
+</t>
+<t tx="ekr.20100911162102.2430">My to-do list.
+</t>
+<t tx="ekr.20100911162102.2431">1. Make Leo Tutorial: the world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20100911162102.2432"></t>
+<t tx="ekr.20100911162102.2433"></t>
+<t tx="ekr.20100911162102.2434"></t>
+<t tx="ekr.20100911162102.2435"></t>
+<t tx="ekr.20100911162102.2436"></t>
+<t tx="ekr.20100911162102.2437"></t>
+<t tx="ekr.20100911162102.2438"></t>
+<t tx="ekr.20100911162102.2439">Here we will save our outline with a file name of "pim.leo".
+</t>
+<t tx="ekr.20100911162102.2440">The file is now saved, and the file name appears in the title bar.
+
+</t>
+<t tx="ekr.20100911162102.2441">You've just seen an introduction to Leo as an outlining editor. You can use Leo
+to make an outline, with optional text for each outline element. You can save
+the outline to a file. Outlines are explained more in a later tutorial in this
+series. The outlining capability of Leo goes far beyond what has just been
+demonstrated, including multipath outlines, and multiple outlines in one file .
+
+What we've shown so far is no different from other outlining editors. What makes
+Leo unique is the addition of a new feature. Using simple directives, you can
+instruct Leo to extract text from any number of nodes, in any order, and write
+the text to a new file. You can also embed outline information in the second
+file, giving Leo the ability to read the text pieces back into the Leo outline,
+even if they have been changed.
+
+In effect, Leo is a meta-text editor . It gives you the ability to create a
+structural document for a non structured document, or a document that is
+structured in some other way.
+
+What does this mean in practice? Some examples should help clarify things...
+</t>
+<t tx="ekr.20100911162102.2442">Here is the "pim.leo" file again. We've:
+
+1. Selected the "2000" node.
+
+2. Entered a couple of directives. The second (@file) tells Leo the file name
+that we want to derive (extract to).
+
+3. Entered some node text. 
+</t>
+<t tx="ekr.20100911162102.2443">Now we tell Leo to tangle the node. This means Leo should 
+
+   1. Start at the current node and look for a @root directive.
+   2. Create the file named in the @root directive or open it if it already exists.
+   3. Write all of the node text to the file named in the root directive. 
+
+Why is this operation called tangling? We'll see that a few pages from now.
+
+.. image:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100823164432-4405.png
+
+</t>
+<t tx="ekr.20100911162102.2444"></t>
+<t tx="ekr.20100911162102.2445">Leo has written the external file to the disk
+</t>
+<t tx="ekr.20100911162102.2446">Here the file is listed in Windows Explorer.
+</t>
+<t tx="ekr.20100911162102.2447">And here is the file displayed in a text editor.
+</t>
+<t tx="ekr.20100911162102.2448">That example wasn't very interesting. All that we extracted was the text "This
+is my diary." We'll probably want to extract more than that.
+
+In fact, when tangling, we can extract not only the node text as we just saw,
+but also all or part of the text of any subnode. And we can put these extracted
+pieces into the derived file in any order. That is why the process of extraction
+is called tangling.
+
+Let's try this. Select the "Jul" node.
+</t>
+<t tx="ekr.20100911162102.2449">   1. We add &lt;&lt; &gt;&gt; angle brackets to the headline. This tells Leo that the node is a section.
+   2. We add the @c directive. This tells Leo where to start extracting text from this node. 
+</t>
+<t tx="ekr.20100911162102.2450">Now we go back to the 2000 node. We enter the section name &lt;&lt; Jul &gt;&gt; into the
+node text where we want the &lt;&lt; Jul &gt;&gt; section text to be output. When tangling,
+Leo will replace this section name with the section text. This operation is
+recursive, so if a section text contains a section name, this also will be
+replaced with the named section's text.
+
+Note: when we put a &lt;&lt; section name &gt;&gt; into node text, the section name must
+correspond to a section located under the current node. Leo only looks in
+subnodes for section names.
+</t>
+<t tx="ekr.20100911162102.2451">Chose Save
+</t>
+<t tx="ekr.20100911162102.2458"></t>
+<t tx="ekr.20100911182248.2421"></t>
+<t tx="ekr.20100911182248.2422"></t>
+<t tx="ekr.20100911182248.2423"></t>
 </tnodes>
 </leo_file>
