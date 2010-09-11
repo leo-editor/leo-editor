@@ -3038,6 +3038,10 @@ def plugin_signon(module_name,verbose=False):
 def unloadOnePlugin (moduleOrFileName,verbose=False):
     pc = g.app.pluginsController
     return pc.unloadOnePlugin(moduleOrFileName,verbose)
+
+def unregisterHandler (tags,fn):
+    pc = g.app.pluginsController
+    return pc.unregisterHandler(tags,fn)
 #@+node:ekr.20100910075900.5952: *4* Information
 def getHandlersForTag(tags):
     pc = g.app.pluginsController
