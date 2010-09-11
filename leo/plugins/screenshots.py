@@ -474,10 +474,16 @@ class ScreenShotController(object):
         fn = os.path.relpath(fn,base).replace('\\','/')
         if self.trace: g.trace(fn)
         return fn
+    #@+node:ekr.20100911044508.5638: *4* p_to_fn
+    def p_to_fn (self,p):
+
+        return '%s-%s.png' % (
+            p.gnx.replace('.','-'),
+            g.sanitize_filename(p.h).replace('.','-'))
     #@+node:ekr.20100911044508.5627: *4* get_output_fn
     def get_output_fn (self,p,output_fn):
 
-        fn = output_fn or '%s.png' % (p.gnx.replace('.','-'))
+        fn = output_fn or self.p_to_fn(p)
         fn = self.finalize(fn)
         if self.trace: g.trace(fn)
         return fn
@@ -486,7 +492,7 @@ class ScreenShotController(object):
 
         '''Compute the full path to the screenshot.'''
 
-        fn = screenshot_fn or '%s.png' % (p.gnx.replace('.','-'))
+        fn = screenshot_fn or self.p_to_fn(p)
         fn = self.finalize(fn)
         if self.trace: g.trace(fn)
         return fn

@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.54">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.76">
 	<global_window_position top="57" left="275" height="962" width="1313"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -559,15 +559,14 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20100910124218.2257"></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
 <v t="ekr.20100911162102.2361"><vh>What is Leo</vh>
-<v t="ekr.20100911182248.2421"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2361.png</vh></v>
+<v t="ekr.20100911185451.2427"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2361-what_is_leo.png</vh></v>
 </v>
 <v t="ekr.20100911162102.2362"><vh>Outlining editor</vh>
-<v t="ekr.20100911182248.2422"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2362.png</vh></v>
-<v t="ekr.20100911162102.2363"><vh>@image ../doc/html/screen-shots/ekr-20100821182153-4352.png</vh></v>
-<v t="ekr.20100911162102.2364"><vh>@screenshot-tree To Do List</vh>
-<v t="ekr.20100911162102.2365"><vh>Organizer</vh>
+<v t="ekr.20100911185451.2428"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2362-outlining_editor.png</vh></v>
+<v t="ekr.20100911162102.2364" a="E"><vh>@screenshot-tree To Do List</vh>
+<v t="ekr.20100911162102.2365" a="E"><vh>Organizer</vh>
 <v t="ekr.20100911162102.2366"><vh>To Do List</vh>
 <v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
 <v t="ekr.20100911162102.2368"><vh>Important</vh></v>
@@ -584,13 +583,13 @@
 </v>
 </v>
 <v t="ekr.20100909154940.2227"><vh>Headline and body text</vh>
-<v t="ekr.20100911122628.2261"><vh>@image ../doc/html/screen-shots/ekr-20100909154940-2227.png</vh></v>
+<v t="ekr.20100911185451.2429"><vh>@image ../doc/html/screen-shots/ekr-20100909154940-2227-headline_and_body_text.png</vh></v>
 <v t="ekr.20100909210124.2239"><vh>@callout This is a headline</vh></v>
 <v t="ekr.20100909210124.2240"><vh>@callout This is the body pane</vh></v>
 <v t="ekr.20100909210124.2241"><vh>@markers 1,2</vh></v>
-<v t="ekr.20100909154940.2228"><vh>@screenshot-tree Urgent</vh>
-<v t="ekr.20100909154940.2229"><vh>Organizer</vh>
-<v t="ekr.20100909154940.2230"><vh>To Do List</vh>
+<v t="ekr.20100909154940.2228" a="E"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100909154940.2229" a="E"><vh>Organizer</vh>
+<v t="ekr.20100909154940.2230" a="E"><vh>To Do List</vh>
 <v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
 <v t="ekr.20100909154940.2232"><vh>Important</vh></v>
 <v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
@@ -606,10 +605,10 @@
 </v>
 </v>
 <v t="ekr.20100911162102.2427"><vh>File:Save</vh>
-<v t="ekr.20100911182248.2423"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2427.png</vh></v>
-<v t="ekr.20100911162102.2428"><vh>@screenshot-tree Urgent</vh>
-<v t="ekr.20100911162102.2429"><vh>Organizer</vh>
-<v t="ekr.20100911162102.2430"><vh>To Do List</vh>
+<v t="ekr.20100911185451.2430"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2427-file_save.png</vh></v>
+<v t="ekr.20100911162102.2428" a="E"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100911162102.2429" a="E"><vh>Organizer</vh>
+<v t="ekr.20100911162102.2430" a="E"><vh>To Do List</vh>
 <v t="ekr.20100911162102.2431"><vh>Urgent</vh></v>
 <v t="ekr.20100911162102.2432"><vh>Important</vh></v>
 <v t="ekr.20100911162102.2433"><vh>Soon</vh></v>
@@ -1122,7 +1121,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12,3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7248,7 +7247,7 @@ else:
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
 
-.. image:: screen-shots/ekr-20100909154940-2227.png
+.. image:: screen-shots/ekr-20100909154940-2227-headline_and_body_text.png
 
 </t>
 <t tx="ekr.20100909154940.2228"></t>
@@ -7273,7 +7272,6 @@ text here by typing it in.
 <t tx="ekr.20100910124218.2257"></t>
 <t tx="ekr.20100910124218.2258"></t>
 <t tx="ekr.20100910124218.2259"></t>
-<t tx="ekr.20100911122628.2261"></t>
 <t tx="ekr.20100911131544.2259"></t>
 <t tx="ekr.20100911161733.2261">m = g.loadOnePlugin('screenshots')
 
@@ -7309,21 +7307,16 @@ the best way to demonstrate what can be done with Leo.
 
 .. image:: screen-shots/ekr-20100911162102-2361.png
 
+.. image:: screen-shots/ekr-20100911162102-2361-what_is_leo.png
+
 </t>
 <t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
 
-.. screen-shots will be a separate project.
-
-.. Relative to the source file.
-
-.. image:: screen-shots/ekr-20100821182153-4352.png
-
-.. image:: screen-shots/ekr-20100911162102-2362.png
+.. image:: screen-shots/ekr-20100911162102-2362-outlining_editor.png
 
 </t>
-<t tx="ekr.20100911162102.2363"></t>
 <t tx="ekr.20100911162102.2364"></t>
 <t tx="ekr.20100911162102.2365">Organizer node.
 </t>
@@ -7396,9 +7389,7 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20100911162102.2413"></t>
 <t tx="ekr.20100911162102.2427">You can save the outline in a leo file. Click File - Save.
 
-.. .. image:: C:\leo.repo\trunk\leo\doc\html\screen-shots\ekr-20100821182153-4357.png
-
-.. image:: screen-shots/ekr-20100911162102-2427.png
+.. image:: screen-shots/ekr-20100911162102-2427-file_save.png
 
 </t>
 <t tx="ekr.20100911162102.2428"></t>
@@ -7494,8 +7485,9 @@ subnodes for section names.
 <t tx="ekr.20100911162102.2451">Chose Save
 </t>
 <t tx="ekr.20100911162102.2458"></t>
-<t tx="ekr.20100911182248.2421"></t>
-<t tx="ekr.20100911182248.2422"></t>
-<t tx="ekr.20100911182248.2423"></t>
+<t tx="ekr.20100911185451.2427"></t>
+<t tx="ekr.20100911185451.2428"></t>
+<t tx="ekr.20100911185451.2429"></t>
+<t tx="ekr.20100911185451.2430"></t>
 </tnodes>
 </leo_file>
