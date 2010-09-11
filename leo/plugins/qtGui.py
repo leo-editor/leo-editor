@@ -1072,16 +1072,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             s = p.h[6:].strip()
 
         s = g.os_path_finalize_join(g.app.loadDir,s)
+        s = s.strip("'").strip('"')
 
-        if not s.startswith('"'): s = '"' + s
-        if not s.endswith('"'): s = s + '"'
+        # if not s.startswith('"'): s = '"' + s
+        # if not s.endswith('"'): s = s + '"'
 
         html = '''
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head></head>
     <body bgcolor="#fffbdc">
-    <img src=%s>
+    <img src="%s">
     </body>
     </html>
     ''' % (s)

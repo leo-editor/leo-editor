@@ -150,7 +150,7 @@ def init ():
 
     return ok
 #@+node:ekr.20100908110845.5581: ** g.command(apropos-screen-shots)
-# @pagewidth 45
+#@@pagewidth 45
 
 @g.command('apropos-screen-shots')
 def apropos_screen_shots(event):
@@ -162,8 +162,12 @@ def apropos_screen_shots(event):
     #@+node:ekr.20100908110845.5582: *3* << define s >>
     s = """\
 
-    Using Inkscape to take screen shots
-    ===================================
+    The screenshot.py plug
+    ======================
+
+    This plugin uses the Qt gui to take scree
+    shots, and optionally uses Inkscape to edit
+    those screen shots.
 
     Inkscape, http://inkscape.org/, is an Open
     Source vector graphics editor, with
@@ -172,37 +176,39 @@ def apropos_screen_shots(event):
     Vector Graphics) file format. See
     http://www.w3.org/Graphics/SVG/.
 
-    Leo scripts can control Inkscape using the
-    c.inkscapeCommands.run method (run for
-    short), a method of the LeoInkscapeCommands
-    class defined in leoRst.py.
+    The plugin defines the take-screen-shot command.
+    This command works in four stages:
 
-    The primary input to the run method is the
-    **screeshot file**. This must be a bitmap.
-    Typically the screenshot file will be a PNG
-    format file, though other kinds of bitmap
-    files should work. The user, or perhaps
-    another script, must generate the screenshot
-    file before calling run().
+    1. Take a bitmap (PNG) **screenshot** file using Qt.
 
-    The run method works in three stages:
+       Discuss:
+           - Name of file
+           - Screen nodes & their descendants.
 
-    1. Convert the screenshot (bitmap) file to
-       the **working file**. The working file is
-       a SVG (vector graphic) file. Besides the
-       image from the original screenshot, the
-       working file may contain text **callouts**
-       (text ballons) and **markers** (black
-       circles containing numbers). You specify
-       callouts and markers using arguments to
-       the run method.
 
-    2. (Optional) Edit the working file using
+    2. Convert the screenshot file to a working file.
+
+
+
+       The **working file** is a SVG (vector
+       graphic) file. Besides the image from the
+       original screenshot, the working file may
+       contain text **callouts** (text ballons)
+       and **markers** (black circles containing
+       numbers). You specify callouts and markers
+       using arguments to the run method.
+
+    3. (Optional) Edit the working file using
        Inkscape. Inkscape will appear on the
        screen. You can edit and position callouts
        and markers, then save the working file.
 
-    3. (Optional) Use Inkscape behind the scenes
+       Discuss: @callout and @marker nodes.
+
+    4. (Optional) Create an output (PNG) file
+       from the working file.
+
+    Use Inkscape behind the scenes
        to render a final PNG image from the
        working file.  If PIL is installed, this
        step adjusts the image in various subtle
@@ -227,18 +233,27 @@ def apropos_screen_shots(event):
 
     @string inkscape-bin
 
-    This setting tells Leo the location of the Inkscape executable.
+    This setting tells Leo the location of the
+    Inkscape executable.
 
-    Usage
-    -----
+    Scripting the plugin
+    --------------------
+
+    Leo scripts can control this plugin using the
+    run method of the plugin's
+    ScreenShotController class.  Like this::
+
+        import leo.plugins.screenshots as screenshots
+        sc = screenshots.ScreenShotController(c)
+        sc.run(<arguments>)
 
     The run method has the following signature::
 
-        def run (self,fn,
+        def run (self,p,
             callouts=[],markers=[],edit_flag=True,
             png_fn=None,svg_fn=None,template_fn=None)
 
-            fn  The name of the bitmap screenshot file.
+            p   The position of the screen node.
       callouts  A possibly empty list of strings.
        markers  A possibly empty list of numbers.
      edit_flag  If True, run calls Inkscape so you can
@@ -256,17 +271,17 @@ def apropos_screen_shots(event):
     balloon callouts and three black circle
     numeric markers on a screenshot::
 
-        fn = "some_screen_shot.png"
-        png_fn = "final_screen_shot.png"
-        callouts = (
-            "This goes here",
-            "These are those, but slightly longer",
-            "Then you pull this")
-        markers = (2,4,17)
-
-        c.inkscapeCommands.run(fn,
-            callouts=callouts,markers=markers,
-            png_fn=png_fn)
+        import leo.plugins.screenshots as screenshots
+        sc = screenshots.ScreenShotController(c)
+        sc.run(
+            fn = "some_screen_shot.png"
+            png_fn = "final_screen_shot.png"
+            callouts = (
+                "This goes here",
+                "These are those, but slightly longer",
+                "Then you pull this",
+            )
+            markers = (2,4,17))
 
     """
     #@-<< define s >>
@@ -278,8 +293,23 @@ def take_screen_shot_command (event):
 
     c = event.get('c')
     if not c: return
+    sc = ScreenShotController(c)
+    p = c.p
+    if not sc.in_slide_show(p):
+        return sc.error('Not in slide show',p.h)
 
-    ScreenShotController(c).screen_shot_command()
+    sc.run(p,
+        callouts=sc.get_callouts(p),
+        markers=sc.get_markers(p),
+        edit_flag=sc.get_edit_flag(),
+        force_edit_flag=sc.get_force_edit_flag(),
+        output_flag=sc.get_output_flag(),
+        screenshot_fn=None,
+        working_fn=None,
+        output_fn=None,
+    )
+
+    sc.note('take-screen-shot command finished')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController(object):
 
@@ -293,8 +323,10 @@ class ScreenShotController(object):
 
         self.c = c
 
-        # Settings.
-        self.edit_flag = c.config.getBool('edit-screenshots',default=True)
+        # Settings.  Set later.
+        self.edit_flag = True
+        self.force_edit_flag = False
+        self.output_flag = True
 
         self.inkscape_bin = None
         bin = c.config.getString('screenshot-bin').strip('"').strip("'")
@@ -310,6 +342,7 @@ class ScreenShotController(object):
 
         self.base_directory = c.config.getString('screenshot-directory')
         g.trace('screenshot-directory',self.base_directory)
+
         # Dimension cache.
         self.dimCache = {}
         self.is_reads,self.is_cache = 0,0
@@ -331,7 +364,7 @@ class ScreenShotController(object):
 
         self.xlink = "{http://www.w3.org/1999/xlink}"
         # self.namespace = {'svg': "http://www.w3.org/2000/svg"}
-    #@+node:ekr.20100908110845.5533: *3*  lxml replacements
+    #@+node:ekr.20100908110845.5533: *3* lxml replacements
     #@+node:ekr.20100908110845.5534: *4* getElementsWithAttrib
     def getElementsWithAttrib (self,e,attr_name,aList=None):
 
@@ -385,7 +418,17 @@ class ScreenShotController(object):
             self.getParents(child,d)
 
         return d
-    #@+node:ekr.20100908110845.5538: *3*  utilities
+    #@+node:ekr.20100911044508.5618: *3* options & utilities
+    #@+node:ekr.20100908110845.5594: *4* add_image_directive
+    def add_image_directive (self,p,path):
+
+        '''Add ".. image:: <path>" to p.b if it is not already there.'''
+
+        path = path.replace('\\','/')
+        s = '.. image:: %s' % path
+
+        if p.b.find(s) == -1:
+            p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
     #@+node:ekr.20100908110845.5539: *4* error, note & warning
     def error (self,*args):
         if not g.app.unitTesting:
@@ -407,73 +450,7 @@ class ScreenShotController(object):
             '..','doc','html','screen-shots',fn)
 
         return s.replace('\\','/')
-    #@+node:ekr.20100908115707.5555: *3* screen_shot_command & helpers
-    def screen_shot_command (self):
-
-        c = self.c ; p = c.p
-
-        if self.in_slide_show(p):
-
-            self.give_pil_warning()
-
-            # Take the screenshot and update the tree.
-            fn = self.take_screen_shot(p)
-
-            # Call Inkscape to post-process the slide.
-            self.post_process(fn,p)
-            c.selectPosition(p)
-            c.redraw()
-            self.note('screen-shot-command finished')
-    #@+node:ekr.20100908110845.5592: *4* in_slide_show
-    def in_slide_show (self,p):
-
-        for p2 in p.parents():
-            if p2.h.startswith('@slideshow'):
-                return True
-        else:
-            return False
-    #@+node:ekr.20100908110845.5543: *4* give_pil_warning
-    pil_message_given = False
-
-    def give_pil_warning(self):
-
-        if self.pil_message_given:
-            return # Warning already given.
-
-        if got_pil:
-            return # The best situation
-
-        self.pil_message_given = True
-
-        if got_qt:
-            self.warning('PIL not found: images may have transparent borders')
-        else:
-            self.warning('PIL and Qt both not found: images may be less clear')
-    #@+node:ekr.20100909121239.6117: *4* take_screen_shot & helpers
-    def take_screen_shot(self,p):
-
-        directive_path = self.get_directive_path(p)
-        path = self.get_path(p)
-        root,h = self.find_at_screenshot_tree_node(p)
-
-        if 1:
-            self.make_screen_shot(path,root,h)
-            g.es('created %s' % path)
-            self.make_image_node(p,path)
-            self.add_image_directive(p,directive_path)
-
-        return path
-    #@+node:ekr.20100908110845.5594: *5* add_image_directive
-    def add_image_directive (self,p,path):
-
-        '''Add ".. image:: <path>" to p.b if it is not already there.'''
-
-        path = path.replace('\\','/')
-        s = '.. image:: %s' % path
-
-        if p.b.find(s) == -1:
-            p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
-    #@+node:ekr.20100909121239.5742: *5* find_at_screenshot_tree_node
+    #@+node:ekr.20100909121239.5742: *4* find_at_screenshot_tree_node
     def find_at_screenshot_tree_node (self,p):
 
         '''
@@ -491,7 +468,33 @@ class ScreenShotController(object):
             root,h = None,''
 
         return root,h
-    #@+node:ekr.20100909121239.5669: *5* get_directive_path
+    #@+node:ekr.20100908110845.5596: *4* get_callouts & helper
+    def get_callouts (self,p):
+        '''Return the list of callouts from the
+        direct children that are @callout nodes.'''
+
+        aList = []
+        for child in p.children():
+            # g.trace(child.h)
+            if child.h.startswith('@callout'):
+                callout = self.get_callout(child)
+                if callout: aList.append(callout)
+        # g.trace(aList)
+        return aList
+    #@+node:ekr.20100909121239.6096: *5* get_callout
+    def get_callout (self,p):
+
+        '''Return the text of the callout at p.'''
+
+        if p.b.strip():
+            return p.b
+        else:
+            s = p.h ; assert s.startswith('@callout')
+            i = g.skip_id(s,0,chars='@')
+                # Match @callout or @callouts, etc.
+            s = s[i:].strip()
+            return s
+    #@+node:ekr.20100909121239.5669: *4* get_directive_path
     def get_directive_path (self,p):
 
         '''Compute the path for use in an .. image:: directive.'''
@@ -499,14 +502,169 @@ class ScreenShotController(object):
         fn = '%s.png' % (p.gnx.replace('.','-'))
 
         return self.finalize(fn)
-    #@+node:ekr.20100909121239.5723: *5* get_path
-    def get_path (self,p):
+    #@+node:ekr.20100911044508.5620: *4* get_edit_flag
+    def get_edit_flag (self):
 
-        '''Compute the path for @image nodes.'''
+        c = self.c
 
-        fn = '%s.png' % (p.gnx.replace('.','-'))
+        return c.config.getBool(
+            'edit-screenshots',default=True)
+
+    #@+node:ekr.20100911044508.5621: *4* get_force_edit_flag
+    def get_force_edit_flag (self):
+
+        c = self.c
+
+        return c.config.getBool(
+            'always-edit-screenshots',default=True)
+    #@+node:ekr.20100908110845.5597: *4* get_markers & helper
+    def get_markers (self,p):
+
+        '''Return the list of callouts from the
+        direct children that are @callout nodes.'''
+
+        aList = []
+        for child in p.children():
+            if child.h.startswith('@marker'):
+                callout = self.get_marker(child)
+                if callout: aList.extend(callout)
+        # g.trace(aList)
+        return aList
+    #@+node:ekr.20100909121239.6097: *5* get_marker
+    def get_marker (self,p):
+
+        '''Return a list of markers at p.'''
+
+        s = p.h ; assert s.startswith('@marker')
+        i = g.skip_id(s,0,chars='@')
+            # Match @marker or @markers, etc.
+        s = s[i:].strip()
+        return [z.strip() for z in s.split(',')]
+    #@+node:ekr.20100911044508.5624: *4* get_output_flag
+    def get_output_flag (self):
+
+        c = self.c
+
+        return c.config.getBool(
+            'write-screenshot-output-file',default=True)
+    #@+node:ekr.20100911044508.5627: *4* get_output_fn
+    def get_output_fn (self,p,output_fn):
+
+        fn = output_fn or '%s.png' % (p.gnx.replace('.','-'))
 
         return self.finalize(fn)
+    #@+node:ekr.20100911044508.5628: *4* get_screenshot_fn
+    def get_screenshot_fn (self,p,screenshot_fn):
+
+        '''Compute the full path to the screenshot.'''
+
+        fn = screenshot_fn or '%s.png' % (p.gnx.replace('.','-'))
+
+        return self.finalize(fn)
+    #@+node:ekr.20100908110845.5542: *4* get_template_fn
+    def get_template_fn (self,template_fn=None):
+
+        c = self.c
+
+        if template_fn:
+            fn = template_fn
+        else:
+            # fn = c.config.getString('inkscape-template') or 'inkscape-template.png'
+            fn = g.os_path_finalize_join(g.app.loadDir,
+                '..','doc','inkscape-template.svg')
+
+        if g.os_path_exists(fn):
+            return fn
+        else:
+            self.error('template file not found:',fn)
+            return None
+    #@+node:ekr.20100911044508.5626: *4* get_working_fn
+    def get_working_fn (self,p,working_fn):
+
+        fn = working_fn or 'screenshot_working_file.svg'
+
+        return self.finalize(fn)
+    #@+node:ekr.20100908110845.5543: *4* give_pil_warning
+    pil_message_given = False
+
+    def give_pil_warning(self):
+
+        if self.pil_message_given:
+            return # Warning already given.
+
+        if got_pil:
+            return # The best situation
+
+        self.pil_message_given = True
+
+        if got_qt:
+            self.warning('PIL not found: images may have transparent borders')
+        else:
+            self.warning('PIL and Qt both not found: images may be less clear')
+    #@+node:ekr.20100908110845.5592: *4* in_slide_show
+    def in_slide_show (self,p):
+
+        for p2 in p.parents():
+            if p2.h.startswith('@slideshow'):
+                return True
+        else:
+            return False
+    #@+node:ekr.20100909193826.5600: *4* select_at_image_node
+    def select_at_image_node (self,p):
+
+        c = self.c
+        for child in p.children():
+            if child.h.startswith('@image'):
+                c.selectPosition(child)
+                c.redraw_now(child)
+                break
+        else:
+            c.selectPosition(p)
+            c.redraw_now(p)
+    #@+node:ekr.20100911044508.5616: *3* run & helpers
+    def run (self,p,
+        callouts=[],markers=[],
+        edit_flag=True,force_edit_flag=False,output_flag=True,
+        screenshot_fn=None,working_fn=None,output_fn=None,
+    ):
+        self.edit_flag = edit_flag
+        self.force_edit_flag = force_edit_flag
+        self.output_flag = output_flag
+
+        # Compute paths and file names.
+        directive_path = self.get_directive_path(p)
+        output_fn = self.get_output_fn(p,output_fn)
+        screenshot_fn = self.get_screenshot_fn(p,screenshot_fn)
+        working_fn = self.get_working_fn(p,working_fn)
+
+        # Take the screenshot and update the tree.
+        fn = self.take_screen_shot(p,directive_path,screenshot_fn)
+
+        # Post-process the slide with inkscape.
+        if force_edit_flag or (self.edit_flag and (callouts or markers)):
+            self.give_pil_warning()
+            self.post_process(p,callouts,markers,screenshot_fn,working_fn)
+
+        # Create the output file.
+        if self.output_flag:
+            self.make_output_file(output_fn,working_fn)
+
+        if 0: # Restore the screen.
+            c.selectPosition(p)
+            c.redraw()
+    #@+node:ekr.20100909121239.6117: *4* 1: take_screen_shot & helpers
+    def take_screen_shot(self,p,directive_path,screenshot_fn):
+
+        '''Take the screen shot, create an @image node,
+        and add an .. image:: directive to p.'''
+
+        fn = screenshot_fn
+        root,h = self.find_at_screenshot_tree_node(p)
+        self.make_screen_shot(fn,root,h)
+        g.es('created %s' % fn)
+        self.make_image_node(p,fn)
+        self.add_image_directive(p,directive_path)
+
     #@+node:ekr.20100908110845.5599: *5* make_image_node
     def make_image_node (self,p,path):
 
@@ -593,112 +751,27 @@ class ScreenShotController(object):
         c.k.simulateCommand('equal-sized-panes')
         c.redraw()
         w.repaint() # Essential
-    #@+node:ekr.20100908110845.5544: *4* post_process & helpers
-    def post_process (self,fn,p):
+    #@+node:ekr.20100908110845.5544: *4* 2: post_process & helpers
+    def post_process (self,p,callouts,markers,screenshot_fn,working_fn):
 
-        '''Post-process the slide fn.'''
+        '''Post-process the slide at p with filename fn.'''
 
         c = self.c
 
         template_fn = self.get_template_fn()
         if not template_fn: return
 
-        png_fn = fn # Use output file is the same as the input file.
-        svg_fn = self.finalize('screenshot_working_file.svg')
-
-        callouts = self.get_callouts(p)
-        markers = self.get_markers(p)
-        template = self.make_svg(fn,svg_fn,template_fn,callouts,markers)
+        template = self.make_dom(callouts,markers,screenshot_fn,template_fn)
         if not template: return
 
+        self.make_working_file(template,working_fn) 
+
         if self.edit_flag and (callouts or markers):
-            self.edit_svg(svg_fn)
+            self.edit_working_file(working_fn)
+    #@+node:ekr.20100908110845.5546: *5* make_dom & helpers
+    def make_dom(self,callouts,markers,screenshot_fn,template_fn):
 
-        self.make_png(svg_fn,png_fn)
-    #@+node:ekr.20100908110845.5596: *5* get_callouts & helper
-    def get_callouts (self,p):
-        '''Return the list of callouts from the
-        direct children that are @callout nodes.'''
-
-        aList = []
-        for child in p.children():
-            # g.trace(child.h)
-            if child.h.startswith('@callout'):
-                callout = self.get_callout(child)
-                if callout: aList.append(callout)
-        g.trace(aList)
-        return aList
-
-    #@+node:ekr.20100909121239.6096: *6* get_callout
-    def get_callout (self,p):
-
-        '''Return the text of the callout at p.'''
-
-        if p.b.strip():
-            return p.b
-        else:
-            s = p.h ; assert s.startswith('@callout')
-            i = g.skip_id(s,0,chars='@')
-                # Match @callout or @callouts, etc.
-            s = s[i:].strip()
-            return s
-    #@+node:ekr.20100908110845.5597: *5* get_markers & helper
-    def get_markers (self,p):
-
-        '''Return the list of callouts from the
-        direct children that are @callout nodes.'''
-
-        aList = []
-        for child in p.children():
-            if child.h.startswith('@marker'):
-                callout = self.get_marker(child)
-                if callout: aList.extend(callout)
-        # g.trace(aList)
-        return aList
-    #@+node:ekr.20100909121239.6097: *6* get_marker
-    def get_marker (self,p):
-
-        '''Return a list of markers at p.'''
-
-        s = p.h ; assert s.startswith('@marker')
-        i = g.skip_id(s,0,chars='@')
-            # Match @marker or @markers, etc.
-        s = s[i:].strip()
-        return [z.strip() for z in s.split(',')]
-    #@+node:ekr.20100908110845.5542: *5* get_template_fn
-    def get_template_fn (self,template_fn=None):
-
-        c = self.c
-
-        if template_fn:
-            fn = template_fn
-        else:
-            # fn = c.config.getString('inkscape-template') or 'inkscape-template.png'
-            fn = g.os_path_finalize_join(g.app.loadDir,
-                '..','doc','inkscape-template.svg')
-
-        if g.os_path_exists(fn):
-            return fn
-        else:
-            self.error('template file not found:',fn)
-            return None
-    #@+node:ekr.20100908110845.5545: *5* step 1: make_svg & make_dom
-    def make_svg(self,fn,output_fn,template_fn,callouts,markers):
-
-        outfile = open(output_fn,'w')
-
-        template = self.make_dom(fn,template_fn,callouts,markers)
-
-        if template:
-            template.write(outfile)
-
-        outfile.close()
-
-        return template
-    #@+node:ekr.20100908110845.5546: *6* make_dom & helpers
-    def make_dom(self,fn,template_fn,callouts,markers):
-
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         template = self.get_template(template_fn)
         if not template: return None
         root = template.getroot()
@@ -756,11 +829,11 @@ class ScreenShotController(object):
         # point to the right screen shot
         ids_d = self.getIds(template.getroot())
         img_element = ids_d.get('co_shot')
-        img_element.set(self.xlink+'href',fn)
+        img_element.set(self.xlink+'href',screenshot_fn)
 
         # adjust screen shot dimensions
         if got_pil:
-            img = Image.open(fn)
+            img = Image.open(screenshot_fn)
             img_element.set('width', str(img.size[0]))
             img_element.set('height', str(img.size[1]))
 
@@ -781,7 +854,7 @@ class ScreenShotController(object):
 
         os.unlink(fp)
         return template
-    #@+node:ekr.20100908110845.5547: *7* clear_id
+    #@+node:ekr.20100908110845.5547: *6* clear_id
     def clear_id(self,x):
 
         """recursively clear @id on element x and descendants"""
@@ -795,7 +868,7 @@ class ScreenShotController(object):
             del z.attrib['id']
 
         return x
-    #@+node:ekr.20100908110845.5548: *7* get_template
+    #@+node:ekr.20100908110845.5548: *6* get_template
     def get_template(self,template_fn):
 
         """Load and check the template SVG and return DOM"""
@@ -811,7 +884,7 @@ class ScreenShotController(object):
         else:
             self.error('template did not include all required IDs:',template_fn)
             return None
-    #@+node:ekr.20100908110845.5549: *7* move_element
+    #@+node:ekr.20100908110845.5549: *6* move_element
     def move_element(self,element,x,y):
 
         if not element.get('transform'):
@@ -823,7 +896,7 @@ class ScreenShotController(object):
 
             element.set('transform', "translate(%f,%f)" %
                 (float(ox)+x, float(oy)+y))
-    #@+node:ekr.20100908110845.5550: *7* resize_curve_box & helper
+    #@+node:ekr.20100908110845.5550: *6* resize_curve_box & helper
     def resize_curve_box(self,fn,template,n):
 
         d = self.getIds(template.getroot())
@@ -875,7 +948,7 @@ class ScreenShotController(object):
         d.append('z')
 
         frame.set('d', ' '.join(d))
-    #@+node:ekr.20100908110845.5551: *8* get_dim
+    #@+node:ekr.20100908110845.5551: *7* get_dim
     def get_dim(self, fn, Id, what):
         """return dimension of element in fn with @id Id, what is
         x, y, width, or height
@@ -909,14 +982,26 @@ class ScreenShotController(object):
         self.is_reads += 1
 
         return self.dimCache[hsh]
-    #@+node:ekr.20100908110845.5552: *5* step 2: edit_svg & enable_filters
-    def edit_svg(self,svg_fn):
+    #@+node:ekr.20100908110845.5545: *5* make_working_file
+    def make_working_file(self,template,working_fn):
 
-        cmd = [self.inkscape_bin,"--with-gui",svg_fn]
-        self.enable_filters(svg_fn, False)
+        '''Create the working file from the template.'''
+
+        outfile = open(working_fn,'w')
+        template.write(outfile)
+        outfile.close()
+    #@+node:ekr.20100908110845.5552: *5* edit_working_file & helper
+    def edit_working_file(self,working_fn):
+
+        '''Invoke Inkscape on the working file.'''
+
+        self.enable_filters(working_fn, False)
+
+        cmd = [self.inkscape_bin,"--with-gui",working_fn]
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()
-        # self.enable_filters(svg_fn, True)
+
+        self.enable_filters(working_fn, True)
     #@+node:ekr.20100908110845.5553: *6* enable_filters
     def enable_filters(self,svgfile,enable):
         """Disable/enable filters in SVG at the XML level
@@ -952,36 +1037,31 @@ class ScreenShotController(object):
                     'filter:url(', '_filter:url('))
 
         doc.write(open(svgfile, 'w'))
-    #@+node:ekr.20100908110845.5554: *5* step 3: make_png & trim
-    def make_png(self,svg_fn,png_fn):
+    #@+node:ekr.20100908110845.5554: *4* 3: make_png & helper
+    def make_output_file(self,output_fn,working_fn):
 
-        '''Create png_fn from svg_fn.'''
+        '''Create the output file from the working file.'''
 
-        # png_fn = self.finalize('output.png')
-        # png_fn = os.path.splitext(png_fn)[0] + ".co.png"
-
-        cmd = [
+        cmd = (
             self.inkscape_bin,
             "--without-gui",
-            "--export-png="+png_fn,
+            "--export-png="+output_fn,
             "--export-area-drawing",
             "--export-area-snap",
-            svg_fn,
-        ]
-
+            working_fn)
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()
 
         if got_pil: # trim transparent border
             try:
-                img = Image.open(png_fn)
+                img = Image.open(output_fn)
                 img = self.trim(img, (255,255,255,0))
-                img.save(png_fn)
+                img.save(output_fn)
             except IOError:
-                g.trace('Can not open %s' % png_fn)
+                g.trace('Can not open %s' % output_fn)
 
         # os.system(png_fn)
-    #@+node:ekr.20100908110845.5555: *6* trim
+    #@+node:ekr.20100908110845.5555: *5* trim
     def trim(self, im, border):
          bg = Image.new(im.mode, im.size, border)
          diff = ImageChops.difference(im, bg)
@@ -991,18 +1071,6 @@ class ScreenShotController(object):
          else:
              # found no content
              raise ValueError("cannot trim; image was empty")
-    #@+node:ekr.20100909193826.5600: *4* select_at_image_node
-    def select_at_image_node (self,p):
-
-        c = self.c
-        for child in p.children():
-            if child.h.startswith('@image'):
-                c.selectPosition(child)
-                c.redraw_now(child)
-                break
-        else:
-            c.selectPosition(p)
-            c.redraw_now(p)
     #@-others
 
 #@-others

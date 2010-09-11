@@ -1005,7 +1005,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7102,12 +7102,11 @@ c.k.simulateCommand('stickynote')
 # Select the screenshot node.
 h = 'Headline and body text'
 p2 = g.findNodeAnywhere(c,h)
-assert p2
-c.selectPosition(p2)
-
-m.take_screen_shot_command({'c':c})
-
-c.selectPosition(p)
+if p2:
+    c.selectPosition(p2)
+    m.take_screen_shot_command(event={'c':c})
+else:
+    g.es_print('not found',p2.h,color='red')
 </t>
 <t tx="ekr.20100909154940.2226"></t>
 <t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
