@@ -303,10 +303,13 @@ class ScreenShotController(object):
                 self.inkscape_bin = bin
             else:
                 self.warning('Invalid @string screenshot-bin:',bin)
-                self.edit_flag = False
+
         if not self.inkscape_bin:
             self.warning('Inkscape not found. No editing is possible.')
+            self.edit_flag = False
 
+        self.base_directory = c.config.getString('screenshot-directory')
+        g.trace('screenshot-directory',self.base_directory)
         # Dimension cache.
         self.dimCache = {}
         self.is_reads,self.is_cache = 0,0
@@ -383,7 +386,7 @@ class ScreenShotController(object):
 
         return d
     #@+node:ekr.20100908110845.5538: *3*  utilities
-    #@+node:ekr.20100908110845.5539: *4* error & warning
+    #@+node:ekr.20100908110845.5539: *4* error, note & warning
     def error (self,*args):
         if not g.app.unitTesting:
             g.es_print('Error:',*args,color='red')
@@ -409,7 +412,7 @@ class ScreenShotController(object):
 
         c = self.c ; p = c.p
 
-        if self.inSlideShow(p):
+        if self.in_slide_show(p):
 
             self.give_pil_warning()
 
@@ -421,8 +424,8 @@ class ScreenShotController(object):
             c.selectPosition(p)
             c.redraw()
             self.note('screen-shot-command finished')
-    #@+node:ekr.20100908110845.5592: *4* inSlideShow
-    def inSlideShow (self,p):
+    #@+node:ekr.20100908110845.5592: *4* in_slide_show
+    def in_slide_show (self,p):
 
         for p2 in p.parents():
             if p2.h.startswith('@slideshow'):

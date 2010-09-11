@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -1038,7 +1038,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1174,10 +1174,10 @@
 <v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
 </v>
 </v>
-<v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
+<v t="ekr.20100910115903.8297" a="E"><vh>screenshot settings</vh>
 <v t="ekr.20100910115903.8298"><vh>@bool edit-screenshots = True</vh></v>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-<v t="ekr.20100910115903.8300"><vh>@string screenshot-directotry</vh></v>
+<v t="ekr.20100910115903.8300"><vh>@string screenshot-directory =</vh></v>
 </v>
 <v t="ekr.20060930111325"><vh>scripting plugin</vh>
 <v t="ekr.20060930111325.2"><vh>@bool scripting-at-button-nodes = True</vh></v>

@@ -178,9 +178,27 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341" a="E"><vh>Leo Screenshots</vh>
-<v t="ekr.20100821182153.4344" a="E"
-expanded="ekr.20100821182153.4346,ekr.20100823164432.4405,"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4341"><vh>Leo Screenshots</vh>
+<v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
+</v>
+<v t="ekr.20100910164422.4468" a="E"><vh>Outlining editor (test)</vh>
+<v t="ekr.20100910164422.4469"><vh>@image ../doc/html/screen-shots/ekr-20100821182153-4352.png</vh></v>
+<v t="ekr.20100910164422.4470"><vh>@screenshot-tree To Do List</vh>
+<v t="ekr.20100910164422.4471"><vh>Organizer</vh>
+<v t="ekr.20100910164422.4472"><vh>To Do List</vh>
+<v t="ekr.20100910164422.4473"><vh>Urgent</vh></v>
+<v t="ekr.20100910164422.4474"><vh>Important</vh></v>
+<v t="ekr.20100910164422.4475"><vh>Soon</vh></v>
+<v t="ekr.20100910164422.4476"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20100910164422.4477"><vh>Diary</vh>
+<v t="ekr.20100910164422.4478"><vh>2009</vh>
+<v t="ekr.20100910164422.4479"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20100910164422.4480"><vh>2010</vh></v>
+</v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -556,6 +574,30 @@ UNL.py
 # codewisecompleter.py
 leoremote.py
 screenshots.py</t>
+<t tx="ekr.20100910164422.4468">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
+You create an outline in the top left pane. (A later tutorial explains how to
+create an outline like the one in the screenshot).
+
+.. screen-shots will be a separate project.
+
+.. Relative to the source file.
+
+.. image:: screen-shots/ekr-20100821182153-4352.png
+</t>
+<t tx="ekr.20100910164422.4469"></t>
+<t tx="ekr.20100910164422.4470"></t>
+<t tx="ekr.20100910164422.4471">Organizer node.
+</t>
+<t tx="ekr.20100910164422.4472">My to-do list.
+</t>
+<t tx="ekr.20100910164422.4473"></t>
+<t tx="ekr.20100910164422.4474"></t>
+<t tx="ekr.20100910164422.4475"></t>
+<t tx="ekr.20100910164422.4476"></t>
+<t tx="ekr.20100910164422.4477"></t>
+<t tx="ekr.20100910164422.4478"></t>
+<t tx="ekr.20100910164422.4479"></t>
+<t tx="ekr.20100910164422.4480"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
