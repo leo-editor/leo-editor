@@ -44,7 +44,7 @@
 <v t="ekr.20080529111617.9"><vh>@float cleo_prog_extra = 4</vh></v>
 <v t="ekr.20080529111617.10"><vh>@string cleo_time_name = 'days'</vh></v>
 </v>
-<v t="ekr.20100910124218.2257" a="E"><vh>screenshot settings</vh>
+<v t="ekr.20100910124218.2257"><vh>screenshot settings</vh>
 <v t="ekr.20100910124218.2258"><vh>@bool edit-screenshots = True</vh></v>
 <v t="ekr.20100910124218.2259"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 <v t="ekr.20100910124218.2260"><vh>@string screenshot-directory =</vh></v>
@@ -187,7 +187,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943"></v>
-<v t="ekr.20100910124218.2257" a="E"></v>
+<v t="ekr.20100910124218.2257"></v>
 <v t="ekr.20071025193940"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
@@ -560,15 +560,15 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
-<v t="ekr.20100909154940.2227"><vh>Headline and body text</vh>
-<v t="ekr.20100909215037.2245"><vh>@image C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100909154940-2227.png</vh></v>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
+<v t="ekr.20100909154940.2227" a="E"><vh>Headline and body text</vh>
+<v t="ekr.20100911122628.2261"><vh>@image ../doc/html/screen-shots/ekr-20100909154940-2227.png</vh></v>
 <v t="ekr.20100909210124.2239"><vh>@callout This is a headline</vh></v>
 <v t="ekr.20100909210124.2240"><vh>@callout This is the body pane</vh></v>
 <v t="ekr.20100909210124.2241"><vh>@markers 1,2</vh></v>
-<v t="ekr.20100909154940.2228"><vh>@screenshot-tree Urgent</vh>
-<v t="ekr.20100909154940.2229"><vh>Organizer</vh>
-<v t="ekr.20100909154940.2230"><vh>To Do List</vh>
+<v t="ekr.20100909154940.2228" a="E"><vh>@screenshot-tree Urgent</vh>
+<v t="ekr.20100909154940.2229" a="E"><vh>Organizer</vh>
+<v t="ekr.20100909154940.2230" a="E"><vh>To Do List</vh>
 <v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
 <v t="ekr.20100909154940.2232"><vh>Important</vh></v>
 <v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
@@ -1005,7 +1005,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="13"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12,0,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7113,7 +7113,9 @@ else:
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
 
-.. image:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100909154940-2227.png
+.. im xxx age:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100909154940-2227.png
+
+.. image:: screen-shots/ekr-20100909154940-2227.png
 
 </t>
 <t tx="ekr.20100909154940.2228"></t>
@@ -7135,10 +7137,10 @@ text here by typing it in.
 <t tx="ekr.20100909210124.2239"></t>
 <t tx="ekr.20100909210124.2240"></t>
 <t tx="ekr.20100909210124.2241"></t>
-<t tx="ekr.20100909215037.2245"></t>
 <t tx="ekr.20100910124218.2257"></t>
 <t tx="ekr.20100910124218.2258"></t>
 <t tx="ekr.20100910124218.2259"></t>
 <t tx="ekr.20100910124218.2260"></t>
+<t tx="ekr.20100911122628.2261"></t>
 </tnodes>
 </leo_file>
