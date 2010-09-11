@@ -307,6 +307,7 @@ def take_screen_shot_command (event):
         screenshot_fn=None,
         working_fn=None,
         output_fn=None,
+        sphinx_path=None,
     )
 
     sc.select_at_image_node(p)
@@ -328,6 +329,9 @@ class ScreenShotController(object):
         self.edit_flag = True
         self.force_edit_flag = False
         self.output_flag = True
+
+        # Debugging, especially paths.
+        self.trace = False
 
         self.inkscape_bin = None
         bin = c.config.getString('screenshot-bin').strip('"').strip("'")
@@ -443,68 +447,85 @@ class ScreenShotController(object):
 
         base = self.fix(g.os_path_finalize(g.app.loadDir))
         fn = self.fix(screenshot_fn)
-
-        return os.path.relpath(fn,base).replace('\\','/')
+        fn = os.path.relpath(fn,base).replace('\\','/')
+        if self.trace: g.trace(fn)
+        return fn
     #@+node:ekr.20100909121239.5669: *4* get_directive_fn
     def get_directive_fn (self,p,sphinx_path,screenshot_fn):
 
         '''Compute the path for use in an .. image:: directive.
 
-        Both sphinx_path and screenshot_fn can be None.
+        This is screenshot_fn relative to sphinx_path.
 
-        By default, sphinx_path is leo/docs/html/screen-shots.
-
-        Return an absolute path if either sphinx_path or screenshot_fn is absolute.
-        Otherwise, return the screenshot_fn relative to the sphinx_path.
+        sphinx_path and screenshot_fn are absolute file names.
         '''
 
-        ld = self.fix(g.app.loadDir)
-        abs_fn = self.get_screenshot_fn(p,screenshot_fn)
-        junk,short_fn = g.os_path_split(abs_fn)
-
-        if not screenshot_fn and not sphinx_path:
-            # Return 'screen-shots/short_fn'
-            s = g.os_path_join('screen-shots',short_fn).replace('\\','/')
-        else:
-            g.trace('not ready yet')
-            return
-
-        if sphinx_path:
-            base = self.fix(g.os_path_join(ld,'..','doc'))
-            path = self.fix(g.os_path_join(ld,self.fix(sphinx_path),'screen-shots'))
-            path = os.path.relpath(base,path)
-        else:
-            path = g.os_path_join('screen-shots',short_fn)
-
-        g.trace(path)
-        return path
+        base = self.fix(sphinx_path) # ,'screen-shots'))
+        fn = self.fix(screenshot_fn)
+        fn = os.path.relpath(fn,base).replace('\\','/')
+        if self.trace: g.trace(fn)
+        return fn
     #@+node:ekr.20100911044508.5627: *4* get_output_fn
     def get_output_fn (self,p,output_fn):
 
         fn = output_fn or '%s.png' % (p.gnx.replace('.','-'))
-
-        return self.finalize(fn)
+        fn = self.finalize(fn)
+        if self.trace: g.trace(fn)
+        return fn
     #@+node:ekr.20100911044508.5628: *4* get_screenshot_fn
     def get_screenshot_fn (self,p,screenshot_fn):
 
         '''Compute the full path to the screenshot.'''
 
         fn = screenshot_fn or '%s.png' % (p.gnx.replace('.','-'))
+        fn = self.finalize(fn)
+        if self.trace: g.trace(fn)
+        return fn
+    #@+node:ekr.20100911044508.5633: *4* get_sphinx_path
+    def get_sphinx_path (self,sphinx_path):
 
-        return self.finalize(fn)
-    #@+node:ekr.20100908110845.5542: *4* get_template_fn
+        '''Return the absolute path to the sphinx directory.
+
+        By default this will be the leo/doc/html directory.
+
+        If a relative path is given, it will resolved
+        relative to the directory containing the .leo file.
+        '''
+
+        c = self.c
+
+        if sphinx_path:
+            if g.os_path_isabs(sphinx_path):
+                path = sphinx_path
+            else:
+                # The path is relative to the .leo file
+                leo_fn = c.fileName()
+                if not leo_fn:
+                    self.error('relative sphinx path given but outline not named')
+                    return None
+                leo_fn = g.os_path_finalize_join(g.app.loadDir,leo_fn)
+                base,junk = g.os_path_split(leo_fn)
+                path = g.os_path_finalize_join(base,sphinx_path)
+        else:
+            # The default is the leo/doc/html directory.
+            path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
+
+        path = path.replace('\\','/')
+        if self.trace: g.trace(path)
+        return path
+    #@+node:ekr.20100908110845.5542: *4* get_template_fn (revise)
     def get_template_fn (self,template_fn=None):
 
         c = self.c
 
         if template_fn:
-            fn = template_fn
+            fn = g.os_path_finalize(template_fn)
         else:
-            # fn = c.config.getString('inkscape-template') or 'inkscape-template.png'
             fn = g.os_path_finalize_join(g.app.loadDir,
                 '..','doc','inkscape-template.svg')
 
         if g.os_path_exists(fn):
+            if self.trace: g.trace(fn)
             return fn
         else:
             self.error('template file not found:',fn)
@@ -513,8 +534,9 @@ class ScreenShotController(object):
     def get_working_fn (self,p,working_fn):
 
         fn = working_fn or 'screenshot_working_file.svg'
-
-        return self.finalize(fn)
+        fn = self.finalize(fn)
+        if self.trace: g.trace(fn)
+        return fn
     #@+node:ekr.20100911044508.5630: *3* options
     #@+node:ekr.20100908110845.5596: *4* get_callouts & helper
     def get_callouts (self,p):
@@ -668,12 +690,16 @@ class ScreenShotController(object):
         sc.output_flag = output_flag
 
         # Compute paths and file names.
-        directive_fn = sc.get_directive_fn(p,sphinx_path,screenshot_fn)
+        sphinx_path = sc.get_sphinx_path(sphinx_path)
+        if not sphinx_path: return
+
         output_fn = sc.get_output_fn(p,output_fn)
         screenshot_fn = sc.get_screenshot_fn(p,screenshot_fn)
         working_fn = sc.get_working_fn(p,working_fn)
-        # Must compute screenshot_fn before calling these...
+
+        # Compute these after omputing sphinx_path and screenshot_fn...
         image_fn = self.get_at_image_fn(screenshot_fn)
+        directive_fn = sc.get_directive_fn(p,sphinx_path,screenshot_fn)
 
         # Take the screenshot and update the tree.
         fn = sc.take_screen_shot(p,directive_fn,image_fn,screenshot_fn)
@@ -706,8 +732,6 @@ class ScreenShotController(object):
         '''Add ".. image:: <path>" to p.b if it is not already there.'''
 
         s = '.. image:: %s' % directive_fn.replace('\\','/')
-
-        g.trace(s)
 
         if p.b.find(s) == -1:
             p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
@@ -782,7 +806,7 @@ class ScreenShotController(object):
         # The file is, in fact, saved correctly.
         w.save(path,'png')
 
-        g.trace('wrote',path)
+        # g.trace('wrote',path)
     #@+node:ekr.20100908110845.5603: *6* resize_leo_window
     def resize_leo_window(self):
 

@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.47">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.54">
 	<global_window_position top="57" left="275" height="962" width="1313"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -47,7 +47,6 @@
 <v t="ekr.20100910124218.2257"><vh>screenshot settings</vh>
 <v t="ekr.20100910124218.2258"><vh>@bool edit-screenshots = True</vh></v>
 <v t="ekr.20100910124218.2259"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-<v t="ekr.20100910124218.2260"><vh>@string screenshot-directory =</vh></v>
 </v>
 </v>
 <v t="ekr.20100118190256.2012"><vh>Syntax coloring</vh>
@@ -187,7 +186,6 @@
 </v>
 </v>
 <v t="ekr.20070224123943"></v>
-<v t="ekr.20100910124218.2257"></v>
 <v t="ekr.20071025193940"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
@@ -560,6 +558,7 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
+<v t="ekr.20100910124218.2257"></v>
 <v t="ekr.20100909154940.2226" a="E"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
 <v t="ekr.20100909154940.2227" a="E"><vh>Headline and body text</vh>
 <v t="ekr.20100911122628.2261"><vh>@image ../doc/html/screen-shots/ekr-20100909154940-2227.png</vh></v>
@@ -584,7 +583,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100909154713.2210"><vh>@button screenshot @key=Alt-8</vh></v>
+<v t="ekr.20100909154713.2210"><vh>@button screenshot @key=Alt-8</vh>
+<v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1005,7 +1006,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7101,19 +7102,35 @@ c.k.simulateCommand('stickynote')
 
 # Select the screenshot node.
 h = 'Headline and body text'
-p2 = g.findNodeAnywhere(c,h)
-if p2:
-    c.selectPosition(p2)
-    m.take_screen_shot_command(event={'c':c})
+p = g.findNodeAnywhere(c,h)
+if p:
+    c.selectPosition(p)
+    if 1: # Test scripting.
+        sc = m.ScreenShotController(c)
+        sc.run(p,
+            callouts=sc.get_callouts(p),
+            markers=sc.get_markers(p),
+            edit_flag=sc.get_edit_flag(),
+            force_edit_flag=sc.get_force_edit_flag(),
+            output_flag=sc.get_output_flag(),
+            screenshot_fn=None,
+            working_fn=None,
+            output_fn=None,
+            # If relative, it is relative to the .leo file???
+            # sphinx_path=r'c:\leo.repo\trunk\leo\doc\html',
+            sphinx_path = r'../doc/html'
+        )
+        sc.select_at_image_node(p)
+        sc.note('script finished')
+    else:
+        m.take_screen_shot_command(event={'c':c})
 else:
-    g.es_print('not found',p2.h,color='red')
+    g.es_print('not found',h,color='red')
 </t>
 <t tx="ekr.20100909154940.2226"></t>
 <t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
-
-.. im xxx age:: C:/leo.repo/trunk/leo/doc/html/screen-shots/ekr-20100909154940-2227.png
 
 .. image:: screen-shots/ekr-20100909154940-2227.png
 
@@ -7140,7 +7157,7 @@ text here by typing it in.
 <t tx="ekr.20100910124218.2257"></t>
 <t tx="ekr.20100910124218.2258"></t>
 <t tx="ekr.20100910124218.2259"></t>
-<t tx="ekr.20100910124218.2260"></t>
 <t tx="ekr.20100911122628.2261"></t>
+<t tx="ekr.20100911131544.2259"></t>
 </tnodes>
 </leo_file>
