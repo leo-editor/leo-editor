@@ -354,9 +354,6 @@ class ScreenShotController(object):
             self.warning('Inkscape not found. No editing is possible.')
             self.edit_flag = False
 
-        # self.base_directory = c.config.getString('screenshot-directory')
-        # g.trace('screenshot-directory',self.base_directory)
-
         # Dimension cache.
         self.dimCache = {}
         self.is_reads,self.is_cache = 0,0
@@ -413,13 +410,6 @@ class ScreenShotController(object):
 
         aList = self.getElementsWithAttrib(e,'id')
         return dict([(e.attrib.get('id'),e) for e in aList])
-
-        # if d is None: d = {}
-        # i = e.attrib.get('id')
-        # if i: d[i] = e
-        # for child in e.getchildren():
-            # self.getIds(child,d)
-        # return d
     #@+node:ekr.20100908110845.5537: *4* getParents
     def getParents (self,e,d=None):
 
@@ -433,6 +423,8 @@ class ScreenShotController(object):
 
         return d
     #@+node:ekr.20100911044508.5629: *3* file names
+    # These methods compute file names using settings or options if given,
+    # or various defaults if no setting or option is in effect.
     #@+node:ekr.20100908110845.5540: *4* finalize
     def finalize (self,fn,base_path=None):
 
@@ -448,11 +440,18 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5632: *4* fix
     def fix (self,fn):
 
+        '''Fix the case of a file name,
+        especially on Windows the case of drive letters.'''
+
         return os.path.normcase(g.os_path_finalize(fn))
     #@+node:ekr.20100911044508.5631: *4* get_at_image_fn
     def get_at_image_fn (self,screenshot_fn):
 
-        '''Return the screenshot name relative to g.app.loadDir.'''
+        '''Return the screenshot name relative to g.app.loadDir.
+
+        @image directives (screenshot_fn) are relative to g.app.loadDir.
+        The final path is g.os_path_finalize_join(g.app.loadDir,s)
+        '''
 
         base = self.fix(g.os_path_finalize(g.app.loadDir))
         fn = self.fix(screenshot_fn)
@@ -465,6 +464,7 @@ class ScreenShotController(object):
         '''Compute the path for use in an .. image:: directive.
 
         This is screenshot_fn relative to sphinx_path.
+        By default this is leo/docs/html.
 
         sphinx_path and screenshot_fn are absolute file names.
         '''
@@ -477,11 +477,16 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5638: *4* p_to_fn
     def p_to_fn (self,p):
 
+        '''Return a unique, sanitize filename corresponding to p,
+        having the form gnx-<p.h>.png.'''
+
         return '%s-%s.png' % (
             p.gnx.replace('.','-'),
             g.sanitize_filename(p.h).replace('.','-'))
     #@+node:ekr.20100911044508.5627: *4* get_output_fn
     def get_output_fn (self,p,output_fn):
+
+        '''Return the full, absolute, output file name.'''
 
         fn = output_fn or self.p_to_fn(p)
         fn = self.finalize(fn)
@@ -490,7 +495,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5628: *4* get_screenshot_fn
     def get_screenshot_fn (self,p,screenshot_fn):
 
-        '''Compute the full path to the screenshot.'''
+        '''Return the full, absolute, screenshot file name.'''
 
         fn = screenshot_fn or self.p_to_fn(p)
         fn = self.finalize(fn)
@@ -499,7 +504,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5633: *4* get_sphinx_path
     def get_sphinx_path (self,sphinx_path):
 
-        '''Return the absolute path to the sphinx directory.
+        '''Return the full, absolute, path to the sphinx directory.
 
         By default this will be the leo/doc/html directory.
 
@@ -528,8 +533,10 @@ class ScreenShotController(object):
         path = path.replace('\\','/')
         if self.trace: g.trace(path)
         return path
-    #@+node:ekr.20100908110845.5542: *4* get_template_fn (revise)
+    #@+node:ekr.20100908110845.5542: *4* get_template_fn
     def get_template_fn (self,template_fn=None):
+
+        '''Return the full, absolute, template file name.'''
 
         c = self.c
 
@@ -548,6 +555,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5626: *4* get_working_fn
     def get_working_fn (self,p,working_fn):
 
+        '''Return the full, absolute, name of the working file.'''
+
         fn = working_fn or 'screenshot_working_file.svg'
         fn = self.finalize(fn)
         if self.trace: g.trace(fn)
@@ -555,6 +564,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5630: *3* options
     #@+node:ekr.20100908110845.5596: *4* get_callouts & helper
     def get_callouts (self,p):
+
         '''Return the list of callouts from the
         direct children that are @callout nodes.'''
 
@@ -582,6 +592,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5620: *4* get_edit_flag
     def get_edit_flag (self):
 
+        '''Return the value of the @bool edit-screenshots setting.'''
+
         c = self.c
 
         return c.config.getBool(
@@ -590,6 +602,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5621: *4* get_force_edit_flag
     def get_force_edit_flag (self):
 
+        '''Return the value of the @bool always-edit-screenshots setting.'''
+
         c = self.c
 
         return c.config.getBool(
@@ -597,8 +611,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5597: *4* get_markers & helper
     def get_markers (self,p):
 
-        '''Return the list of callouts from the
-        direct children that are @callout nodes.'''
+        '''Return the list of markers from all @marker nodes.'''
 
         aList = []
         for child in p.children():
@@ -620,6 +633,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5624: *4* get_output_flag
     def get_output_flag (self):
 
+        '''Return the value of the @bool write-screenshot-output-file setting.'''
+
         c = self.c
 
         return c.config.getBool(
@@ -627,6 +642,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5618: *3* utilities
     #@+node:ekr.20100911044508.5637: *4* clear_cache
     def clear_cache (self):
+
+        '''Clear the dimension cache.'''
 
         self.dimCache = {}
         self.is_reads,self.is_cache = 0,0
@@ -665,6 +682,8 @@ class ScreenShotController(object):
 
     def give_pil_warning(self):
 
+        '''Give a singleton warning that PIL could not be loaded.'''
+
         if self.pil_message_given:
             return # Warning already given.
 
@@ -680,6 +699,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5592: *4* in_slide_show
     def in_slide_show (self,p):
 
+        '''Return True if p is a descendant of an @slideshow node.'''
+
         for p2 in p.parents():
             if p2.h.startswith('@slideshow'):
                 return True
@@ -688,17 +709,18 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
     def open_inkscape_with_list (self,aList):
 
-        #self.enable_filters(working_fn, False)
+        '''Open inkscape with a list of file.'''
+
 
         cmd = [self.inkscape_bin,"--with-gui"]
         cmd.extend(aList)
 
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate() # Wait for Inkscape to terminate.
-
-        #self.enable_filters(working_fn, True)
     #@+node:ekr.20100909193826.5600: *4* select_at_image_node
     def select_at_image_node (self,p):
+
+        '''Select the @image node in one of p's direct children.'''
 
         c = self.c
         for child in p.children():
@@ -711,6 +733,9 @@ class ScreenShotController(object):
             c.redraw_now(p)
     #@+node:ekr.20100911044508.5635: *3* make_slide_show & helper
     def make_slide_show (self,p):
+
+        '''Create slides for all slide nodes (direct children)
+        of the @slideshow node p.'''
 
         sc = self
 
@@ -734,6 +759,10 @@ class ScreenShotController(object):
         screenshot_fn=None,working_fn=None,output_fn=None,
         sphinx_path=None,
     ):
+        '''Create a slide from p with given callouts and markers.
+        Call Inkscape to edit the slide if requested.
+        '''
+
         sc = self
         sc.edit_flag = edit_flag
         sc.force_edit_flag = force_edit_flag
@@ -791,7 +820,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5594: *5* add_image_directive
     def add_image_directive (self,p,directive_fn):
 
-        '''Add ".. image:: <path>" to p.b if it is not already there.'''
+        '''Add ".. image:: <directive_fn>" to p.b if it is not already there.'''
 
         s = '.. image:: %s' % directive_fn.replace('\\','/')
 
@@ -817,6 +846,8 @@ class ScreenShotController(object):
             p2.h = h
     #@+node:ekr.20100908110845.5600: *5* make_screen_shot & helpers
     def make_screen_shot (self,path,root,h):
+
+        '''Take the screen shot after adjusting the window and outline.'''
 
         c = self.c
 
@@ -854,6 +885,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5602: *6* make_screen_shot_helper
     def make_screen_shot_helper (self,path):
 
+        '''Create a screenshot of the present Leo outline and save it to path.'''
+
         try:
             import PyQt4.QtGui
             app = g.app.gui.qtApp
@@ -863,12 +896,7 @@ class ScreenShotController(object):
             return
 
         w = pix.grabWindow(app.activeWindow().winId())
-
-        # This generates an incorrect Qt error.
-        # The file is, in fact, saved correctly.
         w.save(path,'png')
-
-        # g.trace('wrote',path)
     #@+node:ekr.20100908110845.5603: *6* resize_leo_window
     def resize_leo_window(self):
 
@@ -883,6 +911,8 @@ class ScreenShotController(object):
         w.repaint() # Essential
     #@+node:ekr.20100908110845.5546: *4* 2: make_dom & helpers
     def make_dom(self,callouts,markers,screenshot_fn,template_fn):
+
+        '''Create the template dom object.'''
 
         trace = True and not g.unitTesting
         template = self.get_template(template_fn)
@@ -967,7 +997,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5547: *5* clear_id
     def clear_id(self,x):
 
-        """recursively clear @id on element x and descendants"""
+        """Recursively clear @id on element x and descendants."""
 
         if 'id' in x.keys():
             del x.attrib['id']
@@ -1153,8 +1183,6 @@ class ScreenShotController(object):
     def make_output_file(self,output_fn,working_fn):
 
         '''Create the output file from the working file.'''
-
-        # g.trace('work',working_fn,'output',output_fn)
 
         cmd = (
             self.inkscape_bin,
