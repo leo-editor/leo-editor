@@ -74,6 +74,38 @@ import leo.core.leoGui as leoGui
 #@-<< imports and inits >>
 
 #@+others
+#@+node:ekr.20031218072017.2607: ** profile_leo
+#@+at To gather statistics, do the following in a Python window, not idle:
+# 
+#     import leo
+#     import leo.core.runLeo as runLeo
+#     runLeo.profile_leo()  (this runs leo)
+#     load leoDocs.leo (it is very slow)
+#     quit Leo.
+#@@c
+
+def profile_leo ():
+
+    """Gather and print statistics about Leo"""
+
+    import cProfile as profile
+    import pstats
+    import leo.core.leoGlobals as g
+    import os
+
+    theDir = os.getcwd()
+
+    # On Windows, name must be a plain string. An apparent cProfile bug.
+    name = str(g.os_path_normpath(g.os_path_join(theDir,'leoProfile.txt')))
+    print ('profiling to %s' % name)
+    profile.run('import leo ; leo.run()',name)
+    p = pstats.Stats(name)
+    p.strip_dirs()
+    p.sort_stats('module','calls','time','name')
+    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
+    p.print_stats(reFiles)
+
+prof = profile_leo
 #@+node:ekr.20031218072017.1934: ** run & helpers
 def run(fileName=None,pymacs=None,*args,**keywords):
 
@@ -85,7 +117,8 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # Phase 1: before loading plugins.
     # Scan options, set directories and read settings.
     if not isValidPython(): return
-    fn,relFn,script,versionFlag = doPrePluginsInit(fileName,pymacs)
+    fn,relFn,options = doPrePluginsInit(fileName,pymacs)
+    versionFlag = options.get('versionFlag')
 
     # We can't print the signon until we know the gui.
     g.app.computeSignon() # Set app.signon/signon2 for commanders.
@@ -98,23 +131,27 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if g.app.killed: return
 
     # Phase 3: after loading plugins. Create a frame.
-    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
+    ok = doPostPluginsInit(args,fn,relFn,options)
     if ok and not versionFlag: g.app.gui.runMainLoop()
 #@+node:ekr.20090519143741.5915: *3* doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
-    '''
-    Scan options, set directories and read settings.'''
+    ''' Scan options, set directories and read settings.'''
 
     trace = False
     g.computeStandardDirectories()
     adjustSysPath()
-    fileName2,gui,script,versionFlag,windowFlag = scanOptions()
+    options = scanOptions()
+    fileName2 = options.get('fileName')
     if fileName2: fileName = fileName2
     if trace:
         print('runLeo.doPrePluginsInit: sys.argv %s' % sys.argv)
         print('runLeo.doPrePluginsInit: fileName %s' % fileName)
-    if pymacs: script,windowFlag = None,False
+    if pymacs:
+        script,windowFlag = None,False
+    else:
+        script = options.get('script')
+        windowFlag = options.get('windowFlag')
     verbose = script is None
     initApp(verbose)
     fileName,relativeFileName = getFileName(fileName,script)
@@ -122,9 +159,8 @@ def doPrePluginsInit(fileName,pymacs):
     # Read settings *after* setting g.app.config and *before* opening plugins.
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
-    # New in Leo 4.7: the default encoding is always 'utf-8'.
-    # g.app.setEncoding()
     g.app.setGlobalDb()
+    gui = options.get('gui')
     if g.app.gui:
         pass # initApp (setLeoID) created the gui.
     elif gui is None:
@@ -136,7 +172,7 @@ def doPrePluginsInit(fileName,pymacs):
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
 
-    return fileName,relativeFileName,script,versionFlag
+    return fileName,relativeFileName,options
 #@+node:ekr.20080921060401.4: *4* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
@@ -234,19 +270,25 @@ def scanOptions():
 
     # Note: this automatically implements the --help option.
     parser = optparse.OptionParser()
-    parser.add_option('-c', '--config', dest="one_config_path")
-    parser.add_option('--debug',        action="store_true",dest="debug")
-    parser.add_option('-f', '--file',   dest="fileName")
-    parser.add_option('--gui',
-        dest="gui",help = 'gui to use (qt/tk/qttabs)')
-    #parser.add_option('--help',
-        # action="store_true",dest="help_option")
-    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
-    parser.add_option('--no-cache',     action="store_true",dest='no_cache')
-    parser.add_option('--silent',       action="store_true",dest="silent")
-    parser.add_option('--script',       dest="script")
-    parser.add_option('--script-window',dest="script_window")
-    parser.add_option('--version',      action="store_true",dest="version")
+    add = parser.add_option
+    add('-c', '--config', dest="one_config_path")
+    add('--debug',        action="store_true",dest="debug")
+    add('-f', '--file',   dest="fileName")
+    add('--gui', dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #add('--help',action="store_true",dest="help_option")
+    add('--hoist',        dest='hoist',
+        help='headline or gnx of node to hoist initially')
+    add('--ipython',      action="store_true",dest="use_ipython")
+    add('--no-cache',     action="store_true",dest='no_cache')
+    add('--silent',       action="store_true",dest="silent")
+    add('--script',       dest="script")
+    add('--script-window',dest="script_window")
+    add('--select',       dest='select',
+        help='headline or gnx of node to select')
+    add('--version',      action="store_true",dest="version",
+        help='print version number and exit')
+    add('--window-size',  dest='window_size',
+        help='initial window size in height x width format')
 
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
@@ -291,6 +333,10 @@ def scanOptions():
 
     assert gui == g.app.guiArgName
 
+    # --hoist
+    hoist=options.hoist
+    if trace: g.trace('hoist',hoist)
+
     # --ipython
     g.app.useIpython = options.use_ipython
 
@@ -313,6 +359,9 @@ def scanOptions():
         script = None
         # if trace: print('scanOptions: no script')
 
+    # --select
+    select = options.select
+
     # --silent
     g.app.silentMode = options.silent
     # g.trace('silentMode',g.app.silentMode)
@@ -320,14 +369,35 @@ def scanOptions():
     # --version: print the version and exit.
     versionFlag = options.version
 
+    # --window-size
+    windowSize = options.window_size
+    if windowSize:
+        try:
+            h,w = windowSize.split('x')
+            if trace: g.trace('windowSize',h,w)
+        except ValueError:
+            windowSize = None
+            g.trace('bad --window-size:',size)
+
     # Compute the return values.
     windowFlag = script and script_path_w
     if trace:
         print('scanOptions: fileName',fileName)
         print('scanOptions: argv',sys.argv)
-    return fileName,gui,script,versionFlag,windowFlag
+    return {
+        'fileName':fileName,
+        'gui':gui,
+        'hoist':hoist,
+        'script':script,
+        'select':select,
+        'version':versionFlag,
+        'windowFlag':windowFlag,
+        'windowSize':windowSize,
+    }
+
+
 #@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers
-def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
+def doPostPluginsInit(args,fileName,relativeFileName,options):
 
     '''Return True if the frame was created properly.'''
 
@@ -338,7 +408,7 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
 
     # Create the main frame.  Show it and all queued messages.
-    c,frame = createFrame(fileName,relativeFileName,script)
+    c,frame = createFrame(fileName,relativeFileName,options)
     if not frame: return False
 
     # Do the final inits.
@@ -351,10 +421,12 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
         g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
     return True
-#@+node:ekr.20031218072017.1624: *4* createFrame (runLeo.py)
-def createFrame (fileName,relativeFileName,script):
+#@+node:ekr.20031218072017.1624: *4* createFrame & helpers (runLeo.py)
+def createFrame (fileName,relativeFileName,options):
 
     """Create a LeoFrame during Leo's startup process."""
+
+    script = options.get('script')
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
     defaultFileName = None
@@ -368,7 +440,14 @@ def createFrame (fileName,relativeFileName,script):
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
         ok, frame = g.openWithFileName(relativeFileName or fileName,None)
-        if ok: return frame.c,frame
+        c2 = frame.c
+        hoist = options.get('hoist')
+        select = options.get('select')
+        windowSize = options.get('windowSize')
+        if hoist: doHoist(c2,hoist)
+        if select: doSelect(c2,select)
+        if windowSize: doWindowSize(c2,windowSize)
+        if ok: return c2,frame
 
     # Create a _new_ frame & indicate it is the startup window.
     if not fileName: fileName = defaultFileName
@@ -399,6 +478,59 @@ def createFrame (fileName,relativeFileName,script):
         g.es_print("file not found:",fileName,color='red')
 
     return c,frame
+#@+node:ekr.20100913171604.5884: *5* doHoist
+def doHoist (c,s):
+
+    '''Select the node with key s and hoist it.'''
+
+    p = findNode(c,s)
+
+    if p:
+        c.selectPosition(p)
+        c.hoist(p)
+    else:
+        g.es_print('--hoist: node not found:',s)
+#@+node:ekr.20100913171604.5888: *5* doSelect
+def doSelect (c,s):
+
+    '''Select the node with key s.'''
+
+    p = findNode(c,s)
+    if p:
+        c.selectPosition(p)
+    else:
+        g.es_print('--select: node not found:',s)
+#@+node:ekr.20100913171604.5885: *5* doWindowSize
+def doWindowSize (c,windowSize):
+
+    w = c.frame.top
+
+    try:
+        h,w2 = windowSize.split('x')
+        h,w2 = int(h.strip()),int(w2.strip())
+        # g.trace(h,w2)
+        w.resize(h,w2)
+        c.k.simulateCommand('equal-sized-panes')
+        c.redraw()
+        w.repaint() # Essential
+    except Exception:
+        print('doWindowSize:unexpected exception')
+        g.es_exception()
+#@+node:ekr.20100913171604.5889: *5* findNode
+def findNode (c,s):
+
+    s = s.strip()
+
+    # First, assume s is a gnx.
+    for p in c.all_positions():
+        if p.gnx.strip() == s:
+            return p
+
+    for p in c.all_positions():
+        if p.h.strip() == s:
+            return p
+
+    return None
 #@+node:ekr.20080921060401.5: *4* finishInitApp (runLeo.py)
 def finishInitApp(c):
 
@@ -580,38 +712,6 @@ http://python.org/download/
         print("isValidPython: unexpected exception: g.CheckVersion")
         traceback.print_exc()
         return 0
-#@+node:ekr.20031218072017.2607: ** profile_leo
-#@+at To gather statistics, do the following in a Python window, not idle:
-# 
-#     import leo
-#     import leo.core.runLeo as runLeo
-#     runLeo.profile_leo()  (this runs leo)
-#     load leoDocs.leo (it is very slow)
-#     quit Leo.
-#@@c
-
-def profile_leo ():
-
-    """Gather and print statistics about Leo"""
-
-    import cProfile as profile
-    import pstats
-    import leo.core.leoGlobals as g
-    import os
-
-    theDir = os.getcwd()
-
-    # On Windows, name must be a plain string. An apparent cProfile bug.
-    name = str(g.os_path_normpath(g.os_path_join(theDir,'leoProfile.txt')))
-    print ('profiling to %s' % name)
-    profile.run('import leo ; leo.run()',name)
-    p = pstats.Stats(name)
-    p.strip_dirs()
-    p.sort_stats('module','calls','time','name')
-    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
-    p.print_stats(reFiles)
-
-prof = profile_leo
 #@-others
 
 if __name__ == "__main__":
