@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.76">
-	<global_window_position top="57" left="275" height="962" width="1313"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.66">
+	<global_window_position top="57" left="275" height="657" width="609"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -563,6 +563,8 @@
 <v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
 <v t="ekr.20100911162102.2361"><vh>What is Leo</vh>
 <v t="ekr.20100911185451.2427"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2361-what_is_leo.png</vh></v>
+<v t="ekr.20100913131335.2321"><vh>@edit</vh></v>
+<v t="ekr.20100913131335.2322"><vh>@setup</vh></v>
 </v>
 <v t="ekr.20100911162102.2362"><vh>Outlining editor</vh>
 <v t="ekr.20100911185451.2428"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2362-outlining_editor.png</vh></v>
@@ -625,10 +627,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100909154713.2210"><vh>@button screenshot</vh>
+<v t="ekr.20100909154713.2210"><vh>@button screenshot @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
-<v t="ekr.20100911161733.2261"><vh>@button slideshow @key=Alt-8</vh></v>
+<v t="ekr.20100911161733.2261"><vh>@@button slideshow @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1049,7 +1051,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7144,23 +7146,22 @@ c.k.simulateCommand('stickynote')
 <t tx="ekr.20100909154713.2210">m = g.loadOnePlugin('screenshots')
 
 # Select the screenshot node.
-#h = 'Headline and body text'
-#p = g.findNodeAnywhere(c,h)
+if 1:
+    h = 'What is Leo'
+    p = g.findNodeAnywhere(c,h)
 if p:
     c.selectPosition(p)
-    if 1: # Test scripting.
+    if 0: # Test scripting.
         sc = m.ScreenShotController(c)
         sc.run(p,
             callouts=sc.get_callouts(p),
             markers=sc.get_markers(p),
-            edit_flag=sc.get_edit_flag(),
-            force_edit_flag=sc.get_force_edit_flag(),
-            output_flag=sc.get_output_flag(),
+            edit_flag=sc.get_edit_flag(p),
+            force_edit_flag=sc.get_force_edit_flag(p),
+            output_flag=sc.get_output_flag(p),
             screenshot_fn=None,
             working_fn=None,
             output_fn=None,
-            # If relative, it is relative to the .leo file???
-            # sphinx_path=r'c:\leo.repo\trunk\leo\doc\html',
             sphinx_path = r'../doc/html'
         )
         sc.select_at_image_node(p)
@@ -7302,5 +7303,7 @@ table = (
 )
 for start,path in table:
     print(start,path,'--&gt;',os.path.relpath(path,start).replace('\\','/'))</t>
+<t tx="ekr.20100913131335.2321"></t>
+<t tx="ekr.20100913131335.2322"></t>
 </tnodes>
 </leo_file>
