@@ -38,6 +38,7 @@ import os
 import re # For colorizer
 import string
 import sys
+import datetime
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
@@ -6800,6 +6801,81 @@ class leoQtGui(leoGui.leoGui):
         yes = d.addButton(text,b.YesRole)
         d.exec_()
 
+    #@+node:tbrown.20100912184720.12469: *5* runAskDateTimeDialog
+    def runAskDateTimeDialog(self, c, title, 
+        message='Select Date/Time', init=None, step_min={}):
+        """Create and run a qt date/time selection dialog.
+
+        init - a datetime, default now
+        step_min - a dict, keys are QtGui.QDateTimeEdit Sections, like
+          QtGui.QDateTimeEdit.MinuteSection, and values are integers,
+          the minimum amount that section of the date/time changes
+          when you roll the mouse wheel.
+
+        E.g. (5 minute increments in minute field):
+
+            print g.app.gui.runAskDateTimeDialog(c, 'When?',
+              message="When is it?",
+              step_min={QtGui.QDateTimeEdit.MinuteSection: 5})
+
+        """
+
+        class DateTimeEditStepped(QtGui.QDateTimeEdit):
+            """QDateTimeEdit which allows you to set minimum steps on fields, e.g.
+              DateTimeEditStepped(parent, {QtGui.QDateTimeEdit.MinuteSection: 5})
+            for a minimum 5 minute increment on the minute field.
+            """
+            def __init__(self, parent=None, init=None, step_min={}):
+
+                self.step_min = step_min
+                if init:
+                    QtGui.QDateTimeEdit.__init__(self, init, parent)
+                else:
+                    QtGui.QDateTimeEdit.__init__(self, parent)
+
+            def stepBy(self, step):
+                cs = self.currentSection()
+                if cs in self.step_min and abs(step) < self.step_min[cs]:
+                    step = self.step_min[cs] if step > 0 else -self.step_min[cs]
+                QtGui.QDateTimeEdit.stepBy(self, step)
+
+        class Calendar(QtGui.QDialog):
+            def __init__(self, parent=None, message='Select Date/Time',
+                init=None, step_min={}):
+                QtGui.QDialog.__init__(self, parent)
+
+                layout = QtGui.QVBoxLayout()
+                self.setLayout(layout)
+
+                layout.addWidget(QtGui.QLabel(message))
+
+                self.dt = DateTimeEditStepped(init=init, step_min=step_min)
+                self.dt.setCalendarPopup(True)
+                layout.addWidget(self.dt)
+
+                buttonBox = QtGui.QDialogButtonBox(
+                QtGui.QDialogButtonBox.Ok
+                    | QtGui.QDialogButtonBox.Cancel);
+                layout.addWidget(buttonBox)
+
+                self.connect(buttonBox, QtCore.SIGNAL("accepted()"),
+                    self, QtCore.SLOT("accept()"));
+                self.connect(buttonBox, QtCore.SIGNAL("rejected()"),
+                    self, QtCore.SLOT("reject()"));
+
+        if g.unitTesting: return None
+
+        b = Calendar
+        if not init:
+            init = datetime.datetime.now()
+        d = b(c.frame.top, message=message, init=init, step_min=step_min)
+
+        d.setWindowTitle(title)
+
+        if d.exec_() != d.Accepted:
+            return None
+        else:
+            return d.dt.dateTime().toPyDateTime()
     #@+node:ekr.20081121105001.486: *5* runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self,c,title,
         message=None,
