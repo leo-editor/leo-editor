@@ -339,8 +339,11 @@ class baseCommands (object):
 
         if c.exists and c.inCommand and not g.unitTesting:
             # g.trace('inCommand',c)
+            g.app.commandInterruptFlag = True
             g.es('ignoring command: already executing a command.',color='red')
             return 'break'
+
+        g.app.commandInterruptFlag = False
 
         if label and event is None: # Do this only for legacy commands.
             if label == "cantredo": label = "redo"
