@@ -33,6 +33,7 @@ class LeoApp:
             # an @path directive in the body.
         self.batchMode = False # True: run in batch mode.
         self.commandName = None # The name of the command being executed.
+        self.commandInterruptFlag = False # True: command within a command.
         self.config = None # The leoConfig instance.
         self.count = 0 # General purpose debugging count.
         self.db = None # Set to a leoCacher later.
@@ -70,8 +71,6 @@ class LeoApp:
         self.killed = False # True: we are about to destroy the root window.
         self.leoID = None # The id part of gnx's.
         self.loadDir = None # The directory from which Leo was loaded.
-        # No longer used.  Use g.pc.isLoaded(plugin_name) instead.
-        # self.loadedPlugins = [] # List of loaded plugins that have signed on.
         self.log = None # The LeoFrame containing the present log.
         self.logInited = False # False: all log message go to logWaiting list.
         self.logIsLocked = False # True: no changes to log are allowed.
