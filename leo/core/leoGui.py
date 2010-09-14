@@ -461,6 +461,7 @@ class nullGui(leoGui):
         self.clipboardContents = ''
         self.theDict = {}
         self.focusWidget = None
+        self.frameFactory = g.nullObject()
         self.script = None
         self.lastFrame = None
         self.isNullGui = True

@@ -294,7 +294,7 @@ def take_screen_shot_command (event):
     if c:
         sc = ScreenShotController(c)
         sc.take_screen_shot_command(c.p)
-        sc.note('take-screen-shot command finished')
+        g.note('take-screen-shot command finished')
 #@+node:ekr.20100911044508.5634: ** g.command(make-slide-show)
 @g.command('make-slide-show')
 def make_slide_show_command(event=None):
@@ -303,7 +303,7 @@ def make_slide_show_command(event=None):
     if c:
         sc = ScreenShotController(c)
         sc.make_slide_show_command(c.p)
-        sc.note('make-slide-show command finished')
+        g.note('make-slide-show command finished')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController(object):
 
@@ -324,8 +324,10 @@ class ScreenShotController(object):
         self.inkscape_bin = self.get_inkscape_bin()
 
         # Standard screenshot size
-        self.screenshot_height = 1000
-        self.screenshot_width = 800
+        self.default_screenshot_height = 1000
+        self.default_screenshot_width = 800
+        self.screenshot_height = None
+        self.screenshot_width = None
 
         # The @slideshow node.
         self.slide_show_node = None
@@ -361,10 +363,10 @@ class ScreenShotController(object):
             if g.os_path_exists(bin):
                 self.inkscape_bin = bin
             else:
-                self.warning('Invalid @string screenshot-bin:',bin)
+                g.warning('Invalid @string screenshot-bin:',bin)
 
         if not bin:
-            self.warning('Inkscape not found. No editing is possible.')
+            g.warning('Inkscape not found. No editing is possible.')
 
         return bin
     #@+node:ekr.20100908110845.5533: *3* lxml replacements
@@ -542,7 +544,7 @@ class ScreenShotController(object):
                 # The path is relative to the .leo file
                 leo_fn = c.fileName()
                 if not leo_fn:
-                    self.error('relative sphinx path given but outline not named')
+                    g.error('relative sphinx path given but outline not named')
                     return None
                 leo_fn = g.os_path_finalize_join(g.app.loadDir,leo_fn)
                 base,junk = g.os_path_split(leo_fn)
@@ -571,7 +573,7 @@ class ScreenShotController(object):
             if self.trace: g.trace(fn)
             return fn
         else:
-            self.error('template file not found:',fn)
+            g.error('template file not found:',fn)
             return None
     #@+node:ekr.20100911044508.5626: *4* get_working_fn
     def get_working_fn (self,p,working_fn):
@@ -704,14 +706,14 @@ class ScreenShotController(object):
                 return True
         else:
             return False
-    #@+node:ekr.20100913085058.5661: *4* get_screenshot_height/width (to do)
-    def get_screenshot_height (self):
+    #@+node:ekr.20100913085058.5661: *4* get_screenshot_height/width
+    # def get_screenshot_height (self,height):
 
-        return self.screenshot_height
+        # return height or self.default_screenshot_height
 
-    def get_screenshot_width (self):
+    # def get_screenshot_width (self,width):
 
-        return self.screenshot_width
+        # return width or self.default_screenshot_width
     #@+node:ekr.20100913085058.5631: *4* get_setup_app (Not used yet)
     def get_setup_app (self,p):
 
@@ -770,18 +772,6 @@ class ScreenShotController(object):
 
         self.dimCache = {}
         self.is_reads,self.is_cache = 0,0
-    #@+node:ekr.20100908110845.5539: *4* error, note & warning
-    def error (self,*args):
-        if not g.app.unitTesting:
-            g.es_print('Error:',*args,color='red')
-
-    def note (self,*args):
-        if not g.app.unitTesting:
-            g.es_print(*args)
-
-    def warning (self,*args):
-        if not g.app.unitTesting:
-            g.es_print('Warning:',*args,color='blue')
     #@+node:ekr.20100908110845.5543: *4* give_pil_warning
     pil_message_given = False
 
@@ -798,9 +788,9 @@ class ScreenShotController(object):
         self.pil_message_given = True
 
         if got_qt:
-            self.warning('PIL not found: images may have transparent borders')
+            g.warning('PIL not found: images may have transparent borders')
         else:
-            self.warning('PIL and Qt both not found: images may be less clear')
+            g.warning('PIL and Qt both not found: images may be less clear')
     #@+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
     def open_inkscape_with_list (self,aList):
 
@@ -838,9 +828,9 @@ class ScreenShotController(object):
             return # The ctor has given the warning.
 
         if not g.match_word(p.h,0,'@slideshow'):
-            return sc.error('Not an @slideshow node:',p.h)
+            return g.error('Not an @slideshow node:',p.h)
 
-        sc.note('sphinx-path',sc.get_sphinx_path(None))
+        g.note('sphinx-path',sc.get_sphinx_path(None))
 
         aList = []
         for child in p.children():
@@ -857,10 +847,10 @@ class ScreenShotController(object):
             return # The ctor has given the warning.
 
         if not sc.in_slide_show(p):
-            return sc.error('Not in slide show:',p.h)
+            return g.error('Not in slide show:',p.h)
 
         if sc.get_protect_flag(p):
-            return sc.error('Protected:',p.h)
+            return g.error('Protected:',p.h)
 
         sc.run(p,
             callouts=sc.get_callouts(p),
@@ -870,7 +860,9 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5616: *3* sc.run & helpers
     def run (self,p,
         callouts=[],markers=[],
-        screenshot_fn=None,working_fn=None,output_fn=None,
+        screenshot_fn=None,
+        screenshot_height=None,screenshot_width=None,
+        working_fn=None,output_fn=None,
         sphinx_path=None,
     ):
         '''Create a slide from p with given callouts and markers.
@@ -883,18 +875,19 @@ class ScreenShotController(object):
         edit_flag = sc.get_edit_flag(p) or bool(callouts or markers)
 
         if sc.get_protect_flag(p):
-            return sc.note('Skipping protected slide:',p.h)
+            return g.note('Skipping protected slide:',p.h)
 
         # Compute paths and file names.
         sphinx_path = sc.get_sphinx_path(sphinx_path)
         if not sphinx_path: return
-
         n = sc.get_slide_number(p)
         if not output_fn: output_fn = sc.get_output_fn(p,n)
         screenshot_fn = sc.get_screenshot_fn(p,screenshot_fn)
         setup_flag = sc.get_setup_flag(p)
         working_fn = sc.get_working_fn(p,working_fn)
         if not working_fn: return
+        sc.screenshot_height=screenshot_height or sc.default_screenshot_height
+        sc.screenshot_width=screenshot_width or sc.default_screenshot_width
 
         # Compute these after omputing sphinx_path and screenshot_fn...
         image_fn = self.get_at_image_fn(screenshot_fn)
@@ -909,7 +902,7 @@ class ScreenShotController(object):
         sc.give_pil_warning()
         template = sc.make_dom(callouts,markers,screenshot_fn,template_fn)
         if not template:
-            return sc.error('Can not make template from:',template_fn)
+            return g.error('Can not make template from:',template_fn)
 
         self.make_working_file(template,working_fn)
 
@@ -920,7 +913,7 @@ class ScreenShotController(object):
         if output_fn:
             sc.make_output_file(output_fn,working_fn)
         else:
-            sc.note('Empty @output node inhibits output')
+            g.note('Empty @output node inhibits output')
 
         return screenshot_fn
     #@+node:ekr.20100909121239.6117: *4* 1: take_screen_shot & helpers
@@ -940,8 +933,8 @@ class ScreenShotController(object):
             ok = sc.make_screen_shot(hoist_tree,screenshot_fn,select_node)
 
         if ok:
-            sc.note('slide node:  %s' % p.h)
-            sc.note('output file: %s' % g.shortFileName(screenshot_fn))
+            g.note('slide node:  %s' % p.h)
+            g.note('output file: %s' % g.shortFileName(screenshot_fn))
             sc.make_image_node(p,image_fn)
             sc.add_image_directive(p,directive_fn)
         return ok
@@ -1022,7 +1015,7 @@ class ScreenShotController(object):
             app = g.app.gui.qtApp
             pix = PyQt4.QtGui.QPixmap
         except ImportError:
-            self.error('take-screenshot requires PyQt4')
+            g.error('take-screenshot requires PyQt4')
             return
 
         w = pix.grabWindow(app.activeWindow().winId())
@@ -1033,10 +1026,9 @@ class ScreenShotController(object):
         '''Resize the Leo window to the standard size and
         make both panes the same size.'''
 
-        c = self.c ; w = c.frame.top
+        sc = self ; c = sc.c ; w = c.frame.top
 
-        h,w = sc.get_screenshot_height(),sc.get_screenshot_width()
-        w.resize(h,w)
+        w.resize(sc.screenshot_height,sc.screenshot_width)
         c.k.simulateCommand('equal-sized-panes')
         c.redraw()
         w.repaint() # Essential
@@ -1047,13 +1039,19 @@ class ScreenShotController(object):
 
         sc = self
 
+        cb = g.app.gui.qtApp.clipboard()
+        if cb:
+            cb.clear(cb.Clipboard) # Alas, this does not work.
+        else:
+            return g.error('no clipboard')
+
         ok = sc.open_screenshot_app(hoist_tree,select_node)
 
         if ok:
             ok = sc.save_clipboard_to_screenshot_file(screenshot_fn)
 
         return ok
-    #@+node:ekr.20100913085058.5656: *6* open_screenshot_app
+    #@+node:ekr.20100913085058.5656: *6* open_screenshot_app & helper
     def open_screenshot_app (self,hoist_tree,select_node):
 
         '''Open the screenshot app.
@@ -1064,18 +1062,20 @@ class ScreenShotController(object):
         launch = g.os_path_finalize_join(g.app.loadDir,
             '..','..','launchLeo.py')
         python = sys.executable
-        outline = c.fileName()
 
-        h,w = sc.get_screenshot_height(),sc.get_screenshot_width()
-        cmd = [python,launch,outline,'--window-size=%sx%s' % (h,w)]
-
-        if hoist_tree:
-            cmd.append('--hoist="%s"' % (hoist_tree.firstChild().h))
+        h,w = sc.screenshot_height,sc.screenshot_width
+        cmd = [python,launch,'--window-size=%sx%s' % (h,w)]
 
         if select_node:
             cmd.append('--select="%s"' % (select_node))
 
-        # g.trace(cmd)
+        if hoist_tree:
+            # cmd.append('--hoist="%s"' % (hoist_tree.firstChild().h))
+            fn = sc.create_setup_leo_file(hoist_tree)
+        else:
+            fn = c.fileName()
+
+        if fn: cmd.append('--file="%s"' % (fn))
 
         if verbose:
             proc = subprocess.Popen(cmd)
@@ -1085,9 +1085,33 @@ class ScreenShotController(object):
                 stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
         proc.communicate() # Wait for Leo to terminate.
-
         return True
+    #@+node:ekr.20100914090933.5643: *7* create_setup_leo_file
+    def create_setup_leo_file(self,hoist_tree):
 
+        '''Create an ouline containing all children of hoist_tree.'''
+
+        sc = self ; fn = sc.finalize('screenshot-setup.leo')
+        old_gui = g.app.gui
+        try:
+            c,frame = g.app.newLeoCommanderAndFrame(
+                fileName=fn,relativeFileName=None,gui=g.app.createNullGui())
+            # Copy the entire tree.
+            c.frame.createFirstTreeNode()
+            root = c.rootPosition()
+            for child in hoist_tree.children():
+                # g.trace(child.h)
+                child2 = root.insertAfter()
+                child.copyTreeFromSelfTo(child2)
+            # child1 = root.firstChild()
+            # root.doDelete(newNode=None)
+
+            # Save the file silently.
+            c.fileCommands.save(fn)
+        finally:
+            g.app.gui = old_gui
+
+        return fn
 
     #@+node:ekr.20100913085058.5655: *6* save_clipboard_to_screenshot_file
     def save_clipboard_to_screenshot_file (self,screenshot_fn):
@@ -1099,7 +1123,7 @@ class ScreenShotController(object):
 
         cb = g.app.gui.qtApp.clipboard()
         if not cb:
-            return sc.error('no clipboard')
+            return g.error('no clipboard')
 
         image = cb.image()
 
@@ -1107,7 +1131,7 @@ class ScreenShotController(object):
             image.save(screenshot_fn)
             return True
         else:
-            return sc.error('no image on clipboard')
+            return g.error('no image on clipboard')
     #@+node:ekr.20100908110845.5546: *4* 2: make_dom & helpers
     def make_dom(self,callouts,markers,screenshot_fn,template_fn):
 
@@ -1221,7 +1245,7 @@ class ScreenShotController(object):
         if set(self.ids) <= set(ids):
             return template
         else:
-            self.error('template did not include all required IDs:',template_fn)
+            g.error('template did not include all required IDs:',template_fn)
             return None
     #@+node:ekr.20100908110845.5549: *5* move_element
     def move_element(self,element,x,y):

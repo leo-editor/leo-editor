@@ -562,8 +562,8 @@
 <v t="ekr.20100910124218.2257"></v>
 <v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20100911162102.2361" a="E"><vh>What is Leo</vh>
-<v t="ekr.20100914081810.2334"><vh>@screenshot-tree To Do List</vh>
-<v t="ekr.20100914081810.2335" a="E"><vh>Organizer</vh>
+<v t="ekr.20100914113356.2347"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
+<v t="ekr.20100914081810.2334" a="E"><vh>@screenshot-tree</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
 <v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
 <v t="ekr.20100914081810.2338"><vh>Important</vh></v>
@@ -577,12 +577,11 @@
 <v t="ekr.20100914081810.2344"><vh>2010</vh></v>
 </v>
 </v>
-</v>
 <v t="ekr.20100914081810.2345"><vh>@select To Do List</vh></v>
-<v t="ekr.20100913131335.2321"><vh>@edit</vh></v>
+<v t="ekr.20100913131335.2321"><vh>@@edit</vh></v>
 <v t="ekr.20100913131335.2322"><vh>@setup</vh></v>
 </v>
-<v t="ekr.20100911162102.2362" a="E"><vh>Outlining editor</vh>
+<v t="ekr.20100911162102.2362"><vh>Outlining editor</vh>
 <v t="ekr.20100911185451.2428"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2362-outlining_editor.png</vh></v>
 <v t="ekr.20100911162102.2364"><vh>@screenshot-tree To Do List</vh>
 <v t="ekr.20100911162102.2365"><vh>Organizer</vh>
@@ -1067,7 +1066,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12,0,3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7304,8 +7303,6 @@ for start,path in table:
 <t tx="ekr.20100913131335.2321"></t>
 <t tx="ekr.20100913131335.2322"></t>
 <t tx="ekr.20100914081810.2334"></t>
-<t tx="ekr.20100914081810.2335">Organizer node.
-</t>
 <t tx="ekr.20100914081810.2336">My to-do list.
 </t>
 <t tx="ekr.20100914081810.2337"></t>
@@ -7317,5 +7314,6 @@ for start,path in table:
 <t tx="ekr.20100914081810.2343"></t>
 <t tx="ekr.20100914081810.2344"></t>
 <t tx="ekr.20100914081810.2345"></t>
+<t tx="ekr.20100914113356.2347"></t>
 </tnodes>
 </leo_file>

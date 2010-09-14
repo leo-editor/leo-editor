@@ -313,6 +313,8 @@ def scanOptions():
 
     # -f or --file
     fileName = options.fileName
+    if fileName: fileName = fileName.strip('"')
+    if trace: g.trace(fileName)
 
     # --gui
     gui = options.gui

@@ -3103,6 +3103,15 @@ def enl(tabName='Log'):
     if log and not log.isNull:
         log.newlines += 1
         log.putnl(tabName)
+#@+node:ekr.20100914094836.5892: *3* g.error, g.note & g.warning
+def error (*args,**keys):
+    g.es_print('Error:',color='red',*args,**keys)
+
+def note (*args,**keys):
+    g.es_print(*args,**keys)
+
+def warning (*args,**keys):
+    g.es_print('Warning:',color='blue',*args,**keys)
 #@+node:ekr.20070626132332: *3* g.es & minitest
 def es(*args,**keys):
 
