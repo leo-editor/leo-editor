@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.66">
-	<global_window_position top="57" left="275" height="657" width="609"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.88">
+	<global_window_position top="48" left="586" height="984" width="1067"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -560,9 +560,9 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20100910124218.2257"></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow ../test/screenshot-unit-test.html</vh>
-<v t="ekr.20100911162102.2361"><vh>What is Leo</vh>
-<v t="ekr.20100911185451.2427"><vh>@image ../doc/html/screen-shots/ekr-20100911162102-2361-what_is_leo.png</vh></v>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100911162102.2361" a="E"><vh>What is Leo</vh>
+<v t="ekr.20100913200434.2323"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
 <v t="ekr.20100913131335.2321"><vh>@edit</vh></v>
 <v t="ekr.20100913131335.2322"><vh>@setup</vh></v>
 </v>
@@ -1051,7 +1051,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="13"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12,0,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7149,25 +7149,10 @@ c.k.simulateCommand('stickynote')
 if 1:
     h = 'What is Leo'
     p = g.findNodeAnywhere(c,h)
+
 if p:
     c.selectPosition(p)
-    if 0: # Test scripting.
-        sc = m.ScreenShotController(c)
-        sc.run(p,
-            callouts=sc.get_callouts(p),
-            markers=sc.get_markers(p),
-            edit_flag=sc.get_edit_flag(p),
-            force_edit_flag=sc.get_force_edit_flag(p),
-            output_flag=sc.get_output_flag(p),
-            screenshot_fn=None,
-            working_fn=None,
-            output_fn=None,
-            sphinx_path = r'../doc/html'
-        )
-        sc.select_at_image_node(p)
-        sc.note('script finished')
-    else:
-        m.take_screen_shot_command(event={'c':c})
+    m.take_screen_shot_command(event={'c':c})
 else:
     g.es_print('not found',h,color='red')
 </t>
@@ -7234,9 +7219,7 @@ the best way to demonstrate what can be done with Leo.
 
     what-is-leo-0*
 
-.. image:: screen-shots/ekr-20100911162102-2361.png
-
-.. image:: screen-shots/ekr-20100911162102-2361-what_is_leo.png
+.. image:: screen-shots/my_first_slide_show-000.png
 
 </t>
 <t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
@@ -7280,7 +7263,6 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20100911162102.2436"></t>
 <t tx="ekr.20100911162102.2437"></t>
 <t tx="ekr.20100911162102.2438"></t>
-<t tx="ekr.20100911185451.2427"></t>
 <t tx="ekr.20100911185451.2428"></t>
 <t tx="ekr.20100911185451.2429"></t>
 <t tx="ekr.20100911185451.2430"></t>
@@ -7305,5 +7287,6 @@ for start,path in table:
     print(start,path,'--&gt;',os.path.relpath(path,start).replace('\\','/'))</t>
 <t tx="ekr.20100913131335.2321"></t>
 <t tx="ekr.20100913131335.2322"></t>
+<t tx="ekr.20100913200434.2323"></t>
 </tnodes>
 </leo_file>
