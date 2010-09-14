@@ -133,6 +133,7 @@ except ImportError:
     got_qt = False
 
 import subprocess
+import sys
 import tempfile
 
 import xml.etree.ElementTree as etree
@@ -321,6 +322,10 @@ class ScreenShotController(object):
 
         # The path to the Inkscape executable.
         self.inkscape_bin = self.get_inkscape_bin()
+
+        # Standard screenshot size
+        self.screenshot_height = 1000
+        self.screenshot_width = 800
 
         # The @slideshow node.
         self.slide_show_node = None
@@ -582,6 +587,33 @@ class ScreenShotController(object):
 
         return g.sanitize_filename(fn.lower()).replace('.','-')
     #@+node:ekr.20100911044508.5630: *3* options
+    #@+node:ekr.20100909121239.5742: *4* find_at_screenshot_tree_node
+    def find_at_screenshot_tree_node (self,p):
+
+        '''
+        Return the @screenshot-tree node in a direct child of p.
+        '''
+
+        for p2 in p.children():
+            if g.match_word(p2.h,0,'@screenshot-tree'):
+                return p2
+        else:
+            return None
+    #@+node:ekr.20100913085058.5660: *4* find_select_node
+    def find_select_node (self,p):
+
+        '''
+        Find the @select node in a direct child of p.
+        Return whatever follows @select in the headline.
+        '''
+
+        tag = '@select'
+
+        for p2 in p.children():
+            if g.match_word(p2.h,0,tag):
+                return p2.h[len(tag):].strip()
+        else:
+            return ''
     #@+node:ekr.20100908110845.5596: *4* get_callouts & helper
     def get_callouts (self,p):
 
@@ -672,6 +704,14 @@ class ScreenShotController(object):
                 return True
         else:
             return False
+    #@+node:ekr.20100913085058.5661: *4* get_screenshot_height/width (to do)
+    def get_screenshot_height (self):
+
+        return self.screenshot_height
+
+    def get_screenshot_width (self):
+
+        return self.screenshot_width
     #@+node:ekr.20100913085058.5631: *4* get_setup_app (Not used yet)
     def get_setup_app (self,p):
 
@@ -742,24 +782,6 @@ class ScreenShotController(object):
     def warning (self,*args):
         if not g.app.unitTesting:
             g.es_print('Warning:',*args,color='blue')
-    #@+node:ekr.20100909121239.5742: *4* find_at_screenshot_tree_node
-    def find_at_screenshot_tree_node (self,p):
-
-        '''
-        Find the @screenshot-tree node in a direct child of p.
-        Set h to whatever follows @screenshot-tree in the headline.
-        '''
-
-        tag = '@screenshot-tree'
-
-        for root in p.children():
-            if g.match_word(root.h,0,tag):
-                h = root.h[len(tag):].strip()
-                break
-        else:
-            root,h = None,''
-
-        return root,h
     #@+node:ekr.20100908110845.5543: *4* give_pil_warning
     pil_message_given = False
 
@@ -908,11 +930,18 @@ class ScreenShotController(object):
         and add an .. image:: directive to p.'''
 
         sc = self
-        root,h = sc.find_at_screenshot_tree_node(p)
-        ok = sc.make_screen_shot(h,root,screenshot_fn,setup_flag)
+        hoist_tree = sc.find_at_screenshot_tree_node(p)
+        select_node = sc.find_select_node(p)
+        # g.trace(hoist_tree,select_node)
+
+        if setup_flag:
+            ok = sc.setup_screen_shot(hoist_tree,screenshot_fn,select_node)
+        else:
+            ok = sc.make_screen_shot(hoist_tree,screenshot_fn,select_node)
+
         if ok:
-            g.es('slide node:  %s' % p.h)
-            g.es('output file: %s' % g.shortFileName(screenshot_fn))
+            sc.note('slide node:  %s' % p.h)
+            sc.note('output file: %s' % g.shortFileName(screenshot_fn))
             sc.make_image_node(p,image_fn)
             sc.add_image_directive(p,directive_fn)
         return ok
@@ -944,29 +973,23 @@ class ScreenShotController(object):
             p2 = p.insertAsNthChild(0)
             p2.h = h
     #@+node:ekr.20100908110845.5600: *5* make_screen_shot & helpers
-    def make_screen_shot (self,h,root,screenshot_fn,setup_flag):
+    def make_screen_shot (self,hoist_tree,screenshot_fn,select_node):
 
         '''Take the screen shot after adjusting the window and outline.'''
 
         sc = self ; c = sc.c
 
-        if setup_flag:
-            sc.open_screenshot_app(root,h)
-            ok = sc.save_clipboard_to_screenshot_file(screenshot_fn)
-            g.trace('not ready yet: returning False')
-            return ok
-        else:
-            # Setup.
-            old_size = c.frame.top.size()
-            self.resize_leo_window()
-            if root: self.hoist_and_select(root,h)
+        # Setup.
+        old_size = c.frame.top.size()
+        self.resize_leo_window()
+        if root: sc.hoist_and_select(hoist_tree,select_node)
 
-            self.make_screen_shot_helper(screenshot_fn)
+        sc.make_screen_shot_helper(screenshot_fn)
 
-            # Restore.
-            if root: c.dehoist()
-            c.frame.top.resize(old_size)
-            return True
+        # Restore.
+        if root: c.dehoist()
+        c.frame.top.resize(old_size)
+        return True
     #@+node:ekr.20100908110845.5601: *6* hoist_and_select
     def hoist_and_select(self,root,h):
 
@@ -1004,10 +1027,6 @@ class ScreenShotController(object):
 
         w = pix.grabWindow(app.activeWindow().winId())
         w.save(path,'png')
-    #@+node:ekr.20100913085058.5656: *6* open_screenshot_app
-    def open_screenshot_app (self,root,h):
-
-        g.trace(root,h)
     #@+node:ekr.20100908110845.5603: *6* resize_leo_window
     def resize_leo_window(self):
 
@@ -1016,14 +1035,79 @@ class ScreenShotController(object):
 
         c = self.c ; w = c.frame.top
 
-        w.resize(1000,800)
+        h,w = sc.get_screenshot_height(),sc.get_screenshot_width()
+        w.resize(h,w)
         c.k.simulateCommand('equal-sized-panes')
         c.redraw()
         w.repaint() # Essential
+    #@+node:ekr.20100913085058.5659: *5* setup_screen_shot & helpers
+    def setup_screen_shot (self,hoist_tree,screenshot_fn,select_node):
+
+        '''Take the screen shot after adjusting the window and outline.'''
+
+        sc = self
+
+        ok = sc.open_screenshot_app(hoist_tree,select_node)
+
+        if ok:
+            ok = sc.save_clipboard_to_screenshot_file(screenshot_fn)
+
+        return ok
+    #@+node:ekr.20100913085058.5656: *6* open_screenshot_app
+    def open_screenshot_app (self,hoist_tree,select_node):
+
+        '''Open the screenshot app.
+        Return True if the app exists and can be opened.'''
+
+        verbose = False
+        sc = self ; c = sc.c
+        launch = g.os_path_finalize_join(g.app.loadDir,
+            '..','..','launchLeo.py')
+        python = sys.executable
+        outline = c.fileName()
+
+        h,w = sc.get_screenshot_height(),sc.get_screenshot_width()
+        cmd = [python,launch,outline,'--window-size=%sx%s' % (h,w)]
+
+        if hoist_tree:
+            cmd.append('--hoist="%s"' % (hoist_tree.firstChild().h))
+
+        if select_node:
+            cmd.append('--select="%s"' % (select_node))
+
+        # g.trace(cmd)
+
+        if verbose:
+            proc = subprocess.Popen(cmd)
+        else:
+            # Eat the output.
+            proc = subprocess.Popen(cmd,
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+
+        proc.communicate() # Wait for Leo to terminate.
+
+        return True
+
+
     #@+node:ekr.20100913085058.5655: *6* save_clipboard_to_screenshot_file
     def save_clipboard_to_screenshot_file (self,screenshot_fn):
 
-        g.trace(screenshot_fn)
+        '''Save the clipboard to screenshot_fn.
+        Return True if all went well.'''
+
+        sc = self
+
+        cb = g.app.gui.qtApp.clipboard()
+        if not cb:
+            return sc.error('no clipboard')
+
+        image = cb.image()
+
+        if image:
+            image.save(screenshot_fn)
+            return True
+        else:
+            return sc.error('no image on clipboard')
     #@+node:ekr.20100908110845.5546: *4* 2: make_dom & helpers
     def make_dom(self,callouts,markers,screenshot_fn,template_fn):
 

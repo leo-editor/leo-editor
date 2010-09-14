@@ -335,6 +335,7 @@ def scanOptions():
 
     # --hoist
     hoist=options.hoist
+    if hoist: hoist = hoist.strip('"')
     if trace: g.trace('hoist',hoist)
 
     # --ipython
@@ -361,6 +362,8 @@ def scanOptions():
 
     # --select
     select = options.select
+    if select: select = select.strip('"')
+    if trace: g.trace('select',repr(select))
 
     # --silent
     g.app.silentMode = options.silent
@@ -371,19 +374,16 @@ def scanOptions():
 
     # --window-size
     windowSize = options.window_size
+    if trace: g.trace('windowSize',repr(windowSize))
     if windowSize:
         try:
             h,w = windowSize.split('x')
-            if trace: g.trace('windowSize',h,w)
         except ValueError:
             windowSize = None
             g.trace('bad --window-size:',size)
 
     # Compute the return values.
     windowFlag = script and script_path_w
-    if trace:
-        print('scanOptions: fileName',fileName)
-        print('scanOptions: argv',sys.argv)
     return {
         'fileName':fileName,
         'gui':gui,
@@ -489,17 +489,18 @@ def doHoist (c,s):
         c.selectPosition(p)
         c.hoist(p)
     else:
-        g.es_print('--hoist: node not found:',s)
+        g.es_print('--hoist: not found:',s)
 #@+node:ekr.20100913171604.5888: *5* doSelect
 def doSelect (c,s):
 
     '''Select the node with key s.'''
 
     p = findNode(c,s)
+
     if p:
         c.selectPosition(p)
     else:
-        g.es_print('--select: node not found:',s)
+        g.es_print('--select: not found:',s)
 #@+node:ekr.20100913171604.5885: *5* doWindowSize
 def doWindowSize (c,windowSize):
 
@@ -522,11 +523,12 @@ def findNode (c,s):
     s = s.strip()
 
     # First, assume s is a gnx.
-    for p in c.all_positions():
+    for p in c.all_unique_positions():
         if p.gnx.strip() == s:
             return p
 
-    for p in c.all_positions():
+    for p in c.all_unique_positions():
+        # g.trace(p.h.strip())
         if p.h.strip() == s:
             return p
 
