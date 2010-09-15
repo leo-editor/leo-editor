@@ -467,7 +467,7 @@ class LeoPluginsController:
             fn = fn [:-3]
 
         if not fn.startswith('leo.plugins.'):
-           fn = 'leo.plugins.' + fn
+            fn = 'leo.plugins.' + fn
 
         return fn
     #@+node:ekr.20100909104341.5979: *4* setLoaded
