@@ -559,7 +559,7 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20100910124218.2257"></v>
-<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20100914190048.2357"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
@@ -596,7 +596,7 @@
 </v>
 <v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
 </v>
-<v t="ekr.20100909154940.2227" a="E"><vh>@slide Headline and body text</vh>
+<v t="ekr.20100909154940.2227"><vh>@slide Headline and body text</vh>
 <v t="ekr.20100914192147.2391"><vh>@image ../doc/html/screen-shots/my_first_slide_show-002.png</vh></v>
 <v t="ekr.20100909154940.2228"><vh>@screenshot-tree</vh>
 <v t="ekr.20100909154940.2230"><vh>To Do List</vh>
@@ -1061,7 +1061,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="16,2,4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="16"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7171,8 +7171,6 @@ else:
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
 
-.. image:: screen-shots/ekr-20100909154940-2227-headline_and_body_text.png
-
 .. image:: screen-shots/my_first_slide_show-002.png
 
 </t>
@@ -7232,8 +7230,6 @@ the best way to demonstrate what can be done with Leo.
 <t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
-
-.. image:: screen-shots/ekr-20100911162102-2362-outlining_editor.png
 
 .. image:: screen-shots/my_first_slide_show-001.png
 
