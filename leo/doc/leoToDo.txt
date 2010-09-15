@@ -515,6 +515,7 @@ tree, though it does generate an incorrect message:
 We want better docs, automatically, and a way to update @enabled-plugins.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
+#@+node:ekr.20100915101910.5891: *3* Make sure cache works after bzr revert
 #@+node:ekr.20100827114047.5895: *3* Bugs
 #@+node:ekr.20100903090944.5850: *4* Other bugs
 #@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw

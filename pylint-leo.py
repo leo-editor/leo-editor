@@ -108,12 +108,17 @@ pluginsTable = getPluginsTable()
 tkPass = getTkPass()
 #@-<< defines >>
 
-recentList = (
+recentCoreList = (
     ('leoPlugins',''),
 )
 
+recentPluginsList = (
+    ('screenshots',''),
+)
+
 tables_table = (
-    (recentList,'core'),
+    (recentCoreList,'core'),
+    (recentPluginsList,'plugins'),
     # (coreList,'core'),
     # (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
