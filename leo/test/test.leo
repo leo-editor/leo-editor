@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.88">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.69">
 	<global_window_position top="48" left="586" height="800" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -559,8 +559,8 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20100910124218.2257"></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
-<v t="ekr.20100911162102.2361"><vh>What is Leo</vh>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20100914190048.2357"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
@@ -578,7 +578,7 @@
 </v>
 <v t="ekr.20100914081810.2345"><vh>@select Urgent</vh></v>
 </v>
-<v t="ekr.20100911162102.2362"><vh>Outlining editor</vh>
+<v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
 <v t="ekr.20100914192147.2376"><vh>@image ../doc/html/screen-shots/my_first_slide_show-001.png</vh></v>
 <v t="ekr.20100911162102.2364"><vh>@screenshot-tree</vh>
 <v t="ekr.20100911162102.2366"><vh>To Do List</vh>
@@ -596,7 +596,7 @@
 </v>
 <v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
 </v>
-<v t="ekr.20100909154940.2227"><vh>Headline and body text</vh>
+<v t="ekr.20100909154940.2227" a="E"><vh>@slide Headline and body text</vh>
 <v t="ekr.20100914192147.2391"><vh>@image ../doc/html/screen-shots/my_first_slide_show-002.png</vh></v>
 <v t="ekr.20100909154940.2228"><vh>@screenshot-tree</vh>
 <v t="ekr.20100909154940.2230"><vh>To Do List</vh>
@@ -614,8 +614,10 @@
 </v>
 <v t="ekr.20100914190242.2349"><vh>@edit</vh></v>
 <v t="ekr.20100914190242.2348"><vh>@select Urgent</vh></v>
+<v t="ekr.20100915134048.2391"><vh>@@pause</vh></v>
+<v t="ekr.20100915134048.2392"><vh>@@callout 1 is headline, 2 is body text</vh></v>
 </v>
-<v t="ekr.20100911162102.2427"><vh>File:Save</vh>
+<v t="ekr.20100911162102.2427"><vh>@slide File:Save</vh>
 <v t="ekr.20100914192147.2406"><vh>@image ../doc/html/screen-shots/my_first_slide_show-003.png</vh></v>
 <v t="ekr.20100911162102.2428"><vh>@screenshot-tree Urgent</vh>
 <v t="ekr.20100911162102.2430"><vh>To Do List</vh>
@@ -1059,7 +1061,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="16"></t>
+<t tx="ekr.20070416075121" str_leo_pos="16,2,4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7155,7 +7157,7 @@ c.k.simulateCommand('stickynote')
 
 # Select the screenshot node.
 if 1:
-    h = 'What is Leo'
+    h = '@slide What is Leo'
     p = g.findNodeAnywhere(c,h)
 
 if p:
@@ -7184,7 +7186,7 @@ text here by typing it in.
 <t tx="ekr.20100909154940.2232"></t>
 <t tx="ekr.20100909154940.2233"></t>
 <t tx="ekr.20100909154940.2234"></t>
-<t tx="ekr.20100909154940.2235"></t>
+<t tx="ekr.20100909154940.2235" str_leo_pos=""></t>
 <t tx="ekr.20100909154940.2236"></t>
 <t tx="ekr.20100909154940.2237"></t>
 <t tx="ekr.20100909154940.2238"></t>
@@ -7243,7 +7245,7 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20100911162102.2368"></t>
 <t tx="ekr.20100911162102.2369"></t>
 <t tx="ekr.20100911162102.2370"></t>
-<t tx="ekr.20100911162102.2371"></t>
+<t tx="ekr.20100911162102.2371" str_leo_pos=""></t>
 <t tx="ekr.20100911162102.2372"></t>
 <t tx="ekr.20100911162102.2373"></t>
 <t tx="ekr.20100911162102.2374"></t>
@@ -7306,5 +7308,7 @@ for start,path in table:
 <t tx="ekr.20100914192147.2376"></t>
 <t tx="ekr.20100914192147.2391"></t>
 <t tx="ekr.20100914192147.2406"></t>
+<t tx="ekr.20100915134048.2391"></t>
+<t tx="ekr.20100915134048.2392"></t>
 </tnodes>
 </leo_file>
