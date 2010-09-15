@@ -526,12 +526,18 @@ class ScreenShotController(object):
         assert sc.slide_show_node
         assert p == sc.slide_node
 
-        n = 0
-        for p2 in sc.slide_show_node.subtree():
-            if p2 == p:
+        n = 0 ; p1 = p.copy()
+        p = sc.slide_show_node.firstChild()
+        while p:
+            if p == p1:
                 return n
-            elif g.match_word(p2.h,0,'@slide'):
+            elif g.match_word(p.h,0,'@slide'):
                 n += 1
+                # Skip the entire tree, including
+                # any inner @screenshot-tree trees.
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
 
         g.trace('Can not happen. Not found:',p.h)
         return -666
@@ -855,16 +861,16 @@ class ScreenShotController(object):
 
         g.note('sphinx-path',sc.get_sphinx_path(None))
 
-        for p2 in p.subtree():
+        p = p.firstChild()
+        while p:
             if g.app.commandInterruptFlag: return
-            if g.match_word(p2.h,0,'@slide'):
-                sc.run(p2)
-
-        # for child in p.children():
-            # if g.app.commandInterruptFlag: return
-            # sc.run(child,
-                # callouts=sc.get_callouts(child),
-                # markers=sc.get_markers(child))
+            if g.match_word(p.h,0,'@slide'):
+                sc.run(p)
+                # Skip the entire tree, including
+                # any inner @screenshot-tree trees.
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
     #@+node:ekr.20100913085058.5629: *3* sc.take_screen_shot_command
     def take_screen_shot_command (self,p):
 
