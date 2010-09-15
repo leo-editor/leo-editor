@@ -117,14 +117,9 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # Phase 1: before loading plugins.
     # Scan options, set directories and read settings.
     if not isValidPython(): return
-    fn,relFn,options = doPrePluginsInit(fileName,pymacs)
-    versionFlag = options.get('versionFlag')
 
-    # We can't print the signon until we know the gui.
-    g.app.computeSignon() # Set app.signon/signon2 for commanders.
-    if versionFlag:
-        print(g.app.signon) ; return
-    if not g.app.gui: return
+    fn,relFn,options = doPrePluginsInit(fileName,pymacs)
+    if options.get('exit'): return
 
     # Phase 2: load plugins: the gui has already been set.
     g.doHook("start1")
@@ -132,7 +127,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     # Phase 3: after loading plugins. Create a frame.
     ok = doPostPluginsInit(args,fn,relFn,options)
-    if ok and not versionFlag: g.app.gui.runMainLoop()
+    if ok: g.app.gui.runMainLoop()
 #@+node:ekr.20090519143741.5915: *3* doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
@@ -142,25 +137,45 @@ def doPrePluginsInit(fileName,pymacs):
     g.computeStandardDirectories()
     adjustSysPath()
     options = scanOptions()
+
+    # Post-process the options.
     fileName2 = options.get('fileName')
     if fileName2: fileName = fileName2
-    if trace:
-        print('runLeo.doPrePluginsInit: sys.argv %s' % sys.argv)
-        print('runLeo.doPrePluginsInit: fileName %s' % fileName)
+
     if pymacs:
-        script,windowFlag = None,False
+        options['script'] = script = None
+        options['windowFlag'] = False
     else:
         script = options.get('script')
-        windowFlag = options.get('windowFlag')
     verbose = script is None
+
+    # Init the app.
     initApp(verbose)
     fileName,relativeFileName = getFileName(fileName,script)
     reportDirectories(verbose)
+
     # Read settings *after* setting g.app.config and *before* opening plugins.
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setGlobalDb()
+    createGui(pymacs,options)
+
+    # We can't print the signon until we know the gui.
+    g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    versionFlag = options.get('versionFlag')
+    if versionFlag:
+        print(g.app.signon)
+    if versionFlag or not g.app.gui:
+        options['exit'] = True
+
+    return fileName,relativeFileName,options
+#@+node:ekr.20100914142850.5892: *4* createGui & helper
+def createGui(pymacs,options):
+
     gui = options.get('gui')
+    windowFlag = options.get('windowFlag')
+    script = options.get('script')
+
     if g.app.gui:
         pass # initApp (setLeoID) created the gui.
     elif gui is None:
@@ -172,7 +187,6 @@ def doPrePluginsInit(fileName,pymacs):
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
 
-    return fileName,relativeFileName,options
 #@+node:ekr.20080921060401.4: *4* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
@@ -275,12 +289,10 @@ def scanOptions():
     add('--debug',        action="store_true",dest="debug")
     add('-f', '--file',   dest="fileName")
     add('--gui', dest="gui",help = 'gui to use (qt/tk/qttabs)')
-    #add('--help',action="store_true",dest="help_option")
-    add('--hoist',        dest='hoist',
-        help='headline or gnx of node to hoist initially')
     add('--ipython',      action="store_true",dest="use_ipython")
     add('--no-cache',     action="store_true",dest='no_cache')
     add('--silent',       action="store_true",dest="silent")
+    add('--screen-shot',  dest='screenshot_fn')
     add('--script',       dest="script")
     add('--script-window',dest="script_window")
     add('--select',       dest='select',
@@ -335,11 +347,6 @@ def scanOptions():
 
     assert gui == g.app.guiArgName
 
-    # --hoist
-    hoist=options.hoist
-    if hoist: hoist = hoist.strip('"')
-    if trace: g.trace('hoist',hoist)
-
     # --ipython
     g.app.useIpython = options.use_ipython
 
@@ -347,6 +354,11 @@ def scanOptions():
     if options.no_cache:
         g.trace('disabling caching')
         g.enableDB = False
+
+    # --screen-shot=fn
+    screenshot_fn = options.screenshot_fn
+    if screenshot_fn: screenshot_fn = screenshot_fn.strip('"')
+    if trace: g.trace('screenshot_fn',screenshot_fn)
 
     # --script
     script_path = options.script
@@ -389,7 +401,7 @@ def scanOptions():
     return {
         'fileName':fileName,
         'gui':gui,
-        'hoist':hoist,
+        'screenshot_fn':screenshot_fn,
         'script':script,
         'select':select,
         'version':versionFlag,
@@ -422,6 +434,12 @@ def doPostPluginsInit(args,fileName,relativeFileName,options):
     if c.config.getBool('allow_idle_time_hook'):
         g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
+
+    screenshot_fn = options.get('screenshot_fn')
+    if screenshot_fn:
+        make_screen_shot(screenshot_fn)
+        return False # Force an immediate exit.
+
     return True
 #@+node:ekr.20031218072017.1624: *4* createFrame & helpers (runLeo.py)
 def createFrame (fileName,relativeFileName,options):
@@ -443,10 +461,8 @@ def createFrame (fileName,relativeFileName,options):
     if fileName and g.os_path_exists(fileName):
         ok, frame = g.openWithFileName(relativeFileName or fileName,None)
         c2 = frame.c
-        hoist = options.get('hoist')
         select = options.get('select')
         windowSize = options.get('windowSize')
-        if hoist: doHoist(c2,hoist)
         if select: doSelect(c2,select)
         if windowSize: doWindowSize(c2,windowSize)
         if ok: return c2,frame
@@ -480,18 +496,6 @@ def createFrame (fileName,relativeFileName,options):
         g.es_print("file not found:",fileName,color='red')
 
     return c,frame
-#@+node:ekr.20100913171604.5884: *5* doHoist
-def doHoist (c,s):
-
-    '''Select the node with key s and hoist it.'''
-
-    p = findNode(c,s)
-
-    if p:
-        c.selectPosition(p)
-        c.hoist(p)
-    else:
-        g.es_print('--hoist: not found:',s)
 #@+node:ekr.20100913171604.5888: *5* doSelect
 def doSelect (c,s):
 
@@ -559,6 +563,16 @@ def initFocusAndDraw(c,fileName):
         c.k.showStateAndMode(w)
 
     c.outerUpdate()
+#@+node:ekr.20100914142850.5894: *4* make_screen_shot
+def make_screen_shot(fn):
+
+    '''Create a screenshot of the present Leo outline and save it to path.'''
+
+    # g.trace('runLeo.py',fn)
+
+    if g.app.gui.guiName() == 'qt':
+        m = g.loadOnePlugin('screenshots')
+        m.make_screen_shot(fn)
 #@+node:ekr.20040411081633: *4* startPsyco
 def startPsyco ():
 

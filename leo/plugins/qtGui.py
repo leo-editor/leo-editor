@@ -398,7 +398,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             if trace and verbose: g.trace('redrawing')
             return
         if not p:
-            return g.trace('*** no p')
+            if trace: g.trace('*** no p')
+            return
 
         newInsert = w.getInsertPoint()
         newSel = w.getSelectionRange()

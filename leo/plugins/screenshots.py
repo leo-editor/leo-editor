@@ -140,16 +140,8 @@ import xml.etree.ElementTree as etree
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20100908110845.5606: ** init
-def init ():
-
-    ok = got_qt
-
-    if ok:
-        g.plugin_signon(__name__)
-
-    return ok
-#@+node:ekr.20100908110845.5581: ** g.command(apropos-screen-shots)
+#@+node:ekr.20100914090933.5771: ** Top level
+#@+node:ekr.20100908110845.5581: *3* g.command(apropos-screen-shots)
 #@@pagewidth 45
 
 # Ideally, we would compute s from the module's docstring,
@@ -162,7 +154,7 @@ def apropos_screen_shots(event):
     if not c: return
 
     #@+<< define s >>
-    #@+node:ekr.20100908110845.5582: *3* << define s >>
+    #@+node:ekr.20100908110845.5582: *4* << define s >>
     s = """\
 
     The screenshot.py plug
@@ -286,16 +278,7 @@ def apropos_screen_shots(event):
     #@-<< define s >>
 
     g.es(g.adjustTripleString(s.rstrip(),c.tab_width))
-#@+node:ekr.20100908110845.5583: ** g.command(take_screen_shot)
-@g.command('take-screen-shot')
-def take_screen_shot_command (event):
-
-    c = event.get('c')
-    if c:
-        sc = ScreenShotController(c)
-        sc.take_screen_shot_command(c.p)
-        g.note('take-screen-shot command finished')
-#@+node:ekr.20100911044508.5634: ** g.command(make-slide-show)
+#@+node:ekr.20100911044508.5634: *3* g.command(make-slide-show)
 @g.command('make-slide-show')
 def make_slide_show_command(event=None):
 
@@ -304,6 +287,42 @@ def make_slide_show_command(event=None):
         sc = ScreenShotController(c)
         sc.make_slide_show_command(c.p)
         g.note('make-slide-show command finished')
+#@+node:ekr.20100908110845.5583: *3* g.command(take_screen_shot)
+@g.command('take-screen-shot')
+def take_screen_shot_command (event):
+
+    c = event.get('c')
+    if c:
+        sc = ScreenShotController(c)
+        sc.take_screen_shot_command(c.p)
+        g.note('take-screen-shot command finished')
+#@+node:ekr.20100908110845.5606: *3* init
+def init ():
+
+    ok = got_qt
+
+    if ok:
+        g.plugin_signon(__name__)
+
+    return ok
+#@+node:ekr.20100914090933.5770: *3* make_screen_shot
+def make_screen_shot (path):
+
+    '''Create a screenshot of the present Leo outline and save it to path.
+    This is a callback called from make_screen_shot in runLeo.py'''
+
+    # g.trace('screenshots.py:',path)
+
+    try:
+        import PyQt4.QtGui
+        app = g.app.gui.qtApp
+        pix = PyQt4.QtGui.QPixmap
+    except ImportError:
+        g.error('make_screen_shot requires PyQt4')
+        return
+
+    w = pix.grabWindow(app.activeWindow().winId())
+    w.save(path,'png')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController(object):
 
@@ -483,15 +502,15 @@ class ScreenShotController(object):
         tag = '@slideshow'
         assert g.match_word(h,0,tag)
         h = h[len(tag):].strip()
-        if not h: h = p.gnx
+        if not h:
+            # g.trace('*** no h: using gnx',repr(p.gnx))
+            h = p.gnx
 
-        return '%s-%03d.%s' % (sc.sanitize(h),n,ext)
-
-        # return '%s-%s.png' % (
-            # p.gnx.replace('.','-'),
-            # g.sanitize_filename(p.h).replace('.','-'))
+        s = '%s-%03d.%s' % (sc.sanitize(h),n,ext)
+        g.trace(repr(s))
+        return s
     #@+node:ekr.20100911044508.5627: *4* get_output_fn
-    def get_output_fn (self,p,output_fn):
+    def get_output_fn (self,p):
 
         '''Return the full, absolute, output file name.
 
@@ -500,18 +519,16 @@ class ScreenShotController(object):
         The default is h-n.png, where h is the @slideshow nodes's sanitized headline.
         '''
 
-        if output_fn:
-            fn = output_fn
+        # Look for any @output nodes in p's children.
+        tag = '@output'
+        for child in p.children():
+            h = child.h
+            if g.match_word(h,0,tag):
+                fn = h[len(tag):].strip()
         else:
-             # Look for any @output nodes in p's children.
-            tag = '@output'
-            for child in p.children():
-                h = child.h
-                if g.match_word(h,0,tag):
-                    fn = h[len(tag):].strip()
-            else:
-                fn = self.p_to_fn(p,'png')
+            fn = self.p_to_fn(p,'png')
 
+        g.trace(repr(fn))
         fn = self.finalize(fn)
         if self.trace: g.trace(fn)
         return fn
@@ -656,15 +673,6 @@ class ScreenShotController(object):
                 return True
         else:
             return False
-    #@+node:ekr.20100911044508.5621: *4* get_force_edit_flag
-    def get_force_edit_flag (self,unused_p):
-
-        '''Return the value of the @bool always-edit-screenshots setting.'''
-
-        c = self.c
-
-        return c.config.getBool(
-            'always-edit-screenshots',default=True)
     #@+node:ekr.20100908110845.5597: *4* get_markers & helper
     def get_markers (self,p):
 
@@ -688,15 +696,6 @@ class ScreenShotController(object):
             # Match @marker or @markers, etc.
         s = s[i:].strip()
         return [z.strip() for z in s.split(',')]
-    #@+node:ekr.20100911044508.5624: *4* get_output_flag (not used)
-    # def get_output_flag (self,unused_p):
-
-        # '''Return the value of the @bool write-screenshot-output-file setting.'''
-
-        # c = self.c
-
-        # return c.config.getBool(
-            # 'write-screenshot-output-file',default=True)
     #@+node:ekr.20100913085058.5628: *4* get_protect_flag
     def get_protect_flag (self,p):
 
@@ -727,8 +726,6 @@ class ScreenShotController(object):
                     return True
         else:
             return False
-
-
     #@+node:ekr.20100913085058.5630: *4* get_setup_flag
     def get_setup_flag (self,p):
 
@@ -742,10 +739,13 @@ class ScreenShotController(object):
     def get_slide_number (self,p):
 
         sc = self
+
         root = sc.get_slideshow_root(p)
 
         if root:
             return p.childIndex() # zero-based.
+        else:
+            return 666
 
     #@+node:ekr.20100913085058.5654: *4* get_slideshow_root
     def get_slideshow_root (self,p):
@@ -880,8 +880,7 @@ class ScreenShotController(object):
         # Compute paths and file names.
         sphinx_path = sc.get_sphinx_path(sphinx_path)
         if not sphinx_path: return
-        n = sc.get_slide_number(p)
-        if not output_fn: output_fn = sc.get_output_fn(p,n)
+        if not output_fn: output_fn = sc.get_output_fn(p)
         screenshot_fn = sc.get_screenshot_fn(p,screenshot_fn)
         setup_flag = sc.get_setup_flag(p)
         working_fn = sc.get_working_fn(p,working_fn)
@@ -925,18 +924,20 @@ class ScreenShotController(object):
         sc = self
         hoist_tree = sc.find_at_screenshot_tree_node(p)
         select_node = sc.find_select_node(p)
-        # g.trace(hoist_tree,select_node)
 
-        if setup_flag:
-            ok = sc.setup_screen_shot(hoist_tree,screenshot_fn,select_node)
-        else:
-            ok = sc.make_screen_shot(hoist_tree,screenshot_fn,select_node)
+        # Always create 'screenshot-setup.leo' 
+        fn = sc.create_setup_leo_file(hoist_tree)
+
+        # Always open fn in a separate process.
+        ok = sc.setup_screen_shot(fn,hoist_tree,screenshot_fn,select_node,setup_flag)
 
         if ok:
             g.note('slide node:  %s' % p.h)
             g.note('output file: %s' % g.shortFileName(screenshot_fn))
             sc.make_image_node(p,image_fn)
             sc.add_image_directive(p,directive_fn)
+        else:
+            g.warning('problems making screen shot:',p.h)
         return ok
     #@+node:ekr.20100908110845.5594: *5* add_image_directive
     def add_image_directive (self,p,directive_fn):
@@ -947,6 +948,39 @@ class ScreenShotController(object):
 
         if p.b.find(s) == -1:
             p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+    #@+node:ekr.20100914090933.5643: *5* create_setup_leo_file
+    def create_setup_leo_file(self,hoist_tree):
+
+        '''Create an ouline containing all children of hoist_tree.'''
+
+        sc = self ; fn = sc.finalize('screenshot-setup.leo')
+
+        c,frame = g.app.newLeoCommanderAndFrame(
+            fileName=fn,relativeFileName=None) # ,gui=gui)
+
+        # Copy the entire tree.
+        c.frame.createFirstTreeNode()
+        root = c.rootPosition()
+        children = [z.copy() for z in hoist_tree.children()]
+        children.reverse()
+        child1 = children and children[0]
+        for child in children:
+            child2 = root.insertAfter()
+            child.copyTreeFromSelfTo(child2)
+        # g.trace(root)
+        if child1:
+            root.doDelete(newNode=None)
+            c.setRootPosition(child1) # Essential!
+        # Adjust the context for the new file.
+        if 0:
+            for v in c.all_nodes():
+                v.context = c
+
+        # Save the file silently.
+        c.fileCommands.save(fn)
+        c.close()
+
+        return fn
     #@+node:ekr.20100908110845.5599: *5* make_image_node
     def make_image_node (self,p,image_fn):
 
@@ -965,94 +999,28 @@ class ScreenShotController(object):
             c.selectPosition(p)
             p2 = p.insertAsNthChild(0)
             p2.h = h
-    #@+node:ekr.20100908110845.5600: *5* make_screen_shot & helpers
-    def make_screen_shot (self,hoist_tree,screenshot_fn,select_node):
-
-        '''Take the screen shot after adjusting the window and outline.'''
-
-        sc = self ; c = sc.c
-
-        # Setup.
-        old_size = c.frame.top.size()
-        self.resize_leo_window()
-        if root: sc.hoist_and_select(hoist_tree,select_node)
-
-        sc.make_screen_shot_helper(screenshot_fn)
-
-        # Restore.
-        if root: c.dehoist()
-        c.frame.top.resize(old_size)
-        return True
-    #@+node:ekr.20100908110845.5601: *6* hoist_and_select
-    def hoist_and_select(self,root,h):
-
-        '''root is an @screenshot-tree node.
-        Hoist root.firstChild() and select h in root's tree.'''
-
-        c = self.c
-
-        if root.hasChildren(): root = root.firstChild()
-
-        c.selectPosition(root)
-        c.hoist()
-
-        if not h: return
-        # Select the requested node.
-        p = g.findNodeInTree(c,root,h)
-        if p:
-            assert h == p.h
-            assert c.positionExists(p,root=root)
-            c.selectPosition(p)
-        else:
-            g.trace('*** not found ***',h)
-    #@+node:ekr.20100908110845.5602: *6* make_screen_shot_helper
-    def make_screen_shot_helper (self,path):
-
-        '''Create a screenshot of the present Leo outline and save it to path.'''
-
-        try:
-            import PyQt4.QtGui
-            app = g.app.gui.qtApp
-            pix = PyQt4.QtGui.QPixmap
-        except ImportError:
-            g.error('take-screenshot requires PyQt4')
-            return
-
-        w = pix.grabWindow(app.activeWindow().winId())
-        w.save(path,'png')
-    #@+node:ekr.20100908110845.5603: *6* resize_leo_window
-    def resize_leo_window(self):
-
-        '''Resize the Leo window to the standard size and
-        make both panes the same size.'''
-
-        sc = self ; c = sc.c ; w = c.frame.top
-
-        w.resize(sc.screenshot_height,sc.screenshot_width)
-        c.k.simulateCommand('equal-sized-panes')
-        c.redraw()
-        w.repaint() # Essential
     #@+node:ekr.20100913085058.5659: *5* setup_screen_shot & helpers
-    def setup_screen_shot (self,hoist_tree,screenshot_fn,select_node):
+    def setup_screen_shot (self,fn,hoist_tree,screenshot_fn,select_node,setup_flag):
 
         '''Take the screen shot after adjusting the window and outline.'''
 
         sc = self
 
-        cb = g.app.gui.qtApp.clipboard()
-        if cb:
-            cb.clear(cb.Clipboard) # Alas, this does not work.
-        else:
-            return g.error('no clipboard')
+        # Important: we must *not* have the clipboard open here!
+        # Doing so can hang if the user does a clipboard operation
+        # in a subprocess.
+        if 0:
+            cb = g.app.gui.qtApp.clipboard()
+            if cb: cb.clear(cb.Clipboard) # Does not work anyway.
 
-        ok = sc.open_screenshot_app(hoist_tree,select_node)
+        ok = sc.open_screenshot_app(fn,hoist_tree,select_node,setup_flag,screenshot_fn)
 
-        if ok:
+        if ok and setup_flag:
             ok = sc.save_clipboard_to_screenshot_file(screenshot_fn)
 
         return ok
-    #@+node:ekr.20100913085058.5656: *6* open_screenshot_app & helper
-    def open_screenshot_app (self,hoist_tree,select_node):
+    #@+node:ekr.20100913085058.5656: *6* open_screenshot_app
+    def open_screenshot_app (self,fn,hoist_tree,select_node,setup_flag,screenshot_fn):
 
         '''Open the screenshot app.
         Return True if the app exists and can be opened.'''
@@ -1069,13 +1037,10 @@ class ScreenShotController(object):
         if select_node:
             cmd.append('--select="%s"' % (select_node))
 
-        if hoist_tree:
-            # cmd.append('--hoist="%s"' % (hoist_tree.firstChild().h))
-            fn = sc.create_setup_leo_file(hoist_tree)
-        else:
-            fn = c.fileName()
+        if not setup_flag:
+            cmd.append('--screen-shot="%s"' % screenshot_fn)
 
-        if fn: cmd.append('--file="%s"' % (fn))
+        cmd.append('--file="%s"' % (fn))
 
         if verbose:
             proc = subprocess.Popen(cmd)
@@ -1086,33 +1051,6 @@ class ScreenShotController(object):
 
         proc.communicate() # Wait for Leo to terminate.
         return True
-    #@+node:ekr.20100914090933.5643: *7* create_setup_leo_file
-    def create_setup_leo_file(self,hoist_tree):
-
-        '''Create an ouline containing all children of hoist_tree.'''
-
-        sc = self ; fn = sc.finalize('screenshot-setup.leo')
-        old_gui = g.app.gui
-        try:
-            c,frame = g.app.newLeoCommanderAndFrame(
-                fileName=fn,relativeFileName=None,gui=g.app.createNullGui())
-            # Copy the entire tree.
-            c.frame.createFirstTreeNode()
-            root = c.rootPosition()
-            for child in hoist_tree.children():
-                # g.trace(child.h)
-                child2 = root.insertAfter()
-                child.copyTreeFromSelfTo(child2)
-            # child1 = root.firstChild()
-            # root.doDelete(newNode=None)
-
-            # Save the file silently.
-            c.fileCommands.save(fn)
-        finally:
-            g.app.gui = old_gui
-
-        return fn
-
     #@+node:ekr.20100913085058.5655: *6* save_clipboard_to_screenshot_file
     def save_clipboard_to_screenshot_file (self,screenshot_fn):
 
