@@ -3,15 +3,6 @@
 .. @@language rest
 .. @@tabwidth -4
 .. @+all
-.. @+node:ekr.20100819163514.4364: ** @button screenshot
-@language python
-
-m = g.app.pluginsController.loadOnePlugin('screenshots')
-m.take_screen_shot_command({'c':c})
-.. @+node:ekr.20100828111722.4429: ** @button std-size
-@language python
-
-c.frame.top.resize(1000,800)
 .. @+node:ekr.20100821182153.4343: ** @rst html/slides.html
 @ @rst-options
 call_docutils=False
@@ -32,7 +23,7 @@ This is the front page for various slide shows about Leo.
 
 `What is Leo`_
 
-.. @+node:ekr.20100821182153.4345: ** @slideshow html/installation/installation.html
+.. @+node:ekr.20100821182153.4345: ** @slideshow html/slide-shows/installation
 .. The body of this node is ignored except for options.
 
 @ @rst-options
@@ -109,7 +100,7 @@ information, see the `leo-editor`_ Google Group.
 
 Not only is Leo free software, it is supported software. Post questions and bug
 reports to `leo-editor`_ Google Group.
-.. @+node:ekr.20100821182153.4346: ** @slideshow html/what-is-leo/what-is-leo.html
+.. @+node:ekr.20100821182153.4346: ** @slideshow What is Leo?
 .. The body of this node is ignored except for options.
 
 @ @rst-options

@@ -3398,7 +3398,7 @@ def isValidPython():
     if sys.platform == 'cli':
         return True
 
-    minimum_python_version = '2.4'
+    minimum_python_version = '2.6'
 
     message = """\
 Leo requires Python %s or higher.
@@ -3408,7 +3408,6 @@ http://python.org/download/
 
     try:
         version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-        # ok = g.CheckVersion(version,'2.4.0') # Soon.
         ok = g.CheckVersion(version,minimum_python_version)
         if not ok:
             print(message)

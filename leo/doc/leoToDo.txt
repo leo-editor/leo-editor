@@ -396,7 +396,7 @@ installed alongside the package - so you have
 
 leo.pth:
 ...\Program Files\Leo\package 
-#@+node:ekr.20100826110728.5844: *5* Fix install problem 
+#@+node:ekr.20100826110728.5844: *5* Fix install problem
 @nocolor-node
 
 I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
@@ -2702,6 +2702,7 @@ def __init__ (self,importCommands,atAuto,language):
         # For example, ';' and '=' in C.
 
     self.strict = False # True if leading whitespace is very significant.
+    self.warnAboutUnderindentedLines = True
 #@+node:ekr.20070808115837: *6* Checking
 #@+node:ekr.20070703122141.102: *7* check
 def check (self,unused_s,unused_parent):
@@ -2714,7 +2715,7 @@ def check (self,unused_s,unused_parent):
     Return True if the nodes are equivalent to the original file.
     '''
 
-    if self.fullChecks and self.treeType == '@file':
+    if self.fullChecks and self.treeType in (None,'@file'):
         return self.checkTrialWrite()
     else:
         return True
@@ -2778,8 +2779,6 @@ def compareHelper (self,lines1,lines2,i,strict):
 
     '''Compare lines1[i] and lines2[i].
     strict is True if leading whitespace is very significant.'''
-
-
 
     def pr(*args,**keys): #compareHelper
         g.es_print(color='blue',*args,**keys)
@@ -2928,7 +2927,7 @@ def addRef (self,parent):
     if self.isRst and not self.atAuto:
         return
 
-    if self.treeType == '@file':
+    if self.treeType in ('@file',None):
         self.appendStringToBody(parent,'@others\n')
 
     if self.treeType == '@root' and self.methodsSeen:
@@ -2959,6 +2958,8 @@ def computeBody (self,s,start,sigStart,codeEnd):
         while start > 0 and s[start-1] in (' ','\t'):
             start -= 1
 
+    # g.trace(repr(s[sigStart:codeEnd]))
+
     body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
     body2 = self.undentBody(s[sigStart:codeEnd])
     body = body1 + body2
@@ -2970,6 +2971,9 @@ def computeBody (self,s,start,sigStart,codeEnd):
         self.warning(
             '%s %s does not end with a newline; one will be added\n%s' % (
             self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
+
+        # g.trace(repr(s[sigStart:codeEnd]))
+        # g.pdb()
 
     return body
 #@+node:ekr.20090513073632.5737: *7* createDeclsNode
@@ -2985,11 +2989,11 @@ def createDeclsNode (self,parent,s):
 def createFunctionNode (self,headline,body,parent):
 
     # Create the prefix line for @root trees.
-    if self.treeType == '@file':
-        prefix = ''
-    else:
+    if self.treeType == '@root':
         prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
         self.methodsSeen = True
+    else:
+        prefix = ''
 
     # Create the node.
     return self.createHeadline(parent,prefix + body,headline)
@@ -3130,11 +3134,11 @@ def createClassNodePrefix (self):
 
     '''Create the class node prefix.'''
 
-    if  self.treeType == '@file':
-        prefix = ''
-    else:
+    if  self.treeType == '@root':
         prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
         self.methodsSeen = True
+    else:
+        prefix = ''
 
     return prefix
 #@+node:ekr.20070703122141.106: *8* getClassNodeRef
@@ -3142,7 +3146,7 @@ def getClassNodeRef (self,class_name):
 
     '''Insert the proper body text in the class_vnode.'''
 
-    if self.treeType == '@file':
+    if self.treeType in ('@file',None):
         s = '@others'
     else:
         s = g.angleBrackets(' class %s methods ' % (class_name))
@@ -3284,8 +3288,10 @@ def underindentedComment (self,line):
 
 def underindentedLine (self,line):
 
-    self.error(
-        'underindented line.\nExtra leading whitespace will be added\n' + line)
+    if self.warnAboutUnderindentedLines:
+        self.error(
+            'underindented line.\n' +
+            'Extra leading whitespace will be added\n' + line)
 #@+node:ekr.20070703122141.78: *6* error, oops, report and warning
 def error (self,s):
     self.errors += 1
@@ -3431,6 +3437,7 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
     If no matching is found i is set to len(s)'''
 
     trace = False and not g.unitTesting
+    verbose = False
     start = i
     if delim1 is None: delim1 = self.blockDelim1
     if delim2 is None: delim2 = self.blockDelim2
@@ -3439,7 +3446,8 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
     assert match1(s,i,delim1)
     level = 0 ; start = i
     startIndent = self.startSigIndent
-    if trace: g.trace('***','startIndent',startIndent,g.callers())
+    if trace and verbose:
+        g.trace('***','startIndent',startIndent,g.callers())
     while i < len(s):
         progress = i
         if g.is_nl(s,i):
@@ -3448,7 +3456,7 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
             if not backslashNewline and not g.is_nl(s,i):
                 j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
                 line = g.get_line(s,j)
-                if trace: g.trace('indent',indent,line)
+                if trace and verbose: g.trace('indent',indent,line)
                 if indent < startIndent and line.strip():
                     # An non-empty underindented line.
                     # Issue an error unless it contains just the closing bracket.
@@ -3475,15 +3483,21 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
                     i = i2 + len(z)
                     break
             if level <= 0:
+                # 2010/09/20
+                # Skip a single-line comment if it exists.
+                j = g.skip_ws(s,i)
+                if (g.match(s,j,self.lineCommentDelim) or
+                    g.match(s,j,self.lineCommentDelim2)
+                ):
+                    i = g.skip_to_end_of_line(s,i)
                 if trace: g.trace('returns:',repr(s[start:i]))
                 return i
 
         else: i += 1
         assert progress < i
 
-    self.error('no block')
+    self.error('no block: %s' % self.root.h)
     if 1:
-        g.pr('** no block **')
         i,j = g.getLine(s,start)
         g.trace(i,s[i:j])
     else:

@@ -3060,6 +3060,7 @@
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
 <v t="ekr.20100907003013.5979"><vh>@test leoInkCommands</vh></v>
+<v t="ekr.20090529141856.4682" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor

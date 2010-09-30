@@ -2,15 +2,15 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.69">
-	<global_window_position top="48" left="586" height="800" width="1000"/>
+<globals body_outline_ratio="0.65" body_secondary_ratio="0.69">
+	<global_window_position top="50" left="50" height="800" width="1200"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121"><vh>Startup</vh></v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070416075121" a="E"><vh>Startup</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20100118190256.2014"><vh>Chapters</vh>
@@ -66,6 +66,7 @@
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 </v>
+<v t="ekr.20100929121901.2342"><vh>@@bool fixedwindow = False</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
@@ -184,7 +185,8 @@
 <v t="ekr.20070517071510"><vh>run script with leoBridge</vh></v>
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
-<v t="ekr.20070224123943"></v>
+</v>
+<v t="ekr.20070224123943" a="E"></v>
 <v t="ekr.20071025193940"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
@@ -596,7 +598,7 @@
 </v>
 <v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
 </v>
-<v t="ekr.20100909154940.2227"><vh>@slide Headline and body text</vh>
+<v t="ekr.20100909154940.2227"><vh>@ignore @slide Headline and body text</vh>
 <v t="ekr.20100914192147.2391"><vh>@image ../doc/html/screen-shots/my_first_slide_show-002.png</vh></v>
 <v t="ekr.20100909154940.2228"><vh>@screenshot-tree</vh>
 <v t="ekr.20100909154940.2230"><vh>To Do List</vh>
@@ -617,7 +619,7 @@
 <v t="ekr.20100915134048.2391"><vh>@@pause</vh></v>
 <v t="ekr.20100915134048.2392"><vh>@@callout 1 is headline, 2 is body text</vh></v>
 </v>
-<v t="ekr.20100911162102.2427"><vh>@slide File:Save</vh>
+<v t="ekr.20100911162102.2427"><vh>@ignore @slide File:Save</vh>
 <v t="ekr.20100914192147.2406"><vh>@image ../doc/html/screen-shots/my_first_slide_show-003.png</vh></v>
 <v t="ekr.20100911162102.2428"><vh>@screenshot-tree Urgent</vh>
 <v t="ekr.20100911162102.2430"><vh>To Do List</vh>
@@ -637,10 +639,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100909154713.2210"><vh>@@button screenshot @key=Alt-8</vh>
+<v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
-<v t="ekr.20100911161733.2261"><vh>@button slideshow @key=Alt-8</vh></v>
+<v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1061,7 +1063,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="16"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,0,9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7162,11 +7164,11 @@ if 1:
 
 if p:
     c.selectPosition(p)
-    m.take_screen_shot_command(event={'c':c})
+    m.make_slide_command(event={'c':c})
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20100909154940.2226"></t>
+<t tx="ekr.20100909154940.2226">@path slides</t>
 <t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
@@ -7306,5 +7308,6 @@ for start,path in table:
 <t tx="ekr.20100914192147.2406"></t>
 <t tx="ekr.20100915134048.2391"></t>
 <t tx="ekr.20100915134048.2392"></t>
+<t tx="ekr.20100929121901.2342"></t>
 </tnodes>
 </leo_file>

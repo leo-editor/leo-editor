@@ -2,65 +2,115 @@
 #@+node:ekr.20100908110845.5505: * @thin screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
-"""screenshots.py: a plugin to take screen shots using Inkscape
-============================================================
+"""The screenshots.py plugin
+============================
 
-Inkscape, http://inkscape.org/, is an Open
-Source vector graphics editor, with
-capabilities similar to Illustrator,
-CorelDraw, or Xara X, using the SVG (Scalable
-Vector Graphics) file format. See
-http://www.w3.org/Graphics/SVG/.
+The screenshots plugin defines three commands. The
+make-slide and make-slide-show commands
+(collectively known as **slide commands**) create
+slides and slide shows (collections of slides)
+from Leo outlines. The apropos-slides command
+prints this message to Leo's log pane.
 
-Leo scripts can control Inkscape using the
-c.inkscapeCommands.run method (run for
-short), a method of the LeoInkscapeCommands
-class defined in leoRst.py.
+Nodes
+-----
 
-The primary input to the run method is the
-**screeshot file**. This must be a bitmap.
-Typically the screenshot file will be a PNG
-format file, though other kinds of bitmap
-files should work. The user, or perhaps
-another script, must generate the screenshot
-file before calling run().
+A **slide node** is a node whose headline of the form::
 
-The run method works in three stages:
+    @slide <name of slide>
 
-1. Convert the screenshot (bitmap) file to
-   the **working file**. The working file is
-   a SVG (vector graphic) file. Besides the
-   image from the original screenshot, the
-   working file may contain text **callouts**
-   (text ballons) and **markers** (black
-   circles containing numbers). You specify
-   callouts and markers using arguments to
-   the run method.
+A **slideshow** is a tree of nodes whose root
+node has the form::
 
-2. (Optional) Edit the working file using
-   Inkscape. Inkscape will appear on the
-   screen. You can edit and position callouts
-   and markers, then save the working file.
+    @slidesnow <name of slide show>
 
-3. (Optional) Use Inkscape behind the scenes
-   to render a final PNG image from the
-   working file.  If PIL is installed, this
-   step adjusts the image in various subtle
-   ways.
+**Option nodes** allow slide-by-slide control of
+slide commands. Options nodes must be direct
+children of a slide node.
+
+Files
+-----
+
+
+
+Making slides
+-------------
+
+For each slide, the make-slide and make-slide-show
+commands do the following:
+
+1. Create the **target outline**, screenshot-setup.leo.
+
+By default, the target outline is a copy of the
+Leo outline containing the slide node. If the
+slide node contains an @screenshot-tree node, the
+target outline consists of all the descendants of
+the @scrrenshot-tree node.
+
+2. Take a **screenshot**, a bitmap (PNG) file. The
+   slide commands take a screen shot of the target
+   outline.  Several option nodes apply to this step:
+
+- If the slide node contains an option node of the
+  form @select <headline> the slide commands select
+  the node in the target outline whose headline
+  matches <headline>.
+
+- If the slide node contains an @pause node as one
+  of its directive children, the slide commands
+  open the target node, but do *not* take a screen
+  shot.
+
+  The user may adjust the screen as desired,
+  for example by selecting menus or showing dialogs.
+  The *user* must then take the screen shot manually.
+  As soon as the user closes the target outline,
+  the slide commands look for the screen shot on the
+  clipboard.  If found, the slide commands save the
+  screenshot to the screenshot file.
+
+3. Add an .. image:: directive and @image node.
+
+4. Convert the screenshot file to a **work file**,
+   an SVG (Scalable Vector Graphics) file. See
+   http://www.w3.org/Graphics/SVG/.
+
+   @callout
+
+5. (Optional) Edit the work file interactively
+   with Inkscape. Inkscape, http://inkscape.org/,
+   is an Open Source vector graphics editor.
+
+   This step happens only if the slide node contains
+   an @edit node as a direct child of the slide node.
+
+6. Use Inkscape non-interactively to
+   render a **final output file** (a PNG image) from the work file.
+   If the Python Imaging Libary (PIL) is available,
+   this step will use PIL to improve the quality
+   of the final output file.
+
+Examples
+--------
+
+The following examples show how to create screen shots.
+
+Example 1: Fully automatic operation.
+
+Example 2: Creating a custom screen shot.
+
+Example 3: Editing the work file with callouts.
 
 Prerequisites
 -------------
 
-Inkscape
-  The SVG editor, from http://www.inkscape.org/
+Inkscape (Required)
+  An SVG editor
+  http://www.inkscape.org/
 
-PIL
+PIL (Optional but highly recommended)
   The Python Imaging Library,
   http://www.pythonware.com/products/pil/
-
-  Optional but highly recommended. If present,
-  PIL will improve the quality of the generated
-  images.
 
 Settings
 --------
@@ -69,8 +119,8 @@ Settings
 
 This setting tells Leo the location of the Inkscape executable.
 
-Usage
------
+Scripting reference
+-------------------
 
 The run method has the following signature::
 
@@ -108,6 +158,8 @@ numeric markers on a screenshot::
         png_fn=png_fn)
 
 """
+
+#@@pagewidth 50
 #@-<< docstring >>
 
 __version__ = '0.1'
@@ -141,143 +193,12 @@ import xml.etree.ElementTree as etree
 
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level
-#@+node:ekr.20100908110845.5581: *3* g.command(apropos-screen-shots)
-#@@pagewidth 45
-
-# Ideally, we would compute s from the module's docstring,
-# but there are problems doing so, so we just cut/paste.
-
-@g.command('apropos-screen-shots')
+#@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
+@g.command('apropos-slides')
 def apropos_screen_shots(event):
 
-    c = event.get('c')
-    if not c: return
-
-    #@+<< define s >>
-    #@+node:ekr.20100908110845.5582: *4* << define s >>
-    s = """\
-
-    The screenshot.py plug
-    ======================
-
-    This plugin uses the Qt gui to take scree
-    shots, and optionally uses Inkscape to edit
-    those screen shots.
-
-    Inkscape, http://inkscape.org/, is an Open
-    Source vector graphics editor, with
-    capabilities similar to Illustrator,
-    CorelDraw, or Xara X, using the SVG (Scalable
-    Vector Graphics) file format. See
-    http://www.w3.org/Graphics/SVG/.
-
-    The plugin defines the take-screen-shot command.
-    This command works in four stages:
-
-    1. Take a bitmap (PNG) **screenshot** file using Qt.
-
-       Discuss:
-           - Name of file
-           - Screen nodes & their descendants.
-
-
-    2. Convert the screenshot file to a working file.
-
-       The **working file** is a SVG (vector
-       graphic) file. Besides the image from the
-       original screenshot, the working file may
-       contain text **callouts** (text ballons)
-       and **markers** (black circles containing
-       numbers). You specify callouts and markers
-       using arguments to the run method.
-
-    3. (Optional) Edit the working file using
-       Inkscape. Inkscape will appear on the
-       screen. You can edit and position callouts
-       and markers, then save the working file.
-
-       Discuss: @callout and @marker nodes.
-
-    4. (Optional) Create an output (PNG) file
-       from the working file.
-
-    Use Inkscape behind the scenes
-       to render a final PNG image from the
-       working file.  If PIL is installed, this
-       step adjusts the image in various subtle
-       ways.
-
-    Prerequisites
-    -------------
-
-    Inkscape
-      The SVG editor, from http://www.inkscape.org/
-
-    PIL
-      The Python Imaging Library,
-      http://www.pythonware.com/products/pil/
-
-      Optional but highly recommended. If present,
-      PIL will improve the quality of the generated
-      images.
-
-    Settings
-    --------
-
-    @string inkscape-bin
-
-    This setting tells Leo the location of the
-    Inkscape executable.
-
-    Scripting the plugin
-    --------------------
-
-    Leo scripts can control this plugin using the
-    run method of the plugin's
-    ScreenShotController class.  Like this::
-
-        import leo.plugins.screenshots as screenshots
-        sc = screenshots.ScreenShotController(c)
-        sc.run(<arguments>)
-
-    The run method has the following signature::
-
-        def run (self,
-            p, # The slide node,
-            callouts=[], # A possibly empty list of strings.
-            markers=[], # A possibly empty list of numbers.
-            template_fn=None)
-
-    Notes:
-
-    - The slide node must be a direct child of an
-      @screenshot node.
-
-    - template_fn is the name of a template file
-      containing images to be used for callouts
-      and markers. The default is
-      inkscape-template.svg.
-
-    For example, the following places three text
-    balloon callouts and three black circle
-    numeric markers on a screenshot::
-
-        import leo.plugins.screenshots as screenshots
-        sc = screenshots.ScreenShotController(c)
-        sc.run(
-            fn = "some_screen_shot.png"
-            png_fn = "final_screen_shot.png"
-            callouts = (
-                "This goes here",
-                "These are those, but slightly longer",
-                "Then you pull this",
-            )
-            markers = (2,4,17))
-
-    """
-    #@-<< define s >>
-
-    g.es(g.adjustTripleString(s.rstrip(),c.tab_width))
+    # Just print the module's docstring.
+    g.es(__doc__)
 #@+node:ekr.20100911044508.5634: *3* g.command(make-slide-show)
 @g.command('make-slide-show')
 def make_slide_show_command(event=None):
@@ -287,14 +208,14 @@ def make_slide_show_command(event=None):
         sc = ScreenShotController(c)
         sc.make_slide_show_command(c.p)
         g.note('make-slide-show command finished')
-#@+node:ekr.20100908110845.5583: *3* g.command(take_screen_shot)
-@g.command('take-screen-shot')
-def take_screen_shot_command (event):
+#@+node:ekr.20100908110845.5583: *3* g.command(make-slide)
+@g.command('make-slide')
+def make_slide_command (event):
 
     c = event.get('c')
     if c:
         sc = ScreenShotController(c)
-        sc.take_screen_shot_command(c.p)
+        sc.make_slide_command(c.p)
         g.note('take-screen-shot command finished')
 #@+node:ekr.20100908110845.5606: *3* init
 def init ():
@@ -343,7 +264,7 @@ class ScreenShotController(object):
         self.screenshot_width = None
 
         # The @slideshow node.
-        self.slide_show_node = None
+        self.slideshow_node = None
 
         # Dimension cache.
         self.dimCache = {}
@@ -437,15 +358,13 @@ class ScreenShotController(object):
     # These methods compute file names using settings or options if given,
     # or various defaults if no setting or option is in effect.
     #@+node:ekr.20100908110845.5540: *4* finalize
-    def finalize (self,fn,base_path=None):
+    def finalize (self,fn):
 
         '''Return the absolute path to fn in the screenshot folder.'''
 
-        if base_path:
-            s = g.os_path_finalize_join(base_path,fn)
-        else:
-            s = g.os_path_finalize_join(g.app.loadDir,
-                '..','doc','html','screen-shots',fn)
+
+        s = g.os_path_finalize_join(g.app.loadDir,
+            '..','doc','html','screen-shots',fn)
 
         return s.replace('\\','/')
     #@+node:ekr.20100911044508.5632: *4* fix
@@ -523,11 +442,11 @@ class ScreenShotController(object):
     def get_slide_number (self,p):
 
         sc = self
-        assert sc.slide_show_node
+        assert sc.slideshow_node
         assert p == sc.slide_node
 
         n = 0 ; p1 = p.copy()
-        p = sc.slide_show_node.firstChild()
+        p = sc.slideshow_node.firstChild()
         while p:
             if p == p1:
                 return n
@@ -541,6 +460,22 @@ class ScreenShotController(object):
 
         g.trace('Can not happen. Not found:',p.h)
         return -666
+    #@+node:ekr.20100919075719.5641: *4* get_slideshow_path
+    def get_slideshow_path (self,p,sphinx_path):
+
+        '''p is an @slideshow node.
+
+        Return the path to the folder to be used for slides.
+
+        This is the path given by the @path directive in p's body text,
+        relative to the sphinx path.
+        '''
+
+        sc = self
+        d = g.get_directives_dict(p)
+        path = g.os_path_finalize_join(sphinx_path,d.get('path'))
+        g.trace(path)
+        return path
     #@+node:ekr.20100911044508.5633: *4* get_sphinx_path
     def get_sphinx_path (self,sphinx_path):
 
@@ -612,7 +547,7 @@ class ScreenShotController(object):
 
         sc = self
         n = sc.slide_number
-        h = sc.slide_show_node.h
+        h = sc.slideshow_node.h
 
         tag = '@slideshow'
         assert g.match_word(h,0,tag)
@@ -776,12 +711,13 @@ class ScreenShotController(object):
     #@+node:ekr.20100913085058.5654: *4* get_slideshow_root
     def get_slideshow_root (self,p):
 
-        '''Return the @slideshow node containing p as its direct child.'''
+        '''Return the nearest ancestor @slideshow node.'''
 
         parent = p.parent()
 
-        if parent and g.match_word(parent.h,0,'@slideshow'):
-            return parent
+        for parent in p.parents():
+            if g.match_word(parent.h,0,'@slideshow'):
+                return parent
         else:
             return None
     #@+node:ekr.20100908110845.5592: *4* in_slide_show
@@ -861,18 +797,24 @@ class ScreenShotController(object):
 
         g.note('sphinx-path',sc.get_sphinx_path(None))
 
+        def match(p,pattern):
+            return g.match_word(p.h,0,pattern)
+
+        root = p.copy()
         p = p.firstChild()
         while p:
             if g.app.commandInterruptFlag: return
-            if g.match_word(p.h,0,'@slide'):
-                sc.run(p)
+            if match(p,'@slide'):
+                sc.run(p,slideshow_node=root)
                 # Skip the entire tree, including
                 # any inner @screenshot-tree trees.
                 p.moveToNodeAfterTree()
+            elif match(p,'@protect') or match(p,'@ignore'):
+                p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20100913085058.5629: *3* sc.take_screen_shot_command
-    def take_screen_shot_command (self,p):
+    #@+node:ekr.20100913085058.5629: *3* sc.make_slide_command
+    def make_slide_command (self,p):
 
         sc = self
 
@@ -893,7 +835,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100911044508.5616: *3* sc.run & helpers
     def run (self,p,callouts=[],markers=[],output_fn=None,
         screenshot_fn=None,screenshot_height=None,screenshot_width=None,
-        sphinx_path=None,template_fn=None,working_fn=None
+        slideshow_node=None,sphinx_path=None,template_fn=None,working_fn=None
     ):
         '''Create a slide from p with given callouts and markers.
         Call Inkscape to edit the slide if requested.
@@ -903,7 +845,7 @@ class ScreenShotController(object):
         sc = self
         ok = sc.init(p,callouts,markers,output_fn,
             screenshot_fn,screenshot_height,screenshot_width,
-            sphinx_path,template_fn,working_fn)
+            slideshow_node,sphinx_path,template_fn,working_fn)
         if not ok: return
 
         # Take the screenshot and update the tree.
@@ -933,7 +875,7 @@ class ScreenShotController(object):
     def init (self,p,
         callouts,markers,output_fn,
         screenshot_fn,screenshot_height,screenshot_width,
-        sphinx_path,template_fn,working_fn):
+        slideshow_node,sphinx_path,template_fn,working_fn):
 
         # Set ivars from the arguments.
         sc = self
@@ -941,8 +883,11 @@ class ScreenShotController(object):
         sc.markers = markers
 
         # Compute p, the slide_node.
-        sc.slide_show_node = sc.get_slideshow_root(p)
-        if not sc.slide_show_node: return False
+        if slideshow_node:
+            sc.slideshow_node = slideshow_node
+        else:
+            sc.slideshow_node,sc.slide_show_path = sc.get_slideshow_root(p)
+        if not sc.slideshow_node: return False
         sc.slide_node = p = sc.get_slide_node(p)
         if not p: return False
         sc.slide_number = n = sc.get_slide_number(p)
@@ -956,6 +901,8 @@ class ScreenShotController(object):
         # Compute essential paths.
         sc.sphinx_path = sc.get_sphinx_path(sphinx_path)
         if not sc.sphinx_path: return False
+        sc.slideshow_path = sc.get_slideshow_path(
+            sc.slideshow_node,sc.sphinx_path)
         sc.working_fn = sc.get_working_fn(p,working_fn)
         if not sc.working_fn: return False
         sc.screenshot_fn = sc.get_screenshot_fn(p,screenshot_fn)
@@ -1025,10 +972,20 @@ class ScreenShotController(object):
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=fn,relativeFileName=None) # ,gui=gui)
 
-        # Copy the entire tree.
+
         c.frame.createFirstTreeNode()
         root = c.rootPosition()
-        children = [z.copy() for z in sc.screenshot_tree.children()]
+        if sc.screenshot_tree:
+             # Copy all descendants of the @screenshot-tree node.
+            children = [z.copy() for z in sc.screenshot_tree.children()]
+        else:
+            # Copy the entire Leo outline.
+            p = root.copy()
+            children = []
+            while p:
+                children.append(p.copy())
+                p.moveToNext()
+
         children.reverse()
         child1 = children and children[0]
         for child in children:
@@ -1038,10 +995,6 @@ class ScreenShotController(object):
         if child1:
             root.doDelete(newNode=None)
             c.setRootPosition(child1) # Essential!
-        # Adjust the context for the new file.
-        if 0:
-            for v in c.all_nodes():
-                v.context = c
 
         # Save the file silently.
         c.fileCommands.save(fn)
