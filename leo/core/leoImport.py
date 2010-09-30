@@ -148,7 +148,7 @@ class leoImportCommands (scanUtility):
         self.rootLine = "" # Empty or @root + self.fileName
         self.tab_width = c.tab_width # The tab width in effect in the c.currentPosition.
         self.trace = c.config.getBool('trace_import')
-        self.treeType = "@file" # "@root" or "@file"
+        self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
 
@@ -875,12 +875,17 @@ class leoImportCommands (scanUtility):
 
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
+            elif self.treeType is None:
+                # 2010/09/29: by convention, we use the short file name.
+                p.initHeadString(g.shortFileName(fileName))
             else:
-                # @root nodes don't have @root in the headline.
                 p.initHeadString(fileName)
             u.afterInsertNode(p,'Import',undoData)
 
-        self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+        if self.treeType == '@root': # 2010/09/29.
+            self.rootLine = "@root-code "+self.fileName+'\n'
+        else:
+            self.rootLine = ''
 
         if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
             func = self.scanRstText
@@ -1774,6 +1779,7 @@ class baseScannerClass (scanUtility):
             # For example, ';' and '=' in C.
 
         self.strict = False # True if leading whitespace is very significant.
+        self.warnAboutUnderindentedLines = True
     #@+node:ekr.20070808115837: *3* Checking
     #@+node:ekr.20070703122141.102: *4* check
     def check (self,unused_s,unused_parent):
@@ -1786,7 +1792,7 @@ class baseScannerClass (scanUtility):
         Return True if the nodes are equivalent to the original file.
         '''
 
-        if self.fullChecks and self.treeType == '@file':
+        if self.fullChecks and self.treeType in (None,'@file'):
             return self.checkTrialWrite()
         else:
             return True
@@ -1850,8 +1856,6 @@ class baseScannerClass (scanUtility):
 
         '''Compare lines1[i] and lines2[i].
         strict is True if leading whitespace is very significant.'''
-
-
 
         def pr(*args,**keys): #compareHelper
             g.es_print(color='blue',*args,**keys)
@@ -2000,7 +2004,7 @@ class baseScannerClass (scanUtility):
         if self.isRst and not self.atAuto:
             return
 
-        if self.treeType == '@file':
+        if self.treeType in ('@file',None):
             self.appendStringToBody(parent,'@others\n')
 
         if self.treeType == '@root' and self.methodsSeen:
@@ -2031,6 +2035,8 @@ class baseScannerClass (scanUtility):
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
 
+        # g.trace(repr(s[sigStart:codeEnd]))
+
         body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
         body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
@@ -2042,6 +2048,9 @@ class baseScannerClass (scanUtility):
             self.warning(
                 '%s %s does not end with a newline; one will be added\n%s' % (
                 self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
+
+            # g.trace(repr(s[sigStart:codeEnd]))
+            # g.pdb()
 
         return body
     #@+node:ekr.20090513073632.5737: *4* createDeclsNode
@@ -2057,11 +2066,11 @@ class baseScannerClass (scanUtility):
     def createFunctionNode (self,headline,body,parent):
 
         # Create the prefix line for @root trees.
-        if self.treeType == '@file':
-            prefix = ''
-        else:
+        if self.treeType == '@root':
             prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
             self.methodsSeen = True
+        else:
+            prefix = ''
 
         # Create the node.
         return self.createHeadline(parent,prefix + body,headline)
@@ -2202,11 +2211,11 @@ class baseScannerClass (scanUtility):
 
         '''Create the class node prefix.'''
 
-        if  self.treeType == '@file':
-            prefix = ''
-        else:
+        if  self.treeType == '@root':
             prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
             self.methodsSeen = True
+        else:
+            prefix = ''
 
         return prefix
     #@+node:ekr.20070703122141.106: *5* getClassNodeRef
@@ -2214,7 +2223,7 @@ class baseScannerClass (scanUtility):
 
         '''Insert the proper body text in the class_vnode.'''
 
-        if self.treeType == '@file':
+        if self.treeType in ('@file',None):
             s = '@others'
         else:
             s = g.angleBrackets(' class %s methods ' % (class_name))
@@ -2356,8 +2365,10 @@ class baseScannerClass (scanUtility):
 
     def underindentedLine (self,line):
 
-        self.error(
-            'underindented line.\nExtra leading whitespace will be added\n' + line)
+        if self.warnAboutUnderindentedLines:
+            self.error(
+                'underindented line.\n' +
+                'Extra leading whitespace will be added\n' + line)
     #@+node:ekr.20070703122141.78: *3* error, oops, report and warning
     def error (self,s):
         self.errors += 1
@@ -2503,6 +2514,7 @@ class baseScannerClass (scanUtility):
         If no matching is found i is set to len(s)'''
 
         trace = False and not g.unitTesting
+        verbose = False
         start = i
         if delim1 is None: delim1 = self.blockDelim1
         if delim2 is None: delim2 = self.blockDelim2
@@ -2511,7 +2523,8 @@ class baseScannerClass (scanUtility):
         assert match1(s,i,delim1)
         level = 0 ; start = i
         startIndent = self.startSigIndent
-        if trace: g.trace('***','startIndent',startIndent,g.callers())
+        if trace and verbose:
+            g.trace('***','startIndent',startIndent,g.callers())
         while i < len(s):
             progress = i
             if g.is_nl(s,i):
@@ -2520,7 +2533,7 @@ class baseScannerClass (scanUtility):
                 if not backslashNewline and not g.is_nl(s,i):
                     j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
                     line = g.get_line(s,j)
-                    if trace: g.trace('indent',indent,line)
+                    if trace and verbose: g.trace('indent',indent,line)
                     if indent < startIndent and line.strip():
                         # An non-empty underindented line.
                         # Issue an error unless it contains just the closing bracket.
@@ -2547,15 +2560,21 @@ class baseScannerClass (scanUtility):
                         i = i2 + len(z)
                         break
                 if level <= 0:
+                    # 2010/09/20
+                    # Skip a single-line comment if it exists.
+                    j = g.skip_ws(s,i)
+                    if (g.match(s,j,self.lineCommentDelim) or
+                        g.match(s,j,self.lineCommentDelim2)
+                    ):
+                        i = g.skip_to_end_of_line(s,i)
                     if trace: g.trace('returns:',repr(s[start:i]))
                     return i
 
             else: i += 1
             assert progress < i
 
-        self.error('no block')
+        self.error('no block: %s' % self.root.h)
         if 1:
-            g.pr('** no block **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:
@@ -3064,13 +3083,15 @@ class cSharpScanner (baseScannerClass):
 class elispScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20070711060113.1: *4*  __init__
+    #@+node:ekr.20070711060113.1: *4*  __init__ (elispScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='elisp')
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='lisp')
 
         # Set the parser delims.
+        self.atAutoWarnsAboutLeadingWhitespace = False # 2010/09/29.
+        self.warnAboutUnderindentedLines = False # 2010/09/29.
         self.blockCommentDelim1 = None
         self.blockCommentDelim2 = None
         self.lineCommentDelim = ';'
@@ -3078,8 +3099,9 @@ class elispScanner (baseScannerClass):
         self.blockDelim1 = '('
         self.blockDelim2 = ')'
         self.extraIdChars = '-'
+        self.strict=False
 
-    #@+node:ekr.20070711060113.2: *4* Overrides
+    #@+node:ekr.20070711060113.2: *4* Overrides (elispScanner)
     # skipClass/Function/Signature are defined in the base class.
     #@+node:ekr.20070711060113.3: *5* startsClass/Function & skipSignature
     def startsClass (self,unused_s,unused_i):
@@ -3117,7 +3139,28 @@ class elispScanner (baseScannerClass):
     def startsString(self,s,i):
 
         # Single quotes are not strings.
-        return g.match(s,i,'"')
+        # ?\x is the universal character escape.
+        return g.match(s,i,'"') or g.match(s,i,'?\\')
+    #@+node:ekr.20100929121021.13743: *5* skipBlock
+    def skipBlock(self,s,i,delim1=None,delim2=None):
+
+        # Call the base class
+        i = baseScannerClass.skipBlock(self,s,i,delim1,delim2)
+
+        # Skip the closing parens of enclosing constructs.
+        # This prevents the "does not end in a newline error.
+        while i < len(s) and s[i] == ')':
+            i += 1
+
+        return i
+    #@+node:ekr.20100929121021.13745: *5* skipString
+    def skipString (self,s,i):
+
+        # Returns len(s) on unterminated string.
+        if s.startswith('?',i):
+            return min(len(s),i + 3)
+        else:
+            return g.skip_string(s,i,verbose=False)
     #@-others
 #@+node:ekr.20100803231223.5807: *3* class iniScanner
 class iniScanner (baseScannerClass):
