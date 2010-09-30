@@ -3656,6 +3656,10 @@ class atFile:
             # g.trace("is section",p)
             return False
 
+        if self.sentinels or self.atAuto or self.toString:
+            # 2010/09/29: @ignore must not stop expansion here!
+            return True 
+
         # Return False if p's body contains an @ignore directive.
         if p.isAtIgnoreNode():
             # g.trace("is @ignore",p)
