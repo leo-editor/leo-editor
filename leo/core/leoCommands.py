@@ -205,7 +205,7 @@ class baseCommands (object):
         c = self
         c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
         c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
-        c.fixed                 = c.config.getBool('fixedWindow',False)
+        c.fixed                 = c.config.getBool('fixedWindow',default=False)
         c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
         c.showMinibuffer        = c.config.getBool('useMinibuffer')
             # This option is a bad idea.
@@ -303,6 +303,8 @@ class baseCommands (object):
     def setWindowPosition (self):
 
         c = self
+
+        # g.trace(c.fixed,c.fixedWindowPosition)
 
         if c.fixedWindowPosition:
             try:
