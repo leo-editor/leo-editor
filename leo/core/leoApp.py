@@ -157,6 +157,7 @@ class LeoApp:
             "java"          : "// /* */",
             "kshell"        : "#", # Leo 4.5.1.
             "latex"         : "%",
+            "lisp"          : ";", # EKR: 2010/09/29
             "lua"           : "--",  # ddm 13/02/06
             "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
             "pascal"        : "// { }",
