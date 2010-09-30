@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -347,7 +347,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -359,6 +359,7 @@
 <v t="ekr.20061009190510"></v>
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
 <v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
+<v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
@@ -7260,6 +7261,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20080328105334.9">The name of time unit (e.g. days, weeks, hours)</t>
 <t tx="ekr.20080412115752.1"># Must be four entries: width,height,left,top.
 # Put this in myLeoSettings.leo, **not** in individual .leo files.
+# This setting has no effect unless @bool fixed_window = True
 
 1200
 800
@@ -8033,6 +8035,7 @@ Typically you would enable abbreviations in myLeoSettings.leo or in individual
 <t tx="ekr.20100907092300.6959">Path to Inkscape executable</t>
 <t tx="ekr.20100910115903.8297"></t>
 <t tx="ekr.20100910115903.8299"></t>
+<t tx="ekr.20100929121021.8511"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
