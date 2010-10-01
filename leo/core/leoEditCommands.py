@@ -6490,7 +6490,9 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.202: *3* callLastKeyboardMacro
     # Called from universal-command.
 
-    def callLastKeyboardMacro (self,event):
+    def callLastKeyboardMacro (self,event=None):
+
+        g.trace(self.lastMacro)
 
         '''Call the last recorded keyboard macro.'''
 
@@ -6655,9 +6657,11 @@ class macroCommandsClass (baseEditCommandsClass):
             pickle.dump(d, f )
             f.close()
     #@+node:ekr.20050920084036.204: *3* startKbdMacro
-    def startKbdMacro (self,event):
+    def startKbdMacro (self,event=None):
 
         '''Start recording a keyboard macro.'''
+
+        g.trace(self.recordingMacro)
 
         k = self.k
 
