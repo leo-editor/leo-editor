@@ -2022,13 +2022,14 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
-def guessExternalEditor():
+def guessExternalEditor(c=None):
     """ Return a 'sensible' external editor """
 
     editor = (
         os.environ.get("LEO_EDITOR") or
         os.environ.get("EDITOR") or
-        g.app.db.db.get("LEO_EDITOR"))
+        g.app.db.db.get("LEO_EDITOR") or
+        g.app.config.getString(c,'external_editor'))
 
     if editor: return editor
 
