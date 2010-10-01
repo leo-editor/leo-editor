@@ -3526,5 +3526,749 @@ def run (self):
 
     self.top.grab_set() # Make the dialog a modal dialog.
     self.root.wait_window(self.top)
+#@+node:ekr.20100929121021.13741: *4* Improved import for elisp
+@nocolor-node
+
+Improvements:
+
+- Use @language lisp instead of @language elisp.
+- Use short file name when .treeType is None.
+- Don't warn about underindented line.
+- Add single-line comment if it ends a definition.
+#@+node:ekr.20070808115837: *5* Checking
+#@+node:ekr.20070703122141.102: *6* check
+def check (self,unused_s,unused_parent):
+
+    '''Make sure the generated nodes are equivalent to the original file.
+
+    1. Regularize and check leading whitespace.
+    2. Check that a trial write produces the original file.
+
+    Return True if the nodes are equivalent to the original file.
+    '''
+
+    if self.fullChecks and self.treeType in (None,'@file'):
+        return self.checkTrialWrite()
+    else:
+        return True
+#@+node:ekr.20070703122141.104: *6* checkTrialWrite (baseScannerClass)
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+    c = self.c ; at = c.atFileCommands
+    if s1 is None and s2 is None:
+        if self.isRst:
+            outputFile = StringIO()
+            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
+            s1,s2 = self.file_s,outputFile.getvalue()
+        else:
+            at.write(self.root,
+                nosentinels=True,thinFile=False,
+                scriptWrite=False,toString=True)
+            s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+
+    if self.isRst:
+        lines1 = self.adjustRstLines(lines1)
+        lines2 = self.adjustRstLines(lines2)
+
+    n1,n2 = len(lines1), len(lines2)
+    ok = True ; bad_i = 0
+    for i in range(max(n1,n2)):
+        ok = self.compareHelper(lines1,lines2,i,self.strict)
+        if not ok:
+            bad_i = i
+            break
+
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
+        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if not ok: d['fail'] = g.callers() # 2008/10/3
+
+    if not ok:
+        self.reportMismatch(lines1,lines2,bad_i)
+
+    return ok
+#@+node:ekr.20070730093735: *6* compareHelper & helpers
+def compareHelper (self,lines1,lines2,i,strict):
+
+    '''Compare lines1[i] and lines2[i].
+    strict is True if leading whitespace is very significant.'''
+
+    def pr(*args,**keys): #compareHelper
+        g.es_print(color='blue',*args,**keys)
+
+    def pr_mismatch(i,line1,line2):
+        g.es_print('first mismatched line at line',str(i+1))
+        g.es_print('original line: ',line1)
+        g.es_print('generated line:',line2)
+
+    d = g.app.unitTestDict
+    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
+    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
+    messageKind = None
+
+    if i >= len(lines1):
+        if i != expectedMismatch or not g.unitTesting:
+            pr('extra lines')
+            for line in lines2[i:]:
+                pr(repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    if i >= len(lines2):
+        if i != expectedMismatch or not g.unitTesting:
+            g.es_print('missing lines')
+            for line in lines2[i:]:
+                g.es_print('',repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    line1,line2 = lines1[i],lines2[i]
+
+    if line1 == line2:
+        return True # An exact match.
+    elif not line1.strip() and not line2.strip():
+        return True # Blank lines compare equal.
+    elif self.isRst and self.compareRstUnderlines(line1,line2):
+        return True
+    elif strict:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(
+            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
+            'comment','error')
+    else:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(s1==s2,'warning','error')
+
+    if g.unitTesting:
+        d ['actualMismatchLine'] = i+1
+        ok = i+1 == expectedMismatch
+        if not ok:  pr_mismatch(i,line1,line2)
+        return ok
+    elif strict:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            if messageKind == 'comment':
+                self.warning('mismatch in leading whitespace before comment')
+            else:
+                self.error('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind == 'comment' # Only mismatched comment lines are valid.
+    else:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            self.checkLeadingWhitespace(line1)
+            self.warning('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind in ('comment','warning') # Only errors are invalid.
+#@+node:ekr.20091227115606.6468: *7* adjustRstLines
+def adjustRstLines(self,lines):
+
+    '''Ignore newlines.
+
+    This fudge allows the rst code generators to insert needed newlines freely.'''
+
+    return [z for z in lines if z.strip() != '']
+#@+node:ekr.20090513073632.5735: *7* compareRstUnderlines
+def compareRstUnderlines(self,s1,s2):
+
+    s1,s2 = s1.rstrip(),s2.rstrip()
+    if s1 == s2:
+        return True # Don't worry about trailing whitespace.
+
+    n1, n2 = len(s1),len(s2)
+    ch1 = n1 and s1[0] or ''
+    ch2 = n2 and s2[0] or ''
+
+    val = (
+        n1 >= 2 and n2 >= 2 and # Underlinings must be at least 2 long.
+        ch1 == ch2 and # The underlining characters must match.
+        s1 == ch1 * n1 and # The line must consist only of underlining characters.
+        s2 == ch2 * n2)
+
+    return val
+#@+node:ekr.20071110144948: *6* checkLeadingWhitespace
+def checkLeadingWhitespace (self,line):
+
+    tab_width = self.tab_width
+    lws = line[0:g.skip_ws(line,0)]
+    w = g.computeWidth(lws,tab_width)
+    ok = (w % abs(tab_width)) == 0
+
+    if not ok:
+        self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
+        g.es_print('line:',repr(line),color='red')
+
+    return ok
+#@+node:ekr.20070911110507: *6* reportMismatch
+def reportMismatch (self,lines1,lines2,bad_i):
+
+    kind = g.choose(self.atAuto,'@auto','import command')
+    n1,n2 = len(lines1),len(lines2)
+    self.error(
+        '%s did not import %s perfectly\nfirst mismatched line: %d' % (
+            kind,self.root.h,bad_i))
+
+    aList = []
+    for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
+        for lines,n in ((lines1,n1),(lines2,n2)):
+            if i < n: line = repr(lines[i])
+            else: line = '<eof>'
+            aList.append('%4d %s' % (i,line))
+
+    if not g.unitTesting:
+        g.es_print('\n'.join(aList),color='blue')
+
+    return False
+#@+node:ekr.20070711060113.2: *5* Overrides (elispScanner)
+# skipClass/Function/Signature are defined in the base class.
+#@+node:ekr.20070711060113.3: *6* startsClass/Function & skipSignature
+def startsClass (self,unused_s,unused_i):
+    '''Return True if s[i:] starts a class definition.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+    return False
+
+def startsFunction(self,s,i):
+    '''Return True if s[i:] starts a function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    self.startSigIndent = self.getLeadingIndent(s,i)
+    self.sigStart = i
+    self.codeEnd = self.sigEnd = self.sigId = None
+    if not g.match(s,i,'('): return False
+
+    end = self.skipBlock(s,i)
+    # g.trace('%3s %15s block: %s' % (i,repr(s[i:i+10]),repr(s[i:end])))
+    if not g.match(s,end-1,')'): return False
+
+    i = g.skip_ws(s,i+1)
+    if not g.match_word(s,i,'defun'): return False
+
+    i += len('defun')
+    sigEnd = i = g.skip_ws_and_nl(s,i)
+    j = self.skipId(s,i) # Bug fix: 2009/09/30
+    word = s[i:j]
+    if not word: return False
+
+    self.codeEnd = end + 1
+    self.sigEnd = sigEnd
+    self.sigId = word
+    return True
+#@+node:ekr.20070711063339: *6* startsString
+def startsString(self,s,i):
+
+    # Single quotes are not strings.
+    # ?\x is the universal character escape.
+    return g.match(s,i,'"') or g.match(s,i,'?\\')
+#@+node:ekr.20100929121021.13743: *6* skipBlock
+def skipBlock(self,s,i,delim1=None,delim2=None):
+
+    # Call the base class
+    i = baseScannerClass.skipBlock(self,s,i,delim1,delim2)
+
+    # Skip the closing parens of enclosing constructs.
+    # This prevents the "does not end in a newline error.
+    while i < len(s) and s[i] == ')':
+        i += 1
+
+    return i
+#@+node:ekr.20100929121021.13745: *6* skipString
+def skipString (self,s,i):
+
+    # Returns len(s) on unterminated string.
+    if s.startswith('?',i):
+        return min(len(s),i + 3)
+    else:
+        return g.skip_string(s,i,verbose=False)
+#@+node:ekr.20100929121021.13742: *5* changed
+#@+node:ekr.20070711060113.1: *6*  __init__ (elispScanner)
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='lisp')
+
+    # Set the parser delims.
+    self.atAutoWarnsAboutLeadingWhitespace = False # 2010/09/29.
+    self.warnAboutUnderindentedLines = False # 2010/09/29.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.lineCommentDelim = ';'
+    self.lineCommentDelim2 = None
+    self.blockDelim1 = '('
+    self.blockDelim2 = ')'
+    self.extraIdChars = '-'
+    self.strict=False
+
+#@+node:ekr.20070703122141.66: *6* baseScannerClass.__init__
+def __init__ (self,importCommands,atAuto,language):
+
+    ic = importCommands
+
+    self.atAuto = atAuto
+    self.c = c = ic.c
+
+    self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
+    self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
+    self.codeEnd = None
+        # The character after the last character of the class, method or function.
+        # An error will be given if this is not a newline.
+    self.encoding = ic.encoding
+    self.errors = 0
+    ic.errors = 0
+    self.errorLines = []
+    self.escapeSectionRefs = True
+    self.extraIdChars = ''
+    self.fileName = ic.fileName # The original filename.
+    self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
+    self.file_s = '' # The complete text to be parsed.
+    self.fullChecks = c.config.getBool('full_import_checks')
+    self.functionSpelling = 'function' # for error message.
+    self.importCommands = ic
+    self.indentRefFlag = None # None, True or False.
+    self.isRst = False
+    self.language = language
+    self.lastParent = None # The last generated parent node (used only by rstScanner).
+    self.methodName = ic.methodName # x, as in < < x methods > > =
+    self.methodsSeen = False
+    self.mismatchWarningGiven = False
+    self.output_newline = ic.output_newline # = c.config.getBool('output_newline')
+    self.output_indent = 0 # The minimum indentation presently in effect.
+    self.root = None # The top-level node of the generated tree.
+    self.rootLine = ic.rootLine # '' or @root + self.fileName
+    self.sigEnd = None # The index of the end of the signature.
+    self.sigId = None # The identifier contained in the signature, i.e., the function or method name.
+    self.sigStart = None
+        # The start of the line containing the signature.
+        # An error will be given if something other than whitespace precedes the signature.
+    self.startSigIndent = None
+    self.tab_width = None # Set in run: the tab width in effect in the c.currentPosition.
+    self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
+    self.trace = False or ic.trace # = c.config.getBool('trace_import')
+    self.treeType = ic.treeType # '@root' or '@file'
+    self.webType = ic.webType # 'cweb' or 'noweb'
+
+    # Compute language ivars.
+    delim1,junk,junk = g.set_delims_from_language(language)
+    self.comment_delim = delim1
+
+    # May be overridden in subclasses.
+    self.anonymousClasses = [] # For Delphi Pascal interfaces.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.blockCommentDelim1_2 = None
+    self.blockCommentDelim2_2 = None
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+    self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+    self.classTags = ['class',] # tags that start a tag.
+    self.functionTags = []
+    self.hasClasses = True
+    self.hasFunctions = True
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = True
+    self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
+    self.sigFailTokens = []
+        # A list of strings that abort a signature when seen in a tail.
+        # For example, ';' and '=' in C.
+
+    self.strict = False # True if leading whitespace is very significant.
+    self.warnAboutUnderindentedLines = True
+#@+node:ekr.20070730093735: *6* compareHelper & helpers
+def compareHelper (self,lines1,lines2,i,strict):
+
+    '''Compare lines1[i] and lines2[i].
+    strict is True if leading whitespace is very significant.'''
+
+    def pr(*args,**keys): #compareHelper
+        g.es_print(color='blue',*args,**keys)
+
+    def pr_mismatch(i,line1,line2):
+        g.es_print('first mismatched line at line',str(i+1))
+        g.es_print('original line: ',line1)
+        g.es_print('generated line:',line2)
+
+    d = g.app.unitTestDict
+    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
+    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
+    messageKind = None
+
+    if i >= len(lines1):
+        if i != expectedMismatch or not g.unitTesting:
+            pr('extra lines')
+            for line in lines2[i:]:
+                pr(repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    if i >= len(lines2):
+        if i != expectedMismatch or not g.unitTesting:
+            g.es_print('missing lines')
+            for line in lines2[i:]:
+                g.es_print('',repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    line1,line2 = lines1[i],lines2[i]
+
+    if line1 == line2:
+        return True # An exact match.
+    elif not line1.strip() and not line2.strip():
+        return True # Blank lines compare equal.
+    elif self.isRst and self.compareRstUnderlines(line1,line2):
+        return True
+    elif strict:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(
+            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
+            'comment','error')
+    else:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(s1==s2,'warning','error')
+
+    if g.unitTesting:
+        d ['actualMismatchLine'] = i+1
+        ok = i+1 == expectedMismatch
+        if not ok:  pr_mismatch(i,line1,line2)
+        return ok
+    elif strict:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            if messageKind == 'comment':
+                self.warning('mismatch in leading whitespace before comment')
+            else:
+                self.error('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind == 'comment' # Only mismatched comment lines are valid.
+    else:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            self.checkLeadingWhitespace(line1)
+            self.warning('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind in ('comment','warning') # Only errors are invalid.
+#@+node:ekr.20091227115606.6468: *7* adjustRstLines
+def adjustRstLines(self,lines):
+
+    '''Ignore newlines.
+
+    This fudge allows the rst code generators to insert needed newlines freely.'''
+
+    return [z for z in lines if z.strip() != '']
+#@+node:ekr.20090513073632.5735: *7* compareRstUnderlines
+def compareRstUnderlines(self,s1,s2):
+
+    s1,s2 = s1.rstrip(),s2.rstrip()
+    if s1 == s2:
+        return True # Don't worry about trailing whitespace.
+
+    n1, n2 = len(s1),len(s2)
+    ch1 = n1 and s1[0] or ''
+    ch2 = n2 and s2[0] or ''
+
+    val = (
+        n1 >= 2 and n2 >= 2 and # Underlinings must be at least 2 long.
+        ch1 == ch2 and # The underlining characters must match.
+        s1 == ch1 * n1 and # The line must consist only of underlining characters.
+        s2 == ch2 * n2)
+
+    return val
+#@+node:ekr.20090512153903.5806: *6* computeBody (baseScannerClass)
+def computeBody (self,s,start,sigStart,codeEnd):
+
+    trace = False and not g.unitTesting
+
+    body1 = s[start:sigStart]
+    # Adjust start backwards to get a better undent.
+    if body1.strip():
+        while start > 0 and s[start-1] in (' ','\t'):
+            start -= 1
+
+    # g.trace(repr(s[sigStart:codeEnd]))
+
+    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+    body2 = self.undentBody(s[sigStart:codeEnd])
+    body = body1 + body2
+
+    if trace: g.trace('body: %s' % repr(body))
+
+    tail = body[len(body.rstrip()):]
+    if not '\n' in tail:
+        self.warning(
+            '%s %s does not end with a newline; one will be added\n%s' % (
+            self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
+
+        # g.trace(repr(s[sigStart:codeEnd]))
+        # g.pdb()
+
+    return body
+#@+node:ekr.20070703122141.105: *6* createClassNodePrefix
+def createClassNodePrefix (self):
+
+    '''Create the class node prefix.'''
+
+    if  self.treeType == '@root':
+        prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+    else:
+        prefix = ''
+
+    return prefix
+#@+node:ekr.20070707085612: *6* createFunctionNode
+def createFunctionNode (self,headline,body,parent):
+
+    # Create the prefix line for @root trees.
+    if self.treeType == '@root':
+        prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+    else:
+        prefix = ''
+
+    # Create the node.
+    return self.createHeadline(parent,prefix + body,headline)
+
+#@+node:ekr.20031218072017.3210: *6* createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        if atShadow: kind = '@shadow '
+        elif atAuto: kind = '@auto '
+        else: kind = ''
+        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+        if s is None: return None
+        if e: self.encoding = e
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        elif self.treeType is None:
+            # 2010/09/29: by convention, we use the short file name.
+            p.initHeadString(g.shortFileName(fileName))
+        else:
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    if self.treeType == '@root': # 2010/09/29.
+        self.rootLine = "@root-code "+self.fileName+'\n'
+    else:
+        self.rootLine = ''
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        s = s.replace('\r','')
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        s = s.replace('\r','')
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node.
+        # Important: this often sets the bit in the wrong node:
+        # The caller may have to set the bit in the "real" root node.
+        p.v.at_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+#@+node:ekr.20070703122141.106: *6* getClassNodeRef
+def getClassNodeRef (self,class_name):
+
+    '''Insert the proper body text in the class_vnode.'''
+
+    if self.treeType in ('@file',None):
+        s = '@others'
+    else:
+        s = g.angleBrackets(' class %s methods ' % (class_name))
+
+    return '%s\n' % (s)
+#@+node:ekr.20031218072017.3212: *6* importFilesCommand
+def importFilesCommand (self,files=None,treeType=None):
+    # Not a command.  It must *not* have an event arg.
+
+    c = self.c
+    if c == None: return
+    v = current = c.currentVnode()
+    if current == None: return
+    if len(files) < 1: return
+    self.tab_width = self.getTabWidth() # New in 4.3.
+    self.treeType = treeType
+    if len(files) == 2:
+        << Create a parent for two files having a common prefix >>
+    for fileName in files:
+        g.setGlobalOpenDir(fileName)
+        v = self.createOutline(fileName,current)
+        if v: # createOutline may fail.
+            if not g.unitTesting:
+                g.es("imported",fileName,color="blue")
+            v.contract()
+            v.setDirty()
+            c.setChanged(True)
+    c.validateOutline()
+    current.expand()
+    c.redraw(current)
+#@+node:ekr.20031218072017.3213: *7* << Create a parent for two files having a common prefix >>
+@ The two filenames have a common prefix everything before the last
+period is the same. For example, x.h and x.cpp.
+@c
+
+name0 = files[0]
+name1 = files[1]
+prefix0, junk = g.os_path_splitext(name0)
+prefix1, junk = g.os_path_splitext(name1)
+if len(prefix0) > 0 and prefix0 == prefix1:
+    current = current.insertAsLastChild()
+    # junk, nameExt = g.os_path_split(prefix1)
+    name,junk = g.os_path_splitext(prefix1)
+    current.initHeadString(name)
+#@+node:ekr.20041005105605.171: *6* inAtOthers
+def inAtOthers(self,p):
+
+    """Returns True if p should be included in the expansion of the at-others directive
+
+    in the body text of p's parent."""
+
+    # Return False if this has been expanded previously.
+    if  p.v.isVisited():
+        # g.trace("previously visited",p.v)
+        return False
+
+    # Return False if this is a definition node.
+    h = p.h ; i = g.skip_ws(h,0)
+    isSection,junk = self.isSectionName(h,i)
+    if isSection:
+        # g.trace("is section",p)
+        return False
+
+    if self.sentinels or self.atAuto or self.toString:
+        # 2010/09/29: @ignore must not stop expansion here!
+        return True 
+
+    # Return False if p's body contains an @ignore directive.
+    if p.isAtIgnoreNode():
+        # g.trace("is @ignore",p)
+        return False
+    else:
+        # g.trace("ok",p)
+        return True
+#@+node:ekr.20070707073859: *6* skipBlock
+def skipBlock(self,s,i,delim1=None,delim2=None):
+
+    '''Skip from the opening delim to *past* the matching closing delim.
+
+    If no matching is found i is set to len(s)'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    start = i
+    if delim1 is None: delim1 = self.blockDelim1
+    if delim2 is None: delim2 = self.blockDelim2
+    match1 = g.choose(len(delim1)==1,g.match,g.match_word)
+    match2 = g.choose(len(delim2)==1,g.match,g.match_word)
+    assert match1(s,i,delim1)
+    level = 0 ; start = i
+    startIndent = self.startSigIndent
+    if trace and verbose:
+        g.trace('***','startIndent',startIndent,g.callers())
+    while i < len(s):
+        progress = i
+        if g.is_nl(s,i):
+            backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+            i = g.skip_nl(s,i)
+            if not backslashNewline and not g.is_nl(s,i):
+                j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+                line = g.get_line(s,j)
+                if trace and verbose: g.trace('indent',indent,line)
+                if indent < startIndent and line.strip():
+                    # An non-empty underindented line.
+                    # Issue an error unless it contains just the closing bracket.
+                    if level == 1 and match2(s,j,delim2):
+                        pass
+                    else:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedLine(line)
+        elif s[i] in (' ','\t',):
+            i += 1 # speed up the scan.
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif match1(s,i,delim1):
+            level += 1 ; i += len(delim1)
+        elif match2(s,i,delim2):
+            level -= 1 ; i += len(delim2)
+            # Skip junk following Pascal 'end'
+            for z in self.blockDelim2Cruft:
+                i2 = g.skip_ws(s,i)
+                if g.match(s,i2,z):
+                    i = i2 + len(z)
+                    break
+            if level <= 0:
+                # 2010/09/20
+                # Skip a single-line comment if it exists.
+                j = g.skip_ws(s,i)
+                if (g.match(s,j,self.lineCommentDelim) or
+                    g.match(s,j,self.lineCommentDelim2)
+                ):
+                    i = g.skip_to_end_of_line(s,i)
+                if trace: g.trace('returns:',repr(s[start:i]))
+                return i
+
+        else: i += 1
+        assert progress < i
+
+    self.error('no block: %s' % self.root.h)
+    if 1:
+        i,j = g.getLine(s,start)
+        g.trace(i,s[i:j])
+    else:
+        if trace: g.trace('** no block')
+    return start
 #@-all
 #@-leo
