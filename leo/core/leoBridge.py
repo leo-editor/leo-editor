@@ -200,7 +200,8 @@ class bridgeController:
             import leo.core.leoGlobals as g
             # print('leoBridge:isValidPython:g',g)
             # Set leoGlobals.g here, rather than in leoGlobals.py.
-            g.g = g
+            leoGlobals = g # Don't set g.g, it would pollute the autocompleter.
+            leoGlobals.g = g
         except ImportError:
             print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
             return 0

@@ -2,15 +2,15 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.65" body_secondary_ratio="0.69">
-	<global_window_position top="50" left="50" height="800" width="1200"/>
+<globals body_outline_ratio="0.65" body_secondary_ratio="0.52">
+	<global_window_position top="46" left="148" height="990" width="958"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E"><vh>Startup</vh>
-<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
+<v t="ekr.20070416075121"><vh>Startup</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20100118190256.2014"><vh>Chapters</vh>
@@ -66,7 +66,6 @@
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 </v>
-<v t="ekr.20100929121901.2342"><vh>@@bool fixedwindow = False</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
@@ -186,8 +185,6 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943" a="E"></v>
-<v t="ekr.20071025193940"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -535,7 +532,6 @@
 <v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
 </v>
 </v>
-<v t="ekr.20100728114551.2149"><vh>@asis at-asis-test.txt</vh></v>
 <v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
 <v t="ekr.20100812102648.2193"><vh>@button format-code</vh>
 <v t="ekr.20100812102648.2195"><vh>&lt;&lt; options &gt;&gt;</vh></v>
@@ -560,7 +556,10 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
-<v t="ekr.20100910124218.2257"></v>
+<v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
+<v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
+</v>
+<v t="ekr.20100911161733.2261"><vh>@@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20100914190048.2357"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
@@ -639,10 +638,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
-<v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
-</v>
-<v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
+<v t="ekr.20101002141822.2349"><vh>@button auto-scan @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1063,7 +1059,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,0,9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -6439,7 +6435,6 @@ leoPlugins.registerHandler("activate", on_activate)
 print('window events activated')</t>
 <t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
     print('%45s %s %s' % (name,letter,val))</t>
-<t tx="ekr.20100728114551.2149">Changed again.</t>
 <t tx="ekr.20100729114420.2152">@language plain
 
 This is a test.</t>
@@ -7308,6 +7303,9 @@ for start,path in table:
 <t tx="ekr.20100914192147.2406"></t>
 <t tx="ekr.20100915134048.2391"></t>
 <t tx="ekr.20100915134048.2392"></t>
-<t tx="ekr.20100929121901.2342"></t>
+<t tx="ekr.20101002141822.2349">import leo.core.leoKeys as leoKeys
+
+leoKeys.AutoCompleterScanner(c).scan()
+</t>
 </tnodes>
 </leo_file>

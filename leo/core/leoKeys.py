@@ -21,6 +21,7 @@ import os
 import re
 import string
 import sys
+import time
 import types
 #@-<< imports >>
 #@+<< about 'internal' bindings >>
@@ -1092,7 +1093,7 @@ class autoCompleterClass:
     if 0: # Not used at present.
         #@+others
         #@+node:ekr.20061031131434.48: *4* initialScan
-        # Don't call this finishCreate: the startup logic would call it too soon.
+        # Don't call this in finishCreate: the startup logic would call it too soon.
 
         def initialScan (self):
 
@@ -4741,6 +4742,226 @@ class keyHandlerClass:
             k.resetLabel()
             c.macroCommands.startKbdMacro(event)
             c.macroCommands.callLastKeyboardMacro(event)
+    #@-others
+#@+node:ekr.20101002134934.5848: ** class AutoCompleterScanner (NEW)
+class AutoCompleterScanner:
+
+    '''A class that scans for autocompleter completions.'''
+
+    #@+others
+    #@+node:ekr.20101002113936.5842: *3*  ctor & helper (AutoCompleterScanner)
+    def __init__ (self,c):
+
+        self.c = c
+
+        # Set by definePatterns...
+        self.okchars = None
+        self.pats = {}
+
+        # Set by scanners...
+        self.calltips = {}
+        self.watchwords = {}
+
+        self.definePatterns()
+    #@+node:ekr.20101002113936.5833: *4* definePatterns
+    def definePatterns (self):
+
+        self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
+        self.end = r'\w+\s*\([^)]*\)' # word (\w) ws ( any ) (can cross lines)
+
+        # Define re patterns for various languages.
+        # These patterns match method/function definitions.
+        self.pats = {}
+        self.pats ['python'] = re.compile(r'def\s+%s' % self.end)
+            # def ws word ( any ) # Can cross line boundaries.
+        self.pats ['java'] = re.compile(
+            r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % (
+                self.space,self.space,self.end))
+        self.pats ['perl'] = re.compile(r'sub\s+%s' % self.end)
+        self.pats ['c++'] = re.compile(r'((virtual\s+)?\w+%s%s)' % (self.space,self.end))
+        self.pats ['c'] = re.compile(r'\w+%s%s' % (self.space,self.end))
+
+        # Define self.okchars.
+        okchars = {}
+        for z in string.ascii_letters:
+            okchars [z] = z
+        okchars ['_'] = '_'
+        self.okchars = okchars 
+    #@+node:ekr.20101002113936.5834: *3* scan & dumps
+    def scan (self):
+
+        '''Build the database from the outline'''
+
+        trace = True and not g.unitTesting
+        verbose = False
+        if trace: t1 = time.time()
+        c = self.c
+        for p in c.all_unique_positions():
+            self.scanForAutoCompleter(p.b)
+
+        p = c.rootPosition()
+        seen = {}
+        while p:
+            key = p.key()
+            if not key in seen:
+                seen[key] = True
+                if p.isAnyAtFileNode():
+                    # scanForAtLanguage is expensive!
+                    language = g.scanForAtLanguage(c,p)
+                    for p2 in p.self_and_subtree():
+                        seen[p2.key()] = True
+                        self.scanForCallTip(p2.b,language)
+            p.moveToThreadNext()
+
+        if trace:
+            t2 = time.time()
+            if verbose:
+                self.dumpTips()
+                self.dumpWords()
+            self.printSummary(t2-t1)
+
+    #@+node:ekr.20101002120446.5842: *4* dumpTips
+    def dumpTips (self):
+
+        print('calltips...\n\n')
+        for key in sorted(self.calltips):
+            d = self.calltips.get(key)
+            if d:
+                if 1:
+                    d2 = {}
+                    for key2 in list(d.keys()):
+                        aList = d.get(key2)
+                        if len(aList) == 1:
+                            s = aList[0]
+                            if s.startswith(key2):
+                                s = s[len(key2):].strip()
+                            d2[key2] = s
+                        else:
+                            aList2 = []
+                            for s in aList:
+                                if s.startswith(key2):
+                                    s = s[len(key2):].strip()
+                                aList2.append(s)
+                            d2[key2] = aList2
+                    print('\n%s:\n\n' % (key),g.dictToString(d2))
+                else:
+                    print('\n%s:\n\n' % (key),g.dictToString(d))
+    #@+node:ekr.20101002120446.5841: *4* dumpWords
+    def dumpWords (self):
+
+        print('autocompleter words...\n\n')
+        show = ['g','p','s','v','w']
+        keys = show or sorted(self.watchwords)
+        for key in keys:
+            aList = self.watchwords.get(key)
+            aList.sort()
+            print('\n%s:' % (key),g.listToString(aList)) #repr(aList))
+        print()
+    #@+node:ekr.20101002134934.5847: *4* printSummary
+    def printSummary (self,t):
+
+        n  = len(list(self.watchwords.keys()))
+
+        n2 = 0
+        for language in list(self.calltips.keys()):
+            d = self.calltips.get(language)
+            n2 += len(list(d.keys()))
+
+        g.es_print('scanned %s words, %s tips in %3.2fs sec.' % (
+            n,n2,t))
+    #@+node:ekr.20101002113936.5836: *3* scanForAutoCompleter & helper
+    def scanForAutoCompleter (self,s):
+
+        '''This function scans text for the autocompleter database.'''
+
+        aList = []
+        strings = s.split('.')
+        if not strings: return
+
+        for i in range(len(strings)-1):
+            self.makeAutocompletionList(strings[i],strings[i+1],aList)
+
+        if aList:
+            for key,val in aList:
+                aList2 = self.watchwords.get(key,[])
+                # val = str(val)
+                if val not in aList2:
+                    aList2.append(val)
+                    self.watchwords [key] = aList2
+    #@+node:ekr.20101002113936.5837: *4* makeAutocompletionList
+    def makeAutocompletionList (self,a,b,glist):
+
+        '''We have seen a.b, where a and b are arbitrary strings.
+        Append (a1.b1) to glist.
+        To compute a1, scan backwards in a until finding whitespace.
+        To compute b1, scan forwards in b until finding a char not in okchars.
+        '''
+
+        # Compute reverseFindWhitespace inline.
+        i = len(a) -1
+        while i >= 0:
+            # if a[i].isspace() or a [i] == '.':
+            if a[i] not in self.okchars:
+                a1 = a [i+1:] ; break
+            i -= 1
+        else:
+            a1 = a
+
+        # Compute getCleanString inline.
+        i = 0
+        for ch in b:
+            if ch not in self.okchars:
+                b1 = b[:i] ; break
+            i += 1
+        else:
+            b1 = b
+
+        if b1:
+            glist.append((a1,b1),)
+    #@+node:ekr.20101002113936.5835: *3* scanForCallTip & helper
+    def scanForCallTip (self,s,language):
+
+        '''this function scans text for calltip info'''
+
+        d = self.calltips.get(language,{})
+        pat = self.pats.get(language or 'python')
+
+        # Set results to a list of all the function/method defintions in s.
+        results = pat and pat.findall(s) or []
+
+        for z in results:
+            if isinstance(z,tuple): z = z [0]
+            if language == 'python':
+                z = self.cleanPythonTip(z)
+            pieces2 = z.split('(')
+            # g.trace(pieces2)
+            pieces2 [0] = pieces2 [0].split() [-1]
+            a, junk = pieces2 [0], pieces2 [1]
+            aList = d.get(a,[])
+            if z not in aList:
+                aList.append(z)
+                d [a] = aList
+
+        self.calltips [language] = d
+    #@+node:ekr.20101002133920.5845: *4* cleanPythonTip
+    def cleanPythonTip (self,s):
+
+        result = []
+        i = g.skip_ws(s,3)
+        while i < len(s):
+            ch = s[i]
+            if ch in ' \t\n':
+                i += 1
+            elif ch == '#':
+                # Remove comment.
+                i += 1
+                while i < len(s):
+                    i += 1
+                    if s[i-1] == '\n': break
+            else:
+                result.append(ch)
+                i += 1
+        return ''.join(result)
     #@-others
 #@-others
 #@-leo
