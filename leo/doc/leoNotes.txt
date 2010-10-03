@@ -3500,16 +3500,6 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-#@+node:ekr.20100906164425.5890: *3* dumpMismatch
-def dumpMismatch(self,aList,aList2):
-
-    g.trace('\n\n',g.caller(1))
-
-    print('****aList...')
-    for z in aList: print(z)
-
-    print('\n\n****aList2')
-    for z in aList2: print(z)
 #@+node:ekr.20100908125007.6023: *3* getEnabledFiles (not used)
 def getEnabledFiles (self,s,plugins_path=None):
 
@@ -3522,12 +3512,5 @@ def getEnabledFiles (self,s,plugins_path=None):
             enabled_files.append(s)
 
     return enabled_files
-#@+node:ekr.20100909065501.5976: *3* from pc.loadOnePlugin
-    # Prevent Leo from crashing if .leoID.txt does not exist.
-    if g.app.config is None:
-        print ('No g.app.config, making stub...')
-        class StubConfig(g.nullObject):
-            pass
-        g.app.config = StubConfig()
 #@-all
 #@-leo
