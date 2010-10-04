@@ -570,10 +570,9 @@
 <v t="ekr.20100911161733.2261"><vh>@@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
-<v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
+<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100911162102.2361" a="E"><vh>@slide What is Leo</vh>
 <v t="ekr.20101004171309.2370"><vh>@image ../doc/html/my-first-slide-show/my-first-slide-show-000.png</vh></v>
-<v t="ekr.20101004161653.2370"><vh>@image ../doc/html/my-first-slide-show/my-first-slide-show-0.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
 <v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
@@ -1070,7 +1069,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,4,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7333,7 +7332,6 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20101004161653.2370"></t>
 <t tx="ekr.20101004171309.2370"></t>
 </tnodes>
 </leo_file>

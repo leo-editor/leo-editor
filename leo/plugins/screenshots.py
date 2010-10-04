@@ -160,9 +160,26 @@ numeric markers on a screenshot::
 
 #@@pagewidth 50
 #@-<< docstring >>
-
+#@+<< notes >>
+#@+node:ekr.20101004082701.5741: ** << notes >>
+#@@nocolor-node
+#@+at
+# 
+# ** Create a subfolder of the base folder for each slideshow.
+# - Ignore @slide nodes in @screenshot-tree trees.
+# - Revise docstring and apropos-screen-shots.
+# - Patch last slide to avoid running on to the next page.
+# 
+# Done:
+# - @slide is now requred
+# - Rename @select to @pause
+# - Rewrote path init logic.
+# - Added info_command.
+# - Put screenshots in same folder as the slideshow.
+# - Changed the .. image: directive.
+# - Called docutils to process each @slide node into an html file.
+#@-<< notes >>
 __version__ = '0.1'
-
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
 import leo.core.leoGlobals as g
@@ -321,7 +338,7 @@ class ScreenShotController(object):
 
         return bin
     #@+node:ekr.20101004082701.5731: *3* commands
-    #@+node:ekr.20101004082701.5732: *4* sc.info_command
+    #@+node:ekr.20101004082701.5732: *4* sc.slide-show-info_command
     def slide_show_info_command (self,p):
 
         sc = self
