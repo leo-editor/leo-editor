@@ -17,6 +17,7 @@ Contents:
    testimonials
    FAQ
    slides
+   my-first-slide-show/my-first-slide-show-*
    install
    intro
    outlines

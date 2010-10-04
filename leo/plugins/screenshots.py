@@ -333,6 +333,7 @@ class ScreenShotController(object):
             ('output_fn        ',sc.output_fn),
             ('screenshot_fn    ',sc.screenshot_fn),
             ('sphinx_path      ',sc.sphinx_path),
+            ('slide_fn         ',sc.slide_fn),
             ('slideshow_path   ',sc.slideshow_path),
             ('template_fn      ',sc.template_fn),
             ('working_fn       ',sc.working_fn),
@@ -399,7 +400,7 @@ class ScreenShotController(object):
             callouts=sc.get_callouts(p),
             markers=sc.get_markers(p))
 
-        sc.select_at_image_node(p)
+        # sc.select_at_image_node(p)
     #@+node:ekr.20100908110845.5533: *3* lxml replacements
     #@+node:ekr.20100908110845.5534: *4* getElementsWithAttrib
     def getElementsWithAttrib (self,e,attr_name,aList=None):
@@ -565,7 +566,7 @@ class ScreenShotController(object):
         fn = sc.fix(fn)
         return fn
     #@+node:ekr.20100909121239.5669: *5* get_directive_fn
-    def get_directive_fn (self,p,sphinx_path,screenshot_fn):
+    def get_directive_fn (self,screenshot_fn):
 
         '''Compute the path for use in an .. image:: directive.
         '''
@@ -592,18 +593,17 @@ class ScreenShotController(object):
                 else:
                     fn = None
         else:
-            fn = '%s-%s.png' % (sc.slide_base_name,sc.slide_number)
+            fn = '%s-%03d.png' % (sc.slide_base_name,sc.slide_number)
             fn = sc.finalize(fn)
 
         return fn
     #@+node:ekr.20100911044508.5628: *5* get_screenshot_fn
-    def get_screenshot_fn (self,p,screenshot_fn):
+    def get_screenshot_fn (self,p):
 
         '''Return the full, absolute, screenshot file name.'''
 
         sc = self
-
-        fn = '%s-%s.png' % (sc.slide_base_name,sc.slide_number)
+        fn = '%s-%03d.png' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20101004082701.5738: *5* get_slide_base_name
@@ -612,6 +612,13 @@ class ScreenShotController(object):
         junk,name = g.os_path_split(slideshow_path)
 
         return name
+    #@+node:ekr.20101004082701.5740: *5* get_slide_fn
+    def get_slide_fn (self):
+
+        sc = self
+        fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
+        fn = sc.finalize(fn)
+        return fn
     #@+node:ekr.20100919075719.5641: *5* get_slideshow_path
     def get_slideshow_path (self,p,sphinx_path):
 
@@ -688,7 +695,7 @@ class ScreenShotController(object):
         '''Return the full, absolute, name of the working file.'''
 
         sc = self
-        fn = working_fn or '%s-%s.svg' % (sc.slide_base_name,sc.slide_number)
+        fn = working_fn or '%s-%03d.svg' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20101004082701.5737: *4* Options
@@ -877,6 +884,8 @@ class ScreenShotController(object):
             slideshow_node,sphinx_path,template_fn,working_fn)
         if not ok: return
 
+        # sc.slide_show_info_command(sc.slide_node)
+
         # Take the screenshot and update the tree.
         ok = sc.take_screen_shot()
         if not ok: return
@@ -898,6 +907,8 @@ class ScreenShotController(object):
             sc.make_output_file()
         else:
             g.note('Empty @output node inhibits output')
+
+        sc.make_slide()
 
         return sc.screenshot_fn
     #@+node:ekr.20100915074635.5651: *4* 0: init
@@ -933,7 +944,7 @@ class ScreenShotController(object):
         sc.slide_base_name = sc.get_slide_base_name(sc.slideshow_path)
         sc.working_fn = sc.get_working_fn(p,working_fn)
         if not sc.working_fn: return False
-        sc.screenshot_fn = sc.get_screenshot_fn(p,screenshot_fn)
+        sc.screenshot_fn = sc.get_screenshot_fn(p)
         if not sc.screenshot_fn: return False
 
         # Find optional nodes, all relative to the slide node.
@@ -949,7 +960,8 @@ class ScreenShotController(object):
 
         # Compute these after computing sc.sphinx_path and sc.screenshot_fn...
         sc.at_image_fn = sc.get_at_image_fn(sc.screenshot_fn)
-        sc.directive_fn = sc.get_directive_fn(p,sc.sphinx_path,sc.screenshot_fn)
+        sc.directive_fn = sc.get_directive_fn(sc.screenshot_fn)
+        sc.slide_fn = sc.get_slide_fn()
 
         # Compute simple ivars.
         sc.screenshot_height=screenshot_height or sc.default_screenshot_height
@@ -1435,6 +1447,22 @@ class ScreenShotController(object):
         else:
             # found no content
             raise ValueError("cannot trim; image was empty")
+    #@+node:ekr.20101004082701.5739: *4* 6: make_slide
+    def make_slide (self):
+
+        '''Write sc.slide_node.b to <sc.slide_fn>, a .html.txt file.'''
+
+        sc = self ; fn = sc.slide_fn
+        #  Don't call rstCommands.writeToDocutils--we are using sphinx!
+        # result = self.c.rstCommands.writeToDocutils(sc.slide_node.b,'.html')
+        try:
+            f = open(fn,'w')
+            f.write(sc.slide_node.b)
+            f.close()
+            g.note('wrote slide',g.shortFileName(fn))
+        except Exception:
+            g.error('writing',fn)
+            g.es_exception()
     #@-others
 
 #@-others

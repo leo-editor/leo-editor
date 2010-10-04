@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.42" body_secondary_ratio="0.52">
-	<global_window_position top="52" left="259" height="990" width="1058"/>
+<globals body_outline_ratio="0.42" body_secondary_ratio="0.56">
+	<global_window_position top="49" left="341" height="990" width="1565"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -564,15 +564,16 @@
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
 <v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
-<v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
+<v t="ekr.20100909154713.2210"><vh>@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
 <v t="ekr.20100911161733.2261"><vh>@@button make-slide-show @key=Alt-8</vh></v>
-<v t="ekr.20101004104858.2380"><vh>@button slide-show-info @key = Alt-8</vh></v>
+<v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
-<v t="ekr.20100914190048.2357"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
+<v t="ekr.20101004171309.2370"><vh>@image ../doc/html/my-first-slide-show/my-first-slide-show-000.png</vh></v>
+<v t="ekr.20101004161653.2370"><vh>@image ../doc/html/my-first-slide-show/my-first-slide-show-0.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
 <v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
@@ -1069,7 +1070,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7173,13 +7174,10 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20100909154940.2226"># @path slides</t>
+<t tx="ekr.20100909154940.2226">@language rest</t>
 <t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
-
-.. image:: screen-shots/my_first_slide_show-002.png
-
 </t>
 <t tx="ekr.20100909154940.2228"></t>
 <t tx="ekr.20100909154940.2230">My to-do list.
@@ -7210,7 +7208,14 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20100911162102.2361">Leo is a unique, powerful computer program that you can use to organize, analyze
+<t tx="ekr.20100911162102.2361">.. The first slide of each slideshow must have a title
+.. so that slides.html can link to them properly.
+
+===================
+Introduction to Leo
+===================
+
+Leo is a unique, powerful computer program that you can use to organize, analyze
 and describe text and text files. Leo is a free program written by Edward K.
 Ream. For information about downloading Leo, see installation tutorial in this
 series. Leo runs on Windows, Mac, or Linux.
@@ -7225,20 +7230,12 @@ Use Leo:
 Because Leo is unlike other tools you may have used, a series of examples may be
 the best way to demonstrate what can be done with Leo.
 
-.. toctree::
-    :hidden:
-    :glob:
-
-    what-is-leo-0*
-
-.. image:: screen-shots/my_first_slide_show-000.png
+.. image:: my-first-slide-show-000.png
 
 </t>
 <t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
-
-.. image:: screen-shots/my_first_slide_show-001.png
 
 </t>
 <t tx="ekr.20100911162102.2364"></t>
@@ -7253,9 +7250,6 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20100911162102.2373"></t>
 <t tx="ekr.20100911162102.2374"></t>
 <t tx="ekr.20100911162102.2427">You can save the outline in a leo file. Click File - Save.
-
-.. image:: screen-shots/my_first_slide_show-003.png
-
 </t>
 <t tx="ekr.20100911162102.2428"></t>
 <t tx="ekr.20100911162102.2430">My to-do list.
@@ -7302,7 +7296,6 @@ for start,path in table:
 <t tx="ekr.20100914081810.2343"></t>
 <t tx="ekr.20100914081810.2344"></t>
 <t tx="ekr.20100914081810.2345"></t>
-<t tx="ekr.20100914190048.2357"></t>
 <t tx="ekr.20100914190242.2347" str_leo_pos=""></t>
 <t tx="ekr.20100914190242.2348"></t>
 <t tx="ekr.20100914190242.2349" str_leo_pos=""></t>
@@ -7340,5 +7333,7 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
+<t tx="ekr.20101004161653.2370"></t>
+<t tx="ekr.20101004171309.2370"></t>
 </tnodes>
 </leo_file>
