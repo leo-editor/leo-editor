@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.65" body_secondary_ratio="0.52">
-	<global_window_position top="46" left="148" height="990" width="958"/>
+<globals body_outline_ratio="0.42" body_secondary_ratio="0.52">
+	<global_window_position top="52" left="259" height="990" width="1058"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -68,11 +68,6 @@
 </v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
-<v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
-<v t="ekr.20090819085532.4265"><vh>@button detach-body</vh></v>
-<v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
-<v t="ekr.20090715064044.1782"><vh>@button render-as-sphinx</vh></v>
-<v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
 <v t="ekr.20070531102813"><vh>Disabled buttons</vh>
 <v t="ekr.20060814111542"><vh>@@button add-e</vh></v>
 <v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
@@ -91,18 +86,23 @@
 </v>
 <v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
 <v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
+<v t="ekr.20090819085532.4265"><vh>@@button detach-body</vh></v>
 <v t="ekr.20081025105942.1"><vh>@@button dir</vh></v>
 <v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
+<v t="ekr.20090718072135.1786"><vh>@@button print sep</vh></v>
 <v t="ekr.20071006084354"><vh>@@button print tk line number</vh></v>
 <v t="ekr.20080105115712"><vh>@@button pylint</vh>
 <v t="ekr.20080115085447"><vh>harmless warnings, errors</vh></v>
 <v t="ekr.20080105130903"><vh>warnings</vh></v>
 <v t="ekr.20080105120559"><vh>&lt;&lt; define data &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20090715064044.1782"><vh>@@button render-as-sphinx</vh></v>
+<v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
 <v t="ekr.20070515073111"><vh>@@button sep</vh></v>
 <v t="ekr.20060427103457"><vh>@@button settings.leo</vh></v>
+<v t="ekr.20090521070342.1907"><vh>@@button show-rst</vh></v>
 <v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20080815073750.1"><vh>@@button write-nosent-files</vh></v>
@@ -496,7 +496,7 @@
 <v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
 </v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
-<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
+<v t="ekr.20090514073218.1923"><vh>@@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
@@ -532,8 +532,13 @@
 <v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
 </v>
 </v>
+<v t="ekr.20101004104134.2347"><vh>Recent</vh>
 <v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
-<v t="ekr.20100812102648.2193"><vh>@button format-code</vh>
+<v t="ekr.20101004104134.2346"><vh>Autocomplter tests</vh>
+<v t="ekr.20101002141822.2349"><vh>@@button auto-scan @key=Alt-8</vh></v>
+</v>
+<v t="ekr.20101004104134.2348"><vh>Formatting code</vh>
+<v t="ekr.20100812102648.2193"><vh>@@button format-code</vh>
 <v t="ekr.20100812102648.2195"><vh>&lt;&lt; options &gt;&gt;</vh></v>
 <v t="ekr.20100812114823.2176"><vh>The code-to-rst command</vh>
 <v t="ekr.20100812114823.2177"><vh>code_to_rst_command &amp; helpers</vh>
@@ -554,12 +559,17 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
+</v>
+<v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
 <v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
 <v t="ekr.20100911161733.2261"><vh>@@button make-slide-show @key=Alt-8</vh></v>
+<v t="ekr.20101004104858.2380"><vh>@button slide-show-info @key = Alt-8</vh></v>
+<v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
 <v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20100914190048.2357"><vh>@image ../doc/html/screen-shots/my_first_slide_show-000.png</vh></v>
@@ -638,7 +648,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101002141822.2349"><vh>@button auto-scan @key=Alt-8</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1059,7 +1069,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7163,7 +7173,7 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20100909154940.2226">@path slides</t>
+<t tx="ekr.20100909154940.2226"># @path slides</t>
 <t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
 text here by typing it in.
@@ -7306,6 +7316,29 @@ for start,path in table:
 <t tx="ekr.20101002141822.2349">import leo.core.leoKeys as leoKeys
 
 leoKeys.AutoCompleterScanner(c).scan()
+</t>
+<t tx="ekr.20101004104134.2346"></t>
+<t tx="ekr.20101004104134.2347"></t>
+<t tx="ekr.20101004104134.2348"></t>
+<t tx="ekr.20101004104134.2349"></t>
+<t tx="ekr.20101004104134.2350">m = g.loadOnePlugin('screenshots')
+# Select the screenshot node.
+h = '@slideshow My first slide show'
+p = g.findNodeAnywhere(c,h)
+if p:
+    c.selectPosition(p)
+    m.make_slide_show_command(event={'c':c})
+else: g.es_print('not found',h,color='red') </t>
+<t tx="ekr.20101004104858.2380">m = g.loadOnePlugin('screenshots')
+
+# Select the screenshot node.
+h = '@slideshow My first slide show'
+p = g.findNodeAnywhere(c,h)
+if p:
+    c.selectPosition(p)
+    m.slide_show_info_command(event={'c':c})
+else:
+    g.es_print('not found',h,color='red')
 </t>
 </tnodes>
 </leo_file>
