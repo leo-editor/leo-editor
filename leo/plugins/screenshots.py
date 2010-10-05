@@ -165,10 +165,9 @@ numeric markers on a screenshot::
 #@@nocolor-node
 #@+at
 # 
-# ** Create a subfolder of the base folder for each slideshow.
 # - Ignore @slide nodes in @screenshot-tree trees.
 # - Revise docstring and apropos-screen-shots.
-# - Patch last slide to avoid running on to the next page.
+# * Patch last slide to avoid running on to the next page.
 # 
 # Done:
 # - @slide is now requred
@@ -178,6 +177,7 @@ numeric markers on a screenshot::
 # - Put screenshots in same folder as the slideshow.
 # - Changed the .. image: directive.
 # - Called docutils to process each @slide node into an html file.
+# - Create make_all_directories.
 #@-<< notes >>
 __version__ = '0.1'
 #@+<< imports >>
@@ -860,6 +860,28 @@ class ScreenShotController(object):
 
         sc = self
         return bool(sc.find_slideshow_node(p))
+    #@+node:ekr.20101004201006.5685: *4* make_all_directories
+    def make_all_directories (self):
+
+        sc = self
+
+        # Don't create a path for directive_fn: it is a relative fn!
+        table = (
+            ('at_image_fn   ',sc.at_image_fn),
+            ('output_fn     ',sc.output_fn),
+            ('screenshot_fn ',sc.screenshot_fn),
+            ('sphinx_path   ',sc.sphinx_path),
+            ('slide_fn      ',sc.slide_fn),
+            ('slideshow_path',sc.slideshow_path),
+            ('template_fn   ',sc.template_fn),
+            ('working_fn    ',sc.working_fn),
+        )
+        for tag,path in table:
+            if tag.strip().endswith('fn'):
+                path,junk = g.os_path_split(path)
+            if not g.os_path_exists(path):
+                g.makeAllNonExistentDirectories(path,
+                    c=sc.c,force=True,verbose=True)
     #@+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
     def open_inkscape_with_list (self,aList):
 
@@ -895,11 +917,13 @@ class ScreenShotController(object):
         '''
 
         # Init ivars.
-        sc = self
+        sc = self ; c = sc.c
         ok = sc.init(p,callouts,markers,output_fn,
             screenshot_fn,screenshot_height,screenshot_width,
             slideshow_node,sphinx_path,template_fn,working_fn)
         if not ok: return
+
+        sc.make_all_directories()
 
         # sc.slide_show_info_command(sc.slide_node)
 
