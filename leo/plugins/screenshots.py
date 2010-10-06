@@ -835,7 +835,7 @@ class ScreenShotController(object):
         # the top-level sphinx folder (leo/doc/html) because
         # so that only a single _build directory tree exists.
         table = (
-            'conf.py',
+            # 'conf.py',
             # 'leo_toc.html.txt',
             # 'Leo4-80-border.jpg',
             # 'Makefile',
