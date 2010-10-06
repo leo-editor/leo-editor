@@ -396,11 +396,14 @@ class ScreenShotController(object):
         def match(p,pattern):
             return g.match_word(p.h,0,pattern)
 
+        sc.set_defaults_from_slideshow_node(p)
         root = p.copy()
         p = p.firstChild()
+        found = False
         while p:
             if g.app.commandInterruptFlag: return
             if match(p,'@slide'):
+                found = True
                 sc.run(p,slideshow_node=root)
                 # Skip the entire tree, including
                 # any inner @screenshot-tree trees.
@@ -409,6 +412,10 @@ class ScreenShotController(object):
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+
+        if found: # The paths have been inited properly.
+            sc.make_toc()
+
     #@+node:ekr.20100913085058.5629: *4* sc.make_slide_command
     def make_slide_command (self,p):
 
@@ -417,7 +424,11 @@ class ScreenShotController(object):
         if not sc.inkscape_bin:
             return # The ctor has given the warning.
 
-        if not sc.in_slide_show(p):
+        slideshow_node = sc.find_slideshow_node(p)
+
+        if slideshow_node:
+             sc.set_defaults_from_slideshow_node(slideshow_node)
+        else:
             return g.error('Not in slide show:',p.h)
 
         if sc.get_protect_flag(p):
@@ -643,11 +654,15 @@ class ScreenShotController(object):
     def get_slide_fn (self):
 
         sc = self
-        if sc.slide_number == 0:
-            # The first slide is the toc for the slideshow.
-            fn = 'leo_toc.html.txt'
-        else:
-            fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
+
+        ###
+        # if sc.slide_number == 0:
+            # # The first slide is the toc for the slideshow.
+            # fn = 'leo_toc.html.txt'
+        # else:
+            # fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
+
+        fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20100919075719.5641: *5* get_slideshow_path
@@ -816,6 +831,19 @@ class ScreenShotController(object):
                 return True
         else:
             return False
+    #@+node:ekr.20101006060338.5697: *5* set_defaults_from_slideshow_node
+    def set_defaults_from_slideshow_node (self,p):
+
+        '''Set default options from p, an @slideshow node.'''
+
+        g.trace(p.h)
+
+        table = (
+
+        )
+
+        for ivar,setting in table:
+            pass
     #@+node:ekr.20100911044508.5618: *3* utilities
     #@+node:ekr.20100911044508.5637: *4* clear_cache
     def clear_cache (self):
@@ -826,20 +854,24 @@ class ScreenShotController(object):
         sc.dimCache = {}
         sc.is_reads,sc.is_cache = 0,0
     #@+node:ekr.20101005193146.5687: *4* copy_files & helper
+    #@+at We would like to do sphinx "make" operations only in the top-level sphinx
+    # folder (leo/doc/html) so that only a single _build directory tree would exist.
+    # 
+    # Alas, that doesn't work.  To get links correct, the build must be done in
+    # the individual slide folders.  So we *must* copy all the files.
+    #@@c
+
     def copy_files (self):
 
         sc = self
         slide_path,junk = g.os_path_split(sc.slide_fn)
-
-        # It's best to allow sphinx "make" operations only in
-        # the top-level sphinx folder (leo/doc/html) because
-        # so that only a single _build directory tree exists.
         table = (
-            # 'conf.py',
+            'conf.py',
+            # This is created later.
             # 'leo_toc.html.txt',
-            # 'Leo4-80-border.jpg',
-            # 'Makefile',
-            # 'make.bat',
+            'Leo4-80-border.jpg',
+            'Makefile',
+            'make.bat',
         )
         for fn in table:
             path = g.os_path_finalize_join(slide_path,fn)
@@ -860,7 +892,8 @@ class ScreenShotController(object):
         assert sc.slideshow_node
         assert p == sc.slide_node
 
-        n = 0 ; p1 = p.copy()
+        n = 1 # Slides numbers start at one.
+        p1 = p.copy()
         p = sc.slideshow_node.firstChild()
         while p:
             if p == p1:
@@ -924,6 +957,48 @@ class ScreenShotController(object):
             if not g.os_path_exists(path):
                 g.makeAllNonExistentDirectories(path,
                     c=sc.c,force=True,verbose=True)
+    #@+node:ekr.20101006060338.5698: *4* make_toc
+    def make_toc (self):
+
+        sc = self
+
+        #@+<< define toc_body >>
+        #@+node:ekr.20101006060338.5699: *5* << define toc_body >>
+        h = sc.slideshow_node.h[len('@slideshow'):].strip()
+        title = sc.underline(h.title())
+
+        s = '''\
+        %s
+
+        Contents:
+
+        .. toctree::
+           :maxdepth: 1
+           :glob:
+
+           %s-*
+        ''' % (title,sc.slide_base_name)
+
+        # Indices and tables
+        # ==================
+
+        # * :ref:`genindex`
+        # * :ref:`search`
+
+        toc_body = g.adjustTripleString(s,sc.c.tab_width)
+        #@-<< define toc_body >>
+
+        fn = sc.finalize('leo_toc.html.txt')
+        if g.os_path_exists(fn): return
+
+        try:
+            f = open(fn,'w')
+            f.write(toc_body)
+            f.close()
+            if self.verbose: g.note('wrote:',g.shortFileName(fn))
+        except Exception:
+            g.error('writing',fn)
+            g.es_exception()
     #@+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
     def open_inkscape_with_list (self,aList):
 
@@ -957,8 +1032,8 @@ class ScreenShotController(object):
         # Write longer underlines for non-ascii characters.
         n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
         ch = '='
-        # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
-        return '%s\n%s\n' % (s,ch*n)
+        return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
+        # return '%s\n%s\n' % (s,ch*n)
     #@+node:ekr.20100911044508.5616: *3* sc.run & helpers
     def run (self,p,callouts=[],markers=[],output_fn=None,
         screenshot_fn=None,screenshot_height=None,screenshot_width=None,
@@ -1569,39 +1644,10 @@ class ScreenShotController(object):
         sc = self
         n = sc.slide_number
         h = sc.slideshow_node.h[len('@slideshow'):].strip()
-
-        #@+<< define toc_body >>
-        #@+node:ekr.20101005193146.5691: *6* << define toc_body >>
-        s = '''\
-        Contents:
-
-        .. toctree::
-           :maxdepth: 1
-           :glob:
-
-           %s-*
-        ''' % (sc.slide_base_name)
-
-        # Indices and tables
-        # ==================
-
-        # * :ref:`genindex`
-        # * :ref:`search`
-
-
-        toc_body = g.adjustTripleString(s,sc.c.tab_width)
-        #@-<< define toc_body >>
-
-        if n == 0:
-            # h = 'Slideshow: %s' % (h)
-            body = toc_body
-        else:
-            h = '%s: %s' % (h,n)
-            body = sc.slide_node.b
-
-        title = sc.underline(h)
-
-        return '%s\n\n%s' % (title,body)
+        h = '%s: %s' % (h,n)
+        body = sc.slide_node.b
+        title = sc.underline(h.title())
+        return '%s\n%s' % (title,body)
     #@-others
 
 #@-others
