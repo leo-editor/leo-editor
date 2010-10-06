@@ -1103,6 +1103,15 @@ class ScreenShotController(object):
         if g.os_path_exists(sc.working_fn):
             if sc.verbose:
                 g.note('exists:',g.shortFileName(sc.working_fn))
+
+            # Save the working file to the output file
+            # if it is newer than the output file.
+            if (
+                sc.output_fn and 
+                os.path.getmtime(sc.working_fn) >
+                os.path.getmtime(sc.output_fn)
+            ):
+                sc.make_output_file()
         else:
             sc.make_working_file()
 
@@ -1656,8 +1665,10 @@ class ScreenShotController(object):
                 img = Image.open(sc.output_fn)
                 img = sc.trim(img, (255,255,255,0))
                 img.save(sc.output_fn)
+                if sc.verbose:
+                    g.note('wrote:  %s' % g.shortFileName(sc.output_fn))
             except IOError:
-                g.trace('Can not open %s' % sc.output_fn)
+                g.trace('can not open %s' % sc.output_fn)
 
         # os.system(png_fn)
     #@+node:ekr.20100908110845.5555: *5* trim

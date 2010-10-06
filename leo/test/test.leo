@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.42" body_secondary_ratio="0.56">
+<globals body_outline_ratio="0.42" body_secondary_ratio="0.81">
 	<global_window_position top="49" left="807" height="990" width="1099"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -563,18 +563,17 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
-<v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
+<v t="ekr.20101004104134.2349"><vh>Slideshows</vh>
 <v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
 <v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20101006122837.2362"><vh>@verbose=True</vh></v>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20101006081407.2370"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-001.png</vh></v>
-<v t="ekr.20101005200438.2366"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-000.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
 <v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
@@ -593,7 +592,6 @@
 </v>
 <v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
 <v t="ekr.20101006081407.2383"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-002.png</vh></v>
-<v t="ekr.20101005200438.2379"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-001.png</vh></v>
 <v t="ekr.20100911162102.2364"><vh>@screenshot-tree</vh>
 <v t="ekr.20100911162102.2366"><vh>To Do List</vh>
 <v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
@@ -1072,7 +1070,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,4,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7329,8 +7327,6 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20101005200438.2366"></t>
-<t tx="ekr.20101005200438.2379"></t>
 <t tx="ekr.20101006081407.2370"></t>
 <t tx="ekr.20101006081407.2383"></t>
 <t tx="ekr.20101006122837.2362"></t>
