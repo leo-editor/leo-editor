@@ -654,14 +654,6 @@ class ScreenShotController(object):
     def get_slide_fn (self):
 
         sc = self
-
-        ###
-        # if sc.slide_number == 0:
-            # # The first slide is the toc for the slideshow.
-            # fn = 'leo_toc.html.txt'
-        # else:
-            # fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
-
         fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
