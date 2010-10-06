@@ -165,8 +165,9 @@ numeric markers on a screenshot::
 #@@nocolor-node
 #@+at
 # 
-# * Specify options in @slideshow node.
-# - Ignore @slide nodes in @screenshot-tree trees.
+# - Use @slideshow title as title of all slides.
+# - Make _static directory if it does not exist.
+# * Specify global options in @slideshow node.
 # - Revise docstring and apropos-screen-shots.
 # 
 # Done:
@@ -181,6 +182,7 @@ numeric markers on a screenshot::
 # - Copy sphinx build files from doc/html to doc/slides/slideshow-name directory.
 # - Generated leo_toc.html as the first slide.
 # - Generate titles for all slides.
+# - Ignore @slide ande @slideshow nodes in @screenshot-tree trees.
 #@-<< notes >>
 __version__ = '0.1'
 #@+<< imports >>
@@ -1095,25 +1097,29 @@ class ScreenShotController(object):
     #@+node:ekr.20100914090933.5643: *5* create_setup_leo_file
     def create_setup_leo_file(self):
 
-        '''Create an ouline containing all children of sc.screenshot_tree.'''
+        '''Create an ouline containing all children of sc.screenshot_tree.
+        Do not copy @slide nodes or @slideshow nodes.'''
 
         sc = self ; fn = sc.finalize('screenshot-setup.leo')
 
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=fn,relativeFileName=None) # ,gui=gui)
 
+        def isSlide(p):
+            return g.match_word(p.h,0,'@slide') or g.match_word(p.h,0,'@slideshow')
 
         c.frame.createFirstTreeNode()
         root = c.rootPosition()
         if sc.screenshot_tree:
              # Copy all descendants of the @screenshot-tree node.
-            children = [z.copy() for z in sc.screenshot_tree.children()]
+            children = [z.copy() for z in sc.screenshot_tree.children() if not isSlide(z)]
         else:
             # Copy the entire Leo outline.
             p = root.copy()
             children = []
             while p:
-                children.append(p.copy())
+                if not isSlide(p):
+                    children.append(p.copy())
                 p.moveToNext()
 
         children.reverse()
@@ -1559,7 +1565,7 @@ class ScreenShotController(object):
 
         sc = self
         n = sc.slide_number
-        h = sc.slide_node.h[len('@slide'):].strip()
+        h = sc.slideshow_node.h[len('@slideshow'):].strip()
 
         #@+<< define toc_body >>
         #@+node:ekr.20101005193146.5691: *6* << define toc_body >>
@@ -1584,10 +1590,10 @@ class ScreenShotController(object):
         #@-<< define toc_body >>
 
         if n == 0:
-            h = 'Slideshow: %s' % (h)
+            # h = 'Slideshow: %s' % (h)
             body = toc_body
         else:
-            h = 'Slide %s: %s' % (n,h)
+            h = '%s: %s' % (h,n)
             body = sc.slide_node.b
 
         title = sc.underline(h)
