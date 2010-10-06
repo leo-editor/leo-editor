@@ -165,8 +165,7 @@ numeric markers on a screenshot::
 #@@nocolor-node
 #@+at
 # 
-# - Use @slideshow title as title of all slides.
-# - Make _static directory if it does not exist.
+# 
 # * Specify global options in @slideshow node.
 # - Revise docstring and apropos-screen-shots.
 # 
@@ -183,6 +182,8 @@ numeric markers on a screenshot::
 # - Generated leo_toc.html as the first slide.
 # - Generate titles for all slides.
 # - Ignore @slide ande @slideshow nodes in @screenshot-tree trees.
+# - Use @slideshow title as title of all slides.
+# - Copy only leo_toc.html.txt to the slideshow folder.
 #@-<< notes >>
 __version__ = '0.1'
 #@+<< imports >>
@@ -830,13 +831,15 @@ class ScreenShotController(object):
         sc = self
         slide_path,junk = g.os_path_split(sc.slide_fn)
 
-        # Copy most/all files verbatim.
+        # It's best to allow sphinx "make" operations only in
+        # the top-level sphinx folder (leo/doc/html) because
+        # so that only a single _build directory tree exists.
         table = (
             'conf.py',
-            'leo_toc.html.txt',
-            'Leo4-80-border.jpg',
-            'Makefile',
-            'make.bat',
+            # 'leo_toc.html.txt',
+            # 'Leo4-80-border.jpg',
+            # 'Makefile',
+            # 'make.bat',
         )
         for fn in table:
             path = g.os_path_finalize_join(slide_path,fn)
