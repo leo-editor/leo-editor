@@ -166,9 +166,6 @@ numeric markers on a screenshot::
 #@+at
 # 
 # To do:
-# * Specify global options in @slideshow node.
-#     - Do not overwite existing screenshots.
-#     - Do not edit .svg files here.
 # - Revise docstring and apropos-screen-shots.
 # 
 # Done:
@@ -186,6 +183,9 @@ numeric markers on a screenshot::
 # - Ignore @slide ande @slideshow nodes in @screenshot-tree trees.
 # - Use @slideshow title as title of all slides.
 # - Copy only leo_toc.html.txt to the slideshow folder.
+# - Do not overwite existing screenshots.
+# - Edit the svg file only on explicit @edit options.
+# - Finished get_option.
 #@-<< notes >>
 __version__ = '0.1'
 #@+<< imports >>
@@ -284,6 +284,8 @@ class ScreenShotController(object):
 
         self.c = c
 
+        # g.trace('ScreenShotController')
+
         # import flags
         try:
             from PIL import Image, ImageChops
@@ -297,17 +299,43 @@ class ScreenShotController(object):
         except ImportError:
             self.got_qt = False
 
-        # The path to the Inkscape executable.
-        self.inkscape_bin = self.get_inkscape_bin()
-
-        # Standard screenshot size
+        # Defaults.
         self.default_screenshot_height = 900
         self.default_screenshot_width = 700
+        self.default_verbose_flag = True
+
+        # Options that may be set in @settings nodes.
+        self.inkscape_bin = self.get_inkscape_bin()
+            # The path to the Inkscape executable.
+
+        # Options that may be set in children of
+        # *either* the @slideshow node or any @slide node.
         self.screenshot_height = None
         self.screenshot_width = None
+        self.sphinx_path = None
+        self.template_fn = None
+        self.verbose = True
+        self.working_fn = None
 
-        # The @slideshow node.
+        # Options that may be set only in children of @slide nodes.
+        self.callouts = []
+        self.edit_flag = False
+        self.markers = []
+        self.output_fn = None
+        self.pause_flag = None
+        self.screenshot_tree = None
+        self.select_node = None
+        self.slide_node = None
         self.slideshow_node = None
+
+        # Computed data...
+        self.at_image_fn = None
+        self.directive_fn = None
+        self.screenshot_fn = None
+        self.slide_base_name = None
+        self.slide_fn = None
+        self.slide_number = 1
+        self.slideshow_path = None
 
         # Dimension cache.
         self.dimCache = {}
@@ -330,8 +358,6 @@ class ScreenShotController(object):
 
         self.xlink = "{http://www.w3.org/1999/xlink}"
         # self.namespace = {'svg': "http://www.w3.org/2000/svg"}
-
-        self.verbose = True
     #@+node:ekr.20100913085058.5657: *4* get_inkscape_bin
     def get_inkscape_bin(self):
 
@@ -386,17 +412,14 @@ class ScreenShotController(object):
 
         sc = self
 
+        def match(p,pattern):
+            return g.match_word(p.h,0,pattern)
+
         if not sc.inkscape_bin:
             return # The ctor has given the warning.
 
         if not g.match_word(p.h,0,'@slideshow'):
             return g.error('Not an @slideshow node:',p.h)
-
-        if sc.verbose:
-            g.note('sphinx-path:',sc.get_sphinx_path(None))
-
-        def match(p,pattern):
-            return g.match_word(p.h,0,pattern)
 
         p = p.firstChild()
         found = False
@@ -405,17 +428,14 @@ class ScreenShotController(object):
             if match(p,'@slide'):
                 found = True
                 sc.run(p)
-                # Skip the entire tree, including
-                # any inner @screenshot-tree trees.
-                p.moveToNodeAfterTree()
-            elif match(p,'@protect') or match(p,'@ignore'):
+                p.moveToNodeAfterTree() 
+            elif match(p,'@ignore'):
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
 
         if found: # The paths have been inited properly.
             sc.make_toc()
-
     #@+node:ekr.20100913085058.5629: *4* sc.make_slide_command
     def make_slide_command (self,p):
 
@@ -595,8 +615,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100909121239.5669: *5* get_directive_fn
     def get_directive_fn (self,screenshot_fn):
 
-        '''Compute the path for use in an .. image:: directive.
-        '''
+        '''Compute the path for use in an .. image:: directive.'''
 
         return g.shortFileName(screenshot_fn)
     #@+node:ekr.20100911044508.5627: *5* get_output_fn
@@ -680,7 +699,7 @@ class ScreenShotController(object):
 
         sc = self ; c = sc.c
 
-        sphinx_path = sc.get_option(p,'sphinx_path')
+        sphinx_path = sc.get_option('sphinx_path')
 
         if sphinx_path:
             if g.os_path_isabs(sphinx_path):
@@ -707,7 +726,7 @@ class ScreenShotController(object):
 
         sc = self ; c = sc.c
 
-        template_fn = sc.get_option(p,'template_fn')
+        template_fn = sc.get_option('template_fn')
 
         if template_fn:
             fn = sc.fix(g.os_path_finalize(template_fn))
@@ -726,18 +745,47 @@ class ScreenShotController(object):
         '''Return the full, absolute, name of the working file.'''
 
         sc = self
-        working_fn = sc.get_option(p,'working_fn')
+        working_fn = sc.get_option('working_fn')
         fn = working_fn or '%s-%03d.svg' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20101004082701.5737: *4* Options
     # These methods examine the children/descendants of a node for options nodes.
     #@+node:ekr.20101006060338.5703: *5* get_option
-    def get_option (self,p,option):
+    def get_option (self,option):
 
-        '''Get a local or global option.'''
+        '''Get a local or global option.
+        Global options are children of the @slideshow node.
+        Local options are children of the p, the @slide node.'''
 
-        return None ###
+        trace = False
+        sc = self
+        assert sc.slide_node
+        assert sc.slideshow_node
+        assert hasattr(sc,option)
+        tag = '@' + option
+        isPath = tag.endswith('_fn') or tag.endswith('_path')
+        for p in (sc.slideshow_node,sc.slide_node):
+            for child in p.children():
+                h = child.h
+                if g.match_word(h,0,tag):
+                    val = h[len(tag):].strip()
+                    if val.startswith('='): val = val[1:].strip()
+                    if val:
+                        if isPath:
+                            val = sc.finalize(val)
+                        elif val in ('1','True','true'):
+                            val = True
+                        else:
+                            val = False
+                        if trace: g.trace(option,repr(val or False))
+                        return val
+                    else:
+                        g.trace('empty setting:',h)
+                        return None
+        else:
+            # if trace: g.trace(option,repr(None))
+            return None
     #@+node:ekr.20100908110845.5596: *5* get_callouts & helper
     def get_callouts (self,p):
 
@@ -824,17 +872,24 @@ class ScreenShotController(object):
         else:
             return False
     #@+node:ekr.20101006060338.5704: *5* get_screenshot_height/width
-    def get_screenshot_height (self,p):
+    def get_screenshot_height (self):
 
         sc = self
-        h = sc.get_option(p,'screenshot_height')
+        h = sc.get_option('screenshot_height')
         return g.choose(h is None,sc.default_screenshot_height,h)
 
-    def get_screenshot_width (self,p):
+    def get_screenshot_width (self):
 
         sc = self
-        w = sc.get_option(p,'screenshot_width')
+        w = sc.get_option('screenshot_width')
         return g.choose(w is None,sc.default_screenshot_width,w)
+    #@+node:ekr.20101006060338.5706: *5* get_verbose_flag
+    def get_verbose_flag (self):
+
+        sc = self
+        val = sc.get_option('verbose')
+        return g.choose(val is None,
+            sc.default_verbose_flag,val)
     #@+node:ekr.20100911044508.5618: *3* utilities
     #@+node:ekr.20100911044508.5637: *4* clear_cache
     def clear_cache (self):
@@ -1041,6 +1096,9 @@ class ScreenShotController(object):
         sc.make_all_directories()
         sc.copy_files()
 
+        # Always make the slide.
+        sc.make_slide()
+
         # Take the screenshot and update the tree.
         if g.os_path_exists(sc.working_fn):
             if sc.verbose:
@@ -1048,22 +1106,16 @@ class ScreenShotController(object):
         else:
             sc.make_working_file()
 
-        if sc.edit_flag:
-            if self.verbose:
-                g.note('editing:',g.shortFileName(sc.working_fn))
-            sc.edit_working_file()
+            if sc.edit_flag:
+                if self.verbose:
+                    g.note('editing:',g.shortFileName(sc.working_fn))
+                sc.edit_working_file()
 
-        # Create the output file.
-        if sc.output_fn:
-            if g.os_path_exists(sc.output_fn):
-                g.note('exists:',g.shortFileName(sc.output_fn))
-            else:
+            # Create the output file.
+            if sc.output_fn:
                 sc.make_output_file()
-        elif sc.verbose:
-            g.note('no output file')
-
-        # Always make the slide.
-        sc.make_slide()
+            elif sc.verbose:
+                g.note('no output file')
 
         return sc.screenshot_fn
     #@+node:ekr.20100915074635.5651: *4* init
@@ -1073,13 +1125,17 @@ class ScreenShotController(object):
 
         sc = self
 
-        # Compute p, the slide_node.
+
+        # Compute essential nodes & values.
         sc.slideshow_node = sc.find_slideshow_node(p)
         if not sc.slideshow_node: return False
         sc.slide_node = p = sc.find_slide_node(p)
         if not p: return False
         sc.slide_number = n = sc.get_slide_number(p)
         if n < 0: return False
+
+        # Set the verbose flag.
+        sc.verbose = sc.get_verbose_flag()
 
         # Compute essential paths.
         sc.sphinx_path = sc.get_sphinx_path(p)
@@ -1108,8 +1164,8 @@ class ScreenShotController(object):
         sc.slide_fn = sc.get_slide_fn()
 
         # Compute simple ivars.
-        sc.screenshot_height = sc.get_screenshot_height(p)
-        sc.screenshot_width = sc.get_screenshot_width(p)
+        sc.screenshot_height = sc.get_screenshot_height()
+        sc.screenshot_width = sc.get_screenshot_width()
         sc.edit_flag = sc.get_edit_flag(p)
             # Only an explicit pause now pauses.
             # or bool(sc.callouts or sc.markers)
@@ -1150,8 +1206,8 @@ class ScreenShotController(object):
 
         if ok:
             if self.verbose:
-                g.note('slide node:  %s' % p.h)
-                g.note('output file: %s' % g.shortFileName(sc.screenshot_fn))
+                g.note('wrote:  %s' % g.shortFileName(sc.screenshot_fn))
+                # g.note('slide node:  %s' % p.h)
             sc.make_image_node()
             sc.add_image_directive()
         return ok

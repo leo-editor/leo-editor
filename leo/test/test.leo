@@ -571,6 +571,7 @@
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
 <v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20101006122837.2362"><vh>@verbose=True</vh></v>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20101006081407.2370"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-001.png</vh></v>
 <v t="ekr.20101005200438.2366"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-000.png</vh></v>
@@ -1071,7 +1072,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7332,5 +7333,6 @@ else:
 <t tx="ekr.20101005200438.2379"></t>
 <t tx="ekr.20101006081407.2370"></t>
 <t tx="ekr.20101006081407.2383"></t>
+<t tx="ekr.20101006122837.2362"></t>
 </tnodes>
 </leo_file>
