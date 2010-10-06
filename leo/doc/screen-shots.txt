@@ -22,7 +22,7 @@ This is the front page for various slide shows about Leo.
 ..  `Installing Leo`_
 ..  `What is Leo`_
 
-.. `My first slide show`: my-first-slide-show/my-first-slide-show-001.html
+.. _`My first slide show`: slides/my-first-slide-show/my-first-slide-show-001.html
 
 `My first slide show`_
 

@@ -564,15 +564,15 @@
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
 <v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
-<v t="ekr.20100909154713.2210"><vh>@button make-slide @key=Alt-8</vh>
+<v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
-<v t="ekr.20100911161733.2261"><vh>@@button make-slide-show @key=Alt-8</vh></v>
+<v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
 <v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20100911162102.2361" a="E"><vh>@slide What is Leo</vh>
-<v t="ekr.20101004171309.2370"><vh>@image ../doc/html/my-first-slide-show/my-first-slide-show-000.png</vh></v>
+<v t="ekr.20101005200438.2366"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-000.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
 <v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
@@ -589,8 +589,8 @@
 </v>
 <v t="ekr.20100914081810.2345"><vh>@select Urgent</vh></v>
 </v>
-<v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
-<v t="ekr.20100914192147.2376"><vh>@image ../doc/html/screen-shots/my_first_slide_show-001.png</vh></v>
+<v t="ekr.20100911162102.2362" a="E"><vh>@slide Outlining editor</vh>
+<v t="ekr.20101005200438.2379"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-001.png</vh></v>
 <v t="ekr.20100911162102.2364"><vh>@screenshot-tree</vh>
 <v t="ekr.20100911162102.2366"><vh>To Do List</vh>
 <v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
@@ -7236,6 +7236,8 @@ the best way to demonstrate what can be done with Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
 
+.. image:: my-first-slide-show-001.png
+
 </t>
 <t tx="ekr.20100911162102.2364"></t>
 <t tx="ekr.20100911162102.2366">My to-do list.
@@ -7300,7 +7302,6 @@ for start,path in table:
 <t tx="ekr.20100914190242.2349" str_leo_pos=""></t>
 <t tx="ekr.20100914190242.2350" str_leo_pos=""></t>
 <t tx="ekr.20100914190242.2351"></t>
-<t tx="ekr.20100914192147.2376"></t>
 <t tx="ekr.20100914192147.2391"></t>
 <t tx="ekr.20100914192147.2406"></t>
 <t tx="ekr.20100915134048.2391"></t>
@@ -7332,6 +7333,7 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20101004171309.2370"></t>
+<t tx="ekr.20101005200438.2366"></t>
+<t tx="ekr.20101005200438.2379"></t>
 </tnodes>
 </leo_file>

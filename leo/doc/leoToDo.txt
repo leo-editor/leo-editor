@@ -4010,7 +4010,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     paths.reverse()
     if trace: g.trace('paths:',paths)
     for s in paths:
-        path = g.os_path_join(path,s)
+        path = g.os_path_finalize_join(path,s)
         if not g.os_path_exists(path):
             try:
                 if testing:

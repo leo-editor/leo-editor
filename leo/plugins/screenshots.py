@@ -165,9 +165,9 @@ numeric markers on a screenshot::
 #@@nocolor-node
 #@+at
 # 
+# * Specify options in @slideshow node.
 # - Ignore @slide nodes in @screenshot-tree trees.
 # - Revise docstring and apropos-screen-shots.
-# * Patch last slide to avoid running on to the next page.
 # 
 # Done:
 # - @slide is now requred
@@ -178,6 +178,9 @@ numeric markers on a screenshot::
 # - Changed the .. image: directive.
 # - Called docutils to process each @slide node into an html file.
 # - Create make_all_directories.
+# - Copy sphinx build files from doc/html to doc/slides/slideshow-name directory.
+# - Generated leo_toc.html as the first slide.
+# - Generate titles for all slides.
 #@-<< notes >>
 __version__ = '0.1'
 #@+<< imports >>
@@ -200,6 +203,7 @@ try:
 except ImportError:
     got_qt = False
 
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -292,8 +296,8 @@ class ScreenShotController(object):
         self.inkscape_bin = self.get_inkscape_bin()
 
         # Standard screenshot size
-        self.default_screenshot_height = 1000
-        self.default_screenshot_width = 800
+        self.default_screenshot_height = 900
+        self.default_screenshot_width = 700
         self.screenshot_height = None
         self.screenshot_width = None
 
@@ -321,6 +325,8 @@ class ScreenShotController(object):
 
         self.xlink = "{http://www.w3.org/1999/xlink}"
         # self.namespace = {'svg': "http://www.w3.org/2000/svg"}
+
+        self.verbose = False
     #@+node:ekr.20100913085058.5657: *4* get_inkscape_bin
     def get_inkscape_bin(self):
 
@@ -381,7 +387,8 @@ class ScreenShotController(object):
         if not g.match_word(p.h,0,'@slideshow'):
             return g.error('Not an @slideshow node:',p.h)
 
-        g.note('sphinx-path',sc.get_sphinx_path(None))
+        if self.verbose:
+            g.note('sphinx-path:',sc.get_sphinx_path(None))
 
         def match(p,pattern):
             return g.match_word(p.h,0,pattern)
@@ -633,7 +640,11 @@ class ScreenShotController(object):
     def get_slide_fn (self):
 
         sc = self
-        fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
+        if sc.slide_number == 0:
+            # The first slide is the toc for the slideshow.
+            fn = 'leo_toc.html.txt'
+        else:
+            fn = '%s-%03d.html.txt' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20100919075719.5641: *5* get_slideshow_path
@@ -642,7 +653,7 @@ class ScreenShotController(object):
         '''p is an @slideshow node.
 
         Return the path to the folder to be used for slides and screenshots.
-        This is sphinx_path/<sanitized-p.h>
+        This is sphinx_path/slides/<sanitized-p.h>
         '''
 
         sc = self
@@ -652,7 +663,7 @@ class ScreenShotController(object):
         h = h[len(tag):].strip()
         if h:
             theDir = sc.sanitize(h)
-            path = sc.fix(g.os_path_finalize_join(sphinx_path,theDir))
+            path = sc.fix(g.os_path_finalize_join(sphinx_path,'slides',theDir))
             return path
         else:
             g.error('@slideshow node has no name')
@@ -811,6 +822,32 @@ class ScreenShotController(object):
         sc = self
         sc.dimCache = {}
         sc.is_reads,sc.is_cache = 0,0
+    #@+node:ekr.20101005193146.5687: *4* copy_files & helper
+    def copy_files (self):
+
+        sc = self
+        slide_path,junk = g.os_path_split(sc.slide_fn)
+
+        # Copy most/all files verbatim.
+        table = (
+            'conf.py',
+            'leo_toc.html.txt',
+            'Leo4-80-border.jpg',
+            'Makefile',
+            'make.bat',
+        )
+        for fn in table:
+            path = g.os_path_finalize_join(slide_path,fn)
+            if not g.os_path_exists(path):
+                self.copy_file(sc.sphinx_path,slide_path,fn)
+    #@+node:ekr.20101005193146.5688: *5* copy_file
+    def copy_file (self,src_path,dst_path,fn):
+
+        src_fn = g.os_path_finalize_join(src_path,fn)
+        dst_fn = g.os_path_finalize_join(dst_path,fn)
+        junk,dst_dir = g.os_path_split(dst_path)
+        g.note('creating',g.os_path_join('slides',dst_dir,fn))
+        shutil.copyfile(src_fn,dst_fn)
     #@+node:ekr.20100913085058.5653: *4* get_slide_number
     def get_slide_number (self,p):
 
@@ -907,6 +944,16 @@ class ScreenShotController(object):
         else:
             c.selectPosition(p)
             c.redraw_now(p)
+    #@+node:ekr.20101005193146.5690: *4* underline
+    def underline (self,s):
+
+        '''Return s overlined and underlined with '=' characters.'''
+
+        # Write longer underlines for non-ascii characters.
+        n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
+        ch = '='
+        # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
+        return '%s\n%s\n' % (s,ch*n)
     #@+node:ekr.20100911044508.5616: *3* sc.run & helpers
     def run (self,p,callouts=[],markers=[],output_fn=None,
         screenshot_fn=None,screenshot_height=None,screenshot_width=None,
@@ -924,6 +971,7 @@ class ScreenShotController(object):
         if not ok: return
 
         sc.make_all_directories()
+        sc.copy_files()
 
         # sc.slide_show_info_command(sc.slide_node)
 
@@ -940,13 +988,13 @@ class ScreenShotController(object):
         sc.make_working_file(template)
 
         if sc.edit_flag:
-            g.note('***** editing:',sc.working_fn)
+            if self.verbose: g.note('editing:',sc.working_fn)
             sc.edit_working_file()
 
         # Create the output file.
         if sc.output_fn:
             sc.make_output_file()
-        else:
+        elif self.verbose:
             g.note('Empty @output node inhibits output')
 
         sc.make_slide()
@@ -974,7 +1022,7 @@ class ScreenShotController(object):
 
         # Do nothing if the slide node is protected.
         if sc.get_protect_flag(p):
-            g.note('Skipping protected slide:',p.h)
+            if self.verbose: g.note('Skipping protected slide:',p.h)
             return False
 
         # Compute essential paths.
@@ -1025,8 +1073,9 @@ class ScreenShotController(object):
         ok = sc.setup_screen_shot(fn)
 
         if ok:
-            g.note('slide node:  %s' % p.h)
-            g.note('output file: %s' % g.shortFileName(sc.screenshot_fn))
+            if self.verbose:
+                g.note('slide node:  %s' % p.h)
+                g.note('output file: %s' % g.shortFileName(sc.screenshot_fn))
             sc.make_image_node()
             sc.add_image_directive()
         else:
@@ -1488,7 +1537,7 @@ class ScreenShotController(object):
         else:
             # found no content
             raise ValueError("cannot trim; image was empty")
-    #@+node:ekr.20101004082701.5739: *4* 6: make_slide
+    #@+node:ekr.20101004082701.5739: *4* 6: make_slide & helpers
     def make_slide (self):
 
         '''Write sc.slide_node.b to <sc.slide_fn>, a .html.txt file.'''
@@ -1496,14 +1545,54 @@ class ScreenShotController(object):
         sc = self ; fn = sc.slide_fn
         #  Don't call rstCommands.writeToDocutils--we are using sphinx!
         # result = self.c.rstCommands.writeToDocutils(sc.slide_node.b,'.html')
+        s = sc.make_slide_contents()
         try:
             f = open(fn,'w')
-            f.write(sc.slide_node.b)
+            f.write(s)
             f.close()
-            g.note('wrote slide',g.shortFileName(fn))
+            if self.verbose: g.note('wrote slide:',g.shortFileName(fn))
         except Exception:
             g.error('writing',fn)
             g.es_exception()
+    #@+node:ekr.20101005193146.5689: *5* make_slide_contents
+    def make_slide_contents (self):
+
+        sc = self
+        n = sc.slide_number
+        h = sc.slide_node.h[len('@slide'):].strip()
+
+        #@+<< define toc_body >>
+        #@+node:ekr.20101005193146.5691: *6* << define toc_body >>
+        s = '''\
+        Contents:
+
+        .. toctree::
+           :maxdepth: 1
+           :glob:
+
+           %s-*
+        ''' % (sc.slide_base_name)
+
+        # Indices and tables
+        # ==================
+
+        # * :ref:`genindex`
+        # * :ref:`search`
+
+
+        toc_body = g.adjustTripleString(s,sc.c.tab_width)
+        #@-<< define toc_body >>
+
+        if n == 0:
+            h = 'Slideshow: %s' % (h)
+            body = toc_body
+        else:
+            h = 'Slide %s: %s' % (n,h)
+            body = sc.slide_node.b
+
+        title = sc.underline(h)
+
+        return '%s\n\n%s' % (title,body)
     #@-others
 
 #@-others
