@@ -5,12 +5,17 @@
 """The screenshots.py plugin
 ============================
 
-The screenshots plugin defines three commands. The
-make-slide and make-slide-show commands
-(collectively known as **slide commands**) create
-slides and slide shows (collections of slides)
-from Leo outlines. The apropos-slides command
-prints this message to Leo's log pane.
+This plugin creates slides from @slide nodes appearing
+as descendants of @slideshow nodes.
+
+
+This plugin defines four commands. The make-slide
+and make-slide-show commands (collectively known
+as **slide commands**) create slides and slide
+shows (collections of slides) from Leo outlines.
+The apropos-slides command prints this message to
+Leo's log pane. The slide-show-info prints the
+settings in effect for this plugin.
 
 Nodes
 -----
@@ -117,45 +122,6 @@ Settings
 @string inkscape-bin
 
 This setting tells Leo the location of the Inkscape executable.
-
-Scripting reference
--------------------
-
-The run method has the following signature::
-
-    def run (self,fn,
-        callouts=[],
-        markers=[],
-        png_fn=None,svg_fn=None,template_fn=None)
-
-        fn  The name of the bitmap screenshot file.
-  callouts  A possibly empty list of strings.
-   markers  A possibly empty list of numbers.
-    png_fn  The name of final png image file.
-            No image is generated if this argument is None.
-    svg_fn  The name of working svg file.
-            If no name is given, ``working_file.svg`` is used.
- template_fn The name of the **template svg file**.
-            This file contains images to be used for
-            callouts and markers.  If no name is given,
-            inkscape-template.svg is used.
-
-For example, the following places three text
-balloon callouts and three black circle
-numeric markers on a screenshot::
-
-    fn = "some_screen_shot.png"
-    png_fn = "final_screen_shot.png"
-    callouts = (
-        "This goes here",
-        "These are those, but slightly longer",
-        "Then you pull this")
-    markers = (2,4,17)
-
-    c.inkscapeCommands.run(fn,
-        callouts=callouts,markers=markers,
-        png_fn=png_fn)
-
 """
 
 #@@pagewidth 50
@@ -165,10 +131,6 @@ numeric markers on a screenshot::
 #@@nocolor-node
 #@+at
 # 
-# To do:
-# - Revise docstring and apropos-screen-shots.
-# 
-# Done:
 # - @slide is now requred
 # - Rename @select to @pause
 # - Rewrote path init logic.
@@ -760,8 +722,6 @@ class ScreenShotController(object):
 
         trace = False
         sc = self
-        assert sc.slide_node
-        assert sc.slideshow_node
         assert hasattr(sc,option)
         tag = '@' + option
         isPath = tag.endswith('_fn') or tag.endswith('_path')
@@ -776,12 +736,17 @@ class ScreenShotController(object):
                             val = sc.finalize(val)
                         elif val in ('1','True','true'):
                             val = True
-                        else:
+                        elif val in ('0','False','false'):
                             val = False
+                        elif val.isdigit():
+                            val = int(val)
+                        else:
+                            g.warning('ignoring setting',child.h)
+                            return None
                         if trace: g.trace(option,repr(val or False))
                         return val
                     else:
-                        g.trace('empty setting:',h)
+                        g.warning('ignoring setting:',child.h)
                         return None
         else:
             # if trace: g.trace(option,repr(None))

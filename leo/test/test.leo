@@ -563,15 +563,16 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
-<v t="ekr.20101004104134.2349"><vh>Slideshows</vh>
+<v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
 <v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
 <v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
-<v t="ekr.20101006122837.2362"><vh>@verbose=True</vh></v>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20101006122837.2362"><vh>@verbose true</vh></v>
+<v t="ekr.20101007024057.2360"><vh>@screenshot_width = 850</vh></v>
 <v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
 <v t="ekr.20101006081407.2370"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-001.png</vh></v>
 <v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
@@ -1070,7 +1071,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7330,5 +7331,6 @@ else:
 <t tx="ekr.20101006081407.2370"></t>
 <t tx="ekr.20101006081407.2383"></t>
 <t tx="ekr.20101006122837.2362"></t>
+<t tx="ekr.20101007024057.2360"></t>
 </tnodes>
 </leo_file>
