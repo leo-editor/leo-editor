@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.42" body_secondary_ratio="0.81">
-	<global_window_position top="49" left="807" height="990" width="1099"/>
+	<global_window_position top="47" left="524" height="990" width="1099"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -563,35 +563,20 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
-<v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
+<v t="ekr.20101004104134.2349"><vh>Slideshows</vh>
 <v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
 <v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20101006122837.2362"><vh>@verbose true</vh></v>
-<v t="ekr.20101007024057.2360"><vh>@screenshot_width = 850</vh></v>
-<v t="ekr.20100911162102.2361" a="E"><vh>@slide What is Leo</vh>
-<v t="ekr.20100914081810.2334"><vh>@@screenshot</vh>
-<v t="ekr.20100914081810.2336"><vh>To Do List</vh>
-<v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
-<v t="ekr.20100914081810.2338"><vh>Important</vh></v>
-<v t="ekr.20100914081810.2339"><vh>Soon</vh></v>
-<v t="ekr.20100914081810.2340"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20100914081810.2341"><vh>Diary</vh>
-<v t="ekr.20100914081810.2342"><vh>2009</vh>
-<v t="ekr.20100914081810.2343"><vh>Jan 1</vh></v>
-</v>
-<v t="ekr.20100914081810.2344"><vh>2010</vh></v>
-</v>
-</v>
-<v t="ekr.20100914081810.2345"><vh>@@select Urgent</vh></v>
-</v>
+<v t="ekr.20101007024057.2360"><vh>@screenshot_width = 700</vh></v>
+<v t="ekr.20101007100927.2360"><vh>@screenshot_height = 500</vh></v>
+<v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh></v>
 <v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
-<v t="ekr.20101006081407.2383"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-002.png</vh></v>
+<v t="ekr.20101007100927.2373"><vh>@image ../doc/html/slides/my-first-slide-show/screenshot-002.png</vh></v>
 <v t="ekr.20100911162102.2364"><vh>@screenshot-tree</vh>
 <v t="ekr.20100911162102.2366"><vh>To Do List</vh>
 <v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
@@ -607,46 +592,6 @@
 </v>
 </v>
 <v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
-</v>
-<v t="ekr.20100909154940.2227" a="E"><vh>@ignore @slide Headline and body text</vh>
-<v t="ekr.20100914192147.2391"><vh>@image ../doc/html/screen-shots/my_first_slide_show-002.png</vh></v>
-<v t="ekr.20100909154940.2228"><vh>@screenshot</vh>
-<v t="ekr.20100909154940.2230"><vh>To Do List</vh>
-<v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
-<v t="ekr.20100909154940.2232"><vh>Important</vh></v>
-<v t="ekr.20100909154940.2233"><vh>Soon</vh></v>
-<v t="ekr.20100909154940.2234"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20100909154940.2235"><vh>Diary</vh>
-<v t="ekr.20100909154940.2236"><vh>2009</vh>
-<v t="ekr.20100909154940.2237"><vh>Jan 1</vh></v>
-</v>
-<v t="ekr.20100909154940.2238"><vh>2010</vh></v>
-</v>
-</v>
-<v t="ekr.20100914190242.2349"><vh>@edit</vh></v>
-<v t="ekr.20100914190242.2348"><vh>@select Urgent</vh></v>
-<v t="ekr.20100915134048.2391"><vh>@@pause</vh></v>
-<v t="ekr.20100915134048.2392"><vh>@@callout 1 is headline, 2 is body text</vh></v>
-</v>
-<v t="ekr.20100911162102.2427"><vh>@ignore @slide File:Save</vh>
-<v t="ekr.20100914192147.2406"><vh>@image ../doc/html/screen-shots/my_first_slide_show-003.png</vh></v>
-<v t="ekr.20100911162102.2428"><vh>@screenshot-tree Urgent</vh>
-<v t="ekr.20100911162102.2430"><vh>To Do List</vh>
-<v t="ekr.20100911162102.2431"><vh>Urgent</vh></v>
-<v t="ekr.20100911162102.2432"><vh>Important</vh></v>
-<v t="ekr.20100911162102.2433"><vh>Soon</vh></v>
-<v t="ekr.20100911162102.2434"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20100911162102.2435"><vh>Diary</vh>
-<v t="ekr.20100911162102.2436"><vh>2009</vh>
-<v t="ekr.20100911162102.2437"><vh>Jan 1</vh></v>
-</v>
-<v t="ekr.20100911162102.2438"><vh>2010</vh></v>
-</v>
-<v t="ekr.20100914190242.2351"><vh>@edit</vh></v>
-<v t="ekr.20100914190242.2350"><vh>@select Urgent</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -1070,7 +1015,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,4,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7174,25 +7119,10 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20100909154940.2226">@language rest</t>
-<t tx="ekr.20100909154940.2227">Clicking on a node headline (1) will show the text for that node in the body
-pane (2) below. The body pane is a text editor--you can enter, delete or change
-text here by typing it in.
-</t>
-<t tx="ekr.20100909154940.2228"></t>
-<t tx="ekr.20100909154940.2230">My to-do list.
-</t>
-<t tx="ekr.20100909154940.2231">1. Make Leo Tutorial: the world is waiting.
+<t tx="ekr.20100909154940.2226">@language rest
 
-2. Pay phone bill or the world will never know.
-</t>
-<t tx="ekr.20100909154940.2232"></t>
-<t tx="ekr.20100909154940.2233"></t>
-<t tx="ekr.20100909154940.2234"></t>
-<t tx="ekr.20100909154940.2235" str_leo_pos=""></t>
-<t tx="ekr.20100909154940.2236"></t>
-<t tx="ekr.20100909154940.2237"></t>
-<t tx="ekr.20100909154940.2238"></t>
+.. The screenshot plugin ignores the body of @slideshow nodes
+.. and the headlines of @slide nodes.</t>
 <t tx="ekr.20100910124218.2257"></t>
 <t tx="ekr.20100910124218.2258"></t>
 <t tx="ekr.20100910124218.2259"></t>
@@ -7227,8 +7157,7 @@ the best way to demonstrate what can be done with Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
 
-.. image:: my-first-slide-show-002.png
-
+.. image:: screenshot-002.png
 </t>
 <t tx="ekr.20100911162102.2364"></t>
 <t tx="ekr.20100911162102.2366">My to-do list.
@@ -7241,22 +7170,6 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20100911162102.2372"></t>
 <t tx="ekr.20100911162102.2373"></t>
 <t tx="ekr.20100911162102.2374"></t>
-<t tx="ekr.20100911162102.2427">You can save the outline in a leo file. Click File - Save.
-</t>
-<t tx="ekr.20100911162102.2428"></t>
-<t tx="ekr.20100911162102.2430">My to-do list.
-</t>
-<t tx="ekr.20100911162102.2431">1. Make Leo Tutorial: the world is waiting.
-
-2. Pay phone bill or the world will never know.
-</t>
-<t tx="ekr.20100911162102.2432"></t>
-<t tx="ekr.20100911162102.2433"></t>
-<t tx="ekr.20100911162102.2434"></t>
-<t tx="ekr.20100911162102.2435"></t>
-<t tx="ekr.20100911162102.2436"></t>
-<t tx="ekr.20100911162102.2437"></t>
-<t tx="ekr.20100911162102.2438"></t>
 <t tx="ekr.20100911195503.2426">import os
 
 cd = os.path.normcase(g.os_path_finalize(os.getcwd())) # .replace('c:','C:')
@@ -7276,27 +7189,7 @@ table = (
 )
 for start,path in table:
     print(start,path,'--&gt;',os.path.relpath(path,start).replace('\\','/'))</t>
-<t tx="ekr.20100914081810.2334"></t>
-<t tx="ekr.20100914081810.2336">My to-do list.
-</t>
-<t tx="ekr.20100914081810.2337"></t>
-<t tx="ekr.20100914081810.2338"></t>
-<t tx="ekr.20100914081810.2339"></t>
-<t tx="ekr.20100914081810.2340"></t>
-<t tx="ekr.20100914081810.2341" str_leo_pos=""></t>
-<t tx="ekr.20100914081810.2342"></t>
-<t tx="ekr.20100914081810.2343"></t>
-<t tx="ekr.20100914081810.2344"></t>
-<t tx="ekr.20100914081810.2345"></t>
 <t tx="ekr.20100914190242.2347" str_leo_pos=""></t>
-<t tx="ekr.20100914190242.2348"></t>
-<t tx="ekr.20100914190242.2349" str_leo_pos=""></t>
-<t tx="ekr.20100914190242.2350" str_leo_pos=""></t>
-<t tx="ekr.20100914190242.2351"></t>
-<t tx="ekr.20100914192147.2391"></t>
-<t tx="ekr.20100914192147.2406"></t>
-<t tx="ekr.20100915134048.2391"></t>
-<t tx="ekr.20100915134048.2392"></t>
 <t tx="ekr.20101002141822.2349">import leo.core.leoKeys as leoKeys
 
 leoKeys.AutoCompleterScanner(c).scan()
@@ -7324,8 +7217,9 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20101006081407.2383"></t>
 <t tx="ekr.20101006122837.2362"></t>
 <t tx="ekr.20101007024057.2360"></t>
+<t tx="ekr.20101007100927.2360"></t>
+<t tx="ekr.20101007100927.2373"></t>
 </tnodes>
 </leo_file>

@@ -13,13 +13,13 @@ write_intermediate_file = True
 .. links
 .. _`My first slide show`:      slides/my-first-slide-show/slide-001.html
 .. _`What is Leo`:              slides/what-is-leo/slide-001.html
-.. _`What is Leo--Continued`_:  slides/what-is-leo--continued/slide-001.html
-.. _`Installation`_             slides/installation/slide-001.html
-.. _`Outlining`_                slides/outlining/slide-001.html
-.. _`External Files, Part 1`_
-.. _`External Files, Part 2`_
-.. _`Running Scripts with @button Nodes`_
-.. _`Making Slide Shows`_
+.. _`What is Leo--Continued`:   slides/what-is-leo--continued/slide-001.html
+.. _`Installation`:             slides/installation/slide-001.html
+.. _`Outlining`:                slides/outlining/slide-001.html
+.. _`External Files, Part 1`:   slides/external-files-part-1/slide-001.html
+.. _`External Files, Part 2`:   slides/external-files-part-2/slide-001.html
+.. _`Running Scripts with @button Nodes`: slides/running-scripts-with-button-nodes/slide-001.html
+.. _`Making Slide Shows`:       slides/making-slide-shows/slide-001.html
 
 ######
 Slides
@@ -30,26 +30,21 @@ This is the front page for various slide shows about Leo.
 Basics
 ------
 
-`What is Leo`_
-`What is Leo--Continued`_
-`Installation`_
-`Outlining`_
-`External Files, Part 1`_
-`External Files, Part 2`_
+`My first slide show`_ is a slideshow for testing.
+
+..  `What is Leo`_
+..  `What is Leo--Continued`_
+..  `Installation`_
+..  `Outlining`_
+..  `External Files, Part 1`_
+..  `External Files, Part 2`_
 
 Examples
 --------
 
-`Running Scripts with @button Nodes`_
-`Making Slide Shows`_
+..  `Running Scripts with @button Nodes`_
+..  `Making Slide Shows`_
 
 
-
-
-`My first slide show`_
-
-.. @+node:ekr.20101007082321.4359: *3* Basics
-.. @+node:ekr.20101007082321.4360: *3* Installation
-.. @+node:ekr.20101007082321.4361: *3* Examples
 .. @-all
 .. @-leo
