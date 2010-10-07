@@ -28,6 +28,7 @@ import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
+    # Uses leoPlugins.TryNext.
 
 import leo.plugins.baseNativeTree as baseNativeTree
 
@@ -6983,11 +6984,11 @@ class leoQtGui(leoGui.leoGui):
             if retval: return retval
             #@+<< load scrolledmessage plugin >>
             #@+node:leohag.20081205043707.14: *6* << load scrolledmessage plugin >>
-            import leo.core.leoPlugins as leoPlugins
-            sm = leoPlugins.getPluginModule('scrolledmessage')
+            pc = g.app.pluginsController
+            sm = pc.getPluginModule('scrolledmessage')
 
             if not sm:
-                sm = leoPlugins.loadOnePlugin('leo.plugins.scrolledmessage',verbose=True)
+                sm = pc.loadOnePlugin('leo.plugins.scrolledmessage',verbose=True)
                 if sm:
                     g.es('scrolledmessage plugin loaded.', color='blue')
                     sm.onCreate('tag',{'c':c})
@@ -6996,12 +6997,13 @@ class leoQtGui(leoGui.leoGui):
             if retval: return retval
             #@+<< no dialog error >>
             #@+node:leohag.20081205043707.11: *6* << no dialog error >>
-            g.es_print_error('The handler for the "scrolledMessage" hook appears to be missing or not working.\n\t%s'%g.callers())
+            g.es_print_error(
+                'No handler for the "scrolledMessage" hook.\n\t%s' % (
+                    g.callers()))
             #@-<< no dialog error >>
 
         #@+<< emergency fallback >>
         #@+node:leohag.20081205043707.13: *6* << emergency fallback >>
-
         b = QtGui.QMessageBox
         d = b(None) # c.frame.top)
         d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.

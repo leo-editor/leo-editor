@@ -79,10 +79,9 @@ globalPrinter = None
 
 #@+<< imports >>
 #@+node:leohag.20081203143921.3: ** << imports >>
-import inspect 
-
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+
+import inspect 
 
 try:
     from PyQt4 import QtCore, QtGui, uic
@@ -100,9 +99,9 @@ def init():
 
     ok = g.app.gui.guiName().startswith("qt")
     if ok:
-        leoPlugins.registerHandler(('open2','new'), onCreate)
-        leoPlugins.registerHandler('scrolledMessage', scrolledMessageHandler)
-        leoPlugins.registerHandler('scrolledMessage', selectHandler)
+        g.registerHandler(('open2','new'), onCreate)
+        g.registerHandler('scrolledMessage', scrolledMessageHandler)
+        g.registerHandler('scrolledMessage', selectHandler)
 
         g.plugin_signon(__name__)
 
@@ -309,10 +308,11 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081207032616.24: *4* RST3
     def doActionRST3(self, checked):
 
-        rst3 = leoPlugins.getPluginModule('rst3')
+        pc = g.app.pluginsController
+        rst3 = pc.getPluginModule('rst3')
 
         if not rst3:
-            rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+            rst3 = pc.loadOnePlugin('rst3',verbose=True)
             if rst3:
                 g.es('rst3 loaded')
                 rst3.onCreate('tag',{'c':self.c})

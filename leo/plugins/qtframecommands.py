@@ -18,7 +18,7 @@ __version__ = '0.0'
 #@+<< imports >>
 #@+node:ekr.20100103094733.3712: ** << imports >>
 import leo.core.leoGlobals as g
-from leo.core import leoPlugins 
+
 # Whatever other imports your plugins uses.
 #@-<< imports >>
 
@@ -29,10 +29,10 @@ def init ():
     ok = True
 
     if ok:
-        #leoPlugins.registerHandler('start2',onStart2)
+        # g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
-    leoPlugins.registerHandler("select2", onSelect)
+    g.registerHandler("select2", onSelect)
     return ok
 
 def onSelect(tag,keywords):
