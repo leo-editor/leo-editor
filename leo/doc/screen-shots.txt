@@ -10,98 +10,46 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
+.. links
+.. _`My first slide show`:      slides/my-first-slide-show/slide-001.html
+.. _`What is Leo`:              slides/what-is-leo/slide-001.html
+.. _`What is Leo--Continued`_:  slides/what-is-leo--continued/slide-001.html
+.. _`Installation`_             slides/installation/slide-001.html
+.. _`Outlining`_                slides/outlining/slide-001.html
+.. _`External Files, Part 1`_
+.. _`External Files, Part 2`_
+.. _`Running Scripts with @button Nodes`_
+.. _`Making Slide Shows`_
+
 ######
 Slides
 ######
 
 This is the front page for various slide shows about Leo.
 
-..  .. _`Installing Leo`: installation/installation-001.html
-..  .. _`What is Leo`:    what-is-leo/what-is-leo-001.html
+Basics
+------
 
-..  `Installing Leo`_
-..  `What is Leo`_
+`What is Leo`_
+`What is Leo--Continued`_
+`Installation`_
+`Outlining`_
+`External Files, Part 1`_
+`External Files, Part 2`_
 
-.. _`My first slide show`: slides/my-first-slide-show/my-first-slide-show-001.html
+Examples
+--------
+
+`Running Scripts with @button Nodes`_
+`Making Slide Shows`_
+
+
+
 
 `My first slide show`_
 
-.. @+node:ekr.20100821182153.4345: ** @slideshow installation
-.. The body of this node is ignored except for options.
-
-@ @rst-options
-call_docutils=False
-show_headlines=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-.. @+node:ekr.20100822164918.4364: *3* Installing Leo
-This slideshow tells how to install Leo.
-
-..  .. toctree::
-..    ..  :hidden:
-..    ..  :glob:
-..
-..    installation-0*
-.. @+node:ekr.20100821182153.4347: *3* Two versions
-.. _`the Python web site`:  http://www.python.org/
-.. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
-
-Windows Users:
-
-    Installing Leo requires two steps:
-
-    1. Install Python: download the Windows MSI installer (a .msi file) from
-       `the Python web site`_, and double-click on the installer. (Python is a
-       type of software for creating and running computer programs.)
-
-    2. Install Leo: download Leo's executable installer (an .exe file) from
-       `Leo's download page`_, then double-click on the .exe file.
-
-Unix and Mac Users:
-
-    Please continue to next page.
-
-Also, if you are a programmer and want to get the Leo files without using an
-installer, continue to the next page.
-.. @+node:ekr.20100821182153.4348: *3* Full installation
-.. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
-
-Full installation of Leo requires that you:
-
-   1. **Install Python**
-   2. **Install the Leo files**
-
-To install Python, follow the directions on the previous page.
-
-To install Leo, go to `Leo's download page`_ and download the most recent zip file under the
-heading "Leo2.py". Download the zip file to your desktop or other location, and
-then unzip it to the folder of your choice.
-
-To run Leo, double-click on the file leo.py that you have just unzipped.
-.. @+node:ekr.20100821182153.4349: *3* leoconfig.txt
-Once you have installed Leo, you can configure Leo using the leoconfig.txt file.
-For more information about this see the documentation distributed with Leo.
-.. @+node:ekr.20100821182153.4350: *3* Leo is a free program
-.. _`Edward K. Ream`:   http://webpages.charter.net/edreamleo/ekr.html
-.. _`leo-editor`:       http://groups.google.com/group/leo-editor
-.. _`Python Tutorial`:  http://docs.python.org/tutorial/
-
-Leo is a free program distributed under the MIT license. This means that not
-only can you use the program freely including commercially, the full
-installation comes with source code that you can modify as you wish, as long as
-you give credit to the author of the program, `Edward K. Ream`_.
-
-Leo is written in Python--a full featured, powerful programming language that
-is comparatively easy to learn and use. For an excellent introduction to Python
-for non-programmers, see the `Python Tutorial`_. Not only is Leo written in Python, it is
-scriptable via Python, meaning that you can embed Python commands in your
-outlines and execute them.
-
-Leo is under active development and all are welcome to contribute. For more
-information, see the `leo-editor`_ Google Group.
-
-Not only is Leo free software, it is supported software. Post questions and bug
-reports to `leo-editor`_ Google Group.
+.. @+node:ekr.20101007082321.4359: *3* Basics
+.. @+node:ekr.20101007082321.4360: *3* Installation
+.. @+node:ekr.20101007082321.4361: *3* Examples
 .. @-all
 .. @-leo
