@@ -12,9 +12,17 @@ an @screenshot tree, the plugin creates a
 screenshot and links the screenshot into the
 slide.
 
-The user can use Inkscape, http://inkscape.org/,
-an Open Source vector graphics editor, to edit
-screenshots.
+Prerequisites
+-------------
+
+Inkscape (Required)
+  An SVG editor: http://www.inkscape.org/
+  Allows the user to edit screenshots.
+  Required to create final output (PNG) files.
+
+PIL (Optional but highly recommended)
+  The Python Imaging Library,
+  http://www.pythonware.com/products/pil/
 
 Commands
 --------
@@ -49,7 +57,9 @@ Making slides
 For each slide, the make-slide and make-slide-show
 commands do the following:
 
-1. Create a slide. Suppose the @slide node is the
+1. Create a slide.
+
+  Suppose the @slide node is the
   n'th @slide node in the @slideshow tree whose
   sanitized name is 'name'. The name of the
   slide's rST source is name-n.html.txt. The name
@@ -107,8 +117,8 @@ E. Render the **final output file**.
   (PIL) is available, this step will use PIL to
   improve the quality of the final output file.
 
-Options
--------
+Options and settings
+--------------------
 
 You specify options in the headlines of nodes.
 **Global options** appear as direct children of
@@ -118,7 +128,7 @@ options** appear as direct children of an @slide
 node and apply to only to that @slide node.
 
 Global options
---------------
+~~~~~~~~~~~~~~
 
 The following may appear *either* as a direct
 child of the @slideshow node or as the direct
@@ -143,7 +153,7 @@ child of an @slide node.
   False (or false or 0): suppress informational messages.
 
 Local options
--------------
+~~~~~~~~~~~~~
 
 The following are valid only as the direct child
 of an @slide node.
@@ -189,40 +199,24 @@ of an @slide node.
   Causes the given headline in the @screenshot
   outline to be selected before taking the screenshot.
 
-Slideshow directories and contents
-----------------------------------
-
-@slideshow <slideshow-name>
-  Creates the folder:
-  <sphinx_path>/slides/<sanitized slideshow-name>
-
-@slide <name>
-  Name is ignored. Suppose the @slide node is the
-  n'th @slide node in the @slideshow tree whose
-  sanitized name is 'name'. The name of the
-  slide's rST source is name-n.html.txt. The name
-  of the slide in the sphinx _build folder is
-  name-n.html. The name of the working file is
-  name-n.svg and the name of the final screenshot
-  is name-n.png, unless overridden by the @output
-  option.
-
 Settings
---------
+~~~~~~~~
 
 @string screenshot-bin = <path to inkscape.exe>
-  The full path to the Inscape program.       
+  The full path to the Inscape program.   
 
-Prerequisites
--------------
+File names
+----------------------------------
 
-Inkscape (Required)
-  An SVG editor
-  http://www.inkscape.org/
+Suppose the @slide node is the n'th @slide node in
+the @slideshow tree whose sanitized name is
+'name'. The name of the slide's rST source is
+name-n.html.txt. The name of the slide in the
+sphinx _build folder is name-n.html. The name of
+the working file is name-n.svg and the name of the
+final screenshot is name-n.png, unless overridden
+by the @output option.
 
-PIL (Optional but highly recommended)
-  The Python Imaging Library,
-  http://www.pythonware.com/products/pil/
 """
 
 #@@pagewidth 50
