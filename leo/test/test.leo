@@ -573,9 +573,8 @@
 <v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20101006122837.2362"><vh>@verbose true</vh></v>
 <v t="ekr.20101007024057.2360"><vh>@screenshot_width = 850</vh></v>
-<v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
-<v t="ekr.20101006081407.2370"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-001.png</vh></v>
-<v t="ekr.20100914081810.2334"><vh>@screenshot-tree</vh>
+<v t="ekr.20100911162102.2361" a="E"><vh>@slide What is Leo</vh>
+<v t="ekr.20100914081810.2334"><vh>@@screenshot</vh>
 <v t="ekr.20100914081810.2336"><vh>To Do List</vh>
 <v t="ekr.20100914081810.2337"><vh>Urgent</vh></v>
 <v t="ekr.20100914081810.2338"><vh>Important</vh></v>
@@ -589,7 +588,7 @@
 <v t="ekr.20100914081810.2344"><vh>2010</vh></v>
 </v>
 </v>
-<v t="ekr.20100914081810.2345"><vh>@select Urgent</vh></v>
+<v t="ekr.20100914081810.2345"><vh>@@select Urgent</vh></v>
 </v>
 <v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
 <v t="ekr.20101006081407.2383"><vh>@image ../doc/html/slides/my-first-slide-show/my-first-slide-show-002.png</vh></v>
@@ -609,9 +608,9 @@
 </v>
 <v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
 </v>
-<v t="ekr.20100909154940.2227"><vh>@ignore @slide Headline and body text</vh>
+<v t="ekr.20100909154940.2227" a="E"><vh>@ignore @slide Headline and body text</vh>
 <v t="ekr.20100914192147.2391"><vh>@image ../doc/html/screen-shots/my_first_slide_show-002.png</vh></v>
-<v t="ekr.20100909154940.2228"><vh>@screenshot-tree</vh>
+<v t="ekr.20100909154940.2228"><vh>@screenshot</vh>
 <v t="ekr.20100909154940.2230"><vh>To Do List</vh>
 <v t="ekr.20100909154940.2231"><vh>Urgent</vh></v>
 <v t="ekr.20100909154940.2232"><vh>Important</vh></v>
@@ -1071,7 +1070,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7223,9 +7222,6 @@ Use Leo:
 
 Because Leo is unlike other tools you may have used, a series of examples may be
 the best way to demonstrate what can be done with Leo.
-
-.. image:: my-first-slide-show-001.png
-
 </t>
 <t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
@@ -7328,7 +7324,6 @@ if p:
 else:
     g.es_print('not found',h,color='red')
 </t>
-<t tx="ekr.20101006081407.2370"></t>
 <t tx="ekr.20101006081407.2383"></t>
 <t tx="ekr.20101006122837.2362"></t>
 <t tx="ekr.20101007024057.2360"></t>

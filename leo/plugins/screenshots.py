@@ -2,40 +2,46 @@
 #@+node:ekr.20100908110845.5505: * @thin screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
-"""The screenshots.py plugin
+"""
+The screenshots.py plugin
 ============================
 
-This plugin creates slides from @slide nodes appearing
-as descendants of @slideshow nodes.
+This plugin creates slides from @slide nodes in
+@slideshow trees. If an @slide node contains
+an @screenshot tree, the plugin creates a
+screenshot and links the screenshot into the
+slide.
 
+The user can use Inkscape, http://inkscape.org/,
+an Open Source vector graphics editor, to edit
+screenshots.
+
+Commands
+--------
 
 This plugin defines four commands. The make-slide
-and make-slide-show commands (collectively known
-as **slide commands**) create slides and slide
-shows (collections of slides) from Leo outlines.
-The apropos-slides command prints this message to
+and make-slide-show commands create slides and
+slide shows (collections of slides) from
+@slideshow trees and @slide nodes. The
+apropos-slides command prints this message to
 Leo's log pane. The slide-show-info prints the
-settings in effect for this plugin.
+settings in effect.
 
-Nodes
------
+Summary
+-------
 
-A **slide node** is a node whose headline of the form::
+@slideshow <slideshow-name>
+  Creates the folder:
+  <sphinx_path>/slides/<slideshow-name>
 
-    @slide <name of slide>
+@slide <ignored text>
+  Creates <slideshow>-<slide-number>.html.
 
-A **slideshow** is a tree of nodes whose root
-node has the form::
+@screenshot
+  Specifies the contents of the screenshot.
 
-    @slidesnow <name of slide show>
-
-**Option nodes** allow slide-by-slide control of
-slide commands. Options nodes must be direct
-children of a slide node.
-
-Files
------
-
+**Options** are child nodes of @slideshow or
+@slide nodes.  See the Options section below.
 
 Making slides
 -------------
@@ -43,67 +49,169 @@ Making slides
 For each slide, the make-slide and make-slide-show
 commands do the following:
 
-1. Create the **target outline**, screenshot-setup.leo.
+1. Create a slide. Suppose the @slide node is the
+  n'th @slide node in the @slideshow tree whose
+  sanitized name is 'name'. The name of the
+  slide's rST source is name-n.html.txt. The name
+  of the slide in the sphinx _build folder is
+  name-n.html. The name of the working file is
+  name-n.svg and the name of the final screenshot
+  is name-n.png, unless overridden by the @output
+  option.
 
-By default, the target outline is a copy of the
-Leo outline containing the slide node. If the
-slide node contains an @screenshot-tree node, the
-target outline consists of all the descendants of
-the @scrrenshot-tree node.
+  If the @slide node contains an @screenshot tree,
+  the plugin appends an ``.. image::`` directive
+  referring to the screenshot to the body text of
+  the @slide node. The plugin also creates a child
+  @image node referring to the screenshot.
 
-2. Take a **screenshot**, a bitmap (PNG) file. The
-   slide commands take a screen shot of the target
-   outline.  Several option nodes apply to this step:
+2. (Optional) Create a screenshot.
 
-- If the slide node contains an option node of the
-  form @select <headline> the slide commands select
-  the node in the target outline whose headline
-  matches <headline>.
+  The plugin creates a screenshot for an @slide
+  node only if the @slide node contains an
+  @screenshot node as a direct child.
 
-- If the slide node contains an @pause node as one
+Taking a screenshot involves the following steps:
+
+A. Create the **target outline**: screenshot-setup.leo.
+
+  The target outline contains consists of all the
+  children (and their descendants) of the
+  @screenshot node.
+
+B. Create the **screenshot**, a bitmap (PNG) file.
+
+  The slide commands take a screen shot of the
+  target outline. The @pause option opens the
+  target outline but does *not* take the
+  screenshot. The user must take the screenshot
+  manually. For more details, see the the options
+  section below.
+
+C. Convert the screenshot file to a **work file**.
+
+   The work file is an SVG (Scalable Vector
+   Graphics) file: http://www.w3.org/Graphics/SVG/.
+
+D. (Optional) Edit the work file.
+
+  If the @slide node has a child @edit node, the
+  plugin opens Inkscape so that the user can
+  edit the work file.
+
+E. Render the **final output file**.
+
+  The plugin calls Inkscape non-interactively to
+  render the final output file (a PNG image) from
+  the work file. If the Python Imaging Libary
+  (PIL) is available, this step will use PIL to
+  improve the quality of the final output file.
+
+Options
+-------
+
+You specify options in the headlines of nodes.
+**Global options** appear as direct children of
+@slideshow nodes and apply to all @slide nodes
+unless overridden by a local option. **Local
+options** appear as direct children of an @slide
+node and apply to only to that @slide node.
+
+Global options
+--------------
+
+The following may appear *either* as a direct
+child of the @slideshow node or as the direct
+child of an @slide node.
+
+@sphinx_path = <path>
+  This directory contains the slides directory,
+  and the following files: 'conf.py',
+  'Leo4-80-border.jpg', 'Makefile' and 'make.bat'.
+
+@screenshot_height = <int>
+  The height in pixels of screenshots.
+
+@screenshot_width = <int>
+  The height in pixels of screenshots.
+
+@template_fn = <path>
+  The absolute path to inkscape-template.svg
+
+#@@verbose = True/False
+  True (or true or 1):  generate informational message.
+  False (or false or 0): suppress informational messages.
+
+Local options
+-------------
+
+The following are valid only as the direct child
+of an @slide node.
+
+@callout <any text>
+  Generates a text callout in the working .svg file.
+  An @slide node may have several @callout children.
+
+@edit = True/False
+  If True (or true or 1) the plugin enters
+  Inkscape interactively after taking a
+  screenshot.
+
+@markers = <list of integers>
+  Generates 'numbered balls' in the working .svg file.
+
+@pause = True/False
+  If True (or true or 1) the user must take the
+  screenshot manually. Otherwise, the plugin takes
+  the screenshot automatically.
+
+  If the slide node contains an @pause node as one
   of its directive children, the slide commands
   open the target node, but do *not* take a screen
   shot.
 
-  The user may adjust the screen as desired,
-  for example by selecting menus or showing dialogs.
-  The *user* must then take the screen shot manually.
-  As soon as the user closes the target outline,
-  the slide commands look for the screen shot on the
-  clipboard.  If found, the slide commands save the
-  screenshot to the screenshot file.
+  The user may adjust the screen as desired, for
+  example by selecting menus or showing dialogs.
+  The *user* must then take the screen shot
+  manually. As soon as the user closes the target
+  outline, the slide commands look for the screen
+  shot on the clipboard. If found, the slide
+  commands save the screenshot to the screenshot
+  file.
 
-3. Add an .. image:: directive and @image node.
+@screenshot
+  The root of a tree that becomes the entire
+  contents of screenshot. If this option is not
+  given, the entire present outline becomes the
+  contents of the screenshot.
 
-4. Convert the screenshot file to a **work file**,
-   an SVG (Scalable Vector Graphics) file. See
-   http://www.w3.org/Graphics/SVG/.
+@select <headline>
+  Causes the given headline in the @screenshot
+  outline to be selected before taking the screenshot.
 
-   @callout
+Slideshow directories and contents
+----------------------------------
 
-5. (Optional) Edit the work file interactively
-   with Inkscape. Inkscape, http://inkscape.org/,
-   is an Open Source vector graphics editor.
+@slideshow <slideshow-name>
+  Creates the folder:
+  <sphinx_path>/slides/<sanitized slideshow-name>
 
-   This step happens only if the slide node contains
-   an @edit node as a direct child of the slide node.
+@slide <name>
+  Name is ignored. Suppose the @slide node is the
+  n'th @slide node in the @slideshow tree whose
+  sanitized name is 'name'. The name of the
+  slide's rST source is name-n.html.txt. The name
+  of the slide in the sphinx _build folder is
+  name-n.html. The name of the working file is
+  name-n.svg and the name of the final screenshot
+  is name-n.png, unless overridden by the @output
+  option.
 
-6. Use Inkscape non-interactively to
-   render a **final output file** (a PNG image) from the work file.
-   If the Python Imaging Libary (PIL) is available,
-   this step will use PIL to improve the quality
-   of the final output file.
-
-Examples
+Settings
 --------
 
-The following examples show how to create screen shots.
-
-Example 1: Fully automatic operation.
-
-Example 2: Creating a custom screen shot.
-
-Example 3: Editing the work file with callouts.
+@string screenshot-bin = <path to inkscape.exe>
+  The full path to the Inscape program.       
 
 Prerequisites
 -------------
@@ -115,13 +223,6 @@ Inkscape (Required)
 PIL (Optional but highly recommended)
   The Python Imaging Library,
   http://www.pythonware.com/products/pil/
-
-Settings
---------
-
-@string inkscape-bin
-
-This setting tells Leo the location of the Inkscape executable.
 """
 
 #@@pagewidth 50
@@ -142,7 +243,7 @@ This setting tells Leo the location of the Inkscape executable.
 # - Copy sphinx build files from doc/html to doc/slides/slideshow-name directory.
 # - Generated leo_toc.html as the first slide.
 # - Generate titles for all slides.
-# - Ignore @slide ande @slideshow nodes in @screenshot-tree trees.
+# - Ignore @slide ande @slideshow nodes in @screenshot trees.
 # - Use @slideshow title as title of all slides.
 # - Copy only leo_toc.html.txt to the slideshow folder.
 # - Do not overwite existing screenshots.
@@ -277,7 +378,6 @@ class ScreenShotController(object):
         self.sphinx_path = None
         self.template_fn = None
         self.verbose = True
-        self.working_fn = None
 
         # Options that may be set only in children of @slide nodes.
         self.callouts = []
@@ -287,8 +387,6 @@ class ScreenShotController(object):
         self.pause_flag = None
         self.screenshot_tree = None
         self.select_node = None
-        self.slide_node = None
-        self.slideshow_node = None
 
         # Computed data...
         self.at_image_fn = None
@@ -296,8 +394,11 @@ class ScreenShotController(object):
         self.screenshot_fn = None
         self.slide_base_name = None
         self.slide_fn = None
+        self.slideshow_node = None
+        self.slide_node = None
         self.slide_number = 1
         self.slideshow_path = None
+        self.working_fn = None
 
         # Dimension cache.
         self.dimCache = {}
@@ -467,11 +568,11 @@ class ScreenShotController(object):
     def find_at_screenshot_tree_node (self,p):
 
         '''
-        Return the @screenshot-tree node in a direct child of p.
+        Return the @screenshot node in a direct child of p.
         '''
 
         for p2 in p.children():
-            if g.match_word(p2.h,0,'@screenshot-tree'):
+            if g.match_word(p2.h,0,'@screenshot'):
                 return p2
         else:
             return None
@@ -657,6 +758,9 @@ class ScreenShotController(object):
 
         If a relative path is given, it will resolved
         relative to the directory containing the .leo file.
+
+        This path will contain the slides directory, and the following files:
+        'conf.py','Leo4-80-border.jpg','Makefile','make.bat',
         '''
 
         sc = self ; c = sc.c
@@ -702,13 +806,13 @@ class ScreenShotController(object):
             g.error('template file not found:',fn)
             return None
     #@+node:ekr.20100911044508.5626: *5* get_working_fn
-    def get_working_fn (self,p):
+    def get_working_fn (self):
 
         '''Return the full, absolute, name of the working file.'''
 
         sc = self
-        working_fn = sc.get_option('working_fn')
-        fn = working_fn or '%s-%03d.svg' % (sc.slide_base_name,sc.slide_number)
+        # working_fn = sc.get_option('working_fn')
+        fn = '%s-%03d.svg' % (sc.slide_base_name,sc.slide_number)
         fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20101004082701.5737: *4* Options
@@ -878,8 +982,7 @@ class ScreenShotController(object):
         slide_path,junk = g.os_path_split(sc.slide_fn)
         table = (
             'conf.py',
-            # This is created later.
-            # 'leo_toc.html.txt',
+            # 'leo_toc.html.txt', # This is created later.
             'Leo4-80-border.jpg',
             'Makefile',
             'make.bat',
@@ -912,7 +1015,7 @@ class ScreenShotController(object):
             elif g.match_word(p.h,0,'@slide'):
                 n += 1
                 # Skip the entire tree, including
-                # any inner @screenshot-tree trees.
+                # any inner @screenshot trees.
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -1064,6 +1167,9 @@ class ScreenShotController(object):
         # Always make the slide.
         sc.make_slide()
 
+        if not sc.screenshot_tree:
+            return # Don't take any screenshot!
+
         # Take the screenshot and update the tree.
         if g.os_path_exists(sc.working_fn):
             if sc.verbose:
@@ -1090,8 +1196,6 @@ class ScreenShotController(object):
                 sc.make_output_file()
             elif sc.verbose:
                 g.note('no output file')
-
-        return sc.screenshot_fn
     #@+node:ekr.20100915074635.5651: *4* init
     def init (self,p):
 
@@ -1117,7 +1221,7 @@ class ScreenShotController(object):
         sc.slideshow_path = sc.get_slideshow_path(
             sc.slideshow_node,sc.sphinx_path)
         sc.slide_base_name = sc.get_slide_base_name(sc.slideshow_path)
-        sc.working_fn = sc.get_working_fn(p)
+        sc.working_fn = sc.get_working_fn()
         if not sc.working_fn: return False
         sc.screenshot_fn = sc.get_screenshot_fn(p)
         if not sc.screenshot_fn: return False
@@ -1213,7 +1317,7 @@ class ScreenShotController(object):
         c.frame.createFirstTreeNode()
         root = c.rootPosition()
         if sc.screenshot_tree:
-             # Copy all descendants of the @screenshot-tree node.
+             # Copy all descendants of the @screenshot node.
             children = [z.copy() for z in sc.screenshot_tree.children() if not isSlide(z)]
         else:
             # Copy the entire Leo outline.
