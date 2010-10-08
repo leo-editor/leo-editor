@@ -2511,7 +2511,6 @@ class leoQtBody (leoFrame.leoBody):
         cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
         cpl.complete()
         return cpl
-
     #@+node:ekr.20081121105001.212: *4* Editors (qtBody)
     #@+node:ekr.20081121105001.215: *5* entries
     #@+node:ekr.20081121105001.216: *6* addEditor & helper (qtBody)

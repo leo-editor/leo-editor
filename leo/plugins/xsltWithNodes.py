@@ -291,7 +291,7 @@ def addMenu( tag, keywords ):
     c.add_command(xmen, label = "Create Stylesheet Node", command = lambda c = c : addXSLTNode( c ) )
     elmen= Tk.Menu( xmen, tearoff = False )
     xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
-    xsltkeys = xslt.keys()
+    xsltkeys = list(xslt.keys())
     xsltkeys.sort()
     for z in xsltkeys:
         c.add_command(elmen, label = z, command = lambda c = c, element = xslt[ z ]: addXSLTElement( c, element ) )

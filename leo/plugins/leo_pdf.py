@@ -894,7 +894,8 @@ if docutils:
 
             d = node.__dict__
 
-            nkeys = d.keys() ; nkeys.sort()
+            nkeys = list(d.keys())
+            nkeys.sort()
 
             g.pr('\n','-' * 30)
             g.pr('dump of node %s\n' % (g.choose(tag,'(%s)' % tag,'')))

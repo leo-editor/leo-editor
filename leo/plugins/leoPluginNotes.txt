@@ -1,8 +1,8 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20090430075506.3:@thin leoPluginNotes.txt
+#@+leo-ver=5-thin
+#@+node:ekr.20090430075506.3: * @thin leoPluginNotes.txt
 #@+all
-#@+node:ekr.20090430075506.6:To do
-#@+node:ekr.20090430102730.3:Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20090430075506.6: ** To do
+#@+node:ekr.20090430102730.3: *3* Add expand_noweb_references for rst3 plugin
 @nocolor
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
@@ -17,7 +17,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090430120622.2:post
+#@+node:ekr.20090430120622.2: *4* post
 @nocolor-node
 
 I want to write the documentation for the source program in a @rst3 subtree. In
@@ -31,9 +31,7 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-#@nonl
-#@-node:ekr.20090430120622.2:post
-#@+node:ekr.20050811101550.1:writeBody & helpers
+#@+node:ekr.20050811101550.1: *4* writeBody & helpers
 def writeBody (self,p):
 
     # remove trailing cruft and split into lines.
@@ -73,7 +71,7 @@ def writeBody (self,p):
     s = '\n'.join(lines).strip()
     if s:
         self.write('%s\n\n' % s)
-#@+node:ekr.20050811150541:handleCodeMode & helper
+#@+node:ekr.20050811150541: *5* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -108,8 +106,7 @@ def handleCodeMode (self,lines):
         self.finishCodePart(result,code)
         code = []
     return self.rstripList(result)
-#@nonl
-#@+node:ekr.20050811152104:formatCodeModeLine
+#@+node:ekr.20050811152104: *6* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -118,18 +115,14 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-#@nonl
-#@-node:ekr.20050811152104:formatCodeModeLine
-#@+node:ekr.20050813155021:rstripList
+#@+node:ekr.20050813155021: *6* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
 
     s = '\n'.join(theList).rstrip()
     return s.split('\n')
-#@nonl
-#@-node:ekr.20050813155021:rstripList
-#@+node:ekr.20050813160208:finishCodePart
+#@+node:ekr.20050813160208: *6* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -138,10 +131,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-#@nonl
-#@-node:ekr.20050813160208:finishCodePart
-#@-node:ekr.20050811150541:handleCodeMode & helper
-#@+node:ekr.20060608094815:handleDocOnlyMode
+#@+node:ekr.20060608094815: *5* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -171,9 +161,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-#@nonl
-#@-node:ekr.20060608094815:handleDocOnlyMode
-#@+node:ekr.20060608094815.1:isAnyDocPart
+#@+node:ekr.20060608094815.1: *5* isAnyDocPart
 def isAnyDocPart (self,s):
 
     if s.startswith('@doc'):
@@ -182,9 +170,7 @@ def isAnyDocPart (self,s):
         return False
     else:
         return len(s) == 1 or s[1].isspace()
-#@nonl
-#@-node:ekr.20060608094815.1:isAnyDocPart
-#@+node:ekr.20050811153208:isSpecialDocPart
+#@+node:ekr.20050811153208: *5* isSpecialDocPart
 def isSpecialDocPart (self,s,kind):
 
     '''Return True if s is a special doc part of the indicated kind.
@@ -203,9 +189,7 @@ def isSpecialDocPart (self,s,kind):
         result = False
 
     return result
-#@nonl
-#@-node:ekr.20050811153208:isSpecialDocPart
-#@+node:ekr.20050811163802:isAnySpecialDocPart
+#@+node:ekr.20050811163802: *5* isAnySpecialDocPart
 def isAnySpecialDocPart (self,s):
 
     for kind in (
@@ -217,8 +201,7 @@ def isAnySpecialDocPart (self,s):
             return True
 
     return False
-#@-node:ekr.20050811163802:isAnySpecialDocPart
-#@+node:ekr.20050811105438:removeLeoDirectives
+#@+node:ekr.20050811105438: *5* removeLeoDirectives
 def removeLeoDirectives (self,lines):
 
     '''Remove all Leo directives, except within literal blocks.'''
@@ -240,9 +223,7 @@ def removeLeoDirectives (self,lines):
             result.append(s)
 
     return result
-#@nonl
-#@-node:ekr.20050811105438:removeLeoDirectives
-#@+node:ekr.20050811105438.1:handleSpecialDocParts
+#@+node:ekr.20050811105438.1: *5* handleSpecialDocParts
 def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
     # g.trace(kind,g.listToString(lines))
@@ -269,8 +250,7 @@ def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
             result.append(s)
 
     return result
-#@-node:ekr.20050811105438.1:handleSpecialDocParts
-#@+node:ekr.20050805162550.30:replaceCodeBlockDirectives
+#@+node:ekr.20050805162550.30: *5* replaceCodeBlockDirectives
 def replaceCodeBlockDirectives (self,lines):
 
     '''Replace code-block directive, but not in literal blocks.'''
@@ -296,21 +276,15 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
-#@nonl
-#@-node:ekr.20050805162550.30:replaceCodeBlockDirectives
-#@-node:ekr.20050811101550.1:writeBody & helpers
-#@-node:ekr.20090430102730.3:Add expand_noweb_references for rst3 plugin
-#@-node:ekr.20090430075506.6:To do
-#@+node:ekr.20090430075506.5:4.6 b2 projects
-#@+node:ekr.20090430075506.1:Honor @path in rst3 plugin
+#@+node:ekr.20090430075506.5: ** 4.6 b2 projects
+#@+node:ekr.20090430075506.1: *3* Honor @path in rst3 plugin
 @nocolor-node
 
 The rst3 plugin now honors any @path directive that appears as the ancestor of
 an @rst node. As always, such @path directives affect only relative paths:
 absolute paths in @rst nodes override any @path directive. The exact rules can
 be seen in the code in the computeOutputFileName method.
-#@nonl
-#@+node:ekr.20050809075309:initWrite
+#@+node:ekr.20050809075309: *4* initWrite
 def initWrite (self,p):
 
     self.initOptionsFromSettings() # Still needed.
@@ -323,8 +297,7 @@ def initWrite (self,p):
     self.path = d.get('path') or ''
 
     # g.trace('path:',self.path)
-#@-node:ekr.20050809075309:initWrite
-#@+node:ekr.20051202070028:computeOutputFileName
+#@+node:ekr.20051202070028: *4* computeOutputFileName
 def computeOutputFileName (self,fileName):
 
     openDirectory = self.c.frame.openDirectory
@@ -345,10 +318,7 @@ def computeOutputFileName (self,fileName):
         path = g.os_path_finalize_join(fileName)
 
     return path
-#@nonl
-#@-node:ekr.20051202070028:computeOutputFileName
-#@-node:ekr.20090430075506.1:Honor @path in rst3 plugin
-#@+node:ekr.20090430075506.2:Added support for generate_rst_header_comment option
+#@+node:ekr.20090430075506.2: *3* Added support for generate_rst_header_comment option
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/50c1d4dc5695414e/aa061a6c1f9b3ecd?lnk=gst&q=rst+option#aa061a6c1f9b3ecd
@@ -373,8 +343,7 @@ You can set this option in @ @rst-option doc parts like this::
 The following node now appears in leoSettings.leo:
 
 @bool rst3_generate_rst_header_comment = True
-#@nonl
-#@+node:ekr.20050805162550.8:class rstClass
+#@+node:ekr.20050805162550.8: *4* class rstClass
 class rstClass:
 
     '''A class to write rst markup in Leo outlines.'''
@@ -392,9 +361,8 @@ The first three elements are stack of tags, the rest is html code.
 @c
 
     @others
-#@nonl
-#@+node:ekr.20050805162550.9: Birth & init
-#@+node:ekr.20050805162550.10: ctor (rstClass)
+#@+node:ekr.20050805162550.9: *5*  Birth & init
+#@+node:ekr.20050805162550.10: *6*  ctor (rstClass)
 def __init__ (self,c):
 
     global SilverCity
@@ -409,7 +377,7 @@ def __init__ (self,c):
     self.initHeadlineCommands() # Only needs to be done once.
     self.initSingleNodeOptions()
     self.addMenu()
-#@+node:ekr.20050805162550.11:<< init ivars >>
+#@+node:ekr.20050805162550.11: *7* << init ivars >>
 self.silverCityWarningGiven = False
 
 # The options dictionary.
@@ -447,10 +415,7 @@ self.outputFileName = None # The name of the file being written.
 self.outputFile = None # The open file being written.
 self.path = '' # The path from any @path directive.
 self.source = None # The written source as a string.
-#@nonl
-#@-node:ekr.20050805162550.11:<< init ivars >>
-#@-node:ekr.20050805162550.10: ctor (rstClass)
-#@+node:ekr.20050805162550.12:addMenu
+#@+node:ekr.20050805162550.12: *6* addMenu
 def addMenu (self):
 
     c = self.c ; editMenu = c.frame.menu.getMenu('Edit')
@@ -468,9 +433,7 @@ def addMenu (self):
     )
 
     c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)
-#@nonl
-#@-node:ekr.20050805162550.12:addMenu
-#@+node:ekr.20050813083007:initHeadlineCommands
+#@+node:ekr.20050813083007: *6* initHeadlineCommands
 def initHeadlineCommands (self):
 
     '''Init the list of headline commands used by writeHeadline.'''
@@ -491,9 +454,7 @@ def initHeadlineCommands (self):
         # self.getOption('keep_at_file_prefix'),
         # self.getOption('strip_at_file_prefix'),
     ]
-#@nonl
-#@-node:ekr.20050813083007:initHeadlineCommands
-#@+node:ekr.20050813085236:initSingleNodeOptions
+#@+node:ekr.20050813085236: *6* initSingleNodeOptions
 def initSingleNodeOptions (self):
 
     self.singleNodeOptions = [
@@ -503,9 +464,7 @@ def initSingleNodeOptions (self):
         'preformat_this_node',
         'show_this_headline',
     ]
-#@nonl
-#@-node:ekr.20050813085236:initSingleNodeOptions
-#@+node:ekr.20050808072943:munge
+#@+node:ekr.20050808072943: *6* munge
 def munge (self,name):
 
     '''Convert an option name to the equivalent ivar name.'''
@@ -522,11 +481,8 @@ def munge (self,name):
     s = s.replace('-','_')
 
     return s
-#@nonl
-#@-node:ekr.20050808072943:munge
-#@-node:ekr.20050805162550.9: Birth & init
-#@+node:ekr.20050812122236:options...
-#@+node:ekr.20050808064245:createDefaultOptionsDict
+#@+node:ekr.20050812122236: *5* options...
+#@+node:ekr.20050808064245: *6* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Warning: changing the names of options changes the names of the corresponding ivars.
@@ -580,20 +536,17 @@ def createDefaultOptionsDict(self):
         'rst3_preformat_prefix':        '@rst-preformat',
         'rst3_show_headline_prefix':    '@rst-head',
     }
-#@nonl
-#@-node:ekr.20050808064245:createDefaultOptionsDict
-#@+node:ekr.20050812120933:dumpSettings (debugging)
+#@+node:ekr.20050812120933: *6* dumpSettings (debugging)
 def dumpSettings (self):
 
     d = self.optionsDict
-    keys = d.keys() ; keys.sort()
+    keys = list(d.keys())
+    keys.sort()
 
     g.pr('present settings...')
     for key in keys:
         g.pr('%20s %s' % (key,d.get(key)))
-#@nonl
-#@-node:ekr.20050812120933:dumpSettings (debugging)
-#@+node:ekr.20050814134351:getOption
+#@+node:ekr.20050814134351: *6* getOption
 def getOption (self,name):
 
     bwm = False
@@ -602,9 +555,7 @@ def getOption (self,name):
             self, name, self.optionsDict.get(name)))
 
     return self.optionsDict.get(name)
-#@nonl
-#@-node:ekr.20050814134351:getOption
-#@+node:ekr.20071015110830:initCodeBlockString
+#@+node:ekr.20071015110830: *6* initCodeBlockString
 def initCodeBlockString(self,p):
 
     # New in Leo 4.4.4: do this here, not in initWrite:
@@ -624,8 +575,7 @@ def initCodeBlockString(self,p):
         self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
     else:
         self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n'
-#@-node:ekr.20071015110830:initCodeBlockString
-#@+node:ekr.20050807120331.1:preprocessTree & helpers
+#@+node:ekr.20050807120331.1: *6* preprocessTree & helpers
 def preprocessTree (self,root):
 
     self.tnodeOptionDict = {}
@@ -642,17 +592,14 @@ def preprocessTree (self,root):
         for key in self.tnodeOptionDict.keys():
             g.trace(key)
             g.printDict(self.tnodeOptionDict.get(key))
-#@nonl
-#@+node:ekr.20051204070141:preprocessNode
+#@+node:ekr.20051204070141: *7* preprocessNode
 def preprocessNode (self,p):
 
     d = self.tnodeOptionDict.get(p.v)
     if d is None:
         d = self.scanNodeForOptions(p)
         self.tnodeOptionDict [p.v] = d
-#@nonl
-#@-node:ekr.20051204070141:preprocessNode
-#@+node:ekr.20050808072943.1:parseOptionLine
+#@+node:ekr.20050808072943.1: *7* parseOptionLine
 def parseOptionLine (self,s):
 
     '''Parse a line containing name=val and return (name,value) or None.
@@ -673,9 +620,7 @@ def parseOptionLine (self,s):
     else:
         # g.trace('*True')
         return name,'True'
-#@nonl
-#@-node:ekr.20050808072943.1:parseOptionLine
-#@+node:ekr.20050808070018.2:scanForOptionDocParts
+#@+node:ekr.20050808070018.2: *7* scanForOptionDocParts
 def scanForOptionDocParts (self,p,s):
 
     '''Return a dictionary containing all options from @rst-options doc parts in p.
@@ -704,9 +649,7 @@ def scanForOptionDocParts (self,p,s):
                             d.update(self.scanOption(p,line))
                     break
     return d
-#@nonl
-#@-node:ekr.20050808070018.2:scanForOptionDocParts
-#@+node:ekr.20050811173750:scanHeadlineForOptions
+#@+node:ekr.20050811173750: *7* scanHeadlineForOptions
 def scanHeadlineForOptions (self,p):
 
     '''Return a dictionary containing the options implied by p's headline.'''
@@ -755,8 +698,7 @@ def scanHeadlineForOptions (self,p):
             g.trace('unknown kind of @rst headline',p.h)
 
         return {}
-#@-node:ekr.20050811173750:scanHeadlineForOptions
-#@+node:ekr.20050807120331.2:scanNodeForOptions
+#@+node:ekr.20050807120331.2: *7* scanNodeForOptions
 def scanNodeForOptions (self,p):
 
     '''Return a dictionary containing all the option-name:value entries in p.
@@ -774,9 +716,7 @@ def scanNodeForOptions (self,p):
     d.update(d2)
 
     return d
-#@nonl
-#@-node:ekr.20050807120331.2:scanNodeForOptions
-#@+node:ekr.20050808070018:scanOption
+#@+node:ekr.20050808070018: *7* scanOption
 def scanOption (self,p,s):
 
     '''Return { name:val } if s is a line of the form name=val.
@@ -802,9 +742,7 @@ def scanOption (self,p,s):
         s2 = 'bad rst3 option in %s: %s' % (p.h,s)
         g.es_print(s2,color='red')
         return {}
-#@nonl
-#@-node:ekr.20050808070018:scanOption
-#@+node:ekr.20050808070018.1:scanOptions
+#@+node:ekr.20050808070018.1: *7* scanOptions
 def scanOptions (self,p,s):
 
     '''Return a dictionary containing all the options in s.'''
@@ -816,10 +754,7 @@ def scanOptions (self,p,s):
         if d2: d.update(d2)
 
     return d
-#@nonl
-#@-node:ekr.20050808070018.1:scanOptions
-#@-node:ekr.20050807120331.1:preprocessTree & helpers
-#@+node:ekr.20050808142313.28:scanAllOptions & helpers
+#@+node:ekr.20050808142313.28: *6* scanAllOptions & helpers
 # Once an option is seen, no other related options in ancestor nodes have any effect.
 
 def scanAllOptions(self,p):
@@ -849,11 +784,12 @@ def scanAllOptions(self,p):
         self.setOption("generate_rst_header_comment",True, "rst3_all")
         self.setOption("http_server_support", True, "rst3_all")
         self.setOption("write_intermediate_file", True, "rst3_all")
-#@+node:ekr.20050805162550.13:initOptionsFromSettings
+#@+node:ekr.20050805162550.13: *7* initOptionsFromSettings
 def initOptionsFromSettings (self):
 
     c = self.c ; d = self.defaultOptionsDict
-    keys = d.keys() ; keys.sort()
+    keys = list(d.keys())
+    keys.sort()
 
     for key in keys:
         for getter,kind in (
@@ -869,8 +805,7 @@ def initOptionsFromSettings (self):
     if self.getOption('http_server_support') and not mod_http:
         g.es('No http_server_support: can not import mod_http plugin',color='red')
         self.setOption('http_server_support',False)
-#@-node:ekr.20050805162550.13:initOptionsFromSettings
-#@+node:ekr.20050810103731:handleSingleNodeOptions
+#@+node:ekr.20050810103731: *7* handleSingleNodeOptions
 def handleSingleNodeOptions (self,p):
 
     '''Init the settings of single-node options from the tnodeOptionsDict.
@@ -884,9 +819,7 @@ def handleSingleNodeOptions (self,p):
         #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,p.h)
 
-#@-node:ekr.20050810103731:handleSingleNodeOptions
-#@-node:ekr.20050808142313.28:scanAllOptions & helpers
-#@+node:ekr.20050811135526:setOption
+#@+node:ekr.20050811135526: *6* setOption
 def setOption (self,name,val,tag):
 
     ivar = self.munge(name)
@@ -899,12 +832,9 @@ def setOption (self,name,val,tag):
             g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
 
     self.optionsDict [ivar] = val
-#@nonl
-#@-node:ekr.20050811135526:setOption
-#@-node:ekr.20050812122236:options...
-#@+node:ekr.20050809074827:write methods
-#@+node:ekr.20050809082854: Top-level write code
-#@+node:ekr.20050809075309:initWrite
+#@+node:ekr.20050809074827: *5* write methods
+#@+node:ekr.20050809082854: *6*  Top-level write code
+#@+node:ekr.20050809075309: *7* initWrite
 def initWrite (self,p):
 
     self.initOptionsFromSettings() # Still needed.
@@ -917,8 +847,7 @@ def initWrite (self,p):
     self.path = d.get('path') or ''
 
     # g.trace('path:',self.path)
-#@-node:ekr.20050809075309:initWrite
-#@+node:ekr.20050809080925:writeNormalTree
+#@+node:ekr.20050809080925: *7* writeNormalTree
 def writeNormalTree (self,p,toString=False):
 
     self.initWrite(p)
@@ -937,8 +866,7 @@ def writeNormalTree (self,p,toString=False):
         self.outputFile.close()
 
     return True
-#@-node:ekr.20050809080925:writeNormalTree
-#@+node:ekr.20051121102358:processTopTree
+#@+node:ekr.20051121102358: *7* processTopTree
 def processTopTree (self,p,justOneFile=False):
 
     c = self.c ; current = p.copy()
@@ -952,9 +880,7 @@ def processTopTree (self,p,justOneFile=False):
         self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
     g.es_print('done',color='blue')
-#@nonl
-#@-node:ekr.20051121102358:processTopTree
-#@+node:ekr.20050805162550.17:processTree
+#@+node:ekr.20050805162550.17: *7* processTree
 def processTree(self,p,ext,toString,justOneFile):
 
     '''Process all @rst nodes in a tree.'''
@@ -993,8 +919,7 @@ def processTree(self,p,ext,toString,justOneFile):
     if not found:
         g.es('No @rst nodes in selected tree',color='blue')
     return None,None
-#@-node:ekr.20050805162550.17:processTree
-#@+node:ekr.20050805162550.21:writeSpecialTree
+#@+node:ekr.20050805162550.21: *7* writeSpecialTree
 def writeSpecialTree (self,p,toString,justOneFile):
 
     c = self.c
@@ -1067,8 +992,7 @@ def writeSpecialTree (self,p,toString,justOneFile):
             self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
 
     return ok
-#@-node:ekr.20050805162550.21:writeSpecialTree
-#@+node:ekr.20050809082854.1:writeToDocutils (sets argv) & helper
+#@+node:ekr.20050809082854.1: *7* writeToDocutils (sets argv) & helper
 def writeToDocutils (self,s):
 
     '''Send s to docutils using the writer implied by self.ext and return the result.'''
@@ -1129,7 +1053,7 @@ def writeToDocutils (self,s):
     except docutils.ApplicationError as error:
         g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
     return res
-#@+node:ekr.20090428082801.64:handleMissingStyleSheetArgs
+#@+node:ekr.20090428082801.64: *8* handleMissingStyleSheetArgs
 def handleMissingStyleSheetArgs (self,s=None):
 
     '''Parse the publish_argv_for_missing_stylesheets option,
@@ -1159,9 +1083,7 @@ def handleMissingStyleSheetArgs (self,s=None):
             break
 
     return d
-#@-node:ekr.20090428082801.64:handleMissingStyleSheetArgs
-#@-node:ekr.20050809082854.1:writeToDocutils (sets argv) & helper
-#@+node:ekr.20060525102337:writeNodeToString (New in 4.4.1)
+#@+node:ekr.20060525102337: *7* writeNodeToString (New in 4.4.1)
 def writeNodeToString (self,p=None,ext=None):
 
     '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -1181,10 +1103,7 @@ def writeNodeToString (self,p=None,ext=None):
             return self.processTree(p,ext=ext,toString=True,justOneFile=True)
     else:
         return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-#@nonl
-#@-node:ekr.20060525102337:writeNodeToString (New in 4.4.1)
-#@-node:ekr.20050809082854: Top-level write code
-#@+node:ekr.20050811154552:getDocPart
+#@+node:ekr.20050811154552: *6* getDocPart
 def getDocPart (self,lines,n):
 
     # g.trace('n',n,repr(''.join(lines)))
@@ -1197,8 +1116,7 @@ def getDocPart (self,lines,n):
             break
         result.append(s)
     return n, result
-#@nonl
-#@+node:ekr.20060610104435:<< Append whatever follows @doc or @space to result >>
+#@+node:ekr.20060610104435: *7* << Append whatever follows @doc or @space to result >>
 if n > 0:
     line = lines[n-1]
     if line.startswith('@doc'):
@@ -1215,9 +1133,7 @@ if n > 0:
 
     if s.strip():
         result.append(s)
-#@-node:ekr.20060610104435:<< Append whatever follows @doc or @space to result >>
-#@-node:ekr.20050811154552:getDocPart
-#@+node:ekr.20050811102607:skip_literal_block
+#@+node:ekr.20050811102607: *6* skip_literal_block
 def skip_literal_block (self,lines,n):
 
     s = lines[n] ; result = [s] ; n += 1
@@ -1234,9 +1150,7 @@ def skip_literal_block (self,lines,n):
 
     # g.printList(result,tag='literal block')
     return n, result
-#@nonl
-#@-node:ekr.20050811102607:skip_literal_block
-#@+node:ekr.20050811101550.1:writeBody & helpers
+#@+node:ekr.20050811101550.1: *6* writeBody & helpers
 def writeBody (self,p):
 
     # remove trailing cruft and split into lines.
@@ -1276,7 +1190,7 @@ def writeBody (self,p):
     s = '\n'.join(lines).strip()
     if s:
         self.write('%s\n\n' % s)
-#@+node:ekr.20050811150541:handleCodeMode & helper
+#@+node:ekr.20050811150541: *7* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -1311,8 +1225,7 @@ def handleCodeMode (self,lines):
         self.finishCodePart(result,code)
         code = []
     return self.rstripList(result)
-#@nonl
-#@+node:ekr.20050811152104:formatCodeModeLine
+#@+node:ekr.20050811152104: *8* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -1321,18 +1234,14 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-#@nonl
-#@-node:ekr.20050811152104:formatCodeModeLine
-#@+node:ekr.20050813155021:rstripList
+#@+node:ekr.20050813155021: *8* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
 
     s = '\n'.join(theList).rstrip()
     return s.split('\n')
-#@nonl
-#@-node:ekr.20050813155021:rstripList
-#@+node:ekr.20050813160208:finishCodePart
+#@+node:ekr.20050813160208: *8* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -1341,10 +1250,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-#@nonl
-#@-node:ekr.20050813160208:finishCodePart
-#@-node:ekr.20050811150541:handleCodeMode & helper
-#@+node:ekr.20060608094815:handleDocOnlyMode
+#@+node:ekr.20060608094815: *7* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -1374,9 +1280,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-#@nonl
-#@-node:ekr.20060608094815:handleDocOnlyMode
-#@+node:ekr.20060608094815.1:isAnyDocPart
+#@+node:ekr.20060608094815.1: *7* isAnyDocPart
 def isAnyDocPart (self,s):
 
     if s.startswith('@doc'):
@@ -1385,9 +1289,7 @@ def isAnyDocPart (self,s):
         return False
     else:
         return len(s) == 1 or s[1].isspace()
-#@nonl
-#@-node:ekr.20060608094815.1:isAnyDocPart
-#@+node:ekr.20050811153208:isSpecialDocPart
+#@+node:ekr.20050811153208: *7* isSpecialDocPart
 def isSpecialDocPart (self,s,kind):
 
     '''Return True if s is a special doc part of the indicated kind.
@@ -1406,9 +1308,7 @@ def isSpecialDocPart (self,s,kind):
         result = False
 
     return result
-#@nonl
-#@-node:ekr.20050811153208:isSpecialDocPart
-#@+node:ekr.20050811163802:isAnySpecialDocPart
+#@+node:ekr.20050811163802: *7* isAnySpecialDocPart
 def isAnySpecialDocPart (self,s):
 
     for kind in (
@@ -1420,8 +1320,7 @@ def isAnySpecialDocPart (self,s):
             return True
 
     return False
-#@-node:ekr.20050811163802:isAnySpecialDocPart
-#@+node:ekr.20050811105438:removeLeoDirectives
+#@+node:ekr.20050811105438: *7* removeLeoDirectives
 def removeLeoDirectives (self,lines):
 
     '''Remove all Leo directives, except within literal blocks.'''
@@ -1443,9 +1342,7 @@ def removeLeoDirectives (self,lines):
             result.append(s)
 
     return result
-#@nonl
-#@-node:ekr.20050811105438:removeLeoDirectives
-#@+node:ekr.20050811105438.1:handleSpecialDocParts
+#@+node:ekr.20050811105438.1: *7* handleSpecialDocParts
 def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
     # g.trace(kind,g.listToString(lines))
@@ -1472,8 +1369,7 @@ def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
             result.append(s)
 
     return result
-#@-node:ekr.20050811105438.1:handleSpecialDocParts
-#@+node:ekr.20050805162550.30:replaceCodeBlockDirectives
+#@+node:ekr.20050805162550.30: *7* replaceCodeBlockDirectives
 def replaceCodeBlockDirectives (self,lines):
 
     '''Replace code-block directive, but not in literal blocks.'''
@@ -1499,10 +1395,7 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
-#@nonl
-#@-node:ekr.20050805162550.30:replaceCodeBlockDirectives
-#@-node:ekr.20050811101550.1:writeBody & helpers
-#@+node:ekr.20050805162550.26:writeHeadline & helper
+#@+node:ekr.20050805162550.26: *6* writeHeadline & helper
 def writeHeadline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -1527,8 +1420,7 @@ def writeHeadline (self,p):
         return
 
     self.writeHeadlineHelper(p)
-#@nonl
-#@+node:ekr.20060608102001:writeHeadlineHelper
+#@+node:ekr.20060608102001: *7* writeHeadlineHelper
 def writeHeadlineHelper (self,p):
 
     h = p.h.strip()
@@ -1562,9 +1454,7 @@ def writeHeadlineHelper (self,p):
             self.write('\n%s\n' % h)
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-#@-node:ekr.20060608102001:writeHeadlineHelper
-#@-node:ekr.20050805162550.26:writeHeadline & helper
-#@+node:ekr.20050810083057:writeNode
+#@+node:ekr.20050810083057: *6* writeNode
 def writeNode (self,p):
 
     '''Format a node according to the options presently in effect.'''
@@ -1592,8 +1482,7 @@ def writeNode (self,p):
         self.writeHeadline(p)
         self.writeBody(p)
         p.moveToThreadNext()
-#@-node:ekr.20050810083057:writeNode
-#@+node:ekr.20071115061253:writePreformat
+#@+node:ekr.20071115061253: *6* writePreformat
 def writePreformat (self,p):
 
     '''Write p's body text lines as if preformatted.
@@ -1613,8 +1502,7 @@ def writePreformat (self,p):
     s = '\n'.join(lines)
     if s.strip():
         self.write('%s\n\n' % s)
-#@-node:ekr.20071115061253:writePreformat
-#@+node:ekr.20050805162550.23:writeTree
+#@+node:ekr.20050805162550.23: *6* writeTree
 def writeTree(self,p):
 
     '''Write p's tree to self.outputFile.'''
@@ -1635,10 +1523,8 @@ def writeTree(self,p):
 
     while p and p != after:
         self.writeNode(p)
-#@-node:ekr.20050805162550.23:writeTree
-#@-node:ekr.20050809074827:write methods
-#@+node:ekr.20050810083314:Utils
-#@+node:ekr.20051202070028:computeOutputFileName
+#@+node:ekr.20050810083314: *5* Utils
+#@+node:ekr.20051202070028: *6* computeOutputFileName
 def computeOutputFileName (self,fileName):
 
     openDirectory = self.c.frame.openDirectory
@@ -1659,15 +1545,11 @@ def computeOutputFileName (self,fileName):
         path = g.os_path_finalize_join(fileName)
 
     return path
-#@nonl
-#@-node:ekr.20051202070028:computeOutputFileName
-#@+node:ekr.20050805162550.16:encode
+#@+node:ekr.20050805162550.16: *6* encode
 def encode (self,s):
 
     return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-#@nonl
-#@-node:ekr.20050805162550.16:encode
-#@+node:ekr.20050805162550.20:report
+#@+node:ekr.20050805162550.20: *6* report
 def report (self,name):
 
     if self.getOption('verbose'):
@@ -1675,15 +1557,11 @@ def report (self,name):
         name = g.os_path_finalize(name)
 
         g.es_print('wrote: %s' % (name),color="blue")
-#@nonl
-#@-node:ekr.20050805162550.20:report
-#@+node:ekr.20050810083856:rstComment
+#@+node:ekr.20050810083856: *6* rstComment
 def rstComment (self,s):
 
     return '.. %s' % s
-#@nonl
-#@-node:ekr.20050810083856:rstComment
-#@+node:ekr.20050805162550.19:underline
+#@+node:ekr.20050805162550.19: *6* underline
 def underline (self,s,p):
 
     '''Return the underlining string to be used at the given level for string s.'''
@@ -1700,19 +1578,14 @@ def underline (self,s,p):
     n = max(4,len(s))
 
     return ch * n + '\n'
-#@nonl
-#@-node:ekr.20050805162550.19:underline
-#@+node:ekr.20050809080031:write
+#@+node:ekr.20050809080031: *6* write
 def write (self,s):
 
     s = self.encode(s)
 
     self.outputFile.write(s)
-#@nonl
-#@-node:ekr.20050809080031:write
-#@-node:ekr.20050810083314:Utils
-#@+node:ekr.20050805162550.33:Support for http plugin
-#@+node:ekr.20050815091008.1:http_addNodeMarker
+#@+node:ekr.20050805162550.33: *5* Support for http plugin
+#@+node:ekr.20050815091008.1: *6* http_addNodeMarker
 def http_addNodeMarker (self,p):
 
     if (
@@ -1725,9 +1598,7 @@ def http_addNodeMarker (self,p):
         self.write(s)
         self.http_map [anchorname] = p.copy()
         if bwm_file: print >> bwm_file, "addNodeMarker", anchorname, p
-#@nonl
-#@-node:ekr.20050815091008.1:http_addNodeMarker
-#@+node:ekr.20050805162550.34:http_endTree & helpers
+#@+node:ekr.20050805162550.34: *6* http_endTree & helpers
 # Was http_support_main
 
 def http_endTree (self,filename,p,justOneFile):
@@ -1747,8 +1618,7 @@ def http_endTree (self,filename,p,justOneFile):
 
         if self.getOption('clear_http_attributes'):
             g.es_print("http attributes cleared")
-#@nonl
-#@+node:ekr.20050805162550.36:set_initial_http_attributes
+#@+node:ekr.20050805162550.36: *7* set_initial_http_attributes
 def set_initial_http_attributes (self,filename):
 
     f = open(filename)
@@ -1758,9 +1628,7 @@ def set_initial_http_attributes (self,filename):
         parser.feed(line)
 
     f.close()
-#@nonl
-#@-node:ekr.20050805162550.36:set_initial_http_attributes
-#@+node:ekr.20050805162550.38:find_anchors
+#@+node:ekr.20050805162550.38: *7* find_anchors
 def find_anchors (self, p):
 
     '''Find the anchors in all the nodes.'''
@@ -1779,9 +1647,7 @@ def find_anchors (self, p):
                 # bwm: not quite sure what's going on here.
                 parser.feed(line)        
     # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
-#@nonl
-#@-node:ekr.20050805162550.38:find_anchors
-#@+node:ekr.20050805162550.37:relocate_references
+#@+node:ekr.20050805162550.37: *7* relocate_references
 @ Relocate references here if we are only running for one file.
 
 Otherwise we must postpone the relocation until we have processed all files.
@@ -1833,9 +1699,7 @@ def relocate_references (self, iterator_generator):
                 except:
                     g.es("Skipped", attr[line+2])
     # g.trace('after %s\n\n\n',attr)
-#@nonl
-#@-node:ekr.20050805162550.37:relocate_references
-#@+node:ekr.20050805162550.35:http_attribute_iter
+#@+node:ekr.20050805162550.35: *7* http_attribute_iter
 def http_attribute_iter (self, p):
     """
     Iterator for all the nodes which have html code.
@@ -1847,12 +1711,7 @@ def http_attribute_iter (self, p):
         attr = mod_http.get_http_attribute(p1)
         if attr:
             yield (p1.copy(),attr)
-#@nonl
-#@-node:ekr.20050805162550.35:http_attribute_iter
-#@-node:ekr.20050805162550.34:http_endTree & helpers
-#@-node:ekr.20050805162550.33:Support for http plugin
-#@-node:ekr.20050805162550.8:class rstClass
-#@+node:ekr.20050805162550.23:writeTree
+#@+node:ekr.20050805162550.23: *4* writeTree
 def writeTree(self,p):
 
     '''Write p's tree to self.outputFile.'''
@@ -1873,8 +1732,7 @@ def writeTree(self,p):
 
     while p and p != after:
         self.writeNode(p)
-#@-node:ekr.20050805162550.23:writeTree
-#@+node:ekr.20050808064245:createDefaultOptionsDict
+#@+node:ekr.20050808064245: *4* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Warning: changing the names of options changes the names of the corresponding ivars.
@@ -1928,13 +1786,9 @@ def createDefaultOptionsDict(self):
         'rst3_preformat_prefix':        '@rst-preformat',
         'rst3_show_headline_prefix':    '@rst-head',
     }
-#@nonl
-#@-node:ekr.20050808064245:createDefaultOptionsDict
-#@-node:ekr.20090430075506.2:Added support for generate_rst_header_comment option
-#@-node:ekr.20090430075506.5:4.6 b2 projects
-#@+node:ekr.20090629080139.5277:4.6 rc1 projects
-#@+node:ekr.20090628104247.5272:Support different colors of icon buttons
-#@+node:ekr.20060328125248.24:createAtButtonHelper & callback
+#@+node:ekr.20090629080139.5277: ** 4.6 rc1 projects
+#@+node:ekr.20090628104247.5272: *3* Support different colors of icon buttons
+#@+node:ekr.20060328125248.24: *4* createAtButtonHelper & callback
 def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verbose=True):
 
     '''Create a button from an @button node.
@@ -1974,7 +1828,7 @@ def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verb
         pane='button',verbose=verbose)
 
     return b
-#@+node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
+#@+node:ekr.20060328125248.28: *5* executeScriptFromButton (mod_scripting)
 def executeScriptFromButton (self,p,b,buttonText):
 
     '''Called from callbacks to execute the script in node p.'''
@@ -1995,10 +1849,7 @@ def executeScriptFromButton (self,p,b,buttonText):
 
     if 0: # Do *not* set focus here: the script may have changed the focus.
         c.frame.bodyWantsFocus()
-#@nonl
-#@-node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
-#@-node:ekr.20060328125248.24:createAtButtonHelper & callback
-#@+node:ekr.20060328125248.17:createIconButton
+#@+node:ekr.20060328125248.17: *4* createIconButton
 def createIconButton (self,text,command,shortcut,statusLine,bg):
 
     '''Create an icon button.  All icon buttons get created using this utility.
@@ -2048,11 +1899,5 @@ def createIconButton (self,text,command,shortcut,statusLine,bg):
         # Reporting this command is way too annoying.
 
     return b
-#@nonl
-#@-node:ekr.20060328125248.17:createIconButton
-#@-node:ekr.20090628104247.5272:Support different colors of icon buttons
-#@-node:ekr.20090629080139.5277:4.6 rc1 projects
 #@-all
-#@nonl
-#@-node:ekr.20090430075506.3:@thin leoPluginNotes.txt
 #@-leo

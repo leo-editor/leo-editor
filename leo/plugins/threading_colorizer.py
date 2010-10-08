@@ -538,7 +538,8 @@ class colorizer:
             self.fonts['default_body_font'] = defaultBodyfont
 
         # Configure fonts.
-        keys = default_font_dict.keys() ; keys.sort()
+        keys = list(default_font_dict.keys())
+        keys.sort()
         for key in keys:
             option_name = default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
@@ -569,7 +570,8 @@ class colorizer:
                     if trace: g.trace('default',key)
                     w.tag_config(key,font=defaultBodyfont)
 
-        keys = default_colors_dict.keys() ; keys.sort()
+        keys = list(default_colors_dict.keys())
+        keys.sort()
         for name in keys:
             option_name,default_color = default_colors_dict[name]
             color = (

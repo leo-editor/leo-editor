@@ -11,13 +11,20 @@ Scrolled Message Dialog
 
 Provides a Scrolled Message Dialog service for Qt based guis/plugins.
 
-The plugin can display messages supplied as plain text or formated as html. In addition the plugin can accept messages in rst format and convert them to be displayed as html.
+The plugin can display messages supplied as plain text or formated as html. In
+addition the plugin can accept messages in rst format and convert them to be
+displayed as html.
 
-The displayed format can be controlled by the user via check boxes, so rst messages may be viewed either as text or as html. Html messages can also be viwed as raw text, which will be a good debug feature when creating complex dynamically generated html messages.
+The displayed format can be controlled by the user via check boxes, so rst
+messages may be viewed either as text or as html. Html messages can also be
+viwed as raw text, which will be a good debug feature when creating complex
+dynamically generated html messages.
 
-The user interface is provided by a ScrolledMessage.ui file which is dynamically loaded each time a new dialog is loaded.
+The user interface is provided by a ScrolledMessage.ui file which is dynamically
+loaded each time a new dialog is loaded.
 
-The dialog is not modal and many dialogs can exist at one time. Dialogs can be named and output directed to a dialog with a specific name.  
+The dialog is not modal and many dialogs can exist at one time. Dialogs can be
+named and output directed to a dialog with a specific name.
 
 The plugin is invoked like this:
 

@@ -101,10 +101,6 @@ The debug command writes the script to scriptFile.py and invokes winpdb.
 winpdb opens and is already 'attached' to the script to be debugged.
 You can single-step as you like.
 Leo continues to run, but killing the debugger will also kill Leo.
-.. @+node:ekr.20070115172724.2: *4* @button winpdb
-test.leo contains an @button windpdb node.
-Select the test to be debugged, then press the winpdb button or do <Alt>x winpdb<return>.
-This way is essentially the same as using the debug command, though the code is slightly different.
 .. @+node:ekr.20070115172724.3: *4* The execute-script command with explicit debugger breaks
 This way of debugging scripts allows winpdb to debug scripts that use c, g and p.
 A bit more work is needed because winpdb does not start automatically.

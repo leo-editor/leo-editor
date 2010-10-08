@@ -750,7 +750,8 @@ class rstClass:
     def dumpSettings (self):
 
         d = self.optionsDict
-        keys = d.keys() ; keys.sort()
+        keys = list(d.keys())
+        keys.sort()
 
         g.pr('present settings...')
         for key in keys:
@@ -997,7 +998,8 @@ class rstClass:
     def initOptionsFromSettings (self):
 
         c = self.c ; d = self.defaultOptionsDict
-        keys = d.keys() ; keys.sort()
+        keys = list(d.keys())
+        keys.sort()
 
         for key in keys:
             for getter,kind in (

@@ -68,7 +68,7 @@ def trace_tags (tag,keywords):
     elif brief:
         g.pr(tagCount,tag)
     else: # Verbose
-        keys = keywords.items()
+        keys = list(keywords.items())
         keys.sort()
         for key,value in keys:
             g.pr(tagCount,tag,key,value)

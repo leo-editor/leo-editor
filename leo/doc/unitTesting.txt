@@ -162,7 +162,7 @@ following:
      processes them generally as described above. The details are a bit
      different from as described, but they usually don't matter. If you *really*
      care, see the source code for leoTests.doTests.
-.. @+node:ekr.20080729064227.6: *3* @button timer
+.. @+node:ekr.20080729064227.6: *3* @@button timer
 The timit button in unitTest.leo allows you to apply Python's timeit module.
 See http://docs.python.org/lib/module-timeit.html.
 The contents of @button timer is::
@@ -171,7 +171,7 @@ The contents of @button timer is::
     leoTest.runTimerOnNode(c,p,count=100)
 
 runTimerOnNode executes the script in the presently selected node using timit.Timer and prints the results.
-.. @+node:ekr.20080729064227.7: *3* @button profile
+.. @+node:ekr.20080729064227.7: *3* @@button profile
 The profile button in unitTest.leo allows you to profile nodes using Python's profiler module.
 See http://docs.python.org/lib/module-profile.html
 The contents of @button profile is::
