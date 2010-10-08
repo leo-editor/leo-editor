@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.42" body_secondary_ratio="0.81">
-	<global_window_position top="47" left="524" height="990" width="1099"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.52">
+	<global_window_position top="43" left="339" height="990" width="1229"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -563,21 +563,22 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
-<v t="ekr.20101004104134.2349"><vh>Slideshows</vh>
+<v t="ekr.20101004104134.2349" a="E"><vh>Slideshows</vh>
 <v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
 <v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
 </v>
 <v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
 <v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
+<v t="ekr.20100909154940.2226" a="E"><vh>@slideshow My first slide show</vh>
 <v t="ekr.20101006122837.2362"><vh>@verbose true</vh></v>
 <v t="ekr.20101007024057.2360"><vh>@screenshot_width = 700</vh></v>
 <v t="ekr.20101007100927.2360"><vh>@screenshot_height = 500</vh></v>
-<v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh></v>
-<v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
-<v t="ekr.20101007100927.2373"><vh>@image ../doc/html/slides/my-first-slide-show/screenshot-002.png</vh></v>
-<v t="ekr.20100911162102.2364"><vh>@screenshot-tree</vh>
+<v t="ekr.20100911162102.2361" a="E"><vh>@slide What is Leo</vh>
+<v t="ekr.20101008152559.2284"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20100911162102.2362" a="E"><vh>@slide Outlining editor</vh>
+<v t="ekr.20100911162102.2364"><vh>@screenshot</vh>
 <v t="ekr.20100911162102.2366"><vh>To Do List</vh>
 <v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
 <v t="ekr.20100911162102.2368"><vh>Important</vh></v>
@@ -592,6 +593,12 @@
 </v>
 </v>
 <v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
+<v t="ekr.20101008132319.2294"><vh>@callout this is a callout</vh></v>
+<v t="ekr.20101008132319.2295"><vh>@callout this is another callout</vh></v>
+<v t="ekr.20101008152559.2285"><vh>@url screenshot</vh></v>
+<v t="ekr.20101008152559.2298"><vh>@url working file</vh></v>
+<v t="ekr.20101008152559.2299"><vh>@url final output file</vh></v>
+<v t="ekr.20101008152559.2300"><vh>@url built slide</vh></v>
 </v>
 </v>
 </v>
@@ -1015,7 +1022,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4,4,7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7157,7 +7164,8 @@ the best way to demonstrate what can be done with Leo.
 You create an outline in the top left pane. (A later tutorial explains how to
 create an outline like the one in the screenshot).
 
-.. image:: screenshot-002.png
+.. image:: slide-002.png
+
 </t>
 <t tx="ekr.20100911162102.2364"></t>
 <t tx="ekr.20100911162102.2366">My to-do list.
@@ -7220,6 +7228,12 @@ else:
 <t tx="ekr.20101006122837.2362"></t>
 <t tx="ekr.20101007024057.2360"></t>
 <t tx="ekr.20101007100927.2360"></t>
-<t tx="ekr.20101007100927.2373"></t>
+<t tx="ekr.20101008132319.2294"></t>
+<t tx="ekr.20101008132319.2295"></t>
+<t tx="ekr.20101008152559.2284">c:\leo.repo\trunk\leo\doc\html\slides\my-first-slide-show\_build\html\slide-001.html</t>
+<t tx="ekr.20101008152559.2285">c:/leo.repo/trunk/leo/doc/html/slides/my-first-slide-show/screenshot-002.png</t>
+<t tx="ekr.20101008152559.2298">c:/leo.repo/trunk/leo/doc/html/slides/my-first-slide-show/screenshot-002.svg</t>
+<t tx="ekr.20101008152559.2299">c:/leo.repo/trunk/leo/doc/html/slides/my-first-slide-show/slide-002.png</t>
+<t tx="ekr.20101008152559.2300">c:\leo.repo\trunk\leo\doc\html\slides\my-first-slide-show\_build\html\slide-002.html</t>
 </tnodes>
 </leo_file>

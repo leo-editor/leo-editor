@@ -3104,7 +3104,7 @@ def scanOptions():
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
     sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-    if trace: print('scanOptions',sys.argv)
+    if trace: print('scanOptions:',sys.argv)
 
     # Handle the args...
 
@@ -3120,12 +3120,13 @@ def scanOptions():
     # --debug
     if options.debug:
         g.debug = True
-        g.trace('*** debug mode on')
+        print('scanOptions: *** debug mode on')
 
     # -f or --file
     fileName = options.fileName
-    if fileName: fileName = fileName.strip('"')
-    if trace: g.trace(fileName)
+    if fileName:
+        fileName = fileName.strip('"')
+        if trace: print('scanOptions:',fileName)
 
     # --gui
     gui = options.gui
@@ -3139,7 +3140,7 @@ def scanOptions():
         elif gui in ('curses','tk','qt','null'): # 'wx',
             g.app.guiArgName = gui
         else:
-            g.trace('unknown gui: %s' % gui)
+            print('scanOptions: unknown gui: %s' % gui)
             g.app.guiArgName = gui = 'qt'
     else:
         gui = g.app.guiArgName = 'qt'
@@ -3151,13 +3152,14 @@ def scanOptions():
 
     # --no-cache
     if options.no_cache:
-        g.trace('disabling caching')
+        print('scanOptions: disabling caching')
         g.enableDB = False
 
     # --screen-shot=fn
     screenshot_fn = options.screenshot_fn
-    if screenshot_fn: screenshot_fn = screenshot_fn.strip('"')
-    if trace: g.trace('screenshot_fn',screenshot_fn)
+    if screenshot_fn:
+        screenshot_fn = screenshot_fn.strip('"')
+        if trace: print('scanOptions: screenshot_fn',screenshot_fn)
 
     # --script
     script_path = options.script
@@ -3175,20 +3177,21 @@ def scanOptions():
 
     # --select
     select = options.select
-    if select: select = select.strip('"')
-    if trace: g.trace('select',repr(select))
+    if select:
+        select = select.strip('"')
+        if trace: print('scanOptions: select',repr(select))
 
     # --silent
     g.app.silentMode = options.silent
-    # g.trace('silentMode',g.app.silentMode)
+    # print('scanOptions: silentMode',g.app.silentMode)
 
     # --version: print the version and exit.
     versionFlag = options.version
 
     # --window-size
     windowSize = options.window_size
-    if trace: g.trace('windowSize',repr(windowSize))
     if windowSize:
+        if trace: print('windowSize',repr(windowSize))
         try:
             h,w = windowSize.split('x')
         except ValueError:
@@ -3207,8 +3210,6 @@ def scanOptions():
         'windowFlag':windowFlag,
         'windowSize':windowSize,
     }
-
-
 #@+node:ekr.20090519143741.5917: *6* doPostPluginsInit & helpers
 def doPostPluginsInit(args,fileName,relativeFileName,options):
 
@@ -3314,8 +3315,7 @@ def doWindowSize (c,windowSize):
     try:
         h,w2 = windowSize.split('x')
         h,w2 = int(h.strip()),int(w2.strip())
-        # g.trace(h,w2)
-        w.resize(h,w2)
+        w.resize(w2,h) # 2010/10/08.
         c.k.simulateCommand('equal-sized-panes')
         c.redraw()
         w.repaint() # Essential
@@ -4270,5 +4270,106 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
     else:
         if trace: g.trace('** no block')
     return start
+#@+node:ekr.20101008110759.5928: *4* Improved @url nodes
+#@+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b:
+            url = p.b.strip()
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+        if url.lstrip().startswith('--'):
+            # Get the url from the first body line.
+            lines = p.b.split('\n')
+            url = lines and lines[0] or ''
+        else:
+            << stop the url after any whitespace >>
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return 'break' # 11/19/06
+#@+node:ekr.20031218072017.2313: *6* << stop the url after any whitespace  >>
+# For safety, the URL string should end at the first whitespace, unless quoted.
+# This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
+
+url = url.replace('\t',' ')
+
+# Strip quotes.
+i = -1
+if url and url[0] in ('"',"'"):
+    i = url.find(url[0],1)
+    if i > -1:
+        url = url[1:i]
+
+if i == -1:
+    # Not quoted or no matching quote.
+    i = url.find(' ')
+    if i > -1:
+        if 0: # No need for a warning.  Assume everything else is a comment.
+            z_url = url[i:]
+            g.es("ignoring characters after space in url:",z_url)
+            g.es("use %20 instead of spaces")
+        url = url[:i]
+#@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url):
+
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62: *6* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+if not re.match('^([a-z]{3,}:)',url):
+    url = 'http://' + url
+if not re.match(urlPattern,url):
+    g.es("invalid url:",url)
+    return
+#@+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    import os
+    os.chdir(g.app.loadDir)
+    if g.match(url,0,"file:") and url[-4:]==".leo":
+        ok,frame = g.openWithFileName(url[5:],None)
+    else:
+        import webbrowser
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+except:
+    g.es("exception opening",url)
+    g.es_exception()
 #@-all
 #@-leo

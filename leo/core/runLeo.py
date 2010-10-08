@@ -305,7 +305,7 @@ def scanOptions():
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
     sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-    if trace: print('scanOptions',sys.argv)
+    if trace: print('scanOptions:',sys.argv)
 
     # Handle the args...
 
@@ -321,12 +321,13 @@ def scanOptions():
     # --debug
     if options.debug:
         g.debug = True
-        g.trace('*** debug mode on')
+        print('scanOptions: *** debug mode on')
 
     # -f or --file
     fileName = options.fileName
-    if fileName: fileName = fileName.strip('"')
-    if trace: g.trace(fileName)
+    if fileName:
+        fileName = fileName.strip('"')
+        if trace: print('scanOptions:',fileName)
 
     # --gui
     gui = options.gui
@@ -340,7 +341,7 @@ def scanOptions():
         elif gui in ('curses','tk','qt','null'): # 'wx',
             g.app.guiArgName = gui
         else:
-            g.trace('unknown gui: %s' % gui)
+            print('scanOptions: unknown gui: %s' % gui)
             g.app.guiArgName = gui = 'qt'
     else:
         gui = g.app.guiArgName = 'qt'
@@ -352,13 +353,14 @@ def scanOptions():
 
     # --no-cache
     if options.no_cache:
-        g.trace('disabling caching')
+        print('scanOptions: disabling caching')
         g.enableDB = False
 
     # --screen-shot=fn
     screenshot_fn = options.screenshot_fn
-    if screenshot_fn: screenshot_fn = screenshot_fn.strip('"')
-    if trace: g.trace('screenshot_fn',screenshot_fn)
+    if screenshot_fn:
+        screenshot_fn = screenshot_fn.strip('"')
+        if trace: print('scanOptions: screenshot_fn',screenshot_fn)
 
     # --script
     script_path = options.script
@@ -376,20 +378,21 @@ def scanOptions():
 
     # --select
     select = options.select
-    if select: select = select.strip('"')
-    if trace: g.trace('select',repr(select))
+    if select:
+        select = select.strip('"')
+        if trace: print('scanOptions: select',repr(select))
 
     # --silent
     g.app.silentMode = options.silent
-    # g.trace('silentMode',g.app.silentMode)
+    # print('scanOptions: silentMode',g.app.silentMode)
 
     # --version: print the version and exit.
     versionFlag = options.version
 
     # --window-size
     windowSize = options.window_size
-    if trace: g.trace('windowSize',repr(windowSize))
     if windowSize:
+        if trace: print('windowSize',repr(windowSize))
         try:
             h,w = windowSize.split('x')
         except ValueError:
@@ -408,8 +411,6 @@ def scanOptions():
         'windowFlag':windowFlag,
         'windowSize':windowSize,
     }
-
-
 #@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers
 def doPostPluginsInit(args,fileName,relativeFileName,options):
 
@@ -515,8 +516,7 @@ def doWindowSize (c,windowSize):
     try:
         h,w2 = windowSize.split('x')
         h,w2 = int(h.strip()),int(w2.strip())
-        # g.trace(h,w2)
-        w.resize(h,w2)
+        w.resize(w2,h) # 2010/10/08.
         c.k.simulateCommand('equal-sized-panes')
         c.redraw()
         w.repaint() # Essential
