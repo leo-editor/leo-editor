@@ -114,9 +114,62 @@ E. Render the **final output file**.
 
   The plugin calls Inkscape non-interactively to
   render the final output file (a PNG image) from
-  the work file. If the Python Imaging Libary
+  the work file. If the Python Imaging Library
   (PIL) is available, this step will use PIL to
   improve the quality of the final output file.
+
+3. Build the slide using Sphinx.
+
+  After making all files, the plugins runs Sphinx
+  by running 'make html' in the slideshow folder.
+  This command creates the final .html files in the
+  _build/html subfolder of the slideshow folder.
+
+4. Create url nodes
+
+  The slideshow commands create @url nodes as children
+  of each @slide node.  These nodes serve two purposes:
+
+    a) They allow you to access the files created by
+       these commands
+
+    b) They inhibit all or part of the build process
+    the next time you the slideshow commands.  This is
+    usually what you want, but if you want to rerun all
+    or part build process, you can remove some or all
+    of these @url nodes.
+
+Generated @url nodes
+~~~~~~~~~~~~~~~~~~~~
+
+@url built slide
+  Contains the absolute path to the final slide in
+  the _build/html subfolder of the slideshow
+  folder. If present, this @url node completely
+  disables rebuilding the slide.
+
+@url screenshot
+  Contains the absolute path to the original
+  screenshot file.
+
+@url working file
+  Contains the absolute path to the working file.
+  If present, this @url node disables re-creating
+  the working file. However, the output file will
+  be created if the working file is newer than the
+  output file.
+
+@url final output file
+  Contains the absolute path to the final output
+  file. The plugin creates the final output file
+  whenever necessary, regardless of whether this
+  @url node exists.
+
+In short, to completely recreate a slide, you must
+delete the following nodes::
+
+    @url working file
+    @url built slide
 
 Options and settings
 --------------------
@@ -192,9 +245,8 @@ of an @slide node.
 
 @screenshot
   The root of a tree that becomes the entire
-  contents of screenshot. If this option is not
-  given, the entire present outline becomes the
-  contents of the screenshot.
+  contents of screenshot. No screenshot is taken
+  if this node does not exist.
 
 @select <headline>
   Causes the given headline in the @screenshot
@@ -204,43 +256,25 @@ Settings
 ~~~~~~~~
 
 @string screenshot-bin = <path to inkscape.exe>
-  The full path to the Inscape program.   
+  The full path to the Inkscape program.   
 
 File names
 ----------------------------------
 
 Suppose the @slide node is the n'th @slide node in
-the @slideshow tree. The name of the slide's rST source is
-slide-n.html.txt. The name of
-the working file is screenshot-n.svg and the name of the
-final screenshot is screenshot-n.png.
+the @slideshow tree. The following files will be
+created in (relative to) the slideshow directory:
+
+- slide-n.html.txt: the slide's rST source.
+- screenshot-n.png: the original screenshot.
+- screenshot-n.svg: the working file.
+- slide-n.png: the final output file.
+- _build/html/slide-n.html: the final slide.
+
 """
 
 #@@pagewidth 50
 #@-<< docstring >>
-#@+<< notes >>
-#@+node:ekr.20101004082701.5741: ** << notes >>
-#@@nocolor-node
-#@+at
-# 
-# - @slide is now requred
-# - Rename @select to @pause
-# - Rewrote path init logic.
-# - Added info_command.
-# - Put screenshots in same folder as the slideshow.
-# - Changed the .. image: directive.
-# - Called docutils to process each @slide node into an html file.
-# - Create make_all_directories.
-# - Copy sphinx build files from doc/html to doc/slides/slideshow-name directory.
-# - Generated leo_toc.html as the first slide.
-# - Generate titles for all slides.
-# - Ignore @slide ande @slideshow nodes in @screenshot trees.
-# - Use @slideshow title as title of all slides.
-# - Copy only leo_toc.html.txt to the slideshow folder.
-# - Do not overwite existing screenshots.
-# - Edit the svg file only on explicit @edit options.
-# - Finished get_option.
-#@-<< notes >>
 __version__ = '1.0'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
