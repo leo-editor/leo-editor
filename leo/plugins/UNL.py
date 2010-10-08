@@ -154,7 +154,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
 def onUrl1 (tag,keywords):
     """Redefine the @url functionality of Leo Core: allows jumping to URL _and UNLs_.
     Spaces are now allowed in URLs."""
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     c = keywords.get("c")
     p = keywords.get("p")
     v = keywords.get("v")

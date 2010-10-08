@@ -2047,7 +2047,10 @@ or do g.app.db.db['LEO_EDITOR'] = "gvim"''')
 #@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
 def handleUrlInUrlNode(url):
 
-    # Note: the UNL plugin has its own notion of what a good url is.
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
 
     if g.unitTesting: return
     #@+<< check the url; return if bad >>

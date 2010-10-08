@@ -2386,8 +2386,12 @@ class leoTree:
 
         c = self.c
         s = p.h.strip()
-        if g.match_word(s,0,"@url"):
-            url = s[4:].strip()
+        if g.match_word(s,0,"@url"): 
+            if p.b:
+                url = p.b.strip()
+            else:
+                url = s[4:].strip()
+            # g.trace(url,g.callers())
             if url.lstrip().startswith('--'):
                 # Get the url from the first body line.
                 lines = p.b.split('\n')
