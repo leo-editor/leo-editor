@@ -13,32 +13,33 @@
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
-<v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
-<v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
-<v t="ekr.20050901054622"><vh>@@button Save</vh></v>
-<v t="ekr.20050901055150"><vh>@@button promote</vh></v>
 <v t="ekr.20050901060119"><vh>@@button def list</vh>
 <v t="ekr.20050901061220"><vh>createDefList</vh></v>
-</v>
-<v t="ekr.20050901121617"><vh>@@button sentence</vh>
-<v t="ekr.20050901121617.1"><vh>splitSentences</vh></v>
-</v>
-<v t="ekr.20050902080416"><vh>@@button reformat-paragraph</vh></v>
-<v t="ekr.20060525104232"><vh>@@button rst-&gt;html</vh></v>
-<v t="ekr.20060525110135"><vh>@@button rst-&gt;pdf</vh></v>
-<v t="ekr.20060525110135.1"><vh>@@button rst-&gt;tex</vh></v>
-<v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
-</v>
-<v t="ekr.20091112060950.6677"><vh>@@button Remove newlines</vh></v>
-<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
-<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
-<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
+<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
+<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050901055150"><vh>@@button promote</vh></v>
+<v t="ekr.20050902080416"><vh>@@button reformat-paragraph</vh></v>
+<v t="ekr.20091112060950.6677"><vh>@@button Remove newlines</vh></v>
+<v t="ekr.20060525104232"><vh>@@button rst-&gt;html</vh></v>
+<v t="ekr.20060525110135"><vh>@@button rst-&gt;pdf</vh></v>
+<v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
+<v t="ekr.20060525110135.1"><vh>@@button rst-&gt;tex</vh></v>
+<v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
 <v t="ekr.20091006063434.13802"><vh>@@button rst3</vh></v>
+<v t="ekr.20050901054622"><vh>@@button Save</vh></v>
+<v t="ekr.20050901121617"><vh>@@button sentence</vh>
+<v t="ekr.20050901121617.1"><vh>splitSentences</vh></v>
+</v>
+<v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
+<v t="ekr.20070115172724.2"><vh>@@button winpdb</vh></v>
+</v>
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
@@ -76,7 +77,7 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -89,7 +90,7 @@
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20100805165051.7151"><vh>@thin FAQ.txt</vh></v>
 </v>
-<v t="ekr.20101007100904.4372" a="E"><vh>Slideshows page</vh>
+<v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344" a="E"><vh>@thin screen-shots.txt</vh></v>
 </v>
 <v t="ekr.20100731112744.7267"><vh>Chapter 1: Installing Leo</vh>
@@ -152,7 +153,8 @@
 <v t="ekr.20100805165051.7169"><vh>@thin leoBridge.txt</vh></v>
 </v>
 <v t="ekr.20070628083442"><vh>Chapter 20: Unit testing with Leo</vh>
-<v t="ekr.20100805165051.7170"><vh>@thin unitTesting.txt</vh></v>
+<v t="ekr.20100805165051.7170" a="E"
+expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 </v>
 <v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
 <v t="ekr.20100805165051.7171"><vh>@thin IpythonBridge.txt</vh></v>
@@ -181,18 +183,112 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
+<v t="ekr.20101008061729.4425"><vh>@button ins-@slide-nodes</vh></v>
+<v t="ekr.20101008061729.4443"><vh>@button copy-@screenshot-node</vh>
+<v t="ekr.20101008061729.4552"><vh>@screenshot</vh>
+<v t="ekr.20101008061729.4553"><vh>To Do List</vh>
+<v t="ekr.20101008061729.4554"><vh>Urgent</vh></v>
+<v t="ekr.20101008061729.4555"><vh>Important</vh></v>
+<v t="ekr.20101008061729.4556"><vh>Soon</vh></v>
+<v t="ekr.20101008061729.4557"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101008061729.4558"><vh>Diary</vh>
+<v t="ekr.20101008061729.4559" a="E"><vh>2009</vh>
+<v t="ekr.20101008061729.4567"><vh>Jul 2009</vh></v>
+<v t="ekr.20101008061729.4568"><vh>Aug 2009</vh></v>
+<v t="ekr.20101008061729.4569"><vh>Sep 2009</vh></v>
+<v t="ekr.20101008061729.4570"><vh>Oct 2009</vh></v>
+<v t="ekr.20101008061729.4571"><vh>Nov 2009</vh></v>
+<v t="ekr.20101008061729.4572"><vh>Dec 2009</vh></v>
+</v>
+<v t="ekr.20101008061729.4561"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.4637"><vh>@select Urgent</vh></v>
+</v>
+<v t="ekr.20101008061729.4538"><vh>@button renumber nodes</vh></v>
 <v t="ekr.20100821182153.4341"><vh>Slides</vh>
 <v t="ekr.20101007100904.4371"><vh>@button make-slide-show @key=Alt-8</vh></v>
-<v t="ekr.20101007100904.4372" a="E"></v>
-<v t="ekr.20100821182153.4345"><vh>@slideshow installation</vh>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+<v t="ekr.20101008061729.4371" a="E"><vh>Basics</vh>
+<v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
 <v t="ekr.20100822164918.4364"><vh>Installing Leo</vh></v>
 <v t="ekr.20100821182153.4347"><vh>Two versions</vh></v>
 <v t="ekr.20100821182153.4348"><vh>Full installation</vh></v>
 <v t="ekr.20100821182153.4349"><vh>leoconfig.txt</vh></v>
 <v t="ekr.20100821182153.4350"><vh>Leo is a free program</vh></v>
 </v>
-<v t="ekr.20101007082321.4357"><vh>@slideshow Leo: Basics: What is Leo?</vh></v>
-<v t="ekr.20101007082321.4358"><vh>@slideshow Leo: Basics: What is Leo - Continued</vh></v>
+<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo?</vh>
+<v t="ekr.20101008061729.4372"><vh>@slide 001</vh></v>
+<v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
+<v t="ekr.20101008061729.4384"><vh>@screenshot</vh>
+<v t="ekr.20101008061729.4385"><vh>To Do List</vh>
+<v t="ekr.20101008061729.4386"><vh>Urgent</vh></v>
+<v t="ekr.20101008061729.4387"><vh>Important</vh></v>
+<v t="ekr.20101008061729.4388"><vh>Soon</vh></v>
+<v t="ekr.20101008061729.4389"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101008061729.4390"><vh>Diary</vh>
+<v t="ekr.20101008061729.4391"><vh>2009</vh>
+<v t="ekr.20101008061729.4392"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20101008061729.4393"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.4396"><vh>@select To Do List</vh></v>
+<v t="ekr.20101008061729.4397"><vh>@callout arrow shows outline pane</vh></v>
+</v>
+<v t="ekr.20101008061729.4398" a="E"><vh>@slide 003</vh>
+<v t="ekr.20101008061729.4420"><vh>@select To Do List</vh></v>
+<v t="ekr.20101008061729.4421"><vh>@callout arrow points to first diary entry</vh></v>
+</v>
+<v t="ekr.20101008061729.4522"><vh>@slide 004</vh></v>
+<v t="ekr.20101008061729.4518"><vh>@slide 005</vh></v>
+<v t="ekr.20101008061729.4521"><vh>@slide 006</vh></v>
+<v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
+<v t="ekr.20101008061729.4524"><vh>@slide 008</vh></v>
+<v t="ekr.20101008061729.4525"><vh>@slide 009</vh></v>
+<v t="ekr.20101008061729.4526"><vh>@slide 010</vh></v>
+<v t="ekr.20101008061729.4527"><vh>@slide 011</vh></v>
+<v t="ekr.20101008061729.4528"><vh>@slide 012</vh></v>
+<v t="ekr.20101008061729.4529"><vh>@slide 013</vh></v>
+<v t="ekr.20101008061729.4530"><vh>@slide 014</vh></v>
+<v t="ekr.20101008061729.4531"><vh>@slide 015</vh></v>
+<v t="ekr.20101008061729.4532"><vh>@slide 016</vh></v>
+<v t="ekr.20101008061729.4533"><vh>@slide 017</vh></v>
+<v t="ekr.20101008061729.4534"><vh>@slide 018</vh></v>
+<v t="ekr.20101008061729.4535"><vh>@slide 019</vh></v>
+<v t="ekr.20101008061729.4536"><vh>@slide 020</vh></v>
+<v t="ekr.20101008061729.4537"><vh>@slide 021</vh></v>
+<v t="ekr.20101008061729.4539"><vh>@slide 022</vh></v>
+<v t="ekr.20101008061729.4540"><vh>@slide 023</vh></v>
+</v>
+<v t="ekr.20101007082321.4358" a="E"><vh>@slideshow What is Leo? Continued</vh>
+<v t="ekr.20101008061729.4573"><vh>@slide test</vh>
+<v t="ekr.20101008061729.5006"><vh>@screenshot</vh>
+<v t="ekr.20101008061729.5007"><vh>To Do List</vh>
+<v t="ekr.20101008061729.5008"><vh>Urgent</vh></v>
+<v t="ekr.20101008061729.5009"><vh>Important</vh></v>
+<v t="ekr.20101008061729.5010"><vh>Soon</vh></v>
+<v t="ekr.20101008061729.5011"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101008061729.5012"><vh>Diary</vh>
+<v t="ekr.20101008061729.5013" a="E"><vh>2009</vh>
+<v t="ekr.20101008061729.5014"><vh>Jul 2009</vh></v>
+<v t="ekr.20101008061729.5015"><vh>Aug 2009</vh></v>
+<v t="ekr.20101008061729.5016"><vh>Sep 2009</vh></v>
+<v t="ekr.20101008061729.5017"><vh>Oct 2009</vh></v>
+<v t="ekr.20101008061729.5018"><vh>Nov 2009</vh></v>
+<v t="ekr.20101008061729.5019"><vh>Dec 2009</vh></v>
+</v>
+<v t="ekr.20101008061729.5020"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.5021"><vh>@select Urgent</vh></v>
+</v>
+<v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -470,6 +566,10 @@ else:
 <t tx="ekr.20060620094033"></t>
 <t tx="ekr.20060913164304"></t>
 <t tx="ekr.20061025065357"></t>
+<t tx="ekr.20070115172724.2">test.leo contains an @button windpdb node.
+Select the test to be debugged, then press the winpdb button or do &lt;Alt&gt;x winpdb&lt;return&gt;.
+This way is essentially the same as using the debug command, though the code is slightly different.
+</t>
 <t tx="ekr.20070317033759"></t>
 <t tx="ekr.20070325123558"></t>
 <t tx="ekr.20070610174018"></t>
@@ -528,39 +628,63 @@ Rewrite chapter 6.
 
 Revise Tutorial.
 
-Create screen shots.</t>
-<t tx="ekr.20100821182153.4341">@language python
+Reorganize the docs into intro and reference.</t>
+<t tx="ekr.20100821182153.4341">@pagewidth 70
+@language rest
+@nocolor-node
 
-@
-
-To do:
+To a slideshow:
     
-** Make each slideshow distinct.
+cd leo\doc\html\slices\slideshow-name
+make html
 
-To create a distinct slideshow:
-    
-cd leo\doc\html
-mkdir slideshow-name
-copy conf.py slideshow-name
-copy leo_toc
-copy make.bat slideshow-name
-copy Makefile slideshow-name
-copy Leo4-80-border.jpg slideshow-name
+Notes:
 
-cd slideshow-name
-mkdir _build
-mkdir _static
-mkdir screenshots
-</t>
-<t tx="ekr.20100821182153.4345">.. The body of this node is ignored except for options.
-
-@ @rst-options
+Default screenshot height and width are 500, 700.</t>
+<t tx="ekr.20100821182153.4343">@ @rst-options
 call_docutils=False
-show_headlines=True
 stylesheet_path=..\doc
 write_intermediate_file = True
 @c
+
+.. links
+.. _`My first slide show`:      slides/my-first-slide-show/slide-001.html
+.. _`What is Leo`:              slides/what-is-leo/slide-001.html
+.. _`What is Leo--Continued`:   slides/what-is-leo--continued/slide-001.html
+.. _`Installation`:             slides/installation/slide-001.html
+.. _`Outlining`:                slides/outlining/slide-001.html
+.. _`External Files, Part 1`:   slides/external-files-part-1/slide-001.html
+.. _`External Files, Part 2`:   slides/external-files-part-2/slide-001.html
+.. _`Running Scripts with @button Nodes`: slides/running-scripts-with-button-nodes/slide-001.html
+.. _`Making Slide Shows`:       slides/making-slide-shows/slide-001.html
+
+######
+Slides
+######
+
+This is the front page for various slide shows about Leo.
+
+Basics
+------
+
+`My first slide show`_ is a slideshow for testing.
+
+..  `What is Leo`_
+..  `What is Leo--Continued`_
+..  `Installation`_
+..  `Outlining`_
+..  `External Files, Part 1`_
+..  `External Files, Part 2`_
+
+Examples
+--------
+
+..  `Running Scripts with @button Nodes`_
+..  `Making Slide Shows`_
+
+
 </t>
+<t tx="ekr.20100821182153.4345"></t>
 <t tx="ekr.20100821182153.4347">.. _`the Python web site`:  http://www.python.org/
 .. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
 
@@ -651,6 +775,209 @@ screenshots.py</t>
 m.make_slide_show_command(event={'c':c})
 </t>
 <t tx="ekr.20101007100904.4372"></t>
+<t tx="ekr.20101008061729.4371"></t>
+<t tx="ekr.20101008061729.4372">Leo is a unique, powerful computer program that you can use to
+organize, analyze and describe text and text files. Leo is a free
+program written by Edward K. Ream. For information about downloading
+Leo, see installation tutorial in this series. Leo runs on Windows,
+Mac, or Linux.
+
+Use Leo:
+
+- to brainstorm a new project
+- as a Personal Information Manager
+- to add multiple outlines and commentary to any text file
+- as a tool to facilitate a new kind of literate programming.
+
+Because Leo is unlike other tools you may have used, a series of
+examples may be the best way to demonstrate what can be done with Leo.</t>
+<t tx="ekr.20101008061729.4373">From one perspective, Leo is an outlining editor . This is a
+screenshot of Leo. You create an outline in the top left pane. (A
+later tutorial explains how to create an outline like the one in the
+screenshot).
+</t>
+<t tx="ekr.20101008061729.4384"></t>
+<t tx="ekr.20101008061729.4385">My to-do list.
+</t>
+<t tx="ekr.20101008061729.4386"></t>
+<t tx="ekr.20101008061729.4387"></t>
+<t tx="ekr.20101008061729.4388"></t>
+<t tx="ekr.20101008061729.4389"></t>
+<t tx="ekr.20101008061729.4390" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4391"></t>
+<t tx="ekr.20101008061729.4392"></t>
+<t tx="ekr.20101008061729.4393"></t>
+<t tx="ekr.20101008061729.4396" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4397"></t>
+<t tx="ekr.20101008061729.4398">Clicking on the indicated box will open the indicated node.</t>
+<t tx="ekr.20101008061729.4420" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4421"></t>
+<t tx="ekr.20101008061729.4425">'''Create @slide nodes under p, an @slideshow node.'''
+
+n = 23 # Number of last slide to be created.
+
+existing = [z.copy().h for z in p.children() 
+    if g.match_word(z.h,0,'@slide')]
+
+if g.match_word(p.h,0,'@slideshow'):
+    b = c.undoer.beforeChangeTree(p)
+    changed = False
+    for n in range(1,n+1):
+        h = '@slide %03d' % n
+        if h not in existing:
+            changed = True
+            child = p.insertAsLastChild()
+            child.h = h
+            g.note('created %s' % h)
+    if changed:
+        c.undoer.afterChangeTree(p,'ins-@slide-nodes',b)
+    else:
+        g.note('no @slide nodes inserted')
+    c.redraw()
+else:
+    g.error('not an @slideshow node',p.h)</t>
+<t tx="ekr.20101008061729.4443">'''
+Copy the @screenshot node (a child of this node)
+to all @slide nodes under p, (an @slideshow node),
+that do not contain an @screenshot node.
+'''
+
+error = None
+# Find this node:
+h = '@button copy-@screenshot-node'
+p2 = g.findNodeAnywhere(c,h)
+if not p2:
+    error = 'Can not find',p.h
+# Find the @screenshot tree and the optional @select node.
+if not error:
+    select,template = None,None
+    for child in p2.children():
+        if g.match_word(child.h,0,'@screenshot'):
+            template = child.copy()
+        if g.match_word(child.h,0,'@select'):
+            select = child.copy()
+    if not template:
+        error = 'No template @slideshow node in %s' % p2.h
+if not error:
+    if not g.match_word(p.h,0,'@slideshow'):
+        error = 'not an @slideshow node',p.h
+if error:
+    g.error(error)
+else:
+    c.selectPosition(template)
+    c.copyOutline()
+    changed = False
+    b = c.undoer.beforeChangeTree(p)
+    for child in p.children():
+        if not g.match_word(child.h,0,'@slide'):
+            continue
+        for grandChild in child.children():
+            if g.match_word(grandChild.h,0,'@screenshot'):
+                break
+        else:
+            changed = True
+            p3 = child.insertAsLastChild()
+            c.selectPosition(p3)
+            c.pasteOutline()
+            g.note('copied @screenshot to %s' % child.h)
+            if select:
+                c.selectPosition(p3)
+                p4 = child.insertAsLastChild()
+                p4.h = select.h
+                g.note('copied %s to %s' % (select.h,child.h))
+            c.selectPosition(p3)
+            c.deleteOutline(p3)
+            child.contract()
+    if changed:
+        c.undoer.afterChangeTree(p,'copy-@screenshot',b)
+    c.redraw()</t>
+<t tx="ekr.20101008061729.4518"></t>
+<t tx="ekr.20101008061729.4521"></t>
+<t tx="ekr.20101008061729.4522"></t>
+<t tx="ekr.20101008061729.4523"></t>
+<t tx="ekr.20101008061729.4524"></t>
+<t tx="ekr.20101008061729.4525"></t>
+<t tx="ekr.20101008061729.4526"></t>
+<t tx="ekr.20101008061729.4527"></t>
+<t tx="ekr.20101008061729.4528"></t>
+<t tx="ekr.20101008061729.4529"></t>
+<t tx="ekr.20101008061729.4530"></t>
+<t tx="ekr.20101008061729.4531"></t>
+<t tx="ekr.20101008061729.4532"></t>
+<t tx="ekr.20101008061729.4533"></t>
+<t tx="ekr.20101008061729.4534"></t>
+<t tx="ekr.20101008061729.4535"></t>
+<t tx="ekr.20101008061729.4536"></t>
+<t tx="ekr.20101008061729.4537"></t>
+<t tx="ekr.20101008061729.4538">'''Renumber @slide nodes under p, an @slideshow node.'''
+
+if g.match_word(p.h,0,'@slideshow'):
+    n = 1
+    for child in p.children():
+        if g.match(child.h,0,'@slide'):
+            child.h = '@slide %03d' % n
+            n += 1
+    c.redraw()
+else:
+    g.error('not an @slideshow node',p.h)</t>
+<t tx="ekr.20101008061729.4539"></t>
+<t tx="ekr.20101008061729.4540"></t>
+<t tx="ekr.20101008061729.4552"></t>
+<t tx="ekr.20101008061729.4553">My to-do list.
+</t>
+<t tx="ekr.20101008061729.4554">1. Make Leo tutorials.  The world is waiting.
+2. Pay phone bill or the world will never know.</t>
+<t tx="ekr.20101008061729.4555"></t>
+<t tx="ekr.20101008061729.4556"></t>
+<t tx="ekr.20101008061729.4557"></t>
+<t tx="ekr.20101008061729.4558" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4559">@language rest
+
+This is my diary.</t>
+<t tx="ekr.20101008061729.4561"></t>
+<t tx="ekr.20101008061729.4567">July 1
+    Started writing in my diary.
+July 2
+    Wrote another sentence in my diary.
+July 3
+    Keeping my diary very regularly.
+July 5
+    Oops...Yesterday I forgot towrite in my diary.</t>
+<t tx="ekr.20101008061729.4568"></t>
+<t tx="ekr.20101008061729.4569"></t>
+<t tx="ekr.20101008061729.4570"></t>
+<t tx="ekr.20101008061729.4571"></t>
+<t tx="ekr.20101008061729.4572"></t>
+<t tx="ekr.20101008061729.4573"></t>
+<t tx="ekr.20101008061729.4574"></t>
+<t tx="ekr.20101008061729.4637"></t>
+<t tx="ekr.20101008061729.5006"></t>
+<t tx="ekr.20101008061729.5007">My to-do list.
+</t>
+<t tx="ekr.20101008061729.5008">1. Make Leo tutorials.  The world is waiting.
+2. Pay phone bill or the world will never know.</t>
+<t tx="ekr.20101008061729.5009"></t>
+<t tx="ekr.20101008061729.5010"></t>
+<t tx="ekr.20101008061729.5011"></t>
+<t tx="ekr.20101008061729.5012" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.5013">@language rest
+
+This is my diary.</t>
+<t tx="ekr.20101008061729.5014">July 1
+    Started writing in my diary.
+July 2
+    Wrote another sentence in my diary.
+July 3
+    Keeping my diary very regularly.
+July 5
+    Oops...Yesterday I forgot towrite in my diary.</t>
+<t tx="ekr.20101008061729.5015"></t>
+<t tx="ekr.20101008061729.5016"></t>
+<t tx="ekr.20101008061729.5017"></t>
+<t tx="ekr.20101008061729.5018"></t>
+<t tx="ekr.20101008061729.5019"></t>
+<t tx="ekr.20101008061729.5020"></t>
+<t tx="ekr.20101008061729.5021"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
