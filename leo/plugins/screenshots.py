@@ -205,6 +205,27 @@ direct child of an @slide node.
 @template_fn = <path>
   The absolute path to inkscape-template.svg
 
+@title = <any text>
+  The title to use for one slide or the entire
+  slideshow.
+
+@title_pattern = <pattern>
+  The pattern used to generate patterns for one
+  slide or the entire slideshow. The title
+  computed as follows::
+
+    d = {
+        'slideshow_name':slideshow_name,
+        'slide_name':    slide_name,
+        'slide_number':  sc.slide_number,
+    }
+    title = (pattern % (d)).title()
+
+  If neither an @title or @title_pattern option
+  applies, the following is the default pattern::
+
+    '%(slideshow_name)s:%(slide_number)s'
+
 #@@verbose = True/False
   True (or true or 1):  generate informational message.
   False (or false or 0): suppress informational messages.
@@ -398,6 +419,8 @@ class ScreenShotController(object):
         # Defaults.
         self.default_screenshot_height = 700
         self.default_screenshot_width = 900
+        self.default_slide_pattern = '%(slideshow_name)s:%(slide_number)s'
+            # Used with a dict whose keys are 'slideshow_name','slide_name','slide_number'
         self.default_verbose_flag = True
 
         # Options that may be set in @settings nodes.
@@ -408,8 +431,11 @@ class ScreenShotController(object):
         # *either* the @slideshow node or any @slide node.
         self.screenshot_height = None
         self.screenshot_width = None
+        self.slide_pattern = None
         self.sphinx_path = None
         self.template_fn = None
+        self.title = None
+        self.title_pattern = None
         self.verbose = True
 
         # Options that may be set only in children of @slide nodes.
@@ -724,6 +750,8 @@ class ScreenShotController(object):
 
         '''Return the nearest ancestor @slideshow node.'''
 
+        sc = self
+
         for p2 in p.self_and_parents():
             if g.match_word(p2.h,0,'@slideshow'):
                 return p2
@@ -944,9 +972,8 @@ class ScreenShotController(object):
                             val = False
                         elif val.isdigit():
                             val = int(val)
-                        else:
+                        elif not val:
                             g.warning('ignoring setting',child.h)
-                            return None
                         if trace: g.trace(option,repr(val or False))
                         return val
                     else:
@@ -1046,6 +1073,36 @@ class ScreenShotController(object):
         sc = self
         w = sc.get_option('screenshot_width')
         return g.choose(w is None,sc.default_screenshot_width,w)
+    #@+node:ekr.20101009162803.5632: *5* get_slide_title
+    def get_slide_title (self):
+
+        sc = self
+        slideshow_name = sc.slideshow_node.h[len('@slideshow'):].strip()
+        slide_name = sc.slide_node.h[len('@slide'):].strip()
+        d = {
+            'slideshow_name':slideshow_name,
+            'slide_name':    slide_name,
+            'slide_number':  sc.slide_number,
+        }
+        for tag in ('title','title_pattern'):
+            s = sc.get_option(tag)
+            if s:
+                # g.trace(repr(tag),repr(s))
+                if tag == '@title':
+                    return s
+                else:
+                    try:
+                        return s % d
+                    except Exception:
+                        g.warning('bad %s' % repr(p.h))
+        else:
+            s = sc.default_slide_pattern % d
+            # g.trace('using default title:',s)
+            return s
+    #@+node:ekr.20101009162803.5633: *5* get_slideshow_name
+    def get_slideshow_name (self):
+
+        return 
     #@+node:ekr.20101006060338.5706: *5* get_verbose_flag
     def get_verbose_flag (self):
 
@@ -1529,8 +1586,7 @@ class ScreenShotController(object):
 
         sc = self
         n = sc.slide_number
-        h = sc.slideshow_node.h[len('@slideshow'):].strip()
-        h = '%s: %s' % (h,n)
+        h = sc.get_slide_title()
         body = sc.slide_node.b
         title = sc.underline(h.title())
         return '%s\n%s' % (title,body)
@@ -1848,12 +1904,11 @@ class ScreenShotController(object):
             for z2 in expanded:
                 if z2.h == z.h:
                     z.expand()
-                    g.trace('Expanding',z.h)
+                    # g.trace('Expanding',z.h)
 
         # Save the file silently.
         c.fileCommands.save(fn)
         c.close()
-
         return fn
     #@+node:ekr.20100913085058.5659: *5* setup_screen_shot & helpers
     def setup_screen_shot (self,fn):

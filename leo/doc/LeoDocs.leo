@@ -252,6 +252,7 @@
 <v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
 </v>
 <v t="ekr.20101007082321.4357" a="E"><vh>@slideshow What is Leo?</vh>
+<v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
 <v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101009114320.4529"><vh>@url built slide</vh></v>
 </v>
@@ -334,10 +335,10 @@
 </v>
 </v>
 <v t="ekr.20101009134459.4639"><vh>@select 2009</vh></v>
-<v t="ekr.20101009143934.4629"><vh>@url screenshot</vh></v>
-<v t="ekr.20101009143934.4642"><vh>@url working file</vh></v>
-<v t="ekr.20101009143934.4643"><vh>@url final output file</vh></v>
-<v t="ekr.20101009143934.4644"><vh>@url built slide</vh></v>
+<v t="ekr.20101009174050.4623"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009174050.4636"><vh>@url working file</vh></v>
+<v t="ekr.20101009174050.4637"><vh>@url final output file</vh></v>
+<v t="ekr.20101009174050.4638"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4521"><vh>@slide 006</vh></v>
 <v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
@@ -1126,10 +1127,11 @@ False:
 <t tx="ekr.20101009134100.4617"></t>
 <t tx="ekr.20101009134100.4618"></t>
 <t tx="ekr.20101009134459.4639"></t>
-<t tx="ekr.20101009143934.4629">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
-<t tx="ekr.20101009143934.4642">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
-<t tx="ekr.20101009143934.4643">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
-<t tx="ekr.20101009143934.4644">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
+<t tx="ekr.20101009171445.4637"></t>
+<t tx="ekr.20101009174050.4623">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
+<t tx="ekr.20101009174050.4636">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
+<t tx="ekr.20101009174050.4637">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
+<t tx="ekr.20101009174050.4638">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
