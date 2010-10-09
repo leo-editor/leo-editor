@@ -164,9 +164,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if trace:
             theTime = g.timeSince(t1)
-            callers = g.choose(verbose,g.callers(5),'')
             g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
-                self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
+                self.redrawCount,scroll,self.nodeDrawCount,theTime),g.callers())
 
     # Compatibility
     redraw = full_redraw 

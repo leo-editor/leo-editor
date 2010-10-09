@@ -989,7 +989,7 @@ class baseFileCommands:
 
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
-            if trace: g.trace('v.dict',resultDict)
+            if trace and verbose: g.trace('v.dict',resultDict)
             for key in resultDict:
                 v = self.resolveArchivedPosition(key,root_v)
                 if v:
@@ -1003,7 +1003,9 @@ class baseFileCommands:
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
-            if v: expanded[v]=v
+            if v:
+                expanded[v]=v
+                # if trace: g.trace('expanded',v)
             elif verbose:
                 g.trace('can not find vnode (expanded): gnx = %s, tref: %s' % (gnx,tref),color='red')
 
@@ -1023,6 +1025,7 @@ class baseFileCommands:
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
+                    # if trace: g.trace('expand',p.h)
     #@+node:ekr.20060919104530: *3* Sax (reading)
     #@+node:ekr.20090525144314.6526: *4* cleanSaxInputString
     def cleanSaxInputString(self,s):
@@ -1146,6 +1149,7 @@ class baseFileCommands:
 
         s = d.get('a')
         if s:
+            if trace and 'E' in s: g.trace('expand',v)
             # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
             # 'C' (clone) and 'D' bits are not used.
             if 'M' in s: v.setMarked()

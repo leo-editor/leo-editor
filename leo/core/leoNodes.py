@@ -2228,6 +2228,7 @@ class vnode (baseVnode):
     def contract(self):
 
         # if self.context.p.v == self: g.trace(self,g.callers(4))
+        # if self.isExpanded(): g.trace(self,g.callers())
 
         self.statusBits &= ~ self.expandedBit
 

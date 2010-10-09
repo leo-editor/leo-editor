@@ -1817,8 +1817,12 @@ class ScreenShotController(object):
 
         c.frame.createFirstTreeNode()
         root = c.rootPosition()
+
+        # Remember the expanded nodes.
+        expanded = [z.copy() for z in sc.c.all_unique_positions() if z.isExpanded()]
+
         if sc.screenshot_tree:
-             # Copy all descendants of the @screenshot node.
+            # Copy all descendants of the @screenshot node.
             children = [z.copy() for z in sc.screenshot_tree.children() if not isSlide(z)]
         else:
             # Copy the entire Leo outline.
@@ -1838,6 +1842,13 @@ class ScreenShotController(object):
         if child1:
             root.doDelete(newNode=None)
             c.setRootPosition(child1) # Essential!
+
+        # Set the expanded bits in the new file.
+        for z in c.all_unique_positions():
+            for z2 in expanded:
+                if z2.h == z.h:
+                    z.expand()
+                    g.trace('Expanding',z.h)
 
         # Save the file silently.
         c.fileCommands.save(fn)

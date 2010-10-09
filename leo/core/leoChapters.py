@@ -71,7 +71,8 @@ class chapterController:
 
         # Always select the main chapter.
         # It can be alarming to open a small chapter in a large .leo file.
-        cc.selectChapterByName('main')
+        cc.selectChapterByName('main',collapse=False)
+            # 2010/10/09: an important bug fix!
     #@+node:ekr.20070317085437.30: *3* Commands (chapters)
     #@+node:ekr.20070317085437.50: *4* cc.cloneNodeToChapter & helper
     def cloneNodeToChapter (self,event=None):

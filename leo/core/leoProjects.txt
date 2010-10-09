@@ -911,6 +911,86 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     return result
 #@+node:ekr.20100907092144.6079: *4* Improved @enabled-plugins: ignore lines starting with '@'
 Also give calmer messages for non-existent plugins.
+#@+node:ekr.20101009135202.5932: *4* Preserve expansion bits!!
+#@+node:ekr.20070325104904: *5* cc.finishCreate
+def finishCreate (self):
+
+    '''Find or make the @chapters and @chapter trash nodes.'''
+
+    # This must be called late in the init process:
+    # at present, called by g.openWithFileName and c.new.
+
+    # g.trace('(chapterController)',g.callers(4))
+
+    cc = self ; c = cc.c
+
+    # Create the @chapters node if needed, and set cc.chaptersNode.
+    if 0: # Now done in cc.createChapterNode.
+        if not cc.chaptersNode and not cc.findChaptersNode():
+            cc.createChaptersNode()
+
+    if cc.findChaptersNode():
+        if hasattr(c.frame.iconBar,'createChaptersIcon'):
+            c.frame.iconBar.createChaptersIcon()
+
+    # Create the main chapter
+    cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
+
+    tag = '@chapter'
+    for p in c.all_unique_positions():
+        h = p.h
+        if h.startswith(tag) and not h.startswith('@chapters'):
+            tabName = h[len(tag):].strip()
+            if tabName and tabName not in ('main',):
+                if cc.chaptersDict.get(tabName):
+                    self.error('duplicate chapter name: %s' % tabName)
+                else:
+                    cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
+
+    # Always select the main chapter.
+    # It can be alarming to open a small chapter in a large .leo file.
+    cc.selectChapterByName('main',collapse=False)
+        # 2010/10/09: an important bug fix!
+#@+node:ekr.20031218072017.3395: *5* v.contract & expand & initExpandedBit
+def contract(self):
+
+    # if self.context.p.v == self: g.trace(self,g.callers(4))
+    # if self.isExpanded(): g.trace(self,g.callers())
+
+    self.statusBits &= ~ self.expandedBit
+
+def expand(self):
+
+    # g.trace(self,g.callers(4))
+
+    self.statusBits |= self.expandedBit
+
+def initExpandedBit (self):
+
+    # g.trace(self._headString)
+
+    self.statusBits |= self.expandedBit
+#@+node:ekr.20090306060344.2: *5* selectChapterHelper
+def selectChapterByNameHelper (self,chapter,collapse=True):
+
+    cc = self ; c = cc.c
+
+    if chapter != cc.selectedChapter:
+        if cc.selectedChapter:
+            cc.selectedChapter.unselect()
+        chapter.select()
+        c.setCurrentPosition(chapter.p)
+        cc.selectedChapter = chapter
+
+        # New in Leo 4.6 b2: clean up, but not initially.
+        if collapse and chapter.name == 'main':
+            for p in c.all_unique_positions():
+                # 2010/01/26: compare vnodes, not positions.
+                if p.v != c.p.v:
+                    p.contract()
+
+        # New in Leo 4.6 b2: *do* call c.redraw.
+        c.redraw()
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
@@ -1319,6 +1399,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 
     s = d.get('a')
     if s:
+        if trace and 'E' in s: g.trace('expand',v)
         # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
         # 'C' (clone) and 'D' bits are not used.
         if 'M' in s: v.setMarked()
