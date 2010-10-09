@@ -272,6 +272,11 @@
 </v>
 <v t="ekr.20101008061729.4396"><vh>@select To Do List</vh></v>
 <v t="ekr.20101008061729.4397"><vh>@callout arrow shows outline pane</vh></v>
+<v t="ekr.20101009115705.4555"><vh>@edit</vh></v>
+<v t="ekr.20101009115705.4556"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009115705.4569"><vh>@url working file</vh></v>
+<v t="ekr.20101009115705.4570"><vh>@url final output file</vh></v>
+<v t="ekr.20101009115705.4571"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4398"><vh>@slide 003</vh>
 <v t="ekr.20101008061729.4420"><vh>@select To Do List</vh></v>
@@ -1011,6 +1016,11 @@ False:
     be expanded when Leo opens an outline.</t>
 <t tx="ekr.20101009114830.4724"></t>
 <t tx="ekr.20101009114830.4725"></t>
+<t tx="ekr.20101009115705.4555"></t>
+<t tx="ekr.20101009115705.4556">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.png</t>
+<t tx="ekr.20101009115705.4569">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.svg</t>
+<t tx="ekr.20101009115705.4570">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-002.png</t>
+<t tx="ekr.20101009115705.4571">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
