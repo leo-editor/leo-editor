@@ -48,10 +48,10 @@
 <v t="ekr.20100907092300.4441"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.4442"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
-<v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20101009114830.4724"><vh>File options</vh>
+<v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
+<v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
 </v>
 <v t="ekr.20101009114830.4725"><vh>Plugins options</vh>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
@@ -77,7 +77,6 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20100908122026.4443"></v>
-<v t="ekr.20101009114830.4723"></v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -319,7 +318,7 @@
 <v t="ekr.20101009124842.4606"><vh>@select To Do List</vh></v>
 <v t="ekr.20101009124842.4607"><vh>@edit</vh></v>
 </v>
-<v t="ekr.20101008061729.4518" a="E"><vh>@slide 005</vh>
+<v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
 <v t="ekr.20101009134100.4609"><vh>@screenshot</vh>
 <v t="ekr.20101009134100.4610" a="E"><vh>To Do List</vh>
 <v t="ekr.20101009134100.4611"><vh>Urgent</vh></v>
@@ -335,10 +334,10 @@
 </v>
 </v>
 <v t="ekr.20101009134459.4639"><vh>@select 2009</vh></v>
-<v t="ekr.20101009142631.4629"><vh>@url screenshot</vh></v>
-<v t="ekr.20101009142631.4642"><vh>@url working file</vh></v>
-<v t="ekr.20101009142631.4643"><vh>@url final output file</vh></v>
-<v t="ekr.20101009142631.4644"><vh>@url built slide</vh></v>
+<v t="ekr.20101009143934.4629"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009143934.4642"><vh>@url working file</vh></v>
+<v t="ekr.20101009143934.4643"><vh>@url final output file</vh></v>
+<v t="ekr.20101009143934.4644"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4521"><vh>@slide 006</vh></v>
 <v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
@@ -1066,7 +1065,11 @@ July 5
 <t tx="ekr.20101009114655.4531">m = g.loadOnePlugin('screenshots')
 m.make_slide_command(event={'c':c})
 </t>
-<t tx="ekr.20101009114830.4723">True (recommended):
+<t tx="ekr.20101009114830.4723">@nocolor-node
+
+This *must* be true for this file!
+
+True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
     
@@ -1123,10 +1126,10 @@ False:
 <t tx="ekr.20101009134100.4617"></t>
 <t tx="ekr.20101009134100.4618"></t>
 <t tx="ekr.20101009134459.4639"></t>
-<t tx="ekr.20101009142631.4629">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
-<t tx="ekr.20101009142631.4642">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
-<t tx="ekr.20101009142631.4643">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
-<t tx="ekr.20101009142631.4644">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
+<t tx="ekr.20101009143934.4629">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
+<t tx="ekr.20101009143934.4642">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
+<t tx="ekr.20101009143934.4643">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
+<t tx="ekr.20101009143934.4644">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
