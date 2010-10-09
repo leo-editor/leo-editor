@@ -126,7 +126,7 @@ commands do the following:
   This command creates the final .html files in the
   _build/html subfolder of the slideshow folder.
 
-4. Create url nodes
+4. Create url nodes.
 
   The slideshow commands create @url nodes as children
   of each @slide node.  These nodes serve two purposes:
