@@ -43,13 +43,17 @@
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
-<v t="ekr.20100908122026.4443"><vh>@@enabled_plugins</vh></v>
+<v t="ekr.20100908122026.4443"><vh>@enabled_plugins</vh></v>
 <v t="ekr.20100907092300.4440"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.4441"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.4442"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
+<v t="ekr.20101009114830.4724"><vh>File options</vh>
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
+</v>
+<v t="ekr.20101009114830.4725"><vh>Plugins options</vh>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -69,8 +73,10 @@
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
 </v>
 </v>
+</v>
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
+<v t="ekr.20100908122026.4443"></v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -91,7 +97,7 @@
 <v t="ekr.20100805165051.7151"><vh>@thin FAQ.txt</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
-<v t="ekr.20100821182153.4344" a="E"><vh>@thin screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
 </v>
 <v t="ekr.20100731112744.7267"><vh>Chapter 1: Installing Leo</vh>
 <v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e362e3471017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@thin install.txt</vh></v>
@@ -153,8 +159,7 @@
 <v t="ekr.20100805165051.7169"><vh>@thin leoBridge.txt</vh></v>
 </v>
 <v t="ekr.20070628083442"><vh>Chapter 20: Unit testing with Leo</vh>
-<v t="ekr.20100805165051.7170" a="E"
-expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
+<v t="ekr.20100805165051.7170"><vh>@thin unitTesting.txt</vh></v>
 </v>
 <v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
 <v t="ekr.20100805165051.7171"><vh>@thin IpythonBridge.txt</vh></v>
@@ -183,6 +188,8 @@ expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
+<v t="ekr.20101009111520.4525"><vh>Buttons</vh>
 <v t="ekr.20101008061729.4425"><vh>@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@button copy-@screenshot-node</vh>
 <v t="ekr.20101008061729.4552"><vh>@screenshot</vh>
@@ -193,7 +200,7 @@ expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 <v t="ekr.20101008061729.4557"><vh>Whenever</vh></v>
 </v>
 <v t="ekr.20101008061729.4558"><vh>Diary</vh>
-<v t="ekr.20101008061729.4559" a="E"><vh>2009</vh>
+<v t="ekr.20101008061729.4559"><vh>2009</vh>
 <v t="ekr.20101008061729.4567"><vh>Jul 2009</vh></v>
 <v t="ekr.20101008061729.4568"><vh>Aug 2009</vh></v>
 <v t="ekr.20101008061729.4569"><vh>Sep 2009</vh></v>
@@ -207,10 +214,11 @@ expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 <v t="ekr.20101008061729.4637"><vh>@select Urgent</vh></v>
 </v>
 <v t="ekr.20101008061729.4538"><vh>@button renumber nodes</vh></v>
-<v t="ekr.20100821182153.4341"><vh>Slides</vh>
-<v t="ekr.20101007100904.4371"><vh>@button make-slide-show @key=Alt-8</vh></v>
+<v t="ekr.20101007100904.4371"><vh>@@button make-slide-show @key=Alt-8</vh></v>
+<v t="ekr.20101009114655.4531"><vh>@button make-slide @key=Alt-8</vh></v>
+</v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
-<v t="ekr.20101008061729.4371" a="E"><vh>Basics</vh>
+<v t="ekr.20101008061729.4371"><vh>Slideshows: Basics</vh>
 <v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
 <v t="ekr.20100822164918.4364"><vh>Installing Leo</vh></v>
 <v t="ekr.20100821182153.4347"><vh>Two versions</vh></v>
@@ -218,8 +226,35 @@ expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 <v t="ekr.20100821182153.4349"><vh>leoconfig.txt</vh></v>
 <v t="ekr.20100821182153.4350"><vh>Leo is a free program</vh></v>
 </v>
+<v t="ekr.20101007082321.4358"><vh>@slideshow What is Leo? Continued</vh>
+<v t="ekr.20101008061729.4573"><vh>@slide test</vh>
+<v t="ekr.20101008061729.5006"><vh>@screenshot</vh>
+<v t="ekr.20101008061729.5007"><vh>To Do List</vh>
+<v t="ekr.20101008061729.5008"><vh>Urgent</vh></v>
+<v t="ekr.20101008061729.5009"><vh>Important</vh></v>
+<v t="ekr.20101008061729.5010"><vh>Soon</vh></v>
+<v t="ekr.20101008061729.5011"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101008061729.5012"><vh>Diary</vh>
+<v t="ekr.20101008061729.5013"><vh>2009</vh>
+<v t="ekr.20101008061729.5014"><vh>Jul 2009</vh></v>
+<v t="ekr.20101008061729.5015"><vh>Aug 2009</vh></v>
+<v t="ekr.20101008061729.5016"><vh>Sep 2009</vh></v>
+<v t="ekr.20101008061729.5017"><vh>Oct 2009</vh></v>
+<v t="ekr.20101008061729.5018"><vh>Nov 2009</vh></v>
+<v t="ekr.20101008061729.5019"><vh>Dec 2009</vh></v>
+</v>
+<v t="ekr.20101008061729.5020"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.5021"><vh>@select Urgent</vh></v>
+</v>
+<v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
+</v>
 <v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo?</vh>
-<v t="ekr.20101008061729.4372"><vh>@slide 001</vh></v>
+<v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
+<v t="ekr.20101009114320.4529"><vh>@url built slide</vh></v>
+</v>
 <v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
 <v t="ekr.20101008061729.4384"><vh>@screenshot</vh>
 <v t="ekr.20101008061729.4385"><vh>To Do List</vh>
@@ -238,9 +273,10 @@ expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 <v t="ekr.20101008061729.4396"><vh>@select To Do List</vh></v>
 <v t="ekr.20101008061729.4397"><vh>@callout arrow shows outline pane</vh></v>
 </v>
-<v t="ekr.20101008061729.4398" a="E"><vh>@slide 003</vh>
+<v t="ekr.20101008061729.4398"><vh>@slide 003</vh>
 <v t="ekr.20101008061729.4420"><vh>@select To Do List</vh></v>
 <v t="ekr.20101008061729.4421"><vh>@callout arrow points to first diary entry</vh></v>
+<v t="ekr.20101009113451.4538"><vh>@edit</vh></v>
 </v>
 <v t="ekr.20101008061729.4522"><vh>@slide 004</vh></v>
 <v t="ekr.20101008061729.4518"><vh>@slide 005</vh></v>
@@ -263,33 +299,9 @@ expanded="ekr.20070628083442.1,"><vh>@thin unitTesting.txt</vh></v>
 <v t="ekr.20101008061729.4539"><vh>@slide 022</vh></v>
 <v t="ekr.20101008061729.4540"><vh>@slide 023</vh></v>
 </v>
-<v t="ekr.20101007082321.4358" a="E"><vh>@slideshow What is Leo? Continued</vh>
-<v t="ekr.20101008061729.4573"><vh>@slide test</vh>
-<v t="ekr.20101008061729.5006"><vh>@screenshot</vh>
-<v t="ekr.20101008061729.5007"><vh>To Do List</vh>
-<v t="ekr.20101008061729.5008"><vh>Urgent</vh></v>
-<v t="ekr.20101008061729.5009"><vh>Important</vh></v>
-<v t="ekr.20101008061729.5010"><vh>Soon</vh></v>
-<v t="ekr.20101008061729.5011"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20101008061729.5012"><vh>Diary</vh>
-<v t="ekr.20101008061729.5013" a="E"><vh>2009</vh>
-<v t="ekr.20101008061729.5014"><vh>Jul 2009</vh></v>
-<v t="ekr.20101008061729.5015"><vh>Aug 2009</vh></v>
-<v t="ekr.20101008061729.5016"><vh>Sep 2009</vh></v>
-<v t="ekr.20101008061729.5017"><vh>Oct 2009</vh></v>
-<v t="ekr.20101008061729.5018"><vh>Nov 2009</vh></v>
-<v t="ekr.20101008061729.5019"><vh>Dec 2009</vh></v>
-</v>
-<v t="ekr.20101008061729.5020"><vh>2010</vh></v>
 </v>
 </v>
-<v t="ekr.20101008061729.5021"><vh>@select Urgent</vh></v>
-</v>
-<v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20101007082321.4357"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -684,7 +696,8 @@ Examples
 
 
 </t>
-<t tx="ekr.20100821182153.4345"></t>
+<t tx="ekr.20100821182153.4345">@language rest
+</t>
 <t tx="ekr.20100821182153.4347">.. _`the Python web site`:  http://www.python.org/
 .. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
 
@@ -767,34 +780,37 @@ UNL.py
 
 # Other useful plugins
 # codewisecompleter.py
-leoremote.py
-screenshots.py</t>
-<t tx="ekr.20101007082321.4357"></t>
-<t tx="ekr.20101007082321.4358"></t>
+# leoremote.py
+screenshots.py
+</t>
+<t tx="ekr.20101007082321.4357">@language rest</t>
+<t tx="ekr.20101007082321.4358">@langauge rest</t>
 <t tx="ekr.20101007100904.4371">m = g.loadOnePlugin('screenshots')
 m.make_slide_show_command(event={'c':c})
 </t>
 <t tx="ekr.20101007100904.4372"></t>
 <t tx="ekr.20101008061729.4371"></t>
-<t tx="ekr.20101008061729.4372">Leo is a unique, powerful computer program that you can use to
-organize, analyze and describe text and text files. Leo is a free
-program written by Edward K. Ream. For information about downloading
-Leo, see installation tutorial in this series. Leo runs on Windows,
-Mac, or Linux.
+<t tx="ekr.20101008061729.4372">Leo is a unique, powerful computer program that you can use to organize, analyze
+and describe text and text files. Leo is a free and open software written by
+Edward K. Ream. For information about downloading Leo, see installation tutorial
+in this series. Leo runs on Windows, Mac, or Linux.
 
 Use Leo:
 
-- to brainstorm a new project
-- as a Personal Information Manager
-- to add multiple outlines and commentary to any text file
-- as a tool to facilitate a new kind of literate programming.
+- To brainstorm a new project.
+- To a Personal Information Manager.
+- To add multiple outlines and commentary to any text file.
+- To create and organize computer programs.
+- To apply computer scripts to any kind of data.
 
-Because Leo is unlike other tools you may have used, a series of
-examples may be the best way to demonstrate what can be done with Leo.</t>
-<t tx="ekr.20101008061729.4373">From one perspective, Leo is an outlining editor . This is a
-screenshot of Leo. You create an outline in the top left pane. (A
-later tutorial explains how to create an outline like the one in the
-screenshot).
+Because Leo is unlike other tools you may have used, a series of examples may be
+the best way to demonstrate what can be done with Leo.</t>
+<t tx="ekr.20101008061729.4373">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
+You create an outline in the top left pane. (A later tutorial explains how to
+create an outline like the one in the screenshot).
+
+.. image:: slide-002.png
+
 </t>
 <t tx="ekr.20101008061729.4384"></t>
 <t tx="ekr.20101008061729.4385">My to-do list.
@@ -803,7 +819,7 @@ screenshot).
 <t tx="ekr.20101008061729.4387"></t>
 <t tx="ekr.20101008061729.4388"></t>
 <t tx="ekr.20101008061729.4389"></t>
-<t tx="ekr.20101008061729.4390" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4390"></t>
 <t tx="ekr.20101008061729.4391"></t>
 <t tx="ekr.20101008061729.4392"></t>
 <t tx="ekr.20101008061729.4393"></t>
@@ -978,6 +994,23 @@ July 5
 <t tx="ekr.20101008061729.5019"></t>
 <t tx="ekr.20101008061729.5020"></t>
 <t tx="ekr.20101008061729.5021"></t>
+<t tx="ekr.20101009111520.4525"></t>
+<t tx="ekr.20101009113451.4538"></t>
+<t tx="ekr.20101009114320.4529">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html</t>
+<t tx="ekr.20101009114655.4531">m = g.loadOnePlugin('screenshots')
+m.make_slide_command(event={'c':c})
+</t>
+<t tx="ekr.20101009114830.4723">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
+<t tx="ekr.20101009114830.4724"></t>
+<t tx="ekr.20101009114830.4725"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

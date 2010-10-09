@@ -45,6 +45,8 @@ Summary
 @slide <ignored text>
   Creates slide-<slide-number>.html
   (in the sphinx _build directory).
+  **Note**: the plugin skips any @slide nodes
+  with empty body text.
 
 @screenshot
   Specifies the contents of the screenshot.
@@ -280,7 +282,8 @@ created in (relative to) the slideshow directory:
 
 #@@pagewidth 50
 #@-<< docstring >>
-__version__ = '1.0'
+# To do: create _static folder.
+__version__ = '1.0.1'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
 import leo.core.leoGlobals as g
@@ -325,7 +328,7 @@ def make_slide_command (event):
     if c:
         sc = ScreenShotController(c)
         sc.make_slide_command(c.p)
-        g.note('take-screen-shot command finished')
+        g.note('make-slide finished')
 #@+node:ekr.20100911044508.5634: *3* g.command(make-slide-show)
 @g.command('make-slide-show')
 def make_slide_show_command(event=None):
@@ -334,7 +337,7 @@ def make_slide_show_command(event=None):
     if c:
         sc = ScreenShotController(c)
         sc.make_slide_show_command(c.p)
-        g.note('make-slide-show command finished')
+        g.note('make-slide-show finished')
 #@+node:ekr.20101004082701.5733: *3* g.command(slide-show-info)
 @g.command('slide-show-info')
 def slide_show_info_command(event):
@@ -551,7 +554,6 @@ class ScreenShotController(object):
 
         sc = self
 
-
         # Compute essential nodes & values.
         sc.slideshow_node = sc.find_slideshow_node(p)
         if not sc.slideshow_node: return False
@@ -559,6 +561,9 @@ class ScreenShotController(object):
         if not p: return False
         sc.slide_number = n = sc.get_slide_number(p)
         if n < 0: return False
+
+        # Do nothing if p.b is empty.  This is a good flag.
+        if not p.b.strip(): return False
 
         # Set the verbose flag.
         sc.verbose = sc.get_verbose_flag()
@@ -1346,7 +1351,7 @@ class ScreenShotController(object):
 
         # @url built slide inhibits everything.
         if sc.find_node(p,'@url built slide'):
-            g.note('exists: @url built slide in %s' % (p.h),color='orange')
+            g.note('exists: @url built slide in %s' % (p.h),color='blue')
             return
 
         sc.make_slide()
@@ -1355,10 +1360,12 @@ class ScreenShotController(object):
             sc.make_at_url_node_for_screenshot()
         else:
             sc.build_slide()
+            c.redraw()
             return # Don't take any screenshot!
 
         if not sc.take_screen_shot():
             g.error('can not make screen shot:',p.h)
+            c.redraw()
             return
 
         if sc.edit_flag:
