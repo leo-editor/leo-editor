@@ -209,6 +209,7 @@ class baseCommands (object):
         c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
         c.showMinibuffer        = c.config.getBool('useMinibuffer')
             # This option is a bad idea.
+        c.putBitsFlag           = c.config.getBool('put_expansion_bits_in_leo_files',default=True)
         c.sparse_move           = c.config.getBool('sparse_move_outline_left')
         c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
         c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')

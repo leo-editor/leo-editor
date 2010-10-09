@@ -1789,7 +1789,8 @@ class baseFileCommands:
         attr = ""
         # New in Leo 4.5: support fixed .leo files.
         if not c.fixed:
-            if v.isExpanded() and v.hasChildren(): attr += "E"
+            if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+                attr += "E"
             if v.isMarked():   attr += "M"
             if v.isOrphan():   attr += "O"
             if attr:
