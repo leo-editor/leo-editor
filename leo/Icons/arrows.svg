@@ -60,6 +60,48 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2863"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2863-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2863-0"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2922"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2947"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2995"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -69,8 +111,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="137.85714"
-     inkscape:cy="660.46685"
+     inkscape:cx="-99.285717"
+     inkscape:cy="477.83822"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -123,5 +165,77 @@
        id="image3188"
        x="-376.69641"
        y="75.290756" />
+    <image
+       y="72.505035"
+       x="-585"
+       id="image2877"
+       height="114"
+       width="150"
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+    <image
+       y="232.57648"
+       x="-591.51788"
+       id="image2879"
+       height="148"
+       width="112.5"
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697821256125215pitr_red_arrows_set_5.svg.med.png" />
+    <image
+       y="236.93364"
+       x="-371.96429"
+       id="image2881"
+       height="148"
+       width="112.5"
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697902136786863pitr_red_arrows_set_1.svg.med.png" />
+    <image
+       y="75.290756"
+       x="-376.69641"
+       id="image2883"
+       height="114"
+       width="150"
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png" />
+    <image
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       width="75"
+       height="28.5"
+       id="image3188-1"
+       x="-457.14285"
+       y="500.75507" />
+    <image
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png"
+       width="150"
+       height="114"
+       id="image2894"
+       x="-585"
+       y="72.505035" />
+    <image
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       width="75"
+       height="28.5"
+       id="image3188-9"
+       x="495.71429"
+       y="499.68359"
+       transform="scale(-1,1)" />
+    <image
+       y="574.9693"
+       x="-464.59821"
+       id="image2881-8"
+       height="74"
+       width="28.125"
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697902136786863pitr_red_arrows_set_1.svg.med.png" />
+    <image
+       y="575.68365"
+       x="-516.38391"
+       id="image2879-8"
+       height="74"
+       width="28.125"
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697821256125215pitr_red_arrows_set_5.svg.med.png" />
+    <image
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       width="75"
+       height="28.5"
+       id="image3188-1-2"
+       x="278.32776"
+       y="634.9281"
+       transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)" />
   </g>
 </svg>

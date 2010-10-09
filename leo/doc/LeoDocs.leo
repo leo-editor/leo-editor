@@ -279,11 +279,45 @@
 <v t="ekr.20101009115705.4571"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4398"><vh>@slide 003</vh>
-<v t="ekr.20101008061729.4420"><vh>@select To Do List</vh></v>
-<v t="ekr.20101008061729.4421"><vh>@callout arrow points to first diary entry</vh></v>
-<v t="ekr.20101009113451.4538"><vh>@edit</vh></v>
+<v t="ekr.20101009115705.4583"><vh>@screenshot</vh>
+<v t="ekr.20101009115705.4584"><vh>To Do List</vh>
+<v t="ekr.20101009115705.4585"><vh>Urgent</vh></v>
+<v t="ekr.20101009115705.4586"><vh>Important</vh></v>
+<v t="ekr.20101009115705.4587"><vh>Soon</vh></v>
+<v t="ekr.20101009115705.4588"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101008061729.4522"><vh>@slide 004</vh></v>
+<v t="ekr.20101009115705.4589"><vh>Diary</vh>
+<v t="ekr.20101009115705.4590"><vh>2009</vh>
+<v t="ekr.20101009115705.4591"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20101009115705.4592"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.4420"><vh>@select 2009</vh></v>
+<v t="ekr.20101009115705.4593"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009123930.4602"><vh>@edit</vh></v>
+<v t="ekr.20101009124842.4665"><vh>@url working file</vh></v>
+<v t="ekr.20101009124842.4666"><vh>@url final output file</vh></v>
+<v t="ekr.20101009124842.4667"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4522"><vh>@slide 004</vh>
+<v t="ekr.20101009124842.4595"><vh>@screenshot</vh>
+<v t="ekr.20101009124842.4596"><vh>To Do List</vh>
+<v t="ekr.20101009124842.4597"><vh>Urgent</vh></v>
+<v t="ekr.20101009124842.4598"><vh>Important</vh></v>
+<v t="ekr.20101009124842.4599"><vh>Soon</vh></v>
+<v t="ekr.20101009124842.4600"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101009124842.4601"><vh>Diary</vh>
+<v t="ekr.20101009124842.4602"><vh>2009</vh>
+<v t="ekr.20101009124842.4603"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20101009124842.4604"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101009124842.4606"><vh>@select To Do List</vh></v>
+<v t="ekr.20101009124842.4607"><vh>@edit</vh></v>
+</v>
 <v t="ekr.20101008061729.4518"><vh>@slide 005</vh></v>
 <v t="ekr.20101008061729.4521"><vh>@slide 006</vh></v>
 <v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
@@ -830,9 +864,12 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20101008061729.4393"></t>
 <t tx="ekr.20101008061729.4396" str_leo_pos=""></t>
 <t tx="ekr.20101008061729.4397"></t>
-<t tx="ekr.20101008061729.4398">Clicking on the indicated box will open the indicated node.</t>
+<t tx="ekr.20101008061729.4398">Clicking on the indicated box will open the indicated node.
+
+.. image:: slide-003.png
+
+</t>
 <t tx="ekr.20101008061729.4420" str_leo_pos=""></t>
-<t tx="ekr.20101008061729.4421"></t>
 <t tx="ekr.20101008061729.4425">'''Create @slide nodes under p, an @slideshow node.'''
 
 n = 23 # Number of last slide to be created.
@@ -914,7 +951,7 @@ else:
     c.redraw()</t>
 <t tx="ekr.20101008061729.4518"></t>
 <t tx="ekr.20101008061729.4521"></t>
-<t tx="ekr.20101008061729.4522"></t>
+<t tx="ekr.20101008061729.4522">Here the node has been opened. Clicking on the box again will close the node.</t>
 <t tx="ekr.20101008061729.4523"></t>
 <t tx="ekr.20101008061729.4524"></t>
 <t tx="ekr.20101008061729.4525"></t>
@@ -1000,7 +1037,6 @@ July 5
 <t tx="ekr.20101008061729.5020"></t>
 <t tx="ekr.20101008061729.5021"></t>
 <t tx="ekr.20101009111520.4525"></t>
-<t tx="ekr.20101009113451.4538"></t>
 <t tx="ekr.20101009114320.4529">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html</t>
 <t tx="ekr.20101009114655.4531">m = g.loadOnePlugin('screenshots')
 m.make_slide_command(event={'c':c})
@@ -1021,6 +1057,35 @@ False:
 <t tx="ekr.20101009115705.4569">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.svg</t>
 <t tx="ekr.20101009115705.4570">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-002.png</t>
 <t tx="ekr.20101009115705.4571">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html</t>
+<t tx="ekr.20101009115705.4583"></t>
+<t tx="ekr.20101009115705.4584">My to-do list.
+</t>
+<t tx="ekr.20101009115705.4585"></t>
+<t tx="ekr.20101009115705.4586"></t>
+<t tx="ekr.20101009115705.4587"></t>
+<t tx="ekr.20101009115705.4588"></t>
+<t tx="ekr.20101009115705.4589"></t>
+<t tx="ekr.20101009115705.4590"></t>
+<t tx="ekr.20101009115705.4591"></t>
+<t tx="ekr.20101009115705.4592"></t>
+<t tx="ekr.20101009115705.4593">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.png</t>
+<t tx="ekr.20101009123930.4602"></t>
+<t tx="ekr.20101009124842.4595"></t>
+<t tx="ekr.20101009124842.4596">My to-do list.
+</t>
+<t tx="ekr.20101009124842.4597"></t>
+<t tx="ekr.20101009124842.4598"></t>
+<t tx="ekr.20101009124842.4599"></t>
+<t tx="ekr.20101009124842.4600"></t>
+<t tx="ekr.20101009124842.4601"></t>
+<t tx="ekr.20101009124842.4602"></t>
+<t tx="ekr.20101009124842.4603"></t>
+<t tx="ekr.20101009124842.4604"></t>
+<t tx="ekr.20101009124842.4606" str_leo_pos=""></t>
+<t tx="ekr.20101009124842.4607"></t>
+<t tx="ekr.20101009124842.4665">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.svg</t>
+<t tx="ekr.20101009124842.4666">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-003.png</t>
+<t tx="ekr.20101009124842.4667">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

@@ -157,16 +157,16 @@ Generated @url nodes
 
 @url working file
   Contains the absolute path to the working file.
-  If present, this @url node disables re-creating
-  the working file. However, the output file will
-  be created if the working file is newer than the
-  output file.
+  If present, this @url node disables taking the
+  screenshot, creating the working file. The final
+  output file will be regenerated if the working
+  file is newer than the final output file.
 
 @url final output file
   Contains the absolute path to the final output
-  file. The plugin creates the final output file
-  whenever necessary, regardless of whether this
-  @url node exists.
+  file.  If present, this @url node disables taking
+  the screenshot, creating the working file and
+  creating the final output file.
 
 In short, to completely recreate a slide, you must
 delete the following nodes::
@@ -1350,11 +1350,15 @@ class ScreenShotController(object):
         sc.copy_files()
 
         # @url built slide inhibits everything.
-        if sc.find_node(p,'@url built slide'):
+        if sc.find_node(sc.slide_node,'@url built slide'):
             g.note('exists: @url built slide in %s' % (p.h),color='blue')
             return
 
         sc.make_slide()
+
+        if sc.find_node(sc.slide_node,'@url final output file'):
+            g.note('exists: @url final output file %s' % (p.h),color='blue')
+            return
 
         if sc.screenshot_tree:
             sc.make_at_url_node_for_screenshot()
@@ -1373,7 +1377,7 @@ class ScreenShotController(object):
             sc.make_working_file()
             sc.edit_working_file()
             sc.make_output_file()
-        elif sc.find_node(p,'@url working file'):
+        elif sc.find_node(sc.slide_node,'@url working file'):
             # Don't change the working file,
             # but recreate the output file if necessary.
             if (
