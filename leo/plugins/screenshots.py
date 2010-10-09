@@ -82,41 +82,42 @@ commands do the following:
   node only if the @slide node contains an
   @screenshot node as a direct child.
 
-Taking a screenshot involves the following steps:
+  Taking a screenshot involves the following steps:
 
-A. Create the **target outline**: screenshot-setup.leo.
+  A. Create the **target outline**: screenshot-setup.leo.
 
-  The target outline contains consists of all the
-  children (and their descendants) of the
-  @screenshot node.
+    The target outline contains consists of all
+    the children (and their descendants) of the
+    @screenshot node.
 
-B. Create the **screenshot**, a bitmap (PNG) file.
+  B. Create the **screenshot**, a bitmap (PNG) file.
 
-  The slide commands take a screen shot of the
-  target outline. The @pause option opens the
-  target outline but does *not* take the
-  screenshot. The user must take the screenshot
-  manually. For more details, see the the options
-  section below.
+    The slide commands take a screen shot of the
+    target outline. The @pause option opens the
+    target outline but does *not* take the
+    screenshot. The user must take the screenshot
+    manually. For more details, see the the
+    options section below.
 
-C. Convert the screenshot file to a **work file**.
+  C. Convert the screenshot file to a **work file**.
 
-   The work file is an SVG (Scalable Vector
-   Graphics) file: http://www.w3.org/Graphics/SVG/.
+    The work file is an SVG (Scalable Vector
+    Graphics) file: http://www.w3.org/Graphics/SVG/.
 
-D. (Optional) Edit the work file.
+  D. (Optional) Edit the work file.
 
-  If the @slide node has a child @edit node, the
-  plugin opens Inkscape so that the user can
-  edit the work file.
+    If the @slide node has a child @edit node, the
+    plugin opens Inkscape so that the user can
+    edit the work file.
 
-E. Render the **final output file**.
+  E. Render the **final output file**.
 
-  The plugin calls Inkscape non-interactively to
-  render the final output file (a PNG image) from
-  the work file. If the Python Imaging Library
-  (PIL) is available, this step will use PIL to
-  improve the quality of the final output file.
+    The plugin calls Inkscape non-interactively to
+    render the final output file (a PNG image)
+    from the work file. If the Python Imaging
+    Library (PIL) is available, this step will use
+    PIL to improve the quality of the final output
+    file.
 
 3. Build the slide using Sphinx.
 
@@ -130,14 +131,14 @@ E. Render the **final output file**.
   The slideshow commands create @url nodes as children
   of each @slide node.  These nodes serve two purposes:
 
-    a) They allow you to access the files created by
-       these commands
+  a) They allow you to access the files created by
+     these commands.
 
-    b) They inhibit all or part of the build process
-    the next time you the slideshow commands.  This is
-    usually what you want, but if you want to rerun all
-    or part build process, you can remove some or all
-    of these @url nodes.
+  b) They inhibit all or part of the build process
+     the next time you the slideshow commands.
+     This is usually what you want, but if you
+     want to rerun all or part build process, you
+     can remove some or all of these @url nodes.
 
 Generated @url nodes
 ~~~~~~~~~~~~~~~~~~~~
@@ -181,12 +182,12 @@ unless overridden by a local option. **Local
 options** appear as direct children of an @slide
 node and apply to only to that @slide node.
 
-Global options
-~~~~~~~~~~~~~~
+Global options nodes
+~~~~~~~~~~~~~~~~~~~~
 
-The following may appear *either* as a direct
-child of the @slideshow node or as the direct
-child of an @slide node.
+The following nodes may appear *either* as a
+direct child of the @slideshow node or as the
+direct child of an @slide node.
 
 @sphinx_path = <path>
   This directory contains the slides directory,
@@ -206,11 +207,11 @@ child of an @slide node.
   True (or true or 1):  generate informational message.
   False (or false or 0): suppress informational messages.
 
-Local options
-~~~~~~~~~~~~~
+Local options nodes
+~~~~~~~~~~~~~~~~~~~
 
-The following are valid only as the direct child
-of an @slide node.
+The following nodes are valid only as the direct
+child of an @slide node.
 
 @callout <any text>
   Generates a text callout in the working .svg file.
@@ -237,7 +238,11 @@ of an @slide node.
   The user may adjust the screen as desired, for
   example by selecting menus or showing dialogs.
   The *user* must then take the screen shot
-  manually. As soon as the user closes the target
+  manually. **Important**: the screenshot need not
+  be of Leo--it could be a screenshot of anything
+  on the screen.
+
+  As soon as the user closes the target
   outline, the slide commands look for the screen
   shot on the clipboard. If found, the slide
   commands save the screenshot to the screenshot
