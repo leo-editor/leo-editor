@@ -211,7 +211,7 @@ direct child of an @slide node.
 
 @title_pattern = <pattern>
   The pattern used to generate patterns for one
-  slide or the entire slideshow. The title
+  slide or the entire slideshow. The title is
   computed as follows::
 
     d = {

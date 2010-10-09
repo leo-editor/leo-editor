@@ -3421,3 +3421,9 @@ screenshot_height
 screenshot_width
 template_fn
 callout
+title_pattern
+slideshow_name
+slide_name
+slide_number
+sc
+ImageChops
