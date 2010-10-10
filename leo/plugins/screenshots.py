@@ -1414,6 +1414,8 @@ class ScreenShotController(object):
         sc.make_slide()
 
         if sc.find_node(sc.slide_node,'@url final output file'):
+            sc.build_slide()
+            c.redraw()
             g.note('exists: @url final output file %s' % (p.h),color='blue')
             return
 
