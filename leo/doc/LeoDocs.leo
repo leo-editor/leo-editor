@@ -277,7 +277,7 @@
 <v t="ekr.20101009115705.4569"><vh>@url working file</vh></v>
 <v t="ekr.20101009210307.4644"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4398" a="E"><vh>@slide 003</vh>
+<v t="ekr.20101008061729.4398"><vh>@slide 003</vh>
 <v t="ekr.20101009115705.4583"><vh>@screenshot</vh>
 <v t="ekr.20101009115705.4584" a="E"><vh>To Do List</vh>
 <v t="ekr.20101009115705.4585"><vh>Urgent</vh></v>
@@ -306,14 +306,24 @@
 <v t="ekr.20101009124842.4600"><vh>Whenever</vh></v>
 </v>
 <v t="ekr.20101009124842.4601" a="E"><vh>Diary</vh>
-<v t="ekr.20101009124842.4602"><vh>2009</vh>
-<v t="ekr.20101009124842.4603"><vh>Jan 1</vh></v>
+<v t="ekr.20101009124842.4602" a="E"><vh>2009</vh>
+<v t="ekr.20101009124842.4603"><vh>Aug</vh></v>
+<v t="ekr.20101009211009.4624"><vh>Jul</vh></v>
+<v t="ekr.20101009211009.4623"><vh>Jun</vh></v>
+<v t="ekr.20101009211009.4625"><vh>May</vh></v>
+<v t="ekr.20101009211009.4626"><vh>Apr</vh></v>
+<v t="ekr.20101009211009.4627"><vh>Mar</vh></v>
+<v t="ekr.20101009211009.4628"><vh>Feb</vh></v>
+<v t="ekr.20101009211009.4629"><vh>Jan</vh></v>
 </v>
 <v t="ekr.20101009124842.4604"><vh>2010</vh></v>
 </v>
 </v>
-<v t="ekr.20101009124842.4606"><vh>@select To Do List</vh></v>
+<v t="ekr.20101009124842.4606"><vh>@select 2009</vh></v>
 <v t="ekr.20101009124842.4607"><vh>@edit</vh></v>
+<v t="ekr.20101009211009.4630"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009211009.4650"><vh>@url working file</vh></v>
+<v t="ekr.20101009212539.4664"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
 <v t="ekr.20101009134100.4609"><vh>@screenshot</vh>
@@ -324,7 +334,7 @@
 <v t="ekr.20101009134100.4614"><vh>Whenever</vh></v>
 </v>
 <v t="ekr.20101009134100.4615" a="E"><vh>Diary</vh>
-<v t="ekr.20101009134100.4616"><vh>2009</vh>
+<v t="ekr.20101009134100.4616" a="E"><vh>2009</vh>
 <v t="ekr.20101009134100.4617"><vh>Jan 1</vh></v>
 </v>
 <v t="ekr.20101009134100.4618"><vh>2010</vh></v>
@@ -972,7 +982,11 @@ else:
 
 </t>
 <t tx="ekr.20101008061729.4521"></t>
-<t tx="ekr.20101008061729.4522">Here the node has been opened. Clicking on the box again will close the node.</t>
+<t tx="ekr.20101008061729.4522">Here the node has been opened. Clicking on the box again will close the node.
+
+.. image:: slide-004.png
+
+</t>
 <t tx="ekr.20101008061729.4523"></t>
 <t tx="ekr.20101008061729.4524"></t>
 <t tx="ekr.20101008061729.4525"></t>
@@ -1124,6 +1138,16 @@ False:
 <t tx="ekr.20101009210307.4631">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html</t>
 <t tx="ekr.20101009210307.4644">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html</t>
 <t tx="ekr.20101009210748.4635">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html</t>
+<t tx="ekr.20101009211009.4623"></t>
+<t tx="ekr.20101009211009.4624"></t>
+<t tx="ekr.20101009211009.4625"></t>
+<t tx="ekr.20101009211009.4626"></t>
+<t tx="ekr.20101009211009.4627"></t>
+<t tx="ekr.20101009211009.4628"></t>
+<t tx="ekr.20101009211009.4629"></t>
+<t tx="ekr.20101009211009.4630">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.png</t>
+<t tx="ekr.20101009211009.4650">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg</t>
+<t tx="ekr.20101009212539.4664">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

@@ -102,6 +102,13 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2867"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -234,8 +241,16 @@
        width="75"
        height="28.5"
        id="image3188-1-2"
-       x="278.32776"
-       y="634.9281"
+       x="182.36327"
+       y="510.67935"
        transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)" />
+    <image
+       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       width="75"
+       height="28.5"
+       id="image3188-1-2-1"
+       x="545.00812"
+       y="-158.35184"
+       transform="matrix(-0.70710678,0.70710678,-0.70710678,-0.70710678,0,0)" />
   </g>
 </svg>

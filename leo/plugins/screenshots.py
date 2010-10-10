@@ -1406,39 +1406,38 @@ class ScreenShotController(object):
         sc.make_all_directories()
         sc.copy_files()
 
-        # @url built slide inhibits everything.
+        # "@url built slide" inhibits everything.
         if sc.find_node(sc.slide_node,'@url built slide'):
             g.note('exists: @url built slide in %s' % (p.h),color='blue')
             return
 
         sc.make_slide()
 
+        # "@url final output file" inhibits everything except the build.
         if sc.find_node(sc.slide_node,'@url final output file'):
             sc.build_slide()
             c.redraw()
             g.note('exists: @url final output file %s' % (p.h),color='blue')
             return
 
-        if sc.screenshot_tree:
-            sc.make_at_url_node_for_screenshot()
-        else:
+        # Do only a build if there is no @screenshot tree.
+        if not sc.screenshot_tree:
             sc.build_slide()
             c.redraw()
             return # Don't take any screenshot!
 
-        if not sc.take_screen_shot():
+        # Take the screenshot.
+        if sc.take_screen_shot():
+            sc.make_at_url_node_for_screenshot()
+        else:
             g.error('can not make screen shot:',p.h)
+            sc.build_slide()
             c.redraw()
             return
 
-        if sc.edit_flag:
-            # Create and the working file.
-            sc.make_working_file()
-            sc.edit_working_file()
-            sc.make_output_file()
-        elif sc.find_node(sc.slide_node,'@url working file'):
-            # Don't change the working file,
-            # but recreate the output file if necessary.
+        # "@url working file" inhibits making a new working file.
+        if sc.find_node(sc.slide_node,'@url working file'):
+            # Make a new output file *only* if the working file is newer.
             if (
                 g.os_path_exists(sc.working_fn) and
                 sc.output_fn and 
@@ -1447,8 +1446,10 @@ class ScreenShotController(object):
             ):
                 sc.make_output_file()
         else:
-            # Make the working file and output file without editing.
+            # Make the working file and output file
             sc.make_working_file()
+            if sc.edit_flag:
+                sc.edit_working_file()
             sc.make_output_file()
 
         # Build slide after creating the output file ;-)
