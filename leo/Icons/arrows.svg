@@ -18,6 +18,33 @@
    sodipodi:docname="arrows.svg">
   <defs
      id="defs3054">
+    <linearGradient
+       id="linearGradient5443">
+      <stop
+         id="stop5453"
+         offset="0"
+         style="stop-color:#aa1c07;stop-opacity:0.74901961;" />
+      <stop
+         style="stop-color:#aa0e0b;stop-opacity:0.62352941;"
+         offset="0.5"
+         id="stop5455" />
+      <stop
+         id="stop5451"
+         offset="1"
+         style="stop-color:#aa000f;stop-opacity:0.49803922;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3719">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3721" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop3723" />
+    </linearGradient>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 526.18109 : 1"
@@ -137,6 +164,101 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2879"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2869-1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2891-4"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2913"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2987"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2883"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3719"
+       id="linearGradient3725"
+       x1="-1353.0503"
+       y1="459.43815"
+       x2="-1084.3782"
+       y2="459.43815"
+       gradientUnits="userSpaceOnUse" />
+    <inkscape:perspective
+       id="perspective3735"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3719-7"
+       id="linearGradient3725-2"
+       x1="-1353.0503"
+       y1="459.43814"
+       x2="-1084.3782"
+       y2="459.43814"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient3719-7">
+      <stop
+         style="stop-color:#d80000;stop-opacity:1;"
+         offset="0"
+         id="stop3721-7" />
+      <stop
+         id="stop5419"
+         offset="0.25"
+         style="stop-color:#9b0000;stop-opacity:0.74901961;" />
+      <stop
+         id="stop5417"
+         offset="0.5"
+         style="stop-color:#5e0000;stop-opacity:0.49803922;" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop3723-1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3719"
+       id="linearGradient5427"
+       x1="-1046.2646"
+       y1="672.36218"
+       x2="-776.59253"
+       y2="672.36218"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -146,8 +268,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="-336.42857"
-     inkscape:cy="665.83828"
+     inkscape:cx="-810.71429"
+     inkscape:cy="664.35261"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -173,77 +295,36 @@
      inkscape:groupmode="layer"
      id="layer1">
     <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png"
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="150"
        height="114"
        id="image3050"
-       x="-585"
-       y="72.505035" />
+       x="-623.57141"
+       y="81.076469" />
     <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697821256125215pitr_red_arrows_set_5.svg.med.png"
-       width="112.5"
-       height="148"
-       id="image3102"
-       x="-591.51788"
-       y="232.57648" />
-    <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697902136786863pitr_red_arrows_set_1.svg.med.png"
-       width="112.5"
-       height="148"
-       id="image3145"
-       x="-371.96429"
-       y="236.93364" />
-    <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="150"
        height="114"
        id="image3188"
-       x="-376.69641"
-       y="75.290756" />
+       x="-386.69641"
+       y="98.147896" />
     <image
-       y="72.505035"
-       x="-585"
-       id="image2877"
-       height="114"
-       width="150"
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
-    <image
-       y="232.57648"
-       x="-591.51788"
-       id="image2879"
-       height="148"
-       width="112.5"
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697821256125215pitr_red_arrows_set_5.svg.med.png" />
-    <image
-       y="236.93364"
-       x="-371.96429"
-       id="image2881"
-       height="148"
-       width="112.5"
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697902136786863pitr_red_arrows_set_1.svg.med.png" />
-    <image
-       y="75.290756"
-       x="-376.69641"
-       id="image2883"
-       height="114"
-       width="150"
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png" />
-    <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="75"
        height="28.5"
        id="image3188-1"
        x="-457.14285"
        y="500.75507" />
     <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png"
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="150"
        height="114"
        id="image2894"
-       x="-585"
-       y="72.505035" />
+       x="-388.79074"
+       y="-604.14282"
+       transform="matrix(0,-1,1,0,0,0)" />
     <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="75"
        height="28.5"
        id="image3188-9"
@@ -251,29 +332,7 @@
        y="499.68359"
        transform="scale(-1,1)" />
     <image
-       y="574.9693"
-       x="-464.59821"
-       id="image2881-8"
-       height="74"
-       width="28.125"
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697902136786863pitr_red_arrows_set_1.svg.med.png" />
-    <image
-       y="575.68365"
-       x="-516.38391"
-       id="image2879-8"
-       height="74"
-       width="28.125"
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697821256125215pitr_red_arrows_set_5.svg.med.png" />
-    <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
-       width="75"
-       height="28.5"
-       id="image3188-1-2"
-       x="182.36327"
-       y="510.67935"
-       transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)" />
-    <image
-       xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/1206569798191534312pitr_red_arrows_set_2.svg.med.png"
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="75"
        height="28.5"
        id="image3188-1-2-1"
@@ -281,7 +340,8 @@
        y="-158.35184"
        transform="matrix(-0.70710678,0.70710678,-0.70710678,-0.70710678,0,0)" />
     <g
-       id="g3693">
+       id="g3693"
+       transform="translate(11.428571,-24.285714)">
       <image
          transform="scale(-1,1)"
          y="119.6479"
@@ -289,7 +349,7 @@
          id="image2894-1"
          height="114"
          width="150"
-         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+         xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png" />
       <text
          id="text2905"
          y="189.79076"
@@ -302,7 +362,8 @@
            sodipodi:role="line">1</tspan></text>
     </g>
     <g
-       id="g3698">
+       id="g3698"
+       transform="translate(10,-95.714286)">
       <image
          transform="scale(-1,1)"
          y="341.07651"
@@ -310,7 +371,7 @@
          id="image2894-1-7"
          height="114"
          width="150"
-         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+         xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png" />
       <text
          id="text3686"
          y="412.36218"
@@ -323,7 +384,7 @@
            sodipodi:role="line">2</tspan></text>
     </g>
     <g
-       transform="matrix(0.5,0,0,0.5,-454.28574,502.60966)"
+       transform="matrix(0.5,0,0,0.5,-301.4286,65.466803)"
        id="g3693-4">
       <image
          transform="scale(-1,1)"
@@ -332,7 +393,7 @@
          id="image2894-1-0"
          height="114"
          width="150"
-         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+         xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png" />
       <text
          id="text2905-9"
          y="189.79076"
@@ -345,7 +406,7 @@
            sodipodi:role="line">1</tspan></text>
     </g>
     <g
-       transform="matrix(0.5,0,0,0.5,-304.28572,399.03821)"
+       transform="matrix(0.5,0,0,0.5,-292.85715,94.752496)"
        id="g3698-8">
       <image
          transform="scale(-1,1)"
@@ -354,7 +415,7 @@
          id="image2894-1-7-8"
          height="114"
          width="150"
-         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+         xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png" />
       <text
          id="text3686-2"
          y="412.36218"
@@ -366,5 +427,80 @@
            id="tspan3688-4"
            sodipodi:role="line">2</tspan></text>
     </g>
+    <image
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
+       width="300"
+       height="228"
+       id="image2869"
+       x="-1380.0001"
+       y="54.076481" />
+    <path
+       style="fill:#501616"
+       d="m -1188.4556,571.3719 c -4.7385,-0.91382 -5.2588,-3.29016 -5.2588,-24.01793 l 0,-19.27749 -82.5497,0 c -89.184,0 -87.3857,0.1055 -88.8095,-5.20995 -0.3374,-1.25953 -0.6196,-30.9277 -0.6271,-65.92927 -0.013,-61.17724 0.06,-63.73054 1.8977,-66 l 1.9115,-2.36078 84.0885,-0.26675 84.0886,-0.26675 0,-19.37246 c 0,-17.33685 0.1938,-19.61178 1.8442,-21.64992 2.6979,-3.33186 7.412,-3.02981 11.4362,0.73278 101.7947,95.17613 113.4925,106.35501 113.9843,108.92755 0.2898,1.51599 0.011,3.59875 -0.6189,4.62835 -1.1225,1.83385 -103.2003,98.15109 -112.8878,106.5172 -2.7067,2.3375 -5.2221,4.18872 -5.5897,4.11382 -0.3675,-0.0749 -1.6768,-0.33068 -2.9095,-0.5684 z"
+       id="path2860" />
+    <image
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
+       width="75"
+       height="28.5"
+       id="image3188-9-7"
+       x="-651.22388"
+       y="513.60712"
+       transform="matrix(0,-1,-1,0,0,0)" />
+    <image
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
+       width="75"
+       height="28.5"
+       id="image3188-9-7-0"
+       x="574.79529"
+       y="417.89285"
+       transform="matrix(0,1,-1,0,0,0)" />
+    <image
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
+       width="75"
+       height="28.5"
+       id="image3188-9-7-0-9"
+       x="-266.91245"
+       y="-672.97723"
+       transform="matrix(-0.70710678,-0.70710678,0.70710678,-0.70710678,0,0)" />
+    <image
+       xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
+       width="150"
+       height="114"
+       id="image2894-4"
+       x="248.79077"
+       y="275.85715"
+       transform="matrix(0,1,-1,0,0,0)" />
+    <path
+       style="fill:#aa0000;stroke:url(#linearGradient3725);fill-opacity:1"
+       d="m -1181.0504,535.42933 c 0,-14.81471 -0.023,-14.96861 -2.6363,-17.5819 l -2.6364,-2.63636 -83.3636,0 -83.3636,0 0,-56 0,-56 83.5066,0 83.5066,0 2.2434,-2.57599 c 2.0479,-2.35153 2.2869,-3.86368 2.7433,-17.35482 l 0.5,-14.77884 48,44.94015 c 26.4,24.71708 48.0773,45.23925 48.1718,45.60482 0.094,0.36558 -16.9102,16.63968 -37.7881,36.16468 -20.8778,19.525 -42.6676,39.92435 -48.4217,45.3319 l -10.462,9.8319 0,-14.94554 z"
+       id="path2873" />
+    <path
+       style="fill:#aa0026;stroke:url(#linearGradient5427);stroke-opacity:1;fill-opacity:1"
+       d="m -873.76472,748.35337 c 0,-14.81471 -0.023,-14.96861 -2.6363,-17.5819 l -2.6364,-2.63636 -83.3636,0 -83.36358,0 0,-56 0,-56 83.50658,0 83.5066,0 2.2434,-2.57599 c 2.0479,-2.35153 2.2869,-3.86368 2.7433,-17.35482 l 0.5,-14.77884 48,44.94015 c 26.4,24.71708 48.0773,45.23925 48.1718,45.60482 0.094,0.36558 -16.9102,16.63968 -37.7881,36.16468 -20.8778,19.525 -42.6676,39.92435 -48.4217,45.3319 l -10.462,9.8319 0,-14.94554 z"
+       id="path2873-2" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="-1392.8572"
+       y="18.076469"
+       id="text5467"><tspan
+         sodipodi:role="line"
+         x="-1392.8572"
+         y="18.076469"
+         id="tspan5471">Original png</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="-1625.7144"
+       y="406.64789"
+       id="text5475"><tspan
+         sodipodi:role="line"
+         id="tspan5477"
+         x="-1625.7144"
+         y="406.64789">traces of</tspan><tspan
+         sodipodi:role="line"
+         x="-1625.7144"
+         y="456.64789"
+         id="tspan5481">bitmaps</tspan></text>
   </g>
 </svg>
