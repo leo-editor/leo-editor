@@ -1878,19 +1878,14 @@ class ScreenShotController(object):
         root = c.rootPosition()
 
         # Remember the expanded nodes.
-        expanded = [z.copy() for z in sc.c.all_unique_positions() if z.isExpanded()]
+        expanded = [z.copy() for z in sc.screenshot_tree.subtree() if z.isExpanded()]
 
         if sc.screenshot_tree:
             # Copy all descendants of the @screenshot node.
             children = [z.copy() for z in sc.screenshot_tree.children() if not isSlide(z)]
         else:
-            # Copy the entire Leo outline.
-            p = root.copy()
-            children = []
-            while p:
-                if not isSlide(p):
-                    children.append(p.copy())
-                p.moveToNext()
+            g.error('can not happen. no screenshot tree')
+            return
 
         children.reverse()
         child1 = children and children[0]

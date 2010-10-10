@@ -297,7 +297,7 @@
 <v t="ekr.20101009124842.4665"><vh>@url working file</vh></v>
 <v t="ekr.20101009210748.4635"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4522"><vh>@slide 004</vh>
+<v t="ekr.20101008061729.4522" a="E"><vh>@slide 004</vh>
 <v t="ekr.20101009124842.4595"><vh>@screenshot</vh>
 <v t="ekr.20101009124842.4596" a="E"><vh>To Do List</vh>
 <v t="ekr.20101009124842.4597"><vh>Urgent</vh></v>
@@ -325,26 +325,34 @@
 <v t="ekr.20101009211009.4650"><vh>@url working file</vh></v>
 <v t="ekr.20101009212539.4664"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
-<v t="ekr.20101009134100.4609"><vh>@screenshot</vh>
-<v t="ekr.20101009134100.4610" a="E"><vh>To Do List</vh>
-<v t="ekr.20101009134100.4611"><vh>Urgent</vh></v>
-<v t="ekr.20101009134100.4612"><vh>Important</vh></v>
-<v t="ekr.20101009134100.4613"><vh>Soon</vh></v>
-<v t="ekr.20101009134100.4614"><vh>Whenever</vh></v>
+<v t="ekr.20101008061729.4518" a="E"><vh>@slide 005</vh>
+<v t="ekr.20101009212539.4682"><vh>@screenshot</vh>
+<v t="ekr.20101009212539.4683" a="E"><vh>To Do List</vh>
+<v t="ekr.20101009212539.4684"><vh>Urgent</vh></v>
+<v t="ekr.20101009212539.4685"><vh>Important</vh></v>
+<v t="ekr.20101009212539.4686"><vh>Soon</vh></v>
+<v t="ekr.20101009212539.4687"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101009134100.4615" a="E"><vh>Diary</vh>
-<v t="ekr.20101009134100.4616" a="E"><vh>2009</vh>
-<v t="ekr.20101009134100.4617"><vh>Jan 1</vh></v>
+<v t="ekr.20101009212539.4688" a="E"><vh>Diary</vh>
+<v t="ekr.20101009212539.4689"><vh>2009</vh>
+<v t="ekr.20101009212539.4690"><vh>Aug</vh></v>
+<v t="ekr.20101009212539.4691"><vh>Jul</vh></v>
+<v t="ekr.20101009212539.4692"><vh>Jun</vh></v>
+<v t="ekr.20101009212539.4693"><vh>May</vh></v>
+<v t="ekr.20101009212539.4694"><vh>Apr</vh></v>
+<v t="ekr.20101009212539.4695"><vh>Mar</vh></v>
+<v t="ekr.20101009212539.4696"><vh>Feb</vh></v>
+<v t="ekr.20101009212539.4697"><vh>Jan</vh></v>
 </v>
-<v t="ekr.20101009134100.4618"><vh>2010</vh></v>
+<v t="ekr.20101009212539.4698"><vh>2010</vh></v>
 </v>
 </v>
-<v t="ekr.20101009134459.4639"><vh>@select 2009</vh></v>
-<v t="ekr.20101009174050.4623"><vh>@url screenshot</vh></v>
-<v t="ekr.20101009174050.4636"><vh>@url working file</vh></v>
-<v t="ekr.20101009174050.4637"><vh>@url final output file</vh></v>
-<v t="ekr.20101009174050.4638"><vh>@url built slide</vh></v>
+<v t="ekr.20101009212539.4746"><vh>@select 2009</vh></v>
+<v t="ekr.20101009212539.4699"><vh>@edit</vh></v>
+<v t="ekr.20101009213545.4670"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009213545.4671"><vh>@url working file</vh></v>
+<v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
+<v t="ekr.20101009213545.4674"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4521"><vh>@slide 006</vh></v>
 <v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
@@ -976,7 +984,7 @@ else:
     if changed:
         c.undoer.afterChangeTree(p,'copy-@screenshot',b)
     c.redraw()</t>
-<t tx="ekr.20101008061729.4518">This is a test.
+<t tx="ekr.20101008061729.4518">Here the indicated node has been closed.
 
 .. image:: slide-005.png
 
@@ -1118,23 +1126,7 @@ False:
 <t tx="ekr.20101009124842.4606" str_leo_pos=""></t>
 <t tx="ekr.20101009124842.4607"></t>
 <t tx="ekr.20101009124842.4665">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.svg</t>
-<t tx="ekr.20101009134100.4609"></t>
-<t tx="ekr.20101009134100.4610">My to-do list.
-</t>
-<t tx="ekr.20101009134100.4611"></t>
-<t tx="ekr.20101009134100.4612"></t>
-<t tx="ekr.20101009134100.4613"></t>
-<t tx="ekr.20101009134100.4614"></t>
-<t tx="ekr.20101009134100.4615"></t>
-<t tx="ekr.20101009134100.4616"></t>
-<t tx="ekr.20101009134100.4617"></t>
-<t tx="ekr.20101009134100.4618"></t>
-<t tx="ekr.20101009134459.4639"></t>
 <t tx="ekr.20101009171445.4637"></t>
-<t tx="ekr.20101009174050.4623">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
-<t tx="ekr.20101009174050.4636">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
-<t tx="ekr.20101009174050.4637">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
-<t tx="ekr.20101009174050.4638">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
 <t tx="ekr.20101009210307.4631">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html</t>
 <t tx="ekr.20101009210307.4644">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html</t>
 <t tx="ekr.20101009210748.4635">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html</t>
@@ -1148,6 +1140,30 @@ False:
 <t tx="ekr.20101009211009.4630">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.png</t>
 <t tx="ekr.20101009211009.4650">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg</t>
 <t tx="ekr.20101009212539.4664">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html</t>
+<t tx="ekr.20101009212539.4682"></t>
+<t tx="ekr.20101009212539.4683">My to-do list.
+</t>
+<t tx="ekr.20101009212539.4684"></t>
+<t tx="ekr.20101009212539.4685"></t>
+<t tx="ekr.20101009212539.4686"></t>
+<t tx="ekr.20101009212539.4687"></t>
+<t tx="ekr.20101009212539.4688"></t>
+<t tx="ekr.20101009212539.4689"></t>
+<t tx="ekr.20101009212539.4690"></t>
+<t tx="ekr.20101009212539.4691"></t>
+<t tx="ekr.20101009212539.4692"></t>
+<t tx="ekr.20101009212539.4693"></t>
+<t tx="ekr.20101009212539.4694"></t>
+<t tx="ekr.20101009212539.4695"></t>
+<t tx="ekr.20101009212539.4696"></t>
+<t tx="ekr.20101009212539.4697"></t>
+<t tx="ekr.20101009212539.4698"></t>
+<t tx="ekr.20101009212539.4699"></t>
+<t tx="ekr.20101009212539.4746" str_leo_pos=""></t>
+<t tx="ekr.20101009213545.4670">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
+<t tx="ekr.20101009213545.4671">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
+<t tx="ekr.20101009213545.4672">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
+<t tx="ekr.20101009213545.4674">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
