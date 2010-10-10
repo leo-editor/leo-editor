@@ -30,17 +30,17 @@ This is the front page for various slide shows about Leo.
 Basics
 ------
 
-`My first slide show`_ is a slideshow for testing.
+`What is Leo`_
 
-..  `What is Leo`_
 ..  `What is Leo--Continued`_
 ..  `Installation`_
 ..  `Outlining`_
 ..  `External Files, Part 1`_
 ..  `External Files, Part 2`_
 
-Examples
---------
+.. Examples
+.. --------
+
 
 ..  `Running Scripts with @button Nodes`_
 ..  `Making Slide Shows`_

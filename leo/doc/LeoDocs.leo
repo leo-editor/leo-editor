@@ -188,7 +188,7 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
+<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
 <v t="ekr.20101009111520.4525"><vh>Buttons</vh>
 <v t="ekr.20101008061729.4425"><vh>@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@button copy-@screenshot-node</vh>
@@ -353,7 +353,7 @@
 <v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
 <v t="ekr.20101009213545.4674"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4521" a="E"><vh>@slide 006</vh>
+<v t="ekr.20101008061729.4521"><vh>@slide 006</vh>
 <v t="ekr.20101009213545.4692"><vh>@screenshot</vh>
 <v t="ekr.20101009213545.4693" a="E"><vh>To Do List</vh>
 <v t="ekr.20101009213545.4694"><vh>Urgent</vh></v>
@@ -780,17 +780,17 @@ This is the front page for various slide shows about Leo.
 Basics
 ------
 
-`My first slide show`_ is a slideshow for testing.
+`What is Leo`_
 
-..  `What is Leo`_
 ..  `What is Leo--Continued`_
 ..  `Installation`_
 ..  `Outlining`_
 ..  `External Files, Part 1`_
 ..  `External Files, Part 2`_
 
-Examples
---------
+.. Examples
+.. --------
+
 
 ..  `Running Scripts with @button Nodes`_
 ..  `Making Slide Shows`_
