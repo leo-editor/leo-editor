@@ -1883,19 +1883,18 @@ class ScreenShotController(object):
         if sc.screenshot_tree:
             # Copy all descendants of the @screenshot node.
             children = [z.copy() for z in sc.screenshot_tree.children() if not isSlide(z)]
+            if not children:
+                return g.error('empty @screenshot tree')
         else:
-            g.error('can not happen. no screenshot tree')
-            return
+            return g.error('can not happen. no screenshot tree')
 
-        children.reverse()
-        child1 = children and children[0]
-        for child in children:
-            child2 = root.insertAfter()
+        child1 = children[0]
+        child1.copyTreeFromSelfTo(root)
+        last = root
+        for child in children[1:]:
+            child2 = last.insertAfter()
             child.copyTreeFromSelfTo(child2)
-        # g.trace(root)
-        if child1:
-            root.doDelete(newNode=None)
-            c.setRootPosition(child1) # Essential!
+            last = child2
 
         # Set the expanded bits in the new file.
         for z in c.all_unique_positions():

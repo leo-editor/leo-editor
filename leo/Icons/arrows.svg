@@ -109,6 +109,34 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2869"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2891"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3742"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3773"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -118,8 +146,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="-99.285717"
-     inkscape:cy="477.83822"
+     inkscape:cx="-336.42857"
+     inkscape:cy="665.83828"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -252,5 +280,91 @@
        x="545.00812"
        y="-158.35184"
        transform="matrix(-0.70710678,0.70710678,-0.70710678,-0.70710678,0,0)" />
+    <g
+       id="g3693">
+      <image
+         transform="scale(-1,1)"
+         y="119.6479"
+         x="856.42853"
+         id="image2894-1"
+         height="114"
+         width="150"
+         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+      <text
+         id="text2905"
+         y="189.79076"
+         x="-930.28577"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="189.79076"
+           x="-930.28577"
+           id="tspan2907"
+           sodipodi:role="line">1</tspan></text>
+    </g>
+    <g
+       id="g3698">
+      <image
+         transform="scale(-1,1)"
+         y="341.07651"
+         x="850.71429"
+         id="image2894-1-7"
+         height="114"
+         width="150"
+         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+      <text
+         id="text3686"
+         y="412.36218"
+         x="-919.14282"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="412.36218"
+           x="-919.14282"
+           id="tspan3688"
+           sodipodi:role="line">2</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.5,0,0,0.5,-454.28574,502.60966)"
+       id="g3693-4">
+      <image
+         transform="scale(-1,1)"
+         y="119.6479"
+         x="856.42853"
+         id="image2894-1-0"
+         height="114"
+         width="150"
+         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+      <text
+         id="text2905-9"
+         y="189.79076"
+         x="-930.28577"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="189.79076"
+           x="-930.28577"
+           id="tspan2907-4"
+           sodipodi:role="line">1</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.5,0,0,0.5,-304.28572,399.03821)"
+       id="g3698-8">
+      <image
+         transform="scale(-1,1)"
+         y="341.07651"
+         x="850.71429"
+         id="image2894-1-7-8"
+         height="114"
+         width="150"
+         xlink:href="file:///C:/prog/LeoStuff/Icons/clker.com/12065697731638242145pitr_red_arrows_set_4.svg.med.png" />
+      <text
+         id="text3686-2"
+         y="412.36218"
+         x="-919.14282"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="412.36218"
+           x="-919.14282"
+           id="tspan3688-4"
+           sodipodi:role="line">2</tspan></text>
+    </g>
   </g>
 </svg>

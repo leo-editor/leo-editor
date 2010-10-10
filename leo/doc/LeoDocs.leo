@@ -264,7 +264,7 @@
 <v t="ekr.20101008061729.4388"><vh>Soon</vh></v>
 <v t="ekr.20101008061729.4389"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101008061729.4390" a="E"><vh>Diary</vh>
+<v t="ekr.20101008061729.4390"><vh>Diary</vh>
 <v t="ekr.20101008061729.4391"><vh>2009</vh>
 <v t="ekr.20101008061729.4392"><vh>Jan 1</vh></v>
 </v>
@@ -272,7 +272,6 @@
 </v>
 </v>
 <v t="ekr.20101008061729.4396"><vh>@select To Do List</vh></v>
-<v t="ekr.20101008061729.4397"><vh>@callout arrow shows outline pane</vh></v>
 <v t="ekr.20101009115705.4556"><vh>@url screenshot</vh></v>
 <v t="ekr.20101009115705.4569"><vh>@url working file</vh></v>
 <v t="ekr.20101009210307.4644"><vh>@url built slide</vh></v>
@@ -297,7 +296,7 @@
 <v t="ekr.20101009124842.4665"><vh>@url working file</vh></v>
 <v t="ekr.20101009210748.4635"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4522" a="E"><vh>@slide 004</vh>
+<v t="ekr.20101008061729.4522"><vh>@slide 004</vh>
 <v t="ekr.20101009124842.4595"><vh>@screenshot</vh>
 <v t="ekr.20101009124842.4596" a="E"><vh>To Do List</vh>
 <v t="ekr.20101009124842.4597"><vh>Urgent</vh></v>
@@ -325,7 +324,7 @@
 <v t="ekr.20101009211009.4650"><vh>@url working file</vh></v>
 <v t="ekr.20101009212539.4664"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4518" a="E"><vh>@slide 005</vh>
+<v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
 <v t="ekr.20101009212539.4682"><vh>@screenshot</vh>
 <v t="ekr.20101009212539.4683" a="E"><vh>To Do List</vh>
 <v t="ekr.20101009212539.4684"><vh>Urgent</vh></v>
@@ -354,7 +353,35 @@
 <v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
 <v t="ekr.20101009213545.4674"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4521"><vh>@slide 006</vh></v>
+<v t="ekr.20101008061729.4521" a="E"><vh>@slide 006</vh>
+<v t="ekr.20101009213545.4692"><vh>@screenshot</vh>
+<v t="ekr.20101009213545.4693" a="E"><vh>To Do List</vh>
+<v t="ekr.20101009213545.4694"><vh>Urgent</vh></v>
+<v t="ekr.20101009213545.4695"><vh>Important</vh></v>
+<v t="ekr.20101009213545.4696"><vh>Soon</vh></v>
+<v t="ekr.20101009213545.4697"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101009213545.4698" a="E"><vh>Diary</vh>
+<v t="ekr.20101009213545.4699"><vh>2009</vh>
+<v t="ekr.20101009213545.4700"><vh>Aug</vh></v>
+<v t="ekr.20101009213545.4701"><vh>Jul</vh></v>
+<v t="ekr.20101009213545.4702"><vh>Jun</vh></v>
+<v t="ekr.20101009213545.4703"><vh>May</vh></v>
+<v t="ekr.20101009213545.4704"><vh>Apr</vh></v>
+<v t="ekr.20101009213545.4705"><vh>Mar</vh></v>
+<v t="ekr.20101009213545.4706"><vh>Feb</vh></v>
+<v t="ekr.20101009213545.4707"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101009213545.4708"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101009213545.4709"><vh>@edit</vh></v>
+<v t="ekr.20101009213545.4710"><vh>@select Urgent</vh></v>
+<v t="ekr.20101009221946.4737"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009221946.4738"><vh>@url working file</vh></v>
+<v t="ekr.20101009221946.4739"><vh>@url final output file</vh></v>
+<v t="ekr.20101009221946.4740"><vh>@url built slide</vh></v>
+</v>
 <v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
 <v t="ekr.20101008061729.4524"><vh>@slide 008</vh></v>
 <v t="ekr.20101008061729.4525"><vh>@slide 009</vh></v>
@@ -887,8 +914,7 @@ create an outline like the one in the screenshot).
 
 </t>
 <t tx="ekr.20101008061729.4384"></t>
-<t tx="ekr.20101008061729.4385">My to-do list.
-</t>
+<t tx="ekr.20101008061729.4385"></t>
 <t tx="ekr.20101008061729.4386"></t>
 <t tx="ekr.20101008061729.4387"></t>
 <t tx="ekr.20101008061729.4388"></t>
@@ -898,7 +924,6 @@ create an outline like the one in the screenshot).
 <t tx="ekr.20101008061729.4392"></t>
 <t tx="ekr.20101008061729.4393"></t>
 <t tx="ekr.20101008061729.4396" str_leo_pos=""></t>
-<t tx="ekr.20101008061729.4397"></t>
 <t tx="ekr.20101008061729.4398">Clicking on the indicated box will open the indicated node.
 
 .. image:: slide-003.png
@@ -989,7 +1014,13 @@ else:
 .. image:: slide-005.png
 
 </t>
-<t tx="ekr.20101008061729.4521"></t>
+<t tx="ekr.20101008061729.4521">Clicking on a node headline (1) will show the text for that node in the body
+pane (2) below. The body pane is a text editor--you can enter, delete or change
+text here by typing it in.
+
+.. image:: slide-006.png
+
+</t>
 <t tx="ekr.20101008061729.4522">Here the node has been opened. Clicking on the box again will close the node.
 
 .. image:: slide-004.png
@@ -1164,6 +1195,32 @@ False:
 <t tx="ekr.20101009213545.4671">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
 <t tx="ekr.20101009213545.4672">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
 <t tx="ekr.20101009213545.4674">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
+<t tx="ekr.20101009213545.4692"></t>
+<t tx="ekr.20101009213545.4693">My to-do list.
+</t>
+<t tx="ekr.20101009213545.4694">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.</t>
+<t tx="ekr.20101009213545.4695"></t>
+<t tx="ekr.20101009213545.4696"></t>
+<t tx="ekr.20101009213545.4697"></t>
+<t tx="ekr.20101009213545.4698"></t>
+<t tx="ekr.20101009213545.4699"></t>
+<t tx="ekr.20101009213545.4700"></t>
+<t tx="ekr.20101009213545.4701"></t>
+<t tx="ekr.20101009213545.4702"></t>
+<t tx="ekr.20101009213545.4703"></t>
+<t tx="ekr.20101009213545.4704"></t>
+<t tx="ekr.20101009213545.4705"></t>
+<t tx="ekr.20101009213545.4706"></t>
+<t tx="ekr.20101009213545.4707"></t>
+<t tx="ekr.20101009213545.4708"></t>
+<t tx="ekr.20101009213545.4709"></t>
+<t tx="ekr.20101009213545.4710"></t>
+<t tx="ekr.20101009221946.4737">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.png</t>
+<t tx="ekr.20101009221946.4738">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.svg</t>
+<t tx="ekr.20101009221946.4739">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-006.png</t>
+<t tx="ekr.20101009221946.4740">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
