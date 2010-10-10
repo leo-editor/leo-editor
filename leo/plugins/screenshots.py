@@ -573,6 +573,12 @@ class ScreenShotController(object):
             return g.error('Not in slide show:',p.h)
 
         sc.run(p)
+
+        # Only the make-slide command gives this error.
+        # The make-slide-show commands allows dummy nodes.
+        if sc.slide_node and not sc.slide_node.b.strip():
+            g.error('No body for slide')
+
     #@+node:ekr.20100915074635.5651: *3* init
     def init (self,p):
 
