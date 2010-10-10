@@ -188,7 +188,7 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
 <v t="ekr.20101009111520.4525"><vh>Buttons</vh>
 <v t="ekr.20101008061729.4425"><vh>@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@button copy-@screenshot-node</vh>
@@ -258,13 +258,13 @@
 </v>
 <v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
 <v t="ekr.20101008061729.4384"><vh>@screenshot</vh>
-<v t="ekr.20101008061729.4385" a="E"><vh>To Do List</vh>
+<v t="ekr.20101008061729.4385"><vh>To Do List</vh>
 <v t="ekr.20101008061729.4386"><vh>Urgent</vh></v>
 <v t="ekr.20101008061729.4387"><vh>Important</vh></v>
 <v t="ekr.20101008061729.4388"><vh>Soon</vh></v>
 <v t="ekr.20101008061729.4389"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101008061729.4390" a="E"><vh>Diary</vh>
+<v t="ekr.20101008061729.4390"><vh>Diary</vh>
 <v t="ekr.20101008061729.4391"><vh>2009</vh>
 <v t="ekr.20101008061729.4392"><vh>Jan 1</vh></v>
 </v>
@@ -280,13 +280,13 @@
 </v>
 <v t="ekr.20101008061729.4398"><vh>@slide 003</vh>
 <v t="ekr.20101009115705.4583"><vh>@screenshot</vh>
-<v t="ekr.20101009115705.4584" a="E"><vh>To Do List</vh>
+<v t="ekr.20101009115705.4584"><vh>To Do List</vh>
 <v t="ekr.20101009115705.4585"><vh>Urgent</vh></v>
 <v t="ekr.20101009115705.4586"><vh>Important</vh></v>
 <v t="ekr.20101009115705.4587"><vh>Soon</vh></v>
 <v t="ekr.20101009115705.4588"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101009115705.4589" a="E"><vh>Diary</vh>
+<v t="ekr.20101009115705.4589"><vh>Diary</vh>
 <v t="ekr.20101009115705.4590"><vh>2009</vh>
 <v t="ekr.20101009115705.4591"><vh>Jan 1</vh></v>
 </v>
@@ -301,14 +301,14 @@
 </v>
 <v t="ekr.20101008061729.4522"><vh>@slide 004</vh>
 <v t="ekr.20101009124842.4595"><vh>@screenshot</vh>
-<v t="ekr.20101009124842.4596" a="E"><vh>To Do List</vh>
+<v t="ekr.20101009124842.4596"><vh>To Do List</vh>
 <v t="ekr.20101009124842.4597"><vh>Urgent</vh></v>
 <v t="ekr.20101009124842.4598"><vh>Important</vh></v>
 <v t="ekr.20101009124842.4599"><vh>Soon</vh></v>
 <v t="ekr.20101009124842.4600"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101009124842.4601" a="E"><vh>Diary</vh>
-<v t="ekr.20101009124842.4602" a="E"><vh>2009</vh>
+<v t="ekr.20101009124842.4601"><vh>Diary</vh>
+<v t="ekr.20101009124842.4602"><vh>2009</vh>
 <v t="ekr.20101009124842.4603"><vh>Aug</vh></v>
 <v t="ekr.20101009211009.4624"><vh>Jul</vh></v>
 <v t="ekr.20101009211009.4623"><vh>Jun</vh></v>
@@ -330,13 +330,13 @@
 </v>
 <v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
 <v t="ekr.20101009212539.4682"><vh>@screenshot</vh>
-<v t="ekr.20101009212539.4683" a="E"><vh>To Do List</vh>
+<v t="ekr.20101009212539.4683"><vh>To Do List</vh>
 <v t="ekr.20101009212539.4684"><vh>Urgent</vh></v>
 <v t="ekr.20101009212539.4685"><vh>Important</vh></v>
 <v t="ekr.20101009212539.4686"><vh>Soon</vh></v>
 <v t="ekr.20101009212539.4687"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101009212539.4688" a="E"><vh>Diary</vh>
+<v t="ekr.20101009212539.4688"><vh>Diary</vh>
 <v t="ekr.20101009212539.4689"><vh>2009</vh>
 <v t="ekr.20101009212539.4690"><vh>Aug</vh></v>
 <v t="ekr.20101009212539.4691"><vh>Jul</vh></v>
@@ -355,17 +355,17 @@
 <v t="ekr.20101009213545.4670"><vh>@url screenshot</vh></v>
 <v t="ekr.20101009213545.4671"><vh>@url working file</vh></v>
 <v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
-<v t="ekr.20101009213545.4674"><vh>@url built slide</vh></v>
+<v t="ekr.20101010121134.4814"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4521" a="E"><vh>@slide 006</vh>
 <v t="ekr.20101009213545.4692"><vh>@screenshot</vh>
-<v t="ekr.20101009213545.4693" a="E"><vh>To Do List</vh>
+<v t="ekr.20101009213545.4693"><vh>To Do List</vh>
 <v t="ekr.20101009213545.4694"><vh>Urgent</vh></v>
 <v t="ekr.20101009213545.4695"><vh>Important</vh></v>
 <v t="ekr.20101009213545.4696"><vh>Soon</vh></v>
 <v t="ekr.20101009213545.4697"><vh>Whenever</vh></v>
 </v>
-<v t="ekr.20101009213545.4698" a="E"><vh>Diary</vh>
+<v t="ekr.20101009213545.4698"><vh>Diary</vh>
 <v t="ekr.20101009213545.4699"><vh>2009</vh>
 <v t="ekr.20101009213545.4700"><vh>Aug</vh></v>
 <v t="ekr.20101009213545.4701"><vh>Jul</vh></v>
@@ -381,8 +381,39 @@
 </v>
 <v t="ekr.20101009213545.4709"><vh>@edit</vh></v>
 <v t="ekr.20101009213545.4710"><vh>@select Urgent</vh></v>
+<v t="ekr.20101010121134.4810"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4811"><vh>@url working file</vh></v>
+<v t="ekr.20101010121134.4812"><vh>@url final output file</vh></v>
+<v t="ekr.20101010121134.4813"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4523"><vh>@slide 007</vh></v>
+<v t="ekr.20101008061729.4523" a="E"><vh>@slide 007</vh>
+<v t="ekr.20101010121134.4832"><vh>@screenshot</vh>
+<v t="ekr.20101010121134.4833"><vh>To Do List</vh>
+<v t="ekr.20101010121134.4834"><vh>Urgent</vh></v>
+<v t="ekr.20101010121134.4835"><vh>Important</vh></v>
+<v t="ekr.20101010121134.4836"><vh>Soon</vh></v>
+<v t="ekr.20101010121134.4837"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010121134.4838"><vh>Diary</vh>
+<v t="ekr.20101010121134.4839"><vh>2009</vh>
+<v t="ekr.20101010121134.4840"><vh>Aug</vh></v>
+<v t="ekr.20101010121134.4841"><vh>Jul</vh></v>
+<v t="ekr.20101010121134.4842"><vh>Jun</vh></v>
+<v t="ekr.20101010121134.4843"><vh>May</vh></v>
+<v t="ekr.20101010121134.4844"><vh>Apr</vh></v>
+<v t="ekr.20101010121134.4845"><vh>Mar</vh></v>
+<v t="ekr.20101010121134.4846"><vh>Feb</vh></v>
+<v t="ekr.20101010121134.4847"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010121134.4848"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010121134.4849"><vh>@pause</vh></v>
+<v t="ekr.20101010121134.4868"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4869"><vh>@url working file</vh></v>
+<v t="ekr.20101010140842.4755"><vh>@url final output file</vh></v>
+<v t="ekr.20101010140842.4756"><vh>@url built slide</vh></v>
+</v>
 <v t="ekr.20101008061729.4524"><vh>@slide 008</vh></v>
 <v t="ekr.20101008061729.4525"><vh>@slide 009</vh></v>
 <v t="ekr.20101008061729.4526"><vh>@slide 010</vh></v>
@@ -1028,7 +1059,11 @@ text here by typing it in.
 .. image:: slide-004.png
 
 </t>
-<t tx="ekr.20101008061729.4523"></t>
+<t tx="ekr.20101008061729.4523">You can save the outline in a .leo file.  Click File:Save (or Ctrl-S).
+
+.. image:: slide-007.png
+
+</t>
 <t tx="ekr.20101008061729.4524"></t>
 <t tx="ekr.20101008061729.4525"></t>
 <t tx="ekr.20101008061729.4526"></t>
@@ -1190,7 +1225,6 @@ My to-do list.
 <t tx="ekr.20101009213545.4670">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png</t>
 <t tx="ekr.20101009213545.4671">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg</t>
 <t tx="ekr.20101009213545.4672">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png</t>
-<t tx="ekr.20101009213545.4674">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
 <t tx="ekr.20101009213545.4692"></t>
 <t tx="ekr.20101009213545.4693">@nocolor
 
@@ -1230,6 +1264,39 @@ My to-do list.
 <t tx="ekr.20101010121134.4767">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg</t>
 <t tx="ekr.20101010121134.4768">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-004.png</t>
 <t tx="ekr.20101010121134.4769">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html</t>
+<t tx="ekr.20101010121134.4810">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.png</t>
+<t tx="ekr.20101010121134.4811">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.svg</t>
+<t tx="ekr.20101010121134.4812">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-006.png</t>
+<t tx="ekr.20101010121134.4813">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html</t>
+<t tx="ekr.20101010121134.4814">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html</t>
+<t tx="ekr.20101010121134.4832"></t>
+<t tx="ekr.20101010121134.4833">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010121134.4834">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.</t>
+<t tx="ekr.20101010121134.4835"></t>
+<t tx="ekr.20101010121134.4836"></t>
+<t tx="ekr.20101010121134.4837"></t>
+<t tx="ekr.20101010121134.4838">@nocolor
+</t>
+<t tx="ekr.20101010121134.4839"></t>
+<t tx="ekr.20101010121134.4840"></t>
+<t tx="ekr.20101010121134.4841"></t>
+<t tx="ekr.20101010121134.4842"></t>
+<t tx="ekr.20101010121134.4843"></t>
+<t tx="ekr.20101010121134.4844"></t>
+<t tx="ekr.20101010121134.4845"></t>
+<t tx="ekr.20101010121134.4846"></t>
+<t tx="ekr.20101010121134.4847"></t>
+<t tx="ekr.20101010121134.4848"></t>
+<t tx="ekr.20101010121134.4849"></t>
+<t tx="ekr.20101010121134.4868">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.png</t>
+<t tx="ekr.20101010121134.4869">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.svg</t>
+<t tx="ekr.20101010140842.4755">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-007.png</t>
+<t tx="ekr.20101010140842.4756">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-007.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

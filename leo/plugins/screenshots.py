@@ -153,7 +153,8 @@ Generated @url nodes
 
 @url screenshot
   Contains the absolute path to the original
-  screenshot file.
+  screenshot file. If present, this @url node
+  inhibits taking the screenshot.
 
 @url working file
   Contains the absolute path to the working file.
@@ -164,13 +165,12 @@ Generated @url nodes
 
 @url final output file
   Contains the absolute path to the final output
-  file.  If present, this @url node disables taking
-  the screenshot, creating the working file and
-  creating the final output file.
+  file.
 
 In short, to completely recreate a slide, you must
 delete the following nodes::
 
+    @url screenshot
     @url working file
     @url built slide
 
@@ -304,7 +304,7 @@ created in (relative to) the slideshow directory:
 #@@pagewidth 50
 #@-<< docstring >>
 # To do: create _static folder.
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
 import leo.core.leoGlobals as g
@@ -1426,14 +1426,15 @@ class ScreenShotController(object):
             c.redraw()
             return # Don't take any screenshot!
 
-        # Take the screenshot.
-        if sc.take_screen_shot():
-            sc.make_at_url_node_for_screenshot()
-        else:
-            g.error('can not make screen shot:',p.h)
-            sc.build_slide()
-            c.redraw()
-            return
+        # '@url screenshot' inhibits taking the screenshot.
+        if not sc.find_node(sc.slide_node,'@url screenshot'):
+            if sc.take_screen_shot():
+                sc.make_at_url_node_for_screenshot()
+            else:
+                g.error('can not make screen shot:',p.h)
+                sc.build_slide()
+                c.redraw()
+                return
 
         # "@url working file" inhibits making a new working file.
         if sc.find_node(sc.slide_node,'@url working file'):
@@ -1445,6 +1446,9 @@ class ScreenShotController(object):
                 os.path.getmtime(sc.output_fn)
             ):
                 sc.make_output_file()
+            else:
+                # Make sure this has been made.
+                sc.make_at_url_node_for_output_file()
         else:
             # Make the working file and output file
             sc.make_working_file()
