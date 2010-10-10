@@ -268,7 +268,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="-810.71429"
+     inkscape:cx="-1047.8571"
      inkscape:cy="664.35261"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -306,8 +306,9 @@
        width="150"
        height="114"
        id="image3188"
-       x="-386.69641"
-       y="98.147896" />
+       x="265.26785"
+       y="85.290756"
+       transform="scale(-1,1)" />
     <image
        xlink:href="file:///C:/leo.repo/trunk/leo/Icons/red-arrow.png"
        width="75"
