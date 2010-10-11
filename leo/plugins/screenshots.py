@@ -222,7 +222,9 @@ direct child of an @slide node.
     title = (pattern % (d)).title()
 
   If neither an @title or @title_pattern option
-  applies, the following is the default pattern::
+  node applies, the title is the headline of the
+  @slide node. If this is empty, the default
+  pattern is::
 
     '%(slideshow_name)s:%(slide_number)s'
 
