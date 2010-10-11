@@ -558,9 +558,6 @@ class ScreenShotController(object):
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-
-        if found: # The paths have been inited properly.
-            sc.make_toc()
     #@+node:ekr.20100913085058.5629: *4* sc.make_slide_command
     def make_slide_command (self,p):
 
@@ -1147,14 +1144,15 @@ class ScreenShotController(object):
     def copy_files (self):
 
         sc = self
-        slide_path,junk = g.os_path_split(sc.slide_fn)
+        sc.make_toc()
         table = (
             'conf.py',
-            # 'leo_toc.html.txt', # This is created later.
+            # 'leo_toc.html.txt', # created by make_toc above.
             'Leo4-80-border.jpg',
             'Makefile',
             'make.bat',
         )
+        slide_path,junk = g.os_path_split(sc.slide_fn)
         for fn in table:
             path = g.os_path_finalize_join(slide_path,fn)
             if not g.os_path_exists(path):

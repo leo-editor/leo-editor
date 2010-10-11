@@ -251,7 +251,7 @@
 </v>
 <v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
 </v>
-<v t="ekr.20101007082321.4357" a="E"><vh>@slideshow What is Leo?</vh>
+<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo?</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
 <v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
@@ -357,7 +357,7 @@
 <v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
 <v t="ekr.20101010121134.4814"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4521" a="E"><vh>@slide 006</vh>
+<v t="ekr.20101008061729.4521"><vh>@slide 006</vh>
 <v t="ekr.20101009213545.4692"><vh>@screenshot</vh>
 <v t="ekr.20101009213545.4693"><vh>To Do List</vh>
 <v t="ekr.20101009213545.4694"><vh>Urgent</vh></v>
@@ -415,7 +415,7 @@
 <v t="ekr.20101010140842.4755"><vh>@url final output file</vh></v>
 <v t="ekr.20101010140842.4756"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4524" a="E"><vh>@slide 008</vh>
+<v t="ekr.20101008061729.4524"><vh>@slide 008</vh>
 <v t="ekr.20101010141334.4772"><vh>@screenshot</vh>
 <v t="ekr.20101010141334.4773"><vh>To Do List</vh>
 <v t="ekr.20101010141334.4774"><vh>Urgent</vh></v>
@@ -439,10 +439,71 @@
 </v>
 <v t="ekr.20101010141334.4793"><vh>@select Urgent</vh></v>
 <v t="ekr.20101010141334.4789"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.4835"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.4836"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.4837"><vh>@url final output file</vh></v>
+<v t="ekr.20101010141953.4838"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4525"><vh>@slide 009</vh></v>
-<v t="ekr.20101008061729.4526"><vh>@slide 010</vh></v>
-<v t="ekr.20101008061729.4527"><vh>@slide 011</vh></v>
+<v t="ekr.20101008061729.4525"><vh>@slide 009</vh>
+<v t="ekr.20101010141953.4856" a="E"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.4857" a="E"><vh>To Do List</vh>
+<v t="ekr.20101010141953.4858"><vh>Urgent</vh></v>
+<v t="ekr.20101010141953.4859"><vh>Important</vh></v>
+<v t="ekr.20101010141953.4860"><vh>Soon</vh></v>
+<v t="ekr.20101010141953.4861"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010141953.4862" a="E"><vh>Diary</vh>
+<v t="ekr.20101010141953.4863"><vh>2009</vh>
+<v t="ekr.20101010141953.4864"><vh>Aug</vh></v>
+<v t="ekr.20101010141953.4865"><vh>Jul</vh></v>
+<v t="ekr.20101010141953.4866"><vh>Jun</vh></v>
+<v t="ekr.20101010141953.4867"><vh>May</vh></v>
+<v t="ekr.20101010141953.4868"><vh>Apr</vh></v>
+<v t="ekr.20101010141953.4869"><vh>Mar</vh></v>
+<v t="ekr.20101010141953.4870"><vh>Feb</vh></v>
+<v t="ekr.20101010141953.4871"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010141953.4872"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010141953.4873"><vh>@select Urgent</vh></v>
+<v t="ekr.20101010141953.4896"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.4897"><vh>@edit</vh></v>
+<v t="ekr.20101010141953.4916"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.4917"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.4918"><vh>@url final output file</vh></v>
+<v t="ekr.20101010141953.4919"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4526"><vh>@slide 010</vh>
+<v t="ekr.20101010141953.4922"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4527"><vh>@slide 011</vh>
+<v t="ekr.20101010141953.4940" a="E"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.4941" a="E"><vh>To Do List</vh>
+<v t="ekr.20101010141953.4942"><vh>Urgent</vh></v>
+<v t="ekr.20101010141953.4943"><vh>Important</vh></v>
+<v t="ekr.20101010141953.4944"><vh>Soon</vh></v>
+<v t="ekr.20101010141953.4945"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010141953.4946" a="E"><vh>Diary</vh>
+<v t="ekr.20101010141953.4947"><vh>2009</vh>
+<v t="ekr.20101010141953.4948"><vh>Aug</vh></v>
+<v t="ekr.20101010141953.4949"><vh>Jul</vh></v>
+<v t="ekr.20101010141953.4950"><vh>Jun</vh></v>
+<v t="ekr.20101010141953.4951"><vh>May</vh></v>
+<v t="ekr.20101010141953.4952"><vh>Apr</vh></v>
+<v t="ekr.20101010141953.4953"><vh>Mar</vh></v>
+<v t="ekr.20101010141953.4954"><vh>Feb</vh></v>
+<v t="ekr.20101010141953.4955"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010141953.4956"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010141953.4958"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.4957"><vh>@select Diary</vh></v>
+<v t="ekr.20101010141953.5023"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.5024"><vh>@url working file</vh></v>
+</v>
 <v t="ekr.20101008061729.4528"><vh>@slide 012</vh></v>
 <v t="ekr.20101008061729.4529"><vh>@slide 013</vh></v>
 <v t="ekr.20101008061729.4530"><vh>@slide 014</vh></v>
@@ -457,8 +518,25 @@
 <v t="ekr.20101008061729.4540"><vh>@slide 023</vh></v>
 </v>
 </v>
+<v t="ekr.20101010141953.5027"><vh>Slideshows: Examples</vh>
+<v t="ekr.20101010141953.5028" a="E"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
+<v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
+<v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
+<v t="ekr.20101010141953.5032"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.5033"><vh>Take screenshot of the compile .nsi dialog in a Windows folder</vh></v>
 </v>
-<v t="ekr.20101007082321.4357" a="E"></v>
+<v t="ekr.20101010141953.5034"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.5038"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.5039"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.5040"><vh>@url final output file</vh></v>
+<v t="ekr.20101011071655.4918"><vh>@url built slide</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20101007082321.4357"></v>
+<v t="ekr.20101010141953.5028" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1089,10 +1167,46 @@ text here by typing it in.
 .. image:: slide-007.png
 
 </t>
-<t tx="ekr.20101008061729.4524"></t>
-<t tx="ekr.20101008061729.4525"></t>
-<t tx="ekr.20101008061729.4526"></t>
-<t tx="ekr.20101008061729.4527"></t>
+<t tx="ekr.20101008061729.4524">Here we will save our outline in a file named "pim.leo"
+
+.. image:: slide-008.png
+
+</t>
+<t tx="ekr.20101008061729.4525">The file is now saved, and the file appears in the title bar.
+
+.. image:: slide-009.png
+
+</t>
+<t tx="ekr.20101008061729.4526">You've just seen an introduction to Leo as an outlining editor. You can use Leo
+to make an outline, with optional text for each outline element. You can save
+the outline to a file. Outlines are explained more in a later tutorial in this
+series.
+
+  *The outlining capability of Leo goes far beyond what has just been demonstrated,
+  including multipath outlines, and multiple outlines in one file.*
+
+What we've shown so far is no different from other outlining editors. What makes
+Leo unique is the addition of a new feature. **Using simple directives, you can
+instruct Leo to extract text from any number of nodes, in any order, and write
+the text to a new file**. We call files created or managed from within a Leo
+outline **external file**. You can also embed outline information in the
+external file, giving Leo the ability to read the text pieces back into the Leo
+outline, even if they have been changed.
+
+In effect, Leo is a **meta-text** editor. It gives you the ability to create a
+structural document for a non structured document, or a document that is
+structured in some other way.
+
+What does this mean in practice? Some examples should help clarify things...</t>
+<t tx="ekr.20101008061729.4527">Here is the "pim.leo" file again. We have:
+
+1. Selected the "Diary" node.
+2. Typed Ctrl-H to start editing the headline.
+   (You can also edit headlines with the Edit:Edit Headline...:Edit Headline command.
+
+.. image:: slide-011.png
+
+</t>
 <t tx="ekr.20101008061729.4528"></t>
 <t tx="ekr.20101008061729.4529"></t>
 <t tx="ekr.20101008061729.4530"></t>
@@ -1348,6 +1462,103 @@ My to-do list.
 <t tx="ekr.20101010141334.4789"></t>
 <t tx="ekr.20101010141334.4791"></t>
 <t tx="ekr.20101010141334.4793"></t>
+<t tx="ekr.20101010141953.4835">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.png</t>
+<t tx="ekr.20101010141953.4836">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.svg</t>
+<t tx="ekr.20101010141953.4837">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-008.png</t>
+<t tx="ekr.20101010141953.4838">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-008.html</t>
+<t tx="ekr.20101010141953.4856"></t>
+<t tx="ekr.20101010141953.4857">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010141953.4858">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.</t>
+<t tx="ekr.20101010141953.4859"></t>
+<t tx="ekr.20101010141953.4860"></t>
+<t tx="ekr.20101010141953.4861"></t>
+<t tx="ekr.20101010141953.4862">@nocolor
+</t>
+<t tx="ekr.20101010141953.4863"></t>
+<t tx="ekr.20101010141953.4864"></t>
+<t tx="ekr.20101010141953.4865"></t>
+<t tx="ekr.20101010141953.4866"></t>
+<t tx="ekr.20101010141953.4867"></t>
+<t tx="ekr.20101010141953.4868"></t>
+<t tx="ekr.20101010141953.4869"></t>
+<t tx="ekr.20101010141953.4870"></t>
+<t tx="ekr.20101010141953.4871"></t>
+<t tx="ekr.20101010141953.4872"></t>
+<t tx="ekr.20101010141953.4873"></t>
+<t tx="ekr.20101010141953.4896"></t>
+<t tx="ekr.20101010141953.4897"></t>
+<t tx="ekr.20101010141953.4916">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.png</t>
+<t tx="ekr.20101010141953.4917">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.svg</t>
+<t tx="ekr.20101010141953.4918">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-009.png</t>
+<t tx="ekr.20101010141953.4919">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-009.html</t>
+<t tx="ekr.20101010141953.4922">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-010.html</t>
+<t tx="ekr.20101010141953.4940"></t>
+<t tx="ekr.20101010141953.4941">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010141953.4942">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.</t>
+<t tx="ekr.20101010141953.4943"></t>
+<t tx="ekr.20101010141953.4944"></t>
+<t tx="ekr.20101010141953.4945"></t>
+<t tx="ekr.20101010141953.4946">@nocolor
+
+This is my diary.
+</t>
+<t tx="ekr.20101010141953.4947"></t>
+<t tx="ekr.20101010141953.4948"></t>
+<t tx="ekr.20101010141953.4949"></t>
+<t tx="ekr.20101010141953.4950"></t>
+<t tx="ekr.20101010141953.4951"></t>
+<t tx="ekr.20101010141953.4952"></t>
+<t tx="ekr.20101010141953.4953"></t>
+<t tx="ekr.20101010141953.4954"></t>
+<t tx="ekr.20101010141953.4955"></t>
+<t tx="ekr.20101010141953.4956"></t>
+<t tx="ekr.20101010141953.4957"></t>
+<t tx="ekr.20101010141953.4958"></t>
+<t tx="ekr.20101010141953.5023">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.png</t>
+<t tx="ekr.20101010141953.5024">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.svg</t>
+<t tx="ekr.20101010141953.5027"></t>
+<t tx="ekr.20101010141953.5028">@language rest</t>
+<t tx="ekr.20101010141953.5029"></t>
+<t tx="ekr.20101010141953.5030">.. _`here`:     http://www.nullsoft.com/free/nsis/
+.. _`Winamp`:   http://www.winamp.com/
+
+Nullsoft, the makers of the `Winamp`_ MP3 software, have released a powerful free
+installer called NSIS, available `here`_. This application allows you to make
+installation packages for Windows applications.
+
+You create NSIS packages by writing a NSIS script and then compiling it.
+Depending on the application, NSIS can often be a better choice than more
+expensive installation generators, since NSIS installations are easy to create,
+are small and fast, and yet can be configured with many features.
+
+</t>
+<t tx="ekr.20101010141953.5031">When you install Leo, you'll find that it comes with a script for generating an
+installer for Leo. This script is called leo-&lt;version&gt;.nsi, and is distributed
+in the Leo file leo/dist/leoDist.leo.
+
+If you have NSIS installed, right-clicking on a .nsi file will give you the
+option of compiling the script to create a package.
+
+.. image:: slide-002.png
+
+</t>
+<t tx="ekr.20101010141953.5032"></t>
+<t tx="ekr.20101010141953.5033"></t>
+<t tx="ekr.20101010141953.5034"></t>
+<t tx="ekr.20101010141953.5038">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.png</t>
+<t tx="ekr.20101010141953.5039">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg</t>
+<t tx="ekr.20101010141953.5040">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png</t>
+<t tx="ekr.20101011071655.4918">c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
