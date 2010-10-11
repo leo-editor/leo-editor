@@ -253,7 +253,7 @@
 </v>
 <v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo?</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
-<v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
+<v t="ekr.20101008061729.4372" a="E"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
@@ -532,13 +532,16 @@
 <v t="ekr.20101010141953.5040"><vh>@url final output file</vh></v>
 <v t="ekr.20101011071655.4918"><vh>@url built slide</vh></v>
 </v>
+<v t="ekr.20101011092154.4923"><vh>@slide 003</vh></v>
+<v t="ekr.20101011092154.4924"><vh>@slide 004</vh></v>
+<v t="ekr.20101011092154.4925"><vh>@slide 005</vh></v>
 </v>
 </v>
 </v>
 <v t="ekr.20101007082321.4357"></v>
 <v t="ekr.20101010141953.5028"></v>
 <v t="ekr.20101011071655.4919" a="E"><vh>@slideshow Overview of Leo</vh>
-<v t="ekr.20101011071655.4920"><vh>@slide </vh></v>
+<v t="ekr.20101011071655.4920"><vh>@slide Leo is a Pim</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1563,7 +1566,20 @@ option of compiling the script to create a package.
 <t tx="ekr.20101010141953.5040">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png</t>
 <t tx="ekr.20101011071655.4918">c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html</t>
 <t tx="ekr.20101011071655.4919"></t>
-<t tx="ekr.20101011071655.4920"></t>
+<t tx="ekr.20101011071655.4920">Leo is a superior PIM (Personal Information Manager)</t>
+<t tx="ekr.20101011092154.4923">Since the NSIS script for the Leo installation is included in the Leo
+distribution in the nsis.leo file, it is easy to understand the how the script
+works. This .nsi file creates an installer that packages all of the Leo program
+files, and creates a desktop shortcut, a Program Menu item, and the file
+association for .leo files.</t>
+<t tx="ekr.20101011092154.4924">In this screenshot we're looking at the code that checks to see whether Python
+has been installed.
+
+Since Leo is a Python application, modifying this installation script to create
+a script to build a Windows installer for your own Python application is
+relatively simple. You would leave this section alone, and check other sections
+for the program name "Leo", and change these to your program name.</t>
+<t tx="ekr.20101011092154.4925"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

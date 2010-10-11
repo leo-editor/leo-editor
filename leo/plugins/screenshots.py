@@ -304,7 +304,7 @@ created in (relative to) the slideshow directory:
 #@@pagewidth 50
 #@-<< docstring >>
 # To do: create _static folder.
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
 import leo.core.leoGlobals as g
@@ -1099,9 +1099,12 @@ class ScreenShotController(object):
                     except Exception:
                         g.warning('bad %s' % repr(p.h))
         else:
-            s = sc.default_slide_pattern % d
-            # g.trace('using default title:',s)
-            return s
+            if slide_name:
+                return slide_name
+            else:
+                s = sc.default_slide_pattern % d
+                # g.trace('using default title:',s)
+                return s
     #@+node:ekr.20101009162803.5633: *5* get_slideshow_name
     def get_slideshow_name (self):
 
