@@ -519,7 +519,7 @@
 </v>
 </v>
 <v t="ekr.20101010141953.5027"><vh>Slideshows: Examples</vh>
-<v t="ekr.20101010141953.5028" a="E"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
 <v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
 <v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
 <v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
@@ -536,7 +536,10 @@
 </v>
 </v>
 <v t="ekr.20101007082321.4357"></v>
-<v t="ekr.20101010141953.5028" a="E"></v>
+<v t="ekr.20101010141953.5028"></v>
+<v t="ekr.20101011071655.4919" a="E"><vh>@slideshow Overview of Leo</vh>
+<v t="ekr.20101011071655.4920"><vh>@slide </vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1559,6 +1562,8 @@ option of compiling the script to create a package.
 <t tx="ekr.20101010141953.5039">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg</t>
 <t tx="ekr.20101010141953.5040">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png</t>
 <t tx="ekr.20101011071655.4918">c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html</t>
+<t tx="ekr.20101011071655.4919"></t>
+<t tx="ekr.20101011071655.4920"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
