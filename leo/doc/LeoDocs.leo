@@ -519,7 +519,7 @@
 </v>
 </v>
 <v t="ekr.20101010141953.5027"><vh>Slideshows: Examples</vh>
-<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5028" a="E"><vh>@slideshow Leo's NSIS Installer</vh>
 <v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
 <v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
 <v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
@@ -539,10 +539,10 @@
 </v>
 </v>
 <v t="ekr.20101007082321.4357"></v>
-<v t="ekr.20101010141953.5028"></v>
-<v t="ekr.20101011071655.4919" a="E"><vh>@slideshow Whetting Your Appetite</vh>
-<v t="ekr.20101011103613.4940"><vh>@slide Whetting Your Appetite</vh>
-<v t="ekr.20101011103613.4941"><vh>@url built slide</vh></v>
+<v t="ekr.20101010141953.5028" a="E"></v>
+<v t="ekr.20101011071655.4919"><vh>@slideshow Overview of Leo</vh>
+<v t="ekr.20101011103613.4940" a="E"><vh>@slide Whetting Your Appetite</vh>
+<v t="ekr.20101011111455.4972"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101011071655.4920"><vh>@slide A PIM</vh>
 <v t="ekr.20101011103613.4932"><vh>@url built slide</vh></v>
@@ -550,8 +550,7 @@
 <v t="ekr.20101011103613.4930"><vh>@slide A Better PIM</vh>
 <v t="ekr.20101011103613.4942"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101011103613.4939"><vh>@slide HTML</vh></v>
-<v t="ekr.20101011103613.4933"><vh>@slide Scripting Environment</vh>
+<v t="ekr.20101011103613.4933"><vh>@slide A Scripting Environment</vh>
 <v t="ekr.20101011103613.4943"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101011103613.4934"><vh>@slide Better Scripting</vh>
@@ -566,9 +565,10 @@
 <v t="ekr.20101011103613.4936"><vh>@slide Outlines Create Unit tests</vh>
 <v t="ekr.20101011103613.4947"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101011103613.4937" a="E"><vh>@slide Outlines Create Restructured Text Documents</vh>
-<v t="ekr.20101011103613.4948"><vh>@url built slide</vh></v>
+<v t="ekr.20101011103613.4937"><vh>@slide Outlines Create Restructured Text</vh>
+<v t="ekr.20101011111455.4965"><vh>@url built slide</vh></v>
 </v>
+<v t="ekr.20101011103613.4939"><vh>@slide Outlines Create HTML</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1630,15 +1630,26 @@ all the nodes of the outline, properly indented::
         print '%s%s' % (' '*p.level(),p.h)
 </t>
 <t tx="ekr.20101011103613.4939"></t>
-<t tx="ekr.20101011103613.4940">The following slides </t>
-<t tx="ekr.20101011103613.4941">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html</t>
+<t tx="ekr.20101011103613.4940">Leo is a power tool for people who want to organize, study and work with data,
+especially complex data like computer programs, books, web sites and data bases.
+People say Leo is **fun to use**, even additive.
+
+Leo may **look** like other outliners, code folding editors or class
+browsers. Leo most certainly is not. Leo creates a distinct **Leonine** way of
+managing data.
+
+Leo truly is a revolutionary tool. As a result, Leo takes a bit of work to
+understand. Leo’s users speak of an Aha! moment when they see how these pieces
+fit together: **outline structure is significant everywhere**.
+</t>
 <t tx="ekr.20101011103613.4942">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html</t>
 <t tx="ekr.20101011103613.4943">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html</t>
 <t tx="ekr.20101011103613.4944">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html</t>
 <t tx="ekr.20101011103613.4945">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html</t>
 <t tx="ekr.20101011103613.4946">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html</t>
 <t tx="ekr.20101011103613.4947">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html</t>
-<t tx="ekr.20101011103613.4948">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html</t>
+<t tx="ekr.20101011111455.4965">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html</t>
+<t tx="ekr.20101011111455.4972">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

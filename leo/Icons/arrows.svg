@@ -882,14 +882,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1"
      inkscape:cx="-1239.7144"
-     inkscape:cy="664.35261"
+     inkscape:cy="770.34107"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1263"
      inkscape:window-height="906"
-     inkscape:window-x="556"
-     inkscape:window-y="33"
+     inkscape:window-x="432"
+     inkscape:window-y="23"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata3057">
@@ -907,16 +907,6 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <text
-       xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="-1392.8572"
-       y="18.076469"
-       id="text5467"><tspan
-         sodipodi:role="line"
-         x="-1392.8572"
-         y="18.076469"
-         id="tspan5471">Original png</tspan></text>
     <path
        style="color:#000000;fill:url(#linearGradient3086);fill-opacity:1;fill-rule:nonzero;stroke:#6b1a11;stroke-width:1.75;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible"
        d="m -1509.4863,161.3489 0,5.34834 -20.8958,0 0,15.29877 20.8958,0 0,5.37945 13.8684,-13.02883 -13.8684,-12.99773 z"
@@ -976,7 +966,7 @@
          style="color:#000000;fill:url(#linearGradient2960);fill-opacity:1;fill-rule:nonzero;stroke:#6b1a11;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
       <g
          id="text3253"
-         style="font-size:30px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans">
+         style="font-size:30px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none">
         <path
            id="path2963"
            style=""
@@ -992,7 +982,7 @@
          style="color:#000000;fill:url(#linearGradient3016);fill-opacity:1;fill-rule:nonzero;stroke:#6b1a11;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
       <g
          id="text3257"
-         style="font-size:30px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans">
+         style="font-size:30px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none">
         <path
            id="path3019"
            style=""
@@ -1008,7 +998,7 @@
          style="color:#000000;fill:url(#linearGradient3029);fill-opacity:1;fill-rule:nonzero;stroke:#6b1a11;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
       <g
          id="text3261"
-         style="font-size:30px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans">
+         style="font-size:30px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none">
         <path
            id="path3032"
            style=""
