@@ -540,8 +540,35 @@
 </v>
 <v t="ekr.20101007082321.4357"></v>
 <v t="ekr.20101010141953.5028"></v>
-<v t="ekr.20101011071655.4919" a="E"><vh>@slideshow Overview of Leo</vh>
-<v t="ekr.20101011071655.4920"><vh>@slide Leo is a Pim</vh></v>
+<v t="ekr.20101011071655.4919" a="E"><vh>@slideshow Whetting Your Appetite</vh>
+<v t="ekr.20101011103613.4940"><vh>@slide Whetting Your Appetite</vh>
+<v t="ekr.20101011103613.4941"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011071655.4920"><vh>@slide A PIM</vh>
+<v t="ekr.20101011103613.4932"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4930"><vh>@slide A Better PIM</vh>
+<v t="ekr.20101011103613.4942"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4939"><vh>@slide HTML</vh></v>
+<v t="ekr.20101011103613.4933"><vh>@slide Scripting Environment</vh>
+<v t="ekr.20101011103613.4943"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4934"><vh>@slide Better Scripting</vh>
+<v t="ekr.20101011103613.4944"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4938"><vh>@slide Better Scripting, Part Deux</vh>
+<v t="ekr.20101011103613.4945"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4935"><vh>@slide Outlines Create New Leo Commands</vh>
+<v t="ekr.20101011103613.4946"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4936"><vh>@slide Outlines Create Unit tests</vh>
+<v t="ekr.20101011103613.4947"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4937" a="E"><vh>@slide Outlines Create Restructured Text Documents</vh>
+<v t="ekr.20101011103613.4948"><vh>@url built slide</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1565,7 +1592,8 @@ option of compiling the script to create a package.
 <t tx="ekr.20101010141953.5039">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg</t>
 <t tx="ekr.20101010141953.5040">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png</t>
 <t tx="ekr.20101011071655.4918">c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html</t>
-<t tx="ekr.20101011071655.4919"></t>
+<t tx="ekr.20101011071655.4919">@language rest
+</t>
 <t tx="ekr.20101011071655.4920">Leo is a superior PIM (Personal Information Manager)</t>
 <t tx="ekr.20101011092154.4923">Since the NSIS script for the Leo installation is included in the Leo
 distribution in the nsis.leo file, it is easy to understand the how the script
@@ -1580,6 +1608,37 @@ a script to build a Windows installer for your own Python application is
 relatively simple. You would leave this section alone, and check other sections
 for the program name "Leo", and change these to your program name.</t>
 <t tx="ekr.20101011092154.4925"></t>
+<t tx="ekr.20101011103613.4930">Leo is a better pim.</t>
+<t tx="ekr.20101011103613.4932">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html</t>
+<t tx="ekr.20101011103613.4933">The body text of any node can contain a Python script.
+
+You execute the script with (Ctrl-B) Leo's execute-script command.</t>
+<t tx="ekr.20101011103613.4934">All Leo scripts have access to three predefined constants: c, g and p.</t>
+<t tx="ekr.20101011103613.4935">Discuss @button nodes
+</t>
+<t tx="ekr.20101011103613.4936">Discuss @test nodes</t>
+<t tx="ekr.20101011103613.4937">Leo outlines make it easy to create Restructured Text (rST) documents.
+
+Within @rst trees, nodes correspond to rST sections. Naturally, the outline
+level of a node in the Leo outline determines the section's level in the
+resulting document.</t>
+<t tx="ekr.20101011103613.4938">All Leo scripts have full access to the outline in which the scripts reside. The
+following scripts, executed from Leo's body pane, will print the headlines of
+all the nodes of the outline, properly indented::
+
+    for p in c.all_positions():
+        print '%s%s' % (' '*p.level(),p.h)
+</t>
+<t tx="ekr.20101011103613.4939"></t>
+<t tx="ekr.20101011103613.4940">The following slides </t>
+<t tx="ekr.20101011103613.4941">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html</t>
+<t tx="ekr.20101011103613.4942">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html</t>
+<t tx="ekr.20101011103613.4943">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html</t>
+<t tx="ekr.20101011103613.4944">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html</t>
+<t tx="ekr.20101011103613.4945">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html</t>
+<t tx="ekr.20101011103613.4946">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html</t>
+<t tx="ekr.20101011103613.4947">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html</t>
+<t tx="ekr.20101011103613.4948">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
