@@ -1227,6 +1227,8 @@ class ScreenShotController(object):
 
         # Don't create path for at_image_fn or directive_fn
         # They are relative paths!
+        static_dir = g.os_path_finalize_join(
+            sc.slideshow_path,'_static')
         table = (
             # ('at_image_fn   ',sc.at_image_fn),
             ('output_fn     ',sc.output_fn),
@@ -1236,6 +1238,7 @@ class ScreenShotController(object):
             ('slideshow_path',sc.slideshow_path),
             ('template_fn   ',sc.template_fn),
             ('working_fn    ',sc.working_fn),
+            ('_static       ',static_dir),
         )
         for tag,path in table:
             if tag.strip().endswith('fn'):
