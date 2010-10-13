@@ -66,7 +66,7 @@ import subprocess, os
 inited = False
 #@+node:ville.20090630210947.5465: ** openwith_rclick
 def openwith_rclick(c,p, menu):
-    """ Show "Open with" in context menu for external file root nodes (@thin, @auto...) 
+    """ Show "Edit with" in context menu for external file root nodes (@thin, @auto...) 
 
     This looks like "Edit contextmenu.py in scite"
 
@@ -80,14 +80,7 @@ def openwith_rclick(c,p, menu):
     fname = None        
     # argh, we need g.getAbsFileName(c,p)
     head, bname = parts
-    if head == '@thin':
-        fname = p.atThinFileNodeName()
-    elif head.startswith('@auto'):
-        fname = p.atAutoNodeName()        
-    elif head == '@edit':
-        fname = p.atEditNodeName()        
-    elif head == '@shadow':
-        fname = p.atShadowFileNodeName()        
+    fname = p.anyAtFileNodeName()
 
     if fname is None:
         return
