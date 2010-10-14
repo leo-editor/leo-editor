@@ -564,44 +564,20 @@
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 </v>
-<v t="ekr.20101004104134.2349"><vh>Slideshows</vh>
-<v t="ekr.20100909154713.2210"><vh>@@button make-slide @key=Alt-8</vh>
-<v t="ekr.20100911131544.2259"><vh>@image ../doc/html/screen-shots/ekr-20100909154713-2210.png</vh></v>
+<v t="ekr.20101014040509.2309"><vh>Images and movies</vh>
+<v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
+<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
+<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
+<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
+<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
+<v t="ekr.20101014040509.2315"><vh>@url Horse movie</vh></v>
+<v t="ekr.20101014040509.2316"><vh>@button load video</vh>
+<v t="ekr.20101014040509.2317"><vh>run</vh></v>
 </v>
-<v t="ekr.20100911161733.2261"><vh>@button make-slide-show @key=Alt-8</vh></v>
-<v t="ekr.20101004104858.2380"><vh>@@button slide-show-info @key = Alt-8</vh></v>
-<v t="ekr.20101004104134.2350"><vh>@sphinx</vh></v>
-<v t="ekr.20100909154940.2226"><vh>@slideshow My first slide show</vh>
-<v t="ekr.20101006122837.2362"><vh>@verbose true</vh></v>
-<v t="ekr.20101007024057.2360"><vh>@screenshot_width = 700</vh></v>
-<v t="ekr.20101007100927.2360"><vh>@screenshot_height = 500</vh></v>
-<v t="ekr.20100911162102.2361"><vh>@slide What is Leo</vh>
-<v t="ekr.20101008152559.2284"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20100911162102.2362"><vh>@slide Outlining editor</vh>
-<v t="ekr.20100911162102.2364"><vh>@screenshot</vh>
-<v t="ekr.20100911162102.2366"><vh>To Do List</vh>
-<v t="ekr.20100911162102.2367"><vh>Urgent</vh></v>
-<v t="ekr.20100911162102.2368"><vh>Important</vh></v>
-<v t="ekr.20100911162102.2369"><vh>Soon</vh></v>
-<v t="ekr.20100911162102.2370"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20100911162102.2371"><vh>Diary</vh>
-<v t="ekr.20100911162102.2372"><vh>2009</vh>
-<v t="ekr.20100911162102.2373"><vh>Jan 1</vh></v>
-</v>
-<v t="ekr.20100911162102.2374"><vh>2010</vh></v>
-</v>
-</v>
-<v t="ekr.20100914190242.2347"><vh>@select To Do List</vh></v>
-<v t="ekr.20101008132319.2294"><vh>@callout this is a callout</vh></v>
-<v t="ekr.20101008132319.2295"><vh>@callout this is another callout</vh></v>
-<v t="ekr.20101008152559.2285"><vh>@url screenshot</vh></v>
-<v t="ekr.20101008152559.2298"><vh>@url working file</vh></v>
-<v t="ekr.20101008152559.2299"><vh>@url final output file</vh></v>
-<v t="ekr.20101008152559.2300"><vh>@url built slide</vh></v>
-</v>
-</v>
+<v t="ekr.20101014040509.2318"><vh>@button play/pause</vh></v>
+<v t="ekr.20101014040509.2319"><vh>@button vid-stop</vh></v>
+<v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
+<v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1023,7 +999,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7114,71 +7090,9 @@ c = g.app.commanders()[0]
 pc.send("""
 c.k.simulateCommand('stickynote')
 """)</t>
-<t tx="ekr.20100909154713.2210">m = g.loadOnePlugin('screenshots')
-
-# Select the screenshot node.
-if 1:
-    h = '@slide What is Leo'
-    p = g.findNodeAnywhere(c,h)
-
-if p:
-    c.selectPosition(p)
-    m.make_slide_command(event={'c':c})
-else:
-    g.es_print('not found',h,color='red')
-</t>
-<t tx="ekr.20100909154940.2226">@language rest
-
-.. The screenshot plugin ignores the body of @slideshow nodes
-.. and the headlines of @slide nodes.</t>
 <t tx="ekr.20100910124218.2257"></t>
 <t tx="ekr.20100910124218.2258"></t>
 <t tx="ekr.20100910124218.2259"></t>
-<t tx="ekr.20100911131544.2259"></t>
-<t tx="ekr.20100911161733.2261">m = g.loadOnePlugin('screenshots')
-
-# Select the screenshot node.
-h = '@slideshow My first slide show'
-p = g.findNodeAnywhere(c,h)
-if p:
-    c.selectPosition(p)
-    m.make_slide_show_command(event={'c':c})
-else:
-    g.es_print('not found',h,color='red')
-</t>
-<t tx="ekr.20100911162102.2361">Leo is a unique, powerful computer program that you can use to organize, analyze
-and describe text and text files. Leo is a free program written by Edward K.
-Ream. For information about downloading Leo, see installation tutorial in this
-series. Leo runs on Windows, Mac, or Linux.
-
-Use Leo:
-
-- to brainstorm a new project,
-- as a Personal Information Manager,
-- to add multiple outlines and commentary to any text file,
-- as a tool to facilitate a new kind of programming.
-
-Because Leo is unlike other tools you may have used, a series of examples may be
-the best way to demonstrate what can be done with Leo.
-</t>
-<t tx="ekr.20100911162102.2362">From one perspective, Leo is an outlining editor . This is a screenshot of Leo.
-You create an outline in the top left pane. (A later tutorial explains how to
-create an outline like the one in the screenshot).
-
-.. image:: slide-002.png
-
-</t>
-<t tx="ekr.20100911162102.2364"></t>
-<t tx="ekr.20100911162102.2366">My to-do list.
-</t>
-<t tx="ekr.20100911162102.2367"></t>
-<t tx="ekr.20100911162102.2368"></t>
-<t tx="ekr.20100911162102.2369"></t>
-<t tx="ekr.20100911162102.2370"></t>
-<t tx="ekr.20100911162102.2371" str_leo_pos=""></t>
-<t tx="ekr.20100911162102.2372"></t>
-<t tx="ekr.20100911162102.2373"></t>
-<t tx="ekr.20100911162102.2374"></t>
 <t tx="ekr.20100911195503.2426">import os
 
 cd = os.path.normcase(g.os_path_finalize(os.getcwd())) # .replace('c:','C:')
@@ -7198,7 +7112,6 @@ table = (
 )
 for start,path in table:
     print(start,path,'--&gt;',os.path.relpath(path,start).replace('\\','/'))</t>
-<t tx="ekr.20100914190242.2347" str_leo_pos=""></t>
 <t tx="ekr.20101002141822.2349">import leo.core.leoKeys as leoKeys
 
 leoKeys.AutoCompleterScanner(c).scan()
@@ -7206,36 +7119,6 @@ leoKeys.AutoCompleterScanner(c).scan()
 <t tx="ekr.20101004104134.2346"></t>
 <t tx="ekr.20101004104134.2347"></t>
 <t tx="ekr.20101004104134.2348"></t>
-<t tx="ekr.20101004104134.2349"></t>
-<t tx="ekr.20101004104134.2350">m = g.loadOnePlugin('screenshots')
-# Select the screenshot node.
-h = '@slideshow My first slide show'
-p = g.findNodeAnywhere(c,h)
-if p:
-    c.selectPosition(p)
-    m.make_slide_show_command(event={'c':c})
-else: g.es_print('not found',h,color='red') </t>
-<t tx="ekr.20101004104858.2380">m = g.loadOnePlugin('screenshots')
-
-# Select the screenshot node.
-h = '@slideshow My first slide show'
-p = g.findNodeAnywhere(c,h)
-if p:
-    c.selectPosition(p)
-    m.slide_show_info_command(event={'c':c})
-else:
-    g.es_print('not found',h,color='red')
-</t>
-<t tx="ekr.20101006122837.2362"></t>
-<t tx="ekr.20101007024057.2360"></t>
-<t tx="ekr.20101007100927.2360"></t>
-<t tx="ekr.20101008132319.2294"></t>
-<t tx="ekr.20101008132319.2295"></t>
-<t tx="ekr.20101008152559.2284">c:\leo.repo\trunk\leo\doc\html\slides\my-first-slide-show\_build\html\slide-001.html</t>
-<t tx="ekr.20101008152559.2285">c:/leo.repo/trunk/leo/doc/html/slides/my-first-slide-show/screenshot-002.png</t>
-<t tx="ekr.20101008152559.2298">c:/leo.repo/trunk/leo/doc/html/slides/my-first-slide-show/screenshot-002.svg</t>
-<t tx="ekr.20101008152559.2299">c:/leo.repo/trunk/leo/doc/html/slides/my-first-slide-show/slide-002.png</t>
-<t tx="ekr.20101008152559.2300">c:\leo.repo\trunk\leo\doc\html\slides\my-first-slide-show\_build\html\slide-002.html</t>
 <t tx="ekr.20101009105505.2295">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -7245,5 +7128,137 @@ False:
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
+<t tx="ekr.20101014040509.2309">@nocolor-node
+
+On Oct 13, 11:24 am, "Edward K. Ream" &lt;edream...@gmail.com&gt; wrote:
+
+&gt; We only need upgrade Leo's body pane to show pictures, web sites and
+&gt; videos. This can be done with  QImage, QWebView and Qt.VideoWidget.
+&gt; Some of this is already in place.
+
+Indeed it is:
+
+top = c.frame.top is a DynamicWindow.
+top.ui = top
+top.stackedWidget is a QStackedWidget for the body pane.
+</t>
+<t tx="ekr.20101014040509.2310">file://../Icons/Lioness.jpg</t>
+<t tx="ekr.20101014040509.2311">C:\Users\Public\Videos\Sample Videos\Wildlife.wmv
+</t>
+<t tx="ekr.20101014040509.2312">C:\Users\edreamleo\Documents\Music\2001- A Space Odyssey [Rhino]\06 Gayane Ballet Suite.mp3</t>
+<t tx="ekr.20101014040509.2313">http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand</t>
+<t tx="ekr.20101014040509.2314">http://mail.google.com/mail/#inbox</t>
+<t tx="ekr.20101014040509.2315">file:///C:/Users\Public/Videos/Sample Videos/Wildlife.wmv</t>
+<t tx="ekr.20101014040509.2316">import PyQt4.phonon as phonon
+phonon = phonon.Phonon
+
+top = c.frame.top # A DynamicWindow
+sw = top.stackedWidget # QStackedWidget
+
+@others
+
+run(p)
+</t>
+<t tx="ekr.20101014040509.2317">def run(p):
+
+    tag = '@movie'
+
+    if not g.match_word(p.h,0,tag):
+        return g.es('Not an %s node' % (tag))
+
+    if p.b.strip():
+        fn = p.b.strip()
+    else:
+        fn = p.h[len(tag):].strip()
+    path = g.os_path_finalize_join(g.app.loadDir,fn)
+    if not g.os_path_exists(path):
+        return g.es('Not found: %s' % (fn))
+
+    if hasattr(top,'video_player'):
+        vp = top.video_player
+    else:
+        # This call creates a big problem later.
+        top.video_player = vp = phonon.VideoPlayer(phonon.VideoCategory)
+    vw = vp.videoWidget()
+    vp.load(phonon.MediaSource(path))
+    sw.addWidget(vw)
+    sw.setCurrentWidget(vw)
+    sw.show()
+    vp.play()
+</t>
+<t tx="ekr.20101014040509.2318">top = c.frame.top
+sw = top.stackedWidget
+
+if hasattr(top,'video_player'):
+    vp = top.video_player
+    vw = vp.videoWidget()
+    sw.setCurrentWidget(vw)
+    sw.show()
+    if vp.isPlaying():
+        vp.pause()
+    else:
+        vp.play()
+</t>
+<t tx="ekr.20101014040509.2319">top = c.frame.top
+sw = top.stackedWidget
+
+if hasattr(top,'video_player'):
+    vp = top.video_player
+    vp.stop()
+    # vp.deleteLater()
+    delattr(top,'video_player')
+
+sw.setCurrentWidget(top.text_page)
+sw.show()</t>
+<t tx="ekr.20101014040509.2320">top = c.frame.top
+sw = top.stackedWidget
+
+g.es('stacked widgets...')
+for i in range(sw.count()):
+    g.es(i,sw.widget(i))</t>
+<t tx="ekr.20101014040509.2321">import PyQt4.phonon as phonon
+phonon = phonon.Phonon
+
+top = c.frame.top # A DynamicWindow
+sw = top.stackedWidget # QStackedWidget
+
+def run(p):
+    
+    tag = '@movie'
+
+    if not g.match_word(p.h,0,tag):
+        return g.es('Not an %s node' % (tag))
+
+    if p.b.strip():
+        fn = p.b.strip()
+    else:
+        fn = p.h[len(tag):].strip()
+    path = g.os_path_finalize_join(g.app.loadDir,fn)
+    if not g.os_path_exists(path):
+        return g.es('Not found: %s' % (fn))
+
+    if hasattr(top,'video_player'):
+        vp = top.video_player
+    else:
+        # This call creates a big problem later.
+        vp = phonon.VideoPlayer(phonon.VideoCategory)
+    
+    top.video_player = vp
+    vw = vp.videoWidget()
+    if 0:
+        sw.addWidget(vw)
+        sw.setCurrentWidget(vw)
+        sw.show()
+    vp.load(phonon.MediaSource(path))
+    vp.play()
+
+if 0:
+    vp = phonon.VideoPlayer(phonon.VideoCategory)
+    # top.video_player = vp
+    # delattr(top,'video_player')
+else:
+    run(p)
+g.es('crash test done')
+</t>
 </tnodes>
 </leo_file>

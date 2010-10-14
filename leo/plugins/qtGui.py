@@ -1074,11 +1074,18 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             assert p.h.startswith('@image')
             s = p.h[6:].strip()
 
-        s = g.os_path_finalize_join(g.app.loadDir,s)
-        s = s.strip("'").strip('"')
+        if s.startswith('file://'):
+            s2 = s[7:]
+            s2 = g.os_path_finalize_join(g.app.loadDir,s2)
+            if g.os_path_exists(s2):
+                # g.es(s2.replace('\\','/'))
+                s = 'file:///' + s2
+            else:
+                g.es('not found',s2)
+                return s # Don't render the image.
 
-        # if not s.startswith('"'): s = '"' + s
-        # if not s.endswith('"'): s = s + '"'
+        s = s.replace('\\','/')
+        s = s.strip("'").strip('"').strip()
 
         html = '''
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -1758,6 +1765,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.verticalLayout.addWidget(parent)
 
         # Official ivars
+        self.text_page = page2
         self.stackedWidget = sw # used by leoQtBody
         self.richTextEdit = body
         self.leo_body_frame = bodyFrame
@@ -5517,7 +5525,9 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             p2 = p.insertAfter()
 
-        p2.h,p2.b = '@url %s' % (s),''
+        # p2.h,p2.b = '@url %s' % (s),''
+        p2.h = '@url'
+        p2.b = s
         p2.clearDirty() # Don't automatically rewrite this node.
 
         u.afterInsertNode(p2,undoType,undoData)
