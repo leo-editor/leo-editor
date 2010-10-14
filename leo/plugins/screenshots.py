@@ -1478,6 +1478,7 @@ class ScreenShotController(object):
         sc = self
 
         os.chdir(sc.slideshow_path)
+        os.system('make clean')
         os.system('make html')
         sc.make_at_url_node_for_built_slide()
 
