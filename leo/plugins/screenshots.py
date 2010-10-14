@@ -548,9 +548,10 @@ class ScreenShotController(object):
         if not g.match_word(p.h,0,'@slideshow'):
             return g.error('Not an @slideshow node:',p.h)
 
+        after = p.nodeAfterTree()
         p = p.firstChild()
         found = False
-        while p:
+        while p and p != after:
             if g.app.commandInterruptFlag: return
             if match(p,'@slide'):
                 found = True
@@ -1101,7 +1102,7 @@ class ScreenShotController(object):
                     except Exception:
                         g.warning('bad %s' % repr(p.h))
         else:
-            if slide_name:
+            if slide_name and not slide_name.strip().startswith('(('):
                 return slide_name
             else:
                 s = sc.default_slide_pattern % d

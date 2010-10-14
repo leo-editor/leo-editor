@@ -76,14 +76,13 @@
 </v>
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
-<v t="ekr.20100908122026.4443"></v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -99,8 +98,9 @@
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
 </v>
-<v t="ekr.20100731112744.7267"><vh>Chapter 1: Installing Leo</vh>
-<v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e362e3471017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@thin install.txt</vh></v>
+<v t="ekr.20100731112744.7267" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20100805165051.7152" a="E" descendentVnodeUnknownAttributes="7d71005507302e302e352e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"
+expanded="ekr.20100731112744.7268,ekr.20100817101952.4309,"><vh>@thin install.txt</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"><vh>@thin intro.txt</vh></v>
@@ -188,8 +188,8 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
-<v t="ekr.20101009111520.4525"><vh>  Slideshow Buttons (disabled)</vh>
+<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
+<v t="ekr.20101009111520.4525"><vh> Slideshow Buttons (disabled)</vh>
 <v t="ekr.20101008061729.4425"><vh>@@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@@button copy-@screenshot-node</vh>
 <v t="ekr.20101008061729.4552"><vh>@screenshot</vh>
@@ -217,36 +217,166 @@
 <v t="ekr.20101007100904.4371"><vh>@@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101009114655.4531"><vh>@button make-slide @key=Alt-8</vh></v>
 </v>
-<v t="ekr.20101012083118.5247"><vh> Stories</vh></v>
-<v t="ekr.20101014034526.5284"><vh> Topics</vh>
-<v t="ekr.20101013072903.5218"><vh>Descriptions are not stories!</vh>
-<v t="ekr.20101012083118.5246"><vh>@@slide Leo</vh></v>
-<v t="ekr.20101011103613.4940"><vh>@@slide The Leo way</vh>
-<v t="ekr.20101012083118.5242"><vh>@url built slide</vh></v>
+<v t="ekr.20101011165412.5009"><vh> Topics</vh>
+<v t="ekr.20101014034526.5298"><vh>User-defined types</vh>
+<v t="ekr.20101014034526.5292"><vh>\@button nodes</vh></v>
+<v t="ekr.20101014034526.5291"><vh>@test nodes</vh></v>
+<v t="ekr.20101014034526.5293"><vh>@url nodes</vh></v>
 </v>
-<v t="ekr.20101013072903.5238"><vh>Don't describe the window!</vh>
-<v t="ekr.20101013072903.5228"><vh>@slide ((file name: workbook2.leo</vh></v>
-<v t="ekr.20101013072903.5229"><vh>@slide ((3 panes</vh></v>
-<v t="ekr.20101013072903.5230"><vh>@slide ((outline pane</vh></v>
+<v t="ekr.20101014034526.5294"><vh>IPython</vh></v>
+<v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
+</v>
+<v t="ekr.20100821182153.4345" a="E"><vh>@slideshow Installation</vh>
+<v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
+<v t="ekr.20101014100818.5254"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
+<v t="ekr.20101014101107.5256"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5302"><vh>@slide ((running Leo from a console</vh>
+<v t="ekr.20101014101107.5257"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5303"><vh>@slide ((double-clicking </vh>
+<v t="ekr.20101014101107.5258"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5301"><vh>@slide ((running Leo from python</vh>
+<v t="ekr.20101014101107.5259"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5304"><vh>@slide ((.leoID.txt</vh>
+<v t="ekr.20101014101107.5260"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20100821182153.4350"><vh>@slide ((free software</vh>
+<v t="ekr.20101014101107.5261"><vh>@url built slide</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20101011165412.4965"><vh>Installation</vh>
-<v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
-<v t="ekr.20100822164918.4364"><vh>Installing Leo</vh></v>
-<v t="ekr.20100821182153.4347"><vh>Two versions</vh></v>
-<v t="ekr.20100821182153.4348"><vh>Full installation</vh></v>
-<v t="ekr.20100821182153.4349"><vh>leoconfig.txt</vh></v>
-<v t="ekr.20100821182153.4350"><vh>Leo is a free program</vh></v>
-</v>
-</v>
-<v t="ekr.20101014034526.5281"><vh>Opening Leo</vh>
 <v t="ekr.20101013072903.5243"><vh>@slideshow Opening Leo</vh></v>
+<v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
+<v t="ekr.20101014034526.5297"><vh>Notes</vh>
+<v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
+<v t="ekr.20101011165412.5071"><vh>Leo's most import objects</vh></v>
+<v t="ekr.20101011165412.5072"><vh>Predefined objects</vh></v>
+<v t="ekr.20101011165412.5073"><vh>g.es writes to the log pane</vh></v>
+<v t="ekr.20101011165412.5074"><vh>app.windowList: the list of all open frames</vh></v>
+<v t="ekr.20101011165412.5075"><vh>Getting and setting headline and body text</vh></v>
+<v t="ekr.20101011165412.5076"><vh>Getting and setting body text directly</vh></v>
+<v t="ekr.20101011165412.5077"><vh>Ensuring that positions are valid</vh></v>
+<v t="ekr.20101011165412.5078"><vh>About copying positions</vh></v>
+<v t="ekr.20101011165412.5079"><vh>Traversing outlines</vh>
+<v t="ekr.20101011165412.5080"><vh>c.all_positions &amp; c.all_unique_positions</vh></v>
+<v t="ekr.20101011165412.5081"><vh>p.children</vh></v>
+<v t="ekr.20101011165412.5082"><vh>p.parents &amp; p.self_and_parents</vh></v>
+<v t="ekr.20101011165412.5083"><vh>p.siblings &amp; p.following_siblings</vh></v>
+<v t="ekr.20101011165412.5084"><vh>p.subtree &amp; p.self_and_subtree</vh></v>
+<v t="ekr.20101011165412.5085"><vh>Testing whether a position is valid</vh></v>
 </v>
-<v t="ekr.20101008061729.4371"><vh>Basics</vh>
+<v t="ekr.20101011165412.5086"><vh>Updating the screen</vh></v>
+<v t="ekr.20101011165412.5087"><vh>Invoking commands from scripts</vh></v>
+<v t="ekr.20101011165412.5088"><vh>Getting settings from @settings trees</vh></v>
+<v t="ekr.20101011165412.5089"><vh>Getting and setting preferences</vh></v>
+<v t="ekr.20101011165412.5090"><vh>Functions for finding and changing text from scripts</vh></v>
+<v t="ekr.20101011165412.5091"><vh>Functions defined in leoGlobals.py</vh></v>
+<v t="ekr.20101011165412.5092"><vh>Event handlers</vh>
+<v t="ekr.20101011165412.5093"><vh>Summary of event handlers</vh></v>
+<v t="ekr.20101011165412.5094"><vh>Enabling idle time event handlers</vh></v>
+</v>
+<v t="ekr.20101011165412.5095"><vh>How to make operations undoable</vh></v>
+<v t="ekr.20101011165412.5096"><vh>Redirecting output from scripts</vh></v>
+<v t="ekr.20101011165412.5097"><vh>Writing to different log tabs</vh></v>
+<v t="ekr.20101011165412.5098"><vh>Invoking dialogs using the g.app.gui class</vh></v>
+<v t="ekr.20101011165412.5099"><vh>Inserting and deleting icons</vh></v>
+<v t="ekr.20101011165412.5100"><vh>Customizing panes with different widgets</vh>
+<v t="ekr.20101011165412.5101"><vh>Official ivars</vh></v>
+<v t="ekr.20101011165412.5102"><vh>Common operations on Tk.Text widgets</vh></v>
+<v t="ekr.20101011165412.5103"><vh>Customizing the log pane</vh></v>
+<v t="ekr.20101011165412.5104"><vh>Customizing the body pane</vh></v>
+<v t="ekr.20101011165412.5105"><vh>Customizing the outine pane</vh></v>
+</v>
+<v t="ekr.20101011165412.5106"><vh>Working with directives and paths</vh></v>
+<v t="ekr.20101011165412.5107"><vh>Summary of the vnode and position classes</vh>
+<v t="ekr.20101011165412.5108"><vh>generators</vh></v>
+<v t="ekr.20101011165412.5109"><vh>Getters</vh></v>
+<v t="ekr.20101011165412.5110"><vh>Setters</vh></v>
+</v>
+<v t="ekr.20101011165412.5111"><vh>Creating script buttons</vh></v>
+<v t="ekr.20101011165412.5112"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20101011165412.5113"><vh>Getting interactive input from scripts</vh></v>
+<v t="ekr.20101011165412.5114"><vh>Creating Leo commands with the @g.command decorator</vh></v>
+<v t="ekr.20101011165412.5115"><vh>Modifying plugins with @script scripts</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20101014034526.5296"><vh>@slideshow Using the minibuffer</vh></v>
+<v t="ekr.20101010141953.5027"><vh>Examples</vh>
+<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
+<v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
+<v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
+<v t="ekr.20101010141953.5032"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.5033"><vh>Take screenshot of the compile .nsi dialog in a Windows folder</vh></v>
+</v>
+<v t="ekr.20101010141953.5034"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.5038"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.5039"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.5040"><vh>@url final output file</vh></v>
+<v t="ekr.20101011071655.4918"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011092154.4923"><vh>@slide 003</vh></v>
+<v t="ekr.20101011092154.4924"><vh>@slide 004</vh></v>
+<v t="ekr.20101011092154.4925"><vh>@slide 005</vh></v>
+<v t="ekr.20101011165412.5154"><vh>@@button make leo.nsi</vh>
+<v t="ekr.20101011165412.5155"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
+<v t="ekr.20101011165412.5156"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
+<v t="ekr.20101011165412.5157"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
+<v t="ekr.20101011165412.5158"><vh>class nsiWriter</vh>
+<v t="ekr.20101011165412.5159"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20101011165412.5160"><vh>genHead</vh>
+<v t="ekr.20101011165412.5161"><vh>putSettings</vh></v>
+<v t="ekr.20101011165412.5162"><vh>putOnInit</vh></v>
+</v>
+<v t="ekr.20101011165412.5163"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20101011165412.5164"><vh>getInstallVariableData</vh></v>
+</v>
+<v t="ekr.20101011165412.5165"><vh>genMiddle</vh>
+<v t="ekr.20101011165412.5166"><vh>genAdditionalIcons</vh></v>
+<v t="ekr.20101011165412.5167"><vh>genDesktopShortcuts</vh></v>
+<v t="ekr.20101011165412.5168"><vh>genFileAssociation</vh></v>
+<v t="ekr.20101011165412.5169"><vh>genMenuShortcuts</vh></v>
+<v t="ekr.20101011165412.5170"><vh>genMiddleFunctions</vh></v>
+<v t="ekr.20101011165412.5171"><vh>genPost</vh></v>
+<v t="ekr.20101011165412.5172"><vh>genUninstallSettings</vh></v>
+</v>
+<v t="ekr.20101011165412.5173"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20101011165412.5174"><vh>getDeleteDirectories</vh></v>
+<v t="ekr.20101011165412.5175"><vh>getDeleteFiles</vh></v>
+<v t="ekr.20101011165412.5176"><vh>getUninstallVariableData</vh></v>
+</v>
+<v t="ekr.20101011165412.5177"><vh>indent</vh></v>
+<v t="ekr.20101011165412.5178"><vh>openNsi</vh></v>
+<v t="ekr.20101011165412.5179"><vh>put</vh></v>
+</v>
+<v t="ekr.20101011165412.5180"><vh>run &amp; helpers</vh>
+<v t="ekr.20101011165412.5181"><vh>directoryList</vh></v>
+<v t="ekr.20101011165412.5182"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20101011165412.5183"><vh>delete...</vh></v>
+</v>
+<v t="ekr.20101011165412.5184"><vh>makeDicts</vh></v>
+<v t="ekr.20101011165412.5185"><vh>printMissing</vh></v>
+</v>
+<v t="ekr.20101011165412.5186"><vh>whitespace</vh>
+<v t="ekr.20101011165412.5187"><vh>adjustTripleString</vh></v>
+<v t="ekr.20101011165412.5188"><vh>get_leading_ws</vh></v>
+<v t="ekr.20101011165412.5189"><vh>computeWidth</vh></v>
+<v t="ekr.20101011165412.5190"><vh>removeLeadingWhitespace</vh></v>
+<v t="ekr.20101011165412.5191"><vh>splitLines</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20101014034526.5282"><vh>Unused &amp; reference</vh>
 <v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo?</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
-<v t="ekr.20101008061729.4372" a="E"><vh>@slide 001</vh>
+<v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
@@ -321,7 +451,7 @@
 <v t="ekr.20101010121134.4768"><vh>@url final output file</vh></v>
 <v t="ekr.20101010121134.4769"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4518" a="E"><vh>@slide 005</vh>
+<v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
 <v t="ekr.20101009212539.4682"><vh>@screenshot</vh>
 <v t="ekr.20101009212539.4683"><vh>To Do List</vh>
 <v t="ekr.20101009212539.4684"><vh>Urgent</vh></v>
@@ -350,7 +480,7 @@
 <v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
 <v t="ekr.20101010121134.4814"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4521" a="E"><vh>@slide 006</vh>
+<v t="ekr.20101008061729.4521"><vh>@slide 006</vh>
 <v t="ekr.20101009213545.4692"><vh>@screenshot</vh>
 <v t="ekr.20101009213545.4693"><vh>To Do List</vh>
 <v t="ekr.20101009213545.4694"><vh>Urgent</vh></v>
@@ -379,7 +509,7 @@
 <v t="ekr.20101010121134.4812"><vh>@url final output file</vh></v>
 <v t="ekr.20101010121134.4813"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4523" a="E"><vh>@slide 007</vh>
+<v t="ekr.20101008061729.4523"><vh>@slide 007</vh>
 <v t="ekr.20101010121134.4832"><vh>@screenshot</vh>
 <v t="ekr.20101010121134.4833"><vh>To Do List</vh>
 <v t="ekr.20101010121134.4834"><vh>Urgent</vh></v>
@@ -408,7 +538,7 @@
 <v t="ekr.20101010140842.4755"><vh>@url final output file</vh></v>
 <v t="ekr.20101010140842.4756"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4524" a="E"><vh>@slide 008</vh>
+<v t="ekr.20101008061729.4524"><vh>@slide 008</vh>
 <v t="ekr.20101010141334.4772"><vh>@screenshot</vh>
 <v t="ekr.20101010141334.4773"><vh>To Do List</vh>
 <v t="ekr.20101010141334.4774"><vh>Urgent</vh></v>
@@ -437,7 +567,7 @@
 <v t="ekr.20101010141953.4837"><vh>@url final output file</vh></v>
 <v t="ekr.20101010141953.4838"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4525" a="E"><vh>@slide 009</vh>
+<v t="ekr.20101008061729.4525"><vh>@slide 009</vh>
 <v t="ekr.20101010141953.4856"><vh>@screenshot</vh>
 <v t="ekr.20101010141953.4857"><vh>To Do List</vh>
 <v t="ekr.20101010141953.4858"><vh>Urgent</vh></v>
@@ -467,7 +597,7 @@
 <v t="ekr.20101010141953.4918"><vh>@url final output file</vh></v>
 <v t="ekr.20101010141953.4919"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4526" a="E"><vh>@slide 010</vh>
+<v t="ekr.20101008061729.4526"><vh>@slide 010</vh>
 <v t="ekr.20101010141953.4922"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101008061729.4527"><vh>@slide 011</vh>
@@ -510,157 +640,6 @@
 <v t="ekr.20101008061729.4539"><vh>@slide 022</vh></v>
 <v t="ekr.20101008061729.4540"><vh>@slide 023</vh></v>
 </v>
-<v t="ekr.20101007082321.4358"><vh>@slideshow What is Leo? Continued</vh>
-<v t="ekr.20101008061729.4573"><vh>@slide test</vh>
-<v t="ekr.20101008061729.5006"><vh>@screenshot</vh>
-<v t="ekr.20101008061729.5007"><vh>To Do List</vh>
-<v t="ekr.20101008061729.5008"><vh>Urgent</vh></v>
-<v t="ekr.20101008061729.5009"><vh>Important</vh></v>
-<v t="ekr.20101008061729.5010"><vh>Soon</vh></v>
-<v t="ekr.20101008061729.5011"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20101008061729.5012"><vh>Diary</vh>
-<v t="ekr.20101008061729.5013"><vh>2009</vh>
-<v t="ekr.20101008061729.5014"><vh>Jul 2009</vh></v>
-<v t="ekr.20101008061729.5015"><vh>Aug 2009</vh></v>
-<v t="ekr.20101008061729.5016"><vh>Sep 2009</vh></v>
-<v t="ekr.20101008061729.5017"><vh>Oct 2009</vh></v>
-<v t="ekr.20101008061729.5018"><vh>Nov 2009</vh></v>
-<v t="ekr.20101008061729.5019"><vh>Dec 2009</vh></v>
-</v>
-<v t="ekr.20101008061729.5020"><vh>2010</vh></v>
-</v>
-</v>
-<v t="ekr.20101008061729.5021"><vh>@select Urgent</vh></v>
-</v>
-<v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
-</v>
-<v t="ekr.20101011165412.4966"><vh>@slideshow The Leo Screen</vh></v>
-<v t="ekr.20101011165412.4967"><vh>@slideshow Clones and Views</vh></v>
-</v>
-<v t="ekr.20101014034526.5280"><vh>External files</vh></v>
-<v t="ekr.20101011165412.4969"><vh>Scripting Leo</vh>
-<v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
-<v t="ekr.20101011165412.5071"><vh>Leo's most import objects</vh></v>
-<v t="ekr.20101011165412.5072"><vh>Predefined objects</vh></v>
-<v t="ekr.20101011165412.5073"><vh>g.es writes to the log pane</vh></v>
-<v t="ekr.20101011165412.5074"><vh>app.windowList: the list of all open frames</vh></v>
-<v t="ekr.20101011165412.5075"><vh>Getting and setting headline and body text</vh></v>
-<v t="ekr.20101011165412.5076"><vh>Getting and setting body text directly</vh></v>
-<v t="ekr.20101011165412.5077"><vh>Ensuring that positions are valid</vh></v>
-<v t="ekr.20101011165412.5078"><vh>About copying positions</vh></v>
-<v t="ekr.20101011165412.5079"><vh>Traversing outlines</vh>
-<v t="ekr.20101011165412.5080"><vh>c.all_positions &amp; c.all_unique_positions</vh></v>
-<v t="ekr.20101011165412.5081"><vh>p.children</vh></v>
-<v t="ekr.20101011165412.5082"><vh>p.parents &amp; p.self_and_parents</vh></v>
-<v t="ekr.20101011165412.5083"><vh>p.siblings &amp; p.following_siblings</vh></v>
-<v t="ekr.20101011165412.5084"><vh>p.subtree &amp; p.self_and_subtree</vh></v>
-<v t="ekr.20101011165412.5085"><vh>Testing whether a position is valid</vh></v>
-</v>
-<v t="ekr.20101011165412.5086"><vh>Updating the screen</vh></v>
-<v t="ekr.20101011165412.5087"><vh>Invoking commands from scripts</vh></v>
-<v t="ekr.20101011165412.5088"><vh>Getting settings from @settings trees</vh></v>
-<v t="ekr.20101011165412.5089"><vh>Getting and setting preferences</vh></v>
-<v t="ekr.20101011165412.5090"><vh>Functions for finding and changing text from scripts</vh></v>
-<v t="ekr.20101011165412.5091"><vh>Functions defined in leoGlobals.py</vh></v>
-<v t="ekr.20101011165412.5092"><vh>Event handlers</vh>
-<v t="ekr.20101011165412.5093"><vh>Summary of event handlers</vh></v>
-<v t="ekr.20101011165412.5094"><vh>Enabling idle time event handlers</vh></v>
-</v>
-<v t="ekr.20101011165412.5095"><vh>How to make operations undoable</vh></v>
-<v t="ekr.20101011165412.5096"><vh>Redirecting output from scripts</vh></v>
-<v t="ekr.20101011165412.5097"><vh>Writing to different log tabs</vh></v>
-<v t="ekr.20101011165412.5098"><vh>Invoking dialogs using the g.app.gui class</vh></v>
-<v t="ekr.20101011165412.5099"><vh>Inserting and deleting icons</vh></v>
-<v t="ekr.20101011165412.5100"><vh>Customizing panes with different widgets</vh>
-<v t="ekr.20101011165412.5101"><vh>Official ivars</vh></v>
-<v t="ekr.20101011165412.5102"><vh>Common operations on Tk.Text widgets</vh></v>
-<v t="ekr.20101011165412.5103"><vh>Customizing the log pane</vh></v>
-<v t="ekr.20101011165412.5104"><vh>Customizing the body pane</vh></v>
-<v t="ekr.20101011165412.5105"><vh>Customizing the outine pane</vh></v>
-</v>
-<v t="ekr.20101011165412.5106"><vh>Working with directives and paths</vh></v>
-<v t="ekr.20101011165412.5107"><vh>Summary of the vnode and position classes</vh>
-<v t="ekr.20101011165412.5108"><vh>generators</vh></v>
-<v t="ekr.20101011165412.5109"><vh>Getters</vh></v>
-<v t="ekr.20101011165412.5110"><vh>Setters</vh></v>
-</v>
-<v t="ekr.20101011165412.5111"><vh>Creating script buttons</vh></v>
-<v t="ekr.20101011165412.5112"><vh>Running Leo in batch mode</vh></v>
-<v t="ekr.20101011165412.5113"><vh>Getting interactive input from scripts</vh></v>
-<v t="ekr.20101011165412.5114"><vh>Creating Leo commands with the @g.command decorator</vh></v>
-<v t="ekr.20101011165412.5115"><vh>Modifying plugins with @script scripts</vh></v>
-</v>
-<v t="ekr.20101011165412.4968"><vh>@slideshow Scripting</vh></v>
-</v>
-<v t="ekr.20101010141953.5027"><vh>Examples</vh>
-<v t="ekr.20101011165412.5154"><vh>@@button make leo.nsi</vh>
-<v t="ekr.20101011165412.5155"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20101011165412.5156"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
-<v t="ekr.20101011165412.5157"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20101011165412.5158"><vh>class nsiWriter</vh>
-<v t="ekr.20101011165412.5159"><vh>genScript &amp; helpers</vh>
-<v t="ekr.20101011165412.5160"><vh>genHead</vh>
-<v t="ekr.20101011165412.5161"><vh>putSettings</vh></v>
-<v t="ekr.20101011165412.5162"><vh>putOnInit</vh></v>
-</v>
-<v t="ekr.20101011165412.5163"><vh>genInstallData &amp; helpers</vh>
-<v t="ekr.20101011165412.5164"><vh>getInstallVariableData</vh></v>
-</v>
-<v t="ekr.20101011165412.5165"><vh>genMiddle</vh>
-<v t="ekr.20101011165412.5166"><vh>genAdditionalIcons</vh></v>
-<v t="ekr.20101011165412.5167"><vh>genDesktopShortcuts</vh></v>
-<v t="ekr.20101011165412.5168"><vh>genFileAssociation</vh></v>
-<v t="ekr.20101011165412.5169"><vh>genMenuShortcuts</vh></v>
-<v t="ekr.20101011165412.5170"><vh>genMiddleFunctions</vh></v>
-<v t="ekr.20101011165412.5171"><vh>genPost</vh></v>
-<v t="ekr.20101011165412.5172"><vh>genUninstallSettings</vh></v>
-</v>
-<v t="ekr.20101011165412.5173"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20101011165412.5174"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20101011165412.5175"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20101011165412.5176"><vh>getUninstallVariableData</vh></v>
-</v>
-<v t="ekr.20101011165412.5177"><vh>indent</vh></v>
-<v t="ekr.20101011165412.5178"><vh>openNsi</vh></v>
-<v t="ekr.20101011165412.5179"><vh>put</vh></v>
-</v>
-<v t="ekr.20101011165412.5180"><vh>run &amp; helpers</vh>
-<v t="ekr.20101011165412.5181"><vh>directoryList</vh></v>
-<v t="ekr.20101011165412.5182"><vh>filterLines &amp; helpers</vh>
-<v t="ekr.20101011165412.5183"><vh>delete...</vh></v>
-</v>
-<v t="ekr.20101011165412.5184"><vh>makeDicts</vh></v>
-<v t="ekr.20101011165412.5185"><vh>printMissing</vh></v>
-</v>
-<v t="ekr.20101011165412.5186"><vh>whitespace</vh>
-<v t="ekr.20101011165412.5187"><vh>adjustTripleString</vh></v>
-<v t="ekr.20101011165412.5188"><vh>get_leading_ws</vh></v>
-<v t="ekr.20101011165412.5189"><vh>computeWidth</vh></v>
-<v t="ekr.20101011165412.5190"><vh>removeLeadingWhitespace</vh></v>
-<v t="ekr.20101011165412.5191"><vh>splitLines</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
-<v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
-<v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
-<v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
-<v t="ekr.20101010141953.5032"><vh>@screenshot</vh>
-<v t="ekr.20101010141953.5033"><vh>Take screenshot of the compile .nsi dialog in a Windows folder</vh></v>
-</v>
-<v t="ekr.20101010141953.5034"><vh>@pause</vh></v>
-<v t="ekr.20101010141953.5038"><vh>@url screenshot</vh></v>
-<v t="ekr.20101010141953.5039"><vh>@url working file</vh></v>
-<v t="ekr.20101010141953.5040"><vh>@url final output file</vh></v>
-<v t="ekr.20101011071655.4918"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101011092154.4923"><vh>@slide 003</vh></v>
-<v t="ekr.20101011092154.4924"><vh>@slide 004</vh></v>
-<v t="ekr.20101011092154.4925"><vh>@slide 005</vh></v>
-</v>
-</v>
-<v t="ekr.20101014034526.5282"><vh>zz Other slideshows</vh>
 <v t="ekr.20101011071655.4919"><vh>@slideshow Whetting Your Appetite</vh>
 <v t="ekr.20101013072903.5219"><vh>@slide What you can do with Leo</vh>
 <v t="ekr.20101013072903.5220"><vh>@no-screenshot</vh></v>
@@ -693,9 +672,32 @@
 </v>
 <v t="ekr.20101013072903.5262"><vh>@slideshow Leo &amp; Prezi</vh>
 <v t="ekr.20101014031545.5278"><vh>@image lioness</vh></v>
-<v t="ekr.20101014025823.5274"><vh>@image logo</vh></v>
 <v t="ekr.20101014030710.5277"><vh>@url logo</vh></v>
 </v>
+<v t="ekr.20101007082321.4358"><vh>@slideshow What is Leo? Continued</vh>
+<v t="ekr.20101008061729.4573"><vh>@slide test</vh>
+<v t="ekr.20101008061729.5006"><vh>@screenshot</vh>
+<v t="ekr.20101008061729.5007"><vh>To Do List</vh>
+<v t="ekr.20101008061729.5008"><vh>Urgent</vh></v>
+<v t="ekr.20101008061729.5009"><vh>Important</vh></v>
+<v t="ekr.20101008061729.5010"><vh>Soon</vh></v>
+<v t="ekr.20101008061729.5011"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101008061729.5012"><vh>Diary</vh>
+<v t="ekr.20101008061729.5013"><vh>2009</vh>
+<v t="ekr.20101008061729.5014"><vh>Jul 2009</vh></v>
+<v t="ekr.20101008061729.5015"><vh>Aug 2009</vh></v>
+<v t="ekr.20101008061729.5016"><vh>Sep 2009</vh></v>
+<v t="ekr.20101008061729.5017"><vh>Oct 2009</vh></v>
+<v t="ekr.20101008061729.5018"><vh>Nov 2009</vh></v>
+<v t="ekr.20101008061729.5019"><vh>Dec 2009</vh></v>
+</v>
+<v t="ekr.20101008061729.5020"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.5021"><vh>@select Urgent</vh></v>
+</v>
+<v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
 </v>
 <v t="ekr.20101011165412.5192"><vh>Reference</vh>
 <v t="ekr.20101011165412.5195"><vh> Format of external files (copy)</vh></v>
@@ -703,11 +705,22 @@
 <v t="ekr.20101011165412.5201"><vh>@edit example.py.txt</vh></v>
 <v t="ekr.20101011165412.5193"><vh>Format of @thin files</vh></v>
 </v>
+<v t="ekr.20101013072903.5218"><vh>Descriptions are not stories!</vh>
+<v t="ekr.20101011165412.5011"><vh>nutshell (copy)</vh></v>
+<v t="ekr.20101012083118.5246"><vh>@@slide Leo</vh></v>
+<v t="ekr.20101011103613.4940"><vh>@@slide The Leo way</vh>
+<v t="ekr.20101012083118.5242"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5238"><vh>Don't describe the window!</vh>
+<v t="ekr.20101013072903.5228"><vh>@slide ((file name: workbook2.leo</vh></v>
+<v t="ekr.20101013072903.5229"><vh>@slide ((3 panes</vh></v>
+<v t="ekr.20101013072903.5230"><vh>@slide ((outline pane</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
-<v t="ekr.20101011165412.5009"><vh> Topics</vh>
-<v t="ekr.20101011165412.5011"><vh>nutshell (copy)</vh></v>
-</v>
+<v t="ekr.20101014034526.5285"><vh>  Topics</vh></v>
 <v t="ekr.20101013072903.5225"><vh>@slide ((intro  no-ss</vh></v>
 <v t="ekr.20101013072903.5226"><vh>@slide ((Let's start</vh></v>
 <v t="ekr.20101013072903.5256"><vh>Focus and editing</vh>
@@ -740,8 +753,11 @@
 <v t="ekr.20101013072903.5252"><vh>@slide ((left-arrow contracts node</vh></v>
 <v t="ekr.20101013072903.5253"><vh>@slide ((left-arrow selects parent</vh></v>
 </v>
-<v t="ekr.20101013072903.5261"><vh>Cloning nodes</vh></v>
+<v t="ekr.20101013072903.5261"><vh>Clones and Views</vh></v>
 <v t="ekr.20101014034526.5283"><vh>Minibuffer</vh></v>
+</v>
+<v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
+<v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1086,54 +1102,28 @@ Reorganize the docs into intro and reference.</t>
 @language rest
 @nocolor-node
 
-To a slideshow:
+To create a slideshow:
     
 cd leo\doc\html\slices\slideshow-name
 make html
-
-Notes:
-
-Default screenshot height and width are 500, 700.</t>
+</t>
 <t tx="ekr.20100821182153.4345">@language rest
 </t>
-<t tx="ekr.20100821182153.4347">.. _`the Python web site`:  http://www.python.org/
-.. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
+<t tx="ekr.20100821182153.4348">.. _`Download Python`: http://www.python.org/download/
+.. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
 
-Windows Users:
+**Installing Leo from sources:**
 
-    Installing Leo requires two steps:
+1. Install Python: `Download Python`_, save to your desktop, then
+   double-click on the saved file.
+   
+2. Install Leo from sources:
 
-    1. Install Python: download the Windows MSI installer (a .msi file) from
-       `the Python web site`_, and double-click on the installer. (Python is a
-       type of software for creating and running computer programs.)
+- Download the most recent .zip file from `Leo's download page`_
+  to your desktop or other location.
+  
+- Unzip the .zip file to the folder of your choice.
 
-    2. Install Leo: download Leo's executable installer (an .exe file) from
-       `Leo's download page`_, then double-click on the .exe file.
-
-Unix and Mac Users:
-
-    Please continue to next page.
-
-Also, if you are a programmer and want to get the Leo files without using an
-installer, continue to the next page.
-</t>
-<t tx="ekr.20100821182153.4348">.. _`Leo's download page`:  http://sourceforge.net/projects/leo/files/Leo/
-
-Full installation of Leo requires that you:
-
-   1. **Install Python**
-   2. **Install the Leo files**
-
-To install Python, follow the directions on the previous page.
-
-To install Leo, go to `Leo's download page`_ and download the most recent zip file under the
-heading "Leo2.py". Download the zip file to your desktop or other location, and
-then unzip it to the folder of your choice.
-
-To run Leo, double-click on the file leo.py that you have just unzipped.
-</t>
-<t tx="ekr.20100821182153.4349">Once you have installed Leo, you can configure Leo using the leoconfig.txt file.
-For more information about this see the documentation distributed with Leo.
 </t>
 <t tx="ekr.20100821182153.4350">.. _`Edward K. Ream`:   http://webpages.charter.net/edreamleo/ekr.html
 .. _`leo-editor`:       http://groups.google.com/group/leo-editor
@@ -1155,14 +1145,6 @@ information, see the `leo-editor`_ Google Group.
 
 Not only is Leo free software, it is supported software. Post questions and bug
 reports to `leo-editor`_ Google Group.
-</t>
-<t tx="ekr.20100822164918.4364">This slideshow tells how to install Leo.
-
-..  .. toctree::
-..    ..  :hidden:
-..    ..  :glob:
-..
-..    installation-0*
 </t>
 <t tx="ekr.20100907092300.4440"></t>
 <t tx="ekr.20100907092300.4441">Path to inkscape template file
@@ -1187,7 +1169,6 @@ screenshots.py
 m.make_slide_show_command(event={'c':c})
 </t>
 <t tx="ekr.20101007100904.4372"></t>
-<t tx="ekr.20101008061729.4371"></t>
 <t tx="ekr.20101008061729.4372">Leo is a unique, powerful computer program that you can use to **organize**,
 **analyze** and **describe** text and text files. Leo is a free and open
 software written by Edward K. Ream. For information about downloading Leo, see
@@ -1778,95 +1759,16 @@ People say Leo is **fun to use**, even additive.
 <t tx="ekr.20101011103613.4946">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html</t>
 <t tx="ekr.20101011103613.4947">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html</t>
 <t tx="ekr.20101011111455.4965">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html</t>
-<t tx="ekr.20101011165412.4965"></t>
-<t tx="ekr.20101011165412.4966"></t>
-<t tx="ekr.20101011165412.4967"></t>
-<t tx="ekr.20101011165412.4968"></t>
-<t tx="ekr.20101011165412.4969"></t>
-<t tx="ekr.20101011165412.5009">- Expand &amp; contract nodes
+<t tx="ekr.20101011165412.4968">@language rest
+@pagewidth 50
 
-- Edit headline
-
-- Insert node
-
-- Copy/Paste nodes
-
-- Arrow keys
-
-- Move outline up/down/left/right
-    
-- Promote &amp; Demote
-
-- Arrow keys
-
-- Minibuffer &amp; tab completion
 </t>
-<t tx="ekr.20101011165412.5011">
-**Outlines and organization**: Leo's outlines are more flexible and powerful
-than any other outline, for at least three reasons:
+<t tx="ekr.20101011165412.5009">
+- Minibuffer &amp; tab completion
 
-1. Unlike class browsers, you are in complete control of the outline's
-   structure. You can organize it however you like, and Leo will *remember* what
-   you have done and will show it to you just that way when come back next time.
-   This seems like a minor feature. After you use Leo, you will see that it is
-   not.
-
-2. Leo outlines may *look* like other outlines, but in fact Leo outlines are
-   views of a more general underlying data (graph) structure. Nodes in Leo's
-   outlines may appear in many places in the same outline. We call such nodes
-   **clones**. Using clones, it is easy to create as many **views** of the data
-   in the outline as you like. In effect, Leo becomes a supremely flexible
-   filing cabinet: any outline node may be filed any place in this cabinet.
-
-3. Leo outlines are intimately connected to both external files and Python
-   scripting, as explained next.
-
-.. index::
-    pair: External file; Nutshell
-
-**External files**: Any outline node (and its descendants) can be "connected" to
-any file on your file system. Three common kinds of connection are:
-
-1. @edit: Leo reads the entire external file into the @edit node's body text.
-
-2. @auto: Leo parses the external file and automatically creates an outline that
-   shows the structure of the external file, just as in typical class browsers.
-
-3. @file: Leo makes a two-way connection between the @file tree (the @file node
-   and its descendants) and the external file. You can update the external file
-   by writing the Leo outline connected to it, or you can update the outline by
-   changing the external file. To do this Leo uses comments in the external file
-   called **sentinels** that represent the outline structure *in the external
-   file itself*.
-
-\@edit, \@auto and \@file allow you to share external files with others in a
-collaborative environment. With \@file, you also **share outline structure**.
-
-A single Leo outline can connect to dozens or even hundreds of external files.
-Using Leo, you never have to open these files by hand, Leo does so automatically
-when it opens the Leo outline. Outlines connected to external files make Leo a
-new kind of IDE (Integrated Development Environment).
-
-**Scripting**: Every outline node can contain Python scripts. Moreover, each
-node in a Leo outline is a programmable object. All nodes are *easily* available
-to any Leo script. The structure of the outline is *also* easily available to
-any script.  Scripts can *easily* determine the parents and children of any node.
-Finally, Leo makes it easy for scripts to visit any or all nodes of an outline.
-
-.. index::
-    pair: @kind convention; Nutshell
-    pair: User-defined types; Nutshell
-
-Leo's headlines provide a natural place to indicate the **type** of data
-contained in nodes. By *convention*, @test in a headline denotes a unit test,
-\@command creates a new Leo command. The \@kind convention creates 
-**user-defined types** that turn any outline Node into a true programming
-object.
-
-.. index::
-    pair: Leonine; Nutshell
-
-Unifying scripting, data and outline structure creates a new world. We use the
+- Leo has a memory.
+</t>
+<t tx="ekr.20101011165412.5011">Unifying scripting, data and outline structure creates a new world. We use the
 term **Leonine** to denote the Leo-centric (outline-centric) view of
 programming, data and scripting. Here are some of the implications of this
 new world:
@@ -4017,40 +3919,6 @@ Use Leo:
 
 Because Leo is unlike other tools you may have used, a series of examples may be
 the best way to demonstrate what can be done with Leo.</t>
-<t tx="ekr.20101012083118.5247">@language rest
-
-What can you **do**.
-
-Story: Create outlines
-    - Use @url nodes to keep track of web sites.
-    - Use @url nodes to organize pictures or movies.
-    - Use clones to organize any data in multiple ways.
-    
-Story: External files.
-    - Create @thin nodes to create external files.
-    - Creates nodes to represent structure in external files.
-        - Create section references to ensure that data goes in a particular place.
-        - Create @others directives to include data that is not position sensitive.
-        
-Story: Apply scripts to Leo outlines.
-    - Leo scripts use c,g,p.
-    - Leo scripts use p.b and p.h to set and get text.
-    - Leo scripts can traverse the outline.
-
-Story: Create new commands with @button nodes
-    - Create @button node to create a new command.
-    - Apply the command to any outline node.
-    
-Story: Create unit tests with @test nodes
-    - Create an @test node to create a new unit test.
-    
-Story: Use IPython from Leo, and vice versa.
-    - Execute IPython scripts from Leo.
-    - Execute Leo scripts from IPython.
-        
-Story: Use Leo with Vim or Emacs.
-    - Pass text to and from Vim or Emacs.
-</t>
 <t tx="ekr.20101013072903.5218"></t>
 <t tx="ekr.20101013072903.5219">This slideshow shows some of the things you can do
 with Leo</t>
@@ -4070,7 +3938,7 @@ node. Messages from Leo appear in the log pane.
 how to use basic tools in Leo.</t>
 <t tx="ekr.20101013072903.5226">.. The workbook.leo window.
 
-Let\'s start.  Open Leo.  You will see the following window.
+Let\'s start.  Open Leo.  You will see this window.
 
 </t>
 <t tx="ekr.20101013072903.5228">.. Arrow points to window title.
@@ -4103,7 +3971,8 @@ The node's **headline** is ready for editing.</t>
 </t>
 <t tx="ekr.20101013072903.5241">Here, I typed "today" at the end of the headline.</t>
 <t tx="ekr.20101013072903.5242">As before, typing a newline ends editing.</t>
-<t tx="ekr.20101013072903.5243"></t>
+<t tx="ekr.20101013072903.5243">@language rest
+@pagewidth 50</t>
 <t tx="ekr.20101013072903.5244">We make the "go shopping" node a **child**
 of the "to do today" node by typing Ctrl-R.</t>
 <t tx="ekr.20101013072903.5245">We can undo the move by hitting Ctrl-Z.</t>
@@ -4138,14 +4007,157 @@ the right arrow key will select the node's **parent**.</t>
 <t tx="ekr.20101013072903.5261"></t>
 <t tx="ekr.20101013072903.5262">Prezi path: clone-marked.
 Prezi picture: @include &lt;filename&gt;.</t>
-<t tx="ekr.20101014025823.5274">file://C:/Users/edreamleo/Documents/logos/ekr.gif </t>
 <t tx="ekr.20101014030710.5277">file:///C:/Users/edreamleo/Documents/logos/ekr.gif</t>
 <t tx="ekr.20101014031545.5278">file://../Icons/Lioness.jpg</t>
-<t tx="ekr.20101014034526.5280"></t>
-<t tx="ekr.20101014034526.5281"></t>
-<t tx="ekr.20101014034526.5282"></t>
+<t tx="ekr.20101014034526.5280">@language rest
+@pagewidth 50
+
+</t>
+<t tx="ekr.20101014034526.5282">These don't tell stories
+</t>
 <t tx="ekr.20101014034526.5283"></t>
-<t tx="ekr.20101014034526.5284"></t>
+<t tx="ekr.20101014034526.5285">- Expand &amp; contract nodes
+
+- Edit headline
+
+- Insert node
+
+- Copy/Paste nodes
+
+- Arrow keys
+
+- Move outline up/down/left/right
+    
+- Promote &amp; Demote
+
+- Arrow keys
+</t>
+<t tx="ekr.20101014034526.5287">@edit
+
+@auto
+
+@file
+
+sentinels
+
+With \@file, you also **share outline structure**.
+
+Leo opens external files automatically.
+
+Leo is an IDE</t>
+<t tx="ekr.20101014034526.5291"></t>
+<t tx="ekr.20101014034526.5292"></t>
+<t tx="ekr.20101014034526.5293"></t>
+<t tx="ekr.20101014034526.5294">- Execute IPython scripts from Leo.
+- Execute Leo scripts from IPython.</t>
+<t tx="ekr.20101014034526.5295"></t>
+<t tx="ekr.20101014034526.5296"></t>
+<t tx="ekr.20101014034526.5297">Any node can contain Python scripts.
+
+Scripts have access to the entire outline:
+
+    p.b
+    p.h
+    c
+    g
+    
+    p.parent()
+    p.children()
+
+User-defined types
+
+    @url
+    @image
+    @test
+</t>
+<t tx="ekr.20101014034526.5298"></t>
+<t tx="ekr.20101014034526.5299">.. _`Download Python`: http://www.python.org/download/
+.. _`Download Leo's installer`: https://sourceforge.net/projects/leo/files/Leo/
+.. _`next slide`: slide-002.html
+
+**Installing Leo on Windows using Leo's single-click installer:** 
+
+1. Install Python: `Download Python`_, save to your desktop, then
+   double-click on the saved file.
+   
+   Python is software for creating and running computer programs.
+
+2. Install Leo with: `Download Leo's installer`_, save to your desktop, then
+   double-click on the saved file.
+   
+**Installing Leo from sources:**:
+
+See the `next slide`_.
+</t>
+<t tx="ekr.20101014034526.5301">You can run Leo from a Python interpreter as follows::
+
+1. Start Python.  From a console window, type::
+
+    python
+    
+You should see the Python interpreter's signon message.
+
+2. Start Leo.  At the Python command prompt, type::
+
+    import leo
+    leo.run(fileName)
+    
+If fileName is empty Leo opens a new Leo outline.
+</t>
+<t tx="ekr.20101014034526.5302">To run Leo directly from a console, do the following:
+
+1. Go to the Leo directory::
+
+    cd &lt;path-to-leo-directory&gt;
+    
+2. Start launchLeo.py using Python::
+
+    python launchLeo.py %*
+
+</t>
+<t tx="ekr.20101014034526.5303">Here are some tips that may make running Leo easier:
+
+**Linux**
+    The following shell script will allow you to open foo.leo files by typing leo foo::
+
+        #!/bin/sh 
+        python &lt;leopath&gt;launchLeo.py $1
+
+    where &lt;leopath&gt; is the path to the directory containing the leo directory. 
+
+**Windows**
+    If you have associated .leo files with Leo you may run Leo by double-clicking any .leo file.
+    You can also use a batch file.
+    Put the following .bat file in c:\\Windows::
+
+        cd &lt;path-to-leo&gt;
+        c:\Python26\python &lt;path-to-leo&gt;launchLeo.py %*
+
+    where &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory.
+
+    This opens the file specified by the first argument.
+
+</t>
+<t tx="ekr.20101014034526.5304">The first time you start Leo, a dialog will ask you for a unique
+identifier. This string helps ensure that each Leo node has a
+unique identity.
+
+This identifier can be any string 3 characters or more in length.
+In a shared environment, a cvs or bzr login name works well.
+
+Pick a string you don't mind making public: it will appear in
+files that Leo creates.
+
+Leo stores this identifier in the file ~/.leo/.leoID.txt.
+You can change this identifier at any time by editing .leoID.txt.
+</t>
+<t tx="ekr.20101014100818.5254">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
+<t tx="ekr.20101014101107.5256">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-002.html</t>
+<t tx="ekr.20101014101107.5257">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-003.html</t>
+<t tx="ekr.20101014101107.5258">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html</t>
+<t tx="ekr.20101014101107.5259">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html</t>
+<t tx="ekr.20101014101107.5260">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html</t>
+<t tx="ekr.20101014101107.5261">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-007.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
