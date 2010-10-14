@@ -82,7 +82,7 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@thin frontMatter.txt</vh></v>
 </v>
@@ -98,9 +98,8 @@
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344"><vh>@thin screen-shots.txt</vh></v>
 </v>
-<v t="ekr.20100731112744.7267" a="E"><vh>Chapter 1: Installing Leo</vh>
-<v t="ekr.20100805165051.7152" a="E" descendentVnodeUnknownAttributes="7d71005507302e302e352e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"
-expanded="ekr.20100731112744.7268,ekr.20100817101952.4309,"><vh>@thin install.txt</vh></v>
+<v t="ekr.20100731112744.7267"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e352e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@thin install.txt</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"><vh>@thin intro.txt</vh></v>
@@ -188,7 +187,7 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4309,"><vh>@thin install.tx
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
 <v t="ekr.20101009111520.4525"><vh> Slideshow Buttons (disabled)</vh>
 <v t="ekr.20101008061729.4425"><vh>@@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@@button copy-@screenshot-node</vh>
@@ -226,30 +225,26 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4309,"><vh>@thin install.tx
 <v t="ekr.20101014034526.5294"><vh>IPython</vh></v>
 <v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
 </v>
-<v t="ekr.20100821182153.4345" a="E"><vh>@slideshow Installation</vh>
-<v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
-<v t="ekr.20101014100818.5254"><vh>@url built slide</vh></v>
+<v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
+<v t="ekr.20101014034526.5299" a="E"><vh>@slide ((using Leo's installer</vh>
+<v t="ekr.20101014105353.5256"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
-<v t="ekr.20101014101107.5256"><vh>@url built slide</vh></v>
+<v t="ekr.20101014105353.5257"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014034526.5302"><vh>@slide ((running Leo from a console</vh>
-<v t="ekr.20101014101107.5257"><vh>@url built slide</vh></v>
+<v t="ekr.20101014105353.5258"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101014034526.5303"><vh>@slide ((double-clicking </vh>
-<v t="ekr.20101014101107.5258"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014034526.5301"><vh>@slide ((running Leo from python</vh>
-<v t="ekr.20101014101107.5259"><vh>@url built slide</vh></v>
+<v t="ekr.20101014034526.5303"><vh>@slide ((scripts &amp; .bat files</vh>
+<v t="ekr.20101014105353.5259"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014034526.5304"><vh>@slide ((.leoID.txt</vh>
-<v t="ekr.20101014101107.5260"><vh>@url built slide</vh></v>
+<v t="ekr.20101014105353.5260"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20100821182153.4350"><vh>@slide ((free software</vh>
-<v t="ekr.20101014101107.5261"><vh>@url built slide</vh></v>
+<v t="ekr.20101014105353.5261"><vh>@url built slide</vh></v>
 </v>
 </v>
-<v t="ekr.20101013072903.5243"><vh>@slideshow Opening Leo</vh></v>
 <v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
 <v t="ekr.20101014034526.5297"><vh>Notes</vh>
 <v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
@@ -701,9 +696,6 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4309,"><vh>@thin install.tx
 </v>
 <v t="ekr.20101011165412.5192"><vh>Reference</vh>
 <v t="ekr.20101011165412.5195"><vh> Format of external files (copy)</vh></v>
-<v t="ekr.20101011165412.5196"><vh>@thin example.py</vh></v>
-<v t="ekr.20101011165412.5201"><vh>@edit example.py.txt</vh></v>
-<v t="ekr.20101011165412.5193"><vh>Format of @thin files</vh></v>
 </v>
 <v t="ekr.20101013072903.5218"><vh>Descriptions are not stories!</vh>
 <v t="ekr.20101011165412.5011"><vh>nutshell (copy)</vh></v>
@@ -1112,15 +1104,18 @@ make html
 <t tx="ekr.20100821182153.4348">.. _`Download Python`: http://www.python.org/download/
 .. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
 
-**Installing Leo from sources:**
+**Installing Leo from sources**
 
-1. Install Python: `Download Python`_, save to your desktop, then
-   double-click on the saved file.
+1. Install Python:
+
+`Download Python`_, save to your desktop, then double-click on the
+saved file.
+
    
-2. Install Leo from sources:
+2. Install Leo:
 
-- Download the most recent .zip file from `Leo's download page`_
-  to your desktop or other location.
+- Download the most recent .zip file from `Leo's download page`_ to
+  your desktop or other location.
   
 - Unzip the .zip file to the folder of your choice.
 
@@ -3740,7 +3735,6 @@ def deleteFiles (self,lines,deleteList):
     return s and s.splitlines(True) or []
 </t>
 <t tx="ekr.20101011165412.5192"></t>
-<t tx="ekr.20101011165412.5193"></t>
 <t tx="ekr.20101011165412.5195">This section describe the format of external files.
 Leo's `sentinel lines`_ are comments, and this section describes those comments.
 
@@ -3971,8 +3965,6 @@ The node's **headline** is ready for editing.</t>
 </t>
 <t tx="ekr.20101013072903.5241">Here, I typed "today" at the end of the headline.</t>
 <t tx="ekr.20101013072903.5242">As before, typing a newline ends editing.</t>
-<t tx="ekr.20101013072903.5243">@language rest
-@pagewidth 50</t>
 <t tx="ekr.20101013072903.5244">We make the "go shopping" node a **child**
 of the "to do today" node by typing Ctrl-R.</t>
 <t tx="ekr.20101013072903.5245">We can undo the move by hitting Ctrl-Z.</t>
@@ -4072,39 +4064,28 @@ User-defined types
 </t>
 <t tx="ekr.20101014034526.5298"></t>
 <t tx="ekr.20101014034526.5299">.. _`Download Python`: http://www.python.org/download/
-.. _`Download Leo's installer`: https://sourceforge.net/projects/leo/files/Leo/
+.. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
 .. _`next slide`: slide-002.html
 
-**Installing Leo on Windows using Leo's single-click installer:** 
+**Installing on Windows: using Leo's single-click installer** 
 
 1. Install Python: `Download Python`_, save to your desktop, then
    double-click on the saved file.
    
    Python is software for creating and running computer programs.
 
-2. Install Leo with: `Download Leo's installer`_, save to your desktop, then
-   double-click on the saved file.
+2. Download the latest Leo's installer from `Leo's download page`_.
+   It will be called something like LeoSetup-&lt;version&gt;.exe
+
+3. Run the installer.
    
-**Installing Leo from sources:**:
+**Installing Leo from sources**
 
 See the `next slide`_.
 </t>
-<t tx="ekr.20101014034526.5301">You can run Leo from a Python interpreter as follows::
+<t tx="ekr.20101014034526.5302">**Running Leo from a console**
 
-1. Start Python.  From a console window, type::
-
-    python
-    
-You should see the Python interpreter's signon message.
-
-2. Start Leo.  At the Python command prompt, type::
-
-    import leo
-    leo.run(fileName)
-    
-If fileName is empty Leo opens a new Leo outline.
-</t>
-<t tx="ekr.20101014034526.5302">To run Leo directly from a console, do the following:
+To run Leo directly from a console, do the following:
 
 1. Go to the Leo directory::
 
@@ -4115,28 +4096,26 @@ If fileName is empty Leo opens a new Leo outline.
     python launchLeo.py %*
 
 </t>
-<t tx="ekr.20101014034526.5303">Here are some tips that may make running Leo easier:
+<t tx="ekr.20101014034526.5303">Using shell scripts (Linux) or .bat files (Windows)
+can make it easier to open Leo files.
 
 **Linux**
-    The following shell script will allow you to open foo.leo files by typing leo foo::
 
-        #!/bin/sh 
-        python &lt;leopath&gt;launchLeo.py $1
+Put this in a shell script called leo::
 
-    where &lt;leopath&gt; is the path to the directory containing the leo directory. 
+    #!/bin/sh 
+    python &lt;path-to-leo-directory&gt;launchLeo.py $1
 
 **Windows**
-    If you have associated .leo files with Leo you may run Leo by double-clicking any .leo file.
-    You can also use a batch file.
-    Put the following .bat file in c:\\Windows::
 
-        cd &lt;path-to-leo&gt;
-        c:\Python26\python &lt;path-to-leo&gt;launchLeo.py %*
+Put this in leo.bat::
 
-    where &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory.
+    cd &lt;path-to-leo-folder&gt;
+    python &lt;path-to-leo-folder&gt;launchLeo.py %*
+    
+On either platform, the following will open x.leo::
 
-    This opens the file specified by the first argument.
-
+    leo x.leo
 </t>
 <t tx="ekr.20101014034526.5304">The first time you start Leo, a dialog will ask you for a unique
 identifier. This string helps ensure that each Leo node has a
@@ -4151,13 +4130,12 @@ files that Leo creates.
 Leo stores this identifier in the file ~/.leo/.leoID.txt.
 You can change this identifier at any time by editing .leoID.txt.
 </t>
-<t tx="ekr.20101014100818.5254">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
-<t tx="ekr.20101014101107.5256">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-002.html</t>
-<t tx="ekr.20101014101107.5257">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-003.html</t>
-<t tx="ekr.20101014101107.5258">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html</t>
-<t tx="ekr.20101014101107.5259">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html</t>
-<t tx="ekr.20101014101107.5260">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html</t>
-<t tx="ekr.20101014101107.5261">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-007.html</t>
+<t tx="ekr.20101014105353.5256">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
+<t tx="ekr.20101014105353.5257">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-002.html</t>
+<t tx="ekr.20101014105353.5258">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-003.html</t>
+<t tx="ekr.20101014105353.5259">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html</t>
+<t tx="ekr.20101014105353.5260">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html</t>
+<t tx="ekr.20101014105353.5261">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
