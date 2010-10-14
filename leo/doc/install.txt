@@ -51,10 +51,7 @@ Leo also requires either the Qt or Tk widget set. Qt is strongly recommended. In
 particular, Leo does not work with Tk and Python 3k.
 
 The following sections describe how to install Qt or Tk.
-.. @+node:ekr.20100817101952.4299: *3* Quickstart
 .. @+node:ekr.20100817101952.4300: *3* Installing prerequisites
-.. @+node:ekr.20100817101952.4301: *4* Installing Python
-.. @+node:ekr.20100817101952.4302: *4* Installing Qt
 .. @+node:ekr.20100731112744.7271: *4* Installing Qt
 To install Qt, get the binary package of PyQt from: 
 http://www.riverbankcomputing.co.uk/software/pyqt/download
@@ -255,9 +252,6 @@ fails, Leo will use the version of Pmw in the extensions folder.
 At present, Pmw does not work with Python 3.0, which means that you can not use
 the Tk gui with Leo when using Python 3.0.
 .. @+node:ekr.20100817101952.4309: *3* Running Leo
-.. @+node:ekr.20100817101952.4310: *4* Running Leo on Window
-.. @+node:ekr.20100817101952.4311: *4* Running Leo on Linux
-.. @+node:ekr.20100817101952.4312: *4* Running Leo on MacOS
 .. @+node:ekr.20100731112744.7277: *4* Running Leo
 You can run Leo from a Python interpreter as follows::
 
