@@ -1080,6 +1080,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if g.os_path_exists(s2):
                 # g.es(s2.replace('\\','/'))
                 s = 'file:///' + s2
+                # if s2.endswith('.html') or s2.endswith('.htm'):
+                    # s = open(s2).read()
+                    # return s
             else:
                 g.es('not found',s2)
                 return s # Don't render the image.
