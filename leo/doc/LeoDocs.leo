@@ -187,7 +187,7 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
+<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
 <v t="ekr.20101009111520.4525"><vh> Slideshow Buttons (disabled)</vh>
 <v t="ekr.20101008061729.4425"><vh>@@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@@button copy-@screenshot-node</vh>
@@ -226,7 +226,7 @@
 <v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
 </v>
 <v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
-<v t="ekr.20101014034526.5299" a="E"><vh>@slide ((using Leo's installer</vh>
+<v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
 <v t="ekr.20101014105353.5256"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
@@ -246,7 +246,7 @@
 </v>
 </v>
 <v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
-<v t="ekr.20101014034526.5297"><vh>Notes</vh>
+<v t="ekr.20101014034526.5297" a="E"><vh>Notes</vh>
 <v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
 <v t="ekr.20101011165412.5071"><vh>Leo's most import objects</vh></v>
 <v t="ekr.20101011165412.5072"><vh>Predefined objects</vh></v>

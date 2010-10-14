@@ -3427,3 +3427,8 @@ slide_name
 slide_number
 sc
 ImageChops
+LeoSetup
+_
+repo
+cvs
+bzr
