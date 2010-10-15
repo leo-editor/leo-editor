@@ -216,7 +216,7 @@
 <v t="ekr.20101007100904.4371"><vh>@@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101009114655.4531"><vh>@button make-slide @key=Alt-8</vh></v>
 </v>
-<v t="ekr.20101011165412.5009"><vh> Topics</vh>
+<v t="ekr.20101011165412.5009" a="E"><vh> Topics</vh>
 <v t="ekr.20101014034526.5298"><vh>User-defined types</vh>
 <v t="ekr.20101014034526.5292"><vh>\@button nodes</vh></v>
 <v t="ekr.20101014034526.5291"><vh>@test nodes</vh></v>
@@ -292,12 +292,12 @@
 </v>
 </v>
 <v t="ekr.20101014034526.5282"><vh>Unused &amp; reference</vh>
-<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo? (To be deleted)</vh>
+<v t="ekr.20101007082321.4357" a="E"><vh>@slideshow What is Leo? (To be deleted)</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
 <v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
+<v t="ekr.20101008061729.4373" a="E"><vh>@slide 002</vh>
 <v t="ekr.20101008061729.4384"><vh>@screenshot</vh>
 <v t="ekr.20101008061729.4385"><vh>To Do List</vh>
 <v t="ekr.20101008061729.4386"><vh>Urgent</vh></v>
@@ -712,7 +712,7 @@
 </v>
 <v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
 </v>
-<v t="ekr.20101013072903.5224" a="E"><vh>@slideshow Leo basics step by step</vh>
+<v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
 <v t="ekr.20101014110348.5312"><vh>Follow-along outline</vh>
 <v t="ekr.20101014110348.5316"><vh>To do today</vh>
 <v t="ekr.20101014110348.5317"><vh>fix car</vh></v>
@@ -759,6 +759,17 @@
 <v t="ekr.20101014110348.5334"><vh>@slide ((promote the moved nodes</vh></v>
 <v t="ekr.20101014110348.5335"><vh>@slide ((delete the helper node</vh></v>
 <v t="ekr.20101014110348.5336"><vh>@slide ((end slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5338"><vh>@button meld</vh>
+<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
+<v t="ekr.20101014110348.5344"><vh>adjust_slideshow</vh></v>
+<v t="ekr.20101014110348.5342"><vh>check &amp; helpers</vh>
+<v t="ekr.20101014110348.5347"><vh>count_slide_nodes</vh></v>
+</v>
+<v t="ekr.20101014110348.5343"><vh>copy_files</vh></v>
+<v t="ekr.20101014110348.5346"><vh>get_wink_screenshots</vh></v>
+<v t="ekr.20101014110348.5341"><vh>run</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -4351,6 +4362,132 @@ other ways to do similar moves.</t>
 Leo's outlines. Mastering the skills presented
 here is essential to using Leo effectively and
 enjoyably.</t>
+<t tx="ekr.20101014110348.5338">'''Meld Wink slides into an @slideshow folder.'''
+
+import glob
+import shutil
+
+slideshow_dir = r'First-presentation'
+    # The directory relative to leo/doc/slides.
+
+wink_dir = 'C:/Users/edreamleo/Desktop/WinkStuff/First-presentation/_files'
+    # The directory containing the wink screenshots.
+    # This will usually be &lt;slideshow-name&gt;/_files.
+
+@others
+
+mc = MeldController(c,p,slideshow_dir,wink_dir)
+mc.run()</t>
+<t tx="ekr.20101014110348.5339">class MeldController:
+
+    def __init__ (self,c,p,slideshow_dir,wink_dir):
+
+        self.c = c
+        self.slideshow_dir = slideshow_dir
+        self.slideshow_node = p
+        self.wink_dir = wink_dir
+
+    @others
+</t>
+<t tx="ekr.20101014110348.5341">def run (self):
+
+    print('='*20)
+
+    aList = self.get_wink_screenshots()
+
+    if not self.check(aList):
+        return
+
+    if not self.copy_files(aList):
+        return
+
+    self.adjust_slideshow()
+</t>
+<t tx="ekr.20101014110348.5342">def check (self,aList):
+
+    '''
+    Check that len(aList) matches the number of @slide nodes in the
+    slideshow. Don't count @slide nodes containing an @no-screenshot node.
+    '''
+
+    d,p = self.wink_dir,self.slideshow_node
+
+    if not g.os_path_exists(d):
+        return g.error('not found: %s' % (d))
+
+    if not g.os_path_isdir(d):
+        return g.error('not a directory: %s' % (d))
+
+    if not g.match_word(p.h,0,'@slideshow'):
+        return g.error('not a @slideshow node: %s',p.h)
+
+    return True ### Testing
+
+    n1 = len(aList)
+    n2,n3 = self.count_slide_nodes()
+    if n1 != (n2-n3):
+        return g.error(
+            '%s wink slides\n'
+            '%s @slide nodes\n'
+            '%s @no_screenshot nodes' % (
+                n1,n2,n3))
+
+    return True
+</t>
+<t tx="ekr.20101014110348.5343">def copy_files (self,aList):
+
+    '''Copy files from the wink_dir to slideshow_dir.'''
+
+    files = []
+    for s in aList:
+        path,ext = g.os_path_splitext(s)
+        junk,n = g.os_path_split(path)
+        if n.isdigit():
+            files.append('slide-%03d.png' % int(n))
+        else:
+            g.error('bad n: %s' % (n))
+
+    files.sort()
+    for fn in files:
+        g.trace(fn)
+</t>
+<t tx="ekr.20101014110348.5344">def adjust_slideshow(self):
+
+    '''Make any needed adjustments to the slideshow.'''
+
+    pass
+
+
+</t>
+<t tx="ekr.20101014110348.5346">def get_wink_screenshots (self):
+
+    '''Return the number of screenshot files
+    in the wink_dir directory.'''
+
+    aList = glob.glob(self.wink_dir + '/*.png')
+    if 1:
+        for z in aList:
+            print(z)
+    return aList
+</t>
+<t tx="ekr.20101014110348.5347">def count_slide_nodes (self):
+
+    '''Return n1,n2
+
+    n1 is the total number of @slide nodes in the @slideshow tree.
+    n2 is number of @slide nodes containing an @no-slideshow child.
+    '''
+
+    n1,n2 = 0,0
+    for p in self.slideshow_node.subtree():
+        if g.match_word(p.h,0,'@slide'):
+            n1 += 1
+            for p2 in p.children():
+                if g.match_word(p2.h,0,'@no-screenshot'):
+                    n2 += 1
+
+    return n1,n2
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
