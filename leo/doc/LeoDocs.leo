@@ -712,7 +712,7 @@
 </v>
 <v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
 </v>
-<v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
+<v t="ekr.20101013072903.5224" a="E"><vh>@slideshow Leo basics step by step</vh>
 <v t="ekr.20101014110348.5312"><vh>Follow-along outline</vh>
 <v t="ekr.20101014110348.5316"><vh>To do today</vh>
 <v t="ekr.20101014110348.5317"><vh>fix car</vh></v>
@@ -749,8 +749,16 @@
 <v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
 <v t="ekr.20101014110348.5324"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101014110348.5306"><vh>Copy/Paste</vh></v>
-<v t="ekr.20101014110348.5307"><vh>Promote/Demote</vh></v>
+<v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh></v>
+<v t="ekr.20101014110348.5307"><vh>@slide ((Promotes &amp; demote</vh></v>
+<v t="ekr.20101014110348.5329"><vh>@slide ((Ctrl-Shift-] demote</vh></v>
+<v t="ekr.20101014110348.5330"><vh>@slide ((Ctrl-Shift-[ promote</vh></v>
+<v t="ekr.20101014110348.5331"><vh>@slide ((promote &amp; demote to move batches of nodes</vh></v>
+<v t="ekr.20101014110348.5332"><vh>@slide ((demote the moved nodes</vh></v>
+<v t="ekr.20101014110348.5333"><vh>@slide ((move helper node left</vh></v>
+<v t="ekr.20101014110348.5334"><vh>@slide ((promote the moved nodes</vh></v>
+<v t="ekr.20101014110348.5335"><vh>@slide ((delete the helper node</vh></v>
+<v t="ekr.20101014110348.5336"><vh>@slide ((end slide</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4229,8 +4237,16 @@ The blue square in the icon area indicates that the body pane contains text.
 
 .. buy milk
 .. buy eggs.</t>
-<t tx="ekr.20101014110348.5306"></t>
-<t tx="ekr.20101014110348.5307"></t>
+<t tx="ekr.20101014110348.5307">There are two more outline operations that every Leo user should know about,
+promote and demote.
+
+Suppose we want to reorganize this shopping list.
+
+.. - to do
+..   - fix car
+..   - go shopping
+..     - buy milks
+..     - buy eggs</t>
 <t tx="ekr.20101014110348.5308">The shift arrow keys move nodes when focus is in the outline pane.
 
 To move the "fix car node" up</t>
@@ -4290,6 +4306,51 @@ Notice that the icon box one again has a gray outline,
 indicating that the node is no longer dirty.
 
 .. Arrow to icon box.</t>
+<t tx="ekr.20101014110348.5326">Suppose we want to copy the to-do list for another day.
+
+Using the arrow keys as necessary, I select the
+"to do today" node.
+
+The Shift-Ctrl-C key copies the selected outline.
+
+the Shift-Ctrl-V key pastes the copied outline following
+the selected node or as the first child of the selected
+node if the selected node is expanded.
+
+I want to do the paste *after* the to-do list, so I collapse
+the original node before doing the paste:
+
+</t>
+<t tx="ekr.20101014110348.5329">Here, I selected "go shopping" and then demote nodes with Ctrl-Shift-].
+
+The following siblings of the "go shopping" nodes were
+demoted to become children of the "go shopping node.</t>
+<t tx="ekr.20101014110348.5330">Conversely, Ctrl-Shift-[ promotes all the children of the
+selected node so that they become (following) siblings
+of the selected node.</t>
+<t tx="ekr.20101014110348.5331">Using promote and demote is an easy way of moving
+several nodes quickly.
+
+For example, suppose I wanted to move the "buy
+milk" nad "buy eggs" nodes so that they are
+top-level nodes.
+
+I insert a "helper" node after the "go shopping node"</t>
+<t tx="ekr.20101014110348.5332">I then demote the following nodes.</t>
+<t tx="ekr.20101014110348.5333">I move the helper node left.  The demoted nodes go along for the ride.</t>
+<t tx="ekr.20101014110348.5334">I promote the moved nodes.</t>
+<t tx="ekr.20101014110348.5335">And delete the helper node.
+
+This technique can be quite useful when moving
+many nodes, or moving several nodes a long way in
+the outline.
+
+The clones and views slideshows discusses several
+other ways to do similar moves.</t>
+<t tx="ekr.20101014110348.5336">This concludes the step-by-step introduction to
+Leo's outlines. Mastering the skills presented
+here is essential to using Leo effectively and
+enjoyably.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
