@@ -187,7 +187,7 @@
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
-<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
 <v t="ekr.20101009111520.4525"><vh> Slideshow Buttons (disabled)</vh>
 <v t="ekr.20101008061729.4425"><vh>@@button ins-@slide-nodes</vh></v>
 <v t="ekr.20101008061729.4443"><vh>@@button copy-@screenshot-node</vh>
@@ -224,84 +224,6 @@
 </v>
 <v t="ekr.20101014034526.5294"><vh>IPython</vh></v>
 <v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
-</v>
-<v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
-<v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
-<v t="ekr.20101014105353.5256"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
-<v t="ekr.20101014105353.5257"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014034526.5302"><vh>@slide ((running Leo from a console</vh>
-<v t="ekr.20101014105353.5258"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014034526.5303"><vh>@slide ((scripts &amp; .bat files</vh>
-<v t="ekr.20101014105353.5259"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014034526.5304"><vh>@slide ((.leoID.txt</vh>
-<v t="ekr.20101014105353.5260"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20100821182153.4350"><vh>@slide ((free software</vh>
-<v t="ekr.20101014105353.5261"><vh>@url built slide</vh></v>
-</v>
-</v>
-<v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
-<v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
-<v t="ekr.20101014034526.5297" a="E"><vh>Notes</vh>
-<v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
-<v t="ekr.20101011165412.5071"><vh>Leo's most import objects</vh></v>
-<v t="ekr.20101011165412.5072"><vh>Predefined objects</vh></v>
-<v t="ekr.20101011165412.5073"><vh>g.es writes to the log pane</vh></v>
-<v t="ekr.20101011165412.5074"><vh>app.windowList: the list of all open frames</vh></v>
-<v t="ekr.20101011165412.5075"><vh>Getting and setting headline and body text</vh></v>
-<v t="ekr.20101011165412.5076"><vh>Getting and setting body text directly</vh></v>
-<v t="ekr.20101011165412.5077"><vh>Ensuring that positions are valid</vh></v>
-<v t="ekr.20101011165412.5078"><vh>About copying positions</vh></v>
-<v t="ekr.20101011165412.5079"><vh>Traversing outlines</vh>
-<v t="ekr.20101011165412.5080"><vh>c.all_positions &amp; c.all_unique_positions</vh></v>
-<v t="ekr.20101011165412.5081"><vh>p.children</vh></v>
-<v t="ekr.20101011165412.5082"><vh>p.parents &amp; p.self_and_parents</vh></v>
-<v t="ekr.20101011165412.5083"><vh>p.siblings &amp; p.following_siblings</vh></v>
-<v t="ekr.20101011165412.5084"><vh>p.subtree &amp; p.self_and_subtree</vh></v>
-<v t="ekr.20101011165412.5085"><vh>Testing whether a position is valid</vh></v>
-</v>
-<v t="ekr.20101011165412.5086"><vh>Updating the screen</vh></v>
-<v t="ekr.20101011165412.5087"><vh>Invoking commands from scripts</vh></v>
-<v t="ekr.20101011165412.5088"><vh>Getting settings from @settings trees</vh></v>
-<v t="ekr.20101011165412.5089"><vh>Getting and setting preferences</vh></v>
-<v t="ekr.20101011165412.5090"><vh>Functions for finding and changing text from scripts</vh></v>
-<v t="ekr.20101011165412.5091"><vh>Functions defined in leoGlobals.py</vh></v>
-<v t="ekr.20101011165412.5092"><vh>Event handlers</vh>
-<v t="ekr.20101011165412.5093"><vh>Summary of event handlers</vh></v>
-<v t="ekr.20101011165412.5094"><vh>Enabling idle time event handlers</vh></v>
-</v>
-<v t="ekr.20101011165412.5095"><vh>How to make operations undoable</vh></v>
-<v t="ekr.20101011165412.5096"><vh>Redirecting output from scripts</vh></v>
-<v t="ekr.20101011165412.5097"><vh>Writing to different log tabs</vh></v>
-<v t="ekr.20101011165412.5098"><vh>Invoking dialogs using the g.app.gui class</vh></v>
-<v t="ekr.20101011165412.5099"><vh>Inserting and deleting icons</vh></v>
-<v t="ekr.20101011165412.5100"><vh>Customizing panes with different widgets</vh>
-<v t="ekr.20101011165412.5101"><vh>Official ivars</vh></v>
-<v t="ekr.20101011165412.5102"><vh>Common operations on Tk.Text widgets</vh></v>
-<v t="ekr.20101011165412.5103"><vh>Customizing the log pane</vh></v>
-<v t="ekr.20101011165412.5104"><vh>Customizing the body pane</vh></v>
-<v t="ekr.20101011165412.5105"><vh>Customizing the outine pane</vh></v>
-</v>
-<v t="ekr.20101011165412.5106"><vh>Working with directives and paths</vh></v>
-<v t="ekr.20101011165412.5107"><vh>Summary of the vnode and position classes</vh>
-<v t="ekr.20101011165412.5108"><vh>generators</vh></v>
-<v t="ekr.20101011165412.5109"><vh>Getters</vh></v>
-<v t="ekr.20101011165412.5110"><vh>Setters</vh></v>
-</v>
-<v t="ekr.20101011165412.5111"><vh>Creating script buttons</vh></v>
-<v t="ekr.20101011165412.5112"><vh>Running Leo in batch mode</vh></v>
-<v t="ekr.20101011165412.5113"><vh>Getting interactive input from scripts</vh></v>
-<v t="ekr.20101011165412.5114"><vh>Creating Leo commands with the @g.command decorator</vh></v>
-<v t="ekr.20101011165412.5115"><vh>Modifying plugins with @script scripts</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
 <v t="ekr.20101010141953.5027"><vh>Examples</vh>
 <v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
 <v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
@@ -370,7 +292,7 @@
 </v>
 </v>
 <v t="ekr.20101014034526.5282"><vh>Unused &amp; reference</vh>
-<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo?</vh>
+<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo? (To be deleted)</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
 <v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
@@ -670,31 +592,6 @@
 <v t="ekr.20101014031545.5278"><vh>@image lioness</vh></v>
 <v t="ekr.20101014030710.5277"><vh>@url logo</vh></v>
 </v>
-<v t="ekr.20101007082321.4358"><vh>@slideshow What is Leo? Continued</vh>
-<v t="ekr.20101008061729.4573"><vh>@slide test</vh>
-<v t="ekr.20101008061729.5006"><vh>@screenshot</vh>
-<v t="ekr.20101008061729.5007"><vh>To Do List</vh>
-<v t="ekr.20101008061729.5008"><vh>Urgent</vh></v>
-<v t="ekr.20101008061729.5009"><vh>Important</vh></v>
-<v t="ekr.20101008061729.5010"><vh>Soon</vh></v>
-<v t="ekr.20101008061729.5011"><vh>Whenever</vh></v>
-</v>
-<v t="ekr.20101008061729.5012"><vh>Diary</vh>
-<v t="ekr.20101008061729.5013"><vh>2009</vh>
-<v t="ekr.20101008061729.5014"><vh>Jul 2009</vh></v>
-<v t="ekr.20101008061729.5015"><vh>Aug 2009</vh></v>
-<v t="ekr.20101008061729.5016"><vh>Sep 2009</vh></v>
-<v t="ekr.20101008061729.5017"><vh>Oct 2009</vh></v>
-<v t="ekr.20101008061729.5018"><vh>Nov 2009</vh></v>
-<v t="ekr.20101008061729.5019"><vh>Dec 2009</vh></v>
-</v>
-<v t="ekr.20101008061729.5020"><vh>2010</vh></v>
-</v>
-</v>
-<v t="ekr.20101008061729.5021"><vh>@select Urgent</vh></v>
-</v>
-<v t="ekr.20101008061729.4574"><vh>@slide test2</vh></v>
-</v>
 <v t="ekr.20101011165412.5192"><vh>Reference</vh>
 <v t="ekr.20101011165412.5195"><vh> Format of external files (copy)</vh></v>
 </v>
@@ -712,6 +609,27 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
+<v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
+<v t="ekr.20101014105353.5256"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
+<v t="ekr.20101014105353.5257"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5302"><vh>@slide ((running Leo from a console</vh>
+<v t="ekr.20101014105353.5258"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5303"><vh>@slide ((scripts &amp; .bat files</vh>
+<v t="ekr.20101014105353.5259"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014034526.5304"><vh>@slide ((.leoID.txt</vh>
+<v t="ekr.20101014105353.5260"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20100821182153.4350"><vh>@slide ((free software</vh>
+<v t="ekr.20101014105353.5261"><vh>@url built slide</vh></v>
+</v>
+</v>
+<v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
 <v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
 <v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
 <v t="ekr.20101014110348.5259"><vh>Meld notes</vh></v>
@@ -737,7 +655,70 @@
 </v>
 <v t="ekr.20101014110348.5278"><vh>at-thin</vh></v>
 </v>
+<v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
+<v t="ekr.20101014034526.5297" a="E"><vh>Notes</vh>
+<v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
+<v t="ekr.20101011165412.5071"><vh>Leo's most import objects</vh></v>
+<v t="ekr.20101011165412.5072"><vh>Predefined objects</vh></v>
+<v t="ekr.20101011165412.5073"><vh>g.es writes to the log pane</vh></v>
+<v t="ekr.20101011165412.5074"><vh>app.windowList: the list of all open frames</vh></v>
+<v t="ekr.20101011165412.5075"><vh>Getting and setting headline and body text</vh></v>
+<v t="ekr.20101011165412.5076"><vh>Getting and setting body text directly</vh></v>
+<v t="ekr.20101011165412.5077"><vh>Ensuring that positions are valid</vh></v>
+<v t="ekr.20101011165412.5078"><vh>About copying positions</vh></v>
+<v t="ekr.20101011165412.5079"><vh>Traversing outlines</vh>
+<v t="ekr.20101011165412.5080"><vh>c.all_positions &amp; c.all_unique_positions</vh></v>
+<v t="ekr.20101011165412.5081"><vh>p.children</vh></v>
+<v t="ekr.20101011165412.5082"><vh>p.parents &amp; p.self_and_parents</vh></v>
+<v t="ekr.20101011165412.5083"><vh>p.siblings &amp; p.following_siblings</vh></v>
+<v t="ekr.20101011165412.5084"><vh>p.subtree &amp; p.self_and_subtree</vh></v>
+<v t="ekr.20101011165412.5085"><vh>Testing whether a position is valid</vh></v>
+</v>
+<v t="ekr.20101011165412.5086"><vh>Updating the screen</vh></v>
+<v t="ekr.20101011165412.5087"><vh>Invoking commands from scripts</vh></v>
+<v t="ekr.20101011165412.5088"><vh>Getting settings from @settings trees</vh></v>
+<v t="ekr.20101011165412.5089"><vh>Getting and setting preferences</vh></v>
+<v t="ekr.20101011165412.5090"><vh>Functions for finding and changing text from scripts</vh></v>
+<v t="ekr.20101011165412.5091"><vh>Functions defined in leoGlobals.py</vh></v>
+<v t="ekr.20101011165412.5092"><vh>Event handlers</vh>
+<v t="ekr.20101011165412.5093"><vh>Summary of event handlers</vh></v>
+<v t="ekr.20101011165412.5094"><vh>Enabling idle time event handlers</vh></v>
+</v>
+<v t="ekr.20101011165412.5095"><vh>How to make operations undoable</vh></v>
+<v t="ekr.20101011165412.5096"><vh>Redirecting output from scripts</vh></v>
+<v t="ekr.20101011165412.5097"><vh>Writing to different log tabs</vh></v>
+<v t="ekr.20101011165412.5098"><vh>Invoking dialogs using the g.app.gui class</vh></v>
+<v t="ekr.20101011165412.5099"><vh>Inserting and deleting icons</vh></v>
+<v t="ekr.20101011165412.5100"><vh>Customizing panes with different widgets</vh>
+<v t="ekr.20101011165412.5101"><vh>Official ivars</vh></v>
+<v t="ekr.20101011165412.5102"><vh>Common operations on Tk.Text widgets</vh></v>
+<v t="ekr.20101011165412.5103"><vh>Customizing the log pane</vh></v>
+<v t="ekr.20101011165412.5104"><vh>Customizing the body pane</vh></v>
+<v t="ekr.20101011165412.5105"><vh>Customizing the outine pane</vh></v>
+</v>
+<v t="ekr.20101011165412.5106"><vh>Working with directives and paths</vh></v>
+<v t="ekr.20101011165412.5107"><vh>Summary of the vnode and position classes</vh>
+<v t="ekr.20101011165412.5108"><vh>generators</vh></v>
+<v t="ekr.20101011165412.5109"><vh>Getters</vh></v>
+<v t="ekr.20101011165412.5110"><vh>Setters</vh></v>
+</v>
+<v t="ekr.20101011165412.5111"><vh>Creating script buttons</vh></v>
+<v t="ekr.20101011165412.5112"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20101011165412.5113"><vh>Getting interactive input from scripts</vh></v>
+<v t="ekr.20101011165412.5114"><vh>Creating Leo commands with the @g.command decorator</vh></v>
+<v t="ekr.20101011165412.5115"><vh>Modifying plugins with @script scripts</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
+</v>
 <v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
+<v t="ekr.20101014110348.5312"><vh>Follow-along outline</vh>
+<v t="ekr.20101014110348.5316"><vh>To do today</vh>
+<v t="ekr.20101014110348.5317"><vh>fix car</vh></v>
+<v t="ekr.20101014110348.5318"><vh>go shopping</vh></v>
+</v>
+</v>
 <v t="ekr.20101013072903.5225"><vh>@slide ((intro  no-ss</vh></v>
 <v t="ekr.20101013072903.5226"><vh>@slide ((Let's start</vh></v>
 <v t="ekr.20101014110348.5280"><vh>@slide ((Focus in body pane</vh></v>
@@ -746,12 +727,13 @@
 <v t="ekr.20101014110348.5285"><vh>@slide ((Alt-T puts focus in tree pane</vh></v>
 <v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh></v>
 <v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh></v>
-<v t="ekr.20101013072903.5235"><vh>@slide ((newline ends editing</vh></v>
+<v t="ekr.20101013072903.5235"><vh>@slide ((newline ends editing (icon box)</vh></v>
+<v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh></v>
 <v t="ekr.20101013072903.5240"><vh>@slide ((editing a headline</vh></v>
 <v t="ekr.20101013072903.5241"><vh>@slide (("to do today"</vh></v>
 <v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh></v>
 <v t="ekr.20101013072903.5237"><vh>@slide (("go shopping"</vh></v>
-<v t="ekr.20101014110348.5305"><vh>@slide ((typing text</vh></v>
+<v t="ekr.20101014110348.5305"><vh>@slide ((typing text (icon box has blue square)</vh></v>
 <v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh></v>
 <v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh></v>
 <v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh></v>
@@ -762,8 +744,10 @@
 <v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh></v>
 <v t="ekr.20101014110348.5299"><vh>@slide ((Left-Arrow</vh></v>
 <v t="ekr.20101014110348.5300"><vh>@slide ((Right-Arrow</vh></v>
-<v t="ekr.20101014110348.5301"><vh>@slide ((Summary of arrow keys</vh>
-<v t="ekr.20101014110348.5302"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101014110348.5308"><vh>@slide ((Shift arrow keys</vh></v>
+<v t="ekr.20101014110348.5309"><vh>@slide ((Arrow keys: summary</vh>
+<v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101014110348.5324"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5306"><vh>Copy/Paste</vh></v>
 <v t="ekr.20101014110348.5307"><vh>Promote/Demote</vh></v>
@@ -1176,7 +1160,6 @@ UNL.py
 screenshots.py
 </t>
 <t tx="ekr.20101007082321.4357">@language rest</t>
-<t tx="ekr.20101007082321.4358">@langauge rest</t>
 <t tx="ekr.20101007100904.4371">m = g.loadOnePlugin('screenshots')
 m.make_slide_show_command(event={'c':c})
 </t>
@@ -1412,36 +1395,7 @@ July 5
 <t tx="ekr.20101008061729.4570"></t>
 <t tx="ekr.20101008061729.4571"></t>
 <t tx="ekr.20101008061729.4572"></t>
-<t tx="ekr.20101008061729.4573"></t>
-<t tx="ekr.20101008061729.4574"></t>
 <t tx="ekr.20101008061729.4637"></t>
-<t tx="ekr.20101008061729.5006"></t>
-<t tx="ekr.20101008061729.5007">My to-do list.
-</t>
-<t tx="ekr.20101008061729.5008">1. Make Leo tutorials.  The world is waiting.
-2. Pay phone bill or the world will never know.</t>
-<t tx="ekr.20101008061729.5009"></t>
-<t tx="ekr.20101008061729.5010"></t>
-<t tx="ekr.20101008061729.5011"></t>
-<t tx="ekr.20101008061729.5012" str_leo_pos=""></t>
-<t tx="ekr.20101008061729.5013">@language rest
-
-This is my diary.</t>
-<t tx="ekr.20101008061729.5014">July 1
-    Started writing in my diary.
-July 2
-    Wrote another sentence in my diary.
-July 3
-    Keeping my diary very regularly.
-July 5
-    Oops...Yesterday I forgot towrite in my diary.</t>
-<t tx="ekr.20101008061729.5015"></t>
-<t tx="ekr.20101008061729.5016"></t>
-<t tx="ekr.20101008061729.5017"></t>
-<t tx="ekr.20101008061729.5018"></t>
-<t tx="ekr.20101008061729.5019"></t>
-<t tx="ekr.20101008061729.5020"></t>
-<t tx="ekr.20101008061729.5021"></t>
 <t tx="ekr.20101009111520.4525"></t>
 <t tx="ekr.20101009114655.4531">m = g.loadOnePlugin('screenshots')
 m.make_slide_command(event={'c':c})
@@ -1775,11 +1729,7 @@ People say Leo is **fun to use**, even additive.
 @pagewidth 50
 
 </t>
-<t tx="ekr.20101011165412.5009">
-- Minibuffer &amp; tab completion
-
-- Leo has a memory.
-</t>
+<t tx="ekr.20101011165412.5009"></t>
 <t tx="ekr.20101011165412.5011">Unifying scripting, data and outline structure creates a new world. We use the
 term **Leonine** to denote the Leo-centric (outline-centric) view of
 programming, data and scripting. Here are some of the implications of this
@@ -3967,7 +3917,13 @@ Here, the name is workbook.leo, the default file name.</t>
 
 Here, we see the a "startup" headline and a "workbook" headline.</t>
 <t tx="ekr.20101013072903.5234">Here I've typed "To do" in the headline.</t>
-<t tx="ekr.20101013072903.5235">Typing a newline ends editing of the headline.</t>
+<t tx="ekr.20101013072903.5235">Typing a newline ends editing of the headline.
+
+Notice that the **icon box** to the left of the
+headline now has a darker outline that it had
+before. This indicates that the node is dirty (has
+been changed).
+</t>
 <t tx="ekr.20101013072903.5236">Ctrl-I inserts a new node.</t>
 <t tx="ekr.20101013072903.5237">I typed "go shopping" followed by a return.
 
@@ -4026,7 +3982,7 @@ Leo is an IDE</t>
 <t tx="ekr.20101014034526.5294">- Execute IPython scripts from Leo.
 - Execute Leo scripts from IPython.</t>
 <t tx="ekr.20101014034526.5295"></t>
-<t tx="ekr.20101014034526.5296"></t>
+<t tx="ekr.20101014034526.5296">@ Discuss tab completion.</t>
 <t tx="ekr.20101014034526.5297">Any node can contain Python scripts.
 
 Scripts have access to the entire outline:
@@ -4263,24 +4219,46 @@ the Alt-Left-Arrow will contract the node.
 I merely hit the Right-Arrow key.
 
 We can now see the entire to-do list.</t>
-<t tx="ekr.20101014110348.5301">With the focus in the outline pane, the **plain**
-arrow keys **select** nodes and the **shift** arrow keys
-move nodes. This quickly becomes second nature.
+<t tx="ekr.20101014110348.5305">Whatever I type will appear in the body pane.
 
-- The Right-Arrow key expands unexpanded nodes and
-  Left-Arrow key contracts expanded nodes.
+I added a shopping list.
 
-- The Shift-Up-Arrow and Shift-Up-Arrow keys
-  contract nodes to avoid clutter.
-  
-Please play with the Leo keys. Using arrow keys is
-**much** easier than using the mouse.
+The blue square in the icon area indicates that the body pane contains text.
 
-**Note**: When the focus is in the body pane the
-Alt-Arrow and Alt-Shift-Arrows first put focus
-into the outline pane. So you can select using
-Alt-Arrow keys, and you can move nodes with the
-Alt-Shift-Arrow keys.
+.. Arrow at icon box.
+
+.. buy milk
+.. buy eggs.</t>
+<t tx="ekr.20101014110348.5306"></t>
+<t tx="ekr.20101014110348.5307"></t>
+<t tx="ekr.20101014110348.5308">The shift arrow keys move nodes when focus is in the outline pane.
+
+To move the "fix car node" up</t>
+<t tx="ekr.20101014110348.5309">The arrow keys do different things depending on
+which pane has focus. Using arrow keys is **much**
+easier than using the mouse.
+
+**Focus in outline pane**
+    
+    The **plain** arrow keys **select** nodes,
+    expanding or contracting nodes as needed.
+    
+    The **shift** arrow keys **move** nodes. The
+    Shift-Left-Arrow and Shift-Up-Arrow contract
+    nodes as needed. **Note**: the
+    Shift-Down-Arrow and Shift-Right-Arrow keys
+    never expand nodes.
+
+**Focus in body pane**
+
+    As usual, the **plain** arrow keys move the
+    cursor and the **shift** arrow keys move the
+    cursor and extend the solution.
+    
+    The **alt** arrow keys move the focus to the
+    outline pane and then select nodes. The
+    **alt-shift** arrow keys move the focus to the
+    outline pane and then move nodes.
 
 ..  - The Up-Arrow and Down-Arrow keys select
 ..  the previous or next visible nodes.
@@ -4296,20 +4274,22 @@ Alt-Shift-Arrow keys.
 ..  first child (if the children are visible).
 
 ..  This is exactly how Windows explorer works, and
-..  it quickly becomes second nature.</t>
-<t tx="ekr.20101014110348.5302"></t>
-<t tx="ekr.20101014110348.5305">Whatever I type will appear in the body pane.
+..  it quickly becomes second nature.
 
-I added a shopping list.
+</t>
+<t tx="ekr.20101014110348.5312"></t>
+<t tx="ekr.20101014110348.5316"></t>
+<t tx="ekr.20101014110348.5317"></t>
+<t tx="ekr.20101014110348.5318">Buy milk
+Buy eggs</t>
+<t tx="ekr.20101014110348.5323"></t>
+<t tx="ekr.20101014110348.5324">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-026.html</t>
+<t tx="ekr.20101014110348.5325">Ctrl-S saves the outline.
 
-The blue square in the icon area indicates that the body pane contains text.
+Notice that the icon box one again has a gray outline,
+indicating that the node is no longer dirty.
 
-.. Arrow at icon box.
-
-.. buy milk
-.. buy eggs.</t>
-<t tx="ekr.20101014110348.5306"></t>
-<t tx="ekr.20101014110348.5307"></t>
+.. Arrow to icon box.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
