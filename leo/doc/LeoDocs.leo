@@ -245,6 +245,7 @@
 <v t="ekr.20101014105353.5261"><vh>@url built slide</vh></v>
 </v>
 </v>
+<v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
 <v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
 <v t="ekr.20101014034526.5297" a="E"><vh>Notes</vh>
 <v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
@@ -300,7 +301,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101014034526.5296"><vh>@slideshow Using the minibuffer</vh></v>
+<v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
 <v t="ekr.20101010141953.5027"><vh>Examples</vh>
 <v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
 <v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
@@ -711,45 +712,61 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
+<v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
+<v t="ekr.20101014110348.5259"><vh>Meld notes</vh></v>
+<v t="ekr.20101014110348.5256"><vh>@slide ((intro</vh></v>
+<v t="ekr.20101014110348.5276" a="E"><vh>@slide ((@edit, @auto &amp; @thin</vh>
+<v t="ekr.20101014110348.5277"><vh>@no-screenshot</vh></v>
+</v>
+<v t="ekr.20101014110348.5270"><vh>at-edit</vh>
+<v t="ekr.20101014110348.5275"><vh>@slide ((@edit intro</vh></v>
+<v t="ekr.20101014110348.5257"><vh>@slide ((@edit</vh></v>
+<v t="ekr.20101014110348.5261"><vh>@slide ((simple body text</vh></v>
+<v t="ekr.20101014110348.5260"><vh>@slide ((save, creating the file</vh></v>
+<v t="ekr.20101014110348.5262"><vh>@slide ((change the text</vh></v>
+<v t="ekr.20101014110348.5263"><vh>@slide ((save again, updating the file</vh></v>
+<v t="ekr.20101014110348.5265"><vh>@slide ((here is the actual file</vh></v>
+<v t="ekr.20101014110348.5264"><vh>@slide ((close the file</vh></v>
+<v t="ekr.20101014110348.5266"><vh>@slide ((edit the file outside of Leo</vh></v>
+<v t="ekr.20101014110348.5267"><vh>@slide ((close Leo file and reopen</vh></v>
+<v t="ekr.20101014110348.5274"><vh>@slide ((@edit with existing files</vh></v>
+</v>
+<v t="ekr.20101014110348.5271"><vh>at-auto</vh>
+<v t="ekr.20101014110348.5272"><vh>@auto</vh></v>
+</v>
+<v t="ekr.20101014110348.5278"><vh>at-thin</vh></v>
+</v>
 <v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
-<v t="ekr.20101014034526.5285"><vh>  Topics</vh></v>
 <v t="ekr.20101013072903.5225"><vh>@slide ((intro  no-ss</vh></v>
 <v t="ekr.20101013072903.5226"><vh>@slide ((Let's start</vh></v>
-<v t="ekr.20101013072903.5256"><vh>Focus and editing</vh>
-<v t="ekr.20101013072903.5250"><vh>@slide ((body text selected.</vh></v>
-<v t="ekr.20101013072903.5231"><vh>@slide ((Click headline to select</vh></v>
-</v>
-<v t="ekr.20101013072903.5257"><vh>Add &amp; delete &amp; undo</vh>
-<v t="ekr.20101013072903.5232"><vh>@slide ((Add a new node</vh></v>
-<v t="ekr.20101013072903.5233"><vh>@slide ((the headline is ready for editing</vh></v>
+<v t="ekr.20101014110348.5280"><vh>@slide ((Focus in body pane</vh></v>
+<v t="ekr.20101014110348.5281"><vh>@slide ((Click puts focus in tree pane</vh></v>
+<v t="ekr.20101014110348.5283"><vh>@slide ((Return puts focus in body pane</vh></v>
+<v t="ekr.20101014110348.5285"><vh>@slide ((Alt-T puts focus in tree pane</vh></v>
+<v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh></v>
 <v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh></v>
 <v t="ekr.20101013072903.5235"><vh>@slide ((newline ends editing</vh></v>
 <v t="ekr.20101013072903.5240"><vh>@slide ((editing a headline</vh></v>
 <v t="ekr.20101013072903.5241"><vh>@slide (("to do today"</vh></v>
 <v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh></v>
-<v t="ekr.20101013072903.5242"><vh>@slide ((newline</vh></v>
 <v t="ekr.20101013072903.5237"><vh>@slide (("go shopping"</vh></v>
-<v t="ekr.20101013072903.5244"><vh>@slide ((move node (Ctrl-R)</vh></v>
-<v t="ekr.20101013072903.5245"><vh>@slide ((undo</vh></v>
+<v t="ekr.20101014110348.5305"><vh>@slide ((typing text</vh></v>
+<v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh></v>
+<v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh></v>
+<v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh></v>
+<v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh></v>
+<v t="ekr.20101014110348.5295"><vh>@slide (("fix car"</vh></v>
+<v t="ekr.20101014110348.5296"><vh>@slide ((Ctrl-U</vh></v>
+<v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh></v>
+<v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh></v>
+<v t="ekr.20101014110348.5299"><vh>@slide ((Left-Arrow</vh></v>
+<v t="ekr.20101014110348.5300"><vh>@slide ((Right-Arrow</vh></v>
+<v t="ekr.20101014110348.5301"><vh>@slide ((Summary of arrow keys</vh>
+<v t="ekr.20101014110348.5302"><vh>@no-screenshot</vh></v>
 </v>
-<v t="ekr.20101013072903.5258"><vh>Moving nodes</vh>
-<v t="ekr.20101013072903.5246"><vh>@slide ((move right (arrow key)</vh></v>
-<v t="ekr.20101013072903.5247"><vh>@slide (("buy milk"</vh></v>
-<v t="ekr.20101013072903.5248"><vh>@slide ((Make the new node a child</vh></v>
-<v t="ekr.20101013072903.5249"><vh>@slide (("buy flour"</vh></v>
-</v>
-<v t="ekr.20101013072903.5260"><vh>Selecting nodes</vh>
-<v t="ekr.20101013072903.5251"><vh>@slide ((Alt-arrow keys</vh></v>
-</v>
-<v t="ekr.20101013072903.5259"><vh>Expanding and contracting nodes</vh>
-<v t="ekr.20101013072903.5252"><vh>@slide ((left-arrow contracts node</vh></v>
-<v t="ekr.20101013072903.5253"><vh>@slide ((left-arrow selects parent</vh></v>
-</v>
-<v t="ekr.20101013072903.5261"><vh>Clones and Views</vh></v>
-<v t="ekr.20101014034526.5283"><vh>Minibuffer</vh></v>
-</v>
-<v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
-<v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
+<v t="ekr.20101014110348.5306"><vh>Copy/Paste</vh></v>
+<v t="ekr.20101014110348.5307"><vh>Promote/Demote</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3929,12 +3946,14 @@ node. Messages from Leo appear in the log pane.
 <t tx="ekr.20101013072903.5224">@language rest
 @pagewidth 50</t>
 <t tx="ekr.20101013072903.5225">This is a step-by-step introduction to show you
-how to use basic tools in Leo.</t>
+how to use Leo outlines.</t>
 <t tx="ekr.20101013072903.5226">.. The workbook.leo window.
 
-Let\'s start.  Open Leo.  You will see this window.
+Let\'s start.  Open Leo.
+Leo opens the **workbook file** when you start
+Leo without a filename.
 
-</t>
+If initial workbook file looks like this:</t>
 <t tx="ekr.20101013072903.5228">.. Arrow points to window title.
 
 The name of the Leo outline appears in the window's title.
@@ -3947,56 +3966,37 @@ Here, the name is workbook.leo, the default file name.</t>
 <t tx="ekr.20101013072903.5230">The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.</t>
-<t tx="ekr.20101013072903.5231">Clicking on the workbook headline selects it.</t>
-<t tx="ekr.20101013072903.5232">The first thing we'll do is to add a new **node**
-to the outline.
-
-Select the Insert Node command from the Outline menu.</t>
-<t tx="ekr.20101013072903.5233">A new node appears in the **outline pane**.
-
-The node's **headline** is ready for editing.</t>
 <t tx="ekr.20101013072903.5234">Here I've typed "To do" in the headline.</t>
 <t tx="ekr.20101013072903.5235">Typing a newline ends editing of the headline.</t>
-<t tx="ekr.20101013072903.5236">The Ctrl-I key also inserts a new node.</t>
-<t tx="ekr.20101013072903.5237">I typed "go shopping" followed by a return.</t>
+<t tx="ekr.20101013072903.5236">Ctrl-I inserts a new node.</t>
+<t tx="ekr.20101013072903.5237">I typed "go shopping" followed by a return.
+
+The focus is now in the body pane.</t>
 <t tx="ekr.20101013072903.5238"></t>
 <t tx="ekr.20101013072903.5240">You can re-edit a headline by typing Ctrl-H.
 
 </t>
 <t tx="ekr.20101013072903.5241">Here, I typed "today" at the end of the headline.</t>
-<t tx="ekr.20101013072903.5242">As before, typing a newline ends editing.</t>
-<t tx="ekr.20101013072903.5244">We make the "go shopping" node a **child**
-of the "to do today" node by typing Ctrl-R.</t>
-<t tx="ekr.20101013072903.5245">We can undo the move by hitting Ctrl-Z.</t>
-<t tx="ekr.20101013072903.5246">You can also move the node right with the
-Alt-Shift-RightArrow keys.</t>
-<t tx="ekr.20101013072903.5247">Let's add some items to the shopping list.
+<t tx="ekr.20101013072903.5244">Ctrl-R moves a node right.
 
-Type Ctrl-I followed by "buy milk".</t>
-<t tx="ekr.20101013072903.5248">Make the new node a child by typing either Ctrl-R
-or Alt-Shift-RightArrow.</t>
-<t tx="ekr.20101013072903.5249">Let's add one more node called "buy flour".</t>
-<t tx="ekr.20101013072903.5250">When I typed "return" the focus moved into the body text.
+The "go shopping" becomes a **child**
+of the "to do today" node.
 
-Type a note in the body text.</t>
-<t tx="ekr.20101013072903.5251">We can select the previous headline with the Alt-UpArrow key.
+The "to do today" is the **parent** node.</t>
+<t tx="ekr.20101013072903.5245">Leo has unlimited undo/redo capabilities.
 
-This puts the focus in the outline pane.</t>
-<t tx="ekr.20101013072903.5252">Once the focus is in the outline pane, plain arrow keys
-select headlines.
+Ctrl-Z undoes the previous action and
+Ctrl-Shift-Z redoes the previous action.
 
-Type the UpArrow key to select the "go shopping" node.
+Alt-E will open the edit menu so that you
+can see what the undo/redo operations
+will do next.
 
-If a node has children, the Left Arrow key will
-contract it if the node is expanded.</t>
-<t tx="ekr.20101013072903.5253">If a node has no children (or if the node is contracted)
-the right arrow key will select the node's **parent**.</t>
-<t tx="ekr.20101013072903.5256"></t>
-<t tx="ekr.20101013072903.5257"></t>
-<t tx="ekr.20101013072903.5258"></t>
-<t tx="ekr.20101013072903.5259"></t>
-<t tx="ekr.20101013072903.5260"></t>
-<t tx="ekr.20101013072903.5261"></t>
+Here, I typed Ctrl-z, so that the "go shopping"
+node is once again a child of the "to do today" node.
+
+.. screenshot of Edit menu.
+</t>
 <t tx="ekr.20101013072903.5262">Prezi path: clone-marked.
 Prezi picture: @include &lt;filename&gt;.</t>
 <t tx="ekr.20101014030710.5277">file:///C:/Users/edreamleo/Documents/logos/ekr.gif</t>
@@ -4006,23 +4006,6 @@ Prezi picture: @include &lt;filename&gt;.</t>
 
 </t>
 <t tx="ekr.20101014034526.5282">These don't tell stories
-</t>
-<t tx="ekr.20101014034526.5283"></t>
-<t tx="ekr.20101014034526.5285">- Expand &amp; contract nodes
-
-- Edit headline
-
-- Insert node
-
-- Copy/Paste nodes
-
-- Arrow keys
-
-- Move outline up/down/left/right
-    
-- Promote &amp; Demote
-
-- Arrow keys
 </t>
 <t tx="ekr.20101014034526.5287">@edit
 
@@ -4136,6 +4119,197 @@ You can change this identifier at any time by editing .leoID.txt.
 <t tx="ekr.20101014105353.5259">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html</t>
 <t tx="ekr.20101014105353.5260">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html</t>
 <t tx="ekr.20101014105353.5261">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html</t>
+<t tx="ekr.20101014110348.5256">In this slideshow, we'll see how to connect Leo
+outlines to files outside of Leo.
+We call such files **external files**.
+
+Here, we have opened a new Leo outline.
+
+.. open leo to create workbook.leo</t>
+<t tx="ekr.20101014110348.5257">Here, created a node called @edit spam.py.
+
+This represents the file spam.py in the same
+directory as the Leo outline.</t>
+<t tx="ekr.20101014110348.5259">- Use @no-screenshot to indicate no screenshot will be used.
+
+- All other </t>
+<t tx="ekr.20101014110348.5260">I save the Leo outline file with Ctrl-S or the File:Save menu.
+
+When I do that, Leo automatically saves any @edit node that
+is new or has been changed.
+
+In this case, the @edit node was new, so the log window says::
+
+    created: c:\Users\edreamleo\.leo\spam.py
+    saved: workbook.leo
+    
+Leo tells you the full path to created files, and
+the short path to updated files like workbook.leo.</t>
+<t tx="ekr.20101014110348.5261">I've typed some text into the body pane.
+
+The @language python line is a Leo directive. It
+tells Leo to syntax color the body text as Python
+source code.</t>
+<t tx="ekr.20101014110348.5262">Now I've added some more text.
+
+The icon box shows that the @edit node is "dirty" (has been changed).</t>
+<t tx="ekr.20101014110348.5263">I save the Leo outline again.
+
+Once again, Leo saves spam.py.
+
+This time, the log window says::
+
+    wrote: spam.py
+    saved: workbook.leo</t>
+<t tx="ekr.20101014110348.5264">Let's close the file and reopen it.
+
+We get exactly the same information,
+with the same node selected, with the same information.
+
+</t>
+<t tx="ekr.20101014110348.5265"></t>
+<t tx="ekr.20101014110348.5266">We can edit spam.py outside of Leo.
+
+Let's add a comment.</t>
+<t tx="ekr.20101014110348.5267">If we close the Leo file and reopen it,
+we see the new text.
+</t>
+<t tx="ekr.20101014110348.5270"></t>
+<t tx="ekr.20101014110348.5271"></t>
+<t tx="ekr.20101014110348.5272">@edit is the easiest way to connect files</t>
+<t tx="ekr.20101014110348.5274">Rather than creating new files with @edit, it is more common
+to use @edit to connect Leo with files that already exist on your file system.</t>
+<t tx="ekr.20101014110348.5275">Within a Leo outline, an @edit node contains
+the entire contents of an external file.</t>
+<t tx="ekr.20101014110348.5276">This presentation will discuss three ways
+to connect Leo outlines with external files:
+@edit, @auto and @edit.</t>
+<t tx="ekr.20101014110348.5277"></t>
+<t tx="ekr.20101014110348.5278"></t>
+<t tx="ekr.20101014110348.5280">When Leo opens a file, it makes the body pane
+active. The body pane is colored pink, and
+contains a blinking cursor.
+
+We say that the body pane has **focus**.
+
+.. focus must be in body pane.
+
+</t>
+<t tx="ekr.20101014110348.5281">Here, I clicked the headline called "NewHeadline".
+
+Leo selects the headline.
+
+Notice that the body pane is now blue, indicating that
+it no longer has focus.
+
+.. focus must be in tree pane.</t>
+<t tx="ekr.20101014110348.5283">Leo is designed so you never need to use the mouse.
+
+With the focus in the tree pane, hitting the
+return key puts the focus in the body pane.
+
+Alt-D also puts the focus in the body pane.
+
+.. Focus in body pane.</t>
+<t tx="ekr.20101014110348.5285">Typing Alt-T puts the focus in the tree pane.
+
+.. Focus in tree pane.</t>
+<t tx="ekr.20101014110348.5286">Ctrl-H edits the presently selected headline.
+
+You can type Ctrl-H at any time, regardless of
+where the focus is.
+
+Ctrl-H selects the entire text of the headline.</t>
+<t tx="ekr.20101014110348.5290">Ctrl-L moves the "go shopping" node left.
+
+The "go shopping" node becomes a **sibling**
+of the "to do today" node.</t>
+<t tx="ekr.20101014110348.5293"></t>
+<t tx="ekr.20101014110348.5294">Let's add a new node.
+
+I hit Ctrl-I.</t>
+<t tx="ekr.20101014110348.5295">I type "fix car" followed by the &lt;return&gt; key.</t>
+<t tx="ekr.20101014110348.5296">I decide that fixing the car should have first priority.
+
+I type Ctrl-U to move the "fix car" node up.
+It becomes the first child of the "to do today" node.</t>
+<t tx="ekr.20101014110348.5297">After creating the to-do list, I want to hide it
+by **collapsing** the "to do today node.
+
+I could do that by clicking the black triangle
+to the left of the "to do today node".
+
+However, I strongly encourage all Leo users to
+avoid using the mouse.
+
+.. arrow points to black triangle.</t>
+<t tx="ekr.20101014110348.5298">The focus is in the tree pane, so we select the "to do today"
+node merely by using the Up-Arrow key.
+
+If, for some reason, the focus is in the body pane,
+we can select the previous node in either of two ways:
+
+1. Type Alt-T followed by the Up-Arrow key.
+
+2. Type Alt-Up-Arrow.
+
+The "to do today" node is selected.
+</t>
+<t tx="ekr.20101014110348.5299">With the "to-do today" node selected,
+the Alt-Left-Arrow will contract the node.
+
+.. "to do today" contracted.</t>
+<t tx="ekr.20101014110348.5300">To expand the "to do today" node,
+I merely hit the Right-Arrow key.
+
+We can now see the entire to-do list.</t>
+<t tx="ekr.20101014110348.5301">With the focus in the outline pane, the **plain**
+arrow keys **select** nodes and the **shift** arrow keys
+move nodes. This quickly becomes second nature.
+
+- The Right-Arrow key expands unexpanded nodes and
+  Left-Arrow key contracts expanded nodes.
+
+- The Shift-Up-Arrow and Shift-Up-Arrow keys
+  contract nodes to avoid clutter.
+  
+Please play with the Leo keys. Using arrow keys is
+**much** easier than using the mouse.
+
+**Note**: When the focus is in the body pane the
+Alt-Arrow and Alt-Shift-Arrows first put focus
+into the outline pane. So you can select using
+Alt-Arrow keys, and you can move nodes with the
+Alt-Shift-Arrow keys.
+
+..  - The Up-Arrow and Down-Arrow keys select
+..  the previous or next visible nodes.
+
+..  - The Right-Arrow key contracts a node if the node
+..  is expanded. Otherwise the Right-Arrow key
+..  selects the node's parent.
+  
+..  - The Left-Arrow key does nothing if the selected
+..  node has no children.  If the node does have
+..  children, the Left-Arrow key expands the node
+..  (if the children or invisible) or selects the
+..  first child (if the children are visible).
+
+..  This is exactly how Windows explorer works, and
+..  it quickly becomes second nature.</t>
+<t tx="ekr.20101014110348.5302"></t>
+<t tx="ekr.20101014110348.5305">Whatever I type will appear in the body pane.
+
+I added a shopping list.
+
+The blue square in the icon area indicates that the body pane contains text.
+
+.. Arrow at icon box.
+
+.. buy milk
+.. buy eggs.</t>
+<t tx="ekr.20101014110348.5306"></t>
+<t tx="ekr.20101014110348.5307"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
