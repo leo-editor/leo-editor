@@ -216,7 +216,7 @@
 <v t="ekr.20101007100904.4371"><vh>@@button make-slide-show @key=Alt-8</vh></v>
 <v t="ekr.20101009114655.4531"><vh>@button make-slide @key=Alt-8</vh></v>
 </v>
-<v t="ekr.20101011165412.5009" a="E"><vh> Topics</vh>
+<v t="ekr.20101011165412.5009"><vh> Topics</vh>
 <v t="ekr.20101014034526.5298"><vh>User-defined types</vh>
 <v t="ekr.20101014034526.5292"><vh>\@button nodes</vh></v>
 <v t="ekr.20101014034526.5291"><vh>@test nodes</vh></v>
@@ -225,10 +225,10 @@
 <v t="ekr.20101014034526.5294"><vh>IPython</vh></v>
 <v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
 <v t="ekr.20101010141953.5027"><vh>Examples</vh>
-<v t="ekr.20101010141953.5028" a="E"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
 <v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
 <v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
-<v t="ekr.20101010141953.5031" a="E"><vh>@slide 002</vh>
+<v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
 <v t="ekr.20101010141953.5032"><vh>@screenshot</vh>
 <v t="ekr.20101010141953.5033"><vh>Take screenshot of the compile .nsi dialog in a Windows folder</vh></v>
 </v>
@@ -291,13 +291,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101014034526.5282" a="E"><vh>Unused &amp; reference</vh>
+<v t="ekr.20101014034526.5282"><vh>Unused &amp; reference</vh>
 <v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo? (To be deleted)</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
 <v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101008061729.4373" a="E"><vh>@slide 002</vh>
+<v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
 <v t="ekr.20101008061729.4384"><vh>@screenshot</vh>
 <v t="ekr.20101008061729.4385"><vh>To Do List</vh>
 <v t="ekr.20101008061729.4386"><vh>Urgent</vh></v>
@@ -634,7 +634,7 @@
 <v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
 <v t="ekr.20101014110348.5259"><vh>Meld notes</vh></v>
 <v t="ekr.20101014110348.5256"><vh>@slide ((intro</vh></v>
-<v t="ekr.20101014110348.5276" a="E"><vh>@slide ((@edit, @auto &amp; @thin</vh>
+<v t="ekr.20101014110348.5276"><vh>@slide ((@edit, @auto &amp; @thin</vh>
 <v t="ekr.20101014110348.5277"><vh>@no-screenshot</vh></v>
 </v>
 <v t="ekr.20101014110348.5270"><vh>at-edit</vh>
@@ -832,7 +832,7 @@
 </v>
 </v>
 <v t="ekr.20101014110348.5338"><vh>@button meld</vh>
-<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
+<v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
 <v t="ekr.20101016043116.5353"><vh>utils</vh>
 <v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
 <v t="ekr.20101015151959.5302"><vh>match</vh></v>
@@ -1196,9 +1196,9 @@ Reorganize the docs into intro and reference.</t>
 @language rest
 @nocolor-node
 
-To create a slideshow:
+To create a slideshow with sphinx:
     
-cd leo\doc\html\slices\slideshow-name
+cd leo\doc\html\slides\slideshow-name
 make html
 </t>
 <t tx="ekr.20100821182153.4345">@language rest
@@ -4521,7 +4521,9 @@ mc.run()
 </t>
 <t tx="ekr.20101014110348.5343">def copy_files (self,aList):
 
-    '''Copy files from the wink_dir to slideshow_dir.'''
+    '''Copy files from the wink_dir to slideshow_dir,
+    numbering the destination files to reflect "holes"
+    created by @no-screenshot nodes.'''
 
     # Traverse the tree as in the screenshot plugin.
     # That is, ignore @ignore trees and nested @slide nodes.
@@ -4566,8 +4568,7 @@ mc.run()
 </t>
 <t tx="ekr.20101014110348.5346">def get_wink_screenshots (self):
 
-    '''Return the number of screenshot files
-    in the wink_dir directory.'''
+    '''Return the properly sorted list of wink screenshots.'''
 
     trace = False
 
