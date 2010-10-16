@@ -832,19 +832,25 @@
 </v>
 </v>
 <v t="ekr.20101014110348.5338"><vh>@button meld</vh>
-<v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
-<v t="ekr.20101014110348.5344" a="E"><vh>adjust_slideshow &amp; helpers</vh>
+<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
+<v t="ekr.20101016043116.5353"><vh>utils</vh>
+<v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
+<v t="ekr.20101015151959.5302"><vh>match</vh></v>
+</v>
+<v t="ekr.20101014110348.5341"><vh>run &amp; helpers</vh>
+<v t="ekr.20101014110348.5344"><vh>adjust_slideshow &amp; helpers</vh>
 <v t="ekr.20101015151959.5300"><vh>adjust_slide_node</vh></v>
 <v t="ekr.20101015151959.5303"><vh>built_slide_path</vh></v>
-<v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
 </v>
 <v t="ekr.20101014110348.5342"><vh>check &amp; helpers</vh>
+<v t="ekr.20101016043116.5349"><vh>check_dir</vh></v>
 <v t="ekr.20101014110348.5347"><vh>count_slide_nodes</vh></v>
 </v>
-<v t="ekr.20101014110348.5343"><vh>copy_files</vh></v>
+<v t="ekr.20101014110348.5343"><vh>copy_files &amp; helper</vh>
+<v t="ekr.20101016043116.5352"><vh>copy_file</vh></v>
+</v>
 <v t="ekr.20101014110348.5346"><vh>get_wink_screenshots</vh></v>
-<v t="ekr.20101015151959.5302"><vh>match</vh></v>
-<v t="ekr.20101014110348.5341"><vh>run</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -4443,8 +4449,9 @@ import glob
 import os
 import shutil
 
-slideshow_dir = r'First-presentation'
-    # The directory relative to leo/doc/slides.
+slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/First-presentation'
+    # r'First-presentation'
+    # The directory relative to leo/doc/html/slides.
 
 wink_dir = 'C:/Users/edreamleo/Desktop/WinkStuff/First-presentation/_files'
     # The directory containing the wink screenshots.
@@ -4471,12 +4478,16 @@ mc.run()
     print('='*20)
 
     aList = self.get_wink_screenshots()
+    if not aList:
+        return
 
     if not self.check(aList):
         return
 
+    # Pass 1: copy files for @slide nodes w/o @no-screenshot nodes.
     self.copy_files(aList)
 
+    # Pass 2: adjust children of @slide nodes.
     self.adjust_slideshow()
 </t>
 <t tx="ekr.20101014110348.5342">def check (self,aList):
@@ -4486,21 +4497,19 @@ mc.run()
     slideshow. Don't count @slide nodes containing an @no-screenshot node.
     '''
 
-    d,p = self.wink_dir,self.slideshow_node
+    p = self.slideshow_node
+    n1 = len(aList)
+    n2,n3 = self.count_slide_nodes()
 
-    if not g.os_path_exists(d):
-        return g.error('not found: %s' % (d))
-
-    if not g.os_path_isdir(d):
-        return g.error('not a directory: %s' % (d))
-
+    if not self.check_dir(self.wink_dir):
+        return False
+    if not self.check_dir(self.slideshow_dir):
+        return False
     if not self.match(p,'@slideshow'):
         return g.error('not a @slideshow node: %s',p.h)
 
     return True ### Testing
 
-    n1 = len(aList)
-    n2,n3 = self.count_slide_nodes()
     if n1 != (n2-n3):
         return g.error(
             '%s wink slides\n'
@@ -4514,18 +4523,25 @@ mc.run()
 
     '''Copy files from the wink_dir to slideshow_dir.'''
 
-    files = []
-    for s in aList:
-        path,ext = g.os_path_splitext(s)
-        junk,n = g.os_path_split(path)
-        if n.isdigit():
-            files.append('slide-%03d.png' % int(n))
+    # Traverse the tree as in the screenshot plugin.
+    # That is, ignore @ignore trees and nested @slide nodes.
+    # This ensures that the slide number, n, is correct.
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    wink_n = 0 # Wink screenshot numbers start at 0.
+    slide_n = 1 # Slide numbers start at 1.
+    while p and p != after:
+        if self.match(p,'@slide'):
+            if not self.has_at_no_screenshot_node(p):
+                self.copy_file(aList,slide_n,wink_n)
+                wink_n += 1
+            slide_n += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
         else:
-            g.error('bad n: %s' % (n))
-
-    files.sort()
-    for fn in files:
-        g.trace(fn)
+            p.moveToThreadNext()
 </t>
 <t tx="ekr.20101014110348.5344">def adjust_slideshow(self):
 
@@ -4553,10 +4569,25 @@ mc.run()
     '''Return the number of screenshot files
     in the wink_dir directory.'''
 
+    trace = False
+
     aList = glob.glob(self.wink_dir + '/*.png')
-    if 1:
+
+    def key(s):
+        path,ext = g.os_path_splitext(s)
+        junk,n = g.os_path_split(path)
+        if n.isdigit():
+            return int(n)
+        else:
+            g.error('bad wink screenshot: %s' % (s))
+            raise KeyError
+
+    aList.sort(key=key) # Essential.
+
+    if trace:
         for z in aList:
             print(z)
+
     return aList
 </t>
 <t tx="ekr.20101014110348.5347">def count_slide_nodes (self):
@@ -4567,14 +4598,22 @@ mc.run()
     n2 is number of @slide nodes containing an @no-slideshow child.
     '''
 
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
     n1,n2 = 0,0
-    for p in self.slideshow_node.subtree():
+    while p and p != after:
         if self.match(p,'@slide'):
             n1 += 1
-            for p2 in p.children():
-                if self.match(p2,'@no-screenshot'):
-                    n2 += 1
+            if self.has_at_no_screenshot_node(p):
+                n2 += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
 
+    g.trace(n1,n2)
     return n1,n2
 </t>
 <t tx="ekr.20101015151959.5300">def adjust_slide_node (self,p,slide_number):
@@ -4638,42 +4677,68 @@ mc.run()
     fn = finalize(fn)
     return fn
 </t>
-<t tx="ekr.20101016043116.5312">c:/leo.repo/trunk/first-presentation/slide-003.png</t>
-<t tx="ekr.20101016043116.5313">c:/leo.repo/trunk/first-presentation/slide-004.png</t>
-<t tx="ekr.20101016043116.5314">c:/leo.repo/trunk/first-presentation/slide-005.png</t>
-<t tx="ekr.20101016043116.5315">c:/leo.repo/trunk/first-presentation/slide-006.png</t>
-<t tx="ekr.20101016043116.5316">c:/leo.repo/trunk/first-presentation/slide-007.png</t>
-<t tx="ekr.20101016043116.5317">c:/leo.repo/trunk/first-presentation/slide-008.png</t>
-<t tx="ekr.20101016043116.5318">c:/leo.repo/trunk/first-presentation/slide-009.png</t>
-<t tx="ekr.20101016043116.5319">c:/leo.repo/trunk/first-presentation/slide-010.png</t>
-<t tx="ekr.20101016043116.5320">c:/leo.repo/trunk/first-presentation/slide-011.png</t>
-<t tx="ekr.20101016043116.5321">c:/leo.repo/trunk/first-presentation/slide-012.png</t>
-<t tx="ekr.20101016043116.5322">c:/leo.repo/trunk/first-presentation/slide-013.png</t>
-<t tx="ekr.20101016043116.5323">c:/leo.repo/trunk/first-presentation/slide-014.png</t>
-<t tx="ekr.20101016043116.5324">c:/leo.repo/trunk/first-presentation/slide-015.png</t>
-<t tx="ekr.20101016043116.5325">c:/leo.repo/trunk/first-presentation/slide-016.png</t>
-<t tx="ekr.20101016043116.5326">c:/leo.repo/trunk/first-presentation/slide-017.png</t>
-<t tx="ekr.20101016043116.5327">c:/leo.repo/trunk/first-presentation/slide-018.png</t>
-<t tx="ekr.20101016043116.5328">c:/leo.repo/trunk/first-presentation/slide-019.png</t>
-<t tx="ekr.20101016043116.5329">c:/leo.repo/trunk/first-presentation/slide-020.png</t>
-<t tx="ekr.20101016043116.5330">c:/leo.repo/trunk/first-presentation/slide-021.png</t>
-<t tx="ekr.20101016043116.5331">c:/leo.repo/trunk/first-presentation/slide-022.png</t>
-<t tx="ekr.20101016043116.5332">c:/leo.repo/trunk/first-presentation/slide-023.png</t>
-<t tx="ekr.20101016043116.5333">c:/leo.repo/trunk/first-presentation/slide-024.png</t>
-<t tx="ekr.20101016043116.5334">c:/leo.repo/trunk/first-presentation/slide-025.png</t>
-<t tx="ekr.20101016043116.5335">c:/leo.repo/trunk/first-presentation/slide-026.png</t>
-<t tx="ekr.20101016043116.5336">c:/leo.repo/trunk/first-presentation/slide-028.png</t>
-<t tx="ekr.20101016043116.5337">c:/leo.repo/trunk/first-presentation/slide-029.png</t>
-<t tx="ekr.20101016043116.5338">c:/leo.repo/trunk/first-presentation/slide-030.png</t>
-<t tx="ekr.20101016043116.5339">c:/leo.repo/trunk/first-presentation/slide-031.png</t>
-<t tx="ekr.20101016043116.5340">c:/leo.repo/trunk/first-presentation/slide-032.png</t>
-<t tx="ekr.20101016043116.5341">c:/leo.repo/trunk/first-presentation/slide-033.png</t>
-<t tx="ekr.20101016043116.5342">c:/leo.repo/trunk/first-presentation/slide-034.png</t>
-<t tx="ekr.20101016043116.5343">c:/leo.repo/trunk/first-presentation/slide-035.png</t>
-<t tx="ekr.20101016043116.5344">c:/leo.repo/trunk/first-presentation/slide-036.png</t>
-<t tx="ekr.20101016043116.5345">c:/leo.repo/trunk/first-presentation/slide-037.png</t>
-<t tx="ekr.20101016043116.5346">c:/leo.repo/trunk/first-presentation/slide-001.png</t>
-<t tx="ekr.20101016043116.5347">c:/leo.repo/trunk/first-presentation/slide-002.png</t>
+<t tx="ekr.20101016043116.5312">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-003.png</t>
+<t tx="ekr.20101016043116.5313">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-004.png</t>
+<t tx="ekr.20101016043116.5314">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-005.png</t>
+<t tx="ekr.20101016043116.5315">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-006.png</t>
+<t tx="ekr.20101016043116.5316">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-007.png</t>
+<t tx="ekr.20101016043116.5317">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-008.png</t>
+<t tx="ekr.20101016043116.5318">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-009.png</t>
+<t tx="ekr.20101016043116.5319">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-010.png</t>
+<t tx="ekr.20101016043116.5320">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-011.png</t>
+<t tx="ekr.20101016043116.5321">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-012.png</t>
+<t tx="ekr.20101016043116.5322">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-013.png</t>
+<t tx="ekr.20101016043116.5323">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-014.png</t>
+<t tx="ekr.20101016043116.5324">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-015.png</t>
+<t tx="ekr.20101016043116.5325">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-016.png</t>
+<t tx="ekr.20101016043116.5326">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-017.png</t>
+<t tx="ekr.20101016043116.5327">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-018.png</t>
+<t tx="ekr.20101016043116.5328">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-019.png</t>
+<t tx="ekr.20101016043116.5329">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-020.png</t>
+<t tx="ekr.20101016043116.5330">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-021.png</t>
+<t tx="ekr.20101016043116.5331">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-022.png</t>
+<t tx="ekr.20101016043116.5332">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-023.png</t>
+<t tx="ekr.20101016043116.5333">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-024.png</t>
+<t tx="ekr.20101016043116.5334">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-025.png</t>
+<t tx="ekr.20101016043116.5335">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-026.png</t>
+<t tx="ekr.20101016043116.5336">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-028.png</t>
+<t tx="ekr.20101016043116.5337">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-029.png</t>
+<t tx="ekr.20101016043116.5338">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-030.png</t>
+<t tx="ekr.20101016043116.5339">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-031.png</t>
+<t tx="ekr.20101016043116.5340">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-032.png</t>
+<t tx="ekr.20101016043116.5341">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-033.png</t>
+<t tx="ekr.20101016043116.5342">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-034.png</t>
+<t tx="ekr.20101016043116.5343">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-035.png</t>
+<t tx="ekr.20101016043116.5344">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png</t>
+<t tx="ekr.20101016043116.5345">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-037.png</t>
+<t tx="ekr.20101016043116.5346">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-001.png</t>
+<t tx="ekr.20101016043116.5347">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-002.png</t>
+<t tx="ekr.20101016043116.5349">def check_dir (self,theDir):
+
+    if not g.os_path_exists(theDir):
+        return g.error('not found: %s' % (theDir))
+
+    if not g.os_path_isdir(theDir):
+        return g.error('not a directory: %s' % (theDir))
+
+    return True
+</t>
+<t tx="ekr.20101016043116.5352">def copy_file (self,aList,slide_n,wink_n):
+
+    trace = True
+
+    if wink_n &gt;= len(aList):
+        return g.trace('can not happen: '
+            'len(aList): %s, n: %s' % (
+                len(aList),wink_n))
+
+    fn_src = aList[wink_n]
+    fn_dst = 'slide-%03d.png' % (slide_n)
+
+    if trace:
+        g.trace('%7s -&gt; %s' % (g.shortFileName(fn_src),fn_dst))
+</t>
+<t tx="ekr.20101016043116.5353"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
