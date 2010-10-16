@@ -550,11 +550,9 @@ class ScreenShotController(object):
 
         after = p.nodeAfterTree()
         p = p.firstChild()
-        found = False
         while p and p != after:
             if g.app.commandInterruptFlag: return
             if match(p,'@slide'):
-                found = True
                 sc.run(p)
                 p.moveToNodeAfterTree() 
             elif match(p,'@ignore'):
