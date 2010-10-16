@@ -225,10 +225,10 @@
 <v t="ekr.20101014034526.5294"><vh>IPython</vh></v>
 <v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
 <v t="ekr.20101010141953.5027"><vh>Examples</vh>
-<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5028" a="E"><vh>@slideshow Leo's NSIS Installer</vh>
 <v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
 <v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
-<v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
+<v t="ekr.20101010141953.5031" a="E"><vh>@slide 002</vh>
 <v t="ekr.20101010141953.5032"><vh>@screenshot</vh>
 <v t="ekr.20101010141953.5033"><vh>Take screenshot of the compile .nsi dialog in a Windows folder</vh></v>
 </v>
@@ -291,8 +291,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101014034526.5282"><vh>Unused &amp; reference</vh>
-<v t="ekr.20101007082321.4357" a="E"><vh>@slideshow What is Leo? (To be deleted)</vh>
+<v t="ekr.20101014034526.5282" a="E"><vh>Unused &amp; reference</vh>
+<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo? (To be deleted)</vh>
 <v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
 <v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
 <v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
@@ -656,7 +656,7 @@
 <v t="ekr.20101014110348.5278"><vh>at-thin</vh></v>
 </v>
 <v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
-<v t="ekr.20101014034526.5297" a="E"><vh>Notes</vh>
+<v t="ekr.20101014034526.5297"><vh>Notes</vh>
 <v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
 <v t="ekr.20101011165412.5071"><vh>Leo's most import objects</vh></v>
 <v t="ekr.20101011165412.5072"><vh>Predefined objects</vh></v>
@@ -719,55 +719,131 @@
 <v t="ekr.20101014110348.5318"><vh>go shopping</vh></v>
 </v>
 </v>
-<v t="ekr.20101013072903.5225"><vh>@slide ((intro  no-ss</vh></v>
-<v t="ekr.20101013072903.5226"><vh>@slide ((Let's start</vh></v>
-<v t="ekr.20101014110348.5280"><vh>@slide ((Focus in body pane</vh></v>
-<v t="ekr.20101014110348.5281"><vh>@slide ((Click puts focus in tree pane</vh></v>
-<v t="ekr.20101014110348.5283"><vh>@slide ((Return puts focus in body pane</vh></v>
-<v t="ekr.20101014110348.5285"><vh>@slide ((Alt-T puts focus in tree pane</vh></v>
-<v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh></v>
-<v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh></v>
-<v t="ekr.20101013072903.5235"><vh>@slide ((newline ends editing (icon box)</vh></v>
-<v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh></v>
-<v t="ekr.20101013072903.5240"><vh>@slide ((editing a headline</vh></v>
-<v t="ekr.20101013072903.5241"><vh>@slide (("to do today"</vh></v>
-<v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh></v>
-<v t="ekr.20101013072903.5237"><vh>@slide (("go shopping"</vh></v>
-<v t="ekr.20101014110348.5305"><vh>@slide ((typing text (icon box has blue square)</vh></v>
-<v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh></v>
-<v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh></v>
-<v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh></v>
-<v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh></v>
-<v t="ekr.20101014110348.5295"><vh>@slide (("fix car"</vh></v>
-<v t="ekr.20101014110348.5296"><vh>@slide ((Ctrl-U</vh></v>
-<v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh></v>
-<v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh></v>
-<v t="ekr.20101014110348.5299"><vh>@slide ((Left-Arrow</vh></v>
-<v t="ekr.20101014110348.5300"><vh>@slide ((Right-Arrow</vh></v>
-<v t="ekr.20101014110348.5308"><vh>@slide ((Shift arrow keys</vh></v>
+<v t="ekr.20101013072903.5225"><vh>@slide ((intro  no-ss</vh>
+<v t="ekr.20101016043116.5346"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5226"><vh>@slide ((Let's start</vh>
+<v t="ekr.20101016043116.5347"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5280"><vh>@slide ((Focus in body pane</vh>
+<v t="ekr.20101016043116.5312"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5281"><vh>@slide ((Click puts focus in tree pane</vh>
+<v t="ekr.20101016043116.5313"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5283"><vh>@slide ((Return puts focus in body pane</vh>
+<v t="ekr.20101016043116.5314"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5285"><vh>@slide ((Alt-T puts focus in tree pane</vh>
+<v t="ekr.20101016043116.5315"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh>
+<v t="ekr.20101016043116.5316"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh>
+<v t="ekr.20101016043116.5317"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5235"><vh>@slide ((newline ends editing (icon box)</vh>
+<v t="ekr.20101016043116.5318"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
+<v t="ekr.20101016043116.5319"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5240"><vh>@slide ((editing a headline</vh>
+<v t="ekr.20101016043116.5320"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5241"><vh>@slide (("to do today"</vh>
+<v t="ekr.20101016043116.5321"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
+<v t="ekr.20101016043116.5322"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5237"><vh>@slide (("go shopping"</vh>
+<v t="ekr.20101016043116.5323"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5305"><vh>@slide ((typing text (icon box has blue square)</vh>
+<v t="ekr.20101016043116.5324"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh>
+<v t="ekr.20101016043116.5325"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh>
+<v t="ekr.20101016043116.5326"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh>
+<v t="ekr.20101016043116.5327"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh>
+<v t="ekr.20101016043116.5328"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5295"><vh>@slide (("fix car"</vh>
+<v t="ekr.20101016043116.5329"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5296"><vh>@slide ((Ctrl-U</vh>
+<v t="ekr.20101016043116.5330"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh>
+<v t="ekr.20101016043116.5331"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh>
+<v t="ekr.20101016043116.5332"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5299"><vh>@slide ((Left-Arrow</vh>
+<v t="ekr.20101016043116.5333"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5300"><vh>@slide ((Right-Arrow</vh>
+<v t="ekr.20101016043116.5334"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5308"><vh>@slide ((Shift arrow keys</vh>
+<v t="ekr.20101016043116.5335"><vh>@url final output file</vh></v>
+</v>
 <v t="ekr.20101014110348.5309"><vh>@slide ((Arrow keys: summary</vh>
 <v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
-<v t="ekr.20101014110348.5324"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh></v>
-<v t="ekr.20101014110348.5307"><vh>@slide ((Promotes &amp; demote</vh></v>
-<v t="ekr.20101014110348.5329"><vh>@slide ((Ctrl-Shift-] demote</vh></v>
-<v t="ekr.20101014110348.5330"><vh>@slide ((Ctrl-Shift-[ promote</vh></v>
-<v t="ekr.20101014110348.5331"><vh>@slide ((promote &amp; demote to move batches of nodes</vh></v>
-<v t="ekr.20101014110348.5332"><vh>@slide ((demote the moved nodes</vh></v>
-<v t="ekr.20101014110348.5333"><vh>@slide ((move helper node left</vh></v>
-<v t="ekr.20101014110348.5334"><vh>@slide ((promote the moved nodes</vh></v>
-<v t="ekr.20101014110348.5335"><vh>@slide ((delete the helper node</vh></v>
-<v t="ekr.20101014110348.5336"><vh>@slide ((end slide</vh></v>
+<v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh>
+<v t="ekr.20101016043116.5336"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5307"><vh>@slide ((Promotes &amp; demote</vh>
+<v t="ekr.20101016043116.5337"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5329"><vh>@slide ((Ctrl-Shift-] demote</vh>
+<v t="ekr.20101016043116.5338"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5330"><vh>@slide ((Ctrl-Shift-[ promote</vh>
+<v t="ekr.20101016043116.5339"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5331"><vh>@slide ((promote &amp; demote to move batches of nodes</vh>
+<v t="ekr.20101016043116.5340"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5332"><vh>@slide ((demote the moved nodes</vh>
+<v t="ekr.20101016043116.5341"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5333"><vh>@slide ((move helper node left</vh>
+<v t="ekr.20101016043116.5342"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5334"><vh>@slide ((promote the moved nodes</vh>
+<v t="ekr.20101016043116.5343"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5335"><vh>@slide ((delete the helper node</vh>
+<v t="ekr.20101016043116.5344"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5336"><vh>@slide ((end slide</vh>
+<v t="ekr.20101016043116.5345"><vh>@url final output file</vh></v>
+</v>
 </v>
 <v t="ekr.20101014110348.5338"><vh>@button meld</vh>
-<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
-<v t="ekr.20101014110348.5344"><vh>adjust_slideshow</vh></v>
+<v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
+<v t="ekr.20101014110348.5344" a="E"><vh>adjust_slideshow &amp; helpers</vh>
+<v t="ekr.20101015151959.5300"><vh>adjust_slide_node</vh></v>
+<v t="ekr.20101015151959.5303"><vh>built_slide_path</vh></v>
+<v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
+</v>
 <v t="ekr.20101014110348.5342"><vh>check &amp; helpers</vh>
 <v t="ekr.20101014110348.5347"><vh>count_slide_nodes</vh></v>
 </v>
 <v t="ekr.20101014110348.5343"><vh>copy_files</vh></v>
 <v t="ekr.20101014110348.5346"><vh>get_wink_screenshots</vh></v>
+<v t="ekr.20101015151959.5302"><vh>match</vh></v>
 <v t="ekr.20101014110348.5341"><vh>run</vh></v>
 </v>
 </v>
@@ -4310,7 +4386,6 @@ easier than using the mouse.
 <t tx="ekr.20101014110348.5318">Buy milk
 Buy eggs</t>
 <t tx="ekr.20101014110348.5323"></t>
-<t tx="ekr.20101014110348.5324">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-026.html</t>
 <t tx="ekr.20101014110348.5325">Ctrl-S saves the outline.
 
 Notice that the icon box one again has a gray outline,
@@ -4365,6 +4440,7 @@ enjoyably.</t>
 <t tx="ekr.20101014110348.5338">'''Meld Wink slides into an @slideshow folder.'''
 
 import glob
+import os
 import shutil
 
 slideshow_dir = r'First-presentation'
@@ -4377,7 +4453,8 @@ wink_dir = 'C:/Users/edreamleo/Desktop/WinkStuff/First-presentation/_files'
 @others
 
 mc = MeldController(c,p,slideshow_dir,wink_dir)
-mc.run()</t>
+mc.run()
+</t>
 <t tx="ekr.20101014110348.5339">class MeldController:
 
     def __init__ (self,c,p,slideshow_dir,wink_dir):
@@ -4398,8 +4475,7 @@ mc.run()</t>
     if not self.check(aList):
         return
 
-    if not self.copy_files(aList):
-        return
+    self.copy_files(aList)
 
     self.adjust_slideshow()
 </t>
@@ -4418,7 +4494,7 @@ mc.run()</t>
     if not g.os_path_isdir(d):
         return g.error('not a directory: %s' % (d))
 
-    if not g.match_word(p.h,0,'@slideshow'):
+    if not self.match(p,'@slideshow'):
         return g.error('not a @slideshow node: %s',p.h)
 
     return True ### Testing
@@ -4453,11 +4529,24 @@ mc.run()</t>
 </t>
 <t tx="ekr.20101014110348.5344">def adjust_slideshow(self):
 
-    '''Make any needed adjustments to the slideshow.'''
+    '''Adjust all @slide nodes in the slideshow.'''
 
-    pass
-
-
+    # Traverse the tree as in the screenshot plugin.
+    # That is, ignore @ignore trees and nested @slide nodes.
+    # This ensures that the slide number, n, is correct.
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    n = 1
+    while p and p != after:
+        if self.match(p,'@slide'):
+            self.adjust_slide_node(p,n)
+            n += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
 </t>
 <t tx="ekr.20101014110348.5346">def get_wink_screenshots (self):
 
@@ -4480,14 +4569,111 @@ mc.run()</t>
 
     n1,n2 = 0,0
     for p in self.slideshow_node.subtree():
-        if g.match_word(p.h,0,'@slide'):
+        if self.match(p,'@slide'):
             n1 += 1
             for p2 in p.children():
-                if g.match_word(p2.h,0,'@no-screenshot'):
+                if self.match(p2,'@no-screenshot'):
                     n2 += 1
 
     return n1,n2
 </t>
+<t tx="ekr.20101015151959.5300">def adjust_slide_node (self,p,slide_number):
+
+    '''Adjust p, an @slide node.'''
+
+    trace = True
+
+    # 1. Delete any "@url built slide" node.
+    for child in p.children():
+        if self.match(child,'@url built slide'):
+            if trace: g.es('del @url built slide in',p.h)
+            child.doDelete()
+            break
+
+    # Do nothing if there is an @no-screenshot node.
+    if self.has_at_no_screenshot_node(p):
+        return
+
+    # 2. Add or update the "@url final output file" node.
+    tag ='@url final output file'
+    for child in p.children():
+        if self.match(child,tag):
+            p2 = child ; break
+    else:
+        if trace: g.es('add %s' % tag)
+        p2 = p.insertAsLastChild()
+        p2.h = tag
+
+    p2.b = self.built_slide_path(slide_number)
+</t>
+<t tx="ekr.20101015151959.5301">def has_at_no_screenshot_node (self,p):
+
+    for p in p.children():
+        if self.match(p,'@no-screenshot'):
+            return True
+    else:
+        return False
+</t>
+<t tx="ekr.20101015151959.5302">def match (self,p,pattern):
+
+    '''Return True if p.h matches the pattern.'''
+
+    return g.match_word(p.h,0,pattern)
+</t>
+<t tx="ekr.20101015151959.5303">def built_slide_path (self,slide_number):
+
+    '''Return the absolute path to the slide.
+
+    This must match the path computed by
+    get_output_fn in the screenshots plugin.
+    '''
+
+    def fix (fn):
+        return os.path.normcase(fn).replace('\\','/')
+
+    def finalize (fn):
+        return fix(g.os_path_finalize_join(self.slideshow_dir,fn))
+
+    fn = 'slide-%03d.png' % (slide_number)
+    fn = finalize(fn)
+    return fn
+</t>
+<t tx="ekr.20101016043116.5312">c:/leo.repo/trunk/first-presentation/slide-003.png</t>
+<t tx="ekr.20101016043116.5313">c:/leo.repo/trunk/first-presentation/slide-004.png</t>
+<t tx="ekr.20101016043116.5314">c:/leo.repo/trunk/first-presentation/slide-005.png</t>
+<t tx="ekr.20101016043116.5315">c:/leo.repo/trunk/first-presentation/slide-006.png</t>
+<t tx="ekr.20101016043116.5316">c:/leo.repo/trunk/first-presentation/slide-007.png</t>
+<t tx="ekr.20101016043116.5317">c:/leo.repo/trunk/first-presentation/slide-008.png</t>
+<t tx="ekr.20101016043116.5318">c:/leo.repo/trunk/first-presentation/slide-009.png</t>
+<t tx="ekr.20101016043116.5319">c:/leo.repo/trunk/first-presentation/slide-010.png</t>
+<t tx="ekr.20101016043116.5320">c:/leo.repo/trunk/first-presentation/slide-011.png</t>
+<t tx="ekr.20101016043116.5321">c:/leo.repo/trunk/first-presentation/slide-012.png</t>
+<t tx="ekr.20101016043116.5322">c:/leo.repo/trunk/first-presentation/slide-013.png</t>
+<t tx="ekr.20101016043116.5323">c:/leo.repo/trunk/first-presentation/slide-014.png</t>
+<t tx="ekr.20101016043116.5324">c:/leo.repo/trunk/first-presentation/slide-015.png</t>
+<t tx="ekr.20101016043116.5325">c:/leo.repo/trunk/first-presentation/slide-016.png</t>
+<t tx="ekr.20101016043116.5326">c:/leo.repo/trunk/first-presentation/slide-017.png</t>
+<t tx="ekr.20101016043116.5327">c:/leo.repo/trunk/first-presentation/slide-018.png</t>
+<t tx="ekr.20101016043116.5328">c:/leo.repo/trunk/first-presentation/slide-019.png</t>
+<t tx="ekr.20101016043116.5329">c:/leo.repo/trunk/first-presentation/slide-020.png</t>
+<t tx="ekr.20101016043116.5330">c:/leo.repo/trunk/first-presentation/slide-021.png</t>
+<t tx="ekr.20101016043116.5331">c:/leo.repo/trunk/first-presentation/slide-022.png</t>
+<t tx="ekr.20101016043116.5332">c:/leo.repo/trunk/first-presentation/slide-023.png</t>
+<t tx="ekr.20101016043116.5333">c:/leo.repo/trunk/first-presentation/slide-024.png</t>
+<t tx="ekr.20101016043116.5334">c:/leo.repo/trunk/first-presentation/slide-025.png</t>
+<t tx="ekr.20101016043116.5335">c:/leo.repo/trunk/first-presentation/slide-026.png</t>
+<t tx="ekr.20101016043116.5336">c:/leo.repo/trunk/first-presentation/slide-028.png</t>
+<t tx="ekr.20101016043116.5337">c:/leo.repo/trunk/first-presentation/slide-029.png</t>
+<t tx="ekr.20101016043116.5338">c:/leo.repo/trunk/first-presentation/slide-030.png</t>
+<t tx="ekr.20101016043116.5339">c:/leo.repo/trunk/first-presentation/slide-031.png</t>
+<t tx="ekr.20101016043116.5340">c:/leo.repo/trunk/first-presentation/slide-032.png</t>
+<t tx="ekr.20101016043116.5341">c:/leo.repo/trunk/first-presentation/slide-033.png</t>
+<t tx="ekr.20101016043116.5342">c:/leo.repo/trunk/first-presentation/slide-034.png</t>
+<t tx="ekr.20101016043116.5343">c:/leo.repo/trunk/first-presentation/slide-035.png</t>
+<t tx="ekr.20101016043116.5344">c:/leo.repo/trunk/first-presentation/slide-036.png</t>
+<t tx="ekr.20101016043116.5345">c:/leo.repo/trunk/first-presentation/slide-037.png</t>
+<t tx="ekr.20101016043116.5346">c:/leo.repo/trunk/first-presentation/slide-001.png</t>
+<t tx="ekr.20101016043116.5347">c:/leo.repo/trunk/first-presentation/slide-002.png</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
