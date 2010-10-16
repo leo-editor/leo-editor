@@ -832,15 +832,19 @@
 </v>
 </v>
 <v t="ekr.20101014110348.5338"><vh>@button meld</vh>
-<v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
-<v t="ekr.20101016043116.5353"><vh>utils</vh>
+<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
+<v t="ekr.20101016043116.5353" a="E"><vh>utils</vh>
+<v t="ekr.20101016043116.6224"><vh>finalize &amp; fix</vh></v>
 <v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
 <v t="ekr.20101015151959.5302"><vh>match</vh></v>
 </v>
-<v t="ekr.20101014110348.5341"><vh>run &amp; helpers</vh>
+<v t="ekr.20101014110348.5341" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20101014110348.5344"><vh>adjust_slideshow &amp; helpers</vh>
-<v t="ekr.20101015151959.5300"><vh>adjust_slide_node</vh></v>
-<v t="ekr.20101015151959.5303"><vh>built_slide_path</vh></v>
+<v t="ekr.20101015151959.5300"><vh>adjust_slide_node &amp; helper</vh>
+<v t="ekr.20101016043116.6226"><vh>add_at_url_final_output_file</vh></v>
+<v t="ekr.20101016043116.6223"><vh>add_image_directive</vh></v>
+<v t="ekr.20101016043116.6225"><vh>delete_at_url_built_slide_node</vh></v>
+</v>
 </v>
 <v t="ekr.20101014110348.5342"><vh>check &amp; helpers</vh>
 <v t="ekr.20101016043116.5349"><vh>check_dir</vh></v>
@@ -3997,14 +4001,22 @@ node. Messages from Leo appear in the log pane.
 <t tx="ekr.20101013072903.5224">@language rest
 @pagewidth 50</t>
 <t tx="ekr.20101013072903.5225">This is a step-by-step introduction to show you
-how to use Leo outlines.</t>
+how to use Leo outlines.
+
+.. image:: slide-001.png
+
+</t>
 <t tx="ekr.20101013072903.5226">.. The workbook.leo window.
 
 Let\'s start.  Open Leo.
 Leo opens the **workbook file** when you start
 Leo without a filename.
 
-If initial workbook file looks like this:</t>
+If initial workbook file looks like this:
+
+.. image:: slide-002.png
+
+</t>
 <t tx="ekr.20101013072903.5228">.. Arrow points to window title.
 
 The name of the Leo outline appears in the window's title.
@@ -4017,29 +4029,54 @@ Here, the name is workbook.leo, the default file name.</t>
 <t tx="ekr.20101013072903.5230">The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.</t>
-<t tx="ekr.20101013072903.5234">Here I've typed "To do" in the headline.</t>
+<t tx="ekr.20101013072903.5234">Here I've typed "To do" in the headline.
+
+.. image:: slide-008.png
+
+</t>
 <t tx="ekr.20101013072903.5235">Typing a newline ends editing of the headline.
 
 Notice that the **icon box** to the left of the
 headline now has a darker outline that it had
 before. This indicates that the node is dirty (has
 been changed).
+
+.. image:: slide-009.png
+
 </t>
-<t tx="ekr.20101013072903.5236">Ctrl-I inserts a new node.</t>
+<t tx="ekr.20101013072903.5236">Ctrl-I inserts a new node.
+
+.. image:: slide-013.png
+
+</t>
 <t tx="ekr.20101013072903.5237">I typed "go shopping" followed by a return.
 
-The focus is now in the body pane.</t>
+The focus is now in the body pane.
+
+.. image:: slide-014.png
+
+</t>
 <t tx="ekr.20101013072903.5238"></t>
 <t tx="ekr.20101013072903.5240">You can re-edit a headline by typing Ctrl-H.
 
+.. image:: slide-011.png
+
 </t>
-<t tx="ekr.20101013072903.5241">Here, I typed "today" at the end of the headline.</t>
+<t tx="ekr.20101013072903.5241">Here, I typed "today" at the end of the headline.
+
+.. image:: slide-012.png
+
+</t>
 <t tx="ekr.20101013072903.5244">Ctrl-R moves a node right.
 
 The "go shopping" becomes a **child**
 of the "to do today" node.
 
-The "to do today" is the **parent** node.</t>
+The "to do today" is the **parent** node.
+
+.. image:: slide-016.png
+
+</t>
 <t tx="ekr.20101013072903.5245">Leo has unlimited undo/redo capabilities.
 
 Ctrl-Z undoes the previous action and
@@ -4053,6 +4090,9 @@ Here, I typed Ctrl-z, so that the "go shopping"
 node is once again a child of the "to do today" node.
 
 .. screenshot of Edit menu.
+
+.. image:: slide-018.png
+
 </t>
 <t tx="ekr.20101013072903.5262">Prezi path: clone-marked.
 Prezi picture: @include &lt;filename&gt;.</t>
@@ -4251,6 +4291,8 @@ We say that the body pane has **focus**.
 
 .. focus must be in body pane.
 
+.. image:: slide-003.png
+
 </t>
 <t tx="ekr.20101014110348.5281">Here, I clicked the headline called "NewHeadline".
 
@@ -4259,7 +4301,11 @@ Leo selects the headline.
 Notice that the body pane is now blue, indicating that
 it no longer has focus.
 
-.. focus must be in tree pane.</t>
+.. focus must be in tree pane.
+
+.. image:: slide-004.png
+
+</t>
 <t tx="ekr.20101014110348.5283">Leo is designed so you never need to use the mouse.
 
 With the focus in the tree pane, hitting the
@@ -4267,29 +4313,57 @@ return key puts the focus in the body pane.
 
 Alt-D also puts the focus in the body pane.
 
-.. Focus in body pane.</t>
+.. Focus in body pane.
+
+.. image:: slide-005.png
+
+</t>
 <t tx="ekr.20101014110348.5285">Typing Alt-T puts the focus in the tree pane.
 
-.. Focus in tree pane.</t>
+.. Focus in tree pane.
+
+.. image:: slide-006.png
+
+</t>
 <t tx="ekr.20101014110348.5286">Ctrl-H edits the presently selected headline.
 
 You can type Ctrl-H at any time, regardless of
 where the focus is.
 
-Ctrl-H selects the entire text of the headline.</t>
+Ctrl-H selects the entire text of the headline.
+
+.. image:: slide-007.png
+
+</t>
 <t tx="ekr.20101014110348.5290">Ctrl-L moves the "go shopping" node left.
 
 The "go shopping" node becomes a **sibling**
-of the "to do today" node.</t>
+of the "to do today" node.
+
+.. image:: slide-017.png
+
+</t>
 <t tx="ekr.20101014110348.5293"></t>
 <t tx="ekr.20101014110348.5294">Let's add a new node.
 
-I hit Ctrl-I.</t>
-<t tx="ekr.20101014110348.5295">I type "fix car" followed by the &lt;return&gt; key.</t>
+I hit Ctrl-I.
+
+.. image:: slide-019.png
+
+</t>
+<t tx="ekr.20101014110348.5295">I type "fix car" followed by the &lt;return&gt; key.
+
+.. image:: slide-020.png
+
+</t>
 <t tx="ekr.20101014110348.5296">I decide that fixing the car should have first priority.
 
 I type Ctrl-U to move the "fix car" node up.
-It becomes the first child of the "to do today" node.</t>
+It becomes the first child of the "to do today" node.
+
+.. image:: slide-021.png
+
+</t>
 <t tx="ekr.20101014110348.5297">After creating the to-do list, I want to hide it
 by **collapsing** the "to do today node.
 
@@ -4299,7 +4373,11 @@ to the left of the "to do today node".
 However, I strongly encourage all Leo users to
 avoid using the mouse.
 
-.. arrow points to black triangle.</t>
+.. arrow points to black triangle.
+
+.. image:: slide-022.png
+
+</t>
 <t tx="ekr.20101014110348.5298">The focus is in the tree pane, so we select the "to do today"
 node merely by using the Up-Arrow key.
 
@@ -4311,15 +4389,26 @@ we can select the previous node in either of two ways:
 2. Type Alt-Up-Arrow.
 
 The "to do today" node is selected.
+
+.. image:: slide-023.png
+
 </t>
 <t tx="ekr.20101014110348.5299">With the "to-do today" node selected,
 the Alt-Left-Arrow will contract the node.
 
-.. "to do today" contracted.</t>
+.. "to do today" contracted.
+
+.. image:: slide-024.png
+
+</t>
 <t tx="ekr.20101014110348.5300">To expand the "to do today" node,
 I merely hit the Right-Arrow key.
 
-We can now see the entire to-do list.</t>
+We can now see the entire to-do list.
+
+.. image:: slide-025.png
+
+</t>
 <t tx="ekr.20101014110348.5305">Whatever I type will appear in the body pane.
 
 I added a shopping list.
@@ -4329,7 +4418,11 @@ The blue square in the icon area indicates that the body pane contains text.
 .. Arrow at icon box.
 
 .. buy milk
-.. buy eggs.</t>
+.. buy eggs.
+
+.. image:: slide-015.png
+
+</t>
 <t tx="ekr.20101014110348.5307">There are two more outline operations that every Leo user should know about,
 promote and demote.
 
@@ -4339,10 +4432,18 @@ Suppose we want to reorganize this shopping list.
 ..   - fix car
 ..   - go shopping
 ..     - buy milks
-..     - buy eggs</t>
+..     - buy eggs
+
+.. image:: slide-029.png
+
+</t>
 <t tx="ekr.20101014110348.5308">The shift arrow keys move nodes when focus is in the outline pane.
 
-To move the "fix car node" up</t>
+To move the "fix car node" up
+
+.. image:: slide-026.png
+
+</t>
 <t tx="ekr.20101014110348.5309">The arrow keys do different things depending on
 which pane has focus. Using arrow keys is **much**
 easier than using the mouse.
@@ -4397,7 +4498,11 @@ Buy eggs</t>
 Notice that the icon box one again has a gray outline,
 indicating that the node is no longer dirty.
 
-.. Arrow to icon box.</t>
+.. Arrow to icon box.
+
+.. image:: slide-010.png
+
+</t>
 <t tx="ekr.20101014110348.5326">Suppose we want to copy the to-do list for another day.
 
 Using the arrow keys as necessary, I select the
@@ -4412,14 +4517,24 @@ node if the selected node is expanded.
 I want to do the paste *after* the to-do list, so I collapse
 the original node before doing the paste:
 
+.. image:: slide-028.png
+
 </t>
 <t tx="ekr.20101014110348.5329">Here, I selected "go shopping" and then demote nodes with Ctrl-Shift-].
 
 The following siblings of the "go shopping" nodes were
-demoted to become children of the "go shopping node.</t>
+demoted to become children of the "go shopping node.
+
+.. image:: slide-030.png
+
+</t>
 <t tx="ekr.20101014110348.5330">Conversely, Ctrl-Shift-[ promotes all the children of the
 selected node so that they become (following) siblings
-of the selected node.</t>
+of the selected node.
+
+.. image:: slide-031.png
+
+</t>
 <t tx="ekr.20101014110348.5331">Using promote and demote is an easy way of moving
 several nodes quickly.
 
@@ -4427,10 +4542,26 @@ For example, suppose I wanted to move the "buy
 milk" nad "buy eggs" nodes so that they are
 top-level nodes.
 
-I insert a "helper" node after the "go shopping node"</t>
-<t tx="ekr.20101014110348.5332">I then demote the following nodes.</t>
-<t tx="ekr.20101014110348.5333">I move the helper node left.  The demoted nodes go along for the ride.</t>
-<t tx="ekr.20101014110348.5334">I promote the moved nodes.</t>
+I insert a "helper" node after the "go shopping node"
+
+.. image:: slide-032.png
+
+</t>
+<t tx="ekr.20101014110348.5332">I then demote the following nodes.
+
+.. image:: slide-033.png
+
+</t>
+<t tx="ekr.20101014110348.5333">I move the helper node left.  The demoted nodes go along for the ride.
+
+.. image:: slide-034.png
+
+</t>
+<t tx="ekr.20101014110348.5334">I promote the moved nodes.
+
+.. image:: slide-035.png
+
+</t>
 <t tx="ekr.20101014110348.5335">And delete the helper node.
 
 This technique can be quite useful when moving
@@ -4438,11 +4569,19 @@ many nodes, or moving several nodes a long way in
 the outline.
 
 The clones and views slideshows discusses several
-other ways to do similar moves.</t>
+other ways to do similar moves.
+
+.. image:: slide-036.png
+
+</t>
 <t tx="ekr.20101014110348.5336">This concludes the step-by-step introduction to
 Leo's outlines. Mastering the skills presented
 here is essential to using Leo effectively and
-enjoyably.</t>
+enjoyably.
+
+.. image:: slide-037.png
+
+</t>
 <t tx="ekr.20101014110348.5338">'''Meld Wink slides into an @slideshow folder.'''
 
 import glob
@@ -4623,28 +4762,19 @@ mc.run()
 
     trace = True
 
-    # 1. Delete any "@url built slide" node.
-    for child in p.children():
-        if self.match(child,'@url built slide'):
-            if trace: g.es('del @url built slide in',p.h)
-            child.doDelete()
-            break
+    # Delete the first "@url built slide" node.
+    self.delete_at_url_built_slide_node(p)
 
     # Do nothing if there is an @no-screenshot node.
     if self.has_at_no_screenshot_node(p):
         return
 
-    # 2. Add or update the "@url final output file" node.
-    tag ='@url final output file'
-    for child in p.children():
-        if self.match(child,tag):
-            p2 = child ; break
-    else:
-        if trace: g.es('add %s' % tag)
-        p2 = p.insertAsLastChild()
-        p2.h = tag
+    # Add or update the "@url final output file" node.
+    p2 = self.add_at_url_final_output_file(p,slide_number)
 
-    p2.b = self.built_slide_path(slide_number)
+    # Add the .. image:: directive.
+    self.add_image_directive(p,slide_number)
+
 </t>
 <t tx="ekr.20101015151959.5301">def has_at_no_screenshot_node (self,p):
 
@@ -4659,24 +4789,6 @@ mc.run()
     '''Return True if p.h matches the pattern.'''
 
     return g.match_word(p.h,0,pattern)
-</t>
-<t tx="ekr.20101015151959.5303">def built_slide_path (self,slide_number):
-
-    '''Return the absolute path to the slide.
-
-    This must match the path computed by
-    get_output_fn in the screenshots plugin.
-    '''
-
-    def fix (fn):
-        return os.path.normcase(fn).replace('\\','/')
-
-    def finalize (fn):
-        return fix(g.os_path_finalize_join(self.slideshow_dir,fn))
-
-    fn = 'slide-%03d.png' % (slide_number)
-    fn = finalize(fn)
-    return fn
 </t>
 <t tx="ekr.20101016043116.5312">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-003.png</t>
 <t tx="ekr.20101016043116.5313">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-004.png</t>
@@ -4740,6 +4852,53 @@ mc.run()
         g.trace('%7s -&gt; %s' % (g.shortFileName(fn_src),fn_dst))
 </t>
 <t tx="ekr.20101016043116.5353"></t>
+<t tx="ekr.20101016043116.6223">def add_image_directive (self,p,slide_number):
+
+    '''Add an image directive in p if it is not there.'''
+
+    s = '.. image:: slide-%03d.png' % (slide_number)
+
+    if p.b.find(s) == -1:
+        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+</t>
+<t tx="ekr.20101016043116.6224">def fix (self,fn):
+    return os.path.normcase(fn).replace('\\','/')
+
+def finalize (self,fn):
+    return self.fix(g.os_path_finalize_join(self.slideshow_dir,fn))</t>
+<t tx="ekr.20101016043116.6225">def delete_at_url_built_slide_node (self,p):
+
+    '''Delete any "@url built slide" node in p's children.'''
+
+    trace = True
+    tag = '@url built slide'
+
+    for child in p.children():
+        if self.match(child,tag):
+            if trace: g.es('del %s in %s' % (tag,p.h))
+            child.doDelete()
+            break
+</t>
+<t tx="ekr.20101016043116.6226">def add_at_url_final_output_file (self,p,slide_number):
+
+    '''Create or update the "@url final output file" node.'''
+
+    trace = True
+    tag ='@url final output file'
+
+    for child in p.children():
+        if self.match(child,tag):
+            p2 = child ; break
+    else:
+        if trace: g.es('add %s' % tag)
+        p2 = p.insertAsLastChild()
+        p2.h = tag
+
+    p2.b = self.finalize(
+        'slide-%03d.png' % (slide_number))
+
+    return p2
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
