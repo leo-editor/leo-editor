@@ -579,6 +579,7 @@
 <v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
 <v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
 </v>
+<v t="ekr.20101018154944.2262"><vh>colorizing url's</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -999,7 +1000,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7260,5 +7261,11 @@ else:
     run(p)
 g.es('crash test done')
 </t>
+<t tx="ekr.20101018154944.2262">@language python
+
+http://webpages.charter.net/edreamleo/coloring.html
+
+if False:
+    pass</t>
 </tnodes>
 </leo_file>
