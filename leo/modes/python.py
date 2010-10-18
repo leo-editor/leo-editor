@@ -385,7 +385,28 @@ def python_rule20(colorer, s, i):
 
 def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
+    
+url = False
+    
+if url:
+    h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
+    f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
+    def python_rule_h_url(colorer, s, i):
+        return colorer.match_seq_regexp (s,i,kind="keyword",regexp=h_url_regex,
+            at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
+        
+    def python_rule_f_url(colorer,s,i):
+        return colorer.match_seq_regexp (s,i,kind="keyword",regexp=f_url_regex,
+            at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
+else:
+    # Always fail.
+    def python_rule_h_url(colorer, s, i):
+        return 0
+        
+    def python_rule_f_url(colorer,s,i):
+        return 0
+    
 # Rules dict for python_main ruleset.
 rulesDict1 = {
 	"!": [python_rule6,],
@@ -418,9 +439,9 @@ rulesDict1 = {
 	"C": [python_rule21,],
 	"D": [python_rule21,],
 	"E": [python_rule21,],
-	"F": [python_rule21,],
+	"F": [python_rule_f_url,python_rule21,],
 	"G": [python_rule21,],
-	"H": [python_rule21,],
+	"H": [ python_rule_h_url,python_rule21,],
 	"I": [python_rule21,],
 	"J": [python_rule21,],
 	"K": [python_rule21,],
@@ -446,9 +467,9 @@ rulesDict1 = {
 	"c": [python_rule21,],
 	"d": [python_rule21,],
 	"e": [python_rule21,],
-	"f": [python_rule21,],
+	"f": [python_rule_f_url,python_rule21,],
 	"g": [python_rule21,],
-	"h": [python_rule21,],
+	"h": [python_rule_h_url,python_rule21,],
 	"i": [python_rule21,],
 	"j": [python_rule21,],
 	"k": [python_rule21,],
