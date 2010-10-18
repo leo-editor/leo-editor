@@ -711,31 +711,66 @@
 </v>
 </v>
 <v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
+<v t="ekr.20101018061243.5396"><vh>Promote &amp; demote</vh>
+<v t="ekr.20101014110348.5307"><vh>@slide ((18 Promotes &amp; demote</vh>
+<v t="ekr.20101016043116.5337"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
-<v t="ekr.20101014110348.5312"><vh>Follow-along outline</vh>
-<v t="ekr.20101014110348.5316"><vh>To do today</vh>
-<v t="ekr.20101014110348.5317"><vh>fix car</vh></v>
-<v t="ekr.20101014110348.5318"><vh>go shopping</vh></v>
+<v t="ekr.20101014110348.5329"><vh>@slide ((Ctrl-Shift-] demote</vh>
+<v t="ekr.20101016043116.5338"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5330"><vh>@slide ((Ctrl-Shift-[ promote</vh>
+<v t="ekr.20101016043116.5339"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5331"><vh>@slide ((promote &amp; demote to move batches of nodes</vh>
+<v t="ekr.20101016043116.5340"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5332"><vh>@slide ((demote the moved nodes</vh>
+<v t="ekr.20101016043116.5341"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5333"><vh>@slide ((move helper node left</vh>
+<v t="ekr.20101016043116.5342"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5334"><vh>@slide ((promote the moved nodes</vh>
+<v t="ekr.20101016043116.5343"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101014110348.5335"><vh>@slide ((delete the helper node</vh>
+<v t="ekr.20101016043116.5344"><vh>@url final output file</vh></v>
 </v>
 </v>
-<v t="ekr.20101013072903.5225"><vh>@slide ((intro  no-ss</vh>
-<v t="ekr.20101016043116.5346"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101013072903.5226"><vh>@slide ((Let's start</vh>
+<v t="ekr.20101014110348.5338"><vh>@button meld</vh>
+<v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
+<v t="ekr.20101016043116.5353"><vh>utils</vh>
+<v t="ekr.20101016043116.6224"><vh>finalize &amp; fix</vh></v>
+<v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
+<v t="ekr.20101015151959.5302"><vh>match</vh></v>
+</v>
+<v t="ekr.20101014110348.5341"><vh>run &amp; helpers</vh>
+<v t="ekr.20101014110348.5344"><vh>adjust_slideshow &amp; helper</vh>
+<v t="ekr.20101015151959.5300"><vh>adjust_slide_node &amp; helpers</vh>
+<v t="ekr.20101016043116.6226"><vh>add_at_url_final_output_file</vh></v>
+<v t="ekr.20101016043116.6223"><vh>add_image_directive</vh></v>
+<v t="ekr.20101016043116.6225"><vh>delete_at_url_built_slide_node</vh></v>
+</v>
+</v>
+<v t="ekr.20101014110348.5342"><vh>check &amp; helpers</vh>
+<v t="ekr.20101016043116.5349"><vh>check_dir</vh></v>
+<v t="ekr.20101014110348.5347"><vh>count_slide_nodes</vh></v>
+</v>
+<v t="ekr.20101014110348.5343"><vh>copy_files &amp; helper</vh>
+<v t="ekr.20101016043116.5352"><vh>copy_file</vh></v>
+</v>
+<v t="ekr.20101014110348.5346"><vh>get_wink_screenshots</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20101018183640.5360"><vh>@button remove-image-directives</vh></v>
+<v t="ekr.20101013072903.5224" a="E"><vh>@slideshow Leo basics step by step</vh>
+<v t="ekr.20101013072903.5225" a="E"><vh>@slide ((no-slide</vh>
+<v t="ekr.20101016043116.6228"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5226"><vh>@slide ((1 Open notebook file</vh>
 <v t="ekr.20101016043116.5347"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5280"><vh>@slide ((Focus in body pane</vh>
-<v t="ekr.20101016043116.5312"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5281"><vh>@slide ((Click puts focus in tree pane</vh>
-<v t="ekr.20101016043116.5313"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5283"><vh>@slide ((Return puts focus in body pane</vh>
-<v t="ekr.20101016043116.5314"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5285"><vh>@slide ((Alt-T puts focus in tree pane</vh>
-<v t="ekr.20101016043116.5315"><vh>@url final output file</vh></v>
 </v>
 <v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh>
 <v t="ekr.20101016043116.5316"><vh>@url final output file</vh></v>
@@ -743,17 +778,10 @@
 <v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh>
 <v t="ekr.20101016043116.5317"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101013072903.5235"><vh>@slide ((newline ends editing (icon box)</vh>
-<v t="ekr.20101016043116.5318"><vh>@url final output file</vh></v>
-</v>
+<v t="ekr.20101018061243.5392"><vh>@slide ((Return ends editing</vh></v>
+<v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh></v>
 <v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
 <v t="ekr.20101016043116.5319"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101013072903.5240"><vh>@slide ((editing a headline</vh>
-<v t="ekr.20101016043116.5320"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101013072903.5241"><vh>@slide (("to do today"</vh>
-<v t="ekr.20101016043116.5321"><vh>@url final output file</vh></v>
 </v>
 <v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
 <v t="ekr.20101016043116.5322"><vh>@url final output file</vh></v>
@@ -782,7 +810,7 @@
 <v t="ekr.20101014110348.5296"><vh>@slide ((Ctrl-U</vh>
 <v t="ekr.20101016043116.5330"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh>
+<v t="ekr.20101014110348.5297"><vh>@slide ((12 contracting nodes</vh>
 <v t="ekr.20101016043116.5331"><vh>@url final output file</vh></v>
 </v>
 <v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh>
@@ -794,67 +822,16 @@
 <v t="ekr.20101014110348.5300"><vh>@slide ((Right-Arrow</vh>
 <v t="ekr.20101016043116.5334"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101014110348.5308"><vh>@slide ((Shift arrow keys</vh>
-<v t="ekr.20101016043116.5335"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5309"><vh>@slide ((Arrow keys: summary</vh>
+<v t="ekr.20101014110348.5309"><vh>@slide ((no-slide Arrow keys: summary</vh>
 <v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
 </v>
 <v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh>
 <v t="ekr.20101016043116.5336"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101014110348.5307"><vh>@slide ((Promotes &amp; demote</vh>
-<v t="ekr.20101016043116.5337"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5329"><vh>@slide ((Ctrl-Shift-] demote</vh>
-<v t="ekr.20101016043116.5338"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5330"><vh>@slide ((Ctrl-Shift-[ promote</vh>
-<v t="ekr.20101016043116.5339"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5331"><vh>@slide ((promote &amp; demote to move batches of nodes</vh>
-<v t="ekr.20101016043116.5340"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5332"><vh>@slide ((demote the moved nodes</vh>
-<v t="ekr.20101016043116.5341"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5333"><vh>@slide ((move helper node left</vh>
-<v t="ekr.20101016043116.5342"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5334"><vh>@slide ((promote the moved nodes</vh>
-<v t="ekr.20101016043116.5343"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5335"><vh>@slide ((delete the helper node</vh>
-<v t="ekr.20101016043116.5344"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5336"><vh>@slide ((end slide</vh>
-<v t="ekr.20101016043116.5345"><vh>@url final output file</vh></v>
-</v>
-</v>
-<v t="ekr.20101014110348.5338"><vh>@button meld</vh>
-<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
-<v t="ekr.20101016043116.5353" a="E"><vh>utils</vh>
-<v t="ekr.20101016043116.6224"><vh>finalize &amp; fix</vh></v>
-<v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
-<v t="ekr.20101015151959.5302"><vh>match</vh></v>
-</v>
-<v t="ekr.20101014110348.5341" a="E"><vh>run &amp; helpers</vh>
-<v t="ekr.20101014110348.5344"><vh>adjust_slideshow &amp; helpers</vh>
-<v t="ekr.20101015151959.5300"><vh>adjust_slide_node &amp; helper</vh>
-<v t="ekr.20101016043116.6226"><vh>add_at_url_final_output_file</vh></v>
-<v t="ekr.20101016043116.6223"><vh>add_image_directive</vh></v>
-<v t="ekr.20101016043116.6225"><vh>delete_at_url_built_slide_node</vh></v>
-</v>
-</v>
-<v t="ekr.20101014110348.5342"><vh>check &amp; helpers</vh>
-<v t="ekr.20101016043116.5349"><vh>check_dir</vh></v>
-<v t="ekr.20101014110348.5347"><vh>count_slide_nodes</vh></v>
-</v>
-<v t="ekr.20101014110348.5343"><vh>copy_files &amp; helper</vh>
-<v t="ekr.20101016043116.5352"><vh>copy_file</vh></v>
-</v>
-<v t="ekr.20101014110348.5346"><vh>get_wink_screenshots</vh></v>
-</v>
+<v t="ekr.20101018061243.5397"><vh>@slide ((The pasted node</vh></v>
+<v t="ekr.20101018061243.5394"><vh>@slide ((18 expanding the pasted node</vh></v>
+<v t="ekr.20101014110348.5336"><vh>@slide ((no-slide end slide</vh>
+<v t="ekr.20101018061243.5395"><vh>@no-screeshot</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4002,19 +3979,14 @@ node. Messages from Leo appear in the log pane.
 @pagewidth 50</t>
 <t tx="ekr.20101013072903.5225">This is a step-by-step introduction to show you
 how to use Leo outlines.
-
-.. image:: slide-001.png
-
 </t>
 <t tx="ekr.20101013072903.5226">.. The workbook.leo window.
 
-Let\'s start.  Open Leo.
 Leo opens the **workbook file** when you start
 Leo without a filename.
 
-If initial workbook file looks like this:
-
-.. image:: slide-002.png
+The body has focus--it is colored pink, and
+contains a blinking cursor.
 
 </t>
 <t tx="ekr.20101013072903.5228">.. Arrow points to window title.
@@ -4029,70 +4001,31 @@ Here, the name is workbook.leo, the default file name.</t>
 <t tx="ekr.20101013072903.5230">The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.</t>
-<t tx="ekr.20101013072903.5234">Here I've typed "To do" in the headline.
-
-.. image:: slide-008.png
-
-</t>
-<t tx="ekr.20101013072903.5235">Typing a newline ends editing of the headline.
-
-Notice that the **icon box** to the left of the
-headline now has a darker outline that it had
-before. This indicates that the node is dirty (has
-been changed).
-
-.. image:: slide-009.png
+<t tx="ekr.20101013072903.5234">I typed "To do" in the headline.
 
 </t>
 <t tx="ekr.20101013072903.5236">Ctrl-I inserts a new node.
-
-.. image:: slide-013.png
 
 </t>
 <t tx="ekr.20101013072903.5237">I typed "go shopping" followed by a return.
 
 The focus is now in the body pane.
 
-.. image:: slide-014.png
-
 </t>
 <t tx="ekr.20101013072903.5238"></t>
-<t tx="ekr.20101013072903.5240">You can re-edit a headline by typing Ctrl-H.
-
-.. image:: slide-011.png
-
-</t>
-<t tx="ekr.20101013072903.5241">Here, I typed "today" at the end of the headline.
-
-.. image:: slide-012.png
-
-</t>
 <t tx="ekr.20101013072903.5244">Ctrl-R moves a node right.
 
 The "go shopping" becomes a **child**
-of the "to do today" node.
+of the "to do" node.
 
-The "to do today" is the **parent** node.
-
-.. image:: slide-016.png
+The "to do" is the **parent** node.
 
 </t>
 <t tx="ekr.20101013072903.5245">Leo has unlimited undo/redo capabilities.
 
-Ctrl-Z undoes the previous action and
-Ctrl-Shift-Z redoes the previous action.
-
-Alt-E will open the edit menu so that you
-can see what the undo/redo operations
-will do next.
-
-Here, I typed Ctrl-z, so that the "go shopping"
-node is once again a child of the "to do today" node.
-
-.. screenshot of Edit menu.
-
-.. image:: slide-018.png
-
+Here, I typed Ctrl-z to undo the previous move.
+The "go shopping" node is once again a child of
+the "to do" node.
 </t>
 <t tx="ekr.20101013072903.5262">Prezi path: clone-marked.
 Prezi picture: @include &lt;filename&gt;.</t>
@@ -4283,64 +4216,19 @@ to connect Leo outlines with external files:
 @edit, @auto and @edit.</t>
 <t tx="ekr.20101014110348.5277"></t>
 <t tx="ekr.20101014110348.5278"></t>
-<t tx="ekr.20101014110348.5280">When Leo opens a file, it makes the body pane
-active. The body pane is colored pink, and
-contains a blinking cursor.
-
-We say that the body pane has **focus**.
-
-.. focus must be in body pane.
-
-.. image:: slide-003.png
-
-</t>
-<t tx="ekr.20101014110348.5281">Here, I clicked the headline called "NewHeadline".
-
-Leo selects the headline.
-
-Notice that the body pane is now blue, indicating that
-it no longer has focus.
-
-.. focus must be in tree pane.
-
-.. image:: slide-004.png
-
-</t>
-<t tx="ekr.20101014110348.5283">Leo is designed so you never need to use the mouse.
-
-With the focus in the tree pane, hitting the
-return key puts the focus in the body pane.
-
-Alt-D also puts the focus in the body pane.
-
-.. Focus in body pane.
-
-.. image:: slide-005.png
-
-</t>
-<t tx="ekr.20101014110348.5285">Typing Alt-T puts the focus in the tree pane.
-
-.. Focus in tree pane.
-
-.. image:: slide-006.png
-
-</t>
 <t tx="ekr.20101014110348.5286">Ctrl-H edits the presently selected headline.
 
 You can type Ctrl-H at any time, regardless of
 where the focus is.
 
-Ctrl-H selects the entire text of the headline.
-
-.. image:: slide-007.png
+The body pane is now blue, indicating that it no
+longer has focus.
 
 </t>
 <t tx="ekr.20101014110348.5290">Ctrl-L moves the "go shopping" node left.
 
 The "go shopping" node becomes a **sibling**
-of the "to do today" node.
-
-.. image:: slide-017.png
+of the "to do" node.
 
 </t>
 <t tx="ekr.20101014110348.5293"></t>
@@ -4348,65 +4236,52 @@ of the "to do today" node.
 
 I hit Ctrl-I.
 
-.. image:: slide-019.png
-
 </t>
 <t tx="ekr.20101014110348.5295">I type "fix car" followed by the &lt;return&gt; key.
-
-.. image:: slide-020.png
 
 </t>
 <t tx="ekr.20101014110348.5296">I decide that fixing the car should have first priority.
 
 I type Ctrl-U to move the "fix car" node up.
-It becomes the first child of the "to do today" node.
-
-.. image:: slide-021.png
+It becomes the first child of the "to do" node.
 
 </t>
 <t tx="ekr.20101014110348.5297">After creating the to-do list, I want to hide it
-by **collapsing** the "to do today node.
+by **collapsing** the "to do node.
 
 I could do that by clicking the black triangle
-to the left of the "to do today node".
+to the left of the "to do" node.
 
 However, I strongly encourage all Leo users to
 avoid using the mouse.
 
 .. arrow points to black triangle.
 
-.. image:: slide-022.png
-
 </t>
-<t tx="ekr.20101014110348.5298">The focus is in the tree pane, so we select the "to do today"
+<t tx="ekr.20101014110348.5298">The focus is in the tree pane, so we select the "to do"
 node merely by using the Up-Arrow key.
 
 If, for some reason, the focus is in the body pane,
 we can select the previous node in either of two ways:
 
-1. Type Alt-T followed by the Up-Arrow key.
+1. Type Alt-T to put focus in the tree pane
+   followed by the Up-Arrow key.
 
-2. Type Alt-Up-Arrow.
+2. Type Alt-Up-Arrow.  This selects the previous
+   node and also puts focus in the tree pane.
 
-The "to do today" node is selected.
-
-.. image:: slide-023.png
-
-</t>
-<t tx="ekr.20101014110348.5299">With the "to-do today" node selected,
-the Alt-Left-Arrow will contract the node.
-
-.. "to do today" contracted.
-
-.. image:: slide-024.png
+The "to do" node is selected.
 
 </t>
-<t tx="ekr.20101014110348.5300">To expand the "to do today" node,
+<t tx="ekr.20101014110348.5299">With the "to-do today" node selected,Left-Arrow will contract the node.
+
+.. "to do" contracted.
+
+</t>
+<t tx="ekr.20101014110348.5300">To expand the "to do" node,
 I merely hit the Right-Arrow key.
 
 We can now see the entire to-do list.
-
-.. image:: slide-025.png
 
 </t>
 <t tx="ekr.20101014110348.5305">Whatever I type will appear in the body pane.
@@ -4419,8 +4294,6 @@ The blue square in the icon area indicates that the body pane contains text.
 
 .. buy milk
 .. buy eggs.
-
-.. image:: slide-015.png
 
 </t>
 <t tx="ekr.20101014110348.5307">There are two more outline operations that every Leo user should know about,
@@ -4435,13 +4308,6 @@ Suppose we want to reorganize this shopping list.
 ..     - buy eggs
 
 .. image:: slide-029.png
-
-</t>
-<t tx="ekr.20101014110348.5308">The shift arrow keys move nodes when focus is in the outline pane.
-
-To move the "fix car node" up
-
-.. image:: slide-026.png
 
 </t>
 <t tx="ekr.20101014110348.5309">The arrow keys do different things depending on
@@ -4487,11 +4353,6 @@ easier than using the mouse.
 ..  it quickly becomes second nature.
 
 </t>
-<t tx="ekr.20101014110348.5312"></t>
-<t tx="ekr.20101014110348.5316"></t>
-<t tx="ekr.20101014110348.5317"></t>
-<t tx="ekr.20101014110348.5318">Buy milk
-Buy eggs</t>
 <t tx="ekr.20101014110348.5323"></t>
 <t tx="ekr.20101014110348.5325">Ctrl-S saves the outline.
 
@@ -4500,24 +4361,16 @@ indicating that the node is no longer dirty.
 
 .. Arrow to icon box.
 
-.. image:: slide-010.png
-
 </t>
-<t tx="ekr.20101014110348.5326">Suppose we want to copy the to-do list for another day.
+<t tx="ekr.20101014110348.5326">We can copy and paste nodes and all their descendants.
 
 Using the arrow keys as necessary, I select the
-"to do today" node.
+"to do" node.
 
 The Shift-Ctrl-C key copies the selected outline.
 
-the Shift-Ctrl-V key pastes the copied outline following
-the selected node or as the first child of the selected
-node if the selected node is expanded.
-
 I want to do the paste *after* the to-do list, so I collapse
 the original node before doing the paste:
-
-.. image:: slide-028.png
 
 </t>
 <t tx="ekr.20101014110348.5329">Here, I selected "go shopping" and then demote nodes with Ctrl-Shift-].
@@ -4575,11 +4428,18 @@ other ways to do similar moves.
 
 </t>
 <t tx="ekr.20101014110348.5336">This concludes the step-by-step introduction to
-Leo's outlines. Mastering the skills presented
-here is essential to using Leo effectively and
-enjoyably.
+Leo's outlines.
 
-.. image:: slide-037.png
+You now know how to do the following:
+
+- Create new nodes.
+- Edit the headline and body text of any node.
+- Reorganize nodes. 
+- Expand and contract nodes.
+- Copy and paste nodes and their descendants.
+
+Mastering these skills is essential to using Leo
+effectively and enjoyably.
 
 </t>
 <t tx="ekr.20101014110348.5338">'''Meld Wink slides into an @slideshow folder.'''
@@ -4765,7 +4625,7 @@ mc.run()
     # Delete the first "@url built slide" node.
     self.delete_at_url_built_slide_node(p)
 
-    # Do nothing if there is an @no-screenshot node.
+    # Do nothing more if there is an @no-screenshot node.
     if self.has_at_no_screenshot_node(p):
         return
 
@@ -4774,7 +4634,6 @@ mc.run()
 
     # Add the .. image:: directive.
     self.add_image_directive(p,slide_number)
-
 </t>
 <t tx="ekr.20101015151959.5301">def has_at_no_screenshot_node (self,p):
 
@@ -4790,16 +4649,9 @@ mc.run()
 
     return g.match_word(p.h,0,pattern)
 </t>
-<t tx="ekr.20101016043116.5312">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-003.png</t>
-<t tx="ekr.20101016043116.5313">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-004.png</t>
-<t tx="ekr.20101016043116.5314">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-005.png</t>
-<t tx="ekr.20101016043116.5315">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-006.png</t>
 <t tx="ekr.20101016043116.5316">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-007.png</t>
 <t tx="ekr.20101016043116.5317">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-008.png</t>
-<t tx="ekr.20101016043116.5318">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-009.png</t>
 <t tx="ekr.20101016043116.5319">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-010.png</t>
-<t tx="ekr.20101016043116.5320">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-011.png</t>
-<t tx="ekr.20101016043116.5321">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-012.png</t>
 <t tx="ekr.20101016043116.5322">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-013.png</t>
 <t tx="ekr.20101016043116.5323">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-014.png</t>
 <t tx="ekr.20101016043116.5324">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-015.png</t>
@@ -4813,7 +4665,6 @@ mc.run()
 <t tx="ekr.20101016043116.5332">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-023.png</t>
 <t tx="ekr.20101016043116.5333">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-024.png</t>
 <t tx="ekr.20101016043116.5334">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-025.png</t>
-<t tx="ekr.20101016043116.5335">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-026.png</t>
 <t tx="ekr.20101016043116.5336">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-028.png</t>
 <t tx="ekr.20101016043116.5337">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-029.png</t>
 <t tx="ekr.20101016043116.5338">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-030.png</t>
@@ -4823,8 +4674,6 @@ mc.run()
 <t tx="ekr.20101016043116.5342">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-034.png</t>
 <t tx="ekr.20101016043116.5343">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-035.png</t>
 <t tx="ekr.20101016043116.5344">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png</t>
-<t tx="ekr.20101016043116.5345">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-037.png</t>
-<t tx="ekr.20101016043116.5346">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-001.png</t>
 <t tx="ekr.20101016043116.5347">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-002.png</t>
 <t tx="ekr.20101016043116.5349">def check_dir (self,theDir):
 
@@ -4899,6 +4748,48 @@ def finalize (self,fn):
 
     return p2
 </t>
+<t tx="ekr.20101016043116.6228">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html</t>
+<t tx="ekr.20101018061243.5392">Typing return ends editing of the headline
+and puts focus back in the body pane.
+
+Notice that the **icon box** to the left of the
+headline now has a darker outline that it had
+before. This indicates that the contents of the
+node has been changed. We say the node is
+**dirty**.
+</t>
+<t tx="ekr.20101018061243.5393">You can use Leo without ever using the mouse. For
+instance, you can select any Leo pane by using
+keystrokes instead of clicking the pane:
+
+- Regardless of where the focus is, Alt-D puts
+  focus in the body pane and Alt-T puts foucs in
+  the outline pane.
+
+- With the focus in the tree pane, hitting the
+  return key puts the focus in the body pane.
+</t>
+<t tx="ekr.20101018061243.5394">Expanding the node shows that the copy operation
+copied the node and all its descendants.</t>
+<t tx="ekr.20101018061243.5395"></t>
+<t tx="ekr.20101018061243.5396"></t>
+<t tx="ekr.20101018061243.5397"></t>
+<t tx="ekr.20101018183640.5360">changed = 0
+b = c.undoer.beforeChangeTree(p)
+
+for child in p.children():
+    s = child.b
+    i = s.find('.. image::')
+    if i &gt; -1:
+        i,j = g.getLine(s,i)
+        child.b = s[:i] + s[j+1:]
+        # g.es(child.h)
+        changed += 1
+        
+if changed:
+    g.es('changed %s nodes' % changed)
+    c.undoer.afterChangeTree(p,'remove-image-directives',b)
+    </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
