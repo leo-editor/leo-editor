@@ -629,6 +629,108 @@
 <v t="ekr.20101014105353.5261"><vh>@url built slide</vh></v>
 </v>
 </v>
+<v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
+<v t="ekr.20101013072903.5225"><vh>@slide ((no-slide</vh>
+<v t="ekr.20101018190057.5370"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101018190057.5462"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5226"><vh>@slide ((Open notebook file</vh>
+<v t="ekr.20101018190057.5441"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5463"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh>
+<v t="ekr.20101018190057.5442"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5464"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh>
+<v t="ekr.20101018190057.5443"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5424"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101018061243.5392" a="M"><vh>@slide ((Return ends editing</vh>
+<v t="ekr.20101018190057.5444"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5425"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh>
+<v t="ekr.20101018190057.5373"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101019053718.5422"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
+<v t="ekr.20101018190057.5445"><vh>@url final output file</vh></v>
+<v t="ekr.20101018205732.5422"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
+<v t="ekr.20101018190057.5446"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5469"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5237"><vh>@slide (("go shopping"</vh>
+<v t="ekr.20101018190057.5447"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5470"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5305"><vh>@slide ((typing text (icon box has blue square)</vh>
+<v t="ekr.20101018190057.5448"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5426"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh>
+<v t="ekr.20101018190057.5449"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5427"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh>
+<v t="ekr.20101018190057.5450"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5473"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh>
+<v t="ekr.20101018190057.5451"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5474"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh>
+<v t="ekr.20101018190057.5452"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5428"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5295"><vh>@slide (("fix car"</vh>
+<v t="ekr.20101018190057.5453"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5476"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5296"><vh>@slide ((Ctrl-U</vh>
+<v t="ekr.20101018190057.5454"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5477"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh>
+<v t="ekr.20101018190057.5455"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5423"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh>
+<v t="ekr.20101018190057.5456"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5429"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5299" a="M"><vh>@slide ((Left-Arrow</vh>
+<v t="ekr.20101018190057.5457"><vh>@url final output file</vh></v>
+<v t="ekr.20101018203754.5430"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5300"><vh>@slide ((20 Right-Arrow</vh>
+<v t="ekr.20101018190057.5458"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5481"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5309"><vh>@slide ((no-slide Arrow keys: summary</vh>
+<v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101018190057.5482"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh>
+<v t="ekr.20101018190057.5459"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5483"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101018061243.5397"><vh>@slide ((The pasted node</vh>
+<v t="ekr.20101018190057.5460"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5484"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101018061243.5394"><vh>@slide ((expanding the pasted node</vh>
+<v t="ekr.20101018190057.5461"><vh>@url final output file</vh></v>
+<v t="ekr.20101018190057.5485"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5336"><vh>@slide ((no-slide end slide</vh>
+<v t="ekr.20101018061243.5395"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101018190057.5486"><vh>@url built slide</vh></v>
+</v>
+</v>
 <v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
 <v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
 <v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
@@ -766,108 +868,6 @@
 </v>
 <v t="ekr.20101018183640.5360"><vh>@button remove-image-directives</vh></v>
 <v t="ekr.20101018185243.5368"><vh>@button remove-final-output</vh></v>
-<v t="ekr.20101013072903.5224" a="E"><vh>@slideshow Leo basics step by step</vh>
-<v t="ekr.20101013072903.5225"><vh>@slide ((no-slide</vh>
-<v t="ekr.20101018190057.5370"><vh>@no-screenshot</vh></v>
-<v t="ekr.20101018190057.5462"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5226"><vh>@slide ((Open notebook file</vh>
-<v t="ekr.20101018190057.5441"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5463"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh>
-<v t="ekr.20101018190057.5442"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5464"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh>
-<v t="ekr.20101018190057.5443"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5424"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101018061243.5392" a="M"><vh>@slide ((Return ends editing</vh>
-<v t="ekr.20101018190057.5444"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5425"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh>
-<v t="ekr.20101018190057.5373"><vh>@no-screenshot</vh></v>
-<v t="ekr.20101018190057.5467"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
-<v t="ekr.20101018190057.5445"><vh>@url final output file</vh></v>
-<v t="ekr.20101018205732.5422"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
-<v t="ekr.20101018190057.5446"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5469"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5237"><vh>@slide (("go shopping"</vh>
-<v t="ekr.20101018190057.5447"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5470"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5305"><vh>@slide ((typing text (icon box has blue square)</vh>
-<v t="ekr.20101018190057.5448"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5426"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh>
-<v t="ekr.20101018190057.5449"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5427"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh>
-<v t="ekr.20101018190057.5450"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5473"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh>
-<v t="ekr.20101018190057.5451"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5474"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh>
-<v t="ekr.20101018190057.5452"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5428"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5295"><vh>@slide (("fix car"</vh>
-<v t="ekr.20101018190057.5453"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5476"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5296"><vh>@slide ((Ctrl-U</vh>
-<v t="ekr.20101018190057.5454"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5477"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh>
-<v t="ekr.20101018190057.5455"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5423"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh>
-<v t="ekr.20101018190057.5456"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5429"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5299" a="M"><vh>@slide ((Left-Arrow</vh>
-<v t="ekr.20101018190057.5457"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5430"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5300"><vh>@slide ((20 Right-Arrow</vh>
-<v t="ekr.20101018190057.5458"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5481"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5309"><vh>@slide ((no-slide Arrow keys: summary</vh>
-<v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
-<v t="ekr.20101018190057.5482"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh>
-<v t="ekr.20101018190057.5459"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5483"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101018061243.5397"><vh>@slide ((The pasted node</vh>
-<v t="ekr.20101018190057.5460"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5484"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101018061243.5394"><vh>@slide ((expanding the pasted node</vh>
-<v t="ekr.20101018190057.5461"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5485"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101014110348.5336"><vh>@slide ((no-slide end slide</vh>
-<v t="ekr.20101018061243.5395"><vh>@no-screenshot</vh></v>
-<v t="ekr.20101018190057.5486"><vh>@url built slide</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -4821,7 +4821,7 @@ instance, you can select any Leo pane by using
 keystrokes instead of clicking the pane:
 
 - Regardless of where the focus is, Alt-D puts
-  focus in the body pane and Alt-T puts foucs in
+  focus in the body pane and Alt-T puts focus in
   the outline pane.
 
 - With the focus in the tree pane, hitting the
@@ -4897,7 +4897,6 @@ if changed:
 <t tx="ekr.20101018190057.5462">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html</t>
 <t tx="ekr.20101018190057.5463">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
 <t tx="ekr.20101018190057.5464">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html</t>
-<t tx="ekr.20101018190057.5467">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html</t>
 <t tx="ekr.20101018190057.5469">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html</t>
 <t tx="ekr.20101018190057.5470">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html</t>
 <t tx="ekr.20101018190057.5473">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html</t>
@@ -4919,6 +4918,7 @@ if changed:
 <t tx="ekr.20101018203754.5429">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html</t>
 <t tx="ekr.20101018203754.5430">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html</t>
 <t tx="ekr.20101018205732.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
+<t tx="ekr.20101019053718.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
