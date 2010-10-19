@@ -51,7 +51,7 @@
 <v t="ekr.20101009114830.4724"><vh>File options</vh>
 <v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
+<v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 </v>
 <v t="ekr.20101009114830.4725"><vh>Plugins options</vh>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
@@ -868,6 +868,7 @@
 </v>
 <v t="ekr.20101018183640.5360"><vh>@button remove-image-directives</vh></v>
 <v t="ekr.20101018185243.5368"><vh>@button remove-final-output</vh></v>
+<v t="ekr.20101019061953.5422"><vh>Reorganize Users Guide</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1518,7 +1519,10 @@ m.make_slide_command(event={'c':c})
 </t>
 <t tx="ekr.20101009114830.4723">@nocolor-node
 
-This *must* be true for this file!
+Formerly, this had to be on because the expansion bits
+of @screenshot trees were significant.
+
+Happily, this is no longer true.
 
 True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -4919,6 +4923,62 @@ if changed:
 <t tx="ekr.20101018203754.5430">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html</t>
 <t tx="ekr.20101018205732.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="ekr.20101019053718.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html</t>
+<t tx="ekr.20101019061953.5422">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
+
+This morning I had a look at the documentation again and had the thought, that
+just by changing the structure a bit we could make it much easier for any user
+to read through the available information ...
+
+I tried the following steps:
+
+1) Move 'Chapter 9: History of Leo', 'Chapter 10: Theory of Operation'
+and 'Chapter 11: White Papers' to the back of the document.
+2) Move "Chapter 4: Leo’s Reference" to the back of the document.
+3) Move 'Chapter 14: Creating Documents with Leo' forward in the
+document
+4) Move 'Chapter 20: Unit testing with Leo' before 'Chapter 16:
+Debugging with Leo'.
+5) Move 'Chapter 15: Controlling Syntax Coloring' after 'Chapter 23:
+Eliminating sentinel lines with @shadow'.
+6) Create a single "What's New in Leo" directory at the top-level and
+put all current "What's new in ..." directories below there.
+
+Re-arranging the documentation along those lines would lead to the
+following:
+
+* Front Matter
+* Preface
+* What People Are Saying About Leo
+* FAQ
+* Slides
+* Chapter 1: Installing Leo
+* Chapter 2: The Leo Tutorial
+* Chapter 3: Using Outlines
+* Chapter 5: Using Leo’s Commands
+* Chapter 6: Designing with Leo
+* Chapter 14: Creating Documents with Leo
+* Chapter 7: Scripting Leo with Python
+* Chapter 8: Customizing Leo
+* Chapter 12: Plugins
+* Chapter 13: Writing Plugins
+* Chapter 20: Unit testing with Leo
+* Chapter 16: Debugging with Leo
+* Chapter 17: Using ZODB with Leo
+* Chapter 18: Leo and Emacs
+* Chapter 19: Embedding Leo with the leoBridge module
+* Chapter 21: IPython and Leo
+* Chapter 22: Using Vim Bindings with Leo
+* Chapter 23: Eliminating sentinel lines with @shadow
+* Chapter 15: Controlling Syntax Coloring
+* Chapter 4: Leo’s Reference
+* Chapter 9: History of Leo
+* Chapter 10: Theory of Operation
+* Chapter 11: White Papers
+* Appendices
+* Glossary
+* What’s New in Leo </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
