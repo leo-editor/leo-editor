@@ -757,7 +757,7 @@
 <v t="ekr.20101016043116.5349"><vh>check_dir</vh></v>
 <v t="ekr.20101014110348.5347"><vh>count_slide_nodes</vh></v>
 </v>
-<v t="ekr.20101014110348.5343" a="E"><vh>copy_files &amp; helper</vh>
+<v t="ekr.20101014110348.5343"><vh>copy_files &amp; helper</vh>
 <v t="ekr.20101016043116.5352"><vh>copy_file</vh></v>
 </v>
 <v t="ekr.20101014110348.5346"><vh>get_wink_screenshots</vh></v>
@@ -781,11 +781,11 @@
 </v>
 <v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh>
 <v t="ekr.20101018190057.5443"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5465"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5424"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101018061243.5392"><vh>@slide ((Return ends editing</vh>
 <v t="ekr.20101018190057.5444"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5466"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5425"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101018061243.5393" a="M"><vh>@slide ((no-slide focus keys</vh>
 <v t="ekr.20101018190057.5373"><vh>@no-screenshot</vh></v>
@@ -805,11 +805,11 @@
 </v>
 <v t="ekr.20101014110348.5305"><vh>@slide ((typing text (icon box has blue square)</vh>
 <v t="ekr.20101018190057.5448"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5471"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5426"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101013072903.5244"><vh>@slide ((Ctrl-R</vh>
 <v t="ekr.20101018190057.5449"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5472"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5427"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5290"><vh>@slide ((Ctrl-L</vh>
 <v t="ekr.20101018190057.5450"><vh>@url final output file</vh></v>
@@ -821,7 +821,7 @@
 </v>
 <v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh>
 <v t="ekr.20101018190057.5452"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5475"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5428"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5295"><vh>@slide (("fix car"</vh>
 <v t="ekr.20101018190057.5453"><vh>@url final output file</vh></v>
@@ -833,15 +833,15 @@
 </v>
 <v t="ekr.20101014110348.5297"><vh>@slide ((contracting nodes</vh>
 <v t="ekr.20101018190057.5455"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5478"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5423"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5298"><vh>@slide ((Up-Arrow</vh>
 <v t="ekr.20101018190057.5456"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5479"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5429"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5299"><vh>@slide ((Left-Arrow</vh>
 <v t="ekr.20101018190057.5457"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5480"><vh>@url built slide</vh></v>
+<v t="ekr.20101018203754.5430"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5300"><vh>@slide ((20 Right-Arrow</vh>
 <v t="ekr.20101018190057.5458"><vh>@url final output file</vh></v>
@@ -4038,7 +4038,7 @@ Here, the name is workbook.leo, the default file name.</t>
 <t tx="ekr.20101013072903.5230">The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.</t>
-<t tx="ekr.20101013072903.5234">I typed "To do" in the headline.
+<t tx="ekr.20101013072903.5234">I typed "to do" in the headline.
 
 .. image:: slide-004.png
 
@@ -4058,10 +4058,10 @@ The focus is now in the body pane.
 <t tx="ekr.20101013072903.5238"></t>
 <t tx="ekr.20101013072903.5244">Ctrl-R moves a node right.
 
-The "go shopping" becomes a **child**
+The "go shopping" node becomes a **child**
 of the "to do" node.
 
-The "to do" is the **parent** node.
+The "to do" node is the **parent** node.
 
 .. image:: slide-011.png
 
@@ -4284,9 +4284,7 @@ of the "to do" node.
 
 </t>
 <t tx="ekr.20101014110348.5293"></t>
-<t tx="ekr.20101014110348.5294">Let's add a new node.
-
-I hit Ctrl-I.
+<t tx="ekr.20101014110348.5294">Let's add a new node.  I hit Ctrl-I.
 
 .. image:: slide-014.png
 
@@ -4305,24 +4303,24 @@ It becomes the first child of the "to do" node.
 
 </t>
 <t tx="ekr.20101014110348.5297">After creating the to-do list, I want to hide it
-by **collapsing** the "to do node.
+by **collapsing** the "to do" node.
 
 I could do that by clicking the black triangle
 to the left of the "to do" node.
 
-However, I strongly encourage all Leo users to
-avoid using the mouse.
+However, using the mouse is not recommended--
+there are much easier ways.
 
 .. arrow points to black triangle.
 
 .. image:: slide-017.png
 
 </t>
-<t tx="ekr.20101014110348.5298">The focus is in the tree pane, so we select the "to do"
+<t tx="ekr.20101014110348.5298">The focus is in the tree pane, so I can select the "to do"
 node merely by using the Up-Arrow key.
 
 If, for some reason, the focus is in the body pane,
-we can select the previous node in either of two ways:
+I can select the previous node in either of two ways:
 
 1. Type Alt-T to put focus in the tree pane
    followed by the Up-Arrow key.
@@ -4330,12 +4328,13 @@ we can select the previous node in either of two ways:
 2. Type Alt-Up-Arrow.  This selects the previous
    node and also puts focus in the tree pane.
 
-The "to do" node is selected.
+Now the "to do" node is selected.
 
 .. image:: slide-018.png
 
 </t>
-<t tx="ekr.20101014110348.5299">With the "to-do today" node selected,Left-Arrow will contract the node.
+<t tx="ekr.20101014110348.5299">With the "to-do today" node selected,
+hitting the Left-Arrow key will contract the node.
 
 .. "to do" contracted.
 
@@ -4803,7 +4802,7 @@ def finalize (self,fn):
 
     return p2
 </t>
-<t tx="ekr.20101018061243.5392">Typing return ends editing of the headline
+<t tx="ekr.20101018061243.5392">Typing the &lt;return&gt; key ends editing of the headline
 and puts focus back in the body pane.
 
 Notice that the **icon box** to the left of the
@@ -4896,28 +4895,28 @@ if changed:
 <t tx="ekr.20101018190057.5462">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html</t>
 <t tx="ekr.20101018190057.5463">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
 <t tx="ekr.20101018190057.5464">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html</t>
-<t tx="ekr.20101018190057.5465">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html</t>
-<t tx="ekr.20101018190057.5466">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
 <t tx="ekr.20101018190057.5467">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html</t>
 <t tx="ekr.20101018190057.5468">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="ekr.20101018190057.5469">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html</t>
 <t tx="ekr.20101018190057.5470">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html</t>
-<t tx="ekr.20101018190057.5471">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html</t>
-<t tx="ekr.20101018190057.5472">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html</t>
 <t tx="ekr.20101018190057.5473">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html</t>
 <t tx="ekr.20101018190057.5474">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html</t>
-<t tx="ekr.20101018190057.5475">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html</t>
 <t tx="ekr.20101018190057.5476">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-015.html</t>
 <t tx="ekr.20101018190057.5477">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-016.html</t>
-<t tx="ekr.20101018190057.5478">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html</t>
-<t tx="ekr.20101018190057.5479">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html</t>
-<t tx="ekr.20101018190057.5480">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html</t>
 <t tx="ekr.20101018190057.5481">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-020.html</t>
 <t tx="ekr.20101018190057.5482">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-021.html</t>
 <t tx="ekr.20101018190057.5483">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-022.html</t>
 <t tx="ekr.20101018190057.5484">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-023.html</t>
 <t tx="ekr.20101018190057.5485">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-024.html</t>
 <t tx="ekr.20101018190057.5486">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html</t>
+<t tx="ekr.20101018203754.5423">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html</t>
+<t tx="ekr.20101018203754.5424">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html</t>
+<t tx="ekr.20101018203754.5425">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
+<t tx="ekr.20101018203754.5426">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html</t>
+<t tx="ekr.20101018203754.5427">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html</t>
+<t tx="ekr.20101018203754.5428">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html</t>
+<t tx="ekr.20101018203754.5429">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html</t>
+<t tx="ekr.20101018203754.5430">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
