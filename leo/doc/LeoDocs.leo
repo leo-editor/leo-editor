@@ -739,13 +739,13 @@
 </v>
 </v>
 <v t="ekr.20101014110348.5338"><vh>@button meld</vh>
-<v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
+<v t="ekr.20101014110348.5339" a="E"><vh>class MeldController</vh>
 <v t="ekr.20101016043116.5353"><vh>utils</vh>
 <v t="ekr.20101016043116.6224"><vh>finalize &amp; fix</vh></v>
 <v t="ekr.20101015151959.5301"><vh>has_at_no_screenshot_node</vh></v>
 <v t="ekr.20101015151959.5302"><vh>match</vh></v>
 </v>
-<v t="ekr.20101014110348.5341"><vh>run &amp; helpers</vh>
+<v t="ekr.20101014110348.5341" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20101014110348.5344"><vh>adjust_slideshow &amp; helper</vh>
 <v t="ekr.20101015151959.5300"><vh>adjust_slide_node &amp; helpers</vh>
 <v t="ekr.20101016043116.6226"><vh>add_at_url_final_output_file</vh></v>
@@ -765,21 +765,22 @@
 </v>
 </v>
 <v t="ekr.20101018183640.5360"><vh>@button remove-image-directives</vh></v>
+<v t="ekr.20101018185243.5368"><vh>@button remove-final-output</vh></v>
 <v t="ekr.20101013072903.5224" a="E"><vh>@slideshow Leo basics step by step</vh>
-<v t="ekr.20101013072903.5225" a="E"><vh>@slide ((no-slide</vh>
-<v t="ekr.20101016043116.6228"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20101013072903.5226"><vh>@slide ((1 Open notebook file</vh>
-<v t="ekr.20101016043116.5347"><vh>@url final output file</vh></v>
-</v>
-<v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh>
+<v t="ekr.20101013072903.5225"><vh>@slide ((no-slide</vh></v>
+<v t="ekr.20101013072903.5226"><vh>@slide ((1 Open notebook file</vh></v>
+<v t="ekr.20101014110348.5286" a="E"><vh>@slide ((Ctrl-H edits headline</vh>
 <v t="ekr.20101016043116.5316"><vh>@url final output file</vh></v>
 </v>
 <v t="ekr.20101013072903.5234"><vh>@slide (("to do" node</vh>
 <v t="ekr.20101016043116.5317"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101018061243.5392"><vh>@slide ((Return ends editing</vh></v>
-<v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh></v>
+<v t="ekr.20101018061243.5392"><vh>@slide ((Return ends editing</vh>
+<v t="ekr.20101018185243.5363"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh>
+<v t="ekr.20101018185243.5364"><vh>@url final output file</vh></v>
+</v>
 <v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
 <v t="ekr.20101016043116.5319"><vh>@url final output file</vh></v>
 </v>
@@ -828,10 +829,15 @@
 <v t="ekr.20101014110348.5326"><vh>@slide ((Shift-Ctrl-C copies</vh>
 <v t="ekr.20101016043116.5336"><vh>@url final output file</vh></v>
 </v>
-<v t="ekr.20101018061243.5397"><vh>@slide ((The pasted node</vh></v>
-<v t="ekr.20101018061243.5394"><vh>@slide ((18 expanding the pasted node</vh></v>
+<v t="ekr.20101018061243.5397"><vh>@slide ((The pasted node</vh>
+<v t="ekr.20101018185243.5365"><vh>@url final output file</vh></v>
+</v>
+<v t="ekr.20101018061243.5394"><vh>@slide ((18 expanding the pasted node</vh>
+<v t="ekr.20101018185243.5366"><vh>@url final output file</vh></v>
+</v>
 <v t="ekr.20101014110348.5336"><vh>@slide ((no-slide end slide</vh>
 <v t="ekr.20101018061243.5395"><vh>@no-screeshot</vh></v>
+<v t="ekr.20101018185243.5367"><vh>@url final output file</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3979,6 +3985,7 @@ node. Messages from Leo appear in the log pane.
 @pagewidth 50</t>
 <t tx="ekr.20101013072903.5225">This is a step-by-step introduction to show you
 how to use Leo outlines.
+
 </t>
 <t tx="ekr.20101013072903.5226">.. The workbook.leo window.
 
@@ -4026,6 +4033,7 @@ The "to do" is the **parent** node.
 Here, I typed Ctrl-z to undo the previous move.
 The "go shopping" node is once again a child of
 the "to do" node.
+
 </t>
 <t tx="ekr.20101013072903.5262">Prezi path: clone-marked.
 Prezi picture: @include &lt;filename&gt;.</t>
@@ -4448,13 +4456,11 @@ import glob
 import os
 import shutil
 
-slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/First-presentation'
-    # r'First-presentation'
-    # The directory relative to leo/doc/html/slides.
+slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step'
 
-wink_dir = 'C:/Users/edreamleo/Desktop/WinkStuff/First-presentation/_files'
+wink_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/_files'
     # The directory containing the wink screenshots.
-    # This will usually be &lt;slideshow-name&gt;/_files.
+    # This will usually be &lt;slideshow_dir&gt;/_files.
 
 @others
 
@@ -4576,6 +4582,7 @@ mc.run()
     def key(s):
         path,ext = g.os_path_splitext(s)
         junk,n = g.os_path_split(path)
+        n = n.strip()
         if n.isdigit():
             return int(n)
         else:
@@ -4649,23 +4656,23 @@ mc.run()
 
     return g.match_word(p.h,0,pattern)
 </t>
-<t tx="ekr.20101016043116.5316">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-007.png</t>
-<t tx="ekr.20101016043116.5317">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-008.png</t>
-<t tx="ekr.20101016043116.5319">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-010.png</t>
-<t tx="ekr.20101016043116.5322">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-013.png</t>
-<t tx="ekr.20101016043116.5323">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-014.png</t>
-<t tx="ekr.20101016043116.5324">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-015.png</t>
-<t tx="ekr.20101016043116.5325">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-016.png</t>
-<t tx="ekr.20101016043116.5326">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-017.png</t>
-<t tx="ekr.20101016043116.5327">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-018.png</t>
-<t tx="ekr.20101016043116.5328">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-019.png</t>
-<t tx="ekr.20101016043116.5329">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-020.png</t>
-<t tx="ekr.20101016043116.5330">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-021.png</t>
-<t tx="ekr.20101016043116.5331">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-022.png</t>
-<t tx="ekr.20101016043116.5332">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-023.png</t>
-<t tx="ekr.20101016043116.5333">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-024.png</t>
-<t tx="ekr.20101016043116.5334">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-025.png</t>
-<t tx="ekr.20101016043116.5336">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-028.png</t>
+<t tx="ekr.20101016043116.5316">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-003.png</t>
+<t tx="ekr.20101016043116.5317">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-004.png</t>
+<t tx="ekr.20101016043116.5319">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-007.png</t>
+<t tx="ekr.20101016043116.5322">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-008.png</t>
+<t tx="ekr.20101016043116.5323">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-009.png</t>
+<t tx="ekr.20101016043116.5324">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-010.png</t>
+<t tx="ekr.20101016043116.5325">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-011.png</t>
+<t tx="ekr.20101016043116.5326">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-012.png</t>
+<t tx="ekr.20101016043116.5327">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-013.png</t>
+<t tx="ekr.20101016043116.5328">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-014.png</t>
+<t tx="ekr.20101016043116.5329">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-015.png</t>
+<t tx="ekr.20101016043116.5330">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-016.png</t>
+<t tx="ekr.20101016043116.5331">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-017.png</t>
+<t tx="ekr.20101016043116.5332">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-018.png</t>
+<t tx="ekr.20101016043116.5333">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-019.png</t>
+<t tx="ekr.20101016043116.5334">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-020.png</t>
+<t tx="ekr.20101016043116.5336">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-022.png</t>
 <t tx="ekr.20101016043116.5337">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-029.png</t>
 <t tx="ekr.20101016043116.5338">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-030.png</t>
 <t tx="ekr.20101016043116.5339">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-031.png</t>
@@ -4674,7 +4681,6 @@ mc.run()
 <t tx="ekr.20101016043116.5342">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-034.png</t>
 <t tx="ekr.20101016043116.5343">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-035.png</t>
 <t tx="ekr.20101016043116.5344">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png</t>
-<t tx="ekr.20101016043116.5347">c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-002.png</t>
 <t tx="ekr.20101016043116.5349">def check_dir (self,theDir):
 
     if not g.os_path_exists(theDir):
@@ -4748,7 +4754,6 @@ def finalize (self,fn):
 
     return p2
 </t>
-<t tx="ekr.20101016043116.6228">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html</t>
 <t tx="ekr.20101018061243.5392">Typing return ends editing of the headline
 and puts focus back in the body pane.
 
@@ -4757,6 +4762,7 @@ headline now has a darker outline that it had
 before. This indicates that the contents of the
 node has been changed. We say the node is
 **dirty**.
+
 </t>
 <t tx="ekr.20101018061243.5393">You can use Leo without ever using the mouse. For
 instance, you can select any Leo pane by using
@@ -4768,12 +4774,17 @@ keystrokes instead of clicking the pane:
 
 - With the focus in the tree pane, hitting the
   return key puts the focus in the body pane.
+
 </t>
 <t tx="ekr.20101018061243.5394">Expanding the node shows that the copy operation
-copied the node and all its descendants.</t>
+copied the node and all its descendants.
+
+</t>
 <t tx="ekr.20101018061243.5395"></t>
 <t tx="ekr.20101018061243.5396"></t>
-<t tx="ekr.20101018061243.5397"></t>
+<t tx="ekr.20101018061243.5397">
+
+</t>
 <t tx="ekr.20101018183640.5360">changed = 0
 b = c.undoer.beforeChangeTree(p)
 
@@ -4790,6 +4801,26 @@ if changed:
     g.es('changed %s nodes' % changed)
     c.undoer.afterChangeTree(p,'remove-image-directives',b)
     </t>
+<t tx="ekr.20101018185243.5363">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-005.png</t>
+<t tx="ekr.20101018185243.5364">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-006.png</t>
+<t tx="ekr.20101018185243.5365">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-023.png</t>
+<t tx="ekr.20101018185243.5366">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-024.png</t>
+<t tx="ekr.20101018185243.5367">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-025.png</t>
+<t tx="ekr.20101018185243.5368">changed = 0
+tag = '@url final output file'
+b = c.undoer.beforeChangeTree(p)
+
+for child in p.children():
+    for child2 in child.children():
+        if g.match_word(child2.h,0,tag):
+            child2.doDelete()
+            changed += 1
+            break
+        
+if changed:
+    g.es('deleted %s %s nodes' % (changed,tag))
+    c.undoer.afterChangeTree(p,'remove-@url-final-output',b)
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
