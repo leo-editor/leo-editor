@@ -793,7 +793,7 @@
 </v>
 <v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
 <v t="ekr.20101018190057.5445"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5468"><vh>@url built slide</vh></v>
+<v t="ekr.20101018205732.5422"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
 <v t="ekr.20101018190057.5446"><vh>@url final output file</vh></v>
@@ -4896,7 +4896,6 @@ if changed:
 <t tx="ekr.20101018190057.5463">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
 <t tx="ekr.20101018190057.5464">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html</t>
 <t tx="ekr.20101018190057.5467">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html</t>
-<t tx="ekr.20101018190057.5468">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="ekr.20101018190057.5469">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html</t>
 <t tx="ekr.20101018190057.5470">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html</t>
 <t tx="ekr.20101018190057.5473">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html</t>
@@ -4917,6 +4916,7 @@ if changed:
 <t tx="ekr.20101018203754.5428">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html</t>
 <t tx="ekr.20101018203754.5429">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html</t>
 <t tx="ekr.20101018203754.5430">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html</t>
+<t tx="ekr.20101018205732.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
