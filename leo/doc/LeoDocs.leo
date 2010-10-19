@@ -766,8 +766,8 @@
 </v>
 <v t="ekr.20101018183640.5360"><vh>@button remove-image-directives</vh></v>
 <v t="ekr.20101018185243.5368"><vh>@button remove-final-output</vh></v>
-<v t="ekr.20101013072903.5224"><vh>@slideshow Leo basics step by step</vh>
-<v t="ekr.20101013072903.5225" a="M"><vh>@slide ((no-slide</vh>
+<v t="ekr.20101013072903.5224" a="E"><vh>@slideshow Leo basics step by step</vh>
+<v t="ekr.20101013072903.5225"><vh>@slide ((no-slide</vh>
 <v t="ekr.20101018190057.5370"><vh>@no-screenshot</vh></v>
 <v t="ekr.20101018190057.5462"><vh>@url built slide</vh></v>
 </v>
@@ -783,11 +783,11 @@
 <v t="ekr.20101018190057.5443"><vh>@url final output file</vh></v>
 <v t="ekr.20101018203754.5424"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101018061243.5392"><vh>@slide ((Return ends editing</vh>
+<v t="ekr.20101018061243.5392" a="M"><vh>@slide ((Return ends editing</vh>
 <v t="ekr.20101018190057.5444"><vh>@url final output file</vh></v>
 <v t="ekr.20101018203754.5425"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101018061243.5393" a="M"><vh>@slide ((no-slide focus keys</vh>
+<v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh>
 <v t="ekr.20101018190057.5373"><vh>@no-screenshot</vh></v>
 <v t="ekr.20101018190057.5467"><vh>@url built slide</vh></v>
 </v>
@@ -839,7 +839,7 @@
 <v t="ekr.20101018190057.5456"><vh>@url final output file</vh></v>
 <v t="ekr.20101018203754.5429"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101014110348.5299"><vh>@slide ((Left-Arrow</vh>
+<v t="ekr.20101014110348.5299" a="M"><vh>@slide ((Left-Arrow</vh>
 <v t="ekr.20101018190057.5457"><vh>@url final output file</vh></v>
 <v t="ekr.20101018203754.5430"><vh>@url built slide</vh></v>
 </v>
@@ -847,7 +847,7 @@
 <v t="ekr.20101018190057.5458"><vh>@url final output file</vh></v>
 <v t="ekr.20101018190057.5481"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101014110348.5309" a="M"><vh>@slide ((no-slide Arrow keys: summary</vh>
+<v t="ekr.20101014110348.5309"><vh>@slide ((no-slide Arrow keys: summary</vh>
 <v t="ekr.20101014110348.5323"><vh>@no-screenshot</vh></v>
 <v t="ekr.20101018190057.5482"><vh>@url built slide</vh></v>
 </v>
@@ -863,7 +863,7 @@
 <v t="ekr.20101018190057.5461"><vh>@url final output file</vh></v>
 <v t="ekr.20101018190057.5485"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101014110348.5336" a="M"><vh>@slide ((no-slide end slide</vh>
+<v t="ekr.20101014110348.5336"><vh>@slide ((no-slide end slide</vh>
 <v t="ekr.20101018061243.5395"><vh>@no-screenshot</vh></v>
 <v t="ekr.20101018190057.5486"><vh>@url built slide</vh></v>
 </v>
@@ -4333,7 +4333,7 @@ Now the "to do" node is selected.
 .. image:: slide-018.png
 
 </t>
-<t tx="ekr.20101014110348.5299">With the "to-do today" node selected,
+<t tx="ekr.20101014110348.5299">With the "to-do" node selected,
 hitting the Left-Arrow key will contract the node.
 
 .. "to do" contracted.
@@ -4524,6 +4524,8 @@ slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step'
 wink_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/_files'
     # The directory containing the wink screenshots.
     # This will usually be &lt;slideshow_dir&gt;/_files.
+    # **Important** You generate these screenshots using Wink's 
+    # Export As Html command (!)
 
 @others
 
