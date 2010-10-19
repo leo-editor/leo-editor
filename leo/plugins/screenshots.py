@@ -559,6 +559,9 @@ class ScreenShotController(object):
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+
+        sc.build()
+        sc.c.redraw()
     #@+node:ekr.20100913085058.5629: *4* sc.make_slide_command
     def make_slide_command (self,p):
 
@@ -571,12 +574,28 @@ class ScreenShotController(object):
             return g.error('Not in slide show:',p.h)
 
         sc.run(p)
+        sc.build()
+        sc.c.redraw()
 
         # Only the make-slide command gives this error.
         # The make-slide-show commands allows dummy nodes.
         if sc.slide_node and not sc.slide_node.b.strip():
             g.error('No body for slide')
 
+    #@+node:ekr.20101008112639.5628: *4* sc.build
+    def build(self):
+
+        '''Do a complete sphinx build.'''
+
+        sc = self
+
+        os.chdir(sc.slideshow_path)
+        os.system('make clean')
+        os.system('make html')
+
+        # cmd = ['make','html']
+        # proc = subprocess.Popen(cmd)
+        # proc.communicate() # Wait
     #@+node:ekr.20100915074635.5651: *3* init
     def init (self,p):
 
@@ -1426,15 +1445,17 @@ class ScreenShotController(object):
 
         # "@url final output file" inhibits everything except the build.
         if sc.find_node(sc.slide_node,'@url final output file'):
-            sc.build_slide()
-            c.redraw()
+            sc.make_at_url_node_for_built_slide()
+            # sc.build_slide()
+            # c.redraw()
             g.note('exists: @url final output file %s' % (p.h),color='blue')
             return
 
         # Do only a build if there is no @screenshot tree.
         if not sc.screenshot_tree:
-            sc.build_slide()
-            c.redraw()
+            sc.make_at_url_node_for_built_slide()
+            # sc.build_slide()
+            # c.redraw()
             return # Don't take any screenshot!
 
         # '@url screenshot' inhibits taking the screenshot.
@@ -1443,8 +1464,9 @@ class ScreenShotController(object):
                 sc.make_at_url_node_for_screenshot()
             else:
                 g.error('can not make screen shot:',p.h)
-                sc.build_slide()
-                c.redraw()
+                sc.make_at_url_node_for_built_slide()
+                # sc.build_slide()
+                # c.redraw()
                 return
 
         # "@url working file" inhibits making a new working file.
@@ -1468,21 +1490,9 @@ class ScreenShotController(object):
             sc.make_output_file()
 
         # Build slide after creating the output file ;-)
-        sc.build_slide()
-        c.redraw()
-    #@+node:ekr.20101008112639.5628: *4* build_slide
-    def build_slide (self):
-
-        sc = self
-
-        os.chdir(sc.slideshow_path)
-        os.system('make clean')
-        os.system('make html')
         sc.make_at_url_node_for_built_slide()
-
-        # cmd = ['make','html']
-        # proc = subprocess.Popen(cmd)
-        # proc.communicate() # Wait
+        # sc.build_slide()
+        # c.redraw()
     #@+node:ekr.20100908110845.5552: *4* edit_working_file & helper
     def edit_working_file(self):
 
