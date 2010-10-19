@@ -11,7 +11,8 @@ write_intermediate_file = True
 @c
 
 .. links
-.. _`My first slide show`:      slides/my-first-slide-show/slide-001.html
+
+.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
 .. _`What is Leo`:              slides/what-is-leo/slide-001.html
 .. _`What is Leo--Continued`:   slides/what-is-leo--continued/slide-001.html
 .. _`Installation`:             slides/installation/slide-001.html
@@ -30,8 +31,9 @@ This is the front page for various slide shows about Leo.
 Basics
 ------
 
-`What is Leo`_
+`Leo Basics Step By Step`_ explains the basics of Leo outlines.
 
+.. `What is Leo`_
 ..  `What is Leo--Continued`_
 ..  `Installation`_
 ..  `Outlining`_
