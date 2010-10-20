@@ -1286,6 +1286,9 @@
 <v t="ekr.20090615053403.4906"><vh>@test colorizer lisp</vh>
 <v t="ekr.20090615053403.4907"><vh>Startup</vh></v>
 </v>
+<v t="ekr.20101020123501.6005"><vh>@test colorizer objective-c</vh>
+<v t="ekr.20101020123501.6006"><vh>Startup</vh></v>
+</v>
 <v t="ekr.20090615053403.4908"><vh>@test colorizer perl</vh>
 <v t="ekr.20090615053403.4909"><vh>Startup</vh></v>
 </v>
@@ -27055,6 +27058,44 @@ False:
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
+<t tx="ekr.20101020123501.6005">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20101020123501.6006">@language objective_c
+
+@interface Application
+    -(void) init;
+    -(void) showMessage;
+@end
+
+@implementation Application 
+    -(id) init {
+        if (self = [super init]) {
+            NSLog(@"Init ok");
+            return self;
+        }
+        return nil;
+    }
+    -(void) showMessage {
+        NSLog(@"Hello there");
+    }
+@end
+
+@"Hello there"
+
+,@interface
+, @interface
+the @interface
+
+// By the way, I have noticed that such kind of words in doxygen block
+// are highlighted properly, but they are labels here, not keywords1 as in my case.
+/**
+@var test
+@todo
+*/</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
