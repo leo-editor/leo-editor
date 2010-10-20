@@ -227,9 +227,7 @@ Scripts can get or change the context of the body as follows::
     i,j = w.getSelectionRange (sort=True) # Return the range of selected text.
     w.replace(i,j,s)                    # Replace the text from i to j by s.
     w.setAllText(s)                     # Set the entire body text to s.
-    w.setBackgroundColor(color)         # Set the background color.
     w.setSelectionRange(i,j,insert=None) # Select the text.
-    w.setForegroundColor(color)         # Set the foreground color.
 
 **Notes**:
 
