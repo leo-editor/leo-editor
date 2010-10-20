@@ -9276,7 +9276,7 @@ class jEditColorizer:
 
         '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace('%-10s %-20s %s' % (
             self.colorizer.language,pattern,s)) # g.callers(1)
 
