@@ -847,7 +847,14 @@
 <v t="ekr.20101018185243.5368"><vh>@button remove-final-output</vh></v>
 <v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
 <v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
-<v t="ekr.20101014110348.5256"><vh>@slide ((intro</vh></v>
+<v t="ekr.20101014110348.5256"><vh>@slide ((no-ss intro</vh>
+<v t="ekr.20101020082858.5420"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101020082858.5440"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101020082858.5441"><vh>@slide ((no-ss auto read/write</vh>
+<v t="ekr.20101020082858.5443"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101020082858.5446"><vh>@url built slide</vh></v>
+</v>
 <v t="ekr.20101014110348.5278"><vh>at-thin</vh>
 <v t="ekr.20101019085517.5424"><vh>@slide ((@thin</vh></v>
 </v>
@@ -4081,7 +4088,7 @@ Prezi picture: @include &lt;filename&gt;.</t>
 <t tx="ekr.20101014030710.5277">file:///C:/Users/edreamleo/Documents/logos/ekr.gif</t>
 <t tx="ekr.20101014031545.5278">file://../Icons/Lioness.jpg</t>
 <t tx="ekr.20101014034526.5280">@language rest
-@pagewidth 50
+@pagewidth 60
 
 </t>
 <t tx="ekr.20101014034526.5282">These don't tell stories
@@ -4192,13 +4199,27 @@ You can change this identifier at any time by editing .leoID.txt.
 <t tx="ekr.20101014105353.5259">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html</t>
 <t tx="ekr.20101014105353.5260">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html</t>
 <t tx="ekr.20101014105353.5261">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html</t>
-<t tx="ekr.20101014110348.5256">In this slideshow, we'll see how to connect Leo
-outlines to files outside of Leo.
-We call such files **external files**.
+<t tx="ekr.20101014110348.5256">Leo nodes whose headline starts with \@thin, \@auto or
+\@edit create **external files**, files outside of Leo on
+your file system::
 
-Here, we have opened a new Leo outline.
+  @thin myClass.py
+  @auto ../graphics/circles.cpp
+  @edit ~/.leo/.leoID.txt
+  
+The headline contains a file name, which can be an absolute
+path or a path relative to the directory containing the Leo
+outline.
 
-.. open leo to create workbook.leo</t>
+**@thin** embeds outline structure directly into external
+files using comments called **sentinel lines**. This is the
+recommended way to share external files among Leo users.
+
+**@auto** and **@edit** allow you to read and edit external
+files without inserting sentinel lines. The cost of avoiding
+sentinel lines is that Leo can not preserve outline
+structure exactly.
+</t>
 <t tx="ekr.20101014110348.5257">Here, created a node called @edit spam.py.
 
 This represents the file spam.py in the same
@@ -4244,14 +4265,38 @@ Let's add a comment.</t>
 <t tx="ekr.20101014110348.5267">If we close the Leo file and reopen it,
 we see the new text.
 </t>
-<t tx="ekr.20101014110348.5270"></t>
+<t tx="ekr.20101014110348.5270">**@edit nodes** contain the entire contents of an
+external file.
+
+</t>
 <t tx="ekr.20101014110348.5271"></t>
-<t tx="ekr.20101014110348.5272">@edit is the easiest way to connect files</t>
+<t tx="ekr.20101014110348.5272">..  At present, there are **importers** for
+..  C, elisp, HTML, .ini files, Java, Javascript,
+..  Pascal, PHP, Python and xml. 
+
+
+**@auto** trees cause Leo to automatically create
+an outline based on the structure of the external
+file. 
+
+**@auto trees** cause Leo to **import**
+a file into a tree of Leo nodes, based on the
+file's extension. Leo's **importers** create Leo
+outlines based on the structure of the imported
+language. The importer for unknown languages reads
+the entire contents of the external file into the
+\@auto node. **@edit nodes** cause Leo to read the
+entire contents of an external file into the @edit
+node.
+
+Leo contains **importers** for common
+languages. These importers split the external file
+into outline nodes.</t>
 <t tx="ekr.20101014110348.5274">Rather than creating new files with @edit, it is more common
 to use @edit to connect Leo with files that already exist on your file system.</t>
 <t tx="ekr.20101014110348.5275">Within a Leo outline, an @edit node contains
 the entire contents of an external file.</t>
-<t tx="ekr.20101014110348.5278">We create an @thin node.</t>
+<t tx="ekr.20101014110348.5278"></t>
 <t tx="ekr.20101014110348.5286">Ctrl-H edits the presently selected headline.
 
 You can type Ctrl-H at any time, regardless of
@@ -4963,7 +5008,34 @@ following:
 * Appendices
 * Glossary
 * What’s New in Leo </t>
-<t tx="ekr.20101019085517.5424"></t>
+<t tx="ekr.20101019085517.5424">\@thin trees are the most flexible way of creating and editing external files.
+
+Here, we have created an **@thin node**, a node
+whose headline start with @thin.
+</t>
+<t tx="ekr.20101020082858.5420"></t>
+<t tx="ekr.20101020082858.5440">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-001.html</t>
+<t tx="ekr.20101020082858.5441">Collectively, \@thin, \@auto or \@edit trees are called
+**@&lt;file&gt; trees**.
+
+**Leo automatically reads and writes \@&lt;file&gt; trees**
+
+When you open a Leo outline, Leo recreates all \@&lt;file&gt;
+trees from the corresponding external files.
+
+When you save a Leo outline, Leo writes all changed \@&lt;file&gt;
+trees to the corresponding external files.
+
+A single Leo outline may be connected to dozens of external
+files. Reading external files is very fast because of an
+efficient file-caching scheme.
+
+As a result, Leo acts like an IDE (Integrated Development
+Environment). For example, a single Leo outline contains
+@thin trees for all of Leo's core source files.
+</t>
+<t tx="ekr.20101020082858.5443"></t>
+<t tx="ekr.20101020082858.5446">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-002.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
