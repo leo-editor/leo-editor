@@ -662,7 +662,7 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     # os.chdir(leoDir)
     # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
     env = dict(os.environ)
-    env['PYTHONPATH'] = env.get('PYTHONPATH', '') + ';' + leoDir
+    env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
 
     if False:
         keys = list(os.environ.keys())
@@ -1216,9 +1216,9 @@ def makeImportExportSuite(c,parentHeadline,doImport):
 
     u = testUtils(c)
     parent = u.findNodeAnywhere(parentHeadline)
-    assert(parent)
+    assert parent,'node not found: %s' % (parentHeadline)
     temp = u.findNodeInTree(parent,"tempNode")
-    assert(temp)
+    assert temp,'node not found: tempNode'
 
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)
