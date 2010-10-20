@@ -79,10 +79,11 @@ Some names defined at the top level have special significance.
 #@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
 
-if g.isPython3:
-    pass
-else:
-    Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
+if g.app.gui.guiName() == 'tkinter':
+    if g.isPython3:
+        Tk = None
+    else:
+        Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
 
 if g.isPython3:
     import configparser as ConfigParser
