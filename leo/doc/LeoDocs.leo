@@ -186,7 +186,9 @@
 <v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
 </v>
-<v t="ekr.20100807084131.4409"><vh>To do here</vh></v>
+<v t="ekr.20100807084131.4409"><vh>To do here</vh>
+<v t="ekr.20101019061953.5422"><vh>Reorganize Users Guide</vh></v>
+</v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
 <v t="ekr.20101009111520.4525"><vh> Slideshow Buttons (disabled)</vh>
 <v t="ekr.20101008061729.4425"><vh>@@button ins-@slide-nodes</vh></v>
@@ -732,31 +734,6 @@
 </v>
 </v>
 <v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
-<v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
-<v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
-<v t="ekr.20101014110348.5259"><vh>Meld notes</vh></v>
-<v t="ekr.20101014110348.5256"><vh>@slide ((intro</vh></v>
-<v t="ekr.20101014110348.5276"><vh>@slide ((@edit, @auto &amp; @thin</vh>
-<v t="ekr.20101014110348.5277"><vh>@no-screenshot</vh></v>
-</v>
-<v t="ekr.20101014110348.5270"><vh>at-edit</vh>
-<v t="ekr.20101014110348.5275"><vh>@slide ((@edit intro</vh></v>
-<v t="ekr.20101014110348.5257"><vh>@slide ((@edit</vh></v>
-<v t="ekr.20101014110348.5261"><vh>@slide ((simple body text</vh></v>
-<v t="ekr.20101014110348.5260"><vh>@slide ((save, creating the file</vh></v>
-<v t="ekr.20101014110348.5262"><vh>@slide ((change the text</vh></v>
-<v t="ekr.20101014110348.5263"><vh>@slide ((save again, updating the file</vh></v>
-<v t="ekr.20101014110348.5265"><vh>@slide ((here is the actual file</vh></v>
-<v t="ekr.20101014110348.5264"><vh>@slide ((close the file</vh></v>
-<v t="ekr.20101014110348.5266"><vh>@slide ((edit the file outside of Leo</vh></v>
-<v t="ekr.20101014110348.5267"><vh>@slide ((close Leo file and reopen</vh></v>
-<v t="ekr.20101014110348.5274"><vh>@slide ((@edit with existing files</vh></v>
-</v>
-<v t="ekr.20101014110348.5271"><vh>at-auto</vh>
-<v t="ekr.20101014110348.5272"><vh>@auto</vh></v>
-</v>
-<v t="ekr.20101014110348.5278"><vh>at-thin</vh></v>
-</v>
 <v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh>
 <v t="ekr.20101014034526.5297"><vh>Notes</vh>
 <v t="ekr.20101011165412.5066"><vh> Scripting (copy)</vh>
@@ -868,7 +845,29 @@
 </v>
 <v t="ekr.20101018183640.5360"><vh>@button remove-image-directives</vh></v>
 <v t="ekr.20101018185243.5368"><vh>@button remove-final-output</vh></v>
-<v t="ekr.20101019061953.5422"><vh>Reorganize Users Guide</vh></v>
+<v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
+<v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
+<v t="ekr.20101014110348.5256"><vh>@slide ((intro</vh></v>
+<v t="ekr.20101014110348.5278"><vh>at-thin</vh>
+<v t="ekr.20101019085517.5424"><vh>@slide ((@thin</vh></v>
+</v>
+<v t="ekr.20101014110348.5270"><vh>at-edit</vh>
+<v t="ekr.20101014110348.5275"><vh>@slide ((@edit intro</vh></v>
+<v t="ekr.20101014110348.5257"><vh>@slide ((@edit</vh></v>
+<v t="ekr.20101014110348.5261"><vh>@slide ((simple body text</vh></v>
+<v t="ekr.20101014110348.5260"><vh>@slide ((save, creating the file</vh></v>
+<v t="ekr.20101014110348.5262"><vh>@slide ((change the text</vh></v>
+<v t="ekr.20101014110348.5263"><vh>@slide ((save again, updating the file</vh></v>
+<v t="ekr.20101014110348.5265"><vh>@slide ((here is the actual file</vh></v>
+<v t="ekr.20101014110348.5264"><vh>@slide ((close the file</vh></v>
+<v t="ekr.20101014110348.5266"><vh>@slide ((edit the file outside of Leo</vh></v>
+<v t="ekr.20101014110348.5267"><vh>@slide ((close Leo file and reopen</vh></v>
+<v t="ekr.20101014110348.5274"><vh>@slide ((@edit with existing files</vh></v>
+</v>
+<v t="ekr.20101014110348.5271"><vh>at-auto</vh>
+<v t="ekr.20101014110348.5272"><vh>((@auto</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -4089,13 +4088,7 @@ Prezi picture: @include &lt;filename&gt;.</t>
 </t>
 <t tx="ekr.20101014034526.5282">These don't tell stories
 </t>
-<t tx="ekr.20101014034526.5287">@edit
-
-@auto
-
-@file
-
-sentinels
+<t tx="ekr.20101014034526.5287">sentinels
 
 With \@file, you also **share outline structure**.
 
@@ -4212,9 +4205,6 @@ Here, we have opened a new Leo outline.
 
 This represents the file spam.py in the same
 directory as the Leo outline.</t>
-<t tx="ekr.20101014110348.5259">- Use @no-screenshot to indicate no screenshot will be used.
-
-- All other </t>
 <t tx="ekr.20101014110348.5260">I save the Leo outline file with Ctrl-S or the File:Save menu.
 
 When I do that, Leo automatically saves any @edit node that
@@ -4263,11 +4253,7 @@ we see the new text.
 to use @edit to connect Leo with files that already exist on your file system.</t>
 <t tx="ekr.20101014110348.5275">Within a Leo outline, an @edit node contains
 the entire contents of an external file.</t>
-<t tx="ekr.20101014110348.5276">This presentation will discuss three ways
-to connect Leo outlines with external files:
-@edit, @auto and @edit.</t>
-<t tx="ekr.20101014110348.5277"></t>
-<t tx="ekr.20101014110348.5278"></t>
+<t tx="ekr.20101014110348.5278">We create an @thin node.</t>
 <t tx="ekr.20101014110348.5286">Ctrl-H edits the presently selected headline.
 
 You can type Ctrl-H at any time, regardless of
@@ -4979,6 +4965,7 @@ following:
 * Appendices
 * Glossary
 * What’s New in Leo </t>
+<t tx="ekr.20101019085517.5424"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
