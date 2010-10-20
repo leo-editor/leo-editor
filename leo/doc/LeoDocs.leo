@@ -613,7 +613,7 @@
 </v>
 <v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
 <v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
-<v t="ekr.20101014105353.5256"><vh>@url built slide</vh></v>
+<v t="ekr.20101020125156.5430"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
 <v t="ekr.20101014105353.5257"><vh>@url built slide</vh></v>
@@ -4127,6 +4127,7 @@ User-defined types
 </t>
 <t tx="ekr.20101014034526.5298"></t>
 <t tx="ekr.20101014034526.5299">.. _`Download Python`: http://www.python.org/download/
+.. _`packaged version`: http://www.python.org/download/
 .. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
 .. _`next slide`: slide-002.html
 
@@ -4142,6 +4143,12 @@ User-defined types
 
 3. Run the installer.
    
+**Installing Leo from Linux packages**
+
+Linux users are best served by the `packaged version`_ available at
+SourceForge. You can also install Leo manually, as discussed in the
+`next slide`_.
+
 **Installing Leo from sources**
 
 See the `next slide`_.
@@ -4193,7 +4200,6 @@ files that Leo creates.
 Leo stores this identifier in the file ~/.leo/.leoID.txt.
 You can change this identifier at any time by editing .leoID.txt.
 </t>
-<t tx="ekr.20101014105353.5256">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
 <t tx="ekr.20101014105353.5257">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-002.html</t>
 <t tx="ekr.20101014105353.5258">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-003.html</t>
 <t tx="ekr.20101014105353.5259">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html</t>
@@ -5036,6 +5042,7 @@ Environment). For example, a single Leo outline contains
 </t>
 <t tx="ekr.20101020082858.5443"></t>
 <t tx="ekr.20101020082858.5446">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-002.html</t>
+<t tx="ekr.20101020125156.5430">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
