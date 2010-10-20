@@ -1138,7 +1138,8 @@ class leoImportCommands (scanUtility):
         fileName = files[0] # files contains at most one file.
         g.setGlobalOpenDir(fileName)
         s,e = g.readFileIntoString(fileName)
-        if s is None: return
+        if s is None: return ''
+        s = s.replace('\r','') # Fixes bug 626101.
         array = s.split("\n")
 
         # Convert the string to an outline and insert it after the current node.

@@ -1018,6 +1018,7 @@
 <v t="sps.20100609154419.5451"><vh>@test g.scanAtRootOptions none with missing filename</vh></v>
 </v>
 </v>
+<v t="ekr.20100907003013.5979"><vh>@@test leoInkCommands</vh></v>
 </v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
@@ -3059,8 +3060,6 @@
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
-<v t="ekr.20100907003013.5979"><vh>@test leoInkCommands</vh></v>
-<v t="ekr.20090529141856.4682"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
