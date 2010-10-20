@@ -991,6 +991,8 @@ def selectChapterByNameHelper (self,chapter,collapse=True):
 
         # New in Leo 4.6 b2: *do* call c.redraw.
         c.redraw()
+#@+node:ekr.20101019185106.5934: *4* Fixed bug in runUnitTestLeoFile
+Replace ';' by os.pathsep.
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic

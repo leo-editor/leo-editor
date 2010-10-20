@@ -94,6 +94,7 @@ def onIdle (tag,keywords):
     c = keywords.get('c')
     if g.app.killed or not c or not c.exists: return
     d = gDict.get(c.hash())
+    if not d: return
     last = d.get('last')
     interval = d.get('interval')
     if time.time()-last >= interval:
