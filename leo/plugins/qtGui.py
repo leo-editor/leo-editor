@@ -9030,16 +9030,18 @@ class jEditColorizer:
             elif ch in (' ','\t'):
                 i2 -= 1
             else:
+                # g.trace('not a word 1',repr(ch))
                 return 0
 
         # Get the word as quickly as possible.
         j = i+1
         while j < len(s) and s[j] in self.word_chars:
             j += 1
-        word = s[i+1:j] # Bug fix: 10/17/07: entries in leoKeywordsDict do not start with '@'
+        word = s[i+1:j] # entries in leoKeywordsDict do not start with '@'.
 
         if j < len(s) and s[j] not in (' ','\t','\n'):
-            return -(j-i+1) # Fail.
+            # g.trace('not a word 2',repr(word))
+            return 0 # Fail, but allow a rescan, as in objective_c.
 
         if self.leoKeywordsDict.get(word):
             kind = 'leoKeyword'
@@ -9050,7 +9052,21 @@ class jEditColorizer:
             # g.trace('*** match',repr(s))
             return result
         else:
-            return -(j-i+1) # An important optimization.
+            # 2010/10/20: also check the keywords dict here.
+            # This allows for objective_c keywords starting with '@'
+            # This will not slow down Leo, because it is called
+            # for things that look like Leo directives.
+            word = '@' + word
+            kind = self.keywordsDict.get(word)
+            if kind:
+                self.colorRangeWithTag(s,i,j,kind)
+                self.prev = (i,j,kind)
+                self.trace_match(kind,s,i,j)
+                # g.trace('found',word)
+                return j-i
+            else:
+                # g.trace('fail',repr(word),repr(self.word_chars))
+                return -(j-i+1) # An important optimization.
     #@+node:ekr.20090614134853.3725: *6* match_section_ref
     def match_section_ref (self,s,i):
 
@@ -9170,6 +9186,7 @@ class jEditColorizer:
 
         '''Succeed if s[i:] is a keyword.'''
 
+        # trace = False
         self.totalKeywordsCalls += 1
 
         # Important.  Return -len(word) for failure greatly reduces
@@ -9177,9 +9194,8 @@ class jEditColorizer:
 
         # We must be at the start of a word.
         if i > 0 and s[i-1] in self.word_chars:
+            # if trace: g.trace('not at word start',s[i-1])
             return 0
-
-        # trace = False and not g.unitTesting
 
         # Get the word as quickly as possible.
         j = i ; n = len(s) ; chars = self.word_chars
@@ -9260,7 +9276,7 @@ class jEditColorizer:
 
         '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         if trace: g.trace('%-10s %-20s %s' % (
             self.colorizer.language,pattern,s)) # g.callers(1)
 
