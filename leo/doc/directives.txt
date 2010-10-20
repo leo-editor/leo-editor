@@ -146,7 +146,7 @@ When reading \@auto nodes, Leo creates the \@auto tree using **importers**,
 parsers that create an outline with nodes for each class, method and function in
 the external file. Some importers create other kinds of nodes as well.
 
-Importers presently exist for C, elisp, HTML, Java, Javascript, Pascal, PHP,
+Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP,
 Python and xml. Leo determines the language using the file's extension. If no
 parser exists for a language, Leo copies the entire body of the external file
 into the \@auto node.
