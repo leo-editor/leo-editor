@@ -37,7 +37,6 @@ def cascade (self,event=None):
 http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
 
 add-canvas: Like add-editor, but it creates a canvas area, not a text area.
-#@+node:ekr.20081215074704.21: *3* Add drag and drop
 #@+node:ekr.20090418064921.12: *3* Qt, vim bindings
 http://groups.google.com/group/leo-editor/browse_thread/thread/7285ac185355efb1
 #@+node:ekr.20081215162017.4: *3* Allow coloring of script buttons
@@ -74,315 +73,6 @@ keyboard I get:
 
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
-#@+node:ekr.20100223114506.3701: ** Leo 4.7.1
-#@+node:ekr.20100223114506.3700: *3* Fixed expand/contract-pane commands
-#@+node:ekr.20081121105001.297: *4* Minibuffer commands... (qtFrame)
-#@+node:ekr.20081121105001.298: *5* contractPane
-def contractPane (self,event=None):
-
-    '''Contract the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.contractBodyPane()
-        c.bodyWantsFocusNow()
-    elif wname.startswith('log'):
-        f.contractLogPane()
-        c.logWantsFocusNow()
-    else:
-        for z in ('head','canvas','tree'):
-            if wname.startswith(z):
-                f.contractOutlinePane()
-                c.treeWantsFocusNow()
-                break
-#@+node:ekr.20081121105001.299: *5* expandPane
-def expandPane (self,event=None):
-
-    '''Expand the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.expandBodyPane()
-        c.bodyWantsFocusNow()
-    elif wname.startswith('log'):
-        f.expandLogPane()
-        c.logWantsFocusNow()
-    else:
-        for z in ('head','canvas','tree'):
-            if wname.startswith(z):
-                f.expandOutlinePane()
-                c.treeWantsFocusNow()
-                break
-#@+node:ekr.20081121105001.300: *5* fullyExpandPane
-def fullyExpandPane (self,event=None):
-
-    '''Fully expand the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.fullyExpandBodyPane()
-        c.treeWantsFocusNow()
-    elif wname.startswith('log'):
-        f.fullyExpandLogPane()
-        c.bodyWantsFocusNow()
-    else:
-        for z in ('head','canvas','tree'):
-            if wname.startswith(z):
-                f.fullyExpandOutlinePane()
-                c.bodyWantsFocusNow()
-                break
-#@+node:ekr.20081121105001.301: *5* hidePane
-def hidePane (self,event=None):
-
-    '''Completely contract the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.hideBodyPane()
-        c.treeWantsFocusNow()
-    elif wname.startswith('log'):
-        f.hideLogPane()
-        c.bodyWantsFocusNow()
-    else:
-        for z in ('head','canvas','tree'):
-            if wname.startswith(z):
-                f.hideOutlinePane()
-                c.bodyWantsFocusNow()
-                break
-#@+node:ekr.20081121105001.302: *5* expand/contract/hide...Pane
-@ The first arg to divideLeoSplitter means the following:
-
-    f.splitVerticalFlag: use the primary   (tree/body) ratio.
-not f.splitVerticalFlag: use the secondary (tree/log) ratio.
-@c
-
-def contractBodyPane (self,event=None):
-    '''Contract the body pane.'''
-    f = self ; r = min(1.0,f.ratio+0.1)
-    f.divideLeoSplitter(f.splitVerticalFlag,r)
-
-def contractLogPane (self,event=None):
-    '''Contract the log pane.'''
-    f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
-    f.divideLeoSplitter(not f.splitVerticalFlag,r)
-
-def contractOutlinePane (self,event=None):
-    '''Contract the outline pane.'''
-    f = self ; r = max(0.0,f.ratio-0.1)
-    f.divideLeoSplitter(f.splitVerticalFlag,r)
-
-def expandBodyPane (self,event=None):
-    '''Expand the body pane.'''
-    self.contractOutlinePane()
-
-def expandLogPane(self,event=None):
-    '''Expand the log pane.'''
-    f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
-    f.divideLeoSplitter(not f.splitVerticalFlag,r)
-
-def expandOutlinePane (self,event=None):
-    '''Expand the outline pane.'''
-    self.contractBodyPane()
-#@+node:ekr.20081121105001.303: *5* fullyExpand/hide...Pane
-def fullyExpandBodyPane (self,event=None):
-    '''Fully expand the body pane.'''
-    f = self
-    f.divideLeoSplitter(f.splitVerticalFlag,0.0)
-
-def fullyExpandLogPane (self,event=None):
-    '''Fully expand the log pane.'''
-    f = self
-    f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
-
-def fullyExpandOutlinePane (self,event=None):
-    '''Fully expand the outline pane.'''
-    f = self
-    f.divideLeoSplitter(f.splitVerticalFlag,1.0)
-
-def hideBodyPane (self,event=None):
-    '''Completely contract the body pane.'''
-    f = self
-    f.divideLeoSplitter(f.splitVerticalFlag,1.0)
-
-def hideLogPane (self,event=None):
-    '''Completely contract the log pane.'''
-    f = self
-    f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
-
-def hideOutlinePane (self,event=None):
-    '''Completely contract the outline pane.'''
-    f = self
-    f.divideLeoSplitter(f.splitVerticalFlag,0.0)
-#@+node:ekr.20081121110412.223: *4* Minibuffer commands... (tkFrame)
-
-#@+node:ekr.20081121110412.224: *5* contractPane
-def contractPane (self,event=None):
-
-    '''Contract the selected pane.'''
-
-    f = self ; c = f.c
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.contractBodyPane()
-    elif wname.startswith('log'):
-        f.contractLogPane()
-    elif wname.startswith('head') or wname.startswith('canvas'):
-        f.contractOutlinePane()
-#@+node:ekr.20081121110412.225: *5* expandPane
-def expandPane (self,event=None):
-
-    '''Expand the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.expandBodyPane()
-    elif wname.startswith('log'):
-        f.expandLogPane()
-    elif wname.startswith('head') or wname.startswith('canvas'):
-        f.expandOutlinePane()
-#@+node:ekr.20081121110412.226: *5* fullyExpandPane
-def fullyExpandPane (self,event=None):
-
-    '''Fully expand the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    # g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.fullyExpandBodyPane()
-    elif wname.startswith('log'):
-        f.fullyExpandLogPane()
-    else:
-        for z in ('head','canvas','tree'):
-            f.fullyExpandOutlinePane()
-            break
-#@+node:ekr.20081121110412.227: *5* hidePane
-def hidePane (self,event=None):
-
-    '''Completely contract the selected pane.'''
-
-    f = self ; c = f.c
-
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-
-    g.trace(wname)
-    if not w: return
-
-    if wname.startswith('body'):
-        f.hideBodyPane()
-        c.treeWantsFocusNow()
-    elif wname.startswith('log'):
-        f.hideLogPane()
-        c.bodyWantsFocusNow()
-    else:
-        for z in ('head','canvas','tree'):
-            f.hideOutlinePane()
-            c.bodyWantsFocusNow()
-            break
-#@+node:ekr.20081121110412.228: *5* expand/contract/hide...Pane
-@ The first arg to divideLeoSplitter means the following:
-
-    f.splitVerticalFlag: use the primary   (tree/body) ratio.
-not f.splitVerticalFlag: use the secondary (tree/log) ratio.
-@c
-
-def contractBodyPane (self,event=None):
-    '''Contract the body pane.'''
-    f = self ; r = min(1.0,f.ratio+0.1)
-    f.divideLeoSplitter(f.splitVerticalFlag,r)
-
-def contractLogPane (self,event=None):
-    '''Contract the log pane.'''
-    f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
-    f.divideLeoSplitter(not f.splitVerticalFlag,r)
-
-def contractOutlinePane (self,event=None):
-    '''Contract the outline pane.'''
-    f = self ; r = max(0.0,f.ratio-0.1)
-    f.divideLeoSplitter(f.splitVerticalFlag,r)
-
-def expandBodyPane (self,event=None):
-    '''Expand the body pane.'''
-    self.contractOutlinePane()
-
-def expandLogPane(self,event=None):
-    '''Expand the log pane.'''
-    f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
-    f.divideLeoSplitter(not f.splitVerticalFlag,r)
-
-def expandOutlinePane (self,event=None):
-    '''Expand the outline pane.'''
-    self.contractBodyPane()
-#@+node:ekr.20081121110412.229: *5* fullyExpand/hide...Pane
-def fullyExpandBodyPane (self,event=None):
-    '''Fully expand the body pane.'''
-    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,0.0)
-
-def fullyExpandLogPane (self,event=None):
-    '''Fully expand the log pane.'''
-    f = self ; f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
-
-def fullyExpandOutlinePane (self,event=None):
-    '''Fully expand the outline pane.'''
-    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,1.0)
-
-def hideBodyPane (self,event=None):
-    '''Completely contract the body pane.'''
-    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,1.0)
-
-def hideLogPane (self,event=None):
-    '''Completely contract the log pane.'''
-    f = self ; f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
-
-def hideOutlinePane (self,event=None):
-    '''Completely contract the outline pane.'''
-    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,0.0)
 #@+node:ekr.20100330091222.3703: ** Leo 4.8 devel
 #@+node:ekr.20100329115035.3692: *3* Don't put &nbs; in log message
 #@+node:ekr.20081121110412.264: *4* put & putnl (tkLog)
@@ -1330,17 +1020,206 @@ def setCommandForButton(self,button,command):
             # k.registerCommand(buttonText.lower(),
             #   shortcut=shortcut,func=atButtonCallback,
             #   pane='button',verbose=verbose)
-#@+node:ekr.20100223131426.3679: ** Unused code
-#@+node:ekr.20081121105001.214: *3* packEditorLabelWidget (qtBody)
-def packEditorLabelWidget (self,w):
+#@+node:ekr.20101020110928.3844: *3* Fixed bugs re objective-c coloring
+#@+node:ekr.20090614134853.3708: *4* setKeywords
+def setKeywords (self):
 
-    '''Create a qt label widget.'''
-#@+node:ekr.20100830213035.3724: *3* drag modifiers
-e = QtCore.Qt
-alt   = (int(mods) & e.AltModifier) != 0
-ctrl  = (int(mods) & e.ControlModifier) != 0
-meta  = (int(mods) & e.MetaModifier) != 0
-shift = (int(mods) & e.ShiftModifier) != 0
-g.trace(alt,ctrl,metat,shift)
+    '''Initialize the keywords for the present language.
+
+     Set self.word_chars ivar to string.letters + string.digits
+     plus any other character appearing in any keyword.'''
+
+    # Add any new user keywords to leoKeywordsDict.
+    d = self.keywordsDict
+    keys = list(d.keys())
+    for s in g.globalDirectiveList:
+        key = '@' + s
+        if key not in keys:
+            d [key] = 'leoKeyword'
+
+    # Create a temporary chars list.  It will be converted to a dict later.
+    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
+
+    for key in list(d.keys()):
+        for ch in key:
+            if ch not in chars:
+                chars.append(g.toUnicode(ch))
+
+    # jEdit2Py now does this check, so this isn't really needed.
+    # But it is needed for forth.py.
+    for ch in (' ', '\t'):
+        if ch in chars:
+            # g.es_print('removing %s from word_chars' % (repr(ch)))
+            chars.remove(ch)
+
+    # g.trace(self.colorizer.language,[str(z) for z in chars])
+
+    # Convert chars to a dict for faster access.
+    self.word_chars = {}
+    for z in chars:
+        self.word_chars[z] = z
+#@+node:ekr.20090614134853.3730: *4* match_keywords
+# This is a time-critical method.
+def match_keywords (self,s,i):
+
+    '''Succeed if s[i:] is a keyword.'''
+
+    # trace = False
+    self.totalKeywordsCalls += 1
+
+    # Important.  Return -len(word) for failure greatly reduces
+    # the number of times this method is called.
+
+    # We must be at the start of a word.
+    if i > 0 and s[i-1] in self.word_chars:
+        # if trace: g.trace('not at word start',s[i-1])
+        return 0
+
+    # Get the word as quickly as possible.
+    j = i ; n = len(s) ; chars = self.word_chars
+    while j < n and s[j] in chars:
+        j += 1
+
+    word = s[i:j]
+    if self.ignore_case: word = word.lower()
+    kind = self.keywordsDict.get(word)
+    if kind:
+        self.colorRangeWithTag(s,i,j,kind)
+        self.prev = (i,j,kind)
+        result = j - i
+        # if trace: g.trace('success',word,kind,j-i)
+        self.trace_match(kind,s,i,j)
+        return result
+    else:
+        # if trace: g.trace('fail',word,kind)
+        return -len(word) # An important new optimization.
+#@+node:ekr.20090614134853.3754: *4* mainLoop & restart
+def mainLoop(self,n,s):
+
+    '''Colorize string s, starting in state n.'''
+
+    trace = False and not g.unitTesting
+    traceMatch = True ; traceState = True ; verbose = True
+
+    if trace and traceState: g.trace('** start',self.showState(n),s)
+
+    i = 0
+    if n > -1:
+        i = self.restart(n,s,trace and traceMatch)
+    if i == 0:
+        self.setState(self.prevState())
+
+    while i < len(s):
+        progress = i
+        functions = self.rulesDict.get(s[i],[])
+        for f in functions:
+            n = f(self,s,i)
+            if n is None:
+                g.trace('Can not happen: n is None',repr(f))
+                break
+            elif n > 0: # Success.
+                if trace and traceMatch and f.__name__!='match_blanks':
+                    g.trace('match: %20s %s' % (
+                        f.__name__,s[i:i+n]))
+                i += n
+                break # Stop searching the functions.
+            elif n < 0: # Fail and skip n chars.
+                if trace and traceMatch and verbose:
+                    g.trace('fail: %20s %s' % (
+                        f.__name__,s[i:i+n]))
+                i += -n
+                break # Stop searching the functions.
+            else: # Fail. Try the next function.
+                pass # Do not break or change i!
+        else:
+            i += 1
+        assert i > progress
+
+    # Don't even *think* about clearing state here.
+    # We remain in the starting state unless a match happens.
+    if trace and traceState:
+        g.trace('** end',self.showCurrentState(),s)
+#@+node:ekr.20090625061310.3864: *5* restart
+def restart (self,n,s,traceMatch):
+
+    f = self.restartDict.get(n)
+    if f:
+        i = f(s)
+        fname = f.__name__
+        if traceMatch:
+            if i > 0:
+                g.trace('** restart match',fname,s[:i])
+            else:
+                g.trace('** restart fail',fname,s)
+    else:
+        g.trace('**** no restart f')
+        i = 0
+
+    return i
+#@+node:ekr.20090614134853.3724: *4* match_leo_keywords
+def match_leo_keywords(self,s,i):
+
+    '''Succeed if s[i:] is a Leo keyword.'''
+
+    # g.trace(i,g.get_line(s,i))
+
+    self.totalLeoKeywordsCalls += 1
+
+    if s[i] != '@':
+        return 0
+
+    # fail if something besides whitespace precedes the word on the line.
+    i2 = i-1
+    while i2 >= 0:
+        ch = s[i2]
+        if ch == '\n':
+            break
+        elif ch in (' ','\t'):
+            i2 -= 1
+        else:
+            # g.trace('not a word 1',repr(ch))
+            return 0
+
+    # Get the word as quickly as possible.
+    j = i+1
+    while j < len(s) and s[j] in self.word_chars:
+        j += 1
+    word = s[i+1:j] # entries in leoKeywordsDict do not start with '@'.
+
+    if j < len(s) and s[j] not in (' ','\t','\n'):
+        # g.trace('not a word 2',repr(word))
+        return 0 # Fail, but allow a rescan, as in objective_c.
+
+    if self.leoKeywordsDict.get(word):
+        kind = 'leoKeyword'
+        self.colorRangeWithTag(s,i,j,kind)
+        self.prev = (i,j,kind)
+        result = j-i+1 # Bug fix: skip the last character.
+        self.trace_match(kind,s,i,j)
+        # g.trace('*** match',repr(s))
+        return result
+    else:
+        # 2010/10/20: also check the keywords dict here.
+        # This allows for objective_c keywords starting with '@'
+        # This will not slow down Leo, because it is called
+        # for things that look like Leo directives.
+        word = '@' + word
+        kind = self.keywordsDict.get(word)
+        if kind:
+            self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            # g.trace('found',word)
+            return j-i
+        else:
+            # g.trace('fail',repr(word),repr(self.word_chars))
+            return -(j-i+1) # An important optimization.
+#@+node:ekr.20101007215714.3751: ** Qcompleter test
+w = c.frame.body
+
+def callback(val):
+    g.trace(val)
+
+w.showCompleter(['hello','helloworld'],callback)
 #@-all
 #@-leo

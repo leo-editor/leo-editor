@@ -3432,3 +3432,5 @@ _
 repo
 cvs
 bzr
+spam
+ini
