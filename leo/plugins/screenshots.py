@@ -573,15 +573,17 @@ class ScreenShotController(object):
         if not sc.find_slideshow_node(p):
             return g.error('Not in slide show:',p.h)
 
+        slide_node = sc.find_slide_node(p)
+        sc.remove_built_slide_node(slide_node)
         sc.run(p)
-        sc.build()
-        sc.c.redraw()
+        if not sc.find_node(sc.slide_node,'@url built slide'):
+            sc.build()
+            sc.c.redraw()
 
         # Only the make-slide command gives this error.
         # The make-slide-show commands allows dummy nodes.
         if sc.slide_node and not sc.slide_node.b.strip():
             g.error('No body for slide')
-
     #@+node:ekr.20101008112639.5628: *4* sc.build
     def build(self):
 
@@ -1397,6 +1399,20 @@ class ScreenShotController(object):
 
         # proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         # proc.communicate() # Wait for Inkscape to terminate.
+    #@+node:ekr.20101021065622.5633: *4* remove_built_slide_node
+    def remove_built_slide_node (self,p):
+
+        sc = self ; c = sc.c
+        changed = 0
+        for child in p.children():
+            if g.match_word(child.h,0,'@url built slide'):
+                # g.trace(child.b)
+                child.doDelete()
+                changed += 1
+
+        if changed:
+            g.es('deleted %s nodes' % (changed))
+            c.redraw()
     #@+node:ekr.20100909193826.5600: *4* select_at_image_node (not used)
     # def select_at_image_node (self,p):
 
@@ -1446,16 +1462,12 @@ class ScreenShotController(object):
         # "@url final output file" inhibits everything except the build.
         if sc.find_node(sc.slide_node,'@url final output file'):
             sc.make_at_url_node_for_built_slide()
-            # sc.build_slide()
-            # c.redraw()
             g.note('exists: @url final output file %s' % (p.h),color='blue')
             return
 
         # Do only a build if there is no @screenshot tree.
         if not sc.screenshot_tree:
             sc.make_at_url_node_for_built_slide()
-            # sc.build_slide()
-            # c.redraw()
             return # Don't take any screenshot!
 
         # '@url screenshot' inhibits taking the screenshot.
@@ -1465,8 +1477,6 @@ class ScreenShotController(object):
             else:
                 g.error('can not make screen shot:',p.h)
                 sc.make_at_url_node_for_built_slide()
-                # sc.build_slide()
-                # c.redraw()
                 return
 
         # "@url working file" inhibits making a new working file.
@@ -1491,8 +1501,6 @@ class ScreenShotController(object):
 
         # Build slide after creating the output file ;-)
         sc.make_at_url_node_for_built_slide()
-        # sc.build_slide()
-        # c.redraw()
     #@+node:ekr.20100908110845.5552: *4* edit_working_file & helper
     def edit_working_file(self):
 
