@@ -658,7 +658,7 @@
 </v>
 <v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
 <v t="ekr.20101018190057.5445"><vh>@url final output file</vh></v>
-<v t="ekr.20101018205732.5422"><vh>@url built slide</vh></v>
+<v t="ekr.20101021093614.5434"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
 <v t="ekr.20101018190057.5446"><vh>@url final output file</vh></v>
@@ -682,7 +682,7 @@
 </v>
 <v t="ekr.20101013072903.5245"><vh>@slide ((undo/redo</vh>
 <v t="ekr.20101018190057.5451"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5474"><vh>@url built slide</vh></v>
+<v t="ekr.20101021093614.5435"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5294"><vh>@slide ((new node</vh>
 <v t="ekr.20101018190057.5452"><vh>@url final output file</vh></v>
@@ -4019,7 +4019,14 @@ node. Messages from Leo appear in the log pane.
 
 </t>
 <t tx="ekr.20101013072903.5224">@language rest
-@pagewidth 50</t>
+@pagewidth 50
+
+(done) slide 5: could do with the same arrow as slide7
+(done) slide 7:
+  'one again' -&gt; 'once again'
+   if a node is no longer 'dirty', what is it - clean?
+slide 13: 'ctrl-z' (lower-case), but elsewhere 'ctrl-H' (upper-case).
+Stick with upper case for consistency?</t>
 <t tx="ekr.20101013072903.5225">This is a step-by-step introduction to show you
 how to use Leo outlines.
 
@@ -4081,9 +4088,11 @@ The "to do" node is the **parent** node.
 </t>
 <t tx="ekr.20101013072903.5245">Leo has unlimited undo/redo capabilities.
 
-Here, I typed Ctrl-z to undo the previous move.
+Here, I typed Ctrl-Z to undo the previous move.
 The "go shopping" node is once again a child of
 the "to do" node.
+
+**Note**: Ctrl-Shift-Z redoes a previous undo.
 
 .. image:: slide-013.png
 
@@ -4467,8 +4476,9 @@ easier than using the mouse.
 <t tx="ekr.20101014110348.5323"></t>
 <t tx="ekr.20101014110348.5325">Ctrl-S saves the outline.
 
-Notice that the icon box one again has a gray outline,
-indicating that the node is no longer dirty.
+Notice that the icon box once again has a gray outline,
+indicating that the node has not been changed since
+the file was last changed.
 
 .. Arrow to icon box.
 
@@ -4943,7 +4953,6 @@ if changed:
 <t tx="ekr.20101018190057.5469">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html</t>
 <t tx="ekr.20101018190057.5470">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html</t>
 <t tx="ekr.20101018190057.5473">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html</t>
-<t tx="ekr.20101018190057.5474">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html</t>
 <t tx="ekr.20101018190057.5476">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-015.html</t>
 <t tx="ekr.20101018190057.5477">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-016.html</t>
 <t tx="ekr.20101018190057.5481">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-020.html</t>
@@ -4959,7 +4968,6 @@ if changed:
 <t tx="ekr.20101018203754.5428">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html</t>
 <t tx="ekr.20101018203754.5429">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html</t>
 <t tx="ekr.20101018203754.5430">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html</t>
-<t tx="ekr.20101018205732.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="ekr.20101019053718.5422">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html</t>
 <t tx="ekr.20101019061953.5422">@nocolor-node
 
@@ -5055,6 +5063,8 @@ Move meld into screenshots plugin.
 <t tx="ekr.20101021093111.5432">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
 <t tx="ekr.20101021093614.5432">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
 <t tx="ekr.20101021093614.5433">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
+<t tx="ekr.20101021093614.5434">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
+<t tx="ekr.20101021093614.5435">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
