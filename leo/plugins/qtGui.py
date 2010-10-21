@@ -5561,6 +5561,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Parse md.text() into (fn,s)'''
 
         fn = ''
+        # g.trace(type(md.text()))
         s = str(md.text()) # Safe: md.text() is a QString.
 
         if s:
@@ -5582,6 +5583,9 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c = self.c
         fn = self.fileName()
         s = c.fileCommands.putLeoOutline()
+        if not g.isPython3:
+            s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
+            fn = g.toEncodedString(fn,encoding='utf-8', reportErrors=True)
         md.setText('%s,%s' % (fn,s))
     #@-others
 #@+node:ekr.20081121105001.379: *3* class leoQtSpellTab
