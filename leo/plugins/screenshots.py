@@ -576,9 +576,8 @@ class ScreenShotController(object):
         slide_node = sc.find_slide_node(p)
         sc.remove_built_slide_node(slide_node)
         sc.run(p)
-        if not sc.find_node(sc.slide_node,'@url built slide'):
-            sc.build()
-            sc.c.redraw()
+        sc.build()
+        sc.c.redraw()
 
         # Only the make-slide command gives this error.
         # The make-slide-show commands allows dummy nodes.

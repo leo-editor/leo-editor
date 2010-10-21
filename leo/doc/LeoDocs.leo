@@ -613,7 +613,7 @@
 </v>
 <v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
 <v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
-<v t="ekr.20101020125156.5430"><vh>@url built slide</vh></v>
+<v t="ekr.20101021093111.5432"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20100821182153.4348"><vh>@slide ((installing from sources</vh>
 <v t="ekr.20101014105353.5257"><vh>@url built slide</vh></v>
@@ -4128,7 +4128,7 @@ User-defined types
 </t>
 <t tx="ekr.20101014034526.5298"></t>
 <t tx="ekr.20101014034526.5299">.. _`Download Python`: http://www.python.org/download/
-.. _`packaged version`: http://www.python.org/download/
+.. _`packaged version`: https://sourceforge.net/projects/leo/files/Leo/
 .. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
 .. _`next slide`: slide-002.html
 
@@ -5042,7 +5042,6 @@ Environment). For example, a single Leo outline contains
 </t>
 <t tx="ekr.20101020082858.5443"></t>
 <t tx="ekr.20101020082858.5446">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-002.html</t>
-<t tx="ekr.20101020125156.5430">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
 <t tx="ekr.20101021092135.5430">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-001.html</t>
 <t tx="ekr.20101021092135.5431">@nocolor-node
 
@@ -5051,6 +5050,7 @@ Move meld into screenshots plugin.
     - (We don't need to specify the path for moved screenshots.)
     
 </t>
+<t tx="ekr.20101021093111.5432">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
