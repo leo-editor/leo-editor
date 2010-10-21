@@ -4,66 +4,45 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20100903162809.5866: *3* First
-#@+node:ekr.20100907092144.6077: *4* Urgent: make sure filenames with unicode characters open
+#@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/7ec80c1fbb9547b5
-Bug: not opening leo file when there are non-english characters in the path
-
-I created a file time.leo. When it's in the dir d:/Dmitry it's being
-opened fine. But when I put it into the dir with russian characters:
-D:/Личное/Время leo prints squares at the window header and doesn't
-open the file correctly. This problem existed in one of the revisions,
-then it was fixed in the last official release. Now it emerged again
-in my Leo 4.8 devel, build 3005
-#@+node:ekr.20100907092144.6078: *4* Urgent: Investigate problem with makeAllNonExistent directories
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/24f38ef9f2077b4b
-getPathFromDirectives doesn't pass a directory creation flag
-
-> Pull the latest trunk (there was a bug in g.app.config.set) and do the
-> following:
-
-> tag = 'create_nonexistent_directories'
-> old = c.config.getBool(tag)
-> g.app.config.set(c,tag,'bool',False)
-> try:
->     << do your thing >>
-> finally:
->     g.app.config.set(c,tag,'bool',old)  
-
-I think this is kind of clutzy when a simple optional kwarg on the relevant
-methods would cover it, but ok:
-
-    # harmless set up
-    tag = 'create_nonexistent_directories'
-    old_cnd = c.config.getBool(tag)
-
-    try:
-        # mess with reality
-        g.app.config.set(c,tag,'bool',False)
-
-        nd = p.insertAsLastChild()
-        nd.h = "@auto \\project\\foo.bar"
-        g.es(repr(g.getAbsPathFromNode(c,nd)))
-
-        nd.doDelete()
-
-    finally:
-        # restore reality
-        g.app.config.set(c,tag,'bool',old_cnd)
-
-this is the start of a unit test for the windows drive relative path patch.
-
-If fails with
+on doing an Alt-X rst3 command
 
 Traceback (most recent call last):
-  File "/mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/core/leoGlobals.py", line 2205, in makeAllNonExistentDirectories
-    os.mkdir(path)
-OSError: [Errno 13] Permission denied: '/project'
-
-so it seems directory creation isn't being suppressed...? 
+  File "leoCommands.py", line 359, in doCommand
+    val = command(event)
+  File "leoCommands.py", line 764, in minibufferCallback
+    retval = function(keywords)
+  File "mod_scripting.py", line 642, in __call__
+    self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
+  File "mod_scripting.py", line 667, in executeScriptFromButton
+    c.executeScript(args=args,p=p,silent=True)
+  File "leoCommands.py", line 1991, in executeScript
+    script = g.getScript(c,p,useSelectedText=useSelectedText)
+  File "leoGlobals.py", line 4358, in getScript
+    at = leoAtFile.atFile(c)
+  File "leoAtFile.py", line 145, in __init__
+    'check-python-code-on-write',default=True)
+  File "leoCommands.py", line 7436, in getBool
+    return g.app.config.getBool(self.c,setting,default=default)
+  File "leoConfig.py", line 1445, in getBool
+    val = self.get(c,setting,"bool")
+  File "leoConfig.py", line 1337, in get
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+  File "leoCommands.py", line 6673, in shortFileName
+    return g.shortFileName(self.mFileName)
+  File "leoGlobals.py", line 2548, in shortFileName
+    return g.os_path_basename(fileName)
+  File "leoGlobals.py", line 3401, in os_path_basename
+    path = g.toUnicodeFileEncoding(path)
+  File "leoGlobals.py", line 3643, in toUnicodeFileEncoding
+    return g.toUnicode(path)
+  File "leoGlobals.py", line 4636, in toUnicode
+    elif mustConvert(s):
+  File "leoGlobals.py", line 4632, in mustConvert
+    return type(s) != types.UnicodeType
+RuntimeError: maximum recursion depth exceeded while calling a Python object
 #@+node:ekr.20100827095120.5862: *4* First: Fix script problem
 @nocolor-node
 

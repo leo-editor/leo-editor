@@ -943,7 +943,7 @@ def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
 
     return default_dir
 #@+node:ekr.20081001062423.11: *5* g.getPathFromDirectives
-def getPathFromDirectives(c,p):
+def getPathFromDirectives(c,p,createFlag=True):
 
     '''Scan for @path directives.'''
 
@@ -955,12 +955,18 @@ def getPathFromDirectives(c,p):
     if path:
         base = g.getBaseDirectory(c) # returns "" on error.
         path = c.os_path_finalize_join(base,path)
-        if g.os_path_exists(path):
-            default_dir = path
+        exists = g.os_path_exists(path)
+        if createFlag:
+            if exists:
+                default_dir = path
+            else:
+                default_dir = g.makeAllNonExistentDirectories(path,c=c)
+                if not default_dir:
+                    error = "invalid @path: %s" % path
         else:
-            default_dir = g.makeAllNonExistentDirectories(path,c=c)
-            if not default_dir:
-                error = "invalid @path: %s" % path
+            default_dir = path
+            if not exists:
+                error = "does not exist: @path %s" % path
 
     return default_dir,error
 #@+node:ekr.20081001062423.12: *5* g.findDefaultDirectory (major change)

@@ -1122,6 +1122,10 @@ def pr(*args,**keys):
 import sys
 g.es(sys.stdout.encoding)
 # g.es(sys.stdout.errors)
+#@+node:ekr.20101021112112.5948: *4* Fixed unicode bug when dragging
+@nocolor-node
+
+Bug 659211: drag and drop unicode error
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
