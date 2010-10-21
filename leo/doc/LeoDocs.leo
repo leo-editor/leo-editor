@@ -638,7 +638,7 @@
 </v>
 <v t="ekr.20101013072903.5226"><vh>@slide ((Open notebook file</vh>
 <v t="ekr.20101018190057.5441"><vh>@url final output file</vh></v>
-<v t="ekr.20101018190057.5463"><vh>@url built slide</vh></v>
+<v t="ekr.20101021093614.5432"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101014110348.5286"><vh>@slide ((Ctrl-H edits headline</vh>
 <v t="ekr.20101018190057.5442"><vh>@url final output file</vh></v>
@@ -648,9 +648,9 @@
 <v t="ekr.20101018190057.5443"><vh>@url final output file</vh></v>
 <v t="ekr.20101018203754.5424"><vh>@url built slide</vh></v>
 </v>
-<v t="ekr.20101018061243.5392" a="M"><vh>@slide ((Return ends editing</vh>
+<v t="ekr.20101018061243.5392"><vh>@slide ((Return ends editing</vh>
 <v t="ekr.20101018190057.5444"><vh>@url final output file</vh></v>
-<v t="ekr.20101018203754.5425"><vh>@url built slide</vh></v>
+<v t="ekr.20101021093614.5433"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101018061243.5393"><vh>@slide ((no-slide focus keys</vh>
 <v t="ekr.20101018190057.5373"><vh>@no-screenshot</vh></v>
@@ -4029,8 +4029,12 @@ how to use Leo outlines.
 Leo opens the **workbook file** when you start
 Leo without a filename.
 
-The body has focus--it is colored pink, and
+The body has focus--it is colored a pale pink, and
 contains a blinking cursor.
+
+**Note**: on some monitors the colors will be almost
+invisible.  You can choose such colors to suit your
+taste.
 
 .. image:: slide-002.png
 
@@ -4935,7 +4939,6 @@ if changed:
 <t tx="ekr.20101018190057.5460">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-023.png</t>
 <t tx="ekr.20101018190057.5461">c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-024.png</t>
 <t tx="ekr.20101018190057.5462">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html</t>
-<t tx="ekr.20101018190057.5463">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
 <t tx="ekr.20101018190057.5464">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html</t>
 <t tx="ekr.20101018190057.5469">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html</t>
 <t tx="ekr.20101018190057.5470">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html</t>
@@ -4951,7 +4954,6 @@ if changed:
 <t tx="ekr.20101018190057.5486">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html</t>
 <t tx="ekr.20101018203754.5423">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html</t>
 <t tx="ekr.20101018203754.5424">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html</t>
-<t tx="ekr.20101018203754.5425">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
 <t tx="ekr.20101018203754.5426">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html</t>
 <t tx="ekr.20101018203754.5427">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html</t>
 <t tx="ekr.20101018203754.5428">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html</t>
@@ -5051,6 +5053,8 @@ Move meld into screenshots plugin.
     
 </t>
 <t tx="ekr.20101021093111.5432">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
+<t tx="ekr.20101021093614.5432">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
+<t tx="ekr.20101021093614.5433">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

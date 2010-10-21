@@ -1410,7 +1410,7 @@ class ScreenShotController(object):
                 changed += 1
 
         if changed:
-            g.es('deleted %s nodes' % (changed))
+            # g.es('deleted %s nodes' % (changed))
             c.redraw()
     #@+node:ekr.20100909193826.5600: *4* select_at_image_node (not used)
     # def select_at_image_node (self,p):
