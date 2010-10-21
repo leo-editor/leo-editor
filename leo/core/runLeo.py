@@ -162,6 +162,13 @@ def doPrePluginsInit(fileName,pymacs):
     for fn in files:
         g.app.config.readSettingsFiles(fn,verbose)
 
+    if not files and not script:
+        # This must be done *after* the standard settings have been read.
+        fn = getDefaultFile()
+        if fn:
+            files = [fn]
+            g.app.config.readSettingsFiles(fn,verbose=True)
+
     g.app.setGlobalDb()
     createGui(pymacs,options)
 
@@ -242,6 +249,17 @@ def completeFileName (fileName):
     if trace: print('completeFileName',fileName)
 
     return fileName
+#@+node:ekr.20101021101942.6010: *4* getDefaultFile
+def getDefaultFile ():
+
+    # Get the name of the workbook.
+    fn = g.app.config.getString(c=None,setting='default_leo_file')
+    fn = g.os_path_finalize(fn)
+
+    if fn and g.os_path_exists(fn):
+        return fn
+    else:
+        return None
 #@+node:ekr.20101020125657.5976: *4* getFiles
 def getFiles(fileName):
 
@@ -462,17 +480,6 @@ def createFrame (fileName,options):
 
     script = options.get('script')
 
-    # print('createFrame',fileName)
-
-    # New in Leo 4.6: support for 'default_leo_file' setting.
-    defaultFileName = None
-    if not fileName and not script:
-        fileName = g.app.config.getString(c=None,setting='default_leo_file')
-        fileName = g.os_path_finalize(fileName)
-        if fileName and g.os_path_exists(fileName):
-            g.es_print('opening default_leo_file:',fileName,color='blue')
-            defaultFileName = fileName
-
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
         ok, frame = g.openWithFileName(fileName,None)
@@ -484,8 +491,6 @@ def createFrame (fileName,options):
         if ok: return c2,frame
 
     # Create a _new_ frame & indicate it is the startup window.
-    if not fileName: fileName = defaultFileName
-
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=fileName,
         initEditCommanders=True)

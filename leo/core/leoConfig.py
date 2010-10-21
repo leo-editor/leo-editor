@@ -1835,27 +1835,31 @@ class configClass:
     #@+node:ekr.20101021041958.6004: *5* defineSettingsTable
     def defineSettingsTable (self,fileName,localConfigFile):
 
+        global_table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            # (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            # (myLocalConfigFile,False),
+            # New in Leo 4.6: the -c file is in *addition* to other config files.
+            (g.app.oneConfigFilename,False),
+        )
+
         if fileName:
             path = g.os_path_finalize(fileName)
             theDir = g.os_path_dirname(fileName)
             myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
-            table1 = (
+            local_table = (
                 (localConfigFile,False),
                 (myLocalConfigFile,False),
-                (path,True),
             )
+            table1 = [z for z in global_table if z not in global_table]
+            table1.append((path,True),)
         else:
-            table1 = (
-                (self.globalConfigFile,False),
-                (self.homeFile,False),
-                # (localConfigFile,False),
-                (self.myGlobalConfigFile,False),
-                (self.myHomeConfigFile,False),
-                (self.machineConfigFile,False),
-                # (myLocalConfigFile,False),
-                # New in Leo 4.6: the -c file is in *addition* to other config files.
-                (g.app.oneConfigFilename,False),
-            )
+            table1 = global_table
+
         seen = [] ; table = []
         for path,localFlag in table1:
             if path and g.os_path_exists(path):
@@ -2007,10 +2011,12 @@ class configClass:
             localPath = None
 
         written = False
+        seen = []
         for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir): # homeLeoDir was homeDir.
             if path:
                 fileName = g.os_path_join(path,tag)
-                if g.os_path_exists(fileName):
+                if g.os_path_exists(fileName) and not fileName.lower() in seen:
+                    seen.append(fileName.lower())
                     ok = self.writeRecentFilesFileHelper(fileName)
                     if not self.recentFileMessageWritten:
                         if ok:
