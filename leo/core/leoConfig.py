@@ -389,7 +389,7 @@ class parserBaseClass:
         if self.localFlag:
             self.set(p,kind='menus',name='menus',val=aList)
         else:
-            if not g.app.unitTesting and not g.app.silentMode:
+            if False and not g.app.unitTesting and not g.app.silentMode:
                 s = 'using menus from: %s' % c.shortFileName()
                 g.es_print(s,color='blue')
             g.app.config.menusList = aList
@@ -1735,19 +1735,15 @@ class configClass:
         - Called from c.__init__ to init corresponding commmander ivars.'''
 
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
 
-        # Ingore temporary commanders created by readSettingsFiles.
-        if self.inited:
-            if trace:
-                if c:
-                    g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
-                else:
-                    tag = '<no c: called at end of readSettingsFiles>'
-                    g.trace('=' * 10, 'inited',tag,g.callers(1))
-        else:
-            if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
-            return
+        if not self.inited: return
+
+        # Ignore temporary commanders created by readSettingsFiles.
+        if trace and verbose: g.trace('*' * 10)
+        if trace: g.trace(
+            'inited',self.inited,
+            c and c.shortFileName() or '<no c>',g.callers(2))
 
         d = self.ivarsDict
         keys = list(d.keys())
@@ -1760,11 +1756,11 @@ class configClass:
                     kind = bunch.kind
                     val = self.get(c,key,kind) # Don't use bunch.val!
                     if c:
-                        if trace: g.trace("%20s %s = %s" % (
+                        if trace and verbose: g.trace("%20s %s = %s" % (
                             g.shortFileName(c.mFileName),ivar,val))
                         setattr(c,ivar,val)
                     else:
-                        if trace: g.trace("%20s %s = %s" % (
+                        if trace and verbose: g.trace("%20s %s = %s" % (
                             'g.app.config',ivar,val))
                         setattr(self,ivar,val)
     #@+node:ekr.20041201080436: *4* appendToRecentFiles (g.app.config)
@@ -1789,50 +1785,22 @@ class configClass:
     #@+node:ekr.20041120064303: *4* readSettingsFiles & helpers (g.app.config)
     def readSettingsFiles (self,fileName,verbose=True):
 
+        '''Read settings from one file or the standard settings files.'''
+
         trace = False and not g.unitTesting
-        seen = []
+        verbose = verbose or trace
+        giveMessage = (verbose and not g.app.unitTesting and
+            not self.silent and not g.app.batchMode)
+        if trace: g.trace(fileName,g.callers())
         self.write_recent_files_as_needed = False # Will be set later.
-        #@+<< define localDirectory, localConfigFile & myLocalConfigFile >>
-        #@+node:ekr.20061028082834: *5* << define localDirectory, localConfigFile & myLocalConfigFile >>
-        # This can't be done in initSettingsFiles because
-        # the local directory does not yet exist.
-        localDirectory = g.os_path_dirname(fileName)
-
-        #  Set the local leoSettings.leo file.
-        localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
-        if not g.os_path_exists(localConfigFile):
-            localConfigFile = None
-
-        # Set the local myLeoSetting.leo file.
-        myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
-        if not g.os_path_exists(myLocalConfigFile):
-            myLocalConfigFile = None
-        #@-<< define localDirectory, localConfigFile & myLocalConfigFile >>
-
-        if trace: g.trace(g.callers(5))
-        table = (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            (localConfigFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-            (myLocalConfigFile,False),
-            # New in Leo 4.6: the -c file is in *addition* to other config files.
-            (g.app.oneConfigFilename,False),
-            (fileName,True),
-        )
-
-        # Init settings from leoSettings.leo and myLeoSettings.leo files.
+        localConfigFile = self.getLocalConfigFile(fileName)
+        table = self.defineSettingsTable(fileName,localConfigFile)
         for path,localFlag in table:
-            if path:
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+            assert path and g.os_path_exists(path)
             isZipped = path and zipfile.is_zipfile(path)
-            isLeo = isZipped or (path and path.endswith('.leo'))
-            if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
-                seen.append(path.lower())
-                if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+            isLeo = isZipped or path.endswith('.leo')
+            if isLeo:
+                if giveMessage:
                     s = 'reading settings in %s' % path
                     # This occurs early in startup, so use the following instead of g.es_print.
                     if not g.isPython3:
@@ -1844,15 +1812,60 @@ class configClass:
                     g.app.destroyWindow(c.frame)
                     self.write_recent_files_as_needed = c.config.getBool(
                         'write_recent_files_as_needed')
-                    if 0:
-                        # This is useless. setIvarsFromSettings does nothing
-                        # until the self.inited flag is True.
-                        g.trace('?' * 20,c)
-                        self.setIvarsFromSettings(c)
+
         self.readRecentFiles(localConfigFile)
-        # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
+    #@+node:ekr.20101021041958.6008: *5* getLocalConfigFile
+    # This can't be done in initSettingsFiles because
+    # the local directory does not yet exist.
+
+    def getLocalConfigFile (self,fileName):
+
+        if not fileName:
+            return None
+
+        theDir = g.os_path_dirname(fileName)
+        path = g.os_path_join(theDir,'leoSettings.leo')
+
+        if g.os_path_exists(path):
+            return path
+        else:
+            return None
+    #@+node:ekr.20101021041958.6004: *5* defineSettingsTable
+    def defineSettingsTable (self,fileName,localConfigFile):
+
+        if fileName:
+            path = g.os_path_finalize(fileName)
+            theDir = g.os_path_dirname(fileName)
+            myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
+            table1 = (
+                (localConfigFile,False),
+                (myLocalConfigFile,False),
+                (path,True),
+            )
+        else:
+            table1 = (
+                (self.globalConfigFile,False),
+                (self.homeFile,False),
+                # (localConfigFile,False),
+                (self.myGlobalConfigFile,False),
+                (self.myHomeConfigFile,False),
+                (self.machineConfigFile,False),
+                # (myLocalConfigFile,False),
+                # New in Leo 4.6: the -c file is in *addition* to other config files.
+                (g.app.oneConfigFilename,False),
+            )
+        seen = [] ; table = []
+        for path,localFlag in table1:
+            if path and g.os_path_exists(path):
+                # Make sure we mark files seen no matter how they are specified.
+                path = g.os_path_realpath(g.os_path_finalize(path))
+                if path.lower() not in seen:
+                    seen.append(path.lower())
+                    table.append((path,localFlag),)
+        # g.trace(table)
+        return table
     #@+node:ekr.20041117085625: *5* openSettingsFile
     def openSettingsFile (self,path):
 
@@ -1867,7 +1880,6 @@ class configClass:
             fileName=path,relativeFileName=None,
             initEditCommanders=False,updateRecentFiles=False)
         frame.log.enable(False)
-        c.setLog()
         g.app.lockLog()
         ok = frame.c.fileCommands.open(
             theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
@@ -1877,6 +1889,8 @@ class configClass:
         return ok and c
     #@+node:ekr.20051013161232: *5* updateSettings
     def updateSettings (self,c,localFlag):
+
+        # g.trace(localFlag,c)
 
         d = self.readSettings(c,localFlag)
 
@@ -1963,8 +1977,9 @@ class configClass:
             except IOError:
                 g.trace('can not open',fileName)
                 return False
-            if not g.unitTesting and not self.silent:
-                g.pr(('reading %s' % fileName))
+            if 0:
+                if not g.unitTesting and not self.silent:
+                    g.pr(('reading %s' % fileName))
             lines = f.readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]

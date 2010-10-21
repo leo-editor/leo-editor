@@ -3480,7 +3480,7 @@ class leoQtFrame (leoFrame.leoFrame):
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
-        c.setLog()
+        #### c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocusNow()
@@ -3958,6 +3958,8 @@ class leoQtFrame (leoFrame.leoFrame):
         w = c.config.getInt("initial_window_width") or 600
         x = c.config.getInt("initial_window_left") or 10
         y = c.config.getInt("initial_window_top") or 10
+
+        # g.trace(h,w,x,y)
 
         if h and w and x and y:
             self.setTopGeometry(w,h,x,y)
@@ -4606,6 +4608,7 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c
         if g.app.quitting or not c or not c.exists:
+            print('qtGui.log.put fails',repr(s))
             return
 
         if color:
@@ -4618,6 +4621,8 @@ class leoQtLog (leoFrame.leoLog):
 
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
+
+        # print('qtGui.log.put',bool(w),repr(s))
 
         if w:
             sb = w.horizontalScrollBar()

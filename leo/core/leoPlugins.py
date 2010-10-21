@@ -361,7 +361,7 @@ class LeoPluginsController:
             return
 
         if tag in ('start1','open0'):
-            self.loadHandlers(tag)
+            self.loadHandlers(tag,keywords)
 
         return self.doHandlersForTag(tag,keywords)
     #@+node:ekr.20100909065501.5950: *3* Information
@@ -477,7 +477,7 @@ class LeoPluginsController:
 
     #@+node:ekr.20100909065501.5953: *3* Load & unload
     #@+node:ekr.20100908125007.6022: *4* loadHandlers
-    def loadHandlers(self,tag):
+    def loadHandlers(self,tag,keys):
 
         """Load all enabled plugins from the plugins directory"""
 
@@ -489,9 +489,11 @@ class LeoPluginsController:
         if not s: return
 
         if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
-            s2 = '@enabled-plugins found in %s' % (
-                g.app.config.enabledPluginsFileName)
-            g.es_print(s2,color='blue')
+            if 0:
+                s2 = '@enabled-plugins found in %s' % (
+                    g.app.config.enabledPluginsFileName)
+                g.es_print(s2,color='blue')
+                # g.trace(keys,g.callers())
 
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):

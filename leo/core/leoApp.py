@@ -96,6 +96,7 @@ class LeoApp:
         self.scanErrors = 0 # The number of errors seen by g.scanError.
         self.scriptDict = {}
             # For communication between Execute Script command and scripts.
+        self.signon_printed = False
         self.silentMode = False # True if signon is more silent.
         self.statsDict = {}
             # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
@@ -777,7 +778,7 @@ class LeoApp:
 
         """set the frame to which log messages will go"""
 
-        # print("setLog:",tag,"locked:",self.logIsLocked,log)
+        # print("app.setLog:",log,g.callers())
         if not self.logIsLocked:
             self.log = log
 
@@ -812,11 +813,21 @@ class LeoApp:
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1,n2,n3,guiVersion,sysVersion)
     #@+node:ekr.20031218072017.2619: ** app.writeWaitingLog
-    def writeWaitingLog (self,c,forceLog=False):
+    def writeWaitingLog (self,c):
 
         app = self
         # Do not call g.es, g.es_print, g.pr or g.trace here!
-        # print('writeWaitingLog',c,g.callers(4))
+        # print('***** writeWaitingLog','unitTesting',g.unitTesting,c,g.callers())
+
+        if not c or not c.exists:
+            return
+
+        if g.unitTesting:
+            app.printWaiting = []
+            app.logWaiting = []
+            g.app.setLog(None) # Prepare to requeue for other commanders.
+            return
+
         table = [
             ('Leo Log Window','red'),
             (app.signon,'black'),
@@ -824,26 +835,24 @@ class LeoApp:
         ]
         table.reverse()
 
-        if app.log:
-            if not app.logInited:
-                app.logInited = True # Prevent recursive call.
-                print(app.signon)
-                print(app.signon2)
-                for s,color in table:
-                    app.logWaiting.insert(0,(s+'\n',color),)
-            elif forceLog:
-                for s,color in table:
-                    app.logWaiting.insert(0,(s+'\n',color),)
-            # The test for isNull would probably interfere with batch mode.
-            for s in app.printWaiting:
-                print(s)
-            app.printWaiting = []
-            for s,color in app.logWaiting:
-                g.es('',s,color=color,newline=0)
-                    # The caller must write the newlines.
-            app.logWaiting = []
-        else:
-            print('writeWaitingLog: still no log!')
+        c.setLog() # 2010/10/20
+        app.logInited = True # Prevent recursive call.
+        if not app.signon_printed:
+            app.signon_printed = True
+            print(app.signon)
+            print(app.signon2)
+        for s in app.printWaiting:
+            print(s)
+        app.printWaiting = []
+        for s,color in table:
+            app.logWaiting.insert(0,(s+'\n',color),)
+        for s,color in app.logWaiting:
+            g.es('',s,color=color,newline=0)
+                # The caller must write the newlines.
+
+        # Essential when opening multiple files...
+        app.logWaiting = []
+        g.app.setLog(None) 
     #@+node:ville.20090602181814.6219: ** app.commanders
     def commanders(self):
         """ Return list of currently active controllers """

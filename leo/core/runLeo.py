@@ -111,23 +111,25 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
 
-    trace = False and not g.unitTesting
+    trace = False # and not g.unitTesting
     if trace: print('runLeo.run: sys.argv %s' % sys.argv)
 
     # Phase 1: before loading plugins.
     # Scan options, set directories and read settings.
     if not isValidPython(): return
 
-    fn,relFn,options = doPrePluginsInit(fileName,pymacs)
+    files,options = doPrePluginsInit(fileName,pymacs)
     if options.get('exit'): return
 
     # Phase 2: load plugins: the gui has already been set.
     g.doHook("start1")
     if g.app.killed: return
 
-    # Phase 3: after loading plugins. Create a frame.
-    ok = doPostPluginsInit(args,fn,relFn,options)
+    # Phase 3: after loading plugins. Create one or more frames.
+    ok = doPostPluginsInit(args,files,options)
     if ok: g.app.gui.runMainLoop()
+        # For scripts, the gui is a nullGui.
+        # and the gui.setScript has already been called.
 #@+node:ekr.20090519143741.5915: *3* doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
@@ -151,12 +153,15 @@ def doPrePluginsInit(fileName,pymacs):
 
     # Init the app.
     initApp(verbose)
-    fileName,relativeFileName = getFileName(fileName,script)
+    files = getFiles(fileName2)
     reportDirectories(verbose)
 
     # Read settings *after* setting g.app.config and *before* opening plugins.
     # This means if-gui has effect only in per-file settings.
-    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.config.readSettingsFiles(None,verbose)
+    for fn in files:
+        g.app.config.readSettingsFiles(fn,verbose)
+
     g.app.setGlobalDb()
     createGui(pymacs,options)
 
@@ -168,7 +173,7 @@ def doPrePluginsInit(fileName,pymacs):
     if versionFlag or not g.app.gui:
         options['exit'] = True
 
-    return fileName,relativeFileName,options
+    return files,options
 #@+node:ekr.20100914142850.5892: *4* createGui & helper
 def createGui(pymacs,options):
 
@@ -215,22 +220,7 @@ def adjustSysPath ():
 
     2  Plugins now do fully qualified imports.
     '''
-#@+node:ekr.20071117060958: *4* getFileName & helper
-def getFileName (fileName,script):
-
-    '''Return the filename from sys.argv.'''
-
-    if not fileName and not script:
-        if sys.platform.startswith('win'):
-            if len(sys.argv) > 1:
-                fileName = ' '.join(sys.argv[1:])
-            else:
-                fileName = None
-        else:
-            fileName = len(sys.argv) > 1 and sys.argv[-1]
-
-    return completeFileName(fileName)
-#@+node:ekr.20041124083125: *5* completeFileName
+#@+node:ekr.20041124083125: *4* completeFileName
 def completeFileName (fileName):
 
     trace = False
@@ -240,10 +230,7 @@ def completeFileName (fileName):
         return None,None
 
     fileName = g.toUnicode(fileName)
-
-    relativeFileName = fileName
     fileName = g.os_path_finalize(fileName)
-
     junk,ext = g.os_path_splitext(fileName)
 
     # Bug fix: don't add .leo to existing files.
@@ -251,11 +238,23 @@ def completeFileName (fileName):
         pass # use the fileName as is.
     elif ext != '.leo':
         fileName = fileName + ".leo"
-        relativeFileName = relativeFileName + ".leo"
 
     if trace: print('completeFileName',fileName)
 
-    return fileName,relativeFileName
+    return fileName
+#@+node:ekr.20101020125657.5976: *4* getFiles
+def getFiles(fileName):
+
+    files = []
+    if fileName:
+        files.append(fileName)
+
+    for arg in sys.argv[1:]:
+        if not arg.startswith('-'):
+            files.append(arg)
+
+    files = [completeFileName(z) for z in files]
+    return files
 #@+node:ekr.20080921091311.2: *4* initApp
 def initApp (verbose):
 
@@ -372,6 +371,7 @@ def scanOptions():
     if script_name:
         script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
         script,e = g.readFileIntoString(script_name,kind='script:')
+        # print('script_name',repr(script_name))
     else:
         script = None
         # if trace: print('scanOptions: no script')
@@ -412,7 +412,7 @@ def scanOptions():
         'windowSize':windowSize,
     }
 #@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers
-def doPostPluginsInit(args,fileName,relativeFileName,options):
+def doPostPluginsInit(args,files,options):
 
     '''Return True if the frame was created properly.'''
 
@@ -423,13 +423,26 @@ def doPostPluginsInit(args,fileName,relativeFileName,options):
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
 
     # Create the main frame.  Show it and all queued messages.
-    c,frame = createFrame(fileName,relativeFileName,options)
-    if not frame: return False
+    c,fileName = None,None
+    for fileName in files:
+        c,frame = createFrame(fileName,options)
+        if not frame:
+            g.trace('createFrame failed',repr(fileName))
+            return False
+
+    if not c:
+        c,frame = createFrame(None,options)
+        if c and frame:
+            fileName = c.fileName()
+        else:
+            g.trace('createFrame failed 2')
+            return False
 
     # Do the final inits.
+    c.setLog() # 2010/10/20
+    g.app.logInited = True # 2010/10/20
     finishInitApp(c)
     p = c.p
-
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'):
@@ -443,11 +456,13 @@ def doPostPluginsInit(args,fileName,relativeFileName,options):
 
     return True
 #@+node:ekr.20031218072017.1624: *4* createFrame & helpers (runLeo.py)
-def createFrame (fileName,relativeFileName,options):
+def createFrame (fileName,options):
 
     """Create a LeoFrame during Leo's startup process."""
 
     script = options.get('script')
+
+    # print('createFrame',fileName)
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
     defaultFileName = None
@@ -460,7 +475,7 @@ def createFrame (fileName,relativeFileName,options):
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
-        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        ok, frame = g.openWithFileName(fileName,None)
         c2 = frame.c
         select = options.get('select')
         windowSize = options.get('windowSize')
@@ -473,10 +488,10 @@ def createFrame (fileName,relativeFileName,options):
 
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=fileName,
-        relativeFileName=relativeFileName,
         initEditCommanders=True)
 
-    g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
+    if not script:
+        g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
 
     assert frame.c == c and c.frame == frame
     frame.setInitialWindowGeometry()
@@ -548,7 +563,6 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-
 #@+node:ekr.20080921060401.6: *4* initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 

@@ -153,6 +153,7 @@ def put (self,s,color=None,tabName='Log'):
 
     c = self.c
     if g.app.quitting or not c or not c.exists:
+        print('qtGui.log.put fails',repr(s))
         return
 
     if color:
@@ -165,6 +166,8 @@ def put (self,s,color=None,tabName='Log'):
 
     # Note: this must be done after the call to selectTab.
     w = self.logCtrl.widget # w is a QTextBrowser
+
+    # print('qtGui.log.put',bool(w),repr(s))
 
     if w:
         sb = w.horizontalScrollBar()
@@ -704,7 +707,7 @@ def finishCreate (self,c):
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
     f.menu = leoQtMenu(f)
-    c.setLog()
+    #### c.setLog()
     g.app.windowList.append(f)
     f.miniBufferWidget = leoQtMinibuffer(c)
     c.bodyWantsFocusNow()

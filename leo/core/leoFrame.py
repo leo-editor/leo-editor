@@ -2771,13 +2771,12 @@ class nullFrame (leoFrame):
         self.log  = nullLog (frame=self,parentFrame=None)
         self.menu = leoMenu.nullMenu(frame=self)
 
-        c.setLog()
+        # 2010/10/20: The log will be created later.
+        # c.setLog()
 
         assert(c.undoer)
         if self.useNullUndoer:
             c.undoer = leoUndo.nullUndoer(c)
-
-
     #@+node:ekr.20061109124552: *3* Overrides
     #@+node:ekr.20061109123828: *4* Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    pass

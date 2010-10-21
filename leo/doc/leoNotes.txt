@@ -3500,17 +3500,36 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-#@+node:ekr.20100908125007.6023: *3* getEnabledFiles (not used)
-def getEnabledFiles (self,s,plugins_path=None):
+#@+node:ekr.20071117060958: *3* getFileName (no longer used)
+# def getFileName (fileName,script):
 
-    '''Return a list of plugins mentioned in non-comment lines of s.'''
+    # '''Return the filename from sys.argv.'''
 
-    enabled_files = []
-    for s in g.splitLines(s):
-        s = s.strip()
-        if s and not s.lstrip().startswith('#'):
-            enabled_files.append(s)
+    # if not fileName and not script:
+        # g.trace(sys.argv)
+        # if False and sys.platform.startswith('win'):
+            # if len(sys.argv) > 1:
+                # fileName = ' '.join(sys.argv[1:])
+            # else:
+                # fileName = None
+        # else:
+            # fileName = len(sys.argv) > 1 and sys.argv[-1]
 
-    return enabled_files
+    # return completeFileName(fileName)
+#@+node:ekr.20101021041958.6005: *3* From readSettingsFile
+#@+node:ekr.20061028082834: *4* << define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
 #@-all
 #@-leo

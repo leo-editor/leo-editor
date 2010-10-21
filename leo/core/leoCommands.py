@@ -210,6 +210,7 @@ class baseCommands (object):
         c.showMinibuffer        = c.config.getBool('useMinibuffer')
             # This option is a bad idea.
         c.putBitsFlag           = c.config.getBool('put_expansion_bits_in_leo_files',default=True)
+        # g.trace('putBitsFlag',c.putBitsFlag,c.fileName())
         c.sparse_move           = c.config.getBool('sparse_move_outline_left')
         c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
         c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
@@ -783,10 +784,14 @@ class baseCommands (object):
 
         '''Create a new Leo window.'''
 
+        # Send all log messages to the new frame.
+        g.app.setLog(None)
+        g.app.lockLog()
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=None,relativeFileName=None,gui=gui)
-
         g.doHook("new",old_c=self,c=c,new_c=c)
+        g.app.unlockLog()
+
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
@@ -795,7 +800,8 @@ class baseCommands (object):
         c.frame.createFirstTreeNode()
         g.createMenu(c)
         g.finishOpen(c)
-        g.app.writeWaitingLog(c,forceLog=True) # Force a new signon message.
+        g.app.writeWaitingLog(c)
+        c.setLog()
         c.redraw()
         return c # For unit test.
     #@+node:ekr.20031218072017.2821: *6* c.open & helper
@@ -1398,7 +1404,7 @@ class baseCommands (object):
         # New in Leo 4.4.5: write the file immediately.
         g.app.config.recentFileMessageWritten = False # Force the write message.
         g.app.config.writeRecentFilesFile(c)
-    #@+node:ekr.20031218072017.2081: *6* openRecentFile
+    #@+node:ekr.20031218072017.2081: *6* c.openRecentFile
     def openRecentFile(self,name=None):
 
         if not name: return

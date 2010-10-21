@@ -2261,8 +2261,6 @@ def openWithFileName(fileName,old_c,
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
-    trace = False and not g.unitTesting
-
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
 
@@ -2271,18 +2269,23 @@ def openWithFileName(fileName,old_c,
     if c: return True,c.frame
 
     # Open the file.
+    app.setLog(None) # 2010/10/20
+    app.lockLog()# 2010/10/20
     if isLeo:
         c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
     else:
         c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+    app.unlockLog()# 2010/10/20
     if not c: return False,None
 
     # Init the open file.
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
-    g.app.writeWaitingLog(c,forceLog=not g.app.initing)
+    # Handle the open hooks and open the log for c.
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
+    g.app.writeWaitingLog(c)
+    c.setLog() # 2010/10/20
     g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
@@ -2336,13 +2339,10 @@ def finishOpen(c):
 def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-        c.setLog()
         if theFile:
-            app.lockLog()
             ok = c.fileCommands.open(
                 theFile,fileName,
                 readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
             if not ok:
                 g.app.closeLeoWindow(c.frame)
                 return False
@@ -3135,7 +3135,8 @@ def es(*args,**keys):
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)
-    # print app,s,g.callers(5)
+    # print('g.es',app.logInited,log and id(log),args)
+    # print('g.es',g.callers())
 
     if app.batchMode:
         if app.log:
@@ -3147,9 +3148,7 @@ def es(*args,**keys):
             # s = g.toEncodedString(s,'ascii')
             g.pr(s,newline=newline)
     else:
-        if log and log.isNull and app.logInited:
-            pass
-        elif log and app.logInited:
+        if log and app.logInited:
             log.put(s,color=color,tabName=tabName)
             for ch in s:
                 if ch == '\n': log.newlines += 1
