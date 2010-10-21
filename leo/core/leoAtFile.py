@@ -2958,7 +2958,7 @@ class atFile:
         force,toString,writeAtFileNodesFlag,writtenFiles
     ):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         at = self ; c = at.c
 
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():

@@ -3286,6 +3286,7 @@ def pr(*args,**keys):
     newline = d.get('newline')
     nl = g.choose(newline,'\n','')
     if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+        # sys.stdout is a TextIOWrapper with a particular encoding.
         encoding = sys.stdout.encoding
     else:
         encoding = 'utf-8'
@@ -3298,25 +3299,31 @@ def pr(*args,**keys):
         s = s + '\n'
 
     if g.isPython3:
-        s2 = s
+        if encoding.lower() in ('utf-8','utf-16'):
+            s2 = s # There can be no problem.
+        else:
+            # 2010/10/21: Carefully convert s to the encoding.
+            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
+            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
-        s2 = g.toEncodedString(s,encoding)
+        s2 = g.toEncodedString(s,encoding,reportErrors=False)
 
     if app.logInited:
         try: # We can't use any print keyword args in Python 2.x!
             sys.stdout.write(s2)
         except Exception:
-            if not g.pr_warning_given:
-                g.pr_warning_given = True
-                # print('unexpected Exception in g.pr')
-                # print('make sure your sitecustomize.py contains::')
-                # print('    sys.setdefaultencoding("utf-8")')
-                g.es_exception()
-                g.trace(g.callers())
-            s2 = s.encode('ascii',"replace")
-            if g.isPython3:
-                s2 = str(s2,'ascii','replace')
-            sys.stdout.write(s2)
+            g.es('unexpected exception in g.pr')
+            # if not g.pr_warning_given:
+                # g.pr_warning_given = True
+                # # print('unexpected Exception in g.pr')
+                # # print('make sure your sitecustomize.py contains::')
+                # # print('    sys.setdefaultencoding("utf-8")')
+                # g.es_exception()
+                # g.trace(g.callers())
+            # s2 = s.encode('ascii',"replace")
+            # if g.isPython3:
+                # s2 = str(s2,'ascii','replace')
+            # sys.stdout.write(s2)
     else:
         app.printWaiting.append(s2)
 #@+node:ekr.20080220111323: *3* g.translateArgs
