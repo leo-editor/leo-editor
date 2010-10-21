@@ -658,7 +658,7 @@
 </v>
 <v t="ekr.20101014110348.5325"><vh>@slide ((Ctrl-S saves outline</vh>
 <v t="ekr.20101018190057.5445"><vh>@url final output file</vh></v>
-<v t="ekr.20101021093614.5434"><vh>@url built slide</vh></v>
+<v t="ekr.20101021101327.5432"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20101013072903.5236"><vh>@slide ((Ctrl-I inserts a new node</vh>
 <v t="ekr.20101018190057.5446"><vh>@url final output file</vh></v>
@@ -4478,7 +4478,7 @@ easier than using the mouse.
 
 Notice that the icon box once again has a gray outline,
 indicating that the node has not been changed since
-the file was last changed.
+the file was last saved.
 
 .. Arrow to icon box.
 
@@ -5063,8 +5063,8 @@ Move meld into screenshots plugin.
 <t tx="ekr.20101021093111.5432">c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html</t>
 <t tx="ekr.20101021093614.5432">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html</t>
 <t tx="ekr.20101021093614.5433">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
-<t tx="ekr.20101021093614.5434">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="ekr.20101021093614.5435">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html</t>
+<t tx="ekr.20101021101327.5432">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
