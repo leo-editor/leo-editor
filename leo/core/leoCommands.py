@@ -429,7 +429,7 @@ class baseCommands (object):
             "language"      : lang_dict.get('language'),
             "lineending"    : d.get('lineending'),
             "pagewidth"     : d.get('pagewidth'),
-            "path"          : d.get('path') or g.getBaseDirectory(c),
+            "path"          : d.get('path'), # Redundant: or g.getBaseDirectory(c),
             "tabwidth"      : d.get('tabwidth'),
             "pluginsList"   : [], # No longer used.
             "wrap"          : d.get('wrap'),
