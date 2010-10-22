@@ -429,13 +429,13 @@ class baseCommands (object):
             "language"      : lang_dict.get('language'),
             "lineending"    : d.get('lineending'),
             "pagewidth"     : d.get('pagewidth'),
-            ### "path"          : d.get('path') or g.getBaseDirectory(c),
+            "path"          : d.get('path') or g.getBaseDirectory(c),
             "tabwidth"      : d.get('tabwidth'),
             "pluginsList"   : [], # No longer used.
             "wrap"          : d.get('wrap'),
         }
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
-    def scanAtPathDirectives(self,aList): #### ,force=False,createPath=True):
+    def scanAtPathDirectives(self,aList):
 
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
@@ -491,20 +491,10 @@ class baseCommands (object):
         path = c.os_path_finalize_join(*paths)
 
         if trace and verbose: g.trace('joined path:',path)
-
-        ####
-        # Step 4: Make the path if necessary.
-        # if path and createPath and not g.os_path_exists(path):
-            # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-            # if not ok:
-                # if force:
-                    # g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-                # path = absbase # Bug fix: 2008/9/18
-
         if trace: g.trace('returns',path)
 
         return path or g.getBaseDirectory(c)
-            ### 2010/10/22: A very useful default.
+            # 2010/10/22: A useful default.
     #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
@@ -565,12 +555,7 @@ class baseCommands (object):
         Return None if p is no kind of @file node.'''
 
         c = self
-        ### d = c.scanAllDirectives(p)
-        ### path = d.get('path')
-        ###aList = g.get_directives_dict_list(p)
-        ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
         path = g.scanAllAtPathDirectives(c,p)
-
         name = ''
         for p in p.self_and_parents():
             name = p.anyAtFileNodeName()
@@ -2509,10 +2494,6 @@ class baseCommands (object):
                 lines = g.splitLines(at.stringOutput)
             else:
                 # Calculate the full path.
-                ### d = g.scanDirectives(c,p=root)
-                ### path = d.get("path")
-                ###aList = g.get_directives_dict_list(p=root)
-                ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
                 path = g.scanAllAtPathDirectives(c,p)
                 # g.trace('path',path,'fileName',fileName)
                 fileName = c.os_path_finalize_join(path,fileName)

@@ -372,10 +372,6 @@ class atFile:
                 # at.page_width
                 # at.tab_width
 
-            ###
-            ###aList = g.get_directives_dict_list(p=root)
-            ###at.default_directory = c.scanAtPathDirectives(aList)
-
         # g.trace(forcePythonSentinels,
         #    at.startSentinelComment,at.endSentinelComment)
 
@@ -592,10 +588,6 @@ class atFile:
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
-
-        ###
-        ###aList = g.get_directives_dict_list(p=root)
-        ### at.default_directory = c.scanAtPathDirectives(aList)
 
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
         at.inputFile.close()
@@ -5248,7 +5240,7 @@ class atFile:
 
         at = self ; c = at.c
         aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList) ####,createPath=False)
+        path = c.scanAtPathDirectives(aList)
         if simulate: # for unit tests.
             fn = p.h
         else:
