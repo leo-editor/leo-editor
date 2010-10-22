@@ -14,6 +14,15 @@ Adds the following (``Alt-X``) commands:
   pop out current node as an encrypted note
 ``stickynoteenckey``
   enter a new en/decryption key
+``tabula``
+  add the current node to the stickynotes in the `Tabula`
+  sticky note dock window, and show the window
+``tabula-show``
+  show the`Tabula` sticky note dock window
+  (without adding the current node)
+``tabula-marked``
+  add all marked nodes to the stickynotes in the `Tabula`
+  sticky note dock window, and show the window
 
 Sticky notes are synchronized (both ways) with their parent Leo node.
 
