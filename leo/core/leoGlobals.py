@@ -526,7 +526,7 @@ def compute_directives_re ():
 
     return '|'.join(aList)
 #@+node:ekr.20080827175609.1: *4* g.get_directives_dict_list (must be fast)
-def get_directives_dict_list(p1):
+def get_directives_dict_list(p):
 
     """Scans p and all its ancestors for directives.
 
@@ -535,20 +535,18 @@ def get_directives_dict_list(p1):
 
     trace = False and not g.unitTesting
 
-    if trace: time1 = g.getTime()
+    # if trace: time1 = g.getTime()
 
     result = []
+    p1 = p.copy()
+    for p in p1.self_and_parents():
+        if p.hasParent(): root = None
+        else:             root = [p.copy()]
+        result.append(g.get_directives_dict(p,root=root))
 
-    if p1:
-        p1 = p1.copy()
-        for p in p1.self_and_parents():
-            if p.hasParent(): root = None
-            else:             root = [p.copy()]
-            result.append(g.get_directives_dict(p,root=root))
-
-        if trace:
-            n = len(p1.h) + len(p1.b)
-            g.trace('%4d %s' % (n,g.timeSince(time1)))
+    # if trace:
+        # n = len(p1.h) + len(p1.b)
+        # g.trace('%4d %s' % (n,g.timeSince(time1)))
 
     return result
 #@+node:ekr.20031218072017.1386: *4* g.getOutputNewline

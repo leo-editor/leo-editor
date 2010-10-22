@@ -2097,7 +2097,7 @@ def scanAllDirectives(self,p,
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           c.scanAtPathDirectives),
+        ### ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
     )
 
@@ -2125,7 +2125,7 @@ def scanAllDirectives(self,p,
     at.encoding             = d.get('encoding')
     at.language             = lang_dict.get('language')
     at.page_width           = d.get('pagewidth')
-    at.default_directory    = d.get('path')
+    ### at.default_directory    = d.get('path')
     at.tab_width            = d.get('tabwidth')
 
     if not importing and not reading:
@@ -2307,15 +2307,16 @@ def read(self,root,importFileName=None,
         else:
             g.es("converting @file format in",root.h,color='red')
     root.clearVisitedInTree()
-    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
         # Sets the following ivars:
             # at.explicitLineEnding
             # at.output_newline
             # at.encoding
             # at.language
             # at.page_width
-            # at.default_directory *** path**
             # at.tab_width
+    aList = g.get_directives_dict_list(p=root)
+    at.default_directory = c.scanAtPathDirectives(aList)
 
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
     at.inputFile.close()
@@ -2325,7 +2326,7 @@ def read(self,root,importFileName=None,
         at.deleteTnodeList(root)
     if at.errors == 0 and not at.importing:
         # Used by mod_labels plugin.
-        self.copyAllTempBodyStringsToVnodes(root,thinFile)
+        at.copyAllTempBodyStringsToVnodes(root,thinFile)
     at.deleteAllTempBodyStrings()
     if isFileLike:
         # 2010/02/24: Make the root @file node dirty so it will

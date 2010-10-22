@@ -816,7 +816,7 @@ class leoImportCommands (scanUtility):
         #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
-    #@+node:ekr.20080211085914: *4* scanDefaultDirectory (leoImport)
+    #@+node:ekr.20080211085914: *4* ic.scanDefaultDirectory
     def scanDefaultDirectory(self,p):
 
         """Set the default_directory ivar by looking for @path directives."""

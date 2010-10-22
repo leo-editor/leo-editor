@@ -321,7 +321,7 @@ class atFile:
         toString=False,
         forcePythonSentinels=None,
     ):
-
+        at = self ; c = at.c
         self.initCommonIvars()
         #@+<< init ivars for writing >>
         #@+node:ekr.20041005105605.16: *4* << init ivars for writing >>>
@@ -331,35 +331,35 @@ class atFile:
         # temporary file to be the target file.
         #@@c
 
-        self.docKind = None
-        self.explicitLineEnding = False
+        at.docKind = None
+        at.explicitLineEnding = False
             # True: an @lineending directive specifies the ending.
-        self.fileChangedFlag = False # True: the file has actually been updated.
-        self.atAuto = atAuto
-        self.atEdit = atEdit
-        self.atShadow = atShadow
-        self.shortFileName = "" # short version of file name used for messages.
-        self.thinFile = False
-        self.writeVersion5 = self.new_write and not atShadow
+        at.fileChangedFlag = False # True: the file has actually been updated.
+        at.atAuto = atAuto
+        at.atEdit = atEdit
+        at.atShadow = atShadow
+        at.shortFileName = "" # short version of file name used for messages.
+        at.thinFile = False
+        at.writeVersion5 = at.new_write and not atShadow
 
-        self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+        at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force_newlines_in_at_nosent_bodies')
 
         if toString:
-            self.outputFile = g.fileLikeObject()
-            self.stringOutput = ""
-            self.targetFileName = self.outputFileName = "<string-file>"
+            at.outputFile = g.fileLikeObject()
+            at.stringOutput = ""
+            at.targetFileName = at.outputFileName = "<string-file>"
         else:
-            self.outputFile = None # The temporary output file.
-            self.stringOutput = None
-            self.targetFileName = self.outputFileName = g.u('')
+            at.outputFile = None # The temporary output file.
+            at.stringOutput = None
+            at.targetFileName = at.outputFileName = g.u('')
         #@-<< init ivars for writing >>
 
         if forcePythonSentinels is None:
             forcePythonSentinels = scriptWrite
 
         if root:
-            self.scanAllDirectives(root,
+            at.scanAllDirectives(root,
                 scripting=scriptWrite,
                 forcePythonSentinels=forcePythonSentinels,
                 issuePathWarning=True)
@@ -369,32 +369,33 @@ class atFile:
                 # at.encoding
                 # at.language
                 # at.page_width
-                # at.default_directory  *** path ***
                 # at.tab_width
+            aList = g.get_directives_dict_list(p=root)
+            at.default_directory = c.scanAtPathDirectives(aList)
 
         # g.trace(forcePythonSentinels,
-        #    self.startSentinelComment,self.endSentinelComment)
+        #    at.startSentinelComment,at.endSentinelComment)
 
         if forcePythonSentinels:
             # Force Python comment delims for g.getScript.
-            self.startSentinelComment = "#"
-            self.endSentinelComment = None
+            at.startSentinelComment = "#"
+            at.endSentinelComment = None
 
         # Init state from arguments.
-        self.targetFileName = targetFileName
-        self.sentinels = not nosentinels
-        self.thinFile = thinFile
-        self.toString = toString
-        self.root = root
+        at.targetFileName = targetFileName
+        at.sentinels = not nosentinels
+        at.thinFile = thinFile
+        at.toString = toString
+        at.root = root
 
         # Ignore config settings for unit testing.
-        if toString and g.app.unitTesting: self.output_newline = '\n'
+        if toString and g.app.unitTesting: at.output_newline = '\n'
 
         # Init all other ivars even if there is an error.
-        if not self.errors and self.root:
-            if hasattr(self.root.v,'tnodeList'):
-                delattr(self.root.v,'tnodeList')
-            self.root.v._p_changed = True
+        if not at.errors and at.root:
+            if hasattr(at.root.v,'tnodeList'):
+                delattr(at.root.v,'tnodeList')
+            at.root.v._p_changed = True
     #@+node:ekr.20041005105605.17: ** at.Reading
     #@+<< about new sentinels >>
     #@+node:ekr.20100619222623.5918: *3* << about new sentinels >>
@@ -579,15 +580,16 @@ class atFile:
             else:
                 g.es("converting @file format in",root.h,color='red')
         root.clearVisitedInTree()
-        d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+        at.scanAllDirectives(root,importing=at.importing,reading=True)
             # Sets the following ivars:
                 # at.explicitLineEnding
                 # at.output_newline
                 # at.encoding
                 # at.language
                 # at.page_width
-                # at.default_directory *** path**
                 # at.tab_width
+        aList = g.get_directives_dict_list(p=root)
+        at.default_directory = c.scanAtPathDirectives(aList)
 
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
         at.inputFile.close()
@@ -597,7 +599,7 @@ class atFile:
             at.deleteTnodeList(root)
         if at.errors == 0 and not at.importing:
             # Used by mod_labels plugin.
-            self.copyAllTempBodyStringsToVnodes(root,thinFile)
+            at.copyAllTempBodyStringsToVnodes(root,thinFile)
         at.deleteAllTempBodyStrings()
         if isFileLike:
             # 2010/02/24: Make the root @file node dirty so it will
@@ -5062,7 +5064,7 @@ class atFile:
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
+            ### ('path',        None,           c.scanAtPathDirectives),
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         )
 
@@ -5090,7 +5092,7 @@ class atFile:
         at.encoding             = d.get('encoding')
         at.language             = lang_dict.get('language')
         at.page_width           = d.get('pagewidth')
-        at.default_directory    = d.get('path')
+        ### at.default_directory    = d.get('path')
         at.tab_width            = d.get('tabwidth')
 
         if not importing and not reading:
