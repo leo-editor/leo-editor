@@ -557,7 +557,8 @@ class baseCommands (object):
 
         Return None if p is no kind of @file node.'''
 
-        d = self.scanAllDirectives(p)
+        c = self
+        d = c.scanAllDirectives(p)
         path = d.get('path')
 
         name = ''
@@ -2481,7 +2482,7 @@ class baseCommands (object):
 
             # g.trace(n)
             return n
-        #@+node:ekr.20100216141722.5634: *7* getFileLines
+        #@+node:ekr.20100216141722.5634: *7* getFileLines (leoEditCommands)
         def getFileLines (self,root,fileName):
 
             '''Read the file into lines.'''

@@ -11,7 +11,7 @@ Specifying a @path directory causes Leo to save an "@thin file.ext" node below
 it in Leo's home directory without any warning. The next time Leo is opened it
 issues an error that it can not find the file.
 
-It should instead issue a warning that the @path directory does not exist.\
+It should instead issue a warning that the @path directory does not exist.
 
 If this occurs when the saving of @thin nodes to files is performed as part of
 the user closing Leo, the closing of Leo should be aborted to prevent the loss
@@ -127,7 +127,7 @@ def read(self,root,importFileName=None,
             # at.encoding
             # at.language
             # at.page_width
-            # at.default_directory
+            # at.default_directory *** path**
             # at.tab_width
 
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
@@ -853,6 +853,2805 @@ def adjustTargetLanguage (self,fn):
         else:
             # An unknown language.
             pass # Use the default language, **not** 'unknown_language'
+#@+node:ekr.20101022055534.5983: *5*  Found: scanAllDirectives
+#@+node:ekr.20101022055534.5984: *6* defs
+#@+node:ekr.20031218072017.1380: *7* g.Directive utils...
+# New in Leo 4.6:
+# g.findAtTabWidthDirectives, g.findLanguageDirectives and
+# g.get_directives_dict use re module for faster searching.
+#@+node:EKR.20040504150046.4: *8* g.comment_delims_from_extension
+def comment_delims_from_extension(filename):
+
+    """
+    Return the comment delims corresponding to the filename's extension.
+
+    >>> import leo.core.leoGlobals as g
+    >>> g.comment_delims_from_extension(".py")
+    ('#', '', '')
+
+    >>> g.comment_delims_from_extension(".c")
+    ('//', '/*', '*/')
+
+    >>> g.comment_delims_from_extension(".html")
+    ('', '<!--', '-->')
+
+    """
+
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
+    if ext == '.tmp':
+        root, ext = os.path.splitext(root)
+
+    language = g.app.extension_dict.get(ext[1:])
+    if ext:
+        return g.set_delims_from_language(language)
+    else:
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
+        return '','',''
+#@+node:ekr.20071109165315: *8* g.stripPathCruft
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
+#@+node:ekr.20090214075058.8: *8* g.findAtTabWidthDirectives (must be fast)
+g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
+
+def findTabWidthDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    if c is None:
+        return # c may be None for testing.
+
+    w = None
+    # 2009/10/02: no need for copy arg to iter
+    for p in p.self_and_parents():
+        if w: break
+        for s in p.h,p.b:
+            if w: break
+            anIter = g_tabwidth_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = g.skip_ws(s,i + len(word))
+                junk,w = g.skip_long(s,j)
+                if w == 0: w = None
+    return w
+#@+node:ekr.20090214075058.6: *8* g.findLanguageDirectives (must be fast)
+g_language_pat = re.compile(r'(^@language)',re.MULTILINE)
+
+def findLanguageDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    trace = False and not g.unitTesting
+
+    if c is None:
+        return # c may be None for testing. 
+    if c.target_language:
+        language = c.target_language.lower()
+    else:
+        language = 'python'
+    found = False
+    # 2009/10/02: no need for copy arg to iter.
+    for p in p.self_and_parents():
+        if found: break
+        for s in p.h,p.b:
+            if found: break
+            anIter = g_language_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = i + len(word)
+                k = g.skip_line(s,j)
+                language = s[j:k].strip()
+                found = True
+
+    if trace: g.trace(language)
+    return language
+#@+node:ekr.20031218072017.1385: *8* g.findReference
+# Called from the syntax coloring method that colorizes section references.
+
+def findReference(c,name,root):
+
+    '''Find the section definition for name.
+
+    If a search of the descendants fails,
+    and an ancestor is an @root node,
+    search all the descendants of the @root node.
+    '''
+
+    for p in root.subtree():
+        assert(p!=root)
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            return p
+
+    # New in Leo 4.7: expand the search for @root trees.
+    for p in root.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'root' in d:
+            for p2 in p.subtree():
+                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
+                    return p2
+
+    # g.trace("not found:",name,root)
+    return c.nullPosition()
+#@+node:ekr.20090214075058.9: *8* g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing the stripped remainder of the line
+    following the first occurrence of each recognized directive"""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    if trace: g.trace('*'*20,p.h)
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('head',p.h),('body',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if j < len(s) and s[j] not in (' ','\t','\n'):
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
+                    # if trace:g.trace(word,repr(val),s[i:i+20])
+                    pass # Not a valid directive: just ignore it.
+                else:
+                    directive_word = word.strip()
+                    if directive_word in ('root-doc', 'root-code'):
+                        d['root'] = val # in addition to optioned version
+                    d[directive_word] = val
+                    if trace: g.trace(word.strip(),kind,repr(val))
+                    # A special case for @path in the body text of @<file> nodes.
+                    # Don't give an actual warning: just set some flags.
+                    if kind == 'body' and word.strip() == 'path' and p.isAnyAtFileNode():
+                        g.app.atPathInBodyWarning = p.h
+                        d['@path_in_body'] = p.h
+                        if trace: g.trace('@path in body',p.h)
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace and verbose: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10: *9* compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    if 0: # 2010/02/01
+        # The code never this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
+
+    return '|'.join(aList)
+#@+node:ekr.20080827175609.1: *8* g.get_directives_dict_list (must be fast)
+def get_directives_dict_list(p1):
+
+    """Scans p and all its ancestors for directives.
+
+    Returns a list of dicts containing pointers to
+    the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if trace: time1 = g.getTime()
+
+    result = []
+
+    if p1:
+        p1 = p1.copy()
+        for p in p1.self_and_parents():
+            if p.hasParent(): root = None
+            else:             root = [p.copy()]
+            result.append(g.get_directives_dict(p,root=root))
+
+        if trace:
+            n = len(p1.h) + len(p1.b)
+            g.trace('%4d %s' % (n,g.timeSince(time1)))
+
+    return result
+#@+node:ekr.20031218072017.1386: *8* g.getOutputNewline
+def getOutputNewline (c=None,name=None):
+
+    '''Convert the name of a line ending to the line ending itself.
+
+    Priority:
+    - Use name if name given
+    - Use c.config.output_newline if c given,
+    - Otherwise use g.app.config.output_newline.'''
+
+    if name: s = name
+    elif c:  s = c.config.output_newline
+    else:    s = app.config.output_newline
+
+    if not s: s = ''
+    s = s.lower()
+    if s in ( "nl","lf"): s = '\n'
+    elif s == "cr": s = '\r'
+    elif s == "platform": s = os.linesep  # 12/2/03: emakital
+    elif s == "crlf": s = "\r\n"
+    else: s = '\n' # Default for erroneous values.
+    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
+    return s
+#@+node:ekr.20080827175609.52: *8* g.scanAtCommentAndLanguageDirectives
+def scanAtCommentAndAtLanguageDirectives(aList):
+
+    '''Scan aList for @comment and @language directives.
+
+    @comment should follow @language if both appear in the same node.'''
+
+    lang = None
+
+    for d in aList:
+
+        comment = d.get('comment')
+        language = d.get('language')
+
+        # Important: assume @comment follows @language.
+        if language:
+            # if g.unitTesting: g.trace('language',language)
+            lang,delim1,delim2,delim3 = g.set_language(language,0)
+
+        if comment:
+            # if g.unitTesting: g.trace('comment',comment)
+            delim1,delim2,delim3 = g.set_delims_from_string(comment)
+
+        if comment or language:
+            delims = delim1,delim2,delim3
+            return {'language':lang,'comment':comment,'delims':delims}
+
+    return None
+#@+node:ekr.20080827175609.32: *8* g.scanAtEncodingDirectives
+def scanAtEncodingDirectives(aList):
+
+    '''Scan aList for @encoding directives.'''
+
+    for d in aList:
+        encoding = d.get('encoding')
+        if encoding and g.isValidEncoding(encoding):
+            # g.trace(encoding)
+            return encoding
+        elif encoding and not g.app.unitTesting:
+            g.es("invalid @encoding:",encoding,color="red")
+
+    return None
+#@+node:ekr.20080827175609.53: *8* g.scanAtHeaderDirectives
+def scanAtHeaderDirectives(aList):
+
+    '''scan aList for @header and @noheader directives.'''
+
+    for d in aList:
+        if d.get('header') and d.get('noheader'):
+            g.es_print("conflicting @header and @noheader directives",color='red')
+#@+node:ekr.20080827175609.33: *8* g.scanAtLineendingDirectives
+def scanAtLineendingDirectives(aList):
+
+    '''Scan aList for @lineending directives.'''
+
+    for d in aList:
+
+        e = d.get('lineending')
+        if e in ("cr","crlf","lf","nl","platform"):
+            lineending = g.getOutputNewline(name=e)
+            return lineending
+        # else:
+            # g.es("invalid @lineending directive:",e,color="red")
+
+    return None
+#@+node:ekr.20080827175609.34: *8* g.scanAtPagewidthDirectives
+def scanAtPagewidthDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @pagewidth directives.'''
+
+    for d in aList:
+        s = d.get('pagewidth')
+        if s is not None:
+            i, val = g.skip_long(s,0)
+            if val != None and val > 0:
+                # g.trace(val)
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @pagewidth",s,color="red")
+
+    return None
+#@+node:ekr.20100507084415.5760: *8* g.scanAtRootDirectives
+def scanAtRootDirectives(aList):
+
+    '''Scan aList for @root directives.'''
+
+    for d in aList:
+        s = d.get('root')
+        if s is not None:
+            i, mode = g.scanAtRootOptions(s,0)
+            g.trace(mode)
+            return mode
+
+    return None
+#@+node:ekr.20031218072017.3154: *8* g.scanAtRootOptions
+def scanAtRootOptions (s,i,err_flag=False):
+
+    # The @root has been eaten when called from tangle.scanAllDirectives.
+    if g.match(s,i,"@root"):
+        i += len("@root")
+        i = g.skip_ws(s,i)
+
+    mode = None 
+    while g.match(s,i,'-'):
+        << scan another @root option >>
+
+    if mode == None:
+        doc = app.config.at_root_bodies_start_in_doc_mode
+        mode = g.choose(doc,"doc","code")
+
+    # g.trace(mode,g.callers(3))
+
+    return i,mode
+#@+node:ekr.20031218072017.3155: *9* << scan another @root option >>
+i += 1 ; err = -1
+
+if g.match_word(s,i,"code"): # Just match the prefix.
+    if not mode: mode = "code"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+elif g.match(s,i,"doc"): # Just match the prefix.
+    if not mode: mode = "doc"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+else:
+    err = i-1
+
+# Scan to the next minus sign.
+while i < len(s) and s[i] not in (' ','\t','\n','-'):
+    i += 1
+
+if err > -1 and err_flag:
+    z_opt = s[err:i]
+    z_line = g.get_line(s,i)
+    g.es("unknown option:",z_opt,"in",z_line)
+#@+node:ekr.20080827175609.37: *8* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+def scanAtTabwidthDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @tabwidth directives.'''
+
+    for d in aList:
+        s = d.get('tabwidth')
+        if s is not None:
+            junk,val = g.skip_long(s,0)
+            if val not in (None,0):
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @tabwidth",s,color="red")
+    return None
+
+def scanAllAtTabWidthDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @tabwidth directives.'''
+
+    if c and p:
+        aList = g.get_directives_dict_list(p)
+        val = g.scanAtTabwidthDirectives(aList)
+        ret = g.choose(val is None,c.tab_width,val)
+    else:
+        ret = None
+    # g.trace(ret,p and p.h,ret)
+    return ret
+#@+node:ekr.20080831084419.4: *8* g.scanAtWrapDirectives & scanAllAtWrapDirectives
+def scanAtWrapDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @wrap and @nowrap directives.'''
+
+    for d in aList:
+        if d.get('wrap') is not None:
+            return True
+        elif d.get('nowrap') is not None:
+            return False
+
+    return None
+
+def scanAllAtWrapDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
+
+    if c and p:
+        default = c and c.config.getBool("body_pane_wraps")
+        aList = g.get_directives_dict_list(p)
+
+        val = g.scanAtWrapDirectives(aList)
+        ret = g.choose(val is None,default,val)
+    else:
+        ret = None
+    # g.trace(ret,p.h)
+    return ret
+#@+node:ekr.20080901195858.4: *8* g.scanDirectives  (for compatibility only)
+def scanDirectives(c,p=None):
+
+    return c.scanAllDirectives(p)
+#@+node:ekr.20040715155607: *8* g.scanForAtIgnore
+def scanForAtIgnore(c,p):
+
+    """Scan position p and its ancestors looking for @ignore directives."""
+
+    if g.app.unitTesting:
+        return False # For unit tests.
+
+    for p in p.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'ignore' in d:
+            return True
+
+    return False
+#@+node:ekr.20040712084911.1: *8* g.scanForAtLanguage
+def scanForAtLanguage(c,p):
+
+    """Scan position p and p's ancestors looking only for @language and @ignore directives.
+
+    Returns the language found, or c.target_language."""
+
+    # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
+
+    if c and p:
+        for p in p.self_and_parents():
+            d = g.get_directives_dict(p)
+            if 'language' in d:
+                z = d["language"]
+                language,delim1,delim2,delim3 = g.set_language(z,0)
+                return language
+
+    return c.target_language
+#@+node:ekr.20041123094807: *8* g.scanForAtSettings
+def scanForAtSettings(p):
+
+    """Scan position p and its ancestors looking for @settings nodes."""
+
+    for p in p.self_and_parents():
+        h = p.h
+        h = g.app.config.canonicalizeSettingName(h)
+        if h.startswith("@settings"):
+            return True
+
+    return False
+#@+node:ekr.20031218072017.1382: *8* g.set_delims_from_language
+# Returns a tuple (single,start,end) of comment delims
+
+def set_delims_from_language(language):
+
+    trace = False and not g.unitTesting
+
+    val = g.app.language_delims_dict.get(language)
+    # if language.startswith('huh'): g.pdb()
+
+    if val:
+        delim1,delim2,delim3 = g.set_delims_from_string(val)
+        if trace: g.trace(repr(language),
+            repr(delim1),repr(delim2),repr(delim3),g.callers(5))
+        if delim2 and not delim3:
+            return '',delim1,delim2
+        else: # 0,1 or 3 params.
+            return delim1,delim2,delim3
+    else:
+        return '','','' # Indicate that no change should be made
+#@+node:ekr.20031218072017.1383: *8* g.set_delims_from_string
+def set_delims_from_string(s):
+
+    """Returns (delim1, delim2, delim2), the delims following the @comment directive.
+
+    This code can be called from @language logic, in which case s can point at @comment"""
+
+    # Skip an optional @comment
+    tag = "@comment"
+    i = 0
+    if g.match_word(s,i,tag):
+        i += len(tag)
+
+    count = 0 ; delims = ['','','']
+    while count < 3 and i < len(s):
+        i = j = g.skip_ws(s,i)
+        while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+            i += 1
+        if j == i: break
+        delims[count] = s[j:i] or ''
+        count += 1
+
+    # 'rr 09/25/02
+    if count == 2: # delims[0] is always the single-line delim.
+        delims[2] = delims[1]
+        delims[1] = delims[0]
+        delims[0] = ''
+
+    # 7/8/02: The "REM hack": replace underscores by blanks.
+    # 9/25/02: The "perlpod hack": replace double underscores by newlines.
+    for i in range(0,3):
+        if delims[i]:
+            delims[i] = delims[i].replace("__",'\n').replace('_',' ')
+
+    return delims[0], delims[1], delims[2]
+#@+node:ekr.20031218072017.1384: *8* g.set_language
+def set_language(s,i,issue_errors_flag=False):
+
+    """Scan the @language directive that appears at s[i:].
+
+    The @language may have been stripped away.
+
+    Returns (language, delim1, delim2, delim3)
+    """
+
+    tag = "@language"
+    # g.trace(g.get_line(s,i))
+    assert(i != None)
+    # assert(g.match_word(s,i,tag))
+    if g.match_word(s,i,tag):
+        i += len(tag)
+    # Get the argument.
+    i = g.skip_ws(s, i)
+    j = i ; i = g.skip_c_id(s,i)
+    # Allow tcl/tk.
+    arg = s[j:i].lower()
+    if app.language_delims_dict.get(arg):
+        language = arg
+        delim1, delim2, delim3 = g.set_delims_from_language(language)
+        return language, delim1, delim2, delim3
+
+    if issue_errors_flag:
+        g.es("ignoring:",g.get_line(s,i))
+
+    return None, None, None, None,
+#@+node:ekr.20081001062423.9: *8* g.setDefaultDirectory & helpers
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefaultDirectory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    ''' Compute a default directory by scanning @path directives.
+    Return (default_dir,error_message).'''
+
+    if not p: return '',''
+    default_dir,error = g.getAbsPathFromNode(c,p),''
+
+    if not default_dir:
+        default_dir,error = g.getPathFromDirectives(c,p)
+
+    if c and c.frame and not default_dir and not error:
+        default_dir = g.findDefaultDirectory(c)
+
+    if not default_dir and not importing and not error:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    return default_dir, error
+#@+node:ekr.20081001062423.10: *9* g.getAbsPathFromNode
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
+
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
+
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+
+    return default_dir
+#@+node:ekr.20081001062423.11: *9* g.getPathFromDirectives
+def getPathFromDirectives(c,p,createFlag=True):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        exists = g.os_path_exists(path)
+        if createFlag:
+            if exists:
+                default_dir = path
+            else:
+                default_dir = g.makeAllNonExistentDirectories(path,c=c)
+                if not default_dir:
+                    error = "invalid @path: %s" % path
+        else:
+            default_dir = path
+            if not exists:
+                error = "does not exist: @path %s" % path
+
+    return default_dir,error
+#@+node:ekr.20081001062423.12: *9* g.findDefaultDirectory (major change)
+# This code is executed if no valid absolute path was specified in
+# the @file node or in an @path directive.
+
+def findDefaultDirectory(c):
+
+    '''Attempt to find a suitable default directory.'''
+
+    default_dir = ''
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
+    return default_dir
+#@+node:ekr.20101022055534.5985: *7* Not shown tangle.scanAllDirectives
+# No change will be made to the tangle code.
+#@+node:ekr.20080827175609.39: *7* c.scanAllDirectives
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.p
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
+#@+node:ekr.20080923070954.4: *7* at.scanAllDirectives
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+    createPath=True,
+    issuePathWarning=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = self.c
+    g.app.atPathInBodyWarning = None
+    << set ivars >>
+    lang_dict = {'language':at.language,'delims':delims,}
+    table = (
+        ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    if issuePathWarning and g.app.atPathInBodyWarning:
+        g.es('warning: ignoring @path directive in',
+            g.app.atPathInBodyWarning,color='red')
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    delims          = lang_dict.get('delims')
+    lineending      = d.get('lineending')
+    if lineending:
+        at.explicitLineEnding = True
+        at.output_newline = lineending
+    else:
+        at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
+
+    at.encoding             = d.get('encoding')
+    at.language             = lang_dict.get('language')
+    at.page_width           = d.get('pagewidth')
+    at.default_directory    = d.get('path')
+    at.tab_width            = d.get('tabwidth')
+
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        << set comment strings from delims >>
+
+    # For unit testing.
+    d = {
+        "all"       : all,
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+    if trace: g.trace(d)
+    return d
+#@+node:ekr.20080923070954.14: *8* << Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower()
+
+delims = g.set_delims_from_language(c.target_language)
+at.language = c.target_language
+
+at.encoding = c.config.default_derived_file_encoding
+at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@+node:ekr.20080923070954.13: *8* << Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+else:
+    delim1,delim2,delim3 = delims
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@+node:ekr.20080901195858.4: *7* g.scanDirectives  (for compatibility only)
+def scanDirectives(c,p=None):
+
+    return c.scanAllDirectives(p)
+#@+node:ekr.20101022055534.5986: *6* Calls that **do** use path
+#@+node:ekr.20041005105605.15: *7* at.initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    atAuto=False,
+    atEdit=False,
+    atShadow=False,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels,
+            issuePathWarning=True)
+        # Sets the following ivars:
+            # at.explicitLineEnding
+            # at.output_newline
+            # at.encoding
+            # at.language
+            # at.page_width
+            # at.default_directory  *** path ***
+            # at.tab_width
+
+    # g.trace(forcePythonSentinels,
+    #    self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        if hasattr(self.root.v,'tnodeList'):
+            delattr(self.root.v,'tnodeList')
+        self.root.v._p_changed = True
+#@+node:ekr.20041005105605.16: *8* << init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the
+temporary file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False
+    # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.atAuto = atAuto
+self.atEdit = atEdit
+self.atShadow = atShadow
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.writeVersion5 = self.new_write and not atShadow
+
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+    'force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+    self.targetFileName = self.outputFileName = g.u('')
+#@+node:ekr.20041005105605.21: *7* at.read & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h)
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    at.fromString = fromString
+    if at.errors:
+        if trace: g.trace('Init error')
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if fileName and at.inputFile:
+        c.setFileTimeStamp(fileName)
+    elif fromString: # 2010/09/02.
+        pass
+    else:
+        g.trace('No inputFile')
+        return False
+    root.v.at_read = True # Remember that we have read this file.
+
+    # Get the file from the cache if possible.
+    if fromString:
+        s,loaded,fileKey = fromString,False,None
+    else:
+        s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # 2010/02/24: Never read an external file
+    # with file-like sentinels from the cache.
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+        # Sets the following ivars:
+            # at.explicitLineEnding
+            # at.output_newline
+            # at.encoding
+            # at.language
+            # at.page_width
+            # at.default_directory *** path**
+            # at.tab_width
+
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.deleteUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        self.copyAllTempBodyStringsToVnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike:
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    if at.errors == 0 and not isFileLike and not fromString:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('at.errors',at.errors)
+    return at.errors == 0
+#@+node:ekr.20041005105605.25: *8* at.deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
+#@+node:ekr.20100122130101.6174: *8* at.deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@+node:ekr.20071105164407: *8* at.deleteUnvisitedNodes & helpers
+def deleteUnvisitedNodes (self,root):
+
+    '''Delete unvisited nodes in root's subtree, not including root.
+
+    Actually, instead of deleting the nodes, we move them to be children of the
+    'Resurrected Nodes' r.
+    '''
+
+    at = self
+
+    if not root.hasChildren():
+        return
+
+    # Carefully set up the arguments.
+    aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+    if not aList: return
+
+    r = at.createResurrectedNodesNode()
+    assert r not in aList
+    callback=at.defineResurrectedNodeCallback(r,root)
+
+    # Now move the nodes.
+    root.firstChild().deletePositionsInList(aList,callback)
+#@+node:ekr.20100803073751.5817: *9* createResurrectedNodesNode
+def createResurrectedNodesNode(self):
+
+    '''Create a 'Resurrected Nodes' node as the last top-level node.'''
+
+    at = self ; c = at.c ; tag = 'Resurrected Nodes'
+
+    # Find the last top-level node.
+    last = c.rootPosition()
+    while last.hasNext():
+        last.moveToNext()
+
+    if last.h == tag:
+        # The 'Resurrected Nodes' node already exists.
+        p = last
+    else:
+        # Create the 'Resurrected Nodes' node after 'last'.
+        p = last.insertAfter()
+        p.setHeadString(tag)
+
+    p.expand()
+    return p
+#@+node:ekr.20100803073751.5818: *9* defineResurrectedNodeCallback
+def defineResurrectedNodeCallback (self,r,root):
+
+    '''Define a callback that moves node p as r's last child.'''
+
+    def callback(p,r=r.copy(),root=root):
+
+        '''The resurrected nodes callback.'''
+
+        child = r.insertAsLastChild()
+        child.h = 'From %s' % root.h
+        p.moveToLastChildOf(child)
+
+        if g.unitTesting:
+            # g.trace(p.h,r.h)
+            pass 
+        else:
+            g.es('resurrected node:',p.h,color='red')
+            g.es('in file:',root.h,color='blue')
+
+    return callback
+
+
+#@+node:ekr.20041005105605.22: *8* at.initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@+node:ekr.20100224050618.11547: *8* at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False',repr(s))
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@+node:ekr.20081006100835.1: *7* c.getNodePath & c.getNodeFileName
+def getNodePath (self,p):
+
+    '''Return the path in effect at node p.'''
+
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def getNodeFileName (self,p):
+
+    '''Return the full file name at node p,
+    including effects of all @path directives.
+
+    Return None if p is no kind of @file node.'''
+
+    c = self
+    d = c.scanAllDirectives(p)
+    path = d.get('path')
+
+    name = ''
+    for p in p.self_and_parents():
+        name = p.anyAtFileNodeName()
+        if name: break
+
+    if name:
+        name = g.os_path_finalize_join(path,name)
+    return name
+#@+node:ekr.20100216141722.5634: *7* getFileLines (leoEditCommands)
+def getFileLines (self,root,fileName):
+
+    '''Read the file into lines.'''
+
+    c = self.c
+    isAtEdit = root.isAtEditNode()
+    isAtNoSent = root.isAtNoSentFileNode()
+
+    if isAtNoSent or isAtEdit:
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        kind = g.choose(isAtNoSent,'@nosent','@edit')
+        at.write(root,kind=kind,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        # g.trace('path',path,'fileName',fileName)
+        fileName = c.os_path_finalize_join(path,fileName)
+        lines    = self.openFile(fileName)
+
+    return lines
+#@+node:ekr.20090502071837.60: *7* init_write (rstCommands)
+def init_write (self,p):
+
+    self.initOptionsFromSettings() # Still needed.
+
+    # Set the encoding from any parent @encoding directive.
+    # This can be overridden by @rst-option encoding=whatever.
+    c = self.c
+    d = c.scanAllDirectives(p)
+    self.encoding = d.get('encoding') or 'utf-8'
+    self.path = d.get('path') or ''
+
+    # g.trace('path:',self.path)
+#@+node:ekr.20031218072017.3045: *7* setDefaultDirectoryForNewFiles (fileCommands)
+def setDefaultDirectoryForNewFiles (self,fileName):
+
+    """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
+
+    c = self.c
+
+    if not c.openDirectory:
+        theDir = g.os_path_dirname(fileName)
+        if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
+            c.openDirectory = c.frame.openDirectory = theDir
+#@+node:ekr.20101022055534.5987: *6* Calls that do not use path
+#@+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    c = self
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+
+    return ext
+#@+node:ekr.20100203050306.5937: *7* c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if g.os_path_exists(fn):
+            g.es('recreating:  ',g.shortFileName(fn),color='red')
+        else:
+            g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time: g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.1704: *7* convertAllBlanks
+def convertAllBlanks (self,event=None):
+
+    '''Convert all blanks to tabs in the selected outline.'''
+
+    c = self ; u = c.undoer ; undoType = 'Convert All Blanks'
+    current = c.p
+
+    if g.app.batchMode:
+        c.notValidInBatchMode(undoType)
+        return
+
+    d = c.scanAllDirectives()
+    tabWidth  = d.get("tabwidth")
+    count = 0 ; dirtyVnodeList = []
+    u.beforeChangeGroup(current,undoType)
+    for p in current.self_and_subtree():
+        # g.trace(p.h,tabWidth)
+        innerUndoData = u.beforeChangeNodeContents(p)
+        if p == current:
+            changed,dirtyVnodeList2 = c.convertBlanks(event)
+            if changed:
+                count += 1
+                dirtyVnodeList.extend(dirtyVnodeList2)
+        else:
+            changed = False ; result = []
+            text = p.v.b
+            # assert(g.isUnicode(text))
+            lines = text.split('\n')
+            for line in lines:
+                i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
+                s = g.computeLeadingWhitespace(w,abs(tabWidth)) + line[i:] # use positive width.
+                if s != line: changed = True
+                result.append(s)
+            if changed:
+                count += 1
+                dirtyVnodeList2 = p.setDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                result = '\n'.join(result)
+                p.setBodyString(result)
+                u.afterChangeNodeContents(p,undoType,innerUndoData)
+    u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+    if not g.unitTesting:
+        g.es("blanks converted to tabs in",count,"nodes")
+            # Must come before c.redraw().
+    if count > 0:
+        c.redraw_after_icons_changed()
+#@+node:ekr.20031218072017.1705: *7* convertAllTabs
+def convertAllTabs (self,event=None):
+
+    '''Convert all tabs to blanks in the selected outline.'''
+
+    c = self ; u = c.undoer ; undoType = 'Convert All Tabs'
+    current = c.p
+
+    if g.app.batchMode:
+        c.notValidInBatchMode(undoType)
+        return
+    theDict = c.scanAllDirectives()
+    tabWidth  = theDict.get("tabwidth")
+    count = 0 ; dirtyVnodeList = []
+    u.beforeChangeGroup(current,undoType)
+    for p in current.self_and_subtree():
+        undoData = u.beforeChangeNodeContents(p)
+        if p == current:
+            changed,dirtyVnodeList2 = self.convertTabs(event)
+            if changed:
+                count += 1
+                dirtyVnodeList.extend(dirtyVnodeList2)
+        else:
+            result = [] ; changed = False
+            text = p.v.b
+            # assert(g.isUnicode(text))
+            lines = text.split('\n')
+            for line in lines:
+                i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
+                s = g.computeLeadingWhitespace(w,-abs(tabWidth)) + line[i:] # use negative width.
+                if s != line: changed = True
+                result.append(s)
+            if changed:
+                count += 1
+                dirtyVnodeList2 = p.setDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                result = '\n'.join(result)
+                p.setBodyString(result)
+                u.afterChangeNodeContents(p,undoType,undoData)
+    u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+    if not g.unitTesting:
+        g.es("tabs converted to blanks in",count,"nodes")
+    if count > 0:
+        c.redraw_after_icons_changed()
+#@+node:ekr.20031218072017.1821: *7* convertBlanks
+def convertBlanks (self,event=None):
+
+    '''Convert all blanks to tabs in the selected node.'''
+
+    c = self ; changed = False ; dirtyVnodeList = []
+    head,lines,tail,oldSel,oldYview = c.getBodyLines(expandSelection=True)
+
+    # Use the relative @tabwidth, not the global one.
+    theDict = c.scanAllDirectives()
+    tabWidth  = theDict.get("tabwidth")
+    if tabWidth:
+        result = []
+        for line in lines:
+            s = g.optimizeLeadingWhitespace(line,abs(tabWidth)) # Use positive width.
+            if s != line: changed = True
+            result.append(s)
+        if changed:
+            undoType = 'Convert Blanks'
+            result = ''.join(result)
+            oldSel = None
+            dirtyVnodeList = c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview) # Handles undo
+
+    return changed,dirtyVnodeList
+#@+node:ekr.20031218072017.1822: *7* convertTabs
+def convertTabs (self,event=None):
+
+    '''Convert all tabs to blanks in the selected node.'''
+
+    c = self ; changed = False ; dirtyVnodeList = []
+    head,lines,tail,oldSel,oldYview = self.getBodyLines(expandSelection=True)
+
+    # Use the relative @tabwidth, not the global one.
+    theDict = c.scanAllDirectives()
+    tabWidth  = theDict.get("tabwidth")
+    if tabWidth:
+        result = []
+        for line in lines:
+            i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
+            s = g.computeLeadingWhitespace(w,-abs(tabWidth)) + line[i:] # use negative width.
+            if s != line: changed = True
+            result.append(s)
+        if changed:
+            undoType = 'Convert Tabs'
+            result = ''.join(result)
+            oldSel = None
+            dirtyVnodeList = c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview) # Handles undo
+
+    return changed,dirtyVnodeList
+#@+node:ekr.20031218072017.1824: *7* dedentBody
+def dedentBody (self,event=None):
+
+    '''Remove one tab's worth of indentation from all presently selected lines.'''
+
+    c = self ; current = c.p ; undoType='Unindent'
+
+    d = c.scanAllDirectives(current) # Support @tab_width directive properly.
+    tab_width = d.get("tabwidth",c.tab_width)
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+
+    result = [] ; changed = False
+    for line in lines:
+        i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
+        s = g.computeLeadingWhitespace(width-abs(tab_width),tab_width) + line[i:]
+        if s != line: changed = True
+        result.append(s)
+
+    if changed:
+        result = ''.join(result)
+        c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
+#@+node:ekr.20031218072017.1830: *7* indentBody (indent-region)
+def indentBody (self,event=None):
+
+    '''The indent-region command indents each line of the selected body text,
+    or each line of a node if there is no selected text. The @tabwidth directive
+    in effect determines amount of indentation. (not yet) A numeric argument
+    specifies the column to indent to.'''
+
+    c = self ; current = c.p ; undoType='Indent Region'
+    d = c.scanAllDirectives(current) # Support @tab_width directive properly.
+    tab_width = d.get("tabwidth",c.tab_width)
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+
+    result = [] ; changed = False
+    for line in lines:
+        i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
+        s = g.computeLeadingWhitespace(width+abs(tab_width),tab_width) + line[i:]
+        if s != line: changed = True
+        result.append(s)
+
+    if changed:
+        result = ''.join(result)
+        c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
+#@+node:ekr.20050312114529.1: *7* addComments
+def addComments (self,event=None):
+
+    '''Convert all selected lines in the body text to comment lines.'''
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    d1,d2,d3 = d.get('delims') # d1 is the line delim.
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    d2 = d2 or '' ; d3 = d3 or ''
+    if d1: openDelim,closeDelim = d1+' ',''
+    else:  openDelim,closeDelim = d2+' ',d3+' '
+
+    # Comment out non-blank lines.
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line,0)
+            result.append(line[0:i]+openDelim+line[i:]+closeDelim)
+        else:
+            result.append(line)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20050312114529.2: *7* deleteComments
+def deleteComments (self,event=None):
+
+    '''Remove one level of comment delimiters from all selected lines in the body text.'''
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    # d1 is the line delim.
+    d1,d2,d3 = d.get('delims')
+
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        for line in lines:
+            i = g.skip_ws(line,0)
+            if g.match(line,i,d1):
+                j = g.skip_ws(line,i + len(d1))
+                result.append(line[0:i] + line[j:])
+            else:
+                result.append(line)
+    else:
+        n = len(lines)
+        for i in range(n):
+            line = lines[i]
+            if i not in (0,n-1):
+                result.append(line)
+            if i == 0:
+                j = g.skip_ws(line,0)
+                if g.match(line,j,d2):
+                    k = g.skip_ws(line,j + len(d2))
+                    result.append(line[0:j] + line[k:])
+                else:
+                    g.es('',"'%s'" % (d2),"not found",color='blue')
+                    return
+            if i == n-1:
+                if i == 0:
+                    line = result[0] ; result = []
+                s = line.rstrip()
+                if s.endswith(d3):
+                    result.append(s[:-len(d3)].rstrip())
+                else:
+                    g.es('',"'%s'" % (d3),"not found",color='blue')
+                    return
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20031218072017.1834: *7* << compute vars for reformatParagraph >>
+theDict = c.scanAllDirectives()
+pageWidth = theDict.get("pagewidth")
+tabWidth  = theDict.get("tabwidth")
+
+original = w.getAllText()
+oldSel =  w.getSelectionRange()
+oldYview = body.getYScrollPosition()
+
+head,lines,tail = c.findBoundParagraph()
+#@+node:ekr.20060417172056: *7* addRemoveHelper
+def addRemoveHelper(self,event,ch,add,undoType):
+
+    c = self.c ; k = self.k ; w = self.editWidget(event)
+    if not w: return
+
+    if w.hasSelection():s = w.getSelectedText()
+    else:               s = w.getAllText()
+    if not s: return
+
+    # Insert or delete spaces instead of tabs when negative tab width is in effect.
+    d = c.scanAllDirectives() ; width = d.get('tabwidth')
+    if ch == '\t' and width < 0: ch = ' ' * abs(width)
+
+    self.beginCommand(undoType=undoType)
+
+    lines = g.splitLines(s)
+
+    if add:
+        result = [ch + line for line in lines]
+    else:
+        result = [g.choose(line.startswith(ch),line[len(ch):],line) for line in lines]
+
+    result = ''.join(result)
+
+    # g.trace('add',add,'hasSelection',w.hasSelection(),'result',repr(result))
+
+    if w.hasSelection():
+        i,j = w.getSelectionRange()
+        w.delete(i,j)
+        w.insert(i,result)
+        w.setSelectionRange(i,i+len(result))
+    else:
+        w.setAllText(result)
+        w.setSelectionRange(0,len(s))
+
+    self.endCommand(changed=True,setLabel=True)
+
+#@+node:ekr.20051026092433.1: *7* backwardDeleteCharacter
+def backwardDeleteCharacter (self,event=None):
+
+    '''Delete the character to the left of the cursor.'''
+
+    c = self.c ; p = c.p
+    w = self.editWidget(event)
+    if not w: return
+
+    wname = c.widget_name(w)
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    # g.trace(wname,i,j,ins)
+
+    if wname.startswith('body'):
+        self.beginCommand()
+        try:
+            d = c.scanAllDirectives(p)
+            tab_width = d.get("tabwidth",c.tab_width)
+            changed = True
+            if i != j:
+                w.delete(i,j)
+                w.setSelectionRange(i,i,insert=i)
+            elif i == 0:
+                changed = False
+            elif tab_width > 0:
+                w.delete(ins-1)
+                w.setSelectionRange(ins-1,ins-1,insert=ins-1)
+            else:
+                << backspace with negative tab_width >>
+        finally:
+            self.endCommand(changed=True,setLabel=False) # Necessary to make text changes stick.
+    else:
+        # No undo in this widget.
+        # Make sure we actually delete something if we can.
+        s = w.getAllText()
+        if i != j:
+            j = max(i,min(j,len(s)))
+            w.delete(i,j)
+            w.setSelectionRange(i,i,insert=i)
+        elif ins != 0:
+            # Do nothing at the start of the headline.
+            w.delete(ins-1)
+            ins = ins-1
+            w.setSelectionRange(ins,ins,insert=ins)
+#@+node:ekr.20051026092746: *8* << backspace with negative tab_width >>
+s = prev = w.getAllText()
+ins = w.getInsertPoint()
+i,j = g.getLine(s,ins)
+s = prev = s[i:ins]
+n = len(prev)
+abs_width = abs(tab_width)
+
+# Delete up to this many spaces.
+n2 = (n % abs_width) or abs_width
+n2 = min(n,n2) ; count = 0
+
+while n2 > 0:
+    n2 -= 1
+    ch = prev[n-count-1]
+    if ch != ' ': break
+    else: count += 1
+
+# Make sure we actually delete something.
+i = ins-(max(1,count))
+w.delete(i,ins)
+w.setSelectionRange(i,i,insert=i)
+#@+node:ekr.20051026171121.1: *7* updateAutoIndent (leoEditCommands)
+def updateAutoIndent (self,p,w):
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+    # g.trace(i,j,repr(s))
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.findLanguageDirectives(c,p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+#@+node:ekr.20051027172949: *7* updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+#@+node:ekr.20051026092433: *7* updateTab
+def updateTab (self,p,w,smartTab=True):
+
+    c = self.c
+
+    # g.trace('tab_width',tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        # w.delete(i,j)
+        c.indentBody()
+    else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
+        # Get the preceeding characters.
+        s = w.getAllText()
+        # start = g.skip_to_start_of_line(s,i)
+        start,end = g.getLine(s,i)
+        before = s[start:i]
+        after = s[i:end]
+        if after.endswith('\n'): after = after[:-1]
+        ws = g.get_leading_ws(before)
+        s2 = s[start:i] # The characters before the insert point.
+
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+        if doSmartTab:
+            self.updateAutoIndent(p,w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s,i,tab_width,w)
+        else:
+            self.doPlainTab(s,i,tab_width,w)
+#@+node:ekr.20100822092546.5835: *7* write_slides & helper
+def write_slides (self,p,toString=False):
+
+    '''Convert p's children to slides.'''
+
+    c = self.c ; p = p.copy() ; h = p.h
+    i = g.skip_id(h,1) # Skip the '@'
+    kind,fn = h[:i].strip(),h[i:].strip()
+    if not fn: return g.es('%s requires file name' % (kind),color='red')
+    title = p and p.firstChild().h or '<no slide>'
+    title = title.strip().capitalize()
+    n_tot = p.numberOfChildren()
+
+    n = 1
+    for child in p.children():
+        self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+        self.scanAllOptions(child) # Settings for child are valid after this call.
+        # Compute the slide's file name.
+        fn2,ext = g.os_path_splitext(fn)
+        fn2 = '%s-%03d%s' % (fn2,n,ext) # Use leading zeros for :glob:.
+        n += 1
+        # Write the rst sources to self.source.
+        self.outputFile = StringIO()
+        self.writeSlideTitle(title,n-1,n_tot)
+        self.writeBody(child)
+        self.source = self.outputFile.getvalue() # the rST sources.
+        self.outputFile,self.stringOutput = None,None
+        self.write_files(ext,fn2,
+            callDocutils=self.getOption('call_docutils'),
+            toString=toString,
+            writeIntermediateFile=self.getOption('write_intermediate_file'))
+#@+node:ekr.20100822174725.5836: *8* writeSlideTitle
+def writeSlideTitle (self,title,n,n_tot):
+
+    '''Write the title, underlined with the '#' character.'''
+
+    if n != 1:
+        title = '%s (%s of %s)' % (title,n,n_tot)
+
+    width = max(4,len(g.toEncodedString(title,
+        encoding=self.encoding,reportErrors=False)))
+
+    self.write('%s\n%s \n\n' % (title,('#'*width)))
+#@+node:ekr.20090502071837.45: *7* initCodeBlockString
+def initCodeBlockString(self,p):
+
+    trace = False and not g.unitTesting
+    c = self.c
+    # if trace: os.system('cls')
+    d = c.scanAllDirectives(p)
+    language = d.get('language')
+    if language is None: language = 'python'
+    else: language = language.lower()
+    syntax = SilverCity is not None
+
+    if trace: g.trace('language',language,'language.title()',language.title(),p.h)
+
+    # Note: lines that end with '\n\n' are a signal to handleCodeMode.
+    s = self.getOption('code_block_string')
+    if s:
+        self.code_block_string = s.replace('\\n','\n')
+    elif syntax and language in ('python','ruby','perl','c'):
+        self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % (
+            language.title())
+    else:
+        self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
+#@+node:ekr.20041126042730: *7* getTabWidth
+def getTabWidth (self,p=None):
+
+    c = self.c
+    if 1:
+        # Faster, more self-contained.
+        val = g.scanAllAtTabWidthDirectives(c,p)
+        return val
+    else:
+        d = c.scanAllDirectives(p)
+        w = d.get("tabwidth")
+        if w not in (0,None):
+            return w
+        else:
+            return self.c.tab_width
+#@+node:ekr.20101022055534.5979: *5*  Found: scanDefaultDirectory
+#@+node:ekr.20101022055534.5981: *6* Defs & g.setDefaultDirectory
+#@+node:ekr.20041005105605.236: *7* at.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set the default_directory ivar by looking for @path directives.
+
+    The caller must check at.errors."""
+
+    at = self ; c = at.c
+
+    at.default_directory,error = g.setDefaultDirectory(c,p,importing)
+
+    if error:
+        at.error(error)
+#@+node:ekr.20080211085914: *7* scanDefaultDirectory (leoImport)
+def scanDefaultDirectory(self,p):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    c = self.c
+
+    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
+
+    if error:
+        self.error(error)
+#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helpers
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefaultDirectory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    ''' Compute a default directory by scanning @path directives.
+    Return (default_dir,error_message).'''
+
+    if not p: return '',''
+    default_dir,error = g.getAbsPathFromNode(c,p),''
+
+    if not default_dir:
+        default_dir,error = g.getPathFromDirectives(c,p)
+
+    if c and c.frame and not default_dir and not error:
+        default_dir = g.findDefaultDirectory(c)
+
+    if not default_dir and not importing and not error:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    return default_dir, error
+#@+node:ekr.20081001062423.10: *8* g.getAbsPathFromNode
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
+
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
+
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+
+    return default_dir
+#@+node:ekr.20081001062423.11: *8* g.getPathFromDirectives
+def getPathFromDirectives(c,p,createFlag=True):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        exists = g.os_path_exists(path)
+        if createFlag:
+            if exists:
+                default_dir = path
+            else:
+                default_dir = g.makeAllNonExistentDirectories(path,c=c)
+                if not default_dir:
+                    error = "invalid @path: %s" % path
+        else:
+            default_dir = path
+            if not exists:
+                error = "does not exist: @path %s" % path
+
+    return default_dir,error
+#@+node:ekr.20081001062423.12: *8* g.findDefaultDirectory (major change)
+# This code is executed if no valid absolute path was specified in
+# the @file node or in an @path directive.
+
+def findDefaultDirectory(c):
+
+    '''Attempt to find a suitable default directory.'''
+
+    default_dir = ''
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
+    return default_dir
+#@+node:ekr.20101022055534.5980: *6* Calls to at.scanDefaultDirectory
+#@+node:ekr.20041005105605.13: *7* at.initReadIvars
+def initReadIvars(self,root,fileName,
+    importFileName=None,
+    perfectImportRoot=None,
+    atShadow=False,
+):
+
+    importing = importFileName is not None
+
+    self.initCommonIvars()
+
+    << init ivars for reading >>
+        # sets self.errors = 0
+    self.scanDefaultDirectory(root,importing=importing)
+    if self.errors: return
+
+    # Init state from arguments.
+    self.fromString = False
+    self.perfectImportRoot = perfectImportRoot
+    self.importing = importing
+    self.root = root
+    self.targetFileName = fileName
+    self.thinFile = False # 2010/01/22: was thinFile
+    self.atShadow = atShadow
+#@+node:ekr.20041005105605.14: *8* << init ivars for reading >>
+self.cloneSibCount = 0
+    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+self.correctedLines = 0
+self.docOut = [] # The doc part being accumulated.
+self.done = False # True when @-leo seen.
+self.endSentinelIndentStack = []
+    # Restored indentation for @-others and @-<< sentinels.
+    # Used only when readVersion5.
+self.endSentinelStack = []
+    # Contains entries for +node sentinels only when not readVersion5
+self.endSentinelLevelStack = []
+    # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
+    # Used only when readVersion5.
+self.endSentinelNodeStack = []
+    # Used only when readVersion5.
+self.importing = False
+self.importRootSeen = False
+self.indentStack = []
+self.inputFile = None
+self.lastLines = [] # The lines after @-leo
+self.lastRefNode = None
+    # The previous reference node, for at.readAfterRef.
+    # No stack is needed because -<< sentinels restore at.v
+    # to the node needed by at.readAfterRef.
+self.lastThinNode = None
+    # The last thin node at this level.
+    # Used by createThinChild4.
+self.leadingWs = ""
+self.lineNumber = 0 # New in Leo 4.4.8.
+self.out = None
+self.outStack = []
+self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
+self.readVersion5 = False # synonym for at.readVersion >= '5' and not atShadow.
+self.rootSeen = False
+self.tnodeList = []
+    # Needed until old-style @file nodes are no longer supported.
+self.tnodeListIndex = 0
+self.v = None
+self.vStack = [] # Stack of at.v values.
+self.thinNodeStack = [] # Entries are vnodes.
+self.updateWarningGiven = False
+#@+node:ekr.20070909100252: *7* at.readOneAtAutoNode
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+
+    at.errors = 0 # 2010/10/21
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    if at.errors: return # 2010/10/21
+
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # 2010/7/28: Remember that we have seen the @auto node.
+    p.v.at_read = True # Create the attribute
+
+    s,ok,fileKey = c.cacher.readFile(fileName,p)
+    if ok: return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        c.cacher.writeFile(p,fileKey)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@+node:ekr.20090225080846.3: *7* at.readOneAtEditNode
+def readOneAtEditNode (self,fn,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    at.errors = 0 # 2010/10/21
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    if at.errors: return # 2010/10/21
+
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    junk,ext = g.os_path_splitext(fn)
+
+    # 2010/7/28: Remember that we have seen the @edit node.
+    p.v.at_read = True # Create the attribute
+
+    if not g.unitTesting:
+        g.es("reading @edit:", g.shortFileName(fn))
+
+    s,e = g.readFileIntoString(fn,kind='@edit')
+    if s is None: return
+    encoding = g.choose(e is None,'utf-8',e)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    changed = c.isChanged()
+    head = ''
+    ext = ext.lower()
+    if ext in ('.html','.htm'):   head = '@language html\n'
+    elif ext in ('.txt','.text'): head = '@nocolor\n'
+    else:
+        language = ic.languageForExtension(ext)
+        if language and language != 'unknown_language':
+            head = '@language %s\n' % language
+        else:
+            head = '@nocolor\n'
+
+    p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
+
+    if not changed: c.setChanged(False)
+    g.doHook('after-edit',p=p)
+#@+node:ekr.20080711093251.7: *7* at.readOneAtShadowNode
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    # 2010/7/28: Remember that we have seen the @shadow node.
+    p.v.at_read = True # Create the attribute
+
+    at.errors = 0 # 2010/10/21
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+    if at.errors: return # 2010/10/21
+
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    if shadow_exists:
+        at.read(p,atShadow=True)
+    else:
+        if not g.unitTesting: g.es("reading:",p.h)
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1: *8* at.importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@+node:ekr.20070806141607: *7* at.writeOneAtAutoNode & helpers
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.errors = 0 # 2010/10/21
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    if at.errors:
+        root.setDirty() # 2010/10/21
+        return # 2010/10/21
+
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+    if not toString and exists and not hasattr(root.v,'at_read') and exists:
+        # Prompt if writing a new @auto node would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if ok:
+            root.v.at_read = True # Create the attribute for all clones.
+        else:
+            g.es("not written:",fileName)
+            return
+
+    # Prompt if writing a new @auto node would overwrite an existing file.
+    if (not toString and not hasattr(p.v,'at_read') and
+        g.os_path_exists(fileName)
+    ):
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if ok:
+            p.v.at_read = True # Create the attribute
+        else:
+            g.es("not written:",fileName)
+            return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    isAtAutoRst = root.isAtAutoRstNode()
+    if ok:
+        if isAtAutoRst:
+            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+            if not ok2: at.errors += 1
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        # g.trace('at.errors',at.errors)
+        if at.errors == 0:
+            # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
+                # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        g.es("not written:",at.outputFileName)
+
+    return ok
+#@+node:ekr.20090225080846.5: *7* at.writeOneAtEditNode
+def writeOneAtEditNode(self,p,toString,force=False):
+
+    '''Write one @edit node.'''
+
+    at = self ; c = at.c ; root = p.copy()
+    c.endEditing()
+
+    fn = p.atEditNodeName()
+    if not fn and not toString: return False
+
+    if p.hasChildren():
+        g.es('@edit nodes must not have children',color='red')
+        g.es('To save your work, convert @edit to @auto or @thin')
+        return False
+
+    at.errors = 0 # 2010/10/21
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    if at.errors:
+        g.es("not written:",p.h) # 2010/10/21
+        root.setDirty() # 2010/10/21
+        return False # 2010/10/21
+
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+    if not hasattr(root.v,'at_read') and exists:
+        # Prompt if writing a new @edit node would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fn,kind='@edit')
+        if ok:
+            root.v.at_read = True # Create the attribute for all clones.
+        else:
+            g.es("not written:",fn)
+            return False
+
+    at.targetFileName = fn
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True, atEdit=True,
+        nosentinels=True,thinFile=False,
+        scriptWrite=False,toString=toString)
+
+    # Compute the file's contents.
+    # Unlike the @nosent file logic it does not add a final newline.
+    contents = ''.join([s for s in g.splitLines(p.b)
+        if at.directiveKind4(s,0) == at.noDirective])
+
+    if toString:
+        at.stringOutput = contents
+        return True
+
+    ok = at.openFileForWriting(root,fileName=fn,toString=False)
+    if ok:
+        self.os(contents)
+        at.closeWriteFile()
+    if ok and at.errors == 0:
+        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+    else:
+        g.es("not written:",at.outputFileName)
+        root.setDirty()
+
+    return ok
+#@+node:ekr.20031218072017.3210: *6* createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+
+    # New in Leo 4.4.7: honor @path directives.
+    self.errors = 0 # 2010/10/21
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    if self.errors: return None # 2010/10/21
+
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        if atShadow: kind = '@shadow '
+        elif atAuto: kind = '@auto '
+        else: kind = ''
+        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+        if s is None: return None
+        if e: self.encoding = e
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        elif self.treeType is None:
+            # 2010/09/29: by convention, we use the short file name.
+            p.initHeadString(g.shortFileName(fileName))
+        else:
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    if self.treeType == '@root': # 2010/09/29.
+        self.rootLine = "@root-code "+self.fileName+'\n'
+    else:
+        self.rootLine = ''
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        s = s.replace('\r','')
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        s = s.replace('\r','')
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node.
+        # Important: this often sets the bit in the wrong node:
+        # The caller may have to set the bit in the "real" root node.
+        p.v.at_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+#@+node:ekr.20101022055534.5988: *5*  Found: scanAtPathDirectives
+#@+node:ekr.20080828103146.15: *6* c.scanAtPathDirectives
+def scanAtPathDirectives(self,aList,force=False,createPath=True):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and (force or createPath) and not g.unitTesting
+    verbose = True
+
+    c = self
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        warning = d.get('@path_in_body')
+        if trace and path:
+            g.trace('**** d',d)
+            g.trace('**** @path path',path)
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and not warning:
+                paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose:
+        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and createPath and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@+node:ekr.20101022055534.5990: *6* Calls
+#@+node:ekr.20090530055015.6050: *7* at.fullPath
+def fullPath (self,p,simulate=False):
+
+    '''Return the full path (including fileName) in effect at p.
+
+    Neither the path nor the fileName will be created if it does not exist.
+    '''
+
+    at = self ; c = at.c
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList,createPath=False)
+    if simulate: # for unit tests.
+        fn = p.h
+    else:
+        fn = p.anyAtFileNodeName()
+    if fn:
+        path = g.os_path_finalize_join(path,fn)
+    else:
+        g.trace('can not happen: not an @<file> node:',g.callers(4))
+        for p2 in p.self_and_parents():
+            g.trace(p2.h)
+        path = ''
+
+    # g.trace(p.h,repr(path))
+    return path
+#@+node:ekr.20080923070954.4: *7* at.scanAllDirectives
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+    createPath=True,
+    issuePathWarning=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = self.c
+    g.app.atPathInBodyWarning = None
+    << set ivars >>
+    lang_dict = {'language':at.language,'delims':delims,}
+    table = (
+        ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    if issuePathWarning and g.app.atPathInBodyWarning:
+        g.es('warning: ignoring @path directive in',
+            g.app.atPathInBodyWarning,color='red')
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    delims          = lang_dict.get('delims')
+    lineending      = d.get('lineending')
+    if lineending:
+        at.explicitLineEnding = True
+        at.output_newline = lineending
+    else:
+        at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
+
+    at.encoding             = d.get('encoding')
+    at.language             = lang_dict.get('language')
+    at.page_width           = d.get('pagewidth')
+    at.default_directory    = d.get('path')
+    at.tab_width            = d.get('tabwidth')
+
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        << set comment strings from delims >>
+
+    # For unit testing.
+    d = {
+        "all"       : all,
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+    if trace: g.trace(d)
+    return d
+#@+node:ekr.20080923070954.14: *8* << Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower()
+
+delims = g.set_delims_from_language(c.target_language)
+at.language = c.target_language
+
+at.encoding = c.config.default_derived_file_encoding
+at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@+node:ekr.20080923070954.13: *8* << Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+else:
+    delim1,delim2,delim3 = delims
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@+node:ekr.20081006100835.1: *7* c.getNodePath & c.getNodeFileName
+def getNodePath (self,p):
+
+    '''Return the path in effect at node p.'''
+
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def getNodeFileName (self,p):
+
+    '''Return the full file name at node p,
+    including effects of all @path directives.
+
+    Return None if p is no kind of @file node.'''
+
+    c = self
+    d = c.scanAllDirectives(p)
+    path = d.get('path')
+
+    name = ''
+    for p in p.self_and_parents():
+        name = p.anyAtFileNodeName()
+        if name: break
+
+    if name:
+        name = g.os_path_finalize_join(path,name)
+    return name
+#@+node:ekr.20080827175609.39: *7* c.scanAllDirectives
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.p
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
+#@+node:ekr.20081001062423.11: *7* g.getPathFromDirectives
+def getPathFromDirectives(c,p,createFlag=True):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        exists = g.os_path_exists(path)
+        if createFlag:
+            if exists:
+                default_dir = path
+            else:
+                default_dir = g.makeAllNonExistentDirectories(path,c=c)
+                if not default_dir:
+                    error = "invalid @path: %s" % path
+        else:
+            default_dir = path
+            if not exists:
+                error = "does not exist: @path %s" % path
+
+    return default_dir,error
+#@+node:ekr.20080923124254.16: *7* tangle.scanAllDirectives
+def scanAllDirectives(self,p):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    self.init_directive_ivars()
+    if p:
+        s = p.b
+        << Collect @first attributes >>
+
+    table = (
+        ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives), 
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    lang_dict = {'language':None,'delims':None}
+    self.parent_language_comment_settings(p,lang_dict)
+
+    # Post process.
+    lineending      = d.get('lineending')
+    if lineending:
+        self.output_newline = lineending
+    self.encoding             = d.get('encoding')
+    self.language             = lang_dict.get('language')
+    self.init_delims          = lang_dict.get('delims')
+    self.page_width           = d.get('pagewidth')
+    self.tangle_directory     = d.get('path')
+    self.tab_width            = d.get('tabwidth')
+
+    # Handle the print-mode directives.
+    self.print_mode = None
+    for d in aList:
+        for key in ('verbose','terse','quiet','silent'):
+            if d.get(key) is not None:
+                self.print_mode = key ; break
+        if self.print_mode: break
+    if not self.print_mode: self.print_mode = 'verbose'
+
+    # g.trace(self.tangle_directory)
+
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20080923124254.17: *8* << Collect @first attributes >>
+@
+Stephen P. Schaefer 9/13/2002: Add support for @first. Unlike other
+root attributes, does *NOT* inherit from parent nodes.
+@c
+
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
 #@+node:ekr.20101021160326.5950: *5*  Notes
 @nocolor-node
 
@@ -932,6 +3731,127 @@ Part 3: initReadIvars
 **** Why don't all top-level methods call initReadIvars???
     Maybe because they call scanDefaultDirectory instead.
 
+#@+node:ekr.20101022055534.8517: *5*  Posting
+@nocolor-node
+
+The following are notes to myself. Feel free to ignore them. Otoh, they will
+give some indication of what lies beneath Leo. The outward simplicity of Leo is
+an illusion created by a lot of complex code. Nowhere is this more true than
+with file names and paths.
+
+577047 is a nasty bug that must be fixed:
+
+Specifying a @path directory causes Leo to save an "@thin file.ext" node
+below it in Leo's home directory without any warning. The next time Leo is
+opened it issues an error that it can not find the file.
+
+===== Notes
+
+The relevant code is mind boggling. I have spent about 8 hours *preparing* to
+fix this bug. (And another hour writing this post :-)
+
+There are *extensive* notes in the node:
+
+    To do-->@thin ../doc/leoToDo.txt-->4.8 to do-->First-->
+    Fix bug 577047: Invalid @path directory does not warn user
+
+These notes make extensive use of lists of nodes initially created by
+clone-find-all.
+
+===== The problems
+
+1. In essence, the bug happens because g.makeAllNonExistentDirectories can fail.
+It can fail either because an @path path is invalid, or because the user has
+forbidden the automatic creation of directories.
+
+Alas, calls to g.makeAllNonExistentDirectories exist deep inside various calling
+trees. We must ensure that callers of methods that *eventually* call
+g.makeAllNonExistentDirectories check for the possibility that the path does not
+exist.
+
+2. Another problem is that the path computation methods (buried deep inside the
+code) are extremely complex and in some cases use dubious or just-plain-wrong
+defaults.
+
+3. At the code level, the problem is that the relevant code was "helpfully"
+buried in c.scanAllDirectives, at.scanAllDirectives, at.scanDefaultDirectory,
+leoImport.scanDefaultDirectory and g.setDefaultDirectory. As a result, there is
+at present no way to check for errors.
+
+===== The solution
+
+1. Take the path-related stuff out of c/at.scanAllDirectives.
+
+2. Make all path computations explicit, so that they can be checked for errors.
+
+===== Strategy
+
+Here are the principles that I'll follow:
+
+1. Fix in the trunk. This is an urgent bug, and we might as well all test it
+immediately. This should be safe enough provided all unit tests pass.
+
+2. Don't leave any time bombs behind. This mean truly fixing the problem, not
+applying a feeble patch.
+
+We could leave the path-related stuff in c/at.scanAllDirectives for
+compatibility, but that would be sweeping a lot of dirt under that rug. Much
+better to do the job properly, regardless of short-term pain. Thus, I must rip
+the path-related code out of c.at/scanAllDirectives.
+
+Happily, most calls to c.scanAllDirectives never used the computed path. The 3
+that do will have to be revised. Ditto for the 2 calls to at.scanAllDirectives.
+
+3. Do the minimum possible, consistent with point 2. There will be no massive
+refactorings or other changes.
+
+I'll avoid changing the path computation methods if at all possible. To do this,
+I want to make the dubious or wrong defaults irrelevant.
+
+I'll resist the urge to replace c.scanAllDirectives by one or more of the
+helpers in:
+
+    @thin leoGlobals.py-->Commands & Directives-->g.Directive utils...
+
+This would be a reasonable thing to do, and in many cases the clearest thing to
+do. However, it's not necessary and would needlessly delay Leo 4.8.
+#@+node:ekr.20101022055534.5982: *5*  Strategy
+@nocolor-node
+
+1. Make errors explicit.
+    - (Done) All callers now check at.scanDefaultDirectory for errors
+      and take appropriate measures on error.
+
+2. Remove path stuff from c.scanAllDirectives
+    ** Most callers of c.scanAllDirectives do not, in fact, use the path.
+    - Those callers that *do* use the path should use one of the following:
+        at.scanDefaultDirectory
+        ic.scanDefaultDirectory
+        g.getDefaultDirectory
+        **or**
+            # Used in c.getNodePath
+            # Could be used in c.getNodeFileName
+            aList = g.get_directives_dict_list(p)
+            path = c.scanAtPathDirectives(aList)
+
+    * fc.setDefaultDirectoryForNewFiles sets c.openDirectory **for** at.scanAllDirectives.
+
+    - The following use d[path] returned by c.scanAllDirectives:
+        c.getNodeFileName
+        getFileLines (leoEditCommands)
+            ** calls g.scanDirectives.
+            ** probably should just call replacement for c.scanAllDirectives
+        init_write (rstCommands)
+
+    * g.scanDirectives just calls c.scanAllDirectives.
+
+3. Remove path stuff from at.scanAllDirectives.
+
+    ** at.scanAllDirectives sets at.default_directory
+
+    - The following call at.scanAllDirectives:
+        at.read
+        at.initWriteIvars
 #@+node:ekr.20041005105605.15: *5* at.initWriteIvars
 def initWriteIvars(self,root,targetFileName,
     atAuto=False,
@@ -961,7 +3881,7 @@ def initWriteIvars(self,root,targetFileName,
             # at.encoding
             # at.language
             # at.page_width
-            # at.default_directory
+            # at.default_directory  *** path ***
             # at.tab_width
 
     # g.trace(forcePythonSentinels,
@@ -8871,7 +11791,7 @@ def initWriteIvars(self,root,targetFileName,
             # at.encoding
             # at.language
             # at.page_width
-            # at.default_directory
+            # at.default_directory  *** path ***
             # at.tab_width
 
     # g.trace(forcePythonSentinels,

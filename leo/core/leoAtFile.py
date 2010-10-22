@@ -243,7 +243,7 @@ class atFile:
         self.toString = False # True: sring-oriented read or write.
         self.writing_to_shadow_directory = False
         #@-<< init common ivars >>
-    #@+node:ekr.20041005105605.13: *3* initReadIvars
+    #@+node:ekr.20041005105605.13: *3* at.initReadIvars
     def initReadIvars(self,root,fileName,
         importFileName=None,
         perfectImportRoot=None,
@@ -369,7 +369,7 @@ class atFile:
                 # at.encoding
                 # at.language
                 # at.page_width
-                # at.default_directory
+                # at.default_directory  *** path ***
                 # at.tab_width
 
         # g.trace(forcePythonSentinels,
@@ -586,7 +586,7 @@ class atFile:
                 # at.encoding
                 # at.language
                 # at.page_width
-                # at.default_directory
+                # at.default_directory *** path**
                 # at.tab_width
 
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
@@ -5237,7 +5237,7 @@ class atFile:
 
         # Do _not_ call self.error here.
         return g.utils_stat(fileName)
-    #@+node:ekr.20090530055015.6050: *3* fullPath (leoAtFile)
+    #@+node:ekr.20090530055015.6050: *3* at.fullPath
     def fullPath (self,p,simulate=False):
 
         '''Return the full path (including fileName) in effect at p.

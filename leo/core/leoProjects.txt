@@ -2186,7 +2186,7 @@ else: # Emergency!
     at.endSentinelComment = ""
 
 # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
-#@+node:ekr.20041005105605.13: *5* initReadIvars
+#@+node:ekr.20041005105605.13: *5* at.initReadIvars
 def initReadIvars(self,root,fileName,
     importFileName=None,
     perfectImportRoot=None,
@@ -2314,7 +2314,7 @@ def read(self,root,importFileName=None,
             # at.encoding
             # at.language
             # at.page_width
-            # at.default_directory
+            # at.default_directory *** path**
             # at.tab_width
 
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
