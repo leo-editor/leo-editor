@@ -364,16 +364,17 @@ class atFile:
                 forcePythonSentinels=forcePythonSentinels,
                 issuePathWarning=True)
             # Sets the following ivars:
-                # at.explicitLineEnding
-                # at.output_newline
+                # at.default_directory
                 # at.encoding
+                # at.explicitLineEnding
                 # at.language
+                # at.output_newline
                 # at.page_width
                 # at.tab_width
 
             ###
-            aList = g.get_directives_dict_list(p=root)
-            at.default_directory = c.scanAtPathDirectives(aList)
+            ###aList = g.get_directives_dict_list(p=root)
+            ###at.default_directory = c.scanAtPathDirectives(aList)
 
         # g.trace(forcePythonSentinels,
         #    at.startSentinelComment,at.endSentinelComment)
@@ -584,16 +585,17 @@ class atFile:
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
             # Sets the following ivars:
-                # at.explicitLineEnding
-                # at.output_newline
+                # at.default_directory
                 # at.encoding
+                # at.explicitLineEnding
                 # at.language
+                # at.output_newline
                 # at.page_width
                 # at.tab_width
 
         ###
-        aList = g.get_directives_dict_list(p=root)
-        at.default_directory = c.scanAtPathDirectives(aList)
+        ###aList = g.get_directives_dict_list(p=root)
+        ### at.default_directory = c.scanAtPathDirectives(aList)
 
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
         at.inputFile.close()
@@ -5089,7 +5091,7 @@ class atFile:
         at.encoding             = d.get('encoding')
         at.language             = lang_dict.get('language')
         at.page_width           = d.get('pagewidth')
-        ### at.default_directory    = d.get('path')
+        at.default_directory    = d.get('path')
         at.tab_width            = d.get('tabwidth')
 
         if not importing and not reading:
