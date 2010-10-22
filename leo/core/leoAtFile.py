@@ -298,7 +298,7 @@ class atFile:
         self.thinNodeStack = [] # Entries are vnodes.
         self.updateWarningGiven = False
         #@-<< init ivars for reading >>
-
+            # sets self.errors = 0
         self.scanDefaultDirectory(root,importing=importing)
         if self.errors: return
 
@@ -310,7 +310,7 @@ class atFile:
         self.targetFileName = fileName
         self.thinFile = False # 2010/01/22: was thinFile
         self.atShadow = atShadow
-    #@+node:ekr.20041005105605.15: *3* initWriteIvars
+    #@+node:ekr.20041005105605.15: *3* at.initWriteIvars
     def initWriteIvars(self,root,targetFileName,
         atAuto=False,
         atEdit=False,
@@ -812,7 +812,11 @@ class atFile:
         at = self ; c = at.c ; ic = c.importCommands
 
         oldChanged = c.isChanged()
+
+        at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        if at.errors: return # 2010/10/21
+
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         # 2010/7/28: Remember that we have seen the @auto node.
@@ -842,7 +846,11 @@ class atFile:
 
         at = self ; c = at.c ; ic = c.importCommands
         oldChanged = c.isChanged()
+
+        at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        if at.errors: return # 2010/10/21
+
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
 
@@ -888,7 +896,9 @@ class atFile:
         # 2010/7/28: Remember that we have seen the @shadow node.
         p.v.at_read = True # Create the attribute
 
+        at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+        if at.errors: return # 2010/10/21
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
@@ -2819,6 +2829,7 @@ class atFile:
         """Write a 4.x derived file.
         root is the position of an @<file> node"""
 
+        trace = False and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 
@@ -2845,6 +2856,12 @@ class atFile:
             at.default_directory,at.targetFileName)
         exists = g.os_path_exists(eventualFileName)
 
+        if trace:
+            g.trace('default_dir',
+                g.os_path_exists(at.default_directory),
+                at.default_directory)
+            g.trace('eventual_fn',exists,eventualFileName)
+
         if not scriptWrite and not toString:
             # 2010/7/28: The read logic now sets the at_read bit for @nosent nodes,
             # so we can just use promptForDangerousWrite.
@@ -2856,6 +2873,17 @@ class atFile:
                     root.v.at_read = True # Create the attribute for all clones.
                 else:
                     g.es("not written:",eventualFileName)
+                    #@+<< set dirty and orphan bits >>
+                    #@+node:ekr.20041005105605.146: *5* << set dirty and orphan bits >>
+                    # Setting the orphan and dirty flags tells Leo to write the tree..
+                    root.setOrphan()
+                    root.setDirty()
+                    # Delete the temp file.
+                    self.remove(at.outputFileName) 
+
+                    #@-<< set dirty and orphan bits >>
+                    #@afterref
+ # 2010/10/21.
                     return
 
         if not at.openFileForWriting(root,at.targetFileName,toString):
@@ -3053,7 +3081,10 @@ class atFile:
         fileName = p.atAutoNodeName()
         if not fileName and not toString: return False
 
+        at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        if at.errors: return # 2010/10/21
+
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
         if not toString and exists and not hasattr(root.v,'at_read') and exists:
@@ -3353,7 +3384,10 @@ class atFile:
             g.es('To save your work, convert @edit to @auto or @thin')
             return False
 
+        at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        if at.errors: return # 2010/10/21
+
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
         if not hasattr(root.v,'at_read') and exists:
@@ -4967,7 +5001,7 @@ class atFile:
         at = self
         keys = {'color': g.choose(at.errors,'blue','red')}
         g.es_print_error(*args,**keys)
-    #@+node:ekr.20080923070954.4: *3* atFile.scanAllDirectives
+    #@+node:ekr.20080923070954.4: *3* at.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
         reading=False,forcePythonSentinels=False,
@@ -5258,16 +5292,19 @@ class atFile:
             message = message)
 
         return ok == 'yes'
-    #@+node:ekr.20041005105605.236: *3* scanDefaultDirectory (leoAtFile)
+    #@+node:ekr.20041005105605.236: *3* at.scanDefaultDirectory
     def scanDefaultDirectory(self,p,importing=False):
 
-        """Set the default_directory ivar by looking for @path directives."""
+        """Set the default_directory ivar by looking for @path directives.
+
+        The caller must check at.errors."""
 
         at = self ; c = at.c
 
         at.default_directory,error = g.setDefaultDirectory(c,p,importing)
 
-        if error: at.error(error)
+        if error:
+            at.error(error)
     #@+node:ekr.20041005105605.242: *3* scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

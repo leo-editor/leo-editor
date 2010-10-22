@@ -825,7 +825,8 @@ class leoImportCommands (scanUtility):
 
         self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
 
-        if error: self.error(error)
+        if error:
+            self.error(error)
     #@+node:ekr.20031218072017.1463: *4* setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
@@ -849,8 +850,12 @@ class leoImportCommands (scanUtility):
 
         c = self.c ; u = c.undoer ; s1 = s
         w = c.frame.body
+
         # New in Leo 4.4.7: honor @path directives.
+        self.errors = 0 # 2010/10/21
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+        if self.errors: return None # 2010/10/21
+
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)

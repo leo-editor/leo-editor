@@ -1019,6 +1019,31 @@
 </v>
 </v>
 <v t="ekr.20100907003013.5979"><vh>@@test leoInkCommands</vh></v>
+<v t="ekr.20101021205258.6013"><vh>general file stuff</vh>
+<v t="ekr.20100204153116.5369"><vh>@@test raw file copy</vh></v>
+<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
+<v t="ekr.20080806211453.1"><vh>@@shadow uA_test_shadow_file.py</vh>
+<v t="ekr.20080822160527.1"><vh>uA_test_shadow_file declarations</vh></v>
+</v>
+</v>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
+<v t="ekr.20080806084924.2"><vh>@@thin uA_test_file.py</vh>
+<v t="ekr.20080806084924.3"><vh>child1</vh>
+<v t="ekr.20080806084924.4"><vh>grandChild1</vh>
+<v t="ekr.20080806084924.5"><vh>greatGrandChild1</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20101021210253.6017"><vh>tnode stuff</vh>
+<v t="ekr.20061001124008"><vh>@@test fc.putTnodeList (minimal test)</vh>
+<v t="ekr.20061001124008.1"><vh>child</vh>
+<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
+</v>
+</v>
+<v t="ekr.20100131180007.5452"><vh>@@test fc.tnodeAttributes</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
@@ -1041,6 +1066,13 @@
 <v t="ekr.20100208095817.5387"><vh>@test leoCache</vh></v>
 </v>
 <v t="ekr.20100131171342.5471"><vh>General</vh>
+<v t="ekr.20100131171342.5486"><vh>@@test that all @test nodes in derived files start with if g.unitTesting</vh>
+<v t="ekr.20100131171342.5487"><vh>checkFile</vh></v>
+</v>
+<v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
+<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
+<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
+</v>
 <v t="ekr.20100131171342.5472"><vh>Check base classes &amp; ivars</vh>
 <v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
 <v t="ekr.20100131171342.5474"><vh>@test leoBody is subset of leoTkBody</vh></v>
@@ -1053,13 +1085,6 @@
 <v t="ekr.20100131171342.5480"><vh>@test official frame ivars</vh></v>
 <v t="ekr.20100131171342.5481"><vh>@test official g.app directories</vh></v>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-</v>
-<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
-<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
-</v>
-<v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
-<v t="ekr.20100131171342.5486"><vh>@@test that all @test nodes in derived files start with if g.unitTesting</vh>
-<v t="ekr.20100131171342.5487"><vh>checkFile</vh></v>
 </v>
 </v>
 <v t="ekr.20050120095423"><vh>Plugins</vh>
@@ -1139,38 +1164,9 @@
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
-<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
-<v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives</vh></v>
-<v t="ekr.20100131180007.5451"><vh>@test cleanSaxInputString</vh></v>
 <v t="ekr.20100131171342.5507"><vh>@test consistency of leoApp tables</vh></v>
-<v t="ekr.20100131180007.5453"><vh>@test dynamicExpandHelper</vh></v>
-<v t="ekr.20100131180007.5455"><vh>@test fullDirectoryPath</vh>
-<v t="ekr.20100131180007.5456"><vh>@path abc</vh>
-<v t="ekr.20100131180007.5457"><vh>xyz</vh></v>
-</v>
-</v>
-<v t="ekr.20100131180007.5450"><vh>@test getSaxUa</vh></v>
-<v t="ekr.20100131180007.5463"><vh>@test handleTnodeSaxAttributes</vh></v>
-<v t="ekr.20100131180007.5460"><vh>@test handleVnodeSaxAttributes</vh></v>
-<v t="ekr.20100131180007.5459"><vh>@test initAtAutoWrite</vh></v>
-<v t="ekr.20100131180007.5452"><vh>@@test tnodeAttributes</vh></v>
-<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
 </v>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
-<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
-<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.105"><vh>Output</vh></v>
-</v>
-<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
-<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.108"><vh>Output</vh></v>
-</v>
-<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
-<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.111"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
 <v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
@@ -1220,7 +1216,6 @@
 <v t="ekr.20050105094311"><vh>@test at.replaceTargetFileIfDifferent (different)</vh></v>
 <v t="ekr.20050105095743"><vh>@test at.replaceTargetFileIfDifferent (identical)</vh></v>
 <v t="ekr.20050105100227"><vh>@test at.replaceTargetFileIfDifferent (no target file)</vh></v>
-<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
 <v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
@@ -1232,8 +1227,35 @@
 </v>
 <v t="ekr.20060602195914"><vh>Result</vh></v>
 </v>
+<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
 <v t="ekr.20090620110118.5829"><vh>@test verbatim sentinel</vh></v>
 <v t="ekr.20071113201736"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20101021205258.6011"><vh>at.Directives &amp; directories</vh>
+<v t="ekr.20100131180007.5455"><vh>@test at.fullDirectoryPath</vh>
+<v t="ekr.20100131180007.5456"><vh>@path abc</vh>
+<v t="ekr.20100131180007.5457"><vh>xyz</vh></v>
+</v>
+</v>
+<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
+<v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
+<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
+</v>
+<v t="ekr.20101021210253.6018"><vh>Unused</vh>
+<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
+<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.105"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
+<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.108"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
+<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.111"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
+</v>
 </v>
 <v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
 <v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
@@ -1502,6 +1524,7 @@
 <v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
 </v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
+<v t="ekr.20101021205258.6009"><vh>c.Directives &amp; directories</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
 <v t="ekr.20100131180007.5467"><vh>@path one</vh>
@@ -1514,6 +1537,7 @@
 <v t="sps.20100531034136.20111"><vh>@path again</vh>
 <v t="sps.20100531034136.20112"><vh>@path again</vh>
 <v t="sps.20100531034136.20113"><vh>xyz</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1539,17 +1563,6 @@
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
-<v t="ekr.20100830114008.5967"><vh>@common leoEditCommands test code</vh>
-<v t="ekr.20100830114008.5968"><vh>runEditCommandTest</vh></v>
-</v>
-<v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
-<v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
-<v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
-<v t="ekr.20100119102849.5110"><vh>work</vh></v>
-</v>
-<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
-<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
-</v>
 <v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
@@ -2188,32 +2201,27 @@
 </v>
 <v t="ekr.20051109143831"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100830114008.5967"><vh>@common leoEditCommands test code</vh>
+<v t="ekr.20100830114008.5968"><vh>runEditCommandTest</vh></v>
+</v>
+<v t="ekr.20100131180007.5453"><vh>@test dynamicExpandHelper</vh></v>
 <v t="ekr.20070306091949"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
+<v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
+<v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
+<v t="ekr.20100119102849.5110"><vh>work</vh></v>
+</v>
+<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
+<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
+</v>
 </v>
 <v t="ekr.20061001114637"><vh>leoFileCommands</vh>
 <v t="ekr.20100206165505.5386"><vh>@@test fc.handleNodeConflicts</vh></v>
-<v t="ekr.20100225094004.5405"><vh>@test loading .leo file with @file nodes</vh></v>
-<v t="ekr.20061001124008"><vh>@@test minimal test of putTnodeList</vh>
-<v t="ekr.20061001124008.1"><vh>child</vh>
-<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
-</v>
-</v>
-<v t="ekr.20100204153116.5369"><vh>@@test raw file copy</vh></v>
-<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
-<v t="ekr.20080806211453.1"><vh>@@shadow uA_test_shadow_file.py</vh>
-<v t="ekr.20080822160527.1"><vh>uA_test_shadow_file declarations</vh></v>
-</v>
-</v>
-<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
-<v t="ekr.20080806084924.2"><vh>@@thin uA_test_file.py</vh>
-<v t="ekr.20080806084924.3"><vh>child1</vh>
-<v t="ekr.20080806084924.4"><vh>grandChild1</vh>
-<v t="ekr.20080806084924.5"><vh>greatGrandChild1</vh></v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20100131180007.5451"><vh>@test fc.cleanSaxInputString</vh></v>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
+<v t="ekr.20100131180007.5450"><vh>@test fc.getSaxUa</vh></v>
+<v t="ekr.20100131180007.5463"><vh>@test fc.handleTnodeSaxAttributes</vh></v>
+<v t="ekr.20100131180007.5460"><vh>@test fc.handleVnodeSaxAttributes</vh></v>
 <v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
 <v t="ekr.20080806072412.2"><vh>first child</vh></v>
 <v t="ekr.20080806072412.3"><vh>second child</vh>
@@ -2227,6 +2235,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100225094004.5405"><vh>@test loading .leo file with @file nodes</vh></v>
 <v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
 <v t="ekr.20080805122315.1"><vh>first child</vh></v>
 <v t="ekr.20080805122315.2"><vh>second child</vh>
@@ -2280,9 +2289,12 @@
 <v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
 <v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
 <v t="ekr.20100131180007.5422"><vh>@test g.findDefaultDirectory</vh></v>
+<v t="ekr.20101021210253.6019"><vh>g.Directives &amp; directories</vh>
 <v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
 <v t="ekr.20100131180007.5424"><vh>@test g.getAbsPathFromNode</vh></v>
+<v t="ekr.20101021205258.6010"><vh>@test g.makeAllNonExistentDirectories</vh></v>
+</v>
 <v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
 <v t="ekr.20100131180007.5423"><vh>@test g.getPathFromDirectives</vh></v>
 <v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
@@ -2735,6 +2747,7 @@
 <v t="ekr.20100813100841.5828"><vh>@test code_mode: show_markup_doc_parts</vh></v>
 <v t="ekr.20100813100841.5829"><vh>@test code_mode: show_options_doc_parts</vh></v>
 </v>
+<v t="ekr.20100131180007.5459"><vh>@test rst.initAtAutoWrite</vh></v>
 </v>
 <v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
@@ -3063,6 +3076,9 @@
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
+<v t="ekr.20101021205258.6011"></v>
+<v t="ekr.20101021210253.6019"></v>
+<v t="ekr.20101021205258.6009"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -27096,6 +27112,13 @@ the @interface
 @var test
 @todo
 */</t>
+<t tx="ekr.20101021205258.6009"></t>
+<t tx="ekr.20101021205258.6010"></t>
+<t tx="ekr.20101021205258.6011"></t>
+<t tx="ekr.20101021205258.6013"></t>
+<t tx="ekr.20101021210253.6017"></t>
+<t tx="ekr.20101021210253.6018"></t>
+<t tx="ekr.20101021210253.6019"></t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)

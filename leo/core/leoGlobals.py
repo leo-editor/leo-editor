@@ -2165,7 +2165,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     """Attempt to make all non-existent directories"""
 
     trace = False and not g.unitTesting
-    testing = False # True: don't actually make the directories.
+    testing = trace # True: don't actually make the directories.
 
     if force:
         create = True # Bug fix: g.app.config will not exist during startup.
@@ -2180,6 +2180,9 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     dir1 = theDir = g.os_path_normpath(theDir)
 
     ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
+
+    if trace: g.trace('ok',ok,'create',create,'force',force,dir1,g.callers())
+
     if ok:
         return ok
     elif not force and not create:
