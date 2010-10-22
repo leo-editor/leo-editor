@@ -889,23 +889,6 @@ def comment_delims_from_extension(filename):
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
         return '','',''
-#@+node:ekr.20071109165315: *9* g.stripPathCruft
-def stripPathCruft (path):
-
-    '''Strip cruft from a path name.'''
-
-    if not path:
-        return path # Retain empty paths for warnings.
-
-    if len(path) > 2 and (
-        (path[0]=='<' and path[-1] == '>') or
-        (path[0]=='"' and path[-1] == '"') or
-        (path[0]=="'" and path[-1] == "'")
-    ):
-        path = path[1:-1].strip()
-
-    # We want a *relative* path, not an absolute path.
-    return path
 #@+node:ekr.20090214075058.8: *9* g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
 
@@ -1201,6 +1184,17 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @pagewidth",s,color="red")
 
     return None
+#@+node:ekr.20101022172109.6108: *9* g.scanAtPathDirectives scanAllAtPathDirectives 
+def scanAtPathDirectives(c,aList):
+
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def scanAllAtPathDirectives(c,p):
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
 #@+node:ekr.20100507084415.5760: *9* g.scanAtRootDirectives
 def scanAtRootDirectives(aList):
 
@@ -1485,6 +1479,23 @@ def checkOpenDirectory (c):
     if not g.os_path_isabs(c.openDirectory):
         g.error ('relative c.openDirectory: %s' % (
             c.openDirectory))
+#@+node:ekr.20071109165315: *9* g.stripPathCruft
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
 #@+node:ekr.20101022055534.5985: *8* Not shown tangle.scanAllDirectives
 # No change will be made to the tangle code.
 #@+node:ekr.20080827175609.39: *8* c.scanAllDirectives
@@ -1509,7 +1520,7 @@ def scanAllDirectives(self,p=None):
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ### ('path',        None,           c.scanAtPathDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         ('wrap',        wrap,           g.scanAtWrapDirectives),
     )
@@ -1556,7 +1567,7 @@ def scanAllDirectives(self,p,
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ### ('path',        None,           c.scanAtPathDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
     )
 
@@ -1974,8 +1985,9 @@ def getNodeFileName (self,p):
     c = self
     ### d = c.scanAllDirectives(p)
     ### path = d.get('path')
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    ###aList = g.get_directives_dict_list(p)
+    ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    path = g.scanAllAtPathDirectives(c,p)
 
     name = ''
     for p in p.self_and_parents():
@@ -2004,8 +2016,9 @@ def getFileLines (self,root,fileName):
         # Calculate the full path.
         ### d = g.scanDirectives(c,p=root)
         ### path = d.get("path")
-        aList = g.get_directives_dict_list(p=root)
-        path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+        ###aList = g.get_directives_dict_list(p=root)
+        ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+        path = g.scanAllAtPathDirectives(c,p)
         # g.trace('path',path,'fileName',fileName)
         fileName = c.os_path_finalize_join(path,fileName)
         lines    = self.openFile(fileName)
@@ -2024,8 +2037,11 @@ def init_write (self,p):
     ### self.encoding = d.get('encoding') or 'utf-8'
     ### self.path = d.get('path') or ''
 
+    ###aList = g.get_directives_dict_list(p)
+    ###self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+
     aList = g.get_directives_dict_list(p)
-    self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    self.path = c.scanAtPathDirectives(aList)
     self.encoding = g.scanAtEncodingDirectives(aList) or 'utf-8'
 
     # g.trace('path:',self.path)
@@ -2690,7 +2706,7 @@ def getTabWidth (self,p=None):
             return self.c.tab_width
 #@+node:ekr.20101022055534.5988: *6*  Found: scanAtPathDirectives
 #@+node:ekr.20080828103146.15: *7* c.scanAtPathDirectives
-def scanAtPathDirectives(self,aList,force=False,createPath=True):
+def scanAtPathDirectives(self,aList): #### ,force=False,createPath=True):
 
     '''Scan aList for @path directives.
     Return a reasonable default if no @path directive is found.'''
@@ -2747,6 +2763,7 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     if trace and verbose: g.trace('joined path:',path)
 
+    ####
     # Step 4: Make the path if necessary.
     # if path and createPath and not g.os_path_exists(path):
         # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
@@ -2787,7 +2804,7 @@ def fullPath (self,p,simulate=False):
 
     at = self ; c = at.c
     aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList,createPath=False)
+    path = c.scanAtPathDirectives(aList) ####,createPath=False)
     if simulate: # for unit tests.
         fn = p.h
     else:
@@ -2825,8 +2842,9 @@ def getNodeFileName (self,p):
     c = self
     ### d = c.scanAllDirectives(p)
     ### path = d.get('path')
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    ###aList = g.get_directives_dict_list(p)
+    ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    path = g.scanAllAtPathDirectives(c,p)
 
     name = ''
     for p in p.self_and_parents():
@@ -3393,7 +3411,7 @@ def createOutline (self,fileName,parent,
     return p
 #@+node:ekr.20101022055534.8528: *6* Calls to makeAllNonExistentDirectories
 #@+node:ekr.20080828103146.15: *7* c.scanAtPathDirectives
-def scanAtPathDirectives(self,aList,force=False,createPath=True):
+def scanAtPathDirectives(self,aList): #### ,force=False,createPath=True):
 
     '''Scan aList for @path directives.
     Return a reasonable default if no @path directive is found.'''
@@ -3450,6 +3468,7 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     if trace and verbose: g.trace('joined path:',path)
 
+    ####
     # Step 4: Make the path if necessary.
     # if path and createPath and not g.os_path_exists(path):
         # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
@@ -3966,7 +3985,7 @@ def scanAllDirectives(self,p,
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ### ('path',        None,           c.scanAtPathDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
     )
 
@@ -4188,7 +4207,7 @@ def scanAllDirectives(self,p=None):
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ### ('path',        None,           c.scanAtPathDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         ('wrap',        wrap,           g.scanAtWrapDirectives),
     )
@@ -4215,7 +4234,7 @@ def scanAllDirectives(self,p=None):
         "wrap"          : d.get('wrap'),
     }
 #@+node:ekr.20080828103146.15: *7* c.scanAtPathDirectives
-def scanAtPathDirectives(self,aList,force=False,createPath=True):
+def scanAtPathDirectives(self,aList): #### ,force=False,createPath=True):
 
     '''Scan aList for @path directives.
     Return a reasonable default if no @path directive is found.'''
@@ -4272,6 +4291,7 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     if trace and verbose: g.trace('joined path:',path)
 
+    ####
     # Step 4: Make the path if necessary.
     # if path and createPath and not g.os_path_exists(path):
         # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
@@ -4409,8 +4429,11 @@ def init_write (self,p):
     ### self.encoding = d.get('encoding') or 'utf-8'
     ### self.path = d.get('path') or ''
 
+    ###aList = g.get_directives_dict_list(p)
+    ###self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+
     aList = g.get_directives_dict_list(p)
-    self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    self.path = c.scanAtPathDirectives(aList)
     self.encoding = g.scanAtEncodingDirectives(aList) or 'utf-8'
 
     # g.trace('path:',self.path)
@@ -4550,23 +4573,6 @@ def comment_delims_from_extension(filename):
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
         return '','',''
-#@+node:ekr.20071109165315: *8* g.stripPathCruft
-def stripPathCruft (path):
-
-    '''Strip cruft from a path name.'''
-
-    if not path:
-        return path # Retain empty paths for warnings.
-
-    if len(path) > 2 and (
-        (path[0]=='<' and path[-1] == '>') or
-        (path[0]=='"' and path[-1] == '"') or
-        (path[0]=="'" and path[-1] == "'")
-    ):
-        path = path[1:-1].strip()
-
-    # We want a *relative* path, not an absolute path.
-    return path
 #@+node:ekr.20090214075058.8: *8* g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
 
@@ -4862,6 +4868,17 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @pagewidth",s,color="red")
 
     return None
+#@+node:ekr.20101022172109.6108: *8* g.scanAtPathDirectives scanAllAtPathDirectives 
+def scanAtPathDirectives(c,aList):
+
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def scanAllAtPathDirectives(c,p):
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
 #@+node:ekr.20100507084415.5760: *8* g.scanAtRootDirectives
 def scanAtRootDirectives(aList):
 
@@ -5146,6 +5163,23 @@ def checkOpenDirectory (c):
     if not g.os_path_isabs(c.openDirectory):
         g.error ('relative c.openDirectory: %s' % (
             c.openDirectory))
+#@+node:ekr.20071109165315: *8* g.stripPathCruft
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
 #@+node:ekr.20101022055534.8518: *6* Cleanup
 @nocolor-node
 
@@ -5291,28 +5325,17 @@ The **direct replacement** is probably best:
 
 **Note**: fc.setDefaultDirectoryForNewFiles sets c.openDirectory,
     but this should not concern us.
-#@+node:ekr.20101022055534.8534: *6* Strategy (step 1)
-@nocolor-node
+#@+node:ekr.20101022172109.6108: *6* g.scanAtPathDirectives scanAllAtPathDirectives 
+def scanAtPathDirectives(c,aList):
 
-The present strategy is as follows:
+    path = c.scanAtPathDirectives(aList)
+    return path
 
-1. at./ic.scanDefaultDirectory should never:
+def scanAllAtPathDirectives(c,p):
 
-    A. Call g.makeAllNonExistentDirectories or
-    B. Create any errors.
-
-2. The **callers** of scanDefaultDirectory should be responsible for
-error checking,possibly using a new helper (which might be g.makeAllNonExistentDirectories!)
-
-3. Somehow (!!) g.setDefaultDirectory must be simplified.
-
-4. If possible, c.scanAtPathDirectives should default to
-g.getBaseDirectory(c).  This would be much more natural than doing::
-
-    path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
-
-Alas, this is not possible now because  g.setDefaultDirectory tests
-whether c.scanAtPathDirectives return an empty path.  Ouch!! 
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
 #@+node:ekr.20101022055534.5986: *6* Calls that **do** use path in c.scanAllDirectives
 #@+node:ekr.20081006100835.1: *7* c.getNodePath & c.getNodeFileName
 # Not used in Leo's core.
@@ -5337,8 +5360,9 @@ def getNodeFileName (self,p):
     c = self
     ### d = c.scanAllDirectives(p)
     ### path = d.get('path')
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    ###aList = g.get_directives_dict_list(p)
+    ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    path = g.scanAllAtPathDirectives(c,p)
 
     name = ''
     for p in p.self_and_parents():
@@ -5367,8 +5391,9 @@ def getFileLines (self,root,fileName):
         # Calculate the full path.
         ### d = g.scanDirectives(c,p=root)
         ### path = d.get("path")
-        aList = g.get_directives_dict_list(p=root)
-        path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+        ###aList = g.get_directives_dict_list(p=root)
+        ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+        path = g.scanAllAtPathDirectives(c,p)
         # g.trace('path',path,'fileName',fileName)
         fileName = c.os_path_finalize_join(path,fileName)
         lines    = self.openFile(fileName)
@@ -5387,8 +5412,11 @@ def init_write (self,p):
     ### self.encoding = d.get('encoding') or 'utf-8'
     ### self.path = d.get('path') or ''
 
+    ###aList = g.get_directives_dict_list(p)
+    ###self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+
     aList = g.get_directives_dict_list(p)
-    self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    self.path = c.scanAtPathDirectives(aList)
     self.encoding = g.scanAtEncodingDirectives(aList) or 'utf-8'
 
     # g.trace('path:',self.path)
@@ -5420,7 +5448,7 @@ def scanAllDirectives(self,p,
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ### ('path',        None,           c.scanAtPathDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
     )
 
@@ -5844,7 +5872,7 @@ def fullPath (self,p,simulate=False):
 
     at = self ; c = at.c
     aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList,createPath=False)
+    path = c.scanAtPathDirectives(aList) ####,createPath=False)
     if simulate: # for unit tests.
         fn = p.h
     else:
@@ -5882,8 +5910,9 @@ def getNodeFileName (self,p):
     c = self
     ### d = c.scanAllDirectives(p)
     ### path = d.get('path')
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    ###aList = g.get_directives_dict_list(p)
+    ###path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+    path = g.scanAllAtPathDirectives(c,p)
 
     name = ''
     for p in p.self_and_parents():
@@ -6002,7 +6031,7 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@+node:ekr.20080828103146.15: *6* c.scanAtPathDirectives
-def scanAtPathDirectives(self,aList,force=False,createPath=True):
+def scanAtPathDirectives(self,aList): #### ,force=False,createPath=True):
 
     '''Scan aList for @path directives.
     Return a reasonable default if no @path directive is found.'''
@@ -6059,6 +6088,7 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     if trace and verbose: g.trace('joined path:',path)
 
+    ####
     # Step 4: Make the path if necessary.
     # if path and createPath and not g.os_path_exists(path):
         # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
@@ -10405,7 +10435,7 @@ self.last_language = self.language
 self.last_flag = "unknown"
 self.last_language = "unknown"
 #@+node:ekr.20080828103146.15: *7* c.scanAtPathDirectives
-def scanAtPathDirectives(self,aList,force=False,createPath=True):
+def scanAtPathDirectives(self,aList): #### ,force=False,createPath=True):
 
     '''Scan aList for @path directives.
     Return a reasonable default if no @path directive is found.'''
@@ -10462,6 +10492,7 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     if trace and verbose: g.trace('joined path:',path)
 
+    ####
     # Step 4: Make the path if necessary.
     # if path and createPath and not g.os_path_exists(path):
         # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)

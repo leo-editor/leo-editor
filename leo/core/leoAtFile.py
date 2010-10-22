@@ -5061,7 +5061,7 @@ class atFile:
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ### ('path',        None,           c.scanAtPathDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         )
 
@@ -5246,7 +5246,7 @@ class atFile:
 
         at = self ; c = at.c
         aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList,createPath=False)
+        path = c.scanAtPathDirectives(aList) ####,createPath=False)
         if simulate: # for unit tests.
             fn = p.h
         else:

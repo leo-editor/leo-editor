@@ -1615,8 +1615,11 @@ class rstCommands:
         ### self.encoding = d.get('encoding') or 'utf-8'
         ### self.path = d.get('path') or ''
 
+        ###aList = g.get_directives_dict_list(p)
+        ###self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+
         aList = g.get_directives_dict_list(p)
-        self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+        self.path = c.scanAtPathDirectives(aList)
         self.encoding = g.scanAtEncodingDirectives(aList) or 'utf-8'
 
         # g.trace('path:',self.path)

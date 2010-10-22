@@ -345,23 +345,6 @@ def comment_delims_from_extension(filename):
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
         return '','',''
-#@+node:ekr.20071109165315: *4* g.stripPathCruft
-def stripPathCruft (path):
-
-    '''Strip cruft from a path name.'''
-
-    if not path:
-        return path # Retain empty paths for warnings.
-
-    if len(path) > 2 and (
-        (path[0]=='<' and path[-1] == '>') or
-        (path[0]=='"' and path[-1] == '"') or
-        (path[0]=="'" and path[-1] == "'")
-    ):
-        path = path[1:-1].strip()
-
-    # We want a *relative* path, not an absolute path.
-    return path
 #@+node:ekr.20090214075058.8: *4* g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
 
@@ -657,6 +640,17 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @pagewidth",s,color="red")
 
     return None
+#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives scanAllAtPathDirectives 
+def scanAtPathDirectives(c,aList):
+
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def scanAllAtPathDirectives(c,p):
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
 #@+node:ekr.20100507084415.5760: *4* g.scanAtRootDirectives
 def scanAtRootDirectives(aList):
 
@@ -942,6 +936,23 @@ def checkOpenDirectory (c):
     if not g.os_path_isabs(c.openDirectory):
         g.error ('relative c.openDirectory: %s' % (
             c.openDirectory))
+#@+node:ekr.20071109165315: *4* g.stripPathCruft
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
 #@+node:ekr.20031218072017.3100: *3* wrap_lines
 #@+at
 # Important note: this routine need not deal with leading whitespace.

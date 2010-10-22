@@ -3078,9 +3078,6 @@
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
-<v t="ekr.20101021205258.6011"></v>
-<v t="ekr.20101021210253.6019"></v>
-<v t="ekr.20101021205258.6009"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -16370,20 +16367,20 @@ n = g.scanAtPagewidthDirectives(aList)
 
 assert n == 40</t>
 <t tx="ekr.20080917151620.22">aList = g.get_directives_dict_list(p.firstChild())
-s = c.scanAtPathDirectives(aList,force=True)
+s = c.scanAtPathDirectives(aList)
 end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
-s = c.scanAtPathDirectives(aList,force=True)
+s = c.scanAtPathDirectives(aList)
 end = g.os_path_normpath(r'leo/test/unittest')
 
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.25"></t>
 <t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
-s = c.scanAtPathDirectives(aList,force=True)
+s = c.scanAtPathDirectives(aList)
 end = g.os_path_normpath(r'leo/test/unittest')
 
 assert s.endswith(end),repr(s)</t>
@@ -22579,7 +22576,7 @@ assert not x.enabledPluginsFileName
 <t tx="ekr.20100131180007.5466">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList,createPath=False)
+path = c.scanAtPathDirectives(aList)
 # print (path,p2.h)
 endpath = g.os_path_normpath('one/two')
 assert path and path.endswith(endpath),'expected ending %s got %s' % (
@@ -27128,7 +27125,7 @@ the @interface
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList,createPath=False)
+path = c.scanAtPathDirectives(aList)
 # print (path,p2.h)
 endpath = g.os_path_normpath('again/again')
 assert path and path.endswith(endpath),'expected ending %s got %s' % (

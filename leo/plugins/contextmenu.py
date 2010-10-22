@@ -85,8 +85,11 @@ def openwith_rclick(c,p, menu):
     if fname is None:
         return
 
-    path, err = g.getPathFromDirectives(c,p)
+    ### path, err = g.getPathFromDirectives(c,p)
+    path = g.scanAllAtPathDirectives(c,p)
     editor = g.guessExternalEditor()
+
+    # g.trace(repr(path),repr(fname))
 
     def openwith_rclick_cb():
         #print "Editing", path, fname        
