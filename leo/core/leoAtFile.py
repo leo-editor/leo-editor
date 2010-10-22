@@ -363,6 +363,14 @@ class atFile:
                 scripting=scriptWrite,
                 forcePythonSentinels=forcePythonSentinels,
                 issuePathWarning=True)
+            # Sets the following ivars:
+                # at.explicitLineEnding
+                # at.output_newline
+                # at.encoding
+                # at.language
+                # at.page_width
+                # at.default_directory
+                # at.tab_width
 
         # g.trace(forcePythonSentinels,
         #    self.startSentinelComment,self.endSentinelComment)
@@ -572,6 +580,15 @@ class atFile:
                 g.es("converting @file format in",root.h,color='red')
         root.clearVisitedInTree()
         d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+            # Sets the following ivars:
+                # at.explicitLineEnding
+                # at.output_newline
+                # at.encoding
+                # at.language
+                # at.page_width
+                # at.default_directory
+                # at.tab_width
+
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
@@ -3083,7 +3100,9 @@ class atFile:
 
         at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        if at.errors: return # 2010/10/21
+        if at.errors:
+            root.setDirty() # 2010/10/21
+            return # 2010/10/21
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
@@ -3386,7 +3405,10 @@ class atFile:
 
         at.errors = 0 # 2010/10/21
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        if at.errors: return # 2010/10/21
+        if at.errors:
+            g.es("not written:",p.h) # 2010/10/21
+            root.setDirty() # 2010/10/21
+            return False # 2010/10/21
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)

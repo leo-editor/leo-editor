@@ -24,24 +24,35 @@ A **strict helper** is called only by one method.
 ***** Part 1: c.scanAtPathDirectives
 
 # This is the proximate cause of the bug.
-# c.scanAtPathDirectives does not return any error indication.
+# ***** c.scanAtPathDirectives return *no* error indication.
+# ***** at.scanAllDirectives **also** returns *no* error indication.
+
+There are only *2* calls to at.scanAllDirectives.
 
 at.initWriteIvars
     at.scanAllDirectives
         c.scanAtPathDirectives *****
             g.makeAllNonExistentDirectories
 
+at.read
+    at.scanAllDirectives
+
 ===============
 
 # Exactly *6* callers of c.scanAtPathDirectives
 
-c.scanAllDirectives
+c.scanAllDirectives <----- This is also a problem
+    * There appears to be a bogus default for the path.
+    * There is no error indication.
+    ** However, the path is very seldom used.
+        - init_write (rstCommands)
 
 c.getNodePath (a thin wrapper: not called from Leo's core!)
 
 tangle.scanAllDirectives
+    Not a big problem: tangle is on its way out.
 
-at.scanAllDirectives
+at.scanAllDirectives <----- This is the big problem.
 
 at.fullPath
     c.scanAtPathDirectives(createPath=False)
@@ -65,36 +76,38 @@ g.setDefaultDirectory
 
 # Both call self.error if g.setDefaultDirectory returns an error.
 
-at.scanDefaultDirectory (called by many atFile methods)
+*** Change: all calls to these now use the following pattern:
+
+    self.errors = 0 
+    self.scanDefaultDirectory(...)
+    if self.errors: return # Possibly with other error handling.
+
+at.scanDefaultDirectory (called by several atFile methods)
     g.setDefaultDirectory 
 
 leoImport.scanDefaultDirectory (called by createOutline)
     g.setDefaultDirectory
 
-#@+node:ekr.20080211085914: *5* scanDefaultDirectory (leoImport)
-def scanDefaultDirectory(self,p):
+===================
 
-    """Set the default_directory ivar by looking for @path directives."""
+Part 3: initReadIvars
 
+**** Why don't all top-level methods call initReadIvars???
+    Maybe because they call scanDefaultDirectory instead.
+
+#@+node:ekr.20090502071837.60: *5* init_write (rstCommands)
+def init_write (self,p):
+
+    self.initOptionsFromSettings() # Still needed.
+
+    # Set the encoding from any parent @encoding directive.
+    # This can be overridden by @rst-option encoding=whatever.
     c = self.c
+    d = c.scanAllDirectives(p)
+    self.encoding = d.get('encoding') or 'utf-8'
+    self.path = d.get('path') or ''
 
-    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
-
-    if error:
-        self.error(error)
-#@+node:ekr.20041005105605.236: *5* at.scanDefaultDirectory
-def scanDefaultDirectory(self,p,importing=False):
-
-    """Set the default_directory ivar by looking for @path directives.
-
-    The caller must check at.errors."""
-
-    at = self ; c = at.c
-
-    at.default_directory,error = g.setDefaultDirectory(c,p,importing)
-
-    if error:
-        at.error(error)
+    # g.trace('path:',self.path)
 #@+node:ekr.20041005105605.15: *5* at.initWriteIvars
 def initWriteIvars(self,root,targetFileName,
     atAuto=False,
@@ -118,6 +131,14 @@ def initWriteIvars(self,root,targetFileName,
             scripting=scriptWrite,
             forcePythonSentinels=forcePythonSentinels,
             issuePathWarning=True)
+        # Sets the following ivars:
+            # at.explicitLineEnding
+            # at.output_newline
+            # at.encoding
+            # at.language
+            # at.page_width
+            # at.default_directory
+            # at.tab_width
 
     # g.trace(forcePythonSentinels,
     #    self.startSentinelComment,self.endSentinelComment)
@@ -377,6 +398,19 @@ else: # Emergency!
     at.endSentinelComment = ""
 
 # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@+node:ekr.20041005105605.236: *5* at.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set the default_directory ivar by looking for @path directives.
+
+    The caller must check at.errors."""
+
+    at = self ; c = at.c
+
+    at.default_directory,error = g.setDefaultDirectory(c,p,importing)
+
+    if error:
+        at.error(error)
 #@+node:ekr.20041005105605.144: *5* at.write & helper
 def write (self,root,
     kind = '@unknown', # Should not happen.
@@ -472,6 +506,54 @@ root.setDirty()
 # Delete the temp file.
 self.remove(at.outputFileName) 
 
+#@+node:ekr.20080827175609.39: *5* c.scanAllDirectives
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.p
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
 #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives
 def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
@@ -704,6 +786,17 @@ def findDefaultDirectory(c):
             if default_dir: break
 
     return default_dir
+#@+node:ekr.20080211085914: *5* scanDefaultDirectory (leoImport)
+def scanDefaultDirectory(self,p):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    c = self.c
+
+    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
+
+    if error:
+        self.error(error)
 #@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
 @nocolor-node
 
@@ -7934,6 +8027,14 @@ def initWriteIvars(self,root,targetFileName,
             scripting=scriptWrite,
             forcePythonSentinels=forcePythonSentinels,
             issuePathWarning=True)
+        # Sets the following ivars:
+            # at.explicitLineEnding
+            # at.output_newline
+            # at.encoding
+            # at.language
+            # at.page_width
+            # at.default_directory
+            # at.tab_width
 
     # g.trace(forcePythonSentinels,
     #    self.startSentinelComment,self.endSentinelComment)
