@@ -3531,5 +3531,106 @@ if not g.os_path_exists(localConfigFile):
 myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
 if not g.os_path_exists(myLocalConfigFile):
     myLocalConfigFile = None
+#@+node:ekr.20101022124309.6127: *3* OLDg.setDefaultDirectory & helpers
+# Called **only** from ic/at.scanDefaultDirectory.
+
+def OLDsetDefaultDirectory(c,p,importing=False):
+
+    ''' Compute a default directory by scanning @path directives.
+    Return (default_dir,error_message).'''
+
+    if not p: return '',''
+
+    error = ''
+    default_dir = g.getAbsPathFromNode(c,p)
+        ### This calls g.makeAllNonExistentDirectories (!!)
+
+    if not default_dir:
+        default_dir,error = g.getPathFromDirectives(c,p)
+            ### This calls g.makeAllNonExistentDirectories (!!)
+            ### Sets error if the path does not exist.
+
+    if c and c.frame and not default_dir and not error:
+        default_dir = g.findDefaultDirectory(c)
+
+    if not default_dir and not importing and not error:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    return default_dir, error
+#@+node:ekr.20081001062423.10: *4* g.getAbsPathFromNode (strict helper)
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
+
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
+
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+
+    return default_dir
+#@+node:ekr.20081001062423.11: *4* g.getPathFromDirectives (strict helper)
+def getPathFromDirectives(c,p,createFlag=True):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        exists = g.os_path_exists(path)
+        if createFlag:
+            if exists:
+                default_dir = path
+            else:
+                default_dir = g.makeAllNonExistentDirectories(path,c=c)
+                if not default_dir:
+                    error = "invalid @path: %s" % path
+        else:
+            default_dir = path
+            if not exists:
+                error = "does not exist: @path %s" % path
+
+    return default_dir,error
+#@+node:ekr.20081001062423.12: *4* g.findDefaultDirectory (strict helper)
+# This code is executed if no valid absolute path was specified in
+# the @file node or in an @path directive.
+
+def findDefaultDirectory(c):
+
+    '''Attempt to find a suitable default directory.'''
+
+    default_dir = ''
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
+    return default_dir
 #@-all
 #@-leo

@@ -298,9 +298,9 @@ class atFile:
         self.thinNodeStack = [] # Entries are vnodes.
         self.updateWarningGiven = False
         #@-<< init ivars for reading >>
-            # sets self.errors = 0
-        self.scanDefaultDirectory(root,importing=importing)
-        if self.errors: return
+
+        if not self.scanDefaultDirectory(root,importing=importing):
+            return
 
         # Init state from arguments.
         self.fromString = False
@@ -370,6 +370,8 @@ class atFile:
                 # at.language
                 # at.page_width
                 # at.tab_width
+
+            ###
             aList = g.get_directives_dict_list(p=root)
             at.default_directory = c.scanAtPathDirectives(aList)
 
@@ -588,6 +590,8 @@ class atFile:
                 # at.language
                 # at.page_width
                 # at.tab_width
+
+        ###
         aList = g.get_directives_dict_list(p=root)
         at.default_directory = c.scanAtPathDirectives(aList)
 
@@ -832,9 +836,8 @@ class atFile:
 
         oldChanged = c.isChanged()
 
-        at.errors = 0 # 2010/10/21
-        at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        if at.errors: return # 2010/10/21
+        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
+            return
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
@@ -866,9 +869,8 @@ class atFile:
         at = self ; c = at.c ; ic = c.importCommands
         oldChanged = c.isChanged()
 
-        at.errors = 0 # 2010/10/21
-        at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        if at.errors: return # 2010/10/21
+        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
+            return # 2010/10/21
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
@@ -912,12 +914,11 @@ class atFile:
             return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
                 fn, p.atShadowFileNodeName()))
 
-        # 2010/7/28: Remember that we have seen the @shadow node.
+        # Remember that we have seen the @shadow node.
         p.v.at_read = True # Create the attribute
 
-        at.errors = 0 # 2010/10/21
-        at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
-        if at.errors: return # 2010/10/21
+        if not at.scanDefaultDirectory(p,importing=True): # Sets at.default_directory
+            return
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
@@ -3099,11 +3100,9 @@ class atFile:
         fileName = p.atAutoNodeName()
         if not fileName and not toString: return False
 
-        at.errors = 0 # 2010/10/21
-        at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        if at.errors:
-            root.setDirty() # 2010/10/21
-            return # 2010/10/21
+        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
+            root.setDirty()
+            return
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
@@ -3406,12 +3405,10 @@ class atFile:
             g.es('To save your work, convert @edit to @auto or @thin')
             return False
 
-        at.errors = 0 # 2010/10/21
-        at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        if at.errors:
-            g.es("not written:",p.h) # 2010/10/21
-            root.setDirty() # 2010/10/21
-            return False # 2010/10/21
+        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
+            g.es("not written:",p.h)
+            root.setDirty()
+            return False
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
@@ -5326,10 +5323,13 @@ class atFile:
 
         at = self ; c = at.c
 
-        at.default_directory,error = g.setDefaultDirectory(c,p,importing)
+        at.default_directory = d = g.setDefaultDirectory(c,p,importing)
 
-        if error:
-            at.error(error)
+        if not importing and not d:
+            self.error("No absolute directory specified anywhere.")
+            return False
+        else:
+            return True
     #@+node:ekr.20041005105605.242: *3* scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

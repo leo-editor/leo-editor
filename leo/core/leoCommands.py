@@ -487,20 +487,23 @@ class baseCommands (object):
         # Step 3: Compute the full, effective, absolute path.
         if trace and verbose:
             g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+
         path = c.os_path_finalize_join(*paths)
+
         if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.
-        if path and createPath and not g.os_path_exists(path):
-            ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-            if not ok:
-                if force:
-                    g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-                path = absbase # Bug fix: 2008/9/18
+        # if path and createPath and not g.os_path_exists(path):
+            # ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+            # if not ok:
+                # if force:
+                    # g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+                # path = absbase # Bug fix: 2008/9/18
 
         if trace: g.trace('returns',path)
 
-        return path or '' ### 2010/10/22: replace None by ''
+        return path or g.getBaseDirectory(c)
+            ### 2010/10/22: A very useful default.
     #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
@@ -541,6 +544,8 @@ class baseCommands (object):
 
         return g.os_path_finalize_join(*args,**keys)
     #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
+    # Not used in Leo's core.
+    # Used by the UNl plugin.  Does not need to create a path.
     def getNodePath (self,p):
 
         '''Return the path in effect at node p.'''
@@ -550,6 +555,7 @@ class baseCommands (object):
         path = c.scanAtPathDirectives(aList)
         return path
 
+    # Not used in Leo's core.
     def getNodeFileName (self,p):
 
         '''Return the full file name at node p,

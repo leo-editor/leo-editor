@@ -1044,6 +1044,11 @@
 </v>
 <v t="ekr.20100131180007.5452"><vh>@@test fc.tnodeAttributes</vh></v>
 </v>
+<v t="ekr.20101022154041.6023"><vh>These helpers no longer exist</vh>
+<v t="ekr.20100131180007.5424"><vh>@test g.getAbsPathFromNode</vh></v>
+<v t="ekr.20100131180007.5423"><vh>@test g.getPathFromDirectives</vh></v>
+<v t="ekr.20100131180007.5422"><vh>@test g.findDefaultDirectory</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
@@ -2288,15 +2293,12 @@
 <v t="ekr.20100131180007.5403"><vh>@test g.ensureLeadingNewlines</vh></v>
 <v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
 <v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
-<v t="ekr.20100131180007.5422"><vh>@test g.findDefaultDirectory</vh></v>
 <v t="ekr.20101021210253.6019"><vh>g.Directives &amp; directories</vh>
 <v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
-<v t="ekr.20100131180007.5424"><vh>@test g.getAbsPathFromNode</vh></v>
 <v t="ekr.20101021205258.6010"><vh>@test g.makeAllNonExistentDirectories</vh></v>
 </v>
 <v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
-<v t="ekr.20100131180007.5423"><vh>@test g.getPathFromDirectives</vh></v>
 <v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
 <v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
 <v t="ekr.20100131180007.5417"><vh>@test g.openLeoOrZipFile</vh></v>
@@ -22226,8 +22228,11 @@ assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
 </t>
 <t tx="ekr.20100131180007.5421">c,p = g.getTestVars()
 
-result,error = g.setDefaultDirectory(c,p,importing=False)
-assert error == ''
+# result,error = g.setDefaultDirectory(c,p,importing=False)
+# assert error == ''
+# assert result == c.openDirectory,result
+
+result = g.setDefaultDirectory(c,p,importing=False)
 assert result == c.openDirectory,result
 </t>
 <t tx="ekr.20100131180007.5422">theDir = g.findDefaultDirectory(c)
@@ -27119,6 +27124,7 @@ the @interface
 <t tx="ekr.20101021210253.6017"></t>
 <t tx="ekr.20101021210253.6018"></t>
 <t tx="ekr.20101021210253.6019"></t>
+<t tx="ekr.20101022154041.6023"></t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)

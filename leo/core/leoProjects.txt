@@ -1176,33 +1176,6 @@ Traceback (most recent call last):
 OSError: [Errno 13] Permission denied: '/project'
 
 so it seems directory creation isn't being suppressed...? 
-#@+node:ekr.20081001062423.11: *5* g.getPathFromDirectives (strict helper)
-def getPathFromDirectives(c,p,createFlag=True):
-
-    '''Scan for @path directives.'''
-
-    trace = False and not g.unitTesting
-    default_dir = '' ; error = ''
-    if not p: return default_dir,error
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    if path:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = c.os_path_finalize_join(base,path)
-        exists = g.os_path_exists(path)
-        if createFlag:
-            if exists:
-                default_dir = path
-            else:
-                default_dir = g.makeAllNonExistentDirectories(path,c=c)
-                if not default_dir:
-                    error = "invalid @path: %s" % path
-        else:
-            default_dir = path
-            if not exists:
-                error = "does not exist: @path %s" % path
-
-    return default_dir,error
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
@@ -2198,9 +2171,9 @@ def initReadIvars(self,root,fileName,
     self.initCommonIvars()
 
     << init ivars for reading >>
-        # sets self.errors = 0
-    self.scanDefaultDirectory(root,importing=importing)
-    if self.errors: return
+
+    if not self.scanDefaultDirectory(root,importing=importing):
+        return
 
     # Init state from arguments.
     self.fromString = False
@@ -2315,6 +2288,8 @@ def read(self,root,importFileName=None,
             # at.language
             # at.page_width
             # at.tab_width
+
+    ###
     aList = g.get_directives_dict_list(p=root)
     at.default_directory = c.scanAtPathDirectives(aList)
 
@@ -2529,9 +2504,8 @@ def readOneAtEditNode (self,fn,p):
     at = self ; c = at.c ; ic = c.importCommands
     oldChanged = c.isChanged()
 
-    at.errors = 0 # 2010/10/21
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    if at.errors: return # 2010/10/21
+    if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
+        return # 2010/10/21
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     junk,ext = g.os_path_splitext(fn)
@@ -2756,12 +2730,10 @@ def writeOneAtEditNode(self,p,toString,force=False):
         g.es('To save your work, convert @edit to @auto or @thin')
         return False
 
-    at.errors = 0 # 2010/10/21
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    if at.errors:
-        g.es("not written:",p.h) # 2010/10/21
-        root.setDirty() # 2010/10/21
-        return False # 2010/10/21
+    if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
+        g.es("not written:",p.h)
+        root.setDirty()
+        return False
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     exists = g.os_path_exists(fn)
@@ -4388,10 +4360,9 @@ def createOutline (self,fileName,parent,
     c = self.c ; u = c.undoer ; s1 = s
     w = c.frame.body
 
-    # New in Leo 4.4.7: honor @path directives.
-    self.errors = 0 # 2010/10/21
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    if self.errors: return None # 2010/10/21
+    # New in Leo 4.4.7: honor @path directives. set .defaultDirectory.
+    if not self.scanDefaultDirectory(parent): 
+        return None
 
     fileName = c.os_path_finalize_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)
