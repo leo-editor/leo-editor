@@ -1176,7 +1176,7 @@ Traceback (most recent call last):
 OSError: [Errno 13] Permission denied: '/project'
 
 so it seems directory creation isn't being suppressed...? 
-#@+node:ekr.20081001062423.11: *5* g.getPathFromDirectives
+#@+node:ekr.20081001062423.11: *5* g.getPathFromDirectives (strict helper)
 def getPathFromDirectives(c,p,createFlag=True):
 
     '''Scan for @path directives.'''
