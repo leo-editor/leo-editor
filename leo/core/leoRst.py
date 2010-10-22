@@ -1610,9 +1610,14 @@ class rstCommands:
         # Set the encoding from any parent @encoding directive.
         # This can be overridden by @rst-option encoding=whatever.
         c = self.c
-        d = c.scanAllDirectives(p)
-        self.encoding = d.get('encoding') or 'utf-8'
-        self.path = d.get('path') or ''
+
+        ### d = c.scanAllDirectives(p)
+        ### self.encoding = d.get('encoding') or 'utf-8'
+        ### self.path = d.get('path') or ''
+
+        aList = g.get_directives_dict_list(p)
+        self.path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
+        self.encoding = g.scanAtEncodingDirectives(aList) or 'utf-8'
 
         # g.trace('path:',self.path)
     #@+node:ekr.20090502071837.94: *4* write (leoRst)

@@ -408,7 +408,7 @@ class baseCommands (object):
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
+            ### ('path',        None,           c.scanAtPathDirectives),
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
             ('wrap',        wrap,           g.scanAtWrapDirectives),
         )
@@ -429,7 +429,7 @@ class baseCommands (object):
             "language"      : lang_dict.get('language'),
             "lineending"    : d.get('lineending'),
             "pagewidth"     : d.get('pagewidth'),
-            "path"          : d.get('path') or g.getBaseDirectory(c),
+            ### "path"          : d.get('path') or g.getBaseDirectory(c),
             "tabwidth"      : d.get('tabwidth'),
             "pluginsList"   : [], # No longer used.
             "wrap"          : d.get('wrap'),
@@ -500,7 +500,7 @@ class baseCommands (object):
 
         if trace: g.trace('returns',path)
 
-        return path
+        return path or '' ### 2010/10/22: replace None by ''
     #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
@@ -558,8 +558,10 @@ class baseCommands (object):
         Return None if p is no kind of @file node.'''
 
         c = self
-        d = c.scanAllDirectives(p)
-        path = d.get('path')
+        ### d = c.scanAllDirectives(p)
+        ### path = d.get('path')
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
 
         name = ''
         for p in p.self_and_parents():
@@ -2499,8 +2501,10 @@ class baseCommands (object):
                 lines = g.splitLines(at.stringOutput)
             else:
                 # Calculate the full path.
-                d = g.scanDirectives(c,p=root)
-                path = d.get("path")
+                ### d = g.scanDirectives(c,p=root)
+                ### path = d.get("path")
+                aList = g.get_directives_dict_list(p=root)
+                path = c.scanAtPathDirectives(aList) or g.getBaseDirectory(c)
                 # g.trace('path',path,'fileName',fileName)
                 fileName = c.os_path_finalize_join(path,fileName)
                 lines    = self.openFile(fileName)

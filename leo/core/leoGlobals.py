@@ -901,8 +901,7 @@ def set_language(s,i,issue_errors_flag=False):
 
     return None, None, None, None,
 #@+node:ekr.20081001062423.9: *4* g.setDefaultDirectory & helpers
-# This is a refactoring, used by leoImport.scanDefaultDirectory and
-# atFile.scanDefaultDirectory
+# Called **only** from ic/at.scanDefaultDirectory.
 
 def setDefaultDirectory(c,p,importing=False):
 
@@ -910,10 +909,15 @@ def setDefaultDirectory(c,p,importing=False):
     Return (default_dir,error_message).'''
 
     if not p: return '',''
-    default_dir,error = g.getAbsPathFromNode(c,p),''
+
+    error = ''
+    default_dir = g.getAbsPathFromNode(c,p)
+        ### This calls g.makeAllNonExistentDirectories (!!)
 
     if not default_dir:
         default_dir,error = g.getPathFromDirectives(c,p)
+            ### This calls g.makeAllNonExistentDirectories (!!)
+            ### Sets error if the path does not exist.
 
     if c and c.frame and not default_dir and not error:
         default_dir = g.findDefaultDirectory(c)
@@ -923,7 +927,7 @@ def setDefaultDirectory(c,p,importing=False):
         error = "No absolute directory specified anywhere."
 
     return default_dir, error
-#@+node:ekr.20081001062423.10: *5* g.getAbsPathFromNode
+#@+node:ekr.20081001062423.10: *5* g.getAbsPathFromNode (strict helper)
 # An absolute path in an @file node over-rides everything else.
 # A relative path gets appended to the relative path by the open logic.
 
@@ -942,7 +946,7 @@ def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
                 default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
 
     return default_dir
-#@+node:ekr.20081001062423.11: *5* g.getPathFromDirectives
+#@+node:ekr.20081001062423.11: *5* g.getPathFromDirectives (strict helper)
 def getPathFromDirectives(c,p,createFlag=True):
 
     '''Scan for @path directives.'''
@@ -2188,7 +2192,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     elif not force and not create:
         if trace:
             g.trace('did not create: force and create are both false')
-        return ok
+        return False
 
     if trace:
         g.trace('\n',theDir,'\n',g.callers(4))
