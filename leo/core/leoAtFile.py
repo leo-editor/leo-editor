@@ -2987,7 +2987,6 @@ class atFile:
         #@-<< say the command is finished >>
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
-
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
     #@+at We must clear these bits because they may have been set on a previous write.
     # Calls to atFile::write may set the orphan bits in @file nodes.
@@ -3129,6 +3128,7 @@ class atFile:
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
         at.targetFileName = g.choose(toString,"<string-file>",fileName)
+
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
@@ -3239,6 +3239,7 @@ class atFile:
                 return
 
         c.endEditing() # Capture the current headline.
+
         at.initWriteIvars(root,targetFileName=None, # Not used.
             atShadow=True,
             nosentinels=None, # set below.  Affects only error messages (sometimes).
