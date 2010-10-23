@@ -827,9 +827,9 @@ class leoImportCommands (scanUtility):
 
         if not d:
             self.error("No absolute directory specified anywhere.")
-
-        return d
-
+            return False # A real error.
+        else:
+            return True
     #@+node:ekr.20031218072017.1463: *4* setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 

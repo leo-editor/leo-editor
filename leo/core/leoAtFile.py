@@ -5321,8 +5321,9 @@ class atFile:
 
         if not importing and not d:
             self.error("No absolute directory specified anywhere.")
-        return d
-
+            return False # A real error.
+        else:
+            return True
     #@+node:ekr.20041005105605.242: *3* scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

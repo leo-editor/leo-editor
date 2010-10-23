@@ -2912,8 +2912,9 @@ def scanDefaultDirectory(self,p,importing=False):
 
     if not importing and not d:
         self.error("No absolute directory specified anywhere.")
-    return d
-
+        return False # A real error.
+    else:
+        return True
 #@+node:ekr.20080211085914: *7* ic.scanDefaultDirectory
 def scanDefaultDirectory(self,p):
 
@@ -2925,9 +2926,9 @@ def scanDefaultDirectory(self,p):
 
     if not d:
         self.error("No absolute directory specified anywhere.")
-
-    return d
-
+        return False # A real error.
+    else:
+        return True
 #@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
@@ -5353,8 +5354,9 @@ def scanDefaultDirectory(self,p,importing=False):
 
     if not importing and not d:
         self.error("No absolute directory specified anywhere.")
-    return d
-
+        return False # A real error.
+    else:
+        return True
 #@+node:ekr.20080211085914: *7* ic.scanDefaultDirectory
 def scanDefaultDirectory(self,p):
 
@@ -5366,9 +5368,9 @@ def scanDefaultDirectory(self,p):
 
     if not d:
         self.error("No absolute directory specified anywhere.")
-
-    return d
-
+        return False # A real error.
+    else:
+        return True
 #@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
