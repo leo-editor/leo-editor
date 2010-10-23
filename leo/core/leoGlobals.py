@@ -2565,20 +2565,18 @@ def utils_remove (fileName,verbose=True):
             g.es_exception()
         return False
 #@+node:ekr.20031218072017.1263: *4* g.utils_rename
-def utils_rename (c,src,dst,verbose=True): ###,mode=None):
+def utils_rename (c,src,dst,verbose=True):
 
     '''Platform independent rename.'''
 
-    ### 2010/02/04: Don't call g.makeAllNonExistentDirectories.
-    ### It's not right to do this here!!
+    # Don't call g.makeAllNonExistentDirectories.
+    # It's not right to do this here!!
 
     # head, tail = g.os_path_split(dst)
     # if head: g.makeAllNonExistentDirectories(head,c=c)
 
     try:
         shutil.move(src,dst)
-        ### if mode is not None:
-        ###    g.utils_chmod(dst,mode,verbose)
         return True
     except Exception:
         if verbose:
@@ -2954,7 +2952,6 @@ def doHook(tag,*args,**keywords):
         g.trace('tag',tag,'f',f and f.__name__)
 
     if not f:
-        ### import leo.core.leoPlugins as leoPlugins
         g.app.hookFunction = f = g.app.pluginsController.doPlugins
 
     try:

@@ -791,10 +791,6 @@ class atFile:
         oldChanged = c.isChanged()
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-
-        ###at.scanDefaultDirectory(p,importing=True)
-        ###    # Set default_directory
-
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         # 2010/7/28: Remember that we have seen the @auto node.
@@ -826,9 +822,6 @@ class atFile:
         oldChanged = c.isChanged()
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-        ###at.scanDefaultDirectory(p,importing=True)
-            ### Set default_directory
-
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
 
@@ -875,9 +868,6 @@ class atFile:
         p.v.at_read = True # Create the attribute
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-        ###at.scanDefaultDirectory(p,importing=True)
-        ###    # Sets at.default_directory
-
         fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
@@ -1527,14 +1517,6 @@ class atFile:
             else:
                 line = s[i:k] # No trailing newline, whatever k is.
             # g.trace(repr(line))
-
-        # if at.readVersion5:
-            # line = lws2 + s[j:] ### Wrong:
-        # elif len(at.endSentinelComment) == 0:
-            # line = s[i:-1] # No trailing newline
-        # else:
-            # k = s.find(at.endSentinelComment,i)
-            # line = s[i:k] # No trailing newline, whatever k is.
 
         # Undo the cweb hack.
         start = at.startSentinelComment
@@ -3059,9 +3041,6 @@ class atFile:
         if not fileName and not toString: return False
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-        ###at.scanDefaultDirectory(p,importing=True)
-        ###    # Set default_directory
-
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
         if not toString and exists and not hasattr(root.v,'at_read') and exists:
@@ -3365,9 +3344,6 @@ class atFile:
             return False
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-        ###at.scanDefaultDirectory(p,importing=True)
-        ###    # Set default_directory
-
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
         if not hasattr(root.v,'at_read') and exists:

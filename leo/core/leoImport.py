@@ -841,9 +841,6 @@ class leoImportCommands (scanUtility):
         w = c.frame.body
 
         self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
-        ### self.scanDefaultDirectory(parent)
-            ### set default_directory.
-
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)

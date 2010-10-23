@@ -291,10 +291,6 @@ def readOneAtAutoNode (self,fileName,p):
     oldChanged = c.isChanged()
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Set default_directory
-
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
     # 2010/7/28: Remember that we have seen the @auto node.
@@ -326,9 +322,6 @@ def readOneAtEditNode (self,fn,p):
     oldChanged = c.isChanged()
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-        ### Set default_directory
-
     fn = c.os_path_finalize_join(at.default_directory,fn)
     junk,ext = g.os_path_splitext(fn)
 
@@ -375,9 +368,6 @@ def readOneAtShadowNode (self,fn,p):
     p.v.at_read = True # Create the attribute
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Sets at.default_directory
-
     fn = c.os_path_finalize_join(at.default_directory,fn)
     shadow_fn     = x.shadowPathName(fn)
     shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
@@ -628,9 +618,6 @@ def writeOneAtAutoNode(self,p,toString,force):
     if not fileName and not toString: return False
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Set default_directory
-
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
     exists = g.os_path_exists(fileName)
     if not toString and exists and not hasattr(root.v,'at_read') and exists:
@@ -702,9 +689,6 @@ def writeOneAtEditNode(self,p,toString,force=False):
         return False
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Set default_directory
-
     fn = c.os_path_finalize_join(at.default_directory,fn)
     exists = g.os_path_exists(fn)
     if not hasattr(root.v,'at_read') and exists:
@@ -2974,10 +2958,6 @@ def readOneAtAutoNode (self,fileName,p):
     oldChanged = c.isChanged()
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Set default_directory
-
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
     # 2010/7/28: Remember that we have seen the @auto node.
@@ -3009,9 +2989,6 @@ def readOneAtEditNode (self,fn,p):
     oldChanged = c.isChanged()
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-        ### Set default_directory
-
     fn = c.os_path_finalize_join(at.default_directory,fn)
     junk,ext = g.os_path_splitext(fn)
 
@@ -3058,9 +3035,6 @@ def readOneAtShadowNode (self,fn,p):
     p.v.at_read = True # Create the attribute
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Sets at.default_directory
-
     fn = c.os_path_finalize_join(at.default_directory,fn)
     shadow_fn     = x.shadowPathName(fn)
     shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
@@ -3113,9 +3087,6 @@ def writeOneAtAutoNode(self,p,toString,force):
     if not fileName and not toString: return False
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Set default_directory
-
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
     exists = g.os_path_exists(fileName)
     if not toString and exists and not hasattr(root.v,'at_read') and exists:
@@ -3187,9 +3158,6 @@ def writeOneAtEditNode(self,p,toString,force=False):
         return False
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    ###at.scanDefaultDirectory(p,importing=True)
-    ###    # Set default_directory
-
     fn = c.os_path_finalize_join(at.default_directory,fn)
     exists = g.os_path_exists(fn)
     if not hasattr(root.v,'at_read') and exists:
@@ -3235,9 +3203,6 @@ def createOutline (self,fileName,parent,
     w = c.frame.body
 
     self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
-    ### self.scanDefaultDirectory(parent)
-        ### set default_directory.
-
     fileName = c.os_path_finalize_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)
     self.methodName,self.fileType = g.os_path_splitext(self.fileName)
@@ -4383,6 +4348,36 @@ def scanAtPathDirectives(self,aList):
 
     return path or g.getBaseDirectory(c)
         # 2010/10/22: A useful default.
+#@+node:ekr.20101022214212.6106: *5* Recent bug
+#@+node:ekr.20101022214212.6107: *6*  Traceback
+raceback (most recent call last):
+ File "launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "runLeo.py", line 129, in run
+   ok = doPostPluginsInit(args,fn,relFn,options)
+ File "runLeo.py", line 426, in doPostPluginsInit
+   c,frame = createFrame(fileName,relativeFileName,options)
+ File "runLeo.py", line 463, in createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "leoGlobals.py", line 2284, in openWithFileName
+   ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+ File "leoGlobals.py", line 2344, in handleOpenHooks
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "leoFileCommands.py", line 882, in open
+   silent=silent)
+ File "leoFileCommands.py", line 735, in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "leoAtFile.py", line 764, in readAll
+   at.readOneAtEditNode (fileName,p)
+ File "leoAtFile.py", line 846, in readOneAtEditNode
+   fn = c.os_path_finalize_join(at.default_directory,fn)
+ File "leoCommands.py", line 541, in os_path_finalize_join
+   return g.os_path_finalize_join(*args,**keys)
+ File "leoGlobals.py", line 3494, in os_path_finalize_join
+   for path in args if path]
+ File "leoGlobals.py", line 3442, in os_path_expandExpression
+   i = s.find('{{')
+AttributeError: 'bool' object has no attribute 'find'
 #@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
 @nocolor-node
 
@@ -8462,7 +8457,6 @@ def doHook(tag,*args,**keywords):
         g.trace('tag',tag,'f',f and f.__name__)
 
     if not f:
-        ### import leo.core.leoPlugins as leoPlugins
         g.app.hookFunction = f = g.app.pluginsController.doPlugins
 
     try:
