@@ -1432,7 +1432,7 @@ def set_language(s,i,issue_errors_flag=False):
         g.es("ignoring:",g.get_line(s,i))
 
     return None, None, None, None,
-#@+node:ekr.20081001062423.9: *9* g.setDefaultDirectory & helpers (rewritten)
+#@+node:ekr.20081001062423.9: *9* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
 def setDefaultDirectory(c,p,importing=False):
@@ -1456,7 +1456,7 @@ def setDefaultDirectory(c,p,importing=False):
         g.checkOpenDirectory(c)
         for d in (c.openDirectory,g.getBaseDirectory(c)):
             # Errors may result in relative or invalid path.
-            if theDir and g.os_path_isabs(d):
+            if d and g.os_path_isabs(d):
                 path = d
                 break
         else:
@@ -2912,9 +2912,8 @@ def scanDefaultDirectory(self,p,importing=False):
 
     if not importing and not d:
         self.error("No absolute directory specified anywhere.")
-        return False
-    else:
-        return True
+    return d
+
 #@+node:ekr.20080211085914: *7* ic.scanDefaultDirectory
 def scanDefaultDirectory(self,p):
 
@@ -2927,8 +2926,9 @@ def scanDefaultDirectory(self,p):
     if not d:
         self.error("No absolute directory specified anywhere.")
 
-    return bool(d)
-#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helpers (rewritten)
+    return d
+
+#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
 def setDefaultDirectory(c,p,importing=False):
@@ -2952,7 +2952,7 @@ def setDefaultDirectory(c,p,importing=False):
         g.checkOpenDirectory(c)
         for d in (c.openDirectory,g.getBaseDirectory(c)):
             # Errors may result in relative or invalid path.
-            if theDir and g.os_path_isabs(d):
+            if d and g.os_path_isabs(d):
                 path = d
                 break
         else:
@@ -4399,7 +4399,7 @@ def set_language(s,i,issue_errors_flag=False):
         g.es("ignoring:",g.get_line(s,i))
 
     return None, None, None, None,
-#@+node:ekr.20081001062423.9: *8* g.setDefaultDirectory & helpers (rewritten)
+#@+node:ekr.20081001062423.9: *8* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
 def setDefaultDirectory(c,p,importing=False):
@@ -4423,7 +4423,7 @@ def setDefaultDirectory(c,p,importing=False):
         g.checkOpenDirectory(c)
         for d in (c.openDirectory,g.getBaseDirectory(c)):
             # Errors may result in relative or invalid path.
-            if theDir and g.os_path_isabs(d):
+            if d and g.os_path_isabs(d):
                 path = d
                 break
         else:
@@ -4685,12 +4685,6 @@ def init_write (self,p):
 
     # g.trace('path:',self.path)
 #@+node:ekr.20101022055534.8529: *5*  Step 2: (Done) Remove path stuff from at.scanAllDirectives
-@nocolor-node
-
-The **direct replacement** is probably best:
-
-    aList = g.get_directives_dict_list(p)
-    at.default_directory = c.scanAtPathDirectives(aList)
 #@+node:ekr.20080923070954.4: *6* at.scanAllDirectives
 def scanAllDirectives(self,p,
     scripting=False,importing=False,
@@ -5280,6 +5274,7 @@ def getBaseDirectory(c):
         # Call os.chdir if requested.
         if c.chdir_to_relative_path:
             os.chdir(base)
+        # g.trace(base)
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
@@ -5358,9 +5353,8 @@ def scanDefaultDirectory(self,p,importing=False):
 
     if not importing and not d:
         self.error("No absolute directory specified anywhere.")
-        return False
-    else:
-        return True
+    return d
+
 #@+node:ekr.20080211085914: *7* ic.scanDefaultDirectory
 def scanDefaultDirectory(self,p):
 
@@ -5373,8 +5367,9 @@ def scanDefaultDirectory(self,p):
     if not d:
         self.error("No absolute directory specified anywhere.")
 
-    return bool(d)
-#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helpers (rewritten)
+    return d
+
+#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
 def setDefaultDirectory(c,p,importing=False):
@@ -5398,7 +5393,7 @@ def setDefaultDirectory(c,p,importing=False):
         g.checkOpenDirectory(c)
         for d in (c.openDirectory,g.getBaseDirectory(c)):
             # Errors may result in relative or invalid path.
-            if theDir and g.os_path_isabs(d):
+            if d and g.os_path_isabs(d):
                 path = d
                 break
         else:

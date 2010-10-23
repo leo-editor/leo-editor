@@ -892,7 +892,7 @@ def set_language(s,i,issue_errors_flag=False):
         g.es("ignoring:",g.get_line(s,i))
 
     return None, None, None, None,
-#@+node:ekr.20081001062423.9: *4* g.setDefaultDirectory & helpers (rewritten)
+#@+node:ekr.20081001062423.9: *4* g.setDefaultDirectory & helper
 # Called **only** from ic/at.scanDefaultDirectory.
 
 def setDefaultDirectory(c,p,importing=False):
@@ -916,7 +916,7 @@ def setDefaultDirectory(c,p,importing=False):
         g.checkOpenDirectory(c)
         for d in (c.openDirectory,g.getBaseDirectory(c)):
             # Errors may result in relative or invalid path.
-            if theDir and g.os_path_isabs(d):
+            if d and g.os_path_isabs(d):
                 path = d
                 break
         else:
@@ -1982,6 +1982,7 @@ def getBaseDirectory(c):
         # Call os.chdir if requested.
         if c.chdir_to_relative_path:
             os.chdir(base)
+        # g.trace(base)
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
