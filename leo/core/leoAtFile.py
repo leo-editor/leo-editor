@@ -3113,7 +3113,7 @@ class atFile:
             g.es("not written:",at.outputFileName)
 
         return ok
-    #@+node:ekr.20080711093251.3: *4* at.writeAtShadowdNodes & writeDirtyAtShadowNodes & helpers
+    #@+node:ekr.20080711093251.3: *4* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @shadow nodes in the selected outline.'''
@@ -4921,6 +4921,8 @@ class atFile:
 
         # Always warn, even when language=="cweb"
         at = self ; root = at.root
+
+        if at.errors: return # No need to repeat this.
 
         for p in root.self_and_subtree():
             if not p.v.isVisited():

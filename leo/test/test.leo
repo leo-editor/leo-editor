@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="75" left="308" height="910" width="714"/>
+	<global_window_position top="75" left="308" height="910" width="1245"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -563,7 +563,6 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
-</v>
 <v t="ekr.20101014040509.2309"><vh>Images and movies</vh>
 <v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
 <v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
@@ -579,8 +578,10 @@
 <v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
 <v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
 </v>
-<v t="ekr.20101018154944.2262"><vh>colorizing url's</vh></v>
-<v t="ekr.20101020192326.2264"><vh>test</vh></v>
+</v>
+<v t="ekr.20101023151617.2269"><vh>@shadow at-shadow-clone-test.txt</vh></v>
+<v t="ekr.20101023151755.2266"><vh>@thin at-thin-clone-test.txt</vh></v>
+<v t="ekr.20101023151755.2265"><vh>Contents of @shadow file</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1001,7 +1002,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7262,12 +7263,18 @@ else:
     run(p)
 g.es('crash test done')
 </t>
-<t tx="ekr.20101018154944.2262">@language python
-
-http://webpages.charter.net/edreamleo/coloring.html
-
-if False:
-    pass</t>
-<t tx="ekr.20101020192326.2264">g.es('test')</t>
+<t tx="ekr.20101023151755.2265">#@+leo-ver=4-thin
+#@+node:ekr.20101023151617.2269:@shadow at-shadow-clone-test.txt
+#@@language plain
+#@+others
+#@+node:ekr.20101023151617.2270:clone
+Content of clone.
+#@nonl
+#@-node:ekr.20101023151617.2270:clone
+#@-others
+#@nonl
+#@-node:ekr.20101023151617.2269:@shadow at-shadow-clone-test.txt
+#@-leo
+</t>
 </tnodes>
 </leo_file>
