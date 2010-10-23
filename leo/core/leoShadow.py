@@ -37,6 +37,7 @@ import leo.core.leoGlobals as g
 
 import difflib
 import os
+import pprint
 import unittest
 #@-<< imports >>
 
@@ -62,10 +63,6 @@ class shadowController:
 
         # Munch shadow_subdir
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
-
-        # Debugging...
-        self.trace = trace
-        self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
 
         # Error handling...
         self.errors = 0
@@ -214,29 +211,41 @@ class shadowController:
             1. new_targetlines without sentinels must equal changed_lines_without_sentinels.
             2. the sentinel lines of new_targetlines must match 'sentinels'
         """
-        new_public_lines2, new_sentinel_lines2 = self.separate_sentinels (new_private_lines, marker)
+        new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(
+            new_private_lines, marker)
 
-        ok = True
-        if new_public_lines2 != new_public_lines:
-            last_line2 = new_public_lines2[-1]
-            last_line  = new_public_lines[-1]
-            if (
-                new_public_lines2[:-1] == new_public_lines[:-1] and
-                last_line2 == last_line + '\n'
-            ):
-                ok = True
+        lines1 = new_public_lines
+        lines2 = new_public_lines2
+        sents1 = sentinel_lines
+        sents2 = new_sentinel_lines2
+        if 1: # Ignore trailing ws:
+            s1 = ''.join(lines1).rstrip()
+            s2 = ''.join(lines2).rstrip()
+            lines1 = g.splitLines(s1)
+            lines2 = g.splitLines(s2)
+        if 1: # Ignore trailing ws on every line.
+            lines1 = [z.rstrip() for z in lines1]
+            lines2 = [z.rstrip() for z in lines2]
+            sents1 = [z.rstrip() for z in sents1]
+            sents2 = [z.rstrip() for z in sents2]
+        lines_ok = lines1 == lines2
+        sents_ok = sents1 == sents2
+
+        if not lines_ok:
+            if 1:
+                d = difflib.Differ()
+                # g.trace('Different!!',d)
+                aList = list(d.compare(new_public_lines2,new_public_lines))
+                pprint.pprint(aList)
             else:
-                ok = False
                 self.show_error(
                     lines1 = new_public_lines2,
                     lines2 = new_public_lines,
                     message = "Error in updating public file!",
                     lines1_message = "new public lines (derived from new private lines)",
                     lines2_message = "new public lines")
-            # g.trace(g.callers())
 
-        if new_sentinel_lines2 != sentinel_lines:
-            ok = False
+        if not sents_ok:
             self.show_error(
                 lines1 = sentinel_lines,
                 lines2 = new_sentinel_lines2,
@@ -244,7 +253,7 @@ class shadowController:
                 lines1_message = "old sentinels",
                 lines2_message = "new sentinels")
 
-        # if ok: g.trace("success!")
+        return lines_ok and sents_ok
     #@+node:ekr.20080708094444.37: *4* x.copy_sentinels
     def copy_sentinels(self,reader,writer,marker,limit):
 
@@ -683,7 +692,7 @@ class shadowController:
             i += 1
 
         return regular_lines, sentinel_lines 
-    #@+node:ekr.20080708094444.33: *4* x.show_error
+    #@+node:ekr.20080708094444.33: *4* x.show_error & helper
     def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
 
         x = self
@@ -702,11 +711,11 @@ class shadowController:
         g.es_print('\n@shadow did not pick up the external changes correctly')
 
         # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
-    #@+node:ekr.20080822065427.4: *5* show_error_lines (changed)
+    #@+node:ekr.20080822065427.4: *5* show_error_lines
     def show_error_lines (self,lines,fileName):
 
-        for line in lines:
-            g.es_print(line)
+        for i,line in enumerate(lines):
+            g.es_print('%3s %s' % (i,repr(line)))
 
         if False: # Only for major debugging.
             try:
@@ -714,7 +723,7 @@ class shadowController:
                 for s in lines:
                     if not g.isPython3: # 2010/08/27
                         s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-                    f1.write(s)
+                    f1.write(repr(s))
                 f1.close()
             except IOError:
                 g.es_exception()
@@ -746,9 +755,6 @@ class shadowController:
 
             # For teardown...
             self.ok = True
-
-            # Debugging
-            self.trace = trace
         #@+node:ekr.20080709062932.7: *4*  fail
         def fail (self,msg=None):
 
@@ -949,13 +955,20 @@ class shadowController:
         #@+node:ekr.20080708094444.15: *4* get
         def get (self):
 
+            '''Return the next line.'''
+
             trace = False and not g.unitTesting
 
-            if self.i < len(self.lines):
+            if 0: # Old code: crashed.
                 result = self.lines[self.i]
                 self.i+=1
             else:
-                result = ''
+                # A simple-minded guard.
+                if self.i < len(self.lines):
+                    result = self.lines[self.i]
+                    self.i+=1
+                else:
+                    result = ''
 
             if trace: g.trace(repr(result))
             return result 
@@ -967,12 +980,12 @@ class shadowController:
             return self.length 
         #@+node:ekr.20080708094444.18: *4* atEnd
         def atEnd (self):
-            return self.index>=self.length 
-        #@+node:ekr.20080708094444.19: *4* clone
-        def clone(self):
-            sr = self.shadowController.sourcereader(shadowController,self.lines)
-            sr.i = self.i
-            return sr
+            return self.index>=self.length
+        #@+node:ekr.20080708094444.19: *4* clone (not used)
+        # def clone(self):
+            # sr = self.shadowController.sourcereader(shadowController,self.lines)
+            # sr.i = self.i
+            # return sr
         #@+node:ekr.20080708094444.20: *4* dump
         def dump(self, title):
 
@@ -996,11 +1009,10 @@ class shadowController:
             self.i = 0
             self.lines =[]
             self.shadowController=shadowController
-            self.trace = False or self.shadowController.trace_writers
         #@+node:ekr.20080708094444.23: *4* put
         def put(self, line, tag=''):
 
-            trace = (False or self.trace) and not g.unitTesting
+            trace = False and not g.unitTesting
 
             # An important hack.  Make sure *all* lines end with a newline.
             # This will cause a mismatch later in check_the_final_output,
@@ -1029,7 +1041,7 @@ class shadowController:
             g.pr(title)
             for i, line in enumerate(self.lines):
                 marker = '  '
-                g.es("%s %3s:%s" % (marker, i, line),newline=False)
+                g.pr("%s %3s:%s" % (marker, i, line),newline=False)
         #@-others
     #@-others
 #@-others

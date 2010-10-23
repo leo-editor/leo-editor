@@ -579,6 +579,17 @@
 <v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
 </v>
 </v>
+<v t="ekr.20101023163524.2262"><vh>@@shadow bug-567250-test.py</vh>
+<v t="ekr.20101023163524.2264"><vh>class A</vh>
+<v t="ekr.20101023163735.2266"><vh>class B</vh></v>
+<v t="ekr.20101023163735.2267"><vh>b</vh></v>
+</v>
+<v t="ekr.20101023163524.2265"><vh>class E</vh>
+<v t="ekr.20101023163735.2268"><vh>class inner</vh></v>
+</v>
+</v>
+<v t="ekr.20101023164634.2269"
+expanded="akaihola.20100420161721.1586,akaihola.20100420161721.1595,"><vh>@shadow c:/prog/bug-567250/test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -999,7 +1010,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7259,6 +7270,32 @@ if 0:
 else:
     run(p)
 g.es('crash test done')
+</t>
+<t tx="ekr.20101023163524.2262">import m
+
+@others
+
+</t>
+<t tx="ekr.20101023163524.2264">class A:
+
+
+    a = m.F()
+
+    @others
+</t>
+<t tx="ekr.20101023163524.2265">class E:
+    c = m.F()
+
+    @others
+
+</t>
+<t tx="ekr.20101023163735.2266">class Inner:
+    pass</t>
+<t tx="ekr.20101023163735.2267">def b(self):
+        pass
+</t>
+<t tx="ekr.20101023163735.2268">class Inner:
+    pass
 </t>
 </tnodes>
 </leo_file>

@@ -277,6 +277,7 @@ following:
 At the risk of being repetitious, I've never found any documentation as
 accessible as Django's, from this starting point:
 http://docs.djangoproject.com/en/dev/ 
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
 #@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20060306194040: *4* Leo Video & slide show
 @nocolor
