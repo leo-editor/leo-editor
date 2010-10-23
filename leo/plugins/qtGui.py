@@ -670,7 +670,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w = self.widget
         s = w.text()
         s = g.u(s)
-        i = w.toPythonIndex(i)
+        i = self.toPythonIndex(i) # 2010/10/22.
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20081121105001.558: *5* setSelectionRangeHelper (leoQLineEdit)

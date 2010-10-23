@@ -5719,6 +5719,273 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
 if isOrphan and isThin:
     g.es("writing erroneous:",p.h,color="blue")
     p.clearOrphan()
+#@+node:ekr.20101023133431.6098: *4* Investigated bug 524890: Incomplete derived file
+@nocolor-node
+
+This is now a wishlist item.  @thin works the same way.
+
+#@+node:ekr.20101023133431.6099: *5* Report
+@nocolor-node
+
+This is now a wishlist item.  @thin works the same way.
+
+1. Create the following tree (node content prefixed with -, subnode
+with +, [] denotes clones) and save.
+
+@shadow file1.c
+-@others
++ [clone]
+-Content (clone)
++ [clone] (of course same clone content)
+
+Instead of the expected test1.c file of:
+
+Content (clone)
+Content (clone)
+
+I got just:
+
+Content (clone)
+
+I believe it to be a bug.
+
+2. Now copy and paste one of the clones as a regular node, delete the
+clone and save. We are left with two regular subnodes having the same
+content, and this time the expected derived file is generated.
+
+3. Undo to the state of having only the 2 clones (undo twice) and
+save. Leo does not recognize any change in the file.
+
+4. Edit the content of one clone and save. We are back to the 1st case
+(missing content in the derived).
+#@+node:ekr.20041005105605.161: *5* at.putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.b)
+
+    p.v.setVisited()
+    if trace: g.trace('visit',p.h)
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+    if not at.thinFile:
+        p.v.setWriteBit() # Mark the vnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
+    if not fromString:
+        # 2010/10/08: cleanLines calls c.setChanged(!)
+        s = self.cleanLines(p,s)
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert next_i > i,'putBody'
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+
+    if not trailingNewlineFlag:
+        if at.writeVersion5:
+            if at.sentinels:
+                pass # Never write @nonl
+            elif at.atAuto and not at.atEdit:
+                at.onl() # 2010/08/01: bug fix: ensure newline here.
+        else:
+            if at.sentinels:
+                at.putSentinel("@nonl")
+            elif at.atAuto and not at.atEdit:
+                # Ensure all @auto nodes end in a newline!
+                at.onl()
+#@+node:ekr.20041005105605.162: *6* << Make sure all lines end in a newline >>
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if not trailingNewlineFlag:
+        if (at.sentinels or 
+            (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+        ):
+            # g.trace('Added newline',repr(s))
+            s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@+node:ekr.20041005105605.163: *6* << handle line at s[i] >> (putBody)
+if trace: g.trace(kind,repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            hasRef,n1,n2 = at.findSectionName(s,i)
+            if hasRef and not at.raw:
+                at.putRefLine(s,i,n1,n2,p)
+            else:
+                at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert not at.pending,'putBody at.pending'
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    at.raw = False
+    at.putSentinel("@@end_raw")
+    i = g.skip_line(s,i)
+elif kind == at.startVerbatim:
+    at.putSentinel("@verbatim")
+    at.putIndent(at.indent)
+    i = next_i
+    next_i = g.skip_line(s,i)
+    at.os(s[i:next_i])
+elif kind == at.miscDirective:
+    # g.trace('miscDirective')
+    at.putDirective(s,i)
+else:
+    assert 0,'putBody: unknown directive'
+#@+node:ekr.20041005105605.170: *5* @others
+#@+node:ekr.20041005105605.171: *6* inAtOthers
+def inAtOthers(self,p):
+
+    """Returns True if p should be included in the expansion of the at-others directive
+
+    in the body text of p's parent."""
+
+    # Return False if this has been expanded previously.
+    if  p.v.isVisited():
+        # g.trace("previously visited",p.v)
+        return False
+
+    # Return False if this is a definition node.
+    h = p.h ; i = g.skip_ws(h,0)
+    isSection,junk = self.isSectionName(h,i)
+    if isSection:
+        # g.trace("is section",p)
+        return False
+
+    if self.sentinels or self.atAuto or self.toString:
+        # 2010/09/29: @ignore must not stop expansion here!
+        return True 
+
+    # Return False if p's body contains an @ignore directive.
+    if p.isAtIgnoreNode():
+        # g.trace("is @ignore",p)
+        return False
+    else:
+        # g.trace("ok",p)
+        return True
+#@+node:ekr.20041005105605.172: *6* putAtOthersChild
+def putAtOthersChild(self,p):
+
+    at = self
+
+    parent_v = p._parentVnode()
+    clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+    if clonedSibs > 1 and thisClonedSibIndex == 1:
+        at.writeError("Cloned siblings are not valid in @thin trees")
+        g.es_print(p.h,color='red')
+
+    at.putOpenNodeSentinel(p)
+    at.putBody(p) 
+
+    # Insert expansions of all children.
+    for child in p.children():
+        if at.inAtOthers(child):
+            at.putAtOthersChild(child)
+
+    at.putCloseNodeSentinel(p)
+#@+node:ekr.20041005105605.173: *6* putAtOthersLine
+def putAtOthersLine (self,s,i,p):
+
+    """Put the expansion of @others."""
+
+    at = self
+    j,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+    at.putLeadInSentinel(s,i,j,delta)
+
+    at.indent += delta
+
+    lws = at.leadingWs or ''
+
+    if at.writeVersion5 or not lws:
+        # Never write lws in new sentinels.
+        at.putSentinel("@+others")
+    else:
+        # Use the old (bizarre) convention when writing old sentinels.
+        # Note: there are *two* at signs here.
+        at.putSentinel("@" + lws + "@+others")
+
+    for child in p.children():
+        if at.inAtOthers(child):
+            at.putAtOthersChild(child)
+
+    # This is the same in both old and new sentinels.
+    at.putSentinel("@-others")
+
+    at.indent -= delta
+#@+node:ekr.20041005105605.216: *5* warnAboutOrpanAndIgnoredNodes
+# Called from writeOpenFile.
+
+def warnAboutOrphandAndIgnoredNodes (self):
+
+    # Always warn, even when language=="cweb"
+    at = self ; root = at.root
+
+    if at.errors: return # No need to repeat this.
+
+    for p in root.self_and_subtree():
+        if not p.v.isVisited():
+            at.writeError("Orphan node:  " + p.h)
+            if p.hasParent():
+                g.es("parent node:",p.parent().h,color="blue")
+            if not at.thinFile and p.isAtIgnoreNode():
+                at.writeError("@ignore node: " + p.h)
+
+    if at.thinFile:
+        p = root.copy() ; after = p.nodeAfterTree()
+        while p and p != after:
+            if p.isAtAllNode():
+                p.moveToNodeAfterTree()
+            else:
+                if p.isAtIgnoreNode():
+                    at.writeError("@ignore node: " + p.h)
+                p.moveToThreadNext()
+#@+node:ekr.20101023124751.6099: *4* Fixed crasher with del in minibuffer
+Changed w to self in leoQLineEditWidget.setInsertPoint.
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic

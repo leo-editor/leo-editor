@@ -579,9 +579,6 @@
 <v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
 </v>
 </v>
-<v t="ekr.20101023151617.2269"><vh>@shadow at-shadow-clone-test.txt</vh></v>
-<v t="ekr.20101023151755.2266"><vh>@thin at-thin-clone-test.txt</vh></v>
-<v t="ekr.20101023151755.2265"><vh>Contents of @shadow file</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1002,7 +999,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7262,19 +7259,6 @@ if 0:
 else:
     run(p)
 g.es('crash test done')
-</t>
-<t tx="ekr.20101023151755.2265">#@+leo-ver=4-thin
-#@+node:ekr.20101023151617.2269:@shadow at-shadow-clone-test.txt
-#@@language plain
-#@+others
-#@+node:ekr.20101023151617.2270:clone
-Content of clone.
-#@nonl
-#@-node:ekr.20101023151617.2270:clone
-#@-others
-#@nonl
-#@-node:ekr.20101023151617.2269:@shadow at-shadow-clone-test.txt
-#@-leo
 </t>
 </tnodes>
 </leo_file>
