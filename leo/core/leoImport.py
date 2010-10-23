@@ -816,14 +816,6 @@ class leoImportCommands (scanUtility):
         #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
-    #@+node:ekr.20080211085914: *4* ic.scanDefaultDirectory
-    def scanDefaultDirectory(self,p):
-
-        """Set the default_directory ivar by looking for @path directives."""
-
-        c = self.c
-
-        self.default_directory = g.setDefaultDirectory(c,p,importing=False)
     #@+node:ekr.20031218072017.1463: *4* setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
@@ -848,8 +840,9 @@ class leoImportCommands (scanUtility):
         c = self.c ; u = c.undoer ; s1 = s
         w = c.frame.body
 
-        self.scanDefaultDirectory(parent)
-            # set default_directory.
+        self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
+        ### self.scanDefaultDirectory(parent)
+            ### set default_directory.
 
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)

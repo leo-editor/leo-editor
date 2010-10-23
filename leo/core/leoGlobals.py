@@ -893,8 +893,6 @@ def set_language(s,i,issue_errors_flag=False):
 
     return None, None, None, None,
 #@+node:ekr.20081001062423.9: *4* g.setDefaultDirectory & helper
-# Called **only** from ic/at.scanDefaultDirectory.
-
 def setDefaultDirectory(c,p,importing=False):
 
     ''' Return a default directory by scanning @path directives.'''

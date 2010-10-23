@@ -790,8 +790,10 @@ class atFile:
 
         oldChanged = c.isChanged()
 
-        at.scanDefaultDirectory(p,importing=True)
-            # Set default_directory
+        at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+
+        ###at.scanDefaultDirectory(p,importing=True)
+        ###    # Set default_directory
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
@@ -823,8 +825,9 @@ class atFile:
         at = self ; c = at.c ; ic = c.importCommands
         oldChanged = c.isChanged()
 
-        at.scanDefaultDirectory(p,importing=True)
-            # Set default_directory
+        at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+        ###at.scanDefaultDirectory(p,importing=True)
+            ### Set default_directory
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
@@ -871,8 +874,9 @@ class atFile:
         # Remember that we have seen the @shadow node.
         p.v.at_read = True # Create the attribute
 
-        at.scanDefaultDirectory(p,importing=True)
-            # Sets at.default_directory
+        at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+        ###at.scanDefaultDirectory(p,importing=True)
+        ###    # Sets at.default_directory
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
@@ -3054,8 +3058,9 @@ class atFile:
         fileName = p.atAutoNodeName()
         if not fileName and not toString: return False
 
-        at.scanDefaultDirectory(p,importing=True)
-            # Set default_directory
+        at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+        ###at.scanDefaultDirectory(p,importing=True)
+        ###    # Set default_directory
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
@@ -3359,8 +3364,9 @@ class atFile:
             g.es('To save your work, convert @edit to @auto or @thin')
             return False
 
-        at.scanDefaultDirectory(p,importing=True)
-            # Set default_directory
+        at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+        ###at.scanDefaultDirectory(p,importing=True)
+        ###    # Set default_directory
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
@@ -5263,14 +5269,6 @@ class atFile:
             message = message)
 
         return ok == 'yes'
-    #@+node:ekr.20041005105605.236: *3* at.scanDefaultDirectory
-    def scanDefaultDirectory(self,p,importing=False):
-
-        """Set the default_directory ivar by looking for @path directives."""
-
-        at = self ; c = at.c
-
-        at.default_directory = g.setDefaultDirectory(c,p,importing)
     #@+node:ekr.20041005105605.242: *3* scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

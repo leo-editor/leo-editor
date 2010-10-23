@@ -3731,5 +3731,21 @@ else:
     at.outputFile = None # The temporary output file.
     at.stringOutput = None
     at.targetFileName = at.outputFileName = g.u('')
+#@+node:ekr.20080211085914: *3* ic.scanDefaultDirectory
+def scanDefaultDirectory(self,p):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    c = self.c
+
+    self.default_directory = g.setDefaultDirectory(c,p,importing=False)
+#@+node:ekr.20041005105605.236: *3* at.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    at = self ; c = at.c
+
+    at.default_directory = g.setDefaultDirectory(c,p,importing)
 #@-all
 #@-leo

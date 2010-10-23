@@ -32,15 +32,12 @@ This simplifies all aspects of the code:
 def readAll(self,root,partialFlag=False):
 def readAtShadowNodes (self,p):
 
-# Drivers: call at.scanDefaultDirectory...
-def readOneAtAutoNode (self,fileName,p): 
-    # Calls at.scanDefaultDirectory
+# Drivers: call g.setDefaultDirectory...
+def readOneAtAutoNode (self,fileName,p):
     # Calls ic.createOutline.
 def readOneAtEditNode (self,fn,p):
-    # Calls at.scanDefaultDirectory
     # Calls g.readFileIntoString
 def readOneAtShadowNode (self,fn,p):
-    # Calls at.scanDefaultDirectory
     # Calls at.read
 
 # Do real inits. All of these call initReadIvars....
@@ -293,8 +290,10 @@ def readOneAtAutoNode (self,fileName,p):
 
     oldChanged = c.isChanged()
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Set default_directory
 
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
@@ -326,8 +325,9 @@ def readOneAtEditNode (self,fn,p):
     at = self ; c = at.c ; ic = c.importCommands
     oldChanged = c.isChanged()
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+        ### Set default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     junk,ext = g.os_path_splitext(fn)
@@ -374,8 +374,9 @@ def readOneAtShadowNode (self,fn,p):
     # Remember that we have seen the @shadow node.
     p.v.at_read = True # Create the attribute
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Sets at.default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Sets at.default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     shadow_fn     = x.shadowPathName(fn)
@@ -626,8 +627,9 @@ def writeOneAtAutoNode(self,p,toString,force):
     fileName = p.atAutoNodeName()
     if not fileName and not toString: return False
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Set default_directory
 
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
     exists = g.os_path_exists(fileName)
@@ -699,8 +701,9 @@ def writeOneAtEditNode(self,p,toString,force=False):
         g.es('To save your work, convert @edit to @auto or @thin')
         return False
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Set default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     exists = g.os_path_exists(fn)
@@ -1441,8 +1444,6 @@ def set_language(s,i,issue_errors_flag=False):
 
     return None, None, None, None,
 #@+node:ekr.20081001062423.9: *9* g.setDefaultDirectory & helper
-# Called **only** from ic/at.scanDefaultDirectory.
-
 def setDefaultDirectory(c,p,importing=False):
 
     ''' Return a default directory by scanning @path directives.'''
@@ -2903,73 +2904,8 @@ while 1:
         i = g.skip_nl(s,i)
     if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
         break
-#@+node:ekr.20101022055534.5979: *6*  Found: scanDefaultDirectory (& helper: g.setDefaultDirectory)
-#@+node:ekr.20041005105605.236: *7* at.scanDefaultDirectory
-def scanDefaultDirectory(self,p,importing=False):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    at = self ; c = at.c
-
-    at.default_directory = g.setDefaultDirectory(c,p,importing)
-#@+node:ekr.20080211085914: *7* ic.scanDefaultDirectory
-def scanDefaultDirectory(self,p):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    c = self.c
-
-    self.default_directory = g.setDefaultDirectory(c,p,importing=False)
-#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helper
-# Called **only** from ic/at.scanDefaultDirectory.
-
-def setDefaultDirectory(c,p,importing=False):
-
-    ''' Return a default directory by scanning @path directives.'''
-
-    name = p.anyAtFileNodeName()
-    if name:
-        # An absolute path overrides everything.
-        d = g.os_path_dirname(name)
-        if d and g.os_path_isabs(d):
-            return d
-
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-        # Returns g.getBaseDirectory(c) by default.
-        # However, g.getBaseDirectory can return ''
-    if path:
-        path = g.os_path_finalize(path)
-    else:
-        g.checkOpenDirectory(c)
-        for d in (c.openDirectory,g.getBaseDirectory(c)):
-            # Errors may result in relative or invalid path.
-            if d and g.os_path_isabs(d):
-                path = d
-                break
-        else:
-            path = ''
-
-    if not importing and not path:
-        # This should never happen, but is not serious if it does.
-        g.warning("No absolute directory specified anywhere.")
-
-    return path
-#@+node:ekr.20101022124309.6132: *8* g.checkOpenDirectory
-def checkOpenDirectory (c):
-
-    if c.openDirectory != c.frame.openDirectory:
-        g.error(
-            'c.openDirectory != c.frame.openDirectory\n'
-            'c.openDirectory: %s\n'
-            'c.frame.openDirectory: %s' % (
-                c.openDirectory,c.frame.openDirectory))
-
-    if not g.os_path_isabs(c.openDirectory):
-        g.error ('relative c.openDirectory: %s' % (
-            c.openDirectory))
-#@+node:ekr.20101022055534.5980: *7* Calls to at./c.scanDefaultDirectory
-#@+node:ekr.20041005105605.13: *8* at.initReadIvars
+#@+node:ekr.20101022055534.5980: *6* Calls to at./c.scanDefaultDirectory
+#@+node:ekr.20041005105605.13: *7* at.initReadIvars
 def initReadIvars(self,root,fileName,
     importFileName=None,
     perfectImportRoot=None,
@@ -3030,15 +2966,17 @@ def initReadIvars(self,root,fileName,
     at.thinFile = False # 2010/01/22: was thinFile
     at.thinNodeStack = [] # Entries are vnodes.
     at.updateWarningGiven = False
-#@+node:ekr.20070909100252: *8* at.readOneAtAutoNode
+#@+node:ekr.20070909100252: *7* at.readOneAtAutoNode
 def readOneAtAutoNode (self,fileName,p):
 
     at = self ; c = at.c ; ic = c.importCommands
 
     oldChanged = c.isChanged()
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Set default_directory
 
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
@@ -3064,14 +3002,15 @@ def readOneAtAutoNode (self,fileName,p):
     else:
         c.cacher.writeFile(p,fileKey)
         g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@+node:ekr.20090225080846.3: *8* at.readOneAtEditNode
+#@+node:ekr.20090225080846.3: *7* at.readOneAtEditNode
 def readOneAtEditNode (self,fn,p):
 
     at = self ; c = at.c ; ic = c.importCommands
     oldChanged = c.isChanged()
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+        ### Set default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     junk,ext = g.os_path_splitext(fn)
@@ -3106,7 +3045,7 @@ def readOneAtEditNode (self,fn,p):
 
     if not changed: c.setChanged(False)
     g.doHook('after-edit',p=p)
-#@+node:ekr.20080711093251.7: *8* at.readOneAtShadowNode
+#@+node:ekr.20080711093251.7: *7* at.readOneAtShadowNode
 def readOneAtShadowNode (self,fn,p):
 
     at = self ; c = at.c ; x = c.shadowController
@@ -3118,8 +3057,9 @@ def readOneAtShadowNode (self,fn,p):
     # Remember that we have seen the @shadow node.
     p.v.at_read = True # Create the attribute
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Sets at.default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Sets at.default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     shadow_fn     = x.shadowPathName(fn)
@@ -3137,7 +3077,7 @@ def readOneAtShadowNode (self,fn,p):
         if ok:
             # Create the private file automatically.
             at.writeOneAtShadowNode(p,toString=False,force=True)
-#@+node:ekr.20080712080505.1: *9* at.importAtShadowNode
+#@+node:ekr.20080712080505.1: *8* at.importAtShadowNode
 def importAtShadowNode (self,fn,p):
 
     at = self ; c = at.c  ; ic = c.importCommands
@@ -3160,7 +3100,7 @@ def importAtShadowNode (self,fn,p):
     # else: g.doHook('after-shadow', p = p)
 
     return ic.errors == 0
-#@+node:ekr.20070806141607: *8* at.writeOneAtAutoNode & helpers
+#@+node:ekr.20070806141607: *7* at.writeOneAtAutoNode & helpers
 def writeOneAtAutoNode(self,p,toString,force):
 
     '''Write p, an @auto node.
@@ -3172,8 +3112,9 @@ def writeOneAtAutoNode(self,p,toString,force):
     fileName = p.atAutoNodeName()
     if not fileName and not toString: return False
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Set default_directory
 
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
     exists = g.os_path_exists(fileName)
@@ -3229,7 +3170,7 @@ def writeOneAtAutoNode(self,p,toString,force):
         g.es("not written:",at.outputFileName)
 
     return ok
-#@+node:ekr.20090225080846.5: *8* at.writeOneAtEditNode
+#@+node:ekr.20090225080846.5: *7* at.writeOneAtEditNode
 def writeOneAtEditNode(self,p,toString,force=False):
 
     '''Write one @edit node.'''
@@ -3245,8 +3186,9 @@ def writeOneAtEditNode(self,p,toString,force=False):
         g.es('To save your work, convert @edit to @auto or @thin')
         return False
 
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    ###at.scanDefaultDirectory(p,importing=True)
+    ###    # Set default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     exists = g.os_path_exists(fn)
@@ -3285,15 +3227,16 @@ def writeOneAtEditNode(self,p,toString,force=False):
         root.setDirty()
 
     return ok
-#@+node:ekr.20031218072017.3210: *8* createOutline (leoImport)
+#@+node:ekr.20031218072017.3210: *7* createOutline (leoImport)
 def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
     c = self.c ; u = c.undoer ; s1 = s
     w = c.frame.body
 
-    self.scanDefaultDirectory(parent)
-        # set default_directory.
+    self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
+    ### self.scanDefaultDirectory(parent)
+        ### set default_directory.
 
     fileName = c.os_path_finalize_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)
@@ -4440,459 +4383,6 @@ def scanAtPathDirectives(self,aList):
 
     return path or g.getBaseDirectory(c)
         # 2010/10/22: A useful default.
-#@+node:ekr.20101022055534.5979: *6*  Found: scanDefaultDirectory (& helper: g.setDefaultDirectory)
-#@+node:ekr.20041005105605.236: *7* at.scanDefaultDirectory
-def scanDefaultDirectory(self,p,importing=False):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    at = self ; c = at.c
-
-    at.default_directory = g.setDefaultDirectory(c,p,importing)
-#@+node:ekr.20080211085914: *7* ic.scanDefaultDirectory
-def scanDefaultDirectory(self,p):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    c = self.c
-
-    self.default_directory = g.setDefaultDirectory(c,p,importing=False)
-#@+node:ekr.20081001062423.9: *7* g.setDefaultDirectory & helper
-# Called **only** from ic/at.scanDefaultDirectory.
-
-def setDefaultDirectory(c,p,importing=False):
-
-    ''' Return a default directory by scanning @path directives.'''
-
-    name = p.anyAtFileNodeName()
-    if name:
-        # An absolute path overrides everything.
-        d = g.os_path_dirname(name)
-        if d and g.os_path_isabs(d):
-            return d
-
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-        # Returns g.getBaseDirectory(c) by default.
-        # However, g.getBaseDirectory can return ''
-    if path:
-        path = g.os_path_finalize(path)
-    else:
-        g.checkOpenDirectory(c)
-        for d in (c.openDirectory,g.getBaseDirectory(c)):
-            # Errors may result in relative or invalid path.
-            if d and g.os_path_isabs(d):
-                path = d
-                break
-        else:
-            path = ''
-
-    if not importing and not path:
-        # This should never happen, but is not serious if it does.
-        g.warning("No absolute directory specified anywhere.")
-
-    return path
-#@+node:ekr.20101022124309.6132: *8* g.checkOpenDirectory
-def checkOpenDirectory (c):
-
-    if c.openDirectory != c.frame.openDirectory:
-        g.error(
-            'c.openDirectory != c.frame.openDirectory\n'
-            'c.openDirectory: %s\n'
-            'c.frame.openDirectory: %s' % (
-                c.openDirectory,c.frame.openDirectory))
-
-    if not g.os_path_isabs(c.openDirectory):
-        g.error ('relative c.openDirectory: %s' % (
-            c.openDirectory))
-#@+node:ekr.20101022055534.5980: *7* Calls to at./c.scanDefaultDirectory
-#@+node:ekr.20041005105605.13: *8* at.initReadIvars
-def initReadIvars(self,root,fileName,
-    importFileName=None,
-    perfectImportRoot=None,
-    atShadow=False,
-):
-    at = self
-
-    at.initCommonIvars()
-
-    at.cloneSibCount = 0
-        # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-    at.correctedLines = 0
-        # For perfect import.
-    at.docOut = [] # The doc part being accumulated.
-    at.done = False # True when @-leo seen.
-    at.endSentinelIndentStack = []
-        # Restored indentation for @-others and @-<< sentinels.
-        # Used only when readVersion5.
-    at.endSentinelStack = []
-        # Contains entries for +node sentinels only when not readVersion5
-    at.endSentinelLevelStack = []
-        # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
-        # Used only when readVersion5.
-    at.endSentinelNodeStack = []
-        # Used only when readVersion5.
-    at.fromString = False
-    at.importing = bool(importFileName)
-    at.importRootSeen = False
-    at.indentStack = []
-    at.inputFile = None
-    at.lastLines = [] # The lines after @-leo
-    at.lastRefNode = None
-        # The previous reference node, for at.readAfterRef.
-        # No stack is needed because -<< sentinels restore at.v
-        # to the node needed by at.readAfterRef.
-    at.lastThinNode = None
-        # The last thin node at this level.
-        # Used by createThinChild4.
-    at.leadingWs = ""
-    at.lineNumber = 0 # New in Leo 4.4.8.
-    at.out = None
-    at.outStack = []
-    at.perfectImportRoot = perfectImportRoot
-    at.readVersion = ''
-        # New in Leo 4.8: "4" or "5" for new-style thin files.
-    at.readVersion5 = False
-        # synonym for at.readVersion >= '5' and not atShadow.
-        # set by at.parseLeoSentinel()
-    at.root = root
-    at.rootSeen = False
-    at.atShadow = atShadow
-    at.targetFileName = fileName
-    at.tnodeList = []
-        # Needed until old-style @file nodes are no longer supported.
-    at.tnodeListIndex = 0
-    at.v = None
-    at.vStack = [] # Stack of at.v values.
-    at.thinFile = False # 2010/01/22: was thinFile
-    at.thinNodeStack = [] # Entries are vnodes.
-    at.updateWarningGiven = False
-#@+node:ekr.20070909100252: *8* at.readOneAtAutoNode
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
-
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    # 2010/7/28: Remember that we have seen the @auto node.
-    p.v.at_read = True # Create the attribute
-
-    s,ok,fileKey = c.cacher.readFile(fileName,p)
-    if ok: return
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        # Note: the file contains an @ignore,
-        # so no unintended write can happen.
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        c.cacher.writeFile(p,fileKey)
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@+node:ekr.20090225080846.3: *8* at.readOneAtEditNode
-def readOneAtEditNode (self,fn,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-    oldChanged = c.isChanged()
-
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
-
-    fn = c.os_path_finalize_join(at.default_directory,fn)
-    junk,ext = g.os_path_splitext(fn)
-
-    # 2010/7/28: Remember that we have seen the @edit node.
-    p.v.at_read = True # Create the attribute
-
-    if not g.unitTesting:
-        g.es("reading @edit:", g.shortFileName(fn))
-
-    s,e = g.readFileIntoString(fn,kind='@edit')
-    if s is None: return
-    encoding = g.choose(e is None,'utf-8',e)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    changed = c.isChanged()
-    head = ''
-    ext = ext.lower()
-    if ext in ('.html','.htm'):   head = '@language html\n'
-    elif ext in ('.txt','.text'): head = '@nocolor\n'
-    else:
-        language = ic.languageForExtension(ext)
-        if language and language != 'unknown_language':
-            head = '@language %s\n' % language
-        else:
-            head = '@nocolor\n'
-
-    p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
-
-    if not changed: c.setChanged(False)
-    g.doHook('after-edit',p=p)
-#@+node:ekr.20080711093251.7: *8* at.readOneAtShadowNode
-def readOneAtShadowNode (self,fn,p):
-
-    at = self ; c = at.c ; x = c.shadowController
-
-    if not fn == p.atShadowFileNodeName():
-        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-            fn, p.atShadowFileNodeName()))
-
-    # Remember that we have seen the @shadow node.
-    p.v.at_read = True # Create the attribute
-
-    at.scanDefaultDirectory(p,importing=True)
-        # Sets at.default_directory
-
-    fn = c.os_path_finalize_join(at.default_directory,fn)
-    shadow_fn     = x.shadowPathName(fn)
-    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    if shadow_exists:
-        at.read(p,atShadow=True)
-    else:
-        if not g.unitTesting: g.es("reading:",p.h)
-        ok = at.importAtShadowNode(fn,p)
-        if ok:
-            # Create the private file automatically.
-            at.writeOneAtShadowNode(p,toString=False,force=True)
-#@+node:ekr.20080712080505.1: *9* at.importAtShadowNode
-def importAtShadowNode (self,fn,p):
-
-    at = self ; c = at.c  ; ic = c.importCommands
-    oldChanged = c.isChanged()
-
-    # Delete all the child nodes.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    # Import the outline, exactly as @auto does.
-    ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
-
-    if ic.errors:
-        g.es_print('errors inhibited read @shadow',fn,color='red')
-
-    if ic.errors or not g.os_path_exists(fn):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-
-    # else: g.doHook('after-shadow', p = p)
-
-    return ic.errors == 0
-#@+node:ekr.20070806141607: *8* at.writeOneAtAutoNode & helpers
-def writeOneAtAutoNode(self,p,toString,force):
-
-    '''Write p, an @auto node.
-
-    File indices *must* have already been assigned.'''
-
-    at = self ; c = at.c ; root = p.copy()
-
-    fileName = p.atAutoNodeName()
-    if not fileName and not toString: return False
-
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
-
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-    exists = g.os_path_exists(fileName)
-    if not toString and exists and not hasattr(root.v,'at_read') and exists:
-        # Prompt if writing a new @auto node would overwrite the existing file.
-        ok = self.promptForDangerousWrite(fileName,kind='@auto')
-        if ok:
-            root.v.at_read = True # Create the attribute for all clones.
-        else:
-            g.es("not written:",fileName)
-            return
-
-    # Prompt if writing a new @auto node would overwrite an existing file.
-    if (not toString and not hasattr(p.v,'at_read') and
-        g.os_path_exists(fileName)
-    ):
-        ok = self.promptForDangerousWrite(fileName,kind='@auto')
-        if ok:
-            p.v.at_read = True # Create the attribute
-        else:
-            g.es("not written:",fileName)
-            return False
-
-    # This code is similar to code in at.write.
-    c.endEditing() # Capture the current headline.
-    at.targetFileName = g.choose(toString,"<string-file>",fileName)
-
-    at.initWriteIvars(root,at.targetFileName,
-        atAuto=True,
-        nosentinels=True,thinFile=False,scriptWrite=False,
-        toString=toString)
-
-    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-    isAtAutoRst = root.isAtAutoRstNode()
-    if ok:
-        if isAtAutoRst:
-            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
-            if not ok2: at.errors += 1
-        else:
-            at.writeOpenFile(root,nosentinels=True,toString=toString)
-        at.closeWriteFile() # Sets stringOutput if toString is True.
-        # g.trace('at.errors',at.errors)
-        if at.errors == 0:
-            # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
-            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
-                # Sets/clears dirty and orphan bits.
-        else:
-            g.es("not written:",at.outputFileName)
-            root.setDirty() # New in Leo 4.4.8.
-
-    elif not toString:
-        root.setDirty() # Make _sure_ we try to rewrite this file.
-        g.es("not written:",at.outputFileName)
-
-    return ok
-#@+node:ekr.20090225080846.5: *8* at.writeOneAtEditNode
-def writeOneAtEditNode(self,p,toString,force=False):
-
-    '''Write one @edit node.'''
-
-    at = self ; c = at.c ; root = p.copy()
-    c.endEditing()
-
-    fn = p.atEditNodeName()
-    if not fn and not toString: return False
-
-    if p.hasChildren():
-        g.es('@edit nodes must not have children',color='red')
-        g.es('To save your work, convert @edit to @auto or @thin')
-        return False
-
-    at.scanDefaultDirectory(p,importing=True)
-        # Set default_directory
-
-    fn = c.os_path_finalize_join(at.default_directory,fn)
-    exists = g.os_path_exists(fn)
-    if not hasattr(root.v,'at_read') and exists:
-        # Prompt if writing a new @edit node would overwrite the existing file.
-        ok = self.promptForDangerousWrite(fn,kind='@edit')
-        if ok:
-            root.v.at_read = True # Create the attribute for all clones.
-        else:
-            g.es("not written:",fn)
-            return False
-
-    at.targetFileName = fn
-    at.initWriteIvars(root,at.targetFileName,
-        atAuto=True, atEdit=True,
-        nosentinels=True,thinFile=False,
-        scriptWrite=False,toString=toString)
-
-    # Compute the file's contents.
-    # Unlike the @nosent file logic it does not add a final newline.
-    contents = ''.join([s for s in g.splitLines(p.b)
-        if at.directiveKind4(s,0) == at.noDirective])
-
-    if toString:
-        at.stringOutput = contents
-        return True
-
-    ok = at.openFileForWriting(root,fileName=fn,toString=False)
-    if ok:
-        self.os(contents)
-        at.closeWriteFile()
-    if ok and at.errors == 0:
-        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-    else:
-        g.es("not written:",at.outputFileName)
-        root.setDirty()
-
-    return ok
-#@+node:ekr.20031218072017.3210: *8* createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-    w = c.frame.body
-
-    self.scanDefaultDirectory(parent)
-        # set default_directory.
-
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        if atShadow: kind = '@shadow '
-        elif atAuto: kind = '@auto '
-        else: kind = ''
-        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
-        if s is None: return None
-        if e: self.encoding = e
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        elif self.treeType is None:
-            # 2010/09/29: by convention, we use the short file name.
-            p.initHeadString(g.shortFileName(fileName))
-        else:
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    if self.treeType == '@root': # 2010/09/29.
-        self.rootLine = "@root-code "+self.fileName+'\n'
-    else:
-        self.rootLine = ''
-
-    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
-        func = self.scanRstText
-    else:
-        func = self.importDispatchDict.get(ext)
-
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        s = s.replace('\r','')
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        s = s.replace('\r','')
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    if atAuto:
-        # Remember that we have read this file.
-        # Fixes bug 488894: unsettling dialog when saving Leo file
-        # after creating and populating an @auto node.
-        # Important: this often sets the bit in the wrong node:
-        # The caller may have to set the bit in the "real" root node.
-        p.v.at_read = True # Create the attribute
-
-    p.contract()
-    w.setInsertPoint(0)
-    w.seeInsertPoint()
-    return p
 #@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
 @nocolor-node
 
