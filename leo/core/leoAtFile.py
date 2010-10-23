@@ -137,7 +137,6 @@ class atFile:
         self.c = c
         self.debug = False
         self.fileCommands = c.fileCommands
-        self.testing = False # True: enable additional checks.
         self.errors = 0 # Make sure at.error() works even when not inited.
 
         # User options.
@@ -187,208 +186,169 @@ class atFile:
             self.endRef: self.readEndRef,
         }
         #@-<< define the dispatch dictionary used by scanText4 >>
-    #@+node:ekr.20041005105605.10: *3* initCommonIvars
+    #@+node:ekr.20041005105605.10: *3* at.initCommonIvars
     def initCommonIvars (self):
 
         """Init ivars common to both reading and writing.
 
         The defaults set here may be changed later."""
 
-        c = self.c
+        at = self ; c = at.c
 
-        if self.testing:
-            # Save "permanent" ivars
-            fileCommands = self.fileCommands
-            dispatch_dict = self.dispatch_dict
-            # Clear all ivars.
-            g.clearAllIvars(self)
-            # Restore permanent ivars
-            self.testing = True
-            self.c = c
-            self.fileCommands = fileCommands
-            self.dispatch_dict = dispatch_dict
-
-        #@+<< set defaults for arguments and options >>
-        #@+node:ekr.20041005105605.11: *4* << set defaults for arguments and options >>
-        # These may be changed in initReadIvars or initWriteIvars.
-
-        # Support of output_newline option.
-        self.output_newline = g.getOutputNewline(c=c)
-
-        # Set by scanHeader when reading and scanAllDirectives when writing.
-        self.at_auto_encoding = c.config.default_at_auto_file_encoding
-        self.encoding = c.config.default_derived_file_encoding
-        self.endSentinelComment = ""
-        self.startSentinelComment = ""
-
-        # Set by scanAllDirectives when writing.
-        self.default_directory = None
-        self.page_width = None
-        self.tab_width  = None
-        self.startSentinelComment = ""
-        self.endSentinelComment = ""
-        self.language = None
-        #@-<< set defaults for arguments and options >>
-        #@+<< init common ivars >>
-        #@+node:ekr.20041005105605.12: *4* << init common ivars >>
-        # These may be set by initReadIvars or initWriteIvars.
-
-        self.errors = 0
-        self.inCode = True
-        self.indent = 0  # The unit of indentation is spaces, not tabs.
-        self.pending = []
-        self.raw = False # True: in @raw mode
-        self.root = None # The root (a position) of tree being read or written.
-        self.root_seen = False # True: root vnode has been handled in this file.
-        self.toString = False # True: sring-oriented read or write.
-        self.writing_to_shadow_directory = False
-        #@-<< init common ivars >>
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding
+        at.default_directory = None
+        at.encoding = c.config.default_derived_file_encoding
+        at.endSentinelComment = ""
+        at.errors = 0
+        at.inCode = True
+        at.indent = 0  # The unit of indentation is spaces, not tabs.
+        at.language = None
+        at.output_newline = g.getOutputNewline(c=c)
+        at.page_width = None
+        at.pending = []
+        at.raw = False # True: in @raw mode
+        at.root = None # The root (a position) of tree being read or written.
+        at.root_seen = False # True: root vnode has been handled in this file.
+        at.startSentinelComment = ""
+        at.startSentinelComment = ""
+        at.tab_width  = None
+        at.toString = False # True: sring-oriented read or write.
+        at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *3* at.initReadIvars
     def initReadIvars(self,root,fileName,
         importFileName=None,
         perfectImportRoot=None,
         atShadow=False,
     ):
+        at = self
 
-        importing = importFileName is not None
+        at.initCommonIvars()
 
-        self.initCommonIvars()
-
-        #@+<< init ivars for reading >>
-        #@+node:ekr.20041005105605.14: *4* << init ivars for reading >>
-        self.cloneSibCount = 0
+        at.cloneSibCount = 0
             # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        self.correctedLines = 0
-        self.docOut = [] # The doc part being accumulated.
-        self.done = False # True when @-leo seen.
-        self.endSentinelIndentStack = []
+        at.correctedLines = 0
+            # For perfect import.
+        at.docOut = [] # The doc part being accumulated.
+        at.done = False # True when @-leo seen.
+        at.endSentinelIndentStack = []
             # Restored indentation for @-others and @-<< sentinels.
             # Used only when readVersion5.
-        self.endSentinelStack = []
+        at.endSentinelStack = []
             # Contains entries for +node sentinels only when not readVersion5
-        self.endSentinelLevelStack = []
+        at.endSentinelLevelStack = []
             # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
             # Used only when readVersion5.
-        self.endSentinelNodeStack = []
+        at.endSentinelNodeStack = []
             # Used only when readVersion5.
-        self.importing = False
-        self.importRootSeen = False
-        self.indentStack = []
-        self.inputFile = None
-        self.lastLines = [] # The lines after @-leo
-        self.lastRefNode = None
+        at.fromString = False
+        at.importing = bool(importFileName)
+        at.importRootSeen = False
+        at.indentStack = []
+        at.inputFile = None
+        at.lastLines = [] # The lines after @-leo
+        at.lastRefNode = None
             # The previous reference node, for at.readAfterRef.
             # No stack is needed because -<< sentinels restore at.v
             # to the node needed by at.readAfterRef.
-        self.lastThinNode = None
+        at.lastThinNode = None
             # The last thin node at this level.
             # Used by createThinChild4.
-        self.leadingWs = ""
-        self.lineNumber = 0 # New in Leo 4.4.8.
-        self.out = None
-        self.outStack = []
-        self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
-        self.readVersion5 = False # synonym for at.readVersion >= '5' and not atShadow.
-        self.rootSeen = False
-        self.tnodeList = []
+        at.leadingWs = ""
+        at.lineNumber = 0 # New in Leo 4.4.8.
+        at.out = None
+        at.outStack = []
+        at.perfectImportRoot = perfectImportRoot
+        at.readVersion = ''
+            # New in Leo 4.8: "4" or "5" for new-style thin files.
+        at.readVersion5 = False
+            # synonym for at.readVersion >= '5' and not atShadow.
+            # set by at.parseLeoSentinel()
+        at.root = root
+        at.rootSeen = False
+        at.atShadow = atShadow
+        at.targetFileName = fileName
+        at.tnodeList = []
             # Needed until old-style @file nodes are no longer supported.
-        self.tnodeListIndex = 0
-        self.v = None
-        self.vStack = [] # Stack of at.v values.
-        self.thinNodeStack = [] # Entries are vnodes.
-        self.updateWarningGiven = False
-        #@-<< init ivars for reading >>
-
-        if not self.scanDefaultDirectory(root,importing=importing):
-            return
-
-        # Init state from arguments.
-        self.fromString = False
-        self.perfectImportRoot = perfectImportRoot
-        self.importing = importing
-        self.root = root
-        self.targetFileName = fileName
-        self.thinFile = False # 2010/01/22: was thinFile
-        self.atShadow = atShadow
+        at.tnodeListIndex = 0
+        at.v = None
+        at.vStack = [] # Stack of at.v values.
+        at.thinFile = False # 2010/01/22: was thinFile
+        at.thinNodeStack = [] # Entries are vnodes.
+        at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *3* at.initWriteIvars
     def initWriteIvars(self,root,targetFileName,
-        atAuto=False,
-        atEdit=False,
-        atShadow=False,
-        nosentinels=False,
-        thinFile=False,
-        scriptWrite=False,
-        toString=False,
+        atAuto=False,atEdit=False,atShadow=False,
+        nosentinels=False,thinFile=False,
+        scriptWrite=False,toString=False,
         forcePythonSentinels=None,
     ):
         at = self ; c = at.c
-        self.initCommonIvars()
-        #@+<< init ivars for writing >>
-        #@+node:ekr.20041005105605.16: *4* << init ivars for writing >>>
-        #@+at
-        # When tangling, we first write to a temporary output file. After tangling is
-        # temporary file. Otherwise we delete the old target file and rename the
-        # temporary file to be the target file.
-        #@@c
 
-        at.docKind = None
-        at.explicitLineEnding = False
-            # True: an @lineending directive specifies the ending.
-        at.fileChangedFlag = False # True: the file has actually been updated.
+        assert root
+        self.initCommonIvars()
+
         at.atAuto = atAuto
         at.atEdit = atEdit
         at.atShadow = atShadow
-        at.shortFileName = "" # short version of file name used for messages.
-        at.thinFile = False
-        at.writeVersion5 = at.new_write and not atShadow
-
+        # at.default_directory: set by scanAllDirectives()
+        at.docKind = None
+        if forcePythonSentinels:
+            at.endSentinelComment = None
+        # else: at.endSentinelComment set by initCommonIvars.
+        # at.encoding: set by scanAllDirectives() below.
+        # at.explicitLineEnding # True: an @lineending directive specifies the ending.
+            # Set by scanAllDirectives() below.
+        at.fileChangedFlag = False # True: the file has actually been updated.
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force_newlines_in_at_nosent_bodies')
-
-        if toString:
-            at.outputFile = g.fileLikeObject()
-            at.stringOutput = ""
-            at.targetFileName = at.outputFileName = "<string-file>"
-        else:
-            at.outputFile = None # The temporary output file.
-            at.stringOutput = None
-            at.targetFileName = at.outputFileName = g.u('')
-        #@-<< init ivars for writing >>
-
         if forcePythonSentinels is None:
             forcePythonSentinels = scriptWrite
-
-        if root:
-            at.scanAllDirectives(root,
-                scripting=scriptWrite,
-                forcePythonSentinels=forcePythonSentinels,
-                issuePathWarning=True)
-            # Sets the following ivars:
-                # at.default_directory
-                # at.encoding
-                # at.explicitLineEnding
-                # at.language
-                # at.output_newline
-                # at.page_width
-                # at.tab_width
-
-        # g.trace(forcePythonSentinels,
-        #    at.startSentinelComment,at.endSentinelComment)
-
+        # at.language:      set by scanAllDirectives() below.
+        # at.outputFile:    set below.
+        # at.outputNewline: set below.
         if forcePythonSentinels:
             # Force Python comment delims for g.getScript.
             at.startSentinelComment = "#"
-            at.endSentinelComment = None
-
-        # Init state from arguments.
-        at.targetFileName = targetFileName
+        # else:                 set by initCommonIvars.
+        # at.stringOutput:      set below.
+        # at.outputFileName:    set below.
+        # at.output_newline:    set by scanAllDirectives() below.
+        # at.page_width:        set by scanAllDirectives() below.
         at.sentinels = not nosentinels
+        at.shortFileName = ""   # For messages.
+        at.root = root
+        # at.tab_width:         set by scanAllDirectives() below.
+        at.targetFileName = targetFileName
+            # Must be None for @shadow.
         at.thinFile = thinFile
         at.toString = toString
-        at.root = root
+        at.writeVersion5 = at.new_write and not atShadow
 
-        # Ignore config settings for unit testing.
-        if toString and g.app.unitTesting: at.output_newline = '\n'
+        at.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels,
+            issuePathWarning=True)
+        # Sets the following ivars:
+            # at.default_directory
+            # at.encoding
+            # at.explicitLineEnding
+            # at.language
+            # at.output_newline
+            # at.page_width
+            # at.tab_width
+
+        if toString:
+            at.outputFile = g.fileLikeObject()
+            if g.app.unitTesting:
+                at.output_newline = '\n'
+            # else: at.output_newline set in initCommonIvars.
+            at.stringOutput = ""
+            at.outputFileName = "<string-file>"
+        else:
+            at.outputFile = None # The temporary output file.
+            # at.outputNewline set in initCommonIvars.
+            at.stringOutput = None
+            at.outputFileName = g.u('')
 
         # Init all other ivars even if there is an error.
         if not at.errors and at.root:
@@ -830,8 +790,8 @@ class atFile:
 
         oldChanged = c.isChanged()
 
-        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
-            return
+        at.scanDefaultDirectory(p,importing=True)
+            # Set default_directory
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
@@ -863,8 +823,8 @@ class atFile:
         at = self ; c = at.c ; ic = c.importCommands
         oldChanged = c.isChanged()
 
-        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
-            return # 2010/10/21
+        at.scanDefaultDirectory(p,importing=True)
+            # Set default_directory
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
@@ -911,8 +871,8 @@ class atFile:
         # Remember that we have seen the @shadow node.
         p.v.at_read = True # Create the attribute
 
-        if not at.scanDefaultDirectory(p,importing=True): # Sets at.default_directory
-            return
+        at.scanDefaultDirectory(p,importing=True)
+            # Sets at.default_directory
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
@@ -3094,9 +3054,8 @@ class atFile:
         fileName = p.atAutoNodeName()
         if not fileName and not toString: return False
 
-        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
-            root.setDirty()
-            return
+        at.scanDefaultDirectory(p,importing=True)
+            # Set default_directory
 
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
@@ -3203,7 +3162,8 @@ class atFile:
         File indices *must* have already been assigned.'''
 
         trace = False and not g.unitTesting
-        at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+        at = self ; c = at.c ; x = c.shadowController
+        root = p.copy() 
 
         fn = p.atShadowFileNodeName()
         if trace: g.trace(p.h,fn)
@@ -3399,10 +3359,8 @@ class atFile:
             g.es('To save your work, convert @edit to @auto or @thin')
             return False
 
-        if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
-            g.es("not written:",p.h)
-            root.setDirty()
-            return False
+        at.scanDefaultDirectory(p,importing=True)
+            # Set default_directory
 
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
@@ -5071,17 +5029,14 @@ class atFile:
                 g.app.atPathInBodyWarning,color='red')
 
         # Post process.
-        lang_dict       = d.get('lang-dict')
-        delims          = lang_dict.get('delims')
-        lineending      = d.get('lineending')
-        if lineending:
-            at.explicitLineEnding = True
-            at.output_newline = lineending
-        else:
-            at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
+        lang_dict   = d.get('lang-dict')
+        delims      = lang_dict.get('delims')
+        lineending  = d.get('lineending')
 
         at.encoding             = d.get('encoding')
+        at.explicitLineEnding   = bool(lineending)
         at.language             = lang_dict.get('language')
+        at.output_newline       = lineending or g.getOutputNewline(c=c)
         at.page_width           = d.get('pagewidth')
         at.default_directory    = d.get('path')
         at.tab_width            = d.get('tabwidth')
@@ -5311,19 +5266,11 @@ class atFile:
     #@+node:ekr.20041005105605.236: *3* at.scanDefaultDirectory
     def scanDefaultDirectory(self,p,importing=False):
 
-        """Set the default_directory ivar by looking for @path directives.
-
-        The caller must check at.errors."""
+        """Set the default_directory ivar by looking for @path directives."""
 
         at = self ; c = at.c
 
-        at.default_directory = d = g.setDefaultDirectory(c,p,importing)
-
-        if not importing and not d:
-            self.error("No absolute directory specified anywhere.")
-            return False # A real error.
-        else:
-            return True
+        at.default_directory = g.setDefaultDirectory(c,p,importing)
     #@+node:ekr.20041005105605.242: *3* scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

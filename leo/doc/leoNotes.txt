@@ -3632,5 +3632,104 @@ def findDefaultDirectory(c):
             if default_dir: break
 
     return default_dir
+#@+node:ekr.20101023095329.6115: *3* from at.initCommonIvars
+#@+node:ekr.20041005105605.11: *4* << set defaults for arguments and options >>
+# These may be changed in initReadIvars or initWriteIvars.
+
+# Support of output_newline option.
+self.output_newline = g.getOutputNewline(c=c)
+
+# Set by scanHeader when reading and scanAllDirectives when writing.
+self.at_auto_encoding = c.config.default_at_auto_file_encoding
+self.encoding = c.config.default_derived_file_encoding
+self.endSentinelComment = ""
+self.startSentinelComment = ""
+
+# Set by scanAllDirectives when writing.
+self.default_directory = None
+self.page_width = None
+self.tab_width  = None
+self.startSentinelComment = ""
+self.endSentinelComment = ""
+self.language = None
+#@+node:ekr.20041005105605.12: *4* << init common ivars >>
+# These may be set by initReadIvars or initWriteIvars.
+
+self.errors = 0
+self.inCode = True
+self.indent = 0  # The unit of indentation is spaces, not tabs.
+self.pending = []
+self.raw = False # True: in @raw mode
+self.root = None # The root (a position) of tree being read or written.
+self.root_seen = False # True: root vnode has been handled in this file.
+self.toString = False # True: sring-oriented read or write.
+self.writing_to_shadow_directory = False
+#@+node:ekr.20101023095329.6116: *3* from at.initReadIvars
+#@+node:ekr.20041005105605.14: *4* << init ivars for reading >>
+self.cloneSibCount = 0
+    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+self.correctedLines = 0
+self.docOut = [] # The doc part being accumulated.
+self.done = False # True when @-leo seen.
+self.endSentinelIndentStack = []
+    # Restored indentation for @-others and @-<< sentinels.
+    # Used only when readVersion5.
+self.endSentinelStack = []
+    # Contains entries for +node sentinels only when not readVersion5
+self.endSentinelLevelStack = []
+    # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
+    # Used only when readVersion5.
+self.endSentinelNodeStack = []
+    # Used only when readVersion5.
+self.importing = False
+self.importRootSeen = False
+self.indentStack = []
+self.inputFile = None
+self.lastLines = [] # The lines after @-leo
+self.lastRefNode = None
+    # The previous reference node, for at.readAfterRef.
+    # No stack is needed because -<< sentinels restore at.v
+    # to the node needed by at.readAfterRef.
+self.lastThinNode = None
+    # The last thin node at this level.
+    # Used by createThinChild4.
+self.leadingWs = ""
+self.lineNumber = 0 # New in Leo 4.4.8.
+self.out = None
+self.outStack = []
+self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
+self.readVersion5 = False # synonym for at.readVersion >= '5' and not atShadow.
+self.rootSeen = False
+self.tnodeList = []
+    # Needed until old-style @file nodes are no longer supported.
+self.tnodeListIndex = 0
+self.v = None
+self.vStack = [] # Stack of at.v values.
+self.thinNodeStack = [] # Entries are vnodes.
+self.updateWarningGiven = False
+#@+node:ekr.20101023095329.6118: *3* from at.initWriteIvars
+#@+node:ekr.20041005105605.16: *4* << init ivars for writing >>>
+at.docKind = None
+at.explicitLineEnding = False
+    # True: an @lineending directive specifies the ending.
+at.fileChangedFlag = False # True: the file has actually been updated.
+at.atAuto = atAuto
+at.atEdit = atEdit
+at.atShadow = atShadow
+at.shortFileName = "" # short version of file name used for messages.
+at.thinFile = False
+at.writeVersion5 = at.new_write and not atShadow
+
+at.force_newlines_in_at_nosent_bodies = c.config.getBool(
+    'force_newlines_in_at_nosent_bodies')
+
+if toString:
+    at.outputFile = g.fileLikeObject()
+    at.stringOutput = ""
+    at.targetFileName = at.outputFileName = "<string-file>"
+else:
+    at.outputFile = None # The temporary output file.
+    at.stringOutput = None
+    at.targetFileName = at.outputFileName = g.u('')
 #@-all
 #@-leo

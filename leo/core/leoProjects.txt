@@ -2086,17 +2086,14 @@ def scanAllDirectives(self,p,
             g.app.atPathInBodyWarning,color='red')
 
     # Post process.
-    lang_dict       = d.get('lang-dict')
-    delims          = lang_dict.get('delims')
-    lineending      = d.get('lineending')
-    if lineending:
-        at.explicitLineEnding = True
-        at.output_newline = lineending
-    else:
-        at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
+    lang_dict   = d.get('lang-dict')
+    delims      = lang_dict.get('delims')
+    lineending  = d.get('lineending')
 
     at.encoding             = d.get('encoding')
+    at.explicitLineEnding   = bool(lineending)
     at.language             = lang_dict.get('language')
+    at.output_newline       = lineending or g.getOutputNewline(c=c)
     at.page_width           = d.get('pagewidth')
     at.default_directory    = d.get('path')
     at.tab_width            = d.get('tabwidth')
@@ -2165,66 +2162,61 @@ def initReadIvars(self,root,fileName,
     perfectImportRoot=None,
     atShadow=False,
 ):
+    at = self
 
-    importing = importFileName is not None
+    at.initCommonIvars()
 
-    self.initCommonIvars()
-
-    << init ivars for reading >>
-
-    if not self.scanDefaultDirectory(root,importing=importing):
-        return
-
-    # Init state from arguments.
-    self.fromString = False
-    self.perfectImportRoot = perfectImportRoot
-    self.importing = importing
-    self.root = root
-    self.targetFileName = fileName
-    self.thinFile = False # 2010/01/22: was thinFile
-    self.atShadow = atShadow
-#@+node:ekr.20041005105605.14: *6* << init ivars for reading >>
-self.cloneSibCount = 0
-    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-self.correctedLines = 0
-self.docOut = [] # The doc part being accumulated.
-self.done = False # True when @-leo seen.
-self.endSentinelIndentStack = []
-    # Restored indentation for @-others and @-<< sentinels.
-    # Used only when readVersion5.
-self.endSentinelStack = []
-    # Contains entries for +node sentinels only when not readVersion5
-self.endSentinelLevelStack = []
-    # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
-    # Used only when readVersion5.
-self.endSentinelNodeStack = []
-    # Used only when readVersion5.
-self.importing = False
-self.importRootSeen = False
-self.indentStack = []
-self.inputFile = None
-self.lastLines = [] # The lines after @-leo
-self.lastRefNode = None
-    # The previous reference node, for at.readAfterRef.
-    # No stack is needed because -<< sentinels restore at.v
-    # to the node needed by at.readAfterRef.
-self.lastThinNode = None
-    # The last thin node at this level.
-    # Used by createThinChild4.
-self.leadingWs = ""
-self.lineNumber = 0 # New in Leo 4.4.8.
-self.out = None
-self.outStack = []
-self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
-self.readVersion5 = False # synonym for at.readVersion >= '5' and not atShadow.
-self.rootSeen = False
-self.tnodeList = []
-    # Needed until old-style @file nodes are no longer supported.
-self.tnodeListIndex = 0
-self.v = None
-self.vStack = [] # Stack of at.v values.
-self.thinNodeStack = [] # Entries are vnodes.
-self.updateWarningGiven = False
+    at.cloneSibCount = 0
+        # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+    at.correctedLines = 0
+        # For perfect import.
+    at.docOut = [] # The doc part being accumulated.
+    at.done = False # True when @-leo seen.
+    at.endSentinelIndentStack = []
+        # Restored indentation for @-others and @-<< sentinels.
+        # Used only when readVersion5.
+    at.endSentinelStack = []
+        # Contains entries for +node sentinels only when not readVersion5
+    at.endSentinelLevelStack = []
+        # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
+        # Used only when readVersion5.
+    at.endSentinelNodeStack = []
+        # Used only when readVersion5.
+    at.fromString = False
+    at.importing = bool(importFileName)
+    at.importRootSeen = False
+    at.indentStack = []
+    at.inputFile = None
+    at.lastLines = [] # The lines after @-leo
+    at.lastRefNode = None
+        # The previous reference node, for at.readAfterRef.
+        # No stack is needed because -<< sentinels restore at.v
+        # to the node needed by at.readAfterRef.
+    at.lastThinNode = None
+        # The last thin node at this level.
+        # Used by createThinChild4.
+    at.leadingWs = ""
+    at.lineNumber = 0 # New in Leo 4.4.8.
+    at.out = None
+    at.outStack = []
+    at.perfectImportRoot = perfectImportRoot
+    at.readVersion = ''
+        # New in Leo 4.8: "4" or "5" for new-style thin files.
+    at.readVersion5 = False
+        # synonym for at.readVersion >= '5' and not atShadow.
+        # set by at.parseLeoSentinel()
+    at.root = root
+    at.rootSeen = False
+    at.atShadow = atShadow
+    at.targetFileName = fileName
+    at.tnodeList = []
+        # Needed until old-style @file nodes are no longer supported.
+    at.tnodeListIndex = 0
+    at.v = None
+    at.vStack = [] # Stack of at.v values.
+    at.thinFile = False # 2010/01/22: was thinFile
+    at.thinNodeStack = [] # Entries are vnodes.
+    at.updateWarningGiven = False
 #@+node:ekr.20041005105605.21: *5* at.read & helpers
 def read(self,root,importFileName=None,
     fromString=None,atShadow=False,force=False
@@ -2501,8 +2493,8 @@ def readOneAtEditNode (self,fn,p):
     at = self ; c = at.c ; ic = c.importCommands
     oldChanged = c.isChanged()
 
-    if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
-        return # 2010/10/21
+    at.scanDefaultDirectory(p,importing=True)
+        # Set default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     junk,ext = g.os_path_splitext(fn)
@@ -2727,10 +2719,8 @@ def writeOneAtEditNode(self,p,toString,force=False):
         g.es('To save your work, convert @edit to @auto or @thin')
         return False
 
-    if not at.scanDefaultDirectory(p,importing=True): # Set default_directory
-        g.es("not written:",p.h)
-        root.setDirty()
-        return False
+    at.scanDefaultDirectory(p,importing=True)
+        # Set default_directory
 
     fn = c.os_path_finalize_join(at.default_directory,fn)
     exists = g.os_path_exists(fn)
@@ -4357,9 +4347,8 @@ def createOutline (self,fileName,parent,
     c = self.c ; u = c.undoer ; s1 = s
     w = c.frame.body
 
-    # New in Leo 4.4.7: honor @path directives. set .defaultDirectory.
-    if not self.scanDefaultDirectory(parent): 
-        return None
+    self.scanDefaultDirectory(parent)
+        # set default_directory.
 
     fileName = c.os_path_finalize_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)

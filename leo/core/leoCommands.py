@@ -2494,7 +2494,7 @@ class baseCommands (object):
                 lines = g.splitLines(at.stringOutput)
             else:
                 # Calculate the full path.
-                path = g.scanAllAtPathDirectives(c,p)
+                path = g.scanAllAtPathDirectives(c,root)
                 # g.trace('path',path,'fileName',fileName)
                 fileName = c.os_path_finalize_join(path,fileName)
                 lines    = self.openFile(fileName)

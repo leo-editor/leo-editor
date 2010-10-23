@@ -922,6 +922,10 @@ def setDefaultDirectory(c,p,importing=False):
         else:
             path = ''
 
+    if not importing and not path:
+        # This should never happen, but is not serious if it does.
+        g.warning("No absolute directory specified anywhere.")
+
     return path
 #@+node:ekr.20101022124309.6132: *5* g.checkOpenDirectory
 def checkOpenDirectory (c):

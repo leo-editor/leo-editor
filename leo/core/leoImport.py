@@ -823,13 +823,7 @@ class leoImportCommands (scanUtility):
 
         c = self.c
 
-        self.default_directory = d = g.setDefaultDirectory(c,p,importing=False)
-
-        if not d:
-            self.error("No absolute directory specified anywhere.")
-            return False # A real error.
-        else:
-            return True
+        self.default_directory = g.setDefaultDirectory(c,p,importing=False)
     #@+node:ekr.20031218072017.1463: *4* setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
@@ -854,9 +848,8 @@ class leoImportCommands (scanUtility):
         c = self.c ; u = c.undoer ; s1 = s
         w = c.frame.body
 
-        # New in Leo 4.4.7: honor @path directives. set .defaultDirectory.
-        if not self.scanDefaultDirectory(parent): 
-            return None
+        self.scanDefaultDirectory(parent)
+            # set default_directory.
 
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
