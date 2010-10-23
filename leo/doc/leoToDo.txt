@@ -3,46 +3,42 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
-#@+node:ekr.20100903162809.5866: *3* First
-#@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
+#@+node:ekr.20100827095120.5863: *3* Urgent: fix @shadow problem
 @nocolor-node
 
-on doing an Alt-X rst3 command
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
 
-Traceback (most recent call last):
-  File "leoCommands.py", line 359, in doCommand
-    val = command(event)
-  File "leoCommands.py", line 764, in minibufferCallback
-    retval = function(keywords)
-  File "mod_scripting.py", line 642, in __call__
-    self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
-  File "mod_scripting.py", line 667, in executeScriptFromButton
-    c.executeScript(args=args,p=p,silent=True)
-  File "leoCommands.py", line 1991, in executeScript
-    script = g.getScript(c,p,useSelectedText=useSelectedText)
-  File "leoGlobals.py", line 4358, in getScript
-    at = leoAtFile.atFile(c)
-  File "leoAtFile.py", line 145, in __init__
-    'check-python-code-on-write',default=True)
-  File "leoCommands.py", line 7436, in getBool
-    return g.app.config.getBool(self.c,setting,default=default)
-  File "leoConfig.py", line 1445, in getBool
-    val = self.get(c,setting,"bool")
-  File "leoConfig.py", line 1337, in get
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-  File "leoCommands.py", line 6673, in shortFileName
-    return g.shortFileName(self.mFileName)
-  File "leoGlobals.py", line 2548, in shortFileName
-    return g.os_path_basename(fileName)
-  File "leoGlobals.py", line 3401, in os_path_basename
-    path = g.toUnicodeFileEncoding(path)
-  File "leoGlobals.py", line 3643, in toUnicodeFileEncoding
-    return g.toUnicode(path)
-  File "leoGlobals.py", line 4636, in toUnicode
-    elif mustConvert(s):
-  File "leoGlobals.py", line 4632, in mustConvert
-    return type(s) != types.UnicodeType
-RuntimeError: maximum recursion depth exceeded while calling a Python object
+I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
+just noticed a bug in propagate_changed_lines within leoShadow.py.
+I haven't worked out the complete fix for this, but thought I'd
+mention it now so that others don't stumble over it unawares.
+It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
+which does not handle the case when the number of new lines is
+different from the number of old lines. In fact the number of new
+lines can be either greater or less than the number of old lines, so
+the code needs a little more complexity to deal with this. Currently
+it only replaces the same number of lines as were in the old file.
+There's an added twist in that if sentinels occur in the middle of the
+old lines, it won't be clear how to distribute the new lines on either
+side of the sentinels.
+I'll comment further when I've thought about this some more, but for
+now, this is just a road cone to mark the spot.
+
+==========================
+
+After a little more thought, I suspect that the simple approach is
+likely to be the best, at least initially.
+I'd suggest placing a condition (if new_public_lines_rdr.index() <
+new_j) on the copying of new public lines to new private lines, then
+finishing off with a loop copied from the 'insert' tag above -- (while
+new_public_lines_rdr.index() < new_j ...).
+
+I'm not in a position to get involved with direct editing of the code
+within SourceForge, but I contribute these thoughts in the hope that
+an active contributor may be able to make something of them.
+
+Nick
+#@+node:ekr.20100903162809.5866: *3* First
 #@+node:ekr.20100827095120.5862: *4* First: Fix script problem
 @nocolor-node
 
@@ -98,41 +94,6 @@ Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
 Is there some other object I should be using instead of c.frame? I
 simply don't understand the connection between the error and my
 script.
-#@+node:ekr.20100221142603.5620: *4* Fix bug 524890: Incomplete derived file
-@nocolor-node
-
-This is the @others bug
-
-1. Create the following tree
-
-Instead of the expected test1.c file of:
-
-Content (clone)
-Content (clone)
-
-I got just:
-
-Content (clone)
-#@+node:ekr.20100221142603.5625: *5* @@shadow clone-bug-test.py@
-# This buglet has been around for a long long time.
-# It's not clear what Leo can do to fix it.
-# In the meantime, don't put clones under two different
-# @others directives :-)
-
-<< A >>
-<< B >>
-@others
-# end
-#@+node:ekr.20100221142603.5626: *6* << a >>
-# Node a
-@others
-#@+node:ekr.20100221142603.5629: *7* clone
-# Content (clone)
-#@+node:ekr.20100221142603.5628: *6* << b >>
-# Node b
-@others
-#@+node:ekr.20100221142603.5629: *7* clone
-# Content (clone)
 #@+node:ekr.20100826110728.5841: *4* Cool: Allow proportional fonts in plain text
 @nocolor-node
 
@@ -172,112 +133,6 @@ I'd like to see this happen in the next day or so.  It would be a
 really good feature.
 
 Edward
-#@+node:ekr.20100827095120.5863: *4* Urgent: fix @shadow problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
-
-I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
-just noticed a bug in propagate_changed_lines within leoShadow.py.
-I haven't worked out the complete fix for this, but thought I'd
-mention it now so that others don't stumble over it unawares.
-It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
-which does not handle the case when the number of new lines is
-different from the number of old lines. In fact the number of new
-lines can be either greater or less than the number of old lines, so
-the code needs a little more complexity to deal with this. Currently
-it only replaces the same number of lines as were in the old file.
-There's an added twist in that if sentinels occur in the middle of the
-old lines, it won't be clear how to distribute the new lines on either
-side of the sentinels.
-I'll comment further when I've thought about this some more, but for
-now, this is just a road cone to mark the spot.
-
-==========================
-
-After a little more thought, I suspect that the simple approach is
-likely to be the best, at least initially.
-I'd suggest placing a condition (if new_public_lines_rdr.index() <
-new_j) on the copying of new public lines to new private lines, then
-finishing off with a loop copied from the 'insert' tag above -- (while
-new_public_lines_rdr.index() < new_j ...).
-
-I'm not in a position to get involved with direct editing of the code
-within SourceForge, but I contribute these thoughts in the hope that
-an active contributor may be able to make something of them.
-
-Nick
-#@+node:ekr.20100904134301.11007: *4* Document leoremote plugin
-@nocolor-node
-
-Ville's server code to interact with a running Leo
-http://mail.google.com/mail/#inbox/12adebe2ffe80572
-
-Reusing Emacs instances with gnuserv
-http://www.debian-administration.org/articles/257
-
-#@+node:ekr.20100904134301.8336: *4* Generate pdf on Linux
-El 01/05/09 15:12, Ville M. Vainio escribió:
-
-- make latex
-- cd _build/latex
-- make all-pdf
-#@+node:ekr.20100906091349.5848: *4* Allow @url nodes to specify urls in body text
-@nocolor-node
-
-Having to type the url after @url in headline is annoying.
-
-The @url handler should look into the first line of body for url, if the text in
-the headline is not an url. This way, the headline could actually be
-descriptive.
-
-I know some plugin does this, but there is no reason why this couldn't be the
-default behavior.
-#@+node:ekr.20100906091349.5849: *4* Reorganize Leo docs
-@nocolor-node
-
-Structure of Leo's User Documentation
-http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
-
-Re-arranging the documentation along those lines would lead to the
-following:
-
-* Front Matter
-* Preface
-* What People Are Saying About Leo
-* FAQ
-* Slides
-* Chapter 1: Installing Leo
-* Chapter 2: The Leo Tutorial
-* Chapter 3: Using Outlines
-* Chapter 5: Using Leo’s Commands
-* Chapter 6: Designing with Leo
-* Chapter 14: Creating Documents with Leo
-* Chapter 7: Scripting Leo with Python
-* Chapter 8: Customizing Leo
-* Chapter 12: Plugins
-* Chapter 13: Writing Plugins
-* Chapter 20: Unit testing with Leo
-* Chapter 16: Debugging with Leo
-* Chapter 17: Using ZODB with Leo
-* Chapter 18: Leo and Emacs
-* Chapter 19: Embedding Leo with the leoBridge module
-* Chapter 21: IPython and Leo
-* Chapter 22: Using Vim Bindings with Leo
-* Chapter 23: Eliminating sentinel lines with @shadow
-* Chapter 15: Controlling Syntax Coloring
-* Chapter 4: Leo’s Reference
-* Chapter 9: History of Leo
-* Chapter 10: Theory of Operation
-* Chapter 11: White Papers
-* Appendices
-* Glossary
-* What’s New in Leo 
-
-At the risk of being repetitious, I've never found any documentation as
-accessible as Django's, from this starting point:
-http://docs.djangoproject.com/en/dev/ 
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
 #@+node:ekr.20100827095120.5870: *3* Before a1
 #@+node:ekr.20060306194040: *4* Leo Video & slide show
 @nocolor
@@ -391,6 +246,50 @@ However the shortcuts that the "leo install" created don't work they
 abort.
 #@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
 #@+node:ekr.20100827114047.5896: *4* Docs
+#@+node:ekr.20100906091349.5849: *5* Reorganize Leo docs
+@nocolor-node
+
+Structure of Leo's User Documentation
+http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
+
+Re-arranging the documentation along those lines would lead to the
+following:
+
+* Front Matter
+* Preface
+* What People Are Saying About Leo
+* FAQ
+* Slides
+* Chapter 1: Installing Leo
+* Chapter 2: The Leo Tutorial
+* Chapter 3: Using Outlines
+* Chapter 5: Using Leo’s Commands
+* Chapter 6: Designing with Leo
+* Chapter 14: Creating Documents with Leo
+* Chapter 7: Scripting Leo with Python
+* Chapter 8: Customizing Leo
+* Chapter 12: Plugins
+* Chapter 13: Writing Plugins
+* Chapter 20: Unit testing with Leo
+* Chapter 16: Debugging with Leo
+* Chapter 17: Using ZODB with Leo
+* Chapter 18: Leo and Emacs
+* Chapter 19: Embedding Leo with the leoBridge module
+* Chapter 21: IPython and Leo
+* Chapter 22: Using Vim Bindings with Leo
+* Chapter 23: Eliminating sentinel lines with @shadow
+* Chapter 15: Controlling Syntax Coloring
+* Chapter 4: Leo’s Reference
+* Chapter 9: History of Leo
+* Chapter 10: Theory of Operation
+* Chapter 11: White Papers
+* Appendices
+* Glossary
+* What’s New in Leo 
+
+At the risk of being repetitious, I've never found any documentation as
+accessible as Django's, from this starting point:
+http://docs.djangoproject.com/en/dev/ 
 #@+node:ekr.20100826110728.5846: *5* Add explanation of icon box to tutorial
 > 1) Is there a place I can go to find what indicators could appear in
 > the icon box, and also what they mean?
@@ -495,9 +394,26 @@ tree, though it does generate an incorrect message:
 We want better docs, automatically, and a way to update @enabled-plugins.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
-#@+node:ekr.20101004092958.5914: *3* To do: write treepad scanner
+#@+node:ekr.20101023133431.6107: *3* Next
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
+#@+node:ekr.20100904134301.11007: *4* Document leoremote plugin
+@nocolor-node
+
+Ville's server code to interact with a running Leo
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+
+Reusing Emacs instances with gnuserv
+http://www.debian-administration.org/articles/257
+
+#@+node:ekr.20100904134301.8336: *4* Generate pdf on Linux
+El 01/05/09 15:12, Ville M. Vainio escribió:
+
+- make latex
+- cd _build/latex
+- make all-pdf
+#@+node:ekr.20101004092958.5914: *4* To do: write treepad scanner
 @ treepad.py is from the treepad website
-#@+node:ekr.20101004092958.5939: *4* treepad.py
+#@+node:ekr.20101004092958.5939: *5* treepad.py
 @first #! /usr/local/bin/python
 
 # treepad.py
@@ -508,7 +424,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
 if __name__ == '__main__':
     Main().Run()
 
-#@+node:ekr.20101004092958.5940: *5* treepad declarations
+#@+node:ekr.20101004092958.5940: *6* treepad declarations
 import sys, os, re, string
 
 # constants
@@ -516,10 +432,10 @@ VERSION = "<Treepad version 2.7>"
 
 # regexes
 END_RE = re.compile(r'^<end node> ([^ ]+)$')
-#@+node:ekr.20101004092958.5941: *5* class Node
+#@+node:ekr.20101004092958.5941: *6* class Node
 class Node:
     @others
-#@+node:ekr.20101004092958.5942: *6* __init__
+#@+node:ekr.20101004092958.5942: *7* __init__
 def __init__(self):
     self.title    = ""
     self.level    = 0
@@ -527,19 +443,19 @@ def __init__(self):
     self.children = []
     self.parent   = None
     self.end      = ""
-#@+node:ekr.20101004092958.5943: *6* __str__
+#@+node:ekr.20101004092958.5943: *7* __str__
 def __str__(self):
     return "%s/%d" % (self.title, self.level)
-#@+node:ekr.20101004092958.5944: *6* addchild
+#@+node:ekr.20101004092958.5944: *7* addchild
 def addchild(self, node):
     assert self.level == node.level-1 and node.parent is None
     node.parent = self
     self.children.append( node )
-#@+node:ekr.20101004092958.5945: *6* findparent
+#@+node:ekr.20101004092958.5945: *7* findparent
 def findparent(self, node):
     if self.level == (node.level-1): return self
     return self.parent.findparent(node)
-#@+node:ekr.20101004092958.5946: *6* writenode
+#@+node:ekr.20101004092958.5946: *7* writenode
 def writenode(self, fp):
     fp.write("dt=Text\n")
     fp.write("<node>\n")
@@ -548,28 +464,28 @@ def writenode(self, fp):
     for line in self.article:
         fp.write("%s\n" % line)
     fp.write("<end node> %s\n" % self.end)
-#@+node:ekr.20101004092958.5947: *6* writetree
+#@+node:ekr.20101004092958.5947: *7* writetree
 def writetree(self, fp):
     self.writenode(fp)
     for node in self.children:
         node.writetree(fp)
 
-#@+node:ekr.20101004092958.5948: *5* class NodeReader
+#@+node:ekr.20101004092958.5948: *6* class NodeReader
 class NodeReader:
     @others
-#@+node:ekr.20101004092958.5949: *6* __init__
+#@+node:ekr.20101004092958.5949: *7* __init__
 def __init__(self, fname, fp):
     self.fname    = fname
     self.fp       = fp
-#@+node:ekr.20101004092958.5950: *6* expect
+#@+node:ekr.20101004092958.5950: *7* expect
 def expect(self, text, line=None):
     if line is None:
         line = self.fp.readline().strip()
     assert line == text, "expected " + line + " == " + text
-#@+node:ekr.20101004092958.5951: *6* readstart
+#@+node:ekr.20101004092958.5951: *7* readstart
 def readstart(self):
     self.expect(VERSION)
-#@+node:ekr.20101004092958.5952: *6* readnode
+#@+node:ekr.20101004092958.5952: *7* readnode
 def readnode(self):
     line = self.fp.readline()
     if line is None:
@@ -591,16 +507,16 @@ def readnode(self):
         node.article.append( line.strip() )
     return node
 
-#@+node:ekr.20101004092958.5953: *5* class TreeReader
+#@+node:ekr.20101004092958.5953: *6* class TreeReader
 class TreeReader:
     @others
-#@+node:ekr.20101004092958.5954: *6* __init__
+#@+node:ekr.20101004092958.5954: *7* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'r')
     self.nodereader = NodeReader(fname, fp)
     self.root = None
     self.prev = None
-#@+node:ekr.20101004092958.5955: *6* add
+#@+node:ekr.20101004092958.5955: *7* add
 def add(self, node):
     if self.prev is None:
         assert node.level == 0
@@ -610,7 +526,7 @@ def add(self, node):
         parent = self.prev.findparent(node)
         parent.addchild( node )
     self.prev = node
-#@+node:ekr.20101004092958.5956: *6* read
+#@+node:ekr.20101004092958.5956: *7* read
 def read(self):
     self.nodereader.readstart()
     prev = None
@@ -619,29 +535,29 @@ def read(self):
         if node is None: break
         self.add(node)
 
-#@+node:ekr.20101004092958.5957: *5* class TreeWriter
+#@+node:ekr.20101004092958.5957: *6* class TreeWriter
 class TreeWriter:
     @others
-#@+node:ekr.20101004092958.5958: *6* __init__
+#@+node:ekr.20101004092958.5958: *7* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'w')
     self.fname = fname
     self.fp    = fp
-#@+node:ekr.20101004092958.5959: *6* write
+#@+node:ekr.20101004092958.5959: *7* write
 def write(self, root):
     self.fp.write("%s\n" % VERSION)
     root.writetree(self.fp)
 
-#@+node:ekr.20101004092958.5960: *5* class Main
+#@+node:ekr.20101004092958.5960: *6* class Main
 class Main:
     @others
-#@+node:ekr.20101004092958.5961: *6* __init__
+#@+node:ekr.20101004092958.5961: *7* __init__
 def __init__(self):
     self.infile  = sys.argv[1]
     self.outfile = sys.argv[2]
     self.reader  = TreeReader(self.infile)
     self.writer  = TreeWriter(self.outfile)
-#@+node:ekr.20101004092958.5962: *6* Run
+#@+node:ekr.20101004092958.5962: *7* Run
 
 def Run(self):
     self.reader.read()
@@ -649,6 +565,45 @@ def Run(self):
 
 #@+node:ekr.20100915101910.5891: *3* Make sure cache works after bzr revert
 #@+node:ekr.20100827114047.5895: *3* Bugs
+#@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
+@nocolor-node
+
+on doing an Alt-X rst3 command
+
+Traceback (most recent call last):
+  File "leoCommands.py", line 359, in doCommand
+    val = command(event)
+  File "leoCommands.py", line 764, in minibufferCallback
+    retval = function(keywords)
+  File "mod_scripting.py", line 642, in __call__
+    self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
+  File "mod_scripting.py", line 667, in executeScriptFromButton
+    c.executeScript(args=args,p=p,silent=True)
+  File "leoCommands.py", line 1991, in executeScript
+    script = g.getScript(c,p,useSelectedText=useSelectedText)
+  File "leoGlobals.py", line 4358, in getScript
+    at = leoAtFile.atFile(c)
+  File "leoAtFile.py", line 145, in __init__
+    'check-python-code-on-write',default=True)
+  File "leoCommands.py", line 7436, in getBool
+    return g.app.config.getBool(self.c,setting,default=default)
+  File "leoConfig.py", line 1445, in getBool
+    val = self.get(c,setting,"bool")
+  File "leoConfig.py", line 1337, in get
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+  File "leoCommands.py", line 6673, in shortFileName
+    return g.shortFileName(self.mFileName)
+  File "leoGlobals.py", line 2548, in shortFileName
+    return g.os_path_basename(fileName)
+  File "leoGlobals.py", line 3401, in os_path_basename
+    path = g.toUnicodeFileEncoding(path)
+  File "leoGlobals.py", line 3643, in toUnicodeFileEncoding
+    return g.toUnicode(path)
+  File "leoGlobals.py", line 4636, in toUnicode
+    elif mustConvert(s):
+  File "leoGlobals.py", line 4632, in mustConvert
+    return type(s) != types.UnicodeType
+RuntimeError: maximum recursion depth exceeded while calling a Python object
 #@+node:ekr.20100903090944.5850: *4* Other bugs
 #@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
 @nocolor-node

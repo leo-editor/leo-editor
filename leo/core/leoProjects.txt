@@ -5986,6 +5986,233 @@ def warnAboutOrphandAndIgnoredNodes (self):
                 p.moveToThreadNext()
 #@+node:ekr.20101023124751.6099: *4* Fixed crasher with del in minibuffer
 Changed w to self in leoQLineEditWidget.setInsertPoint.
+#@+node:ekr.20101023133431.6100: *4* Fixed (ameliorated) bug 567250: IndexError on startup after external changes to @shadow files
+@nocolor-node
+
+The rdr.get change happened in rev 3064.1.1
+
+- Made **no** further changes to the fundamental algorithm.
+
+- Made several chanes to the import checks:
+
+    1. Ignore trailing ws on every line, and trailing blank lines.
+    2. Use difflib.Differ to report problems.
+#@+node:ekr.20101023133431.6106: *5*  Notes
+#@+node:ekr.20101023133431.6101: *6* Report 1
+@nocolor-node
+
+I raised this issue earlier today on the mailing list as well.
+
+I created and edited a number of @shadow entries in my .leo files. After closing
+Leo, I committed some changes into my Git repository and rolled back some
+whitespace-only changes. The next time I tried to open Leo with the .leo file I
+got this:
+
+$ leo --ipython testproject.leo
+*** isPython3: False
+Leo 4.8 devel, build 3005, February 26, 2010
+Python 2.6.5, qt version 4.6.2
+linux2
+reading settings in /home/ak/leobzr/leo/config/leoSettings.leo
+using menus from: leoSettings.leo
+reading settings in /home/ak/.leo/myLeoSettings.leo
+reading settings in /home/ak/testproject/testproject.leo
+reading /home/ak/.leo/.leoRecentFiles.txt
+@enabled-plugins found in myLeoSettings.leo
+No word lists can be found for the language "fi_FI".
+aspell checker not enabled
+Traceback (most recent call last):
+  File "/usr/local/bin/leo", line 7, in <module>
+    execfile(__file__)
+  File "/home/ak/leobzr/leo/scripts/leo", line 8, in <module>
+    leo.core.runLeo.run()
+  File "/home/ak/leobzr/leo/core/runLeo.py", line 96, in run
+    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
+  File "/home/ak/leobzr/leo/core/runLeo.py", line 357, in doPostPluginsInit
+    c,frame = createFrame(fileName,relativeFileName,script)
+  File "/home/ak/leobzr/leo/core/runLeo.py", line 386, in createFrame
+    ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+  File "/home/ak/leobzr/leo/core/leoGlobals.py", line 2420, in openWithFileName
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+  File "/home/ak/leobzr/leo/core/leoGlobals.py", line 2483, in handleOpenHooks
+    readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+  File "/home/ak/leobzr/leo/core/leoFileCommands.py", line 939, in open
+    silent=silent)
+  File "/home/ak/leobzr/leo/core/leoFileCommands.py", line 802, in getLeoFile
+    c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+  File "/home/ak/leobzr/leo/core/leoAtFile.py", line 655, in readAll
+    at.readOneAtShadowNode (fileName,p)
+  File "/home/ak/leobzr/leo/core/leoAtFile.py", line 846, in readOneAtShadowNode
+    at.read(p,atShadow=True)
+  File "/home/ak/leobzr/leo/core/leoAtFile.py", line 482, in read
+    fileName = at.openFileForReading(fromString=fromString)
+  File "/home/ak/leobzr/leo/core/leoAtFile.py", line 446, in openFileForReading
+    x.updatePublicAndPrivateFiles(fn,shadow_fn)
+  File "/home/ak/leobzr/leo/core/leoShadow.py", line 588, in updatePublicAndPrivateFiles
+    written = x.propagate_changes(fn,shadow_fn)
+  File "/home/ak/leobzr/leo/core/leoShadow.py", line 525, in propagate_changes
+    old_public_lines,old_private_lines,marker)
+  File "/home/ak/leobzr/leo/core/leoShadow.py", line 456, in propagate_changed_lines
+    new_line = new_public_lines_rdr.get()
+  File "/home/ak/leobzr/leo/core/leoShadow.py", line 1021, in get
+    result = self.lines[self.i]
+IndexError: list index out of range
+
+I'm using Leo rev 3064 installed with setuptools' "develop" command,
+Python 2.6.5 on Ubuntu 10.04 (pre-release).
+
+I've reduced the *.py and .leo_shadow/x*.py files to a minimum and am attaching
+them as a test case.
+#@+node:ekr.20101023133431.6102: *6* Fix 1
+@nocolor-node
+
+Let's try a simple-minded guard. Change sourcereader.get to:
+
+def get (self):
+
+    trace = False and not g.unitTesting
+
+    if self.i < len(self.lines):
+        result = self.lines[self.i]
+        self.i+=1
+    else:
+        result = ''
+
+    if trace: g.trace(repr(result))
+    return result
+
+Does this work for you?
+#@+node:ekr.20101023133431.6103: *6* Report 2
+@nocolor-node
+
+Yes, now I get past the error, but the file appears corrupted in Leo.
+
+The file I currently have this problem with has 5 sub-nodes. After saving the
+file, I had closed Leo and reverted Leo's removal of whitespace on blank lines.
+When re-opening:
+
+- the first node is ok
+- the second node contains contents of original nodes 2 & 3
+- the third node contains original nodes 4 & 5 plus three extra blank lines and
+  the last two lines of node 2 (or node 3 -- the nodes are almost identical)
+- the fourth node is ok (contains original node 4)
+- the fifth node is ok (contains original node 5)
+
+I also get a dump of the imported file on the console with this message:
+
+    @shadow did not pick up the external changes correctly
+
+The file ends with a single newline (0x0a) both before and after saving with
+Leo, so it seems that missing final newlines are not the (only) cause for this
+symptom. Instead,
+
+   *** the addition of whitespace on blank lines seems to cause trouble. ***
+
+Might the similarity of nodes 2 & 3 confuse Leo in this case? They both contain
+17 lines, and only their two initial lines differ (ignoring whitespace on blank
+lines).
+
+Unfortunately I'm not in a position to force whitespace clean-up on tools used
+by other members of the team. To ease collaboration and creating clean patches,
+I'd really like Leo to *not* clean up whitespace, but I haven't found such
+settings.
+
+I can work around Leo's clean-up by automatically excluding whitespace-only
+changes from my git commits. But I can't think of an easy way to re-apply them
+on my working tree after the commit, so fixing this bug would help me a lot. I
+can try to create further minimal test cases if that helps.
+#@+node:ekr.20080708094444.35: *5* x.check_the_final_output
+def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
+    """
+    Check that we produced a valid output.
+
+    Input:
+        new_targetlines:   the lines with sentinels which produce changed_lines_without_sentinels.
+        sentinels:         new_targetlines should include all the lines from sentinels.
+
+    checks:
+        1. new_targetlines without sentinels must equal changed_lines_without_sentinels.
+        2. the sentinel lines of new_targetlines must match 'sentinels'
+    """
+    new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(
+        new_private_lines, marker)
+
+    lines1 = new_public_lines
+    lines2 = new_public_lines2
+    sents1 = sentinel_lines
+    sents2 = new_sentinel_lines2
+    if 1: # Ignore trailing ws:
+        s1 = ''.join(lines1).rstrip()
+        s2 = ''.join(lines2).rstrip()
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+    if 1: # Ignore trailing ws on every line.
+        lines1 = [z.rstrip() for z in lines1]
+        lines2 = [z.rstrip() for z in lines2]
+        sents1 = [z.rstrip() for z in sents1]
+        sents2 = [z.rstrip() for z in sents2]
+    lines_ok = lines1 == lines2
+    sents_ok = sents1 == sents2
+
+    if not lines_ok:
+        if 1:
+            d = difflib.Differ()
+            # g.trace('Different!!',d)
+            aList = list(d.compare(new_public_lines2,new_public_lines))
+            pprint.pprint(aList)
+        else:
+            self.show_error(
+                lines1 = new_public_lines2,
+                lines2 = new_public_lines,
+                message = "Error in updating public file!",
+                lines1_message = "new public lines (derived from new private lines)",
+                lines2_message = "new public lines")
+
+    if not sents_ok:
+        self.show_error(
+            lines1 = sentinel_lines,
+            lines2 = new_sentinel_lines2,
+            message = "Sentinals not preserved!",
+            lines1_message = "old sentinels",
+            lines2_message = "new sentinels")
+
+    return lines_ok and sents_ok
+#@+node:ekr.20080708094444.33: *5* x.show_error & helper
+def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
+
+    x = self
+    banner1 = '=' * 30
+    banner2 = '-' * 30
+    g.es_print('%s\n%s\n%s\n%s\n%s' % (
+        banner1,message,banner1,lines1_message,banner2))
+
+    x.show_error_lines(lines1,'shadow_errors.tmp1')
+
+    g.es_print('\n%s\n%s\n%s' % (
+        banner1,lines2_message,banner1))
+
+    x.show_error_lines(lines2,'shadow_errors.tmp2')
+
+    g.es_print('\n@shadow did not pick up the external changes correctly')
+
+    # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
+#@+node:ekr.20080822065427.4: *6* show_error_lines
+def show_error_lines (self,lines,fileName):
+
+    for i,line in enumerate(lines):
+        g.es_print('%3s %s' % (i,repr(line)))
+
+    if False: # Only for major debugging.
+        try:
+            f1 = open(fileName, "w")
+            for s in lines:
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+                f1.write(repr(s))
+            f1.close()
+        except IOError:
+            g.es_exception()
+            g.es_print('can not open',fileName)
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
@@ -9383,106 +9610,17 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
         if trace: g.trace('** no block')
     return start
 #@+node:ekr.20101008110759.5928: *4* Improved @url nodes
-#@+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
-def OnIconDoubleClick (self,p):
+#@+node:ekr.20100906091349.5848: *5* Allow @url nodes to specify urls in body text
+@nocolor-node
 
-    # Note: "icondclick" hooks handled by vnode callback routine.
+Having to type the url after @url in headline is annoying.
 
-    c = self.c
-    s = p.h.strip()
-    if g.match_word(s,0,"@url"): 
-        if p.b:
-            url = p.b.strip()
-        else:
-            url = s[4:].strip()
-        # g.trace(url,g.callers())
-        if url.lstrip().startswith('--'):
-            # Get the url from the first body line.
-            lines = p.b.split('\n')
-            url = lines and lines[0] or ''
-        else:
-            << stop the url after any whitespace >>
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url)
-        g.doHook("@url2",c=c,p=p,v=p)
+The @url handler should look into the first line of body for url, if the text in
+the headline is not an url. This way, the headline could actually be
+descriptive.
 
-    return 'break' # 11/19/06
-#@+node:ekr.20031218072017.2313: *6* << stop the url after any whitespace  >>
-# For safety, the URL string should end at the first whitespace, unless quoted.
-# This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
-
-url = url.replace('\t',' ')
-
-# Strip quotes.
-i = -1
-if url and url[0] in ('"',"'"):
-    i = url.find(url[0],1)
-    if i > -1:
-        url = url[1:i]
-
-if i == -1:
-    # Not quoted or no matching quote.
-    i = url.find(' ')
-    if i > -1:
-        if 0: # No need for a warning.  Assume everything else is a comment.
-            z_url = url[i:]
-            g.es("ignoring characters after space in url:",z_url)
-            g.es("use %20 instead of spaces")
-        url = url[:i]
-#@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url):
-
-    # Note 1: the UNL plugin has its own notion of what a good url is.
-
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
-
-    if g.unitTesting: return
-    << check the url; return if bad >>
-    << pass the url to the web browser >>
-#@+node:tbrown.20090219095555.62: *6* << check the url; return if bad >>
-@ A valid url is (according to D.T.Hein):
-
-3 or more lowercase alphas, followed by,
-one ':', followed by,
-one or more of: (excludes !"#;<>[\]^`|)
-  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-followed by one of: (same as above, except no minus sign or comma).
-  $%&'()*+/0-9:=?@A-Z_a-z}~
-@c
-
-urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-
-if not url or len(url) == 0:
-    g.es("no url following @url")
-    return
-
-# Add http:// if required.
-if not re.match('^([a-z]{3,}:)',url):
-    url = 'http://' + url
-if not re.match(urlPattern,url):
-    g.es("invalid url:",url)
-    return
-#@+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
-@ Most browsers should handle the following urls:
-  ftp://ftp.uu.net/public/whatever.
-  http://localhost/MySiteUnderDevelopment/index.html
-  file://home/me/todolist.html
-@c
-
-try:
-    import os
-    os.chdir(g.app.loadDir)
-    if g.match(url,0,"file:") and url[-4:]==".leo":
-        ok,frame = g.openWithFileName(url[5:],None)
-    else:
-        import webbrowser
-        # Mozilla throws a weird exception, then opens the file!
-        try: webbrowser.open(url)
-        except: pass
-except:
-    g.es("exception opening",url)
-    g.es_exception()
+I know some plugin does this, but there is no reason why this couldn't be the
+default behavior.
 #@+node:ekr.20101009103953.5929: *4* Support @bool write_expansion_bits_in_leo_files
 #@+node:ekr.20031218072017.3019: *5* leoFileCommands._init_
 def __init__(self,c):
