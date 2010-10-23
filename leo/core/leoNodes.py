@@ -2141,7 +2141,9 @@ class vnode (baseVnode):
     #@+node:ekr.20090830051712.6151: *4*  v.Dirty bits
     #@+node:ekr.20031218072017.3390: *5* v.clearDirty
     def clearDirty (self):
+
         v = self
+        # g.trace(v,g.callers())
         v.statusBits &= ~ v.dirtyBit
 
     #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes

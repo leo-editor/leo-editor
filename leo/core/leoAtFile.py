@@ -559,11 +559,21 @@ class atFile:
             # Used by mod_labels plugin.
             at.copyAllTempBodyStringsToVnodes(root,thinFile)
         at.deleteAllTempBodyStrings()
-        if isFileLike:
+        if isFileLike and at.errors == 0: # Old-style sentinels.
             # 2010/02/24: Make the root @file node dirty so it will
             # be written automatically when saving the file.
+            # Do *not* set the orphan bit here!
+            root.clearOrphan()
             root.setDirty()
             c.setChanged(True) # Essential, to keep dirty bit set.
+        elif at.errors > 0:
+            # 2010/10/22: Dirty bits are *always* cleared.
+            # Only the orphan bit is preserved.
+            root.setDirty()
+            root.setOrphan()
+            c.setChanged(True)
+        else:
+            root.clearOrphan()
         if at.errors == 0 and not isFileLike and not fromString:
             c.cacher.writeFile(root,fileKey)
 
@@ -750,7 +760,9 @@ class atFile:
                 ok = at.read(p,force=force)
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
+                    # However, the dirty bit gets cleared.
                     p.setDirty() # Expensive, but it can't be helped.
+                    p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
                     c.setChanged(True)
                 p.moveToNodeAfterTree()
             else:
@@ -760,9 +772,11 @@ class atFile:
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                     p.v.at_read = True # Remember that we have seen this node.
                 p.moveToThreadNext()
-        # Clear all orphan bits.
-        for v in c.all_unique_nodes():
-            v.clearOrphan()
+
+        # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
+        ### Clear all orphan bits.
+        #for v in c.all_unique_nodes():
+        #    v.clearOrphan()
 
         if partialFlag and not anyRead:
             g.es("no @<file> nodes in the selected tree")
@@ -2387,8 +2401,10 @@ class atFile:
 
         # Delete all of root's tree.
         self.root.v.children = []
-        self.root.setOrphan()
         self.root.setDirty()
+            # 2010/10/22: the dirty bit gets cleared later, though.
+        self.root.setOrphan()
+
     #@+node:ekr.20041005105605.128: *4* at.readLine
     def readLine (self,theFile):
 
@@ -3089,9 +3105,11 @@ class atFile:
             else:
                 g.es("not written:",at.outputFileName)
                 root.setDirty() # New in Leo 4.4.8.
+                root.setOrphan() # 2010/10/22.
 
         elif not toString:
             root.setDirty() # Make _sure_ we try to rewrite this file.
+            root.setOrphan() # 2010/10/22.
             g.es("not written:",at.outputFileName)
 
         return ok
@@ -3228,6 +3246,7 @@ class atFile:
         else:
             g.es("not written:",at.outputFileName,color='red')
             root.setDirty() # New in Leo 4.4.8.
+            root.setOrphan() # 2010/10/22.
 
         return at.errors == 0
     #@+node:ekr.20080819075811.13: *6* adjustTargetLanguage
@@ -3377,8 +3396,9 @@ class atFile:
         if ok and at.errors == 0:
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
         else:
-            g.es("not written:",at.outputFileName)
+            g.es("not written:",at.targetFileName) # 2010/10/22
             root.setDirty()
+            root.setOrphan() # 2010/10/22
 
         return ok
     #@+node:ekr.20041005105605.157: *4* at.writeOpenFile
@@ -4846,7 +4866,9 @@ class atFile:
                 else:
                     g.es('error writing',self.shortFileName,color='red')
                     g.es('not written:',self.shortFileName)
-                    if root: root.setDirty() # New in 4.4.8.
+                    if root:
+                        root.setDirty() # New in 4.4.8.
+                        root.setOrphan() # 2010/10/22.
                 self.fileChangedFlag = False
                 return False
             else:
@@ -4871,7 +4893,9 @@ class atFile:
                 else:
                     g.es('error writing',self.shortFileName,color='red')
                     g.es('not written:',self.shortFileName)
-                    if root: root.setDirty() # New in 4.4.8.
+                    if root:
+                        root.setDirty() # New in 4.4.8.
+                        root.setOrphan() # 2010/10/22.
 
                 self.fileChangedFlag = ok
                 return ok
@@ -4883,7 +4907,9 @@ class atFile:
                 g.es('created:',self.targetFileName)
             else:
                 # self.rename gives the error.
-                if root: root.setDirty() # New in 4.4.8.
+                if root:
+                    root.setDirty() # New in 4.4.8.
+                    root.setOrphan() # 2010/10/22.
 
             # No original file to change. Return value tested by a unit test.
             self.fileChangedFlag = False 
@@ -4918,11 +4944,11 @@ class atFile:
 
         if self.errors == 0:
             g.es_error("errors writing: " + self.targetFileName)
-            g.trace(g.callers(5))
+            # g.trace(g.callers(5))
 
         self.error(message)
-        self.root.setOrphan()
         self.root.setDirty()
+        self.root.setOrphan()
     #@+node:ekr.20041005105605.218: *4* writeException
     def writeException (self,root=None): # changed 11.
 

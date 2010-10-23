@@ -1772,11 +1772,12 @@ class baseFileCommands:
         isOrphan = p.isOrphan()
         if not isIgnore: isIgnore = p.isAtIgnoreNode()
 
+        # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
         if   isIgnore: forceWrite = True      # Always write full @ignore trees.
-        elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-        elif isEdit:   forceWrite = False     # Never write non-ignored @edit trees.
-        elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
-        elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
+        elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
+        elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+        elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
+        elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
         else:          forceWrite = True      # Write all other @<file> trees.
 
         #@+<< Set gnx = vnode index >>
