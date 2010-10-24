@@ -749,7 +749,6 @@ as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
-
 #@+node:ekr.20101024062147.6010: *3* Before a1
 #@+node:ekr.20100804095820.5812: *4* bug 613153: unable to describe root directory on thumb drive
 Fix in g.os_path_isabs
@@ -816,23 +815,15 @@ Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
 Is there some other object I should be using instead of c.frame? I
 simply don't understand the connection between the error and my
 script.
-#@+node:ekr.20101024062147.6013: *4* Easy bugs & features 6
+#@+node:ekr.20101024062147.6026: *4* Easiest/most annoying bugs/features 4
 # None of these are essential for a1,
 # but I'll attempt to do the most annoying.
-#@+node:ekr.20101024062147.6026: *5* Easiest/most annoying 5
-#@+node:ekr.20101024062147.6001: *6* Fix bindings in log pane
-#@+node:ekr.20101024062147.5991: *6* bug 583955: key bindings in Find Panel need some love
+#@+node:ekr.20101024062147.6001: *5* Fix key bindings in log pane
+#@+node:ekr.20101024062147.5991: *5* bug 583955: Key bindings in Find Panel need some love
 
 
 Make sure bindings work in log pane
-#@+node:ekr.20101024062147.6023: *6* bug 622802: Go to clone" switches to the first chapter
-@nocolor-node
-
-If one or more chapters exist (other than main), "Go to clone" switches to the
-first chapter, whether or not the clone is in that chapter.
-
-This affects unitTest.leo, which is where I noticed it.
-#@+node:ekr.20101024062147.6024: *6* bug 622819: Ctrl-Shift movement is incorrect 
+#@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect 
 @nocolor-node
 
 Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
@@ -842,7 +833,7 @@ method other than Ctrl-Shift movement.
 Expected behavior: it should extend/contract the existing selection
 
 Actual behavior: it creates a new selection from the cursor position
-#@+node:ekr.20100206173123.5801: *6* Eliminate check python syntax commands
+#@+node:ekr.20100206173123.5801: *5* Eliminate check python syntax commands
 @nocolor-node
 
 If not, I'd like to get rid of them.

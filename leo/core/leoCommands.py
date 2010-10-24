@@ -5497,6 +5497,7 @@ class baseCommands (object):
         p.moveToThreadNext()
         wrapped = False
         while 1:
+            # g.trace(p.v,p.h)
             if p and p.v == v:
                 break
             elif p:
@@ -5507,25 +5508,29 @@ class baseCommands (object):
                 wrapped = True
                 p = c.rootPosition()
 
-        if not p: g.es("done",color="blue")
+        if p:
+            if cc:
+                cc.selectChapterByName('main')
+            c.selectPosition(p)
+            c.redraw_after_select(p)
+        else:
+            g.es("done",color="blue")
 
-        if cc:
-            name = cc.findChapterNameForPosition(p)
-            cc.selectChapterByName(name)
-
-        c.selectPosition(p)
-        c.redraw_after_select(p)
+        # if cc:
+            # name = cc.findChapterNameForPosition(p)
+            # cc.selectChapterByName(name)
     #@+node:ekr.20071213123942: *6* findNextClone
     def findNextClone (self,event=None):
 
         '''Select the next cloned node.'''
 
-        c = self ; p = c.p ; flag = False
+        c = self ; p = c.p ; cc = c.chapterController
         if not p: return
 
         if p.isCloned():
             p.moveToThreadNext()
 
+        flag = False
         while p:
             if p.isCloned():
                 flag = True ; break
@@ -5533,10 +5538,9 @@ class baseCommands (object):
                 p.moveToThreadNext()
 
         if flag:
-            cc = c.chapterController
             if cc:
-                name = cc.findChapterNameForPosition(p)
-                cc.selectChapterByName(name)
+                # name = cc.findChapterNameForPosition(p)
+                cc.selectChapterByName('main')
             c.selectPosition(p)
             c.redraw_after_select(p)
         else:

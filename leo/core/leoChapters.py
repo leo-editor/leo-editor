@@ -640,32 +640,35 @@ class chapterController:
         Select a chapter containing position p.
         Do nothing if p if p does not exist or is in the presently selected chapter.
         '''
-        cc = self ; c = cc.c ; trace = False
+
+        # trace = False and not g.unitTesting
+        cc = self ; c = cc.c
 
         if not p or not c.positionExists(p):
             return
 
         theChapter = cc.getSelectedChapter()
         if not theChapter:
-            if trace: g.trace('no chapter')
+            # if trace: g.trace('no chapter')
             return
 
-        if trace: g.trace('selected:',theChapter.name)
+        # if trace: g.trace('selected:',theChapter.name)
+
         # First, try the presently selected chapter.
         firstName = theChapter.name
         if firstName == 'main' or theChapter.positionIsInChapter(p):
-            if trace: g.trace('in chapter:',theChapter.name)
+            # if trace: g.trace('in chapter:',theChapter.name)
             return
 
         for name in cc.chaptersDict:
             if name not in (firstName,'main'):
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
-                    if trace: g.trace('select:',theChapter.name)
+                    # if trace: g.trace('select:',theChapter.name)
                     cc.selectChapterByName(name)
                     return
         else:
-            if trace: g.trace('select main')
+            # if trace: g.trace('select main')
             cc.selectChapterByName('main')
     #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
     def findChapterNameForPosition (self,p):
@@ -893,19 +896,25 @@ class chapter:
 
         '''Return a valid position p such that p.v == v.'''
 
+        # trace = False and not g.unitTesting
+
         # Do nothing if the present position is in the proper chapter.
         c = self.c ; name = self.name 
 
         root = g.choose(self.name=='main',c.rootPosition(),self.root)
-        # g.trace('p1',p1)
+
+        # if trace:
+            # g.trace('searching for: %s in chapter %s' % (p1.h,self.name))
+            # g.trace(g.callers(6))
+
         if p1 and c.positionExists(p1,root=root):
-            # g.trace('using existing position',p)
+            # if trace: g.trace('using existing position:',p1.h)
             return p1
 
         if name == 'main':
             for p in self.c.all_unique_positions():
                 if p.v == p1.v:
-                    # g.trace('*** found in main chapter',p)
+                    # if trace: g.trace('*** found in chapter main:',p.h)
                     self.p = p.copy()
                     return self.p
             if strict:
@@ -916,7 +925,7 @@ class chapter:
             for p in self.root.self_and_subtree():
                 # g.trace('testing',p,p1)
                 if p.v == p1.v:
-                    # g.trace('*** found in chapter',p)
+                    # if trace: g.trace('*** found in chapter %s: %s' % (self.name,p.h))
                     self.p = p.copy()
                     return self.p
             if strict:
@@ -924,10 +933,10 @@ class chapter:
             else:
                 self.p = self.root.copy()
 
-        if 0:
-            self.error('***** chapter: %s findPositionInChapter: lost %s' % (
-                self.name,p1.h))
-            g.trace(g.callers())
+        # if trace:
+            # # self.error('***** chapter: %s findPositionInChapter: lost %s' % (
+                # # self.name,p1.h))
+            # g.trace('fail',g.callers())
 
         return self.p.copy()
     #@+node:ekr.20070425175522: *4* chapter.findEditorInChapter

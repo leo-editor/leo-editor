@@ -6660,6 +6660,78 @@ def writeOneAtAutoNode(self,p,toString,force):
     return ok
 #@+node:ekr.20101023182938.5980: *4* Ignore F-Keys & Ins in the minibuffer.
 k.fullCommand now ignores fkeys and Ins.
+#@+node:ekr.20101024062147.6023: *4* Fixed bug 622802: Go to clone" switches to the first chapter
+@nocolor-node
+
+If one or more chapters exist (other than main), "Go to clone" switches to the
+first chapter, whether or not the clone is in that chapter.
+
+The new code always selects the main chapter.
+This is the simplest thing that could possibly work.
+Other approaches are fraught with difficulties.
+#@+node:ekr.20071213123942: *5* findNextClone
+def findNextClone (self,event=None):
+
+    '''Select the next cloned node.'''
+
+    c = self ; p = c.p ; cc = c.chapterController
+    if not p: return
+
+    if p.isCloned():
+        p.moveToThreadNext()
+
+    flag = False
+    while p:
+        if p.isCloned():
+            flag = True ; break
+        else:
+            p.moveToThreadNext()
+
+    if flag:
+        if cc:
+            # name = cc.findChapterNameForPosition(p)
+            cc.selectChapterByName('main')
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    else:
+        g.es('no more clones',color='blue')
+#@+node:ekr.20031218072017.2916: *5* goToNextClone
+def goToNextClone (self,event=None):
+
+    '''Select the next node that is a clone of the selected node.'''
+
+    c = self ; cc = c.chapterController ; p = c.p
+    if not p: return
+    if not p.isCloned():
+        g.es('not a clone:',p.h,color='blue')
+        return
+
+    v = p.v
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        # g.trace(p.v,p.h)
+        if p and p.v == v:
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+
+    if p:
+        if cc:
+            cc.selectChapterByName('main')
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    else:
+        g.es("done",color="blue")
+
+    # if cc:
+        # name = cc.findChapterNameForPosition(p)
+        # cc.selectChapterByName(name)
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
