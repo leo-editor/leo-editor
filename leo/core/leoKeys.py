@@ -2370,6 +2370,8 @@ class keyHandlerClass:
             k.mb_help = help
             k.mb_helpHandler = helpHandler
             c.minibufferWantsFocus()
+        elif keysym == 'Ins' or k.isFKey(keysym):
+            pass
         elif keysym == 'Escape':
             k.keyboardQuit(event)
         elif keysym == 'Return':
@@ -3034,7 +3036,7 @@ class keyHandlerClass:
 
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
-        trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
+        trace = False and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3223,7 +3225,9 @@ class keyHandlerClass:
 
         # Special case for bindings handled in k.getArg:
         if state in ('getArg','full-command'):
-            if stroke in ('BackSpace','Return','Tab','\t','Escape'):
+            if stroke in ('BackSpace','Return','Tab','\t','Escape',):
+                return False
+            if k.isFKey(stroke): # 2010/10/23.
                 return False
 
         if not state.startswith('auto-'):
@@ -3264,6 +3268,8 @@ class keyHandlerClass:
 
         if trace: g.trace('ch: %s keysym: %s stroke %s' % (
             repr(event.char),repr(event.keysym),repr(stroke)))
+
+        # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
 
         if k.unboundKeyAction == 'command':
             # Ignore all unbound characters in command mode.

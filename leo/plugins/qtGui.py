@@ -7393,7 +7393,7 @@ class leoKeyEvent:
                 repr(ch),repr(tkKey),repr(stroke)))
 
         # Last minute-munges to keysym.
-        if tkKey in ('Return','Tab','Escape'):
+        if tkKey in ('Return','Tab','Escape',): # 'Ins'
             ch = tkKey
         stroke = stroke.replace('\t','Tab')
         tkKey = tkKey.replace('\t','Tab')

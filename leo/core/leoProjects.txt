@@ -6658,6 +6658,8 @@ def writeOneAtAutoNode(self,p,toString,force):
         g.es("not written:",fileName)
 
     return ok
+#@+node:ekr.20101023182938.5980: *4* Ignore F-Keys & Ins in the minibuffer.
+k.fullCommand now ignores fkeys and Ins.
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
