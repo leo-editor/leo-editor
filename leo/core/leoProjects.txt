@@ -2366,7 +2366,7 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @pagewidth",s,color="red")
 
     return None
-#@+node:ekr.20101022172109.6108: *9* g.scanAtPathDirectives scanAllAtPathDirectives 
+#@+node:ekr.20101022172109.6108: *9* g.scanAtPathDirectives scanAllAtPathDirectives
 def scanAtPathDirectives(c,aList):
 
     path = c.scanAtPathDirectives(aList)
@@ -4829,7 +4829,7 @@ On Windows, if dst already exists, OSError will be raised even if it is a file;
 there may be no way to implement an atomic rename when dst names an existing
 file.
 #@+node:ekr.20101022055534.8519: *5* Step 1: (Done) Remove path stuff from c.scanAllDirectives
-#@+node:ekr.20101022172109.6108: *6* g.scanAtPathDirectives scanAllAtPathDirectives 
+#@+node:ekr.20101022172109.6108: *6* g.scanAtPathDirectives scanAllAtPathDirectives
 def scanAtPathDirectives(c,aList):
 
     path = c.scanAtPathDirectives(aList)
@@ -6154,8 +6154,13 @@ def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_l
     lines_ok = lines1 == lines2
     sents_ok = sents1 == sents2
 
+    if g.unitTesting:
+        # The unit test will report the error.
+        return lines_ok and sents_ok
+
     if not lines_ok:
         if 1:
+            g.trace()
             d = difflib.Differ()
             # g.trace('Different!!',d)
             aList = list(d.compare(new_public_lines2,new_public_lines))
@@ -6213,6 +6218,213 @@ def show_error_lines (self,lines,fileName):
         except IOError:
             g.es_exception()
             g.es_print('can not open',fileName)
+#@+node:ekr.20100827095120.5863: *4* Fixed Nick's real @shadow problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
+
+The fixes are marked # 2010/10/22 in << handle the opcode >>.
+
+#@+node:ekr.20101023182938.5982: *5* Report
+@nocolor-node
+
+I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and just
+noticed a bug in propagate_changed_lines within leoShadow.py. I haven't worked
+out the complete fix for this, but thought I'd mention it now so that others
+don't stumble over it unawares.
+
+It's the handling of the 'replace' tag (new code dated 7 Jan 2010) which does
+not handle the case when the number of new lines is different from the number of
+old lines.
+
+In fact the number of new lines can be either greater or less than the number of
+old lines, so the code needs a little more complexity to deal with this.
+Currently it only replaces the same number of lines as were in the old file.
+
+There's an added twist in that if sentinels occur in the middle of the old
+lines, it won't be clear how to distribute the new lines on either side of the
+sentinels. I'll comment further when I've thought about this some more, but for
+now, this is just a road cone to mark the spot.
+
+==========================
+
+After a little more thought, I suspect that the simple approach is likely to be
+the best, at least initially.
+
+I'd suggest placing a condition:
+
+    if new_public_lines_rdr.index() < new_j:
+
+on the copying of new public lines to new private lines, then finishing off with
+a loop copied from the 'insert' tag above:
+
+    while new_public_lines_rdr.index() < new_j:
+
+I'm not in a position to get involved with direct editing of the code
+within SourceForge, but I contribute these thoughts in the hope that
+an active contributor may be able to make something of them.
+
+Nick
+#@+node:ekr.20080709062932.10: *5* runTest (atShadowTestCase)
+def runTest (self,define_g = True):
+
+    x = self.shadowController
+    p = self.p.copy()
+
+    results = x.propagate_changed_lines(
+        self.new_public_lines,self.old_private_lines,self.marker,p=p)
+
+    if not self.lax and results != self.expected_private_lines:
+
+        # g.pr('%s\natShadowTestCase.runTest:failure\n%s' % ('*' * 40,p.h))
+        g.pr(p.h)
+
+        for aList,tag in (
+            (results,'results'),
+            (self.expected_private_lines,'expected_private_lines')
+        ):
+            g.pr('%s...' % tag)
+            for i, line in enumerate(aList):
+                g.pr('%3s %s' % (i,repr(line)))
+            g.pr('-' * 40)
+
+        assert results == self.expected_private_lines
+
+    assert self.ok
+    return self.ok
+#@+node:ekr.20080708094444.35: *5* x.check_the_final_output
+def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
+    """
+    Check that we produced a valid output.
+
+    Input:
+        new_targetlines:   the lines with sentinels which produce changed_lines_without_sentinels.
+        sentinels:         new_targetlines should include all the lines from sentinels.
+
+    checks:
+        1. new_targetlines without sentinels must equal changed_lines_without_sentinels.
+        2. the sentinel lines of new_targetlines must match 'sentinels'
+    """
+    new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(
+        new_private_lines, marker)
+
+    lines1 = new_public_lines
+    lines2 = new_public_lines2
+    sents1 = sentinel_lines
+    sents2 = new_sentinel_lines2
+    if 1: # Ignore trailing ws:
+        s1 = ''.join(lines1).rstrip()
+        s2 = ''.join(lines2).rstrip()
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+    if 1: # Ignore trailing ws on every line.
+        lines1 = [z.rstrip() for z in lines1]
+        lines2 = [z.rstrip() for z in lines2]
+        sents1 = [z.rstrip() for z in sents1]
+        sents2 = [z.rstrip() for z in sents2]
+    lines_ok = lines1 == lines2
+    sents_ok = sents1 == sents2
+
+    if g.unitTesting:
+        # The unit test will report the error.
+        return lines_ok and sents_ok
+
+    if not lines_ok:
+        if 1:
+            g.trace()
+            d = difflib.Differ()
+            # g.trace('Different!!',d)
+            aList = list(d.compare(new_public_lines2,new_public_lines))
+            pprint.pprint(aList)
+        else:
+            self.show_error(
+                lines1 = new_public_lines2,
+                lines2 = new_public_lines,
+                message = "Error in updating public file!",
+                lines1_message = "new public lines (derived from new private lines)",
+                lines2_message = "new public lines")
+
+    if not sents_ok:
+        self.show_error(
+            lines1 = sentinel_lines,
+            lines2 = new_sentinel_lines2,
+            message = "Sentinals not preserved!",
+            lines1_message = "old sentinels",
+            lines2_message = "new sentinels")
+
+    return lines_ok and sents_ok
+#@+node:ekr.20080708192807.5: *5* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
+
+if tag == 'equal':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+            tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag == 'insert':
+    if limit < old_private_lines_rdr.size():
+        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index() # Only used for tag.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag == 'replace':
+    # This case is new: it was the same as the 'insert' case.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while (
+        old_private_lines_rdr.index() <= mapping[old_j-1]
+        and new_public_lines_rdr.index() <  new_j
+            # 2010/10/22: the replacement lines can be shorter.
+    ):
+        old_line = old_private_lines_rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                'replace: copy sentinel',start,new_j))
+        else:
+            new_line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                'replace: new line',start,new_j))
+
+    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # Leave new_public_lines_rdr unchanged.
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic

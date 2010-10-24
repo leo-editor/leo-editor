@@ -2756,7 +2756,22 @@
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
 <v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
-<v t="ekr.20090529115704.4399"><vh>passed</vh></v>
+<v t="ekr.20101023195640.6033"><vh>@shadow-test replace in node new &gt; old</vh>
+<v t="ekr.20101023195640.6034"><vh>old</vh>
+<v t="ekr.20101023195640.6035"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20101023195640.6037"><vh>new</vh>
+<v t="ekr.20101023195640.6038"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20101023204543.6042"><vh>@shadow-test replace in node new &lt; old</vh>
+<v t="ekr.20101023204543.6043"><vh>old</vh>
+<v t="ekr.20101023204543.6044"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20101023204543.6045"><vh>new</vh>
+<v t="ekr.20101023204543.6046"><vh>node 1</vh></v>
+</v>
+</v>
 <v t="ekr.20090529115704.4400"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20090529115704.4401"><vh>old</vh></v>
 <v t="ekr.20090529115704.4402"><vh>new</vh></v>
@@ -16760,7 +16775,6 @@ The replace, delete, insert operations should happen at least once:
 For the delete and replace operators we must also test the case that the
 deletion or replacement spans more than one block.
 </t>
-<t tx="ekr.20090529115704.4399"></t>
 <t tx="ekr.20090529115704.4400"></t>
 <t tx="ekr.20090529115704.4401">line 1
 line 2
@@ -27122,6 +27136,31 @@ the @interface
 <t tx="ekr.20101021210253.6018"></t>
 <t tx="ekr.20101021210253.6019"></t>
 <t tx="ekr.20101022154041.6023"></t>
+<t tx="ekr.20101023195640.6033"></t>
+<t tx="ekr.20101023195640.6034">@others</t>
+<t tx="ekr.20101023195640.6035">node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 line 2</t>
+<t tx="ekr.20101023195640.6037">@others</t>
+<t tx="ekr.20101023195640.6038">node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 new line 3
+node 1 line 2</t>
+<t tx="ekr.20101023204543.6042"></t>
+<t tx="ekr.20101023204543.6043">@others</t>
+<t tx="ekr.20101023204543.6044">node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 old line 3
+node 1 old line 4
+node 1 line 2</t>
+<t tx="ekr.20101023204543.6045">@others</t>
+<t tx="ekr.20101023204543.6046">node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 line 2</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)

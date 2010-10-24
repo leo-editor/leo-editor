@@ -3,41 +3,6 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
-#@+node:ekr.20100827095120.5863: *3* Urgent: fix @shadow problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
-
-I'm working with Leo 4.7.1 final (build 3005, dated 26 Feb 2010) and
-just noticed a bug in propagate_changed_lines within leoShadow.py.
-I haven't worked out the complete fix for this, but thought I'd
-mention it now so that others don't stumble over it unawares.
-It's the handling of the 'replace' tag (new code dated 7 Jan 2010)
-which does not handle the case when the number of new lines is
-different from the number of old lines. In fact the number of new
-lines can be either greater or less than the number of old lines, so
-the code needs a little more complexity to deal with this. Currently
-it only replaces the same number of lines as were in the old file.
-There's an added twist in that if sentinels occur in the middle of the
-old lines, it won't be clear how to distribute the new lines on either
-side of the sentinels.
-I'll comment further when I've thought about this some more, but for
-now, this is just a road cone to mark the spot.
-
-==========================
-
-After a little more thought, I suspect that the simple approach is
-likely to be the best, at least initially.
-I'd suggest placing a condition (if new_public_lines_rdr.index() <
-new_j) on the copying of new public lines to new private lines, then
-finishing off with a loop copied from the 'insert' tag above -- (while
-new_public_lines_rdr.index() < new_j ...).
-
-I'm not in a position to get involved with direct editing of the code
-within SourceForge, but I contribute these thoughts in the hope that
-an active contributor may be able to make something of them.
-
-Nick
 #@+node:ekr.20100903162809.5866: *3* First
 #@+node:ekr.20100827095120.5862: *4* First: Fix script problem
 @nocolor-node
@@ -8811,7 +8776,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
        the end of a node.  However, insertions must always be done within sentinels.
     '''
 
-    trace = False and not g.unitTesting
+    trace = False and g.unitTesting
     verbose = True
     x = self
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
@@ -8955,9 +8920,13 @@ elif tag == 'insert':
         new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
 elif tag == 'replace':
-    # 2010/01/07: This case is new: it was the same as the 'insert' case.
+    # This case is new: it was the same as the 'insert' case.
     start = old_private_lines_rdr.index() # Only used for tag.
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+    while (
+        old_private_lines_rdr.index() <= mapping[old_j-1]
+        and new_public_lines_rdr.index() <  new_j
+            # 2010/10/22: the replacement lines can be shorter.
+    ):
         old_line = old_private_lines_rdr.get()
         if marker.isSentinel(old_line):
             # Important: this should work for @verbatim sentinels
@@ -8968,6 +8937,15 @@ elif tag == 'replace':
             new_line = new_public_lines_rdr.get()
             new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
                 'replace: new line',start,new_j))
+
+    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
 elif tag=='delete':
     # Copy sentinels up to the limit = mapping[old_i]

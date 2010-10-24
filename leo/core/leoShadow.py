@@ -100,9 +100,14 @@ class shadowController:
     #@+node:ekr.20080712080505.3: *4* x.isSignificantPublicFile
     def isSignificantPublicFile (self,fn):
 
-        '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+        '''This tells the atFile.read logic whether to import a public file
+        or use an existing public file.'''
 
-        return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
+        return (
+            g.os_path_exists(fn) and
+            g.os_path_isfile(fn) and
+            g.os_path_getsize(fn) > 10
+        )
     #@+node:ekr.20080710082231.19: *4* x.makeShadowDirectory
     def makeShadowDirectory (self,fn):
 
@@ -116,7 +121,7 @@ class shadowController:
             g.makeAllNonExistentDirectories(path,c=None,force=True)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
-    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString (@shadow) (not changed)
+    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString (@shadow)
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -231,8 +236,13 @@ class shadowController:
         lines_ok = lines1 == lines2
         sents_ok = sents1 == sents2
 
+        if g.unitTesting:
+            # The unit test will report the error.
+            return lines_ok and sents_ok
+
         if not lines_ok:
             if 1:
+                g.trace()
                 d = difflib.Differ()
                 # g.trace('Different!!',d)
                 aList = list(d.compare(new_public_lines2,new_public_lines))
@@ -292,7 +302,7 @@ class shadowController:
            the end of a node.  However, insertions must always be done within sentinels.
         '''
 
-        trace = False and not g.unitTesting
+        trace = False and g.unitTesting
         verbose = True
         x = self
         # mapping tells which line of old_private_lines each line of old_public_lines comes from.
@@ -422,9 +432,13 @@ class shadowController:
                     new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
             elif tag == 'replace':
-                # 2010/01/07: This case is new: it was the same as the 'insert' case.
+                # This case is new: it was the same as the 'insert' case.
                 start = old_private_lines_rdr.index() # Only used for tag.
-                while old_private_lines_rdr.index() <= mapping[old_j-1]:
+                while (
+                    old_private_lines_rdr.index() <= mapping[old_j-1]
+                    and new_public_lines_rdr.index() <  new_j
+                        # 2010/10/22: the replacement lines can be shorter.
+                ):
                     old_line = old_private_lines_rdr.get()
                     if marker.isSentinel(old_line):
                         # Important: this should work for @verbatim sentinels
@@ -435,6 +449,15 @@ class shadowController:
                         new_line = new_public_lines_rdr.get()
                         new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
                             'replace: new line',start,new_j))
+
+                # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+                while new_public_lines_rdr.index() < new_j:
+                    line = new_public_lines_rdr.get()
+                    if marker.isSentinel(line):
+                        new_private_lines_wtr.put(
+                            '%s@verbatim%s\n' % (delim1,delim2),
+                            tag='%s %s:%s' % ('new sent',start,new_j))
+                    new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
             elif tag=='delete':
                 # Copy sentinels up to the limit = mapping[old_i]
@@ -852,13 +875,16 @@ class shadowController:
         def runTest (self,define_g = True):
 
             x = self.shadowController
+            p = self.p.copy()
 
             results = x.propagate_changed_lines(
-                self.new_public_lines,self.old_private_lines,self.marker,p = self.p.copy())
+                self.new_public_lines,self.old_private_lines,self.marker,p=p)
 
             if not self.lax and results != self.expected_private_lines:
 
-                g.pr('%s atShadowTestCase.runTest:failure' % ('*' * 40))
+                # g.pr('%s\natShadowTestCase.runTest:failure\n%s' % ('*' * 40,p.h))
+                g.pr(p.h)
+
                 for aList,tag in (
                     (results,'results'),
                     (self.expected_private_lines,'expected_private_lines')
@@ -1041,7 +1067,7 @@ class shadowController:
             g.pr(title)
             for i, line in enumerate(self.lines):
                 marker = '  '
-                g.pr("%s %3s:%s" % (marker, i, line),newline=False)
+                g.pr("%s %3s:%s" % (marker, i, repr(line)),newline=False)
         #@-others
     #@-others
 #@-others
