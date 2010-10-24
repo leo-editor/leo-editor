@@ -816,7 +816,7 @@ Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
 Is there some other object I should be using instead of c.frame? I
 simply don't understand the connection between the error and my
 script.
-#@+node:ekr.20101024062147.6013: *4* Easy bugs & features 7
+#@+node:ekr.20101024062147.6013: *4* Easy bugs & features 6
 # None of these are essential for a1,
 # but I'll attempt to do the most annoying.
 #@+node:ekr.20100206173123.5801: *5* Eliminate check python syntax commands
@@ -835,8 +835,6 @@ So unless somebody complains I'll remove the explicit syntax-checking commands.
 
 Edward
 #@+node:ekr.20101024062147.6026: *5* Easiest/most annoying 4
-#@+node:ekr.20101023182938.5981: *6* Sometimes the not written: <fn> doesn't show the fn
-Maybe should use at.targetFileName or fn.
 #@+node:ekr.20101024062147.6001: *6* Fix bindings in log pane
 #@+node:ekr.20101023182938.5980: *6* Make sure all keys work in minibuffer
 Unbound keys: 

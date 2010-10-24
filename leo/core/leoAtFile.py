@@ -3101,14 +3101,14 @@ class atFile:
                 at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                     # Sets/clears dirty and orphan bits.
             else:
-                g.es("not written:",at.outputFileName)
+                g.es("not written:",fileName)
                 root.setDirty() # New in Leo 4.4.8.
                 root.setOrphan() # 2010/10/22.
 
         elif not toString:
             root.setDirty() # Make _sure_ we try to rewrite this file.
             root.setOrphan() # 2010/10/22.
-            g.es("not written:",at.outputFileName)
+            g.es("not written:",fileName)
 
         return ok
     #@+node:ekr.20080711093251.3: *4* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers

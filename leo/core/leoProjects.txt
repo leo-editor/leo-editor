@@ -1850,14 +1850,14 @@ def writeOneAtAutoNode(self,p,toString,force):
             at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                 # Sets/clears dirty and orphan bits.
         else:
-            g.es("not written:",at.outputFileName)
+            g.es("not written:",fileName)
             root.setDirty() # New in Leo 4.4.8.
             root.setOrphan() # 2010/10/22.
 
     elif not toString:
         root.setDirty() # Make _sure_ we try to rewrite this file.
         root.setOrphan() # 2010/10/22.
-        g.es("not written:",at.outputFileName)
+        g.es("not written:",fileName)
 
     return ok
 #@+node:ekr.20090225080846.5: *7* at.writeOneAtEditNode
@@ -4333,14 +4333,14 @@ def writeOneAtAutoNode(self,p,toString,force):
             at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                 # Sets/clears dirty and orphan bits.
         else:
-            g.es("not written:",at.outputFileName)
+            g.es("not written:",fileName)
             root.setDirty() # New in Leo 4.4.8.
             root.setOrphan() # 2010/10/22.
 
     elif not toString:
         root.setDirty() # Make _sure_ we try to rewrite this file.
         root.setOrphan() # 2010/10/22.
-        g.es("not written:",at.outputFileName)
+        g.es("not written:",fileName)
 
     return ok
 #@+node:ekr.20090225080846.5: *7* at.writeOneAtEditNode
@@ -6585,6 +6585,79 @@ def underline (self,s,p):
         # return '%s\n%s\n\n' % (p.h.strip(),ch*n)
         return '%s\n%s\n\n' % (s.strip(),ch*n)
             # Fixes bug 618570:
+#@+node:ekr.20101023182938.5981: *4* Fixed bug in at.writeOneAtAutoNode
+@nocolor-node
+
+Use fileName for 'not written:' messages in at.writeOneAtAutoNode.
+#@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode & helpers
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+    if not toString and exists and not hasattr(root.v,'at_read') and exists:
+        # Prompt if writing a new @auto node would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if ok:
+            root.v.at_read = True # Create the attribute for all clones.
+        else:
+            g.es("not written:",fileName)
+            return
+
+    # Prompt if writing a new @auto node would overwrite an existing file.
+    if (not toString and not hasattr(p.v,'at_read') and
+        g.os_path_exists(fileName)
+    ):
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if ok:
+            p.v.at_read = True # Create the attribute
+        else:
+            g.es("not written:",fileName)
+            return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    isAtAutoRst = root.isAtAutoRstNode()
+    if ok:
+        if isAtAutoRst:
+            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+            if not ok2: at.errors += 1
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        # g.trace('at.errors',at.errors)
+        if at.errors == 0:
+            # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
+                # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",fileName)
+            root.setDirty() # New in Leo 4.4.8.
+            root.setOrphan() # 2010/10/22.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        root.setOrphan() # 2010/10/22.
+        g.es("not written:",fileName)
+
+    return ok
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
