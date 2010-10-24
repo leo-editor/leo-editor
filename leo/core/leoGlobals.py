@@ -640,7 +640,7 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @pagewidth",s,color="red")
 
     return None
-#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives scanAllAtPathDirectives 
+#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives scanAllAtPathDirectives
 def scanAtPathDirectives(c,aList):
 
     path = c.scanAtPathDirectives(aList)
@@ -3393,7 +3393,7 @@ def os_path_dirname(path):
 #@+node:ekr.20031218072017.2149: *3* os_path_exists
 def os_path_exists(path):
 
-    """Normalize the path and convert it to an absolute path."""
+    """Return True if path exists."""
 
     path = g.toUnicodeFileEncoding(path)
 
@@ -3471,7 +3471,7 @@ def os_path_finalize_join (*args,**keys):
 #@+node:ekr.20031218072017.2150: *3* os_path_getmtime
 def os_path_getmtime(path):
 
-    """Normalize the path and convert it to an absolute path."""
+    """Return the modification time of path."""
 
     path = g.toUnicodeFileEncoding(path)
 
@@ -3479,13 +3479,15 @@ def os_path_getmtime(path):
 #@+node:ekr.20080729142651.2: *3* os_path_getsize
 def os_path_getsize (path):
 
+    '''Return the size of path.'''
+
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.getsize(path)
 #@+node:ekr.20031218072017.2151: *3* os_path_isabs
 def os_path_isabs(path):
 
-    """Normalize the path and convert it to an absolute path."""
+    """Return True if path is an absolute path."""
 
     path = g.toUnicodeFileEncoding(path)
 
@@ -3493,7 +3495,7 @@ def os_path_isabs(path):
 #@+node:ekr.20031218072017.2152: *3* os_path_isdir
 def os_path_isdir(path):
 
-    """Normalize the path and convert it to an absolute path."""
+    """Return True if the path is a directory."""
 
     path = g.toUnicodeFileEncoding(path)
 
@@ -3501,7 +3503,7 @@ def os_path_isdir(path):
 #@+node:ekr.20031218072017.2153: *3* os_path_isfile
 def os_path_isfile(path):
 
-    """Normalize the path and convert it to an absolute path."""
+    """Return True if path is a file."""
 
     path = g.toUnicodeFileEncoding(path)
 

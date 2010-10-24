@@ -9,6 +9,15 @@ Should preserve scrollbar location and appropriate window ratio.
 https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
 #@+node:ekr.20100223123910.5835: *4* 611413: The import logic for python code doesn't work as expected in some cases
 #@+node:ekr.20100804095820.5812: *4* 613153: unable to describe root directory on thumb drive
+Fix in g.os_path_isabs
+#@+node:ekr.20031218072017.2151: *5* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
 #@+node:ekr.20101024062147.5991: *4* 583955: key bindings in Find Panel need some love
 
 
@@ -759,308 +768,19 @@ I'd also like
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
-#@+node:ekr.20101024062147.5993: ** Documentation
-#@+node:ekr.20101024062147.6004: *3*  Notes
-#@+node:ekr.20060306194040: *4* The curse of knowledge
-@nocolor
-
-The curse of knowledge
-http://groups.google.com/group/leo-editor/browse_thread/thread/3e75787223ee9303
-
-(Rich) I'd like to see something like:
-
-[Buttons]
-...[What are Buttons good for?]
-...[How do I make my own buttons?]
-......[Some commands you can use with buttons]
-......[Where to find button commands]
-#@+node:ekr.20100828074347.5828: *4* Slide show resources
-http://sourceforge.net/forum/message.php?msg_id=3615177
-By: ktenney
-
-High on my ToLearn list is vnc2swf
-http://www.unixuser.org/~euske/vnc2swf/
-
-http://sourceforge.net/forum/message.php?msg_id=3615278
-By: James
-
-A lot of people are now using Wink for demonstrations
-(http://www.debugmode.com/wink/), it's is free and seems to work well.
-
-Check out http://murl.se/11332
-At the bottom they talk about tools and techniques.
-http://showmedo.com seems like it would be a good
-place to host vids also.
-
-I've listened/watched a fair number of things like this;
-my recomendation is to get a good microphone and
-pre-amp to record your voice, and prepare the audio
-track carefully. It is so aggravating when
-it's hard to discern the words being spoken.
-
-http://sourceforge.net/forum/message.php?msg_id=3758271
-
-From: Rich
-
-Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
-and it has a very good tutorial -- leads the beginner by the hand through much
-of the language. Also the help file has working code snippets
-to cut-n-paste-n-play-with. 
-#@+node:ekr.20100904134301.8336: *3* Generate pdf on Linux
-El 01/05/09 15:12, Ville M. Vainio escribió:
-
-- make latex
-- cd _build/latex
-- make all-pdf
-#@+node:ekr.20100204052559.5791: *3* Make TOC sidebar collapsible
-@nocolor-node
-@wrap
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-includes code for the CSS stylesheet (sidebar.js) to do make the sidebar collapsable.
-
-EKR:
-
-1. Place sidebar.js in leo\doc\html\_build\html\_static
-
-2. Add the following line in the <head> section of all .html files in leo\doc\html\_build\html:
-
-    <script type="text/javascript" src="sidebar.js"></script>
-
-Now the sidebar is collapsable. Mousing over the divider shows a << icon. When
-the sidebar is collapsed, mousing over the left edge shows a >> button.
-
-The question is, how to do this automatically?
-#@+node:ekr.20101024062147.6005: *3* Users guide
-#@+node:ekr.20100906091349.5849: *4* Reorganize Leo docs
-@nocolor-node
-
-Structure of Leo's User Documentation
-http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
-
-Re-arranging the documentation along those lines would lead to the
-following:
-
-* Front Matter
-* Preface
-* What People Are Saying About Leo
-* FAQ
-* Slides
-* Chapter 1: Installing Leo
-* Chapter 2: The Leo Tutorial
-* Chapter 3: Using Outlines
-* Chapter 5: Using Leo’s Commands
-* Chapter 6: Designing with Leo
-* Chapter 14: Creating Documents with Leo
-* Chapter 7: Scripting Leo with Python
-* Chapter 8: Customizing Leo
-* Chapter 12: Plugins
-* Chapter 13: Writing Plugins
-* Chapter 20: Unit testing with Leo
-* Chapter 16: Debugging with Leo
-* Chapter 17: Using ZODB with Leo
-* Chapter 18: Leo and Emacs
-* Chapter 19: Embedding Leo with the leoBridge module
-* Chapter 21: IPython and Leo
-* Chapter 22: Using Vim Bindings with Leo
-* Chapter 23: Eliminating sentinel lines with @shadow
-* Chapter 15: Controlling Syntax Coloring
-* Chapter 4: Leo’s Reference
-* Chapter 9: History of Leo
-* Chapter 10: Theory of Operation
-* Chapter 11: White Papers
-* Appendices
-* Glossary
-* What’s New in Leo 
-
-At the risk of being repetitious, I've never found any documentation as
-accessible as Django's, from this starting point:
-http://docs.djangoproject.com/en/dev/ 
-#@+node:ekr.20100826110728.5846: *4* Add explanation of icon box to tutorial
-> 1) Is there a place I can go to find what indicators could appear in
-> the icon box, and also what they mean?
-
-Here :-)
-
-Blue box: node contains text.
-Red vertical bar: node is marked.
-Circular arrow: node is cloned.
-Outer box is black: node is dirty.
-#@+node:ekr.20100827114047.5894: *4* Fix documentation for expand-all-subheads
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/604037
-
-The manual mentions "Expand All Subheads", and it is implemented in
-leoCommands.py, but it is not present in leoEditCommands.py, and is thus
-unavailable except in python scripts. If this was intended, I'll remove it from
-the manual; if not, I'll add it to leoEditCommands.py.
-#@+node:ekr.20100827095120.5860: *4* Fix chapter 14 typos
-@nocolor-node
-
-I've recreated my feedback notes using the online service Diigo.
-Here's a link to see the highlights and sticky notes: http://diigo.com/0c9u2
-
-This is an experiment as I've been researching Diigo-like services for
-about a week, and would like to know if this would be an acceptable
-method when there are lots of things to be commented on for Leo's web
-pages. Otherwise I would do email when there are only a few comments.
-
-When you go to the link, you'll see pink highlighted text, with a
-small icon in the top left of each text "piece" with a number. Hover
-over it to cause the sticky note to be displayed. The number
-represents the number of comments entered on the sticky note.
-
-Usually when I'm highlighting edits to be made (like in Acrobat), I
-only highlight the specific word or punctuation that needs attention.
-With Diigo, there are two problems:
-
-a) there seems to be a minimal number of characters that need to be
-highlighted before you get an option to add a sticky note, and
-
-b) Diigo appears to "remember" the location of highlights/stickies
-based on where the text first occurs on the page. If you highlight
-text halfway into the document that also appears at the beginning of
-the document, reloading the web page causes your highlight to "move"
-without warning to the beginning of the document. This took a while
-for me to realize, because I'd keep redoing highlights, not knowing I
-was spinning my wheels. (I don't know what will happen to these
-annotations if Chapter 14 is changed and reuploaded. Probably it will
-still "find" the highlighted text that hasn't changed and be able to
-show the sticky notes.)
-
-The solution to both issues is to highlight more text than you want,
-and make sure it's enough text to identify its location uniquely on
-the web page. I noted in the sticky note where extra text highlighting
-was done, eventually saying I did it due to a Diigo bug.
-
-You do NOT need to sign up for Diigo to see the edits, but there are
-two benefits I can see for collaborating on web pages. If you had an
-account (and you can use your Google account, like I did), you could:
-
-1) Add comments to the comments I've made. Without an account, when a
-sticky note is displayed, it acts like you could type in a comment and
-click on Post. But when you click on Post the comment is not saved
-anywhere, and there's no message that it was sent to /dev/null.
-
-2) Navigate easier through the list of annotations, if you also
-install the Diigo toolbar. There's a "Comment" button that when
-clicked opens up a side bar listing all annotations. The biggest
-feature I wish Diigo had was an easy way to go to the previous/next
-annotation to be sure I see them all.
-
-3) Create the first sticky note for highlighted text that Diigo has
-trouble dealing with: Text highlighted at the very beginning of the
-line causes the icon to appear at the very end of the line above it.
-The problem is, you need to hover over the highlighted text to cause
-the icon to appear that allows adding the sticky note. But you can't
-move the mouse fast enough :) from the highlighted text to the icon at
-the end of the line above it. The solution is to sign in to your Diigo
-account, go to My Library, find your highlighted text and choose the
-"Add Sticky Note" link.
-
-Phew, been working on this and the Chapter 14 edits for hours. Time to
-take a break.
-#@+node:ekr.20100827095120.5864: *4* Clarify read @file node command
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
-
-Fix/clarify menus and documentation
-
-Also, removed incorrect error message:
-
-The "Read @<file> Nodes" works to incorporate external changes in the select
-tree, though it does generate an incorrect message:
-
-    "no @<file> nodes in the selected tree".
-#@+node:ekr.20100521130114.5904: *4* Plugins documentation thread
-@nocolor-node
-
-We want better docs, automatically, and a way to update @enabled-plugins.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
-#@+node:ekr.20100904134301.11007: *4* Document leoremote plugin
-@nocolor-node
-
-Ville's server code to interact with a running Leo
-http://mail.google.com/mail/#inbox/12adebe2ffe80572
-
-Reusing Emacs instances with gnuserv
-http://www.debian-administration.org/articles/257
-
-#@+node:ekr.20100827114047.5899: ** Installer/Distribution
-#@+node:ekr.20100827114047.5900: *3*  Convert to leoPy.leo EKRleoPy.leo, etc.
-#@+node:ekr.20100907092144.6076: *3* Make sure distribution contains correct files
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
-Status of 'make-leo-zip' in Outline 'leoDist' ?
-
-On Sep 6, 2:39 pm, VR <viktor.ransm...@gmail.com> wrote:
-
-> * The file 'INSTALL.TXT' contains the outline text with sentinels from
-> 'Chapter 1: Installing Leo'
-
-That can't be good.  I'll make sure sentinels don't appear in the distro.
-
-> * The file 'PKG-INFO.TXT' is OK. - However it uses an old version,
-> i.e. '4.7.1-final'
-
-> * The file 'README' is OK. - However it also uses this old version.
-
-The script isn't meant to update these automatically.  I use a checklist to remind me to do such things.
-
-> * However neither of these files are not added to the archive ...
-
-I'll check this.  I'm not sure this is a problem, but it could be.
-
-Thanks for your careful checking.  Such checking is essential when preparing for releases.
-
-I've added this discussion to my internal distribution checklist.
-
-Edward
-#@+node:ekr.20100828110445.5824: *3* Finish installer
-@nocolor-node
-
-Docs and installer should have top priority
-http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
-
-2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
-unrelated to Leo, I'll presumably need to reinstall Leo as well. It
-would be nice not to have to.
-
-These goals could possibly be achieved by installing Leo in an
-independent directory (chosen by the user as part of the installation)
-and adding a .pth file into Python's site-packages directory (see
-documentation for the site module). Then the leo script can be
-installed alongside the package - so you have
-
-    ... Program Files\Leo\
-            leo.bat
-            package\leo\...
-
-leo.pth:
-...\Program Files\Leo\package 
-#@+node:ekr.20100826110728.5844: *3* Fix install problem
-@nocolor-node
-
-I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
-I figured out on my own to make a shortcut to launchLeo.py at this
-location:
-
-C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
-
-which works. (whooppee)
-
-However the shortcuts that the "leo install" created don't work they
-abort.
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20101024062147.6003: *3* To do first
+#@+node:ekr.20100804095820.5812: *4* 613153: unable to describe root directory on thumb drive
+Fix in g.os_path_isabs
+#@+node:ekr.20031218072017.2151: *5* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
 #@+node:ekr.20101023182938.5981: *4* Sometimes the not written: <fn> doesn't show the fn
 Maybe should use at.targetFileName or fn.
 #@+node:ekr.20101023182938.5977: *4* Fix bug: 657374 Content of shadow file affects the outline structure
@@ -1303,6 +1023,305 @@ I'd like to see this happen in the next day or so.  It would be a
 really good feature.
 
 Edward
+#@+node:ekr.20101024062147.5993: *3* Documentation
+#@+node:ekr.20101024062147.6004: *4*  Notes
+#@+node:ekr.20060306194040: *5* The curse of knowledge
+@nocolor
+
+The curse of knowledge
+http://groups.google.com/group/leo-editor/browse_thread/thread/3e75787223ee9303
+
+(Rich) I'd like to see something like:
+
+[Buttons]
+...[What are Buttons good for?]
+...[How do I make my own buttons?]
+......[Some commands you can use with buttons]
+......[Where to find button commands]
+#@+node:ekr.20100828074347.5828: *5* Slide show resources
+http://sourceforge.net/forum/message.php?msg_id=3615177
+By: ktenney
+
+High on my ToLearn list is vnc2swf
+http://www.unixuser.org/~euske/vnc2swf/
+
+http://sourceforge.net/forum/message.php?msg_id=3615278
+By: James
+
+A lot of people are now using Wink for demonstrations
+(http://www.debugmode.com/wink/), it's is free and seems to work well.
+
+Check out http://murl.se/11332
+At the bottom they talk about tools and techniques.
+http://showmedo.com seems like it would be a good
+place to host vids also.
+
+I've listened/watched a fair number of things like this;
+my recomendation is to get a good microphone and
+pre-amp to record your voice, and prepare the audio
+track carefully. It is so aggravating when
+it's hard to discern the words being spoken.
+
+http://sourceforge.net/forum/message.php?msg_id=3758271
+
+From: Rich
+
+Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
+and it has a very good tutorial -- leads the beginner by the hand through much
+of the language. Also the help file has working code snippets
+to cut-n-paste-n-play-with. 
+#@+node:ekr.20100904134301.8336: *4* Generate pdf on Linux
+El 01/05/09 15:12, Ville M. Vainio escribió:
+
+- make latex
+- cd _build/latex
+- make all-pdf
+#@+node:ekr.20100204052559.5791: *4* Make TOC sidebar collapsible
+@nocolor-node
+@wrap
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+includes code for the CSS stylesheet (sidebar.js) to do make the sidebar collapsable.
+
+EKR:
+
+1. Place sidebar.js in leo\doc\html\_build\html\_static
+
+2. Add the following line in the <head> section of all .html files in leo\doc\html\_build\html:
+
+    <script type="text/javascript" src="sidebar.js"></script>
+
+Now the sidebar is collapsable. Mousing over the divider shows a << icon. When
+the sidebar is collapsed, mousing over the left edge shows a >> button.
+
+The question is, how to do this automatically?
+#@+node:ekr.20101024062147.6005: *4* Users guide
+#@+node:ekr.20100906091349.5849: *5* Reorganize Leo docs
+@nocolor-node
+
+Structure of Leo's User Documentation
+http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
+
+Re-arranging the documentation along those lines would lead to the
+following:
+
+* Front Matter
+* Preface
+* What People Are Saying About Leo
+* FAQ
+* Slides
+* Chapter 1: Installing Leo
+* Chapter 2: The Leo Tutorial
+* Chapter 3: Using Outlines
+* Chapter 5: Using Leo’s Commands
+* Chapter 6: Designing with Leo
+* Chapter 14: Creating Documents with Leo
+* Chapter 7: Scripting Leo with Python
+* Chapter 8: Customizing Leo
+* Chapter 12: Plugins
+* Chapter 13: Writing Plugins
+* Chapter 20: Unit testing with Leo
+* Chapter 16: Debugging with Leo
+* Chapter 17: Using ZODB with Leo
+* Chapter 18: Leo and Emacs
+* Chapter 19: Embedding Leo with the leoBridge module
+* Chapter 21: IPython and Leo
+* Chapter 22: Using Vim Bindings with Leo
+* Chapter 23: Eliminating sentinel lines with @shadow
+* Chapter 15: Controlling Syntax Coloring
+* Chapter 4: Leo’s Reference
+* Chapter 9: History of Leo
+* Chapter 10: Theory of Operation
+* Chapter 11: White Papers
+* Appendices
+* Glossary
+* What’s New in Leo 
+
+At the risk of being repetitious, I've never found any documentation as
+accessible as Django's, from this starting point:
+http://docs.djangoproject.com/en/dev/ 
+#@+node:ekr.20100826110728.5846: *5* Add explanation of icon box to tutorial
+> 1) Is there a place I can go to find what indicators could appear in
+> the icon box, and also what they mean?
+
+Here :-)
+
+Blue box: node contains text.
+Red vertical bar: node is marked.
+Circular arrow: node is cloned.
+Outer box is black: node is dirty.
+#@+node:ekr.20100827114047.5894: *5* Fix documentation for expand-all-subheads
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/604037
+
+The manual mentions "Expand All Subheads", and it is implemented in
+leoCommands.py, but it is not present in leoEditCommands.py, and is thus
+unavailable except in python scripts. If this was intended, I'll remove it from
+the manual; if not, I'll add it to leoEditCommands.py.
+#@+node:ekr.20100827095120.5860: *5* Fix chapter 14 typos
+@nocolor-node
+
+I've recreated my feedback notes using the online service Diigo.
+Here's a link to see the highlights and sticky notes: http://diigo.com/0c9u2
+
+This is an experiment as I've been researching Diigo-like services for
+about a week, and would like to know if this would be an acceptable
+method when there are lots of things to be commented on for Leo's web
+pages. Otherwise I would do email when there are only a few comments.
+
+When you go to the link, you'll see pink highlighted text, with a
+small icon in the top left of each text "piece" with a number. Hover
+over it to cause the sticky note to be displayed. The number
+represents the number of comments entered on the sticky note.
+
+Usually when I'm highlighting edits to be made (like in Acrobat), I
+only highlight the specific word or punctuation that needs attention.
+With Diigo, there are two problems:
+
+a) there seems to be a minimal number of characters that need to be
+highlighted before you get an option to add a sticky note, and
+
+b) Diigo appears to "remember" the location of highlights/stickies
+based on where the text first occurs on the page. If you highlight
+text halfway into the document that also appears at the beginning of
+the document, reloading the web page causes your highlight to "move"
+without warning to the beginning of the document. This took a while
+for me to realize, because I'd keep redoing highlights, not knowing I
+was spinning my wheels. (I don't know what will happen to these
+annotations if Chapter 14 is changed and reuploaded. Probably it will
+still "find" the highlighted text that hasn't changed and be able to
+show the sticky notes.)
+
+The solution to both issues is to highlight more text than you want,
+and make sure it's enough text to identify its location uniquely on
+the web page. I noted in the sticky note where extra text highlighting
+was done, eventually saying I did it due to a Diigo bug.
+
+You do NOT need to sign up for Diigo to see the edits, but there are
+two benefits I can see for collaborating on web pages. If you had an
+account (and you can use your Google account, like I did), you could:
+
+1) Add comments to the comments I've made. Without an account, when a
+sticky note is displayed, it acts like you could type in a comment and
+click on Post. But when you click on Post the comment is not saved
+anywhere, and there's no message that it was sent to /dev/null.
+
+2) Navigate easier through the list of annotations, if you also
+install the Diigo toolbar. There's a "Comment" button that when
+clicked opens up a side bar listing all annotations. The biggest
+feature I wish Diigo had was an easy way to go to the previous/next
+annotation to be sure I see them all.
+
+3) Create the first sticky note for highlighted text that Diigo has
+trouble dealing with: Text highlighted at the very beginning of the
+line causes the icon to appear at the very end of the line above it.
+The problem is, you need to hover over the highlighted text to cause
+the icon to appear that allows adding the sticky note. But you can't
+move the mouse fast enough :) from the highlighted text to the icon at
+the end of the line above it. The solution is to sign in to your Diigo
+account, go to My Library, find your highlighted text and choose the
+"Add Sticky Note" link.
+
+Phew, been working on this and the Chapter 14 edits for hours. Time to
+take a break.
+#@+node:ekr.20100827095120.5864: *5* Clarify read @file node command
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
+
+Fix/clarify menus and documentation
+
+Also, removed incorrect error message:
+
+The "Read @<file> Nodes" works to incorporate external changes in the select
+tree, though it does generate an incorrect message:
+
+    "no @<file> nodes in the selected tree".
+#@+node:ekr.20100521130114.5904: *5* Plugins documentation thread
+@nocolor-node
+
+We want better docs, automatically, and a way to update @enabled-plugins.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
+#@+node:ekr.20100904134301.11007: *5* Document leoremote plugin
+@nocolor-node
+
+Ville's server code to interact with a running Leo
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+
+Reusing Emacs instances with gnuserv
+http://www.debian-administration.org/articles/257
+
+#@+node:ekr.20100827114047.5899: *3* Installer/Distribution
+#@+node:ekr.20100827114047.5900: *4*  Convert to leoPy.leo EKRleoPy.leo, etc.
+#@+node:ekr.20100907092144.6076: *4* Make sure distribution contains correct files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
+Status of 'make-leo-zip' in Outline 'leoDist' ?
+
+On Sep 6, 2:39 pm, VR <viktor.ransm...@gmail.com> wrote:
+
+> * The file 'INSTALL.TXT' contains the outline text with sentinels from
+> 'Chapter 1: Installing Leo'
+
+That can't be good.  I'll make sure sentinels don't appear in the distro.
+
+> * The file 'PKG-INFO.TXT' is OK. - However it uses an old version,
+> i.e. '4.7.1-final'
+
+> * The file 'README' is OK. - However it also uses this old version.
+
+The script isn't meant to update these automatically.  I use a checklist to remind me to do such things.
+
+> * However neither of these files are not added to the archive ...
+
+I'll check this.  I'm not sure this is a problem, but it could be.
+
+Thanks for your careful checking.  Such checking is essential when preparing for releases.
+
+I've added this discussion to my internal distribution checklist.
+
+Edward
+#@+node:ekr.20100828110445.5824: *4* Finish installer
+@nocolor-node
+
+Docs and installer should have top priority
+http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
+
+2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
+unrelated to Leo, I'll presumably need to reinstall Leo as well. It
+would be nice not to have to.
+
+These goals could possibly be achieved by installing Leo in an
+independent directory (chosen by the user as part of the installation)
+and adding a .pth file into Python's site-packages directory (see
+documentation for the site module). Then the leo script can be
+installed alongside the package - so you have
+
+    ... Program Files\Leo\
+            leo.bat
+            package\leo\...
+
+leo.pth:
+...\Program Files\Leo\package 
+#@+node:ekr.20100826110728.5844: *4* Fix install problem
+@nocolor-node
+
+I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
+I figured out on my own to make a shortcut to launchLeo.py at this
+location:
+
+C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
+
+which works. (whooppee)
+
+However the shortcuts that the "leo install" created don't work they
+abort.
 #@+node:ekr.20100206074650.5843: *3* Autocompletion
 #@+node:ekr.20090131200406.14: *4* Notes
 #@+node:ekr.20080113165010: *5* About auto completion
