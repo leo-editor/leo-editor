@@ -1017,7 +1017,7 @@ def writeAllHelper (self,p,
     force,toString,writeAtFileNodesFlag,writtenFiles
 ):
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     at = self ; c = at.c
 
     if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
@@ -1284,8 +1284,7 @@ def read(self,root,importFileName=None,
         s,loaded,fileKey = fromString,False,None
     else:
         s,loaded,fileKey = c.cacher.readFile(fileName,root)
-    # 2010/02/24: Never read an external file
-    # with file-like sentinels from the cache.
+    # Never read an external file with file-like sentinels from the cache.
     isFileLike = loaded and at.isFileLike(s)
     if not loaded or isFileLike:
         # if trace: g.trace('file-like file',fileName)
@@ -1314,6 +1313,7 @@ def read(self,root,importFileName=None,
             # at.page_width
             # at.tab_width
 
+    if trace: g.trace(fileName)
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
     at.inputFile.close()
     root.clearDirty() # May be set dirty below.
@@ -2957,8 +2957,7 @@ def read(self,root,importFileName=None,
         s,loaded,fileKey = fromString,False,None
     else:
         s,loaded,fileKey = c.cacher.readFile(fileName,root)
-    # 2010/02/24: Never read an external file
-    # with file-like sentinels from the cache.
+    # Never read an external file with file-like sentinels from the cache.
     isFileLike = loaded and at.isFileLike(s)
     if not loaded or isFileLike:
         # if trace: g.trace('file-like file',fileName)
@@ -2987,6 +2986,7 @@ def read(self,root,importFileName=None,
             # at.page_width
             # at.tab_width
 
+    if trace: g.trace(fileName)
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
     at.inputFile.close()
     root.clearDirty() # May be set dirty below.
@@ -5132,8 +5132,7 @@ def read(self,root,importFileName=None,
         s,loaded,fileKey = fromString,False,None
     else:
         s,loaded,fileKey = c.cacher.readFile(fileName,root)
-    # 2010/02/24: Never read an external file
-    # with file-like sentinels from the cache.
+    # Never read an external file with file-like sentinels from the cache.
     isFileLike = loaded and at.isFileLike(s)
     if not loaded or isFileLike:
         # if trace: g.trace('file-like file',fileName)
@@ -5162,6 +5161,7 @@ def read(self,root,importFileName=None,
             # at.page_width
             # at.tab_width
 
+    if trace: g.trace(fileName)
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
     at.inputFile.close()
     root.clearDirty() # May be set dirty below.
@@ -6425,6 +6425,60 @@ else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(ta
 
 if trace and verbose:
     print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@+node:ekr.20101023182938.5977: *4* Investigated invalid bug: 657374 Content of shadow file affects the outline structure
+@nocolor-node
+
+See http://groups.google.com/group/leo-editor/browse_thread/thread/0eab8b60c403628d
+
+*** @shadow cache has higher priority than the actual files ***
+#@+node:ekr.20101024062147.6009: *5* Why the @shadow bug is invalid
+@nocolor-node
+
+This bug is invalid, as I shall now explain.
+
+QQQ
+- download http://dl.dropbox.com/u/4226858/test.tar.gz
+- extract it
+- the directory contains a very minimalistic bzr repo with two commits, issue `bzr` log to see them
+- the repo was archived after the second commit
+- do `bzr update -r 1` to go back to the state after the first commit
+   [EKR: it's bzr revert: update has no -r argument.]
+- open test.leo, see the node method2() with empty body
+- there should be no method2() node after the first commit!
+QQQ
+
+The conclusion, that there should be no method2() is incorrect. Indeed, when Leo
+opens after the revert (not update), it announces: updated private xtest.py from
+public test.py.
+
+This is correct, and has nothing in particular to do with caching.
+
+The updated xtest.py comes from the fundamental @shadow algorithm:
+propagate_changed_lines.
+
+The assertion behind this bug report is that the @shadow algorithm "should" have
+deleted the node's sentinels along with its contents. This assertion is dubious,
+or rather simply wrong, for the following reasons:
+
+1. The @shadow algorithm has no way of "guessing" whether the node "should" or
+"should not" have been deleted.
+
+2. The **fundamental property** of the @shadow file is **still valid** after the
+update, namely that the @shadow tree will generate the updated *public* file.
+The contents of the *private* file, while interesting, have *nothing* to do with
+this fundamental property.
+
+3. This bug report is simply a special case of a "fact of life" about @shadow,
+namely that the @shadow algorithm **can not in principle** guess between two or
+more ways of updating the *private* file when each of the ways yields the same
+*public* file. But this "fact of life" is not serious. If you don't like the
+"guesses" that the @shadow algorithm has made, you simple change the @shadow
+tree. After saving, the *private* file *will* record your choice, and the next
+time you open the @shadow tree you will see the choices *you* made, not the
+guess that the @shadow algorithm made. Clear?
+
+4. There is absolutely no way I shall entertain the notion of putting a special
+case inside the main @shadow loop to handle this "problem".
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic
@@ -7502,8 +7556,7 @@ def read(self,root,importFileName=None,
         s,loaded,fileKey = fromString,False,None
     else:
         s,loaded,fileKey = c.cacher.readFile(fileName,root)
-    # 2010/02/24: Never read an external file
-    # with file-like sentinels from the cache.
+    # Never read an external file with file-like sentinels from the cache.
     isFileLike = loaded and at.isFileLike(s)
     if not loaded or isFileLike:
         # if trace: g.trace('file-like file',fileName)
@@ -7532,6 +7585,7 @@ def read(self,root,importFileName=None,
             # at.page_width
             # at.tab_width
 
+    if trace: g.trace(fileName)
     thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
     at.inputFile.close()
     root.clearDirty() # May be set dirty below.
@@ -7694,7 +7748,6 @@ def openFileForReading(self,fromString=False):
     This will be the private file for @shadow nodes.'''
 
     trace = False and not g.app.unitTesting
-    verbose = False
     at = self ; c = at.c
 
     if fromString:
@@ -7707,7 +7760,6 @@ def openFileForReading(self,fromString=False):
         fn = at.fullPath(self.root)
             # Returns full path, including file name.
         at.setPathUa(self.root,fn) # Remember the full path to this node.
-        if trace: g.trace(fn)
 
         if at.atShadow:
             x = at.c.shadowController
@@ -7722,14 +7774,14 @@ def openFileForReading(self,fromString=False):
                     'can not happen: private file does not exist: %s' % (
                         shadow_fn))
             # This method is the gateway to the shadow algorithm.
+            if trace:
+                g.trace('         fn:       ',fn)
+                g.trace('reading: shadow_fn:',shadow_fn)
             x.updatePublicAndPrivateFiles(fn,shadow_fn)
             fn = shadow_fn
 
         try:
             # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            if trace and verbose and at.atShadow:
-                g.trace('opening %s file: %s' % (
-                    g.choose(at.atShadow,'private','public'),fn))
             at.inputFile = open(fn,'rb')
             at.warnOnReadOnlyFile(fn)
         except IOError:

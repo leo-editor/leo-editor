@@ -240,6 +240,8 @@ Docs:
 
 Windows
 
+EKR:  do ed-bzr
+
 - Configuration file is .bazaar in XP
 C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
 

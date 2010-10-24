@@ -575,16 +575,15 @@ class shadowController:
 
         This will be called only if the public and private files both exist.'''
 
-        x = self ; trace = False
-
-        if trace and not g.app.unitTesting:
-            g.trace('significant',x.isSignificantPublicFile(fn),fn)
+        trace = False and not g.unitTesting
+        x = self
 
         if x.isSignificantPublicFile(fn):
             # Update the private shadow file from the public file.
             written = x.propagate_changes(fn,shadow_fn)
             if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
-        # else:
+        else:
+            if trace: g.trace('not significant',fn)
             # Don't write *anything*.
             # if 0: # This causes considerable problems.
                 # # Create the public file from the private shadow file.

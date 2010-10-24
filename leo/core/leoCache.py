@@ -311,6 +311,7 @@ class cacher:
     def readFile (self,fileName,root):
 
         trace = False and not g.unitTesting
+        verbose = True
         c = self.c
 
         if not g.enableDB:
@@ -322,6 +323,10 @@ class cacher:
             if trace: g.trace('empty file contents',fileName)
             return s,False,None
         assert not g.isUnicode(s)
+
+        if trace and verbose:
+            for i,line in enumerate(g.splitLines(s)):
+                print('%3d %s' % (i,repr(line)))
 
         # There will be a bug if s is not already an encoded string.
         key = self.fileKey(root.h,s,requireEncodedString=True)

@@ -440,7 +440,6 @@ class atFile:
         This will be the private file for @shadow nodes.'''
 
         trace = False and not g.app.unitTesting
-        verbose = False
         at = self ; c = at.c
 
         if fromString:
@@ -453,7 +452,6 @@ class atFile:
             fn = at.fullPath(self.root)
                 # Returns full path, including file name.
             at.setPathUa(self.root,fn) # Remember the full path to this node.
-            if trace: g.trace(fn)
 
             if at.atShadow:
                 x = at.c.shadowController
@@ -468,14 +466,14 @@ class atFile:
                         'can not happen: private file does not exist: %s' % (
                             shadow_fn))
                 # This method is the gateway to the shadow algorithm.
+                if trace:
+                    g.trace('         fn:       ',fn)
+                    g.trace('reading: shadow_fn:',shadow_fn)
                 x.updatePublicAndPrivateFiles(fn,shadow_fn)
                 fn = shadow_fn
 
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                if trace and verbose and at.atShadow:
-                    g.trace('opening %s file: %s' % (
-                        g.choose(at.atShadow,'private','public'),fn))
                 at.inputFile = open(fn,'rb')
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -519,8 +517,7 @@ class atFile:
             s,loaded,fileKey = fromString,False,None
         else:
             s,loaded,fileKey = c.cacher.readFile(fileName,root)
-        # 2010/02/24: Never read an external file
-        # with file-like sentinels from the cache.
+        # Never read an external file with file-like sentinels from the cache.
         isFileLike = loaded and at.isFileLike(s)
         if not loaded or isFileLike:
             # if trace: g.trace('file-like file',fileName)
@@ -549,6 +546,7 @@ class atFile:
                 # at.page_width
                 # at.tab_width
 
+        if trace: g.trace(fileName)
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
@@ -2961,7 +2959,7 @@ class atFile:
         force,toString,writeAtFileNodesFlag,writtenFiles
     ):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self ; c = at.c
 
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
