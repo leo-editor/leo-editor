@@ -6479,6 +6479,112 @@ guess that the @shadow algorithm made. Clear?
 
 4. There is absolutely no way I shall entertain the notion of putting a special
 case inside the main @shadow loop to handle this "problem".
+#@+node:ekr.20101024062147.6021: *4* Fixed bug 604037: Status of expand All Subheads
+@nocolor-node
+
+Created the expand-all-subheads minibuffer command.
+#@+node:ekr.20101024062147.6022: *4* Fixed bug 618570: leoRst: option strip_at_file_prefixes...
+@nocolor-node
+
+leoRst: option strip_at_file_prefixes does not strip file prefixes in leo 4.7.1
+
+The problematic code is in method underline of class rstCommands.
+The last statement:
+
+  return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+
+returns the full heading and not stripped one, (in the s parameter)
+#@+node:ekr.20090502071837.84: *5* writeHeadlineHelper
+def writeHeadlineHelper (self,p):
+
+    h = p.h
+    if not self.atAutoWrite:
+        h = h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_ws(h,0)
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i].strip()
+    if word:
+        # Never generate a section for these...
+        if word in (
+            '@rst-option','@rst-options',
+            '@rst-no-head','@rst-no-headlines'
+        ):
+            return
+
+        # Remove all other headline commands from the headline.
+        for command in self.headlineCommands:
+            if word == command:
+                h = h [len(word):].strip()
+                break
+
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            self.write(self.underline(h,p)) # Used by @auto-rst.
+        else:
+            self.write('\n%s\n\n' % h)
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@+node:ekr.20090502071837.93: *5* underline (leoRst)
+def underline (self,s,p):
+
+    '''Return the underlining string to be used at the given level for string s.
+    This includes the headline, and possibly a leading overlining line.
+    '''
+
+    trace = False and not g.unitTesting
+
+    if self.atAutoWrite:
+        # We *might* generate overlines for top-level sections.
+        u = self.atAutoWriteUnderlines
+        level = p.level()-self.topLevel
+
+        if trace: g.trace('level: %s under2: %s under1: %s %s' % (
+            level,repr(self.underlines2),repr(self.underlines1),p.h))
+
+        # This is tricky. The index n depends on several factors.
+        if self.underlines2:
+            level -= 1 # There *is* a double-underlined section.
+            n = level
+        else:
+            n = level-1
+
+        if 0 <= n < len(u):
+            ch = u[n]
+        elif u:
+            ch = u[-1]
+        else:
+            g.trace('can not happen: no u')
+            ch = '#'
+
+        # 2010/01/10: write longer underlines for non-ascii characters.
+        n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        if level == 0 and self.underlines2:
+            return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+        else:
+            return '%s\n%s\n\n' % (p.h,ch*n)
+    else:
+        # The user is responsible for top-level overlining.
+        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
+        level = max(0,p.level()-self.topLevel)
+        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+        ch = u [level]
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
+        # return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+        return '%s\n%s\n\n' % (s.strip(),ch*n)
+            # Fixes bug 618570:
 #@+node:ekr.20100709113505.6383: *3* Features
 #@+node:ekr.20100517130356.5809: *4* New sentinels
 #@+node:ekr.20100709113505.6384: *4* Fixed the @test logic

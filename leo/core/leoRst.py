@@ -1946,7 +1946,9 @@ class rstCommands:
             ch = u [level]
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
-            return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+            # return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+            return '%s\n%s\n\n' % (s.strip(),ch*n)
+                # Fixes bug 618570:
     #@-others
 #@-others
 #@-leo

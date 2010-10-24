@@ -751,41 +751,17 @@ I think that's really all we're talking about, some @settings to test during imp
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20101024062147.6010: *3* Before a1
-#@+node:ekr.20101024062147.6013: *4* Easy bugs & features 10
-# None of these are essential for a1,
-# but I'll attempt to do the most annoying.
-#@+node:ekr.20101024062147.6026: *5* Easiest/Most annoying 5
-#@+node:ekr.20101023182938.5981: *6* Sometimes the not written: <fn> doesn't show the fn
-Maybe should use at.targetFileName or fn.
-#@+node:ekr.20101024062147.6001: *6* Fix bindings in log pane
-#@+node:ekr.20101023182938.5980: *6* Make sure all keys work in minibuffer
-Unbound keys: 
+#@+node:ekr.20100804095820.5812: *4* bug 613153: unable to describe root directory on thumb drive
+Fix in g.os_path_isabs
+#@+node:ekr.20031218072017.2151: *5* os_path_isabs
+def os_path_isabs(path):
 
-The following show up: perhaps they are considered plain keys:
+    """Return True if path is an absolute path."""
 
-f4, f5 (unbound)
-ins
-#@+node:ekr.20101024062147.5991: *6* bug 583955: key bindings in Find Panel need some love
+    path = g.toUnicodeFileEncoding(path)
 
-
-Make sure bindings work in log pane
-#@+node:ekr.20100206173123.5801: *6* Eliminate check python syntax commands
-@nocolor-node
-
-If not, I'd like to get rid of them.
-
-Don't panic: automatic syntax checking of python files on saves will remain.
-
-The problem with separate commands is that they don't necessarily check an
-entire command. Directives and section references are not the problem. Rather,
-the problems are thinks like 'return' in a node that doesn't look it is in a
-function.
-
-So unless somebody complains I'll remove the explicit syntax-checking commands.
-
-Edward
-#@+node:ekr.20101024062147.6027: *5* Other easy bugs 5
-#@+node:ekr.20100827095120.5862: *6* Seeking help with broken script
+    return os.path.isabs(path)
+#@+node:ekr.20100827095120.5862: *4* Seeking help with broken script
 @nocolor-node
 
 seeking help with broken script node after upgrade to 4.7
@@ -840,25 +816,40 @@ Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
 Is there some other object I should be using instead of c.frame? I
 simply don't understand the connection between the error and my
 script.
-#@+node:ekr.20100804095820.5812: *6* bug 613153: unable to describe root directory on thumb drive
-Fix in g.os_path_isabs
-#@+node:ekr.20031218072017.2151: *7* os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-#@+node:ekr.20101024062147.6022: *6* bug 618570:leoRst: option strip_at_file_prefixes does not strip file prefixes in leo 4.7.1
+#@+node:ekr.20101024062147.6013: *4* Easy bugs & features 7
+# None of these are essential for a1,
+# but I'll attempt to do the most annoying.
+#@+node:ekr.20100206173123.5801: *5* Eliminate check python syntax commands
 @nocolor-node
 
-The problematic code is in method underline of class rstCommands.
-The last statement
+If not, I'd like to get rid of them.
 
-  return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+Don't panic: automatic syntax checking of python files on saves will remain.
 
-returns the full heading and not stripped one, (in the s parameter)
+The problem with separate commands is that they don't necessarily check an
+entire command. Directives and section references are not the problem. Rather,
+the problems are thinks like 'return' in a node that doesn't look it is in a
+function.
+
+So unless somebody complains I'll remove the explicit syntax-checking commands.
+
+Edward
+#@+node:ekr.20101024062147.6026: *5* Easiest/most annoying 4
+#@+node:ekr.20101023182938.5981: *6* Sometimes the not written: <fn> doesn't show the fn
+Maybe should use at.targetFileName or fn.
+#@+node:ekr.20101024062147.6001: *6* Fix bindings in log pane
+#@+node:ekr.20101023182938.5980: *6* Make sure all keys work in minibuffer
+Unbound keys: 
+
+The following show up: perhaps they are considered plain keys:
+
+f4, f5 (unbound)
+ins
+#@+node:ekr.20101024062147.5991: *6* bug 583955: key bindings in Find Panel need some love
+
+
+Make sure bindings work in log pane
+#@+node:ekr.20101024062147.6027: *5* Other easy bugs 2
 #@+node:ekr.20101024062147.6023: *6* bug 622802: Go to clone" switches to the first chapter
 @nocolor-node
 
