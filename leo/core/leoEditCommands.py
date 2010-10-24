@@ -6283,6 +6283,8 @@ class leoCommandsClass (baseEditCommandsClass):
             'execute-script':               c.executeScript,
             'exit-leo':                     g.app.onQuit,
             'expand-all':                   c.expandAllHeadlines,
+            'expand-all-subheads':          c.expandAllSubheads,
+                # Fixes bug 604037 Status of expandAllSubheads
             'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
             'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
             'expand-next-level':            c.expandNextLevel,

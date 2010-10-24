@@ -751,22 +751,98 @@ I think that's really all we're talking about, some @settings to test during imp
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 
 #@+node:ekr.20101024062147.6010: *3* Before a1
-#@+node:ekr.20100206173123.5801: *4* Posting: Eliminate check python syntax commands?
+#@+node:ekr.20101024062147.6013: *4* Easy bugs & features 10
+# None of these are essential for a1,
+# but I'll attempt to do the most annoying.
+#@+node:ekr.20101024062147.6026: *5* Easiest/Most annoying 5
+#@+node:ekr.20101023182938.5981: *6* Sometimes the not written: <fn> doesn't show the fn
+Maybe should use at.targetFileName or fn.
+#@+node:ekr.20101024062147.6001: *6* Fix bindings in log pane
+#@+node:ekr.20101023182938.5980: *6* Make sure all keys work in minibuffer
+Unbound keys: 
+
+The following show up: perhaps they are considered plain keys:
+
+f4, f5 (unbound)
+ins
+#@+node:ekr.20101024062147.5991: *6* bug 583955: key bindings in Find Panel need some love
+
+
+Make sure bindings work in log pane
+#@+node:ekr.20100206173123.5801: *6* Eliminate check python syntax commands
 @nocolor-node
 
-Directives and section references are not the problem. Rather, the problems are
-thinks like 'return' in a node that doesn't look it is in a function.
+If not, I'd like to get rid of them.
 
-The solution would likely be to check the entire file at once in checkPython
-code. But this won't work for the check-all-python-code command.
+Don't panic: automatic syntax checking of python files on saves will remain.
 
-Do we really need these checks? I think not, because the automatic checks work
-so well.
-#@+node:ekr.20101023182938.5981: *4* Sometimes the not written: <fn> doesn't show the fn
-Maybe should use at.targetFileName or fn.
-#@+node:ekr.20100804095820.5812: *4* bug 613153: unable to describe root directory on thumb drive
+The problem with separate commands is that they don't necessarily check an
+entire command. Directives and section references are not the problem. Rather,
+the problems are thinks like 'return' in a node that doesn't look it is in a
+function.
+
+So unless somebody complains I'll remove the explicit syntax-checking commands.
+
+Edward
+#@+node:ekr.20101024062147.6027: *5* Other easy bugs 5
+#@+node:ekr.20100827095120.5862: *6* Seeking help with broken script
+@nocolor-node
+
+seeking help with broken script node after upgrade to 4.7
+http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
+
+The following is a better listing:
+
+=============================
+from mod_scripting import scriptingController
+sc = scriptingController(c)
+
+c.frame.addIconRow()
+first = True
+for node in p.following_siblings_iter():
+   if first:
+       first = False
+       continue
+   h = node.headString()
+   buttonText = sc.getButtonText(h)
+   statusLine = "Hoist %s" % h
+   b = sc.createIconButton(text=buttonText,
+                           command=None,
+                           shortcut=None,
+                           statusLine=statusLine,
+                           bg='yellow')
+   def deleteButtonCallback(event=None,sc=sc,b=b):
+       sc.deleteButton(b)
+
+   def hoistButtonCallback (event=None,c=c,p=node.copy()):
+       while (c.canDehoist()):
+           c.dehoist()
+       c.selectPosition(p)
+       c.hoist()
+
+   b.configure(command=hoistButtonCallback)
+   b.bind('<3>',deleteButtonCallback)
+=============================
+
+On Windows, I have determined that the problem occurs at
+c.frame.addIconRow(). The traceback I get is:
+
+exception executing script
+AttributeError: 'ToolbarTkIconBarClass' object has no attribute
+'iconFrameContainerFrame'
+--------------------
+ line 4324:
+* line 4325:             w =
+Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
+ line 4326:             w.pack(fill="x",pady=2)
+ line 4327:             self.iconFrame = w
+
+Is there some other object I should be using instead of c.frame? I
+simply don't understand the connection between the error and my
+script.
+#@+node:ekr.20100804095820.5812: *6* bug 613153: unable to describe root directory on thumb drive
 Fix in g.os_path_isabs
-#@+node:ekr.20031218072017.2151: *5* os_path_isabs
+#@+node:ekr.20031218072017.2151: *7* os_path_isabs
 def os_path_isabs(path):
 
     """Return True if path is an absolute path."""
@@ -774,8 +850,35 @@ def os_path_isabs(path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.isabs(path)
+#@+node:ekr.20101024062147.6022: *6* bug 618570:leoRst: option strip_at_file_prefixes does not strip file prefixes in leo 4.7.1
+@nocolor-node
+
+The problematic code is in method underline of class rstCommands.
+The last statement
+
+  return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+
+returns the full heading and not stripped one, (in the s parameter)
+#@+node:ekr.20101024062147.6023: *6* bug 622802: Go to clone" switches to the first chapter
+@nocolor-node
+
+If one or more chapters exist (other than main), "Go to clone" switches to the
+first chapter, whether or not the clone is in that chapter.
+
+This affects unitTest.leo, which is where I noticed it.
+#@+node:ekr.20101024062147.6024: *6* bug 622819: Ctrl-Shift movement is incorrect 
+@nocolor-node
+
+Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+is incorrect when there is an existing selection, which was created by some
+method other than Ctrl-Shift movement.
+
+Expected behavior: it should extend/contract the existing selection
+
+Actual behavior: it creates a new selection from the cursor position
 #@+node:ekr.20101024062147.6006: *4* External Files & Clones slideshows
 #@+node:ekr.20101024062147.5993: *4* Documentation
+#@+node:ekr.20101024062147.6019: *5* Move project stuff to LeoDocs.leo
 #@+node:ekr.20101024062147.6004: *5*  Notes
 #@+node:ekr.20060306194040: *6* The curse of knowledge
 @nocolor
@@ -1003,6 +1106,7 @@ Now the sidebar is collapsable. Mousing over the divider shows a << icon. When
 the sidebar is collapsed, mousing over the left edge shows a >> button.
 
 The question is, how to do this automatically?
+#@+node:ekr.20101024062147.6017: *5* Document slideshow stuff.
 #@+node:ekr.20100827114047.5899: *4* Installer/Distribution
 #@+node:ekr.20100827114047.5900: *5*  Convert to leoPy.leo EKRleoPy.leo, etc.
 #@+node:ekr.20100907092144.6076: *5* Make sure distribution contains correct files
@@ -1034,6 +1138,19 @@ Thanks for your careful checking.  Such checking is essential when preparing for
 I've added this discussion to my internal distribution checklist.
 
 Edward
+#@+node:ekr.20101024062147.6020: *5* Bug 514656 Uninstall operation does not work as expected
+On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
+<514656@bugs.launchpad.net> wrote:
+> Perhaps changing the current working directory away from the
+> installation directory before applying the NSIS RMDir command to the
+> installation directory would work. If not, use the /REBOOTOK option of
+> the RmDir command to force deletion of the installation folder on the
+> next reboot.
+>
+> Both these techniques are described at <
+> http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8 >.
+
+Thanks for these tips.
 #@+node:ekr.20100828110445.5824: *5* Finish installer
 @nocolor-node
 
@@ -1109,78 +1226,10 @@ I'd like to see this happen in the next day or so.  It would be a
 really good feature.
 
 Edward
-#@+node:ekr.20101024062147.6015: *4* All high-priority bugs
-#@+node:ekr.20101024062147.6013: *4* Easy bugs 4
-#@+node:ekr.20101024062147.6001: *5* Fix bindings in log pane
-#@+node:ekr.20101024062147.5991: *5* bug 583955: key bindings in Find Panel need some love
-
-
-Make sure bindings work in log pane
-#@+node:ekr.20100827095120.5862: *5* Fix script problem
-@nocolor-node
-
-seeking help with broken script node after upgrade to 4.7
-http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
-
-The following is a better listing:
-
-=============================
-from mod_scripting import scriptingController
-sc = scriptingController(c)
-
-c.frame.addIconRow()
-first = True
-for node in p.following_siblings_iter():
-   if first:
-       first = False
-       continue
-   h = node.headString()
-   buttonText = sc.getButtonText(h)
-   statusLine = "Hoist %s" % h
-   b = sc.createIconButton(text=buttonText,
-                           command=None,
-                           shortcut=None,
-                           statusLine=statusLine,
-                           bg='yellow')
-   def deleteButtonCallback(event=None,sc=sc,b=b):
-       sc.deleteButton(b)
-
-   def hoistButtonCallback (event=None,c=c,p=node.copy()):
-       while (c.canDehoist()):
-           c.dehoist()
-       c.selectPosition(p)
-       c.hoist()
-
-   b.configure(command=hoistButtonCallback)
-   b.bind('<3>',deleteButtonCallback)
-=============================
-
-On Windows, I have determined that the problem occurs at
-c.frame.addIconRow(). The traceback I get is:
-
-exception executing script
-AttributeError: 'ToolbarTkIconBarClass' object has no attribute
-'iconFrameContainerFrame'
---------------------
- line 4324:
-* line 4325:             w =
-Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
- line 4326:             w.pack(fill="x",pady=2)
- line 4327:             self.iconFrame = w
-
-Is there some other object I should be using instead of c.frame? I
-simply don't understand the connection between the error and my
-script.
-#@+node:ekr.20101023182938.5980: *5* Make sure all keys work in minibuffer
-Unbound keys: 
-
-The following show up: perhaps they are considered plain keys:
-
-f4, f5 (unbound)
-ins
 #@+node:ekr.20101024062147.6012: *3* Before rc1
-#@+node:ekr.20100223123910.5835: *4* bug 611413: The import logic for python code doesn't work as expected in some cases
-#@+node:ekr.20100827114047.5892: *4* bug 581031: Fix toggle-split-direction
+#@+node:ekr.20101024062147.6025: *4* Low-priority, somewhat hard bugs
+#@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
+#@+node:ekr.20100827114047.5892: *5* bug 581031: Fix toggle-split-direction
 Should preserve scrollbar location and appropriate window ratio.
 
 https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
@@ -1188,6 +1237,8 @@ https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
 #@+node:ekr.20101024062147.6014: *3* For 4.8.1
 # These will be moved to 4.8 final, time permitting.
 #@+node:ekr.20100206074650.5843: *4* Autocompletion
+# This can be done in the trunk.
+# For example new-complete commands.
 #@+node:ekr.20090131200406.14: *5* Notes
 #@+node:ekr.20080113165010: *6* About auto completion
 @nocolor
