@@ -14306,8 +14306,9 @@ The highlights of Leo 4.8:
 - Leo can now open multiple files from the command line.
 - Leo's ancient Tangle and Untangle commands are now deprecated.
   This will help newbies how to learn Leo.
-- Leo now shows "resurrected nodes" when opening outlines.
-  This is an important consistency check.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
 - The usual round of bug fixes.
@@ -14888,127 +14889,103 @@ The typical usage::
 #@+node:ekr.20101024234254.6112: *5* Removed mark-clones command
 It is useless in the one-node world.
 #@+node:ekr.20101024234254.6126: *5* Improved abbreviation commands
+http://groups.google.com/group/leo-editor/browse_thread/thread/24cb88a8c2a20a07#
+
 - Space activates abbreviations.
 - Multi-line abbreviations handled properly.
 - add-global-abbrev command uses entire selected text as the value of the abbreviation.
 - Inserted abbreviations are undoable.
 - Added support for @data abbreviations and @data global-abbreviations.
 - Added support for @bool enable-abbreviations.
-#@+node:ekr.20101024234254.6127: *6* aproposAbbreviations
-@pagewidth 45
-
-def aproposAbbreviations (self,event=None):
-
-    s = '''\
 
 apropos-abbreviations
 =====================
 
-When abbreviation mode is on (abbrev-mode
-toggles this mode) Leo will expand
-abbreviations as you type. Type the name of
-an abbreviation, followed by a space. As soon
-as you type the space, Leo will replace the
-name by the abbreviations value. You can undo
-the replacement as usual.
+When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
+abbreviations as you type. Type the name of an abbreviation, followed by a
+space. As soon as you type the space, Leo will replace the name by the
+abbreviations value. You can undo the replacement as usual.
 
-Note that defining any abbreviation
-automatically turns on abbreviation mode.
+Note that defining any abbreviation automatically turns on abbreviation mode.
 
-The add-global-abbreviation command
-(<alt-x>add-gl<tab><return>) takes the
-selected text as the replacement value of the
-abbreviation. The minibuffer prompts you for
-the name of the abbreviation.
+The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the abbreviation. The minibuffer
+prompts you for the name of the abbreviation.
 
 Settings
 ========
 
-As usual, the following settings have effect
-only in @settings trees:
+The following settings have effect only in @settings trees:
 
 @bool enable-abbreviations (default: False)
 
-When true, enables substitution of
-abbreviations.
+  When true, enables substitution of abbreviations.
 
 @data global-abbreviations
 @data abbreviations
 
-In both cases, body text contains lines of
-the form::
+  In both cases, body text contains lines of
+  the form::
 
    name=value
 
-name is the abbreviation name, value is the
-substituted text. Whitespace is ignore around
-the name, but is significant in the value.
-Abbreviation names may contain only
-alphabetic characters, but may start with the
-'@' sign.
+  name is the abbreviation name, value is the substituted text. Whitespace is
+  ignore around the name, but is significant in the value. Abbreviation names
+  may contain only alphabetic characters, but may start with the '@' sign.
 
-By *convention* @data global-abbreviations
-setting should be defined in
-myLeoSettings.leo, while @data abbreviations
-should be defined in other .leo files.
-Regardless of where they are defined,
-abbreviations in @data abbreviation nodes
-will override settings (with the same name)
-in @data global-abbreviations nodes.
+  By *convention* @data global-abbreviations setting should be defined in
+  myLeoSettings.leo, while @data abbreviations should be defined in other .leo
+  files. Regardless of where they are defined, abbreviations in @data
+  abbreviation nodes will override settings (with the same name) in @data
+  global-abbreviations nodes.
 
 Commands
 ========
 
 apropos-abbreviations
 
-Prints this summary.
+  Prints this summary.
 
 dabbrev-completion
 
-Insert the common prefix of all dynamic
-abbreviations matching the present word.
-Similar C-M-/ in Emacs.
+  Insert the common prefix of all dynamic abbreviations matching the present
+  word. Similar C-M-/ in Emacs.
 
 dabbrev-expands
 
-Expand the word in the buffer before point as
-a dynamic abbrev, by searching in the buffer
-for words starting with that abbreviation
-(dabbrev-expand). Similar to M-/ in Emacs
+  Expand the word in the buffer before point as a dynamic abbrev, by searching
+  in the buffer for words starting with that abbreviation (dabbrev-expand).
+  Similar to M-/ in Emacs
 
 abbrev-mode
 
-Toggles abbreviation mode. Abbreviations are
-only active when this mode is on.
+  Toggles abbreviation mode. Abbreviations are only active when this mode is on.
 
 add-global-abbrev
 
-Adds an abbreviation for the selected text.
-The minibuffer prompts for the abbreviation
-name.
+  Adds an abbreviation for the selected text. The minibuffer prompts for the
+  abbreviation name.
 
 inverse-add-global-abbrev
 
-Adds an abbreviation. The selected text is
-the abbreviation name. The minibuffer prompts
-for the value of the abbreviation.
+  Adds an abbreviation. The selected text is the abbreviation name. The
+  minibuffer prompts for the value of the abbreviation.
 
 kill-all-abbrevs
 
-Removes all abbreviations.
+  Removes all abbreviations.
 
 list-abbrevs
 
-Lists all active abbreviations.
+  Lists all active abbreviations.
 
 read-abbrev-file
 
-Read an external file containing
-abbreviations.
+  Read an external file containing abbreviations.
 
 write-abbrev-file
 
-Writes abbreviations to an external file.
+  Writes abbreviations to an external file.
 
 Scripting
 =========
@@ -15016,12 +14993,6 @@ Scripting
 Leo scripts may read abbreviations from a file with::
 
     c.abbrevCommands.readAbbreviationsFromFile(fn)
-
-'''
-
-    if not g.app.unitTesting:
-        g.es(g.adjustTripleString(s.rstrip(),
-            self.c.tab_width))
 #@+node:ekr.20101024234254.6092: *4* Features
 #@+node:ekr.20101024234254.6093: *5* New sentinels
 #@+node:ekr.20101024234254.6100: *5* Don't create @chapter node for new file
@@ -15084,6 +15055,8 @@ DnD creates @thin or @auto nodes if appropriate
 #@+node:ekr.20101024234254.6150: *5* write @edit nodes like @nosent nodes
 #@+node:ekr.20101024234254.6160: *5* Leo now uses PyEnchant to check spelling
 This is much safer than the old Aspell wrapper.
+#@+node:ekr.20101025080245.5749: *6* @url Leo uses PyEnchant
+http://groups.google.com/group/leo-editor/browse_thread/thread/62ac1977b3704590#
 #@+node:ekr.20101024234254.6243: *5* Improved @url nodes
 Having to type the url after @url in headline is annoying.
 

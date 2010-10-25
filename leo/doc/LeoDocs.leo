@@ -937,9 +937,7 @@
 <v t="ekr.20101024234254.6097"><vh>Added legend for print-settings command</vh></v>
 <v t="ekr.20101024234254.6110"><vh>Added code-to-rst command</vh></v>
 <v t="ekr.20101024234254.6112"><vh>Removed mark-clones command</vh></v>
-<v t="ekr.20101024234254.6126"><vh>Improved abbreviation commands</vh>
-<v t="ekr.20101024234254.6127"><vh>aproposAbbreviations</vh></v>
-</v>
+<v t="ekr.20101024234254.6126"><vh>Improved abbreviation commands</vh></v>
 </v>
 <v t="ekr.20101024234254.6092"><vh>Features</vh>
 <v t="ekr.20101024234254.6093"><vh>New sentinels</vh></v>
@@ -947,7 +945,9 @@
 <v t="ekr.20101024234254.6104"><vh>Improved install instructions &amp; logic</vh></v>
 <v t="ekr.20101024234745.5829"><vh>DnD outline nodes</vh></v>
 <v t="ekr.20101024234254.6150"><vh>write @edit nodes like @nosent nodes</vh></v>
-<v t="ekr.20101024234254.6160"><vh>Leo now uses PyEnchant to check spelling</vh></v>
+<v t="ekr.20101024234254.6160"><vh>Leo now uses PyEnchant to check spelling</vh>
+<v t="ekr.20101025080245.5749"><vh>@url Leo uses PyEnchant</vh></v>
+</v>
 <v t="ekr.20101024234254.6243"><vh>Improved @url nodes</vh></v>
 <v t="ekr.20101024234254.5847"><vh>Made sure that all @auto nodes end with a newline</vh></v>
 </v>
@@ -981,6 +981,7 @@
 </v>
 <v t="ekr.20101025080245.5543"><vh>Document screenshots plugin</vh></v>
 <v t="ekr.20101025080245.5546"><vh>@url Document Ville's server</vh></v>
+<v t="ekr.20101025080245.5734"><vh>add items to FAQ</vh></v>
 </v>
 <v t="ekr.20101025080245.5541"><vh>To do b1</vh>
 <v t="ekr.20101025080245.5535"><vh>Revise Tutorial</vh></v>
@@ -988,7 +989,69 @@
 </v>
 </v>
 <v t="ekr.20101025080245.5544"><vh>Fix installer problems</vh></v>
-<v t="ekr.20101025080245.5542"><vh>Review leo-editor</vh></v>
+<v t="ekr.20101025080245.5542"><vh>Review of leo-editor</vh>
+<v t="ekr.20101025080245.5735"><vh>10/2010</vh>
+<v t="ekr.20101025080245.5736"><vh>FAQ: how to syntax color sql</vh></v>
+<v t="ekr.20101025080245.5737"><vh>@url Prezi: a good model for intros</vh></v>
+<v t="ekr.20101025080245.5738"><vh>@url FAQ: how to use macros</vh></v>
+</v>
+<v t="ekr.20101025080245.5740"><vh>9/2010</vh>
+<v t="ekr.20101025080245.5739"><vh>@url Ville's server code</vh></v>
+<v t="ekr.20101025080245.5741"><vh>@url FAQ: creating windows file associations</vh></v>
+<v t="ekr.20101025080245.5742"><vh>@url Google: window 7 file icons</vh></v>
+<v t="ekr.20101025080245.5743"><vh>@url Google: window 7 file associations</vh></v>
+<v t="ekr.20101025080245.5744"><vh>@url qt-tabs</vh></v>
+<v t="ekr.20101025080245.5745"><vh>Slideshow stuff</vh>
+<v t="ekr.20101025080245.5746"><vh>@url slideshow will be a plugin</vh></v>
+<v t="ekr.20101025080245.5747"><vh>@url callouts with inkscape</vh></v>
+<v t="ekr.20101025080245.5752"><vh>@url more thougths about slides</vh></v>
+<v t="ekr.20101025080245.5758"><vh>@url (Aug) Leo vrs Screenbook Maker and storyboarding</vh></v>
+<v t="ekr.20101025080245.5759"><vh>@url (Aug) S5 is not good enough</vh></v>
+<v t="ekr.20101025080245.5760"><vh>@url (Aug) Deconstructing screenbook maker</vh></v>
+</v>
+<v t="ekr.20101025080245.5748"><vh>@url DnD howto</vh></v>
+<v t="ekr.20101025080245.5750"><vh>@url interact plugin (ileo)</vh></v>
+</v>
+<v t="ekr.20101025080245.5753"><vh>8/2010</vh>
+<v t="ekr.20101025080245.5751"><vh>@url leoscreen plugin</vh></v>
+<v t="ekr.20101025080245.5754"><vh>@url time to retire tk? (design)</vh></v>
+<v t="ekr.20101025080245.5755"><vh>@url simulating &lt;&lt;nodes&gt;&gt; in rst branches (design)</vh></v>
+<v t="ekr.20101025080245.5756"><vh>@url @auto import problems</vh></v>
+<v t="ekr.20101025080245.5757"><vh>@url leo in a nutshell</vh></v>
+<v t="ekr.20101025080245.5761"><vh>@url The curse of knowledge</vh></v>
+<v t="ekr.20101025080245.5762"><vh>@url second draft of rst3 tutorial</vh></v>
+<v t="ekr.20101025080245.5763"><vh>@url quickmove tutorial</vh></v>
+<v t="ekr.20101025080245.5764"><vh>@url ** sharing code in scripts</vh></v>
+<v t="ekr.20101025080245.5765"><vh>@url simplifying docs for rst3</vh></v>
+<v t="ekr.20101025080245.5766"><vh>@url Leo screencast on utube</vh></v>
+<v t="ekr.20101025080245.5767"><vh>@url @root must disappear</vh></v>
+<v t="ekr.20101025080245.5768"><vh>@url revising chapter 6 (design chapter)</vh></v>
+<v t="ekr.20101025080245.5769"><vh>@url ** p.deletePositionsInList</vh></v>
+</v>
+<v t="ekr.20101025080245.5770"><vh>7/2010</vh>
+<v t="ekr.20101025080245.5771"><vh>@url Leo3k works with docutils</vh></v>
+<v t="ekr.20101025080245.5772"><vh>@url ** At last: deleting "resurrected nodes"</vh>
+<v t="ekr.20101025080245.5773"><vh>Note: Leo creates both resurrected nodes and recovered nodes</vh></v>
+</v>
+<v t="ekr.20101025080245.5774"><vh>@url @auto now regularizes newlines</vh></v>
+<v t="ekr.20101025080245.5775"><vh>@url new sentinels</vh></v>
+<v t="ekr.20101025080245.5776"><vh>@url complications re new sentinels (design)</vh></v>
+<v t="ekr.20101025080245.5777"><vh>@url how to avoid usernames in outlines</vh></v>
+</v>
+<v t="ekr.20101025080245.5778"><vh>6/2010</vh>
+<v t="ekr.20101025080245.5779"><vh>@url @auto-rst issue</vh></v>
+</v>
+<v t="ekr.20101025080245.5780"><vh>5/2010</vh>
+<v t="ekr.20101025080245.5781"><vh>@url much simpler sentinels</vh></v>
+</v>
+<v t="ekr.20101025080245.5786"><vh>4/2010</vh>
+<v t="ekr.20101025080245.5782"><vh>@url new-pylint is too slow</vh></v>
+<v t="ekr.20101025080245.5783"><vh>@url thoughts about autocompletion</vh></v>
+</v>
+<v t="ekr.20101025080245.5785"><vh>3/2010</vh>
+<v t="ekr.20101025080245.5784"><vh>@url @language pseudoplain?</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -5195,8 +5258,9 @@ The highlights of Leo 4.8:
 - Leo can now open multiple files from the command line.
 - Leo's ancient Tangle and Untangle commands are now deprecated.
   This will help newbies how to learn Leo.
-- Leo now shows "resurrected nodes" when opening outlines.
-  This is an important consistency check.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
 - The usual round of bug fixes.
@@ -5825,127 +5889,103 @@ The fix was to leoTree.selectHelper and qtBody.onFocusIn.
 </t>
 <t tx="ekr.20101024234254.6112">It is useless in the one-node world.
 </t>
-<t tx="ekr.20101024234254.6126">- Space activates abbreviations.
+<t tx="ekr.20101024234254.6126">http://groups.google.com/group/leo-editor/browse_thread/thread/24cb88a8c2a20a07#
+
+- Space activates abbreviations.
 - Multi-line abbreviations handled properly.
 - add-global-abbrev command uses entire selected text as the value of the abbreviation.
 - Inserted abbreviations are undoable.
 - Added support for @data abbreviations and @data global-abbreviations.
 - Added support for @bool enable-abbreviations.
-</t>
-<t tx="ekr.20101024234254.6127">@pagewidth 45
-
-def aproposAbbreviations (self,event=None):
-
-    s = '''\
 
 apropos-abbreviations
 =====================
 
-When abbreviation mode is on (abbrev-mode
-toggles this mode) Leo will expand
-abbreviations as you type. Type the name of
-an abbreviation, followed by a space. As soon
-as you type the space, Leo will replace the
-name by the abbreviations value. You can undo
-the replacement as usual.
+When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
+abbreviations as you type. Type the name of an abbreviation, followed by a
+space. As soon as you type the space, Leo will replace the name by the
+abbreviations value. You can undo the replacement as usual.
 
-Note that defining any abbreviation
-automatically turns on abbreviation mode.
+Note that defining any abbreviation automatically turns on abbreviation mode.
 
-The add-global-abbreviation command
-(&lt;alt-x&gt;add-gl&lt;tab&gt;&lt;return&gt;) takes the
-selected text as the replacement value of the
-abbreviation. The minibuffer prompts you for
-the name of the abbreviation.
+The add-global-abbreviation command (&lt;alt-x&gt;add-gl&lt;tab&gt;&lt;return&gt;) takes the
+selected text as the replacement value of the abbreviation. The minibuffer
+prompts you for the name of the abbreviation.
 
 Settings
 ========
 
-As usual, the following settings have effect
-only in @settings trees:
+The following settings have effect only in @settings trees:
 
 @bool enable-abbreviations (default: False)
 
-When true, enables substitution of
-abbreviations.
+  When true, enables substitution of abbreviations.
 
 @data global-abbreviations
 @data abbreviations
 
-In both cases, body text contains lines of
-the form::
+  In both cases, body text contains lines of
+  the form::
 
    name=value
 
-name is the abbreviation name, value is the
-substituted text. Whitespace is ignore around
-the name, but is significant in the value.
-Abbreviation names may contain only
-alphabetic characters, but may start with the
-'@' sign.
+  name is the abbreviation name, value is the substituted text. Whitespace is
+  ignore around the name, but is significant in the value. Abbreviation names
+  may contain only alphabetic characters, but may start with the '@' sign.
 
-By *convention* @data global-abbreviations
-setting should be defined in
-myLeoSettings.leo, while @data abbreviations
-should be defined in other .leo files.
-Regardless of where they are defined,
-abbreviations in @data abbreviation nodes
-will override settings (with the same name)
-in @data global-abbreviations nodes.
+  By *convention* @data global-abbreviations setting should be defined in
+  myLeoSettings.leo, while @data abbreviations should be defined in other .leo
+  files. Regardless of where they are defined, abbreviations in @data
+  abbreviation nodes will override settings (with the same name) in @data
+  global-abbreviations nodes.
 
 Commands
 ========
 
 apropos-abbreviations
 
-Prints this summary.
+  Prints this summary.
 
 dabbrev-completion
 
-Insert the common prefix of all dynamic
-abbreviations matching the present word.
-Similar C-M-/ in Emacs.
+  Insert the common prefix of all dynamic abbreviations matching the present
+  word. Similar C-M-/ in Emacs.
 
 dabbrev-expands
 
-Expand the word in the buffer before point as
-a dynamic abbrev, by searching in the buffer
-for words starting with that abbreviation
-(dabbrev-expand). Similar to M-/ in Emacs
+  Expand the word in the buffer before point as a dynamic abbrev, by searching
+  in the buffer for words starting with that abbreviation (dabbrev-expand).
+  Similar to M-/ in Emacs
 
 abbrev-mode
 
-Toggles abbreviation mode. Abbreviations are
-only active when this mode is on.
+  Toggles abbreviation mode. Abbreviations are only active when this mode is on.
 
 add-global-abbrev
 
-Adds an abbreviation for the selected text.
-The minibuffer prompts for the abbreviation
-name.
+  Adds an abbreviation for the selected text. The minibuffer prompts for the
+  abbreviation name.
 
 inverse-add-global-abbrev
 
-Adds an abbreviation. The selected text is
-the abbreviation name. The minibuffer prompts
-for the value of the abbreviation.
+  Adds an abbreviation. The selected text is the abbreviation name. The
+  minibuffer prompts for the value of the abbreviation.
 
 kill-all-abbrevs
 
-Removes all abbreviations.
+  Removes all abbreviations.
 
 list-abbrevs
 
-Lists all active abbreviations.
+  Lists all active abbreviations.
 
 read-abbrev-file
 
-Read an external file containing
-abbreviations.
+  Read an external file containing abbreviations.
 
 write-abbrev-file
 
-Writes abbreviations to an external file.
+  Writes abbreviations to an external file.
 
 Scripting
 =========
@@ -5953,12 +5993,6 @@ Scripting
 Leo scripts may read abbreviations from a file with::
 
     c.abbrevCommands.readAbbreviationsFromFile(fn)
-
-'''
-
-    if not g.app.unitTesting:
-        g.es(g.adjustTripleString(s.rstrip(),
-            self.c.tab_width))
 </t>
 <t tx="ekr.20101024234254.6150"></t>
 <t tx="ekr.20101024234254.6160">This is much safer than the old Aspell wrapper.
@@ -6246,7 +6280,8 @@ The question is, how to do this automatically?
 <t tx="ekr.20101025080245.5539"></t>
 <t tx="ekr.20101025080245.5540"></t>
 <t tx="ekr.20101025080245.5541"></t>
-<t tx="ekr.20101025080245.5542"></t>
+<t tx="ekr.20101025080245.5542">@nocolor
+</t>
 <t tx="ekr.20101025080245.5543"></t>
 <t tx="ekr.20101025080245.5544">@nocolor-node
 
@@ -6309,6 +6344,59 @@ I still does not recognize PyQt
 
 </t>
 <t tx="ekr.20101025080245.5546">http://mail.google.com/mail/#inbox/12adebe2ffe80572</t>
+<t tx="ekr.20101025080245.5734"></t>
+<t tx="ekr.20101025080245.5735"></t>
+<t tx="ekr.20101025080245.5736">use @language plsql </t>
+<t tx="ekr.20101025080245.5737">http://groups.google.com/group/leo-editor/browse_thread/thread/a1734a5f7ae25444#</t>
+<t tx="ekr.20101025080245.5738">http://groups.google.com/group/leo-editor/browse_thread/thread/866245f923f382a7#</t>
+<t tx="ekr.20101025080245.5739">http://groups.google.com/group/leo-editor/browse_thread/thread/278aa85d7298a319#</t>
+<t tx="ekr.20101025080245.5740"></t>
+<t tx="ekr.20101025080245.5741">http://groups.google.com/group/leo-editor/browse_thread/thread/fec80438b9619c1c#</t>
+<t tx="ekr.20101025080245.5742">http://www.winhelponline.com/blog/change-file-type-icon-windows-7-and-vista/</t>
+<t tx="ekr.20101025080245.5743">http://vista.blorge.com/2009/10/26/how-to-change-file-type-associations-in-windows-7/</t>
+<t tx="ekr.20101025080245.5744">http://groups.google.com/group/leo-editor/browse_thread/thread/2efdbc3b47846a15#</t>
+<t tx="ekr.20101025080245.5745"></t>
+<t tx="ekr.20101025080245.5746">http://groups.google.com/group/leo-editor/browse_thread/thread/4da36f0d897a25e8#</t>
+<t tx="ekr.20101025080245.5747">http://groups.google.com/group/leo-editor/browse_thread/thread/be5401b424a022a7#</t>
+<t tx="ekr.20101025080245.5748">http://groups.google.com/group/leo-editor/browse_thread/thread/7752d3e14b49ef35#</t>
+<t tx="ekr.20101025080245.5749">http://groups.google.com/group/leo-editor/browse_thread/thread/62ac1977b3704590#</t>
+<t tx="ekr.20101025080245.5750">http://groups.google.com/group/leo-editor/browse_thread/thread/d58333f2ebae2675#</t>
+<t tx="ekr.20101025080245.5751">http://www.mail-archive.com/leo-editor@googlegroups.com/msg11439.html</t>
+<t tx="ekr.20101025080245.5752">http://groups.google.com/group/leo-editor/browse_thread/thread/c66f30b5d09d3411#</t>
+<t tx="ekr.20101025080245.5753"></t>
+<t tx="ekr.20101025080245.5754">http://groups.google.com/group/leo-editor/browse_thread/thread/c66f30b5d09d3411#</t>
+<t tx="ekr.20101025080245.5755">http://groups.google.com/group/leo-editor/browse_thread/thread/8842b4878975e3f1#</t>
+<t tx="ekr.20101025080245.5756">http://groups.google.com/group/leo-editor/browse_thread/thread/cde63221041d9afc#</t>
+<t tx="ekr.20101025080245.5757">http://groups.google.com/group/leo-editor/browse_thread/thread/e9c5f73d048597ae#</t>
+<t tx="ekr.20101025080245.5758">http://groups.google.com/group/leo-editor/browse_thread/thread/fd52e4187eec7bd0#</t>
+<t tx="ekr.20101025080245.5759">http://groups.google.com/group/leo-editor/browse_thread/thread/44eb904d6b32cdd8#</t>
+<t tx="ekr.20101025080245.5760">http://groups.google.com/group/leo-editor/browse_thread/thread/3da73f0c2da2c416#</t>
+<t tx="ekr.20101025080245.5761">http://groups.google.com/group/leo-editor/browse_thread/thread/3da73f0c2da2c416#</t>
+<t tx="ekr.20101025080245.5762">http://groups.google.com/group/leo-editor/browse_thread/thread/c02a442bea48f233#</t>
+<t tx="ekr.20101025080245.5763">http://groups.google.com/group/leo-editor/browse_thread/thread/8eaf13b6ebda0fcd#</t>
+<t tx="ekr.20101025080245.5764">http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#</t>
+<t tx="ekr.20101025080245.5765">http://groups.google.com/group/leo-editor/browse_thread/thread/5c1ef1abcc01ef50#</t>
+<t tx="ekr.20101025080245.5766">http://groups.google.com/group/leo-editor/browse_thread/thread/ce7353ce5614efca#</t>
+<t tx="ekr.20101025080245.5767">http://groups.google.com/group/leo-editor/browse_thread/thread/15f05a216697ac21#</t>
+<t tx="ekr.20101025080245.5768">http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#</t>
+<t tx="ekr.20101025080245.5769">http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#</t>
+<t tx="ekr.20101025080245.5770"></t>
+<t tx="ekr.20101025080245.5771">http://groups.google.com/group/leo-editor/browse_thread/thread/64dfc56394abcee8#</t>
+<t tx="ekr.20101025080245.5772">http://groups.google.com/group/leo-editor/browse_thread/thread/64dfc56394abcee8#</t>
+<t tx="ekr.20101025080245.5773"></t>
+<t tx="ekr.20101025080245.5774">http://groups.google.com/group/leo-editor/browse_thread/thread/c351a5e3399fcf09#</t>
+<t tx="ekr.20101025080245.5775">http://groups.google.com/group/leo-editor/browse_thread/thread/ace3046ffb94805b#</t>
+<t tx="ekr.20101025080245.5776">http://groups.google.com/group/leo-editor/browse_thread/thread/76d12c9abd586b16#</t>
+<t tx="ekr.20101025080245.5777">http://groups.google.com/group/leo-editor/browse_thread/thread/e21f8efa58c204e7#</t>
+<t tx="ekr.20101025080245.5778"></t>
+<t tx="ekr.20101025080245.5779">http://groups.google.com/group/leo-editor/browse_thread/thread/f1deadac39f8f8c5#</t>
+<t tx="ekr.20101025080245.5780"></t>
+<t tx="ekr.20101025080245.5781">http://groups.google.com/group/leo-editor/browse_thread/thread/8b659c96720afd53#</t>
+<t tx="ekr.20101025080245.5782">http://groups.google.com/group/leo-editor/browse_thread/thread/de7fc699752f7a39#</t>
+<t tx="ekr.20101025080245.5783">http://groups.google.com/group/leo-editor/browse_thread/thread/3dd91b318f17a359#</t>
+<t tx="ekr.20101025080245.5784">http://groups.google.com/group/leo-editor/topics?start=360&amp;sa=N</t>
+<t tx="ekr.20101025080245.5785"></t>
+<t tx="ekr.20101025080245.5786"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
