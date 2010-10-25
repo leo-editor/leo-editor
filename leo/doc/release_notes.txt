@@ -14824,6 +14824,21 @@ Traceback (most recent call last):
 UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position 31: character maps to <undefined>
 path changed for @thin Unicode-Â-folder/unicode-Â-test2.txt
 created: C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
+#@+node:ekr.20101025080245.5505: *6* Eliminated check python syntax commands, but retained code
+@nocolor-node
+
+Removed the check-all-python-code and check-python code commands
+(and removed the references to these commands in menus.)
+
+- Retained the actual code for scripts.
+- Retained automatic syntax checking of python files on saves
+
+The problem with separate commands is that they don't necessarily check an
+entire file: things like 'return' in a node that doesn't look it is in a
+function.
+
+Directives and section references are not the problem:
+they get translated to comments before the check.
 #@+node:ekr.20101024234745.5827: *4* Code features
 #@+node:ekr.20101024234254.6101: *5* Remember whether @asis/@nosent existed at read time
 Removed all traces of the "significant change" logic. The read code remembers

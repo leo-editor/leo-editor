@@ -232,6 +232,7 @@ the sidebar is collapsed, mousing over the left edge shows a >> button.
 
 The question is, how to do this automatically?
 #@+node:ekr.20101024062147.6017: *5* Document slideshow stuff.
+#@+node:ekr.20101025081416.5896: *5* Document {{expression}} in paths
 #@+node:ekr.20100827114047.5899: *4* Installer/Distribution
 #@+node:ekr.20101024062147.6020: *5* Bug 514656 Uninstall operation does not work as expected
 On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
@@ -312,21 +313,6 @@ I've added this discussion to my internal distribution checklist.
 
 Edward
 #@+node:ekr.20101024062147.6006: *4* External Files & Clones slideshows
-#@+node:ekr.20100206173123.5801: *4* Eliminate check python syntax commands
-@nocolor-node
-
-If not, I'd like to get rid of them.
-
-Don't panic: automatic syntax checking of python files on saves will remain.
-
-The problem with separate commands is that they don't necessarily check an
-entire command. Directives and section references are not the problem. Rather,
-the problems are thinks like 'return' in a node that doesn't look it is in a
-function.
-
-So unless somebody complains I'll remove the explicit syntax-checking commands.
-
-Edward
 #@+node:ekr.20101024062147.6011: *3* Before b1
 #@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect
 @nocolor-node

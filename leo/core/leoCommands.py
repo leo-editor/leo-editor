@@ -4041,6 +4041,8 @@ class baseCommands (object):
             #@-<< print summary message >>
         return errors
     #@+node:ekr.20040723094220: *6* Check Outline commands & allies
+    # This code is no longer used by any Leo command,
+    # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *7* c.checkAllPythonCode
     def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
 
