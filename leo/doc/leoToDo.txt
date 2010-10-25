@@ -750,75 +750,59 @@ as often there's more docs on a class in the __init__ than the class docstring.
 I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6010: *3* Before a1
-#@+node:ekr.20100206173123.5801: *4* Eliminate check python syntax commands
+#@+node:ekr.20101024062147.5993: *4* Documentation
+#@+node:ekr.20101024235225.5966: *5* Investigated invalid bug: 657374 Content of shadow file affects the outline structure
+See http://groups.google.com/group/leo-editor/browse_thread/thread/0eab8b60c403628d
+
+*** @shadow cache has higher priority than the actual files ***
+#@+node:ekr.20101024235225.5967: *6* Why the @shadow bug is invalid
 @nocolor-node
 
-If not, I'd like to get rid of them.
+This bug is invalid, as I shall now explain.
 
-Don't panic: automatic syntax checking of python files on saves will remain.
+QQQ
+- download http://dl.dropbox.com/u/4226858/test.tar.gz
+- extract it
+- the directory contains a very minimalistic bzr repo with two commits, issue `bzr` log to see them
+- the repo was archived after the second commit
+- do `bzr update -r 1` to go back to the state after the first commit
+   [EKR: it's bzr revert: update has no -r argument.]
+- open test.leo, see the node method2() with empty body
+- there should be no method2() node after the first commit!
+QQQ
 
-The problem with separate commands is that they don't necessarily check an
-entire command. Directives and section references are not the problem. Rather,
-the problems are thinks like 'return' in a node that doesn't look it is in a
-function.
+The conclusion, that there should be no method2() is incorrect. Indeed, when Leo
+opens after the revert (not update), it announces: updated private xtest.py from
+public test.py.
 
-So unless somebody complains I'll remove the explicit syntax-checking commands.
+This is correct, and has nothing in particular to do with caching.
 
-Edward
-#@+node:ekr.20101024062147.5993: *4* Documentation
-#@+node:ekr.20101024062147.6019: *5* Move project stuff to LeoDocs.leo
-#@+node:ekr.20101024062147.6004: *5*  Notes
-#@+node:ekr.20060306194040: *6* The curse of knowledge
-@nocolor
+The updated xtest.py comes from the fundamental @shadow algorithm:
+propagate_changed_lines.
 
-The curse of knowledge
-http://groups.google.com/group/leo-editor/browse_thread/thread/3e75787223ee9303
+The assertion behind this bug report is that the @shadow algorithm "should" have
+deleted the node's sentinels along with its contents. This assertion is dubious,
+or rather simply wrong, for the following reasons:
 
-(Rich) I'd like to see something like:
+1. The @shadow algorithm has no way of "guessing" whether the node "should" or
+"should not" have been deleted.
 
-[Buttons]
-...[What are Buttons good for?]
-...[How do I make my own buttons?]
-......[Some commands you can use with buttons]
-......[Where to find button commands]
-#@+node:ekr.20100828074347.5828: *6* Slide show resources
-http://sourceforge.net/forum/message.php?msg_id=3615177
-By: ktenney
+2. The **fundamental property** of the @shadow file is **still valid** after the
+update, namely that the @shadow tree will generate the updated *public* file.
+The contents of the *private* file, while interesting, have *nothing* to do with
+this fundamental property.
 
-High on my ToLearn list is vnc2swf
-http://www.unixuser.org/~euske/vnc2swf/
+3. This bug report is simply a special case of a "fact of life" about @shadow,
+namely that the @shadow algorithm **can not in principle** guess between two or
+more ways of updating the *private* file when each of the ways yields the same
+*public* file. But this "fact of life" is not serious. If you don't like the
+"guesses" that the @shadow algorithm has made, you simple change the @shadow
+tree. After saving, the *private* file *will* record your choice, and the next
+time you open the @shadow tree you will see the choices *you* made, not the
+guess that the @shadow algorithm made. Clear?
 
-http://sourceforge.net/forum/message.php?msg_id=3615278
-By: James
-
-A lot of people are now using Wink for demonstrations
-(http://www.debugmode.com/wink/), it's is free and seems to work well.
-
-Check out http://murl.se/11332
-At the bottom they talk about tools and techniques.
-http://showmedo.com seems like it would be a good
-place to host vids also.
-
-I've listened/watched a fair number of things like this;
-my recomendation is to get a good microphone and
-pre-amp to record your voice, and prepare the audio
-track carefully. It is so aggravating when
-it's hard to discern the words being spoken.
-
-http://sourceforge.net/forum/message.php?msg_id=3758271
-
-From: Rich
-
-Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
-and it has a very good tutorial -- leads the beginner by the hand through much
-of the language. Also the help file has working code snippets
-to cut-n-paste-n-play-with. 
-#@+node:ekr.20100904134301.8336: *6* Generate pdf on Linux
-El 01/05/09 15:12, Ville M. Vainio escribió:
-
-- make latex
-- cd _build/latex
-- make all-pdf
+4. There is absolutely no way I shall entertain the notion of putting a special
+case inside the main @shadow loop to handle this "problem".
 #@+node:ekr.20101024062147.6005: *5* Users guide
 #@+node:ekr.20101024062147.6007: *6* Easy
 #@+node:ekr.20100826110728.5846: *7* Add explanation of icon box to tutorial
@@ -1075,6 +1059,21 @@ I've added this discussion to my internal distribution checklist.
 
 Edward
 #@+node:ekr.20101024062147.6006: *4* External Files & Clones slideshows
+#@+node:ekr.20100206173123.5801: *4* Eliminate check python syntax commands
+@nocolor-node
+
+If not, I'd like to get rid of them.
+
+Don't panic: automatic syntax checking of python files on saves will remain.
+
+The problem with separate commands is that they don't necessarily check an
+entire command. Directives and section references are not the problem. Rather,
+the problems are thinks like 'return' in a node that doesn't look it is in a
+function.
+
+So unless somebody complains I'll remove the explicit syntax-checking commands.
+
+Edward
 #@+node:ekr.20101024062147.6011: *3* Before b1
 #@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect 
 @nocolor-node

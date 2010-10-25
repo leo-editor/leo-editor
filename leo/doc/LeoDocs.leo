@@ -182,10 +182,6 @@
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
-<v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
-<v t="ekr.20100805165051.7177"><vh>@thin release_notes.txt</vh></v>
-</v>
 <v t="ekr.20100807084131.4409"><vh>To do here</vh>
 <v t="ekr.20101019061953.5422"><vh>Reorganize Users Guide</vh></v>
 </v>
@@ -611,6 +607,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101021092135.5431"><vh> Slideshows to-do</vh></v>
 <v t="ekr.20100821182153.4345"><vh>@slideshow Installation</vh>
 <v t="ekr.20101014034526.5299"><vh>@slide ((using Leo's installer</vh>
 <v t="ekr.20101021093111.5432"><vh>@url built slide</vh></v>
@@ -816,8 +813,6 @@
 <v t="ekr.20101016043116.5344"><vh>@url final output file</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20101021092135.5431"><vh>Slideshows to-do</vh></v>
 <v t="ekr.20101014110348.5338"><vh>@button meld</vh>
 <v t="ekr.20101014110348.5339"><vh>class MeldController</vh>
 <v t="ekr.20101016043116.5353"><vh>utils</vh>
@@ -875,6 +870,12 @@
 <v t="ekr.20101014110348.5271"><vh>at-auto</vh>
 <v t="ekr.20101014110348.5272"><vh>((@auto</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="edream.110203163054.63,ekr.20101024234254.5433,ekr.20101024234745.5823,"><vh>@thin release_notes.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>

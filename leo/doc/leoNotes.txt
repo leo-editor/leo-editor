@@ -363,6 +363,58 @@ Call hierarchy tracing (using python 'trace' module)
 - Tomboy: wiki-like notes
   http://projects.gnome.org/tomboy/index.html
   http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
+#@+node:ekr.20101024062147.6004: ** Documentation notes
+#@+node:ekr.20060306194040: *3* The curse of knowledge
+@nocolor
+
+The curse of knowledge
+http://groups.google.com/group/leo-editor/browse_thread/thread/3e75787223ee9303
+
+(Rich) I'd like to see something like:
+
+[Buttons]
+...[What are Buttons good for?]
+...[How do I make my own buttons?]
+......[Some commands you can use with buttons]
+......[Where to find button commands]
+#@+node:ekr.20100828074347.5828: *3* Slide show resources
+http://sourceforge.net/forum/message.php?msg_id=3615177
+By: ktenney
+
+High on my ToLearn list is vnc2swf
+http://www.unixuser.org/~euske/vnc2swf/
+
+http://sourceforge.net/forum/message.php?msg_id=3615278
+By: James
+
+A lot of people are now using Wink for demonstrations
+(http://www.debugmode.com/wink/), it's is free and seems to work well.
+
+Check out http://murl.se/11332
+At the bottom they talk about tools and techniques.
+http://showmedo.com seems like it would be a good
+place to host vids also.
+
+I've listened/watched a fair number of things like this;
+my recomendation is to get a good microphone and
+pre-amp to record your voice, and prepare the audio
+track carefully. It is so aggravating when
+it's hard to discern the words being spoken.
+
+http://sourceforge.net/forum/message.php?msg_id=3758271
+
+From: Rich
+
+Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
+and it has a very good tutorial -- leads the beginner by the hand through much
+of the language. Also the help file has working code snippets
+to cut-n-paste-n-play-with. 
+#@+node:ekr.20100904134301.8336: *3* Generate pdf on Linux
+El 01/05/09 15:12, Ville M. Vainio escribió:
+
+- make latex
+- cd _build/latex
+- make all-pdf
 #@+node:ekr.20091218120633.6300: ** Other notes
 #@+node:ekr.20090601083544.6066: *3* Cool plugins & Leo code
 These are plugins/projects that I'd like to investigate further.
