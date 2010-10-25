@@ -56,21 +56,27 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20100815092343.1489"><vh>Installer to do</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
+<v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
+<v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
+<v t="ekr.20101025095431.1520"><vh>Fix install problem</vh></v>
+</v>
+<v t="ekr.20101025095431.1522"><vh>Make sure distribution contains correct files</vh></v>
+</v>
+<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
-<v t="ekr.20090901092556.1573" a="E"><vh>genHead</vh>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901092556.1573"><vh>genHead</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
-<v t="ekr.20090901092556.1575" a="E"><vh>genMiddle</vh>
+<v t="ekr.20090901092556.1575"><vh>genMiddle</vh>
 <v t="ekr.20090901092556.1606"><vh>genAdditionalIcons</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -1445,7 +1451,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </t>
-<t tx="ekr.20100815092343.1489">@nocolor-node
+<t tx="ekr.20101025095431.1517">@nocolor-node
 
 To do:
 - Use new interface.
@@ -1462,6 +1468,83 @@ Done
 - Test that uninstall from control panel removes top-level folder.
 - Eliminate duplicate prompt
 
+</t>
+<t tx="ekr.20101025095431.1518">On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
+&lt;514656@bugs.launchpad.net&gt; wrote:
+&gt; Perhaps changing the current working directory away from the
+&gt; installation directory before applying the NSIS RMDir command to the
+&gt; installation directory would work. If not, use the /REBOOTOK option of
+&gt; the RmDir command to force deletion of the installation folder on the
+&gt; next reboot.
+&gt;
+&gt; Both these techniques are described at &lt;
+&gt; http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8 &gt;.
+
+Thanks for these tips.
+</t>
+<t tx="ekr.20101025095431.1519">@nocolor-node
+
+Docs and installer should have top priority
+http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
+
+2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
+unrelated to Leo, I'll presumably need to reinstall Leo as well. It
+would be nice not to have to.
+
+These goals could possibly be achieved by installing Leo in an
+independent directory (chosen by the user as part of the installation)
+and adding a .pth file into Python's site-packages directory (see
+documentation for the site module). Then the leo script can be
+installed alongside the package - so you have
+
+    ... Program Files\Leo\
+            leo.bat
+            package\leo\...
+
+leo.pth:
+...\Program Files\Leo\package 
+</t>
+<t tx="ekr.20101025095431.1520">@nocolor-node
+
+I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
+I figured out on my own to make a shortcut to launchLeo.py at this
+location:
+
+C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
+
+which works. (whooppee)
+
+However the shortcuts that the "leo install" created don't work they
+abort.
+</t>
+<t tx="ekr.20101025095431.1522">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
+Status of 'make-leo-zip' in Outline 'leoDist' ?
+
+On Sep 6, 2:39 pm, VR &lt;viktor.ransm...@gmail.com&gt; wrote:
+
+&gt; * The file 'INSTALL.TXT' contains the outline text with sentinels from
+&gt; 'Chapter 1: Installing Leo'
+
+That can't be good.  I'll make sure sentinels don't appear in the distro.
+
+&gt; * The file 'PKG-INFO.TXT' is OK. - However it uses an old version,
+&gt; i.e. '4.7.1-final'
+
+&gt; * The file 'README' is OK. - However it also uses this old version.
+
+The script isn't meant to update these automatically.  I use a checklist to remind me to do such things.
+
+&gt; * However neither of these files are not added to the archive ...
+
+I'll check this.  I'm not sure this is a problem, but it could be.
+
+Thanks for your careful checking.  Such checking is essential when preparing for releases.
+
+I've added this discussion to my internal distribution checklist.
+
+Edward
 </t>
 </tnodes>
 </leo_file>

@@ -14280,6 +14280,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Corrected date in trunk/license.txt.
 #@+node:edream.110203163054.63: ** Latest version
 #@+node:ekr.20101024234254.5433: *3* 4.8 a1
+@nocolor
+
 Leo 4.8 alpha 1                    October 29, 2010
 
 Leo 4.8 alpha 1 is now available at:
@@ -14292,13 +14294,23 @@ The highlights of Leo 4.8:
 --------------------------
 
 - Leo now uses the simplest possible sentinel lines in external files.
-- Leo now supports Drag and Drop when using the Qt gui.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
 - Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
 - Leo now uses PyEnchant to check spelling.
+  Much safer than using aspell.
 - Leo can now open multiple files from the command line.
 - Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
 - Leo now shows "resurrected nodes" when opening outlines.
-- Dozens of bug fixes.
+  This is an important consistency check.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- The usual round of bug fixes.
 
 Links:
 ------
