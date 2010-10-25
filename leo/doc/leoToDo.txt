@@ -750,90 +750,7 @@ as often there's more docs on a class in the __init__ than the class docstring.
 I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6010: *3* Before a1
-#@+node:ekr.20100804095820.5812: *4* bug 613153: unable to describe root directory on thumb drive
-Fix in g.os_path_isabs
-#@+node:ekr.20031218072017.2151: *5* os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-#@+node:ekr.20100827095120.5862: *4* Seeking help with broken script
-@nocolor-node
-
-seeking help with broken script node after upgrade to 4.7
-http://groups.google.com/group/leo-editor/browse_thread/thread/1d9b947a1945dd57
-
-The following is a better listing:
-
-=============================
-from mod_scripting import scriptingController
-sc = scriptingController(c)
-
-c.frame.addIconRow()
-first = True
-for node in p.following_siblings_iter():
-   if first:
-       first = False
-       continue
-   h = node.headString()
-   buttonText = sc.getButtonText(h)
-   statusLine = "Hoist %s" % h
-   b = sc.createIconButton(text=buttonText,
-                           command=None,
-                           shortcut=None,
-                           statusLine=statusLine,
-                           bg='yellow')
-   def deleteButtonCallback(event=None,sc=sc,b=b):
-       sc.deleteButton(b)
-
-   def hoistButtonCallback (event=None,c=c,p=node.copy()):
-       while (c.canDehoist()):
-           c.dehoist()
-       c.selectPosition(p)
-       c.hoist()
-
-   b.configure(command=hoistButtonCallback)
-   b.bind('<3>',deleteButtonCallback)
-=============================
-
-On Windows, I have determined that the problem occurs at
-c.frame.addIconRow(). The traceback I get is:
-
-exception executing script
-AttributeError: 'ToolbarTkIconBarClass' object has no attribute
-'iconFrameContainerFrame'
---------------------
- line 4324:
-* line 4325:             w =
-Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
- line 4326:             w.pack(fill="x",pady=2)
- line 4327:             self.iconFrame = w
-
-Is there some other object I should be using instead of c.frame? I
-simply don't understand the connection between the error and my
-script.
-#@+node:ekr.20101024062147.6026: *4* Easiest/most annoying bugs/features 4
-# None of these are essential for a1,
-# but I'll attempt to do the most annoying.
-#@+node:ekr.20101024062147.6001: *5* Fix key bindings in log pane
-#@+node:ekr.20101024062147.5991: *5* bug 583955: Key bindings in Find Panel need some love
-
-
-Make sure bindings work in log pane
-#@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect 
-@nocolor-node
-
-Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
-is incorrect when there is an existing selection, which was created by some
-method other than Ctrl-Shift movement.
-
-Expected behavior: it should extend/contract the existing selection
-
-Actual behavior: it creates a new selection from the cursor position
-#@+node:ekr.20100206173123.5801: *5* Eliminate check python syntax commands
+#@+node:ekr.20100206173123.5801: *4* Eliminate check python syntax commands
 @nocolor-node
 
 If not, I'd like to get rid of them.
@@ -848,7 +765,6 @@ function.
 So unless somebody complains I'll remove the explicit syntax-checking commands.
 
 Edward
-#@+node:ekr.20101024062147.6006: *4* External Files & Clones slideshows
 #@+node:ekr.20101024062147.5993: *4* Documentation
 #@+node:ekr.20101024062147.6019: *5* Move project stuff to LeoDocs.leo
 #@+node:ekr.20101024062147.6004: *5*  Notes
@@ -1080,7 +996,55 @@ the sidebar is collapsed, mousing over the left edge shows a >> button.
 The question is, how to do this automatically?
 #@+node:ekr.20101024062147.6017: *5* Document slideshow stuff.
 #@+node:ekr.20100827114047.5899: *4* Installer/Distribution
-#@+node:ekr.20100827114047.5900: *5*  Convert to leoPy.leo EKRleoPy.leo, etc.
+#@+node:ekr.20101024062147.6020: *5* Bug 514656 Uninstall operation does not work as expected
+On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
+<514656@bugs.launchpad.net> wrote:
+> Perhaps changing the current working directory away from the
+> installation directory before applying the NSIS RMDir command to the
+> installation directory would work. If not, use the /REBOOTOK option of
+> the RmDir command to force deletion of the installation folder on the
+> next reboot.
+>
+> Both these techniques are described at <
+> http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8 >.
+
+Thanks for these tips.
+#@+node:ekr.20100828110445.5824: *6* Finish installer
+@nocolor-node
+
+Docs and installer should have top priority
+http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
+
+2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
+unrelated to Leo, I'll presumably need to reinstall Leo as well. It
+would be nice not to have to.
+
+These goals could possibly be achieved by installing Leo in an
+independent directory (chosen by the user as part of the installation)
+and adding a .pth file into Python's site-packages directory (see
+documentation for the site module). Then the leo script can be
+installed alongside the package - so you have
+
+    ... Program Files\Leo\
+            leo.bat
+            package\leo\...
+
+leo.pth:
+...\Program Files\Leo\package 
+#@+node:ekr.20100826110728.5844: *6* Fix install problem
+@nocolor-node
+
+I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
+I figured out on my own to make a shortcut to launchLeo.py at this
+location:
+
+C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
+
+which works. (whooppee)
+
+However the shortcuts that the "leo install" created don't work they
+abort.
+#@+node:ekr.20100827114047.5900: *5* Convert to leoPy.leo EKRleoPy.leo, etc.
 #@+node:ekr.20100907092144.6076: *5* Make sure distribution contains correct files
 @nocolor-node
 
@@ -1110,101 +1074,142 @@ Thanks for your careful checking.  Such checking is essential when preparing for
 I've added this discussion to my internal distribution checklist.
 
 Edward
-#@+node:ekr.20101024062147.6020: *5* Bug 514656 Uninstall operation does not work as expected
-On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
-<514656@bugs.launchpad.net> wrote:
-> Perhaps changing the current working directory away from the
-> installation directory before applying the NSIS RMDir command to the
-> installation directory would work. If not, use the /REBOOTOK option of
-> the RmDir command to force deletion of the installation folder on the
-> next reboot.
->
-> Both these techniques are described at <
-> http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8 >.
-
-Thanks for these tips.
-#@+node:ekr.20100828110445.5824: *5* Finish installer
-@nocolor-node
-
-Docs and installer should have top priority
-http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
-
-2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
-unrelated to Leo, I'll presumably need to reinstall Leo as well. It
-would be nice not to have to.
-
-These goals could possibly be achieved by installing Leo in an
-independent directory (chosen by the user as part of the installation)
-and adding a .pth file into Python's site-packages directory (see
-documentation for the site module). Then the leo script can be
-installed alongside the package - so you have
-
-    ... Program Files\Leo\
-            leo.bat
-            package\leo\...
-
-leo.pth:
-...\Program Files\Leo\package 
-#@+node:ekr.20100826110728.5844: *5* Fix install problem
-@nocolor-node
-
-I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
-I figured out on my own to make a shortcut to launchLeo.py at this
-location:
-
-C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
-
-which works. (whooppee)
-
-However the shortcuts that the "leo install" created don't work they
-abort.
+#@+node:ekr.20101024062147.6006: *4* External Files & Clones slideshows
 #@+node:ekr.20101024062147.6011: *3* Before b1
-#@+node:ekr.20100826110728.5841: *4* Cool: Allow proportional fonts in plain text
+#@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect 
 @nocolor-node
 
+Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+is incorrect when there is an existing selection, which was created by some
+method other than Ctrl-Shift movement.
 
-I have an outline with the default target language set to plain, but
-with imported @shadow source code nodes.
-The default body font is set to a mono-spaced font for the benefit of
-the source code, but I'd really like all my plain-text descriptive
-nodes to be in a proportional font.
-Can I set a proportional font to use in all "@language plain" nodes
-while retaining the mono-spaced font for all @language csharp" nodes?
+Expected behavior: it should extend/contract the existing selection
 
-=====================
-Actually, almost all the machinery is in place to do this.  For
-example, see in leoSettings.leo, the node
-
-@settings-->Colors-->Syntax colors & options-->Options for jEdit
-colorer-->Language-specific colors
-
-As I have just verified, these will work for the Qt colorizer.  For example:
-
-@font python keyword1 fonts
-
-with body text:
-
-python_keyword1_font_family = DejaVu Sans Mono
-python_keyword1_font_size = 20
-python_keyword1_font_slant = roman
-   # roman, italic
-python_keyword1_font_weight = bold
-   # normal, bold
-
-Produces quite big keyword :-)
-
-There are some issues that may have to be addressed re defaults, but
-I'd like to see this happen in the next day or so.  It would be a
-really good feature.
-
-Edward
+Actual behavior: it creates a new selection from the cursor position
 #@+node:ekr.20101024062147.6012: *3* Before rc1
 #@+node:ekr.20101024062147.6025: *4* Low-priority, somewhat hard bugs
+#@+node:ekr.20100804095820.5812: *5* bug 613153: unable to describe root directory on thumb drive
+@nocolor-node
+
+Fix in g.os_path_isabs
+
+Edward, not sure if you're following this thread, but the fix turned out to be
+entangled with a lot of @<file> stuff, so I don't want to push it without your
+inspection.
+
+Repeating the basic problem: for an @<file> node there is some parent path in
+effect at the point where you reach the node, based on the location of the .leo
+file and any relevant @path directives. For determination of the full path to
+the target file, the @<file> node can either extend the parent path with a
+relative path (simplest case, just the filename), or discard the parent path
+with an absolute path of its own. The problem arises when the @<file> introduces
+a Windows drive specific \absolute\path without specifying the drive. In that
+case the drive should come from the original parent path.
+
+I think the diff below does that ok. It might do it in more places than was
+needed to fix the original problem, but I don't think it does it in any places
+where it shouldn't.
+
+Also, I think the same issue would affect the scanning of @path directives, this
+diff doesn't address that, although the fix_windows_absolute() method it
+introduces could probably be used for that application also. Here's the diff:
+
+=== modified file 'leo/core/leoAtFile.py'
+--- leo/core/leoAtFile.py 2010-08-03 22:26:10 +0000
++++ leo/core/leoAtFile.py 2010-08-05 22:24:42 +0000
+@@ -688,6 +688,8 @@
+         else:
+             fileName = None
+
++ fileName = g.fix_windows_absolute(self.c, root, fileName)
++
+         return fileName
+#@verbatim
+     #@+node:ekr.20100224050618.11547: *5* at.isFileLike
+     def isFileLike (self,s):
+@@ -2815,7 +2817,10 @@
+                 at.targetFileName = root.atFileNodeName()
+         else:
+             at.targetFileName = root.atFileNodeName()
++
++ at.targetFileName = g.fix_windows_absolute(at.c, root, at.targetFileName)
+#@verbatim
+         #@-<< set at.targetFileName >>
++
+         at.initWriteIvars(root,at.targetFileName,
+             nosentinels = nosentinels, thinFile = thinFile,
+             scriptWrite = scriptWrite, toString = toString)
+@@ -5166,7 +5171,9 @@
+         else:
+             fn = p.anyAtFileNodeName()
+         if fn:
++ fn = g.fix_windows_absolute(c, p, fn)
+             path = g.os_path_finalize_join(path,fn)
++
+         else:
+             g.trace('can not happen: not an @<file> node:',g.callers(4))
+             for p2 in p.self_and_parents():
+
+=== modified file 'leo/core/leoCommands.py'
+--- leo/core/leoCommands.py 2010-08-01 17:16:51 +0000
++++ leo/core/leoCommands.py 2010-08-05 22:59:13 +0000
+@@ -559,6 +559,7 @@
+             if name: break
+
+         if name:
++ name = g.fix_windows_absolute(self, p, name)
+             name = g.os_path_finalize_join(path,name)
+         return name
+#@verbatim
+     #@+node:ekr.20091211111443.6265: *3* c.doBatchOperations & helpers
+
+=== modified file 'leo/core/leoGlobals.py'
+--- leo/core/leoGlobals.py 2010-07-31 12:00:58 +0000
++++ leo/core/leoGlobals.py 2010-08-05 22:52:47 +0000
+@@ -936,6 +936,9 @@
+     if name:
+         theDir = g.os_path_dirname(name)
+         if theDir and g.os_path_isabs(theDir):
++
++ theDir = g.fix_windows_absolute(c,p,theDir)
++
+             if g.os_path_exists(theDir):
+                 default_di...
+
+=========================
+
+Ville M. Vainio wrote on 2010-08-06: 	#18
+
+For performance reasons the first thing you check before doing
+anything else should be:
+
+ if path[0] != "\\": return path
+
+#@+node:ekr.20031218072017.2151: *6* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
 #@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
 #@+node:ekr.20100827114047.5892: *5* bug 581031: Fix toggle-split-direction
 Should preserve scrollbar location and appropriate window ratio.
 
 https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
+#@+node:ekr.20101024062147.5991: *5* bug 583955: Key bindings in Find Panel need some love
+@nocolor-node
+
+see thread http://www.mail-archive.com/leo-editor@googlegroups.com/msg12137.html
+for details.
+
+- no keyboard method to swing focus away from the options panel
+
+- inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
+
+(perhaps nothing
+can be done here, but it does make the user experience more awkward)
 #@+node:ekr.20101024062147.6016: *4* Selected medium-priority bugs
 #@+node:ekr.20101024062147.6014: *3* For 4.8.1
 # These will be moved to 4.8 final, time permitting.

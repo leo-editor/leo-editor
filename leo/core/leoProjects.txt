@@ -11975,5 +11975,41 @@ def writeRecentFilesFileHelper (self,fileName):
         return True
     else:
         return False
+#@+node:ekr.20100826110728.5841: *4* Allow proportional fonts in plain text
+@nocolor
+
+Can I set a proportional font to use in all "@language plain" nodes
+while retaining the mono-spaced font for all @language csharp" nodes?
+
+Now you can.
+
+@color
+
+# The only addition here was the match_line method.
+# leo\modes\plain.py contains the following new code:
+
+def plain_rule0(colorer, s, i):
+    return colorer.match_line(s,i,kind="null",delegate="")
+
+class RulesDict:
+    def __init__(self):
+        self.d = {}
+    def get(self,ch,default_val):
+        return self.d.get(ch) or [plain_rule0]
+    def __setitem__(self, key, item):
+        self.d[key] = item
+
+rulesDict1 = RulesDict()
+#@+node:ekr.20101024220133.6314: *5* @font plain null font
+# For new colorizer
+
+plain_null_font_family = Times New Roman
+    # DejaVu Sans Mono
+plain_null_font_size = 16
+plain_null_font_slant = roman
+    # roman, italic
+plain_null_font_weight = bold
+    # normal, bold
+#@+node:ekr.20101024220133.6316: *5* @color plain null color = black
 #@-all
 #@-leo

@@ -8439,7 +8439,7 @@ class jEditColorizer:
         traceFonts = True
         c = self.c ; w = self.w
 
-        if trace: g.trace(self.colorizer.language,g.callers(5))
+        if trace: g.trace(self.colorizer.language) # ,g.callers(5))
 
         # The stated default is 40, but apparently it must be set explicitly.
         tabWidth = c.config.getInt('qt-tab-width') or 40
@@ -8463,6 +8463,7 @@ class jEditColorizer:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
+                # if trace: g.trace(name)
                 font = self.fonts.get(name)
                 if font:
                     if trace and traceFonts:
@@ -9224,6 +9225,16 @@ class jEditColorizer:
         else:
             # if trace: g.trace('fail',word,kind)
             return -len(word) # An important new optimization.
+    #@+node:ekr.20101024205622.3754: *5* match_line
+    def match_line (self,s,i,kind=None,delegate='',exclude_match=False):
+
+        '''Match the rest of the line.'''
+
+        j = g.skip_to_end_of_line(s,i)
+
+        self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+
+        return j-i
     #@+node:ekr.20090614134853.3731: *5* match_mark_following & getNextToken
     def match_mark_following (self,s,i,
         kind='',pattern='',
@@ -9711,7 +9722,7 @@ class jEditColorizer:
 
         This is called whenever a pattern matcher succeed.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         # Pattern matcher may set the .flag ivar.
         if self.colorizer.killColorFlag or not self.colorizer.flag:
