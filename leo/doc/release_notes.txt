@@ -14300,7 +14300,6 @@ The highlights of Leo 4.8:
 - Leo now shows "resurrected nodes" when opening outlines.
 - Dozens of bug fixes.
 
-
 Links:
 ------
 Leo:      http://webpages.charter.net/edreamleo/front.html

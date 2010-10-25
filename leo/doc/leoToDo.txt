@@ -1,753 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20100827114047.5895: ** Bugs
-#@+node:ekr.20101024062147.5994: *3* Minor
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20100522090453.5912: *4* Fix bugs with @verbatim, @raw and @end_raw
-@nocolor-node
-
-> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
-> not @root), you can prevent any interpretation of the immediately
-> following line with the "@verbatim" directive
-
-This is not true, although it might appear to be true.
-
-There is an @verbatim *sentinel*, but no @verbatim *directive*.
-
-For example, I have just verified that the following does not work:
-
-@verbatim
-<< undefined ref >>
-
-@raw and @end_raw do work as described.
-
-There appear to be several bugs in this area:
-
-1. Leo probably should warn that @verbatim does not exist as a
-directive, although technically Leo is supposed to write anything that
-looks like a sentinel but isn't "verbatim".
-
-2. Leo does appear to read @raw and @end_raw properly in @thin files,
-but Leo improperly issues the (red) log message,
-converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-#@+node:ekr.20100521090440.5885: *4* Fix mac unicode crasher
-#@+node:ekr.20100521090440.5886: *5* Report
-@nocolor-node
-
-I put the following in qtGui.py after
-
-# Last minute-munges to keysym.
-
-    if sys.platform.startswith('darwin'):
-        darwinmap = {
-            'Alt-Key-5': '[',
-            'Alt-Key-6': ']',
-            'Alt-Key-7': '|',
-            'Alt-slash': '\\',
-            'Alt-Key-8': '{',
-            'Alt-Key-9': '}',
-            'Alt-e': '€',
-            'Alt-l': '@',
-        }
-        if tkKey in darwinmap:
-            tkKey = stroke = darwinmap[tkKey]
-
-It works quite reasonabe. Sometimes (not really well reproducable)
-following message appears:
-
-/Users/tst/Leo-4.7-final/leo/core/leoKeys.py:3363: UnicodeWarning:
-Unicode equal comparison failed to convert both arguments to Unicode -
-interpreting them as being unequal
-  if k.abortAllModesKey and stroke == k.abortAllModesKey:
-/Users/scalet/Leo-4.7-final/leo/core/leoKeys.py:2521: UnicodeWarning:
-Unicode equal comparison failed to convert both arguments to Unicode -
-interpreting them as being unequal
-  if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-
-g'
-
-nonetheless the special characters were inserted as expected.
-
-I think all this is quite a hack, but ... thanks for the hack, most
-important for me it's working for now. 
-#@+node:ekr.20101024062147.5995: *3* Rst problems
-#@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
-@nocolor-node
-
-on doing an Alt-X rst3 command
-
-Traceback (most recent call last):
-  File "leoCommands.py", line 359, in doCommand
-    val = command(event)
-  File "leoCommands.py", line 764, in minibufferCallback
-    retval = function(keywords)
-  File "mod_scripting.py", line 642, in __call__
-    self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
-  File "mod_scripting.py", line 667, in executeScriptFromButton
-    c.executeScript(args=args,p=p,silent=True)
-  File "leoCommands.py", line 1991, in executeScript
-    script = g.getScript(c,p,useSelectedText=useSelectedText)
-  File "leoGlobals.py", line 4358, in getScript
-    at = leoAtFile.atFile(c)
-  File "leoAtFile.py", line 145, in __init__
-    'check-python-code-on-write',default=True)
-  File "leoCommands.py", line 7436, in getBool
-    return g.app.config.getBool(self.c,setting,default=default)
-  File "leoConfig.py", line 1445, in getBool
-    val = self.get(c,setting,"bool")
-  File "leoConfig.py", line 1337, in get
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-  File "leoCommands.py", line 6673, in shortFileName
-    return g.shortFileName(self.mFileName)
-  File "leoGlobals.py", line 2548, in shortFileName
-    return g.os_path_basename(fileName)
-  File "leoGlobals.py", line 3401, in os_path_basename
-    path = g.toUnicodeFileEncoding(path)
-  File "leoGlobals.py", line 3643, in toUnicodeFileEncoding
-    return g.toUnicode(path)
-  File "leoGlobals.py", line 4636, in toUnicode
-    elif mustConvert(s):
-  File "leoGlobals.py", line 4632, in mustConvert
-    return type(s) != types.UnicodeType
-RuntimeError: maximum recursion depth exceeded while calling a Python object
-#@+node:ekr.20100827114047.5893: *4* Fix rst file problems
-@nocolor-node
-
-Reported by TL:
-
-When editing a Docutils file in an external editor (exported from
-Leo), I always get a "Replace changed outline with external changes?"
-dialog box when I save the file in the external editor. This appears
-to occur because a newline is added to the end of the file when it is
-imported back into Leo.
-
-Note: The addition of a newline occurs even if the imported file
-already has a newline at the end of the file.
-
-There appears to be two problems:
-
-1) Leo always adds a newline even if the already has one.
-2) After Leo has added the newline it mistakenly marks the buffer as
-modified.
-#@+node:ekr.20100220190251.5616: *5* Fix rst bug?
-# See handleCodeMode
-#@+node:ekr.20100220190251.5617: *6* report
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-
-The indentation of the second @doc causes the doc part to look like
-a continuation of the code:: directive.
-
-It's not clear whether this bug is worth fixing, and it's not clear whether
-there would be side effects of any potential fix.
-
-The simplest fix appears to be in handleCodeMode.
-#@+node:ekr.20090502071837.72: *6* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or (
-                self.getOption('show_doc_parts_as_paragraphs') and
-                self.isSpecialDocPart(s,None)
-            )
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            # A fix, perhaps dubious, to a bug discussed at
-            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-            # lines2 = [z.lstrip() for z in lines2]
-            # g.trace('lines2',lines2)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        elif not code: # Start the code block.
-            result.append('')
-            result.append(self.code_block_string)
-            code.append(s)
-        else: # Continue the code block.
-            code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-
-    # Munge the result so as to keep docutils happy.
-    # Don't use self.rstripList: it's not the same.
-    # g.trace(result)
-    result2 = []
-    for z in result:
-        if z == '': result2.append('\n\n')
-        # 2010/08/27: Fix bug 618482.
-        # elif not z.rstrip(): pass
-        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-        else: result2.append('%s\n' % z.rstrip())
-
-    return result2
-#@+node:ekr.20090502071837.73: *7* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-#@+node:ekr.20090502071837.74: *7* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    # 2010/08/27: fix bug 618482.
-    s = ''.join(theList).rstrip()
-    return s.split('\n')
-#@+node:ekr.20090502071837.75: *7* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-#@+node:ekr.20100220204150.5627: *6* @@rst hello.html
-@ @rst-options
-verbose=True
-code_mode=True
-show_doc_parts_as_paragraphs=True
-number_code_lines=True
-write_intermediate_file=True
-@c
-
-#@+node:ekr.20100220204150.5628: *7* Greet the world
-@
-Greet the world, politely
-@c
-
-g.es ("Hello, world")
-
-@
-    Was that polite enough?
-    Indentation.
-@c
-#@+node:ekr.20100826110728.5840: *4* rst with show-comments-as-paragraph
-@nocolor-node
-
-derwish
-
-It seems that this option only works as expected for comments at the
-beginning of a node.
-
-A Leo file with the following contents would be rendered with  the
-second comment inside the PRE-element of the code paragraph.
-
-I am using Leo 4.7b2, build 2404
-
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
-<leo_file>
-<leo_header file_format="2" tnodes="0" max_tnode_index="0"
-clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-       <global_window_position top="30" left="12" height="600" width="800"/>
-       <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="huesingjohannes.20090706083342.1221"
-str_leo_pos="2,0"><vh>@chapters</vh></v>
-<v t="huesingjohannes.20091022082006.1227"><vh>@url U:/leo/hello.html</
-vh></v>
-<v t="huesingjohannes.20090706083342.1220" a="E"><vh>@rst U:\leo
-\hello.html</vh>
-<v t="huesingjohannes.20090706083342.5924"><vh>Greet the world</vh></
-v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="huesingjohannes.20090706083342.1220">@ @rst-options
-verbose=True
-code_mode=True
-show_doc_parts_as_paragraphs=True
-number_code_lines=False
-
-@c
-
-</t>
-<t tx="huesingjohannes.20090706083342.1221"></t>
-<t tx="huesingjohannes.20090706083342.5924">@
-    Greet the world, politely
-@c
-
-g.es ("Hello, world")
-
-@
-   Was that polite enough?
-@c</t>
-<t tx="huesingjohannes.20091022082006.1227"></t>
-</tnodes>
-</leo_file>
-
-========================
-
-Is there anyone here who could help me on this? It would be really nice if I
-didn't have to restrain myself to comments only at the top of a node.
-
-
-==========================
-Thanks for this report.  Sorry for the delay in responding.  Please
-file an official bug report.  It does seem like a real bug.
-
-
-If I can fix it cleanly tomorrow before Leo 4.7 final I shall. Otherwise soon.
-
-=======================
-Ok. I have simple fixes, but none are safe enough to include in Leo 4.7 final...
-
-In the meantime, removing the leading whitespace from the first line
-of the second @doc part should be a good enough workaround.
-
-There are three possible fixes, all similar:
-
-1. In getDocPart (in leoRst.py), change::
-
-   result.append(s)
-
-to:
-
-   result.append(s.lstrip())
-
-There are two such lines in getDocPart.  Probably both should be
-changed.
-
-2. The same fix, conditional on a new 'stripLines' keyword arg.  Like
-this:
-
-   if stripLines:
-       result.append(s.lstrip())
-   else:
-       result.append(s)
-
-Again, this change affects two lines in getDocPart.
-
-The idea is that handleCodeMode would be the only method to set the
-stripLines arg:
-
-   n, lines2 = self.getDocPart(lines,n)
-
-3. A change to handleCodeMode.  After the line:
-
-   n, lines2 = self.getDocPart(lines,n)
-
-add the line:
-
-   lines2 = [z.lstrip() for z in lines2]
-
-As I write this, I am thinking that change #3 is the simplest change,
-with the fewest side effects.
-
-We can test any one of these solutions starting early in the Leo 4.8
-release cycle, but none  is safe enough to include in Leo 4.7 final.
-
-If you would, please test fix #3 and report your results.  Thanks.
-#@+node:ekr.20101024062147.5996: *3* Wishlist
-#@+node:ekr.20080922115725.1: *4* Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@+node:ekr.20081004102201.2: *5* Log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-
-How about a shadow.log file which Leo told what it thought of the relationship
-between the node, file and shadow? It might provide useful clues.
-#@+node:ekr.20081001062423.1: *5* Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@+node:ekr.20080708094444.38: *6* x.propagate_changed_lines
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-       New at 2010/01/07: Replacements preserve sentinel locations.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    trace = False and g.unitTesting
-    verbose = True
-    x = self
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    delim1,delim2 = marker.getDelims()
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,
-        new_private_lines_wtr,
-        marker,
-        limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40: *7* << init vars >>
-new_private_lines_wtr = self.sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = self.sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = self.sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@+node:ekr.20080708094444.39: *7* << define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@+node:ekr.20080708192807.2: *7* << about this loop >>
-@ This loop writes all output lines using a single writer:
-new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present
-  SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of
-  the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips
-(deletes) all previously unwritten non-sentinel lines in
-old_private_lines_rdr whose index is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from
-the old_private_lines_rdr explicitly. This explains why opcode
-handlers for the 'insert' and 'delete' opcodes are identical.
-#@+node:ekr.20080708192807.5: *7* << Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
-
-if tag == 'equal':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
-            tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag == 'insert':
-    if limit < old_private_lines_rdr.size():
-        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index() # Only used for tag.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag == 'replace':
-    # This case is new: it was the same as the 'insert' case.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while (
-        old_private_lines_rdr.index() <= mapping[old_j-1]
-        and new_public_lines_rdr.index() <  new_j
-            # 2010/10/22: the replacement lines can be shorter.
-    ):
-        old_line = old_private_lines_rdr.get()
-        if marker.isSentinel(old_line):
-            # Important: this should work for @verbatim sentinels
-            # because the next line will also be replaced.
-            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
-                'replace: copy sentinel',start,new_j))
-        else:
-            new_line = new_public_lines_rdr.get()
-            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
-                'replace: new line',start,new_j))
-
-    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # Leave new_public_lines_rdr unchanged.
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@+node:ekr.20080708094444.45: *7* << do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@+node:ekr.20090402072059.13: *5* Create a general mechanism for aux (shadow, _db) files
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
-
-On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-
-    When I tried to de-install Leo-4.6b1 I succeeded, but the program
-    reported that 5 directories
-    were not removed.
-
-    Three of the directories where
-
-    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
-    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
-    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
-
-    [containing]
-
-
-    a) .leoSettings.leo_db
-    b) .leoDocs.leo_db
-    c) .leo_shadow
-    d) .leoPluginsRef.leo_db
-
-
-Thanks for this report. I think it is important, and needs a good solution.
-
-I dislike all these files being sprayed around the file system. I'd like to see
-these files placed somewhere the ~/.leo directory. Is there a reason why this
-would be a bad idea?
-
-Similarly, we might also prefer to have shadow files place in, say,
-~/.leo/shadow_files.
-
-In both cases, I think we want to create files that indicate their location.
-Either that, or mirror their location in (subdirectories) ~/.leo. In other
-words, this is a general problem, and it would be good to have a robust, general
-solution.
-#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
-# Just make the test.  It doesn't have to pass.
-#@+node:ekr.20100826110728.5839: *4* Relocating .leo_shadow directories
-@nocolor-node
-
-2008
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
-
-May 10, 2010
-
-Kent
-
-I think there could be quite a bit of interest in moving
-the shadow files to their own tree, avoiding what might
-be considered 'pollution' of a tree of files in @shadow nodes.
-
-Edward has said that this would add a lot of complexity to Leo.
-
-It seems that a VCS back end for Leo might simplify the
-task of arbitrary shadow file location, as well as adding
-versioning capability.
-
-
-Those of us old enough to remember the Groucho Marx show will know what I am ...
-
-bogomil
- to me
-
-In order to relocate .leo_shadow directories in home dir, I have made
-the following changes leoShadow.py:
-1. Introduce new setting 'shadow_in_home_dir':
-   x.ctor:
-     ...
-     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
-
-=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
-or False
-    ...
-
-2. Make the following line:
-   x.shadowDirName and shadowPathName:
-      ...
-      fileDir = g.os_path_dirname(filename)
-
-=>   if self.shadow_in_home_dir:
-        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
-
-In this way I keep .leo_shadow dirs in a tree and it is ok if the user
-reorgs the original tree.
-
-=====================
-Edward K. Ream
- to bogomil
-
-Thanks for these suggestions.  I'll try them soon.
-
-A few minor comments about the code.
-
->  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
-
-This works (because c.config.getBool returns None if the setting does
-not exist). Thus, the "or False" part merely replaces None by False.
-I prefer the following:
-
-self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
-
->   if self.shadow_in_home_dir:
->         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
-
-This looks like a Windows-only solution because of ':'.  It might fail
-in strange ways on other platforms.
-#@+node:ekr.20100830120622.5829: *4* Fix python import problems
-@nocolor-node
-
-> > Hmm, I guess that would be more clear, although I think I'd like an option
-to include it in the following def to avoid
-
-> > Decoration
-> > index
-> > Decoration
-> > add_user
->
-> Sure.  Decorations must always be part of a definition.
-
-Well, personally I'd like to have them included in the definition, but I think
-Kent's preference for a separate node is reasonable to. If your function and
-hence definition node is called "pluralize", and it's decorated with something
-like "@authenticate_user", you may never check the innocent looking pluralize
-definition to find out what on earth's triggering the mysterious network
-database call. And this isn't a completely specious example, authentication may
-have been added to stop pluralize being used in a user existence detection
-exploit or something. OTOH in well behaved code like CherryPy apps you don't
-want a separate node for every @cherrypy.expose.
-
-Bottom line is I think we're asking for a set of @settings to fine tune python
-import behavior:
-
-@python_import_interdef = previous | next | own_node | ai
-@python_import_decoration = next | own_node
-
-I'm not sure I believe the AI option is possible / practical, and am not asking
-for it, just listing it :-)
-
-I'd also like
-
-@python_import_init_in_class_node = true | false
-
-as often there's more docs on a class in the __init__ than the class docstring.
-
-I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6010: *3* Before a1
 #@+node:ekr.20101024062147.5993: *4* Documentation
@@ -1075,7 +328,7 @@ So unless somebody complains I'll remove the explicit syntax-checking commands.
 
 Edward
 #@+node:ekr.20101024062147.6011: *3* Before b1
-#@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect 
+#@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect
 @nocolor-node
 
 Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
@@ -3616,6 +2869,753 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 Vim mode users: your top 3 complaints, please
 
 @color
+#@+node:ekr.20100827114047.5895: *3* Bugs
+#@+node:ekr.20101024062147.5994: *4* Minor
+#@+node:ekr.20101021101942.6011: *5* Window size not honored when opened from menu
+#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
+@nocolor-node
+
+> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
+> not @root), you can prevent any interpretation of the immediately
+> following line with the "@verbatim" directive
+
+This is not true, although it might appear to be true.
+
+There is an @verbatim *sentinel*, but no @verbatim *directive*.
+
+For example, I have just verified that the following does not work:
+
+@verbatim
+<< undefined ref >>
+
+@raw and @end_raw do work as described.
+
+There appear to be several bugs in this area:
+
+1. Leo probably should warn that @verbatim does not exist as a
+directive, although technically Leo is supposed to write anything that
+looks like a sentinel but isn't "verbatim".
+
+2. Leo does appear to read @raw and @end_raw properly in @thin files,
+but Leo improperly issues the (red) log message,
+converting @file format in @thin test_verbatim_sentinel.py
+#@+node:ekr.20100223133351.5998: *5* show-invisibles doesn't work for blank lines
+#@+node:ekr.20081208102356.1: *5* Threading colorizer doesn't handle multiple body editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
+
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@+node:ekr.20100521090440.5885: *5* Fix mac unicode crasher
+#@+node:ekr.20100521090440.5886: *6* Report
+@nocolor-node
+
+I put the following in qtGui.py after
+
+# Last minute-munges to keysym.
+
+    if sys.platform.startswith('darwin'):
+        darwinmap = {
+            'Alt-Key-5': '[',
+            'Alt-Key-6': ']',
+            'Alt-Key-7': '|',
+            'Alt-slash': '\\',
+            'Alt-Key-8': '{',
+            'Alt-Key-9': '}',
+            'Alt-e': '€',
+            'Alt-l': '@',
+        }
+        if tkKey in darwinmap:
+            tkKey = stroke = darwinmap[tkKey]
+
+It works quite reasonabe. Sometimes (not really well reproducable)
+following message appears:
+
+/Users/tst/Leo-4.7-final/leo/core/leoKeys.py:3363: UnicodeWarning:
+Unicode equal comparison failed to convert both arguments to Unicode -
+interpreting them as being unequal
+  if k.abortAllModesKey and stroke == k.abortAllModesKey:
+/Users/scalet/Leo-4.7-final/leo/core/leoKeys.py:2521: UnicodeWarning:
+Unicode equal comparison failed to convert both arguments to Unicode -
+interpreting them as being unequal
+  if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-
+g'
+
+nonetheless the special characters were inserted as expected.
+
+I think all this is quite a hack, but ... thanks for the hack, most
+important for me it's working for now. 
+#@+node:ekr.20101024062147.5995: *4* Rst problems
+#@+node:ekr.20101021160326.5948: *5* Fix rst3 unbounded recursion
+@nocolor-node
+
+on doing an Alt-X rst3 command
+
+Traceback (most recent call last):
+  File "leoCommands.py", line 359, in doCommand
+    val = command(event)
+  File "leoCommands.py", line 764, in minibufferCallback
+    retval = function(keywords)
+  File "mod_scripting.py", line 642, in __call__
+    self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
+  File "mod_scripting.py", line 667, in executeScriptFromButton
+    c.executeScript(args=args,p=p,silent=True)
+  File "leoCommands.py", line 1991, in executeScript
+    script = g.getScript(c,p,useSelectedText=useSelectedText)
+  File "leoGlobals.py", line 4358, in getScript
+    at = leoAtFile.atFile(c)
+  File "leoAtFile.py", line 145, in __init__
+    'check-python-code-on-write',default=True)
+  File "leoCommands.py", line 7436, in getBool
+    return g.app.config.getBool(self.c,setting,default=default)
+  File "leoConfig.py", line 1445, in getBool
+    val = self.get(c,setting,"bool")
+  File "leoConfig.py", line 1337, in get
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+  File "leoCommands.py", line 6673, in shortFileName
+    return g.shortFileName(self.mFileName)
+  File "leoGlobals.py", line 2548, in shortFileName
+    return g.os_path_basename(fileName)
+  File "leoGlobals.py", line 3401, in os_path_basename
+    path = g.toUnicodeFileEncoding(path)
+  File "leoGlobals.py", line 3643, in toUnicodeFileEncoding
+    return g.toUnicode(path)
+  File "leoGlobals.py", line 4636, in toUnicode
+    elif mustConvert(s):
+  File "leoGlobals.py", line 4632, in mustConvert
+    return type(s) != types.UnicodeType
+RuntimeError: maximum recursion depth exceeded while calling a Python object
+#@+node:ekr.20100827114047.5893: *5* Fix rst file problems
+@nocolor-node
+
+Reported by TL:
+
+When editing a Docutils file in an external editor (exported from
+Leo), I always get a "Replace changed outline with external changes?"
+dialog box when I save the file in the external editor. This appears
+to occur because a newline is added to the end of the file when it is
+imported back into Leo.
+
+Note: The addition of a newline occurs even if the imported file
+already has a newline at the end of the file.
+
+There appears to be two problems:
+
+1) Leo always adds a newline even if the already has one.
+2) After Leo has added the newline it mistakenly marks the buffer as
+modified.
+#@+node:ekr.20100220190251.5616: *6* Fix rst bug?
+# See handleCodeMode
+#@+node:ekr.20100220190251.5617: *7* report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+
+The indentation of the second @doc causes the doc part to look like
+a continuation of the code:: directive.
+
+It's not clear whether this bug is worth fixing, and it's not clear whether
+there would be side effects of any potential fix.
+
+The simplest fix appears to be in handleCodeMode.
+#@+node:ekr.20090502071837.72: *7* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *8* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *8* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *8* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@+node:ekr.20100220204150.5627: *7* @@rst hello.html
+@ @rst-options
+verbose=True
+code_mode=True
+show_doc_parts_as_paragraphs=True
+number_code_lines=True
+write_intermediate_file=True
+@c
+
+#@+node:ekr.20100220204150.5628: *8* Greet the world
+@
+Greet the world, politely
+@c
+
+g.es ("Hello, world")
+
+@
+    Was that polite enough?
+    Indentation.
+@c
+#@+node:ekr.20100826110728.5840: *5* rst with show-comments-as-paragraph
+@nocolor-node
+
+derwish
+
+It seems that this option only works as expected for comments at the
+beginning of a node.
+
+A Leo file with the following contents would be rendered with  the
+second comment inside the PRE-element of the code paragraph.
+
+I am using Leo 4.7b2, build 2404
+
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0"
+clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+       <global_window_position top="30" left="12" height="600" width="800"/>
+       <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="huesingjohannes.20090706083342.1221"
+str_leo_pos="2,0"><vh>@chapters</vh></v>
+<v t="huesingjohannes.20091022082006.1227"><vh>@url U:/leo/hello.html</
+vh></v>
+<v t="huesingjohannes.20090706083342.1220" a="E"><vh>@rst U:\leo
+\hello.html</vh>
+<v t="huesingjohannes.20090706083342.5924"><vh>Greet the world</vh></
+v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="huesingjohannes.20090706083342.1220">@ @rst-options
+verbose=True
+code_mode=True
+show_doc_parts_as_paragraphs=True
+number_code_lines=False
+
+@c
+
+</t>
+<t tx="huesingjohannes.20090706083342.1221"></t>
+<t tx="huesingjohannes.20090706083342.5924">@
+    Greet the world, politely
+@c
+
+g.es ("Hello, world")
+
+@
+   Was that polite enough?
+@c</t>
+<t tx="huesingjohannes.20091022082006.1227"></t>
+</tnodes>
+</leo_file>
+
+========================
+
+Is there anyone here who could help me on this? It would be really nice if I
+didn't have to restrain myself to comments only at the top of a node.
+
+
+==========================
+Thanks for this report.  Sorry for the delay in responding.  Please
+file an official bug report.  It does seem like a real bug.
+
+
+If I can fix it cleanly tomorrow before Leo 4.7 final I shall. Otherwise soon.
+
+=======================
+Ok. I have simple fixes, but none are safe enough to include in Leo 4.7 final...
+
+In the meantime, removing the leading whitespace from the first line
+of the second @doc part should be a good enough workaround.
+
+There are three possible fixes, all similar:
+
+1. In getDocPart (in leoRst.py), change::
+
+   result.append(s)
+
+to:
+
+   result.append(s.lstrip())
+
+There are two such lines in getDocPart.  Probably both should be
+changed.
+
+2. The same fix, conditional on a new 'stripLines' keyword arg.  Like
+this:
+
+   if stripLines:
+       result.append(s.lstrip())
+   else:
+       result.append(s)
+
+Again, this change affects two lines in getDocPart.
+
+The idea is that handleCodeMode would be the only method to set the
+stripLines arg:
+
+   n, lines2 = self.getDocPart(lines,n)
+
+3. A change to handleCodeMode.  After the line:
+
+   n, lines2 = self.getDocPart(lines,n)
+
+add the line:
+
+   lines2 = [z.lstrip() for z in lines2]
+
+As I write this, I am thinking that change #3 is the simplest change,
+with the fewest side effects.
+
+We can test any one of these solutions starting early in the Leo 4.8
+release cycle, but none  is safe enough to include in Leo 4.7 final.
+
+If you would, please test fix #3 and report your results.  Thanks.
+#@+node:ekr.20101024062147.5996: *4* Wishlist
+#@+node:ekr.20080922115725.1: *5* Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@+node:ekr.20081004102201.2: *6* Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+
+How about a shadow.log file which Leo told what it thought of the relationship
+between the node, file and shadow? It might provide useful clues.
+#@+node:ekr.20081001062423.1: *6* Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@+node:ekr.20080708094444.38: *7* x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+       New at 2010/01/07: Replacements preserve sentinel locations.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    trace = False and g.unitTesting
+    verbose = True
+    x = self
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40: *8* << init vars >>
+new_private_lines_wtr = self.sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@+node:ekr.20080708094444.39: *8* << define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@+node:ekr.20080708192807.2: *8* << about this loop >>
+@ This loop writes all output lines using a single writer:
+new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present
+  SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of
+  the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips
+(deletes) all previously unwritten non-sentinel lines in
+old_private_lines_rdr whose index is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from
+the old_private_lines_rdr explicitly. This explains why opcode
+handlers for the 'insert' and 'delete' opcodes are identical.
+#@+node:ekr.20080708192807.5: *8* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
+
+if tag == 'equal':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+            tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag == 'insert':
+    if limit < old_private_lines_rdr.size():
+        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index() # Only used for tag.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag == 'replace':
+    # This case is new: it was the same as the 'insert' case.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while (
+        old_private_lines_rdr.index() <= mapping[old_j-1]
+        and new_public_lines_rdr.index() <  new_j
+            # 2010/10/22: the replacement lines can be shorter.
+    ):
+        old_line = old_private_lines_rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                'replace: copy sentinel',start,new_j))
+        else:
+            new_line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                'replace: new line',start,new_j))
+
+    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # Leave new_public_lines_rdr unchanged.
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@+node:ekr.20080708094444.45: *8* << do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@+node:ekr.20090402072059.13: *6* Create a general mechanism for aux (shadow, _db) files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+
+On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+
+    When I tried to de-install Leo-4.6b1 I succeeded, but the program
+    reported that 5 directories
+    were not removed.
+
+    Three of the directories where
+
+    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
+    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
+    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
+
+    [containing]
+
+
+    a) .leoSettings.leo_db
+    b) .leoDocs.leo_db
+    c) .leo_shadow
+    d) .leoPluginsRef.leo_db
+
+
+Thanks for this report. I think it is important, and needs a good solution.
+
+I dislike all these files being sprayed around the file system. I'd like to see
+these files placed somewhere the ~/.leo directory. Is there a reason why this
+would be a bad idea?
+
+Similarly, we might also prefer to have shadow files place in, say,
+~/.leo/shadow_files.
+
+In both cases, I think we want to create files that indicate their location.
+Either that, or mirror their location in (subdirectories) ~/.leo. In other
+words, this is a general problem, and it would be good to have a robust, general
+solution.
+#@+node:ekr.20100131161507.6303: *5* Unit tests that all commands have docstrings
+# Just make the test.  It doesn't have to pass.
+#@+node:ekr.20100826110728.5839: *5* Relocating .leo_shadow directories
+@nocolor-node
+
+2008
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
+
+May 10, 2010
+
+Kent
+
+I think there could be quite a bit of interest in moving
+the shadow files to their own tree, avoiding what might
+be considered 'pollution' of a tree of files in @shadow nodes.
+
+Edward has said that this would add a lot of complexity to Leo.
+
+It seems that a VCS back end for Leo might simplify the
+task of arbitrary shadow file location, as well as adding
+versioning capability.
+
+
+Those of us old enough to remember the Groucho Marx show will know what I am ...
+
+bogomil
+ to me
+
+In order to relocate .leo_shadow directories in home dir, I have made
+the following changes leoShadow.py:
+1. Introduce new setting 'shadow_in_home_dir':
+   x.ctor:
+     ...
+     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
+or False
+    ...
+
+2. Make the following line:
+   x.shadowDirName and shadowPathName:
+      ...
+      fileDir = g.os_path_dirname(filename)
+
+=>   if self.shadow_in_home_dir:
+        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+In this way I keep .leo_shadow dirs in a tree and it is ok if the user
+reorgs the original tree.
+
+=====================
+Edward K. Ream
+ to bogomil
+
+Thanks for these suggestions.  I'll try them soon.
+
+A few minor comments about the code.
+
+>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
+
+This works (because c.config.getBool returns None if the setting does
+not exist). Thus, the "or False" part merely replaces None by False.
+I prefer the following:
+
+self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
+
+>   if self.shadow_in_home_dir:
+>         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+This looks like a Windows-only solution because of ':'.  It might fail
+in strange ways on other platforms.
+#@+node:ekr.20100830120622.5829: *5* Fix python import problems
+@nocolor-node
+
+> > Hmm, I guess that would be more clear, although I think I'd like an option
+to include it in the following def to avoid
+
+> > Decoration
+> > index
+> > Decoration
+> > add_user
+>
+> Sure.  Decorations must always be part of a definition.
+
+Well, personally I'd like to have them included in the definition, but I think
+Kent's preference for a separate node is reasonable to. If your function and
+hence definition node is called "pluralize", and it's decorated with something
+like "@authenticate_user", you may never check the innocent looking pluralize
+definition to find out what on earth's triggering the mysterious network
+database call. And this isn't a completely specious example, authentication may
+have been added to stop pluralize being used in a user existence detection
+exploit or something. OTOH in well behaved code like CherryPy apps you don't
+want a separate node for every @cherrypy.expose.
+
+Bottom line is I think we're asking for a set of @settings to fine tune python
+import behavior:
+
+@python_import_interdef = previous | next | own_node | ai
+@python_import_decoration = next | own_node
+
+I'm not sure I believe the AI option is possible / practical, and am not asking
+for it, just listing it :-)
+
+I'd also like
+
+@python_import_init_in_class_node = true | false
+
+as often there's more docs on a class in the __init__ than the class docstring.
+
+I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20100828074347.5827: *3* Vim bindings
 #@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
 Just playing with part of a template system, the (partial) mock up for

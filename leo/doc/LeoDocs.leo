@@ -875,7 +875,7 @@
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@thin other_docs.txt</vh></v>
 <v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.63,ekr.20101024234254.5433,ekr.20101024234745.5823,"><vh>@thin release_notes.txt</vh></v>
+expanded="edream.110203163054.63,ekr.20101024234745.5823,"><vh>@thin release_notes.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
