@@ -109,9 +109,16 @@ Outline pane
 
     The outline pane shows your project as an outline. The outline
     contains all your project's data. An outline consists of **nodes**. The
-    **icon box** is a small icon directly to the left of the headline text. If a
-    node contains children, a smaller icon appears to the left of the icon box.
-    This icon contains a '+' or '-' symbol. Clicking this **expansion box**
+    **icon box** is a small icon directly to the left of the headline text.
+    The border of the icon box is black if the node has been changed.
+    Smaller icons within the icon box indicate the status of the node::
+
+        A small blue box:   the node has body text.
+        A red vertical bar: the node is marked.
+        A circular arrow:   the node is cloned.
+
+    If a node contains children, a smaller icon appears to the left of the icon
+    box. This icon contains a '+' or '-' symbol. Clicking this **expansion box**
     expands or contracts the node.
 
 .. index::

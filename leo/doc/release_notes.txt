@@ -4723,7 +4723,7 @@ focus-in-tree, etc, activate-edit-menu, etc.
 
        <alt-x>show-mini-buffer<return>
 #@+node:ekr.20051028051444.6: *7* The @bool useCmdMenu option
-This options controls whether Leo creates a Cmds menu.
+This option controls whether Leo creates a Cmds menu.
 
 This menu is not ready yet, though nothing bad happens if this option is True.
 #@+node:ekr.20051028051444.7: *7* Options for selected body text
@@ -7979,7 +7979,7 @@ http://sourceforge.net/forum/message.php?msg_id=3958333
 As always, you can set max_undo_stack_size in myLeoSettings.leo.
 #@+node:ekr.20061020155235.405: *7* Added @bool select_all_text_when_editing_headlines
 A highly useful option.
-However, creating a new node always selects the entire text, regardless of this options.
+However, creating a new node always selects the entire text, regardless of this option.
 #@+node:ekr.20061020155235.410: *7* Added bindings to toggle-autocompleter and toggle-calltips
 - Added bindings for toggle-autocompleter (Alt-1) and toggle-calltips (Alt-2)
 

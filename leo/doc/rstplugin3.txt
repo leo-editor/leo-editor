@@ -30,7 +30,7 @@ LaTeX and other kinds of documents from Leo outlines containing
 `reStructuredText`_ (rST) or `Sphinx`_ markup.
 
 **Note**: `docutils`_ is a document processing system using rST markup.
-`Sphinx`_ extends docutils: sphinx markup is a superset of rST markup. All of
+`Sphinx`_ extends docutils: Sphinx markup is a superset of rST markup. All of
 Leo's documentation is written in Sphinx and processed with the rst3 command to
 produce HTML files.
 
@@ -327,7 +327,7 @@ command, you can examine the intermediate file to see what rst3 has done.
 
 Let's turn our attention to the the body of the \@rst node...
 .. @+node:ekr.20100809162244.4298: *5* Set global options
-The \@rst3 node is a good place for options that apply to the entire \@rst3
+The \@rst node is a good place for options that apply to the entire \@rst
 tree. Typically, you will just set these options once and then completely forget
 about them.
 
@@ -372,7 +372,7 @@ body text of the \@rst node::
     War and Peace
     #############
 
-**Important**: The rst3 command reserves the '#' character for the setting
+**Important**: The rst3 command reserves the '#' character for the document
 titles--don't use any other underlining character.
 
 Sometimes I put the first words of a document in the \@rst node::
@@ -429,7 +429,7 @@ start with '\@rst-' control the rst3 command.  The three most useful are:
 \@rst-ignore-tree <ignored-text>
 
     The rst3 command ignores the \@rst-ignore-tree node and all its descendants.
-.. @+node:ekr.20100809162244.4296: *4* Step 3: Run the @rst3 command
+.. @+node:ekr.20100809162244.4296: *4* Step 3: Run the rst3 command
 This step is easy. Select an outline containing one or more \@rst trees. Now do
 <Alt-X>rst3<Return>. You can use <Ctrl-P> (repeat-complex-command) instead if
 the last minibuffer command was the rst3 command.
@@ -513,7 +513,7 @@ show_headlines (default: True)
     False: ignore headlines.
 
     **Note**: The level of the node in the outline determines the level of the
-    section underling in the rST markup. Higher-level headlines in the outline
+    section underlining in the rST markup. Higher-level headlines in the outline
     correspond to higher-level section headings; lower-level headlines in the
     outline correspond to lower-level section headings.
 
@@ -563,7 +563,7 @@ verbose (default: True)
 write_intermediate_file (default: False)
 
     **Important**: the rst3 command *always* creates an intermediate file.
-    This options controls whether that file is an internal Python object
+    This option controls whether that file is an internal Python object
     or an actual file on the external file system.
 
     True: writes the intermediate file to the external file system. The name of
@@ -609,7 +609,7 @@ Any headline that starts with @rst- controls the rst3 command.
 
 @rst-options <ignored-text>
 
-    Set options options from body text. The body text should contain nothing but
+    Set options from body text. The body text should contain nothing but
     lines of the form::
 
         <option>=<value>
@@ -617,7 +617,7 @@ Any headline that starts with @rst- controls the rst3 command.
 @rst-preformat <ignored-text>
 
     Format the body text of the node as computer source code. In effect, this
-    options adds a line containing '::' the start of the body text. The option
+    option adds a line containing '::' at the start of the body text. The option
     then indents all following lines.
 
     This option has no effect on descendant nodes.
@@ -629,8 +629,8 @@ Any headline that starts with @rst- controls the rst3 command.
 
 .. @+node:ekr.20050818163826.8: *4* Option doc parts
 **Option doc parts** set rst3 options. Option doc parts start with \@
-\@rst-options followed by lines of the form name=value. (Comments lines starting
-with '..' are allowed) For example::
+\@rst-options followed by lines of the form name=value. (Comment lines starting
+with '..' are allowed.) For example::
 
     @ @rst-options
     .. This comment line is ignored.
@@ -666,7 +666,7 @@ To use the http plugin, start a web browser and enter this url::
     http://localhost:8080/
 
 You will see a a top level page containing one link for every open .leo file.
-Clicking on link will cause the http server to pass a new page to the browser.
+Clicking on a link will cause the http server to pass a new page to the browser.
 You can use the browser's refresh button to update the top-level view in the
 browser after you have opened or closed files.
 
@@ -696,7 +696,7 @@ http_server_support (default: False)
 http_attributename (default: 'rst_http_attribute')
 
     The name of the attribute name written to the unknownAttributes attribute of
-    each each outline node in the rst root tree. The default is
+    each outline node in the rst root tree. The default is
     'rst_http_attribute'; it should match the following setting of the http
     plugin::
 
@@ -760,18 +760,18 @@ defaultOptionsDict
     To add another option, just add another entry to this dictionary.
     Keys are the option name, including the `rst3_` prefix.
     Values are the default value of the option.
-    The hard values in the dictionary may be changed as the result of @settings entries.
+    The hard-coded values in the dictionary may be changed as the result of @settings entries.
 
 processTree
     processTree is the top-level code that handles one rst root node.
     It calls preprocessTree to create the **vnodeOptionDict** ivar.
     processTree then calls either writeNormalTree or writeSpecialTree
     depending on whether text will be sent to docutils for further processing.
-    These two methods handle mundane details of opening an closing files.
+    These two methods handle mundane details of opening and closing files.
     Both writeNormalTree and writeSpecialTree call **writeTree** to do the actual work.
 
 vnodeOptionDict
-    The entries in this dictionary represents the options that are set in one particular node.
+    The entries in this dictionary represent the options that are set in one particular node.
     The keys of vnodeOptionDict are vnodes, the values are anonymous dictionaries.
     These anonymous inner dictionaries contain the options that are explicitly set at each vnode
     (and thus each position).
@@ -785,7 +785,7 @@ writeTree
 
 writeNode
     writeNode first calls **scanAllOptions** to compute the options that are in
-    effect for that *single* node. Once options have computed, processing the
+    effect for that *single* node. Once options have been computed, processing the
     node is straightforward. writeNode calls writeBody and writeHeadline
     to do the real work. These methods generate or skip text based on various
     options.
