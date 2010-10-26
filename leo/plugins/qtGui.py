@@ -1679,6 +1679,7 @@ class DynamicWindow(QtGui.QMainWindow):
             'top':QtCore.Qt.TopToolBarArea,
         }
         where = c.config.getString('qt-toolbar-location')
+        # g.trace(where)
         if where:
             where = d.get(where)
             if where: self.addToolBar(where,self.iconBar)
@@ -9722,7 +9723,7 @@ class jEditColorizer:
 
         This is called whenever a pattern matcher succeed.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         # Pattern matcher may set the .flag ivar.
         if self.colorizer.killColorFlag or not self.colorizer.flag:
