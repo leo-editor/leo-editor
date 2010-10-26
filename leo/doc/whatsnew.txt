@@ -45,7 +45,7 @@ Leo now writes \@thin files with the `simplest possible`_ sentinel lines.
     - Eliminated \@-node sentinels.
     - Eliminated \@nl and \@nonl sentinels.
     - Simpler representation of \@doc and \@ in sentinels.
-    - Simplified represention of \@others and section references.
+    - Simplified representation of \@others and section references.
     - Use a scheme much like Emacs `org-mode`_ to represent headline level.
 
 The result is, provably, the simplest possible representation of Leo's outline

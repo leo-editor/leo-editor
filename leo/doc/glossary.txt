@@ -46,7 +46,7 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
     pair: @@ convention for headlines; Glossary
 
 \@@ convention for headlines
-    Wthin \@asis trees only, if a headline starts with \@@, Leo
+    Within \@asis trees only, if a headline starts with \@@, Leo
     writes everything in the headline following the \@@ just before the
     corresponding body text.
 
@@ -206,7 +206,7 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 
 \@nocolor-node
 
-    Completely disables coloring for one node. Descedant nodes are not affected.
+    Completely disables coloring for one node. Descendant nodes are not affected.
 
 .. index::
     pair: @nosent; Glossary
