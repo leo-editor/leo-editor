@@ -22,25 +22,11 @@
 Preface
 ############
 
-.. .. contents::
-
 .. index:: Preface
-.. @+node:ekr.20070701101809.1: *3* @rst-no-head Links
-.. links...
-.. _`SourceForge`:      http://sourceforge.net/projects/leo/
-.. _`noweb`:            http://www.eecs.harvard.edu/~nr/noweb/
-.. _reStructuredText:   http://docutils.sourceforge.net/rst.html
 
-.. _outline:            intro.html#introduction
-.. _plugins:            intro.html#plugins-settings
-.. _scripting:          intro.html#scripting-leo
-.. _users:              http://sourceforge.net/projects/leo/
+.. contents::
+    :depth: 2
 
-.. _`cloned nodes`:     intro.html#clones-views
-.. _`external files`:   intro.html#external-files
-
-.. _`Using the Rst3 Plugin`:           rstplugin3.html
-.. @+node:ekr.20070723100037: *3* @rst-no-head preface
 Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are
 superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo
 possibly compete with such strong competition? What does Leo offer that these
@@ -68,9 +54,22 @@ be used by any other node. Leo represent nodes directly, as nodes (headlines) in
 an outline. An outline node contains a headline and body text. The **outline
 pane** shows all headlines; the **body pane** shows the body text of the
 presently selected node.
+.. @+node:ekr.20070701101809.1: *3* @rst-no-head Links
+.. links...
+.. _`SourceForge`:      http://sourceforge.net/projects/leo/
+.. _`noweb`:            http://www.eecs.harvard.edu/~nr/noweb/
+.. _reStructuredText:   http://docutils.sourceforge.net/rst.html
 
-**Outline structure is real data**
+.. _outline:            intro.html#introduction
+.. _plugins:            intro.html#plugins-settings
+.. _scripting:          intro.html#scripting-leo
+.. _users:              http://sourceforge.net/projects/leo/
 
+.. _`cloned nodes`:     intro.html#clones-views
+.. _`external files`:   intro.html#external-files
+
+.. _`Using the Rst3 Plugin`:           rstplugin3.html
+.. @+node:ekr.20070723100037: *3* Outline structure is real data
 To repeat: the fundamental unit in Leo is *not* text. True, headlines and body
 *consist* of text, but a node is just not text, it is a true (Python) object.
 This means several specific things:
@@ -116,22 +115,15 @@ This means several specific things:
    very easy to create **editing scripts** that automate what would otherwise be
    boring and repetitive editing tasks.
 
-**Leo outlines aren't your average outline**
-
+.. @+node:ekr.20101025080245.6082: *3* Leo outlines aren't your average outline
 Earlier I said that *any* node can be built from other nodes, and *any* node can
 be used by any other node. It takes a very special kind of outline for this to
 be possible. In a typical outline, such as Emacs outline mode, for example,
 nodes appear exactly once in the outline. This makes it impossible to 'reuse'
 nodes in multiple places. Leo removes that limitation: any outline node can be
 **cloned**, and clones can appear in as many places in an outline as you like.
-
-Cloned nodes are distinct: they must be distinct so they can be moved throughout
-the outline, but **cloned nodes share all their information**. That is, changing
-the headline or body text in a node instantly changes the headline and body text
-in all the other nodes cloned to it. Furthermore, similar remarks apply to the
-children and descendants of any node--changing any child (or other descendant)
-of a node, say node A, instantly makes corresponding changes to all nodes cloned
-to node A.
+Although clones may look distinct on the screen, at the data level
+**each clone is exactly the same node**.
 
 Earlier I said that you can think of nodes as representing 'organization' or
 'structure' or 'views' or even 'architecture'. Clones are the crucial feature
@@ -149,8 +141,7 @@ directly. Leo's **chapters** are simply views created as I have just described.
 When you select one chapter, you only see the nodes of that chapter in Leo's
 outline pane.
 
-**Conclusions & encouragements**
-
+.. @+node:ekr.20101025080245.6083: *3* Conclusions & encouragements
 So Leo offers a new way to understand, organize and manipulate *any* kind of
 complex data, including computer programs, *designs* of computer programs, web
 sites, personal data, whatever. The Aha that I invite you to experience is this:

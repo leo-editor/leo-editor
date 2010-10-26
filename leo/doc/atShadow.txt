@@ -36,7 +36,9 @@ using the same algorithms used by `@auto trees`_.
 
 The crucial ideas and algorithms underlying @shadow trees are the invention of Bernhard Mulder.
 
-.. .. contents::
+.. contents::
+    :depth: 2
+
 .. @+node:ekr.20080730212711.16: *3* @rst-no-head links
 .. Links
 .. _`@auto trees`:          directives.html#auto    

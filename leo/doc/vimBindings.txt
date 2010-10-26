@@ -23,10 +23,10 @@ Using Vim Bindings with Leo
 ###########################
 
 This chapter describes Leo's vim-like bindings, including how to install them.
-.. @+node:TL.20080804095315.3: *3* @rst-no-head links
-.. Links
-.. @+node:TL.20080804095315.11: *3* Vim bindings
-.. @+node:TL.20080804095315.4: *4* Installing vim bindings
+
+.. contents::
+    :depth: 3
+.. @+node:TL.20080804095315.4: *3* Installing vim bindings
 Place a copy of the "@keys Vim bindings" node and its sub-nodes,
 located in the leoSettings.leo file, under the "@settings" node
 in the myLeoSettings.leo file
@@ -36,7 +36,7 @@ The same procedure is performed to update to a new version.
 Note: Place any local customized key bindings in a separate
 "@keys My Vi" node in the myLeoSettings.leo file to prevent
 them from being overwritten when updating to a new version.
-.. @+node:TL.20080804095315.5: *4* General commands
+.. @+node:TL.20080804095315.5: *3* General commands
 The following commands are always available.
 
 State change commands::
@@ -83,7 +83,7 @@ Miscellaneous commands::
     =           Simulate double-click on current node's icon box
     Alt-G       Go to specified line number (relative to external file)
     Ctrl-:      Enter Leo's command line
-.. @+node:TL.20080804095315.6: *4* Body pane commands
+.. @+node:TL.20080804095315.6: *3* Body pane commands
 Move cursor commands::
 
     h           Go back 1 character
@@ -279,7 +279,7 @@ Node commands::
        Ctrl-UpArrow    Mapped to "Ctrl-k" for convenience
        Ctrl-LtArrow    Mapped to "Ctrl-h" for convenience
        Ctrl-RtArrow    Mapped to "Ctrl-l" for convenience
-.. @+node:TL.20080804095315.7: *4* Outline commands
+.. @+node:TL.20080804095315.7: *3* Outline commands
 The following commands are supported when in a headline's command mode.
 
 State change commands::
@@ -417,7 +417,7 @@ Outline scroll commands::
    Ctrl-b       Scroll outline up one page
    Ctrl-f       scroll outline down one page
 
-.. @+node:TL.20080804095315.8: *4* Commands not supported
+.. @+node:TL.20080804095315.8: *3* Commands not supported
 Notable missing editing commands::
 
     t<char>     Move cursor to character before specified character

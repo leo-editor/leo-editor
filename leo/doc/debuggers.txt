@@ -26,6 +26,9 @@ This chapter discusses debugging Python scripts with Leo.
 Be aware of the distinction between **Leo-specific** scripts and **general** scripts.
 Leo-specific scripts access data in the Leo outline in which they are contained;
 general scripts do not.
+
+.. contents::
+    :depth: 3
 .. @+node:ekr.20060527105804: *3* @rst-no-head links
 .. External links...
 .. _Idle:                       http://www.python.org/idle/

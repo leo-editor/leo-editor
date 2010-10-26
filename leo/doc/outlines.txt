@@ -27,14 +27,16 @@ invoked by clicking with the pointer in the outline pane or by using the pointer
 to select the command from the ``Outline`` menu. The key bindings mentioned here
 are those of the default EKR bindings.
 
-.. .. contents::
+.. contents::
+    :depth: 2
+
 .. @+node:ekr.20050901101608.1: *3* @rst-no-head links
 .. _`A Tutorial Introduction to Leo`:   intro.html
 .. _`Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                 intro.html#clones-views
 .. @+node:sps.20100710110337.12186: *3* @rst-ignore-node DO NOT SORT THESE HEADLINES
 I've ordered these sections in approximate ascending complexity of concepts and descending importance.
-.. @+node:sps.20100710110337.12187: *3* Outline Related
+.. @+node:sps.20100710110337.12187: *3* @rst-no-head Outline Related
 .. @+node:ekr.20060929040750: *4* Navigating through the outline
 Leo has many commands that select nodes in the outline. These commands can be
 found in the Outline:Go To menu.
@@ -155,7 +157,7 @@ as it is. Leo scrolls the outline pane as the result of mouse-moved events, so
 to continue scrolling you must keep moving the mouse.
 
 This is not yet implemented in the (default) Qt GUI.
-.. @+node:sps.20100710110337.12188: *3* Body Related
+.. @+node:sps.20100710110337.12188: *3* @rst-no-head Body Related
 .. @+node:EKR.20040524104904.39: *4* Editing body text
 The default features of Leo's body text derive from the Tk.Text widget,
 described at: http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm Not all these features
@@ -270,7 +272,7 @@ Three commands in the Cmds->Body Editors menu allow one to create, destroy, or f
 - The ``cycle-editor-focus`` (Cmds->Body Editors->Change Body Editor) command cycles body editor focus between editors in the body text.
 
 There is a single body editor focus which determines which body editor shows the content of the selected outline node and which allows that node to be edited; other body editors continue to show the node contents they last had when they had the body editor focus.
-.. @+node:sps.20100710110337.12189: *3* Miscellaneous
+.. @+node:sps.20100710110337.12189: *3* @rst-no-head Miscellaneous
 .. @+node:EKR.20040524104904.48: *4* Undoing operations
 Leo supports unlimited undo for all typing and all commands. The
 'undo_granularity' setting controls the granularity of undo. There are four

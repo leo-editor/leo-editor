@@ -26,7 +26,9 @@ This chapter discusses all of Leo's menu commands.
 It starts with a discussion of the Emacs-like minibuffer,
 then continues with a discussion of commands in each of Leo's menus.
 
-.. .. contents::
+.. contents::
+    :depth: 3
+
 .. @+node:ekr.20050901101852: *3* @rst-no-head links
 .. External links...
 .. _CWEB:       http://www-cs-faculty.stanford.edu/~knuth/cweb.html

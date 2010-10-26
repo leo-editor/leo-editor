@@ -22,7 +22,9 @@
 Front Matter
 ############
 
-.. .. contents::
+.. contents::
+    :depth: 2
+
 .. @+node:ekr.20050812134441: *3* @rst-no-head Links
 .. External links...
 .. _`Open Software`:    http://www.opensource.org/

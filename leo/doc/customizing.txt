@@ -24,6 +24,9 @@ Customizing Leo
 
 This chapter discusses how to customize Leo using the plugins and other means.
 See `Specifying settings`_ for a description of how to change Leo's settings.
+
+.. contents::
+    :depth: 3
 .. @+node:ekr.20050901102055: *3* @rst-no-head links
 .. _`Scripting Leo with Python`:    scripting.html
 .. _`History of Leo`:               history.html

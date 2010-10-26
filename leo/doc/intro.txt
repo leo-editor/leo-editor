@@ -65,6 +65,8 @@ learn more about Leo's many advanced features.
 The `Glossary`_ is also worth reading.
 
 .. contents::
+    :depth: 3
+
 .. @+node:ekr.20091130111843.6810: *3* @rst-no-head links
 .. Links used in this document...
 

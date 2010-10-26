@@ -23,6 +23,9 @@ Using ZODB with Leo
 ###################
 
 This chapter discusses how to write Leo scripts that store and retrieve data using ZODB_.
+
+.. contents::
+    :depth: 2
 .. @+node:ekr.20060913164311: *3* @rst-no-head links
 .. External links...
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html

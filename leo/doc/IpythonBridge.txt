@@ -61,7 +61,9 @@ However, you probably wont use 'c' and 'g' directly, but use a series of
 convenience wrappers described in this document that make interactive work
 painless and powerful.
 
-.. .. contents::
+.. contents::
+    :depth: 2
+
 
 .. @+node:ekr.20080203101507.2: *3* @rst-no-head links
 .. Links

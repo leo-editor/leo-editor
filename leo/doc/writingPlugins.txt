@@ -21,18 +21,7 @@
 ###############
 Writing Plugins
 ###############
-.. @+node:ekr.20060612103824: *3* @rst-no-head links
-.. External links...
-.. _docutils:             http://docutils.sourceforge.net
-.. _LaTeX:                http://www.latex-project.org/
-.. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-.. _SilverCity:           http://silvercity.sourceforge.net
 
-.. Relative links...
-.. _`Event handlers`:               scripting.html#event-handlers
-.. _`Scripting Leo with Python`:    scripting.html
-.. _`Customizing Leo`:              customizing.html
-.. @+node:ekr.20050903075144: *3* Overview
 A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
 modify how Leo works. With plugins you can give Leo new commands, modify how
 existing commands work, or change any other aspect of Leo's look and feel.
@@ -54,6 +43,21 @@ Writing plugins is quite similar to writing any other Leo script.  See
    details, see the section called `event handlers`_ in Leo's scripting chapter.
 
 The rest of this chapters discusses topics related specifically to plugins.
+
+
+.. contents::
+    :depth: 2
+.. @+node:ekr.20060612103824: *3* @rst-no-head links
+.. External links...
+.. _docutils:             http://docutils.sourceforge.net
+.. _LaTeX:                http://www.latex-project.org/
+.. _reStructuredText:     http://docutils.sourceforge.net/rst.html
+.. _SilverCity:           http://silvercity.sourceforge.net
+
+.. Relative links...
+.. _`Event handlers`:               scripting.html#event-handlers
+.. _`Scripting Leo with Python`:    scripting.html
+.. _`Customizing Leo`:              customizing.html
 .. @+node:ville.20100807185755.4510: *3* enabled-plugins
 @enabled-plugins node is as list of plugins to load. If you have @enabled-plugins
 node in your myLeoSettings.leo, the plugins are loaded from there. If such a

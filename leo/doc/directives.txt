@@ -28,6 +28,8 @@ This chapter does *not* teach how to use Leo. It assumes you are *thoroughly*
 familiar with `Leo's tutorial`_.
 
 .. contents::
+    :depth: 5
+
 .. @+node:ekr.20050828160132: *3* @rst-no-head links
 .. Links to other chapters
 .. _front:                      front.html
@@ -35,13 +37,6 @@ familiar with `Leo's tutorial`_.
 .. _`Leo and reStructuredText`: rstplugin3.html
 .. _`History of Leo`:           history.html
 .. _`Using Chapters`:           outlines.html#using-chapters
-
-.. Relative links...
-..  .. _`@auto reference`:      `auto reference`_
-..  .. _`@delims`:              `delims reference`_
-..  .. _`@file reference`:      `file reference`_
-..  .. _`@root Directive Family`:   `root reference`_
-
 
 .. For reasons unknown, images must appear in the _images folder on the web site.
 .. |leoAtFileMainNode| image:: screen-shots/leo-qt-at-file-main-node.JPG

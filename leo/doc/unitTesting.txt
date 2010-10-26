@@ -23,11 +23,7 @@ Unit testing with Leo
 #####################
 
 This chapter describes how you can execute Python unit test from within Leo outlines.
-.. @+node:ekr.20070628083442.2: *3* @rst-no-head links
-.. Links
 
-.. _`run Leo in a console window`:      install.html#running-leo-from-a-console-window
-.. @+node:ekr.20070704074747: *3* Overview
 Leo's **unit test commands** run the unit tests
 created by @test and @suite nodes. run-unit-tests and run-unit-tests-locally
 run all unit tests in the presently selected part of the Leo outline;
@@ -39,6 +35,13 @@ Leo's unit test commands run all the unit tests using the standard unittest text
 runner, and the output of the unit tests appears in the console.
 
 test/unitTest.leo contains many examples of using @test and @suite nodes.
+
+.. contents::
+    :depth: 2
+.. @+node:ekr.20070628083442.2: *3* @rst-no-head links
+.. Links
+
+.. _`run Leo in a console window`:      install.html#running-leo-from-a-console-window
 .. @+node:ekr.20070628084351: *3* Using @test nodes
 **@test nodes** are nodes whose headlines start with @test. The unit test
 commands convert the body text of @test nodes into a unit test automatically.

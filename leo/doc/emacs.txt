@@ -23,6 +23,9 @@ Leo and Emacs
 #############
 
 This chapter several topics relating to the Emacs editor.
+
+.. contents::
+    :depth: 2
 .. @+node:ekr.20061025065357.2: *3* @rst-no-head links
 .. Links
 .. _elisp:              http://en.wikipedia.org/wiki/Emacs_Lisp

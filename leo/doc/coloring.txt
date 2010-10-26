@@ -34,6 +34,9 @@ The __jEdit_colorizer__.py plugin was an early prototype of the new colorizer.
 This code has been retired. The threading_colorizer.py plugin uses a separate
 helper thread to do the colorizing. Coding details for this plugin are discussed
 in this chapter.
+
+.. contents::
+    :depth: 3
 .. @+node:ekr.20060430222753: *3* @rst-no-head links
 .. External links...
 .. _jEdit:                      http://www.jedit.org/

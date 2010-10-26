@@ -30,7 +30,9 @@ Using the leoBridge module, host programs can get access to:
 - the contents of any .leo file,
 - the commander of any .leo file.
 
-.. .. contents::
+.. contents::
+    :depth: 2
+
 .. @+node:ekr.20070317033759.2: *3* @rst-no-head links
 .. Links
 .. @+node:ekr.20070317033759.3: *3* The basics

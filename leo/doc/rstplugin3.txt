@@ -25,6 +25,37 @@ verbose=True
 Creating Documents with Leo
 ############################
 
+This chapter discusses Leo's rst3 command. The rst3 command creates HTML, PDF,
+LaTeX and other kinds of documents from Leo outlines containing
+`reStructuredText`_ (rST) or `Sphinx`_ markup.
+
+**Note**: `docutils`_ is a document processing system using rST markup.
+`Sphinx`_ extends docutils: sphinx markup is a superset of rST markup. All of
+Leo's documentation is written in Sphinx and processed with the rst3 command to
+produce HTML files.
+
+Leo and rst3 make writing rST/Sphinx documents a *lot* easier:
+
+1. Leo outlines organize writing in all the usual ways. You always see the
+   structure of your writing clearly no matter how large it is. You can
+   reorganize chapters, sections and paragraphs effortlessly. View nodes can
+   show you many different views of your writing simultaneously. These
+   features, all by themselves, would make Leo an excellent choice for
+   editing rST documents.
+
+2. But the rst3 command does more: it automatically creates rST sections from
+   headlines. Without Leo, changing the level of a section is clumsy and error
+   prone: you must carefully change the section's underlining character. Leo's
+   rst3 command eliminates all this bother.
+
+3. The rst3 command converts an \@rst tree to rST and then sends this text to
+   docutils or Sphinx for further processing.
+
+In addition to these basic features, the rst3 command provides *many* other
+capabilities for power users. We'll discuss these features later.
+
+.. contents::
+    :depth: 4
 .. @+node:ekr.20050818163826.1: *3* @rst-no-head links
 .. rST links used in this document...
 
@@ -252,35 +283,6 @@ Notes:
 - Valid values for the ext argument are ".html", ".tex" or None (specifies rst output)
 
 - There is some support for ext=".pdf", but this is experimental code.  Expect crashes.
-.. @+node:ekr.20050818163826.2: *3* Overview
-This chapter discusses Leo's rst3 command. The rst3 command creates HTML, PDF,
-LaTeX and other kinds of documents from Leo outlines containing
-`reStructuredText`_ (rST) or `Sphinx`_ markup.
-
-**Note**: `docutils`_ is a document processing system using rST markup.
-`Sphinx`_ extends docutils: sphinx markup is a superset of rST markup. All of
-Leo's documentation is written in Sphinx and processed with the rst3 command to
-produce HTML files.
-
-Leo and rst3 make writing rST/Sphinx documents a *lot* easier:
-
-1. Leo outlines organize writing in all the usual ways. You always see the
-   structure of your writing clearly no matter how large it is. You can
-   reorganize chapters, sections and paragraphs effortlessly. View nodes can
-   show you many different views of your writing simultaneously. These
-   features, all by themselves, would make Leo an excellent choice for
-   editing rST documents.
-
-2. But the rst3 command does more: it automatically creates rST sections from
-   headlines. Without Leo, changing the level of a section is clumsy and error
-   prone: you must carefully change the section's underlining character. Leo's
-   rst3 command eliminates all this bother.
-
-3. The rst3 command converts an \@rst tree to rST and then sends this text to
-   docutils or Sphinx for further processing.
-
-In addition to these basic features, the rst3 command provides *many* other
-capabilities for power users. We'll discuss these features later.
 .. @+node:ekr.20100809162244.4289: *3* Tutorial
 This tutorial tells how to get started with Leo's rst3 command. The tutorial
 covers only rst3's basic features. You can do a *lot* with these features--Leo's

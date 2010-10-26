@@ -25,6 +25,9 @@ Theory of Operation
 This chapter discusses how Leo's code works,
 paying particular attention to topics that have caused difficulties in design or implementation.
 This chapter will be of use primarily to those wanting to change Leo's code.
+
+.. contents::
+    :depth: 2
 .. @+node:ekr.20050901102300: *3* @rst-no-head links
 .. _`History of Leo`:   history.html
 .. _`White Papers`:     whitepapers.html
@@ -33,8 +36,8 @@ All versions of Leo are organized as a collection of classes. The general
 organization of Leo has remained remarkably stable throughout all versions of
 Leo, although the names of classes are different in different versions.
 Smalltalk's Model/View/Controller terminology is a good way think about Leo's
-classes. **Model classes** represent the fundamental data. The vnode and tnode
-classes are Leo's primary model classes.
+classes. **Model classes** represent the fundamental data. The vnode
+class is Leo's primary model class.
 
 **View classes** draw the screen. The main view classes are leoFrame.py and
 leoTree.py. The colorizer class in leoColor.py handles syntax coloring in the
@@ -76,41 +79,28 @@ commands.
 
 We use the following convention throughout this documentation. Any variable
 named c is a commander, i.e., an instance of the Commands class in
-leoCommands.py. Variables named v and t are vnodes and tnodes respectively.
-These classes are defined in leoNodes.py.
+leoCommands.py. Variables named v are vnodes. These classes are defined in
+leoNodes.py.
 .. @+node:EKR.20040524104904.263: *3* Nodes
-The vnode and tnode classes represent most of the data contained in the outline.
-These classes are Leo's fundamental Model classes. A **vnode** (visual node)
-represents a headline at a particular location on the screen. When a headline is
-cloned, vnodes must be copied. vnodes persist even if they are not drawn on the
-screen. Commanders call vnode routines to insert, delete and move headlines.
+The vnode class is Leo's fundamental model class. A **vnode** represents the
+data represented by headlines. As of Leo 4.7, all clones of a node are in fact
+**exactly the same node**.
 
-The vnode contains data associated with a headline, except the body text data
-which is contained in tnodes. A vnode contains headline text, a link to its
-tnode and other information. Vnodes contain structure links: parent, firstChild,
-next and back ivars. To insert, delete, move or clone a vnode the vnode class
-just alters those links. The Commands class calls the **leoTree** class to redraw
-the outline pane whenever it changes. The leoTree class knows about these
-structure links; in effect, the leoTree and vnode classes work together.
+The vnode contains **all** data associated with a node. A vnode contains
+headline text, body text, and **user attributes**, uA's for short.
 
-A **tnode**, (text node) represents body text. All vnodes that are clones of
-each other share the same tnode. In other words, tnodes are the unit of sharing
-of body text. The tnode class is more private than the vnode class. Most
-commanders deal only with vnodes, though there are exceptions.
+Because Leo has unlimited Undo commands, Leo deletes vnodes only when a window
+closes. Leo deletes nodes indirectly using destroy methods. Several classes,
+including the vnode, leoFrame and leoTree classes, have destroy methods. destroy
+methods merely clear links so that Python's and Tkinter's reference counting
+mechanisms will eventually delete vnodes and other data when a window
+closes.
 
-Because Leo has unlimited Undo commands, Leo deletes vnodes and tnodes only when
-a window closes. Leo deletes nodes indirectly using destroy methods. Several
-classes, including the vnode, tnode, leoFrame and leoTree classes, have
-destroy methods. destroy methods merely clear links so that Python's and
-Tkinter's reference counting mechanisms will eventually delete vnodes, tnodes
-and other data when a window closes.
-
-Leo's XML file format uses **tnode indices** to indicate which tnodes (t
-elements) belong to which vnodes (v elements). Such indices are required. Even
-if we duplicated the body text of shared tnodes within the file, the file format
-would still need an unambiguous way to denote that tnodes are shared. Present
-versions of Leo use **gnx's** (global node indices) as node indices. These indices
-do not change once a node has created. This reduces cvs conflicts.
+Leo's XML file format uses **tx** and **t** attributes to associate <v> elements
+with <t> elements. <v> elements represent nodes. <t> elements represent the body
+text of nodes. This is a (somewhat dubious) space optimization. The values of tx
+and t attributes are **gnx's** (global node indices). These indices do not
+change once a node has created.
 .. @+node:EKR.20040524104904.264: *3* Drawing and events
 Leo must redraw the outline pane when commands are executed and as the result of mouse and keyboard events.
 The main challenges are eliminating flicker and handling events properly.
@@ -146,20 +136,7 @@ tells what the present icon is. The event handler simply compares these two
 values and sets redraw_flag if they don't match.
 
 **Handling events.** Besides redrawing the screen, Leo must handle events or
-commands that change the text in the outline or body panes. It is surprisingly
-difficult to ensure that headline and body text corresponds to the vnode and
-tnode corresponding to presently selected outline, and vice versa. For example,
-when the user selects a new headline in the outline pane, we must ensure that 1)
-the vnode and tnode of the previously selected node have up-to-date information
-and 2) the body pane is loaded from the correct data in the corresponding tnode.
-Early versions of Leo attempted to satisfy these conditions when the user
-switched outline nodes. Such attempts never worked well; there were too many
-special cases. Later versions of Leo, including leo.py, use a much more direct
-approach. The event handlers make sure that the vnode and tnode corresponding to
-the presently selected node are always kept up-to-date. In particular, every
-keystroke in the body pane causes the presently selected tnode to be updated
-immediately. There is no longer any need for the c.synchVnode method, though
-that method still exists for compatibility with old scripts.
+commands that change the text in the outline or body panes.
 
 The leoTree class contains all the event handlers for the body and outline
 panes. The actual work is done in the idle_head_key and idle_body_key methods.
@@ -231,7 +208,7 @@ of self.search_text indicate the range of text to be searched. Searching
 headline and body text simultaneously is complicated. The selectNextVnode()
 method handles the many details involved by setting self.s_text and its insert
 and sel attributes.
-.. @+node:EKR.20040524104904.267: *3* Tangle and untangle commands
+.. @+node:EKR.20040524104904.267: *3* @rst-ignore Tangle and untangle commands
 This section describes Leo's explicit Tangle and Untangle commands. Such
 commands operate only on @root and @unit trees. The previous chapter discusses
 the implicit Tangle on Write/Untangle on Read processes used to read and write
@@ -329,7 +306,7 @@ skip_body method and its allies. Just when skip_body enters a definition
 into the symbol table, all the information is present that Untangle needs to
 update that definition.
 .. @+node:EKR.20040524104904.268: *3* Unicode
-Leo uses unicode objects in vnodes and tnodes to denote headline and body text.
+Leo uses unicode objects in vnodes to denote headline and body text.
 Note that unicode strings have no encoding; only plain strings have encodings.
 This means that once an (encoded) plain string has been converted to a unicode
 string it doesn't matter how the unicode string was created. This is the key

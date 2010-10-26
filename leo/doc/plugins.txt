@@ -31,7 +31,9 @@ plugin lets you create **script buttons** in a matter of seconds. See `Creating
 script buttons`_. Script buttons are extraordinarily useful. Try them, you'll be
 instantly hooked.
 
-.. .. contents::
+.. contents::
+    :depth: 5
+
 .. @+node:ekr.20050912125735: *3* @rst-no-head links
 .. External links...
 .. _docutils:             http://docutils.sourceforge.net

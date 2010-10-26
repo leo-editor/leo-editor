@@ -22,7 +22,8 @@
 What People Are Saying About Leo
 ###################################
 
-.. .. contents::
+.. contents::
+    :depth: 2
 
 .. index:: What people are saying about Leo
 .. @+node:ekr.20050830075229: *3* @rst-no-head Links

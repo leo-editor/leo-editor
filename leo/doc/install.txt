@@ -30,6 +30,10 @@ This chapter tells how to install and run Leo.
 
 If you have *any* problems installing Leo,
 please ask for help on `Leo's help forum`_.
+
+.. contents::
+    :depth: 2
+
 .. @+node:ekr.20100731112744.7269: *3* @rst-no-head links
 .. Links used in this document...
 .. _`Pmw`:                  http://pmw.sourceforge.net/

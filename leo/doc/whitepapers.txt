@@ -29,7 +29,9 @@ White Papers
 I wrote this white paper soon after discovering Python in 2001.
 The conclusions are still valid today.
 
-.. .. contents::
+.. contents::
+    :depth: 4
+
 .. @+node:ekr.20050901092232.1: *3* @rst-no-head links
 .. External links...
 .. _pychecker:              http://pychecker.sourceforge.net/
@@ -459,15 +461,15 @@ Presto!  Leo is ready for a script search.
 One more feature greatly expands the generality and power of
 Leo's outlines combined with Python.  Plugins may now attach arbitrary data
 to any node of a Leo outline.  This is done merely by "injecting" an ivar
-called  unknownAttributes ivar into Leo's fundamental vnode or tnode objects
+called  unknownAttributes ivar into Leo's fundamental vnode objects
 (or adding items to the unknownAttributes dict if it already exists).  The
 unknownAttributes ivar should be a Python dictionary whose keys are xml
 attribute names and whose values are the values of those attributes.
 
 When writing a file, Leo will write "foreign" attributes in the <v> or <t>
-xml elements of Leo's .leo file if the corresponding vnode or tnode contains
+xml elements of Leo's .leo file if the corresponding vnode contains
 this unknownAttributes ivar.  Similarly, Leo will create an
-unknownAttributes ivar for a vnode or tnode if the corresponding <v> or <t>
+unknownAttributes ivar for a vnode if the corresponding <v> or <t>
 element contains an attribute not normally used by Leo.  Leo performs the
 standard xml escapes when writing unknown attributes, so plugins can put
 *anything* in the unknownAttributes dictionary.  In particular, plugins may

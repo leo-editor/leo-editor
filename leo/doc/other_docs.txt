@@ -10,6 +10,8 @@
 Leo screen shots
 ################
 
+.. contents::
+    :depth: 2
 .. @+node:ekr.20090811090022.14451: *4* @rst-no-head links
 .. Links used in this document...
 

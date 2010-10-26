@@ -42,7 +42,9 @@ all code examples in this chapter by running the Execute Script command
 (Ctrl-B). You may have to select the actual code to execute if a node contains
 comments interspersed with the code.
 
-.. .. contents::
+.. contents::
+    :depth: 4
+
 .. @+node:ekr.20091104200540.6566: *3* @rst-ignore
 .. @+node:ekr.20091107181442.26607: *4* old, too complicated intro
 Leo's **vnode** class represents all the data in a particular node.

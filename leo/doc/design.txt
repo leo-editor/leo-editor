@@ -31,6 +31,8 @@ implementation, maintanance and testing. In all cases, being able to organize,
 understand and manipulate (script) complex data is what Leo does best.
 
 .. contents::
+    :depth: 2
+
 .. @+node:ekr.20100807120250.4399: *3* Outlines embody design
 Leo's outlines don't merely represent design. They often *are* the design.
 Outlines effortlessly show relationships between class, methods or any other

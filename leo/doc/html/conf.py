@@ -99,6 +99,8 @@ html_theme = 'default'
 # documentation.
 html_theme_options = {
 
+    'collapsiblesidebar': True, ### Aborts the build.
+
 	#  footerbgcolor (CSS color): Background color for the footer line.
 	#  footertextcolor (CSS color): Text color for the footer line.
 	#  sidebarbgcolor (CSS color): Background color for the sidebar.
@@ -160,8 +162,19 @@ html_last_updated_fmt = '%b %d, %Y'
 html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {'FAQ':'noSideBar.txt'}
-# collapsiblesidebar = True
+## html_sidebars = {'FAQ':'noSideBar.txt'} ### raises TemplateNotFound exception.
+
+    # * localtoc.html – a fine-grained table of contents of the current document
+    # * globaltoc.html – a coarse-grained table of contents for the whole documentation set, collapsed
+    # * relations.html – two links to the previous and next documents
+    # * sourcelink.html – a link to the source of the current document, if enabled in html_show_sourcelink
+    # * searchbox.html – the “quick search” box
+    
+### nosidebar = True ### has no effect.
+
+html_sidebars = {
+   '**': ['relations.html',] # 'localtoc.html'], # 'globaltoc.html',] ### 'sourcelink.html', 'searchbox.html'],
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

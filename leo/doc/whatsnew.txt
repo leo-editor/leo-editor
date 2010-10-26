@@ -22,8 +22,8 @@
 What's New in Leo
 ##################
 
-.. toctree::
-  :maxdepth: 1
+.. contents::
+    :depth: 2
 .. @+node:ekr.20071116062917.2: *3* @rst-no-head links
 .. Links used in this document.
 .. _`leoBridge`:            leoBridge.html
@@ -188,6 +188,11 @@ XXX To do.
 - Improved the installation instructions.
 
 .. @+node:ekr.20100129054823.11924: *3* Leo 4.7
+.. @+node:ekr.20101025080245.6088: *4* The one-node world
+Leo 4.7 accomplishes something I long thought to be impossible: the unification
+of vnodes and tnodes. tnodes now longer exist: vnodes contain all data. The Aha
+that made this possible is that iterators and positions allow a single node to
+appear in more than one place in a tree traversal.
 .. @+node:ekr.20100129054823.17680: *4* Leo supports Python 3.x
 Leo requires Python 2.6 or above, including Python 3.0 and above.
 .. @+node:ekr.20100129054823.11928: *4* Improved file handling
