@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20060430221745.1: ** @rst html\coloring.html
-#########################################
-Chapter 15: Controlling Syntax Coloring
-#########################################
+###########################
+Controlling Syntax Coloring
+###########################
 
 This chapter discusses how to control Leo's new syntax colorer using Python
 files derived from jEdit_'s xml language description files. It also discusses
@@ -34,8 +34,6 @@ The __jEdit_colorizer__.py plugin was an early prototype of the new colorizer.
 This code has been retired. The threading_colorizer.py plugin uses a separate
 helper thread to do the colorizing. Coding details for this plugin are discussed
 in this chapter.
-
-.. .. contents::
 .. @+node:ekr.20060430222753: *3* @rst-no-head links
 .. External links...
 .. _jEdit:                      http://www.jedit.org/
@@ -43,7 +41,7 @@ in this chapter.
 
 .. Relative links...
 .. _`Ruleset name`:      `Ruleset names`_
-.. _`Chapter 8`:           customizing.html
+.. _`Customizing Leo`:           customizing.html
 .. @+node:ekr.20060430220749: *3* Files
 The jEdit_ editor drives its syntax colorer using xml **language description files.**
 `jEdit's documentation`_ contain a complete description of these xml files.
@@ -620,7 +618,7 @@ If successful, match_terminate colors at_char characters
 with the color specified by kind.
 .. @+node:ekr.20060830142929: *3* Syntax coloring settings
 This section discusses only those settings that affect syntax coloring.
-See `Chapter 8`_ for a general discussion of Leo's settings.
+See `Customizing Leo`_ for a general discussion of Leo's settings.
 
 Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer plugin)
 now support @font settings for colorizing options.

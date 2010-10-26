@@ -39,7 +39,7 @@ Preface
 .. _`cloned nodes`:     intro.html#clones-views
 .. _`external files`:   intro.html#external-files
 
-.. _`Chapter 14\: Using the Rst3 Plugin`:           rstplugin3.html
+.. _`Using the Rst3 Plugin`:           rstplugin3.html
 .. @+node:ekr.20070723100037: *3* @rst-no-head preface
 Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are
 superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo

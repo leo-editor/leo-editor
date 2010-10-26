@@ -18,13 +18,11 @@
 
 .. @+all
 .. @+node:TL.20080804095315.2: ** @rst html\vimBindings.html
-############################################################
-Chapter 22: Using Vim Bindings with Leo
-############################################################
+###########################
+Using Vim Bindings with Leo
+###########################
 
 This chapter describes Leo's vim-like bindings, including how to install them.
-
-.. .. contents::
 .. @+node:TL.20080804095315.3: *3* @rst-no-head links
 .. Links
 .. @+node:TL.20080804095315.11: *3* Vim bindings

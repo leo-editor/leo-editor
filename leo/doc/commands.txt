@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20050901101608.2: ** @rst html\commands.html
-##########################################
-Chapter 5: Using Leo's Commands
-##########################################
+####################
+Using Leo's Commands
+####################
 
 This chapter discusses all of Leo's menu commands.
 It starts with a discussion of the Emacs-like minibuffer,
@@ -33,11 +33,12 @@ then continues with a discussion of commands in each of Leo's menus.
 .. _noweb:      http://www.eecs.harvard.edu/~nr/noweb/
 
 .. Relative links...
-.. _`Chapter 4\: Writing Programs in Leo`:              directives.html
-.. _`Chapter 8: Customizing Leo`:                       customizing.html
+.. _`Writing Programs in Leo`:              directives.html
+.. _`Customizing Leo`:                       customizing.html
 .. _`Clones and views`:                                 intro.html#clones-views
 .. _`Creating script buttons`:                          scripting.html#creating-script-buttons
-.. _`Tangling @root trees with the Tangle commands`:    directives.html#tangling-root-trees-with-the-tangle-commands
+
+.. .. _`Tangling @root trees with the Tangle commands`:    directives.html#tangling-root-trees-with-the-tangle-commands
 .. @+node:ekr.20060227102028.111: *3* Autocompletion
 Typing a period when @language python is in effect starts autocompletion. Typing
 Return or Control-g (keyboard-quit) exits autocompletion.
@@ -112,7 +113,7 @@ For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer.
 **Important**: you may bind keystrokes to any of these commands.
-See `Chapter 8: Customizing Leo`_ for full details.
+See `Customizing Leo`_ for full details.
 .. @+node:ekr.20060613062025.6: *4* Basic editing commands
 The following basic editing commands are typically bound to key strokes::
 
@@ -697,62 +698,6 @@ in the Open With submenu. This would typically be done in a hook routine, using
 the createOpenWithMenuFromTable routine described in the child of this node. The
 @file mod_open_with.py node in LeoPlugins.leo gives a complete example
 of handling the Open With menu.
-.. @+node:EKR.20040524104904.105: *4* Tangling an outline: Producing external files
-The Tangle, Tangle All and Tangle Marked commands create derived
-files from portions of an outline. These commands indent and format the derived
-files so that they are easy to read and so that it is clear what sections
-produced the code. The .c file in the Examples folder shows the code produced by
-the Tangle commands. The Tangle command tangles only the selected portion of
-the outline, the Tangle All command tangles the entire outline, and the
-Tangle Marked command tangles only marked headlines.
-
-The Tangle commands create a external file, call it F, from each @root
-node. This process is like macro expansion. The contents of F are simply the
-body text of the @root node, with each section reference replaced by its
-definition. Substitution continues until all references to sections are replaced
-with their definitions. By default, Tangle commands look for section
-definitions only in the suboutline containing the @root directive being
-tangled. That is, all sections are assumed to be defined either in the body text
-of the headline, say h, containing the
-@root directive, or in the body texts of the descendants of h.
-The @unit directive changes the default scope of the tangle command, while
-the @ignore directive causes the tangle commands to ignore a subtree. For
-more details, see: `Tangling @root trees with the Tangle commands`_
-.. @+node:EKR.20040524104904.106: *4* Untangling: updating an outline
-The Untangle, Untangle All and Untangle Marked commands are the
-reverse of the corresponding Tangle commands. They update an outline based
-on changes made to one or more external files. These are exceptionally useful
-commands. For example, suppose you create a new part of the outline and
-Tangle it for the first time. When you compile the resulting external files
-for the first time, you are likely to get many syntax errors. You could fix
-those errors in the outline and Tangle the outline again, but there is a much
-easier way: you fix the errors in the external files using the compiler's editor,
-then run the untangle command on the part of the outline that created the
-external file. The Untangle command updates the selected outline to match the
-changes in the external files. It's as simple as that. The Untangle command
-marks all the nodes in the outline that it updates; you can examine all such
-nodes with the Go To Next Marked command in the Outline menu. You cannot use
-Untangle to update doc parts, or leading comments in code parts or "trivial"
-whitespace in code parts. This is a limitation of the Untangle command that
-cannot be fixed; Untangle has no way of knowing whether leading comments
-came from doc parts or are just leading comments.
-
-Untangle never changes the structure of an outline; it never inserts,
-deletes or moves nodes. Don't attempt to change the structure of an outline by
-modifying external files; it won't work. Also, never delete, move or alter the
-sentinel lines in external files written by the Tangle command. Such lines start
-with /// followed by a section name. If you change the section name in a
-sentinel line Untangle will not update the code in the outline (with the old
-name) that generated the renamed section. Untangle now warns about sections that
-appear in a external file but not in the outline. Untangle has no trouble with
-changed section references in external files; it is only changed sentinel lines
-that cause problems. Cloned nodes that generate code in several files may cause
-problems for Untangle if not all the code is changed the same way in derived
-files. If Untangle is run separately on these external files, Untangle will
-update all cloned nodes each time it is run, so only the code in the last
-Untangle run will take effect. Therefore, the only reliable way to update
-text in cloned nodes is to make the change in the .leo file rather than the
-external files.
 .. @+node:EKR.20040524104904.108: *4* Importing Files into Leo Outlines
 The Import commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:
 

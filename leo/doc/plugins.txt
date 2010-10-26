@@ -18,13 +18,13 @@
 
 .. @+all
 .. @+node:ekr.20050912125144.1: ** @rst html\plugins.html
-##########################
-Chapter 12: Plugins
-##########################
+#######
+Plugins
+#######
 
 This chapter discusses the plugins contained in leoPlugins.leo.
 These plugins are part of Leo's official distribution.
-`Chapter 13: Writing Plugins`_ tells how to write plugins.
+`Writing Plugins`_ tells how to write plugins.
 
 The scripting plugin (mod_scripting.py) deserves special mention. This
 plugin lets you create **script buttons** in a matter of seconds. See `Creating
@@ -40,10 +40,10 @@ instantly hooked.
 .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Relative links...
-.. _`Specifying settings`:              customizing.html#specifying-settings
-.. _`Chapter 8\: Customizing Leo`:      customizing.html
-.. _`Chapter 13\: Writing Plugins`:     writingPlugins.html
-.. _`Creating script buttons`:          scripting.html#creating-script-buttons
+.. _`Specifying settings`:      customizing.html#specifying-settings
+.. _`Customizing Leo`:          customizing.html
+.. _`Writing Plugins`:          writingPlugins.html
+.. _`Creating script buttons`:  scripting.html#creating-script-buttons
 .. @+node:ekr.20070814104719: *3* Enabling plugins
 You enable or disable plugins using @enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded).  See `Specifying settings`_ for full details of settings files.
 
@@ -1024,9 +1024,9 @@ the headline of a child node.  UNL's of the form::
     file:<path>#headline1-->...-->headlineN
 
 refer to a node specified in <path> For example, double clicking the following
-headline will take you to Chapter 8 of Leo's Users Guide::
+headline will take you to the ``Customizing Leo`` chapter of Leo's Users Guide::
 
-    @url file:c:/prog/leoCvs/leo/doc/leoDocs.leo#Users Guide-->Chapter 8: Customizing Leo
+    @url file:c:/prog/leoCvs/leo/doc/leoDocs.leo#Users Guide-->Customizing Leo
 
 For example, suppose you want to email someone with comments about a Leo file.
 Create a comments.leo file containing @url UNL nodes. That is, headlines are

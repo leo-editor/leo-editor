@@ -18,18 +18,16 @@
 
 .. @+all
 .. @+node:ekr.20050901101608.6: ** @rst html\theory.html
-##########################################
-Chapter 10: Theory of Operation
-##########################################
+###################
+Theory of Operation
+###################
 
 This chapter discusses how Leo's code works,
 paying particular attention to topics that have caused difficulties in design or implementation.
 This chapter will be of use primarily to those wanting to change Leo's code.
-
-.. .. contents::
 .. @+node:ekr.20050901102300: *3* @rst-no-head links
-.. _`Chapter 9\: History of Leo`:   history.html
-.. _`Chapter 11\: White Papers`:    whitepapers.html
+.. _`History of Leo`:   history.html
+.. _`White Papers`:     whitepapers.html
 .. @+node:EKR.20040524104904.262: *3* Overview
 All versions of Leo are organized as a collection of classes. The general
 organization of Leo has remained remarkably stable throughout all versions of

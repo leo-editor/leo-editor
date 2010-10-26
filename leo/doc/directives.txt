@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20050828061213: ** @rst html/directives.html
-#####################################
-Chapter 4: Leo's Reference
-#####################################
+###############
+Leo's Reference
+###############
 
 This chapter is a reference for all of Leo's directives.
 
@@ -30,11 +30,11 @@ familiar with `Leo's tutorial`_.
 .. contents::
 .. @+node:ekr.20050828160132: *3* @rst-no-head links
 .. Links to other chapters
-.. _front:                  front.html
-.. _`Leo's tutorial`:       intro.html
+.. _front:                      front.html
+.. _`Leo's tutorial`:           intro.html
 .. _`Leo and reStructuredText`: rstplugin3.html
-.. _`History of Leo`:       history.html
-.. _`Using Chapters`:       outlines.html#using-chapters
+.. _`History of Leo`:           history.html
+.. _`Using Chapters`:           outlines.html#using-chapters
 
 .. Relative links...
 ..  .. _`@auto reference`:      `auto reference`_

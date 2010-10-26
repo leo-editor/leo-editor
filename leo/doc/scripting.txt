@@ -25,9 +25,9 @@
 show_doc_parts_as_paragraphs = True
 @c
 
-####################################
-Chapter 7: Scripting Leo with Python
-####################################
+#########################
+Scripting Leo with Python
+#########################
 
 This chapter describes how to write Python scripts that control Leo and access
 the data in Leo outlines. To write such scripts, you must understand the basics
@@ -107,9 +107,9 @@ to the internals of these classes.
 .. @+node:ekr.20050812134441.1: *3* @rst-no-head Links
 .. Links used in this document.
 .. _front:          front.html
-.. _chapter6:       design.html
-.. _chapter8:       customizing.html
-.. _`rst3 plugin`:  rstplugin3.html
+.. _`Designing with Leo`:   design.html
+.. _`Customizing Leo`:      customizing.html
+.. _`rst3 plugin`:          rstplugin3.html
 .. @+node:ekr.20040403183229: *3* Leo's most import objects
 Leo scripts typically use the following objects:
 

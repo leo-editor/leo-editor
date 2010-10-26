@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20050901101608.3: ** @rst html\design.html
-##########################################
-Chapter 6: Designing with Leo
-##########################################
+##################
+Designing with Leo
+##################
 
 This chapter discusses how outlines can improve the design of programs, web
 sites and any other complex data. The more complex your program or data, the
@@ -113,8 +113,7 @@ web sites or data.
 .. @+node:ekr.20100807120250.4401: *3* Nodes create context
 Nodes naturally provide **useful** context. For example, @button and @test nodes.
 
-Outlines provide a convenient way of
-expressing the intended scope of commands. Many of Leo's commands operates on
-the presently selected tree.
+Outlines provide a convenient way of expressing the intended scope of commands.
+Many of Leo's commands operates on the presently selected tree.
 .. @-all
 .. @-leo

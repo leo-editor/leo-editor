@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20091130111843.6788: ** @rst html\intro.html
-############################
-Chapter 2: The Leo Tutorial
-############################
+################
+The Leo Tutorial
+################
 
 .. index:: Leo's tutorial
 
@@ -73,23 +73,11 @@ The `Glossary`_ is also worth reading.
 .. _`Python`:           http://www.python.org/
 .. _`XML`:              http://en.wikipedia.org/wiki/XML
 
-.. _`Leo's Installation Guide`:                     install.html
-.. _`Chapter 5: Using Leo's Commands`:              commands.html
-.. _`Chapter 7: Scripting Leo with Python`:         scripting.html
-.. _`Chapter 8: Customizing Leo`:                   customizing.html
-.. _`Glossary`:                                     genindex.html
-
-.. ----- References to other chapters.
-..  .. _command:                                        commands.html
-..  .. _commands:                                       commands.html
-..  .. _directive:                                      directives.html
-..  .. _directives:                                     directives.html
-..  .. _`Leo directives`:                               directives.html
-..  .. _`editing commands`:                             commands.html#the-edit-menu
-..  .. _front:                                          front.html
-..  .. _`install Leo`:                                  install.html
-..  .. _`launch Leo`:                                   install.html#running-leo
-
+.. _`Leo's Installation Guide`:     install.html
+.. _`Using Leo's Commands`:         commands.html
+.. _`Scripting Leo with Python`:    scripting.html
+.. _`Customizing Leo`:              customizing.html
+.. _`Glossary`:                     genindex.html
 
 .. This image must appear in the _images folder on the web site.
 .. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
@@ -183,7 +171,7 @@ Minibuffer
     like the Emacs mini-buffer. To enter a command, type <Alt-x> followed by the
     command name and then <return>. To type a search string, type <ctrl-f>
     followed by the search string and then <return>. For full details, see
-    `Chapter 5: Using Leo's Commands`_.
+    `Using Leo's Commands`_.
 .. @+node:ekr.20091130111843.6846: *3* External files and @thin nodes
 .. index::
     pair: External file; Tutorial
@@ -637,7 +625,7 @@ example, the following script will print all the headlines in an outline::
         print ' '*p.level(),p.h
 
 The example above is only the beginning of what scripts can do.
-See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripting Leo.
+See `Scripting Leo with Python`_ for a complete discussion of scripting Leo.
 
 .. index::
     pair: Extending Leo; Tutorial
@@ -653,7 +641,7 @@ Leo distributions.
 Plugins and other parts of Leo can get options from **@settings** trees.
 \@settings trees allow plugins to get options without any further support from
 Leo's core code. For a full discussion of \@settings trees,
-see `Chapter 8: Customizing Leo`_.
+see `Customizing Leo`_.
 .. @+node:ekr.20091222125456.6641: *3* Summary
 Using Leo quickly becomes second nature:
 

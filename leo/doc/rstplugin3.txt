@@ -21,14 +21,14 @@ write_intermediate_file=True
 verbose=True
 @c
 
-########################################
-Chapter 14: Creating Documents with Leo
-########################################
+############################
+Creating Documents with Leo
+############################
 
-
-.. .. contents::
 .. @+node:ekr.20050818163826.1: *3* @rst-no-head links
 .. rST links used in this document...
+
+.. _`Scripting`:            scripting.html
 
 .. External links...
 .. _docutils:               http://docutils.sourceforge.net
@@ -218,8 +218,7 @@ The result looks like this if the SilverCity syntax coloring module has been ins
     .. import leo.core.leoPlugins as leoPlugins
     .. import leo.core.leoGlobals as g
 
-See the Scripting chapter in LeoDocs.leo for many examples of how to use
-code-blocks.
+See `Scripting`_ for many examples of how to use code-blocks.
 .. @+node:ekr.20060527103630: *5* Controlling the rst3 command from scripts
 A new method has been added to make it more easily to write rST code from scripts::
 

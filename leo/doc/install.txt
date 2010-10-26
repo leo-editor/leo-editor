@@ -18,13 +18,13 @@
 
 .. @+all
 .. @+node:ekr.20100731112744.7268: ** @rst html\install.html
-##########################################
-Chapter 1: Installing Leo
-##########################################
+################
+Installing Leo
+################
 
 .. index:: Installing Leo
 
-This chapter tells how to install and run_ Leo.
+This chapter tells how to install and run Leo.
 
 **Important**:
 
@@ -33,7 +33,6 @@ please ask for help on `Leo's help forum`_.
 .. @+node:ekr.20100731112744.7269: *3* @rst-no-head links
 .. Links used in this document...
 .. _`Pmw`:                  http://pmw.sourceforge.net/
-.. _run:                    `Running Leo`_
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 .. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
@@ -251,8 +250,7 @@ fails, Leo will use the version of Pmw in the extensions folder.
 
 At present, Pmw does not work with Python 3.0, which means that you can not use
 the Tk gui with Leo when using Python 3.0.
-.. @+node:ekr.20100817101952.4309: *3* Running Leo
-.. @+node:ekr.20100731112744.7277: *4* Running Leo
+.. @+node:ekr.20100731112744.7277: *3* Running Leo 
 You can run Leo from a Python interpreter as follows::
 
     import leo
@@ -292,7 +290,7 @@ stores this identifier in the file .leoID.txt. Leo attempts to create
 leoID.txt in the .leo sub-directory of your home directory, then in Leo's config directory, and
 finally in Leo's core directory. You can change this identifier at any time by
 editing .leoID.txt.
-.. @+node:ekr.20100731112744.7279: *4* Running Leo in batch mode
+.. @+node:ekr.20100731112744.7279: *3* Running Leo in batch mode
 On startup, Leo looks for two arguments of the form::
 
     --script scriptFile
@@ -316,7 +314,7 @@ headlines in that file::
 
     for p in newFrame.c.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
-.. @+node:ekr.20100731112744.7278: *4* Running Leo from a console window
+.. @+node:ekr.20100731112744.7278: *3* Running Leo from a console window
 Leo sends more detailed error messages to stderr,
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.

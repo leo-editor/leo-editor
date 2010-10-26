@@ -18,13 +18,11 @@
 
 .. @+all
 .. @+node:ekr.20061025065357.1: ** @rst html\emacs.html
-#######################################
-Chapter 18: Leo and Emacs
-#######################################
+#############
+Leo and Emacs
+#############
 
 This chapter several topics relating to the Emacs editor.
-
-.. .. contents::
 .. @+node:ekr.20061025065357.2: *3* @rst-no-head links
 .. Links
 .. _elisp:              http://en.wikipedia.org/wiki/Emacs_Lisp
@@ -32,7 +30,7 @@ This chapter several topics relating to the Emacs editor.
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
 .. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
 .. _pymacs:             http://pymacs.progiciels-bpi.ca/index.html
-.. _`Chapter 8: Customizing Leo`:   customizing.html
+.. _`Customizing Leo`:  customizing.html
 .. @+node:ekr.20061025081359: *3* Controlling Leo from Emacs using Pymacs
 Leo's leoPymacs module is a simple 'server' for the pymacs_ package.
 Using pymacs and leoPymacs, elisp_ scripts in Emacs_ can open .leo files and execute *Python* scripts

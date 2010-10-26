@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20050901092232: ** @rst html\whitepapers.html
-##########################
-Chapter 11: White Papers
-##########################
+############
+White Papers
+############
 
 ..  I wrote the first two white papers soon after discovering Python.
 ..  The conclusions in these papers have remained largely unchanged.
@@ -36,7 +36,7 @@ The conclusions are still valid today.
 .. _`region inference`:     http://en.wikipedia.org/wiki/Region_inference
 
 .. Relative links...
-.. _chapter10:              theory.html
+.. _`Theory of Operation`:  theory.html
 .. _appendices:             appendices.html
 .. _`Rst3 plugin`:          rstplugin3.html
 .. _`Scripting plugin`:     plugins.html#mod-scripting

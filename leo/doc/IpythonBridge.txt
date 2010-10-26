@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20080203101507.1: ** @rst html\IPythonBridge.html
-############################################################
-Chapter 21: IPython and Leo
-############################################################
+###############
+IPython and Leo
+###############
 
 .. _`run Leo in a console window`: install.html#running-leo-from-a-console-window
 
@@ -71,7 +71,7 @@ painless and powerful.
 .. _`IPython Notebook`:     http://projects.scipy.org/ipython/ipython/wiki/NoteBook
 .. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
 .. _`The Ipython Extension API`: extensionAPI_
-.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+.. _`Scripting Leo with Python`:    scripting.html
 
 .. _`run Leo in a console window`:  install.html#running-leo-from-a-console-window
 .. _`console window`:               install.html#running-leo-from-a-console-window
@@ -667,7 +667,7 @@ For, such scripts can insert and delete nodes in Leo outlines.
 The changes will become visible as soon as the script (running in IPython)
 redraws the screen.
 
-See `Chapter 7\: Scripting Leo with Python`_ for full details about how to script
+See `Scripting Leo with Python`_ for full details about how to script
 Leo.  The following are merely examples about what can be done from IPython.
 All these examples have been tested.
 

@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20050901101608: ** @rst html\outlines.html
-##########################################
-Chapter 3: Using Outlines
-##########################################
+##############
+Using Outlines
+##############
 
 This chapter tells how to use Leo's outlines. Most of the commands can be
 invoked by clicking with the pointer in the outline pane or by using the pointer
@@ -29,9 +29,9 @@ are those of the default EKR bindings.
 
 .. .. contents::
 .. @+node:ekr.20050901101608.1: *3* @rst-no-head links
-.. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
-.. _`Chapter 4\: Writing Programs in Leo`:          directives.html
-.. _`Clones and views`:                             intro.html#clones-views
+.. _`A Tutorial Introduction to Leo`:   intro.html
+.. _`Writing Programs in Leo`:          directives.html
+.. _`Clones and views`:                 intro.html#clones-views
 .. @+node:sps.20100710110337.12186: *3* @rst-ignore-node DO NOT SORT THESE HEADLINES
 I've ordered these sections in approximate ascending complexity of concepts and descending importance.
 .. @+node:sps.20100710110337.12187: *3* Outline Related

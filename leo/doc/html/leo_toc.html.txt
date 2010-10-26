@@ -1,3 +1,4 @@
+
 .. Leo documentation documentation master file, created by
    sphinx-quickstart on Mon Mar 30 16:39:02 2009.
    You can adapt this file completely to your liking, but it should at least
@@ -15,48 +16,36 @@ Contents:
    frontMatter   
    preface
    testimonials
+
    FAQ
    slides
    install
    intro
    outlines
-   directives
    commands
-   design
-   scripting
    customizing
+   
+   coloring
+   rstplugin3
+   scripting
+   plugins
+   writingPlugins
+   unitTesting
+   debuggers
+   atShadow
+   
+   emacs
+   IPythonBridge
+   leoBridge
+   vimBindings
+   zodb
+   
+   directives
+   design
    history
    theory
    whitepapers
-   plugins
-   writingPlugins
-   rstplugin3
-   coloring
-   debuggers
-   zodb
-   emacs
-   leoBridge
-   unitTesting
-   IPythonBridge
-   vimBindings
-   atShadow
    appendices
    glossary
-   new-4-7
-   new-4-6
-   new-4-5
-   new-4-4-8
-   new-4-4-6
-   new-4-4-5
-   new-4-4-4
-   new-4-4-3
-   new-4-4-2
-   new-4-4-1
-   new-4-4
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
-
+   
+   what-is-new

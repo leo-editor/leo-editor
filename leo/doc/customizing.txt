@@ -18,19 +18,17 @@
 
 .. @+all
 .. @+node:ekr.20050901101608.4: ** @rst html\customizing.html
-#############################################
-Chapter 8: Customizing Leo
-#############################################
+################
+Customizing Leo
+################
 
 This chapter discusses how to customize Leo using the plugins and other means.
 See `Specifying settings`_ for a description of how to change Leo's settings.
-
-.. .. contents::
 .. @+node:ekr.20050901102055: *3* @rst-no-head links
-.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-.. _`Chapter 9\: History of Leo`:               history.html
-.. _`rst3 plugin`:                              glossary.html#rst3-plugin
-.. _`Specifying settings`:                      commands.html#specifying-settings
+.. _`Scripting Leo with Python`:    scripting.html
+.. _`History of Leo`:               history.html
+.. _`rst3 plugin`:                  glossary.html#rst3-plugin
+.. _`Specifying settings`:          commands.html#specifying-settings
 .. @+node:EKR.20040524104904.140: *3* Specifying settings
 Leo stores options in **@settings trees**, outlines whose headline is
 @settings. When opening a .leo file, Leo looks for @settings trees not only

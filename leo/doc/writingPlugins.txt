@@ -18,11 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20060612103240: ** @rst html\writingPlugins.html
-####################################
-Chapter 13: Writing Plugins
-####################################
-
-.. .. contents::
+###############
+Writing Plugins
+###############
 .. @+node:ekr.20060612103824: *3* @rst-no-head links
 .. External links...
 .. _docutils:             http://docutils.sourceforge.net
@@ -31,9 +29,9 @@ Chapter 13: Writing Plugins
 .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Relative links...
-.. _`Event handlers`:                           scripting.html#event-handlers
-.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-.. _`Chapter 8\: Customizing Leo`:              customizing.html
+.. _`Event handlers`:               scripting.html#event-handlers
+.. _`Scripting Leo with Python`:    scripting.html
+.. _`Customizing Leo`:              customizing.html
 .. @+node:ekr.20050903075144: *3* Overview
 A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
 modify how Leo works. With plugins you can give Leo new commands, modify how
@@ -47,7 +45,7 @@ leoSettings.leo. Leo imports all enabled plugins at startup time. Plugins become
 **active** if importing the plugin was successful.
 
 Writing plugins is quite similar to writing any other Leo script.  See
-`Chapter 7\: Scripting Leo with Python`_. In particular:
+`Scripting Leo with Python`_. In particular:
 
 1. Plugins can use any of Leo's source code simply by importing any module
    defined in leoPy.leo.

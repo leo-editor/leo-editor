@@ -18,13 +18,11 @@
 
 .. @+all
 .. @+node:ekr.20070628083442.1: ** @rst html\unitTesting.html
-############################################################
-Chapter 20: Unit testing with Leo
-############################################################
+#####################
+Unit testing with Leo
+#####################
 
 This chapter describes how you can execute Python unit test from within Leo outlines.
-
-.. .. contents::
 .. @+node:ekr.20070628083442.2: *3* @rst-no-head links
 .. Links
 

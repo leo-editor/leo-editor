@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20070317033759.1: ** @rst html\leoBridge.html
-############################################################
-Chapter 19: Embedding Leo with the leoBridge module
-############################################################
+#######################################
+Embedding Leo with the leoBridge module
+#######################################
 
 The leoBridge module allows complete access to all aspects of Leo from programs
 running independently of Leo. Let us call such a program a **host** program.

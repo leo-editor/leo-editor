@@ -23,10 +23,10 @@ Glossary
 #########
 
 .. Links
-.. _`Chapter 8: Customizing Leo`:   customizing.html
+.. _`Customizing Leo`:          customizing.html
 .. _`Writing plugins and hooks`:    writingPlugins.html
-.. _`Leo's reference`:  directives.html
-.. _`leo's tutorial`:   intro.html
+.. _`Leo's reference`:          directives.html
+.. _`leo's tutorial`:           intro.html
 
 This is a short glossary of important terms in Leo's world. For more information
 about terms, look in the index for links to discussions in other places,
@@ -608,7 +608,7 @@ Settings:
     for @settings trees in the outline being opened and also in various
     leoSettings.leo files. @settings trees allow plugins to get options without
     any further support from Leo's core code. For a full discussion of @settings
-    trees, see `Chapter 8: Customizing Leo`_.
+    trees, see `Customizing Leo`_.
 
 .. index::
     pair: Sibling; Glossary

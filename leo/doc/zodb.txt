@@ -18,13 +18,11 @@
 
 .. @+all
 .. @+node:ekr.20060913164304.1: ** @rst html\zodb.html
-#######################################
-Chapter 17: Using ZODB with Leo
-#######################################
+###################
+Using ZODB with Leo
+###################
 
 This chapter discusses how to write Leo scripts that store and retrieve data using ZODB_.
-
-.. .. contents::
 .. @+node:ekr.20060913164311: *3* @rst-no-head links
 .. External links...
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html

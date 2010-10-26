@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20080730212711.15: ** @rst html\atShadow.html
-############################################################
-Chapter 23: Eliminating sentinel lines with @shadow
-############################################################
+#############
+Using @shadow
+#############
 
 This chapter describes an important new feature that debuted in Leo 4.5 b2: @shadow trees.
 These trees combine the benefits of @auto, @thin, @file and @nosent trees:

@@ -54,9 +54,7 @@ This is Leo's Frequently Asked Questions document.
 .. _`Tangle and Untangle`:                      commands.html#tangling-an-outline-producing-derived-files
 .. _tutorial:                                   intro.html
 .. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
-.. _`Chapter 9: History of Leo`:                history.html
-.. .. _`Run Leo in a console window`:            `How can I run Leo from a console window?`_
-.. _`Run Leo in a console window`:              install.html#running-leo-from-a-console-window
+.. _`History of Leo`:                history.html
 .. _`run Leo in a console window`:              install.html#running-leo-from-a-console-window
 .. _`console window`:                           install.html#running-leo-from-a-console-window
 
@@ -468,7 +466,7 @@ compiler gets it.
 
 The @ignore directive can not be used elsewhere in @thin trees because of the way Leo recreates 
 outlines from external files. This is an absolutely crucial restriction and will never go away.
-For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `Chapter 9: History of Leo`_.
+For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
 
 There are several workaround, as shown in LeoPy.leo:
 

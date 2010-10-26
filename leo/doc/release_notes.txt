@@ -1850,52 +1850,6 @@ Leo ignores all elements in these dictionaries if some element can not be pickle
 #@+node:EKR.20040601101430.1: *6* @+-middle sentinels allow sections to be defined in grandchildren
 #@+node:EKR.20040601101510: *6* @clone sentinel allows siblings to be cloned
 #@+node:EKR.20040601101547: *6* Created @thin, @nosent, @noref and @asis abbreviations
-#@+node:EKR.20040524104904.92: *7* Appendix 1 to Chapter 4: Using @asis, @noref and @nosent trees
-An @asis tree is a tree whose root headline starts with @asis <filename>.  Similarly, for @noref and @nosent trees.
-
-New in 4.2:  The following terms are equivalent.  The first form is preferred in each case.
-
-@asis, @file-asis, @silent
-@nosent, @file-nosent and @nosentinelsfile
-@noref, @file-noref and @rawfile
-
-You can get any combination of sentinels/no sentinels and references/no references using @file, @nosent, @noref and @asis trees:
-
-                External files        Sections and 
-Type of tree   contain sentinels?   @others expanded?
-------------   ------------------   -----------------
-       @asis   no                   no
-       @file   yes                  yes
-      @noref   yes                  no
-     @nosent   no                   yes
-
-
-
-Leo can not update the outline from changes made from external files unless those
-files contain sentinels. The primary source for @nosent and @asis trees are the
-outlines from which those files were derived.
-
-Leo creates files derived from @noref and @asis trees by writing the body text
-of all nodes of the tree in outline order. Leo writes the body text _as is_,
-without recognizing section definitions, without expanding section references,
-and without treating directives specially in any way. In particular, Leo copies
-all directives, including @space or @c directives, to the external file as text.
-However, Leo recognizes the @ignore directive in the _ancestors_ of @noref or
-@asis nodes, so you may use the @ignore directive as usual to prevent Leo from
-writing @rawfile and @silentfile trees.
-
-Notes:
-
-1. When writing @noref trees, Leo writes only the @+leo, @-leo, @+node, @-node,
-@+body and @-body sentinels.
-
-2. Within @asis trees only, if a headline starts with @@, Leo writes everything
-in the headline following the @@ just before the corresponding body text.
-
-3. Files derived from @asis trees contain _nothing_ not contained in body text
-(or @@ headlines). In particular, if body text does not end in a newline, the
-first line from the next node will concatenated to the last line of the
-preceding node.
 #@+node:EKR.20040601084317.102: *6* Made undo extensible
 Added u.registerUndoHandlers.
 
@@ -1938,7 +1892,7 @@ the 4.2 code base are complete:
 
 Shared nodes dramatically improve the time needed to insert, delete, and move
 nodes. Moreover, the new code base is code compatible with the old. Indeed, much
-of Leo still uses the old code base. See Chapter 7 for full details of how to
+of Leo still uses the old code base. See the Scripting Leo for full details of how to
 script Leo with the 4.2 code base.
 
 2. This is the first version to use @file-thin for most external files.
@@ -2108,43 +2062,43 @@ convenient to use.
 - FAQ: Reorganized, simplified, revised. Added entries for running Leo in a
 console window and debugging docutils. Improved entry for using cvs.
 
-- Chapter 1: Installation: Now the first chapter. Revised.
+- Installation: Now the first chapter. Revised.
 
-- Chapter 2: Tutorial: Completely rewritten. Like Python's tutorial, this
+- Tutorial: Completely rewritten. Like Python's tutorial, this
 chapter contains everything a beginner needs to understand and use Leo. The
 `Quickstart for programmers` section is the heart of this chapter. All terms
 used have links either to their definition in the tutorial or in the Glossary.
 Newbies should be able to digest this chapter easily. This chapter should make
 Leo comprehensible to many more people.
 
-- Chapter 3: Using Outlines: Revised per general remarks above.
+- Using Outlines: Revised per general remarks above.
 
-- Chapter 4: Writing Programs in Leo. Completely rewritten. The old chapter was
+- Writing Programs in Leo. Completely rewritten. The old chapter was
 an embarrassment. The new chapter is a reference guide, properly organized as
 such. The introduction warns newbies away.
 
-- Chapter 5: Using Leo's Commands. 'Minor' revisions and corrections create a
+- Using Leo's Commands. 'Minor' revisions and corrections create a
 substantially better result.
 
-- Chapter 7: Scripting Leo with Python: Rewritten, simplified, updated and
+- Scripting Leo with Python: Rewritten, simplified, updated and
 corrected. The sources in LeoDocs.leo are directly executable. rST sources use
 literal blocks instead of code-blocks so that the sources are simplified.
 (Important when executing examples). Properly discusses positions, including
 'supremely important' section on copying positions.
 
-- Chapter 8: Customizing Leo. Heavily revised. Discusses leoSettings.leo, not
+- Customizing Leo. Heavily revised. Discusses leoSettings.leo, not
 leoConfig.txt. Security warnings are more reasonable. Section on script buttons.
 Rewrote section on uA's (Adding extensible attributes to nodes and .leo files).
 
-- Chapter 9: History of Leo. Rewritten. Much shorter and more useful. Discusses
+- History of Leo. Rewritten. Much shorter and more useful. Discusses
 the major milestones, concentrating on explaining the major differences between
 versions. Gone are details of how discoveries came to be. They are in
 LeoPostings.leo, which will be included in the distribution.
 
-- Chapter 10: Theory of Operation. Largely rewritten. Discusses positions
+- Theory of Operation. Largely rewritten. Discusses positions
 properly. Omits discussion of how clones were implemented before 4.2.
 
-- Chapter 11: White Papers. A new chapter. This is a slightly-edited version of
+- White Papers. A new chapter. This is a slightly-edited version of
 writing that had been buried in the appendices.
 
 - Appendices. Heavily revised and reformatted. Rewrote sections on file formats.
@@ -9031,9 +8985,9 @@ read-at-auto-nodes command to update @auto nodes without having to reload the
 .leo file.
 #@+node:ekr.20070806100055: *7* Extending the code: adding new parsers
 All present parsers are short overrides of a powerful base parser class. Thus,
-it would be simple to add support for other languages. See the node
+it would be simple to add support for other languages. See the node::
 
-@thin leoImport.py-->Import-->Scanners for createOutline
+    @thin leoImport.py-->Import-->Scanners for createOutline
 
 in leoPy.leo to see how easy it is to create new parsers.
 
@@ -9405,9 +9359,9 @@ read-at-auto-nodes command to update @auto nodes without having to reload the
 .leo file.
 #@+node:ekr.20070806100055: *8* Extending the code: adding new parsers
 All present parsers are short overrides of a powerful base parser class. Thus,
-it would be simple to add support for other languages. See the node
+it would be simple to add support for other languages. See the node::
 
-@thin leoImport.py-->Import-->Scanners for createOutline
+    @thin leoImport.py-->Import-->Scanners for createOutline
 
 in leoPy.leo to see how easy it is to create new parsers.
 
@@ -9472,7 +9426,7 @@ window). It then creates clones of all inserted, deleted and changed nodes.
 #@+node:ekr.20071004105000: *7* Added the graphed plugin
 The graphed plugin allows users to manipulate parts of Leo outlines as if
 they were general graphs. It is still early days for this exciting plugin.
-#@+node:ekr.20071004101443.178: *7* Added new convenience methods for scripts and plugins
+#@+node:ekr.20071004101443.178: *7* New convenience methods
 The c.frame.logcreateCanvas convenience method create a canvas tab in the log pane.
 Here is a sample script:
 
@@ -11319,14 +11273,15 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 #@+node:ekr.20080806211440.188: *5* Major new features
+.. _`v.uA's`: http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+
 - Added support for @shadow files.
   This is a major breakthrough.
-  See `Chapter 23`_ for full details.
+  See the `Using @shadow`_ chapter for full details.
 
 - Added much improved support for vim bindings.
 
-- Allow v.uA's in @thin and @shadow nodes.
-  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+- Allow `v.uA's`_ in @thin and @shadow nodes.
 #@+node:ekr.20080806211440.253: *5* Major code reorganizations
 - Leo now uses a sax-based parser to read .leo files.
   This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
@@ -11365,37 +11320,39 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 #@+node:ekr.20080806211440.189: *5* New settings
 - The default settings for @shadow files are now located in leoSettings.leo in the node::
 
-    @settings-->File options-->Shadow files
+        @settings-->File options-->Shadow files
 
-  The defaults for these settings are::
+    The defaults for these settings are::
 
-    @string shadow_prefix = x
-    @string shadow_subdir = .leo_shadow
+        @string shadow_prefix = x
+        @string shadow_subdir = .leo_shadow
 
-- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
-  state, orphan bits and current position bits when writing fixed .leo files. As
-  a result, all nodes will be collapsed and the root node will always be
-  selected when Leo opens a fixed .leo file.
+- Added support for @bool fixedWindow option.
 
-  You can optionally specify the size and position on the screen of fixed .leo
-  files by putting an '@data fixedWindowPosition' node in the
-  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-  **not** put such a node in the fixed .leo file itself--everyone who
-  opens the file would get that fixed position.
+    Leo suppresses marks, expansion state, orphan bits and current position bits
+    when writing fixed .leo files. As a result, all nodes will be collapsed and
+    the root node will always be selected when Leo opens a fixed .leo file.
 
-  The body of the '@data fixedWindowPosition' node should contain
-  something like this::
+    You can optionally specify the size and position on the screen of fixed .leo
+    files by putting an '@data fixedWindowPosition' node in the
+    \@settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+    **not** put such a node in the fixed .leo file itself--everyone who
+    opens the file would get that fixed position.
 
-    # Must be four entries: width,height,left,top.
-    # Put this in myLeoSettings.leo, **not** in individual .leo files.
+    The body of the '@data fixedWindowPosition' node should contain
+    something like this::
 
-    1200
-    800
-    50
-    50
+        # Must be four entries: width,height,left,top.
+        # Put this in myLeoSettings.leo, **not** in individual .leo files.
+
+        1200
+        800
+        50
+        50
 
 - Added @bool cleo_color_ignore = True
-  This determines whether cleo colors @ignore headlines. The default is True.
+
+    This determines whether cleo colors @ignore headlines. The default is True.
 #@+node:ekr.20080815093141.89: *4* 4.5 b3
 Leo 4.5 beta 3                      August 15, 2008
 
@@ -14852,16 +14809,7 @@ function.
 
 Directives and section references are not the problem:
 they get translated to comments before the check.
-#@+node:ekr.20101024234745.5827: *4* Code features
-#@+node:ekr.20101024234254.6101: *5* Remember whether @asis/@nosent existed at read time
-Removed all traces of the "significant change" logic. The read code remembers
-whether a node existed when Leo loaded the outline.
-
-Leo will warn when writing a node that didn't previously exist. This is a nice
-simplification of the code.
-#@+node:ekr.20101024234254.6099: *5* Added g.app.config.config_iter
-This simplifies the print-settings command.
-#@+node:ekr.20101024234254.6105: *5* Improved handling of history
+#@+node:ekr.20101024234254.6105: *6* Improved handling of history
 nav_qt.py just uses these:
 
     c.goPrevVisitedNode()
@@ -14878,10 +14826,43 @@ wherever body focus code is.
 
 The fix was to leoTree.selectHelper and qtBody.onFocusIn.
 
-#@+node:ekr.20101024234254.6111: *5* Added g.findTestScript
-The typical usage::
+#@+node:ekr.20101025080245.6069: *6* Remember whether @asis/@nosent existed at read time
+Removed all traces of the "significant change" logic. The read code remembers
+whether a node existed when Leo loaded the outline.
 
-    g.findTestScript(c,'@common code for tests of x')
+Leo will warn when writing a node that didn't previously exist. This is a nice
+simplification of the code.
+#@+node:ekr.20101024234254.6099: *6* Added g.app.config.config_iter
+This simplifies the print-settings command.
+#@+node:ekr.20101024234745.5827: *4* Code features
+#@+node:ekr.20101024234254.6111: *5* Added g.findTestScript
+http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
+
+g.findTestScript is an important new pattern for sharing code in Leo scripts,
+including scripts in @test nodes.
+
+Suppose there is common code that I want to include in several unit tests::
+
+    class Hello():
+        def __init__(self,name='john'):
+            self.name=name
+            print('hello %s' % name)
+
+I put this in a node called 'Common test code'.
+
+The unit tests can "import" the code as follows::
+
+    exec(g.findTestScript('Common test code'))
+
+Now class Hello is available the test code!
+
+This is something that I've wanted to do forever.  It's almost too
+easy.  I suppose it's a small security problem, but so is every other
+@test node!
+#@+node:ekr.20101025080245.6071: *5* Added p.deletePositionsInList
+http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#
+
+This is an important new helper.
 #@+node:ekr.20101024234745.5826: *4* Commands
 #@+node:ekr.20101024234254.6097: *5* Added legend for print-settings command
 #@+node:ekr.20101024234254.6110: *5* Added code-to-rst command
@@ -14911,88 +14892,16 @@ Note that defining any abbreviation automatically turns on abbreviation mode.
 The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
 selected text as the replacement value of the abbreviation. The minibuffer
 prompts you for the name of the abbreviation.
+#@+node:ekr.20101025080245.5803: *4* Documentation
+#@+node:ekr.20101025080245.5804: *5* Created introductory slide shows
+#@+node:ekr.20101019061953.5422: *5* Reorganized Users Guide
+http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
 
-Settings
-========
+I created my own copy of the home page:
 
-The following settings have effect only in @settings trees:
+    Files-->@edit leo_toc.html
 
-@bool enable-abbreviations (default: False)
-
-  When true, enables substitution of abbreviations.
-
-@data global-abbreviations
-@data abbreviations
-
-  In both cases, body text contains lines of
-  the form::
-
-   name=value
-
-  name is the abbreviation name, value is the substituted text. Whitespace is
-  ignore around the name, but is significant in the value. Abbreviation names
-  may contain only alphabetic characters, but may start with the '@' sign.
-
-  By *convention* @data global-abbreviations setting should be defined in
-  myLeoSettings.leo, while @data abbreviations should be defined in other .leo
-  files. Regardless of where they are defined, abbreviations in @data
-  abbreviation nodes will override settings (with the same name) in @data
-  global-abbreviations nodes.
-
-Commands
-========
-
-apropos-abbreviations
-
-  Prints this summary.
-
-dabbrev-completion
-
-  Insert the common prefix of all dynamic abbreviations matching the present
-  word. Similar C-M-/ in Emacs.
-
-dabbrev-expands
-
-  Expand the word in the buffer before point as a dynamic abbrev, by searching
-  in the buffer for words starting with that abbreviation (dabbrev-expand).
-  Similar to M-/ in Emacs
-
-abbrev-mode
-
-  Toggles abbreviation mode. Abbreviations are only active when this mode is on.
-
-add-global-abbrev
-
-  Adds an abbreviation for the selected text. The minibuffer prompts for the
-  abbreviation name.
-
-inverse-add-global-abbrev
-
-  Adds an abbreviation. The selected text is the abbreviation name. The
-  minibuffer prompts for the value of the abbreviation.
-
-kill-all-abbrevs
-
-  Removes all abbreviations.
-
-list-abbrevs
-
-  Lists all active abbreviations.
-
-read-abbrev-file
-
-  Read an external file containing abbreviations.
-
-write-abbrev-file
-
-  Writes abbreviations to an external file.
-
-Scripting
-=========
-
-Leo scripts may read abbreviations from a file with::
-
-    c.abbrevCommands.readAbbreviationsFromFile(fn)
+This allows me to group items without creating special pages.
 #@+node:ekr.20101024234254.6092: *4* Features
 #@+node:ekr.20101024234254.6093: *5* New sentinels
 #@+node:ekr.20101024234254.6100: *5* Don't create @chapter node for new file
@@ -15112,5 +15021,27 @@ Valid values are top,bottom,left,right
 #@+node:ekr.20101024234254.6245: *5* Support @bool write_expansion_bits_in_leo_files
 #@+node:ekr.20101024234745.5825: *5* Added support for slideshow plugin
 Command-line args
+#@+node:ekr.20101025080245.6076: *5* New settings for abbreviations
+@bool enable-abbreviations (default: False)
+
+  When true, enables substitution of abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+  In both cases, body text contains lines of
+  the form::
+
+   name=value
+
+  name is the abbreviation name, value is the substituted text. Whitespace is
+  ignore around the name, but is significant in the value. Abbreviation names
+  may contain only alphabetic characters, but may start with the '@' sign.
+
+  By *convention* @data global-abbreviations setting should be defined in
+  myLeoSettings.leo, while @data abbreviations should be defined in other .leo
+  files. Regardless of where they are defined, abbreviations in @data
+  abbreviation nodes will override settings (with the same name) in @data
+  global-abbreviations nodes.
 #@-all
 #@-leo

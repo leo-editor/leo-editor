@@ -18,26 +18,24 @@
 
 .. @+all
 .. @+node:ekr.20050901101608.5: ** @rst html\history.html
-##########################################
-Chapter 9: History of Leo
-##########################################
+##############
+History of Leo
+##############
 
 This chapter discusses the history of Leo and tells the essential features of each version.
 Here are the most important dates in Leo's history:
-
-.. .. contents::
 .. @+node:ekr.20050901102147: *3* @rst-no-head links
 .. Relative links...
-.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-.. _`Chapter 8\: Customizing Leo`:              customizing.html
-.. _`Chapter 10\: Theory of Operation`:         theory.html
-.. _`Chapter 15\: Controlling Syntax Coloring`:     coloring.html
-.. _`Chapter 16\: Debugging with Leo`:              debuggers.html
-.. _`Chapter 17\: Using ZODB with Leo`:             zodb.html
-.. _`Chapter 18\: Leo and Emacs`:                   emacs.html
-.. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
-.. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
-.. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
+.. _`Scripting Leo with Python`:        scripting.html
+.. _`Customizing Leo`:                  customizing.html
+.. _`Theory of Operation`:              theory.html
+.. _`Controlling Syntax Coloring`:      coloring.html
+.. _`Debugging with Leo`:               debuggers.html
+.. _`Using ZODB with Leo`:              zodb.html
+.. _`Leo and Emacs`:                    emacs.html
+.. _`Embedding Leo with the leoBridge Module`: leoBridge.html
+.. _`Unit testing with Leo`:            unitTesting.html
+.. _`ILeo - the IPython bridge`:        IPythonBridge.html
 
 .. Absolute links..
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
@@ -169,7 +167,7 @@ This surely is one of the most significant dates in Leo's history:
     traverse the entire outline! 4.2 represents clones by sharing subtrees.
     Changing Leo's fundamental data structures while retaining compatibility
     with old scripts was engineering work of which the entire Leo community can
-    be proud. `Chapter 7: Scripting Leo with Python`_ tells how the position
+    be proud. `Scripting Leo with Python`_ tells how the position
     class makes this happen.
     This was a cooperative effort. Kent Tenney and Bernhard Mulder made
     absolutely crucial contributions. Kent pointed out that it is a tnode,
@@ -194,29 +192,22 @@ Development on long-delayed projects accelerated after 4.4 final went out the do
 Recent projects include:
 
 - Controlling syntax coloring with jEdit's xml language-description files.
-  See Chapter 15.
 - Support for debugging scripts using external debuggers.
-  See Chapter 16.
 - Modifying Leo's vnodes and tnodes so that Leo's data can be used with ZODB.
-  See Chapter 17.
 - Using pymacs to write Leo scripts within Emacs.
-  See Chapter 18.
 - Using the leoBridge module to embed Leo support in other programs.
-  See Chapter 19.
 - Using Leo to run unit tests.
-  See Chapter 20.
+
 .. @+node:ekr.20080315115427.568: *3* Leo 4.4.4 Improvements
-Leo 4.4.1 through 4.4.8 contained many incremental improvements,
-as documented in Chapters 15 through 21 of this Users Guide.
 .. @+node:ekr.20080315115427.569: *4* Leo 4.4.1
 - Supported multiple editors in body pane.
-- Added the jEdit_colorizer plugin. See `Chapter 15: Controlling Syntax Coloring`_.
+- Added the jEdit_colorizer plugin. See `Controlling Syntax Coloring`_.
 - Added the slideshow plugin.
 .. @+node:ekr.20080315115427.570: *4* Leo 4.4.2
 - Added support for myLeoSettings.leo
 - The 'Big Reorg' made Leo's vnodes and tnode classes independent of the rest of Leo.
-- Added support for ZODB. See `Chapter 17: Using ZODB with Leo`_.
-- Added leoPymacs module. See `Chapter 18: Leo and Emacs`_.
+- Added support for ZODB. See `Using ZODB with Leo`_.
+- Added leoPymacs module. See `Leo and Emacs`_.
 - Added the leoOPML, leo_to_rtf and leo_to_html plugins.
 - Added outline navigation: typing a letter selects the next outline node that starts with that letter.
 - Added autocontract during finds.
@@ -225,7 +216,7 @@ as documented in Chapters 15 through 21 of this Users Guide.
 .. @+node:ekr.20080315115427.571: *4* Leo 4.4.3
 - Added support for chapters in Leo's core.
 - Added support for zipped .leo files.
-- Added the leoBridge module. See `Chapter 19: Embedding Leo with the leoBridge Module`_.
+- Added the leoBridge module. See `Embedding Leo with the leoBridge Module`_.
 - Removed all gui-dependent code from Leo's core.
 - Added better support for the winpdb debugger.
 - Added support for @enabled-plugins and @open-with nodes in settings files.
@@ -242,7 +233,7 @@ as documented in Chapters 15 through 21 of this Users Guide.
 - Leo now recognizes directives in headlines.
 - Added support for @rst-preformat nodes to the rst3 plugin.
 .. @+node:ekr.20080315115427.574: *4* Leo 4.4.7 and Leo 4.4.8
-- Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
+- Added the ILeo, the IPython bridge. See `ILeo - the IPython bridge`_.
 - Added support for translating messages to Leo's log.
 .. @+node:ekr.20050902100834: *3* @rst-ignore-tree Details
 This following information may be of interest to historians. It is not of
