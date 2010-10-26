@@ -26,9 +26,7 @@ Installing Leo
 
 This chapter tells how to install and run Leo.
 
-**Important**:
-
-If you have *any* problems installing Leo,
+**Important**: If you have *any* problems installing Leo,
 please ask for help on `Leo's help forum`_.
 
 .. contents::
@@ -254,7 +252,7 @@ fails, Leo will use the version of Pmw in the extensions folder.
 
 At present, Pmw does not work with Python 3.0, which means that you can not use
 the Tk gui with Leo when using Python 3.0.
-.. @+node:ekr.20100731112744.7277: *3* Running Leo 
+.. @+node:ekr.20100731112744.7277: *3* Running Leo
 You can run Leo from a Python interpreter as follows::
 
     import leo
