@@ -148,7 +148,8 @@ expanded="ekr.20050818163826.4,ekr.20100809162244.4292,"><vh>@thin rstplugin3.tx
 <v t="ekr.20100805165051.7166"><vh>@thin debuggers.txt</vh></v>
 </v>
 <v t="ekr.20080730212711.14"><vh>Using @shadow</vh>
-<v t="ekr.20100805165051.7173"><vh>@thin atShadow.txt</vh></v>
+<v t="ekr.20100805165051.7173"
+expanded="ekr.20080730212711.15,"><vh>@thin atShadow.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
@@ -846,12 +847,13 @@ expanded="edream.110203163054.117,ekr.20080311060457.214,ekr.20061008190905,ekr.
 </v>
 </v>
 <v t="ekr.20101025080245.5523"><vh>Improve users guide</vh>
-<v t="ekr.20101025080245.5521"><vh>Document invalid bug: 657374 Content of shadow file affects the outline structure</vh></v>
 <v t="ekr.20101025080245.5528"><vh>Clarify read @file node command</vh></v>
 <v t="ekr.20101025080245.5533"><vh>Document {{expression}} in paths</vh></v>
-<v t="ekr.20101025080245.5544"><vh>Newbie complaints</vh></v>
+<v t="ekr.20101026082911.5537"><vh>No mention of qt in installation slideshow</vh></v>
 </v>
-<v t="ekr.20101025080245.5527"><vh>Fix chapter 14 typos</vh></v>
+<v t="ekr.20101025080245.5521"><vh>Document invalid bug: 657374 Content of shadow file affects the outline structure</vh>
+<v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @shadow outline as expected?</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -3828,7 +3830,9 @@ Environment). For example, a single Leo outline contains
 <t tx="ekr.20101021093614.5433">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
 <t tx="ekr.20101021093614.5435">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html</t>
 <t tx="ekr.20101021101327.5432">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
-<t tx="ekr.20101025080245.5521">See http://groups.google.com/group/leo-editor/browse_thread/thread/0eab8b60c403628d
+<t tx="ekr.20101025080245.5521">@language rest
+
+See http://groups.google.com/group/leo-editor/browse_thread/thread/0eab8b60c403628d
 
 This bug is invalid, as I shall now explain.
 
@@ -3878,11 +3882,6 @@ case inside the main @shadow loop to handle this "problem".
 </t>
 <t tx="ekr.20101025080245.5523">@nocolor
 </t>
-<t tx="ekr.20101025080245.5527">@nocolor
-
-I've recreated my feedback notes using the online service Diigo.
-Here's a link to see the highlights and sticky notes: http://diigo.com/0c9u2
-</t>
 <t tx="ekr.20101025080245.5528">http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
 
 Fix/clarify menus and documentation
@@ -3909,66 +3908,6 @@ http://www.debian-administration.org/articles/257
 
 </t>
 <t tx="ekr.20101025080245.5543"></t>
-<t tx="ekr.20101025080245.5544">@nocolor-node
-
-Installation "problems" - First time install following current slideshow: (WinXP)
-
-I wanted to try and find how to change the *very* light pink/light blue colors
-referenced in Slide2+3 of "Leo Basics Step By Step Note: per ColorMania they are
-#F2FDFF and #FDF5F5 - I guess I need to tune both my monitors - sure looks like
-#FFFFFF - white to me O:-)
-
-Summary Install problems::
-(1) No reference to PyQt in Installer slides.
-(2) Installer doesn't honor actual Python version installed.
-    (Thinks its Python26 not Python27)
-(3) After best attempts  can't get Leo to recognize PyQt
-- Is it significant that PyQt installer wants to install at::
-D:\Lang\Python27\Lib\site-packages\PyQt4
-- but (per a registry search) tk appears to have been installed by the Python installer one level up at:
-D:\Lang\Python27\Lib\lib-tk\
-
-*** remainder are notes made while installing *** probably not relevant
-Python page suggests either Python27 or Python31 (I already had Python25 and Python26 - though essentially unused)
-I first installed Python31 - setting as default per installer, then installed Python27 - also setting it as default (ie. to override Python31 choice)
-
-Now installed Leo: LeoSetup-4.7.1-final.exe
-Installer said "Found Python at D:\Lang\Python26\" (s/b Python27 ?) and suggested location:
-D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
-
-Instead I put it at D:\Lang\Leo\Leo-4.7.1-final
-
-No mention of PyQt in the installer slides for Windows?
-per Matt and his description of "site package" in http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&amp;q=install+qt#d5e62fa67bcdaaeb &lt;http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&amp;q=install+qt#d5e62fa67bcdaaeb&gt;
-
- - I put a junction from D:\Lang\Leo\Leo-4.7.1-final to D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
- - installed PyQt first to D:\Lang\PyQt\PyQt27 but running "launchLeo.py" runs the Python27 (GOOD) but still doesn't find PyQt and says PyQt not installed - reverting to Tk UI so I reinstalled PyQt to the "default"  location:
-D:\Lang\Python27\Lib\site-packages\PyQt4
-
-Now that I've create the junction for Leo-4.7.1-final trying to execute "launchLeo.py" now stalls
-Instead run it from the junction link in ...\site packages\...
-I still does not recognize PyQt
-
-    *** isPython3: False
-    PyQt not installed - reverting to Tk UI
-    Leo 4.7.1 final, build 3005, February 26, 2010
-    Python 2.7.0, Tk 8.5, Pmw 1.3
-    Windows 5, 1, 2600, 2, Service Pack 3
-    reading settings in D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final\leo\confi
-    g\leoSettings.leo
-    using menus from: leoSettings.leo
-    reading C:\Documents and Settings\Alec\.leo\.leoRecentFiles.txt
-    Ui type not compatible for plugin (quicksearch)
-    Can not import quicksearch from plugin quicksearch
-    Ui type not compatible for plugin (contextmenu)
-    Can not import contextmenu from plugin contextmenu
-    Ui type not compatible for plugin (nav_qt)
-    Can not import nav_qt from plugin nav_qt
-    Can not load c:\aspell\bin\aspell-15.dll
-    file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
-
-
-</t>
 <t tx="ekr.20101025080245.5546">http://mail.google.com/mail/#inbox/12adebe2ffe80572</t>
 <t tx="ekr.20101025080245.5794"></t>
 <t tx="ekr.20101025080245.5795"></t>
@@ -4058,6 +3997,22 @@ Release Notes
 <t tx="ekr.20101026082911.5534">Can probably be done by changing the slides page.</t>
 <t tx="ekr.20101026082911.5535"></t>
 <t tx="ekr.20101026082911.5536"></t>
+<t tx="ekr.20101026082911.5537"></t>
+<t tx="ekr.20101026082911.5538">.. _`here`: atShadow.html#aha-boundary-cases-don-t-matter
+
+As explained `here`_, the fundamental \@shadow algorithm guarantees *only* that
+writing an updated \@shadow outline will generate the updated **public** file.
+There is *no way* to guarantee that the updated outline structure will be as
+expected. The \@shadow algorithm can not *in principle* guess between two or
+more ways of updating the **private** file when each of the ways yields the same
+**public** file.
+
+Happily, this "fact of life" about \@shadow is not serious. If you don't like
+the "guesses" that the \@shadow algorithm has made, you can simply change the
+\@shadow tree. After saving the outline, the *private* file will record your
+choice. The next time you open the outline, you will see the choices *you* made,
+not the guesses that the \@shadow algorithm made.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

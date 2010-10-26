@@ -116,8 +116,8 @@ Step 3 is the clever part. To see all the details of how the algorithm works,
 please study the x.propagate_changed_lines method in leoShadow.py. This code is
 heavily commented.
 .. @+node:ekr.20080730212711.52: *3* Aha: boundary cases don't matter
-There is one boundary case that the update algorithm can not resolve.
-If a line is inserted at the boundary between nodes,
+There are several boundary cases that the update algorithm can not resolve.
+For example, if a line is inserted at the boundary between nodes,
 the updated algorithm can not determine whether the line should be inserted
 at the end of one node of the start of the next node.
 
@@ -142,6 +142,7 @@ these two cases **does not matter**, for three very important reasons:
    the line (on the boundary) will be completely determined and it will never
    need to be moved across the boundary.
 
-Understanding these three reasons finally convinced me that @shadow could be made to work reliably.
+Understanding these three reasons finally convinced me that @shadow could be
+made to work reliably.
 .. @-all
 .. @-leo

@@ -57,6 +57,7 @@
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
 <v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
+<v t="ekr.20101026094728.1521"><vh>Installation problems (detailed, recent)</vh></v>
 <v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
 <v t="ekr.20101025095431.1520"><vh>Fix install problem</vh></v>
@@ -1545,6 +1546,71 @@ Thanks for your careful checking.  Such checking is essential when preparing for
 I've added this discussion to my internal distribution checklist.
 
 Edward
+</t>
+<t tx="ekr.20101026094728.1521">@nocolor-node
+
+Installation "problems" - First time install following current slideshow: (WinXP)
+
+I wanted to try and find how to change the *very* light pink/light blue colors
+referenced in Slide2+3 of "Leo Basics Step By Step Note: per ColorMania they are
+#F2FDFF and #FDF5F5 
+
+Summary Install problems::
+
+** (Known bug) Installer doesn't honor actual Python version installed.
+    (Thinks its Python26 not Python27)
+    
+** After best attempts  can't get Leo to recognize PyQt
+- Is it significant that PyQt installer wants to install at::
+D:\Lang\Python27\Lib\site-packages\PyQt4
+- but (per a registry search) tk appears to have been installed by the Python installer
+  one level up at: D:\Lang\Python27\Lib\lib-tk\
+
+*** remainder are notes made while installing *** probably not relevant
+Python page suggests either Python27 or Python31 (I already had Python25 and Python26 - though essentially unused)
+I first installed Python31 - setting as default per installer, then installed Python27 - also setting it as default (ie. to override Python31 choice)
+
+Now installed Leo: LeoSetup-4.7.1-final.exe
+Installer said "Found Python at D:\Lang\Python26\" (s/b Python27 ?) and suggested location:
+D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
+
+Instead I put it at D:\Lang\Leo\Leo-4.7.1-final
+
+No mention of PyQt in the installer slides for Windows?
+per Matt and his description of "site package" in
+http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&amp;q=install+qt#d5e62fa67bcdaaeb &lt;http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&amp;q=install+qt#d5e62fa67bcdaaeb&gt;
+
+ - I put a junction from D:\Lang\Leo\Leo-4.7.1-final to
+   D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
+
+ - installed PyQt first to D:\Lang\PyQt\PyQt27
+ but running "launchLeo.py" runs the Python27 (GOOD)
+ but still doesn't find PyQt and says PyQt not installed -
+ reverting to Tk UI so I reinstalled PyQt to the "default"  location:
+ D:\Lang\Python27\Lib\site-packages\PyQt4
+
+Now that I've created the junction for Leo-4.7.1-final trying to execute
+"launchLeo.py" now stalls
+Instead run it from the junction link in ...\site packages\...
+I still does not recognize PyQt
+
+    *** isPython3: False
+    PyQt not installed - reverting to Tk UI
+    Leo 4.7.1 final, build 3005, February 26, 2010
+    Python 2.7.0, Tk 8.5, Pmw 1.3
+    Windows 5, 1, 2600, 2, Service Pack 3
+    reading settings in D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final\leo\confi
+    g\leoSettings.leo
+    using menus from: leoSettings.leo
+    reading C:\Documents and Settings\Alec\.leo\.leoRecentFiles.txt
+    Ui type not compatible for plugin (quicksearch)
+    Can not import quicksearch from plugin quicksearch
+    Ui type not compatible for plugin (contextmenu)
+    Can not import contextmenu from plugin contextmenu
+    Ui type not compatible for plugin (nav_qt)
+    Can not import nav_qt from plugin nav_qt
+    Can not load c:\aspell\bin\aspell-15.dll
+    file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
 </t>
 </tnodes>
 </leo_file>

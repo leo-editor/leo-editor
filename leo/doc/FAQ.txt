@@ -1049,6 +1049,21 @@ using the node in leoSettings.leo called::
     @data qt-gui-plugin-style-sheet
 
 As usual, you will probably want to put this node in your myLeoSettings.leo file.
+.. @+node:ekr.20101026082911.5538: *4* Why didn't Leo update my @shadow outline as expected?
+.. _`here`: atShadow.html#aha-boundary-cases-don-t-matter
+
+As explained `here`_, the fundamental \@shadow algorithm guarantees *only* that
+writing an updated \@shadow outline will generate the updated **public** file.
+There is *no way* to guarantee that the updated outline structure will be as
+expected. The \@shadow algorithm can not *in principle* guess between two or
+more ways of updating the **private** file when each of the ways yields the same
+**public** file.
+
+Happily, this "fact of life" about \@shadow is not serious. If you don't like
+the "guesses" that the \@shadow algorithm has made, you can simply change the
+\@shadow tree. After saving the outline, the *private* file will record your
+choice. The next time you open the outline, you will see the choices *you* made,
+not the guesses that the \@shadow algorithm made.
 .. @+node:ekr.20071026055929: *3* Unicode issues
 .. @+node:ekr.20061021164213: *4* I can not enter non-ascii characters.  What can I do?
 Set @bool ignore_unbound_non_ascii_keys = False in LeoSettings.leo or myLeoSettings.leo.
