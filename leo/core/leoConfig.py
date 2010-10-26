@@ -1239,6 +1239,7 @@ class configClass:
         """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
         self.myHomeConfigFile, and self.machineConfigFile."""
 
+        trace = False and not g.unitTesting
         settingsFile = 'leoSettings.leo'
         mySettingsFile = 'myLeoSettings.leo'
         machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
@@ -1264,11 +1265,11 @@ class configClass:
                 #dan: IMO, it's better to set the defaults to None in configClass.__init__().
                 #     This avoids the creation of ivars in odd (non __init__) places.
                 #setattr(self,ivar, getattr(self,ivar,None))
-        if 0:
-            g.trace('global file:',self.globalConfigFile)
-            g.trace('home file:',self.homeFile)
+        if trace:
+            g.trace('global file:  ',self.globalConfigFile)
+            g.trace('home file:    ',self.homeFile)
             g.trace('myGlobal file:',self.myGlobalConfigFile)
-            g.trace('myHome file:',self.myHomeConfigFile)
+            g.trace('myHome file:  ',self.myHomeConfigFile)
     #@+node:ekr.20041117081009: *3* Getters... (g.app.config)
     #@+node:ekr.20041123070429: *4* canonicalizeSettingName (munge)
     def canonicalizeSettingName (self,name):
@@ -1835,6 +1836,8 @@ class configClass:
     #@+node:ekr.20101021041958.6004: *5* defineSettingsTable
     def defineSettingsTable (self,fileName,localConfigFile):
 
+        trace = False and not g.unitTesting
+
         global_table = (
             (self.globalConfigFile,False),
             (self.homeFile,False),
@@ -1855,20 +1858,25 @@ class configClass:
                 (localConfigFile,False),
                 (myLocalConfigFile,False),
             )
-            table1 = [z for z in global_table if z not in global_table]
+            if trace:
+                g.trace('localConfigFile:  ',localConfigFile)
+                g.trace('myLocalConfigFile:',myLocalConfigFile)
+
+            table1 = [z for z in local_table if z not in global_table]
             table1.append((path,True),)
         else:
             table1 = global_table
 
         seen = [] ; table = []
         for path,localFlag in table1:
+            if trace: g.trace('exists',g.os_path_exists(path),path)
             if path and g.os_path_exists(path):
                 # Make sure we mark files seen no matter how they are specified.
                 path = g.os_path_realpath(g.os_path_finalize(path))
                 if path.lower() not in seen:
                     seen.append(path.lower())
                     table.append((path,localFlag),)
-        # g.trace(table)
+        if trace: g.trace(repr(fileName),table)
         return table
     #@+node:ekr.20041117085625: *5* openSettingsFile
     def openSettingsFile (self,path):

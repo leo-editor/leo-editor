@@ -837,8 +837,17 @@ expanded="ekr.20080730212711.15,"><vh>@thin atShadow.txt</vh></v>
 expanded="edream.110203163054.117,ekr.20080311060457.214,ekr.20061008190905,ekr.20061020155306,ekr.20061020155235.403,"><vh>@thin release_notes.txt</vh></v>
 </v>
 <v t="ekr.20101025080245.5540"><vh>To do</vh>
+<v t="ekr.20101025080245.5523"><vh>Improve users guide</vh>
+<v t="ekr.20101025080245.5528"><vh>Clarify read @file node command</vh></v>
+<v t="ekr.20101026082911.5537"><vh>No mention of qt in installation slideshow</vh></v>
+<v t="ekr.20101025080245.5533"><vh>Document {{expression}} in paths</vh></v>
+</v>
+<v t="ekr.20101026082911.5543"><vh>Polish release notes</vh></v>
 <v t="ekr.20101026082911.5534"><vh>Eliminate sphinx warnings</vh></v>
+<v t="ekr.20101026082911.5542"><vh>Create a slides_toc for slides</vh></v>
 <v t="ekr.20101026082911.5533"><vh>Move meld into screenshot plugin</vh></v>
+<v t="ekr.20101026082911.5540"><vh>Make sure to upload all slides</vh></v>
+<v t="ekr.20101026082911.5541"><vh>For b1?</vh>
 <v t="ekr.20101025080245.5539"><vh>External Files &amp; Clones slideshows</vh></v>
 <v t="ekr.20101026082911.5535"><vh>Document plugins &amp; other cool things</vh>
 <v t="ekr.20101025080245.5529"><vh>Document leoremote plugin</vh></v>
@@ -846,13 +855,6 @@ expanded="edream.110203163054.117,ekr.20080311060457.214,ekr.20061008190905,ekr.
 <v t="ekr.20101025080245.5546"><vh>@url Document Ville's server</vh></v>
 </v>
 </v>
-<v t="ekr.20101025080245.5523"><vh>Improve users guide</vh>
-<v t="ekr.20101025080245.5528"><vh>Clarify read @file node command</vh></v>
-<v t="ekr.20101025080245.5533"><vh>Document {{expression}} in paths</vh></v>
-<v t="ekr.20101026082911.5537"><vh>No mention of qt in installation slideshow</vh></v>
-</v>
-<v t="ekr.20101025080245.5521"><vh>Document invalid bug: 657374 Content of shadow file affects the outline structure</vh>
-<v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @shadow outline as expected?</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3830,56 +3832,6 @@ Environment). For example, a single Leo outline contains
 <t tx="ekr.20101021093614.5433">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html</t>
 <t tx="ekr.20101021093614.5435">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html</t>
 <t tx="ekr.20101021101327.5432">c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html</t>
-<t tx="ekr.20101025080245.5521">@language rest
-
-See http://groups.google.com/group/leo-editor/browse_thread/thread/0eab8b60c403628d
-
-This bug is invalid, as I shall now explain.
-
-QQQ
-- download http://dl.dropbox.com/u/4226858/test.tar.gz
-- extract it
-- the directory contains a very minimalistic bzr repo with two commits, issue `bzr` log to see them
-- the repo was archived after the second commit
-- do `bzr update -r 1` to go back to the state after the first commit
-   [EKR: it's bzr revert: update has no -r argument.]
-- open test.leo, see the node method2() with empty body
-- there should be no method2() node after the first commit!
-QQQ
-
-The conclusion, that there should be no method2() is incorrect. Indeed, when Leo
-opens after the revert (not update), it announces: updated private xtest.py from
-public test.py.
-
-This is correct, and has nothing in particular to do with caching.
-
-The updated xtest.py comes from the fundamental @shadow algorithm:
-propagate_changed_lines.
-
-The assertion behind this bug report is that the @shadow algorithm "should" have
-deleted the node's sentinels along with its contents. This assertion is dubious,
-or rather simply wrong, for the following reasons:
-
-1. The @shadow algorithm has no way of "guessing" whether the node "should" or
-"should not" have been deleted.
-
-2. The **fundamental property** of the @shadow file is **still valid** after the
-update, namely that the @shadow tree will generate the updated *public* file.
-The contents of the *private* file, while interesting, have *nothing* to do with
-this fundamental property.
-
-3. This bug report is simply a special case of a "fact of life" about @shadow,
-namely that the @shadow algorithm **can not in principle** guess between two or
-more ways of updating the *private* file when each of the ways yields the same
-*public* file. But this "fact of life" is not serious. If you don't like the
-"guesses" that the @shadow algorithm has made, you simple change the @shadow
-tree. After saving, the *private* file *will* record your choice, and the next
-time you open the @shadow tree you will see the choices *you* made, not the
-guess that the @shadow algorithm made. Clear?
-
-4. There is absolutely no way I shall entertain the notion of putting a special
-case inside the main @shadow loop to handle this "problem".
-</t>
 <t tx="ekr.20101025080245.5523">@nocolor
 </t>
 <t tx="ekr.20101025080245.5528">http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
@@ -3994,25 +3946,16 @@ Release Notes
 <t tx="ekr.20101026082911.5533">Move meld into screenshots plugin.
     - Use @wink-path = &lt;path&gt; to control meld.
     - (We don't need to specify the path for moved screenshots.)</t>
-<t tx="ekr.20101026082911.5534">Can probably be done by changing the slides page.</t>
+<t tx="ekr.20101026082911.5534">Can probably be done by changing the slides page.
+
+Creating .. contents or .. toctree might do the trick.</t>
 <t tx="ekr.20101026082911.5535"></t>
 <t tx="ekr.20101026082911.5536"></t>
 <t tx="ekr.20101026082911.5537"></t>
-<t tx="ekr.20101026082911.5538">.. _`here`: atShadow.html#aha-boundary-cases-don-t-matter
-
-As explained `here`_, the fundamental \@shadow algorithm guarantees *only* that
-writing an updated \@shadow outline will generate the updated **public** file.
-There is *no way* to guarantee that the updated outline structure will be as
-expected. The \@shadow algorithm can not *in principle* guess between two or
-more ways of updating the **private** file when each of the ways yields the same
-**public** file.
-
-Happily, this "fact of life" about \@shadow is not serious. If you don't like
-the "guesses" that the \@shadow algorithm has made, you can simply change the
-\@shadow tree. After saving the outline, the *private* file will record your
-choice. The next time you open the outline, you will see the choices *you* made,
-not the guesses that the \@shadow algorithm made.
-</t>
+<t tx="ekr.20101026082911.5540"></t>
+<t tx="ekr.20101026082911.5541"></t>
+<t tx="ekr.20101026082911.5542"></t>
+<t tx="ekr.20101026082911.5543"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
