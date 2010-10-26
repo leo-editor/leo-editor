@@ -536,5 +536,102 @@ to write your own plugins.
 - Leo’s home page:  google edreamleo or http://webpages.charter.net/edreamleo/front.html
 
 - Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766
+.. @+node:ekr.20101025080245.5542: ** Review of leo-editor
+The following nodes contain links to important discussions on the leo-editor web
+site.
+.. @+node:ekr.20101025080245.5735: *3* 10/2010
+.. @+node:ekr.20101025080245.5736: *4* FAQ: how to syntax color sql
+use @language plsql 
+.. @+node:ekr.20101025080245.5737: *4* @url Prezi: a good model for intros
+http://groups.google.com/group/leo-editor/browse_thread/thread/a1734a5f7ae25444#
+.. @+node:ekr.20101025080245.5787: *5* @url Prezi home page
+http://prezi.com/your/
+.. @+node:ekr.20101025080245.5738: *4* @url FAQ: how to use macros
+http://groups.google.com/group/leo-editor/browse_thread/thread/866245f923f382a7#
+.. @+node:ekr.20101025080245.5740: *3* 9/2010
+.. @+node:ekr.20101025080245.5739: *4* @url Ville's server code
+http://groups.google.com/group/leo-editor/browse_thread/thread/278aa85d7298a319#
+.. @+node:ekr.20101025080245.5741: *4* @url FAQ: creating windows file associations
+http://groups.google.com/group/leo-editor/browse_thread/thread/fec80438b9619c1c#
+.. @+node:ekr.20101025080245.5742: *4* @url Google: window 7 file icons
+http://www.winhelponline.com/blog/change-file-type-icon-windows-7-and-vista/
+.. @+node:ekr.20101025080245.5743: *4* @url Google: window 7 file associations
+http://vista.blorge.com/2009/10/26/how-to-change-file-type-associations-in-windows-7/
+.. @+node:ekr.20101025080245.5744: *4* @url qt-tabs
+http://groups.google.com/group/leo-editor/browse_thread/thread/2efdbc3b47846a15#
+.. @+node:ekr.20101025080245.5745: *4* Slideshow stuff
+.. @+node:ekr.20101025080245.5746: *5* @url slideshow will be a plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/4da36f0d897a25e8#
+.. @+node:ekr.20101025080245.5747: *5* @url callouts with inkscape
+http://groups.google.com/group/leo-editor/browse_thread/thread/be5401b424a022a7#
+.. @+node:ekr.20101025080245.5752: *5* @url more thougths about slides
+http://groups.google.com/group/leo-editor/browse_thread/thread/c66f30b5d09d3411#
+.. @+node:ekr.20101025080245.5758: *5* @url (Aug) Leo vrs Screenbook Maker and storyboarding
+http://groups.google.com/group/leo-editor/browse_thread/thread/fd52e4187eec7bd0#
+.. @+node:ekr.20101025080245.5759: *5* @url (Aug) S5 is not good enough
+http://groups.google.com/group/leo-editor/browse_thread/thread/44eb904d6b32cdd8#
+.. @+node:ekr.20101025080245.5760: *5* @url (Aug) Deconstructing screenbook maker
+http://groups.google.com/group/leo-editor/browse_thread/thread/3da73f0c2da2c416#
+.. @+node:ekr.20101025080245.5748: *4* @url DnD howto
+http://groups.google.com/group/leo-editor/browse_thread/thread/7752d3e14b49ef35#
+.. @+node:ekr.20101025080245.5750: *4* @url interact plugin (ileo)
+http://groups.google.com/group/leo-editor/browse_thread/thread/d58333f2ebae2675#
+.. @+node:ekr.20101025080245.5753: *3* 8/2010
+.. @+node:ekr.20101025080245.5751: *4* @url leoscreen plugin
+http://www.mail-archive.com/leo-editor@googlegroups.com/msg11439.html
+.. @+node:ekr.20101025080245.5754: *4* @url time to retire tk? (design)
+http://groups.google.com/group/leo-editor/browse_thread/thread/c66f30b5d09d3411#
+.. @+node:ekr.20101025080245.5755: *4* @url simulating <<nodes>> in rst branches (design)
+http://groups.google.com/group/leo-editor/browse_thread/thread/8842b4878975e3f1#
+.. @+node:ekr.20101025080245.5756: *4* @url @auto import problems
+http://groups.google.com/group/leo-editor/browse_thread/thread/cde63221041d9afc#
+.. @+node:ekr.20101025080245.5757: *4* @url leo in a nutshell
+http://groups.google.com/group/leo-editor/browse_thread/thread/e9c5f73d048597ae#
+.. @+node:ekr.20101025080245.5761: *4* @url The curse of knowledge
+http://groups.google.com/group/leo-editor/browse_thread/thread/3da73f0c2da2c416#
+.. @+node:ekr.20101025080245.5762: *4* @url second draft of rst3 tutorial
+http://groups.google.com/group/leo-editor/browse_thread/thread/c02a442bea48f233#
+.. @+node:ekr.20101025080245.5763: *4* @url quickmove tutorial
+http://groups.google.com/group/leo-editor/browse_thread/thread/8eaf13b6ebda0fcd#
+.. @+node:ekr.20101025080245.5764: *4* @url ** sharing code in scripts
+http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
+.. @+node:ekr.20101025080245.5765: *4* @url simplifying docs for rst3
+http://groups.google.com/group/leo-editor/browse_thread/thread/5c1ef1abcc01ef50#
+.. @+node:ekr.20101025080245.5766: *4* @url Leo screencast on utube
+http://groups.google.com/group/leo-editor/browse_thread/thread/ce7353ce5614efca#
+.. @+node:ekr.20101025080245.5767: *4* @url @root must disappear
+http://groups.google.com/group/leo-editor/browse_thread/thread/15f05a216697ac21#
+.. @+node:ekr.20101025080245.5768: *4* @url revising chapter 6 (design chapter)
+http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#
+.. @+node:ekr.20101025080245.5769: *4* @url ** p.deletePositionsInList
+http://groups.google.com/group/leo-editor/browse_thread/thread/0aa8d9d17f6300b8#
+.. @+node:ekr.20101025080245.5770: *3* 7/2010
+.. @+node:ekr.20101025080245.5771: *4* @url Leo3k works with docutils
+http://groups.google.com/group/leo-editor/browse_thread/thread/64dfc56394abcee8#
+.. @+node:ekr.20101025080245.5772: *4* @url ** At last: deleting "resurrected nodes"
+http://groups.google.com/group/leo-editor/browse_thread/thread/64dfc56394abcee8#
+.. @+node:ekr.20101025080245.5773: *5* Note: Leo creates both resurrected nodes and recovered nodes
+.. @+node:ekr.20101025080245.5774: *4* @url @auto now regularizes newlines
+http://groups.google.com/group/leo-editor/browse_thread/thread/c351a5e3399fcf09#
+.. @+node:ekr.20101025080245.5775: *4* @url new sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/ace3046ffb94805b#
+.. @+node:ekr.20101025080245.5776: *4* @url complications re new sentinels (design)
+http://groups.google.com/group/leo-editor/browse_thread/thread/76d12c9abd586b16#
+.. @+node:ekr.20101025080245.5777: *4* @url how to avoid usernames in outlines
+http://groups.google.com/group/leo-editor/browse_thread/thread/e21f8efa58c204e7#
+.. @+node:ekr.20101025080245.5778: *3* 6/2010
+.. @+node:ekr.20101025080245.5779: *4* @url @auto-rst issue
+http://groups.google.com/group/leo-editor/browse_thread/thread/f1deadac39f8f8c5#
+.. @+node:ekr.20101025080245.5780: *3* 5/2010
+.. @+node:ekr.20101025080245.5781: *4* @url much simpler sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/8b659c96720afd53#
+.. @+node:ekr.20101025080245.5786: *3* 4/2010
+.. @+node:ekr.20101025080245.5782: *4* @url new-pylint is too slow
+http://groups.google.com/group/leo-editor/browse_thread/thread/de7fc699752f7a39#
+.. @+node:ekr.20101025080245.5783: *4* @url thoughts about autocompletion
+http://groups.google.com/group/leo-editor/browse_thread/thread/3dd91b318f17a359#
+.. @+node:ekr.20101025080245.5785: *3* 3/2010
+.. @+node:ekr.20101025080245.5784: *4* @url @language pseudoplain?
+http://groups.google.com/group/leo-editor/topics?start=360&sa=N
 .. @-all
 .. @-leo
