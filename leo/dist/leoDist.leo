@@ -48,11 +48,11 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
+<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
-<v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
 <v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
@@ -85,8 +85,6 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
@@ -168,38 +166,40 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 </t>
 <t tx="EKR.20040519090846">@nocolor
 
-Do a search and replace on this suffix.
+1. Search for ##version
 
-Latest suffix:  -final
+2. Search for this suffix: -final
 
-Latest copyright date: 2010.
+3. Search for copyright
 
-Note: The top-level install.txt file creates the copyright message in the nsi
-installer.</t>
-<t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
-The gist of the license is that Leo is absolutely free, even for commercial use
-(including resale). There is no GNU-like "copyleft" restriction. The Open Source
-Initiative board has voted to certify the Python license as Open Source. This
-license is compatible with the GPL.
+    Latest copyright date: 2010.
+
+    Note: install.txt file embeds a copyright message in the nsi installer.</t>
+<t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
+License. The gist of the license is that Leo is absolutely free, even
+for commercial use (including resale). There is no GNU-like "copyleft"
+restriction. The Open Source Initiative board has voted to certify the
+MIT license as Open Source. This license is compatible with the GPL.
 
 Copyright (c) 1997-2010 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted, provided that
-the above copyright notice appear in all copies and that both that copyright
-notice and this permission notice appear in supporting documentation, and that
-the names of Leo or Edward K. Ream not be used in advertising or publicity
-pertaining to distribution of the software without specific, written prior
-permission.
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the names of Leo or Edward K. Ream
+not be used in advertising or publicity pertaining to distribution of
+the software without specific, written prior permission.
 
 DISCLAIMER OF WARRANTIES
 
-EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED OR
-IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT LIMITED TO
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. IN
-NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF PROFIT OR ANY COMMERCIAL DAMAGE,
-INCLUDING BUT NOT LIMITED TO SPECIAL, INCIDENTAL, CONSEQUENTIAL OR OTHER
-DAMAGES.</t>
+EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED
+OR IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT
+LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE. IN NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF
+PROFIT OR ANY COMMERCIAL DAMAGE, INCLUDING BUT NOT LIMITED TO SPECIAL,
+INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
+</t>
 <t tx="EKR.20040519090846.2"></t>
 <t tx="EKR.20040519090846.3">System requirements
 -------------------
@@ -692,14 +692,14 @@ SectionEnd
     result = [self.indent(z) for z in result]
     return ''.join(result)
 </t>
-<t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.8-a1'</t>
 <t tx="ekr.20090905082405.1486">'''Create leo.zip using bzr export'''
 
 # To do: Leo bitmap.
 
 &lt;&lt; includes &gt;&gt;
-&lt;&lt; define version &gt;&gt;
+
+version = '4.8-a1' ##version
+
 @others
 
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
@@ -773,7 +773,7 @@ LeoPy.leo:
 LeoDist.leo:
     - Make sure copyright dates are correct.
         (trunk/license.txt **and** leo/doc/license.txt.)
-    - Update version numbers.
+    - Update version numbers: search this file for ##version.
     - Update readme.txt
     - Check 'INSTALL.TXT'
     - Check 'PKG-INFO.TXT'
@@ -905,12 +905,15 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
 HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
     val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
 </t>
-<t tx="ekr.20101027070126.1639"># **Important**
-#   Before running this script you must create bzr-manifest as follows::
+<t tx="ekr.20101027070126.1639">'''Use bzr-manifest.txt to two "helper" files for leo.nsi:
+
+        leo\dist\nsi-install-files.txt
+        leo\dist\nsi-uninstall-files.txt
+'''
+
+# **Important**: create bzr-manifest **before** running this script::
 #       cd to trunk
 #       bzr ls -R &gt;bzr-manifest.txt
-
-'''Create the installer script using bzr-manifest.txt.'''
 
 
 import os,string,sys
@@ -933,7 +936,14 @@ g.es_print('done')
 </t>
 <t tx="ekr.20101027070126.1643">class nsiWriter:
 
-    '''A class to write .nsi scripts.'''
+    '''
+    A class to write two "helper" files for leo.nsi:
+
+        leo\dist\nsi-install-files.txt
+        leo\dist\nsi-uninstall-files.txt
+
+    These are the only files that depend on the bzr manifest.
+    '''
 
     @others
 </t>

@@ -1,7 +1,7 @@
 .bzrignore
 LICENSE.txt
 Leo-4.8-a1.zip
-LeoSetup-4.8-a1.exe
+LeoSetup-4.8.a1.exe
 Makefile
 bzr-manifest.txt
 launchLeo.py
@@ -1090,6 +1090,9 @@ leo/core/test_core.txt
 leo/dist/
 leo/dist/LeoPackage.pmsp
 leo/dist/leoDist.leo
+leo/dist/nsi-boilerplate.txt
+leo/dist/nsi-install-files.txt
+leo/dist/nsi-uninstall-files.txt
 leo/doc/
 leo/doc/FAQ.txt
 leo/doc/IpythonBridge.txt
@@ -1624,6 +1627,7 @@ leo/modes/idl.xml
 leo/modes/inform.py
 leo/modes/inform.xml
 leo/modes/ini.py
+leo/modes/ini.pyc
 leo/modes/ini.xml
 leo/modes/inno_setup.py
 leo/modes/inno_setup.xml
@@ -1677,6 +1681,8 @@ leo/modes/netrexx.py
 leo/modes/netrexx.xml
 leo/modes/nqc.py
 leo/modes/nqc.xml
+leo/modes/nsi.py
+leo/modes/nsi.pyc
 leo/modes/nsis2.py
 leo/modes/nsis2.xml
 leo/modes/objective_c.py
@@ -1982,6 +1988,7 @@ leo/plugins/pygeotag/pygeotag.leo
 leo/plugins/pygeotag/pygeotag.py
 leo/plugins/pygeotag/template.html
 leo/plugins/qtGui.py
+leo/plugins/qtGui.py.~1~
 leo/plugins/qtGui.pyc
 leo/plugins/qtNotes.txt
 leo/plugins/qt_main.py
@@ -2147,7 +2154,7 @@ leo/www/default.css
 leo/www/index.html
 leo/www/leo_rst.css
 leo/www/silver_city.css
-leo-4.8-a1.nsi
+leo.nsi
 leo_to_html.xsl
 profileLeo.py
 pylint-leo.bat
