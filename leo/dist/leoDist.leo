@@ -48,16 +48,18 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
+</v>
+<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 <v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
-<v t="ekr.20101027070126.1643"><vh>class nsiWriter</vh>
+<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
@@ -1210,5 +1212,6 @@ def deleteFiles (self,lines,deleteList):
         return None
 </t>
 <t tx="ekr.20101027070126.1680"></t>
+<t tx="ekr.20101027131034.1490">@color</t>
 </tnodes>
 </leo_file>
