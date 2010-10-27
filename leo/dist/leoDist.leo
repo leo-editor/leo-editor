@@ -66,7 +66,7 @@
 </v>
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@@button OLD make leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@@button OLD make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
@@ -114,8 +114,8 @@
 <v t="ekr.20101026142031.1556"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
 <v t="ekr.20101026142031.1557"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20101026142031.1558"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20101026142031.1559"><vh>class nsiWriter</vh>
-<v t="ekr.20101026142031.1560" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20101026142031.1559" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20101026142031.1560"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20101026142031.1561"><vh>genHead</vh>
 <v t="ekr.20101026142031.1562"><vh>putSettings</vh></v>
 <v t="ekr.20101026142031.1597"><vh>putOnInit</vh></v>
@@ -158,12 +158,30 @@
 </v>
 <v t="ekr.20101026142031.1593"><vh>=======================</vh></v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo-test.nsi</vh></v>
-<v t="ekr.20101027064141.1595"><vh>@thin ../../nsi-defines.txt</vh></v>
-<v t="ekr.20101027063949.1592"><vh>@thin ../../nsi-preamble.txt</vh></v>
-<v t="ekr.20101027070126.1599"><vh>@thin ../../nsi-leo-section.txt</vh></v>
-<v t="ekr.20101027070126.1601"><vh>@thin ../../nsi-postamble.txt</vh></v>
-<v t="ekr.20101027070126.1602"><vh>@thin ../../nsi-uninstall.txt</vh></v>
-<v t="ekr.20101027070126.1603"><vh>@thin ../../nsi-uninstall-files.txt</vh></v>
+<v t="ekr.20101027064141.1595"><vh>@thin nsi-defines.txt</vh></v>
+<v t="ekr.20101027063949.1592"><vh>@thin nsi-preamble.txt</vh></v>
+<v t="ekr.20101027070126.1599"><vh>@thin nsi-leo-section.txt</vh></v>
+<v t="ekr.20101027070126.1601"><vh>@thin nsi-postamble.txt</vh></v>
+<v t="ekr.20101027070126.1602"><vh>@thin nsi-uninstall.txt</vh></v>
+<v t="ekr.20101027070126.1603"><vh>@thin nsi-uninstall-files.txt</vh></v>
+<v t="ekr.20101027070126.1639"><vh>button make leo.nsi</vh>
+<v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
+<v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
+<v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
+<v t="ekr.20101027070126.1664"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20101027070126.1665"><vh>delete...</vh></v>
+</v>
+<v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
+<v t="ekr.20101027070126.1667"><vh>printMissing</vh></v>
+<v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
+</v>
+<v t="ekr.20101027070126.1680"><vh>utils...</vh>
+<v t="ekr.20101027070126.1679"><vh>openFile</vh></v>
+<v t="ekr.20101027070126.1678"><vh>put</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
@@ -2330,5 +2348,300 @@ FunctionEnd
     s = s.replace('${name}',app_name).replace('${version}',app_version)
     self.put(s,substitute=False)
 </t>
+<t tx="ekr.20101027070126.1639"># **Important**
+#   Before running this script you must create bzr-manifest as follows::
+#       cd to trunk
+#       bzr ls -R &gt;bzr-manifest.txt
+
+'''Create the installer script using bzr-manifest.txt.'''
+
+
+import os,string,sys
+
+# Globals...
+join = g.os_path_finalize_join
+rootDir  = join(g.app.loadDir,'..','..')
+distDir =  join(g.app.loadDir,'..','dist')
+manifest = join(rootDir,'bzr-manifest.txt')
+install_fn   = join(distDir,'nsi-install-files.txt')
+uninstall_fn = join(distDir,'nsi-uninstall-files.txt')
+
+assert g.os_path_exists(manifest)
+
+@others
+
+nsi = nsiWriter()
+nsi.run(manifest)
+g.es_print('done')
+</t>
+<t tx="ekr.20101027070126.1643">class nsiWriter:
+
+    '''A class to write .nsi scripts.'''
+
+    @others
+</t>
+<t tx="ekr.20101027070126.1662">def run (self,mainifest_fn):
+
+    '''The top-level logic.'''
+
+    # Create and filter the list of files from the manifest.
+    s = open(mainifest_fn).read()
+    lines = g.splitLines(s)
+    files = self.filterLines(lines)
+
+    # Compute the list of all the directories.
+    dirs = self.directoryList(rootDir)
+
+    # Compute dictionaries of directories and files.
+    dirDict,filesDict = self.makeDicts(dirs,files)
+
+    # Print manifest lines not in either dict.
+    # This is a crucial check.
+    errors = self.printMissing(files,dirDict,filesDict)
+    if not errors:
+        self.create_install_files(dirs,dirDict,filesDict)
+        self.create_uninstall_files(dirs,dirDict,filesDict)
+</t>
+<t tx="ekr.20101027070126.1663">def directoryList (self,rootDir):
+
+    '''Compute a top-down list of all directories.
+       These directories start at the top-level directory.'''
+
+    trace = False
+    ignoreDirs = ('.bzr',)
+    # Important: this adds all directories on EKR's machine,
+    # regardless of whether they appear in the manifest!
+    result = [] ; n = len(rootDir)
+    for z in os.walk(rootDir): # top-down traversal.
+        dirpath, dirnames, filenames = z
+        assert dirpath.startswith(rootDir),z
+        if len(dirpath) &gt; n:
+            path = dirpath[n+1:].replace('\\','/')
+            result.append(path)
+    for z2 in ignoreDirs:
+        result = [ z for z in result if not z.startswith(z2)]
+    if trace:
+        g.trace('-' * 40)
+        g.trace(g.listToString(result))
+    return result
+</t>
+<t tx="ekr.20101027070126.1664">def filterLines (self,lines):
+
+    '''Filter lines from the input manifest file.'''
+
+    trace = False
+
+    # Remove blank lines, comments, and .pyc and .pyo files.
+    lines = self.deleteBlankLines(lines)
+    lines = self.deleteComments(lines)
+    lines = self.deleteExt(lines,'.pyc')
+    lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
+    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
+
+    # Remove specific files.
+    deleteList = (
+        '.bzrignore',
+        'bzr-manifest.txt',
+        'bzr-small-manifest.txt',
+        'setup.py',
+        'leo/test/unittest/.leo_shadow/',
+        'nsi.log.txt', # Can't write log while we are creating it.
+        'leo/core/leoPy.leo',
+        'leo/core/ekrLeoPy.leo',
+    )
+    lines = self.deleteFiles(lines,deleteList)
+    if lines and lines[0].endswith('bzr ls -R'):
+        lines = lines[1:]
+
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(lines))
+
+    return lines
+</t>
+<t tx="ekr.20101027070126.1665">def deleteBlankLines (self,lines):
+
+    return [z.strip() for z in lines if z.strip()]
+
+def deleteComments (self,lines):
+
+    return [z for z in lines if not z.startswith('#')]
+
+def deleteExt (self,lines,ext):
+
+    return [z for z in lines if not z.endswith(ext)]
+
+def deleteFiles (self,lines,deleteList):
+
+    return [z for z in lines if not z in deleteList]
+</t>
+<t tx="ekr.20101027070126.1666">def makeDicts (self,dirs,lines):
+
+    trace = False ; verbose = False
+
+    # Create the dirDict.
+    # Keys are directories.
+    # Values are files contained in each directory.
+    dirDict = {}
+    dirDict['**top'] = [] # Create an entry for the root directory.
+    for z in dirs:
+        dirDict[z] = []
+
+    # Assign files to dirDict.
+    for line in lines:
+        line = line.strip().replace('\\','/')
+        if line in dirDict.keys():
+            path,fn = None,None
+        elif line.startswith('leo/'):
+            path,fn = g.os_path_split(line)
+        else:
+            path,fn = '**top',line.strip()
+
+        # Don't include top-level leo directory,
+        # Do include leo/scripts/leo file.
+        if fn and (path != '**top**' or fn != 'leo'):
+            aList = dirDict.get(path,[])
+            assert line not in aList,repr(line)
+            aList.append(fn)
+            dirDict[path]=aList
+
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        if aList and trace:
+            if verbose:
+                print() ; print(theDir)
+                print(g.listToString(aList))
+            else:
+                print(theDir)
+
+    # Create the inverse dict.
+    filesDict = {}
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        for fn in aList:
+            path = g.choose(theDir=='**top',
+                fn,'%s/%s' % (theDir,fn))
+            filesDict[path] = theDir
+
+    return dirDict,filesDict
+</t>
+<t tx="ekr.20101027070126.1667">def printMissing (self,files,dirDict,filesDict):
+
+    errors = 0
+
+    for fn in files:
+        fn = fn.rstrip('/')
+        if fn and fn not in dirDict and fn not in filesDict:
+            g.es_print('missing',fn,color='red')
+            errors += 1
+
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+
+    return errors
+</t>
+<t tx="ekr.20101027070126.1675">def create_install_files(self,dirs,dirDict,filesDict):
+
+    global install_fn,rootDir
+    put = self.put
+
+    self.f = self.openFile(install_fn)
+    if not self.f: return
+
+    # Top level
+    theDir = '**top'
+    put('\n')
+    put('; top-level\n')
+    put('SetOutPath "$INSTDIR"\n')
+    put('SetOverwrite ifnewer\n')
+    aList = dirDict.get(theDir,[])
+    for fn in aList:
+        put('File "%s"\n' % fn)
+
+    for theDir in dirs:
+        if theDir != '**top':
+            aList = dirDict.get(theDir,[])
+            if aList:
+                theDir2 = theDir.replace('/','\\').rstrip('\\')
+                put('\n')
+                put('SetOutPath $INSTDIR\\%s\n' % theDir2)
+                for fn in aList:
+                    # Fix bug 425369: quote file names.
+                    put('File "%s\\%s\\%s"\n' % (
+                        rootDir,theDir2,fn))
+
+    self.f.close()
+</t>
+<t tx="ekr.20101027070126.1676">def create_uninstall_files(self,dirs,dirDict,filesDict):
+
+    def clean(s):
+        return s.replace('/','\\')
+    put = self.put
+
+    self.f = self.openFile(uninstall_fn)
+    if not self.f: return
+
+    # Part 1: Delete top-level files.
+    put('\n')
+    put('; Uninstall files...\n\n')
+
+    put('; Delete top-level files...\n')
+    aList = dirDict.get('**top',[])
+    for fn in aList:
+        # Always delete individual files.
+        put('Delete "$INSTDIR\\%s"\n' % fn)
+
+    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
+    if 0: # This seems way too drastic, and not needed.
+        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
+            aList.append(fn)
+    # special case.
+    aList.append('uninst.exe')
+
+    # Part 2: Delete files in lower directories.
+    for theDir in dirs:
+        if theDir:
+            dir2 = clean(theDir)
+            aList = dirDict.get(theDir,[])
+            if aList:
+                put('\n')
+                put('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                put('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+            for fn in aList:
+                put('Delete "$INSTDIR\\%s\\%s"\n' % (dir2,fn))
+
+    # Part 3: Delete directories.
+    reverseDirs = dirs[:]
+    reverseDirs.reverse()
+    put('\n')
+    put('; Uninstall directories in reverse order\n')
+    for theDir in reverseDirs:
+        # Delete the directory even if it has files.
+        if theDir and theDir != '**top':
+            if not theDir.startswith('.bzr'):
+                put('RMDir "$INSTDIR\\%s"\n' % (clean(theDir)))
+
+    # Delete the op-level folder.
+    put('\n')
+    put('; Delete the top-level directory.\n')
+    put('RMDir "$INSTDIR"\n')
+
+    self.f.close()
+</t>
+<t tx="ekr.20101027070126.1678">def put (self,s):
+
+    self.f.write(s)
+</t>
+<t tx="ekr.20101027070126.1679">def openFile (self,fn):
+
+    try:
+        f = open(fn,'w')
+        return f
+    except IOError:
+        g.error('can not open',fn)
+        return None
+</t>
+<t tx="ekr.20101027070126.1680"></t>
 </tnodes>
 </leo_file>
