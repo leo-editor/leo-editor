@@ -56,27 +56,8 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
-<v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
-<v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
-</v>
-</v>
-<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-</v>
-<v t="ekr.20101026142031.1593"><vh>=======================</vh></v>
-<v t="ekr.20101027054254.1590"><vh>@edit ../../leo-test.nsi</vh></v>
-<v t="ekr.20101027064141.1595"><vh>@thin nsi-defines.txt</vh></v>
-<v t="ekr.20101027063949.1592"><vh>@thin nsi-preamble.txt</vh></v>
-<v t="ekr.20101027070126.1599"><vh>@thin nsi-leo-section.txt</vh></v>
-<v t="ekr.20101027070126.1601"><vh>@thin nsi-postamble.txt</vh></v>
-<v t="ekr.20101027070126.1602"><vh>@thin nsi-uninstall.txt</vh></v>
-<v t="ekr.20101027070126.1603"><vh>@thin nsi-uninstall-files.txt</vh></v>
-<v t="ekr.20101027070126.1639"><vh>button make leo.nsi</vh>
-<v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101027070126.1643"><vh>class nsiWriter</vh>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
@@ -93,6 +74,19 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
+<v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
+<v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
+<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
+<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
+</v>
+</v>
+<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
+</v>
+<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
@@ -911,7 +905,6 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
 HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
     val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
 </t>
-<t tx="ekr.20101026142031.1593"></t>
 <t tx="ekr.20101027070126.1639"># **Important**
 #   Before running this script you must create bzr-manifest as follows::
 #       cd to trunk
