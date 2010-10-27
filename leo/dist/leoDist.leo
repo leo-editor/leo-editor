@@ -56,28 +56,30 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
-<v t="ekr.20101026094728.1521"><vh>Installation problems (detailed, recent)</vh></v>
-<v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
+<v t="ekr.20101025095431.1517" a="E"><vh>Installer/Distribution to do</vh>
 <v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
-<v t="ekr.20101025095431.1520"><vh>Fix install problem</vh></v>
+<v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
+<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
+<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
 </v>
-<v t="ekr.20101025095431.1522"><vh>Make sure distribution contains correct files</vh></v>
 </v>
-<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
+<v t="ekr.20090826220933.1565"><vh>@@button OLD make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
-<v t="ekr.20090901092556.1573"><vh>genHead</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901092556.1573" a="E"><vh>genHead</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
-<v t="ekr.20090901092556.1575"><vh>genMiddle</vh>
+<v t="ekr.20090901092556.1575" a="E"><vh>genMiddle</vh>
 <v t="ekr.20090901092556.1606"><vh>genAdditionalIcons</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -86,11 +88,7 @@
 <v t="ekr.20090901092556.1607"><vh>genPost</vh></v>
 <v t="ekr.20090901092556.1611"><vh>genUninstallSettings</vh></v>
 </v>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
-</v>
+<v t="ekr.20090901092556.1576"></v>
 <v t="ekr.20090901160534.1572"><vh>indent</vh></v>
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
@@ -109,6 +107,53 @@
 <v t="ekr.20090902092112.1466"><vh>computeWidth</vh></v>
 <v t="ekr.20090902092112.1470"><vh>removeLeadingWhitespace</vh></v>
 <v t="ekr.20090902092112.1479"><vh>splitLines</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20101026142031.1593"><vh>=======================</vh></v>
+<v t="ekr.20101026142031.1555" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101026142031.1556"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
+<v t="ekr.20101026142031.1557"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
+<v t="ekr.20101026142031.1558"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
+<v t="ekr.20101026142031.1559" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20101026142031.1560" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20101026142031.1561"><vh>genHead</vh>
+<v t="ekr.20101026142031.1562"><vh>putSettings</vh></v>
+<v t="ekr.20101026142031.1597"><vh>putOnInit</vh></v>
+</v>
+<v t="ekr.20101026142031.1564" a="E"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20101026142031.1565"><vh>getInstallVariableData</vh></v>
+</v>
+<v t="ekr.20101026142031.1566" a="E"><vh>genMiddle</vh>
+<v t="ekr.20101026142031.1567"><vh>genAdditionalIcons</vh></v>
+<v t="ekr.20101026142031.1568"><vh>genDesktopShortcuts</vh></v>
+<v t="ekr.20101026142031.1569"><vh>genFileAssociation</vh></v>
+<v t="ekr.20101026142031.1572"><vh>genPost</vh></v>
+</v>
+<v t="ekr.20101026142031.1574"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20101026142031.1575"><vh>getDeleteDirectories</vh></v>
+<v t="ekr.20101026142031.1576"><vh>getDeleteFiles</vh></v>
+<v t="ekr.20101026142031.1577"><vh>getUninstallVariableData</vh></v>
+</v>
+<v t="ekr.20101026142031.1578"><vh>indent</vh></v>
+<v t="ekr.20101026142031.1579"><vh>openNsi</vh></v>
+<v t="ekr.20101026142031.1580"><vh>put</vh></v>
+</v>
+<v t="ekr.20101026142031.1581"><vh>run &amp; helpers</vh>
+<v t="ekr.20101026142031.1582"><vh>directoryList</vh></v>
+<v t="ekr.20101026142031.1583"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20101026142031.1584"><vh>delete...</vh></v>
+</v>
+<v t="ekr.20101026142031.1585"><vh>makeDicts</vh></v>
+<v t="ekr.20101026142031.1586"><vh>printMissing</vh></v>
+</v>
+<v t="ekr.20101026142031.1587"><vh>whitespace</vh>
+<v t="ekr.20101026142031.1588"><vh>adjustTripleString</vh></v>
+<v t="ekr.20101026142031.1589"><vh>get_leading_ws</vh></v>
+<v t="ekr.20101026142031.1590"><vh>computeWidth</vh></v>
+<v t="ekr.20101026142031.1591"><vh>removeLeadingWhitespace</vh></v>
+<v t="ekr.20101026142031.1592"><vh>splitLines</vh></v>
 </v>
 </v>
 </v>
@@ -862,6 +907,8 @@ def deleteFiles (self,lines,deleteList):
 
     '''Generate the manifest-specific uninstall data.'''
 
+    trace = True
+
     s = r'''
 Section Uninstall
 
@@ -887,9 +934,9 @@ DeleteLeoKeysAndFiles:
     self.put(s,substitute=True)
 
     # Does all the hard work.
-    self.put(
-        self.getUninstallVariableData(dirs,dirDict,filesDict),
-        adjust = False)
+    s = self.getUninstallVariableData(dirs,dirDict,filesDict)
+    if trace: g.trace('\n',s)
+    self.put(s,adjust = False)
 
     s = r'''
     ; ---- End of manifest related data.
@@ -932,10 +979,13 @@ LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 ; Default location.  May be changed in .onInit.
 InstallDir "${PROGRAMFILES}\${name}-${version}"
 Icon "${icon}"
+
 DirText "Setup will install ${name}-${version} in the following folder. $$\n\
 To install in a different folder, click Browse and select another folder."
+
 LicenseText "You must accept the agreement to install ${name}-${version}."
 LicenseData "${license}"
+
 ShowInstDetails show
 ShowUnInstDetails show
 
@@ -1106,15 +1156,21 @@ FunctionEnd
     reverseDirs.reverse()
 
     result = []
-    result.append('; Uninstall directories in reverse order\n')
-    for theDir in reverseDirs:
-        # Delete the directory even if it has no files.
-        if theDir and theDir != '**top':
-            if not theDir.startswith('.bzr'):
-                result.append('RMDir "$INSTDIR\\%s"\n' % (
-                    theDir.replace('/','\\')))
+
+    if 1:
+        result.append('; Recursively delete the leo directory and everything in it.\n')
+        result.append('RMDir /r "$INSTDIR\\leo"\n\n')
+    else:
+        result.append('; Uninstall directories in reverse order\n')
+        for theDir in reverseDirs:
+            # Delete the directory even if it has files.
+            if theDir and theDir != '**top':
+                if not theDir.startswith('.bzr'):
+                    result.append('RMDir "$INSTDIR\\%s"\n' % (
+                        theDir.replace('/','\\')))
 
     # top-level folder.
+    result.append('; Delete the top-level directory.\n')
     result.append('RMDir "$INSTDIR"\n')
 
     result = [self.indent(z) for z in result]
@@ -1122,35 +1178,43 @@ FunctionEnd
 </t>
 <t tx="ekr.20090901121423.1569">def getDeleteFiles (self,dirs,dirDict,filesDict):
 
-    wildcard_delete = True
     result = []
+    result.append('\n')
     result.append('; Uninstall files...\n\n')
 
     # top-level files.
     result.append('; Delete top-level files...\n')
     aList = dirDict.get('**top',[])
+    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
+    if 0: # This seems way too drastic, and not needed.
+        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
+            aList.append(fn)
     # special case.
     aList.append('uninst.exe')
     # Warning: **never** delete all files in the top-level directory.
     for fn in aList:
         result.append('Delete "$INSTDIR\\%s"\n' % fn)
-    if wildcard_delete:
-        result.append('\n')
 
-    for theDir in dirs:
-        if theDir:
-            dir2 = theDir.replace('/','\\')
-            if wildcard_delete:
-                result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
-            else:
-                aList = dirDict.get(theDir,[])
-                if aList:
-                    result.append('\n')
-                    result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                    result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-                for fn in aList:
-                    result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                        dir2,fn))
+    if 0:
+        wildcard_delete = True
+        if wildcard_delete:
+            result.append('\n')
+        # Use the \r option to recursively delete everything in the leo directory.
+
+        for theDir in dirs:
+            if theDir:
+                dir2 = theDir.replace('/','\\')
+                if wildcard_delete:
+                    result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
+                else:
+                    aList = dirDict.get(theDir,[])
+                    if aList:
+                        result.append('\n')
+                        result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                        result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                    for fn in aList:
+                        result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
+                            dir2,fn))
 
     result = [self.indent(z) for z in result]
     return ''.join(result)
@@ -1269,7 +1333,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.8-d1'</t>
+app_version = version = '4.8-a1'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
@@ -1384,7 +1448,9 @@ import time</t>
     print ('removing: %s' % fileName)
     os.remove(fileName)
 </t>
-<t tx="ekr.20100202061222.1494">Testing:
+<t tx="ekr.20100202061222.1494">@nocolor-node
+
+Testing:
     - Run all unit tests.
     - Run pylint-leo.bat.
 LeoDocs.leo:
@@ -1400,6 +1466,8 @@ LeoDist.leo:
         (trunk/license.txt **and** leo/doc/license.txt.)
     - Update version numbers.
     - Update readme.txt
+    - Check 'INSTALL.TXT'
+    - Check 'PKG-INFO.TXT'
 Create the manifest:
     - Delete old distribution (.exe,.zip) files.
     - Create the manifest: bzr ls -R &gt;bzr-manifest.txt
@@ -1455,33 +1523,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <t tx="ekr.20101025095431.1517">@nocolor-node
 
 To do:
-- Use new interface.
-- Distribute leoPy.leo, ignore ekrLeoPy.leo.
+    There is a problem with the desktop shortcut.
+    There is a problem with finding spellpyx.
+    Make the License look better.  It can be an .rtf file.
+    Add description sections.
 
-- Create reasonable list of installations places:
-    pythonXY/Lib/site-packages/leo for all found XY
-    "Program Files/Leo"
-    (Replaces "Found Python" message box.)
-
-
-Done
+Done:
+** Switched to new interface: it is *much* better.
+- Test desktop shortcut.  It opens Python 2.6 as expected.
 - Make sure the uninstaller gets deleted.
 - Test that uninstall from control panel removes top-level folder.
-- Eliminate duplicate prompt
+- Eliminate duplicate prompt.
 
 </t>
-<t tx="ekr.20101025095431.1518">On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
-&lt;514656@bugs.launchpad.net&gt; wrote:
-&gt; Perhaps changing the current working directory away from the
-&gt; installation directory before applying the NSIS RMDir command to the
-&gt; installation directory would work. If not, use the /REBOOTOK option of
-&gt; the RmDir command to force deletion of the installation folder on the
-&gt; next reboot.
-&gt;
-&gt; Both these techniques are described at &lt;
-&gt; http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8 &gt;.
+<t tx="ekr.20101025095431.1518">@nocolor-node
 
-Thanks for these tips.
+On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
+&lt;514656@bugs.launchpad.net&gt; wrote:
+
+Perhaps changing the current working directory away from the installation
+directory before applying the NSIS RMDir command to the installation directory
+would work.
+
+If not, use the /REBOOTOK option of the RmDir command to force
+deletion of the installation folder on the next reboot.
+
+Both these techniques are described at
+http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8
 </t>
 <t tx="ekr.20101025095431.1519">@nocolor-node
 
@@ -1505,112 +1573,755 @@ installed alongside the package - so you have
 leo.pth:
 ...\Program Files\Leo\package 
 </t>
-<t tx="ekr.20101025095431.1520">@nocolor-node
+<t tx="ekr.20101026142031.1516">@nocolor-node
 
-I installed leo 4.7.1, python31, qt4 pyqtgpl 4.7.4 for py31.
-I figured out on my own to make a shortcut to launchLeo.py at this
-location:
+HKEY_CURRENT_USER\Software\Classes\Applications\python.exe
+HKEY_CURRENT_USER\Software\Classes\Applications\python.exe\shell\open\command
+    val = c:\Python26\python.exe %1
+HKCU
+HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe
+HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe\shell\open\command
+    val = c:\Python26\pythonw.exe %1
 
-C:\Python31\Lib\site-packages\Leo-4.7.1-final\launchLeo.py
-
-which works. (whooppee)
-
-However the shortcuts that the "leo install" created don't work they
-abort.
-</t>
-<t tx="ekr.20101025095431.1522">@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
-Status of 'make-leo-zip' in Outline 'leoDist' ?
-
-On Sep 6, 2:39 pm, VR &lt;viktor.ransm...@gmail.com&gt; wrote:
-
-&gt; * The file 'INSTALL.TXT' contains the outline text with sentinels from
-&gt; 'Chapter 1: Installing Leo'
-
-That can't be good.  I'll make sure sentinels don't appear in the distro.
-
-&gt; * The file 'PKG-INFO.TXT' is OK. - However it uses an old version,
-&gt; i.e. '4.7.1-final'
-
-&gt; * The file 'README' is OK. - However it also uses this old version.
-
-The script isn't meant to update these automatically.  I use a checklist to remind me to do such things.
-
-&gt; * However neither of these files are not added to the archive ...
-
-I'll check this.  I'm not sure this is a problem, but it could be.
-
-Thanks for your careful checking.  Such checking is essential when preparing for releases.
-
-I've added this discussion to my internal distribution checklist.
-
-Edward
-</t>
-<t tx="ekr.20101026094728.1521">@nocolor-node
-
-Installation "problems" - First time install following current slideshow: (WinXP)
-
-I wanted to try and find how to change the *very* light pink/light blue colors
-referenced in Slide2+3 of "Leo Basics Step By Step Note: per ColorMania they are
-#F2FDFF and #FDF5F5 
-
-Summary Install problems::
-
-** (Known bug) Installer doesn't honor actual Python version installed.
-    (Thinks its Python26 not Python27)
+HKEY_CURRENT_USER\Software\Classes\Applications\py_auto_file\shell\open\command
+    val = c:\Python26\python.exe %1
     
-** After best attempts  can't get Leo to recognize PyQt
-- Is it significant that PyQt installer wants to install at::
-D:\Lang\Python27\Lib\site-packages\PyQt4
-- but (per a registry search) tk appears to have been installed by the Python installer
-  one level up at: D:\Lang\Python27\Lib\lib-tk\
+HKEY_CURRENT_USER\Software\Classes\Installer\Products\nnnnnn
 
-*** remainder are notes made while installing *** probably not relevant
-Python page suggests either Python27 or Python31 (I already had Python25 and Python26 - though essentially unused)
-I first installed Python31 - setting as default per installer, then installed Python27 - also setting it as default (ie. to override Python31 choice)
+HKLM
+HKEY_LOCAL_MACHINE\SOFTWARE\Python
+HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore
+HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
+    val = c:\python27\
+HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
+    val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
+</t>
+<t tx="ekr.20101026142031.1555"># **Important**
+#   Before running this script you must create bzr-manifest as follows::
+#       cd to trunk
+#       bzr ls -R &gt;bzr-manifest.txt
 
-Now installed Leo: LeoSetup-4.7.1-final.exe
-Installer said "Found Python at D:\Lang\Python26\" (s/b Python27 ?) and suggested location:
-D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
+'''Create the installer script using bzr-manifest.txt.'''
 
-Instead I put it at D:\Lang\Leo\Leo-4.7.1-final
+import os,string,sys
+&lt;&lt; define version &gt;&gt;
+&lt;&lt; define inLeo &gt;&gt;
 
-No mention of PyQt in the installer slides for Windows?
-per Matt and his description of "site package" in
-http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&amp;q=install+qt#d5e62fa67bcdaaeb &lt;http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&amp;q=install+qt#d5e62fa67bcdaaeb&gt;
+if inLeo:
+    # The root directory contains the leo directory.
+    rootDir  = g.os_path_finalize_join(g.app.loadDir,'..','..')
+    manifest = g.os_path_finalize_join(rootDir,'bzr-manifest.txt')
+else:
+    rootDir = os.path.abspath(os.curdir)
+    manifest = os.path.normpath(os.path.join(rootDir,'bzr-manifest.txt'))
 
- - I put a junction from D:\Lang\Leo\Leo-4.7.1-final to
-   D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
+&lt;&lt; define application constants &gt;&gt;
+@others
 
- - installed PyQt first to D:\Lang\PyQt\PyQt27
- but running "launchLeo.py" runs the Python27 (GOOD)
- but still doesn't find PyQt and says PyQt not installed -
- reverting to Tk UI so I reinstalled PyQt to the "default"  location:
- D:\Lang\Python27\Lib\site-packages\PyQt4
+nsi = nsiWriter()
+nsi.run(manifest)
+</t>
+<t tx="ekr.20101026142031.1556"># Used by both @button make leo.nsi and @button make leo.zip.
+app_version = version = '4.8-a1'</t>
+<t tx="ekr.20101026142031.1557">try:
+    inLeo = g is not None
+except AttributeError:
+    inLeo = False
 
-Now that I've created the junction for Leo-4.7.1-final trying to execute
-"launchLeo.py" now stalls
-Instead run it from the junction link in ...\site packages\...
-I still does not recognize PyQt
+# print('inLeo',inLeo)
+</t>
+<t tx="ekr.20101026142031.1558">app_doc_icon = r'Icons\LeoDoc.ico'
+app_extension = '.leo'
+app_hkey_local_machine = r'SOFTWARE\EKR\leo'
+app_icon = r"%s\leo\Icons\leo_inst.ico" % rootDir
+app_icon2 = r'leo\Icons\LeoApp.ico' # Relative to install dir.
+app_license = r'%s\License.txt' % rootDir
+app_lower_case_name = 'leo'
+app_name = 'Leo'
+app_publisher = 'Edward K. Ream'
+app_python_executable = 'launchLeo.py'
+app_uninst_key = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+app_uninst_root_key = 'HKLM'
+app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
 
-    *** isPython3: False
-    PyQt not installed - reverting to Tk UI
-    Leo 4.7.1 final, build 3005, February 26, 2010
-    Python 2.7.0, Tk 8.5, Pmw 1.3
-    Windows 5, 1, 2600, 2, Service Pack 3
-    reading settings in D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final\leo\confi
-    g\leoSettings.leo
-    using menus from: leoSettings.leo
-    reading C:\Documents and Settings\Alec\.leo\.leoRecentFiles.txt
-    Ui type not compatible for plugin (quicksearch)
-    Can not import quicksearch from plugin quicksearch
-    Ui type not compatible for plugin (contextmenu)
-    Can not import contextmenu from plugin contextmenu
-    Ui type not compatible for plugin (nav_qt)
-    Can not import nav_qt from plugin nav_qt
-    Can not load c:\aspell\bin\aspell-15.dll
-    file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
+nsi_name = 'leo-%s.nsi' % app_version
+target_file = 'LeoSetup-%s.exe' % app_version
+
+substitutionDict = {
+    'doc_icon': app_doc_icon,
+    'ext': app_extension,
+    'exe': app_python_executable,
+    'hkey_local_machine': app_hkey_local_machine,
+    'icon': app_icon,
+    'icon2': app_icon2,
+    'license': app_license,
+    'lower_name': app_lower_case_name,
+    'name': app_name,
+    'nsi_name': nsi_name,
+    'publisher': app_publisher,
+
+    'site': app_web_site,
+    'target_file': target_file,
+    'uninst_key': app_uninst_key,
+    'uninst_root_key': app_uninst_root_key,
+    'version': app_version,
+    # Leave these unchanged.
+    'DESKTOP': '$DESKTOP',
+    'INSTDIR': '$INSTDIR',
+    'NSISDIR': '${NSISDIR}',
+    'PROGRAMFILES': '$PROGRAMFILES',
+    'PythonExecutable': '$PythonExecutable',
+    'SMPROGRAMS': '$SMPROGRAMS'
+}
+</t>
+<t tx="ekr.20101026142031.1559">class nsiWriter:
+
+    '''A class to write .nsi scripts.'''
+
+    @others
+</t>
+<t tx="ekr.20101026142031.1560">def genScript (self,dirs,dirDict,filesDict):
+
+    '''Generate the .nsi installer script.'''
+
+    self.f = f = self.openNsi()
+    if not f: return
+
+    try:
+        self.genHead()
+        self.genInstallData(dirs,dirDict,filesDict)
+        self.genMiddle()
+        self.genUninstallData(dirs,dirDict,filesDict)
+    finally:
+        f.close()
+
+    g.es_print('make-leo-nsi done. no errors')
+</t>
+<t tx="ekr.20101026142031.1561">def genHead (self):
+
+    '''Generate the boilerplate appearing before
+    the manifest-specific install data.'''
+
+    self.put('!include MUI2.nsh\n')
+    self.putSettings()
+    self.putOnInit() # Sets PythonExecutable.
+</t>
+<t tx="ekr.20101026142031.1562">def putSettings (self):
+
+    s = r'''
+; Location of Pythonw.exe. Set by .onInit.
+var PythonExecutable
+
+; ========== Boilerplate
+SetCompressor bzip2
+Caption "${name} Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on
+SetCompress auto
+SetDatablockOptimize on
+WindowIcon on
+ShowInstDetails show
+ShowUnInstDetails show
+
+; ========== Locations
+Name "Leo"
+OutFile "${target_file}"
+InstallDir "${PROGRAMFILES}\${name}-${version}"
+Icon "${icon}"
+
+; =========== Pages
+
+var StartMenuFolder
+
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE $license
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_STARTMENU "Application" $$StartMenuFolder
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+!insertmacro MUI_UNPAGE_WELCOME
+; !insertmacro MUI_UNPAGE_LICENSE $license
+; !insertmacro MUI_UNPAGE_CONFIRM
+;!insertmacro MUI_UNPAGE_COMPONENTS ; doesn't actually list components.
+!insertmacro MUI_UNPAGE_DIRECTORY
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+
+; =========== Language (should be last)
+
+!insertmacro MUI_LANGUAGE "English"
+
+'''
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101026142031.1564">def genInstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific install data.'''
+
+    self.put('\nSection "%s" SEC01\n\n' % (app_name))
+
+    if 1:
+        self.put(self.getInstallVariableData(
+            dirs,dirDict,filesDict),adjust=False)
+
+    self.put('\n; end %s section\n' % (app_name))
+    self.put('SectionEnd\n')
+</t>
+<t tx="ekr.20101026142031.1565">def getInstallVariableData (self,dirs,dirDict,filesDict):
+
+    global rootDir
+    result = []
+
+    # Top level
+    theDir = '**top'
+    result.append('; top-level\n')
+    result.append('SetOutPath "$INSTDIR"\n')
+    result.append('SetOverwrite ifnewer\n')
+    aList = dirDict.get(theDir,[])
+    for fn in aList:
+        result.append('File "%s"\n' % fn)
+
+    for theDir in dirs:
+        if theDir != '**top':
+            aList = dirDict.get(theDir,[])
+            if aList:
+                theDir2 = theDir.replace('/','\\').rstrip('\\')
+                result.append('\n')
+                result.append('SetOutPath $INSTDIR\\%s\n' % theDir2)
+                for fn in aList:
+                    # Fix bug 425369: quote file names.
+                    result.append('File "%s\\%s\\%s"\n' % (
+                        rootDir,theDir2,fn))
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+</t>
+<t tx="ekr.20101026142031.1566">def genMiddle (self):
+
+    '''Generate the boilerplate appearing between
+    the manifest-specific install data and
+    the manifest-specific uninstall data.'''
+
+    self.genDesktopShortcuts()
+    self.genFileAssociation()
+    self.genAdditionalIcons()
+    self.genPost()
+</t>
+<t tx="ekr.20101026142031.1567">def genAdditionalIcons(self):
+
+    s = r'''
+Section -AdditionalIcons
+  SetOutPath $INSTDIR
+  CreateDirectory "${SMPROGRAMS}\${name}"
+  CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+SectionEnd
+'''
+
+    self.put(s,substitute=True)</t>
+<t tx="ekr.20101026142031.1568">def genDesktopShortcuts(self):
+
+    s = r'''
+Section "Desktop Shortcut" SEC03
+  ; Apparently important.
+  ; Without this, the start directory is set to the directory of the last installed file (www).
+  SetOutPath $INSTDIR
+  CreateShortCut "${DESKTOP}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\${exe}"' "$INSTDIR\${icon2}" 0
+SectionEnd
+'''
+
+    self.put(s,substitute=True)</t>
+<t tx="ekr.20101026142031.1569">def genFileAssociation(self):
+
+    s = r'''
+Section "${ext} File Association"
+  SectionIn 1
+  SectionIn 2
+  SectionIn 3
+
+  # back up old value of extension in case some other program was using it
+  ReadRegStr $$1 HKCR "${ext}" ""
+  StrCmp $$1 "" Label1
+  StrCmp $$1 "${name}File" Label1
+  WriteRegStr HKCR "${ext}" "backup_val" $$1
+
+Label1:
+  WriteRegStr HKCR "${ext}" "" "${name}File"
+  WriteRegStr HKCR "${name}File" "" "${name} File"
+  WriteRegStr HKCR "${name}File\shell" "" "open"
+  WriteRegStr HKCR "${name}File\DefaultIcon" "" '"${INSTDIR}\${doc_icon}"'
+  WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "${INSTDIR}\${exe}" "%*"'
+
+SectionEnd
+'''
+    # Second to last line had no double quotes around ${INSTDIR}\${doc_icon}
+    # Last line was ... "${INSTDIR}\${exe}" "%1"
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101026142031.1572">def genPost (self):
+
+    s = r'''
+Section -Post
+  WriteRegStr HKEY_LOCAL_MACHINE "${hkey_local_machine}" "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "UninstallString" "${INSTDIR}\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayVersion" "${version}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "URLInfoAbout" "${site}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "Publisher" "${publisher}"
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101026142031.1574">def genUninstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific uninstall data.'''
+
+    trace = False
+
+    s = r'''
+Section Uninstall
+
+    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
+
+    ; Delete files &amp; directories only if we own them!
+    ReadRegStr $$1 HKCR "${ext}" ""
+    StrCmp $$1 "${name}File" 0 FinishUninstall
+
+    ; Delete files &amp; directories only if there is no backup_val key.
+    ReadRegStr $$1 HKCR "${ext}" "backup_val"
+    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
+      DeleteRegKey HKCR "${ext}"
+    Goto FinishUninstall
+
+DeleteLeoKeysAndFiles:
+    WriteRegStr HKCR "${ext}" "" $$1
+    DeleteRegValue HKCR "${ext}" "backup_val"
+
+    ; ---- Start of manifest-related data...
+'''
+
+    self.put(s,substitute=True)
+
+    # Does all the hard work.
+    s = self.getUninstallVariableData(dirs,dirDict,filesDict)
+    if trace: g.trace('\n',s)
+    self.put(s,adjust = False)
+
+    s = r'''
+    ; ---- End of manifest related data.
+
+FinishUninstall:
+
+  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
+  RMDir "${SMPROGRAMS}\${name}-${version}"
+  Delete "${DESKTOP}\${name}.lnk"
+
+  DeleteRegKey ${uninst_root_key} "${uninst_key}"
+  SetAutoClose false
+
+; end Uninstall section
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101026142031.1575">def getDeleteDirectories (self,dirs,dirDict):
+
+    reverseDirs = dirs[:]
+    reverseDirs.reverse()
+
+    result = []
+
+    if 1:
+        result.append('; Recursively delete the leo directory and everything in it.\n')
+        result.append('RMDir /r "$INSTDIR\\leo"\n\n')
+    else:
+        result.append('; Uninstall directories in reverse order\n')
+        for theDir in reverseDirs:
+            # Delete the directory even if it has files.
+            if theDir and theDir != '**top':
+                if not theDir.startswith('.bzr'):
+                    result.append('RMDir "$INSTDIR\\%s"\n' % (
+                        theDir.replace('/','\\')))
+
+    # top-level folder.
+    result.append('; Delete the top-level directory.\n')
+    result.append('RMDir "$INSTDIR"\n')
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+</t>
+<t tx="ekr.20101026142031.1576">def getDeleteFiles (self,dirs,dirDict,filesDict):
+
+    result = []
+    result.append('\n')
+    result.append('; Uninstall files...\n\n')
+
+    # top-level files.
+    result.append('; Delete top-level files...\n')
+    aList = dirDict.get('**top',[])
+    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
+    if 0: # This seems way too drastic, and not needed.
+        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
+            aList.append(fn)
+    # special case.
+    aList.append('uninst.exe')
+    # Warning: **never** delete all files in the top-level directory.
+    for fn in aList:
+        result.append('Delete "$INSTDIR\\%s"\n' % fn)
+
+    if 0:
+        wildcard_delete = True
+        if wildcard_delete:
+            result.append('\n')
+        # Use the \r option to recursively delete everything in the leo directory.
+
+        for theDir in dirs:
+            if theDir:
+                dir2 = theDir.replace('/','\\')
+                if wildcard_delete:
+                    result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
+                else:
+                    aList = dirDict.get(theDir,[])
+                    if aList:
+                        result.append('\n')
+                        result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                        result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                    for fn in aList:
+                        result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
+                            dir2,fn))
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+</t>
+<t tx="ekr.20101026142031.1577">def getUninstallVariableData(self,dirs,dirDict,filesDict):
+
+    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
+    s2 = self.getDeleteDirectories(dirs,dirDict)
+    return '%s\n%s' % (s1,s2)
+</t>
+<t tx="ekr.20101026142031.1578">def indent(self,s):
+
+    if s.strip():
+        return '    ' + s
+    else:
+        return s
+</t>
+<t tx="ekr.20101026142031.1579">def openNsi (self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','..',nsi_name)
+
+    try:
+        f = open(path,'w')
+    except IOError:
+        f = None
+        g.es_print('Can not open',path,color='red')
+
+    return f
+</t>
+<t tx="ekr.20101026142031.1580">def put (self,s,adjust=True,substitute=False,dump=False):
+
+    '''Output s to the nsi file, optionally making
+    the substitutions given in substitutionDict.'''
+
+    trace = False
+    if adjust:
+        s = self.adjustTripleString(s)
+
+    if substitute:
+        if 0:
+            n = 1
+            for z in g.splitLines(s):
+                print('%3s %s' % (n,z.rstrip()))
+                n += 1
+        s = string.Template(s)
+        s = s.substitute(substitutionDict)
+        if dump:
+            g.trace(g.callers(1),'\n')
+            for z in g.splitLines(s):
+                print(z.rstrip())
+
+    if trace: g.trace(s,g.callers(4))
+    self.f.write(s)
+</t>
+<t tx="ekr.20101026142031.1581">def run (self,fn):
+
+    '''The top-level logic.'''
+
+    # Create and filter the list of files from the manifest.
+    s = open(fn).read()
+    lines = g.splitLines(s)
+    files = self.filterLines(lines)
+
+    # Compute the list of all the directories.
+    dirs = self.directoryList(rootDir)
+
+    # Compute dictionaries of directories and files.
+    dirDict,filesDict = self.makeDicts(dirs,files)
+
+    # Print manifest lines not in either dict.
+    # This is a crucial check.
+    errors = self.printMissing(files,dirDict,filesDict)
+    if errors: return
+
+    # Generate the script!
+    self.genScript(dirs,dirDict,filesDict)
+</t>
+<t tx="ekr.20101026142031.1582">def directoryList (self,rootDir):
+
+    '''Compute a top-down list of all directories.
+       These directories start at the top-level directory.'''
+
+    trace = False
+    ignoreDirs = ('.bzr',)
+    # Important: this adds all directories on EKR's machine,
+    # regardless of whether they appear in the manifest!
+    result = [] ; n = len(rootDir)
+    for z in os.walk(rootDir): # top-down traversal.
+        dirpath, dirnames, filenames = z
+        assert dirpath.startswith(rootDir),z
+        if len(dirpath) &gt; n:
+            path = dirpath[n+1:].replace('\\','/')
+            result.append(path)
+    for z2 in ignoreDirs:
+        result = [ z for z in result if not z.startswith(z2)]
+    if trace:
+        g.trace('-' * 40)
+        g.trace(g.listToString(result))
+    return result
+</t>
+<t tx="ekr.20101026142031.1583">def filterLines (self,lines):
+
+    '''Filter lines from the input manifest file.'''
+
+    trace = False
+
+    # Remove blank lines, comments, and .pyc and .pyo files.
+    lines = self.deleteBlankLines(lines)
+    lines = self.deleteComments(lines)
+    lines = self.deleteExt(lines,'.pyc')
+    lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
+    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
+
+    # Remove specific files.
+    deleteList = (
+        '.bzrignore',
+        'bzr-manifest.txt',
+        'bzr-small-manifest.txt',
+        'setup.py',
+        'leo/test/unittest/.leo_shadow/',
+        'nsi.log.txt', # Can't write log while we are creating it.
+        'leo/core/leoPy.leo',
+        'leo/core/ekrLeoPy.leo',
+    )
+    lines = self.deleteFiles(lines,deleteList)
+    if lines and lines[0].endswith('bzr ls -R'):
+        lines = lines[1:]
+
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(lines))
+
+    return lines
+</t>
+<t tx="ekr.20101026142031.1584">def deleteBlankLines (self,lines):
+
+    return [z.strip() for z in lines if z.strip()]
+
+def deleteComments (self,lines):
+
+    return [z for z in lines if not z.startswith('#')]
+
+def deleteExt (self,lines,ext):
+
+    return [z for z in lines if not z.endswith(ext)]
+
+def deleteFiles (self,lines,deleteList):
+
+    return [z for z in lines if not z in deleteList]
+</t>
+<t tx="ekr.20101026142031.1585">def makeDicts (self,dirs,lines):
+
+    trace = False ; verbose = False
+
+    # Create the dirDict.
+    # Keys are directories.
+    # Values are files contained in each directory.
+    dirDict = {}
+    dirDict['**top'] = [] # Create an entry for the root directory.
+    for z in dirs:
+        dirDict[z] = []
+
+    # Assign files to dirDict.
+    for line in lines:
+        line = line.strip().replace('\\','/')
+        if line in dirDict.keys():
+            path,fn = None,None
+        elif line.startswith('leo/'):
+            path,fn = g.os_path_split(line)
+        else:
+            path,fn = '**top',line.strip()
+
+        # Don't include top-level leo directory,
+        # Do include leo/scripts/leo file.
+        if fn and (path != '**top**' or fn != 'leo'):
+            aList = dirDict.get(path,[])
+            assert line not in aList,repr(line)
+            aList.append(fn)
+            dirDict[path]=aList
+
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        if aList and trace:
+            if verbose:
+                print() ; print(theDir)
+                print(g.listToString(aList))
+            else:
+                print(theDir)
+
+    # Create the inverse dict.
+    filesDict = {}
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        for fn in aList:
+            path = g.choose(theDir=='**top',
+                fn,'%s/%s' % (theDir,fn))
+            filesDict[path] = theDir
+
+    return dirDict,filesDict
+</t>
+<t tx="ekr.20101026142031.1586">def printMissing (self,files,dirDict,filesDict):
+
+    errors = 0
+
+    for fn in files:
+        fn = fn.rstrip('/')
+        if fn and fn not in dirDict and fn not in filesDict:
+            g.es_print('missing',fn,color='red')
+            errors += 1
+
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+
+    return errors
+</t>
+<t tx="ekr.20101026142031.1587"># These are adapted from the corresponding functions in leoPy.leo
+# They are defined here to make this script independent of Leo</t>
+<t tx="ekr.20101026142031.1588">def adjustTripleString (self,s):
+
+    '''Remove leading indentation from a triple-quoted string.'''
+
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = self.splitLines(s)
+    w = 0 ; val = -1
+    for line in lines:
+        if line.strip():
+            lws = self.get_leading_ws(line)
+            w2 = self.computeWidth(lws)
+            # The sign of w does not matter.
+            if w == 0 or abs(w2) &lt; w:
+                w = abs(w2)
+
+    if w == 0: return s
+
+    # Remove the leading whitespace.
+    result = [self.removeLeadingWhitespace(line,w) for line in lines]
+    result = ''.join(result)
+    return result
+</t>
+<t tx="ekr.20101026142031.1589">def get_leading_ws(self,s):
+
+    """Returns the leading whitespace of 's'."""
+
+    i = 0 ; n = len(s)
+    while i &lt; n and s[i] in (' ','\t'):
+        i += 1
+    return s[0:i]
+</t>
+<t tx="ekr.20101026142031.1590">def computeWidth (self,s):
+
+    '''Return the width of s, assuming s starts a line.'''
+
+    tabwidth = 4
+    w = 0
+    for ch in s:
+        if ch == '\t':
+            w += tab_width - (w % tab_width)
+        else:
+            w += 1
+    return w
+</t>
+<t tx="ekr.20101026142031.1591">def removeLeadingWhitespace (self,s,first_ws):
+
+    '''Remove whitespace up to first_ws wide in s.'''
+
+    j = 0 ; ws = 0
+    tabwidth = 4
+    first_ws = abs(first_ws)
+    for ch in s:
+        if ws &gt;= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += tab_width - (ws % tab_width)
+        else: break
+    if j &gt; 0:
+        s = s[j:]
+    return s
+</t>
+<t tx="ekr.20101026142031.1592">def splitLines (self,s):
+
+    '''Split s into lines, preserving the number of lines and the ending of the last line.'''
+
+    return s and s.splitlines(True) or []
+</t>
+<t tx="ekr.20101026142031.1593"></t>
+<t tx="ekr.20101026142031.1597">def putOnInit (self):
+
+    s = r'''
+
+; Set PythonExecutable to full path to Pythonw.exe.
+Function .onInit
+
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.1\InstallPath" ""
+    StrCmp $9 "" tryPython30 ok
+
+tryPython30:
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.0\InstallPath" ""
+    StrCmp $9 "" tryPython27 ok
+
+tryPython27:
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+    StrCmp $9 "" tryPython26 ok
+
+tryPython26:
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
+    StrCmp $9 "" oops ok
+
+oops:
+    MessageBox MB_OK "Python not found"
+    ; Abort "Python not found"
+    StrCpy $PythonExecutable ""
+    Goto done
+ok:
+    ; MessageBox MB_OK "Found Python at $9"
+    ; LogText "Found Python at $9"
+    StrCpy $PythonExecutable "$9\pythonw.exe"
+done:
+
+; End .onInit
+FunctionEnd
+'''
+    s = s.replace('${name}',app_name).replace('${version}',app_version)
+    self.put(s,substitute=False)
 </t>
 </tnodes>
 </leo_file>
