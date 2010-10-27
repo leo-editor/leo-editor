@@ -33,7 +33,7 @@ keywordsDictDict = {
 
 def nsi_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="", exclude_match=False)
         
 def nsi_rule1(colorer, s, i):

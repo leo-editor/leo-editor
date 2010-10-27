@@ -1,0 +1,23 @@
+;@+leo-ver=5-thin
+;@+node:ekr.20101027070126.1603: * @thin ../../nsi-uninstall-files.txt
+;@@language nsi
+
+; Uninstall files...
+
+; Delete top-level files...
+Delete "$INSTDIR\LICENSE.txt"
+Delete "$INSTDIR\Makefile"
+Delete "$INSTDIR\launchLeo.py"
+Delete "$INSTDIR\leo-4.8-a1.nsi"
+Delete "$INSTDIR\leo_to_html.xsl"
+Delete "$INSTDIR\profileLeo.py"
+Delete "$INSTDIR\pylint-leo.bat"
+Delete "$INSTDIR\pylint-leo.py"
+Delete "$INSTDIR\uninst.exe"
+
+; Recursively delete the leo directory and everything in it.
+RMDir /r "$INSTDIR\leo"
+
+; Delete the top-level directory.
+RMDir "$INSTDIR"
+;@-leo

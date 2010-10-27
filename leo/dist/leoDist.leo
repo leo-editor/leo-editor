@@ -56,7 +56,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
+<v t="ekr.20101025095431.1517" a="E"><vh>Installer/Distribution to do</vh>
 <v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
 <v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
@@ -66,12 +66,12 @@
 </v>
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-<v t="ekr.20090826220933.1565"><vh>@@button OLD make leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@@button OLD make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
@@ -110,22 +110,20 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20101026142031.1593"><vh>=======================</vh></v>
-<v t="ekr.20101026142031.1555" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101026142031.1555" a="E"><vh>@@@button make leo.nsi</vh>
 <v t="ekr.20101026142031.1556"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
 <v t="ekr.20101026142031.1557"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20101026142031.1558"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20101026142031.1559" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20101026142031.1559"><vh>class nsiWriter</vh>
 <v t="ekr.20101026142031.1560" a="E"><vh>genScript &amp; helpers</vh>
-<v t="ekr.20101026142031.1561" a="E"><vh>genHead</vh>
+<v t="ekr.20101026142031.1561"><vh>genHead</vh>
 <v t="ekr.20101026142031.1562"><vh>putSettings</vh></v>
 <v t="ekr.20101026142031.1597"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20101026142031.1564"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20101026142031.1564" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20101026142031.1565"><vh>getInstallVariableData</vh></v>
 </v>
-<v t="ekr.20101026142031.1566"><vh>genMiddle</vh>
+<v t="ekr.20101026142031.1566" a="E"><vh>genMiddle</vh>
 <v t="ekr.20101026142031.1567"><vh>genAdditionalIcons</vh></v>
 <v t="ekr.20101026142031.1568"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20101026142031.1569"><vh>genFileAssociation</vh></v>
@@ -140,7 +138,7 @@
 <v t="ekr.20101026142031.1579"><vh>openNsi</vh></v>
 <v t="ekr.20101026142031.1580"><vh>put</vh></v>
 </v>
-<v t="ekr.20101026142031.1581"><vh>run &amp; helpers</vh>
+<v t="ekr.20101026142031.1581" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20101026142031.1582"><vh>directoryList</vh></v>
 <v t="ekr.20101026142031.1583"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20101026142031.1584"><vh>delete...</vh></v>
@@ -157,7 +155,15 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20101026142031.1593"><vh>=======================</vh></v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo-test.nsi</vh></v>
+<v t="ekr.20101027064141.1595"><vh>@thin ../../nsi-defines.txt</vh></v>
+<v t="ekr.20101027063949.1592"><vh>@thin ../../nsi-preamble.txt</vh></v>
+<v t="ekr.20101027070126.1599"><vh>@thin ../../nsi-leo-section.txt</vh></v>
+<v t="ekr.20101027070126.1601"><vh>@thin ../../nsi-postamble.txt</vh></v>
+<v t="ekr.20101027070126.1602"><vh>@thin ../../nsi-uninstall.txt</vh></v>
+<v t="ekr.20101027070126.1603"><vh>@thin ../../nsi-uninstall-files.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
