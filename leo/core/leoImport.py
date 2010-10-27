@@ -1609,6 +1609,29 @@ class leoImportCommands (scanUtility):
         scanner = javaScriptScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
+    #@+node:ekr.20101027055033.5967: *4* scanNSIText
+    def scanNSIText (self,s,p,ext,atAuto=False):
+
+        c = self.c
+        changed = c.isChanged()
+        # body = g.choose(atAuto,'','@ignore\n')
+        # if ext in ('.html','.htm'):   body += '@language html\n'
+        # elif ext in ('.txt','.text'): body += '@nocolor\n'
+        # else:
+            # language = self.languageForExtension(ext)
+            # if language: body += '@language %s\n' % language
+
+        assert self.rootLine == ''
+
+        body = '@language ini\n\n'
+
+        self.setBodyString(p,body + self.escapeFalseSectionReferences(s))
+        if atAuto:
+            p.clearDirty()
+            if not changed:
+                c.setChanged(False)
+
+        g.app.unitTestDict = {'result':True}
     #@+node:ekr.20070711104241.2: *4* scanPascalText
     def scanPascalText (self,s,parent,atAuto=False):
 
@@ -1663,7 +1686,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20080811174246.1: *5* languageForExtension
     def languageForExtension (self,ext):
 
-        '''Return the language corresponding to the extensiion ext.'''
+        '''Return the language corresponding to the extension ext.'''
 
         unknown = 'unknown_language'
 
