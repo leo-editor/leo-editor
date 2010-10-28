@@ -283,7 +283,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack = []
             # The stack of module names.
             # The top is the module being loaded.
-        self.signonModule = [] # A hack for plugin_signon.
+        self.signonModule = None # A hack for plugin_signon.
 
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
@@ -505,7 +505,9 @@ class LeoPluginsController:
 
         if moduleOrFileName.startswith('@'):
             if trace: g.trace('ignoring Leo directive')
-            return False # Allow Leo directives in @enabled-plugins nodes.
+            return None
+                # Return None, not False, to keep pylint happy.
+                # Allow Leo directives in @enabled-plugins nodes.
 
         moduleName = self.regularizeName(moduleOrFileName)
 
@@ -611,7 +613,7 @@ class LeoPluginsController:
 
         moduleName = self.regularizeName(moduleOrFileName)
 
-        if self.isloaded(moduleName):
+        if self.isLoaded(moduleName):
             if verbose:
                 g.pr('unloading',moduleName)
             del self.loadedModules[moduleName]

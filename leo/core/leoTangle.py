@@ -7,7 +7,6 @@
 # Tangle and Untangle.
 import leo.core.leoGlobals as g
 import os
-import string
 
 #@+<< about Tangle and Untangle >>
 #@+node:ekr.20031218072017.2411: ** << About Tangle and Untangle >>
@@ -460,12 +459,12 @@ class baseTangleCommands:
         if c.target_language: c.target_language = c.target_language.lower()
         self.language = c.target_language
         if 0: # debug
-          import sys
-          g.es("tangleCommands.languague: %s at header %s"%(self.language,repr(self.p)))
-          f = sys._getframe(1)
-          g.es("caller: "+f.f_code.co_name)
-          f = sys._getframe(2)
-          g.es("caller's caller: "+f.f_code.co_name)
+            import sys
+            g.es("tangleCommands.languague: %s at header %s"%(self.language,repr(self.p)))
+            f = sys._getframe(1)
+            g.es("caller: "+f.f_code.co_name)
+            f = sys._getframe(2)
+            g.es("caller's caller: "+f.f_code.co_name)
 
         # Abbreviations for self.language.
         # Warning: these must also be initialized in tangle.scanAllDirectives.
@@ -785,7 +784,10 @@ class baseTangleCommands:
         #@+<< return if @silent >>
         #@+node:ekr.20031218072017.3482: *5* << return if @silent >>
         if self.print_mode in ("quiet","silent"):
-            g.es('','@%s' % (self.print_mode),"inhibits untangle for",path, color="blue")
+            g.es(
+                '','@%s' % (self.print_mode),
+                "inhibits untangle for",root.h,
+                color="blue")
             return
         #@-<< return if @silent >>
         s = root.b
@@ -892,7 +894,7 @@ class baseTangleCommands:
                 # Expand the context to the @unit directive.
                 unitNode = p   # 9/27/99
                 afterUnit = p.nodeAfterTree()
-                self.scanAllDirectives() # sets self.init_delims
+                self.scanAllDirectives(p) # sets self.init_delims
                 p.moveToThreadNext()
                 while p and p != afterUnit and self.errors + g.app.scanErrors== 0:
                     self.setRootFromHeadline(p)
@@ -1432,7 +1434,7 @@ class baseTangleCommands:
                     relative_path = file_name_path[len(c.openDirectory):]
                     # don't confuse /u and /usr as having common prefixes
                     if (relative_path[:len(os.sep)] == os.sep):
-                         file_name_path = relative_path[len(os.sep):]
+                        file_name_path = relative_path[len(os.sep):]
                 self.tangle_output[file_name_path] = self.output_file.get()
             #@-<< unit testing fake files>>
             self.output_file.close()
@@ -2799,7 +2801,6 @@ class baseTangleCommands:
                 section = self.st_lookup(self.root_name)
                 delims = section.delims
 
-
         if delims[0]:
             self.line_comment = delims[0]
             self.sentinel = delims[0]
@@ -2813,9 +2814,10 @@ class baseTangleCommands:
         # don't change multiline comment until after a comment convention transition is finished
         if len(self.refpart_stack)<2 or (
             self.refpart_stack[-2].delims[1] == self.refpart_stack[-1].delims[1] and
-            self.refpart_stack[-2].delims[1] == self.refpart_stack[-1].delims[2]):
-                self.comment = delims[1]
-                self.comment_end = delims[2]
+            self.refpart_stack[-2].delims[1] == self.refpart_stack[-1].delims[2]
+        ):
+            self.comment = delims[1]
+            self.comment_end = delims[2]
         # g.trace(self.refpart_stack_dump())
 
         self.tst = restore_tst
@@ -3187,7 +3189,7 @@ class baseTangleCommands:
                 elif not lang_dict['language']:
                     # delims are already set, only set language
                     if m.group('language'):
-                        lang, d1, d2, d3 = g.set_language(m.group('language'))
+                        lang, d1, d2, d3 = g.set_language(m.group('language'),0)
                         lang.dict['language'] = lang
                         break
             if not lang_dict['language']:

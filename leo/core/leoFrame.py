@@ -195,12 +195,14 @@ class baseTextWidget:
     # These are high-level interface methods that do not call low-level methods.
     #@+node:ekr.20081031074455.13: *5*  do-nothings
     def bind (self,kind,*args,**keys):          pass
+    def configure(self,*args,**keys):           pass
     def getWidth (self):                        return 0
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
     def indexIsVisible (self,i):                return False
         # Code will loop if this returns True forever.
     def mark_set(self,markName,i):              pass
+    def pack(self,*args,**keys):                pass
     def setWidth (self,width):                  pass
     def tag_add(self,tagName,i,j=None,*args):   pass
     def tag_configure (self,colorName,**keys):  pass
@@ -2178,7 +2180,7 @@ class leoTree:
     #@+node:ekr.20040803072955.91: *5* onHeadChanged (leoTree)
     # Tricky code: do not change without careful thought and testing.
 
-    def onHeadChanged (self,p,undoType='Typing',s=None):
+    def onHeadChanged (self,p,undoType='Typing',s=None,e=None): # e used in baseNativeTree.
 
         '''Officially change a headline.
         Set the old undo text to the previous revert point.'''
@@ -2443,12 +2445,12 @@ class leoTree:
 
     # These are hints for optimization.
     # The proper default is c.redraw()
-    def redraw_after_clone(self):                   self.c.redraw()
-    def redraw_after_contract(self,p=None):         self.c.redraw()
-    def redraw_after_expand(self,p=None):           self.c.redraw()
-    def redraw_after_head_changed(self):            self.c.redraw()
-    def redraw_after_icons_changed(self,all=False): self.c.redraw()
-    def redraw_after_select(self,p=None):           self.c.redraw()
+    def redraw_after_clone(self):           self.c.redraw()
+    def redraw_after_contract(self,p=None): self.c.redraw()
+    def redraw_after_expand(self,p=None):   self.c.redraw()
+    def redraw_after_head_changed(self):    self.c.redraw()
+    def redraw_after_icons_changed(self):   self.c.redraw()
+    def redraw_after_select(self,p=None):   self.c.redraw()
     #@+node:ekr.20040803072955.128: *3* leoTree.select & helpers
     tree_select_lockout = False
 
@@ -3073,11 +3075,11 @@ class nullTree (leoTree):
     def redraw_now(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
 
-    def redraw_after_contract(self,p=None):         self.redraw()
-    def redraw_after_expand(self,p=None):           self.redraw()
-    def redraw_after_head_changed(self):            self.redraw()
-    def redraw_after_icons_changed(self,all=False): self.redraw()
-    def redraw_after_select(self,p=None):           self.redraw()
+    def redraw_after_contract(self,p=None): self.redraw()
+    def redraw_after_expand(self,p=None):   self.redraw()
+    def redraw_after_head_changed(self):    self.redraw()
+    def redraw_after_icons_changed(self):   self.redraw()
+    def redraw_after_select(self,p=None):   self.redraw()
 
     def scrollTo(self,p):
         pass

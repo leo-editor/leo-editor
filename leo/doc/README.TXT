@@ -1,34 +1,36 @@
-Leo 4.7.1 final                    February 26, 2010
+@nocolor
 
-Leo 4.7.1 final is now available at:
+Leo 4.8 alpha 1                    October 29, 2010
+
+Leo 4.8 alpha 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo 4.7.1 fixes a dangerous bug in Leo 4.7. When converting file-like sentinels
-to thin-like sentinels in an external file, Leo now issues a warning and sets
-the corresponding @file node dirty. This ensures that Leo will write the
-converted external file and .leo file together, making it impossible to lose
-data.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.7:
+The highlights of Leo 4.8:
 --------------------------
 
-- Leo now uses the simplest possible internal data model.
-  This is the so-called "one-node" world.
-- Leo supports Python 3.x.
-- Leo requires Python 2.6 or above.
-- Several important improvements in file handling.
-    - Leo converts @file nodes to @thin nodes automatically.
-    - Leo creates a 'Recovered Nodes' node to hold data that
-      otherwise might be lost due to clone conflicts.
-    - @auto-rst now works much more reliably reliably.
-    - Leo no longer supports @noref trees.  Such trees are not
-      reliable in cooperative environments.
-- A new Windows installer.
-- Many other features, including new command line options and new plugins.
-- Dozens of bug fixes.
+- Leo now uses the simplest possible sentinel lines in external files.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
+- Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
+- Leo now uses PyEnchant to check spelling.
+  Much safer than using aspell.
+- Leo can now open multiple files from the command line.
+- Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- A better installer.
+- The usual round of bug fixes.
 
 Links:
 ------

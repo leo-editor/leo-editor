@@ -445,6 +445,14 @@ class leoGui:
             else:
                 return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                     repr(self.char),repr(self.keysym))
+    #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
+    # These definitions keeps pylint happy.
+
+    def killPopupMenu(self):
+        pass
+
+    def postPopupMenu(self,*args,**keys):
+        pass
     #@-others
 #@+node:ekr.20031218072017.2223: ** class nullGui (leoGui)
 class nullGui(leoGui):

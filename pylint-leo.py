@@ -23,7 +23,8 @@ def getCoreList():
 def getPassList():
 
     return (
-        '__init__','FileActions','UNL',
+        '__init__','FileActions',
+        # 'UNL', # in plugins table.
         'active_path','add_directives','attrib_edit',
         'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
         'codewisecompleter','colorize_headlines','contextmenu',
@@ -32,16 +33,19 @@ def getPassList():
         'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
         'leoOPML','leoremote','lineNumbers',
         'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
-        'mod_scripting','mod_speedups','mod_timestamp',
+        # 'mod_scripting', # in plugins table.
+        'mod_speedups','mod_timestamp',
         'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
-        'open_shell','outline_export','quit_leo',
+        'open_shell','open_with','outline_export','quit_leo',
         'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
         'qt_main','qt_quicksearch','qtframecommands',
         'quickMove','quicksearch','redirect_to_log','rClickBasePluginClasses',
         'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
         'rst3',
         'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
-        'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+        'testRegisterCommand','todo',
+        # 'toolbar', # in plugins table.
+        'trace_gc_plugin','trace_keys','trace_tags',
         'vim','xemacs',
     )
 #@+node:ekr.20100221142603.5642: ** getPluginsTable
@@ -51,15 +55,12 @@ def getPluginsTable ():
         ('mod_scripting','E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
-        ('open_with',''),
         ('toolbar','E1101,W0221,W0511'),
             # Dangerous: many erroneous E1101 errors
             # Harmless: W0221: Arguments number differs from overridden method
             # Harmless: W0511: Fixme and to-do.
-        ('UNL',''),
+        ('UNL','E0611'),
             # Dangerous: one E0611 error: 94: No name 'parse' in module 'urllib'
-        ('vim',''),
-        ('xemacs',''),
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
@@ -77,7 +78,7 @@ def getTkPass():
         'open_with','pie_menus','pluginsTest',
         'read_only_nodes','rClick',
         'scheduler','searchbar','searchbox','shortcut_button',
-        'script_io_to_body','searchbox',
+        'script_io_to_body',
         'templates','textnode','tkGui','toolbar',
         'xcc_nodes',
     )
@@ -100,8 +101,9 @@ def run(theDir,fn,suppress):
 coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
 guiPluginsTable = (
-    ('qtGui','W0221'),
-    ('tkGui','W0221'),
+    ('qtGui','W0221,W0233'),
+        # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
+    ('tkGui','W0221,W0222'),
 )
 passList = getPassList()
 pluginsTable = getPluginsTable()
@@ -109,16 +111,19 @@ tkPass = getTkPass()
 #@-<< defines >>
 
 recentCoreList = (
-    ('leoPlugins',''),
+    'leoEditCommands',
 )
 
 recentPluginsList = (
-    ('screenshots',''),
+    # 'tkGui','codewisecompleter',
+    'baseNativeTree','contextmenu',
+    'mod_scripting','plugins_menu','projectwizard',
+    'trace_gc_plugin',
 )
 
 tables_table = (
-    (recentCoreList,'core'),
-    (recentPluginsList,'plugins'),
+    # (recentCoreList,'core'),
+    # (recentPluginsList,'plugins'),
     # (coreList,'core'),
     # (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
@@ -128,10 +133,12 @@ tables_table = (
 )
 
 for table,theDir in tables_table:
-    if table in (tkPass,passList,coreList,externalList):
+    if table in (pluginsTable,guiPluginsTable):
+        # These tables have suppressions.
+        for fn,suppress in table:
+            run(theDir,fn,suppress) 
+    else:
         for fn in table:
             run(theDir,fn,suppress='')
-    else:
-        for fn,suppress in table:
-            run(theDir,fn,suppress)
+
 #@-leo

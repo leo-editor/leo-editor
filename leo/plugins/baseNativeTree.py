@@ -616,7 +616,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if trace: g.trace(self.traceItem(item))
             self.select(p) # Calls before/afterSelectHint.
         else:
-            self.error('no p for item: %s' % item,g.callers(4))
+            self.error('no p for item: %s' % item)
 
         c.outerUpdate()
     #@+node:ekr.20090124174652.45: *3* tree.OnPopup & allies (nativeTree)

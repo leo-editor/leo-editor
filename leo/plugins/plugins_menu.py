@@ -148,8 +148,8 @@ def addPluginMenuItem (p,c):
         def callback (event,c=c,p=p):
             path, name = g.os_path_split(p.filename)
             name, ext = g.os_path_splitext(name)
-            # if name in g.app.loadedPlugins:
-            if g.isLoaded(name):
+            pc = g.app.pluginsController
+            if pc and pc.isLoaded(name):
                 p.hastoplevel(c)
             else:
                 p.about()
@@ -336,12 +336,11 @@ class PlugIn:
             # s = 'Can not import %s in plugins_menu plugin' % g.shortFileName(filename)
             # g.es_print(s,color='blue')
             return
-        """        
-        except Exception:
-            s = 'Unexpected exception in plugins_menu plugin importing %s' % filename
-            g.es_print(s,color='red')
-            return
-        """
+        # except Exception:
+            # s = 'Unexpected exception in plugins_menu plugin importing %s' % filename
+            # g.es_print(s,color='red')
+            # return
+
         #@+<< Check if this can be configured >>
         #@+node:EKR.20040517080555.5: *4* << Check if this can be configured >>
         # Look for a configuration file

@@ -440,7 +440,7 @@ class baseCommands (object):
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
 
-        trace = False and (force or createPath) and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
 
         c = self

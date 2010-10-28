@@ -85,6 +85,7 @@ class LeoApp:
             # Used to generate temp file names for Open With command.
         self.openWithTable = None
             # The table passed to createOpenWithMenuFromTable.
+        self.pluginsController = None # Set early in the init process.
         self.positions = 0 # Count of the number of positions generated.
         self.printWaiting = [] # Queue of messages to be sent to the printer.
         self.qt_use_tabs = False # True: allow tabbed main window.

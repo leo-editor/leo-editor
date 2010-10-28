@@ -4763,7 +4763,7 @@ if g.unitTesting:
         relative_path = file_name_path[len(c.openDirectory):]
         # don't confuse /u and /usr as having common prefixes
         if (relative_path[:len(os.sep)] == os.sep):
-             file_name_path = relative_path[len(os.sep):]
+            file_name_path = relative_path[len(os.sep):]
     self.tangle_output[file_name_path] = self.output_file.get()
 #@+node:sps.20100608083657.20938: *6* << unit testing set result and continue >>
 if g.unitTesting:

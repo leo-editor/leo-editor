@@ -13,13 +13,6 @@
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
-<v t="ekr.20090620084709.1387"><vh>No longer used</vh>
-<v t="ekr.20090620084709.1389"><vh>Windows installation (old)</vh></v>
-<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
-<v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
-<v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
-</v>
-</v>
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
@@ -33,6 +26,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
+<v t="ekr.20101028125202.1496"><vh>Leo 4.8 a1</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
@@ -72,7 +66,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101025095431.1517" a="E"><vh>Installer/Distribution to do</vh>
+<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
 <v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
@@ -82,94 +76,17 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
+<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="EKR.20040519082027.32">@color
-@lineending nl
-@language shell</t>
-<t tx="EKR.20040519082027.33">@first #!/bin/sh
-
-# This script installs Leo on *nix.
-# Initial version by by Frank Merenda (fmerenda@yahoo.com)
-
-# Variables...
-LEO_PREFIX=${LEO_PREFIX:-/usr/local}
-LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
-
-# Bug fix: 2008/4/8: replace /lib/leo by /lib.
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
-
-echo ""
-echo "Prefix directory set to \"$LEO_PREFIX\""
-
-# Make the directory structure
-if [ ! -d $LEO_LIB_DIR ] ; then
-    echo ""
-    echo Making directory structure $LEO_LIB_DIR
-
-    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2&gt;&amp;1`
-    if [ $? -ne 0 ]; then
-        echo Failure making directory $LEO_LIB_DIR!
-        exit 1;
-    fi
-fi
-
-if [ ! -d $LEO_PREFIX/bin ] ; then
-    echo ""
-    echo Making directory structure $LEO_PREFIX/bin
-    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2&gt;&amp;1`
-    if [ $? -ne 0 ]; then
-        echo Failure making directory $LEO_PREFIX/bin!
-        exit 1;
-    fi
-fi
-
-# Copy the files
-cp -rp leo $LEO_LIB_DIR
-
-echo "python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"$@\"" &gt; $LEO_RUN_SCRIPT_OUTPUT
-
-RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
-
-echo ""
-echo "Leo installed successfully"
-echo "Make sure ${LEO_PREFIX}/bin is in your path then"
-echo "type 'leo filename.leo' to use it."   
-echo ""
-
-exit 0;
-</t>
-<t tx="EKR.20040519082027.34">@first #!/bin/sh
-
-# This script uninstalls Leo on Linux.
-#
-# Initial version by by Frank Merenda (fmerenda@yahoo.com)
-
-# Variables...
-LEO_PREFIX=${LEO_PREFIX:-/usr/local}
-LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-
-# Show the commands to remove Leo.
-echo ""
-echo "Prefix directory set to \"$LEO_PREFIX\""
-echo ""
-echo "To uninstall leo check the following \"rm\" commands"
-echo "if they look ok execute them."
-echo "
-rm -fr $LEO_LIB_DIR
-rm -f  $LEO_RUN_SCRIPT_OUTPUT
-"
-</t>
 <t tx="EKR.20040519090846">@nocolor
 
 1. Search for ##version
@@ -328,7 +245,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.7.1-final
+Version: 4.8-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -342,37 +259,39 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.7.1 final                    February 26, 2010
+<t tx="EKR.20040519090846.9">@nocolor
 
-Leo 4.7.1 final is now available at:
+Leo 4.8 alpha 1                    October 29, 2010
+
+Leo 4.8 alpha 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.7.1 fixes a dangerous bug in Leo 4.7. When converting file-like sentinels
-to thin-like sentinels in an external file, Leo now issues a warning and sets
-the corresponding @file node dirty. This ensures that Leo will write the
-converted external file and .leo file together, making it impossible to lose
-data.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.7:
+The highlights of Leo 4.8:
 --------------------------
 
-- Leo now uses the simplest possible internal data model.
-  This is the so-called "one-node" world.
-- Leo supports Python 3.x.
-- Leo requires Python 2.6 or above.
-- Several important improvements in file handling.
-    - Leo converts @file nodes to @thin nodes automatically.
-    - Leo creates a 'Recovered Nodes' node to hold data that
-      otherwise might be lost due to clone conflicts.
-    - @auto-rst now works much more reliably reliably.
-    - Leo no longer supports @noref trees.  Such trees are not
-      reliable in cooperative environments.
-- A new Windows installer.
-- Many other features, including new command line options and new plugins.
-- Dozens of bug fixes.
+- Leo now uses the simplest possible sentinel lines in external files.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
+- Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
+- Leo now uses PyEnchant to check spelling.
+  Much safer than using aspell.
+- Leo can now open multiple files from the command line.
+- Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- A better installer.
+- The usual round of bug fixes.
 
 Links:
 ------
@@ -380,7 +299,8 @@ Leo:      http://webpages.charter.net/edreamleo/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @killcolor
 
@@ -535,38 +455,6 @@ finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
 <t tx="ekr.20080901114425.2">For me Squeak and Leo have been two of the most significant technologies to
 redefine my personal computer experience and the ideas behind computing.</t>
-<t tx="ekr.20090620084709.1387"></t>
-<t tx="ekr.20090620084709.1389">
-Installing the leo.py on Windows
---------------------------------
-
-Leo is distributed either as an executable installer (.exe) file or as a .zip file.
-
-To install Leo using the executable installer:
-
-    1. Download the latest version of Leo's installer from:    
-       http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-       The installer will be called something like LeoSetup-4-4-3.exe.
-
-    2. Run the installer.
-       By default, the install will install Leo in your 'Program Files' directory.
-
-To install Leo from the .zip file:
-
-    1. Download the latest version of Leo (a .zip file) from:    
-       http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-    2. Unzip the .zip file and place the unpacked leo folder in 
-       the 'Program Files' folder or any convenient location.
-
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
-
-    import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\core')
-
-Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
-</t>
 <t tx="ekr.20090901092556.1576">def genUninstallData(self,dirs,dirDict,filesDict):
 
     '''Generate the manifest-specific uninstall data.'''
@@ -828,12 +716,13 @@ subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
 </t>
 <t tx="ekr.20101025095431.1517">@nocolor-node
 
@@ -1200,5 +1089,47 @@ def deleteFiles (self,lines,deleteList):
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
+<t tx="ekr.20101028125202.1496">@nocolor
+
+Leo 4.8 alpha 1                    October 29, 2010
+
+Leo 4.8 alpha 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.8:
+--------------------------
+
+- Leo now uses the simplest possible sentinel lines in external files.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
+- Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
+- Leo now uses PyEnchant to check spelling.
+  Much safer than using aspell.
+- Leo can now open multiple files from the command line.
+- Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- A better installer.
+- The usual round of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
 </tnodes>
 </leo_file>

@@ -5779,7 +5779,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 # w.dropMimeData = dropMimeData
 
                 def mimeData(self,indexes):
-                   g.trace()
+                    g.trace()
 
         # Early inits...
         try: w.headerItem().setHidden(True)
@@ -6879,13 +6879,13 @@ class leoQtGui(leoGui.leoGui):
 
                 buttonBox = QtGui.QDialogButtonBox(
                 QtGui.QDialogButtonBox.Ok
-                    | QtGui.QDialogButtonBox.Cancel);
+                    | QtGui.QDialogButtonBox.Cancel)
                 layout.addWidget(buttonBox)
 
                 self.connect(buttonBox, QtCore.SIGNAL("accepted()"),
-                    self, QtCore.SLOT("accept()"));
+                    self, QtCore.SLOT("accept()"))
                 self.connect(buttonBox, QtCore.SIGNAL("rejected()"),
-                    self, QtCore.SLOT("reject()"));
+                    self, QtCore.SLOT("reject()"))
 
         if g.unitTesting: return None
 

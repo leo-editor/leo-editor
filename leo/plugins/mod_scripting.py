@@ -556,15 +556,8 @@ class scriptingController:
         elif g.pluginIsLoaded(theFile):
             g.es("plugin already loaded: %s" % (theFile),color="blue")
         else:
-            theModule = g.loadOnePlugin(theFile,verbose=False)
-            if 0: # old code.
-                plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
-                theModule = g.importFromPath(theFile,plugins_path, pluginName=__name__,verbose=False)
-                if theModule:
-                    g.es("plugin loaded: %s" % (theFile),color="blue")
-                    # g.app.loadedPlugins.append(theFile)
-                else:
-                    g.es("can not load plugin: %s" % (theFile),color="blue")
+            theModule = g.loadOnePlugin(theFile)
+
     #@+node:ekr.20060328125248.14: *4* handleAtScriptNode @script (mod_scripting)
     def handleAtScriptNode (self,p):
 

@@ -91,24 +91,26 @@ Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< version history >>
 #@+<< todo >>
 #@+node:ekr.20050329082101.119: ** << todo >>
-"""
+#@@nocolor-node
 
-Todo list:
-
-- periodic updates
-
-Done:
-
-- optional remove tree   
-- double click hook
-- remove old tree
-- populate new tree
-- scan for tree plugins
-- use plugin manager to manage
-- allow them to be turned off
-
-"""
+#@+at
+# 
+# Todo list:
+# 
+# - periodic updates
+# 
+# Done:
+# 
+# - optional remove tree   
+# - double click hook
+# - remove old tree
+# - populate new tree
+# - scan for tree plugins
+# - use plugin manager to manage
+# - allow them to be turned off
 #@-<< todo >>
+
+thePluginController = None
 
 #@+others
 #@+node:ekr.20050329082101.120: ** Error Classes

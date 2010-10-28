@@ -3788,84 +3788,86 @@ class pythonScanner (baseScannerClass):
 
         return i ### A rewrite may be needed.
 
-        trace = False # and not g.unitTesting
-        c,found,i1 = self.c,False,i
-        at_line_start,last_comment,last_nl = True,None,-1
-        while i < len(s):
-            progress = i
-            if self.startsComment(s,i):
-                # Break at underindented comments.
-                if at_line_start:
-                    if i == last_nl:
-                        n = 0
-                    else:
-                        ws = s[last_nl+1:i]
-                        n = g.computeWidth (ws,c.tab_width)
-                    if n < lastIndent:
-                        if trace: g.trace('underindented comment',
-                            'ws',repr(ws),'n',n,'lastIndent',lastIndent)
-                        found = True ; break
-                    else:
-                        # Remember the start of a range of comments and whitespace.
-                        if last_comment is None:
-                            last_comment = i
-                        last_nl = i = self.skipComment(s,i)
-                        at_line_start = True
-                else:
-                    # An interior comment.
-                    assert last_comment is None
-                    last_nl = i = self.skipComment(s,i)
-                    at_line_start = True
-            elif self.startsString(s,i):
-                at_line_start = False
-                last_comment = None
-                i = self.skipString(s,i)
-            elif at_line_start and (
-                g.match_word(s,i,'def') or
-                g.match_word(s,i,'class')
-            ):
-                # Do not break for over-indent matches.
-                # This allows something reasonable to happen for::
-                # if 0:
-                #     def spam():
-                #         pass
-                ws = s[last_nl+1:i]
-                # g.trace('ws',repr(ws))
-                n = g.computeWidth (ws,c.tab_width)
-                if (not ws or ws.isspace()) and n <= lastIndent:
-                    found = True ; break
-                else: # Ignore the over-indented def.
-                    if trace: g.trace('overindented','ws',repr(ws),
-                        'n',n,'lastIndent',lastIndent)
-                    last_comment = None
-                    last_nl = i = g.skip_to_end_of_line(s,i)
-                    at_line_start = True
-            elif s[i] == '@':
-                # Leo directives will look like comments,
-                # so we can safely assume we have a decorator
-                if at_line_start and last_comment is None:
-                    last_comment = i
-                last_nl = i = g.skip_to_end_of_line(s,i)
-                at_line_start = True
-            elif s[i] ==  '\n':
-                at_line_start = True
-                last_nl = i
-                i += 1
-            elif s[i].isspace():
-                i += 1
-            else:
-                at_line_start = False
-                last_comment = None
-                i += 1
-            assert progress < i
+        # Comment this out to keep pylint happy.
 
-        if found:
-            if last_comment is None:
-                return i
-            else:
-                return last_comment
-        else:
-            return i1
+        # trace = False # and not g.unitTesting
+        # c,found,i1 = self.c,False,i
+        # at_line_start,last_comment,last_nl = True,None,-1
+        # while i < len(s):
+            # progress = i
+            # if self.startsComment(s,i):
+                # # Break at underindented comments.
+                # if at_line_start:
+                    # if i == last_nl:
+                        # n = 0
+                    # else:
+                        # ws = s[last_nl+1:i]
+                        # n = g.computeWidth (ws,c.tab_width)
+                    # if n < lastIndent:
+                        # if trace: g.trace('underindented comment',
+                            # 'ws',repr(ws),'n',n,'lastIndent',lastIndent)
+                        # found = True ; break
+                    # else:
+                        # # Remember the start of a range of comments and whitespace.
+                        # if last_comment is None:
+                            # last_comment = i
+                        # last_nl = i = self.skipComment(s,i)
+                        # at_line_start = True
+                # else:
+                    # # An interior comment.
+                    # assert last_comment is None
+                    # last_nl = i = self.skipComment(s,i)
+                    # at_line_start = True
+            # elif self.startsString(s,i):
+                # at_line_start = False
+                # last_comment = None
+                # i = self.skipString(s,i)
+            # elif at_line_start and (
+                # g.match_word(s,i,'def') or
+                # g.match_word(s,i,'class')
+            # ):
+                # # Do not break for over-indent matches.
+                # # This allows something reasonable to happen for::
+                # # if 0:
+                # #     def spam():
+                # #         pass
+                # ws = s[last_nl+1:i]
+                # # g.trace('ws',repr(ws))
+                # n = g.computeWidth (ws,c.tab_width)
+                # if (not ws or ws.isspace()) and n <= lastIndent:
+                    # found = True ; break
+                # else: # Ignore the over-indented def.
+                    # if trace: g.trace('overindented','ws',repr(ws),
+                        # 'n',n,'lastIndent',lastIndent)
+                    # last_comment = None
+                    # last_nl = i = g.skip_to_end_of_line(s,i)
+                    # at_line_start = True
+            # elif s[i] == '@':
+                # # Leo directives will look like comments,
+                # # so we can safely assume we have a decorator
+                # if at_line_start and last_comment is None:
+                    # last_comment = i
+                # last_nl = i = g.skip_to_end_of_line(s,i)
+                # at_line_start = True
+            # elif s[i] ==  '\n':
+                # at_line_start = True
+                # last_nl = i
+                # i += 1
+            # elif s[i].isspace():
+                # i += 1
+            # else:
+                # at_line_start = False
+                # last_comment = None
+                # i += 1
+            # assert progress < i
+
+        # if found:
+            # if last_comment is None:
+                # return i
+            # else:
+                # return last_comment
+        # else:
+            # return i1
     #@+node:ekr.20070803101619: *4* skipSigTail
     # This must be overridden in order to handle newlines properly.
 

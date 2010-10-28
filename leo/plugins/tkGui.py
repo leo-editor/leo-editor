@@ -821,6 +821,166 @@ class tkinterGui(leoGui.leoGui):
             return 'tkGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
     #@-others
+#@+node:ekr.20101028132547.3760: ** class TkPropertiesDialog
+# This class is also defined in the plugins_menu.py plugin.
+class TkPropertiesDialog:
+
+    """A class to create and run a Properties dialog"""
+
+    #@+others
+    #@+node:ekr.20101028132547.3761: *3* __init__
+    def __init__(self, title, data, callback=None, buttons=[]):
+        #@+<< docstring >>
+        #@+node:ekr.20101028132547.3762: *4* << docstring >>
+        """ Initialize and show a Properties dialog.
+
+            'buttons' should be a list of names for buttons.
+
+            'callback' should be None or a function of the form:
+
+                def cb(name, data)
+                    ...
+                    return 'close' # or anything other than 'close'
+
+            where name is the name of the button clicked and data is
+            a data structure representing the current state of the dialog.
+
+            If a callback is provided then when a button (other than
+            'OK' or 'Cancel') is clicked then the callback will be called
+            with name and data as parameters.
+
+                If the literal string 'close' is returned from the callback
+                the dialog will be closed and self.result will be set to a
+                tuple (button, data).
+
+                If anything other than the literal string 'close' is returned
+                from the callback, the dialog will continue to be displayed.
+
+            If no callback is provided then when a button is clicked the
+            dialog will be closed and self.result set to  (button, data).
+
+            The 'ok' and 'cancel' buttons (which are always provided) behave as
+            if no callback was supplied.
+
+        """
+        #@-<< docstring >>
+
+        if buttons is None:
+            buttons = []
+
+        self.entries = []
+        self.title = title
+        self.callback = callback
+        self.buttons = buttons
+        self.data = data
+
+        #@+<< create the frame from the configuration data >>
+        #@+node:ekr.20101028132547.3763: *4* << Create the frame from the configuration data >>
+        root = g.app.root
+
+        #@+<< Create the top level and the main frame >>
+        #@+node:ekr.20101028132547.3764: *5* << Create the top level and the main frame >>
+        self.top = top = Tk.Toplevel(root)
+        g.app.gui.attachLeoIcon(self.top)
+        #top.title("Properties of "+ plugin.name)
+        top.title(title)
+
+        top.resizable(0,0) # neither height or width is resizable.
+
+        self.frame = frame = Tk.Frame(top)
+        frame.pack(side="top")
+        #@-<< Create the top level and the main frame >>
+        #@+<< Create widgets for each section and option >>
+        #@+node:ekr.20101028132547.3765: *5* << Create widgets for each section and option >>
+        # Create all the entry boxes on the screen to allow the user to edit the properties
+
+        sections = data.keys()
+        sections.sort()
+
+        for section in sections:
+
+            # Create a frame for the section.
+            f = Tk.Frame(top, relief="groove",bd=2)
+            f.pack(side="top",padx=5,pady=5)
+            Tk.Label(f, text=section.capitalize()).pack(side="top")
+
+            # Create an inner frame for the options.
+            b = Tk.Frame(f)
+            b.pack(side="top",padx=2,pady=2)
+
+            options = data[section].keys()
+            options.sort()
+
+            row = 0
+            # Create a Tk.Label and Tk.Entry for each option.
+            for option in options:
+                e = Tk.Entry(b)
+                e.insert(0, data[section][option])
+                Tk.Label(b, text=option).grid(row=row, column=0, sticky="e", pady=4)
+                e.grid(row=row, column=1, sticky="ew", pady = 4)
+                row += 1
+                self.entries.append((section, option, e))
+        #@-<< Create widgets for each section and option >>
+        #@+<< Create the buttons >>
+        #@+node:ekr.20101028132547.3766: *5* << Create the buttons >>
+        box = Tk.Frame(top, borderwidth=5)
+        box.pack(side="bottom")
+
+        buttons.extend(("OK", "Cancel"))
+
+        for name in buttons:
+            Tk.Button(box,
+                text=name,
+                width=6,
+                command=lambda self=self, name=name: self.onButton(name)
+            ).pack(side="left",padx=5)
+
+        #@-<< Create the buttons >>
+
+        g.app.gui.center_dialog(top) # Do this after packing.
+        top.grab_set() # Make the dialog a modal dialog.
+        top.focus_force() # Get all keystrokes.
+
+        self.result = ('Cancel', '')
+
+        root.wait_window(top)
+        #@-<< create the frame from the configuration data >>
+    #@+node:ekr.20101028132547.3767: *3* Event Handlers
+
+    def onButton(self, name):
+        """Event handler for all button clicks."""
+
+        data = self.getData()
+        self.result = (name, data)
+
+        if name in ('OK', 'Cancel'):
+            self.top.destroy()
+            return
+
+        if self.callback:
+            retval = self.callback(name, data)
+            if retval == 'close':
+                self.top.destroy()
+            else:
+                self.result = ('Cancel', None)
+
+
+    #@+node:ekr.20101028132547.3768: *3* getData
+    def getData(self):
+        """Return the modified configuration."""
+
+        data = {}
+        for section, option, entry in self.entries:
+            if section not in data:
+                data[section] = {}
+            s = entry.get()
+            s = g.toEncodedString(s,"ascii",reportErrors=True) # Config params had better be ascii.
+            data[section][option] = s
+
+        return data
+
+
+    #@-others
 #@+node:ekr.20081121110412.404: ** class tkinterKeyHandlerClass
 class tkinterKeyHandlerClass (leoKeys.keyHandlerClass):
 
@@ -6760,7 +6920,7 @@ class leoTkinterTree (leoFrame.leoTree):
         # The changed node may be a non-cloned descendant of a cloned node.
         self.redraw_now()
     #@+node:ekr.20090110073024.13: *6* redraw_after_icons_changed
-    def redraw_after_icons_changed (self,all=False):
+    def redraw_after_icons_changed (self):
 
         if g.unitTesting:
             # A terrible hack.  Don't switch edit widget.

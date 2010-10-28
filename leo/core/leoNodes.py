@@ -1094,8 +1094,10 @@ class position (object):
         '''
 
         if callback is None:
-            def callback(p):
+            def callback_f(p):
                 p.doDelete(newNode=None)
+        else:
+            callback_f = callback # To keep pylint happy.
 
         p = self.copy()
         while p and aList:
@@ -1106,7 +1108,7 @@ class position (object):
                     if p.isAncestorOf(z):
                         aList.remove(z)
                 next = p.nodeAfterTree()
-                callback(p.copy())
+                callback_f(p.copy())
                 p = next
             else:
                 p.moveToThreadNext()

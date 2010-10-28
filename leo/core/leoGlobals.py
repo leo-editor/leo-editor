@@ -106,6 +106,7 @@ class nullObject:
     def __getattr__(self,attr):     return self
     def __setattr__(self,attr,val): return self
 #@-<< define the nullObject class >>
+tree_popup_handlers = [] # Set later.
 g = nullObject() # Set early in startup logic to this module.
 app = None # The singleton app object.
 debug = False # Set early in startup by the --debug command-line option.
@@ -2916,6 +2917,13 @@ def idleTimeHookHandler(*args,**keys):
         g.app.afterHandler = g.idleTimeHookHandler
     else:
         g.app.afterHandler = None
+#@+node:ekr.20101028131948.5860: *3* g.act_on_node
+def dummy_act_on_node(c,p,event):
+    pass
+
+# This dummy definition keeps pylint happy.
+# Plugins can change this.
+act_on_node = dummy_act_on_node
 #@+node:ekr.20031218072017.1596: *3* g.doHook
 #@+at This global function calls a hook routine.  Hooks are identified by the tag param.
 # Returns the value returned by the hook routine, or None if the there is an exception.

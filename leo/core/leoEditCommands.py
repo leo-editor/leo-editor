@@ -12,7 +12,6 @@ Modelled after Emacs and Vim commands.'''
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
 try:
@@ -20,8 +19,6 @@ try:
 except ImportError:
     enchant = None
 
-import ctypes
-import ctypes.util
 import difflib
 import os
 import re
@@ -759,7 +756,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             for name in keys:
                 val,tag = self.abbrevs.get(name)
                 val=val.replace('\n','\\n')
-                s = '%s=%s\n' % (x,val)
+                s = '%s=%s\n' % (name,val)
                 if not g.isPython3:
                     s = g.toEncodedString(s,reportErrors=True)
                 f.write(s)
@@ -5245,7 +5242,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             f = open(fileName,'w')
             s = w.getAllText()
             if not g.isPython3: # 2010/08/27
-                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
+                s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
             f.write(s)
             f.close()
         except IOError:
@@ -6494,9 +6491,9 @@ class macroCommandsClass (baseEditCommandsClass):
 
     def callLastKeyboardMacro (self,event=None):
 
-        g.trace(self.lastMacro)
-
         '''Call the last recorded keyboard macro.'''
+
+        # g.trace(self.lastMacro)
 
         if self.lastMacro:
             self.executeMacro(self.lastMacro)
@@ -8560,7 +8557,8 @@ class EnchantClass:
 
         # Set the base language
         if language and not enchant.dict_exists(language):
-            g.es_print('Invalid language code for Enchant',language_code,color='blue')
+            g.es_print('Invalid language code for Enchant',
+                repr(language),color='blue')
             g.es('Using "en_US" instead')
             language = 'en_US'
 

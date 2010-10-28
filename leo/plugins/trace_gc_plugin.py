@@ -33,7 +33,7 @@ def init():
 #@+node:ekr.20050111084900: ** printIdleRefs
 def printIdleRefs(tag,keywords):
 
-    g.printGcRefs(verbose=False)
+    g.printGcRefs(tag)
 #@+node:ekr.20050111084900.1: ** printIdleGC
 def printIdleGC(tag,keywords):
 
@@ -43,8 +43,8 @@ def printIdleGC(tag,keywords):
     elif tag == "idle":
         global gcCount ; gcCount += 1
         if (gcCount % 20) == 0:
-            g.printGc(tag,onlyPrintChanges=True)
+            g.printGc(tag)
     else:
-        g.printGc(tag,onlyPrintChanges=False)
+        g.printGc(tag)
 #@-others
 #@-leo
