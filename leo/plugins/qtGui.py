@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20081121105001.188: * @thin qtGui.py
+#@+node:ekr.20081121105001.188: * @file qtGui.py
 #@@first
 
 '''qt gui plugin.'''
@@ -8614,7 +8614,7 @@ class jEditColorizer:
 
         '''Name may be a language name or a delegate name.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         if not name: return False
         h = self.highlighter
         language,rulesetName = self.nameToRulesetName(name)

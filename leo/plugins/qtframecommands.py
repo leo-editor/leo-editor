@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100103094733.3709: * @thin qtframecommands.py
+#@+node:ekr.20100103094733.3709: * @file qtframecommands.py
 #@+<< docstring >>
 #@+node:ekr.20100103094733.3710: ** << docstring >>
 ''' Various commands to manipulate GUI under qt

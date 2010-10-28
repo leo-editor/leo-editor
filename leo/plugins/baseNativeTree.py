@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20090124174652.7: * @thin baseNativeTree.py
+#@+node:ekr.20090124174652.7: * @file baseNativeTree.py
 #@@first
 
 '''Base classes for native tree widgets.'''

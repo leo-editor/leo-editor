@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20081121105001.595: * @thin swing_gui.py
+#@+node:ekr.20081121105001.595: * @file swing_gui.py
 #@@first
 
 '''The plugin part of the swing gui code.'''

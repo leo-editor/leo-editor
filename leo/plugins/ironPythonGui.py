@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20081121105001.80: * @thin ironPythonGui.py
+#@+node:ekr.20081121105001.80: * @file ironPythonGui.py
 #@@first
 
 """A plugin to use IronPython and .Net Forms as Leo's gui."""

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20090126093408.1: * @thin wxGui.py
+#@+node:ekr.20090126093408.1: * @file wxGui.py
 #@@first
 
 '''A plugin to use wxWidgets as Leo's gui.
@@ -2077,7 +2077,7 @@ class wxComparePanel (leoCompare.leoCompare): #,leoWxDialog):
 
         self.countEntry = e = Tk.Entry(row,width=4)
         e.pack(side="left",padx=2)
-        e.insert(01,"1")
+        e.insert(1,"1")
 
         lab = Tk.Label(row,text="mismatches")
         lab.pack(side="left",padx=2)
@@ -5210,16 +5210,19 @@ class wxGui(leoGui.leoGui):
         elif chr(keycode).isalpha():
             return unichr(keycode).upper()
         else:
+            pass
+            # Not compatible with Python 3k.
             # The most odious, risible code in all of Leo.
-            d = {
-                39:u'"',
-                43:u'+',44:u'<',45:u'_',46:u'>',47:u'?',
-                48:u')',49:u'!',50:u'@',51:u'#',52:u'$',
-                53:u'%',54:u'^',55:u'&',56:u'*',57:u'(',
-                59:u':',
-                91:u'{',92:u'|',93:u'}',
-            }
-            return d.get(keycode,unichr(keycode))
+            # d = {
+                # 39:u'"',
+                # 43:u'+',44:u'<',45:u'_',46:u'>',47:u'?',
+                # 48:u')',49:u'!',50:u'@',51:u'#',52:u'$',
+                # 53:u'%',54:u'^',55:u'&',56:u'*',57:u'(',
+                # 59:u':',
+                # 91:u'{',92:u'|',93:u'}',
+            # }
+            # return d.get(keycode,unichr(keycode))
+            return None
     #@+node:ekr.20090126093408.160: *6* unshift
     # A helper for 'the terrible hack' in keysymHelper.
 
@@ -5233,15 +5236,17 @@ class wxGui(leoGui.leoGui):
             return unichr(keycode).lower()
         else:
             # The most odious, risible code in all of Leo.
-            d = {
-                39:u"'",
-                43:u'=',44:u',',45:u'-',46:u'.',47:u'/',
-                48:u'0',49:u'1',50:u'2',51:u'3',52:u'4',
-                53:u'5',54:u'6',55:u'7',56:u'8',57:u'9',
-                59:u';',
-                91:u'[',92:u'\\',93:u']',
-            }
-            return d.get(keycode,unichr(keycode))
+            # Not compatible with Python 3.x.
+            # d = {
+                # 39:u"'",
+                # 43:u'=',44:u',',45:u'-',46:u'.',47:u'/',
+                # 48:u'0',49:u'1',50:u'2',51:u'3',52:u'4',
+                # 53:u'5',54:u'6',55:u'7',56:u'8',57:u'9',
+                # 59:u';',
+                # 91:u'[',92:u'\\',93:u']',
+            # }
+            # return d.get(keycode,unichr(keycode))
+            return None
     #@+node:ekr.20090126093408.161: *4* eventWidget
     def eventWidget (self,event):
 
@@ -5411,9 +5416,9 @@ class wxGui(leoGui.leoGui):
             #g.pr("actual_name:",font.cget("family"))
             return font
         except:
-            g.es("exception setting font from " + `family_name`)
+            g.es("exception setting font from " + repr(family_name))
             g.es("family,size,slant,weight:"+
-                `family`+':'+`size`+':'+`slant`+':'+`weight`)
+                repr(family)+':'+repr(size)+':'+(slant)+':'+repr(weight))
             g.es_exception()
             return g.app.config.defaultFont
     #@+node:ekr.20090126093408.181: *4* Icons (wxGui) (to do)

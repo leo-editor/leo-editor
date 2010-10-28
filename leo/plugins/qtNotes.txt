@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20081121105001.147: * @thin qtNotes.txt
+#@+node:ekr.20081121105001.147: * @file qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: **  qt To do
 #@+node:ekr.20100223133144.3680: *3* Create color picker

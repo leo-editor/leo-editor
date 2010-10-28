@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20081121110412.2: * @thin tkGui.py
+#@+node:ekr.20081121110412.2: * @file tkGui.py
 #@@first
 
 '''Leo's tkinter gui plugin.'''
