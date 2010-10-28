@@ -4417,7 +4417,6 @@ else:
 <t tx="ekr.20050112095306.1"></t>
 <t tx="ekr.20050120095423"></t>
 <t tx="ekr.20050120095423.11"># Create unit tests in g.app.scriptDict["suite"]
-import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 import glob
 import sys
@@ -4479,7 +4478,7 @@ g.app.scriptDict['suite'] = suite</t>
     module = sys.modules.get(moduleName)
 
     if not module:
-        module = leoPlugins.loadOnePlugin(moduleName,verbose=False)
+        module = pc.loadOnePlugin(moduleName,verbose=False)
         assert module, 'can not import %s' % moduleName</t>
 <t tx="ekr.20050120095423.17">def setUp(self):
 
@@ -4509,14 +4508,13 @@ g.app.scriptDict['suite'] = suite</t>
         def shutDown(self):
             c = self.new_c
             c.close()</t>
-<t tx="ekr.20050120095423.21">import leo.core.leoPlugins as leoPlugins
-
-print('\nloaded plugins...')
+<t tx="ekr.20050120095423.21">print('\nloaded plugins...')
 
 for p in g.app.loadedPlugins:
     print(p)
     
-leoPlugins.printHandlers()</t>
+g.app.pluginsController.printHandlers()
+</t>
 <t tx="ekr.20050203001146"># g.es(c.page_width)
 
 assert c.page_width == 80</t>
@@ -21264,8 +21262,8 @@ g.es_print('unit tests done',color='blue')</t>
 <t tx="ekr.20100131171342.5473"></t>
 <t tx="ekr.20100131171342.5474">if g.app.gui.guiName() == 'tkinter':
 
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect,sys
@@ -21301,8 +21299,8 @@ g.es_print('unit tests done',color='blue')</t>
                 print(value)</t>
 <t tx="ekr.20100131171342.5475">if g.app.gui.guiName() == 'tkinter':
 
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect
@@ -21329,8 +21327,8 @@ g.es_print('unit tests done',color='blue')</t>
 </t>
 <t tx="ekr.20100131171342.5476">if g.app.gui.guiName() == 'tkinter':
 
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
 
     import leo.core.leoGui as leoGui
     import inspect
@@ -21360,8 +21358,8 @@ g.es_print('unit tests done',color='blue')</t>
 </t>
 <t tx="ekr.20100131171342.5477">if g.app.gui.guiName() == 'tkinter':
 
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect
@@ -21779,8 +21777,8 @@ if g.app.gui.guiName() == 'tkinter':
         assert result == expected,'toGuiIndex(i): %s, expected: %s, got: %s' % (i,expected,result)</t>
 <t tx="ekr.20100131171342.5602">if g.app.gui.guiName() == 'tkinter':
 
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
     import Tkinter as Tk
     w = tkGui.leoTkTextWidget()
     w.setAllText('abcdef\n')
@@ -26908,16 +26906,19 @@ This is the body of the section.&lt;/p&gt;
         print ('%3d %s' % (i,repr(expected_lines[i])))
         print ('%3d %s' % (i,repr(got_lines[i])))
         if expected_lines[i] != got_lines[i]: break</t>
-<t tx="ekr.20100830113702.5969">exec(g.findTestScript(c,'@common leoEditCommands test code'))
-runEditCommandTest(c,p,inHeadline=False)
-runEditCommandTest(c,p,inHeadline=True)
+<t tx="ekr.20100830113702.5969">if g.app.gui.guiName() == 'qt':
+    exec(g.findTestScript(c,'@common leoEditCommands test code'))
+    runEditCommandTest(c,p,inHeadline=False)
+    runEditCommandTest(c,p,inHeadline=True)
 </t>
 <t tx="ekr.20100830113702.5970">aaaa bbbb dddd</t>
 <t tx="ekr.20100830113702.5971">aaaa bbbb cccc dddd</t>
 <t tx="ekr.20100830113702.5972">aaaa bbbb dddd</t>
-<t tx="ekr.20100830113702.5977">exec(g.findTestScript(c,'@common leoEditCommands test code'))
-runEditCommandTest(c,p,inHeadline=False)
-runEditCommandTest(c,p,inHeadline=True)
+<t tx="ekr.20100830113702.5977">if g.app.gui.guiName() == 'qt':
+
+    exec(g.findTestScript(c,'@common leoEditCommands test code'))
+    runEditCommandTest(c,p,inHeadline=False)
+    runEditCommandTest(c,p,inHeadline=True)
 </t>
 <t tx="ekr.20100830113702.5978">aaaa bbcc dddd</t>
 <t tx="ekr.20100830113702.5979">aaaa bbbb cccc dddd</t>
