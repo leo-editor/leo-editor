@@ -19,7 +19,7 @@
 </v>
 </v>
 <v t="ekr.20081121105001.1083"><vh>buttons</vh>
-<v t="ekr.20090620053541.3858"><vh>@button add-test @key=alt-9</vh></v>
+<v t="ekr.20090620053541.3858"><vh>@@button add-test @key=alt-9</vh></v>
 <v t="ekr.20081121105001.1084"><vh>@@button settings.leo</vh></v>
 <v t="ekr.20081121105001.1085"><vh>@@button scripts.leo</vh></v>
 <v t="ekr.20081121105001.1086"><vh>@@button Beautify</vh></v>
@@ -31,22 +31,21 @@
 <v t="ekr.20100102164747.3702"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"
-marks="ekr.20081121105001.502,"><vh>@thin qtNotes.txt</vh></v>
+<v t="ekr.20081121105001.147"><vh>@file qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
-<v t="ekr.20081121105001.12"><vh>@thin cursesGui.py</vh></v>
-<v t="ekr.20081121105001.80"><vh>@thin ironPythonGui.py</vh></v>
-<v t="ekr.20081121105001.595"><vh>@thin swing_gui.py</vh></v>
-<v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
-<v t="ekr.20090126093408.1"><vh>@thin wxGui.py</vh></v>
+<v t="ekr.20081121105001.12"><vh>@file cursesGui.py</vh></v>
+<v t="ekr.20081121105001.80"><vh>@file ironPythonGui.py</vh></v>
+<v t="ekr.20081121105001.595"><vh>@file swing_gui.py</vh></v>
+<v t="ekr.20081121110412.2"><vh>@file tkGui.py</vh></v>
+<v t="ekr.20090126093408.1"><vh>@file wxGui.py</vh></v>
 </v>
 <v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
-<v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
-<v t="ekr.20100103094733.3709"><vh>@thin qtframecommands.py</vh></v>
+<v t="ekr.20090124174652.7"><vh>@file baseNativeTree.py</vh></v>
+<v t="ekr.20100103094733.3709"><vh>@file qtframecommands.py</vh></v>
 <v t="ekr.20081121105001.188"
-marks="ekr.20081121105001.502,"><vh>@thin qtGui.py</vh></v>
-<v t="leohag.20081204085551.1"><vh>@thin scrolledmessage.py</vh></v>
+marks="ekr.20081121105001.502,"><vh>@file qtGui.py</vh></v>
+<v t="leohag.20081204085551.1"><vh>@file scrolledmessage.py</vh></v>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>

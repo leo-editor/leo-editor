@@ -8614,7 +8614,7 @@ class jEditColorizer:
 
         '''Name may be a language name or a delegate name.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if not name: return False
         h = self.highlighter
         language,rulesetName = self.nameToRulesetName(name)

@@ -215,7 +215,7 @@ def init_mode (self,name):
 
     '''Name may be a language name or a delegate name.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     if not name: return False
     h = self.highlighter
     language,rulesetName = self.nameToRulesetName(name)
@@ -1693,5 +1693,25 @@ def callback(val):
     g.trace(val)
 
 w.showCompleter(['hello','helloworld'],callback)
+#@+node:ekr.20101018145309.3757: ** Support for detect_urls
+if 0:
+    import PyQt4.QtGui as QtGui
+
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    w = colorer.w
+    w.tag_configure('URL',underline=1,foreground="orange")
+    # w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    colorer.setTag('URL',s,len(s)-20,len(s))
+
+    # highlighter = c.frame.body.colorizer.highlighter
+    # QtGui.QSyntaxHighlighter.rehighlight(highlighter)
+
+if 0:
+    w = c.frame.top.richTextEdit
+    g.es(w)
+    w.setOpenExternalLinks(True)
+
+    http://webpages.charter.net/edreamleo/front.html
 #@-all
 #@-leo
