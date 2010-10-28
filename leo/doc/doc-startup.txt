@@ -1,0 +1,392 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20101028112631.4959: * @file doc-startup.txt
+#@+all
+#@+node:ekr.20070325123558: ** @chapters
+#@+node:ekr.20050404094627: ** Buttons
+#@+node:ekr.20090712122931.10453: *3* Disabled buttons
+#@+node:ekr.20050901060119: *4* @@button def list
+@color
+
+# Converts text selection to def list.
+
+@others
+
+createDefList(c,p)
+#@+node:ekr.20050901061220: *5* createDefList
+def createDefList(c,p):
+
+    undoType = 'Create Def List'
+    head,lines,tail,oldSel,oldYview = c.getBodyLines()
+    if not lines: return
+
+    result = ['``%s``\n' % lines[0].strip()]
+
+    for line in lines[1:]:
+        result.append('    %s' % line.lstrip()+'\n')
+    lines = ''.join(result).rstrip()
+
+    c.updateBodyPane(head,lines,tail,undoType,oldSel,oldYview)
+#@+node:sps.20100708203040.19008: *4* @@button generate-full-userguide
+@language python
+import os
+pos = c.find_h("Users Guide")[0]
+c.selectPosition(pos)
+c.k.simulateCommand('rst3')
+<< html manual >>
+<< pdf manual >>
+#@+node:sps.20100708203040.19009: *5* << html manual >>
+d = c.scanAllDirectives(p)
+mandir = d.get('path') + "/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make html')
+#@+node:sps.20100708203040.19010: *5* << pdf manual >>
+# you probably need to install several packages 
+# to create pdf (e.g. jadetex)
+mandir = d.get('path') + "/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make latex')
+os.chdir('_build/latex')
+os.system('../../fixup.pl < Leodocumentation.tex > LeoDoc.tex')
+os.system('make LeoDoc.pdf')
+#@+node:ville.20090705224948.5734: *4* @@button generate-userguide
+import os
+pos = c.find_h("Users Guide")[0]
+c.selectPosition(pos)
+c.k.simulateCommand('rst3')
+<< html manual >>
+# no pdf manual creation, perhaps too "involved" for many
+#@+node:ville.20090705225609.5736: *5* << html manual >>
+mandir = g.app.leoDir + "/doc/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make html')
+#@+node:ville.20090705225609.5738: *5* << pdf manual >>
+# you probably need to install several packages 
+# to create pdf (e.g. jadetex)
+mandir = g.app.leoDir + "/doc/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make latex')
+os.chdir('_build/latex')
+os.system('make all-pdf')
+#@+node:ekr.20050901055150: *4* @@button promote
+@color
+# Script to promote headlines and body text
+
+root = p.copy()
+body = [root.bodyString()+'\n']
+for p in root.subtree_iter():
+    body.append(p.headString())
+    body.append(p.bodyString().rstrip()+'\n')
+
+body = '\n'.join(body)
+root.setBodyString(body)
+#@+node:ekr.20050902080416: *4* @@button reformat-paragraph
+# Start at the top.
+b = c.frame.body.bodyCtrl
+b.mark_set('insert','1.0')
+b.tag_remove('sel','1.0','end')
+b.tag_add('sel','1.0','1.0')
+b.update_idletasks()
+
+# Format until the end.
+count = 0 # Guard against loops.
+while count < 100:
+    count += 1
+    s = p.bodyString()
+    if not s.strip():
+        break
+    c.reformatParagraph()
+    s2 = p.bodyString()
+
+    index = b.index('insert')
+    if b.compare(index,'>=','end-1c'):
+        break
+#@+node:ekr.20091112060950.6677: *4* @@button Remove newlines
+s = p.bodyString()
+
+s = s.replace('\n\n','***2***')
+s = s.replace('\n',' ')
+s = s.replace('***2***','\n\n')
+s = s.replace('\n  ','\n')
+s = s.replace('\n ','\n')
+s = s.replace('     ',' ')
+s = s.replace('    ',' ')
+s = s.replace('   ',' ')
+s = s.replace('  ',' ')
+
+p.setBodyString(s)
+#@+node:ekr.20060525104232: *4* @@button rst->html
+import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        p,s = controller.writeNodeToString(ext='.html')
+        print '*' * 40,p
+        print s
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True
+#@+node:ekr.20060525110135: *4* @@button rst->pdf
+# Problems with pdf files.
+
+import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        p,s = controller.writeNodeToString(ext='.pdf')
+        print '*' * 40,p
+        print s
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True
+#@+node:ekr.20060525110217: *4* @@button rst->rst
+import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        p,s = controller.writeNodeToString(ext=None) # Convert rst nodes to rst text.
+        print '*' * 40,p
+        print s
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True
+#@+node:ekr.20060525110135.1: *4* @@button rst->tex
+import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        p,s = controller.writeNodeToString(ext='.tex')
+        print '*' * 40,p
+        print s
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True
+#@+node:ekr.20050812090111: *4* @@button rst3
+import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        controller.processTopTree(p)
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True
+#@+node:ekr.20091006063434.13802: *4* @@button rst3
+c.rstCommands.rst3()
+#@+node:ekr.20050901054622: *4* @@button Save
+c.save()
+#@+node:ekr.20050901121617: *4* @@button sentence
+@color
+
+# Puts each sentence on a separate line
+# Not as useful as I had hoped.  The Reformat Paragraph command is better.
+
+@others
+
+splitSentences(c,p)
+#@+node:ekr.20050901121617.1: *5* splitSentences
+def splitSentences(c,p):
+
+    undoType = 'Split Sentences'
+    head,lines,tail,oldSel,oldYview = c.getBodyLines()
+    s = p.bodyString()
+    if not s.strip(): return
+
+    i = 0 ; line = [] ; result = [] ; nl = False
+    while i < len(s):
+        ch = s[i] ; i += 1 ; ch2 = '.'
+        if i < len(s): ch2 = s[i]
+        if ch in ('.',';') and ch2 in (' ','\t','\n'):
+            line.append(ch)
+            r = ''.join(line)+'\n'
+            if nl and ch == '.': r = r + '\n'
+            result.append(r)
+            line = [] ; nl = False
+            while i < len(s):
+                ch2 = s[i]
+                if ch2 == '\n' and ch == '.':
+                    nl = True
+                if ch2 in (' ','\t','\n'):
+                    i += 1
+                else:
+                    break
+        else: line.append(ch)
+
+    result.append(''.join(line)+'\n') # Add the last line.
+    result = ''.join(result)
+    c.updateBodyPane('',result,'',undoType,oldSel,oldYview)
+#@+node:ekr.20041226081019: *4* @@button Spell
+c.spellCommands.openSpellTab()
+#@+node:ekr.20070115172724.2: *4* @@button winpdb
+test.leo contains an @button windpdb node.
+Select the test to be debugged, then press the winpdb button or do <Alt>x winpdb<return>.
+This way is essentially the same as using the debug command, though the code is slightly different.
+#@+node:ville.20090520232034.6345: *3* @button rst-preview
+g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)
+#@+node:ekr.20101025080245.6075: *3* @button promote-child-bodies
+'''Copy the body text of all children to the parent's body text.'''
+
+# Great for creating what's new nodes.
+result = [p.b]
+b = c.undoer.beforeChangeNodeContents(p)
+for child in p.children():
+    if child.b:
+        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
+    else:
+        result.append('\n- %s\n\n' % (child.h))
+p.b = ''.join(result)
+c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
+#@+node:ekr.20050407144417: ** @settings
+#@+node:ekr.20100908122026.4443: *3* @enabled_plugins
+# Standard plugins
+mod_scripting.py
+nav_qt.py
+plugins_menu.py
+quicksearch.py
+scrolledmessage.py
+UNL.py
+
+# Other useful plugins
+# codewisecompleter.py
+# leoremote.py
+screenshots.py
+#@+node:ekr.20100907092300.4440: *3* Inkscape options
+#@+node:ekr.20100907092300.4441: *4* @string inkscape-template = ../docs/inkscape-template.svg
+Path to inkscape template file
+#@+node:ekr.20100907092300.4442: *4* @string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"
+Path to Inkscape executable
+#@+node:ekr.20101009114830.4724: *3* File options
+#@+node:ekr.20080923182326.1: *4* @@bool create_nonexistent_directories = True
+This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
+
+True:  Leo attempts to create directories if they do not exist.
+False: Leo never attempts to create directories.
+#@+node:ekr.20080412124815.1: *4* @bool fixedWindow = False
+#@+node:ekr.20101009114830.4723: *4* @bool put_expansion_bits_in_leo_files = False
+@nocolor-node
+
+Formerly, this had to be on because the expansion bits
+of @screenshot trees were significant.
+
+Happily, this is no longer true.
+
+True (recommended):
+    Write "E" attribute bits in <v> elements.
+    Leo outlines will record the expansion state of all nodes.
+
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in <v> elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.
+#@+node:ekr.20101009114830.4725: *3* Plugins options
+#@+node:ekr.20050407144342: *4* @page http plugin
+
+
+
+
+#@+node:ekr.20050407144342.1: *5* @bool http_active = False
+#@+node:ekr.20050407144342.2: *5* @int  port = 8080
+#@+node:ekr.20050407144342.3: *5* @string rst_http_attributename = rst_http_attribute
+#@+node:ekr.20050812123002: *4* @page rst3 options
+#@+node:ekr.20050812123002.1: *5* Http options...
+#@+node:ekr.20050812123002.2: *6* @bool rst3_clear_http_attributes = False
+Deletes p.v.rst2_http_attributename from all nodes after writing.
+
+Deletes p.v.unknownAttributes if it then becomes empty.
+#@+node:ekr.20050812123002.3: *6* @string rst3_http_attributename = 'rst_http_attribute'
+#@+node:ekr.20050812123002.4: *6* @bool rst3_http_server_support = False
+@nocolor
+
+If False, add_node_marker and http_support_main  do nothing.  Otherwise add_node_marker does the following:
+
+1. add_node_marker writes a string using generate_node_marker.
+
+Generates 'http-node-marker-'+str(number), where number is config.node_counter
+(incremented each time add_node_marker is called.
+
+2. Enables the following code in :
+@color
+
+    if config.tag == 'open2':
+        http_map = self.http_map
+    else:
+        http_map = {}
+        config.anchormap = {}
+        # maps v nodes to markers.
+        config.node_counter = 0
+    # [snip] code to write the tree
+    if config.rst2_http_server_support:
+        self.http_map = http_map
+#@+node:ekr.20050812123002.5: *6* @string rst3_node_begin_marker = 'http-node-marker-'
+#@+node:ekr.20050812123002.6: *5* @bool rst3_massage_body = False
+True: call body_filter to massage text.
+
+Removes @ignore, @nocolor, @wrap directives.
+#@+node:ekr.20050812123002.7: *5* @bool rst3_format_headlines = True
+Used differently.  See rst2_pure_document.
+#@+node:ekr.20050812123002.8: *5* @bool rst3_write_intermediate_file = True
+#@+node:sps.20100708213227.44914: *5* @string rst3_write_intermediate_extension = .html.txt
+#@+node:ekr.20051202072010: *5* @string rst3_default_path =
+#@+node:ekr.20080923181012.1: ** @@rst ../test/new-directory/test.html
+@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+A test of creating directories.
+
+############
+html test
+############
+#@-all
+#@-leo
