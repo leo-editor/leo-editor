@@ -1767,8 +1767,9 @@ class baseFileCommands:
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
             # 2010/09/02: @edit nodes must not have children.
             # If they do, the entire tree is written to the outline.
+        ifFile   = p.isAtFileNode()
         isShadow = p.isAtShadowFileNode()
-        isThin = p.isAtThinFileNode()
+        isThin   = p.isAtThinFileNode()
         isOrphan = p.isOrphan()
         if not isIgnore: isIgnore = p.isAtIgnoreNode()
 
@@ -1776,6 +1777,7 @@ class baseFileCommands:
         if   isIgnore: forceWrite = True      # Always write full @ignore trees.
         elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
         elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+        ### elif isFile:   forceWrite = isOrphan  # Force write of orphan @file trees.
         elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
         else:          forceWrite = True      # Write all other @<file> trees.

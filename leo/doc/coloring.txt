@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7165: * @thin coloring.txt
+.. @+node:ekr.20100805165051.7165: * @file coloring.txt
 .. @@language rest
 .. @@tabwidth -4
 

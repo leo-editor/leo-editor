@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7162: * @thin plugins.txt
+.. @+node:ekr.20100805165051.7162: * @file plugins.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -254,7 +254,7 @@ which the scripts are run contains two elements:
     programs to be called that require user interaction
 
 File actions are implemented for @file nodes and all its variants
-(@file-nosent, @thin, etc.). There is also a new node type
+(@nosent, @thin, etc.). There is also a new node type
 @file-ref for referring to files purely for the purpose of
 file actions, Leo does not do anything with or to such files.
 .. @+node:ekr.20050912125735.129: *4* groupOperations.py
@@ -347,7 +347,7 @@ node::
       |
       +- http:\\*
       |
-      +- @thin *.py
+      +- @file *.py
 
 Configuration:
    The nodeActions plugin supports the following global configurations using
@@ -407,7 +407,7 @@ Patterns:
    To enable a script to run on any type of @file node (@thin, @shadow, ...),
    the pattern can start with "@files" to match on any
    external file type.  For example, the pattern "@files \*.py" will
-   match a node with the headline "@thin abcd.py".
+   match a node with the headline "@file abcd.py".
 
    The headline of the double-clicked node is matched against the patterns
    starting from the first sub-node under the "nodeActions" node to the last
@@ -431,7 +431,7 @@ Patterns:
 
    :Note:
       To prevent Leo from trying to save patterns that begin with a derived
-      file directive (@thin, @auto, ...) to disk, such as "@thin \*.py",
+      file directive (@file, @auto, ...) to disk, such as "@file \*.py",
       place the "@ignore" directive in the body of the "nodeActions" node.
 
    Pattern nodes can be placed at any level under the "nodeActions" node.
@@ -446,7 +446,7 @@ Patterns:
             |
             +- http:\\*
             |
-            +- @thin *.py
+            +- @file *.py
 
 
 .. _nA_Directives:
@@ -1055,7 +1055,7 @@ Just load the plugin, activate "Nav" tab, enter search text and press enter.
 A plugin that manipulates appearance of individual tree widget items.
 
 This plugin is mostly an example of how to change appearance of headlines - as
-such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
+such, it does a relatively mundane chore of highlighting @file, @auto, @shadow
 nodes in bold.
 .. @+node:ekr.20050912125735.2786: *3* LeoN
 LeoN is Leo over the Network. LeoN is Collaborative Leo. This is an important
@@ -1076,8 +1076,8 @@ Define various useful actions for context menus (for Qt ui)
 Examples are:
 
 - Edit in $EDITOR
-- Edit @thin node in $EDITOR (remember to do "refresh" after this!)
-- Refresh @thin node from disk (e.g. after editing it in external editor)
+- Edit @file node in $EDITOR (remember to do "refresh" after this!)
+- Refresh @file node from disk (e.g. after editing it in external editor)
 - Go to clone
 
 Here's an example on how to implement your own context menu items 
@@ -1245,11 +1245,12 @@ as the first child of the target node.
 .. @+node:ekr.20050912125735.647: *4* read_only_nodes.py
 A plugin to create and update @read-only nodes. I wanted to have the ability to
 import files in "read-only" mode, that is, in a mode where files could only be
-read by leo (not tangled), and also kept in sync with the content on the drive.
-The reason for this is for example that I have external programs that generate
-resource files. I want these files to be part of a leo outline, but I don't want
-leo to tangle or in any way modify them. At the same time, I want them to be
-up-to-date in the leo outline. This plugin has the following characteristics:
+read by Leo (not converted to an outline), and also kept in sync with the
+content on the drive. The reason for this is for example that I have external
+programs that generate resource files. I want these files to be part of a leo
+outline, but I don't want leo to tangle or in any way modify them. At the same
+time, I want them to be up-to-date in the leo outline. This plugin has the
+following characteristics:
 
 - It reads the specified file and puts it into the node content.
 

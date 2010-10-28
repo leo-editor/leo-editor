@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7163: * @thin writingPlugins.txt
+.. @+node:ekr.20100805165051.7163: * @file writingPlugins.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -124,10 +124,10 @@ Here are the step-by-step instructions:
 
 Plugins--> Templates: these show recommended ways of defining plugins.-->Template for Tk plugin with per-commander controller class
 
-2. Paste the tree somewhere else and rename it to @thin print_cp.py.
+2. Paste the tree somewhere else and rename it to @file print_cp.py.
    I copied the tree to::
 
-    Plugins-->Example code-->@thin print_cp.py
+    Plugins-->Example code-->@file print_cp.py
 
 3. Update the docstring, the __version__ constant and the << imports >> section.
    Note that unlike when using script buttons, you must have the following imports::

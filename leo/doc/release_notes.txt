@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100805165051.7177: * @thin release_notes.txt
+#@+node:ekr.20100805165051.7177: * @file release_notes.txt
 #@@language plain
 #@@tabwidth -4
 #@+all
@@ -29,8 +29,6 @@ Leo 4.0.2                         October 23, 2003
   .leo file.
 - Leo now sends full tracebacks to the log window when Leo takes an unexpected
  exception.
-- Leo now issues a more informative message when the @comment directive
-  inhibits the Untangle command.
 
 Leo 4.0.1                         October 22, 2003
 
@@ -1296,9 +1294,8 @@ I wonder if the 250 character limit on headline length should be
 rethought in light of the @url directive and long web addresses.
 #@+node:ekr.20040914103743: *5* Fixed bugs
 #@+node:ekr.20040914103359.47: *6* Disabled perfect import
-There were too many problems with this feature.  In the future Leo will have a Check Import command.
-#@+node:ekr.20040914103359.127: *6* Fixed bugs in Tangle/Untangle
-Leo wasn't always traversing the outline correctly when looking for @root nodes.
+There were too many problems with this feature. In the future Leo will have a
+Check Import command.
 #@+node:ekr.20040914103359.12: *6* Fixed Import External Files command
 If only one file was specified Leo gave an error for every character of the file name!
 #@+node:ekr.20040914103359.15: *6* Fixed parsing of minimal <preferences> tag
@@ -1385,7 +1382,8 @@ _original_ file has not been saved.
 #@+node:ekr.20040804164600.56: *6* Added 3 .cascading style sheets to the distribution list
 #@+node:ekr.20040804164600.98: *6* Fixed some bugs in g.importFromPath
 #@+node:ekr.20040804164600.102: *6* Fixed major bug in write logic
-Spurious entries in a tnodeList for @thin trees wiped out all the headlines in the @thin tree.
+Spurious entries in a tnodeList for @thin trees wiped out all the headlines in
+the @thin tree.
 #@+node:ekr.20040804164600.265: *6* Fixed bug in p.isAncestorOf
 #@+node:ekr.20040804164600.275: *6* Leo now writes only the currently selected tree when pasting to the clipboard
 # The new code only writes tnodes for the current tree when pasting to the clipboard.
@@ -3124,8 +3122,6 @@ will attempt to import such extensions from the extensions directory if normal
 imports fail. Leo is distributed with Pmw (Python Mega Widgets), path.py and
 sets.py in this directory.
 #@+node:ekr.20050313101229.2: *5* Fixed bugs...
-#@+node:ekr.20050313101229.69: *6* Fix colorizer bug for initial @nocolor in @root nodes
-Nodes containing the @root directive did not honor @nocolor directives.
 #@+node:ekr.20050313101229.74: *6* Fixed @wrap bug
 http://sourceforge.net/forum/message.php?msg_id=3035471
 
@@ -3273,21 +3269,6 @@ will attempt to import such extensions from the extensions directory if normal
 imports fail. Leo is distributed with Pmw (Python Mega Widgets), path.py and
 sets.py in this directory.
 #@+node:ekr.20050221104844.2: *5* Bugs
-#@+node:ekr.20050221104844.3: *6* Fixed crasher in Tangle
-http://sourceforge.net/forum/message.php?msg_id=2998446
-By: djsg
-
-g.create_temp_name() calls tempfile.mktemp or mkstemp(), but these return different values!
-
-mktemp returns the filename(a string); mkstemp returns a tuple (handle,filename)
-
-What I did:
-
-- Changed g.create_temp_name to g.create_temp_file.
-- Removed the file open logic in tangle.put_all_roots (now done in g.create_temp_file)
-- Rewrote g.create_temp_file so it works in both cases.
-- Create test routine for g.create_temp_file
-- Created very simple unit tests in test.leo for tangle and untangle.
 #@+node:ekr.20050221104844.12: *6* Applied patch to rst2 plugin
 http://sourceforge.net/forum/message.php?msg_id=2999651
 
@@ -3943,7 +3924,8 @@ What I did:
     - Rewrote replaceTargetFileIfDifferent in terms of atFile.rename, atFile.remove, etc.
     - Rewrote update_file_if_changed in terms of g.utils_rename, g.utils_remove, etc.
 #@+node:ekr.20050123151338: *7* Fixed bugs handling @language & @comment in atFile.scanAllDirectives & g.scanDirectives)
-Changed scanDirectives and atFile.scanDirectives so they work like tangle.scanAllDirectives.  Also added a few clarifying words in LeoDocs.leo.
+Changed scanDirectives and atFile.scanDirectives so they work like
+tangle.scanAllDirectives. Also added a few clarifying words in LeoDocs.leo.
 
 This should have worked, but didn't:
 
@@ -5320,7 +5302,7 @@ We could also consider a delete to be dangerous **if it results in a node being
 omitted from an external file.** This can happen as follows. Suppose we have the
 following outline (As usual, A' indicates that A is marked with a clone mark)::
 
-    - @thin spam.py
+    - @file spam.py
         - A'
             - B
     - Projects
@@ -5329,7 +5311,7 @@ following outline (As usual, A' indicates that A is marked with a clone mark)::
 
 Now suppose we clone B, and move the clone so the tree looks like this::
 
-    - @thin spam.py
+    - @file spam.py
         - A'
             - B'
     - Projects
@@ -5339,13 +5321,13 @@ Now suppose we clone B, and move the clone so the tree looks like this::
 
 If (maybe much later), we eliminate B' as a child of A will get::
 
-    - @thin spam.py
+    - @file spam.py
         - A'
     - Projects
         - A'
         - B
 
-B has not been destroyed, but B is gone from @thin spam.py! So in this sense deleting a clone node can also be called dangerous.
+B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 #@+node:ekr.20060206111508: *4* 4.4 beta 2
 Leo 4.4 beta 2                                              February 14, 2006
 
@@ -8924,8 +8906,8 @@ information if it has any children or if the root node contains more than 10
 non-blank lines. the external file is copied to the body of the @auto node.
 
 Leo does not write the contents of @auto trees to .leo files. In this respect,
-@auto trees work much like @thin trees. @auto trees whose root node is under the
-scope of an @ignore directive *will* be written to the .leo, just like @thin
+@auto trees work much like @file trees. @auto trees whose root node is under the
+scope of an @ignore directive *will* be written to the .leo, just like @file
 trees.
 #@+node:ekr.20070809141529: *7* Perfect import checks
 Leo performs several checks to ensure that the result of importing an external
@@ -8987,7 +8969,7 @@ read-at-auto-nodes command to update @auto nodes without having to reload the
 All present parsers are short overrides of a powerful base parser class. Thus,
 it would be simple to add support for other languages. See the node::
 
-    @thin leoImport.py-->Import-->Scanners for createOutline
+    @file leoImport.py-->Import-->Scanners for createOutline
 
 in leoPy.leo to see how easy it is to create new parsers.
 
@@ -9298,8 +9280,8 @@ information if it has any children or if the root node contains more than 10
 non-blank lines. the external file is copied to the body of the @auto node.
 
 Leo does not write the contents of @auto trees to .leo files. In this respect,
-@auto trees work much like @thin trees. @auto trees whose root node is under the
-scope of an @ignore directive *will* be written to the .leo, just like @thin
+@auto trees work much like @file trees. @auto trees whose root node is under the
+scope of an @ignore directive *will* be written to the .leo, just like @file
 trees.
 #@+node:ekr.20070809141529: *8* Perfect import checks
 Leo performs several checks to ensure that the result of importing an external
@@ -9361,7 +9343,7 @@ read-at-auto-nodes command to update @auto nodes without having to reload the
 All present parsers are short overrides of a powerful base parser class. Thus,
 it would be simple to add support for other languages. See the node::
 
-    @thin leoImport.py-->Import-->Scanners for createOutline
+    @file leoImport.py-->Import-->Scanners for createOutline
 
 in leoPy.leo to see how easy it is to create new parsers.
 
@@ -9983,8 +9965,6 @@ http://sourceforge.net/forum/message.php?msg_id=4646055
 https://sourceforge.net/forum/message.php?msg_id=4643992
 #@+node:ekr.20071206093323.31: *7* Reorganized leoImport.py
 The init base classes can now be inited in a more standard way.
-#@+node:ekr.20071206093323.32: *7* Fixed crasher when tangling @root
-http://sourceforge.net/forum/message.php?msg_id=4639426
 #@+node:ekr.20071206093323.59: *7* Fixed command lockout problem
 http://sourceforge.net/forum/message.php?msg_id=4639872
 #@+node:ekr.20071206093323.72: *7* Improved @auto code
@@ -10831,7 +10811,6 @@ I close the leo file, re-open in from the recent files menu of the
 outline that spawned it, and the @auto file is read no problems.
 #@+node:ekr.20080624093059.12: *6* Fixed recent files bug
 http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
-#@+node:ekr.20080624093059.13: *6* Fixed Tangle bugs
 #@+node:ekr.20080624093059.14: *6* Greatly increased speed of undo clone-find-all
 findAll now just creates undo info for clone-find-all for one inserted node.
 #@+node:ekr.20080624093059.15: *6* Temporary fix for php import bug
@@ -11281,7 +11260,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
 - Added much improved support for vim bindings.
 
-- Allow `v.uA's`_ in @thin and @shadow nodes.
+- Allow `v.uA's`_ in @file and @shadow nodes.
 #@+node:ekr.20080806211440.253: *5* Major code reorganizations
 - Leo now uses a sax-based parser to read .leo files.
   This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
@@ -12349,11 +12328,6 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 #@+node:ekr.20090709084001.5945: *5* Bugs
-#@+node:ekr.20090709084001.5946: *6* Fixed Tangle bugs
-- There was a blunder in standardize_name.
-- Inited print_mode in tangle.scanAllDirectives.
-- Changed .default_directory to .tangle_directory throughout leoTangle.py.
-
 #@+node:ekr.20090709084001.5968: *6* Fixed unicode problem with spell checker
 #@+node:ekr.20090709084001.6086: *6* Ensure newline at end of each @auto node
 #@+node:ekr.20090709084001.6096: *6* Fixed bugs with goto-global-line and @auto
@@ -13535,7 +13509,6 @@ Fixes bug 497332: importing xml via @data import_xml_tags does not allow dashes 
 
 For characters valid in names see:
 www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
-#@+node:ekr.20100118181428.8086: *6* Color sections references in @root trees
 #@+node:ekr.20100118181428.8090: *6* Fixed Alt-u bug and refactored k.masterKeyHandler
 Bug 404993: alt+U (universal argument) "freezes" leo state
 
@@ -13770,7 +13743,6 @@ We allow setting this vars in file reading code.
 #@+node:ekr.20100128094926.12524: *6* Eliminated node-changed marks
 These marks were just annoying.
 #@+node:ekr.20100128094926.12739: *6* Suppress path changed message in save-as and save-to
-#@+node:ekr.20100128094926.12747: *6* Fixed Tangle problem with latext files
 #@+node:ekr.20100128094926.12756: *6* Fixed Terry's unicode problem
 Deleting a range of line containing unicode characters deletes too much.
 #@+node:ekr.20100118181428.8525: *5* Features
@@ -14041,8 +14013,6 @@ What I did:
   shutils_move!!
 #@+node:ekr.20100209160132.11736: *6* Alt-right should *not* go down
 #@+node:ekr.20100209160132.11742: *6* Big change: simplified g.utils_rename
-@nocolor-node
-
 Removed call to g.makeAllNonExistentDirectories in g.utils_rename.
 
 This has global effects. Happily, there were only three callers of g.utils_rename:
@@ -14050,10 +14020,6 @@ This has global effects. Happily, there were only three callers of g.utils_renam
 - handleWriteLeoFileException: should *not* create directories.
 
 - x.rename: no longer used!
-
-- g.update_file_if_changed:
-    - called only from tangle.put_all_roots.
-    - I added call to g.makeAllNonExistentDirectories there.
 #@+node:ekr.20100209160132.11751: *6* Fixed cursor hangnail
 Non-extending cursor moves now always clear the selection.
 #@+node:ekr.20100209160132.11755: *6* Do a full redraw when contracting a cloned node
@@ -14791,9 +14757,10 @@ Traceback (most recent call last):
   File "c:\python31\lib\encodings\cp437.py", line 19, in encode
     return codecs.charmap_encode(input,self.errors,encoding_map)[0]
 
-UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position 31: character maps to <undefined>
-path changed for @thin Unicode-Â-folder/unicode-Â-test2.txt
-created: C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
+UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position
+31: character maps to <undefined> path changed for @thin
+Unicode-Â-folder/unicode-Â-test2.txt created:
+C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
 #@+node:ekr.20101025080245.5505: *6* Eliminated check python syntax commands, but retained code
 @nocolor-node
 
@@ -14960,7 +14927,7 @@ Menu did nothing. Eventually I found the Windows section under
 "Running Leo" and learned it was required to run Leo the first time
 from a console window and not by launching it from Windows.
 #@+node:ekr.20101024234745.5829: *5* DnD outline nodes
-DnD creates @thin or @auto nodes if appropriate
+DnD creates @file or @auto nodes if appropriate
 #@+node:ekr.20101024234254.6150: *5* write @edit nodes like @nosent nodes
 #@+node:ekr.20101024234254.6160: *5* Leo now uses PyEnchant to check spelling
 This is much safer than the old Aspell wrapper.

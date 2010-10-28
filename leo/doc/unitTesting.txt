@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7170: * @thin unitTesting.txt
+.. @+node:ekr.20100805165051.7170: * @file unitTesting.txt
 .. @@language rest
 .. @@tabwidth -4
 

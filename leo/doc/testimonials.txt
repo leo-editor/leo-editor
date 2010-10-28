@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7150: * @thin testimonials.txt
+.. @+node:ekr.20100805165051.7150: * @file testimonials.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -137,7 +137,7 @@ history. -- Dan Winkler
 "Leo is an interactive editor for organizing text fragments hierarchically and
 sequentially into one or more files and hierarchical folders, without arbitrary
 limits on the number and size of text fragments and the depth of the
-hierarchy...Tangle is a tool for combining hierarchically and sequentially
+hierarchy...Leo is a tool for combining hierarchically and sequentially
 organized text fragments into text files, hierarchically grouped into folders,
 with hierarchical or sequential organization of text within the files, and
 without arbitrary limits on the size and number of files and the depth of the

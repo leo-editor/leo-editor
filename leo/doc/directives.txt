@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805001344.7253: * @thin directives.txt
+.. @+node:ekr.20100805001344.7253: * @file directives.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -50,8 +50,8 @@ This section discusses the \@<file> directives. These directives create or
 import external files.
 
 **Important**: Newcomers to Leo should create external files with \@auto or
-\@thin. Use \@auto if your external files must not contain sentinel lines. Use
-\@thin otherwise. In particular, \@thin is **highly recommended** when sharing
+\@file. Use \@auto if your external files must not contain sentinel lines. Use
+\@file otherwise. In particular, \@file is **highly recommended** when sharing
 external files in a collaborative environment.
 
 **Note**: All these directive must appear in headlines.
@@ -208,13 +208,25 @@ When reading \@edit nodes, Leo reads the entire file into the \@edit node. Lines
 that look like sentinels will be read just as they are.
 
 When writing \@edit nodes, Leo writes expands section references, \@all and
-\@others just as with \@thin trees. However, Leo writes no sentinels, so the
+\@others just as with \@file trees. However, Leo writes no sentinels, so the
 structure created by sections references, \@all and \@others is not preserved.
-.. @+node:ekr.20100806170836.4403: *4* \@file <path>
+.. @+node:ekr.20100806170836.4403: *4* \@file <path> (aka @thin)
 .. index::
     pair: @file; Reference
+    pair: @thin; Reference
 
-The \@file directive is a synonym for \@thin.
+The \@file directive creates an external file containing sentinels. When writing
+\@file trees, Leo expands section references and \@all and \@others directives.
+
+When reading external files created by \@file, the sentinels allow Leo to
+recreate all aspects of the outline. In particular, Leo can update the
+outline based on changes made to the file by another editor. 
+
+**Important**: \@file is the recommended way to create and edit most files. In
+particular, using \@file nodes is **highly recommended** when sharing external
+files in a collaborative environment.
+
+The \@thin directive is a synonym for \@file.
 
 Prior to Leo 4.7, \@file worked differently from \@thin. This should not be
 a problem: Leo 4.7 can read all external files written by Leo 4.6.
@@ -249,25 +261,11 @@ sentinels, and a **private** file containing sentinels.
 When reading an \@shadow node, Leo uses a brilliant algorithm devised by
 Bernhard Mulder that compares the public and private files, and then updates the
 outline based on changes to the *public* file. In this way, \@shadow provides
-many of the benefits of \@thin trees without writing sentinels in the (public)
+many of the benefits of \@file trees without writing sentinels in the (public)
 external file.
 
 Leo can do an initial import of \@shadow trees by parsing the corresponding
 public file, exactly as is done for \@auto nodes.
-.. @+node:ekr.20100806170836.4401: *4* \@thin <path>
-.. index::
-    pair: @thin; Reference
-
-The \@thin directive creates an external file containing sentinels. When writing
-\@thin trees, Leo expands section references and \@all and \@others directives.
-
-When reading external files created by \@thin, the sentinels allow Leo to
-recreate all aspects of the outline. In particular, Leo can update the
-outline based on changes made to the file by another editor. 
-
-**Important**: \@thin is the recommended way to create and edit most files. In
-particular, using \@thin nodes is **highly recommended** when sharing external
-files in a collaborative environment.
 .. @+node:ekr.20100806170836.4411: *3* Part 2: \@all and \@others
 These control how Leo places text when writing external files.
 They are two of the most important directives in Leo.
@@ -283,7 +281,7 @@ They are two of the most important directives in Leo.
     Copies *all* descendant nodes to the external file. Use \@all to place
     unrelated data in an external file.
 
-    The \@all directive is valid only in the body of \@thin trees.
+    The \@all directive is valid only in the body of \@file trees.
 
     Within the range of an \@all directive, Leo ignores the \@others directive
     and section references, so Leo will not complain about orphan nodes.
@@ -361,7 +359,7 @@ Nevertheless, these sentinels can be useful in special situations.
 
 \@comment <1, 2 or three comment delims>
 
-    Sets the comment delimiters in \@thin, \@file and \@shadow files.
+    Sets the comment delimiters in \@file and \@shadow files.
     **Important**: Use \@comment for unusual situations only. In most cases, you
     should use the \@language directive to set comment delimiters.
 
@@ -655,10 +653,6 @@ and they must start at the leftmost column of the node.
 
    If no \@path directives are in effect, the default path prefix is
    the directory containing the .leo file.
-
-   Within \@root trees, the default_tangle_directory setting is used
-   as the default if it exists, otherwise the directory containing
-   the .leo file is used as the default.
 
 .. index::
     pair: @tabwidth; Reference

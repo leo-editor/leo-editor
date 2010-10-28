@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7160: * @thin theory.txt
+.. @+node:ekr.20100805165051.7160: * @file theory.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -51,8 +51,7 @@ response to menu commands.
 controllers mostly handle menu commands. Commanders create subcommanders to
 handle complex commands. The atFile class reads and writes files derived from
 \@file trees. The LeoFind class handles the Find and Change commands. The
-leoImportCommands class handles the Import and Export commands, the
-tangleCommands class handles the Tangle and Untangle commands and the undoer
+leoImportCommands class handles the Import and Export commands, and the undoer
 class handles the Undo command. Other classes could be considered controller
 classes.
 
@@ -208,103 +207,6 @@ of self.search_text indicate the range of text to be searched. Searching
 headline and body text simultaneously is complicated. The selectNextVnode()
 method handles the many details involved by setting self.s_text and its insert
 and sel attributes.
-.. @+node:EKR.20040524104904.267: *3* @rst-ignore Tangle and untangle commands
-This section describes Leo's explicit Tangle and Untangle commands. Such
-commands operate only on @root and @unit trees. The previous chapter discusses
-the implicit Tangle on Write/Untangle on Read processes used to read and write
-@file trees.
-
-The Tangle command translates the selected @root tree into one or more
-well-formatted C source files. The outline should contain directives, sections
-references and section definitions, as described in Chapter 4. The Untangle
-command is essentially the reverse of the Tangle command. The Tangle command
-creates a external file from an @root tree; the Untangle command incorporates
-changes made to external files back into the @root tree.
-
-The Tangle command operates in two passes. The first pass discovers the complete
-definitions of all sections and places these definitions in a symbol table. The
-first pass also makes a list of root sections. Definitions can appear in any
-order, so we must scan the entire input file to know whether any particular
-definition has been completed.
-
-This second pass creates one file for each @root node. Tangle rescans each
-section in the list of roots, copying the root text to the output and replacing
-each section reference by the section's definition. This is a recursive process
-because any definition may contain other references. We can not allow a section
-to be defined in terms of itself, either directly or indirectly. We check for
-such illegally recursive definitions in pass 2 using the section stack class.
-Tangle indicates where sections begin and end using comment lines called
-sentinel lines. The this part of the appendix discusses the format of the
-sentinels output by the Tangle command.
-
-The key design principle of the Tangle command is this::
-
-    Tangle must output newlines in a context-free manner.
-
-That is, Tangle must never output conditional newlines, either directly or
-indirectly. Without this rule Untangle could not determine whether to skip or
-copy newlines.
-
-The Tangle command increases the indentation level of a section expansion the
-minimum necessary to align the section expansion with the surrounding code. In
-essence, this scheme aligns all section expansions with the line of code in
-which the reference to the section occurs. In some cases, several nested
-sections expansions will have the same indentation level. This can occur, for
-example, when a section reference in an outline occurs at the left margin of the
-outline.
-
-This scheme is probably better than more obvious schemes that indent more
-"consistently." Such schemes would produce too much indentation for deeply
-nested outlines. The present scheme is clear enough and avoids indentation
-wherever possible, yet indents sections adequately. End sentinel lines make this
-scheme work by making clear where the expansion of one section ends and the
-expansion of a containing section resumes.
-
-Tangle increases indentation if the section reference does not start a line.
-Untangle is aware of this hack and adjusts accordingly. This extra indentation
-handles several common code idioms, which otherwise would create under-indented
-code. In short, Tangle produces highly readable output, given the necessity
-of preserving newlines for Untangle.
-
-Untangle is inherently complex. It must do a perfect job of updating the
-outline, especially whitespace, from expansions of section definitions created
-by the Tangle command. Such expansions need not be identical because they may
-have been generated at different levels of indentation. The Untangle command
-can not assume that all expansions of a section will be identical in the derived
-file; within the external file, the programmer may have made incompatible changes
-to two different expansions of the same section. Untangle must check to see
-that all expansions of a section are "equivalent". As an added complication,
-external files do not contain all the information found in @root trees.
-@root trees may contain headlines that generate no code at all. Also, an
-outline may define a section in several ways: with an @c or @code
-directive or with a section definition line. To be useful, Untangle must handle
-all these complications flawlessly. The this part of the appendix discusses the
-various conventions used in the sentinels output by the Tangle command.
-These conventions allow the Untangle command to recreate whitespace
-correctly.
-
-Untangle operates in two passes. The first pass finds definitions in the
-external file and enters them into the **Untangle Symbol Table**, or UST.
-Definitions often include references to other sections, so definitions often
-include nested definitions of referenced sections. The first pass uses a
-definition stack to keep track of nested definitions. The top of the stack
-represents the definition following the latest reference, except for the very
-first entry pushed on the stack, which represents the code in the outline that
-contains the @root directive. The stack never becomes empty because of the
-entry for the @root section. All definitions of a section should
-match--otherwise there is an inconsistent definition. This pass uses a forgiving
-compare routine that ignores differences that do not affect the meaning of a
-program.
-
-The second pass of Untangle enters definitions from the outline into the
-**Tangle Symbol Table**, or TST. The second pass simultaneously updates all
-sections in the outline whose definition in the TST does not match the
-definition in the UST. The central coding insight of the Untangle command is
-this:  **the second pass of Untangle is almost identical to the first pass of
-Tangle**. That is, Tangle and Untangle share key parts of code, namely the
-skip_body method and its allies. Just when skip_body enters a definition
-into the symbol table, all the information is present that Untangle needs to
-update that definition.
 .. @+node:EKR.20040524104904.268: *3* Unicode
 Leo uses unicode objects in vnodes to denote headline and body text.
 Note that unicode strings have no encoding; only plain strings have encodings.

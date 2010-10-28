@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7157: * @thin scripting.txt
+.. @+node:ekr.20100805165051.7157: * @file scripting.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -297,7 +297,7 @@ or::
 
 Using the list is simpler, but list comprehensions can be more flexible.  For example::
 
-    aList = [p.copy().h for p in c.all_positions() if p.h.startswith('@thin')]
+    aList = [p.copy().h for p in c.all_positions() if p.h.startswith('@file')]
     print(aList)
 .. @+node:ekr.20040403173920.10: *4* c.all_positions & c.all_unique_positions
 The c.all_positions generator returns a list of all positions in the outline.
@@ -446,10 +446,7 @@ Your scripts can get the following ivars::
         'page_width',
         'page_width',
         'tab_width',
-        'tangle_batch_flag',
-        'tangle_directory',
         'target_language',
-        'untangle_batch_flag',
         'use_header_flag',
     )
 
@@ -942,7 +939,7 @@ For example::
 
 In particular, d.get('path') returns the full, absolute path created by all
 \@path directives that are in ancestors of node p. If p is any kind of @file node
-(including @thin, @auto, @nosent, @shadow, etc.), the following script will
+(including @file, @auto, @nosent, @shadow, etc.), the following script will
 print the full path to the created file::
 
     path = d.get('path')

@@ -1,9 +1,10 @@
 Python list based description of trees ('objtrees')
 ===================================================
 
-Positions and trees are objects that exists only within Leo instance. However, trees can have "serialized"
-representation in .leo xml files (where structure is described by xml hierarchy), or @thin nodes (where
-structure is described by sentinels).
+Positions and trees are objects that exists only within Leo instance. However,
+trees can have "serialized" representation in .leo xml files (where structure is
+described by xml hierarchy), or @file nodes (where structure is described by
+sentinels).
 
 Sometimes, both formats are too heavyweight. Both xml and "flat" text files involve nontrivial callback-based
 (or worse) parsing. Luckily, trees can be represented naturally with python lists, which can be pickled and 
@@ -64,20 +65,22 @@ the tree of the clone (since it already has a tree of its own!).
 Using objtrees for caching
 ==========================
 
-Objtrees are not without real life applications. They are used to implement the content hash 
-based node cache that radically speeds up Leo's startup (effectively eliminating the delay
-caused by Leo parsing @thin / @auto nodes - something which made trees with several @auto / @thin
-nodes intolerable in practice. The trick here relies on the fact that:
+Objtrees are not without real life applications. They are used to implement the
+content hash based node cache that radically speeds up Leo's startup
+(effectively eliminating the delay caused by Leo parsing @file / @auto nodes -
+something which made trees with several @auto or @file nodes intolerable in
+practice. The trick here relies on the fact that:
 
-- The whole content of external file (say, foo.py) can be described by calculating an md5sum of the file
-- The same external file content will always create the same leo tree.
+- The whole content of external file (say, foo.py) can be described by
+calculating an md5sum of the file - The same external file content will always
+create the same leo tree.
 
 In brief, 
 
-- When we are reading in a @thin node foo.cpp, we first read in the whole file and calculate
+- When we are reading in a @file node foo.cpp, we first read in the whole file and calculate
   md5sum of its contents. Let's say the md5 sum is 8095e2dabbfe90b349066209fb090df6. 
 - Leo tries to look for existing cached version in ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6. Initially, it doesn't exist,
-  so Leo executes the standard (slow) @thin code parsing routine and creates the tree normally
+  so Leo executes the standard (slow) @file code parsing routine and creates the tree normally
 - After creating the tree, Leo executes g.tree_at_position and pickles the objtree to file 
   ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
 - Now, on the next startup, Leo *will* find the cached pickle, read it in and execute `g.create_tree_at_vnode`

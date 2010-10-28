@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7155: * @thin commands.txt
+.. @+node:ekr.20100805165051.7155: * @file commands.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -40,7 +40,6 @@ then continues with a discussion of commands in each of Leo's menus.
 .. _`Clones and views`:                                 intro.html#clones-views
 .. _`Creating script buttons`:                          scripting.html#creating-script-buttons
 
-.. .. _`Tangling @root trees with the Tangle commands`:    directives.html#tangling-root-trees-with-the-tangle-commands
 .. @+node:ekr.20060227102028.111: *3* Autocompletion
 Typing a period when @language python is in effect starts autocompletion. Typing
 Return or Control-g (keyboard-quit) exits autocompletion.
@@ -551,7 +550,6 @@ The following commands invoke Leo's outline commands::
     insert-node
     mark
     mark-changed-items
-    mark-changed-roots
     mark-subheads
     move-outline-down
     move-outline-left
@@ -627,13 +625,7 @@ Here are various miscellaneous minibuffer commands::
     spell-change-then-find
     spell-find
     spell-ignore
-    tangle
-    tangle-all
-    tangle-marked
     toggle-angle-brackets
-    untangle
-    untangle-all
-    untangle-marked
     weave
     write-abbrev-file
     write-at-file-nodes
@@ -704,8 +696,6 @@ of handling the Open With menu.
 The Import commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:
 
 -   The Import to @file command creates an @file node from a file.
-
--   The Import to @root command creates an @root node from a file.
 
 -   The Import CWEB Files command creates an @file node from a `CWEB`_ file.
 
@@ -972,7 +962,7 @@ each line as full as possible, up to the @pagewidth setting. A paragraph is
 delimited by blank lines, Leo directives, and (of course) start and end of text
 in a node. The width of the line used by the reformatting operation is governed
 by @pagewidth and the indentation that would be applied to the node when
-tangled (as part of a @root) or written (as part of a @file).
+Leo writes the file.
 
 The command operates on the paragraph containing the insert cursor. If the
 insert cursor is on a blank line or directive, nothing happens. If the cursor is
@@ -1040,14 +1030,17 @@ highlights the range of matched characters without changing the cursor.
 -   The Expand All command expands all the nodes of the entire tree.
 -   The Contract Parent contracts the selected node's parent and selects the parent node.
 .. @+node:EKR.20040524104904.149: *4*  Marking nodes
--   The Mark Headline command marks a headline with a red marker  near the leader characters.
--   The Unmark Headline command removes such a mark.
--   The Mark Subheads command marks all offspring of the currently selected node.
--   The Unmark All command removes the marks from the entire tree.
--   The Mark Changed Items command marks all headlines whose headline or
-    body text has been changed since the file was last saved.
--   The Mark Changed Roots command marks all changed headlines whose body text contains the @root directive.
-    This command is especially useful with the Tangle Marked command.
+- The Mark Headline command marks a headline with a red marker near the leader
+characters.
+
+- The Unmark Headline command removes such a mark.
+
+- The Mark Subheads command marks all offspring of the currently selected node.
+
+- The Unmark All command removes the marks from the entire tree.
+
+- The Mark Changed Items command marks all headlines whose headline or body text
+  has been changed since the file was last saved.
 .. @+node:EKR.20040524104904.150: *4*  Moving, sorting and reorganizing nodes
 -   The Move Up, Move Down, Move Left and Move Right commands move the currently selected node.
 

@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100808120531.4280: * @thin outline-commands.txt
+.. @+node:ekr.20100808120531.4280: * @file outline-commands.txt
 .. @@language rest
 .. @@tabwidth -4
 

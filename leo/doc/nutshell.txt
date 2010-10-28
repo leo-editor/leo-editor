@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100808120531.4283: * @thin nutshell.txt
+.. @+node:ekr.20100808120531.4283: * @file nutshell.txt
 .. @@language rest
 .. @@tabwidth -4
 

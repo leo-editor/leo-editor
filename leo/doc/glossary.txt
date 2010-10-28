@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7147: * @thin glossary.txt
+.. @+node:ekr.20100805165051.7147: * @file glossary.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -63,7 +63,7 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
     pair:  @all; Glossary
 
 \@all
-    Copies the body text of all nodes in an @thin tree to the external file.
+    Copies the body text of all nodes in an @file tree to the external file.
 
 .. index::
     pair: @asis; Glossary
@@ -146,8 +146,12 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 
 \@file <filename>
 
-    Creates an external file containing Leo sentinels.
-    A synonym for @thin.
+    Creates an external file containing sentinels. When writing \@file
+    trees, Leo expands section references and \@all and \@others directives.
+
+    **Important**: \@file is the recommended way to create and edit most files.
+    Using \@file trees is **highly recommended** when sharing external files in
+    a collaborative environment.
 
 .. index::
     pair: @first; Glossary
@@ -229,7 +233,7 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 \@others
 
     Copies the body text of all nodes *except* section definition nodes in an
-    @thin tree to the corresponding external file.
+    \@file tree to the corresponding external file.
 
 .. index::
     pair: @pagewidth; Glossary
@@ -265,12 +269,7 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 
 \@thin <filename>
 
-    \@thin creates an external file containing sentinels. When writing \@thin
-    trees, Leo expands section references and \@all and \@others directives.
-
-    **Important**: \@thin is the recommended way to create and edit most files.
-    Using \@thin trees is **highly recommended** when sharing external files in
-    a collaborative environment.
+    A synonym for @file.
 
 .. index::
     pair: @wrap; Glossary
@@ -375,13 +374,10 @@ Doc part
 Escape convention
 
     A convention for representing sequences of characters that would otherwise
-    have special meaning. Leo has only one such convention: in @root trees only,
-    @@ in the leftmost column of a code part stands for a single @ character.
-
-    **Important**: Leo does not support escape conventions used by `noweb`_. Any
-    line containing matched <\< and >\> is a section reference, regardless of
-    context. To use <\< and >\> as ordinary characters, place them on separate
-    lines.
+    have special meaning. **Important**: Leo does not support escape conventions
+    used by `noweb`_. Any line containing matched <\< and >\> is a section
+    reference, regardless of context. To use <\< and >\> as ordinary characters,
+    place them on separate lines.
 
 .. index::
     pair: Expand; Glossary
@@ -478,13 +474,13 @@ Organizer node
 Orphan node
 
     A node that would not be copied to a external file. Orphan nodes can arise
-    because an @thin tree has no @others or @all directives. Sections that are
+    because an @file tree has no @others or @all directives. Sections that are
     defined but not used also create orphan nodes.
 
-    Leo issues a warning when attempting to write an @thin tree containing
+    Leo issues a warning when attempting to write an @file tree containing
     orphan nodes, and does not save the external file. No information is lost;
-    Leo saves the information in the @thin tree in the .leo file. Leo will load
-    the @thin tree from the .leo file the next time Leo opens the .leo file.
+    Leo saves the information in the @file tree in the .leo file. Leo will load
+    the @file tree from the .leo file the next time Leo opens the .leo file.
 
 .. index::
     pair: Outline; Glossary

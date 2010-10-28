@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100821182153.4344: * @thin screen-shots.txt
+.. @+node:ekr.20100821182153.4344: * @file screen-shots.txt
 .. @@language rest
 .. @@tabwidth -4
 .. @+all

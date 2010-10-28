@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7176: * @thin other_docs.txt
+.. @+node:ekr.20100805165051.7176: * @file other_docs.txt
 .. @@language rest
 .. @@tabwidth -4
 .. @+all
@@ -293,9 +293,8 @@ headlines start with ‘@’ are special nodes. Several **special nodes** indica
 root of a tree that generates a derived file::
 
     @asis filename    Creates a derived file. Ignores all markup in body text.
-    @file filename    Creates a derived file. Duplicates outline structure in .leo file.
+    @file filename    Creates a derived file. External files contain all outline structure.
     @nosent filename  Creates a derived file without sentinels.
-    @thin filename    (Recommended) Like @file, but thin derived files contain all outline structure.
 
 Leo recognizes several other special nodes::
 
@@ -375,7 +374,6 @@ references**, **directives** and **doc parts**.
         @others                 Inserts body text of all descendents except definition nodes. 
         @pagewidth n            Sets page width for justifying comments in doc parts.
         @path path              Sets prefix to use in relative file names in @file nodes, etc.
-        @root filename          Marks the root of a tree that creates an external file.
         @raw, @end_raw          Inhibits sections references in a range of text. (@file only.)
         @tabwidth n             Sets width of tabs (negative widths convert tabs to spaces.)
         @wrap, @nowrap          Controls wrapping of text in body pane.
@@ -599,8 +597,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
 http://groups.google.com/group/leo-editor/browse_thread/thread/5c1ef1abcc01ef50#
 .. @+node:ekr.20101025080245.5766: *4* @url Leo screencast on utube
 http://groups.google.com/group/leo-editor/browse_thread/thread/ce7353ce5614efca#
-.. @+node:ekr.20101025080245.5767: *4* @url @root must disappear
-http://groups.google.com/group/leo-editor/browse_thread/thread/15f05a216697ac21#
 .. @+node:ekr.20101025080245.5768: *4* @url revising chapter 6 (design chapter)
 http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#
 .. @+node:ekr.20101025080245.5769: *4* @url ** p.deletePositionsInList

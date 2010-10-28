@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7175: * @thin whatsnew.txt
+.. @+node:ekr.20100805165051.7175: * @file whatsnew.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -40,7 +40,7 @@ What's New in Leo
 .. _`simplest possible`: http://groups.google.com/group/leo-editor/browse_thread/thread/8b659c96720afd53/628a09779ca9e8c6
 .. _`org-mode`: http://orgmode.org/
 
-Leo now writes \@thin files with the `simplest possible`_ sentinel lines.
+Leo now writes \@file files with the `simplest possible`_ sentinel lines.
 
     - Eliminated \@-node sentinels.
     - Eliminated \@nl and \@nonl sentinels.
@@ -53,7 +53,7 @@ structure in external files.
 .. @+node:ekr.20101025080245.6078: *4* Drag and drop
 The Qt Gui now supports drag and drop in Leo outlines.
 
-You can drag files into Leo.  Leo will create \@thin or \@auto nodes if appropriate.
+You can drag files into Leo.  Leo will create \@file or \@auto nodes if appropriate.
 .. @+node:ekr.20101025080245.5980: *4* Scripting improvements
 .. _`p.deletePositionsInList`: http://groups.google.com/group/leo-editor/browse_thread/thread/0aa8d9d17f6300b8#
 .. _`g.findTestScript`: http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
@@ -413,7 +413,7 @@ This makes Leo a superb environment for using rST.
 
 - Added much improved support for vim bindings.
 
-- Allow `v.uA's`_ in @thin and @shadow nodes.
+- Allow `v.uA's`_ in @file and @shadow nodes.
 .. @+node:ekr.20080806211440.253: *4* Major code reorganizations
 - Leo now uses a sax-based parser to read .leo files.
   This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
@@ -656,8 +656,8 @@ information if it has any children or if the root node contains more than 10
 non-blank lines. the external file is copied to the body of the @auto node.
 
 Leo does not write the contents of @auto trees to .leo files. In this respect,
-@auto trees work much like @thin trees. @auto trees whose root node is under the
-scope of an @ignore directive *will* be written to the .leo, just like @thin
+@auto trees work much like @file trees. @auto trees whose root node is under the
+scope of an @ignore directive *will* be written to the .leo, just like @file
 trees.
 .. @+node:ekr.20070809141529: *5* Perfect import checks
 Leo performs several checks to ensure that the result of importing an external
@@ -719,7 +719,7 @@ read-at-auto-nodes command to update @auto nodes without having to reload the
 All present parsers are short overrides of a powerful base parser class. Thus,
 it would be simple to add support for other languages. See the node::
 
-    @thin leoImport.py-->Import-->Scanners for createOutline
+    @file leoImport.py-->Import-->Scanners for createOutline
 
 in leoPy.leo to see how easy it is to create new parsers.
 

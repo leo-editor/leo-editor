@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7167: * @thin zodb.txt
+.. @+node:ekr.20100805165051.7167: * @file zodb.txt
 .. @@language rest
 .. @@tabwidth -4
 

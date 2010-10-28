@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7153: * @thin outlines.txt
+.. @+node:ekr.20100805165051.7153: * @file outlines.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -92,9 +92,22 @@ This representation is the same as Leo's .leo file format with some information
 deleted. You may copy this text representation into a body pane (or into any
 other text editor) using Edit->Paste in the menus, Ctrl-V, or Alt-X paste-text.
 
-**Warning**: If you want to preserve the "cloned" attribute of a node, or want to paste the node as a clone of the node you cut or copied, use the ``past-retaining-clones`` command, which in the Outline menu is called "Paste Node as Clone".  The ``paste-node`` command instead creates a new, distinct version of the node you previously cut or copied, though if there were descendant nodes which were clones of each other, the new version will have parallel, distinct nodes that are also clones of each other (just not of the originals).  You may paste a node between .leo files, but there can be no clone relationship across files.
+**Warning**: If you want to preserve the "cloned" attribute of a node, or want
+to paste the node as a clone of the node you cut or copied, use the
+``past-retaining-clones`` command, which in the Outline menu is called "Paste
+Node as Clone". The ``paste-node`` command instead creates a new, distinct
+version of the node you previously cut or copied, though if there were
+descendant nodes which were clones of each other, the new version will have
+parallel, distinct nodes that are also clones of each other (just not of the
+originals). You may paste a node between .leo files, but there can be no clone
+relationship across files.
 
-There are places to which you are prevented from ``paste-retaining-clones``, because it would cause a node to become a parent of itself, and thus cause outline traversals like ``@thin`` expansion to loop until they consumed all memory and crashed the program.  The Leo outline is thus mathematically a *directed acyclic graph*: clones make it more flexible than a tree, but not a generalized graph.
+There are places to which you are prevented from ``paste-retaining-clones``,
+because it would cause a node to become a parent of itself, and thus cause
+outline traversals like ``@file`` expansion to loop until they consumed all
+memory and crashed the program. The Leo outline is thus mathematically a
+*directed acyclic graph*: clones make it more flexible than a tree, but not a
+generalized graph.
 .. @+node:EKR.20040524104904.44: *4* Moving & Reorganizing nodes
 The ``move-outline-up``, ``move-outline-down``, ``move-outline-left``, and  ``move-outline-right`` commands move the currently
 selected node. In the Outline->Move... menu, they're called Move Up, Move Down, Move Left and Move Right; they're bound to Control-U, Control-D, Control-L and Control R.  The ``promote`` command makes all the children of a node
@@ -127,7 +140,7 @@ clone.
 You can mark nodes in several ways:
 
 - With the Mark commands: ``mark``, ``mark-changed-items``,
-  ``mark-changed-roots``, ``mark-subheads``. These are found in the
+  ``mark-subheads``. These are found in the
   Outline->Mark... submenu; ``mark`` is bound to Control-M .
 
 - With the Find or Change commands. The "mark changes" and "mark finds" options
@@ -138,10 +151,6 @@ You can mark nodes in several ways:
   character will put focus on that option, and then the space bar will toggle
   the option. You can also change the options by clicking on them in the Find
   tab.
-
-- With the ``untangle``, ``untangle-all`` and ``untangle-marked`` commands:
-  nodes altered because of changes to external files get marked. These commands
-  are available in the File->Untangle... submenu.
 
 The ``goto-next-marked`` command selects the next marked node, if any; it is available in the Outline->Go to... submenu.
 

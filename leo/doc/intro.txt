@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7146: * @thin intro.txt
+.. @+node:ekr.20100805165051.7146: * @file intro.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -181,7 +181,7 @@ Minibuffer
     command name and then <return>. To type a search string, type <ctrl-f>
     followed by the search string and then <return>. For full details, see
     `Using Leo's Commands`_.
-.. @+node:ekr.20091130111843.6846: *3* External files and @thin nodes
+.. @+node:ekr.20091130111843.6846: *3* External files and @file nodes
 .. index::
     pair: External file; Tutorial
     pair: .leo file; Tutorial
@@ -193,13 +193,13 @@ allows you to store parts of your outline data **external files**, that is,
 other files on your file system.
 
 .. index::
-    pair: @thin; Tutorial
+    pair: @file; Tutorial
 
-**@thin nodes** create external files. \@thin nodes have headlines starting with
-\@thin followed by a file name. Some examples::
+**@file nodes** create external files. \@file nodes have headlines starting with
+\@file followed by a file name. Some examples::
 
-    @thin leoNodes.py
-    @thin ../../notes.text
+    @file leoNodes.py
+    @file ../../notes.text
 
 .. index::
     pair: Load directory; Tutorial
@@ -211,19 +211,19 @@ Leo reads and writes external files automatically when you open or save your Leo
 outline:
 
 - When you open an outline (.leo file) Leo reads all the external files created
-  by the \@thin nodes in the outline. If you have changed an external file
-  outside of Leo, Leo will update the corresponding \@thin tree to reflect those
+  by the \@file nodes in the outline. If you have changed an external file
+  outside of Leo, Leo will update the corresponding \@file tree to reflect those
   changes when Leo next opens the outline.
 
 .. index::
     pair: Dirty node; Tutorial
 
-- When you save your outline, Leo writes all **dirty** \@thin nodes. An \@thin
+- When you save your outline, Leo writes all **dirty** \@file nodes. An \@file
   is dirty if the node or any of its descendant nodes has changed.
   **Important**: When Leo writes an external file, Leo writes all the essential
-  information in the \@thin tree to the external file, *not* to the .leo file.
+  information in the \@file tree to the external file, *not* to the .leo file.
   The only nodes that gets written to the .leo file are nodes that are not
-  contained in any \@thin tree.
+  contained in any \@file tree.
 .. @+node:ekr.20091201091455.6809: *3* Creating external files from outlines
 .. index::
     pair: Leo markup; Tutorial
@@ -231,12 +231,12 @@ outline:
 We come now to one of Leo's most important and unusual features. When Leo writes
 an external file, it does so in a flexible manner, directed by **outline-based
 markup**. This markup tells Leo exactly how to create the external file from an
-\@thin node.
+\@file node.
 
 .. index::
     pair: Outline order; Tutorial
 
-The **obvious** way to write an external file would be to write the @thin node
+The **obvious** way to write an external file would be to write the @file node
 itself followed by all the descendant nodes in **outline order** (the order in
 which nodes appear in the outline). But Leo does *not* write external files
 exactly this way.
@@ -245,8 +245,8 @@ exactly this way.
     pair: @all; Tutorial
     pair: @others; Tutorial
 
-Yes, Leo does indeed start by writing the \@thin node itself. But Leo writes the
-@thin node's descendants only when it sees one of three kinds of Leo
+Yes, Leo does indeed start by writing the \@file node itself. But Leo writes the
+@file node's descendants only when it sees one of three kinds of Leo
 markup: section references, the @others directive and the @all directive.
 We'll discuss these three kinds of markup in the next section.
 
@@ -357,7 +357,7 @@ Newcomers to Leo frequently ask when to use the \@others directive and when to
 use sections. It is good style to use section references only when the order of
 text within a external file matters. For example, Python programmers put
 docstrings and imports at the start of files. So the body text of
-\@thin nodes typically look something like this::
+\@file nodes typically look something like this::
 
     << docstring >>
     \@language python
@@ -585,14 +585,14 @@ directive is in effect throughout a tree, unless overridden in some subtree.
 \@path <path>
 
     This directive is a convenience.  Rather than specifying long paths
-    in @thin nodes, you can specify a path in an ancestor @path node.
+    in @file nodes, you can specify a path in an ancestor @path node.
     For example, suppose three nodes have the following headlines::
 
         @path a
             @path b
-                @thin c/d.py
+                @file c/d.py
 
-    Because of the ancestor @path nodes, the @thin node creates the file
+    Because of the ancestor @path nodes, the @file node creates the file
     a/b/c/d.py
 
 .. index::
@@ -657,10 +657,10 @@ Using Leo quickly becomes second nature:
 - You can use Leo like any ordinary outliner, as a filing cabinet, but Leo's
   clones makes this filing cabinet much more flexible and useful than usual.
 
-- You create external files using \@thin trees. Within \@thin trees, you use
+- You create external files using \@file trees. Within \@file trees, you use
   section references and the \@others directive to tell Leo how to write nodes
   to the external file. Directives such as \@tabwidth and \@language provide other
-  information to Leo. Leo's \@thin trees allow you to organize your scripts
+  information to Leo. Leo's \@file trees allow you to organize your scripts
   and programs with Leo's outline structure.
 
 - You can execute Python scripts from any node in a Leo outline. Leo scripts

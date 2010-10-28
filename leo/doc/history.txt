@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7159: * @thin history.txt
+.. @+node:ekr.20100805165051.7159: * @file history.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -66,7 +66,7 @@ text within the outline, as MORE does, I decided to use a separate body pane.
 
 I hacked a translator called M2C which allowed me to use MORE to write
 real code. I would write code in MORE, copy the text to the clipboard in
-MORE format, then run M2C, which would tangle the outline into C code.
+MORE format, then run M2C, which would convert the outline into C code.
 This process was useful, if clumsy. I called the language used in the outline
 SWEB, for simplified CWEB. Much later Leo started supporting the noweb
 language.
@@ -117,11 +117,11 @@ this version as the first version to support @file and automatic tangling
 and untangling.
 .. @+node:ekr.20050902105852.7: *3* Untangling @file is easy!
 The biggest surprise in Leo's history was the realization it is **much** easier
-to untangle files derived from @file. Indeed, @root creates all sorts of
-problems that just disappear when using @file. The new Python version of Leo
-became fully operational in early 2002. It was probably about this time that I chose
-noweb as Leo's preferred markup language. My decision not to support noweb's
-escape sequences made Leo's read code much more robust.
+to untangle files derived from @file. Indeed, the old tangle code created all
+sorts of problems that just disappear when using @file. The new Python version
+of Leo became fully operational in early 2002. It was probably about this time
+that I chose noweb as Leo's preferred markup language. My decision not to
+support noweb's escape sequences made Leo's read code much more robust.
 .. @+node:ekr.20050902105852.8: *3* Leo 3.x: Continuous improvement
 I spent 2002 taking advantages of Python's tremendous power and safety.
 Many improvements were at last easy enough to do:
@@ -150,7 +150,7 @@ was on a completely firm foundation.
 Leo first used gnx's (global node indices) as a foolproof way of associating
 nodes in .leo files with nodes in external files. At the time, there was
 still intense discussions about protecting the logical consistency of
-outlines. @thin was later to solve all those problems, but nobody knew
+outlines. \@thin was later to solve all those problems, but nobody knew
 that then.
 .. @+node:ekr.20050902105852.11: *3* Leo 4.2: Complete at last
 Leo 4.2 Final went out the door September 20, 2004.

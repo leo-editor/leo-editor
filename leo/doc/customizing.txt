@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7158: * @thin customizing.txt
+.. @+node:ekr.20100805165051.7158: * @file customizing.txt
 .. @@language rest
 .. @@tabwidth -4
 

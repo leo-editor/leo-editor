@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7173: * @thin atShadow.txt
+.. @+node:ekr.20100805165051.7173: * @file atShadow.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -23,7 +23,7 @@ Using @shadow
 #############
 
 This chapter describes an important new feature that debuted in Leo 4.5 b2: @shadow trees.
-These trees combine the benefits of @auto, @thin, @file and @nosent trees:
+These trees combine the benefits of @auto, @file and @nosent trees:
 
 - The (public) files created by @shadow trees contain no sentinels, but
 - Leo is able to update @shadow trees in the Leo outline based on changes made
@@ -47,17 +47,18 @@ Using @shadow trees is the best choice when you want to have the full power of
 Leo's outlines, but wish to retain the source files in their original format,
 without Leo sentinels (markup) in comments in the source file. 
 
-Leo's @file and @thin trees create external files containing comments called sentinels.
-These sentinel lines allow Leo to recreate the outlines structure of @file and @thin trees.
-Alas, many people and organizations find these added sentinel lines unacceptable.
-@nosent nodes create external files without sentinels, but at a cost:
-Leo can not update @nosent trees when the corresponding external file is changed outside of Leo.
+Leo's @file trees create external files containing comments called sentinels.
+These sentinel lines allow Leo to recreate the outlines structure of @file
+trees. Alas, many people and organizations find these added sentinel lines
+unacceptable. \@nosent nodes create external files without sentinels, but at a
+cost: Leo can not update \@nosent trees when the corresponding external file is
+changed outside of Leo.
 
-@shadow trees provide a way around this dilemma.
-When Leo saves an @shadow tree, it saves two copies of the tree:
-a **public** file without sentinels, and a **private** file containing sentinels.
-Using Bernhard Mulder's brilliant **update algorithm**,
-Leo is able to update @shadow trees in the Leo outline based *solely* on changes to public files.
+\@shadow trees provide a way around this dilemma. When Leo saves an \@shadow
+tree, it saves two copies of the tree: a **public** file without sentinels, and
+a **private** file containing sentinels. Using Bernhard Mulder's brilliant
+**update algorithm**, Leo is able to update @shadow trees in the Leo outline
+based *solely* on changes to public files.
 
 Leo writes private files to a subfolder of the folder containing the public file:
 by default this folder is called .leo_shadow.
@@ -130,9 +131,9 @@ these two cases **does not matter**, for three very important reasons:
 
 2. Leo reports any nodes that were changed as the result of the update
    algorithm. In essence, these reports are exactly the same as the reports Leo
-   makes when @file or @thin trees were changed as the result of changes made
-   externally to Leo. It is as easy for the user to review changes to @shadow
-   trees as it is to review changes to @thin or @file trees.
+   makes when @file trees were changed as the result of changes made externally
+   to Leo. It is as easy for the user to review changes to @shadow trees as it
+   is to review changes to @thin or @file trees.
 
 3. Suppose the user moves a line from the end of one node to the beginning of
    the following node, or vice versa. Once the user saves the file, the

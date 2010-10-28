@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7161: * @thin whitepapers.txt
+.. @+node:ekr.20100805165051.7161: * @file whitepapers.txt
 .. @@language rest
 .. @@tabwidth -4
 

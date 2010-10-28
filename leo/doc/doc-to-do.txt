@@ -1,0 +1,49 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20101028110015.8272: * @file doc-to-do.txt
+#@+all
+#@+node:ekr.20101025080245.5540: ** To do
+@nocolor
+
+#@+node:ekr.20101025080245.5523: *3* Improve users guide
+@nocolor
+#@+node:ekr.20101025080245.5528: *4* Clarify read @file node command
+http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
+
+Fix/clarify menus and documentation
+
+Also, removed incorrect error message:
+
+The "Read @<file> Nodes" works to incorporate external changes in the select
+tree, though it does generate an incorrect message:
+
+    "no @<file> nodes in the selected tree".
+#@+node:ekr.20101026082911.5537: *4* No mention of qt in installation slideshow
+#@+node:ekr.20101025080245.5533: *4* Document {{expression}} in paths
+#@+node:ekr.20101026082911.5543: *3* Polish release notes
+#@+node:ekr.20101026082911.5534: *3* Eliminate sphinx warnings
+Can probably be done by changing the slides page.
+
+Creating .. contents or .. toctree might do the trick.
+#@+node:ekr.20101026082911.5542: *3* Create a slides_toc for slides
+#@+node:ekr.20101026082911.5533: *3* Move meld into screenshot plugin
+Move meld into screenshots plugin.
+    - Use @wink-path = <path> to control meld.
+    - (We don't need to specify the path for moved screenshots.)
+#@+node:ekr.20101026082911.5540: *3* Make sure to upload all slides
+#@+node:ekr.20101026082911.5541: *3* For b1?
+#@+node:ekr.20101025080245.5539: *4* External Files & Clones slideshows
+#@+node:ekr.20101026082911.5535: *4* Document plugins & other cool things
+#@+node:ekr.20101025080245.5529: *5* Document leoremote plugin
+@nocolor-node
+
+Ville's server code to interact with a running Leo
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+
+Reusing Emacs instances with gnuserv
+http://www.debian-administration.org/articles/257
+
+#@+node:ekr.20101025080245.5543: *5* Document screenshots plugin
+#@+node:ekr.20101025080245.5546: *5* @url Document Ville's server
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+#@-all
+#@-leo

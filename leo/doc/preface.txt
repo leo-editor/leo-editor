@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7149: * @thin preface.txt
+.. @+node:ekr.20100805165051.7149: * @file preface.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -94,7 +94,7 @@ This means several specific things:
    treat the headline text as *something truly different from* body text. The
    natural interpretation of headline text is as a description of the body text.
    This is important! Headlines often control Leo's commands. For example,
-   headlines that start with @thin, @file, @asis, @auto, etc. serve to guide and
+   headlines that start with @file, @asis, @auto, etc. serve to guide and
    control Leo's read and write commands. Headlines that start with @test,
    @suite and @mark-for-unit-tests guide Leo's unit testing commands. Moreover,
    it is easy to create new conventions for headlines that control user-written

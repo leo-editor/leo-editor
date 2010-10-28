@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7151: * @thin FAQ.txt
+.. @+node:ekr.20100805165051.7151: * @file FAQ.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -50,7 +50,6 @@ This is Leo's Frequently Asked Questions document.
 .. _`quick start for programmers`:              intro.html#quick-start-for-programmers
 .. _`rst3 plugin`:                              rstplugin3.html
 
-.. _`Tangle and Untangle`:                      commands.html#tangling-an-outline-producing-derived-files
 .. _tutorial:                                   intro.html
 .. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
 .. _`History of Leo`:                history.html
@@ -63,7 +62,6 @@ This is Leo's Frequently Asked Questions document.
 .. _`@file`:                glossary.html#file-trees
 .. _`@others directive`:    glossary.html#others
 .. _`@nosent`:              glossary.html#nosent
-.. _`@root`:                glossary.html#root
 .. _`@shadow`:              glossary.html#shadow-trees
 .. _`@thin`:                glossary.html#thin-trees
 .. _`@unit`:                glossary.html#unit
@@ -86,8 +84,6 @@ This is Leo's Frequently Asked Questions document.
 .. _`sentinel lines`:       glossary.html#sentinel
 .. _setting:                glossary.html#setting
 .. _settings:               glossary.html#settings
-.. _tangle:                 glossary.html#tangle
-.. _untangle:               glossary.html#untangle
 .. @+node:ekr.20090212054250.5: *3* Getting Leo
 .. @+node:ekr.20090212054250.6: *4* Where can I get official releases of Leo?
 You can get the latest official releases of Leo at
@@ -191,7 +187,7 @@ just look for the following common usage patterns:
 
 -   The (Projects) tree shows how to use clones to represent tasks.
 
--   Study @thin leoNodes.py.
+-   Study @file leoNodes.py.
     It shows how to define more than one class in single file.
 
 -   Most other files show how to use a single @others directive to define one class.
@@ -202,22 +198,6 @@ just look for the following common usage patterns:
 
 You will lose much of Leo's power if you don't use clones.
 See `Clones & views`_ for full details.
-.. @+node:ekr.20050830115714.5: *4* Which should I use: @root trees or @thin trees?
-Use @thin trees unless you are *sure* you must have the extra flexibility of @root trees.
-Indeed, @thin trees are much easier to use than @root trees:
-
-- @thin trees use less markup than @root trees.
-  In particular, the @others directive is valid only within @thin trees.
-
-- You must explicitly tangle_ and untangle_ @root trees using the `Tangle and Untangle`_ commands.
-
-However, @root trees are more flexible than @thin trees:
-
-- Sections_ may be defined anywhere within @root trees.
-  Moreover, the @unit directive_ expands the scope of section definitions in @root trees
-  so that a section may be referenced in several @root trees.
-
-- The meaning of section definitions in @root trees are independent of their position within the tree.
 .. @+node:ekr.20050830115714.7: *4* When is using a section better than using a method?
 Use methods for any code that is used (called or referenced) more than once.
 
@@ -254,7 +234,7 @@ We could also consider a delete to be dangerous **if it results in a node being
 omitted from an external file.** This can happen as follows. Suppose we have the
 following outline (As usual, A' indicates that A is marked with a clone mark)::
 
-    - @thin spam.py
+    - @file spam.py
         - A'
             - B
     - Projects
@@ -263,7 +243,7 @@ following outline (As usual, A' indicates that A is marked with a clone mark)::
 
 Now suppose we clone B, and move the clone so the tree looks like this::
 
-    - @thin spam.py
+    - @file spam.py
         - A'
             - B'
     - Projects
@@ -273,26 +253,26 @@ Now suppose we clone B, and move the clone so the tree looks like this::
 
 If (maybe much later), we eliminate B' as a child of A will get::
 
-    - @thin spam.py
+    - @file spam.py
         - A'
     - Projects
         - A'
         - B
 
-B has not been destroyed, but B is gone from @thin spam.py! So in this sense deleting a clone node can also be called dangerous.
+B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 .. @+node:ekr.20101025080245.6084: *3* Leo in Shared environments
 .. @+node:ekr.20050830115714.12: *4* How should I use Leo with bzr/git/hg/svn/cvs?
-Using @thin trees can eliminate most problems with using Leo in cooperative
+Using @file trees can eliminate most problems with using Leo in cooperative
 (SCCS) environments:
 
-- Developers should use @thin trees to create external files in any kind of
+- Developers should use @file trees to create external files in any kind of
   cooperative environment.
 
 - If sentinels are frowned upon in your development community, use @auto or
-  @shadow instead of @thin.
+  @shadow instead of @file.
 
 - The repository contains **reference** .leo files. These reference files should
-  contain nothing but @thin nodes. Reference files should change only when
+  contain nothing but @file nodes. Reference files should change only when
   new external files get added to the project. Leo's `bzr repository`_ and Leo
   distributions contain the following reference files: LeoPyRef.leo,
   LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use
@@ -320,7 +300,7 @@ or not.
 
 -   Use @nosent trees.
     Files derived from @nosent trees contain no sentinels_.
-    However, Leo create the external file just as in @thin trees.
+    However, Leo create the external file just as in @file trees.
     In particular, Leo expands section references and understands the @others directive.
 
 -   Use @asis trees.
@@ -342,7 +322,7 @@ a CData section containing javascript. I can get the XML as I want it by using
 \@language html, but how can I get the tangling comments inside the CData
 section to be java-style comments rather than html ones?
 
-**Answer**: In @thin trees you use the @delims directive to change comment delimiters.
+**Answer**: In @file trees you use the @delims directive to change comment delimiters.
 For example::
 
     @delims /* */ 
@@ -352,8 +332,6 @@ For example::
 
 **Important**: Leo can not revert to previous delimiters automatically;
 you must change back to previous delimiters using another @delims directive_.
-
-In @root trees you can work around this problem using the @silent directive_.
 .. @+node:ekr.20050830115714.19: *4* How can I disable PHP comments?
 By Zvi Boshernitzan: I was having trouble disabling '<?php' with comments (and
 couldn't override the comment character for the start of the page). Finally, I
@@ -406,27 +384,26 @@ Like this::
 This changes the comment symbol the apostrophe,
 making comments parseable by a BASIC (or other language.)
 .. @+node:ekr.20050830115714.21: *4* How do I make external files start with a shebang line?
-Use the @first directive_ in @thin trees or @nosent trees.
-Use the @silent directive in @root trees.
+Use the @first directive_ in @file trees or @nosent trees.
 
-The @first directive puts lines at the very start of files derived from @thin.
-For example, the body text of @thin spam.py might be::
+The @first directive puts lines at the very start of files derived from @file.
+For example, the body text of @file spam.py might be::
 
     @first #! /usr/bin/env python
 
-The body text of @thin foo.pl might be::
+The body text of @file foo.pl might be::
 
     @first #/usr/bin/perl
 
-Leo recognizes the @first directive_ only at the start of the body text of @thin nodes.
+Leo recognizes the @first directive_ only at the start of the body text of @file nodes.
 No text may precede @first directives_.
 More than one @first directive may exist, like this::
 
     @first #! /usr/bin/env python
     @first # more comments.
 .. @+node:ekr.20050830115714.24: *4* Can @file trees contain material not in the external file?
-No. Everything in an @thin trees must be part of the external file: orphan and
-\@ignore nodes are invalid in @thin trees. This restriction should not be
+No. Everything in an @file trees must be part of the external file: orphan and
+\@ignore nodes are invalid in @file trees. This restriction should not be
 troublesome. For example, you can organize your outline like this::
 
     + myClass
@@ -434,7 +411,7 @@ troublesome. For example, you can organize your outline like this::
     ..+ @file myClass
 
 (As usual, + denotes a headline.) So you simply create a new node_, called
-myClass, that holds your @thin trees and stuff you don't want in the @thin
+myClass, that holds your @file trees and stuff you don't want in the @file
 trees.
 .. @+node:ekr.20050830115714.25: *4* How can I use Leo with older C compilers
 By Rich Ries.
@@ -457,10 +434,10 @@ The solution is to use::
 Leo is happy: it recognizes the @comment directive_.
 The C compiler is happy: the C preprocessor strips out the offending line before the C
 compiler gets it.
-.. @+node:ekr.20060529053407: *4* Why can't I use @ignore directives in @thin trees?
-@ignore can only be used in the root node of @thin trees.  It tells Leo to ignore the tree.
+.. @+node:ekr.20060529053407: *4* Why can't I use @ignore directives in @file trees?
+@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
 
-The @ignore directive can not be used elsewhere in @thin trees because of the way Leo recreates 
+The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates 
 outlines from external files. This is an absolutely crucial restriction and will never go away.
 For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
 
@@ -468,7 +445,7 @@ There are several workaround, as shown in LeoPy.leo:
 
 - keep notes in the outline outside of any external file.
 
-- Use @all to gather notes in a external file, as in done in @thin leoProjects.txt.
+- Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
 .. @+node:shadow.20080825171547.9: *4* How can I avoid getting long lines in external files?
 **Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
@@ -494,9 +471,9 @@ description file.
 .. @+node:ekr.20050830115714.30: *4* How do I submit a plugin?
 You have two options: 
 
--   Get cvs write access, and add the @thin file to the plugins directory.
+-   Get cvs write access, and add the @file file to the plugins directory.
 
--   Just send the @thin file to me at edreamleo@gmail.com.
+-   Just send the @file file to me at edreamleo@gmail.com.
     That's all you need to do.  In particular that there is no need to change leoPlugins.leo.
 .. @+node:ekr.20050830120844: *4* How do I add a new menu item from a plugin?
 c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu.
@@ -545,11 +522,11 @@ You can 'revert' to old key bindings as follows:
    It should **not** be a child of the node
    '@ignore Unused key bindings'.
 .. @+node:ekr.20060915112109: *4* How can I enable and disable support for psyco?
-Find the @thin leoApp.py node in leoPy.leo.
+Find the @file leoApp.py node in leoPy.leo.
 In the ctor for the LeoApp class set self.use_psyco to True or False.
 You will find this ctor in the node::
 
-    Code-->Core classes...-->@thin leoApp.py-->app.__init__
+    Code-->Core classes...-->@file leoApp.py-->app.__init__
 
 Note that this ivar can not be set using settings in leoSettings.leo because
 Leo uses g.app.use_psyco before processing configuration settings.
@@ -960,7 +937,7 @@ Used this way, g.trace shows you patterns that will be invisible using pdb.
 .. @+node:ekr.20050830115714.17: *4* I can't write Imported files.  What's going on?
 The import commands insert @ignore directives_ in the top-level node_.
 Leo does this so that you won't accidentally overwrite your files after importing them.
-Change the filename following @thin or @root as desired,
+Change the filename following @file (or @file) as desired,
 then remove the @ignore directive_.
 Saving the outline will then create the external file.
 .. @+node:edream.110203163054.61: *4* I don't see the Leo icon in Leo windows
@@ -1084,7 +1061,7 @@ Leo uses the following settings_ to translate to and from unicode:
 
 default_derived_file_encoding
     The encoding used for external files if no @encoding directive_ is in effect.
-    This setting also controls the encoding of files created by the Tangle commands.
+    This setting also controls the encoding of files that Leo writes.
     The default is UTF-8 (case not important).
 
 new_leo_file_encoding

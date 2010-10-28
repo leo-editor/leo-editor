@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7172: * @thin vimBindings.txt
+.. @+node:ekr.20100805165051.7172: * @file vimBindings.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -455,7 +455,7 @@ to a buffer in a Python file::
     # vim:noma (A space is required between the '#' and "vim:noma")
 
 If this line is placed in a separate Leo node at the top or bottom of the list
-of nodes under a external file node (ex: @thin) then any external file saved and
+of nodes under a external file node (ex: @file) then any external file saved and
 then later loaded into Vim will, by default, not be modifiable. If a derived
 file does need to be edited then modifications can be re-enabled on a
 file-by-file basis by issuing Vim's ":ma" command while viewing the derived
