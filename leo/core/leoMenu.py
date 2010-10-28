@@ -815,7 +815,7 @@ class leoMenu:
             '*&mark',
             '*mark-&subheads',
             '*mark-changed-&items',
-            '*mark-changed-&roots',
+            # '*mark-changed-&roots',
             '*mark-&clones',
             '*&unmark-all',
         ]

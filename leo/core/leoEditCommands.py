@@ -6339,7 +6339,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'insert-node':                  c.insertHeadline,
             'mark':                         c.markHeadline,
             'mark-changed-items':           c.markChangedHeadlines,
-            'mark-changed-roots':           c.markChangedRoots,
+            # 'mark-changed-roots':           c.markChangedRoots,
             # 'mark-clones':                c.markClones,
             'mark-subheads':                c.markSubheads,
             'match-brackets':               c.findMatchingBracket,

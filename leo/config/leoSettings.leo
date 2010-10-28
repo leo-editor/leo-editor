@@ -430,7 +430,7 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -438,7 +438,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -651,7 +651,6 @@
 <v t="ekr.20070925144534.161"><vh>@item *&amp;mark</vh></v>
 <v t="ekr.20070925144534.162"><vh>@item *mark-&amp;subheads</vh></v>
 <v t="ekr.20070925144534.163"><vh>@item *mark-changed-&amp;items</vh></v>
-<v t="ekr.20070925144534.164"><vh>@item *mark-changed-&amp;roots</vh></v>
 <v t="ekr.20070925144534.166"><vh>@item *&amp;unmark-all</vh></v>
 </v>
 <v t="ekr.20070925144534.167"><vh>@menu &amp;Go To...</vh>
@@ -4917,7 +4916,6 @@ move-past-close-extend-selection    = None</t>
 <t tx="ekr.20060112090844.1">make-directory                  = None
 mark                            = Ctrl-M
 mark-changed-items              = None         # Alt-C: now quick-command.
-mark-changed-roots              = None         # Removed Alt-R: not useful enough.
 mark-subheads                   = None         # Alt-S conflicts with center-line.
 match-brackets                  = None         # Ctrl-K conflicts with kill-line.
 minimize-all                    = None
@@ -5216,7 +5214,6 @@ list-buffers-alphabetically         = None
 make-directory                      = None
 mark                                = None
 mark-changed-items                  = None
-mark-changed-roots                  = None
 mark-subheads                       = None
 match-brackets                      = None
 minimize-all                        = None
@@ -6716,7 +6713,6 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.161"></t>
 <t tx="ekr.20070925144534.162"></t>
 <t tx="ekr.20070925144534.163"></t>
-<t tx="ekr.20070925144534.164"></t>
 <t tx="ekr.20070925144534.166"></t>
 <t tx="ekr.20070925144534.167"></t>
 <t tx="ekr.20070925144534.168">Go To &amp;First Node</t>
