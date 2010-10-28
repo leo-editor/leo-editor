@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20071010193720: * @thin threading_colorizer.py	
+#@+node:ekr.20071010193720: * @file threading_colorizer.py	
 '''A threading colorizer using jEdit language description files.
 
 See: http://webpages.charter.net/edreamleo/coloring.html for documentation.

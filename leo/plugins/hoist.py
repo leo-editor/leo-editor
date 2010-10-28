@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040331072607: * @thin hoist.py
+#@+node:ekr.20040331072607: * @file hoist.py
 """Add Hoist/De-Hoist buttons to the toolbar.
 """
 #@+<< change history >>

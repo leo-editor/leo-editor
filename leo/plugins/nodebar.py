@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041022155742.1: * @thin nodebar.py
+#@+node:mork.20041022155742.1: * @file nodebar.py
 """nodebar adds buttons at the bottom of the tree canvas.
 
 The buttons correspond to commands found in the Outline commands. It is intended

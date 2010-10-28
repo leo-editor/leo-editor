@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040831122004: * @thin UniversalScrolling.py
+#@+node:ekr.20040831122004: * @file UniversalScrolling.py
 #@+<< docstring >>
 #@+node:ekr.20050913084245: ** << docstring >>
 '''A plugin that enables the user to scroll down with a left mouse click and

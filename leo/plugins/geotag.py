@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20091214233510.5347: * @thin geotag.py
+#@+node:tbrown.20091214233510.5347: * @file geotag.py
 #@+<< docstring >>
 #@+node:tbrown.20091214233510.5348: ** << docstring >>
 '''

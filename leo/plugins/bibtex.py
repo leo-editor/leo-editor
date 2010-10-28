@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:timo.20050213160555: * @thin bibtex.py
+#@+node:timo.20050213160555: * @file bibtex.py
 
 #@+<< docstring >>
 #@+node:ekr.20050912175750: ** << docstring >>

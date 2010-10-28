@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040828103325: * @thin startfile.py
+#@+node:ekr.20040828103325: * @file startfile.py
 #@+<< docstring >>
 #@+node:ekr.20050912182050: ** << docstring >>
 """Launches (starts) a file given by a headline when double-clicking the icon.

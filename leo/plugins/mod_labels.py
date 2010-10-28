@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050301095332: * @thin mod_labels.py
+#@+node:ekr.20050301095332: * @file mod_labels.py
 #@+<<docstring>>
 #@+node:ekr.20050301095332.1: ** <<docstring>>
 '''This plugin allows you to associate information with nodes.

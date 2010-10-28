@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100103093121.5329: * @thin stickynotes.py
+#@+node:ekr.20100103093121.5329: * @file stickynotes.py
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
 '''Simple "sticky notes" feature (popout editors)

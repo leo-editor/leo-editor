@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090310191936.10: * @thin colorize_headlines.py
+#@+node:ville.20090310191936.10: * @file colorize_headlines.py
 #@+<< docstring >>
 #@+node:ville.20090310191936.11: ** << docstring >>
 '''A plugin that manipulates appearance of individual tree widget items

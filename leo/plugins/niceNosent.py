@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040331151007: * @thin niceNosent.py
+#@+node:ekr.20040331151007: * @file niceNosent.py
 """Preprocess @file-nosent nodes: make sure each subnode ends
 with exactly one newline, replace all tabs with spaces, and
 add a newline before class and functions in the derived file.

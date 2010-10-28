@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090815203828.5235: * @thin spydershell.py
+#@+node:ville.20090815203828.5235: * @file spydershell.py
 #@+<< docstring >>
 #@+node:ville.20090815203828.5236: ** << docstring >>
 ''' Launch spyder environment with access to Leo instance

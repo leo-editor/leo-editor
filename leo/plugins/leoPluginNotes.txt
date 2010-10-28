@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090430075506.3: * @thin leoPluginNotes.txt
+#@+node:ekr.20090430075506.3: * @file leoPluginNotes.txt
 #@+all
 #@+node:ekr.20090430075506.6: ** To do
 #@+node:ekr.20090430102730.3: *3* Add expand_noweb_references for rst3 plugin

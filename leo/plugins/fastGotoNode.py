@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041018091414.1: * @thin fastGotoNode.py
+#@+node:mork.20041018091414.1: * @file fastGotoNode.py
 #@+<< docstring >>
 #@+node:ekr.20050226120947: ** << docstring >>
 '''A Leo plugin that adds the fast-goto-node minibuffer command that creates a

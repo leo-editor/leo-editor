@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20081214160729.1: * @thin setHomeDirectory.py
+#@+node:ekr.20081214160729.1: * @file setHomeDirectory.py
 import leo.core.leoGlobals as g
 
 def init ():

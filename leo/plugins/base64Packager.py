@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041020082242.1: * @thin base64Packager.py
+#@+node:mork.20041020082242.1: * @file base64Packager.py
 #@+<< docstring >>
 #@+node:ekr.20050307134613: ** << docstring >>
 '''This plugin allows the user to import binary data and store it in Leo as a

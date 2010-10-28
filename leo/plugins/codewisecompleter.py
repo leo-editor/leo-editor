@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20091204224145.5355: * @thin codewisecompleter.py
+#@+node:ville.20091204224145.5355: * @file codewisecompleter.py
 #@+<< docstring >>
 #@+node:ville.20091204224145.5356: ** << docstring >>
 ''' This plugin uses ctags to provide autocompletion list

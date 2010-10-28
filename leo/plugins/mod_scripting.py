@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060328125248: * @thin mod_scripting.py
+#@+node:ekr.20060328125248: * @file mod_scripting.py
 #@+<< docstring >>
 #@+node:ekr.20060328125248.1: ** << docstring >>
 """A plugin to create script buttons and @button, @command, @plugin and @script

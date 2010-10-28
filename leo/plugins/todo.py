@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20090119215428.2: * @thin todo.py
+#@+node:tbrown.20090119215428.2: * @file todo.py
 #@+<< docstring >>
 #@+node:tbrown.20090119215428.3: ** << docstring >>
 '''todo.py  -- ToDo and simple task management for leo

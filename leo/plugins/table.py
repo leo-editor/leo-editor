@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20041017035937: * @thin table.py
+#@+node:ekr.20041017035937: * @file table.py
 #@+<< docstring >>
 #@+node:ekr.20050912180921: ** << docstring >>
 '''This plugin puts the View Table command in the Outline menu.

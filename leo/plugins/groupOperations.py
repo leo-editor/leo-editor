@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041018131258.1: * @thin groupOperations.py
+#@+node:mork.20041018131258.1: * @file groupOperations.py
 #@+<< docstring >>
 #@+node:ekr.20050912180223: ** << docstring >>
 '''A Leo Plugin that adds Group commands functionality. Restrictions currently

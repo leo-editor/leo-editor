@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090503124249.1: * @thin tomboy_import.py
+#@+node:ville.20090503124249.1: * @file tomboy_import.py
 #@+<< docstring >>
 #@+node:ville.20090503124249.2: ** << docstring >>
 '''This plugin adds a possibility to import the notes created in Tomboy / gnote

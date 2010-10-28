@@ -33,7 +33,7 @@
 <v t="ekr.20100102164842.5328"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20100909111553.5583"><vh>Unit tests</vh>
 <v t="ekr.20100909121239.5797"><vh>@ignore</vh>
@@ -72,57 +72,56 @@
 </v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
-<v t="ekr.20091118065749.5261"><vh>@thin ctagscompleter.py</vh></v>
-<v t="ville.20091204224145.5355"><vh>@thin codewisecompleter.py</vh></v>
+<v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
+<v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
 <v t="ekr.20040722135402.1"><vh>Body pane</vh>
-<v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
-<v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
-<v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
-<v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
+<v t="edream.110403140857.8"><vh>@file color_markup.py</vh></v>
+<v t="edream.110203113231.753"><vh>@file image.py</vh></v>
+<v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 <v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
-<v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
-<v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
+<v t="bobjack.20080321133958.6"><vh>@file rClick.py</vh></v>
+<v t="bobjack.20080619110105.2"><vh>@file rClickBasePluginClasses.py</vh></v>
 </v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.668"><vh> Importing Cisco configuration files</vh>
-<v t="edream.110203113231.669"><vh>@thin import_cisco_config.py</vh></v>
+<v t="edream.110203113231.669"><vh>@file import_cisco_config.py</vh></v>
 </v>
-<v t="edream.110203113231.741"><vh>@thin add_directives.py</vh></v>
-<v t="timo.20050213160555"><vh>@thin bibtex.py</vh></v>
-<v t="ekr.20040916073636"><vh>@thin ConceptualSort.py</vh></v>
-<v t="TL.20090225102340.32"><vh>@thin nodeActions.py</vh></v>
-<v t="ekr.20040915105758.13"><vh>@thin FileActions.py</vh></v>
-<v t="mork.20041018131258.1"><vh>@thin groupOperations.py</vh></v>
-<v t="ekr.20050328092641.4"><vh>@thin Library.py</vh></v>
-<v t="ekr.20040916084945"><vh>@thin macros.py</vh></v>
-<v t="ekr.20050301083306"><vh>@thin mod_read_dir_outline.py</vh></v>
-<v t="edream.110203113231.727"><vh>@thin mod_timestamp.py</vh></v>
-<v t="edream.110203113231.720"><vh>@thin outline_export.py</vh></v>
-<v t="danr7.20060912105041.1"><vh>@thin paste_as_headlines.py</vh></v>
-<v t="ekr.20041021120118"><vh>@thin pretty_print.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@thin quickMove.py</vh></v>
-<v t="ekr.20040331153923"><vh>@thin scheduler.py</vh></v>
-<v t="mork.20041022090036.1"><vh>@thin templates.py</vh></v>
-<v t="danr7.20061010105952.1"><vh>@thin word_count.py</vh></v>
+<v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
+<v t="timo.20050213160555"><vh>@file bibtex.py</vh></v>
+<v t="ekr.20040916073636"><vh>@file ConceptualSort.py</vh></v>
+<v t="TL.20090225102340.32"><vh>@file nodeActions.py</vh></v>
+<v t="ekr.20040915105758.13"><vh>@file FileActions.py</vh></v>
+<v t="mork.20041018131258.1"><vh>@file groupOperations.py</vh></v>
+<v t="ekr.20050328092641.4"><vh>@file Library.py</vh></v>
+<v t="ekr.20040916084945"><vh>@file macros.py</vh></v>
+<v t="ekr.20050301083306"><vh>@file mod_read_dir_outline.py</vh></v>
+<v t="edream.110203113231.727"><vh>@file mod_timestamp.py</vh></v>
+<v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
+<v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
+<v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
+<v t="ekr.20040331153923"><vh>@file scheduler.py</vh></v>
+<v t="mork.20041022090036.1"><vh>@file templates.py</vh></v>
+<v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 <v t="edream.110203113231.722"><vh>mod_autosave</vh>
 <v t="edream.110203113231.723"><vh>@file-nosent mod_autosave.ini</vh></v>
-<v t="edream.110203113231.724"><vh>@thin mod_autosave.py</vh></v>
+<v t="edream.110203113231.724"><vh>@file mod_autosave.py</vh></v>
 </v>
 <v t="ekr.20041110104350"><vh>table plugin: requires tktable</vh>
-<v t="ekr.20041017035937"><vh>@thin table.py</vh></v>
+<v t="ekr.20041017035937"><vh>@file table.py</vh></v>
 </v>
 </v>
 <v t="edream.110203113231.729"><vh>Debugging</vh>
-<v t="edream.110203113231.730"><vh>@thin dump_globals.py</vh></v>
-<v t="edream.110203113231.732"><vh>@thin enable_gc.py</vh></v>
-<v t="edream.110203113231.734"><vh>@thin quit_leo.py</vh></v>
-<v t="ekr.20051016160700"><vh>@thin testRegisterCommand.py</vh></v>
-<v t="edream.110203113231.735"><vh>@thin trace_gc_plugin.py</vh></v>
-<v t="edream.110203113231.736"><vh>@thin trace_keys.py</vh></v>
-<v t="edream.110203113231.738"><vh>@thin trace_tags.py</vh></v>
-<v t="ekr.20040205071616"><vh>@thin mnplugins.py</vh></v>
+<v t="edream.110203113231.730"><vh>@file dump_globals.py</vh></v>
+<v t="edream.110203113231.732"><vh>@file enable_gc.py</vh></v>
+<v t="edream.110203113231.734"><vh>@file quit_leo.py</vh></v>
+<v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
+<v t="edream.110203113231.735"><vh>@file trace_gc_plugin.py</vh></v>
+<v t="edream.110203113231.736"><vh>@file trace_keys.py</vh></v>
+<v t="edream.110203113231.738"><vh>@file trace_tags.py</vh></v>
+<v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20060513122613"><vh>xcc plugin</vh>
 <v t="ekr.20060513122613.1"><vh>Examples</vh>
 <v t="ekr.20060513122613.2"><vh>@xcc OpenGl.h</vh>
@@ -285,68 +284,68 @@
 <v t="ekr.20060513122450.86"><vh>Show</vh></v>
 </v>
 </v>
-<v t="ekr.20060513122450"><vh>@thin xcc_nodes.py</vh></v>
+<v t="ekr.20060513122450"><vh>@file xcc_nodes.py</vh></v>
 </v>
 </v>
 <v t="ekr.20060703162826"><vh>Dialogs</vh>
-<v t="ekr.20060703162506"><vh>@thin keybindings.py</vh></v>
+<v t="ekr.20060703162506"><vh>@file keybindings.py</vh></v>
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh>
 <v t="ekr.20060110125615"><vh>@url http://rclick.netfirms.com/dyna_menu.py.html  (dyna plugin)</vh></v>
 </v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
-<v t="edream.110203113231.916"><vh>@thin examples/__overrideClasses.py</vh></v>
-<v t="edream.110203113231.919"><vh>@thin examples/override_commands.py</vh></v>
-<v t="edream.110203113231.921"><vh>@thin examples/redefine_put.py</vh></v>
-<v t="ekr.20060621123339"><vh>@thin examples/print_cp.py</vh></v>
-<v t="ekr.20040828105233"><vh>@thin examples/chinese_menu.py</vh></v>
-<v t="EKR.20040517080202.3"><vh>@thin examples/french_fm.py</vh></v>
+<v t="edream.110203113231.916"><vh>@file examples/__overrideClasses.py</vh></v>
+<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
+<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
+<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
+<v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
+<v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
 </v>
 <v t="ekr.20040722134535"><vh>Experimental</vh>
 <v t="ekr.20040918165427.4"><vh>Autocompletion dictionary files</vh></v>
 </v>
 <v t="EKR.20040517075715"><vh>External editors &amp; Open With</vh>
-<v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
-<v t="EKR.20040517080049.4"><vh>@thin open_shell.py</vh></v>
-<v t="bob.20071218121513"><vh>@thin open_with.py</vh></v>
-<v t="EKR.20040517075715.10"><vh>@thin vim.py</vh></v>
-<v t="EKR.20040517075715.12"><vh>@thin xemacs.py</vh></v>
+<v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
+<v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
+<v t="bob.20071218121513"><vh>@file open_with.py</vh></v>
+<v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
+<v t="EKR.20040517075715.12"><vh>@file xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
-<v t="EKR.20040517075715.14"><vh>@thin word_export.py</vh></v>
+<v t="EKR.20040517075715.14"><vh>@file word_export.py</vh></v>
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
-<v t="ville.20090503124249.1"><vh>@thin tomboy_import.py</vh></v>
+<v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
 </v>
 <v t="EKR.20040517080049"><vh>Files</vh>
-<v t="EKR.20040517080049.1"><vh>@thin empty_leo_file.py</vh></v>
-<v t="danr7.20060902215215.1"><vh>@thin leo_to_html.py</vh></v>
-<v t="danr7.20060902083957"><vh>@thin leo_to_rtf.py</vh></v>
-<v t="ekr.20040419105219"><vh>@thin lineNumbers.py</vh></v>
-<v t="mork.20041018204908.1"><vh>@thin multifile.py</vh></v>
-<v t="ekr.20040331151007"><vh>@thin niceNosent.py</vh></v>
-<v t="ekr.20090622063842.5264"><vh>@thin projectwizard.py</vh></v>
-<v t="ekr.20081214160729.1"><vh>@thin setHomeDirectory.py</vh></v>
+<v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
+<v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
+<v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
+<v t="ekr.20040419105219"><vh>@file lineNumbers.py</vh></v>
+<v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
+<v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
+<v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
+<v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 </v>
 <v t="ekr.20071006112739"><vh>Graph world</vh>
-<v t="tbrown.20081223111325.3"><vh>@thin backlink.py</vh></v>
+<v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@shadow graphcanvas.py</vh></v>
-<v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
+<v t="ekr.20071004090250"><vh>@file graphed.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20040722135402"><vh>Icon and status areas</vh>
-<v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
-<v t="ekr.20040331072607"><vh>@thin hoist.py</vh></v>
-<v t="edream.110203113231.758"><vh>@thin nav_buttons.py</vh></v>
-<v t="ville.20090518182905.5419"><vh>@thin nav_qt.py</vh></v>
-<v t="pap.20051010170720"><vh>@thin newButtons.py</vh></v>
-<v t="ekr.20040108062655"><vh>@thin nodenavigator.py</vh></v>
-<v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
-<v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
-<v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
-<v t="bobjack.20080424190315.2"><vh>@thin toolbar.py</vh></v>
+<v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
+<v t="ekr.20040331072607"><vh>@file hoist.py</vh></v>
+<v t="edream.110203113231.758"><vh>@file nav_buttons.py</vh></v>
+<v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
+<v t="pap.20051010170720"><vh>@file newButtons.py</vh></v>
+<v t="ekr.20040108062655"><vh>@file nodenavigator.py</vh></v>
+<v t="ekr.20040108095351"><vh>@file rowcol.py</vh></v>
+<v t="ekr.20040107092135.2"><vh>@file searchbox.py</vh></v>
+<v t="ekr.20060601151845"><vh>@file shortcut_button.py</vh></v>
+<v t="bobjack.20080424190315.2"><vh>@file toolbar.py</vh></v>
 </v>
 <v t="ekr.20080203083146"><vh>IPython bridge</vh>
-<v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>
+<v t="ekr.20080201143145"><vh>@file ipython.py</vh></v>
 </v>
 <v t="ekr.20050402080206"><vh>LeoN</vh>
 <v t="ekr.20050402080206.1"><vh>Readme file.</vh></v>
@@ -359,37 +358,37 @@
 <v t="ekr.20050402080206.7"><vh>Notes</vh></v>
 </v>
 </v>
-<v t="ekr.20050402080206.8"><vh>@thin LeoN.py</vh></v>
+<v t="ekr.20050402080206.8"><vh>@file LeoN.py</vh></v>
 </v>
 <v t="EKR.20040517080555"><vh>Menus &amp; translations</vh>
-<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
-<v t="ekr.20040828122150"><vh>@thin pie_menus.py</vh></v>
-<v t="EKR.20040517080555.36"><vh>@thin scripts_menu.py</vh></v>
+<v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
+<v t="ekr.20040828122150"><vh>@file pie_menus.py</vh></v>
+<v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 </v>
 <v t="ekr.20060530091119"><vh>New colorizer</vh>
-<v t="ekr.20071010193720"><vh>@thin threading_colorizer.py	</vh></v>
-<v t="ekr.20080707101341.1"><vh>@thin ../modes/forth.py</vh></v>
+<v t="ekr.20071010193720"><vh>@file threading_colorizer.py	</vh></v>
+<v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
 </v>
 <v t="edream.110203113231.872"><vh>Nodes...</vh>
-<v t="tbrown.20080613095157.2"><vh>@thin active_path.py</vh></v>
-<v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
-<v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
-<v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
-<v t="mork.20041020082242.1"><vh>@thin base64Packager.py</vh></v>
-<v t="tbrown.20070322113635"><vh>@thin bookmarks.py</vh></v>
-<v t="ekr.20060807103814.1"><vh>@thin datenodes.py</vh></v>
-<v t="ajones.20070122153625"><vh>@thin expfolder.py</vh></v>
-<v t="mork.20041018091414.1"><vh>@thin fastGotoNode.py</vh></v>
-<v t="tbrown.20091214233510.5347"><vh>@thin geotag.py</vh></v>
-<v t="tbrown.20100228141752.5691"><vh>@thin leocursor.py</vh></v>
-<v t="dan.20090217132953.1"><vh>@thin mime.py</vh></v>
-<v t="ekr.20050301095332"><vh>@thin mod_labels.py</vh></v>
-<v t="edream.110203113231.876"><vh>@thin read_only_nodes.py</vh></v>
-<v t="ekr.20040910070811.1"><vh>@thin run_nodes.py</vh></v>
-<v t="ekr.20060831165821"><vh>@thin slideshow.py</vh></v>
-<v t="ekr.20040828103325"><vh>@thin startfile.py</vh></v>
-<v t="ajones.20070122160142"><vh>@thin textnode.py</vh></v>
+<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
+<v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
+<v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="mork.20041020082242.1"><vh>@file base64Packager.py</vh></v>
+<v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
+<v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
+<v t="ajones.20070122153625"><vh>@file expfolder.py</vh></v>
+<v t="mork.20041018091414.1"><vh>@file fastGotoNode.py</vh></v>
+<v t="tbrown.20091214233510.5347"><vh>@file geotag.py</vh></v>
+<v t="tbrown.20100228141752.5691"><vh>@file leocursor.py</vh></v>
+<v t="dan.20090217132953.1"><vh>@file mime.py</vh></v>
+<v t="ekr.20050301095332"><vh>@file mod_labels.py</vh></v>
+<v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
+<v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
+<v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
+<v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
+<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20050329082101"><vh>AutoTrees</vh>
 <v t="ekr.20050329082101.1"><vh>AutoTrees plugin</vh>
 <v t="ekr.20050329082101.2"><vh>Introduction</vh></v>
@@ -523,22 +522,22 @@
 </v>
 </v>
 <v t="ekr.20050329082101.114"><vh>AutoTrees Code</vh>
-<v t="ekr.20050329082101.115"><vh>@thin autotrees.py</vh></v>
-<v t="ekr.20050329082101.145"><vh>@thin trees\pluginsManager.txt</vh></v>
+<v t="ekr.20050329082101.115"><vh>@file autotrees.py</vh></v>
+<v t="ekr.20050329082101.145"><vh>@file trees\pluginsManager.txt</vh></v>
 <v t="ekr.20050329082101.146"><vh>Example tree handlers</vh>
-<v t="ekr.20050329082101.147"><vh>@thin trees\test.py</vh></v>
-<v t="ekr.20050329082101.150"><vh>@thin trees\rss.py</vh></v>
-<v t="ekr.20050329082101.153"><vh>@thin trees\news.py</vh></v>
-<v t="ekr.20050329082101.162"><vh>@thin trees\remote.py</vh></v>
-<v t="ekr.20050329082101.165"><vh>@thin trees\doc.py</vh></v>
+<v t="ekr.20050329082101.147"><vh>@file trees\test.py</vh></v>
+<v t="ekr.20050329082101.150"><vh>@file trees\rss.py</vh></v>
+<v t="ekr.20050329082101.153"><vh>@file trees\news.py</vh></v>
+<v t="ekr.20050329082101.162"><vh>@file trees\remote.py</vh></v>
+<v t="ekr.20050329082101.165"><vh>@file trees\doc.py</vh></v>
 </v>
 </v>
 </v>
 </v>
 <v t="ekr.20041009112303"><vh>Plugins manager, updater &amp; menu</vh>
 <v t="EKR.20040517080555.1"><vh> Plugins menu</vh>
-<v t="EKR.20040517080555.2"><vh>@thin plugins_menu.py</vh></v>
-<v t="EKR.20040517080555.25"><vh>@thin pluginsTest.py</vh></v>
+<v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
+<v t="EKR.20040517080555.25"><vh>@file pluginsTest.py</vh></v>
 <v t="EKR.20040517080555.32"><vh>Notes re plugins menu</vh>
 <v t="EKR.20040517080555.33"><vh> Changes made by E.K.Ream</vh></v>
 <v t="EKR.20040517080555.34"><vh> Design</vh></v>
@@ -546,7 +545,7 @@
 </v>
 </v>
 <v t="ekr.20071029090815"><vh> Plugins manager</vh>
-<v t="pap.20041006184225"><vh>@@thin old_plugin_manager.py</vh>
+<v t="pap.20041006184225"><vh>@@file old_plugin_manager.py</vh>
 <v t="pap.20041006184225.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050329035844"><vh>&lt;&lt; define importLeoGlobals &gt;&gt;</vh></v>
 <v t="pap.20041006184225.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -721,30 +720,30 @@
 </v>
 </v>
 </v>
-<v t="pap.20050605183206"><vh>@thin leoupdate.py</vh></v>
+<v t="pap.20050605183206"><vh>@file leoupdate.py</vh></v>
 </v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
-<v t="ekr.20060328125248"><vh>@thin mod_scripting.py</vh></v>
-<v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
-<v t="tbrown.20100226095909.12777"><vh>@thin leoscreen.py</vh></v>
-<v t="ville.20090815203828.5235"><vh>@thin spydershell.py</vh></v>
+<v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
+<v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
+<v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
+<v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="ekr.20100907114130.5503"><vh>example leoremote client</vh></v>
-<v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
-<v t="ville.20091009202416.10040"><vh>@thin leoremote.py</vh></v>
+<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
+<v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows and screenshots</vh>
-<v t="ekr.20100908110845.5505"><vh>@thin screenshots.py</vh></v>
+<v t="ekr.20100908110845.5505"><vh>@file screenshots.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
-<v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
-<v t="ekr.20071113085315"><vh>@thin test/failed_to_load_plugin.py</vh></v>
-<v t="ekr.20050130120433"><vh>@thin test/failed_import.py</vh></v>
-<v t="ekr.20080214092357"><vh>@thin test/ekr_test.py</vh></v>
+<v t="ekr.20071113084440.1"><vh>@file test/syntax_error_plugin.py</vh></v>
+<v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
+<v t="ekr.20050130120433"><vh>@file test/failed_import.py</vh></v>
+<v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
-<v t="mork.20041010095009"><vh>@thin xsltWithNodes.py</vh></v>
+<v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20050128070307"><vh>@url http://www.marshallresearch.com/michael-dawson/os/leo.html</vh></v>
 <v t="ekr.20040331071919.38"><vh>Leo 2 AsciiDoc Users Guide</vh>
@@ -813,35 +812,32 @@
 </v>
 </v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
-<v t="ekr.20090704103932.5160"><vh>@thin leo_pdf.py</vh></v>
-<v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
+<v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
+<v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
 </v>
-<v t="tbrown.20100318101414.5990"><vh>@thin viewrendered.py</vh></v>
-<v t="ekr.20100103093121.5329"><vh>@thin stickynotes.py</vh></v>
-<v t="ekr.20100103093121.5339"><vh>@thin stickynotes_plus.py</vh></v>
-<v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
+<v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
+<v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
+<v t="ekr.20070119094733.1"><vh>@file dtest.py</vh></v>
 </v>
 <v t="ekr.20061023142737"><vh>UNL plugin</vh>
 <v t="rogererens.20041014110709"><vh>To do</vh></v>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
 <v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt; Chapter 8: Customizing Leo'</vh></v>
-<v t="ekr.20061023141459"><vh>@url 'Plugins--&gt;UNL plugin--&gt;@thin UNL.py'</vh></v>
+<v t="ekr.20061023141459"><vh>@url 'Plugins--&gt;UNL plugin--&gt;@file UNL.py'</vh></v>
 </v>
-<v t="rogererens.20041013082304"><vh>@thin UNL.py</vh></v>
+<v t="rogererens.20041013082304"><vh>@file UNL.py</vh></v>
 </v>
 <v t="ekr.20040915073259"><vh>Windows</vh>
 <v t="tbrown.20090322083202.1"><vh>NOTE: todo.py is qt verion of cleo.py (which is tk)</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@thin todo.py</vh></v>
+<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="ekr.20050227071948"><vh> cleo</vh>
 <v t="ekr.20050227072121"><vh>Notes</vh>
 <v t="ekr.20050227071948.1"><vh>TODO</vh>
 <v t="ekr.20050227071948.2"><vh>pixmap icons</vh></v>
 <v t="ekr.20050227071948.3"><vh>colour selector</vh></v>
 <v t="ekr.20050227071948.4"><vh>popup location</vh></v>
-<v t="ekr.20050227071948.5"><vh>EKR's intentions on @thin nodes</vh>
-<v t="ekr.20050227071948.6"><vh>No attributes for @thin nodes</vh></v>
-</v>
 <v t="ekr.20050227071948.7"><vh>group annotations</vh></v>
 <v t="ekr.20050227071948.8"><vh>archetype based search,navigation</vh></v>
 <v t="ekr.20050227071948.9"><vh>sort by type</vh></v>
@@ -857,7 +853,7 @@
 <v t="ekr.20050227071948.19"><vh>archtetype colouring</vh></v>
 </v>
 <v t="ekr.20050227071948.20"><vh>Problems</vh>
-<v t="ekr.20050227071948.6"></v>
+<v t="ekr.20050227071948.6"><vh>No attributes for @file nodes</vh></v>
 <v t="ekr.20050227071948.21"><vh>features are not orthogonal</vh></v>
 <v t="ekr.20050227071948.22"><vh>Too many colours !!</vh></v>
 </v>
@@ -869,23 +865,23 @@
 <v t="ekr.20050227071948.29"><vh>drawing hooks</vh></v>
 </v>
 </v>
-<v t="tbrown.20060828111141"><vh>@thin cleo.py</vh></v>
+<v t="tbrown.20060828111141"><vh>@file cleo.py</vh></v>
 </v>
 <v t="ekr.20050303080042"><vh> footprints</vh>
 <v t="ekr.20050303080236"><vh>To do</vh></v>
 <v t="ekr.20050303080042.1"><vh>@nosent footprints.ini</vh></v>
-<v t="pap.20041020001240"><vh>@thin footprints.py</vh></v>
+<v t="pap.20041020001240"><vh>@file footprints.py</vh></v>
 </v>
-<v t="mork.20041018162155.1"><vh>@thin EditAttributes.py</vh></v>
-<v t="ekr.20040915073259.1"><vh>@thin maximizeNewWindows.py</vh></v>
-<v t="mork.20041022155742.1"><vh>@thin nodebar.py</vh></v>
-<v t="edream.110203113231.924"><vh>@thin redirect_to_log.py</vh></v>
-<v t="ekr.20040915075530"><vh>@thin UASearch.py</vh></v>
-<v t="ekr.20040831122004"><vh>@thin UniversalScrolling.py</vh></v>
-<v t="ekr.20040831115238"><vh>@thin URLloader.py</vh></v>
-<v t="ekr.20060506070443.1"></v>
-<v t="ville.20090310191936.10"><vh>@thin colorize_headlines.py</vh></v>
-<v t="ville.20090314215508.4"><vh>@thin quicksearch.py</vh></v>
+<v t="mork.20041018162155.1"><vh>@file EditAttributes.py</vh></v>
+<v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
+<v t="mork.20041022155742.1"><vh>@file nodebar.py</vh></v>
+<v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
+<v t="ekr.20040915075530"><vh>@file UASearch.py</vh></v>
+<v t="ekr.20040831122004"><vh>@file UniversalScrolling.py</vh></v>
+<v t="ekr.20040831115238"><vh>@file URLloader.py</vh></v>
+<v t="ekr.20060506070443.1"><vh>@file detect_urls.py</vh></v>
+<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
+<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4712,9 +4708,6 @@ yay ! they work with the CVS version.
 There seems to be a colour selector in leo.
 </t>
 <t tx="ekr.20050227071948.4" annotate="58f000000037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
-<t tx="ekr.20050227071948.5" annotate="5892000000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e">
-He haven't thought about it.
-</t>
 <t tx="ekr.20050227071948.6" annotate="5892000000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"></t>
 <t tx="ekr.20050227071948.7" annotate="7d71002e"></t>
 <t tx="ekr.20050227071948.8" annotate="7d71002e"></t>

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100318101414.5990: * @thin viewrendered.py
+#@+node:tbrown.20100318101414.5990: * @file viewrendered.py
 #@+<< docstring >>
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
 '''Rendered rst, html, etc., *live*, in another window.  Qt only.

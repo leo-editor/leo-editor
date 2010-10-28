@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050329082101.115: * @thin autotrees.py
+#@+node:ekr.20050329082101.115: * @file autotrees.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.116: ** << docstring >>
 """The AutoTrees plugin is a helper plugin designed to make it very easy to write

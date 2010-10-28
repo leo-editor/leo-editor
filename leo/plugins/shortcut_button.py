@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060601151845: * @thin shortcut_button.py
+#@+node:ekr.20060601151845: * @file shortcut_button.py
 #@+<<docstring>>
 #@+node:bobjack.20080614084120.6: ** << docstring >>
 '''A plugin to create a 'shortcut' button in the icon area.

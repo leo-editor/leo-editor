@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050328092641.4: * @thin Library.py
+#@+node:ekr.20050328092641.4: * @file Library.py
 #@+<< docstring >>
 #@+node:ekr.20050912180445: ** << docstring >>
 '''A plugin to store Leo trees in database files. This should help people

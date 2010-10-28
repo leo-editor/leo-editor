@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20080201143145: * @thin ipython.py
+#@+node:ekr.20080201143145: * @file ipython.py
 #@@first
 
 #@+<< docstring >>

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050805162550: * @thin rst3.py
+#@+node:ekr.20050805162550: * @file rst3.py
 #@+<< docstring >>
 #@+node:ekr.20050805162550.1: ** << docstring >>
 '''The rst3 plugin creates output files from Leo outlines containing rST

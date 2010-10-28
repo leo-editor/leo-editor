@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915075530: * @thin UASearch.py
+#@+node:ekr.20040915075530: * @file UASearch.py
 """
 A plugin for searching unknownAttributes (uA's).
 """

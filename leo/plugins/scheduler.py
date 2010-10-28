@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040331153923: * @thin scheduler.py
+#@+node:ekr.20040331153923: * @file scheduler.py
 #@+<< docstring >>
 #@+node:ekr.20040331153923.1: ** << docstring >>
 '''A plugin to schedule commands for later execution. It's provides the ability to

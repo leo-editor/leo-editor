@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040107092135.2: * @thin searchbox.py
+#@+node:ekr.20040107092135.2: * @file searchbox.py
 #@+<< doc string >>
 #@+node:ekr.20040108060748: ** << doc string >>
 '''Add a quick search to Leo's toolbar.

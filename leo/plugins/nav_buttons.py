@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.758: * @thin nav_buttons.py
+#@+node:edream.110203113231.758: * @file nav_buttons.py
 #@+<< docstring >>
 #@+node:bob.20080103150617: ** << docstring >>
 """

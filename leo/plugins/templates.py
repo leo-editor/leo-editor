@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041022090036.1: * @thin templates.py
+#@+node:mork.20041022090036.1: * @file templates.py
 #@+<<docstring>>
 #@+node:ekr.20041109173848: ** << docstring >>
 '''This plugin lets you add customizable templates to an outline. Templates are

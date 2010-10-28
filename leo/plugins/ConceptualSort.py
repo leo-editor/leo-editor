@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040916073636: * @thin ConceptualSort.py
+#@+node:ekr.20040916073636: * @file ConceptualSort.py
 #@+<< docstring >>
 #@+node:ekr.20050912175951: ** << docstring >>
 '''This plugin is enhances the EditAttributes.py plugin. It puts a command in

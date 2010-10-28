@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20041021120118: * @thin pretty_print.py
+#@+node:ekr.20041021120118: * @file pretty_print.py
 #@+<< docstring >>
 #@+node:ekr.20050912180735: ** << docstring >>
 '''A plugin that helps customize pretty printing. It creates a do-nothing subclass

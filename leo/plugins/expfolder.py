@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ajones.20070122153625: * @thin expfolder.py
+#@+node:ajones.20070122153625: * @file expfolder.py
 #@+<< docstring >>
 #@+node:ajones.20070122153625.1: ** << docstring >>
 '''Makes @expfolder expandable representations of folders in the filesystem.

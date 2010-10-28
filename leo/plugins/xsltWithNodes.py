@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041010095009: * @thin xsltWithNodes.py
+#@+node:mork.20041010095009: * @file xsltWithNodes.py
 #@+<< docstring >>
 #@+node:ekr.20050226120104: ** << docstring >>
 """Adds XSLT-Node Command submen item to the Outline menu.

@@ -1,6 +1,6 @@
 # coding: utf-8
 #@+leo-ver=5-thin
-#@+node:tbrown.20070117104409: * @thin quickMove.py
+#@+node:tbrown.20070117104409: * @file quickMove.py
 #@@first
 #@+<< docstring >>
 #@+node:tbrown.20070117104409.1: ** << docstring >>

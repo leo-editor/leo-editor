@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040205071616: * @thin mnplugins.py
+#@+node:ekr.20040205071616: * @file mnplugins.py
 #@+<< docstring >>
 #@+node:ekr.20050101090717: ** << docstring >>
 """

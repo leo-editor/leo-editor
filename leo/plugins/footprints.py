@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:pap.20041020001240: * @thin footprints.py
+#@+node:pap.20041020001240: * @file footprints.py
 """ 
 A plugin to leave footprints! This colours the Leo nodes so that the ones you
 have visited most and most recently will stand out.

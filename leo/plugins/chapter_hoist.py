@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060328125925: * @thin chapter_hoist.py
+#@+node:ekr.20060328125925: * @file chapter_hoist.py
 #@+<< docstring >>
 #@+node:ekr.20060328125925.1: ** << docstring >>
 """A plugin to create hoist buttons.  It is kind of a Chapters lite plugin

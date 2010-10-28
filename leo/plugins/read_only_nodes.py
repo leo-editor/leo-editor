@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.876: * @thin read_only_nodes.py
+#@+node:edream.110203113231.876: * @file read_only_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912052854: ** << docstring >>
 '''A plugin to create and update @read-only nodes.

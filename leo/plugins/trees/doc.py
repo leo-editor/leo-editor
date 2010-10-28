@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050329082101.165: * @thin trees\doc.py
+#@+node:ekr.20050329082101.165: * @file trees\doc.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.166: ** << docstring >>
 """A handler that documents a module

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050329082101.147: * @thin trees\test.py
+#@+node:ekr.20050329082101.147: * @file trees\test.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.148: ** << docstring >>
 """A Test handler.

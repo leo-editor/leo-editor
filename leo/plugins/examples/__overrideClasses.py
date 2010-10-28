@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.916: * @thin examples/__overrideClasses.py
+#@+node:edream.110203113231.916: * @file examples/__overrideClasses.py
 """A plugin showing how to override Leo's core classes."""
 
 #@@language python

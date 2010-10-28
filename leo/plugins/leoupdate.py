@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:pap.20050605183206: * @thin leoupdate.py
+#@+node:pap.20050605183206: * @file leoupdate.py
 #@+<< docstring >>
 #@+node:pap.20050605183206.1: ** << docstring >>
 """

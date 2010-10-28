@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517075715.10: * @thin vim.py
+#@+node:EKR.20040517075715.10: * @file vim.py
 #@+<< docstring >>
 #@+node:ekr.20050226184411: ** << docstring >>
 '''A plugin that communicates with VIM.

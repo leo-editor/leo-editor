@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20090513125417.5244: * @thin interact.py
+#@+node:tbrown.20090513125417.5244: * @file interact.py
 #@@language python
 #@@tabwidth -4
 #@+others

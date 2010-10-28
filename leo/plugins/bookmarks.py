@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20070322113635: * @thin bookmarks.py
+#@+node:tbrown.20070322113635: * @file bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
 '''

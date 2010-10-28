@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060513122450: * @thin xcc_nodes.py
+#@+node:ekr.20060513122450: * @file xcc_nodes.py
 
 """Integrate C/C++ compiler and debugger in a node."""
 

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040831115238: * @thin URLloader.py
+#@+node:ekr.20040831115238: * @file URLloader.py
 """This plugin uses Python's urllib module to download files and import them into Leo.
 """
 

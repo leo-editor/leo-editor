@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:bob.20071218121513: * @thin open_with.py
+#@+node:bob.20071218121513: * @file open_with.py
 #@+<< docstring >>
 #@+node:ekr.20050910140846: ** << docstring >>
 '''Create menu for Open With command and handle the resulting commands.

@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #@+leo-ver=5-thin
-#@+node:ekr.20090704103932.5160: * @thin leo_pdf.py
+#@+node:ekr.20090704103932.5160: * @file leo_pdf.py
 #@@first
 
 #@+<< docstring >>

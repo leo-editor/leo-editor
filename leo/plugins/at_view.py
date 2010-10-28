@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ktenney.20041211072654.1: * @thin at_view.py
+#@+node:ktenney.20041211072654.1: * @file at_view.py
 #@+<< docstring >>
 #@+node:ekr.20041231104454: ** << docstring >>
 '''A plugin that supports ``@clip``, ``@view`` and ``@strip`` nodes.

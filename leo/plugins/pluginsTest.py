@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517080555.25: * @thin pluginsTest.py
+#@+node:EKR.20040517080555.25: * @file pluginsTest.py
 """Test file for Plugins menu protocols"""
 
 #@@language python

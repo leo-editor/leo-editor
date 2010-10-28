@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100226095909.12777: * @thin leoscreen.py
+#@+node:tbrown.20100226095909.12777: * @file leoscreen.py
 #@+<< docstring >>
 #@+node:tbrown.20100226095909.12778: ** << docstring >>
 '''

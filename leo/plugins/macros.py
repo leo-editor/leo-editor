@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040916084945: * @thin macros.py
+#@+node:ekr.20040916084945: * @file macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
 '''

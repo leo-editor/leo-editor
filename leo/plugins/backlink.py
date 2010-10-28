@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20081223111325.3: * @thin backlink.py
+#@+node:tbrown.20081223111325.3: * @file backlink.py
 #@@language python
 #@@tabwidth -4
 #@+others

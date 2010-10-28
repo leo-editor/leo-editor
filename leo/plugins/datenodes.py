@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060807103814.1: * @thin datenodes.py
+#@+node:ekr.20060807103814.1: * @file datenodes.py
 #@+<< docstring >>
 #@+node:bobjack.20080615065747.4: ** << docstring >>
 """

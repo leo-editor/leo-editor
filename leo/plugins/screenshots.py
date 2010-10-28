@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100908110845.5505: * @thin screenshots.py
+#@+node:ekr.20100908110845.5505: * @file screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
 """

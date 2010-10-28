@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041018204908.1: * @thin multifile.py
+#@+node:mork.20041018204908.1: * @file multifile.py
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
 r'''Multipath enables the ability to write a file to multiple locations.

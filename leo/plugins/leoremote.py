@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20091009202416.10040: * @thin leoremote.py
+#@+node:ville.20091009202416.10040: * @file leoremote.py
 #@+<< docstring >>
 #@+node:ville.20091009202416.10041: ** << docstring >>
 ''' Remote control for leo

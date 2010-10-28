@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915105758.13: * @thin FileActions.py
+#@+node:ekr.20040915105758.13: * @file FileActions.py
 #@+<< docstring >>
 #@+node:ekr.20050912180106: ** << docstring >>
 r""" A Leo plugin that permits the definition of actions for double-clicking on

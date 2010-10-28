@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:pap.20051010170720: * @thin newButtons.py
+#@+node:pap.20051010170720: * @file newButtons.py
 #@+<< docstring >>
 #@+node:pap.20051010170720.1: ** << docstring >>
 """Allows the use of template nodes for common tasks

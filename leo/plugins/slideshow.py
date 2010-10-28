@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060831165821: * @thin slideshow.py
+#@+node:ekr.20060831165821: * @file slideshow.py
 #@+<< docstring >>
 #@+node:ekr.20060831165845.1: ** << docstring >>
 '''A plugin to support slideshows in Leo outlines.

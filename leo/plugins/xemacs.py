@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517075715.12: * @thin xemacs.py
+#@+node:EKR.20040517075715.12: * @file xemacs.py
 '''This plugin allows you to edit nodes in emacs/xemacs.
 
 Important: the open_with plugin must be enabled for this plugin to work properly.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050329082101.162: * @thin trees\remote.py
+#@+node:ekr.20050329082101.162: * @file trees\remote.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.163: ** << docstring >>
 """A handler that downloads remote files

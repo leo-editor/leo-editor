@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:bobjack.20080321133958.6: * @thin rClick.py
+#@+node:bobjack.20080321133958.6: * @file rClick.py
 #@@language python
 #@@tabwidth -4
 

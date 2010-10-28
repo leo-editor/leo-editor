@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040419105219: * @thin lineNumbers.py
+#@+node:ekr.20040419105219: * @file lineNumbers.py
 '''Adds #line directives in perl and perlpod programs.
 
 Over-rides two methods in leoAtFile.py to write #line directives after node

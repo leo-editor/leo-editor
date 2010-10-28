@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517080049.4: * @thin open_shell.py
+#@+node:EKR.20040517080049.4: * @file open_shell.py
 #@+<< docstring >>
 #@+node:ekr.20050111112200: ** << docstring >>
 '''

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041018162155.1: * @thin EditAttributes.py
+#@+node:mork.20041018162155.1: * @file EditAttributes.py
 #@+<< docstring >>
 #@+node:ekr.20050226091502: ** << docstring >>
 '''A plugin that lets the user to associate text with a specific node.

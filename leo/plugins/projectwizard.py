@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090622063842.5264: * @thin projectwizard.py
+#@+node:ekr.20090622063842.5264: * @file projectwizard.py
 #@+<< docstring >>
 #@+node:ville.20090614224528.8136: ** << docstring >>
 ''' Simple @auto project wizard

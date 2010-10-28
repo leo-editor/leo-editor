@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050329082101.153: * @thin trees\news.py
+#@+node:ekr.20050329082101.153: * @file trees\news.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.154: ** << docstring >>
 """A handler that downloads messages from a news server

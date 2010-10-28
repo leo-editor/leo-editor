@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20071004090250: * @thin graphed.py
+#@+node:ekr.20071004090250: * @file graphed.py
 #@+<< docstring >>
 #@+node:ekr.20071004090250.1: ** << docstring >>
 """

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20091118065749.5261: * @thin ctagscompleter.py
+#@+node:ekr.20091118065749.5261: * @file ctagscompleter.py
 #@+<< docstring >>
 #@+node:ville.20090317180704.8: ** << docstring >>
 ''' This plugin uses ctags to provide autocompletion list

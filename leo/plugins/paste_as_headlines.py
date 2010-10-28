@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:danr7.20060912105041.1: * @thin paste_as_headlines.py
+#@+node:danr7.20060912105041.1: * @file paste_as_headlines.py
 #@@first
 
 #@@language python

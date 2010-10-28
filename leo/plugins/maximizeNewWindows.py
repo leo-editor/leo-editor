@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915073259.1: * @thin maximizeNewWindows.py
+#@+node:ekr.20040915073259.1: * @file maximizeNewWindows.py
 """Maximizes all new windows."""
 
 #@@language python

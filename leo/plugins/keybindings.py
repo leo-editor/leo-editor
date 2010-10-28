@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060703162506: * @thin keybindings.py
+#@+node:ekr.20060703162506: * @file keybindings.py
 #@+<< docstring >>
 #@+node:pap.20060703102546.1: ** << docstring >>
 """KeyBindings - shows what key bindings are in effect.

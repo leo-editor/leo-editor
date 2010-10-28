@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.741: * @thin add_directives.py
+#@+node:edream.110203113231.741: * @file add_directives.py
 """Support new @direcives"""
 
 #@@language python

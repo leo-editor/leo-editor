@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:bobjack.20080424190315.2: * @thin toolbar.py
+#@+node:bobjack.20080424190315.2: * @file toolbar.py
 #@@language python
 #@@tabwidth -4
 

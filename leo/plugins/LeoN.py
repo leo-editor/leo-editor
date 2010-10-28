@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.2
 #@+leo-ver=5-thin
-#@+node:ekr.20050402080206.8: * @thin LeoN.py
+#@+node:ekr.20050402080206.8: * @file LeoN.py
 #@@first
 
 #@+<< docstring >>

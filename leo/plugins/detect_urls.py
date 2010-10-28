@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060506070443.1: * @thin detect_urls.py
+#@+node:ekr.20060506070443.1: * @file detect_urls.py
 #@+<< docstring >>
 #@+node:vpe.20060426084738: ** << docstring >>
 """

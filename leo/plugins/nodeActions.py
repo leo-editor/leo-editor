@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TL.20090225102340.32: * @thin nodeActions.py
+#@+node:TL.20090225102340.32: * @file nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >>
 """ A Leo plugin that permits the definition of actions for double-clicking on

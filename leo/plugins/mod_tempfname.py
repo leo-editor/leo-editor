@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517075715.1: * @thin mod_tempfname.py
+#@+node:EKR.20040517075715.1: * @file mod_tempfname.py
 """Replace Commands.openWithTempFilePath to create alternate temporary
 directory paths.  Two alternates are supported.  Default method creates temporary
 files with a filename that begins with the headline text, and

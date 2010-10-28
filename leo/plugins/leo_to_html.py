@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:danr7.20060902215215.1: * @thin leo_to_html.py
+#@+node:danr7.20060902215215.1: * @file leo_to_html.py
 #@@language python
 #@@tabwidth -4
 

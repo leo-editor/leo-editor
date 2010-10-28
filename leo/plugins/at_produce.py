@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915085351: * @thin at_produce.py
+#@+node:ekr.20040915085351: * @file at_produce.py
 #@+<< docstring >>
 #@+node:ekr.20050311110307: ** << docstring >>
 '''

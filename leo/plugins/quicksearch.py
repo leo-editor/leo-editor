@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090314215508.4: * @thin quicksearch.py
+#@+node:ville.20090314215508.4: * @file quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >>
 ''' This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors

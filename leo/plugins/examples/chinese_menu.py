@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20040828105233: * @thin examples/chinese_menu.py
+#@+node:ekr.20040828105233: * @file examples/chinese_menu.py
 #@@first
 #@@language python
 #@@tabwidth -4

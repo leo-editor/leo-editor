@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050329082101.150: * @thin trees\rss.py
+#@+node:ekr.20050329082101.150: * @file trees\rss.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.151: ** << docstring >>
 """A handler that downloads RSS feeds

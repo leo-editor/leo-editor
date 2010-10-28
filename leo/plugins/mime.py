@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:dan.20090217132953.1: * @thin mime.py
+#@+node:dan.20090217132953.1: * @file mime.py
 #@+<< docstring >>
 #@+node:dan.20090203174248.27: ** << docstring >>
 '''Open files with their default platform program.

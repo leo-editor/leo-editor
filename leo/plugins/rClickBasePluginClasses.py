@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:bobjack.20080619110105.2: * @thin rClickBasePluginClasses.py
+#@+node:bobjack.20080619110105.2: * @file rClickBasePluginClasses.py
 #@+<< docstring >>
 #@+node:bobjack.20080614200920.8: ** << docstring >>
 """Base classes for plugins.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040910070811.1: * @thin run_nodes.py
+#@+node:ekr.20040910070811.1: * @file run_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912181956: ** << docstring >>
 r'''Runs a program and interface Leo through its input/output/error streams.

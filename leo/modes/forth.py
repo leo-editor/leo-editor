@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20080707101341.1: * @thin ../modes/forth.py
+#@+node:ekr.20080707101341.1: * @file ../modes/forth.py
 # Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
 

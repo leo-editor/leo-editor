@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.724: * @thin mod_autosave.py
+#@+node:edream.110203113231.724: * @file mod_autosave.py
 #@+<< docstring >>
 #@+node:ekr.20060108123253: ** << docstring >>
 """Autosave the Leo document every so often.

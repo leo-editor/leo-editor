@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20060828111141: * @thin cleo.py
+#@+node:tbrown.20060828111141: * @file cleo.py
 #@+<< docstring >>
 #@+node:tbrown.20060903211930: ** << docstring >>
 '''cleo.py  -- Coloured LEo Outlines

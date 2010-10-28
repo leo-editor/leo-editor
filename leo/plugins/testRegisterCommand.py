@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20051016160700: * @thin testRegisterCommand.py
+#@+node:ekr.20051016160700: * @file testRegisterCommand.py
 '''A plugin to test k.registerCommand.'''
 
 #@@language python

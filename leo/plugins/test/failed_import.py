@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20050130120433: * @thin test/failed_import.py
+#@+node:ekr.20050130120433: * @file test/failed_import.py
 '''A plugin to test import problems.'''
 
 import leo.core.leoGlobals as g

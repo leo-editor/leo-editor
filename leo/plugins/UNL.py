@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:rogererens.20041013082304: * @thin UNL.py
+#@+node:rogererens.20041013082304: * @file UNL.py
 #@+<< docstring >>
 #@+node:ekr.20050119144617: ** << docstring >>
 '''This plugin supports Uniform Node Locators (UNL's). UNL's specify nodes within

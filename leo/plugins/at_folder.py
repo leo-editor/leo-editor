@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.873: * @thin at_folder.py
+#@+node:edream.110203113231.873: * @file at_folder.py
 #@+<< docstring >>
 #@+node:edream.110203113231.874: ** << docstring >>
 '''Synchronize @folder nodes with folders.

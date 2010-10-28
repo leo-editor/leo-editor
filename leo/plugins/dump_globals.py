@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.730: * @thin dump_globals.py
+#@+node:edream.110203113231.730: * @file dump_globals.py
 """Dump Python globals at startup"""
 
 #@@language python

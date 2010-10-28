@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040108095351: * @thin rowcol.py
+#@+node:ekr.20040108095351: * @file rowcol.py
 """Add row/column indicators to the toolbar."""
 
 #@@language python
