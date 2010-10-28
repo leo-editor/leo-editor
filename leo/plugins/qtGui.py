@@ -5181,7 +5181,7 @@ class leoQtMenu (leoMenu.leoMenu):
 #@+node:ekr.20100830205422.3714: *3* class LeoQTreeWidget
 class LeoQTreeWidget(QtGui.QTreeWidget):
 
-    # To do: Generate @auto or @thin nodes when appropriate.
+    # To do: Generate @auto or @file nodes when appropriate.
 
     def __init__(self,c,parent):
 
@@ -5394,7 +5394,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20100830205422.3723: *7* doFileUrlHelper & helper
     def doFileUrlHelper (self,fn,p,s):
 
-        '''Insert s in an @thin, @auto or @edit node after p.'''
+        '''Insert s in an @file, @auto or @edit node after p.'''
 
         c = self.c ; u = c.undoer ; undoType = 'Drag File'
 
@@ -5416,7 +5416,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Set p's headline, body text and possibly descendants
         based on the file's name fn and contents s.
 
-        If the file is an thin file, create an @thin tree.
+        If the file is an thin file, create an @file tree.
         Othewise, create an @auto tree.
         If all else fails, create an @auto node.
 
@@ -5425,7 +5425,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         c = self.c ; d = c.importCommands.importDispatchDict
         if self.isThinFile(fn,s):
-            self.createAtThinTree(fn,p,s)
+            self.createAtFileTree(fn,p,s)
         elif self.isAutoFile(fn,s):
             self.createAtAutoTree(fn,p,s)
         else:
@@ -5457,16 +5457,16 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         at.readOneAtEditNode(fn,p)
         p.h = '@edit %s' % (fn)
         p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20100902095952.3743: *9* createAtThinTree
-    def createAtThinTree (self,fn,p,s):
+    #@+node:ekr.20100902095952.3743: *9* createAtFileTree
+    def createAtFileTree (self,fn,p,s):
 
-        '''Make p an @thin node and create the tree using
+        '''Make p an @file node and create the tree using
         s, the file's contents.
         '''
 
         c = self.c ; at = c.atFileCommands
 
-        p.h = '@thin %s' % (fn)
+        p.h = '@file %s' % (fn)
 
         # Read the file into p.
         ok = at.read(root=p.copy(),
@@ -5483,7 +5483,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     def isThinFile (self,fn,s):
 
         '''Return true if the file whose contents is s
-        was created from an @thin tree.'''
+        was created from an @thin or @file tree.'''
 
         c = self. c ; at = c.atFileCommands
 
