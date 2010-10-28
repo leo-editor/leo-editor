@@ -1911,9 +1911,7 @@
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
-</v>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
 <v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
@@ -1921,7 +1919,7 @@
 </v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
 <v t="ekr.20080907123324.3"></v>
 </v>
@@ -16142,10 +16140,6 @@ c.gotoLineNumber is called in just two ways:
     
 - from goto-global-line with root=None,lines=None and scriptFile = False.
 - from c.goToScriptLineNumber with valid root and lines and scriptFile = True.
-</t>
-<t tx="ekr.20080904102243.2">@language python
-@tabwidth -4
-@others
 </t>
 <t tx="ekr.20080904102243.3">def child():
     pass
