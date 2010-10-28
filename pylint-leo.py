@@ -124,8 +124,8 @@ recentPluginsList = (
 tables_table = (
     # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    # (coreList,'core'),
-    # (guiPluginsTable,'plugins'),
+    (coreList,'core'),
+    (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),
