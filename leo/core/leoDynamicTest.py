@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20080730161153.5: * @thin leoDynamicTest.py
+#@+node:ekr.20080730161153.5: * @file leoDynamicTest.py
 '''A program to run dynamic unit tests with the leoBridge module.'''
 
 import optparse

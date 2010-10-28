@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060123151617: * @thin leoFind.py
+#@+node:ekr.20060123151617: * @file leoFind.py
 '''Leo's gui-independent find classes.'''
 
 #@@language python

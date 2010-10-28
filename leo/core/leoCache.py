@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100208065621.5894: * @thin leoCache.py
+#@+node:ekr.20100208065621.5894: * @file leoCache.py
 '''A module encapsulating Leo's file caching'''
 
 #@+<< imports >>

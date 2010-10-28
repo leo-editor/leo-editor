@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20050710142719: * @thin leoEditCommands.py
+#@+node:ekr.20050710142719: * @file leoEditCommands.py
 #@@first
 
 '''Basic editor commands for Leo.

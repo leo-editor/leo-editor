@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100119205347.6015: * @thin ../doc/leoToDo.txt
+#@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101026125532.5968: *3* Installation problems with Qt

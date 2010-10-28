@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3655: * @thin leoFrame.py
+#@+node:ekr.20031218072017.3655: * @file leoFrame.py
 """The base classes for all Leo Windows, their body, log and tree panes, key bindings and menus.
 
 These classes should be overridden to create frames for a particular gui."""

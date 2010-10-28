@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3446: * @thin leoTangle.py
+#@+node:ekr.20031218072017.3446: * @file leoTangle.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100120072650.6089: * @thin leoProjects.txt
+#@+node:ekr.20100120072650.6089: * @file leoProjects.txt
 #@+all
 #@+node:ekr.20100709113505.6291: ** Leo 4.8 a1
 #@+node:ekr.20101024235225.5864: *3* Code notes

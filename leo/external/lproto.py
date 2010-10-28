@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20091010232339.6117: * @thin ../external/lproto.py
+#@+node:ville.20091010232339.6117: * @file ../external/lproto.py
 #@@language python
 
 #@+<< docstring >>

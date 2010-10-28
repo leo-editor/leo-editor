@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100221142603.5638: * @thin ../../pylint-leo.py
+#@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
 #@@language python
 
 #@+<< imports >>

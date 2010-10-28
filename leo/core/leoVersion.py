@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090717092906.12765: * @thin leoVersion.py
+#@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
 
 # Leo 4.5.1 final: September 14, 2008

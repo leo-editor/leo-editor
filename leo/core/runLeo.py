@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.2605: * @thin runLeo.py 
+#@+node:ekr.20031218072017.2605: * @file runLeo.py 
 #@@first
 
 """Entry point for Leo in Python."""

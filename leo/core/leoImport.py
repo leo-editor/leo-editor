@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3206: * @thin leoImport.py
+#@+node:ekr.20031218072017.3206: * @file leoImport.py
 #@@first
     # Required so non-ascii characters will be valid in unit tests.
 

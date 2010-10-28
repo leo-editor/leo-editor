@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20041117062700: * @thin leoConfig.py
+#@+node:ekr.20041117062700: * @file leoConfig.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

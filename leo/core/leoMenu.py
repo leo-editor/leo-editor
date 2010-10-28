@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3749: * @thin leoMenu.py
+#@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
 
 #@@language python

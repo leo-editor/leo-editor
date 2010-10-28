@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.2794: * @thin leoColor.py
+#@+node:ekr.20031218072017.2794: * @file leoColor.py
 #@+<< docstring >>
 #@+node:bob.20080115083029: ** << docstring >>
 """Syntax coloring routines and color database for Leo.

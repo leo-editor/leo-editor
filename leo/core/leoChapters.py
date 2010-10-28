@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20070317085508.1: * @thin leoChapters.py
+#@+node:ekr.20070317085508.1: * @file leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 
 #@@language python

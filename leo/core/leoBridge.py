@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #@+leo-ver=5-thin
-#@+node:ekr.20070227091955.1: * @thin leoBridge.py
+#@+node:ekr.20070227091955.1: * @file leoBridge.py
 #@@first
 
 '''A module to allow full access to Leo commanders from outside Leo.'''

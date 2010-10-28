@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20061024060248.1: * @thin leoPymacs.py
+#@+node:ekr.20061024060248.1: * @file leoPymacs.py
 #@@first
 
 #@+<< docstring>>

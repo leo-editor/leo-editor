@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100120092047.6087: * @thin ../external/ipy_leo.py
+#@+node:ekr.20100120092047.6087: * @file ../external/ipy_leo.py
 #@@language python
 #@@tabwidth -4
 #@+others

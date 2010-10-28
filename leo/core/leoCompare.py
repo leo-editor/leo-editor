@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3630: * @thin leoCompare.py
+#@+node:ekr.20031218072017.3630: * @file leoCompare.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

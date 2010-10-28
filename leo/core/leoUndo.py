@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3603: * @thin leoUndo.py
+#@+node:ekr.20031218072017.3603: * @file leoUndo.py
 '''Undo manager.'''
 
 #@@language python

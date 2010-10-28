@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060207133601: * @thin ../doc/leoToDoLater.txt
+#@+node:ekr.20060207133601: * @file ../doc/leoToDoLater.txt
 #@+all
 #@+node:ekr.20060824110846: ** Colorizing
 #@+node:ekr.20060813121814: *3* Add colorizer files for cweb, rapidq

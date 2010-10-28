@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3439: * @thin leoPlugins.py
+#@+node:ekr.20031218072017.3439: * @file leoPlugins.py
 '''define the LeoPluginsController class.'''
 
 #@@language python

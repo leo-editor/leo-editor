@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3093: * @thin leoGlobals.py
+#@+node:ekr.20031218072017.3093: * @file leoGlobals.py
 #@@first
 
 """Global constants, variables and utility functions used throughout Leo."""

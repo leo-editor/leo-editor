@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20080730161153.2: * @thin leoBridgeTest.py
+#@+node:ekr.20080730161153.2: * @file leoBridgeTest.py
 '''A program to run unit tests with the leoBridge module.'''
 
 import leo.core.leoBridge as leoBridge

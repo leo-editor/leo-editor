@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.2608: * @thin leoApp.py
+#@+node:ekr.20031218072017.2608: * @file leoApp.py
 #@@first
 
 #@@language python

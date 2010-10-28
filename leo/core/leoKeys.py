@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20061031131434: * @thin leoKeys.py
+#@+node:ekr.20061031131434: * @file leoKeys.py
 """Gui-independent keystroke handling for Leo.""" 
 
 #@@language python

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20041005105605.1: * @thin leoAtFile.py
+#@+node:ekr.20041005105605.1: * @file leoAtFile.py
 #@@first
     # Needed because of unicode characters in tests.
 
