@@ -3279,7 +3279,9 @@ def pr(*args,**keys):
         try: # We can't use any print keyword args in Python 2.x!
             sys.stdout.write(s2)
         except Exception:
-            g.es('unexpected exception in g.pr')
+            # This can fail when running pythonw.ese.
+            # g.es('unexpected exception in g.pr')
+            g.es(s2)
             # if not g.pr_warning_given:
                 # g.pr_warning_given = True
                 # # print('unexpected Exception in g.pr')

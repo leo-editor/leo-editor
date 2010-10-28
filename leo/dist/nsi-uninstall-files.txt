@@ -1,7 +1,7 @@
 
 ; Uninstall files...
 
-; Delete top-level files...
+SetOutPath $Temp
 Delete "$INSTDIR\LICENSE.txt"
 Delete "$INSTDIR\Makefile"
 Delete "$INSTDIR\launchLeo.py"
@@ -10,6 +10,9 @@ Delete "$INSTDIR\leo_to_html.xsl"
 Delete "$INSTDIR\profileLeo.py"
 Delete "$INSTDIR\pylint-leo.bat"
 Delete "$INSTDIR\pylint-leo.py"
+Delete "$INSTDIR\*.pyo"
+Delete "$INSTDIR\*.pyc"
+Delete "$INSTDIR\uninst.exe"
 
 Delete "$INSTDIR\leo\*.pyc"
 Delete "$INSTDIR\leo\*.pyo"

@@ -49,16 +49,12 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 </v>
-<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
-<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
-</v>
 <v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
 <v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
@@ -76,8 +72,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
-<v t="ekr.20101025095431.1519"><vh>Finish installer</vh></v>
+<v t="ekr.20101025095431.1517" a="E"><vh>Installer/Distribution to do</vh>
 <v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
@@ -86,6 +81,15 @@
 </v>
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
+</v>
+<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
+<v t="ekr.20101027160251.1500"><vh>Notes</vh>
+<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
+<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
+<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
+</v>
+<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
+<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -862,28 +866,6 @@ deletion of the installation folder on the next reboot.
 Both these techniques are described at
 http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8
 </t>
-<t tx="ekr.20101025095431.1519">@nocolor-node
-
-Docs and installer should have top priority
-http://groups.google.com/group/leo-editor/browse_thread/thread/8ed5b2034bd218d8
-
-2. Migration. If I upgrade from Python 2.6 to 2.7 for reasons
-unrelated to Leo, I'll presumably need to reinstall Leo as well. It
-would be nice not to have to.
-
-These goals could possibly be achieved by installing Leo in an
-independent directory (chosen by the user as part of the installation)
-and adding a .pth file into Python's site-packages directory (see
-documentation for the site module). Then the leo script can be
-installed alongside the package - so you have
-
-    ... Program Files\Leo\
-            leo.bat
-            package\leo\...
-
-leo.pth:
-...\Program Files\Leo\package 
-</t>
 <t tx="ekr.20101026142031.1516">@nocolor-node
 
 HKEY_CURRENT_USER\Software\Classes\Applications\python.exe
@@ -1155,18 +1137,19 @@ def deleteFiles (self,lines,deleteList):
     put('\n')
     put('; Uninstall files...\n\n')
 
-    put('; Delete top-level files...\n')
+    put('SetOutPath $Temp\n')
+
+    # Get the list of top-level files.
     aList = dirDict.get('**top',[])
+
+    # Add some special cases:
+    for fn in ('*.pyo','*.pyc','uninst.exe',):
+        if fn not in aList:
+            aList.append(fn)
+
     for fn in aList:
         # Always delete individual files.
         put('Delete "$INSTDIR\\%s"\n' % fn)
-
-    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
-    if 0: # This seems way too drastic, and not needed.
-        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
-            aList.append(fn)
-    # special case.
-    aList.append('uninst.exe')
 
     # Part 2: Delete files in lower directories.
     for theDir in dirs:
@@ -1213,5 +1196,9 @@ def deleteFiles (self,lines,deleteList):
 </t>
 <t tx="ekr.20101027070126.1680"></t>
 <t tx="ekr.20101027131034.1490">@color</t>
+<t tx="ekr.20101027135430.1492">http://nsis.sourceforge.net/Docs/Modern%20UI%202/Readme.html</t>
+<t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
+<t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
+<t tx="ekr.20101027160251.1500"></t>
 </tnodes>
 </leo_file>
