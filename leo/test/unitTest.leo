@@ -21032,12 +21032,14 @@ if 0: # This is usually a very bad idea.
         p.v.fileIndex = None
 
     g.es("all timestamps cleared")</t>
-<t tx="ekr.20091206090247.5063">put = g.es_print
+<t tx="ekr.20091206090247.5063">doDelete = False
+put = g.es_print
 for p in c.all_positions():
     if p.v.u:
-        put("deleting v.u:",p.h,
+        put("found v.u:",p.h,
             g.listToString(p.v.u.keys()))
-        p.v.u = None
+        if doDelete:
+            p.v.u = None
 put('done') 
 c.redraw()</t>
 <t tx="ekr.20091219121039.5065">x = c.rstCommands

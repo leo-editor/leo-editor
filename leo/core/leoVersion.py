@@ -10,6 +10,6 @@
 #@@tabwidth -4
 
 build = 3005
-date = "February 26, 2010"
-version = "4.8 devel"
+date = "October 28, 2010"
+version = "4.8 a1"
 #@-leo
