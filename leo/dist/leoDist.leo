@@ -48,7 +48,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
@@ -1031,7 +1031,9 @@ def deleteFiles (self,lines,deleteList):
     aList = dirDict.get('**top',[])
 
     # Add some special cases:
-    for fn in ('*.pyo','*.pyc','uninst.exe',):
+    for fn in ('*.pyo','*.pyc',
+        'uninst.exe','setup.py','bzr-manifest.txt',
+    ):
         if fn not in aList:
             aList.append(fn)
 

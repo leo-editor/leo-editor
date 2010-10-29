@@ -14,6 +14,8 @@ Delete "$INSTDIR\pylint-leo.py"
 Delete "$INSTDIR\*.pyo"
 Delete "$INSTDIR\*.pyc"
 Delete "$INSTDIR\uninst.exe"
+Delete "$INSTDIR\setup.py"
+Delete "$INSTDIR\bzr-manifest.txt"
 
 Delete "$INSTDIR\leo\*.pyc"
 Delete "$INSTDIR\leo\*.pyo"
