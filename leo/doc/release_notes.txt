@@ -14244,6 +14244,16 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+#@+node:ekr.20101029092059.4897: *4* Known problems
+There are at least 2 installer issues outstanding:
+
+1. Installing to the "Program Files" folder or the "Program Files
+(x86)" folder can cause some unit tests to fail due to permission
+issues.  I don't think this is too serious.
+
+2. Installing to the "Program Files (x86)" folder can cause PyEnchant
+not to find the spellpyx.txt folder.  This looks like a bug in
+PyEnchant.
 #@+node:ekr.20101024234254.5826: *4* Bugs
 #@+node:ekr.20101024234745.5831: *5* Significant bugs
 #@+node:ekr.20101024234254.5848: *6* Fixed vampire nodes and created p.deletePositionsInList
