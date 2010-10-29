@@ -316,7 +316,7 @@ class LeoPluginsController:
                 if c:
                     # Make sure c exists and has a frame.
                     if not c.exists or not hasattr(c,'frame'):
-                        g.pr('skipping tag %s: c does not exists or does not have a frame.' % tag)
+                        # g.pr('skipping tag %s: c does not exist or does not have a frame.' % tag)
                         return None
 
         # Calls to registerHandler from inside the handler belong to moduleName.
