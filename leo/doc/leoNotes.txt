@@ -3381,6 +3381,72 @@ Also note the text widget in Tk8.4 (http://www.tcl.tk/man/tcl8.4/TkCmd/text.htm#
 has a built-in way of seeing if the text has changed
 
 Brian Theado
+#@+node:ekr.20090105132011.6: ** Regex notes
+@nocolor-node
+
+# *** match pat2 if not preceded by pat1::
+
+(?<!pat1)pat2
+
+.  any char
+^  start line
+$  end of line
+\w alphanum: [a-zA-Z0-9_]
+\W non-alphanum
+\s whitespace
+\S non-whitespace
+
+These can be done with regexps:
+
+copy-to-end-of-each-line:   (.)$        -->  \1x
+copy-to-start-of-each-line: ^([ \t]+)   -->  \1x
+remove-leading-ws:  ^[ \t]+             -->  empty
+remove-trailing-ws: [ \t]+$             -->  empty
+paste-at-column:    ^(.{4})             -->  \1x
+paste-after-lws:    ^([ \t]+)           -->  \1x
+
+[]
+    Used to indicate a set of characters. Characters can be listed individually,
+    or a range of characters can be indicated by giving two characters and
+    separating them by a '-'. Special characters are not active inside sets.
+
+    [akm$] will match any of the characters 'a', 'k', 'm', or '$';
+    [a-z] will match any lowercase letter.
+    [a-zA-Z0-9] matches any letter or digit.
+
+    Character classes such as \w or \S (defined below) are also
+    acceptable inside a range, although the characters they match depends on
+    whether LOCALE or UNICODE mode is in force. If you want to include a ']' or
+    a '-' inside a set, precede it with a backslash, or place it as the first
+    character. The pattern []] will match ']', for example.
+
+    You can match the characters not within a range by complementing the set.
+    This is indicated by including a '^' as the first character of the set; '^'
+    elsewhere will simply match the '^' character. For example, [^5] will match
+    any character except '5', and [^^] will match any character except '^'.
+
+(?=...)
+    Matches if ... matches next, but doesnt consume any of the string.
+    This is called a lookahead assertion.
+    For example, Isaac (?=Asimov) will match 'Isaac ' only if it's followed by 'Asimov'.
+
+(?!...)
+    Matches if ... doesn't match next.
+    This is a negative lookahead assertion.
+    For example, Isaac (?!Asimov) will match 'Isaac ' only if it is not followed by 'Asimov'.
+
+(?<=...)
+    Matches if the current position in the string is preceded by a match for ...
+    that ends at the current position. This is called a positive lookbehind assertion.
+    The contained pattern must only match strings of some fixed length,
+    meaning that abc or a|b are allowed, but a* and a{3,4} are not.
+
+(?<!...) Matches if the current position in the string is not preceded by a
+    match for .... This is called a negative lookbehind assertion. Similar to
+    positive lookbehind assertions, the contained pattern must only match
+    strings of some fixed length. Patterns which start with negative lookbehind
+    assertions may match at the beginning of the string being searched.
+#@+node:ekr.20060217111834: *3* @url http://docs.python.org/lib/re-syntax.html
 #@+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python

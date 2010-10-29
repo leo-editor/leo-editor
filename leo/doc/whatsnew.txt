@@ -50,7 +50,7 @@ Leo now writes \@file files with the `simplest possible`_ sentinel lines.
 
 The result is, provably, the simplest possible representation of Leo's outline
 structure in external files.
-.. @+node:ekr.20101025080245.6078: *4* Drag and drop
+.. @+node:ekr.20101025080245.6078: *4* Drag and drop files into Leo
 The Qt Gui now supports drag and drop in Leo outlines.
 
 You can drag files into Leo.  Leo will create \@file or \@auto nodes if appropriate.
@@ -119,7 +119,7 @@ If the body text is non-empty, it is assumed to contain the URL.
 This is a remarkably important improvement--it allows the
 headline to contain a description of the url.
 .. @+node:ekr.20101025080245.6081: *4* New plugins
-XXX To do.
+- The screenshots.py plugin helps make slide shows containing many screen shots.
 .. @+node:ekr.20101025080245.6006: *4* New settings & command-line args
 - Leo can now open multiple files from the command line.
 
@@ -160,6 +160,8 @@ XXX To do.
     --window-size=600x900  # <height> x <width>, in pixels.
 .. @+node:ekr.20101025080245.5985: *4* Other improvements
 .. _`Reorganized`: http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
+
+- Several important improvements to Leo's installer for Windows.
 
 - Leo doesn't create @chapter nodes for new files.
 

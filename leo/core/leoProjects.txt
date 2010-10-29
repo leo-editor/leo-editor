@@ -1,6 +1,39 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file leoProjects.txt
 #@+all
+#@+node:ekr.20100907092144.5901: ** Unit tests
+# These are intended to be temporary tests,
+# to be copied eventually to unitTest.leo
+#@+node:ekr.20100907115157.5905: *3* @ignore
+#@+node:ekr.20100208095423.5940: *4* @test leoCache
+import leo.core.leoCache as leoCache
+
+cacher = leoCache.cacher(c)
+
+if 0:
+    import os
+    os.system('cls')
+
+assert cacher.test()
+#@+node:ekr.20100906165118.5915: *4* @test leoInkCommands
+ic = c.inkscapeCommands
+screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
+template_fn = r'c:\leo.repo\inkcall\template.svg'
+png_fn = r'c:\leo.repo\inkcall\output.png'
+svg_fn = r'c:\leo.repo\inkcall\temp.svg'
+callouts = [
+        "This goes here",
+        "These are those, but slightly longer",
+        "Then you pull this, but this text needs to be longer for testing",]
+ic.run(
+    screenshot,
+    callouts=callouts,
+    numbers=[2,4,17],
+    edit_flag = True, # True: call inkscape to edit the working file.
+    png_fn=png_fn, # Optional: Name of output png file.
+    svg_fn=svg_fn, # Optional: Name of working svg file.
+    template_fn=template_fn, # Optional: Name of template svg file.
+)
 #@+node:ekr.20100709113505.6291: ** Leo 4.8 a1
 #@+node:ekr.20101028131948.5858: *3* Pylint errors for minor plugins
 ************* Module leo.plugins.geotag

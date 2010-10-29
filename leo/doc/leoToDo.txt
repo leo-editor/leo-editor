@@ -62,131 +62,15 @@ I still does not recognize PyQt
     Can not load c:\aspell\bin\aspell-15.dll
     file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
 #@+node:ekr.20101024062147.6011: *3* Before b1
-#@+node:ekr.20101025100847.5852: *4* @url ready to work on codewise
-http://mail.google.com/mail/#inbox/12b7463d6c339406
+#@+node:ekr.20101029065151.5922: *4* More slide shows
+#@+node:ekr.20101029065151.5921: *4* Discuss installing qt in introductory slideshow
+#@+node:ekr.20101029065151.5920: *4* Document screenshot plugin
 #@+node:ekr.20101024062147.6025: *4* Somewhat hard bugs
-#@+node:ekr.20100804095820.5812: *5* bug 613153: unable to describe root directory on thumb drive
-@nocolor-node
-
-Fix in g.os_path_isabs
-
-Edward, not sure if you're following this thread, but the fix turned out to be
-entangled with a lot of @<file> stuff, so I don't want to push it without your
-inspection.
-
-Repeating the basic problem: for an @<file> node there is some parent path in
-effect at the point where you reach the node, based on the location of the .leo
-file and any relevant @path directives. For determination of the full path to
-the target file, the @<file> node can either extend the parent path with a
-relative path (simplest case, just the filename), or discard the parent path
-with an absolute path of its own. The problem arises when the @<file> introduces
-a Windows drive specific \absolute\path without specifying the drive. In that
-case the drive should come from the original parent path.
-
-I think the diff below does that ok. It might do it in more places than was
-needed to fix the original problem, but I don't think it does it in any places
-where it shouldn't.
-
-Also, I think the same issue would affect the scanning of @path directives, this
-diff doesn't address that, although the fix_windows_absolute() method it
-introduces could probably be used for that application also. Here's the diff:
-
-=== modified file 'leo/core/leoAtFile.py'
---- leo/core/leoAtFile.py 2010-08-03 22:26:10 +0000
-+++ leo/core/leoAtFile.py 2010-08-05 22:24:42 +0000
-@@ -688,6 +688,8 @@
-         else:
-             fileName = None
-
-+ fileName = g.fix_windows_absolute(self.c, root, fileName)
-+
-         return fileName
-#@verbatim
-     #@+node:ekr.20100224050618.11547: *5* at.isFileLike
-     def isFileLike (self,s):
-@@ -2815,7 +2817,10 @@
-                 at.targetFileName = root.atFileNodeName()
-         else:
-             at.targetFileName = root.atFileNodeName()
-+
-+ at.targetFileName = g.fix_windows_absolute(at.c, root, at.targetFileName)
-#@verbatim
-         #@-<< set at.targetFileName >>
-+
-         at.initWriteIvars(root,at.targetFileName,
-             nosentinels = nosentinels, thinFile = thinFile,
-             scriptWrite = scriptWrite, toString = toString)
-@@ -5166,7 +5171,9 @@
-         else:
-             fn = p.anyAtFileNodeName()
-         if fn:
-+ fn = g.fix_windows_absolute(c, p, fn)
-             path = g.os_path_finalize_join(path,fn)
-+
-         else:
-             g.trace('can not happen: not an @<file> node:',g.callers(4))
-             for p2 in p.self_and_parents():
-
-=== modified file 'leo/core/leoCommands.py'
---- leo/core/leoCommands.py 2010-08-01 17:16:51 +0000
-+++ leo/core/leoCommands.py 2010-08-05 22:59:13 +0000
-@@ -559,6 +559,7 @@
-             if name: break
-
-         if name:
-+ name = g.fix_windows_absolute(self, p, name)
-             name = g.os_path_finalize_join(path,name)
-         return name
-#@verbatim
-     #@+node:ekr.20091211111443.6265: *3* c.doBatchOperations & helpers
-
-=== modified file 'leo/core/leoGlobals.py'
---- leo/core/leoGlobals.py 2010-07-31 12:00:58 +0000
-+++ leo/core/leoGlobals.py 2010-08-05 22:52:47 +0000
-@@ -936,6 +936,9 @@
-     if name:
-         theDir = g.os_path_dirname(name)
-         if theDir and g.os_path_isabs(theDir):
-+
-+ theDir = g.fix_windows_absolute(c,p,theDir)
-+
-             if g.os_path_exists(theDir):
-                 default_di...
-
-=========================
-
-Ville M. Vainio wrote on 2010-08-06: 	#18
-
-For performance reasons the first thing you check before doing
-anything else should be:
-
- if path[0] != "\\": return path
-
-#@+node:ekr.20031218072017.2151: *6* os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
 #@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
 #@+node:ekr.20100827114047.5892: *5* bug 581031: Fix toggle-split-direction
 Should preserve scrollbar location and appropriate window ratio.
 
 https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
-#@+node:ekr.20101024062147.5991: *5* bug 583955: Key bindings in Find Panel need some love
-@nocolor-node
-
-see thread http://www.mail-archive.com/leo-editor@googlegroups.com/msg12137.html
-for details.
-
-- no keyboard method to swing focus away from the options panel
-
-- inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
-
-(perhaps nothing
-can be done here, but it does make the user experience more awkward)
 #@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect
 @nocolor-node
 
@@ -198,11 +82,11 @@ Expected behavior: it should extend/contract the existing selection
 
 Actual behavior: it creates a new selection from the cursor position
 #@+node:ekr.20101024062147.6012: *3* Before rc1
-#@+node:ekr.20101024062147.6014: *3* For 4.8.1
-# These will be moved to 4.8 final, time permitting.
 #@+node:ekr.20100206074650.5843: *4* Autocompletion
 # This can be done in the trunk.
 # For example new-complete commands.
+#@+node:ekr.20101025100847.5852: *5* @url ready to work on codewise
+http://mail.google.com/mail/#inbox/12b7463d6c339406
 #@+node:ekr.20090131200406.14: *5* Notes
 #@+node:ekr.20080113165010: *6* About auto completion
 @nocolor
@@ -2594,6 +2478,8 @@ def start (self,event=None,w=None,prefix=None,chain=False):
             return self.tabList
     else:
         self.abort()
+#@+node:ekr.20101024062147.6014: *3* For 4.8.1
+# These will be moved to 4.8 final, time permitting.
 #@+node:ekr.20080603052650.466: ** 4.9 Vim stuff
 @nocolor
 

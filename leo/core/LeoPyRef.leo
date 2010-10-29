@@ -77,9 +77,6 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20090105132011.6"><vh>Regex notes</vh>
-<v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
-</v>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
@@ -88,12 +85,6 @@
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@file ../doc/leoToDoLater.txt</vh></v>
-</v>
-<v t="ekr.20100907092144.5901"><vh>Unit tests</vh>
-<v t="ekr.20100907115157.5905"><vh>@ignore</vh>
-<v t="ekr.20100208095423.5940"><vh>@test leoCache</vh></v>
-<v t="ekr.20100906165118.5915"><vh>@test leoInkCommands</vh></v>
-</v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -224,7 +215,6 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
 <t tx="ekr.20051031040240"></t>
-<t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
 original parent? Here's some code to help. It displays the headline of the
@@ -744,70 +734,6 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
 <t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20090105132011.6">@nocolor-node
-
-# *** match pat2 if not preceded by pat1::
-
-(?&lt;!pat1)pat2
-
-.  any char
-^  start line
-$  end of line
-\w alphanum: [a-zA-Z0-9_]
-\W non-alphanum
-\s whitespace
-\S non-whitespace
-
-These can be done with regexps:
-
-copy-to-end-of-each-line:   (.)$        --&gt;  \1x
-copy-to-start-of-each-line: ^([ \t]+)   --&gt;  \1x
-remove-leading-ws:  ^[ \t]+             --&gt;  empty
-remove-trailing-ws: [ \t]+$             --&gt;  empty
-paste-at-column:    ^(.{4})             --&gt;  \1x
-paste-after-lws:    ^([ \t]+)           --&gt;  \1x
-
-[]
-    Used to indicate a set of characters. Characters can be listed individually,
-    or a range of characters can be indicated by giving two characters and
-    separating them by a '-'. Special characters are not active inside sets.
-
-    [akm$] will match any of the characters 'a', 'k', 'm', or '$';
-    [a-z] will match any lowercase letter.
-    [a-zA-Z0-9] matches any letter or digit.
-
-    Character classes such as \w or \S (defined below) are also
-    acceptable inside a range, although the characters they match depends on
-    whether LOCALE or UNICODE mode is in force. If you want to include a ']' or
-    a '-' inside a set, precede it with a backslash, or place it as the first
-    character. The pattern []] will match ']', for example.
-
-    You can match the characters not within a range by complementing the set.
-    This is indicated by including a '^' as the first character of the set; '^'
-    elsewhere will simply match the '^' character. For example, [^5] will match
-    any character except '5', and [^^] will match any character except '^'.
-
-(?=...)
-    Matches if ... matches next, but doesnt consume any of the string.
-    This is called a lookahead assertion.
-    For example, Isaac (?=Asimov) will match 'Isaac ' only if it's followed by 'Asimov'.
-
-(?!...)
-    Matches if ... doesn't match next.
-    This is a negative lookahead assertion.
-    For example, Isaac (?!Asimov) will match 'Isaac ' only if it is not followed by 'Asimov'.
-
-(?&lt;=...)
-    Matches if the current position in the string is preceded by a match for ...
-    that ends at the current position. This is called a positive lookbehind assertion.
-    The contained pattern must only match strings of some fixed length,
-    meaning that abc or a|b are allowed, but a* and a{3,4} are not.
-    
-(?&lt;!...) Matches if the current position in the string is not preceded by a
-    match for .... This is called a negative lookbehind assertion. Similar to
-    positive lookbehind assertions, the contained pattern must only match
-    strings of some fixed length. Patterns which start with negative lookbehind
-    assertions may match at the beginning of the string being searched.</t>
 <t tx="ekr.20090514093345.6054"></t>
 <t tx="ekr.20090620052003.8505">u = c.undoer
 w = c.frame.body.bodyCtrl
@@ -837,15 +763,6 @@ for v in c.all_nodes():
 
 # ekr.20100205162207.5844
 </t>
-<t tx="ekr.20100208095423.5940">import leo.core.leoCache as leoCache
-
-cacher = leoCache.cacher(c)
-
-if 0:
-    import os
-    os.system('cls')
-
-assert cacher.test()</t>
 <t tx="ekr.20100210214809.5767">old,new = None,None
 for child in p.children():
     if child.h.startswith('old'):
@@ -971,27 +888,5 @@ g.es('delta',delta)
 g.es('d',d)
 </t>
 <t tx="ekr.20100902154544.5872"></t>
-<t tx="ekr.20100906165118.5915">ic = c.inkscapeCommands
-screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
-template_fn = r'c:\leo.repo\inkcall\template.svg'
-png_fn = r'c:\leo.repo\inkcall\output.png'
-svg_fn = r'c:\leo.repo\inkcall\temp.svg'
-callouts = [
-        "This goes here",
-        "These are those, but slightly longer",
-        "Then you pull this, but this text needs to be longer for testing",]
-ic.run(
-    screenshot,
-    callouts=callouts,
-    numbers=[2,4,17],
-    edit_flag = True, # True: call inkscape to edit the working file.
-    png_fn=png_fn, # Optional: Name of output png file.
-    svg_fn=svg_fn, # Optional: Name of working svg file.
-    template_fn=template_fn, # Optional: Name of template svg file.
-)
-</t>
-<t tx="ekr.20100907092144.5901"># These are intended to be temporary tests,
-# to be copied eventually to unitTest.leo</t>
-<t tx="ekr.20100907115157.5905"></t>
 </tnodes>
 </leo_file>
