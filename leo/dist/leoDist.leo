@@ -31,7 +31,7 @@
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20100225104302.1510"><vh>@asis ../../LICENSE.txt</vh></v>
-<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -91,7 +91,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -final
+2. Search for this suffix: -a1.
 
 3. Search for copyright
 
@@ -728,7 +728,6 @@ IN THE SOFTWARE.
 
 To do:
     There is a problem with the desktop shortcut.
-    There is a problem with finding spellpyx.
     Make the License look better.  It can be an .rtf file.
     Add description sections.
 
@@ -736,9 +735,6 @@ Done:
 ** Switched to new interface: it is *much* better.
 - Test desktop shortcut.  It opens Python 2.6 as expected.
 - Make sure the uninstaller gets deleted.
-- Test that uninstall from control panel removes top-level folder.
-- Eliminate duplicate prompt.
-
 </t>
 <t tx="ekr.20101025095431.1518">@nocolor-node
 

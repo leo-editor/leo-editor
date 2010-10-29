@@ -62,6 +62,7 @@ I still does not recognize PyQt
     Can not load c:\aspell\bin\aspell-15.dll
     file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
 #@+node:ekr.20101024062147.6011: *3* Before b1
+#@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
 #@+node:ekr.20101029065151.5922: *4* More slide shows
 #@+node:ekr.20101029065151.5921: *4* Discuss installing qt in introductory slideshow
 #@+node:ekr.20101029065151.5920: *4* Document screenshot plugin
