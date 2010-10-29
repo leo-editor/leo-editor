@@ -2,7 +2,9 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
-#@+node:ekr.20101026125532.5968: *3* Installation problems with Qt
+#@+node:ekr.20101024062147.6011: *3* Before b1
+#@+node:ekr.20101029092426.5855: *4* Installation docs
+#@+node:ekr.20101026125532.5968: *5* Installation problems with Qt
 @nocolor-node
 
 ** After best attempts  can't get Leo to recognize PyQt
@@ -61,17 +63,116 @@ I still does not recognize PyQt
     Can not import nav_qt from plugin nav_qt
     Can not load c:\aspell\bin\aspell-15.dll
     file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
-#@+node:ekr.20101024062147.6011: *3* Before b1
-#@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
-#@+node:ekr.20101029065151.5922: *4* More slide shows
-#@+node:ekr.20101029065151.5921: *4* Discuss installing qt in introductory slideshow
-#@+node:ekr.20101029065151.5920: *4* Document screenshot plugin
-#@+node:ekr.20101024062147.6025: *4* Somewhat hard bugs
-#@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
-#@+node:ekr.20100827114047.5892: *5* bug 581031: Fix toggle-split-direction
-Should preserve scrollbar location and appropriate window ratio.
+#@+node:ekr.20101024062147.6025: *4* Fix bugs & code(before b1)
+#@+node:ekr.20101029092426.5861: *5* Finish QCompleter
+@nocolor-node
 
-https://bugs.launchpad.net/leo-editor/+bug/581031/+editstatus
+http://groups.google.com/group/leo-editor/browse_thread/thread/ba5748aad35deba0
+
+Here's my modest proposal for autocompletion work:
+
+Please ensure that autocompletion works for c. and p. and g.
+
+That's it.
+
+The important thing is that it uses QCompleter and keyboard event
+handling works. That's the hard part. Rest can be handled by plugins.
+Every time the topic of autocompletion comes up, we end up solving the
+"fun" problems like scanning and ctags, and the most important part
+(gui) does not get done. 
+#@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
+#@+node:ekr.20101029092426.5856: *5* bug 583826: docutils problem with Auto newline at end of file
+Reported by TL:
+
+When editing a Docutils file in an external editor (exported from
+Leo), I always get a "Replace changed outline with external changes?"
+dialog box when I save the file in the external editor. This appears
+to occur because a newline is added to the end of the file when it is
+imported back into Leo.
+
+Note: The addition of a newline occurs even if the imported file
+already has a newline at the end of the file.
+
+There appears to be two problems:
+
+1) Leo always adds a newline even if the already has one.
+2) After Leo has added the newline it mistakenly marks the buffer as
+modified.
+#@+node:ekr.20101029092426.5858: *5* bug 597757: c.frame.body.getSelectedText() doesn't work in added editors
+@nocolor-node
+
+c.frame.body.getSelectedText() always returns the selection in the leftmost editor.
+
+test with the following button
+
+@button selected
+
+selection = "nothing selected"
+if c.frame.body.hasSelection():
+    selection = c.frame.body.getSelectedText()
+g.es(selection)
+
+<alt-x> add-editor
+
+A selection in the new editor doesn't register.
+If the leftmost editor has a selection, and focus is in another,
+the selection in the leftmost will be reported.
+#@+node:ekr.20101029092426.5859: *5* bug 603720: @auto parsing error on dedented triple quote string
+@nocolor-node
+
+the file test.py contains::
+====================================
+def foo():
+    s = \
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+foo()
+====================================
+
+Create node @auto test.py
+rclick select refresh from disk
+
+the node "foo" contains::
+def foo():
+    s = \
+
+the node "class bar" contains
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+=============================
+
+This is an interesting special case of indentation. The code that
+calculates the end of a block of indented Python code will have to
+take more care with backslashes :-)
+#@+node:ekr.20101029092426.5860: *5* bug 604115: chapter-{clone,copy}-node-to broken
+@nocolor-node
+
+Reported by Stephen P. Schaefer
+
+The behavior of chapter-clone-node-to and chapter-copy-node-to is not useful;
+chpater-move-node-to *is* behaving as expected.
+
+In the case of clone or move, one is prompted for the chapter name. If one
+chooses a chapter that is not a descendant of the @chapters node, the command
+creates a copy of the orignal @chapter node under the @chapters node and copies
+or clones the node into this new @chapter node. It then hoists into the original
+@chapter node, while still showing the body of the node to have been
+cloned/copied, which is nonetheless inaccessible from this original node.
+
+This is in trunk revno 3162 with no changes, Fedora 12, python 2.6.
+#@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
 #@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect
 @nocolor-node
 
@@ -82,6 +183,9 @@ method other than Ctrl-Shift movement.
 Expected behavior: it should extend/contract the existing selection
 
 Actual behavior: it creates a new selection from the cursor position
+#@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
+#@+node:ekr.20101029065151.5922: *4* More slide shows
+#@+node:ekr.20101029065151.5920: *4* Document screenshot plugin
 #@+node:ekr.20101024062147.6012: *3* Before rc1
 #@+node:ekr.20100206074650.5843: *4* Autocompletion
 # This can be done in the trunk.
