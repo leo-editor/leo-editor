@@ -443,7 +443,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -1477,7 +1477,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20060603215208"></v>
+<v t="ekr.20060603215208" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6182,7 +6182,7 @@ False: Do not write uA's.</t>
 
 back-word                           = Alt-b  
 back-word-extend-selection          = Alt-Shift-b
-back-to-indentation                 = Ctrl-space
+back-to-indentation                 = None # Ctrl-space
 beginning-of-line                   = Ctrl-a
 beginning-of-line-extend-selection  = Ctrl-Shift-a
 end-of-line                         = Ctrl-e
@@ -6275,8 +6275,7 @@ save-file                   = Ctrl-s
 write-at-file-nodes         = Shift-Ctrl-W
 write-dirty-at-file-nodes   = Shift+Ctrl+Q
 </t>
-<t tx="ekr.20060925061845.1">auto-complete-force         = Ctrl-period
-    # This command needs work before it is useful. Ctrl-period
+<t tx="ekr.20060925061845.1">auto-complete-force         = Ctrl-space
 auto-complete               = period
 debug                       = None
 execute-script              = Ctrl+B
