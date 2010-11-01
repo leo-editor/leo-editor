@@ -96,14 +96,15 @@ class chapterController:
     #@+node:ekr.20070604155815.1: *5* cc.cloneToChapterHelper
     def cloneNodeToChapterHelper (self,toChapterName):
 
-        cc = self ; c = cc.c ;  u = c.undoer ; undoType = 'Clone Node To Chapter'
-        p = c.p ; h = p.h
+        cc = self ; c = cc.c ; p = c.p ; u = c.undoer
+        undoType = 'Clone Node To Chapter'
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
-            return cc.error('no such chapter: %s' % toChapterName)
-        if fromChapter.name == 'main' and h.startswith('@chapter'):
+            return cc.error('chapter "%s" does not exist' % toChapterName)
+        if fromChapter.name == 'main' and g.match_word(p.h,0,'@chapter'):
             return cc.error('can not clone @chapter node')
+
         # g.trace('from',fromChapter.name,'to',toChapter)
 
         # Open the group undo.
@@ -115,7 +116,7 @@ class chapterController:
         if toChapter.name == 'main':
             clone.moveAfter(toChapter.p)
         else:
-            parent = cc.getChapterNode(toChapter.name)
+            parent = cc.getChapterNode(toChapter.name) #### 
             clone.moveToLastChildOf(parent)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
         c.redraw(clone)
@@ -177,19 +178,19 @@ class chapterController:
     #@+node:ekr.20070604155815.2: *5* cc.copyNodeToChapterHelper
     def copyNodeToChapterHelper (self,toChapterName):
 
-        cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Copy Node To Chapter'
-        p = c.p ; h = p.h
+        cc = self ; c = cc.c ; p = c.p ; u = c.undoer
+        undoType = 'Copy Node To Chapter'
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
             return cc.error('no such chapter: %s' % toChapterName)
-        if fromChapter.name == 'main' and h.startswith('@chapter'):
+        if fromChapter.name == 'main' and g.match_word(p.h,0,'@chapter'):
             return cc.error('can not copy @chapter node')
         # g.trace('from',fromChapter.name,'to',toChapter.name)
 
         # For undo, we treat the copy like a pasted (inserted) node.
         # Use parent as the node to select for undo.
-        parent = cc.getChapterNode(toChapter.name)
+        parent = cc.getChapterNode(toChapter.name) ####
         undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
         s = c.fileCommands.putLeoOutline()
         p2 = c.fileCommands.getLeoOutline(s)
@@ -295,19 +296,17 @@ class chapterController:
             k.resetLabel()
             if k.arg:
                 cc.moveNodeToChapterHelper(k.arg)
-    #@+node:ekr.20070317085437.52: *5* cc.moveNodeToChapterHelper
+    #@+node:ekr.20070317085437.52: *5* cc.moveNodeToChapterHelper (works)
     def moveNodeToChapterHelper (self,toChapterName):
 
-        cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Move Node To Chapter'
-        p = c.p
+        cc = self ; c = cc.c ; p = c.p ; u = c.undoer
+        undoType = 'Move Node To Chapter'
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
             return cc.error('chapter "%s" does not exist' % toChapterName)
-
-        if 1: # Defensive code: should never happen.
-            if fromChapter.name == 'main' and p.h.startswith('@chapter'):
-                return cc.error('can not move @chapter node')
+        if fromChapter.name == 'main' and g.match_word(p.h,0,'@chapter'):
+            return cc.error('can not move @chapter node')
 
         if toChapter.name == 'main':
             sel = (p.threadBack() != fromChapter.root and p.threadBack()) or p.nodeAfterTree()
@@ -340,7 +339,7 @@ class chapterController:
             toChapter.select()
             fromChapter.p = sel.copy()
         else:
-            cc.error('Can not move the last node of a chapter.')
+            cc.error('Can not move the last remaining node of a chapter.')
     #@+node:ekr.20070317085437.40: *4* cc.removeChapter
     def removeChapter (self,event=None):
 
