@@ -2257,5 +2257,6 @@ def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
     # was getInsertPoint.
 def setFocus(self):                     return self.bodyCtrl.setFocus()
 def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
+#@+node:ekr.20101101114333.5922: *3* Completed cascade-windows and minimize-all-windows commands
 #@-all
 #@-leo

@@ -4319,25 +4319,19 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Cascade all Leo windows.'''
 
-        # x,y,delta = 10,10,10
-        # for frame in g.app.windowList:
-            # top = frame.top
+        x,y,delta = 50,50,50
+        for frame in g.app.windowList:
 
-            # # Compute w,h
-            # top.update_idletasks() # Required to get proper info.
-            # geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-            # dim,junkx,junky = geom.split('+')
-            # w,h = dim.split('x')
-            # w,h = int(w),int(h)
+            w = frame and frame.top
+            if w:
+                r = w.geometry() # a Qt.Rect
+                w.setGeometry(x,y,r.width(),r.height())
 
-            # # Set new x,y and old w,h
-            # frame.setTopGeometry(w,h,x,y,adjustSize=False)
-
-            # # Compute the new offsets.
-            # x += 30 ; y += 30
-            # if x > 200:
-                # x = 10 + delta ; y = 40 + delta
-                # delta += 10
+                # Compute the new offsets.
+                x += 30 ; y += 30
+                if x > 200:
+                    x = 10 + delta ; y = 40 + delta
+                    delta += 10
     #@+node:ekr.20081121105001.307: *6* equalSizedPanes
     def equalSizedPanes (self,event=None):
 
@@ -4363,10 +4357,10 @@ class leoQtFrame (leoFrame.leoFrame):
 
     def minimize(self,frame):
 
-        pass
+        w = frame and frame.top
 
-        # if frame and frame.top.state() == "normal":
-            # frame.top.iconify()
+        if w:
+            w.setWindowState(QtCore.Qt.WindowMinimized)
     #@+node:ekr.20081121105001.310: *6* toggleSplitDirection (qtFrame)
     def toggleSplitDirection (self,event=None):
 
