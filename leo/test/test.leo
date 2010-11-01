@@ -579,14 +579,7 @@
 <v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
 </v>
 </v>
-<v t="ekr.20101029124821.2267"><vh>Autocompleter stuff</vh>
-<v t="ekr.20101029124821.2268"><vh>@url QComplter docs</vh></v>
-<v t="ekr.20101029124821.2269"><vh>autocompleter test</vh>
-<v t="ekr.20101029124821.2270"><vh>showComplete</vh></v>
-<v t="ekr.20101029124821.2271"><vh>monkeyPatch</vh></v>
-</v>
-<v t="ekr.20101029153348.2271"><vh>test</vh></v>
-</v>
+<v t="ekr.20101101143333.2273"><vh>@button autocompleter test @key=Alt-9</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1007,7 +1000,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7268,161 +7261,12 @@ else:
     run(p)
 g.es('crash test done')
 </t>
-<t tx="ekr.20101029124821.2267"></t>
-<t tx="ekr.20101029124821.2268">http://doc.trolltech.com/4.4/qcompleter.html
+<t tx="ekr.20101101143333.2273">ac = c.k.autoCompleter
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+w.setInsertPoint(len(s))
+ac.autoComplete(event=None,force=True)
 
-@nocolor-node
-
-Detailed Description
-
-The QCompleter class provides completions based on an item model.
-
-You can use QCompleter to provide auto completions in any Qt widget, such as
-QLineEdit and QComboBox. When the user starts typing a word, QCompleter suggests
-possible ways of completing the word, based on a word list. The word list is
-provided as a QAbstractItemModel. (For simple applications, where the word list
-is static, you can pass a QStringList to QCompleter's constructor.)
-
-Basic Usage
-
-A QCompleter is used typically with a QLineEdit or QComboBox. For example,
-here's how to provide auto completions from a simple word list in a QLineEdit:
-
- QStringList wordList;
- wordList &lt;&lt; "alpha" &lt;&lt; "omega" &lt;&lt; "omicron" &lt;&lt; "zeta";
-
- QLineEdit *lineEdit = new QLineEdit(this);
-
- QCompleter *completer = new QCompleter(wordList, this);
- completer-&gt;setCaseSensitivity(Qt::CaseInsensitive);
- lineEdit-&gt;setCompleter(completer);
-
-A QDirModel can be used to provide auto completion of file names. For example:
-
- QCompleter *completer = new QCompleter(this);
- completer-&gt;setModel(new QDirModel(completer));
- lineEdit-&gt;setCompleter(completer);
-
-To set the model on which QCompleter should operate, call setModel(). By
-default, QCompleter will attempt to match the completion prefix (i.e., the word
-that the user has started typing) against the Qt::EditRole data stored in column
-0 in the model case sensitively. This can be changed using setCompletionRole(),
-setCompletionColumn(), and setCaseSensitivity().
-
-If the model is sorted on the column and role that are used for completion, you
-can call setModelSorting() with either QCompleter::CaseSensitivelySortedModel or
-QCompleter::CaseInsensitivelySortedModel as the argument. On large models, this
-can lead to significant performance improvements, because QCompleter can then
-use binary search instead of linear search.
-
-The model can be a list model, a table model, or a tree model. Completion on
-tree models is slightly more involved and is covered in the Handling Tree Models
-section below.
-
-The completionMode() determines the mode used to provide completions to the
-user. Iterating Through Completions
-
-To retrieve a single candidate string, call setCompletionPrefix() with the text
-that needs to be completed and call currentCompletion(). You can iterate through
-the list of completions as below:
-
- for (int i = 0; completer-&gt;setCurrentRow(i); i++)
-     qDebug() &lt;&lt; completer-&gt;currentCompletion() &lt;&lt; " is match number " &lt;&lt; i;
-
-completionCount() returns the total number of completions for the current
-prefix. completionCount() should be avoided when possible, since it requires a
-scan of the entire model. The Completion Model
-
-completionModel() return a list model that contains all possible completions for
-the current completion prefix, in the order in which they appear in the model.
-This model can be used to display the current completions in a custom view.
-Calling setCompletionPrefix() automatically refreshes the completion model.
-Handling Tree Models
-
-QCompleter can look for completions in tree models, assuming that any item (or
-sub-item or sub-sub-item) can be unambiguously represented as a string by
-specifying the path to the item. The completion is then performed one level at a
-time.
-
-Let's take the example of a user typing in a file system path. The model is a
-(hierarchical) QDirModel. The completion occurs for every element in the path.
-For example, if the current text is C:\Wind, QCompleter might suggest Windows to
-complete the current path element. Similarly, if the current text is
-C:\Windows\Sy, QCompleter might suggest System.
-
-For this kind of completion to work, QCompleter needs to be able to split the
-path into a list of strings that are matched at each level. For C:\Windows\Sy,
-it needs to be split as "C:", "Windows" and "Sy". The default implementation of
-splitPath(), splits the completionPrefix using QDir::separator() if the model is
-a QDirModel.
-
-To provide completions, QCompleter needs to know the path from an index. This is
-provided by pathFromIndex(). The default implementation of pathFromIndex(),
-returns the data for the completionRole() for list models and the absolute file
-path if the mode is a QDirModel.
-
-See also QAbstractItemModel, QLineEdit, QComboBox, and Completer Example.</t>
-<t tx="ekr.20101029124821.2269">import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-
-options = (
-    'c.frame',
-    'c.frame.body',
-    'c.frame.body.bodyCtrl',
-)
-
-def callback (arg):
-    g.trace(arg)
-
-# Define a local copy for testing.
-@others
-
-wb = c.frame.body
-w = wb.bodyCtrl.widget
-ac = showCompleter(w,options,callback)
-monkeyPatch(ac) # Should call ac.complete()
-s = wb.getAllText()
-wb.setInsertPoint(len(s))
-
-ac.setCompletionPrefix('c.frame.b')
-ac.complete()
-
-wp = ac.popup()
-wp.setFocus()
-print(wp)
-
-# Testing area: c.frame.b
-</t>
-<t tx="ekr.20101029124821.2270">def showCompleter(w,options,callback):
-
-    ''' Show 'autocompleter' widget for widget w::
-
-        options = ['hello', 'helloworld']
-
-        def myCallback(arg):
-            """insert arg into text for w."""
-            g.trace(arg)
-
-        showCompleter(w,options, myCallback )
-    '''
-
-    ac = QtGui.QCompleter(options,w)
-
-    # Sent when the user selects an item.
-    ac.connect(ac,QtCore.SIGNAL("activated(QString)"),callback)
-
-    # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
-    ac.setCompletionMode(ac.PopupCompletion)
-        # ac.InlineCompletion # Probably harder to use.
-        # ac.PopupCompletion
-        # ac.UnfilteredPopupCompletion
-    ac.setWidget(w)
-    return ac
-</t>
-<t tx="ekr.20101029124821.2271">def monkeyPatch(ac):
-
-    pass
-</t>
-<t tx="ekr.20101029153348.2271">c.</t>
+# c.frame.b</t>
 </tnodes>
 </leo_file>
