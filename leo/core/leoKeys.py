@@ -92,7 +92,7 @@ import types
 #@-<< about key dicts >>
 
 #@+others
-#@+node:ekr.20061031131434.4: ** class autoCompleterClass
+#@+node:ekr.20061031131434.4: ** class autoCompleterClass (existing)
 class autoCompleterClass:
 
     '''A class that inserts autocompleted and calltip text in text widgets.
@@ -113,8 +113,8 @@ class autoCompleterClass:
         self.attrDictDict = {}  # Keys are languages (strings); values are anonymous attrDicts.
             # attrDicts: keys are strings; values are list of strings (attributes).
         self.calltips = {} # Keys are language, values are dicts: keys are ids, values are signatures.
-        self.classScanner = self.classScannerClass(c)
-        self.forgivingParser = self.forgivingParserClass(c)
+        ###self.classScanner = self.classScannerClass(c)
+        ###self.forgivingParser = self.forgivingParserClass(c)
         self.globalPythonFunctionsDict = {}
         self.language = None
         self.leadinWord = None
@@ -987,40 +987,6 @@ class autoCompleterClass:
             # Don't clear the stack here!
             self.membersList = []
             self.theObject = None
-    #@+node:ekr.20061031131434.43: *5* completeSelf (not used yet)
-    def completeSelf (self):
-
-        g.trace(g.callers(4))
-
-        # This scan will be fast if an instant object already exists.
-        className,obj,p,s = self.classScanner.scan()
-        # g.trace(className,obj,p,s and len(s))
-
-        # First, look up the className.
-        if not obj and className:
-            obj = self.allClassesDict.get(className)
-            # if obj: g.trace('found in allClassesDict: %s = %s' % (className,obj))
-
-        # Second, create the object from class definition.
-        if not obj and s:
-            theClass = self.computeClassObjectFromString(className,s)
-            if theClass:
-                obj = self.createProxyObjectFromClass(className,theClass)
-                if obj:
-                    self.selfObjectsDict [className] = obj
-                    # This prevents future rescanning, even if the node moves.
-                    self.selfVnodesDict [p.v] = obj
-        if obj:
-            self.selfClassName = className
-            self.push(self.theObject)
-            self.theObject = obj
-            self.membersList = self.getMembersList(obj=obj)
-        else:
-            # No further action possible or desirable.
-            self.selfClassName = None
-            self.theObject = None
-            self.clear()
-            self.membersList = []
     #@+node:ekr.20061031131434.44: *5* completeFromObject
     def completeFromObject (self,obj):
 
@@ -1136,199 +1102,6 @@ class autoCompleterClass:
                 g.es_print('unexpected exception in',computeProxyObject)
                 g.es_exception()
             return None
-    #@+node:ekr.20061031131434.60: *3* class forgivingParserClass
-    class forgivingParserClass:
-
-        '''A class to create a valid class instances from
-        a class definition that may contain syntax errors.'''
-
-        #@+others
-        #@+node:ekr.20061031131434.61: *4* ctor (forgivingParserClass)
-        def __init__ (self,c):
-
-            self.c = c
-            self.excludedTnodesList = []
-            self.old_putBody = None # Set in parse for communication with newPutBody.
-        #@+node:ekr.20061031131434.62: *4* parse
-        def parse (self,p):
-
-            '''The top-level parser method.
-
-            It patches c.atFileCommands.putBody, calls the forgiving parser and finally
-            restores c.atFileCommands.putBody.'''
-
-            c = self.c
-
-            # Create an ivar for communication with newPutBody.
-            self.old_putBody = c.atFileCommands.putBody
-
-            # Override atFile.putBody.
-            c.atFileCommands.putBody = self.newPutBody
-
-            try:
-                s = None
-                s = self.forgivingParser(p)
-            finally:
-                c.atFileCommands.putBody = self.old_putBody
-
-            return s # Don't put a return in a finally clause.
-
-
-        #@+node:ekr.20061031131434.63: *4* forgivingParser (leoKeys)
-        def forgivingParser (self,p,suppress=False):
-
-            c = self.c ; root = p.copy()
-            self.excludedTnodesList = []
-            s = g.getScript(c,root,useSelectedText=False)
-            while s:
-                try:
-                    if not g.isPython3:
-                        s = g.toEncodedString(s)
-                    compile(s+'\n','<string>','exec')
-                    break
-                except SyntaxError:
-                    fileName, n = g.getLastTracebackFileAndLineNumber()
-                    p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
-                    if not p or p == root:
-                        if not suppress:
-                            g.es_print('syntax error in class node: can not continue')
-                        s = None ; break
-                    else:
-                        # g.es_print('syntax error: deleting',p.h)
-                        self.excludedTnodesList.append(p.v)
-                        s = g.getScript(c,root,useSelectedText=False)
-                except Exception:
-                    g.trace('unexpected exception')
-                    g.es_exception()
-                    break
-            return s or ''
-        #@+node:ekr.20061031131434.64: *4* computeErrorNode (leoKeys)
-        def computeErrorNode (self,c,root,n,lines):
-
-            '''The from c.goToLineNumber that applies to scripts.
-            Unlike c.gotoLineNumberOpen, this function returns a position.'''
-
-            if n == 1 or n >= len(lines):
-                return root
-
-            # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
-                # lines, n, root, scriptFind = True)
-
-            goto = goToLineNumber(c)
-            vnodeName,junk,junk,junk = goto.findVnode(
-                root,lines,n,ignoreSentinels)
-
-            if vnodeName:
-                for p in root.self_and_subtree():
-                    if p.matchHeadline(vnodeName):
-                        return p
-
-            return None
-        #@+node:ekr.20061031131434.65: *4* newPutBody
-        def newPutBody (self,p,oneNodeOnly=False,fromString=''):
-
-            if p.v in self.excludedTnodesList:
-                pass
-                # g.trace('ignoring',p.h)
-            else:
-                self.old_putBody(p,oneNodeOnly,fromString)
-        #@-others
-    #@+node:ekr.20061031131434.66: *3* class classScannerClass
-    class classScannerClass:
-
-        '''A class to find class definitions in a node or its parents.'''
-
-        #@+others
-        #@+node:ekr.20061031131434.67: *4* ctor
-        def __init__ (self,c):
-
-            self.c = c
-
-            # Ignore @root for now:
-            # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
-
-            self.start_in_doc = False
-        #@+node:ekr.20061031131434.68: *4* scan
-        def scan (self):
-
-            c = self.c
-
-            className,obj,p = self.findParentClass(c.p)
-            # g.trace(className,obj,p)
-
-            if p and not obj:
-                parser = c.k.autoCompleter.forgivingParser
-                s = parser.parse(p)
-            else:
-                s = None
-
-            return className,obj,p,s
-        #@+node:ekr.20061031131434.69: *4* findParentClass
-        def findParentClass (self,root):
-
-            autoCompleter = self.c.k.autoCompleter
-
-            # First, see if any parent has already been scanned.
-            for p in root.self_and_parents():
-                obj = autoCompleter.selfVnodesDict.get(p.v)
-                if obj:
-                    # g.trace('found',obj,'in',p.h)
-                    return None,obj,p
-
-            # Next, do a much slower scan.
-            # g.trace('slow scanning...')
-            for p in root.self_and_parents():
-                className = self.findClass(p)
-                if className:
-                    # g.trace('found',className,'in',p.h)
-                    return className,None,p
-
-            return None,None,None
-        #@+node:ekr.20061031131434.70: *4* findClass & helpers
-        def findClass (self,p):
-
-            lines = g.splitLines(p.b)
-            inDoc = self.start_in_doc
-            # g.trace(p.h)
-            for s in lines:
-                if inDoc:
-                    if self.endsDoc(s):
-                        inDoc = False
-                else:
-                    if self.startsDoc(s):
-                        inDoc = True
-                    else:
-                        # Not a perfect scan: a triple-string could start with 'class',
-                        # but perfection is not important.
-                        className = self.startsClass(s)
-                        if className: return className
-            else:
-                return None
-        #@+node:ekr.20061031131434.71: *5* endsDoc
-        def endsDoc (self,s):
-
-            return s.startswith('@c')
-        #@+node:ekr.20061031131434.72: *5* startsClass
-        def startsClass (self,s):
-
-            if s.startswith('class'):
-                i = 5
-                i = g.skip_ws(s,i)
-                j = g.skip_id(s,i)
-                word = s[i:j]
-                # g.trace(word)
-                return word
-            else:
-                return None
-        #@+node:ekr.20061031131434.73: *5* startsDoc
-        def startsDoc (self,s):
-
-            for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
-                if s.startswith(s2):
-                    return True
-            else:
-                return False
-        #@-others
     #@-others
 #@+node:ekr.20061031131434.74: ** class keyHandlerClass
 class keyHandlerClass:

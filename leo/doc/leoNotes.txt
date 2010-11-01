@@ -3620,252 +3620,233 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-#@+node:ekr.20071117060958: *3* getFileName (no longer used)
-# def getFileName (fileName,script):
+#@+node:ekr.20101031172539.5880: *3* Existing autocompleter: do not delete
+#@+node:ekr.20061031131434.43: *4* completeSelf (not used yet)
+def completeSelf (self):
 
-    # '''Return the filename from sys.argv.'''
+    g.trace(g.callers(4))
 
-    # if not fileName and not script:
-        # g.trace(sys.argv)
-        # if False and sys.platform.startswith('win'):
-            # if len(sys.argv) > 1:
-                # fileName = ' '.join(sys.argv[1:])
-            # else:
-                # fileName = None
-        # else:
-            # fileName = len(sys.argv) > 1 and sys.argv[-1]
+    # This scan will be fast if an instant object already exists.
+    className,obj,p,s = self.classScanner.scan()
+    # g.trace(className,obj,p,s and len(s))
 
-    # return completeFileName(fileName)
-#@+node:ekr.20101021041958.6005: *3* From readSettingsFile
-#@+node:ekr.20061028082834: *4* << define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because
-# the local directory does not yet exist.
-localDirectory = g.os_path_dirname(fileName)
+    # First, look up the className.
+    if not obj and className:
+        obj = self.allClassesDict.get(className)
+        # if obj: g.trace('found in allClassesDict: %s = %s' % (className,obj))
 
-#  Set the local leoSettings.leo file.
-localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
-if not g.os_path_exists(localConfigFile):
-    localConfigFile = None
+    # Second, create the object from class definition.
+    if not obj and s:
+        theClass = self.computeClassObjectFromString(className,s)
+        if theClass:
+            obj = self.createProxyObjectFromClass(className,theClass)
+            if obj:
+                self.selfObjectsDict [className] = obj
+                # This prevents future rescanning, even if the node moves.
+                self.selfVnodesDict [p.v] = obj
+    if obj:
+        self.selfClassName = className
+        self.push(self.theObject)
+        self.theObject = obj
+        self.membersList = self.getMembersList(obj=obj)
+    else:
+        # No further action possible or desirable.
+        self.selfClassName = None
+        self.theObject = None
+        self.clear()
+        self.membersList = []
+#@+node:ekr.20061031131434.60: *4* class forgivingParserClass (not used)
+class forgivingParserClass:
 
-# Set the local myLeoSetting.leo file.
-myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
-if not g.os_path_exists(myLocalConfigFile):
-    myLocalConfigFile = None
-#@+node:ekr.20101022124309.6127: *3* OLDg.setDefaultDirectory & helpers
-# Called **only** from ic/at.scanDefaultDirectory.
+    '''A class to create a valid class instances from
+    a class definition that may contain syntax errors.'''
 
-def OLDsetDefaultDirectory(c,p,importing=False):
+    @others
+#@+node:ekr.20061031131434.61: *5* ctor (forgivingParserClass)
+def __init__ (self,c):
 
-    ''' Compute a default directory by scanning @path directives.
-    Return (default_dir,error_message).'''
+    self.c = c
+    self.excludedTnodesList = []
+    self.old_putBody = None # Set in parse for communication with newPutBody.
+#@+node:ekr.20061031131434.62: *5* parse
+def parse (self,p):
 
-    if not p: return '',''
+    '''The top-level parser method.
 
-    error = ''
-    default_dir = g.getAbsPathFromNode(c,p)
-        ### This calls g.makeAllNonExistentDirectories (!!)
-
-    if not default_dir:
-        default_dir,error = g.getPathFromDirectives(c,p)
-            ### This calls g.makeAllNonExistentDirectories (!!)
-            ### Sets error if the path does not exist.
-
-    if c and c.frame and not default_dir and not error:
-        default_dir = g.findDefaultDirectory(c)
-
-    if not default_dir and not importing and not error:
-        # This should never happen: c.openDirectory should be a good last resort.
-        error = "No absolute directory specified anywhere."
-
-    return default_dir, error
-#@+node:ekr.20081001062423.10: *4* g.getAbsPathFromNode (strict helper)
-# An absolute path in an @file node over-rides everything else.
-# A relative path gets appended to the relative path by the open logic.
-
-def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
-
-    default_dir = ''
-    if p:
-        name = p.anyAtFileNodeName()
-
-    if name:
-        theDir = g.os_path_dirname(name)
-        if theDir and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                default_dir = theDir
-            else:
-                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
-
-    return default_dir
-#@+node:ekr.20081001062423.11: *4* g.getPathFromDirectives (strict helper)
-def getPathFromDirectives(c,p,createFlag=True):
-
-    '''Scan for @path directives.'''
-
-    trace = False and not g.unitTesting
-    default_dir = '' ; error = ''
-    if not p: return default_dir,error
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    if path:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = c.os_path_finalize_join(base,path)
-        exists = g.os_path_exists(path)
-        if createFlag:
-            if exists:
-                default_dir = path
-            else:
-                default_dir = g.makeAllNonExistentDirectories(path,c=c)
-                if not default_dir:
-                    error = "invalid @path: %s" % path
-        else:
-            default_dir = path
-            if not exists:
-                error = "does not exist: @path %s" % path
-
-    return default_dir,error
-#@+node:ekr.20081001062423.12: *4* g.findDefaultDirectory (strict helper)
-# This code is executed if no valid absolute path was specified in
-# the @file node or in an @path directive.
-
-def findDefaultDirectory(c):
-
-    '''Attempt to find a suitable default directory.'''
-
-    default_dir = ''
-
-    # Check that c.openDirectory and c.frame.openDirectory are in synch.
-    if c.openDirectory != c.frame.openDirectory:
-        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
-        g.trace('c.openDirectory',c.openDirectory)
-        g.trace('c.frame.openDirectory',c.frame.openDirectory)
-
-    if not g.os_path_isabs(c.openDirectory):
-        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
-
-    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
-        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-            if g.os_path_exists(theDir):
-                default_dir = theDir
-            else:
-                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
-            if default_dir: break
-
-    return default_dir
-#@+node:ekr.20101023095329.6115: *3* from at.initCommonIvars
-#@+node:ekr.20041005105605.11: *4* << set defaults for arguments and options >>
-# These may be changed in initReadIvars or initWriteIvars.
-
-# Support of output_newline option.
-self.output_newline = g.getOutputNewline(c=c)
-
-# Set by scanHeader when reading and scanAllDirectives when writing.
-self.at_auto_encoding = c.config.default_at_auto_file_encoding
-self.encoding = c.config.default_derived_file_encoding
-self.endSentinelComment = ""
-self.startSentinelComment = ""
-
-# Set by scanAllDirectives when writing.
-self.default_directory = None
-self.page_width = None
-self.tab_width  = None
-self.startSentinelComment = ""
-self.endSentinelComment = ""
-self.language = None
-#@+node:ekr.20041005105605.12: *4* << init common ivars >>
-# These may be set by initReadIvars or initWriteIvars.
-
-self.errors = 0
-self.inCode = True
-self.indent = 0  # The unit of indentation is spaces, not tabs.
-self.pending = []
-self.raw = False # True: in @raw mode
-self.root = None # The root (a position) of tree being read or written.
-self.root_seen = False # True: root vnode has been handled in this file.
-self.toString = False # True: sring-oriented read or write.
-self.writing_to_shadow_directory = False
-#@+node:ekr.20101023095329.6116: *3* from at.initReadIvars
-#@+node:ekr.20041005105605.14: *4* << init ivars for reading >>
-self.cloneSibCount = 0
-    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-self.correctedLines = 0
-self.docOut = [] # The doc part being accumulated.
-self.done = False # True when @-leo seen.
-self.endSentinelIndentStack = []
-    # Restored indentation for @-others and @-<< sentinels.
-    # Used only when readVersion5.
-self.endSentinelStack = []
-    # Contains entries for +node sentinels only when not readVersion5
-self.endSentinelLevelStack = []
-    # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
-    # Used only when readVersion5.
-self.endSentinelNodeStack = []
-    # Used only when readVersion5.
-self.importing = False
-self.importRootSeen = False
-self.indentStack = []
-self.inputFile = None
-self.lastLines = [] # The lines after @-leo
-self.lastRefNode = None
-    # The previous reference node, for at.readAfterRef.
-    # No stack is needed because -<< sentinels restore at.v
-    # to the node needed by at.readAfterRef.
-self.lastThinNode = None
-    # The last thin node at this level.
-    # Used by createThinChild4.
-self.leadingWs = ""
-self.lineNumber = 0 # New in Leo 4.4.8.
-self.out = None
-self.outStack = []
-self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
-self.readVersion5 = False # synonym for at.readVersion >= '5' and not atShadow.
-self.rootSeen = False
-self.tnodeList = []
-    # Needed until old-style @file nodes are no longer supported.
-self.tnodeListIndex = 0
-self.v = None
-self.vStack = [] # Stack of at.v values.
-self.thinNodeStack = [] # Entries are vnodes.
-self.updateWarningGiven = False
-#@+node:ekr.20101023095329.6118: *3* from at.initWriteIvars
-#@+node:ekr.20041005105605.16: *4* << init ivars for writing >>>
-at.docKind = None
-at.explicitLineEnding = False
-    # True: an @lineending directive specifies the ending.
-at.fileChangedFlag = False # True: the file has actually been updated.
-at.atAuto = atAuto
-at.atEdit = atEdit
-at.atShadow = atShadow
-at.shortFileName = "" # short version of file name used for messages.
-at.thinFile = False
-at.writeVersion5 = at.new_write and not atShadow
-
-at.force_newlines_in_at_nosent_bodies = c.config.getBool(
-    'force_newlines_in_at_nosent_bodies')
-
-if toString:
-    at.outputFile = g.fileLikeObject()
-    at.stringOutput = ""
-    at.targetFileName = at.outputFileName = "<string-file>"
-else:
-    at.outputFile = None # The temporary output file.
-    at.stringOutput = None
-    at.targetFileName = at.outputFileName = g.u('')
-#@+node:ekr.20080211085914: *3* ic.scanDefaultDirectory
-def scanDefaultDirectory(self,p):
-
-    """Set the default_directory ivar by looking for @path directives."""
+    It patches c.atFileCommands.putBody, calls the forgiving parser and finally
+    restores c.atFileCommands.putBody.'''
 
     c = self.c
 
-    self.default_directory = g.setDefaultDirectory(c,p,importing=False)
-#@+node:ekr.20041005105605.236: *3* at.scanDefaultDirectory
-def scanDefaultDirectory(self,p,importing=False):
+    # Create an ivar for communication with newPutBody.
+    self.old_putBody = c.atFileCommands.putBody
 
-    """Set the default_directory ivar by looking for @path directives."""
+    # Override atFile.putBody.
+    c.atFileCommands.putBody = self.newPutBody
 
-    at = self ; c = at.c
+    try:
+        s = None
+        s = self.forgivingParser(p)
+    finally:
+        c.atFileCommands.putBody = self.old_putBody
 
-    at.default_directory = g.setDefaultDirectory(c,p,importing)
+    return s # Don't put a return in a finally clause.
+
+
+#@+node:ekr.20061031131434.63: *5* forgivingParser (leoKeys)
+def forgivingParser (self,p,suppress=False):
+
+    c = self.c ; root = p.copy()
+    self.excludedTnodesList = []
+    s = g.getScript(c,root,useSelectedText=False)
+    while s:
+        try:
+            if not g.isPython3:
+                s = g.toEncodedString(s)
+            compile(s+'\n','<string>','exec')
+            break
+        except SyntaxError:
+            fileName, n = g.getLastTracebackFileAndLineNumber()
+            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
+            if not p or p == root:
+                if not suppress:
+                    g.es_print('syntax error in class node: can not continue')
+                s = None ; break
+            else:
+                # g.es_print('syntax error: deleting',p.h)
+                self.excludedTnodesList.append(p.v)
+                s = g.getScript(c,root,useSelectedText=False)
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            break
+    return s or ''
+#@+node:ekr.20061031131434.64: *5* computeErrorNode (leoKeys)
+def computeErrorNode (self,c,root,n,lines):
+
+    '''The from c.goToLineNumber that applies to scripts.
+    Unlike c.gotoLineNumberOpen, this function returns a position.'''
+
+    if n == 1 or n >= len(lines):
+        return root
+
+    # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
+        # lines, n, root, scriptFind = True)
+
+    goto = goToLineNumber(c)
+    vnodeName,junk,junk,junk = goto.findVnode(
+        root,lines,n,ignoreSentinels)
+
+    if vnodeName:
+        for p in root.self_and_subtree():
+            if p.matchHeadline(vnodeName):
+                return p
+
+    return None
+#@+node:ekr.20061031131434.65: *5* newPutBody
+def newPutBody (self,p,oneNodeOnly=False,fromString=''):
+
+    if p.v in self.excludedTnodesList:
+        pass
+        # g.trace('ignoring',p.h)
+    else:
+        self.old_putBody(p,oneNodeOnly,fromString)
+#@+node:ekr.20061031131434.66: *4* class classScannerClass (not used)
+# Called by completeSelf, which is not used.
+
+class classScannerClass:
+
+    '''A class to find class definitions in a node or its parents.'''
+
+    @others
+#@+node:ekr.20061031131434.67: *5* ctor
+def __init__ (self,c):
+
+    self.c = c
+
+    # Ignore @root for now:
+    # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
+
+    self.start_in_doc = False
+#@+node:ekr.20061031131434.68: *5* scan
+def scan (self):
+
+    c = self.c
+
+    className,obj,p = self.findParentClass(c.p)
+    # g.trace(className,obj,p)
+
+    if p and not obj:
+        parser = c.k.autoCompleter.forgivingParser
+        s = parser.parse(p)
+    else:
+        s = None
+
+    return className,obj,p,s
+#@+node:ekr.20061031131434.69: *5* findParentClass
+def findParentClass (self,root):
+
+    autoCompleter = self.c.k.autoCompleter
+
+    # First, see if any parent has already been scanned.
+    for p in root.self_and_parents():
+        obj = autoCompleter.selfVnodesDict.get(p.v)
+        if obj:
+            # g.trace('found',obj,'in',p.h)
+            return None,obj,p
+
+    # Next, do a much slower scan.
+    # g.trace('slow scanning...')
+    for p in root.self_and_parents():
+        className = self.findClass(p)
+        if className:
+            # g.trace('found',className,'in',p.h)
+            return className,None,p
+
+    return None,None,None
+#@+node:ekr.20061031131434.70: *5* findClass & helpers
+def findClass (self,p):
+
+    lines = g.splitLines(p.b)
+    inDoc = self.start_in_doc
+    # g.trace(p.h)
+    for s in lines:
+        if inDoc:
+            if self.endsDoc(s):
+                inDoc = False
+        else:
+            if self.startsDoc(s):
+                inDoc = True
+            else:
+                # Not a perfect scan: a triple-string could start with 'class',
+                # but perfection is not important.
+                className = self.startsClass(s)
+                if className: return className
+    else:
+        return None
+#@+node:ekr.20061031131434.71: *6* endsDoc
+def endsDoc (self,s):
+
+    return s.startswith('@c')
+#@+node:ekr.20061031131434.72: *6* startsClass
+def startsClass (self,s):
+
+    if s.startswith('class'):
+        i = 5
+        i = g.skip_ws(s,i)
+        j = g.skip_id(s,i)
+        word = s[i:j]
+        # g.trace(word)
+        return word
+    else:
+        return None
+#@+node:ekr.20061031131434.73: *6* startsDoc
+def startsDoc (self,s):
+
+    for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
+        if s.startswith(s2):
+            return True
+    else:
+        return False
 #@-all
 #@-leo
