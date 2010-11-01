@@ -303,7 +303,6 @@
 <v t="ekr.20060201110016"><vh>@bool allow_idle_time_hook = False</vh></v>
 <v t="ekr.20060212101234"></v>
 <v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
-<v t="ekr.20060216145416"><vh>@bool trace_autocompleter = False</vh></v>
 <v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
 <v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
 <v t="ekr.20060425124142"><vh>@bool trace_color_parser = True</vh></v>
@@ -430,7 +429,7 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -438,7 +437,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -5778,7 +5777,6 @@ commands to enable or disable autocompletion at any time.
 Note: The 'initially' prefix is needed to distinguish this setting from
 enable-autocompleter command. Otherwised they would get 'munged' to the same
 configuration value.</t>
-<t tx="ekr.20060216145416"></t>
 <t tx="ekr.20060216170801"></t>
 <t tx="ekr.20060303075452">The following commands are will be useful for operating Leo without a mouse.
 
@@ -6277,7 +6275,8 @@ save-file                   = Ctrl-s
 write-at-file-nodes         = Shift-Ctrl-W
 write-dirty-at-file-nodes   = Shift+Ctrl+Q
 </t>
-<t tx="ekr.20060925061845.1">auto-complete-force         = None # This command needs work before it is useful. Ctrl-period
+<t tx="ekr.20060925061845.1">auto-complete-force         = Ctrl-period
+    # This command needs work before it is useful. Ctrl-period
 auto-complete               = period
 debug                       = None
 execute-script              = Ctrl+B
