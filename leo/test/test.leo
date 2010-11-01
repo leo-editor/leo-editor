@@ -585,6 +585,7 @@
 <v t="ekr.20101029124821.2270"><vh>showComplete</vh></v>
 <v t="ekr.20101029124821.2271"><vh>monkeyPatch</vh></v>
 </v>
+<v t="ekr.20101029153348.2271"><vh>test</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1006,7 +1007,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7422,5 +7423,6 @@ print(wp)
 
     pass
 </t>
+<t tx="ekr.20101029153348.2271">c.</t>
 </tnodes>
 </leo_file>

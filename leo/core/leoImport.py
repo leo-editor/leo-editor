@@ -3688,14 +3688,18 @@ class pythonScanner (baseScannerClass):
             progress = i
             ch = s[i]
             if g.is_nl(s,i):
-                i = g.skip_nl(s,i)
-                j = g.skip_ws(s,i)
-                if g.is_nl(s,j):
-                    pass # We have already made progress.
+                if trace and verbose: g.trace(g.get_line(s,i))
+                backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
+                if backslashNewline:
+                   # An underindented line, including docstring,
+                   # does not end the code block.
+                   i += 1 # 2010/11/01
                 else:
-                    if trace and verbose: g.trace(g.get_line(s,i))
-                    backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
-                    if not backslashNewline:
+                    i = g.skip_nl(s,i)
+                    j = g.skip_ws(s,i)
+                    if g.is_nl(s,j):
+                        pass # We have already made progress.
+                    else:
                         i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
                             s,i,parenCount,startIndent,underIndentedStart)
                         if breakFlag: break

@@ -1954,5 +1954,269 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
 if isOrphan and isThin:
     g.es("writing erroneous:",p.h,color="blue")
     p.clearOrphan()
+#@+node:ekr.20101031172539.5869: ** Leo 4.8 b1
+#@+node:ekr.20101029092426.5856: *3* Investigated bug 583826: docutils problem with Auto newline at end of file
+@nocolor-node
+
+EKR: The new caching scheme probably fixed this as a side effect.
+Neither 1) nor 2) below happen now.
+
+Reported by TL:
+
+When editing a Docutils file in an external editor (exported from
+Leo), I always get a "Replace changed outline with external changes?"
+dialog box when I save the file in the external editor. This appears
+to occur because a newline is added to the end of the file when it is
+imported back into Leo.
+
+Note: The addition of a newline occurs even if the imported file
+already has a newline at the end of the file.
+
+There appears to be two problems:
+
+1) Leo always adds a newline even if the already has one.
+
+2) After Leo has added the newline it mistakenly marks the buffer as
+modified.
+#@+node:ekr.20101029092426.5859: *3* Fixed bug 603720: @auto parsing error on dedented triple quote string
+@nocolor-node
+
+the file test.py contains::
+====================================
+def foo():
+    s = \
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+foo()
+====================================
+
+Create node @auto test.py
+rclick select refresh from disk
+
+the node "foo" contains::
+def foo():
+    s = \
+
+the node "class bar" contains
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+=============================
+
+This is an interesting special case of indentation. The code that
+calculates the end of a block of indented Python code will have to
+take more care with backslashes :-)
+#@+node:ekr.20101031172539.5875: *4* @url bug page
+https://bugs.launchpad.net/leo-editor/+bug/603720
+#@+node:ekr.20070712090019.1: *4* skipCodeBlock (python) & helpers
+def skipCodeBlock (self,s,i,kind):
+
+    trace = False ; verbose = True
+    # if trace: g.trace('***',g.callers())
+    startIndent = self.startSigIndent
+    if trace: g.trace('startIndent',startIndent)
+    assert startIndent is not None
+    i = start = g.skip_ws_and_nl(s,i)
+    parenCount = 0
+    underIndentedStart = None # The start of trailing underindented blank or comment lines.
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if g.is_nl(s,i):
+            if trace and verbose: g.trace(g.get_line(s,i))
+            backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
+            if backslashNewline:
+               # An underindented line, including docstring,
+               # does not end the code block.
+               i += 1 # 2010/11/01
+            else:
+                i = g.skip_nl(s,i)
+                j = g.skip_ws(s,i)
+                if g.is_nl(s,j):
+                    pass # We have already made progress.
+                else:
+                    i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
+                        s,i,parenCount,startIndent,underIndentedStart)
+                    if breakFlag: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s,i)
+        elif ch == '"' or ch == '\'':
+            i = g.skip_python_string(s,i)
+        elif ch in '[{(':
+            i += 1 ; parenCount += 1
+            # g.trace('ch',ch,parenCount)
+        elif ch in ']})':
+            i += 1 ; parenCount -= 1
+            # g.trace('ch',ch,parenCount)
+        else: i += 1
+        assert(progress < i)
+
+    # The actual end of the block.
+    if underIndentedStart is not None:
+        i = underIndentedStart
+        if trace: g.trace('***backtracking to underindent range')
+        if trace: g.trace(g.get_line(s,i))
+
+    if 0 < i < len(s) and not g.match(s,i-1,'\n'):
+        g.trace('Can not happen: Python block does not end in a newline.')
+        g.trace(g.get_line(s,i))
+        return i,False
+
+    # 2010/02/19: Include all following material
+    # until the next 'def' or 'class'
+    i = self.skipToTheNextClassOrFunction(s,i,startIndent)
+
+    if (trace or self.trace) and s[start:i].strip():
+        g.trace('%s returns\n' % (kind) + s[start:i])
+    return i,True
+#@+node:ekr.20070801080447: *5* pythonNewlineHelper
+def pythonNewlineHelper (self,s,i,parenCount,startIndent,underIndentedStart):
+
+    trace = False
+    breakFlag = False
+    j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+    if trace: g.trace(
+        'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+        'line',repr(g.get_line(s,j)))
+    if indent <= startIndent and parenCount == 0:
+        # An underindented line: it ends the block *unless*
+        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
+        if g.match(s,j,'#'):
+            if trace: g.trace('underindent: comment')
+            if underIndentedStart is None: underIndentedStart = i
+            i = j
+        elif g.match(s,j,'\n'):
+            if trace: g.trace('underindent: blank line')
+            # Blank lines never start the range of underindented lines.
+            i = j
+        else:
+            if trace: g.trace('underindent: end of block')
+            breakFlag = True # The actual end of the block.
+    else:
+        if underIndentedStart and g.match(s,j,'\n'):
+            # Add the blank line to the underindented range.
+            if trace: g.trace('properly indented blank line extends underindent range')
+        elif underIndentedStart and g.match(s,j,'#'):
+            # Add the (properly indented!) comment line to the underindented range.
+            if trace: g.trace('properly indented comment line extends underindent range')
+        elif underIndentedStart is None:
+            pass
+        else:
+            # A properly indented non-comment line.
+            # Give a message for all underindented comments in underindented range.
+            if trace: g.trace('properly indented line generates underindent errors')
+            s2 = s[underIndentedStart:i]
+            lines = g.splitlines(s2)
+            for line in lines:
+                if line.strip():
+                    junk, indent = g.skip_leading_ws_with_indent(line,0,self.tab_width)
+                    if indent <= startIndent:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedComment(line)
+            underIndentedStart = None
+    if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
+    return i,underIndentedStart,breakFlag
+#@+node:ekr.20100223094350.5834: *5* skipToTheNextClassOrFunction (New in 4.8)
+def skipToTheNextClassOrFunction(self,s,i,lastIndent):
+
+    '''Skip to the next python def or class.
+    Return the original i if nothing more is found.
+    This allows the "if __name__ == '__main__' hack
+    to appear at the top level.'''
+
+    return i ### A rewrite may be needed.
+
+    # Comment this out to keep pylint happy.
+
+    # trace = False # and not g.unitTesting
+    # c,found,i1 = self.c,False,i
+    # at_line_start,last_comment,last_nl = True,None,-1
+    # while i < len(s):
+        # progress = i
+        # if self.startsComment(s,i):
+            # # Break at underindented comments.
+            # if at_line_start:
+                # if i == last_nl:
+                    # n = 0
+                # else:
+                    # ws = s[last_nl+1:i]
+                    # n = g.computeWidth (ws,c.tab_width)
+                # if n < lastIndent:
+                    # if trace: g.trace('underindented comment',
+                        # 'ws',repr(ws),'n',n,'lastIndent',lastIndent)
+                    # found = True ; break
+                # else:
+                    # # Remember the start of a range of comments and whitespace.
+                    # if last_comment is None:
+                        # last_comment = i
+                    # last_nl = i = self.skipComment(s,i)
+                    # at_line_start = True
+            # else:
+                # # An interior comment.
+                # assert last_comment is None
+                # last_nl = i = self.skipComment(s,i)
+                # at_line_start = True
+        # elif self.startsString(s,i):
+            # at_line_start = False
+            # last_comment = None
+            # i = self.skipString(s,i)
+        # elif at_line_start and (
+            # g.match_word(s,i,'def') or
+            # g.match_word(s,i,'class')
+        # ):
+            # # Do not break for over-indent matches.
+            # # This allows something reasonable to happen for::
+            # # if 0:
+            # #     def spam():
+            # #         pass
+            # ws = s[last_nl+1:i]
+            # # g.trace('ws',repr(ws))
+            # n = g.computeWidth (ws,c.tab_width)
+            # if (not ws or ws.isspace()) and n <= lastIndent:
+                # found = True ; break
+            # else: # Ignore the over-indented def.
+                # if trace: g.trace('overindented','ws',repr(ws),
+                    # 'n',n,'lastIndent',lastIndent)
+                # last_comment = None
+                # last_nl = i = g.skip_to_end_of_line(s,i)
+                # at_line_start = True
+        # elif s[i] == '@':
+            # # Leo directives will look like comments,
+            # # so we can safely assume we have a decorator
+            # if at_line_start and last_comment is None:
+                # last_comment = i
+            # last_nl = i = g.skip_to_end_of_line(s,i)
+            # at_line_start = True
+        # elif s[i] ==  '\n':
+            # at_line_start = True
+            # last_nl = i
+            # i += 1
+        # elif s[i].isspace():
+            # i += 1
+        # else:
+            # at_line_start = False
+            # last_comment = None
+            # i += 1
+        # assert progress < i
+
+    # if found:
+        # if last_comment is None:
+            # return i
+        # else:
+            # return last_comment
+    # else:
+        # return i1
 #@-all
 #@-leo

@@ -80,24 +80,66 @@ handling works. That's the hard part. Rest can be handled by plugins.
 Every time the topic of autocompletion comes up, we end up solving the
 "fun" problems like scanning and ctags, and the most important part
 (gui) does not get done. 
+#@+node:ekr.20101031172539.5873: *5* Create @button scripts as workaround to @auto problem
+@nocolor-node
+
+What to do about code between methods in a class?
+
+I want the following all in one node:
+
+def foo():
+    pass
+
+Foo = foo
+
+However, decorators and preceding comments also belong in a node.
+
+After reviewing this issue again, I have no new ideas for a simple, obvious fix
+to the actual @auto code.
+
+I do have a new idea for a workaround two @button scripts:
+
+1. move non-def code from the start of one node to the end of the previous node.
+
+2. move non-def code from the end of one node to the start of the following
+node.
+#@+node:ekr.20100223123910.5835: *6* bug 611413: The import logic for python code doesn't work as expected in some cases
+@nocolor-node
+
+When importing the following code:
+
+--- cut here ---
+class MyClass:
+
+    def method1(self):
+
+        pass
+
+    m1 = method1()
+
+    def method2(self):
+
+        pass
+
+    m2 = method2()
+
+--- cut here ---
+
+code pieces that are logically connected end in different nodes.
+
+This was discussed a bit some time ago in two google groups threads:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/054afe963abdca1a
+http://groups.google.com/group/leo-editor/browse_thread/thread/27c901983605660f
+#@+node:ekr.20101031172539.5874: *7* @url bug report
+https://bugs.launchpad.net/leo-editor/+bugs
+#@+node:ekr.20101031172539.5871: *7* @url examples
+http://groups.google.com/group/leo-editor/browse_thread/thread/054afe963abdca1a
+
+#@+node:ekr.20101031172539.5872: *7* @url more examples
+http://groups.google.com/group/leo-editor/browse_thread/thread/27c901983605660f
+
 #@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
-#@+node:ekr.20101029092426.5856: *5* bug 583826: docutils problem with Auto newline at end of file
-Reported by TL:
-
-When editing a Docutils file in an external editor (exported from
-Leo), I always get a "Replace changed outline with external changes?"
-dialog box when I save the file in the external editor. This appears
-to occur because a newline is added to the end of the file when it is
-imported back into Leo.
-
-Note: The addition of a newline occurs even if the imported file
-already has a newline at the end of the file.
-
-There appears to be two problems:
-
-1) Leo always adds a newline even if the already has one.
-2) After Leo has added the newline it mistakenly marks the buffer as
-modified.
 #@+node:ekr.20101029092426.5858: *5* bug 597757: c.frame.body.getSelectedText() doesn't work in added editors
 @nocolor-node
 
@@ -117,45 +159,6 @@ g.es(selection)
 A selection in the new editor doesn't register.
 If the leftmost editor has a selection, and focus is in another,
 the selection in the leftmost will be reported.
-#@+node:ekr.20101029092426.5859: *5* bug 603720: @auto parsing error on dedented triple quote string
-@nocolor-node
-
-the file test.py contains::
-====================================
-def foo():
-    s = \
-"""#!/bin/bash
-cd /tmp
-ls"""
-    file('/tmp/script', 'w').write(s)
-
-class bar:
-    pass
-
-foo()
-====================================
-
-Create node @auto test.py
-rclick select refresh from disk
-
-the node "foo" contains::
-def foo():
-    s = \
-
-the node "class bar" contains
-"""#!/bin/bash
-cd /tmp
-ls"""
-    file('/tmp/script', 'w').write(s)
-
-class bar:
-    pass
-
-=============================
-
-This is an interesting special case of indentation. The code that
-calculates the end of a block of indented Python code will have to
-take more care with backslashes :-)
 #@+node:ekr.20101029092426.5860: *5* bug 604115: chapter-{clone,copy}-node-to broken
 @nocolor-node
 
@@ -172,7 +175,6 @@ or clones the node into this new @chapter node. It then hoists into the original
 cloned/copied, which is nonetheless inaccessible from this original node.
 
 This is in trunk revno 3162 with no changes, Fedora 12, python 2.6.
-#@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
 #@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect
 @nocolor-node
 

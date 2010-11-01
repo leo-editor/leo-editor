@@ -2467,6 +2467,7 @@
 <v t="ekr.20090529141856.4743"><vh>@test overindent def--one following def</vh></v>
 <v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
 <v t="ekr.20090529141856.4745"><vh>@test python bad class test</vh></v>
+<v t="ekr.20101101034131.6042"><vh>@test python bug 603720</vh></v>
 <v t="ekr.20090529141856.4746"><vh>@test python class test 2</vh></v>
 <v t="ekr.20090529141856.4747"><vh>@test python class tests 1</vh></v>
 <v t="ekr.20090529141856.4748"><vh>@test python decls test 1</vh></v>
@@ -27158,6 +27159,33 @@ node 1 line 2</t>
 node 1 new line 1
 node 1 new line 2
 node 1 line 2</t>
+<t tx="ekr.20101101034131.6042"># Leo bug 603720
+# Within the docstring we must change '\' to '\\'
+s = '''\
+def foo():
+    s = \\
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+foo()
+'''
+
+showTree = False
+
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    c.redraw_now()
+    foo = g.findNodeInTree(c,p,'foo')
+    assert foo
+    s = "file('/tmp/script', 'w').write(s)"
+    print('foo.b',repr(foo.b))
+    assert foo.b.find(s) &gt; -1,"foo.b: %s" % foo.b</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)
