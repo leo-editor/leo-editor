@@ -2971,7 +2971,7 @@ class keyHandlerClass:
                     d = k.masterBindingsDict.get('button',{})
                     g.print_dict(d)
             c.frame.tree.setBindings()
-        elif verbose and not g.app.silentMode:
+        elif trace and verbose and not g.app.silentMode:
             g.trace(g.callers())
             g.es_print('','@command: %s' % (commandName),color='blue')
 

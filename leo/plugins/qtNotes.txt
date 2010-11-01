@@ -1686,14 +1686,15 @@ def setText (self,md):
         s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
         fn = g.toEncodedString(fn,encoding='utf-8', reportErrors=True)
     md.setText('%s,%s' % (fn,s))
-#@+node:ekr.20101007215714.3751: ** Qcompleter test
+#@+node:ekr.20101101085309.3765: ** Leo 4.8 a1
+#@+node:ekr.20101007215714.3751: *3* Qcompleter test
 w = c.frame.body
 
 def callback(val):
     g.trace(val)
 
 w.showCompleter(['hello','helloworld'],callback)
-#@+node:ekr.20101018145309.3757: ** Support for detect_urls
+#@+node:ekr.20101018145309.3757: *3* Support for detect_urls
 if 0:
     import PyQt4.QtGui as QtGui
 

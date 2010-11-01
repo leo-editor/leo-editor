@@ -2218,5 +2218,44 @@ def skipToTheNextClassOrFunction(self,s,i,lastIndent):
             # return last_comment
     # else:
         # return i1
+#@+node:ekr.20101029092426.5858: *3* Fixed bug 597757: c.frame.body.getSelectedText() doesn't work in added editors
+@nocolor-node
+
+#@+node:ekr.20101031172539.5878: *4* Report
+@nocolor-node
+
+Added definition for getSelection to leoBody class (!)
+
+c.frame.body.getSelectedText() always returns the selection in the leftmost editor.
+
+test with the following button
+
+@button selected
+
+selection = "nothing selected"
+if c.frame.body.hasSelection():
+    selection = c.frame.body.getSelectedText()
+g.es(selection)
+
+<alt-x> add-editor
+
+A selection in the new editor doesn't register.
+If the leftmost editor has a selection, and focus is in another,
+the selection in the leftmost will be reported.
+#@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
+def getAllText (self):                  return self.bodyCtrl.getAllText()
+def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
+def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
+def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
+def hasSelection(self):                 return self.bodyCtrl.hasSelection() # 2010/11/01
+def hasTextSelection (self):            return self.bodyCtrl.hasSelection()
+def see (self,index):                   self.bodyCtrl.see(index)
+def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
+def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
+    # This is a command.
+def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
+    # was getInsertPoint.
+def setFocus(self):                     return self.bodyCtrl.setFocus()
+def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
 #@-all
 #@-leo

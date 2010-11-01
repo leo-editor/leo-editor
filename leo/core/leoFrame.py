@@ -1321,19 +1321,19 @@ class leoBody:
         else:
             first = scrollPosition
         self.bodyCtrl.setYScrollPosition(first)
-    #@+node:ekr.20070228080627: *4* Text Wrappers (base class)
+    #@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
     def getAllText (self):                  return self.bodyCtrl.getAllText()
     def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
     def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
     def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
+    def hasSelection(self):                 return self.bodyCtrl.hasSelection() # 2010/11/01
     def hasTextSelection (self):            return self.bodyCtrl.hasSelection()
-    # def scrollDown (self):                g.app.gui.yscroll(self.bodyCtrl,1,'units')
-    # def scrollUp (self):                  g.app.gui.yscroll(self.bodyCtrl,-1,'units')
     def see (self,index):                   self.bodyCtrl.see(index)
     def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
-    def selectAllText (self,event=None): # This is a command.
-        return self.bodyCtrl.selectAllText()
-    def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos) # was getInsertPoint.
+    def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
+        # This is a command.
+    def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
+        # was getInsertPoint.
     def setFocus(self):                     return self.bodyCtrl.setFocus()
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
     #@+node:ekr.20081005065934.6: *3* leoBody: may be defined in subclasses
