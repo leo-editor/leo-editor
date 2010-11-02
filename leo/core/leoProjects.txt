@@ -2258,5 +2258,333 @@ def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
 def setFocus(self):                     return self.bodyCtrl.setFocus()
 def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
 #@+node:ekr.20101101114333.5922: *3* Completed cascade-windows and minimize-all-windows commands
+#@+node:ekr.20101031172539.5879: *3* Quick improvements to present autocompleter
+@nocolor-node
+
+Allow "always on" operation:
+
+- Bind something like ctrl-space to force-auto-completion
+  This will do all completions until the user accepts or aborts.
+- Remove Alt-1 and Alt-2 default bindings.
+- Investigate caching
+#@+node:ekr.20101101175644.5892: *4* test
+ac = c.k.autoCompleter
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+w.setInsertPoint(len(s))
+ac.autoComplete(event=None,force=True)
+
+# c.frame.b
+#@+node:ekr.20061031131434.9: *4* autoComplete
+def autoComplete (self,event=None,force=False):
+
+    '''An event handler called from k.masterKeyHanderlerHelper.'''
+
+    c = self.c ; k = self.k ; gui = g.app.gui
+    w = gui.eventWidget(event) or c.get_focus()
+
+    self.force = force
+
+    # First, handle the invocation character as usual.
+    if not force:
+        # 2010/11/01: ctrl-period does *not* insert a period.
+        k.masterCommand(event,func=None,stroke=None,commandName=None)
+
+    # Allow autocompletion only in the body pane.
+    if not c.widget_name(w).lower().startswith('body'):
+        return 'break'
+
+    self.language = g.scanForAtLanguage(c,c.p)
+    if w and self.language == 'python' and (k.enable_autocompleter or force):
+        self.start(event=event,w=w)
+
+    return 'break'
+#@+node:ekr.20061031131434.36: *4* getLeadinWord
+def getLeadinWord (self,w):
+
+    trace = False and not g.unitTesting
+    self.verbose = False # User must explicitly ask for verbose.
+    self.leadinWord = None
+    start = w.getInsertPoint()
+    s = w.getAllText()
+    start -= 1
+    i,word = self.findAnchor(w)
+
+    if word and word.isdigit():
+        self.membersList = []
+        return False
+
+    self.setObjectAndMembersList(word)
+    if trace: g.trace(word,self.theObject,len(self.membersList),g.callers())
+
+    if not word:
+        self.membersList = []
+        return False
+    elif not self.theObject:
+        self.membersList = []
+        return False
+    else:
+        self.beginTabName(word)
+        while 0 <= i < start and i <len(s):
+            if s[i] != '.':
+                return False
+            i,j = g.getWord(s,i+1)
+            word = s[i:j]
+            if trace: g.trace(word) #,i,j,start)
+            if not self.force:
+                # 2010/11/01: partial words are fine.
+                self.setObjectAndMembersList(word)
+                if not self.theObject:
+                    if trace: g.trace('unknown',word)
+                    return False
+            self.appendTabName(word)
+            i = j
+        self.leadinWord = word
+        return True
+#@+node:ekr.20080924032842.5: *4* findAnchor
+def findAnchor (self,w):
+
+    '''Find the first word of a chain.
+
+    Returns (j,word) where j is a Python index.'''
+
+    trace = False and not g.unitTesting
+    i = j = w.getInsertPoint()
+    s = w.getAllText()
+
+    if self.force:
+        # Scan backward to the previous full word.
+        found = False
+        while i > 1 and s[i-1] != '.':
+            i -= 1
+        if i == 0:
+            if trace: g.trace('force. fail')
+            return 0,None
+
+    # Find the base of the chain.
+    # New in Leo 4.5: Fix a hanger by stopping when i <= 1.
+    while i > 1 and s[i-1] == '.':
+        i,j = g.getWord(s,i-2)
+
+    word = s[i:j]
+    if word == '.': word = None
+
+    if trace: g.trace(i,j,repr(word))
+    return j,word
+#@+node:ekr.20061031131434.41: *4* setObjectAndMembersList & helpers
+def setObjectAndMembersList (self,word):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not word:
+        # Leading dot shows all classes.
+        self.leadinWord = None
+        self.theObject = sys.modules
+        self.membersList = list(sys.modules.keys())
+        self.beginTabName('Modules')
+    elif word in ( "'",'"'):
+        word = 'aString' # This is in the objectsDict.
+        self.clear()
+        self.push(self.theObject)
+        self.theObject = 'aString'
+        self.membersList = self.getMembersList(self.theObject)
+    elif self.theObject:
+        self.getObjectFromAttribute(word)
+    # elif word == 'self':
+        # self.completeSelf()
+    else:
+        obj = self.objectDict.get(word) or sys.modules.get(word)
+        self.completeFromObject(obj)
+
+    if trace: g.trace(word,self.theObject,len(self.membersList))
+#@+node:ekr.20061031131434.42: *5* getObjectFromAttribute
+def getObjectFromAttribute (self,word):
+
+    obj = self.theObject
+
+    if obj and self.hasAttr(obj,word):
+        self.push(self.theObject)
+        self.theObject = self.getAttr(obj,word)
+        self.appendToKnownObjects(self.theObject)
+        self.membersList = self.getMembersList(self.theObject)
+    else:
+        # No special support for 'self' here.
+        # Don't clear the stack here!
+        self.membersList = []
+        self.theObject = None
+#@+node:ekr.20061031131434.44: *5* completeFromObject
+def completeFromObject (self,obj):
+
+    if obj:
+        self.appendToKnownObjects(obj)
+        self.push(self.theObject)
+        self.theObject = obj
+        self.membersList = self.getMembersList(obj=obj)
+    else:
+        self.theObject = None
+        self.clear()
+        self.membersList = []
+#@+node:ekr.20061031131434.46: *4* start & startForce
+def start (self,event=None,w=None,prefix=None):
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if w: self.widget = w
+    else: w = self.widget
+
+    # We wait until now to define these dicts so that more classes and objects will exist.
+    if not self.objectDict:
+        self.defineClassesDict()
+        self.defineObjectDict()
+
+    if trace: g.trace('force',self.force)
+
+    self.prefix = g.choose(prefix is None,'',prefix)
+    self.selection = w.getSelectionRange()
+    self.selectedText = w.getSelectedText()
+    flag = self.getLeadinWord(w)
+    if self.force:
+        partialWord = self.initForce()
+    if self.membersList:
+        if not flag:
+            # Remove the (leading) invocation character.
+            i = w.getInsertPoint()
+            s = w.getAllText()
+            if i > 0 and s[i-1] == '.':
+                s = g.app.gui.stringDelete(s,i-1)
+                w.setAllText(s)
+                c.frame.body.onBodyChanged('Typing')
+        if self.useTabs:
+            self.autoCompleterStateHandler(event)
+        else:
+            self.computeCompletionList()
+            return self.tabList
+    else:
+        self.abort()
+#@+node:ekr.20101101114615.8450: *5* initForce
+def initForce(self):
+
+    trace = False and not g.unitTesting
+    w = self.widget
+    i = j = w.getInsertPoint()
+    s = w.getAllText()
+
+    # Select the text from the insert point back to the next period.
+    while i > 1 and s[i-1] != '.':
+        i -= 1
+
+    if i > 0:
+        word = s[i:j]
+        w.setSelectionRange(i,j)
+        self.selectedText = word
+        self.selection = w.getSelectionRange()
+    else:
+        word = None
+
+    if trace: g.trace(word)
+    return word
+
+#@+node:ekr.20061031131434.29: *4* doBackSpace (autocompleter)
+def doBackSpace (self):
+
+    '''Cut back to previous prefix.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(autocompleter)',
+        self.prefix,self.theObject,self.prevObjects)
+
+    c = self.c
+    if self.prefix:
+        self.prefix = self.prefix[:-1]
+        self.setSelection(self.prefix)
+        self.computeCompletionList(backspace=True)
+    elif self.theObject:
+        if self.prevObjects:
+            obj = self.pop()
+        else:
+            obj = self.theObject
+        if trace: g.trace(self.theObject,obj)
+        w = self.widget
+        s = w.getAllText()
+        i,junk = w.getSelectionRange()
+        ch = 0 <= i-1 < len(s) and s[i-1] or ''
+        # g.trace(ch)
+        if ch == '.':
+            self.theObject = obj
+            w.delete(i-1)
+            c.frame.body.onBodyChanged(undoType='Typing')
+            i,j = g.getWord(s,i-2)
+            word = s[i:j]
+            if trace: g.trace(i,j,repr(word))
+            w.setSelectionRange(i,j,insert=j)
+            self.prefix = word
+            self.popTabName()
+            self.membersList = self.getMembersList(obj)
+            # g.trace(len(self.membersList))
+            if self.membersList:
+                self.computeCompletionList(backspace=True)
+            else:
+                self.abort()
+        else:
+            self.abort() # should not happen.
+    else:
+        self.abort()            
+#@+node:ekr.20061031131434.45: *4* setSelection
+def setSelection (self,s):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.widget
+    c.widgetWantsFocusNow(w)
+
+    if w.hasSelection():
+        i,j = w.getSelectionRange()
+        w.delete(i,j)
+    else:
+        i = w.getInsertPoint()
+
+    # Don't go past the ':' that separates the completion from the type.
+    n = s.find(':')
+    if n > -1: s = s[:n]
+
+    w.insert(i,s)
+    j = i + len(s)
+    w.setSelectionRange(i,j,insert=j)
+    if trace: g.trace(i,j,s,g.callers())
+
+    # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
+    c.frame.body.recolor(c.p,incremental=True)
+    # Usually this call will have no effect because the body text has not changed.
+    c.frame.body.onBodyChanged('Typing')
+#@+node:ekr.20061031131434.28: *4* computeCompletionList
+def computeCompletionList (self,backspace=False,verbose=False):
+
+    c = self.c ; w = self.widget
+    c.widgetWantsFocus(w)
+    s = w.getSelectedText()
+    self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+        s,self.membersList,matchEmptyPrefix=True)
+
+    if not common_prefix:
+        if verbose or len(self.tabList) < 25 or not self.useTabs:
+            self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+                s,self.membersList,matchEmptyPrefix=True)
+        else: # Show the possible starting letters.
+            d = {}
+            for z in self.tabList:
+                ch = z and z[0] or ''
+                if ch:
+                    n = d.get(ch,0)
+                    d[ch] = n + 1
+            aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
+            self.tabList = aList
+
+    if self.useTabs:
+        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
+        if self.tabList:
+            self.tabListIndex = -1 # The next item will be item 0.
+            if not backspace:
+                self.setSelection(common_prefix)
+        self.put('','\n'.join(self.tabList),tabName=self.tabName)
 #@-all
 #@-leo
