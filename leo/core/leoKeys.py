@@ -321,6 +321,10 @@ class autoCompleterClass:
             elif type(self.theObject) in (type((),),type([])):
                 self.membersList = self.theObject
             self.computeCompletionList()
+        elif ch == 'Down' and hasattr(self,'onDown'):
+            self.onDown()
+        elif ch == 'Up' and hasattr(self,'onUp'):
+            self.onUp()
         elif ch and ch in string.printable:
             self.insertNormalChar(ch,keysym)
         else:

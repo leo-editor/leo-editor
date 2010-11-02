@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.45" body_secondary_ratio="0.53">
-	<global_window_position top="36" left="704" height="1035" width="1168"/>
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.48">
+	<global_window_position top="68" left="451" height="1035" width="1168"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -643,8 +643,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101101174225.2272"><vh>@button qcompleter test @key=Alt-8</vh>
-<v t="ekr.20101101211859.2414"><vh>class keyEventFilter</vh>
+<v t="ekr.20101101174225.2272"><vh>qcompleter test</vh>
+<v t="ekr.20101102120712.2422"><vh>Not used</vh>
+<v t="ekr.20101101211859.2414"><vh>class keyEventFilter (not used)</vh>
 <v t="ekr.20101101211859.2416"><vh> ctor</vh></v>
 <v t="ekr.20101101211859.2418"><vh>eventFilter</vh></v>
 <v t="ekr.20101101211859.2427"><vh>unused</vh>
@@ -659,13 +660,8 @@
 <v t="ekr.20101101211859.2426"><vh>traceFocus</vh></v>
 </v>
 </v>
-<v t="ekr.20101101174225.2273"><vh>class newCompleter</vh>
-<v t="ekr.20101101195800.2396"><vh>Birth</vh>
-<v t="ekr.20101101195800.2397"><vh>ctor</vh></v>
-<v t="ekr.20101101195800.2398"><vh>onActivated/onKey</vh></v>
-</v>
 <v t="ekr.20101101181525.2375"><vh>autoCompleterStateHandler</vh></v>
-<v t="ekr.20101101180223.2372"><vh>put</vh></v>
+<v t="ekr.20101101195800.2398"><vh>onActivated/onKey (not used)</vh></v>
 <v t="ekr.20101101174225.2371"><vh>append/begin/popTabName</vh></v>
 <v t="ekr.20101101181525.2376"><vh>Non-overrides for tracing</vh>
 <v t="ekr.20101101181525.2383"><vh>setSelection</vh></v>
@@ -675,6 +671,14 @@
 <v t="ekr.20101101181525.2380"><vh>insertNormalChar</vh></v>
 <v t="ekr.20101101182057.2389"><vh>.abort &amp; exit (autocompleter) (test)</vh></v>
 </v>
+<v t="ekr.20101102121928.2422"><vh>Old code from put</vh></v>
+<v t="ekr.20101102133143.2427"><vh>Old code from ctor</vh></v>
+</v>
+<v t="ekr.20101101174225.2273"><vh>class newCompleter</vh>
+<v t="ekr.20101101195800.2397"><vh>ctor</vh></v>
+<v t="ekr.20101102124208.2424"><vh>exit &amp; finish</vh></v>
+<v t="ekr.20101101180223.2372"><vh>put</vh></v>
+<v t="ekr.20101102133143.2426"><vh>onUp/Down</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1097,7 +1101,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6,1,3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7524,6 +7528,8 @@ import string
 
 ac = newCompleter(c.k)
 
+c.k.autoCompleter = ac # Patch the new code in.
+
 # Init the selection.
 w = c.frame.body.bodyCtrl
 s = w.getAllText()
@@ -7531,7 +7537,7 @@ w.setInsertPoint(len(s))
 
 ac.autoComplete(event=None,force=True)
 
-# c</t>
+# c.frame.</t>
 <t tx="ekr.20101101174225.2273">class newCompleter (leoKeys.autoCompleterClass):
 
     @others
@@ -8611,19 +8617,32 @@ def setTabName (self,s):
     if self.useTabs:
         self.tabName = s.replace('_','') or ''
 </t>
-<t tx="ekr.20101101180223.2372">def put (self,unused_s1,s2,tabName=None):
+<t tx="ekr.20101101180223.2372">def put (self,*args,tabName='Log'):
 
-    if self.use_qc:
-        ac = self.ac
-        aList = s2.split('\n')
-        ac.model().setStringList(aList)
-        g.trace('prefix',repr(self.prefix),'aList',repr(aList))
-        ac.setCompletionPrefix(self.prefix)
-        self.popup.setFocus()
-        ac.complete()
-    else:
-        print('========== put ==========')
-        print(s2)
+    # args[1] contains a string.
+
+    trace = False and not g.unitTesting
+    aList = [z.rstrip() for z in g.splitLines(args[1])]
+
+    if trace:
+        print('newCompleter.put')
+        for s in aList:
+            print(s)
+
+    if 0: # Put the list to the named tab.
+        g.es(*args,tabName=tabName)
+
+    # Next, put the list to the QListView.
+    v = self.view
+    v.clear()
+    v.insertItems(0,aList)
+    self.numberOfItems = len(aList)
+    self.select(1)
+    # v.adjustSize()
+    # v.setGridSize(QtCore.QSize(1,len(aList)))
+    # v.layout().update()
+    # v.update()
+    v.show()
 </t>
 <t tx="ekr.20101101181525.2375">def autoCompleterStateHandler (self,event):
 
@@ -8846,45 +8865,37 @@ def stackNames (self):
             aList.append(str(z))
     return aList
 </t>
-<t tx="ekr.20101101195800.2396"></t>
 <t tx="ekr.20101101195800.2397">def __init__ (self,k):
 
     # Init the base class.
     leoKeys.autoCompleterClass.__init__(self,k)
 
-    self.use_qc = False
+    self.numberOfItems = 0
 
-    if self.use_qc:
-        self.w = w = self.c.frame.body.bodyCtrl.widget
-        self.ac = ac = QtGui.QCompleter(w)
-        self.model = QtGui.QStringListModel()
-        ac.setModel(self.model)
-        self.popup = ap = ac.popup()
+    self.w = w = self.c.frame.body.bodyCtrl.widget
 
-        # Sent when the user selects an item.
-        # ap.connect(ap,QtCore.SIGNAL("activated(QString)"),self.onActivated)
-        # ap.connect(ap,QtCore.SIGNAL("press(QString)"),self.onKey)
+    # Use a QListView directly
+    # ac = QtGui.QCompleter(w)
+    self.view = v = QtGui.QListWidget(w)
 
-        self.ev_filter = keyEventFilter(completer=self)
-        ap.installEventFilter(self.ev_filter)
-
-        # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
-        ac.setCompletionMode(ac.PopupCompletion)
-            # ac.InlineCompletion # Probably harder to use.
-            # ac.PopupCompletion
-            # ac.UnfilteredPopupCompletion
-        ac.setWidget(w)
+    # These don't seem to work.
+    v.setSizePolicy(
+        QtGui.QSizePolicy.Expanding, # Horizontal policy.
+        QtGui.QSizePolicy.MinimumExpanding) # Vertical policy.
+    v.setResizeMode(QtGui.QListView.Adjust)
 </t>
-<t tx="ekr.20101101195800.2398">def onActivated (self,*args,**keys):
+<t tx="ekr.20101101195800.2398"># def onActivated (self,*args,**keys):
 
-    g.trace(*args,**keys)
+    # g.trace(*args,**keys)
 
-def onKey (self,*args,**keys):
+# def onKey (self,*args,**keys):
 
-    g.trace(*args,**keys)
+    # g.trace(*args,**keys)
 
 </t>
-<t tx="ekr.20101101211859.2414">class keyEventFilter(QtCore.QObject):
+<t tx="ekr.20101101211859.2414"># It's probably best to use the existing eventFilter.
+
+class keyEventFilter(QtCore.QObject):
 
     @others
 </t>
@@ -9206,6 +9217,81 @@ def char2tkName (self,ch):
 <t tx="ekr.20101101211859.2427">if 0:
 
     @others
+</t>
+<t tx="ekr.20101102120712.2422">if 0:
+    @others</t>
+<t tx="ekr.20101102121928.2422">    # if self.use_qc:
+        # ac = self.ac
+        # aList = s2.split('\n')
+        # ac.model().setStringList(aList)
+        # g.trace('prefix',repr(self.prefix),'aList',repr(aList))
+        # ac.setCompletionPrefix(self.prefix)
+        # self.popup.setFocus()
+        # ac.complete()
+    # else:
+        # print('========== put ==========')
+        # print(s2)
+</t>
+<t tx="ekr.20101102124208.2424">def exit (self,restore=False): # Called from keyboard-quit.
+
+    # Call the base class.
+    v = self.view
+
+    leoKeys.autoCompleterClass.exit(self)
+    v.hide()
+
+def finish (self):
+
+    # Call the base class.
+    leoKeys.autoCompleterClass.finish(self)
+    self.view.hide()
+</t>
+<t tx="ekr.20101102133143.2426">def onDown (self):
+
+    v = self.view
+    n = v.currentIndex().row()
+    g.trace(n)
+    self.select(n+1)
+
+def onUp (self):
+
+    v = self.view
+    n = v.currentIndex().row()
+    g.trace(n)
+    self.select(n-1)
+
+def select (self,n):
+
+    n = max(0,min(n,self.numberOfItems-1))
+    v = self.view
+    x = v.currentIndex()
+    g.trace(n,x)
+    if x.row() ==  -1:
+        g.trace('init')
+        x2 = x.parent() ### Does not work.
+    else:
+        x2 = x.sibling(n,0)
+    v.setCurrentIndex(x2)
+</t>
+<t tx="ekr.20101102133143.2427">if 0: # Old code.
+        self.ac = ac = QtGui.QCompleter(w)
+        self.model = QtGui.QStringListModel()
+        ac.setModel(self.model)
+        self.popup = ap = ac.popup()
+
+        # Sent when the user selects an item.
+        # ap.connect(ap,QtCore.SIGNAL("activated(QString)"),self.onActivated)
+        # ap.connect(ap,QtCore.SIGNAL("press(QString)"),self.onKey)
+
+        self.ev_filter = keyEventFilter(completer=self)
+        ap.installEventFilter(self.ev_filter)
+
+        # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
+        ac.setCompletionMode(ac.PopupCompletion)
+            # ac.InlineCompletion # Probably harder to use.
+            # ac.PopupCompletion
+            # ac.UnfilteredPopupCompletion
+        ac.setWidget(w)
 </t>
 </tnodes>
 </leo_file>
