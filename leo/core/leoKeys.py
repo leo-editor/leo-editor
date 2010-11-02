@@ -427,7 +427,7 @@ class autoCompleterClass:
         return self.showCalltips(event,force=True)
     #@+node:ekr.20061031131434.15: *4* showAutocompleter/CalltipsStatus
     def showAutocompleterStatus (self):
-        '''Show the autocompleter status on the status line.'''
+        '''Show the autocompleter status.'''
 
         k = self.k
         if not g.unitTesting:
@@ -435,7 +435,7 @@ class autoCompleterClass:
             g.es(s,color='red')
 
     def showCalltipsStatus (self):
-        '''Show the autocompleter status on the status line.'''
+        '''Show the autocompleter status.'''
         k = self.k
         if not g.unitTesting:
             s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
@@ -661,7 +661,7 @@ class autoCompleterClass:
                 self.tabListIndex = -1 # The next item will be item 0.
                 if not backspace:
                     self.setSelection(common_prefix)
-            g.es('','\n'.join(self.tabList),tabName=self.tabName)
+            self.put('','\n'.join(self.tabList),tabName=self.tabName)
     #@+node:ekr.20061031131434.29: *4* doBackSpace (autocompleter)
     def doBackSpace (self):
 
@@ -899,7 +899,7 @@ class autoCompleterClass:
 
         if doc:
             c.frame.log.clearTab('Info',wrap='word')
-            g.es('',doc,tabName='Info')
+            self.put('',doc,tabName='Info')
         else:
             g.es('no docstring for',word,color='blue')
     #@+node:ekr.20061031131434.39: *4* insertNormalChar
@@ -967,6 +967,16 @@ class autoCompleterClass:
             else:
                 aList.append(str(z))
         return aList
+    #@+node:ekr.20101101175644.5891: *4* put
+    def put (self,*args,**keys):
+
+        '''Put s to the given tab.
+
+        May be overridden in subclasses.'''
+
+        # print('autoCompleter.put',args,keys)
+
+        g.es(*args,**keys)
     #@+node:ekr.20061031131434.41: *4* setObjectAndMembersList & helpers
     def setObjectAndMembersList (self,word):
 
