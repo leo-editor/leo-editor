@@ -3848,5 +3848,95 @@ def startsDoc (self,s):
             return True
     else:
         return False
+#@+node:ekr.20061031131434.57: *4* Proxy classes and objects
+#@+node:ekr.20061031131434.58: *5* createProxyObjectFromClass
+def createProxyObjectFromClass (self,className,theClass):
+
+    '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
+
+    if 0: # Calling the real ctor is way too dangerous.
+        # Set args to the list of required arguments.
+        args = inspect.getargs(theClass.__init__.im_func.func_code)
+        args = args[0] ; n = len(args)-1
+        args = [None for z in range(n)]
+
+    def dummyCtor (self):
+        pass
+
+    try:
+        obj = None
+        old_init = hasattr(theClass,'__init__') and theClass.__init__
+        theClass.__init__ = dummyCtor
+        obj = theClass()
+    finally:
+        if old_init:
+            theClass.__init__ = old_init
+        else:
+            delattr(theClass,'__init__')
+
+    g.trace(type(theClass),obj)
+
+    # Verify that it has all the proper attributes.
+    # g.trace(g.listToString(dir(obj)))
+    return obj
+#@+node:ekr.20061031131434.59: *5* createClassObjectFromString
+def computeClassObjectFromString (self,className,s):
+
+    try:
+        # Add the the class definition to the present environment.
+        exec(s) # Security violation!
+
+        # Get the newly created object from the locals dict.
+        theClass = locals().get(className)
+        return theClass
+
+    except Exception:
+        if 1: # Could be a weird kind of user error.
+            g.es_print('unexpected exception in',computeProxyObject)
+            g.es_exception()
+        return None
+#@+node:ekr.20080924032842.3: *4* getExternalCompletions
+def getExternalCompletions (self,s,p=None,language='python'):
+
+    '''Return the completions possible at the end of string 's'.
+       Return (theObject,completions):
+    - theObject is None unless the last character is 's' is a period.
+    - completions is the list of valid completions.'''
+
+    c = self.c ; k = c.k
+    if not p: p = c.p
+
+    # Use a separate widget containing just s.
+    self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
+    w.setAllText(s)
+
+    # Scan back for the first period.
+    i = len(s)-1
+    # while i > 0 and s[i] != '.':
+    while i > 0 and g.isWordChar(s[i]):
+        i -= 1
+    if s[i] == '.': i += 1
+    prefix = s[i:].strip()
+
+    # Remember the prefix, but put the insert before the period.
+    w.setSelectionRange(i, len(s)-1, insert=i)
+
+    # Init the ivars...
+    self.language = p and g.scanForAtLanguage(c,p) or language
+    self.tabName = ''
+    old_enable = c.k.enable_autocompleter
+
+    # Get the completions.
+    try:
+        c.k.enable_autocompleter = True
+        self.useTabs = False
+        self.start(prefix=prefix)
+    finally:
+        c.k.enable_autocompleter = old_enable
+        self.useTabs = True
+
+    theObject,tabList = self.theObject,self.tabList
+    self.exit() # Not called from the autocompleter itself.
+    return theObject,tabList
 #@-all
 #@-leo

@@ -4,94 +4,6 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6011: *3* Before b1
 #@+node:ekr.20101024062147.6025: *4* Fix bugs
-#@+node:ekr.20101101114615.5922: *5* Make sure proper files appear in distribution
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
-
-Hi Edward,
-
-   I have re-tried the creation of the Leo zip archive from a bazaar
-snapshot, in this case rev.3600:
-
-On 7 Sep., 15:51, "Edward K. Ream" <edream...@gmail.com> wrote:
-> On Sep 6, 2:39 pm, VR <viktor.ransm...@gmail.com> wrote:
->
-> > * The file 'INSTALL.TXT' contains the outline text with sentinels from
-> > 'Chapter 1: Installing Leo'
->
-> That can't be good.  I'll make sure sentinels don't appear in the
-> distro.
->
-This issue is still there.
-
-> > * However neither of these files are not added to the archive ...
->
-> I'll check this.  I'm not sure this is a problem, but it could be.
->
-
-This issue is still here as well. - I'm attaching the log from the
-cmd shell, when executing the button "make-leo-zip"
-
-<Log>
-
-created in D:\Branches\leo-editor: PKG-INFO.TXT
-created in D:\Branches\leo-editor: INSTALL.TXT
-created in D:\Branches\leo-editor: README.TXT
-removing: D:\Branches\leo-editor\Leo-4.8-dev-r3600.zip
-command: cd D:\Branches\leo-editor
-command: bzr status
-modified: <- OK. - I have manually changed it !!!
- leo/dist/leoDist.leo
-unknown: <- ???
- INSTALL.TXT
- PKG-INFO.TXT
- README.TXT
-command: bzr status
-modified:
- leo/dist/leoDist.leo
-unknown:
- INSTALL.TXT
- PKG-INFO.TXT
- README.TXT
-command: bzr export "D:\Branches\leo-editor\Leo-4.8-dev-r3600.zip"
-command: bzr export --root="Lib\site-packages\Leo-4.8-dev-r3600" "D:
-\Branches\leo-editor\Leo-4.8-dev-r3600-temp.zip"
-removing: D:\Branches\leo-editor\Leo-4.8-dev-r3600-temp.zip
- Volume in Laufwerk D: hat keine Bezeichnung.
- Volumeseriennummer: B2A1-A6B7
-
- Verzeichnis von D:\Branches\leo-editor
-
-01.11.2010  11:20    <DIR>          .
-01.11.2010  11:20    <DIR>          ..
-29.08.2010  16:32    <DIR>          .bzr
-29.08.2010  16:32             1.236 .bzrignore
-29.10.2010  20:02            86.034 bzr-manifest.txt
-01.11.2010  11:20            13.485 INSTALL.TXT
-29.08.2010  16:32               129 launchLeo.py
-31.10.2010  07:05    <DIR>          leo
-01.11.2010  11:20         7.300.051 Leo-4.8-dev-r3600.zip
-29.08.2010  16:32             1.460 leo_to_html.xsl
-29.10.2010  20:02             1.082 LICENSE.txt
-29.08.2010  16:32               389 Makefile
-01.11.2010  11:20               599 PKG-INFO.TXT
-29.08.2010  16:32               138 profileLeo.py
-29.08.2010  16:32            18.124 pylint-leo.bat
-29.10.2010  20:02             4.994 pylint-leo.py
-01.11.2010  11:20             1.700 README.TXT
-29.08.2010  16:32             4.722 setup.py
-             14 Datei(en),      7.434.143 Bytes
-              4 Verzeichnis(se), 116.680.400.896 Bytes frei
-@button make: done
-
-</Log>
-
-I hope this information helps you to track down the issue.
-
-With kind regards,
-
-Viktor
 #@+node:ekr.20101029092426.5860: *5* bug 604115: chapter-{clone,copy}-node-to broken
 @nocolor-node
 
@@ -618,6 +530,94 @@ method other than Ctrl-Shift movement.
 Expected behavior: it should extend/contract the existing selection
 
 Actual behavior: it creates a new selection from the cursor position
+#@+node:ekr.20101101114615.5922: *5* Make sure proper files appear in distribution
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
+
+Hi Edward,
+
+   I have re-tried the creation of the Leo zip archive from a bazaar
+snapshot, in this case rev.3600:
+
+On 7 Sep., 15:51, "Edward K. Ream" <edream...@gmail.com> wrote:
+> On Sep 6, 2:39 pm, VR <viktor.ransm...@gmail.com> wrote:
+>
+> > * The file 'INSTALL.TXT' contains the outline text with sentinels from
+> > 'Chapter 1: Installing Leo'
+>
+> That can't be good.  I'll make sure sentinels don't appear in the
+> distro.
+>
+This issue is still there.
+
+> > * However neither of these files are not added to the archive ...
+>
+> I'll check this.  I'm not sure this is a problem, but it could be.
+>
+
+This issue is still here as well. - I'm attaching the log from the
+cmd shell, when executing the button "make-leo-zip"
+
+<Log>
+
+created in D:\Branches\leo-editor: PKG-INFO.TXT
+created in D:\Branches\leo-editor: INSTALL.TXT
+created in D:\Branches\leo-editor: README.TXT
+removing: D:\Branches\leo-editor\Leo-4.8-dev-r3600.zip
+command: cd D:\Branches\leo-editor
+command: bzr status
+modified: <- OK. - I have manually changed it !!!
+ leo/dist/leoDist.leo
+unknown: <- ???
+ INSTALL.TXT
+ PKG-INFO.TXT
+ README.TXT
+command: bzr status
+modified:
+ leo/dist/leoDist.leo
+unknown:
+ INSTALL.TXT
+ PKG-INFO.TXT
+ README.TXT
+command: bzr export "D:\Branches\leo-editor\Leo-4.8-dev-r3600.zip"
+command: bzr export --root="Lib\site-packages\Leo-4.8-dev-r3600" "D:
+\Branches\leo-editor\Leo-4.8-dev-r3600-temp.zip"
+removing: D:\Branches\leo-editor\Leo-4.8-dev-r3600-temp.zip
+ Volume in Laufwerk D: hat keine Bezeichnung.
+ Volumeseriennummer: B2A1-A6B7
+
+ Verzeichnis von D:\Branches\leo-editor
+
+01.11.2010  11:20    <DIR>          .
+01.11.2010  11:20    <DIR>          ..
+29.08.2010  16:32    <DIR>          .bzr
+29.08.2010  16:32             1.236 .bzrignore
+29.10.2010  20:02            86.034 bzr-manifest.txt
+01.11.2010  11:20            13.485 INSTALL.TXT
+29.08.2010  16:32               129 launchLeo.py
+31.10.2010  07:05    <DIR>          leo
+01.11.2010  11:20         7.300.051 Leo-4.8-dev-r3600.zip
+29.08.2010  16:32             1.460 leo_to_html.xsl
+29.10.2010  20:02             1.082 LICENSE.txt
+29.08.2010  16:32               389 Makefile
+01.11.2010  11:20               599 PKG-INFO.TXT
+29.08.2010  16:32               138 profileLeo.py
+29.08.2010  16:32            18.124 pylint-leo.bat
+29.10.2010  20:02             4.994 pylint-leo.py
+01.11.2010  11:20             1.700 README.TXT
+29.08.2010  16:32             4.722 setup.py
+             14 Datei(en),      7.434.143 Bytes
+              4 Verzeichnis(se), 116.680.400.896 Bytes frei
+@button make: done
+
+</Log>
+
+I hope this information helps you to track down the issue.
+
+With kind regards,
+
+Viktor
 #@+node:ekr.20101031172539.5873: *4* Create @button scripts as workaround to @auto problem
 @nocolor-node
 

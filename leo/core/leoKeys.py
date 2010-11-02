@@ -292,11 +292,12 @@ class autoCompleterClass:
         ch = gui.eventChar(event)
         keysym = gui.eventKeysym(event)
 
-        if trace: g.trace(repr(ch),repr(keysym),state)
+        if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
+            state,repr(ch),repr(keysym)))
 
         if state == 0:
             c.frame.log.clearTab(self.tabName)
-            self.computeCompletionList()
+            self.computeCompletionList(init=True)
             k.setState(tag,1,handler=self.autoCompleterStateHandler) 
         elif keysym in (' ','Return'):
             self.finish()
@@ -323,48 +324,6 @@ class autoCompleterClass:
         else:
             # if trace: g.trace('ignore',repr(ch))
             return 'do-standard-keys'
-    #@+node:ekr.20080924032842.3: *4* getExternalCompletions
-    def getExternalCompletions (self,s,p=None,language='python'):
-
-        '''Return the completions possible at the end of string 's'.
-        Return (theObject,completions):
-        - theObject is None unless the last character is 's' is a period.
-        - completions is the list of valid completions.'''
-
-        c = self.c ; k = c.k
-        if not p: p = c.p
-
-        # Use a separate widget containing just s.
-        self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
-        w.setAllText(s)
-
-        # A big kludge: scan back for the first period.
-        i = len(s)-1
-        while i > 0 and s[i] != '.':
-            i -= 1
-        if s[i] == '.': i += 1
-        prefix = s[i:].strip()
-
-        # Remember the prefix, but put the insert before the period.
-        w.setSelectionRange(i, len(s)-1, insert=i)
-
-        # Init the ivars...
-        self.language = p and g.scanForAtLanguage(c,p) or language
-        self.tabName = ''
-        old_enable = c.k.enable_autocompleter
-
-        # Get the completions.
-        try:
-            c.k.enable_autocompleter = True
-            self.useTabs = False
-            self.start(prefix=prefix)
-        finally:
-            c.k.enable_autocompleter = old_enable
-            self.useTabs = True
-
-        theObject,tabList = self.theObject,self.tabList
-        self.abort()
-        return theObject,tabList
     #@+node:ekr.20061031131434.12: *4* enable/disable/toggleAutocompleter/Calltips
     def disableAutocompleter (self,event=None):
         '''Disable the autocompleter.'''
@@ -441,27 +400,28 @@ class autoCompleterClass:
             s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
             g.es(s,color='red')
     #@+node:ekr.20061031131434.16: *3* Helpers
-    #@+node:ekr.20061031131434.17: *4* .abort & exit (autocompleter) (test)
+    #@+node:ekr.20061031131434.17: *4* abort & exit (autocompleter)
     def abort (self):
 
         k = self.k
         k.keyboardQuit(event=None,setDefaultStatus=False)
             # Stay in the present input state.
+        g.es('No completions',color='blue') # 2010/11/02.
         self.exit(restore=True)
 
     def exit (self,restore=False): # Called from keyboard-quit.
 
-        k = self ; c = self.c 
+        trace = False and not g.unitTesting
+        if trace: g.trace('restore: %s, selected: %s' % (
+            restore,self.selectedText))
+
+        k = self ; c = k.c 
         w = self.widget or c.frame.body.bodyCtrl
         for name in (self.tabName,'Modules','Info'):
             c.frame.log.deleteTab(name)
         c.widgetWantsFocusNow(w)
         i,j = w.getSelectionRange()
-        if restore:
-            if i != j: w.delete(i,j)
-            w.insert(i,self.selectedText)
         w.setSelectionRange(j,j,insert=j)
-
         self.clear()
         self.theObject = None
     #@+node:ekr.20061031131434.18: *4* append/begin/popTabName
@@ -599,11 +559,17 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.27: *4* chain
     def chain (self):
 
+        '''The user has just typed period.'''
+
+        trace = False and not g.unitTesting
         c = self.c ; w = self.widget
         word = w.getSelectedText()
         old_obj = self.theObject
 
-        if word and old_obj and type(old_obj) == type([]) and old_obj == sys.modules:
+        if (word and old_obj and
+            type(old_obj) == type([]) and
+            old_obj == sys.modules
+        ):
             obj = old_obj.get(word)
             if obj:
                 self.theObject = obj
@@ -611,7 +577,13 @@ class autoCompleterClass:
         elif word and old_obj and self.hasAttr(old_obj,word):
             self.push(old_obj)
             self.theObject = obj = self.getAttr(old_obj,word)
-        else: obj = None
+        elif not self.prefix:
+            obj = old_obj # 2010/11/02.
+        else:
+            obj = None
+
+        if trace: g.trace('word: %s, prefix: %s, old obj: %s, new obj: %s' % (
+            word,self.prefix,old_obj,obj))
 
         if obj:
             self.appendToKnownObjects(obj)
@@ -630,10 +602,11 @@ class autoCompleterClass:
                 # self.autoCompleterStateHandler(event=None)
                 self.computeCompletionList()
                 return
+        # Otherwise we are done.
         self.extendSelection('.')
         self.finish()
     #@+node:ekr.20061031131434.28: *4* computeCompletionList
-    def computeCompletionList (self,backspace=False,verbose=False):
+    def computeCompletionList (self,backspace=False,init=False,verbose=False):
 
         c = self.c ; w = self.widget
         c.widgetWantsFocus(w)
@@ -659,7 +632,7 @@ class autoCompleterClass:
             c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
             if self.tabList:
                 self.tabListIndex = -1 # The next item will be item 0.
-                if not backspace:
+                if not backspace and not init:
                     self.setSelection(common_prefix)
             self.put('','\n'.join(self.tabList),tabName=self.tabName)
     #@+node:ekr.20061031131434.29: *4* doBackSpace (autocompleter)
@@ -763,12 +736,9 @@ class autoCompleterClass:
 
         if self.force:
             # Scan backward to the previous full word.
-            found = False
-            while i > 1 and s[i-1] != '.':
+            # while i > 1 and s[i-1] != '.':
+            while i > 1 and g.isWordChar(s[i-1]):
                 i -= 1
-            if i == 0:
-                if trace: g.trace('force. fail')
-                return 0,None
 
         # Find the base of the chain.
         # New in Leo 4.5: Fix a hanger by stopping when i <= 1.
@@ -828,20 +798,23 @@ class autoCompleterClass:
         self.leadinWord = None
         start = w.getInsertPoint()
         s = w.getAllText()
-        start -= 1
+        if 0 < start and s[start-1] == '.':
+            start -= 1
         i,word = self.findAnchor(w)
+        if trace: g.trace('word',word)
 
-        if word and word.isdigit():
-            self.membersList = []
+        self.membersList = []
+        if not word:
+            return False
+
+        if word.isdigit():
             return False
 
         self.setObjectAndMembersList(word)
-        if trace: g.trace(word,self.theObject,len(self.membersList),g.callers())
+        if trace: g.trace('obj: %s, members: %s' % (
+            self.theObject,len(self.membersList)))
 
-        if not word:
-            self.membersList = []
-            return False
-        elif not self.theObject:
+        if not self.theObject:
             self.membersList = []
             return False
         else:
@@ -1057,7 +1030,7 @@ class autoCompleterClass:
         c.frame.body.recolor(c.p,incremental=True)
         # Usually this call will have no effect because the body text has not changed.
         c.frame.body.onBodyChanged('Typing')
-    #@+node:ekr.20061031131434.46: *4* start & startForce
+    #@+node:ekr.20061031131434.46: *4* start & initForce
     def start (self,event=None,w=None,prefix=None):
 
         trace = False and not g.unitTesting
@@ -1070,30 +1043,24 @@ class autoCompleterClass:
             self.defineClassesDict()
             self.defineObjectDict()
 
-        if trace: g.trace('force',self.force)
-
         self.prefix = g.choose(prefix is None,'',prefix)
         self.selection = w.getSelectionRange()
         self.selectedText = w.getSelectedText()
+
         flag = self.getLeadinWord(w)
         if self.force:
             partialWord = self.initForce()
-        if self.membersList:
-            if not flag:
-                # Remove the (leading) invocation character.
-                i = w.getInsertPoint()
-                s = w.getAllText()
-                if i > 0 and s[i-1] == '.':
-                    s = g.app.gui.stringDelete(s,i-1)
-                    w.setAllText(s)
-                    c.frame.body.onBodyChanged('Typing')
-            if self.useTabs:
-                self.autoCompleterStateHandler(event)
-            else:
-                self.computeCompletionList()
-                return self.tabList
-        else:
+
+        if trace: g.trace(flag,len(self.membersList))
+
+        if not self.membersList:
             self.abort()
+        elif self.useTabs:
+            self.autoCompleterStateHandler(event)
+        else:
+            self.computeCompletionList()
+            return self.tabList
+
     #@+node:ekr.20101101114615.8450: *5* initForce
     def initForce(self):
 
@@ -1102,11 +1069,12 @@ class autoCompleterClass:
         i = j = w.getInsertPoint()
         s = w.getAllText()
 
-        # Select the text from the insert point back to the next period.
-        while i > 1 and s[i-1] != '.':
+        # Select the text from the insert point back to
+        # the next period or other word terminator.
+        while i > 1 and g.isWordChar(s[i-1]):
             i -= 1
 
-        if i > 0:
+        if i < j:
             word = s[i:j]
             w.setSelectionRange(i,j)
             self.selectedText = word
@@ -1117,53 +1085,6 @@ class autoCompleterClass:
         if trace: g.trace(word)
         return word
 
-    #@+node:ekr.20061031131434.57: *3* Proxy classes and objects
-    #@+node:ekr.20061031131434.58: *4* createProxyObjectFromClass
-    def createProxyObjectFromClass (self,className,theClass):
-
-        '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
-
-        if 0: # Calling the real ctor is way too dangerous.
-            # Set args to the list of required arguments.
-            args = inspect.getargs(theClass.__init__.im_func.func_code)
-            args = args[0] ; n = len(args)-1
-            args = [None for z in range(n)]
-
-        def dummyCtor (self):
-            pass
-
-        try:
-            obj = None
-            old_init = hasattr(theClass,'__init__') and theClass.__init__
-            theClass.__init__ = dummyCtor
-            obj = theClass()
-        finally:
-            if old_init:
-                theClass.__init__ = old_init
-            else:
-                delattr(theClass,'__init__')
-
-        g.trace(type(theClass),obj)
-
-        # Verify that it has all the proper attributes.
-        # g.trace(g.listToString(dir(obj)))
-        return obj
-    #@+node:ekr.20061031131434.59: *4* createClassObjectFromString
-    def computeClassObjectFromString (self,className,s):
-
-        try:
-            # Add the the class definition to the present environment.
-            exec(s) # Security violation!
-
-            # Get the newly created object from the locals dict.
-            theClass = locals().get(className)
-            return theClass
-
-        except Exception:
-            if 1: # Could be a weird kind of user error.
-                g.es_print('unexpected exception in',computeProxyObject)
-                g.es_exception()
-            return None
     #@-others
 #@+node:ekr.20061031131434.74: ** class keyHandlerClass
 class keyHandlerClass:
