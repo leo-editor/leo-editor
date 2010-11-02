@@ -149,6 +149,7 @@ class ViewRendered(QTextEdit):
 
         p = self.c.currentPosition()
         b = p.b.strip()
+        self.setWindowTitle(p.h)
 
         if self.gnx == p.v.gnx and len(b) == self.length:
             return  # no change
@@ -177,5 +178,18 @@ def viewrendered(event):
     c = event['c']
 
     ViewRendered(c)
+
+@g.command('viewrendered-big')
+def viewrendered(event):
+    """Open render view for commander, with big text
+
+    (useful for presentations)
+
+    """
+
+    c = event['c']
+
+    vr = ViewRendered(c)
+    vr.zoomIn(4)
 #@-others
 #@-leo
