@@ -2489,9 +2489,16 @@ def doBackSpace (self):
     if trace: g.trace('(autocompleter)',
         self.prefix,self.theObject,self.prevObjects)
 
-    c = self.c
+    c = self.c ; w = self.widget
     if self.prefix:
         self.prefix = self.prefix[:-1]
+        if trace: g.trace('new prefix',self.prefix)
+        if not self.prefix:
+            i,j = w.getSelectionRange()
+            if i != j:
+                w.delete(i,j)
+
+    if self.prefix: # 2010/11/02.
         self.setSelection(self.prefix)
         self.computeCompletionList(backspace=True)
     elif self.theObject:
@@ -2500,11 +2507,10 @@ def doBackSpace (self):
         else:
             obj = self.theObject
         if trace: g.trace(self.theObject,obj)
-        w = self.widget
         s = w.getAllText()
         i,junk = w.getSelectionRange()
         ch = 0 <= i-1 < len(s) and s[i-1] or ''
-        # g.trace(ch)
+        if trace: g.trace(ch)
         if ch == '.':
             self.theObject = obj
             w.delete(i-1)
@@ -2552,7 +2558,7 @@ def setSelection (self,s):
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
 #@+node:ekr.20061031131434.28: *4* computeCompletionList
-def computeCompletionList (self,backspace=False,init=False,verbose=False):
+def computeCompletionList (self,backspace=False,init=False):
 
     c = self.c ; w = self.widget
     c.widgetWantsFocus(w)
@@ -2561,7 +2567,7 @@ def computeCompletionList (self,backspace=False,init=False,verbose=False):
         s,self.membersList,matchEmptyPrefix=True)
 
     if not common_prefix:
-        if verbose or len(self.tabList) < 25 or not self.useTabs:
+        if self.verbose or len(self.tabList) < 20 or not self.useTabs:
             self.tabList,common_prefix = g.itemsMatchingPrefixInList(
                 s,self.membersList,matchEmptyPrefix=True)
         else: # Show the possible starting letters.
@@ -2582,6 +2588,21 @@ def computeCompletionList (self,backspace=False,init=False,verbose=False):
                 self.setSelection(common_prefix)
         self.put('','\n'.join(self.tabList),tabName=self.tabName)
 #@+node:ekr.20101102065413.5859: *3* Fixed recent autocompleter bugs
+#@+node:ekr.20101102065413.5861: *4* Fix crasher
+@nocolor-node
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 7608, in eventFilter
+    ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2894, in masterKeyHandler
+    # New in 4.4b4.
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2953, in doMode
+    ('text','head'), # Important: text bindings in head before tree bindings.
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2927, in callStateFunction
+    elif k.unboundKeyAction == 'command':
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 316, in autoCompleterStateHandler
+    self.verbose = not self.verbose
+AttributeError: 'module' object has no attribute 'DictType'
 #@+node:ekr.20061031131434.4: *4* class autoCompleterClass (existing)
 class autoCompleterClass:
 
@@ -2804,11 +2825,13 @@ def autoCompleterStateHandler (self,event):
     elif keysym == '!':
         # Toggle between verbose and brief listing.
         self.verbose = not self.verbose
+        c.frame.putStatusLine('verbose completions %s' % (
+            g.choose(self.verbose,'ON','OFF')),color='red')
         if type(self.theObject) == types.DictType:
             self.membersList = list(self.theObject.keys())
         elif type(self.theObject) in (type((),),type([])):
             self.membersList = self.theObject
-        self.computeCompletionList(verbose=self.verbose)
+        self.computeCompletionList()
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
@@ -2903,7 +2926,7 @@ def exit (self,restore=False): # Called from keyboard-quit.
 
     trace = False and not g.unitTesting
     if trace: g.trace('restore: %s, selected: %s' % (
-        restore,self.selectedText))
+        restore,self.selectedText),g.callers())
 
     k = self ; c = k.c 
     w = self.widget or c.frame.body.bodyCtrl
@@ -3061,8 +3084,8 @@ def chain (self):
     elif word and old_obj and self.hasAttr(old_obj,word):
         self.push(old_obj)
         self.theObject = obj = self.getAttr(old_obj,word)
-    elif not self.prefix:
-        obj = old_obj # 2010/11/02.
+    elif word:
+        obj = old_obj # 2010//11/02
     else:
         obj = None
 
@@ -3090,7 +3113,7 @@ def chain (self):
     self.extendSelection('.')
     self.finish()
 #@+node:ekr.20061031131434.28: *6* computeCompletionList
-def computeCompletionList (self,backspace=False,init=False,verbose=False):
+def computeCompletionList (self,backspace=False,init=False):
 
     c = self.c ; w = self.widget
     c.widgetWantsFocus(w)
@@ -3099,7 +3122,7 @@ def computeCompletionList (self,backspace=False,init=False,verbose=False):
         s,self.membersList,matchEmptyPrefix=True)
 
     if not common_prefix:
-        if verbose or len(self.tabList) < 25 or not self.useTabs:
+        if self.verbose or len(self.tabList) < 20 or not self.useTabs:
             self.tabList,common_prefix = g.itemsMatchingPrefixInList(
                 s,self.membersList,matchEmptyPrefix=True)
         else: # Show the possible starting letters.
@@ -3128,9 +3151,16 @@ def doBackSpace (self):
     if trace: g.trace('(autocompleter)',
         self.prefix,self.theObject,self.prevObjects)
 
-    c = self.c
+    c = self.c ; w = self.widget
     if self.prefix:
         self.prefix = self.prefix[:-1]
+        if trace: g.trace('new prefix',self.prefix)
+        if not self.prefix:
+            i,j = w.getSelectionRange()
+            if i != j:
+                w.delete(i,j)
+
+    if self.prefix: # 2010/11/02.
         self.setSelection(self.prefix)
         self.computeCompletionList(backspace=True)
     elif self.theObject:
@@ -3139,11 +3169,10 @@ def doBackSpace (self):
         else:
             obj = self.theObject
         if trace: g.trace(self.theObject,obj)
-        w = self.widget
         s = w.getAllText()
         i,junk = w.getSelectionRange()
         ch = 0 <= i-1 < len(s) and s[i-1] or ''
-        # g.trace(ch)
+        if trace: g.trace(ch)
         if ch == '.':
             self.theObject = obj
             w.delete(i-1)
@@ -3625,46 +3654,18 @@ def autoCompleterStateHandler (self,event):
     elif keysym == '!':
         # Toggle between verbose and brief listing.
         self.verbose = not self.verbose
+        c.frame.putStatusLine('verbose completions %s' % (
+            g.choose(self.verbose,'ON','OFF')),color='red')
         if type(self.theObject) == types.DictType:
             self.membersList = list(self.theObject.keys())
         elif type(self.theObject) in (type((),),type([])):
             self.membersList = self.theObject
-        self.computeCompletionList(verbose=self.verbose)
+        self.computeCompletionList()
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
         # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
-#@+node:ekr.20061031131434.28: *5* computeCompletionList
-def computeCompletionList (self,backspace=False,init=False,verbose=False):
-
-    c = self.c ; w = self.widget
-    c.widgetWantsFocus(w)
-    s = w.getSelectedText()
-    self.tabList,common_prefix = g.itemsMatchingPrefixInList(
-        s,self.membersList,matchEmptyPrefix=True)
-
-    if not common_prefix:
-        if verbose or len(self.tabList) < 25 or not self.useTabs:
-            self.tabList,common_prefix = g.itemsMatchingPrefixInList(
-                s,self.membersList,matchEmptyPrefix=True)
-        else: # Show the possible starting letters.
-            d = {}
-            for z in self.tabList:
-                ch = z and z[0] or ''
-                if ch:
-                    n = d.get(ch,0)
-                    d[ch] = n + 1
-            aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
-            self.tabList = aList
-
-    if self.useTabs:
-        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
-        if self.tabList:
-            self.tabListIndex = -1 # The next item will be item 0.
-            if not backspace and not init:
-                self.setSelection(common_prefix)
-        self.put('','\n'.join(self.tabList),tabName=self.tabName)
 #@+node:ekr.20061031131434.46: *5* start & initForce
 def start (self,event=None,w=None,prefix=None):
 
@@ -3792,6 +3793,30 @@ def findAnchor (self,w):
 
     if trace: g.trace(i,j,repr(word))
     return j,word
+#@+node:ekr.20061031131434.17: *5* abort & exit (autocompleter)
+def abort (self):
+
+    k = self.k
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+    g.es('No completions',color='blue') # 2010/11/02.
+    self.exit(restore=True)
+
+def exit (self,restore=False): # Called from keyboard-quit.
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('restore: %s, selected: %s' % (
+        restore,self.selectedText),g.callers())
+
+    k = self ; c = k.c 
+    w = self.widget or c.frame.body.bodyCtrl
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange()
+    w.setSelectionRange(j,j,insert=j)
+    self.clear()
+    self.theObject = None
 #@+node:ekr.20061031131434.27: *5* chain
 def chain (self):
 
@@ -3813,8 +3838,8 @@ def chain (self):
     elif word and old_obj and self.hasAttr(old_obj,word):
         self.push(old_obj)
         self.theObject = obj = self.getAttr(old_obj,word)
-    elif not self.prefix:
-        obj = old_obj # 2010/11/02.
+    elif word:
+        obj = old_obj # 2010//11/02
     else:
         obj = None
 
@@ -3841,29 +3866,86 @@ def chain (self):
     # Otherwise we are done.
     self.extendSelection('.')
     self.finish()
-#@+node:ekr.20061031131434.17: *5* abort & exit (autocompleter)
-def abort (self):
+#@+node:ekr.20061031131434.28: *5* computeCompletionList
+def computeCompletionList (self,backspace=False,init=False):
 
-    k = self.k
-    k.keyboardQuit(event=None,setDefaultStatus=False)
-        # Stay in the present input state.
-    g.es('No completions',color='blue') # 2010/11/02.
-    self.exit(restore=True)
+    c = self.c ; w = self.widget
+    c.widgetWantsFocus(w)
+    s = w.getSelectedText()
+    self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+        s,self.membersList,matchEmptyPrefix=True)
 
-def exit (self,restore=False): # Called from keyboard-quit.
+    if not common_prefix:
+        if self.verbose or len(self.tabList) < 20 or not self.useTabs:
+            self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+                s,self.membersList,matchEmptyPrefix=True)
+        else: # Show the possible starting letters.
+            d = {}
+            for z in self.tabList:
+                ch = z and z[0] or ''
+                if ch:
+                    n = d.get(ch,0)
+                    d[ch] = n + 1
+            aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
+            self.tabList = aList
+
+    if self.useTabs:
+        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
+        if self.tabList:
+            self.tabListIndex = -1 # The next item will be item 0.
+            if not backspace and not init:
+                self.setSelection(common_prefix)
+        self.put('','\n'.join(self.tabList),tabName=self.tabName)
+#@+node:ekr.20061031131434.29: *5* doBackSpace (autocompleter)
+def doBackSpace (self):
+
+    '''Cut back to previous prefix.'''
 
     trace = False and not g.unitTesting
-    if trace: g.trace('restore: %s, selected: %s' % (
-        restore,self.selectedText))
+    if trace: g.trace('(autocompleter)',
+        self.prefix,self.theObject,self.prevObjects)
 
-    k = self ; c = k.c 
-    w = self.widget or c.frame.body.bodyCtrl
-    for name in (self.tabName,'Modules','Info'):
-        c.frame.log.deleteTab(name)
-    c.widgetWantsFocusNow(w)
-    i,j = w.getSelectionRange()
-    w.setSelectionRange(j,j,insert=j)
-    self.clear()
-    self.theObject = None
+    c = self.c ; w = self.widget
+    if self.prefix:
+        self.prefix = self.prefix[:-1]
+        if trace: g.trace('new prefix',self.prefix)
+        if not self.prefix:
+            i,j = w.getSelectionRange()
+            if i != j:
+                w.delete(i,j)
+
+    if self.prefix: # 2010/11/02.
+        self.setSelection(self.prefix)
+        self.computeCompletionList(backspace=True)
+    elif self.theObject:
+        if self.prevObjects:
+            obj = self.pop()
+        else:
+            obj = self.theObject
+        if trace: g.trace(self.theObject,obj)
+        s = w.getAllText()
+        i,junk = w.getSelectionRange()
+        ch = 0 <= i-1 < len(s) and s[i-1] or ''
+        if trace: g.trace(ch)
+        if ch == '.':
+            self.theObject = obj
+            w.delete(i-1)
+            c.frame.body.onBodyChanged(undoType='Typing')
+            i,j = g.getWord(s,i-2)
+            word = s[i:j]
+            if trace: g.trace(i,j,repr(word))
+            w.setSelectionRange(i,j,insert=j)
+            self.prefix = word
+            self.popTabName()
+            self.membersList = self.getMembersList(obj)
+            # g.trace(len(self.membersList))
+            if self.membersList:
+                self.computeCompletionList(backspace=True)
+            else:
+                self.abort()
+        else:
+            self.abort() # should not happen.
+    else:
+        self.abort()            
 #@-all
 #@-leo

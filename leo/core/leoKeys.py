@@ -314,11 +314,13 @@ class autoCompleterClass:
         elif keysym == '!':
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
+            c.frame.putStatusLine('verbose completions %s' % (
+                g.choose(self.verbose,'ON','OFF')),color='red')
             if type(self.theObject) == types.DictType:
                 self.membersList = list(self.theObject.keys())
             elif type(self.theObject) in (type((),),type([])):
                 self.membersList = self.theObject
-            self.computeCompletionList(verbose=self.verbose)
+            self.computeCompletionList()
         elif ch and ch in string.printable:
             self.insertNormalChar(ch,keysym)
         else:
@@ -413,7 +415,7 @@ class autoCompleterClass:
 
         trace = False and not g.unitTesting
         if trace: g.trace('restore: %s, selected: %s' % (
-            restore,self.selectedText))
+            restore,self.selectedText),g.callers())
 
         k = self ; c = k.c 
         w = self.widget or c.frame.body.bodyCtrl
@@ -577,8 +579,8 @@ class autoCompleterClass:
         elif word and old_obj and self.hasAttr(old_obj,word):
             self.push(old_obj)
             self.theObject = obj = self.getAttr(old_obj,word)
-        elif not self.prefix:
-            obj = old_obj # 2010/11/02.
+        elif word:
+            obj = old_obj # 2010//11/02
         else:
             obj = None
 
@@ -606,7 +608,7 @@ class autoCompleterClass:
         self.extendSelection('.')
         self.finish()
     #@+node:ekr.20061031131434.28: *4* computeCompletionList
-    def computeCompletionList (self,backspace=False,init=False,verbose=False):
+    def computeCompletionList (self,backspace=False,init=False):
 
         c = self.c ; w = self.widget
         c.widgetWantsFocus(w)
@@ -615,7 +617,7 @@ class autoCompleterClass:
             s,self.membersList,matchEmptyPrefix=True)
 
         if not common_prefix:
-            if verbose or len(self.tabList) < 25 or not self.useTabs:
+            if self.verbose or len(self.tabList) < 20 or not self.useTabs:
                 self.tabList,common_prefix = g.itemsMatchingPrefixInList(
                     s,self.membersList,matchEmptyPrefix=True)
             else: # Show the possible starting letters.
@@ -644,9 +646,16 @@ class autoCompleterClass:
         if trace: g.trace('(autocompleter)',
             self.prefix,self.theObject,self.prevObjects)
 
-        c = self.c
+        c = self.c ; w = self.widget
         if self.prefix:
             self.prefix = self.prefix[:-1]
+            if trace: g.trace('new prefix',self.prefix)
+            if not self.prefix:
+                i,j = w.getSelectionRange()
+                if i != j:
+                    w.delete(i,j)
+
+        if self.prefix: # 2010/11/02.
             self.setSelection(self.prefix)
             self.computeCompletionList(backspace=True)
         elif self.theObject:
@@ -655,11 +664,10 @@ class autoCompleterClass:
             else:
                 obj = self.theObject
             if trace: g.trace(self.theObject,obj)
-            w = self.widget
             s = w.getAllText()
             i,junk = w.getSelectionRange()
             ch = 0 <= i-1 < len(s) and s[i-1] or ''
-            # g.trace(ch)
+            if trace: g.trace(ch)
             if ch == '.':
                 self.theObject = obj
                 w.delete(i-1)
