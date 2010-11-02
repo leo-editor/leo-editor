@@ -610,25 +610,30 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.28: *4* computeCompletionList
     def computeCompletionList (self,backspace=False,init=False):
 
+        trace = False and not g.unitTesting
         c = self.c ; w = self.widget
         c.widgetWantsFocus(w)
         s = w.getSelectedText()
+
         self.tabList,common_prefix = g.itemsMatchingPrefixInList(
-            s,self.membersList,matchEmptyPrefix=True)
+            s,self.membersList,matchEmptyPrefix=False)
 
         if not common_prefix:
-            if self.verbose or len(self.tabList) < 20 or not self.useTabs:
-                self.tabList,common_prefix = g.itemsMatchingPrefixInList(
-                    s,self.membersList,matchEmptyPrefix=True)
-            else: # Show the possible starting letters.
-                d = {}
-                for z in self.tabList:
-                    ch = z and z[0] or ''
-                    if ch:
-                        n = d.get(ch,0)
-                        d[ch] = n + 1
-                aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
-                self.tabList = aList
+            self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+                s,self.membersList,matchEmptyPrefix=True)
+
+        if trace: g.trace('common',common_prefix,'len(tabList)',len(self.tabList))
+
+        if not self.verbose and len(self.tabList) > 20:
+            # Show the possible starting letters.
+            d = {}
+            for z in self.tabList:
+                ch = z and z[0] or ''
+                if ch:
+                    n = d.get(ch,0)
+                    d[ch] = n + 1
+            aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
+            self.tabList = aList
 
         if self.useTabs:
             c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
@@ -649,11 +654,15 @@ class autoCompleterClass:
         c = self.c ; w = self.widget
         if self.prefix:
             self.prefix = self.prefix[:-1]
-            if trace: g.trace('new prefix',self.prefix)
             if not self.prefix:
                 i,j = w.getSelectionRange()
                 if i != j:
+                    if trace: g.trace('delete',i,j)
                     w.delete(i,j)
+
+        if trace:
+            if trace: g.trace('prefix: %s, obj: %s' % (
+                self.prefix,self.theObject))
 
         if self.prefix: # 2010/11/02.
             self.setSelection(self.prefix)
