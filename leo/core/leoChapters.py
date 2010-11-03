@@ -85,6 +85,7 @@ class chapterController:
 
         if state == 0:
             names = list(cc.chaptersDict.keys())
+            g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Clone node to chapter: '
             k.setLabelBlue(prefix,protect=True)
             k.getArg(event,tag,1,self.cloneNodeToChapter,prefix=prefix,tabList=names)
@@ -108,7 +109,7 @@ class chapterController:
         # g.trace('from',fromChapter.name,'to',toChapter)
 
         # Open the group undo.
-        c.undoer.beforeChangeGroup(p,undoType)
+        c.undoer.beforeChangeGroup(toChapter.root,undoType)
         # Do the clone.  c.clone handles the inner undo.
         clone = c.clone()
         # Do the move.
@@ -116,8 +117,9 @@ class chapterController:
         if toChapter.name == 'main':
             clone.moveAfter(toChapter.p)
         else:
-            parent = cc.getChapterNode(toChapter.name) #### 
-            clone.moveToLastChildOf(parent)
+            # parent = cc.getChapterNode(toChapter.name) ####
+            # clone.moveToLastChildOf(parent)
+            clone.moveToLastChildOf(toChapter.root)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
         c.redraw(clone)
         c.setChanged(True)
@@ -167,6 +169,7 @@ class chapterController:
 
         if state == 0:
             names = list(cc.chaptersDict.keys())
+            g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Copy node to chapter: '
             k.setLabelBlue(prefix,protect=True)
             k.getArg(event,tag,1,self.copyNodeToChapter,prefix=prefix,tabList=names)
@@ -186,15 +189,12 @@ class chapterController:
             return cc.error('no such chapter: %s' % toChapterName)
         if fromChapter.name == 'main' and g.match_word(p.h,0,'@chapter'):
             return cc.error('can not copy @chapter node')
-        # g.trace('from',fromChapter.name,'to',toChapter.name)
 
         # For undo, we treat the copy like a pasted (inserted) node.
-        # Use parent as the node to select for undo.
-        parent = cc.getChapterNode(toChapter.name) ####
-        undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
+        undoData = u.beforeInsertNode(toChapter.root,pasteAsClone=False,copiedBunchList=[])
         s = c.fileCommands.putLeoOutline()
         p2 = c.fileCommands.getLeoOutline(s)
-        p2.moveToLastChildOf(parent)
+        p2.moveToLastChildOf(toChapter.root)
         c.redraw(p2)
         u.afterInsertNode(p2,undoType,undoData)
         c.setChanged(True)
@@ -288,6 +288,7 @@ class chapterController:
 
         if state == 0:
             names = list(cc.chaptersDict.keys())
+            g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Move node to chapter: '
             k.setLabelBlue(prefix,protect=True)
             k.getArg(event,tag,1,self.moveNodeToChapter,prefix=prefix,tabList=names)

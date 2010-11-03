@@ -1325,7 +1325,9 @@ class undoer:
     #@+node:ekr.20050412083057: *4* redoCloneNode
     def redoCloneNode (self):
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; cc = c.chapterController
+
+        if cc: cc.selectChapterByName('main')
 
         if u.newBack:
             u.newP._linkAfter(u.newBack)
@@ -1421,7 +1423,9 @@ class undoer:
     #@+node:ekr.20050412084532: *4* redoInsertNode
     def redoInsertNode (self):
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; cc = c.chapterController
+
+        if cc: cc.selectChapterByName('main')
 
         # g.trace('newP',u.newP.v,'back',u.newBack,'parent',u.newParent.v)
 
@@ -1461,10 +1465,13 @@ class undoer:
     #@+node:ekr.20050411111847: *4* redoMove
     def redoMove (self):
 
-        u = self ; c = u.c ; v = u.p.v
+        u = self ; c = u.c ; cc = c.chapterController
+        v = u.p.v
         assert(u.oldParent_v)
         assert(u.newParent_v)
         assert(v)
+
+        if cc: cc.selectChapterByName('main')
 
         # Adjust the children arrays.
         assert u.oldParent_v.children[u.oldN] == v
@@ -1638,7 +1645,9 @@ class undoer:
     #@+node:ekr.20050412083057.1: *4* undoCloneNode
     def undoCloneNode (self):
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; cc = c.chapterController
+
+        if cc: cc.selectChapterByName('main')
 
         c.selectPosition(u.newP)
         c.deleteOutline()
@@ -1742,7 +1751,9 @@ class undoer:
     #@+node:ekr.20050412085112: *4* undoInsertNode
     def undoInsertNode (self):
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; cc = c.chapterController
+
+        if cc: cc.selectChapterByName('main')
 
         c.selectPosition(u.newP)
 
@@ -1775,7 +1786,11 @@ class undoer:
     #@+node:ekr.20050411112033: *4* undoMove
     def undoMove (self):
 
-        u = self ; c = u.c ; v = u.p.v
+        u = self ; c = u.c ; cc = c.chapterController
+
+        if cc: cc.selectChapterByName('main')
+
+        v = u.p.v
         assert(u.oldParent_v)
         assert(u.newParent_v)
         assert(v)
