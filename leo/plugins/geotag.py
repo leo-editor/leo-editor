@@ -19,6 +19,8 @@ geotag.py - Tag nodes with lat/long. info
 import leo.core.leoGlobals as g
 
 from leo.plugins.pygeotag import pygeotag
+
+import socket
 #@-<< imports >>
 __version__ = "0.1"
 #@+<< version history >>
@@ -35,11 +37,19 @@ __version__ = "0.1"
 #@+node:tbrown.20091214233510.5351: ** init
 def init():
 
-    g.registerHandler('after-create-leo-frame',onCreate)
-    g.plugin_signon(__name__)
+    if not hasattr(g, 'pygeotag'):
 
-    g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
-    g.pygeotag.start_server()
+        try:
+            g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
+            g.pygeotag.start_server()
+
+            g.registerHandler('after-create-leo-frame',onCreate)
+            g.registerHandler('end1',onQuit)
+            g.plugin_signon(__name__)
+
+        except socket.error:
+
+            g.es('Geotag plugin init failed, perhaps port in use')
 
     return True
 #@+node:tbrown.20091214233510.5352: ** onCreate
@@ -48,6 +58,9 @@ def onCreate (tag,key):
     c = key.get('c')
 
     geotag_Controller(c)
+#@+node:tbrown.20101103145611.5658: ** onQuit
+def onQuit(tag,key):
+    g.pygeotag.stop_server()
 #@+node:tbrown.20091214233510.5353: ** class geotag_Controller
 class geotag_Controller:
 
