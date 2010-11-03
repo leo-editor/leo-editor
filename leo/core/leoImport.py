@@ -3668,11 +3668,31 @@ class pythonScanner (baseScannerClass):
                     return j + 1
 
         return i
-    #@+node:ekr.20070707073627.4: *4* skipString
-    def skipString (self,s,i):
+    #@+node:ekr.20101103093942.5935: *4* findClass (for @button scripts)
+    def findClass(self,p):
 
-        # Returns len(s) on unterminated string.
-        return g.skip_python_string(s,i,verbose=False)
+        '''Return the index end of the class or def in a node, or -1.'''
+
+        s,i = p.b,0
+        while i < len(s):
+            progress = i
+            if s[i] in (' ','\t','\n'):
+                i += 1
+            elif self.startsComment(s,i):
+                i = self.skipComment(s,i)
+            elif self.startsString(s,i):
+                i = self.skipString(s,i)
+            elif self.startsClass(s,i):
+                return 'class',self.sigStart,self.codeEnd
+            elif self.startsFunction(s,i):
+                return 'def',self.sigStart,self.codeEnd
+            elif self.startsId(s,i):
+                i = self.skipId(s,i)
+            else:
+                i += 1
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+        return None,-1,-1
     #@+node:ekr.20070712090019.1: *4* skipCodeBlock (python) & helpers
     def skipCodeBlock (self,s,i,kind):
 
@@ -3891,6 +3911,11 @@ class pythonScanner (baseScannerClass):
                 break
 
         return i,g.match(s,i,':')
+    #@+node:ekr.20070707073627.4: *4* skipString
+    def skipString (self,s,i):
+
+        # Returns len(s) on unterminated string.
+        return g.skip_python_string(s,i,verbose=False)
     #@-others
 #@+node:ekr.20090501095634.41: *3* class rstScanner
 class rstScanner (baseScannerClass):
