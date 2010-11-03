@@ -59,10 +59,6 @@ class geotag_Controller:
 
         self.c = c
         c.geotag = self
-    #@+node:tbrown.20091214233510.5355: *3* __del__
-    def __del__(self):
-        for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])
     #@+node:tbrown.20091215204347.11403: *3* getAttr
     @staticmethod
     def getAttr(p):
@@ -79,8 +75,6 @@ class geotag_Controller:
         p = c.p
 
         nd = self.getAttr(p)
-
-
 
         nd.h = '@LatLng %(lat)f %(lng)f %(zoom)d %(maptype)s  %(description)s ' % data
         c.setChanged(True)
