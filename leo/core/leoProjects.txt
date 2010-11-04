@@ -4817,5 +4817,12 @@ contain installation instructions and the one that contains the
 "Installing Leo" chapter.
 
 The solution was to change install.txt to installing.txt in the users guide.
+#@+node:ekr.20101101114615.5923: *3* Tell how to install PyEnchant
+@nocolor-node
+
+Updated leoDocs.leo to make it's text about PyEnchant.
+Removed most mentions of aspell in the docs.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bb19e2a0f43ef2f2#
 #@-all
 #@-leo

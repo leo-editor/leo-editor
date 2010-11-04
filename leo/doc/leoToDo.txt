@@ -4,23 +4,7 @@
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6011: *3* Before b1
 #@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
-#@+node:ekr.20101104100822.5873: *4* Doc bugs
-#@+node:ekr.20101101114615.5923: *5* Aspell -> PyEnchant
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bb19e2a0f43ef2f2#
-
-In the LeoDocs What's New///Leo 4.8 / Other improvements node, it
-states 'Leo now uses PyEnchant to check spelling. This is much safer
-than the old Aspell wrapper'
-However under the Basics///'Installing optional packages' node aspell
-gets a mention but there are no details about PyEnchant.
-May I suggest updating leoDocs.leo to make it's text about PyEnchant
-consistent with leoSettings.leo 'Spell tab' node in leoSettings.leo.
-  "Leo's spell checker requires PyEnchant to be installed.
-   See: http://www.rfk.id.au/software/pyenchant/tutorial.html#installation" 
-#@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
-#@+node:ekr.20101026125532.5968: *5* Installation problems with Qt
+#@+node:ekr.20101026125532.5968: *4* Installation problems with Qt
 @nocolor-node
 
 ** After best attempts  can't get Leo to recognize PyQt
@@ -79,6 +63,8 @@ I still does not recognize PyQt
     Can not import nav_qt from plugin nav_qt
     Can not load c:\aspell\bin\aspell-15.dll
     file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
+#@+node:ekr.20101104100822.5873: *4* Doc bugs
+#@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
 #@+node:ekr.20101031172539.5876: *4* Docs & slides
 @nocolor-node
 

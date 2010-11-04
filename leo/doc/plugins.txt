@@ -1420,20 +1420,6 @@ To enable this plugin put this into your file::
         @bool http_active = True
         @int  port = 8080
         @string rst_http_attributename = 'rst_http_attribute'
-.. @+node:ekr.20050912125735.3136: *3* Spell checking
-.. @+node:ekr.20050912125735.3138: *4* spellpyx.py
-aspell.pyx: Leo's new spell checking plugin that uses aspell.exe. It is much
-faster than the old mod_spelling plugin, but requires Python 2.3 or above and a
-recent version of Aspell. When properly installed and enabled, this plugin adds
-a Check Spelling command to Leo's Edit menu. This command brings up a spell
-checking dialog. You can set options by changing entries in spellpyx.ini in
-Leo's plugins menu. One of these settings is the name of the dictionary,
-spellpyx.txt by default. **Warning**: do not create spellpyx.txt with an @asis
-tree in leoPlugins.leo: only the plugin code should typically change
-spellpyx.txt. You **can** edit spellpyx.txt yourself in an external editor: just
-make sure that Leo isn't running when you do this. You can bring up the spell
-checker without enabling the spellpyx plugin by using an @button Check
-Spelling... script button. LeoDocs.leo contains such a script button.
 .. @+node:ekr.20050912125735.3559: *3* Text formatting
 .. @+node:ekr.20050912125735.3642: *4* Leo to AsciiDoc
 Leo2AsciiDoc is a small Python program which has been built to be used as a

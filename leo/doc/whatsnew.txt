@@ -570,10 +570,6 @@ Replaced the delete-all-icons command with a script in scripts.leo.  This comman
   This option has effect only when importing so-called non-strict languages, for
   which leading whitespace is not terribly significant.
 
-- @bool diagnose-aspell-installation
-
-  This provides further information when there are problems using aspell.
-
 - @bool warn_when_plugins_fail_to_load
 
   There is also an @bool trace_plugins setting.

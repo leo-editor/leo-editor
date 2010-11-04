@@ -227,14 +227,11 @@ Installing Leo on MacOS 10.5 (Leopard) is straightforward.
          make
          sudo make install
 .. @+node:ekr.20100817101952.4313: *3* Installing optional packages
-.. @+node:ekr.20100731112744.7281: *4* Installing the Aspell spell checker
-You must install the Aspell package if you want to use Leo's Spell tab.
-
-1.  Download and install the Aspell package from http://aspell.sourceforge.net/
-    Typically this will create a directory called Aspell/bin
-
-2.  Specify the location of the Aspell and Aspell/bin directories using
-    the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
+.. @+node:ekr.20100731112744.7281: *4* Installing the PyEnchant spell checker
+You must install the PyEnchant package if you want to use Leo's Spell tab.
+Download and install the PyEnchant package from
+http://www.rfk.id.au/software/pyenchant/download.html There is an executable
+installer for Windows users.
 .. @+node:ekr.20100731112744.7272: *4* Installing Tk
 When using Tk, you must install Tk 8.4 or later. As explained later in this
 section, the Tk version of Leo does not work with Python 3.0 or later.

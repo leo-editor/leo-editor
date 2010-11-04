@@ -30,7 +30,6 @@
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="ekr.20101104090957.1490"><vh>@edit ../../bzr-manifest.txt</vh></v>
 <v t="EKR.20040519090846.2"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
@@ -49,7 +48,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
 <v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
