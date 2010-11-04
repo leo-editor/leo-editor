@@ -81,6 +81,8 @@ class cacher:
                 '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
 
             self.db = PickleShareDB(dbdirname)
+            # Fixes bug 670108.
+            self.c.db = self.db
             self.inited = True
     #@+node:ekr.20100208082353.5920: *4* initGlobalDb
     def initGlobalDB (self):
@@ -424,13 +426,12 @@ class cacher:
             # Null gui's don't normally set the g.app.gui.db.
             g.app.setGlobalDb() 
 
-        assert g.app.db
-            # a cacher instance.
-        assert g.app.db.db is not None
+        # Fixes bug 670108.
+        assert g.app.db is not None
             # a PickleShareDB instance.
 
         # Make sure g.guessExternalEditor works.
-        junk = g.app.db.db.get("LEO_EDITOR")
+        junk = g.app.db.get("LEO_EDITOR")
 
         self.initFileDB('~/testpickleshare')
         db = self.db

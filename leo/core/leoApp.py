@@ -775,9 +775,9 @@ class LeoApp:
 
         """
 
-        g.app.db = leoCache.cacher()
-        g.app.db.initGlobalDB()
 
+        # Fixes bug 670108.
+        g.app.db = leoCache.cacher().initGlobalDB()
     #@+node:ekr.20031218072017.1847: ** app.setLog, lockLog, unlocklog
     def setLog (self,log):
 
