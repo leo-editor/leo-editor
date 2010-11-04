@@ -1109,7 +1109,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9388,58 +9388,21 @@ def onDestroyed (self):
 
     g.trace()
 </t>
-<t tx="ekr.20101103135707.2439">'''Move the code following a def to end of previous node.'''
+<t tx="ekr.20101103135707.2439">import leo.core.leoImport as leoImport
 
-import leo.core.leoImport as leoImport
-
-scanner = leoImport.pythonScanner(c.importCommands,atAuto=False)
-kind,i,junk = scanner.findClass(p)
-p2 = p.back()
-
-if p2 and kind in ('class','def') and i &gt; 0:
-    u = c.undoer ; undoType = 'move-head-to-prev'
-    head = p.b[:i].rstrip()
-    u.beforeChangeGroup(p,undoType)
-    b  = u.beforeChangeNodeContents(p)
-    p.b = p.b[i:]
-    u.afterChangeNodeContents(p,undoType,b)
-    if head:
-        b2 = u.beforeChangeNodeContents(p2)
-        p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
-        u.afterChangeNodeContents(p2,undoType,b2)
-    u.afterChangeGroup(p,undoType)
-    c.selectPosition(p2)
+leoImport.headToPrevNode(event={'c':c})
 </t>
-<t tx="ekr.20101103153740.2440">Spam = spam
-
-def spam():
+<t tx="ekr.20101103153740.2440">def spam():
     pass
 </t>
 <t tx="ekr.20101103153740.2441">class eggs:
     pass
 
+Spam = spam
 </t>
-<t tx="ekr.20101103170034.2445">'''Move the code following a def to end of previous node.'''
+<t tx="ekr.20101103170034.2445">import leo.core.leoImport as leoImport
 
-import leo.core.leoImport as leoImport
-
-scanner = leoImport.pythonScanner(c.importCommands,atAuto=False)
-kind,junk,j = scanner.findClass(p)
-p2 = p.next()
-
-if p2 and kind in ('class','def') and j &lt; len(p.b):
-    u = c.undoer ; undoType = 'move-tail-to-next'
-    tail = p.b[j:].rstrip()
-    u.beforeChangeGroup(p,undoType)
-    b  = u.beforeChangeNodeContents(p)
-    p.b = p.b[:j]
-    u.afterChangeNodeContents(p,undoType,b)
-    if tail:
-        b2 = u.beforeChangeNodeContents(p2)
-        p2.b = tail + '\n\n' + p2.b
-        u.afterChangeNodeContents(p2,undoType,b2)
-    u.afterChangeGroup(p,undoType)
-    c.selectPosition(p2)
+leoImport.tailToNextNode(event={'c':c})
 </t>
 </tnodes>
 </leo_file>
