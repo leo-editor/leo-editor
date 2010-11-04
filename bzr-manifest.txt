@@ -1099,10 +1099,7 @@ leo/dist/nsi-uninstall-files.txt
 leo/doc/
 leo/doc/FAQ.txt
 leo/doc/IpythonBridge.txt
-leo/doc/LICENSE.TXT
 leo/doc/LeoDocs.leo
-leo/doc/PKG-INFO.TXT
-leo/doc/README.TXT
 leo/doc/appendices.txt
 leo/doc/atShadow.txt
 leo/doc/coloring.txt
