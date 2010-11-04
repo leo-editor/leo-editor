@@ -2,76 +2,18 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
-#@+node:ekr.20101024062147.6011: *3* Before b1
-#@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
-#@+node:ekr.20101026125532.5968: *4* Installation problems with Qt
 @nocolor-node
 
-** After best attempts  can't get Leo to recognize PyQt
+For b1:
+- Documentation.
 
-- Is it significant that PyQt installer wants to install at::
-D:\Lang\Python27\Lib\site-packages\PyQt4
-- but (per a registry search) tk appears to have been installed by the Python installer
-  one level up at: D:\Lang\Python27\Lib\lib-tk\
-
-*** remainder are notes made while installing *** probably not relevant
-
-Python page suggests either Python27 or Python31
-(I already had Python25 and Python26 - though essentially unused)
-I first installed Python31 - setting as default per installer,
-then installed Python27 - also setting it as default (ie. to override Python31 choice)
-
-Now installed Leo: LeoSetup-4.7.1-final.exe
-Installer said "Found Python at D:\Lang\Python26\" (s/b Python27 ?)
-and suggested location:
-D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
-
-Instead I put it at D:\Lang\Leo\Leo-4.7.1-final
-
-No mention of PyQt in the installer slides for Windows?
-per Matt and his description of "site package" in
-http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&q=install+qt#d5e62fa67bcdaaeb <http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&q=install+qt#d5e62fa67bcdaaeb>
-
- - I put a junction from D:\Lang\Leo\Leo-4.7.1-final to
-   D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
-
- - installed PyQt first to D:\Lang\PyQt\PyQt27
- but running "launchLeo.py" runs the Python27 (GOOD)
- but still doesn't find PyQt and says PyQt not installed -
- reverting to Tk UI so I reinstalled PyQt to the "default"  location:
- D:\Lang\Python27\Lib\site-packages\PyQt4
-
-Now that I've created the junction for Leo-4.7.1-final trying to execute
-"launchLeo.py" now stalls
-Instead run it from the junction link in ...\site packages\...
-I still does not recognize PyQt
-
-    *** isPython3: False
-    PyQt not installed - reverting to Tk UI
-    Leo 4.7.1 final, build 3005, February 26, 2010
-    Python 2.7.0, Tk 8.5, Pmw 1.3
-    Windows 5, 1, 2600, 2, Service Pack 3
-    reading settings in D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final\leo\confi
-    g\leoSettings.leo
-    using menus from: leoSettings.leo
-    reading C:\Documents and Settings\Alec\.leo\.leoRecentFiles.txt
-    Ui type not compatible for plugin (quicksearch)
-    Can not import quicksearch from plugin quicksearch
-    Ui type not compatible for plugin (contextmenu)
-    Can not import contextmenu from plugin contextmenu
-    Ui type not compatible for plugin (nav_qt)
-    Can not import nav_qt from plugin nav_qt
-    Can not load c:\aspell\bin\aspell-15.dll
-    file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
-#@+node:ekr.20101104100822.5873: *4* Doc bugs
-#@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
-#@+node:ekr.20101031172539.5876: *4* Docs & slides
-@nocolor-node
-
-Document screenshot plugin.
-
-More slide shows.
-#@+node:ekr.20101024062147.6012: *3* Before rc1
+For rc1:
+- Resolve all new bugs.
+- Finish introductory slide shows.
+#@+node:ekr.20101024062147.6014: ** For 4.8.1 Autocompleter
+#@+node:ekr.20100206074650.5843: *3* Autocompletion
+# This can be done in the trunk.
+# For example new-complete commands.
 #@+node:ekr.20101029092426.5861: *4* Finish QCompleter
 @nocolor-node
 
@@ -88,13 +30,10 @@ handling works. That's the hard part. Rest can be handled by plugins.
 Every time the topic of autocompletion comes up, we end up solving the
 "fun" problems like scanning and ctags, and the most important part
 (gui) does not get done. 
-#@+node:ekr.20100206074650.5843: *4* Autocompletion
-# This can be done in the trunk.
-# For example new-complete commands.
-#@+node:ekr.20101025100847.5852: *5* @url ready to work on codewise
+#@+node:ekr.20101025100847.5852: *4* @url ready to work on codewise
 http://mail.google.com/mail/#inbox/12b7463d6c339406
-#@+node:ekr.20090131200406.14: *5* Notes
-#@+node:ekr.20080113165010: *6* About auto completion
+#@+node:ekr.20090131200406.14: *4* Notes
+#@+node:ekr.20080113165010: *5* About auto completion
 @nocolor
 
 Summary: inspect when possible, ask for types otherwise.
@@ -115,8 +54,8 @@ Performance isn't too hard:
 Parsing:
     - Forgiving parser is essentially complete.
     - It's easy to parse python def lines.
-#@+node:ekr.20101004092958.6008: *6* codewise stuff
-#@+node:ekr.20101004092958.5964: *7* codewise crash
+#@+node:ekr.20101004092958.6008: *5* codewise stuff
+#@+node:ekr.20101004092958.5964: *6* codewise crash
 
 c:\leo.repo\trunk>python -m codewise setup
 
@@ -191,7 +130,7 @@ Traceback (most recent call last):
 IndexError: list index out of range
 
 c:\leo.repo\trunk>
-#@+node:ekr.20101004092958.6009: *7* codewise.py
+#@+node:ekr.20101004092958.6009: *6* codewise.py
 @first #!/usr/bin/env python
 
 << docstring >>
@@ -205,7 +144,7 @@ c:\leo.repo\trunk>
 
 if __name__ == "__main__":
     main()
-#@+node:ekr.20101004092958.6010: *8* << docstring >>
+#@+node:ekr.20101004092958.6010: *7* << docstring >>
 """ CodeWise - global code intelligence database
 
 Why codewise:
@@ -219,7 +158,7 @@ Why codewise:
 - This is usable as a python module, or a command line tool.
 
 """
-#@+node:ekr.20101004092958.6011: *8* << usage >>
+#@+node:ekr.20101004092958.6011: *7* << usage >>
 USAGE = """
 codewise setup
  (Optional - run this first to create template ~/.ctags)
@@ -252,7 +191,7 @@ codewise tags TAGS
  Dump already-created tagfile TAGS to database
 
 """ 
-#@+node:ekr.20101004092958.6012: *8* << decls >>
+#@+node:ekr.20101004092958.6012: *7* << decls >>
 import os,sys
 import sqlite3
 
@@ -273,9 +212,9 @@ CREATE INDEX idx_function_class ON function(class ASC);
 COMMIT;
 """
 
-#@+node:ekr.20101004092958.6013: *8* Top level
-#@+node:ekr.20101004092958.6014: *9* Commands
-#@+node:ekr.20101004092958.6015: *10* cmd_functions
+#@+node:ekr.20101004092958.6013: *7* Top level
+#@+node:ekr.20101004092958.6014: *8* Commands
+#@+node:ekr.20101004092958.6015: *9* cmd_functions
 def cmd_functions(args):
     cw = CodeWise()
 
@@ -287,7 +226,7 @@ def cmd_functions(args):
     lines.sort()
     printlines(lines)
     return lines # EKR
-#@+node:ekr.20101004092958.6016: *10* cmd_init
+#@+node:ekr.20101004092958.6016: *9* cmd_init
 def cmd_init(args):
 
     print("Initializing CodeWise db at", DEFAULT_DB)
@@ -295,7 +234,7 @@ def cmd_init(args):
         os.remove(DEFAULT_DB)
 
     cw = CodeWise()
-#@+node:ekr.20101004092958.6017: *10* cmd_members
+#@+node:ekr.20101004092958.6017: *9* cmd_members
 def cmd_members(args):
     cw = CodeWise()
     if not args:
@@ -309,23 +248,23 @@ def cmd_members(args):
     lines.sort()
     printlines(lines)
     return lines # EKR
-#@+node:ekr.20101004092958.6018: *10* cmd_parse
+#@+node:ekr.20101004092958.6018: *9* cmd_parse
 def cmd_parse(args):
     assert args
     cw = CodeWise()
     cw.parse(args)
-#@+node:ekr.20101004092958.6019: *10* cmd_parseall
+#@+node:ekr.20101004092958.6019: *9* cmd_parseall
 def cmd_parseall(args):
     cw = CodeWise()
     cw.parseall()
-#@+node:ekr.20101004092958.6020: *10* cmd_scintilla
+#@+node:ekr.20101004092958.6020: *9* cmd_scintilla
 def cmd_scintilla(args):
     cw = CodeWise()
     for fil in args:
         f = open(fil)
         cw.feed_scintilla(f)
         f.close()
-#@+node:ekr.20101004092958.6021: *10* cmd_setup
+#@+node:ekr.20101004092958.6021: *9* cmd_setup
 def cmd_setup(args):
 
     ctagsfile = os.path.expanduser("~/.ctags")
@@ -333,11 +272,11 @@ def cmd_setup(args):
     assert not os.path.isfile(ctagsfile)
     open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
     cmd_init(args)
-#@+node:ekr.20101004092958.6022: *10* cmd_tags
+#@+node:ekr.20101004092958.6022: *9* cmd_tags
 def cmd_tags(args):
     cw = CodeWise()
     cw.feed_ctags(open(args[0]))
-#@+node:ekr.20101004092958.6023: *9* main
+#@+node:ekr.20101004092958.6023: *8* main
 def main():
     if len(sys.argv) < 2:
         print(USAGE)
@@ -361,23 +300,23 @@ def main():
         cmd_init(args)
     elif cmd == 'setup':
         cmd_setup(args)
-#@+node:ekr.20101004092958.6024: *9* printlines
+#@+node:ekr.20101004092958.6024: *8* printlines
 def printlines(lines):
     for l in lines:
         try:
             print(l)
         except Exception: # EKR: UnicodeEncodeError:            
             pass
-#@+node:ekr.20101004092958.6025: *9* run_ctags
+#@+node:ekr.20101004092958.6025: *8* run_ctags
 def run_ctags(paths):
     cm = 'ctags -R --sort=no -f - ' + " ".join(paths)
     print(cm)
     f = os.popen(cm)
     return f
-#@+node:ekr.20101004092958.6026: *8* class CodeWise
+#@+node:ekr.20101004092958.6026: *7* class CodeWise
 class CodeWise:
     @others
-#@+node:ekr.20101004092958.6027: *9* __init__
+#@+node:ekr.20101004092958.6027: *8* __init__
 def __init__(self, dbpath = None):
 
     if dbpath is None:
@@ -393,7 +332,7 @@ def __init__(self, dbpath = None):
     else:
         self.dbconn = c = sqlite3.connect(dbpath)
         self.create_caches()
-#@+node:ekr.20101004092958.6028: *9* createdb
+#@+node:ekr.20101004092958.6028: *8* createdb
 def createdb(self, dbpath):
 
     self.dbconn = c = sqlite3.connect(dbpath)
@@ -401,7 +340,7 @@ def createdb(self, dbpath):
     c.executescript(DB_SCHEMA)
     c.commit()
     c.close()
-#@+node:ekr.20101004092958.6029: *9* create_caches
+#@+node:ekr.20101004092958.6029: *8* create_caches
 def create_caches(self):
     """ read existing db and create caches """
 
@@ -417,16 +356,16 @@ def create_caches(self):
 
     c.close()
     #print self.classcache
-#@+node:ekr.20101004092958.6030: *9* reset_caches
+#@+node:ekr.20101004092958.6030: *8* reset_caches
 def reset_caches(self):
     self.classcache = {}
     self.filecache = {}
 
     self.fileids_scanned = set()
-#@+node:ekr.20101004092958.6031: *9* cursor
+#@+node:ekr.20101004092958.6031: *8* cursor
 def cursor(self):
     return self.dbconn.cursor()
-#@+node:ekr.20101004092958.6032: *9* class_id
+#@+node:ekr.20101004092958.6032: *8* class_id
 def class_id(self, classname):
     """ return class id. May create new class """
 
@@ -441,7 +380,7 @@ def class_id(self, classname):
         idd = c.lastrowid
         self.classcache[classname] = idd
     return idd
-#@+node:ekr.20101004092958.6033: *9* get_members
+#@+node:ekr.20101004092958.6033: *8* get_members
 def get_members(self, classnames):
 
     clset = set(classnames)
@@ -461,7 +400,7 @@ def get_members(self, classnames):
                 res.append((name, pat))
 
     return res
-#@+node:ekr.20101004092958.6034: *9* get_functions
+#@+node:ekr.20101004092958.6034: *8* get_functions
 def get_functions(self, prefix = None):
 
     c = self.cursor()
@@ -472,7 +411,7 @@ def get_functions(self, prefix = None):
         c.execute('select name, class, file, searchpattern from function')
 
     return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-#@+node:ekr.20101004092958.6035: *9* file_id
+#@+node:ekr.20101004092958.6035: *8* file_id
 def file_id(self, fname):
     if fname == '':
         return 0
@@ -497,7 +436,7 @@ def file_id(self, fname):
         self.fileids_scanned.add(idd)
 
     return idd
-#@+node:ekr.20101004092958.6036: *9* feed_function
+#@+node:ekr.20101004092958.6036: *8* feed_function
 def feed_function(self, func_name, class_name, file_name, aux):
     """ insert one function
 
@@ -508,7 +447,7 @@ def feed_function(self, func_name, class_name, file_name, aux):
     c = self.cursor()
     c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
               [clid, func_name, aux, fid])
-#@+node:ekr.20101004092958.6037: *9* feed_scintilla
+#@+node:ekr.20101004092958.6037: *8* feed_scintilla
 def feed_scintilla(self, apifile_obj):
     """ handle scintilla api files
 
@@ -537,7 +476,7 @@ def feed_scintilla(self, apifile_obj):
         #print func, klass, desc
         self.feed_function(func.strip(), shortclass.strip(), '', desc.strip())
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6038: *9* feed_ctags
+#@+node:ekr.20101004092958.6038: *8* feed_ctags
 def feed_ctags(self,tagsfile_obj):
     for l in tagsfile_obj:
         #print l
@@ -573,24 +512,24 @@ def feed_ctags(self,tagsfile_obj):
 
     self.dbconn.commit()
     #c.commit()
-#@+node:ekr.20101004092958.6039: *9* add_source
+#@+node:ekr.20101004092958.6039: *8* add_source
 def add_source(self, type, src):
     c = self.cursor()
     c.execute('insert into datasource(type, src) values (?,?)', (type,src))
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6040: *9* sources
+#@+node:ekr.20101004092958.6040: *8* sources
 def sources(self):
     c = self.cursor()
     c.execute('select type, src from datasource')
     return list(c)
-#@+node:ekr.20101004092958.6041: *9* zap_symbols
+#@+node:ekr.20101004092958.6041: *8* zap_symbols
 def zap_symbols(self):
     c = self.cursor()
     tables = ['class', 'file', 'function']
     for t in tables:
         c.execute('delete from ' + t)
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6042: *9* parseall
+#@+node:ekr.20101004092958.6042: *8* parseall
 # high level commands        
 def parseall(self):
     sources = self.sources()
@@ -599,7 +538,7 @@ def parseall(self):
     tagdirs = [td for typ, td in sources if typ == 'tagdir']
     self.parse(tagdirs)
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6043: *9* parse
+#@+node:ekr.20101004092958.6043: *8* parse
 def parse(self, paths):
     paths = set(os.path.abspath(p) for p in paths)
     f = run_ctags(paths)
@@ -608,7 +547,7 @@ def parse(self, paths):
     for a in paths:
         if ('tagdir', a) not in sources:            
             self.add_source('tagdir', a)
-#@+node:ekr.20101004092958.6044: *8* class ContextSniffer
+#@+node:ekr.20101004092958.6044: *7* class ContextSniffer
 class ContextSniffer:
     """ Class to analyze surrounding context and guess class
 
@@ -616,18 +555,18 @@ class ContextSniffer:
 
     """
     @others
-#@+node:ekr.20101004092958.6045: *9* __init__
+#@+node:ekr.20101004092958.6045: *8* __init__
 def __init__(self):
     # var name => list of classes
     self.vars = {}
-#@+node:ekr.20101004092958.6046: *9* declare
+#@+node:ekr.20101004092958.6046: *8* declare
 def declare(self, var, klass):
     print("declare",var,klass)
     vars = self.vars.get(var, [])
     if not vars:
         self.vars[var] = vars
     vars.append(klass)
-#@+node:ekr.20101004092958.6047: *9* push_declarations
+#@+node:ekr.20101004092958.6047: *8* push_declarations
 def push_declarations(self, body):
     for l in body.splitlines():
         l = l.lstrip()
@@ -638,16 +577,16 @@ def push_declarations(self, body):
         if len(parts) != 2:
             continue
         self.declare(parts[0].strip(), parts[1].strip())
-#@+node:ekr.20101004092958.6048: *9* set_small_context
+#@+node:ekr.20101004092958.6048: *8* set_small_context
 def set_small_context(self, body):
     """ Set immediate function """
     self.push_declarations(body)
-#@+node:ekr.20101004092958.6049: *7* codewise experiments
+#@+node:ekr.20101004092958.6049: *6* codewise experiments
 import codewise as cw
 # print(dir(cw))
 
 cw.cmd_init()
-#@+node:ekr.20101004092958.6050: *7* How to make codewise work
+#@+node:ekr.20101004092958.6050: *6* How to make codewise work
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
@@ -716,7 +655,7 @@ Also, try the explicit declarations:
 w.<alt+0>
 
 And self.<alt+0> 
-#@+node:ekr.20081005065934.12: *6* Links from Ville re Scintilla
+#@+node:ekr.20081005065934.12: *5* Links from Ville re Scintilla
 @nocolor-node
 
 It seems Scintilla relies on externally generated api description
@@ -729,7 +668,7 @@ http://www.burgaud.com/scite-java-api/
 http://scintilla.sourceforge.net/tags2api.py
 
 http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
-#@+node:ekr.20060927173836.1: *6* Make calltips and autocompleter 'stateless'
+#@+node:ekr.20060927173836.1: *5* Make calltips and autocompleter 'stateless'
 @nocolor
 
 Disabled these binding:
@@ -746,7 +685,7 @@ This is a complex problem, and not very serious now that there is an easy way of
 toggling autocompleter and calltips on and off.
 
 @color
-#@+node:ekr.20080110082845: *6* pyxides: code completion
+#@+node:ekr.20080110082845: *5* pyxides: code completion
 @nocolor
 
 Python code completion module
@@ -1350,7 +1289,7 @@ specific parts of rope, I'll be happy to answer.
 By the way, I tried to reply this mail to the group, but it seems that
 your group requires subscription for posting, so I've sent it to you,
 instead.
-#@+node:ekr.20071106083149: *6* Recent post
+#@+node:ekr.20071106083149: *5* Recent post
 @killcolor
 
 In general, autocompletion is a tricky problem. Consider:
@@ -1368,7 +1307,7 @@ or "os.path." for example.
 It might be possible to generalize c.k.defineObjectDict so that the user
 could specify autocompleter conventions, say in an @autocompleter node in an
 @settings tree.
-#@+node:ekr.20100506062734.5756: *6* Ville post re autocompleter
+#@+node:ekr.20100506062734.5756: *5* Ville post re autocompleter
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ee84e52fba476950
@@ -1402,9 +1341,9 @@ behave" on 2010, i.e. the way provided by QCompleter.
 
 -- 
 Ville M. Vainio 
-#@+node:ekr.20101002192824.5989: *5* Changed
+#@+node:ekr.20101002192824.5989: *4* Changed
 # Search for ###
-#@+node:ekr.20101002192824.5916: *6*  ctor (autocompleter)
+#@+node:ekr.20101002192824.5916: *5*  ctor (autocompleter)
 def __init__ (self,k):
 
     self.c = k.c
@@ -1427,7 +1366,7 @@ def __init__ (self,k):
     self.verbose = False # True: print all members.
     self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
     self.widget = None # The widget that should get focus after autocomplete is done.
-#@+node:ekr.20101002192824.5997: *6* calltip
+#@+node:ekr.20101002192824.5997: *5* calltip
 def calltip (self):
 
     c = self.c
@@ -1453,7 +1392,7 @@ def calltip (self):
     self.finish()
     c.widgetWantsFocusNow(w)
     w.setSelectionRange(j1,j2,insert=j2)
-#@+node:ekr.20101002192824.5988: *6* chain
+#@+node:ekr.20101002192824.5988: *5* chain
 def chain (self):
 
     c = self.c ; w = self.widget
@@ -1463,7 +1402,7 @@ def chain (self):
     w.setInsertPoint(j+1)
     self.finish()
     self.start(chain=True)
-#@+node:ekr.20101002192824.5941: *6* doBackSpace (autocompleter)
+#@+node:ekr.20101002192824.5941: *5* doBackSpace (autocompleter)
 def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
@@ -1471,7 +1410,7 @@ def doBackSpace (self):
     s = self.prefixes and self.prefixes.pop() or ''
     self.setSelection(s)
     self.computeCompletionList()
-#@+node:ekr.20101002192824.5948: *6* getLeadinWord & helper
+#@+node:ekr.20101002192824.5948: *5* getLeadinWord & helper
 def getLeadinWord (self,w):
 
     i,word = self.findAnchor(w)
@@ -1485,7 +1424,7 @@ def getLeadinWord (self,w):
         self.membersList = []
         self.leadinWord = None
         return False
-#@+node:ekr.20101002192824.5945: *7* findAnchor
+#@+node:ekr.20101002192824.5945: *6* findAnchor
 def findAnchor (self,w):
 
     '''
@@ -1511,7 +1450,7 @@ def findAnchor (self,w):
     else:
         # g.trace(i,j,repr(word))
         return j,word
-#@+node:ekr.20101002192824.5951: *6* insertNormalChar
+#@+node:ekr.20101002192824.5951: *5* insertNormalChar
 def insertNormalChar (self,ch,keysym):
 
     k = self.k ; w = self.widget
@@ -1538,14 +1477,14 @@ def insertNormalChar (self,ch,keysym):
     else:
         self.extendSelection(ch)
         self.finish()
-#@+node:ekr.20101002192824.5953: *6* setMembersList & helpers
+#@+node:ekr.20101002192824.5953: *5* setMembersList & helpers
 def setMembersList (self,word):
 
     self.membersList = self.watchwords.get(word)
     self.membersList.sort()
 
     # g.trace(word,self.membersList)
-#@+node:ekr.20101002192824.5954: *7* getObjectFromAttribute
+#@+node:ekr.20101002192824.5954: *6* getObjectFromAttribute
 def getObjectFromAttribute (self,word):
 
     obj = self.theObject
@@ -1560,7 +1499,7 @@ def getObjectFromAttribute (self,word):
         # Don't clear the stack here!
         self.membersList = []
         self.theObject = None
-#@+node:ekr.20101002192824.5956: *7* completeFromObject
+#@+node:ekr.20101002192824.5956: *6* completeFromObject
 def completeFromObject (self,obj):
 
     if obj:
@@ -1572,7 +1511,7 @@ def completeFromObject (self,obj):
         self.theObject = None
         self.clear()
         self.membersList = []
-#@+node:ekr.20101002192824.5925: *6* showCalltips (TO DO)
+#@+node:ekr.20101002192824.5925: *5* showCalltips (TO DO)
 def showCalltips (self,event=None,force=False):
 
     '''Show the calltips at the cursor.'''
@@ -1593,7 +1532,7 @@ def showCalltips (self,event=None,force=False):
         k.masterCommand(event,func=None,stroke=None,commandName=None)
 
     return 'break'
-#@+node:ekr.20101002192824.5958: *6* start
+#@+node:ekr.20101002192824.5958: *5* start
 def start (self,event=None,w=None,prefix=None,chain=False):
 
     c = self.c
@@ -1635,12 +1574,12 @@ def start (self,event=None,w=None,prefix=None,chain=False):
             return self.tabList
     else:
         self.abort()
-#@+node:ekr.20101024062147.5999: *5* Testing
-#@+node:ekr.20101002144536.5831: *6* Test auto scanner
+#@+node:ekr.20101024062147.5999: *4* Testing
+#@+node:ekr.20101002144536.5831: *5* Test auto scanner
 import leo.core.leoKeys as leoKeys
 
 leoKeys.AutoCompleterScanner(c).scan()
-#@+node:ekr.20101002192824.5843: *6* test-new-ac
+#@+node:ekr.20101002192824.5843: *5* test-new-ac
 # To do:
 # - Fix findAnchor.
 # - Report duck type in completion tab: callable if calltips exist.
@@ -1666,13 +1605,13 @@ ac.start(event=event,w=w)
 
 # The cursor must be at the end
 # p.s
-#@+node:ekr.20101002192824.6019: *7* class AutoCompleterScanner
+#@+node:ekr.20101002192824.6019: *6* class AutoCompleterScanner
 class AutoCompleterScanner:
 
     '''A class that scans for autocompleter completions.'''
 
     @others
-#@+node:ekr.20101002192824.6020: *8*  ctor & helper (AutoCompleterScanner)
+#@+node:ekr.20101002192824.6020: *7*  ctor & helper (AutoCompleterScanner)
 def __init__ (self,c):
 
     self.c = c
@@ -1686,7 +1625,7 @@ def __init__ (self,c):
     self.watchwords = {}
 
     self.definePatterns()
-#@+node:ekr.20101002192824.6021: *9* definePatterns
+#@+node:ekr.20101002192824.6021: *8* definePatterns
 def definePatterns (self):
 
     self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
@@ -1710,7 +1649,7 @@ def definePatterns (self):
         okchars [z] = z
     okchars ['_'] = '_'
     self.okchars = okchars 
-#@+node:ekr.20101002192824.6022: *8* scan & dumps
+#@+node:ekr.20101002192824.6022: *7* scan & dumps
 def scan (self):
 
     '''Build the database from the outline'''
@@ -1743,7 +1682,7 @@ def scan (self):
             self.dumpWords()
         self.printSummary(t2-t1)
 
-#@+node:ekr.20101002192824.6023: *9* dumpTips
+#@+node:ekr.20101002192824.6023: *8* dumpTips
 def dumpTips (self):
 
     print('calltips...\n\n')
@@ -1769,7 +1708,7 @@ def dumpTips (self):
                 print('\n%s:\n\n' % (key),g.dictToString(d2))
             else:
                 print('\n%s:\n\n' % (key),g.dictToString(d))
-#@+node:ekr.20101002192824.6024: *9* dumpWords
+#@+node:ekr.20101002192824.6024: *8* dumpWords
 def dumpWords (self):
 
     print('autocompleter words...\n\n')
@@ -1780,7 +1719,7 @@ def dumpWords (self):
         aList.sort()
         print('\n%s:' % (key),g.listToString(aList)) #repr(aList))
     print()
-#@+node:ekr.20101002192824.6025: *9* printSummary
+#@+node:ekr.20101002192824.6025: *8* printSummary
 def printSummary (self,t):
 
     n  = len(list(self.watchwords.keys()))
@@ -1792,7 +1731,7 @@ def printSummary (self,t):
 
     g.es_print('scanned %s words, %s tips in %3.2fs sec.' % (
         n,n2,t))
-#@+node:ekr.20101002192824.6026: *8* scanForAutoCompleter & helper
+#@+node:ekr.20101002192824.6026: *7* scanForAutoCompleter & helper
 def scanForAutoCompleter (self,s):
 
     '''This function scans text for the autocompleter database.'''
@@ -1811,7 +1750,7 @@ def scanForAutoCompleter (self,s):
             if val not in aList2:
                 aList2.append(val)
                 self.watchwords [key] = aList2
-#@+node:ekr.20101002192824.6027: *9* makeAutocompletionList
+#@+node:ekr.20101002192824.6027: *8* makeAutocompletionList
 def makeAutocompletionList (self,a,b,glist):
 
     '''We have seen a.b, where a and b are arbitrary strings.
@@ -1841,7 +1780,7 @@ def makeAutocompletionList (self,a,b,glist):
 
     if b1:
         glist.append((a1,b1),)
-#@+node:ekr.20101002192824.6028: *8* scanForCallTip & helper
+#@+node:ekr.20101002192824.6028: *7* scanForCallTip & helper
 def scanForCallTip (self,s,language):
 
     '''this function scans text for calltip info'''
@@ -1866,7 +1805,7 @@ def scanForCallTip (self,s,language):
             d [a] = aList
 
     self.calltips [language] = d
-#@+node:ekr.20101002192824.6029: *9* cleanPythonTip
+#@+node:ekr.20101002192824.6029: *8* cleanPythonTip
 def cleanPythonTip (self,s):
 
     result = []
@@ -1885,7 +1824,7 @@ def cleanPythonTip (self,s):
             result.append(ch)
             i += 1
     return ''.join(result)
-#@+node:ekr.20101002192824.5915: *7* class NewAutoCompleter (New)
+#@+node:ekr.20101002192824.5915: *6* class NewAutoCompleter (New)
 class NewAutoCompleter:
 
     '''A class that inserts autocompleted and calltip text in text widgets.
@@ -1897,7 +1836,7 @@ class NewAutoCompleter:
     '''
 
     @others
-#@+node:ekr.20101002192824.5916: *8*  ctor (autocompleter)
+#@+node:ekr.20101002192824.5916: *7*  ctor (autocompleter)
 def __init__ (self,k):
 
     self.c = k.c
@@ -1920,8 +1859,8 @@ def __init__ (self,k):
     self.verbose = False # True: print all members.
     self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
     self.widget = None # The widget that should get focus after autocomplete is done.
-#@+node:ekr.20101002192824.5919: *8* Top level
-#@+node:ekr.20101002192824.5920: *9* autoComplete
+#@+node:ekr.20101002192824.5919: *7* Top level
+#@+node:ekr.20101002192824.5920: *8* autoComplete
 def autoComplete (self,event=None,force=False):
 
     '''An event handler called from k.masterKeyHanderlerHelper.'''
@@ -1943,13 +1882,13 @@ def autoComplete (self,event=None,force=False):
         self.start(event=event,w=w)
 
     return 'break'
-#@+node:ekr.20101002192824.5921: *9* autoCompleteForce
+#@+node:ekr.20101002192824.5921: *8* autoCompleteForce
 def autoCompleteForce (self,event=None):
 
     '''Show autocompletion, even if autocompletion is not presently enabled.'''
 
     return self.autoComplete(event,force=True)
-#@+node:ekr.20101002192824.5922: *9* autoCompleterStateHandler
+#@+node:ekr.20101002192824.5922: *8* autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
     trace = False and not g.app.unitTesting
@@ -1985,7 +1924,7 @@ def autoCompleterStateHandler (self,event):
     else:
         # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
-#@+node:ekr.20101002192824.5924: *9* enable/disable/toggleAutocompleter/Calltips
+#@+node:ekr.20101002192824.5924: *8* enable/disable/toggleAutocompleter/Calltips
 def disableAutocompleter (self,event=None):
     '''Disable the autocompleter.'''
     self.k.enable_autocompleter = False
@@ -2015,7 +1954,7 @@ def toggleCalltips (self,event=None):
     '''Toggle whether calltips are enabled.'''
     self.k.enable_calltips = not self.k.enable_calltips
     self.showCalltipsStatus()
-#@+node:ekr.20101002192824.5925: *9* showCalltips (TO DO)
+#@+node:ekr.20101002192824.5925: *8* showCalltips (TO DO)
 def showCalltips (self,event=None,force=False):
 
     '''Show the calltips at the cursor.'''
@@ -2036,13 +1975,13 @@ def showCalltips (self,event=None,force=False):
         k.masterCommand(event,func=None,stroke=None,commandName=None)
 
     return 'break'
-#@+node:ekr.20101002192824.5926: *9* showCalltipsForce
+#@+node:ekr.20101002192824.5926: *8* showCalltipsForce
 def showCalltipsForce (self,event=None):
 
     '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
 
     return self.showCalltips(event,force=True)
-#@+node:ekr.20101002192824.5927: *9* showAutocompleter/CalltipsStatus
+#@+node:ekr.20101002192824.5927: *8* showAutocompleter/CalltipsStatus
 def showAutocompleterStatus (self):
     '''Show the autocompleter status on the status line.'''
 
@@ -2057,8 +1996,8 @@ def showCalltipsStatus (self):
     if not g.unitTesting:
         s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
         g.es(s,color='red')
-#@+node:ekr.20101002192824.5928: *8* Helpers
-#@+node:ekr.20101002192824.5929: *9* .abort & exit (autocompleter)
+#@+node:ekr.20101002192824.5928: *7* Helpers
+#@+node:ekr.20101002192824.5929: *8* .abort & exit (autocompleter)
 def abort (self):
 
     k = self.k
@@ -2081,7 +2020,7 @@ def exit (self,restore=False): # Called from keyboard-quit.
 
     ### self.clear()
     ### self.theObject = None
-#@+node:ekr.20101002192824.5930: *9* append/begin/popTabName
+#@+node:ekr.20101002192824.5930: *8* append/begin/popTabName
 def appendTabName (self,word):
 
     self.setTabName(self.tabName + word + '.')
@@ -2113,7 +2052,7 @@ def setTabName (self,s):
             c.frame.log.deleteTab(self.tabName)
         self.tabName = s.replace('_','') or ''
         c.frame.log.clearTab(self.tabName)
-#@+node:ekr.20101002192824.5931: *9* appendToKnownObjects
+#@+node:ekr.20101002192824.5931: *8* appendToKnownObjects
 def appendToKnownObjects (self,obj):
 
     if 0:
@@ -2121,7 +2060,7 @@ def appendToKnownObjects (self,obj):
             if hasattr(obj,'__name__'):
                 self.knownObjects[obj.__name__] = obj
                 # g.trace('adding',obj.__name__)
-#@+node:ekr.20101002192824.5997: *9* calltip
+#@+node:ekr.20101002192824.5997: *8* calltip
 def calltip (self):
 
     c = self.c
@@ -2147,7 +2086,7 @@ def calltip (self):
     self.finish()
     c.widgetWantsFocusNow(w)
     w.setSelectionRange(j1,j2,insert=j2)
-#@+node:ekr.20101002192824.5988: *9* chain
+#@+node:ekr.20101002192824.5988: *8* chain
 def chain (self):
 
     c = self.c ; w = self.widget
@@ -2157,7 +2096,7 @@ def chain (self):
     w.setInsertPoint(j+1)
     self.finish()
     self.start(chain=True)
-#@+node:ekr.20101002192824.5940: *9* computeCompletionList
+#@+node:ekr.20101002192824.5940: *8* computeCompletionList
 def computeCompletionList (self,verbose=False):
 
     c = self.c ; w = self.widget
@@ -2186,7 +2125,7 @@ def computeCompletionList (self,verbose=False):
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
         g.es('','\n'.join(self.tabList),tabName=self.tabName)
-#@+node:ekr.20101002192824.5941: *9* doBackSpace (autocompleter)
+#@+node:ekr.20101002192824.5941: *8* doBackSpace (autocompleter)
 def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
@@ -2194,7 +2133,7 @@ def doBackSpace (self):
     s = self.prefixes and self.prefixes.pop() or ''
     self.setSelection(s)
     self.computeCompletionList()
-#@+node:ekr.20101002192824.5942: *9* doTabCompletion (autocompleter)
+#@+node:ekr.20101002192824.5942: *8* doTabCompletion (autocompleter)
 def doTabCompletion (self):
 
     '''Handle tab completion when the user hits a tab.'''
@@ -2213,7 +2152,7 @@ def doTabCompletion (self):
         self.computeCompletionList()
 
     c.widgetWantsFocusNow(w)
-#@+node:ekr.20101002192824.5943: *9* extendSelection
+#@+node:ekr.20101002192824.5943: *8* extendSelection
 def extendSelection (self,s):
 
     '''Append s to the presently selected text.'''
@@ -2226,7 +2165,7 @@ def extendSelection (self,s):
     j += 1
     w.setSelectionRange(i,j,insert=j)
     c.frame.body.onBodyChanged('Typing')
-#@+node:ekr.20101002192824.5944: *9* findCalltipWord
+#@+node:ekr.20101002192824.5944: *8* findCalltipWord
 def findCalltipWord (self,w):
 
     i = w.getInsertPoint()
@@ -2237,7 +2176,7 @@ def findCalltipWord (self,w):
         return word
     else:
         return ''
-#@+node:ekr.20101002192824.5946: *9* finish
+#@+node:ekr.20101002192824.5946: *8* finish
 def finish (self):
 
     c = self.c ; k = c.k
@@ -2252,7 +2191,7 @@ def finish (self):
     c.recolor()
     ### self.clear()
     ### self.theObject = None
-#@+node:ekr.20101002192824.5948: *9* getLeadinWord & helper
+#@+node:ekr.20101002192824.5948: *8* getLeadinWord & helper
 def getLeadinWord (self,w):
 
     i,word = self.findAnchor(w)
@@ -2266,7 +2205,7 @@ def getLeadinWord (self,w):
         self.membersList = []
         self.leadinWord = None
         return False
-#@+node:ekr.20101002192824.5945: *10* findAnchor
+#@+node:ekr.20101002192824.5945: *9* findAnchor
 def findAnchor (self,w):
 
     '''
@@ -2292,7 +2231,7 @@ def findAnchor (self,w):
     else:
         # g.trace(i,j,repr(word))
         return j,word
-#@+node:ekr.20101002192824.5949: *9* getMembersList
+#@+node:ekr.20101002192824.5949: *8* getMembersList
 def getMembersList (self,obj):
 
     '''Return a list of possible autocompletions for self.leadinWord.'''
@@ -2305,7 +2244,7 @@ def getMembersList (self,obj):
         return members
     else:
         return []
-#@+node:ekr.20101002192824.6005: *9* info (rewrite)
+#@+node:ekr.20101002192824.6005: *8* info (rewrite)
 def info (self):
 
     c = self.c ; doc = None ; obj = self.theObject ; w = self.widget
@@ -2332,7 +2271,7 @@ def info (self):
         g.es('',doc,tabName='Info')
     else:
         g.es('no docstring for',word,color='blue')
-#@+node:ekr.20101002192824.5951: *9* insertNormalChar
+#@+node:ekr.20101002192824.5951: *8* insertNormalChar
 def insertNormalChar (self,ch,keysym):
 
     k = self.k ; w = self.widget
@@ -2359,7 +2298,7 @@ def insertNormalChar (self,ch,keysym):
     else:
         self.extendSelection(ch)
         self.finish()
-#@+node:ekr.20101002192824.5952: *9* push, pop, clear, stackNames (To be deleted)
+#@+node:ekr.20101002192824.5952: *8* push, pop, clear, stackNames (To be deleted)
 if 0:
     def push (self,obj):
         if obj is not None:
@@ -2382,14 +2321,14 @@ if 0:
             else:
                 aList.append(str(z))
         return aList
-#@+node:ekr.20101002192824.5953: *9* setMembersList & helpers
+#@+node:ekr.20101002192824.5953: *8* setMembersList & helpers
 def setMembersList (self,word):
 
     self.membersList = self.watchwords.get(word)
     self.membersList.sort()
 
     # g.trace(word,self.membersList)
-#@+node:ekr.20101002192824.5954: *10* getObjectFromAttribute
+#@+node:ekr.20101002192824.5954: *9* getObjectFromAttribute
 def getObjectFromAttribute (self,word):
 
     obj = self.theObject
@@ -2404,7 +2343,7 @@ def getObjectFromAttribute (self,word):
         # Don't clear the stack here!
         self.membersList = []
         self.theObject = None
-#@+node:ekr.20101002192824.5956: *10* completeFromObject
+#@+node:ekr.20101002192824.5956: *9* completeFromObject
 def completeFromObject (self,obj):
 
     if obj:
@@ -2416,7 +2355,7 @@ def completeFromObject (self,obj):
         self.theObject = None
         self.clear()
         self.membersList = []
-#@+node:ekr.20101002192824.5957: *9* setSelection
+#@+node:ekr.20101002192824.5957: *8* setSelection
 def setSelection (self,s):
 
     g.trace(s,g.callers(2))
@@ -2442,7 +2381,7 @@ def setSelection (self,s):
     c.frame.body.recolor(c.p,incremental=True)
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
-#@+node:ekr.20101002192824.5958: *9* start
+#@+node:ekr.20101002192824.5958: *8* start
 def start (self,event=None,w=None,prefix=None,chain=False):
 
     c = self.c
@@ -2484,8 +2423,6 @@ def start (self,event=None,w=None,prefix=None,chain=False):
             return self.tabList
     else:
         self.abort()
-#@+node:ekr.20101024062147.6014: *3* For 4.8.1
-# These will be moved to 4.8 final, time permitting.
 #@+node:ekr.20080603052650.466: ** 4.9 Vim stuff
 @nocolor
 

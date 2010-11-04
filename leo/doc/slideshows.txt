@@ -1688,6 +1688,13 @@ Here, we see the a "startup" headline and a "workbook" headline.
 - Top ten coolest features.
 - Tips!
 - @button nodes.
+
+- Move meld to screenshot controller??
+    Pros:
+        A single place for the commands.
+    Cons:
+        More to remember.
+        Less flexible.
 .. @+node:ekr.20100821182153.4345: ** @slideshow Installation
 @language rest
 .. @+node:ekr.20101014034526.5299: *3* @slide ((using Leo's installer
@@ -2289,6 +2296,8 @@ c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png
 .. @+node:ekr.20101014110348.5338: ** @button meld
 '''Meld Wink slides into an @slideshow folder.'''
 
+@language python
+
 import glob
 import os
 import shutil
@@ -2571,6 +2580,8 @@ def get_wink_screenshots (self):
 
     return aList
 .. @+node:ekr.20101018183640.5360: ** @button remove-image-directives
+@language python
+
 changed = 0
 b = c.undoer.beforeChangeTree(p)
 
@@ -2588,6 +2599,8 @@ if changed:
     c.undoer.afterChangeTree(p,'remove-image-directives',b)
 
 .. @+node:ekr.20101018185243.5368: ** @button remove-final-output
+@language python
+
 changed = 0
 b = c.undoer.beforeChangeTree(p)
 for child in p.children():
