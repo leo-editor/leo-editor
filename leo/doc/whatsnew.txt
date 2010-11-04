@@ -77,7 +77,19 @@ You can drag files into Leo.  Leo will create \@file or \@auto nodes if appropri
 
     After this exec statement completes the class Hello is available to the test
     code! This is something that I've wanted to do forever.
-.. @+node:ekr.20101025080245.6079: *4* Improved abbreviations commands
+.. @+node:ekr.20101025080245.6080: *4* Improved @url nodes
+If the body text is non-empty, it is assumed to contain the URL.
+This is a remarkably important improvement--it allows the
+headline to contain a description of the url.
+.. @+node:ekr.20101104173324.5141: *4* New commands
+- Added code-to-rst command.
+
+- Completed cascade-windows and minimize-all-windows commands.
+
+- Created head-to-prev-node and tail-to-next-node commands.
+
+- Removed mark-clones command.  It is useless in the one-node world.
+.. @+node:ekr.20101025080245.6079: *5* Improved abbreviations commands
 When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
 abbreviations as you type. Type the name of an abbreviation, followed by a
 space. As soon as you type the space, Leo will replace the name by the
@@ -114,10 +126,6 @@ Three new settings apply to the abbreviation commands:
       .leo files. Regardless of where they are defined, abbreviations in @data
       abbreviation nodes will override settings (with the same name) in @data
       global-abbreviations nodes.
-.. @+node:ekr.20101025080245.6080: *4* Improved @url nodes
-If the body text is non-empty, it is assumed to contain the URL.
-This is a remarkably important improvement--it allows the
-headline to contain a description of the url.
 .. @+node:ekr.20101025080245.6081: *4* New plugins
 - The screenshots.py plugin helps make slide shows containing many screen shots.
 .. @+node:ekr.20101025080245.6006: *4* New settings & command-line args
@@ -175,10 +183,6 @@ headline to contain a description of the url.
 
 - Added legend for print-settings command.
 
-- Added code-to-rst command.
-
-- Removed mark-clones command.  It is useless in the one-node world.
-
 - Improved the importer for elisp.
 
 - Added an .ini importer.
@@ -189,10 +193,7 @@ headline to contain a description of the url.
 
 - Improved the installation instructions.
 
-- Completed cascade-windows and minimize-all-windows commands.
-
-- Created head-to-prev-node and tail-to-next-node commands.
-
+- Added support for .nsi files.
 .. @+node:ekr.20100129054823.11924: *3* Leo 4.7
 .. @+node:ekr.20101025080245.6088: *4* The one-node world
 Leo 4.7 accomplishes something I long thought to be impossible: the unification

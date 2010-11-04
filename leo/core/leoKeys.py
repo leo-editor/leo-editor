@@ -4675,7 +4675,7 @@ class NewAutoCompleter:
         '''Toggle whether calltips are enabled.'''
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
-    #@+node:ekr.20101002192824.5925: *4* showCalltips (TO DO)
+    #@+node:ekr.20101002192824.5925: *4* showCalltips
     def showCalltips (self,event=None,force=False):
 
         '''Show the calltips at the cursor.'''
