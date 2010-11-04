@@ -3043,11 +3043,10 @@ class baseScannerClass (scanUtility):
         return ''.join(result)
     #@-others
 #@-<< class baseScannerClass >>
-#@+<< scanner classes >>
-#@+node:ekr.20031218072017.3241: ** << scanner classes >>
-# All these classes are subclasses of baseScannerClass.
 
 #@+others
+#@+node:ekr.20031218072017.3241: ** Scanner classes
+# All these classes are subclasses of baseScannerClass.
 #@+node:edreamleo.20070710093042: *3* class cScanner
 class cScanner (baseScannerClass):
 
@@ -3668,11 +3667,31 @@ class pythonScanner (baseScannerClass):
                     return j + 1
 
         return i
-    #@+node:ekr.20070707073627.4: *4* skipString
-    def skipString (self,s,i):
+    #@+node:ekr.20101103093942.5935: *4* findClass (leoImport)
+    def findClass(self,p):
 
-        # Returns len(s) on unterminated string.
-        return g.skip_python_string(s,i,verbose=False)
+        '''Return the index end of the class or def in a node, or -1.'''
+
+        s,i = p.b,0
+        while i < len(s):
+            progress = i
+            if s[i] in (' ','\t','\n'):
+                i += 1
+            elif self.startsComment(s,i):
+                i = self.skipComment(s,i)
+            elif self.startsString(s,i):
+                i = self.skipString(s,i)
+            elif self.startsClass(s,i):
+                return 'class',self.sigStart,self.codeEnd
+            elif self.startsFunction(s,i):
+                return 'def',self.sigStart,self.codeEnd
+            elif self.startsId(s,i):
+                i = self.skipId(s,i)
+            else:
+                i += 1
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+        return None,-1,-1
     #@+node:ekr.20070712090019.1: *4* skipCodeBlock (python) & helpers
     def skipCodeBlock (self,s,i,kind):
 
@@ -3891,6 +3910,11 @@ class pythonScanner (baseScannerClass):
                 break
 
         return i,g.match(s,i,':')
+    #@+node:ekr.20070707073627.4: *4* skipString
+    def skipString (self,s,i):
+
+        # Returns len(s) on unterminated string.
+        return g.skip_python_string(s,i,verbose=False)
     #@-others
 #@+node:ekr.20090501095634.41: *3* class rstScanner
 class rstScanner (baseScannerClass):
@@ -4371,6 +4395,59 @@ class xmlScanner (baseScannerClass):
 
         return i,False
     #@-others
+#@+node:ekr.20101103093942.5938: ** Commands (leoImport)
+#@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
+@g.command('head-to-prev-node')
+def headToPrevNode(event):
+
+    '''Move the code following a def to end of previous node.'''
+
+    # import leo.core.leoImport as leoImport
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    scanner = pythonScanner(c.importCommands,atAuto=False)
+    kind,i,junk = scanner.findClass(p)
+    p2 = p.back()
+
+    if p2 and kind in ('class','def') and i > 0:
+        u = c.undoer ; undoType = 'move-head-to-prev'
+        head = p.b[:i].rstrip()
+        u.beforeChangeGroup(p,undoType)
+        b  = u.beforeChangeNodeContents(p)
+        p.b = p.b[i:]
+        u.afterChangeNodeContents(p,undoType,b)
+        if head:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
+            u.afterChangeNodeContents(p2,undoType,b2)
+        u.afterChangeGroup(p,undoType)
+        c.selectPosition(p2)
+#@+node:ekr.20101103093942.5943: *3* @g.command(tail-to-next-node)
+@g.command('tail-to-next-node')
+def tailToNextNode(event=None):
+
+    '''Move the code following a def to end of previous node.'''
+
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    scanner = pythonScanner(c.importCommands,atAuto=False)
+    kind,junk,j = scanner.findClass(p)
+    p2 = p.next()
+
+    if p2 and kind in ('class','def') and j < len(p.b):
+        u = c.undoer ; undoType = 'move-tail-to-next'
+        tail = p.b[j:].rstrip()
+        u.beforeChangeGroup(p,undoType)
+        b  = u.beforeChangeNodeContents(p)
+        p.b = p.b[:j]
+        u.afterChangeNodeContents(p,undoType,b)
+        if tail:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = tail + '\n\n' + p2.b
+            u.afterChangeNodeContents(p2,undoType,b2)
+        u.afterChangeGroup(p,undoType)
+        c.selectPosition(p2)
 #@-others
-#@-<< scanner classes >>
 #@-leo

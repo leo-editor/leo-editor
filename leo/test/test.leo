@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.45" body_secondary_ratio="0.35">
-	<global_window_position top="30" left="491" height="1035" width="1168"/>
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.53">
+	<global_window_position top="32" left="368" height="949" width="1106"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -570,13 +570,13 @@
 <v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20101014040509.2315"><vh>@url Horse movie</vh></v>
-<v t="ekr.20101014040509.2316"><vh>@button load video</vh>
+<v t="ekr.20101014040509.2316"><vh>@@button load video</vh>
 <v t="ekr.20101014040509.2317"><vh>run</vh></v>
 </v>
-<v t="ekr.20101014040509.2318"><vh>@button play/pause</vh></v>
-<v t="ekr.20101014040509.2319"><vh>@button vid-stop</vh></v>
+<v t="ekr.20101014040509.2318"><vh>@@button play/pause</vh></v>
+<v t="ekr.20101014040509.2319"><vh>@@button vid-stop</vh></v>
 <v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
-<v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
+<v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
 </v>
 </v>
 <v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
@@ -685,6 +685,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101103153740.2441"><vh>class eggs</vh></v>
+<v t="ekr.20101103153740.2440"><vh>spam</vh></v>
+<v t="ekr.20101103135707.2439"><vh>@button move head to prev</vh></v>
+<v t="ekr.20101103170034.2445"><vh>@button move tail to next</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1105,7 +1109,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9383,6 +9387,22 @@ def select (self,n):
 def onDestroyed (self):
 
     g.trace()
+</t>
+<t tx="ekr.20101103135707.2439">import leo.core.leoImport as leoImport
+
+leoImport.headToPrevNode(event={'c':c})
+</t>
+<t tx="ekr.20101103153740.2440">def spam():
+    pass
+</t>
+<t tx="ekr.20101103153740.2441">class eggs:
+    pass
+
+Spam = spam
+</t>
+<t tx="ekr.20101103170034.2445">import leo.core.leoImport as leoImport
+
+leoImport.tailToNextNode(event={'c':c})
 </t>
 </tnodes>
 </leo_file>

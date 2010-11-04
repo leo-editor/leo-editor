@@ -3459,11 +3459,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
-            # g.trace('no spot')
+            if trace: g.trace('no spot')
             self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
         elif extend:
             if i == j or self.moveSpot not in (i,j):
-                # g.trace('spot not in sel')
+                if trace: g.trace('extend and spot not in sel')
                 self.setMoveCol(w,ins) # sets self.moveSpot.
         else:
             if upOrDown:

@@ -3,18 +3,86 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6011: *3* Before b1
-#@+node:ekr.20101024062147.6025: *4* Fix bugs
-#@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect
+#@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
+#@+node:ekr.20101031172539.5876: *4* Docs & slides
+#@+node:ekr.20101101114615.5923: *5* Aspell -> PyEnchant
 @nocolor-node
 
-Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
-is incorrect when there is an existing selection, which was created by some
-method other than Ctrl-Shift movement.
+http://groups.google.com/group/leo-editor/browse_thread/thread/bb19e2a0f43ef2f2#
 
-Expected behavior: it should extend/contract the existing selection
+In the LeoDocs What's New///Leo 4.8 / Other improvements node, it
+states 'Leo now uses PyEnchant to check spelling. This is much safer
+than the old Aspell wrapper'
+However under the Basics///'Installing optional packages' node aspell
+gets a mention but there are no details about PyEnchant.
+May I suggest updating leoDocs.leo to make it's text about PyEnchant
+consistent with leoSettings.leo 'Spell tab' node in leoSettings.leo.
+  "Leo's spell checker requires PyEnchant to be installed.
+   See: http://www.rfk.id.au/software/pyenchant/tutorial.html#installation" 
+#@+node:ekr.20101029092426.5855: *5* Installation docs
+#@+node:ekr.20101026125532.5968: *6* Installation problems with Qt
+@nocolor-node
 
-Actual behavior: it creates a new selection from the cursor position
-#@+node:ekr.20101101114615.5922: *5* Make sure proper files appear in distribution
+** After best attempts  can't get Leo to recognize PyQt
+
+- Is it significant that PyQt installer wants to install at::
+D:\Lang\Python27\Lib\site-packages\PyQt4
+- but (per a registry search) tk appears to have been installed by the Python installer
+  one level up at: D:\Lang\Python27\Lib\lib-tk\
+
+*** remainder are notes made while installing *** probably not relevant
+
+Python page suggests either Python27 or Python31
+(I already had Python25 and Python26 - though essentially unused)
+I first installed Python31 - setting as default per installer,
+then installed Python27 - also setting it as default (ie. to override Python31 choice)
+
+Now installed Leo: LeoSetup-4.7.1-final.exe
+Installer said "Found Python at D:\Lang\Python26\" (s/b Python27 ?)
+and suggested location:
+D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
+
+Instead I put it at D:\Lang\Leo\Leo-4.7.1-final
+
+No mention of PyQt in the installer slides for Windows?
+per Matt and his description of "site package" in
+http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&q=install+qt#d5e62fa67bcdaaeb <http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&q=install+qt#d5e62fa67bcdaaeb>
+
+ - I put a junction from D:\Lang\Leo\Leo-4.7.1-final to
+   D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
+
+ - installed PyQt first to D:\Lang\PyQt\PyQt27
+ but running "launchLeo.py" runs the Python27 (GOOD)
+ but still doesn't find PyQt and says PyQt not installed -
+ reverting to Tk UI so I reinstalled PyQt to the "default"  location:
+ D:\Lang\Python27\Lib\site-packages\PyQt4
+
+Now that I've created the junction for Leo-4.7.1-final trying to execute
+"launchLeo.py" now stalls
+Instead run it from the junction link in ...\site packages\...
+I still does not recognize PyQt
+
+    *** isPython3: False
+    PyQt not installed - reverting to Tk UI
+    Leo 4.7.1 final, build 3005, February 26, 2010
+    Python 2.7.0, Tk 8.5, Pmw 1.3
+    Windows 5, 1, 2600, 2, Service Pack 3
+    reading settings in D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final\leo\confi
+    g\leoSettings.leo
+    using menus from: leoSettings.leo
+    reading C:\Documents and Settings\Alec\.leo\.leoRecentFiles.txt
+    Ui type not compatible for plugin (quicksearch)
+    Can not import quicksearch from plugin quicksearch
+    Ui type not compatible for plugin (contextmenu)
+    Can not import contextmenu from plugin contextmenu
+    Ui type not compatible for plugin (nav_qt)
+    Can not import nav_qt from plugin nav_qt
+    Can not load c:\aspell\bin\aspell-15.dll
+    file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
+#@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
+#@+node:ekr.20101029065151.5922: *5* More slide shows
+#@+node:ekr.20101029065151.5920: *5* Document screenshot plugin
+#@+node:ekr.20101101114615.5922: *4* Make sure proper files appear in distribution
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
@@ -102,144 +170,6 @@ I hope this information helps you to track down the issue.
 With kind regards,
 
 Viktor
-#@+node:ekr.20101031172539.5873: *4* Create @button scripts as workaround to @auto problem
-@nocolor-node
-
-What to do about code between methods in a class?
-
-I want the following all in one node:
-
-def foo():
-    pass
-
-Foo = foo
-
-However, decorators and preceding comments also belong in a node.
-
-After reviewing this issue again, I have no new ideas for a simple, obvious fix
-to the actual @auto code.
-
-I do have a new idea for a workaround two @button scripts:
-
-1. move non-def code from the start of one node to the end of the previous node.
-
-2. move non-def code from the end of one node to the start of the following
-node.
-#@+node:ekr.20100223123910.5835: *5* bug 611413: The import logic for python code doesn't work as expected in some cases
-@nocolor-node
-
-When importing the following code:
-
---- cut here ---
-class MyClass:
-
-    def method1(self):
-
-        pass
-
-    m1 = method1()
-
-    def method2(self):
-
-        pass
-
-    m2 = method2()
-
---- cut here ---
-
-code pieces that are logically connected end in different nodes.
-
-This was discussed a bit some time ago in two google groups threads:
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/054afe963abdca1a
-http://groups.google.com/group/leo-editor/browse_thread/thread/27c901983605660f
-#@+node:ekr.20101031172539.5874: *6* @url bug report
-https://bugs.launchpad.net/leo-editor/+bugs
-#@+node:ekr.20101031172539.5871: *6* @url examples
-http://groups.google.com/group/leo-editor/browse_thread/thread/054afe963abdca1a
-
-#@+node:ekr.20101031172539.5872: *6* @url more examples
-http://groups.google.com/group/leo-editor/browse_thread/thread/27c901983605660f
-
-#@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
-#@+node:ekr.20101031172539.5876: *4* Docs & slides
-#@+node:ekr.20101101114615.5923: *5* Aspell -> PyEnchant
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bb19e2a0f43ef2f2#
-
-In the LeoDocs What's New///Leo 4.8 / Other improvements node, it
-states 'Leo now uses PyEnchant to check spelling. This is much safer
-than the old Aspell wrapper'
-However under the Basics///'Installing optional packages' node aspell
-gets a mention but there are no details about PyEnchant.
-May I suggest updating leoDocs.leo to make it's text about PyEnchant
-consistent with leoSettings.leo 'Spell tab' node in leoSettings.leo.
-  "Leo's spell checker requires PyEnchant to be installed.
-   See: http://www.rfk.id.au/software/pyenchant/tutorial.html#installation" 
-#@+node:ekr.20101029092426.5855: *5* Installation docs
-#@+node:ekr.20101026125532.5968: *6* Installation problems with Qt
-@nocolor-node
-
-** After best attempts  can't get Leo to recognize PyQt
-
-- Is it significant that PyQt installer wants to install at::
-D:\Lang\Python27\Lib\site-packages\PyQt4
-- but (per a registry search) tk appears to have been installed by the Python installer
-  one level up at: D:\Lang\Python27\Lib\lib-tk\
-
-*** remainder are notes made while installing *** probably not relevant
-
-Python page suggests either Python27 or Python31
-(I already had Python25 and Python26 - though essentially unused)
-I first installed Python31 - setting as default per installer,
-then installed Python27 - also setting it as default (ie. to override Python31 choice)
-
-Now installed Leo: LeoSetup-4.7.1-final.exe
-Installer said "Found Python at D:\Lang\Python26\" (s/b Python27 ?)
-and suggested location:
-D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
-
-Instead I put it at D:\Lang\Leo\Leo-4.7.1-final
-
-No mention of PyQt in the installer slides for Windows?
-per Matt and his description of "site package" in
-http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&q=install+qt#d5e62fa67bcdaaeb <http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476/d5e62fa67bcdaaeb?lnk=gst&q=install+qt#d5e62fa67bcdaaeb>
-
- - I put a junction from D:\Lang\Leo\Leo-4.7.1-final to
-   D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final
-
- - installed PyQt first to D:\Lang\PyQt\PyQt27
- but running "launchLeo.py" runs the Python27 (GOOD)
- but still doesn't find PyQt and says PyQt not installed -
- reverting to Tk UI so I reinstalled PyQt to the "default"  location:
- D:\Lang\Python27\Lib\site-packages\PyQt4
-
-Now that I've created the junction for Leo-4.7.1-final trying to execute
-"launchLeo.py" now stalls
-Instead run it from the junction link in ...\site packages\...
-I still does not recognize PyQt
-
-    *** isPython3: False
-    PyQt not installed - reverting to Tk UI
-    Leo 4.7.1 final, build 3005, February 26, 2010
-    Python 2.7.0, Tk 8.5, Pmw 1.3
-    Windows 5, 1, 2600, 2, Service Pack 3
-    reading settings in D:\Lang\Python27\Lib\site-packages\Leo-4.7.1-final\leo\confi
-    g\leoSettings.leo
-    using menus from: leoSettings.leo
-    reading C:\Documents and Settings\Alec\.leo\.leoRecentFiles.txt
-    Ui type not compatible for plugin (quicksearch)
-    Can not import quicksearch from plugin quicksearch
-    Ui type not compatible for plugin (contextmenu)
-    Can not import contextmenu from plugin contextmenu
-    Ui type not compatible for plugin (nav_qt)
-    Can not import nav_qt from plugin nav_qt
-    Can not load c:\aspell\bin\aspell-15.dll
-    file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
-#@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
-#@+node:ekr.20101029065151.5922: *5* More slide shows
-#@+node:ekr.20101029065151.5920: *5* Document screenshot plugin
 #@+node:ekr.20101024062147.6012: *3* Before rc1
 #@+node:ekr.20101029092426.5861: *4* Finish QCompleter
 @nocolor-node
@@ -2746,6 +2676,23 @@ nonetheless the special characters were inserted as expected.
 
 I think all this is quite a hack, but ... thanks for the hack, most
 important for me it's working for now. 
+#@+node:ekr.20101024062147.6024: *5* bug 622819: Ctrl-Shift movement is incorrect
+@nocolor-node
+
+Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+is incorrect when there is an existing selection, which was created by some
+method other than Ctrl-Shift movement.
+
+Expected behavior: it should extend/contract the existing selection
+
+Actual behavior: it creates a new selection from the cursor position
+
+======
+
+This is a minor bug, but hard to fix because Leo doesn't always distinguish
+between the point and the mark.
+
+The fix would be in extendHelper, called from moveToHelper.
 #@+node:ekr.20101024062147.5995: *4* Rst problems
 #@+node:ekr.20101021160326.5948: *5* Fix rst3 unbounded recursion
 @nocolor-node
