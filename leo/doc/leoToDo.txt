@@ -3,8 +3,10 @@
 #@+all
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 #@+node:ekr.20101024062147.6011: *3* Before b1
+#@+node:ekr.20101103093942.5944: *4* Fix the two new bugs
 #@+node:ekr.20101029072437.5854: *4* Move meld into screenshot plugin
 #@+node:ekr.20101031172539.5876: *4* Docs & slides
+#@+node:ekr.20101029065151.5920: *5* Document screenshot plugin
 #@+node:ekr.20101101114615.5923: *5* Aspell -> PyEnchant
 @nocolor-node
 
@@ -81,7 +83,6 @@ I still does not recognize PyQt
     file not found: C:\Documents and Settings\Alec\.leo\workbook.leo
 #@+node:ekr.20101029065151.5921: *5* Discuss installing qt in introductory slideshow
 #@+node:ekr.20101029065151.5922: *5* More slide shows
-#@+node:ekr.20101029065151.5920: *5* Document screenshot plugin
 #@+node:ekr.20101101114615.5922: *4* Make sure proper files appear in distribution
 @nocolor-node
 

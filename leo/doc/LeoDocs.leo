@@ -23,6 +23,16 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
+<v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
+<v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
+<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
+<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
+</v>
 <v t="ekr.20101025080245.5794"><vh>Preliminaries</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20100805165051.7148"><vh>@file frontMatter.txt</vh></v>
@@ -141,7 +151,7 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536" a="E"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" a="E"
-expanded="edream.110203163054.63,ekr.20101024234254.5433,"><vh>@file release_notes.txt</vh></v>
+expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -162,17 +172,7 @@ They contain sphinx markup. See::
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
-To generate these docs:
-
-    - From this file, run rst3 on desired tree.
-    - cd leo\doc\html
-    - make html
-
-To create pdf (probably easiest on Linux, with necessary latex packages installed):
-
-    - make latex
-    - cd _build/latex
-    - make all-pdf
+To generate these docs, see the next node: "Generating the Users Guide"
     
 Important files:
 
@@ -297,5 +297,74 @@ Release Notes
 &lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="what-is-new.html"&gt;What&amp;#8217;s New in Leo&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</t>
 <t tx="ekr.20101026082911.5536"></t>
+<t tx="ekr.20101104024804.4898">@nocolor-node
+
+The children of this node contain two @button scripts. These are disabled, but
+you can execute them by selecting them and hitting Ctrl-B (execute-script).
+
+To generate these docs by hand:
+
+    - From this file, run rst3 on desired tree.
+    - cd leo\doc\html
+    - make html
+
+To create pdf (probably easiest on Linux, with necessary latex packages installed):
+
+    - make latex
+    - cd _build/latex
+    - make all-pdf
+    
+Important files:
+
+- doc\html\conf.py contains settings, including the name of the master toctree
+  document, leo_toc.html.txt.
+
+- leo_toc.html.txt contains a list of all file to be included.
+</t>
+<t tx="sps.20100708203040.19008">@language python
+import os
+pos = c.find_h("Users Guide")[0]
+c.selectPosition(pos)
+c.k.simulateCommand('rst3')
+&lt;&lt; html manual &gt;&gt;
+&lt;&lt; pdf manual &gt;&gt;
+</t>
+<t tx="sps.20100708203040.19009">d = c.scanAllDirectives(p)
+mandir = d.get('path') + "/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make html')
+</t>
+<t tx="sps.20100708203040.19010"># you probably need to install several packages 
+# to create pdf (e.g. jadetex)
+mandir = d.get('path') + "/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make latex')
+os.chdir('_build/latex')
+os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
+os.system('make LeoDoc.pdf')
+</t>
+<t tx="ville.20090705224948.5734">import os
+pos = c.find_h("Users Guide")[0]
+c.selectPosition(pos)
+c.k.simulateCommand('rst3')
+&lt;&lt; html manual &gt;&gt;
+# no pdf manual creation, perhaps too "involved" for many
+</t>
+<t tx="ville.20090705225609.5736">mandir = g.app.leoDir + "/doc/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make html')
+</t>
+<t tx="ville.20090705225609.5738"># you probably need to install several packages 
+# to create pdf (e.g. jadetex)
+mandir = g.app.leoDir + "/doc/html"
+g.es(mandir)
+os.chdir(mandir)
+os.system('make latex')
+os.chdir('_build/latex')
+os.system('make all-pdf')
+</t>
 </tnodes>
 </leo_file>

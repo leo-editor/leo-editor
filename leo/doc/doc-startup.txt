@@ -26,51 +26,6 @@ def createDefList(c,p):
     lines = ''.join(result).rstrip()
 
     c.updateBodyPane(head,lines,tail,undoType,oldSel,oldYview)
-#@+node:sps.20100708203040.19008: *4* @@button generate-full-userguide
-@language python
-import os
-pos = c.find_h("Users Guide")[0]
-c.selectPosition(pos)
-c.k.simulateCommand('rst3')
-<< html manual >>
-<< pdf manual >>
-#@+node:sps.20100708203040.19009: *5* << html manual >>
-d = c.scanAllDirectives(p)
-mandir = d.get('path') + "/html"
-g.es(mandir)
-os.chdir(mandir)
-os.system('make html')
-#@+node:sps.20100708203040.19010: *5* << pdf manual >>
-# you probably need to install several packages 
-# to create pdf (e.g. jadetex)
-mandir = d.get('path') + "/html"
-g.es(mandir)
-os.chdir(mandir)
-os.system('make latex')
-os.chdir('_build/latex')
-os.system('../../fixup.pl < Leodocumentation.tex > LeoDoc.tex')
-os.system('make LeoDoc.pdf')
-#@+node:ville.20090705224948.5734: *4* @@button generate-userguide
-import os
-pos = c.find_h("Users Guide")[0]
-c.selectPosition(pos)
-c.k.simulateCommand('rst3')
-<< html manual >>
-# no pdf manual creation, perhaps too "involved" for many
-#@+node:ville.20090705225609.5736: *5* << html manual >>
-mandir = g.app.leoDir + "/doc/html"
-g.es(mandir)
-os.chdir(mandir)
-os.system('make html')
-#@+node:ville.20090705225609.5738: *5* << pdf manual >>
-# you probably need to install several packages 
-# to create pdf (e.g. jadetex)
-mandir = g.app.leoDir + "/doc/html"
-g.es(mandir)
-os.chdir(mandir)
-os.system('make latex')
-os.chdir('_build/latex')
-os.system('make all-pdf')
 #@+node:ekr.20050901055150: *4* @@button promote
 @color
 # Script to promote headlines and body text
