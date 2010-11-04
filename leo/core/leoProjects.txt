@@ -3935,30 +3935,6 @@ def doBackSpace (self):
             self.abort() # should not happen.
     else:
         self.abort()            
-#@+node:ekr.20061031131434.17: *5* abort & exit (autocompleter)
-def abort (self):
-
-    k = self.k
-    k.keyboardQuit(event=None,setDefaultStatus=False)
-        # Stay in the present input state.
-    g.es('No completions',color='blue') # 2010/11/02.
-    self.exit(restore=True)
-
-def exit (self,restore=False): # Called from keyboard-quit.
-
-    trace = False and not g.unitTesting
-    if trace: g.trace('restore: %s, selected: %s' % (
-        restore,self.selectedText),g.callers())
-
-    k = self ; c = k.c 
-    w = self.widget or c.frame.body.bodyCtrl
-    for name in (self.tabName,'Modules','Info'):
-        c.frame.log.deleteTab(name)
-    c.widgetWantsFocusNow(w)
-    i,j = w.getSelectionRange()
-    w.setSelectionRange(j,j,insert=j)
-    self.clear()
-    self.theObject = None
 #@+node:ekr.20061031131434.11: *5* autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
@@ -4827,5 +4803,19 @@ def tailToNextNode(event=None):
             u.afterChangeNodeContents(p2,undoType,b2)
         u.afterChangeGroup(p,undoType)
         c.selectPosition(p2)
+#@+node:ekr.20101101114615.5922: *3* Made sure proper install.txt appears
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
+
+
+> > * The file 'INSTALL.TXT' contains the outline text with sentinels from
+> > 'Chapter 1: Installing Leo'
+
+There are *two* files called install.txt: the one that should
+contain installation instructions and the one that contains the
+"Installing Leo" chapter.
+
+The solution was to change install.txt to installing.txt in the users guide.
 #@-all
 #@-leo

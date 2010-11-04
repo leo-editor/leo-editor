@@ -40,9 +40,9 @@ general scripts do not.
 .. _`work flow`:                http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
 
 .. .. _`running Leo in a console`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-run-leo-from-a-console-window
-.. _`running Leo from a console window`:    install.html#running-leo-from-a-console-window
-.. _`run Leo in a console window`:          install.html#running-leo-from-a-console-window
-.. _`console window`:                       install.html#running-leo-from-a-console-window
+.. _`running Leo from a console window`:    installing.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`:          installing.html#running-leo-from-a-console-window
+.. _`console window`:                       installing.html#running-leo-from-a-console-window
 .. @+node:ekr.20070116062405: *3* Using g.trace and g.pdb
 Inserting g.trace statements in my Python code is usually my first debugging
 choice. The g.trace statement prints the name of the function in which the call

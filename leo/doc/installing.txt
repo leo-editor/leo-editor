@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7152: * @file install.txt
+.. @+node:ekr.20100805165051.7152: * @file installing.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -17,7 +17,7 @@
 .. @@c
 
 .. @+all
-.. @+node:ekr.20100731112744.7268: ** @rst html\install.html
+.. @+node:ekr.20100731112744.7268: ** @rst html\installing.html
 ################
 Installing Leo
 ################

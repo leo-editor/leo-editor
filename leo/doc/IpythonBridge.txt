@@ -22,7 +22,7 @@
 IPython and Leo
 ###############
 
-.. _`run Leo in a console window`: install.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
 
 Leo's ipython plugin provides two-way communication (a bridge) between Leo and
 IPython: you can run Leo scripts from IPython, and IPython scripts from Leo. To
@@ -75,8 +75,8 @@ painless and powerful.
 .. _`The Ipython Extension API`: extensionAPI_
 .. _`Scripting Leo with Python`:    scripting.html
 
-.. _`run Leo in a console window`:  install.html#running-leo-from-a-console-window
-.. _`console window`:               install.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`:  installing.html#running-leo-from-a-console-window
+.. _`console window`:               installing.html#running-leo-from-a-console-window
 .. @+node:vivainio.20080302174639.1: *3* Introduction
 ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional

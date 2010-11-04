@@ -1,7 +1,9 @@
 .bzrignore
+INSTALL.TXT
 LICENSE.txt
-Leo-4.8-a1.zip
 Makefile
+PKG-INFO.TXT
+README.TXT
 bzr-manifest.txt
 launchLeo.py
 leo/
@@ -1024,6 +1026,7 @@ leo/core/leoBridge.pyc
 leo/core/leoBridgeTest.py
 leo/core/leoBridgeTest.pyc
 leo/core/leoCache.py
+leo/core/leoCache.py.~1~
 leo/core/leoCache.pyc
 leo/core/leoChapters.py
 leo/core/leoChapters.pyc
@@ -1094,6 +1097,7 @@ leo/dist/nsi-install-files.txt
 leo/dist/nsi-uninstall-files.txt
 leo/doc/
 leo/doc/FAQ.txt
+leo/doc/INSTALL.TXT
 leo/doc/IpythonBridge.txt
 leo/doc/LICENSE.TXT
 leo/doc/LeoDocs.leo
@@ -1144,7 +1148,7 @@ leo/doc/html/front.html
 leo/doc/html/frontMatter.html.txt
 leo/doc/html/glossary.html.txt
 leo/doc/html/history.html.txt
-leo/doc/html/install.html.txt
+leo/doc/html/installing.html.txt
 leo/doc/html/intro.html.txt
 leo/doc/html/jythonShell.html
 leo/doc/html/leoBridge.html.txt
@@ -1186,7 +1190,7 @@ leo/doc/html/whitepapers.html.txt
 leo/doc/html/writingPlugins.html.txt
 leo/doc/html/zodb.html.txt
 leo/doc/inkscape-template.svg
-leo/doc/install.txt
+leo/doc/installing.txt
 leo/doc/intro.txt
 leo/doc/leoBridge.txt
 leo/doc/leoNotes.txt
@@ -1877,6 +1881,7 @@ leo/plugins/bibtex.py
 leo/plugins/bibtex.pyc
 leo/plugins/bookmarks.py
 leo/plugins/bookmarks.pyc
+leo/plugins/bzr_qcommands.py
 leo/plugins/chapter_hoist.py
 leo/plugins/cleo.py
 leo/plugins/codewisecompleter.py
@@ -2028,6 +2033,10 @@ leo/plugins/pygeotag/pygeotag.leo
 leo/plugins/pygeotag/pygeotag.py
 leo/plugins/pygeotag/template.html
 leo/plugins/qtGui.py
+leo/plugins/qtGui.py.~1~
+leo/plugins/qtGui.py.~2~
+leo/plugins/qtGui.py.~3~
+leo/plugins/qtGui.py.~4~
 leo/plugins/qtGui.pyc
 leo/plugins/qtNotes.txt
 leo/plugins/qt_main.py
@@ -2153,6 +2162,9 @@ leo/test/qtui_generate.py
 leo/test/scriptFile.py
 leo/test/silver_city.css
 leo/test/test.leo
+leo/test/test.leo.~1~
+leo/test/test.leo.~2~
+leo/test/test.leo.~3~
 leo/test/testzip.zip
 leo/test/unitTest.leo
 leo/test/unittest/

@@ -1,0 +1,164 @@
+System requirements
+-------------------
+
+Leo requires Python 2.6 or above (including Python 3.x) and tcl/tk 8.4 or above.
+Leo will also work with PyQt instead of tcl/tk.
+
+	Download Python from http://python.org/ 
+	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
+    Download PyQt from http://www.riverbankcomputing.co.uk/news
+
+Warning: When building Tcl on Linux, do not specify "--enable-threads" .
+Only use Tcl with the default "threads not enabled" case.
+Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+
+Installing the leo.py on Linux
+------------------------------
+
+Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+
+Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
+The unpacked folder will be called something like leo-4-5.
+
+You can run Leo from your home directory.
+You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
+
+    python ~/leo-4-5/launchLeo.py
+
+Installing Leo on Windows
+--------------------------
+
+There are now two ways to install Leo on Windows:
+    
+1. Use the single-click executable installer, named something like
+   LeoSetup-4.7.1-final.exe
+
+2. Leo is distributed as a .zip file.
+   To install Leo from the .zip file:
+
+    1. Download the latest version of Leo (a .zip file) from:    
+       http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+
+    2. Unzip the .zip file and place the unpacked leo folder in 
+       the 'Program Files' folder or any convenient location.
+
+    After you have installed Leo, you should add the location of your leo/core folder to your python path.
+    One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+
+        import sys
+        sys.path.append(r'<path-to-leo>leo\core')
+
+    Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+
+Installing leo.py on MacOs
+--------------------------
+
+Leo works reliably only on MacOS X 10.3 and above.
+
+For the latest discussion of how to install Leo with PyQt, see
+http://groups.google.com/group/leo-editor/browse_thread/thread/2bae897436d3d70e/20d8b94ac3371074?lnk=gst&q=macos#20d8b94ac3371074
+
+To run Leo on Macintosh OS X 10.3 (There will be slight changes for later versions of Mac Os X):
+
+1) Download and install "MacPython 2.3 for Panther addons".
+
+Python is already included in OS X 10.3 so only the addons are necessary
+
+	http://www.cwi.nl/~jack/macpython.html
+
+2) Download and install TclTkAqua.
+
+	http://tcltkaqua.sourceforge.net/
+
+3) Run the PackageManager found in /Applications/MacPython-2.3 and  
+install "_tkinter-2.3-binary" by clicking on the package in the list  
+and clicking the [Install:] button with "Install dependencies" checked
+
+4)  Install Leo.  There are two ways to do this.
+
+a)  The NEW way: Download Leo-version-number.pkg from
+
+    http://leo.sourceforge.net/
+
+Double-click Leo.pkg to install the Leo folder. I recommend that you install Leo
+in your home directory.
+
+b) The OLD way: Download Leo-version-number.zip:
+
+	http://leo.sourceforge.net/
+
+Unzip the contents into the desired directory by double-clicking the downloaded file.
+
+5) Run Leo by control-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
+with PythonLauncher.
+
+6) It is a good idea to set PythonLauncher as the default program to  
+open python scripts by clicking on "leo.py", choosing Get Info from the  
+Finder's File menu, and selecting "PythonLauncher" as the default  
+program to "Open With:"
+
+By clicking the "Change All..." button, all python scripts will be  
+opened with PythonLauncher.
+
+8) (optional) Download and install Pmw. (Leo now contains Pmw in the extensions folder).
+
+    http://pmw.sourceforge.net/
+
+Pmw must be installed in order to use the Settings panel.
+
+Drag the downloaded gzip file into
+
+/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages
+
+Double click on it to unzip and untar the file into a folder to make it
+available to Python
+
+Thanks to Randall Voth for these instructions.
+
+Running Leo
+-----------
+
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+
+Another way to run Leo is as follows::
+
+    cd <path-to-launchLeo.py>
+    python launchLeo.py
+
+Here are some tips that may make running Leo easier:
+
+**Linux**
+    The following shell script will allow you to open foo.leo files by typing leo foo::
+
+        #!/bin/sh 
+        python <leopath>launchLeo.py $1
+
+    where <leopath> is the path to the directory *containing* the leo directory. 
+
+**Windows**
+    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
+    You can also use a batch file.
+    Put the following .bat file in c:\\Windows::
+
+        cd <path-to-leo>
+        c:\python25\python <path-to-leo>launchLeo.py %1
+
+    where <path-to-leo> is the path to the directory *containing* the leo directory.
+
+    This opens the file specified by the first argument (%1).
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file ``.leoID.txt``. Leo attempts to create
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing ``.leoID.txt``.

@@ -851,96 +851,6 @@ Wrap Around
     the command reaches the bottom of the file.
     For reverse searches, the find or change command continues at the bottom of the file when
     the command reaches the top of the file.
-.. @+node:ekr.20050902160924: *4* Script search
-**Important**: Script buttons are easier to use than the script-oriented
-find/change commands described next. I recommend using script buttons whenever
-possible. See `Creating script buttons`_.
-You are not likely to need all the firepower that script-orient find/change commands,
-but it could save you lots of time for complex jobs.
-
-Leo's find panel contains the Script Search radio button and the Script
-Change checkbox. When the Script Search radio button is selected Leo treats the
-contents of the Search Text as a script to execute whenever any kind of Find
-command is executed. Similarly, when the Script Change checkbox is selected Leo
-treats the context of the Change Text as a script to execute whenever any kind
-of Change command is executed.
-
-Script-based find-change turns Leo's Find/Change panel into a platform for
-running scripts interactively. The script writer need not write code to control
-interactive searches.
-
-Here's how it works. Leo dedicates g.app.searchDict for
-communication between Leo and the search and change scripts. The search and
-change scripts may also use g.app.searchDict for communication between themselves.
-Leo sets g.app.searchDict["type"] to "find", "change", "findAll" or "changeAll" to
-indicate the kind of command being executed. Scripts may use all other entries
-in g.app.searchDict as they please.
-
-Here is what Leo does when the user presses buttons with Script Search enable:
-
-Find and Change, then Find buttons
-    Leo executes the find script once. Typically, the find script would traverse
-    the tree and highlight the found text or otherwise indicate to the user that
-    the find operation has succeeded. However, the script can do anything it
-    pleases.
-
-Find All button
-    Leo executes the find script repeatedly until g.app.searchDict["continue"] evaluates
-    to False. Initially there is no entry for g.app.searchDict["continue"], so the
-    find script must set g.app.searchDict["continue"] = True if it wants Leo call it again.
-
-Change button
-    Leo executes the change script once. Typically, the change script would change
-    the selected text. Usually the change script will compute the new value of body
-    text and call c.setBodyString(p,newText) to make that change permanent. 
-    To handle undo, the change script can call
-    c.frame.onBodyChanged(v,"Change",oldText=oldText).
-
-Change All button
-    Leo executes the change script repeatedly
-    until g.app.searchDict["continue"] evaluates to false.
-
-Most find and change scripts will ignore settings in the Find Panel like "whole
-word", "pattern match", and "reverse". However, these settings are available to
-the scripts via ivars such as c.whole_word_flag, etc. if desired.
-
-The initScriptFind script in LeoPy.leo makes it easy to set up script based searches:
-
-1. Put the following code in the root of a tree that will contain your script search::
-
-    # Initialize Leo's find panel using the named children of this node.
-    import leo.core.leoGlobals as g.
-    g.initScriptFind("Find script","Change script") # Second argument is optional.
-    # Start searching at the top.
-    c.selectPosition(c.rootPosition())
-
-2. Put the search script in a child node called "Find script" (no quotes).
-
-3. (Optional) Put the change script in a child node called "Change script"
-
-4.  Execute the code above.  Leo does the following:
-
-- Puts the body of the "Find script" into the find text of Leo's Find/Change dialog.
-- Puts the body of the "Change script" into the change text of Leo's Find/Change dialog.
-- Selects the Script Find radio button.
-- Selects the Script Change checkbox if the change script exists.
-- Selects the root of the entire outline.
-
-Presto! Leo is ready for a script search. **Note**: you could also consider creating a
-script button to set up complex find/change scripts.
-
-Here are some ideas for using script find/change.
-
--   Find and change scripts may use Python's re module.  For
-    example, the find script could set g.app.searchDict["m"] to the match object
-    returned by re's match method.  The change script would then compute the
-    result, change the text and set the undo info as usual.
-
--   Find and change scripts may operate on data outside any Leo outline.
-    For example, script-find scripts could traverse your file system.
-    Scripts could even pull data from the file system
-    into the outline so that you can see the effects of changes as the scripts
-    operate.
 .. @+node:EKR.20040524104904.134: *4* Go To Line Number
 The Go To Line Number command selects the locations in your outlines corresponding to a line in a external file.
 .. @+node:EKR.20040524104904.136: *4* Inserting the date and time
@@ -1031,7 +941,7 @@ highlights the range of matched characters without changing the cursor.
 -   The Contract Parent contracts the selected node's parent and selects the parent node.
 .. @+node:EKR.20040524104904.149: *4*  Marking nodes
 - The Mark Headline command marks a headline with a red marker near the leader
-characters.
+  characters.
 
 - The Unmark Headline command removes such a mark.
 

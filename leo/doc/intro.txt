@@ -75,7 +75,7 @@ The `Glossary`_ is also worth reading.
 .. _`Python`:           http://www.python.org/
 .. _`XML`:              http://en.wikipedia.org/wiki/XML
 
-.. _`Leo's Installation Guide`:     install.html
+.. _`Leo's Installation Guide`:     installing.html
 .. _`Using Leo's Commands`:         commands.html
 .. _`Scripting Leo with Python`:    scripting.html
 .. _`Customizing Leo`:              customizing.html

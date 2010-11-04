@@ -41,7 +41,7 @@ test/unitTest.leo contains many examples of using @test and @suite nodes.
 .. @+node:ekr.20070628083442.2: *3* @rst-no-head links
 .. Links
 
-.. _`run Leo in a console window`:      install.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`:      installing.html#running-leo-from-a-console-window
 .. @+node:ekr.20070628084351: *3* Using @test nodes
 **@test nodes** are nodes whose headlines start with @test. The unit test
 commands convert the body text of @test nodes into a unit test automatically.

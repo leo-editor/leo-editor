@@ -189,6 +189,10 @@ headline to contain a description of the url.
 
 - Improved the installation instructions.
 
+- Completed cascade-windows and minimize-all-windows commands.
+
+- Created head-to-prev-node and tail-to-next-node commands.
+
 .. @+node:ekr.20100129054823.11924: *3* Leo 4.7
 .. @+node:ekr.20101025080245.6088: *4* The one-node world
 Leo 4.7 accomplishes something I long thought to be impossible: the unification

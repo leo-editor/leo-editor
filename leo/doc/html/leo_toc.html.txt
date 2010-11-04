@@ -19,7 +19,7 @@ Contents:
 
    FAQ
    slides
-   install
+   installing
    intro
    outlines
    commands

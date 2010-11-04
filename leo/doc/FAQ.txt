@@ -41,8 +41,8 @@ This is Leo's Frequently Asked Questions document.
 
 .. ----- Relative links into Leo's documentation.
 
-.. _`Associating Leo with .leo Files`:  install.html#how-to-associate-leo-with-leo-files-on-windows
-.. _`How to install Leo on Windows`:    install.html#how-to-install-leo-on-windows
+.. _`Associating Leo with .leo Files`:  installing.html#how-to-associate-leo-with-leo-files-on-windows
+.. _`How to install Leo on Windows`:    installing.html#how-to-install-leo-on-windows
 
 .. _`CWEB mode`:                                directives.html#cweb-mode
 .. _command:                                    commands.html
@@ -53,8 +53,8 @@ This is Leo's Frequently Asked Questions document.
 .. _tutorial:                                   intro.html
 .. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
 .. _`History of Leo`:                history.html
-.. _`run Leo in a console window`:              install.html#running-leo-from-a-console-window
-.. _`console window`:                           install.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`:              installing.html#running-leo-from-a-console-window
+.. _`console window`:                           installing.html#running-leo-from-a-console-window
 
 .. ----- References to the glossary: the glossary now contains references to the tutorial.
 .. _`@asis`:                glossary.html#asis-trees

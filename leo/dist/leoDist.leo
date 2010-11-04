@@ -26,12 +26,12 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20101028125202.1496"><vh>Leo 4.8 a1</vh></v>
+<v t="ekr.20101104090957.1488"><vh>Leo 4.8 b1</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="ekr.20100225104302.1510"><vh>@asis ../../LICENSE.txt</vh></v>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="ekr.20101104090957.1490"><vh>@edit ../../bzr-manifest.txt</vh></v>
+<v t="EKR.20040519090846.2"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -39,21 +39,22 @@
 <v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
 <v t="ekr.20080825083632.263"><vh>Running Leo</vh></v>
 </v>
-<v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
-<v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
+<v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
+<v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
+<v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
-<v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
+<v t="ekr.20090905082405.1486" a="E"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20101104090957.1489"><vh>error</vh></v>
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
-<v t="ekr.20101027070126.1643"><vh>class nsiWriter</vh>
+<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
-<v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
-<v t="ekr.20101027070126.1664"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20101027070126.1664" a="E"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20101027070126.1665"><vh>delete...</vh></v>
 </v>
 <v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
@@ -91,7 +92,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -a1.
+2. Search for this suffix: -b1.
 
 3. Search for copyright
 
@@ -259,11 +260,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">@nocolor
+<t tx="EKR.20040519090846.9">Leo 4.8 beta 1                               November 8, 2010
 
-Leo 4.8 alpha 1                    October 29, 2010
-
-Leo 4.8 alpha 1 is now available at:
+Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -291,7 +290,7 @@ The highlights of Leo 4.8:
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
 - A better installer.
-- The usual round of bug fixes.
+- Many bug fixes.
 
 Links:
 ------
@@ -592,7 +591,7 @@ SectionEnd
 
 &lt;&lt; includes &gt;&gt;
 
-version = '4.8-a1' ##version
+version = '4.8-b1' ##version
 
 @others
 
@@ -606,7 +605,7 @@ zipFile2= abspath(join(top,'Leo-%s-temp.zip' % (version)))
 
 make()
 
-print('@button make: done')
+g.es_print('@button make-leo-zip: done')
 </t>
 <t tx="ekr.20090905082405.1487">import os
 import shutil
@@ -617,9 +616,15 @@ import time</t>
 
     # Copy files from the doc directory to the top directory.
     for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        path= abspath(join(docDir,theFile))
-        shutil.copy(path,top)
-        g.es_print('created in %s: %s' % (top,theFile))
+        src_path= abspath(join(docDir,theFile))
+        dst_path= abspath(join(top,theFile))
+        if g.os_path_exists(src_path):
+            shutil.copyfile(src_path,dst_path)
+            assert g.os_path_exists(dst_path)
+            g.es_print('created in %s: %s' % (top,theFile))
+        else:
+            error('not found: %s' % src_path)
+            return
 
     for z in (zipFile,zipFile2):
         if exists(z): unlink(z)
@@ -640,9 +645,10 @@ import time</t>
 
     # Unlink temp files.
     unlink(zipFile2)
-    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        path= abspath(join(top,z))
-        if exists(z): unlink(z)
+    if 0: # Don't unlink these!
+        for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+            path= abspath(join(top,z))
+            if exists(z): unlink(z)
 
     os.system('dir %s' % (top))
 </t>
@@ -707,26 +713,6 @@ Announcements
 - Announce to leo-editor.
 - Announce to comp.lang.python (use Forte Agent)
 - Register Leo at http://www.python.org/pypi?:action=submit_form</t>
-<t tx="ekr.20100225104302.1510">Copyright 1997-2010 by Edward K. Ream. All Rights Reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
-</t>
 <t tx="ekr.20101025095431.1517">@nocolor-node
 
 To do:
@@ -804,7 +790,7 @@ assert g.os_path_exists(manifest)
 
 nsi = nsiWriter()
 nsi.run(manifest)
-g.es_print('done')
+g.es_print('@button make-leo-nsi done')
 </t>
 <t tx="ekr.20101027070126.1643">class nsiWriter:
 
@@ -1090,11 +1076,9 @@ def deleteFiles (self,lines,deleteList):
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
-<t tx="ekr.20101028125202.1496">@nocolor
+<t tx="ekr.20101104090957.1488">Leo 4.8 beta 1                               November 8, 2010
 
-Leo 4.8 alpha 1                    October 29, 2010
-
-Leo 4.8 alpha 1 is now available at:
+Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -1122,7 +1106,7 @@ The highlights of Leo 4.8:
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
 - A better installer.
-- The usual round of bug fixes.
+- Many bug fixes.
 
 Links:
 ------
@@ -1131,6 +1115,10 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
+<t tx="ekr.20101104090957.1489">def error (s):
+
+    g.es_print('error: %s' % s,color='red')
 </t>
 </tnodes>
 </leo_file>
