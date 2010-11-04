@@ -29,7 +29,7 @@
 <v t="ekr.20101104090957.1488"><vh>Leo 4.8 b1</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20101104090957.1490"><vh>@edit ../../bzr-manifest.txt</vh></v>
 <v t="EKR.20040519090846.2"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
@@ -43,7 +43,7 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
-<v t="ekr.20090905082405.1486" a="E"><vh>@button make leo.zip</vh>
+<v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20101104090957.1489"><vh>error</vh></v>
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
@@ -614,17 +614,28 @@ import sys
 import time</t>
 <t tx="ekr.20090905082405.1489">def make():
 
+    # Make the manifest.
+    commands = (
+        r'cd %s' % (top),
+        r'bzr ls -R &gt;bzr-manifest.txt'
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+
     # Copy files from the doc directory to the top directory.
-    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        src_path= abspath(join(docDir,theFile))
-        dst_path= abspath(join(top,theFile))
-        if g.os_path_exists(src_path):
-            shutil.copyfile(src_path,dst_path)
-            assert g.os_path_exists(dst_path)
-            g.es_print('created in %s: %s' % (top,theFile))
-        else:
-            error('not found: %s' % src_path)
-            return
+    if 0: # No longer needed: these are in the root directory.
+        for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+            src_path= abspath(join(docDir,theFile))
+            dst_path= abspath(join(top,theFile))
+            if g.os_path_exists(src_path):
+                shutil.copyfile(src_path,dst_path)
+                assert g.os_path_exists(dst_path)
+                g.es_print('created in %s: %s' % (top,theFile))
+            else:
+                error('not found: %s' % src_path)
+                return
 
     for z in (zipFile,zipFile2):
         if exists(z): unlink(z)

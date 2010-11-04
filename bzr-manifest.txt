@@ -1,6 +1,7 @@
 .bzrignore
 INSTALL.TXT
-LICENSE.txt
+LICENSE.TXT
+Leo-4.8-b1.zip
 Makefile
 PKG-INFO.TXT
 README.TXT
@@ -1097,7 +1098,6 @@ leo/dist/nsi-install-files.txt
 leo/dist/nsi-uninstall-files.txt
 leo/doc/
 leo/doc/FAQ.txt
-leo/doc/INSTALL.TXT
 leo/doc/IpythonBridge.txt
 leo/doc/LICENSE.TXT
 leo/doc/LeoDocs.leo
