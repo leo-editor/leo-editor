@@ -76,14 +76,14 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
+<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>

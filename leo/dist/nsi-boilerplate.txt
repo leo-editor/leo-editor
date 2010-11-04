@@ -204,6 +204,7 @@ Section Uninstall
     ;; ReadRegStr $1 HKCR "${ext}" "backup_val"
     ;; StrCmp $1 "" 0 DeleteKeysAndFiles
     DeleteRegKey HKCR "${ext}"
+    DeleteRegKey HKCR "${name}File"
 
     ; Goto FinishUninstall
 ; DeleteKeysAndFiles:
