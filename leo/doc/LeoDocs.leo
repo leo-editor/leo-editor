@@ -136,8 +136,7 @@
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
-<v t="ekr.20100805165051.7175"
-expanded="ekr.20101025080245.5805,"><vh>@file whatsnew.txt</vh></v>
+<v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
@@ -149,10 +148,9 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" a="E"
-expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20101104173324.4901" a="E"><vh>To do here</vh>
+<v t="ekr.20101104173324.4901"><vh>To do here</vh>
 <v t="ekr.20101104173324.4906"><vh>Discuss installing qt in introductory slideshow</vh></v>
 <v t="ekr.20101104173324.4907"><vh>Installation problems with Qt</vh></v>
 </v>

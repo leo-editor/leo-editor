@@ -540,7 +540,7 @@ deprecated. The new_c key is also deprecated. Plugins should use the c key inste
 ============================= ======== =================================== =============================
 Event name (tag argument)     Stop?    When called                         Keys in keywords dict
 ============================= ======== =================================== =============================
-'after-auto'                           after each @auto file loaded        c,p (note 14)
+'after-auto'                           after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'               after creating any frame            c
 'after-redraw-outline'                 end of tree.redraw                  c (note 6)
 'before-create-leo-frame'              before frame.finishCreate           c
@@ -562,7 +562,6 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'command2'                             after  each command                 c,p,v,label (note 2)
 'create-optional-menus'                (note 8)                            c (note 8)
 'create-popup-menu-items'              in tree.OnPopup                     c,p,v,event (new)
-'destroy-all-global-windows'           (note 12)                           None
 'draw-outline-box'             yes     when drawing +- box                 tree,p,v,x,y
 'draw-outline-icon'            yes     when drawing icon                   tree,p,v,x,y
 'draw-outline-node'            yes     when drawing node                   tree,p,v,x,y
@@ -579,8 +578,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'headclick2'                           after  normal click in headline     c,p,v,event
 'headrclick1'                  yes     before right click in headline      c,p,v,event
 'headrclick2'                          after  right click in headline      c,p,v,event
-'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 13)
-'headkey2'                             after  headline keystrokes          c,p,v,ch (note 13)
+'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 12)
+'headkey2'                             after  headline keystrokes          c,p,v,ch (note 12)
 'hoist-changed'                        whenever the hoist stack changes    c
 'hypercclick1'                 yes     before control click in hyperlink   c,p,v,event
 'hypercclick2'                         after  control click in hyperlink   c,p,v,event
@@ -686,12 +685,9 @@ Event name (tag argument)     Stop?    When called                         Keys 
     removing the window from g.app.windowList. The hook code may remove the window
     from app.windowList to prevent g.app.closeLeoWindow from destroying the window.
 
-12. g.app.destroyAllGlobalWindows calls the 'destroy-all-global-windows' hook.
-    This hook gives plugins the chance to clean up after themselves when Leo shuts down.
+12. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
 
-13. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
-
-14. p is the new node (position) containing '@auto filename.ext'
+13. p is the new node (position) containing '@auto filename.ext'
 .. @+node:ekr.20071021102946: *4* Enabling idle time event handlers
 Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
 **g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
