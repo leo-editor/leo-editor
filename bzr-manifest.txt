@@ -1,6 +1,7 @@
 .bzrignore
 INSTALL.TXT
 LICENSE.TXT
+Leo-4.8-b1-temp.zip
 Leo-4.8-b1.zip
 Makefile
 PKG-INFO.TXT
@@ -2072,6 +2073,7 @@ leo/plugins/screenshots.pyc
 leo/plugins/script_io_to_body.py
 leo/plugins/scripts_menu.py
 leo/plugins/scrolledmessage.py
+leo/plugins/scrolledmessage.py.~1~
 leo/plugins/scrolledmessage.pyc
 leo/plugins/searchbar.py
 leo/plugins/searchbox.py
@@ -2164,6 +2166,7 @@ leo/test/test.leo.~2~
 leo/test/test.leo.~3~
 leo/test/testzip.zip
 leo/test/unitTest.leo
+leo/test/unitTest.leo.~1~
 leo/test/unittest/
 leo/test/unittest/at-asis-test.py
 leo/test/unittest/at-auto-line-number-test.py

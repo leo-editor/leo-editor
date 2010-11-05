@@ -30,7 +30,7 @@
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2"><vh>@asis ../../INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2" a="E"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -42,27 +42,29 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
-<v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
-<v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20101104090957.1489"><vh>error</vh></v>
+<v t="ekr.20090905082405.1486"><vh>@@button make leo.zip</vh>
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
-<v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20101027070126.1639"><vh>@button make leo.nsi</vh>
-<v t="ekr.20101027070126.1643" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo</vh>
+<v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20101027070126.1643" a="E"><vh>class LeoMaker</vh>
+<v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
-<v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
 <v t="ekr.20101027070126.1664" a="E"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20101027070126.1665"><vh>delete...</vh></v>
 </v>
+<v t="ekr.20101105103524.1491"><vh>make_manifest</vh></v>
+<v t="ekr.20101105103524.1493"><vh>make_zip</vh></v>
 <v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
 <v t="ekr.20101027070126.1667"><vh>printMissing</vh></v>
-<v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
 </v>
 <v t="ekr.20101027070126.1680"><vh>utils...</vh>
 <v t="ekr.20101027070126.1679"><vh>openFile</vh></v>
 <v t="ekr.20101027070126.1678"><vh>put</vh></v>
+<v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
 </v>
 </v>
@@ -76,14 +78,14 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
+<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -596,7 +598,7 @@ version = '4.8-b1' ##version
 
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
-root = join('Lib','site-packages','Leo-%s' % (version)) # Don't use abspath!
+# root = join('Lib','site-packages','Leo-%s' % (version)) # Don't use abspath!
 docDir  = abspath(join(g.app.loadDir,'..','doc'))
 top     = abspath(join(g.app.loadDir,'..','..'))
 zipFile = abspath(join(top,'Leo-%s.zip' % (version)))
@@ -608,20 +610,23 @@ g.es_print('@button make-leo-zip: done')
 </t>
 <t tx="ekr.20090905082405.1487">import os
 import shutil
+import string
 import struct
 import sys
 import time</t>
 <t tx="ekr.20090905082405.1489">def make():
 
-    # Make the manifest.
-    commands = (
-        r'cd %s' % (top),
-        r'bzr ls -R &gt;bzr-manifest.txt'
-    )
-
-    for z in commands:
-        print ('command: %s' % z)
-        os.system(z)
+    # Do **not* make the manifest
+    # **unless there is an automatic way of deleting ~?~ extensions.
+    if 0:
+        commands = (
+            r'cd %s' % (top),
+            r'bzr ls -R &gt;bzr-manifest.txt'
+        )
+    
+        for z in commands:
+            print ('command: %s' % z)
+            os.system(z)
 
     # Copy files from the doc directory to the top directory.
     if 0: # No longer needed: these are in the root directory.
@@ -633,11 +638,13 @@ import time</t>
                 assert g.os_path_exists(dst_path)
                 g.es_print('created in %s: %s' % (top,theFile))
             else:
-                error('not found: %s' % src_path)
+                g.error('not found: %s' % src_path)
                 return
 
     for z in (zipFile,zipFile2):
         if exists(z): unlink(z)
+        
+    root = join('Lib','site-packages','Leo-%s' % (version)) # Don't use abspath!
 
     commands = (
         r'cd %s' % (top),
@@ -662,7 +669,7 @@ import time</t>
 
     os.system('dir %s' % (top))
 </t>
-<t tx="ekr.20090905082405.1490">def unlink (fileName):
+<t tx="ekr.20090905082405.1490">def unlink (self,fileName):
 
     print ('removing: %s' % fileName)
     os.remove(fileName)
@@ -673,7 +680,6 @@ Testing:
     - Run all unit tests.
     - Run pylint-leo.bat.
 LeoDocs.leo:
-    **Update version on home page.
     - Remove top-level clones.
     - Select the readme node.
 LeoPlugins.leo:
@@ -691,16 +697,17 @@ Create the manifest:
     - Delete old distribution (.exe,.zip) files.
     - Create the manifest: bzr ls -R &gt;bzr-manifest.txt
     - review bzr-manifest file: remove .~?~ files.
+Create distribution files using to @button make scripts in leoDist.leo
+    - Make leo.zip (use the button)
+    - Make leo.nsi
+    - Create the installer:
+        - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
+        - or just double-click leo.nsi.
+    
 Create a bzr tag:
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push
-Create distribution files using to @button make scripts in leoDist.leo
-    - 1: Make leo.nsi
-    - 2: Create the installer:
-        - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
-        - or just double-click leo.nsi.
-    - 3: Make leo.zip (use the button)
 Test files
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
@@ -773,56 +780,61 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
 HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
     val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
 </t>
-<t tx="ekr.20101027070126.1639">'''Use bzr-manifest.txt to two "helper" files for leo.nsi:
+<t tx="ekr.20101027070126.1639">'''Make all variable Leo distribution files::
 
+        bzr-manifest.txt
         leo\dist\nsi-install-files.txt
         leo\dist\nsi-uninstall-files.txt
+        leo.zip.
 '''
 
-# **Important**: create bzr-manifest **before** running this script::
-#       cd to trunk
-#       bzr ls -R &gt;bzr-manifest.txt
+version = '4.8-b1' ##version
 
-
-import os,string,sys
+&lt;&lt; includes &gt;&gt;
 
 # Globals...
-join = g.os_path_finalize_join
-rootDir  = join(g.app.loadDir,'..','..')
-distDir =  join(g.app.loadDir,'..','dist')
-manifest = join(rootDir,'bzr-manifest.txt')
-install_fn   = join(distDir,'nsi-install-files.txt')
-uninstall_fn = join(distDir,'nsi-uninstall-files.txt')
+abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
-assert g.os_path_exists(manifest)
+# First.
+bzrRoot = join('Lib','site-packages','Leo-%s' % (version))
+    # Don't use abspath!
+distDir = abspath(join(g.app.loadDir,'..','dist'))
+rootDir = abspath(join(g.app.loadDir,'..','..')) # Same as top.
+
+# Next.
+docDir =        abspath(join(g.app.loadDir,'..','doc'))
+manifest_fn =   abspath(join(rootDir,'bzr-manifest.txt'))
+install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
+uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
+zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
+zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
+
+# assert g.os_path_exists(manifest)
 
 @others
 
-nsi = nsiWriter()
-nsi.run(manifest)
-g.es_print('@button make-leo-nsi done')
+LeoMaker().run()
+
+g.es_print('@button make-leo done')
 </t>
-<t tx="ekr.20101027070126.1643">class nsiWriter:
+<t tx="ekr.20101027070126.1643">class LeoMaker:
 
-    '''
-    A class to write two "helper" files for leo.nsi:
+    '''A class to make Leo distribution files:
 
-        leo\dist\nsi-install-files.txt
-        leo\dist\nsi-uninstall-files.txt
-
-    These are the only files that depend on the bzr manifest.
+    bzr-manifest.txt.
+    leo\dist\nsi-install-files.txt
+    leo\dist\nsi-uninstall-files.txt
+    leo.zip
     '''
 
     @others
 </t>
-<t tx="ekr.20101027070126.1662">def run (self,mainifest_fn):
+<t tx="ekr.20101027070126.1662">def run (self):
 
     '''The top-level logic.'''
 
-    # Create and filter the list of files from the manifest.
-    s = open(mainifest_fn).read()
-    lines = g.splitLines(s)
-    files = self.filterLines(lines)
+    self.make_manifest()
+    files = self.clean_manifest()
 
     # Compute the list of all the directories.
     dirs = self.directoryList(rootDir)
@@ -836,6 +848,7 @@ g.es_print('@button make-leo-nsi done')
     if not errors:
         self.create_install_files(dirs,dirDict,filesDict)
         self.create_uninstall_files(dirs,dirDict,filesDict)
+        self.make_zip()
 </t>
 <t tx="ekr.20101027070126.1663">def directoryList (self,rootDir):
 
@@ -869,6 +882,7 @@ g.es_print('@button make-leo-nsi done')
     # Remove blank lines, comments, and .pyc and .pyo files.
     lines = self.deleteBlankLines(lines)
     lines = self.deleteComments(lines)
+    lines = self.deleteTempFiles(lines)
     lines = self.deleteExt(lines,'.pyc')
     lines = self.deleteExt(lines,'.pyo')
     lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
@@ -910,6 +924,12 @@ def deleteExt (self,lines,ext):
 def deleteFiles (self,lines,deleteList):
 
     return [z for z in lines if not z in deleteList]
+
+def deleteTempFiles (self,lines):
+
+    for i in range(1,10):
+        lines = [z for z in lines if not z.endswith('~%s~' % i)]
+    return lines
 </t>
 <t tx="ekr.20101027070126.1666">def makeDicts (self,dirs,lines):
 
@@ -1126,9 +1146,54 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
-<t tx="ekr.20101104090957.1489">def error (s):
+<t tx="ekr.20101105103524.1491">def make_manifest(self):
 
-    g.es_print('error: %s' % s,color='red')
+    '''Make bzr-manifest.txt.'''
+
+    commands = (
+        r'cls',
+        r'cd %s' % (rootDir),
+        r'bzr ls -R &gt;bzr-manifest.txt'
+    )
+
+    for z in commands:
+        print('command: %s' % z)
+        os.system(z)
+</t>
+<t tx="ekr.20101105103524.1493">def make_zip(self):
+
+    for z in (zipFile,zipFile2):
+        if exists(z): self.unlink(z)
+
+    commands = (
+        r'cd %s' % (rootDir),
+        # This commit ensures the proper files are included in the distribution.
+        # r'bzr commit -m "commit doc files during make"',
+        r'bzr status',
+        r'bzr export "%s"' % (zipFile),
+        r'bzr export --root="%s" "%s"' % (bzrRoot,zipFile2),
+        # r'dir %s' % (rootDir),
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+</t>
+<t tx="ekr.20101105103524.1494">def clean_manifest(self):
+
+    # Create and filter the list of files from the manifest.
+    f = open(manifest_fn)
+    s = f.read()
+    f.close()
+    lines = g.splitLines(s)
+    files = self.filterLines(lines)
+
+    # Write the file back.
+    f = open(manifest_fn,'w')
+    f.write(''.join(lines))
+    f.close()
+
+    return files
 </t>
 </tnodes>
 </leo_file>
