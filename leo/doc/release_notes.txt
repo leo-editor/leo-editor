@@ -14209,7 +14209,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 #@+node:ekr.20101104091058.4975: *3* 4.8 b1
 @nocolor
 
-Leo 4.8 beta 1                               November 8, 2010
+Leo 4.8 beta 1                               November 5, 2010
 
 Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
@@ -14975,5 +14975,10 @@ function definition to the end of the previous sibling node.
 
 The tail-to-next-node command moves non-empty text following a class, method or
 function definition to the start of the next sibling node.
+#@+node:ekr.20101105082829.4917: *5* Put non-def code in their own node
+Fixed wishlist bug 670744: add a setting to put inter-def code in its own node
+
+Added support for @bool at_auto_separate_non_def_nodes option.
+The default (legacy mode) is False.
 #@-all
 #@-leo

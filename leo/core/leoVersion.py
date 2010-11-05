@@ -9,7 +9,7 @@
 #@@language python
 #@@tabwidth -4
 
-build = 3005
-date = "October 28, 2010"
-version = "4.8 a1"
+build = 3636
+date = "November 5, 2010"
+version = "4.8 b1"
 #@-leo

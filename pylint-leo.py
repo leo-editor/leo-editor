@@ -111,21 +111,23 @@ tkPass = getTkPass()
 #@-<< defines >>
 
 recentCoreList = (
-    'leoEditCommands',
+    'leoCache',
+    'leoImport',
 )
 
 recentPluginsList = (
+    # 'screenshots',
     # 'tkGui','codewisecompleter',
-    'baseNativeTree','contextmenu',
-    'mod_scripting','plugins_menu','projectwizard',
-    'trace_gc_plugin',
+    # 'baseNativeTree','contextmenu',
+    # 'mod_scripting','plugins_menu','projectwizard',
+    # 'trace_gc_plugin',
 )
 
 tables_table = (
-    # (recentCoreList,'core'),
+    (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    (coreList,'core'),
-    (guiPluginsTable,'plugins'),
+    # (coreList,'core'),
+    # (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),

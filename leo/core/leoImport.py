@@ -2308,7 +2308,7 @@ class baseScannerClass (scanUtility):
         parent = self.adjustParent(parent,headline)
 
         if trace:
-            g.trace('parent',parent.h)
+            g.trace('parent',parent)
             if verbose:
                 g.trace('**body1...\n',body1)
                 g.trace('**body2...\n',body2)
@@ -3719,9 +3719,9 @@ class pythonScanner (baseScannerClass):
                 if trace and verbose: g.trace(g.get_line(s,i))
                 backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
                 if backslashNewline:
-                   # An underindented line, including docstring,
-                   # does not end the code block.
-                   i += 1 # 2010/11/01
+                    # An underindented line, including docstring,
+                    # does not end the code block.
+                    i += 1 # 2010/11/01
                 else:
                     i = g.skip_nl(s,i)
                     j = g.skip_ws(s,i)

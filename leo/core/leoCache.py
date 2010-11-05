@@ -109,10 +109,6 @@ class cacher:
 
     def clearAllCaches (self):
 
-        # Clear the global cacher.
-        if g.app.db:
-            g.app.db.clearCache()
-
         # Clear the cachers *only* for all open windows.
         # This is much safer than tryting to Kill all db's.
         for frame in g.windows():

@@ -81,7 +81,7 @@ You can drag files into Leo.  Leo will create \@file or \@auto nodes if appropri
 If the body text is non-empty, it is assumed to contain the URL.
 This is a remarkably important improvement--it allows the
 headline to contain a description of the url.
-.. @+node:ekr.20101104173324.5141: *4* New commands
+.. @+node:ekr.20101104173324.5141: *4* New & improved commands
 - Added code-to-rst command.
 
 - Completed cascade-windows and minimize-all-windows commands.
@@ -166,6 +166,11 @@ Three new settings apply to the abbreviation commands:
   window.  This is especially useful with the ``screen-shot`` command-line argument::
 
     --window-size=600x900  # <height> x <width>, in pixels.
+
+- Added support for @bool at_auto_separate_non_def_nodes option.
+
+    When true, the @auto file importers put inter-def code in their own node.
+    The default (legacy mode) is False.
 .. @+node:ekr.20101025080245.5985: *4* Other improvements
 .. _`Reorganized`: http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
 

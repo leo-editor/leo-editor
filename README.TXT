@@ -1,4 +1,4 @@
-Leo 4.8 beta 1                               November 8, 2010
+Leo 4.8 beta 1                               November 5, 2010
 
 Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106

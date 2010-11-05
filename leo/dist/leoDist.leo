@@ -76,14 +76,14 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
+<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -259,7 +259,7 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.8 beta 1                               November 8, 2010
+<t tx="EKR.20040519090846.9">Leo 4.8 beta 1                               November 5, 2010
 
 Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
