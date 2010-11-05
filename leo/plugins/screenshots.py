@@ -4,13 +4,37 @@
 #@+node:ekr.20100908115707.5554: ** << docstring >>
 """
 The screenshots.py plugin
-============================
+=========================
 
-This plugin creates slides from @slide nodes in
-@slideshow trees. If an @slide node contains
-an @screenshot tree, the plugin creates a
-screenshot and links the screenshot into the
-slide.
+This plugin defines four commands. The
+apropos-slides command prints this message to
+Leo's log pane. The slide-show-info prints the
+settings in effect.
+
+The make-slide and make-slide-show commands,
+collectively called **slide commands**, create
+collections of slides from **@slideshow** trees
+containing **@slide** nodes.
+
+Slides may link to screenshots. The slide commands
+can generate screenshots from **@screenshot-tree**
+nodes, but this feature has proven to be clumsy
+and inflexible. It is usually more convenient to
+use screenshots taken with a program such as Wink.
+The **@button meld** script in LeoDocs.leo creates
+references to externally-generated screenshots
+within @slide nodes.
+
+\@slide nodes may contain **@url nodes**. These @url
+nodes serve two purposes. First, they allow you to
+see various files (slides, initial screenshots,
+working files and final screenshots). Second,
+these @url nodes guide the meld script and the
+four commands defined by this plugin (see below).
+By inserting or deleting these @url nodes you (or
+your scripts) can customize how the commands (and
+meld) work. In effect, the @url nodes become
+per-slide settings.
 
 Prerequisites
 -------------
@@ -24,16 +48,9 @@ PIL (Optional but highly recommended)
   The Python Imaging Library,
   http://www.pythonware.com/products/pil/
 
-Commands
---------
-
-This plugin defines four commands. The make-slide
-and make-slide-show commands create slides and
-slide shows (collections of slides) from
-@slideshow trees and @slide nodes. The
-apropos-slides command prints this message to
-Leo's log pane. The slide-show-info prints the
-settings in effect.
+Wink (Optional)
+  A program that creates slideshows and slides.
+  http://www.debugmode.com/wink/
 
 Summary
 -------
@@ -52,7 +69,43 @@ Summary
   Specifies the contents of the screenshot.
 
 **Options** are child nodes of @slideshow or
-@slide nodes.  See the Options section below.
+\@slide nodes that control the make-slide and
+make-slide-show commands. See the Options section
+below.
+
+The make-slide and make-slide-show commands
+create the following @url nodes as children
+of each @slide node:
+
+@url built slide
+  Contains the absolute path to the final slide in
+  the _build/html subfolder of the slideshow
+  folder. If present, this @url node completely
+  disables rebuilding the slide.
+
+@url screenshot
+  Contains the absolute path to the original
+  screenshot file. If present, this @url node
+  inhibits taking the screenshot.
+
+@url working file
+  Contains the absolute path to the working file.
+  If present, this @url node disables taking the
+  screenshot, creating the working file. The final
+  output file will be regenerated if the working
+  file is newer than the final output file.
+
+@url final output file
+  Contains the absolute path to the final output
+  file.
+
+Thus, to completely recreate an @slide node, you
+must delete any of the following nodes that appear
+as its children::
+
+    @url screenshot
+    @url working file
+    @url built slide
 
 Making slides
 -------------
@@ -61,16 +114,6 @@ For each slide, the make-slide and make-slide-show
 commands do the following:
 
 1. Create a slide.
-
-  Suppose the @slide node is the
-  n'th @slide node in the @slideshow tree whose
-  sanitized name is 'name'. The name of the
-  slide's rST source is name-n.html.txt. The name
-  of the slide in the sphinx _build folder is
-  name-n.html. The name of the working file is
-  name-n.svg and the name of the final screenshot
-  is name-n.png, unless overridden by the @output
-  option.
 
   If the @slide node contains an @screenshot tree,
   the plugin appends an ``.. image::`` directive
@@ -83,6 +126,10 @@ commands do the following:
   The plugin creates a screenshot for an @slide
   node only if the @slide node contains an
   @screenshot node as a direct child.
+
+  **Important**: this step has largely been
+  superseded by the ``@button meld`` script in
+  LeoDocs.leo.
 
   Taking a screenshot involves the following steps:
 
@@ -130,56 +177,22 @@ commands do the following:
 
 4. Create url nodes.
 
-  The slideshow commands create @url nodes as children
-  of each @slide node.  These nodes serve two purposes:
+  Depending on options, and already-existing @url
+  nodes, the make-slide and make-slide-show
+  commands may create one or more of the following
+  \@url nodes::
 
-  a) They allow you to access the files created by
-     these commands.
-
-  b) They inhibit all or part of the build process
-     the next time you the slideshow commands.
-     This is usually what you want, but if you
-     want to rerun all or part build process, you
-     can remove some or all of these @url nodes.
-
-Generated @url nodes
-~~~~~~~~~~~~~~~~~~~~
-
-@url built slide
-  Contains the absolute path to the final slide in
-  the _build/html subfolder of the slideshow
-  folder. If present, this @url node completely
-  disables rebuilding the slide.
-
-@url screenshot
-  Contains the absolute path to the original
-  screenshot file. If present, this @url node
-  inhibits taking the screenshot.
-
-@url working file
-  Contains the absolute path to the working file.
-  If present, this @url node disables taking the
-  screenshot, creating the working file. The final
-  output file will be regenerated if the working
-  file is newer than the final output file.
-
-@url final output file
-  Contains the absolute path to the final output
-  file.
-
-In short, to completely recreate a slide, you must
-delete the following nodes::
-
-    @url screenshot
-    @url working file
     @url built slide
+    @url screenshot
+    @url working file 
+    @url final output file
 
 Options and settings
 --------------------
 
 You specify options in the headlines of nodes.
 **Global options** appear as direct children of
-@slideshow nodes and apply to all @slide nodes
+\@slideshow nodes and apply to all @slide nodes
 unless overridden by a local option. **Local
 options** appear as direct children of an @slide
 node and apply to only to that @slide node.
@@ -223,12 +236,12 @@ direct child of an @slide node.
 
   If neither an @title or @title_pattern option
   node applies, the title is the headline of the
-  @slide node. If this is empty, the default
+  \@slide node. If this is empty, the default
   pattern is::
 
     '%(slideshow_name)s:%(slide_number)s'
 
-#@@verbose = True/False
+\@verbose = True/False
   True (or true or 1):  generate informational message.
   False (or false or 0): suppress informational messages.
 
@@ -289,17 +302,26 @@ Settings
   The full path to the Inkscape program.   
 
 File names
-----------------------------------
+----------
 
 Suppose the @slide node is the n'th @slide node in
-the @slideshow tree. The following files will be
-created in (relative to) the slideshow directory:
+the @slideshow tree whose sanitized name is
+'name'. The following files will be created in
+(relative to) the slideshow directory::
 
-- slide-n.html.txt: the slide's rST source.
-- screenshot-n.png: the original screenshot.
-- screenshot-n.svg: the working file.
-- slide-n.png: the final output file.
-- _build/html/slide-n.html: the final slide.
+    slide-n.html.txt:   the slide's rST source.
+    screenshot-n.png:   the original screenshot.
+    screenshot-n.svg:   the working file.
+    slide-n.png:        the final output file.
+    _build/html/slide-n.html: the final slide.
+
+To do
+-----
+
+It would be possible to make @button meld a
+command defined by this plugin. To do this, the
+plugin would need to support options presently set
+"by hand" in the @button meld script.
 
 """
 

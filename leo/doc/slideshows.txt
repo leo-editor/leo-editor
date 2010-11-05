@@ -1685,6 +1685,8 @@ Here, we see the a "startup" headline and a "workbook" headline.
 .. @+node:ekr.20101021092135.5431: **  Slideshows to-do
 @nocolor-node
 
+** Discuss installing qt in introductory slideshow
+
 - Top ten coolest features.
 - Tips!
 - @button nodes.
@@ -2294,7 +2296,15 @@ other ways to do similar moves.
 .. @+node:ekr.20101016043116.5344: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png
 .. @+node:ekr.20101014110348.5338: ** @button meld
-'''Meld Wink slides into an @slideshow folder.'''
+'''Meld Wink slides into an @slideshow folder.
+
+   Copy screenshot files from the wink_dir to slideshow_dir, numbering
+   the destination files to reflect "holes" created by @no-screenshot
+   nodes.
+
+   This script carefully checks that the number of screenshot files
+   matches the number of screenshots referenced by the @slide nodes.
+   No copying takes place if the numbers are not as expected.'''
 
 @language python
 
