@@ -613,17 +613,12 @@ LeoDist.leo:
     - Update readme.txt
     - Check 'INSTALL.TXT'
     - Check 'PKG-INFO.TXT'
-Create the manifest:
-    - Delete old distribution (.exe,.zip) files.
-    - Create the manifest: bzr ls -R &gt;bzr-manifest.txt
-    - review bzr-manifest file: remove .~?~ files.
-Create distribution files using to @button make scripts in leoDist.leo
-    - Make leo.zip (use the button)
-    - Make leo.nsi
+Create distribution files:
+    - Run make-leo button in leoDist.leo.
+        - This creates bzr-manifest.txt and all other variable distribution files.
     - Create the installer:
         - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
         - or just double-click leo.nsi.
-    
 Create a bzr tag:
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
