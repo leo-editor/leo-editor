@@ -14237,6 +14237,7 @@ The highlights of Leo 4.8:
   These fix several long-standing data-related problems.
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
+- Improved autocompletion: Ctrl-space starts a one-time completion.
 - A better installer.
 - Many bug fixes.
 
