@@ -1,6 +1,6 @@
 
 #@+leo-ver=5-thin
-#@+node:leohag.20081204085551.1: * @file scrolledmessage.py
+#@+node:ekr.20101104190737.5629: * @file scrolledmessage.py
 #@@first
 
 #@+<< docstring >>
@@ -407,9 +407,8 @@ class ScrolledMessageDialog(object):
             self.parent.onDialogClosing(self)
             self.dock.destroy()
 
-            print(self.dock)
-            print(self.ui)
-
+            #print(self.dock)
+            #print(self.ui)
     #@+node:leohag.20081203143921.10: *3* findChkControls
     def findChkControls(self):
         s = 'leo_chk_'; ls = len(s)

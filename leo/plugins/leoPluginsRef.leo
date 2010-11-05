@@ -10,7 +10,6 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20041211035618"><vh>Startup</vh>
-<v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
 <v t="ekr.20050328101812.1"><vh>@bool http_active = False</vh></v>
@@ -22,14 +21,14 @@
 </v>
 </v>
 <v t="ekr.20060924180348"><vh>buttons</vh>
-<v t="ekr.20060109114710"><vh>@@button settings.leo</vh></v>
-<v t="ekr.20060827163237"><vh>@@button scripts.leo</vh></v>
 <v t="ekr.20050724100334"><vh>@@button Beautify</vh></v>
-<v t="ekr.20051025144116"><vh>@@button Spell</vh></v>
+<v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 <v t="ekr.20050819055746"><vh>@@button Save</vh></v>
+<v t="ekr.20060827163237"><vh>@@button scripts.leo</vh></v>
+<v t="ekr.20060109114710"><vh>@@button settings.leo</vh></v>
+<v t="ekr.20051025144116"><vh>@@button Spell</vh></v>
 </v>
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
-<v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 <v t="ekr.20100102164842.5328"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
@@ -43,7 +42,7 @@
 </v>
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -315,8 +314,7 @@
 </v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
 </v>
-<v t="EKR.20040517080049" a="E"><vh>Files</vh>
-<v t="tbrown.20101101144917.14759" a="E"><vh>@file bzr_qcommands.py</vh></v>
+<v t="EKR.20040517080049"><vh>Files</vh>
 <v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
@@ -374,7 +372,7 @@
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="mork.20041020082242.1"><vh>@file base64Packager.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
@@ -830,8 +828,6 @@
 <v t="rogererens.20041013082304"><vh>@file UNL.py</vh></v>
 </v>
 <v t="ekr.20040915073259"><vh>Windows</vh>
-<v t="tbrown.20090322083202.1"><vh>NOTE: todo.py is qt verion of cleo.py (which is tk)</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="ekr.20050227071948"><vh> cleo</vh>
 <v t="ekr.20050227072121"><vh>Notes</vh>
 <v t="ekr.20050227071948.1"><vh>TODO</vh>
@@ -872,16 +868,19 @@
 <v t="ekr.20050303080042.1"><vh>@nosent footprints.ini</vh></v>
 <v t="pap.20041020001240"><vh>@file footprints.py</vh></v>
 </v>
+<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
+<v t="ekr.20060506070443.1"><vh>@file detect_urls.py</vh></v>
 <v t="mork.20041018162155.1"><vh>@file EditAttributes.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="mork.20041022155742.1"><vh>@file nodebar.py</vh></v>
+<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
+<v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
+<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="ekr.20040915075530"><vh>@file UASearch.py</vh></v>
 <v t="ekr.20040831122004"><vh>@file UniversalScrolling.py</vh></v>
 <v t="ekr.20040831115238"><vh>@file URLloader.py</vh></v>
-<v t="ekr.20060506070443.1"><vh>@file detect_urls.py</vh></v>
-<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
-<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
+<v t="tbrown.20090322083202.1"><vh>NOTE: todo.py is qt verion of cleo.py (which is tk)</vh></v>
 </v>
 </v>
 </vnodes>
@@ -8420,7 +8419,6 @@ if not ok:
 <t tx="ekr.20061023141638"></t>
 <t tx="ekr.20061023142737"></t>
 <t tx="ekr.20061023142737.1"></t>
-<t tx="ekr.20070718131416"></t>
 <t tx="ekr.20071006112739"></t>
 <t tx="ekr.20071029090815"># This plugins has been disabled until it can be rewritten to handle @enabled-plugins nodes.</t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
