@@ -642,8 +642,10 @@ Announcements
 - Update version number on web site.
 - Announce to SourceForge itself.
 - Announce to leo-editor.
-- Announce to comp.lang.python (use Forte Agent)
-- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
+- Announce to comp.lang.python: google comp.lang.python
+- Register Leo at http://www.python.org/pypi?:action=submit_form
+- Twitter
+- My blog</t>
 <t tx="ekr.20101025095431.1517">@nocolor-node
 
 - There is a problem with the desktop shortcut.
