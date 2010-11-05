@@ -4017,7 +4017,7 @@ class rstScanner (baseScannerClass):
 
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
-        return body
+        return body1,body2
     #@+node:ekr.20090512080015.5797: *4* computeSectionLevel
     def computeSectionLevel (self,ch,kind):
 
