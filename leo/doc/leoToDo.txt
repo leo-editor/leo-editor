@@ -1,6 +1,22 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
+#@+node:ekr.20101104191857.5820: ** Idea: presentation tool
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+
+Ville:
+
+Create one QWebView window, zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html,
+and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and
+leo would be in your private computer. You can easily edit the text, or find new
+interesting slides to present in privacy of your own screen.
+
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 @nocolor-node
 

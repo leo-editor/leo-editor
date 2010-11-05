@@ -1726,6 +1726,7 @@ class baseScannerClass (scanUtility):
         self.c = c = ic.c
 
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
+        self.atAutoSeparateNonDefNodes = c.config.getBool('at_auto_separate_non_def_nodes',default=False)
         self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
         self.codeEnd = None
             # The character after the last character of the class, method or function.
@@ -2063,10 +2064,7 @@ class baseScannerClass (scanUtility):
                 '%s %s does not end with a newline; one will be added\n%s' % (
                 self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
-            # g.trace(repr(s[sigStart:codeEnd]))
-            # g.pdb()
-
-        return body
+        return body1,body2
     #@+node:ekr.20090513073632.5737: *4* createDeclsNode
     def createDeclsNode (self,parent,s):
 
@@ -2292,7 +2290,7 @@ class baseScannerClass (scanUtility):
         '''Create a node of parent for a function defintion.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
 
         # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
 
@@ -2305,13 +2303,25 @@ class baseScannerClass (scanUtility):
             g.trace('Can not happen: no sigId')
             headline = 'unknown function'
 
-        body = self.computeBody(s,start,sigStart,codeEnd)
+        body1,body2 = self.computeBody(s,start,sigStart,codeEnd)
+        body = body1 + body2
+        parent = self.adjustParent(parent,headline)
 
         if trace:
             g.trace('parent',parent.h)
-            if verbose: g.trace('**body...\n',body)
+            if verbose:
+                g.trace('**body1...\n',body1)
+                g.trace('**body2...\n',body2)
 
-        parent = self.adjustParent(parent,headline)
+        # 2010/11/04: Fix wishlist bug 670744.
+        if self.atAutoSeparateNonDefNodes:
+            if body1.strip():
+                if trace: g.trace('head',body1)
+                line1 = g.splitLines(body1.lstrip())[0]
+                line1 = line1.strip() or 'non-def code'
+                self.createFunctionNode(line1,body1,parent)
+                body = body2
+
         self.lastParent = self.createFunctionNode(headline,body,parent)
 
         # Exit the function: restore the function info.
@@ -2323,7 +2333,6 @@ class baseScannerClass (scanUtility):
 
         self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
             self.rootLine,self.language,self.tab_width))
-    #@+node:ekr.20090122201952.5: *4* setBodyString
     #@+node:ekr.20070703122141.88: *4* undentBody
     def undentBody (self,s,ignoreComments=True):
 
