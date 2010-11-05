@@ -42,9 +42,6 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
-<v t="ekr.20090905082405.1486"><vh>@@button make leo.zip</vh>
-<v t="ekr.20090905082405.1489"><vh>make</vh></v>
-</v>
 <v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
 <v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
@@ -64,7 +61,7 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
-<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo</vh>
+<v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20101027070126.1643" a="E"><vh>class LeoMaker</vh>
 <v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
@@ -586,89 +583,12 @@ SectionEnd
     result = [self.indent(z) for z in result]
     return ''.join(result)
 </t>
-<t tx="ekr.20090905082405.1486">'''Create leo.zip using bzr export'''
-
-# To do: Leo bitmap.
-
-&lt;&lt; includes &gt;&gt;
-
-version = '4.8-b1' ##version
-
-@others
-
-abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
-
-# root = join('Lib','site-packages','Leo-%s' % (version)) # Don't use abspath!
-docDir  = abspath(join(g.app.loadDir,'..','doc'))
-top     = abspath(join(g.app.loadDir,'..','..'))
-zipFile = abspath(join(top,'Leo-%s.zip' % (version)))
-zipFile2= abspath(join(top,'Leo-%s-temp.zip' % (version)))
-
-make()
-
-g.es_print('@button make-leo-zip: done')
-</t>
 <t tx="ekr.20090905082405.1487">import os
 import shutil
 import string
 import struct
 import sys
 import time</t>
-<t tx="ekr.20090905082405.1489">def make():
-
-    # Do **not* make the manifest
-    # **unless there is an automatic way of deleting ~?~ extensions.
-    if 0:
-        commands = (
-            r'cd %s' % (top),
-            r'bzr ls -R &gt;bzr-manifest.txt'
-        )
-    
-        for z in commands:
-            print ('command: %s' % z)
-            os.system(z)
-
-    # Copy files from the doc directory to the top directory.
-    if 0: # No longer needed: these are in the root directory.
-        for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-            src_path= abspath(join(docDir,theFile))
-            dst_path= abspath(join(top,theFile))
-            if g.os_path_exists(src_path):
-                shutil.copyfile(src_path,dst_path)
-                assert g.os_path_exists(dst_path)
-                g.es_print('created in %s: %s' % (top,theFile))
-            else:
-                g.error('not found: %s' % src_path)
-                return
-
-    for z in (zipFile,zipFile2):
-        if exists(z): unlink(z)
-        
-    root = join('Lib','site-packages','Leo-%s' % (version)) # Don't use abspath!
-
-    commands = (
-        r'cd %s' % (top),
-        r'bzr status',
-        # This commit ensures the proper files are included in the distribution.
-        # r'bzr commit -m "commit doc files during make"',
-        r'bzr status',
-        r'bzr export "%s"' % (zipFile),
-        r'bzr export --root="%s" "%s"' % (root,zipFile2),
-    )
-
-    for z in commands:
-        print ('command: %s' % z)
-        os.system(z)
-
-    # Unlink temp files.
-    unlink(zipFile2)
-    if 0: # Don't unlink these!
-        for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-            path= abspath(join(top,z))
-            if exists(z): unlink(z)
-
-    os.system('dir %s' % (top))
-</t>
 <t tx="ekr.20090905082405.1490">def unlink (self,fileName):
 
     print ('removing: %s' % fileName)
@@ -732,15 +652,11 @@ Announcements
 - Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20101025095431.1517">@nocolor-node
 
-To do:
-    There is a problem with the desktop shortcut.
-    Make the License look better.  It can be an .rtf file.
-    Add description sections.
+- There is a problem with the desktop shortcut.
 
-Done:
-** Switched to new interface: it is *much* better.
-- Test desktop shortcut.  It opens Python 2.6 as expected.
-- Make sure the uninstaller gets deleted.
+- Make the License look better.  It can be an .rtf file.
+
+- Add description sections.
 </t>
 <t tx="ekr.20101025095431.1518">@nocolor-node
 
