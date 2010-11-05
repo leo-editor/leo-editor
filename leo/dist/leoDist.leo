@@ -61,9 +61,9 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
-<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo</vh>
+<v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20101027070126.1643" a="E"><vh>class LeoMaker</vh>
+<v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
 <v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
@@ -619,16 +619,15 @@ Create distribution files:
     - Create the installer:
         - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
         - or just double-click leo.nsi.
-Create a bzr tag:
-    - bzr tag leo-x-y
-    - bzr commit --unchanged -m "added tag"
-    - bzr push
 Test files
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
     ** Open leoPlugins.leo: does it open without errors?
     - Run all unit tests in the installed folder, with the installed Leo.
-
+Create a bzr tag:
+    - bzr tag leo-x-y
+    - bzr commit --unchanged -m "added tag"
+    - bzr push
 @color
 # **** Scan all folders &amp; files before uploading.
 @nocolor
