@@ -61,7 +61,7 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
-<v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
+<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20101027070126.1643" a="E"><vh>class LeoMaker</vh>
 <v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
@@ -69,7 +69,7 @@
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
-<v t="ekr.20101027070126.1664" a="E"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20101027070126.1664"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20101027070126.1665"><vh>delete...</vh></v>
 </v>
 <v t="ekr.20101105103524.1491"><vh>make_manifest</vh></v>
@@ -77,7 +77,7 @@
 <v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
 <v t="ekr.20101027070126.1667"><vh>printMissing</vh></v>
 </v>
-<v t="ekr.20101027070126.1680"><vh>utils...</vh>
+<v t="ekr.20101027070126.1680" a="E"><vh>utils...</vh>
 <v t="ekr.20101027070126.1679"><vh>openFile</vh></v>
 <v t="ekr.20101027070126.1678"><vh>put</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
@@ -589,10 +589,10 @@ import string
 import struct
 import sys
 import time</t>
-<t tx="ekr.20090905082405.1490">def unlink (self,fileName):
+<t tx="ekr.20090905082405.1490">def unlink (self,fn):
 
-    print ('removing: %s' % fileName)
-    os.remove(fileName)
+    print('command: unlink: %s' % fn)
+    os.remove(fn)
 </t>
 <t tx="ekr.20100202061222.1494">@nocolor-node
 
@@ -1089,6 +1089,10 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
     for z in commands:
         print ('command: %s' % z)
         os.system(z)
+
+    # Removed the temporary zip file.
+    if exists(zipFile2):
+        self.unlink(zipFile2)
 </t>
 <t tx="ekr.20101105103524.1494">def clean_manifest(self):
 
