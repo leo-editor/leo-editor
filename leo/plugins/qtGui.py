@@ -7393,6 +7393,22 @@ class leoKeyEvent:
         stroke = stroke.replace('\t','Tab')
         tkKey = tkKey.replace('\t','Tab')
 
+        # Patch provided by resi147.
+        # See the thread: special characters in MacOSX, like '@'.
+        if sys.platform.startswith('darwin'):
+           darwinmap = {
+               'Alt-Key-5': '[',
+               'Alt-Key-6': ']',
+               'Alt-Key-7': '|',
+               'Alt-slash': '\\',
+               'Alt-Key-8': '{',
+               'Alt-Key-9': '}',
+               'Alt-e': '€',
+               'Alt-l': '@',
+           }
+           if tkKey in darwinmap:
+               tkKey = stroke = darwinmap[tkKey]
+
         # The main ivars.
         self.actualEvent = event
         self.c      = c
@@ -7606,6 +7622,7 @@ class leoQtEventFilter(QtCore.QObject):
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+                # g.trace(repr(ret))
                 c.outerUpdate()
             else:
                 if trace and traceKey and verbose:

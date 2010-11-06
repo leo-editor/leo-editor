@@ -1709,5 +1709,68 @@ if 0:
     w.setOpenExternalLinks(True)
 
     http://webpages.charter.net/edreamleo/front.html
+#@+node:ekr.20101106154117.3780: ** Leo rc1
+#@+node:ekr.20101106154117.3781: *3* Support for MacOS special keys
+#@+node:ekr.20081121105001.514: *4* class leoKeyEvent
+class leoKeyEvent:
+
+    '''A wrapper for wrapper for qt events.
+
+    This does *not* override leoGui.leoKeyevent because
+    it is a separate class, not member of leoQtGui.'''
+
+    def __init__ (self,event,c,w,ch,tkKey,stroke):
+
+        trace = False and not g.unitTesting
+
+        if trace: print(
+            'leoKeyEvent.__init__: ch: %s, tkKey: %s, stroke: %s' % (
+                repr(ch),repr(tkKey),repr(stroke)))
+
+        # Last minute-munges to keysym.
+        if tkKey in ('Return','Tab','Escape',): # 'Ins'
+            ch = tkKey
+        stroke = stroke.replace('\t','Tab')
+        tkKey = tkKey.replace('\t','Tab')
+
+        # Patch provided by resi147.
+        # See the thread: special characters in MacOSX, like '@'.
+        if sys.platform.startswith('darwin'):
+           darwinmap = {
+               'Alt-Key-5': '[',
+               'Alt-Key-6': ']',
+               'Alt-Key-7': '|',
+               'Alt-slash': '\\',
+               'Alt-Key-8': '{',
+               'Alt-Key-9': '}',
+               'Alt-e': '€',
+               'Alt-l': '@',
+           }
+           if tkKey in darwinmap:
+               tkKey = stroke = darwinmap[tkKey]
+
+        # The main ivars.
+        self.actualEvent = event
+        self.c      = c
+        self.char   = ch
+        self.keysym = ch
+        self.stroke = stroke
+        self.w = self.widget = w # A leoQtX object
+
+        # Auxiliary info.
+        self.x      = hasattr(event,'x') and event.x or 0
+        self.y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        self.y_root = hasattr(event,'y_root') and event.y_root or 0
+
+        # g.trace('qt.leoKeyEvent: %s' % repr(self))
+
+    def __repr__ (self):
+
+        return 'qtGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+
+        # return 'qtGui.leoKeyEvent: stroke: %s, char: %s, keysym: %s' % (
+            # repr(self.stroke),repr(self.char),repr(self.keysym))
 #@-all
 #@-leo
