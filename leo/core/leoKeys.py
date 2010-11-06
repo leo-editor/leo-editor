@@ -4032,6 +4032,8 @@ class keyHandlerClass:
                 s = '%s+%s' % ('+'.join(fields[:-1]),last)
             else:
                 s = last
+        if s.endswith(' '):
+            s = s[:-1]+'Space' # 2010/11/06
         # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
     #@+node:ekr.20061031131434.193: *3* States
