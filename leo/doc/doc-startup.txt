@@ -218,8 +218,15 @@ c.spellCommands.openSpellTab()
 test.leo contains an @button windpdb node.
 Select the test to be debugged, then press the winpdb button or do <Alt>x winpdb<return>.
 This way is essentially the same as using the debug command, though the code is slightly different.
-#@+node:ville.20090520232034.6345: *3* @button rst-preview
-g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)
+#@+node:ville.20090520232034.6345: *3* @button preview
+g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b)
+#@+node:ekr.20101109084947.4909: *3* @button preview-tree
+result = []
+for p2 in p.subtree():
+    result.append(p2.b)
+s = '\n'.join(result)
+
+g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + s)
 #@+node:ekr.20101025080245.6075: *3* @button promote-child-bodies
 '''Copy the body text of all children to the parent's body text.'''
 

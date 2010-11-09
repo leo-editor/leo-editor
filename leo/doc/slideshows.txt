@@ -1,8 +1,98 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20101028110015.8271: * @file slideshows.txt
 .. @+all
-.. @+node:ekr.20101009111520.4525: **  Slideshow Buttons (disabled)
-.. @+node:ekr.20101008061729.4425: *3* @@button ins-@slide-nodes
+.. @+node:ekr.20101109053515.4914: ** Unused
+.. @+node:ekr.20101018061243.5396: *3* Promote & demote
+.. @+node:ekr.20101014110348.5307: *4* @slide ((18 Promotes & demote
+There are two more outline operations that every Leo user should know about,
+promote and demote.
+
+Suppose we want to reorganize this shopping list.
+
+.. - to do
+..   - fix car
+..   - go shopping
+..     - buy milks
+..     - buy eggs
+
+.. image:: slide-029.png
+
+.. @+node:ekr.20101016043116.5337: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-029.png
+.. @+node:ekr.20101014110348.5329: *4* @slide ((Ctrl-Shift-] demote
+Here, I selected "go shopping" and then demote nodes with Ctrl-Shift-].
+
+The following siblings of the "go shopping" nodes were
+demoted to become children of the "go shopping node.
+
+.. image:: slide-030.png
+
+.. @+node:ekr.20101016043116.5338: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-030.png
+.. @+node:ekr.20101014110348.5330: *4* @slide ((Ctrl-Shift-[ promote
+Conversely, Ctrl-Shift-[ promotes all the children of the
+selected node so that they become (following) siblings
+of the selected node.
+
+.. image:: slide-031.png
+
+.. @+node:ekr.20101016043116.5339: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-031.png
+.. @+node:ekr.20101014110348.5331: *4* @slide ((promote & demote to move batches of nodes
+Using promote and demote is an easy way of moving
+several nodes quickly.
+
+For example, suppose I wanted to move the "buy
+milk" nad "buy eggs" nodes so that they are
+top-level nodes.
+
+I insert a "helper" node after the "go shopping node"
+
+.. image:: slide-032.png
+
+.. @+node:ekr.20101016043116.5340: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-032.png
+.. @+node:ekr.20101014110348.5332: *4* @slide ((demote the moved nodes
+I then demote the following nodes.
+
+.. image:: slide-033.png
+
+.. @+node:ekr.20101016043116.5341: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-033.png
+.. @+node:ekr.20101014110348.5333: *4* @slide ((move helper node left
+I move the helper node left.  The demoted nodes go along for the ride.
+
+.. image:: slide-034.png
+
+.. @+node:ekr.20101016043116.5342: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-034.png
+.. @+node:ekr.20101014110348.5334: *4* @slide ((promote the moved nodes
+I promote the moved nodes.
+
+.. image:: slide-035.png
+
+.. @+node:ekr.20101016043116.5343: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-035.png
+.. @+node:ekr.20101014110348.5335: *4* @slide ((delete the helper node
+And delete the helper node.
+
+This technique can be quite useful when moving
+many nodes, or moving several nodes a long way in
+the outline.
+
+The clones and views slideshows discusses several
+other ways to do similar moves.
+
+.. image:: slide-036.png
+
+.. @+node:ekr.20101016043116.5344: *5* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png
+.. @+node:ekr.20101009111520.4525: **  Slideshow Buttons
+.. @+node:ekr.20101009114655.4531: *3* @button make-slide @key=Alt-8
+m = g.loadOnePlugin('screenshots')
+m.make_slide_command(event={'c':c})
+.. @+node:ekr.20101109053515.4915: *3* Unused
+.. @+node:ekr.20101008061729.4425: *4* @@button ins-@slide-nodes
 '''Create @slide nodes under p, an @slideshow node.'''
 
 n = 23 # Number of last slide to be created.
@@ -27,7 +117,7 @@ if g.match_word(p.h,0,'@slideshow'):
     c.redraw()
 else:
     g.error('not an @slideshow node',p.h)
-.. @+node:ekr.20101008061729.4443: *3* @@button copy-@screenshot-node
+.. @+node:ekr.20101008061729.4443: *4* @@button copy-@screenshot-node
 '''
 Copy the @screenshot node (a child of this node)
 to all @slide nodes under p, (an @slideshow node),
@@ -83,21 +173,21 @@ else:
     if changed:
         c.undoer.afterChangeTree(p,'copy-@screenshot',b)
     c.redraw()
-.. @+node:ekr.20101008061729.4552: *4* @screenshot
-.. @+node:ekr.20101008061729.4553: *5* To Do List
+.. @+node:ekr.20101008061729.4552: *5* @screenshot
+.. @+node:ekr.20101008061729.4553: *6* To Do List
 My to-do list.
-.. @+node:ekr.20101008061729.4554: *6* Urgent
+.. @+node:ekr.20101008061729.4554: *7* Urgent
 1. Make Leo tutorials.  The world is waiting.
 2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101008061729.4555: *6* Important
-.. @+node:ekr.20101008061729.4556: *6* Soon
-.. @+node:ekr.20101008061729.4557: *6* Whenever
-.. @+node:ekr.20101008061729.4558: *5* Diary
-.. @+node:ekr.20101008061729.4559: *6* 2009
+.. @+node:ekr.20101008061729.4555: *7* Important
+.. @+node:ekr.20101008061729.4556: *7* Soon
+.. @+node:ekr.20101008061729.4557: *7* Whenever
+.. @+node:ekr.20101008061729.4558: *6* Diary
+.. @+node:ekr.20101008061729.4559: *7* 2009
 @language rest
 
 This is my diary.
-.. @+node:ekr.20101008061729.4567: *7* Jul 2009
+.. @+node:ekr.20101008061729.4567: *8* Jul 2009
 July 1
     Started writing in my diary.
 July 2
@@ -106,14 +196,14 @@ July 3
     Keeping my diary very regularly.
 July 5
     Oops...Yesterday I forgot towrite in my diary.
-.. @+node:ekr.20101008061729.4568: *7* Aug 2009
-.. @+node:ekr.20101008061729.4569: *7* Sep 2009
-.. @+node:ekr.20101008061729.4570: *7* Oct 2009
-.. @+node:ekr.20101008061729.4571: *7* Nov 2009
-.. @+node:ekr.20101008061729.4572: *7* Dec 2009
-.. @+node:ekr.20101008061729.4561: *6* 2010
-.. @+node:ekr.20101008061729.4637: *4* @select Urgent
-.. @+node:ekr.20101008061729.4538: *3* @@button renumber nodes
+.. @+node:ekr.20101008061729.4568: *8* Aug 2009
+.. @+node:ekr.20101008061729.4569: *8* Sep 2009
+.. @+node:ekr.20101008061729.4570: *8* Oct 2009
+.. @+node:ekr.20101008061729.4571: *8* Nov 2009
+.. @+node:ekr.20101008061729.4572: *8* Dec 2009
+.. @+node:ekr.20101008061729.4561: *7* 2010
+.. @+node:ekr.20101008061729.4637: *5* @select Urgent
+.. @+node:ekr.20101008061729.4538: *4* @@button renumber nodes
 '''Renumber @slide nodes under p, an @slideshow node.'''
 
 if g.match_word(p.h,0,'@slideshow'):
@@ -125,13 +215,22 @@ if g.match_word(p.h,0,'@slideshow'):
     c.redraw()
 else:
     g.error('not an @slideshow node',p.h)
-.. @+node:ekr.20101007100904.4371: *3* @@button make-slide-show @key=Alt-8
+.. @+node:ekr.20101007100904.4371: *4* @@button make-slide-show @key=Alt-8
 m = g.loadOnePlugin('screenshots')
 m.make_slide_show_command(event={'c':c})
-.. @+node:ekr.20101009114655.4531: *3* @button make-slide @key=Alt-8
-m = g.loadOnePlugin('screenshots')
-m.make_slide_command(event={'c':c})
-.. @+node:ekr.20101011165412.5009: **  Topics
+.. @+node:ekr.20101021092135.5431: **  Slideshows to-do
+@nocolor-node
+
+** Discuss installing qt in introductory 
+
+- Move meld to screenshot controller.
+    @x nodes remove hard coding.
+
+** Remove Joe Orr's old slides: they are too confusing.
+
+- Top ten coolest features.
+- Tips!
+- @button nodes.
 .. @+node:ekr.20101014034526.5298: *3* User-defined types
 .. @+node:ekr.20101014034526.5292: *4* \@button nodes
 .. @+node:ekr.20101014034526.5291: *4* @test nodes
@@ -141,10 +240,10 @@ m.make_slide_command(event={'c':c})
 - Execute Leo scripts from IPython.
 .. @+node:ekr.20101014034526.5295: *3* Vim & Emacs
 .. @+node:ekr.20101010141953.5027: *3* Examples
-.. @+node:ekr.20101010141953.5028: *4* @slideshow Leo's NSIS Installer
+.. @+node:ekr.20101010141953.5028: *3* @slideshow Leo's NSIS Installer
 @language rest
-.. @+node:ekr.20101010141953.5029: *5* @title_pattern = Leo's NSIS Installer: Slide %(slide_number)s
-.. @+node:ekr.20101010141953.5030: *5* @slide 001
+.. @+node:ekr.20101010141953.5029: *4* @title_pattern = Leo's NSIS Installer: Slide %(slide_number)s
+.. @+node:ekr.20101010141953.5030: *4* @slide 001
 .. _`here`:     http://www.nullsoft.com/free/nsis/
 .. _`Winamp`:   http://www.winamp.com/
 
@@ -157,7 +256,7 @@ Depending on the application, NSIS can often be a better choice than more
 expensive installation generators, since NSIS installations are easy to create,
 are small and fast, and yet can be configured with many features.
 
-.. @+node:ekr.20101010141953.5031: *5* @slide 002
+.. @+node:ekr.20101010141953.5031: *4* @slide 002
 When you install Leo, you'll find that it comes with a script for generating an
 installer for Leo. This script is called leo-<version>.nsi, and is distributed
 in the Leo file leo/dist/leoDist.leo.
@@ -167,24 +266,24 @@ option of compiling the script to create a package.
 
 .. image:: slide-002.png
 
-.. @+node:ekr.20101010141953.5032: *6* @screenshot
-.. @+node:ekr.20101010141953.5033: *7* Take screenshot of the compile .nsi dialog in a Windows folder
-.. @+node:ekr.20101010141953.5034: *6* @pause
-.. @+node:ekr.20101010141953.5038: *6* @url screenshot
+.. @+node:ekr.20101010141953.5032: *5* @screenshot
+.. @+node:ekr.20101010141953.5033: *6* Take screenshot of the compile .nsi dialog in a Windows folder
+.. @+node:ekr.20101010141953.5034: *5* @pause
+.. @+node:ekr.20101010141953.5038: *5* @url screenshot
 c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.png
-.. @+node:ekr.20101010141953.5039: *6* @url working file
+.. @+node:ekr.20101010141953.5039: *5* @url working file
 c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg
-.. @+node:ekr.20101010141953.5040: *6* @url final output file
+.. @+node:ekr.20101010141953.5040: *5* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png
-.. @+node:ekr.20101011071655.4918: *6* @url built slide
+.. @+node:ekr.20101011071655.4918: *5* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html
-.. @+node:ekr.20101011092154.4923: *5* @slide 003
+.. @+node:ekr.20101011092154.4923: *4* @slide 003
 Since the NSIS script for the Leo installation is included in the Leo
 distribution in the nsis.leo file, it is easy to understand the how the script
 works. This .nsi file creates an installer that packages all of the Leo program
 files, and creates a desktop shortcut, a Program Menu item, and the file
 association for .leo files.
-.. @+node:ekr.20101011092154.4924: *5* @slide 004
+.. @+node:ekr.20101011092154.4924: *4* @slide 004
 In this screenshot we're looking at the code that checks to see whether Python
 has been installed.
 
@@ -192,8 +291,8 @@ Since Leo is a Python application, modifying this installation script to create
 a script to build a Windows installer for your own Python application is
 relatively simple. You would leave this section alone, and check other sections
 for the program name "Leo", and change these to your program name.
-.. @+node:ekr.20101011092154.4925: *5* @slide 005
-.. @+node:ekr.20101011165412.5154: *5* @@button make leo.nsi
+.. @+node:ekr.20101011092154.4925: *4* @slide 005
+.. @+node:ekr.20101011165412.5154: *4* @@button make leo.nsi
 @language python
 
 # **Important**
@@ -220,17 +319,17 @@ else:
 
 nsi = nsiWriter()
 nsi.run(manifest)
-.. @+node:ekr.20101011165412.5155: *6* << define version >>
+.. @+node:ekr.20101011165412.5155: *5* << define version >>
 # Used by both @button make leo.nsi and @button make leo.zip.
 app_version = version = '4.8-d1'
-.. @+node:ekr.20101011165412.5156: *6* << define inLeo >>
+.. @+node:ekr.20101011165412.5156: *5* << define inLeo >>
 try:
     inLeo = g is not None
 except AttributeError:
     inLeo = False
 
 # print('inLeo',inLeo)
-.. @+node:ekr.20101011165412.5157: *6* << define application constants >>
+.. @+node:ekr.20101011165412.5157: *5* << define application constants >>
 app_doc_icon = r'Icons\LeoDoc.ico'
 app_extension = '.leo'
 app_hkey_local_machine = r'SOFTWARE\EKR\leo'
@@ -274,13 +373,13 @@ substitutionDict = {
     'PythonExecutable': '$PythonExecutable',
     'SMPROGRAMS': '$SMPROGRAMS'
 }
-.. @+node:ekr.20101011165412.5158: *6* class nsiWriter
+.. @+node:ekr.20101011165412.5158: *5* class nsiWriter
 class nsiWriter:
 
     '''A class to write .nsi scripts.'''
 
     @others
-.. @+node:ekr.20101011165412.5159: *7* genScript & helpers
+.. @+node:ekr.20101011165412.5159: *6* genScript & helpers
 def genScript (self,dirs,dirDict,filesDict):
 
     '''Generate the .nsi installer script.'''
@@ -297,7 +396,7 @@ def genScript (self,dirs,dirDict,filesDict):
         f.close()
 
     g.es_print('make-leo-nsi done. no errors')
-.. @+node:ekr.20101011165412.5160: *8* genHead
+.. @+node:ekr.20101011165412.5160: *7* genHead
 def genHead (self):
 
     '''Generate the boilerplate appearing before
@@ -306,7 +405,7 @@ def genHead (self):
     self.put('!include MUI2.nsh\n')
     self.putSettings()
     self.putOnInit()
-.. @+node:ekr.20101011165412.5161: *9* putSettings
+.. @+node:ekr.20101011165412.5161: *8* putSettings
 def putSettings (self):
 
     s = r'''
@@ -336,7 +435,7 @@ ShowUnInstDetails show
 
 '''
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5162: *9* putOnInit
+.. @+node:ekr.20101011165412.5162: *8* putOnInit
 def putOnInit (self):
 
     s = r'''
@@ -368,7 +467,7 @@ FunctionEnd
 '''
     s = s.replace('${name}',app_name).replace('${version}',app_version)
     self.put(s,substitute=False)
-.. @+node:ekr.20101011165412.5163: *8* genInstallData & helpers
+.. @+node:ekr.20101011165412.5163: *7* genInstallData & helpers
 def genInstallData(self,dirs,dirDict,filesDict):
 
     '''Generate the manifest-specific install data.'''
@@ -380,7 +479,7 @@ def genInstallData(self,dirs,dirDict,filesDict):
 
     self.put('\n; end %s section\n' % (app_name))
     self.put('SectionEnd\n')
-.. @+node:ekr.20101011165412.5164: *9* getInstallVariableData
+.. @+node:ekr.20101011165412.5164: *8* getInstallVariableData
 def getInstallVariableData (self,dirs,dirDict,filesDict):
 
     global rootDir
@@ -409,7 +508,7 @@ def getInstallVariableData (self,dirs,dirDict,filesDict):
 
     result = [self.indent(z) for z in result]
     return ''.join(result)
-.. @+node:ekr.20101011165412.5165: *8* genMiddle
+.. @+node:ekr.20101011165412.5165: *7* genMiddle
 def genMiddle (self):
 
     '''Generate the boilerplate appearing between
@@ -423,7 +522,7 @@ def genMiddle (self):
     self.genPost()
     self.genUninstallSettings()
     self.genMiddleFunctions()
-.. @+node:ekr.20101011165412.5166: *9* genAdditionalIcons
+.. @+node:ekr.20101011165412.5166: *8* genAdditionalIcons
 def genAdditionalIcons(self):
 
     s = r'''
@@ -435,7 +534,7 @@ SectionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5167: *9* genDesktopShortcuts
+.. @+node:ekr.20101011165412.5167: *8* genDesktopShortcuts
 def genDesktopShortcuts(self):
 
     s = r'''
@@ -445,7 +544,7 @@ SectionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5168: *9* genFileAssociation
+.. @+node:ekr.20101011165412.5168: *8* genFileAssociation
 def genFileAssociation(self):
 
     s = r'''
@@ -471,7 +570,7 @@ SectionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5169: *9* genMenuShortcuts
+.. @+node:ekr.20101011165412.5169: *8* genMenuShortcuts
 def genMenuShortcuts (self):
 
     s = r'''
@@ -499,7 +598,7 @@ SectionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5170: *9* genMiddleFunctions
+.. @+node:ekr.20101011165412.5170: *8* genMiddleFunctions
 def genMiddleFunctions (self):
 
     s = r'''
@@ -516,7 +615,7 @@ FunctionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5171: *9* genPost
+.. @+node:ekr.20101011165412.5171: *8* genPost
 def genPost (self):
 
     s = r'''
@@ -532,7 +631,7 @@ SectionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5172: *9* genUninstallSettings
+.. @+node:ekr.20101011165412.5172: *8* genUninstallSettings
 def genUninstallSettings(self):
 
     path = g.os_path_finalize_join(
@@ -545,7 +644,7 @@ UninstallIcon "${path}"
 
     s = s.replace('${path}',path)
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5173: *8* genUninstallData & helpers
+.. @+node:ekr.20101011165412.5173: *7* genUninstallData & helpers
 def genUninstallData(self,dirs,dirDict,filesDict):
 
     '''Generate the manifest-specific uninstall data.'''
@@ -599,7 +698,7 @@ SectionEnd
 '''
 
     self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5174: *9* getDeleteDirectories
+.. @+node:ekr.20101011165412.5174: *8* getDeleteDirectories
 def getDeleteDirectories (self,dirs,dirDict):
 
     reverseDirs = dirs[:]
@@ -619,7 +718,7 @@ def getDeleteDirectories (self,dirs,dirDict):
 
     result = [self.indent(z) for z in result]
     return ''.join(result)
-.. @+node:ekr.20101011165412.5175: *9* getDeleteFiles
+.. @+node:ekr.20101011165412.5175: *8* getDeleteFiles
 def getDeleteFiles (self,dirs,dirDict,filesDict):
 
     wildcard_delete = True
@@ -654,20 +753,20 @@ def getDeleteFiles (self,dirs,dirDict,filesDict):
 
     result = [self.indent(z) for z in result]
     return ''.join(result)
-.. @+node:ekr.20101011165412.5176: *9* getUninstallVariableData
+.. @+node:ekr.20101011165412.5176: *8* getUninstallVariableData
 def getUninstallVariableData(self,dirs,dirDict,filesDict):
 
     s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
     s2 = self.getDeleteDirectories(dirs,dirDict)
     return '%s\n%s' % (s1,s2)
-.. @+node:ekr.20101011165412.5177: *8* indent
+.. @+node:ekr.20101011165412.5177: *7* indent
 def indent(self,s):
 
     if s.strip():
         return '    ' + s
     else:
         return s
-.. @+node:ekr.20101011165412.5178: *8* openNsi
+.. @+node:ekr.20101011165412.5178: *7* openNsi
 def openNsi (self):
 
     path = g.os_path_finalize_join(
@@ -680,7 +779,7 @@ def openNsi (self):
         g.es_print('Can not open',path,color='red')
 
     return f
-.. @+node:ekr.20101011165412.5179: *8* put
+.. @+node:ekr.20101011165412.5179: *7* put
 def put (self,s,adjust=True,substitute=False):
 
     '''Output s to the nsi file, optionally making
@@ -701,7 +800,7 @@ def put (self,s,adjust=True,substitute=False):
 
     if trace: g.trace(s,g.callers(4))
     self.f.write(s)
-.. @+node:ekr.20101011165412.5180: *7* run & helpers
+.. @+node:ekr.20101011165412.5180: *6* run & helpers
 def run (self,fn):
 
     '''The top-level logic.'''
@@ -724,7 +823,7 @@ def run (self,fn):
 
     # Generate the script!
     self.genScript(dirs,dirDict,filesDict)
-.. @+node:ekr.20101011165412.5181: *8* directoryList
+.. @+node:ekr.20101011165412.5181: *7* directoryList
 def directoryList (self,rootDir):
 
     '''Compute a top-down list of all directories.
@@ -747,7 +846,7 @@ def directoryList (self,rootDir):
         g.trace('-' * 40)
         g.trace(g.listToString(result))
     return result
-.. @+node:ekr.20101011165412.5182: *8* filterLines & helpers
+.. @+node:ekr.20101011165412.5182: *7* filterLines & helpers
 def filterLines (self,lines):
 
     '''Filter lines from the input manifest file.'''
@@ -782,7 +881,7 @@ def filterLines (self,lines):
         g.trace(g.listToString(lines))
 
     return lines
-.. @+node:ekr.20101011165412.5183: *9* delete...
+.. @+node:ekr.20101011165412.5183: *8* delete...
 def deleteBlankLines (self,lines):
 
     return [z.strip() for z in lines if z.strip()]
@@ -798,7 +897,7 @@ def deleteExt (self,lines,ext):
 def deleteFiles (self,lines,deleteList):
 
     return [z for z in lines if not z in deleteList]
-.. @+node:ekr.20101011165412.5184: *8* makeDicts
+.. @+node:ekr.20101011165412.5184: *7* makeDicts
 def makeDicts (self,dirs,lines):
 
     trace = False ; verbose = False
@@ -848,7 +947,7 @@ def makeDicts (self,dirs,lines):
             filesDict[path] = theDir
 
     return dirDict,filesDict
-.. @+node:ekr.20101011165412.5185: *8* printMissing
+.. @+node:ekr.20101011165412.5185: *7* printMissing
 def printMissing (self,files,dirDict,filesDict):
 
     errors = 0
@@ -863,10 +962,10 @@ def printMissing (self,files,dirDict,filesDict):
         g.es_print('%s errors' % (errors),color='red')
 
     return errors
-.. @+node:ekr.20101011165412.5186: *7* whitespace
+.. @+node:ekr.20101011165412.5186: *6* whitespace
 # These are adapted from the corresponding functions in leoPy.leo
 # They are defined here to make this script independent of Leo
-.. @+node:ekr.20101011165412.5187: *8* adjustTripleString
+.. @+node:ekr.20101011165412.5187: *7* adjustTripleString
 def adjustTripleString (self,s):
 
     '''Remove leading indentation from a triple-quoted string.'''
@@ -888,7 +987,7 @@ def adjustTripleString (self,s):
     result = [self.removeLeadingWhitespace(line,w) for line in lines]
     result = ''.join(result)
     return result
-.. @+node:ekr.20101011165412.5188: *8* get_leading_ws
+.. @+node:ekr.20101011165412.5188: *7* get_leading_ws
 def get_leading_ws(self,s):
 
     """Returns the leading whitespace of 's'."""
@@ -897,7 +996,7 @@ def get_leading_ws(self,s):
     while i < n and s[i] in (' ','\t'):
         i += 1
     return s[0:i]
-.. @+node:ekr.20101011165412.5189: *8* computeWidth
+.. @+node:ekr.20101011165412.5189: *7* computeWidth
 def computeWidth (self,s):
 
     '''Return the width of s, assuming s starts a line.'''
@@ -910,7 +1009,7 @@ def computeWidth (self,s):
         else:
             w += 1
     return w
-.. @+node:ekr.20101011165412.5190: *8* removeLeadingWhitespace
+.. @+node:ekr.20101011165412.5190: *7* removeLeadingWhitespace
 def removeLeadingWhitespace (self,s,first_ws):
 
     '''Remove whitespace up to first_ws wide in s.'''
@@ -929,15 +1028,14 @@ def removeLeadingWhitespace (self,s,first_ws):
     if j > 0:
         s = s[j:]
     return s
-.. @+node:ekr.20101011165412.5191: *8* splitLines
+.. @+node:ekr.20101011165412.5191: *7* splitLines
 def splitLines (self,s):
 
     '''Split s into lines, preserving the number of lines and the ending of the last line.'''
 
     return s and s.splitlines(True) or []
-.. @+node:ekr.20101014034526.5282: *3* Unused & reference
-These don't tell stories
-.. @+node:ekr.20101007082321.4357: *4* @slideshow What is Leo? (To be deleted)
+.. @+node:ekr.20101013072903.5218: *3* Not good stories
+.. @+node:ekr.20101007082321.4357: *4* @slideshow What is Leo? (Joe Orr)
 @language rest
 .. @+node:ekr.20101009171445.4637: *5* @title_pattern = What is Leo? Slide %(slide_number)s
 .. @+node:ekr.20101008061729.4372: *5* @slide 001
@@ -1378,181 +1476,7 @@ resulting document.
 .. @+node:ekr.20101011111455.4965: *6* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html
 .. @+node:ekr.20101011103613.4939: *5* @slide Outlines Create HTML
-.. @+node:ekr.20101013072903.5262: *4* @slideshow Leo & Prezi
-Prezi path: clone-marked.
-Prezi picture: @include <filename>.
-.. @+node:ekr.20101014031545.5278: *5* @image lioness
-file://../Icons/Lioness.jpg
-.. @+node:ekr.20101014030710.5277: *5* @url logo
-file:///C:/Users/edreamleo/Documents/logos/ekr.gif
-.. @+node:ekr.20101011165412.5192: *4* Reference
-.. @+node:ekr.20101011165412.5195: *5*  Format of external files (copy)
-This section describe the format of external files.
-Leo's `sentinel lines`_ are comments, and this section describes those comments.
-
-The format of external files produced by Leo 4.0 and later meets the following goals:
-
-- The minimum of sentinels needed to properly recreate the outline.
-
-- A robust way of telling whether newlines belong to sentinels or not.
-  Prior to Leo 4.0, deleting blank lines before and after sentinel lines
-  could corrupt the outline structure of the external file.
-
-- A minimum of intrusion and ugliness.
-
-**New in Leo 4.2**:
-Files derived from @thin use gnx's in @+node and @-node sentinels.
-Such gnx's permanently and uniquely identify nodes.
-Gnx's have the form::
-
-    id.yyyymmddhhmmss
-    id.yyyymmddhhmmss.n
-
-The second form is used if two gnx's would otherwise be identical.
-
-- id is a string unique to a developer, e.g., a cvs id.
-
-- yyyymmddhhmmss is the node's creation date.
-
-- n is an integer.
-
-Here are the sentinels used by Leo, in alphabetical order.
-Unless otherwise noted, the documentation applies to all versions of Leo.
-In the following discussion, gnx denotes a gnx as described above.
-
-\@<<
-    A sentinel of the form @<<section_name>> represents a section reference.
-
-    If the reference does not end the line,
-    the sentinel line ending the expansion is followed by the remainder of the reference line.
-    This allows the Read code to recreate the reference line exactly.
-
-\@@
-    The @@ sentinel represents any line starting with @ in body text
-    except @*whitespace*, @doc and @others.
-    Examples::
-
-      @@nocolor
-      @@pagewidth 80
-      @@tabwidth 4
-      @@code
-
-\@afterref **(Leo 4.0 and later)**
-    Marks non-whitespace text appearing after a section references.
-
-\@+all **(Leo 4.0 and later)**
-    Marks the start of text generated by the @all directive.
-
-\@-all **(Leo 4.0 and later)**
-    Marks the end of text generated by the @all directive.
-
-\@at and \@doc
-    The @+doc and @-doc sentinels delimit doc parts within a node that starts with @doc.
-    These sentinels are nested within @body directives.
-    Similarly, @+at and @-at sentinels delimit doc parts within a node that start with @ *whitespace*.
-    We use the following **trailing whitespace convention**
-    to determine where putDocPart has inserted line breaks::
-
-        A line in a doc part is followed by an inserted newline
-        if and only if the newline if preceded by whitespace.
-
-    To make this convention work,
-    Leo's write code deletes the trailing whitespace of all lines that are followed by a "real" newline.
-
-    **Leo 4.0 and later**:
-    The @+doc and @+at sentinels now contain the whitespace that follows
-    the corresponding @doc or @ directives.
-
-\@+body **(Leo 3.x only)**
-    Marks the start of body text.
-
-\@-body **(Leo 3.x only)**
-    Marks the end of body text.
-
-\@delims
-    The @delims sentinel inserts @@delims sentinels into the external file.
-    The new delimiter strings continue in effect until the next @@delims sentinel
-    *in the external file* or until the end of the external file.
-    Adding, deleting or changing @@delim *sentinels* will destroy Leo's ability to read the external file.
-    Mistakes in using the @delims *directives* have no effect on Leo,
-    though such mistakes will thoroughly mess up a external file as far as compilers,
-    HTML renderers, etc. are concerned. 
-
-\@+leo
-    Marks the start of any external file.
-    This sentinel has the form::
-
-        <opening_delim>@leo<closing_delim>
-
-    The read code uses single-line comments if <closing_delim> is empty.
-    The write code generates single-line comments if possible.
-
-    **New in Leo 4.0**: The @+leo sentinel contains other information following
-    @leo.  For example::
-
-        <opening_delim>@leo-ver=4-thin<closing_delim>
-
-\@-leo
-    Marks the end of the Leo file.
-    Nothing but whitespace should follow this directive.
-
-\@+middle **(Leo 4.0 and later)**
-    Marks the start of intermediate nodes between the node that
-    references a section and the node that defines the section.
-    Typically no such sentinels are needed: most sections are defined in a direct child of the referencing node.
-
-\@-middle **(Leo 4.0 and later)**
-    Marks the end of intermediate nodes between the node that
-    references a section and the node that defines the section.
-
-\@+node and \@-node
-    Mark the start and end of a node.
-
-    **Leo 4.2 and later**::
-    @+node and @-node sentinels use gnx's as described above::
-
-        @+node:gnx:<headline>
-        @-node:gnx:<headline>
-
-    Leo generates these sentinels only for nodes containing body text.
-    Leo no longer generates other @+node sentinels to indicate outline structure.
-    As a result, there is no longer any need for @+body sentinels.
-
-    **Before Leo 4.2**::
-    @+node and @-node sentinels used child indices, and status fields as described below::
-
-      @+node:<child_index>:<status_fields>:<headline>
-      @-node::<child_index>:<status_fields>:<headline>
-
-    <child_index> is a number from 1 to n indicating the index of the node in the list of its parent's children.
-    <status_field> is the cloneIndex field of the form: "C=nnn", where nnn is an immutable clone index.
-    <headline> contains *headline* text, not reference text.
-
-\@nl **(Leo 4.0 and later)**
-    Adds a newline to the body text.
-
-\@nonl **(Leo 4.0 and later)**
-    Suppresses a newline from the body text.
-
-\@others
-    The @+others sentinel indicates the start of the expansion of an @+others directive,
-    which continues until the matching @-others sentinel.
-    @others sentinels are nested within @body sentinels;
-    the expansion of the @others directive always occurs within the body text of some node.
-
-\@verbatim
-    @verbatim indicates that the next line of the external file is not a sentinel.
-    This escape convention allows body text to contain lines that would otherwise be considered sentinel lines.
-
-\@@verbatimAfterRef
-    @verbatimAfterRef is generated when a comment following a section reference would otherwise be treated as a sentinel.
-    In Python code, an example would be::
-
-      << ref >> #+others
-
-    This sentinel is required only when blank lines are suppressed between sentinel lines.
-.. @+node:ekr.20101013072903.5218: *4* Descriptions are not stories!
-.. @+node:ekr.20101011165412.5011: *5* nutshell (copy)
+.. @+node:ekr.20101011165412.5011: *4* nutshell (copy)
 Unifying scripting, data and outline structure creates a new world. We use the
 term **Leonine** to denote the Leo-centric (outline-centric) view of
 programming, data and scripting. Here are some of the implications of this
@@ -1644,7 +1568,7 @@ The Leo Aha is just this: Leo outlines are far more than eye candy. Leo outlines
 revolutionize your view of data--Leo outlines can organize *anything*. Leo
 outlines create a new kind of programming environment, one in which outline
 structure and user-defined data types create totally new opportunities.
-.. @+node:ekr.20101012083118.5246: *5* @@slide Leo
+.. @+node:ekr.20101012083118.5246: *4* @@slide Leo
 Leo is a unique, powerful computer program that you can use to organize, analyze
 and describe text and text files.
 
@@ -1656,7 +1580,7 @@ Use Leo:
 
 Because Leo is unlike other tools you may have used, a series of examples may be
 the best way to demonstrate what can be done with Leo.
-.. @+node:ekr.20101011103613.4940: *5* @@slide The Leo way
+.. @+node:ekr.20101011103613.4940: *4* @@slide The Leo way
 Leo is a new way of working with complex data like computer programs,
 books, web sites and data bases. The term **Leonine** refers to the Leo
 way of viewing the world and its data.
@@ -1665,38 +1589,23 @@ In Leo, **outline structure is significant everywhere**. Leo’s users speak of 
 Aha! moment when they see what this statement means.
 
 People say Leo is **fun to use**, even additive.
-.. @+node:ekr.20101012083118.5242: *6* @url built slide
+.. @+node:ekr.20101012083118.5242: *5* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html
-.. @+node:ekr.20101013072903.5238: *5* Don't describe the window!
-.. @+node:ekr.20101013072903.5228: *6* @slide ((file name: workbook2.leo
+.. @+node:ekr.20101013072903.5238: *4* Don't describe the window!
+.. @+node:ekr.20101013072903.5228: *5* @slide ((file name: workbook2.leo
 .. Arrow points to window title.
 
 The name of the Leo outline appears in the window's title.
 
 Here, the name is workbook.leo, the default file name.
-.. @+node:ekr.20101013072903.5229: *6* @slide ((3 panes
+.. @+node:ekr.20101013072903.5229: *5* @slide ((3 panes
 Leo's main window consists of an **outline pane**
 (1), a **body pane** (2) and a **log pane** (3).
 
-.. @+node:ekr.20101013072903.5230: *6* @slide ((outline pane
+.. @+node:ekr.20101013072903.5230: *5* @slide ((outline pane
 The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.
-.. @+node:ekr.20101021092135.5431: **  Slideshows to-do
-@nocolor-node
-
-** Discuss installing qt in introductory slideshow
-
-- Top ten coolest features.
-- Tips!
-- @button nodes.
-
-- Move meld to screenshot controller??
-    Pros:
-        A single place for the commands.
-    Cons:
-        More to remember.
-        Less flexible.
 .. @+node:ekr.20100821182153.4345: ** @slideshow Installation
 @language rest
 .. @+node:ekr.20101014034526.5299: *3* @slide ((using Leo's installer
@@ -2210,91 +2119,6 @@ c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-
 
 .. @+node:ekr.20101014034526.5296: ** @slideshow Leo's minibuffer
 @ Discuss tab completion.
-.. @+node:ekr.20101018061243.5396: ** Promote & demote
-.. @+node:ekr.20101014110348.5307: *3* @slide ((18 Promotes & demote
-There are two more outline operations that every Leo user should know about,
-promote and demote.
-
-Suppose we want to reorganize this shopping list.
-
-.. - to do
-..   - fix car
-..   - go shopping
-..     - buy milks
-..     - buy eggs
-
-.. image:: slide-029.png
-
-.. @+node:ekr.20101016043116.5337: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-029.png
-.. @+node:ekr.20101014110348.5329: *3* @slide ((Ctrl-Shift-] demote
-Here, I selected "go shopping" and then demote nodes with Ctrl-Shift-].
-
-The following siblings of the "go shopping" nodes were
-demoted to become children of the "go shopping node.
-
-.. image:: slide-030.png
-
-.. @+node:ekr.20101016043116.5338: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-030.png
-.. @+node:ekr.20101014110348.5330: *3* @slide ((Ctrl-Shift-[ promote
-Conversely, Ctrl-Shift-[ promotes all the children of the
-selected node so that they become (following) siblings
-of the selected node.
-
-.. image:: slide-031.png
-
-.. @+node:ekr.20101016043116.5339: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-031.png
-.. @+node:ekr.20101014110348.5331: *3* @slide ((promote & demote to move batches of nodes
-Using promote and demote is an easy way of moving
-several nodes quickly.
-
-For example, suppose I wanted to move the "buy
-milk" nad "buy eggs" nodes so that they are
-top-level nodes.
-
-I insert a "helper" node after the "go shopping node"
-
-.. image:: slide-032.png
-
-.. @+node:ekr.20101016043116.5340: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-032.png
-.. @+node:ekr.20101014110348.5332: *3* @slide ((demote the moved nodes
-I then demote the following nodes.
-
-.. image:: slide-033.png
-
-.. @+node:ekr.20101016043116.5341: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-033.png
-.. @+node:ekr.20101014110348.5333: *3* @slide ((move helper node left
-I move the helper node left.  The demoted nodes go along for the ride.
-
-.. image:: slide-034.png
-
-.. @+node:ekr.20101016043116.5342: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-034.png
-.. @+node:ekr.20101014110348.5334: *3* @slide ((promote the moved nodes
-I promote the moved nodes.
-
-.. image:: slide-035.png
-
-.. @+node:ekr.20101016043116.5343: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-035.png
-.. @+node:ekr.20101014110348.5335: *3* @slide ((delete the helper node
-And delete the helper node.
-
-This technique can be quite useful when moving
-many nodes, or moving several nodes a long way in
-the outline.
-
-The clones and views slideshows discusses several
-other ways to do similar moves.
-
-.. image:: slide-036.png
-
-.. @+node:ekr.20101016043116.5344: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png
 .. @+node:ekr.20101014110348.5338: ** @button meld
 '''Meld Wink slides into an @slideshow folder.
 

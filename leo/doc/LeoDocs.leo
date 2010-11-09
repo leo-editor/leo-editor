@@ -9,8 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
+<v t="ekr.20101028112631.4959" a="E"
+expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
@@ -22,7 +23,7 @@
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
@@ -33,9 +34,9 @@
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20101025080245.5794"><vh>Preliminaries</vh>
-<v t="ekr.20050831184021.3"><vh>Front matter</vh>
-<v t="ekr.20100805165051.7148"><vh>@file frontMatter.txt</vh></v>
+<v t="ekr.20101025080245.5794" a="E"><vh>Preliminaries</vh>
+<v t="ekr.20050831184021.3" a="E"><vh>Front matter</vh>
+<v t="ekr.20100805165051.7148" a="E"><vh>@file frontMatter.txt</vh></v>
 </v>
 <v t="ekr.20070701101808"><vh>Preface</vh>
 <v t="ekr.20100805165051.7149"><vh>@file preface.txt</vh></v>
@@ -139,17 +140,18 @@
 <v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e342e302e342e3171017d7102580b0000007374725f6c656f5f706f73710358000000007104735809000000302e302e312e302e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e342e302e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e342e302e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473580b000000302e312e342e302e322e31710e7d710f580b0000007374725f6c656f5f706f737110680473752e"
-marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
-</v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
-<v t="ekr.20101026082911.5536" a="E"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" a="E"
-expanded="edream.110203163054.63,ekr.20101104091058.4975,ekr.20101104091058.4977,ekr.20101104091058.5019,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
+<v t="ekr.20100805165051.7177"
+expanded="ekr.20101104091058.4977,ekr.20101104091058.5019,"><vh>@file release_notes.txt</vh></v>
+</v>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e322e352e302e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e322e352e302e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e322e352e302e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e312e302e31710b7d710c580b0000007374725f6c656f5f706f73710d680473580b000000302e322e352e302e342e31710e7d710f580b0000007374725f6c656f5f706f737110680473752e"
+marks="ekr.20101014110348.5299,"
+expanded="ekr.20101013072903.5218,"><vh>@file slideshows.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
