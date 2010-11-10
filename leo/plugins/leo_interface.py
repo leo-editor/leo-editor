@@ -1,6 +1,5 @@
-#@+leo-ver=4
-#@+node:@file plugins/leo_interface.py
-#@@language python
+#@+leo-ver=5-thin
+#@+node:ekr.20101110091234.5700: * @file leo_interface.py
 """
 This file implements an interface to XML generation,
 so that the resulting file can be processed by leo.
@@ -16,79 +15,66 @@ how to use these classes.
 Clones:
    If you encounter the first of a set of clones,
    create a leo_node.
-   
+
    If you encounter the same set of clones later,
    create a leo_clone node and refer back to
    the first element.
 """
 
 debug = False
-# In case you must debug this module, you might want
-# to set debug to true.
 
+#@@language python
+#@@tabwidth -4
 #@+others
-
-#@+node:escape
+#@+node:ekr.20101110092416.5699: ** escape
 def escape(s):
     s = s.replace('&', "&amp;")
     s = s.replace('<', "&lt;")
     s = s.replace('>', "&gt;")
     return s
-#@-node:escape
-#@+node:class node_with_parent
+#@+node:ekr.20101110092416.5700: ** class node_with_parent
 class node_with_parent:
-   #@   @+others
-   #@+node:set_parent
+
+   #@+others
+   #@+node:ekr.20101110092416.5702: *3* set_parent
    def set_parent(self, node):
       self.mparent = node
-   #@nonl
-   #@-node:set_parent
-   #@+node:parent
+   #@+node:ekr.20101110092416.5704: *3* parent
    def parent(self):
       return self.mparent
-   #@nonl
-   #@-node:parent
    #@-others
-#@nonl
-#@-node:class node_with_parent
-#@+node:class node
-
+#@+node:ekr.20101110092416.5705: ** class node
 error_count = 0
 
 class node:
    """
-   
+
    Abstrace class for generating xml.
-   
+
    """
-   #@   @+others
-   #@+node:__init__
+   #@+others
+   #@+node:ekr.20101110092416.5707: *3* __init__
    def __init__(self):
        self.children = []
-   #@-node:__init__
-   #@+node:add_child
+   #@+node:ekr.20101110092416.5709: *3* add_child
    def add_child(self, child):
        self.children.append(child)
        child.set_parent(self)
-   #@-node:add_child
-   #@+node:gen
+   #@+node:ekr.20101110092416.5711: *3* gen
    def gen(self, file):
        pass
-   #@-node:gen
-   #@+node:gen_children
+   #@+node:ekr.20101110092416.5713: *3* gen_children
    def gen_children(self, file):
        for child in self.children:
            child.gen(file)
-   #@-node:gen_children
-   #@+node:mark
+   #@+node:ekr.20101110092416.5715: *3* mark
    def mark(self, file, marker, func, newline=True):
        file.write("<%s>" % marker)
        if newline:
            file.write("\n")
        func(file)
        file.write("</%s>\n" % marker)
-   #@-node:mark
-   #@+node:mark_with_attributes
+   #@+node:ekr.20101110092416.5717: *3* mark_with_attributes
    def mark_with_attributes(self, file, marker, attribute_list, func, newline=True):
        write = file.write
        write("<")
@@ -103,8 +89,7 @@ class node:
        write("</%s>" % marker)
        if newline:
            write("\n")
-   #@-node:mark_with_attributes
-   #@+node:mark_with_attributes_short
+   #@+node:ekr.20101110092416.5719: *3* mark_with_attributes_short
    def mark_with_attributes_short(self, file, marker, attribute_list):
        write = file.write
        write("<")
@@ -113,54 +98,40 @@ class node:
        for name, value in attribute_list:
            write('%s="%s" ' % (name, value))
        write("/>\n")
-   #@-node:mark_with_attributes_short
-   #@+node:nthChild
-   # childIndex and nthChild are zero-based.
-   
+   #@+node:ekr.20101110092416.5721: *3* nthChild
    def nthChild (self, n):
      return self.children[n]
-   #@nonl
-   #@-node:nthChild
    #@-others
-#@nonl
-#@-node:class node
-#@+node:class leo_file
-        
+#@+node:ekr.20101110092416.5722: ** class leo_file
 class leo_file(node):
    """
    Leo specific class representing a file.
    """
-   #@   @+others
-   #@+node:headString
+
+   #@+others
+   #@+node:ekr.20101110092416.5724: *3* headString
    def headString(self):
       return "[[This is the file root]]"
-   #@nonl
-   #@-node:headString
-   #@+node:parent
+   #@+node:ekr.20101110092416.5726: *3* parent
    def parent(self):
       return None
-   #@nonl
-   #@-node:parent
-   #@+node:empty
+   #@+node:ekr.20101110092416.5728: *3* empty
    def empty(self, file):
        pass
-   #@-node:empty
-   #@+node:find_panel_settings
+   #@+node:ekr.20101110092416.5730: *3* find_panel_settings
    def find_panel_settings(self, file):
        self.mark(file, "find_string", self.empty, newline=False)
        self.mark(file, "change_string", self.empty, newline=False)
-   #@-node:find_panel_settings
-   #@+node:gen
+   #@+node:ekr.20101110092416.5732: *3* gen
    def gen(self, file):
        global error_count
        error_count = 0
        file.write('<?xml version="1.0" encoding="UTF-8"?>\n')
        self.mark(file, "leo_file", self.gen1)
-   #@-node:gen
-   #@+node:gen1
+   #@+node:ekr.20101110092416.5734: *3* gen1
    def gen1(self, file):
        self.header(file)
-   
+
        # This is a shortcut.
        file.write("""<globals body_outline_ratio="0.5">
    <global_window_position top="0" left="2" height="400" width="700"/>
@@ -174,13 +145,11 @@ class leo_file(node):
           vnode_count = 0
        self.mark(file, "vnodes", self.gen_vnodes)
        self.mark(file, "tnodes", self.gen_tnodes)
-   #@-node:gen1
-   #@+node:gen_tnodes
+   #@+node:ekr.20101110092416.5736: *3* gen_tnodes
    def gen_tnodes(self, file):
        for child in self.children:
            child.gen_tnodes(file)
-   #@-node:gen_tnodes
-   #@+node:gen_vnodes
+   #@+node:ekr.20101110092416.5738: *3* gen_vnodes
    def gen_vnodes(self, file):
       if debug:
          global allvnodes, vnode_stack
@@ -188,76 +157,63 @@ class leo_file(node):
          vnode_stack = []
       for child in self.children:
          child.gen_vnodes(file)
-   #@nonl
-   #@-node:gen_vnodes
-   #@+node:header
+   #@+node:ekr.20101110092416.5740: *3* header
    def header(self, file):
        self.mark_with_attributes_short(file, "leo_header",
                                  (("file_format", "1"),
                                   ("tnodes", repr(self.nr_tnodes())),
                                   ("max_tnode_index", repr(self.max_tnode_index())),
                                   ("clone_windows", "0")))
-   #@-node:header
-   #@+node:max_tnode_index
+   #@+node:ekr.20101110092416.5742: *3* max_tnode_index
    def max_tnode_index(self):
        return leo_node.count
-   #@-node:max_tnode_index
-   #@+node:nr_tnodes
+   #@+node:ekr.20101110092416.5744: *3* nr_tnodes
    def nr_tnodes(self):
        return leo_node.count
-   #@-node:nr_tnodes
-   #@+node:preferences
+   #@+node:ekr.20101110092416.5746: *3* preferences
    def preferences(self, file):
        pass
-   #@-node:preferences
-   #@+node:sss
+   #@+node:ekr.20101110092416.5748: *3* sss
    def sss(self, file):
        file.write("sss")
-   #@-node:sss
    #@-others
-#@nonl
-#@-node:class leo_file
-#@+node:class leo_node
-        
-    
+#@+node:ekr.20101110092416.5749: ** class leo_node
 class leo_node(node, node_with_parent):
    """
    Leo specific class representing a node.
-   
+
    These nodes correspond to tnodes in LEO. 
    They have a headline and a body.
-   
+
    They also represent the (only) vnode in an outline without clones.
-   
+
    """
+
    __super_leo_node = node
    count = 0
-   #@   @+others
-   #@+node:__init__
+
+   #@+others
+   #@+node:ekr.20101110092416.5751: *3* __init__
    def __init__(self, headline='', body=''):
        self.__super_leo_node.__init__(self)
        leo_node.count += 1
        self.nr = leo_node.count
        self.headline =  headline
        self.body = body
-   #@-node:__init__
-   #@+node:bodyString
+   #@+node:ekr.20101110092416.5753: *3* bodyString
    def bodyString(self, body):
        return self.body
-   #@-node:bodyString
-   #@+node:gen_tnodes
+   #@+node:ekr.20101110092416.5755: *3* gen_tnodes
    def gen_tnodes(self, file):
        self.mark_with_attributes(file, "t", (
            ("tx", "T" + repr(self.nr)),
            ), self.gen_tnodes1, newline=False)
        for child in self.children:
            child.gen_tnodes(file)
-   #@-node:gen_tnodes
-   #@+node:gen_tnodes1
+   #@+node:ekr.20101110092416.5757: *3* gen_tnodes1
    def gen_tnodes1(self, file):
        self.write_body_escaped(file)
-   #@-node:gen_tnodes1
-   #@+node:gen_vnodes
+   #@+node:ekr.20101110092416.5759: *3* gen_vnodes
    def gen_vnodes(self, file):
       attributes = [("t", "T" + repr(self.nr))]
       if debug:
@@ -283,83 +239,67 @@ class leo_node(node, node_with_parent):
       if debug:
          del allvnodes[self]
          vnode_stack.pop()
-   #@-node:gen_vnodes
-   #@+node:gen_vnodes1
+   #@+node:ekr.20101110092416.5761: *3* gen_vnodes1
    def gen_vnodes1(self, file):
       self.mark(file, "vh", self.write_headline_escaped, newline=False)
       for child in self.children:
          child.gen_vnodes(file)
-   #@-node:gen_vnodes1
-   #@+node:headString
+   #@+node:ekr.20101110092416.5763: *3* headString
    def headString(self):
        return self.headline
-   #@-node:headString
-   #@+node:set_body
+   #@+node:ekr.20101110092416.5765: *3* set_body
    def set_body(self, body):
        self.body = body
-   #@-node:set_body
-   #@+node:set_headline
+   #@+node:ekr.20101110092416.5767: *3* set_headline
    def set_headline(self, headline):
        self.headline = headline
-   #@-node:set_headline
-   #@+node:write_body_escaped
+   #@+node:ekr.20101110092416.5769: *3* write_body_escaped
    def write_body_escaped(self, file):
        file.write(escape(self.body.encode("UTF-8")))
-   
-   #@-node:write_body_escaped
-   #@+node:write_headline
+
+   #@+node:ekr.20101110092416.5771: *3* write_headline
    def write_headline(self, file):
        file.write(self.headline) 
-   #@-node:write_headline
-   #@+node:write_headline_escaped
+   #@+node:ekr.20101110092416.5773: *3* write_headline_escaped
    def write_headline_escaped(self, file):
       file.write(escape(self.headline.encode("UTF-8")))
-   #@-node:write_headline_escaped
    #@-others
-#@-node:class leo_node
-#@+node:class leo_clone
+#@+node:ekr.20101110092416.5774: ** class leo_clone
 class leo_clone(node_with_parent):
    """
    Class representing a clone.
-   
+
    The (only) data of a clone is the reference to a leo_node.
-   
+
    When you encounter the first clone of a set of clones, generate
    a leo_node. The second clone should then reference this leo_node,
    and contain no other data.
-   
+
    Since clones are indistinguishable, there is really not much to do in
    this class.
    """
-   #@   @+others
-   #@+node:__init__
+
+   #@+others
+   #@+node:ekr.20101110092416.5776: *3* __init__
    def __init__(self, orig):
       self.orig = orig
       self.mparent = None
-   #@nonl
-   #@-node:__init__
-   #@+node:gen_vnodes
+   #@+node:ekr.20101110092416.5778: *3* gen_vnodes
    def gen_vnodes(self, file):
       self.orig.gen_vnodes(file)
       # There is nothing new to do here;
       # just repeat what we did when we encountered
       # the first clone.
-   #@nonl
-   #@-node:gen_vnodes
-   #@+node:gen_tnodes
+   #@+node:ekr.20101110092416.5780: *3* gen_tnodes
    def gen_tnodes(self, file):
       pass
       # the tnodes are generated by the Leo_node
-      
-   #@-node:gen_tnodes
+
    #@-others
-   
-#@-node:class leo_clone
-#@+node:leotree
+#@+node:ekr.20101110092416.5782: ** leotree
 def leotree():
     f = leo_file()
     return f
-#@-node:leotree
 #@-others
 
 if __name__ == "__main__":
@@ -368,8 +308,4 @@ if __name__ == "__main__":
     r = leo_node("Some headline", "some Body")
     f.add_child(r)
     f.gen(sys.stdout)
-   
-
-
-#@-node:@file plugins/leo_interface.py
 #@-leo

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110091234.5689: * @thin debugger_pudb.py
+#@+node:ekr.20101110091234.5689: * @file debugger_pudb.py
 #@+<< docstring >>
 #@+node:ville.20090712141419.5250: ** << docstring >>
 ''' pudb debugger support
