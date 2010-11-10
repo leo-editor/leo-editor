@@ -1,8 +1,5 @@
-#@+leo-ver=4
-#@+node:@file zenity_file_dialogs.py
-#@<< docstring >>
-#@+node:<< docstring >>
-
+#@+leo-ver=5-thin
+#@+node:ekr.20101110095202.5882: * @file zenity_file_dialogs.py
 '''Replace the tk file dialogs on linux with external
 calls to the zenity gtk dialog package.
 
@@ -13,25 +10,16 @@ filters and starting folders can not be specified.
 Despit this, some linux users might prefer it to the
 tk dialogs.
 '''
-#@-node:<< docstring >>
-#@nl
 
 #@@language python
 #@@tabwidth -4
 
 __version__ = "0.1"
-#@<< version history >>
-#@+node:<< version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 plumloco: Initial version
-#@-at
-#@nonl
-#@-node:<< version history >>
-#@nl
-#@<< imports >>
-#@+node:<< imports >>
+
+ok = None
+
+#@+<< imports >>
+#@+node:ekr.20101110095557.5884: ** << imports >>
 import leoGlobals as g
 import leoPlugins
 
@@ -50,17 +38,11 @@ if trace:
         print('subprocess imported ok')
     else:
         g.trace('failed to import subprocess')
-
-
-#@-node:<< imports >>
-#@nl
-
+#@-<< imports >>
 
 #@+others
-#@+node:testForZenity
-
+#@+node:ekr.20101110095557.5886: ** testForZenity
 def testForZenity():
-
 
     command = [ 'which', 'zenity']
 
@@ -78,12 +60,10 @@ def testForZenity():
         g.trace('\n\tCan\'t find Zenity!')
 
     return not ret
-
-#@-node:testForZenity
-#@+node:init
+#@+node:ekr.20101110095557.5888: ** init
 def init ():
     global ok
-	
+
     if g.unitTesting:
         return False
 
@@ -96,8 +76,7 @@ def init ():
     else:
         g.trace('failed to load zenity')
     return ok
-#@-node:init
-#@+node:onStart2
+#@+node:ekr.20101110095557.5890: ** onStart2
 def onStart2 (tag, keywords):
 
     """
@@ -107,11 +86,8 @@ def onStart2 (tag, keywords):
 
     g.funcToMethod(runOpenFileDialog,g.app.gui)
     g.funcToMethod(runSaveFileDialog,g.app.gui)
-#@nonl
-#@-node:onStart2
-#@+node:callZenity
+#@+node:ekr.20101110095557.5892: ** callZenity
 def callZenity(title, multiple=False, save=False, test=False):
-
 
     command = [ 'zenity', '--file-selection', '--title=%s'%title]
 
@@ -140,10 +116,7 @@ def callZenity(title, multiple=False, save=False, test=False):
         return filename.split('|')
 
     return filename
-
-
-#@-node:callZenity
-#@+node:runOpenFileDialog
+#@+node:ekr.20101110095557.5894: ** runOpenFileDialog
 def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=False):
 
     """Call zenity's open file(s) dialog."""
@@ -153,9 +126,7 @@ def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=F
     initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
 
     return callZenity(title, multiple=multiple)
-
-#@-node:runOpenFileDialog
-#@+node:runSaveFileDialog
+#@+node:ekr.20101110095557.5896: ** runSaveFileDialog
 def runSaveFileDialog(initialfile=None,title=None,filetypes=None,defaultextension=None):
 
     """Call zenity's save file dialog."""
@@ -165,10 +136,5 @@ def runSaveFileDialog(initialfile=None,title=None,filetypes=None,defaultextensio
     initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
 
     return callZenity(title, save=True)
-
-
-#@-node:runSaveFileDialog
 #@-others
-
-#@-node:@file zenity_file_dialogs.py
 #@-leo

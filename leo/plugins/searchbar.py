@@ -1,46 +1,28 @@
-#@+leo-ver=4-thin
-#@+node:bobjack.20080616185440.2:@thin searchbar.py
+#@+leo-ver=5-thin
+#@+node:ekr.20101110095202.5852: * @file searchbar.py
+"""A plugin to emulate the 'Find' panel in an iconBar."""
+
 #@@language python
 #@@tabwidth -4
 
-#@<< docstring >>
-#@+node:bobjack.20080510064957.114:<< docstring >>
-#@@nocolor
-"""
-A plugin to emulate the 'Find' panel in an iconBar.
-
-
-"""
-
-#@-node:bobjack.20080510064957.114:<< docstring >>
-#@nl
-
 __version__ = "0.1"
 __plugin_name__ = 'Search Bar'
-
 __plugin_id__ = 'Searchbar'
-
-
 
 controllers = {}
 
-#@<< version history >>
-#@+node:bobjack.20080510064957.115:<< version history >>
+#@+<< version history >>
+#@+node:bobjack.20080510064957.115: ** << version history >>
 #@+at
 # 0.1 bobjack:
 #     - initial version
-#@-at
-#@-node:bobjack.20080510064957.115:<< version history >>
-#@nl
-#@<< todo >>
-#@+node:bobjack.20080510064957.116:<< todo >>
+#@-<< version history >>
+#@+<< todo >>
+#@+node:bobjack.20080510064957.116: ** << todo >>
 #@+at
-#@-at
-#@nonl
-#@-node:bobjack.20080510064957.116:<< todo >>
-#@nl
-#@<< imports >>
-#@+node:bobjack.20080510064957.117:<< imports >>
+#@-<< todo >>
+#@+<< imports >>
+#@+node:bobjack.20080510064957.117: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -58,38 +40,32 @@ except ImportError:
     Image = ImageTk = None
 
 import rClickBasePluginClasses as baseClasses
-#@nonl
-#@-node:bobjack.20080510064957.117:<< imports >>
-#@nl
-
-#@<< required ivars >>
-#@+node:bobjack.20080510064957.118:<< required ivars >>
+#@-<< imports >>
+#@+<< required ivars >>
+#@+node:bobjack.20080510064957.118: ** << required ivars >>
 #@+at
-# This is a list of ivars that the pluginController must have and the type of 
-# objects they are allowed to contain.
+# This is a list of ivars that the pluginController must have and the type of objects they are allowed to contain.
 # 
 #     (ivar, type)
 # 
 # where type may be a tuple and False indicates any type will do
 # 
 # The list is used by unit tests.
-#@-at
 #@@c
 
 requiredIvars = (
 
 )
-#@nonl
-#@-node:bobjack.20080510064957.118:<< required ivars >>
-#@nl
+#@-<< required ivars >>
 
-allowedButtonConfigItems = ('image', 'bg', 'fg', 'justify', 'padx', 'pady', 'relief', 'text', 'command', 'state')
-
-
+allowedButtonConfigItems = (
+    'image', 'bg', 'fg', 'justify', 'padx', 'pady', 
+    'relief', 'text', 'command', 'state',
+)
 
 #@+others
-#@+node:bobjack.20080510064957.119:Module-level
-#@+node:bobjack.20080510064957.120:init
+#@+node:bobjack.20080510064957.119: ** Module-level
+#@+node:bobjack.20080510064957.120: *3* init
 def init ():
     """Initialize and register plugin."""
 
@@ -113,8 +89,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@-node:bobjack.20080510064957.120:init
-#@+node:bobjack.20080510064957.121:onPreCreate
+#@+node:bobjack.20080510064957.121: *3* onPreCreate
 def onPreCreate (tag, keys):
     """Handle before-create-leo-frame hook."""
 
@@ -123,9 +98,7 @@ def onPreCreate (tag, keys):
         return
 
     pass
-#@nonl
-#@-node:bobjack.20080510064957.121:onPreCreate
-#@+node:bobjack.20080510064957.105:onCreate
+#@+node:bobjack.20080510064957.105: *3* onCreate
 def onCreate (tag, keys):
     """Handle after-create-leo-frame hook.
 
@@ -145,8 +118,7 @@ def onCreate (tag, keys):
 
 
 
-#@-node:bobjack.20080510064957.105:onCreate
-#@+node:bobjack.20080510064957.122:onClose
+#@+node:bobjack.20080510064957.122: *3* onClose
 def onClose (tag, keys):
 
     """Tell controller to clean up then destroy it."""
@@ -169,17 +141,13 @@ def onClose (tag, keys):
         controller.onClose()
     finally:
         controller = None
-#@-node:bobjack.20080510064957.122:onClose
-#@-node:bobjack.20080510064957.119:Module-level
-#@+node:bobjack.20080516105903.12:class searchbarCommandClass
+#@+node:bobjack.20080516105903.12: ** class searchbarCommandClass
 class searchbarCommandClass(baseClasses.pluginCommandClass):
 
     """Base class for all commands defined in the searchbar.py plugin."""
 
     pass
-#@nonl
-#@-node:bobjack.20080516105903.12:class searchbarCommandClass
-#@+node:bobjack.20080617071658.8:class SearchbarEntryWidget
+#@+node:bobjack.20080617071658.8: ** class SearchbarEntryWidget
 class SearchbarEntryWidget(Tk.Frame, object):
 
     """A subclass of Tk.Frame that is parented on c.frame.top.
@@ -188,8 +156,8 @@ class SearchbarEntryWidget(Tk.Frame, object):
 
     """
 
-    #@    @+others
-    #@+node:bobjack.20080617071658.9:__init__
+    #@+others
+    #@+node:bobjack.20080617071658.9: *3* __init__
     def __init__(self, c):
 
         self.c = c
@@ -219,7 +187,7 @@ class SearchbarEntryWidget(Tk.Frame, object):
         self.createBindings()
 
         self.leoDragHandle = self.button
-    #@+node:bobjack.20080618081827.5:createBindings
+    #@+node:bobjack.20080618081827.5: *4* createBindings
     def createBindings (self):
 
         c = self.c ; k = c.k
@@ -259,9 +227,7 @@ class SearchbarEntryWidget(Tk.Frame, object):
 
         for event, callback in table:
             c.bind(self.entry,event,callback)
-    #@-node:bobjack.20080618081827.5:createBindings
-    #@-node:bobjack.20080617071658.9:__init__
-    #@+node:bobjack.20080617071658.12:detachWidget
+    #@+node:bobjack.20080617071658.12: *3* detachWidget
     def detachWidget(self):
 
         """Remove this widget from its containing iconBar."""
@@ -276,8 +242,7 @@ class SearchbarEntryWidget(Tk.Frame, object):
 
     removeWidget = detachWidget
 
-    #@-node:bobjack.20080617071658.12:detachWidget
-    #@+node:bobjack.20080617071658.13:deleteButton
+    #@+node:bobjack.20080617071658.13: *3* deleteButton
     def deleteButton(self, event=None):
 
         """Delete the given button.
@@ -290,8 +255,7 @@ class SearchbarEntryWidget(Tk.Frame, object):
         self.detachWidget()
 
 
-    #@-node:bobjack.20080617071658.13:deleteButton
-    #@+node:bobjack.20080617071658.14:onTextChanged
+    #@+node:bobjack.20080617071658.14: *3* onTextChanged
     def onTextChanged(self, *args):
 
         c = self.c
@@ -302,13 +266,11 @@ class SearchbarEntryWidget(Tk.Frame, object):
 
         slave.setAllText(text)
 
-    #@-node:bobjack.20080617071658.14:onTextChanged
-    #@+node:bobjack.20080617170156.14:onRightClick
+    #@+node:bobjack.20080617170156.14: *3* onRightClick
     def onRightClick(self, event):
 
         g.doHook('rclick-popup', c=self.c, event=event, context_menu=self.entry_menu)
-    #@-node:bobjack.20080617170156.14:onRightClick
-    #@+node:bobjack.20080618081827.6:onReturn
+    #@+node:bobjack.20080618081827.6: *3* onReturn
     def onReturn(self, event=None):
 
         c = self.c
@@ -317,10 +279,8 @@ class SearchbarEntryWidget(Tk.Frame, object):
 
         #c.outerUpdate()
         return 'break'
-    #@-node:bobjack.20080618081827.6:onReturn
     #@-others
-#@-node:bobjack.20080617071658.8:class SearchbarEntryWidget
-#@+node:bobjack.20080617071658.25:class FindEntry
+#@+node:bobjack.20080617071658.25: ** class FindEntry
 class FindEntry(SearchbarEntryWidget):
 
     labelText = 'Find'
@@ -332,8 +292,7 @@ class FindEntry(SearchbarEntryWidget):
     context_menu='searchbar-find-button-menu'
     entry_menu = 'searchbar-find-entry-menu'
 
-#@-node:bobjack.20080617071658.25:class FindEntry
-#@+node:bobjack.20080617071658.26:class ChangeEntry
+#@+node:bobjack.20080617071658.26: ** class ChangeEntry
 class ChangeEntry(SearchbarEntryWidget):
 
     labelText = 'Change'
@@ -344,23 +303,21 @@ class ChangeEntry(SearchbarEntryWidget):
 
     context_menu = 'searchbar-change-button-menu'
     entry_menu = 'searchbar-change-entry-menu'
-#@-node:bobjack.20080617071658.26:class ChangeEntry
-#@+node:bobjack.20080510064957.123:class pluginController
+#@+node:bobjack.20080510064957.123: ** class pluginController
 class pluginController(baseClasses.basePluginController):
 
     """A per commander controller."""
 
     commandPrefix = 'searchbar'
 
-    #@    << command list >>
-    #@+node:bobjack.20080617163822.2:<< command list >>
+    #@+<< command list >>
+    #@+node:bobjack.20080617163822.2: *3* << command list >>
     commandList = (
         'toggle-searchbar',
     )
-    #@-node:bobjack.20080617163822.2:<< command list >>
-    #@nl
-    #@    << deault context menus >>
-    #@+node:bobjack.20080617163822.3:<< deault context menus >>
+    #@-<< command list >>
+    #@+<< deault context menus >>
+    #@+node:bobjack.20080617163822.3: *3* << deault context menus >>
     defaultContextMenus = {
 
         'searchbar-find-button-menu': [
@@ -383,16 +340,14 @@ class pluginController(baseClasses.basePluginController):
             ('&', 'edit-menu'),
         ]
     }
-    #@-node:bobjack.20080617163822.3:<< deault context menus >>
-    #@nl
+    #@-<< deault context menus >>
 
-    #@    @+others
-    #@+node:bobjack.20080510064957.125:postCreate
+    #@+others
+    #@+node:bobjack.20080510064957.125: *3* postCreate
     def postCreate(self):
 
         self.createBarWidgets()
-    #@-node:bobjack.20080510064957.125:postCreate
-    #@+node:bobjack.20080517142334.2:createBarWidgets
+    #@+node:bobjack.20080517142334.2: *3* createBarWidgets
     def createBarWidgets(self):
 
         c = self.c 
@@ -428,14 +383,13 @@ class pluginController(baseClasses.basePluginController):
         )
         self.bar.addWidget(btn)
 
-    #@-node:bobjack.20080517142334.2:createBarWidgets
-    #@+node:bobjack.20080510064957.130:Generator Commands
-    #@+node:bobjack.20080616185440.10:toggle-searchbar
+    #@+node:bobjack.20080510064957.130: *3* Generator Commands
+    #@+node:bobjack.20080616185440.10: *4* toggle-searchbar
     class toggleSearchbarCommandClass(searchbarCommandClass):
 
         """Minibuffer command to toggle the visibility of the searchbar."""
 
-        #@    @+others
+        #@+others
         #@-others
 
         def doCommand(self, keywords):
@@ -459,12 +413,7 @@ class pluginController(baseClasses.basePluginController):
                 g.trace('illegal phase')
                 pass
 
-    #@-node:bobjack.20080616185440.10:toggle-searchbar
-    #@-node:bobjack.20080510064957.130:Generator Commands
-    #@+node:bobjack.20080510064957.133:Invocation Commands
-    #@-node:bobjack.20080510064957.133:Invocation Commands
+    #@+node:bobjack.20080510064957.133: *3* Invocation Commands
     #@-others
-#@-node:bobjack.20080510064957.123:class pluginController
 #@-others
-#@-node:bobjack.20080616185440.2:@thin searchbar.py
 #@-leo
