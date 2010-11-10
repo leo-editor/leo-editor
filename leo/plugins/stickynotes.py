@@ -532,9 +532,12 @@ class Tabula(QMainWindow):
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
         geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items() if n.isVisible())
         geoms['mainwindow'] = self.saveState()
-        self.c.cacher.db['tabulanotes'] = geoms
+        if self.c.cacher.db:
+            self.c.cacher.db['tabulanotes'] = geoms
 
     def load_states(self):
+        if not self.c.cacher.db:
+            return
         try:
 
             stored = self.c.cacher.db['tabulanotes']
