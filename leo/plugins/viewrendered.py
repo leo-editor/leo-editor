@@ -24,10 +24,10 @@ and::
 
 will look something like:
 
-    Heading
-    -------
+Heading
+-------
 
-    `This` is **really** a line of text.
+`This` is **really** a line of text.
 
 '''
 #@-<< docstring >>
