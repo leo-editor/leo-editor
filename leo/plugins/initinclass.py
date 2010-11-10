@@ -1,3 +1,5 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20101110092851.5812: * @file initinclass.py
 """Move __init__ into the class node body in python @auto imports
 
 This makes it easier to keep the instance variable docs in the class
@@ -11,11 +13,17 @@ the order of declarations if other methods are declared before __init__.
 
 __version__ = "0.1"
 __plugin_name__ = "__init__ in class"
+
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
+
+#@@language python
+#@@tabwidth -4
+#@+others
+#@+node:ekr.20101110093301.5816: ** InitInClass
 def InitInClass(tag, keywords):
     '''Move __init__ into the class node body in python @auto imports'''
-    
+
     cull = []  # __init__ nodes to remove
 
     parent = keywords['p']
@@ -28,7 +36,7 @@ def InitInClass(tag, keywords):
                 new = '\n'.join(['    '+i if i.strip() else ''
                     for i in p.bodyString().strip().split('\n')])
                 new = '\n%s\n' % new
-                
+
                 # insert before @others
                 for n, i in enumerate(old):
                     if i.strip() == '@others':
@@ -40,7 +48,7 @@ def InitInClass(tag, keywords):
                 else:
                     old.append(new)
                 parent.setBodyString('\n'.join(old))
-        
+
             moveInit(p)
 
     moveInit(parent)
@@ -48,10 +56,10 @@ def InitInClass(tag, keywords):
     cull.reverse()  # leaves first
     for i in cull:
         i._unlink()
-
-
+#@+node:ekr.20101110093301.5817: ** init
 def init():
     leoPlugins.registerHandler("after-auto", InitInClass)
     g.plugin_signon(__name__)
     return True
-
+#@-others
+#@-leo

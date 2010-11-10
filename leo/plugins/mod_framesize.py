@@ -1,22 +1,17 @@
-#@+leo-ver=4-thin
-#@+node:ville.20090726125902.5269:@thin mod_framesize.py
-#@@language python
-#@@tabwidth -4
-
-#@<< docstring >>
-#@+node:ville.20090726125902.5295:<< docstring >>
+#@+leo-ver=5-thin
+#@+node:ekr.20101110093301.5818: * @file mod_framesize.py
 """ Always use the same, hardcoded frame size 
 
 Prevents Leo from setting custom frame size (e.g. from an external .leo document)
 
 """
-#@nonl
-#@-node:ville.20090726125902.5295:<< docstring >>
-#@nl
+
+#@@language python
+#@@tabwidth -4
 #@+others
-#@+node:ville.20090726125902.5293:init
+#@+node:ville.20090726125902.5293: ** init
 def init():
-    
+
     from leo.core import leoGlobals as g
 
     ok = g.app.gui.guiName() == "qt"
@@ -27,14 +22,11 @@ def init():
     setattr(qtGui.leoQtFrame, 'setTopGeometry', setTopGeometry_mod_framesize)
     g.plugin_signon(__name__)
     return True
-#@-node:ville.20090726125902.5293:init
-#@+node:ville.20090726125902.5294:setTopGeometry_mod_framesize
+#@+node:ville.20090726125902.5294: ** setTopGeometry_mod_framesize
 def setTopGeometry_mod_framesize(self, *args):
+
     """ Monkeypatced version of setTopGeometry """
 
     self.top.resize(1000,700)
-
-#@-node:ville.20090726125902.5294:setTopGeometry_mod_framesize
 #@-others
-#@-node:ville.20090726125902.5269:@thin mod_framesize.py
 #@-leo
