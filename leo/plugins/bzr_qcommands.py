@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20101101144917.14759: * @file bzr_qcommands.py
+#@+node:ekr.20101110084839.5682: * @file bzr_qcommands.py
 #@+<< docstring >>
 #@+node:tbrown.20101101135104.15787: ** << docstring >>
 """Add a node context menu with all the bzr q* commands (bzr qt interface)
