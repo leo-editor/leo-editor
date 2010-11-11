@@ -39,6 +39,8 @@ try:
     Gato_ok = True
 except:
     Gato_ok = False
+    Gred = None
+    Graph = None
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20071004090250.3: ** << version history >>
@@ -71,13 +73,15 @@ except:
 #@+node:ekr.20071004090250.9: ** init
 def init():
 
-    if not Gato_ok:
-        g.es('graphed: Gato import failed, functions reduced',color='red')
+    # Important: Gato uses Tk
+    # Using Gato with the Qt gui will hang Leo.
+    ok = Gato_ok and g.app.gui.guiName() == 'tkinter'
 
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.plugin_signon(__name__)
+    if ok:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
 
-    return True
+    return ok
 #@+node:ekr.20071004090250.10: ** onCreate
 def onCreate (tag,key):
     GraphEd(key['c'])
@@ -448,14 +452,17 @@ class GraphEd:
 
         tgraph = tGraph()
         splitL = g.app.gui.runAskYesNoDialog(self.c,
-            'Split labels with spaces?') 
+            'Split labels with spaces?',
+            'Split labels with spaces?'
+        )
+
         tgraph.addGraphFromPosition(p, splitLabels = (splitL == 'yes'))
 
         #X # make sure fileIndex is set on everything
         #X for p2 in p.self_and_subtree():
         #X     self.setIndex(p2)
 
-        self.graph = Graph.Graph()
+        self.graph = Graph()
         # graph.simple = 0  # only blocks self loops?
         self.graph.directed = 1
 

@@ -92,7 +92,6 @@ import os
 import glob
 import re
 
-# Whatever other imports your plugins uses.
 try:
     Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
     Pmw = g.importExtension("Pmw",    pluginName=__name__,verbose=True)    
@@ -107,7 +106,7 @@ helpers = {}
 #@+node:pap.20051010170720.4: *3* init
 def init ():
 
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and Pmw and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)

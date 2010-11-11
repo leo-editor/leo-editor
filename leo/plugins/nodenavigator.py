@@ -53,7 +53,8 @@ USE_FIXED_SIZES = sys.platform != "darwin"
 #@+node:ekr.20050311090939.4: ** init
 def init ():
 
-    ok = Tk and g.app.gui.guiName() == "tkinter" # OK for unit testing.
+    ok = Tk and g.app.gui.guiName() == "tkinter"
+        # OK for unit testing.
 
     if ok:
         g.registerHandler(('new','open2'), onCreate)

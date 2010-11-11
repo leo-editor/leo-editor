@@ -282,39 +282,38 @@ rodrigob at elo dot utfsm dot cl
 # 
 # RodrigoB.
 #@+node:ekr.20050402080206.7: *5* Notes
-#@@nocolor
+#@@nocolor-node
 
-25/06/03 Copying of the main algorithms into the code. RodrigoB.
-01/07/03 Programming. RodrigoB.
-02/07/03 Programming. RodrigoB.
-05/07/03 Reading about the garbage collector stuff. RodrigoB.
-07/07/03 Programming. RodrigoB.
-08/07/03 Programming, operations herit from dict, support splitted ops, working on tests, syntax debugging. RodrigoB.
-09/07/03 Implementing operations relations, starting debug iterations based on unittests.
-		 Added another parameters form for receive_operation. RodrigoB.
-10/07/03 Debugging conceptual aspects; management of timestamps on transformed operations. minor bugs fixed. Splitted special cases appears.RodrigoB.
-12/07/03 Searching bugs. bugfixes. RodrigoB.
-13/07/03 Implementing the garbage collector. Searching bugs. bugfixes. Testing garbage collector. RA problems. RodrigoB.
-14/07/03 (vive la France!) Testing an idea (__eq__). Little edit to the root docustring. RodrigoB.
-15/07/03 Hunting the Last Bug. Eureka. First successful execution. Code cleanup. Using unittest module. Release 1. RodrigoB.
-
-Todo
-
-- Find a good TestConcurrentEditable2 to test LostInformation cases
-
-- LI is absolutelly not verified
-- Find the Recover_LI specifications.
-- Find a better way to quit the ambiguities on the 'if else {}' operation pertenence. (save_RA, save_LI conditions ?)
-
-- collect garbage do not work anymore exactly like in the example. (is this a problem ?)
-
-- Implement ConcurrentEditableServer
-- Implement the  client-server tests
-
-- Debug.
-
-#@@color
-#@@language python
+#@+at
+# 
+# 25/06/03 Copying of the main algorithms into the code. RodrigoB.
+# 01/07/03 Programming. RodrigoB.
+# 02/07/03 Programming. RodrigoB.
+# 05/07/03 Reading about the garbage collector stuff. RodrigoB.
+# 07/07/03 Programming. RodrigoB.
+# 08/07/03 Programming, operations herit from dict, support splitted ops, working on tests, syntax debugging. RodrigoB.
+# 09/07/03 Implementing operations relations, starting debug iterations based on unittests.
+# 		 Added another parameters form for receive_operation. RodrigoB.
+# 10/07/03 Debugging conceptual aspects; management of timestamps on transformed operations. minor bugs fixed. Splitted special cases appears.RodrigoB.
+# 12/07/03 Searching bugs. bugfixes. RodrigoB.
+# 13/07/03 Implementing the garbage collector. Searching bugs. bugfixes. Testing garbage collector. RA problems. RodrigoB.
+# 14/07/03 (vive la France!) Testing an idea (__eq__). Little edit to the root docustring. RodrigoB.
+# 15/07/03 Hunting the Last Bug. Eureka. First successful execution. Code cleanup. Using unittest module. Release 1. RodrigoB.
+# 
+# Todo
+# 
+# - Find a good TestConcurrentEditable2 to test LostInformation cases
+# 
+# - LI is absolutelly not verified
+# - Find the Recover_LI specifications.
+# - Find a better way to quit the ambiguities on the 'if else {}' operation pertenence. (save_RA, save_LI conditions ?)
+# 
+# - collect garbage do not work anymore exactly like in the example. (is this a problem ?)
+# 
+# - Implement ConcurrentEditableServer
+# - Implement the  client-server tests
+# 
+# - Debug.
 #@-others
 #@-<<docs>>
 

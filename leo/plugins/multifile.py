@@ -62,9 +62,8 @@ import weakref
 
 try:
     import tkFileDialog
-    ok = True
 except ImportError:
-    ok = False
+    tkFileDialog = None
 #@-<< imports >>
 
 __version__ = ".9"
@@ -99,9 +98,7 @@ originalOpenFileForWriting = None
 #@+node:ekr.20050226115130.1: ** init & helpers
 def init ():
 
-    global ok
-
-    ok = ok and g.app.gui.guiName() == "tkinter"
+    ok = tkFileDialog and g.app.gui.guiName() == "tkinter"
 
     if ok:
         # Append to the module list, not to the g.copy.

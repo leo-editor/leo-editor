@@ -103,7 +103,7 @@ __version__ = '1.8'
 #@+node:ekr.20050311092840: ** init
 def init ():
 
-    ok = tkFileDialog and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting\
+    ok = tkFileDialog and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
         # Not Ok for unit testing.
 
     if ok:

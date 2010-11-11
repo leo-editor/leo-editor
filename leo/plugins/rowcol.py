@@ -27,6 +27,16 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< version history >>
 
 #@+others
+#@+node:ekr.20101110150056.9475: ** init
+def init():
+
+    ok = Tk and g.app.gui.guiName() == "tkinter"
+
+    if ok:
+        g.registerHandler("after-create-leo-frame",onCreate)
+        g.plugin_signon("rowcol")
+
+    return ok
 #@+node:ekr.20041120114651.1: ** onCreate
 def onCreate (tag,keywords):
 
@@ -94,13 +104,4 @@ class rowColClass:
             self.label.after(500,self.update)
     #@-others
 #@-others
-
-if Tk: # OK for unit testing.
-
-    if g.app.gui is None: 
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
-        g.registerHandler("after-create-leo-frame",onCreate)
-        g.plugin_signon("rowcol")
 #@-leo

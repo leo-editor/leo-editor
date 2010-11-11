@@ -49,7 +49,7 @@ def init():
 
     # Equivalent functionality comes with contextmenu.py on qt ui.
 
-    ok = g.app.gui.guiName() == 'tkinter'
+    ok = Tk and g.app.gui.guiName() == 'tkinter'
 
     if ok:
         g.app.hasOpenWithMenu = True

@@ -91,9 +91,11 @@ import leo.core.leoGlobals as g
 
 import mod_scripting
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-
-import rClickBasePluginClasses as baseClasses
+try:
+    import rClickBasePluginClasses as baseClasses
+        # This requires Tk.
+except ImportError:
+    rClickBasePluginClasses = None
 #@-<< imports >>
 
 __version__ = "0.6"
@@ -119,7 +121,11 @@ __version__ = "0.6"
 #@+node:ekr.20060601151845.4: ** init
 def init ():
 
-    ok = Tk and mod_scripting and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
+    ok = (
+        rClickBasePluginClasses and mod_scripting and
+        g.app.gui.guiName() == "tkinter" and
+        not g.app.unitTesting
+    )
 
     if ok:
 

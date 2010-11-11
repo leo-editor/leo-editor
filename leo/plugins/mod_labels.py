@@ -43,9 +43,6 @@ import leo.plugins.tkGui as tkGui
 leoTkinterDialog = tkGui.leoTkinterDialog
 tkinterListBoxDialog = tkGui.tkinterListBoxDialog
 
-if 0: # Not anymore
-    from leoGlobals import * # required by read :-(.
-
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 Pmw = g.importExtension("Pmw",pluginName=__name__,verbose=True)
 
