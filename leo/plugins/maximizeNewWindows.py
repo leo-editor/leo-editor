@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 
-__version__ = "1.3"
+__version__ = "1.4"
 #@+<< version history >>
 #@+node:ekr.20040915073259.2: ** << version history >>
 #@+at
@@ -21,23 +21,18 @@ __version__ = "1.3"
 #         if c and c.exists and c.frame and not c.frame.isNullFrame:
 #     - Added init function.
 # 1.3 EKR: Now works on Linux.
+# 1.4 EKR: Gui independent.
 #@-<< version history >>
-#@+<< imports >>
-#@+node:ekr.20070602072200: ** << imports >>
-import leo.core.leoGlobals as g
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@-<< imports >>
+import leo.core.leoGlobals as g
 
 #@+others
 #@+node:ekr.20070602072200.1: ** init
 def init():
-    ok = Tk and not g.app.unitTesting
-    if ok:
-        # g.registerHandler("after-create-leo-frame", maximize_window)
-        g.registerHandler(('new','open2'), maximize_window)
-        g.plugin_signon(__name__)
-    return ok
+
+    g.registerHandler(('new','open2'), maximize_window)
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20070602072200.2: ** maximize_window
 def maximize_window(tag, keywords):
 

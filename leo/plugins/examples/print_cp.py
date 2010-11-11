@@ -1,31 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060621123339: * @file examples/print_cp.py
-#@+<< docstring >>
-#@+node:ekr.20060621123339.1: ** << docstring >>
 '''A plugin showing how to convert an @button node to a plugin.
 
 This plugin registers the 'print-cp' minibuffer command.'''
-#@-<< docstring >>
 
 __version__ = '0.1'
-#@+<< version history >>
-#@+node:ekr.20060621123339.2: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# v 0.1: Initial version.
-#@-<< version history >>
 
-#@+<< imports >>
-#@+node:ekr.20060621123339.3: ** << imports >>
 import leo.core.leoGlobals as g
-
-if 0:
-    Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)
-    Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
-
-# Whatever other imports your plugins uses.
-#@-<< imports >>
 
 #@+others
 #@+node:ekr.20060621123339.4: ** init

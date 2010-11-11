@@ -57,6 +57,37 @@ navigate to the nodes 'by hand' by following the arrows in the UNL.
 #@@tabwidth -4
 
 __version__ = "0.11"
+#@+<< todo >>
+#@+node:rogererens.20041014110709: ** << todo >>
+#@@nocolor-node
+#@+at
+# 
+# How about other plugins that create a status line? Should I test whether the
+# status line is already created?
+# 
+# Don't know exactly yet about the interaction with other plugins. The info in the
+# status line may be overwritten by them. That's fine with me: I can always click
+# on the icon of the node again to show the info again.
+# 
+# Keep the pane of the UNL referred to on top (now the pane with the referring
+# node stays on top). Maybe this should be a settings-dependent behaviour. Could
+# this be solved by using the 'onCreate' idiom and a UNLclass?
+# 
+# Find out about the difference between the event 'select2' and 'select3'.
+# 
+# A UNL checker script would be handy to check whether all references are still
+# valid.
+# 
+# Deal with path-separators for various platforms?
+# 
+# Handle relative paths?
+# 
+# Introduce a menu item to improve documentation? By firing up a browser,
+# directing it to leo on sourceforge (sourceforge userid needed?). EKR could start
+# up a new thread beforehand, "documentation improvements", where a new message
+# might be posted with the relevant UNL placed automatically in the text box. Then
+# the user just needs to type in his/her comments and post the message.
+#@-<< todo >>
 #@+<< version history >>
 #@+node:rogererens.20041014104353: ** << version history >>
 #@+at

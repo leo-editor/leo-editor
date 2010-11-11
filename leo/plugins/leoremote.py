@@ -43,12 +43,6 @@ import leo.core.leoGlobals as g
 
 from leo.external import lproto
 import os, sys, tempfile
-
-# Whatever other imports your plugins uses.
-
-#g.assertUi('qt')
-
-#from PyQt4 import QtGui, QtCore
 #@-<< imports >>
 
 #@+others

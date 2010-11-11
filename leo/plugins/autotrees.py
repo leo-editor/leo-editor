@@ -74,7 +74,16 @@ import re
 import sys
 import glob
 
-Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+# Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+
+try:
+    plugin_manager = __import__("plugin_manager")
+except ImportError as err:
+    # g.es("Autotrees did not load plugin manager: %s" % (err,), color="red")
+    plugin_manager = None
+
+
+
 #@-<< imports >>
 
 #@+<< version history >>
@@ -122,22 +131,13 @@ class BadHandler(AutoTreeError):
 #@+node:ekr.20050329082101.121: ** init
 def init():
 
-    ok = Tk is not None
+    ok = plugin_manager is not None
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            if 0: # Use this if you want to create the commander class before the frame is fully created.
-                g.registerHandler('before-create-leo-frame',onCreate)
-            else: # Use this if you want to create the commander class after the frame is fully created.
-                g.registerHandler('after-create-leo-frame',onCreate)
-            g.plugin_signon(__name__)
-        else:
-            g.es("autotrees requires Tkinter",color='blue')
+        g.registerHandler('after-create-leo-frame',onCreate)
+        g.plugin_signon(__name__)
+    else:
+        g.es_print('autotrees.py requires the plugins_manager plugin')
 
     return ok
 #@+node:ekr.20050329082101.122: ** onCreate

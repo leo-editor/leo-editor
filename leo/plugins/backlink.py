@@ -1,11 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20081223111325.3: * @file backlink.py
+'''Backlink - allow arbitrary links between nodes
+'''
+
+# **Important**: this plugin is gui-independent.
+
 #@@language python
 #@@tabwidth -4
 #@+others
 #@+node:ekr.20090616105756.3939: ** backlink declarations
-'''Backlink - allow arbitrary links between nodes
-'''
 
 # Notes
 # 

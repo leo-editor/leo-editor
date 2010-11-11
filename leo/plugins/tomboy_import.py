@@ -46,14 +46,10 @@ import HTMLParser
 #@+node:ville.20090503124249.5: ** init
 def init ():
 
-    ok = True
+    g.registerHandler('after-create-leo-frame',onCreate)
+    g.plugin_signon(__name__)
 
-    if ok:
-
-        g.registerHandler('after-create-leo-frame',onCreate)
-        g.plugin_signon(__name__)
-
-    return ok
+    return True
 #@+node:ville.20090503124249.6: ** onCreate
 def onCreate (tag, keys):
 

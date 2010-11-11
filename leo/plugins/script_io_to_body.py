@@ -10,8 +10,6 @@ __version__ = "1.5"
 #@+<< imports >>
 #@+node:ekr.20050101090207.4: ** << imports >>
 import leo.core.leoGlobals as g
-
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20071212114235: ** << version history >>
@@ -19,20 +17,12 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@+at
 # 
 # 1.5 EKR: A complete rewrite. Now works with Leo 4.4.5 code base.
+# 2.0 EKR: Gui independent.
 #@-<< version history >>
 
 #@+others
 #@+node:ekr.20071025195133: ** init
 def init():
-
-    ok = Tk and not g.app.unitTesting
-        # Not for unit testing: modifies core classes.
-    if not ok: return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() != "tkinter": return False
 
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)

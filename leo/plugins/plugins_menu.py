@@ -79,6 +79,7 @@ Some names defined at the top level have special significance.
 #@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
 
+# **Important**: this plugin is gui-independent.
 if g.app.gui.guiName() == 'tkinter':
     if g.isPython3:
         Tk = None

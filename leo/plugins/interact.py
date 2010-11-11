@@ -1,10 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20090513125417.5244: * @file interact.py
-#@@language python
-#@@tabwidth -4
-#@+others
-#@+node:tbrown.20090603104805.4937: ** interact declarations
-"""Add buttons so leo can interact with command line environments.
+#@+<< docstring >>
+#@+node:tbrown.20090603104805.4937: ** << docstring >>
+"""Add buttons so Leo can interact with command line environments.
 
 :20100226: see also leoscreen.py for a simpler approach.
 
@@ -35,14 +33,20 @@ is required at the end of SQL statements.
 
 Requires `pexpect` module.
 """
+
+#@-<< docstring >>
+
+#@@language python
+#@@tabwidth -4
+
 # 0.1 by Terry Brown, 2009-05-12
 import leo.core.leoGlobals as g
-
 from mod_scripting import scriptingController
-
 import pexpect
 import time
 import os
+
+#@+others
 #@+node:tbrown.20090603104805.4938: ** init
 def init():
     g.registerHandler('after-create-leo-frame', onCreate)

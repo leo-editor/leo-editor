@@ -25,8 +25,6 @@ import leo.core.leoGlobals as g
 
 import leo.core.leoCommands as leoCommands
 import time
-
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-<< imports >>
 
 OKFLAG='OK '  # Space required.
@@ -37,21 +35,13 @@ __version__ = "0.2"
 #@+node:ekr.20100128091412.5381: ** init
 def init():
 
-    ok = Tk and not g.app.unitTesting # Not (yet) for unit testing.
+    g.registerHandler("start1", onStart)
+    g.registerHandler("create-optional-menus",create_UserMenu)
+    g.registerHandler("iconrclick2", onRclick)
+    g.plugin_signon(__name__)
+    g.es('mnplug OK+Commands+Menu aktiv',color='green')
 
-    if ok:
-
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        if g.app.gui.guiName() == "tkinter":
-            g.registerHandler("start1", onStart)
-            g.registerHandler("create-optional-menus",create_UserMenu)
-            g.registerHandler("iconrclick2", onRclick)
-            g.plugin_signon(__name__)
-            g.es('mnplug OK+Commands+Menu aktiv',color='green')
-
-    return ok
+    return True
 #@+node:ekr.20040205071616.1: ** mnstamp
 def mnstamp():
 

@@ -26,53 +26,56 @@ loaded each time a new dialog is loaded.
 The dialog is not modal and many dialogs can exist at one time. Dialogs can be
 named and output directed to a dialog with a specific name.
 
-The plugin is invoked like this:
+The plugin is invoked like this::
 
     g.doHook('scrolledMessage', c=c, msg='message', title='title',  ...etc    )
 
-or
+or::
+
     g.app.gui.runScrolledMessageDialog(c=c, ...etc)
 
 all parameters are optional except c.
 
 Parameters
 ----------
-    msg:
-        The text to be displayed (html, rst, plain).
 
-        If the text starts with 'rst:' it is assumed to be rst text and
-        is converted to html for display, (after the rst: prefix has been removed.
+msg:
+    The text to be displayed (html, rst, plain).
 
-        If the text starts with '<' it is assumed to be html.
+    If the text starts with 'rst:' it is assumed to be rst text and
+    is converted to html for display, (after the rst: prefix has been removed.
 
-        These auto detection features can be overridden by 'flags'.
+    If the text starts with '<' it is assumed to be html.
 
-    label:
-        The text to appear in a label above the display. If it is '', the label is hidden.
+    These auto detection features can be overridden by 'flags'.
 
-    title:
-        The title to appear on the window or dock.
+label:
+    The text to appear in a label above the display. If it is '', the label is hidden.
 
-    flags:
-        Says what kind of message eg: 'rst', 'text', 'html'. This overrides auto-detection.
+title:
+    The title to appear on the window or dock.
 
-        Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
-        displayed as html.
+flags:
+    Says what kind of message eg: 'rst', 'text', 'html'. This overrides auto-detection.
+
+    Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
+    displayed as html.
 
 To Do
 -----
-    - Add parameters to control position, size, closing, hiding etc.
 
-    - Save or print files from the dialog.
+- Add parameters to control position, size, closing, hiding etc.
 
-    - Add an option to put the dialog in leo's log notebook.
+- Save or print files from the dialog.
 
-    - Add \@settings to control default behaviour
+- Add an option to put the dialog in leo's log notebook.
 
-    - Provide a menu of plugins that allows their docstring to be displayed.
+- Add \@settings to control default behaviour
 
-    - Provide a menu of @rst nodes in the current outline, automatically track changes
-      if it is set to display any of these nodes.
+- Provide a menu of plugins that allows their docstring to be displayed.
+
+- Provide a menu of @rst nodes in the current outline, automatically track changes
+  if it is set to display any of these nodes.
 
 """
 #@-<< docstring >>

@@ -97,25 +97,18 @@ def init ():
 
     if not import_ok: return
 
-    # This plugin depends on the properties of the Tk event loop.
+    # This plugin depends on the properties of the gui's event loop.
     # It may work for other gui's, but this is not guaranteed.
-    #if g.app.gui is None:
-    #    g.app.createTkGui(__file__)
 
     if g.app.gui and g.app.gui.guiName() == 'qt' and not g.app.useIpython:
         g.pr('ipython.py plugin disabled ("leo --ipython" enables it)')
         return False
 
-    # since tk and qt are the only ones used currently, we are not too picky
-    ok = True
-    #ok = g.app.gui.guiName() in ("tkinter","qt")
-    if ok:
+    # Call onCreate after the commander and the key handler exist.
+    g.registerHandler('after-create-leo-frame',onCreate)
+    g.plugin_signon(__name__)
 
-        # Call onCreate after the commander and the key handler exist.
-        g.registerHandler('after-create-leo-frame',onCreate)
-        g.plugin_signon(__name__)
-
-    return ok
+    return True
 #@+node:ekr.20080201143145.5: *3* onCreate
 def onCreate (tag, keys):
 

@@ -212,6 +212,7 @@
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
 </v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20101110190130.2451"><vh>example leoremote client</vh></v>
 <v t="ekr.20100108090658.1958"><vh>generate key events</vh>
 <v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
 <v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
@@ -1109,7 +1110,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9404,5 +9405,22 @@ Spam = spam
 
 leoImport.tailToNextNode(event={'c':c})
 </t>
+<t tx="ekr.20101110190130.2451">from leo.external import lproto
+import os
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+print("will connect to",addr)
+pc  = lproto.LProtoClient(addr)
+pc.send("""
+
+g.es("hello world from remote") 
+c = g.app.commanders()[0]
+
+""")
+
+# note how c persists between calls
+pc.send("""
+c.k.simulateCommand('stickynote')
+""")</t>
 </tnodes>
 </leo_file>

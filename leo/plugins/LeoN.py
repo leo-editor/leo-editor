@@ -36,6 +36,10 @@ rodrigob at elo dot utfsm dot cl
 """
 #@-<< docstring >>
 
+# This is LeoN-0.0.1 as created by Rodrigo Benenson, very slightly reorganized form.
+
+# See Projects\LeoN-0.1.0-alpha in the contrib branch for important research papers.
+
 #@@language python
 #@@tabwidth -4
 
@@ -82,26 +86,41 @@ rodrigob at elo dot utfsm dot cl
 
 #@+<<docs>>
 #@+node:ekr.20050402080206.10: ** <<docs>>
+#@@language plain
+#@@nocolor
 #@+others
+#@+node:ekr.20050402080206.1: *3* Readme file.
+#@+at
+# 
+# Read the docustrings in the code.
+# 
+# Run the code LeoN.py to test it. 
+# 
+# You need to read sun98acheiving.pdf to understand what is all this stuff about.
+# This and other .pdf files are now in the leo/doc/LeoN folder.
+# 
+# Rodrigo Benenson. 2003. LeoN project. <rodrigob@elo.utfsm.cl>
 #@+node:ekr.20050402080206.13: *3* Big picture
 #@+at
-# Big picture
-# -----------
 # 
-# There is a concurrent editable object that receive commands (operations to realize) associated with the State Vector of the emisor.
+# There is a concurrent editable object that receive commands (operations to
+# realize) associated with the State Vector of the emisor.
 # 
-# The received command are 'received and delayed to preserve causality' or 'executed'.
+# The received command are 'received and delayed to preserve causality' or
+# 'executed'.
 # 
 # When executed an undo/transform-do/transform-redo scheme is used.
 # 
-# The transformation of commands (operational transforms) is realized by the GOT algorithm.
+# The transformation of commands (operational transforms) is realized by the GOT
+# algorithm.
 # 
-# The GOT algorithm use two application specific transformation functions IT, ET (inclusion and exclusion transform, respectively).
+# The GOT algorithm use two application specific transformation functions IT, ET
+# (inclusion and exclusion transform, respectively).
 # 
 # Tadaaa...
-#@@c
 #@+node:ekr.20050402080206.14: *3* Context (so what?)
 #@+at
+# 
 # so what? -> Why should you care about this code?
 # 
 # If you want to implement a collaborative text editing software.
@@ -110,12 +129,192 @@ rodrigob at elo dot utfsm dot cl
 #     - editor user interface
 #     - core logic for collaborative editing
 # 
-# The python implementation allow a full cross platform usage and a very rapid deployment; considering that there already exist solutions for the network layer (Twisted) and tools to create easilly user interfaces (Tkinter, wxWindows).
+# The python implementation allow a full cross platform usage and a very rapid
+# deployment; considering that there already exist solutions for the network layer
+# (Twisted) and tools to create easilly user interfaces (Tkinter, wxWindows).
 # 
-# I will enjoy to know about anyone using this code, so please feel free to mail me: <rodrigob at elo dot utfsm dot cl>.
+# I will enjoy to know about anyone using this code, so please feel free to mail
+# me: <rodrigob at elo dot utfsm dot cl>.
 # 
-# This code is part of the devellopment of LeoN, the Collaborative Leo plugin. http://leo.sf.net
-#@@c
+# This code is part of the devellopment of LeoN, the Collaborative Leo plugin.
+# http://leo.sf.net
+#@+node:ekr.20050402080206.2: *3* Overview
+#@+at
+# 
+# LeoN is Leo over the Network.
+# 
+# LeoN is Collaborative Leo.
+# 
+# Leo is http://leo.sf.net
+# 
+# Leo over network requirements
+# -----------------------------
+# 
+# This is my résumé of the Requirements and design issues for Leo over the Network. (LeoN).
+# 
+# First in sake of simplicity a N-clients/One server architecture is imposed, being much more easy to design and implement.
+# Also it's required that the code could be as most Plugin as possible and as most python Modules independent as possible (one and only one instalation required).
+# 
+# Now, the list presented approximately in the logic order of implementation:
+# 
+# <Step one, Merging>
+# 
+# <Step two, Publishing>
+# 
+# <Step three, Interacting by turns>
+# 
+# <Step four, Realtime interaction>
+# 
+# Please comment this document.
+# 
+# RodrigoB. 
+#@+node:ekr.20050402080206.3: *4* < Step four, Realtime interaction >
+#@+at
+# 
+# Step four, "Realtime interaction":
+# - There should be a way that multiple online users edit on realtime the same Node.
+# This is the final step and is truly difficult. Probably this code should be merged from a parallel (but related) project.
+# (Guy X,Y,Z having a code party.)
+# 
+# - The client should show the editors cursors and edition on realtime.
+# Adquire the status, of Hydra Open Source, Multiplatform, Clone.
+# (Guy X,Y,Z enjoying the code party.)
+# 
+# Some features were intentionally omited:
+# - Versioning system. (there exists better solutions)
+# - Voice chat. (there exists parallel solutions)
+# 
+# 
+#@+node:ekr.20050402080206.4: *5* Design notes
+#@+at
+# 
+# The realtime edition could be implemented initially on a lock/unlock fashion
+# automatized on a per line basis, very much like an online CVS editor...
+# 
+# The complications should be left to a parallel project, or maybe to another
+# community (search, propose and merge/translate)
+#@+node:ekr.20050402080206.5: *6* LeoN devellopment status III
+#@+at
+# 
+# 29/06/03
+# 
+# Hi!
+# 
+# It's time to news again. This last weeks were my final exams weeks but LeoN
+# devellopment is going on as planned.
+# 
+# The last two weeks where focused on the Gui control, intercepting the whole list
+# of actions that the user can do into the collaborative outline. There still some
+# importants events to manage, but I think almost the base code is there. As
+# mentioned this stage is absolutelly non trivial nor little; and is characterised
+# to be some how frustating ("Tk marks are before or bellow a charater? Event
+# occurs before or after effects?", and similars) and slow (because you have to
+# test by hand the gui to debug it). The important elements missing will be done
+# at the time it becomes strictly necessary.
+# 
+# The LeoN code is already pretty big and relativelly complex (3500 raw lines
+# count) and there is a big list of things to do. Anyway no one said it would be
+# easy. Somes days ago I drafted the code base for Step4, hopefully the more
+# important piece of code, due of it reusability and because I think it will give
+# to LeoN an important sparky effect (near realtime multiuser text edition).
+# 
+# So now the actual plan is:
+# - Focus the next two weeks on the implementation of Step4 and his unit tests.
+# - Release the Step4 code. (because it is usefull without Leo and could be used in parallel projects)
+# - Integrate Step4 and Step(2,3) (one week)
+# - Move the code over Leo 3.1x  and Twisted 1.0.6 (which unfortunelly changed some classes used in LeoN (cred module)) (horizont: one week)
+# - After that I will focus strictly on finishing the usability elements and (if everything go fine) will start the releases iterations. This stage will have at least the following milestones:
+# 	- Finish and debug the interface hooks (this can be long...)
+# 	- Implement server persistence (should be easy)
+# 	- Implement the admin interface (should be boring)
+# 	- Implement Clones (two weeks if things go fine)
+# 	- Improve the LeoN web views (implement more than one view  model?)
+# 	- Allow as easy as possible instalations
+# 
+# Of course the releases will be all alpha during a probably long period until the devellopers are happy and then we will switch to beta and when everyone will be happy : the first stable Release !
+# 
+# I'm pretty impacient to finish the vapourware status of LeoN, we have the luck that the timing are acceptable, and Leo has some importants things to do before LeoN will become the first priority. This will give me the time to work on the mentioned plan.
+# 
+# RodrigoB.
+#@+node:ekr.20050402080206.6: *6* LeoN devellopment status IV
+#@+at
+# 
+# As said, it is times to news. Briefly.
+# 
+# about step4
+# -----------
+# 
+# The code is ready and running since wednesday (mercredi) on the morning, but
+# until now I'm grumbling-grumbling with the code to get it working as supposed; I
+# have found some minor bugs and solved some conceptuals problems and bugs.
+# Debugging code of someelse algorithm is notoriously harder than working on your
+# own ideas but the work give his fruits and each day we are one step nearer to us
+# dreams. Most of the hard problems are due to some ambiguities or not so clear
+# ideas in the papers, so I have to crunch my brain to guess the correct way to
+# manage the presented abstractions (or apply a 'guess, try, evaluate' strategy).
+# 
+# Due to this problems, and after five days of debugging work I will delay the
+# code release until I get the unit test passed, this should not take more than a
+# week more (I hope so, but you never know if the actual bug is or not the last
+# one).
+# 
+# what is next
+# ------------
+# 
+# - Finish debug of step4
+# - Implement and test the one server various clients collaborative editing (a special case of the above class)
+# - move codebase to 3.12b* and twisted 1.0.6
+# - merge step2, step3, step4 
+# - start the release of the code snapshots.
+# - start working on last frozen elements and on the Todo List:
+# 	- hooks installations and debug (starting by node renaming)
+# 	- admin interface
+# 	- server side persistence 
+# 	- clone support
+# 	- cut and paste (with download interface)
+# 	- better web server views
+# 	- design a web plugin system ?
+# 	- debugging, debugging
+# 	- as easy as possible instalations
+# 	- work on the design of LeoN2 features
+# 
+# I will stay working on a two weeks devellopment cycles, and post news at the end of each cycle.
+# 
+# RodrigoB.
+#@+node:ekr.20050402080206.7: *5* Notes
+#@@nocolor
+
+25/06/03 Copying of the main algorithms into the code. RodrigoB.
+01/07/03 Programming. RodrigoB.
+02/07/03 Programming. RodrigoB.
+05/07/03 Reading about the garbage collector stuff. RodrigoB.
+07/07/03 Programming. RodrigoB.
+08/07/03 Programming, operations herit from dict, support splitted ops, working on tests, syntax debugging. RodrigoB.
+09/07/03 Implementing operations relations, starting debug iterations based on unittests.
+		 Added another parameters form for receive_operation. RodrigoB.
+10/07/03 Debugging conceptual aspects; management of timestamps on transformed operations. minor bugs fixed. Splitted special cases appears.RodrigoB.
+12/07/03 Searching bugs. bugfixes. RodrigoB.
+13/07/03 Implementing the garbage collector. Searching bugs. bugfixes. Testing garbage collector. RA problems. RodrigoB.
+14/07/03 (vive la France!) Testing an idea (__eq__). Little edit to the root docustring. RodrigoB.
+15/07/03 Hunting the Last Bug. Eureka. First successful execution. Code cleanup. Using unittest module. Release 1. RodrigoB.
+
+Todo
+
+- Find a good TestConcurrentEditable2 to test LostInformation cases
+
+- LI is absolutelly not verified
+- Find the Recover_LI specifications.
+- Find a better way to quit the ambiguities on the 'if else {}' operation pertenence. (save_RA, save_LI conditions ?)
+
+- collect garbage do not work anymore exactly like in the example. (is this a problem ?)
+
+- Implement ConcurrentEditableServer
+- Implement the  client-server tests
+
+- Debug.
+
+#@@color
+#@@language python
 #@-others
 #@-<<docs>>
 

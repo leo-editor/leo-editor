@@ -25,7 +25,8 @@ __version__ = "0.4"
 #@+node:ekr.20071004090250.2: ** << imports >>
 import leo.core.leoGlobals as g
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+# This plugin doesn't use Tkinter directly, but Gato requires it.
+# Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import sys
 
