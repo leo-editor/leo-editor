@@ -109,8 +109,7 @@ class paramClass:
         self.pattern = g.angleBrackets(r'\w*?\(([^,]*?,)*?([^,])+?\)') + '$'
         self.regex = re.compile(self.pattern)
 
-        if g.app.gui.guiName() == 'tkinter':
-            self.addMenu()
+        self.addMenu() # Now gui-independent.
     #@+node:ekr.20040916084945.1: *3* macros.parameterize
     def parameterize (self,event=None):
 

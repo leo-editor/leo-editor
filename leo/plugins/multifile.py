@@ -107,7 +107,7 @@ def init ():
 
         # g.registerHandler('save1',start)
         g.registerHandler('save2',stop)
-        g.registerHandler(('new','start2'),addMenu)
+        g.registerHandler(('new','menu2'),addMenu)
         g.plugin_signon(__name__)
 
     return ok

@@ -34,8 +34,6 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 #@+node:ekr.20040915085715: ** << imports >>
 import leo.core.leoGlobals as g
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-
 import os
 import threading
 import time
@@ -63,11 +61,10 @@ pr = '@' + 'produce'
 #@+node:ekr.20050311110629.1: ** init
 def init ():
 
-    ok = Tk is not None
+    ok = True # Ok for unit testing: adds menu and new directive.
 
-    if ok: # Ok for unit testing: adds menu and new directive.
-
-        g.registerHandler(('new','open2'),addMenu)
+    if ok: 
+        g.registerHandler(('new','menu2'),addMenu)
         g.globalDirectiveList.append('produce')
         g.plugin_signon(__name__)
 
@@ -103,14 +100,15 @@ def travel(vn,stopnode):
         if vn == stopnode:
             vn = None
 #@+node:ekr.20040915085351.5: ** exeProduce
-def exeProduce(  c, root = True ):
+def exeProduce( c,root=True):
 
-    pl = makeProduceList(c, root)
+    pl = makeProduceList(c,root)
     # Define the callback with argument bound to p1.
     #@+others
     #@+node:ekr.20040915085351.6: *3* runPL
     def runPL(pl=pl):
-        f = open( 'produce.log', 'w+' )
+        # g.trace(pl)
+        f = open('produce.log', 'w+')
         for z in pl:
             if z.startswith(pr):
                 z = z.lstrip( pr )
@@ -137,7 +135,7 @@ def exeProduce(  c, root = True ):
         f.close()
         os.remove( 'produce.log' )
     #@-others
-    t = threading.Thread( target = runPL )
+    t = threading.Thread(target = runPL)
     t.setDaemon( True )
     t.start()
 #@+node:ekr.20040915085351.7: ** addMenu
@@ -146,14 +144,16 @@ def addMenu( tag, keywords ):
     c = keywords.get('c')
     if not c: return
 
-    men = c.frame.menu.getMenu( 'Outline' )
-    men2 = Tk.Menu( men , tearoff = 0 )
-    men.add_cascade( menu = men2, label = 'Produce' )
-    c.add_command(men2,
+    mc = c.frame.menu
+
+    m = mc.createNewMenu ('Produce',parentName="outline",before=None)
+
+    c.add_command(m,
         label = "Execute All Produce",
-        command = lambda  c = c: exeProduce( c ))
-    c.add_command(men2,
+        command = lambda c = c: exeProduce(c))
+
+    c.add_command(m,
         label = "Execute Tree Produce",
-        command = lambda c = c: exeProduce( c, root = False ) )
+        command = lambda c = c: exeProduce(c,root=False ) )
 #@-others
 #@-leo
