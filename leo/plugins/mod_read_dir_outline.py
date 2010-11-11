@@ -65,12 +65,7 @@ language = 'english' # Anything except 'french' uses english.
 #@+node:ekr.20050301083306.4: ** init
 def init ():
 
-    if tkFileDialog is None: return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = tkFileDialog and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler(("new2","open2"), onCreate)

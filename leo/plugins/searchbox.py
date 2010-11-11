@@ -106,18 +106,13 @@ def onCreate(tag, keywords):
 #@+node:ekr.20080707161756.1: ** init
 def init():
 
-    if not Tk:
-        return False # OK for unit testing.
+    ok = Tk and g.app.gui.guiName() == "tkinter"
 
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
+    if ok:
         g.registerHandler("after-create-leo-frame", onCreate)
         g.plugin_signon(__name__)
-        return True
-    else:
-        return False
+
+    return ok
 #@+node:ekr.20040107092135.3: ** class SearchBox
 class SearchBox:
 

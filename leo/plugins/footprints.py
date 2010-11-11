@@ -5,9 +5,11 @@ A plugin to leave footprints! This colours the Leo nodes so that the ones you
 have visited most and most recently will stand out.
 """
 
+# Crashes if .ini file does not exist.
+
 # By Paul Paterson. Most of the drawing code and idea from the cleo plugin by Mark Ng.
 
-__version__ = "0.3" 
+__version__ = "0.4" 
 __plugin_name__ = "Footprints" 
 
 #@+<< version history >>
@@ -45,40 +47,25 @@ import threading
 import time 
 
 #@-<< imports >>
-#@+<< todo >>
-#@+node:pap.20041020001240.3: ** << todo >>
-""" 
-
-Todo list: 
-
-- pretty much everything 
-
-""" 
-#@-<< todo >>
 
 #@+others
 #@+node:ekr.20050310105438: ** init
 def init ():
 
-    ok = Tk and not g.app.unitTesting # Not safe for unit testing because of lock.
+    ok = Tk and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
+        # Not safe for unit testing because of lock.
 
     global click_registry, coloured_nodes
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            # Internal controls 
-            click_registry = {} 
-            coloured_nodes = set() 
-            applyConfiguration(getConfiguration()) 
-            # 
-            g.registerHandler("start2", installDrawMethod) 
-            g.registerHandler("headclick1", storeHeadlineClick) 
-            g.plugin_signon(__name__)
+        # Internal controls 
+        click_registry = {} 
+        coloured_nodes = set() 
+        applyConfiguration(getConfiguration()) 
+        # 
+        g.registerHandler("start2", installDrawMethod) 
+        g.registerHandler("headclick1", storeHeadlineClick) 
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:pap.20041020001240.5: ** Error Classes

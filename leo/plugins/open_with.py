@@ -47,22 +47,19 @@ __version__ = '1.13'
 #@+node:ekr.20050311090939.8: ** init
 def init():
 
-    if not g.app.gui:
-        g.app.createTkGui(__file__)
+    # Equivalent functionality comes with contextmenu.py on qt ui.
 
-    # Only tkinter needs this plugin. Note that equivalent functionality comes
-    # with contextmenu.py on qt ui. 
-    if g.app.gui and g.app.gui.guiName() != 'tkinter':
-        return False
+    ok = g.app.gui.guiName() == 'tkinter'
 
-    g.app.hasOpenWithMenu = True
-    g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
-    g.registerHandler("idle", on_idle)
-    # g.registerHandler(('new','open2'), create_open_with_menu)
-    g.registerHandler('menu2', create_open_with_menu)
-    g.plugin_signon(__name__)
+    if ok:
+        g.app.hasOpenWithMenu = True
+        g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
+        g.registerHandler("idle", on_idle)
+        # g.registerHandler(('new','open2'), create_open_with_menu)
+        g.registerHandler('menu2', create_open_with_menu)
+        g.plugin_signon(__name__)
 
-    return True
+    return ok
 #@+node:EKR.20040517075715.5: ** on_idle
 # frame.OnOpenWith creates the dict with the following entries:
 # "body", "c", "encoding", "f", "path", "time" and "p".

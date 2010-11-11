@@ -71,12 +71,7 @@ haveseen = weakref.WeakKeyDictionary()
 #@+node:ekr.20070125124515: ** init
 def init ():
 
-    if not import_succeed: return False # OK for unit testing.
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = import_succeed and g.app.gui.guiName() == "tkinter"
 
     if ok:
         initImages()

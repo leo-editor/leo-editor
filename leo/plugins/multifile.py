@@ -100,24 +100,23 @@ originalOpenFileForWriting = None
 def init ():
 
     global ok
+
+    ok = ok and g.app.gui.guiName() == "tkinter"
+
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-        ok = g.app.gui.guiName() == "tkinter"
-        if ok:
-            #import leo.core.leoGlobals as leoGlobals # Append to the module list, not to the g.copy.
-            g.globalDirectiveList.append('multipath')
-            g.globalDirectiveList.append('multiprefix')
+        # Append to the module list, not to the g.copy.
+        g.globalDirectiveList.append('multipath')
+        g.globalDirectiveList.append('multiprefix')
 
-            # Override all instances of leoAtFile.atFile.
-            at = leoAtFile.atFile
-            global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
-            g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
+        # Override all instances of leoAtFile.atFile.
+        at = leoAtFile.atFile
+        global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
+        g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
 
-            # g.registerHandler('save1',start)
-            g.registerHandler('save2',stop)
-            g.registerHandler(('new','start2'),addMenu)
-            g.plugin_signon(__name__)
+        # g.registerHandler('save1',start)
+        g.registerHandler('save2',stop)
+        g.registerHandler(('new','start2'),addMenu)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:mork.20041019091317: *3* addMenu

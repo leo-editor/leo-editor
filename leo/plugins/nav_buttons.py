@@ -162,12 +162,7 @@ recentInitiallyVisible = False
 #@+node:ekr.20050219114353.2: ** init
 def init ():
 
-    if Tk is None: return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)

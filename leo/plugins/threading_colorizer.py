@@ -146,10 +146,9 @@ default_font_dict = {
 def init ():
 
     # The qt gui plugin now does colorizing.
-    ok = g.app.gui.guiName() in ('tkinter',)
+    ok = g.app.gui.guiName() == 'tkinter'
 
     if ok:
-
         g.registerHandler('start1',onStart1)
         g.plugin_signon(__name__)
 

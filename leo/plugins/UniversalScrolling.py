@@ -53,17 +53,11 @@ __version__ = "0.4"
 #@+node:ekr.20050526121026: ** init
 def init ():
 
-    ok = Tk and not g.app.unitTesting
+    ok = Tk and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            tkGui.leoTkinterFrame.createCanvas = addUThreading
-            g.plugin_signon(__name__)
+        tkGui.leoTkinterFrame.createCanvas = addUThreading
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:ekr.20040915104230: ** addUThreading & callbacks

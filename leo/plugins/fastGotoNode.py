@@ -33,15 +33,12 @@ parent's parent or after a sibling, if they exist.
 #@@language python
 #@@tabwidth -4
 
-from __future__ import generators # To make this plugin work with Python 2.2.
-
 #@+<< imports >>
 #@+node:mork.20041018091414.2: ** << imports >>
 import leo.core.leoGlobals as g
 
 import copy
 import Tkinter
-import tkFileDialog
 import os
 #@-<< imports >>
 __version__ = ".107"
@@ -78,12 +75,7 @@ __version__ = ".107"
 #@+node:ekr.20050226120947.2: ** init & helpers
 def init ():
 
-    if Tkinter is None: return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tkinter and g.app.gui.guiName() == "tkinter"
 
     if ok:
         global smenu

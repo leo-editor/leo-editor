@@ -51,15 +51,7 @@ SIZER_WIDTH = 55 # was 70
 #@+node:ekr.20070301070027: ** init
 def init ():
 
-    # g.trace('hoist.init')
-
-    if Tk is None: return False
-
-    # OK for unit testing.
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler("after-create-leo-frame",onCreate)

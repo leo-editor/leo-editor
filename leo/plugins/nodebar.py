@@ -92,13 +92,7 @@ __version__ = ".8"
 #@+node:ekr.20050311090939.5: ** init
 def init():
 
-    if not load_ok: return False
-
-    # Ok for unit test.
-    if g.app.gui is None: 
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = load_ok and g.app.gui.guiName() == "tkinter"
 
     if ok:
         initImages()

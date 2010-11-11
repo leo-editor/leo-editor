@@ -302,29 +302,26 @@ __version__ = "0.5" # EKR: use c.frame.body.bodyCtrl.leo_bodyBar and .leo_bodyXB
 #@+node:ekr.20060513123144: *3* init
 def init ():
 
-    if g.app.unitTesting: return False
+    ok = g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
 
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-    if g.app.gui.guiName() != "tkinter": return False
+    if ok:
+        data = (
+            (("new","open2"), OnCreate),
+            # ("start2",      OnStart2),
+            ("select2",     OnSelect2),
+            ("idle",        OnIdle),
+            ("command2",    OnCommand2),
+            ("bodydclick2", OnBodyDoubleClick),
+            ("bodykey2",    OnBodyKey2),
+            ("headkey2",    OnHeadKey2),
+            ("end1",        OnQuit),
+        )
 
-    data = (
-        (("new","open2"), OnCreate),
-        # ("start2",      OnStart2),
-        ("select2",     OnSelect2),
-        ("idle",        OnIdle),
-        ("command2",    OnCommand2),
-        ("bodydclick2", OnBodyDoubleClick),
-        ("bodykey2",    OnBodyKey2),
-        ("headkey2",    OnHeadKey2),
-        ("end1",        OnQuit),
-    )
+        for hook,f in data:
+            g.registerHandler(hook,f)
+            g.plugin_signon(__name__)
 
-    for hook,f in data:
-        g.registerHandler(hook,f)
-        g.plugin_signon(__name__)
-
-    return True
+    return ok
 #@+node:ekr.20060513122450.395: *4* Module-level event handlers
 #@+node:ekr.20060513122450.397: *5* OnCreate
 def OnCreate(tag,keywords):

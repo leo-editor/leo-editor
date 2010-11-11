@@ -119,21 +119,14 @@ __version__ = "0.6"
 #@+node:ekr.20060601151845.4: ** init
 def init ():
 
-    ok = Tk and mod_scripting and not g.app.unitTesting
+    ok = Tk and mod_scripting and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
 
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            # Note: call onCreate _after_ reading the .leo file.
-            # That is, the 'after-create-leo-frame' hook is too early!
-            g.registerHandler(('new','open2'),onCreate)
-            g.plugin_signon(__name__)
-
-
+        # Note: call onCreate _after_ reading the .leo file.
+        # That is, the 'after-create-leo-frame' hook is too early!
+        g.registerHandler(('new','open2'),onCreate)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:ekr.20060601151845.5: ** onCreate

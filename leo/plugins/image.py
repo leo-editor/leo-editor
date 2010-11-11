@@ -48,14 +48,7 @@ import os
 #@+node:ekr.20070301085537: ** init
 def init ():
 
-    if not (Tk and ImageTk): return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
-
-    # g.pr('image.init')
+    ok = Tk and ImageTk and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler("select2", onSelect)

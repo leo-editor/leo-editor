@@ -41,12 +41,7 @@ import re
 #@+node:ekr.20050311090939.6: ** init
 def init ():
 
-    if Tk is None: return # Ok for unit tests: adds menu.
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler(('new','open2'),addPMenu)

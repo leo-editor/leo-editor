@@ -290,7 +290,6 @@ leoTkinterTreeTab = tkGui.leoTkinterTreeTab
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
 Pmw = g.importExtension("Pmw",pluginName=__name__,verbose=True,required=True)
 
-#mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
 from leo.plugins import mod_scripting
 
 from leo.plugins import rClickBasePluginClasses as baseClasses
@@ -324,24 +323,12 @@ iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
 def init ():
     """Initialize and register plugin."""
 
-    global old
-
-    if not Tk:
-        return False
-
-    if g.app.unitTesting:
-        return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and Pmw and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
 
     if ok:
-        r = g.registerHandler
-        r('before-create-leo-frame',onPreCreate)
-        r('after-create-leo-frame', onCreate)
-        r('close-frame', onClose)
+        g.registerHandler('before-create-leo-frame',onPreCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('close-frame', onClose)
 
         tkGui.leoTkinterFrame = ToolbarTkinterFrame
         g.plugin_signon(__name__)

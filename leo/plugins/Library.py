@@ -113,17 +113,15 @@ validlibs = ['lib0', 'lib1', 'lib2', 'lib3', 'lib4', 'lib5',]
 #@+node:ekr.20050328092641.38: *3* init
 def init():
 
-    ok = Tk and Pmw and zlib and not g.app.unitTesting
+    ok = (Tk and Pmw and zlib and
+        g.app.gui.guiName() == "tkinter" and
+        not g.app.unitTesting
+    )
+
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__ )
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            g.registerHandler("after-create-leo-frame", onCreate)
-            g.registerHandler("close-frame", onCloseFrame)
-            g.plugin_signon(__name__ )
+        g.registerHandler("after-create-leo-frame", onCreate)
+        g.registerHandler("close-frame", onCloseFrame)
+        g.plugin_signon(__name__ )
 
     return ok
 #@+node:ekr.20050328092641.36: *3* onCreate

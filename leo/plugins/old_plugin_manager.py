@@ -182,12 +182,8 @@ USE_PRIORITY = False # True: show non-functional priority field.
 def init():
 
     global ok
-    if not ok: return None
 
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = ok and g.app.gui.guiName() == "tkinter"
 
     # Ok for unit testing: adds menu.
     if ok:

@@ -69,22 +69,13 @@ class LeoUpdateError(Exception):
 #@+node:pap.20050605183206.6: ** init
 def init():
 
-    ok = Tk and sets
+    ok = Tk and g.app.gui.guiName() == "tkinter"
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            if 0: # Use this if you want to create the commander class before the frame is fully created.
-                g.registerHandler('before-create-leo-frame',onCreate)
-            else: # Use this if you want to create the commander class after the frame is fully created.
-                g.registerHandler('after-create-leo-frame',onCreate)
-            g.plugin_signon(__name__)
-        else:
-            g.es("autotrees requires Tkinter",color='blue')
+        g.registerHandler('after-create-leo-frame',onCreate)
+        g.plugin_signon(__name__)
+    else:
+        g.es("autotrees requires Tkinter",color='blue')
 
     return ok
 #@+node:pap.20050605183206.7: ** onCreate

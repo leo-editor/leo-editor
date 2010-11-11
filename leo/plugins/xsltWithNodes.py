@@ -94,13 +94,7 @@ __version__ = '0.6'
 #@+node:ekr.20050226120104.1: ** init
 def init():
 
-    ok = Ft and Tk
-    if not ok: return
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Ft and Tk and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler(('open2',"new"),addMenu)

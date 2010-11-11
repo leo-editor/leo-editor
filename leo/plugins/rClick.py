@@ -703,11 +703,8 @@ requiredIvars = (
 def init ():
     """Initialize and register plugin."""
 
-    if g.app.gui is None:
-        g.app.createDefaultGui(__file__)
-
     # Support for qt gui is not ready yet.
-    ok = g.app.gui.guiName() in ("tkinter") # ,"qt")
+    ok = g.app.gui.guiName() in ("tkinter",) # ,"qt")
 
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)

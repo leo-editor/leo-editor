@@ -55,15 +55,11 @@ __version__ = "1.5"
 #@+node:ekr.20050311102853.1: ** init
 def init ():
 
-    ok = tkFileDialog is not None
+    ok = tkFileDialog and g.app.gui.guiName() == "tkinter"
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        if g.app.gui.guiName() == "tkinter":
-            g.registerHandler(('new','open2'),create_import_cisco_menu)
-            g.plugin_signon(__name__)
+        g.registerHandler(('new','open2'),create_import_cisco_menu)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:edream.110203113231.671: ** create_import_cisco_menu

@@ -32,6 +32,7 @@ import copy
 import base64
 
 Tkinter = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+    # Uses Tkinter.PhotoImage.
 #@-<< imports >>
 
 lassoers = {} # Keys are commanders. Values are instances of class Lassoer.
@@ -74,12 +75,7 @@ __version__ = ".10"
 #@+node:ekr.20050226114442: *3* init
 def init ():
 
-    if not (Tkinter and sets): return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tkinter and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler('menu2',addMenu)

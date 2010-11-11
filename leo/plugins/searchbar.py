@@ -67,25 +67,14 @@ allowedButtonConfigItems = (
 #@+node:bobjack.20080510064957.119: ** Module-level
 #@+node:bobjack.20080510064957.120: *3* init
 def init ():
+
     """Initialize and register plugin."""
 
-    if not Tk:
-        return False
-
-    if g.app.unitTesting:
-         return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
 
     if ok:
-        r = leoPlugins.registerHandler
-        #r('before-create-leo-frame',onPreCreate)
-        r('after-create-leo-frame', onCreate)
-        r('close-frame', onClose)
-
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('close-frame', onClose)
         g.plugin_signon(__name__)
 
     return ok

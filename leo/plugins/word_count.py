@@ -41,17 +41,12 @@ __version__ = "1.1"
 #@+node:ekr.20070301062245: ** init
 def init ():
 
-    ok = tkMessageBox is not None
+    ok = tkMessageBox and g.app.gui.guiName() == "tkinter"
+        # Ok for unit testing: creates menu.
 
-    if ok: # Ok for unit testing: creates menu.
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            g.registerHandler("create-optional-menus",createWordCountMenu)
-            g.plugin_signon(__name__)
+    if ok: 
+        g.registerHandler("create-optional-menus",createWordCountMenu)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:danr7.20061010105952.5: ** createWordCountMenu

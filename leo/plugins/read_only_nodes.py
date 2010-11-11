@@ -103,24 +103,19 @@ __version__ = '1.8'
 #@+node:ekr.20050311092840: ** init
 def init ():
 
-
-    ok = tkFileDialog and not g.app.unitTesting # Not Ok for unit testing.
+    ok = tkFileDialog and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting\
+        # Not Ok for unit testing.
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
+        g.registerHandler(('new','open2'), on_open)
+        g.registerHandler("bodykey1", on_bodykey1)
+        g.registerHandler("headkey2", on_headkey2)
 
-        ok = g.app.gui.guiName() == "tkinter"
-        if ok:
-            g.registerHandler(('new','open2'), on_open)
-            g.registerHandler("bodykey1", on_bodykey1)
-            g.registerHandler("headkey2", on_headkey2)
+        if 0: # doesn't work: the cursor stops blinking.
+            g.registerHandler("select1", on_select1)
+            g.registerHandler("select2", on_select2)
 
-            if 0: # doesn't work: the cursor stops blinking.
-                g.registerHandler("select1", on_select1)
-                g.registerHandler("select2", on_select2)
-
-            g.plugin_signon(__name__)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:edream.110203113231.879: ** class FTPurl

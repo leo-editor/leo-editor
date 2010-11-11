@@ -53,15 +53,11 @@ USE_FIXED_SIZES = sys.platform != "darwin"
 #@+node:ekr.20050311090939.4: ** init
 def init ():
 
-    ok = Tk is not None # OK for unit testing.
+    ok = Tk and g.app.gui.guiName() == "tkinter" # OK for unit testing.
 
     if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        if g.app.gui.guiName() == "tkinter":
-            g.registerHandler(('new','open2'), onCreate)
-            g.plugin_signon(__name__) #"nodenavigator")
+        g.registerHandler(('new','open2'), onCreate)
+        g.plugin_signon(__name__) #"nodenavigator")
 
     return ok
 #@+node:ekr.20040909132810: ** onCreate

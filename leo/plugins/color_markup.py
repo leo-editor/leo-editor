@@ -112,27 +112,23 @@ wikiColoredText = None
 #@+node:ekr.20050311104330.1: *3* init
 def init ():
 
-    ok = Tk and tkColorChooser # Ok for unit tests.
+    ok = Tk and tkColorChooser and g.app.gui.guiName() == "tkinter"
+        # Ok for unit tests.
 
     if ok: 
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
 
-        ok = g.app.gui.guiName() == "tkinter"
+        if not g.app.unitTesting and not g.app.batchMode:
+            g.pr("wiki markup enabled")
 
-        if ok:
-            if not g.app.unitTesting and not g.app.batchMode:
-                g.pr("wiki markup enabled")
-
-            # default value for color-tagged wiki text
-            global wikiColoredText
-            wikiColoredText = "blue"
-            g.registerHandler("color-optional-markup", colorWikiMarkup)
-            g.registerHandler("init-color-markup", initAnyMarkup)
-            #g.registerHandler("bodykey1", onBodykey1)
-            g.registerHandler("bodydclick1", onBodydclick1)
-            g.registerHandler(('new','open2'), onCreate)
-            g.plugin_signon(__name__)
+        # default value for color-tagged wiki text
+        global wikiColoredText
+        wikiColoredText = "blue"
+        g.registerHandler("color-optional-markup", colorWikiMarkup)
+        g.registerHandler("init-color-markup", initAnyMarkup)
+        #g.registerHandler("bodykey1", onBodykey1)
+        g.registerHandler("bodydclick1", onBodydclick1)
+        g.registerHandler(('new','open2'), onCreate)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:edream.110403140857.9: *3* initAnyMarkup

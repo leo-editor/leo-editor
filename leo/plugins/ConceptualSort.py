@@ -83,13 +83,7 @@ import weakref
 #@+node:ekr.20070301072310: ** init
 def init ():
 
-    if not (Tk and Pmw): return False
-
-    # Ok for unit testing.  add's menu.
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = Tk and Pmw and g.app.gui.guiName() == "tkinter"
 
     if ok:
         g.registerHandler(('new2','open2'), addCommand)

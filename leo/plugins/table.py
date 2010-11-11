@@ -54,17 +54,12 @@ haveseen = weakref.WeakKeyDictionary()
 #@+node:ekr.20050311103711.1: ** init
 def init ():
 
-    ok = Pmw and Tk and tktab # Ok for unit testing.
+    ok = Pmw and Tk and tktab and g.app.gui.guiName() == "tkinter"
+        # Ok for unit testing.
 
     if ok:
-
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-        if ok:
-            g.registerHandler(('new','open2'),addMenu )
-            g.plugin_signon( __name__ )
+        g.registerHandler(('new','open2'),addMenu )
+        g.plugin_signon( __name__ )
 
     return ok
 #@+node:ekr.20041017035937.2: ** class CSVVisualizer
