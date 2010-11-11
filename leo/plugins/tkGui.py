@@ -279,7 +279,16 @@ class tkinterGui(leoGui.leoGui):
         return tkSpellTab(c,spellHandler,tabName)
     #@+node:ekr.20081121110412.368: *4* tkGui file dialogs
     # We no longer specify default extensions so that we can open and save files without extensions.
-    #@+node:ekr.20081121110412.369: *5* runOpenFileDialog
+    #@+node:ekr.20101111103251.3822: *5* runOpenDirectoryDialog (tkGui)
+    def runOpenDirectoryDialog(self,title,startdir):
+
+        """Create and run a Tk open directory dialog ."""
+
+        dirName = tkFileDialog.askdirectory(
+            title=titledialog,initialdir=startdir,mustexist="true")
+
+        return dirName
+    #@+node:ekr.20081121110412.369: *5* runOpenFileDialog (tkGui)
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
         """Create and run an Tkinter open file dialog ."""

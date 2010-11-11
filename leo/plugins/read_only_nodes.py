@@ -76,13 +76,8 @@ else:
 
 from formatter import AbstractFormatter, DumbWriter
 from htmllib   import HTMLParser
-
-try:
-    import tkFileDialog
-except ImportError:
-    tkFileDialog = None
 #@-<< imports >>
-__version__ = '1.8'
+__version__ = '2.0'
 #@+<< version history >>
 #@+node:ekr.20050311091110: ** << version history >>
 #@@killcolor
@@ -91,19 +86,16 @@ __version__ = '1.8'
 # 1.6 EKR:
 #     - Changed 'new_c' logic to 'c' logic.
 #     - Added init function.
-# 
-# 1.7 EKR:
-#     - Use 'new' and 'open2' hooks.
-# 
-# 1.8 EKR:
-#     - Moved documentation into docstring so it is visible from the plugins manager.
+# 1.7 EKR: Use 'new' and 'open2' hooks.
+# 1.8 EKR: Moved documentation into docstring so it is visible from the plugins manager.
+# 2.0 EKR: The code is now gui-independent.
 #@-<< version history >>
 
 #@+others
 #@+node:ekr.20050311092840: ** init
 def init ():
 
-    ok = tkFileDialog and g.app.gui.guiName() == "tkinter" and not g.app.unitTesting
+    ok = not g.app.unitTesting
         # Not Ok for unit testing.
 
     if ok:
@@ -302,15 +294,15 @@ def disable_body(body):
             body.configure(state="disabled")
         except: g.es_exception()
 #@+node:edream.110203113231.894: ** insert_read_only_node (FTP version)
-# Sets v's body text from the file with the given name.
+# Sets p's body text from the file with the given name.
 # Returns True if the body text changed.
-def insert_read_only_node (c,v,name):
+def insert_read_only_node (c,p,name):
     if name=="":
-        name = tkFileDialog.askopenfilename(
+        name = g.app.gui.runOpenFileDialog(
             title="Open",
-            filetypes=[("All files", "*")]
-            )
-        c.setHeadString(v,"@read-only %s" % name)
+            filetypes=[("All files", "*")],
+        )
+        c.setHeadString(p,"@read-only %s" % name)
         c.redraw()
     parse = urlparse.urlparse(name)
     try:
@@ -326,7 +318,7 @@ def insert_read_only_node (c,v,name):
     except IOError as msg:
         # g.es("error reading %s: %s" % (name, msg))
         # g.es("...not found: " + name)
-        c.setBodyString(v,"") # Clear the body text.
+        c.setBodyString(p,"") # Clear the body text.
         return True # Mark the node as changed.
     else:
         ext = os.path.splitext(parse[2])[1]
@@ -355,8 +347,8 @@ def insert_read_only_node (c,v,name):
                     hyperlist.append("\n[%d]: %s" % (i+1,hyperlinks[i])) # 3/26/03: was i.
                 new = new + ''.join(hyperlist)
             #@-<< convert HTML to text >>
-        previous = v.b
-        c.setBodyString(v,new)
+        previous = p.b
+        c.setBodyString(p,new)
         changed = (g.toUnicode(new) != g.toUnicode(previous))
         if changed and previous != "":
             g.es("changed: %s" % name) # A real change.
@@ -368,31 +360,29 @@ def on_open (tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    v = c.rootVnode()
+    p = c.rootPosition()
     g.es("scanning for @read-only nodes...",color="blue")
-    while v:
-        h = v.h
+    while p:
+        h = p.h
         if g.match_word(h,0,"@read-only"):
-            changed = insert_read_only_node(c,v,h[11:])
-            g.es("changing %s" % v.h,color="red")
+            changed = insert_read_only_node(c,p,h[11:])
+            g.es("changing %s" % p.h,color="red")
             if changed:
-                if not v.isDirty():
-                    v.setDirty()
+                if not p.isDirty():
+                    p.setDirty()
                 if not c.isChanged():
                     c.setChanged(changed)
-        v = v.threadNext()
+        p.moveToThreadNext()
     c.redraw()
 #@+node:edream.110203113231.897: ** on_bodykey1
 # override the body key handler if we are in an @read-only node.
 
 def on_bodykey1 (tag,keywords):
 
-    g.trace()
-
+    # g.trace()
     c = keywords.get("c")
-    v = keywords.get("v")
-    h = v.h
-    if g.match_word(h,0,"@read-only"):
+    p = keywords.get("p")
+    if g.match_word(p.h,0,"@read-only"):
         # The following code causes problems with scrolling and syntax coloring.
         # Its advantage is that it makes clear that the text can't be changed,
         # but perhaps that is obvious anyway...
@@ -400,7 +390,7 @@ def on_bodykey1 (tag,keywords):
             # An @read-only node: do not change its text.
             body = c.frame.body.bodyCtrl
             body.delete("1.0","end")
-            body.insert("1.0",v.b)
+            body.insert("1.0",p.b)
         return 1 # Override the body key event handler.
 #@+node:edream.110203113231.898: ** on_headkey2
 # update the body text when we press enter
@@ -408,15 +398,15 @@ def on_bodykey1 (tag,keywords):
 def on_headkey2 (tag,keywords):
 
     c = keywords.get("c")
-    v = keywords.get("v")
-    h = v.h
+    p = keywords.get("p")
+    h = p.h
     ch = keywords.get("ch")
 
-    g.trace(repr(ch))
+    # g.trace(repr(ch))
 
-    if ch == '\r' and g.match_word(h,0,"@read-only"):
+    if ch in ('\n','\r') and g.match_word(h,0,"@read-only"):
         # on-the-fly update of @read-only directives
-        changed = insert_read_only_node(c,v,h[11:])
+        changed = insert_read_only_node(c,p,h[11:])
         c.setChanged(changed)
 #@+node:edream.110203113231.899: ** on_select1
 def on_select1 (tag,keywords):
@@ -429,11 +419,11 @@ def on_select1 (tag,keywords):
 def on_select2 (tag,keywords):
 
     c = keywords.get("c")
-    v = c.currentVnode()
-    h = v.h
-    if g.match_word(h,0,"@read-only"):
+
+    if g.match_word(c.p.h,0,"@read-only"):
         disable_body(c.frame.body)
     else:
         enable_body(c.frame.body)
 #@-others
+
 #@-leo

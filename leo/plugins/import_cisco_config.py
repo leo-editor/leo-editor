@@ -31,13 +31,10 @@ All created sections are alphabetically ordered.
 #@@language python
 #@@tabwidth -4
 
-#@+<< imports >>
-#@+node:ekr.20050111085909: ** << imports >>
 import leo.core.leoGlobals as g
 
-tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
-#@-<< imports >>
-__version__ = "1.5"
+__version__ = "2.0"
+
 #@+<< version history >>
 #@+node:ekr.20050311102853: ** << version history >>
 #@@killcolor
@@ -49,19 +46,18 @@ __version__ = "1.5"
 # 1.5 EKR:
 # - Removed all calls to g.top().
 # - Fixed bug: return ok in init.
+# 2.0 EKR: now gui independent.
 #@-<< version history >>
 
 #@+others
 #@+node:ekr.20050311102853.1: ** init
 def init ():
 
-    ok = tkFileDialog and g.app.gui.guiName() == "tkinter"
+    # This plugin is gui-independent.
+    g.registerHandler(('new','menu2'),create_import_cisco_menu)
+    g.plugin_signon(__name__)
 
-    if ok:
-        g.registerHandler(('new','open2'),create_import_cisco_menu)
-        g.plugin_signon(__name__)
-
-    return ok
+    return True
 #@+node:edream.110203113231.671: ** create_import_cisco_menu
 def create_import_cisco_menu (tag,keywords):
 
@@ -85,11 +81,18 @@ def importCiscoConfig(c):
     current = c.p
     #@+<< open file >>
     #@+node:edream.110203113231.673: *3* << open file >>
-    name = tkFileDialog.askopenfilename(
+    # name = tkFileDialog.askopenfilename(
+        # title="Import Cisco Configuration File",
+        # filetypes=[("All files", "*")]
+        # )
+
+    name = g.app.gui.runOpenFileDialog (
         title="Import Cisco Configuration File",
-        filetypes=[("All files", "*")]
-        )
-    if name == "":	return
+        filetypes=[("All files", "*")],
+        defaultextension='ini',
+    )
+
+    if not name:	return
 
     p = current.insertAsNthChild(0)
     c.setHeadString(p,"cisco config: %s" % name)
@@ -202,11 +205,13 @@ def importCiscoConfig(c):
                     subchild = child.insertAsNthChild(0)
                     c.setHeadString(subchild,value[0])
                     c.setBodyString(subchild,'\n'.join(value))
-            child.sortChildren()
+            # child.sortChildren()
         else:
             # this should never happen
             g.es("Unknown key: %s" % key)
-    p.sortChildren()
+    # p.sortChildren()
+    current.expand()
+    c.redraw_now()
     #@-<< complete outline >>
 #@-others
 #@-leo

@@ -6941,8 +6941,16 @@ class leoQtGui(leoGui.leoGui):
         val = d.exec_()
         return g.choose(val == 0,'yes','no')
 
+    #@+node:ekr.20101111103251.3821: *5* runOpenDirectoryDialog (qtGui)
+    def runOpenDirectoryDialog(self,title,startdir):
+
+        """Create and run an Qt open directory dialog ."""
+
+        parent = None
+        s = QtGui.QFileDialog.getExistingDirectory (parent,title,startdir)
+        return g.u(s)
     #@+node:ekr.20081121105001.488: *5* runOpenFileDialog
-    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
+    def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False):
 
         """Create and run an Qt open file dialog ."""
 
@@ -9920,4 +9928,5 @@ class jEditColorizer:
 
     #@-others
 #@-others
+QtGui.QFileDialog
 #@-leo

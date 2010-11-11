@@ -24,16 +24,10 @@ Feedback on this plugin can be sent to::
 #@@language python
 #@@tabwidth -4
 
-#@+<< imports >>
-#@+node:ekr.20050301083306.2: ** << imports >>
 import leo.core.leoGlobals as g
-
-tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
-
 import os
-#@-<< imports >>
 
-__version__ = '1.6'
+__version__ = '2.0'
 #@+<< version history >>
 #@+node:ekr.20050301083306.3: ** << version history >>
 #@@killcolor
@@ -53,10 +47,10 @@ __version__ = '1.6'
 # 1.5 EKR:
 #     - use g.importExtension to import tkFileDialog.
 #     - Redraw the screen only once (in readDir instead of importDir).
-# 
 # 1.6 EKR:
 #     - Changed 'new_c' logic to 'c' logic.
 #     - Added init function.
+# 2.0 EKR: now gui independent.
 #@-<< version history >>
 
 language = 'english' # Anything except 'french' uses english.
@@ -65,13 +59,11 @@ language = 'english' # Anything except 'french' uses english.
 #@+node:ekr.20050301083306.4: ** init
 def init ():
 
-    ok = tkFileDialog and g.app.gui.guiName() == "tkinter"
+    # This plugin is now gui independent.
+    g.registerHandler(("new2","menu2"), onCreate)
+    g.plugin_signon(__name__)
 
-    if ok:
-        g.registerHandler(("new2","open2"), onCreate)
-        g.plugin_signon(__name__)
-
-    return ok
+    return True
 #@+node:ekr.20050301083306.5: ** onCreate
 def onCreate (tag, keywords):
 
@@ -110,35 +102,22 @@ class controller:
         else:
             titledialog = "Please, select a directory..."
 
-        dirName = tkFileDialog.askdirectory(
-            title=titledialog,initialdir=startdir,mustexist="true")
+        dirName = g.app.gui.runOpenDirectoryDialog(
+            title=titledialog,
+            startdir=startdir,
+        )
 
-        if dirName and len(dirName) > 0:
+        if dirName:
             g.es(dirName)
-            compteur, compteurglobal = self.importDir(dirName,compteur=0,compteurglobal=0)
-            c.selectVnode(c.currentVnode())
-            c.frame.tree.redraw_now()
-            self.esfm("\n")
+            compteurglobal = self.importDir(dirName,compteurglobal=0)
+            c.selectPosition(c.p)
+            c.redraw_now()
             if language == 'french':
                 g.es(str(compteurglobal)+" fichiers traités.")
             else:
                 g.es(str(compteurglobal)+" files outlined.")
-    #@+node:ekr.20050301083306.9: *3* esfm
-    def esfm (self,chaine,**keys):
-
-        """ Pour imprimer une chaîne de caractères sans retour à la ligne """
-
-        if 1: # No longer needed so much now that we don't redraw as much.
-
-            color = keys.get('color')
-
-            if g.app.log:
-                g.app.log.put(chaine,color=color)
-            else:
-                g.app.logWaiting.append((chaine,color),)
-                g.pr(chaine,newline=False)
     #@+node:ekr.20050301083306.10: *3* importDir
-    def importDir (self,dir,compteur,compteurglobal):
+    def importDir (self,dir,compteurglobal):
 
         """ La routine récursive de lecture des fichiers """
 
@@ -147,10 +126,10 @@ class controller:
                 g.es("Ce répertoire n'existe pas: %s" + dir)
             else:
                 g.es("No such Directory: %s" + dir)
-            return compteur, compteurglobal # EKR
+            return compteurglobal
 
         head,tail = g.os_path_split(dir)
-        c = self.c ; v = c.currentVnode()
+        c = self.c ; current = c.p
         try:
             #ici, on liste le contenu du répertoire
             body=""
@@ -160,9 +139,6 @@ class controller:
                 fichiers = os.listdir(dir)
                 dossiers = []
                 for f in fichiers:
-                    if compteur == 25:
-                        self.esfm("\n")
-                        compteur = 0
                     # mettre ici le code de création des noeuds
                     path = g.os_path_join(dir,f)
                     # est-ce un fichier ?
@@ -171,9 +147,6 @@ class controller:
                     else:
                         # c'est alors un répertoire
                         dossiers.append(path)
-
-                    self.esfm(".")
-                    compteur += 1
                     compteurglobal += 1
             except Exception:
                 if language == 'french':
@@ -182,23 +155,22 @@ class controller:
                     g.es("os.listdir error...")
                 g.es_exception()
             #@-<< listdir >>
-            retour = c.importCommands.createHeadline(v,body,tail)
-            #sélectionne le noeud nouvellement créé
-            c.selectVnode(retour)
+            p = c.importCommands.createHeadline(current,body,tail)
+            c.selectPosition(p)
             if len(dossiers) > 0:
                 for d in dossiers:
-                    compteur,compteurglobal = self.importDir(d,compteur,compteurglobal)
+                    compteurglobal = self.importDir(d,compteurglobal)
             c.setChanged(True)
             #sélectionne le noeud parent
-            c.selectVnode(v)
+            c.selectPosition(current)
         except:
             if language == 'french':
                 g.es("erreur d'insertion de noeud...")
             else:
-                g.es("error while creating vnode...")
+                g.es("error while creating node...")
             g.es_exception()
 
-        return compteur, compteurglobal
+        return compteurglobal
     #@-others
 #@-others
 #@-leo
