@@ -1,0 +1,2722 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20101110150056.9445: * @file mod_leo2ascd.txt
+#@@language plain
+#@@tabwidth -4
+#@+all
+#@+node:ekr.20040331071919.38: ** Leo 2 AsciiDoc Users Guide
+@language plain
+@ascfile "doc/mod_asc_user.asc"
+@ascconfig maxCodeLineLength 80
+@doc
+@ascskip # Time-stamp: "Mon, Jan 19 15:29 CST 2004  michael@redpriest Leo_AsciiDoc_Users_Guide_141652036.txt"
+
+Preface
+-------
+
+Leo2AsciiDoc is a small Python program which has been
+built to be used as a plugin module for the Leo outlining editor.
+
+Leo2AsciiDoc enables the contents of Leo outlines to be published to HTML
+or PDF via the DocBook set of publishing tools.  Plain text from the
+Leo outline is transformed into a final result that has:
+
+    - typeset body text, in which bulleted and numbered lists,
+      variable lists, page numbers, URLs, index terms,and bold and
+      italic text are automatically recognized.
+    - typeset Headings
+    - a Table of Contents
+    - an Index containing any items marked by the user, and any
+      Python classes or functions.
+
+As you will see, there's not a lot involved in using the
+Leo2AsciiDoc module.  It simply copies text from a Leo outline (or a
+portion of a Leo outline) to a text file.  In turn that text file can
+be automatically converted by the AsciiDoc program and a DocBook
+system to properly typeset DocBook HTML, PDF or other formats.
+
+If you keep your text plain, and use a few simple formatting
+conventions, the final output can have typeset headings, bulleted
+lists, indexing and cross-referencing, as well as many other
+features.
+
+---
+Michael Dawson
+Marshall Research
+michael_dawson at marshallresearch dot com
+---
+
+*note*
+
+Leo2AsciiDoc is suited for general text documents, most programming
+documentation and most business documents.  Leo2AsciiDoc (being based on
+DocBook) is not the choice for anyone needing detailed typographic
+control of individual words or characters -- for example, typeset
+equations.  In general, DocBook typesets blocks of text.
+
+*note*
+
+@code
+#@+node:ekr.20040331071919.2: *3* About this document
+@doc
+@ascskip # Time-stamp: "Fri, Jan  9 15:19 CST 2004  michael@redpriest About_this_document_140583820.txt"
+
+If you are reading this document in HTML (in a web browser) or as a
+PDF file (usually in Adobe Acrobat Reader), it may interest you to
+know that this document was generated from a Leo outline.
+
+The Leo outline (in the file mod_leo2ascd.leo) contained the
+Leo2AsciiDoc Users Guide, the Leo2AsciiDoc Developers Guide, and all
+the Leo2AsciiDoc source code.  All of them were created by simply
+typing plain text.
+
+The working source code was exported by Leo using the "File; Tangle;
+Tangle" menu selection, which created the Python program file
+"mod_leo2ascd.py".
+
+The Users Guide and the Developers Guide were created by exporting
+the text from Leo, using the menu selection "File; Export; Export
+All to AsciiDoc".  This created the plain text files
+"mod_asc_user.asc" and "mod_asc_dev.asc" (which are the file names I
+told Leo to use.)
+
+I then typed "make all" at the console in the directory, and the
+make program:
+
+    - ran the AsciiDoc program to produce the DocBook XML files.
+    - ran the xsltproc program to produce the HTML files from the
+      XML files.
+    - ran the xsltproc program to produce "fo" files, and ran the
+      fop program to produce PDF files from the fo files.
+
+Everything was generated automatically without any further work on
+my part.
+
+@code
+#@+node:ekr.20040331071919.3: *4* License
+@doc
+@ascskip # Time-stamp: "Mon, Jan 19 15:28 CST 2004  michael@redpriest License_141615068.txt"
+
+This is part of the Leo2AsciiDoc software package, which is released
+as open source.  
+
+The license is the most "open" I know of, and is sometimes referred
+to as the "X11" or "MIT" license.  Boiled down, in non-legal terms:
+
+    - the software is yours for free -- to run, modify and
+      distribute as you will
+    - I have no legal liability for any of it
+    - you may not use my name.
+
+Michael Dawson
+Marshall Research
+michael_dawson at marshallresearch dot com
+
+NOTE: The following license is often referred to as the "MIT/X
+Consortium License", as the "MIT license" and as the "X11" license.
+My source for the exact wording is the copy at the Open Source
+Initiative:  http://opensource.org/licenses/mit-license.html[]
+
+
+@code
+#@+node:ekr.20040331071919.4: *5* License document
+@doc
+@ascskip # Time-stamp: "Fri, Jan  9 09:18 CST 2004  michael@redpriest License_document_140581532.txt"
+---
+Terms and Conditions
+
+COPYRIGHT AND PERMISSION NOTICE
+
+Copyright (c) 1999,2000,2001,2002,2003,2004 Michael W. Dawson
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation files
+(the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, provided
+that the above copyright notice(s) and this permission notice appear
+in all copies of the Software and that both the above copyright
+notice(s) and this permission notice appear in supporting
+documentation.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR
+ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+OF THIS SOFTWARE.
+
+Except as contained in this notice, the name of a copyright holder
+shall not be used in advertising or otherwise to promote the sale,
+use or other dealings in this Software without prior written
+authorization of the copyright holder.
+---
+@code
+#@+node:ekr.20040331071919.40: *3* Operation
+@language plain
+@
+
+Using Leo2AsciiDoc is as simple as choosing the Leo menu item: "File;
+Export; Export All to AsciiDoc".  From there, you have the AsciiDoc
+program and the DocBook system automatically convert your outline to
+HTML or PDF (or to a manpage or a DocBook website.)
+
+Step by step:
+
+    - You need a Leo outline containing some plain text, or plain
+      text and code.
+    - You ensure that the top node in the outline (or part of the
+      outline tree which you want to be a separate document) must
+      have an @ascfile directive in the body text. The @ascfile
+      directive is used to specify the filename in which the output
+      text will be put.
+    - You then use Leo's menu: "File; Export; Export All to
+      AsciiDoc" (or one of the other Leo2AsciiDoc menu items) to
+      have Leo2AsciiDoc automatically export the outline to a text file.
+    - After that, you run the AsciiDoc program on the exported text
+      file, and process it as a DocBook document.  Most often,
+      people have a Make file set up to do this automatically.
+
+In practice, people often want to use special features:
+
+    - plain text formatting, sometimes referred to as "structured
+      text" or "minimal markup"
+    - Leo2AsciiDoc configuration options
+
+The following sections cover this.  If you've downloaded the Leo2AsciiDoc
+package, the mod_leo2asc.leo outline is available, and illustrates
+all the features.  It is the outline from which all the Leo2AsciiDoc HTML
+and PDF documentation and code were derived.
+
+@code
+#@+node:ekr.20040331071919.41: *4* Directives
+@doc
+@ascskip # Time-stamp: "Mon, Jan 19 13:19 CST 2004  michael@redpriest Directives_140672364.txt"
+
+The following are non-printing directives that you can insert into
+your outline text to control Leo2AsciiDoc behaviour.  All must be at the
+beginning of the line.
+
+{amp}commat;ascfile::
+    e.g: `@ascfile "doc/mod_asc_user.asc" `
+
+    Ascfile is the equivalent of a Leo @root directive. Ascfile
+    signals the start of a document and specifies the file name to
+    receive the text.
+
+    The default directory is the directory containing the Leo
+    outline.  If you were editing an outline that resided in
+    /home/me then the above ascfile directive would create the file
+    mod_asc/user.asc in the directory /home/me/doc.
+
+{amp}commat;ascignore::
+    Ascignore causes Leo2AsciiDoc to ignore the outline node, and any
+    sub-nodes. It must be placed before any line in the node which
+    will print.
+
+{amp}commat;ascskip::
+    Causes Leo2AsciiDoc to skip the line.  If followed by the word "on",
+    causes Leo2AsciiDoc to skip all succeeding document lines until an
+    "{amp}commat;ascskip off" directive is read, or a code section is reached.
+
+{amp}commat;ascexit::
+    Causes Leo2AsciiDoc to exit the outline node without processing any
+    further lines.  Sub-nodes will be processed.
+
+{amp}commat;ascconfig::
+    e.g. `{amp}commat;ascconfig maxCodeLineLength 70` -- see
+    Configuration below. 
+
+
+@code
+#@+node:ekr.20040331071919.42: *5* Configuration
+@doc
+@ascskip # Time-stamp: "Mon, Jan 19 13:20 CST 2004  michael@redpriest Configuration_140673612.txt"
+
+There are a few configuration settings which may be set in an
+outline.  To take effect, they must be placed:
+
+    - in the top node of the outline, or
+    - the same node as an @ascfile directive.
+
+Configuration settings in the top node of the outline are effective
+for the whole outline, unless overridden by settings in sub-nodes.
+
+maxCodeLineLength::
+    e.g. `{amp}commat;ascconfig maxCodeLineLength 70` -- 
+    sets the maximum length of code printout lines to 70 characters.
+    Longer lines will be wrapped and a line continuation character
+    displayed.
+
+PrintHeadings::    
+    e.g. `{amp}commat;ascconfig PrintHeadings off` -- turns off the
+    export of outline node headings as section titles.  In that
+    case, you must have correctly entered AsciiDoc section titles in
+    the body text of your outline.
+
+Readers of the code will note that there are other configuration
+settings in the code. These will be used in future, and so I won't
+document them yet.
+
+
+@code
+#@+node:ekr.20040331071919.43: *4* Markup
+@language plain
+@doc
+@ascskip # Time-stamp: "Mon, Jan 19 13:22 CST 2004  michael@redpriest Markup_140672220.txt"
+
+The point of using a system like AsciiDoc is to get a document that
+is properly typeset, while writing only plain text with as little
+embedded formatting instruction as possible.
+
+For the most part, you simply write chunks of text, which become
+typeset paragraphs.
+
+I've tried to use most commonly used markup in the Leo outline that
+contains all the Leo2AsciiDoc source and documentation, so that you
+can see exactly how markup may be used.
+
+@code
+#@+node:ekr.20040331071919.44: *5* Standard AsciiDoc Markup
+@doc
+@ascskip # Time-stamp: "Mon, Jan 19 13:20 CST 2004  michael@redpriest Standard_AsciiDoc_Markup_140676540.txt"
+
+This section illustrates a very small part of the standard AsciiDoc
+markup.  However, AsciiDoc comes with extensive documentation of its
+own, which any Leo2AsciiDoc user should read.
+
+
+@code
+#@+node:ekr.20040331071919.45: *6* Headings
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:06 CST 2004  michael@redpriest Headings_141020668.txt"
+
+indexterm:[Markup, Headings]
+Leo2AsciiDoc will automatically create Headings from the headings of
+your Leo outline.  You can turn this off (see Configuration), and
+create your own headings in the body text of an outline node.  For
+example, a Chapter heading is text at the left margin that has a
+following line of dashes.  For example,
+
+@code
+ Operation
+ ---------
+
+@doc
+is the heading of this chapter.  Chapter sub-sections have a
+following line of tildes.  For example,
+
+@code
+
+ Markup
+ ~~~~~~
+
+@doc
+
+is the heading of Section One of this chapter.  Section Two markup
+is a following line of "^".  For example, 
+
+@code
+
+Standard AsciiDoc Markup
+^^^^^^^^^^^^^^^^^^^^^^^^
+@doc
+
+is the heading of the section, which is a Section Two.
+
+As I say, you normally don't need to do this, since Leo2AsciiDoc does all
+this itself from the outline headings.
+
+
+@code
+#@+node:ekr.20040331071919.46: *6* Lists
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:06 CST 2004  michael@redpriest Lists_141018612.txt"
+
+indexterm:[Markup, lists]
+Bulleted lists start with a dash (or asterisk) followed by a space
+or tab character.  I've extended this to allow leading spaces.  For
+example,
+
+@code
+    - this is a list item
+        * this is a sub-item
+    - this is another list item
+@doc
+
+produces:
+
+    - this is a list item
+        * this is a sub-item
+    - this is another list item
+
+
+@code
+#@+node:ekr.20040331071919.47: *6* URLs
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:07 CST 2004  michael@redpriest URLs_140994492.txt"
+
+indexterm:[Markup, URL]
+The URL address of a web page will be "hot" in the HTML or PDF
+document, when terminated with square brackets:
+
+@code
+
+http://www.docbook.org[The official home page for DocBook: The Definitive  Guide.]
+
+@doc
+
+results in:
+
+http://www.docbook.org[The official home page for DocBook: The Definitive Guide.]
+
+
+@code
+#@+node:ekr.20040331071919.1: ** Leo 2 AsciiDoc Developers Guide
+@language plain
+
+@
+Preface
+-------
+
+Leo2AsciiDoc is a small Python program which has been built to be used as
+a plugin module for the Leo outlining editor.
+
+This is the Developer Documentation and source code listing of
+Leo2AsciiDoc.
+
+Leo2AsciiDoc enables the contents of Leo outlines to be published to
+HTML or PDF via the DocBook XML set of publishing tools.  Plain text
+from the Leo outline is transformed into a final result that has:
+
+    - typeset body text, in which bulleted and numbered lists,
+      variable lists, page numbers, URLs, index terms,and bold and
+      italic text are automatically recognized.
+    - typeset Headings
+    - a Table of Contents
+    - an Index containing any items marked by the user, and any
+      Python classes or functions.
+
+indexterm:[Literate Programming]
+For programmers, Leo2AsciiDoc enables a simplified version of
+Literate Programming: all the documentation and code for a program
+can be written in a Leo outline, and published with just a few
+keystrokes.  As is normal for a Leo outline, Leo can also extract
+the source code from the outline and package it into text files,
+ready to be run or compiled.
+
+Specifically, what the Leo2AsciiDoc program does is:
+
+    - wait to be called by the Leo menu (File; Export; Export to
+      AsciiDoc), and then
+    - read a part of a Leo outline, and
+    - write the contents to a text file that can be understood by
+      the AsciiDoc program.
+
+From there:
+
+    - the xref:AsciiDoc[] program can then convert that text file to
+      another text file that is in the DocBook XML format.
+    - the standard collection of xref:DocBook[] tools can then format the
+      text in HTML (web page) files or as a typeset PDF file.
+    - Once set up, the whole process happens quickly and
+      automatically, usually with a simple "make" command.
+
+Here are some web locations for the items I've referenced above:
+
+Leo::    
+    http://webpages.charter.net/edreamleo/front.html[]
+Python::
+    http://www.python.org[]
+Docbook::    
+    http://docbook.org/[]
+Literate Programming::
+    http://www.literateprogramming.com/[]
+AsciiDoc::
+    http://www.methods.co.nz/asciidoc/[]
+PDF::
+    Adobe provides a free program, Adobe Acrobat Reader (Windows &
+    Linux), that is used to read and print documents produced in the
+    Adobe Portable Document Format.
+    http://www.adobe.com/products/acrobat/readermain.html[]
+
+---
+Michael Dawson
+Marshall Research
+michael_dawson at marshallresearch dot com
+---
+@code
+#@+node:ekr.20040331071919.6: *3* The General Approach
+@language plain
+@doc
+@ascskip # Time-stamp: "Fri, Jan  9 16:00 CST 2004  michael@redpriest The_General_Approach_140588436.txt"
+
+Leo2AsciiDoc simply copies the text from a portion of a Leo outline
+to a text file.  That text file can then be processed by other
+programs to produce HTML, PDF's, etc.
+
+The text will be copied from each outline item, in outline order,
+though you can skip individual nodes or sub-trees.
+
+The idea is that you write the outline as a book, or series of
+books.
+
+If your book contains source code, you can break it up into pieces
+that make it convenient to review with the reader.  Additionally,
+you can discuss the pieces in any order that you like.  Using the
+"tangle" command, Leo will be able to assemble and reorder the
+pieces in the order required for a file of compilable source code.
+
+As the text is copied from the outline, Leo2AsciiDoc adds minimal markup,
+generally:
+
+    - It marks up node headlines as Titles and Section Headings
+      in the AsciiDoc format.
+    - Program listings have AsciiDoc section markers inserted before
+      and after.
+
+A specific list follows.
+
+@code
+#@+node:ekr.20040331071919.7: *4* Markup Added
+@language plain
+@doc
+@ascskip # Time-stamp: "Fri, Jan  9 16:05 CST 2004  michael@redpriest Markup_Added_140589620.txt"
+
+    - headings:
+        * By default, all outline node headings are underlined with
+          the appropriate section underline character, which
+          AsciiDoc will use to transform the headings into titles:
+          chapter, section1, section2, etc.
+        * code extracts are given an "example" heading.
+    - source code sections are marked with delimiters, so that they
+      can be assigned to the DocBook "programlisting" element.
+    - source code sections are line-wrapped in the document output,
+      for convenient html display.
+    - wherever source code is exported to a source code file, the
+      document with note this with an automatically generated "note"
+      element.
+
+@code
+#@+node:ekr.20040331071919.14: *3* Other programs
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 11:09 CST 2004  michael@redpriest Other_programs_140636444.txt"
+
+The appendices are about other programs that are used with Leo.
+I'm including them because they are examples of how my setup works,
+for those who may be interested in setting up something similar.
+
+    - AsciiDoc is the program that processes the output from Leo2AsciiDoc
+      into a DocBook-ready XML file.
+    - Setting up DocBook is a topic that is far too large for this
+      little manual, but the DocBook section which follows contains
+      documentation of exactly how my working system is configured.
+    - The XEmacs text editor is the one I prefer, but it is not
+      necessary for the use of Leo2AsciiDoc.  Others who also use XEmacs
+      might find the documentation of my Leo integration and
+      multi-mode support to be useful.
+@code
+#@+node:ekr.20040331071919.15: *3* <<Appendix: AsciiDoc >>
+@language plain
+@ascskip Time-stamp: "Thu, Oct 30 10:58 CST 2003  michael@redpriest Appendix_AsciiDoc__140954356.txt"
+@doc
+anchor:AsciiDoc[AsciiDoc]
+
+The AsciiDoc program is written by Stuart Rackham and has its own
+web site at http://www.methods.co.nz/asciidoc/[], with full
+documentation.
+
+AsciiDoc is a small program, written in Python, that reads text
+which is in the AsciiDoc text format. Generally speaking, ordinary
+text (such as you would write in an email message) is already in the
+AsciiDoc format.  The AsciiDoc program produces (among other
+choices) output in the DocBook XML format.
+
+Text exported from a Leo outline by Leo2AsciiDoc is ready to be processed
+by AsciiDoc, once AsciiDoc has been configured to recognize it.
+
+Leo2AsciiDoc comes with an AsciiDoc configuration file that will enable
+AsciiDoc to process all Leo2AsciiDoc features.  The following section
+describes that configuration file.
+
+Of course, you don't need to read or understand the configuration
+file to use it.  Simply put it (leo-docbook.conf) in the same
+directory as AsciiDoc's "docbook.conf" file.  When you invoke
+AsciiDoc (see the xref:Makefile[] section in the DocBook appendix for
+examples), give the "leo-docbook.conf" file as the configuration
+parameter ("-f leo-docbook.conf".)
+
+@ascskip on
+<< Appendix: AsciiDoc >>
+@code
+#@+node:ekr.20040331071919.16: *4* << Configuration file >>
+@language python
+@tabwidth -4
+
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 11:58 CST 2004  michael@redpriest _Configuration_file__140640380.py"
+
+AsciiDoc is customized through the use of configuration files, which
+cascade, so that you can include other configuration files and
+then proceed to add your changes.
+
+The main elements of the configuration file below:
+
+    - adds chapter and web site document types
+    - switches code listings to use the DocBook "programlisting"
+      element 
+
+    *note*
+
+    If you choose to export this configuration file from the Leo
+    outline, you will have to remove escape charactersfrom some
+    lines after you have exported it.
+
+    Specifically, some lines begin with the character "\".  That
+    character should be removed.
+
+    *note*
+
+@ascskip on
+@root "other/asciidoc/leo-docbook.conf"
+<< Configuration File >>
+@code
+# Start with the standard docbook back end configuration.
+# ensure the next line is uncommented before installing
+\include::docbook.conf[]
+
+@doc
+
+I want tabs interpreted as 4 spaces.
+
+@code
+[options]
+tabsize=4
+@doc
+
+Interpret an indented paragraph as a simple paragraph.
+
+@code
+[indentedparagraph]
+<simpara>|</simpara>
+
+
+@doc
+
+For our code listings we invent a new markup that will use the
+DocBook programlisting element.
+
+@code
+[blockdef-leocode]
+delimiter=^\~\-~--- code(.*?)$
+section=programlistingblock
+presubs=specialcharacters, replacements
+
+[programlistingblock]
+<programlisting>
+|
+</programlisting>
+
+@doc
+
+We add new markup to signify the DocBook "note" element.  This
+predates AsciiDoc 5.0, and is still useful.
+
+@code
+[blockdef-note]
+delimiter=^ *\*note\*$
+section=noteblock
+presubs=specialcharacters,quotes,specialwords,replacements,macros,glossary
+
+# Block macro
+[noteblock]
+<note>
+|
+</note>
+
+[blockdef-example]
+delimiter=^ *\*example\*$
+options=section
+section=exampleblock
+presubs=replacements
+
+# Block macro
+[exampleblock]
+<example>
+<title>{title}</title>
+|
+</example>
+
+
+@doc
+
+The following replacements ensure basic Python code indexing.
+
+@code
+[replacements]
+#----- indexing markup -----------------------------------------------------
+# using regular expressions because I don't want to introduce a filter, which
+# would slow things down.
+#
+# index python classes and defs
+^(def +)(.+?)(\(.+:)=\1\2\3<indexterm><primary>Python code, functions</primary><secondary>\2</secondary></indexterm> 
+^(class +)(.+?)(:)=\1\2\3<indexterm><primary>Python code, classes</primary><secondary>\2</secondary></indexterm> 
+^( +def +)(.+?)(\(.+:)=\1\2\3<indexterm><primary>Python code, methods and nested functions</primary><secondary>\2</secondary></indexterm> 
+
+# index code extracts
+(\&lt\;\&lt\;)(.+?)(\&gt\;\&gt\;\=)=\2<indexterm><primary>Python code, extracts explained</primary><secondary>\2</secondary></indexterm>
+(\&lt\;\&lt\;)(.+?)(\&gt\;\&gt\;)(\s*$)=\1\2\3\4<indexterm><primary>Python code, extracts used</primary><secondary>\2</secondary></indexterm> 
+
+@doc
+
+Change the standard AsciiDoc article, book and manpage definition to
+use the DocBook 4.2 DTD.  Add an empty index element to the end of
+the book definition so that DocBook will automatically generate an
+index.
+
+@code
+#---------------------------------------------------------------------------
+#----- article -------------------------------------------------------------
+#---------------------------------------------------------------------------
+
+# changing to our version of the docbook dtd
+\ifdef::doctype-article[]
+
+[header]
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article
+        PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+
+<article lang="en">
+<articleinfo>
+    <title>{doctitle}</title>
+    <date>{date}</date>
+    <author>
+        <firstname>{firstname}</firstname>
+        <othername>{middlename}</othername>
+        <surname>{lastname}</surname>
+        <affiliation>
+            <address>
+                <email>{email}</email>
+            </address>
+        </affiliation>
+    </author>
+    <authorinitials>{authorinitials}</authorinitials>
+    <revhistory><revision><revnumber>{revision}</revnumber><date>{date}</date></revision></revhistory>
+    <corpname>{companyname}</corpname>
+</articleinfo>
+
+\endif::doctype-article[]
+
+
+#---------------------------------------------------------------------------
+#----- book ----------------------------------------------------------------
+#---------------------------------------------------------------------------
+# change to our version of docbook dtd
+
+\ifdef::doctype-book[]
+
+[header]
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book
+        PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+
+<book lang="en">
+<bookinfo>
+    <title>{doctitle}</title>
+    <date>{date}</date>
+    <author>
+        <firstname>{firstname}</firstname>
+        <othername>{middlename}</othername>
+        <surname>{lastname}</surname>
+        <affiliation>
+            <address>
+                <email>{email}</email>
+            </address>
+        </affiliation>
+    </author>
+    <authorinitials>{authorinitials}</authorinitials>
+    <revhistory><revision><revnumber>{revision}</revnumber><date>{date}</date></revision></revhistory>
+    <corpname>{companyname}</corpname>
+</bookinfo>
+
+
+[footer]
+<index/>
+</book>
+
+\endif::doctype-book[]
+
+#---------------------------------------------------------------------------
+#----- manpage -------------------------------------------------------------
+#---------------------------------------------------------------------------
+\ifdef::doctype-manpage[]
+
+[header]
+<!DOCTYPE refentry
+        PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<refentry>
+# The refentryinfo element is legal and should not normally be printed.
+# Unfortunately some docbook processors do print it.
+<refentryinfo>
+    <title>{doctitle}</title>
+    <date>{date}</date>
+    <author>
+        <firstname>{firstname}</firstname>
+        <othername>{middlename}</othername>
+        <surname>{lastname}</surname>
+        <affiliation>
+            <address>
+                <email>{email}</email>
+            </address>
+        </affiliation>
+    </author>
+    <authorinitials>{authorinitials}</authorinitials>
+    <revhistory><revision><revnumber>{revision}</revnumber><date>{date}</date></revision></revhistory>
+    <corpname>{companyname}</corpname>
+</refentryinfo>
+<refmeta>
+<refentrytitle>{mantitle}</refentrytitle>
+<manvolnum>{manvolnum}</manvolnum>
+</refmeta>
+<refnamediv>
+    <refname>{manname}</refname>
+    <refpurpose>{manpurpose}</refpurpose>
+</refnamediv>
+
+\endif::doctype-manpage[]
+
+
+
+@doc
+
+Add chapter and website document types.
+
+@code
+#---------------------------------------------------------------------------
+#----- new: chapter --------------------------------------------------------
+#---------------------------------------------------------------------------
+\ifdef::doctype-chapter[]
+
+[header]
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE chapter
+        PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<chapter>
+<title>{doctitle}</title>
+
+[footer]
+</chapter>
+
+
+# Section macros
+# Using <abstract> semantics restricts preface to <simpara> elements.
+[preface]
+|
+
+[sect1]
+<sect1>
+<title>{title}</title>
+|
+</sect1>
+
+[sect2]
+<sect2>
+<title>{title}</title>
+|
+</sect2>
+
+[sect3]
+<sect3>
+<title>{title}</title>
+|
+</sect3>
+
+[options]
+outfilesuffix=.xml
+
+\endif::doctype-chapter[]
+
+@doc
+
+Website requires a unique id for each page.  I've changed AsciiDoc
+to provide the HTML filename as the id, and we use it here. We'll
+use the date the XML file was created as the update date.
+
+@code
+#---------------------------------------------------------------------------
+#----- new: website --------------------------------------------------------
+#---------------------------------------------------------------------------
+\ifdef::doctype-website[]
+[header]
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE webpage SYSTEM "website-full.dtd">
+<webpage id="{infilebase}">
+  <head>
+    <title>{doctitle}</title>
+  </head>
+  <config param="rcsdate" value="Updated: {localdate}  {localtime}"/>
+[footer]
+</webpage>
+
+[options]
+outfilesuffix=.xml
+
+\endif::doctype-website[]
+
+#@+node:ekr.20040331071919.17: *4* << Patches >>
+@silent
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 14:11 CST 2004  michael@redpriest _Patches__140641532.txt"
+
+I've patched the source code for AsciiDoc (asciidoc.py) with a few
+small changes to allow AsciiDoc to process chapters and DocBook
+web site documents as well as the DocBook book format.  Since I use
+Linux, I also changed the default line-ending code to the Linux
+default.
+
+For the exact changes I made, the following output at the end of
+this section was created by GNU diff (version 2.8.4) with the
+command
+
+---
+LC_ALL=C TZ=UTC0 diff -Naur 5.0.2-original 5.0.2-mrc-patched \
+    >mrc-asciidoc-5.0.2-patch-diff
+---
+
+I include this mainly so that you can see the exact changes I made.
+However, you may want to patch a copy of the original in exactly the
+same way. 
+
+To patch a copy of the original asciidoc.py (version 5.0.2), one
+would use the patch command as follows (when in the same directory
+as the copy of asciidoc.py and mrc-asciidoc-5.0.2-patch-diff)
+
+---
+patch -Np1 <mrc2-asciidoc-5.0.2-patch-diff
+---
+
+@ascskip on
+@root "other/asciidoc/mrc-asciidoc-5.0.2-patch-diff"
+<< Patches >>
+@code
+diff -Naur 5.0.2-original/asciidoc.py 5.0.2-mrc-patched/asciidoc.py
+--- 5.0.2-original/asciidoc.py	2003-12-16 00:16:28.000000000 +0000
++++ 5.0.2-mrc-patched/asciidoc.py	2004-01-08 17:45:37.000000000 +0000
+@@ -838,12 +838,15 @@
+         '''Set predefined glossary entries that follow configuration file
+         loading.'''
+         self.glossary['infile'] = reader.fname
++        # mwd Monday, June 23, 2003 for use in website
++        self.glossary['infilebase'] = os.path.splitext(os.path.split(reader.fname)[1]) [0]
+         self.glossary['outfile'] = reader.fname
+         s = os.path.splitext(writer.fname)[1][1:]   # Output file extension.
+         self.glossary['filetype'] = s
+         self.glossary['filetype-'+s] = ''
+     def translate(self):
+-        assert self.doctype in ('article','manpage','book'), \
++        # mwd 2003-Jun-23 assert self.doctype in ('article','manpage','book'), \
++        assert self.doctype in ('article','chapter','website','manpage', 'book'), \
+             'illegal document type'
+         assert self.level == 0
+         reader.tabsize = config.tabsize
+@@ -864,7 +867,8 @@
+             if not config.suppress_headers:
+                 hdr = config.subs_section('header',{})
+                 writer.write(hdr)
+-            if self.doctype in ('article','book'):
++            # mwd 2003-Jun-23 if self.doctype in ('article','book'):
++            if self.doctype in ('article','book','chapter','website'):
+                 # Translate 'preamble' (untitled elements between header
+                 # and first section title).
+                 if Lex.next() is not Title:
+@@ -952,7 +956,7 @@
+                 # Parse revision line.
+                 s = reader.read()
+                 s = subs_glossary([s])[0]
+-                # Match RCS/CVS $Id: leoPluginsRef.leo,v 1.63 2008/02/18 21:53:38 edream Exp $ marker format.
++                # Match RCS/CVS $Id: leoPluginsRef.leo,v 1.63 2008/02/18 21:53:38 edream Exp $ marker format.
+                 mo = re.match(r'^\$Id: \S+ (?P<revision>\S+)' \
+                     ' (?P<date>\S+) \S+ \S+ \S+ \$$',s)
+                 if not mo:
+@@ -2573,7 +2577,8 @@
+
+ class Writer:
+     '''Writes lines to output file.'''
+-    EOL = '\r\n'    # End of line terminator.
++    # mwd 2003-Jun-23 EOL = '\r\n'    # End of line terminator.
++    EOL = '\n'    # End of line terminator.
+     f = None        # Output file object.
+     fname= None     # Output file name.
+     lines_out = 0   # Number of lines written.
+@@ -3068,7 +3073,8 @@
+     The AsciiDoc document is read from file object src the translated
+     DocBook file written to file object dst.'''
+     try:
+-        if doctype not in ('article','manpage','book'):
++        # mwd-2004-Jan-05 if doctype not in ('article','manpage','book'):
++        if doctype not in ('article','chapter','website','manpage', 'book'):
+             raise EAsciiDoc,'illegal document type'
+         if backend == 'linuxdoc' and doctype != 'article':
+             raise EAsciiDoc,'%s %s documents are not supported' \
+#@+node:ekr.20040331071919.18: *3* <<Appendix: DocBook>>
+@language plain
+@ascskip Time-stamp: "Fri, Dec 19 11:48 CST 2003  michael@redpriest Appendix_DocBook_140578660.txt"
+@doc
+
+anchor:DocBook[DocBook]
+DocBook is a project that provides:
+
+    - a specification for the text markup (DTD) of DocBook XML
+      documents, and
+    - a set of XSLT stylesheets that can be used by an XSLT engine
+      to transform those XML documents to HTML, PDF, etc.
+
+If you create your text documents using the rules in the DocBook
+DTD, you can use the DocBook XSLT stylesheets to produce various
+output formats, such as HTML and PDF.
+
+The DocBook project is designed for the production of computer
+documentation, but is actually used for a wide variety of documents.
+
+Some web resources:
+
+    - the official home page for DocBook: The Definitive Guide:
+        http://docbook.org/[]
+    - DocBook Basics:
+        http://www.dpawson.co.uk/docbook/reference.html[]
+    - DocBook Open Repository:
+        http://sourceforge.net/projects/docbook/[]
+    - DocBook XSL: The Complete Guide:
+        http://www.sagehill.net/docbookxsl/index.html[]
+
+I include this section as documentation of one setup that works --
+it translates Leo2AsciiDoc output to HTML and PDF.
+
+This is not a guide to the installation, setup and operation of
+DocBook, just an example of a working system.
+
+@ascskip on
+<< Appendix: DocBook >>
+@code
+#@+node:ekr.20040331071919.19: *4* << Tool Chain >>
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 13:57 CST 2004  michael@redpriest _Tool_Chain__140810780.txt"
+
+Documents go through a number of stages in their creation.  Each
+stage may involve one or more tools or programs, which form a tool
+chain: each performing some processing and handing off to the next.
+
+As a simple example, for this document:
+
+
+    - text creation was handled by XEmacs, a text
+      editor (which functioned as a Leo plugin.)
+      indexterm:[XEmacs]
+      indexterm:[GNU Make]
+      indexterm:[AsciiDoc]
+      indexterm:[xsltproc]
+      indexterm:[FOP]
+    - text storage and organization was handled by Leo, an outlining
+      editor.
+    - text was exported from Leo to a plain-text file, using the
+      Leo2AsciiDoc program.
+    - from there, all transformations are automated by the
+      GNU Make program.
+    - the DocBook XML document was created by the
+      AsciiDoc program, which transformed the
+      plain-text file to XML.
+    - The HTML pages were created by the
+      xsltproc program. xsltproc read the XML
+      document, and the DocBook XSLT stylesheets, and then created
+      each HTML page.
+    - To make the PDF file, the xsltproc program used the same
+      process as for the HTML pages, except that it created a
+      Formatting Objects (FO) file instead.  Then the
+      FOP program processed the FO file, producing
+      the final PDF file.  This process was also automated.
+
+All I did was type in text for each section, arranging it much as I
+usually do for email.  The rest was handled automatically by
+clicking on a Leo menu, or entering a short command at the console.
+For example: "make all".
+
+There are many, many choices of tools to put in your DocBook tool
+chain.  You can even purchase complete packages, from text editing
+to PDF generation.
+
+@code
+#@+node:ekr.20040331071919.20: *4* << Make File >>
+@language plain
+@tabwidth 4
+@doc
+@ascskip # Time-stamp: "Thu, Jan 15 15:39 CST 2004  michael@redpriest _Make_File__140651828.txt"
+
+anchor:Makefile[Makefile]
+In my case, I use a standard unix-style "make" setup for processing
+the text exported from a Leo outline.  It simply automates the
+commands which I would otherwise have to type at the command line.
+
+After Leo2AsciiDoc exports the text from the Leo outline to a disk file,
+the Make program takes over.  It reads rules in a file named
+"Makefile" and calls the necessary programs to make the
+requested output.
+
+This Makefile takes over where Leo2AsciiDoc leaves off.  It directs the
+AsciiDoc conversion of the Leo2AsciiDoc text file to XML, and then the
+DocBook conversion of the XML file to HTML pages or a PDF document.
+
+indexterm:[GNU Make]
+I use GNU Make.  For example, assuming I am in xterm and located in
+the same directory as the Makefile, I just enter the command
+
+---
+make pdf-dev
+---
+and the make program guides the creation of the PDF version of The
+Developers Guide, using the instructions in this Makefile.  The PDF
+is available within seconds.
+
+The Makefile instructions, in brief:
+
+    - the AsciiDoc program is called to make an XML file.
+    - the xsltproc program is called to process the XML file to
+      either HTML or a Formatting Objects file for further
+      translation to PDF
+        * various XSLT style sheets (html.xsl, man.xsl, etc.) are
+          used by xsltproc to guide the transformation of the XML
+          file.  Typically, they call the DocBook stylesheets for
+          the heavy lifting, and set a few simple options.
+    - the FOP program is used to process the intermediate fo file to
+      the final PDF file.
+
+This is by no means a model Makefile.  It is included because it
+works for me in my office, and may thus be useful as an example for
+other people who want to set up Make for this purpose.
+
+@ascskip xemacs-makefile-mode-on
+@ascskip on
+@root "doc/Makefile"
+<< Make File >>
+@code
+#----- global variables -----------------------------------------
+DEVGUIDE=mod_asc_dev
+USERGUIDE=mod_asc_user
+CSS=dbstyle.css
+
+MAN=${DOC}.1
+STYLESHEET_MAN=man.xsl
+# default docbook, located by /etc/xml/catalog
+STYLESHEET_MAN_HTML=docbook.xsl
+MAN_OUTPUT_DIR=man
+
+STYLESHEET_HTML=html.xsl
+HTML_DEV_OUTPUT_DIR=html-dev
+HTML_USER_OUTPUT_DIR=html-user
+STYLESHEET_CHUNK=chunkit.xsl
+CHUNK_DEV_OUTPUT_DIR=chunk-dev
+CHUNK_USER_OUTPUT_DIR=chunk-user
+
+STYLESHEET_FO_FOP=fo-fop.xsl
+PDF_DEV_OUTPUT_DIR=pdf-dev
+PDF_USER_OUTPUT_DIR=pdf-user
+
+ASCIIDOC_COMMAND=python asciidoc/asciidoc.py -v -b docbook -d book
+ASCIIDOC_CONFIG=asciidoc/leo-docbook.conf
+
+#   $@ target file name
+#   $< name of the first prerequisite
+#   $* stem that rule matched
+
+#----- pattern rules -------------------------------------------------------
+%.xml	:	%.asc
+#	asciidoc -b docbook -d book -f ${ASCIIDOC_CONFIG} -o $@ $<
+    ${ASCIIDOC_COMMAND}  -f ${ASCIIDOC_CONFIG} -o $@ $<
+    xsltproc --output $*.final.xml customize.xsl $@
+
+
+%.html	:	%.xml css
+    xsltproc --xinclude --output ${OUTPUT} ${STYLESHEET}  $*.final.xml
+    touch $*.xml
+
+%.pdf	:	%.xml
+    xsltproc --xinclude  --output ${OUTPUT}/$*.fo $(STYLESHEET) $*.final.xml
+    fop -fo  ${OUTPUT}/$*.fo  -pdf ${OUTPUT}/$*.pdf 
+    -$(RM) ${OUTPUT}/$*.fo
+
+#----- usage ---------------------------------------------------------------
+usage	:
+    @echo; echo "primary make modules: html-dev chunk-dev pdf-dev"
+    @echo       "                      html-user chunk-user pdf-user"
+    @echo
+
+
+
+#---------------------------------------------------------------------------
+#----- modules -------------------------------------------------------------
+#---------------------------------------------------------------------------
+
+# docbook
+#---------------------------------------------------------------------------
+
+all	:	css pdf-dev html-dev sub-chunk-dev html-user sub-chunk-user pdf-user
+
+#----- DocBook html stylesheet ---------------------------------------------
+css:
+    cat base.css   >  $(CSS)
+    cat docstyle.css >> $(CSS)
+
+#----- Developers Guide ----------------------------------------------------
+#   #----- one page -----------------------------------------------------
+html-dev	:	STYLESHEET=$(STYLESHEET_HTML)
+html-dev	:	OUTPUT=${HTML_DEV_OUTPUT_DIR}/$*.html
+html-dev	:	mkdirhtmldev ${DEVGUIDE}.html
+    cp ${CSS} ${HTML_DEV_OUTPUT_DIR}
+
+mkdirhtmldev	:	cleanhtmldev
+    mkdir ${HTML_DEV_OUTPUT_DIR}
+
+#   #----- individual pages ------------------------------------------------
+chunk-dev	:	STYLESHEET=$(STYLESHEET_CHUNK)
+chunk-dev	:	OUTPUT=$(CHUNK_DEV_OUTPUT_DIR)/
+chunk-dev	:	mkdirchunkdev ${DEVGUIDE}.html
+    cp chunk-dev-frame*.html ${CHUNK_DEV_OUTPUT_DIR}
+    cp ${CSS} ${CHUNK_DEV_OUTPUT_DIR}
+    cp frametoc.css ${CHUNK_DEV_OUTPUT_DIR}
+    cp -r ../graphics ${CHUNK_DEV_OUTPUT_DIR}
+# put in frame target line
+    sed -f sed-dev-frame ${CHUNK_DEV_OUTPUT_DIR}/index.html >${CHUNK_DEV_OUTPUT_DIR}/chunk-dev-frame-toc.html
+
+mkdirchunkdev	:	cleanchunkdev
+    mkdir ${CHUNK_DEV_OUTPUT_DIR}
+
+sub-chunk-dev	:
+    ${MAKE} chunk-dev
+
+#----- Users Guide ---------------------------------------------------------
+#   #----- one page -----------------------------------------------------
+html-user	:	STYLESHEET=$(STYLESHEET_HTML)
+html-user:	OUTPUT=${HTML_USER_OUTPUT_DIR}/$*.html
+html-user:	mkdirhtmluser ${USERGUIDE}.html
+    cp ${CSS} ${HTML_USER_OUTPUT_DIR}
+
+mkdirhtmluser	:	cleanhtmluser
+    mkdir ${HTML_USER_OUTPUT_DIR}
+
+#   #----- individual pages ------------------------------------------------
+chunk-user	:	STYLESHEET=$(STYLESHEET_CHUNK)
+chunk-user	:	OUTPUT=$(CHUNK_USER_OUTPUT_DIR)/
+chunk-user	:	cleanchunkuser ${USERGUIDE}.html
+    cp chunk-user-frame*.html ${CHUNK_USER_OUTPUT_DIR}
+    cp ${CSS} ${CHUNK_USER_OUTPUT_DIR}
+    cp frametoc.css ${CHUNK_USER_OUTPUT_DIR}
+    cp -r ../graphics ${CHUNK_USER_OUTPUT_DIR}
+# put in frame target line
+    sed -f sed-user-frame ${CHUNK_USER_OUTPUT_DIR}/index.html >${CHUNK_USER_OUTPUT_DIR}/chunk-user-frame-toc.html
+
+mkdirchunkuser	:	cleanchunkuser
+    mkdir ${CHUNK_USER_OUTPUT_DIR}
+
+sub-chunk-user	:
+    ${MAKE} chunk-user
+
+#   #----- pdf -------------------------------------------------------------
+pdf-dev		:	STYLESHEET=$(STYLESHEET_FO_FOP)
+pdf-dev		:	OUTPUT=$(PDF_DEV_OUTPUT_DIR)
+pdf-dev		:	mkdirpdf ${DEVGUIDE}.pdf
+
+pdf-user		:	STYLESHEET=$(STYLESHEET_FO_FOP)
+pdf-user		:	OUTPUT=$(PDF_USER_OUTPUT_DIR)
+pdf-user		:	mkdirpdf ${USERGUIDE}.pdf
+
+#   mkdirpdf exists only to make an empty directory for the pdf working files
+mkdirpdf	:
+    -mkdir $(PDF_DEV_OUTPUT_DIR)
+    -mkdir $(PDF_USER_OUTPUT_DIR)
+
+
+
+
+#----- clean ---------------------------------------------------------------
+clean	: cleanhtml cleanchunk cleanpdf cleanman cleanclutter 
+
+cleanhtml	:	cleanhtmluser cleanhtmldev
+
+cleanhtmluser	:
+    -$(RM) -r $(HTML_USER_OUTPUT_DIR)
+
+cleanhtmldev	:
+    -$(RM) -r $(HTML_DEV_OUTPUT_DIR)
+
+cleanchunk	:	cleanchunkuser cleanchunkdev
+
+cleanchunkuser	:
+    -$(RM) -r $(CHUNK_USER_OUTPUT_DIR)
+
+cleanchunkdev	:
+    -$(RM) -r $(CHUNK_DEV_OUTPUT_DIR)
+
+cleanpdf	:
+    -$(RM) -r $(PDF_OUTPUT_DIR)
+
+cleanman	:
+    -$(RM) -r $(MAN_OUTPUT_DIR)
+
+cleanclutter: 
+    -$(RM) -r *.xml
+
+.PRECIOUS	:	%.xml
+@doc
+@ascskip xemacs-makefile-mode-off
+@code
+#@+node:ekr.20040331071919.21: *4* << Style Sheets >>
+@silent
+@doc
+@ascskip # Time-stamp: "Wed, Oct  1 15:33 CST 2003  michael@redpriest _Style_Sheets__140741140.txt"
+
+When the Makefile calls the xsltproc program, it gives it the name
+of an XSLT stylesheet to guide the production of the result.
+
+Following are simple XSLT stylesheets that are used to:
+    - set formatting options, and
+    - call the main DocBook XSLT stylesheets.
+
+The stylesheets cascade (each adding its options to the total), with
+the original stylesheet including others as needed, and always
+calling the main DocBook stylesheets at some point.
+
+@code
+#@+node:ekr.20040331071919.22: *5* << General >>
+@comment <!-- -->
+@silent
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:01 CST 2004  michael@redpriest _General__139758588.txt"
+
+indexterm:[Stylesheets, common-links.xsl]
+This is the entire common-links style sheet ("common-links.xsl"),
+which sets basic Table of Contents and chapter cross-reference
+preferences.
+
+This stylesheet is called by both HTML and PDF stylesheets.
+
+@ascskip on
+@ascskip xemacs-xsl-mode-on
+@root "doc/common-links.xsl"
+<< General >>
+@code
+<?xml version='1.0'?> 
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+
+<!--===== 
+    This changes a chapter cross-reference to include the chapter
+    title text. 
+-->
+<xsl:param name="local.l10n.xml" select="document('')"/> 
+<l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"> 
+  <l:l10n language="en"> 
+    <l:context name="xref"> 
+      <l:template name="chapter" text="Chapter %n: &#8220;%t&#8221;"/> 
+    </l:context>   
+  </l:l10n>
+</l:i18n>
+
+<xsl:param name="generate.toc">
+book      toc,title,figure,table,example,equation
+chapter   title
+</xsl:param>
+
+<!-- only 1 toc in the doc -->
+<xsl:param name="generate.section.toc.level" select="1"/>
+
+<!-- toc shows 3 levels of sections -->
+<xsl:param name="toc.section.depth">3</xsl:param>
+
+<xsl:param name="generate.index" select="1"></xsl:param>
+
+<!--===== omit the title for notes, tips ================================-->
+<xsl:param name="admon.textlabel" select="0"></xsl:param>
+
+</xsl:stylesheet>
+@doc
+@ascskip xemacs-xsl-mode-off
+
+
+#@+node:ekr.20040331071919.23: *5* << Customize >>
+@comment <!-- -->
+@silent
+@doc
+@ascskip # Time-stamp: "Tue, Jan 20 11:42 CST 2004  michael@redpriest _Customize__141637044.txt"
+
+
+indexterm:[customize.xsl]
+This is the entire customize style sheet ("customize.xsl", which is
+used by the Makefile to make changes to the standard xml file
+produced from the AsciiDoc output.  It results in a file suffixed
+".final.xml" which is used by both the HTML and PDF stylesheets.
+
+Currently, the stylesheet copies the xml file:
+
+    - changing any chapter elements that have a title beginning
+      with "Appendix: " to DocBook appendix elements.  This is from
+      AsciiDoc 3.2 days, when AsciiDoc didn't know about appendix
+      elements. I haven't yet modified Leo2AsciiDoc to take
+      advantage of the automatic appendix elements in AsciiDoc 5.0.
+    - adding custom bookinfo elements
+
+I've used XSLT for this, but it could have been done with python,
+AWK, sed, or other tools.
+
+@ascskip on
+@ascskip xemacs-xsl-mode-on
+@root "doc/customize.xsl"
+<< Customize >>
+@code
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="1.0">
+
+<xsl:variable name="AppendBegin">Appendix: </xsl:variable>
+
+<!--~~~~~~ copy everything ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<xsl:template match="@*|node()">
+   <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+   </xsl:copy>
+</xsl:template>
+
+<!--~~~~~~ delete the appendix string from the title ~~~~~~~~~~~~~~~~~~~~-->
+<xsl:template match="/book/chapter/title[starts-with(text(),$AppendBegin)]">
+  <title>
+  <xsl:value-of select="substring-after(text(),$AppendBegin)"/>
+  </title>
+  <xsl:apply-templates select="*" /> 
+</xsl:template>
+
+<!--~~~~~~ change appendix chapter element to appendix element ~~~~~~~~~~-->
+<xsl:template match="/book/chapter[starts-with(title,$AppendBegin)]">
+  <appendix>
+    <xsl:apply-templates select="*" /> 
+  </appendix>
+</xsl:template>
+
+<!--~~~~~~ bookinfo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!--
+From Leo2AsciiDoc, only the bookinfo title is filled in, with a
+blank author.  Here, we replace the author element with any and all
+bookinfo elements we please.
+-->
+
+<xsl:template match="/book/bookinfo/author">
+  <author>
+    <firstname>Michael</firstname><surname>Dawson</surname>
+    <affiliation>
+      <address>
+        <otheraddr>
+          <ulink url="http://www.marshallresearch.com/contact.html">
+            at Marshall Research
+          </ulink>
+        </otheraddr>
+      </address>
+    </affiliation>
+  </author>
+  <revhistory>
+    <revision>
+      <revnumber>0.4a</revnumber>
+      <date>Jan 21 2004</date>
+      <authorinitials>mwd</authorinitials>
+      <revremark>Formatting enhancements</revremark>
+    </revision>
+    <revision>
+      <revnumber>0.4</revnumber>
+      <date>Jan 19 2004</date>
+      <authorinitials>mwd</authorinitials>
+      <revremark>First release</revremark>
+    </revision>
+  </revhistory>
+</xsl:template>
+
+
+</xsl:stylesheet>
+
+@doc
+@ascskip xemacs-xsl-mode-off
+
+#@+node:ekr.20040331071919.24: *5* << HTML: One File >>
+@silent
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:02 CST 2004  michael@redpriest _HTML_One_File__139289780.txt"
+
+indexterm:[Stylesheets,html.xsl]
+For one long page of HTML, we simply import the DocBook stylesheets
+and our small custom stylesheets that set our standard options.
+This is the "html.xsl" stylesheet.
+
+@ascskip on
+@ascskip xemacs-xsl-mode-on
+@root "doc/html.xsl"
+<< HTML: One File >>
+@code
+<?xml version='1.0'?> 
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+
+<!--===== the catalog (/etx/xml/catalog) will convert this to the local pathname -->
+<xsl:import href="docbook.xsl"/>
+
+<xsl:import href="common-links.xsl"/>
+<xsl:import href="common-html.xsl"/>
+
+</xsl:stylesheet> 
+@doc
+@ascskip xemacs-xsl-mode-off
+
+
+#@+node:ekr.20040331071919.25: *5* << HTML: Individual Pages >>
+@silent
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:40 CST 2004  michael@redpriest _HTML_Individual_Pages__141001292.txt"
+
+For individual section pages of HTML, we import the DocBook stylesheets
+and our small custom stylesheets that set our standard options.
+
+Then we set our chunking options, and tell the web pages where to
+find the header and footer graphics.
+
+indexterm:[Stylesheets,chunkit.xsl]
+The following code is the entire chunkit style sheet
+("chunkit.xsl").
+
+@ascskip on
+@ascskip xemacs-xsl-mode-on
+@root "doc/chunkit.xsl"
+<< HTML: Individual Pages >>
+@code
+<?xml version='1.0'?> 
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+
+<xsl:import href="chunk.xsl"/>
+
+<xsl:import href="common-links.xsl"/>
+<xsl:import href="common-html.xsl"/>
+
+<xsl:param name="navig.graphics" select="1"/>
+<xsl:param name=
+  "navig.graphics.path">graphics/</xsl:param>
+    <!--  "navig.graphics.path">/usr/share/xml/docbook/docbook-xsl-1.59.1/images/</xsl:param>-->
+    <!--<xsl:param name="navig.graphics.path">graphics/dbook/navicons/</xsl:param>-->
+<xsl:param name="navig.graphics.extension">.png</xsl:param>
+<xsl:param name="navig.showtitles">1</xsl:param>
+
+<xsl:param name="chunk.first.sections" select="1"></xsl:param>
+<xsl:param name="chunk.section.depth" select="2"></xsl:param>
+<xsl:param name="section.autolabel" select="0"></xsl:param>
+
+<xsl:param name="css.decoration">1</xsl:param>
+
+</xsl:stylesheet>
+
+@doc
+@ascskip xemacs-xsl-mode-off
+#@+node:ekr.20040331071919.26: *5* << HTML: base css style sheet >>
+@silent
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:58 CST 2004  michael@redpriest _HTML_base_css_style_sheet__141160708.txt"
+
+css style sheet
+
+@ascskip on
+@ascskip xemacs-css-mode-on
+@root "doc/base.css"
+<< HTML: base css style sheet >>
+@code
+/* base from http://www.w3.org/TR/CSS21/sample.html */
+
+address,
+blockquote,
+body, dd, div,
+dl, dt, fieldset, form,
+frame, frameset,
+h1, h2, h3, h4,
+h5, h6, noframes,
+ol, p, ul, center,
+dir, hr, menu, pre   { display: block }
+li              { display: list-item }
+head            { display: none }
+table           { display: table }
+tr              { display: table-row }
+thead           { display: table-header-group }
+tbody           { display: table-row-group }
+tfoot           { display: table-footer-group }
+col             { display: table-column }
+colgroup        { display: table-column-group }
+td, th          { display: table-cell; }
+caption         { display: table-caption }
+th              { font-weight: bolder; text-align: center }
+caption         { text-align: center }
+body            { padding: 8px; line-height: 1.12em }
+h1              { font-size: 2em; margin: .67em 0 }
+h2              { font-size: 1.5em; margin: .75em 0 }
+h3              { font-size: 1.17em; margin: .83em 0 }
+h4, p,
+blockquote, ul,
+fieldset, form,
+ol, dl, dir,
+menu            { margin: 1.12em 0 }
+h5              { font-size: .83em; margin: 1.5em 0 }
+h6              { font-size: .75em; margin: 1.67em 0 }
+h1, h2, h3, h4,
+h5, h6, b,
+strong          { font-weight: bolder }
+blockquote      { margin-left: 40px; margin-right: 40px }
+i, cite, em,
+var, address    { font-style: italic }
+pre, tt, code,
+kbd, samp       { font-family: monospace }
+pre             { white-space: pre }
+
+/            * comment             */
+/* http://www.w3.org/TR/CSS21/visuren.html#propdef-display lists inline-block */
+button, textarea,
+input, object, 
+select, img { display:inline-block; }
+
+big             { font-size: 1.17em }
+small, sub, sup { font-size: .83em }
+sub             { vertical-align: sub }
+sup             { vertical-align: super }
+s, strike, del  { text-decoration: line-through }
+hr              { border: 1px inset }
+ol, ul, dir,
+menu, dd        { margin-left: 40px }
+ol              { list-style-type: decimal }
+ol ul, ul ol,
+ul ul, ol ol    { margin-top: 0; margin-bottom: 0 }
+u, ins          { text-decoration: underline }
+/*br:before       { content: "\A" }*/
+center          { text-align: center }
+
+/            * changed             */
+/*
+abbr, acronym   { font-variant: small-caps; letter-spacing: 0.1em }
+*/
+
+:link, :visited { text-decoration: underline }
+:focus          { outline: thin dotted invert }
+
+/* Begin bidirectionality settings (do not change) */
+BDO[DIR="ltr"]  { direction: ltr; unicode-bidi: bidi-override }
+BDO[DIR="rtl"]  { direction: rtl; unicode-bidi: bidi-override }
+
+*[DIR="ltr"]    { direction: ltr; unicode-bidi: embed }
+*[DIR="rtl"]    { direction: rtl; unicode-bidi: embed }
+
+@media print {
+  h1            { page-break-before: always }
+  h1, h2, h3,
+  h4, h5, h6    { page-break-after: avoid }
+  ul, ol, dl    { page-break-before: avoid }
+}
+
+
+
+@doc
+@ascskip xemacs-css-mode-off
+#@+node:ekr.20040331071919.27: *5* << HTML: css style sheet >>
+@silent
+@doc
+@ascskip # Time-stamp: "Wed, Jan 21 09:13 CST 2004  michael@redpriest _HTML_css_style_sheet__140659188.txt"
+
+css style sheet
+
+@ascskip on
+@ascskip xemacs-css-mode-on
+@root "doc/docstyle.css"
+<< HTML: css style sheet >>
+@code
+
+html, body {
+  background-color: #CCCCCC;
+  font-family: "Verdana", arial;
+}
+
+body {
+  font-size: 9pt;
+  line-height: 125%;
+/*   margin: 1em; */
+  padding: 2em;
+  margin-top: 1em;
+  margin-left: 3em;
+/*   width: 39em; */
+  min-height: 60em;
+/*   margin-right: 0.5em; */
+  background-color: white;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+/*   border-right: 2px solid black; */
+/*   border-bottom: 2px solid black; */
+}
+
+.strong {
+  font-weight: bold;
+}
+
+h1, h2, h3, h4, h5, h6,
+p
+{
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  line-height: 125%;
+}
+
+h1 { font-size: 2em;}
+h2 { font-size: 1.4em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1.0em; }
+h5 { font-size: 1.0em; }
+h6 { font-size: 1.0em; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #660000;
+  margin-right: 20%;
+}
+
+* > h1 {
+  padding-top: 0.5em;
+}
+
+/* h2, h3 */
+/* { */
+/*   margin-right: 10em; */
+/* } */
+
+h1.title 
+{
+  margin-top: 3em;
+  border-top: 3px solid #660000;
+  border-bottom: 3px solid #660000;
+  border-color: #660000;
+  padding: .4em;
+  text-align: center;
+}
+
+h2.title 
+{
+  margin-top: 3em;
+  border-top: 3px solid #660000;
+  border-bottom: 3px solid #660000;
+  border-color: #660000;
+  padding: .4em;
+}
+
+div.toc {
+    line-height: 100%;
+}
+
+div.list-of-examples {
+    margin-top: 3em;
+}
+
+div.sect1 h2 {
+  font-size: 1.5em;
+  margin-top: 4em;
+  margin-left: 0em;
+  margin-right: 25%;
+  margin-bottom: 1em;
+  /* border-color: #660000; */
+  border-top: 0em;
+  border-bottom: 1px solid;
+  padding: 0em;
+}
+
+div.sect2 h3 {
+  font-size: 1em;
+  margin-top: 4em;
+  margin-bottom: 1em;
+  margin-right: 25%;
+  /* border-color: #660000; */
+  border-top: 0em;
+  border-bottom: 1px solid;
+}
+
+div.sect3 h4 {
+  font-size: small;
+  color: black;
+  margin-top: 4em;
+  margin-bottom: 1em;
+  margin-right: 25%;
+  /* border-color: #660000; */
+  border-top: 0em;
+  border-bottom: 1px solid;
+}
+
+div.note
+{
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+div.note .title
+{
+  color: black;
+  font-size: x-small;
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
+/* ----- links ---------------------------------------------------------- */
+:link {
+  color: #660000;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+:visited {
+  color: #333333;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+div.toc :link, :visited {
+  font-weight: normal;
+ }
+
+div.list-of-examples :link, :visited {
+  font-weight: normal;
+ }
+
+
+a:link img {border-style: none;}
+a:visited img {border-style: none;}
+
+div.toc dd, dl
+{
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
+div.toc dt
+{
+  margin-top: 0.2em;
+}
+
+ul, ol
+{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.para {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.sect1,
+.toplevel.section
+{
+  padding-bottom: 0.25em;
+}
+
+
+tt,pre {
+    font-family: Courier New,Courier,monospace;
+    font-size: smaller;
+}
+
+.programlisting {
+    margin-top: 8pt;
+    margin-bottom: 8pt;
+    margin-left: 1em;
+    background-color: #FFFFCC;
+    white-space: pre;
+    border-style: solid;
+    border-width: 1pt;
+    border-color: #999999;
+    padding-left: 6pt;
+    padding-top: 2pt;
+    padding-bottom: 2pt;
+    width: 100%;
+    line-height: 100%;
+}
+
+table{
+    background-color: #FFFFFF;
+    width: 99.6%;
+}
+
+div.example {
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+}
+
+div.example .title {
+    color: black;
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+    padding-top: 8pt;
+    padding-bottom: 0pt;
+}
+
+div.sidebar .title {
+  font-weight: bold;
+  color: black;
+}
+
+div.sidebar  {
+  font-size: x-small;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  /* margin-left: 1em; */
+  margin-right: 33%; 
+  padding: 4pt;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+
+h1 > a,
+h2 > a {
+  padding-top: 0.5em;
+}
+
+ol.vert, ol.inline {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+hr, .toc, .title
+{ color: #660000 
+}
+
+
+.navfooter
+{
+  margin-top: 2em;
+}
+.navheader
+{
+  margin-bottom: 1em;
+
+}
+
+/* ------ title page ---------------------------------------------------- */
+h3.author
+{
+  padding: 0em;
+  margin-top: 0em;
+  margin-bottom: -1em;
+}
+
+.affiliation
+{
+  padding: 0em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  font-size: smaller;
+}
+
+
+div.revhistory table, tr, td
+{
+  border-collapse: collapse;
+  border: hidden;
+  font-size: x-small;
+ }
+
+div.revhistory table
+{
+  width: auto;
+  }
+
+div.revhistory td[colspan="3"]
+{
+  padding-left: 2em;  
+ }
+
+
+/* div.draft { */
+/*   background-image: url('pics/draft.png'); */
+/* } */
+
+
+@doc
+@ascskip xemacs-css-mode-off
+
+#@+node:ekr.20040331071919.28: *5* << HTML: common >>
+@comment <!-- -->
+@silent
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:03 CST 2004  michael@redpriest _HTML_common__140982180.txt"
+@ascskip xemacs-xsl-mode-off
+
+indexterm:[Stylesheets,common-html.xsl]
+The following section is the entire common-html style sheet
+("common-html.xsl"), which sets basic HTML options.
+
+@ascskip on
+@ascskip xemacs-xsl-mode-on
+@root "doc/common-html.xsl"
+<< HTML: common>>
+@code
+<?xml version='1.0'?> 
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<!--===== ==========================================================-->
+<xsl:param name="default.table.width" select="'100%'"></xsl:param>
+<xsl:param name="html.stylesheet" select="'dbstyle.css'"/>
+<xsl:param name="shade.verbatim" select="1"/>
+<xsl:attribute-set name="shade.verbatim.style">
+  <xsl:attribute name="border">0</xsl:attribute>
+  <xsl:attribute name="bgcolor">#F3F3F3</xsl:attribute>
+</xsl:attribute-set>
+
+
+</xsl:stylesheet>
+@doc
+@ascskip xemacs-xsl-mode-off
+#@+node:ekr.20040331071919.29: *5* << PDF >>
+@comment <!-- -->
+@silent
+@doc
+@ascskip # Time-stamp: "Thu, Jan  8 14:03 CST 2004  michael@redpriest _PDF__139549436.txt"
+
+indexterm:[Stylesheets, fo-fop.xsl]
+This is the Formatting Objects style sheet ("fo-fop.xsl", which sets
+the options for all printed output.
+
+The actual output is a file with the ".fo" extension, which will be
+used by a Formatting Object processor to produce a PDF file.
+
+@ascskip on
+@ascskip xemacs-xsl-mode-on
+@root "doc/fo-fop.xsl"
+<< PDF >>
+@code
+<?xml version='1.0'?> 
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<!--===== ==========================================================-->
+
+<!--===== catalog will convert the url to our file location =========-->
+<xsl:import href="fo-docbook.xsl"/>
+<xsl:import href="common-links.xsl"/>
+
+<!--===== using the fop pdf processor ===================================-->
+<xsl:param name="fop.extensions" select="1"/>
+
+<!--===== single sided pages ============================================-->
+<xsl:param name="double.sided" select="0"></xsl:param>
+
+<!--===== body print ====================================================-->
+<xsl:param name="body.font.master">12</xsl:param>
+<xsl:param name="alignment">left</xsl:param>
+<xsl:param name="hyphenate">true</xsl:param>
+
+<!--===== set page margins ==============================================-->
+<xsl:param name="page.margin.inner">
+  <xsl:choose>
+    <xsl:when test="$double.sided != 0">1.25in</xsl:when>
+    <xsl:otherwise>1.5in</xsl:otherwise>
+  </xsl:choose>
+</xsl:param>
+
+<xsl:param name="body.margin.top" select="'.75in'"></xsl:param>
+
+<!--===== set title fonts ===============================================
+     Title fonts require replacing the standard
+     titlepage.templates.xsl with a custom version.  This is done
+     here by copying the fo/titlepage.templates.xml to
+     mrc.titlepage.templates.xsl, editing it, and then processing it
+     with
+      xsltproc -output mrc.titlepage.templates.xsl \
+         /usr/share/xml/docbook/docbook-xsl-1.60.1/template/titlepage.xsl  \
+         mrc.titlepage.templates.xml
+     Now we replace the old titlepage.templates.xsl with our new
+     mrc.titlepage.templates.xsl
+-->
+<xsl:include href="mrc.titlepage.templates.xsl"/>
+
+<!--===== blank verso titlepage =========================================-->
+<xsl:template name="book.titlepage.verso"/>
+
+<!--===== outdent titles ================================================-->
+<xsl:param name="title.margin.left" select="'-2pc'"/>
+
+<!--===== set section font, break ======================================-->
+<xsl:attribute-set name="section.title.level1.properties">
+  <xsl:attribute name="font-size">14pt</xsl:attribute>
+  <xsl:attribute name="break-before">page</xsl:attribute>
+  <xsl:attribute name="border-bottom">1pt</xsl:attribute>
+  <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+  <xsl:attribute name="border-bottom-color">black</xsl:attribute>  
+  <xsl:attribute name="margin-right">6em</xsl:attribute>
+</xsl:attribute-set>
+<xsl:attribute-set name="section.title.level2.properties">
+  <xsl:attribute name="break-before">page</xsl:attribute>
+</xsl:attribute-set>
+<xsl:attribute-set name="section.title.level3.properties">
+  <xsl:attribute name="break-before">page</xsl:attribute>
+</xsl:attribute-set>
+
+<!--===== Code extract titles are sidebars ==============================-->
+<xsl:attribute-set name="sidebar.properties" use-attribute-sets="formal.object.properties">
+  <xsl:attribute name="border-style">solid</xsl:attribute>
+  <xsl:attribute name="border-width">1pt</xsl:attribute>
+  <xsl:attribute name="border-color">black</xsl:attribute>
+  <xsl:attribute name="background-color">#EDEDED</xsl:attribute>
+  <xsl:attribute name="padding-left">12pt</xsl:attribute>
+  <xsl:attribute name="padding-right">12pt</xsl:attribute>
+  <xsl:attribute name="padding-top">2pt</xsl:attribute>
+  <xsl:attribute name="padding-bottom">4pt</xsl:attribute>
+  <xsl:attribute name="margin-left">0pt</xsl:attribute>
+  <xsl:attribute name="margin-right">4em</xsl:attribute>
+  <xsl:attribute name="margin-top">2pt</xsl:attribute>
+  <xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+</xsl:attribute-set>
+<!--===== code (verbatim) font and spacing ==============================-->
+<xsl:attribute-set name="verbatim.properties">
+  <xsl:attribute name="space-before.minimum">0.1pt</xsl:attribute>
+  <xsl:attribute name="space-before.optimum">2pt</xsl:attribute>
+  <xsl:attribute name="space-before.maximum">3pt</xsl:attribute>
+  <xsl:attribute name="space-after.minimum">0.4em</xsl:attribute>
+  <xsl:attribute name="space-after.optimum">.5em</xsl:attribute>
+  <xsl:attribute name="space-after.maximum">1.2em</xsl:attribute>
+</xsl:attribute-set>
+<xsl:attribute-set name="monospace.verbatim.properties"
+    use-attribute-sets="verbatim.properties monospace.properties">
+  <xsl:attribute name="text-align">start</xsl:attribute>
+  <xsl:attribute name="font-size">9pt</xsl:attribute>
+</xsl:attribute-set>
+    <!--===== 2003-Oct-01 FOP does not appear to support shade.verbatim yet =-->
+<xsl:param name="shade.verbatim" select="1"/>
+<xsl:attribute-set name="shade.verbatim.style">
+  <xsl:attribute name="border">1</xsl:attribute>
+  <xsl:attribute name="bgcolor">#E0E0E0</xsl:attribute>
+</xsl:attribute-set>
+
+    <!--===== FOP did not like this =========================================-->
+<!--<xsl:attribute-set name="xref.properties">-->
+<!--  <xsl:attribute name="font-size">14pt</xsl:attribute>-->
+<!--  <xsl:attribute name="font-style">bold</xsl:attribute>-->
+<!--</xsl:attribute-set>-->
+
+</xsl:stylesheet>
+
+@doc
+@ascskip xemacs-xsl-mode-off
+
+
+
+
+#@+node:ekr.20040331071919.30: *3* <<Appendix: XEmacs Text Editor>>
+@language plain
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:21 CST 2004  michael@redpriest Appendix_XEmacs_Text_Editor_140657924.txt"
+
+You can use Leo to enter all the text in an outline, but Leo also
+allows you to use your familiar editing environment.  In my case,
+that is XEmacs.  Fortunately, Leo integrates with XEmacs quite well.
+
+The following items are code I use, some Leo Python plugins and some
+XEmacs elisp functions.  You may find them useful.
+
+@ascskip on
+<< Appendix: XEmacs Text Editor >>
+@code
+#@+node:ekr.20040331071919.31: *4* << Open_With Plugin >>
+@language python
+@tabwidth -4
+
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:10 CST 2004  michael@redpriest _OpenWith_Plugin__140659092.py"
+
+Leo's Open_With plugin can be modified so that the body text of any
+outline node can be edited in XEmacs by choosing "File; OpenWith;
+XEmacs" or "File; OpenWith; XEmacs - noshow"  from the menu.
+
+What actually happens is that Leo places the text in a temporary
+file, and calls XEmacs with the address of that temporary file.  Leo
+then watches for changes in the temporary file.  When and if the
+temporary file changes, Leo copies the contents to the body text of
+the Leo node.
+
+Below is the standard open_with.py plugin that came with Leo 4.1-rc3
+The only modification I've made is to insert
+@code
+<<call XEmacs>>=
+table = (
+    ("X&Emacs", "Alt+Shift+O", ("os.system","/usr/bin/gnuclient -q ", None)),
+    ("X&Emacs - noshow", "Ctrl+Shift+O", ("os.system","/mrc2/linux-bin/gnuclient-noshow ", None))
+    )
+@doc
+as noted below.  A similar alteration should work for future
+versions.
+
+Note: this alteration is for XEmacs running under Linux, but a
+similar command should work in the Windows environment.
+
+I use the "gnuclient-noshow" selection to load the temporary open_with file in
+the background.  It is a small bash shell script:
+---
+#!/bin/bash
+gnuclient -eval "(find-file-noselect \"${1}\")"
+---
+
+To implement this, edit a copy of the open_with.py file that comes
+with your version of Leo.  Move the original copy to a safe place,
+and put your edited copy in the Leo plugins directory.  Check to see
+it is included in "pluginsManager.txt" in that directory.
+@ascskip on
+@root "other/xemacs/open_with.py"
+<< Open_With Plugin>>
+@code
+"""Create menu for Open With command and handle the resulting commands"""
+
+import leo.core.leoGlobals as g
+Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+
+import os
+
+if Tk: # Register the handlers...
+
+    def on_idle (tag,keywords):
+        a = g.app
+        if g.app.killed: return
+        for dict in a.openWithFiles:
+            path = dict.get("path")
+            c = dict.get("c")
+            encoding = dict.get("encoding",None)
+            v = dict.get("v")
+            old_body = dict.get("body")
+            if path and os.path.exists(path):
+                try:
+                    time = os.path.getmtime(path)
+                    if time and time != dict.get("time"):
+                        dict["time"] = time # inhibit endless dialog loop.
+                        # The file has changed.
+                        try:
+                            # Update v from the changed temp file.
+                            f=open(path)
+                            s=f.read()
+                            f.close()
+                        except:
+                            g.es("can not open " + g.shortFileName(path))
+                            break
+
+                        # Convert body and s to whatever encoding is in effect.
+                        body = v.bodyString()
+                        body = g.toEncodedString(body,encoding,reportErrors=True)
+                        s = g.toEncodedString(s,encoding,reportErrors=True) # 10/13/03
+
+                        conflict = body != old_body and body != s
+
+                        # Set update if we should update the outline from the file.
+                        if conflict:
+                            # See how the user wants to resolve the conflict.
+                            g.es("conflict in " + g.shortFileName(path),color="red")
+                            message = "Replace changed outline with external changes?"
+                            result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
+                            update = result.lower() == "yes"
+                        else:
+                            update = s != body
+
+                        if update:
+                            g.es("updated from: " + g.shortFileName(path),color="blue")
+                            c.setBodyString(v,s,encoding)
+                            c.selectVnode(v)
+                            dict["body"] = s
+                        elif conflict:
+                            g.es("not updated from: " + g.shortFileName(path),color="blue")
+                except:
+                    g.es_exception() # testing
+                    pass
+    def create_open_with_menu (tag,keywords):
+
+        if  (tag in ("start2","open2") or
+            (tag=="command2" and keywords.get("label")=="new")):
+
+            # Entries in the following table are the tuple 
+            # (commandName,shortcut,data).
+            # 
+            # - data is the tuple (command,arg,ext).
+            # - command is one of "os.system", "os.startfile", "os.spawnl", 
+            # "os.spawnv" or "exec".
+            # 
+            # Leo executes command(arg+path) where path is the full path to 
+            # the temp file.
+            # If ext is not None, the temp file has the extension ext,
+            # Otherwise, Leo computes an extension based on what @language 
+            # directive is in effect.
+
+            idle_arg = "c:/python22/tools/idle/idle.py -e "
+
+@doc
+Here is where we insert the < Call XEmacs > code fragment defined above:
+@code
+            if 1: # Default table.
+
+
+<< Call XEmacs >>
+#               table = (
+#                   # Opening idle this way doesn't work so well.
+#                   # ("&Idle",   "Alt+Shift+I",("os.system",idle_arg,".py")),
+#                   ("&Word",   "Alt+Shift+W",("os.startfile",None,".doc")),
+#                   ("Word&Pad","Alt+Shift+T",("os.startfile",None,".txt")))
+#           elif 1: # Test table.
+#               table = ("&Word","Alt+Shift+W",("os.startfile",None,".doc")),
+#           else: # David McNab's table.
+#               table = ("X&Emacs", "Ctrl+E", ("os.spawnl","/usr/bin/gnuclient", None)),
+
+            c.frame.menu.createOpenWithMenuFromTable(table)
+
+    if g.app.gui is None:
+        g.app.createTkGui(__file__)
+
+    if g.app.gui.guiName() == "tkinter":
+
+        g.app.hasOpenWithMenu = True
+        g.registerHandler("idle", on_idle)
+        g.registerHandler(("start2","open2","command2"), create_open_with_menu)
+
+        __version__ = "1.4" # Set version for the plugin handler.
+        g.plugin_signon(__name__)
+
+#@+node:ekr.20040331071919.32: *4* << Open_Tree Plugin >>
+@language python
+@tabwidth-4
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:14 CST 2004  michael@redpriest _OpenTree_Plugin__140660268.py"
+
+This is a module that creates an "Open With" menu item that opens
+Leo outline nodes in the tree below the current Leo node in the
+XEmacs editor.I frequently have a small tree of Leo nodes which
+contain code that is usually edited in the same session.
+
+NOTE: I use the "gnuclient-noshow" selection to load the temporary
+open_with file in the background.Leo calls a command with the
+temporary file name at the end of the command, but the gnuclient
+command needs to receive it enclosed in quotes and parentheses.The
+solution is a small intermediary bash shell script called
+"gnuclient-noshow":
+
+- - -
+#!/bin/bash
+gnuclient- eval "(find-file-noselect \"${1}\")"
+- - -
+
+I would rather have this operate in the background, but Leo ' s
+openWith always operates on the current node, and openWith has much
+good error checking that I want to use.So the fast solution was to
+have OpenTreeInXEmacs visibly traverse the tree.
+
+@ascskip on
+@root "other/xemacs/mod_xemacsopentree.py"
+<< Open_Tree Plugin >>
+@code
+
+def OpenTreeInXEmacs (c):
+    import leo.core.leoCommands as leoCommands
+    #XEmacsCommand = "/usr/bin/gnuclient -q "
+    XEmacsCommand = "/mrc2/linux-bin/gnuclient-noshow "
+    vnode = c.currentVnode() # get the current vnode.
+    stopHere = vnode.nodeAfterTree()
+    v = vnode
+    while v != stopHere:
+        c.openWith(data=("os.system",XEmacsCommand,None))
+        v = v.threadNext()
+        if (not v) or (v==stopHere):
+            break
+        c.selectVnode(v)
+    c.selectVnode(vnode)
+
+
+def CreateOpenTreeMenu (tag,keywords):
+
+    """Create the 'Xemacs: Open Tree' menu item in the Open With menu."""
+
+
+    if (tag=="open2" or
+        (tag=="start2") or
+        (tag=="command2" and keywords.get("label")=="new")):
+
+        c = keyword.get('c')
+        exportMenu = c.frame.menu.getMenu('Open With')
+        newEntries = (
+            ("-",None,None),
+            ("XEmacs: Open nodes in sub-tree","None",OpenTreeInXEmacs),
+        )
+        c.frame.menu.createMenuEntries(exportMenu,newEntries,dynamicMenu=True)
+
+if 1:
+    g.registerHandler(("start2","open2","command2"),CreateOpenTreeMenu)
+
+    __version__ = ".4" # Set version for the plugin handler.
+    g.plugin_signon(__name__)
+@doc
+
+
+@code
+#@+node:ekr.20040331071919.33: *4* << Filename modification >>
+@language python
+@tabwidth -4
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:15 CST 2004  michael@redpriest _Filename_modification__140661308.py"
+
+This is a small modification to Leo (via a Python plugin module) so
+that Leo will open the temporary files with a name that can be
+easily recognized in an XEmacs buffer listing.
+
+On Linux, Leo opens files in the temporary files directory, all
+prefixed with "LeoTemp_", which makes the names difficult to tell
+apart when you have many different nodes loaded in XEmacs.
+
+This code replaces the openWithTempFilePath method of the LeoFrame
+class with code that opens temporary files in a subdirectory of the
+temporary files directory, called "username_Leo", and omits the
+"LeoTemp" prefix.
+
+For example, I'm now editing this Leo node in XEmacs as
+    "/tmp/michael_Leo/_Filename_modification__138976348.py"
+In the XEmacs buffer list, the filename is shown as
+    "_Filename_modification__138976348.py"
+and all the Leo buffer names start with a leading underscore, so
+they are grouped together.
+
+For general use, this code should be considerably more robust about
+creating the Leo subdirectory and signaling errors, but it is just a
+quick hack that works for me on my machines.
+
+This is distributed with Leo version 4.1rc3, so I've updated it with
+Ed Ream's modifications to match that distribution.
+
+@ascskip on
+@root "other/xemacs/mod_tempfname.py"
+<< Filename modification >>
+@code
+
+"""Replace Commands.openWithTempFilePath so Leo opens temporary
+files with a filename that begins with the headline text, and
+located in a 'username_Leo' subdirectory of the temporary
+directory. The 'LeoTemp' prefix is omitted.  This makes it easier to
+see which temporary file is related to which outline node.""" #'
+
+import leo.core.leoGlobals as g
+import leo.core.leoCommands as leoCommands
+import getpass
+import os
+import tempfile
+
+def onStart (tag,keywords):
+
+    # g.trace("replacing openWithTempFilePath")
+
+    g.funcToMethod(openWithTempFilePath,leoCommands.Commands,"openWithTempFilePath")
+
+def openWithTempFilePath (self,v,ext):
+
+    """Return the path to the temp file corresponding to v and ext.
+
+    Replaces the Commands method."""    
+
+    try:
+        leoTempDir = getpass.getuser() + "_" + "Leo"
+    except:
+        leoTempDir = "LeoTemp"
+        g.es("Could not retrieve your user name.")
+        g.es("Temporary files will be stored in: %s" % leoTempDir)
+
+    td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
+    if not os.path.exists(td):
+        os.mkdir(td)
+
+    name = g.sanitize_filename(v.headString()) + '_' + str(id(v))  + ext
+    path = os.path.join(td,name)
+    return path
+
+# Register the handlers...
+g.registerHandler("start2", onStart)
+
+__version__ = "1.3"
+g.plugin_signon(__name__)
+#@+node:ekr.20040331071919.34: *4* << Kill Temporary Buffers >>
+@language plain
+@silent
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 09:58 CST 2004  michael@redpriest _Kill_Temporary_Buffers__140661388.txt"
+
+If you've opened a number of Leo temporary buffers in XEmacs, this
+XEmacs function will kill them for you.  Just set the tempdir
+variable to whatever matches your local value.
+
+XEmacs will prompt you about any buffers that have unsaved changes.
+
+@ascskip on
+@ascskip xemacs-lisp-mode-on
+@root "other/xemacs/kill-temporary-buffers.el"
+<< Kill Temporary Buffers >>
+@code
+;;
+;;-     mwd-leo-kill-buffers
+(defun mwd-leo-kill-buffers ()
+  "Kill any buffers for files in my Leo temporary directory."
+  (interactive)
+  (let ((bl (buffer-list))
+        (tempdir "/tmp/michael_Leo" )  ;; change this to your temporary directory.
+        )
+    (while bl
+      (setq test-buffer (car bl))
+      (setq bname (buffer-file-name test-buffer))
+      (if (and bname (string-match tempdir bname))
+          (kill-buffer test-buffer)
+        )
+      (setq bl (cdr bl))
+      )
+    )
+  )
+
+
+
+@doc
+@ascskip xemacs-lisp-mode-off
+#@+node:ekr.20040331071919.35: *4* << MMM-mode >>
+@language plain
+@silent
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:18 CST 2004  michael@redpriest _MMMmode__140663340.txt"
+
+There is an editing mode for XEmacs called Multiple Major Modes,
+which allows us to edit the temporary text conveniently: with all
+the syntax highlighting, special keymaps, etc. available, even
+though Leo nodes may contain both plain text and program code.
+
+When the XEmacs cursor is in a section of plain text, all the plain
+text facilities are available, and there is no syntax
+highlighting. When the XEmacs cursor is in a section of code
+(Python, XSL, whatever) XEmacs invokes the syntax highlighting,
+special keymaps, etc. appropriate for that code.
+
+indexterm:[Multiple Major Modes]
+indexterm:[Multiple Major Modes,mmm-mode.el]
+If you have XEmacs installed, and you have also installed the
+Multiple Major Modes mmm-mode.el package, the following code will
+customize mmm-mode for use while editing Leo temporary files.
+
+NOTE: mmm-mode is already installed by default in most
+distributions.
+
+Installation: Load mmm-leo-config.el from your .init.el file, or
+just load it manually to try it out.
+
+I won't go through it all, but for example, when editing a temporary
+Leo file that is in XEmacs Python mode, and/or has a ".py" suffix:
+
+    - when your cursor is any text between the @doc and @code
+      directives XEmacs will enter text-mode.  Otherwise (e.g. with
+      the cursor after the @code directive), XEmacs will be in
+      Python mode.
+    - when your cursor is between text that says
+      "xemacs -makefile-mode-on" and text that says
+      "xemacs -makefile-mode-off", XEmacs will enter makefile-mode.
+      (You key in those text markers to mark out the area you want
+      as makefile-mode.  See the Leo2AsciiDoc.leo outline for examples,
+      e.g the "Make File" section in the Leo2AsciiDoc Users Guide.)
+
+      Otherwise, XEmacs will be in Python mode in that buffer.
+
+Similarly, makefile-mode, xsl-mode and emacs-lisp-mode are added to
+temporary Leo files that created with a ".txt" extension.      
+
+A future project may be to create a Leo module to use in the
+Leo "openWith" function that examines each node for these mmm-mode
+markers and creates the temporary file with the proper extension.
+
+@ascskip on
+@ascskip xemacs-lisp-mode-on
+@root "other/xemacs/mmm-leo-config.el"
+<< MMM-mode >>
+@code
+;;-     mmm-mode                multiple modes
+(require 'mmm-auto)
+(require 'mmm-vars)
+
+;   mmm-mode-on and mmm-mode-off turn it on and off in a buffer.
+;   \c-c % \c-b re-parses the whole buffer
+
+;   set mode to activate on mode or extension
+(setq mmm-global-mode 'maybe)
+
+; turn off gray background
+(setq mmm-submode-decoration-level 0)
+
+;   add embedded modes in python
+(mmm-add-group
+ 'py-embedded-text
+ '(
+   (py-leo
+    :submode text-mode
+    :face mmm-code-submode-face
+    :front "^@doc.*"
+    :back "^@code"
+    :insert ((?l py-leo-tag nil @ "@doc"
+                 @ "\n\n" _ "\n\n" @ "@code" @))
+    ; \c % l will insert the doc-code pair at point.
+    )
+   (py-doc
+    :submode text-mode
+    :face mmm-code-submode-face
+    :front "^\"\"\".*"
+    :back "^.+\"\"\""
+    )
+   (py-makefile
+    :submode makefile-mode
+    :face mmm-code-submode-face
+    :front "xemacs-makefile-mode-on"
+    :back "xemacs-makefile-mode-off"
+    )
+   )
+ )
+;   add embedded modes in text
+(mmm-add-group
+ 'text-embedded
+ '(
+   (txt-makefile-mode
+    :submode makefile-mode
+    :face mmm-code-submode-face
+    :front "xemacs-makefile-mode-on"
+    :back "xemacs-makefile-mode-off"
+    :insert ((?l text-embedded-tag nil @ "@doc"
+                 @ "\n\n" _ "\n\n" @ "@code" @))
+    ; \c % l will insert the doc-code pair at point.
+    )
+   (txt-xsl-mode
+    :submode xsl-mode
+    :face mmm-code-submode-face
+    :front "xemacs-xsl-mode-on"
+    :back "xemacs-xsl-mode-off"
+    :insert ((?l text-embedded-tag nil @ "@doc"
+                 @ "\n\n" _ "\n\n" @ "@code" @))
+    ; \c % l will insert the doc-code pair at point.
+    )
+   (txt-lisp-mode
+    :submode emacs-lisp-mode
+    :face mmm-code-submode-face
+    :front "xemacs-lisp-mode-on"
+    :back "xemacs-lisp-mode-off"
+    :insert ((?l text-embedded-tag nil @ "@doc"
+                 @ "\n\n" _ "\n\n" @ "@code" @))
+    ; \c % l will insert the doc-code pair at point.
+    )
+   )
+ )
+(mmm-add-mode-ext-class 'python-mode "\\.py\\'" 'py-embedded-text)
+(mmm-add-mode-ext-class 'text-mode "\\.txt\\'" 'text-embedded)
+
+@doc
+@ascskip xemacs-lisp-mode-off
+#@+node:ekr.20040331071919.36: *4* << Insert indexterm >>
+@language plain
+@silent
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:20 CST 2004  michael@redpriest _Insert_indexterm__140664580.txt"
+
+indexterm:[XEmacs, Indexing]
+Indexing is tedious work, and it interferes with the readability of
+the ascii text as well.  However, used sparingly, it helps the
+reader.
+
+When editing a Leo node (in an XEmacs buffer), this function copies
+a highlighted word or phrase and inserts an AsciiDoc index code on a
+new line immediately before the paragraph.  I try to keep markup out
+of the way of the reader.  In this case, AsciiDoc requires that the
+index code be part of the same block of text, and the first line of
+the block is the least annoying place I can find.
+
+For example, if I wanted to index the words "XEmacs buffer" above, I
+would highlight them (usually by pressing M-@ a couple of times) and
+then call this function (I have it bound to C-k C-h C-i).  At the
+beginning of the paragraph, my text would say "\indexterm:[XEmacs
+buffer]".
+
+@ascskip on
+@ascskip xemacs-lisp-mode-on
+@root "other/xemacs/index-leo-region.el"
+<< Insert indexterm >>
+@code
+(defun mwd-index-leo-region (start end)
+  "preface paragraph with AsciiDoc index macro of region."
+  (interactive "r")
+  (save-excursion
+    (copy-region-as-kill start end)
+    (backward-paragraph)
+    (insert "\nindexterm:[")
+    (yank)
+    (insert "]")
+    )
+  )
+
+@doc
+@ascskip xemacs-lisp-mode-off
+
+#@+node:ekr.20040331071919.37: *4* << Indent Leo comments >>
+@language plain
+@silent
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:56 CST 2004  michael@redpriest _Indent_Leo_comments__141202716.txt"
+
+Leo derived files are sprinkled with comments, which Leo uses as
+markers to be able to "untangle" files, i.e. import changes made to
+a derived file back into the Leo outline.
+
+Useful as they may be, the comments are an ugly distraction when
+reading the source code.  One could have XEmacs flush them from the
+file, but then the untangle feature is gone for that file.
+
+This pair of XEmacs elisp functions moves them to the right, where
+they aren't so distracting, and moves them back again if you should
+want to untangle the file.
+
+@ascskip on
+@ascskip xemacs-lisp-mode-on
+@root "other/xemacs/indent-leo-comments.el"
+<< Indent Leo comments >>
+@code
+(defun mwd-leo-comments-indent ()
+  "Indent Leo comments to make them less distracting."
+  (interactive)
+  (save-excursion
+    (let* (
+          (leading-spaces 40)
+          (start-string (concat (make-string leading-spaces ? ) "\\1" ))
+          (end-string (concat (make-string leading-spaces ? ) "\\1" ))
+          )
+      (goto-char (point-min))
+      (while (search-forward-regexp "\\(^# <<\\)" nil t) (replace-match start-string))
+      (goto-char (point-min))
+      (while (search-forward-regexp "\\(^# -- end\\)" nil t) (replace-match end-string))
+      )
+    )
+  )
+
+(defun mwd-leo-comments-unindent ()
+  "Reverse the effect of mwd-leo-comments-indent."
+  (interactive)
+  (save-excursion
+      (goto-char (point-min))
+      (while (search-forward-regexp "^\\(\\s-\\)+\\(# <<\\)" nil t) (replace-match "\\2" ))
+      (goto-char (point-min))
+      (while (search-forward-regexp "^\\(\\s-\\)+\\(# -- end\\)" nil t) (replace-match "\\2" ))
+    )
+  )
+@doc
+@ascskip xemacs-lisp-mode-off
+#@-all
+#@-leo
