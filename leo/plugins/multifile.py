@@ -59,11 +59,6 @@ import leo.core.leoAtFile as leoAtFile
 import os.path
 import shutil
 import weakref
-
-try:
-    import tkFileDialog
-except ImportError:
-    tkFileDialog = None
 #@-<< imports >>
 
 __version__ = ".9"
@@ -98,7 +93,7 @@ originalOpenFileForWriting = None
 #@+node:ekr.20050226115130.1: ** init & helpers
 def init ():
 
-    ok = tkFileDialog and g.app.gui.guiName() == "tkinter"
+    ok = True # Now gui-independent.
 
     if ok:
         # Append to the module list, not to the g.copy.
@@ -124,21 +119,25 @@ def addMenu (tag,keywords):
     c = keywords.get('c')
     if not c or haveseen.has_key(c):
         return
+
     haveseen [c] = None
-    men = c.frame.menu
-    men = men.getMenu('Edit')
-    c.add_command(men,
+    m = c.frame.menu.getMenu('Edit')
+    c.add_command(m,
         label = "Insert Directory String",
         command = lambda c = c: insertDirectoryString(c))
 #@+node:mork.20041019091524: *3* insertDirectoryString
 def insertDirectoryString (c):
 
-    dir = tkFileDialog.askdirectory()
-    if dir:
+    d = g.app.gui.runOpenDirectoryDialog(
+        title='Select a directory',
+        startdir=os.curdir)
+
+    if d:
         w = c.frame.body.bodyCtrl
-        w.insert('insert',dir)
-        w.event_generate('<Key>')
-        w.update_idletasks()
+        ins = w.getInsertPoint()
+        w.insert(ins,d)
+        #w.event_generate('<Key>')
+        #w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decoratedOpenFileForWriting
 def decoratedOpenFileForWriting (self,root,fileName,toString):
 
