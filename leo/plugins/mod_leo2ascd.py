@@ -426,7 +426,7 @@ def CreateAscMenu(tag,keywords):
 if 1:
     def init():
         ok = True
-        leoPlugins.registerHandler(('new','open2'), CreateAscMenu)
+        leoPlugins.registerHandler(('new','menu2'), CreateAscMenu)
         g.plugin_signon(__name__)
         return ok
 else:

@@ -133,7 +133,8 @@ def onFileOpen(tag, keywords):
         asyncore.read = a_read
         g.registerHandler("idle", plugin_wrapper)
 
-        g.es("http serving enabled on port %s, version %s" % (config.http_port, __version__), color="purple")
+        g.es("http serving enabled on port %s, version %s" % (
+            config.http_port, __version__), color="purple")
 #@+node:bwmulder.20050322132919: ** rst_related
 #@+node:bwmulder.20050322134325: *3* reconstruct_html_from_attrs
 def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):

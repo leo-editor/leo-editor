@@ -55,7 +55,6 @@ def init():
         g.app.hasOpenWithMenu = True
         g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
         g.registerHandler("idle", on_idle)
-        # g.registerHandler(('new','open2'), create_open_with_menu)
         g.registerHandler('menu2', create_open_with_menu)
         g.plugin_signon(__name__)
 

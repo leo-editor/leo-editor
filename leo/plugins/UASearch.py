@@ -44,7 +44,7 @@ def init ():
     ok = Tk and g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.registerHandler(('new','open2'),addPMenu)
+        g.registerHandler(('new','menu2'),addPMenu)
         g.plugin_signon( __name__ )
 
     return ok

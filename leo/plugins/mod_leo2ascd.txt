@@ -2285,7 +2285,7 @@ Here is where we insert the < Call XEmacs > code fragment defined above:
 
         g.app.hasOpenWithMenu = True
         g.registerHandler("idle", on_idle)
-        g.registerHandler(("start2","open2","command2"), create_open_with_menu)
+        g.registerHandler(("start2","menu2","command2"), create_open_with_menu)
 
         __version__ = "1.4" # Set version for the plugin handler.
         g.plugin_signon(__name__)
@@ -2344,7 +2344,7 @@ def CreateOpenTreeMenu (tag,keywords):
     """Create the 'Xemacs: Open Tree' menu item in the Open With menu."""
 
 
-    if (tag=="open2" or
+    if (tag=="menu2" or
         (tag=="start2") or
         (tag=="command2" and keywords.get("label")=="new")):
 
@@ -2357,7 +2357,7 @@ def CreateOpenTreeMenu (tag,keywords):
         c.frame.menu.createMenuEntries(exportMenu,newEntries,dynamicMenu=True)
 
 if 1:
-    g.registerHandler(("start2","open2","command2"),CreateOpenTreeMenu)
+    g.registerHandler(("start2","menu2","command2"),CreateOpenTreeMenu)
 
     __version__ = ".4" # Set version for the plugin handler.
     g.plugin_signon(__name__)

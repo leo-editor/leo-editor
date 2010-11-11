@@ -81,7 +81,7 @@ def init ():
         global smenu
         smenu = Tkinter.Menu(tearoff=0,activeforeground='blue',activebackground='white')
         calculateMenuSize()
-        g.registerHandler(('open2','new'),registerPopupMenu)
+        g.registerHandler(('menu2','new'),registerPopupMenu)
         g.plugin_signon(__name__)
 
         if 0: # We now use leoSettings.leo to get all settings.

@@ -58,7 +58,7 @@ def init ():
         # Ok for unit testing.
 
     if ok:
-        g.registerHandler(('new','open2'),addMenu )
+        g.registerHandler(('new','menu2'),addMenu )
         g.plugin_signon( __name__ )
 
     return ok

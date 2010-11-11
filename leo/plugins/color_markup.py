@@ -127,7 +127,7 @@ def init ():
         g.registerHandler("init-color-markup", initAnyMarkup)
         #g.registerHandler("bodykey1", onBodykey1)
         g.registerHandler("bodydclick1", onBodydclick1)
-        g.registerHandler(('new','open2'), onCreate)
+        g.registerHandler(('new','menu2'), onCreate)
         g.plugin_signon(__name__)
 
     return ok

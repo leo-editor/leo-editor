@@ -41,8 +41,6 @@ try:
 except ImportError:
     Ft = g.cantImport("Ft",__name__)
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-
 import weakref
 #@-<< imports >>
 #@+<<parser problems>>
@@ -94,10 +92,10 @@ __version__ = '0.6'
 #@+node:ekr.20050226120104.1: ** init
 def init():
 
-    ok = Ft and Tk and g.app.gui.guiName() == "tkinter"
+    ok = Ft
 
     if ok:
-        g.registerHandler(('open2',"new"),addMenu)
+        g.registerHandler(('menu2',"new"),addMenu)
         g.plugin_signon(__name__)
 
     return ok
@@ -275,25 +273,42 @@ def addMenu( tag, keywords ):
     c = keywords.get('c')
     if not c: return
 
-    men = c.frame.menu
-    men = men.getMenu( 'Outline' )
-    xmen = Tk.Menu( men , tearoff = False)
-    c.add_command(xmen, label = "Set Stylesheet Node", command = lambda c = c : setStyleNode( c ) )
-    c.add_command(xmen, label = "Jump To Style Node", command = lambda c = c: jumpToStyleNode( c ) )
-    c.add_command(xmen, label = "Process Node with Stylesheet Node", command = lambda c=c : processDocumentNode( c ) )
-    xmen.add_separator()
-    c.add_command(xmen, label = "Create Stylesheet Node", command = lambda c = c : addXSLTNode( c ) )
-    elmen= Tk.Menu( xmen, tearoff = False )
-    xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
+    mc = c.frame.menu
+
+    # men = men.getMenu( 'Outline' )
+    # xmen = Tk.Menu(men,tearoff = False)
+    xmen = mc.createNewMenu ('XSLT',"Outline")
+
+    c.add_command(xmen,
+        label = "Set Stylesheet Node",
+        command = lambda c = c : setStyleNode(c))
+    c.add_command(xmen,
+        label = "Jump To Style Node",
+        command = lambda c = c: jumpToStyleNode(c))
+    c.add_command(xmen,
+        label = "Process Node with Stylesheet Node",
+        command = lambda c=c : processDocumentNode(c))
+    xmen.add_separator(xmen)
+    c.add_command(xmen,
+        label = "Create Stylesheet Node",
+        command = lambda c = c : addXSLTNode(c))
+
+    # elmen= Tk.Menu( xmen, tearoff = False )
+    # xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
+    m2 = mc.createNewMenu ('Insert XSL Element',"Outline")
+
     xsltkeys = list(xslt.keys())
     xsltkeys.sort()
     for z in xsltkeys:
-        c.add_command(elmen, label = z, command = lambda c = c, element = xslt[ z ]: addXSLTElement( c, element ) )
-    men.add_cascade( menu = xmen, label = "XSLT-Node Commands" )
-    c.add_command(xmen, label = 'Test Node with Minidom', command = lambda c=c: doMinidomTest( c ) )
+        c.add_command(m2,
+            label = z,
+            command = lambda c=c,element=xslt[ z ]: addXSLTElement(c,element))
 
-
-
+    # men.add_cascade(menu = xmen, label = "XSLT-Node Commands")
+    m3 = mc.createNewMenu('XSLT-Node Commands',"Outline")
+    c.add_command(m3,
+        label = 'Test Node with Minidom',
+        command = lambda c=c: doMinidomTest(c))
 #@+node:mork.20041025100716: ** examples/tests
 #@+at
 # table.leo contains the xml.  xslt is in the other node.

@@ -212,7 +212,7 @@ def onCreate(tag, keywords):
         controllers[c] = rstClass(c)
 
         # Warning: Do not return anything but None here!
-        # Doing so suppresses the loadeing of other 'new' or 'open2' hooks!
+        # Doing so suppresses the loading of other 'new' or 'open2' hooks!
 #@+node:ekr.20050806101253: *3* code_block
 def code_block (name,arguments,options,content,lineno,content_offset,block_text,state,state_machine):
 

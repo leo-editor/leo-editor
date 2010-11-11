@@ -86,7 +86,7 @@ def init ():
     ok = Tk and Pmw and g.app.gui.guiName() == "tkinter"
 
     if ok:
-        g.registerHandler(('new2','open2'), addCommand)
+        g.registerHandler(('new2','menu2'), addCommand)
         g.plugin_signon( __name__ )
 
     return ok
