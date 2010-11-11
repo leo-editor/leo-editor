@@ -146,7 +146,7 @@ def createStatusLine(tag,keywords):
     statusLine.clear()
     statusLine.put("...")
 #@+node:tbrown.20070726135242: ** recursiveUNLSearch
-def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=9, maxp=None):
     """try and move to unl in the commander c"""
 
     def moveToP(c, p):
@@ -191,7 +191,7 @@ def onUrl1 (tag,keywords):
     v = keywords.get("v")
     # The url key is new in 4.3 beta 2.
     # The url ends with the first blank, unless either single or double quotes are used.
-    url = keywords.get('url')
+    url = keywords.get('url') or ''
     url = url.replace('%20',' ')
 
 #@+at Most browsers should handle the following urls:

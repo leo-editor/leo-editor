@@ -1401,5 +1401,6 @@ xsltWithNodes.py
 I also registered the menu2 event instead of the open2 event in all plugins that
 use this event to create menus. This is required because a relatively recent
 change creates menus *after* the open2 event happens.
+#@+node:ekr.20101111172355.5825: *3* Fixed crasher in UNL.py: recursiveUNLSearch
 #@-all
 #@-leo
