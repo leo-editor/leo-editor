@@ -15,16 +15,13 @@ The 'Dehoist' button performs one level of dehoisting
 Requires at least version 0.19 of mod_scripting
 """
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:ekr.20060328125925.2: ** << imports >>
+
 import leo.core.leoGlobals as g
 
 from mod_scripting import scriptingController
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@-<< imports >>
+__version__ = "0.5"
 
-__version__ = "0.4"
 #@+<< version history >>
 #@+node:ekr.20060328125925.3: ** << version history >>
 #@+at
@@ -34,27 +31,19 @@ __version__ = "0.4"
 # 0.3 EKR: init now succeeds for unit tests.
 # 0.4 EKR: use new calling sequences for sc.createIconButton.
 #          Among other things, this creates the save-hoist commnand.
+# 0.5 EKR: Made gui-independent.
 #@-<< version history >>
 
 #@+others
 #@+node:ekr.20060328125925.4: ** init
 def init ():
 
-    ok = Tk is not None # OK for unit tests.
+    # Note: call onCreate _after_ reading the .leo file.
+    # That is, the 'after-create-leo-frame' hook is too early!
+    g.registerHandler(('new','open2'),onCreate)
+    g.plugin_signon(__name__)
 
-    if ok:
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            # Note: call onCreate _after_ reading the .leo file.
-            # That is, the 'after-create-leo-frame' hook is too early!
-            g.registerHandler(('new','open2'),onCreate)
-            g.plugin_signon(__name__)
-
-    return ok
+    return True
 #@+node:ekr.20060328125925.5: ** onCreate
 def onCreate (tag, keys):
 
