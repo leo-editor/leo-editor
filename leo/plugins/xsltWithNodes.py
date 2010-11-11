@@ -295,7 +295,7 @@ def addMenu( tag, keywords ):
 
     # elmen= Tk.Menu( xmen, tearoff = False )
     # xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
-    m2 = mc.createNewMenu ('Insert XSL Element',"Outline")
+    m2 = mc.createNewMenu ('Insert XSL Element','XSLT')
 
     xsltkeys = list(xslt.keys())
     xsltkeys.sort()
@@ -305,7 +305,7 @@ def addMenu( tag, keywords ):
             command = lambda c=c,element=xslt[ z ]: addXSLTElement(c,element))
 
     # men.add_cascade(menu = xmen, label = "XSLT-Node Commands")
-    m3 = mc.createNewMenu('XSLT-Node Commands',"Outline")
+    m3 = mc.createNewMenu('XSLT-Node Commands','XSLT')
     c.add_command(m3,
         label = 'Test Node with Minidom',
         command = lambda c=c: doMinidomTest(c))
