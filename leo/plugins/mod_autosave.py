@@ -2,7 +2,7 @@
 #@+node:edream.110203113231.724: * @file mod_autosave.py
 #@+<< docstring >>
 #@+node:ekr.20060108123253: ** << docstring >>
-"""Autosave the Leo document every so often.
+""" Autosave the Leo outline every so often.
 
 The time between saves is given by the setting, with default as shown::
 

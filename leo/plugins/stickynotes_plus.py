@@ -2,27 +2,20 @@
 #@+node:ekr.20100103093121.5339: * @file stickynotes_plus.py
 #@+<< docstring >>
 #@+node:ekr.20100103100944.5389: ** << docstring >>
-''' Simple "sticky notes" feature (popout editors)
+''' Adds simple "sticky notes" feature (popout editors) for Qt gui.
 
-alt-x stickynote to pop out current node as a note
+alt-x stickynote to pop out current node as a note.
 
 '''
 #@-<< docstring >>
 
+# print('stickynotes_plus.py')
+
 __version__ = '0.0'
-#@+<< version history >>
-#@+node:ekr.20100103100944.5390: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# Put notes about each version here.
-#@-<< version history >>
 
 #@+<< imports >>
 #@+node:ekr.20100103100944.5391: ** << imports >>
 import leo.core.leoGlobals as g
-
-# Whatever other imports your plugins uses.
 
 g.assertUi('qt')
 

@@ -1,4 +1,6 @@
-"""Add a graph layout for nodes in a tab.  Requires backlink.py"""
+"""Adds a graph layout for nodes in a tab.
+Requires Qt and the backlink.py plugin.
+"""
 
 __version__ = '0.1'
 # 

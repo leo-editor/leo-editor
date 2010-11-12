@@ -2,9 +2,8 @@
 #@+node:ville.20090815203828.5235: * @file spydershell.py
 #@+<< docstring >>
 #@+node:ville.20090815203828.5236: ** << docstring >>
-''' Launch spyder environment with access to Leo instance.
-
-http://packages.python.org/spyder/
+''' Launches the spyder environment with access to Leo instance.
+See http://packages.python.org/spyder/
 
 Usage:
 

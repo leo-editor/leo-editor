@@ -2,11 +2,9 @@
 #@+node:ekr.20040916084945: * @file macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
-'''
-Creates new nodes containing parameterized section references.
+''' Creates new nodes containing parameterized section reference.
 
-For a discussion of this plugin, see:
-http://sourceforge.net/forum/message.php?msg_id=2444117
+.. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
 
 This plugin adds nodes under the currently selected tree that are to act as
 section references. To do so, go the Outline menu and select the
@@ -88,8 +86,10 @@ import re
 def init ():
 
     # Ok for unit testing: adds command to Outline menu.
-    g.registerHandler( ('new','open2') ,onCreate)
+    g.registerHandler( ('new','menu2') ,onCreate)
     g.plugin_signon(__name__)
+
+    return True
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag,keywords):
 
@@ -189,7 +189,11 @@ class paramClass:
     def addMenu(self):
 
         c = self.c
-        table = ("Parameterize Section Reference",None,self.parameterize),
+
+        table = (
+            ("Parameterize Section Reference",None,self.parameterize),
+        )
+
         c.frame.menu.createMenuItemsFromTable("Outline",table,dynamicMenu=True)
     #@-others
 #@-others

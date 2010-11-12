@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110091234.5700: * @file leo_interface.py
-"""
+""" Allows the user to browse XML documents in Leo.
+
 This file implements an interface to XML generation,
 so that the resulting file can be processed by leo.
-
-It can be used to browse tree structured data in leo.
 
 class file represents the whole leo file.
 class leo_node has a headline and body text.
@@ -32,6 +31,9 @@ def escape(s):
     s = s.replace('<', "&lt;")
     s = s.replace('>', "&gt;")
     return s
+#@+node:ekr.20101112045055.60165: ** init
+def init():
+    return True
 #@+node:ekr.20101110092416.5700: ** class node_with_parent
 class node_with_parent:
 

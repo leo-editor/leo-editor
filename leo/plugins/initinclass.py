@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110092851.5812: * @file initinclass.py
-"""Move __init__ into the class node body in python @auto imports
+""" Modifies the Python @auto importer so that the importer
+puts the __init__ method (ctor) into the body of the class node.
 
 This makes it easier to keep the instance variable docs in the class
 docstring in sync. with the ivars as manipulated by __init__, saves

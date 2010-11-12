@@ -2,10 +2,9 @@
 #@+node:edream.110203113231.669: * @file import_cisco_config.py
 #@+<< docstring >>
 #@+node:ekr.20050912180321: ** << docstring >>
-'''This plugin adds a menu item under the File->Import menu to import
-Cisco configuration files.
+''' Allows the user to import Cisco configuration files.
 
-The plugin will:
+Adds the "File:Import:Import Cisco Configuration" menu item. The plugin will:
 
 1)  Create a new node, under the current node, where the configuration will be
     written. This node will typically have references to several sections (see below).

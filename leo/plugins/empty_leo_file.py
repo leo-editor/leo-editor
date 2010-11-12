@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080049.1: * @file empty_leo_file.py
-"""Open any empty file as a minimal .leo file"""
+"""Allows Leo to open any empty file as a minimal .leo file."""
 
 #@@language python
 #@@tabwidth -4

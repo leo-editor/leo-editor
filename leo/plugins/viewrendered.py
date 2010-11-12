@@ -2,7 +2,7 @@
 #@+node:tbrown.20100318101414.5990: * @file viewrendered.py
 #@+<< docstring >>
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
-'''Rendered rst, html, etc., *live*, in another window.  Qt only.
+''' Creates a window for *live* rendering of rst, html, etc.  Qt only.
 
 viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
 which opens a new window where the current body text is rendered as HTML

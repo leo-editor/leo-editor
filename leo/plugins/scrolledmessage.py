@@ -5,8 +5,7 @@
 
 #@+<< docstring >>
 #@+node:leohag.20081203143921.2: ** << docstring >>
-"""
-Provides a Scrolled Message Dialog service for Qt.
+""" Provides a Scrolled Message Dialog service for Qt.
 
 The plugin can display messages supplied as plain text or formated as html. In
 addition the plugin can accept messages in rst format and convert them to be

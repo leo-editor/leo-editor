@@ -2,13 +2,208 @@
 #@+node:TL.20090225102340.32: * @file nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >>
-""" A Leo plugin that permits the definition of actions for double-clicking on
-nodes. Written by TL. Derived from the fileActions plugin. Distributed under the same licence as Leo.
-
-When a node is double-clicked, the nodeActions plugin checks for a match of the clicked node's headline text with a list of patterns and, if a match occurs, the script associated with the pattern is executed.
-
-Detailed documentations is provided in the "Plugins" section of the Leo Users Guide (Chapter 12).
 """
+Allows the definition of double-click actions.
+
+When the user double-clicks a node this plugin checks for a match of the clicked
+node's headline text with a list of patterns. If a match occurs, the plugin
+executes the associated script.
+
+**nodeAction** nodes may be located anywhere in the outline. Such nodes should
+contain one or more **pattern nodes** as children. The headline of each pattern
+node contains the pattern; the body text contains the script to be executed when
+the pattern matches the double-clicked node.
+
+For example, the "nodeActions" node containing a "launch URL" pattern node
+and a "pre-process python code" node could be placed under an "@settings"
+node::
+
+   @settings
+   |
+   +- nodeActions
+      |
+      +- http:\\*
+      |
+      +- @file *.py
+
+Configuration
+=============
+
+The nodeActions plugin supports the following global configurations using
+Leo's support for setting global variables within an @settings node's
+sub-nodes in the leoSettings.leo, myLeoSettings.leo, and the project Leo
+file:
+
+@bool nodeActions_save_atFile_nodes = False
+
+  :True:
+     Double-click on an @file type node will save the file to disk
+     before executing the script.
+
+  :False:
+     Double-click on an @file type node will **not** save the file to disk
+     before executing the script. (default)
+
+@int nodeActions_message_level = 1
+
+  Specifies the type of messages to be sent to the log pane.  Specifying a
+  higher message level will display that level and all lower levels.
+  The following integer values are supported::
+
+      :0: no messages
+      :1: Plugin triggered and the patterns that were matched (default)
+      :2: Double-click event passed or not to next plugin
+      :3: Patterns that did not match
+      :4: Code debugging messages
+
+Patterns
+========
+
+Pattern matching is performed using python's support for Unix
+shell-style patterns unless overwritten by the "X" pattern directive.
+The following pattern elements are supported::
+
+    *           matches everything
+    ?           matches any single character
+    [<seq>]     matches any character in <seq>
+    [!<seq>]    matches any character **not** in <seq>
+
+Unix shell-style pattern matching is case insensitive and always starts from
+the beginning of the headline.  For example:
+
+     ======= =========== ==============
+     Pattern   Matches   Does not match
+     ======= =========== ==============
+     \*.py   Abc_Test.py
+     .py     .py - Test  Abc_Test.py
+     test*   Test_Abc.py Abc_Test.py
+     ======= =========== ==============
+
+To enable a script to run on any type of @file node (@thin, @shadow, ...),
+the pattern can start with "@files" to match on any
+external file type.  For example, the pattern "@files \*.py" will
+match a node with the headline "@file abcd.py".
+
+The headline of the double-clicked node is matched against the patterns
+starting from the first sub-node under the "nodeActions" node to the last
+sub-node.
+
+Only the script associated with the first matching pattern is
+invoked unless overwritten by the "V" pattern directive.
+
+Using the "V" pattern directive allows a broad pattern such
+as "@files \*.py" to be invoked, and then, by placing a more restrictive
+pattern above it, such as "@files \*_test.py", a different script can be
+executed for those files requiring pre-processing::
+
+  +- nodeActions
+     |
+     +- @files *_test.py
+     |
+     +- @files *.py
+
+**Note**: To prevent Leo from trying to save patterns that begin with a derived
+file directive (@file, @auto, ...) to disk, such as "@file \*.py", place the
+"@ignore" directive in the body of the "nodeActions" node.
+
+Pattern nodes can be placed at any level under the "nodeActions" node.
+Only nodes with no child nodes are considered pattern nodes.
+This allows patterns that are to be used in multiple Leo files to be read
+from a file.  For example, the following structure reads the pattern
+definition from the "C:\\Leo\\nodeActions_Patterns.txt" file::
+
+    +- nodeActions
+    |
+    +- @files C:\\Leo\\nodeActions_Patterns.txt
+        |
+        +- http:\\*
+        |
+        +- @file *.py
+
+Pattern directives
+==================
+
+The following pattern specific directives can be appended to the end of a
+pattern (do not include the ':'):
+
+:[X]:
+  Use python's regular expression type patterns instead of the Unix
+  shell-style pattern syntax.
+
+  For example, the following patterns will match the same headline string::
+
+     Unix shell-style pattern:
+        @files *.py
+
+     Regular Expression patern:
+        ^@files .*\.py$ [X]
+
+:[V]:
+  Matching the pattern will not block the double-click event from
+  being passed to the remaining patterns.
+  The "V" represents a down arrow that symbolizes the passing of the event
+  to the next pattern below it.
+
+  For example, adding the "[V]" directive to the "@files \*_test.py" in
+  the Patterns section above, changes its script from being 'an
+  alternate to' to being 'a pre-processor for' the "@files \*.py" script::
+
+     +- nodeActions
+        |
+        +- @files *_test.py [V]
+        |
+        +- @files *.py
+
+:[>]:
+  Matching the pattern will not block the double-click event from being
+  passed to other plugins.
+  The ">" represents a right arrow that
+  symbolizes the passing of the event to the next plugin.
+
+  If the headline matched more than one headline,
+  the double-click event will be passed to the next plugin if the
+  directive is associated with any of the matched patterns.
+
+The directive(s) for a pattern must be contained within a single set of
+brackets, separated from the pattern by a space, with or without a comma
+separator.  For example, the following specifies all three directives::
+
+  ^@files .*\.py$ [X,V>]
+
+Scripts
+=======
+
+The script for a pattern is located in the body of the pattern's node.
+The following global variables are available to the script::
+
+    c
+    g
+    pClicked - node position of the double-clicked node
+    pScript - node position of the invoked script
+
+Examples
+========
+
+
+Double-clicking on a node with a "http:\\\\www.google.com" headline
+will invoke the script associated with the
+"http:\\\\\*" pattern.  The following script in the body of the pattern's
+node displays the URL in a browser::
+
+     import webbrowser
+     hClicked = pClicked.h     #Clicked node's Headline text
+     webbrowser.open(hClicked) #Invoke browser
+
+The following script can be placed in the body of a pattern's node to
+execute a command in the first line of the body of a double-clicked node::
+
+     g.os.system('"Start /b ' + pClicked.bodyString() + '"')
+
+"""
+
+# Written by TL.
+# Derived from the fileActions plugin.
+# Distributed under the same licence as Leo.
 #@-<< docstring >>
 
 #@@language python

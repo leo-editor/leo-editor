@@ -539,6 +539,7 @@ class LeoPluginsController:
         except ImportError:
             if trace or tag == 'open0': # Just give the warning once.
                 g.es_print('plugin does not exist:',moduleName,color='red')
+                # g.es_exception()
             result = None
 
         except Exception as e:
@@ -558,6 +559,8 @@ class LeoPluginsController:
                 try:
                     # Indicate success only if init_result is True.
                     init_result = result.init()
+                    if init_result not in (True,False):
+                        g.error('%s.init did not return a bool' % (moduleName))
                     if init_result:
                         self.loadedModules[moduleName] = result
                         self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName

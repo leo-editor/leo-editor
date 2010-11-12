@@ -2,17 +2,13 @@
 #@+node:EKR.20040517080555.2: * @file plugins_menu.py
 #@+<< docstring >>
 #@+node:ekr.20050101090207.9: ** << docstring >>
-'''
-Create a Plugins menu
-=====================
-
-This plugin creates a **Plugins** menu and adds an item to it for each active
+''' Creates a **Plugins** menu and adds an item to it for each active
 plugin. Selecting these menu items will bring up a short **About Plugin** dialog
 with the details of the plugin. In some circumstances a submenu will be created
 instead and an 'About' menu entry will be created in this.
 
 
-INI files and the Properties Dialog.
+INI files and the Properties Dialog
 ------------------------------------
 
 If a file exists in the plugins directory with the same file name as the plugin
@@ -139,8 +135,6 @@ __plugin_group__ = "Core"
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem
 def addPluginMenuItem (p,c):
 
-    # g.trace(p.name,g.callers())
-
     plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
 
     if p.hastoplevel:
@@ -196,7 +190,8 @@ def createPluginsMenu (tag,keywords):
     if os.path.exists(path):
         # Create a list of all active plugins.
         files = glob.glob(os.path.join(path,"*.py"))
-        files.sort()
+        def lower(s): return s.lower()
+        files.sort(key=lower)
         modules = ['leo.plugins.' + os.path.basename(f[:-3]) for f in files]
         plugins = [PlugIn(m, c) for m in modules]
         PluginDatabase.storeAllPlugins(modules)
@@ -212,17 +207,21 @@ def createPluginsMenu (tag,keywords):
         if items:
             #@+<< Sort items >>
             #@+node:pap.20041009133925: *4* << sort items >>
-            dec = [(item[1].priority, item) for item in items]
-            dec.sort()
-            dec.reverse()
-            items = [item[1] for item in dec]
+            if 0:
+                dec = [(item[1].priority, item) for item in items]
+                dec.sort()
+                dec.reverse()
+                items = [item[1] for item in dec]
             #@-<< Sort items >>
             c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
             PluginDatabase.setMenu("Default", pluginMenu)
             #@+<< Add group menus >>
             #@+node:pap.20050305152223: *4* << Add group menus >>
             for group_name in PluginDatabase.getGroups():
-                PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, "&Plugins"))
+
+                PluginDatabase.setMenu(
+                    group_name,
+                    c.frame.menu.createNewMenu(group_name, "&Plugins"))
             #@-<< Add group menus >>
             for name,p in items:
                 addPluginMenuItem(p, c)
@@ -407,15 +406,20 @@ class PlugIn:
 
         """Put information about this plugin in a scrolledMessage dialog."""
 
+        if self.doc:
+            msg = self.doc.strip()+'\n'
+            # msg = msg.replace('\\n','\\\\n')
+        else:
+            msg = ''
+
         g.app.gui.runScrolledMessageDialog(
             title="About Plugin ( " + self.name + " )",
             label="Version: " + self.version,
-            msg=self.doc,
+            msg=msg,
             c=self.c,
             flags='rst',
             name='leo_system'
         )
-
     #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
         """Return a nice version of the plugin name
@@ -434,7 +438,6 @@ class PlugIn:
         return name.capitalize()
     #@+node:EKR.20040517080555.9: *3* properties
     def properties(self, event=None):
-
 
         """Display a modal properties dialog for this plugin"""
 

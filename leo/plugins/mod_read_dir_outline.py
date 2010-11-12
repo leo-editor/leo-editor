@@ -5,9 +5,9 @@
 
 #@+<< docstring >>
 #@+node:ekr.20050301084207: ** << docstring >>
-'''This plugin allows Leo to read a complete directory's outline into a Leo's
-Outline. Directories are converted into headlines and files names are listed
-into the bodies.
+''' Allows Leo to read a complete directory tree into a Leo outline. Converts
+directories into headlines and puts the list of file names into bodies.
+
 
 Ce plug-in permet de traduire l'arborescence d'un répertoire en une arborescence
 Leo : Chaque dossier est converti en noeud dans Leo ; son nom est placé dans

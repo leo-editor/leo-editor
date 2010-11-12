@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.727: * @file mod_timestamp.py
-"""Timestamp all save operations to show when they occur"""
+""" Timestamps all save operations to show when they occur."""
 
 #@@language python
 #@@tabwidth -4

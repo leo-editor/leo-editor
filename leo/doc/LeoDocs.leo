@@ -9,8 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
+<v t="ekr.20101028112631.4959" a="E"
+expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
@@ -298,7 +299,7 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101111175617.5787"><vh>run</vh></v>
 </v>
 </v>
-<v t="ekr.20101111175617.98925"><vh>@button flatten script</vh></v>
+<v t="ekr.20101111175617.98925"><vh>@@button flatten script</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url generated docs</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@edit plugin_catalog.py</vh></v>
 </vnodes>

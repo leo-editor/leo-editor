@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.741: * @file add_directives.py
-"""Support new @direcives"""
+"""Allows users to define new @direcives."""
 
 #@@language python
 #@@tabwidth -4
@@ -9,7 +9,7 @@ __version__ = "1.2"
 
 import leo.core.leoGlobals as g
 
-directives = "markup", # A tuple with one string.
+directives = ("markup",) # A tuple with one string.
 
 #@+others
 #@+node:ekr.20070725103420: ** init

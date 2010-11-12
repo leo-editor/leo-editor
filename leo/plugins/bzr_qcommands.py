@@ -2,11 +2,10 @@
 #@+node:ekr.20101110084839.5682: * @file bzr_qcommands.py
 #@+<< docstring >>
 #@+node:tbrown.20101101135104.15787: ** << docstring >>
-"""Add a node context menu with all the bzr q* commands (bzr qt interface)
-as submenu. **Requires contextmenu.py.** Bzr is invoked based on the path
-of the current node.
-"""
+""" Adds a context menu to each node containing all the commands in the bzr Qt
+interface. Bzr is invoked based on the path of the current node.
 
+**Requires contextmenu.py.** """
 #@-<< docstring >>
 
 #@@language python

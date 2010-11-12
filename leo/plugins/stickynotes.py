@@ -2,7 +2,7 @@
 #@+node:ekr.20100103093121.5329: * @file stickynotes.py
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
-'''Simple "sticky notes" feature (popout editors)
+''' Adds simple "sticky notes" feature (popout editors) for Qt gui.
 
 Adds the following (``Alt-X``) commands:
 
@@ -38,13 +38,6 @@ When **creating an encrypted note**, you should **start with and empty node**.  
 #@-<< docstring >>
 
 __version__ = '0.0'
-#@+<< version history >>
-#@+node:vivainio2.20091008133028.5822: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# Put notes about each version here.
-#@-<< version history >>
 
 #@+<< imports >>
 #@+node:vivainio2.20091008133028.5823: ** << imports >>

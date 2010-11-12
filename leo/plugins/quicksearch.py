@@ -2,7 +2,7 @@
 #@+node:ville.20090314215508.4: * @file quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >>
-''' Add a fast-to-use search widget, like the "Find in files" feature of many editors.
+''' Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
 
