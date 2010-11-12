@@ -297,7 +297,6 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101111175617.5787"><vh>run</vh></v>
 </v>
 </v>
-<v t="ekr.20101111175617.98927"><vh>flattened Script: get-plugin-docstrings</vh></v>
 <v t="ekr.20101111175617.98925"><vh>@button flatten script</vh></v>
 </vnodes>
 <tnodes>
@@ -1898,7 +1897,8 @@ Clones:
         g.app.loadDir,'..','plugins','leoPlugins.leo')
 
     ok,frame = g.openWithFileName(fn,
-        old_c=c,enableLog=True,gui=None,readAtFileNodesFlag=True)
+        old_c=self.c,enableLog=True,
+        gui=None,readAtFileNodesFlag=True)
 
     if ok:
         return frame.c
@@ -1966,85 +1966,13 @@ controller(c).run()
 at = c.atFileCommands
 
 at.write (p,kind = '@unknown',
-    nosentinels = True,thinFile = False,
-    scriptWrite = False,toString = True,
-)
+    nosentinels = True, thinFile = False,
+    scriptWrite = False, toString = True)
 
 output = p.insertAfter()
 output.h = 'flattened %s' % p.h
 output.b = at.stringOutput
-c.redraw()</t>
-<t tx="ekr.20101111175617.98927">'''Create a tree containing the docstrings
-of most plugins in leoPlugins.leo.'''
-
-class controller:
-
-    def __init__ (self,c):
-        self.c = c
-
-    def clear (self,p):
-        p.b = '@language rest\n'
-        while p.hasChildren():
-            p.firstChild().doDelete()
-
-    def getDocString(self,p):
-        '''Return the docstring of the @&lt;file&gt; node p.'''
-        for p2 in p.self_and_subtree():
-            s = p2.b
-            for tag in ("'''",'"""'):
-                i = s.find(tag)
-                if i &gt; -1:
-                    j = s.find(tag,i+3)
-                    if j &gt; -1:
-                        return s[i+3:j]
-        else:
-            return ''
-
-    def openLeoPlugins(self):
-        fn = g.os_path_finalize_join(
-            g.app.loadDir,'..','plugins','leoPlugins.leo')
-        ok,frame = g.openWithFileName(fn,
-            old_c=c,enableLog=True,gui=None,readAtFileNodesFlag=True)
-        if ok:
-            return frame.c
-        else:
-            g.error('can not open leoPlugins.leo')
-            return None
-
-    def run(self):
-        c = self.c
-        new_c = self.openLeoPlugins()
-        if not new_c: return
-
-        aList = ('Examples','Experimental','Gui plugins','Testing',)
-
-        # Create the output node.
-        tag = 'get-docstrings-output'
-        output = c.p.insertAfter()
-        output.h = tag
-        self.clear(output)
-
-        # Scan the descendants of the Plugins node.
-        root = g.findNodeAnywhere(new_c,'Plugins')
-        if not root: return g.error('no Plugins node')
-        print('='*20)
-        for p in root.children():
-            if p.h not in aList and not p.h.startswith('  '):
-                print('\n**',p.h)
-                child = output.insertAsLastChild()
-                child.h = p.h
-                for p2 in p.subtree():
-                    if p2.isAnyAtFileNode() and p2.h.endswith('.py'):
-                        h = p2.anyAtFileNodeName()
-                        s = self.getDocString(p2)
-                        print('%5s %s' % (len(s),h))
-                        child2 = child.insertAsLastChild()
-                        child2.h = h
-                        child2.b = "%s\n\n" % s.strip()
-        new_c.close()
-        c.redraw()
-
-controller(c).run()
+c.redraw()
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
