@@ -2,13 +2,12 @@
 #@+node:ekr.20040915105758.13: * @file FileActions.py
 #@+<< docstring >>
 #@+node:ekr.20050912180106: ** << docstring >>
-r""" A Leo plugin that permits the definition of actions for double-clicking on
-file nodes. Written by Konrad Hinsen <konrad.hinsen@laposte.net> Distributed
-under the same licence as Leo.
+r""" Defines actions taken when double-clicking on @<file> nodes and supports
+@file-ref nodes.
 
-Double-clicking in a @file node writes out the file if changes have been made
-since the last save, and then runs a script on it, which is retrieved from the
-outline.
+Double-clicking any kind of @<file> node writes out the file if changes have
+been made since the last save, and then runs a script on it, which is retrieved
+from the outline.
 
 Scripts are located in a node whose headline is FileActions. This node can be
 anywhere in the outline. If there is more than one such node, the first one in
@@ -31,12 +30,15 @@ in which the scripts are run contains these elements:
    external windows, thus permitting programs to be called that require user
    interaction
 
-File actions are implemented for @file nodes and all its variants (@file-nosent,
-@thin, etc.). There is also a new node type @file-ref for referring to files
-purely for the purpose of file actions, Leo does not do anything with or to such
-files.
+File actions are implemented for all kinds @<file> nodes. There is also a new
+node type @file-ref for referring to files purely for the purpose of file
+actions, Leo does not do anything with or to such files.
+
 """
 #@-<< docstring >>
+
+# Written by Konrad Hinsen <konrad.hinsen@laposte.net>
+# Distributed under the same licence as Leo.
 
 #@@language python
 #@@tabwidth -4

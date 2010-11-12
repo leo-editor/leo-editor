@@ -5,14 +5,15 @@
 
 #@+<< docstring >>
 #@+node:ekr.20080201151802: ** << docstring >>
-''' The ipython plugin provides two-way communication (a bridge) between Leo
+''' Creates a two-way communication (bridge) between Leo
 scripts and IPython running in the console from which Leo was launched.
 
 Using this bridge, scripts running in Leo can affect IPython, and vice versa.
 In particular, scripts running in IPython can alter Leo outlines!
 
-There are too many details to cover in this docstring.  For full details,
-see: LeoDocs.leo or http://webpages.charter.net/edreamleo/IPythonBridge.html
+For full details, see Leo Users Guide:
+http://webpages.charter.net/edreamleo/IPythonBridge.html
+
 '''
 #@-<< docstring >>
 

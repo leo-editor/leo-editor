@@ -1,15 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20091214233510.5347: * @file geotag.py
-#@+<< docstring >>
-#@+node:tbrown.20091214233510.5348: ** << docstring >>
-'''
-
-geotag.py - Tag nodes with lat/long. info
-=========================================
-
-
-'''
-#@-<< docstring >>
+''' Tags nodes with latitude and longitude. '''
 
 #@@language python
 #@@tabwidth -4
@@ -23,15 +14,6 @@ from leo.plugins.pygeotag import pygeotag
 import socket
 #@-<< imports >>
 __version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20091214233510.5350: ** << version history >>
-#@@killcolor
-
-#@+at Use and distribute under the same terms as leo itself.
-# 
-# 0.1 TNB
-#   - initial version
-#@-<< version history >>
 
 #@+others
 #@+node:tbrown.20091214233510.5351: ** init

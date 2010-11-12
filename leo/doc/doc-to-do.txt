@@ -19,6 +19,10 @@ tree, though it does generate an incorrect message:
     "no @<file> nodes in the selected tree".
 #@+node:ekr.20101026082911.5537: *4* No mention of qt in installation slideshow
 #@+node:ekr.20101025080245.5533: *4* Document {{expression}} in paths
+Within @path and @<file> paths, {{exp}} gets evaluated with the following
+symbols known: c, g, p, os and sys.
+
+Thus, {{os.curdir}} evaluates to the current directory.
 #@+node:ekr.20101026082911.5543: *3* Polish release notes
 #@+node:ekr.20101026082911.5534: *3* Eliminate sphinx warnings
 Can probably be done by changing the slides page.

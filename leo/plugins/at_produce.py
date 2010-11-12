@@ -2,8 +2,8 @@
 #@+node:ekr.20040915085351: * @file at_produce.py
 #@+<< docstring >>
 #@+node:ekr.20050311110307: ** << docstring >>
-'''
-Executes commands in nodes whose body text starts with @produce.
+''' Executes commands in nodes whose body text starts with @produce.
+
 To use, put in the body text of a node::
 
     @produce javac -verbose Test.java

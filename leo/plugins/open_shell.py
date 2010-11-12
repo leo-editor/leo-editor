@@ -2,17 +2,21 @@
 #@+node:EKR.20040517080049.4: * @file open_shell.py
 #@+<< docstring >>
 #@+node:ekr.20050111112200: ** << docstring >>
-'''
-Creates an 'extensions' menu with commands to open either an xterm on linux
-or a cmd windows/explorer window on win32 in the directory of the current @file.
+''' Creates an 'Extensions' menu containing two commands:
+Open Console Window and Open Explorer.
+
+The Open Console Window command opens xterm on linux.
+The Open Explorer command Opens a Windows explorer window.
+
 This allows quick navigation to facilitate testing and navigating large systems
-with complex direcgtories.
+with complex directories.
 
 Please submit bugs / feature requests to etaekema@earthlink.net
 
 Current limitations:
 - Not tested on Mac OS X ...
 - On linux, xterm must be in your path.
+
 '''
 #@-<< docstring >>
 

@@ -9,9 +9,8 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959" a="E"
-expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20070610174018"><vh>Startup</vh>
+<v t="ekr.20101028112631.4959"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
@@ -140,9 +139,10 @@ expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
-<v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
+<v t="ekr.20101028110015.8272" a="E"
+expanded="ekr.20101025080245.5540,ekr.20101025080245.5523,"><vh>@file doc-to-do.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>

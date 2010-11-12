@@ -2,7 +2,7 @@
 #@+node:ville.20090503124249.1: * @file tomboy_import.py
 #@+<< docstring >>
 #@+node:ville.20090503124249.2: ** << docstring >>
-'''This plugin adds a possibility to import the notes created in Tomboy / gnote
+''' Allows imports of notes created in Tomboy / gnote
 
 Usage:
 
@@ -38,8 +38,6 @@ from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
 
 import HTMLParser
-
-# Whatever other imports your plugins uses.
 #@-<< imports >>
 
 #@+others
@@ -59,7 +57,6 @@ def onCreate (tag, keys):
     # c not needed
 
     tomboy_install()
-
 #@+node:ville.20090503124249.7: ** the code
 class MLStripper(HTMLParser.HTMLParser):
     def __init__(self):

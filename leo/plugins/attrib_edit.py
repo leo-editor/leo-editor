@@ -2,10 +2,7 @@
 #@+node:tbrown.20091029123555.5319: * @file attrib_edit.py
 #@+<< docstring >>
 #@+node:tbrown.20091009210724.10972: ** << docstring >>
-'''
-
-attrib_edit.py - Edit attributes in v.u
-=======================================
+''' Edits user attributes in a Qt frame.
 
 This plugin creates a frame for editing attributes similar to::
 
@@ -114,6 +111,7 @@ plugins, here are some points of interest:
 #@+node:tbrown.20091009210724.10973: ** << imports >>
 import leo.core.leoGlobals as g
 import re
+
 if g.app.gui.guiName() == "qt":
 
     import os

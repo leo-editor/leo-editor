@@ -2,11 +2,11 @@
 #@+node:EKR.20040517075715.10: * @file vim.py
 #@+<< docstring >>
 #@+node:ekr.20050226184411: ** << docstring >>
-'''A plugin that communicates with VIM.
+''' Enables two-way communication with VIM.
 
-It's recommended that you have gvim installed - basic console vim is not recommended.
+It's recommended that you have gvim installed--the basic console vim is not recommended.
 
-***On Tk ui, the open_with plugin must be enabled for this plugin to work properly!***
+**On Tk ui, the open_with plugin must be enabled for this plugin to work properly!**
 
 When properly installed, this plugin does the following:
 
@@ -40,10 +40,14 @@ To install this plugin do the following:
 
 1. Make sure to enable open_with plugin (if you are using Tk ui).
 
-2. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim as shown in leoSettings.leo.
-   Alternatively, you can ensure that gvim.exe is on your PATH.
+2. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
+   as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
+   on your PATH.
 
-3. If you are using Python 2.4 or above, that's all you need to do. Jim Sizelove's new code will start vim automatically using Python's subprocess module. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
+3. If you are using Python 2.4 or above, that's all you need to do. Jim
+   Sizelove's new code will start vim automatically using Python's subprocess
+   module. The subprocess module comes standard with Python 2.4. For Linux
+   systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
 
 '''
 #@-<< docstring >>

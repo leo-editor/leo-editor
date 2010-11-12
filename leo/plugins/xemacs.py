@@ -1,8 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517075715.12: * @file xemacs.py
-'''This plugin allows you to edit nodes in emacs/xemacs.
+''' Allows you to edit nodes in emacs/xemacs.
 
-Important: the open_with plugin must be enabled for this plugin to work properly.
+**Important**: the open_with plugin must be enabled for this plugin to work
+properly.
 
 Depending on your preference, selecting or double-clicking a node will pass the
 body text of that node to emacs. You may edit the node in the emacs buffer and

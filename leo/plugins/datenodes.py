@@ -2,8 +2,7 @@
 #@+node:ekr.20060807103814.1: * @file datenodes.py
 #@+<< docstring >>
 #@+node:bobjack.20080615065747.4: ** << docstring >>
-"""
-This plugin allows 'date nodes' to be added to the outline.
+""" Allows users to insert headlines containing dates.
 
 'Date nodes' are nodes that have dates in their headlines. They may be added to
 the outline one at a time, a month's-worth at a time, or a year's-worth at a

@@ -2,10 +2,10 @@
 #@+node:ekr.20101110091234.5689: * @file debugger_pudb.py
 #@+<< docstring >>
 #@+node:ville.20090712141419.5250: ** << docstring >>
-'''
-.. _`Pudb`: http://pypi.python.org/pypi/pudb
+''' Makes g.pdb() enter the Pudb debugger instead of pdb.
 
-Makes g.pdb() enter the `Pudb`_ debugger instead of pdb.
+Pudb is a full-screen Python debugger:
+http://pypi.python.org/pypi/pudb
 
 '''
 #@-<< docstring >>

@@ -2,13 +2,24 @@
 #@+node:ajones.20070122153625: * @file expfolder.py
 #@+<< docstring >>
 #@+node:ajones.20070122153625.1: ** << docstring >>
-'''Makes @expfolder expandable representations of folders in the filesystem.
+''' Adds @expfolder nodes that represent folders in the filesystem.
 
-Double clicking on the icon of an @expfolder heading reads the files in the directory at the path specified and creates child nodes for each file in the subfolder.  Subdirectories are made into child @expfolder nodes so the tree can be easily traversed.  If files have extensions specified in the expfolder.ini file they are made into @text nodes so the content of the files can be easily loaded into leo and edited.  Double clicking a second time will delete all child nodes and refresh the directory listing.  If there are any changed @text nodes contained inside you will be prompted about saving them.
+Double clicking on the icon of an @expfolder heading reads the files in the
+directory at the path specified and creates child nodes for each file in the
+subfolder. Subdirectories are made into child @expfolder nodes so the tree can
+be easily traversed. If files have extensions specified in the expfolder.ini
+file they are made into @text nodes so the content of the files can be easily
+loaded into leo and edited. Double clicking a second time will delete all child
+nodes and refresh the directory listing. If there are any changed @text nodes
+contained inside you will be prompted about saving them.
 
-The textextensions field on the expfolder Properties page contains a list of extensions which will be made into @text nodes, seperated by spaces.
+The textextensions field on the expfolder Properties page contains a list of
+extensions which will be made into @text nodes, seperated by spaces.
 
-For the @text and @expfolder nodes to interact correctly, the textnode plugin must load before the expfolder plugin.  This can be set using the Plugin Manager's Plugin Load Order pane.
+For the @text and @expfolder nodes to interact correctly, the textnode plugin
+must load before the expfolder plugin. This can be set using the Plugin
+Manager's Plugin Load Order pane.
+
 '''
 #@-<< docstring >>
 

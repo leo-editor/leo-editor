@@ -5,32 +5,32 @@
 '''Synchronize @path nodes with folders.
 
 If a node is named '@path path_to_folder', the content (file and folder names)
-of the folder and the children of that node will synchronized whenever
-the node's status-iconbox is double clicked.
+of the folder and the children of that node will synchronized whenever the
+node's status-iconbox is double clicked.
 
-For files not previously seen in a folder a new node will appear on top of
-the children list (with a mark).
+For files not previously seen in a folder a new node will appear on top of the
+children list (with a mark).
 
-Folders appear in the list as /foldername/.  If you double click on the
-icon-box of the folder node, it will have children added to it based on
-the contents of the folder on disk.  These folders have the '@path' directive
-as the first line of their body text.
+Folders appear in the list as /foldername/. If you double click on the icon-box
+of the folder node, it will have children added to it based on the contents of
+the folder on disk. These folders have the '@path' directive as the first line
+of their body text.
 
 When files are deleted from the folder and the list is updated by double
 clicking the files will appear in the list as *filename* (or */foldername/*).
 
 You can describe files and directories in the body of the nodes.
 
-You can organize files and directories with organizer nodes, an organizer
-node name cannot contain with '/'.
+You can organize files and directories with organizer nodes, an organizer node
+name cannot contain with '/'.
 
-Files and folders can be created by entering a node with the required name as its headline
-(must start and/or end with "/" for a folder) and then double clicking on the node's
-status-iconbox.
+Files and folders can be created by entering a node with the required name as
+its headline (must start and/or end with "/" for a folder) and then double
+clicking on the node's status-iconbox.
 
-@auto nodes can be set up for existing files can be loaded by
-double clicking on the node's status-iconbox.  If you prefer
-@shadow or something else use the "active_path_attype" setting,
+\@auto nodes can be set up for existing files can be loaded by
+double clicking on the node's status-iconbox. If you prefer
+\@shadow or something else use the "active_path_attype" setting,
 without the "@".
 
 There are commands on the Plugins active_path submenu:
@@ -60,14 +60,16 @@ of .py files automatically.  These nodes start with the special string::
 which must be left intact if you want active path to be able to double-click load
 the file later.
 
-@float active_path_timeout_seconds (default 10.) controls the maximum
+\@float active_path_timeout_seconds (default 10.) controls the maximum
 time active_path will spend on a recursive operation.
 
-@int active_path_max_size (default 1000000) controls the maximum
+\@int active_path_max_size (default 1000000) controls the maximum
 size file active_path will open without query.
 
-active_path is a rewrite of the at_directory plugin to use @path directives (which influence
-@auto and other @file type directives), and to handle sub-folders more automatically.
+active_path is a rewrite of the at_directory plugin to use \@path directives
+(which influence \@auto and other \@file type directives), and to handle
+sub-folders more automatically.
+
 '''
 #@-<< docstring >>
 

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20081223111325.3: * @file backlink.py
-''' Allow arbitrary links between nodes.
+''' Allows arbitrary links between nodes.
 '''
 
 # **Important**: this plugin is gui-independent.
