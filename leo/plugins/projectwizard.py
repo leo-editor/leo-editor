@@ -2,10 +2,11 @@
 #@+node:ekr.20090622063842.5264: * @file projectwizard.py
 #@+<< docstring >>
 #@+node:ville.20090614224528.8136: ** << docstring >>
-''' Simple @auto project wizard
+''' Creates a wizard that creates @auto nodes.
 
-Open a file dialog and recursively creates @auto & @path nodes from the path where selected file is 
-(the selected file itself doesn't matter)
+Open a file dialog and recursively creates @auto & @path nodes from the path
+where selected file is (the selected file itself doesn't matter)
+
 '''
 #@-<< docstring >>
 

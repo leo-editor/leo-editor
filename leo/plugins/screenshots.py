@@ -3,8 +3,7 @@
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
 """
-The screenshots.py plugin
-=========================
+This plugin assists in creating slideshows containing screenshots.
 
 This plugin defines four commands. The
 apropos-slides command prints this message to

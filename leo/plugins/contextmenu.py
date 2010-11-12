@@ -2,7 +2,7 @@
 #@+node:ekr.20090701111504.5294: * @file contextmenu.py
 #@+<< docstring >>
 #@+node:ville.20090630210947.5460: ** << docstring >>
-''' Define various useful actions for context menus (for Qt ui)
+''' Define various useful actions for context menus (Qt only).
 
 Examples are:
 

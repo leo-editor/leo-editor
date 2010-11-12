@@ -2,7 +2,7 @@
 #@+node:ville.20090518182905.5419: * @file nav_qt.py
 #@+<< docstring >>
 #@+node:ville.20090518182905.5420: ** << docstring >>
-''' "Back" and "Forward" buttons for qt ui
+'''Add "Back" and "Forward" buttons (Qt only).
 
 Creates "back" and "forward" buttons on button bar. These navigate
 the node history.
