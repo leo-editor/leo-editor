@@ -10,8 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959"
-expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
@@ -35,8 +34,8 @@ expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5794"><vh>Preliminaries</vh>
-<v t="ekr.20050831184021.3" a="E"><vh>Front matter</vh>
-<v t="ekr.20100805165051.7148" a="E"><vh>@file frontMatter.txt</vh></v>
+<v t="ekr.20050831184021.3"><vh>Front matter</vh>
+<v t="ekr.20100805165051.7148"><vh>@file frontMatter.txt</vh></v>
 </v>
 <v t="ekr.20070701101808"><vh>Preface</vh>
 <v t="ekr.20100805165051.7149"><vh>@file preface.txt</vh></v>
@@ -145,16 +144,14 @@ expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="ekr.20101104091058.4977,ekr.20101104091058.5019,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" a="E" descendentVnodeUnknownAttributes="7d710028580b000000302e322e352e302e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e322e352e302e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e322e352e302e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e312e302e31710b7d710c580b0000007374725f6c656f5f706f73710d680473580b000000302e322e352e302e342e31710e7d710f580b0000007374725f6c656f5f706f737110680473752e"
-marks="ekr.20101014110348.5299,"
-expanded="ekr.20101013072903.5218,"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e322e352e302e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e322e352e302e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e322e352e302e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e312e302e31710b7d710c580b0000007374725f6c656f5f706f73710d680473580b000000302e322e352e302e342e31710e7d710f580b0000007374725f6c656f5f706f737110680473752e"
+marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101109204114.4910"><vh>General </vh></v>
 </v>
-<v t="ekr.20101110150056.4912" a="E"><vh>Recent</vh>
+<v t="ekr.20101110150056.4912"><vh>Recent</vh>
 <v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050912125735.26"><vh>Commands &amp; directives</vh>
@@ -292,6 +289,16 @@ expanded="ekr.20101013072903.5218,"><vh>@file slideshows.txt</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
+<v t="ekr.20101111175617.56915" a="E"><vh>class controller</vh>
+<v t="ekr.20101111175617.56916"><vh>clear</vh></v>
+<v t="ekr.20101111175617.14683"><vh>getDocString</vh></v>
+<v t="ekr.20101111175617.24328"><vh>openPlugins</vh></v>
+<v t="ekr.20101111175617.5787"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20101111175617.98927"><vh>flattened Script: get-plugin-docstrings</vh></v>
+<v t="ekr.20101111175617.98925"><vh>@button flatten script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1870,6 +1877,175 @@ Clones:
    If you encounter the same set of clones later,
    create a leo_clone node and refer back to
    the first element.</t>
+<t tx="ekr.20101111175617.14683">def getDocString(self,p):
+
+    '''Return the docstring of the @&lt;file&gt; node p.'''
+
+    for p2 in p.self_and_subtree():
+        s = p2.b
+        for tag in ("'''",'"""'):
+            i = s.find(tag)
+            if i &gt; -1:
+                j = s.find(tag,i+3)
+                if j &gt; -1:
+                    return s[i+3:j]
+    else:
+        return ''
+</t>
+<t tx="ekr.20101111175617.24328">def openLeoPlugins(self):
+
+    fn = g.os_path_finalize_join(
+        g.app.loadDir,'..','plugins','leoPlugins.leo')
+
+    ok,frame = g.openWithFileName(fn,
+        old_c=c,enableLog=True,gui=None,readAtFileNodesFlag=True)
+
+    if ok:
+        return frame.c
+    else:
+        g.error('can not open leoPlugins.leo')
+        return None
+</t>
+<t tx="ekr.20101111175617.5037">'''Create a tree containing the docstrings
+of most plugins in leoPlugins.leo.'''
+
+@others
+
+controller(c).run()
+</t>
+<t tx="ekr.20101111175617.56915">class controller:
+
+    def __init__ (self,c):
+        self.c = c
+
+    @others
+</t>
+<t tx="ekr.20101111175617.56916">def clear (self,p):
+
+    p.b = '@language rest\n'
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+</t>
+<t tx="ekr.20101111175617.5787">def run(self):
+
+    c = self.c
+    new_c = self.openLeoPlugins()
+    if not new_c: return
+
+    aList = ('Examples','Experimental','Gui plugins','Testing',)
+
+    # Create the output node.
+    tag = 'get-docstrings-output'
+    output = c.p.insertAfter()
+    output.h = tag
+    self.clear(output)
+
+    # Scan the descendants of the Plugins node.
+    root = g.findNodeAnywhere(new_c,'Plugins')
+    if not root: return g.error('no Plugins node')
+    print('='*20)
+    for p in root.children():
+        if p.h not in aList and not p.h.startswith('  '):
+            print('\n**',p.h)
+            child = output.insertAsLastChild()
+            child.h = p.h
+            for p2 in p.subtree():
+                if p2.isAnyAtFileNode() and p2.h.endswith('.py'):
+                    h = p2.anyAtFileNodeName()
+                    s = self.getDocString(p2)
+                    print('%5s %s' % (len(s),h))
+                    child2 = child.insertAsLastChild()
+                    child2.h = h
+                    child2.b = "%s\n\n" % s.strip()
+    new_c.close()
+    c.redraw()
+</t>
+<t tx="ekr.20101111175617.98925">'''Convert a script to a string as if written with @nosent.'''
+
+at = c.atFileCommands
+
+at.write (p,kind = '@unknown',
+    nosentinels = True,thinFile = False,
+    scriptWrite = False,toString = True,
+)
+
+output = p.insertAfter()
+output.h = 'flattened %s' % p.h
+output.b = at.stringOutput
+c.redraw()</t>
+<t tx="ekr.20101111175617.98927">'''Create a tree containing the docstrings
+of most plugins in leoPlugins.leo.'''
+
+class controller:
+
+    def __init__ (self,c):
+        self.c = c
+
+    def clear (self,p):
+        p.b = '@language rest\n'
+        while p.hasChildren():
+            p.firstChild().doDelete()
+
+    def getDocString(self,p):
+        '''Return the docstring of the @&lt;file&gt; node p.'''
+        for p2 in p.self_and_subtree():
+            s = p2.b
+            for tag in ("'''",'"""'):
+                i = s.find(tag)
+                if i &gt; -1:
+                    j = s.find(tag,i+3)
+                    if j &gt; -1:
+                        return s[i+3:j]
+        else:
+            return ''
+
+    def openLeoPlugins(self):
+        fn = g.os_path_finalize_join(
+            g.app.loadDir,'..','plugins','leoPlugins.leo')
+        ok,frame = g.openWithFileName(fn,
+            old_c=c,enableLog=True,gui=None,readAtFileNodesFlag=True)
+        if ok:
+            return frame.c
+        else:
+            g.error('can not open leoPlugins.leo')
+            return None
+
+    def run(self):
+        c = self.c
+        new_c = self.openLeoPlugins()
+        if not new_c: return
+
+        aList = ('Examples','Experimental','Gui plugins','Testing',)
+
+        # Create the output node.
+        tag = 'get-docstrings-output'
+        output = c.p.insertAfter()
+        output.h = tag
+        self.clear(output)
+
+        # Scan the descendants of the Plugins node.
+        root = g.findNodeAnywhere(new_c,'Plugins')
+        if not root: return g.error('no Plugins node')
+        print('='*20)
+        for p in root.children():
+            if p.h not in aList and not p.h.startswith('  '):
+                print('\n**',p.h)
+                child = output.insertAsLastChild()
+                child.h = p.h
+                for p2 in p.subtree():
+                    if p2.isAnyAtFileNode() and p2.h.endswith('.py'):
+                        h = p2.anyAtFileNodeName()
+                        s = self.getDocString(p2)
+                        print('%5s %s' % (len(s),h))
+                        child2 = child.insertAsLastChild()
+                        child2.h = h
+                        child2.b = "%s\n\n" % s.strip()
+        new_c.close()
+        c.redraw()
+
+controller(c).run()
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

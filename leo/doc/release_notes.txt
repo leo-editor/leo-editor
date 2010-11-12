@@ -6261,7 +6261,7 @@ down.
 
 http://sourceforge.net/forum/message.php?msg_id=3639216
 
-g.os_path_dirname(self.outputFileName) with self.c.frame.openDirectory. This
+g.os_path_dirname(self.output0FileName) with self.c.frame.openDirectory. This
 makes the path relative to the project. Not 100% as the stylesheet filename
 would need a path embedded in it to move the location down the tree. However,
 it is consistent with the way the output file is named.
