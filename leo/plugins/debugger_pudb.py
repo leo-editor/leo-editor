@@ -2,14 +2,10 @@
 #@+node:ekr.20101110091234.5689: * @file debugger_pudb.py
 #@+<< docstring >>
 #@+node:ville.20090712141419.5250: ** << docstring >>
-''' pudb debugger support
+'''
+.. _`Pudb`: http://pypi.python.org/pypi/pudb
 
-Pudb is a full-screen console-based debugger for Python:
-
-http://pypi.python.org/pypi/pudb
-
-This plugin make g.pdb(), e.g. inside a script, enter the pudb debugger
-instead of pdb.
+Makes g.pdb() enter the `Pudb`_ debugger instead of pdb.
 
 '''
 #@-<< docstring >>
@@ -23,23 +19,19 @@ __version__ = '0.1'
 # 0.1 First released version (VMV)
 #@-<< version history >>
 
-#@+<< imports >>
-#@+node:ville.20090712141419.5252: ** << imports >>
 import leo.core.leoGlobals as g
 
-# Whatever other imports your plugins uses.
-#@-<< imports >>
+try:
+    import pudb
+except ImportError:
+    pudb = None
 
 #@+others
 #@+node:ville.20090712141419.5253: ** init
 def init ():
 
-    ok = True # This might depend on imports, etc.
+    ok = pudb is not None
 
-    try:
-        import pudb
-    except ImportError:
-        ok = False
     if ok:
         def pudb_set_trace(*args):
             pudb.set_trace()

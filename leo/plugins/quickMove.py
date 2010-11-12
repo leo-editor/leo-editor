@@ -4,10 +4,11 @@
 #@@first
 #@+<< docstring >>
 #@+node:tbrown.20070117104409.1: ** << docstring >>
-"""Create buttons to quickly move nodes to other nodes
+"""Creates buttons to move nodes quickly to other nodes
 
-Quickly move/copy/clone nodes from around the tree to one or more target nodes.  It can also create
-bookmark and tagging functionality in an outline (see `Set Parent Notes`_ below).
+Quickly move/copy/clone nodes from around the tree to one or more target nodes.
+It can also create bookmark and tagging functionality in an outline (see `Set
+Parent Notes`_ below).
 
 Adds `Move/Clone/Copy To Last Child Button` and `Move/Clone/Copy To First Child
 Button`, `Link To/From` and `Jump To` commands to the Move sub-menu on the

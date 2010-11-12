@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.720: * @file outline_export.py
-"""Modify the way exported outlines are displayed"""
+"""Modifies the way exported outlines are written."""
 
 #@@language python
 #@@tabwidth -4

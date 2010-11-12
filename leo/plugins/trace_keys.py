@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.736: * @file trace_keys.py
-"""Trace keystrokes in the outline and body panes"""
+""" Traces keystrokes in the outline and body panes"""
 
 #@@language python
 #@@tabwidth -4

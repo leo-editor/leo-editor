@@ -5,11 +5,12 @@
 
 #@+<< docstring >>
 #@+node:danr7.20061010105952.2: ** << docstring >>
-'''Word Count plugin by Dan Rahmel
+''' Displays in the log pane the count of characters, words, lines, and
+paragraphs in the body pane.
 
-This plugin displays information about the body text of the current node in the log pane:
-characters, words, lines, and paragraphs. It adds a "Word Count..." option
-to the bottom of the Edit menu that will activate the command.
+It adds a "Word Count..." option to the bottom of the Edit menu that will
+activate the command.
+
 '''
 #@-<< docstring >>
 #@+<< version history >>
@@ -26,6 +27,8 @@ to the bottom of the Edit menu that will activate the command.
 # 1.1 - Load this plugin only if the Tkinter is in effect.
 # 1.2: The plugin now is gui independent.
 #@-<< version history >>
+
+# Word Count plugin by Dan Rahmel
 
 import leo.core.leoGlobals as g
 

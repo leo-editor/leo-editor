@@ -3,28 +3,30 @@
 #@+node:danr7.20060912105041.1: * @file paste_as_headlines.py
 #@@first
 
+#@+<< docstring >>
+#@+node:danr7.20060912105041.2: ** << docstring >>
+''' Creates new headlines from clipboard text.
+
+If the pasted text would be greater than 50 characters in length, the plugin
+truncates the headline to 50 characters and pastes the entire line into the body
+text of that node.
+
+Creates a "Paste as Headlines" option the Edit menu directly under the existing
+Paste option.
+
+'''
+#@-<< docstring >>
+
 #@@language python
 #@@tabwidth -4
 
-#@+<< docstring >>
-#@+node:danr7.20060912105041.2: ** << docstring >>
-'''Paste as Headlines 1.0 plugin by Dan Rahmel
-
-This plug-in takes any text is stored in the clipboard and creates new headlines
-for each line of text. The paste routine checks to make sure the line of text is not
-greater than 50 characters in length. If it is, the routine truncates the headline to
-50 characters and pastes the entire line into the body text of that node.
-
-If the plug-in is functioning properly, a "Paste as Headlines" option should appear in
-the Edit menu directly under the existing Paste option.
-'''
-#@-<< docstring >>
 #@+<< version history >>
 #@+node:danr7.20060912105041.3: ** << version history >>
 #@+at
 # 0.91 - Added headline truncate code
 # 0.90 - Created initial plug-in framework
-# 1.1 ERK:
+# 1.0: Dan Rahmel
+# 1.1 EKR:
 # - Converted code to use c.setHead/BodyString rather than the old position setters.
 # - Added call to currentNode.expand in paste_as_headlines, enclosed in c.begin/endUpate.
 #@-<< version history >>
