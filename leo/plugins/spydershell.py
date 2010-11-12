@@ -2,9 +2,9 @@
 #@+node:ville.20090815203828.5235: * @file spydershell.py
 #@+<< docstring >>
 #@+node:ville.20090815203828.5236: ** << docstring >>
-''' Launch spyder environment with access to Leo instance
+''' Launch spyder environment with access to Leo instance.
 
-http://source.pythonxy.com/spyder/doc/
+http://packages.python.org/spyder/
 
 Usage:
 
@@ -35,8 +35,6 @@ import sys
 import leo.core.leoGlobals as g
 
 g.assertUi('qt')
-
-# Whatever other imports your plugins uses.
 #@-<< imports >>
 
 #@+others
@@ -51,10 +49,17 @@ def spyder_launch(event):
     """ Launch spyder """
     # Options
     from spyderlib import spyder
-    commands, intitle, message, options = spyder.get_options()
+    data = spyder.get_options()
 
-    # Main window
-    g.spyder = main = spyder.MainWindow(commands, intitle, message, options)
+    # Create the main window
+    try:
+        # Version 1.x
+        commands, intitle, message, options = data
+        g.spyder = main = spyder.MainWindow(commands, intitle, message, options)
+    except TypeError:
+        # Version 2.x
+        g.spyder = main = spyder.MainWindow(options=data)
+
     main.setup()
     g.spyderns = main.console.shell.interpreter.namespace
     spyder_update(event)
