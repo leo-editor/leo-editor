@@ -288,8 +288,9 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
-<v t="ekr.20101111175617.56915"><vh>class controller</vh>
-<v t="ekr.20101112045055.13356"><vh>allowDir &amp; allowFile</vh></v>
+<v t="ekr.20101111175617.56915" a="E"><vh>class controller</vh>
+<v t="ekr.20101112045055.13356"><vh>allowDir</vh></v>
+<v t="ekr.20101112222250.5322"><vh>allowFile</vh></v>
 <v t="ekr.20101112045055.13355"><vh>createDocs</vh></v>
 <v t="ekr.20101112045055.13354"><vh>createSummary</vh></v>
 <v t="ekr.20101111175617.14683"><vh>getDocString</vh></v>
@@ -2147,7 +2148,7 @@ c.redraw()
 </t>
 <t tx="ekr.20101112045055.13356">def allowDir (self,p):
 
-    '''Return True if we should allow scan of headline s.'''
+    '''Return True if we should allow scan of directory p.'''
 
     aList = (
         # Suppressed directories.
@@ -2155,29 +2156,7 @@ c.redraw()
         'Dyna plugins by e',
         'Gui plugins','Testing',
     )
-
     return p.h not in aList and not p.h.startswith('  ')
-
-def allowFile (self,p):
-
-    aList = (
-        # Suppresssed files.
-        '@file bookmarks.py',   # Replaced by better @url.
-        '@file rst3.py',        # Replaced by core rst3 command.
-        '@file testnode.py',    # Replaced by @edit.
-        # These all depend on old plugins_manager.py.
-        '@file autotrees.py', 
-        '@file old_plugin_manager.py',
-        '@file leoupdate.py', # Depends on old plugins_manager.py.
-        # These are used only by autotrees.py.
-        r'@file trees\doc.py',
-        r'@file trees\news.py',
-        r'@file trees\remote.py',
-        r'@file trees\rss.py',
-        r'@file trees\test.py',
-    )
-
-    return p.h not in aList and p.isAnyAtFileNode() and p.h.endswith('.py')
 </t>
 <t tx="ekr.20101112045055.13357">def getFirstParagraph (self,s):
 
@@ -6198,6 +6177,28 @@ in leoSettings.leo.
 </t>
 <t tx="ekr.20101112211748.19985">Uses Python's urllib module to download files and import them into Leo.
 
+</t>
+<t tx="ekr.20101112222250.5322">def allowFile (self,p):
+    
+    '''Return True if we should allow scan of a file at p.'''
+
+    aList = (
+        # Suppresssed files.
+        '@file bookmarks.py',   # Replaced by better @url.
+        '@file rst3.py',        # Replaced by core rst3 command.
+        '@file testnode.py',    # Replaced by @edit.
+        # These all depend on old plugins_manager.py.
+        '@file autotrees.py', 
+        '@file old_plugin_manager.py',
+        '@file leoupdate.py',
+        # These are used only by autotrees.py.
+        r'@file trees\doc.py',
+        r'@file trees\news.py',
+        r'@file trees\remote.py',
+        r'@file trees\rss.py',
+        r'@file trees\test.py',
+    )
+    return p.h not in aList and p.isAnyAtFileNode() and p.h.endswith('.py')
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
