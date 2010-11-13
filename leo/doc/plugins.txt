@@ -140,7 +140,7 @@ enable_gc.py
    Enables debugging and tracing for Python's garbage collector.
 
 expfolder.py
-   Adds @expfolder nodes that represent folders in the filesystem.
+   Adds @expfolder nodes that represent folders in the file system.
 
 fastGotoNode.py
    Adds the fast-goto-node minibuffer command that creates a
@@ -229,7 +229,7 @@ mod_autosave.py
    Autosaves the Leo outline every so often.
 
 mod_framesize.py
-   Sets a hardcoded frame size.
+   Sets a hard coded frame size.
 
 mod_http.py
    A minimal http plugin for LEO, based on AsyncHttpServer.py.
@@ -433,7 +433,7 @@ xsltWithNodes.py
    Adds the Outline:XSLT menu containing XSLT-related commands.
 
 zenity_file_dialogs.py
-   Replaces the tk file dialogs on linux with external
+   Replaces the tk file dialogs on Linux with external
    calls to the zenity gtk dialog package.
 
 .. @+node:ekr.20101113063552.9528: *3* Gui-independent plugins
@@ -725,7 +725,7 @@ pattern (do not include the ':'):
      Unix shell-style pattern:
         @files *.py
 
-     Regular Expression patern:
+     Regular Expression pattern:
         ^@files .*\.py$ [X]
 
 :[V]:
@@ -785,7 +785,6 @@ The following script can be placed in the body of a pattern's node to
 execute a command in the first line of the body of a double-clicked node::
 
      g.os.system('"Start /b ' + pClicked.bodyString() + '"')
-
 .. @+node:ekr.20101113063552.9425: *5* outline_export.py
 Modifies the way exported outlines are written.
 
@@ -944,7 +943,7 @@ related to which outline node.
 Creates an 'Extensions' menu containing two commands:
 Open Console Window and Open Explorer.
 
-The Open Console Window command opens xterm on linux.
+The Open Console Window command opens xterm on Linux.
 The Open Explorer command Opens a Windows explorer window.
 
 This allows quick navigation to facilitate testing and navigating large systems
@@ -954,7 +953,7 @@ Please submit bugs / feature requests to etaekema@earthlink.net
 
 Current limitations:
 - Not tested on Mac OS X ...
-- On linux, xterm must be in your path.
+- On Linux, xterm must be in your path.
 
 .. @+node:ekr.20101113063552.9443: *5* tomboy_import.py
 Allows imports of notes created in Tomboy / gnote.
@@ -1105,7 +1104,7 @@ Synchronizes @folder nodes with folders.
 If a node is named '@folder path_to_folder', the content (filenames) of the
 folder and the children of that node will be sync. Whenever a new file is put
 there, a new node will appear on top of the children list (with mark). So that
-I can put my description (ie. annotation) as the content of that node. In this
+I can put my description (i.e. annotation) as the content of that node. In this
 way, I can find any files much easier from leo.
 
 Moreover, I add another feature to allow you to group files(in leo) into
@@ -1129,7 +1128,7 @@ Outline.  Any output, even error messages, should be there.
 It executes in a hierarchal manner.  Nodes that come before that contain @produce
 go first.
 
-Im hoping that this orthogonal to @run nodes and anything like that.  Its not
+I'm hoping that this orthogonal to @run nodes and anything like that.  Its not
 intended as a replacement for make or Ant, but as a simple substitute when that
 machinery is overkill.
 
@@ -1176,7 +1175,7 @@ The following commands are available for use via the minibuffer or in
     - datenodes-this-year
 
 .. @+node:ekr.20101113063552.9454: *5* expfolder.py
-Adds @expfolder nodes that represent folders in the filesystem.
+Adds @expfolder nodes that represent folders in the file system.
 
 Double clicking on the icon of an @expfolder heading reads the files in the
 directory at the path specified and creates child nodes for each file in the
@@ -1188,7 +1187,7 @@ nodes and refresh the directory listing. If there are any changed @text nodes
 contained inside you will be prompted about saving them.
 
 The textextensions field on the expfolder Properties page contains a list of
-extensions which will be made into @text nodes, seperated by spaces.
+extensions which will be made into @text nodes, separated by spaces.
 
 For the @text and @expfolder nodes to interact correctly, the textnode plugin
 must load before the expfolder plugin. This can be set using the Plugin
@@ -1267,8 +1266,8 @@ AND call the mime_open_cmd.
 
 This plugin is complementary to the UNL.py plugin's @url nodes. Use @url for
 opening either URLs or Uniform Node Locators in "\*.leo" files and use @mime
-nodes for opening files on the local filesystem. It also replaces the
-startfile.py plugin, where here the headline must start with @mime to activiate
+nodes for opening files on the local file system. It also replaces the
+startfile.py plugin, where here the headline must start with @mime to activate
 this plugin.
 
 For other sys.platform's, add an elif case to the section "guess file
@@ -1280,11 +1279,11 @@ filename string as its only argument and set as open_func.
 Allows Leo to write a file to multiple locations.
 
 This plugin acts as a post-write mechanism, a file must be written to the
-filesystem for it to work. At this point it is not a replacement for @path or an
+file system for it to work. At this point it is not a replacement for @path or an
 absolute path, it works in tandem with them.
 
 To use, place @multipath at the start of a line in the root node or an ancestor
-of the node. The format is (On Unixy systems)::
+of the node. The format is (On Unix-like systems)::
 
     @multipath /machine/unit/:/machine/robot/:/machine/
 
@@ -1301,7 +1300,7 @@ There is an additional directive that simplifies common paths, it is called
 directive.
 
 For example: (note I put # in front of the directives here because I
-dont want someone browsing this file to accidentilly save mulitple copies of
+dont want someone browsing this file to accidentally save multiple copies of
 this file to their system :) )
 
 #@multiprefix /leo #@multipath /plugins 
@@ -1314,7 +1313,7 @@ or
 copies a file to /leo/plugins /leo/fungus /leo/drain.
 
 The @multiprefix stays in effect for the entire tree until reset with another
-@multiprefix directive. @multipath is cumulitive, in that for each @multipath in
+@multiprefix directive. @multipath is cumulative, in that for each @multipath in
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
 
@@ -1392,12 +1391,12 @@ The body text of every child, in which the headlines do not begin with '@run'
 or '@in', will be appended to <command>, allowing you to add an unlimited number
 of arguments to <command>.
 
-The output of the program is written in the log pane (Error outputed in red).
+The output of the program is written in the log pane (Error output in red).
 When the program exit the node is set unmarked and the return value is
 displayed... When the enter key is pressed in the body pane of an active @run
 node the content of it body pane is written to the program and then emptied
-ready for another line of input. If the node have @run nodes in its descendance,
-they will be launched successivelly. (Unless one returned an exit code other
+ready for another line of input. If the node have @run nodes in its descendants,
+they will be launched successively. (Unless one returned an exit code other
 than 0, then it will stop there)
 
 By Alexis Gendron Paquette. Please send comments to the Leo forums.
@@ -1483,7 +1482,7 @@ leoscreen-next
   Switch screen session to next window.
 
 leoscreen-prev
-  Switch screen session to preceeding window.
+  Switch screen session to preceding window.
 
 leoscreen-other
   Switch screen session to last window displayed.
@@ -2019,7 +2018,7 @@ This plugin defines four new commands:
 - next-slide: move to the next slide of a present slide show.
 - prev-slide: move to the previous slide of the present slide show.
 
-Slides shows consist of a root @slideshow node with descendent @slide nodes.
+Slides shows consist of a root @slideshow node with descendant @slide nodes.
 @slide nodes may be organized via non-@slide nodes that do not appear in the slideshow.
 
 All these commands ignore @ignore trees.
@@ -2073,7 +2072,7 @@ Will be written as::
     author = {A. Uthor},
     journal = j1}
 
-No error checking is made on the syntax. The entries can be organised under
+No error checking is made on the syntax. The entries can be organized under
 nodes --- if the headline doesn't start with '@', the headline and body text are
 ignored, but the child nodes are parsed as usual.
 
@@ -2230,7 +2229,7 @@ loaded into Microsoft Word and formatted as a proper outline.
 If this plug-in loads properly, you should have an "Outline to Microsoft RTF"
 option added to your File > Export... menu in Leo.
 
-Settings such as outputing just the headlines (vs. headlines & body text) and whether
+Settings such as outputting just the headlines (vs. headlines & body text) and whether
 to include or ignore the contents of @file nodes are stored in the rtf_export.ini file
 in your Leo\plugins folder.
 
@@ -2360,7 +2359,7 @@ Requires `pexpect` module.
 Maximizes all new windows.
 
 .. @+node:ekr.20101113063552.9489: *5* mod_framesize.py
-Sets a hardcoded frame size.
+Sets a hard coded frame size.
 
 Prevents Leo from setting custom frame size (e.g. from an external .leo
 document)
@@ -2421,14 +2420,14 @@ Sends all output to the log pane.
 Creates a Scripts menu for LeoPy.leo.
 
 .. @+node:ekr.20101113063552.9493: *5* zenity_file_dialogs.py
-Replaces the tk file dialogs on linux with external
+Replaces the tk file dialogs on Linux with external
 calls to the zenity gtk dialog package.
 
-This plugin is more a proof of concopt demo than
+This plugin is more a proof of concept demo than
 a useful tool.  The dialogs presented do not take
 filters and starting folders can not be specified.
 
-Despit this, some linux users might prefer it to the
+Despite this, some Linux users might prefer it to the
 tk dialogs.
 
 .. @+node:ekr.20101113063552.9399: *3* Qt only plugins
@@ -2597,8 +2596,8 @@ The pattern to search for is, by default, a case *insensitive* fnmatch pattern
 want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
 
 Regexp matching is case sensitive; if you want to do a case-insensitive regular
-expression search (or any kind of case-sentive search in the first place), do it
-by searching for "r:(?i)Foo". (?i) is a standard feature of Python regural expression
+expression search (or any kind of case-sensitive search in the first place), do it
+by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expression
 syntax, as documented in 
 
 http://docs.python.org/library/re.html#regular-expression-syntax
@@ -2612,7 +2611,7 @@ displayed as html.
 
 The displayed format can be controlled by the user via check boxes, so rst
 messages may be viewed either as text or as html. Html messages can also be
-viwed as raw text, which will be a good debug feature when creating complex
+viewed as raw text, which will be a good debug feature when creating complex
 dynamically generated html messages.
 
 The user interface is provided by a ScrolledMessage.ui file which is dynamically
@@ -2650,16 +2649,16 @@ title:
     The title to appear on the window or dock.
 
 flags:
-    Says what kind of message eg: 'rst', 'text', 'html'. This overrides auto-detection.
+    Says what kind of message: 'rst', 'text', 'html'. This overrides auto-detection.
 
-    Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
+    Flags can be combined, for example, 'rst html' causes the message to be interpreted as rst and
     displayed as html.
 
 ..  To Do
 ..  - Add parameters to control position, size, closing, hiding etc.
 ..  - Save or print files from the dialog.
 ..  - Add an option to put the dialog in leo's log notebook.
-..  - Add \@settings to control default behaviour
+..  - Add \@settings to control default behavior
 ..  - Provide a menu of plugins that allows their docstring to be displayed.
 ..  - Provide a menu of @rst nodes in the current outline, automatically track changes
 ..    if it is set to display any of these nodes.
@@ -2715,7 +2714,7 @@ Provides to-do list and simple task management for leo (Qt only).
 
 todo adds time required, progress and priority settings for nodes.
 With the @project tag a branch can display progress and time
-required with dynamic hierachical updates.
+required with dynamic hierarchical updates.
 
 For full documentation see:
 
@@ -2799,7 +2798,7 @@ and also the following fragments:
 
     - 'find-controls-fragment'
 
-        This organises the find control buttons into two columns.
+        This organizes the find control buttons into two columns.
 
     These fragments are meant to be included in other popup menu's via::
 
@@ -2895,9 +2894,7 @@ The menu tables are simply lists of tuples with the form::
 
     (txt, cmd)
 
-where txt and cmd can be any python object
-
-eg::
+where txt and cmd can be any python object. For example::
 
     default_context_menus['body'] = [
 
@@ -2945,9 +2942,9 @@ if `txt` is '-' then a separator item will be inserted into the menu.
 
 if `txt` is '' (empty string) or '"' (single  double-quote) then nothing is done.
 
-    This is a noop or comment. Again `cmd` can have any value as it is not used.
+    This is a no-op or comment. Again `cmd` can have any value as it is not used.
 
-if `txt` is '|' (bar) then a columnbreak will be introduced.
+if `txt` is '|' (bar) then a column break will be introduced.
 
 
 `cmd` can be set to a string value for these items so that scripts which
@@ -2955,7 +2952,7 @@ manipulate the menu tables can use these items as position markers, so that
 similar items may be grouped together for example.
 
 `cmd` can, however, take on any value and these items, especially comments, can
-be used to pass extra information to generator functions. eg::
+be used to pass extra information to generator functions. For example::
 
     ...
     ( '*', interesting_function ),
@@ -3014,7 +3011,7 @@ if `txt` is '*':
 
             c.theContextMenuController.mb_keywords
 
-        and should place their returnvalue in
+        and should place their return value in
 
             c.theContextMenuController.mb_retval
 
@@ -3110,7 +3107,7 @@ Create a "Help on:" menu item.
         The following may have comments in the first line of the body.
 
         - @item | - to introduce a column break in the menu
-        - @item " - a noop but may be useful for the comment in the body
+        - @item " - a no-op but may be useful for the comment in the body
 
     **rclick_show_help**
 
@@ -3119,9 +3116,7 @@ Create a "Help on:" menu item.
             @string rclick_show_help = 'flags'
 
         `flags` is a string that can contain any combination of 'print', 'log',
-        'browser' or 'all'.
-
-        eg::
+        'browser' or 'all'. For example::
 
             @string rclick_show_help = 'print log'
 
@@ -3171,7 +3166,7 @@ rclick menu tables and @popup trees.
 
         These commands are generator commands to be use as @item \* (body: rclick-find-\*-button).
 
-        Each command producdes a radio or check item that reflects a control in the find tab.
+        Each command produces a radio or check item that reflects a control in the find tab.
 
         When these buttons are clicked, the changes are automatically made to the controls
         in the find tab.
@@ -3277,7 +3272,7 @@ Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a
 branch can display progress and time required with dynamic updates.
 
-Right click on a node's icon box to dislay the cleo menu.
+Right click on a node's icon box to display the cleo menu.
 
 For full documentation see:
 
@@ -3383,7 +3378,7 @@ Gato Graph Animation Toolbox at http://gato.sourceforge.net/
 .. @+node:ekr.20101113063552.9505: *4* groupOperations.py
 Adds Group commands functionality.
 
-Restrictions currently apply to using Leo with a Tk frontend. There are several
+Restrictions currently apply to using Leo with a Tk front end. There are several
 commands in this plugin:
 
 -   Mark Node: marks a node for further operations such as copying, cloning and moving.
@@ -3410,7 +3405,7 @@ Stores Leo trees in database files.
 
 This should help people develop templates that they want to reuse between Leo
 projects. For example, Id like a template of many Java interfaces to be easily
-accessable.
+accessible.
 
 This plugin creates three menu items in the Plugins:Library menu:
 
@@ -3514,7 +3509,7 @@ Allows the use of template nodes for common tasks
 Template nodes can be create for any node. The template can then
 be inserted at the click of a button. This is a bit like a permanent
 clipboard except that templates can have items in them which can 
-be overriden. Nodes can contain any number of child nodes.
+be overridden. Nodes can contain any number of child nodes.
 
 For instance you might want to have a template for a unit test method.
 The unit test method template includes a name and description. When
@@ -3532,7 +3527,7 @@ existing names,
     name = the name entered into the entry box in the toolbar
     node = the leo Vnode that was selected when the *New* button was pressed
 
-You can use this in many way, eg to create a custom file from a template::
+You can use this in many way, e.g., to create a custom file from a template::
 
     @thin $$name$$.py   <- in the headline text
 
@@ -3599,7 +3594,7 @@ for 5:00 PM. I would do so by using the value 17:00.
 
 The Schedule Message is simple. There is a Text box to enter the message and a
 Entry to place the time. View Queue will summon a view of The Queue. This dialog
-will show the commands that have been enqued. There is also the option to Cancel
+will show the commands that have been enqueued. There is also the option to Cancel
 out any scheduled commands/messages.
 
 .. @+node:ekr.20101113063552.9518: *4* searchbar.py
@@ -3611,7 +3606,7 @@ Adds a quick search to Leo's toolbar.
 A search box which behaves like a web site search is added, along with
 a "GO" button to do quick searches right from the main Leo window. All the
 current search options are retained except that "search body text" is
-explicitely set - mainly because this is by far the most common use case.
+explicitly set - mainly because this is by far the most common use case.
 
 Pressing <CR> while editing the text automatically does a search. Repeated
 searches can be done by clicking the "GO" button.
@@ -3710,7 +3705,7 @@ out of possibly many nodes.
 
 This plugin creates two buttons in Leo's icon area:
 
-- The '%s' button marks or unmarks a node as a template. A %s symbol will apear to
+- The '%s' button marks or unmarks a node as a template. A %s symbol will appear to
   the left of the node when it is marked as a template.
 
 - The '----> %s' button brings up a dialog that shows you the template text and
@@ -3746,13 +3741,13 @@ If the toolbar.py plugin is enabled then a comment block can be added at the top
 of the body of the @button node. (If toolbar.py is not enabled then these
 comment blocks will of course simply be ignored.)
 
-The header will also be honoured if script-button is used to convert a node
+The header will also be honored if script-button is used to convert a node
 to a button.
 
 Within this block you may include lines starting with @btn to set extra
 parameters for the button created.
 
-eg 1::
+Example 1::
 
     @
     @btn fg = yellow
@@ -3764,7 +3759,7 @@ The created button would have yellow text on a red background and when the right
 mouse button is clicked on it a popup menu will appear (if rClick.py is
 enabled).
 
-eg 2::
+Example 2::
 
     @
     @btn icon = Tango/16x16/actions/add.png
@@ -3785,7 +3780,7 @@ blank lines.
 **Toolbars** 
 
 A toolbar is a collection of iconbars. At the moment only one toolbar is
-availiable and it appears in the place where the leo's traditional iconbar appears.
+available and it appears in the place where the leo's traditional iconbar appears.
 
 Future plans include allowing toolbars to be placed anywhere, including in dialogs,
 orientated vertically as well as horizontally. It will then be possible to drag and
@@ -3918,7 +3913,7 @@ The iconbars also have the following public properties.
 **Compound iconBar widgets and drag handles**
 
 Compound widgets can be constructed using a Tkinter.Frame widget and packing
-buttons (obtained eg from c.frame.getButton) and other components into it,
+buttons (obtained, for example, from c.frame.getButton) and other components into it,
 finally packing the frame into the iconBar using c.frame.addIconWidget or
 bar.addWidget.
 
@@ -3946,7 +3941,7 @@ this may actually be superior to wheel scrolling, in that there is little work
 a user has to do to scroll except to press a button.
 
 We use a Thread and 4 Tkinter Events to enable this. Threading was
-necessary to deserialise Button Press and Button Release. Without a Thread
+necessary to de-serialize Button Press and Button Release. Without a Thread
 there apparently was no way to split the two apart. Exterior processes were
 not considered as serious pieces of the mechanism, threading kept things
 simple.
