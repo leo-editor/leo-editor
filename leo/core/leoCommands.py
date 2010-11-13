@@ -2011,7 +2011,12 @@ class baseCommands (object):
                     c.inCommand = False
                     if writeScriptFile:
                         scriptFile = self.writeScriptFile(script)
-                    exec(script,d)
+                        if g.isPython3:
+                            exec(compile(script,scriptFile,'exec'),d)
+                        else:
+                            execfile(scriptFile,d)
+                    else:
+                        exec(script,d)
                     if 0: # This message switches panes, and can be disruptive.
                         if not script1 and not silent:
                             # Careful: the script may have changed the log tab.
@@ -2050,6 +2055,7 @@ class baseCommands (object):
     #@+node:ekr.20070115135502: *7* writeScriptFile (changed)
     def writeScriptFile (self,script):
 
+        trace = False and not g.unitTesting
         # Get the path to the file.
         c = self
         path = c.config.getString('script_file_path')
@@ -2066,7 +2072,9 @@ class baseCommands (object):
             path = c.os_path_finalize_join(*allParts)
         else:
             path = c.os_path_finalize_join(
-                g.app.homeLeoDir,'scriptFile.py')                    
+                g.app.homeLeoDir,'scriptFile.py')
+
+        if trace: g.trace(path)                
 
         # Write the file.
         try:
