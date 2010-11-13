@@ -61,13 +61,13 @@ The version of PyQt that you download must match your installed Python version.
 Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run
 the binary PyQt installer.
 
-Special care may be needed to install PyQt on MacOs. See `Installing Leo on
-MacOs X`_ below.
+Special care may be needed to install PyQt on MacOS. See `Installing Leo on
+MacOS X`_ below.
 .. @+node:ekr.20100817101952.4303: *3* Installing Leo itself
 .. @+node:ekr.20100817101952.4306: *4* Installing Leo with bzr
 .. @+node:ekr.20100731112744.7280: *5* Tracking the development version
 Many users will want to track the development version of Leo, in order to stay
-on top of the latest features and bugfixes. Running the development version is
+on top of the latest features and bug fixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 

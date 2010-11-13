@@ -92,7 +92,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 However, if at all possible, it is better to use bzr to get the latest sources.  See the next entry.
 .. @+node:ekr.20080603124653.1: *4* How do I use bzr to get the latest sources from Leo's launchpad site?
 Many users will want to track the development version of Leo, in order to stay
-on top of the latest features and bugfixes. Running the development version is
+on top of the latest features and bug fixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
@@ -456,7 +456,7 @@ indented when it is written to the external file. It happens when an
 \@others directive or a section name appears indented in a higher-level
 node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
-relative to the external file, not to the curent node. The relation
+relative to the external file, not to the current node. The relation
 **fcol >= col** is always true.
 .. @+node:ekr.20050830115714.26: *3* Customizing Leo
 .. @+node:ekr.20050830115714.29: *4* How can I add support for a new language?
@@ -662,7 +662,7 @@ but the first editor will stay focused on the main node_. It's a lot easier to
 do than to describe!
 .. @+node:ekr.20050830115714.120: *4* How can I display graphics in Leo?
 One way is to link directly to the media file from a Leo node_ (with @url)
-and write a scriptbutton to wrap all URL-nodes under the current node_ in a
+and write a script button to wrap all URL-nodes under the current node_ in a
 single HTML page (using the HTML browser trick at
 http://sourceforge.net/forum/forum.php?thread_id=1201579&forum_id=10226).
 
@@ -792,7 +792,7 @@ When reporting a bug, please include *all* of the following:
 
 - The version of Python used.
 
-- The platform or platforms used: Linux, Windows, MacOs.
+- The platform or platforms used: Linux, Windows, MacOS.
 
 - A clear description of the problem.
 
