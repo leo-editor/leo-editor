@@ -2,7 +2,7 @@
 #@+node:ekr.20050329082101.115: * @file autotrees.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.116: ** << docstring >>
-"""The AutoTrees plugin is a helper plugin designed to make it very easy to write
+""" A helper plugin designed to make it easy to write
 "hanlder" plugins to manage dynamic content in Leo outlines. AutoTrees provides:
 
 - Convenient handler base classes which can be specialized for particular uses.

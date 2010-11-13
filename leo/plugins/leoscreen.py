@@ -2,7 +2,7 @@
 #@+node:tbrown.20100226095909.12777: * @file leoscreen.py
 #@+<< docstring >>
 #@+node:tbrown.20100226095909.12778: ** << docstring >>
-''' Allows interaction with shell apps. via screen
+''' Allows interaction with shell apps via screen.
 
 Analysis environments like SQL, R, scipy, ipython, etc. can be
 used by pasting sections of text from an editor (Leo) and a

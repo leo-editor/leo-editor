@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060513122450: * @file xcc_nodes.py
 
-"""Integrate C/C++ compiler and debugger in a node."""
+"""Integrates C/C++ compiler and debugger in a node."""
 
 #@+<< About this plugin >>
 #@+middle:ekr.20060513153648: ** Documentation

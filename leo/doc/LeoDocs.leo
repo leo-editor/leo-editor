@@ -139,10 +139,9 @@
 <v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
+<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
-<v t="ekr.20101028110015.8272" a="E"
-expanded="ekr.20101025080245.5540,ekr.20101025080245.5523,"><vh>@file doc-to-do.txt</vh></v>
+<v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
@@ -290,13 +289,156 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
 <v t="ekr.20101111175617.56915"><vh>class controller</vh>
-<v t="ekr.20101112045055.13356"><vh>allow</vh></v>
+<v t="ekr.20101112045055.13356"><vh>allowDir &amp; allowFile</vh></v>
 <v t="ekr.20101112045055.13355"><vh>createDocs</vh></v>
 <v t="ekr.20101112045055.13354"><vh>createSummary</vh></v>
 <v t="ekr.20101111175617.14683"><vh>getDocString</vh></v>
 <v t="ekr.20101112045055.13357"><vh>getFirstParagraph</vh></v>
 <v t="ekr.20101111175617.24328"><vh>openPlugins</vh></v>
 <v t="ekr.20101111175617.5787"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20101112211748.19854"><vh>get-docstrings-output</vh>
+<v t="ekr.20101112211748.19855"><vh>Summary</vh></v>
+<v t="ekr.20101112211748.19856"><vh> Qt only plugins</vh>
+<v t="ekr.20101112211748.19857"><vh>attrib_edit.py</vh></v>
+<v t="ekr.20101112211748.19858"><vh>colorize_headlines.py</vh></v>
+<v t="ekr.20101112211748.19859"><vh>contextmenu.py</vh></v>
+<v t="ekr.20101112211748.19869"><vh>graphcanvas.py</vh></v>
+<v t="ekr.20101112211748.19860"><vh>nav_qt.py</vh></v>
+<v t="ekr.20101112211748.19861"><vh>projectwizard.py</vh></v>
+<v t="ekr.20101112211748.19862"><vh>quicksearch.py</vh></v>
+<v t="ekr.20101112211748.19863"><vh>scrolledmessage.py</vh></v>
+<v t="ekr.20101112211748.19864"><vh>spydershell.py</vh></v>
+<v t="ekr.20101112211748.19865"><vh>stickynotes.py</vh></v>
+<v t="ekr.20101112211748.19866"><vh>stickynotes_plus.py</vh></v>
+<v t="ekr.20101112211748.19867"><vh>todo.py</vh></v>
+<v t="ekr.20101112211748.19868"><vh>viewrendered.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19870"><vh>Commands &amp; directives</vh>
+<v t="ekr.20101112211748.19871"><vh>add_directives.py</vh></v>
+<v t="ekr.20101112211748.19872"><vh>bzr_qcommands.py</vh></v>
+<v t="ekr.20101112211748.19873"><vh>empty_leo_file.py</vh></v>
+<v t="ekr.20101112211748.19874"><vh>import_cisco_config.py</vh></v>
+<v t="ekr.20101112211748.19875"><vh>initinclass.py</vh></v>
+<v t="ekr.20101112211748.19876"><vh>leo_interface.py</vh></v>
+<v t="ekr.20101112211748.19877"><vh>lineNumbers.py</vh></v>
+<v t="ekr.20101112211748.19878"><vh>macros.py</vh></v>
+<v t="ekr.20101112211748.19879"><vh>mod_autosave.py</vh></v>
+<v t="ekr.20101112211748.19880"><vh>mod_read_dir_outline.py</vh></v>
+<v t="ekr.20101112211748.19881"><vh>mod_timestamp.py</vh></v>
+<v t="ekr.20101112211748.19882"><vh>nodeActions.py</vh></v>
+<v t="ekr.20101112211748.19883"><vh>outline_export.py</vh></v>
+<v t="ekr.20101112211748.19884"><vh>paste_as_headlines.py</vh></v>
+<v t="ekr.20101112211748.19885"><vh>pretty_print.py</vh></v>
+<v t="ekr.20101112211748.19886"><vh>quickMove.py</vh></v>
+<v t="ekr.20101112211748.19887"><vh>setHomeDirectory.py</vh></v>
+<v t="ekr.20101112211748.19888"><vh>word_count.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19889"><vh>Debugging</vh>
+<v t="ekr.20101112211748.19890"><vh>debugger_pudb.py</vh></v>
+<v t="ekr.20101112211748.19891"><vh>dump_globals.py</vh></v>
+<v t="ekr.20101112211748.19892"><vh>enable_gc.py</vh></v>
+<v t="ekr.20101112211748.19893"><vh>quit_leo.py</vh></v>
+<v t="ekr.20101112211748.19894"><vh>trace_gc_plugin.py</vh></v>
+<v t="ekr.20101112211748.19895"><vh>trace_keys.py</vh></v>
+<v t="ekr.20101112211748.19896"><vh>trace_tags.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19898"><vh>External programs &amp; Open With</vh>
+<v t="ekr.20101112211748.19899"><vh>ipython.py</vh></v>
+<v t="ekr.20101112211748.19900"><vh>mod_tempfname.py</vh></v>
+<v t="ekr.20101112211748.19901"><vh>open_shell.py</vh></v>
+<v t="ekr.20101112211748.19902"><vh>tomboy_import.py</vh></v>
+<v t="ekr.20101112211748.19903"><vh>vim.py</vh></v>
+<v t="ekr.20101112211748.19904"><vh>xemacs.py</vh></v>
+<v t="ekr.20101112211748.19905"><vh>word_export.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19906"><vh>Files and nodes</vh>
+<v t="ekr.20101112211748.19907"><vh>active_path.py</vh></v>
+<v t="ekr.20101112211748.19908"><vh>at_folder.py</vh></v>
+<v t="ekr.20101112211748.19909"><vh>at_produce.py</vh></v>
+<v t="ekr.20101112211748.19910"><vh>at_view.py</vh></v>
+<v t="ekr.20101112211748.19911"><vh>backlink.py</vh></v>
+<v t="ekr.20101112211748.19912"><vh>datenodes.py</vh></v>
+<v t="ekr.20101112211748.19913"><vh>expfolder.py</vh></v>
+<v t="ekr.20101112211748.19914"><vh>FileActions.py</vh></v>
+<v t="ekr.20101112211748.19915"><vh>geotag.py</vh></v>
+<v t="ekr.20101112211748.19916"><vh>leocursor.py</vh></v>
+<v t="ekr.20101112211748.19917"><vh>mime.py</vh></v>
+<v t="ekr.20101112211748.19918"><vh>multifile.py</vh></v>
+<v t="ekr.20101112211748.19919"><vh>niceNosent.py</vh></v>
+<v t="ekr.20101112211748.19920"><vh>read_only_nodes.py</vh></v>
+<v t="ekr.20101112211748.19921"><vh>run_nodes.py</vh></v>
+<v t="ekr.20101112211748.19922"><vh>slideshow.py</vh></v>
+<v t="ekr.20101112211748.19923"><vh>startfile.py</vh></v>
+<v t="ekr.20101112211748.19924"><vh>textnode.py</vh></v>
+<v t="ekr.20101112211748.19925"><vh>xsltWithNodes.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19926"><vh>Scripting</vh>
+<v t="ekr.20101112211748.19927"><vh>leoscreen.py</vh></v>
+<v t="ekr.20101112211748.19928"><vh>mod_scripting.py</vh></v>
+<v t="ekr.20101112211748.19929"><vh>script_io_to_body.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19930"><vh>Servers</vh>
+<v t="ekr.20101112211748.19931"><vh>leoremote.py</vh></v>
+<v t="ekr.20101112211748.19932"><vh>mod_http.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19933"><vh>Slideshows and screenshots</vh>
+<v t="ekr.20101112211748.19934"><vh>screenshots.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19935"><vh>Text formatting</vh>
+<v t="ekr.20101112211748.19936"><vh>bibtex.py</vh></v>
+<v t="ekr.20101112211748.19937"><vh>dtest.py</vh></v>
+<v t="ekr.20101112211748.19938"><vh>leo_to_html.py</vh></v>
+<v t="ekr.20101112211748.19939"><vh>leo_to_rtf.py</vh></v>
+<v t="ekr.20101112211748.19940"><vh>leo_pdf.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19941"><vh>User interface</vh>
+<v t="ekr.20101112211748.19942"><vh>UNL.py</vh></v>
+<v t="ekr.20101112211748.19943"><vh>chapter_hoist.py</vh></v>
+<v t="ekr.20101112211748.19944"><vh>detect_urls.py</vh></v>
+<v t="ekr.20101112211748.19945"><vh>EditAttributes.py</vh></v>
+<v t="ekr.20101112211748.19946"><vh>interact.py</vh></v>
+<v t="ekr.20101112211748.19947"><vh>maximizeNewWindows.py</vh></v>
+<v t="ekr.20101112211748.19948"><vh>mod_framesize.py</vh></v>
+<v t="ekr.20101112211748.19949"><vh>plugins_menu.py</vh></v>
+<v t="ekr.20101112211748.19950"><vh>redirect_to_log.py</vh></v>
+<v t="ekr.20101112211748.19951"><vh>scripts_menu.py</vh></v>
+<v t="ekr.20101112211748.19952"><vh>zenity_file_dialogs.py</vh></v>
+</v>
+<v t="ekr.20101112211748.19953"><vh>zz Tk only plugins</vh>
+<v t="ekr.20101112211748.19958"><vh>base64Packager.py</vh></v>
+<v t="ekr.20101112211748.19959"><vh>cleo.py</vh></v>
+<v t="ekr.20101112211748.19960"><vh>color_markup.py</vh></v>
+<v t="ekr.20101112211748.19961"><vh>ConceptualSort.py</vh></v>
+<v t="ekr.20101112211748.19962"><vh>fastGotoNode.py</vh></v>
+<v t="ekr.20101112211748.19954"><vh>footprints.py</vh></v>
+<v t="ekr.20101112211748.19963"><vh>graphed.py</vh></v>
+<v t="ekr.20101112211748.19964"><vh>groupOperations.py</vh></v>
+<v t="ekr.20101112211748.19965"><vh>hoist.py</vh></v>
+<v t="ekr.20101112211748.19966"><vh>image.py</vh></v>
+<v t="ekr.20101112211748.19967"><vh>Library.py</vh></v>
+<v t="ekr.20101112211748.19968"><vh>mod_labels.py</vh></v>
+<v t="ekr.20101112211748.19969"><vh>nav_buttons.py</vh></v>
+<v t="ekr.20101112211748.19970"><vh>newButtons.py</vh></v>
+<v t="ekr.20101112211748.19971"><vh>nodebar.py</vh></v>
+<v t="ekr.20101112211748.19972"><vh>nodenavigator.py</vh></v>
+<v t="ekr.20101112211748.19973"><vh>open_with.py</vh></v>
+<v t="ekr.20101112211748.19974"><vh>pie_menus.py</vh></v>
+<v t="ekr.20101112211748.19955"><vh>rClick.py</vh></v>
+<v t="ekr.20101112211748.19956"><vh>rClickBasePluginClasses.py</vh></v>
+<v t="ekr.20101112211748.19975"><vh>rowcol.py</vh></v>
+<v t="ekr.20101112211748.19976"><vh>scheduler.py</vh></v>
+<v t="ekr.20101112211748.19977"><vh>searchbar.py</vh></v>
+<v t="ekr.20101112211748.19978"><vh>searchbox.py</vh></v>
+<v t="ekr.20101112211748.19979"><vh>shortcut_button.py</vh></v>
+<v t="ekr.20101112211748.19980"><vh>table.py</vh></v>
+<v t="ekr.20101112211748.19981"><vh>templates.py</vh></v>
+<v t="ekr.20101112211748.19982"><vh>toolbar.py</vh></v>
+<v t="ekr.20101112211748.19983"><vh>UASearch.py</vh></v>
+<v t="ekr.20101112211748.19984"><vh>UniversalScrolling.py</vh></v>
+<v t="ekr.20101112211748.19985"><vh>URLloader.py</vh></v>
+<v t="ekr.20101112211748.19957"><vh>xcc_nodes.py</vh></v>
 </v>
 </v>
 <v t="ekr.20101111175617.98925"><vh>@@button flatten script</vh></v>
@@ -1883,13 +2025,17 @@ Clones:
 
     '''Return the docstring of the @&lt;file&gt; node p.'''
 
+    trace = False # p.h.find('@file rClick.py') &gt; -1
+    if trace: g.trace('='*20)
     for p2 in p.self_and_subtree():
         s = p2.b
+        if trace: g.trace(p2.h)
         for tag in ("'''",'"""'):
             i = s.find(tag)
             if i &gt; -1:
                 j = s.find(tag,i+3)
                 if j &gt; -1:
+                    if trace: g.trace('**found**',p2.h,'\n',s)
                     return s[i+3:j]
     else:
         return ''
@@ -1909,7 +2055,11 @@ Clones:
         g.error('can not open leoPlugins.leo')
         return None
 </t>
-<t tx="ekr.20101111175617.5037">@others
+<t tx="ekr.20101111175617.5037">'''Creates an outline containing most docstrings from leoPlugins.leo.
+
+Documentation for some docstings are suppressed.'''
+
+@others
 
 controller(c).run()</t>
 <t tx="ekr.20101111175617.56915">class controller:
@@ -1964,9 +2114,9 @@ c.redraw()
     result = []
 
     for p in root.children():
-        if self.allow(p):
+        if self.allowDir(p):
             for p2 in p.subtree():
-                if p2.isAnyAtFileNode() and p2.h.endswith('.py'):
+                if self.allowFile(p2):
                     h = p2.anyAtFileNodeName()
                     s = self.getDocString(p2)
                     s = self.getFirstParagraph(s).rstrip()
@@ -1982,29 +2132,52 @@ c.redraw()
 <t tx="ekr.20101112045055.13355">def createDocs (self,output,root):
 
      for p in root.children():
-        if self.allow(p):
+        if self.allowDir(p):
             if self.trace: print('\n**',p.h)
             child = output.insertAsLastChild()
             child.h = p.h
             for p2 in p.subtree():
-                if p2.isAnyAtFileNode() and p2.h.endswith('.py'):
+                if self.allowFile(p2):
                     h = p2.anyAtFileNodeName()
                     s = self.getDocString(p2)
                     if self.trace: print('%5s %s' % (len(s),h))
                     child2 = child.insertAsLastChild()
                     child2.h = h
                     child2.b = "%s\n\n" % s.strip()
-
 </t>
-<t tx="ekr.20101112045055.13356">def allow (self,p):
+<t tx="ekr.20101112045055.13356">def allowDir (self,p):
 
     '''Return True if we should allow scan of headline s.'''
 
     aList = (
-        'Examples','Experimental','Gui plugins','Testing',
+        # Suppressed directories.
+        'Examples','Experimental',
+        'Dyna plugins by e',
+        'Gui plugins','Testing',
     )
 
     return p.h not in aList and not p.h.startswith('  ')
+
+def allowFile (self,p):
+
+    aList = (
+        # Suppresssed files.
+        '@file bookmarks.py',   # Replaced by better @url.
+        '@file rst3.py',        # Replaced by core rst3 command.
+        '@file testnode.py',    # Replaced by @edit.
+        # These all depend on old plugins_manager.py.
+        '@file autotrees.py', 
+        '@file old_plugin_manager.py',
+        '@file leoupdate.py', # Depends on old plugins_manager.py.
+        # These are used only by autotrees.py.
+        r'@file trees\doc.py',
+        r'@file trees\news.py',
+        r'@file trees\remote.py',
+        r'@file trees\rss.py',
+        r'@file trees\test.py',
+    )
+
+    return p.h not in aList and p.isAnyAtFileNode() and p.h.endswith('.py')
 </t>
 <t tx="ekr.20101112045055.13357">def getFirstParagraph (self,s):
 
@@ -2021,6 +2194,4011 @@ c.redraw()
     return ''.join(result)
 </t>
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
+<t tx="ekr.20101112211748.19854">@language rest
+</t>
+<t tx="ekr.20101112211748.19855">active_path.py
+   Synchronizes @path nodes with folders.
+
+add_directives.py
+   Allows users to define new @direcives.
+
+at_folder.py
+   Synchronizes @folder nodes with folders.
+
+at_produce.py
+   Executes commands in nodes whose body text starts with @produce.
+
+at_view.py
+   Adds support for \@clip, \@view and \@strip nodes.
+
+attrib_edit.py
+   Edits user attributes in a Qt frame.
+
+backlink.py
+   Allows arbitrary links between nodes.
+
+base64Packager.py
+   Allows the user to import binary data and store it in Leo as a
+   base64 string.
+
+bibtex.py
+   Manages BibTeX files with Leo.
+
+bzr_qcommands.py
+   Adds a context menu to each node containing all the commands in the bzr Qt
+   interface. Bzr is invoked based on the path of the current node.
+
+chapter_hoist.py
+   Creates hoist buttons.
+
+cleo.py
+   Creates coloured LEo Outlines.
+
+color_markup.py
+   Handles coloring for markup in doc parts and Python triple-double-quoted strings.
+
+colorize_headlines.py
+   Manipulates appearance of individual tree widget items.
+
+ConceptualSort.py
+   Enhances the EditAttributes.py plugin.
+
+contextmenu.py
+   Defines various useful actions for context menus (Qt only).
+
+datenodes.py
+   Allows users to insert headlines containing dates.
+
+debugger_pudb.py
+   Makes g.pdb() enter the Pudb debugger instead of pdb.
+
+detect_urls.py
+   Colorizes URLs everywhere in node's body on node selection or saving. Double
+   click on any URL launches it in default browser.
+
+dtest.py
+   Sends code to the doctest module and reports the result.
+
+dump_globals.py
+   Dumps Python globals at startup.
+
+EditAttributes.py
+   Lets the user to associate text with a specific node.
+
+empty_leo_file.py
+   Allows Leo to open any empty file as a minimal .leo file.
+
+enable_gc.py
+   Enables debugging and tracing for Python's garbage collector.
+
+expfolder.py
+   Adds @expfolder nodes that represent folders in the filesystem.
+
+fastGotoNode.py
+   Adds the fast-goto-node minibuffer command that creates a
+   popup menu.
+
+FileActions.py
+   Defines actions taken when double-clicking on @&lt;file&gt; nodes and supports
+   @file-ref nodes.
+
+footprints.py
+   Leave footprints! This colours the Leo nodes so that the ones you
+   have visited most and most recently will stand out.
+
+geotag.py
+   Tags nodes with latitude and longitude.
+
+graphcanvas.py
+   Adds a graph layout for nodes in a tab.
+   Requires Qt and the backlink.py plugin.
+
+graphed.py
+   Edits graphs visually.
+
+groupOperations.py
+   Adds Group commands functionality.
+
+hoist.py
+   Adds Hoist/De-Hoist buttons to the toolbar.
+
+image.py
+   Handles @image nodes.
+
+import_cisco_config.py
+   Allows the user to import Cisco configuration files.
+
+initinclass.py
+   Modifies the Python @auto importer so that the importer
+   puts the __init__ method (ctor) into the body of the class node.
+
+interact.py
+   Adds buttons so Leo can interact with command line environments.
+
+ipython.py
+   Creates a two-way communication (bridge) between Leo
+   scripts and IPython running in the console from which Leo was launched.
+
+leo_interface.py
+   Allows the user to browse XML documents in Leo.
+
+leo_pdf.py
+   This NOT a Leo plugin: this is a docutils writer for .pdf files.
+
+leo_to_html.py
+   Converts a leo outline to an html web page.**.
+
+leo_to_rtf.py
+   Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
+   loaded into Microsoft Word and formatted as a proper outline.
+
+leocursor.py
+   Creates a LeoCursor object that can walk around a Leo outline and decode
+   attributes from nodes.
+
+leoremote.py
+   Remote control for Leo.
+
+leoscreen.py
+   Allows interaction with shell apps via screen.
+
+Library.py
+   Stores Leo trees in database files. This should help people
+   develop templates that they want to reuse between Leo projects. For example, Id
+   like a template of many Java interfaces to be easily accessable.
+
+lineNumbers.py
+   Adds #line directives in perl and perlpod programs.
+
+macros.py
+   Creates new nodes containing parameterized section reference.
+
+maximizeNewWindows.py
+   Maximizes all new windows.
+
+mime.py
+   Opens files with their default platform program.
+
+mod_autosave.py
+   Autosaves the Leo outline every so often.
+
+mod_framesize.py
+   Sets a hardcoded frame size.
+
+mod_http.py
+   A minimal http plugin for LEO, based on AsyncHttpServer.py.
+
+mod_labels.py
+   Associates information with nodes. This information is organized around
+   "labels", which is are just strings and freely chosen by the user.
+
+mod_read_dir_outline.py
+   Allows Leo to read a complete directory tree into a Leo outline. Converts
+   directories into headlines and puts the list of file names into bodies.
+
+mod_scripting.py
+   Creates script buttons and @button, @command, @plugin and @script
+   nodes.
+
+mod_tempfname.py
+   Replaces c.openWithTempFilePath to create alternate temporary
+   directory paths.
+
+mod_timestamp.py
+   Timestamps all save operations to show when they occur.
+
+multifile.py
+   Allows Leo to write a file to multiple locations.
+
+nav_buttons.py
+   Adds navigation buttons to icon bar.
+
+nav_qt.py
+   Adds "Back" and "Forward" buttons (Qt only).
+
+newButtons.py
+   Allows the use of template nodes for common tasks.
+
+niceNosent.py
+   Ensures that all descendants of @file-nosent nodes end
+   with exactly one newline, replaces all tabs with spaces, and
+   adds a newline before class and functions in the derived file.
+
+nodeActions.py
+   Allows the definition of double-click actions.
+
+nodebar.py
+   Adds buttons at the bottom of the tree canvas.
+
+nodenavigator.py
+   Adds "Recent" and "Marks" pulldown buttons to the toolbar.
+
+open_shell.py
+   Creates an 'Extensions' menu containing two commands:
+   Open Console Window and Open Explorer.
+
+open_with.py
+   Creates the Open With menu and handles the resulting commands.
+
+outline_export.py
+   Modifies the way exported outlines are written.
+
+paste_as_headlines.py
+   Creates new headlines from clipboard text.
+
+pie_menus.py
+   Adds pie menus: http://www.piemenus.com/.
+
+plugins_menu.py
+   Creates a Plugins menu and adds all actives plugins to it.
+
+pretty_print.py
+   Customizes pretty printing.
+
+projectwizard.py
+   Creates a wizard that creates @auto nodes.
+
+quickMove.py
+   Creates buttons to move nodes quickly to other nodes.
+
+quicksearch.py
+   Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+
+quit_leo.py
+   Shows how to force Leo to quit.
+
+rClick.py
+   Manages scriptable context menus invoked by right-clicking nodes.
+
+rClickBasePluginClasses.py
+   Provides base classes for plugins.
+
+read_only_nodes.py
+   Creates and updates @read-only nodes.
+
+redirect_to_log.py
+   Sends all output to the log pane.
+
+rowcol.py
+   Adds row/column indicators to the toolbar.
+
+run_nodes.py
+   Runs a program and interface Leos through its input/output/error streams.
+
+scheduler.py
+   Schedules commands for later execution.
+
+screenshots.py
+   Creates stand-alone slideshows containing screenshots.
+
+script_io_to_body.py
+   Sends output from the Execute Script command to the end of the body pane.
+
+scripts_menu.py
+   Creates a Scripts menu for LeoPy.leo.
+
+scrolledmessage.py
+   Provides a Scrolled Message Dialog service for Qt.
+
+searchbar.py
+   Emulates the 'Find' panel in an iconBar.
+
+searchbox.py
+   Adds a quick search to Leo's toolbar.
+
+setHomeDirectory.py
+   Sets g.app.homeDir to a hard-coded path.
+
+shortcut_button.py
+   Creates a 'shortcut' button in the icon area.
+
+slideshow.py
+   Support slideshows in Leo outlines.
+
+spydershell.py
+   Launches the spyder environment with access to Leo instance.
+   See http://packages.python.org/spyder/.
+
+startfile.py
+   Launches (starts) a file given by a headline when double-clicking the icon.
+
+stickynotes.py
+   Adds simple "sticky notes" feature (popout editors) for Qt gui.
+
+stickynotes_plus.py
+   Adds simple "sticky notes" feature (popout editors) for Qt gui.
+
+table.py
+   Creates a View Table command in the Outline menu.
+
+templates.py
+   Adds customizable templates to an outline.
+
+textnode.py
+   Supports @text nodes for reading and writing external files.
+
+todo.py
+   Provides to-do list and simple task management for leo (Qt only).
+
+tomboy_import.py
+   Allows imports of notes created in Tomboy / gnote.
+
+toolbar.py
+   Enhances Leo's iconBar and script buttons.
+
+trace_gc_plugin.py
+   Traces changes to Leo's objects at idle time.
+
+trace_keys.py
+   Traces keystrokes in the outline and body panes.
+
+trace_tags.py
+   Traces most common hooks, but not key, drag or idle hooks.
+
+UASearch.py
+   Searches for unknownAttributes (uA's).
+
+UniversalScrolling.py
+   Enables the user to scroll with mouse clicks.
+
+UNL.py
+   Supports Uniform Node Locators (UNL's) for linking to nodes in any Leo file.
+
+URLloader.py
+   Uses Python's urllib module to download files and import them into Leo.
+
+viewrendered.py
+   Creates a window for *live* rendering of rst, html, etc.  Qt only.
+
+vim.py
+   Enables two-way communication with VIM.
+
+word_count.py
+   Counts characters, words, lines, and paragraphs in the body pane.
+
+word_export.py
+   Adds the Plugins\:Word Export\:Export menu item to format and export
+   the selected outline to a Word document, starting Word if necessary.
+
+xcc_nodes.py
+   Integrates C/C++ compiler and debugger in a node.
+
+xemacs.py
+   Allows you to edit nodes in emacs/xemacs.
+
+xsltWithNodes.py
+   Adds the Outline:XSLT menu containing XSLT-related commands.
+
+zenity_file_dialogs.py
+   Replaces the tk file dialogs on linux with external
+   calls to the zenity gtk dialog package.
+</t>
+<t tx="ekr.20101112211748.19856"></t>
+<t tx="ekr.20101112211748.19857">Edits user attributes in a Qt frame.
+
+This plugin creates a frame for editing attributes similar to::
+
+    Name:   Fred Blogs
+    Home:   555-555-5555
+    Work:   555-555-5556
+
+``attrib_edit`` is also intended to provide attribute editing for
+other plugins, see below.
+
+The attributes can be stored in different ways, three modes are implemented
+currently:
+
+"v.u mode"
+  These attributes are stored in the "unknownAttributes" (uA) data for
+  each node, accessed via ``v.u``.
+"Field:"
+  Attributes are lines starting (no whitespace) with "AttributeName:" in
+  the body text.
+"@Child"
+  Attributes are the head strings of child nodes when the head string
+  starts with '@AttributeName' where the first letter (second character)
+  must be capitalized.
+
+The plugin defines the following commands, available either in the
+plugin's sub-menu in the Plugins menu, or as ``Alt-X attrib-edit-*``.
+
+attrib-edit-modes
+    Select which attribute setting / getting modes to use.  More than one mode
+    can be used at the same time.
+
+    You can also control which modes are active by listing them in 
+    ``@settings -&gt; @data attrib_edit_active_modes``, e.g.::
+
+        Field:
+        @Child
+        # v.u mode
+
+    would cause only the "Field:" and "@Child" modes to be active be default.
+
+attrib-edit-manage
+    Select which attributes, from all attributes seen so
+    far in this outline, to include on the current node.
+
+attrib-edit-scan
+    Scan the entire outline for attributes so ``attrib-edit-manage``
+    has the complete list.
+
+attrib-edit-create
+    Create a new attribute on the current node.  If "Field:" or "@Child" modes
+    are active, they simply remind you how to create an attribute in the log pane.
+    If the "v.u mode" mode is active, you're prompted for a path for the attribute,
+    e.g.::
+
+        "addressbook First"
+
+    to store the attribute in v.u['addressbook']['_edit']['First']
+
+    As a convenience, entering a path like::
+
+        "todo metadata created|creator|revised"
+
+    would create::
+
+        v.u.['todo']['metadata']['_edit']['created']
+        v.u.['todo']['metadata']['_edit']['creator']
+        v.u.['todo']['metadata']['_edit']['revised']
+
+
+Technical details
++++++++++++++++++
+
+See the source for complete documentation for use with other
+plugins, here are some points of interest:
+
+- in addition to ``v.u['addressbook']['_edit']['first']`` paths
+  like ``v.u['addressbook']['_edit']['_int']['age']`` may be used
+  to identify type, although currently there's no difference in
+  the edit widget.
+
+- in future the plugin may allow other plugins to register
+  to provide attribute path information, instead of just
+  scanning for ['_edit'] entries in v.u.
+
+- currently there's no sorting of the attributes in "v.u mode", which is
+  a problem for some applications.  It's unclear where the
+  desired order would be stored, without even more repetition
+  in v.u.  When other plugins can register to manipulate the
+  attribute list each plugin could address this, with unordered
+  presentation in the absence of the client plugin.
+
+- There's code to have the editor appear in a tab instead
+  of its own area under the body editor, but (a) this is
+  always being buried by output in the log window, and
+  (b) there's a bug which leaves some (harmless) ghost 
+  widgets in the background.  Enable by @setting
+  ``attrib_edit_placement`` to 'tab'.
+
+</t>
+<t tx="ekr.20101112211748.19858">Manipulates appearance of individual tree widget items
+
+This plugin is mostly an example of how to change appearance of headlines - as
+such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
+nodes in bold.
+
+</t>
+<t tx="ekr.20101112211748.19859">Defines various useful actions for context menus (Qt only).
+
+Examples are:
+
+- Edit in $EDITOR
+- Edit @thin node in $EDITOR (remember to do "refresh" after this!)
+- Refresh @thin node from disk (e.g. after editing it in external editor)
+- Go to clone
+
+Here's an example on how to implement your own context menu items 
+in your plugins::
+
+    def nextclone_rclick(c,p, menu):
+        """ Go to next clone """
+
+        # only show the item if you are on a clone
+        # this is what makes this "context sensitive"
+        if not p.isCloned():
+            return    
+
+        def nextclone_rclick_cb():
+            c.goToNextClone()
+
+        # 'menu' is a QMenu instance that was created by Leo 
+        # in response to right click on tree item
+
+        action = menu.addAction("Go to clone")
+        action.connect(action, QtCore.SIGNAL("triggered()"), nextclone_rclick_cb)
+
+And call this in your plugin *once*::
+
+    g.tree_popup_handlers.append(nextclone_rclick)
+
+</t>
+<t tx="ekr.20101112211748.19860">Adds "Back" and "Forward" buttons (Qt only).
+
+Creates "back" and "forward" buttons on button bar. These navigate
+the node history.
+
+This plugin does not need specific setup. If the plugin is loaded, the buttons 
+will be available. The buttons use the icon specified in the active Qt style
+
+</t>
+<t tx="ekr.20101112211748.19861">Creates a wizard that creates @auto nodes.
+
+Open a file dialog and recursively creates @auto &amp; @path nodes from the path
+where selected file is (the selected file itself doesn't matter)
+
+</t>
+<t tx="ekr.20101112211748.19862">Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+
+Just load the plugin, activate "Nav" tab, enter search text and press enter.
+
+The pattern to search for is, by default, a case *insensitive* fnmatch pattern
+(e.g. foo*bar), because they are typically easier to type than regexps. If you
+want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
+
+Regexp matching is case sensitive; if you want to do a case-insensitive regular
+expression search (or any kind of case-sentive search in the first place), do it
+by searching for "r:(?i)Foo". (?i) is a standard feature of Python regural expression
+syntax, as documented in 
+
+http://docs.python.org/library/re.html#regular-expression-syntax
+
+</t>
+<t tx="ekr.20101112211748.19863">Provides a Scrolled Message Dialog service for Qt.
+
+The plugin can display messages supplied as plain text or formated as html. In
+addition the plugin can accept messages in rst format and convert them to be
+displayed as html.
+
+The displayed format can be controlled by the user via check boxes, so rst
+messages may be viewed either as text or as html. Html messages can also be
+viwed as raw text, which will be a good debug feature when creating complex
+dynamically generated html messages.
+
+The user interface is provided by a ScrolledMessage.ui file which is dynamically
+loaded each time a new dialog is loaded.
+
+The dialog is not modal and many dialogs can exist at one time. Dialogs can be
+named and output directed to a dialog with a specific name.
+
+The plugin is invoked like this::
+
+    g.doHook('scrolledMessage', c=c, msg='message', title='title',  ...etc    )
+
+or::
+
+    g.app.gui.runScrolledMessageDialog(c=c, ...etc)
+
+all parameters are optional except c.
+
+Parameters
+----------
+
+msg:
+    The text to be displayed (html, rst, plain).
+
+    If the text starts with 'rst:' it is assumed to be rst text and
+    is converted to html for display, (after the rst: prefix has been removed.
+
+    If the text starts with '&lt;' it is assumed to be html.
+
+    These auto detection features can be overridden by 'flags'.
+
+label:
+    The text to appear in a label above the display. If it is '', the label is hidden.
+
+title:
+    The title to appear on the window or dock.
+
+flags:
+    Says what kind of message eg: 'rst', 'text', 'html'. This overrides auto-detection.
+
+    Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
+    displayed as html.
+
+To Do
+-----
+
+- Add parameters to control position, size, closing, hiding etc.
+
+- Save or print files from the dialog.
+
+- Add an option to put the dialog in leo's log notebook.
+
+- Add \@settings to control default behaviour
+
+- Provide a menu of plugins that allows their docstring to be displayed.
+
+- Provide a menu of @rst nodes in the current outline, automatically track changes
+  if it is set to display any of these nodes.
+
+</t>
+<t tx="ekr.20101112211748.19864">Launches the spyder environment with access to Leo instance.
+See http://packages.python.org/spyder/
+
+Usage:
+
+Execute alt-x spyder-launch to start spyder
+
+Execute alt-x spyder-update to pass current c,p,g to spyder
+interactive session. spyder-update also shows the window
+if it was closed before.
+
+</t>
+<t tx="ekr.20101112211748.19865">Adds simple "sticky notes" feature (popout editors) for Qt gui.
+
+Adds the following (``Alt-X``) commands:
+
+``stickynote``
+  pop out current node as a sticky note
+``stickynoter``
+  pop out current node as a rich text note
+``stickynoteenc``
+  pop out current node as an encrypted note
+``stickynoteenckey``
+  enter a new en/decryption key
+``tabula``
+  add the current node to the stickynotes in the `Tabula`
+  sticky note dock window, and show the window
+``tabula-show``
+  show the`Tabula` sticky note dock window
+  (without adding the current node)
+``tabula-marked``
+  add all marked nodes to the stickynotes in the `Tabula`
+  sticky note dock window, and show the window
+
+Sticky notes are synchronized (both ways) with their parent Leo node.
+
+Encrypted mode requires the python-crypto module.
+
+The first time you open a note in encrypted mode you'll be asked for a pass phrase.  That phrase will be used for the rest of the session, you can change it with ``Alt-X`` ``stickynoteenckey``, but probably won't need to.
+
+The encrypted note is stored in base64 encoded *encrypted* text in the parent Leo node, if you forget the pass phrase there's no way to un-encrypt it again.  Also, you must not edit the text in the Leo node.
+
+When **creating an encrypted note**, you should **start with and empty node**.  If you want to encrypt text that already exists in a node, select-all cut it to empty the node, then paste it into the note.
+
+</t>
+<t tx="ekr.20101112211748.19866">Adds simple "sticky notes" feature (popout editors) for Qt gui.
+
+alt-x stickynote to pop out current node as a note.
+
+</t>
+<t tx="ekr.20101112211748.19867">Provides to-do list and simple task management for leo (Qt only)
+
+(todo is the Qt version of the Tk cleo plugin)
+
+todo adds time required, progress and priority settings for nodes.
+With the @project tag a branch can display progress and time
+required with dynamic hierachical updates.
+
+For full documentation see:
+
+  - http://leo.zwiki.org/ToDo 
+  - http://leo.zwiki.org/tododoc.html
+
+</t>
+<t tx="ekr.20101112211748.19868">Creates a window for *live* rendering of rst, html, etc.  Qt only.
+
+viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
+which opens a new window where the current body text is rendered as HTML
+(if it starts with '&lt;'), or otherwise reStructuredText.  reStructuredText
+errors and warnings may be shown.
+
+So both::
+
+    Heading
+    -------
+
+    `This` is **really** a line of text.
+
+and::
+
+    &lt;h1&gt;Heading&lt;h1&gt;
+
+    &lt;tt&gt;This&lt;/tt&gt; is &lt;b&gt;really&lt;/b&gt; a line of text.
+
+will look something like:
+
+Heading
+-------
+
+`This` is **really** a line of text.
+
+</t>
+<t tx="ekr.20101112211748.19869">Adds a graph layout for nodes in a tab.
+Requires Qt and the backlink.py plugin.
+
+</t>
+<t tx="ekr.20101112211748.19870"></t>
+<t tx="ekr.20101112211748.19871">Allows users to define new @direcives.
+
+</t>
+<t tx="ekr.20101112211748.19872">Adds a context menu to each node containing all the commands in the bzr Qt
+interface. Bzr is invoked based on the path of the current node.
+
+**Requires contextmenu.py.**
+
+</t>
+<t tx="ekr.20101112211748.19873">Allows Leo to open any empty file as a minimal .leo file.
+
+</t>
+<t tx="ekr.20101112211748.19874">Allows the user to import Cisco configuration files.
+
+Adds the "File:Import:Import Cisco Configuration" menu item. The plugin will:
+
+1)  Create a new node, under the current node, where the configuration will be
+    written. This node will typically have references to several sections (see below).
+
+2)  Create sections (child nodes) for the indented blocks present in the original
+    config file. These child nodes will have sub-nodes grouping similar blocks (e.g.
+    there will be an 'interface' child node, with as many sub-nodes as there are real
+    interfaces in the configuration file).
+
+3)  Create sections for the custom keywords specified in the customBlocks[] list in
+    importCiscoConfig(). You can modify this list to specify different keywords. DO
+    NOT put keywords that are followed by indented blocks (these are taken care of by
+    point 2 above). The negated form of the keywords (for example, if the keyword is
+    'service', the negated form is 'no service') is also included in the sections.
+
+
+4)  Not display consecutive empty comment lines (lines with only a '!').
+
+All created sections are alphabetically ordered.
+
+</t>
+<t tx="ekr.20101112211748.19875">Modifies the Python @auto importer so that the importer
+puts the __init__ method (ctor) into the body of the class node.
+
+This makes it easier to keep the instance variable docs in the class
+docstring in sync. with the ivars as manipulated by __init__, saves
+repeating explanations in both places.
+
+Note that this is done *after* the consistency checks by the @auto
+import code, so using this plugin is at your own risk.  It will change
+the order of declarations if other methods are declared before __init__.
+
+</t>
+<t tx="ekr.20101112211748.19876">Allows the user to browse XML documents in Leo.
+
+This file implements an interface to XML generation,
+so that the resulting file can be processed by leo.
+
+class file represents the whole leo file.
+class leo_node has a headline and body text.
+
+See the end of this file for a minimal example on
+how to use these classes.
+
+If you encounter the first of a set of clones, create a leo_node. If you
+encounter the same set of clones later, create a leo_clone node and refer back
+to the first element.
+
+</t>
+<t tx="ekr.20101112211748.19877">Adds #line directives in perl and perlpod programs.
+
+Over-rides two methods in leoAtFile.py to write #line directives after node
+sentinels. This allows compilers to give locations of errors in relation to the
+node name rather than the filename. Currently supports only perl and perlpod.
+
+</t>
+<t tx="ekr.20101112211748.19878">Creates new nodes containing parameterized section reference.
+
+.. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
+
+This plugin adds nodes under the currently selected tree that are to act as
+section references. To do so, go the Outline menu and select the
+'Parameterize Section Reference' command. This plugin looks for a top level node called
+'Parameterized Nodes'. If it finds a headline that matches the section reference
+it adds a node/nodes to the current tree.
+
+To see this in action, do the following:
+
+0. **Important**: in the examples below, type &lt;&lt; instead of &lt; &lt; and
+   type &gt;&gt; instead of &gt; &gt;.  Docstrings can not contain section references!
+
+1. Create a node called 'Parameterized Nodes', with a sub-node called  &lt; &lt; Meow \&gt;\&gt;.
+The body of &lt; &lt; Meow &gt; &gt; should have the text::
+
+    I mmmm sooo happy I could  &lt; &lt; 1$  &gt; &gt;.
+    But I dont know if I have all the  &lt; &lt; 2$  &gt; &gt;
+    money in the world.
+
+2. In a node called A, type::
+
+     &lt; &lt; meow( purrrrrr, zzooot )  &gt; &gt; (leave the cursor at the end of the line)
+
+3. In a node called B, type::
+
+     &lt; &lt; meow ( spit or puke, blinkin  )  &gt; &gt;
+    (leave the cursor at the end of the line)
+
+4. Leave the cursor in Node A at the designated point.
+
+5. Go to Outline and select Parameterize Section Reference.
+
+The plugin searches the outline, goes to level one and finds a Node with the Headline,
+"Parameterized Nodes". It looks for nodes under that headline with the the headline
+&lt; &lt; meow &gt; &gt;. It then creates this node structure under Node A::
+
+    &lt; &lt; meow ( purrrrrr, zzooot ) &gt; &gt;
+        &lt; &lt;2$&gt; &gt;
+        &lt; &lt;1$&gt; &gt;
+
+6. Examine the new subnodes of Node A.
+
+&lt; &lt; meow ( purrrrrr, zzooot ) &gt; &gt; contains the body text of the &lt; &lt; meow &gt; &gt; node.
+&lt; &lt; 1$ &gt; &gt; contains the word purrrrrr.
+&lt; &lt; 2$ &gt; &gt; contains the word zzooot.
+
+7. Go to Node B, and leave the cursor at the designated point.
+
+Go to Outline Menu and select Parameterize Section Reference command.
+
+8. Examine the new subnodes of Node B.
+
+It's a lot easier to use than to explain!
+
+</t>
+<t tx="ekr.20101112211748.19879">Autosaves the Leo outline every so often.
+
+The time between saves is given by the setting, with default as shown::
+
+    @int mod_autosave_interval = 300
+
+This plugin is active only if::
+
+    @bool mod_autosave_active = True
+
+</t>
+<t tx="ekr.20101112211748.19880">Allows Leo to read a complete directory tree into a Leo outline. Converts
+directories into headlines and puts the list of file names into bodies.
+
+
+Ce plug-in permet de traduire l'arborescence d'un répertoire en une arborescence
+Leo : Chaque dossier est converti en noeud dans Leo ; son nom est placé dans
+l'entête du noeud et chaque nom de fichier qu'il contient est listé dans son
+contenu.
+
+Feedback on this plugin can be sent to::
+
+    Frédéric Momméja
+    &lt;frederic [point] mommeja [at] laposte [point] net&gt;
+
+</t>
+<t tx="ekr.20101112211748.19881">Timestamps all save operations to show when they occur.
+
+</t>
+<t tx="ekr.20101112211748.19882">Allows the definition of double-click actions.
+
+When the user double-clicks a node this plugin checks for a match of the clicked
+node's headline text with a list of patterns. If a match occurs, the plugin
+executes the associated script.
+
+**nodeAction** nodes may be located anywhere in the outline. Such nodes should
+contain one or more **pattern nodes** as children. The headline of each pattern
+node contains the pattern; the body text contains the script to be executed when
+the pattern matches the double-clicked node.
+
+For example, the "nodeActions" node containing a "launch URL" pattern node
+and a "pre-process python code" node could be placed under an "@settings"
+node::
+
+   @settings
+   |
+   +- nodeActions
+      |
+      +- http:\\*
+      |
+      +- @file *.py
+
+Configuration
+=============
+
+The nodeActions plugin supports the following global configurations using
+Leo's support for setting global variables within an @settings node's
+sub-nodes in the leoSettings.leo, myLeoSettings.leo, and the project Leo
+file:
+
+@bool nodeActions_save_atFile_nodes = False
+
+  :True:
+     Double-click on an @file type node will save the file to disk
+     before executing the script.
+
+  :False:
+     Double-click on an @file type node will **not** save the file to disk
+     before executing the script. (default)
+
+@int nodeActions_message_level = 1
+
+  Specifies the type of messages to be sent to the log pane.  Specifying a
+  higher message level will display that level and all lower levels.
+  The following integer values are supported::
+
+      :0: no messages
+      :1: Plugin triggered and the patterns that were matched (default)
+      :2: Double-click event passed or not to next plugin
+      :3: Patterns that did not match
+      :4: Code debugging messages
+
+Patterns
+========
+
+Pattern matching is performed using python's support for Unix
+shell-style patterns unless overwritten by the "X" pattern directive.
+The following pattern elements are supported::
+
+    *           matches everything
+    ?           matches any single character
+    [&lt;seq&gt;]     matches any character in &lt;seq&gt;
+    [!&lt;seq&gt;]    matches any character **not** in &lt;seq&gt;
+
+Unix shell-style pattern matching is case insensitive and always starts from
+the beginning of the headline.  For example:
+
+     ======= =========== ==============
+     Pattern   Matches   Does not match
+     ======= =========== ==============
+     \*.py   Abc_Test.py
+     .py     .py - Test  Abc_Test.py
+     test*   Test_Abc.py Abc_Test.py
+     ======= =========== ==============
+
+To enable a script to run on any type of @file node (@thin, @shadow, ...),
+the pattern can start with "@files" to match on any
+external file type.  For example, the pattern "@files \*.py" will
+match a node with the headline "@file abcd.py".
+
+The headline of the double-clicked node is matched against the patterns
+starting from the first sub-node under the "nodeActions" node to the last
+sub-node.
+
+Only the script associated with the first matching pattern is
+invoked unless overwritten by the "V" pattern directive.
+
+Using the "V" pattern directive allows a broad pattern such
+as "@files \*.py" to be invoked, and then, by placing a more restrictive
+pattern above it, such as "@files \*_test.py", a different script can be
+executed for those files requiring pre-processing::
+
+  +- nodeActions
+     |
+     +- @files *_test.py
+     |
+     +- @files *.py
+
+**Note**: To prevent Leo from trying to save patterns that begin with a derived
+file directive (@file, @auto, ...) to disk, such as "@file \*.py", place the
+"@ignore" directive in the body of the "nodeActions" node.
+
+Pattern nodes can be placed at any level under the "nodeActions" node.
+Only nodes with no child nodes are considered pattern nodes.
+This allows patterns that are to be used in multiple Leo files to be read
+from a file.  For example, the following structure reads the pattern
+definition from the "C:\\Leo\\nodeActions_Patterns.txt" file::
+
+    +- nodeActions
+    |
+    +- @files C:\\Leo\\nodeActions_Patterns.txt
+        |
+        +- http:\\*
+        |
+        +- @file *.py
+
+Pattern directives
+==================
+
+The following pattern specific directives can be appended to the end of a
+pattern (do not include the ':'):
+
+:[X]:
+  Use python's regular expression type patterns instead of the Unix
+  shell-style pattern syntax.
+
+  For example, the following patterns will match the same headline string::
+
+     Unix shell-style pattern:
+        @files *.py
+
+     Regular Expression patern:
+        ^@files .*\.py$ [X]
+
+:[V]:
+  Matching the pattern will not block the double-click event from
+  being passed to the remaining patterns.
+  The "V" represents a down arrow that symbolizes the passing of the event
+  to the next pattern below it.
+
+  For example, adding the "[V]" directive to the "@files \*_test.py" in
+  the Patterns section above, changes its script from being 'an
+  alternate to' to being 'a pre-processor for' the "@files \*.py" script::
+
+     +- nodeActions
+        |
+        +- @files *_test.py [V]
+        |
+        +- @files *.py
+
+:[&gt;]:
+  Matching the pattern will not block the double-click event from being
+  passed to other plugins.
+  The "&gt;" represents a right arrow that
+  symbolizes the passing of the event to the next plugin.
+
+  If the headline matched more than one headline,
+  the double-click event will be passed to the next plugin if the
+  directive is associated with any of the matched patterns.
+
+The directive(s) for a pattern must be contained within a single set of
+brackets, separated from the pattern by a space, with or without a comma
+separator.  For example, the following specifies all three directives::
+
+  ^@files .*\.py$ [X,V&gt;]
+
+Scripts
+=======
+
+The script for a pattern is located in the body of the pattern's node.
+The following global variables are available to the script::
+
+    c
+    g
+    pClicked - node position of the double-clicked node
+    pScript - node position of the invoked script
+
+Examples
+========
+
+
+Double-clicking on a node with a "http:\\\\www.google.com" headline
+will invoke the script associated with the
+"http:\\\\\*" pattern.  The following script in the body of the pattern's
+node displays the URL in a browser::
+
+     import webbrowser
+     hClicked = pClicked.h     #Clicked node's Headline text
+     webbrowser.open(hClicked) #Invoke browser
+
+The following script can be placed in the body of a pattern's node to
+execute a command in the first line of the body of a double-clicked node::
+
+     g.os.system('"Start /b ' + pClicked.bodyString() + '"')
+
+</t>
+<t tx="ekr.20101112211748.19883">Modifies the way exported outlines are written.
+
+</t>
+<t tx="ekr.20101112211748.19884">Creates new headlines from clipboard text.
+
+If the pasted text would be greater than 50 characters in length, the plugin
+truncates the headline to 50 characters and pastes the entire line into the body
+text of that node.
+
+Creates a "Paste as Headlines" option the Edit menu directly under the existing
+Paste option.
+
+</t>
+<t tx="ekr.20101112211748.19885">Customizes pretty printing.
+
+The plugin creates a do-nothing subclass of the default pretty printer. To
+customize, simply override in this file the methods of the base prettyPrinter
+class in leoCommands.py. You would typically want to override putNormalToken or
+its allies. Templates for these methods have been provided. You may, however,
+override any methods you like. You could even define your own class entirely,
+provided you implement the prettyPrintNode method.
+
+</t>
+<t tx="ekr.20101112211748.19886">Creates buttons to move nodes quickly to other nodes.
+
+Quickly move/copy/clone nodes from around the tree to one or more target nodes.
+It can also create bookmark and tagging functionality in an outline (see `Set
+Parent Notes`_ below).
+
+Adds `Move/Clone/Copy To Last Child Button` and `Move/Clone/Copy To First Child
+Button`, `Link To/From` and `Jump To` commands to the Move sub-menu on the
+Outline menu, and each node's context menu, if the `contextmenu` plugin is enabled.
+
+Select a node ``Foo`` and then use the `Move To Last Child Button` command.
+This adds a 'to Foo' button to the button bar. Now select another node and click
+the 'to Foo' button. The selected node will be moved to the last child
+of the node 'Foo'.
+
+`To First Child Button` works the same way, except that moved nodes are inserted
+as the first child of the target node.
+
+`Clone` and `Copy` variants are like `Move`, but clone or copy instead of moving.
+
+`Link` works in conjunction with the `backlink` plugin (and also the
+`graphcanvas` plugin) creating a link to/from the target and current nodes.
+
+`Jump` buttons act as bookmarks, taking you to the target node.
+
+You can right click on any of these buttons to access their context menu:
+
+  Goto Target
+    takes you to the target node (like a `Jump` button).
+  Make Permanent
+    makes the button permanent, it will reappear
+    when the file is saved / closed / re-opened.
+  Set Parent
+    allows you to move buttons to sub-menu items of other
+    `quickMove` buttons.  This implicitly makes the moved button
+    permanent.  It also causes the moved button to lose its context menu.
+  Remove Button
+    comes from the `mod_scripting` plugin, and just
+    removes the button for the rest of the current session.
+
+Set Parent Notes
+----------------
+
+`Set Parent` doesn't allow you to do anything with `quickMove` you couldn't
+do with a long strip of separate buttons, but it collects quickMove buttons
+as sub-menu items of one quickMove button, saving a lot of toolbar space.
+
+Bookmarks 
+  Create somewhere out of the way in your outline a node called
+  `Bookmarks`. Use the quickMove menu to make it a `Jump To` button, and use its
+  context menu to make it permanent. There is no particular reason to jump to
+  it, but it needs to be a `quickMove` button of some kind.
+
+  Now, when you want to bookmark a node, first use the quickMove menu to make
+  the node a `Jump To` button, and then use the context menu on the button to
+  set its parent to your `Bookmarks` button.  It becomes a sub-menu item
+  of the `Bookmarks` button.
+
+Tags
+  In conjunction with the `backlinks` plugin you can use `quickMove` to
+  tag nodes.   The `backlinks` plugin adds a `Links` tab to the `Log pane`.
+
+  Create somewhere in your outline a node called `Tags`. Use the quickMove menu
+  to make it a `Jump To` button, and use its context menu to make it permanent.
+  Clicking on it will jump you to your tag list. Now create a node under the
+  `Tags` node for each tag you want. The node's name will be the tag name, and
+  can be changed later. Then use the quickMove menu to make each of these nodes
+  a `Link To` button, and then use the context menu on the button to set its
+  parent to your `Tags` button. It becomes a sub-menu item of the `Tags` button.
+
+  To see the tags on a node, you need to be looking at the `Links` tab in the
+  `Log pane`.  To see all the nodes with a particular tag, click on the `Tags`
+  button to jump to the tag list, and select the node which names the tag of
+  interest.  The nodes with that tag will be listed in th `Links` tab in the
+  `Log pane`.
+
+</t>
+<t tx="ekr.20101112211748.19887">Sets g.app.homeDir to a hard-coded path.
+
+</t>
+<t tx="ekr.20101112211748.19888">Counts characters, words, lines, and paragraphs in the body pane.
+
+It adds a "Word Count..." option to the bottom of the Edit menu that will
+activate the command.
+
+</t>
+<t tx="ekr.20101112211748.19889"></t>
+<t tx="ekr.20101112211748.19890">Makes g.pdb() enter the Pudb debugger instead of pdb.
+
+Pudb is a full-screen Python debugger:
+http://pypi.python.org/pypi/pudb
+
+</t>
+<t tx="ekr.20101112211748.19891">Dumps Python globals at startup
+
+</t>
+<t tx="ekr.20101112211748.19892">Enables debugging and tracing for Python's garbage collector.
+
+</t>
+<t tx="ekr.20101112211748.19893">Shows how to force Leo to quit.
+
+</t>
+<t tx="ekr.20101112211748.19894">Traces changes to Leo's objects at idle time
+
+</t>
+<t tx="ekr.20101112211748.19895">Traces keystrokes in the outline and body panes
+
+</t>
+<t tx="ekr.20101112211748.19896">Traces most common hooks, but not key, drag or idle hooks.
+
+</t>
+<t tx="ekr.20101112211748.19898"></t>
+<t tx="ekr.20101112211748.19899">Creates a two-way communication (bridge) between Leo
+scripts and IPython running in the console from which Leo was launched.
+
+Using this bridge, scripts running in Leo can affect IPython, and vice versa.
+In particular, scripts running in IPython can alter Leo outlines!
+
+For full details, see Leo Users Guide:
+http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+</t>
+<t tx="ekr.20101112211748.19900">Replaces c.openWithTempFilePath to create alternate temporary
+directory paths.
+
+Two alternates are supported. The default method creates temporary files with a
+filename that begins with the headline text, and located in a "username_Leo"
+subdirectory of the temporary directory. The "LeoTemp" prefix is omitted. If
+'open_with_clean_filenames' is set to true then subdirectories mirror the node's
+hierarchy in Leo. Either method makes it easier to see which temporary file is
+related to which outline node.
+
+</t>
+<t tx="ekr.20101112211748.19901">Creates an 'Extensions' menu containing two commands:
+Open Console Window and Open Explorer.
+
+The Open Console Window command opens xterm on linux.
+The Open Explorer command Opens a Windows explorer window.
+
+This allows quick navigation to facilitate testing and navigating large systems
+with complex directories.
+
+Please submit bugs / feature requests to etaekema@earthlink.net
+
+Current limitations:
+- Not tested on Mac OS X ...
+- On linux, xterm must be in your path.
+
+</t>
+<t tx="ekr.20101112211748.19902">Allows imports of notes created in Tomboy / gnote.
+
+Usage:
+
+* Create a node with the headline 'tomboy'
+* Select the node, and do alt+x act-on-node    
+* The notes will appear as children of 'tomboy' node
+* The next time you do act-on-node, existing notes will be updated (they don't need to 
+  be under 'tomboy' node anymore) and new notes added.
+
+</t>
+<t tx="ekr.20101112211748.19903">Enables two-way communication with VIM.
+
+It's recommended that you have gvim installed--the basic console vim is not recommended.
+
+**On Tk ui, the open_with plugin must be enabled for this plugin to work properly!**
+
+When properly installed, this plugin does the following:
+
+- By default, the plugin opens nodes on icondclick2 events.
+  (double click in the icon box)
+
+- The setting::
+
+    @string vim_trigger_event = icondclick2
+
+  controls when nodes are opened in vim.  The default, shown above,
+  opens a node in vim on double clicks in Leo's icon box.
+  A typical alternative would be::
+
+      @string vim_trigger_event = iconclick2
+
+  to open nodes on single clicks in the icon box.
+  You could also set:
+
+      @string vim_trigger_event = select2
+
+  to open a node in vim whenever the selected node changes for any reason.
+
+- Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
+
+- Leo will put node in a Vim tab card if 'vim_plugin_uses_tab_feature' set to True.
+
+- Leo will update the node in the outline when you save the file in VIM.
+
+To install this plugin do the following:
+
+1. Make sure to enable open_with plugin (if you are using Tk ui).
+
+2. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
+   as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
+   on your PATH.
+
+3. If you are using Python 2.4 or above, that's all you need to do. Jim
+   Sizelove's new code will start vim automatically using Python's subprocess
+   module. The subprocess module comes standard with Python 2.4. For Linux
+   systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
+
+</t>
+<t tx="ekr.20101112211748.19904">Allows you to edit nodes in emacs/xemacs.
+
+**Important**: the open_with plugin must be enabled for this plugin to work
+properly.
+
+Depending on your preference, selecting or double-clicking a node will pass the
+body text of that node to emacs. You may edit the node in the emacs buffer and
+changes will appear in Leo.
+
+</t>
+<t tx="ekr.20101112211748.19905">Adds the Plugins\:Word Export\:Export menu item to format and export
+the selected outline to a Word document, starting Word if necessary.
+
+</t>
+<t tx="ekr.20101112211748.19906"></t>
+<t tx="ekr.20101112211748.19907">Synchronizes @path nodes with folders.
+
+If a node is named '@path path_to_folder', the content (file and folder names)
+of the folder and the children of that node will synchronized whenever the
+node's status-iconbox is double clicked.
+
+For files not previously seen in a folder a new node will appear on top of the
+children list (with a mark).
+
+Folders appear in the list as /foldername/. If you double click on the icon-box
+of the folder node, it will have children added to it based on the contents of
+the folder on disk. These folders have the '@path' directive as the first line
+of their body text.
+
+When files are deleted from the folder and the list is updated by double
+clicking the files will appear in the list as *filename* (or */foldername/*).
+
+You can describe files and directories in the body of the nodes.
+
+You can organize files and directories with organizer nodes, an organizer node
+name cannot contain with '/'.
+
+Files and folders can be created by entering a node with the required name as
+its headline (must start and/or end with "/" for a folder) and then double
+clicking on the node's status-iconbox.
+
+\@auto nodes can be set up for existing files can be loaded by
+double clicking on the node's status-iconbox. If you prefer
+\@shadow or something else use the "active_path_attype" setting,
+without the "@".
+
+There are commands on the Plugins active_path submenu:
+
+    - show path - show the current path
+    - set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+    - purge vanished (recursive) - remove *entries*
+    - update recursive - recursive load of directories, use with caution on large
+      file systems
+
+If you want to use an input other than double clicking a node's status-iconbox
+set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
+
+There are @settings for ignoring directory entries and automatically loading files.  ``re.search`` is used, rather than ``re.match``, so patterns need only match part of the filename, not the whole filename.
+
+The body of the @setting ``@data active_path_ignore`` is a list of regex
+patterns, one per line.  Directory entries matching any pattern in the list will be ignored.  The names of directories used for matching will have forward slashes around them ('/dirname/'), so patterns can use this to distinguish between directories and files.
+
+The body of the @setting ``@data active_path_autoload`` is a list of regex
+patterns, one per line.  File entries matching any pattern in the list will be loaded automatically.  This works only with files, not directories (but you can load directories recursively anyway).
+
+Set ``@bool active_path_load_docstring = True`` to have active_path load the docstring
+of .py files automatically.  These nodes start with the special string::
+
+    @language rest # AUTOLOADED DOCSTRING
+
+which must be left intact if you want active path to be able to double-click load
+the file later.
+
+\@float active_path_timeout_seconds (default 10.) controls the maximum
+time active_path will spend on a recursive operation.
+
+\@int active_path_max_size (default 1000000) controls the maximum
+size file active_path will open without query.
+
+active_path is a rewrite of the at_directory plugin to use \@path directives
+(which influence \@auto and other \@file type directives), and to handle
+sub-folders more automatically.
+
+</t>
+<t tx="ekr.20101112211748.19908">Synchronizes @folder nodes with folders.
+
+If a node is named '@folder path_to_folder', the content (filenames) of the
+folder and the children of that node will be sync. Whenever a new file is put
+there, a new node will appear on top of the children list (with mark). So that
+I can put my description (ie. annotation) as the content of that node. In this
+way, I can find any files much easier from leo.
+
+Moreover, I add another feature to allow you to group files(in leo) into
+children of another group. This will help when there are many files in that
+folder. You can logically group it in leo (or even clone it to many groups),
+while keep every files in a flat/single directory on your computer.
+
+</t>
+<t tx="ekr.20101112211748.19909">Executes commands in nodes whose body text starts with @produce.
+
+To use, put in the body text of a node::
+
+    @produce javac -verbose Test.java
+
+To execute, you goto Outline and look at Produce.  Choose Execute All Produce
+or Execute Tree Produce.  The Tree does the current Tree, All does the whole
+Outline.  Executing will fire javac, or whatever your using.  @produce functions
+as a directive.  After executing, a log file/node is created at the top of the
+Outline.  Any output, even error messages, should be there.
+
+It executes in a hierarchal manner.  Nodes that come before that contain @produce
+go first.
+
+Im hoping that this orthogonal to @run nodes and anything like that.  Its not
+intended as a replacement for make or Ant, but as a simple substitute when that
+machinery is overkill.
+
+WARNING: trying to execute a non-existent command will hang Leo.
+
+</t>
+<t tx="ekr.20101112211748.19910">Adds support for \@clip, \@view and \@strip nodes.
+
+- Selecting a headline containing \@clip appends the contents of the clipboard to
+  the end of the body pane.
+
+- Double clicking the icon box of a node whose headline contains \@view
+  *&lt;path-to-file&gt;* places the contents of the file in the body pane.
+
+- Double clicking the icon box of a node whose headline contains \@strip
+  *&lt;path-to-file&gt;* places the contents of the file in the body pane, with all
+  sentinels removed.
+
+This plugin also accumulates the effect of all \@path nodes.
+
+</t>
+<t tx="ekr.20101112211748.19911">Allows arbitrary links between nodes.
+
+</t>
+<t tx="ekr.20101112211748.19912">Allows users to insert headlines containing dates.
+
+'Date nodes' are nodes that have dates in their headlines. They may be added to
+the outline one at a time, a month's-worth at a time, or a year's-worth at a
+time. The format of the labels (headlines) is configurable.
+
+There are options to omit Saturdays and Sundays.
+
+An 'Insert Date Nodes ...' submenu will be created (by default) in the 'Outline'
+menu.  This menu can be suppressed by using either of the following settings:
+
+    - @bool suppress-datenodes-menus
+    - @bool suppress-all-plugins-menus
+
+The following commands are available for use via the minibuffer or in
+@menu/@popup settings.
+
+    - datenodes-today
+    - datenodes-this-month
+    - datenodes-this-year
+
+</t>
+<t tx="ekr.20101112211748.19913">Adds @expfolder nodes that represent folders in the filesystem.
+
+Double clicking on the icon of an @expfolder heading reads the files in the
+directory at the path specified and creates child nodes for each file in the
+subfolder. Subdirectories are made into child @expfolder nodes so the tree can
+be easily traversed. If files have extensions specified in the expfolder.ini
+file they are made into @text nodes so the content of the files can be easily
+loaded into leo and edited. Double clicking a second time will delete all child
+nodes and refresh the directory listing. If there are any changed @text nodes
+contained inside you will be prompted about saving them.
+
+The textextensions field on the expfolder Properties page contains a list of
+extensions which will be made into @text nodes, seperated by spaces.
+
+For the @text and @expfolder nodes to interact correctly, the textnode plugin
+must load before the expfolder plugin. This can be set using the Plugin
+Manager's Plugin Load Order pane.
+
+</t>
+<t tx="ekr.20101112211748.19914">Defines actions taken when double-clicking on @&lt;file&gt; nodes and supports
+@file-ref nodes.
+
+Double-clicking any kind of @&lt;file&gt; node writes out the file if changes have
+been made since the last save, and then runs a script on it, which is retrieved
+from the outline.
+
+Scripts are located in a node whose headline is FileActions. This node can be
+anywhere in the outline. If there is more than one such node, the first one in
+outline order is used.
+
+The children of that node are expected to contain a file pattern in the headline
+and the script to be executed in the body. The file name is matched against the
+patterns (which are Unix-style shell patterns), and the first matching node is
+selected. If the filename is a path, only the last item is matched.
+
+Execution of the scripts is similar to the "Execute Script"
+command in Leo. The main difference is that the namespace
+in which the scripts are run contains these elements:
+
+- 'c' and 'g' and 'p': as in the regular execute script command.
+
+- 'filename': the filename from the @file directive.
+
+- 'shellScriptInWindow', a utility function that runs a shell script in an
+   external windows, thus permitting programs to be called that require user
+   interaction
+
+File actions are implemented for all kinds @&lt;file&gt; nodes. There is also a new
+node type @file-ref for referring to files purely for the purpose of file
+actions, Leo does not do anything with or to such files.
+
+</t>
+<t tx="ekr.20101112211748.19915">Tags nodes with latitude and longitude.
+
+</t>
+<t tx="ekr.20101112211748.19916">Creates a LeoCursor object that can walk around a Leo outline and decode
+attributes from nodes.
+
+Node names can be used through . (dot) notation so ``cursor.Data.Name._B`` for
+example returns the body text of the Name node which is a child of the Data node
+which is a child of the cursors current location.
+
+See .../plugins/examples/leocursorexample.leo for application.
+
+</t>
+<t tx="ekr.20101112211748.19917">Opens files with their default platform program.
+
+Double-clicking @mime nodes will attempt to open the named file as if opened
+from a file manager. \@path parent nodes are used to find the full filename
+path.
+
+    @mime foodir/document.pdf
+
+The string setting 'mime_open_cmd' allows specifying a program to handle opening
+files::
+
+    @settings
+        @string mime_open_cmd = see
+        .. or ..
+        @string mime_open_cmd = see %s
+
+Where '%s' is replaced with the full pathname.
+
+**Note**: This plugin terminates handling of the 'icondclick1' event by returning
+True. If another plugin using this event (e.g. vim.py) is also enabled, the
+order in @enabled-plugins matters. For example: if vim.py is enabled before
+mime.py, double-clicking on an @mime node will both open the body text in [g]vim
+AND call the mime_open_cmd.
+
+This plugin is complementary to the UNL.py plugin's @url nodes. Use @url for
+opening either URLs or Uniform Node Locators in "\*.leo" files and use @mime
+nodes for opening files on the local filesystem. It also replaces the
+startfile.py plugin, where here the headline must start with @mime to activiate
+this plugin.
+
+For other sys.platform's, add an elif case to the section "guess file
+association handler" and either define a default _mime_open_cmd string, where
+"%s" will be replaced with the filename, or define a function taking the
+filename string as its only argument and set as open_func.
+
+</t>
+<t tx="ekr.20101112211748.19918">Allows Leo to write a file to multiple locations.
+
+This plugin acts as a post-write mechanism, a file must be written to the
+filesystem for it to work. At this point it is not a replacement for @path or an
+absolute path, it works in tandem with them.
+
+To use, place @multipath at the start of a line in the root node or an ancestor
+of the node. The format is (On Unixy systems)::
+
+    @multipath /machine/unit/:/machine/robot/:/machine/
+
+New in version 0.6 of this plugin: the separator used above is ';' not ':',
+for example:
+
+    @multipath c:\prog\test;c:\prog\unittest
+
+It will places copy of the written file in each of these directories.
+
+There is an additional directive that simplifies common paths, it is called
+@multiprefix. By typing @multiprefix with a path following it, before a
+@multipath directive you set the beginning of the paths in the @multipath
+directive.
+
+For example: (note I put # in front of the directives here because I
+dont want someone browsing this file to accidentilly save mulitple copies of
+this file to their system :) )
+
+#@multiprefix /leo #@multipath /plugins 
+
+or
+
+#@multiprefix /leo/
+#@multipath plugins: fungus : drain
+
+copies a file to /leo/plugins /leo/fungus /leo/drain.
+
+The @multiprefix stays in effect for the entire tree until reset with another
+@multiprefix directive. @multipath is cumulitive, in that for each @multipath in
+an ancestor a copy of the file is created. These directives must at the
+beginning of the line and by themselves.
+
+</t>
+<t tx="ekr.20101112211748.19919">Ensures that all descendants of @file-nosent nodes end
+with exactly one newline, replaces all tabs with spaces, and
+adds a newline before class and functions in the derived file.
+
+</t>
+<t tx="ekr.20101112211748.19920">Creates and updates @read-only nodes.
+
+Here's my first attempt at customizing leo. I wanted to have the ability to
+import files in "read-only" mode, that is, in a mode where files could only
+be read by leo (not tangled), and also kept in sync with the content on the
+drive.
+
+The reason for this is for example that I have external programs that generate
+resource files. I want these files to be part of a leo outline, but I don't
+want leo to tangle or in any way modify them. At the same time, I want them
+to be up-to-date in the leo outline.
+
+So I coded the directive plugin. It has the following characteristics:
+
+- It reads the specified file and puts it into the node content.
+
+- If the @read-only directive was in the leo outline already, and the file content
+  on disk has changed from what is stored in the outline, it marks the node as
+  changed and prints a "changed" message to the log window; if, on the other hand,
+  the file content has _not_ changed, the file is simply read and the node is
+  not marked as changed.
+
+- When you write a @read-only directive, the file content is added to the node
+  immediately, i.e. as soon as you press Enter (no need to call a menu
+  entry to import the content).
+
+- If you want to refresh/update the content of the file, just edit the headline
+  and press Enter. The file is reloaded, and if in the meantime it has changed,
+  a "change" message is sent to the log window.
+
+- The body text of a @read-only file cannot be modified in leo.
+
+The syntax to access files in @read-only via ftp/http is the following::
+
+    @read-only http://www.ietf.org/rfc/rfc0791.txt
+    @read-only ftp://ftp.someserver.org/filepath
+
+If FTP authentication (username/password) is required, it can be specified as follows::
+
+    @read-only ftp://username:password@ftp.someserver.org/filepath
+
+For more details, see the doc string for the class FTPurl.
+
+Davide Salomoni
+
+</t>
+<t tx="ekr.20101112211748.19921">Runs a program and interface Leos through its input/output/error streams.
+
+Double clicking the icon box whose headlines are @run 'cmd args' will execute
+the command. There are several other features, including @arg and @input nodes.
+
+The run_nodes.py plugin introduce two new nodes that transform leo into a
+terminal. It was mostly intended to run compilers and debuggers while having the
+possibility to send messages to the program.
+
+Double clicking on the icon of an node whose headline is @run &lt;command&gt; &lt;args&gt;
+will launch &lt;command&gt; with the given arguments. It will also mark the node. #
+Terminates the argument list. @run # &lt;comment&gt; is also valid.
+
+@in nodes are used to send input to the running process. Double clicking on
+the icon of an @in &lt;message&gt; node will append a "\n" to &lt;message&gt; and write it
+to the program, no matter where the node is placed. If no @run node is active,
+nothing happens.
+
+The body text of every child, in which the headlines do not begin with '@run'
+or '@in', will be appended to &lt;command&gt;, allowing you to add an unlimited number
+of arguments to &lt;command&gt;.
+
+The output of the program is written in the log pane (Error outputed in red).
+When the program exit the node is set unmarked and the return value is
+displayed... When the enter key is pressed in the body pane of an active @run
+node the content of it body pane is written to the program and then emptied
+ready for another line of input. If the node have @run nodes in its descendance,
+they will be launched successivelly. (Unless one returned an exit code other
+than 0, then it will stop there)
+
+By Alexis Gendron Paquette. Please send comments to the Leo forums.
+
+</t>
+<t tx="ekr.20101112211748.19922">Support slideshows in Leo outlines.
+
+This plugin defines four new commands:
+
+- next-slide-show:  move to the start of the next slide show,
+  or the first slide show if no slide show has been seen yet.
+- prev-slide-show:  move to the start of the previous slide show,
+  or the first slide show if no slide show has been seen yet.
+- next-slide: move to the next slide of a present slide show.
+- prev-slide: move to the previous slide of the present slide show.
+
+Slides shows consist of a root @slideshow node with descendent @slide nodes.
+@slide nodes may be organized via non-@slide nodes that do not appear in the slideshow.
+
+All these commands ignore @ignore trees.
+
+</t>
+<t tx="ekr.20101112211748.19923">Launches (starts) a file given by a headline when double-clicking the icon.
+
+This plugin ignores headlines starting with an '@'.
+
+Uses the @folder path if the headline is under an @folder headline.
+Otherwise the path is relative to the Leo file.
+
+</t>
+<t tx="ekr.20101112211748.19924">Supports @text nodes for reading and writing external files.
+
+The @text node is for embedding text files in a leo node that won't be saved
+with the leo file, and won't contain any sentinel leo comments. Children of
+@text nodes are not saved with the derived file, though they will stay in the
+outline. When a outline is first loaded any @text nodes are filled with the
+contents of the text files on disk. To refresh the contents of an @text node,
+double click on the heading icon.
+
+</t>
+<t tx="ekr.20101112211748.19925">Adds the Outline:XSLT menu containing XSLT-related commands.
+
+This menu contains the following items:
+
+- Set StyleSheet Node:
+    - Selects the current node as the xsl stylesheet the plugin will use.
+
+- Process Node with Stylesheet Node:
+    - Processes the current node as an xml document,
+      resolving section references and Leo directives.
+    - Creates a sibling containing the results.
+
+Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
+
+</t>
+<t tx="ekr.20101112211748.19926"></t>
+<t tx="ekr.20101112211748.19927">Allows interaction with shell apps via screen.
+
+Analysis environments like SQL, R, scipy, ipython, etc. can be
+used by pasting sections of text from an editor (Leo) and a
+shell window.  Results can be pasted back into the editor.
+
+This plugin streamlines the process by communicating with ``screen``,
+the shell multiplexer
+
+Commands created
+----------------
+
+Execution command
++++++++++++++++++
+
+leoscreen-run-text
+  Send the text selected in Leo's body text to the shell app.
+  Selects the next line for your convenience.
+
+Retrieval commands
+++++++++++++++++++
+
+These commands get output from the shell app. and put it somewhere.
+
+leoscreen-get-line
+  Insert a line of the last result from the shell into Leo's body text
+  at the current insert point.  Lines are pulled one at a time starting
+  from the end of the output.  Can be used repeatedly to get the
+  output you want into Leo.
+leoscreen-get-all
+  Insert all of the last result from the shell into Leo's body text
+  at the current insert point.
+leoscreen-get-note
+  Insert all of the last result from the shell into a new child node of
+  the current node.
+leoscreen-show-all
+  **Show** the output from the last result from the shell in a temporary
+  read only window.  The output **is not stored**.
+leoscreen-show-note
+  Insert all of the last result from the shell into a new child node of
+  the current node and display that node a a stickynote (requires stickynote
+  plugin).
+
+Shell screen commands
++++++++++++++++++++++  
+
+leoscreen-next
+  Switch screen session to next window.
+leoscreen-prev
+  Switch screen session to preceeding window.
+leoscreen-other
+  Switch screen session to last window displayed.
+
+Parameter commands
+++++++++++++++++++
+
+leoscreen-get-prefix
+  Interactively get prefix for inserting text into body (#, --, //, etc/)
+  Can also set via ``c.leo_screen.get_line_prefix = '#'``
+leoscreen-more-prompt
+  Skip one less line at the end of output when fetching output into Leo.
+  Adjusts lines skipped to avoid pulling in the applications prompt line.
+leoscreen-less-prompt
+  Skip one more line at the end of output when fetching output into Leo
+  Adjusts lines skipped to avoid pulling in the applications prompt line.
+
+@settings
+---------
+
+``leoscreen_prefix`` - prepended to output pulled in to Leo.  The
+substring SPACE in this setting will be replaced with a space character,
+to allow for trailing spaces.
+
+``leoscreen_time_fmt`` - time.strftime format for note type output headings
+
+Methods
+-------
+
+leoscreen creates a instance at c.leo_screen which has some methods which might
+be useful in ``@button`` and other Leo contexts.
+
+
+Example SQL setup
+-----------------
+
+In a Leo file full of interactive SQL analysis, I have::
+
+    @settings
+        @string leoscreen_prefix = --SPACE
+    @button rollback
+        import time
+        c.leo_screen.run_text('ROLLBACK;  -- %s\n' % time.asctime())
+    @button commit
+        import time
+        cmd = 'COMMIT;  -- %s' % time.asctime()
+        c.leo_screen.run_text(cmd)
+        c.leo_screen.insert_line(cmd)
+
+which creates a button to rollback messed up queries, another to commit
+(requiring additional action to supply the newline as a safeguard) and
+sets the prefix to "-- " for text pulled back from the SQL session into
+Leo.
+
+
+**IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
+if screen -X is executed with the same stdout as the target
+screen, vs. a different stdout.  Although stdout is ignored,
+Popen() needs to ensure it's not just inherited.
+
+</t>
+<t tx="ekr.20101112211748.19928">Creates script buttons and @button, @command, @plugin and @script
+nodes.
+
+This plugin puts buttons in the icon area. Depending on settings the plugin will
+create the 'Run Script', the 'Script Button' and the 'Debug Script' buttons.
+
+The 'Run Script' button is simply another way of doing the Execute Script
+command: it executes the selected text of the presently selected node, or the
+entire text if no text is selected.
+
+The 'Script Button' button creates *another* button in the icon area every time
+you push it. The name of the button is the headline of the presently selected
+node. Hitting this *newly created* button executes the button's script.
+
+For example, to run a script on any part of an outline do the following:
+
+1.  Select the node containing the script.
+2.  Press the scriptButton button.  This will create a new button.
+3.  Select the node on which you want to run the script.
+4.  Push the *new* button.
+
+That's all.
+
+For every @button node, this plugin creates two new minibuffer commands: x and
+delete-x-button, where x is the 'cleaned' name of the button. The 'x' command is
+equivalent to pushing the script button.
+
+**New in Leo 4.4.4**: You can specify **global buttons** in leoSettings.leo or
+myLeoSettings.leo by putting @button nodes as children of an @buttons node in an
+@settings trees. Such buttons are included in all open .leo (in a slightly
+different color). Actually, you can specify global buttons in any .leo file, but
+@buttons nodes affect all later opened .leo files so usually you would define
+global buttons in leoSettings.leo or myLeoSettings.leo.
+
+The cleaned name of an @button node is the headline text of the button with:
+
+- Leading @button or @command removed,
+- @key and all following text removed,
+- @args and all following text removed,
+- all non-alphanumeric characters converted to a single '-' characters.
+
+Thus, cleaning headline text converts it to a valid minibuffer command name.
+
+You can delete a script button by right-clicking on it, or by
+executing the delete-x-button command.
+
+The 'Debug Script' button runs a script using an external debugger.
+
+This plugin optionally scans for @button nodes, @command, @plugin nodes and
+@script nodes whenever a .leo file is opened.
+
+- @button nodes create script buttons.
+- @command nodes create minibuffer commands.
+- @plugin nodes cause plugins to be loaded.
+- @script nodes cause a script to be executed when opening a .leo file.
+
+Such nodes may be security risks. This plugin scans for such nodes only if the
+corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set
+to True in this plugin.
+
+You can specify the following options in leoSettings.leo.  See the node:
+@settings--&gt;Plugins--&gt;scripting plugin.  Recommended defaults are shown.
+
+- @bool scripting-at-button-nodes = True
+  True: adds a button for every @button node.
+
+- @bool scripting-at-commands-nodes = True
+  True: define a minibuffer command for every @command node.
+
+- @bool scripting-at-plugin-nodes = False
+  True: dynamically loads plugins in @plugins nodes when a window is created.
+
+- @bool scripting-at-script-nodes = False
+  True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!
+
+- @bool scripting-create-debug-button = False
+  True: create Debug Script button.
+
+- @bool scripting-create-run-script-button = False
+  True: create Run Script button.
+  Note: The plugin creates the press-run-script-button regardless of this setting.
+
+- @bool scripting-create-script-button-button = True
+  True: create Script Button button in icon area.
+  Note: The plugin creates the press-script-button-button regardless of this setting.
+
+- @int scripting-max-button-size = 18
+  The maximum length of button names: longer names are truncated.
+
+You can bind key shortcuts to @button and @command nodes as follows:
+
+@button name @key=shortcut
+
+This binds the shortcut to the script in the script button. The button's name is
+'name', but you can see the full headline in the status line when you move the
+mouse over the button.
+
+@command name @key=shortcut
+
+This creates a new minibuffer command and binds shortcut to it. As with @buffer
+nodes, the name of the command is the cleaned name of the headline.
+
+This plugin is based on ideas from e's dynabutton plugin, quite possibly the
+most brilliant idea in Leo's history.
+
+You can run the script with sys.argv initialized to string values using @args.
+For example:
+
+@button test-args @args = a,b,c
+
+will set sys.argv to [u'a',u'b',u'c']
+
+</t>
+<t tx="ekr.20101112211748.19929">Sends output from the Execute Script command to the end of the body pane
+
+</t>
+<t tx="ekr.20101112211748.19930"></t>
+<t tx="ekr.20101112211748.19931">Remote control for Leo.
+
+Example client::
+
+    from leo.external import lproto
+    import os
+
+
+    addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+    print("will connect to",addr)
+    pc  = lproto.LProtoClient(addr)
+    pc.send("""
+        g.es("hello world from remote") 
+        c = g.app.commanders()[0]
+    """)
+
+    # note how c persists between calls
+    pc.send("""c.k.simulateCommand('stickynote')""")
+
+</t>
+<t tx="ekr.20101112211748.19932">A minimal http plugin for LEO, based on AsyncHttpServer.py.
+
+Use this plugin is as follows:
+
+1. Start Leo with the plugin enabled.  You will see a purple message that says something like:
+
+"http serving enabled on port 8080, version 0.91"
+
+2. Start a web browser, and enter the following url: http://localhost:8080/
+
+You will see a a "top" level page containing one link for every open .leo file.  Start clicking :-)
+
+You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.
+
+To enable this plugin put this into your file::
+
+    @settings
+        @bool http_active = True
+        @int  port = 8080
+        @string rst_http_attributename = 'rst_http_attribute'
+
+**Note**: the browser_encoding constant (defined in the top node of this file)
+must match the character encoding used in the browser. If it does not, non-ascii
+characters will look strange.
+
+</t>
+<t tx="ekr.20101112211748.19933"></t>
+<t tx="ekr.20101112211748.19934">Creates stand-alone slideshows containing screenshots.
+
+This plugin defines four commands. The
+apropos-slides command prints this message to
+Leo's log pane. The slide-show-info prints the
+settings in effect.
+
+The make-slide and make-slide-show commands,
+collectively called **slide commands**, create
+collections of slides from **@slideshow** trees
+containing **@slide** nodes.
+
+Slides may link to screenshots. The slide commands
+can generate screenshots from **@screenshot-tree**
+nodes, but this feature has proven to be clumsy
+and inflexible. It is usually more convenient to
+use screenshots taken with a program such as Wink.
+The **@button meld** script in LeoDocs.leo creates
+references to externally-generated screenshots
+within @slide nodes.
+
+\@slide nodes may contain **@url nodes**. These @url
+nodes serve two purposes. First, they allow you to
+see various files (slides, initial screenshots,
+working files and final screenshots). Second,
+these @url nodes guide the meld script and the
+four commands defined by this plugin (see below).
+By inserting or deleting these @url nodes you (or
+your scripts) can customize how the commands (and
+meld) work. In effect, the @url nodes become
+per-slide settings.
+
+Prerequisites
+-------------
+
+Inkscape (Required)
+  An SVG editor: http://www.inkscape.org/
+  Allows the user to edit screenshots.
+  Required to create final output (PNG) files.
+
+PIL (Optional but highly recommended)
+  The Python Imaging Library,
+  http://www.pythonware.com/products/pil/
+
+Wink (Optional)
+  A program that creates slideshows and slides.
+  http://www.debugmode.com/wink/
+
+Summary
+-------
+
+@slideshow &lt;slideshow-name&gt;
+  Creates the folder:
+  &lt;sphinx_path&gt;/slides/&lt;slideshow-name&gt;
+
+@slide &lt;ignored text&gt;
+  Creates slide-&lt;slide-number&gt;.html
+  (in the sphinx _build directory).
+  **Note**: the plugin skips any @slide nodes
+  with empty body text.
+
+@screenshot
+  Specifies the contents of the screenshot.
+
+**Options** are child nodes of @slideshow or
+\@slide nodes that control the make-slide and
+make-slide-show commands. See the Options section
+below.
+
+The make-slide and make-slide-show commands
+create the following @url nodes as children
+of each @slide node:
+
+@url built slide
+  Contains the absolute path to the final slide in
+  the _build/html subfolder of the slideshow
+  folder. If present, this @url node completely
+  disables rebuilding the slide.
+
+@url screenshot
+  Contains the absolute path to the original
+  screenshot file. If present, this @url node
+  inhibits taking the screenshot.
+
+@url working file
+  Contains the absolute path to the working file.
+  If present, this @url node disables taking the
+  screenshot, creating the working file. The final
+  output file will be regenerated if the working
+  file is newer than the final output file.
+
+@url final output file
+  Contains the absolute path to the final output
+  file.
+
+Thus, to completely recreate an @slide node, you
+must delete any of the following nodes that appear
+as its children::
+
+    @url screenshot
+    @url working file
+    @url built slide
+
+Making slides
+-------------
+
+For each slide, the make-slide and make-slide-show
+commands do the following:
+
+1. Create a slide.
+
+  If the @slide node contains an @screenshot tree,
+  the plugin appends an ``.. image::`` directive
+  referring to the screenshot to the body text of
+  the @slide node. The plugin also creates a child
+  @image node referring to the screenshot.
+
+2. (Optional) Create a screenshot.
+
+  The plugin creates a screenshot for an @slide
+  node only if the @slide node contains an
+  @screenshot node as a direct child.
+
+  **Important**: this step has largely been
+  superseded by the ``@button meld`` script in
+  LeoDocs.leo.
+
+  Taking a screenshot involves the following steps:
+
+  A. Create the **target outline**: screenshot-setup.leo.
+
+    The target outline contains consists of all
+    the children (and their descendants) of the
+    @screenshot node.
+
+  B. Create the **screenshot**, a bitmap (PNG) file.
+
+    The slide commands take a screen shot of the
+    target outline. The @pause option opens the
+    target outline but does *not* take the
+    screenshot. The user must take the screenshot
+    manually. For more details, see the the
+    options section below.
+
+  C. Convert the screenshot file to a **work file**.
+
+    The work file is an SVG (Scalable Vector
+    Graphics) file: http://www.w3.org/Graphics/SVG/.
+
+  D. (Optional) Edit the work file.
+
+    If the @slide node has a child @edit node, the
+    plugin opens Inkscape so that the user can
+    edit the work file.
+
+  E. Render the **final output file**.
+
+    The plugin calls Inkscape non-interactively to
+    render the final output file (a PNG image)
+    from the work file. If the Python Imaging
+    Library (PIL) is available, this step will use
+    PIL to improve the quality of the final output
+    file.
+
+3. Build the slide using Sphinx.
+
+  After making all files, the plugins runs Sphinx
+  by running 'make html' in the slideshow folder.
+  This command creates the final .html files in the
+  _build/html subfolder of the slideshow folder.
+
+4. Create url nodes.
+
+  Depending on options, and already-existing @url
+  nodes, the make-slide and make-slide-show
+  commands may create one or more of the following
+  \@url nodes::
+
+    @url built slide
+    @url screenshot
+    @url working file 
+    @url final output file
+
+Options and settings
+--------------------
+
+You specify options in the headlines of nodes.
+**Global options** appear as direct children of
+\@slideshow nodes and apply to all @slide nodes
+unless overridden by a local option. **Local
+options** appear as direct children of an @slide
+node and apply to only to that @slide node.
+
+Global options nodes
+~~~~~~~~~~~~~~~~~~~~
+
+The following nodes may appear *either* as a
+direct child of the @slideshow node or as the
+direct child of an @slide node.
+
+@sphinx_path = &lt;path&gt;
+  This directory contains the slides directory,
+  and the following files: 'conf.py',
+  'Leo4-80-border.jpg', 'Makefile' and 'make.bat'.
+
+@screenshot_height = &lt;int&gt;
+  The height in pixels of screenshots.
+
+@screenshot_width = &lt;int&gt;
+  The height in pixels of screenshots.
+
+@template_fn = &lt;path&gt;
+  The absolute path to inkscape-template.svg
+
+@title = &lt;any text&gt;
+  The title to use for one slide or the entire
+  slideshow.
+
+@title_pattern = &lt;pattern&gt;
+  The pattern used to generate patterns for one
+  slide or the entire slideshow. The title is
+  computed as follows::
+
+    d = {
+        'slideshow_name':slideshow_name,
+        'slide_name':    slide_name,
+        'slide_number':  sc.slide_number,
+    }
+    title = (pattern % (d)).title()
+
+  If neither an @title or @title_pattern option
+  node applies, the title is the headline of the
+  \@slide node. If this is empty, the default
+  pattern is::
+
+    '%(slideshow_name)s:%(slide_number)s'
+
+\@verbose = True/False
+  True (or true or 1):  generate informational message.
+  False (or false or 0): suppress informational messages.
+
+Local options nodes
+~~~~~~~~~~~~~~~~~~~
+
+The following nodes are valid only as the direct
+child of an @slide node.
+
+@callout &lt;any text&gt;
+  Generates a text callout in the working .svg file.
+  An @slide node may have several @callout children.
+
+@edit = True/False
+  If True (or true or 1) the plugin enters
+  Inkscape interactively after taking a
+  screenshot.
+
+@markers = &lt;list of integers&gt;
+  Generates 'numbered balls' in the working .svg file.
+
+@pause = True/False
+  If True (or true or 1) the user must take the
+  screenshot manually. Otherwise, the plugin takes
+  the screenshot automatically.
+
+  If the slide node contains an @pause node as one
+  of its directive children, the slide commands
+  open the target node, but do *not* take a screen
+  shot.
+
+  The user may adjust the screen as desired, for
+  example by selecting menus or showing dialogs.
+  The *user* must then take the screen shot
+  manually. **Important**: the screenshot need not
+  be of Leo--it could be a screenshot of anything
+  on the screen.
+
+  As soon as the user closes the target
+  outline, the slide commands look for the screen
+  shot on the clipboard. If found, the slide
+  commands save the screenshot to the screenshot
+  file.
+
+@screenshot
+  The root of a tree that becomes the entire
+  contents of screenshot. No screenshot is taken
+  if this node does not exist.
+
+@select &lt;headline&gt;
+  Causes the given headline in the @screenshot
+  outline to be selected before taking the screenshot.
+
+Settings
+~~~~~~~~
+
+@string screenshot-bin = &lt;path to inkscape.exe&gt;
+  The full path to the Inkscape program.   
+
+File names
+----------
+
+Suppose the @slide node is the n'th @slide node in
+the @slideshow tree whose sanitized name is
+'name'. The following files will be created in
+(relative to) the slideshow directory::
+
+    slide-n.html.txt:   the slide's rST source.
+    screenshot-n.png:   the original screenshot.
+    screenshot-n.svg:   the working file.
+    slide-n.png:        the final output file.
+    _build/html/slide-n.html: the final slide.
+
+To do
+-----
+
+It would be possible to make @button meld a
+command defined by this plugin. To do this, the
+plugin would need to support options presently set
+"by hand" in the @button meld script.
+
+</t>
+<t tx="ekr.20101112211748.19935"></t>
+<t tx="ekr.20101112211748.19936">Manages BibTeX files with Leo.
+
+Create a bibliographic database by
+putting '@bibtex filename' in a headline. Entries are added as nodes, with
+'@entrytype key' as the headline, and the contents of the entry in body text.
+The plugin will automatically insert a template for the entry in the body pane
+when a new entry is created (hooked to pressing enter when typing the headline
+text). The templates are defined in dictionary 'templates' in the \&lt;\&lt;globals\&gt;\&gt;
+section, by default containing all required fields for every entry.
+
+The file is written by double-clicking the node. Thus the following outline::
+
+    -@bibtex biblio.bib
+     +@book key
+      author = {A. Uthor},
+      year = 1999
+
+will be written in the file 'biblio.bib' as::
+
+    @book{key,
+    author = {A. Uthor},
+    year= 1999}
+
+Strings are defined in @string nodes and they can contain multiple entries.
+All @string nodes are written at the start of the file. Thus the following
+outline::
+
+    -@bibtext biblio.bib
+     +@string
+      j1 = {Journal1}
+     +@article AUj1
+      author = {A. Uthor},
+      journal = j1
+     +@string
+      j2 = {Journal2}
+      j3 = {Journal3}
+
+Will be written as::
+
+    @string{j1 = {Journal1}}
+    @string{j2 = {Journal2}}
+    @string{j3 = {Journal3}}
+
+    @article{AUj1,
+    author = {A. Uthor},
+    journal = j1}
+
+No error checking is made on the syntax. The entries can be organised under
+nodes --- if the headline doesn't start with '@', the headline and body text are
+ignored, but the child nodes are parsed as usual.
+
+BibTeX files can be imported by creating an empty node with '@bibtex filename'
+in the headline. Double-clicking it will read the file 'filename' and parse it
+into a @bibtex tree. No syntax checking is made, 'filename' is expected to be a
+valid BibTeX file.
+
+</t>
+<t tx="ekr.20101112211748.19937">Sends code to the doctest module and reports the result.
+
+When the Dtest plugin is enabled, the ``dtest`` command is active.
+Typing:: 
+
+    Alt-X dtest
+
+will run doctest on a file consisting of the current node and it's children.
+If text is selected only the selection is tested.
+
+From Wikipedia::
+
+    'Doctest' is a module included in the Python programming language's 
+    standard library that allows for easy generation of tests based on 
+    output from the standard Python interpreter.
+
+http://tinyurl.com/cqh53 - Python.org doctest page    
+
+http://tinyurl.com/pxhlq - Jim Fulton's presentation::
+
+    Literate Testing:
+    Automated Testing with doctest
+
+</t>
+<t tx="ekr.20101112211748.19938">Converts a leo outline to an html web page.**
+
+.. contents::
+
+Introduction
+~~~~~~~~~~~~
+
+This plugin takes an outline stored in LEO and converts it to html which is then
+either saved in a file or shown in a browser. It is based on the original
+leoToHTML 1.0 plugin by Dan Rahmel which had bullet list code by Mike Crowe.
+
+The outline can be represented as a bullet list, a numbered list or using html
+&lt;h?&gt; type headings. Optionally, the body text may be included in the output.
+
+If desired, only the current node will be included in the output rather than
+the entire outline.
+
+An xhtml header may be included in the output, in which case the code will be
+valid XHTML 1.0 Strict.
+
+The plugin is fully scriptable as all its functionality is available through a
+Leo_to_HTML object which can be imported and used in scripts.
+
+
+Menu items and @settings
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+If this plugin loads properly, the following menu items should appear in
+your File &gt; Export... menu in Leo::
+
+    Save Outline as HTML  (equivalent to export-html)
+    Save Node as HTML     (equivalent to export-html-node)
+    Show Outline as HTML  (equivalent to show-html)
+    Show Node as HTML     (equivalent to show-html-node)
+
+*Unless* the following appears in an @setting tree::
+
+    @bool leo_to_html_no_menus = True
+
+in which case the menus will **not** be created. This is so that the user can
+use @menu and @item to decide which commands will appear in the menu and where.
+
+
+Commands
+~~~~~~~~
+
+Several commands will also be made available
+
+export-html
+  will export to a file according to current settings.
+export-html-*
+  will export to a file using bullet type '*' which can be **number**, **bullet** or **head**.
+
+The following commands will start a browser showing the html.
+
+show-html
+  will show the outline according to current settings.
+
+show-html-*
+  will show the outline using bullet type '*' which can be **number**, **bullet** or **head**.
+
+The following commands are the same as above except only the current node is converted::
+
+    export-html-node
+    export-html-node-*
+    show-html-node
+    show-html-node-*
+
+
+Properties
+~~~~~~~~~~
+
+There are several settings that can appear in the leo_to_html.ini properties
+file in leo's plugins folder or be set via the Plugins &gt; leo_to_html &gt;
+Properties... menu. These are:
+
+exportpath:
+    The path to the folder where you want to store the generated html file.
+
+    Default: c:\\
+
+flagjustheadlines:
+
+    Default: 'Yes' to include only headlines in the output.
+
+flagignorefiles:
+
+    Default: 'Yes' to ignore @file nodes.
+
+use_xhtml:
+
+    Yes to include xhtml doctype declarations and make the file valid XHTML 1.0 Strict.
+    Otherwise only a simple &lt;html&gt; tag is used although the output will be xhtml
+    compliant otherwise.
+
+    Default: Yes
+
+bullet_type:
+
+    If this is 'bullet' then the output will be in the form of a bulleted list.
+    If this is 'number' then the output will be in the form of a numbered list.
+    If this is 'heading' then the output will use &lt;h?&gt; style headers.
+
+    Anything else will result in &lt;h?&gt; type tags being used where '?' will be a
+    digit starting at 1 and increasing up to a maximum of six depending on depth
+    of nesting.
+
+    Default: number
+
+browser_command:
+
+    Set this to the command needed to launch a browser on your system or leave it blank
+    to use your systems default browser.
+
+    If this is an empty string or the browser can not be launched using this command then
+    python's `webbrowser` module will be tried. Using a bad command here will slow down the
+    launch of the default browser, better to leave it blank.
+
+    Default:
+        empty string
+
+Configuration
+~~~~~~~~~~~~~
+
+At present, the file leo/plugins/leo_to_html.ini contains configuration
+settings. In particular, the default export path, "c:\" must be changed for \*nix
+systems.
+
+</t>
+<t tx="ekr.20101112211748.19939">Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
+loaded into Microsoft Word and formatted as a proper outline.
+
+If this plug-in loads properly, you should have an "Outline to Microsoft RTF"
+option added to your File &gt; Export... menu in Leo.
+
+Settings such as outputing just the headlines (vs. headlines &amp; body text) and whether
+to include or ignore the contents of @file nodes are stored in the rtf_export.ini file
+in your Leo\plugins folder.
+
+The default export path is also stored in the INI file. By default, it's set to c:\ so
+you may need to modify it depending on your system.
+
+</t>
+<t tx="ekr.20101112211748.19940">This NOT a Leo plugin: this is a docutils writer for .pdf files.  
+
+That file uses the reportlab module to convert html markup to pdf.
+
+The original code written by Engelbert Gruber.
+
+Rewritten by Edward K. Ream for the Leo rst3 plugin.
+
+</t>
+<t tx="ekr.20101112211748.19941"></t>
+<t tx="ekr.20101112211748.19942">Supports Uniform Node Locators (UNL's) for linking to nodes in any Leo file.
+
+UNL's specify nodes within any Leo file. You can use them to create
+cross-Leo-file links! UNL
+
+This plugin consists of two parts:
+
+1) Selecting a node shows the UNL in the status line at the bottom of the Leo
+   window. You can copy from the status line and paste it into headlines, emails,
+   whatever. 
+
+2) Double-clicking @url nodes containing UNL's select the node specified in the
+   UNL. If the UNL species in another Leo file, the other file will be opened.
+
+Format of UNL's:
+
+UNL's referring to nodes within the present outline have the form::
+
+    headline1--&gt;headline2--&gt;...--&gt;headlineN
+
+headline1 is the headline of a top-level node, and each successive headline is
+the headline of a child node.
+
+UNL's of the form::
+
+    file:&lt;path&gt;#headline1--&gt;...--&gt;headlineN
+
+refer to a node specified in &lt;path&gt; For example, double clicking the following
+headline will take you to Chapter 8 of Leo's Users Guide::
+
+    @url file:c:/prog/leoCvs/leo/doc/leoDocs.leo#Users Guide--&gt;Chapter 8: Customizing Leo
+
+For example, suppose you want to email someone with comments about a Leo file.
+Create a comments.leo file containing @url UNL nodes. That is, headlines are
+@url followed by a UNL. The body text contains your comments about the nodes in
+the _other_ Leo file! Send the comments.leo to your friend, who can use the
+comments.leo file to quickly navigate to the various nodes you are talking
+about. As another example, you can copy UNL's into emails. The recipient can
+navigate to the nodes 'by hand' by following the arrows in the UNL.
+
+**Notes**:
+
+- At present, UNL's refer to nodes by their position in the outline. Moving a
+  node will break the link.
+
+- Don't refer to nodes that contain UNL's in the headline. Instead, refer to the
+  parent or child of such nodes.
+
+- You don't have to replace spaces in URL's or UNL's by '%20'.
+
+</t>
+<t tx="ekr.20101112211748.19943">Creates hoist buttons.
+
+This plugin puts two buttons in the icon area: a button called 'Save Hoist' and
+a button called 'Dehoist'. The 'Save Hoist' button hoists the presently selected
+node and creates a button which can later rehoist the same node. The 'Dehoist'
+button performs one level of dehoisting
+
+Requires at least version 0.19 of mod_scripting.
+
+</t>
+<t tx="ekr.20101112211748.19944">Colorizes URLs everywhere in node's body on node selection or saving. Double
+click on any URL launches it in default browser.
+
+URL regex:  (http|https|file|ftp)://[^\s'"]+[\w=/]
+
+Related plugins:  color_markup.py; rClick.py
+
+</t>
+<t tx="ekr.20101112211748.19945">Lets the user to associate text with a specific node.
+
+Summon it by pressing button-2 or button-3 on an icon Box in the outline. This
+will create an attribute editor where the user can add, remove and edit
+attributes. Since attributes use the underlying tnode, clones will share the
+attributes of one another.
+
+</t>
+<t tx="ekr.20101112211748.19946">Adds buttons so Leo can interact with command line environments.
+
+:20100226: see also leoscreen.py for a simpler approach.
+
+Currently implements `bash` shell and `psql` (postresql SQL db shell).
+
+Single-line commands can be entered in the headline with a blank body,
+multi-line commands can be entered in the body with a descriptive
+title in the headline.  Press the `bash` or `psql` button to send
+the command to the appropriate interpreter.
+
+The output from the command is **always** stored in a new node added
+as the first child of the command node.  For multi-line commands
+this new node is selected.  For single-line command this new node
+is not shown, instead the body text of the command node is updated
+to reflect the most recent output.  Comment delimiter magic is used
+to allow single-line and multi-line commands to maintain their
+single-line and multi-line flavors.
+
+Both the new child nodes and the updated body text of single-line
+commands are timestamped.
+
+For the `bash` button the execution directory is either the directory
+containing the `.leo` file, or any other path as specified by ancestor
+`@path` nodes.
+
+Currently the `psql` button just connects to the default database.  ";"
+is required at the end of SQL statements.
+
+Requires `pexpect` module.
+
+</t>
+<t tx="ekr.20101112211748.19947">Maximizes all new windows.
+
+</t>
+<t tx="ekr.20101112211748.19948">Sets a hardcoded frame size 
+
+Prevents Leo from setting custom frame size (e.g. from an external .leo
+document)
+
+</t>
+<t tx="ekr.20101112211748.19949">Creates a Plugins menu and adds all actives plugins to it.
+
+Selecting these menu items will bring up a short **About Plugin** dialog
+with the details of the plugin. In some circumstances a submenu will be created
+instead and an 'About' menu entry will be created in this.
+
+INI files and the Properties Dialog
+------------------------------------
+
+If a file exists in the plugins directory with the same file name as the plugin
+but with a .ini extension instead of .py, then a **Properties** item will be
+created in a submenu. Selecting this item will pop up a Properties Dialog which
+will allow the contents of this file to be edited.
+
+The .ini file should be formated for use by the python ConfigParser class.
+
+
+Special Methods
+---------------
+
+Certain methods defined at the top level are considered special.
+
+**cmd_XZY**
+
+    If a method is defined at the module level with a name of the form
+    **cmd_XZY** then a menu item **XZY** will be created which will invoke
+    **cmd_XZY** when it is selected. These menus will appear in a sub menu.
+
+**applyConfiguration**
+
+    If this method exists then it will be called whenever
+
+**topLevelMenu**
+
+    This method, if it exists, will be called when the user clicks on the plugin
+    name in the plugins menu (or the **About** item in its submenu), but only if
+    the plugin was loaded properly and registered with g.plugin_signon.
+
+
+Special Variable Names
+----------------------
+
+Some names defined at the top level have special significance.
+
+**__plugin_name__**
+
+    This will be used to define the name of the plugin and will be used
+    as a label for its menu entry.
+
+**__plugin_priority__**
+
+    Plugins can also attempt to select the order they will appear in the menu by
+    defining a __plugin_prioriy__. The menu will be created with the highest
+    priority items first. This behavior is not guaranteed since other plugins
+    can define any priority. This priority does not affect the order of calling
+    handlers.
+
+    To change the order select a number outside the range 0-200 since this range
+    is used internally for sorting alphabetically. Properties and INI files.
+
+</t>
+<t tx="ekr.20101112211748.19950">Sends all output to the log pane.
+
+</t>
+<t tx="ekr.20101112211748.19951">Creates a Scripts menu for LeoPy.leo.
+
+</t>
+<t tx="ekr.20101112211748.19952">Replaces the tk file dialogs on linux with external
+calls to the zenity gtk dialog package.
+
+This plugin is more a proof of concopt demo than
+a useful tool.  The dialogs presented do not take
+filters and starting folders can not be specified.
+
+Despit this, some linux users might prefer it to the
+tk dialogs.
+
+</t>
+<t tx="ekr.20101112211748.19953"></t>
+<t tx="ekr.20101112211748.19954">Leave footprints! This colours the Leo nodes so that the ones you
+have visited most and most recently will stand out.
+
+</t>
+<t tx="ekr.20101112211748.19955">Manages scriptable context menus invoked by right-clicking nodes.
+
+Executable Howto's and other examples of the use of this plugin can be
+found in::
+
+    leo/tests/testAtPopup.leo
+
+.. contents::
+
+To start with it works out-of-the-box, providing default menus for the
+following:
+
+    - the body pane         ( c.context_menus['body'] )
+    - the log pane          ( c.context_menus['log'] )
+    - the find edit box     ( c.context_menus['find-text'] )
+    - the change edit box   ( c.context_menus['change-text'] )
+    - headline              ( c.context_menus['headlines']) (empty)
+    - iconbox               ( c.context_menus['iconbox']) (empty)
+    - plusbox               ( c.context_menus['plusbox']) (empty)
+    - canvas                ( c.context_menus['canvas']) (empty)
+
+    ( if the headline or iconbox list is empty, the standard leo popupmenu will be used,
+    for other items an empty list will simply not produce a popup at all.)
+
+and also the following fragments:
+
+    - 'edit-menu' fragment (c.context_menus['edit-menu'])
+
+        This gives basic 'cut/copy/paste/select all' menu items for
+        text widgets.
+
+    - 'recent-files-menu' fragment (c.context_menus['recent-files-menu']
+
+        This gives a single cascade menu item which opens to reveal a list of
+        recently opened files.
+
+    - 'to-chapter-fragment'
+
+        This gives a list of four (copy/clone/move/goto) chapter menus
+
+    - 'find-controls-fragment'
+
+        This organises the find control buttons into two columns.
+
+    These fragments are meant to be included in other popup menu's via::
+
+        ('&amp;', 'recent-files-menu') or ('&amp;', 'edit-menu') or ('&amp;', 'to-chapter-fragment')
+
+
+These menus can be altered at will by scripts and other plugins using basic list
+operators such as append etc.
+
+In addition, callbacks can be embedded in the list to be called when the popup
+is being created. The callback can then either manipulate the physical tk menu
+(as it has been generated so far) or manipulate and extend the list of items yet
+to be generated.
+
+Adding support to other widgets.
+--------------------------------
+
+For widgets to use the rClick context menu system it needs to use::
+
+    g.doHook('rclick-popup', c=c, event=event, context_menu='&lt;a menu name&gt;', &lt;any other key=value pairs&gt; ...)
+
+context_menu provides the name of a menu to be used if an explicit menu has not been set with::
+
+    widget.context_menu = &lt;name&gt; | &lt;list&gt;
+
+Any number of keyword pairs can be included and all these will be passed to any
+generator or invocation callbacks used in the menu.
+
+
+The right click menu to be used is determined in one of two ways.
+
+    The explicitly set context_menu property:
+
+        If widget.context_menu exists it is always used.
+
+    The context_menu supplied the doHook call if any.   
+
+
+Keyword = Value data items in the body
+--------------------------------------
+
+Each line after the first line of a body can have the form::
+
+    key-string = value string
+
+these lines will be passed to the menu system aa a dictionary {key: value, ...}. This will
+be available to generator and invocation callbacks as keywords['item_data'].
+
+Lines not containing '=' or with '#' as the first character are ignored.
+
+Leading and trailing spaces will be stripped as will spaces around the first '=' sign.
+The value string may contain '=' signs.
+
+
+Colored Menu Items
+------------------
+
+Colors for menu items can be set using keyword = value data lines in the body of 
+@item and @menu nodes or the cmd string in rClick menus. 
+
+To set the foreground and background colors for menu items use::
+
+    fg = color
+    bg = color
+
+additionally different background and foreground colors can be set for radio and
+check items in the selected state by using::
+
+    selected-fg = color
+    selected-bg = color
+
+Icons in Menu Items
+-------------------
+Icons will only be shown if the Python Imaging Library extension is available.
+
+To set an icon for an @item or @menu setting in @popup trees use this in the body::
+
+    icon = &lt;full path to image&gt;
+
+or::
+
+    icon = &lt;path relative to leo's Icon folder&gt;
+
+an additional key 'compound' can be added::
+
+    compound = [bottom | center | left | right | top | none]
+
+if compound is not included it is equivalent to::
+
+    compound = left
+
+See the Tk menu documentation for more details.
+
+
+Format of menu tables.
+======================
+
+The menu tables are simply lists of tuples with the form::
+
+    (txt, cmd)
+
+where txt and cmd can be any python object
+
+eg::
+
+    default_context_menus['body'] = [
+
+        ('Cut', 'cut-text'),
+        ('Copy', 'copy-text'),
+        ('Paste', 'paste-text'),
+
+        ('-', ''),
+
+        ('Select All', 'select-all'),
+
+        ('-', ''),
+
+        ('Block Operations', [
+
+            ('Indent', 'indent-region'),
+            ('Dedent', 'unindent-region'),
+
+            ('-', ''),
+
+            ('Add Comments', 'add-comments'),
+            ('Remove Comments', 'delete-comments'),
+        ]),
+
+        ('-', ''),
+
+        ('&amp;', 'recent-files-menu'),
+
+        ('Find Bracket', 'match-brackets'),
+        ('Insert newline', rc_nl),
+
+        ('Execute Script', 'execute-script'),
+
+        ('"', 'users menu items'),
+
+        ('*', 'rclick-gen-context-sensitive-commands'),
+
+    ]
+
+Separators, Comments and Data
+-----------------------------
+
+if `txt` is '-' then a separator item will be inserted into the menu.
+
+    In this case `cmd` can have any value as it is not used.
+
+if `txt` is '' (empty string) or '"' (single  double-quote) then nothing is done.
+
+    This is a noop or comment. Again `cmd` can have any value as it is not used.
+
+if `txt` is '|' (bar) then a columnbreak will be introduced.
+
+
+`cmd` can be set to a string value for these items so that scripts which
+manipulate the menu tables can use these items as position markers, so that
+similar items may be grouped together for example.
+
+`cmd` can, however, take on any value and these items, especially comments, can
+be used to pass extra information to generator functions. eg::
+
+    ...
+    ( '*', interesting_function ),
+    ( '"', ('data', 4, 'interesting', function)),
+    ...
+
+The comment tuple can either be removed by interesting_function or just left as
+it will be ignored anyway.
+
+
+Other menu items
+------------------
+
+if `txt` is a string then a menu item will be generated using that string as a
+label.
+
+    - **Mini buffer Command**
+
+        If `cmd` is a string it is assumed to be a minibuffer command and
+        invoking the menu item runs this command.
+
+    - **Submenus**
+
+        If `cmd` is a list it is assumed to be a definition of a submenu and a
+        cascade menu item will be inserted into the menu.
+
+    - **Function call**
+
+        If `cmd` is not a list or string it is assumed to be a function or other
+        callable object and on invocation the object will be called as::
+
+            cmd(keywords)
+
+        where `keywords` is a dictionary that contains data supplied by the
+        right click event that we are responding to.
+
+        `keywords` will contain at least 'c' and 'event'
+
+        keywords.rc_label will be set to the value of `txt`
+
+
+Generating context sensitive items dynamically
+----------------------------------------------
+
+if `txt` is '*':
+
+    This is a **generator item**. It indicates that `cmd` should be used to call
+    a function or minibuffer command that will generate extra menu items, or
+    modify existing items, when the popup menu is being constructed.
+
+
+    When it comes to this item,
+
+    **If `cmd` is a string**:
+
+        It is assumed to be a **minibuffer** command and will be executed.
+
+        Handlers for minibuffer commands will find all the data they need in::
+
+            c.theContextMenuController.mb_keywords
+
+        and should place their returnvalue in
+
+            c.theContextMenuController.mb_retval
+
+        otherwise the handlers should be the same as if the function reference
+        had been placed directly in the table.
+
+
+    **If cmd is a function**:
+
+        the function is called as ::
+
+            cmd(keywords)
+
+        where
+
+            :keywords['c']: is the commander of the widget that received the event.
+
+            :keywords['event']: is the event object produced by the right click.
+
+            :keywords['event'].widget: is the widget that received the event.
+
+            :keywords['rc_rmenu']: is the physical tkMenu containing the items constructed so far.
+
+            :keywords['rc_menu_table']: is the list of tuples representing items not yet constructed.
+
+            :keywords['rc_item_data']: is a dictionary providing extra information for radio/check button callbacks
+
+        `cmd` may either manipulate the physical tkMenu directly or add (txt, cmd) tuples
+        to the front of (or anywhere else in) keywords.rc_menu_table. See the code in
+        rClick.py for an example.
+
+        An example of how to do this is provided by the rclick-gen-context-sensitive-commands
+        minibuffer command described later.
+
+
+Including other menus and fragments.
+------------------------------------
+
+If `txt` is '&amp;':
+
+    In this case `cmd` is used as the name of a menu which appears in
+    c.context_menus. If a menu exists with that name its contents are included
+    inline, (not as a submenu).
+
+
+
+Example menu generator
+======================
+
+An example of generating dynamic context sensitive menus is provided as the
+**rclick-gen-context-sensitive-commands** minibuffer command.
+
+If this command is placed in a 'body' menu table as::
+
+     ('*', 'rclick-gen-context-sensitive-commands')
+
+the following happens.
+
+Create "Open URL: ..." menu items.
+
+    The selected text, or the line containing the cursor, is scanned for urls of
+    the form (http|https|ftp):// etc and a menu item is created named "Open
+    URL:..." for each one found, which when invoked will launch a browser and
+    point it to that url.
+
+Create "Jump To: &lt; &lt;section&gt;&gt;"" menu items.
+
+    The selected text, or the line containing the cursor, is scanned for
+    sections markers of the form &lt; &lt; ... &gt;&gt; and a menu item is created for each
+    one found, which when invoked will jump to that section.
+
+Create a "Help on:" menu item.
+
+    The selected text, or the word under the cursor, is used to create a "Help
+    on: word" menu item, which when invoked will call python's 'help' command on
+    the word and display the result in the log pane or a browser.
+
+
+@Settings (@popup)
+==================
+
+    **popup**
+
+        Context menus can be described in @settings trees using::
+
+            @popup &lt; menu_name &gt;
+
+        where `name` can be any string. If `name` has already been defined then
+        that menu is replaced with this one. Last in wins.
+
+        @menu and @item nodes are used as with @menus. The syntax is slightly
+        expanded to enable additional features.
+
+        - @item &amp; - with the name of a menu to be included in the first line of the body
+        - @item * - with the name of a minibuffer command in the body
+
+        The following may have comments in the first line of the body.
+
+        - @item | - to introduce a column break in the menu
+        - @item " - a noop but may be useful for the comment in the body
+
+    **rclick_show_help**
+
+        This setting specifies where output from the help() utility is sent::
+
+            @string rclick_show_help = 'flags'
+
+        `flags` is a string that can contain any combination of 'print', 'log',
+        'browser' or 'all'.
+
+        eg::
+
+            @string rclick_show_help = 'print log'
+
+        This will send output to stdout and the log pane but not the browser.
+
+        If the setting is not present or does not contain valid data, output
+        will be sent to all three destinations.
+
+
+Minibuffer Commands
+===================
+
+These are provided for use with ('*', ... ) items. They are of use **only** in
+rclick menu tables and @popup trees.
+
+    - rclick-gen-context-sensitive-commands
+
+        It's use is described elsewhere.
+
+
+    - rclick-gen-recent-files-list
+
+        Used to generate a list of items from the recent files list.
+
+    - clone-node-to-chapter-menu
+    - copy-node-to-chapter-menu
+    - move-node-to-chapter-menu
+    - select-chapter-menu
+
+        These produce menu items for each chapter that copy, clone, move or select that chapter when invoked. 
+        The currently selected chapter is not included in the list.
+
+    - rclick-button
+
+        This is the default handler for radio and check menu items.
+
+    - rclick-find-whole-word-button
+    - rclick-find-ignore-case-button
+    - rclick-find-wrap-around-button
+    - rclick-find-reverse-button
+    - rclick-find-regexp-button
+    - rclick-find-mark-finds-button
+    - rclick-find-mark-changes-button
+    - rclick-find-search-body-button
+    - rclick-find-search-headline-button
+    - rclick-find-node-only-button
+    - rclick-find-suboutline-only-button
+    - rclick-find-entire-outline-button
+
+        These commands are generator commands to be use as @item \* (body: rclick-find-\*-button).
+
+        Each command producdes a radio or check item that reflects a control in the find tab.
+
+        When these buttons are clicked, the changes are automatically made to the controls
+        in the find tab.
+
+        fg, bg, selected-fg and selected-bg may be used to color these buttons but
+        do NOT use kind, name or group
+
+
+Radio and Check menu Items.
+===========================
+
+If '\@item rclick-button' is used then the item is assumed to be a check or radio item and the body
+of the node should have the following format::
+
+    first line:  &lt;item label&gt;
+    other lines: kind = &lt;radio or check&gt;
+                 name = &lt;unique name for this item&gt;
+                 group = &lt;name of group if kind is radio&gt;
+
+As well as 'fg = color' and 'bg = color', 'selected-fg = color' and
+'selected-bg' can be used to set the colors for when a radio or check button is
+selected
+
+From now on controller will refer to c.theContextMenuController
+
+:controller.radio_group_data:
+
+    Is a dictionary with keys being the name of a radio group and values the
+    name of the radio button currently selected for that group.
+
+    These may be initialized by the user but will be initialized automatically if not.
+
+    The selected value may be set by scripts at any time.
+
+:controller.check_button_data:
+
+    This is a dictionary with keys being the name of the check buttons and
+    values being boolean values, True to indicate the button is checked,
+    False otherwise.
+
+    The value may be initialized by scripts but will be initialized automatically
+    otherwise.
+
+    The value may be changed by scripts at any time.
+
+When any check or radio item is clicked, a hook is generated
+
+    **for radio items**::
+
+        g.doHook('rclick-button-clicked', kind='radio', group=group, selected=selected)
+
+    where selected is the name of the radio button currently selected for the group
+
+    **for check items**::
+
+        g.doHook('rclick-button-clicked', kind='check', name=name, selected=selected)
+
+    where selected is True to indicate the named button is checked, False otherwise.
+
+
+The 'rclick-button' command is provided for convenience.  Plugins may provide there own
+command to handle check and radio items, using rclick-button as a template.
+
+</t>
+<t tx="ekr.20101112211748.19956">Provides base classes for plugins.
+
+This is an experimental set of base classes for plugins.
+
+They are primarily meant for use in rClick and toolbar 
+but may be used in other plugins.
+
+</t>
+<t tx="ekr.20101112211748.19957">Integrates C/C++ compiler and debugger in a node.
+
+</t>
+<t tx="ekr.20101112211748.19958">Allows the user to import binary data and store it in Leo as a
+base64 string.
+
+This plugin adds 'Import base64' and 'Export base64' commands to the Import menu
+and adds the 'View base64' command to the outline menu.
+
+The Import base64 command creates a new node with the headline '@base64
+&lt;filename&gt;'. The body of this node will kill the colorizer, add some info on
+the original file and create a section reference to the payload node, which
+contains the data.
+
+The Export base64 command asks for a location to place the file. The plugin
+checks that the structure of the base64 node is what it expected, basically what
+an import operation creates. If Ok, it will write the file to the selected
+directory.
+
+The View base64 command brings up a Pmw Dialog that displays the data as a
+PhotoImage. This currently only supports formats recognized by the PhotoImage
+class. This would be the .gif format. This functionality may be enhanced in the
+future by PIL to support more image types.
+
+Depending on the size of the image, you may have to scroll around to see it. For
+example, a leo clone icon will require scrolling to find. Id like to change this
+in the future.
+
+</t>
+<t tx="ekr.20101112211748.19959">Creates coloured LEo Outlines.
+
+Cleo adds time required, progress and priority settings for nodes.
+It also allows you to colour nodes.  With the @project tag a
+branch can display progress and time required with dynamic updates.
+
+Right click on a node's icon box to dislay the cleo menu.
+
+For full documentation see:
+
+  - http://leo.zwiki.org/Cleo 
+  - http://leo.zwiki.org/cleodoc.html
+
+</t>
+<t tx="ekr.20101112211748.19960">Handles coloring for markup in doc parts and Python triple-double-quoted strings.
+
+Important notes:
+
+- The add_directives.py plugin must be enabled for this plugin to work.
+- At present, this plugin does *not* work with the threading_colorizer plugin.
+- The wiki text must be 
+    1. in the range of an ``@markup wiki`` directive **and**
+    2. in a Leo doc part (starting with '@') **or** a Python triple-quoted string.
+- This plugin adds commands to the Edit:Edit Body menu.
+
+The currently supported markups are:
+
+''text''                # write text in italics
+__text__                # write text in bold
+~~&lt;color&gt;:text~~        # write text in the color specified by &lt;color&gt; (e.g. blue, grey, etc)
+{picture file=filename} # load the picture indicated by filename.
+http://url  # Underline the url: double clicking the url will open it in the default browser.
+https://url # Underline the url: double clicking the url will open it in the default browser.
+
+-   Note 1: italics and bold markups can be nested, e.g.
+
+        ''__text__''               # write text in italics and bold
+
+    Just remember to terminate the tags in the order they were opened.
+
+- Note 2: URLs must be terminated by a space.
+
+By default, once the text has been markup up, the actual tags (e.g. __ for bold) are not displayed anymore. You can choose to display them selecting "Show Invisibles" from the Edit menu.
+
+</t>
+<t tx="ekr.20101112211748.19961">Enhances the EditAttributes.py plugin.
+
+It puts a command in Outline called ConceptualSort. This will prompt you for a
+concept to sort by. This gives the user some more flexibility in how they want
+to arrange their nodes. Nodes without the attribute in question go to the bottom
+of the sort.
+
+The dialog has been redone. The user can:
+
+- Select which attribute he wants to sort on by clicking on the Attribute box.
+
+- Select the type of sort he wants by clicking on the radio buttons:
+
+    -   Normal.
+    -   Reversed. Like normal but the results are reversed.
+    -   Used defined. For advanced users. The text box is where a user can type in
+        their own python code to sort the nodes-attributes. There is no need for a
+        def. That gets appended to the beginning of the code. It prototype looks
+        like::
+
+            def( a, b, att ):
+
+where a and b are nodes and att is dictionary of the nodes and the respective
+value of the selected attribute. There is no need to indent on the first level
+since indentation is added at compile time.
+
+</t>
+<t tx="ekr.20101112211748.19962">Adds the fast-goto-node minibuffer command that creates a
+popup menu.
+
+You can summon this menu in two ways, depending on the
+``fastgotonode_useKeyBinding`` setting:
+
+- If this setting is True, the ``fastgotonode_binding`` setting should be a Key
+  specifier that does not conflict with any key binding in leoSettings.leo.
+
+- If this setting is False, the ``fastgotonode_binding`` setting should be some
+  other event specifier, typically 'Button-3'.
+
+You may also invoke the popup menu using Alt-x fast-goto-node.
+
+This plugin offers 3 main feature sets:
+
+1. Movement. If a node has ancestors,siblings or children a menu option will
+appear offering the user the ability to jump to the node from the current node.
+This is an improvement over moving one node at a time with the keyboard
+commands.
+
+2. Inserting text. These menus offer the current language keywords, the
+directives the body recognizes and any @file type headline directives. It offers
+the new user easy access to the different directives and ways to write a file.
+
+3. Moving Nodes( experimental feature ). You can quickly move a node to its
+parent's parent or after a sibling, if they exist.
+
+</t>
+<t tx="ekr.20101112211748.19963">Edits graphs visually
+
+Graph commands are in the Outline/Graph submenu.
+See http://leo.zwiki.org/GraphEd for documentation.
+
+Graph editor component based on the Gred graph editor from the
+Gato Graph Animation Toolbox at http://gato.sourceforge.net/
+
+</t>
+<t tx="ekr.20101112211748.19964">Adds Group commands functionality.
+
+Restrictions currently apply to using Leo with a Tk frontend. There are several
+commands in this plugin:
+
+-   Mark Node: marks a node for further operations such as copying, cloning and moving.
+
+-   Mark Target: marks a node as the place where group operations are to target.
+
+-   Operate On Marked: moves lassoed nodes to the spot where the roundup node is
+    placed. Clones are maintained.
+
+-   Clear Marked: unmarks all marked nodes and removes the roundup node.
+
+-   Transfer Lassoed Nodes: this is a menu for inter-window communication.
+    The windows must all be spawned from the same Leo instance. 
+    It allows the user to move all node marked for copying and moving from another window to this one.
+
+</t>
+<t tx="ekr.20101112211748.19965">Adds Hoist/De-Hoist buttons to the toolbar.
+
+</t>
+<t tx="ekr.20101112211748.19966">Handles @image nodes.
+
+</t>
+<t tx="ekr.20101112211748.19967">Stores Leo trees in database files. This should help people
+develop templates that they want to reuse between Leo projects. For example, Id
+like a template of many Java interfaces to be easily accessable.
+
+This plugin creates three menu items in the Plugins:Library menu:
+
+- Show Dialog
+
+Shows a dialog that allows you to insert parts of a Leo outline into the
+database. You can also remove previously stored outlines or insert stored
+outlines into the present outline.
+
+- Show Status
+
+Shows the status of the database and various options.
+
+- Close Database
+
+Closes the database.
+
+**Warning**: your database files may not be OS independent.
+
+</t>
+<t tx="ekr.20101112211748.19968">Associates information with nodes. This information is organized around
+"labels", which is are just strings and freely chosen by the user.
+
+The plugin allows you to create such a label quickly for each marked node, and
+to mark all nodes which have a certain label.
+
+"labels" can be converted to subnodes, and vice versa. This facility allows you
+to add additional information for each label.
+
+You can create clones for each node which has a label. These clones are
+created as children of the current node.
+
+This last facility can be used to create clones for each node which has been
+found or changed by the standard search / replace dialog:
+
+- Delete all marks.
+- Do a "find all" / "change all".
+- Convert the marks to a label.
+- Run the "Clone label subnodes" command.
+
+Finally, if you read a derived file, and the content of a node changes, the
+previous content is available under the label "before change:"
+
+</t>
+<t tx="ekr.20101112211748.19969">Adds navigation buttons to icon bar
+
+This plugin adds buttons to the icon bar that:
+
+- allow the selected position to be moved between recently visited positions
+
+- pops up a dialog which shows recently visited positions and allows them
+  to be selected.
+
+- pops up a dialog which shows currently marked nodes and allows them to be
+  selected.
+
+In addition, the marks button and the previous/next arrow buttons have right 
+click menus that pop up in response to right clicks from the mouse.
+
+
+Commands
+--------
+
+    show-recent-sections-dialog
+
+    show-marks-dialog
+
+rClick menu generator commands
+------------------------------
+
+    These minibuffer commands are for use in rClick and @popup menus. To include
+    the menus generated by these commands:
+
+        In @popup menus use '@item \*' in the headline and the name of the
+        command as the first line of the body.
+
+        In rClick menu tables use ('\*', &lt;command-name&gt;)
+
+    nav-marks-menu:
+
+        creates menu items for each marked headline that will select that headline
+        when invoked.
+
+    nav-prev-menu:
+
+        creates menu items for each previously visited node that will select
+        that headline when invoked. The items are created in the same order as
+        the headlines would be visited by pressing the left arrow icon.
+
+    nav-next-menu:
+
+        creates menu items for each each next to be visited node that will
+        select that headline when invoked. The items are created in the same
+        order they would be visited by pressing the right arrow icon.
+
+    Typical usage for these commands would be:
+
+        @menu prev
+            @item *    body = nav-prev-menu
+
+</t>
+<t tx="ekr.20101112211748.19970">Allows the use of template nodes for common tasks
+
+Template nodes can be create for any node. The template can then
+be inserted at the click of a button. This is a bit like a permanent
+clipboard except that templates can have items in them which can 
+be overriden. Nodes can contain any number of child nodes.
+
+For instance you might want to have a template for a unit test method.
+The unit test method template includes a name and description. When
+you create an instance of the template these items can be specified.
+
+To override items in the template you insert strings with the following
+form::
+
+    $$expr$$
+
+These strings can be anywhere in the headline or body text. The *expr*
+is an expression which will be evaluated in a namespace containing two
+existing names,
+
+    name = the name entered into the entry box in the toolbar
+    node = the leo Vnode that was selected when the *New* button was pressed
+
+You can use this in many way, eg to create a custom file from a template::
+
+    @thin $$name$$.py   &lt;- in the headline text
+
+Or to create a unit test node (using methods of the *name* object)::
+
+    @thin test$$name.lower()$$
+    &lt; body text &gt;
+       class $$name$$:   &lt;- in a child node
+
+The following menu items are available:
+
+MakeTemplateFrom
+    Create a template from the current node. You will be asked to enter the
+    name for the template.
+
+UpdateTemplateFrom
+    Update a specific template from the current node. You will be asked
+    to select the template to update.
+
+DeleteTemplate
+    Delete a specific template. You will be asked to select the template to delete.
+
+AddRawTemplate
+    Adds the contents of a template to the outline but doesn't convert the
+    $$name$$ values. This is useful for updating a template using UpdateTemplateFrom
+    at a later stage.
+
+</t>
+<t tx="ekr.20101112211748.19971">Adds buttons at the bottom of the tree canvas.
+
+The buttons correspond to commands found in the Outline commands. It is intended
+to speed up a new users ability to use the outline. Experienced users may find
+value in being able to quickly execute commands they do not use very often
+
+</t>
+<t tx="ekr.20101112211748.19972">Adds "Recent" and "Marks" pulldown buttons to the toolbar.
+
+</t>
+<t tx="ekr.20101112211748.19973">Creates the Open With menu and handles the resulting commands.
+
+\@openwith settings nodes specify entries. See the documentation for @openwith
+nodes in leoSettings.leo for details.
+
+</t>
+<t tx="ekr.20101112211748.19974">Adds pie menus: http://www.piemenus.com/
+
+</t>
+<t tx="ekr.20101112211748.19975">Adds row/column indicators to the toolbar.
+
+</t>
+<t tx="ekr.20101112211748.19976">Schedules commands for later execution.
+
+This plugin provides the ability to issue commands at a future time and to write
+messages that will be displayed at a later time.
+
+To record commands You goto Schedule and choose begin recording. Then you jump
+to the nodes and select the commands you want issued on them. This process is
+ended with the end recording option.
+
+A dialog pops up. You can then click on the individual commands and set the time
+for execution. To set the execution time for all, enter a value and hit set_all.
+All times must be in the form hh:mm. For example I want to issue a save command
+for 5:00 PM. I would do so by using the value 17:00.
+
+The Schedule Message is simple. There is a Text box to enter the message and a
+Entry to place the time. View Queue will summon a view of The Queue. This dialog
+will show the commands that have been enqued. There is also the option to Cancel
+out any scheduled commands/messages.
+
+</t>
+<t tx="ekr.20101112211748.19977">Emulates the 'Find' panel in an iconBar.
+
+</t>
+<t tx="ekr.20101112211748.19978">Adds a quick search to Leo's toolbar.
+
+A search box which behaves like a web site search is added, along with
+a "GO" button to do quick searches right from the main Leo window. All the
+current search options are retained except that "search body text" is
+explicitely set - mainly because this is by far the most common use case.
+
+Pressing &lt;CR&gt; while editing the text automatically does a search. Repeated
+searches can be done by clicking the "GO" button.
+
+The combo box also stores a list of previous searches, which can be
+selected to quickly repeat a search. When activating a previous
+search the original search mode is used.
+
+Still to do:
+
+- incremental search
+- reverse search
+- persist recent searches across Leo sessions
+- use INI file to set options for list size etc
+
+</t>
+<t tx="ekr.20101112211748.19979">Creates a 'shortcut' button in the icon area.
+
+Pressing the 'shortcut' button creates *another* button which when pressed will
+select the presently selected node at the time the button was created.
+
+This plugin requires that the mod_scripting plugin be enabled. The toolbar.py
+and rClick.py plugins are not required, but extra facilities are available
+if they are enabled.
+
+
+An @data shortcut_button_data may be used in @setting trees to control the colors
+for the buttons and to set the name of the @popup menu to be used as a context menu.
+
+If the following line appears::
+
+    icon = &lt;full or relative path to an icon&gt;
+
+then the requested icon will be shown instead of text in the master button.
+
+
+The colors and menus for the 'shortcut' button itself are set using::
+
+    master-bg = &lt;color&gt;
+    master-fg = &lt;color&gt;
+    master-menu = &lt;@popup menu-name&gt;
+
+
+The colors and menus for the 'shortcut' button itself are set using::
+
+    slave-bg = &lt;color&gt;
+    slave-fg = &lt;color&gt;
+    slave-menu = &lt;@popoup menu-name&gt;
+
+
+The menus will be ignored if the rClick.py and toolbar.py plugins are not enabled.
+
+If the toolbar.py plugin is enabled then the following settings will be honored::
+
+    iconbar = &lt;name of an iconbar&gt;
+    hide = 
+
+Iconbar gives the name of an iconbar to which the master button should initially be attached. 
+If no name is given then the default 'iconbar' will be used. The iconbar will be created if it
+does not already exist. 
+
+If hide is left blank then any iconbar created will be shown initially, otherwise it will be
+hidden. This has no effect if the iconbar already exists.
+
+
+Minibuffer Commands
+-------------------
+
+The following minibuffer commands are provided::
+
+        If these commands are used in a button menu or an iconBar menu then the
+        buttons will be created in the iconbar to which the menu or button
+        is attached. Otherwise the button will be created in the default 'iconbar'. 
+
+    create-shortcut-button
+
+        Creates a duplicate of the master button, which when pressed
+        will issue a create-shortcut command.
+
+
+    create-shortcut
+
+        Creates a slave button which when pressed will select the presently 
+        selected node at the time the button was created.
+
+</t>
+<t tx="ekr.20101112211748.19980">Creates a View Table command in the Outline menu.
+
+This command checks the current node using the csv (comma separated values) mods
+Sniffer. It tries to determine the format that is in the nodes data. If you had
+excel data in it, it should be able to determine its excel data. It then creates
+a dialog with the data presented as in a table for the user to see it.
+
+Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable
+
+</t>
+<t tx="ekr.20101112211748.19981">Adds customizable templates to an outline.
+
+Templates are like any other node except that the plugin replaces %s in the body
+text by values that you specify when using template. Templates may have section
+references; this plugin uses Leo's @nosent write machinery to create one string
+out of possibly many nodes.
+
+This plugin creates two buttons in Leo's icon area:
+
+- The '%s' button marks or unmarks a node as a template. A %s symbol will apear to
+  the left of the node when it is marked as a template.
+
+- The '----&gt; %s' button brings up a dialog that shows you the template text and
+  asks you to specify the value for all %s instances. Dismissing this dialog
+  inserts the template as the first child of the node, and creates a section
+  reference in the node that references the template.
+
+If a template does not have a '%s' in it, then the templates plugin just adds
+the text as a node. Templates once marked are stored across sessions. Do not put
+a template in a thin file, as your template mark will be erased between
+sessions.
+
+</t>
+<t tx="ekr.20101112211748.19982">Enhances Leo's iconBar and script buttons.
+
+**see test/testToolbar.leo for demo's and howto's **
+**see test/testAtPopup.leo for examples of enhanced buttons.**
+
+This plugin provides:
+
+    multiple iconBars each of which automatically collapse and
+    expand so that all the buttons are always visible.
+
+    drag and drop of buttons within and between iconBars.
+
+    enhancements to Leo's buttons and @button settings to allow
+    icons, menus, tooltips and text and background colors to be set
+    in @button settings and scripts. 
+
+.. contents::
+
+enhanced script button and @button nodes
+----------------------------------------
+
+If the toolbar.py plugin is enabled then a comment block can be added at the top
+of the body of the @button node. (If toolbar.py is not enabled then these
+comment blocks will of course simply be ignored.)
+
+The header will also be honoured if script-button is used to convert a node
+to a button.
+
+Within this block you may include lines starting with @btn to set extra
+parameters for the button created.
+
+eg 1::
+
+    @
+    @btn fg = yellow
+    @btn bg = red
+    @btn menu = my-button-menu
+    @c
+
+The created button would have yellow text on a red background and when the right
+mouse button is clicked on it a popup menu will appear (if rClick.py is
+enabled).
+
+eg 2::
+
+    @
+    @btn icon = Tango/16x16/actions/add.png
+    @btn menu = my-button-menu
+    @btn bg =
+    @btn tooltip = My First Icon Button
+    @c
+
+Here the button will only have an icon, not text. It still has a right click
+menu. The line after the 'bg =' is left blank to suppress any default background
+colors, without setting our own color.
+
+Icons in buttons requires the Python Imaging Library to be installed on your computer.
+
+The line containing the single @ must not be preceded by any other line except
+blank lines.
+
+toolbars 
+--------
+
+A 'toolbar' is a collection of 'iconbars'. At the moment only one toolbar is
+availiable and it appears in the place where the leo's traditional iconbar appears.
+
+Future plans include allowing toolbars to be placed anywhere, including in dialogs,
+orientated vertically as well as horizontally. It will then be possible to drag and
+drop iconbars within and between toolbars.
+
+iconbars
+--------
+
+Each iconbar is assigned a name, the default iconBar is called 'iconbar'. A
+dictionary mapping names to iconBar objects is kept in *c.frame.iconBars* and
+the default iconBar is also in *c.frame.iconBar*    
+
+Any widget may be added to an iconBar but:
+
+    All widgets must have c.frame.top as the parent.
+
+    Widgets can not be packed into the bars directly, they must be added
+    through c.frame.addIconWidget or through &lt;bar&gt;.addWidget
+
+
+This will break some plugins. If it breaks a plugin you are using report this
+on the mailing list and it will be fixed.
+
+If widget.leoShow exists and is set to False then the widget will still be in
+the list in its assigned packing order but it will not be seen. Any change to 
+widget.leoShow must be followed by a call to bar.repackButtons() before the
+change will be seen. 
+
+Some convenience methods are available in c.frame, all of which can have
+barName=&lt;name of bar&gt;. If no barName is supplied 'iconbar' will be used.
+
+    createIconBar(barName='iconbar'):
+        If an iconBar with barName already exists it will be returned, otherwise
+        a new iconBar will be created, packed and returned.
+
+    addIconButton(\*args, \**keys):
+        creates and packs and returns an icon button. This is equivalent
+        to c.frame.addIconWidget(c.frame.getIconButton(\*args, \**keys)
+
+        barName: 'iconbar' may be in keys.
+
+    getIconButton(\*args, \**keys):
+        creates and returns an icon button but does not pack it. Any barName
+        will be ignored.
+
+    getIconWidgetFrame(\*args, \**keys): 
+
+        creates an enhanced Tk.Frame widget properly parented and with
+        a few methods which make it easier to use than a straight Tk.Frame.
+
+        args and keys are the same as for Tk.Frame except without the first
+        (parent) arg which is not used as the Frame will always have c.frame.top
+        as the parent as required by all widgets to be packed in an iconBar.
+
+    addIconWidget(widget, barName='iconbar', index=None):
+
+        Adds any widget or button to the named iconBar in the position indicated
+        by index. If barName does not exist it is created.
+
+        This method delegates to c.frame.iconBars[barName].addWidget
+
+        The method is used to add buttons as well as other widgets because
+        'addIconButton' is already taken and has a different meaning.
+
+The iconBars themselves have the following public methods.
+
+    getButton(\*args, \**keys)
+        same as c.frame.getIconButton
+
+    getWidgetFrame(\*args, \**keys)
+        same as c.frame.getWidgetFrame
+
+    add(\*args, \**keys)
+        same as c.frame.addIconButton
+
+    repackButtons(buttons=None)
+
+        if buttons is None then the current list of buttons is repacked,
+        otherwise it must be a list of buttons or other widgets to pack
+
+    addWidget(widget, index=None, repack=True)
+
+        Adds a widget to the list of widgets to be packed in this iconBar.
+
+        repack is True by default causing repackButtons() to be called after
+        adding the widget. If repack is set to False the script must call
+        repackButtons() itself. Setting repack to False is useful if you
+        want to add several widgets, you can then call repackButtons() just
+        once.
+
+        If index is None or invalid the widget will be packed at the end
+        of the iconBar.
+
+    removeWidget(widget, repack=True)
+         removes the widget from the list and optionally repacks the iconBar.
+
+    show(show=True)
+        Makes the toolbar visible if it is not already visible or vice versa
+        if show is False.
+
+     hide()
+        Makes the toolbar invisible if it was not already invisible.
+
+The iconbars also have the following public properties.
+
+    bar.buttons
+
+        This provides a shallow *copy* of the list of buttons/widgets contained
+        in the iconBar. Changing this list has no effect on the iconBar.
+
+        Using 'bar.buttons = &lt;list of widgets&gt;' is allowed and is the same as::
+
+            bar.repackButtons(&lt;list of widgets&gt;)
+
+        Commands of the following kind are allowed::
+
+            bar.buttons = bar.buttons[1:]
+
+        but the following will not work as expected::
+
+            bar.buttons[1:]
+
+    bar.visible
+
+        tells if the bar is visible or not.
+
+        'bar visible = True (or False)' show (or hides) the toolbar. 
+
+        'bar.visible = not bar.visible' toggles the visibility of the toolbar
+
+compound iconBar widgets and drag handles.
+------------------------------------------
+
+Compound widgets can be constructed using a Tkinter.Frame widget and packing
+buttons (obtained eg from c.frame.getButton) and other components into it,
+finally packing the frame into the iconBar using c.frame.addIconWidget or
+bar.addWidget.
+
+The following methods::
+
+    c.frame.getIconWidgetFrame(\*args, \*keys) and 
+    bar.getWidgetFram(\*args, \*keys)
+
+return a Tk.Frame widget parented on c.frame.top and with a few extra
+methods to make more advanced use easier.
+
+See the compound widgets and drag handles howto in test/testToolbar.leo
+
+</t>
+<t tx="ekr.20101112211748.19983">Searches for unknownAttributes (uA's).
+
+</t>
+<t tx="ekr.20101112211748.19984">Enables the user to scroll with mouse clicks.
+
+Scroll down with a left mouse click and hold; scroll up with a right mouse click
+and hold. Scrolling continues until the user releases the mouse.
+
+Originally designed as a workaround for various bugs in Tkinter scrolling,
+this may actually be superior to wheel scrolling, in that there is little work
+a user has to do to scroll except to press a button.
+
+We use a Thread and 4 Tkinter Events to enable this. Threading was
+necessary to deserialise Button Press and Button Release. Without a Thread
+there apparently was no way to split the two apart. Exterior processes were
+not considered as serious pieces of the mechanism, threading kept things
+simple.
+
+Important: this plugin requires @bool expanded_click_area = False
+in leoSettings.leo.
+
+</t>
+<t tx="ekr.20101112211748.19985">Uses Python's urllib module to download files and import them into Leo.
+
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

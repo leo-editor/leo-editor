@@ -15,6 +15,7 @@ Related plugins:  color_markup.py; rClick.py
 #@@tabwidth -4
 
 __version__ = "0.3"
+
 #@+<< version history >>
 #@+node:RV20090910.20100110154407.7439: ** << version history >>
 #@+at
@@ -34,8 +35,12 @@ import leo.core.leoGlobals as g
 
 import re
 #@-<< imports >>
+#@+<< define url_regex >>
+#@+node:ekr.20101112211748.19589: ** << define url_regex >>
+# Defined here so it won't confuse the script that finds docstrings.
 
 url_regex = re.compile(r"""(http|https|file|ftp)://[^\s'"]+[\w=/]""")
+#@-<< define url_regex >>
 
 #@+others
 #@+node:RV20090910.20100110154407.7438: ** init()

@@ -2,9 +2,8 @@
 #@+node:danr7.20060902083957: * @file leo_to_rtf.py
 #@+<< docstring >>
 #@+node:danr7.20060902085340: ** << docstring >>
-''' This plugin takes an outline stored in LEO and outputs it as a numbered list to
-an RTF file. The RTF file can be loaded into Microsoft Word and formatted as a
-proper outline.
+''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
+loaded into Microsoft Word and formatted as a proper outline.
 
 If this plug-in loads properly, you should have an "Outline to Microsoft RTF"
 option added to your File > Export... menu in Leo.

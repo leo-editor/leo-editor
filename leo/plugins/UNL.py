@@ -2,9 +2,10 @@
 #@+node:rogererens.20041013082304: * @file UNL.py
 #@+<< docstring >>
 #@+node:ekr.20050119144617: ** << docstring >>
-''' Supports Uniform Node Locators (UNL's). UNL's specify nodes within
-Leo files. UNL's are not limited to nodes within the present Leo file; you can
-use them to create cross-Leo-file links! UNL
+''' Supports Uniform Node Locators (UNL's) for linking to nodes in any Leo file.
+
+UNL's specify nodes within any Leo file. You can use them to create
+cross-Leo-file links! UNL
 
 This plugin consists of two parts:
 

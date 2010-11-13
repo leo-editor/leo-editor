@@ -5,8 +5,7 @@
 
 #@+<< docstring >>
 #@+node:bobjack.20080320084644.2: ** << docstring >>
-""" Provides a simple but powerful and flexible system of managing
-scriptable context menus.
+""" Manages scriptable context menus invoked by right-clicking nodes.
 
 Executable Howto's and other examples of the use of this plugin can be
 found in::
@@ -665,8 +664,13 @@ import leo.plugins.rClickBasePluginClasses as baseClasses
 controllers = {}
 default_context_menus = {}
 
-SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
+#@+<< define SCAN_URL_RE >>
+#@+node:ekr.20101112212116.5431: ** << define SCAN_URL_RE >>
+# A bit of a kludge. Defining this at the top level
+# interferes with the script that finds docstrings.
 
+SCAN_URL_RE = '''(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?'''
+#@-<< define SCAN_URL_RE >>
 #@+<< required ivars >>
 #@+node:bobjack.20080424195922.5: ** << required ivars >>
 #@+at

@@ -5,8 +5,7 @@
 
 #@+<< docstring >>
 #@+node:danr7.20061010105952.2: ** << docstring >>
-''' Displays in the log pane the count of characters, words, lines, and
-paragraphs in the body pane.
+''' Counts characters, words, lines, and paragraphs in the body pane.
 
 It adds a "Word Count..." option to the bottom of the Edit menu that will
 activate the command.

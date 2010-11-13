@@ -2,7 +2,7 @@
 #@+node:edream.110203113231.873: * @file at_folder.py
 #@+<< docstring >>
 #@+node:edream.110203113231.874: ** << docstring >>
-'''Synchronize @folder nodes with folders.
+'''Synchronizes @folder nodes with folders.
 
 If a node is named '@folder path_to_folder', the content (filenames) of the
 folder and the children of that node will be sync. Whenever a new file is put
