@@ -11,8 +11,8 @@ The pattern to search for is, by default, a case *insensitive* fnmatch pattern
 want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
 
 Regexp matching is case sensitive; if you want to do a case-insensitive regular
-expression search (or any kind of case-sentive search in the first place), do it
-by searching for "r:(?i)Foo". (?i) is a standard feature of Python regural expression
+expression search (or any kind of case-sensitive search in the first place), do it
+by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expression
 syntax, as documented in 
 
 http://docs.python.org/library/re.html#regular-expression-syntax

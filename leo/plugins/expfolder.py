@@ -2,7 +2,7 @@
 #@+node:ajones.20070122153625: * @file expfolder.py
 #@+<< docstring >>
 #@+node:ajones.20070122153625.1: ** << docstring >>
-''' Adds @expfolder nodes that represent folders in the filesystem.
+''' Adds @expfolder nodes that represent folders in the file system.
 
 Double clicking on the icon of an @expfolder heading reads the files in the
 directory at the path specified and creates child nodes for each file in the
@@ -14,7 +14,7 @@ nodes and refresh the directory listing. If there are any changed @text nodes
 contained inside you will be prompted about saving them.
 
 The textextensions field on the expfolder Properties page contains a list of
-extensions which will be made into @text nodes, seperated by spaces.
+extensions which will be made into @text nodes, separated by spaces.
 
 For the @text and @expfolder nodes to interact correctly, the textnode plugin
 must load before the expfolder plugin. This can be set using the Plugin

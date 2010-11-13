@@ -44,7 +44,7 @@ leoscreen-next
   Switch screen session to next window.
 
 leoscreen-prev
-  Switch screen session to preceeding window.
+  Switch screen session to preceding window.
 
 leoscreen-other
   Switch screen session to last window displayed.

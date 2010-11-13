@@ -7,7 +7,7 @@
 Template nodes can be create for any node. The template can then
 be inserted at the click of a button. This is a bit like a permanent
 clipboard except that templates can have items in them which can 
-be overriden. Nodes can contain any number of child nodes.
+be override. Nodes can contain any number of child nodes.
 
 For instance you might want to have a template for a unit test method.
 The unit test method template includes a name and description. When
@@ -25,7 +25,7 @@ existing names,
     name = the name entered into the entry box in the toolbar
     node = the leo Vnode that was selected when the *New* button was pressed
 
-You can use this in many way, eg to create a custom file from a template::
+You can use this in many way, for example to create a custom file from a template::
 
     @thin $$name$$.py   <- in the headline text
 

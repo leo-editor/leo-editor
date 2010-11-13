@@ -13,7 +13,7 @@ displayed as html.
 
 The displayed format can be controlled by the user via check boxes, so rst
 messages may be viewed either as text or as html. Html messages can also be
-viwed as raw text, which will be a good debug feature when creating complex
+viewed as raw text, which will be a good debug feature when creating complex
 dynamically generated html messages.
 
 The user interface is provided by a ScrolledMessage.ui file which is dynamically
@@ -51,9 +51,9 @@ title:
     The title to appear on the window or dock.
 
 flags:
-    Says what kind of message eg: 'rst', 'text', 'html'. This overrides auto-detection.
+    Says what kind of message, for example: 'rst', 'text', 'html'. This overrides auto-detection.
 
-    Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
+    Flags can be combined, for example: 'rst html' causes the message to be interpreted as rst and
     displayed as html.
 
 **To Do**
@@ -64,7 +64,7 @@ flags:
 
 - Add an option to put the dialog in leo's log notebook.
 
-- Add \@settings to control default behaviour
+- Add \@settings to control default behavior
 
 - Provide a menu of plugins that allows their docstring to be displayed.
 

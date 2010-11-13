@@ -2,7 +2,7 @@
 #@+node:ekr.20050329082101.150: * @file trees\rss.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.151: ** << docstring >>
-"""A handler that downloads RSS feeds
+""" A handler that downloads RSS feeds
 
 The parameter in the @auto-rss headline is the URL to load from. The
 body of the node contains the keys to display in the created node

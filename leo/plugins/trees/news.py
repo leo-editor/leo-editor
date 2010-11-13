@@ -2,7 +2,7 @@
 #@+node:ekr.20050329082101.153: * @file trees\news.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.154: ** << docstring >>
-"""A handler that downloads messages from a news server
+""" A handler that downloads messages from a news server
 
 The parameter in the @auto-rss headline is the news server followed
 by the group name in the form:
@@ -10,7 +10,7 @@ by the group name in the form:
     @auto-news newserver.myisp.com/comp.lang.python
 
 Messages will be downloaded directly as nodes. Doesn't support threading
-but message bodies are downloaded lazily, ie only when you click on the
+but message bodies are downloaded lazily, that is, only when you click on the
 header. This is achieved by using the @auto-newsitem headline. 
 
 """

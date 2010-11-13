@@ -5,7 +5,9 @@
 """ Adds a context menu to each node containing all the commands in the bzr Qt
 interface. Bzr is invoked based on the path of the current node.
 
-**Requires contextmenu.py.** """
+*Requires contextmenu.py.*
+
+"""
 #@-<< docstring >>
 
 #@@language python

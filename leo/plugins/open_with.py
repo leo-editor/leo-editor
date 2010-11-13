@@ -2,7 +2,7 @@
 #@+node:bob.20071218121513: * @file open_with.py
 #@+<< docstring >>
 #@+node:ekr.20050910140846: ** << docstring >>
-'''Creates the Open With menu and handles the resulting commands.
+''' Creates the Open With menu and handles the resulting commands.
 
 \@openwith settings nodes specify entries. See the documentation for @openwith
 nodes in leoSettings.leo for details.
@@ -35,7 +35,7 @@ __version__ = '1.13'
 # 1.6 EKR: Installed patches from Jim Sizelove to use subprocess module if possible.
 # 1.7 EKR: Set subprocess = None if import fails.
 # 1.8 EKR:
-# - Document how install subproces, and use g.importExtension to import subprocess.
+# - Document how install subprocess, and use g.importExtension to import subprocess.
 # - Import subprocess with g.importExtension.
 # 1.9 EKR: Removed key bindings from default table.
 # 1.10 EKR: The init code now explicitly calls g.enableIdleTimeHook.

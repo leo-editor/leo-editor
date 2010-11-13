@@ -10,7 +10,9 @@ This code correspond to an implementation of a Concurrent Editable Text buffer.
 
 The code is strictly based on the works of Chengzheng Sun.
 
-Actually all the function were written in order to follow as much as possible the notation introduced in his papers. So most of the code is procedure oriented and not strictly pythonic.
+Actually all the function were written in order to follow as much as possible
+the notation introduced in his papers. So most of the code is procedure oriented
+and not strictly pythonic.
 
 Search at citeseer for the files:
 
@@ -20,11 +22,13 @@ Search at citeseer for the files:
     sun98operational.pdf
     sun98reversible.pdf
 
-You need this documents to understand the code.
+You need these documents to understand the code.
 
-This file provide a unit test that execute an instance of the example proposed in the reference papers.
+This file provide a unit test that execute an instance of the example proposed
+in the reference papers.
 
-There is also a class named ConcurrentEditableServer that try to implement a 'star' configuration (one server <-> N clients) for the comunications.
+There is also a class named ConcurrentEditableServer that try to implement a
+'star' configuration (one server <-> N clients) for the comunications.
 
 I recomend using Leo to explore the code. http://leo.sf.net
 
@@ -33,6 +37,7 @@ Released under GNU GPL. http://www.gnu.org
 Rodrigo Benenson. 2003. LeoN project. 
 
 rodrigob at elo dot utfsm dot cl
+
 """
 #@-<< docstring >>
 

@@ -5,8 +5,6 @@
 
 #@+<< docstring >>
 #@+node:bobjack.20080424190906.12: ** << docstring >>
-#@@nocolor
-
 """ Enhances Leo's iconBar and script buttons.
 
 **see test/testToolbar.leo for demo's and howto's **
@@ -29,13 +27,13 @@ If the toolbar.py plugin is enabled then a comment block can be added at the top
 of the body of the @button node. (If toolbar.py is not enabled then these
 comment blocks will of course simply be ignored.)
 
-The header will also be honoured if script-button is used to convert a node
+The header will also be honored if script-button is used to convert a node
 to a button.
 
 Within this block you may include lines starting with @btn to set extra
 parameters for the button created.
 
-eg 1::
+Example 1::
 
     @
     @btn fg = yellow
@@ -47,7 +45,7 @@ The created button would have yellow text on a red background and when the right
 mouse button is clicked on it a popup menu will appear (if rClick.py is
 enabled).
 
-eg 2::
+Example 2::
 
     @
     @btn icon = Tango/16x16/actions/add.png
@@ -68,7 +66,7 @@ blank lines.
 **Toolbars** 
 
 A toolbar is a collection of iconbars. At the moment only one toolbar is
-availiable and it appears in the place where the leo's traditional iconbar appears.
+available and it appears in the place where the leo's traditional iconbar appears.
 
 Future plans include allowing toolbars to be placed anywhere, including in dialogs,
 orientated vertically as well as horizontally. It will then be possible to drag and
@@ -201,7 +199,7 @@ The iconbars also have the following public properties.
 **Compound iconBar widgets and drag handles**
 
 Compound widgets can be constructed using a Tkinter.Frame widget and packing
-buttons (obtained eg from c.frame.getButton) and other components into it,
+buttons (obtained, for example, from c.frame.getButton) and other components into it,
 finally packing the frame into the iconBar using c.frame.addIconWidget or
 bar.addWidget.
 

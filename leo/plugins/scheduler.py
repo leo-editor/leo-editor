@@ -18,7 +18,7 @@ for 5:00 PM. I would do so by using the value 17:00.
 
 The Schedule Message is simple. There is a Text box to enter the message and a
 Entry to place the time. View Queue will summon a view of The Queue. This dialog
-will show the commands that have been enqued. There is also the option to Cancel
+will show the commands that have been enqueued. There is also the option to Cancel
 out any scheduled commands/messages.
 '''
 #@-<< docstring >>

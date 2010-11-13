@@ -50,7 +50,7 @@ Will be written as::
     author = {A. Uthor},
     journal = j1}
 
-No error checking is made on the syntax. The entries can be organised under
+No error checking is made on the syntax. The entries can be organized under
 nodes --- if the headline doesn't start with '@', the headline and body text are
 ignored, but the child nodes are parsed as usual.
 

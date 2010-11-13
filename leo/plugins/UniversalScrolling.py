@@ -12,7 +12,7 @@ this may actually be superior to wheel scrolling, in that there is little work
 a user has to do to scroll except to press a button.
 
 We use a Thread and 4 Tkinter Events to enable this. Threading was
-necessary to deserialise Button Press and Button Release. Without a Thread
+necessary to de-serialize Button Press and Button Release. Without a Thread
 there apparently was no way to split the two apart. Exterior processes were
 not considered as serious pieces of the mechanism, threading kept things
 simple.
@@ -41,7 +41,7 @@ __version__ = "0.4"
 #@@nocolor
 #@+at
 # 
-# 0.2 EKR: Added init method and implified the code.
+# 0.2 EKR: Added init method and simplified the code.
 # 
 # Note: This code appears to work. At present it suffers from re-binding Button-1.
 # The solution is to pick another binding :-)

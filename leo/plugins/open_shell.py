@@ -5,7 +5,7 @@
 ''' Creates an 'Extensions' menu containing two commands:
 Open Console Window and Open Explorer.
 
-The Open Console Window command opens xterm on linux.
+The Open Console Window command opens xterm on Linux.
 The Open Explorer command Opens a Windows explorer window.
 
 This allows quick navigation to facilitate testing and navigating large systems
@@ -15,7 +15,7 @@ Please submit bugs / feature requests to etaekema@earthlink.net
 
 Current limitations:
 - Not tested on Mac OS X ...
-- On linux, xterm must be in your path.
+- On Linux, xterm must be in your path.
 
 '''
 #@-<< docstring >>

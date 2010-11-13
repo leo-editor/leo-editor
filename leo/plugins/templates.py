@@ -11,7 +11,7 @@ out of possibly many nodes.
 
 This plugin creates two buttons in Leo's icon area:
 
-- The '%s' button marks or unmarks a node as a template. A %s symbol will apear to
+- The '%s' button marks or unmarks a node as a template. A %s symbol will appear to
   the left of the node when it is marked as a template.
 
 - The '----> %s' button brings up a dialog that shows you the template text and

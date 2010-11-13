@@ -2,14 +2,14 @@
 #@+node:ekr.20101110095202.5882: * @file zenity_file_dialogs.py
 #@+<< docstring >>
 #@+node:ekr.20101112195628.5435: ** << docstring >>
-''' Replaces the tk file dialogs on linux with external
+''' Replaces the tk file dialogs on Linux with external
 calls to the zenity gtk dialog package.
 
-This plugin is more a proof of concopt demo than
+This plugin is more a proof of concept demo than
 a useful tool.  The dialogs presented do not take
 filters and starting folders can not be specified.
 
-Despit this, some linux users might prefer it to the
+Despite this, some Linux users might prefer it to the
 tk dialogs.
 
 '''

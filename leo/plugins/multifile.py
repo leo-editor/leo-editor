@@ -5,11 +5,11 @@
 r''' Allows Leo to write a file to multiple locations.
 
 This plugin acts as a post-write mechanism, a file must be written to the
-filesystem for it to work. At this point it is not a replacement for @path or an
+file system for it to work. At this point it is not a replacement for @path or an
 absolute path, it works in tandem with them.
 
 To use, place @multipath at the start of a line in the root node or an ancestor
-of the node. The format is (On Unixy systems)::
+of the node. The format is (On Unix-like systems)::
 
     @multipath /machine/unit/:/machine/robot/:/machine/
 
@@ -26,7 +26,7 @@ There is an additional directive that simplifies common paths, it is called
 directive.
 
 For example: (note I put # in front of the directives here because I
-dont want someone browsing this file to accidentilly save mulitple copies of
+don't want someone browsing this file to accidentally save multiple copies of
 this file to their system :) )
 
 #@verbatim
@@ -42,7 +42,7 @@ or
 copies a file to /leo/plugins /leo/fungus /leo/drain.
 
 The @multiprefix stays in effect for the entire tree until reset with another
-@multiprefix directive. @multipath is cumulitive, in that for each @multipath in
+@multiprefix directive. @multipath is cumulative, in that for each @multipath in
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
 '''

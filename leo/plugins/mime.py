@@ -28,8 +28,8 @@ AND call the mime_open_cmd.
 
 This plugin is complementary to the UNL.py plugin's @url nodes. Use @url for
 opening either URLs or Uniform Node Locators in "\*.leo" files and use @mime
-nodes for opening files on the local filesystem. It also replaces the
-startfile.py plugin, where here the headline must start with @mime to activiate
+nodes for opening files on the local file system. It also replaces the
+startfile.py plugin, where here the headline must start with @mime to activate
 this plugin.
 
 For other sys.platform's, add an elif case to the section "guess file

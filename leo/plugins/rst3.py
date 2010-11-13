@@ -3,7 +3,7 @@
 #@+<< docstring >>
 #@+node:ekr.20050805162550.1: ** << docstring >>
 ''' Creates output files from Leo outlines containing rST (reStructuredText)
-markup. This plugin has been superceded by Leo's core rst3 command.
+markup. This plugin has been superseded by Leo's core rst3 command.
 
 This is a powerful plugin with many options.  The full documentation is at:
 http://webpages.charter.net/edreamleo/rstplugin3.html

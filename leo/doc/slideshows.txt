@@ -1511,6 +1511,20 @@ Leo's main window consists of an **outline pane**
 The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.
+.. @+node:ekr.20101026082911.5535: *3* Document plugins & other cool things
+.. @+node:ekr.20101025080245.5529: *4* Document leoremote plugin
+@nocolor-node
+
+Ville's server code to interact with a running Leo
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+
+Reusing Emacs instances with gnuserv
+http://www.debian-administration.org/articles/257
+
+.. @+node:ekr.20101025080245.5543: *4* Document screenshots plugin
+.. @+node:ekr.20101025080245.5546: *4* @url Document Ville's server
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+.. @+node:ekr.20101025080245.5539: *3* External Files & Clones slideshows
 .. @+node:ekr.20100821182153.4345: ** @slideshow Installation
 @language rest
 .. @+node:ekr.20101014034526.5299: *3* @slide ((using Leo's installer

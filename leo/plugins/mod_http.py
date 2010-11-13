@@ -2,7 +2,7 @@
 #@+node:EKR.20040517080250.1: * @file mod_http.py
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
-'''A minimal http plugin for LEO, based on AsyncHttpServer.py.
+''' A minimal http plugin for LEO, based on AsyncHttpServer.py.
 
 Use this plugin is as follows:
 

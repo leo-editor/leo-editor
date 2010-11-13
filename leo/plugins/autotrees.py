@@ -3,7 +3,7 @@
 #@+<< docstring >>
 #@+node:ekr.20050329082101.116: ** << docstring >>
 """ A helper plugin designed to make it easy to write
-"hanlder" plugins to manage dynamic content in Leo outlines. AutoTrees provides:
+"handler" plugins to manage dynamic content in Leo outlines. AutoTrees provides:
 
 - Convenient handler base classes which can be specialized for particular uses.
 
@@ -18,7 +18,7 @@ also makes it easier to maintain Leo, since it standardizes the way that certain
 classes of plugin interact with the Leo core.
 
 Why use this? I'm a plugin writer and I want to write a plugin to display
-dynamic content - ie content not directly contained in the .leo or derived
+dynamic content, that is, content not directly contained in the .leo or derived
 files, e.g.,
 
 - email messages 

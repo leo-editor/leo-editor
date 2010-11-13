@@ -2,7 +2,7 @@
 #@+node:ekr.20050329082101.165: * @file trees\doc.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.166: ** << docstring >>
-"""A handler that documents a module
+""" A handler that documents a module
 
 The parameter in the @auto-doc headline is the module to document.
 

@@ -17,7 +17,7 @@ Outline.  Any output, even error messages, should be there.
 It executes in a hierarchal manner.  Nodes that come before that contain @produce
 go first.
 
-Im hoping that this orthogonal to @run nodes and anything like that.  Its not
+I'm hoping that this orthogonal to @run nodes and anything like that.  Its not
 intended as a replacement for make or Ant, but as a simple substitute when that
 machinery is overkill.
 

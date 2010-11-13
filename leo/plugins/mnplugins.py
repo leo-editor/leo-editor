@@ -11,12 +11,12 @@ create Usermenu with new Commands
 
 new Commands:
 insertOK: 
-    insert 'OK' in headline and a stamp in the first bodyline
-    are there childnodes without 'OK' verhindern OK in actual node
+    insert 'OK' in headline and a stamp in the first body line
+    are there child nodes without 'OK' verhindern OK in actual node
     (insertOK on iconrclick2 too)
 
 insertUser : Shift-F6
-    insert a <user/date/time> stamp at the current location in bodytext
+    insert a <user/date/time> stamp at the current location in body text
 """
 #@-<< docstring >>
 #@+<< imports >>

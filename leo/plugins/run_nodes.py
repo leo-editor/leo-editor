@@ -24,12 +24,12 @@ The body text of every child, in which the headlines do not begin with '@run'
 or '@in', will be appended to <command>, allowing you to add an unlimited number
 of arguments to <command>.
 
-The output of the program is written in the log pane (Error outputed in red).
+The output of the program is written in the log pane (Error output in red).
 When the program exit the node is set unmarked and the return value is
 displayed... When the enter key is pressed in the body pane of an active @run
 node the content of it body pane is written to the program and then emptied
-ready for another line of input. If the node have @run nodes in its descendance,
-they will be launched successivelly. (Unless one returned an exit code other
+ready for another line of input. If the node have @run nodes in its descendants,
+they will be launched successively. (Unless one returned an exit code other
 than 0, then it will stop there)
 
 By Alexis Gendron Paquette. Please send comments to the Leo forums.

@@ -2,13 +2,15 @@
 #@+node:ekr.20050329082101.162: * @file trees\remote.py
 #@+<< docstring >>
 #@+node:ekr.20050329082101.163: ** << docstring >>
-"""A handler that downloads remote files
+""" A handler that downloads remote files
 
 The parameter in the @auto-remote headline is the URL to load from. You
-can pass username passwords in the URL, eg
+can pass username passwords in the URL.  For example::
+
     ftp://username:password@mysite.org/myfile.txt
 
-Requires pyCurl:
+Requires pyCurl::
+
     http://pycurl.sourceforge.net/
 
 """

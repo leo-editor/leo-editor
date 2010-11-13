@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20090704103932.5161: ** << docstring >>
-'''This NOT a Leo plugin: this is a docutils writer for .pdf files.  
+''' This NOT a Leo plugin: this is a docutils writer for .pdf files.  
 
 That file uses the reportlab module to convert html markup to pdf.
 

@@ -47,7 +47,7 @@ and also the following fragments:
 
     - 'find-controls-fragment'
 
-        This organises the find control buttons into two columns.
+        This organizes the find control buttons into two columns.
 
     These fragments are meant to be included in other popup menu's via::
 
@@ -145,7 +145,7 @@ The menu tables are simply lists of tuples with the form::
 
 where txt and cmd can be any python object
 
-eg::
+For example::
 
     default_context_menus['body'] = [
 

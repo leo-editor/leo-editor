@@ -522,7 +522,7 @@ class TkPropertiesDialog:
     def __init__(self, title, data, callback=None, buttons=[]):
         #@+<< docstring >>
         #@+node:bob.20071208211442: *4* << docstring >>
-        """ Initialize and show a Properties dialog.
+        """ Initializes and shows a Properties dialog.
 
             'buttons' should be a list of names for buttons.
 

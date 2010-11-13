@@ -2,7 +2,7 @@
 #@+node:mork.20041018162155.1: * @file EditAttributes.py
 #@+<< docstring >>
 #@+node:ekr.20050226091502: ** << docstring >>
-''' Lets the user to associate text with a specific node.
+''' Lets the user associate text with a specific node.
 
 Summon it by pressing button-2 or button-3 on an icon Box in the outline. This
 will create an attribute editor where the user can add, remove and edit

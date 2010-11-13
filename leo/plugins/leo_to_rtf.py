@@ -8,7 +8,7 @@ loaded into Microsoft Word and formatted as a proper outline.
 If this plug-in loads properly, you should have an "Outline to Microsoft RTF"
 option added to your File > Export... menu in Leo.
 
-Settings such as outputing just the headlines (vs. headlines & body text) and whether
+Settings such as outputting just the headlines (vs. headlines & body text) and whether
 to include or ignore the contents of @file nodes are stored in the rtf_export.ini file
 in your Leo\plugins folder.
 

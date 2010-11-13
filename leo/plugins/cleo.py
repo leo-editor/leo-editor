@@ -8,7 +8,7 @@ Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a
 branch can display progress and time required with dynamic updates.
 
-Right click on a node's icon box to dislay the cleo menu.
+Right click on a node's icon box to display the cleo menu.
 
 For full documentation see:
 

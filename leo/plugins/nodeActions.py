@@ -2,8 +2,7 @@
 #@+node:TL.20090225102340.32: * @file nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >>
-"""
-Allows the definition of double-click actions.
+""" Allows the definition of double-click actions.
 
 When the user double-clicks a node this plugin checks for a match of the clicked
 node's headline text with a list of patterns. If a match occurs, the plugin
@@ -132,7 +131,7 @@ pattern (do not include the ':'):
      Unix shell-style pattern:
         @files *.py
 
-     Regular Expression patern:
+     Regular Expression pattern:
         ^@files .*\.py$ [X]
 
 :[V]:

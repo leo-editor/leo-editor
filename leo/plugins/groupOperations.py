@@ -4,7 +4,7 @@
 #@+node:ekr.20050912180223: ** << docstring >>
 ''' Adds Group commands functionality.
 
-Restrictions currently apply to using Leo with a Tk frontend. There are several
+Restrictions currently apply to using Leo with a Tk front end. There are several
 commands in this plugin:
 
 -   Mark Node: marks a node for further operations such as copying, cloning and moving.

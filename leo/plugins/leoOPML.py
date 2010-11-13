@@ -12,7 +12,7 @@ The write-opml-file command writes the present Leo outline to an .opml file.
 
 Various settings control what gets written to .opml files, and in what format.
 As usual, you specify settings for the OPML plugin using leoSettings.leo.
-The settigns for the OPML are found in the node: @settings-->Plugins-->opml plugin
+The settings for the OPML are found in the node: @settings-->Plugins-->opml plugin
 
 Here are the settings that control the format of .opml files. The default values are shown.
 
