@@ -16,8 +16,8 @@ You will see a a "top" level page containing one link for every open .leo file. 
 
 You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.
 
-To enable this plugin:
-    put this into your file
+To enable this plugin put this into your file::
+
     @settings
         @bool http_active = True
         @int  port = 8080
@@ -26,6 +26,7 @@ To enable this plugin:
 **Note**: the browser_encoding constant (defined in the top node of this file)
 must match the character encoding used in the browser. If it does not, non-ascii
 characters will look strange.
+
 '''
 #@-<< docstring >>
 

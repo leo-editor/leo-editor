@@ -2,7 +2,7 @@
 #@+node:ekr.20050328092641.4: * @file Library.py
 #@+<< docstring >>
 #@+node:ekr.20050912180445: ** << docstring >>
-'''A plugin to store Leo trees in database files. This should help people
+''' Store Leo trees in database files. This should help people
 develop templates that they want to reuse between Leo projects. For example, Id
 like a template of many Java interfaces to be easily accessable.
 

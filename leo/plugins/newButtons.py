@@ -2,7 +2,7 @@
 #@+node:pap.20051010170720: * @file newButtons.py
 #@+<< docstring >>
 #@+node:pap.20051010170720.1: ** << docstring >>
-"""Allows the use of template nodes for common tasks
+""" Allows the use of template nodes for common tasks
 
 Template nodes can be create for any node. The template can then
 be inserted at the click of a button. This is a bit like a permanent
@@ -15,7 +15,8 @@ you create an instance of the template these items can be specified.
 
 To override items in the template you insert strings with the following
 form::
-            $$expr$$
+
+    $$expr$$
 
 These strings can be anywhere in the headline or body text. The *expr*
 is an expression which will be evaluated in a namespace containing two

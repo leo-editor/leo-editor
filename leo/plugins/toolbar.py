@@ -7,9 +7,7 @@
 #@+node:bobjack.20080424190906.12: ** << docstring >>
 #@@nocolor
 
-"""
-A plugin that enhances Leo's iconBar and script buttons.
-=======================================================
+""" Enhances Leo's iconBar and script buttons.
 
 **see test/testToolbar.leo for demo's and howto's **
 **see test/testAtPopup.leo for examples of enhanced buttons.**

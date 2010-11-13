@@ -2,9 +2,10 @@
 #@+node:mork.20041022090036.1: * @file templates.py
 #@+<<docstring>>
 #@+node:ekr.20041109173848: ** << docstring >>
-'''This plugin lets you add customizable templates to an outline. Templates are
-like any other node except that the plugin replaces %s in the body text by
-values that you specify when using template. Templates may have section
+''' Adds customizable templates to an outline.
+
+Templates are like any other node except that the plugin replaces %s in the body
+text by values that you specify when using template. Templates may have section
 references; this plugin uses Leo's @nosent write machinery to create one string
 out of possibly many nodes.
 
@@ -23,7 +24,6 @@ the text as a node. Templates once marked are stored across sessions. Do not put
 a template in a thin file, as your template mark will be erased between
 sessions.
 
-This plugin requires the simplified atFile write code that is new in 4.2.1.
 '''
 #@-<<docstring>>
 

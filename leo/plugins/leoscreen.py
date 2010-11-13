@@ -2,11 +2,7 @@
 #@+node:tbrown.20100226095909.12777: * @file leoscreen.py
 #@+<< docstring >>
 #@+node:tbrown.20100226095909.12778: ** << docstring >>
-'''
-leoscreen.py - interact with shell apps. via screen
-===================================================
-
-(an simpler alternative to interact.py)
+''' Allows interaction with shell apps. via screen
 
 Analysis environments like SQL, R, scipy, ipython, etc. can be
 used by pasting sections of text from an editor (Leo) and a
@@ -84,10 +80,9 @@ to allow for trailing spaces.
 Methods
 -------
 
-leoscreen creates a instance at c.leo_screen which has some methods which might be
-useful in ``@button`` and other Leo contexts.
+leoscreen creates a instance at c.leo_screen which has some methods which might
+be useful in ``@button`` and other Leo contexts.
 
-LIST HERE
 
 Example SQL setup
 -----------------
@@ -110,12 +105,12 @@ which creates a button to rollback messed up queries, another to commit
 sets the prefix to "-- " for text pulled back from the SQL session into
 Leo.
 
-.. note::
 
-    **IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
-    if screen -X is executed with the same stdout as the target
-    screen, vs. a different stdout.  Although stdout is ignored,
-    Popen() needs to ensure it's not just inherited.
+**IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
+if screen -X is executed with the same stdout as the target
+screen, vs. a different stdout.  Although stdout is ignored,
+Popen() needs to ensure it's not just inherited.
+
 '''
 #@-<< docstring >>
 

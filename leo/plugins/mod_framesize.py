@@ -1,8 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110093301.5818: * @file mod_framesize.py
-""" Always use the same, hardcoded frame size 
+""" Sets a hardcoded frame size 
 
-Prevents Leo from setting custom frame size (e.g. from an external .leo document)
+Prevents Leo from setting custom frame size (e.g. from an external .leo
+document)
 
 """
 

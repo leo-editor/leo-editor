@@ -2,10 +2,11 @@
 #@+node:bob.20071218121513: * @file open_with.py
 #@+<< docstring >>
 #@+node:ekr.20050910140846: ** << docstring >>
-'''Create menu for Open With command and handle the resulting commands.
+'''Creates the Open With menu and handles the resulting commands.
 
-@openwith settings nodes specify entries.
-See the documentation for @openwith nodes in leoSettings.leo for details.
+\@openwith settings nodes specify entries. See the documentation for @openwith
+nodes in leoSettings.leo for details.
+
 '''
 #@-<< docstring >>
 

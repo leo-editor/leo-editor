@@ -2,7 +2,7 @@
 #@+node:bobjack.20080619110105.2: * @file rClickBasePluginClasses.py
 #@+<< docstring >>
 #@+node:bobjack.20080614200920.8: ** << docstring >>
-"""Base classes for plugins.
+""" Provides base classes for plugins.
 
 This is an experimental set of base classes for plugins.
 

@@ -2,7 +2,7 @@
 #@+node:tbrown.20090513125417.5244: * @file interact.py
 #@+<< docstring >>
 #@+node:tbrown.20090603104805.4937: ** << docstring >>
-"""Add buttons so Leo can interact with command line environments.
+""" Adds buttons so Leo can interact with command line environments.
 
 :20100226: see also leoscreen.py for a simpler approach.
 

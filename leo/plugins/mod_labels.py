@@ -2,10 +2,8 @@
 #@+node:ekr.20050301095332: * @file mod_labels.py
 #@+<<docstring>>
 #@+node:ekr.20050301095332.1: ** <<docstring>>
-'''This plugin allows you to associate information with nodes.
-
-This information is organized around "labels", which is are just strings and
-freely chosen by the user.
+''' Associates information with nodes. This information is organized around
+"labels", which is are just strings and freely chosen by the user.
 
 The plugin allows you to create such a label quickly for each marked node, and
 to mark all nodes which have a certain label.

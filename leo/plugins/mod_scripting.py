@@ -2,7 +2,7 @@
 #@+node:ekr.20060328125248: * @file mod_scripting.py
 #@+<< docstring >>
 #@+node:ekr.20060328125248.1: ** << docstring >>
-"""A plugin to create script buttons and @button, @command, @plugin and @script
+""" Creates script buttons and @button, @command, @plugin and @script
 nodes.
 
 This plugin puts buttons in the icon area. Depending on settings the plugin will

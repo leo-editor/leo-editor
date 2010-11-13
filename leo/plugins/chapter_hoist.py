@@ -2,17 +2,15 @@
 #@+node:ekr.20060328125925: * @file chapter_hoist.py
 #@+<< docstring >>
 #@+node:ekr.20060328125925.1: ** << docstring >>
-"""A plugin to create hoist buttons.  It is kind of a Chapters lite plugin
+""" Creates hoist buttons.
 
 This plugin puts two buttons in the icon area: a button called 'Save Hoist' and
-a button called 'Dehoist'.
+a button called 'Dehoist'. The 'Save Hoist' button hoists the presently selected
+node and creates a button which can later rehoist the same node. The 'Dehoist'
+button performs one level of dehoisting
 
-The 'Save Hoist' button hoists the presently selected node and creates a button
-which can later rehoist the same node.
+Requires at least version 0.19 of mod_scripting.
 
-The 'Dehoist' button performs one level of dehoisting
-
-Requires at least version 0.19 of mod_scripting
 """
 #@-<< docstring >>
 

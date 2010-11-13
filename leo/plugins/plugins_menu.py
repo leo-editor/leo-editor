@@ -2,11 +2,11 @@
 #@+node:EKR.20040517080555.2: * @file plugins_menu.py
 #@+<< docstring >>
 #@+node:ekr.20050101090207.9: ** << docstring >>
-''' Creates a **Plugins** menu and adds an item to it for each active
-plugin. Selecting these menu items will bring up a short **About Plugin** dialog
+''' Creates a Plugins menu and adds all actives plugins to it.
+
+Selecting these menu items will bring up a short **About Plugin** dialog
 with the details of the plugin. In some circumstances a submenu will be created
 instead and an 'About' menu entry will be created in this.
-
 
 INI files and the Properties Dialog
 ------------------------------------

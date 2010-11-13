@@ -1,13 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:danr7.20060902083957: * @file leo_to_rtf.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:danr7.20060902085340: ** << docstring >>
-'''leoToRTF 1.0 plugin by Dan Rahmel
-
-This plugin takes an outline stored in LEO and outputs it as a numbered list to
+''' This plugin takes an outline stored in LEO and outputs it as a numbered list to
 an RTF file. The RTF file can be loaded into Microsoft Word and formatted as a
 proper outline.
 
@@ -20,8 +15,15 @@ in your Leo\plugins folder.
 
 The default export path is also stored in the INI file. By default, it's set to c:\ so
 you may need to modify it depending on your system.
+
 '''
 #@-<< docstring >>
+
+#@@language python
+#@@tabwidth -4
+
+# leoToRTF 1.0 plugin by Dan Rahmel
+
 #@+<< version history >>
 #@+node:danr7.20060902085055: ** << version history >>
 #@@killcolor

@@ -2,7 +2,7 @@
 #@+node:rogererens.20041013082304: * @file UNL.py
 #@+<< docstring >>
 #@+node:ekr.20050119144617: ** << docstring >>
-'''This plugin supports Uniform Node Locators (UNL's). UNL's specify nodes within
+''' Supports Uniform Node Locators (UNL's). UNL's specify nodes within
 Leo files. UNL's are not limited to nodes within the present Leo file; you can
 use them to create cross-Leo-file links! UNL
 
@@ -50,6 +50,7 @@ navigate to the nodes 'by hand' by following the arrows in the UNL.
   parent or child of such nodes.
 
 - You don't have to replace spaces in URL's or UNL's by '%20'.
+
 '''
 #@-<< docstring >>
 

@@ -2,10 +2,12 @@
 #@+node:ekr.20040916073636: * @file ConceptualSort.py
 #@+<< docstring >>
 #@+node:ekr.20050912175951: ** << docstring >>
-'''This plugin is enhances the EditAttributes.py plugin. It puts a command in
-Outline called ConceptualSort. This will prompt you for a concept to sort by.
-This gives the user some more flexibility in how they want to arrange their
-nodes. Nodes without the attribute in question go to the bottom of the sort. :)
+''' Enhances the EditAttributes.py plugin.
+
+It puts a command in Outline called ConceptualSort. This will prompt you for a
+concept to sort by. This gives the user some more flexibility in how they want
+to arrange their nodes. Nodes without the attribute in question go to the bottom
+of the sort.
 
 The dialog has been redone. The user can:
 

@@ -2,8 +2,10 @@
 #@+node:mork.20041018091414.1: * @file fastGotoNode.py
 #@+<< docstring >>
 #@+node:ekr.20050226120947: ** << docstring >>
-'''A Leo plugin that adds the fast-goto-node minibuffer command that creates a
-popup menu. You can summon this menu in two ways, depending on the
+''' Adds the fast-goto-node minibuffer command that creates a
+popup menu.
+
+You can summon this menu in two ways, depending on the
 ``fastgotonode_useKeyBinding`` setting:
 
 - If this setting is True, the ``fastgotonode_binding`` setting should be a Key

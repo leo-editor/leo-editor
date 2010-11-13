@@ -3,7 +3,9 @@
 
 #@+<< docstring >>
 #@+node:ekr.20050912175750: ** << docstring >>
-r'''This plugin manages BibTeX files with Leo. Create a bibliographic database by
+r''' Manages BibTeX files with Leo.
+
+Create a bibliographic database by
 putting '@bibtex filename' in a headline. Entries are added as nodes, with
 '@entrytype key' as the headline, and the contents of the entry in body text.
 The plugin will automatically insert a template for the entry in the body pane
@@ -56,6 +58,7 @@ BibTeX files can be imported by creating an empty node with '@bibtex filename'
 in the headline. Double-clicking it will read the file 'filename' and parse it
 into a @bibtex tree. No syntax checking is made, 'filename' is expected to be a
 valid BibTeX file.
+
 '''
 #@-<< docstring >>
 

@@ -2,9 +2,10 @@
 #@+node:ekr.20040831122004: * @file UniversalScrolling.py
 #@+<< docstring >>
 #@+node:ekr.20050913084245: ** << docstring >>
-'''A plugin that enables the user to scroll down with a left mouse click and
-hold, and to scroll up with a right mouse click and hold. Scrolling continues
-until the user releases the mouse. 
+''' Enables the user to scroll with mouse clicks.
+
+Scroll down with a left mouse click and hold; scroll up with a right mouse click
+and hold. Scrolling continues until the user releases the mouse.
 
 Originally designed as a workaround for various bugs in Tkinter scrolling,
 this may actually be superior to wheel scrolling, in that there is little work
@@ -18,6 +19,7 @@ simple.
 
 Important: this plugin requires @bool expanded_click_area = False
 in leoSettings.leo.
+
 '''
 #@-<< docstring >>
 #@+<< imports >>

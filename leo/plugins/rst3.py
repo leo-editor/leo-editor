@@ -2,8 +2,8 @@
 #@+node:ekr.20050805162550: * @file rst3.py
 #@+<< docstring >>
 #@+node:ekr.20050805162550.1: ** << docstring >>
-'''The rst3 plugin creates output files from Leo outlines containing rST
-(reStructuredText) markup.
+''' Creates output files from Leo outlines containing rST (reStructuredText)
+markup. This plugin has been superceded by Leo's core rst3 command.
 
 This is a powerful plugin with many options.  The full documentation is at:
 http://webpages.charter.net/edreamleo/rstplugin3.html
@@ -18,8 +18,8 @@ the higher-level nodes in the outline correspond to higher-level sections in the
 output. Creating rST headings automatically eliminates one of the most tedious
 chores associated with rST markup.
 
-To use this plugin effectively, Python's docutils_ module must be installed. The
-rst3 plugin will use the SilverCity_ syntax coloring package if it installed.
+To use this plugin effectively, Python's docutils module must be installed. The
+rst3 plugin will use the SilverCity syntax coloring package if it installed.
 
 This plugin sends .htm, .html or .tex files to the docutils module for further
 processing. Docutils generates HTML files or LaTeX files depending on the file's
@@ -31,6 +31,7 @@ rst3 options control most aspects of this plugin's operations. You can set
 options in @settings trees, in headlines and in body text. There are too many
 details to discuss here. For full details see:
 http://webpages.charter.net/edreamleo/rstplugin3.html
+
 '''
 #@-<< docstring >>
 

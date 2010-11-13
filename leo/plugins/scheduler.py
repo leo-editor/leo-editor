@@ -2,9 +2,10 @@
 #@+node:ekr.20040331153923: * @file scheduler.py
 #@+<< docstring >>
 #@+node:ekr.20040331153923.1: ** << docstring >>
-'''A plugin to schedule commands for later execution. It's provides the ability to
-issue commands at a future time and to write messages that will be displayed at
-a later time.
+''' Schedules commands for later execution.
+
+This plugin provides the ability to issue commands at a future time and to write
+messages that will be displayed at a later time.
 
 To record commands You goto Schedule and choose begin recording. Then you jump
 to the nodes and select the commands you want issued on them. This process is

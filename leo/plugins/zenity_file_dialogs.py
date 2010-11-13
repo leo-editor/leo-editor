@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110095202.5882: * @file zenity_file_dialogs.py
-'''Replace the tk file dialogs on linux with external
+#@+<< docstring >>
+#@+node:ekr.20101112195628.5435: ** << docstring >>
+''' Replaces the tk file dialogs on linux with external
 calls to the zenity gtk dialog package.
 
 This plugin is more a proof of concopt demo than
@@ -9,7 +11,9 @@ filters and starting folders can not be specified.
 
 Despit this, some linux users might prefer it to the
 tk dialogs.
+
 '''
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4

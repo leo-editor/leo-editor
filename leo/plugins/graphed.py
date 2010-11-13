@@ -2,8 +2,7 @@
 #@+node:ekr.20071004090250: * @file graphed.py
 #@+<< docstring >>
 #@+node:ekr.20071004090250.1: ** << docstring >>
-"""
-graphed.py  -- Edit graphs visually
+""" Edits graphs visually
 
 Graph commands are in the Outline/Graph submenu.
 See http://leo.zwiki.org/GraphEd for documentation.
@@ -11,9 +10,10 @@ See http://leo.zwiki.org/GraphEd for documentation.
 Graph editor component based on the Gred graph editor from the
 Gato Graph Animation Toolbox at http://gato.sourceforge.net/
 
-Leo plugin by Terry Brown terry_n_brown@yahoo.com
 """
 #@-<< docstring >>
+
+# By Terry Brown terry_n_brown@yahoo.com
 
 #@@language python
 #@@tabwidth -4

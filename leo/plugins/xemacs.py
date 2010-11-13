@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517075715.12: * @file xemacs.py
+#@+<< docstring >>
+#@+node:ekr.20101112195628.5434: ** << docstring >>
 ''' Allows you to edit nodes in emacs/xemacs.
 
 **Important**: the open_with plugin must be enabled for this plugin to work
@@ -7,7 +9,10 @@ properly.
 
 Depending on your preference, selecting or double-clicking a node will pass the
 body text of that node to emacs. You may edit the node in the emacs buffer and
-changes will appear in Leo. '''
+changes will appear in Leo.
+
+'''
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4

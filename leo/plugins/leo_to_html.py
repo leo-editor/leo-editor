@@ -5,11 +5,7 @@
 
 #@+<< docstring >>
 #@+node:danr7.20060902215215.2: ** << docstring >>
-'''
-leo_to_html
-===========
-
-**Converts a leo outline to an html web page.**
+''' Converts a leo outline to an html web page.**
 
 .. contents::
 
@@ -133,8 +129,9 @@ browser_command:
 Configuration
 ~~~~~~~~~~~~~
 
-At present, the file leo/plugins/leo_to_html.ini contains configuration settings.
-In particular, the default export path, "c:\" must be changed for *nix systems.
+At present, the file leo/plugins/leo_to_html.ini contains configuration
+settings. In particular, the default export path, "c:\" must be changed for \*nix
+systems.
 
 '''
 #@-<< docstring >>

@@ -2,9 +2,7 @@
 #@+node:pap.20050605183206: * @file leoupdate.py
 #@+<< docstring >>
 #@+node:pap.20050605183206.1: ** << docstring >>
-"""
-
-A plugin to automatically update Leo from the current CVS version
+""" Automatically updates Leo from the current CVS version
 of the code stored on the SourceForge site. You can view individual
 files and update your entire Leo installation directly without needing
 a CVS client.

@@ -2,7 +2,7 @@
 #@+node:edream.110403140857.8: * @file color_markup.py
 #@+<< docstring >>
 #@+node:ekr.20050912182434: ** << docstring >>
-'''Handle coloring for markup in doc parts and Python triple-double-quoted strings.
+''' Handles coloring for markup in doc parts and Python triple-double-quoted strings.
 
 Important notes:
 

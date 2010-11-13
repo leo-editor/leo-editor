@@ -2,15 +2,15 @@
 #@+node:ville.20090503124249.1: * @file tomboy_import.py
 #@+<< docstring >>
 #@+node:ville.20090503124249.2: ** << docstring >>
-''' Allows imports of notes created in Tomboy / gnote
+''' Allows imports of notes created in Tomboy / gnote.
 
 Usage:
 
-  * Create a node with the headline 'tomboy'
-  * Select the node, and do alt+x act-on-node    
-  * The notes will appear as children of 'tomboy' node
-  * The next time you do act-on-node, existing notes will be updated (they don't need to 
-    be under 'tomboy' node anymore) and new notes added.
+* Create a node with the headline 'tomboy'
+* Select the node, and do alt+x act-on-node    
+* The notes will appear as children of 'tomboy' node
+* The next time you do act-on-node, existing notes will be updated (they don't need to 
+  be under 'tomboy' node anymore) and new notes added.
 
 '''
 #@-<< docstring >>

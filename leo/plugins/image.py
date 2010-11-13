@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.753: * @file image.py
-'''Handle @image nodes.'''
+'''Handles @image nodes.'''
 
 #@+at
 # Based on work by Gil Scwartz.

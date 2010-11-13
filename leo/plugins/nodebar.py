@@ -1,10 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:mork.20041022155742.1: * @file nodebar.py
-"""nodebar adds buttons at the bottom of the tree canvas.
+#@+<< docstring >>
+#@+node:ekr.20101112195628.5436: ** << docstring >>
+""" Adds buttons at the bottom of the tree canvas.
 
 The buttons correspond to commands found in the Outline commands. It is intended
 to speed up a new users ability to use the outline. Experienced users may find
 value in being able to quickly execute commands they do not use very often"""
+#@-<< docstring >>
 
 #@+<< imports >>
 #@+node:ekr.20041030084334: ** << imports >>

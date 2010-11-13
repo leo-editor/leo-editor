@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080555.36: * @file scripts_menu.py
-"""Create a Scripts menu for LeoPy.leo"""
+"""Creates a Scripts menu for LeoPy.leo."""
 
 # The new Execute Script command seems much safer and more convenient.
 

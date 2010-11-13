@@ -2,7 +2,7 @@
 #@+node:mork.20041020082242.1: * @file base64Packager.py
 #@+<< docstring >>
 #@+node:ekr.20050307134613: ** << docstring >>
-'''This plugin allows the user to import binary data and store it in Leo as a
+''' Allows the user to import binary data and store it in Leo as a
 base64 string.
 
 This plugin adds 'Import base64' and 'Export base64' commands to the Import menu

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110095202.5852: * @file searchbar.py
-"""A plugin to emulate the 'Find' panel in an iconBar."""
+""" Emulates the 'Find' panel in an iconBar."""
 
 #@@language python
 #@@tabwidth -4

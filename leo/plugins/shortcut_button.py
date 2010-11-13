@@ -2,7 +2,7 @@
 #@+node:ekr.20060601151845: * @file shortcut_button.py
 #@+<<docstring>>
 #@+node:bobjack.20080614084120.6: ** << docstring >>
-'''A plugin to create a 'shortcut' button in the icon area.
+''' Creates a 'shortcut' button in the icon area.
 
 Pressing the 'shortcut' button creates *another* button which when pressed will
 select the presently selected node at the time the button was created.

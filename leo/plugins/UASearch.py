@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040915075530: * @file UASearch.py
-"""
-A plugin for searching unknownAttributes (uA's).
-"""
+""" Searches for unknownAttributes (uA's)."""
 
 #@@language python
 #@@tabwidth -4

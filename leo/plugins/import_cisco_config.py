@@ -24,6 +24,7 @@ Adds the "File:Import:Import Cisco Configuration" menu item. The plugin will:
 4)  Not display consecutive empty comment lines (lines with only a '!').
 
 All created sections are alphabetically ordered.
+
 '''
 #@-<< docstring >>
 

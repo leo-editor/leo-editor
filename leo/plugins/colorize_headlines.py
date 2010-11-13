@@ -2,7 +2,7 @@
 #@+node:ville.20090310191936.10: * @file colorize_headlines.py
 #@+<< docstring >>
 #@+node:ville.20090310191936.11: ** << docstring >>
-'''A plugin that manipulates appearance of individual tree widget items
+''' Manipulates appearance of individual tree widget items
 
 This plugin is mostly an example of how to change appearance of headlines - as
 such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
@@ -25,8 +25,6 @@ __version__ = '0.1'
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
-
-# Whatever other imports your plugins uses.
 #@-<< imports >>
 
 #@+others

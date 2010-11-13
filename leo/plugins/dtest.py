@@ -2,7 +2,8 @@
 #@+node:ekr.20070119094733.1: * @file dtest.py
 #@+<< docstring >>
 #@+node:ekr.20070119094733.4: ** << docstring >>
-"""Sends code to the doctest module and reports the result.
+""" Sends code to the doctest module and reports the result.
+
 When the Dtest plugin is enabled, the ``dtest`` command is active.
 Typing:: 
 
@@ -23,6 +24,7 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 
     Literate Testing:
     Automated Testing with doctest
+
 """    
 #@-<< docstring >>
 #@+<< imports >>

@@ -2,7 +2,7 @@
 #@+node:ville.20091009202416.10040: * @file leoremote.py
 #@+<< docstring >>
 #@+node:ville.20091009202416.10041: ** << docstring >>
-''' Remote control for leo
+''' Remote control for Leo.
 
 Example client::
 
@@ -14,16 +14,12 @@ Example client::
     print("will connect to",addr)
     pc  = lproto.LProtoClient(addr)
     pc.send("""
-
-    g.es("hello world from remote") 
-    c = g.app.commanders()[0]
-
+        g.es("hello world from remote") 
+        c = g.app.commanders()[0]
     """)
 
     # note how c persists between calls
-    pc.send("""
-    c.k.simulateCommand('stickynote')
-    """)
+    pc.send("""c.k.simulateCommand('stickynote')""")
 
 '''
 #@-<< docstring >>

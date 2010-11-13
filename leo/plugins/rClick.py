@@ -5,11 +5,7 @@
 
 #@+<< docstring >>
 #@+node:bobjack.20080320084644.2: ** << docstring >>
-"""
-Right Click Menus (rClick.py)
-=============================
-
-This plugin provides a simple but powerful and flexible system of managing
+""" Provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
 Executable Howto's and other examples of the use of this plugin can be

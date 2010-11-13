@@ -2,7 +2,7 @@
 #@+node:ekr.20040107092135.2: * @file searchbox.py
 #@+<< doc string >>
 #@+node:ekr.20040108060748: ** << doc string >>
-'''Add a quick search to Leo's toolbar.
+'''Adds a quick search to Leo's toolbar.
 
 A search box which behaves like a web site search is added, along with
 a "GO" button to do quick searches right from the main Leo window. All the
@@ -22,6 +22,7 @@ Still to do:
 - reverse search
 - persist recent searches across Leo sessions
 - use INI file to set options for list size etc
+
 '''
 #@-<< doc string >>
 

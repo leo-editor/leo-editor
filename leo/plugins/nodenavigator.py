@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040108062655: * @file nodenavigator.py
-"""Add "Recent" and "Marks" pulldown buttons to the toolbar."""
+"""Adds "Recent" and "Marks" pulldown buttons to the toolbar."""
 
 #@@language python
 #@@tabwidth -4

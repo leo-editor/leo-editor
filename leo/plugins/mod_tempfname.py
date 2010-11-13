@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517075715.1: * @file mod_tempfname.py
+#@+<< docstring >>
+#@+node:ekr.20101112195628.5433: ** << docstring >>
 """ Replaces c.openWithTempFilePath to create alternate temporary
 directory paths.
 
@@ -11,6 +13,7 @@ hierarchy in Leo. Either method makes it easier to see which temporary file is
 related to which outline node.
 
 """
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
