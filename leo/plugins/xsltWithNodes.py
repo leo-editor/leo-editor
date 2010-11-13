@@ -2,7 +2,7 @@
 #@+node:mork.20041010095009: * @file xsltWithNodes.py
 #@+<< docstring >>
 #@+node:ekr.20050226120104: ** << docstring >>
-"""Adds XSLT-Node Command submen item to the Outline menu.
+""" Adds the Outline:XSLT menu containing XSLT-related commands.
 
 This menu contains the following items:
 
@@ -15,6 +15,7 @@ This menu contains the following items:
     - Creates a sibling containing the results.
 
 Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
+
 """
 #@-<< docstring >>
 

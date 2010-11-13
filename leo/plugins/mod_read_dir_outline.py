@@ -18,6 +18,7 @@ Feedback on this plugin can be sent to::
 
     Frédéric Momméja
     <frederic [point] mommeja [at] laposte [point] net>
+
 '''
 #@-<< docstring >>
 

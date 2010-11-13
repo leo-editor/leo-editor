@@ -2,11 +2,11 @@
 #@+node:mork.20041018204908.1: * @file multifile.py
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
-r'''Multipath enables the ability to write a file to multiple locations.
+r''' Allows Leo to write a file to multiple locations.
 
-It acts as a post-write mechanism, a file must be written to the filesystem for
-it to work. At this point it is not a replacement for @path or an absolute path,
-it works in tandem with them.
+This plugin acts as a post-write mechanism, a file must be written to the
+filesystem for it to work. At this point it is not a replacement for @path or an
+absolute path, it works in tandem with them.
 
 To use, place @multipath at the start of a line in the root node or an ancestor
 of the node. The format is (On Unixy systems)::

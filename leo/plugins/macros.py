@@ -17,19 +17,21 @@ To see this in action, do the following:
 0. **Important**: in the examples below, type << instead of < < and
    type >> instead of > >.  Docstrings can not contain section references!
 
-1. Create a node called 'Parameterized Nodes', with a sub-node called < < Meow > >.
+1. Create a node called 'Parameterized Nodes', with a sub-node called  < < Meow \>\>.
 The body of < < Meow > > should have the text::
 
-I mmmm sooo happy I could < < 1$ > >.  But I dont know if I have all the < < 2$ > >
-money in the world.
+    I mmmm sooo happy I could  < < 1$  > >.
+    But I dont know if I have all the  < < 2$  > >
+    money in the world.
 
 2. In a node called A, type::
 
-< < meow( purrrrrr, zzooot ) > > (leave the cursor at the end of the line)
+     < < meow( purrrrrr, zzooot )  > > (leave the cursor at the end of the line)
 
 3. In a node called B, type::
 
-< < meow ( spit or puke, blinkin  ) > > (leave the cursor at the end of the line)
+     < < meow ( spit or puke, blinkin  )  > >
+    (leave the cursor at the end of the line)
 
 4. Leave the cursor in Node A at the designated point.
 
@@ -37,7 +39,8 @@ money in the world.
 
 The plugin searches the outline, goes to level one and finds a Node with the Headline,
 "Parameterized Nodes". It looks for nodes under that headline with the the headline
-< < meow > >. It then creates this node structure under Node A:
+< < meow > >. It then creates this node structure under Node A::
+
     < < meow ( purrrrrr, zzooot ) > >
         < <2$> >
         < <1$> >
@@ -55,6 +58,7 @@ Go to Outline Menu and select Parameterize Section Reference command.
 8. Examine the new subnodes of Node B.
 
 It's a lot easier to use than to explain!
+
 '''
 #@-<< docstring >>
 

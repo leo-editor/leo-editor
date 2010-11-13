@@ -2,7 +2,8 @@
 #@+node:ekr.20040910070811.1: * @file run_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912181956: ** << docstring >>
-r'''Runs a program and interface Leo through its input/output/error streams.
+r''' Runs a program and interface Leos through its input/output/error streams.
+
 Double clicking the icon box whose headlines are @run 'cmd args' will execute
 the command. There are several other features, including @arg and @input nodes.
 

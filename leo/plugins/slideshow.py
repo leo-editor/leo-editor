@@ -2,9 +2,9 @@
 #@+node:ekr.20060831165821: * @file slideshow.py
 #@+<< docstring >>
 #@+node:ekr.20060831165845.1: ** << docstring >>
-'''A plugin to support slideshows in Leo outlines.
+''' Support slideshows in Leo outlines.
 
-It defines four new commands:
+This plugin defines four new commands:
 
 - next-slide-show:  move to the start of the next slide show,
   or the first slide show if no slide show has been seen yet.
@@ -17,6 +17,7 @@ Slides shows consist of a root @slideshow node with descendent @slide nodes.
 @slide nodes may be organized via non-@slide nodes that do not appear in the slideshow.
 
 All these commands ignore @ignore trees.
+
 '''
 #@-<< docstring >>
 

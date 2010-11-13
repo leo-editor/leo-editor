@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110092851.5812: * @file initinclass.py
+#@+<< docstring >>
+#@+node:ekr.20101112180523.5421: ** << docstring >>
 """ Modifies the Python @auto importer so that the importer
 puts the __init__ method (ctor) into the body of the class node.
 
@@ -11,6 +13,8 @@ Note that this is done *after* the consistency checks by the @auto
 import code, so using this plugin is at your own risk.  It will change
 the order of declarations if other methods are declared before __init__.
 """
+#@-<< docstring >>
+
 
 __version__ = "0.1"
 __plugin_name__ = "__init__ in class"

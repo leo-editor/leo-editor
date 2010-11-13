@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110091234.5700: * @file leo_interface.py
+#@+<< docstring >>
+#@+node:ekr.20101112180523.5422: ** << docstring >>
 """ Allows the user to browse XML documents in Leo.
 
 This file implements an interface to XML generation,
@@ -11,14 +13,12 @@ class leo_node has a headline and body text.
 See the end of this file for a minimal example on
 how to use these classes.
 
-Clones:
-   If you encounter the first of a set of clones,
-   create a leo_node.
+If you encounter the first of a set of clones, create a leo_node. If you
+encounter the same set of clones later, create a leo_clone node and refer back
+to the first element.
 
-   If you encounter the same set of clones later,
-   create a leo_clone node and refer back to
-   the first element.
 """
+#@-<< docstring >>
 
 debug = False
 

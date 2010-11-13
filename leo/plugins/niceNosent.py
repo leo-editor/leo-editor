@@ -1,9 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040331151007: * @file niceNosent.py
-"""Preprocess @file-nosent nodes: make sure each subnode ends
-with exactly one newline, replace all tabs with spaces, and
-add a newline before class and functions in the derived file.
+#@+<< docstring >>
+#@+node:ekr.20101112180523.5420: ** << docstring >>
+""" Ensures that all descendants of @file-nosent nodes end
+with exactly one newline, replaces all tabs with spaces, and
+adds a newline before class and functions in the derived file.
+
 """
+#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4

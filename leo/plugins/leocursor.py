@@ -1,12 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20100228141752.5691: * @file leocursor.py
-"""A LeoCursor object can walk around on a Leo outline and decode
-attributes from nodes.  Node names can be used through . (dot) notation
-so ``cursor.Data.Name._B`` for example returns the body text of the
-Name node which is a child of the Data node which is a child of the
-cursors current location.
+""" Creates a LeoCursor object that can walk around a Leo outline and decode
+attributes from nodes.
+
+Node names can be used through . (dot) notation so ``cursor.Data.Name._B`` for
+example returns the body text of the Name node which is a child of the Data node
+which is a child of the cursors current location.
 
 See .../plugins/examples/leocursorexample.leo for application.
+
 """
 
 import re

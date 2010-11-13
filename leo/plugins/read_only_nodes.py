@@ -2,7 +2,7 @@
 #@+node:edream.110203113231.876: * @file read_only_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912052854: ** << docstring >>
-'''A plugin to create and update @read-only nodes.
+''' Create and updates @read-only nodes.
 
 Here's my first attempt at customizing leo. I wanted to have the ability to
 import files in "read-only" mode, that is, in a mode where files could only

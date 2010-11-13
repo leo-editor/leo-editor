@@ -201,10 +201,11 @@ execute a command in the first line of the body of a double-clicked node::
 
 """
 
+#@-<< docstring >>
+
 # Written by TL.
 # Derived from the fileActions plugin.
 # Distributed under the same licence as Leo.
-#@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4

@@ -2,32 +2,33 @@
 #@+node:dan.20090217132953.1: * @file mime.py
 #@+<< docstring >>
 #@+node:dan.20090203174248.27: ** << docstring >>
-'''Open files with their default platform program.
+''' Opens files with their default platform program.
 
 Double-clicking @mime nodes will attempt to open the named file as if opened
-from a file manager.  @path parent nodes are used to find the full filename
+from a file manager. \@path parent nodes are used to find the full filename
 path.
 
     @mime foodir/document.pdf
 
-The string setting 'mime_open_cmd' allows specifying a program to handle opening files.
+The string setting 'mime_open_cmd' allows specifying a program to handle opening
+files::
 
     @settings
         @string mime_open_cmd = see
         .. or ..
         @string mime_open_cmd = see %s
 
-    Where '%s' is replaced with the full pathname.
+Where '%s' is replaced with the full pathname.
 
-Note: This plugin terminates handling of the 'icondclick1' event by returning
-      True.  If another plugin using this event (e.g. vim.py) is also enabled,
-      the order in @enabled-plugins matters.  For example: if vim.py is enabled
-      before mime.py, double-clicking on an @mime node will both open the body
-      text in [g]vim AND call the mime_open_cmd.
+**Note**: This plugin terminates handling of the 'icondclick1' event by returning
+True. If another plugin using this event (e.g. vim.py) is also enabled, the
+order in @enabled-plugins matters. For example: if vim.py is enabled before
+mime.py, double-clicking on an @mime node will both open the body text in [g]vim
+AND call the mime_open_cmd.
 
-This plugin is complementary to the UNL.py plugin's @url nodes.  Use @url for
-opening either URLs or Uniform Node Locators in "*.leo" files and use @mime
-nodes for opening files on the local filesystem.  It also replaces the
+This plugin is complementary to the UNL.py plugin's @url nodes. Use @url for
+opening either URLs or Uniform Node Locators in "\*.leo" files and use @mime
+nodes for opening files on the local filesystem. It also replaces the
 startfile.py plugin, where here the headline must start with @mime to activiate
 this plugin.
 

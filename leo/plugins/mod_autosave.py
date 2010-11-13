@@ -11,6 +11,7 @@ The time between saves is given by the setting, with default as shown::
 This plugin is active only if::
 
     @bool mod_autosave_active = True
+
  """
 #@-<< docstring >>
 
