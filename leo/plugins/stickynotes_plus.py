@@ -26,9 +26,12 @@ try:
     import markdown
 except ImportError:
     print('stickynotes_plus.py: can not import markdown')
-    raise
+    markdown = None
+except SyntaxError:
+    print('stickynotes_plus.py: syntax error in markdown')
+    markdown = None
 
-from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL,QTimer)
+from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL,QTimer) # QString, 
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,QPlainTextEdit)
@@ -58,7 +61,8 @@ def decorate_window(w):
 #@+node:ekr.20100103100944.5393: ** init
 def init ():
 
-    ok = True
+    ok = markdown is not None
+        # Markdown fails on Python 3k at present.
 
     if ok:
         #g.registerHandler('start2',onStart2)
@@ -527,7 +531,8 @@ class notetextedit(QTextEdit):
     def toMarkdown(self):
         references = ''
         i = 1
-        doc = QString() # the full document
+        # doc = QString() # the full document
+        doc = g.u('')
         block = self.document().begin() # block is like a para; text fragment is sequence of same char format
         while block.isValid():
             #print "block=",block.text()
@@ -543,7 +548,8 @@ class notetextedit(QTextEdit):
             else:
                 if block.textList():
                     doc += '  '+block.textList().itemText(block) + ' ' 
-                para = QString()
+                # para = QString()
+                para = g.u('')
                 iterator = block.begin()
                 while iterator != block.end():
                     fragment = iterator.fragment()

@@ -538,8 +538,8 @@ class LeoPluginsController:
 
         except ImportError:
             if trace or tag == 'open0': # Just give the warning once.
-                g.es_print('plugin does not exist:',moduleName,color='red')
-                # g.es_exception()
+                g.es_print('error importing plugin:',moduleName,color='red')
+                g.es_exception()
             result = None
 
         except Exception as e:

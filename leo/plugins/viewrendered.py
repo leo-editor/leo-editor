@@ -32,20 +32,11 @@ Heading
 '''
 #@-<< docstring >>
 
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:tbrown.20100318101414.5992: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# Put notes about each version here.
-#@-<< version history >>
+__version__ = '0.1'
 
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
-
-# Whatever other imports your plugins uses.
 
 g.assertUi('qt')
 
@@ -59,7 +50,7 @@ try:
 except ImportError:
     got_docutils = False
 
-from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL, QTimer)
+from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
@@ -86,45 +77,37 @@ def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
-
 #@+node:tbrown.20100318101414.5995: ** init
 def init ():
 
-    ok = True
+    g.viewrendered_count = 0
+    g.plugin_signon(__name__)
 
-    if ok:
-        #g.registerHandler('start2',onStart2)
-        g.plugin_signon(__name__)
-
-        g.viewrendered_count = 0
-
-    return ok
-#@+node:tbrown.20100318101414.5997: ** class ViewRendered
+    return True
+#@+node:tbrown.20100318101414.5997: ** class ViewRendered(QTextEdit)
 class ViewRendered(QTextEdit):
 
+    #@+others
+    #@+node:ekr.20101112195628.5429: *3* __init__ & __del__
     def __init__(self, c):
-        QTextEdit.__init__(self)
 
+        QTextEdit.__init__(self)
         self.length = 0
         self.gnx = 0
-
         self.setReadOnly(True)
         self.c = c
         c.viewrendered = self
-
         g.registerHandler('select2',self.update)
         g.registerHandler('idle',self.update)
         g.enableIdleTimeHook(idleTimeDelay=1000)
         g.viewrendered_count += 1
-
         self.show()
-
         self.update(None, {'c':c})
 
     def __del__(self):
 
         self.close()
-
+    #@+node:ekr.20101112195628.5430: *3* close & closeEvent
     def close(self):
 
         if g.viewrendered_count > 0:
@@ -139,13 +122,14 @@ class ViewRendered(QTextEdit):
             del self.c.viewrendered
 
     def closeEvent(self, event):
+
         event.accept()        
         self.close()
-
+    #@+node:ekr.20101112195628.5426: *3* update
     def update(self, tag, keywords):
 
         if keywords['c'] != self.c:
-            return  # not out problem
+            return  # not our problem
 
         p = self.c.currentPosition()
         b = p.b.strip()
@@ -169,7 +153,8 @@ class ViewRendered(QTextEdit):
                     self.setPlainText(b)
                     return
 
-        self.setHtml(b)
+        self.setHtml(g.toUnicode(b))
+    #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
