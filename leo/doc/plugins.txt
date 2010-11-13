@@ -529,7 +529,7 @@ To see this in action, do the following:
 The body of < < Meow > > should have the text::
 
     I mmmm sooo happy I could  < < 1$  > >.
-    But I dont know if I have all the  < < 2$  > >
+    But I don't know if I have all the  < < 2$  > >
     money in the world.
 
 2. In a node called A, type::
@@ -1300,7 +1300,7 @@ There is an additional directive that simplifies common paths, it is called
 directive.
 
 For example: (note I put # in front of the directives here because I
-dont want someone browsing this file to accidentally save multiple copies of
+don't want someone browsing this file to accidentally save multiple copies of
 this file to their system :) )
 
 #@multiprefix /leo #@multipath /plugins 

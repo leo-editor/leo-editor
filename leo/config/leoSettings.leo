@@ -398,7 +398,7 @@
 <v t="ekr.20060702100257"><vh>@font menu text font</vh></v>
 <v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
 </v>
-<v t="ekr.20071214132254" a="E"><vh>Import options</vh>
+<v t="ekr.20071214132254"><vh>Import options</vh>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
 </v>
@@ -463,13 +463,13 @@
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20070925144534"><vh>@menus</vh>
-<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -483,26 +483,26 @@
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
+<v t="ekr.20070925144534.13" a="E"><vh>@menu &amp;Read/Write...</vh>
 <v t="ekr.20071001120755"><vh>@item *check-derived-file</vh></v>
 <v t="ekr.20071001120755.1"><vh>@item *check-leo-file</vh></v>
 <v t="ekr.20071001121059"><vh>@item *compare-leo-files</vh></v>
 <v t="ekr.20071001120755.2"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.14"><vh>@item *read-outline-only</vh></v>
 <v t="ekr.20071001120755.3"><vh>@item *read-file-into-node</vh></v>
-<v t="ekr.20070925144534.17"><vh>@@@item read-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.17"><vh>@item read-at-auto-nodes</vh></v>
 <v t="ekr.20070925144534.21"><vh>@item read-at-file-nodes</vh></v>
-<v t="ekr.20080801104153.2"><vh>@@@item read-at-shadow-nodes</vh></v>
+<v t="ekr.20080801104153.2"><vh>@item read-at-shadow-nodes</vh></v>
 <v t="ekr.20071001123216"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.15"><vh>@item *write-outline-only</vh></v>
 <v t="ekr.20071001120755.4"><vh>@item *write-file-from-node</vh></v>
-<v t="ekr.20070925144534.18"><vh>@@@item write-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.18"><vh>@item write-at-auto-nodes</vh></v>
 <v t="ekr.20070925144534.24"><vh>@item write-at-file-nodes</vh></v>
-<v t="ekr.20080801104153.3"><vh>@@@item write-at-shadow-nodes</vh></v>
+<v t="ekr.20080801104153.3"><vh>@item write-at-shadow-nodes</vh></v>
 <v t="ekr.20070925144534.16"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.19"><vh>@@@item write-dirty-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.19"><vh>@item write-dirty-at-auto-nodes</vh></v>
 <v t="ekr.20070925144534.22"><vh>@item write-dirty-at-file-nodes</vh></v>
-<v t="ekr.20080801104153.4"><vh>@@@item write-dirty-at-shadow-nodes</vh></v>
+<v t="ekr.20080801104153.4"><vh>@item write-dirty-at-shadow-nodes</vh></v>
 <v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
 <v t="ekr.20070925144534.33"><vh>@menu &amp;Import...</vh>
@@ -6782,7 +6782,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.227"></t>
 <t tx="ekr.20070925144534.228"></t>
 <t tx="ekr.20070925144534.229"></t>
-<t tx="ekr.20070925144534.23">Write Missing @file Nodes</t>
+<t tx="ekr.20070925144534.23">Write Missing @&lt;file&gt; Nodes</t>
 <t tx="ekr.20070925144534.230"></t>
 <t tx="ekr.20070925144534.231"></t>
 <t tx="ekr.20070925144534.232"></t>

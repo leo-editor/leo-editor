@@ -595,6 +595,13 @@ directive is in effect throughout a tree, unless overridden in some subtree.
     Because of the ancestor @path nodes, the @file node creates the file
     a/b/c/d.py
 
+    Within @path and @<file> paths, {{exp}} gets evaluated with the following
+    symbols known: c, g, p, os and sys.  For example::
+
+        @file {{os.path.abspath(os.curdir)}}/abc.py
+
+    refers to the file abc.py in (absolute path of) the current directory.
+
 .. index::
     pair: @tabwidth; Tutorial
     pair: Negative tab width; Tutorial

@@ -86,6 +86,13 @@ and a **private** file with sentinels.
 **Note 3**: Outline structure created in \@edit nodes is not saved in the
 external file.
 
+Within @path and @<file> paths, {{exp}} gets evaluated with the following
+symbols known: c, g, p, os and sys.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
+
+refers to the file abc.py in (absolute path of) the current directory.
+
 .. @+node:ekr.20100806170836.4393: *4* \@asis <path>
 .. index::
     pair: @asis; Reference
@@ -653,6 +660,13 @@ and they must start at the leftmost column of the node.
 
    If no \@path directives are in effect, the default path prefix is
    the directory containing the .leo file.
+
+   Within @path and @<file> paths, {{exp}} gets evaluated with the following
+   symbols known: c, g, p, os and sys.  For example::
+
+       @file {{os.path.abspath(os.curdir)}}/abc.py
+
+   refers to the file abc.py in (absolute path of) the current directory.
 
 .. index::
     pair: @tabwidth; Reference

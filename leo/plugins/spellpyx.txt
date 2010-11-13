@@ -3814,3 +3814,14 @@ feedparser
 newserver
 newsitem
 pycurl
+pylab
+ipython_argv
+LeoNode
+SList
+LeoNodes
+remote_impl
+sysadmin
+grep
+Turbogears
+Django
+hijack_tk

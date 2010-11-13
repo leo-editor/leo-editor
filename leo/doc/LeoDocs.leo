@@ -115,8 +115,9 @@
 </v>
 </v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
-<v t="ekr.20050831184021.5"><vh>Leo's Reference</vh>
-<v t="ekr.20100805001344.7253"><vh>@file directives.txt</vh></v>
+<v t="ekr.20050831184021.5" a="E"><vh>Leo's Reference</vh>
+<v t="ekr.20100805001344.7253" a="E"
+expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
 <v t="ekr.20100805165051.7156"><vh>@file design.txt</vh></v>
@@ -145,8 +146,7 @@
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
 <v t="ekr.20101113120258.4929"><vh>To do</vh>
-<v t="ekr.20101028110015.8272"
-expanded="ekr.20101025080245.5540,"><vh>@file doc-to-do.txt</vh></v>
+<v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
@@ -155,11 +155,7 @@ expanded="ekr.20101025080245.5540,"><vh>@file doc-to-do.txt</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e382e302e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e382e302e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e302e312e312e302e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e382e302e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473580b000000302e312e382e302e332e31710e7d710f580b0000007374725f6c656f5f706f737110680473752e"
 marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
-<v t="ekr.20101025080245.5540" a="E"><vh>To do</vh>
-<v t="ekr.20101025080245.5528"><vh>Clarify read @file node command</vh></v>
-<v t="ekr.20101025080245.5533"><vh>Document {{expression}} in paths</vh></v>
-<v t="ekr.20101026082911.5534"><vh>Eliminate sphinx warnings</vh></v>
-</v>
+<v t="ekr.20101025080245.5540"><vh>To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -233,22 +229,6 @@ cd leo\doc\html\slides\slideshow-name
 make html
 </t>
 <t tx="ekr.20101007100904.4372"></t>
-<t tx="ekr.20101025080245.5528">http://groups.google.com/group/leo-editor/browse_thread/thread/150a356ad24fe3b1
-
-Fix/clarify menus and documentation
-
-Also, removed incorrect error message:
-
-The "Read @&lt;file&gt; Nodes" works to incorporate external changes in the select
-tree, though it does generate an incorrect message:
-
-    "no @&lt;file&gt; nodes in the selected tree".
-</t>
-<t tx="ekr.20101025080245.5533">Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following
-symbols known: c, g, p, os and sys.
-
-Thus, {{os.curdir}} evaluates to the current directory.
-</t>
 <t tx="ekr.20101025080245.5540">@nocolor
 
 - Discuss installing qt in introductory slide show.
@@ -256,10 +236,13 @@ Thus, {{os.curdir}} evaluates to the current directory.
 - Move meld to screenshot controller.
     - Use @wink-path = &lt;path&gt; to control meld.
     - (We don't need to specify the path for moved screenshots.)
-    
+
 - Make sure to upload all slides.
 
 - Create slides_toc for slides, separate from the main toc document.
+
+- Eliminate Sphinx warnings:
+    Can probably be done by changing the slides page.
 </t>
 <t tx="ekr.20101025080245.5794"></t>
 <t tx="ekr.20101025080245.5795"></t>
@@ -331,10 +314,6 @@ Release Notes
 &lt;ul&gt;
 &lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="what-is-new.html"&gt;What&amp;#8217;s New in Leo&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</t>
-<t tx="ekr.20101026082911.5534">Can probably be done by changing the slides page.
-
-Creating .. contents or .. toctree might do the trick.
-</t>
 <t tx="ekr.20101026082911.5536"></t>
 <t tx="ekr.20101104024804.4898">@nocolor-node
 
