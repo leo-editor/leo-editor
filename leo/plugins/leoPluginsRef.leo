@@ -21,12 +21,8 @@
 </v>
 </v>
 <v t="ekr.20060924180348"><vh>buttons</vh>
-<v t="ekr.20050724100334"><vh>@@button Beautify</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
-<v t="ekr.20050819055746"><vh>@@button Save</vh></v>
-<v t="ekr.20060827163237"><vh>@@button scripts.leo</vh></v>
-<v t="ekr.20060109114710"><vh>@@button settings.leo</vh></v>
-<v t="ekr.20051025144116"><vh>@@button Spell</vh></v>
+<v t="ekr.20101112124740.5432"><vh>@button preview</vh></v>
 </v>
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20100102164842.5328"><vh>Script: count pages</vh></v>
@@ -73,6 +69,8 @@
 </v>
 </v>
 <v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
@@ -80,7 +78,6 @@
 <v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@shadow graphcanvas.py</vh></v>
@@ -106,14 +103,13 @@
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 </v>
 <v t="edream.110203113231.729"><vh>Debugging</vh>
+<v t="ekr.20101110091234.5689"><vh>@file debugger_pudb.py</vh></v>
 <v t="edream.110203113231.730"><vh>@file dump_globals.py</vh></v>
 <v t="edream.110203113231.732"><vh>@file enable_gc.py</vh></v>
 <v t="edream.110203113231.734"><vh>@file quit_leo.py</vh></v>
-<v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
 <v t="edream.110203113231.735"><vh>@file trace_gc_plugin.py</vh></v>
 <v t="edream.110203113231.736"><vh>@file trace_keys.py</vh></v>
 <v t="edream.110203113231.738"><vh>@file trace_tags.py</vh></v>
-<v t="ekr.20101110091234.5689"><vh>@file debugger_pudb.py</vh></v>
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
@@ -129,6 +125,7 @@
 <v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
+<v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
 <v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
@@ -156,7 +153,6 @@
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
@@ -180,17 +176,18 @@
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
-<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
+<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows and screenshots</vh>
 <v t="ekr.20100908110845.5505"><vh>@file screenshots.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
-<v t="ekr.20071113084440.1"><vh>@file test/syntax_error_plugin.py</vh></v>
-<v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
-<v t="ekr.20050130120433"><vh>@file test/failed_import.py</vh></v>
 <v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
+<v t="ekr.20050130120433"><vh>@file test/failed_import.py</vh></v>
+<v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
+<v t="ekr.20071113084440.1"><vh>@file test/syntax_error_plugin.py</vh></v>
+<v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
 <v t="timo.20050213160555"><vh>@file bibtex.py</vh></v>
@@ -206,13 +203,12 @@
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
-<v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt; Chapter 8: Customizing Leo'</vh></v>
+<v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt;Basics--&gt;Customizing Leo'</vh></v>
 <v t="ekr.20061023141459"><vh>@url 'Plugins--&gt;UNL plugin--&gt;@file UNL.py'</vh></v>
 </v>
 <v t="rogererens.20041013082304"><vh>@file UNL.py</vh></v>
 </v>
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
-<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@file detect_urls.py</vh></v>
 <v t="mork.20041018162155.1"><vh>@file EditAttributes.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
@@ -418,7 +414,7 @@
 <v t="ekr.20060513122613.22"></v>
 </v>
 </v>
-<v t="ekr.20060513122450"><vh>@file xcc_nodes.py</vh></v>
+<v t="ekr.20060513122450" a="E"><vh>@file xcc_nodes.py</vh></v>
 </v>
 <v t="mork.20041020082242.1"><vh>@file base64Packager.py</vh></v>
 <v t="tbrown.20060828111141"><vh>@file cleo.py</vh></v>
@@ -462,7 +458,6 @@ use_section_numbers = Yes
 use_current_document = Yes
 max_headings = 6
 header_style = Heading
-
 </t>
 <t tx="EKR.20040517090508">@nocolor-node
 
@@ -1505,7 +1500,6 @@ An octogenarian US man is jailed for 20 years for trying to travel to the Philip
 <t tx="ekr.20050329092553.9">Golf: Funk claims Players title
 
 Fred Funk's final-round 70 gives him victory in the lucrative Players Championship at Sawgrass.</t>
-<t tx="ekr.20050724100334">c.prettyPrintPythonNode()</t>
 <t tx="ekr.20050817132814">@nocolor
 
 Important: the rst3 plugin has largely been superceded by similar
@@ -1531,9 +1525,6 @@ To activate the rst3 plugin, do the following:
 - Check in the menu 'Edit' for item 'Write-Restructured-Text'.
 
 @color</t>
-<t tx="ekr.20050819055746">c.save()</t>
-<t tx="ekr.20051025144116">c.spellCommands.openSpellTab()</t>
-<t tx="ekr.20060109114710">c.openLeoSettings()</t>
 <t tx="ekr.20060513122613"></t>
 <t tx="ekr.20060513122613.1">@
 opengl.h is just a test for long files
@@ -2887,11 +2878,6 @@ GL_PROC(void,glViewport,(GLint x, GLint y, GLsizei width, GLsizei height))
 #define GL_ALIASED_POINT_SIZE_RANGE       0x846D
 #define GL_ALIASED_LINE_WIDTH_RANGE       0x846E
 #endif</t>
-<t tx="ekr.20060827163237">name = "scripts.leo"
-fileName = g.os_path_join(g.app.loadDir,"..","scripts",name)
-ok,frame = g.openWithFileName(fileName,c)
-if not ok:
-    g.es("not found: %s" % name)</t>
 <t tx="ekr.20060924180348"></t>
 <t tx="ekr.20061023141459"></t>
 <t tx="ekr.20061023141638"></t>
@@ -3025,6 +3011,8 @@ else:
 <t tx="ekr.20101110150056.9457"></t>
 <t tx="ekr.20101110150056.9467"># These plugins would have to be substantially rewritten to be made gui-independent.</t>
 <t tx="ekr.20101110150056.9469"></t>
+<t tx="ekr.20101112124740.5432">g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b + '\n\n')
+</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
