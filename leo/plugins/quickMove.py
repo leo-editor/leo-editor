@@ -4,7 +4,7 @@
 #@@first
 #@+<< docstring >>
 #@+node:tbrown.20070117104409.1: ** << docstring >>
-"""Creates buttons to move nodes quickly to other nodes
+"""Creates buttons to move nodes quickly to other nodes.
 
 Quickly move/copy/clone nodes from around the tree to one or more target nodes.
 It can also create bookmark and tagging functionality in an outline (see `Set
@@ -108,7 +108,7 @@ import types
 
 import leo.core.leoGlobals as g
 
-from mod_scripting import scriptingController
+from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items

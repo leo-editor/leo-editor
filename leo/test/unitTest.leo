@@ -21243,7 +21243,7 @@ for fn in files:
             __import__('leo.plugins.%s' % m)
             if 1: print('pass %s' % m)
         except ImportError:
-            if 1: print('fail %s' % m)
+            if 1: print('FAIL %s' % m)
         except Exception:
             if 1: g.es_exception()
             if 1: print('error %s' % m)
