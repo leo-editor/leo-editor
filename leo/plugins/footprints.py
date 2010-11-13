@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:pap.20041020001240: * @file footprints.py
-""" Leave footprints! This colours the Leo nodes so that the ones you
+""" Leaves footprints! Colours nodes so that the ones you
 have visited most and most recently will stand out.
 """
 

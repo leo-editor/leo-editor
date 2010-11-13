@@ -8,8 +8,7 @@ Selecting these menu items will bring up a short **About Plugin** dialog
 with the details of the plugin. In some circumstances a submenu will be created
 instead and an 'About' menu entry will be created in this.
 
-INI files and the Properties Dialog
-------------------------------------
+**INI files and the Properties Dialog**
 
 If a file exists in the plugins directory with the same file name as the plugin
 but with a .ini extension instead of .py, then a **Properties** item will be
@@ -18,47 +17,36 @@ will allow the contents of this file to be edited.
 
 The .ini file should be formated for use by the python ConfigParser class.
 
-
-Special Methods
----------------
+**Special Methods**
 
 Certain methods defined at the top level are considered special.
 
-**cmd_XZY**
-
+cmd_XZY
     If a method is defined at the module level with a name of the form
     **cmd_XZY** then a menu item **XZY** will be created which will invoke
     **cmd_XZY** when it is selected. These menus will appear in a sub menu.
 
-**applyConfiguration**
+applyConfiguration
 
-    If this method exists then it will be called whenever
-
-**topLevelMenu**
-
+topLevelMenu
     This method, if it exists, will be called when the user clicks on the plugin
     name in the plugins menu (or the **About** item in its submenu), but only if
     the plugin was loaded properly and registered with g.plugin_signon.
 
-
-Special Variable Names
-----------------------
+**Special Variable Names**
 
 Some names defined at the top level have special significance.
 
-**__plugin_name__**
-
+__plugin_name__
     This will be used to define the name of the plugin and will be used
     as a label for its menu entry.
 
-**__plugin_priority__**
-
+__plugin_priority__
     Plugins can also attempt to select the order they will appear in the menu by
     defining a __plugin_prioriy__. The menu will be created with the highest
     priority items first. This behavior is not guaranteed since other plugins
     can define any priority. This priority does not affect the order of calling
     handlers.
-
     To change the order select a number outside the range 0-200 since this range
     is used internally for sorting alphabetically. Properties and INI files.
 

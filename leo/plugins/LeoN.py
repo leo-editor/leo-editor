@@ -49,7 +49,6 @@ rodrigob at elo dot utfsm dot cl
 # release version 0.0.1 (major, minor, release)
 # 
 # this version is not supposed to be error prone, but it is good code base.
-# -------------------------------------------------------------------------
 # 
 # 25/06/03 Copying of the main algorithms into the code. RodrigoB.
 # 01/07/03 Programming. RodrigoB.
@@ -147,13 +146,15 @@ rodrigob at elo dot utfsm dot cl
 # 
 # Leo is http://leo.sf.net
 # 
-# Leo over network requirements
-# -----------------------------
+# **Leo over network requirements**
 # 
-# This is my résumé of the Requirements and design issues for Leo over the Network. (LeoN).
+# This is my résumé of the Requirements and design issues for Leo over the
+# Network. (LeoN).
 # 
-# First in sake of simplicity a N-clients/One server architecture is imposed, being much more easy to design and implement.
-# Also it's required that the code could be as most Plugin as possible and as most python Modules independent as possible (one and only one instalation required).
+# First in sake of simplicity a N-clients/One server architecture is imposed,
+# being much more easy to design and implement. Also it's required that the code
+# could be as most Plugin as possible and as most python Modules independent as
+# possible (one and only one instalation required).
 # 
 # Now, the list presented approximately in the logic order of implementation:
 # 
@@ -242,7 +243,6 @@ rodrigob at elo dot utfsm dot cl
 # As said, it is times to news. Briefly.
 # 
 # about step4
-# -----------
 # 
 # The code is ready and running since wednesday (mercredi) on the morning, but
 # until now I'm grumbling-grumbling with the code to get it working as supposed; I
@@ -259,7 +259,6 @@ rodrigob at elo dot utfsm dot cl
 # one).
 # 
 # what is next
-# ------------
 # 
 # - Finish debug of step4
 # - Implement and test the one server various clients collaborative editing (a special case of the above class)

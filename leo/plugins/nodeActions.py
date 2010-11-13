@@ -26,8 +26,7 @@ node::
       |
       +- @file *.py
 
-Configuration
-=============
+**Configuration**
 
 The nodeActions plugin supports the following global configurations using
 Leo's support for setting global variables within an @settings node's
@@ -56,8 +55,7 @@ file:
       :3: Patterns that did not match
       :4: Code debugging messages
 
-Patterns
-========
+**Patterns**
 
 Pattern matching is performed using python's support for Unix
 shell-style patterns unless overwritten by the "X" pattern directive.
@@ -120,8 +118,7 @@ definition from the "C:\\Leo\\nodeActions_Patterns.txt" file::
         |
         +- @file *.py
 
-Pattern directives
-==================
+**Pattern directives**
 
 The following pattern specific directives can be appended to the end of a
 pattern (do not include the ':'):
@@ -170,8 +167,7 @@ separator.  For example, the following specifies all three directives::
 
   ^@files .*\.py$ [X,V>]
 
-Scripts
-=======
+**Scripts**
 
 The script for a pattern is located in the body of the pattern's node.
 The following global variables are available to the script::
@@ -181,9 +177,7 @@ The following global variables are available to the script::
     pClicked - node position of the double-clicked node
     pScript - node position of the invoked script
 
-Examples
-========
-
+**Examples**
 
 Double-clicking on a node with a "http:\\\\www.google.com" headline
 will invoke the script associated with the

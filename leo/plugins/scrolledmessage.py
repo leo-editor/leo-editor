@@ -32,8 +32,7 @@ or::
 
 all parameters are optional except c.
 
-Parameters
-----------
+**Parameters**
 
 msg:
     The text to be displayed (html, rst, plain).
@@ -57,8 +56,7 @@ flags:
     Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
     displayed as html.
 
-To Do
------
+**To Do**
 
 - Add parameters to control position, size, closing, hiding etc.
 

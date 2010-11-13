@@ -350,5 +350,166 @@ A test of creating directories.
 ############
 html test
 ############
+#@+node:ekr.20101111175617.5037: ** Script: get-plugin-docstrings
+'''Creates an outline containing most docstrings from leoPlugins.leo.
+
+Documentation for some docstings are suppressed.'''
+
+@others
+
+controller(c).run()
+#@+node:ekr.20101111175617.56915: *3* class controller
+class controller:
+
+    def __init__ (self,c):
+        self.c = c
+        self.trace = False
+
+    @others
+#@+node:ekr.20101112045055.13356: *4* allowDir
+def allowDir (self,p):
+
+    '''Return True if we should allow scan of directory p.'''
+
+    aList = (
+        # Suppressed directories.
+        'Examples','Experimental',
+        'Dyna plugins by e',
+        'Gui plugins','Testing',
+    )
+    return p.h not in aList and not p.h.startswith('  ')
+#@+node:ekr.20101112222250.5322: *4* allowFile
+def allowFile (self,p):
+
+    '''Return True if we should allow scan of a file at p.'''
+
+    aList = (
+        # Suppresssed files.
+        '@file bookmarks.py',       # Replaced by better @url.
+        '@file rst3.py',            # Replaced by core rst3 command.
+        '@file stickynotes_plus.py', # Experimental version of stickynotes
+        '@file testnode.py',        # Replaced by @edit.
+        # These all depend on old plugins_manager.py.
+        '@file autotrees.py', 
+        '@file old_plugin_manager.py',
+        '@file leoupdate.py',
+        # These are used only by autotrees.py.
+        r'@file trees\doc.py',
+        r'@file trees\news.py',
+        r'@file trees\remote.py',
+        r'@file trees\rss.py',
+        r'@file trees\test.py',
+    )
+    return p.h not in aList and p.isAnyAtFileNode() and p.h.endswith('.py')
+#@+node:ekr.20101112045055.13355: *4* createDocs
+def createDocs (self,output,root):
+
+     for p in root.children():
+        if self.allowDir(p):
+            if self.trace: print('\n**',p.h)
+            child = output.insertAsLastChild()
+            child.h = p.h
+            for p2 in p.subtree():
+                if self.allowFile(p2):
+                    h = p2.anyAtFileNodeName()
+                    s = self.getDocString(p2)
+                    if self.trace: print('%5s %s' % (len(s),h))
+                    child2 = child.insertAsLastChild()
+                    child2.h = h
+                    child2.b = "%s\n\n" % s.strip()
+#@+node:ekr.20101112045055.13354: *4* createSummary
+def createSummary (self,output,root):
+
+    summary = output.insertAsLastChild()
+    summary.h = 'Summary'
+    result = []
+
+    for p in root.children():
+        if self.allowDir(p):
+            for p2 in p.subtree():
+                if self.allowFile(p2):
+                    h = p2.anyAtFileNodeName()
+                    s = self.getDocString(p2)
+                    s = self.getFirstParagraph(s).rstrip()
+                    if s:
+                        if not s.endswith('.'): s = s + '.'
+                        result.append('%s\n%s\n\n' % (h,s))
+
+    # Sort by plugin name, ignoring case.
+    def lower(s): return s.lower()
+    result.sort(key=lower)
+    summary.b = ''.join(result)
+#@+node:ekr.20101111175617.14683: *4* getDocString
+def getDocString(self,p):
+
+    '''Return the docstring of the @<file> node p.'''
+
+    trace = False # p.h.find('@file rClick.py') > -1
+    if trace: g.trace('='*20)
+    for p2 in p.self_and_subtree():
+        s = p2.b
+        if trace: g.trace(p2.h)
+        for tag in ("'''",'"""'):
+            i = s.find(tag)
+            if i > -1:
+                j = s.find(tag,i+3)
+                if j > -1:
+                    if trace: g.trace('**found**',p2.h,'\n',s)
+                    return s[i+3:j]
+    else:
+        return ''
+#@+node:ekr.20101112045055.13357: *4* getFirstParagraph
+def getFirstParagraph (self,s):
+
+    lines =  g.splitLines(s.strip())
+    if not lines: return ''
+
+    result = []
+    for s in lines:
+        if s.strip():
+            result.append('   '+s)
+        else:
+            break
+
+    return ''.join(result)
+#@+node:ekr.20101111175617.24328: *4* openPlugins
+def openLeoPlugins(self):
+
+    fn = g.os_path_finalize_join(
+        g.app.loadDir,'..','plugins','leoPlugins.leo')
+
+    ok,frame = g.openWithFileName(fn,
+        old_c=self.c,enableLog=True,
+        gui=None,readAtFileNodesFlag=True)
+
+    if ok:
+        return frame.c
+    else:
+        g.error('can not open leoPlugins.leo')
+        return None
+#@+node:ekr.20101111175617.5787: *4* run
+def run(self):
+
+    c = self.c
+    new_c = self.openLeoPlugins()
+    if not new_c: return
+
+    # Create the top-level output node.
+    output = c.p.insertAfter()
+    output.h = 'get-docstrings-output'
+    output.b = '@language rest\n'
+
+    # Scan the descendants of the Plugins node.
+    root = g.findNodeAnywhere(new_c,'Plugins')
+    if root:
+        if self.trace: print('='*20)
+        self.createSummary(output,root)
+        self.createDocs(output,root)
+        c.frame.bringToFront() # new_c.close()
+        c.redraw()
+    else:
+        g.error('no Plugins node')
+
+
 #@-all
 #@-leo

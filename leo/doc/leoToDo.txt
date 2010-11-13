@@ -20,11 +20,7 @@ interesting slides to present in privacy of your own screen.
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 @nocolor-node
 
-For b1:
-- Documentation.
-
-For rc1:
-- Resolve all new bugs.
+For final:
 - Finish introductory slide shows.
 #@+node:ekr.20101024062147.6014: ** For 4.8.1 Autocompleter
 # This can be done in the trunk.

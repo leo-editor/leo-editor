@@ -2,7 +2,7 @@
 #@+node:tbrown.20090119215428.2: * @file todo.py
 #@+<< docstring >>
 #@+node:tbrown.20090119215428.3: ** << docstring >>
-''' Provides to-do list and simple task management for leo (Qt only)
+''' Provides to-do list and simple task management for leo (Qt only).
 
 (todo is the Qt version of the Tk cleo plugin)
 

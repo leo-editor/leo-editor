@@ -2,7 +2,7 @@
 #@+node:ekr.20071004090250: * @file graphed.py
 #@+<< docstring >>
 #@+node:ekr.20071004090250.1: ** << docstring >>
-""" Edits graphs visually
+""" Edits graphs visually.
 
 Graph commands are in the Outline/Graph submenu.
 See http://leo.zwiki.org/GraphEd for documentation.

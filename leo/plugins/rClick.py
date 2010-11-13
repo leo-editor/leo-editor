@@ -62,8 +62,7 @@ is being created. The callback can then either manipulate the physical tk menu
 (as it has been generated so far) or manipulate and extend the list of items yet
 to be generated.
 
-Adding support to other widgets.
---------------------------------
+**Adding support to other widgets**
 
 For widgets to use the rClick context menu system it needs to use::
 
@@ -86,8 +85,7 @@ The right click menu to be used is determined in one of two ways.
     The context_menu supplied the doHook call if any.   
 
 
-Keyword = Value data items in the body
---------------------------------------
+**Keyword = Value data items in the body**
 
 Each line after the first line of a body can have the form::
 
@@ -101,9 +99,7 @@ Lines not containing '=' or with '#' as the first character are ignored.
 Leading and trailing spaces will be stripped as will spaces around the first '=' sign.
 The value string may contain '=' signs.
 
-
-Colored Menu Items
-------------------
+**Colored Menu Items**
 
 Colors for menu items can be set using keyword = value data lines in the body of 
 @item and @menu nodes or the cmd string in rClick menus. 
@@ -119,8 +115,8 @@ check items in the selected state by using::
     selected-fg = color
     selected-bg = color
 
-Icons in Menu Items
--------------------
+**Icons in Menu Items**
+
 Icons will only be shown if the Python Imaging Library extension is available.
 
 To set an icon for an @item or @menu setting in @popup trees use this in the body::
@@ -141,9 +137,7 @@ if compound is not included it is equivalent to::
 
 See the Tk menu documentation for more details.
 
-
-Format of menu tables.
-======================
+**Format of menu tables**
 
 The menu tables are simply lists of tuples with the form::
 
@@ -191,8 +185,7 @@ eg::
 
     ]
 
-Separators, Comments and Data
------------------------------
+**Separators, Comments and Data**
 
 if `txt` is '-' then a separator item will be inserted into the menu.
 
@@ -220,9 +213,7 @@ be used to pass extra information to generator functions. eg::
 The comment tuple can either be removed by interesting_function or just left as
 it will be ignored anyway.
 
-
-Other menu items
-------------------
+**Other menu items**
 
 if `txt` is a string then a menu item will be generated using that string as a
 label.
@@ -252,8 +243,7 @@ label.
         keywords.rc_label will be set to the value of `txt`
 
 
-Generating context sensitive items dynamically
-----------------------------------------------
+**Generating context sensitive items dynamically**
 
 if `txt` is '*':
 
@@ -308,8 +298,7 @@ if `txt` is '*':
         minibuffer command described later.
 
 
-Including other menus and fragments.
-------------------------------------
+**Including other menus and fragments**
 
 If `txt` is '&':
 
@@ -318,12 +307,10 @@ If `txt` is '&':
     inline, (not as a submenu).
 
 
-
-Example menu generator
-======================
+**Example menu generator**
 
 An example of generating dynamic context sensitive menus is provided as the
-**rclick-gen-context-sensitive-commands** minibuffer command.
+``rclick-gen-context-sensitive-commands`` minibuffer command.
 
 If this command is placed in a 'body' menu table as::
 
@@ -351,8 +338,7 @@ Create a "Help on:" menu item.
     the word and display the result in the log pane or a browser.
 
 
-@Settings (@popup)
-==================
+**@Settings (@popup)**
 
     **popup**
 
@@ -392,9 +378,7 @@ Create a "Help on:" menu item.
         If the setting is not present or does not contain valid data, output
         will be sent to all three destinations.
 
-
-Minibuffer Commands
-===================
+**Minibuffer Commands**
 
 These are provided for use with ('*', ... ) items. They are of use **only** in
 rclick menu tables and @popup trees.
@@ -443,9 +427,7 @@ rclick menu tables and @popup trees.
         fg, bg, selected-fg and selected-bg may be used to color these buttons but
         do NOT use kind, name or group
 
-
-Radio and Check menu Items.
-===========================
+**Radio and Check menu Items**
 
 If '\@item rclick-button' is used then the item is assumed to be a check or radio item and the body
 of the node should have the following format::

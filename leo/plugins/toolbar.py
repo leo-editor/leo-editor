@@ -23,10 +23,7 @@ This plugin provides:
     icons, menus, tooltips and text and background colors to be set
     in @button settings and scripts. 
 
-.. contents::
-
-enhanced script button and @button nodes
-----------------------------------------
+**Enhanced script button and @button nodes**
 
 If the toolbar.py plugin is enabled then a comment block can be added at the top
 of the body of the @button node. (If toolbar.py is not enabled then these
@@ -68,18 +65,16 @@ Icons in buttons requires the Python Imaging Library to be installed on your com
 The line containing the single @ must not be preceded by any other line except
 blank lines.
 
-toolbars 
---------
+**Toolbars** 
 
-A 'toolbar' is a collection of 'iconbars'. At the moment only one toolbar is
+A toolbar is a collection of iconbars. At the moment only one toolbar is
 availiable and it appears in the place where the leo's traditional iconbar appears.
 
 Future plans include allowing toolbars to be placed anywhere, including in dialogs,
 orientated vertically as well as horizontally. It will then be possible to drag and
 drop iconbars within and between toolbars.
 
-iconbars
---------
+**Iconbars**
 
 Each iconbar is assigned a name, the default iconBar is called 'iconbar'. A
 dictionary mapping names to iconBar objects is kept in *c.frame.iconBars* and
@@ -203,8 +198,7 @@ The iconbars also have the following public properties.
 
         'bar.visible = not bar.visible' toggles the visibility of the toolbar
 
-compound iconBar widgets and drag handles.
-------------------------------------------
+**Compound iconBar widgets and drag handles**
 
 Compound widgets can be constructed using a Tkinter.Frame widget and packing
 buttons (obtained eg from c.frame.getButton) and other components into it,

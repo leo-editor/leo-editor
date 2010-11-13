@@ -24,8 +24,7 @@ and::
 
 will look something like:
 
-Heading
--------
+**Heading**
 
 `This` is **really** a line of text.
 

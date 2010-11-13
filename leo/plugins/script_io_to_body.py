@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.925: * @file script_io_to_body.py
-"""Sends output from the Execute Script command to the end of the body pane"""
+"""Sends output from the Execute Script command to the end of the body pane."""
 
 #@@language python
 #@@tabwidth -4

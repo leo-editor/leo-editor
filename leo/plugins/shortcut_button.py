@@ -11,7 +11,6 @@ This plugin requires that the mod_scripting plugin be enabled. The toolbar.py
 and rClick.py plugins are not required, but extra facilities are available
 if they are enabled.
 
-
 An @data shortcut_button_data may be used in @setting trees to control the colors
 for the buttons and to set the name of the @popup menu to be used as a context menu.
 
@@ -21,20 +20,17 @@ If the following line appears::
 
 then the requested icon will be shown instead of text in the master button.
 
-
 The colors and menus for the 'shortcut' button itself are set using::
 
     master-bg = <color>
     master-fg = <color>
     master-menu = <@popup menu-name>
 
-
 The colors and menus for the 'shortcut' button itself are set using::
 
     slave-bg = <color>
     slave-fg = <color>
     slave-menu = <@popoup menu-name>
-
 
 The menus will be ignored if the rClick.py and toolbar.py plugins are not enabled.
 
@@ -50,9 +46,7 @@ does not already exist.
 If hide is left blank then any iconbar created will be shown initially, otherwise it will be
 hidden. This has no effect if the iconbar already exists.
 
-
-Minibuffer Commands
--------------------
+**Minibuffer Commands**
 
 The following minibuffer commands are provided::
 
@@ -65,25 +59,13 @@ The following minibuffer commands are provided::
         Creates a duplicate of the master button, which when pressed
         will issue a create-shortcut command.
 
-
     create-shortcut
 
         Creates a slave button which when pressed will select the presently 
         selected node at the time the button was created.
 
-
-
-
-
-
-
-
-
 '''
 #@-<<docstring>>
-
-
-
 
 #@+<< imports >>
 #@+node:ekr.20060601151845.2: ** << imports >>

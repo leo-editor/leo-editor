@@ -11,65 +11,57 @@ shell window.  Results can be pasted back into the editor.
 This plugin streamlines the process by communicating with ``screen``,
 the shell multiplexer
 
-Commands created
-----------------
-
-Execution command
-+++++++++++++++++
+**Commands**
 
 leoscreen-run-text
   Send the text selected in Leo's body text to the shell app.
   Selects the next line for your convenience.
-
-Retrieval commands
-++++++++++++++++++
-
-These commands get output from the shell app. and put it somewhere.
 
 leoscreen-get-line
   Insert a line of the last result from the shell into Leo's body text
   at the current insert point.  Lines are pulled one at a time starting
   from the end of the output.  Can be used repeatedly to get the
   output you want into Leo.
+
 leoscreen-get-all
   Insert all of the last result from the shell into Leo's body text
   at the current insert point.
+
 leoscreen-get-note
   Insert all of the last result from the shell into a new child node of
   the current node.
+
 leoscreen-show-all
   **Show** the output from the last result from the shell in a temporary
   read only window.  The output **is not stored**.
+
 leoscreen-show-note
   Insert all of the last result from the shell into a new child node of
   the current node and display that node a a stickynote (requires stickynote
   plugin).
 
-Shell screen commands
-+++++++++++++++++++++  
-
 leoscreen-next
   Switch screen session to next window.
+
 leoscreen-prev
   Switch screen session to preceeding window.
+
 leoscreen-other
   Switch screen session to last window displayed.
-
-Parameter commands
-++++++++++++++++++
 
 leoscreen-get-prefix
   Interactively get prefix for inserting text into body (#, --, //, etc/)
   Can also set via ``c.leo_screen.get_line_prefix = '#'``
+
 leoscreen-more-prompt
   Skip one less line at the end of output when fetching output into Leo.
   Adjusts lines skipped to avoid pulling in the applications prompt line.
+
 leoscreen-less-prompt
   Skip one more line at the end of output when fetching output into Leo
   Adjusts lines skipped to avoid pulling in the applications prompt line.
 
-@settings
----------
+**Settings**
 
 ``leoscreen_prefix`` - prepended to output pulled in to Leo.  The
 substring SPACE in this setting will be replaced with a space character,
@@ -77,15 +69,12 @@ to allow for trailing spaces.
 
 ``leoscreen_time_fmt`` - time.strftime format for note type output headings
 
-Methods
--------
+Theory of operation
 
 leoscreen creates a instance at c.leo_screen which has some methods which might
 be useful in ``@button`` and other Leo contexts.
 
-
-Example SQL setup
------------------
+**Example SQL setup**
 
 In a Leo file full of interactive SQL analysis, I have::
 
@@ -105,11 +94,9 @@ which creates a button to rollback messed up queries, another to commit
 sets the prefix to "-- " for text pulled back from the SQL session into
 Leo.
 
-
-**IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
-if screen -X is executed with the same stdout as the target
-screen, vs. a different stdout.  Although stdout is ignored,
-Popen() needs to ensure it's not just inherited.
+**Implementation note**: screen behave's differently if screen -X is executed
+with the same stdout as the target screen, vs. a different stdout. Although
+stdout is ignored, Popen() needs to ensure it's not just inherited.
 
 '''
 #@-<< docstring >>

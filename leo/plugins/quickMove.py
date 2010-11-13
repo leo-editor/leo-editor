@@ -8,7 +8,7 @@
 
 Quickly move/copy/clone nodes from around the tree to one or more target nodes.
 It can also create bookmark and tagging functionality in an outline (see `Set
-Parent Notes`_ below).
+Parent Notes` below).
 
 Adds `Move/Clone/Copy To Last Child Button` and `Move/Clone/Copy To First Child
 Button`, `Link To/From` and `Jump To` commands to the Move sub-menu on the
@@ -45,11 +45,9 @@ You can right click on any of these buttons to access their context menu:
     removes the button for the rest of the current session.
 
 Set Parent Notes
-----------------
-
-`Set Parent` doesn't allow you to do anything with `quickMove` you couldn't
-do with a long strip of separate buttons, but it collects quickMove buttons
-as sub-menu items of one quickMove button, saving a lot of toolbar space.
+  `Set Parent` doesn't allow you to do anything with `quickMove` you couldn't
+  do with a long strip of separate buttons, but it collects quickMove buttons
+  as sub-menu items of one quickMove button, saving a lot of toolbar space.
 
 Bookmarks 
   Create somewhere out of the way in your outline a node called

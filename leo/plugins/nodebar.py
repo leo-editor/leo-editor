@@ -67,7 +67,6 @@ __version__ = ".8"
 # position
 # usehelp
 # 
-# ----
 # position should be set to 1 of 3 values:
 # position=1
 # position=2
@@ -77,7 +76,6 @@ __version__ = ".8"
 # 2, means add the nodebar underneath the tree area
 # 3, means add the nodebar underneath the editor area
 # 
-# -----
 # usehelp should be set to either 0 or 1:
 # usehelp=0
 # usehelp=1
@@ -85,7 +83,6 @@ __version__ = ".8"
 # 0, means do not use balloon help when the arrow goes over the nodebar( this is the default )
 # 1, means use the balloon help when the arrow goes over the nodebar
 # 
-# ------
 # nodebar will create a .ini file for the user if there isn't one already.
 # 
 # If there are problems in the .ini file, nodebar should sail on using the default values.

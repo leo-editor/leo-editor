@@ -34,8 +34,7 @@ your scripts) can customize how the commands (and
 meld) work. In effect, the @url nodes become
 per-slide settings.
 
-Prerequisites
--------------
+**Prerequisites**
 
 Inkscape (Required)
   An SVG editor: http://www.inkscape.org/
@@ -50,8 +49,7 @@ Wink (Optional)
   A program that creates slideshows and slides.
   http://www.debugmode.com/wink/
 
-Summary
--------
+**Summary**
 
 @slideshow <slideshow-name>
   Creates the folder:
@@ -105,8 +103,7 @@ as its children::
     @url working file
     @url built slide
 
-Making slides
--------------
+**Making slides**
 
 For each slide, the make-slide and make-slide-show
 commands do the following:
@@ -185,8 +182,7 @@ commands do the following:
     @url working file 
     @url final output file
 
-Options and settings
---------------------
+**Options and settings**
 
 You specify options in the headlines of nodes.
 **Global options** appear as direct children of
@@ -195,8 +191,7 @@ unless overridden by a local option. **Local
 options** appear as direct children of an @slide
 node and apply to only to that @slide node.
 
-Global options nodes
-~~~~~~~~~~~~~~~~~~~~
+**Global options nodes**
 
 The following nodes may appear *either* as a
 direct child of the @slideshow node or as the
@@ -243,8 +238,7 @@ direct child of an @slide node.
   True (or true or 1):  generate informational message.
   False (or false or 0): suppress informational messages.
 
-Local options nodes
-~~~~~~~~~~~~~~~~~~~
+**Local options nodes**
 
 The following nodes are valid only as the direct
 child of an @slide node.
@@ -293,14 +287,12 @@ child of an @slide node.
   Causes the given headline in the @screenshot
   outline to be selected before taking the screenshot.
 
-Settings
-~~~~~~~~
+**Settings**
 
 @string screenshot-bin = <path to inkscape.exe>
   The full path to the Inkscape program.   
 
-File names
-----------
+**File names**
 
 Suppose the @slide node is the n'th @slide node in
 the @slideshow tree whose sanitized name is
@@ -313,8 +305,7 @@ the @slideshow tree whose sanitized name is
     slide-n.png:        the final output file.
     _build/html/slide-n.html: the final slide.
 
-To do
------
+**To do**
 
 It would be possible to make @button meld a
 command defined by this plugin. To do this, the

@@ -206,7 +206,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                 if val == ']': self.squareBracketLevel -= 1
                 if val == ')':
                     self.parenLevel -= 1 ; self.lineParenLevel -= 1
-            # ----- no difference between outer and inner modes ---
+            # no difference between outer and inner modes
             elif val in (';','%'):
                 # Add leading and trailing blank.
                 self.put(' %s ' % val)

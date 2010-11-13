@@ -8,7 +8,6 @@
 ''' Allows Leo to read a complete directory tree into a Leo outline. Converts
 directories into headlines and puts the list of file names into bodies.
 
-
 Ce plug-in permet de traduire l'arborescence d'un répertoire en une arborescence
 Leo : Chaque dossier est converti en noeud dans Leo ; son nom est placé dans
 l'entête du noeud et chaque nom de fichier qu'il contient est listé dans son

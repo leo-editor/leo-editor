@@ -1,92 +1,6 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20101028110015.8271: * @file slideshows.txt
 .. @+all
-.. @+node:ekr.20101109053515.4914: ** Unused
-.. @+node:ekr.20101018061243.5396: *3* Promote & demote
-.. @+node:ekr.20101014110348.5307: *4* @slide ((18 Promotes & demote
-There are two more outline operations that every Leo user should know about,
-promote and demote.
-
-Suppose we want to reorganize this shopping list.
-
-.. - to do
-..   - fix car
-..   - go shopping
-..     - buy milks
-..     - buy eggs
-
-.. image:: slide-029.png
-
-.. @+node:ekr.20101016043116.5337: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-029.png
-.. @+node:ekr.20101014110348.5329: *4* @slide ((Ctrl-Shift-] demote
-Here, I selected "go shopping" and then demote nodes with Ctrl-Shift-].
-
-The following siblings of the "go shopping" nodes were
-demoted to become children of the "go shopping node.
-
-.. image:: slide-030.png
-
-.. @+node:ekr.20101016043116.5338: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-030.png
-.. @+node:ekr.20101014110348.5330: *4* @slide ((Ctrl-Shift-[ promote
-Conversely, Ctrl-Shift-[ promotes all the children of the
-selected node so that they become (following) siblings
-of the selected node.
-
-.. image:: slide-031.png
-
-.. @+node:ekr.20101016043116.5339: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-031.png
-.. @+node:ekr.20101014110348.5331: *4* @slide ((promote & demote to move batches of nodes
-Using promote and demote is an easy way of moving
-several nodes quickly.
-
-For example, suppose I wanted to move the "buy
-milk" nad "buy eggs" nodes so that they are
-top-level nodes.
-
-I insert a "helper" node after the "go shopping node"
-
-.. image:: slide-032.png
-
-.. @+node:ekr.20101016043116.5340: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-032.png
-.. @+node:ekr.20101014110348.5332: *4* @slide ((demote the moved nodes
-I then demote the following nodes.
-
-.. image:: slide-033.png
-
-.. @+node:ekr.20101016043116.5341: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-033.png
-.. @+node:ekr.20101014110348.5333: *4* @slide ((move helper node left
-I move the helper node left.  The demoted nodes go along for the ride.
-
-.. image:: slide-034.png
-
-.. @+node:ekr.20101016043116.5342: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-034.png
-.. @+node:ekr.20101014110348.5334: *4* @slide ((promote the moved nodes
-I promote the moved nodes.
-
-.. image:: slide-035.png
-
-.. @+node:ekr.20101016043116.5343: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-035.png
-.. @+node:ekr.20101014110348.5335: *4* @slide ((delete the helper node
-And delete the helper node.
-
-This technique can be quite useful when moving
-many nodes, or moving several nodes a long way in
-the outline.
-
-The clones and views slideshows discusses several
-other ways to do similar moves.
-
-.. image:: slide-036.png
-
-.. @+node:ekr.20101016043116.5344: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/first-presentation/slide-036.png
 .. @+node:ekr.20101009111520.4525: **  Slideshow Buttons
 .. @+node:ekr.20101009114655.4531: *3* @button make-slide @key=Alt-8
 m = g.loadOnePlugin('screenshots')
@@ -218,19 +132,10 @@ else:
 .. @+node:ekr.20101007100904.4371: *4* @@button make-slide-show @key=Alt-8
 m = g.loadOnePlugin('screenshots')
 m.make_slide_show_command(event={'c':c})
-.. @+node:ekr.20101021092135.5431: **  Slideshows to-do
-@nocolor-node
-
-** Discuss installing qt in introductory 
-
-- Move meld to screenshot controller.
-    @x nodes remove hard coding.
-
-** Remove Joe Orr's old slides: they are too confusing.
-
-- Top ten coolest features.
-- Tips!
-- @button nodes.
+.. @+node:ekr.20101021092135.5431: **  Slideshows to create
+.. @+node:ekr.20101113110328.4947: *3* Using @button nodes
+.. @+node:ekr.20101113110328.4945: *3* Top 10 coolest features
+.. @+node:ekr.20101113110328.4946: *3* How to make slide shows
 .. @+node:ekr.20101014034526.5298: *3* User-defined types
 .. @+node:ekr.20101014034526.5292: *4* \@button nodes
 .. @+node:ekr.20101014034526.5291: *4* @test nodes

@@ -5,12 +5,7 @@
 
 #@+<< docstring >>
 #@+node:danr7.20060902215215.2: ** << docstring >>
-''' Converts a leo outline to an html web page.**
-
-.. contents::
-
-Introduction
-~~~~~~~~~~~~
+''' Converts a leo outline to an html web page.
 
 This plugin takes an outline stored in LEO and converts it to html which is then
 either saved in a file or shown in a browser. It is based on the original
@@ -28,9 +23,7 @@ valid XHTML 1.0 Strict.
 The plugin is fully scriptable as all its functionality is available through a
 Leo_to_HTML object which can be imported and used in scripts.
 
-
-Menu items and @settings
-~~~~~~~~~~~~~~~~~~~~~~~~
+**Menu items and @settings**
 
 If this plugin loads properly, the following menu items should appear in
 your File > Export... menu in Leo::
@@ -47,9 +40,7 @@ your File > Export... menu in Leo::
 in which case the menus will **not** be created. This is so that the user can
 use @menu and @item to decide which commands will appear in the menu and where.
 
-
-Commands
-~~~~~~~~
+**Commands**
 
 Several commands will also be made available
 
@@ -73,9 +64,7 @@ The following commands are the same as above except only the current node is con
     show-html-node
     show-html-node-*
 
-
-Properties
-~~~~~~~~~~
+**Properties**
 
 There are several settings that can appear in the leo_to_html.ini properties
 file in leo's plugins folder or be set via the Plugins > leo_to_html >
@@ -126,8 +115,7 @@ browser_command:
     Default:
         empty string
 
-Configuration
-~~~~~~~~~~~~~
+**Configuration**
 
 At present, the file leo/plugins/leo_to_html.ini contains configuration
 settings. In particular, the default export path, "c:\" must be changed for \*nix

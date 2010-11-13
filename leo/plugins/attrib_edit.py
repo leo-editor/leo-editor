@@ -72,8 +72,7 @@ attrib-edit-create
         v.u.['todo']['metadata']['_edit']['revised']
 
 
-Technical details
-+++++++++++++++++
+**Technical details**
 
 See the source for complete documentation for use with other
 plugins, here are some points of interest:

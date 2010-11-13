@@ -6,15 +6,18 @@
 
 Use this plugin is as follows:
 
-1. Start Leo with the plugin enabled.  You will see a purple message that says something like:
+1. Start Leo with the plugin enabled. You will see a purple message that says
+   something like::
 
-"http serving enabled on port 8080, version 0.91"
+    "http serving enabled on port 8080, version 0.91"
 
 2. Start a web browser, and enter the following url: http://localhost:8080/
 
-You will see a a "top" level page containing one link for every open .leo file.  Start clicking :-)
+You will see a a "top" level page containing one link for every open .leo file.
+Start clicking :-)
 
-You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.
+You can use the browser's refresh button to update the top-level view in the
+browser after you have opened or closed files.
 
 To enable this plugin put this into your file::
 

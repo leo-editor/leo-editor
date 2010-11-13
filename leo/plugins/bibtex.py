@@ -70,32 +70,23 @@ valid BibTeX file.
 __version__ = "0.4" # Set version for the plugin handler.
 #@+<< change log >>
 #@+node:timo.20050213160555.2: ** <<change log>>
+#@@nocolor-node
 #@+at 
 # 
-# Change log
-# ==========
 # 
 # 0.1
-# ---
-# 
 # - @bibtex nodes introduced, writing the contents in a BibTeX format.
 #   Timo Honkasalo 2005/02/13
 # 
 # 0.2
-# ---
-# 
 # - Importing BibTeX files added.
 #   Timo Honkasalo 2005/02/14
 # 
 # 0.3
-# ---
-# 
 # - Automatic inserting of templates when new entries are created.
 #   Timo Honkasalo 2005/02/15
 # 
 # 0.4
-# ---
-# 
 # - Some changes in writeTreeAsBibTex (better format), added entrytypes in globals.
 # - Greatly simplified and enhanced the performance of readBibTexFileIntoTree.
 # - Fixed parsing of files in readBibTexFileIntoTree: they are now split at '\n@' (whitespace stripped) instead of '@', so that fields may contain '@' (like a 'mailto' field most likely would).
