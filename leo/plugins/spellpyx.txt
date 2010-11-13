@@ -3482,3 +3482,4 @@ doEnabledPlugins
 enabledPluginsFileName
 tk
 masterCommandHandler
+init

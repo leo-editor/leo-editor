@@ -2,11 +2,11 @@
 #@+node:tbrown.20080613095157.2: * @file active_path.py
 #@+<< docstring >>
 #@+node:tbrown.20080613095157.3: ** << docstring >>
-'''Synchronizes @path nodes with folders.
+'''Synchronizes \@path nodes with folders.
 
-If a node is named '@path path_to_folder', the content (file and folder names)
-of the folder and the children of that node will synchronized whenever the
-node's status-iconbox is double clicked.
+If a node is named '\@path *<path_to_folder>*', the content (file and folder names)
+of the folder and the children of that node will synchronized whenever you double-click
+the node's status-iconbox.
 
 For files not previously seen in a folder a new node will appear on top of the
 children list (with a mark).

@@ -68,7 +68,7 @@ active_path.py
    Synchronizes @path nodes with folders.
 
 add_directives.py
-   Allows users to define new @direcives.
+   Allows users to define new @directives.
 
 at_folder.py
    Synchronizes @folder nodes with folders.
@@ -100,7 +100,7 @@ chapter_hoist.py
    Creates hoist buttons.
 
 cleo.py
-   Creates coloured LEo Outlines.
+   Creates coloured Leo Outlines.
 
 color_markup.py
    Handles coloring for markup in doc parts and Python triple-double-quoted strings.
@@ -3271,7 +3271,7 @@ example, a leo clone icon will require scrolling to find. Id like to change this
 in the future.
 
 .. @+node:ekr.20101113063552.9500: *4* cleo.py
-Creates coloured LEo Outlines.
+Creates coloured Leo Outlines.
 
 Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a

@@ -7792,7 +7792,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 The beta release fixed dozens of bugs and smoothed many rough edges.  There
 are no known major bugs in Leo.  This will be the last beta release before
-LEo 4.4.2 final.
+Leo 4.4.2 final.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
