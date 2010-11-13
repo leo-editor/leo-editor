@@ -1539,11 +1539,17 @@ http://mail.google.com/mail/#inbox/12adebe2ffe80572
    double-click on the saved file.
 
    Python is software for creating and running computer programs.
+   Leo requires Python 2.6 or later, or Python 3.0 or later.
 
-2. Download the latest Leo's installer from `Leo's download page`_.
+2. Install Qt. Get the binary package of PyQt from: 
+   http://www.riverbankcomputing.co.uk/software/pyqt/download
+
+   The version of PyQt that you download must match the version of your Python.
+
+3. Download the latest Leo's installer from `Leo's download page`_.
    It will be called something like LeoSetup-<version>.exe
 
-3. Run the installer.
+4. Run the installer.
 
 **Installing Leo from Linux packages**
 
@@ -1554,7 +1560,7 @@ SourceForge. You can also install Leo manually, as discussed in the
 **Installing Leo from sources**
 
 See the `next slide`_.
-.. @+node:ekr.20101021093111.5432: *4* @url built slide
+.. @+node:ekr.20101113132111.4924: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html
 .. @+node:ekr.20100821182153.4348: *3* @slide ((installing from sources
 .. _`Download Python`: http://www.python.org/download/
@@ -1562,20 +1568,20 @@ c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html
 
 **Installing Leo from sources**
 
-1. Install Python:
+1. Install Python: `Download Python`_, save to your desktop, then
+   double-click on the saved file.
 
-`Download Python`_, save to your desktop, then double-click on the
-saved file.
+   Leo requires Python 2.6 or later, or Python 3.0 or later.
 
+2. Install Qt. Install Qt. Get PyQt from: 
+   http://www.riverbankcomputing.co.uk/software/pyqt/download
 
-2. Install Leo:
+   The version of PyQt that you download must match the version of your Python.
 
-- Download the most recent .zip file from `Leo's download page`_ to
-  your desktop or other location.
-
-- Unzip the .zip file to the folder of your choice.
-
-.. @+node:ekr.20101014105353.5257: *4* @url built slide
+3. Install Leo: Download the most recent .zip file from `Leo's
+   download page`_ to your desktop or other location. Unzip the .zip
+   file to the folder of your choice.
+.. @+node:ekr.20101113132111.4925: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-002.html
 .. @+node:ekr.20101014034526.5302: *3* @slide ((running Leo from a console
 **Running Leo from a console**

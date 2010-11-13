@@ -115,9 +115,8 @@
 </v>
 </v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
-<v t="ekr.20050831184021.5" a="E"><vh>Leo's Reference</vh>
-<v t="ekr.20100805001344.7253" a="E"
-expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
+<v t="ekr.20050831184021.5"><vh>Leo's Reference</vh>
+<v t="ekr.20100805001344.7253"><vh>@file directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
 <v t="ekr.20100805165051.7156"><vh>@file design.txt</vh></v>
@@ -231,13 +230,13 @@ make html
 <t tx="ekr.20101007100904.4372"></t>
 <t tx="ekr.20101025080245.5540">@nocolor
 
-- Discuss installing qt in introductory slide show.
-
 - Move meld to screenshot controller.
     - Use @wink-path = &lt;path&gt; to control meld.
     - (We don't need to specify the path for moved screenshots.)
 
 - Make sure to upload all slides.
+
+Later:
 
 - Create slides_toc for slides, separate from the main toc document.
 
