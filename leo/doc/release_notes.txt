@@ -14205,13 +14205,55 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-#@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20101104091058.4975: *3* 4.8 b1
+#@+node:ekr.20101114081049.5004: *4* 4.8 b1
 @nocolor
 
 Leo 4.8 beta 1                               November 5, 2010
 
 Leo 4.8 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.8:
+--------------------------
+
+- Leo now uses the simplest possible sentinel lines in external files.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
+- Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
+- Leo now uses PyEnchant to check spelling.
+- Leo can now open multiple files from the command line.
+- Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- Improved autocompletion: Ctrl-space starts a one-time completion.
+- A better installer.
+- Many bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+#@+node:edream.110203163054.63: ** Latest version
+#@+node:ekr.20101104091058.4975: *3* 4.8 rc1
+@nocolor
+
+Leo 4.8 rc 1                               November 15, 2010
+
+Leo 4.8 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -14981,5 +15023,50 @@ Fixed wishlist bug 670744: add a setting to put inter-def code in its own node
 
 Added support for @bool at_auto_separate_non_def_nodes option.
 The default (legacy mode) is False.
+#@+node:ekr.20101114081049.5090: *4* New in 4.8 rc1
+#@+node:ekr.20101114081049.5101: *5* Revised many plugins
+@nocolor-node
+
+Removed the keybindings.py plugin.  The print-bindings command should suffice.
+
+The plugins_menu.py has been renamed old_plugin_menu.py to indicate that it
+needs a lot of work to become functional.
+
+The following plugins are now gui-independent (the used to be Tk only):
+
+at_produce.py
+chapter_hoist.py
+import_cisco_config.py
+macros.py
+mod_read_dir_outline.py
+multifile.py
+read_only_nodes.py
+word_count.py
+xsltWithNodes.py
+
+I also registered the menu2 event instead of the open2 event in all plugins that
+use this event to create menus. This is required because a relatively recent
+change creates menus *after* the open2 event happens.
+#@+node:ekr.20101114081049.5102: *5* Fixed crasher in UNL.py: recursiveUNLSearch
+#@+node:ekr.20101114081049.5103: *5* Big improvement to execute-script command
+execute-script now calls execfile (or its equivalent when using Python 3k)
+when @bool write_script_file = True.
+
+This allows pdb to show the text of scripts!
+#@+node:ekr.20101114081049.5108: *5* Added extract-python-method command
+This should have been done *ages* ago. The command makes it easy to put python
+methods in separate nodes.
+
+Select a range of text, the first line of which starts with 'def foo (...)'
+
+Do alt-x extract-python-method (or ctrl-p if you are repeating the command).
+
+What happens:
+
+- Creates a new child node whose headline is 'foo'.
+
+- The body of foo contains all the selected text, properly indented.
+
+The command is undoable as always.
 #@-all
 #@-leo
