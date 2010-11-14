@@ -167,25 +167,18 @@ Section "${ext} Desktop Shortcut" ; SEC03
     '"$INSTDIR\${app_icon}"' 0
 
 SectionEnd
-;@+node:ekr.20101114132202.1494: ** Section Start Menu Shortcut
+;@+node:ekr.20101027115225.1500: ** Section Start Menu
 
-Section "${name} Start Menu Shortcut" ; SEC04
+Section "${name} Start Menu"
 
-    createShortCut "$SMPROGRAMS\${name}.lnk" \
+  CreateDirectory "$SMPROGRAMS\${name}"
+  CreateShortCut  "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+
+  createShortCut "$SMPROGRAMS\${name}.lnk" \
         '"${PythonExecutable}" "$INSTDIR\launchLeo.py"' \ 
         '"$INSTDIR\${app_icon}"' 0
 
 SectionEnd
-;@+node:ekr.20101027115225.1500: ** Section -Additional Icons
-
-Section -AdditionalIcons
-
-  ; SetOutPath "$INSTDIR"
-  CreateDirectory "$SMPROGRAMS\${name}"
-  CreateShortCut  "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
-
-SectionEnd
-
 ;@+node:ekr.20101027115225.1501: ** Section -Post
 
 Section -Post
@@ -229,9 +222,10 @@ Section Uninstall
 ; FinishUninstall:
 
     Delete "$SMPROGRAMS\${name}\Uninstall.lnk"
-    RMDir  "$SMPROGRAMS\${name}-${version}"
-    Delete "$DESKTOP\${name}.lnk"
     Delete "$SMPROGRAMS\${name}.lnk"
+    RMDir  "$SMPROGRAMS\${name}-${version}"
+
+    Delete "$DESKTOP\${name}.lnk"
 
     ; "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
     DeleteRegKey HKLM "${uninst_key}" 
