@@ -84,6 +84,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101114081415.1492"><vh>To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@nocolor
@@ -1111,5 +1112,41 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
     return lines
 </t>
+<t tx="ekr.20101114081415.1492">@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/674198
+
+Summary:
+
+- No start menu shortcut for launching. NOT OK
+
+- Leo opens with "untitled" document, not workbook.leo. NOT OK
+
+- double click on .leo file launches Leo, but with "untitled" empty document. NOT OK
+
+Full report:
+    
+Here's an install report - consider NOT OK parts the bug report.
+
+I tried installing Leo to a Windows machine with the new installer.
+
+- No Python version installed - it warned me about it, and I aborted the install
+  and installed python. +1
+
+- Installation went fine after that. I installed to c:\opt\leo since I hate
+  paths with spaces :). +1
+
+- No start menu shortcut for launching. NOT OK
+
+- I went to dir where I installed it and ran launchLeo.py. It said I don't have
+  Qt installed, launched Tk ui and asked for leo id on tk window. +1
+
+- Leo opens with "untitled" document, not workbook.leo. NOT OK
+
+- I intalled PyQt from the usual place, ran launchLeo.py, I get Qt ui. +1
+
+- .leo files have the lion icon. +1
+
+- double click on .leo file launches Leo, but with "untitled" empty document. NOT OK</t>
 </tnodes>
 </leo_file>

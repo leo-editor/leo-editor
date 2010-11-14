@@ -255,10 +255,18 @@ def getDefaultFile ():
     # Get the name of the workbook.
     fn = g.app.config.getString(c=None,setting='default_leo_file')
     fn = g.os_path_finalize(fn)
+    if not fn: return
 
-    if fn and g.os_path_exists(fn):
+    # g.trace(g.os_path_exists(fn),fn)
+
+    if g.os_path_exists(fn):
+        return fn
+    elif g.os_path_isabs(fn):
+        # Create the file.
+        g.es_print('Using default leo file name:\n%s' % (fn),color='red')
         return fn
     else:
+        # It's too risky to open a default file if it is relative.
         return None
 #@+node:ekr.20101020125657.5976: *4* getFiles
 def getFiles(fileName):
