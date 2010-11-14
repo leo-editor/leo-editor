@@ -4,24 +4,24 @@
 #@+node:ekr.20100908115707.5554: ** << docstring >>
 """ Creates stand-alone slideshows containing screenshots.
 
-This plugin defines four commands. The
-apropos-slides command prints this message to
-Leo's log pane. The slide-show-info prints the
-settings in effect.
+This plugin defines five commands. The
+**apropos-slides** command prints this message to
+Leo's log pane. The **slide-show-info** command
+prints the settings in effect.
 
-The make-slide and make-slide-show commands,
-collectively called **slide commands**, create
-collections of slides from **@slideshow** trees
-containing **@slide** nodes.
+The **make-slide** and **make-slide-show**
+commands, collectively called **slide commands**,
+create collections of slides from **@slideshow**
+trees containing **@slide** nodes.
 
 Slides may link to screenshots. The slide commands
 can generate screenshots from **@screenshot-tree**
 nodes, but this feature has proven to be clumsy
 and inflexible. It is usually more convenient to
 use screenshots taken with a program such as Wink.
-The **@button meld** script in LeoDocs.leo creates
-references to externally-generated screenshots
-within @slide nodes.
+The **meld-slides** command creates references to
+externally-generated screenshots within @slide
+nodes.
 
 \@slide nodes may contain **@url nodes**. These @url
 nodes serve two purposes. First, they allow you to
@@ -239,7 +239,7 @@ direct child of an @slide node.
   False (or false or 0): suppress informational messages.
 
 \@wink_path = <path>
-  This path contains the wink slides.
+  This path contains screenshots created by wink.
   This is used only by the meld-slides command.
 
 **Local options nodes**
@@ -308,13 +308,6 @@ the @slideshow tree whose sanitized name is
     screenshot-n.svg:   the working file.
     slide-n.png:        the final output file.
     _build/html/slide-n.html: the final slide.
-
-**To do**
-
-It would be possible to make @button meld a
-command defined by this plugin. To do this, the
-plugin would need to support options presently set
-"by hand" in the @button meld script.
 
 """
 

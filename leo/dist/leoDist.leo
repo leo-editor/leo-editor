@@ -76,7 +76,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
+<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
