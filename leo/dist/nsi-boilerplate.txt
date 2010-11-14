@@ -148,7 +148,7 @@ Section "${ext} File Association"
 SectionEnd
 ;@+node:ekr.20101027115225.1498: ** Section Desktop Shortcut
 
-Section "${ext} Desktop Shortcut" ; SEC03
+Section "${name} Desktop Shortcut"
 
   ; Apparently, this sets the "Start in folder" box!!!"
   SetOutPath "$INSTDIR\leo"
@@ -172,10 +172,12 @@ SectionEnd
 Section "${name} Start Menu"
 
   CreateDirectory "$SMPROGRAMS\${name}"
+
   CreateShortCut  "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
 
   createShortCut "$SMPROGRAMS\${name}.lnk" \
-        '"${PythonExecutable}" "$INSTDIR\launchLeo.py"' \ 
+        '"${PythonExecutable}"' \
+        '"$INSTDIR\launchLeo.py"' \ 
         '"$INSTDIR\${app_icon}"' 0
 
 SectionEnd

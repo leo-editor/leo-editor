@@ -11,7 +11,7 @@
 <vnodes>
 <v t="ekr.20050315084904"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20050315084922"><vh>@button Spell</vh></v>
+<v t="ekr.20050315084922"><vh>@@button Spell</vh></v>
 </v>
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
@@ -701,7 +701,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.8-b1' ##version
+version = '4.8-rc1' ##version
 
 &lt;&lt; includes &gt;&gt;
 
