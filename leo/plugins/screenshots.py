@@ -575,14 +575,8 @@ class ScreenShotController(object):
 
         sc = self
 
-        # def match(p,pattern):
-            # return g.match_word(p.h,0,pattern)
-
         if not sc.inkscape_bin:
             return # The ctor has given the warning.
-
-        # if not g.match_word(p.h,0,'@slideshow'):
-            # return g.error('Not an @slideshow node:',p.h)
 
         if not sc.match(p,'@slideshow'):
             return g.error('Not an @slideshow node:',p.h)
@@ -793,12 +787,6 @@ class ScreenShotController(object):
         '''Return the @slide node at or near p.'''
 
         sc = self ; p1 = p.copy()
-
-        # def match(p):
-            # return g.match_word(p.h,0,'@slide')
-
-        # def match_slide_show(p):
-            # return g.match_word(p.h,0,'@slideshow')
 
         if sc.match(p,'@slide'):
             return p
@@ -2311,6 +2299,7 @@ class ScreenShotController(object):
     def copy_screenshot (self,aList,slide_n,wink_n):
 
         trace = True
+        sc = self
 
         if wink_n >= len(aList):
             return g.trace('can not happen: '
@@ -2318,7 +2307,7 @@ class ScreenShotController(object):
                     len(aList),wink_n))
 
         fn_src = aList[wink_n]
-        fn_dst = 'slide-%03d.png' % (slide_n)
+        fn_dst = sc.finalize('slide-%03d.png' % (slide_n))
 
         if trace:
             g.trace('%7s -> %s' % (g.shortFileName(fn_src),fn_dst))

@@ -1975,7 +1975,7 @@ This is a step-by-step introduction to show you
 how to use Leo outlines.
 
 .. @+node:ekr.20101018190057.5370: *4* @no-screenshot
-.. @+node:ekr.20101113210223.5014: *4* @url built slide
+.. @+node:ekr.20101113211531.4918: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html
 .. @+node:ekr.20101013072903.5226: *3* @slide ((Open notebook file
 .. The workbook.leo window.
@@ -1994,7 +1994,7 @@ taste.
 
 .. @+node:ekr.20101018190057.5441: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-002.png
-.. @+node:ekr.20101113210223.5015: *4* @url built slide
+.. @+node:ekr.20101113211531.4919: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html
 .. @+node:ekr.20101014110348.5286: *3* @slide ((Ctrl-H edits headline
 Ctrl-H edits the presently selected headline.
@@ -2009,7 +2009,7 @@ longer has focus.
 
 .. @+node:ekr.20101018190057.5442: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-003.png
-.. @+node:ekr.20101113210223.5016: *4* @url built slide
+.. @+node:ekr.20101113211531.4920: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html
 .. @+node:ekr.20101013072903.5234: *3* @slide (("to do" node
 I typed "to do" in the headline.
@@ -2018,7 +2018,7 @@ I typed "to do" in the headline.
 
 .. @+node:ekr.20101018190057.5443: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-004.png
-.. @+node:ekr.20101113210223.5017: *4* @url built slide
+.. @+node:ekr.20101113211531.4921: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html
 .. @+node:ekr.20101018061243.5392: *3* @slide ((Return ends editing
 Typing the <return> key ends editing of the headline
@@ -2034,7 +2034,7 @@ node has been changed. We say the node is
 
 .. @+node:ekr.20101018190057.5444: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-005.png
-.. @+node:ekr.20101113210223.5018: *4* @url built slide
+.. @+node:ekr.20101113211531.4922: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html
 .. @+node:ekr.20101018061243.5393: *3* @slide ((no-slide focus keys
 You can use Leo without ever using the mouse. For
@@ -2049,7 +2049,7 @@ keystrokes instead of clicking the pane:
   return key puts the focus in the body pane.
 
 .. @+node:ekr.20101018190057.5373: *4* @no-screenshot
-.. @+node:ekr.20101113210223.5019: *4* @url built slide
+.. @+node:ekr.20101113211531.4923: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html
 .. @+node:ekr.20101014110348.5325: *3* @slide ((Ctrl-S saves outline
 Ctrl-S saves the outline.
@@ -2064,7 +2064,7 @@ the file was last saved.
 
 .. @+node:ekr.20101018190057.5445: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-007.png
-.. @+node:ekr.20101113210223.5020: *4* @url built slide
+.. @+node:ekr.20101113211531.4924: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html
 .. @+node:ekr.20101013072903.5236: *3* @slide ((Ctrl-I inserts a new node
 Ctrl-I inserts a new node.
@@ -2073,7 +2073,7 @@ Ctrl-I inserts a new node.
 
 .. @+node:ekr.20101018190057.5446: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-008.png
-.. @+node:ekr.20101113210223.5021: *4* @url built slide
+.. @+node:ekr.20101113211531.4925: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html
 .. @+node:ekr.20101013072903.5237: *3* @slide (("go shopping"
 I typed "go shopping" followed by a return.
@@ -2084,7 +2084,7 @@ The focus is now in the body pane.
 
 .. @+node:ekr.20101018190057.5447: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-009.png
-.. @+node:ekr.20101113210223.5022: *4* @url built slide
+.. @+node:ekr.20101113211531.4926: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html
 .. @+node:ekr.20101014110348.5305: *3* @slide ((typing text (icon box has blue square)
 Whatever I type will appear in the body pane.
@@ -2102,7 +2102,7 @@ The blue square in the icon area indicates that the body pane contains text.
 
 .. @+node:ekr.20101018190057.5448: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-010.png
-.. @+node:ekr.20101113210223.5023: *4* @url built slide
+.. @+node:ekr.20101113211531.4927: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html
 .. @+node:ekr.20101013072903.5244: *3* @slide ((Ctrl-R
 Ctrl-R moves a node right.
@@ -2116,7 +2116,7 @@ The "to do" node is the **parent** node.
 
 .. @+node:ekr.20101018190057.5449: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-011.png
-.. @+node:ekr.20101113210223.5024: *4* @url built slide
+.. @+node:ekr.20101113211531.4928: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html
 .. @+node:ekr.20101014110348.5290: *3* @slide ((Ctrl-L
 Ctrl-L moves the "go shopping" node left.
@@ -2128,7 +2128,7 @@ of the "to do" node.
 
 .. @+node:ekr.20101018190057.5450: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-012.png
-.. @+node:ekr.20101113210223.5025: *4* @url built slide
+.. @+node:ekr.20101113211531.4929: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html
 .. @+node:ekr.20101013072903.5245: *3* @slide ((undo/redo
 Leo has unlimited undo/redo capabilities.
@@ -2143,7 +2143,7 @@ the "to do" node.
 
 .. @+node:ekr.20101018190057.5451: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-013.png
-.. @+node:ekr.20101113210223.5026: *4* @url built slide
+.. @+node:ekr.20101113211531.4930: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html
 .. @+node:ekr.20101014110348.5294: *3* @slide ((new node
 Let's add a new node.  I hit Ctrl-I.
@@ -2152,7 +2152,7 @@ Let's add a new node.  I hit Ctrl-I.
 
 .. @+node:ekr.20101018190057.5452: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-014.png
-.. @+node:ekr.20101113210223.5027: *4* @url built slide
+.. @+node:ekr.20101113211531.4931: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html
 .. @+node:ekr.20101014110348.5295: *3* @slide (("fix car"
 I type "fix car" followed by the <return> key.
@@ -2161,7 +2161,7 @@ I type "fix car" followed by the <return> key.
 
 .. @+node:ekr.20101018190057.5453: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-015.png
-.. @+node:ekr.20101113210223.5028: *4* @url built slide
+.. @+node:ekr.20101113211531.4932: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-015.html
 .. @+node:ekr.20101014110348.5296: *3* @slide ((Ctrl-U
 I decide that fixing the car should have first priority.
@@ -2173,7 +2173,7 @@ It becomes the first child of the "to do" node.
 
 .. @+node:ekr.20101018190057.5454: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-016.png
-.. @+node:ekr.20101113210223.5029: *4* @url built slide
+.. @+node:ekr.20101113211531.4933: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-016.html
 .. @+node:ekr.20101014110348.5297: *3* @slide ((contracting nodes
 After creating the to-do list, I want to hide it
@@ -2191,7 +2191,7 @@ there are much easier ways.
 
 .. @+node:ekr.20101018190057.5455: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-017.png
-.. @+node:ekr.20101113210223.5030: *4* @url built slide
+.. @+node:ekr.20101113211531.4934: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html
 .. @+node:ekr.20101014110348.5298: *3* @slide ((Up-Arrow
 The focus is in the tree pane, so I can select the "to do"
@@ -2212,7 +2212,7 @@ Now the "to do" node is selected.
 
 .. @+node:ekr.20101018190057.5456: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-018.png
-.. @+node:ekr.20101113210223.5031: *4* @url built slide
+.. @+node:ekr.20101113211531.4935: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html
 .. @+node:ekr.20101014110348.5299: *3* @slide ((Left-Arrow
 With the "to-do" node selected,
@@ -2224,7 +2224,7 @@ hitting the Left-Arrow key will contract the node.
 
 .. @+node:ekr.20101018190057.5457: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-019.png
-.. @+node:ekr.20101113210223.5032: *4* @url built slide
+.. @+node:ekr.20101113211531.4936: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html
 .. @+node:ekr.20101014110348.5300: *3* @slide ((20 Right-Arrow
 To expand the "to do" node,
@@ -2236,7 +2236,7 @@ We can now see the entire to-do list.
 
 .. @+node:ekr.20101018190057.5458: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-020.png
-.. @+node:ekr.20101113210223.5033: *4* @url built slide
+.. @+node:ekr.20101113211531.4937: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-020.html
 .. @+node:ekr.20101014110348.5309: *3* @slide ((no-slide Arrow keys: summary
 The arrow keys do different things depending on
@@ -2282,7 +2282,7 @@ easier than using the mouse.
 ..  it quickly becomes second nature.
 
 .. @+node:ekr.20101014110348.5323: *4* @no-screenshot
-.. @+node:ekr.20101113210223.5034: *4* @url built slide
+.. @+node:ekr.20101113211531.4938: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-021.html
 .. @+node:ekr.20101014110348.5326: *3* @slide ((Shift-Ctrl-C copies
 We can copy and paste nodes and all their descendants.
@@ -2299,7 +2299,7 @@ the original node before doing the paste:
 
 .. @+node:ekr.20101018190057.5459: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-022.png
-.. @+node:ekr.20101113210223.5035: *4* @url built slide
+.. @+node:ekr.20101113211531.4939: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-022.html
 .. @+node:ekr.20101018061243.5397: *3* @slide ((The pasted node
 And here is the pasted node.
@@ -2308,7 +2308,7 @@ And here is the pasted node.
 
 .. @+node:ekr.20101018190057.5460: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-023.png
-.. @+node:ekr.20101113210223.5036: *4* @url built slide
+.. @+node:ekr.20101113211531.4940: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-023.html
 .. @+node:ekr.20101018061243.5394: *3* @slide ((expanding the pasted node
 Expanding the node shows that the copy operation
@@ -2318,7 +2318,7 @@ copied the node and all its descendants.
 
 .. @+node:ekr.20101018190057.5461: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-024.png
-.. @+node:ekr.20101113210223.5037: *4* @url built slide
+.. @+node:ekr.20101113211531.4941: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-024.html
 .. @+node:ekr.20101014110348.5336: *3* @slide ((no-slide end slide
 This concludes the step-by-step introduction to
@@ -2336,7 +2336,7 @@ Mastering these skills is essential to using Leo
 effectively and enjoyably.
 
 .. @+node:ekr.20101018061243.5395: *4* @no-screenshot
-.. @+node:ekr.20101113210223.5038: *4* @url built slide
+.. @+node:ekr.20101113211531.4942: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html
 .. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
 .. @+node:ekr.20101011165412.4968: ** @slideshow Scripting Leo
