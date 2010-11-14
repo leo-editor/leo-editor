@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -463,13 +463,13 @@
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
-<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -483,7 +483,7 @@
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.13" a="E"><vh>@menu &amp;Read/Write...</vh>
+<v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
 <v t="ekr.20071001120755"><vh>@item *check-derived-file</vh></v>
 <v t="ekr.20071001120755.1"><vh>@item *check-leo-file</vh></v>
 <v t="ekr.20071001121059"><vh>@item *compare-leo-files</vh></v>
@@ -537,6 +537,7 @@
 <v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body...</vh>
 <v t="ekr.20070925144534.59"><vh>@item *extract-&amp;section</vh></v>
 <v t="ekr.20070925144534.60"><vh>@item *extract-&amp;names</vh></v>
+<v t="ekr.20101114064731.8352"><vh>@item *extract-p&amp;ython-method</vh></v>
 <v t="ekr.20070925144534.61"><vh>@item *&amp;extract</vh></v>
 <v t="ekr.20070925144534.62"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.63"><vh>@item *convert-all-b&amp;lanks</vh></v>
@@ -4346,9 +4347,9 @@ capitalize-word                     = Alt-c
 cascade-windows                     = None
 center-line                         = Alt-s
 center-region                       = None
-check-all-python-code               = None
+#check-all-python-code              = None
 check-outline                       = None
-check-python-code                   = None
+# check-python-code                 = None
 clear-extend-mode                   = None
 clear-kill-ring                     = None
 clear-recent-files                  = None
@@ -4425,6 +4426,7 @@ export-headlines                    = None
 extend-to-paragraph                 = Alt-h
 extract                             = Shift-Ctrl-D
 extract-names                       = Shift-Ctrl-N
+extract-python-method               = None
 extract-section                     = Shift-Ctrl-E</t>
 <t tx="ekr.20051007200824">@nocolor
 
@@ -4659,10 +4661,10 @@ chapter-create                      = None
 chapter-move-node-to                = None
 chapter-remove                      = None
 chapter-select                      = None
-check-all-python-code               = None
+# check-all-python-code             = None
 check-outline                       = None
-check-python-code                   = None
-# check-spelling                      = None
+# check-python-code                 = None
+# check-spelling                    = None
 clean-all-lines                     = None
 clean-lines                         = None
 clean-recent-files                  = None
@@ -4777,6 +4779,7 @@ extend-to-sentence                  = None
 extend-to-word                      = None
 extract                             = None
 extract-names                       = None
+extract-python-method               = None
 extract-section                     = None
 </t>
 <t tx="ekr.20060104093101">@nocolor
@@ -6236,6 +6239,7 @@ expand-next-level           = None
 expand-node                 = Alt-]
 extract                     = Shift-Ctrl-D
 extract-names               = Shift-Ctrl-N
+extract-python-method       = None
 extract-section             = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection
 goto-next-clone             = Alt-N
 insert-node                 = Ctrl-I
@@ -8042,6 +8046,7 @@ False: (Good for files like unitTest.leo)
     be expanded when Leo opens an outline.</t>
 <t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
 False: put trailing non-definition code at the start of the next node.</t>
+<t tx="ekr.20101114064731.8352"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
