@@ -4,10 +4,6 @@
 #@+node:ekr.20101025080245.5540: ** To do
 @nocolor
 
-- Move meld to screenshot controller.
-    - Use @wink-path = <path> to control meld.
-    - (We don't need to specify the path for moved screenshots.)
-
 - Make sure to upload all slides.
 
 Later:

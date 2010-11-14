@@ -2,36 +2,7 @@
 .. @+node:ekr.20101028110015.8271: * @file slideshows.txt
 .. @+all
 .. @+node:ekr.20101009111520.4525: **  Slideshow Buttons
-.. @+node:ekr.20101009114655.4531: *3* @button make-slide @key=Alt-8
-m = g.loadOnePlugin('screenshots')
-m.make_slide_command(event={'c':c})
-.. @+node:ekr.20101109053515.4915: *3* Unused
-.. @+node:ekr.20101008061729.4425: *4* @@button ins-@slide-nodes
-'''Create @slide nodes under p, an @slideshow node.'''
-
-n = 23 # Number of last slide to be created.
-
-existing = [z.copy().h for z in p.children() 
-    if g.match_word(z.h,0,'@slide')]
-
-if g.match_word(p.h,0,'@slideshow'):
-    b = c.undoer.beforeChangeTree(p)
-    changed = False
-    for n in range(1,n+1):
-        h = '@slide %03d' % n
-        if h not in existing:
-            changed = True
-            child = p.insertAsLastChild()
-            child.h = h
-            g.note('created %s' % h)
-    if changed:
-        c.undoer.afterChangeTree(p,'ins-@slide-nodes',b)
-    else:
-        g.note('no @slide nodes inserted')
-    c.redraw()
-else:
-    g.error('not an @slideshow node',p.h)
-.. @+node:ekr.20101008061729.4443: *4* @@button copy-@screenshot-node
+.. @+node:ekr.20101008061729.4443: *3* @@button copy-@screenshot-node
 '''
 Copy the @screenshot node (a child of this node)
 to all @slide nodes under p, (an @slideshow node),
@@ -87,21 +58,21 @@ else:
     if changed:
         c.undoer.afterChangeTree(p,'copy-@screenshot',b)
     c.redraw()
-.. @+node:ekr.20101008061729.4552: *5* @screenshot
-.. @+node:ekr.20101008061729.4553: *6* To Do List
+.. @+node:ekr.20101008061729.4552: *4* @screenshot
+.. @+node:ekr.20101008061729.4553: *5* To Do List
 My to-do list.
-.. @+node:ekr.20101008061729.4554: *7* Urgent
+.. @+node:ekr.20101008061729.4554: *6* Urgent
 1. Make Leo tutorials.  The world is waiting.
 2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101008061729.4555: *7* Important
-.. @+node:ekr.20101008061729.4556: *7* Soon
-.. @+node:ekr.20101008061729.4557: *7* Whenever
-.. @+node:ekr.20101008061729.4558: *6* Diary
-.. @+node:ekr.20101008061729.4559: *7* 2009
+.. @+node:ekr.20101008061729.4555: *6* Important
+.. @+node:ekr.20101008061729.4556: *6* Soon
+.. @+node:ekr.20101008061729.4557: *6* Whenever
+.. @+node:ekr.20101008061729.4558: *5* Diary
+.. @+node:ekr.20101008061729.4559: *6* 2009
 @language rest
 
 This is my diary.
-.. @+node:ekr.20101008061729.4567: *8* Jul 2009
+.. @+node:ekr.20101008061729.4567: *7* Jul 2009
 July 1
     Started writing in my diary.
 July 2
@@ -110,14 +81,339 @@ July 3
     Keeping my diary very regularly.
 July 5
     Oops...Yesterday I forgot towrite in my diary.
-.. @+node:ekr.20101008061729.4568: *8* Aug 2009
-.. @+node:ekr.20101008061729.4569: *8* Sep 2009
-.. @+node:ekr.20101008061729.4570: *8* Oct 2009
-.. @+node:ekr.20101008061729.4571: *8* Nov 2009
-.. @+node:ekr.20101008061729.4572: *8* Dec 2009
-.. @+node:ekr.20101008061729.4561: *7* 2010
-.. @+node:ekr.20101008061729.4637: *5* @select Urgent
-.. @+node:ekr.20101008061729.4538: *4* @@button renumber nodes
+.. @+node:ekr.20101008061729.4568: *7* Aug 2009
+.. @+node:ekr.20101008061729.4569: *7* Sep 2009
+.. @+node:ekr.20101008061729.4570: *7* Oct 2009
+.. @+node:ekr.20101008061729.4571: *7* Nov 2009
+.. @+node:ekr.20101008061729.4572: *7* Dec 2009
+.. @+node:ekr.20101008061729.4561: *6* 2010
+.. @+node:ekr.20101008061729.4637: *4* @select Urgent
+.. @+node:ekr.20101008061729.4425: *3* @@button ins-@slide-nodes
+'''Create @slide nodes under p, an @slideshow node.'''
+
+n = 23 # Number of last slide to be created.
+
+existing = [z.copy().h for z in p.children() 
+    if g.match_word(z.h,0,'@slide')]
+
+if g.match_word(p.h,0,'@slideshow'):
+    b = c.undoer.beforeChangeTree(p)
+    changed = False
+    for n in range(1,n+1):
+        h = '@slide %03d' % n
+        if h not in existing:
+            changed = True
+            child = p.insertAsLastChild()
+            child.h = h
+            g.note('created %s' % h)
+    if changed:
+        c.undoer.afterChangeTree(p,'ins-@slide-nodes',b)
+    else:
+        g.note('no @slide nodes inserted')
+    c.redraw()
+else:
+    g.error('not an @slideshow node',p.h)
+.. @+node:ekr.20101009114655.4531: *3* @@button make-slide @key=Alt-8
+m = g.loadOnePlugin('screenshots')
+m.make_slide_command(event={'c':c})
+.. @+node:ekr.20101007100904.4371: *3* @@button make-slide-show @key=Alt-8
+m = g.loadOnePlugin('screenshots')
+m.make_slide_show_command(event={'c':c})
+.. @+node:ekr.20101014110348.5338: *3* @@button meld
+'''Meld Wink slides into an @slideshow folder.
+
+   Copy screenshot files from the wink_dir to slideshow_dir, numbering
+   the destination files to reflect "holes" created by @no-screenshot
+   nodes.
+
+   This script carefully checks that the number of screenshot files
+   matches the number of screenshots referenced by the @slide nodes.
+   No copying takes place if the numbers are not as expected.'''
+
+@language python
+
+import glob
+import os
+import shutil
+
+slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step'
+
+wink_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/_files'
+    # The directory containing the wink screenshots.
+    # This will usually be <slideshow_dir>/_files.
+    # **Important** You generate these screenshots using Wink's 
+    # Export As Html command (!)
+
+@others
+
+mc = MeldController(c,p,slideshow_dir,wink_dir)
+mc.run()
+.. @+node:ekr.20101014110348.5339: *4* class MeldController
+class MeldController:
+
+    def __init__ (self,c,p,slideshow_dir,wink_dir):
+
+        self.c = c
+        self.slideshow_dir = slideshow_dir
+        self.slideshow_node = p
+        self.wink_dir = wink_dir
+
+    @others
+.. @+node:ekr.20101016043116.5353: *5* utils
+.. @+node:ekr.20101016043116.6224: *6* finalize & fix
+def fix (self,fn):
+    return os.path.normcase(fn).replace('\\','/')
+
+def finalize (self,fn):
+    return self.fix(g.os_path_finalize_join(self.slideshow_dir,fn))
+.. @+node:ekr.20101015151959.5301: *6* has_at_no_screenshot_node
+def has_at_no_screenshot_node (self,p):
+
+    for p in p.children():
+        if self.match(p,'@no-screenshot'):
+            return True
+    else:
+        return False
+.. @+node:ekr.20101015151959.5302: *6* match
+def match (self,p,pattern):
+
+    '''Return True if p.h matches the pattern.'''
+
+    return g.match_word(p.h,0,pattern)
+.. @+node:ekr.20101014110348.5341: *5* run & helpers
+def run (self):
+
+    print('='*20)
+
+    aList = self.get_wink_screenshots()
+    if not aList:
+        return
+
+    if not self.check(aList):
+        return
+
+    # Pass 1: copy files for @slide nodes w/o @no-screenshot nodes.
+    self.copy_files(aList)
+
+    # Pass 2: adjust children of @slide nodes.
+    self.adjust_slideshow()
+
+    print('meld done')
+.. @+node:ekr.20101014110348.5344: *6* adjust_slideshow & helper
+def adjust_slideshow(self):
+
+    '''Adjust all @slide nodes in the slideshow.'''
+
+    # Traverse the tree as in the screenshot plugin.
+    # That is, ignore @ignore trees and nested @slide nodes.
+    # This ensures that the slide number, n, is correct.
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    n = 1
+    while p and p != after:
+        if self.match(p,'@slide'):
+            self.adjust_slide_node(p,n)
+            n += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+.. @+node:ekr.20101015151959.5300: *7* adjust_slide_node & helpers
+def adjust_slide_node (self,p,slide_number):
+
+    '''Adjust p, an @slide node.'''
+
+    trace = True
+
+    # Delete the first "@url built slide" node.
+    self.delete_at_url_built_slide_node(p)
+
+    # Do nothing more if there is an @no-screenshot node.
+    if self.has_at_no_screenshot_node(p):
+        return
+
+    # Add or update the "@url final output file" node.
+    p2 = self.add_at_url_final_output_file(p,slide_number)
+
+    # Add the .. image:: directive.
+    self.add_image_directive(p,slide_number)
+.. @+node:ekr.20101016043116.6226: *8* add_at_url_final_output_file
+def add_at_url_final_output_file (self,p,slide_number):
+
+    '''Create or update the "@url final output file" node.'''
+
+    trace = True
+    tag ='@url final output file'
+
+    for child in p.children():
+        if self.match(child,tag):
+            p2 = child ; break
+    else:
+        if trace: g.es('add %s' % tag)
+        p2 = p.insertAsLastChild()
+        p2.h = tag
+
+    p2.b = self.finalize(
+        'slide-%03d.png' % (slide_number))
+
+    return p2
+.. @+node:ekr.20101016043116.6223: *8* add_image_directive
+def add_image_directive (self,p,slide_number):
+
+    '''Add an image directive in p if it is not there.'''
+
+    s = '.. image:: slide-%03d.png' % (slide_number)
+
+    if p.b.find(s) == -1:
+        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+.. @+node:ekr.20101016043116.6225: *8* delete_at_url_built_slide_node
+def delete_at_url_built_slide_node (self,p):
+
+    '''Delete any "@url built slide" node in p's children.'''
+
+    trace = True
+    tag = '@url built slide'
+
+    for child in p.children():
+        if self.match(child,tag):
+            if trace: g.es('del %s in %s' % (tag,p.h))
+            child.doDelete()
+            break
+.. @+node:ekr.20101014110348.5342: *6* check & helpers
+def check (self,aList):
+
+    '''
+    Check that len(aList) matches the number of @slide nodes in the
+    slideshow. Don't count @slide nodes containing an @no-screenshot node.
+    '''
+
+    p = self.slideshow_node
+    n1 = len(aList)
+    n2,n3 = self.count_slide_nodes()
+
+    if not self.check_dir(self.wink_dir):
+        return False
+    if not self.check_dir(self.slideshow_dir):
+        return False
+    if not self.match(p,'@slideshow'):
+        return g.error('not a @slideshow node: %s',p.h)
+
+    if n1 != (n2-n3):
+        return g.error(
+            '%s wink slides\n'
+            '%s @slide nodes\n'
+            '%s @no_screenshot nodes' % (
+                n1,n2,n3))
+
+    return True
+.. @+node:ekr.20101016043116.5349: *7* check_dir
+def check_dir (self,theDir):
+
+    if not g.os_path_exists(theDir):
+        return g.error('not found: %s' % (theDir))
+
+    if not g.os_path_isdir(theDir):
+        return g.error('not a directory: %s' % (theDir))
+
+    return True
+.. @+node:ekr.20101014110348.5347: *7* count_slide_nodes
+def count_slide_nodes (self):
+
+    '''Return n1,n2
+
+    n1 is the total number of @slide nodes in the @slideshow tree.
+    n2 is number of @slide nodes containing an @no-slideshow child.
+    '''
+
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    n1,n2 = 0,0
+    while p and p != after:
+        if self.match(p,'@slide'):
+            n1 += 1
+            if self.has_at_no_screenshot_node(p):
+                n2 += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    g.trace(n1,n2)
+    return n1,n2
+.. @+node:ekr.20101014110348.5343: *6* copy_files & helper
+def copy_files (self,aList):
+
+    '''Copy files from the wink_dir to slideshow_dir,
+    numbering the destination files to reflect "holes"
+    created by @no-screenshot nodes.'''
+
+    # Traverse the tree as in the screenshot plugin.
+    # That is, ignore @ignore trees and nested @slide nodes.
+    # This ensures that the slide number, n, is correct.
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    wink_n = 0 # Wink screenshot numbers start at 0.
+    slide_n = 1 # Slide numbers start at 1.
+    while p and p != after:
+        if self.match(p,'@slide'):
+            if not self.has_at_no_screenshot_node(p):
+                self.copy_file(aList,slide_n,wink_n)
+                wink_n += 1
+            slide_n += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+.. @+node:ekr.20101016043116.5352: *7* copy_file
+def copy_file (self,aList,slide_n,wink_n):
+
+    trace = True
+
+    if wink_n >= len(aList):
+        return g.trace('can not happen: '
+            'len(aList): %s, n: %s' % (
+                len(aList),wink_n))
+
+    fn_src = aList[wink_n]
+    fn_dst = 'slide-%03d.png' % (slide_n)
+
+    if trace:
+        g.trace('%7s -> %s' % (g.shortFileName(fn_src),fn_dst))
+
+    shutil.copyfile(fn_src,fn_dst)
+.. @+node:ekr.20101014110348.5346: *6* get_wink_screenshots
+def get_wink_screenshots (self):
+
+    '''Return the properly sorted list of wink screenshots.'''
+
+    trace = False
+
+    aList = glob.glob(self.wink_dir + '/*.png')
+
+    def key(s):
+        path,ext = g.os_path_splitext(s)
+        junk,n = g.os_path_split(path)
+        n = n.strip()
+        if n.isdigit():
+            return int(n)
+        else:
+            g.error('bad wink screenshot: %s' % (s))
+            raise KeyError
+
+    aList.sort(key=key) # Essential.
+
+    if trace:
+        for z in aList:
+            print(z)
+
+    return aList
+.. @+node:ekr.20101008061729.4538: *3* @@button renumber nodes
 '''Renumber @slide nodes under p, an @slideshow node.'''
 
 if g.match_word(p.h,0,'@slideshow'):
@@ -129,9 +425,6 @@ if g.match_word(p.h,0,'@slideshow'):
     c.redraw()
 else:
     g.error('not an @slideshow node',p.h)
-.. @+node:ekr.20101007100904.4371: *4* @@button make-slide-show @key=Alt-8
-m = g.loadOnePlugin('screenshots')
-m.make_slide_show_command(event={'c':c})
 .. @+node:ekr.20101021092135.5431: **  Slideshows to create
 .. @+node:ekr.20101113110328.4947: *3* Using @button nodes
 .. @+node:ekr.20101113110328.4945: *3* Top 10 coolest features
@@ -1669,12 +1962,20 @@ c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html
    if a node is no longer 'dirty', what is it - clean?
 slide 13: 'ctrl-z' (lower-case), but elsewhere 'ctrl-H' (upper-case).
 Stick with upper case for consistency?
+.. @+node:ekr.20101113202201.4920: *3* @wink_path = ../doc/html/slides/leo-basics-step-by-step/_files
+@nocolor-node
+
+The directory containing the wink screenshots.
+This will usually be <slideshow_dir>/_files.
+
+**Important** You generate these screenshots using Wink's 
+Export As Html command (!)
 .. @+node:ekr.20101013072903.5225: *3* @slide ((no-slide
 This is a step-by-step introduction to show you
 how to use Leo outlines.
 
 .. @+node:ekr.20101018190057.5370: *4* @no-screenshot
-.. @+node:ekr.20101018190057.5462: *4* @url built slide
+.. @+node:ekr.20101113210223.5014: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html
 .. @+node:ekr.20101013072903.5226: *3* @slide ((Open notebook file
 .. The workbook.leo window.
@@ -1693,7 +1994,7 @@ taste.
 
 .. @+node:ekr.20101018190057.5441: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-002.png
-.. @+node:ekr.20101021093614.5432: *4* @url built slide
+.. @+node:ekr.20101113210223.5015: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html
 .. @+node:ekr.20101014110348.5286: *3* @slide ((Ctrl-H edits headline
 Ctrl-H edits the presently selected headline.
@@ -1708,7 +2009,7 @@ longer has focus.
 
 .. @+node:ekr.20101018190057.5442: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-003.png
-.. @+node:ekr.20101018190057.5464: *4* @url built slide
+.. @+node:ekr.20101113210223.5016: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html
 .. @+node:ekr.20101013072903.5234: *3* @slide (("to do" node
 I typed "to do" in the headline.
@@ -1717,7 +2018,7 @@ I typed "to do" in the headline.
 
 .. @+node:ekr.20101018190057.5443: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-004.png
-.. @+node:ekr.20101018203754.5424: *4* @url built slide
+.. @+node:ekr.20101113210223.5017: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html
 .. @+node:ekr.20101018061243.5392: *3* @slide ((Return ends editing
 Typing the <return> key ends editing of the headline
@@ -1733,7 +2034,7 @@ node has been changed. We say the node is
 
 .. @+node:ekr.20101018190057.5444: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-005.png
-.. @+node:ekr.20101021093614.5433: *4* @url built slide
+.. @+node:ekr.20101113210223.5018: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html
 .. @+node:ekr.20101018061243.5393: *3* @slide ((no-slide focus keys
 You can use Leo without ever using the mouse. For
@@ -1748,7 +2049,7 @@ keystrokes instead of clicking the pane:
   return key puts the focus in the body pane.
 
 .. @+node:ekr.20101018190057.5373: *4* @no-screenshot
-.. @+node:ekr.20101019053718.5422: *4* @url built slide
+.. @+node:ekr.20101113210223.5019: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html
 .. @+node:ekr.20101014110348.5325: *3* @slide ((Ctrl-S saves outline
 Ctrl-S saves the outline.
@@ -1763,7 +2064,7 @@ the file was last saved.
 
 .. @+node:ekr.20101018190057.5445: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-007.png
-.. @+node:ekr.20101021101327.5432: *4* @url built slide
+.. @+node:ekr.20101113210223.5020: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html
 .. @+node:ekr.20101013072903.5236: *3* @slide ((Ctrl-I inserts a new node
 Ctrl-I inserts a new node.
@@ -1772,7 +2073,7 @@ Ctrl-I inserts a new node.
 
 .. @+node:ekr.20101018190057.5446: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-008.png
-.. @+node:ekr.20101018190057.5469: *4* @url built slide
+.. @+node:ekr.20101113210223.5021: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html
 .. @+node:ekr.20101013072903.5237: *3* @slide (("go shopping"
 I typed "go shopping" followed by a return.
@@ -1783,7 +2084,7 @@ The focus is now in the body pane.
 
 .. @+node:ekr.20101018190057.5447: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-009.png
-.. @+node:ekr.20101018190057.5470: *4* @url built slide
+.. @+node:ekr.20101113210223.5022: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html
 .. @+node:ekr.20101014110348.5305: *3* @slide ((typing text (icon box has blue square)
 Whatever I type will appear in the body pane.
@@ -1801,7 +2102,7 @@ The blue square in the icon area indicates that the body pane contains text.
 
 .. @+node:ekr.20101018190057.5448: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-010.png
-.. @+node:ekr.20101018203754.5426: *4* @url built slide
+.. @+node:ekr.20101113210223.5023: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html
 .. @+node:ekr.20101013072903.5244: *3* @slide ((Ctrl-R
 Ctrl-R moves a node right.
@@ -1815,7 +2116,7 @@ The "to do" node is the **parent** node.
 
 .. @+node:ekr.20101018190057.5449: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-011.png
-.. @+node:ekr.20101018203754.5427: *4* @url built slide
+.. @+node:ekr.20101113210223.5024: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html
 .. @+node:ekr.20101014110348.5290: *3* @slide ((Ctrl-L
 Ctrl-L moves the "go shopping" node left.
@@ -1827,7 +2128,7 @@ of the "to do" node.
 
 .. @+node:ekr.20101018190057.5450: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-012.png
-.. @+node:ekr.20101018190057.5473: *4* @url built slide
+.. @+node:ekr.20101113210223.5025: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html
 .. @+node:ekr.20101013072903.5245: *3* @slide ((undo/redo
 Leo has unlimited undo/redo capabilities.
@@ -1842,7 +2143,7 @@ the "to do" node.
 
 .. @+node:ekr.20101018190057.5451: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-013.png
-.. @+node:ekr.20101021093614.5435: *4* @url built slide
+.. @+node:ekr.20101113210223.5026: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html
 .. @+node:ekr.20101014110348.5294: *3* @slide ((new node
 Let's add a new node.  I hit Ctrl-I.
@@ -1851,7 +2152,7 @@ Let's add a new node.  I hit Ctrl-I.
 
 .. @+node:ekr.20101018190057.5452: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-014.png
-.. @+node:ekr.20101018203754.5428: *4* @url built slide
+.. @+node:ekr.20101113210223.5027: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html
 .. @+node:ekr.20101014110348.5295: *3* @slide (("fix car"
 I type "fix car" followed by the <return> key.
@@ -1860,7 +2161,7 @@ I type "fix car" followed by the <return> key.
 
 .. @+node:ekr.20101018190057.5453: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-015.png
-.. @+node:ekr.20101018190057.5476: *4* @url built slide
+.. @+node:ekr.20101113210223.5028: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-015.html
 .. @+node:ekr.20101014110348.5296: *3* @slide ((Ctrl-U
 I decide that fixing the car should have first priority.
@@ -1872,7 +2173,7 @@ It becomes the first child of the "to do" node.
 
 .. @+node:ekr.20101018190057.5454: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-016.png
-.. @+node:ekr.20101018190057.5477: *4* @url built slide
+.. @+node:ekr.20101113210223.5029: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-016.html
 .. @+node:ekr.20101014110348.5297: *3* @slide ((contracting nodes
 After creating the to-do list, I want to hide it
@@ -1890,7 +2191,7 @@ there are much easier ways.
 
 .. @+node:ekr.20101018190057.5455: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-017.png
-.. @+node:ekr.20101018203754.5423: *4* @url built slide
+.. @+node:ekr.20101113210223.5030: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html
 .. @+node:ekr.20101014110348.5298: *3* @slide ((Up-Arrow
 The focus is in the tree pane, so I can select the "to do"
@@ -1911,7 +2212,7 @@ Now the "to do" node is selected.
 
 .. @+node:ekr.20101018190057.5456: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-018.png
-.. @+node:ekr.20101018203754.5429: *4* @url built slide
+.. @+node:ekr.20101113210223.5031: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html
 .. @+node:ekr.20101014110348.5299: *3* @slide ((Left-Arrow
 With the "to-do" node selected,
@@ -1923,7 +2224,7 @@ hitting the Left-Arrow key will contract the node.
 
 .. @+node:ekr.20101018190057.5457: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-019.png
-.. @+node:ekr.20101018203754.5430: *4* @url built slide
+.. @+node:ekr.20101113210223.5032: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html
 .. @+node:ekr.20101014110348.5300: *3* @slide ((20 Right-Arrow
 To expand the "to do" node,
@@ -1935,7 +2236,7 @@ We can now see the entire to-do list.
 
 .. @+node:ekr.20101018190057.5458: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-020.png
-.. @+node:ekr.20101018190057.5481: *4* @url built slide
+.. @+node:ekr.20101113210223.5033: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-020.html
 .. @+node:ekr.20101014110348.5309: *3* @slide ((no-slide Arrow keys: summary
 The arrow keys do different things depending on
@@ -1981,7 +2282,7 @@ easier than using the mouse.
 ..  it quickly becomes second nature.
 
 .. @+node:ekr.20101014110348.5323: *4* @no-screenshot
-.. @+node:ekr.20101018190057.5482: *4* @url built slide
+.. @+node:ekr.20101113210223.5034: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-021.html
 .. @+node:ekr.20101014110348.5326: *3* @slide ((Shift-Ctrl-C copies
 We can copy and paste nodes and all their descendants.
@@ -1998,7 +2299,7 @@ the original node before doing the paste:
 
 .. @+node:ekr.20101018190057.5459: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-022.png
-.. @+node:ekr.20101018190057.5483: *4* @url built slide
+.. @+node:ekr.20101113210223.5035: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-022.html
 .. @+node:ekr.20101018061243.5397: *3* @slide ((The pasted node
 And here is the pasted node.
@@ -2007,7 +2308,7 @@ And here is the pasted node.
 
 .. @+node:ekr.20101018190057.5460: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-023.png
-.. @+node:ekr.20101018190057.5484: *4* @url built slide
+.. @+node:ekr.20101113210223.5036: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-023.html
 .. @+node:ekr.20101018061243.5394: *3* @slide ((expanding the pasted node
 Expanding the node shows that the copy operation
@@ -2017,7 +2318,7 @@ copied the node and all its descendants.
 
 .. @+node:ekr.20101018190057.5461: *4* @url final output file
 c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-024.png
-.. @+node:ekr.20101018190057.5485: *4* @url built slide
+.. @+node:ekr.20101113210223.5037: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-024.html
 .. @+node:ekr.20101014110348.5336: *3* @slide ((no-slide end slide
 This concludes the step-by-step introduction to
@@ -2035,7 +2336,7 @@ Mastering these skills is essential to using Leo
 effectively and enjoyably.
 
 .. @+node:ekr.20101018061243.5395: *4* @no-screenshot
-.. @+node:ekr.20101018190057.5486: *4* @url built slide
+.. @+node:ekr.20101113210223.5038: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html
 .. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
 .. @+node:ekr.20101011165412.4968: ** @slideshow Scripting Leo
@@ -2044,300 +2345,6 @@ c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-
 
 .. @+node:ekr.20101014034526.5296: ** @slideshow Leo's minibuffer
 @ Discuss tab completion.
-.. @+node:ekr.20101014110348.5338: ** @button meld
-'''Meld Wink slides into an @slideshow folder.
-
-   Copy screenshot files from the wink_dir to slideshow_dir, numbering
-   the destination files to reflect "holes" created by @no-screenshot
-   nodes.
-
-   This script carefully checks that the number of screenshot files
-   matches the number of screenshots referenced by the @slide nodes.
-   No copying takes place if the numbers are not as expected.'''
-
-@language python
-
-import glob
-import os
-import shutil
-
-slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step'
-
-wink_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/_files'
-    # The directory containing the wink screenshots.
-    # This will usually be <slideshow_dir>/_files.
-    # **Important** You generate these screenshots using Wink's 
-    # Export As Html command (!)
-
-@others
-
-mc = MeldController(c,p,slideshow_dir,wink_dir)
-mc.run()
-.. @+node:ekr.20101014110348.5339: *3* class MeldController
-class MeldController:
-
-    def __init__ (self,c,p,slideshow_dir,wink_dir):
-
-        self.c = c
-        self.slideshow_dir = slideshow_dir
-        self.slideshow_node = p
-        self.wink_dir = wink_dir
-
-    @others
-.. @+node:ekr.20101016043116.5353: *4* utils
-.. @+node:ekr.20101016043116.6224: *5* finalize & fix
-def fix (self,fn):
-    return os.path.normcase(fn).replace('\\','/')
-
-def finalize (self,fn):
-    return self.fix(g.os_path_finalize_join(self.slideshow_dir,fn))
-.. @+node:ekr.20101015151959.5301: *5* has_at_no_screenshot_node
-def has_at_no_screenshot_node (self,p):
-
-    for p in p.children():
-        if self.match(p,'@no-screenshot'):
-            return True
-    else:
-        return False
-.. @+node:ekr.20101015151959.5302: *5* match
-def match (self,p,pattern):
-
-    '''Return True if p.h matches the pattern.'''
-
-    return g.match_word(p.h,0,pattern)
-.. @+node:ekr.20101014110348.5341: *4* run & helpers
-def run (self):
-
-    print('='*20)
-
-    aList = self.get_wink_screenshots()
-    if not aList:
-        return
-
-    if not self.check(aList):
-        return
-
-    # Pass 1: copy files for @slide nodes w/o @no-screenshot nodes.
-    self.copy_files(aList)
-
-    # Pass 2: adjust children of @slide nodes.
-    self.adjust_slideshow()
-
-    print('meld done')
-.. @+node:ekr.20101014110348.5344: *5* adjust_slideshow & helper
-def adjust_slideshow(self):
-
-    '''Adjust all @slide nodes in the slideshow.'''
-
-    # Traverse the tree as in the screenshot plugin.
-    # That is, ignore @ignore trees and nested @slide nodes.
-    # This ensures that the slide number, n, is correct.
-    p = self.slideshow_node
-    after = p.nodeAfterTree()
-    p = p.firstChild()
-    n = 1
-    while p and p != after:
-        if self.match(p,'@slide'):
-            self.adjust_slide_node(p,n)
-            n += 1
-            p.moveToNodeAfterTree()
-        elif self.match(p,'@ignore'):
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-.. @+node:ekr.20101015151959.5300: *6* adjust_slide_node & helpers
-def adjust_slide_node (self,p,slide_number):
-
-    '''Adjust p, an @slide node.'''
-
-    trace = True
-
-    # Delete the first "@url built slide" node.
-    self.delete_at_url_built_slide_node(p)
-
-    # Do nothing more if there is an @no-screenshot node.
-    if self.has_at_no_screenshot_node(p):
-        return
-
-    # Add or update the "@url final output file" node.
-    p2 = self.add_at_url_final_output_file(p,slide_number)
-
-    # Add the .. image:: directive.
-    self.add_image_directive(p,slide_number)
-.. @+node:ekr.20101016043116.6226: *7* add_at_url_final_output_file
-def add_at_url_final_output_file (self,p,slide_number):
-
-    '''Create or update the "@url final output file" node.'''
-
-    trace = True
-    tag ='@url final output file'
-
-    for child in p.children():
-        if self.match(child,tag):
-            p2 = child ; break
-    else:
-        if trace: g.es('add %s' % tag)
-        p2 = p.insertAsLastChild()
-        p2.h = tag
-
-    p2.b = self.finalize(
-        'slide-%03d.png' % (slide_number))
-
-    return p2
-.. @+node:ekr.20101016043116.6223: *7* add_image_directive
-def add_image_directive (self,p,slide_number):
-
-    '''Add an image directive in p if it is not there.'''
-
-    s = '.. image:: slide-%03d.png' % (slide_number)
-
-    if p.b.find(s) == -1:
-        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
-.. @+node:ekr.20101016043116.6225: *7* delete_at_url_built_slide_node
-def delete_at_url_built_slide_node (self,p):
-
-    '''Delete any "@url built slide" node in p's children.'''
-
-    trace = True
-    tag = '@url built slide'
-
-    for child in p.children():
-        if self.match(child,tag):
-            if trace: g.es('del %s in %s' % (tag,p.h))
-            child.doDelete()
-            break
-.. @+node:ekr.20101014110348.5342: *5* check & helpers
-def check (self,aList):
-
-    '''
-    Check that len(aList) matches the number of @slide nodes in the
-    slideshow. Don't count @slide nodes containing an @no-screenshot node.
-    '''
-
-    p = self.slideshow_node
-    n1 = len(aList)
-    n2,n3 = self.count_slide_nodes()
-
-    if not self.check_dir(self.wink_dir):
-        return False
-    if not self.check_dir(self.slideshow_dir):
-        return False
-    if not self.match(p,'@slideshow'):
-        return g.error('not a @slideshow node: %s',p.h)
-
-    if n1 != (n2-n3):
-        return g.error(
-            '%s wink slides\n'
-            '%s @slide nodes\n'
-            '%s @no_screenshot nodes' % (
-                n1,n2,n3))
-
-    return True
-.. @+node:ekr.20101016043116.5349: *6* check_dir
-def check_dir (self,theDir):
-
-    if not g.os_path_exists(theDir):
-        return g.error('not found: %s' % (theDir))
-
-    if not g.os_path_isdir(theDir):
-        return g.error('not a directory: %s' % (theDir))
-
-    return True
-.. @+node:ekr.20101014110348.5347: *6* count_slide_nodes
-def count_slide_nodes (self):
-
-    '''Return n1,n2
-
-    n1 is the total number of @slide nodes in the @slideshow tree.
-    n2 is number of @slide nodes containing an @no-slideshow child.
-    '''
-
-    p = self.slideshow_node
-    after = p.nodeAfterTree()
-    p = p.firstChild()
-    n1,n2 = 0,0
-    while p and p != after:
-        if self.match(p,'@slide'):
-            n1 += 1
-            if self.has_at_no_screenshot_node(p):
-                n2 += 1
-            p.moveToNodeAfterTree()
-        elif self.match(p,'@ignore'):
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-
-    g.trace(n1,n2)
-    return n1,n2
-.. @+node:ekr.20101014110348.5343: *5* copy_files & helper
-def copy_files (self,aList):
-
-    '''Copy files from the wink_dir to slideshow_dir,
-    numbering the destination files to reflect "holes"
-    created by @no-screenshot nodes.'''
-
-    # Traverse the tree as in the screenshot plugin.
-    # That is, ignore @ignore trees and nested @slide nodes.
-    # This ensures that the slide number, n, is correct.
-    p = self.slideshow_node
-    after = p.nodeAfterTree()
-    p = p.firstChild()
-    wink_n = 0 # Wink screenshot numbers start at 0.
-    slide_n = 1 # Slide numbers start at 1.
-    while p and p != after:
-        if self.match(p,'@slide'):
-            if not self.has_at_no_screenshot_node(p):
-                self.copy_file(aList,slide_n,wink_n)
-                wink_n += 1
-            slide_n += 1
-            p.moveToNodeAfterTree()
-        elif self.match(p,'@ignore'):
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-.. @+node:ekr.20101016043116.5352: *6* copy_file
-def copy_file (self,aList,slide_n,wink_n):
-
-    trace = True
-
-    if wink_n >= len(aList):
-        return g.trace('can not happen: '
-            'len(aList): %s, n: %s' % (
-                len(aList),wink_n))
-
-    fn_src = aList[wink_n]
-    fn_dst = 'slide-%03d.png' % (slide_n)
-
-    if trace:
-        g.trace('%7s -> %s' % (g.shortFileName(fn_src),fn_dst))
-
-    shutil.copyfile(fn_src,fn_dst)
-.. @+node:ekr.20101014110348.5346: *5* get_wink_screenshots
-def get_wink_screenshots (self):
-
-    '''Return the properly sorted list of wink screenshots.'''
-
-    trace = False
-
-    aList = glob.glob(self.wink_dir + '/*.png')
-
-    def key(s):
-        path,ext = g.os_path_splitext(s)
-        junk,n = g.os_path_split(path)
-        n = n.strip()
-        if n.isdigit():
-            return int(n)
-        else:
-            g.error('bad wink screenshot: %s' % (s))
-            raise KeyError
-
-    aList.sort(key=key) # Essential.
-
-    if trace:
-        for z in aList:
-            print(z)
-
-    return aList
 .. @+node:ekr.20101018183640.5360: ** @button remove-image-directives
 @language python
 
