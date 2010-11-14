@@ -61,11 +61,12 @@ try:
 except ImportError:
     pass
 
-from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL, QTimer)
+from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
         QPlainTextEdit, QInputDialog, QMainWindow, QMdiArea)
+
 #@-<< imports >>
 
 #@+others
@@ -426,11 +427,15 @@ def tabula_marked_f(event):
         if p.isMarked():
             t.add_note(p)
 
-#@+node:ville.20100703194946.5584: *3* class Tabula
+#@+node:ville.20100703194946.5584: *3* class Tabula(QMainWindow)
 class Tabula(QMainWindow):
 
+    #@+others
+    #@+node:ekr.20101114061906.5445: *4* __init__
     def __init__(self, c):
+
         QMainWindow.__init__(self)
+
         mdi = self.mdi = QMdiArea(self)
         self.setCentralWidget(mdi)
         self.create_actions()
@@ -438,21 +443,39 @@ class Tabula(QMainWindow):
 
         self.notes = {}
         self.c = c
+
         def delayed_load():
             self.load_states()
-
         QTimer.singleShot(0, delayed_load)
 
-        #self.load_states()
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
 
-        def on_quit(tag, kw):
-            # saving when hidden nukes all
-            if self.isVisible():
-                self.save_states()
-        g.registerHandler("end1",on_quit)
+        g.registerHandler("end1",self.on_quit)
+    #@+node:ekr.20101114061906.5443: *4* add_note
+    def add_note(self, p):
 
+        gnx = p.gnx
+        if gnx in self.notes:
+            n = self.notes[gnx]
+            n.show()
+            return n
+
+        n = mknote(self.c, p, parent = self.mdi)
+        sw = self.mdi.addSubWindow(n)
+        sw.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.notes[gnx] = n
+        n.show()
+        return n
+    #@+node:ekr.20101114061906.5442: *4* closeEvent
+    def closeEvent(self,event):
+
+        self.save_states()
+        g.trace(event)
+        event.accept() # EKR: doesn't help: we don't get the event.
+
+    #@+node:ekr.20101114061906.5444: *4* create_actions
     def create_actions(self):
+
         self.tb = self.addToolBar("toolbar")
         self.tb.setObjectName("toolbar")
         #self.addToolBar(Qt.BottomToolBarArea, self.tb)
@@ -501,46 +524,21 @@ class Tabula(QMainWindow):
         # ca.setMenuRole(QAction.QuitRole)
         # ca.connect(ca, SIGNAL("triggered()"), do_close_all)
         # self.tb.addAction(ca)
-
-
-    def add_note(self, p):
-        #g.pdb()
-        gnx = p.gnx
-        if gnx in self.notes:
-            n = self.notes[gnx]
-            n.show()
-            return n
-
-        n = mknote(self.c, p, parent = self.mdi)
-        sw = self.mdi.addSubWindow(n)
-        sw.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.notes[gnx] = n
-        n.show()
-        return n
-
-    def closeEvent(self, event):
-        self.save_states()
-
-    def save_states(self):
-        # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
-        geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items() if n.isVisible())
-        geoms['mainwindow'] = self.saveState()
-        if self.c.cacher.db:
-            self.c.cacher.db['tabulanotes'] = geoms
-
+    #@+node:ekr.20101114061906.5440: *4* load_states
     def load_states(self):
+
         if not self.c.cacher.db:
             return
         try:
-
             stored = self.c.cacher.db['tabulanotes']
         except KeyError:
-            #empty
             return
 
         mwstate = stored.pop("mainwindow")
         self.restoreState(mwstate)
-        # still think leo should maintain a dict like this
+
+        # still think leo should maintain a dict like this.
+        # EKR: :-)
         ncache = dict((p.gnx, p.copy()) for p in self.c.all_unique_positions())
 
         for gnx, geom in stored.items():
@@ -552,7 +550,33 @@ class Tabula(QMainWindow):
 
             n = self.add_note(ncache[gnx])
             n.parent().restoreGeometry(geom)
+    #@+node:ekr.20101114061906.5446: *4* on_quit
+    def on_quit(self,tag, kw):
 
-        #print stored
+        g.trace(tag,kw,self)
+        # saving when hidden nukes all
+
+        if self.isVisible():
+            self.save_states()
+
+        # None of these work on Python 3.x.
+        # self.destroy()
+
+        # self.mdi.close()
+        # self.close() # EKR
+        # self.midi.delete() # EKR
+    #@+node:ekr.20101114061906.5441: *4* save_states
+    def save_states(self):
+
+        # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
+        geoms = dict(
+            (gnx, n.parent().saveGeometry())
+                for (gnx, n) in self.notes.items() if n.isVisible())
+
+        geoms['mainwindow'] = self.saveState()
+
+        if self.c.cacher.db:
+            self.c.cacher.db['tabulanotes'] = geoms
+    #@-others
 #@-others
 #@-leo

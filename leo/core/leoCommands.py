@@ -2668,6 +2668,141 @@ class baseCommands (object):
         c = self
         c.openLeoSettings()
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
+    #@+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
+    def findBoundParagraph (self,event=None):
+
+        c = self
+        head,ins,tail = c.frame.body.getInsertLines()
+
+        if not ins or ins.isspace() or ins[0] == '@':
+            return None,None,None
+
+        head_lines = g.splitLines(head)
+        tail_lines = g.splitLines(tail)
+
+        if 0:
+            #@+<< trace head_lines, ins, tail_lines >>
+            #@+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
+            if 0:
+                g.pr("\nhead_lines")
+                for line in head_lines:
+                    g.pr(line)
+                g.pr("\nins", ins)
+                g.pr("\ntail_lines")
+                for line in tail_lines:
+                    g.pr(line)
+            else:
+                g.es_print("head_lines: ",head_lines)
+                g.es_print("ins: ",ins)
+                g.es_print("tail_lines: ",tail_lines)
+            #@-<< trace head_lines, ins, tail_lines >>
+
+        # Scan backwards.
+        i = len(head_lines)
+        while i > 0:
+            i -= 1
+            line = head_lines[i]
+            if len(line) == 0 or line.isspace() or line[0] == '@':
+                i += 1 ; break
+
+        pre_para_lines = head_lines[:i]
+        para_head_lines = head_lines[i:]
+
+        # Scan forwards.
+        i = 0
+        for line in tail_lines:
+            if not line or line.isspace() or line.startswith('@'):
+                break
+            i += 1
+
+        para_tail_lines = tail_lines[:i]
+        post_para_lines = tail_lines[i:]
+
+        head = g.joinLines(pre_para_lines)
+        result = para_head_lines 
+        result.extend([ins])
+        result.extend(para_tail_lines)
+        tail = g.joinLines(post_para_lines)
+
+        return head,result,tail # string, list, string
+    #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
+    def findMatchingBracket (self,event=None):
+
+        '''Select the text between matching brackets.'''
+
+        c = self ; w = c.frame.body.bodyCtrl
+
+        if g.app.batchMode:
+            c.notValidInBatchMode("Match Brackets")
+            return
+
+        brackets = "()[]{}<>"
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        ch1 = 0 <= ins-1 < len(s) and s[ins-1] or ''
+        ch2 = 0 <= ins   < len(s) and s[ins] or ''
+        # g.trace(repr(ch1),repr(ch2),ins)
+
+        # Prefer to match the character to the left of the cursor.
+        if ch1 and ch1 in brackets:
+            ch = ch1 ; index = max(0,ins-1)
+        elif ch2 and ch2 in brackets:
+            ch = ch2 ; index = ins
+        else:
+            return
+
+        index2 = self.findMatchingBracketHelper(s,ch,index)
+        # g.trace('index,index2',index,index2)
+        if index2 is not None:
+            if index2 < index:
+                w.setSelectionRange(index2,index+1,insert=index2) # was insert=index2+1
+                # g.trace('case 1',s[index2:index+1])
+            else:
+                w.setSelectionRange(index,index2+1,insert=min(len(s),index2+1))
+                # g.trace('case2',s[index:index2+1])
+            w.see(index2)
+        else:
+            g.es("unmatched",repr(ch))
+    #@+node:ekr.20061113221414: *7* findMatchingBracketHelper
+    # To do: replace comments with blanks before scanning.
+    # Test  unmatched())
+    def findMatchingBracketHelper(self,s,ch,index):
+
+        c = self
+        open_brackets  = "([{<" ; close_brackets = ")]}>"
+        brackets = open_brackets + close_brackets
+        matching_brackets = close_brackets + open_brackets
+        forward = ch in open_brackets
+        # Find the character matching the initial bracket.
+        # g.trace('index',index,'ch',repr(ch),'brackets',brackets)
+        for n in range(len(brackets)):
+            if ch == brackets[n]:
+                match_ch = matching_brackets[n]
+                break
+        else:
+            return None
+        # g.trace('index',index,'ch',repr(ch),'match_ch',repr(match_ch))
+        level = 0
+        while 1:
+            if forward and index >= len(s):
+                # g.trace("not found")
+                return None
+            ch2 = 0 <= index < len(s) and s[index] or ''
+            # g.trace('forward',forward,'ch2',repr(ch2),'index',index)
+            if ch2 == ch:
+                level += 1
+            if ch2 == match_ch:
+                level -= 1
+                if level <= 0:
+                    return index
+            if not forward and index <= 0:
+                # g.trace("not found")
+                return None
+            index += g.choose(forward,1,-1)
+        return 0 # unreachable: keeps pychecker happy.
+    # Test  (
+    # ([(x){y}]))
+    # Test  ((x)(unmatched
     #@+node:ekr.20031218072017.1704: *6* convertAllBlanks
     def convertAllBlanks (self,event=None):
 
@@ -2847,7 +2982,7 @@ class baseCommands (object):
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@+node:ekr.20031218072017.1706: *6* extract (test)
+    #@+node:ekr.20031218072017.1706: *6* extract
     def extract (self,event=None):
 
         '''Create child node from the elected body text, deleting all selected text.
@@ -2876,6 +3011,49 @@ class baseCommands (object):
         if 1: # In group...
             undoData = u.beforeInsertNode(current)
             p = c.createLastChildNode(current,headline,newBody)
+            u.afterInsertNode(p,undoType,undoData)
+            c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+        u.afterChangeGroup(current,undoType=undoType)
+        c.redraw(p)
+    #@+node:ekr.20101114064731.5828: *6* extractPythonMethod
+    def extractPythonMethod (self,event=None):
+
+        '''Create child node from the elected body text, deleting all selected text.
+        The text must start with Python def statement This becomes the new child's
+        headline. The body text of the new child node contains all selected lines
+        '''
+
+        c = self ; u = c.undoer ; undoType = 'extract-python-method'
+        current = c.p
+        head,lines,tail,oldSel,oldYview = self.getBodyLines()
+        if lines:
+            h = lines[0].strip()
+            # Set h to the function name.
+            if h.startswith('def'):
+                h = h[3:].strip()
+                i = h.find('(')
+                if i > -1:
+                    h = h[:i].strip()
+            else:
+                if not g.unitTesting:
+                    g.note("no def line")
+                return
+        else:
+            if not g.unitTesting:
+                g.note("no lines")
+            return
+
+        # Remove leading whitespace from all body lines.
+        junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
+        strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
+            for line in lines]
+        newBody = ''.join(strippedLines)
+        if head: head = head.rstrip()
+
+        u.beforeChangeGroup(current,undoType)
+        if 1: # In group...
+            undoData = u.beforeInsertNode(current)
+            p = c.createLastChildNode(current,h,newBody)
             u.afterInsertNode(p,undoType,undoData)
             c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
         u.afterChangeGroup(current,undoType=undoType)
@@ -2974,141 +3152,6 @@ class baseCommands (object):
         # Restore the selection.
         body.setSelectionRange(oldSel)
         body.setFocus()
-    #@+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
-    def findBoundParagraph (self,event=None):
-
-        c = self
-        head,ins,tail = c.frame.body.getInsertLines()
-
-        if not ins or ins.isspace() or ins[0] == '@':
-            return None,None,None
-
-        head_lines = g.splitLines(head)
-        tail_lines = g.splitLines(tail)
-
-        if 0:
-            #@+<< trace head_lines, ins, tail_lines >>
-            #@+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
-            if 0:
-                g.pr("\nhead_lines")
-                for line in head_lines:
-                    g.pr(line)
-                g.pr("\nins", ins)
-                g.pr("\ntail_lines")
-                for line in tail_lines:
-                    g.pr(line)
-            else:
-                g.es_print("head_lines: ",head_lines)
-                g.es_print("ins: ",ins)
-                g.es_print("tail_lines: ",tail_lines)
-            #@-<< trace head_lines, ins, tail_lines >>
-
-        # Scan backwards.
-        i = len(head_lines)
-        while i > 0:
-            i -= 1
-            line = head_lines[i]
-            if len(line) == 0 or line.isspace() or line[0] == '@':
-                i += 1 ; break
-
-        pre_para_lines = head_lines[:i]
-        para_head_lines = head_lines[i:]
-
-        # Scan forwards.
-        i = 0
-        for line in tail_lines:
-            if not line or line.isspace() or line.startswith('@'):
-                break
-            i += 1
-
-        para_tail_lines = tail_lines[:i]
-        post_para_lines = tail_lines[i:]
-
-        head = g.joinLines(pre_para_lines)
-        result = para_head_lines 
-        result.extend([ins])
-        result.extend(para_tail_lines)
-        tail = g.joinLines(post_para_lines)
-
-        return head,result,tail # string, list, string
-    #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
-    def findMatchingBracket (self,event=None):
-
-        '''Select the text between matching brackets.'''
-
-        c = self ; w = c.frame.body.bodyCtrl
-
-        if g.app.batchMode:
-            c.notValidInBatchMode("Match Brackets")
-            return
-
-        brackets = "()[]{}<>"
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        ch1 = 0 <= ins-1 < len(s) and s[ins-1] or ''
-        ch2 = 0 <= ins   < len(s) and s[ins] or ''
-        # g.trace(repr(ch1),repr(ch2),ins)
-
-        # Prefer to match the character to the left of the cursor.
-        if ch1 and ch1 in brackets:
-            ch = ch1 ; index = max(0,ins-1)
-        elif ch2 and ch2 in brackets:
-            ch = ch2 ; index = ins
-        else:
-            return
-
-        index2 = self.findMatchingBracketHelper(s,ch,index)
-        # g.trace('index,index2',index,index2)
-        if index2 is not None:
-            if index2 < index:
-                w.setSelectionRange(index2,index+1,insert=index2) # was insert=index2+1
-                # g.trace('case 1',s[index2:index+1])
-            else:
-                w.setSelectionRange(index,index2+1,insert=min(len(s),index2+1))
-                # g.trace('case2',s[index:index2+1])
-            w.see(index2)
-        else:
-            g.es("unmatched",repr(ch))
-    #@+node:ekr.20061113221414: *7* findMatchingBracketHelper
-    # To do: replace comments with blanks before scanning.
-    # Test  unmatched())
-    def findMatchingBracketHelper(self,s,ch,index):
-
-        c = self
-        open_brackets  = "([{<" ; close_brackets = ")]}>"
-        brackets = open_brackets + close_brackets
-        matching_brackets = close_brackets + open_brackets
-        forward = ch in open_brackets
-        # Find the character matching the initial bracket.
-        # g.trace('index',index,'ch',repr(ch),'brackets',brackets)
-        for n in range(len(brackets)):
-            if ch == brackets[n]:
-                match_ch = matching_brackets[n]
-                break
-        else:
-            return None
-        # g.trace('index',index,'ch',repr(ch),'match_ch',repr(match_ch))
-        level = 0
-        while 1:
-            if forward and index >= len(s):
-                # g.trace("not found")
-                return None
-            ch2 = 0 <= index < len(s) and s[index] or ''
-            # g.trace('forward',forward,'ch2',repr(ch2),'index',index)
-            if ch2 == ch:
-                level += 1
-            if ch2 == match_ch:
-                level -= 1
-                if level <= 0:
-                    return index
-            if not forward and index <= 0:
-                # g.trace("not found")
-                return None
-            index += g.choose(forward,1,-1)
-        return 0 # unreachable: keeps pychecker happy.
-    # Test  (
-    # ([(x){y}]))
-    # Test  ((x)(unmatched
     #@+node:ekr.20031218072017.1829: *6* getBodyLines
     def getBodyLines (self,expandSelection=False):
 
@@ -3162,55 +3205,6 @@ class baseCommands (object):
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@+node:ekr.20031218072017.1831: *6* insertBodyTime, helpers and tests
-    def insertBodyTime (self,event=None):
-
-        '''Insert a time/date stamp at the cursor.'''
-
-        c = self ; undoType = 'Insert Body Time'
-        w = c.frame.body.bodyCtrl
-
-        if g.app.batchMode:
-            c.notValidInBatchMode(undoType)
-            return
-
-        oldSel = c.frame.body.getSelectionRange()
-        w.deleteTextSelection()
-        s = self.getTime(body=True)
-        i = w.getInsertPoint()
-        w.insert(i,s)
-
-        c.frame.body.onBodyChanged(undoType,oldSel=oldSel)
-    #@+node:ekr.20031218072017.1832: *7* getTime
-    def getTime (self,body=True):
-
-        c = self
-        default_format =  "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
-
-        # Try to get the format string from leoConfig.txt.
-        if body:
-            format = c.config.getString("body_time_format_string")
-            gmt    = c.config.getBool("body_gmt_time")
-        else:
-            format = c.config.getString("headline_time_format_string")
-            gmt    = c.config.getBool("headline_gmt_time")
-
-        if format == None:
-            format = default_format
-
-        try:
-            import time
-            if gmt:
-                s = time.strftime(format,time.gmtime())
-            else:
-                s = time.strftime(format,time.localtime())
-        except (ImportError, NameError):
-            g.es("time.strftime not available on this platform",color="blue")
-            return ""
-        except:
-            g.es_exception() # Probably a bad format string in leoSettings.leo.
-            s = time.strftime(default_format,time.gmtime())
-        return s
     #@+node:ekr.20050312114529: *6* insert/removeComments
     #@+node:ekr.20050312114529.1: *7* addComments
     def addComments (self,event=None):
@@ -3291,6 +3285,55 @@ class baseCommands (object):
 
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+    #@+node:ekr.20031218072017.1831: *6* insertBodyTime, helpers and tests
+    def insertBodyTime (self,event=None):
+
+        '''Insert a time/date stamp at the cursor.'''
+
+        c = self ; undoType = 'Insert Body Time'
+        w = c.frame.body.bodyCtrl
+
+        if g.app.batchMode:
+            c.notValidInBatchMode(undoType)
+            return
+
+        oldSel = c.frame.body.getSelectionRange()
+        w.deleteTextSelection()
+        s = self.getTime(body=True)
+        i = w.getInsertPoint()
+        w.insert(i,s)
+
+        c.frame.body.onBodyChanged(undoType,oldSel=oldSel)
+    #@+node:ekr.20031218072017.1832: *7* getTime
+    def getTime (self,body=True):
+
+        c = self
+        default_format =  "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
+
+        # Try to get the format string from leoConfig.txt.
+        if body:
+            format = c.config.getString("body_time_format_string")
+            gmt    = c.config.getBool("body_gmt_time")
+        else:
+            format = c.config.getString("headline_time_format_string")
+            gmt    = c.config.getBool("headline_gmt_time")
+
+        if format == None:
+            format = default_format
+
+        try:
+            import time
+            if gmt:
+                s = time.strftime(format,time.gmtime())
+            else:
+                s = time.strftime(format,time.localtime())
+        except (ImportError, NameError):
+            g.es("time.strftime not available on this platform",color="blue")
+            return ""
+        except:
+            g.es_exception() # Probably a bad format string in leoSettings.leo.
+            s = time.strftime(default_format,time.gmtime())
+        return s
     #@+node:ekr.20031218072017.1833: *6* reformatParagraph
     def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
