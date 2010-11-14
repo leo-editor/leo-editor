@@ -28,7 +28,8 @@ ShowUnInstDetails show
 Name "${name}"
 OutFile "${target_file}"
 InstallDir "$PROGRAMFILES\${name}-${version}"
-Icon ${install_icon}
+; Just use the NSIS icon.
+;Icon "${install_icon}"
 ;@-<< prolog >>
 ;@+<< pages >>
 ;@+node:ekr.20101027115225.1496: ** << pages >>
@@ -127,9 +128,9 @@ Section "Leo" SEC01
 SectionEnd
 ;@+node:ekr.20101027115225.1499: ** Section File Association
 
-Section "${ext} File Association"
+Section "${ext} File Association" SEC02
 
-    SectionIn 1 2 3
+    SectionIn 1 2 3 4
 
     ; back up old value of extension in case some other program was using it
     ;;ReadRegStr $1 HKCR "${ext}" ""
@@ -148,7 +149,7 @@ Section "${ext} File Association"
 SectionEnd
 ;@+node:ekr.20101027115225.1498: ** Section Desktop Shortcut
 
-Section "${name} Desktop Shortcut"
+Section "${name} Desktop Shortcut" SEC03
 
   ; Apparently, this sets the "Start in folder" box!!!"
   SetOutPath "$INSTDIR\leo"
@@ -169,16 +170,16 @@ Section "${name} Desktop Shortcut"
 SectionEnd
 ;@+node:ekr.20101027115225.1500: ** Section Start Menu
 
-Section "${name} Start Menu"
+Section "${name} Start Menu" SEC04
 
   CreateDirectory "$SMPROGRAMS\${name}"
 
-  CreateShortCut  "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
-
-  createShortCut "$SMPROGRAMS\${name}.lnk" \
+  CreateShortCut "$SMPROGRAMS\${name}\${name}.lnk" \
         '"${PythonExecutable}"' \
         '"$INSTDIR\launchLeo.py"' \ 
         '"$INSTDIR\${app_icon}"' 0
+
+  CreateShortCut "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
 
 SectionEnd
 ;@+node:ekr.20101027115225.1501: ** Section -Post
