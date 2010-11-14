@@ -1375,5 +1375,26 @@ W0601:749:lleo_f: Global variable '_request_immediate_connect' undefined at the 
 
 ************* Module leo.external.lproto
 E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
+#@+node:ekr.20101114130150.8351: ** Leo 4.8 rc1
+#@+node:ekr.20101114130150.5825: *3* Open the default leo file if possible
+#@+node:ekr.20101021101942.6010: *4* getDefaultFile
+def getDefaultFile ():
+
+    # Get the name of the workbook.
+    fn = g.app.config.getString(c=None,setting='default_leo_file')
+    fn = g.os_path_finalize(fn)
+    if not fn: return
+
+    # g.trace(g.os_path_exists(fn),fn)
+
+    if g.os_path_exists(fn):
+        return fn
+    elif g.os_path_isabs(fn):
+        # Create the file.
+        g.es_print('Using default leo file name:\n%s' % (fn),color='red')
+        return fn
+    else:
+        # It's too risky to open a default file if it is relative.
+        return None
 #@-all
 #@-leo

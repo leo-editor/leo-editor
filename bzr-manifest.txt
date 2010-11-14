@@ -1116,6 +1116,7 @@ leo/doc/html/make.bat
 leo/doc/html/nutshell.html.txt
 leo/doc/html/outline-commands.html.txt
 leo/doc/html/outlines.html.txt
+leo/doc/html/plugins.html
 leo/doc/html/plugins.html.txt
 leo/doc/html/preface.html.txt
 leo/doc/html/rstplugin3.html.txt
@@ -1777,7 +1778,6 @@ leo/plugins/at_folder.py
 leo/plugins/at_produce.py
 leo/plugins/at_view.py
 leo/plugins/attrib_edit.py
-leo/plugins/autocompleter.py
 leo/plugins/autotrees.py
 leo/plugins/backlink.py
 leo/plugins/base64Packager.py
@@ -1828,7 +1828,6 @@ leo/plugins/initinclass.py
 leo/plugins/interact.py
 leo/plugins/ipython.py
 leo/plugins/ironPythonGui.py
-leo/plugins/keybindings.py
 leo/plugins/keys.css
 leo/plugins/leoGuiPlugins.leo
 leo/plugins/leoGuiPluginsRef.leo
@@ -1859,6 +1858,7 @@ leo/plugins/mod_framesize.py
 leo/plugins/mod_http.py
 leo/plugins/mod_labels.py
 leo/plugins/mod_leo2ascd.py
+leo/plugins/mod_leo2ascd.txt
 leo/plugins/mod_read_dir_outline.py
 leo/plugins/mod_scripting.py
 leo/plugins/mod_speedups.py
@@ -1873,10 +1873,10 @@ leo/plugins/nodeActions.py
 leo/plugins/nodebar.ini
 leo/plugins/nodebar.py
 leo/plugins/nodenavigator.py
+leo/plugins/old_plugin_manager.py
 leo/plugins/open_shell.py
 leo/plugins/open_with.py
 leo/plugins/outline_export.py
-leo/plugins/override_commands.py
 leo/plugins/paste_as_headlines.py
 leo/plugins/pie_menus.py
 leo/plugins/pluginsManager.txt

@@ -52,19 +52,11 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
-<v t="ekr.20101027160251.1500"><vh>Notes</vh>
-<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
-<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
-<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
-</v>
-<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
-</v>
+<v t="ekr.20101114081415.1492"><vh>To do</vh></v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
-<v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
@@ -77,14 +69,22 @@
 <v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
 <v t="ekr.20101027070126.1667"><vh>printMissing</vh></v>
 </v>
-<v t="ekr.20101027070126.1680" a="E"><vh>utils...</vh>
+<v t="ekr.20101027070126.1680"><vh>utils...</vh>
 <v t="ekr.20101027070126.1679"><vh>openFile</vh></v>
 <v t="ekr.20101027070126.1678"><vh>put</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20101114081415.1492"><vh>To do</vh></v>
+<v t="ekr.20101027131034.1490" a="E"><vh>NSIS source files</vh>
+<v t="ekr.20101027160251.1500"><vh>Notes</vh>
+<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
+<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
+<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
+</v>
+<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
+<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@nocolor
@@ -1116,37 +1116,22 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
 https://bugs.launchpad.net/leo-editor/+bug/674198
 
-Summary:
-
 - No start menu shortcut for launching. NOT OK
 
-- Leo opens with "untitled" document, not workbook.leo. NOT OK
 
-- double click on .leo file launches Leo, but with "untitled" empty document. NOT OK
-
-Full report:
-    
-Here's an install report - consider NOT OK parts the bug report.
-
-I tried installing Leo to a Windows machine with the new installer.
-
-- No Python version installed - it warned me about it, and I aborted the install
-  and installed python. +1
-
-- Installation went fine after that. I installed to c:\opt\leo since I hate
-  paths with spaces :). +1
-
-- No start menu shortcut for launching. NOT OK
-
-- I went to dir where I installed it and ran launchLeo.py. It said I don't have
-  Qt installed, launched Tk ui and asked for leo id on tk window. +1
-
-- Leo opens with "untitled" document, not workbook.leo. NOT OK
-
-- I intalled PyQt from the usual place, ran launchLeo.py, I get Qt ui. +1
-
-- .leo files have the lion icon. +1
-
-- double click on .leo file launches Leo, but with "untitled" empty document. NOT OK</t>
+# Name the installer
+outFile "installer.exe"
+ 
+# default section
+section
+ 
+    # create a shortcut named "new shortcut" in the start menu programs directory
+    # presently, the new shortcut doesn't call anything (the second field is blank)
+    createShortCut "$SMPROGRAMS\new shortcut.lnk" ""
+ 
+    # to delete shortcut, go to start menu directory and manually delete it
+ 
+# default sec end
+sectionEnd</t>
 </tnodes>
 </leo_file>

@@ -148,7 +148,7 @@ Section "${ext} File Association"
 SectionEnd
 ;@+node:ekr.20101027115225.1498: ** Section Desktop Shortcut
 
-Section "Desktop Shortcut" SEC03
+Section "${ext} Desktop Shortcut" ; SEC03
 
   ; Apparently, this sets the "Start in folder" box!!!"
   SetOutPath "$INSTDIR\leo"
@@ -165,6 +165,15 @@ Section "Desktop Shortcut" SEC03
     '"${PythonExecutable}"' \
     '"$INSTDIR\launchLeo.py"' \
     '"$INSTDIR\${app_icon}"' 0
+
+SectionEnd
+;@+node:ekr.20101114132202.1494: ** Section Start Menu Shortcut
+
+Section "${name} Start Menu Shortcut" ; SEC04
+
+    createShortCut "$SMPROGRAMS\${name}.lnk" \
+        '"${PythonExecutable}" "$INSTDIR\launchLeo.py"' \ 
+        '"$INSTDIR\${app_icon}"' 0
 
 SectionEnd
 ;@+node:ekr.20101027115225.1500: ** Section -Additional Icons
@@ -222,6 +231,7 @@ Section Uninstall
     Delete "$SMPROGRAMS\${name}\Uninstall.lnk"
     RMDir  "$SMPROGRAMS\${name}-${version}"
     Delete "$DESKTOP\${name}.lnk"
+    Delete "$SMPROGRAMS\${name}.lnk"
 
     ; "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
     DeleteRegKey HKLM "${uninst_key}" 
