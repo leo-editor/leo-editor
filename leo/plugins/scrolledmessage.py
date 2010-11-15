@@ -30,7 +30,7 @@ or::
 
     g.app.gui.runScrolledMessageDialog(c=c, ...etc)
 
-all parameters are optional except c.
+All parameters are optional except c.
 
 **Parameters**
 
@@ -39,9 +39,7 @@ msg:
 
     If the text starts with 'rst:' it is assumed to be rst text and
     is converted to html for display after the rst: prefix has been removed.
-
     If the text starts with '<' it is assumed to be html.
-
     These auto detection features can be overridden by 'flags'.
 
 label:

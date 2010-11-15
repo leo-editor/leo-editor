@@ -35,11 +35,11 @@ without the "@".
 
 There are commands on the Plugins active_path submenu:
 
-    - show path - show the current path
-    - set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
-    - purge vanished (recursive) - remove *entries*
-    - update recursive - recursive load of directories, use with caution on large
-      file systems
+- show path - show the current path
+- set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+- purge vanished (recursive) - remove *entries*
+- update recursive - recursive load of directories, use with caution on large
+  file systems
 
 If you want to use an input other than double clicking a node's status-iconbox
 set active_path_event to a value like 'iconrclick1' or 'iconclick1'.

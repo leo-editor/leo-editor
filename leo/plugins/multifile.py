@@ -14,7 +14,7 @@ of the node. The format is (On Unix-like systems)::
     @multipath /machine/unit/:/machine/robot/:/machine/
 
 New in version 0.6 of this plugin: the separator used above is ';' not ':',
-for example:
+for example::
 
     @multipath c:\prog\test;c:\prog\unittest
 
@@ -23,23 +23,23 @@ It will places copy of the written file in each of these directories.
 There is an additional directive that simplifies common paths, it is called
 @multiprefix. By typing @multiprefix with a path following it, before a
 @multipath directive you set the beginning of the paths in the @multipath
-directive.
-
-For example: (note I put # in front of the directives here because I
-don't want someone browsing this file to accidentally save multiple copies of
-this file to their system :) )
+directive. For example:: 
 
 #@verbatim
-#@multiprefix /leo #@multipath /plugins 
+    #@multiprefix /leo #@multipath /plugins 
 
-or
+or::
 
 #@verbatim
-#@multiprefix /leo/
+    #@multiprefix /leo/
 #@verbatim
-#@multipath plugins: fungus : drain
+    #@multipath plugins: fungus : drain
 
 copies a file to /leo/plugins /leo/fungus /leo/drain.
+
+Note: I put # in front of the directives here because I don't want someone
+browsing this file to accidentally save multiple copies of this file to their
+system :)
 
 The @multiprefix stays in effect for the entire tree until reset with another
 @multiprefix directive. @multipath is cumulative, in that for each @multipath in

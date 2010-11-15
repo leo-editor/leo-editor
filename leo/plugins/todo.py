@@ -4,16 +4,14 @@
 #@+node:tbrown.20090119215428.3: ** << docstring >>
 ''' Provides to-do list and simple task management for leo (Qt only).
 
-(todo is the Qt version of the Tk cleo plugin)
+This plugin is the Qt version of the Tk cleo plugin. This plugin adds time
+required, progress and priority settings for nodes. With the @project tag a
+branch can display progress and time required with dynamic hierarchical updates.
+For full documentation see::
 
-todo adds time required, progress and priority settings for nodes.
-With the @project tag a branch can display progress and time
-required with dynamic hierarchical updates.
+  http://leo.zwiki.org/ToDo 
+  http://leo.zwiki.org/tododoc.html
 
-For full documentation see:
-
-  - http://leo.zwiki.org/ToDo 
-  - http://leo.zwiki.org/tododoc.html
 '''
 #@-<< docstring >>
 

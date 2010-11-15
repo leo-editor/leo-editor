@@ -32,8 +32,8 @@ leoscreen-get-note
   the current node.
 
 leoscreen-show-all
-  **Show** the output from the last result from the shell in a temporary
-  read only window.  The output **is not stored**.
+  Show the output from the last result from the shell in a temporary
+  read only window. **Important**: The output is not stored.
 
 leoscreen-show-note
   Insert all of the last result from the shell into a new child node of
@@ -51,7 +51,9 @@ leoscreen-other
 
 leoscreen-get-prefix
   Interactively get prefix for inserting text into body (#, --, //, etc/)
-  Can also set via ``c.leo_screen.get_line_prefix = '#'``
+  Can also set using::
+
+      c.leo_screen.get_line_prefix = '#'
 
 leoscreen-more-prompt
   Skip one less line at the end of output when fetching output into Leo.
@@ -63,13 +65,15 @@ leoscreen-less-prompt
 
 **Settings**
 
-``leoscreen_prefix`` - prepended to output pulled in to Leo.  The
-substring SPACE in this setting will be replaced with a space character,
-to allow for trailing spaces.
+leoscreen_prefix
+  Prepended to output pulled in to Leo. The substring SPACE in this
+  setting will be replaced with a space character, to allow for trailing
+  spaces.
 
-``leoscreen_time_fmt`` - time.strftime format for note type output headings
+leoscreen_time_fmt
+  time.strftime format for note type output headings.
 
-Theory of operation
+**Theory of operation**
 
 leoscreen creates a instance at c.leo_screen which has some methods which might
 be useful in ``@button`` and other Leo contexts.

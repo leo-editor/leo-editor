@@ -48,11 +48,11 @@ file:
   higher message level will display that level and all lower levels.
   The following integer values are supported::
 
-      :0: no messages
-      :1: Plugin triggered and the patterns that were matched (default)
-      :2: Double-click event passed or not to next plugin
-      :3: Patterns that did not match
-      :4: Code debugging messages
+    0 no messages
+    1 Plugin triggered and the patterns that were matched (default)
+    2 Double-click event passed or not to next plugin
+    3 Patterns that did not match
+    4 Code debugging messages
 
 **Patterns**
 
@@ -164,7 +164,7 @@ The directive(s) for a pattern must be contained within a single set of
 brackets, separated from the pattern by a space, with or without a comma
 separator.  For example, the following specifies all three directives::
 
-  ^@files .*\.py$ [X,V>]
+    ^@files .*\.py$ [X,V>]
 
 **Scripts**
 

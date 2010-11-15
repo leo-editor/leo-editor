@@ -4,10 +4,9 @@
 #@+node:ekr.20050912182050: ** << docstring >>
 """ Launches (starts) a file given by a headline when double-clicking the icon.
 
-This plugin ignores headlines starting with an '@'.
-
-Uses the @folder path if the headline is under an @folder headline.
-Otherwise the path is relative to the Leo file.
+This plugin ignores headlines starting with an '@'. Uses the @folder path if the
+headline is under an @folder headline. Otherwise the path is relative to the Leo
+file.
 
 """
 #@-<< docstring >>

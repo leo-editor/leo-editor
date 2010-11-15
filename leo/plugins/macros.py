@@ -2,7 +2,7 @@
 #@+node:ekr.20040916084945: * @file macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
-''' Creates new nodes containing parameterized section references.
+''' Creates new nodes containing parameterized section reference.
 
 .. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
 
@@ -18,20 +18,21 @@ To see this in action, do the following:
    type >> instead of > >.  Docstrings can not contain section references!
 
 1. Create a node called 'Parameterized Nodes', with a sub-node called  < < Meow \>\>.
-The body of < < Meow > > should have the text::
+   The body of < < Meow > > should have the text::
 
-    I mmmm sooo happy I could  < < 1$  > >.
-    But I dont know if I have all the  < < 2$  > >
-    money in the world.
+        I mmmm sooo happy I could  < < 1$  > >.
+        But I don't know if I have all the  < < 2$  > >
+        money in the world.
 
 2. In a node called A, type::
 
-     < < meow( purrrrrr, zzooot )  > > (leave the cursor at the end of the line)
+        < < meow( purrrrrr, zzooot )  > >
+        (leave the cursor at the end of the line)
 
 3. In a node called B, type::
 
-     < < meow ( spit or puke, blinkin  )  > >
-    (leave the cursor at the end of the line)
+         < < meow ( spit or puke, blinkin  )  > >
+        (leave the cursor at the end of the line)
 
 4. Leave the cursor in Node A at the designated point.
 
@@ -39,17 +40,18 @@ The body of < < Meow > > should have the text::
 
 The plugin searches the outline, goes to level one and finds a Node with the Headline,
 "Parameterized Nodes". It looks for nodes under that headline with the the headline
-< < meow > >. It then creates this node structure under Node A::
+<\< meow >\>. It then creates this node structure under Node A::
 
-    < < meow ( purrrrrr, zzooot ) > >
-        < <2$> >
-        < <1$> >
+        < < meow ( purrrrrr, zzooot ) > >
+            < <2$> >
+            < <1$> >
 
-6. Examine the new subnodes of Node A.
+6. Examine the new subnodes of Node A:  
 
-< < meow ( purrrrrr, zzooot ) > > contains the body text of the < < meow > > node.
-< < 1$ > > contains the word purrrrrr.
-< < 2$ > > contains the word zzooot.
+        < < meow ( purrrrrr, zzooot ) > >
+            contains the body text of the < < meow > > node.
+        < < 1$ > > contains the word purrrrrr.
+        < < 2$ > > contains the word zzooot.
 
 7. Go to Node B, and leave the cursor at the designated point.
 

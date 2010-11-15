@@ -7,9 +7,7 @@
 viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
 which opens a new window where the current body text is rendered as HTML
 (if it starts with '<'), or otherwise reStructuredText.  reStructuredText
-errors and warnings may be shown.
-
-So both::
+errors and warnings may be shown.  For example, both::
 
     Heading
     -------

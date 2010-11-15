@@ -16,13 +16,15 @@ other plugins, see below.
 The attributes can be stored in different ways, three modes are implemented
 currently:
 
-"v.u mode"
+v.u mode
   These attributes are stored in the "unknownAttributes" (uA) data for
-  each node, accessed via ``v.u``.
-"Field:"
+  each node, accessed via v.u.
+
+Field:
   Attributes are lines starting (no whitespace) with "AttributeName:" in
   the body text.
-"@Child"
+
+@Child
   Attributes are the head strings of child nodes when the head string
   starts with '@AttributeName' where the first letter (second character)
   must be capitalized.
@@ -34,8 +36,8 @@ attrib-edit-modes
     Select which attribute setting / getting modes to use.  More than one mode
     can be used at the same time.
 
-    You can also control which modes are active by listing them in 
-    ``@settings -> @data attrib_edit_active_modes``, e.g.::
+    You can also control which modes are active by listing them 
+    with the @data attrib_edit_active_modes setting.  For example::
 
         Field:
         @Child
@@ -52,18 +54,18 @@ attrib-edit-scan
     has the complete list.
 
 attrib-edit-create
-    Create a new attribute on the current node.  If "Field:" or "@Child" modes
+    Create a new attribute on the current node.  If Field: or \@Child modes
     are active, they simply remind you how to create an attribute in the log pane.
-    If the "v.u mode" mode is active, you're prompted for a path for the attribute,
-    e.g.::
+    If the "v.u mode" mode is active, you're prompted for a path for the attribute.
+    For example::
 
-        "addressbook First"
+        addressbook First
 
     to store the attribute in v.u['addressbook']['_edit']['First']
 
     As a convenience, entering a path like::
 
-        "todo metadata created|creator|revised"
+        todo metadata created|creator|revised
 
     would create::
 

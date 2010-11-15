@@ -47,7 +47,8 @@ Several commands will also be made available
 export-html
   will export to a file according to current settings.
 export-html-*
-  will export to a file using bullet type '*' which can be **number**, **bullet** or **head**.
+  will export to a file using bullet type '*' which can be
+  **number**, **bullet** or **head**.
 
 The following commands will start a browser showing the html.
 
@@ -55,7 +56,8 @@ show-html
   will show the outline according to current settings.
 
 show-html-*
-  will show the outline using bullet type '*' which can be **number**, **bullet** or **head**.
+  will show the outline using bullet type '*' which can be
+  **number**, **bullet** or **head**.
 
 The following commands are the same as above except only the current node is converted::
 
@@ -72,48 +74,36 @@ Properties... menu. These are:
 
 exportpath:
     The path to the folder where you want to store the generated html file.
-
     Default: c:\\
 
 flagjustheadlines:
-
     Default: 'Yes' to include only headlines in the output.
 
 flagignorefiles:
-
     Default: 'Yes' to ignore @file nodes.
 
 use_xhtml:
-
     Yes to include xhtml doctype declarations and make the file valid XHTML 1.0 Strict.
     Otherwise only a simple <html> tag is used although the output will be xhtml
-    compliant otherwise.
-
-    Default: Yes
+    compliant otherwise. Default: Yes
 
 bullet_type:
-
     If this is 'bullet' then the output will be in the form of a bulleted list.
     If this is 'number' then the output will be in the form of a numbered list.
     If this is 'heading' then the output will use <h?> style headers.
 
     Anything else will result in <h?> type tags being used where '?' will be a
     digit starting at 1 and increasing up to a maximum of six depending on depth
-    of nesting.
-
-    Default: number
+    of nesting. Default: number
 
 browser_command:
-
     Set this to the command needed to launch a browser on your system or leave it blank
     to use your systems default browser.
 
     If this is an empty string or the browser can not be launched using this command then
     python's `webbrowser` module will be tried. Using a bad command here will slow down the
     launch of the default browser, better to leave it blank.
-
-    Default:
-        empty string
+    Default: empty string
 
 **Configuration**
 

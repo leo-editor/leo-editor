@@ -5,12 +5,8 @@
 ''' Launches the spyder environment with access to Leo instance.
 See http://packages.python.org/spyder/
 
-Usage:
-
-Execute alt-x spyder-launch to start spyder.
-
-Execute alt-x spyder-update to pass current c,p,g to spyder
-interactive session. spyder-update also shows the window
+Execute alt-x spyder-launch to start spyder. Execute alt-x spyder-update to pass
+current c,p,g to spyder interactive session. spyder-update also shows the window
 if it was closed before.
 
 '''

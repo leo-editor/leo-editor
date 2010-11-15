@@ -6,7 +6,7 @@
 
 Double-clicking @mime nodes will attempt to open the named file as if opened
 from a file manager. \@path parent nodes are used to find the full filename
-path.
+path.  For example::
 
     @mime foodir/document.pdf
 

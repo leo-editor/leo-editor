@@ -29,12 +29,12 @@ For every @button node, this plugin creates two new minibuffer commands: x and
 delete-x-button, where x is the 'cleaned' name of the button. The 'x' command is
 equivalent to pushing the script button.
 
-**New in Leo 4.4.4**: You can specify **global buttons** in leoSettings.leo or
-myLeoSettings.leo by putting @button nodes as children of an @buttons node in an
-@settings trees. Such buttons are included in all open .leo (in a slightly
-different color). Actually, you can specify global buttons in any .leo file, but
-@buttons nodes affect all later opened .leo files so usually you would define
-global buttons in leoSettings.leo or myLeoSettings.leo.
+You can specify **global buttons** in leoSettings.leo or myLeoSettings.leo by
+putting \@button nodes as children of an @buttons node in an \@settings trees.
+Such buttons are included in all open .leo (in a slightly different color).
+Actually, you can specify global buttons in any .leo file, but \@buttons nodes
+affect all later opened .leo files so usually you would define global buttons in
+leoSettings.leo or myLeoSettings.leo.
 
 The cleaned name of an @button node is the headline text of the button with:
 
@@ -63,46 +63,47 @@ corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set
 to True in this plugin.
 
 You can specify the following options in leoSettings.leo.  See the node:
-@settings-->Plugins-->scripting plugin.  Recommended defaults are shown.
+@settings-->Plugins-->scripting plugin.  Recommended defaults are shown::
 
-- @bool scripting-at-button-nodes = True
-  True: adds a button for every @button node.
+    @bool scripting-at-button-nodes = True
+    True: adds a button for every @button node.
 
-- @bool scripting-at-commands-nodes = True
-  True: define a minibuffer command for every @command node.
+    @bool scripting-at-commands-nodes = True
+    True: define a minibuffer command for every @command node.
 
-- @bool scripting-at-plugin-nodes = False
-  True: dynamically loads plugins in @plugins nodes when a window is created.
+    @bool scripting-at-plugin-nodes = False
+    True: dynamically loads plugins in @plugins nodes when a window is created.
 
-- @bool scripting-at-script-nodes = False
-  True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!
+    @bool scripting-at-script-nodes = False
+    True: dynamically executes script in @script nodes when a window is created.
+    This is dangerous!
 
-- @bool scripting-create-debug-button = False
-  True: create Debug Script button.
+    @bool scripting-create-debug-button = False
+    True: create Debug Script button.
 
-- @bool scripting-create-run-script-button = False
-  True: create Run Script button.
-  Note: The plugin creates the press-run-script-button regardless of this setting.
+    @bool scripting-create-run-script-button = False
+    True: create Run Script button.
+    Note: The plugin creates the press-run-script-button regardless of this setting.
 
-- @bool scripting-create-script-button-button = True
-  True: create Script Button button in icon area.
-  Note: The plugin creates the press-script-button-button regardless of this setting.
+    @bool scripting-create-script-button-button = True
+    True: create Script Button button in icon area.
+    Note: The plugin creates the press-script-button-button regardless of this setting.
 
-- @int scripting-max-button-size = 18
-  The maximum length of button names: longer names are truncated.
+    @int scripting-max-button-size = 18
+    The maximum length of button names: longer names are truncated.
 
 You can bind key shortcuts to @button and @command nodes as follows:
 
 @button name @key=shortcut
 
-This binds the shortcut to the script in the script button. The button's name is
-'name', but you can see the full headline in the status line when you move the
-mouse over the button.
+    Binds the shortcut to the script in the script button. The button's name is
+    'name', but you can see the full headline in the status line when you move the
+    mouse over the button.
 
 @command name @key=shortcut
 
-This creates a new minibuffer command and binds shortcut to it. As with @buffer
-nodes, the name of the command is the cleaned name of the headline.
+    Creates a new minibuffer command and binds shortcut to it. As with @buffer
+    nodes, the name of the command is the cleaned name of the headline.
 
 This plugin is based on ideas from e's dynabutton plugin, quite possibly the
 most brilliant idea in Leo's history.

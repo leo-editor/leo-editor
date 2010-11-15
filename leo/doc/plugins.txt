@@ -61,8 +61,7 @@ Notes:
    leoSettings.leo *will* be enabled regardless of the contents of any other
    @enabled-plugins node.
 
-- g.app.gui.getEnabledPlugins contains the last processed
-   @enabled-plugins node.
+- g.app.gui.getEnabledPlugins contains the last processed @enabled-plugins node.
 .. @+node:ekr.20101113063552.9398: *3* Summary
 active_path.py
    Synchronizes @path nodes with folders.
@@ -492,15 +491,12 @@ Allows the user to browse XML documents in Leo.
 This file implements an interface to XML generation,
 so that the resulting file can be processed by leo.
 
-class file represents the whole leo file.
-class leo_node has a headline and body text.
+..  class file represents the whole leo file.
+..  class leo_node has a headline and body text.
 
-See the end of this file for a minimal example on
-how to use these classes.
-
-If you encounter the first of a set of clones, create a leo_node. If you
-encounter the same set of clones later, create a leo_clone node and refer back
-to the first element.
+..  If you encounter the first of a set of clones, create a leo_node. If you
+..  encounter the same set of clones later, create a leo_clone node and refer back
+..  to the first element.
 
 .. @+node:ekr.20101113063552.9419: *5* lineNumbers.py
 Adds #line directives in perl and perlpod programs.
@@ -526,20 +522,21 @@ To see this in action, do the following:
    type >> instead of > >.  Docstrings can not contain section references!
 
 1. Create a node called 'Parameterized Nodes', with a sub-node called  < < Meow \>\>.
-The body of < < Meow > > should have the text::
+   The body of < < Meow > > should have the text::
 
-    I mmmm sooo happy I could  < < 1$  > >.
-    But I don't know if I have all the  < < 2$  > >
-    money in the world.
+        I mmmm sooo happy I could  < < 1$  > >.
+        But I don't know if I have all the  < < 2$  > >
+        money in the world.
 
 2. In a node called A, type::
 
-     < < meow( purrrrrr, zzooot )  > > (leave the cursor at the end of the line)
+        < < meow( purrrrrr, zzooot )  > >
+        (leave the cursor at the end of the line)
 
 3. In a node called B, type::
 
-     < < meow ( spit or puke, blinkin  )  > >
-    (leave the cursor at the end of the line)
+         < < meow ( spit or puke, blinkin  )  > >
+        (leave the cursor at the end of the line)
 
 4. Leave the cursor in Node A at the designated point.
 
@@ -547,17 +544,18 @@ The body of < < Meow > > should have the text::
 
 The plugin searches the outline, goes to level one and finds a Node with the Headline,
 "Parameterized Nodes". It looks for nodes under that headline with the the headline
-< < meow > >. It then creates this node structure under Node A::
+<\< meow >\>. It then creates this node structure under Node A::
 
-    < < meow ( purrrrrr, zzooot ) > >
-        < <2$> >
-        < <1$> >
+        < < meow ( purrrrrr, zzooot ) > >
+            < <2$> >
+            < <1$> >
 
-6. Examine the new subnodes of Node A.
+6. Examine the new subnodes of Node A:  
 
-< < meow ( purrrrrr, zzooot ) > > contains the body text of the < < meow > > node.
-< < 1$ > > contains the word purrrrrr.
-< < 2$ > > contains the word zzooot.
+        < < meow ( purrrrrr, zzooot ) > >
+            contains the body text of the < < meow > > node.
+        < < 1$ > > contains the word purrrrrr.
+        < < 2$ > > contains the word zzooot.
 
 7. Go to Node B, and leave the cursor at the designated point.
 
@@ -642,11 +640,11 @@ file:
   higher message level will display that level and all lower levels.
   The following integer values are supported::
 
-      :0: no messages
-      :1: Plugin triggered and the patterns that were matched (default)
-      :2: Double-click event passed or not to next plugin
-      :3: Patterns that did not match
-      :4: Code debugging messages
+    0 no messages
+    1 Plugin triggered and the patterns that were matched (default)
+    2 Double-click event passed or not to next plugin
+    3 Patterns that did not match
+    4 Code debugging messages
 
 **Patterns**
 
@@ -793,10 +791,8 @@ Creates new headlines from clipboard text.
 
 If the pasted text would be greater than 50 characters in length, the plugin
 truncates the headline to 50 characters and pastes the entire line into the body
-text of that node.
-
-Creates a "Paste as Headlines" option the Edit menu directly under the existing
-Paste option.
+text of that node. Creates a "Paste as Headlines" option the Edit menu directly
+under the existing Paste option.
 
 .. @+node:ekr.20101113063552.9427: *5* pretty_print.py
 Customizes pretty printing.
@@ -1063,11 +1059,11 @@ without the "@".
 
 There are commands on the Plugins active_path submenu:
 
-    - show path - show the current path
-    - set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
-    - purge vanished (recursive) - remove *entries*
-    - update recursive - recursive load of directories, use with caution on large
-      file systems
+- show path - show the current path
+- set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+- purge vanished (recursive) - remove *entries*
+- update recursive - recursive load of directories, use with caution on large
+  file systems
 
 If you want to use an input other than double clicking a node's status-iconbox
 set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
@@ -1244,7 +1240,7 @@ Opens files with their default platform program.
 
 Double-clicking @mime nodes will attempt to open the named file as if opened
 from a file manager. \@path parent nodes are used to find the full filename
-path.
+path.  Fore example::
 
     @mime foodir/document.pdf
 
@@ -1288,7 +1284,7 @@ of the node. The format is (On Unix-like systems)::
     @multipath /machine/unit/:/machine/robot/:/machine/
 
 New in version 0.6 of this plugin: the separator used above is ';' not ':',
-for example:
+for example::
 
     @multipath c:\prog\test;c:\prog\unittest
 
@@ -1297,20 +1293,20 @@ It will places copy of the written file in each of these directories.
 There is an additional directive that simplifies common paths, it is called
 @multiprefix. By typing @multiprefix with a path following it, before a
 @multipath directive you set the beginning of the paths in the @multipath
-directive.
+directive. For example::
 
-For example: (note I put # in front of the directives here because I
-don't want someone browsing this file to accidentally save multiple copies of
-this file to their system :) )
+    #@multiprefix /leo #@multipath /plugins 
 
-#@multiprefix /leo #@multipath /plugins 
+or::
 
-or
-
-#@multiprefix /leo/
-#@multipath plugins: fungus : drain
+    #@multiprefix /leo/
+    #@multipath plugins: fungus : drain
 
 copies a file to /leo/plugins /leo/fungus /leo/drain.
+
+Note I put # in front of the directives here because I
+don't want someone browsing this file to accidentally save multiple copies of
+this file to their system :) )
 
 The @multiprefix stays in effect for the entire tree until reset with another
 @multiprefix directive. @multipath is cumulative, in that for each @multipath in
@@ -1404,10 +1400,9 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 .. @+node:ekr.20101113063552.9464: *5* startfile.py
 Launches (starts) a file given by a headline when double-clicking the icon.
 
-This plugin ignores headlines starting with an '@'.
-
-Uses the @folder path if the headline is under an @folder headline.
-Otherwise the path is relative to the Leo file.
+This plugin ignores headlines starting with an '@'. Uses the @folder path if the
+headline is under an @folder headline. Otherwise the path is relative to the Leo
+file.
 
 .. @+node:ekr.20101113063552.9465: *5* textnode.py
 Supports @text nodes for reading and writing external files.
@@ -1470,8 +1465,8 @@ leoscreen-get-note
   the current node.
 
 leoscreen-show-all
-  **Show** the output from the last result from the shell in a temporary
-  read only window.  The output **is not stored**.
+  Show the output from the last result from the shell in a temporary
+  read only window. **Important**: The output is not stored.
 
 leoscreen-show-note
   Insert all of the last result from the shell into a new child node of
@@ -1489,7 +1484,9 @@ leoscreen-other
 
 leoscreen-get-prefix
   Interactively get prefix for inserting text into body (#, --, //, etc/)
-  Can also set via ``c.leo_screen.get_line_prefix = '#'``
+  Can also set using::
+
+      c.leo_screen.get_line_prefix = '#'
 
 leoscreen-more-prompt
   Skip one less line at the end of output when fetching output into Leo.
@@ -1501,13 +1498,15 @@ leoscreen-less-prompt
 
 **Settings**
 
-``leoscreen_prefix`` - prepended to output pulled in to Leo.  The
-substring SPACE in this setting will be replaced with a space character,
-to allow for trailing spaces.
+leoscreen_prefix
+  Prepended to output pulled in to Leo. The substring SPACE in this
+  setting will be replaced with a space character, to allow for trailing
+  spaces.
 
-``leoscreen_time_fmt`` - time.strftime format for note type output headings
+leoscreen_time_fmt
+  time.strftime format for note type output headings.
 
-Theory of operation
+**Theory of operation**
 
 leoscreen creates a instance at c.leo_screen which has some methods which might
 be useful in ``@button`` and other Leo contexts.
@@ -1564,12 +1563,12 @@ For every @button node, this plugin creates two new minibuffer commands: x and
 delete-x-button, where x is the 'cleaned' name of the button. The 'x' command is
 equivalent to pushing the script button.
 
-**New in Leo 4.4.4**: You can specify **global buttons** in leoSettings.leo or
-myLeoSettings.leo by putting @button nodes as children of an @buttons node in an
-@settings trees. Such buttons are included in all open .leo (in a slightly
-different color). Actually, you can specify global buttons in any .leo file, but
-@buttons nodes affect all later opened .leo files so usually you would define
-global buttons in leoSettings.leo or myLeoSettings.leo.
+You can specify **global buttons** in leoSettings.leo or myLeoSettings.leo by
+putting \@button nodes as children of an @buttons node in an \@settings trees.
+Such buttons are included in all open .leo (in a slightly different color).
+Actually, you can specify global buttons in any .leo file, but \@buttons nodes
+affect all later opened .leo files so usually you would define global buttons in
+leoSettings.leo or myLeoSettings.leo.
 
 The cleaned name of an @button node is the headline text of the button with:
 
@@ -1598,46 +1597,47 @@ corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set
 to True in this plugin.
 
 You can specify the following options in leoSettings.leo.  See the node:
-@settings-->Plugins-->scripting plugin.  Recommended defaults are shown.
+@settings-->Plugins-->scripting plugin.  Recommended defaults are shown::
 
-- @bool scripting-at-button-nodes = True
-  True: adds a button for every @button node.
+    @bool scripting-at-button-nodes = True
+    True: adds a button for every @button node.
 
-- @bool scripting-at-commands-nodes = True
-  True: define a minibuffer command for every @command node.
+    @bool scripting-at-commands-nodes = True
+    True: define a minibuffer command for every @command node.
 
-- @bool scripting-at-plugin-nodes = False
-  True: dynamically loads plugins in @plugins nodes when a window is created.
+    @bool scripting-at-plugin-nodes = False
+    True: dynamically loads plugins in @plugins nodes when a window is created.
 
-- @bool scripting-at-script-nodes = False
-  True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!
+    @bool scripting-at-script-nodes = False
+    True: dynamically executes script in @script nodes when a window is created.
+    This is dangerous!
 
-- @bool scripting-create-debug-button = False
-  True: create Debug Script button.
+    @bool scripting-create-debug-button = False
+    True: create Debug Script button.
 
-- @bool scripting-create-run-script-button = False
-  True: create Run Script button.
-  Note: The plugin creates the press-run-script-button regardless of this setting.
+    @bool scripting-create-run-script-button = False
+    True: create Run Script button.
+    Note: The plugin creates the press-run-script-button regardless of this setting.
 
-- @bool scripting-create-script-button-button = True
-  True: create Script Button button in icon area.
-  Note: The plugin creates the press-script-button-button regardless of this setting.
+    @bool scripting-create-script-button-button = True
+    True: create Script Button button in icon area.
+    Note: The plugin creates the press-script-button-button regardless of this setting.
 
-- @int scripting-max-button-size = 18
-  The maximum length of button names: longer names are truncated.
+    @int scripting-max-button-size = 18
+    The maximum length of button names: longer names are truncated.
 
-You can bind key shortcuts to @button and @command nodes as follows:
+You can bind key shortcuts to @button and @command nodes as follows.
 
 @button name @key=shortcut
 
-This binds the shortcut to the script in the script button. The button's name is
-'name', but you can see the full headline in the status line when you move the
-mouse over the button.
+    Binds the shortcut to the script in the script button. The button's name is
+    'name', but you can see the full headline in the status line when you move the
+    mouse over the button.
 
 @command name @key=shortcut
 
-This creates a new minibuffer command and binds shortcut to it. As with @buffer
-nodes, the name of the command is the cleaned name of the headline.
+    Creates a new minibuffer command and binds shortcut to it. As with @buffer
+    nodes, the name of the command is the cleaned name of the headline.
 
 This plugin is based on ideas from e's dynabutton plugin, quite possibly the
 most brilliant idea in Leo's history.
@@ -2148,7 +2148,8 @@ Several commands will also be made available
 export-html
   will export to a file according to current settings.
 export-html-*
-  will export to a file using bullet type '*' which can be **number**, **bullet** or **head**.
+  will export to a file using bullet type '*' which can be
+  **number**, **bullet** or **head**.
 
 The following commands will start a browser showing the html.
 
@@ -2156,7 +2157,8 @@ show-html
   will show the outline according to current settings.
 
 show-html-*
-  will show the outline using bullet type '*' which can be **number**, **bullet** or **head**.
+  will show the outline using bullet type '*' which can be
+  **number**, **bullet** or **head**.
 
 The following commands are the same as above except only the current node is converted::
 
@@ -2173,48 +2175,36 @@ Properties... menu. These are:
 
 exportpath:
     The path to the folder where you want to store the generated html file.
-
     Default: c:\\
 
 flagjustheadlines:
-
     Default: 'Yes' to include only headlines in the output.
 
 flagignorefiles:
-
     Default: 'Yes' to ignore @file nodes.
 
 use_xhtml:
-
     Yes to include xhtml doctype declarations and make the file valid XHTML 1.0 Strict.
     Otherwise only a simple <html> tag is used although the output will be xhtml
-    compliant otherwise.
-
-    Default: Yes
+    compliant otherwise. Default: Yes
 
 bullet_type:
-
     If this is 'bullet' then the output will be in the form of a bulleted list.
     If this is 'number' then the output will be in the form of a numbered list.
     If this is 'heading' then the output will use <h?> style headers.
 
     Anything else will result in <h?> type tags being used where '?' will be a
     digit starting at 1 and increasing up to a maximum of six depending on depth
-    of nesting.
-
-    Default: number
+    of nesting. Default: number
 
 browser_command:
-
     Set this to the command needed to launch a browser on your system or leave it blank
     to use your systems default browser.
 
     If this is an empty string or the browser can not be launched using this command then
     python's `webbrowser` module will be tried. Using a bad command here will slow down the
     launch of the default browser, better to leave it blank.
-
-    Default:
-        empty string
+    Default: empty string
 
 **Configuration**
 
@@ -2235,15 +2225,6 @@ in your Leo\plugins folder.
 
 The default export path is also stored in the INI file. By default, it's set to c:\ so
 you may need to modify it depending on your system.
-
-.. @+node:ekr.20101113063552.9481: *5* leo_pdf.py
-This NOT a Leo plugin: this is a docutils writer for .pdf files.  
-
-That file uses the reportlab module to convert html markup to pdf.
-
-The original code written by Engelbert Gruber.
-
-Rewritten by Edward K. Ream for the Leo rst3 plugin.
 
 .. @+node:ekr.20101113063552.9482: *4* User interface
 .. @+node:ekr.20101113063552.9483: *5* UNL.py
@@ -2446,13 +2427,15 @@ other plugins, see below.
 The attributes can be stored in different ways, three modes are implemented
 currently:
 
-"v.u mode"
+v.u mode
   These attributes are stored in the "unknownAttributes" (uA) data for
-  each node, accessed via ``v.u``.
-"Field:"
+  each node, accessed via v.u.
+
+Field:
   Attributes are lines starting (no whitespace) with "AttributeName:" in
   the body text.
-"@Child"
+
+@Child
   Attributes are the head strings of child nodes when the head string
   starts with '@AttributeName' where the first letter (second character)
   must be capitalized.
@@ -2464,8 +2447,8 @@ attrib-edit-modes
     Select which attribute setting / getting modes to use.  More than one mode
     can be used at the same time.
 
-    You can also control which modes are active by listing them in 
-    ``@settings -> @data attrib_edit_active_modes``, e.g.::
+    You can also control which modes are active by listing them 
+    with the @data attrib_edit_active_modes setting.  For example::
 
         Field:
         @Child
@@ -2482,18 +2465,18 @@ attrib-edit-scan
     has the complete list.
 
 attrib-edit-create
-    Create a new attribute on the current node.  If "Field:" or "@Child" modes
+    Create a new attribute on the current node.  If Field: or \@Child modes
     are active, they simply remind you how to create an attribute in the log pane.
-    If the "v.u mode" mode is active, you're prompted for a path for the attribute,
-    e.g.::
+    If the "v.u mode" mode is active, you're prompted for a path for the attribute.
+    For example::
 
-        "addressbook First"
+        addressbook First
 
     to store the attribute in v.u['addressbook']['_edit']['First']
 
     As a convenience, entering a path like::
 
-        "todo metadata created|creator|revised"
+        todo metadata created|creator|revised
 
     would create::
 
@@ -2627,7 +2610,7 @@ or::
 
     g.app.gui.runScrolledMessageDialog(c=c, ...etc)
 
-all parameters are optional except c.
+All parameters are optional except c.
 
 **Parameters**
 
@@ -2636,9 +2619,7 @@ msg:
 
     If the text starts with 'rst:' it is assumed to be rst text and
     is converted to html for display after the rst: prefix has been removed.
-
     If the text starts with '<' it is assumed to be html.
-
     These auto detection features can be overridden by 'flags'.
 
 label:
@@ -2665,12 +2646,8 @@ flags:
 Launches the spyder environment with access to Leo instance.
 See http://packages.python.org/spyder/
 
-Usage:
-
-Execute alt-x spyder-launch to start spyder.
-
-Execute alt-x spyder-update to pass current c,p,g to spyder
-interactive session. spyder-update also shows the window
+Execute alt-x spyder-launch to start spyder. Execute alt-x spyder-update to pass
+current c,p,g to spyder interactive session. spyder-update also shows the window
 if it was closed before.
 
 .. @+node:ekr.20101113063552.9408: *4* stickynotes.py
@@ -2715,11 +2692,9 @@ empty the node, then paste it into the note.
 .. @+node:ekr.20101113063552.9409: *4* todo.py
 Provides to-do list and simple task management for leo (Qt only).
 
-(todo is the Qt version of the Tk cleo plugin)
-
-todo adds time required, progress and priority settings for nodes.
-With the @project tag a branch can display progress and time
-required with dynamic hierarchical updates.
+This plugin is the Qt version of the Tk cleo plugin. This plugin adds time
+required, progress and priority settings for nodes. With the @project tag a
+branch can display progress and time required with dynamic hierarchical updates.
 
 For full documentation see:
 
@@ -2732,9 +2707,7 @@ Creates a window for *live* rendering of rst, html, etc.  Qt only.
 viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
 which opens a new window where the current body text is rendered as HTML
 (if it starts with '<'), or otherwise reStructuredText.  reStructuredText
-errors and warnings may be shown.
-
-So both::
+errors and warnings may be shown.  For example, both::
 
     Heading
     -------
