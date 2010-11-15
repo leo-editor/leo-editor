@@ -58,6 +58,10 @@ You can drag files into Leo.  Leo will create \@file or \@auto nodes if appropri
 .. _`p.deletePositionsInList`: http://groups.google.com/group/leo-editor/browse_thread/thread/0aa8d9d17f6300b8#
 .. _`g.findTestScript`: http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
 
+- The execute-script now calls execfile (or its equivalent when using Python 3k)
+  when @bool write_script_file = True. This allows pdb (or pudb) to show the
+  text of Leo scripts!
+
 - Added `p.deletePositionsInList`_, an important new helper.
 
 - Added `g.findTestScript`_, an important new pattern for sharing code in Leo
@@ -91,10 +95,6 @@ headline to contain a description of the url.
 - Removed mark-clones command.  It is useless in the one-node world.
 
 - Added extract-python-method command.
-
-- The execute-script now calls execfile (or its equivalent when using Python 3k)
-  when @bool write_script_file = True. This allows pdb (or pudb) to show the
-  text of scripts!
 .. @+node:ekr.20101025080245.6079: *5* Improved abbreviations commands
 When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
 abbreviations as you type. Type the name of an abbreviation, followed by a
