@@ -89,6 +89,12 @@ headline to contain a description of the url.
 - Created head-to-prev-node and tail-to-next-node commands.
 
 - Removed mark-clones command.  It is useless in the one-node world.
+
+- Added extract-python-method command.
+
+- The execute-script now calls execfile (or its equivalent when using Python 3k)
+  when @bool write_script_file = True. This allows pdb (or pudb) to show the
+  text of scripts!
 .. @+node:ekr.20101025080245.6079: *5* Improved abbreviations commands
 When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
 abbreviations as you type. Type the name of an abbreviation, followed by a

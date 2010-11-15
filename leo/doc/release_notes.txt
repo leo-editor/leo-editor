@@ -15067,6 +15067,13 @@ What happens:
 
 - The body of foo contains all the selected text, properly indented.
 
-The command is undoable as always.
+The command is undoable.
+#@+node:ekr.20101115085632.4928: *5* Open the default leo file if possible
+Leo opens the file specified by the default_leo_file setting if it exists.
+
+New in 4.8 rc1: if default (workbook) file does not exist Leo will
+open an empty file and name is to be the default file.
+#@+node:ekr.20101115085632.4930: *5* Fixed problems with installer
+The installer now makes proper entries in the Windows start menu.
 #@-all
 #@-leo

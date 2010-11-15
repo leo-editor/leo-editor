@@ -1,6 +1,6 @@
-Leo 4.8 beta 1                               November 5, 2010
+Leo 4.8 rc 1                               November 15, 2010
 
-Leo 4.8 beta 1 is now available at:
+Leo 4.8 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -18,7 +18,6 @@ The highlights of Leo 4.8:
 - @url nodes may contain url's in body text.
   This allows headlines to contain summaries: very useful.
 - Leo now uses PyEnchant to check spelling.
-  Much safer than using aspell.
 - Leo can now open multiple files from the command line.
 - Leo's ancient Tangle and Untangle commands are now deprecated.
   This will help newbies how to learn Leo.
@@ -27,6 +26,7 @@ The highlights of Leo 4.8:
   These fix several long-standing data-related problems.
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
+- Improved autocompletion: Ctrl-space starts a one-time completion.
 - A better installer.
 - Many bug fixes.
 

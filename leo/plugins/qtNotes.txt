@@ -1736,18 +1736,18 @@ class leoKeyEvent:
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.
         if sys.platform.startswith('darwin'):
-           darwinmap = {
-               'Alt-Key-5': '[',
-               'Alt-Key-6': ']',
-               'Alt-Key-7': '|',
-               'Alt-slash': '\\',
-               'Alt-Key-8': '{',
-               'Alt-Key-9': '}',
-               'Alt-e': '€',
-               'Alt-l': '@',
-           }
-           if tkKey in darwinmap:
-               tkKey = stroke = darwinmap[tkKey]
+            darwinmap = {
+                'Alt-Key-5': '[',
+                'Alt-Key-6': ']',
+                'Alt-Key-7': '|',
+                'Alt-slash': '\\',
+                'Alt-Key-8': '{',
+                'Alt-Key-9': '}',
+                'Alt-e': '€',
+                'Alt-l': '@',
+            }
+            if tkKey in darwinmap:
+                tkKey = stroke = darwinmap[tkKey]
 
         # The main ivars.
         self.actualEvent = event

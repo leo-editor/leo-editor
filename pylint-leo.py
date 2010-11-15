@@ -124,14 +124,14 @@ recentPluginsList = (
 )
 
 tables_table = (
-    (recentCoreList,'core'),
+    # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    # (coreList,'core'),
-    # (guiPluginsTable,'plugins'),
-    # (tkPass,'plugins'),
-    # (passList,'plugins'),
-    # (externalList,'external'),
-    # (pluginsTable,'plugins'),
+    (coreList,'core'),
+    (guiPluginsTable,'plugins'),
+    #(tkPass,'plugins'),
+    #(passList,'plugins'),
+    #(externalList,'external'),
+    #(pluginsTable,'plugins'),
 )
 
 for table,theDir in tables_table:

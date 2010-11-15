@@ -285,7 +285,7 @@ class tkinterGui(leoGui.leoGui):
         """Create and run a Tk open directory dialog ."""
 
         dirName = tkFileDialog.askdirectory(
-            title=titledialog,initialdir=startdir,mustexist="true")
+            title=title,initialdir=startdir,mustexist="true")
 
         return dirName
     #@+node:ekr.20081121110412.369: *5* runOpenFileDialog (tkGui)

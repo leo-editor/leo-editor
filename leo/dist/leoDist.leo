@@ -27,10 +27,11 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20101104090957.1488"><vh>Leo 4.8 b1</vh></v>
+<v t="ekr.20101115090518.1494"><vh>Leo 4.8 rc1</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../../INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -83,7 +84,7 @@
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494" a="E"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -91,7 +92,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -b1.
+2. Search for this suffix: -rc1.
 
 3. Search for copyright
 
@@ -245,7 +246,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.8-b1
+Version: 4.8-rc1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -259,9 +260,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.8 beta 1                               November 5, 2010
+<t tx="EKR.20040519090846.9">Leo 4.8 rc 1                               November 15, 2010
 
-Leo 4.8 beta 1 is now available at:
+Leo 4.8 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -279,7 +280,6 @@ The highlights of Leo 4.8:
 - @url nodes may contain url's in body text.
   This allows headlines to contain summaries: very useful.
 - Leo now uses PyEnchant to check spelling.
-  Much safer than using aspell.
 - Leo can now open multiple files from the command line.
 - Leo's ancient Tangle and Untangle commands are now deprecated.
   This will help newbies how to learn Leo.
@@ -288,6 +288,7 @@ The highlights of Leo 4.8:
   These fix several long-standing data-related problems.
 - A new "screenshots" plugin for creating slide shows with Leo.
   I used this plugin to create Leo's introductory slide shows.
+- Improved autocompletion: Ctrl-space starts a one-time completion.
 - A better installer.
 - Many bug fixes.
 
@@ -1133,5 +1134,45 @@ section
  
 # default sec end
 sectionEnd</t>
+<t tx="ekr.20101115090518.1494">Leo 4.8 rc 1                               November 15, 2010
+
+Leo 4.8 release candidate 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.8:
+--------------------------
+
+- Leo now uses the simplest possible sentinel lines in external files.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
+- Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
+- Leo now uses PyEnchant to check spelling.
+- Leo can now open multiple files from the command line.
+- Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- Improved autocompletion: Ctrl-space starts a one-time completion.
+- A better installer.
+- Many bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
 </tnodes>
 </leo_file>

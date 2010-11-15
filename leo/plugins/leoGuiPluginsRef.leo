@@ -43,8 +43,7 @@
 <v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
 <v t="ekr.20090124174652.7"><vh>@file baseNativeTree.py</vh></v>
 <v t="ekr.20100103094733.3709"><vh>@file qtframecommands.py</vh></v>
-<v t="ekr.20081121105001.188"
-marks="ekr.20081121105001.502,"><vh>@file qtGui.py</vh></v>
+<v t="ekr.20081121105001.188"><vh>@file qtGui.py</vh></v>
 <v t="leohag.20081204085551.1"><vh>@file scrolledmessage.py</vh></v>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>

@@ -4711,7 +4711,7 @@ class leoQtLog (leoFrame.leoLog):
             w.addTab(contents,tabName)
 
         return contents
-    #@+node:ekr.20081121105001.331: *5* cycleTabFocus (to do)
+    #@+node:ekr.20081121105001.331: *5* cycleTabFocus
     def cycleTabFocus (self,event=None,stop_w = None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -7404,18 +7404,18 @@ class leoKeyEvent:
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.
         if sys.platform.startswith('darwin'):
-           darwinmap = {
-               'Alt-Key-5': '[',
-               'Alt-Key-6': ']',
-               'Alt-Key-7': '|',
-               'Alt-slash': '\\',
-               'Alt-Key-8': '{',
-               'Alt-Key-9': '}',
-               'Alt-e': '€',
-               'Alt-l': '@',
-           }
-           if tkKey in darwinmap:
-               tkKey = stroke = darwinmap[tkKey]
+            darwinmap = {
+                'Alt-Key-5': '[',
+                'Alt-Key-6': ']',
+                'Alt-Key-7': '|',
+                'Alt-slash': '\\',
+                'Alt-Key-8': '{',
+                'Alt-Key-9': '}',
+                'Alt-e': '€',
+                'Alt-l': '@',
+            }
+            if tkKey in darwinmap:
+                tkKey = stroke = darwinmap[tkKey]
 
         # The main ivars.
         self.actualEvent = event
@@ -9928,5 +9928,4 @@ class jEditColorizer:
 
     #@-others
 #@-others
-QtGui.QFileDialog
 #@-leo
