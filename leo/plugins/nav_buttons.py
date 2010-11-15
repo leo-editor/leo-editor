@@ -15,7 +15,7 @@ This plugin adds buttons to the icon bar that:
   selected.
 
 In addition, the marks button and the previous/next arrow buttons have right 
-click menus that pop up in response to right clicks from the mouse.
+click menus.
 
 **Commands**
 
@@ -46,7 +46,7 @@ click menus that pop up in response to right clicks from the mouse.
 
     nav-next-menu:
 
-        creates menu items for each each next to be visited node that will
+        creates menu items for each next-to-be-visited node that will
         select that headline when invoked. The items are created in the same
         order they would be visited by pressing the right arrow icon.
 

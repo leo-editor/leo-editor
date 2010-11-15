@@ -26,12 +26,6 @@ The colors and menus for the 'shortcut' button itself are set using::
     master-fg = <color>
     master-menu = <@popup menu-name>
 
-The colors and menus for the 'shortcut' button itself are set using::
-
-    slave-bg = <color>
-    slave-fg = <color>
-    slave-menu = <@popoup menu-name>
-
 The menus will be ignored if the rClick.py and toolbar.py plugins are not enabled.
 
 If the toolbar.py plugin is enabled then the following settings will be honored::

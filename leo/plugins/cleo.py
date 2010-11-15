@@ -2,7 +2,7 @@
 #@+node:tbrown.20060828111141: * @file cleo.py
 #@+<< docstring >>
 #@+node:tbrown.20060903211930: ** << docstring >>
-''' Creates coloured Leo Outlines.
+''' Creates coloured Leo outlines.
 
 Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a

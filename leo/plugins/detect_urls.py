@@ -2,8 +2,8 @@
 #@+node:ekr.20060506070443.1: * @file detect_urls.py
 #@+<< docstring >>
 #@+node:vpe.20060426084738: ** << docstring >>
-""" Colorizes URLs everywhere in node's body on node selection or saving. Double
-click on any URL launches it in default browser.
+""" Colorizes URLs everywhere in a node's body on node selection or saving. Double
+click on any URL launches it in the default browser.
 
 URL regex:  (http|https|file|ftp)://[^\s'"]+[\w=/]
 

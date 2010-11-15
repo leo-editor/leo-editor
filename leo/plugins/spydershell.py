@@ -7,7 +7,7 @@ See http://packages.python.org/spyder/
 
 Usage:
 
-Execute alt-x spyder-launch to start spyder
+Execute alt-x spyder-launch to start spyder.
 
 Execute alt-x spyder-update to pass current c,p,g to spyder
 interactive session. spyder-update also shows the window

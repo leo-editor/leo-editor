@@ -7,7 +7,7 @@
 This plugin provides the ability to issue commands at a future time and to write
 messages that will be displayed at a later time.
 
-To record commands You goto Schedule and choose begin recording. Then you jump
+To record commands, you go to Schedule and choose begin recording. Then you jump
 to the nodes and select the commands you want issued on them. This process is
 ended with the end recording option.
 
@@ -16,8 +16,8 @@ for execution. To set the execution time for all, enter a value and hit set_all.
 All times must be in the form hh:mm. For example I want to issue a save command
 for 5:00 PM. I would do so by using the value 17:00.
 
-The Schedule Message is simple. There is a Text box to enter the message and a
-Entry to place the time. View Queue will summon a view of The Queue. This dialog
+The Schedule Message is simple. There is a Text box to enter the message and an
+entry to place the time. View Queue will summon a view of the queue. This dialog
 will show the commands that have been enqueued. There is also the option to Cancel
 out any scheduled commands/messages.
 '''

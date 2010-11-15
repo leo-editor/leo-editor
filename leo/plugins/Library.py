@@ -5,26 +5,26 @@
 ''' Stores Leo trees in database files.
 
 This should help people develop templates that they want to reuse between Leo
-projects. For example, Id like a template of many Java interfaces to be easily
+projects. For example, I'd like a template of many Java interfaces to be easily
 accessible.
 
 This plugin creates three menu items in the Plugins:Library menu:
 
 - Show Dialog
 
-Shows a dialog that allows you to insert parts of a Leo outline into the
-database. You can also remove previously stored outlines or insert stored
-outlines into the present outline.
+    Shows a dialog that allows you to insert parts of a Leo outline into the
+    database. You can also remove previously stored outlines or insert stored
+    outlines into the present outline.
 
 - Show Status
 
-Shows the status of the database and various options.
+    Shows the status of the database and various options.
 
 - Close Database
 
-Closes the database.
+    Closes the database.
+    **Warning**: your database files may not be OS independent.
 
-**Warning**: your database files may not be OS independent.
 '''
 #@-<< docstring >>
 

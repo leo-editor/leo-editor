@@ -13,14 +13,14 @@ Important notes:
     2. in a Leo doc part (starting with '@') **or** a Python triple-quoted string.
 - This plugin adds commands to the Edit:Edit Body menu.
 
-The currently supported markups are:
+The currently supported markups are::
 
-''text''                # write text in italics
-__text__                # write text in bold
-~~<color>:text~~        # write text in the color specified by <color> (e.g. blue, grey, etc)
-{picture file=filename} # load the picture indicated by filename.
-http://url  # Underline the url: double clicking the url will open it in the default browser.
-https://url # Underline the url: double clicking the url will open it in the default browser.
+    ''text''                # write text in italics
+    __text__                # write text in bold
+    ~~<color>:text~~        # write text in the color specified by <color> (e.g. blue, grey, etc)
+    {picture file=filename} # load the picture indicated by filename.
+    http://url  # Underline the url: double clicking the url will open it in the default browser.
+    https://url # Underline the url: double clicking the url will open it in the default browser.
 
 -   Note 1: italics and bold markups can be nested, e.g.
 
@@ -30,7 +30,10 @@ https://url # Underline the url: double clicking the url will open it in the def
 
 - Note 2: URLs must be terminated by a space.
 
-By default, once the text has been markup up, the actual tags (e.g. __ for bold) are not displayed anymore. You can choose to display them selecting "Show Invisibles" from the Edit menu.
+By default, once the text has been marked up, the actual tags (e.g. __ for bold)
+are not displayed anymore. You can choose to display them selecting "Show
+Invisibles" from the Edit menu.
+
 '''
 #@-<< docstring >>
 #@+<< example >>

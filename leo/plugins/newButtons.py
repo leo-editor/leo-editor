@@ -4,7 +4,7 @@
 #@+node:pap.20051010170720.1: ** << docstring >>
 """ Allows the use of template nodes for common tasks
 
-Template nodes can be create for any node. The template can then
+Template nodes can be created for any node. The template can then
 be inserted at the click of a button. This is a bit like a permanent
 clipboard except that templates can have items in them which can 
 be override. Nodes can contain any number of child nodes.
@@ -20,10 +20,10 @@ form::
 
 These strings can be anywhere in the headline or body text. The *expr*
 is an expression which will be evaluated in a namespace containing two
-existing names,
+existing names::
 
-    name = the name entered into the entry box in the toolbar
-    node = the leo Vnode that was selected when the *New* button was pressed
+    name: the name entered into the entry box in the toolbar
+    node: the vnode that was selected when the *New* button was pressed
 
 You can use this in many way, for example to create a custom file from a template::
 

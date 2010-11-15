@@ -7,9 +7,6 @@
 #@+node:bobjack.20080424190906.12: ** << docstring >>
 """ Enhances Leo's iconBar and script buttons.
 
-**see test/testToolbar.leo for demo's and howto's **
-**see test/testAtPopup.leo for examples of enhanced buttons.**
-
 This plugin provides:
 
     multiple iconBars each of which automatically collapse and
@@ -66,7 +63,7 @@ blank lines.
 **Toolbars** 
 
 A toolbar is a collection of iconbars. At the moment only one toolbar is
-available and it appears in the place where the leo's traditional iconbar appears.
+available and it appears in the place where Leo's traditional iconbar appears.
 
 Future plans include allowing toolbars to be placed anywhere, including in dialogs,
 orientated vertically as well as horizontally. It will then be possible to drag and
@@ -74,7 +71,7 @@ drop iconbars within and between toolbars.
 
 **Iconbars**
 
-Each iconbar is assigned a name, the default iconBar is called 'iconbar'. A
+Each iconbar is assigned a name. The default iconBar is called 'iconbar'. A
 dictionary mapping names to iconBar objects is kept in *c.frame.iconBars* and
 the default iconBar is also in *c.frame.iconBar*    
 
@@ -102,7 +99,7 @@ barName=<name of bar>. If no barName is supplied 'iconbar' will be used.
         a new iconBar will be created, packed and returned.
 
     addIconButton(\*args, \**keys):
-        creates and packs and returns an icon button. This is equivalent
+        Creates and packs and returns an icon button. This is equivalent
         to c.frame.addIconWidget(c.frame.getIconButton(\*args, \**keys)
 
         barName: 'iconbar' may be in keys.
@@ -113,7 +110,7 @@ barName=<name of bar>. If no barName is supplied 'iconbar' will be used.
 
     getIconWidgetFrame(\*args, \**keys): 
 
-        creates an enhanced Tk.Frame widget properly parented and with
+        Creates an enhanced Tk.Frame widget properly parented and with
         a few methods which make it easier to use than a straight Tk.Frame.
 
         args and keys are the same as for Tk.Frame except without the first
@@ -143,8 +140,8 @@ The iconBars themselves have the following public methods.
 
     repackButtons(buttons=None)
 
-        if buttons is None then the current list of buttons is repacked,
-        otherwise it must be a list of buttons or other widgets to pack
+        If buttons is None then the current list of buttons is repacked,
+        otherwise it must be a list of buttons or other widgets to pack.
 
     addWidget(widget, index=None, repack=True)
 
@@ -211,7 +208,9 @@ The following methods::
 return a Tk.Frame widget parented on c.frame.top and with a few extra
 methods to make more advanced use easier.
 
-See the compound widgets and drag handles howto in test/testToolbar.leo
+See test/testToolbar.leo for demo's and howto's.
+See test/testAtPopup.leo for examples of enhanced buttons.
+
 
 """
 #@-<< docstring >>

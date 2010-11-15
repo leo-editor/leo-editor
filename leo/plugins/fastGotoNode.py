@@ -18,7 +18,7 @@ You may also invoke the popup menu using Alt-x fast-goto-node.
 
 This plugin offers 3 main feature sets:
 
-1. Movement. If a node has ancestors,siblings or children a menu option will
+1. Movement. If a node has ancestors, siblings or children a menu option will
 appear offering the user the ability to jump to the node from the current node.
 This is an improvement over moving one node at a time with the keyboard
 commands.
@@ -27,7 +27,7 @@ commands.
 directives the body recognizes and any @file type headline directives. It offers
 the new user easy access to the different directives and ways to write a file.
 
-3. Moving Nodes( experimental feature ). You can quickly move a node to its
+3. Moving Nodes (experimental feature). You can quickly move a node to its
 parent's parent or after a sibling, if they exist.
 '''
 #@-<< docstring >>

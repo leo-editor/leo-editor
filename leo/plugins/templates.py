@@ -5,7 +5,7 @@
 ''' Adds customizable templates to an outline.
 
 Templates are like any other node except that the plugin replaces %s in the body
-text by values that you specify when using template. Templates may have section
+text by values that you specify when using the template. Templates may have section
 references; this plugin uses Leo's @nosent write machinery to create one string
 out of possibly many nodes.
 

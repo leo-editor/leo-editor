@@ -7,18 +7,18 @@
 Restrictions currently apply to using Leo with a Tk front end. There are several
 commands in this plugin:
 
--   Mark Node: marks a node for further operations such as copying, cloning and moving.
+- Mark Node: marks a node for further operations such as copying, cloning and moving.
 
--   Mark Target: marks a node as the place where group operations are to target.
+- Mark Target: marks a node as the place where group operations are to target.
 
--   Operate On Marked: moves lassoed nodes to the spot where the roundup node is
-    placed. Clones are maintained.
+- Operate On Marked: moves lassoed nodes to the spot where the roundup node is
+  placed. Clones are maintained.
 
--   Clear Marked: unmarks all marked nodes and removes the roundup node.
+- Clear Marked: unmarks all marked nodes and removes the roundup node.
 
--   Transfer Lassoed Nodes: this is a menu for inter-window communication.
-    The windows must all be spawned from the same Leo instance. 
-    It allows the user to move all node marked for copying and moving from another window to this one.
+- Transfer Lassoed Nodes: this is a menu for inter-window communication. The
+  windows must all be spawned from the same Leo instance. It allows the user to
+  move all nodes marked for copying and moving from another window to this one.
 
 '''
 #@-<< docstring >>

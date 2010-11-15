@@ -7,7 +7,7 @@
 A search box which behaves like a web site search is added, along with
 a "GO" button to do quick searches right from the main Leo window. All the
 current search options are retained except that "search body text" is
-explicitely set - mainly because this is by far the most common use case.
+explicitly set--mainly because this is by far the most common use case.
 
 Pressing <CR> while editing the text automatically does a search. Repeated
 searches can be done by clicking the "GO" button.

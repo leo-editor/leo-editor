@@ -24,7 +24,7 @@ class. This would be the .gif format. This functionality may be enhanced in the
 future by PIL to support more image types.
 
 Depending on the size of the image, you may have to scroll around to see it. For
-example, a leo clone icon will require scrolling to find. Id like to change this
+example, a Leo clone icon will require scrolling to find. I'd like to change this
 in the future.
 '''
 #@-<< docstring >>

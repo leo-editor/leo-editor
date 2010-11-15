@@ -6,7 +6,7 @@
 
 This command checks the current node using the csv (comma separated values) mods
 Sniffer. It tries to determine the format that is in the nodes data. If you had
-excel data in it, it should be able to determine its excel data. It then creates
+Excel data in it, it should be able to determine its Excel data. It then creates
 a dialog with the data presented as in a table for the user to see it.
 
 Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable

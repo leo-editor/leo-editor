@@ -75,18 +75,18 @@ attrib-edit-create
 **Technical details**
 
 See the source for complete documentation for use with other
-plugins, here are some points of interest:
+plugins. Here are some points of interest:
 
-- in addition to ``v.u['addressbook']['_edit']['first']`` paths
+- In addition to ``v.u['addressbook']['_edit']['first']``, paths
   like ``v.u['addressbook']['_edit']['_int']['age']`` may be used
   to identify type, although currently there's no difference in
   the edit widget.
 
-- in future the plugin may allow other plugins to register
+- In the future the plugin may allow other plugins to register
   to provide attribute path information, instead of just
   scanning for ['_edit'] entries in v.u.
 
-- currently there's no sorting of the attributes in "v.u mode", which is
+- Currently there's no sorting of the attributes in "v.u mode", which is
   a problem for some applications.  It's unclear where the
   desired order would be stored, without even more repetition
   in v.u.  When other plugins can register to manipulate the

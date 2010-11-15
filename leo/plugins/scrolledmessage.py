@@ -7,7 +7,7 @@
 #@+node:leohag.20081203143921.2: ** << docstring >>
 """ Provides a Scrolled Message Dialog service for Qt.
 
-The plugin can display messages supplied as plain text or formated as html. In
+The plugin can display messages supplied as plain text or formatted as html. In
 addition the plugin can accept messages in rst format and convert them to be
 displayed as html.
 
@@ -38,7 +38,7 @@ msg:
     The text to be displayed (html, rst, plain).
 
     If the text starts with 'rst:' it is assumed to be rst text and
-    is converted to html for display, (after the rst: prefix has been removed.
+    is converted to html for display after the rst: prefix has been removed.
 
     If the text starts with '<' it is assumed to be html.
 

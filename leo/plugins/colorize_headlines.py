@@ -2,9 +2,9 @@
 #@+node:ville.20090310191936.10: * @file colorize_headlines.py
 #@+<< docstring >>
 #@+node:ville.20090310191936.11: ** << docstring >>
-''' Manipulates appearance of individual tree widget items.
+''' Manipulates appearance of individual tree widget items. (Qt only).
 
-This plugin is mostly an example of how to change appearance of headlines - as
+This plugin is mostly an example of how to change the appearance of headlines. As
 such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
 nodes in bold.
 

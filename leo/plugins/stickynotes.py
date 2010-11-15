@@ -28,11 +28,17 @@ Sticky notes are synchronized (both ways) with their parent Leo node.
 
 Encrypted mode requires the python-crypto module.
 
-The first time you open a note in encrypted mode you'll be asked for a pass phrase.  That phrase will be used for the rest of the session, you can change it with ``Alt-X`` ``stickynoteenckey``, but probably won't need to.
+The first time you open a note in encrypted mode you'll be asked for a pass
+phrase. That phrase will be used for the rest of the session, you can change it
+with ``Alt-X`` ``stickynoteenckey``, but probably won't need to.
 
-The encrypted note is stored in base64 encoded *encrypted* text in the parent Leo node, if you forget the pass phrase there's no way to un-encrypt it again.  Also, you must not edit the text in the Leo node.
+The encrypted note is stored in base64 encoded *encrypted* text in the parent
+Leo node, if you forget the pass phrase there's no way to un-encrypt it again.
+Also, you must not edit the text in the Leo node.
 
-When **creating an encrypted note**, you should **start with and empty node**.  If you want to encrypt text that already exists in a node, select-all cut it to empty the node, then paste it into the note.
+When **creating an encrypted note**, you should **start with an empty node**.
+If you want to encrypt text that already exists in a node, select-all cut it to
+empty the node, then paste it into the note.
 
 '''
 #@-<< docstring >>

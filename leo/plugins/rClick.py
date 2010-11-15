@@ -26,10 +26,10 @@ following:
     - plusbox               ( c.context_menus['plusbox']) (empty)
     - canvas                ( c.context_menus['canvas']) (empty)
 
-    ( if the headline or iconbox list is empty, the standard leo popupmenu will be used,
-    for other items an empty list will simply not produce a popup at all.)
+If the headline or iconbox list is empty, the standard leo popupmenu will be used,
+for other items an empty list will simply not produce a popup at all.
 
-and also the following fragments:
+The plugin also the following fragments:
 
     - 'edit-menu' fragment (c.context_menus['edit-menu'])
 
@@ -49,10 +49,11 @@ and also the following fragments:
 
         This organizes the find control buttons into two columns.
 
-    These fragments are meant to be included in other popup menu's via::
+    These fragments are meant to be included in other popup menus via one of the following::
 
-        ('&', 'recent-files-menu') or ('&', 'edit-menu') or ('&', 'to-chapter-fragment')
-
+        ('&', 'recent-files-menu')
+        ('&', 'edit-menu')
+        ('&', 'to-chapter-fragment')
 
 These menus can be altered at will by scripts and other plugins using basic list
 operators such as append etc.
@@ -66,14 +67,16 @@ to be generated.
 
 For widgets to use the rClick context menu system it needs to use::
 
-    g.doHook('rclick-popup', c=c, event=event, context_menu='<a menu name>', <any other key=value pairs> ...)
+    g.doHook('rclick-popup', c=c, event=event,
+        context_menu='<a menu name>',
+        <any other key=value pairs> ...)
 
 context_menu provides the name of a menu to be used if an explicit menu has not been set with::
 
     widget.context_menu = <name> | <list>
 
 Any number of keyword pairs can be included and all these will be passed to any
-generator or invocation callbacks used in the menu.
+generator or callbacks used in the menu.
 
 
 The right click menu to be used is determined in one of two ways.
@@ -91,7 +94,7 @@ Each line after the first line of a body can have the form::
 
     key-string = value string
 
-these lines will be passed to the menu system aa a dictionary {key: value, ...}. This will
+These lines will be passed to the menu system as a dictionary {key: value, ...}. This will
 be available to generator and invocation callbacks as keywords['item_data'].
 
 Lines not containing '=' or with '#' as the first character are ignored.
@@ -109,7 +112,7 @@ To set the foreground and background colors for menu items use::
     fg = color
     bg = color
 
-additionally different background and foreground colors can be set for radio and
+Additionally, different background and foreground colors can be set for radio and
 check items in the selected state by using::
 
     selected-fg = color
@@ -131,7 +134,7 @@ an additional key 'compound' can be added::
 
     compound = [bottom | center | left | right | top | none]
 
-if compound is not included it is equivalent to::
+If compound is not included it is equivalent to::
 
     compound = left
 
@@ -187,20 +190,19 @@ For example::
 
 **Separators, Comments and Data**
 
-if `txt` is '-' then a separator item will be inserted into the menu.
+If `txt` is '-' then a separator item will be inserted into the menu.
 
     In this case `cmd` can have any value as it is not used.
 
-if `txt` is '' (empty string) or '"' (single  double-quote) then nothing is done.
+If `txt` is '' (empty string) or '"' (single  double-quote) then nothing is done.
 
     This is a noop or comment. Again `cmd` can have any value as it is not used.
 
-if `txt` is '|' (bar) then a columnbreak will be introduced.
-
+If `txt` is '|' (bar) then a column break will be introduced.
 
 `cmd` can be set to a string value for these items so that scripts which
-manipulate the menu tables can use these items as position markers, so that
-similar items may be grouped together for example.
+manipulate the menu tables can use these items as position markers. This allows
+similar items to be grouped together for example.
 
 `cmd` can, however, take on any value and these items, especially comments, can
 be used to pass extra information to generator functions. eg::
@@ -266,11 +268,11 @@ if `txt` is '*':
 
             c.theContextMenuController.mb_retval
 
-        otherwise the handlers should be the same as if the function reference
+        Otherwise the handlers should be the same as if the function reference
         had been placed directly in the table.
 
 
-    **If cmd is a function**:
+    **If `cmd` is a function**:
 
         the function is called as ::
 
@@ -304,7 +306,7 @@ If `txt` is '&':
 
     In this case `cmd` is used as the name of a menu which appears in
     c.context_menus. If a menu exists with that name its contents are included
-    inline, (not as a submenu).
+    inline, not as a submenu.
 
 
 **Example menu generator**
@@ -334,7 +336,7 @@ Create "Jump To: < <section>>"" menu items.
 Create a "Help on:" menu item.
 
     The selected text, or the word under the cursor, is used to create a "Help
-    on: word" menu item, which when invoked will call python's 'help' command on
+    on: word" menu item, which when invoked will call Python's 'help' command on
     the word and display the result in the log pane or a browser.
 
 
@@ -367,9 +369,7 @@ Create a "Help on:" menu item.
             @string rclick_show_help = 'flags'
 
         `flags` is a string that can contain any combination of 'print', 'log',
-        'browser' or 'all'.
-
-        eg::
+        'browser' or 'all'.  For example::
 
             @string rclick_show_help = 'print log'
 
@@ -417,15 +417,17 @@ rclick menu tables and @popup trees.
     - rclick-find-suboutline-only-button
     - rclick-find-entire-outline-button
 
-        These commands are generator commands to be use as @item \* (body: rclick-find-\*-button).
+        These commands are generator commands to be use as @item \* (body:
+        rclick-find-\*-button).
 
-        Each command producdes a radio or check item that reflects a control in the find tab.
+        Each command produces a radio or check item that reflects a control in
+        the find tab.
 
-        When these buttons are clicked, the changes are automatically made to the controls
-        in the find tab.
+        When these buttons are clicked, the changes are automatically made to
+        the controls in the find tab.
 
-        fg, bg, selected-fg and selected-bg may be used to color these buttons but
-        do NOT use kind, name or group
+        fg, bg, selected-fg and selected-bg may be used to color these buttons
+        but do NOT use kind, name or group
 
 **Radio and Check menu Items**
 
@@ -439,7 +441,7 @@ of the node should have the following format::
 
 As well as 'fg = color' and 'bg = color', 'selected-fg = color' and
 'selected-bg' can be used to set the colors for when a radio or check button is
-selected
+selected.
 
 From now on controller will refer to c.theContextMenuController
 
@@ -476,7 +478,6 @@ When any check or radio item is clicked, a hook is generated
         g.doHook('rclick-button-clicked', kind='check', name=name, selected=selected)
 
     where selected is True to indicate the named button is checked, False otherwise.
-
 
 The 'rclick-button' command is provided for convenience.  Plugins may provide there own
 command to handle check and radio items, using rclick-button as a template.

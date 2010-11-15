@@ -2,7 +2,7 @@
 #@+node:ekr.20040916084945: * @file macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
-''' Creates new nodes containing parameterized section reference.
+''' Creates new nodes containing parameterized section references.
 
 .. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
 

@@ -22,11 +22,11 @@ The dialog has been redone. The user can:
         def. That gets appended to the beginning of the code. It prototype looks
         like::
 
-            def( a, b, att ):
+            def(a,b,att):
 
-where a and b are nodes and att is dictionary of the nodes and the respective
-value of the selected attribute. There is no need to indent on the first level
-since indentation is added at compile time.'''
+        where a and b are nodes and att is a dictionary of the nodes and the respective
+        value of the selected attribute. There is no need to indent on the first level
+        since indentation is added at compile time.'''
 #@-<< docstring >>
 
 #@@language python

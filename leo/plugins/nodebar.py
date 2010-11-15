@@ -5,8 +5,10 @@
 """ Adds buttons at the bottom of the tree canvas.
 
 The buttons correspond to commands found in the Outline commands. It is intended
-to speed up a new users ability to use the outline. Experienced users may find
-value in being able to quickly execute commands they do not use very often"""
+to speed up a new user's ability to use the outline. Experienced users may find
+value in being able to quickly execute commands they do not use very often.
+
+"""
 #@-<< docstring >>
 
 #@+<< imports >>
