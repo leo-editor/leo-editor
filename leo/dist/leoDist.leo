@@ -621,12 +621,13 @@ Create distribution files:
     - Create the installer:
         - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
         - or just double-click leo.nsi.
-Test files
-	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
-    ** Open unitTest.leo: does it open without errors?
-    ** Open leoPlugins.leo: does it open without errors?
+Test files in installed folder.
     - Run all unit tests in the installed folder, with the installed Leo.
-Create a bzr tag:
+    - Make sure the following open without errors:
+        - leoPlugins.leo
+        - leoPy.leo
+        - LeoDocs.leo
+Create a bzr tag **last**.
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push
