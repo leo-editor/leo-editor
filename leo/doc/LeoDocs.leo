@@ -466,9 +466,10 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101021092135.5431"><vh> Drafts</vh>
-<v t="ekr.20101115152915.4930"><vh>1. External files</vh></v>
+<v t="ekr.20101115152915.4930"><vh>1. External files (draft)</vh></v>
 <v t="ekr.20101115152915.4931"><vh>2. Clones &amp; views</vh></v>
 <v t="ekr.20101115152915.4936"><vh>3. Scripting Leo</vh></v>
+<v t="ekr.20101116103056.5272"><vh>Using the minibuffer</vh></v>
 </v>
 <v t="ekr.20101115152915.4933"><vh>Maybe</vh>
 <v t="ekr.20101115152915.4935"><vh>Leo's Dom</vh></v>
@@ -584,6 +585,45 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101021092135.5431"></v>
+<v t="ekr.20101014034526.5280"></v>
+<v t="ekr.20101115152915.4930"></v>
+<v t="ekr.20101116124202.7829"><vh>Improve reformat-paragraph</vh>
+<v t="ekr.20101116124202.7830"><vh>reformatParagraph</vh>
+<v t="ekr.20101116124202.7831"><vh>&lt;&lt; compute vars for reformatParagraph &gt;&gt;</vh></v>
+<v t="ekr.20101116124202.7832"><vh>&lt;&lt; compute the leading whitespace &gt;&gt;</vh></v>
+<v t="ekr.20101116124202.7833"><vh>&lt;&lt; compute the result of wrapping all lines &gt;&gt;</vh></v>
+<v t="ekr.20101116124202.7834"><vh>&lt;&lt; update the body, selection &amp; undo state &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20101116124202.7835"><vh>Reformat Paragraph test code (leoTest.py)</vh>
+<v t="ekr.20101116124202.7836"><vh>class reformatParagraphTest</vh>
+<v t="ekr.20101116124202.7837"><vh>__init__</vh></v>
+<v t="ekr.20101116124202.7838"><vh>go</vh></v>
+<v t="ekr.20101116124202.7839"><vh>checkPosition</vh></v>
+<v t="ekr.20101116124202.7840"><vh>checkText</vh></v>
+<v t="ekr.20101116124202.7841"><vh>copyBeforeToTemp</vh></v>
+<v t="ekr.20101116124202.7842"><vh>getRowCol</vh></v>
+<v t="ekr.20101116124202.7843"><vh>runTest</vh></v>
+<v t="ekr.20101116124202.7844"><vh>setUp</vh></v>
+<v t="ekr.20101116124202.7845"><vh>tearDown</vh></v>
+</v>
+<v t="ekr.20101116124202.7846"><vh>class singleParagraphTest (reformatParagraphTest)</vh>
+<v t="ekr.20101116124202.7847"><vh>__init__</vh></v>
+<v t="ekr.20101116124202.7848"><vh>runTest</vh></v>
+</v>
+<v t="ekr.20101116124202.7849"><vh>class multiParagraphTest (reformatParagraphTest)</vh>
+<v t="ekr.20101116124202.7850"><vh>runTest</vh></v>
+</v>
+<v t="ekr.20101116124202.7851"><vh>class multiParagraphWithListTest (reformatParagraphTest)</vh>
+<v t="ekr.20101116124202.7852"><vh>runTest</vh></v>
+</v>
+<v t="ekr.20101116124202.7853"><vh>class leadingWSOnEmptyLinesTest (reformatParagraphTest)</vh>
+<v t="ekr.20101116124202.7854"><vh>runTest</vh></v>
+</v>
+<v t="ekr.20101116124202.7855"><vh>class testDirectiveBreaksParagraph (reformatParagraphTest)</vh>
+<v t="ekr.20101116124202.7856"><vh>runTest</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2029,7 +2069,6 @@ Here, we see the a "startup" headline and a "workbook" headline.
 <t tx="ekr.20101013072903.5238"></t>
 <t tx="ekr.20101014034526.5280">@language rest
 @pagewidth 60
-
 </t>
 <t tx="ekr.20101014034526.5287">sentinels
 
@@ -2310,13 +2349,473 @@ Important files:
 ** Discuss @auto in the tutorial!</t>
 <t tx="ekr.20101115152915.4928"></t>
 <t tx="ekr.20101115152915.4929"></t>
-<t tx="ekr.20101115152915.4930"></t>
-<t tx="ekr.20101115152915.4931"></t>
+<t tx="ekr.20101115152915.4930">@nocolor-node
+
+===== Intro
+
+Trees whose root headline starts with \@file, \@auto or \@edit create **external
+files** on your file system.  Here are some examples::
+
+  @file myClass.py
+  @auto ../graphics/circles.cpp
+  @edit ~/.leo/.leoID.txt
+
+As you can see, these nodes specify file names, which can be an absolute
+path or a path relative to the directory containing the Leo outline.
+
+Collectively, nodes that create external files are known as **@&lt;file&gt; nodes.**
+Leo defines several other kinds of @&lt;file&gt; nodes, but this slideshow will not
+discuss them.
+
+===== Automatic load/store make Leo an IDE
+
+Leo automatically loads all @&lt;file&gt; trees when you open a Leo outline, and Leo
+writes any modified @&lt;file&gt; tree when you save an outline. Reading external
+files is very fast because of an efficient file-caching scheme.
+
+A single Leo outline may be connected to dozens of external files: this makes
+Leo work like an IDE (Integrated Development Environment). Leo outlines act like
+project files. For example, a Leo outline, leoPyRef.leo, contains \@file trees
+for all of Leo's core source files. Another Leo outline, leoPluginsRef.leo,
+creates the external files for all of Leo's plugins, and LeoDocs.leo contains
+all of Leo's documentation.
+
+===== Using sentinel lines, or not
+
+When using \@file, Leo stores outline structure in external files using comment
+lines called **sentinel lines**. These sentinel lines are important: they allow
+Leo to keep track of outlines structure, including clone relationships. Using
+\@file is **highly recommended** whenever possible. In particular, using \@file
+allows you to **share outline structure** with others merely by sharing external
+files.
+
+Alas, in some situations it is not appropriate to use sentinel comments in
+external files. In that case you use \@auto and \@edit trees to connect Leo
+outlines to existing external files without creating sentinel files. Not all of
+Leo's features can be used with \@auto and \@edit trees, but that can't be
+helped. In particular, Leo can not preserve outline structure exactly. Leo's
+"degraded" operation for such trees is similar to that found in all other
+editors and IDE's.
+
+The rest of this slide show will discuss \@file trees and their capabilities. We
+will then discuss \@auto and \@edit.
+
+===== Using @file trees.
+
+To repeat, it's best to use \@file to create external files. The next serious of slides
+will show you how to create external files with \@file trees.
+
+To create a new external file, create an \@file node giving the path to the
+external file. This path can be a full, absolute path, but it is usually much
+more convenient to use a relative paths. All relative paths in @&lt;file&gt; nodes are
+relative to Leo's **load directory**, the directory containing the .leo file for
+the present outline. In most cases, we can ignore the path prefix entirely. For
+example::
+
+    @file myFile.py
+
+===== The top-level body text: section references &amp; @others
+
+
+===== Defining &lt;&lt; imports &gt;&gt;
+
+===== Defining other nodes.
+
+**Important**: indentation in the external file is controlled by the indentation
+of \@others directives, **not** by the structure of the outline. This allows you
+to create **organizer nodes** without affecting the external file in any
+significant way (other than sentinel comments).
+
+
+
+
+===== Using @auto nodes.
+
+
+
+===== Using @edit nodes
+
+**@edit nodes** contain the entire contents of an
+external file.
+</t>
+<t tx="ekr.20101115152915.4931">Clones focus attention.
+</t>
 <t tx="ekr.20101115152915.4932"></t>
 <t tx="ekr.20101115152915.4933"></t>
 <t tx="ekr.20101115152915.4934"></t>
 <t tx="ekr.20101115152915.4935"></t>
-<t tx="ekr.20101115152915.4936"></t>
+<t tx="ekr.20101115152915.4936">c, g, p.
+
+getters/setters (Python propterties)
+
+iterators
+
+g.openWithFileName
+
+using atFile.write.
+
+g.pdb
+</t>
+<t tx="ekr.20101116103056.5272">@nocolor-node
+
+&gt;&gt; You can use the print-commands command.
+
+&gt; How can I run this command? Do I use the minibuffer?
+
+Yes. Type &lt;alt-x&gt; to put the cursor in the minibuffer. Then use tab
+completion to avoid having to do much typing. Something like this:
+
+Type "pr&lt;tab&gt;". This will show open the completion pane. The pane shows you all
+the commands that start with pr. There are too many, so type i&lt;tab&gt;. Now you
+will see "print-" in the minibuffer and only commands that start with "print-"
+in the completion tab. Now just type "c&lt;tab&gt;" and you will see the full
+print-commands command in the minibuffer. Finally, type &lt;return&gt; to execute the
+command.
+
+*Important*: you can use &lt;backspace&gt; in the minibuffer to show more alternatives,
+and you can hit &lt;ctrl-g&gt; at any time in Leo to put focus in the body pane.
+</t>
+<t tx="ekr.20101116124202.7829"></t>
+<t tx="ekr.20101116124202.7830">def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph in a Tk.Text widget
+
+Wraps the concatenated text to present page width setting. Leading tabs are
+sized to present tab width setting. First and second line of original text is
+used to determine leading whitespace in reformatted text. Hanging indentation
+is honored.
+
+Paragraph is bound by start of body, end of body, blank lines, and lines
+starting with "@". Paragraph is selected by position of current insertion
+cursor."""
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    &lt;&lt; compute vars for reformatParagraph &gt;&gt;
+    if lines:
+        &lt;&lt; compute the leading whitespace &gt;&gt;
+        &lt;&lt; compute the result of wrapping all lines &gt;&gt;
+        &lt;&lt; update the body, selection &amp; undo state &gt;&gt;
+</t>
+<t tx="ekr.20101116124202.7831">theDict = c.scanAllDirectives()
+pageWidth = theDict.get("pagewidth")
+tabWidth  = theDict.get("tabwidth")
+
+original = w.getAllText()
+oldSel =  w.getSelectionRange()
+oldYview = body.getYScrollPosition()
+
+head,lines,tail = c.findBoundParagraph()
+</t>
+<t tx="ekr.20101116124202.7832">indents = [0,0] ; leading_ws = ["",""]
+
+for i in (0,1):
+    if i &lt; len(lines):
+        # Use the original, non-optimized leading whitespace.
+        leading_ws[i] = ws = g.get_leading_ws(lines[i])
+        indents[i] = g.computeWidth(ws,tabWidth)
+
+indents[1] = max(indents)
+if len(lines) == 1:
+    leading_ws[1] = leading_ws[0]
+</t>
+<t tx="ekr.20101116124202.7833">trailingNL = lines and lines[-1].endswith('\n')
+lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+# Wrap the lines, decreasing the page width by indent.
+result = g.wrap_lines(lines,
+    pageWidth-indents[1],
+    pageWidth-indents[0])
+
+# prefix with the leading whitespace, if any
+paddedResult = []
+paddedResult.append(leading_ws[0] + result[0])
+for line in result[1:]:
+    paddedResult.append(leading_ws[1] + line)
+
+# Convert the result to a string.
+result = '\n'.join(paddedResult)
+if trailingNL: result = result + '\n'
+</t>
+<t tx="ekr.20101116124202.7834"># This destroys recoloring.
+junk, ins = body.setSelectionAreas(head,result,tail)
+old_ins = ins
+
+# Advance to the next paragraph.
+s = w.getAllText()
+ins += 1 # Move past the selection.
+while ins &lt; len(s):
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+    # but I can't change this at this late stage in the release cycle.
+    if line.isspace() or line.startswith('@'):
+        ins = j+1
+    else:
+        ins = i ; break
+
+changed = original != head + result + tail
+
+if changed:
+    body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    ins = old_ins # 2010/11/16: stay in the paragraph if something changed.
+else:
+    # We must always recolor, even if the text has not changed,
+    # because setSelectionAreas above destroys the coloring.
+    c.recolor()
+
+w.setSelectionRange(ins,ins,insert=ins)
+w.see(ins)
+</t>
+<t tx="ekr.20101116124202.7835"># DTHEIN 2004.01.11: Added unit tests for reformatParagraph
+</t>
+<t tx="ekr.20101116124202.7836">class reformatParagraphTest:
+
+    '''A class to work around stupidities of the Unittest classes.'''
+
+    @others
+</t>
+<t tx="ekr.20101116124202.7837">def __init__ (self,c,p):
+
+    self.c = c
+    self.p = p.copy()
+
+    self.go()
+</t>
+<t tx="ekr.20101116124202.7838">def go (self):
+
+    try:
+        self.setUp()
+        self.runTest()
+    finally:
+        self.tearDown()
+</t>
+<t tx="ekr.20101116124202.7839">def checkPosition(self,expRow,expCol):
+
+    row,col = self.getRowCol()
+
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+</t>
+<t tx="ekr.20101116124202.7840">def checkText(self):
+
+    new_text = self.tempChild.b
+    ref_text = self.after.b
+    newLines = new_text.splitlines(1)
+    refLines = ref_text.splitlines(1)
+    newLinesCount = len(newLines)
+    refLinesCount = len(refLines)
+    for i in range(min(newLinesCount,refLinesCount)):
+        assert newLines[i] == refLines[i], \
+            "Mismatch on line " + str(i) + "." \
+            + "\nExpected text: " + repr(refLines[i]) \
+            + "\n  Actual text: " + repr(newLines[i])
+
+    assert newLinesCount == refLinesCount, \
+        "Expected " + str(refLinesCount) + " lines, but " \
+        + "received " + str(newLinesCount) + " lines."
+</t>
+<t tx="ekr.20101116124202.7841"># Used in a unit test.
+
+def copyBeforeToTemp(self):
+
+    c = self.c ; tempNode = self.tempNode
+
+    # Delete all children of temp node.
+    while tempNode.firstChild():
+        tempNode.firstChild().doDelete()
+
+    # Copy the before node text to the temp node.
+    text = self.before.b
+    tempNode.setBodyString(text)
+
+    # create the child node that holds the text.
+    self.tempChild = self.tempNode.insertAsNthChild(0)
+    self.tempChild.setHeadString('tempChildNode')
+
+    # copy the before text to the temp text.
+    text = self.before.b
+    self.tempChild.setBodyString(text)
+
+    # Make the temp child node current, and put the cursor at the beginning.
+    c.selectPosition(self.tempChild)
+    w = c.frame.body.bodyCtrl
+    w.setSelectionRange(0,0)
+</t>
+<t tx="ekr.20101116124202.7842">def getRowCol(self):
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+    tab_width = c.frame.tab_width
+
+    # Get the Tkinter row col position of the insert cursor.
+    s = w.getAllText()
+    index = w.getInsertPoint()
+    row,col = g.convertPythonIndexToRowCol(s,index)
+    row += 1
+    # g.trace(index,row,col)
+
+    # Adjust col position for tabs.
+    if col &gt; 0:
+        s2 = s[index-col:index]
+        s2 = g.toUnicode(s2)
+        col = g.computeWidth(s2,tab_width)
+
+    return row,col
+</t>
+<t tx="ekr.20101116124202.7843">def runTest(self):
+
+    g.trace('must be overridden in subclasses')
+</t>
+<t tx="ekr.20101116124202.7844">def setUp(self):
+
+    c = self.c ; p = self.p
+    u = self.u = testUtils(c)
+
+    # self.undoMark = c.undoer.getMark()
+    c.undoer.clearUndoState()
+
+    assert(c.positionExists(p))
+    self.before = u.findNodeInTree(p,"before")
+    self.after  = u.findNodeInTree(p,"after")
+    self.tempNode = u.findNodeInTree(p,"tempNode")
+
+    assert self.tempNode,'no tempNode: ' + p
+    assert c.positionExists(self.tempNode),'tempNode does not exist'
+    self.tempChild = None
+
+    self.copyBeforeToTemp()
+</t>
+<t tx="ekr.20101116124202.7845">def tearDown(self):
+
+    c = self.c ; tempNode = self.tempNode
+
+    # clear the temp node and mark it unchanged
+    tempNode.setBodyString("")
+    tempNode.clearDirty()
+
+    if 1: # Disabling this is good for debugging.
+        # Delete all children of temp node.
+        while tempNode.firstChild():
+            tempNode.firstChild().doDelete()
+
+    # c.undoer.rollbackToMark(self.undoMark)
+    c.undoer.clearUndoState()
+</t>
+<t tx="ekr.20101116124202.7846">class singleParagraphTest (reformatParagraphTest):
+
+    '''A class to work around stupidities of the Unittest classes.'''
+
+    @others
+</t>
+<t tx="ekr.20101116124202.7847">def __init__ (self,c,p,finalRow,finalCol):
+
+    self.finalCol = finalCol
+    self.finalRow = finalRow
+
+    # Call the base class.
+    reformatParagraphTest.__init__(self,c,p)
+</t>
+<t tx="ekr.20101116124202.7848">def runTest(self):
+
+    # Reformat the paragraph
+    self.c.reformatParagraph()
+
+    # Compare the computed result to the reference result.
+    self.checkText()
+    self.checkPosition(self.finalRow,self.finalCol)
+</t>
+<t tx="ekr.20101116124202.7849">class multiParagraphTest (reformatParagraphTest):
+
+    @others
+</t>
+<t tx="ekr.20101116124202.7850">def runTest(self):
+
+    self.c.reformatParagraph()
+    self.checkPosition(13,0)
+
+    # Keep going, in the same manner
+    self.c.reformatParagraph()
+    self.checkPosition(25,0)
+    self.c.reformatParagraph()
+    self.checkPosition(32,11)
+
+    # Compare the computed result to the reference result.
+    self.checkText()
+</t>
+<t tx="ekr.20101116124202.7851">class multiParagraphWithListTest (reformatParagraphTest):
+
+    @others
+</t>
+<t tx="ekr.20101116124202.7852">def runTest(self):
+
+    # reformat the paragraph and check insertion cursor position
+    self.c.reformatParagraph()
+    self.checkPosition(4,0)
+
+    # Keep going, in the same manner.
+    self.c.reformatParagraph()
+    self.checkPosition(7,0)
+    self.c.reformatParagraph()
+    self.checkPosition(10,0)
+    self.c.reformatParagraph()
+    self.checkPosition(13,0)
+    self.c.reformatParagraph()
+    self.checkPosition(14,18)
+
+    # Compare the computed result to the reference result.
+    self.checkText()
+</t>
+<t tx="ekr.20101116124202.7853">class leadingWSOnEmptyLinesTest (reformatParagraphTest):
+
+    @others
+</t>
+<t tx="ekr.20101116124202.7854">def runTest(self):
+
+    # reformat the paragraph and check insertion cursor position
+    self.c.reformatParagraph()
+    self.checkPosition(4,0)
+
+    # Keep going, in the same manner
+    self.c.reformatParagraph()
+    self.checkPosition(7,0)
+    self.c.reformatParagraph()
+    self.checkPosition(10,0)
+    self.c.reformatParagraph()
+    self.checkPosition(13,0)
+    self.c.reformatParagraph()
+    self.checkPosition(14,18)
+
+    # Compare the computed result to the reference result.
+    self.checkText()
+</t>
+<t tx="ekr.20101116124202.7855">class directiveBreaksParagraphTest (reformatParagraphTest):
+
+    @others
+</t>
+<t tx="ekr.20101116124202.7856">def runTest(self):
+
+    # reformat the paragraph and check insertion cursor position
+    self.c.reformatParagraph()
+    self.checkPosition(13,0) # at next paragraph
+
+    # Keep going, in the same manner
+    self.c.reformatParagraph()
+    self.checkPosition(25,0) # at next paragraph
+    self.c.reformatParagraph()
+    self.checkPosition(32,11)
+
+    # Compare the computed result to the reference result.
+    self.checkText()
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

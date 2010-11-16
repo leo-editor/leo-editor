@@ -1049,6 +1049,12 @@
 <v t="ekr.20100131180007.5423"><vh>@test g.getPathFromDirectives</vh></v>
 <v t="ekr.20100131180007.5422"><vh>@test g.findDefaultDirectory</vh></v>
 </v>
+<v t="ekr.20100223094723.5375"><vh>New import tests</vh>
+<v t="ekr.20100223094723.5376"><vh>@test skipToTheNextClassOrFunction (a class next)</vh></v>
+<v t="ekr.20100223094723.5377"><vh>@test skipToTheNextClassOrFunction (a function next)</vh></v>
+<v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
+<v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
@@ -3085,12 +3091,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20100223094723.5375"><vh>New import tests</vh>
-<v t="ekr.20100223094723.5376"><vh>@test skipToTheNextClassOrFunction (a class next)</vh></v>
-<v t="ekr.20100223094723.5377"><vh>@test skipToTheNextClassOrFunction (a function next)</vh></v>
-<v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
-<v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
 </v>
 </vnodes>
 <tnodes>

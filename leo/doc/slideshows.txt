@@ -586,9 +586,128 @@ The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.
 .. @+node:ekr.20101021092135.5431: *3*  Drafts
-.. @+node:ekr.20101115152915.4930: *4* 1. External files
+.. @+node:ekr.20101115152915.4930: *4* 1. External files (draft)
+@nocolor-node
+
+===== Intro
+
+Trees whose root headline starts with \@file, \@auto or \@edit create **external
+files** on your file system.  Here are some examples::
+
+  @file myClass.py
+  @auto ../graphics/circles.cpp
+  @edit ~/.leo/.leoID.txt
+
+As you can see, these nodes specify file names, which can be an absolute
+path or a path relative to the directory containing the Leo outline.
+
+Collectively, nodes that create external files are known as **@<file> nodes.**
+Leo defines several other kinds of @<file> nodes, but this slideshow will not
+discuss them.
+
+===== Automatic load/store make Leo an IDE
+
+Leo automatically loads all @<file> trees when you open a Leo outline, and Leo
+writes any modified @<file> tree when you save an outline. Reading external
+files is very fast because of an efficient file-caching scheme.
+
+A single Leo outline may be connected to dozens of external files: this makes
+Leo work like an IDE (Integrated Development Environment). Leo outlines act like
+project files. For example, a Leo outline, leoPyRef.leo, contains \@file trees
+for all of Leo's core source files. Another Leo outline, leoPluginsRef.leo,
+creates the external files for all of Leo's plugins, and LeoDocs.leo contains
+all of Leo's documentation.
+
+===== Using sentinel lines, or not
+
+When using \@file, Leo stores outline structure in external files using comment
+lines called **sentinel lines**. These sentinel lines are important: they allow
+Leo to keep track of outlines structure, including clone relationships. Using
+\@file is **highly recommended** whenever possible. In particular, using \@file
+allows you to **share outline structure** with others merely by sharing external
+files.
+
+Alas, in some situations it is not appropriate to use sentinel comments in
+external files. In that case you use \@auto and \@edit trees to connect Leo
+outlines to existing external files without creating sentinel files. Not all of
+Leo's features can be used with \@auto and \@edit trees, but that can't be
+helped. In particular, Leo can not preserve outline structure exactly. Leo's
+"degraded" operation for such trees is similar to that found in all other
+editors and IDE's.
+
+The rest of this slide show will discuss \@file trees and their capabilities. We
+will then discuss \@auto and \@edit.
+
+===== Using @file trees.
+
+To repeat, it's best to use \@file to create external files. The next serious of slides
+will show you how to create external files with \@file trees.
+
+To create a new external file, create an \@file node giving the path to the
+external file. This path can be a full, absolute path, but it is usually much
+more convenient to use a relative paths. All relative paths in @<file> nodes are
+relative to Leo's **load directory**, the directory containing the .leo file for
+the present outline. In most cases, we can ignore the path prefix entirely. For
+example::
+
+    @file myFile.py
+
+===== The top-level body text: section references & @others
+
+
+===== Defining << imports >>
+
+===== Defining other nodes.
+
+**Important**: indentation in the external file is controlled by the indentation
+of \@others directives, **not** by the structure of the outline. This allows you
+to create **organizer nodes** without affecting the external file in any
+significant way (other than sentinel comments).
+
+
+
+
+===== Using @auto nodes.
+
+
+
+===== Using @edit nodes
+
+**@edit nodes** contain the entire contents of an
+external file.
 .. @+node:ekr.20101115152915.4931: *4* 2. Clones & views
+Clones focus attention.
 .. @+node:ekr.20101115152915.4936: *4* 3. Scripting Leo
+c, g, p.
+
+getters/setters (Python propterties)
+
+iterators
+
+g.openWithFileName
+
+using atFile.write.
+
+g.pdb
+.. @+node:ekr.20101116103056.5272: *4* Using the minibuffer
+@nocolor-node
+
+>> You can use the print-commands command.
+
+> How can I run this command? Do I use the minibuffer?
+
+Yes. Type <alt-x> to put the cursor in the minibuffer. Then use tab
+completion to avoid having to do much typing. Something like this:
+
+Type "pr<tab>". This will show open the completion pane. The pane shows you all
+the commands that start with pr. There are too many, so type i<tab>. Now you
+will see "print-" in the minibuffer and only commands that start with "print-"
+in the completion tab. Now just type "c<tab>" and you will see the full
+print-commands command in the minibuffer. Finally, type <return> to execute the
+command.
+
+*Important*: you can use <backspace> in the minibuffer to show more alternatives,
+and you can hit <ctrl-g> at any time in Leo to put focus in the body pane.
 .. @+node:ekr.20101115152915.4933: *3* Maybe
 .. @+node:ekr.20101115152915.4935: *4* Leo's Dom
 .. @+node:ekr.20101113110328.4947: *4* Using @button nodes
@@ -615,7 +734,6 @@ http://mail.google.com/mail/#inbox/12adebe2ffe80572
 .. @+node:ekr.20101014034526.5280: *4* @slideshow External files
 @language rest
 @pagewidth 60
-
 .. @+node:ekr.20101014034526.5287: *5*   Topics
 sentinels
 

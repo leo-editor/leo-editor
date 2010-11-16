@@ -24,6 +24,27 @@ For final:
 - Finish introductory slide shows.
 #@+node:ekr.20101024062147.6014: ** For 4.8.1 Autocompleter
 # This can be done in the trunk.
+#@+node:ekr.20101116104701.5828: *3* Make promote-child-body an official command
+#@+node:ekr.20101116104701.5829: *3* Create a script to use @g.command for all commands
+#@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
+@nocolor-node
+
+It's important that g.pdb get the sources for *all* Leo scripts.
+
+Postings:
+
+When @bool write_script_file is True the execute-script file uses
+execfile (or its Python 3k equivalent) to execute scripts.
+
+This allows g.pdb (or pudb) to know the text of Leo scripts!
+
+I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
+@bool write_script_file is False.
+
+In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
+
+Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
+@string script_file_path to some convenient place, say in your home directory.
 #@+node:ekr.20090131200406.14: *3* Notes
 #@+node:ekr.20080113165010: *4* About auto completion
 @nocolor
