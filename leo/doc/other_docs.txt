@@ -629,5 +629,96 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3dd91b318f17a359#
 .. @+node:ekr.20101025080245.5785: *3* 3/2010
 .. @+node:ekr.20101025080245.5784: *4* @url @language pseudoplain?
 http://groups.google.com/group/leo-editor/topics?start=360&sa=N
+.. @+node:ekr.20101115152915.4937: ** wikipedia entry
+@nocolor-node
+
+{{Infobox software
+| name = Leo: Leonine Editor with Outlines
+| screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&ssid=22298 Screenshots]
+| caption =
+| developer = Edward K. Ream
+| latest_release_version = 4.8 release candidate 1
+| latest_release_date = {{release date and age|2010|11|15}}
+| operating_system = [[Cross-platform]]
+| genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
+| license = [[Python (programming language)|Python]] License
+| website = http://webpages.charter.net/edreamleo/front.html
+}}
+
+'''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
+that features [[outliner|outlines]] with clones as its central tool of
+organization, navigation, customization and scripting.
+
+==Language==
+
+Leo is written in [[Python (programming language)|Python]] and uses two GUI
+toolkits, [[Tk (computing)|Tk]] and [[Qt (toolkit)|Qt]]. It is fully scriptable
+using Python and can be extended with plugins.
+In Leo, outlines are hierarchical data structures that people use to work with
+and manage text files—including code.
+
+==Trees, clones and views==
+
+Leo is an [[outliner]]. Leo's outline pane shows a [[tree (data structure)]] of data nodes.
+Nodes contain headlines, body text, and other information.
+Headlines naturally serve as descriptions of the body text.
+For example, @file nodes are nodes whose headline starts with @file.
+
+Leo trees are in fact [[directed acyclic graph|directed acyclic graphs]];
+nodes may have more than one parent.
+Leo calls such nodes clones.
+Clones appear in several places in the outline pane.
+
+Views are simply nodes whose children contain clones. A single outline may contain
+arbitrarily many views of the nodes contained therein.
+Views and clones turn Leo into a supremely flexible filing cabinet: any node may be filed
+in arbitrarily many places.
+<ref>[http://webpages.charter.net/edreamleo/nutshell.html Leo documentation: Leo in a Nutshell]</ref>
+
+==External files==
+
+@file nodes represent external files, files on the computer's file system.
+When saving an outline Leo automatically writes all changed @file
+trees back to the external files.
+Comments, called sentinel lines, in external files represent the outline structure.
+When reading an outline, these comments allows Leo to recreate
+@file trees using only the data in the external file.
+
+@auto nodes represent external files without using sentinel comments.
+When reading @auto nodes, Leo uses the program structure of the external file
+to create the @auto tree.
+
+==Scripting==
+
+Leo's scripting environment takes full advantage of outline structure:
+
+* The body text of any node may contain a Leo script, a Python script executed in the context of a Leo outline.
+
+* A simple [[API]] <ref>[http://webpages.charter.net/edreamleo/scripting.html Leo documentation: Scripting Leo with Python]</ref> gives Leo scripts full access to all data in loaded outlines, as well as full access to Leo's own source code. The API includes Python [[iterators]] that allow scripts to traverse outlines easily.
+
+* Scripts may be composed of any tree of nodes. A [[markup language]] similar to [[noweb]] <ref>[http://webpages.charter.net/edreamleo/intro.html#section-references Leo documentation: Tutorial]</ref> tells Leo how to create scripts from (parts of) an outline.
+
+* Headlines naturally control and guide scripts.
+
+** @test nodes represent unit tests. Leo can execute the body of an @test node as unit test, without the body having to create an explicit subclass of Python's UnitTest.TestCase class. <ref>[
+
+** @button nodes contain scripts that can be applied to other nodes.  In effect, @button nodes create user-defined commands. <ref>
+
+==External links==
+{{Portal|Free software}}
+*[http://webpages.charter.net/edreamleo/front.html Leo's homepage]
+*[http://sourceforge.net/projects/leo/ Leo at SourceForge],[http://sourceforge.net/project/screenshots.php?group_id=3458&ssid=22298 screenshots]
+*[http://groups.google.com/group/leo-editor leo-editor Google Group]
+*{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}
+*{{cite web |author=[[James Tauber]] |title=Using the Leo Outliner as a PIM | date=2004-05-15 |url=http://jtauber.com/blog/2004/05/15/using_the_leo_outliner_as_a_pim/ }}
+*{{cite book | author = Vreda Pieterse, Derrick G. Kourie, Andrew Boake | title=ACM International Conference Proceeding Series; Vol. 75. Proceedings of the 2004 annual research conference of the South African institute of computer scientists and information technologists on IT research in developing countries | chapter=A case for contemporary literate programming | editor=[[Association for Computing Machinery|ACM]] | pages=2–9 | url=http://portal.acm.org/citation.cfm?id=1035054}} (cited in references)
+
+==References==
+<references/>
+
+{{DEFAULTSORT:Leo (Text Editor)}}
+[[Category:Free text editors]]
+[[Category:Free software programmed in Python]]
+[[Category:Outliners]]
 .. @-all
 .. @-leo

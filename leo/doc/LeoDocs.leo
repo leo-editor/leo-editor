@@ -10,8 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
-expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -25,7 +24,7 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
@@ -72,7 +71,7 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20101025080245.5799" a="E"><vh>Intermediate Topics</vh>
+<v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
 <v t="ekr.20100805165051.7165"><vh>@file coloring.txt</vh></v>
 </v>
@@ -148,7 +147,7 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20101113120258.4929"><vh>To do</vh>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
-<v t="ekr.20101026082911.5536" a="E"><vh>Release notes</vh>
+<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
@@ -585,8 +584,6 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101021092135.5431"></v>
-<v t="ekr.20101115152915.4938"><vh>original</vh></v>
-<v t="ekr.20101115152915.4937"><vh>wikipedia</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2320,153 +2317,6 @@ Important files:
 <t tx="ekr.20101115152915.4934"></t>
 <t tx="ekr.20101115152915.4935"></t>
 <t tx="ekr.20101115152915.4936"></t>
-<t tx="ekr.20101115152915.4937">@nocolor-node
-
-{{Infobox software
-| name = Leo: Leonine Editor with Outlines
-| screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
-| caption =
-| developer = Edward K. Ream
-| latest_release_version = 4.8 release candidate 1
-| latest_release_date = {{release date and age|2010|11|15}}
-| operating_system = [[Cross-platform]]
-| genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
-| license = [[Python (programming language)|Python]] License
-| website = http://webpages.charter.net/edreamleo/front.html
-}}
-
-'''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
-that features [[outliner|outlines]] with clones as its central tool of
-organization, navigation, customization and scripting.
-
-==Language==
-
-Leo is written in [[Python (programming language)|Python]] and uses two GUI
-toolkits, [[Tk (computing)|Tk]] and [[Qt (toolkit)|Qt]]. It is fully scriptable
-using Python and can be extended with plugins.
-In Leo, outlines are hierarchical data structures that people use to work with
-and manage text files—including code.
-
-==Trees, clones and views==
-
-Leo is an [[outliner]]. Leo's outline pane shows a [[tree (data structure)]] of data nodes.
-Nodes contain headlines, body text, and other information.
-Headlines naturally serve as descriptions of the body text.
-For example, @file nodes are nodes whose headline starts with @file.
-
-Leo trees are in fact [[directed acyclic graph|directed acyclic graphs]];
-nodes may have more than one parent.
-Leo calls such nodes clones.
-Clones appear in several places in the outline pane.
-
-Views are simply nodes whose children contain clones. A single outline may contain
-arbitrarily many views of the nodes contained therein.
-Views and clones turn Leo into a supremely flexible filing cabinet: any node may be filed
-in arbitrarily many places.
-&lt;ref&gt;[http://webpages.charter.net/edreamleo/nutshell.html Leo documentation: Leo in a Nutshell]&lt;/ref&gt;
-
-==External files==
-
-@file nodes represent external files, files on the computer's file system.
-When saving an outline Leo automatically writes all changed @file
-trees back to the external files.
-Comments, called sentinel lines, in external files represent the outline structure.
-When reading an outline, these comments allows Leo to recreate
-@file trees using only the data in the external file.
-
-@auto nodes represent external files without using sentinel comments.
-When reading @auto nodes, Leo uses the program structure of the external file
-to create the @auto tree.
-
-==Scripting==
-
-Leo's scripting environment takes full advantage of outline structure:
-
-* The body text of any node may contain a Leo script, a Python script executed in the context of a Leo outline.
-
-* A simple [[API]] &lt;ref&gt;[http://webpages.charter.net/edreamleo/scripting.html Leo documentation: Scripting Leo with Python]&lt;/ref&gt; gives Leo scripts full access to all data in loaded outlines, as well as full access to Leo's own source code. The API includes Python [[iterators]] that allow scripts to traverse outlines easily.
-
-* Scripts may be composed of any tree of nodes. A [[markup language]] similar to [[noweb]] &lt;ref&gt;[http://webpages.charter.net/edreamleo/intro.html#section-references Leo documentation: Tutorial]&lt;/ref&gt; tells Leo how to create scripts from (parts of) an outline.
-  
-* Headlines naturally control and guide scripts.
-
-** @test nodes represent unit tests. Leo can execute the body of an @test node as unit test, without the body having to create an explicit subclass of Python's UnitTest.TestCase class. &lt;ref&gt;[
-
-** @button nodes contain scripts that can be applied to other nodes.  In effect, @button nodes create user-defined commands. &lt;ref&gt;
-
-==External links==
-{{Portal|Free software}}
-*[http://webpages.charter.net/edreamleo/front.html Leo's homepage]
-*[http://sourceforge.net/projects/leo/ Leo at SourceForge],[http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 screenshots]
-*[http://groups.google.com/group/leo-editor leo-editor Google Group]
-*{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}
-*{{cite web |author=[[James Tauber]] |title=Using the Leo Outliner as a PIM | date=2004-05-15 |url=http://jtauber.com/blog/2004/05/15/using_the_leo_outliner_as_a_pim/ }}
-*{{cite book | author = Vreda Pieterse, Derrick G. Kourie, Andrew Boake | title=ACM International Conference Proceeding Series; Vol. 75. Proceedings of the 2004 annual research conference of the South African institute of computer scientists and information technologists on IT research in developing countries | chapter=A case for contemporary literate programming | editor=[[Association for Computing Machinery|ACM]] | pages=2–9 | url=http://portal.acm.org/citation.cfm?id=1035054}} (cited in references)
-
-==References==
-&lt;references/&gt;
-
-{{DEFAULTSORT:Leo (Text Editor)}}
-[[Category:Free text editors]]
-[[Category:Free software programmed in Python]]
-[[Category:Outliners]]
-</t>
-<t tx="ekr.20101115152915.4938">@nocolor-node
-
-'''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
-that features [[outliner|outlines]] with clones as its central tool of
-organization and navigation.
-
-==Language==
-
-Leo is written in [[Python (programming language)|Python]] and uses two GUI
-toolkits, [[Tk (computing)|Tk]] and [[Qt (toolkit)|Qt]]. It is fully scriptable
-using Python and can be extended with plugins.
-
-==Leo outlines and clones==
-
-In Leo, outlines are hierarchical tree structures that are used to work with and
-manage text files—including code.
-
-Clones are outline nodes that are automatically kept identical throughout a Leo
-outline. They can be thought of as pointers to the same content: By editing one,
-all the other clones of that outline element update as well.
-
-This feature turns the outline tree structure into a [[directed acyclic graph]]
-structure.
-
-Outline nodes may be named or unnamed. Leo creates output files in a process
-called "tangling". Tangling starts at the top-level node of the output file. The
-contents of the top-level node are copied to the output file. Named nodes are
-inserted at the point of reference, as in macro languages; unnamed nodes are
-inserted as the result of Leo's @others directive. Tangling is a recursive
-process—inserted nodes may contain @other directives and references to named
-nodes, and so on.
-
-==Literate programming and Leo==
-
-Leo supports markup used in [[literate
-programming]]&lt;ref&gt;[http://webpages.charter.net/edreamleo/design.html leo
-Documentation - Designing with Leo]&lt;/ref&gt;. However, outlines generally reduce
-the need for comments and Leo programs and scripts need not follow Literate
-Programming methods.
-
-==External links==
-{{Portal|Free software}}
-*[http://webpages.charter.net/edreamleo/front.html Leo's homepage]
-*[http://sourceforge.net/projects/leo/ Leo at SourceForge], [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 screenshots]
-*{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}
-*{{cite web |author=[[James Tauber]] |title=Using the Leo Outliner as a PIM | date=2004-05-15 |url=http://jtauber.com/blog/2004/05/15/using_the_leo_outliner_as_a_pim/ }}
-*{{cite book | author = Vreda Pieterse, Derrick G. Kourie, Andrew Boake | title=ACM International Conference Proceeding Series; Vol. 75. Proceedings of the 2004 annual research conference of the South African institute of computer scientists and information technologists on IT research in developing countries | chapter=A case for contemporary literate programming | editor=[[Association for Computing Machinery|ACM]] | pages=2–9 | url=http://portal.acm.org/citation.cfm?id=1035054}} (cited in references)
-
-==References==
-&lt;references/&gt;
-
-{{DEFAULTSORT:Leo (Text Editor)}}
-[[Category:Free text editors]]
-[[Category:Free software programmed in Python]]
-[[Category:Outliners]]
-</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
