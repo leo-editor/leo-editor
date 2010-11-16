@@ -12,6 +12,12 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
+<v t="ekr.20101116124202.7830"><vh>@button reformat @key=Ctrl-Shift-P</vh>
+<v t="ekr.20101116124202.7831"><vh>&lt;&lt; compute vars for reformatParagraph &gt;&gt;</vh></v>
+<v t="ekr.20101116124202.7832"><vh>&lt;&lt; compute the leading whitespace &gt;&gt;</vh></v>
+<v t="ekr.20101116124202.7833"><vh>&lt;&lt; compute the result of wrapping all lines &gt;&gt;</vh></v>
+<v t="ekr.20101116124202.7834"><vh>&lt;&lt; update the body, selection &amp; undo state &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
@@ -587,43 +593,6 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101021092135.5431"></v>
 <v t="ekr.20101014034526.5280"></v>
 <v t="ekr.20101115152915.4930"></v>
-<v t="ekr.20101116124202.7829"><vh>Improve reformat-paragraph</vh>
-<v t="ekr.20101116124202.7830"><vh>reformatParagraph</vh>
-<v t="ekr.20101116124202.7831"><vh>&lt;&lt; compute vars for reformatParagraph &gt;&gt;</vh></v>
-<v t="ekr.20101116124202.7832"><vh>&lt;&lt; compute the leading whitespace &gt;&gt;</vh></v>
-<v t="ekr.20101116124202.7833"><vh>&lt;&lt; compute the result of wrapping all lines &gt;&gt;</vh></v>
-<v t="ekr.20101116124202.7834"><vh>&lt;&lt; update the body, selection &amp; undo state &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20101116124202.7835"><vh>Reformat Paragraph test code (leoTest.py)</vh>
-<v t="ekr.20101116124202.7836"><vh>class reformatParagraphTest</vh>
-<v t="ekr.20101116124202.7837"><vh>__init__</vh></v>
-<v t="ekr.20101116124202.7838"><vh>go</vh></v>
-<v t="ekr.20101116124202.7839"><vh>checkPosition</vh></v>
-<v t="ekr.20101116124202.7840"><vh>checkText</vh></v>
-<v t="ekr.20101116124202.7841"><vh>copyBeforeToTemp</vh></v>
-<v t="ekr.20101116124202.7842"><vh>getRowCol</vh></v>
-<v t="ekr.20101116124202.7843"><vh>runTest</vh></v>
-<v t="ekr.20101116124202.7844"><vh>setUp</vh></v>
-<v t="ekr.20101116124202.7845"><vh>tearDown</vh></v>
-</v>
-<v t="ekr.20101116124202.7846"><vh>class singleParagraphTest (reformatParagraphTest)</vh>
-<v t="ekr.20101116124202.7847"><vh>__init__</vh></v>
-<v t="ekr.20101116124202.7848"><vh>runTest</vh></v>
-</v>
-<v t="ekr.20101116124202.7849"><vh>class multiParagraphTest (reformatParagraphTest)</vh>
-<v t="ekr.20101116124202.7850"><vh>runTest</vh></v>
-</v>
-<v t="ekr.20101116124202.7851"><vh>class multiParagraphWithListTest (reformatParagraphTest)</vh>
-<v t="ekr.20101116124202.7852"><vh>runTest</vh></v>
-</v>
-<v t="ekr.20101116124202.7853"><vh>class leadingWSOnEmptyLinesTest (reformatParagraphTest)</vh>
-<v t="ekr.20101116124202.7854"><vh>runTest</vh></v>
-</v>
-<v t="ekr.20101116124202.7855"><vh>class testDirectiveBreaksParagraph (reformatParagraphTest)</vh>
-<v t="ekr.20101116124202.7856"><vh>runTest</vh></v>
-</v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2402,8 +2371,9 @@ will then discuss \@auto and \@edit.
 
 ===== Using @file trees.
 
-To repeat, it's best to use \@file to create external files. The next serious of slides
-will show you how to create external files with \@file trees.
+To repeat, it's best to use \@file to create external files if at all possible.
+The next series of slides will show you how to create external files with \@file
+trees.
 
 To create a new external file, create an \@file node giving the path to the
 external file. This path can be a full, absolute path, but it is usually much
@@ -2475,7 +2445,6 @@ command.
 *Important*: you can use &lt;backspace&gt; in the minibuffer to show more alternatives,
 and you can hit &lt;ctrl-g&gt; at any time in Leo to put focus in the body pane.
 </t>
-<t tx="ekr.20101116124202.7829"></t>
 <t tx="ekr.20101116124202.7830">def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
     """Reformat a text paragraph in a Tk.Text widget
@@ -2557,7 +2526,7 @@ while ins &lt; len(s):
     line = s[i:j]
     # 2010/11/16: it's annoying, imo, to treat @ lines differently.
     # but I can't change this at this late stage in the release cycle.
-    if line.isspace() or line.startswith('@'):
+    if line.isspace(): ### or line.startswith('@'):
         ins = j+1
     else:
         ins = i ; break
@@ -2574,247 +2543,6 @@ else:
 
 w.setSelectionRange(ins,ins,insert=ins)
 w.see(ins)
-</t>
-<t tx="ekr.20101116124202.7835"># DTHEIN 2004.01.11: Added unit tests for reformatParagraph
-</t>
-<t tx="ekr.20101116124202.7836">class reformatParagraphTest:
-
-    '''A class to work around stupidities of the Unittest classes.'''
-
-    @others
-</t>
-<t tx="ekr.20101116124202.7837">def __init__ (self,c,p):
-
-    self.c = c
-    self.p = p.copy()
-
-    self.go()
-</t>
-<t tx="ekr.20101116124202.7838">def go (self):
-
-    try:
-        self.setUp()
-        self.runTest()
-    finally:
-        self.tearDown()
-</t>
-<t tx="ekr.20101116124202.7839">def checkPosition(self,expRow,expCol):
-
-    row,col = self.getRowCol()
-
-    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
-
-    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-</t>
-<t tx="ekr.20101116124202.7840">def checkText(self):
-
-    new_text = self.tempChild.b
-    ref_text = self.after.b
-    newLines = new_text.splitlines(1)
-    refLines = ref_text.splitlines(1)
-    newLinesCount = len(newLines)
-    refLinesCount = len(refLines)
-    for i in range(min(newLinesCount,refLinesCount)):
-        assert newLines[i] == refLines[i], \
-            "Mismatch on line " + str(i) + "." \
-            + "\nExpected text: " + repr(refLines[i]) \
-            + "\n  Actual text: " + repr(newLines[i])
-
-    assert newLinesCount == refLinesCount, \
-        "Expected " + str(refLinesCount) + " lines, but " \
-        + "received " + str(newLinesCount) + " lines."
-</t>
-<t tx="ekr.20101116124202.7841"># Used in a unit test.
-
-def copyBeforeToTemp(self):
-
-    c = self.c ; tempNode = self.tempNode
-
-    # Delete all children of temp node.
-    while tempNode.firstChild():
-        tempNode.firstChild().doDelete()
-
-    # Copy the before node text to the temp node.
-    text = self.before.b
-    tempNode.setBodyString(text)
-
-    # create the child node that holds the text.
-    self.tempChild = self.tempNode.insertAsNthChild(0)
-    self.tempChild.setHeadString('tempChildNode')
-
-    # copy the before text to the temp text.
-    text = self.before.b
-    self.tempChild.setBodyString(text)
-
-    # Make the temp child node current, and put the cursor at the beginning.
-    c.selectPosition(self.tempChild)
-    w = c.frame.body.bodyCtrl
-    w.setSelectionRange(0,0)
-</t>
-<t tx="ekr.20101116124202.7842">def getRowCol(self):
-
-    c = self.c ; w = c.frame.body.bodyCtrl
-    tab_width = c.frame.tab_width
-
-    # Get the Tkinter row col position of the insert cursor.
-    s = w.getAllText()
-    index = w.getInsertPoint()
-    row,col = g.convertPythonIndexToRowCol(s,index)
-    row += 1
-    # g.trace(index,row,col)
-
-    # Adjust col position for tabs.
-    if col &gt; 0:
-        s2 = s[index-col:index]
-        s2 = g.toUnicode(s2)
-        col = g.computeWidth(s2,tab_width)
-
-    return row,col
-</t>
-<t tx="ekr.20101116124202.7843">def runTest(self):
-
-    g.trace('must be overridden in subclasses')
-</t>
-<t tx="ekr.20101116124202.7844">def setUp(self):
-
-    c = self.c ; p = self.p
-    u = self.u = testUtils(c)
-
-    # self.undoMark = c.undoer.getMark()
-    c.undoer.clearUndoState()
-
-    assert(c.positionExists(p))
-    self.before = u.findNodeInTree(p,"before")
-    self.after  = u.findNodeInTree(p,"after")
-    self.tempNode = u.findNodeInTree(p,"tempNode")
-
-    assert self.tempNode,'no tempNode: ' + p
-    assert c.positionExists(self.tempNode),'tempNode does not exist'
-    self.tempChild = None
-
-    self.copyBeforeToTemp()
-</t>
-<t tx="ekr.20101116124202.7845">def tearDown(self):
-
-    c = self.c ; tempNode = self.tempNode
-
-    # clear the temp node and mark it unchanged
-    tempNode.setBodyString("")
-    tempNode.clearDirty()
-
-    if 1: # Disabling this is good for debugging.
-        # Delete all children of temp node.
-        while tempNode.firstChild():
-            tempNode.firstChild().doDelete()
-
-    # c.undoer.rollbackToMark(self.undoMark)
-    c.undoer.clearUndoState()
-</t>
-<t tx="ekr.20101116124202.7846">class singleParagraphTest (reformatParagraphTest):
-
-    '''A class to work around stupidities of the Unittest classes.'''
-
-    @others
-</t>
-<t tx="ekr.20101116124202.7847">def __init__ (self,c,p,finalRow,finalCol):
-
-    self.finalCol = finalCol
-    self.finalRow = finalRow
-
-    # Call the base class.
-    reformatParagraphTest.__init__(self,c,p)
-</t>
-<t tx="ekr.20101116124202.7848">def runTest(self):
-
-    # Reformat the paragraph
-    self.c.reformatParagraph()
-
-    # Compare the computed result to the reference result.
-    self.checkText()
-    self.checkPosition(self.finalRow,self.finalCol)
-</t>
-<t tx="ekr.20101116124202.7849">class multiParagraphTest (reformatParagraphTest):
-
-    @others
-</t>
-<t tx="ekr.20101116124202.7850">def runTest(self):
-
-    self.c.reformatParagraph()
-    self.checkPosition(13,0)
-
-    # Keep going, in the same manner
-    self.c.reformatParagraph()
-    self.checkPosition(25,0)
-    self.c.reformatParagraph()
-    self.checkPosition(32,11)
-
-    # Compare the computed result to the reference result.
-    self.checkText()
-</t>
-<t tx="ekr.20101116124202.7851">class multiParagraphWithListTest (reformatParagraphTest):
-
-    @others
-</t>
-<t tx="ekr.20101116124202.7852">def runTest(self):
-
-    # reformat the paragraph and check insertion cursor position
-    self.c.reformatParagraph()
-    self.checkPosition(4,0)
-
-    # Keep going, in the same manner.
-    self.c.reformatParagraph()
-    self.checkPosition(7,0)
-    self.c.reformatParagraph()
-    self.checkPosition(10,0)
-    self.c.reformatParagraph()
-    self.checkPosition(13,0)
-    self.c.reformatParagraph()
-    self.checkPosition(14,18)
-
-    # Compare the computed result to the reference result.
-    self.checkText()
-</t>
-<t tx="ekr.20101116124202.7853">class leadingWSOnEmptyLinesTest (reformatParagraphTest):
-
-    @others
-</t>
-<t tx="ekr.20101116124202.7854">def runTest(self):
-
-    # reformat the paragraph and check insertion cursor position
-    self.c.reformatParagraph()
-    self.checkPosition(4,0)
-
-    # Keep going, in the same manner
-    self.c.reformatParagraph()
-    self.checkPosition(7,0)
-    self.c.reformatParagraph()
-    self.checkPosition(10,0)
-    self.c.reformatParagraph()
-    self.checkPosition(13,0)
-    self.c.reformatParagraph()
-    self.checkPosition(14,18)
-
-    # Compare the computed result to the reference result.
-    self.checkText()
-</t>
-<t tx="ekr.20101116124202.7855">class directiveBreaksParagraphTest (reformatParagraphTest):
-
-    @others
-</t>
-<t tx="ekr.20101116124202.7856">def runTest(self):
-
-    # reformat the paragraph and check insertion cursor position
-    self.c.reformatParagraph()
-    self.checkPosition(13,0) # at next paragraph
-
-    # Keep going, in the same manner
-    self.c.reformatParagraph()
-    self.checkPosition(25,0) # at next paragraph
-    self.c.reformatParagraph()
-    self.checkPosition(32,11)
-
-    # Compare the computed result to the reference result.
-    self.checkText()
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

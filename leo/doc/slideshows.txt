@@ -640,8 +640,9 @@ will then discuss \@auto and \@edit.
 
 ===== Using @file trees.
 
-To repeat, it's best to use \@file to create external files. The next serious of slides
-will show you how to create external files with \@file trees.
+To repeat, it's best to use \@file to create external files if at all possible.
+The next series of slides will show you how to create external files with \@file
+trees.
 
 To create a new external file, create an \@file node giving the path to the
 external file. This path can be a full, absolute path, but it is usually much
