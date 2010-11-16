@@ -709,6 +709,15 @@ command.
 
 *Important*: you can use <backspace> in the minibuffer to show more alternatives,
 and you can hit <ctrl-g> at any time in Leo to put focus in the body pane.
+.. @+node:ekr.20101116152804.5285: *4* Nutshell
+@nocolor-node
+
+The experience of using Leo is quite a bit different from using other editors or
+IDE's.
+
+- The unit of work is different: I work with nodes, not files or text.
+- The workflow is different: I create clones rather than searching.
+- Scripts are much more important: it's easy to manipulate code because less parsing is needed.
 .. @+node:ekr.20101115152915.4933: *3* Maybe
 .. @+node:ekr.20101115152915.4935: *4* Leo's Dom
 .. @+node:ekr.20101113110328.4947: *4* Using @button nodes

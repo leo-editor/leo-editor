@@ -12,12 +12,6 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
-<v t="ekr.20101116124202.7830"><vh>@button reformat @key=Ctrl-Shift-P</vh>
-<v t="ekr.20101116124202.7831"><vh>&lt;&lt; compute vars for reformatParagraph &gt;&gt;</vh></v>
-<v t="ekr.20101116124202.7832"><vh>&lt;&lt; compute the leading whitespace &gt;&gt;</vh></v>
-<v t="ekr.20101116124202.7833"><vh>&lt;&lt; compute the result of wrapping all lines &gt;&gt;</vh></v>
-<v t="ekr.20101116124202.7834"><vh>&lt;&lt; update the body, selection &amp; undo state &gt;&gt;</vh></v>
-</v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
@@ -28,6 +22,14 @@
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
+</v>
+<v t="ekr.20101116124202.7830"><vh>@button reformat @key=Ctrl-Shift-P</vh>
+<v t="ekr.20101116152804.5284"><vh>reformatParagraph &amp; helpers</vh>
+<v t="ekr.20101116124202.7831"><vh>rp_get_args</vh></v>
+<v t="ekr.20101116124202.7832"><vh>rp_get_leading_ws</vh></v>
+<v t="ekr.20101116124202.7834"><vh>rp_reformat</vh></v>
+<v t="ekr.20101116124202.7833"><vh>rp_wrap_all_lines</vh></v>
+</v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
@@ -476,6 +478,7 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101115152915.4931"><vh>2. Clones &amp; views</vh></v>
 <v t="ekr.20101115152915.4936"><vh>3. Scripting Leo</vh></v>
 <v t="ekr.20101116103056.5272"><vh>Using the minibuffer</vh></v>
+<v t="ekr.20101116152804.5285"><vh>Nutshell</vh></v>
 </v>
 <v t="ekr.20101115152915.4933"><vh>Maybe</vh>
 <v t="ekr.20101115152915.4935"><vh>Leo's Dom</vh></v>
@@ -2445,7 +2448,106 @@ command.
 *Important*: you can use &lt;backspace&gt; in the minibuffer to show more alternatives,
 and you can hit &lt;ctrl-g&gt; at any time in Leo to put focus in the body pane.
 </t>
-<t tx="ekr.20101116124202.7830">def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+<t tx="ekr.20101116124202.7830">@others
+
+reformatParagraph (c)
+
+</t>
+<t tx="ekr.20101116124202.7831">def rp_get_args (self):
+
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+
+    c = self ; body = c.frame.body ;  w = body.bodyCtrl
+
+    d = c.scanAllDirectives()
+    pageWidth = d.get("pagewidth")
+    tabWidth  = d.get("tabwidth")
+
+    original = w.getAllText()
+    oldSel =  w.getSelectionRange()
+    oldYview = body.getYScrollPosition()
+
+    return oldSel,oldYview,original,pageWidth,tabWidth
+</t>
+<t tx="ekr.20101116124202.7832">def rp_get_leading_ws (self,lines,tabWidth):
+
+    '''Compute and return indents and leading_ws.'''
+
+    c = self
+
+    indents = [0,0]
+    leading_ws = ["",""]
+
+    for i in (0,1):
+        if i &lt; len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws,tabWidth)
+
+    indents[1] = max(indents)
+
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
+
+    return indents,leading_ws
+</t>
+<t tx="ekr.20101116124202.7833">def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
+</t>
+<t tx="ekr.20101116124202.7834">def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+
+    '''Reformat the body and update the selection.'''
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
+
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
+
+    changed = original != head + result + tail
+    if changed:
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins &lt; len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace(): ### or line.startswith('@'):
+                ins = j+1
+            else:
+                ins = i ; break
+
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+
+    w.setSelectionRange(ins,ins,insert=ins)
+    w.see(ins)
+</t>
+<t tx="ekr.20101116152804.5284">def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
     """Reformat a text paragraph in a Tk.Text widget
 
@@ -2468,82 +2570,21 @@ cursor."""
         i,j = w.getSelectionRange()
         w.setInsertPoint(i)
 
-    &lt;&lt; compute vars for reformatParagraph &gt;&gt;
+    ### To do: change f(c,args) to c.f(args)
+    oldSel,oldYview,original,pageWidth,tabWidth = rp_get_args(c)
+    head,lines,tail = c.findBoundParagraph()
     if lines:
-        &lt;&lt; compute the leading whitespace &gt;&gt;
-        &lt;&lt; compute the result of wrapping all lines &gt;&gt;
-        &lt;&lt; update the body, selection &amp; undo state &gt;&gt;
-</t>
-<t tx="ekr.20101116124202.7831">theDict = c.scanAllDirectives()
-pageWidth = theDict.get("pagewidth")
-tabWidth  = theDict.get("tabwidth")
+        indents,leading_ws = rp_get_leading_ws(c,lines,tabWidth)
+        result = rp_wrap_all_lines(c,indents,leading_ws,lines,pageWidth)
+        rp_reformat(c,head,oldSel,oldYview,original,result,tail,undoType)</t>
+<t tx="ekr.20101116152804.5285">@nocolor-node
 
-original = w.getAllText()
-oldSel =  w.getSelectionRange()
-oldYview = body.getYScrollPosition()
+The experience of using Leo is quite a bit different from using other editors or
+IDE's.
 
-head,lines,tail = c.findBoundParagraph()
-</t>
-<t tx="ekr.20101116124202.7832">indents = [0,0] ; leading_ws = ["",""]
-
-for i in (0,1):
-    if i &lt; len(lines):
-        # Use the original, non-optimized leading whitespace.
-        leading_ws[i] = ws = g.get_leading_ws(lines[i])
-        indents[i] = g.computeWidth(ws,tabWidth)
-
-indents[1] = max(indents)
-if len(lines) == 1:
-    leading_ws[1] = leading_ws[0]
-</t>
-<t tx="ekr.20101116124202.7833">trailingNL = lines and lines[-1].endswith('\n')
-lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
-
-# Wrap the lines, decreasing the page width by indent.
-result = g.wrap_lines(lines,
-    pageWidth-indents[1],
-    pageWidth-indents[0])
-
-# prefix with the leading whitespace, if any
-paddedResult = []
-paddedResult.append(leading_ws[0] + result[0])
-for line in result[1:]:
-    paddedResult.append(leading_ws[1] + line)
-
-# Convert the result to a string.
-result = '\n'.join(paddedResult)
-if trailingNL: result = result + '\n'
-</t>
-<t tx="ekr.20101116124202.7834"># This destroys recoloring.
-junk, ins = body.setSelectionAreas(head,result,tail)
-old_ins = ins
-
-# Advance to the next paragraph.
-s = w.getAllText()
-ins += 1 # Move past the selection.
-while ins &lt; len(s):
-    i,j = g.getLine(s,ins)
-    line = s[i:j]
-    # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-    # but I can't change this at this late stage in the release cycle.
-    if line.isspace(): ### or line.startswith('@'):
-        ins = j+1
-    else:
-        ins = i ; break
-
-changed = original != head + result + tail
-
-if changed:
-    body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
-    ins = old_ins # 2010/11/16: stay in the paragraph if something changed.
-else:
-    # We must always recolor, even if the text has not changed,
-    # because setSelectionAreas above destroys the coloring.
-    c.recolor()
-
-w.setSelectionRange(ins,ins,insert=ins)
-w.see(ins)
-</t>
+- The unit of work is different: I work with nodes, not files or text.
+- The workflow is different: I create clones rather than searching.
+- Scripts are much more important: it's easy to manipulate code because less parsing is needed.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
