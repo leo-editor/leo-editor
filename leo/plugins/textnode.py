@@ -3,6 +3,7 @@
 #@+<< docstring >>
 #@+node:ajones.20070122160142.1: ** << docstring >>
 ''' Supports @text nodes for reading and writing external files.
+This plugin has been superceded by @edit nodes.
 
 The @text node is for embedding text files in a leo node that won't be saved
 with the leo file, and won't contain any sentinel leo comments. Children of

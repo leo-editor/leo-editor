@@ -25,7 +25,7 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
@@ -72,7 +72,7 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
+<v t="ekr.20101025080245.5799" a="E"><vh>Intermediate Topics</vh>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
 <v t="ekr.20100805165051.7165"><vh>@file coloring.txt</vh></v>
 </v>
@@ -148,7 +148,7 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20101113120258.4929"><vh>To do</vh>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
-<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
+<v t="ekr.20101026082911.5536" a="E"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
