@@ -100,10 +100,13 @@ def onIdle (tag,keywords):
     interval = d.get('interval')
     if time.time()-last >= interval:
         if c.mFileName and c.changed:
+            w = c.get_focus() # 2010/11/16: save & restore focus.
+            # g.trace(w)
             s = "Autosave: %s" % time.ctime()
             g.es(s,color="orange")
             if trace: g.trace(s)
             c.fileCommands.save(c.mFileName)
+            c.set_focus(w,force=True) # 2010/11/16: save & restore focus.
         elif trace:
             g.trace('not changed')
         # Update the global dict.
