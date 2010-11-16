@@ -1680,6 +1680,8 @@ class keyHandlerClass:
                     if b2.commandName != commandName and pane in ('button','all',b2.pane)
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
+                    shortcut = c.k.prettyPrintKey(shortcut)
+                        # 2010/11/16: a significant bug fix.
                     g.es_print ('redefining shortcut %s from %s to %s in %s' % (
                         shortcut,
                         g.choose(pane=='button',z,commandName),
@@ -4002,7 +4004,7 @@ class keyHandlerClass:
         # g.trace('<%s>' % stroke)
         return '<%s>' % stroke
     #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
-    def prettyPrintKey (self,stroke,brief=False):
+    def prettyPrintKey (self,stroke,brief=False,trace=False):
 
         k = self
         s = stroke and g.stripBrackets(stroke.strip())
@@ -4015,6 +4017,7 @@ class keyHandlerClass:
         else:               s = s.replace('-','+')
         fields = s.split('+')
         last = fields and fields[-1]
+        if trace: g.trace('fields',fields)
         if last and len(last) == 1:
             prev = s[:-1]
             if last.isalpha():
