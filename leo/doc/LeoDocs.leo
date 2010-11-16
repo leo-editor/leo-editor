@@ -10,7 +10,8 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
+expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -144,17 +145,448 @@
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
-<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d7100285809000000302e302e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e382e302e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e382e302e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e382e302e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473580b000000302e312e382e302e332e31710e7d710f580b0000007374725f6c656f5f706f737110680473752e"
-marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
-</v>
 <v t="ekr.20101113120258.4929"><vh>To do</vh>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
-<v t="ekr.20101026082911.5536" a="E"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" a="E"
-expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580d000000302e302e302e302e302e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580d000000302e302e302e302e302e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580d000000302e302e302e302e302e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580d000000302e302e302e302e302e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
+marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
+</v>
+<v t="ekr.20101025080245.5540"><vh>To do: slideshows</vh>
+<v t="ekr.20101115152915.4928"><vh> Unused</vh>
+<v t="ekr.20101013072903.5218"><vh>Not good stories</vh>
+<v t="ekr.20101007082321.4357"><vh>@slideshow What is Leo? (Joe Orr)</vh>
+<v t="ekr.20101009171445.4637"><vh>@title_pattern = What is Leo? Slide %(slide_number)s</vh></v>
+<v t="ekr.20101008061729.4372"><vh>@slide 001</vh>
+<v t="ekr.20101010121134.4703"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4373"><vh>@slide 002</vh>
+<v t="ekr.20101008061729.4384"><vh>@screenshot</vh>
+<v t="ekr.20101008061729.4385"><vh>To Do List</vh>
+<v t="ekr.20101008061729.4386"><vh>Urgent</vh></v>
+<v t="ekr.20101008061729.4387"><vh>Important</vh></v>
+<v t="ekr.20101008061729.4388"><vh>Soon</vh></v>
+<v t="ekr.20101008061729.4389"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101008061729.4390"><vh>Diary</vh>
+<v t="ekr.20101008061729.4391"><vh>2009</vh>
+<v t="ekr.20101008061729.4392"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20101008061729.4393"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.4396"><vh>@select To Do List</vh></v>
+<v t="ekr.20101010121134.4704"><vh>@edit</vh></v>
+<v t="ekr.20101010121134.4716"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4717"><vh>@url working file</vh></v>
+<v t="ekr.20101010121134.4718"><vh>@url final output file</vh></v>
+<v t="ekr.20101010121134.4719"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4398"><vh>@slide 003</vh>
+<v t="ekr.20101009115705.4583"><vh>@screenshot</vh>
+<v t="ekr.20101009115705.4584"><vh>To Do List</vh>
+<v t="ekr.20101009115705.4585"><vh>Urgent</vh></v>
+<v t="ekr.20101009115705.4586"><vh>Important</vh></v>
+<v t="ekr.20101009115705.4587"><vh>Soon</vh></v>
+<v t="ekr.20101009115705.4588"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101009115705.4589"><vh>Diary</vh>
+<v t="ekr.20101009115705.4590"><vh>2009</vh>
+<v t="ekr.20101009115705.4591"><vh>Jan 1</vh></v>
+</v>
+<v t="ekr.20101009115705.4592"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101008061729.4420"><vh>@select 2009</vh></v>
+<v t="ekr.20101010121134.4731"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4732"><vh>@url working file</vh></v>
+<v t="ekr.20101010121134.4746"><vh>@url final output file</vh></v>
+<v t="ekr.20101010121134.4747"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4522"><vh>@slide 004</vh>
+<v t="ekr.20101009124842.4595"><vh>@screenshot</vh>
+<v t="ekr.20101009124842.4596"><vh>To Do List</vh>
+<v t="ekr.20101009124842.4597"><vh>Urgent</vh></v>
+<v t="ekr.20101009124842.4598"><vh>Important</vh></v>
+<v t="ekr.20101009124842.4599"><vh>Soon</vh></v>
+<v t="ekr.20101009124842.4600"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101009124842.4601"><vh>Diary</vh>
+<v t="ekr.20101009124842.4602"><vh>2009</vh>
+<v t="ekr.20101009124842.4603"><vh>Aug</vh></v>
+<v t="ekr.20101009211009.4624"><vh>Jul</vh></v>
+<v t="ekr.20101009211009.4623"><vh>Jun</vh></v>
+<v t="ekr.20101009211009.4625"><vh>May</vh></v>
+<v t="ekr.20101009211009.4626"><vh>Apr</vh></v>
+<v t="ekr.20101009211009.4627"><vh>Mar</vh></v>
+<v t="ekr.20101009211009.4628"><vh>Feb</vh></v>
+<v t="ekr.20101009211009.4629"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101009124842.4604"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101009124842.4606"><vh>@select 2009</vh></v>
+<v t="ekr.20101009124842.4607"><vh>@edit</vh></v>
+<v t="ekr.20101010121134.4766"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4767"><vh>@url working file</vh></v>
+<v t="ekr.20101010121134.4768"><vh>@url final output file</vh></v>
+<v t="ekr.20101010121134.4769"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4518"><vh>@slide 005</vh>
+<v t="ekr.20101009212539.4682"><vh>@screenshot</vh>
+<v t="ekr.20101009212539.4683"><vh>To Do List</vh>
+<v t="ekr.20101009212539.4684"><vh>Urgent</vh></v>
+<v t="ekr.20101009212539.4685"><vh>Important</vh></v>
+<v t="ekr.20101009212539.4686"><vh>Soon</vh></v>
+<v t="ekr.20101009212539.4687"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101009212539.4688"><vh>Diary</vh>
+<v t="ekr.20101009212539.4689"><vh>2009</vh>
+<v t="ekr.20101009212539.4690"><vh>Aug</vh></v>
+<v t="ekr.20101009212539.4691"><vh>Jul</vh></v>
+<v t="ekr.20101009212539.4692"><vh>Jun</vh></v>
+<v t="ekr.20101009212539.4693"><vh>May</vh></v>
+<v t="ekr.20101009212539.4694"><vh>Apr</vh></v>
+<v t="ekr.20101009212539.4695"><vh>Mar</vh></v>
+<v t="ekr.20101009212539.4696"><vh>Feb</vh></v>
+<v t="ekr.20101009212539.4697"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101009212539.4698"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101009212539.4746"><vh>@select 2009</vh></v>
+<v t="ekr.20101009212539.4699"><vh>@edit</vh></v>
+<v t="ekr.20101009213545.4670"><vh>@url screenshot</vh></v>
+<v t="ekr.20101009213545.4671"><vh>@url working file</vh></v>
+<v t="ekr.20101009213545.4672"><vh>@url final output file</vh></v>
+<v t="ekr.20101010121134.4814"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4521"><vh>@slide 006</vh>
+<v t="ekr.20101009213545.4692"><vh>@screenshot</vh>
+<v t="ekr.20101009213545.4693"><vh>To Do List</vh>
+<v t="ekr.20101009213545.4694"><vh>Urgent</vh></v>
+<v t="ekr.20101009213545.4695"><vh>Important</vh></v>
+<v t="ekr.20101009213545.4696"><vh>Soon</vh></v>
+<v t="ekr.20101009213545.4697"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101009213545.4698"><vh>Diary</vh>
+<v t="ekr.20101009213545.4699"><vh>2009</vh>
+<v t="ekr.20101009213545.4700"><vh>Aug</vh></v>
+<v t="ekr.20101009213545.4701"><vh>Jul</vh></v>
+<v t="ekr.20101009213545.4702"><vh>Jun</vh></v>
+<v t="ekr.20101009213545.4703"><vh>May</vh></v>
+<v t="ekr.20101009213545.4704"><vh>Apr</vh></v>
+<v t="ekr.20101009213545.4705"><vh>Mar</vh></v>
+<v t="ekr.20101009213545.4706"><vh>Feb</vh></v>
+<v t="ekr.20101009213545.4707"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101009213545.4708"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101009213545.4709"><vh>@edit</vh></v>
+<v t="ekr.20101009213545.4710"><vh>@select Urgent</vh></v>
+<v t="ekr.20101010121134.4810"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4811"><vh>@url working file</vh></v>
+<v t="ekr.20101010121134.4812"><vh>@url final output file</vh></v>
+<v t="ekr.20101010121134.4813"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4523"><vh>@slide 007</vh>
+<v t="ekr.20101010121134.4832"><vh>@screenshot</vh>
+<v t="ekr.20101010121134.4833"><vh>To Do List</vh>
+<v t="ekr.20101010121134.4834"><vh>Urgent</vh></v>
+<v t="ekr.20101010121134.4835"><vh>Important</vh></v>
+<v t="ekr.20101010121134.4836"><vh>Soon</vh></v>
+<v t="ekr.20101010121134.4837"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010121134.4838"><vh>Diary</vh>
+<v t="ekr.20101010121134.4839"><vh>2009</vh>
+<v t="ekr.20101010121134.4840"><vh>Aug</vh></v>
+<v t="ekr.20101010121134.4841"><vh>Jul</vh></v>
+<v t="ekr.20101010121134.4842"><vh>Jun</vh></v>
+<v t="ekr.20101010121134.4843"><vh>May</vh></v>
+<v t="ekr.20101010121134.4844"><vh>Apr</vh></v>
+<v t="ekr.20101010121134.4845"><vh>Mar</vh></v>
+<v t="ekr.20101010121134.4846"><vh>Feb</vh></v>
+<v t="ekr.20101010121134.4847"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010121134.4848"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010141334.4791"><vh>@select Urgent</vh></v>
+<v t="ekr.20101010121134.4849"><vh>@pause</vh></v>
+<v t="ekr.20101010121134.4868"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010121134.4869"><vh>@url working file</vh></v>
+<v t="ekr.20101010140842.4755"><vh>@url final output file</vh></v>
+<v t="ekr.20101010140842.4756"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4524"><vh>@slide 008</vh>
+<v t="ekr.20101010141334.4772"><vh>@screenshot</vh>
+<v t="ekr.20101010141334.4773"><vh>To Do List</vh>
+<v t="ekr.20101010141334.4774"><vh>Urgent</vh></v>
+<v t="ekr.20101010141334.4775"><vh>Important</vh></v>
+<v t="ekr.20101010141334.4776"><vh>Soon</vh></v>
+<v t="ekr.20101010141334.4777"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010141334.4778"><vh>Diary</vh>
+<v t="ekr.20101010141334.4779"><vh>2009</vh>
+<v t="ekr.20101010141334.4780"><vh>Aug</vh></v>
+<v t="ekr.20101010141334.4781"><vh>Jul</vh></v>
+<v t="ekr.20101010141334.4782"><vh>Jun</vh></v>
+<v t="ekr.20101010141334.4783"><vh>May</vh></v>
+<v t="ekr.20101010141334.4784"><vh>Apr</vh></v>
+<v t="ekr.20101010141334.4785"><vh>Mar</vh></v>
+<v t="ekr.20101010141334.4786"><vh>Feb</vh></v>
+<v t="ekr.20101010141334.4787"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010141334.4788"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010141334.4793"><vh>@select Urgent</vh></v>
+<v t="ekr.20101010141334.4789"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.4835"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.4836"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.4837"><vh>@url final output file</vh></v>
+<v t="ekr.20101010141953.4838"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4525"><vh>@slide 009</vh>
+<v t="ekr.20101010141953.4856"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.4857"><vh>To Do List</vh>
+<v t="ekr.20101010141953.4858"><vh>Urgent</vh></v>
+<v t="ekr.20101010141953.4859"><vh>Important</vh></v>
+<v t="ekr.20101010141953.4860"><vh>Soon</vh></v>
+<v t="ekr.20101010141953.4861"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010141953.4862"><vh>Diary</vh>
+<v t="ekr.20101010141953.4863"><vh>2009</vh>
+<v t="ekr.20101010141953.4864"><vh>Aug</vh></v>
+<v t="ekr.20101010141953.4865"><vh>Jul</vh></v>
+<v t="ekr.20101010141953.4866"><vh>Jun</vh></v>
+<v t="ekr.20101010141953.4867"><vh>May</vh></v>
+<v t="ekr.20101010141953.4868"><vh>Apr</vh></v>
+<v t="ekr.20101010141953.4869"><vh>Mar</vh></v>
+<v t="ekr.20101010141953.4870"><vh>Feb</vh></v>
+<v t="ekr.20101010141953.4871"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010141953.4872"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010141953.4873"><vh>@select Urgent</vh></v>
+<v t="ekr.20101010141953.4896"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.4897"><vh>@edit</vh></v>
+<v t="ekr.20101010141953.4916"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.4917"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.4918"><vh>@url final output file</vh></v>
+<v t="ekr.20101010141953.4919"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4526"><vh>@slide 010</vh>
+<v t="ekr.20101010141953.4922"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101008061729.4527"><vh>@slide 011</vh>
+<v t="ekr.20101010141953.4940"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.4941"><vh>To Do List</vh>
+<v t="ekr.20101010141953.4942"><vh>Urgent</vh></v>
+<v t="ekr.20101010141953.4943"><vh>Important</vh></v>
+<v t="ekr.20101010141953.4944"><vh>Soon</vh></v>
+<v t="ekr.20101010141953.4945"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20101010141953.4946"><vh>Diary</vh>
+<v t="ekr.20101010141953.4947"><vh>2009</vh>
+<v t="ekr.20101010141953.4948"><vh>Aug</vh></v>
+<v t="ekr.20101010141953.4949"><vh>Jul</vh></v>
+<v t="ekr.20101010141953.4950"><vh>Jun</vh></v>
+<v t="ekr.20101010141953.4951"><vh>May</vh></v>
+<v t="ekr.20101010141953.4952"><vh>Apr</vh></v>
+<v t="ekr.20101010141953.4953"><vh>Mar</vh></v>
+<v t="ekr.20101010141953.4954"><vh>Feb</vh></v>
+<v t="ekr.20101010141953.4955"><vh>Jan</vh></v>
+</v>
+<v t="ekr.20101010141953.4956"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20101010141953.4958"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.4957"><vh>@select Diary</vh></v>
+<v t="ekr.20101010141953.5023"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.5024"><vh>@url working file</vh></v>
+</v>
+<v t="ekr.20101008061729.4528"><vh>@slide 012</vh></v>
+<v t="ekr.20101008061729.4529"><vh>@slide 013</vh></v>
+<v t="ekr.20101008061729.4530"><vh>@slide 014</vh></v>
+<v t="ekr.20101008061729.4531"><vh>@slide 015</vh></v>
+<v t="ekr.20101008061729.4532"><vh>@slide 016</vh></v>
+<v t="ekr.20101008061729.4533"><vh>@slide 017</vh></v>
+<v t="ekr.20101008061729.4534"><vh>@slide 018</vh></v>
+<v t="ekr.20101008061729.4535"><vh>@slide 019</vh></v>
+<v t="ekr.20101008061729.4536"><vh>@slide 020</vh></v>
+<v t="ekr.20101008061729.4537"><vh>@slide 021</vh></v>
+<v t="ekr.20101008061729.4539"><vh>@slide 022</vh></v>
+<v t="ekr.20101008061729.4540"><vh>@slide 023</vh></v>
+</v>
+<v t="ekr.20101011071655.4919"><vh>@slideshow Whetting Your Appetite</vh>
+<v t="ekr.20101013072903.5219"><vh>@slide What you can do with Leo</vh>
+<v t="ekr.20101013072903.5220"><vh>@no-screenshot</vh></v>
+</v>
+<v t="ekr.20101013072903.5221"><vh>@slide Leo's main window</vh></v>
+<v t="ekr.20101011071655.4920"><vh>@slide A Personal Information Manager</vh></v>
+<v t="ekr.20101011103613.4930"><vh>@slide A Better PIM</vh>
+<v t="ekr.20101011103613.4942"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101012083118.5245"><vh>@slide External Files</vh></v>
+<v t="ekr.20101011103613.4933"><vh>@slide A Scripting Environment</vh>
+<v t="ekr.20101011103613.4943"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4934"><vh>@slide Better Scripting</vh>
+<v t="ekr.20101011103613.4944"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4938"><vh>@slide Better Scripting, Part Deux</vh>
+<v t="ekr.20101011103613.4945"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4935"><vh>@slide Outlines Create New Leo Commands</vh>
+<v t="ekr.20101011103613.4946"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4936"><vh>@slide Outlines Create Unit tests</vh>
+<v t="ekr.20101011103613.4947"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4937"><vh>@slide Outlines Create Restructured Text</vh>
+<v t="ekr.20101011111455.4965"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011103613.4939"><vh>@slide Outlines Create HTML</vh></v>
+</v>
+<v t="ekr.20101011165412.5011"><vh>nutshell (copy)</vh></v>
+<v t="ekr.20101012083118.5246"><vh>@@slide Leo</vh></v>
+<v t="ekr.20101011103613.4940"><vh>@@slide The Leo way</vh>
+<v t="ekr.20101012083118.5242"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101013072903.5238"><vh>Don't describe the window!</vh>
+<v t="ekr.20101013072903.5228"><vh>@slide ((file name: workbook2.leo</vh></v>
+<v t="ekr.20101013072903.5229"><vh>@slide ((3 panes</vh></v>
+<v t="ekr.20101013072903.5230"><vh>@slide ((outline pane</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20101021092135.5431"><vh> Drafts</vh>
+<v t="ekr.20101115152915.4930"><vh>1. External files</vh></v>
+<v t="ekr.20101115152915.4931"><vh>2. Clones &amp; views</vh></v>
+<v t="ekr.20101115152915.4936"><vh>3. Scripting Leo</vh></v>
+</v>
+<v t="ekr.20101115152915.4933"><vh>Maybe</vh>
+<v t="ekr.20101115152915.4935"><vh>Leo's Dom</vh></v>
+<v t="ekr.20101113110328.4947"><vh>Using @button nodes</vh></v>
+<v t="ekr.20101115152915.4932"><vh>Using @test nodes</vh></v>
+<v t="ekr.20101115152915.4934"><vh>Using @url nodes</vh></v>
+<v t="ekr.20101113110328.4945"><vh>Top 10 coolest features</vh></v>
+<v t="ekr.20101113110328.4946"><vh>How to make slide shows</vh></v>
+<v t="ekr.20101014034526.5294"><vh>IPython</vh></v>
+<v t="ekr.20101014034526.5295"><vh>Vim &amp; Emacs</vh></v>
+<v t="ekr.20101025080245.5529"><vh>leoremote plugin</vh></v>
+<v t="ekr.20101025080245.5546"><vh>@url Document Ville's server</vh></v>
+</v>
+<v t="ekr.20101115152915.4929"><vh>Unfinished</vh>
+<v t="ekr.20101014034526.5280"><vh>@slideshow External files</vh>
+<v t="ekr.20101014034526.5287"><vh>  Topics</vh></v>
+<v t="ekr.20101014110348.5256"><vh>@slide ((no-ss intro</vh>
+<v t="ekr.20101020082858.5420"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101021092135.5430"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101020082858.5441"><vh>@slide ((no-ss auto read/write</vh>
+<v t="ekr.20101020082858.5443"><vh>@no-screenshot</vh></v>
+<v t="ekr.20101020082858.5446"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101014110348.5278"><vh>at-thin</vh>
+<v t="ekr.20101019085517.5424"><vh>@slide ((@file</vh></v>
+</v>
+<v t="ekr.20101014110348.5270"><vh>at-edit</vh>
+<v t="ekr.20101014110348.5275"><vh>@slide ((@edit intro</vh></v>
+<v t="ekr.20101014110348.5257"><vh>@slide ((@edit</vh></v>
+<v t="ekr.20101014110348.5261"><vh>@slide ((simple body text</vh></v>
+<v t="ekr.20101014110348.5260"><vh>@slide ((save, creating the file</vh></v>
+<v t="ekr.20101014110348.5262"><vh>@slide ((change the text</vh></v>
+<v t="ekr.20101014110348.5263"><vh>@slide ((save again, updating the file</vh></v>
+<v t="ekr.20101014110348.5265"><vh>@slide ((here is the actual file</vh></v>
+<v t="ekr.20101014110348.5264"><vh>@slide ((close the file</vh></v>
+<v t="ekr.20101014110348.5266"><vh>@slide ((edit the file outside of Leo</vh></v>
+<v t="ekr.20101014110348.5267"><vh>@slide ((close Leo file and reopen</vh></v>
+<v t="ekr.20101014110348.5274"><vh>@slide ((@edit with existing files</vh></v>
+</v>
+<v t="ekr.20101014110348.5271"><vh>at-auto</vh>
+<v t="ekr.20101014110348.5272"><vh>((@auto</vh></v>
+</v>
+</v>
+<v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
+<v t="ekr.20101011165412.4968"><vh>@slideshow Scripting Leo</vh></v>
+<v t="ekr.20101014034526.5296"><vh>@slideshow Leo's minibuffer</vh></v>
+<v t="ekr.20101010141953.5028"><vh>@slideshow Leo's NSIS Installer</vh>
+<v t="ekr.20101010141953.5029"><vh>@title_pattern = Leo's NSIS Installer: Slide %(slide_number)s</vh></v>
+<v t="ekr.20101010141953.5030"><vh>@slide 001</vh></v>
+<v t="ekr.20101010141953.5031"><vh>@slide 002</vh>
+<v t="ekr.20101010141953.5032"><vh>@screenshot</vh>
+<v t="ekr.20101010141953.5033"><vh>Take screenshot of the compile .nsi dialog in a Windows folder</vh></v>
+</v>
+<v t="ekr.20101010141953.5034"><vh>@pause</vh></v>
+<v t="ekr.20101010141953.5038"><vh>@url screenshot</vh></v>
+<v t="ekr.20101010141953.5039"><vh>@url working file</vh></v>
+<v t="ekr.20101010141953.5040"><vh>@url final output file</vh></v>
+<v t="ekr.20101011071655.4918"><vh>@url built slide</vh></v>
+</v>
+<v t="ekr.20101011092154.4923"><vh>@slide 003</vh></v>
+<v t="ekr.20101011092154.4924"><vh>@slide 004</vh></v>
+<v t="ekr.20101011092154.4925"><vh>@slide 005</vh></v>
+<v t="ekr.20101011165412.5154"><vh>@@button make leo.nsi</vh>
+<v t="ekr.20101011165412.5155"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
+<v t="ekr.20101011165412.5156"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
+<v t="ekr.20101011165412.5157"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
+<v t="ekr.20101011165412.5158"><vh>class nsiWriter</vh>
+<v t="ekr.20101011165412.5159"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20101011165412.5160"><vh>genHead</vh>
+<v t="ekr.20101011165412.5161"><vh>putSettings</vh></v>
+<v t="ekr.20101011165412.5162"><vh>putOnInit</vh></v>
+</v>
+<v t="ekr.20101011165412.5163"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20101011165412.5164"><vh>getInstallVariableData</vh></v>
+</v>
+<v t="ekr.20101011165412.5165"><vh>genMiddle</vh>
+<v t="ekr.20101011165412.5166"><vh>genAdditionalIcons</vh></v>
+<v t="ekr.20101011165412.5167"><vh>genDesktopShortcuts</vh></v>
+<v t="ekr.20101011165412.5168"><vh>genFileAssociation</vh></v>
+<v t="ekr.20101011165412.5169"><vh>genMenuShortcuts</vh></v>
+<v t="ekr.20101011165412.5170"><vh>genMiddleFunctions</vh></v>
+<v t="ekr.20101011165412.5171"><vh>genPost</vh></v>
+<v t="ekr.20101011165412.5172"><vh>genUninstallSettings</vh></v>
+</v>
+<v t="ekr.20101011165412.5173"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20101011165412.5174"><vh>getDeleteDirectories</vh></v>
+<v t="ekr.20101011165412.5175"><vh>getDeleteFiles</vh></v>
+<v t="ekr.20101011165412.5176"><vh>getUninstallVariableData</vh></v>
+</v>
+<v t="ekr.20101011165412.5177"><vh>indent</vh></v>
+<v t="ekr.20101011165412.5178"><vh>openNsi</vh></v>
+<v t="ekr.20101011165412.5179"><vh>put</vh></v>
+</v>
+<v t="ekr.20101011165412.5180"><vh>run &amp; helpers</vh>
+<v t="ekr.20101011165412.5181"><vh>directoryList</vh></v>
+<v t="ekr.20101011165412.5182"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20101011165412.5183"><vh>delete...</vh></v>
+</v>
+<v t="ekr.20101011165412.5184"><vh>makeDicts</vh></v>
+<v t="ekr.20101011165412.5185"><vh>printMissing</vh></v>
+</v>
+<v t="ekr.20101011165412.5186"><vh>whitespace</vh>
+<v t="ekr.20101011165412.5187"><vh>adjustTripleString</vh></v>
+<v t="ekr.20101011165412.5188"><vh>get_leading_ws</vh></v>
+<v t="ekr.20101011165412.5189"><vh>computeWidth</vh></v>
+<v t="ekr.20101011165412.5190"><vh>removeLeadingWhitespace</vh></v>
+<v t="ekr.20101011165412.5191"><vh>splitLines</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20101021092135.5431"></v>
+<v t="ekr.20101115152915.4938"><vh>original</vh></v>
+<v t="ekr.20101115152915.4937"><vh>wikipedia</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -227,7 +659,1556 @@ To create a slideshow with sphinx:
 cd leo\doc\html\slides\slideshow-name
 make html
 </t>
+<t tx="ekr.20101007082321.4357">@language rest
+</t>
 <t tx="ekr.20101007100904.4372"></t>
+<t tx="ekr.20101008061729.4372">Leo is a unique, powerful computer program that you can use to **organize**,
+**analyze** and **describe** text and text files. Leo is a free and open
+software written by Edward K. Ream. For information about downloading Leo, see
+the **installation** tutorial in this series. Leo runs on Windows, Mac, or
+Linux.
+
+Use Leo:
+
+- To brainstorm a new project.
+- As a Personal Information Manager.
+- To add multiple outlines and commentary to any text file.
+- To create and organize computer programs.
+- To apply computer scripts to any kind of data.
+
+Because Leo is unlike other tools you may have used, a series of examples may be
+the best way to demonstrate what can be done with Leo.
+</t>
+<t tx="ekr.20101008061729.4373">From one perspective, Leo is an **outlining editor**. This is a screenshot of
+Leo. The arrow shows the outline pane. (A later tutorial explains how to create
+an outline like the one in the screenshot).
+
+.. image:: slide-002.png
+
+</t>
+<t tx="ekr.20101008061729.4384"></t>
+<t tx="ekr.20101008061729.4385"></t>
+<t tx="ekr.20101008061729.4386"></t>
+<t tx="ekr.20101008061729.4387"></t>
+<t tx="ekr.20101008061729.4388"></t>
+<t tx="ekr.20101008061729.4389"></t>
+<t tx="ekr.20101008061729.4390"></t>
+<t tx="ekr.20101008061729.4391"></t>
+<t tx="ekr.20101008061729.4392"></t>
+<t tx="ekr.20101008061729.4393"></t>
+<t tx="ekr.20101008061729.4396" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4398">Clicking on the open triangle will open the indicated node.
+
+.. image:: slide-003.png
+
+</t>
+<t tx="ekr.20101008061729.4420" str_leo_pos=""></t>
+<t tx="ekr.20101008061729.4518">Here the indicated node has been closed.
+
+.. image:: slide-005.png
+
+</t>
+<t tx="ekr.20101008061729.4521">Clicking on a node headline (1) will show the text for that node in the body
+pane (2) below. The body pane is a text editor--you can enter, delete or change
+text here by typing it in.
+
+.. image:: slide-006.png
+
+</t>
+<t tx="ekr.20101008061729.4522">Here the node has been opened. Clicking on the box again will close the node.
+
+.. image:: slide-004.png
+
+</t>
+<t tx="ekr.20101008061729.4523">You can save the outline in a .leo file.  Click File:Save (or Ctrl-S).
+
+.. image:: slide-007.png
+
+</t>
+<t tx="ekr.20101008061729.4524">Here we will save our outline in a file named "pim.leo"
+
+.. image:: slide-008.png
+
+</t>
+<t tx="ekr.20101008061729.4525">The file is now saved, and the file appears in the title bar.
+
+.. image:: slide-009.png
+
+</t>
+<t tx="ekr.20101008061729.4526">You've just seen an introduction to Leo as an outlining editor. You can use Leo
+to make an outline, with optional text for each outline element. You can save
+the outline to a file. Outlines are explained more in a later tutorial in this
+series.
+
+  *The outlining capability of Leo goes far beyond what has just been demonstrated,
+  including multipath outlines, and multiple outlines in one file.*
+
+What we've shown so far is no different from other outlining editors. What makes
+Leo unique is the addition of a new feature. **Using simple directives, you can
+instruct Leo to extract text from any number of nodes, in any order, and write
+the text to a new file**. We call files created or managed from within a Leo
+outline **external file**. You can also embed outline information in the
+external file, giving Leo the ability to read the text pieces back into the Leo
+outline, even if they have been changed.
+
+In effect, Leo is a **meta-text** editor. It gives you the ability to create a
+structural document for a non structured document, or a document that is
+structured in some other way.
+
+What does this mean in practice? Some examples should help clarify things...
+</t>
+<t tx="ekr.20101008061729.4527">Here is the "pim.leo" file again. We have:
+
+1. Selected the "Diary" node.
+2. Typed Ctrl-H to start editing the headline.
+   (You can also edit headlines with the Edit:Edit Headline...:Edit Headline command.
+
+.. image:: slide-011.png
+
+</t>
+<t tx="ekr.20101008061729.4528"></t>
+<t tx="ekr.20101008061729.4529"></t>
+<t tx="ekr.20101008061729.4530"></t>
+<t tx="ekr.20101008061729.4531"></t>
+<t tx="ekr.20101008061729.4532"></t>
+<t tx="ekr.20101008061729.4533"></t>
+<t tx="ekr.20101008061729.4534"></t>
+<t tx="ekr.20101008061729.4535"></t>
+<t tx="ekr.20101008061729.4536"></t>
+<t tx="ekr.20101008061729.4537"></t>
+<t tx="ekr.20101008061729.4539"></t>
+<t tx="ekr.20101008061729.4540"></t>
+<t tx="ekr.20101009115705.4583"></t>
+<t tx="ekr.20101009115705.4584">My to-do list.
+</t>
+<t tx="ekr.20101009115705.4585"></t>
+<t tx="ekr.20101009115705.4586"></t>
+<t tx="ekr.20101009115705.4587"></t>
+<t tx="ekr.20101009115705.4588"></t>
+<t tx="ekr.20101009115705.4589"></t>
+<t tx="ekr.20101009115705.4590"></t>
+<t tx="ekr.20101009115705.4591"></t>
+<t tx="ekr.20101009115705.4592"></t>
+<t tx="ekr.20101009124842.4595"></t>
+<t tx="ekr.20101009124842.4596">@nocolor-node
+
+My to-do list.
+</t>
+<t tx="ekr.20101009124842.4597"></t>
+<t tx="ekr.20101009124842.4598"></t>
+<t tx="ekr.20101009124842.4599"></t>
+<t tx="ekr.20101009124842.4600"></t>
+<t tx="ekr.20101009124842.4601">@nocolor-node
+
+</t>
+<t tx="ekr.20101009124842.4602"></t>
+<t tx="ekr.20101009124842.4603"></t>
+<t tx="ekr.20101009124842.4604"></t>
+<t tx="ekr.20101009124842.4606" str_leo_pos=""></t>
+<t tx="ekr.20101009124842.4607"></t>
+<t tx="ekr.20101009171445.4637"></t>
+<t tx="ekr.20101009211009.4623"></t>
+<t tx="ekr.20101009211009.4624"></t>
+<t tx="ekr.20101009211009.4625"></t>
+<t tx="ekr.20101009211009.4626"></t>
+<t tx="ekr.20101009211009.4627"></t>
+<t tx="ekr.20101009211009.4628"></t>
+<t tx="ekr.20101009211009.4629"></t>
+<t tx="ekr.20101009212539.4682"></t>
+<t tx="ekr.20101009212539.4683">My to-do list.
+</t>
+<t tx="ekr.20101009212539.4684"></t>
+<t tx="ekr.20101009212539.4685"></t>
+<t tx="ekr.20101009212539.4686"></t>
+<t tx="ekr.20101009212539.4687"></t>
+<t tx="ekr.20101009212539.4688"></t>
+<t tx="ekr.20101009212539.4689"></t>
+<t tx="ekr.20101009212539.4690"></t>
+<t tx="ekr.20101009212539.4691"></t>
+<t tx="ekr.20101009212539.4692"></t>
+<t tx="ekr.20101009212539.4693"></t>
+<t tx="ekr.20101009212539.4694"></t>
+<t tx="ekr.20101009212539.4695"></t>
+<t tx="ekr.20101009212539.4696"></t>
+<t tx="ekr.20101009212539.4697"></t>
+<t tx="ekr.20101009212539.4698"></t>
+<t tx="ekr.20101009212539.4699"></t>
+<t tx="ekr.20101009212539.4746" str_leo_pos=""></t>
+<t tx="ekr.20101009213545.4670">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png
+</t>
+<t tx="ekr.20101009213545.4671">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg
+</t>
+<t tx="ekr.20101009213545.4672">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png
+</t>
+<t tx="ekr.20101009213545.4692"></t>
+<t tx="ekr.20101009213545.4693">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101009213545.4694">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20101009213545.4695"></t>
+<t tx="ekr.20101009213545.4696"></t>
+<t tx="ekr.20101009213545.4697"></t>
+<t tx="ekr.20101009213545.4698">@nocolor
+</t>
+<t tx="ekr.20101009213545.4699"></t>
+<t tx="ekr.20101009213545.4700"></t>
+<t tx="ekr.20101009213545.4701"></t>
+<t tx="ekr.20101009213545.4702"></t>
+<t tx="ekr.20101009213545.4703"></t>
+<t tx="ekr.20101009213545.4704"></t>
+<t tx="ekr.20101009213545.4705"></t>
+<t tx="ekr.20101009213545.4706"></t>
+<t tx="ekr.20101009213545.4707"></t>
+<t tx="ekr.20101009213545.4708"></t>
+<t tx="ekr.20101009213545.4709"></t>
+<t tx="ekr.20101009213545.4710"></t>
+<t tx="ekr.20101010121134.4703">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html
+</t>
+<t tx="ekr.20101010121134.4704"></t>
+<t tx="ekr.20101010121134.4716">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.png
+</t>
+<t tx="ekr.20101010121134.4717">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.svg
+</t>
+<t tx="ekr.20101010121134.4718">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-002.png
+</t>
+<t tx="ekr.20101010121134.4719">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html
+</t>
+<t tx="ekr.20101010121134.4731">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.png
+</t>
+<t tx="ekr.20101010121134.4732">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.svg
+</t>
+<t tx="ekr.20101010121134.4746">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-003.png
+</t>
+<t tx="ekr.20101010121134.4747">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html
+</t>
+<t tx="ekr.20101010121134.4766">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.png
+</t>
+<t tx="ekr.20101010121134.4767">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg
+</t>
+<t tx="ekr.20101010121134.4768">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-004.png
+</t>
+<t tx="ekr.20101010121134.4769">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html
+</t>
+<t tx="ekr.20101010121134.4810">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.png
+</t>
+<t tx="ekr.20101010121134.4811">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.svg
+</t>
+<t tx="ekr.20101010121134.4812">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-006.png
+</t>
+<t tx="ekr.20101010121134.4813">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html
+</t>
+<t tx="ekr.20101010121134.4814">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html
+</t>
+<t tx="ekr.20101010121134.4832"></t>
+<t tx="ekr.20101010121134.4833">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010121134.4834">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20101010121134.4835"></t>
+<t tx="ekr.20101010121134.4836"></t>
+<t tx="ekr.20101010121134.4837"></t>
+<t tx="ekr.20101010121134.4838">@nocolor
+</t>
+<t tx="ekr.20101010121134.4839"></t>
+<t tx="ekr.20101010121134.4840"></t>
+<t tx="ekr.20101010121134.4841"></t>
+<t tx="ekr.20101010121134.4842"></t>
+<t tx="ekr.20101010121134.4843"></t>
+<t tx="ekr.20101010121134.4844"></t>
+<t tx="ekr.20101010121134.4845"></t>
+<t tx="ekr.20101010121134.4846"></t>
+<t tx="ekr.20101010121134.4847"></t>
+<t tx="ekr.20101010121134.4848"></t>
+<t tx="ekr.20101010121134.4849"></t>
+<t tx="ekr.20101010121134.4868">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.png
+</t>
+<t tx="ekr.20101010121134.4869">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.svg
+</t>
+<t tx="ekr.20101010140842.4755">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-007.png
+</t>
+<t tx="ekr.20101010140842.4756">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-007.html
+</t>
+<t tx="ekr.20101010141334.4772"></t>
+<t tx="ekr.20101010141334.4773">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010141334.4774">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20101010141334.4775"></t>
+<t tx="ekr.20101010141334.4776"></t>
+<t tx="ekr.20101010141334.4777"></t>
+<t tx="ekr.20101010141334.4778">@nocolor
+</t>
+<t tx="ekr.20101010141334.4779"></t>
+<t tx="ekr.20101010141334.4780"></t>
+<t tx="ekr.20101010141334.4781"></t>
+<t tx="ekr.20101010141334.4782"></t>
+<t tx="ekr.20101010141334.4783"></t>
+<t tx="ekr.20101010141334.4784"></t>
+<t tx="ekr.20101010141334.4785"></t>
+<t tx="ekr.20101010141334.4786"></t>
+<t tx="ekr.20101010141334.4787"></t>
+<t tx="ekr.20101010141334.4788"></t>
+<t tx="ekr.20101010141334.4789"></t>
+<t tx="ekr.20101010141334.4791"></t>
+<t tx="ekr.20101010141334.4793"></t>
+<t tx="ekr.20101010141953.4835">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.png
+</t>
+<t tx="ekr.20101010141953.4836">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.svg
+</t>
+<t tx="ekr.20101010141953.4837">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-008.png
+</t>
+<t tx="ekr.20101010141953.4838">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-008.html
+</t>
+<t tx="ekr.20101010141953.4856"></t>
+<t tx="ekr.20101010141953.4857">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010141953.4858">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20101010141953.4859"></t>
+<t tx="ekr.20101010141953.4860"></t>
+<t tx="ekr.20101010141953.4861"></t>
+<t tx="ekr.20101010141953.4862">@nocolor
+</t>
+<t tx="ekr.20101010141953.4863"></t>
+<t tx="ekr.20101010141953.4864"></t>
+<t tx="ekr.20101010141953.4865"></t>
+<t tx="ekr.20101010141953.4866"></t>
+<t tx="ekr.20101010141953.4867"></t>
+<t tx="ekr.20101010141953.4868"></t>
+<t tx="ekr.20101010141953.4869"></t>
+<t tx="ekr.20101010141953.4870"></t>
+<t tx="ekr.20101010141953.4871"></t>
+<t tx="ekr.20101010141953.4872"></t>
+<t tx="ekr.20101010141953.4873"></t>
+<t tx="ekr.20101010141953.4896"></t>
+<t tx="ekr.20101010141953.4897"></t>
+<t tx="ekr.20101010141953.4916">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.png
+</t>
+<t tx="ekr.20101010141953.4917">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.svg
+</t>
+<t tx="ekr.20101010141953.4918">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-009.png
+</t>
+<t tx="ekr.20101010141953.4919">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-009.html
+</t>
+<t tx="ekr.20101010141953.4922">c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-010.html
+</t>
+<t tx="ekr.20101010141953.4940"></t>
+<t tx="ekr.20101010141953.4941">@nocolor
+
+My to-do list.
+</t>
+<t tx="ekr.20101010141953.4942">1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20101010141953.4943"></t>
+<t tx="ekr.20101010141953.4944"></t>
+<t tx="ekr.20101010141953.4945"></t>
+<t tx="ekr.20101010141953.4946">@nocolor
+
+This is my diary.
+</t>
+<t tx="ekr.20101010141953.4947"></t>
+<t tx="ekr.20101010141953.4948"></t>
+<t tx="ekr.20101010141953.4949"></t>
+<t tx="ekr.20101010141953.4950"></t>
+<t tx="ekr.20101010141953.4951"></t>
+<t tx="ekr.20101010141953.4952"></t>
+<t tx="ekr.20101010141953.4953"></t>
+<t tx="ekr.20101010141953.4954"></t>
+<t tx="ekr.20101010141953.4955"></t>
+<t tx="ekr.20101010141953.4956"></t>
+<t tx="ekr.20101010141953.4957"></t>
+<t tx="ekr.20101010141953.4958"></t>
+<t tx="ekr.20101010141953.5023">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.png
+</t>
+<t tx="ekr.20101010141953.5024">c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.svg
+</t>
+<t tx="ekr.20101010141953.5028">@language rest
+</t>
+<t tx="ekr.20101010141953.5029"></t>
+<t tx="ekr.20101010141953.5030">.. _`here`:     http://www.nullsoft.com/free/nsis/
+.. _`Winamp`:   http://www.winamp.com/
+
+Nullsoft, the makers of the `Winamp`_ MP3 software, have released a powerful free
+installer called NSIS, available `here`_. This application allows you to make
+installation packages for Windows applications.
+
+You create NSIS packages by writing a NSIS script and then compiling it.
+Depending on the application, NSIS can often be a better choice than more
+expensive installation generators, since NSIS installations are easy to create,
+are small and fast, and yet can be configured with many features.
+
+</t>
+<t tx="ekr.20101010141953.5031">When you install Leo, you'll find that it comes with a script for generating an
+installer for Leo. This script is called leo-&lt;version&gt;.nsi, and is distributed
+in the Leo file leo/dist/leoDist.leo.
+
+If you have NSIS installed, right-clicking on a .nsi file will give you the
+option of compiling the script to create a package.
+
+.. image:: slide-002.png
+
+</t>
+<t tx="ekr.20101010141953.5032"></t>
+<t tx="ekr.20101010141953.5033"></t>
+<t tx="ekr.20101010141953.5034"></t>
+<t tx="ekr.20101010141953.5038">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.png
+</t>
+<t tx="ekr.20101010141953.5039">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg
+</t>
+<t tx="ekr.20101010141953.5040">c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png
+</t>
+<t tx="ekr.20101011071655.4918">c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html
+</t>
+<t tx="ekr.20101011071655.4919">@language rest
+@pagewidth 50
+</t>
+<t tx="ekr.20101011071655.4920">You can use Leo as a PIM.
+
+As with other outliners, Leo outlines show 
+</t>
+<t tx="ekr.20101011092154.4923">Since the NSIS script for the Leo installation is included in the Leo
+distribution in the nsis.leo file, it is easy to understand the how the script
+works. This .nsi file creates an installer that packages all of the Leo program
+files, and creates a desktop shortcut, a Program Menu item, and the file
+association for .leo files.
+</t>
+<t tx="ekr.20101011092154.4924">In this screenshot we're looking at the code that checks to see whether Python
+has been installed.
+
+Since Leo is a Python application, modifying this installation script to create
+a script to build a Windows installer for your own Python application is
+relatively simple. You would leave this section alone, and check other sections
+for the program name "Leo", and change these to your program name.
+</t>
+<t tx="ekr.20101011092154.4925"></t>
+<t tx="ekr.20101011103613.4930">Leo is a better pim.
+</t>
+<t tx="ekr.20101011103613.4933">The body text of any node can contain a Python script.
+
+You execute the script with (Ctrl-B) Leo's execute-script command.
+</t>
+<t tx="ekr.20101011103613.4934">All Leo scripts have access to three predefined constants: c, g and p.
+</t>
+<t tx="ekr.20101011103613.4935">Discuss @button nodes
+</t>
+<t tx="ekr.20101011103613.4936">Discuss @test nodes
+</t>
+<t tx="ekr.20101011103613.4937">Leo outlines make it easy to create Restructured Text (rST) documents.
+
+Within @rst trees, nodes correspond to rST sections. Naturally, the outline
+level of a node in the Leo outline determines the section's level in the
+resulting document.
+</t>
+<t tx="ekr.20101011103613.4938">All Leo scripts have full access to the outline in which the scripts reside. The
+following scripts, executed from Leo's body pane, will print the headlines of
+all the nodes of the outline, properly indented::
+
+    for p in c.all_positions():
+        print '%s%s' % (' '*p.level(),p.h)
+</t>
+<t tx="ekr.20101011103613.4939"></t>
+<t tx="ekr.20101011103613.4940">Leo is a new way of working with complex data like computer programs,
+books, web sites and data bases. The term **Leonine** refers to the Leo
+way of viewing the world and its data.
+
+In Leo, **outline structure is significant everywhere**. Leo’s users speak of an
+Aha! moment when they see what this statement means.
+
+People say Leo is **fun to use**, even additive.
+</t>
+<t tx="ekr.20101011103613.4942">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html
+</t>
+<t tx="ekr.20101011103613.4943">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html
+</t>
+<t tx="ekr.20101011103613.4944">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html
+</t>
+<t tx="ekr.20101011103613.4945">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html
+</t>
+<t tx="ekr.20101011103613.4946">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html
+</t>
+<t tx="ekr.20101011103613.4947">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html
+</t>
+<t tx="ekr.20101011111455.4965">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html
+</t>
+<t tx="ekr.20101011165412.4968">@language rest
+@pagewidth 50
+
+</t>
+<t tx="ekr.20101011165412.5011">Unifying scripting, data and outline structure creates a new world. We use the
+term **Leonine** to denote the Leo-centric (outline-centric) view of
+programming, data and scripting. Here are some of the implications of this
+new world:
+
+**Data organization**: Leo's clones allow unprecedented flexibility in
+organizing data. Leo outlines have been used as an entirely new kind of
+database. It is easily scriptable. As my brother has shown, it is possible to
+design Leo outlines so that parts of the outline *are* SQL queries!
+
+**Design**: With Leo, you always see the big picture, and as many of the details
+as you like. But this makes outlines ideal for representing designs. In fact,
+Leo outlines don't just represent designs, they *are* the designs. For example,
+all of Leo's source code reside in just a few Leo outlines. And Leo outlines can
+represent input data to other design tools.
+
+**Programming/Coding**: It's much easier to program when the design is always
+easily visible. Nodes provide the perfect way to organize large modules, classes
+and functions. Nodes also provide unlimited room to save as many details as you
+like, *without* cluttering your overall view of the task, or rather tasks, at
+hand.
+
+**Testing**: Leo is a supremely powerful unit-testing framework:
+
+1. You can make a node a unit test simply by putting @test at the start of its
+   headline. Leo will then automatically generate all the blah-blah-blah needed
+   to turn the node's script into a fully-functional unit test. Oh yes,
+   the headline becomes the name of the unit test.
+
+2. Unit tests can use data in children of @test nodes. Typical tests put input
+   data in one child node, and the expected results of running the test in another
+   child node. The test simply compares the actual and expected results.
+
+3. You can easily run tests in the entire outline or just in the selected
+   outline. Because tests reside in nodes, you can use clones to organize tests
+   in as many ways as you like. For example, it is trivial to run only those
+   tests that are failing.
+
+**Maintenance and support**: Leo's ability to contain multiple views of data is
+*precisely* what is needed while maintaining any large project. For every new
+support task and every new bug, a new (plain) **task node** will contain all the
+data needed for that task, notes, test data, whatever. Furthermore, when fixing
+bugs, the task node can contain clones of all classes, methods or functions
+related to the bug. Fixing a node in the task node fixes the node in the
+external file! And as always, you can use all of Leo's outlining features
+(including clones) to organize your task nodes.
+
+**Organization everywhere**: Have you noticed that Leo's organizational prowess
+applies to *everything*? Indeed, you can use outlines and clones in new ways to
+organize files, projects, data, design, programs, testing, and tasks. Leo
+doesn't need lots of features--outlines, clones and scripts suffice.  The more
+complex your data, designs, program and tasks, the better Leo is suited to them.
+
+It's time to mention one of Leo's most unique features.  Simple, *optional*
+markup makes it possible to synthesize (build) scripts and entire computer programs
+from outlines. Leo is more than a filing cabinet for scripts and programs, Leo
+is a build tool for scripts and outlines!
+
+**Scripting everything**: Let's step back a moment. A single outline can contain
+databases, designs, actual computer code, unit tests, test scripts and task
+nodes. But Leo scripts will work on any kind of node. Thus, it is *easy* to run
+scripts on *anything*! Examples:
+
+- Scripting itself: @button nodes creates a **script button**, a Python script
+  that can be applied to any node in an outline! Script buttons have been
+  written (in Python) that will execute Leo scripts in other languages.
+
+- Data: The @kind convention for headlines tells scripts what a node contains
+  without having to parse the node's contents.  The possibilities are endless.
+
+- Design: scripts can verify properties of design based on either the contents
+  of design nodes or their outline structure.
+
+- Coding: scripts routinely make massive changes to outlines. Scripts and unit
+  tests can (and do!) verify arbitrarily complex properties of outlines.
+
+- Scientific programming: Leo scripts can run experiments many times using
+  different starting points. Nodes are the perfect place to store results and
+  notes. Many scientists use the IPython shell-- Using Leo's **IPython bridge**,
+  Leo can execute IPython scripts, and scripts in IPython have full access to
+  all nodes in Leo outlines.
+
+- Testing: scripts can (and do!) create @test nodes themselves.
+
+- Maintenance: scripts could gather statistics about tasks using simple @kind
+  conventions.
+
+The Leo Aha is just this: Leo outlines are far more than eye candy. Leo outlines
+revolutionize your view of data--Leo outlines can organize *anything*. Leo
+outlines create a new kind of programming environment, one in which outline
+structure and user-defined data types create totally new opportunities.
+</t>
+<t tx="ekr.20101011165412.5154">@language python
+
+# **Important**
+#   Before running this script you must create bzr-manifest as follows::
+#       cd to trunk
+#       bzr ls -R &gt;bzr-manifest.txt
+
+'''Create the installer script using bzr-manifest.txt.'''
+
+import os,string,sys
+&lt;&lt; define version &gt;&gt;
+&lt;&lt; define inLeo &gt;&gt;
+
+if inLeo:
+    # The root directory contains the leo directory.
+    rootDir  = g.os_path_finalize_join(g.app.loadDir,'..','..')
+    manifest = g.os_path_finalize_join(rootDir,'bzr-manifest.txt')
+else:
+    rootDir = os.path.abspath(os.curdir)
+    manifest = os.path.normpath(os.path.join(rootDir,'bzr-manifest.txt'))
+
+&lt;&lt; define application constants &gt;&gt;
+@others
+
+nsi = nsiWriter()
+nsi.run(manifest)
+</t>
+<t tx="ekr.20101011165412.5155"># Used by both @button make leo.nsi and @button make leo.zip.
+app_version = version = '4.8-d1'
+</t>
+<t tx="ekr.20101011165412.5156">try:
+    inLeo = g is not None
+except AttributeError:
+    inLeo = False
+
+# print('inLeo',inLeo)
+</t>
+<t tx="ekr.20101011165412.5157">app_doc_icon = r'Icons\LeoDoc.ico'
+app_extension = '.leo'
+app_hkey_local_machine = r'SOFTWARE\EKR\leo'
+app_icon = r"%s\leo\Icons\leo_inst.ico" % rootDir
+app_icon2 = r'leo\Icons\LeoApp.ico' # Relative to install dir.
+app_license = r'%s\License.txt' % rootDir
+app_lower_case_name = 'leo'
+app_name = 'Leo'
+app_publisher = 'Edward K. Ream'
+app_python_executable = 'launchLeo.py'
+app_uninst_key = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+app_uninst_root_key = 'HKLM'
+app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
+
+nsi_name = 'leo-%s.nsi' % app_version
+target_file = 'LeoSetup-%s.exe' % app_version
+
+substitutionDict = {
+    'doc_icon': app_doc_icon,
+    'ext': app_extension,
+    'exe': app_python_executable,
+    'hkey_local_machine': app_hkey_local_machine,
+    'icon': app_icon,
+    'icon2': app_icon2,
+    'license': app_license,
+    'lower_name': app_lower_case_name,
+    'name': app_name,
+    'nsi_name': nsi_name,
+    'publisher': app_publisher,
+
+    'site': app_web_site,
+    'target_file': target_file,
+    'uninst_key': app_uninst_key,
+    'uninst_root_key': app_uninst_root_key,
+    'version': app_version,
+    # Leave these unchanged.
+    'DESKTOP': '$DESKTOP',
+    'INSTDIR': '$INSTDIR',
+    'NSISDIR': '${NSISDIR}',
+    'PROGRAMFILES': '$PROGRAMFILES',
+    'PythonExecutable': '$PythonExecutable',
+    'SMPROGRAMS': '$SMPROGRAMS'
+}
+</t>
+<t tx="ekr.20101011165412.5158">class nsiWriter:
+
+    '''A class to write .nsi scripts.'''
+
+    @others
+</t>
+<t tx="ekr.20101011165412.5159">def genScript (self,dirs,dirDict,filesDict):
+
+    '''Generate the .nsi installer script.'''
+
+    self.f = f = self.openNsi()
+    if not f: return
+
+    try:
+        self.genHead()
+        self.genInstallData(dirs,dirDict,filesDict)
+        self.genMiddle()
+        self.genUninstallData(dirs,dirDict,filesDict)
+    finally:
+        f.close()
+
+    g.es_print('make-leo-nsi done. no errors')
+</t>
+<t tx="ekr.20101011165412.5160">def genHead (self):
+
+    '''Generate the boilerplate appearing before
+    the manifest-specific install data.'''
+
+    self.put('!include MUI2.nsh\n')
+    self.putSettings()
+    self.putOnInit()
+</t>
+<t tx="ekr.20101011165412.5161">def putSettings (self):
+
+    s = r'''
+; Location of Pythonw.exe. Set by .onInit.
+var PythonExecutable
+
+SetCompressor bzip2
+Caption "${name} Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
+SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
+SetDatablockOptimize on
+; SetOverwrite ifnewer
+WindowIcon off
+OutFile "${target_file}"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+; Default location.  May be changed in .onInit.
+InstallDir "${PROGRAMFILES}\${name}-${version}"
+Icon "${icon}"
+DirText "Setup will install ${name}-${version} in the following folder. $$\n\
+To install in a different folder, click Browse and select another folder."
+LicenseText "You must accept the agreement to install ${name}-${version}."
+LicenseData "${license}"
+ShowInstDetails show
+ShowUnInstDetails show
+
+'''
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5162">def putOnInit (self):
+
+    s = r'''
+
+; Set PythonExecutable to full path to Pythonw.exe.
+Function .onInit
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
+    StrCmp $9 "" tryPython31 ok
+
+tryPython31:
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.1\InstallPath" ""
+    StrCmp $9 "" oops ok
+
+oops:
+    MessageBox MB_OK "Python not found: using c:\python26"
+    ; Guess where Python 26 is.
+    StrCpy $PythonExecutable "c:\Python26\pythonw.exe"
+    ; Fallback installation directory is "Program Files"
+    Goto done
+ok:
+    MessageBox MB_OK "Found Python at $9"
+    StrCpy $PythonExecutable "$9\pythonw.exe"
+    ; Normal installation directory 
+    StrCpy $INSTDIR "$9\Lib\site-packages\${name}-${version}"
+done:
+
+; End .onInit
+FunctionEnd
+'''
+    s = s.replace('${name}',app_name).replace('${version}',app_version)
+    self.put(s,substitute=False)
+</t>
+<t tx="ekr.20101011165412.5163">def genInstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific install data.'''
+
+    self.put('\nSection "%s" SEC01\n\n' % (app_name))
+
+    self.put(self.getInstallVariableData(
+        dirs,dirDict,filesDict),adjust=False)
+
+    self.put('\n; end %s section\n' % (app_name))
+    self.put('SectionEnd\n')
+</t>
+<t tx="ekr.20101011165412.5164">def getInstallVariableData (self,dirs,dirDict,filesDict):
+
+    global rootDir
+    result = []
+
+    # Top level
+    theDir = '**top'
+    result.append('; top-level\n')
+    result.append('SetOutPath "$INSTDIR"\n')
+    result.append('SetOverwrite ifnewer\n')
+    aList = dirDict.get(theDir,[])
+    for fn in aList:
+        result.append('File "%s"\n' % fn)
+
+    for theDir in dirs:
+        if theDir != '**top':
+            aList = dirDict.get(theDir,[])
+            if aList:
+                theDir2 = theDir.replace('/','\\').rstrip('\\')
+                result.append('\n')
+                result.append('SetOutPath $INSTDIR\\%s\n' % theDir2)
+                for fn in aList:
+                    # Fix bug 425369: quote file names.
+                    result.append('File "%s\\%s\\%s"\n' % (
+                        rootDir,theDir2,fn))
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+</t>
+<t tx="ekr.20101011165412.5165">def genMiddle (self):
+
+    '''Generate the boilerplate appearing between
+    the manifest-specific install data and
+    the manifest-specific uninstall data.'''
+
+    self.genMenuShortcuts()
+    self.genDesktopShortcuts()
+    self.genFileAssociation()
+    self.genAdditionalIcons()
+    self.genPost()
+    self.genUninstallSettings()
+    self.genMiddleFunctions()
+</t>
+<t tx="ekr.20101011165412.5166">def genAdditionalIcons(self):
+
+    s = r'''
+Section -AdditionalIcons
+  SetOutPath $INSTDIR
+  CreateDirectory "${SMPROGRAMS}\${name}"
+  CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5167">def genDesktopShortcuts(self):
+
+    s = r'''
+Section "Desktop Shortcut" SEC03
+  CreateShortCut "${DESKTOP}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\${exe}"' "$INSTDIR\${icon2}" 0
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5168">def genFileAssociation(self):
+
+    s = r'''
+Section "${ext} File Association"
+  SectionIn 1
+  SectionIn 2
+  SectionIn 3
+
+  # back up old value of extension in case some other program was using it
+  ReadRegStr $$1 HKCR "${ext}" ""
+  StrCmp $$1 "" Label1
+  StrCmp $$1 "${name}File" Label1
+  WriteRegStr HKCR "${ext}" "backup_val" $$1
+
+Label1:
+  WriteRegStr HKCR "${ext}" "" "${name}File"
+  WriteRegStr HKCR "${name}File" "" "${name} File"
+  WriteRegStr HKCR "${name}File\shell" "" "open"
+  WriteRegStr HKCR "${name}File\DefaultIcon" "" ${INSTDIR}\${doc_icon}
+  WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "${INSTDIR}\${exe}" "%1"'
+
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5169">def genMenuShortcuts (self):
+
+    s = r'''
+; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
+; that means that this installer will make the app available for the current user only.
+; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
+; security concerns are such that it would be best to not run the app with the Administrator privileges
+; of the account used to install the software.
+;
+; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
+;
+; Question is -- do we want the app always available for any log-in on this computer?
+;
+; My guesses:
+; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
+; if run by a user who lacks Admin privileges on Windows NT and its descendants
+;
+; How will Windows XP Home deal with that? 
+
+Section "Start Menu Shortcuts" SEC02
+    CreateDirectory "${SMPROGRAMS}\${name}"
+    CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "${INSTDIR}\uninst.exe" "" "${INSTDIR}\uninst.exe" 0
+    CreateShortCut "${SMPROGRAMS}\${name}\${name}.lnk" '"${PythonExecutable}"' '"${INSTDIR}\${exe}"' "${INSTDIR}\${icon2}" 0
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5170">def genMiddleFunctions (self):
+
+    s = r'''
+Function un.onUninstSuccess
+  HideWindow
+  MessageBox MB_ICONINFORMATION|MB_OK "${name}-${version} was successfully removed from your computer."
+FunctionEnd
+
+Function un.onInit
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \
+  "Are you sure you want to completely remove ${name}-${version} and all of its components?" IDYES +2
+  Abort
+FunctionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5171">def genPost (self):
+
+    s = r'''
+Section -Post
+  WriteRegStr HKEY_LOCAL_MACHINE "${hkey_local_machine}" "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "UninstallString" "${INSTDIR}\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayVersion" "${version}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "URLInfoAbout" "${site}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "Publisher" "${publisher}"
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5172">def genUninstallSettings(self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','Icons','uninst.ico')
+
+    s = r'''
+UninstallCaption "Uninstall ${name}"
+UninstallIcon "${path}"
+'''
+
+    s = s.replace('${path}',path)
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5173">def genUninstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific uninstall data.'''
+
+    s = r'''
+Section Uninstall
+
+    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
+
+    ; Delete files &amp; directories only if we own them!
+    ReadRegStr $$1 HKCR "${ext}" ""
+    StrCmp $$1 "${name}File" 0 FinishUninstall
+
+    ; Delete files &amp; directories only if there is no backup_val key.
+    ReadRegStr $$1 HKCR "${ext}" "backup_val"
+    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
+      DeleteRegKey HKCR "${ext}"
+    Goto FinishUninstall
+
+DeleteLeoKeysAndFiles:
+    WriteRegStr HKCR "${ext}" "" $$1
+    DeleteRegValue HKCR "${ext}" "backup_val"
+
+    ; ---- Start of manifest-related data...
+'''
+
+    self.put(s,substitute=True)
+
+    # Does all the hard work.
+    self.put(
+        self.getUninstallVariableData(dirs,dirDict,filesDict),
+        adjust = False)
+
+    s = r'''
+    ; ---- End of manifest related data.
+
+FinishUninstall:
+    ; MessageBox MB_YESNO|MB_ICONQUESTION \
+    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
+; NoDelete:
+
+  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
+  RMDir "${SMPROGRAMS}\${name}-${version}"
+  Delete "${DESKTOP}\${name}.lnk"
+
+  DeleteRegKey ${uninst_root_key} "${uninst_key}"
+  SetAutoClose false
+
+; end Uninstall section
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+</t>
+<t tx="ekr.20101011165412.5174">def getDeleteDirectories (self,dirs,dirDict):
+
+    reverseDirs = dirs[:]
+    reverseDirs.reverse()
+
+    result = []
+    result.append('; Uninstall directories in reverse order\n')
+    for theDir in reverseDirs:
+        # Delete the directory even if it has no files.
+        if theDir and theDir != '**top':
+            if not theDir.startswith('.bzr'):
+                result.append('RMDir "$INSTDIR\\%s"\n' % (
+                    theDir.replace('/','\\')))
+
+    # top-level folder.
+    result.append('RMDir "$INSTDIR"\n')
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+</t>
+<t tx="ekr.20101011165412.5175">def getDeleteFiles (self,dirs,dirDict,filesDict):
+
+    wildcard_delete = True
+    result = []
+    result.append('; Uninstall files...\n\n')
+
+    # top-level files.
+    result.append('; Delete top-level files...\n')
+    aList = dirDict.get('**top',[])
+    # special case.
+    aList.append('uninst.exe')
+    # Warning: **never** delete all files in the top-level directory.
+    for fn in aList:
+        result.append('Delete "$INSTDIR\\%s"\n' % fn)
+    if wildcard_delete:
+        result.append('\n')
+
+    for theDir in dirs:
+        if theDir:
+            dir2 = theDir.replace('/','\\')
+            if wildcard_delete:
+                result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
+            else:
+                aList = dirDict.get(theDir,[])
+                if aList:
+                    result.append('\n')
+                    result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                    result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                for fn in aList:
+                    result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
+                        dir2,fn))
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+</t>
+<t tx="ekr.20101011165412.5176">def getUninstallVariableData(self,dirs,dirDict,filesDict):
+
+    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
+    s2 = self.getDeleteDirectories(dirs,dirDict)
+    return '%s\n%s' % (s1,s2)
+</t>
+<t tx="ekr.20101011165412.5177">def indent(self,s):
+
+    if s.strip():
+        return '    ' + s
+    else:
+        return s
+</t>
+<t tx="ekr.20101011165412.5178">def openNsi (self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','..',nsi_name)
+
+    try:
+        f = open(path,'w')
+    except IOError:
+        f = None
+        g.es_print('Can not open',path,color='red')
+
+    return f
+</t>
+<t tx="ekr.20101011165412.5179">def put (self,s,adjust=True,substitute=False):
+
+    '''Output s to the nsi file, optionally making
+    the substitutions given in substitutionDict.'''
+
+    trace = False
+    if adjust:
+        s = self.adjustTripleString(s)
+
+    if substitute:
+        if 0:
+            n = 1
+            for z in g.splitLines(s):
+                print('%3s %s' % (n,z.rstrip()))
+                n += 1
+        s = string.Template(s)
+        s = s.substitute(substitutionDict)
+
+    if trace: g.trace(s,g.callers(4))
+    self.f.write(s)
+</t>
+<t tx="ekr.20101011165412.5180">def run (self,fn):
+
+    '''The top-level logic.'''
+
+    # Create and filter the list of files from the manifest.
+    s = open(fn).read()
+    lines = g.splitLines(s)
+    files = self.filterLines(lines)
+
+    # Compute the list of all the directories.
+    dirs = self.directoryList(rootDir)
+
+    # Compute dictionaries of directories and files.
+    dirDict,filesDict = self.makeDicts(dirs,files)
+
+    # Print manifest lines not in either dict.
+    # This is a crucial check.
+    errors = self.printMissing(files,dirDict,filesDict)
+    if errors: return
+
+    # Generate the script!
+    self.genScript(dirs,dirDict,filesDict)
+</t>
+<t tx="ekr.20101011165412.5181">def directoryList (self,rootDir):
+
+    '''Compute a top-down list of all directories.
+       These directories start at the top-level directory.'''
+
+    trace = False
+    ignoreDirs = ('.bzr',)
+    # Important: this adds all directories on EKR's machine,
+    # regardless of whether they appear in the manifest!
+    result = [] ; n = len(rootDir)
+    for z in os.walk(rootDir): # top-down traversal.
+        dirpath, dirnames, filenames = z
+        assert dirpath.startswith(rootDir),z
+        if len(dirpath) &gt; n:
+            path = dirpath[n+1:].replace('\\','/')
+            result.append(path)
+    for z2 in ignoreDirs:
+        result = [ z for z in result if not z.startswith(z2)]
+    if trace:
+        g.trace('-' * 40)
+        g.trace(g.listToString(result))
+    return result
+</t>
+<t tx="ekr.20101011165412.5182">def filterLines (self,lines):
+
+    '''Filter lines from the input manifest file.'''
+
+    trace = False
+
+    # Remove blank lines, comments, and .pyc and .pyo files.
+    lines = self.deleteBlankLines(lines)
+    lines = self.deleteComments(lines)
+    lines = self.deleteExt(lines,'.pyc')
+    lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
+    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
+
+    # Remove specific files.
+    deleteList = (
+        '.bzrignore',
+        'bzr-manifest.txt',
+        'bzr-small-manifest.txt',
+        'setup.py',
+        'leo/test/unittest/.leo_shadow/',
+        'nsi.log.txt', # Can't write log while we are creating it.
+        'leo/core/leoPy.leo',
+        'leo/core/ekrLeoPy.leo',
+    )
+    lines = self.deleteFiles(lines,deleteList)
+    if lines and lines[0].endswith('bzr ls -R'):
+        lines = lines[1:]
+
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(lines))
+
+    return lines
+</t>
+<t tx="ekr.20101011165412.5183">def deleteBlankLines (self,lines):
+
+    return [z.strip() for z in lines if z.strip()]
+
+def deleteComments (self,lines):
+
+    return [z for z in lines if not z.startswith('#')]
+
+def deleteExt (self,lines,ext):
+
+    return [z for z in lines if not z.endswith(ext)]
+
+def deleteFiles (self,lines,deleteList):
+
+    return [z for z in lines if not z in deleteList]
+</t>
+<t tx="ekr.20101011165412.5184">def makeDicts (self,dirs,lines):
+
+    trace = False ; verbose = False
+
+    # Create the dirDict.
+    # Keys are directories.
+    # Values are files contained in each directory.
+    dirDict = {}
+    dirDict['**top'] = [] # Create an entry for the root directory.
+    for z in dirs:
+        dirDict[z] = []
+
+    # Assign files to dirDict.
+    for line in lines:
+        line = line.strip().replace('\\','/')
+        if line in dirDict.keys():
+            path,fn = None,None
+        elif line.startswith('leo/'):
+            path,fn = g.os_path_split(line)
+        else:
+            path,fn = '**top',line.strip()
+
+        # Don't include top-level leo directory,
+        # Do include leo/scripts/leo file.
+        if fn and (path != '**top**' or fn != 'leo'):
+            aList = dirDict.get(path,[])
+            assert line not in aList,repr(line)
+            aList.append(fn)
+            dirDict[path]=aList
+
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        if aList and trace:
+            if verbose:
+                print() ; print(theDir)
+                print(g.listToString(aList))
+            else:
+                print(theDir)
+
+    # Create the inverse dict.
+    filesDict = {}
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        for fn in aList:
+            path = g.choose(theDir=='**top',
+                fn,'%s/%s' % (theDir,fn))
+            filesDict[path] = theDir
+
+    return dirDict,filesDict
+</t>
+<t tx="ekr.20101011165412.5185">def printMissing (self,files,dirDict,filesDict):
+
+    errors = 0
+
+    for fn in files:
+        fn = fn.rstrip('/')
+        if fn and fn not in dirDict and fn not in filesDict:
+            g.es_print('missing',fn,color='red')
+            errors += 1
+
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+
+    return errors
+</t>
+<t tx="ekr.20101011165412.5186"># These are adapted from the corresponding functions in leoPy.leo
+# They are defined here to make this script independent of Leo
+</t>
+<t tx="ekr.20101011165412.5187">def adjustTripleString (self,s):
+
+    '''Remove leading indentation from a triple-quoted string.'''
+
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = self.splitLines(s)
+    w = 0 ; val = -1
+    for line in lines:
+        if line.strip():
+            lws = self.get_leading_ws(line)
+            w2 = self.computeWidth(lws)
+            # The sign of w does not matter.
+            if w == 0 or abs(w2) &lt; w:
+                w = abs(w2)
+
+    if w == 0: return s
+
+    # Remove the leading whitespace.
+    result = [self.removeLeadingWhitespace(line,w) for line in lines]
+    result = ''.join(result)
+    return result
+</t>
+<t tx="ekr.20101011165412.5188">def get_leading_ws(self,s):
+
+    """Returns the leading whitespace of 's'."""
+
+    i = 0 ; n = len(s)
+    while i &lt; n and s[i] in (' ','\t'):
+        i += 1
+    return s[0:i]
+</t>
+<t tx="ekr.20101011165412.5189">def computeWidth (self,s):
+
+    '''Return the width of s, assuming s starts a line.'''
+
+    tabwidth = 4
+    w = 0
+    for ch in s:
+        if ch == '\t':
+            w += tab_width - (w % tab_width)
+        else:
+            w += 1
+    return w
+</t>
+<t tx="ekr.20101011165412.5190">def removeLeadingWhitespace (self,s,first_ws):
+
+    '''Remove whitespace up to first_ws wide in s.'''
+
+    j = 0 ; ws = 0
+    tabwidth = 4
+    first_ws = abs(first_ws)
+    for ch in s:
+        if ws &gt;= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += tab_width - (ws % tab_width)
+        else: break
+    if j &gt; 0:
+        s = s[j:]
+    return s
+</t>
+<t tx="ekr.20101011165412.5191">def splitLines (self,s):
+
+    '''Split s into lines, preserving the number of lines and the ending of the last line.'''
+
+    return s and s.splitlines(True) or []
+</t>
+<t tx="ekr.20101012083118.5242">c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html
+</t>
+<t tx="ekr.20101012083118.5245"></t>
+<t tx="ekr.20101012083118.5246">Leo is a unique, powerful computer program that you can use to organize, analyze
+and describe text and text files.
+
+Use Leo:
+
+- To brainstorm a new project.
+- As a Personal Information Manager.
+- As a new kind of programming too.
+
+Because Leo is unlike other tools you may have used, a series of examples may be
+the best way to demonstrate what can be done with Leo.
+</t>
+<t tx="ekr.20101013072903.5218"></t>
+<t tx="ekr.20101013072903.5219">This slideshow shows some of the things you can do
+with Leo
+</t>
+<t tx="ekr.20101013072903.5220"></t>
+<t tx="ekr.20101013072903.5221">Leo's main window consists of an **outline pane**
+(1), a **body pane** (2) and a **log pane** (3).
+All data in Leo resides in **nodes**. A node
+consists of **headline text** and **body text**.
+The outline pane shows headlines. The body pane
+pane shows the body text of the presently selected
+node. Messages from Leo appear in the log pane.
+
+</t>
+<t tx="ekr.20101013072903.5228">.. Arrow points to window title.
+
+The name of the Leo outline appears in the window's title.
+
+Here, the name is workbook.leo, the default file name.
+</t>
+<t tx="ekr.20101013072903.5229">Leo's main window consists of an **outline pane**
+(1), a **body pane** (2) and a **log pane** (3).
+
+</t>
+<t tx="ekr.20101013072903.5230">The outline pane shows **headlines**.
+
+Here, we see the a "startup" headline and a "workbook" headline.
+</t>
+<t tx="ekr.20101013072903.5238"></t>
+<t tx="ekr.20101014034526.5280">@language rest
+@pagewidth 60
+
+</t>
+<t tx="ekr.20101014034526.5287">sentinels
+
+With \@file, you also **share outline structure**.
+
+Leo opens external files automatically.
+
+Leo is an IDE
+</t>
+<t tx="ekr.20101014034526.5294">- Execute IPython scripts from Leo.
+- Execute Leo scripts from IPython.
+</t>
+<t tx="ekr.20101014034526.5295"></t>
+<t tx="ekr.20101014034526.5296">@ Discuss tab completion.
+</t>
+<t tx="ekr.20101014110348.5256">Leo nodes whose headline starts with \@file, \@auto or
+\@edit create **external files**, files outside of Leo on
+your file system::
+
+  @file myClass.py
+  @auto ../graphics/circles.cpp
+  @edit ~/.leo/.leoID.txt
+
+The headline contains a file name, which can be an absolute
+path or a path relative to the directory containing the Leo
+outline.
+
+**@file** embeds outline structure directly into external
+files using comments called **sentinel lines**. This is the
+recommended way to share external files among Leo users.
+
+**@auto** and **@edit** allow you to read and edit external
+files without inserting sentinel lines. The cost of avoiding
+sentinel lines is that Leo can not preserve outline
+structure exactly.
+</t>
+<t tx="ekr.20101014110348.5257">Here, created a node called @edit spam.py.
+
+This represents the file spam.py in the same
+directory as the Leo outline.
+</t>
+<t tx="ekr.20101014110348.5260">I save the Leo outline file with Ctrl-S or the File:Save menu.
+
+When I do that, Leo automatically saves any @edit node that
+is new or has been changed.
+
+In this case, the @edit node was new, so the log window says::
+
+    created: c:\Users\edreamleo\.leo\spam.py
+    saved: workbook.leo
+
+Leo tells you the full path to created files, and
+the short path to updated files like workbook.leo.
+</t>
+<t tx="ekr.20101014110348.5261">I've typed some text into the body pane.
+
+The @language python line is a Leo directive. It
+tells Leo to syntax color the body text as Python
+source code.
+</t>
+<t tx="ekr.20101014110348.5262">Now I've added some more text.
+
+The icon box shows that the @edit node is "dirty" (has been changed).
+</t>
+<t tx="ekr.20101014110348.5263">I save the Leo outline again.
+
+Once again, Leo saves spam.py.
+
+This time, the log window says::
+
+    wrote: spam.py
+    saved: workbook.leo
+</t>
+<t tx="ekr.20101014110348.5264">Let's close the file and reopen it.
+
+We get exactly the same information,
+with the same node selected, with the same information.
+
+</t>
+<t tx="ekr.20101014110348.5265"></t>
+<t tx="ekr.20101014110348.5266">We can edit spam.py outside of Leo.
+
+Let's add a comment.
+</t>
+<t tx="ekr.20101014110348.5267">If we close the Leo file and reopen it,
+we see the new text.
+</t>
+<t tx="ekr.20101014110348.5270">**@edit nodes** contain the entire contents of an
+external file.
+
+</t>
+<t tx="ekr.20101014110348.5271"></t>
+<t tx="ekr.20101014110348.5272">..  At present, there are **importers** for
+..  C, elisp, HTML, .ini files, Java, Javascript,
+..  Pascal, PHP, Python and xml. 
+
+
+**@auto** trees cause Leo to automatically create
+an outline based on the structure of the external
+file. 
+
+**@auto trees** cause Leo to **import**
+a file into a tree of Leo nodes, based on the
+file's extension. Leo's **importers** create Leo
+outlines based on the structure of the imported
+language. The importer for unknown languages reads
+the entire contents of the external file into the
+\@auto node. **@edit nodes** cause Leo to read the
+entire contents of an external file into the @edit
+node.
+
+Leo contains **importers** for common
+languages. These importers split the external file
+into outline nodes.
+</t>
+<t tx="ekr.20101014110348.5274">Rather than creating new files with @edit, it is more common
+to use @edit to connect Leo with files that already exist on your file system.
+</t>
+<t tx="ekr.20101014110348.5275">Within a Leo outline, an @edit node contains
+the entire contents of an external file.
+</t>
+<t tx="ekr.20101014110348.5278"></t>
+<t tx="ekr.20101014110348.5293"></t>
+<t tx="ekr.20101019085517.5424">\@file trees are the most flexible way of creating and editing external files.
+
+Here, we have created an **@file node**, a node
+whose headline start with @file.
+</t>
+<t tx="ekr.20101020082858.5420"></t>
+<t tx="ekr.20101020082858.5441">Collectively, \@file, \@auto or \@edit trees are called
+**@&lt;file&gt; trees**.
+
+**Leo automatically reads and writes \@&lt;file&gt; trees**
+
+When you open a Leo outline, Leo recreates all \@&lt;file&gt;
+trees from the corresponding external files.
+
+When you save a Leo outline, Leo writes all changed \@&lt;file&gt;
+trees to the corresponding external files.
+
+A single Leo outline may be connected to dozens of external
+files. Reading external files is very fast because of an
+efficient file-caching scheme.
+
+As a result, Leo acts like an IDE (Integrated Development
+Environment). For example, a single Leo outline contains
+@file trees for all of Leo's core source files.
+</t>
+<t tx="ekr.20101020082858.5443"></t>
+<t tx="ekr.20101020082858.5446">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-002.html
+</t>
+<t tx="ekr.20101021092135.5430">c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-001.html
+</t>
+<t tx="ekr.20101021092135.5431"></t>
+<t tx="ekr.20101025080245.5529">@nocolor-node
+
+Ville's server code to interact with a running Leo
+http://mail.google.com/mail/#inbox/12adebe2ffe80572
+
+Reusing Emacs instances with gnuserv
+http://www.debian-administration.org/articles/257
+
+</t>
+<t tx="ekr.20101025080245.5540">@nocolor
+
+- Make sure to upload all slides.
+
+Later:
+
+- Create slides_toc for slides, separate from the main toc document.
+
+- Eliminate Sphinx warnings:
+    Can probably be done by changing the slides page.
+</t>
+<t tx="ekr.20101025080245.5546">http://mail.google.com/mail/#inbox/12adebe2ffe80572
+</t>
 <t tx="ekr.20101025080245.5794"></t>
 <t tx="ekr.20101025080245.5795"></t>
 <t tx="ekr.20101025080245.5796"></t>
@@ -324,7 +2305,168 @@ Important files:
 - leo_toc.html.txt contains a list of all file to be included.
 </t>
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
-<t tx="ekr.20101113120258.4929"></t>
+<t tx="ekr.20101113110328.4945"></t>
+<t tx="ekr.20101113110328.4946"></t>
+<t tx="ekr.20101113110328.4947"></t>
+<t tx="ekr.20101113120258.4929">@nocolor-node
+
+** Discuss @auto in the tutorial!</t>
+<t tx="ekr.20101115152915.4928"></t>
+<t tx="ekr.20101115152915.4929"></t>
+<t tx="ekr.20101115152915.4930"></t>
+<t tx="ekr.20101115152915.4931"></t>
+<t tx="ekr.20101115152915.4932"></t>
+<t tx="ekr.20101115152915.4933"></t>
+<t tx="ekr.20101115152915.4934"></t>
+<t tx="ekr.20101115152915.4935"></t>
+<t tx="ekr.20101115152915.4936"></t>
+<t tx="ekr.20101115152915.4937">@nocolor-node
+
+{{Infobox software
+| name = Leo: Leonine Editor with Outlines
+| screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
+| caption =
+| developer = Edward K. Ream
+| latest_release_version = 4.8 release candidate 1
+| latest_release_date = {{release date and age|2010|11|15}}
+| operating_system = [[Cross-platform]]
+| genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
+| license = [[Python (programming language)|Python]] License
+| website = http://webpages.charter.net/edreamleo/front.html
+}}
+
+'''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
+that features [[outliner|outlines]] with clones as its central tool of
+organization, navigation, customization and scripting.
+
+==Language==
+
+Leo is written in [[Python (programming language)|Python]] and uses two GUI
+toolkits, [[Tk (computing)|Tk]] and [[Qt (toolkit)|Qt]]. It is fully scriptable
+using Python and can be extended with plugins.
+In Leo, outlines are hierarchical data structures that people use to work with
+and manage text files—including code.
+
+==Trees, clones and views==
+
+Leo is an [[outliner]]. Leo's outline pane shows a [[tree (data structure)]] of data nodes.
+Nodes contain headlines, body text, and other information.
+Headlines naturally serve as descriptions of the body text.
+For example, @file nodes are nodes whose headline starts with @file.
+
+Leo trees are in fact [[directed acyclic graph|directed acyclic graphs]];
+nodes may have more than one parent.
+Leo calls such nodes clones.
+Clones appear in several places in the outline pane.
+
+Views are simply nodes whose children contain clones. A single outline may contain
+arbitrarily many views of the nodes contained therein.
+Views and clones turn Leo into a supremely flexible filing cabinet: any node may be filed
+in arbitrarily many places.
+&lt;ref&gt;[http://webpages.charter.net/edreamleo/nutshell.html Leo documentation: Leo in a Nutshell]&lt;/ref&gt;
+
+==External files==
+
+@file nodes represent external files, files on the computer's file system.
+When saving an outline Leo automatically writes all changed @file
+trees back to the external files.
+Comments, called sentinel lines, in external files represent the outline structure.
+When reading an outline, these comments allows Leo to recreate
+@file trees using only the data in the external file.
+
+@auto nodes represent external files without using sentinel comments.
+When reading @auto nodes, Leo uses the program structure of the external file
+to create the @auto tree.
+
+==Scripting==
+
+Leo's scripting environment takes full advantage of outline structure:
+
+* The body text of any node may contain a Leo script, a Python script executed in the context of a Leo outline.
+
+* A simple [[API]] &lt;ref&gt;[http://webpages.charter.net/edreamleo/scripting.html Leo documentation: Scripting Leo with Python]&lt;/ref&gt; gives Leo scripts full access to all data in loaded outlines, as well as full access to Leo's own source code. The API includes Python [[iterators]] that allow scripts to traverse outlines easily.
+
+* Scripts may be composed of any tree of nodes. A [[markup language]] similar to [[noweb]] &lt;ref&gt;[http://webpages.charter.net/edreamleo/intro.html#section-references Leo documentation: Tutorial]&lt;/ref&gt; tells Leo how to create scripts from (parts of) an outline.
+  
+* Headlines naturally control and guide scripts.
+
+** @test nodes represent unit tests. Leo can execute the body of an @test node as unit test, without the body having to create an explicit subclass of Python's UnitTest.TestCase class. &lt;ref&gt;[
+
+** @button nodes contain scripts that can be applied to other nodes.  In effect, @button nodes create user-defined commands. &lt;ref&gt;
+
+==External links==
+{{Portal|Free software}}
+*[http://webpages.charter.net/edreamleo/front.html Leo's homepage]
+*[http://sourceforge.net/projects/leo/ Leo at SourceForge],[http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 screenshots]
+*[http://groups.google.com/group/leo-editor leo-editor Google Group]
+*{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}
+*{{cite web |author=[[James Tauber]] |title=Using the Leo Outliner as a PIM | date=2004-05-15 |url=http://jtauber.com/blog/2004/05/15/using_the_leo_outliner_as_a_pim/ }}
+*{{cite book | author = Vreda Pieterse, Derrick G. Kourie, Andrew Boake | title=ACM International Conference Proceeding Series; Vol. 75. Proceedings of the 2004 annual research conference of the South African institute of computer scientists and information technologists on IT research in developing countries | chapter=A case for contemporary literate programming | editor=[[Association for Computing Machinery|ACM]] | pages=2–9 | url=http://portal.acm.org/citation.cfm?id=1035054}} (cited in references)
+
+==References==
+&lt;references/&gt;
+
+{{DEFAULTSORT:Leo (Text Editor)}}
+[[Category:Free text editors]]
+[[Category:Free software programmed in Python]]
+[[Category:Outliners]]
+</t>
+<t tx="ekr.20101115152915.4938">@nocolor-node
+
+'''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
+that features [[outliner|outlines]] with clones as its central tool of
+organization and navigation.
+
+==Language==
+
+Leo is written in [[Python (programming language)|Python]] and uses two GUI
+toolkits, [[Tk (computing)|Tk]] and [[Qt (toolkit)|Qt]]. It is fully scriptable
+using Python and can be extended with plugins.
+
+==Leo outlines and clones==
+
+In Leo, outlines are hierarchical tree structures that are used to work with and
+manage text files—including code.
+
+Clones are outline nodes that are automatically kept identical throughout a Leo
+outline. They can be thought of as pointers to the same content: By editing one,
+all the other clones of that outline element update as well.
+
+This feature turns the outline tree structure into a [[directed acyclic graph]]
+structure.
+
+Outline nodes may be named or unnamed. Leo creates output files in a process
+called "tangling". Tangling starts at the top-level node of the output file. The
+contents of the top-level node are copied to the output file. Named nodes are
+inserted at the point of reference, as in macro languages; unnamed nodes are
+inserted as the result of Leo's @others directive. Tangling is a recursive
+process—inserted nodes may contain @other directives and references to named
+nodes, and so on.
+
+==Literate programming and Leo==
+
+Leo supports markup used in [[literate
+programming]]&lt;ref&gt;[http://webpages.charter.net/edreamleo/design.html leo
+Documentation - Designing with Leo]&lt;/ref&gt;. However, outlines generally reduce
+the need for comments and Leo programs and scripts need not follow Literate
+Programming methods.
+
+==External links==
+{{Portal|Free software}}
+*[http://webpages.charter.net/edreamleo/front.html Leo's homepage]
+*[http://sourceforge.net/projects/leo/ Leo at SourceForge], [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 screenshots]
+*{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}
+*{{cite web |author=[[James Tauber]] |title=Using the Leo Outliner as a PIM | date=2004-05-15 |url=http://jtauber.com/blog/2004/05/15/using_the_leo_outliner_as_a_pim/ }}
+*{{cite book | author = Vreda Pieterse, Derrick G. Kourie, Andrew Boake | title=ACM International Conference Proceeding Series; Vol. 75. Proceedings of the 2004 annual research conference of the South African institute of computer scientists and information technologists on IT research in developing countries | chapter=A case for contemporary literate programming | editor=[[Association for Computing Machinery|ACM]] | pages=2–9 | url=http://portal.acm.org/citation.cfm?id=1035054}} (cited in references)
+
+==References==
+&lt;references/&gt;
+
+{{DEFAULTSORT:Leo (Text Editor)}}
+[[Category:Free text editors]]
+[[Category:Free software programmed in Python]]
+[[Category:Outliners]]
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

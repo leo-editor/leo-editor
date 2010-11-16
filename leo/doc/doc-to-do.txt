@@ -1,16 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101028110015.8272: * @file doc-to-do.txt
 #@+all
-#@+node:ekr.20101025080245.5540: ** To do
-@nocolor
-
-- Make sure to upload all slides.
-
-Later:
-
-- Create slides_toc for slides, separate from the main toc document.
-
-- Eliminate Sphinx warnings:
-    Can probably be done by changing the slides page.
 #@-all
 #@-leo

@@ -579,7 +579,8 @@
 <v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
 <v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
 </v>
-</v>
+<v t="ekr.20101103135707.2439"><vh>@@button move head to prev</vh></v>
+<v t="ekr.20101103170034.2445"><vh>@@button move tail to next</vh></v>
 <v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
 <v t="ekr.20101101143333.2273"><vh>@@button autocompleter test @key=Alt-8</vh></v>
 <v t="ekr.20101101173931.2268"><vh>@url QComplter docs</vh></v>
@@ -686,10 +687,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101103153740.2441"><vh>class eggs</vh></v>
-<v t="ekr.20101103153740.2440"><vh>spam</vh></v>
-<v t="ekr.20101103135707.2439"><vh>@button move head to prev</vh></v>
-<v t="ekr.20101103170034.2445"><vh>@button move tail to next</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1110,7 +1108,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9392,14 +9390,6 @@ def onDestroyed (self):
 <t tx="ekr.20101103135707.2439">import leo.core.leoImport as leoImport
 
 leoImport.headToPrevNode(event={'c':c})
-</t>
-<t tx="ekr.20101103153740.2440">def spam():
-    pass
-</t>
-<t tx="ekr.20101103153740.2441">class eggs:
-    pass
-
-Spam = spam
 </t>
 <t tx="ekr.20101103170034.2445">import leo.core.leoImport as leoImport
 

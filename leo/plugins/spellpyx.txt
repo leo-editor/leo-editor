@@ -3829,3 +3829,4 @@ hClicked
 active_path_attype
 item_data
 interesting_function
+LeoDist
