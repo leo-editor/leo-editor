@@ -99,16 +99,31 @@ def onIdle (tag,keywords):
     last = d.get('last')
     interval = d.get('interval')
     if time.time()-last >= interval:
-        if c.mFileName and c.changed:
-            w = c.get_focus() # 2010/11/16: save & restore focus.
+        # 2010/11/16: disable autosave unless focus is in the body or Tree.
+        w = c.get_focus()
+        guiName = g.app.gui.guiName()
+        if guiName == 'qt':
+            bodyWidget = c.frame.body
+            treeWidget = c.frame.tree.treeWidget # QtGui.
+        elif guiName == 'tkinter':
+            treeWidget = c.frame.tree.canvas
+            bodyWidget = c.frame.body.bodyCtrl
+        else:
+            return # Only Qt and Tk gui's are supported.
+        isBody = w == bodyWidget
+        isTree = w == treeWidget
+        if trace: g.trace(
+            'isBody: %s, isTree: %s, w: %s, bodyWidget: %s, treeWidget: %s' % (
+                isBody,isTree,w,bodyWidget, treeWidget))
+        if c.mFileName and c.changed and (isBody or isTree):
             # g.trace(w)
             s = "Autosave: %s" % time.ctime()
             g.es(s,color="orange")
-            if trace: g.trace(s)
+            if trace: g.trace('message: %s' % (s))
             c.fileCommands.save(c.mFileName)
             c.set_focus(w,force=True) # 2010/11/16: save & restore focus.
         elif trace:
-            g.trace('not changed')
+            g.trace('not changed.')
         # Update the global dict.
         d['last'] = time.time()
         gDict[c.hash()] = d
