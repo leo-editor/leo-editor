@@ -32,7 +32,7 @@
 </v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
@@ -65,7 +65,8 @@
 <v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005805000000302e302e3671017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@file installing.txt</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>The Leo Tutorial</vh>
-<v t="ekr.20100805165051.7146"><vh>@file intro.txt</vh></v>
+<v t="ekr.20100805165051.7146" a="E"
+expanded="ekr.20091130111843.6788,"><vh>@file intro.txt</vh></v>
 <v t="ekr.20100808120531.4280"><vh>@file outline-commands.txt</vh></v>
 <v t="ekr.20100808120531.4283"><vh>@file nutshell.txt</vh></v>
 </v>
@@ -595,7 +596,7 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101021092135.5431"></v>
 <v t="ekr.20101014034526.5280"></v>
-<v t="ekr.20101115152915.4930" a="O"></v>
+<v t="ekr.20101115152915.4931"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2392,16 +2393,16 @@ example::
 ===== The top-level body text: section references &amp; @others
 
 Here is the body text for a typical @file node that defines a single Python class::
-    
+
     &lt;&lt; imports &gt;&gt;
-    
+
     class MyDemoClass:
-        
+
         @others
-        
+
 Informally, it says that external file consists of import statements,
 followed by the class MyDemoClass.  We expect to see the following:
-    
+
 - A child node whose headline &lt;&lt; imports &gt;&gt;.
 
 - The methods of MyDemoClass in all the **other** child nodes.
@@ -2420,15 +2421,15 @@ The next few slides will discuss this pattern line by line.
     **Section definition nodes** create section definitions.
     Section definition nodes contain a section name in the headline.
     The body text contains the section definition.
-    
+
     Therefore, the definition of &lt;&lt; imports &gt;&gt; are the lines::
-        
+
         import os
         import sys
-        
+
     Each section definition node must be a descendant of the node
     containing the section reference.
-    
+
 ===== @others definitions
 
     The \@others directive is similar to a section reference;
@@ -2438,14 +2439,14 @@ The next few slides will discuss this pattern line by line.
     as in a section reference, \@others tells Leo to insert the
     body text of all node that **aren't** section definition nodes.
     That's where the name comes from: it inserts all the **other** nodes.
-    
+
 ===== Simple expansion of @others.
 
     Here we have added two children of the root node, named, as usual
     in Python examples, spam and eggs.  The expansion of the \@others directive
     will be the body text of those two nodes.  Each line of the expansion is
     indented with the leading whitespace that occurs before the \@others directive.
-    
+
 ===== Indentation
 
     Let us use the term **reference** to mean either a section reference or an
@@ -2456,7 +2457,7 @@ The next few slides will discuss this pattern line by line.
     expansion of a reference by the total amount of leading whitespace that is
     in effect at the point of the reference. This allows Leo handle languages
     like Python in which indentation is especially important.
-    
+
     In our example, there is no leading whitespace before the reference to
     &lt;&lt; imports &gt;&gt;, but there are four spaces before the \@others directives.
     This means that Leo writes the import statements without additional indentation,
@@ -2465,49 +2466,49 @@ The next few slides will discuss this pattern line by line.
     **Important**: Indentation is controlled **only** by the indentation of
     references. The outline level of nodes in expansions does not affect
     indentation in any way.
-    
+
     This **decoupling** of outline structure from indentation is very important:
     it allows you to create **organizer nodes** without affecting the external
     file in any significant way (other than sentinel comments).
-    
+
 ===== Expansion
 
     In our first example, the expansions of references are straightforward.
     However, any node may contain one or more section references, and any node
     may also contain a single \@others directive.
-    
+
     Every line of an expansion is written as the result of exactly one
     reference.
-    
+
     A. The expansion of a section reference is just exactly the expansion of the
        body of the section definition node. That expansion may include
        expansions of *other* references appearing in that node.
-       
+
     B. The expansion of an @others directive is the expansion of all descendant
        nodes that aren't section definition nodes and are not included in the
        expansion of \@others nodes deeper in the tree. This means that no node
        is ever included in the expansion of more than one \@other directive.
        Non-section-definition nodes are included in the expansion of the nearest
        \@others directive.
-    
+
     When writing an \@file tree, Leo ensures all of the following:
-        
+
     1. Each section must be defined. There must be a section reference in an
         ancestor of each section defition node.
-    
+
     2. There must be no **orphan nodes**.  A section definition node is an
        orphan if no ancestor node contains a reference to that node.
        A non-definition node is an orphan if no ancestor node contains an
        \@others directive.
-       
+
     Leo will issue an error if these checks are not satisifed.
-       
+
     In short, each node in an \@file tree, except the \@file node itself, must
     be part of the expansion of exactly one reference. 
-    
+
     In practice, these rules are much easier to use than to describe!
-    
-    
+
+
 ===== Multiple @others nodes: top-level node
 
     ((
@@ -2518,7 +2519,7 @@ The next few slides will discuss this pattern line by line.
     An example will clarify matters.  Here is a common pattern for a file that
     defines two classes, SpamClass and EggsClass.  The top-level node includes imports,
     and then uses \@others to include the expansion of the rest of the outline.
-    
+
 ===== Multiple @others nodes: SpamClass
 
     ((
@@ -2528,15 +2529,15 @@ The next few slides will discuss this pattern line by line.
 
     The first child node creates the expansion of SpamClass.
     The line::
-        
+
         class SpamClass:
-            
+
     has no extra indentation, because the \@others in the top-level
     node has no leading whitespace.
-    
+
     However, all the methods of the class will have 4 spaces of indentation
     because the \@others directive in *this* node is indented by 4 spaces.
-    
+
 ===== Multiple @others nodes: EggsClass
 
     ((
@@ -2546,16 +2547,16 @@ The next few slides will discuss this pattern line by line.
 
     The second child node creates the expansion of EggsClass in a similar manner.
     It's always perfectly clear what nodes are included in \@others directives.
-    
+
     Here, \@others refers to all descendant nodes of *this* node.
-    
+
 ===== Multiple @others nodes: @if 0:
-    
+
     ((
     if 0:
         @others
     ))
-    
+
     You can use @others to "comment out" all descendant nodes as shown. This
     works in Python because the indentation of the \@others directive cause the
     expansion of all descendant nodes to have 4 extra spaces.
@@ -2564,7 +2565,7 @@ The next few slides will discuss this pattern line by line.
 
     When Leo reads an **@auto node**, Leo will automatically create an outline
     that shows the class, functions or other units of the external file.
-    
+
     Leo can only do this if Leo has an **importer** for the external file. At
     present, Leo has importers for C, elisp, HTML, .ini files, Java, Javascript,
     Pascal, PHP, Python and xml. Leo determines the language using the file's
@@ -2576,8 +2577,104 @@ The next few slides will discuss this pattern line by line.
     When Leo reads and **@edit node**, Leo reads the entire contents of the
     external file into the body text of the \@edit node.
 </t>
-<t tx="ekr.20101115152915.4931">Clones focus attention.
-</t>
+<t tx="ekr.20101115152915.4931">@nocolor-node
+
+Clones focus attention.
+
+===== Intro
+
+    Clones are one of Leo's most unusual and most useful features.
+    
+    A **clone** is a node that appears in more than one place in a Leo outline.
+   
+====== Create clone of A
+
+    Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
+    
+    Clones are marked with a small red *clone arrow** in the icon box.
+    Deleting the penultimate clone removes the red arrow from the node.
+    
+====== Clones are identical
+    
+    Changing the headline or body text of a clone changes the headline or body
+    text of all other clones of that node. Furthermore, changing any descendants
+    of a clone, including inserting, deleting or moving nodes, results in the
+    same changes being made to all other clones.
+    
+    In fact, all clones of a node are actually *the exactly the same node*, so
+    any change to one clone inevitably affects all other clones.
+    
+===== Changing the headline of a clone.
+
+    Here, I am beginning to change the headline of Node A.
+    The headline doesn't actually change until we hit return,
+    so the headline of these clone of A hasn't changed yet.
+    
+===== Change complete.
+
+    After typing &lt;return&gt; the headlines of both nodes changes.
+    
+===== Node b.
+    
+    Here we have created a node B following the first clone of B.
+    
+===== Move B right
+
+    Moving B right makes B a child of node A.
+    As you can see, B appears as a child of both cloned nodes.
+    
+    Even the expansion state of cloned nodes are identical:
+    both clones are now expanded.
+    
+===== Create another child (newheadline)
+
+    Here, I have created a new node with Ctrl-I (insert-node).
+    
+    The node appears in the same place in both nodes.
+    
+===== Auto update
+
+    Changing a node marks all clones of that node as changed. When I save the
+    Leo outline, Leo automatically writes all the external files that contain
+    dirty nodes.
+    
+===== Clones create views
+
+    Clones are important because they allow you to create as many views of the
+    data in the outline as you like. In effect, Leo becomes a supremely flexible
+    filing cabinet. Any ordinary node can act like a folder in the filing
+    cabinet. Using clones, you can "file" a node in as many folders as you like.
+ 
+    In Leo, a **view** is simply a subset of the nodes of the outline. We
+    represent a view as **ordinary** node, called a **view node**, whose nodes
+    can contain both regular nodes and clones. The children of the view node are
+    the subset of nodes that define the view. It's that simple.
+     
+    With Leo, you can have as many view nodes as you like. There is no such
+    thing as a single, "correct" view of data. 
+    
+    
+===== Using view nodes
+   
+    I use view nodes to focus attention on a set of disparate nodes.
+    
+    For example, when I fix a bug in Leo, I create a **bug node** containing
+    all the data in Leo's source code that relates to the bug. As I discover
+    code related to the bug, I clone nodes and move them under the bug node.
+    I'll also add ordinary nodes as children of the bug node. These nodes
+    contain the original bug report, descriptions of how I fixed the bug, test
+    data, or any other notes I might want to keep.
+    
+    Once I have created the bug node, I concentrate *only* on that node and its
+    children. I can examine the bug node and its children without having to jump
+    around the outline. Everything I need is in one place. This extremely narrow
+    focus makes it *much* easier to fix bugs. to jump around the outline. It
+    doesn't matter how big or complex the outline is: I am only dealing with the
+    bug node and its children.
+
+    **Important**: I can fix the bug by changing the clones in the view node.
+    When I save the Leo file, Leo will save all the @&lt;file&gt; nodes that contain any
+    changed clone.  Everything "just works".</t>
 <t tx="ekr.20101115152915.4932"></t>
 <t tx="ekr.20101115152915.4933"></t>
 <t tx="ekr.20101115152915.4934"></t>
