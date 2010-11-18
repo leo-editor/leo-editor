@@ -474,7 +474,7 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101021092135.5431"><vh> Drafts</vh>
-<v t="ekr.20101115152915.4930"><vh>1. External files (draft)</vh></v>
+<v t="ekr.20101115152915.4930" a="O"><vh>1. External files (draft)</vh></v>
 <v t="ekr.20101115152915.4931"><vh>2. Clones &amp; views</vh></v>
 <v t="ekr.20101115152915.4936"><vh>3. Scripting Leo</vh></v>
 <v t="ekr.20101116103056.5272"><vh>Using the minibuffer</vh></v>
@@ -595,7 +595,7 @@ marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101021092135.5431"></v>
 <v t="ekr.20101014034526.5280"></v>
-<v t="ekr.20101115152915.4930"></v>
+<v t="ekr.20101115152915.4930" a="O"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2326,7 +2326,7 @@ Important files:
 ===== Intro
 
 Trees whose root headline starts with \@file, \@auto or \@edit create **external
-files** on your file system.  Here are some examples::
+files** on your file system.  Here are some example headlines::
 
   @file myClass.py
   @auto ../graphics/circles.cpp
@@ -2346,22 +2346,24 @@ writes any modified @&lt;file&gt; tree when you save an outline. Reading externa
 files is very fast because of an efficient file-caching scheme.
 
 A single Leo outline may be connected to dozens of external files: this makes
-Leo work like an IDE (Integrated Development Environment). Leo outlines act like
-project files. For example, a Leo outline, leoPyRef.leo, contains \@file trees
+Leo work like an Integrated Development Environment (IDE). Leo outlines act like
+project files. For example, one Leo outline, leoPyRef.leo, contains \@file trees
 for all of Leo's core source files. Another Leo outline, leoPluginsRef.leo,
 creates the external files for all of Leo's plugins, and LeoDocs.leo contains
 all of Leo's documentation.
 
 ===== Using sentinel lines, or not
 
-When using \@file, Leo stores outline structure in external files using comment
-lines called **sentinel lines**. These sentinel lines are important: they allow
-Leo to keep track of outlines structure, including clone relationships. Using
-\@file is **highly recommended** whenever possible. In particular, using \@file
-allows you to **share outline structure** with others merely by sharing external
-files.
+Leo stores the structure of \@file trees in external files themselves using
+comment lines called **sentinel lines**. Sentinel lines allow Leo to keep track
+of outlines structure, including clone relationships. Using \@file is **highly
+recommended** whenever possible. In particular, using \@file allows you to
+**share outline structure** with others merely by sharing external files.
+External files created from \@file nodes contain **all** essential data: The
+.leo file contains only the headline of the \@file node. All the data resides in
+the external files.
 
-Alas, in some situations it is not appropriate to use sentinel comments in
+However, in some situations it is not appropriate to use sentinel comments in
 external files. In that case you use \@auto and \@edit trees to connect Leo
 outlines to existing external files without creating sentinel files. Not all of
 Leo's features can be used with \@auto and \@edit trees, but that can't be
@@ -2379,8 +2381,8 @@ The next series of slides will show you how to create external files with \@file
 trees.
 
 To create a new external file, create an \@file node giving the path to the
-external file. This path can be a full, absolute path, but it is usually much
-more convenient to use a relative paths. All relative paths in @&lt;file&gt; nodes are
+external file. This path can be a full, absolute path, but usually it is more
+convenient to use a relative path. All relative paths in @&lt;file&gt; nodes are
 relative to Leo's **load directory**, the directory containing the .leo file for
 the present outline. In most cases, we can ignore the path prefix entirely. For
 example::
@@ -2389,27 +2391,190 @@ example::
 
 ===== The top-level body text: section references &amp; @others
 
+Here is the body text for a typical @file node that defines a single Python class::
+    
+    &lt;&lt; imports &gt;&gt;
+    
+    class MyDemoClass:
+        
+        @others
+        
+Informally, it says that external file consists of import statements,
+followed by the class MyDemoClass.  We expect to see the following:
+    
+- A child node whose headline &lt;&lt; imports &gt;&gt;.
 
-===== Defining &lt;&lt; imports &gt;&gt;
+- The methods of MyDemoClass in all the **other** child nodes.
 
-===== Defining other nodes.
+The next few slides will discuss this pattern line by line.
 
-**Important**: indentation in the external file is controlled by the indentation
-of \@others directives, **not** by the structure of the outline. This allows you
-to create **organizer nodes** without affecting the external file in any
-significant way (other than sentinel comments).
+===== &lt;&lt; imports &gt;&gt;
 
+    The &lt;&lt; imports &gt;&gt; line is a **section reference**.
+    "Imports" is the **section name**.
+    This line tells Leo to insert the **section definition**
+    into the output file at the place where section reference occurs.
 
+===== Section definitions
 
+    **Section definition nodes** create section definitions.
+    Section definition nodes contain a section name in the headline.
+    The body text contains the section definition.
+    
+    Therefore, the definition of &lt;&lt; imports &gt;&gt; are the lines::
+        
+        import os
+        import sys
+        
+    Each section definition node must be a descendant of the node
+    containing the section reference.
+    
+===== @others definitions
+
+    The \@others directive is similar to a section reference;
+    \@others tells Leo to insert text into the output file.
+
+    However, instead of inserting the body text of one particular node,
+    as in a section reference, \@others tells Leo to insert the
+    body text of all node that **aren't** section definition nodes.
+    That's where the name comes from: it inserts all the **other** nodes.
+    
+===== Simple expansion of @others.
+
+    Here we have added two children of the root node, named, as usual
+    in Python examples, spam and eggs.  The expansion of the \@others directive
+    will be the body text of those two nodes.  Each line of the expansion is
+    indented with the leading whitespace that occurs before the \@others directive.
+    
+===== Indentation
+
+    Let us use the term **reference** to mean either a section reference or an
+    \@others directive. The **expansion** of a reference is the set of all lines
+    that Leo writes to the output file as the result of that reference.
+
+    The indentation of references is significant. Leo indents each line of the
+    expansion of a reference by the total amount of leading whitespace that is
+    in effect at the point of the reference. This allows Leo handle languages
+    like Python in which indentation is especially important.
+    
+    In our example, there is no leading whitespace before the reference to
+    &lt;&lt; imports &gt;&gt;, but there are four spaces before the \@others directives.
+    This means that Leo writes the import statements without additional indentation,
+    but Leo adds 4 spaces before all nodes written as the result of the @other directive.
+
+    **Important**: Indentation is controlled **only** by the indentation of
+    references. The outline level of nodes in expansions does not affect
+    indentation in any way.
+    
+    This **decoupling** of outline structure from indentation is very important:
+    it allows you to create **organizer nodes** without affecting the external
+    file in any significant way (other than sentinel comments).
+    
+===== Expansion
+
+    In our first example, the expansions of references are straightforward.
+    However, any node may contain one or more section references, and any node
+    may also contain a single \@others directive.
+    
+    Every line of an expansion is written as the result of exactly one
+    reference.
+    
+    A. The expansion of a section reference is just exactly the expansion of the
+       body of the section definition node. That expansion may include
+       expansions of *other* references appearing in that node.
+       
+    B. The expansion of an @others directive is the expansion of all descendant
+       nodes that aren't section definition nodes and are not included in the
+       expansion of \@others nodes deeper in the tree. This means that no node
+       is ever included in the expansion of more than one \@other directive.
+       Non-section-definition nodes are included in the expansion of the nearest
+       \@others directive.
+    
+    When writing an \@file tree, Leo ensures all of the following:
+        
+    1. Each section must be defined. There must be a section reference in an
+        ancestor of each section defition node.
+    
+    2. There must be no **orphan nodes**.  A section definition node is an
+       orphan if no ancestor node contains a reference to that node.
+       A non-definition node is an orphan if no ancestor node contains an
+       \@others directive.
+       
+    Leo will issue an error if these checks are not satisifed.
+       
+    In short, each node in an \@file tree, except the \@file node itself, must
+    be part of the expansion of exactly one reference. 
+    
+    In practice, these rules are much easier to use than to describe!
+    
+    
+===== Multiple @others nodes: top-level node
+
+    ((
+    &lt;&lt; imports &gt;&gt;
+    @others
+    ))
+
+    An example will clarify matters.  Here is a common pattern for a file that
+    defines two classes, SpamClass and EggsClass.  The top-level node includes imports,
+    and then uses \@others to include the expansion of the rest of the outline.
+    
+===== Multiple @others nodes: SpamClass
+
+    ((
+    class SpamClass:
+        @others
+    ))
+
+    The first child node creates the expansion of SpamClass.
+    The line::
+        
+        class SpamClass:
+            
+    has no extra indentation, because the \@others in the top-level
+    node has no leading whitespace.
+    
+    However, all the methods of the class will have 4 spaces of indentation
+    because the \@others directive in *this* node is indented by 4 spaces.
+    
+===== Multiple @others nodes: EggsClass
+
+    ((
+    class EggsClass:
+        @others
+    ))
+
+    The second child node creates the expansion of EggsClass in a similar manner.
+    It's always perfectly clear what nodes are included in \@others directives.
+    
+    Here, \@others refers to all descendant nodes of *this* node.
+    
+===== Multiple @others nodes: @if 0:
+    
+    ((
+    if 0:
+        @others
+    ))
+    
+    You can use @others to "comment out" all descendant nodes as shown. This
+    works in Python because the indentation of the \@others directive cause the
+    expansion of all descendant nodes to have 4 extra spaces.
 
 ===== Using @auto nodes.
 
-
+    When Leo reads an **@auto node**, Leo will automatically create an outline
+    that shows the class, functions or other units of the external file.
+    
+    Leo can only do this if Leo has an **importer** for the external file. At
+    present, Leo has importers for C, elisp, HTML, .ini files, Java, Javascript,
+    Pascal, PHP, Python and xml. Leo determines the language using the file's
+    extension. If no parser exists for a language, Leo copies the entire body of
+    the external file into the \@auto node.
 
 ===== Using @edit nodes
 
-**@edit nodes** contain the entire contents of an
-external file.
+    When Leo reads and **@edit node**, Leo reads the entire contents of the
+    external file into the body text of the \@edit node.
 </t>
 <t tx="ekr.20101115152915.4931">Clones focus attention.
 </t>
@@ -2584,7 +2749,8 @@ IDE's.
 
 - The unit of work is different: I work with nodes, not files or text.
 - The workflow is different: I create clones rather than searching.
-- Scripts are much more important: it's easy to manipulate code because less parsing is needed.</t>
+- Scripts are much more important: it's easy to manipulate code because less parsing is needed.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
