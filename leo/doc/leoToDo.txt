@@ -17,6 +17,80 @@ Voila', instant presentation tool. The webview window would be on projector, and
 leo would be in your private computer. You can easily edit the text, or find new
 interesting slides to present in privacy of your own screen.
 
+#@+node:ekr.20101119030344.5838: ** script to turn all commands into @g.command nodes
+'''Add @g.command(command_name) before all commands.'''
+
+@others
+
+import os ; os.system('cls')
+
+d = c.commandsDict
+f_dict = find_all_defs(c)
+
+if 0:
+    for name in sorted(f_dict):
+        if name in c.k.inverseCommandsDict:
+            aList = [p.h for i,p in f_dict.get(name)]
+            print(name,aList)
+
+print('---- duplicates -----')
+for name in sorted(f_dict):
+    if name in c.k.inverseCommandsDict:
+        aList = [p.h for i,p in f_dict.get(name)]
+        if len(aList) > 1:
+            print('%20s %s' % (name,aList))
+
+if 0:
+    for name in sorted(d):
+        f = d.get(name)
+        f_name = f.__name__
+        # name is the minibuffer command name, f_name is the function name.
+        i,p = find(c,command,f_name)
+        adjust(c,f_name,i,p)
+#@+node:ekr.20101119030344.5841: *3* find_all_defs
+def find_all_defs (c):
+
+    '''Return a dict containing all function defs.
+
+    Keys are function names, values are lists of (i,p) pairs.'''
+
+    # To do: consider only files that actually generate commands?
+    d = {}
+    suppress = ('__init__',)
+    for p in c.all_unique_positions():
+        done,i,s = False,0,p.b
+        while not done and i < len(s):
+            progress = i
+            i = i1 = s.find('def',i)
+            if i == -1:
+                done = True ; break
+            i += 3 # Assures progress.
+            if not g.match_word(s,i-3,'def'): continue
+            j = g.skip_ws(s,i)
+            if j == i: continue
+            i = j
+            j = g.skip_id(s,i,chars='_')
+            if j == i: continue
+            name = s[i:j]
+            if name not in suppress:
+                aList = d.get(name,[])
+                aList.append((i1,p.copy()),)
+                d[name] = aList
+            # g.trace('%30s %s' % (name,p.h))
+            i = j
+            assert progress < i
+    return d
+#@+node:ekr.20101119030344.5839: *3* find
+def find (c,command,f_name):
+
+    g.trace('%30s %s' % (command,f_name))
+
+    for p in c.all_unique_nodes():
+        s = p.b
+        i = s.find('def %s' % f_name)
+#@+node:ekr.20101119030344.5840: *3* adjust
+def adjust(f,i,p):
+    pass
 #@+node:ekr.20100109214940.6225: ** 4.8 to do
 @nocolor-node
 
