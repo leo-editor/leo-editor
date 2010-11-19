@@ -27,18 +27,31 @@ import os ; os.system('cls')
 d = c.commandsDict
 f_dict = find_all_defs(c)
 
-if 0:
-    for name in sorted(f_dict):
-        if name in c.k.inverseCommandsDict:
-            aList = [p.h for i,p in f_dict.get(name)]
-            print(name,aList)
+result1, result2 = [],[]
+for f_name in sorted(f_dict): # These are function names, not command name.
+    c_name = c.k.inverseCommandsDict.get(f_name) # Get the emacs command name.
+    if c_name:
+        f = d.get(c_name) # f is the function name that defines a command.
+        if f:
+            d_name = f.__name__
+            s = repr(f)
+            tag = '<bound method '
+            if s.startswith(tag): s = s[len(tag):]
+            i = s.find(' of ')
+            if i > -1: s = s[:i]
+            aList = [p.h for i,p in f_dict.get(d_name,[])]
+            if len(aList) == 1:
+                result1.append((d_name,s,aList),)
+            else:
+                result2.append((d_name,s,aList),)
 
-print('---- duplicates -----')
-for name in sorted(f_dict):
-    if name in c.k.inverseCommandsDict:
-        aList = [p.h for i,p in f_dict.get(name)]
-        if len(aList) > 1:
-            print('%20s %s' % (name,aList))
+print('----- duplicate commands -----\n')
+for d_name,s,aList in result2:
+    print('%s: %s\n%s %s\n' % (d_name,s,len(aList),aList))
+
+print('----- unambiguous commands -----\n')
+for d_name,s,aList in result1:
+    print('%40s %s' % (d_name,aList[0]))
 
 if 0:
     for name in sorted(d):
@@ -47,6 +60,35 @@ if 0:
         # name is the minibuffer command name, f_name is the function name.
         i,p = find(c,command,f_name)
         adjust(c,f_name,i,p)
+#@+node:ekr.20061031131434.3: *3* << about key dicts >>
+@nocolor
+@
+ivars:
+
+c.commandsDict:
+    Keys are emacs command names; values are functions f.
+
+k.inverseCommandsDict:
+    Keys are f.__name__; values are emacs command names.
+
+k.bindingsDict:
+    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
+
+k.masterBindingsDict:
+    Keys are scope names: 'all','text',etc. or mode names.
+    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
+
+k.masterGuiBindingsDict:
+    Keys are strokes; value is a list of widgets for which stroke is bound.
+
+k.settingsNameDict:
+    Keys are lowercase settings; values are 'real' Tk key specifiers.
+    Important: this table has no inverse.
+
+not an ivar (computed by k.computeInverseBindingDict):
+
+inverseBindingDict
+    Keys are emacs command names; values are *lists* of shortcuts.
 #@+node:ekr.20101119030344.5841: *3* find_all_defs
 def find_all_defs (c):
 

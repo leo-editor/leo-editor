@@ -1806,7 +1806,7 @@ class leoFrame:
     def resizePanesToRatio (self,ratio,secondary_ratio):    self.oops()
     def setInitialWindowGeometry (self):                    self.oops()
     def setTopGeometry (self,w,h,x,y,adjustSize=True):      self.oops()
-    #@+node:ekr.20031218072017.3681: *4* Gui-dependent commands
+    #@+node:ekr.20031218072017.3681: *4* Gui-dependent commands (leoFrame)
     # In the Edit menu...
 
     def OnCopy  (self,event=None): self.oops()
@@ -2791,7 +2791,7 @@ class nullFrame (leoFrame):
         self.h = h
         self.x = x
         self.y = y
-    #@+node:ekr.20061109124129: *4* Gui-dependent commands
+    #@+node:ekr.20061109124129: *4* Gui-dependent commands (nullFrame)
     # Expanding and contracting panes.
     def contractPane         (self,event=None): pass
     def expandPane           (self,event=None): pass
