@@ -42,15 +42,9 @@
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh>  Templates: these show recommended ways of defining plugins.</vh>
-<v t="ekr.20041114102139"><vh>Notes</vh>
-<v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
-<v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
-<v t="ekr.20041114103913.1"><vh>About defining functions in separate nodes</vh></v>
-<v t="ekr.20041114102139.2"><vh>About the &lt;&lt; imports &gt;&gt; section</vh></v>
-<v t="ekr.20050306072156"><vh>About exceptions</vh></v>
-</v>
-<v t="ekr.20050306071629"><vh>Template for plugin that overrides commander methods</vh>
+<v t="ekr.20050303051035"><vh>  Templates</vh>
+<v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
+<v t="ekr.20050306071629"><vh>Template for plugins that override commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -126,6 +120,7 @@
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
+<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
 <v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
@@ -166,7 +161,6 @@
 <v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
-<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
@@ -179,8 +173,8 @@
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows and screenshots</vh>
-<v t="ekr.20100908110845.5505"><vh>@file screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
+<v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
@@ -471,16 +465,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618">@ It is usually best _not_ to catch exceptions in plugins:
-doHook catches all exceptions and disables further calls to plugins.
-
-If a plugin catches exceptions during startup it should either:
-
-- raise the exception again.
-- provide an init function at the top level that reports the failure.
-@c
-
-@language python
+<t tx="edream.110203113231.618">@language python
 @tabwidth -4
 @pagewidth 80
 </t>
@@ -507,56 +492,71 @@ affect Leo's panes and windows in various ways.
 
 You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
 </t>
-<t tx="ekr.20041114102139">@nocolor</t>
-<t tx="ekr.20041114102139.1">- Several plugins show the docstring, so please take care to do a good job of
+<t tx="ekr.20041114102139">@nocolor
+
+Comments
+--------
+
+Most of the comments in the style guide are comments *about* the style guide.
+You would replace these comments with your own, or eliminate them entirely in
+your plugin.
+
+Docstrings
+----------
+
+Several plugins show the docstring, so please take care to do a good job of
 describing what the plugin does and how to use it.
 
-- Please put the following immediately following the plugin's docstring.
+Directives
+----------
+
+Please put the following immediately following the plugin's docstring::
 
     @language python
     @tabwidth -4
 
-- There is no need to use sections if they are empty.
+Imports
+-------
+    
+- Do *not* assume that modules like Tkinter, Pmw, etc. are always available. Use
+  g.importExtension.
 
-- The code should test whether modules have been imported only if those modules
-may not be available on all platforms.
+- Do *not* use either of the following kinds of imports::
 
-- Use the following lines only if your plugin uses a gui.
-
-    if g.app.gui.guiName() == "tkinter":
-        ...
-</t>
-<t tx="ekr.20041114102139.2">Please use the general format as shown in &lt;&lt; imports &gt;&gt;.  In partular:
-
-- Please do _not_ assume that modules like Tkinter, Pmw, etc. are always available.
-  Use g.importExtension.
-
-- Good Python style is to put each import on a separate line.
-
-- Please abbreviate Tkinter as Tk.  Please do NOT abbreviate Pmw.
-
-- Please do NOT use either of the following kinds of imports.
     from m import *
     from m import x,y,z
 
-- Do not import leo.core.leoNodes as leoNodes unless your plugin creates nodes directly.</t>
-<t tx="ekr.20041114103913">Most of the comments in the style guide are comments _about_ the style guide.
-You would replace these comments with your own, or eliminate them entirely in
-your plugin.</t>
-<t tx="ekr.20041114103913.1">PLEASE define each function or method in a separate node! To make this work,
+- Your code should test whether modules have been imported only if those modules
+  may not be available on all platforms.
+
+Use the following lines only if your plugin uses a gui::
+
+    if g.app.gui.guiName() == "tkinter":
+        ...
+        
+Exceptions
+----------
+
+It is usually best *not* to catch exceptions in plugins: doHook catches all
+exceptions and disables further calls to plugins.
+
+If a plugin catches exceptions during startup it should do either raise the
+exception again or provide an init function at the top level that reports the
+failure by returning False.
+        
+Use separate nodes
+------------------
+
+**Please** define each function or method in a separate node! To make this work,
 just put @others in the root of your plugin as shown. Note that @others may be
-nested, as shown in class myClass.</t>
+nested, as shown in class myClass.
+</t>
 <t tx="ekr.20041211035618"></t>
 <t tx="ekr.20050111122605"></t>
 <t tx="ekr.20050217093214">@nocolor</t>
-<t tx="ekr.20050303051035">@
+<t tx="ekr.20050303051035">@nocolor-node
 
-Note: the newButtons.py now has templates for the following plugin nodes.
-    
-- init: A generic init function.
-- init(tk): An init function for a plugin that uses Tk (or Pmw).
-- &lt;&lt; imports &gt;&gt;:  The &lt;&lt;imports&gt;&gt; section.
-- &lt;&lt; version history &gt;&gt;: The &lt;&lt;version history&gt;&gt; section.</t>
+The following nodes show recommended style when writing plugins.</t>
 <t tx="ekr.20050303051035.2">&lt;&lt; docstring &gt;&gt;
 
 __version__ = '0.0'
@@ -569,8 +569,7 @@ __version__ = '0.0'
 what the plugin does and how to use it.
 '''
 </t>
-<t tx="ekr.20050303051035.4">@killcolor
-@
+<t tx="ekr.20050303051035.4">@
 
 Put notes about each version here.</t>
 <t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
@@ -596,7 +595,8 @@ Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True
     c = keys.get('c')
     if not c: return
     
-    thePluginController = pluginController(c)</t>
+    thePluginController = pluginController(c)
+</t>
 <t tx="ekr.20050303051222">class pluginController:
     
     @others</t>
@@ -635,13 +635,13 @@ __version__ = '0.0'
 what the plugin does and how to use it.
 '''
 </t>
-<t tx="ekr.20050306071629.2">@killcolor
-@
+<t tx="ekr.20050306071629.2">@
 
 Put notes about each version here.</t>
 <t tx="ekr.20050306071629.3">import leo.core.leoGlobals as g
 
-# Whatever other imports your plugins uses.</t>
+# Whatever other imports your plugins uses.
+</t>
 <t tx="ekr.20050306071629.4">def init ():
     
     ok = True # This might depend on imports, etc.
@@ -651,13 +651,6 @@ Put notes about each version here.</t>
         g.plugin_signon(__name__)
         
     return ok</t>
-<t tx="ekr.20050306072156">It is usually best _not_ to catch exceptions in plugins:
-doHook catches all exceptions and disables further calls to plugins.
-
-If a plugin catches exceptions during startup it should do one of the following:
-    
-- raise the exception again.
-- provide an init function at the top level that reports the failure.</t>
 <t tx="ekr.20050306081349"></t>
 <t tx="ekr.20050328101812"> 
         
