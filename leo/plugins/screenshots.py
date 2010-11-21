@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100908110845.5505: * @file screenshots.py
+#@+node:ekr.20101121031443.5330: * @file screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
 """ Creates stand-alone slideshows containing screenshots.
@@ -1693,7 +1693,9 @@ class ScreenShotController(object):
         n = sc.slide_number
         h = sc.get_slide_title()
         body = sc.slide_node.b
-        title = sc.underline(h.title())
+        # 2010/11/21: Don't use h.title(): it can produce bad results.
+        # title = sc.underline(h.title())
+        title = sc.underline(h)
         return '%s\n%s' % (title,body)
     #@+node:ekr.20101006060338.5702: *4* make_working_file & helpers
     def make_working_file (self):
