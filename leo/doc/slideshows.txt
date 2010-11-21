@@ -2636,8 +2636,8 @@ the commander of the newly-created outline.
 .. @+node:ekr.20101121125326.4970: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-009.html
 .. @+node:ekr.20101119112650.5377: *3* @slide g.pdb
-..`Python debugger`: http://docs.python.org/library/pdb.html
-..`Pudb debugger`: http://pypi.python.org/pypi/pudb
+.. _`Python debugger`: http://docs.python.org/library/pdb.html
+.. _`Pudb debugger`: http://pypi.python.org/pypi/pudb
 
 **g.pdb** opens pdb, the `Python debugger`_.  To use this,
 you must be running Leo from a console.
@@ -2645,7 +2645,7 @@ you must be running Leo from a console.
 The pudb plugin changes g.pdb so that it uses the
 full-screen `Pudb debugger`_ instead of pdb.
 .. @+node:ekr.20101119112650.5379: *4* @no-screenshot
-.. @+node:ekr.20101121125326.4971: *4* @url built slide
+.. @+node:ekr.20101121130516.4962: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
 .. @+node:ekr.20101121021109.5352: *3* @slide Further reading
 .. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
