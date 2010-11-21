@@ -10,30 +10,16 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
-.. links
-
-.. _`Installation`:             slides/installation/slide-001.html
-.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
-
-.. Not ready yet.
-
-.. _`Running Scripts with @button Nodes`: slides/running-scripts-with-button-nodes/slide-001.html
-.. _`Making Slide Shows`:       slides/making-slide-shows/slide-001.html
-
-.. Based on Joe Orr's slides.
-
-.. _`What is Leo`:              slides/what-is-leo/slide-001.html
-.. _`What is Leo--Continued`:   slides/what-is-leo--continued/slide-001.html
-.. _`Outlining`:                slides/outlining/slide-001.html
-.. _`External Files, Part 1`:   slides/external-files-part-1/slide-001.html
-.. _`External Files, Part 2`:   slides/external-files-part-2/slide-001.html
-
-
 ######
 Slides
 ######
 
 This is the front page for various slide shows about Leo.
+
+.. links
+.. _`Installation`:             slides/installation/slide-001.html
+.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
+.. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
 
 Basics
 ------
@@ -42,17 +28,9 @@ The `Installation`_ slideshow tells how to install Leo.
 
 The `Leo Basics Step By Step`_ slideshow explains the basics of Leo outlines.
 
-.. `What is Leo`_
-..  `What is Leo--Continued`_
-..  `Outlining`_
-..  `External Files, Part 1`_
-..  `External Files, Part 2`_
+Intermediate topics
+-------------------
 
-.. Examples
-.. --------
-
-..  `Running Scripts with @button Nodes`_
-..  `Making Slide Shows`_
-
+The `Scripting Leo`_ slideshow explains how to use Python scripting in Leo.
 .. @-all
 .. @-leo

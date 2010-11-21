@@ -2,1290 +2,9 @@
 .. @+node:ekr.20101028110015.8271: * @file slideshows.txt
 .. @+all
 .. @+node:ekr.20101021092135.5431: **  Drafts
-.. @+node:ekr.20101115152915.4930: *3* 1. External files (draft)
-@nocolor-node
-
-===== Intro
-
-Trees whose root headline starts with \@file, \@auto or \@edit create **external
-files** on your file system.  Here are some example headlines::
-
-  @file myClass.py
-  @auto ../graphics/circles.cpp
-  @edit ~/.leo/.leoID.txt
-
-As you can see, these nodes specify file names, which can be an absolute
-path or a path relative to the directory containing the Leo outline.
-
-Collectively, nodes that create external files are known as **@<file> nodes.**
-Leo defines several other kinds of @<file> nodes, but this slideshow will not
-discuss them.
-
-===== Automatic load/store make Leo an IDE
-
-Leo automatically loads all @<file> trees when you open a Leo outline, and Leo
-writes any modified @<file> tree when you save an outline. Reading external
-files is very fast because of an efficient file-caching scheme.
-
-A single Leo outline may be connected to dozens of external files: this makes
-Leo work like an Integrated Development Environment (IDE). Leo outlines act like
-project files. For example, one Leo outline, leoPyRef.leo, contains \@file trees
-for all of Leo's core source files. Another Leo outline, leoPluginsRef.leo,
-creates the external files for all of Leo's plugins, and LeoDocs.leo contains
-all of Leo's documentation.
-
-===== Using sentinel lines, or not
-
-Leo stores the structure of \@file trees in external files themselves using
-comment lines called **sentinel lines**. Sentinel lines allow Leo to keep track
-of outlines structure, including clone relationships. Using \@file is **highly
-recommended** whenever possible. In particular, using \@file allows you to
-**share outline structure** with others merely by sharing external files.
-External files created from \@file nodes contain **all** essential data: The
-.leo file contains only the headline of the \@file node. All the data resides in
-the external files.
-
-However, in some situations it is not appropriate to use sentinel comments in
-external files. In that case you use \@auto and \@edit trees to connect Leo
-outlines to existing external files without creating sentinel files. Not all of
-Leo's features can be used with \@auto and \@edit trees, but that can't be
-helped. In particular, Leo can not preserve outline structure exactly. Leo's
-"degraded" operation for such trees is similar to that found in all other
-editors and IDE's.
-
-The rest of this slide show will discuss \@file trees and their capabilities. We
-will then discuss \@auto and \@edit.
-
-===== Using @file trees.
-
-To repeat, it's best to use \@file to create external files if at all possible.
-The next series of slides will show you how to create external files with \@file
-trees.
-
-To create a new external file, create an \@file node giving the path to the
-external file. This path can be a full, absolute path, but usually it is more
-convenient to use a relative path. All relative paths in @<file> nodes are
-relative to Leo's **load directory**, the directory containing the .leo file for
-the present outline. In most cases, we can ignore the path prefix entirely. For
-example::
-
-    @file myFile.py
-
-===== The top-level body text: section references & @others
-
-Here is the body text for a typical @file node that defines a single Python class::
-
-    << imports >>
-
-    class MyDemoClass:
-
-        @others
-
-Informally, it says that external file consists of import statements,
-followed by the class MyDemoClass.  We expect to see the following:
-
-- A child node whose headline << imports >>.
-
-- The methods of MyDemoClass in all the **other** child nodes.
-
-The next few slides will discuss this pattern line by line.
-
-===== << imports >>
-
-    The << imports >> line is a **section reference**.
-    "Imports" is the **section name**.
-    This line tells Leo to insert the **section definition**
-    into the output file at the place where section reference occurs.
-
-===== Section definitions
-
-    **Section definition nodes** create section definitions.
-    Section definition nodes contain a section name in the headline.
-    The body text contains the section definition.
-
-    Therefore, the definition of << imports >> are the lines::
-
-        import os
-        import sys
-
-    Each section definition node must be a descendant of the node
-    containing the section reference.
-
-===== @others definitions
-
-    The \@others directive is similar to a section reference;
-    \@others tells Leo to insert text into the output file.
-
-    However, instead of inserting the body text of one particular node,
-    as in a section reference, \@others tells Leo to insert the
-    body text of all node that **aren't** section definition nodes.
-    That's where the name comes from: it inserts all the **other** nodes.
-
-===== Simple expansion of @others.
-
-    Here we have added two children of the root node, named, as usual
-    in Python examples, spam and eggs.  The expansion of the \@others directive
-    will be the body text of those two nodes.  Each line of the expansion is
-    indented with the leading whitespace that occurs before the \@others directive.
-
-===== Indentation
-
-    Let us use the term **reference** to mean either a section reference or an
-    \@others directive. The **expansion** of a reference is the set of all lines
-    that Leo writes to the output file as the result of that reference.
-
-    The indentation of references is significant. Leo indents each line of the
-    expansion of a reference by the total amount of leading whitespace that is
-    in effect at the point of the reference. This allows Leo handle languages
-    like Python in which indentation is especially important.
-
-    In our example, there is no leading whitespace before the reference to
-    << imports >>, but there are four spaces before the \@others directives.
-    This means that Leo writes the import statements without additional indentation,
-    but Leo adds 4 spaces before all nodes written as the result of the @other directive.
-
-    **Important**: Indentation is controlled **only** by the indentation of
-    references. The outline level of nodes in expansions does not affect
-    indentation in any way.
-
-    This **decoupling** of outline structure from indentation is very important:
-    it allows you to create **organizer nodes** without affecting the external
-    file in any significant way (other than sentinel comments).
-
-===== Expansion
-
-    In our first example, the expansions of references are straightforward.
-    However, any node may contain one or more section references, and any node
-    may also contain a single \@others directive.
-
-    Every line of an expansion is written as the result of exactly one
-    reference.
-
-    A. The expansion of a section reference is just exactly the expansion of the
-       body of the section definition node. That expansion may include
-       expansions of *other* references appearing in that node.
-
-    B. The expansion of an @others directive is the expansion of all descendant
-       nodes that aren't section definition nodes and are not included in the
-       expansion of \@others nodes deeper in the tree. This means that no node
-       is ever included in the expansion of more than one \@other directive.
-       Non-section-definition nodes are included in the expansion of the nearest
-       \@others directive.
-
-    When writing an \@file tree, Leo ensures all of the following:
-
-    1. Each section must be defined. There must be a section reference in an
-        ancestor of each section defition node.
-
-    2. There must be no **orphan nodes**.  A section definition node is an
-       orphan if no ancestor node contains a reference to that node.
-       A non-definition node is an orphan if no ancestor node contains an
-       \@others directive.
-
-    Leo will issue an error if these checks are not satisifed.
-
-    In short, each node in an \@file tree, except the \@file node itself, must
-    be part of the expansion of exactly one reference. 
-
-    In practice, these rules are much easier to use than to describe!
-
-
-===== Multiple @others nodes: top-level node
-
-    ((
-    << imports >>
-    @others
-    ))
-
-    An example will clarify matters.  Here is a common pattern for a file that
-    defines two classes, SpamClass and EggsClass.  The top-level node includes imports,
-    and then uses \@others to include the expansion of the rest of the outline.
-
-===== Multiple @others nodes: SpamClass
-
-    ((
-    class SpamClass:
-        @others
-    ))
-
-    The first child node creates the expansion of SpamClass.
-    The line::
-
-        class SpamClass:
-
-    has no extra indentation, because the \@others in the top-level
-    node has no leading whitespace.
-
-    However, all the methods of the class will have 4 spaces of indentation
-    because the \@others directive in *this* node is indented by 4 spaces.
-
-===== Multiple @others nodes: EggsClass
-
-    ((
-    class EggsClass:
-        @others
-    ))
-
-    The second child node creates the expansion of EggsClass in a similar manner.
-    It's always perfectly clear what nodes are included in \@others directives.
-
-    Here, \@others refers to all descendant nodes of *this* node.
-
-===== Multiple @others nodes: @if 0:
-
-    ((
-    if 0:
-        @others
-    ))
-
-    You can use @others to "comment out" all descendant nodes as shown. This
-    works in Python because the indentation of the \@others directive cause the
-    expansion of all descendant nodes to have 4 extra spaces.
-
-===== Using @auto nodes.
-
-    When Leo reads an **@auto node**, Leo will automatically create an outline
-    that shows the class, functions or other units of the external file.
-
-    Leo can only do this if Leo has an **importer** for the external file. At
-    present, Leo has importers for C, elisp, HTML, .ini files, Java, Javascript,
-    Pascal, PHP, Python and xml. Leo determines the language using the file's
-    extension. If no parser exists for a language, Leo copies the entire body of
-    the external file into the \@auto node.
-
-===== Using @edit nodes
-
-    When Leo reads and **@edit node**, Leo reads the entire contents of the
-    external file into the body text of the \@edit node.
-.. @+node:ekr.20101115152915.4931: *3* 2. Clones & views
-@nocolor-node
-
-Clones focus attention.
-
-===== Intro
-
-    Clones are one of Leo's most unusual and most useful features.
-
-    A **clone** is a node that appears in more than one place in a Leo outline.
-
-====== Create clone of A
-
-    Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
-
-    Clones are marked with a small red *clone arrow** in the icon box.
-    Deleting the penultimate clone removes the red arrow from the node.
-
-====== Clones are identical
-
-    Changing the headline or body text of a clone changes the headline or body
-    text of all other clones of that node. Furthermore, changing any descendants
-    of a clone, including inserting, deleting or moving nodes, results in the
-    same changes being made to all other clones.
-
-    In fact, all clones of a node are actually *the exactly the same node*, so
-    any change to one clone inevitably affects all other clones.
-
-===== Changing the headline of a clone.
-
-    Here, I am beginning to change the headline of Node A.
-    The headline doesn't actually change until we hit return,
-    so the headline of these clone of A hasn't changed yet.
-
-===== Change complete.
-
-    After typing <return> the headlines of both nodes changes.
-
-===== Node b.
-
-    Here we have created a node B following the first clone of B.
-
-===== Move B right
-
-    Moving B right makes B a child of node A.
-    As you can see, B appears as a child of both cloned nodes.
-
-    Even the expansion state of cloned nodes are identical:
-    both clones are now expanded.
-
-===== Create another child (newheadline)
-
-    Here, I have created a new node with Ctrl-I (insert-node).
-
-    The node appears in the same place in both nodes.
-
-===== Auto update
-
-    Changing a node marks all clones of that node as changed. When I save the
-    Leo outline, Leo automatically writes all the external files that contain
-    dirty nodes.
-
-===== Clones create views
-
-    Clones are important because they allow you to create as many views of the
-    data in the outline as you like. In effect, Leo becomes a supremely flexible
-    filing cabinet. Any ordinary node can act like a folder in the filing
-    cabinet. Using clones, you can "file" a node in as many folders as you like.
-
-    In Leo, a **view** is simply a subset of the nodes of the outline. We
-    represent a view as **ordinary** node, called a **view node**, whose nodes
-    can contain both regular nodes and clones. The children of the view node are
-    the subset of nodes that define the view. It's that simple.
-
-    With Leo, you can have as many view nodes as you like. There is no such
-    thing as a single, "correct" view of data. 
-
-
-===== Using view nodes
-
-    I use view nodes to focus attention on a set of disparate nodes.
-
-    For example, when I fix a bug in Leo, I create a **bug node** containing
-    all the data in Leo's source code that relates to the bug. As I discover
-    code related to the bug, I clone nodes and move them under the bug node.
-    I'll also add ordinary nodes as children of the bug node. These nodes
-    contain the original bug report, descriptions of how I fixed the bug, test
-    data, or any other notes I might want to keep.
-
-    Once I have created the bug node, I concentrate *only* on that node and its
-    children. I can examine the bug node and its children without having to jump
-    around the outline. Everything I need is in one place. This extremely narrow
-    focus makes it *much* easier to fix bugs. to jump around the outline. It
-    doesn't matter how big or complex the outline is: I am only dealing with the
-    bug node and its children.
-
-    **Important**: I can fix the bug by changing the clones in the view node.
-    When I save the Leo file, Leo will save all the @<file> nodes that contain any
-    changed clone.  Everything "just works".
-.. @+node:ekr.20101115152915.4936: *3* 3. Scripting Leo
-@language rest
-
-===== Intro
-
-For me, scripting is the most fun part of Leo.
-
-Leo can execute any body text as a **Leo script**, Python scripts that have full
-access to all data in any open Leo outline, as well as full access to all parts
-of Leo's source code.
-
-Leo's Ctrl-B (execute-script) command runs the body text of a node as a Leo script.
-
-===== c, g, p
-
-Leo's execute script command predefines the c, g and p constants
-when it runs any script inside Leo:
-
-    **g** is Leo's leo.core.leoGlobals module. This module contains several
-    dozen utility functions and classes.
-
-    **g.app** is the **application object** representing the entire Leo
-    application. The instance variables (ivars) of g.app represent Leo's global
-    variables.
-
-    **c** is the **commander** of the outline containing the script. A commander
-    gives Leo scripts all access to all data present while Leo is running,
-    including all data in all open outlines and all of Leo's source code.
-
-    **p** is the **position** of the presently selected node. Positions
-    represent positions in the traversal of Leo outlines.
-
-    **p.v** is the **vnode** at position p. A vnode represents an outline node.
-    Because of clones, a vnode may appear in several places in a traversal.
-    Vnodes hold most of the data in Leo outlines. For any vnode v, v.h is the
-    node's headline, and v.b is the node's body text. As a convenience, for any
-    position p, p.h and p.b are synonyms for p.v.h and p.v.b.
-
-This slide show will show how to use c, g and p.
-
-===== g.es
-
-g.es is a function that prints its arguments to Leo's log pane.
-
-Here is the hello world program as a Leo script::
-
-    g.es('Hello world!')
-
-.. show "Hello world!" in the log pane.
-
-===== Creating scripts from trees
-
-The Execute Script command **preprocesses** the script before executing it, in
-exactly the same way that Leo writes external files. Leo expands section
-references and processes \@others directives before executing the script. This
-allows you to use all of Leo's outlining capabilities to organize your scripts.
-
-===== p.h and p.b (as getters)
-
-Given any position p, **p.h** is the headline text of p.v, and **p.b** is the
-body text of p.v.
-
-===== p.h and p.b (as setters)
-
-p.h and p.b are `Python properties`_, which means you can set the headline and
-body text by assigning to them::
-
-    p.h = p.h + ' more'
-
-In order to see the result of changing a headline, you will have to redraw the outline::
-
-    c.redraw()
-
-===== c.p (as getter and setter)
-
-**c.p** is presently selected postion. Like p.b and p.h, c.p is a Python
-Property, so you can change the presently selected position by assigning to c.p.
-Just remember to call c.redraw() so that the change becomes visible.
-
-===== iterators
-
-Leo scripts use the commander to get access to all nodes of the outline.
-
-c.all_positions() is a `Python iterator`_ that returns all the positions of the outline in order.
-
-    ((
-    for p in c.all_positions():
-        print ' '*p.level(),p.h
-    ))
-
-Note that this sample code redefines one of the predefined constants.  That's perfectly
-fine.
-
-===== g.openWithFileName
-
-===== g.pdb
-
-.. @+node:ekr.20101118091038.5355: *4* Traversing outlines
-Leo scripts can easily access any node of an outline with generators. Leo's
-generators return positions or nodes, one after another. Generators do not
-return lists, but you can make lists from generators easily. For example, the
-c.all_positions() generator returns every position in c's tree, one after
-another. You can use the generator directly, like this::
-
-    for p  in c.all_positions():
-        print(p.h)
-
-You can create actual lists from generators in several ways::
-
-    aList = list(c.all_positions()] # Use the list built-in function.
-    print(aList)
-
-or::
-
-    aList = [p.copy() for p in c.all_positions()] # Use list comprehension.
-    print(aList)
-
-
-Using the list is simpler, but list comprehensions can be more flexible.  For example::
-
-    aList = [p.copy().h for p in c.all_positions() if p.h.startswith('@file')]
-    print(aList)
-.. @+node:ekr.20101118091038.5356: *5* c.all_positions & c.all_unique_positions
-The c.all_positions generator returns a list of all positions in the outline.
-This script makes a list of all the nodes in an outline::
-
-    nodes = list(c.all_positions())
-    print("This outline contains %d nodes" % len(nodes))
-
-The c.all_unique_positions generator returns a list of all unique positions in the outline.
-For each vnode v in the outline, exactly one position p is returned such that p.v == v.
-
-This script prints the *distinct* vnodes of an outline::
-
-    for p in c.all_unique_positions():
-        sep = g.choose(p.hasChildren(),'+','-')
-        print('%s%s %s' % (' '*p.level(),sep,p.h))
-.. @+node:ekr.20101118091038.5357: *5* p.children
-The p.children generator returns a list of all children of position p::
-
-    parent = p.parent()
-    print("children of %s" % parent.h)
-    for p in parent.children():
-        print(p.h)
-.. @+node:ekr.20101118091038.5358: *5* p.parents & p.self_and_parents
-The p.parents generator returns a list of all parents of position p,
-excluding p::
-
-    current = p.copy()
-    print("exclusive of %s" % (current.h),color="purple")
-    for p in current.parents():
-        print(p.h)
-
-The p.self_and_parents generator returns a list of all parents of position
-p, including p::
-
-    current = p.copy()
-    print("inclusive parents of %s" % (current.h),color="purple")
-    for p in current.self_and_parents():
-        print(p.h)    
-.. @+node:ekr.20101118091038.5359: *5* p.siblings & p.following_siblings
-The p.siblings generator returns a list of all siblings of position p::
-
-    current = c.p
-    print("all siblings of %s" % (current.h),color="purple")
-    for p in current.self_and_siblings():
-        print(p.h)
-
-The p.following_siblings generator returns a list of all siblings that
-follow position p::
-
-    current = c.p
-    print("following siblings of %s" % (current.h),color="purple")
-    for p in current.following_siblings():
-        print(p.h)
-.. @+node:ekr.20101118091038.5360: *5* p.subtree & p.self_and_subtree
-The p.subtree generator returns a list of all positions in p's subtree, excluding p::
-
-    parent = p.parent()
-    print("exclusive subtree of %s" % (parent.h),color="purple")
-    for p in parent.subtree():
-        print(p.h)
-
-The p.self_and_subtree generator returns a list of all positions in p's subtree, including p::
-
-    parent = p.parent()
-    print("inclusive subtree of %s" % (parent.h),color="purple")
-    for p in parent.self_and_subtree():
-        print(p.h)
-.. @+node:ekr.20101118091038.5361: *5* Testing whether a position is valid
-The tests::
-
-    if p:       # Right
-    if not p:   # Right
-
-are the **only** correct ways to test whether a position p is valid.
-In particular, the following **will not work**::
-
-    if p is None:       # Wrong
-    if p is not None:   # Wrong
-.. @+node:ekr.20101118091038.5387: *4* Creating script buttons
-Creating a script button should be your first thought whenever you want to
-automate any task. The scripting plugin, mod_scripting.py, puts two buttons
-in the icon menu, a pink Run Script button and a yellow Script Button
-button. The Run Script button does the same thing as the Execute Script
-command. The Script Button button is the interesting one. It creates a
-button, confusingly called a **script button** in the icon area. A script button
-executes a script when you push it.
-
-Suppose node N is selected. When you press the Script Button button a new
-(pink) script button is created. The name of the new button is N's headline
-text. The script associated with the new button is N's body text. Now whenever
-you press the new button, N's script is executed on the **presently** selected
-node. Script buttons are extraordinarily useful. In effect, each script button
-defines an instant command! For example, sometimes my fingers get tired of
-saving a file. I simply put Save in a node's headline and c.save() in
-the body text. I hit the Script Button button and I get a new button called
-Save that will save the outline when I press it.
-
-Here's a more interesting example. The following script searches the present
-node and its ancestors looking for an @rst node. When such a node is found the
-script uses Leo's core c.rstCommands.processTree method to format it. I don't have
-to select the actual \@rst node; I can select any of its children::
-
-    for p in p.self_and_parents():
-        if p.h.startswith('@rst '):
-            c.rstCommands.processTree(p)
-            break
-
-**Notes**:
-
-- The scripting plugin pre-defines the c, g and p symbols just as the Execute
-  Script command does.
-
-- By default a script button executes the **present** body text of the node that
-  original created the script button. This is very handy: you can modify a
-  script button's script at any time without having to recreate the script
-  button.
-
-- You can delete any script button by right-clicking on it.
-
-- On startup, the scripting plugin scans the entire .leo file and creates a
-  script button for every node whose headline starts with @button scriptName.
-  **Warning**: this is indeed a security risk of the kind discussed later. This
-  feature can be disabled by setting atButtonNodes = True at the start of
-  mod_scripting.py.
-.. @+node:ekr.20101118091038.5404: *4* Details
-.. @+node:ekr.20101118091038.5353: *5* Ensuring that positions are valid
-Positions become invalid whenever the outline changes. Plugins and scripts that
-can make sure the position p is still valid by calling c.positionExists(p).
-
-.. @+node:ekr.20101118091038.5354: *5* About copying positions
-Scripts must wary of saving positions because positions become invalid
-whenever the user moves, inserts or deletes nodes.  It is valid to store
-positions **only** when a script knows that the stored position will be used
-before the outline's structure changes.
-
-To store a position, the script must use the p.copy() method::
-
-    p2 = p.copy()   # Correct: p2 will not change when p changes later.
-
-The following **will not work**::
-
-    p2 = p  # Wrong.  p2 will change if p changes later.
-
-For example, the following creates a dictionary of saved positions::
-
-    d = {}
-    for p in c.all_positions():
-        d[p.v] = p.copy()
-
-.. @+node:ekr.20101118091038.5363: *5* Invoking commands from scripts
-Leo dispatches commands using c.doCommand,
-which calls the "command1" and "command2" hook routines for the given label.
-c.doCommand catches all exceptions thrown by the command::
-
-    c.doCommand(c.markHeadline,label="markheadline")
-
-You can also call command handlers directly so that hooks will not be called::
-
-    c.markHeadline()
-
-You can invoke minibuffer commands by name.  For example::
-
-    c.executeMinibufferCommand('open-outline')
-
-c.keyHandler.funcReturn contains the value returned from the command.
-In many cases, as above, this value is simply 'break'.
-.. @+node:ekr.20101118091038.5364: *5* Getting settings from @settings trees
-Any .leo file may contain an @settings tree, so settings may be different for each commander.
-Plugins and other scripts can get the value of settings as follows::
-
-    format_headlines = c.config.getBool('rst3_format_headlines')
-    print('format_headlines',format_headlines)
-
-The c.config class has the following getters.
-See the configSettings in leoCommands.py for details::
-
-    c.config.getBool(settingName,default=None)
-    c.config.getColor(settingName)
-    c.config.getDirectory(settingName)
-    c.config.getFloat(settingName)
-    c.config.getInt(settingName)
-    c.config.getLanguage(settingName)
-    c.config.getRatio(settingName)
-    c.config.getShortcut(settingName)
-    c.config.getString(settingName)
-
-These methods return None if no setting exists.
-The getBool 'default' argument to getBool gives the value to be returned if the setting does not exist.
-
-You can set any *existing* item in an @settings tree with c.config.set(p,setting,val).
-For example::
-
-    for val in (False,True):
-        c.config.set(p,'rst3_format_headlines',val)
-        format_headlines = c.config.getBool('rst3_format_headlines')
-        print('format_headlines',format_headlines)
-
-c.config.set does not change the @settings tree; it simply changes the values returned by the getters.
-.. @+node:ekr.20101118091038.5365: *5* Getting and setting preferences
-Each commander maintains its own preferences.
-Your scripts can get the following ivars::
-
-    ivars = (
-        'output_doc_flag',
-        'page_width',
-        'page_width',
-        'tab_width',
-        'target_language',
-        'use_header_flag',
-    )
-
-    print("Prefs ivars...\n",color="purple")
-    for ivar in ivars:
-        print(getattr(c,ivar))
-
-If your script sets c.tab_width your script may call f.setTabWidth to redraw the screen::
-
-    c.tab_width = -4    # Change this and see what happens.
-    c.frame.setTabWidth(c.tab_width)
-.. @+node:ekr.20101118091038.5366: *5* Functions for finding and changing text from scripts
-The file leoFindScript.py contains functions for finding and changing text
-from within scripts.  See leoFindScript.py in LeoPy.leo for full details.
-
-The findall function returns a list of tuples (v,pos) describing matches in
-c's entire tree::
-
-    import leo.scripts.leoFindScript as leoFindScript
-
-    pattern="import leo.core.leoGlobals as g"
-    result = leoFindScript.findAll(c,pattern,bodyFlag=1)
-
-    print("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
-
-    for v,pos in result:
-        body = v.b
-        print('\n%-4d %s' % (pos,v.h))
-        print(g.get_line_after(body,pos))
-
-The reFindall function returns a list of tuples (v,mo,pos), where mo
-is a MatchObject. The reFlags argument are flags to re.search::
-
-    import leo.scripts.leoFindScript as leoFindScript
-
-    pattern="from .* import"
-    result = leoFindScript.reFindAll(c,pattern,bodyFlag=1,reFlags=None)
-
-    print("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
-    for v,mo,pos in result:
-        body = v.b
-        print('\n%-4d %s' % (pos,v.h))
-        print(g.get_line_after(body,pos))
-.. @+node:ekr.20101118091038.5367: *5* Functions defined in leoGlobals.py
-leoGlobals.py contains many utility functions and constants.
-The following script prints all the names defined in leoGlobals.py::
-
-    print("Names defined in leoGlobals.py",color="purple")
-    names = g.__dict__.keys()
-    names.sort()
-    for name in names:
-        print(name)
-.. @+node:ekr.20101118091038.5368: *5* Event handlers
-Plugins and other scripts can register event handlers (also known as hooks) with code such as::
-
-    leoPlugins.registerHandler("after-create-leo-frame",onCreate)
-    leoPlugins.registerHandler("idle", on_idle) 
-    leoPlugins.registerHandler(("start2","open2","command2"), create_open_with_menu) 
-
-As shown above, a plugin may register one or more event handlers with a single call to
-leoPlugins.registerHandler. Once a hook is registered, Leo will call the
-registered function' at the named **hook time**. For example::
-
-    leoPlugins.registerHandler("idle", on_idle)
-
-causes Leo to call on_idle at "idle" time.
-
-Event handlers must have the following signature::
-
-    def myHook (tag, keywords):
-        whatever
-
--   tag is the name of the hook (a string).
--   keywords is a Python dictionary containing additional information.
-    The following section describes the contents of the keywords dictionary in detail.
-
-**Important**: hooks should get the proper commander this way::
-
-    c = keywords.get('c')
-.. @+node:ekr.20101118091038.5369: *6* @rst-no-head Summary of event handlers
-The following table tells about each event handler: its name, when it is called,
-and the additional arguments passed to the hook in the keywords dictionary.
-For some kind of hooks, Leo will skip its own normal processing if the hook
-returns anything *other* than None. The table indicates such hooks with 'yes' in
-the 'Stop?' column.
-
-**Important**: Ever since Leo 4.2, the v, old_v and new_v keys in
-the keyword dictionary contain *positions*, not vnodes. These keys are
-deprecated. The new_c key is also deprecated. Plugins should use the c key instead.
-
-============================= ======== =================================== =============================
-Event name (tag argument)     Stop?    When called                         Keys in keywords dict
-============================= ======== =================================== =============================
-'after-auto'                           after each @auto file loaded        c,p (note 13)
-'after-create-leo-frame'               after creating any frame            c
-'after-redraw-outline'                 end of tree.redraw                  c (note 6)
-'before-create-leo-frame'              before frame.finishCreate           c
-'bodyclick1'                   yes     before normal click in body         c,p,v,event
-'bodyclick2'                           after normal click in body          c,p,v,event
-'bodydclick1'                  yes     before double click in body         c,p,v,event
-'bodydclick2'                          after  double click in body         c,p,v,event
-'bodykey1'                     yes     before body keystrokes              c,p,v,ch,oldSel,undoType
-'bodykey2'                             after  body keystrokes              c,p,v,ch,oldSel,undoType
-'bodyrclick1'                  yes     before right click in body          c,p,v,event
-'bodyrclick2'                          after  right click in body          c,p,v,event
-'boxclick1'                    yes     before click in +- box              c,p,v,event
-'boxclick2'                            after  click in +- box              c,p,v,event
-'clear-all-marks'                      after clear-all-marks command       c,p,v
-'clear-mark'                           when mark is set                    c,p,v
-'close-frame'                          in app.closeLeoWindow               c
-'color-optional-markup'        yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
-'command1'                     yes     before each command                 c,p,v,label (note 2)
-'command2'                             after  each command                 c,p,v,label (note 2)
-'create-optional-menus'                (note 8)                            c (note 8)
-'create-popup-menu-items'              in tree.OnPopup                     c,p,v,event (new)
-'draw-outline-box'             yes     when drawing +- box                 tree,p,v,x,y
-'draw-outline-icon'            yes     when drawing icon                   tree,p,v,x,y
-'draw-outline-node'            yes     when drawing node                   tree,p,v,x,y
-'draw-outline-text-box'        yes     when drawing headline               tree,p,v,x,y
-'drag1'                        yes     before start of drag                c,p,v,event
-'drag2'                                after  start of drag                c,p,v,event
-'dragging1'                    yes     before continuing to drag           c,p,v,event
-'dragging2'                            after  continuing to drag           c,p,v,event
-'enable-popup-menu-items'              in tree.OnPopup                     c,p,v,event
-'end1'                                 start of app.quit()                 None
-'enddrag1'                     yes     before end of drag                  c,p,v,event
-'enddrag2'                             after  end of drag                  c,p,v,event
-'headclick1'                   yes     before normal click in headline     c,p,v,event
-'headclick2'                           after  normal click in headline     c,p,v,event
-'headrclick1'                  yes     before right click in headline      c,p,v,event
-'headrclick2'                          after  right click in headline      c,p,v,event
-'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 12)
-'headkey2'                             after  headline keystrokes          c,p,v,ch (note 12)
-'hoist-changed'                        whenever the hoist stack changes    c
-'hypercclick1'                 yes     before control click in hyperlink   c,p,v,event
-'hypercclick2'                         after  control click in hyperlink   c,p,v,event
-'hyperenter1'                  yes     before entering hyperlink           c,p,v,event
-'hyperenter2'                          after  entering hyperlink           c,p,v,event
-'hyperleave1'                  yes     before leaving  hyperlink           c,p,v,event
-'hyperleave2'                          after  leaving  hyperlink           c,p,v,event
-'iconclick1'                   yes     before single click in icon box     c,p,v,event
-'iconclick2'                           after  single click in icon box     c,p,v,event
-'iconrclick1'                  yes     before right click in icon box      c,p,v,event
-'iconrclick2'                          after  right click in icon box      c,p,v,event
-'icondclick1'                  yes     before double click in icon box     c,p,v,event
-'icondclick2'                          after  double click in icon box     c,p,v,event
-'idle'                                 periodically (at idle time)         c
-'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
-'menu1'                        yes     before creating menus               c,p,v (note 3)
-'menu2'                        yes     during creating menus               c,p,v (note 3)
-'menu-update'                  yes     before updating menus               c,p,v
-'new'                                  start of New command                c,old_c,new_c (note 9)
-'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
-'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
-'openwith1'                    yes     before Open With command            c,p,v,openType,arg,ext
-'openwith2'                            after  Open With command            c,p,v,openType,arg,ext
-'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
-'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
-'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
-'save1'                        yes     before any Save command             c,p,v,fileName
-'save2'                                after  any Save command             c,p,v,fileName
-'scan-directives'                      in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
-'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,new_v
-'select2'                              after  selecting a position         c,new_p,old_p,new_v,old_v
-'select3'                              after  selecting a position         c,new_p,old_p,new_v,old_v
-'set-mark'                             when a mark is set                  c,p,v
-'show-popup-menu'                      in tree.OnPopup                     c,p,v,event
-'start1'                               after app.finishCreate()            None
-'start2'                               after opening first Leo window      c,p,v,fileName
-'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
-'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
-'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
-'\@url2'                                after  double-click @url node       c,p,v(note 5)
-============================= ======== =================================== =============================
-
-**Notes**:
-
-1.  'activate' and 'deactivate' hooks have been removed because they do not work as expected.
-
-2.  'commands' hooks: The label entry in the keywords dict contains the
-    'canonicalized' form of the command, that is, the lowercase name of the command
-    with all non-alphabetic characters removed.
-    Commands hooks now set the label for undo and redo commands 'undo' and 'redo'
-    rather than 'cantundo' and 'cantredo'.
-
-3.  'menu1' hook: Setting g.app.realMenuNameDict in this hook is an easy way of
-    translating menu names to other languages. **Note**: the 'new' names created this
-    way affect only the actual spelling of the menu items, they do *not* affect how
-    you specify shortcuts settings, nor do they affect the 'official'
-    command names passed in g.app.commandName. For example::
-
-        app().realMenuNameDict['Open...'] = 'Ouvre'.
-
-4.  'open1' and 'open2' hooks: These are called with a keywords dict containing the following entries:
-
-    - c:          The commander of the newly opened window.
-    - old_c:      The commander of the previously open window.
-    - new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.
-    - fileName:   The name of the file being opened.
-
-    You can use old_c.p and c.p to get the current position in the old and new windows.
-    Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
-    will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
-    Recent Files menu and b) the file is not already open.
-
-5.  '\@url1' and '\@url2' hooks are only executed if the 'icondclick1' hook returns None.
-
-6.  These hooks are useful for testing.
-
-7.  These hooks allow plugins to parse and handle markup within doc parts,
-    comments and Python ''' strings. Note that these hooks are *not* called in
-    Python ''' strings. See the color_markup plugin for a complete example of how to
-    use these hooks.
-
-8.  Leo calls the 'create-optional-menus' hook when creating menus. This hook need
-    only create new menus in the correct order, without worrying about the placement
-    of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
-    examples of how to use this hook.
-
-9.  The New command calls 'new'.
-    The 'new_c' key is deprecated.  Use the 'c' key instead.
-
-10. g.scanDirectives calls 'scan-directives' hook.
-    g.scanDirectives returns a dictionary, say d.
-    d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
-
-    - d is the spelling of the @directive, without the leading @.
-    - v is the vnode containing the directive, _not_ the original vnode.
-    - s[k:] is a string containing whatever follows the @directive.
-      k has already been moved past any whitespace that follows the @directive.
-
-    See the add_directives plugins directive for a complete example of how to use
-    the 'scan-directives' hook.
-
-11. g.app.closeLeoWindow calls the 'close-frame' hook just before
-    removing the window from g.app.windowList. The hook code may remove the window
-    from app.windowList to prevent g.app.closeLeoWindow from destroying the window.
-
-12. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
-
-13. p is the new node (position) containing '@auto filename.ext'
-.. @+node:ekr.20101118091038.5370: *6* Enabling idle time event handlers
-Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
-**g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
-Afterwards, Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
-Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
-**g.disableIdleTimeHook()** disables the "idle" hook.
-.. @+node:ekr.20101118091038.5371: *5* How to make operations undoable
-Plugins and scripts should call u.beforeX and u.afterX methods ato
-describe the operation that is being performed. **Note**: u is shorthand for
-c.undoer. Most u.beforeX methods return undoData that the client
-code merely passes to the corresponding u.afterX method. This data contains
-the 'before' snapshot. The u.afterX methods then create a bead containing
-both the 'before' and 'after' snapshots.
-
-u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to
-u.beforeX and u.afterX methods to be treated as a single undoable entry.
-See the code for the Change All, Sort, Promote and Demote
-commands for examples. The u.beforeChangeGroup and u.afterChangeGroup
-methods substantially reduce the number of u.beforeX and afterX methods
-needed.
-
-Plugins and scripts may define their own u.beforeX and afterX methods. Indeed,
-u.afterX merely needs to set the bunch.undoHelper and
-bunch.redoHelper ivars to the methods used to undo and redo the operation.
-See the code for the various u.beforeX and afterX methods for guidance.
-
-p.setDirty and p.setAllAncestorAtFileNodesDirty now return a
-dirtyVnodeList that all vnodes that became dirty as the result of an
-operation. More than one list may be generated: client code is responsible for
-merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
-
-See the section << How Leo implements unlimited undo >> in leoUndo.py
-for more details. In general, the best way to see how to implement undo is to
-see how Leo's core calls the u.beforeX and afterX methods.
-.. @+node:ekr.20101118091038.5372: *5* Redirecting output from scripts
-leoGlobals.py defines 6 convenience methods for redirecting stdout and stderr::
-
-    g.redirectStderr() # Redirect stderr to the current log pane.
-    g.redirectStdout() # Redirect stdout to the current log pane.
-    g.restoreStderr()  # Restores stderr so it prints to the console window.
-    g.restoreStdout()  # Restores stdout so it prints to the console window.
-    g.stdErrIsRedirected() # Returns True if the stderr stream is redirected to the log pane.
-    g.stdOutIsRedirected() # Returns True if the stdout stream is redirected to the log pane.
-
-Calls need *not* be paired. Redundant calls are ignored and the last call made
-controls where output for each stream goes.
-**Note**: you must execute Leo in a console window to see non-redirected output from the print statement::
-
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.redirectStderr()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.redirectStdout()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.restoreStderr()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.restoreStdout()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-.. @+node:ekr.20101118091038.5373: *5* Writing to different log tabs
-Plugins and scripts can create new tabs in the log panel.
-The following creates a tab named test or make it visible if it already exists::
-
-    c.frame.log.selectTab('Test')
-
-g.es, g.enl, g.ecnl, g.ecnls write to the log tab specified by the optional
-tabName argument. The default for tabName is 'Log'. The put and putnl methods of
-the tkinterLog class also take an optional tabName argument which defaults to
-'Log'.
-
-Plugins and scripts may call the
-c.frame.canvas.createCanvas method to create a log tab containing a Tk.Canvas
-widget. Here is an example script::
-
-    log = c.frame.log ; tag = 'my-canvas'
-    w = log.canvasDict.get(tag)
-    if not w:
-        w = log.createCanvas(tag)
-        w.configure(bg='yellow')
-    log.selectTab(tag)
-.. @+node:ekr.20101118091038.5374: *5* Invoking dialogs using the g.app.gui class
-Scripts can invoke various dialogs using the following methods of the g.app.gui object.
-Here is a partial list. You can use typing completion(default bindings: Alt-1 and Alt-2) to get the full list!
-::
-
-    g.app.gui.runAskOkCancelNumberDialog(c,title,message)
-    g.app.gui.runAskOkCancelStringDialog(c,title,message)
-    g.app.gui.runAskOkDialog(c,title,message=None,text='Ok')
-    g.app.gui.runAskYesNoCancelDialog(c,title,message=None,
-        yesMessage='Yes',noMessage='No',defaultButton='Yes')
-    g.app.gui.runAskYesNoDialog(c,title,message=None)
-
-The values returned are in ('ok','yes','no','cancel'), as indicated by the
-method names. Some dialogs also return strings or numbers, again as indicated by
-their names.
-
-Scripts can run File Open and Save dialogs with these methods::
-
-    g.app.gui.runOpenFileDialog(title,filetypes,defaultextension,multiple=False)
-    g.app.gui.runSaveFileDialog(initialfile,title,filetypes,defaultextension)
-
-For details about how to use these file dialogs, look for examples in Leo's own
-source code. The runOpenFileDialog returns a list of file names.
-.. @+node:ekr.20101118091038.5375: *5* Inserting and deleting icons
-You can add an icon to the presently selected node with
-c.editCommands.insertIconFromFile(path). path is an absolute path or a path
-relative to the leo/Icons folder. A relative path is recommended if you plan to
-use the icons on machines with different directory structures.
-
-For example::
-
-    path = 'rt_arrow_disabled.gif' 
-    c.editCommands.insertIconFromFile(path) 
-
-Scripts can delete icons from the presently selected node using the following methods::
-
-    c.editCommands.deleteFirstIcon() 
-    c.editCommands.deleteLastIcon() 
-    c.editCommands.deleteNodeIcons() 
-.. @+node:ekr.20101118091038.5376: *5* Customizing panes with different widgets
-Tk/Tkinter make it easy to customize the contents of any of Leo's panes. The
-following sections will discuss the 'official' ivars that make it possible for
-scripts to access and alter the contents of panes. The next three sections will
-give examples of modifying each pane.
-.. @+node:ekr.20101118091038.5377: *6* Official ivars
-The c.frame.log class contains the following 'official' ivars::
-
-    g.es('tabName',c.frame.log.tabName)     # The name of the active tab.
-    g.es('tabFrame',c.frame.log.tabFrame)   # The Tk.Frame containing all the other widgets of the tab.
-    g.es('logCtrl',c.frame.log.logCtrl)     # Tk.Text widget containing the log text.
-
-The following ivars provide access to the body pane::
-
-    g.es('bodyFrame',c.frame.body.frame)    # The Tk.Frame widget containing the c.frame.body.bodyCtrl
-
-The following ivars provide access to the outline pane::
-
-    g.es('canvas',c.frame.tree.canvas) # The Tk.Canvas on which Leo's outline is drawn.
-
-Tkinter provides a way of determining the enclosing widget of any widget.
-The body text is enclosed in a Pmw.PanedWidget to support multiple editors.
-
-    w = c.frame.body.bodyCtrl
-    parent = w.pack_info().get('in') 
-    g.es('bodyCtrl.parent',parent) # The Tk.Frame containing the body text.
-.. @+node:ekr.20101118091038.5378: *6* Common operations on Tk.Text widgets
-The following is no substitute for a full discussion of programming the Tk.Text
-widget: it can do lots.
-
-To clear the log::
-
-    w = c.frame.log.logCtrl
-    w.delete('1.0','end')
-
-To write a line to the end of the log::
-
-    w = c.frame.log.logCtrl
-    w.insert('end','This is a test\n')
-
-To get the entire contents of the log::
-
-    w = c.frame.log.logCtrl
-    g.es(w.get('1.0','end')+'\n')
-.. @+node:ekr.20101118091038.5379: *6* Customizing the log pane
-The following line removes the initial text widget::
-
-    c.frame.log.logCtrl.pack_forget()
-
-To make the text widget visible again::
-
-    c.frame.log.logCtrl.pack(side='top',expand=1,fill='both')
-
-Plugins and scripts can pack any other widgets into c.frame.log.tabFrame.
-For example, the following replaces the default text widget with a red box::
-
-    import Tkinter as Tk
-
-    # Remove the old contents.
-    w = c.frame.log.logCtrl
-    parent =  w.pack_info().get('in')
-    w.pack_forget()
-
-    # Replace with a red frame.
-    f = c.frame.newLog = Tk.Frame(parent,background='red')
-    f.pack(side='left',expand=1,fill='both')
-
-And the following will restore the original pane::
-
-    c.frame.newLog.pack_forget()
-    w = c.frame.log.logCtrl
-    w.pack(side='left',expand=1,fill='both')
-.. @+node:ekr.20101118091038.5380: *6* Customizing the body pane
-Warning: you will find it hard to execute scripts after removing the body pane,
-so you had best make the following two scripts into script buttons before
-executing them :-)
-
-Plugins and scripts can pack any other widgets into c.frame.log.tabFrame.
-For example, the following replaces the default text widget with a red box::
-
-    import Tkinter as Tk
-
-    w = c.frame.body.bodyCtrl
-    parent =  w.pack_info().get('in')
-    w.pack_forget()
-
-    f = c.frame.newBody = Tk.Frame(parent,background='red')
-    f.pack(side='left',expand=1,fill='both')
-
-To restore::
-
-    c.frame.newBody.pack_forget()
-    w = c.frame.body.bodyCtrl
-    w.pack(side='left',expand=1,fill='both')
-.. @+node:ekr.20101118091038.5381: *6* Customizing the outine pane
-The following replaces the outline pane with a red frame::
-
-    import Tkinter as Tk
-
-    w = c.frame.tree.canvas
-    parent =  w.pack_info().get('in')
-    w.pack_forget()
-
-    f = c.frame.newTree = Tk.Frame(parent,background='red')
-    f.pack(side='left',expand=1,fill='both')
-
-And this script restores the outline::
-
-    c.frame.newTree.pack_forget()
-    c.frame.tree.canvas.pack(side='left',expand=1,fill='both')
-.. @+node:ekr.20101118091038.5382: *5* Working with directives and paths
-Scripts can easily determine what directives are in effect at a particular
-position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose
-keys are directive names and whose values are the value in effect at position p.
-For example::
-
-    d = c.scanAllDirectives(p)
-    g.es(g.dictToString(d))
-
-In particular, d.get('path') returns the full, absolute path created by all
-\@path directives that are in ancestors of node p. If p is any kind of @file node
-(including @file, @auto, @nosent, @shadow, etc.), the following script will
-print the full path to the created file::
-
-    path = d.get('path')
-    name = p.anyAtFileNodeName()
-    if name:
-       name = g.os_path_finalize_join(path,name)
-       g.es(name)
-.. @+node:ekr.20101118091038.5383: *5* Summary of the vnode and position classes
-Most scripts will use methods of the position class to access information in an
-outline. The following sections summarizes the most useful methods that your
-scripts can use. For a complete list, see the leoNodes.py in of LeoPy.leo.
-.. @+node:ekr.20101118091038.5384: *6* generators
-Here is the list of Leo's generators::
-
-    c.all_nodes             # all vnodes in c.
-    c.all_unique_nodes      # all unique vnodes in c.
-    c.all_positions         # all positions in c.
-    c.all_unique_positions  # all unique positions in c.
-
-    p.children              # all children of p.
-    p.following_siblings    # all siblings of p that follow p.
-    p.nodes                 # all vnodes in p's subtree.
-    p.parents               # all parents of p.
-    p.self_and_parents      # p and all parents of p.
-    p.siblings              # all siblings of p, including p.
-    p.subtree               # all positions in p's subtree, excluding p.
-    p.self_and_subtree      # all positions in p's subtree, including p.
-    p.unique_nodes          # all unique vnodes in p's subtree.
-    p.unique_subtree        # all unique positions in p's subtree.
-
-**Note**: A generator that returns **unique positions** is a generator that returns
-a list of positions such that p.v == v at most once for any vnode v.
-Similarly, a generator that returns **unique nodes** is a generator that returns
-a list that contains any vnode at most once.
-
-**Note**: The names given above are the recommended names for Leo's generators.
-Leo continues to support the names of iterators used before Leo 4.7.
-These names typically end with the _iter suffix.
-.. @+node:ekr.20101118091038.5385: *6* Getters
-Here are the most useful getters of the vnode and position classes.
-
-Returning strings::
-
-    p.b # the body string of p.
-    p.h # the headline string of p. A property.
-
-Returning ints::
-
-    p.childIndex()
-    p.numberOfChildren()
-    p.level()
-
-Returning bools representing property bits::
-
-    p.hasChildren()
-    p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
-    p.isCloned()
-    p.isDirty()
-    p.isExpanded()
-    p.isMarked()
-    p.isVisible()
-    p.isVisited()
-.. @+node:ekr.20101118091038.5386: *6* Setters
-Here are the most useful setters of the Commands and position classes.
-The following setters of the position class regardless of whether
-p is the presently selected position::
-
-    c.setBodyString(p,s)  # Sets the body text of p.
-    c.setHeadString(p,s)  # Sets the headline text of p.
-
-Moving nodes::
-
-    p.moveAfter(v2)           # move p after v2
-    p.moveToNthChildOf(v2,n)  # move p to the n'th child of v2
-    p.moveToRoot(oldRoot)     # make p the root position.
-                              # oldRoot must be the old root position if it exists.
-
-The "visited" bit may be used by commands or scripts for any purpose.
-Many commands use this bits for tree traversal, so these bits do not persist::
-
-    c.clearAllVisited() # Clears all visited bits in c's tree.
-    p.clearVisited()
-    p.setVisited()
 .. @+node:ekr.20101116103056.5272: *3* Using the minibuffer
 @nocolor-node
 
->> You can use the print-commands command.
-
-> How can I run this command? Do I use the minibuffer?
-
-Yes. Type <alt-x> to put the cursor in the minibuffer. Then use tab
-completion to avoid having to do much typing. Something like this:
-
-Type "pr<tab>". This will show open the completion pane. The pane shows you all
-the commands that start with pr. There are too many, so type i<tab>. Now you
-will see "print-" in the minibuffer and only commands that start with "print-"
-in the completion tab. Now just type "c<tab>" and you will see the full
-print-commands command in the minibuffer. Finally, type <return> to execute the
-command.
-
-*Important*: you can use <backspace> in the minibuffer to show more alternatives,
-and you can hit <ctrl-g> at any time in Leo to put focus in the body pane.
-.. @+node:ekr.20101116152804.5285: *3* Nutshell
-@nocolor-node
-
-The experience of using Leo is quite a bit different from using other editors or
-IDE's.
-
-- The unit of work is different: I work with nodes, not files or text.
-- The workflow is different: I create clones rather than searching.
-- Scripts are much more important: it's easy to manipulate code because less parsing is needed.
 .. @+node:ekr.20101025080245.5540: ** To do: slideshows
 @nocolor-node
 
@@ -1870,11 +589,20 @@ Leo's main window consists of an **outline pane**
 The outline pane shows **headlines**.
 
 Here, we see the a "startup" headline and a "workbook" headline.
-.. @+node:ekr.20101115152915.4933: *3* Maybe
-.. @+node:ekr.20101115152915.4935: *4* Leo's Dom
+.. @+node:ekr.20101115152915.4933: *3* Next
+.. @+node:ekr.20101116152804.5285: *4* Nutshell
+@nocolor-node
+
+The experience of using Leo is quite a bit different from using other editors or
+IDE's.
+
+- The unit of work is different: I work with nodes, not files or text.
+- The workflow is different: I create clones rather than searching.
+- Scripts are much more important: it's easy to manipulate code because less parsing is needed.
 .. @+node:ekr.20101113110328.4947: *4* Using @button nodes
 .. @+node:ekr.20101115152915.4932: *4* Using @test nodes
 .. @+node:ekr.20101115152915.4934: *4* Using @url nodes
+.. @+node:ekr.20101121032151.5375: *3* Maybe
 .. @+node:ekr.20101113110328.4945: *4* Top 10 coolest features
 .. @+node:ekr.20101113110328.4946: *4* How to make slide shows
 .. @+node:ekr.20101014034526.5294: *4* IPython
@@ -1892,9 +620,1056 @@ http://www.debian-administration.org/articles/257
 
 .. @+node:ekr.20101025080245.5546: *4* @url Document Ville's server
 http://mail.google.com/mail/#inbox/12adebe2ffe80572
+.. @+node:ekr.20101010141953.5028: *4* @slideshow Leo's NSIS Installer
+@language rest
+.. @+node:ekr.20101010141953.5029: *5* @title_pattern = Leo's NSIS Installer: Slide %(slide_number)s
+.. @+node:ekr.20101010141953.5030: *5* @slide 001
+.. _`here`:     http://www.nullsoft.com/free/nsis/
+.. _`Winamp`:   http://www.winamp.com/
+
+Nullsoft, the makers of the `Winamp`_ MP3 software, have released a powerful free
+installer called NSIS, available `here`_. This application allows you to make
+installation packages for Windows applications.
+
+You create NSIS packages by writing a NSIS script and then compiling it.
+Depending on the application, NSIS can often be a better choice than more
+expensive installation generators, since NSIS installations are easy to create,
+are small and fast, and yet can be configured with many features.
+
+.. @+node:ekr.20101010141953.5031: *5* @slide 002
+When you install Leo, you'll find that it comes with a script for generating an
+installer for Leo. This script is called leo-<version>.nsi, and is distributed
+in the Leo file leo/dist/leoDist.leo.
+
+If you have NSIS installed, right-clicking on a .nsi file will give you the
+option of compiling the script to create a package.
+
+.. image:: slide-002.png
+
+.. @+node:ekr.20101010141953.5032: *6* @screenshot
+.. @+node:ekr.20101010141953.5033: *7* Take screenshot of the compile .nsi dialog in a Windows folder
+.. @+node:ekr.20101010141953.5034: *6* @pause
+.. @+node:ekr.20101010141953.5038: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.png
+.. @+node:ekr.20101010141953.5039: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg
+.. @+node:ekr.20101010141953.5040: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png
+.. @+node:ekr.20101011071655.4918: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html
+.. @+node:ekr.20101011092154.4923: *5* @slide 003
+Since the NSIS script for the Leo installation is included in the Leo
+distribution in the nsis.leo file, it is easy to understand the how the script
+works. This .nsi file creates an installer that packages all of the Leo program
+files, and creates a desktop shortcut, a Program Menu item, and the file
+association for .leo files.
+.. @+node:ekr.20101011092154.4924: *5* @slide 004
+In this screenshot we're looking at the code that checks to see whether Python
+has been installed.
+
+Since Leo is a Python application, modifying this installation script to create
+a script to build a Windows installer for your own Python application is
+relatively simple. You would leave this section alone, and check other sections
+for the program name "Leo", and change these to your program name.
+.. @+node:ekr.20101011092154.4925: *5* @slide 005
+.. @+node:ekr.20101011165412.5154: *5* @@button make leo.nsi
+@language python
+
+# **Important**
+#   Before running this script you must create bzr-manifest as follows::
+#       cd to trunk
+#       bzr ls -R >bzr-manifest.txt
+
+'''Create the installer script using bzr-manifest.txt.'''
+
+import os,string,sys
+<< define version >>
+<< define inLeo >>
+
+if inLeo:
+    # The root directory contains the leo directory.
+    rootDir  = g.os_path_finalize_join(g.app.loadDir,'..','..')
+    manifest = g.os_path_finalize_join(rootDir,'bzr-manifest.txt')
+else:
+    rootDir = os.path.abspath(os.curdir)
+    manifest = os.path.normpath(os.path.join(rootDir,'bzr-manifest.txt'))
+
+<< define application constants >>
+@others
+
+nsi = nsiWriter()
+nsi.run(manifest)
+.. @+node:ekr.20101011165412.5155: *6* << define version >>
+# Used by both @button make leo.nsi and @button make leo.zip.
+app_version = version = '4.8-d1'
+.. @+node:ekr.20101011165412.5156: *6* << define inLeo >>
+try:
+    inLeo = g is not None
+except AttributeError:
+    inLeo = False
+
+# print('inLeo',inLeo)
+.. @+node:ekr.20101011165412.5157: *6* << define application constants >>
+app_doc_icon = r'Icons\LeoDoc.ico'
+app_extension = '.leo'
+app_hkey_local_machine = r'SOFTWARE\EKR\leo'
+app_icon = r"%s\leo\Icons\leo_inst.ico" % rootDir
+app_icon2 = r'leo\Icons\LeoApp.ico' # Relative to install dir.
+app_license = r'%s\License.txt' % rootDir
+app_lower_case_name = 'leo'
+app_name = 'Leo'
+app_publisher = 'Edward K. Ream'
+app_python_executable = 'launchLeo.py'
+app_uninst_key = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+app_uninst_root_key = 'HKLM'
+app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
+
+nsi_name = 'leo-%s.nsi' % app_version
+target_file = 'LeoSetup-%s.exe' % app_version
+
+substitutionDict = {
+    'doc_icon': app_doc_icon,
+    'ext': app_extension,
+    'exe': app_python_executable,
+    'hkey_local_machine': app_hkey_local_machine,
+    'icon': app_icon,
+    'icon2': app_icon2,
+    'license': app_license,
+    'lower_name': app_lower_case_name,
+    'name': app_name,
+    'nsi_name': nsi_name,
+    'publisher': app_publisher,
+
+    'site': app_web_site,
+    'target_file': target_file,
+    'uninst_key': app_uninst_key,
+    'uninst_root_key': app_uninst_root_key,
+    'version': app_version,
+    # Leave these unchanged.
+    'DESKTOP': '$DESKTOP',
+    'INSTDIR': '$INSTDIR',
+    'NSISDIR': '${NSISDIR}',
+    'PROGRAMFILES': '$PROGRAMFILES',
+    'PythonExecutable': '$PythonExecutable',
+    'SMPROGRAMS': '$SMPROGRAMS'
+}
+.. @+node:ekr.20101011165412.5158: *6* class nsiWriter
+class nsiWriter:
+
+    '''A class to write .nsi scripts.'''
+
+    @others
+.. @+node:ekr.20101011165412.5159: *7* genScript & helpers
+def genScript (self,dirs,dirDict,filesDict):
+
+    '''Generate the .nsi installer script.'''
+
+    self.f = f = self.openNsi()
+    if not f: return
+
+    try:
+        self.genHead()
+        self.genInstallData(dirs,dirDict,filesDict)
+        self.genMiddle()
+        self.genUninstallData(dirs,dirDict,filesDict)
+    finally:
+        f.close()
+
+    g.es_print('make-leo-nsi done. no errors')
+.. @+node:ekr.20101011165412.5160: *8* genHead
+def genHead (self):
+
+    '''Generate the boilerplate appearing before
+    the manifest-specific install data.'''
+
+    self.put('!include MUI2.nsh\n')
+    self.putSettings()
+    self.putOnInit()
+.. @+node:ekr.20101011165412.5161: *9* putSettings
+def putSettings (self):
+
+    s = r'''
+; Location of Pythonw.exe. Set by .onInit.
+var PythonExecutable
+
+SetCompressor bzip2
+Caption "${name} Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
+SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
+SetDatablockOptimize on
+; SetOverwrite ifnewer
+WindowIcon off
+OutFile "${target_file}"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+; Default location.  May be changed in .onInit.
+InstallDir "${PROGRAMFILES}\${name}-${version}"
+Icon "${icon}"
+DirText "Setup will install ${name}-${version} in the following folder. $$\n\
+To install in a different folder, click Browse and select another folder."
+LicenseText "You must accept the agreement to install ${name}-${version}."
+LicenseData "${license}"
+ShowInstDetails show
+ShowUnInstDetails show
+
+'''
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5162: *9* putOnInit
+def putOnInit (self):
+
+    s = r'''
+
+; Set PythonExecutable to full path to Pythonw.exe.
+Function .onInit
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
+    StrCmp $9 "" tryPython31 ok
+
+tryPython31:
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.1\InstallPath" ""
+    StrCmp $9 "" oops ok
+
+oops:
+    MessageBox MB_OK "Python not found: using c:\python26"
+    ; Guess where Python 26 is.
+    StrCpy $PythonExecutable "c:\Python26\pythonw.exe"
+    ; Fallback installation directory is "Program Files"
+    Goto done
+ok:
+    MessageBox MB_OK "Found Python at $9"
+    StrCpy $PythonExecutable "$9\pythonw.exe"
+    ; Normal installation directory 
+    StrCpy $INSTDIR "$9\Lib\site-packages\${name}-${version}"
+done:
+
+; End .onInit
+FunctionEnd
+'''
+    s = s.replace('${name}',app_name).replace('${version}',app_version)
+    self.put(s,substitute=False)
+.. @+node:ekr.20101011165412.5163: *8* genInstallData & helpers
+def genInstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific install data.'''
+
+    self.put('\nSection "%s" SEC01\n\n' % (app_name))
+
+    self.put(self.getInstallVariableData(
+        dirs,dirDict,filesDict),adjust=False)
+
+    self.put('\n; end %s section\n' % (app_name))
+    self.put('SectionEnd\n')
+.. @+node:ekr.20101011165412.5164: *9* getInstallVariableData
+def getInstallVariableData (self,dirs,dirDict,filesDict):
+
+    global rootDir
+    result = []
+
+    # Top level
+    theDir = '**top'
+    result.append('; top-level\n')
+    result.append('SetOutPath "$INSTDIR"\n')
+    result.append('SetOverwrite ifnewer\n')
+    aList = dirDict.get(theDir,[])
+    for fn in aList:
+        result.append('File "%s"\n' % fn)
+
+    for theDir in dirs:
+        if theDir != '**top':
+            aList = dirDict.get(theDir,[])
+            if aList:
+                theDir2 = theDir.replace('/','\\').rstrip('\\')
+                result.append('\n')
+                result.append('SetOutPath $INSTDIR\\%s\n' % theDir2)
+                for fn in aList:
+                    # Fix bug 425369: quote file names.
+                    result.append('File "%s\\%s\\%s"\n' % (
+                        rootDir,theDir2,fn))
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+.. @+node:ekr.20101011165412.5165: *8* genMiddle
+def genMiddle (self):
+
+    '''Generate the boilerplate appearing between
+    the manifest-specific install data and
+    the manifest-specific uninstall data.'''
+
+    self.genMenuShortcuts()
+    self.genDesktopShortcuts()
+    self.genFileAssociation()
+    self.genAdditionalIcons()
+    self.genPost()
+    self.genUninstallSettings()
+    self.genMiddleFunctions()
+.. @+node:ekr.20101011165412.5166: *9* genAdditionalIcons
+def genAdditionalIcons(self):
+
+    s = r'''
+Section -AdditionalIcons
+  SetOutPath $INSTDIR
+  CreateDirectory "${SMPROGRAMS}\${name}"
+  CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5167: *9* genDesktopShortcuts
+def genDesktopShortcuts(self):
+
+    s = r'''
+Section "Desktop Shortcut" SEC03
+  CreateShortCut "${DESKTOP}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\${exe}"' "$INSTDIR\${icon2}" 0
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5168: *9* genFileAssociation
+def genFileAssociation(self):
+
+    s = r'''
+Section "${ext} File Association"
+  SectionIn 1
+  SectionIn 2
+  SectionIn 3
+
+  # back up old value of extension in case some other program was using it
+  ReadRegStr $$1 HKCR "${ext}" ""
+  StrCmp $$1 "" Label1
+  StrCmp $$1 "${name}File" Label1
+  WriteRegStr HKCR "${ext}" "backup_val" $$1
+
+Label1:
+  WriteRegStr HKCR "${ext}" "" "${name}File"
+  WriteRegStr HKCR "${name}File" "" "${name} File"
+  WriteRegStr HKCR "${name}File\shell" "" "open"
+  WriteRegStr HKCR "${name}File\DefaultIcon" "" ${INSTDIR}\${doc_icon}
+  WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "${INSTDIR}\${exe}" "%1"'
+
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5169: *9* genMenuShortcuts
+def genMenuShortcuts (self):
+
+    s = r'''
+; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
+; that means that this installer will make the app available for the current user only.
+; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
+; security concerns are such that it would be best to not run the app with the Administrator privileges
+; of the account used to install the software.
+;
+; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
+;
+; Question is -- do we want the app always available for any log-in on this computer?
+;
+; My guesses:
+; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
+; if run by a user who lacks Admin privileges on Windows NT and its descendants
+;
+; How will Windows XP Home deal with that? 
+
+Section "Start Menu Shortcuts" SEC02
+    CreateDirectory "${SMPROGRAMS}\${name}"
+    CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "${INSTDIR}\uninst.exe" "" "${INSTDIR}\uninst.exe" 0
+    CreateShortCut "${SMPROGRAMS}\${name}\${name}.lnk" '"${PythonExecutable}"' '"${INSTDIR}\${exe}"' "${INSTDIR}\${icon2}" 0
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5170: *9* genMiddleFunctions
+def genMiddleFunctions (self):
+
+    s = r'''
+Function un.onUninstSuccess
+  HideWindow
+  MessageBox MB_ICONINFORMATION|MB_OK "${name}-${version} was successfully removed from your computer."
+FunctionEnd
+
+Function un.onInit
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \
+  "Are you sure you want to completely remove ${name}-${version} and all of its components?" IDYES +2
+  Abort
+FunctionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5171: *9* genPost
+def genPost (self):
+
+    s = r'''
+Section -Post
+  WriteRegStr HKEY_LOCAL_MACHINE "${hkey_local_machine}" "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "UninstallString" "${INSTDIR}\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayVersion" "${version}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "URLInfoAbout" "${site}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "Publisher" "${publisher}"
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5172: *9* genUninstallSettings
+def genUninstallSettings(self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','Icons','uninst.ico')
+
+    s = r'''
+UninstallCaption "Uninstall ${name}"
+UninstallIcon "${path}"
+'''
+
+    s = s.replace('${path}',path)
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5173: *8* genUninstallData & helpers
+def genUninstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific uninstall data.'''
+
+    s = r'''
+Section Uninstall
+
+    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
+
+    ; Delete files & directories only if we own them!
+    ReadRegStr $$1 HKCR "${ext}" ""
+    StrCmp $$1 "${name}File" 0 FinishUninstall
+
+    ; Delete files & directories only if there is no backup_val key.
+    ReadRegStr $$1 HKCR "${ext}" "backup_val"
+    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
+      DeleteRegKey HKCR "${ext}"
+    Goto FinishUninstall
+
+DeleteLeoKeysAndFiles:
+    WriteRegStr HKCR "${ext}" "" $$1
+    DeleteRegValue HKCR "${ext}" "backup_val"
+
+    ; ---- Start of manifest-related data...
+'''
+
+    self.put(s,substitute=True)
+
+    # Does all the hard work.
+    self.put(
+        self.getUninstallVariableData(dirs,dirDict,filesDict),
+        adjust = False)
+
+    s = r'''
+    ; ---- End of manifest related data.
+
+FinishUninstall:
+    ; MessageBox MB_YESNO|MB_ICONQUESTION \
+    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
+; NoDelete:
+
+  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
+  RMDir "${SMPROGRAMS}\${name}-${version}"
+  Delete "${DESKTOP}\${name}.lnk"
+
+  DeleteRegKey ${uninst_root_key} "${uninst_key}"
+  SetAutoClose false
+
+; end Uninstall section
+SectionEnd
+'''
+
+    self.put(s,substitute=True)
+.. @+node:ekr.20101011165412.5174: *9* getDeleteDirectories
+def getDeleteDirectories (self,dirs,dirDict):
+
+    reverseDirs = dirs[:]
+    reverseDirs.reverse()
+
+    result = []
+    result.append('; Uninstall directories in reverse order\n')
+    for theDir in reverseDirs:
+        # Delete the directory even if it has no files.
+        if theDir and theDir != '**top':
+            if not theDir.startswith('.bzr'):
+                result.append('RMDir "$INSTDIR\\%s"\n' % (
+                    theDir.replace('/','\\')))
+
+    # top-level folder.
+    result.append('RMDir "$INSTDIR"\n')
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+.. @+node:ekr.20101011165412.5175: *9* getDeleteFiles
+def getDeleteFiles (self,dirs,dirDict,filesDict):
+
+    wildcard_delete = True
+    result = []
+    result.append('; Uninstall files...\n\n')
+
+    # top-level files.
+    result.append('; Delete top-level files...\n')
+    aList = dirDict.get('**top',[])
+    # special case.
+    aList.append('uninst.exe')
+    # Warning: **never** delete all files in the top-level directory.
+    for fn in aList:
+        result.append('Delete "$INSTDIR\\%s"\n' % fn)
+    if wildcard_delete:
+        result.append('\n')
+
+    for theDir in dirs:
+        if theDir:
+            dir2 = theDir.replace('/','\\')
+            if wildcard_delete:
+                result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
+            else:
+                aList = dirDict.get(theDir,[])
+                if aList:
+                    result.append('\n')
+                    result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                    result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                for fn in aList:
+                    result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
+                        dir2,fn))
+
+    result = [self.indent(z) for z in result]
+    return ''.join(result)
+.. @+node:ekr.20101011165412.5176: *9* getUninstallVariableData
+def getUninstallVariableData(self,dirs,dirDict,filesDict):
+
+    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
+    s2 = self.getDeleteDirectories(dirs,dirDict)
+    return '%s\n%s' % (s1,s2)
+.. @+node:ekr.20101011165412.5177: *8* indent
+def indent(self,s):
+
+    if s.strip():
+        return '    ' + s
+    else:
+        return s
+.. @+node:ekr.20101011165412.5178: *8* openNsi
+def openNsi (self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','..',nsi_name)
+
+    try:
+        f = open(path,'w')
+    except IOError:
+        f = None
+        g.es_print('Can not open',path,color='red')
+
+    return f
+.. @+node:ekr.20101011165412.5179: *8* put
+def put (self,s,adjust=True,substitute=False):
+
+    '''Output s to the nsi file, optionally making
+    the substitutions given in substitutionDict.'''
+
+    trace = False
+    if adjust:
+        s = self.adjustTripleString(s)
+
+    if substitute:
+        if 0:
+            n = 1
+            for z in g.splitLines(s):
+                print('%3s %s' % (n,z.rstrip()))
+                n += 1
+        s = string.Template(s)
+        s = s.substitute(substitutionDict)
+
+    if trace: g.trace(s,g.callers(4))
+    self.f.write(s)
+.. @+node:ekr.20101011165412.5180: *7* run & helpers
+def run (self,fn):
+
+    '''The top-level logic.'''
+
+    # Create and filter the list of files from the manifest.
+    s = open(fn).read()
+    lines = g.splitLines(s)
+    files = self.filterLines(lines)
+
+    # Compute the list of all the directories.
+    dirs = self.directoryList(rootDir)
+
+    # Compute dictionaries of directories and files.
+    dirDict,filesDict = self.makeDicts(dirs,files)
+
+    # Print manifest lines not in either dict.
+    # This is a crucial check.
+    errors = self.printMissing(files,dirDict,filesDict)
+    if errors: return
+
+    # Generate the script!
+    self.genScript(dirs,dirDict,filesDict)
+.. @+node:ekr.20101011165412.5181: *8* directoryList
+def directoryList (self,rootDir):
+
+    '''Compute a top-down list of all directories.
+       These directories start at the top-level directory.'''
+
+    trace = False
+    ignoreDirs = ('.bzr',)
+    # Important: this adds all directories on EKR's machine,
+    # regardless of whether they appear in the manifest!
+    result = [] ; n = len(rootDir)
+    for z in os.walk(rootDir): # top-down traversal.
+        dirpath, dirnames, filenames = z
+        assert dirpath.startswith(rootDir),z
+        if len(dirpath) > n:
+            path = dirpath[n+1:].replace('\\','/')
+            result.append(path)
+    for z2 in ignoreDirs:
+        result = [ z for z in result if not z.startswith(z2)]
+    if trace:
+        g.trace('-' * 40)
+        g.trace(g.listToString(result))
+    return result
+.. @+node:ekr.20101011165412.5182: *8* filterLines & helpers
+def filterLines (self,lines):
+
+    '''Filter lines from the input manifest file.'''
+
+    trace = False
+
+    # Remove blank lines, comments, and .pyc and .pyo files.
+    lines = self.deleteBlankLines(lines)
+    lines = self.deleteComments(lines)
+    lines = self.deleteExt(lines,'.pyc')
+    lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
+    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
+
+    # Remove specific files.
+    deleteList = (
+        '.bzrignore',
+        'bzr-manifest.txt',
+        'bzr-small-manifest.txt',
+        'setup.py',
+        'leo/test/unittest/.leo_shadow/',
+        'nsi.log.txt', # Can't write log while we are creating it.
+        'leo/core/leoPy.leo',
+        'leo/core/ekrLeoPy.leo',
+    )
+    lines = self.deleteFiles(lines,deleteList)
+    if lines and lines[0].endswith('bzr ls -R'):
+        lines = lines[1:]
+
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(lines))
+
+    return lines
+.. @+node:ekr.20101011165412.5183: *9* delete...
+def deleteBlankLines (self,lines):
+
+    return [z.strip() for z in lines if z.strip()]
+
+def deleteComments (self,lines):
+
+    return [z for z in lines if not z.startswith('#')]
+
+def deleteExt (self,lines,ext):
+
+    return [z for z in lines if not z.endswith(ext)]
+
+def deleteFiles (self,lines,deleteList):
+
+    return [z for z in lines if not z in deleteList]
+.. @+node:ekr.20101011165412.5184: *8* makeDicts
+def makeDicts (self,dirs,lines):
+
+    trace = False ; verbose = False
+
+    # Create the dirDict.
+    # Keys are directories.
+    # Values are files contained in each directory.
+    dirDict = {}
+    dirDict['**top'] = [] # Create an entry for the root directory.
+    for z in dirs:
+        dirDict[z] = []
+
+    # Assign files to dirDict.
+    for line in lines:
+        line = line.strip().replace('\\','/')
+        if line in dirDict.keys():
+            path,fn = None,None
+        elif line.startswith('leo/'):
+            path,fn = g.os_path_split(line)
+        else:
+            path,fn = '**top',line.strip()
+
+        # Don't include top-level leo directory,
+        # Do include leo/scripts/leo file.
+        if fn and (path != '**top**' or fn != 'leo'):
+            aList = dirDict.get(path,[])
+            assert line not in aList,repr(line)
+            aList.append(fn)
+            dirDict[path]=aList
+
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        if aList and trace:
+            if verbose:
+                print() ; print(theDir)
+                print(g.listToString(aList))
+            else:
+                print(theDir)
+
+    # Create the inverse dict.
+    filesDict = {}
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        for fn in aList:
+            path = g.choose(theDir=='**top',
+                fn,'%s/%s' % (theDir,fn))
+            filesDict[path] = theDir
+
+    return dirDict,filesDict
+.. @+node:ekr.20101011165412.5185: *8* printMissing
+def printMissing (self,files,dirDict,filesDict):
+
+    errors = 0
+
+    for fn in files:
+        fn = fn.rstrip('/')
+        if fn and fn not in dirDict and fn not in filesDict:
+            g.es_print('missing',fn,color='red')
+            errors += 1
+
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+
+    return errors
+.. @+node:ekr.20101011165412.5186: *7* whitespace
+# These are adapted from the corresponding functions in leoPy.leo
+# They are defined here to make this script independent of Leo
+.. @+node:ekr.20101011165412.5187: *8* adjustTripleString
+def adjustTripleString (self,s):
+
+    '''Remove leading indentation from a triple-quoted string.'''
+
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = self.splitLines(s)
+    w = 0 ; val = -1
+    for line in lines:
+        if line.strip():
+            lws = self.get_leading_ws(line)
+            w2 = self.computeWidth(lws)
+            # The sign of w does not matter.
+            if w == 0 or abs(w2) < w:
+                w = abs(w2)
+
+    if w == 0: return s
+
+    # Remove the leading whitespace.
+    result = [self.removeLeadingWhitespace(line,w) for line in lines]
+    result = ''.join(result)
+    return result
+.. @+node:ekr.20101011165412.5188: *8* get_leading_ws
+def get_leading_ws(self,s):
+
+    """Returns the leading whitespace of 's'."""
+
+    i = 0 ; n = len(s)
+    while i < n and s[i] in (' ','\t'):
+        i += 1
+    return s[0:i]
+.. @+node:ekr.20101011165412.5189: *8* computeWidth
+def computeWidth (self,s):
+
+    '''Return the width of s, assuming s starts a line.'''
+
+    tabwidth = 4
+    w = 0
+    for ch in s:
+        if ch == '\t':
+            w += tab_width - (w % tab_width)
+        else:
+            w += 1
+    return w
+.. @+node:ekr.20101011165412.5190: *8* removeLeadingWhitespace
+def removeLeadingWhitespace (self,s,first_ws):
+
+    '''Remove whitespace up to first_ws wide in s.'''
+
+    j = 0 ; ws = 0
+    tabwidth = 4
+    first_ws = abs(first_ws)
+    for ch in s:
+        if ws >= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += tab_width - (ws % tab_width)
+        else: break
+    if j > 0:
+        s = s[j:]
+    return s
+.. @+node:ekr.20101011165412.5191: *8* splitLines
+def splitLines (self,s):
+
+    '''Split s into lines, preserving the number of lines and the ending of the last line.'''
+
+    return s and s.splitlines(True) or []
 .. @+node:ekr.20101014034526.5280: *3* @slideshow External files
 @language rest
 @pagewidth 60
+
+===== Intro
+
+Trees whose root headline starts with \@file, \@auto or \@edit create **external
+files** on your file system.  Here are some example headlines::
+
+  @file myClass.py
+  @auto ../graphics/circles.cpp
+  @edit ~/.leo/.leoID.txt
+
+As you can see, these nodes specify file names, which can be an absolute
+path or a path relative to the directory containing the Leo outline.
+
+Collectively, nodes that create external files are known as **@<file> nodes.**
+Leo defines several other kinds of @<file> nodes, but this slideshow will not
+discuss them.
+
+===== Automatic load/store make Leo an IDE
+
+Leo automatically loads all @<file> trees when you open a Leo outline, and Leo
+writes any modified @<file> tree when you save an outline. Reading external
+files is very fast because of an efficient file-caching scheme.
+
+A single Leo outline may be connected to dozens of external files: this makes
+Leo work like an Integrated Development Environment (IDE). Leo outlines act like
+project files. For example, one Leo outline, leoPyRef.leo, contains \@file trees
+for all of Leo's core source files. Another Leo outline, leoPluginsRef.leo,
+creates the external files for all of Leo's plugins, and LeoDocs.leo contains
+all of Leo's documentation.
+
+===== Using sentinel lines, or not
+
+Leo stores the structure of \@file trees in external files themselves using
+comment lines called **sentinel lines**. Sentinel lines allow Leo to keep track
+of outlines structure, including clone relationships. Using \@file is **highly
+recommended** whenever possible. In particular, using \@file allows you to
+**share outline structure** with others merely by sharing external files.
+External files created from \@file nodes contain **all** essential data: The
+.leo file contains only the headline of the \@file node. All the data resides in
+the external files.
+
+However, in some situations it is not appropriate to use sentinel comments in
+external files. In that case you use \@auto and \@edit trees to connect Leo
+outlines to existing external files without creating sentinel files. Not all of
+Leo's features can be used with \@auto and \@edit trees, but that can't be
+helped. In particular, Leo can not preserve outline structure exactly. Leo's
+"degraded" operation for such trees is similar to that found in all other
+editors and IDE's.
+
+The rest of this slide show will discuss \@file trees and their capabilities. We
+will then discuss \@auto and \@edit.
+
+===== Using @file trees.
+
+To repeat, it's best to use \@file to create external files if at all possible.
+The next series of slides will show you how to create external files with \@file
+trees.
+
+To create a new external file, create an \@file node giving the path to the
+external file. This path can be a full, absolute path, but usually it is more
+convenient to use a relative path. All relative paths in @<file> nodes are
+relative to Leo's **load directory**, the directory containing the .leo file for
+the present outline. In most cases, we can ignore the path prefix entirely. For
+example::
+
+    @file myFile.py
+
+===== The top-level body text: section references & @others
+
+Here is the body text for a typical @file node that defines a single Python class::
+
+    << imports >>
+
+    class MyDemoClass:
+
+        @others
+
+Informally, it says that external file consists of import statements,
+followed by the class MyDemoClass.  We expect to see the following:
+
+- A child node whose headline << imports >>.
+
+- The methods of MyDemoClass in all the **other** child nodes.
+
+The next few slides will discuss this pattern line by line.
+
+===== << imports >>
+
+    The << imports >> line is a **section reference**.
+    "Imports" is the **section name**.
+    This line tells Leo to insert the **section definition**
+    into the output file at the place where section reference occurs.
+
+===== Section definitions
+
+    **Section definition nodes** create section definitions.
+    Section definition nodes contain a section name in the headline.
+    The body text contains the section definition.
+
+    Therefore, the definition of << imports >> are the lines::
+
+        import os
+        import sys
+
+    Each section definition node must be a descendant of the node
+    containing the section reference.
+
+===== @others definitions
+
+    The \@others directive is similar to a section reference;
+    \@others tells Leo to insert text into the output file.
+
+    However, instead of inserting the body text of one particular node,
+    as in a section reference, \@others tells Leo to insert the
+    body text of all node that **aren't** section definition nodes.
+    That's where the name comes from: it inserts all the **other** nodes.
+
+===== Simple expansion of @others.
+
+    Here we have added two children of the root node, named, as usual
+    in Python examples, spam and eggs.  The expansion of the \@others directive
+    will be the body text of those two nodes.  Each line of the expansion is
+    indented with the leading whitespace that occurs before the \@others directive.
+
+===== Indentation
+
+    Let us use the term **reference** to mean either a section reference or an
+    \@others directive. The **expansion** of a reference is the set of all lines
+    that Leo writes to the output file as the result of that reference.
+
+    The indentation of references is significant. Leo indents each line of the
+    expansion of a reference by the total amount of leading whitespace that is
+    in effect at the point of the reference. This allows Leo handle languages
+    like Python in which indentation is especially important.
+
+    In our example, there is no leading whitespace before the reference to
+    << imports >>, but there are four spaces before the \@others directives.
+    This means that Leo writes the import statements without additional indentation,
+    but Leo adds 4 spaces before all nodes written as the result of the @other directive.
+
+    **Important**: Indentation is controlled **only** by the indentation of
+    references. The outline level of nodes in expansions does not affect
+    indentation in any way.
+
+    This **decoupling** of outline structure from indentation is very important:
+    it allows you to create **organizer nodes** without affecting the external
+    file in any significant way (other than sentinel comments).
+
+===== Expansion
+
+    In our first example, the expansions of references are straightforward.
+    However, any node may contain one or more section references, and any node
+    may also contain a single \@others directive.
+
+    Every line of an expansion is written as the result of exactly one
+    reference.
+
+    A. The expansion of a section reference is just exactly the expansion of the
+       body of the section definition node. That expansion may include
+       expansions of *other* references appearing in that node.
+
+    B. The expansion of an @others directive is the expansion of all descendant
+       nodes that aren't section definition nodes and are not included in the
+       expansion of \@others nodes deeper in the tree. This means that no node
+       is ever included in the expansion of more than one \@other directive.
+       Non-section-definition nodes are included in the expansion of the nearest
+       \@others directive.
+
+    When writing an \@file tree, Leo ensures all of the following:
+
+    1. Each section must be defined. There must be a section reference in an
+        ancestor of each section defition node.
+
+    2. There must be no **orphan nodes**.  A section definition node is an
+       orphan if no ancestor node contains a reference to that node.
+       A non-definition node is an orphan if no ancestor node contains an
+       \@others directive.
+
+    Leo will issue an error if these checks are not satisifed.
+
+    In short, each node in an \@file tree, except the \@file node itself, must
+    be part of the expansion of exactly one reference. 
+
+    In practice, these rules are much easier to use than to describe!
+
+
+===== Multiple @others nodes: top-level node
+
+    ((
+    << imports >>
+    @others
+    ))
+
+    An example will clarify matters.  Here is a common pattern for a file that
+    defines two classes, SpamClass and EggsClass.  The top-level node includes imports,
+    and then uses \@others to include the expansion of the rest of the outline.
+
+===== Multiple @others nodes: SpamClass
+
+    ((
+    class SpamClass:
+        @others
+    ))
+
+    The first child node creates the expansion of SpamClass.
+    The line::
+
+        class SpamClass:
+
+    has no extra indentation, because the \@others in the top-level
+    node has no leading whitespace.
+
+    However, all the methods of the class will have 4 spaces of indentation
+    because the \@others directive in *this* node is indented by 4 spaces.
+
+===== Multiple @others nodes: EggsClass
+
+    ((
+    class EggsClass:
+        @others
+    ))
+
+    The second child node creates the expansion of EggsClass in a similar manner.
+    It's always perfectly clear what nodes are included in \@others directives.
+
+    Here, \@others refers to all descendant nodes of *this* node.
+
+===== Multiple @others nodes: @if 0:
+
+    ((
+    if 0:
+        @others
+    ))
+
+    You can use @others to "comment out" all descendant nodes as shown. This
+    works in Python because the indentation of the \@others directive cause the
+    expansion of all descendant nodes to have 4 extra spaces.
+
+===== Using @auto nodes.
+
+    When Leo reads an **@auto node**, Leo will automatically create an outline
+    that shows the class, functions or other units of the external file.
+
+    Leo can only do this if Leo has an **importer** for the external file. At
+    present, Leo has importers for C, elisp, HTML, .ini files, Java, Javascript,
+    Pascal, PHP, Python and xml. Leo determines the language using the file's
+    extension. If no parser exists for a language, Leo copies the entire body of
+    the external file into the \@auto node.
+
+===== Using @edit nodes
+
+    When Leo reads and **@edit node**, Leo reads the entire contents of the
+    external file into the body text of the \@edit node.
 .. @+node:ekr.20101014034526.5287: *4*   Topics
 sentinels
 
@@ -2041,802 +1816,125 @@ Leo contains **importers** for common
 languages. These importers split the external file
 into outline nodes.
 .. @+node:ekr.20101014110348.5293: *3* @slideshow Clones and views
-.. @+node:ekr.20101014034526.5296: *3* @slideshow Leo's minibuffer
-@ Discuss tab completion.
-.. @+node:ekr.20101010141953.5028: *3* @slideshow Leo's NSIS Installer
 @language rest
-.. @+node:ekr.20101010141953.5029: *4* @title_pattern = Leo's NSIS Installer: Slide %(slide_number)s
-.. @+node:ekr.20101010141953.5030: *4* @slide 001
-.. _`here`:     http://www.nullsoft.com/free/nsis/
-.. _`Winamp`:   http://www.winamp.com/
-
-Nullsoft, the makers of the `Winamp`_ MP3 software, have released a powerful free
-installer called NSIS, available `here`_. This application allows you to make
-installation packages for Windows applications.
-
-You create NSIS packages by writing a NSIS script and then compiling it.
-Depending on the application, NSIS can often be a better choice than more
-expensive installation generators, since NSIS installations are easy to create,
-are small and fast, and yet can be configured with many features.
-
-.. @+node:ekr.20101010141953.5031: *4* @slide 002
-When you install Leo, you'll find that it comes with a script for generating an
-installer for Leo. This script is called leo-<version>.nsi, and is distributed
-in the Leo file leo/dist/leoDist.leo.
-
-If you have NSIS installed, right-clicking on a .nsi file will give you the
-option of compiling the script to create a package.
-
-.. image:: slide-002.png
-
-.. @+node:ekr.20101010141953.5032: *5* @screenshot
-.. @+node:ekr.20101010141953.5033: *6* Take screenshot of the compile .nsi dialog in a Windows folder
-.. @+node:ekr.20101010141953.5034: *5* @pause
-.. @+node:ekr.20101010141953.5038: *5* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.png
-.. @+node:ekr.20101010141953.5039: *5* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/screenshot-002.svg
-.. @+node:ekr.20101010141953.5040: *5* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leos-nsis-installer/slide-002.png
-.. @+node:ekr.20101011071655.4918: *5* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leos-nsis-installer\_build\html\slide-002.html
-.. @+node:ekr.20101011092154.4923: *4* @slide 003
-Since the NSIS script for the Leo installation is included in the Leo
-distribution in the nsis.leo file, it is easy to understand the how the script
-works. This .nsi file creates an installer that packages all of the Leo program
-files, and creates a desktop shortcut, a Program Menu item, and the file
-association for .leo files.
-.. @+node:ekr.20101011092154.4924: *4* @slide 004
-In this screenshot we're looking at the code that checks to see whether Python
-has been installed.
-
-Since Leo is a Python application, modifying this installation script to create
-a script to build a Windows installer for your own Python application is
-relatively simple. You would leave this section alone, and check other sections
-for the program name "Leo", and change these to your program name.
-.. @+node:ekr.20101011092154.4925: *4* @slide 005
-.. @+node:ekr.20101011165412.5154: *4* @@button make leo.nsi
-@language python
-
-# **Important**
-#   Before running this script you must create bzr-manifest as follows::
-#       cd to trunk
-#       bzr ls -R >bzr-manifest.txt
-
-'''Create the installer script using bzr-manifest.txt.'''
-
-import os,string,sys
-<< define version >>
-<< define inLeo >>
-
-if inLeo:
-    # The root directory contains the leo directory.
-    rootDir  = g.os_path_finalize_join(g.app.loadDir,'..','..')
-    manifest = g.os_path_finalize_join(rootDir,'bzr-manifest.txt')
-else:
-    rootDir = os.path.abspath(os.curdir)
-    manifest = os.path.normpath(os.path.join(rootDir,'bzr-manifest.txt'))
-
-<< define application constants >>
-@others
-
-nsi = nsiWriter()
-nsi.run(manifest)
-.. @+node:ekr.20101011165412.5155: *5* << define version >>
-# Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.8-d1'
-.. @+node:ekr.20101011165412.5156: *5* << define inLeo >>
-try:
-    inLeo = g is not None
-except AttributeError:
-    inLeo = False
-
-# print('inLeo',inLeo)
-.. @+node:ekr.20101011165412.5157: *5* << define application constants >>
-app_doc_icon = r'Icons\LeoDoc.ico'
-app_extension = '.leo'
-app_hkey_local_machine = r'SOFTWARE\EKR\leo'
-app_icon = r"%s\leo\Icons\leo_inst.ico" % rootDir
-app_icon2 = r'leo\Icons\LeoApp.ico' # Relative to install dir.
-app_license = r'%s\License.txt' % rootDir
-app_lower_case_name = 'leo'
-app_name = 'Leo'
-app_publisher = 'Edward K. Ream'
-app_python_executable = 'launchLeo.py'
-app_uninst_key = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
-app_uninst_root_key = 'HKLM'
-app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
-
-nsi_name = 'leo-%s.nsi' % app_version
-target_file = 'LeoSetup-%s.exe' % app_version
-
-substitutionDict = {
-    'doc_icon': app_doc_icon,
-    'ext': app_extension,
-    'exe': app_python_executable,
-    'hkey_local_machine': app_hkey_local_machine,
-    'icon': app_icon,
-    'icon2': app_icon2,
-    'license': app_license,
-    'lower_name': app_lower_case_name,
-    'name': app_name,
-    'nsi_name': nsi_name,
-    'publisher': app_publisher,
-
-    'site': app_web_site,
-    'target_file': target_file,
-    'uninst_key': app_uninst_key,
-    'uninst_root_key': app_uninst_root_key,
-    'version': app_version,
-    # Leave these unchanged.
-    'DESKTOP': '$DESKTOP',
-    'INSTDIR': '$INSTDIR',
-    'NSISDIR': '${NSISDIR}',
-    'PROGRAMFILES': '$PROGRAMFILES',
-    'PythonExecutable': '$PythonExecutable',
-    'SMPROGRAMS': '$SMPROGRAMS'
-}
-.. @+node:ekr.20101011165412.5158: *5* class nsiWriter
-class nsiWriter:
-
-    '''A class to write .nsi scripts.'''
-
-    @others
-.. @+node:ekr.20101011165412.5159: *6* genScript & helpers
-def genScript (self,dirs,dirDict,filesDict):
-
-    '''Generate the .nsi installer script.'''
-
-    self.f = f = self.openNsi()
-    if not f: return
-
-    try:
-        self.genHead()
-        self.genInstallData(dirs,dirDict,filesDict)
-        self.genMiddle()
-        self.genUninstallData(dirs,dirDict,filesDict)
-    finally:
-        f.close()
-
-    g.es_print('make-leo-nsi done. no errors')
-.. @+node:ekr.20101011165412.5160: *7* genHead
-def genHead (self):
-
-    '''Generate the boilerplate appearing before
-    the manifest-specific install data.'''
-
-    self.put('!include MUI2.nsh\n')
-    self.putSettings()
-    self.putOnInit()
-.. @+node:ekr.20101011165412.5161: *8* putSettings
-def putSettings (self):
-
-    s = r'''
-; Location of Pythonw.exe. Set by .onInit.
-var PythonExecutable
-
-SetCompressor bzip2
-Caption "${name} Installer"
-AutoCloseWindow false 
-SilentInstall normal
-CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
-SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
-SetDatablockOptimize on
-; SetOverwrite ifnewer
-WindowIcon off
-OutFile "${target_file}"
-LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-; Default location.  May be changed in .onInit.
-InstallDir "${PROGRAMFILES}\${name}-${version}"
-Icon "${icon}"
-DirText "Setup will install ${name}-${version} in the following folder. $$\n\
-To install in a different folder, click Browse and select another folder."
-LicenseText "You must accept the agreement to install ${name}-${version}."
-LicenseData "${license}"
-ShowInstDetails show
-ShowUnInstDetails show
-
-'''
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5162: *8* putOnInit
-def putOnInit (self):
-
-    s = r'''
-
-; Set PythonExecutable to full path to Pythonw.exe.
-Function .onInit
-    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
-    StrCmp $9 "" tryPython31 ok
-
-tryPython31:
-    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.1\InstallPath" ""
-    StrCmp $9 "" oops ok
-
-oops:
-    MessageBox MB_OK "Python not found: using c:\python26"
-    ; Guess where Python 26 is.
-    StrCpy $PythonExecutable "c:\Python26\pythonw.exe"
-    ; Fallback installation directory is "Program Files"
-    Goto done
-ok:
-    MessageBox MB_OK "Found Python at $9"
-    StrCpy $PythonExecutable "$9\pythonw.exe"
-    ; Normal installation directory 
-    StrCpy $INSTDIR "$9\Lib\site-packages\${name}-${version}"
-done:
-
-; End .onInit
-FunctionEnd
-'''
-    s = s.replace('${name}',app_name).replace('${version}',app_version)
-    self.put(s,substitute=False)
-.. @+node:ekr.20101011165412.5163: *7* genInstallData & helpers
-def genInstallData(self,dirs,dirDict,filesDict):
-
-    '''Generate the manifest-specific install data.'''
-
-    self.put('\nSection "%s" SEC01\n\n' % (app_name))
-
-    self.put(self.getInstallVariableData(
-        dirs,dirDict,filesDict),adjust=False)
-
-    self.put('\n; end %s section\n' % (app_name))
-    self.put('SectionEnd\n')
-.. @+node:ekr.20101011165412.5164: *8* getInstallVariableData
-def getInstallVariableData (self,dirs,dirDict,filesDict):
-
-    global rootDir
-    result = []
-
-    # Top level
-    theDir = '**top'
-    result.append('; top-level\n')
-    result.append('SetOutPath "$INSTDIR"\n')
-    result.append('SetOverwrite ifnewer\n')
-    aList = dirDict.get(theDir,[])
-    for fn in aList:
-        result.append('File "%s"\n' % fn)
-
-    for theDir in dirs:
-        if theDir != '**top':
-            aList = dirDict.get(theDir,[])
-            if aList:
-                theDir2 = theDir.replace('/','\\').rstrip('\\')
-                result.append('\n')
-                result.append('SetOutPath $INSTDIR\\%s\n' % theDir2)
-                for fn in aList:
-                    # Fix bug 425369: quote file names.
-                    result.append('File "%s\\%s\\%s"\n' % (
-                        rootDir,theDir2,fn))
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-.. @+node:ekr.20101011165412.5165: *7* genMiddle
-def genMiddle (self):
-
-    '''Generate the boilerplate appearing between
-    the manifest-specific install data and
-    the manifest-specific uninstall data.'''
-
-    self.genMenuShortcuts()
-    self.genDesktopShortcuts()
-    self.genFileAssociation()
-    self.genAdditionalIcons()
-    self.genPost()
-    self.genUninstallSettings()
-    self.genMiddleFunctions()
-.. @+node:ekr.20101011165412.5166: *8* genAdditionalIcons
-def genAdditionalIcons(self):
-
-    s = r'''
-Section -AdditionalIcons
-  SetOutPath $INSTDIR
-  CreateDirectory "${SMPROGRAMS}\${name}"
-  CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5167: *8* genDesktopShortcuts
-def genDesktopShortcuts(self):
-
-    s = r'''
-Section "Desktop Shortcut" SEC03
-  CreateShortCut "${DESKTOP}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\${exe}"' "$INSTDIR\${icon2}" 0
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5168: *8* genFileAssociation
-def genFileAssociation(self):
-
-    s = r'''
-Section "${ext} File Association"
-  SectionIn 1
-  SectionIn 2
-  SectionIn 3
-
-  # back up old value of extension in case some other program was using it
-  ReadRegStr $$1 HKCR "${ext}" ""
-  StrCmp $$1 "" Label1
-  StrCmp $$1 "${name}File" Label1
-  WriteRegStr HKCR "${ext}" "backup_val" $$1
-
-Label1:
-  WriteRegStr HKCR "${ext}" "" "${name}File"
-  WriteRegStr HKCR "${name}File" "" "${name} File"
-  WriteRegStr HKCR "${name}File\shell" "" "open"
-  WriteRegStr HKCR "${name}File\DefaultIcon" "" ${INSTDIR}\${doc_icon}
-  WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "${INSTDIR}\${exe}" "%1"'
-
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5169: *8* genMenuShortcuts
-def genMenuShortcuts (self):
-
-    s = r'''
-; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
-; that means that this installer will make the app available for the current user only.
-; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
-; security concerns are such that it would be best to not run the app with the Administrator privileges
-; of the account used to install the software.
-;
-; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
-;
-; Question is -- do we want the app always available for any log-in on this computer?
-;
-; My guesses:
-; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
-; if run by a user who lacks Admin privileges on Windows NT and its descendants
-;
-; How will Windows XP Home deal with that? 
-
-Section "Start Menu Shortcuts" SEC02
-    CreateDirectory "${SMPROGRAMS}\${name}"
-    CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "${INSTDIR}\uninst.exe" "" "${INSTDIR}\uninst.exe" 0
-    CreateShortCut "${SMPROGRAMS}\${name}\${name}.lnk" '"${PythonExecutable}"' '"${INSTDIR}\${exe}"' "${INSTDIR}\${icon2}" 0
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5170: *8* genMiddleFunctions
-def genMiddleFunctions (self):
-
-    s = r'''
-Function un.onUninstSuccess
-  HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "${name}-${version} was successfully removed from your computer."
-FunctionEnd
-
-Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \
-  "Are you sure you want to completely remove ${name}-${version} and all of its components?" IDYES +2
-  Abort
-FunctionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5171: *8* genPost
-def genPost (self):
-
-    s = r'''
-Section -Post
-  WriteRegStr HKEY_LOCAL_MACHINE "${hkey_local_machine}" "" "$INSTDIR"
-  WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
-  WriteRegStr ${uninst_root_key} "${uninst_key}" "UninstallString" "${INSTDIR}\uninst.exe"
-  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayVersion" "${version}"
-  WriteRegStr ${uninst_root_key} "${uninst_key}" "URLInfoAbout" "${site}"
-  WriteRegStr ${uninst_root_key} "${uninst_key}" "Publisher" "${publisher}"
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5172: *8* genUninstallSettings
-def genUninstallSettings(self):
-
-    path = g.os_path_finalize_join(
-        g.app.loadDir,'..','Icons','uninst.ico')
-
-    s = r'''
-UninstallCaption "Uninstall ${name}"
-UninstallIcon "${path}"
-'''
-
-    s = s.replace('${path}',path)
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5173: *7* genUninstallData & helpers
-def genUninstallData(self,dirs,dirDict,filesDict):
-
-    '''Generate the manifest-specific uninstall data.'''
-
-    s = r'''
-Section Uninstall
-
-    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
-
-    ; Delete files & directories only if we own them!
-    ReadRegStr $$1 HKCR "${ext}" ""
-    StrCmp $$1 "${name}File" 0 FinishUninstall
-
-    ; Delete files & directories only if there is no backup_val key.
-    ReadRegStr $$1 HKCR "${ext}" "backup_val"
-    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
-      DeleteRegKey HKCR "${ext}"
-    Goto FinishUninstall
-
-DeleteLeoKeysAndFiles:
-    WriteRegStr HKCR "${ext}" "" $$1
-    DeleteRegValue HKCR "${ext}" "backup_val"
-
-    ; ---- Start of manifest-related data...
-'''
-
-    self.put(s,substitute=True)
-
-    # Does all the hard work.
-    self.put(
-        self.getUninstallVariableData(dirs,dirDict,filesDict),
-        adjust = False)
-
-    s = r'''
-    ; ---- End of manifest related data.
-
-FinishUninstall:
-    ; MessageBox MB_YESNO|MB_ICONQUESTION \
-    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
-; NoDelete:
-
-  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
-  RMDir "${SMPROGRAMS}\${name}-${version}"
-  Delete "${DESKTOP}\${name}.lnk"
-
-  DeleteRegKey ${uninst_root_key} "${uninst_key}"
-  SetAutoClose false
-
-; end Uninstall section
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-.. @+node:ekr.20101011165412.5174: *8* getDeleteDirectories
-def getDeleteDirectories (self,dirs,dirDict):
-
-    reverseDirs = dirs[:]
-    reverseDirs.reverse()
-
-    result = []
-    result.append('; Uninstall directories in reverse order\n')
-    for theDir in reverseDirs:
-        # Delete the directory even if it has no files.
-        if theDir and theDir != '**top':
-            if not theDir.startswith('.bzr'):
-                result.append('RMDir "$INSTDIR\\%s"\n' % (
-                    theDir.replace('/','\\')))
-
-    # top-level folder.
-    result.append('RMDir "$INSTDIR"\n')
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-.. @+node:ekr.20101011165412.5175: *8* getDeleteFiles
-def getDeleteFiles (self,dirs,dirDict,filesDict):
-
-    wildcard_delete = True
-    result = []
-    result.append('; Uninstall files...\n\n')
-
-    # top-level files.
-    result.append('; Delete top-level files...\n')
-    aList = dirDict.get('**top',[])
-    # special case.
-    aList.append('uninst.exe')
-    # Warning: **never** delete all files in the top-level directory.
-    for fn in aList:
-        result.append('Delete "$INSTDIR\\%s"\n' % fn)
-    if wildcard_delete:
-        result.append('\n')
-
-    for theDir in dirs:
-        if theDir:
-            dir2 = theDir.replace('/','\\')
-            if wildcard_delete:
-                result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
-            else:
-                aList = dirDict.get(theDir,[])
-                if aList:
-                    result.append('\n')
-                    result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                    result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-                for fn in aList:
-                    result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                        dir2,fn))
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-.. @+node:ekr.20101011165412.5176: *8* getUninstallVariableData
-def getUninstallVariableData(self,dirs,dirDict,filesDict):
-
-    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
-    s2 = self.getDeleteDirectories(dirs,dirDict)
-    return '%s\n%s' % (s1,s2)
-.. @+node:ekr.20101011165412.5177: *7* indent
-def indent(self,s):
-
-    if s.strip():
-        return '    ' + s
-    else:
-        return s
-.. @+node:ekr.20101011165412.5178: *7* openNsi
-def openNsi (self):
-
-    path = g.os_path_finalize_join(
-        g.app.loadDir,'..','..',nsi_name)
-
-    try:
-        f = open(path,'w')
-    except IOError:
-        f = None
-        g.es_print('Can not open',path,color='red')
-
-    return f
-.. @+node:ekr.20101011165412.5179: *7* put
-def put (self,s,adjust=True,substitute=False):
-
-    '''Output s to the nsi file, optionally making
-    the substitutions given in substitutionDict.'''
-
-    trace = False
-    if adjust:
-        s = self.adjustTripleString(s)
-
-    if substitute:
-        if 0:
-            n = 1
-            for z in g.splitLines(s):
-                print('%3s %s' % (n,z.rstrip()))
-                n += 1
-        s = string.Template(s)
-        s = s.substitute(substitutionDict)
-
-    if trace: g.trace(s,g.callers(4))
-    self.f.write(s)
-.. @+node:ekr.20101011165412.5180: *6* run & helpers
-def run (self,fn):
-
-    '''The top-level logic.'''
-
-    # Create and filter the list of files from the manifest.
-    s = open(fn).read()
-    lines = g.splitLines(s)
-    files = self.filterLines(lines)
-
-    # Compute the list of all the directories.
-    dirs = self.directoryList(rootDir)
-
-    # Compute dictionaries of directories and files.
-    dirDict,filesDict = self.makeDicts(dirs,files)
-
-    # Print manifest lines not in either dict.
-    # This is a crucial check.
-    errors = self.printMissing(files,dirDict,filesDict)
-    if errors: return
-
-    # Generate the script!
-    self.genScript(dirs,dirDict,filesDict)
-.. @+node:ekr.20101011165412.5181: *7* directoryList
-def directoryList (self,rootDir):
-
-    '''Compute a top-down list of all directories.
-       These directories start at the top-level directory.'''
-
-    trace = False
-    ignoreDirs = ('.bzr',)
-    # Important: this adds all directories on EKR's machine,
-    # regardless of whether they appear in the manifest!
-    result = [] ; n = len(rootDir)
-    for z in os.walk(rootDir): # top-down traversal.
-        dirpath, dirnames, filenames = z
-        assert dirpath.startswith(rootDir),z
-        if len(dirpath) > n:
-            path = dirpath[n+1:].replace('\\','/')
-            result.append(path)
-    for z2 in ignoreDirs:
-        result = [ z for z in result if not z.startswith(z2)]
-    if trace:
-        g.trace('-' * 40)
-        g.trace(g.listToString(result))
-    return result
-.. @+node:ekr.20101011165412.5182: *7* filterLines & helpers
-def filterLines (self,lines):
-
-    '''Filter lines from the input manifest file.'''
-
-    trace = False
-
-    # Remove blank lines, comments, and .pyc and .pyo files.
-    lines = self.deleteBlankLines(lines)
-    lines = self.deleteComments(lines)
-    lines = self.deleteExt(lines,'.pyc')
-    lines = self.deleteExt(lines,'.pyo')
-    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
-    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
-
-    # Remove specific files.
-    deleteList = (
-        '.bzrignore',
-        'bzr-manifest.txt',
-        'bzr-small-manifest.txt',
-        'setup.py',
-        'leo/test/unittest/.leo_shadow/',
-        'nsi.log.txt', # Can't write log while we are creating it.
-        'leo/core/leoPy.leo',
-        'leo/core/ekrLeoPy.leo',
-    )
-    lines = self.deleteFiles(lines,deleteList)
-    if lines and lines[0].endswith('bzr ls -R'):
-        lines = lines[1:]
-
-    if trace:
-        g.trace('=' * 40)
-        g.trace(g.listToString(lines))
-
-    return lines
-.. @+node:ekr.20101011165412.5183: *8* delete...
-def deleteBlankLines (self,lines):
-
-    return [z.strip() for z in lines if z.strip()]
-
-def deleteComments (self,lines):
-
-    return [z for z in lines if not z.startswith('#')]
-
-def deleteExt (self,lines,ext):
-
-    return [z for z in lines if not z.endswith(ext)]
-
-def deleteFiles (self,lines,deleteList):
-
-    return [z for z in lines if not z in deleteList]
-.. @+node:ekr.20101011165412.5184: *7* makeDicts
-def makeDicts (self,dirs,lines):
-
-    trace = False ; verbose = False
-
-    # Create the dirDict.
-    # Keys are directories.
-    # Values are files contained in each directory.
-    dirDict = {}
-    dirDict['**top'] = [] # Create an entry for the root directory.
-    for z in dirs:
-        dirDict[z] = []
-
-    # Assign files to dirDict.
-    for line in lines:
-        line = line.strip().replace('\\','/')
-        if line in dirDict.keys():
-            path,fn = None,None
-        elif line.startswith('leo/'):
-            path,fn = g.os_path_split(line)
-        else:
-            path,fn = '**top',line.strip()
-
-        # Don't include top-level leo directory,
-        # Do include leo/scripts/leo file.
-        if fn and (path != '**top**' or fn != 'leo'):
-            aList = dirDict.get(path,[])
-            assert line not in aList,repr(line)
-            aList.append(fn)
-            dirDict[path]=aList
-
-    for theDir in sorted(dirDict):
-        aList = dirDict.get(theDir)
-        if aList and trace:
-            if verbose:
-                print() ; print(theDir)
-                print(g.listToString(aList))
-            else:
-                print(theDir)
-
-    # Create the inverse dict.
-    filesDict = {}
-    for theDir in sorted(dirDict):
-        aList = dirDict.get(theDir)
-        for fn in aList:
-            path = g.choose(theDir=='**top',
-                fn,'%s/%s' % (theDir,fn))
-            filesDict[path] = theDir
-
-    return dirDict,filesDict
-.. @+node:ekr.20101011165412.5185: *7* printMissing
-def printMissing (self,files,dirDict,filesDict):
-
-    errors = 0
-
-    for fn in files:
-        fn = fn.rstrip('/')
-        if fn and fn not in dirDict and fn not in filesDict:
-            g.es_print('missing',fn,color='red')
-            errors += 1
-
-    if errors:
-        g.es_print('%s errors' % (errors),color='red')
-
-    return errors
-.. @+node:ekr.20101011165412.5186: *6* whitespace
-# These are adapted from the corresponding functions in leoPy.leo
-# They are defined here to make this script independent of Leo
-.. @+node:ekr.20101011165412.5187: *7* adjustTripleString
-def adjustTripleString (self,s):
-
-    '''Remove leading indentation from a triple-quoted string.'''
-
-    # Compute the minimum leading whitespace of all non-blank lines.
-    lines = self.splitLines(s)
-    w = 0 ; val = -1
-    for line in lines:
-        if line.strip():
-            lws = self.get_leading_ws(line)
-            w2 = self.computeWidth(lws)
-            # The sign of w does not matter.
-            if w == 0 or abs(w2) < w:
-                w = abs(w2)
-
-    if w == 0: return s
-
-    # Remove the leading whitespace.
-    result = [self.removeLeadingWhitespace(line,w) for line in lines]
-    result = ''.join(result)
-    return result
-.. @+node:ekr.20101011165412.5188: *7* get_leading_ws
-def get_leading_ws(self,s):
-
-    """Returns the leading whitespace of 's'."""
-
-    i = 0 ; n = len(s)
-    while i < n and s[i] in (' ','\t'):
-        i += 1
-    return s[0:i]
-.. @+node:ekr.20101011165412.5189: *7* computeWidth
-def computeWidth (self,s):
-
-    '''Return the width of s, assuming s starts a line.'''
-
-    tabwidth = 4
-    w = 0
-    for ch in s:
-        if ch == '\t':
-            w += tab_width - (w % tab_width)
-        else:
-            w += 1
-    return w
-.. @+node:ekr.20101011165412.5190: *7* removeLeadingWhitespace
-def removeLeadingWhitespace (self,s,first_ws):
-
-    '''Remove whitespace up to first_ws wide in s.'''
-
-    j = 0 ; ws = 0
-    tabwidth = 4
-    first_ws = abs(first_ws)
-    for ch in s:
-        if ws >= first_ws:
-            break
-        elif ch == ' ':
-            j += 1 ; ws += 1
-        elif ch == '\t':
-            j += 1 ; ws += tab_width - (ws % tab_width)
-        else: break
-    if j > 0:
-        s = s[j:]
-    return s
-.. @+node:ekr.20101011165412.5191: *7* splitLines
-def splitLines (self,s):
-
-    '''Split s into lines, preserving the number of lines and the ending of the last line.'''
-
-    return s and s.splitlines(True) or []
+@pagewidth 60
+
+Clones focus attention.
+
+===== Intro
+
+    Clones are one of Leo's most unusual and most useful features.
+
+    A **clone** is a node that appears in more than one place in a Leo outline.
+
+====== Create clone of A
+
+    Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
+
+    Clones are marked with a small red *clone arrow** in the icon box.
+    Deleting the penultimate clone removes the red arrow from the node.
+
+====== Clones are identical
+
+    Changing the headline or body text of a clone changes the headline or body
+    text of all other clones of that node. Furthermore, changing any descendants
+    of a clone, including inserting, deleting or moving nodes, results in the
+    same changes being made to all other clones.
+
+    In fact, all clones of a node are actually *the exactly the same node*, so
+    any change to one clone inevitably affects all other clones.
+
+===== Changing the headline of a clone.
+
+    Here, I am beginning to change the headline of Node A.
+    The headline doesn't actually change until we hit return,
+    so the headline of these clone of A hasn't changed yet.
+
+===== Change complete.
+
+    After typing <return> the headlines of both nodes changes.
+
+===== Node b.
+
+    Here we have created a node B following the first clone of B.
+
+===== Move B right
+
+    Moving B right makes B a child of node A.
+    As you can see, B appears as a child of both cloned nodes.
+
+    Even the expansion state of cloned nodes are identical:
+    both clones are now expanded.
+
+===== Create another child (newheadline)
+
+    Here, I have created a new node with Ctrl-I (insert-node).
+
+    The node appears in the same place in both nodes.
+
+===== Auto update
+
+    Changing a node marks all clones of that node as changed. When I save the
+    Leo outline, Leo automatically writes all the external files that contain
+    dirty nodes.
+
+===== Clones create views
+
+    Clones are important because they allow you to create as many views of the
+    data in the outline as you like. In effect, Leo becomes a supremely flexible
+    filing cabinet. Any ordinary node can act like a folder in the filing
+    cabinet. Using clones, you can "file" a node in as many folders as you like.
+
+    In Leo, a **view** is simply a subset of the nodes of the outline. We
+    represent a view as **ordinary** node, called a **view node**, whose nodes
+    can contain both regular nodes and clones. The children of the view node are
+    the subset of nodes that define the view. It's that simple.
+
+    With Leo, you can have as many view nodes as you like. There is no such
+    thing as a single, "correct" view of data. 
+
+
+===== Using view nodes
+
+    I use view nodes to focus attention on a set of disparate nodes.
+
+    For example, when I fix a bug in Leo, I create a **bug node** containing
+    all the data in Leo's source code that relates to the bug. As I discover
+    code related to the bug, I clone nodes and move them under the bug node.
+    I'll also add ordinary nodes as children of the bug node. These nodes
+    contain the original bug report, descriptions of how I fixed the bug, test
+    data, or any other notes I might want to keep.
+
+    Once I have created the bug node, I concentrate *only* on that node and its
+    children. I can examine the bug node and its children without having to jump
+    around the outline. Everything I need is in one place. This extremely narrow
+    focus makes it *much* easier to fix bugs. to jump around the outline. It
+    doesn't matter how big or complex the outline is: I am only dealing with the
+    bug node and its children.
+
+    **Important**: I can fix the bug by changing the clones in the view node.
+    When I save the Leo file, Leo will save all the @<file> nodes that contain any
+    changed clone.  Everything "just works".
+.. @+node:ekr.20101014034526.5296: *3* @slideshow Leo's minibuffer
+@language rest
+@pagewidth 60
+
+>> You can use the print-commands command.
+
+> How can I run this command? Do I use the minibuffer?
+
+Yes. Type <alt-x> to put the cursor in the minibuffer. Then use tab
+completion to avoid having to do much typing. Something like this:
+
+Type "pr<tab>". This will show open the completion pane. The pane shows you all
+the commands that start with pr. There are too many, so type i<tab>. Now you
+will see "print-" in the minibuffer and only commands that start with "print-"
+in the completion tab. Now just type "c<tab>" and you will see the full
+print-commands command in the minibuffer. Finally, type <return> to execute the
+command.
+
+*Important*: you can use <backspace> in the minibuffer to show more alternatives,
+and you can hit <ctrl-g> at any time in Leo to put focus in the body pane.
 .. @+node:ekr.20100821182153.4345: ** @slideshow Installation
 @language rest
 .. @+node:ekr.20101014034526.5299: *3* @slide ((using Leo's installer
@@ -3357,5 +2455,214 @@ effectively and enjoyably.
 .. @+node:ekr.20101018061243.5395: *4* @no-screenshot
 .. @+node:ekr.20101113211531.4942: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html
+.. @+node:ekr.20101011165412.4968: ** @slideshow Scripting Leo
+@language rest
+@pagewidth 50
+
+.. This slideshow will have no screenshots.
+
+.. @+node:ekr.20101119112650.5363: *3* @slide Introduction
+For me, scripting is the most fun part of Leo.
+
+Leo can execute any body text as a **Leo script**,
+Python scripts that have full access to all data
+in any open Leo outline, as well as full access to
+all parts of Leo's source code.
+
+Leo's Ctrl-B (execute-script) command runs the
+body text of a node as a Leo script.
+.. @+node:ekr.20101121021109.5367: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
+.. @+node:ekr.20101119112650.5368: *3* @slide c, g and p
+.. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
+.. _`Leo's Users Guide`: http://webpages.charter.net/edreamleo/leo_toc.html
+
+Leo scripts execute in an environment containing
+three predefined objects: c, g and p.
+
+**g** is Leo's leoGlobals module. This module
+contains several dozen utility functions and
+classes.
+
+**c** is the **commander** of the outline
+containing the script. Commanders defined
+all of Leo's commands, as well as other data.
+
+**p** is the **position** of the presently
+selected node. Positions represent positions
+in the traversal of Leo outlines.
+
+This slide give a few examples of how to use
+c, g and p in Leo scripts. For full details
+about scripting in Leo, see the `Scripting Chapter`_
+in `Leo's Users Guide`_.
+.. @+node:ekr.20101121032151.5365: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-002.html
+.. @+node:ekr.20101119112650.5369: *3* @slide Official ivars
+The c, g and p objects give Leo scripts access to
+all parts of Leo and Leo outlines. There are many
+**official ivars** (instance variables) that
+scripts may use. Here are a few:
+
+**c.frame** is the frame representing the actual
+parts of Leo screen. For any frame, **frame.c** is
+the frame's commander, so c.frame.c is always c.
+
+**g.app** is the **application object**
+representing the entire Leo application. The ivars
+of g.app represent Leo's global variables.
+
+**p.v** is the **vnode** at position p. A vnode
+represents an outline node. Vnodes hold most of
+the data in Leo outlines. For any vnode v, v.h is
+the node's headline, and v.b is the node's body
+text. As a convenience, for any position p, p.h
+and p.b are synonyms for p.v.h and p.v.b.
+**Important**: because of clones, a vnode may
+appear in several positions in a traversal.
+.. @+node:ekr.20101121032151.5366: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-003.html
+.. @+node:ekr.20101119112650.5374: *3* @slide Hello world
+g.es is a function that prints its arguments to Leo's log pane.
+
+Here is the hello world program as a Leo script::
+
+    g.es('Hello world!')
+
+Leo scripts may also use Python's print command
+provided that Leo is running in a console.
+.. @+node:ekr.20101121032151.5367: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-004.html
+.. @+node:ekr.20101119112650.5371: *3* @slide p.h and p.b
+.. _`Python properties`: http://docs.python.org/library/functions.html
+
+Given any position p, **p.h** is the headline text
+of p.v, and **p.b** is the body text of p.v.
+
+p.h and p.b are `Python properties`_, which means
+you can set the headline and body text by
+assigning to them::
+
+    p.h = p.h + ' more'
+
+In order to see the result of changing a headline,
+Leo scripts must redraw the outline pane, like this::
+
+    c.redraw()
+.. @+node:ekr.20101121032151.5374: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-005.html
+.. @+node:ekr.20101119112650.5375: *3* @slide Iterators
+.. _`Python iterator`: http://docs.python.org/library/stdtypes.html#iterator-types
+
+Commanders and positions define `Python
+iterators`_ that return lists of positions in Leo
+outlines. These iterators are the easiest way of
+gaining access to the nodes of Leo outlines. Here
+are few examples (there are many more):
+
+- **c.all_positions()** returns all the positions
+  of the outline in order. Cloned nodes will
+  appear several times in this list.
+
+- **c.all_unique_nodes()** returns all the vnodes
+  of the outline.
+
+- **p.self_and_subtree()** returns p and all its
+  descendant positions.
+
+- **p.children()** returns all the positions of
+  all p's direct children.
+.. @+node:ekr.20101121021109.5381: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-006.html
+.. @+node:ekr.20101121021109.5351: *3* @slide Using iterators
+Using iterators, it is easy to gain access to all
+the data in a Leo outine. For example, the
+following script prints all headlines in an
+outline, indented to show outline level::
+
+    for p in c.all_positions():
+        g.es(' '*p.level(),p.h)
+
+The output of this script, when run from LeoDocs.leo,
+will look something like this::
+
+    Startup
+     @file doc-startup.txt
+      @chapters
+      Buttons
+       Disabled buttons
+       ... and hundreds of other nodes.
+
+**Note**: p.level() is a method of the positioin
+class that returns the outline level of the node
+at position p: 0 for top-level nodes, 1 for their
+children, and so on.
+.. @+node:ekr.20101121032151.5369: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
+.. @+node:ekr.20101119112650.5370: *3* @slide Building scripts from outlines
+Leo scripts can be composed of more than one node,
+just as external files are organized. The Execute
+Script command **preprocesses** the script before
+executing it, by expanding section references and
+\@others directives
+
+For example, I organize my complex script as follows.
+I create a top-level node containing just::
+
+    '''docstring'''
+    @others
+    controller(c).run()
+
+A child node will contain the following::
+
+    class controller:
+        def __init__(self,c):
+            self.c = c
+        @others
+
+And the children of the top-level class node will
+contain all the methods of the controller class.
+This organization is simple, flexible and powerful.
+.. @+node:ekr.20101121032151.5370: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-008.html
+.. @+node:ekr.20101119112650.5376: *3* @slide g.openWithFileName
+The c and g constants give you access to all of
+Leo's source code. Here, we'll discuss just two of
+them. There are hundreds more you can use.
+
+**g.openWithFileName** opens a .leo file.  For example::
+
+    ok, frame = g.openWithFileName(fileName,c)
+    new_c = frame.c
+
+The return frame value represents the frame of the visual
+outline.  frame.c is the frame's commander, so new_c is
+the commander of the newly-created outline.
+
+.. @+node:ekr.20101119112650.5381: *4* @no-screenshot
+.. @+node:ekr.20101121032151.5371: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-009.html
+.. @+node:ekr.20101119112650.5377: *3* @slide g.pdb
+..`Python debugger`: http://docs.python.org/library/pdb.html
+..`Pudb debugger`: http://pypi.python.org/pypi/pudb
+
+**g.pdb** opens pdb, the `Python debugger`_.  To use this,
+you must be running Leo from a console.
+
+The pudb plugin changes g.pdb so that it uses the
+full-screen `Pudb debugger`_ instead of pdb.
+.. @+node:ekr.20101119112650.5379: *4* @no-screenshot
+.. @+node:ekr.20101121032151.5372: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
+.. @+node:ekr.20101121021109.5352: *3* @slide Further reading
+.. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
+.. _`Leo's Users Guide`: http://webpages.charter.net/edreamleo/leo_toc.html
+
+This concludes our brief introduction to scripting in Leo.
+
+For full details about scripting in Leo, see the
+`Scripting Chapter`_ in `Leo's Users Guide`_.
+.. @+node:ekr.20101121032151.5373: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-011.html
 .. @-all
 .. @-leo
