@@ -32,7 +32,7 @@
 </v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
 <v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
@@ -54,12 +54,12 @@
 <v t="ekr.20100805165051.7150"><vh>@file testimonials.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20101025080245.5795" a="E"><vh>Basics</vh>
+<v t="ekr.20101025080245.5795"><vh>Basics</vh>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20100805165051.7151"><vh>@file FAQ.txt</vh></v>
 </v>
-<v t="ekr.20101007100904.4372" a="E"><vh>Slideshows page</vh>
-<v t="ekr.20100821182153.4344" a="E"><vh>@file screen-shots.txt</vh></v>
+<v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
+<v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
 </v>
 <v t="ekr.20100731112744.7267"><vh>Installing Leo</vh>
 <v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005805000000302e302e3671017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@file installing.txt</vh></v>
@@ -152,17 +152,17 @@
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
-<v t="ekr.20101113120258.4929"><vh>To do</vh>
+<v t="ekr.20101113120258.4929"><vh>To do (before 4.8 final)</vh>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20100821182153.4341" a="E"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" a="E" descendentVnodeUnknownAttributes="7d710028580d000000302e312e302e302e302e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580d000000302e312e302e302e302e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580d000000302e312e302e302e302e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580d000000302e312e302e302e302e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
-marks="ekr.20101014110348.5299,"
-expanded="ekr.20101119112650.5363,"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580d000000302e312e302e302e302e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580d000000302e312e302e302e302e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580d000000302e312e302e302e302e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580d000000302e312e302e302e302e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
+marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
+<v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -236,6 +236,106 @@ cd leo\doc\html\slides\slideshow-name
 make html
 </t>
 <t tx="ekr.20101007100904.4372"></t>
+<t tx="ekr.20101014110348.5293">@language rest
+@pagewidth 60
+
+Clones focus attention.
+
+===== Intro
+
+    Clones are one of Leo's most unusual and most useful features.
+
+    A **clone** is a node that appears in more than one place in a Leo outline.
+
+====== Create clone of A
+
+    Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
+
+    Clones are marked with a small red *clone arrow** in the icon box.
+    Deleting the penultimate clone removes the red arrow from the node.
+
+====== Clones are identical
+
+    Changing the headline or body text of a clone changes the headline or body
+    text of all other clones of that node. Furthermore, changing any descendants
+    of a clone, including inserting, deleting or moving nodes, results in the
+    same changes being made to all other clones.
+
+    In fact, all clones of a node are actually *the exactly the same node*, so
+    any change to one clone inevitably affects all other clones.
+
+===== Changing the headline of a clone.
+
+    Here, I am beginning to change the headline of Node A.
+    The headline doesn't actually change until we hit return,
+    so the headline of these clone of A hasn't changed yet.
+
+===== Change complete.
+
+    After typing &lt;return&gt; the headlines of both nodes changes.
+
+===== Node b.
+
+    Here we have created a node B following the first clone of B.
+
+===== Move B right
+
+    Moving B right makes B a child of node A.
+    As you can see, B appears as a child of both cloned nodes.
+
+    Even the expansion state of cloned nodes are identical:
+    both clones are now expanded.
+
+===== Create another child (newheadline)
+
+    Here, I have created a new node with Ctrl-I (insert-node).
+
+    The node appears in the same place in both nodes.
+
+===== Auto update
+
+    Changing a node marks all clones of that node as changed. When I save the
+    Leo outline, Leo automatically writes all the external files that contain
+    dirty nodes.
+
+===== Clones create views
+
+    Clones are important because they allow you to create as many views of the
+    data in the outline as you like. In effect, Leo becomes a supremely flexible
+    filing cabinet. Any ordinary node can act like a folder in the filing
+    cabinet. Using clones, you can "file" a node in as many folders as you like.
+
+    In Leo, a **view** is simply a subset of the nodes of the outline. We
+    represent a view as **ordinary** node, called a **view node**, whose nodes
+    can contain both regular nodes and clones. The children of the view node are
+    the subset of nodes that define the view. It's that simple.
+
+    With Leo, you can have as many view nodes as you like. There is no such
+    thing as a single, "correct" view of data. 
+
+
+===== Using view nodes
+
+    I use view nodes to focus attention on a set of disparate nodes.
+
+    For example, when I fix a bug in Leo, I create a **bug node** containing
+    all the data in Leo's source code that relates to the bug. As I discover
+    code related to the bug, I clone nodes and move them under the bug node.
+    I'll also add ordinary nodes as children of the bug node. These nodes
+    contain the original bug report, descriptions of how I fixed the bug, test
+    data, or any other notes I might want to keep.
+
+    Once I have created the bug node, I concentrate *only* on that node and its
+    children. I can examine the bug node and its children without having to jump
+    around the outline. Everything I need is in one place. This extremely narrow
+    focus makes it *much* easier to fix bugs. to jump around the outline. It
+    doesn't matter how big or complex the outline is: I am only dealing with the
+    bug node and its children.
+
+    **Important**: I can fix the bug by changing the clones in the view node.
+    When I save the Leo file, Leo will save all the @&lt;file&gt; nodes that contain any
+    changed clone.  Everything "just works".
+</t>
 <t tx="ekr.20101025080245.5794"></t>
 <t tx="ekr.20101025080245.5795"></t>
 <t tx="ekr.20101025080245.5796"></t>
@@ -334,7 +434,10 @@ Important files:
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
 <t tx="ekr.20101113120258.4929">@nocolor-node
 
-** Discuss @auto in the tutorial!</t>
+** Discuss @auto in the tutorial!
+
+** Discuss g.openWithFileName and g.pdb in the scripting chapter.
+</t>
 <t tx="ekr.20101118091038.5398">@others
 
 reformatParagraph (c)

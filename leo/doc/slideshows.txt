@@ -1588,14 +1588,14 @@ The next few slides will discuss this pattern line by line.
     When writing an \@file tree, Leo ensures all of the following:
 
     1. Each section must be defined. There must be a section reference in an
-        ancestor of each section defition node.
+        ancestor of each section definition node.
 
     2. There must be no **orphan nodes**.  A section definition node is an
        orphan if no ancestor node contains a reference to that node.
        A non-definition node is an orphan if no ancestor node contains an
        \@others directive.
 
-    Leo will issue an error if these checks are not satisifed.
+    Leo will issue an error if these checks are not satisfied.
 
     In short, each node in an \@file tree, except the \@file node itself, must
     be part of the expansion of exactly one reference. 
@@ -2072,13 +2072,6 @@ c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html
 .. @+node:ekr.20101013072903.5224: ** @slideshow Leo basics step by step
 @language rest
 @pagewidth 50
-
-(done) slide 5: could do with the same arrow as slide7
-(done) slide 7:
-  'one again' -> 'once again'
-   if a node is no longer 'dirty', what is it - clean?
-slide 13: 'ctrl-z' (lower-case), but elsewhere 'ctrl-H' (upper-case).
-Stick with upper case for consistency?
 .. @+node:ekr.20101113202201.4920: *3* @wink_path = ../doc/html/slides/leo-basics-step-by-step/_files
 @nocolor-node
 
@@ -2471,7 +2464,7 @@ all parts of Leo's source code.
 
 Leo's Ctrl-B (execute-script) command runs the
 body text of a node as a Leo script.
-.. @+node:ekr.20101121021109.5367: *4* @url built slide
+.. @+node:ekr.20101121125326.4962: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
 .. @+node:ekr.20101119112650.5368: *3* @slide c, g and p
 .. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
@@ -2496,7 +2489,7 @@ This slide give a few examples of how to use
 c, g and p in Leo scripts. For full details
 about scripting in Leo, see the `Scripting Chapter`_
 in `Leo's Users Guide`_.
-.. @+node:ekr.20101121032151.5365: *4* @url built slide
+.. @+node:ekr.20101121125326.4963: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-002.html
 .. @+node:ekr.20101119112650.5369: *3* @slide Official ivars
 The c, g and p objects give Leo scripts access to
@@ -2520,7 +2513,7 @@ text. As a convenience, for any position p, p.h
 and p.b are synonyms for p.v.h and p.v.b.
 **Important**: because of clones, a vnode may
 appear in several positions in a traversal.
-.. @+node:ekr.20101121032151.5366: *4* @url built slide
+.. @+node:ekr.20101121125326.4964: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-003.html
 .. @+node:ekr.20101119112650.5374: *3* @slide Hello world
 g.es is a function that prints its arguments to Leo's log pane.
@@ -2531,7 +2524,7 @@ Here is the hello world program as a Leo script::
 
 Leo scripts may also use Python's print command
 provided that Leo is running in a console.
-.. @+node:ekr.20101121032151.5367: *4* @url built slide
+.. @+node:ekr.20101121125326.4965: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-004.html
 .. @+node:ekr.20101119112650.5371: *3* @slide p.h and p.b
 .. _`Python properties`: http://docs.python.org/library/functions.html
@@ -2549,7 +2542,7 @@ In order to see the result of changing a headline,
 Leo scripts must redraw the outline pane, like this::
 
     c.redraw()
-.. @+node:ekr.20101121032151.5374: *4* @url built slide
+.. @+node:ekr.20101121125326.4966: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-005.html
 .. @+node:ekr.20101119112650.5375: *3* @slide Iterators
 .. _`Python iterator`: http://docs.python.org/library/stdtypes.html#iterator-types
@@ -2572,11 +2565,11 @@ are few examples (there are many more):
 
 - **p.children()** returns all the positions of
   all p's direct children.
-.. @+node:ekr.20101121021109.5381: *4* @url built slide
+.. @+node:ekr.20101121125326.4967: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-006.html
 .. @+node:ekr.20101121021109.5351: *3* @slide Using iterators
 Using iterators, it is easy to gain access to all
-the data in a Leo outine. For example, the
+the data in a Leo outline. For example, the
 following script prints all headlines in an
 outline, indented to show outline level::
 
@@ -2593,11 +2586,11 @@ will look something like this::
        Disabled buttons
        ... and hundreds of other nodes.
 
-**Note**: p.level() is a method of the positioin
+**Note**: p.level() is a method of the position
 class that returns the outline level of the node
 at position p: 0 for top-level nodes, 1 for their
 children, and so on.
-.. @+node:ekr.20101121032151.5369: *4* @url built slide
+.. @+node:ekr.20101121125326.4968: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
 .. @+node:ekr.20101119112650.5370: *3* @slide Building scripts from outlines
 Leo scripts can be composed of more than one node,
@@ -2623,7 +2616,7 @@ A child node will contain the following::
 And the children of the top-level class node will
 contain all the methods of the controller class.
 This organization is simple, flexible and powerful.
-.. @+node:ekr.20101121032151.5370: *4* @url built slide
+.. @+node:ekr.20101121125326.4969: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-008.html
 .. @+node:ekr.20101119112650.5376: *3* @slide g.openWithFileName
 The c and g constants give you access to all of
@@ -2640,7 +2633,7 @@ outline.  frame.c is the frame's commander, so new_c is
 the commander of the newly-created outline.
 
 .. @+node:ekr.20101119112650.5381: *4* @no-screenshot
-.. @+node:ekr.20101121032151.5371: *4* @url built slide
+.. @+node:ekr.20101121125326.4970: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-009.html
 .. @+node:ekr.20101119112650.5377: *3* @slide g.pdb
 ..`Python debugger`: http://docs.python.org/library/pdb.html
@@ -2652,7 +2645,7 @@ you must be running Leo from a console.
 The pudb plugin changes g.pdb so that it uses the
 full-screen `Pudb debugger`_ instead of pdb.
 .. @+node:ekr.20101119112650.5379: *4* @no-screenshot
-.. @+node:ekr.20101121032151.5372: *4* @url built slide
+.. @+node:ekr.20101121125326.4971: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
 .. @+node:ekr.20101121021109.5352: *3* @slide Further reading
 .. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
@@ -2662,7 +2655,7 @@ This concludes our brief introduction to scripting in Leo.
 
 For full details about scripting in Leo, see the
 `Scripting Chapter`_ in `Leo's Users Guide`_.
-.. @+node:ekr.20101121032151.5373: *4* @url built slide
+.. @+node:ekr.20101121125326.4972: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-011.html
 .. @-all
 .. @-leo
