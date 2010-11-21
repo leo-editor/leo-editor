@@ -108,7 +108,7 @@ def install_qt_quicksearch_tab(c):
 
     def focus_quicksearch_entry(event):
         c.frame.log.selectTab('Nav')
-        wdg.ui.lineEdit.setText('')
+        wdg.ui.lineEdit.selectAll()
         wdg.ui.lineEdit.setFocus()
 
     def focus_to_nav(event):
@@ -135,6 +135,18 @@ def install_qt_quicksearch_tab(c):
         wdg.scon.doShowMarked()
 
     c.frame.nav = wdg            
+
+    # make activating this tab activate the input box
+    def activate_input(idx, c=c):
+        wdg = c.frame.nav
+        tab_widget = wdg.parent().parent()
+        if tab_widget.currentWidget() == wdg:
+            wdg.ui.lineEdit.selectAll()
+            wdg.ui.lineEdit.setFocus()
+
+    tab_widget = wdg.parent().parent()
+    tab_widget.connect(tab_widget,
+        QtCore.SIGNAL("currentChanged(int)"), activate_input)
 
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ 'Find in files'/grep style search widget """
