@@ -271,10 +271,9 @@ Here are some tips that may make running Leo easier:
 
     where <leopath> is the path to the directory containing the leo directory. 
 
-**Windows**
-    If you have associated .leo files with Leo you may run Leo by double-clicking any .leo file.
-    You can also use a batch file.
-    Put the following .bat file in c:\\Windows::
+**Windows** If you have associated .leo files with Leo you may run Leo by
+    double-clicking any .leo file. You can also use a batch file. Put the
+    following .bat file in c:\\Windows::
 
         cd <path-to-leo>
         c:\Python26\python <path-to-leo>launchLeo.py %*

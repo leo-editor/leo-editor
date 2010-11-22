@@ -159,10 +159,10 @@
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580d000000302e312e302e302e302e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580d000000302e312e302e302e302e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580d000000302e312e302e302e302e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580d000000302e312e302e302e302e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
-marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580d000000302e302e302e302e302e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580d000000302e302e302e302e302e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580d000000302e302e302e302e302e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580d000000302e302e302e302e302e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
+marks="ekr.20101014110348.5299,"
+expanded="ekr.20101014034526.5280,"><vh>@file slideshows.txt</vh></v>
 </v>
-<v t="ekr.20101014110348.5293"><vh>@slideshow Clones and views</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -236,106 +236,6 @@ cd leo\doc\html\slides\slideshow-name
 make html
 </t>
 <t tx="ekr.20101007100904.4372"></t>
-<t tx="ekr.20101014110348.5293">@language rest
-@pagewidth 60
-
-Clones focus attention.
-
-===== Intro
-
-    Clones are one of Leo's most unusual and most useful features.
-
-    A **clone** is a node that appears in more than one place in a Leo outline.
-
-====== Create clone of A
-
-    Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
-
-    Clones are marked with a small red *clone arrow** in the icon box.
-    Deleting the penultimate clone removes the red arrow from the node.
-
-====== Clones are identical
-
-    Changing the headline or body text of a clone changes the headline or body
-    text of all other clones of that node. Furthermore, changing any descendants
-    of a clone, including inserting, deleting or moving nodes, results in the
-    same changes being made to all other clones.
-
-    In fact, all clones of a node are actually *the exactly the same node*, so
-    any change to one clone inevitably affects all other clones.
-
-===== Changing the headline of a clone.
-
-    Here, I am beginning to change the headline of Node A.
-    The headline doesn't actually change until we hit return,
-    so the headline of these clone of A hasn't changed yet.
-
-===== Change complete.
-
-    After typing &lt;return&gt; the headlines of both nodes changes.
-
-===== Node b.
-
-    Here we have created a node B following the first clone of B.
-
-===== Move B right
-
-    Moving B right makes B a child of node A.
-    As you can see, B appears as a child of both cloned nodes.
-
-    Even the expansion state of cloned nodes are identical:
-    both clones are now expanded.
-
-===== Create another child (newheadline)
-
-    Here, I have created a new node with Ctrl-I (insert-node).
-
-    The node appears in the same place in both nodes.
-
-===== Auto update
-
-    Changing a node marks all clones of that node as changed. When I save the
-    Leo outline, Leo automatically writes all the external files that contain
-    dirty nodes.
-
-===== Clones create views
-
-    Clones are important because they allow you to create as many views of the
-    data in the outline as you like. In effect, Leo becomes a supremely flexible
-    filing cabinet. Any ordinary node can act like a folder in the filing
-    cabinet. Using clones, you can "file" a node in as many folders as you like.
-
-    In Leo, a **view** is simply a subset of the nodes of the outline. We
-    represent a view as **ordinary** node, called a **view node**, whose nodes
-    can contain both regular nodes and clones. The children of the view node are
-    the subset of nodes that define the view. It's that simple.
-
-    With Leo, you can have as many view nodes as you like. There is no such
-    thing as a single, "correct" view of data. 
-
-
-===== Using view nodes
-
-    I use view nodes to focus attention on a set of disparate nodes.
-
-    For example, when I fix a bug in Leo, I create a **bug node** containing
-    all the data in Leo's source code that relates to the bug. As I discover
-    code related to the bug, I clone nodes and move them under the bug node.
-    I'll also add ordinary nodes as children of the bug node. These nodes
-    contain the original bug report, descriptions of how I fixed the bug, test
-    data, or any other notes I might want to keep.
-
-    Once I have created the bug node, I concentrate *only* on that node and its
-    children. I can examine the bug node and its children without having to jump
-    around the outline. Everything I need is in one place. This extremely narrow
-    focus makes it *much* easier to fix bugs. to jump around the outline. It
-    doesn't matter how big or complex the outline is: I am only dealing with the
-    bug node and its children.
-
-    **Important**: I can fix the bug by changing the clones in the view node.
-    When I save the Leo file, Leo will save all the @&lt;file&gt; nodes that contain any
-    changed clone.  Everything "just works".
-</t>
 <t tx="ekr.20101025080245.5794"></t>
 <t tx="ekr.20101025080245.5795"></t>
 <t tx="ekr.20101025080245.5796"></t>
