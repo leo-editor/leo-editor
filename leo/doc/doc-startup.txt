@@ -683,7 +683,23 @@ if changed:
     g.es('changed %s nodes' % changed)
     c.undoer.afterChangeTree(p,'remove-image-directives',b)
 
-#@+node:ekr.20101018185243.5368: *4* @button remove-final-output
+#@+node:ekr.20101018185243.5368: *4* @button remove-built-slides
+@language python
+
+changed = 0
+b = c.undoer.beforeChangeTree(p)
+for child in p.children():
+    for child2 in child.children():
+        if g.match_word(child2.h,0,'@url built slide'):
+            child2.doDelete()
+            changed += 1
+            break
+
+if changed:
+    g.es('deleted %s nodes' % (changed))
+    c.undoer.afterChangeTree(p,'remove-@url-built-slide',b)
+    c.redraw()
+#@+node:ekr.20101122071746.5020: *4* @button remove-final-output
 @language python
 
 changed = 0

@@ -12,600 +12,7 @@ Later:
 
 - Eliminate Sphinx warnings:
     Can probably be done by changing the slides page.
-.. @+node:ekr.20101115152915.4928: *3*  Unused
-.. @+node:ekr.20101013072903.5218: *4* Not good stories
-.. @+node:ekr.20101007082321.4357: *5* @slideshow What is Leo? (Joe Orr)
-@language rest
-.. @+node:ekr.20101009171445.4637: *6* @title_pattern = What is Leo? Slide %(slide_number)s
-.. @+node:ekr.20101008061729.4372: *6* @slide 001
-Leo is a unique, powerful computer program that you can use to **organize**,
-**analyze** and **describe** text and text files. Leo is a free and open
-software written by Edward K. Ream. For information about downloading Leo, see
-the **installation** tutorial in this series. Leo runs on Windows, Mac, or
-Linux.
-
-Use Leo:
-
-- To brainstorm a new project.
-- As a Personal Information Manager.
-- To add multiple outlines and commentary to any text file.
-- To create and organize computer programs.
-- To apply computer scripts to any kind of data.
-
-Because Leo is unlike other tools you may have used, a series of examples may be
-the best way to demonstrate what can be done with Leo.
-.. @+node:ekr.20101010121134.4703: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html
-.. @+node:ekr.20101008061729.4373: *6* @slide 002
-From one perspective, Leo is an **outlining editor**. This is a screenshot of
-Leo. The arrow shows the outline pane. (A later tutorial explains how to create
-an outline like the one in the screenshot).
-
-.. image:: slide-002.png
-
-.. @+node:ekr.20101008061729.4384: *7* @screenshot
-.. @+node:ekr.20101008061729.4385: *8* To Do List
-.. @+node:ekr.20101008061729.4386: *9* Urgent
-.. @+node:ekr.20101008061729.4387: *9* Important
-.. @+node:ekr.20101008061729.4388: *9* Soon
-.. @+node:ekr.20101008061729.4389: *9* Whenever
-.. @+node:ekr.20101008061729.4390: *8* Diary
-.. @+node:ekr.20101008061729.4391: *9* 2009
-.. @+node:ekr.20101008061729.4392: *10* Jan 1
-.. @+node:ekr.20101008061729.4393: *9* 2010
-.. @+node:ekr.20101008061729.4396: *7* @select To Do List
-.. @+node:ekr.20101010121134.4704: *7* @edit
-.. @+node:ekr.20101010121134.4716: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.png
-.. @+node:ekr.20101010121134.4717: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.svg
-.. @+node:ekr.20101010121134.4718: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-002.png
-.. @+node:ekr.20101010121134.4719: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html
-.. @+node:ekr.20101008061729.4398: *6* @slide 003
-Clicking on the open triangle will open the indicated node.
-
-.. image:: slide-003.png
-
-.. @+node:ekr.20101009115705.4583: *7* @screenshot
-.. @+node:ekr.20101009115705.4584: *8* To Do List
-My to-do list.
-.. @+node:ekr.20101009115705.4585: *9* Urgent
-.. @+node:ekr.20101009115705.4586: *9* Important
-.. @+node:ekr.20101009115705.4587: *9* Soon
-.. @+node:ekr.20101009115705.4588: *9* Whenever
-.. @+node:ekr.20101009115705.4589: *8* Diary
-.. @+node:ekr.20101009115705.4590: *9* 2009
-.. @+node:ekr.20101009115705.4591: *10* Jan 1
-.. @+node:ekr.20101009115705.4592: *9* 2010
-.. @+node:ekr.20101008061729.4420: *7* @select 2009
-.. @+node:ekr.20101010121134.4731: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.png
-.. @+node:ekr.20101010121134.4732: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.svg
-.. @+node:ekr.20101010121134.4746: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-003.png
-.. @+node:ekr.20101010121134.4747: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html
-.. @+node:ekr.20101008061729.4522: *6* @slide 004
-Here the node has been opened. Clicking on the box again will close the node.
-
-.. image:: slide-004.png
-
-.. @+node:ekr.20101009124842.4595: *7* @screenshot
-.. @+node:ekr.20101009124842.4596: *8* To Do List
-@nocolor-node
-
-My to-do list.
-.. @+node:ekr.20101009124842.4597: *9* Urgent
-.. @+node:ekr.20101009124842.4598: *9* Important
-.. @+node:ekr.20101009124842.4599: *9* Soon
-.. @+node:ekr.20101009124842.4600: *9* Whenever
-.. @+node:ekr.20101009124842.4601: *8* Diary
-@nocolor-node
-
-.. @+node:ekr.20101009124842.4602: *9* 2009
-.. @+node:ekr.20101009124842.4603: *10* Aug
-.. @+node:ekr.20101009211009.4624: *10* Jul
-.. @+node:ekr.20101009211009.4623: *10* Jun
-.. @+node:ekr.20101009211009.4625: *10* May
-.. @+node:ekr.20101009211009.4626: *10* Apr
-.. @+node:ekr.20101009211009.4627: *10* Mar
-.. @+node:ekr.20101009211009.4628: *10* Feb
-.. @+node:ekr.20101009211009.4629: *10* Jan
-.. @+node:ekr.20101009124842.4604: *9* 2010
-.. @+node:ekr.20101009124842.4606: *7* @select 2009
-.. @+node:ekr.20101009124842.4607: *7* @edit
-.. @+node:ekr.20101010121134.4766: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.png
-.. @+node:ekr.20101010121134.4767: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg
-.. @+node:ekr.20101010121134.4768: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-004.png
-.. @+node:ekr.20101010121134.4769: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html
-.. @+node:ekr.20101008061729.4518: *6* @slide 005
-Here the indicated node has been closed.
-
-.. image:: slide-005.png
-
-.. @+node:ekr.20101009212539.4682: *7* @screenshot
-.. @+node:ekr.20101009212539.4683: *8* To Do List
-My to-do list.
-.. @+node:ekr.20101009212539.4684: *9* Urgent
-.. @+node:ekr.20101009212539.4685: *9* Important
-.. @+node:ekr.20101009212539.4686: *9* Soon
-.. @+node:ekr.20101009212539.4687: *9* Whenever
-.. @+node:ekr.20101009212539.4688: *8* Diary
-.. @+node:ekr.20101009212539.4689: *9* 2009
-.. @+node:ekr.20101009212539.4690: *10* Aug
-.. @+node:ekr.20101009212539.4691: *10* Jul
-.. @+node:ekr.20101009212539.4692: *10* Jun
-.. @+node:ekr.20101009212539.4693: *10* May
-.. @+node:ekr.20101009212539.4694: *10* Apr
-.. @+node:ekr.20101009212539.4695: *10* Mar
-.. @+node:ekr.20101009212539.4696: *10* Feb
-.. @+node:ekr.20101009212539.4697: *10* Jan
-.. @+node:ekr.20101009212539.4698: *9* 2010
-.. @+node:ekr.20101009212539.4746: *7* @select 2009
-.. @+node:ekr.20101009212539.4699: *7* @edit
-.. @+node:ekr.20101009213545.4670: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png
-.. @+node:ekr.20101009213545.4671: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg
-.. @+node:ekr.20101009213545.4672: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png
-.. @+node:ekr.20101010121134.4814: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html
-.. @+node:ekr.20101008061729.4521: *6* @slide 006
-Clicking on a node headline (1) will show the text for that node in the body
-pane (2) below. The body pane is a text editor--you can enter, delete or change
-text here by typing it in.
-
-.. image:: slide-006.png
-
-.. @+node:ekr.20101009213545.4692: *7* @screenshot
-.. @+node:ekr.20101009213545.4693: *8* To Do List
-@nocolor
-
-My to-do list.
-.. @+node:ekr.20101009213545.4694: *9* Urgent
-1. Make Leo tutorials.  The world is waiting.
-
-2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101009213545.4695: *9* Important
-.. @+node:ekr.20101009213545.4696: *9* Soon
-.. @+node:ekr.20101009213545.4697: *9* Whenever
-.. @+node:ekr.20101009213545.4698: *8* Diary
-@nocolor
-.. @+node:ekr.20101009213545.4699: *9* 2009
-.. @+node:ekr.20101009213545.4700: *10* Aug
-.. @+node:ekr.20101009213545.4701: *10* Jul
-.. @+node:ekr.20101009213545.4702: *10* Jun
-.. @+node:ekr.20101009213545.4703: *10* May
-.. @+node:ekr.20101009213545.4704: *10* Apr
-.. @+node:ekr.20101009213545.4705: *10* Mar
-.. @+node:ekr.20101009213545.4706: *10* Feb
-.. @+node:ekr.20101009213545.4707: *10* Jan
-.. @+node:ekr.20101009213545.4708: *9* 2010
-.. @+node:ekr.20101009213545.4709: *7* @edit
-.. @+node:ekr.20101009213545.4710: *7* @select Urgent
-.. @+node:ekr.20101010121134.4810: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.png
-.. @+node:ekr.20101010121134.4811: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.svg
-.. @+node:ekr.20101010121134.4812: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-006.png
-.. @+node:ekr.20101010121134.4813: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html
-.. @+node:ekr.20101008061729.4523: *6* @slide 007
-You can save the outline in a .leo file.  Click File:Save (or Ctrl-S).
-
-.. image:: slide-007.png
-
-.. @+node:ekr.20101010121134.4832: *7* @screenshot
-.. @+node:ekr.20101010121134.4833: *8* To Do List
-@nocolor
-
-My to-do list.
-.. @+node:ekr.20101010121134.4834: *9* Urgent
-1. Make Leo tutorials.  The world is waiting.
-
-2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101010121134.4835: *9* Important
-.. @+node:ekr.20101010121134.4836: *9* Soon
-.. @+node:ekr.20101010121134.4837: *9* Whenever
-.. @+node:ekr.20101010121134.4838: *8* Diary
-@nocolor
-.. @+node:ekr.20101010121134.4839: *9* 2009
-.. @+node:ekr.20101010121134.4840: *10* Aug
-.. @+node:ekr.20101010121134.4841: *10* Jul
-.. @+node:ekr.20101010121134.4842: *10* Jun
-.. @+node:ekr.20101010121134.4843: *10* May
-.. @+node:ekr.20101010121134.4844: *10* Apr
-.. @+node:ekr.20101010121134.4845: *10* Mar
-.. @+node:ekr.20101010121134.4846: *10* Feb
-.. @+node:ekr.20101010121134.4847: *10* Jan
-.. @+node:ekr.20101010121134.4848: *9* 2010
-.. @+node:ekr.20101010141334.4791: *7* @select Urgent
-.. @+node:ekr.20101010121134.4849: *7* @pause
-.. @+node:ekr.20101010121134.4868: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.png
-.. @+node:ekr.20101010121134.4869: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.svg
-.. @+node:ekr.20101010140842.4755: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-007.png
-.. @+node:ekr.20101010140842.4756: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-007.html
-.. @+node:ekr.20101008061729.4524: *6* @slide 008
-Here we will save our outline in a file named "pim.leo"
-
-.. image:: slide-008.png
-
-.. @+node:ekr.20101010141334.4772: *7* @screenshot
-.. @+node:ekr.20101010141334.4773: *8* To Do List
-@nocolor
-
-My to-do list.
-.. @+node:ekr.20101010141334.4774: *9* Urgent
-1. Make Leo tutorials.  The world is waiting.
-
-2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101010141334.4775: *9* Important
-.. @+node:ekr.20101010141334.4776: *9* Soon
-.. @+node:ekr.20101010141334.4777: *9* Whenever
-.. @+node:ekr.20101010141334.4778: *8* Diary
-@nocolor
-.. @+node:ekr.20101010141334.4779: *9* 2009
-.. @+node:ekr.20101010141334.4780: *10* Aug
-.. @+node:ekr.20101010141334.4781: *10* Jul
-.. @+node:ekr.20101010141334.4782: *10* Jun
-.. @+node:ekr.20101010141334.4783: *10* May
-.. @+node:ekr.20101010141334.4784: *10* Apr
-.. @+node:ekr.20101010141334.4785: *10* Mar
-.. @+node:ekr.20101010141334.4786: *10* Feb
-.. @+node:ekr.20101010141334.4787: *10* Jan
-.. @+node:ekr.20101010141334.4788: *9* 2010
-.. @+node:ekr.20101010141334.4793: *7* @select Urgent
-.. @+node:ekr.20101010141334.4789: *7* @pause
-.. @+node:ekr.20101010141953.4835: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.png
-.. @+node:ekr.20101010141953.4836: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.svg
-.. @+node:ekr.20101010141953.4837: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-008.png
-.. @+node:ekr.20101010141953.4838: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-008.html
-.. @+node:ekr.20101008061729.4525: *6* @slide 009
-The file is now saved, and the file appears in the title bar.
-
-.. image:: slide-009.png
-
-.. @+node:ekr.20101010141953.4856: *7* @screenshot
-.. @+node:ekr.20101010141953.4857: *8* To Do List
-@nocolor
-
-My to-do list.
-.. @+node:ekr.20101010141953.4858: *9* Urgent
-1. Make Leo tutorials.  The world is waiting.
-
-2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101010141953.4859: *9* Important
-.. @+node:ekr.20101010141953.4860: *9* Soon
-.. @+node:ekr.20101010141953.4861: *9* Whenever
-.. @+node:ekr.20101010141953.4862: *8* Diary
-@nocolor
-.. @+node:ekr.20101010141953.4863: *9* 2009
-.. @+node:ekr.20101010141953.4864: *10* Aug
-.. @+node:ekr.20101010141953.4865: *10* Jul
-.. @+node:ekr.20101010141953.4866: *10* Jun
-.. @+node:ekr.20101010141953.4867: *10* May
-.. @+node:ekr.20101010141953.4868: *10* Apr
-.. @+node:ekr.20101010141953.4869: *10* Mar
-.. @+node:ekr.20101010141953.4870: *10* Feb
-.. @+node:ekr.20101010141953.4871: *10* Jan
-.. @+node:ekr.20101010141953.4872: *9* 2010
-.. @+node:ekr.20101010141953.4873: *7* @select Urgent
-.. @+node:ekr.20101010141953.4896: *7* @pause
-.. @+node:ekr.20101010141953.4897: *7* @edit
-.. @+node:ekr.20101010141953.4916: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.png
-.. @+node:ekr.20101010141953.4917: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.svg
-.. @+node:ekr.20101010141953.4918: *7* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-009.png
-.. @+node:ekr.20101010141953.4919: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-009.html
-.. @+node:ekr.20101008061729.4526: *6* @slide 010
-You've just seen an introduction to Leo as an outlining editor. You can use Leo
-to make an outline, with optional text for each outline element. You can save
-the outline to a file. Outlines are explained more in a later tutorial in this
-series.
-
-  *The outlining capability of Leo goes far beyond what has just been demonstrated,
-  including multipath outlines, and multiple outlines in one file.*
-
-What we've shown so far is no different from other outlining editors. What makes
-Leo unique is the addition of a new feature. **Using simple directives, you can
-instruct Leo to extract text from any number of nodes, in any order, and write
-the text to a new file**. We call files created or managed from within a Leo
-outline **external file**. You can also embed outline information in the
-external file, giving Leo the ability to read the text pieces back into the Leo
-outline, even if they have been changed.
-
-In effect, Leo is a **meta-text** editor. It gives you the ability to create a
-structural document for a non structured document, or a document that is
-structured in some other way.
-
-What does this mean in practice? Some examples should help clarify things...
-.. @+node:ekr.20101010141953.4922: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-010.html
-.. @+node:ekr.20101008061729.4527: *6* @slide 011
-Here is the "pim.leo" file again. We have:
-
-1. Selected the "Diary" node.
-2. Typed Ctrl-H to start editing the headline.
-   (You can also edit headlines with the Edit:Edit Headline...:Edit Headline command.
-
-.. image:: slide-011.png
-
-.. @+node:ekr.20101010141953.4940: *7* @screenshot
-.. @+node:ekr.20101010141953.4941: *8* To Do List
-@nocolor
-
-My to-do list.
-.. @+node:ekr.20101010141953.4942: *9* Urgent
-1. Make Leo tutorials.  The world is waiting.
-
-2. Pay phone bill or the world will never know.
-.. @+node:ekr.20101010141953.4943: *9* Important
-.. @+node:ekr.20101010141953.4944: *9* Soon
-.. @+node:ekr.20101010141953.4945: *9* Whenever
-.. @+node:ekr.20101010141953.4946: *8* Diary
-@nocolor
-
-This is my diary.
-.. @+node:ekr.20101010141953.4947: *9* 2009
-.. @+node:ekr.20101010141953.4948: *10* Aug
-.. @+node:ekr.20101010141953.4949: *10* Jul
-.. @+node:ekr.20101010141953.4950: *10* Jun
-.. @+node:ekr.20101010141953.4951: *10* May
-.. @+node:ekr.20101010141953.4952: *10* Apr
-.. @+node:ekr.20101010141953.4953: *10* Mar
-.. @+node:ekr.20101010141953.4954: *10* Feb
-.. @+node:ekr.20101010141953.4955: *10* Jan
-.. @+node:ekr.20101010141953.4956: *9* 2010
-.. @+node:ekr.20101010141953.4958: *7* @pause
-.. @+node:ekr.20101010141953.4957: *7* @select Diary
-.. @+node:ekr.20101010141953.5023: *7* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.png
-.. @+node:ekr.20101010141953.5024: *7* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.svg
-.. @+node:ekr.20101008061729.4528: *6* @slide 012
-.. @+node:ekr.20101008061729.4529: *6* @slide 013
-.. @+node:ekr.20101008061729.4530: *6* @slide 014
-.. @+node:ekr.20101008061729.4531: *6* @slide 015
-.. @+node:ekr.20101008061729.4532: *6* @slide 016
-.. @+node:ekr.20101008061729.4533: *6* @slide 017
-.. @+node:ekr.20101008061729.4534: *6* @slide 018
-.. @+node:ekr.20101008061729.4535: *6* @slide 019
-.. @+node:ekr.20101008061729.4536: *6* @slide 020
-.. @+node:ekr.20101008061729.4537: *6* @slide 021
-.. @+node:ekr.20101008061729.4539: *6* @slide 022
-.. @+node:ekr.20101008061729.4540: *6* @slide 023
-.. @+node:ekr.20101011071655.4919: *5* @slideshow Whetting Your Appetite
-@language rest
-@pagewidth 50
-.. @+node:ekr.20101013072903.5219: *6* @slide What you can do with Leo
-This slideshow shows some of the things you can do
-with Leo
-.. @+node:ekr.20101013072903.5220: *7* @no-screenshot
-.. @+node:ekr.20101013072903.5221: *6* @slide Leo's main window
-Leo's main window consists of an **outline pane**
-(1), a **body pane** (2) and a **log pane** (3).
-All data in Leo resides in **nodes**. A node
-consists of **headline text** and **body text**.
-The outline pane shows headlines. The body pane
-pane shows the body text of the presently selected
-node. Messages from Leo appear in the log pane.
-
-.. @+node:ekr.20101011071655.4920: *6* @slide A Personal Information Manager
-You can use Leo as a PIM.
-
-As with other outliners, Leo outlines show 
-.. @+node:ekr.20101011103613.4930: *6* @slide A Better PIM
-Leo is a better pim.
-.. @+node:ekr.20101011103613.4942: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html
-.. @+node:ekr.20101012083118.5245: *6* @slide External Files
-.. @+node:ekr.20101011103613.4933: *6* @slide A Scripting Environment
-The body text of any node can contain a Python script.
-
-You execute the script with (Ctrl-B) Leo's execute-script command.
-.. @+node:ekr.20101011103613.4943: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html
-.. @+node:ekr.20101011103613.4934: *6* @slide Better Scripting
-All Leo scripts have access to three predefined constants: c, g and p.
-.. @+node:ekr.20101011103613.4944: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html
-.. @+node:ekr.20101011103613.4938: *6* @slide Better Scripting, Part Deux
-All Leo scripts have full access to the outline in which the scripts reside. The
-following scripts, executed from Leo's body pane, will print the headlines of
-all the nodes of the outline, properly indented::
-
-    for p in c.all_positions():
-        print '%s%s' % (' '*p.level(),p.h)
-.. @+node:ekr.20101011103613.4945: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html
-.. @+node:ekr.20101011103613.4935: *6* @slide Outlines Create New Leo Commands
-Discuss @button nodes
-.. @+node:ekr.20101011103613.4946: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html
-.. @+node:ekr.20101011103613.4936: *6* @slide Outlines Create Unit tests
-Discuss @test nodes
-.. @+node:ekr.20101011103613.4947: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html
-.. @+node:ekr.20101011103613.4937: *6* @slide Outlines Create Restructured Text
-Leo outlines make it easy to create Restructured Text (rST) documents.
-
-Within @rst trees, nodes correspond to rST sections. Naturally, the outline
-level of a node in the Leo outline determines the section's level in the
-resulting document.
-.. @+node:ekr.20101011111455.4965: *7* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html
-.. @+node:ekr.20101011103613.4939: *6* @slide Outlines Create HTML
-.. @+node:ekr.20101011165412.5011: *5* nutshell (copy)
-Unifying scripting, data and outline structure creates a new world. We use the
-term **Leonine** to denote the Leo-centric (outline-centric) view of
-programming, data and scripting. Here are some of the implications of this
-new world:
-
-**Data organization**: Leo's clones allow unprecedented flexibility in
-organizing data. Leo outlines have been used as an entirely new kind of
-database. It is easily scriptable. As my brother has shown, it is possible to
-design Leo outlines so that parts of the outline *are* SQL queries!
-
-**Design**: With Leo, you always see the big picture, and as many of the details
-as you like. But this makes outlines ideal for representing designs. In fact,
-Leo outlines don't just represent designs, they *are* the designs. For example,
-all of Leo's source code reside in just a few Leo outlines. And Leo outlines can
-represent input data to other design tools.
-
-**Programming/Coding**: It's much easier to program when the design is always
-easily visible. Nodes provide the perfect way to organize large modules, classes
-and functions. Nodes also provide unlimited room to save as many details as you
-like, *without* cluttering your overall view of the task, or rather tasks, at
-hand.
-
-**Testing**: Leo is a supremely powerful unit-testing framework:
-
-1. You can make a node a unit test simply by putting @test at the start of its
-   headline. Leo will then automatically generate all the blah-blah-blah needed
-   to turn the node's script into a fully-functional unit test. Oh yes,
-   the headline becomes the name of the unit test.
-
-2. Unit tests can use data in children of @test nodes. Typical tests put input
-   data in one child node, and the expected results of running the test in another
-   child node. The test simply compares the actual and expected results.
-
-3. You can easily run tests in the entire outline or just in the selected
-   outline. Because tests reside in nodes, you can use clones to organize tests
-   in as many ways as you like. For example, it is trivial to run only those
-   tests that are failing.
-
-**Maintenance and support**: Leo's ability to contain multiple views of data is
-*precisely* what is needed while maintaining any large project. For every new
-support task and every new bug, a new (plain) **task node** will contain all the
-data needed for that task, notes, test data, whatever. Furthermore, when fixing
-bugs, the task node can contain clones of all classes, methods or functions
-related to the bug. Fixing a node in the task node fixes the node in the
-external file! And as always, you can use all of Leo's outlining features
-(including clones) to organize your task nodes.
-
-**Organization everywhere**: Have you noticed that Leo's organizational prowess
-applies to *everything*? Indeed, you can use outlines and clones in new ways to
-organize files, projects, data, design, programs, testing, and tasks. Leo
-doesn't need lots of features--outlines, clones and scripts suffice.  The more
-complex your data, designs, program and tasks, the better Leo is suited to them.
-
-It's time to mention one of Leo's most unique features.  Simple, *optional*
-markup makes it possible to synthesize (build) scripts and entire computer programs
-from outlines. Leo is more than a filing cabinet for scripts and programs, Leo
-is a build tool for scripts and outlines!
-
-**Scripting everything**: Let's step back a moment. A single outline can contain
-databases, designs, actual computer code, unit tests, test scripts and task
-nodes. But Leo scripts will work on any kind of node. Thus, it is *easy* to run
-scripts on *anything*! Examples:
-
-- Scripting itself: @button nodes creates a **script button**, a Python script
-  that can be applied to any node in an outline! Script buttons have been
-  written (in Python) that will execute Leo scripts in other languages.
-
-- Data: The @kind convention for headlines tells scripts what a node contains
-  without having to parse the node's contents.  The possibilities are endless.
-
-- Design: scripts can verify properties of design based on either the contents
-  of design nodes or their outline structure.
-
-- Coding: scripts routinely make massive changes to outlines. Scripts and unit
-  tests can (and do!) verify arbitrarily complex properties of outlines.
-
-- Scientific programming: Leo scripts can run experiments many times using
-  different starting points. Nodes are the perfect place to store results and
-  notes. Many scientists use the IPython shell-- Using Leo's **IPython bridge**,
-  Leo can execute IPython scripts, and scripts in IPython have full access to
-  all nodes in Leo outlines.
-
-- Testing: scripts can (and do!) create @test nodes themselves.
-
-- Maintenance: scripts could gather statistics about tasks using simple @kind
-  conventions.
-
-The Leo Aha is just this: Leo outlines are far more than eye candy. Leo outlines
-revolutionize your view of data--Leo outlines can organize *anything*. Leo
-outlines create a new kind of programming environment, one in which outline
-structure and user-defined data types create totally new opportunities.
-.. @+node:ekr.20101012083118.5246: *5* @@slide Leo
-Leo is a unique, powerful computer program that you can use to organize, analyze
-and describe text and text files.
-
-Use Leo:
-
-- To brainstorm a new project.
-- As a Personal Information Manager.
-- As a new kind of programming too.
-
-Because Leo is unlike other tools you may have used, a series of examples may be
-the best way to demonstrate what can be done with Leo.
-.. @+node:ekr.20101011103613.4940: *5* @@slide The Leo way
-Leo is a new way of working with complex data like computer programs,
-books, web sites and data bases. The term **Leonine** refers to the Leo
-way of viewing the world and its data.
-
-In Leo, **outline structure is significant everywhere**. Leo’s users speak of an
-Aha! moment when they see what this statement means.
-
-People say Leo is **fun to use**, even additive.
-.. @+node:ekr.20101012083118.5242: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-001.html
-.. @+node:ekr.20101013072903.5238: *5* Don't describe the window!
-.. @+node:ekr.20101013072903.5228: *6* @slide ((file name: workbook2.leo
-.. Arrow points to window title.
-
-The name of the Leo outline appears in the window's title.
-
-Here, the name is workbook.leo, the default file name.
-.. @+node:ekr.20101013072903.5229: *6* @slide ((3 panes
-Leo's main window consists of an **outline pane**
-(1), a **body pane** (2) and a **log pane** (3).
-
-.. @+node:ekr.20101013072903.5230: *6* @slide ((outline pane
-The outline pane shows **headlines**.
-
-Here, we see the a "startup" headline and a "workbook" headline.
 .. @+node:ekr.20101115152915.4933: *3* Next
-.. @+node:ekr.20101014034526.5296: *4* @slideshow Leo's minibuffer
-@language rest
-@pagewidth 60
-
->> You can use the print-commands command.
-
-> How can I run this command? Do I use the minibuffer?
-
-Yes. Type <alt-x> to put the cursor in the minibuffer. Then use tab
-completion to avoid having to do much typing. Something like this:
-
-Type "pr<tab>". This will show open the completion pane. The pane shows you all
-the commands that start with pr. There are too many, so type i<tab>. Now you
-will see "print-" in the minibuffer and only commands that start with "print-"
-in the completion tab. Now just type "c<tab>" and you will see the full
-print-commands command in the minibuffer. Finally, type <return> to execute the
-command.
-
-*Important*: you can use <backspace> in the minibuffer to show more alternatives,
-and you can hit <ctrl-g> at any time in Leo to put focus in the body pane.
 .. @+node:ekr.20101113110328.4947: *4* Using @button nodes
 .. @+node:ekr.20101115152915.4932: *4* Using @test nodes
 .. @+node:ekr.20101115152915.4934: *4* Using @url nodes
@@ -1430,6 +837,447 @@ def splitLines (self,s):
     '''Split s into lines, preserving the number of lines and the ending of the last line.'''
 
     return s and s.splitlines(True) or []
+.. @+node:ekr.20101011071655.4919: *4* @slideshow Whetting Your Appetite
+@language rest
+@pagewidth 50
+.. @+node:ekr.20101013072903.5219: *5* @slide What you can do with Leo
+This slideshow shows some of the things you can do
+with Leo
+.. @+node:ekr.20101013072903.5220: *6* @no-screenshot
+.. @+node:ekr.20101013072903.5221: *5* @slide Leo's main window
+Leo's main window consists of an **outline pane**
+(1), a **body pane** (2) and a **log pane** (3).
+All data in Leo resides in **nodes**. A node
+consists of **headline text** and **body text**.
+The outline pane shows headlines. The body pane
+pane shows the body text of the presently selected
+node. Messages from Leo appear in the log pane.
+
+.. @+node:ekr.20101011071655.4920: *5* @slide A Personal Information Manager
+You can use Leo as a PIM.
+
+As with other outliners, Leo outlines show 
+.. @+node:ekr.20101011103613.4930: *5* @slide A Better PIM
+Leo is a better pim.
+.. @+node:ekr.20101011103613.4942: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html
+.. @+node:ekr.20101012083118.5245: *5* @slide External Files
+.. @+node:ekr.20101011103613.4933: *5* @slide A Scripting Environment
+The body text of any node can contain a Python script.
+
+You execute the script with (Ctrl-B) Leo's execute-script command.
+.. @+node:ekr.20101011103613.4943: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html
+.. @+node:ekr.20101011103613.4934: *5* @slide Better Scripting
+All Leo scripts have access to three predefined constants: c, g and p.
+.. @+node:ekr.20101011103613.4944: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html
+.. @+node:ekr.20101011103613.4938: *5* @slide Better Scripting, Part Deux
+All Leo scripts have full access to the outline in which the scripts reside. The
+following scripts, executed from Leo's body pane, will print the headlines of
+all the nodes of the outline, properly indented::
+
+    for p in c.all_positions():
+        print '%s%s' % (' '*p.level(),p.h)
+.. @+node:ekr.20101011103613.4945: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html
+.. @+node:ekr.20101011103613.4935: *5* @slide Outlines Create New Leo Commands
+Discuss @button nodes
+.. @+node:ekr.20101011103613.4946: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html
+.. @+node:ekr.20101011103613.4936: *5* @slide Outlines Create Unit tests
+Discuss @test nodes
+.. @+node:ekr.20101011103613.4947: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html
+.. @+node:ekr.20101011103613.4937: *5* @slide Outlines Create Restructured Text
+Leo outlines make it easy to create Restructured Text (rST) documents.
+
+Within @rst trees, nodes correspond to rST sections. Naturally, the outline
+level of a node in the Leo outline determines the section's level in the
+resulting document.
+.. @+node:ekr.20101011111455.4965: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html
+.. @+node:ekr.20101011103613.4939: *5* @slide Outlines Create HTML
+.. @+node:ekr.20101007082321.4357: *4* @slideshow What is Leo? (Joe Orr)
+@language rest
+.. @+node:ekr.20101009171445.4637: *5* @title_pattern = What is Leo? Slide %(slide_number)s
+.. @+node:ekr.20101008061729.4372: *5* @slide 001
+Leo is a unique, powerful computer program that you can use to **organize**,
+**analyze** and **describe** text and text files. Leo is a free and open
+software written by Edward K. Ream. For information about downloading Leo, see
+the **installation** tutorial in this series. Leo runs on Windows, Mac, or
+Linux.
+
+Use Leo:
+
+- To brainstorm a new project.
+- As a Personal Information Manager.
+- To add multiple outlines and commentary to any text file.
+- To create and organize computer programs.
+- To apply computer scripts to any kind of data.
+
+Because Leo is unlike other tools you may have used, a series of examples may be
+the best way to demonstrate what can be done with Leo.
+.. @+node:ekr.20101010121134.4703: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html
+.. @+node:ekr.20101008061729.4373: *5* @slide 002
+From one perspective, Leo is an **outlining editor**. This is a screenshot of
+Leo. The arrow shows the outline pane. (A later tutorial explains how to create
+an outline like the one in the screenshot).
+
+.. image:: slide-002.png
+
+.. @+node:ekr.20101008061729.4384: *6* @screenshot
+.. @+node:ekr.20101008061729.4385: *7* To Do List
+.. @+node:ekr.20101008061729.4386: *8* Urgent
+.. @+node:ekr.20101008061729.4387: *8* Important
+.. @+node:ekr.20101008061729.4388: *8* Soon
+.. @+node:ekr.20101008061729.4389: *8* Whenever
+.. @+node:ekr.20101008061729.4390: *7* Diary
+.. @+node:ekr.20101008061729.4391: *8* 2009
+.. @+node:ekr.20101008061729.4392: *9* Jan 1
+.. @+node:ekr.20101008061729.4393: *8* 2010
+.. @+node:ekr.20101008061729.4396: *6* @select To Do List
+.. @+node:ekr.20101010121134.4704: *6* @edit
+.. @+node:ekr.20101010121134.4716: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.png
+.. @+node:ekr.20101010121134.4717: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.svg
+.. @+node:ekr.20101010121134.4718: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-002.png
+.. @+node:ekr.20101010121134.4719: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html
+.. @+node:ekr.20101008061729.4398: *5* @slide 003
+Clicking on the open triangle will open the indicated node.
+
+.. image:: slide-003.png
+
+.. @+node:ekr.20101009115705.4583: *6* @screenshot
+.. @+node:ekr.20101009115705.4584: *7* To Do List
+My to-do list.
+.. @+node:ekr.20101009115705.4585: *8* Urgent
+.. @+node:ekr.20101009115705.4586: *8* Important
+.. @+node:ekr.20101009115705.4587: *8* Soon
+.. @+node:ekr.20101009115705.4588: *8* Whenever
+.. @+node:ekr.20101009115705.4589: *7* Diary
+.. @+node:ekr.20101009115705.4590: *8* 2009
+.. @+node:ekr.20101009115705.4591: *9* Jan 1
+.. @+node:ekr.20101009115705.4592: *8* 2010
+.. @+node:ekr.20101008061729.4420: *6* @select 2009
+.. @+node:ekr.20101010121134.4731: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.png
+.. @+node:ekr.20101010121134.4732: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.svg
+.. @+node:ekr.20101010121134.4746: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-003.png
+.. @+node:ekr.20101010121134.4747: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html
+.. @+node:ekr.20101008061729.4522: *5* @slide 004
+Here the node has been opened. Clicking on the box again will close the node.
+
+.. image:: slide-004.png
+
+.. @+node:ekr.20101009124842.4595: *6* @screenshot
+.. @+node:ekr.20101009124842.4596: *7* To Do List
+@nocolor-node
+
+My to-do list.
+.. @+node:ekr.20101009124842.4597: *8* Urgent
+.. @+node:ekr.20101009124842.4598: *8* Important
+.. @+node:ekr.20101009124842.4599: *8* Soon
+.. @+node:ekr.20101009124842.4600: *8* Whenever
+.. @+node:ekr.20101009124842.4601: *7* Diary
+@nocolor-node
+
+.. @+node:ekr.20101009124842.4602: *8* 2009
+.. @+node:ekr.20101009124842.4603: *9* Aug
+.. @+node:ekr.20101009211009.4624: *9* Jul
+.. @+node:ekr.20101009211009.4623: *9* Jun
+.. @+node:ekr.20101009211009.4625: *9* May
+.. @+node:ekr.20101009211009.4626: *9* Apr
+.. @+node:ekr.20101009211009.4627: *9* Mar
+.. @+node:ekr.20101009211009.4628: *9* Feb
+.. @+node:ekr.20101009211009.4629: *9* Jan
+.. @+node:ekr.20101009124842.4604: *8* 2010
+.. @+node:ekr.20101009124842.4606: *6* @select 2009
+.. @+node:ekr.20101009124842.4607: *6* @edit
+.. @+node:ekr.20101010121134.4766: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.png
+.. @+node:ekr.20101010121134.4767: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg
+.. @+node:ekr.20101010121134.4768: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-004.png
+.. @+node:ekr.20101010121134.4769: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html
+.. @+node:ekr.20101008061729.4518: *5* @slide 005
+Here the indicated node has been closed.
+
+.. image:: slide-005.png
+
+.. @+node:ekr.20101009212539.4682: *6* @screenshot
+.. @+node:ekr.20101009212539.4683: *7* To Do List
+My to-do list.
+.. @+node:ekr.20101009212539.4684: *8* Urgent
+.. @+node:ekr.20101009212539.4685: *8* Important
+.. @+node:ekr.20101009212539.4686: *8* Soon
+.. @+node:ekr.20101009212539.4687: *8* Whenever
+.. @+node:ekr.20101009212539.4688: *7* Diary
+.. @+node:ekr.20101009212539.4689: *8* 2009
+.. @+node:ekr.20101009212539.4690: *9* Aug
+.. @+node:ekr.20101009212539.4691: *9* Jul
+.. @+node:ekr.20101009212539.4692: *9* Jun
+.. @+node:ekr.20101009212539.4693: *9* May
+.. @+node:ekr.20101009212539.4694: *9* Apr
+.. @+node:ekr.20101009212539.4695: *9* Mar
+.. @+node:ekr.20101009212539.4696: *9* Feb
+.. @+node:ekr.20101009212539.4697: *9* Jan
+.. @+node:ekr.20101009212539.4698: *8* 2010
+.. @+node:ekr.20101009212539.4746: *6* @select 2009
+.. @+node:ekr.20101009212539.4699: *6* @edit
+.. @+node:ekr.20101009213545.4670: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png
+.. @+node:ekr.20101009213545.4671: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg
+.. @+node:ekr.20101009213545.4672: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png
+.. @+node:ekr.20101010121134.4814: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html
+.. @+node:ekr.20101008061729.4521: *5* @slide 006
+Clicking on a node headline (1) will show the text for that node in the body
+pane (2) below. The body pane is a text editor--you can enter, delete or change
+text here by typing it in.
+
+.. image:: slide-006.png
+
+.. @+node:ekr.20101009213545.4692: *6* @screenshot
+.. @+node:ekr.20101009213545.4693: *7* To Do List
+@nocolor
+
+My to-do list.
+.. @+node:ekr.20101009213545.4694: *8* Urgent
+1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20101009213545.4695: *8* Important
+.. @+node:ekr.20101009213545.4696: *8* Soon
+.. @+node:ekr.20101009213545.4697: *8* Whenever
+.. @+node:ekr.20101009213545.4698: *7* Diary
+@nocolor
+.. @+node:ekr.20101009213545.4699: *8* 2009
+.. @+node:ekr.20101009213545.4700: *9* Aug
+.. @+node:ekr.20101009213545.4701: *9* Jul
+.. @+node:ekr.20101009213545.4702: *9* Jun
+.. @+node:ekr.20101009213545.4703: *9* May
+.. @+node:ekr.20101009213545.4704: *9* Apr
+.. @+node:ekr.20101009213545.4705: *9* Mar
+.. @+node:ekr.20101009213545.4706: *9* Feb
+.. @+node:ekr.20101009213545.4707: *9* Jan
+.. @+node:ekr.20101009213545.4708: *8* 2010
+.. @+node:ekr.20101009213545.4709: *6* @edit
+.. @+node:ekr.20101009213545.4710: *6* @select Urgent
+.. @+node:ekr.20101010121134.4810: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.png
+.. @+node:ekr.20101010121134.4811: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.svg
+.. @+node:ekr.20101010121134.4812: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-006.png
+.. @+node:ekr.20101010121134.4813: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html
+.. @+node:ekr.20101008061729.4523: *5* @slide 007
+You can save the outline in a .leo file.  Click File:Save (or Ctrl-S).
+
+.. image:: slide-007.png
+
+.. @+node:ekr.20101010121134.4832: *6* @screenshot
+.. @+node:ekr.20101010121134.4833: *7* To Do List
+@nocolor
+
+My to-do list.
+.. @+node:ekr.20101010121134.4834: *8* Urgent
+1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20101010121134.4835: *8* Important
+.. @+node:ekr.20101010121134.4836: *8* Soon
+.. @+node:ekr.20101010121134.4837: *8* Whenever
+.. @+node:ekr.20101010121134.4838: *7* Diary
+@nocolor
+.. @+node:ekr.20101010121134.4839: *8* 2009
+.. @+node:ekr.20101010121134.4840: *9* Aug
+.. @+node:ekr.20101010121134.4841: *9* Jul
+.. @+node:ekr.20101010121134.4842: *9* Jun
+.. @+node:ekr.20101010121134.4843: *9* May
+.. @+node:ekr.20101010121134.4844: *9* Apr
+.. @+node:ekr.20101010121134.4845: *9* Mar
+.. @+node:ekr.20101010121134.4846: *9* Feb
+.. @+node:ekr.20101010121134.4847: *9* Jan
+.. @+node:ekr.20101010121134.4848: *8* 2010
+.. @+node:ekr.20101010141334.4791: *6* @select Urgent
+.. @+node:ekr.20101010121134.4849: *6* @pause
+.. @+node:ekr.20101010121134.4868: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.png
+.. @+node:ekr.20101010121134.4869: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.svg
+.. @+node:ekr.20101010140842.4755: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-007.png
+.. @+node:ekr.20101010140842.4756: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-007.html
+.. @+node:ekr.20101008061729.4524: *5* @slide 008
+Here we will save our outline in a file named "pim.leo"
+
+.. image:: slide-008.png
+
+.. @+node:ekr.20101010141334.4772: *6* @screenshot
+.. @+node:ekr.20101010141334.4773: *7* To Do List
+@nocolor
+
+My to-do list.
+.. @+node:ekr.20101010141334.4774: *8* Urgent
+1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20101010141334.4775: *8* Important
+.. @+node:ekr.20101010141334.4776: *8* Soon
+.. @+node:ekr.20101010141334.4777: *8* Whenever
+.. @+node:ekr.20101010141334.4778: *7* Diary
+@nocolor
+.. @+node:ekr.20101010141334.4779: *8* 2009
+.. @+node:ekr.20101010141334.4780: *9* Aug
+.. @+node:ekr.20101010141334.4781: *9* Jul
+.. @+node:ekr.20101010141334.4782: *9* Jun
+.. @+node:ekr.20101010141334.4783: *9* May
+.. @+node:ekr.20101010141334.4784: *9* Apr
+.. @+node:ekr.20101010141334.4785: *9* Mar
+.. @+node:ekr.20101010141334.4786: *9* Feb
+.. @+node:ekr.20101010141334.4787: *9* Jan
+.. @+node:ekr.20101010141334.4788: *8* 2010
+.. @+node:ekr.20101010141334.4793: *6* @select Urgent
+.. @+node:ekr.20101010141334.4789: *6* @pause
+.. @+node:ekr.20101010141953.4835: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.png
+.. @+node:ekr.20101010141953.4836: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.svg
+.. @+node:ekr.20101010141953.4837: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-008.png
+.. @+node:ekr.20101010141953.4838: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-008.html
+.. @+node:ekr.20101008061729.4525: *5* @slide 009
+The file is now saved, and the file appears in the title bar.
+
+.. image:: slide-009.png
+
+.. @+node:ekr.20101010141953.4856: *6* @screenshot
+.. @+node:ekr.20101010141953.4857: *7* To Do List
+@nocolor
+
+My to-do list.
+.. @+node:ekr.20101010141953.4858: *8* Urgent
+1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20101010141953.4859: *8* Important
+.. @+node:ekr.20101010141953.4860: *8* Soon
+.. @+node:ekr.20101010141953.4861: *8* Whenever
+.. @+node:ekr.20101010141953.4862: *7* Diary
+@nocolor
+.. @+node:ekr.20101010141953.4863: *8* 2009
+.. @+node:ekr.20101010141953.4864: *9* Aug
+.. @+node:ekr.20101010141953.4865: *9* Jul
+.. @+node:ekr.20101010141953.4866: *9* Jun
+.. @+node:ekr.20101010141953.4867: *9* May
+.. @+node:ekr.20101010141953.4868: *9* Apr
+.. @+node:ekr.20101010141953.4869: *9* Mar
+.. @+node:ekr.20101010141953.4870: *9* Feb
+.. @+node:ekr.20101010141953.4871: *9* Jan
+.. @+node:ekr.20101010141953.4872: *8* 2010
+.. @+node:ekr.20101010141953.4873: *6* @select Urgent
+.. @+node:ekr.20101010141953.4896: *6* @pause
+.. @+node:ekr.20101010141953.4897: *6* @edit
+.. @+node:ekr.20101010141953.4916: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.png
+.. @+node:ekr.20101010141953.4917: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.svg
+.. @+node:ekr.20101010141953.4918: *6* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-009.png
+.. @+node:ekr.20101010141953.4919: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-009.html
+.. @+node:ekr.20101008061729.4526: *5* @slide 010
+You've just seen an introduction to Leo as an outlining editor. You can use Leo
+to make an outline, with optional text for each outline element. You can save
+the outline to a file. Outlines are explained more in a later tutorial in this
+series.
+
+  *The outlining capability of Leo goes far beyond what has just been demonstrated,
+  including multipath outlines, and multiple outlines in one file.*
+
+What we've shown so far is no different from other outlining editors. What makes
+Leo unique is the addition of a new feature. **Using simple directives, you can
+instruct Leo to extract text from any number of nodes, in any order, and write
+the text to a new file**. We call files created or managed from within a Leo
+outline **external file**. You can also embed outline information in the
+external file, giving Leo the ability to read the text pieces back into the Leo
+outline, even if they have been changed.
+
+In effect, Leo is a **meta-text** editor. It gives you the ability to create a
+structural document for a non structured document, or a document that is
+structured in some other way.
+
+What does this mean in practice? Some examples should help clarify things...
+.. @+node:ekr.20101010141953.4922: *6* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-010.html
+.. @+node:ekr.20101008061729.4527: *5* @slide 011
+Here is the "pim.leo" file again. We have:
+
+1. Selected the "Diary" node.
+2. Typed Ctrl-H to start editing the headline.
+   (You can also edit headlines with the Edit:Edit Headline...:Edit Headline command.
+
+.. image:: slide-011.png
+
+.. @+node:ekr.20101010141953.4940: *6* @screenshot
+.. @+node:ekr.20101010141953.4941: *7* To Do List
+@nocolor
+
+My to-do list.
+.. @+node:ekr.20101010141953.4942: *8* Urgent
+1. Make Leo tutorials.  The world is waiting.
+
+2. Pay phone bill or the world will never know.
+.. @+node:ekr.20101010141953.4943: *8* Important
+.. @+node:ekr.20101010141953.4944: *8* Soon
+.. @+node:ekr.20101010141953.4945: *8* Whenever
+.. @+node:ekr.20101010141953.4946: *7* Diary
+@nocolor
+
+This is my diary.
+.. @+node:ekr.20101010141953.4947: *8* 2009
+.. @+node:ekr.20101010141953.4948: *9* Aug
+.. @+node:ekr.20101010141953.4949: *9* Jul
+.. @+node:ekr.20101010141953.4950: *9* Jun
+.. @+node:ekr.20101010141953.4951: *9* May
+.. @+node:ekr.20101010141953.4952: *9* Apr
+.. @+node:ekr.20101010141953.4953: *9* Mar
+.. @+node:ekr.20101010141953.4954: *9* Feb
+.. @+node:ekr.20101010141953.4955: *9* Jan
+.. @+node:ekr.20101010141953.4956: *8* 2010
+.. @+node:ekr.20101010141953.4958: *6* @pause
+.. @+node:ekr.20101010141953.4957: *6* @select Diary
+.. @+node:ekr.20101010141953.5023: *6* @url screenshot
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.png
+.. @+node:ekr.20101010141953.5024: *6* @url working file
+c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.svg
+.. @+node:ekr.20101008061729.4528: *5* @slide 012
+.. @+node:ekr.20101008061729.4529: *5* @slide 013
+.. @+node:ekr.20101008061729.4530: *5* @slide 014
+.. @+node:ekr.20101008061729.4531: *5* @slide 015
+.. @+node:ekr.20101008061729.4532: *5* @slide 016
+.. @+node:ekr.20101008061729.4533: *5* @slide 017
+.. @+node:ekr.20101008061729.4534: *5* @slide 018
+.. @+node:ekr.20101008061729.4535: *5* @slide 019
+.. @+node:ekr.20101008061729.4536: *5* @slide 020
+.. @+node:ekr.20101008061729.4537: *5* @slide 021
+.. @+node:ekr.20101008061729.4539: *5* @slide 022
+.. @+node:ekr.20101008061729.4540: *5* @slide 023
 .. @+node:ekr.20100821182153.4345: ** @slideshow Installation
 @language rest
 .. @+node:ekr.20101014034526.5299: *3* @slide ((using Leo's installer
@@ -2152,94 +2000,6 @@ For full details about scripting in Leo, see the
 `Scripting Chapter`_ in `Leo's Users Guide`_.
 .. @+node:ekr.20101121125326.4972: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-011.html
-.. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
-@language rest
-@pagewidth 60
-.. @+node:ekr.20101122052247.4962: *3* @slide Clones and views
-Clones are one of Leo's most unusual and most useful features.
-
-A **clone** is a node that appears in more than one place in a Leo outline.
-
-Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
-
-Clones are marked with a small red *clone arrow** in the icon box.
-Deleting the penultimate clone removes the red arrow from the node.
-
-.. @+node:ekr.20101122052247.4964: *3* @slide Clones are the same node
-Changing the headline or body text of a clone changes the headline or body
-text of all other clones of that node. Furthermore, changing any descendants
-of a clone, including inserting, deleting or moving nodes, results in the
-same changes being made to all other clones.
-
-In fact, all clones of a node are actually *the exactly the same node*, so
-any change to one clone inevitably affects all other clones.
-
-.. @+node:ekr.20101122052247.4979: *4* @no-screenshot
-.. @+node:ekr.20101122052247.4966: *3* @slide Changing headlines
-Changing the headline of node A changes the headlines of all cloned nodes.
-
-.. Rename the node to B.
-.. @+node:ekr.20101122052247.4968: *3* @slide A new node
-Here we have created a node C following the first clone of B.
-
-.. @+node:ekr.20101122052247.4970: *3* @slide Adding a child node
-Moving C to the right makes C a child of node B.
-As you can see, C appears as a child of both cloned nodes.
-
-Even the expansion state of cloned nodes are identical:
-both clones are now expanded.
-
-.. @+node:ekr.20101122052247.4972: *3* @slide Creating a new child
-Here, I have created a new node with Ctrl-I (insert-node).
-
-The node appears as a child of both cloned nodes.
-
-.. @+node:ekr.20101122052247.4974: *3* @slide Keeping track of changes
-Changing a node marks all clones of that node as changed.
-When I save the Leo outline, Leo automatically writes all
-the external files that contain dirty nodes.
-
-.. @+node:ekr.20101122052247.4976: *3* @slide Clones create views
-Clones are important because they allow you to create as
-many views of the data in the outline as you like. In
-effect, Leo becomes a supremely flexible filing cabinet. Any
-ordinary node can act like a folder in the filing cabinet.
-Using clones, you can "file" a node in as many folders as
-you like.
-
-In Leo, a **view** is simply a subset of the nodes of the
-outline. We represent a view as **ordinary** node, called a
-**view node**, whose nodes can contain both regular nodes
-and clones. The children of the view node are the subset of
-nodes that define the view. It's that simple.
-
-With Leo, you can have as many view nodes as you like. There
-is no such thing as a single, "correct" view of data.
-.. @+node:ekr.20101122052247.4978: *3* @slide Using view nodes
-I use view nodes to focus attention on a set of disparate
-nodes.
-
-For example, when I fix a bug in Leo, I create a **bug
-node** containing all the data in Leo's source code that
-relates to the bug. As I discover code related to the bug, I
-clone nodes and move them under the bug node. I'll also add
-ordinary nodes as children of the bug node. These nodes
-contain the original bug report, descriptions of how I fixed
-the bug, test data, or any other notes I might want to keep.
-
-Once I have created the bug node, I concentrate *only* on
-that node and its children. I can examine the bug node and
-its children without having to jump around the outline.
-Everything I need is in one place. This extremely narrow
-focus makes it *much* easier to fix bugs. to jump around the
-outline. It doesn't matter how big or complex the outline
-is: I am only dealing with the bug node and its children.
-
-**Important**: I can fix the bug by changing the clones in
-the view node. When I save the Leo file, Leo will save all
-the @<file> nodes that contain any changed clone. Everything
-"just works".
-
 .. @+node:ekr.20101014034526.5280: ** @slideshow External files
 @language rest
 @pagewidth 60
@@ -2639,5 +2399,221 @@ body of the external file into the \@auto node.
 When Leo reads and **@edit node**, Leo reads the entire
 contents of the external file into the body text of the
 \@edit node.
+.. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
+@language rest
+@pagewidth 60
+.. @+node:ekr.20101122052247.4962: *3* @slide Clones and views
+Clones are one of Leo's most unusual and most useful features.
+
+A **clone** is a node that appears in more than one place in a Leo outline.
+
+Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
+
+Clones are marked with a small red *clone arrow** in the icon box.
+Deleting the penultimate clone removes the red arrow from the node.
+
+.. @+node:ekr.20101122052247.4964: *3* @slide Clones are the same node
+Changing the headline or body text of a clone changes the headline or body
+text of all other clones of that node. Furthermore, changing any descendants
+of a clone, including inserting, deleting or moving nodes, results in the
+same changes being made to all other clones.
+
+In fact, all clones of a node are actually *the exactly the same node*, so
+any change to one clone inevitably affects all other clones.
+
+.. @+node:ekr.20101122052247.4979: *4* @no-screenshot
+.. @+node:ekr.20101122052247.4966: *3* @slide Changing headlines
+Changing the headline of node A changes the headlines of all cloned nodes.
+
+.. Rename the node to B.
+.. @+node:ekr.20101122052247.4968: *3* @slide A new node
+Here we have created a node C following the first clone of B.
+
+.. @+node:ekr.20101122052247.4970: *3* @slide Adding a child node
+Moving C to the right makes C a child of node B.
+As you can see, C appears as a child of both cloned nodes.
+
+Even the expansion state of cloned nodes are identical:
+both clones are now expanded.
+
+.. @+node:ekr.20101122052247.4972: *3* @slide Creating a new child
+Here, I have created a new node with Ctrl-I (insert-node).
+
+The node appears as a child of both cloned nodes.
+
+.. @+node:ekr.20101122052247.4974: *3* @slide Keeping track of changes
+Changing a node marks all clones of that node as changed.
+When I save the Leo outline, Leo automatically writes all
+the external files that contain dirty nodes.
+
+.. @+node:ekr.20101122052247.4976: *3* @slide Clones create views
+Clones are important because they allow you to create as
+many views of the data in the outline as you like. In
+effect, Leo becomes a supremely flexible filing cabinet. Any
+ordinary node can act like a folder in the filing cabinet.
+Using clones, you can "file" a node in as many folders as
+you like.
+
+In Leo, a **view** is simply a subset of the nodes of the
+outline. We represent a view as **ordinary** node, called a
+**view node**, whose nodes can contain both regular nodes
+and clones. The children of the view node are the subset of
+nodes that define the view. It's that simple.
+
+With Leo, you can have as many view nodes as you like. There
+is no such thing as a single, "correct" view of data.
+.. @+node:ekr.20101122052247.4978: *3* @slide Using view nodes
+I use view nodes to focus attention on a set of disparate
+nodes.
+
+For example, when I fix a bug in Leo, I create a **bug
+node** containing all the data in Leo's source code that
+relates to the bug. As I discover code related to the bug, I
+clone nodes and move them under the bug node. I'll also add
+ordinary nodes as children of the bug node. These nodes
+contain the original bug report, descriptions of how I fixed
+the bug, test data, or any other notes I might want to keep.
+
+Once I have created the bug node, I concentrate *only* on
+that node and its children. I can examine the bug node and
+its children without having to jump around the outline.
+Everything I need is in one place. This extremely narrow
+focus makes it *much* easier to fix bugs. to jump around the
+outline. It doesn't matter how big or complex the outline
+is: I am only dealing with the bug node and its children.
+
+**Important**: I can fix the bug by changing the clones in
+the view node. When I save the Leo file, Leo will save all
+the @<file> nodes that contain any changed clone. Everything
+"just works".
+
+.. @+node:ekr.20101014034526.5296: ** @slideshow Using Leo's minibuffer
+@language rest
+@pagewidth 60
+
+>> You can use the print-commands command.
+
+> How can I run this command? Do I use the minibuffer?
+
+.. @+node:ekr.20101122071746.4988: *3* @slide Introduction
+Leo's **minibuffer** appears at the bottom of Leo's main window.
+
+You use the minibuffer to execute commands by name, and also
+to accumulate arguments to commands.
+
+Type <Alt-x> to put the cursor in the minibuffer.
+
+.. @+node:ekr.20101122071746.5034: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-001.html
+.. @+node:ekr.20101122071746.4990: *3* @slide Tab completion
+You could type the full command name in the minibuffer,
+followed by the <return> key to invoke the command,
+but that would be **way** too much work.
+
+Instead, you can use **tab completion** to avoid having to
+do much typing. With tab completion, there is no need to
+remember the exact names of Leo's commands.
+.. @+node:ekr.20101122071746.5004: *4* @no-screenshot
+.. @+node:ekr.20101122071746.5035: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-002.html
+.. @+node:ekr.20101122071746.4992: *3* @slide Example
+For example, suppose you want to print out the list of Leo's
+commands. You might remember only that there are several
+related commands and that they all start with "print".
+Just type::
+
+    <alt-x>pri<tab>
+
+You will see "print-" in the minibuffer.
+The **Completion tab** in the log pane shows
+all the commands that start with "print-".
+
+.. screenshot: show the Completion tab containing:
+..  print-bindings            
+..  print-commands            
+..  print-focus               
+..  print-gc-summary          
+..  print-macros              
+..  print-plugin-handlers      
+..  print-plugins-info        
+..  print-settings            
+..  print-stats        
+
+.. @+node:ekr.20101122071746.5036: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-003.html
+.. @+node:ekr.20101122071746.5005: *3* @slide Example, continued
+Now just type "c<tab>" and you will see one the single
+print-commands command in the minibuffer. Finally, type
+<return> to execute the command.
+
+.. screenshot:  show only the print-commands command in the Completion tab.
+.. @+node:ekr.20101122071746.5037: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-004.html
+.. @+node:ekr.20101122071746.5006: *3* @slide Example, concluded
+You will see something like the following.
+
+.. screenshot: show the Commands tab.
+.. @+node:ekr.20101122071746.5038: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-005.html
+.. @+node:ekr.20101122071746.4994: *3* @slide Details
+Using the minibuffer quickly becomes second nature. When in
+doubt about what the valid completions are, you simply hit
+the <tab> key.
+
+Here are a few more details you should know about:
+
+- You can use <BackSpace> in the minibuffer to show more
+  alternatives.
+
+- You can hit <Ctrl-G> at any time in Leo to put focus in
+  the body pane.  This is the way to exit the minibuffer
+  without executing any command.
+.. @+node:ekr.20101122071746.5039: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-006.html
+.. @+node:ekr.20101122071746.5007: *3* @slide Arguments
+Several of Leo's commands use the minibuffer to get arguments.
+
+For example, Leo's find command accumulates the search and
+replace strings in the minibuffer.
+
+To invoke the find command, type <Ctrl-F>.
+This puts the focus in the minibuffer.
+
+.. @+node:ekr.20101122071746.5040: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-007.html
+.. @+node:ekr.20101122071746.5021: *3* @slide Search string
+Now type the search string, say "def".
+
+.. screenshot: searching for "def".
+.. @+node:ekr.20101122071746.5041: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-008.html
+.. @+node:ekr.20101122071746.5008: *3* @slide Replace string
+You can invoke the find by typing <return>.
+
+However, suppose you want to replace "def" with "foo".
+
+Type <Shift-Ctrl-R>. The minibuffer prompts for the replacement string.
+
+..screenshot: Replace String: def With: 
+.. @+node:ekr.20101122071746.5042: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-009.html
+.. @+node:ekr.20101122071746.5009: *3* @slide Doing the find
+Type "Foo" and hit return to start the find-next command.
+
+.. screenshot show "def" selected.
+.. @+node:ekr.20101122071746.5043: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-010.html
+.. @+node:ekr.20101122071746.5010: *3* @slide Doing the replace
+Here, Leo has found the next instance of "def" in the body pane.
+
+To make the replacement, hit <Ctrl-minus>.
+
+To continue searching without making a replacement, hit <F3>.
+
+To end the search, hit <Ctrl-G>.
+
+This concludes the discussion of the minibuffer.
+.. @+node:ekr.20101122071746.5044: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-011.html
 .. @-all
 .. @-leo

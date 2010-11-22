@@ -20,17 +20,20 @@ This is the front page for various slide shows about Leo.
 .. _`Installation`:             slides/installation/slide-001.html
 .. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
 .. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
+.. _`Using Leo's Minibuffer`:   slides/using-leos-minibuffer/_build/html/slide-001.html
 
-Basics
-------
+Basic slide shows
+-----------------
 
-The `Installation`_ slideshow tells how to install Leo.
+`Installation`_  tells how to install Leo.
 
-The `Leo Basics Step By Step`_ slideshow explains the basics of Leo outlines.
+`Leo Basics Step By Step`_  explains the basics of Leo outlines.
 
-Intermediate topics
--------------------
+`Using Leo's Minibuffer`_ tells how to execute Leo's commands by name.
 
-The `Scripting Leo`_ slideshow explains how to use Python scripting in Leo.
+Intermediate slide shows
+------------------------
+
+`Scripting Leo`_ explains how to use Python scripting in Leo.
 .. @-all
 .. @-leo
