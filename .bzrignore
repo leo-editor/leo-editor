@@ -5,7 +5,6 @@
 leo/test/unittest/rst_write_test.txt
 *.exe
 *.o
-*.nsi
 *.~*
 *~
 *.tmp
