@@ -53,7 +53,6 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
-<v t="ekr.20101114081415.1492"><vh>To do</vh></v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
@@ -92,7 +91,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -rc1.
+2. Search for this suffix: -final.
 
 3. Search for copyright
 
@@ -246,7 +245,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.8-rc1
+Version: 4.8-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -651,8 +650,6 @@ Announcements
 - My blog</t>
 <t tx="ekr.20101025095431.1517">@nocolor-node
 
-- There is a problem with the desktop shortcut.
-
 - Make the License look better.  It can be an .rtf file.
 
 - Add description sections.
@@ -703,7 +700,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.8-rc1' ##version
+version = '4.8-final' ##version
 
 &lt;&lt; includes &gt;&gt;
 
@@ -1114,27 +1111,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
     return lines
 </t>
-<t tx="ekr.20101114081415.1492">@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/674198
-
-- No start menu shortcut for launching. NOT OK
-
-
-# Name the installer
-outFile "installer.exe"
- 
-# default section
-section
- 
-    # create a shortcut named "new shortcut" in the start menu programs directory
-    # presently, the new shortcut doesn't call anything (the second field is blank)
-    createShortCut "$SMPROGRAMS\new shortcut.lnk" ""
- 
-    # to delete shortcut, go to start menu directory and manually delete it
- 
-# default sec end
-sectionEnd</t>
 <t tx="ekr.20101115090518.1494">Leo 4.8 rc 1                               November 15, 2010
 
 Leo 4.8 release candidate 1 is now available at:
