@@ -2324,8 +2324,14 @@ class ScreenShotController(object):
             n = n.strip()
             if n.isdigit():
                 return int(n)
+            # 2010/11/23: allow file names of the form xnnn.png.
+            if n and n[-1].isdigit():
+                i = len(n) -1
+                while i >= 0 and n[i:].isdigit():
+                    i -= 1
+                return int(n[i+1:])
             else:
-                g.error('bad wink screenshot: %s' % (s))
+                g.error('wink screenshot file names must end with a number: %s' % (s))
                 raise KeyError
 
         aList.sort(key=key) # Essential.
