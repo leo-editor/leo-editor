@@ -140,6 +140,12 @@ For final:
 - Finish introductory slide shows.
 #@+node:ekr.20101024062147.6014: ** For 4.8.1 Autocompleter
 # This can be done in the trunk.
+#@+node:ekr.20101123131018.5842: *3* Don't save expansion bits in uA if not saving expansion bits
+@nocolor-node
+
+@bool put_expansion_bits_in_leo_files = False
+
+It's illogical to save bits in uA's if they aren't save in in the <v> elements.
 #@+node:ekr.20101118113953.5844: *3* Use new reformatParagraph code
 @nocolor-node
 

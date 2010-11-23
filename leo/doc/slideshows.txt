@@ -2011,493 +2011,6 @@ For full details about scripting in Leo, see the
 `Scripting Chapter`_ in `Leo's Users Guide`_.
 .. @+node:ekr.20101121125326.4972: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-011.html
-.. @+node:ekr.20101014034526.5280: ** @slideshow External files
-@language rest
-@pagewidth 60
-.. @+node:ekr.20101122052247.5007: *3* @ignore Old stuff
-.. @+node:ekr.20101014110348.5256: *4* @slide ((no-ss intro
-Leo nodes whose headline starts with \@file, \@auto or
-\@edit create **external files**, files outside of Leo on
-your file system::
-
-  @file myClass.py
-  @auto ../graphics/circles.cpp
-  @edit ~/.leo/.leoID.txt
-
-The headline contains a file name, which can be an absolute
-path or a path relative to the directory containing the Leo
-outline.
-
-**@file** embeds outline structure directly into external
-files using comments called **sentinel lines**. This is the
-recommended way to share external files among Leo users.
-
-**@auto** and **@edit** allow you to read and edit external
-files without inserting sentinel lines. The cost of avoiding
-sentinel lines is that Leo can not preserve outline
-structure exactly.
-.. @+node:ekr.20101020082858.5420: *5* @no-screenshot
-.. @+node:ekr.20101021092135.5430: *5* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-001.html
-.. @+node:ekr.20101020082858.5441: *4* @slide ((no-ss auto read/write
-Collectively, \@file, \@auto or \@edit trees are called
-**@<file> trees**.
-
-**Leo automatically reads and writes \@<file> trees**
-
-When you open a Leo outline, Leo recreates all \@<file>
-trees from the corresponding external files.
-
-When you save a Leo outline, Leo writes all changed \@<file>
-trees to the corresponding external files.
-
-A single Leo outline may be connected to dozens of external
-files. Reading external files is very fast because of an
-efficient file-caching scheme.
-
-As a result, Leo acts like an IDE (Integrated Development
-Environment). For example, a single Leo outline contains
-@file trees for all of Leo's core source files.
-.. @+node:ekr.20101020082858.5443: *5* @no-screenshot
-.. @+node:ekr.20101020082858.5446: *5* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-002.html
-.. @+node:ekr.20101014110348.5270: *4* at-edit
-**@edit nodes** contain the entire contents of an
-external file.
-
-.. @+node:ekr.20101014110348.5275: *5* @slide ((@edit intro
-Within a Leo outline, an @edit node contains
-the entire contents of an external file.
-.. @+node:ekr.20101014110348.5257: *5* @slide ((@edit
-Here, created a node called @edit spam.py.
-
-This represents the file spam.py in the same
-directory as the Leo outline.
-.. @+node:ekr.20101014110348.5261: *5* @slide ((simple body text
-I've typed some text into the body pane.
-
-The @language python line is a Leo directive. It
-tells Leo to syntax color the body text as Python
-source code.
-.. @+node:ekr.20101014110348.5260: *5* @slide ((save, creating the file
-I save the Leo outline file with Ctrl-S or the File:Save menu.
-
-When I do that, Leo automatically saves any @edit node that
-is new or has been changed.
-
-In this case, the @edit node was new, so the log window says::
-
-    created: c:\Users\edreamleo\.leo\spam.py
-    saved: workbook.leo
-
-Leo tells you the full path to created files, and
-the short path to updated files like workbook.leo.
-.. @+node:ekr.20101014110348.5262: *5* @slide ((change the text
-Now I've added some more text.
-
-The icon box shows that the @edit node is "dirty" (has been changed).
-.. @+node:ekr.20101014110348.5263: *5* @slide ((save again, updating the file
-I save the Leo outline again.
-
-Once again, Leo saves spam.py.
-
-This time, the log window says::
-
-    wrote: spam.py
-    saved: workbook.leo
-.. @+node:ekr.20101014110348.5265: *5* @slide ((here is the actual file
-.. @+node:ekr.20101014110348.5264: *5* @slide ((close the file
-Let's close the file and reopen it.
-
-We get exactly the same information,
-with the same node selected, with the same information.
-
-.. @+node:ekr.20101014110348.5266: *5* @slide ((edit the file outside of Leo
-We can edit spam.py outside of Leo.
-
-Let's add a comment.
-.. @+node:ekr.20101014110348.5267: *5* @slide ((close Leo file and reopen
-If we close the Leo file and reopen it,
-we see the new text.
-.. @+node:ekr.20101014110348.5274: *5* @slide ((@edit with existing files
-Rather than creating new files with @edit, it is more common
-to use @edit to connect Leo with files that already exist on your file system.
-.. @+node:ekr.20101014110348.5278: *4* at-thin
-.. @+node:ekr.20101019085517.5424: *5* @slide ((@file
-\@file trees are the most flexible way of creating and editing external files.
-
-Here, we have created an **@file node**, a node
-whose headline start with @file.
-.. @+node:ekr.20101014110348.5271: *4* at-auto
-.. @+node:ekr.20101014110348.5272: *5* ((@auto
-..  At present, there are **importers** for
-..  C, elisp, HTML, .ini files, Java, Javascript,
-..  Pascal, PHP, Python and xml. 
-
-
-**@auto** trees cause Leo to automatically create
-an outline based on the structure of the external
-file. 
-
-**@auto trees** cause Leo to **import**
-a file into a tree of Leo nodes, based on the
-file's extension. Leo's **importers** create Leo
-outlines based on the structure of the imported
-language. The importer for unknown languages reads
-the entire contents of the external file into the
-\@auto node. **@edit nodes** cause Leo to read the
-entire contents of an external file into the @edit
-node.
-
-Leo contains **importers** for common
-languages. These importers split the external file
-into outline nodes.
-.. @+node:ekr.20101014034526.5287: *4*   Topics
-sentinels
-
-With \@file, you also **share outline structure**.
-
-Leo opens external files automatically.
-
-Leo is an IDE
-.. @+node:ekr.20101122052247.4980: *3* @slide External files
-Trees whose root headline starts with \@file, \@auto or
-\@edit create **external files** on your file system. Here
-are some example headlines::
-
-  @file myClass.py
-  @auto ../graphics/circles.cpp
-  @edit ~/.leo/.leoID.txt
-
-As you can see, these nodes specify file names, which can be
-an absolute path or a path relative to the directory
-containing the Leo outline.
-
-Collectively, nodes that create external files are known as
-**@<file> nodes.** Leo defines several other kinds of
-@<file> nodes, but this slideshow will not discuss them.
-
-
-.. @+node:ekr.20101122052247.4982: *3* @slide Loading and saving files
-Leo automatically loads all @<file> trees when you open a
-Leo outline, and Leo writes any modified @<file> tree when
-you save an outline. Reading external files is very fast
-because of an efficient file-caching scheme.
-
-A single Leo outline may be connected to dozens of external
-files: this makes Leo work like an Integrated Development
-Environment (IDE). Leo outlines act like project files. For
-example, one Leo outline, leoPyRef.leo, contains \@file
-trees for all of Leo's core source files. Another Leo
-outline, leoPluginsRef.leo, creates the external files for
-all of Leo's plugins, and LeoDocs.leo contains all of Leo's
-documentation.
-.. @+node:ekr.20101122052247.4984: *3* @slide Sentinel lines
-Leo stores the structure of \@file trees in external files
-themselves using comment lines called **sentinel lines**.
-Sentinel lines allow Leo to keep track of outlines
-structure, including clone relationships. Using \@file is
-**highly recommended** whenever possible. In particular,
-using \@file allows you to **share outline structure** with
-others merely by sharing external files. External files
-created from \@file nodes contain **all** essential data:
-The .leo file contains only the headline of the \@file node.
-All the data resides in the external files.
-
-However, in some situations it is not appropriate to use
-sentinel comments in external files. In that case you use
-\@auto and \@edit trees to connect Leo outlines to existing
-external files without creating sentinel files. Not all of
-Leo's features can be used with \@auto and \@edit trees, but
-that can't be helped. In particular, Leo can not preserve
-outline structure exactly. Leo's "degraded" operation for
-such trees is similar to that found in all other editors and
-IDE's.
-
-The rest of this slide show will discuss \@file trees and
-their capabilities. We will then discuss \@auto and \@edit.
-.. @+node:ekr.20101122052247.4986: *3* @slide Using @file trees
-To repeat, it's best to use \@file to create external files
-if at all possible. The next series of slides will show you
-how to create external files with \@file trees.
-
-To create a new external file, create an \@file node giving
-the path to the external file. This path can be a full,
-absolute path, but usually it is more convenient to use a
-relative path. All relative paths in @<file> nodes are
-relative to Leo's **load directory**, the directory
-containing the .leo file for the present outline. In most
-cases, we can ignore the path prefix entirely. For example::
-
-    @file myFile.py
-.. @+node:ekr.20101122052247.4988: *3* @slide Top-level design pattern
-Here is the body text for a typical @file node that defines
-a single Python class::
-
-    << imports >>
-
-    class MyDemoClass:
-
-        @others
-
-Informally, it says that external file consists of import
-statements, followed by the class MyDemoClass. We expect to
-see the following:
-
-- A child node whose headline is << imports >>.
-
-- The methods of MyDemoClass in all the **other** child nodes.
-
-The next few slides will discuss this pattern line by line.
-
-.. @+node:ekr.20101122052247.4990: *3* @slide Section references
-The << imports >> line is a **section reference**. "Imports"
-is the **section name**. This line tells Leo to insert the
-**section definition** into the output file at the place
-where section reference occurs.
-.. @+node:ekr.20101122052247.4992: *3* @slide Section definitions
-**Section definition nodes** create section definitions.
-Section definition nodes contain a section name in the
-headline. The body text contains the section definition.
-
-Therefore, the definition of << imports >> are the lines::
-
-    import os
-    import sys
-
-Each section definition node must be a descendant of the
-node containing the section reference.
-.. @+node:ekr.20101122052247.4994: *3* @slide The @others directive
-The \@others directive is similar to a section reference;
-\@others tells Leo to insert text into the output file.
-
-However, instead of inserting the body text of one
-particular node, as in a section reference, \@others tells
-Leo to insert the body text of all node that **aren't**
-section definition nodes. That's where the name comes from:
-it inserts all the **other** nodes.
-.. @+node:ekr.20101122052247.4996: *3* @slide Expansions
-Here we have added two children of the root node, named, as
-usual in Python examples, spam and eggs. The expansion of
-the \@others directive will be the body text of those two
-nodes. Each line of the expansion is indented with the
-leading whitespace that occurs before the \@others
-directive.
-.. @+node:ekr.20101122052247.4998: *3* @slide Indentation
-Let us use the term **reference** to mean either a section
-reference or an \@others directive. The **expansion** of a
-reference is the set of all lines that Leo writes to the
-output file as the result of that reference.
-
-The indentation of references is significant. Leo indents
-each line of the expansion of a reference by the total
-amount of leading whitespace that is in effect at the point
-of the reference. This allows Leo handle languages like
-Python in which indentation is especially important.
-
-In our example, there is no leading whitespace before the
-reference to << imports >>, but there are four spaces before
-the \@others directives. This means that Leo writes the
-import statements without additional indentation, but Leo
-adds 4 spaces before all nodes written as the result of the
-\@others directive.
-
-**Important**: Indentation is controlled **only** by the
-indentation of references. The outline level of nodes in
-expansions does not affect indentation in any way.
-
-This **decoupling** of outline structure from indentation is
-very important: it allows you to create **organizer nodes**
-without affecting the external file in any significant way
-(other than sentinel comments).
-.. @+node:ekr.20101122052247.5000: *3* @slide Expansions, in more detail
-In our first example, the expansions of references are
-straightforward. However, any node may contain one or more
-section references, and any node may also contain a single
-\@others directive.
-
-Every line of an expansion is written as the result of
-exactly one reference.
-
-A. The expansion of a section reference is just exactly the
-   expansion of the body of the section definition node.
-   That expansion may include expansions of *other*
-   references appearing in that node.
-
-B. The expansion of an @others directive is the expansion of
-   all descendant nodes that aren't section definition nodes
-   and are not included in the expansion of \@others nodes
-   deeper in the tree. This means that no node is ever
-   included in the expansion of more than one \@other
-   directive. Non-section-definition nodes are included in
-   the expansion of the nearest \@others directive.
-
-.. @+node:ekr.20101122052247.5013: *3* @slide Orphan nodes
-In short, each node in an \@file tree, except the \@file
-node itself, must be part of the expansion of exactly one
-reference:
-
-1. Each section must be defined. There must be a section
-   reference in an ancestor of each section definition node.
-
-2. There must be no **orphan nodes**.  A section definition node is an
-   orphan if no ancestor node contains a reference to that node.
-   A non-definition node is an orphan if no ancestor node contains an
-   \@others directive.
-
-Leo will issue an error if these checks are not satisfied.
-.. @+node:ekr.20101122052247.5002: *3* @slide Using multiple @others nodes
-((
-<< imports >>
-@others
-))
-
-Here is a common pattern for a file that defines two
-classes, SpamClass and EggsClass. The top-level node
-includes imports, and then uses \@others to include the
-expansion of the rest of the outline.
-.. @+node:ekr.20101122052247.5004: *3* @slide SpamClass
-((
-class SpamClass:
-    @others
-))
-
-The first child node creates the expansion of SpamClass. The
-line::
-
-    class SpamClass:
-
-has no extra indentation, because the \@others in the
-top-level node has no leading whitespace.
-
-However, all the methods of the class will have 4 spaces of
-indentation because the \@others directive in *this* node is
-indented by 4 spaces.
-.. @+node:ekr.20101122052247.5006: *3* @slide EggsClass
-((
-class EggsClass:
-    @others
-))
-
-The second child node creates the expansion of EggsClass in
-a similar manner. It's always perfectly clear what nodes are
-included in \@others directives.
-
-Here, \@others refers to all descendant nodes of *this*
-node.
-.. @+node:ekr.20101122052247.5008: *3* @slide Using @others to group code
-((
-if 0:
-    @others
-))
-
-You can use @others to "comment out" all descendant nodes as
-shown. This works in Python because the indentation of the
-\@others directive cause the expansion of all descendant
-nodes to have 4 extra spaces.
-.. @+node:ekr.20101122052247.5010: *3* @slide Using @auto nodes
-When Leo reads an **@auto node**, Leo will automatically
-create an outline that shows the class, functions or other
-units of the external file.
-
-Leo can only do this if Leo has an **importer** for the
-external file. At present, Leo has importers for C, elisp,
-HTML, .ini files, Java, Javascript, Pascal, PHP, Python and
-xml. Leo determines the language using the file's extension.
-If no parser exists for a language, Leo copies the entire
-body of the external file into the \@auto node.
-.. @+node:ekr.20101122052247.5012: *3* @slide Using @edit nodes
-When Leo reads and **@edit node**, Leo reads the entire
-contents of the external file into the body text of the
-\@edit node.
-.. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
-@language rest
-@pagewidth 60
-.. @+node:ekr.20101122052247.4962: *3* @slide Clones and views
-Clones are one of Leo's most unusual and most useful features.
-
-A **clone** is a node that appears in more than one place in a Leo outline.
-
-Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
-
-Clones are marked with a small red *clone arrow** in the icon box.
-Deleting the penultimate clone removes the red arrow from the node.
-
-.. @+node:ekr.20101122052247.4964: *3* @slide Clones are the same node
-Changing the headline or body text of a clone changes the headline or body
-text of all other clones of that node. Furthermore, changing any descendants
-of a clone, including inserting, deleting or moving nodes, results in the
-same changes being made to all other clones.
-
-In fact, all clones of a node are actually *the exactly the same node*, so
-any change to one clone inevitably affects all other clones.
-
-.. @+node:ekr.20101122052247.4979: *4* @no-screenshot
-.. @+node:ekr.20101122052247.4966: *3* @slide Changing headlines
-Changing the headline of node A changes the headlines of all cloned nodes.
-
-.. Rename the node to B.
-.. @+node:ekr.20101122052247.4968: *3* @slide A new node
-Here we have created a node C following the first clone of B.
-
-.. @+node:ekr.20101122052247.4970: *3* @slide Adding a child node
-Moving C to the right makes C a child of node B.
-As you can see, C appears as a child of both cloned nodes.
-
-Even the expansion state of cloned nodes are identical:
-both clones are now expanded.
-
-.. @+node:ekr.20101122052247.4972: *3* @slide Creating a new child
-Here, I have created a new node with Ctrl-I (insert-node).
-
-The node appears as a child of both cloned nodes.
-
-.. @+node:ekr.20101122052247.4974: *3* @slide Keeping track of changes
-Changing a node marks all clones of that node as changed.
-When I save the Leo outline, Leo automatically writes all
-the external files that contain dirty nodes.
-
-.. @+node:ekr.20101122052247.4976: *3* @slide Clones create views
-Clones are important because they allow you to create as
-many views of the data in the outline as you like. In
-effect, Leo becomes a supremely flexible filing cabinet. Any
-ordinary node can act like a folder in the filing cabinet.
-Using clones, you can "file" a node in as many folders as
-you like.
-
-In Leo, a **view** is simply a subset of the nodes of the
-outline. We represent a view as **ordinary** node, called a
-**view node**, whose nodes can contain both regular nodes
-and clones. The children of the view node are the subset of
-nodes that define the view. It's that simple.
-
-With Leo, you can have as many view nodes as you like. There
-is no such thing as a single, "correct" view of data.
-.. @+node:ekr.20101122052247.4978: *3* @slide Using view nodes
-I use view nodes to focus attention on a set of disparate
-nodes.
-
-For example, when I fix a bug in Leo, I create a **bug
-node** containing all the data in Leo's source code that
-relates to the bug. As I discover code related to the bug, I
-clone nodes and move them under the bug node. I'll also add
-ordinary nodes as children of the bug node. These nodes
-contain the original bug report, descriptions of how I fixed
-the bug, test data, or any other notes I might want to keep.
-
-Once I have created the bug node, I concentrate *only* on
-that node and its children. I can examine the bug node and
-its children without having to jump around the outline.
-Everything I need is in one place. This extremely narrow
-focus makes it *much* easier to fix bugs. to jump around the
-outline. It doesn't matter how big or complex the outline
-is: I am only dealing with the bug node and its children.
-
-**Important**: I can fix the bug by changing the clones in
-the view node. When I save the Leo file, Leo will save all
-the @<file> nodes that contain any changed clone. Everything
-"just works".
-
 .. @+node:ekr.20101014034526.5296: ** @slideshow Using Leo's minibuffer
 @language rest
 @pagewidth 60
@@ -2664,5 +2177,395 @@ This concludes the discussion of the minibuffer.
 c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-011.png
 .. @+node:ekr.20101123095813.5018: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-011.html
+.. @+node:ekr.20101014034526.5280: ** @slideshow External files
+@language rest
+@pagewidth 60
+.. @+node:ekr.20101122052247.4980: *3* @slide External files
+Trees whose root headline starts with \@file, \@auto or
+\@edit create **external files** on your file system. Here
+are some example headlines::
+
+  @file myClass.py
+  @auto ../graphics/circles.cpp
+  @edit ~/.leo/.leoID.txt
+
+As you can see, these nodes specify file names, which can be
+an absolute path or a path relative to the directory
+containing the Leo outline.
+
+Collectively, nodes that create external files are known as
+**@<file> nodes.** Leo defines several other kinds of
+@<file> nodes, but this slideshow will not discuss them.
+
+.. no sc
+
+
+.. @+node:ekr.20101123095813.5020: *4* @no-screenshot
+.. @+node:ekr.20101122052247.4982: *3* @slide Loading and saving files
+Leo automatically loads all @<file> trees when you open a
+Leo outline, and Leo writes any modified @<file> tree when
+you save an outline. Reading external files is very fast
+because of an efficient file-caching scheme.
+
+A single Leo outline may be connected to dozens of external
+files: this makes Leo work like an Integrated Development
+Environment (IDE). Leo outlines act like project files. For
+example, one Leo outline, leoPyRef.leo, contains \@file
+trees for all of Leo's core source files. Another Leo
+outline, leoPluginsRef.leo, creates the external files for
+all of Leo's plugins, and LeoDocs.leo contains all of Leo's
+documentation.
+
+.. no sc
+.. @+node:ekr.20101123095813.5021: *4* @no-screenshot
+.. @+node:ekr.20101122052247.4984: *3* @slide Sentinel lines
+.. no sc
+Leo stores the structure of \@file trees in external files
+themselves using comment lines called **sentinel lines**.
+Sentinel lines allow Leo to keep track of outlines
+structure, including clone relationships. Using \@file is
+**highly recommended** whenever possible. In particular,
+using \@file allows you to **share outline structure** with
+others merely by sharing external files. External files
+created from \@file nodes contain **all** essential data:
+The .leo file contains only the headline of the \@file node.
+All the data resides in the external files.
+
+However, in some situations it is not appropriate to use
+sentinel comments in external files. In that case you use
+\@auto and \@edit trees to connect Leo outlines to existing
+external files without creating sentinel files. Not all of
+Leo's features can be used with \@auto and \@edit trees, but
+that can't be helped. In particular, Leo can not preserve
+outline structure exactly. Leo's "degraded" operation for
+such trees is similar to that found in all other editors and
+IDE's.
+
+The rest of this slide show will discuss \@file trees and
+their capabilities. We will then discuss \@auto and \@edit.
+.. @+node:ekr.20101123095813.5023: *4* @no-screenshot
+.. @+node:ekr.20101122052247.4986: *3* @slide Using @file trees
+To repeat, it's best to use \@file to create external files
+if at all possible. The next series of slides will show you
+how to create external files with \@file trees.
+
+To create a new external file, create an \@file node giving
+the path to the external file. This path can be a full,
+absolute path, but usually it is more convenient to use a
+relative path. All relative paths in @<file> nodes are
+relative to Leo's **load directory**, the directory
+containing the .leo file for the present outline. In most
+cases, we can ignore the path prefix entirely.
+
+.. sc 1: @file myFile.py
+.. @+node:ekr.20101122052247.4988: *3* @slide Top-level design pattern
+.. sc 2: top-level node
+..  << imports >>
+..  class MyDemoClass:
+..      @others
+
+The body text of the @file node contains typical code for a
+file that defines a single Python class. Informally, it says
+that external file consists of import statements, followed
+by the class MyDemoClass.
+
+Let's look at this pattern line by line.
+.. @+node:ekr.20101122052247.4990: *3* @slide Section references
+The << imports >> line is a **section reference**. "Imports"
+is the **section name**. This line tells Leo to insert the
+**section definition** into the output file at the place
+where section reference occurs.
+
+.. sc 3: top-level node (with imports line highlighted)
+.. @+node:ekr.20101122052247.4992: *3* @slide Section definitions
+**Section definition nodes** create section definitions.
+Section definition nodes contain a section name in the
+headline. The body text contains the section definition.
+
+Therefore, the definition of << imports >> are the lines::
+
+    import os
+    import sys
+
+Each section definition node must be a descendant of the
+node containing the section reference.
+
+.. sc 4: << imports node >>
+.. @+node:ekr.20101122052247.4994: *3* @slide The @others directive
+The \@others directive is similar to a section reference;
+\@others tells Leo to insert text into the output file.
+
+However, instead of inserting the body text of one
+particular node, as in a section reference, \@others tells
+Leo to insert the body text of all node that **aren't**
+section definition nodes. That's where the name comes from:
+it inserts all the **other** nodes.
+
+.. sc 5: top-level node (with @others line highlighted)
+.. @+node:ekr.20101122052247.4996: *3* @slide Expansions
+Here we have added two children of the root node, named, as
+usual in Python examples, spam and eggs. The expansion of
+the \@others directive will be the body text of those two
+nodes. Each line of the expansion is indented with the
+leading whitespace that occurs before the \@others
+directive.
+
+.. sc 6: spam and eggs added, still see the top-level node.
+.. @+node:ekr.20101123095813.5025: *3* @slide References
+Let us use the term **reference** to mean either a section
+reference or an \@others directive. The **expansion** of a
+reference is the set of all lines that Leo writes to the
+output file as the result of that reference.
+
+.. no sc
+.. @+node:ekr.20101123095813.5026: *4* @no-screenshot
+.. @+node:ekr.20101122052247.4998: *3* @slide Indentation
+The indentation of references is significant. Leo indents
+each line of the expansion of a reference by the total
+amount of leading whitespace that is in effect at the point
+of the reference. This allows Leo handle languages like
+Python in which indentation is especially important.
+
+In our example, there is no leading whitespace before the
+reference to << imports >>, but there are four spaces before
+the \@others directives. This means that Leo writes the
+import statements without additional indentation, but Leo
+adds 4 spaces before all nodes written as the result of the
+\@others directive.
+
+.. sc 7: highlight indentation of @others
+.. @+node:ekr.20101123095813.5024: *3* @slide Indentation, 2
+Indentation is controlled **only** by the
+indentation of references. The outline level of nodes in
+expansions does not affect indentation in any way.
+
+This **decoupling** of outline structure from indentation is
+very important: it allows you to create **organizer nodes**
+without affecting the external file in any significant way
+(other than sentinel comments).
+
+.. no sc
+.. @+node:ekr.20101123095813.5029: *4* @no-screenshot
+.. @+node:ekr.20101122052247.5000: *3* @slide Expansions: 2
+Any node may contain one or more section references, and any
+node may also contain a single \@others directive.
+
+A. The expansion of a section reference is just exactly the
+   expansion of the body of the section definition node.
+   That expansion may include expansions of *other*
+   references appearing in that node.
+
+B. The expansion of an @others directive is the expansion of
+   all descendant nodes that aren't section definition nodes
+   and are not included in the expansion of \@others nodes
+   deeper in the tree. This means that no node is ever
+   included in the expansion of more than one \@other
+   directive. Non-section-definition nodes are included in
+   the expansion of the nearest \@others directive.
+
+.. no sc
+.. @+node:ekr.20101123095813.5033: *4* @no-screenshot
+.. @+node:ekr.20101122052247.5013: *3* @slide Orphan nodes
+Each node in an \@file tree, except the \@file node itself,
+must be part of the expansion of exactly one reference. When
+writing an external file, Leo makes the following checks:
+
+1. Each section must be defined. There must be a section
+   reference in an ancestor of each section definition node.
+
+2. There must be no **orphan nodes**.  A section definition node is an
+   orphan if no ancestor node contains a reference to that node.
+   A non-definition node is an orphan if no ancestor node contains an
+   \@others directive.
+
+Leo will issue an error if these checks are not satisfied.
+
+.. no sc
+.. @+node:ekr.20101123095813.5035: *4* @no-screenshot
+.. @+node:ekr.20101122052247.5002: *3* @slide Using multiple @others nodes
+
+..  << imports >>
+..  @others
+..  ======== children
+..    SpamClass
+..      @others
+..    EggsClass
+..      @others
+
+Here is a common pattern for a file that defines two
+classes, SpamClass and EggsClass. The top-level node
+includes imports, and then uses \@others to include the
+expansion of the rest of the outline.
+
+.. sc 8: only @others at the top level.
+.. @+node:ekr.20101122052247.5004: *3* @slide SpamClass
+The first child node creates the expansion of SpamClass. The
+line::
+
+    class SpamClass:
+
+has no extra indentation, because the \@others in the
+top-level node has no leading whitespace.
+
+However, all the methods of the class will have 4 spaces of
+indentation because the \@others directive in *this* node is
+indented by 4 spaces.
+
+.. sc 9: SpamClass
+.. @+node:ekr.20101122052247.5006: *3* @slide EggsClass
+The second child node creates the expansion of EggsClass in
+a similar manner. It's always perfectly clear what nodes are
+included in \@others directives.
+
+Here, \@others refers to all descendant nodes of *this*
+node.
+
+.. sc 10: SpamClass
+.. @+node:ekr.20101122052247.5008: *3* @slide Using @others to group code
+You can use \@others to "comment out" all descendant nodes as
+shown. This works in Python because the indentation of the
+\@others directive cause the expansion of all descendant
+nodes to have 4 extra spaces.
+
+.. sc 11:
+..  if 0:
+    ..  @others
+.. @+node:ekr.20101123095813.5036: *3* @slide Summary of @file
+This concludes our brief discussion of \@file nodes. The next
+few slides discuss two alternatives to \@file, \@auto and
+\@edit.
+
+\@auto and \@edit create external files without sentinel
+lines. The cost of avoiding sentinel lines is that Leo can
+not preserve outline structure exactly.
+
+.. no sc
+.. @+node:ekr.20101123095813.5037: *4* @no-screenshot
+.. @+node:ekr.20101122052247.5010: *3* @slide Using @auto nodes
+When Leo reads an **@auto node**, Leo will automatically
+create an outline that shows the class, functions or other
+units of the external file.
+
+Leo can only do this if Leo has an **importer** for the
+external file. At present, Leo has importers for C, elisp,
+HTML, .ini files, Java, Javascript, Pascal, PHP, Python and
+xml. Leo determines the language using the file's extension.
+If no parser exists for a language, Leo copies the entire
+body of the external file into the \@auto node.
+
+.. no sc
+.. @+node:ekr.20101123095813.5038: *3* @slide @auto example
+.. sc 12: Showing tree of nodes imported by @auto
+.. @+node:ekr.20101122052247.5012: *3* @slide Using @edit nodes
+When Leo reads and **@edit node**, Leo reads the entire
+contents of the external file into the body text of the
+\@edit node. Any changes to the external file will appear in
+the \@edit node the next time Leo loads the external file.
+Rather than creating new files with @edit, it is more common
+to use @edit to connect Leo with files that already exist on
+your file system.
+
+.. sc 13: Showing @edit node.
+.. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
+@language rest
+@pagewidth 60
+.. @+node:ekr.20101122052247.4962: *3* @slide Clones and views
+Clones are one of Leo's most unusual and most useful features.
+
+A **clone** is a node that appears in more than one place in a Leo outline.
+
+Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
+
+Clones are marked with a small red *clone arrow** in the icon box.
+Deleting the penultimate clone removes the red arrow from the node.
+
+.. sc 1: Clone of A.
+.. Important: this be in an @file node.
+.. @+node:ekr.20101122052247.4964: *3* @slide Clones are the same node
+Changing the headline or body text of a clone changes the headline or body
+text of all other clones of that node. Furthermore, changing any descendants
+of a clone, including inserting, deleting or moving nodes, results in the
+same changes being made to all other clones.
+
+In fact, all clones of a node are actually *the exactly the same node*, so
+any change to one clone inevitably affects all other clones.
+
+.. no sc
+.. @+node:ekr.20101122052247.4979: *4* @no-screenshot
+.. @+node:ekr.20101122052247.4966: *3* @slide Changing headlines
+Changing the headline of node A changes the headlines of all cloned nodes.
+
+.. sc 2: Rename the node to B.
+.. @+node:ekr.20101122052247.4968: *3* @slide A new node
+Here we have created a node C following the first clone of B.
+
+.. sc 3: Create node C
+.. @+node:ekr.20101122052247.4970: *3* @slide Adding a child node
+Moving C to the right makes C a child of node B.
+As you can see, C appears as a child of both cloned nodes.
+
+Even the expansion state of cloned nodes are identical:
+both clones are now expanded.
+
+.. sc 4: move C right.
+.. @+node:ekr.20101122052247.4972: *3* @slide Creating a new child
+Here, I have created a new node with Ctrl-I (insert-node).
+
+The node appears as a child of both cloned nodes.
+
+.. sc 5: Insert node
+.. @+node:ekr.20101122052247.4974: *3* @slide Keeping track of changes
+Changing a node marks all clones of that node as changed.
+When I save the Leo outline, Leo automatically writes all
+the external files that contain dirty nodes.
+
+.. sc 6: @file node is dirty
+.. @+node:ekr.20101122052247.4976: *3* @slide Views
+Clones are important because they allow you to create as
+many views of the data in the outline as you like. In
+effect, Leo becomes a supremely flexible filing cabinet. Any
+ordinary node can act like a folder in the filing cabinet.
+Using clones, you can "file" a node in as many folders as
+you like.
+
+.. no sc
+.. @+node:ekr.20101123095813.5039: *3* @slide Views: 2
+In Leo, a **view** is simply a subset of the nodes of the
+outline. We represent a view as **ordinary** node, called a
+**view node**, whose nodes can contain both regular nodes
+and clones. The children of the view node are the subset of
+nodes that define the view. It's that simple.
+
+With Leo, you can have as many view nodes as you like. There
+is no such thing as a single, "correct" view of data.
+
+.. sc 7: Ordinary node with clones.
+.. @+node:ekr.20101122052247.4978: *3* @slide Bug nodes
+I use view nodes to focus attention on a set of disparate
+nodes. For example, when I fix a bug in Leo, I create a **bug
+node** containing all the data in Leo's source code that
+relates to the bug. As I discover code related to the bug, I
+clone nodes and move them under the bug node. I'll also add
+ordinary nodes as children of the bug node. These nodes
+contain the original bug report, descriptions of how I fixed
+the bug, test data, or any other notes I might want to keep.
+
+.. sc 8: bug node
+
+.. @+node:ekr.20101123095813.5040: *3* @slide Bug nodes: 2
+Once I have created the bug node, I concentrate *only* on
+that node and its children. I can examine the bug node and
+its children without having to jump around the outline.
+Everything I need is in one place. This extremely narrow
+focus makes it *much* easier to fix bugs. to jump around the
+outline. It doesn't matter how big or complex the outline
+is: I am only dealing with the bug node and its children.
+
+**Important**: I can fix the bug by changing the clones in
+the view node. When I save the Leo file, Leo will save all
+the @<file> nodes that contain any changed clone. Everything
+"just works".
+
+.. sc 9: fixing a bug in a cloned node.
 .. @-all
 .. @-leo
