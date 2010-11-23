@@ -11,7 +11,7 @@
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
-expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
+expanded="ekr.20050404094627,ekr.20101009111520.4525,ekr.20101008061729.4443,ekr.20101014110348.5338,ekr.20101014110348.5339,"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -151,7 +151,8 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
-<v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
+<v t="ekr.20100805165051.7176"
+expanded="ekr.20090711120622.10447,ekr.20101025080245.5542,"><vh>@file other_docs.txt</vh></v>
 </v>
 <v t="ekr.20101113120258.4929"><vh>To do (before 4.8 final)</vh>
 <v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
@@ -160,9 +161,9 @@ expanded="ekr.20101009111520.4525,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e302e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e302e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e302e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e302e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
 marks="ekr.20101014110348.5299,"
-expanded="ekr.20101014034526.5296,ekr.20101122071746.4992,"><vh>@file slideshows.txt</vh></v>
+expanded="ekr.20101122071746.4988,"><vh>@file slideshows.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -227,15 +228,7 @@ http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20091130111843.6787"></t>
 <t tx="ekr.20100731112744.7267"></t>
 <t tx="ekr.20100805171546.4412"># This section contains important files used to generate Leo's web site.</t>
-<t tx="ekr.20100821182153.4341">@pagewidth 70
-@language rest
-@nocolor-node
-
-To create a slideshow with sphinx:
-    
-cd leo\doc\html\slides\slideshow-name
-make html
-</t>
+<t tx="ekr.20100821182153.4341"></t>
 <t tx="ekr.20101007100904.4372"></t>
 <t tx="ekr.20101025080245.5794"></t>
 <t tx="ekr.20101025080245.5795"></t>
@@ -338,6 +331,12 @@ Important files:
 ** Discuss @auto in the tutorial!
 
 ** Discuss g.openWithFileName and g.pdb in the scripting chapter.
+
+- Make sure to upload all slides.
+
+- Eliminate Sphinx warnings:
+    Can probably be done by changing the slides page.
+    Create slides_toc for slides, separate from the main toc document.
 </t>
 <t tx="ekr.20101118091038.5398">@others
 
