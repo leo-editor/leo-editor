@@ -12,8 +12,8 @@ make html
 
 To generate screenshots from Wink & meld-slides & make-slide:
 
-1. Plan slides carefully.  Insert @no-screeshot nodes for slides
-   that will not have screenshots.
+1. Plan slides carefully.  Insert @no-screeshot nodes for @slide
+   nodes that will not have screenshots.
 
    Know the numbering of slides. I use the following kinds of comments
    to keep track of expected screenshots:
@@ -23,8 +23,11 @@ To generate screenshots from Wink & meld-slides & make-slide:
 
 2. Using the script in @slide nodes, take the screenshots in Wink.
 
+   I use a screenshots.bat script that starts screenshots.leo with
+   a standard size (900x700) window.
+
 3. Create the screenshots using Wink's Export As Html command.
-  The exact file names don't matter.
+   The exact file names don't matter, but they should be .png files.
 
 4. Create an @wink_path node in the @slideshow tree pointing
    to the screenshot folder.
@@ -37,7 +40,10 @@ To generate screenshots from Wink & meld-slides & make-slide:
    The creates the @url built slide node and runs the actual make,
    which creates the _build directory in the slideshow directory.
 
-8. Copy the *contents* of the *slideshow's* _build directory to the
+8. The make-slide-show command is useful for quickly generating
+   @url built slide nodes in batches.
+
+9. Copy the *contents* of the *slideshow's* _build directory to the
    proper slideshow directory of the server. Do *not* just copy the
    entire _build directory to the server.
 .. @+node:ekr.20101025080245.5540: ** To do: slideshows
@@ -2487,6 +2493,7 @@ your file system.
 .. @+node:ekr.20101014110348.5293: ** @slideshow Clones and views
 @language rest
 @pagewidth 60
+.. @+node:ekr.20101123095813.5044: *3* @wink_path ../doc/html/slides/clones-and-views/sc_files
 .. @+node:ekr.20101122052247.4962: *3* @slide Clones and views
 Clones are one of Leo's most unusual and most useful features.
 
@@ -2498,7 +2505,13 @@ Clones are marked with a small red *clone arrow** in the icon box.
 Deleting the penultimate clone removes the red arrow from the node.
 
 .. sc 1: Clone of A.
-.. Important: this be in an @file node.
+
+.. image:: slide-001.png
+
+.. @+node:ekr.20101123095813.5046: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-001.png
+.. @+node:ekr.20101123095813.5056: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-001.html
 .. @+node:ekr.20101122052247.4964: *3* @slide Clones are the same node
 Changing the headline or body text of a clone changes the headline or body
 text of all other clones of that node. Furthermore, changing any descendants
@@ -2510,14 +2523,30 @@ any change to one clone inevitably affects all other clones.
 
 .. no sc
 .. @+node:ekr.20101122052247.4979: *4* @no-screenshot
+.. @+node:ekr.20101123095813.5062: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-002.html
 .. @+node:ekr.20101122052247.4966: *3* @slide Changing headlines
 Changing the headline of node A changes the headlines of all cloned nodes.
 
 .. sc 2: Rename the node to B.
+
+.. image:: slide-003.png
+
+.. @+node:ekr.20101123095813.5047: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-003.png
+.. @+node:ekr.20101123095813.5057: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-003.html
 .. @+node:ekr.20101122052247.4968: *3* @slide A new node
 Here we have created a node C following the first clone of B.
 
 .. sc 3: Create node C
+
+.. image:: slide-004.png
+
+.. @+node:ekr.20101123095813.5048: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-004.png
+.. @+node:ekr.20101123095813.5058: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-004.html
 .. @+node:ekr.20101122052247.4970: *3* @slide Adding a child node
 Moving C to the right makes C a child of node B.
 As you can see, C appears as a child of both cloned nodes.
@@ -2526,18 +2555,59 @@ Even the expansion state of cloned nodes are identical:
 both clones are now expanded.
 
 .. sc 4: move C right.
+
+.. image:: slide-005.png
+
+.. @+node:ekr.20101123095813.5049: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-005.png
+.. @+node:ekr.20101123095813.5059: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-005.html
 .. @+node:ekr.20101122052247.4972: *3* @slide Creating a new child
-Here, I have created a new node with Ctrl-I (insert-node).
+Here, I have created a new node D with Ctrl-I (insert-node).
 
 The node appears as a child of both cloned nodes.
 
+In general, **any** change to one clone produces the
+corresponding change in all other clones.
+
 .. sc 5: Insert node
+
+.. image:: slide-006.png
+
+.. @+node:ekr.20101123095813.5050: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-006.png
+.. @+node:ekr.20101123095813.5060: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-006.html
 .. @+node:ekr.20101122052247.4974: *3* @slide Keeping track of changes
 Changing a node marks all clones of that node as changed.
 When I save the Leo outline, Leo automatically writes all
 the external files that contain dirty nodes.
 
+For example, the cloned spam node appears in two places.
+
 .. sc 6: @file node is dirty
+
+.. image:: slide-007.png
+
+.. @+node:ekr.20101123095813.5051: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-007.png
+.. @+node:ekr.20101123095813.5061: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-007.html
+.. @+node:ekr.20101123095813.5042: *3* @slide Keeping track of changes: 2
+Changing either clone marks both as changed and marks any
+ancestor @file nodes as changed as well.
+
+This ensures that saving the .leo file will also save all
+changed external files.
+
+.. sc 7: @file node is dirty
+
+.. image:: slide-008.png
+
+.. @+node:ekr.20101123095813.5052: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-008.png
+.. @+node:ekr.20101123095813.5063: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-008.html
 .. @+node:ekr.20101122052247.4976: *3* @slide Views
 Clones are important because they allow you to create as
 many views of the data in the outline as you like. In
@@ -2547,17 +2617,26 @@ Using clones, you can "file" a node in as many folders as
 you like.
 
 .. no sc
+.. @+node:ekr.20101123095813.5045: *4* @no-screenshot
+.. @+node:ekr.20101123095813.5064: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-009.html
 .. @+node:ekr.20101123095813.5039: *3* @slide Views: 2
 In Leo, a **view** is simply a subset of the nodes of the
 outline. We represent a view as **ordinary** node, called a
-**view node**, whose nodes can contain both regular nodes
-and clones. The children of the view node are the subset of
+**view node** (1). The children of the view node are the subset of
 nodes that define the view. It's that simple.
 
 With Leo, you can have as many view nodes as you like. There
 is no such thing as a single, "correct" view of data.
 
-.. sc 7: Ordinary node with clones.
+.. sc 8: Ordinary node with clones.
+
+.. image:: slide-010.png
+
+.. @+node:ekr.20101123095813.5053: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-010.png
+.. @+node:ekr.20101123095813.5065: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-010.html
 .. @+node:ekr.20101122052247.4978: *3* @slide Bug nodes
 I use view nodes to focus attention on a set of disparate
 nodes. For example, when I fix a bug in Leo, I create a **bug
@@ -2568,8 +2647,14 @@ ordinary nodes as children of the bug node. These nodes
 contain the original bug report, descriptions of how I fixed
 the bug, test data, or any other notes I might want to keep.
 
-.. sc 8: bug node
+.. sc 9: bug node
 
+.. image:: slide-011.png
+
+.. @+node:ekr.20101123095813.5054: *4* @url final output file
+c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-011.png
+.. @+node:ekr.20101123095813.5066: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-011.html
 .. @+node:ekr.20101123095813.5040: *3* @slide Bug nodes: 2
 Once I have created the bug node, I concentrate *only* on
 that node and its children. I can examine the bug node and
@@ -2584,6 +2669,9 @@ the view node. When I save the Leo file, Leo will save all
 the @<file> nodes that contain any changed clone. Everything
 "just works".
 
-.. sc 9: fixing a bug in a cloned node.
+.. no screenshot
+.. @+node:ekr.20101123095813.5043: *4* @no-screenshot
+.. @+node:ekr.20101123095813.5067: *4* @url built slide
+c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-012.html
 .. @-all
 .. @-leo
