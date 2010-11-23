@@ -10,18 +10,36 @@ To create a slideshow with sphinx:
 cd leo\doc\html\slides\slideshow-name
 make html
 
-To generate screenshots from Wink:
+To generate screenshots from Wink & meld-slides & make-slide:
 
-- Use Wink's Export As Html command.
-  The exact file names don't matter if you
-  are going to be using the meld-slides command.
+1. Plan slides carefully.  Insert @no-screeshot nodes for slides
+   that will not have screenshots.
 
-- I typically use the make-slide command to edit each slide's
-  screenshot one at a time.
+   Know the numbering of slides. I use the following kinds of comments
+   to keep track of expected screenshots:
 
-- To copy files to the server, copy the *contents* of the 
-  *slideshow's* _build directory to the slideshow directory
-  of the server, but do *not* just copy the entire _build directory.
+        .. no screenshot
+        .. sc 5: description
+
+2. Using the script in @slide nodes, take the screenshots in Wink.
+
+3. Create the screenshots using Wink's Export As Html command.
+  The exact file names don't matter.
+
+4. Create an @wink_path node in the @slideshow tree pointing
+   to the screenshot folder.
+
+5. Run the meld-slides command to create @url final output file nodes.
+
+6. Double-click @url final output nodes to edit them in InkScape.
+
+7. Run the make-slide command on the individual @slide nodes.
+   The creates the @url built slide node and runs the actual make,
+   which creates the _build directory in the slideshow directory.
+
+8. Copy the *contents* of the *slideshow's* _build directory to the
+   proper slideshow directory of the server. Do *not* just copy the
+   entire _build directory to the server.
 .. @+node:ekr.20101025080245.5540: ** To do: slideshows
 .. @+node:ekr.20101115152915.4933: *3* Next
 .. @+node:ekr.20101113110328.4947: *4* Using @button nodes
