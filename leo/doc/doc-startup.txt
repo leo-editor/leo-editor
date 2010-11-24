@@ -38,27 +38,19 @@ for p in root.subtree_iter():
 
 body = '\n'.join(body)
 root.setBodyString(body)
-#@+node:ekr.20050902080416: *4* @@button reformat-paragraph
-# Start at the top.
-b = c.frame.body.bodyCtrl
-b.mark_set('insert','1.0')
-b.tag_remove('sel','1.0','end')
-b.tag_add('sel','1.0','1.0')
-b.update_idletasks()
+#@+node:ekr.20101025080245.6075: *4* @@button promote-child-bodies
+'''Copy the body text of all children to the parent's body text.'''
 
-# Format until the end.
-count = 0 # Guard against loops.
-while count < 100:
-    count += 1
-    s = p.bodyString()
-    if not s.strip():
-        break
-    c.reformatParagraph()
-    s2 = p.bodyString()
-
-    index = b.index('insert')
-    if b.compare(index,'>=','end-1c'):
-        break
+# Great for creating what's new nodes.
+result = [p.b]
+b = c.undoer.beforeChangeNodeContents(p)
+for child in p.children():
+    if child.b:
+        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
+    else:
+        result.append('\n- %s\n\n' % (child.h))
+p.b = ''.join(result)
+c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
 #@+node:ekr.20091112060950.6677: *4* @@button Remove newlines
 s = p.bodyString()
 
@@ -151,73 +143,6 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True
-#@+node:ekr.20050812090111: *4* @@button rst3
-import leo.core.leoPlugins as leoPlugins
-
-rst3 = leoPlugins.getPluginModule('rst3')
-
-if rst3:
-    controller = rst3.controllers.get(c)
-    if controller:
-        controller.processTopTree(p)
-else:
-    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-    if rst3:
-        g.es('rst3 loaded')
-        rst3.onCreate('tag',{'c':c})
-    else:
-        # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True
-#@+node:ekr.20091006063434.13802: *4* @@button rst3
-c.rstCommands.rst3()
-#@+node:ekr.20050901054622: *4* @@button Save
-c.save()
-#@+node:ekr.20050901121617: *4* @@button sentence
-@color
-
-# Puts each sentence on a separate line
-# Not as useful as I had hoped.  The Reformat Paragraph command is better.
-
-@others
-
-splitSentences(c,p)
-#@+node:ekr.20050901121617.1: *5* splitSentences
-def splitSentences(c,p):
-
-    undoType = 'Split Sentences'
-    head,lines,tail,oldSel,oldYview = c.getBodyLines()
-    s = p.bodyString()
-    if not s.strip(): return
-
-    i = 0 ; line = [] ; result = [] ; nl = False
-    while i < len(s):
-        ch = s[i] ; i += 1 ; ch2 = '.'
-        if i < len(s): ch2 = s[i]
-        if ch in ('.',';') and ch2 in (' ','\t','\n'):
-            line.append(ch)
-            r = ''.join(line)+'\n'
-            if nl and ch == '.': r = r + '\n'
-            result.append(r)
-            line = [] ; nl = False
-            while i < len(s):
-                ch2 = s[i]
-                if ch2 == '\n' and ch == '.':
-                    nl = True
-                if ch2 in (' ','\t','\n'):
-                    i += 1
-                else:
-                    break
-        else: line.append(ch)
-
-    result.append(''.join(line)+'\n') # Add the last line.
-    result = ''.join(result)
-    c.updateBodyPane('',result,'',undoType,oldSel,oldYview)
-#@+node:ekr.20041226081019: *4* @@button Spell
-c.spellCommands.openSpellTab()
-#@+node:ekr.20070115172724.2: *4* @@button winpdb
-test.leo contains an @button windpdb node.
-Select the test to be debugged, then press the winpdb button or do <Alt>x winpdb<return>.
-This way is essentially the same as using the debug command, though the code is slightly different.
 #@+node:ekr.20101118091038.5398: *3* @button reformat @key=Ctrl-Shift-P
 @others
 
@@ -357,19 +282,6 @@ for p2 in p.subtree():
 s = '\n'.join(result)
 
 g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + s)
-#@+node:ekr.20101025080245.6075: *3* @button promote-child-bodies
-'''Copy the body text of all children to the parent's body text.'''
-
-# Great for creating what's new nodes.
-result = [p.b]
-b = c.undoer.beforeChangeNodeContents(p)
-for child in p.children():
-    if child.b:
-        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
-    else:
-        result.append('\n- %s\n\n' % (child.h))
-p.b = ''.join(result)
-c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
 #@+node:ekr.20101009111520.4525: *3*  Slideshow Buttons
 #@+node:ekr.20101008061729.4443: *4* @@button copy-@screenshot-node
 '''
