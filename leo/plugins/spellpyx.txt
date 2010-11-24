@@ -3848,3 +3848,5 @@ stdtypes
 self_and_subtree
 openWithFileName
 leos
+wink_path
+InkScape

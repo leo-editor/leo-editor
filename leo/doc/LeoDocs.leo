@@ -10,7 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e342e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e352e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -22,14 +22,6 @@
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
-</v>
-<v t="ekr.20101118091038.5398"><vh>@button reformat @key=Ctrl-Shift-P</vh>
-<v t="ekr.20101118091038.5399"><vh>reformatParagraph &amp; helpers</vh>
-<v t="ekr.20101118091038.5400"><vh>rp_get_args</vh></v>
-<v t="ekr.20101118091038.5401"><vh>rp_get_leading_ws</vh></v>
-<v t="ekr.20101118091038.5402"><vh>rp_reformat</vh></v>
-<v t="ekr.20101118091038.5403"><vh>rp_wrap_all_lines</vh></v>
-</v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
@@ -152,16 +144,14 @@
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
-<v t="ekr.20101113120258.4929"><vh>To do (before 4.8 final)</vh>
-<v t="ekr.20101028110015.8272"><vh>@file doc-to-do.txt</vh></v>
-</v>
-<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
-</v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
 marks="ekr.20101014110348.5299,"
-expanded="ekr.20101122071746.4990,ekr.20101122071746.4992,ekr.20101122052247.4980,ekr.20101123095813.5068,ekr.20101122052247.5012,"><vh>@file slideshows.txt</vh></v>
+expanded="ekr.20101010141953.5028,ekr.20101122071746.4990,ekr.20101122071746.4992,ekr.20101122052247.4980,ekr.20101123095813.5068,ekr.20101122052247.5012,"><vh>@file slideshows.txt</vh></v>
+</v>
+<v t="ekr.20101113120258.4929"><vh>To do</vh></v>
+<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -326,144 +316,7 @@ Important files:
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
 <t tx="ekr.20101113120258.4929">@nocolor-node
 
-** Discuss @auto in the tutorial!
-
 ** Discuss g.openWithFileName and g.pdb in the scripting chapter.
-
-- Make sure to upload all slides.
-
-- Eliminate Sphinx warnings:
-    Can probably be done by changing the slides page.
-    Create slides_toc for slides, separate from the main toc document.
-</t>
-<t tx="ekr.20101118091038.5398">@others
-
-reformatParagraph (c)
-
-</t>
-<t tx="ekr.20101118091038.5399">def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
-
-    """Reformat a text paragraph in a Tk.Text widget
-
-Wraps the concatenated text to present page width setting. Leading tabs are
-sized to present tab width setting. First and second line of original text is
-used to determine leading whitespace in reformatted text. Hanging indentation
-is honored.
-
-Paragraph is bound by start of body, end of body, blank lines, and lines
-starting with "@". Paragraph is selected by position of current insertion
-cursor."""
-
-    c = self ; body = c.frame.body ; w = body.bodyCtrl
-
-    if g.app.batchMode:
-        c.notValidInBatchMode("xxx")
-        return
-
-    if body.hasTextSelection():
-        i,j = w.getSelectionRange()
-        w.setInsertPoint(i)
-
-    ### To do: change f(c,args) to c.f(args)
-    oldSel,oldYview,original,pageWidth,tabWidth = rp_get_args(c)
-    head,lines,tail = c.findBoundParagraph()
-    if lines:
-        indents,leading_ws = rp_get_leading_ws(c,lines,tabWidth)
-        result = rp_wrap_all_lines(c,indents,leading_ws,lines,pageWidth)
-        rp_reformat(c,head,oldSel,oldYview,original,result,tail,undoType)</t>
-<t tx="ekr.20101118091038.5400">def rp_get_args (self):
-
-    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-
-    c = self ; body = c.frame.body ;  w = body.bodyCtrl
-
-    d = c.scanAllDirectives()
-    pageWidth = d.get("pagewidth")
-    tabWidth  = d.get("tabwidth")
-
-    original = w.getAllText()
-    oldSel =  w.getSelectionRange()
-    oldYview = body.getYScrollPosition()
-
-    return oldSel,oldYview,original,pageWidth,tabWidth
-</t>
-<t tx="ekr.20101118091038.5401">def rp_get_leading_ws (self,lines,tabWidth):
-
-    '''Compute and return indents and leading_ws.'''
-
-    c = self
-
-    indents = [0,0]
-    leading_ws = ["",""]
-
-    for i in (0,1):
-        if i &lt; len(lines):
-            # Use the original, non-optimized leading whitespace.
-            leading_ws[i] = ws = g.get_leading_ws(lines[i])
-            indents[i] = g.computeWidth(ws,tabWidth)
-
-    indents[1] = max(indents)
-
-    if len(lines) == 1:
-        leading_ws[1] = leading_ws[0]
-
-    return indents,leading_ws
-</t>
-<t tx="ekr.20101118091038.5402">def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
-
-    '''Reformat the body and update the selection.'''
-
-    c = self ; body = c.frame.body ; w = body.bodyCtrl
-    s = w.getAllText()
-
-    # This destroys recoloring.
-    junk, ins = body.setSelectionAreas(head,result,tail)
-
-    changed = original != head + result + tail
-    if changed:
-        # 2010/11/16: stay in the paragraph.
-        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
-    else:
-        # Advance to the next paragraph.
-        ins += 1 # Move past the selection.
-        while ins &lt; len(s):
-            i,j = g.getLine(s,ins)
-            line = s[i:j]
-            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace(): ### or line.startswith('@'):
-                ins = j+1
-            else:
-                ins = i ; break
-
-        # setSelectionAreas has destroyed the coloring.
-        c.recolor()
-
-    w.setSelectionRange(ins,ins,insert=ins)
-    w.see(ins)
-</t>
-<t tx="ekr.20101118091038.5403">def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
-
-    '''compute the result of wrapping all lines.'''
-
-    trailingNL = lines and lines[-1].endswith('\n')
-    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
-
-    # Wrap the lines, decreasing the page width by indent.
-    result = g.wrap_lines(lines,
-        pageWidth-indents[1],
-        pageWidth-indents[0])
-
-    # prefix with the leading whitespace, if any
-    paddedResult = []
-    paddedResult.append(leading_ws[0] + result[0])
-    for line in result[1:]:
-        paddedResult.append(leading_ws[1] + line)
-
-    # Convert the result to a string.
-    result = '\n'.join(paddedResult)
-    if trailingNL: result = result + '\n'
-
-    return result
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

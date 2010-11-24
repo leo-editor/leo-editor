@@ -1,5 +1,0 @@
-#@+leo-ver=5-thin
-#@+node:ekr.20101028110015.8272: * @file doc-to-do.txt
-#@+all
-#@-all
-#@-leo

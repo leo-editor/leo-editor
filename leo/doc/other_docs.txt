@@ -14,13 +14,13 @@ Leo screen shots
     :depth: 2
 .. @+node:ekr.20090811090022.14451: *4* @rst-no-head links
 .. Links used in this document...
+.. These create references to the _images directory.
 
 .. |leoQtMainWindow| image:: screen-shots/leo-qt-main-window.JPG
 
 .. |leoTkMainWindow| image:: screen-shots/leo-tk-main-window.jpg
 
 .. |leoQtMainWindowLinux| image:: screen-shots/leo-qt-main-window-linux.png
-.. .. |findTab| image:: screen-shots/find-tab.jpg
 
 .. |leoQtFindTab| image:: screen-shots/leo-qt-find-tab.JPG
 .. @+node:ekr.20090811090022.14452: *4* Windows screen shots

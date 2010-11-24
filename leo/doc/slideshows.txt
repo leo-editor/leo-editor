@@ -12,7 +12,7 @@ make html
 
 To generate screenshots from Wink & meld-slides & make-slide:
 
-1. Plan slides carefully.  Insert @no-screeshot nodes for @slide
+1. Plan slides carefully.  Insert @no-screenshot nodes for @slide
    nodes that will not have screenshots.
 
    Know the numbering of slides. I use the following kinds of comments
@@ -43,23 +43,14 @@ To generate screenshots from Wink & meld-slides & make-slide:
 8. The make-slide-show command is useful for quickly generating
    @url built slide nodes in batches.
 
-9. Copy the *contents* of the *slideshow's* _build directory to the
-   proper slideshow directory of the server. Do *not* just copy the
-   entire _build directory to the server.
+9. Copy the *contents* of the *slideshow's* _build/html directory to
+   the proper slideshow directory of the server. Do *not* just copy
+   the entire _build directory to the server.
 .. @+node:ekr.20101025080245.5540: ** To do: slideshows
 .. @+node:ekr.20101115152915.4933: *3* Next
 .. @+node:ekr.20101113110328.4947: *4* Using @button nodes
 .. @+node:ekr.20101115152915.4932: *4* Using @test nodes
 .. @+node:ekr.20101115152915.4934: *4* Using @url nodes
-.. @+node:ekr.20101116152804.5285: *4* Nutshell
-@nocolor-node
-
-The experience of using Leo is quite a bit different from using other editors or
-IDE's.
-
-- The unit of work is different: I work with nodes, not files or text.
-- The workflow is different: I create clones rather than searching.
-- Scripts are much more important: it's easy to manipulate code because less parsing is needed.
 .. @+node:ekr.20101121032151.5375: *3* Maybe
 .. @+node:ekr.20101113110328.4945: *4* Top 10 coolest features
 .. @+node:ekr.20101113110328.4946: *4* How to make slide shows
