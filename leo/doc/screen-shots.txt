@@ -17,6 +17,7 @@ Slides
 This is the front page for various slide shows about Leo.
 
 .. links
+.. _`Clones and views`:         slides/clones-and-views/slide-001.html
 .. _`Installation`:             slides/installation/slide-001.html
 .. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
 .. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
@@ -28,6 +29,8 @@ Basic slide shows
 `Installation`_  tells how to install Leo.
 
 `Leo Basics Step By Step`_  explains the basics of Leo outlines.
+
+`Clones and views`_ illustrates how clones work and show how they create views.
 
 `Using Leo's Minibuffer`_ tells how to execute Leo's commands by name.
 
