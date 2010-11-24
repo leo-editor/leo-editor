@@ -43,7 +43,7 @@ all code examples in this chapter by running the Execute Script command
 comments interspersed with the code.
 
 .. contents::
-    :depth: 5
+    :depth: 3
 
 .. @+node:ekr.20050812134441.1: *3* @rst-no-head Links
 .. Links used in this document.
@@ -261,7 +261,7 @@ The p.self_and_subtree generator returns a list of all positions in p's subtree,
     print("inclusive subtree of %s" % (parent.h),color="purple")
     for p in parent.self_and_subtree():
         print(p.h)
-.. @+node:ekr.20040903100514: *5* Testing whether a position is valid
+.. @+node:ekr.20040903100514: *4* Testing whether a position is valid
 The tests::
 
     if p:       # Right
@@ -274,7 +274,7 @@ In particular, the following **will not work**::
     if p is not None:   # Wrong
 .. @+node:ekr.20101124083644.5049: *4* g.pdb
 .. _`pdb`:  http://docs.python.org/library/pdb.html
-.. _`pudb': http://pypi.python.org/pypi/pudb
+.. _`pudb`: http://pypi.python.org/pypi/pudb
 
 g.pdb() invokes Python `pdb`_ debugger.  You must be running Leo
 from a console to invoke g.pdb().

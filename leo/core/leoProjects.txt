@@ -34,6 +34,1312 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
+#@+node:ekr.20101115092550.5825: ** Pylint reports
+@killcolor
+
+Wrong:
+************* Module leo.core.leoFileCommands
+E1120:833:baseFileCommands.getDiff: No value passed for parameter 'b' in function call
+E1101:1048:baseFileCommands.cleanSaxInputString: Class 'str' has no 'maketrans' member
+#@+node:ekr.20101115092550.5826: *3* Minor plugins
+************* Module leo.plugins.groupOperations
+W0601:190:initImages: Global variable 'groupOpPI' undefined at the module level
+W0601:191:initImages: Global variable 'bullseyePI' undefined at the module level
+W0601:192:initImages: Global variable 'copyPI' undefined at the module level
+W0601:193:initImages: Global variable 'clonePI' undefined at the module level
+W0601:194:initImages: Global variable 'movePI' undefined at the module level
+W0601:195:initImages: Global variable 'move_arrowPI' undefined at the module level
+W0601:196:initImages: Global variable 'copy_arrowPI' undefined at the module level
+W0601:197:initImages: Global variable 'clone_arrowPI' undefined at the module level
+W0601:198:initImages: Global variable 'markSpotPI' undefined at the module level
+W0601:199:initImages: Global variable 'markForPI' undefined at the module level
+W0601:200:initImages: Global variable 'operateOnMarkedPI' undefined at the module level
+W0601:201:initImages: Global variable 'clearMarksPI' undefined at the module level
+W0601:202:initImages: Global variable 'transferFromPI' undefined at the module level
+W0611: 33: Unused import copy
+W0611: 34: Unused import base64
+
+************* Module leo.plugins.leoupdate
+W0105: 59: String statement has no effect
+W0601: 85:onCreate: Global variable 'thePluginController' undefined at the module level
+W0601: 92:topLevelMenu: Global variable 'thePluginController' undefined at the module level
+E1101:132:LeoUpdater.showManagerDialog.HandlerDialog.initLocalCollection: Instance of 'HandlerDialog' has no 'c' member
+E1101:150:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'remote_plugin_list' member
+E1101:151:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
+E1101:155:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
+E1101:159:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'plugin_list' member
+E1101:160:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'plugin_list' member
+E1101:162:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'remote_plugin_list' member
+E1101:163:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
+W0611: 28: Unused import glob
+W0611: 27: Unused import sys
+W0611: 26: Unused import re
+
+************* Module leo.plugins.mod_labels
+W0311:113: Bad indentation. Found 3 spaces, expected 4
+W0311:114: Bad indentation. Found 6 spaces, expected 8
+W0311:121: Bad indentation. Found 6 spaces, expected 8
+W0311:123: Bad indentation. Found 3 spaces, expected 4
+W0311:124: Bad indentation. Found 6 spaces, expected 8
+W0311:128: Bad indentation. Found 3 spaces, expected 4
+W0311:129: Bad indentation. Found 6 spaces, expected 8
+W0311:130: Bad indentation. Found 6 spaces, expected 8
+W0311:135: Bad indentation. Found 6 spaces, expected 8
+W0311:137: Bad indentation. Found 3 spaces, expected 4
+W0311:138: Bad indentation. Found 6 spaces, expected 8
+W0311:201: Bad indentation. Found 20 spaces, expected 16
+W0311:202: Bad indentation. Found 20 spaces, expected 16
+W0311:203: Bad indentation. Found 20 spaces, expected 16
+W0311:204: Bad indentation. Found 28 spaces, expected 20
+W0311:205: Bad indentation. Found 20 spaces, expected 16
+W0311:207: Bad indentation. Found 20 spaces, expected 16
+W0311:221: Bad indentation. Found 20 spaces, expected 16
+W0311:223: Bad indentation. Found 20 spaces, expected 16
+W0311:231: Bad indentation. Found 20 spaces, expected 16
+E1123:537:labelsController.label_to_subnode: Passing unexpected keyword argument 'p' in function call
+E1120:537:labelsController.label_to_subnode: No value passed for parameter 'v' in function call
+E1101:566:labelsController.subnode_to_label: Instance of 'labelsController' has no 'get_labellist_for_node' member
+E0602:574:labelsController.subnode_to_label: Undefined variable 'v'
+E0602:600:labelsController.subnode_to_label: Undefined variable 'labels'
+E0602:601:labelsController.subnode_to_label: Undefined variable 'v'
+E0602:601:labelsController.subnode_to_label: Undefined variable 'labels'
+E0602:606:labelsController.subnode_to_label: Undefined variable 'v'
+E1120:618:labelsController.subnodes_to_label: No value passed for parameter 'title' in function call
+E0602:668:labelsController.subnodes_to_labels: Undefined variable 'v'
+W0611: 37: Unused import leoAtFile
+W0611: 38: Unused import leoCommands
+W0611: 48: Unused import os
+('EKR: exit status', 6)
+('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\mod_read_dir_outline.py', '')
+************* Module leo.plugins.mod_read_dir_outline
+E1103:105:controller.readDir: Instance of 'unitTestGui' has no 'runOpenDirectoryDialog' member (but some types could notbe inferred)
+E1103:105:controller.readDir: Instance of 'nullGui' has no 'runOpenDirectoryDialog' member (but some types could not beinferred)
+
+************* Module leo.plugins.multifile
+E1103:131:insertDirectoryString: Instance of 'unitTestGui' has no 'runOpenDirectoryDialog' member (but some types could not be inferred)
+E1103:131:insertDirectoryString: Instance of 'nullGui' has no 'runOpenDirectoryDialog' member (but some types could not be inferred)
+
+************* Module leo.plugins.newButtons
+E1101:246:UIHelperClass.addWidgets: Instance of 'FlatOptionMenu' has no 'pack' member
+E1111:359:HelperForm.formCommit: Assigning to function call which doesn't return
+
+************* Module leo.plugins.nodeActions
+W0312:252: Found indentation with tabs instead of spaces
+W0312:253: Found indentation with tabs instead of spaces
+W0312:254: Found indentation with tabs instead of spaces
+W0312:255: Found indentation with tabs instead of spaces
+W0312:256: Found indentation with tabs instead of spaces
+W0312:257: Found indentation with tabs instead of spaces
+W0311:261: Bad indentation. Found 3 spaces, expected 4
+W0311:270: Bad indentation. Found 3 spaces, expected 4
+W0311:272: Bad indentation. Found 3 spaces, expected 4
+W0311:273: Bad indentation. Found 6 spaces, expected 8
+W0311:276: Bad indentation. Found 3 spaces, expected 4
+W0311:277: Bad indentation. Found 3 spaces, expected 4
+W0311:278: Bad indentation. Found 6 spaces, expected 8
+W0311:281: Bad indentation. Found 3 spaces, expected 4
+W0311:282: Bad indentation. Found 3 spaces, expected 4
+W0311:283: Bad indentation. Found 6 spaces, expected 8
+W0311:285: Bad indentation. Found 3 spaces, expected 4
+W0311:287: Bad indentation. Found 6 spaces, expected 8
+W0311:288: Bad indentation. Found 6 spaces, expected 8
+W0311:290: Bad indentation. Found 6 spaces, expected 8
+W0311:293: Bad indentation. Found 9 spaces, expected 12
+W0311:294: Bad indentation. Found 12 spaces, expected 16
+W0311:297: Bad indentation. Found 9 spaces, expected 12
+W0311:298: Bad indentation. Found 12 spaces, expected 16
+W0311:300: Bad indentation. Found 9 spaces, expected 12
+W0311:301: Bad indentation. Found 9 spaces, expected 12
+W0311:302: Bad indentation. Found 12 spaces, expected 16
+W0311:305: Bad indentation. Found 9 spaces, expected 12
+W0311:306: Bad indentation. Found 9 spaces, expected 12
+W0311:307: Bad indentation. Found 12 spaces, expected 16
+W0311:308: Bad indentation. Found 9 spaces, expected 12
+W0311:309: Bad indentation. Found 12 spaces, expected 16
+W0311:311: Bad indentation. Found 9 spaces, expected 12
+W0311:312: Bad indentation. Found 9 spaces, expected 12
+W0311:313: Bad indentation. Found 9 spaces, expected 12
+W0311:314: Bad indentation. Found 12 spaces, expected 16
+W0311:316: Bad indentation. Found 9 spaces, expected 12
+W0311:317: Bad indentation. Found 9 spaces, expected 12
+W0311:318: Bad indentation. Found 12 spaces, expected 16
+W0311:322: Bad indentation. Found 9 spaces, expected 12
+W0311:326: Bad indentation. Found 9 spaces, expected 12
+W0311:327: Bad indentation. Found 9 spaces, expected 12
+W0311:328: Bad indentation. Found 9 spaces, expected 12
+W0311:330: Bad indentation. Found 12 spaces, expected 16
+W0311:331: Bad indentation. Found 12 spaces, expected 16
+W0311:332: Bad indentation. Found 15 spaces, expected 20
+W0311:334: Bad indentation. Found 15 spaces, expected 20
+W0311:335: Bad indentation. Found 15 spaces, expected 20
+W0311:336: Bad indentation. Found 18 spaces, expected 24
+W0311:340: Bad indentation. Found 9 spaces, expected 12
+W0311:341: Bad indentation. Found 12 spaces, expected 16
+W0311:342: Bad indentation. Found 9 spaces, expected 12
+W0311:343: Bad indentation. Found 12 spaces, expected 16
+W0311:344: Bad indentation. Found 9 spaces, expected 12
+W0311:345: Bad indentation. Found 12 spaces, expected 16
+W0311:346: Bad indentation. Found 15 spaces, expected 20
+W0311:347: Bad indentation. Found 12 spaces, expected 16
+W0311:348: Bad indentation. Found 15 spaces, expected 20
+W0311:351: Bad indentation. Found 12 spaces, expected 16
+W0311:352: Bad indentation. Found 15 spaces, expected 20
+W0311:354: Bad indentation. Found 18 spaces, expected 24
+W0311:355: Bad indentation. Found 18 spaces, expected 24
+W0311:356: Bad indentation. Found 18 spaces, expected 24
+W0311:357: Bad indentation. Found 18 spaces, expected 24
+W0311:358: Bad indentation. Found 21 spaces, expected 28
+W0311:360: Bad indentation. Found 12 spaces, expected 16
+W0311:362: Bad indentation. Found 12 spaces, expected 16
+W0311:364: Bad indentation. Found 12 spaces, expected 16
+W0311:365: Bad indentation. Found 15 spaces, expected 20
+W0311:366: Bad indentation. Found 9 spaces, expected 12
+W0311:367: Bad indentation. Found 12 spaces, expected 16
+W0311:368: Bad indentation. Found 15 spaces, expected 20
+W0311:371: Bad indentation. Found 6 spaces, expected 8
+W0311:373: Bad indentation. Found 9 spaces, expected 12
+W0311:374: Bad indentation. Found 12 spaces, expected 16
+W0311:375: Bad indentation. Found 9 spaces, expected 12
+W0311:376: Bad indentation. Found 6 spaces, expected 8
+W0311:378: Bad indentation. Found 9 spaces, expected 12
+W0311:379: Bad indentation. Found 12 spaces, expected 16
+W0311:380: Bad indentation. Found 9 spaces, expected 12
+W0311:381: Bad indentation. Found 6 spaces, expected 8
+W0311:383: Bad indentation. Found 9 spaces, expected 12
+W0311:384: Bad indentation. Found 12 spaces, expected 16
+W0311:385: Bad indentation. Found 9 spaces, expected 12
+W0311:386: Bad indentation. Found 3 spaces, expected 4
+W0311:388: Bad indentation. Found 6 spaces, expected 8
+W0311:389: Bad indentation. Found 9 spaces, expected 12
+W0311:390: Bad indentation. Found 6 spaces, expected 8
+W0311:394: Bad indentation. Found 3 spaces, expected 4
+W0311:395: Bad indentation. Found 3 spaces, expected 4
+W0311:396: Bad indentation. Found 7 spaces, expected 8
+W0311:397: Bad indentation. Found 7 spaces, expected 8
+W0311:398: Bad indentation. Found 7 spaces, expected 8
+W0311:399: Bad indentation. Found 7 spaces, expected 8
+W0311:401: Bad indentation. Found 7 spaces, expected 8
+W0311:402: Bad indentation. Found 11 spaces, expected 12
+W0311:403: Bad indentation. Found 11 spaces, expected 12
+W0311:404: Bad indentation. Found 7 spaces, expected 8
+W0311:405: Bad indentation. Found 11 spaces, expected 12
+W0311:411: Bad indentation. Found 11 spaces, expected 12
+W0311:413: Bad indentation. Found 11 spaces, expected 12
+W0311:414: Bad indentation. Found 15 spaces, expected 16
+W0311:415: Bad indentation. Found 15 spaces, expected 16
+W0311:416: Bad indentation. Found 7 spaces, expected 8
+W0311:418: Bad indentation. Found 11 spaces, expected 12
+W0311:419: Bad indentation. Found 15 spaces, expected 16
+W0311:420: Bad indentation. Found 15 spaces, expected 16
+W0311:421: Bad indentation. Found 11 spaces, expected 12
+W0311:422: Bad indentation. Found 11 spaces, expected 12
+W0311:424: Bad indentation. Found 7 spaces, expected 8
+
+************* Module leo.plugins.pie_menus
+E1101:104:PieMenu.drawString: Instance of 'PieMenu' has no 'l4' member
+E1101:104:PieMenu.drawString: Instance of 'PieMenu' has no 'l4' member
+E0602:134:PieMenu.construct: Undefined variable 'l1'
+E0602:138:PieMenu.construct: Undefined variable 'l1'
+E0602:142:PieMenu.construct: Undefined variable 'l1'
+E0602:147:PieMenu.construct: Undefined variable 'l1'
+E0602:151:PieMenu.construct: Undefined variable 'l1'
+E0602:166:PieMenu.construct: Undefined variable 'l1'
+E0602:179:PieMenu.construct: Undefined variable 'l3'
+E0602:185:PieMenu.construct: Undefined variable 'l3'
+E0602:192:PieMenu.construct: Undefined variable 'l3'
+E0602:200:PieMenu.construct: Undefined variable 'l2'
+E0602:206:PieMenu.construct: Undefined variable 'l2'
+E0602:212:PieMenu.construct: Undefined variable 'l2'
+E0602:219:PieMenu.construct: Undefined variable 'l2'
+E0602:225:PieMenu.construct: Undefined variable 'l2'
+E0602:233:PieMenu.construct: Undefined variable 'l4'
+E0602:239:PieMenu.construct: Undefined variable 'l4'
+E0602:246:PieMenu.construct: Undefined variable 'l4'
+E0602:254:PieMenu.construct: Undefined variable 'l5'
+E0602:262:PieMenu.construct: Undefined variable 'l6'
+E0602:270:PieMenu.construct: Undefined variable 'l7'
+E0602:276:PieMenu.construct: Undefined variable 'l7'
+E0602:282:PieMenu.construct: Undefined variable 'l7'
+E1101:381:PieMenu.clean: Instance of 'PieMenu' has no 'l1' member
+E1101:382:PieMenu.clean: Instance of 'PieMenu' has no 'l2' member
+E1101:383:PieMenu.clean: Instance of 'PieMenu' has no 'l3' member
+E1101:384:PieMenu.clean: Instance of 'PieMenu' has no 'l4' member
+E1101:385:PieMenu.clean: Instance of 'PieMenu' has no 'l5' member
+E1101:386:PieMenu.clean: Instance of 'PieMenu' has no 'l6' member
+E1101:387:PieMenu.clean: Instance of 'PieMenu' has no 'l7' member
+E1101:433:PieMenu.draw: Instance of 'PieMenu' has no 'l1' member
+E1101:434:PieMenu.draw: Instance of 'PieMenu' has no 'l3' member
+E1101:435:PieMenu.draw: Instance of 'PieMenu' has no 'l2' member
+E1101:436:PieMenu.draw: Instance of 'PieMenu' has no 'l4' member
+E1101:437:PieMenu.draw: Instance of 'PieMenu' has no 'l5' member
+E1101:438:PieMenu.draw: Instance of 'PieMenu' has no 'l6' member
+E1101:439:PieMenu.draw: Instance of 'PieMenu' has no 'l7' member
+E1101:440:PieMenu.draw: Instance of 'PieMenu' has no 'l1' member
+E1101:441:PieMenu.draw: Instance of 'PieMenu' has no 'l3' member
+E1101:442:PieMenu.draw: Instance of 'PieMenu' has no 'l2' member
+E1101:443:PieMenu.draw: Instance of 'PieMenu' has no 'l4' member
+E1101:444:PieMenu.draw: Instance of 'PieMenu' has no 'l5' member
+E1101:445:PieMenu.draw: Instance of 'PieMenu' has no 'l6' member
+E1101:446:PieMenu.draw: Instance of 'PieMenu' has no 'l7' member
+
+************* Module leo.plugins.read_only_nodes
+E0611: 73: No name 'parse' in module 'urllib'
+E0602:188:FTPurl.read: Undefined variable 'sys'
+E0602:222:FTPurl.write: Undefined variable 'sys'
+E0213:226:FTPurl.seek: Method should have "self" as first argument
+E0602:227:FTPurl.seek: Undefined variable 'self'
+E0211:229:FTPurl.flush: Method has no argument
+E0602:243:FTPurl.dir: Undefined variable 'sys'
+W0601:277:enable_body: Global variable 'insertOnTime' undefined at the module level
+W0601:277:enable_body: Global variable 'insertOffTime' undefined at the module level
+W0601:287:disable_body: Global variable 'insertOnTime' undefined at the module level
+W0601:287:disable_body: Global variable 'insertOffTime' undefined at the module level
+
+************* Module leo.plugins.rClick
+W0511:611: TODO:
+E1101:938:pluginController.getButtonHandlers: Instance of 'pluginController' has no 'button_handlers' member
+E1101:1567:pluginController.findButtonCommandClass.doCommand: Instance of 'findButtonCommandClass' has no 'data' member
+W0611:640: Unused import ImageTk
+W0611:639: Unused import Image
+
+************* Module leo.plugins.searchbar
+W0107: 89:onPreCreate: Unnecessary pass statement
+E1101:162:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'bg' member
+E1101:168:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'labelText' member
+E1101:170:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'command' member
+E1101:225:SearchbarEntryWidget.detachWidget: Instance of 'SearchbarEntryWidget' has no 'leoIconBar' member
+E1101:230:SearchbarEntryWidget.detachWidget: Instance of 'SearchbarEntryWidget' has no 'leoIconBar' member
+E1101:252:SearchbarEntryWidget.onTextChanged: Instance of 'SearchbarEntryWidget' has no 'slave' member
+E1101:261:SearchbarEntryWidget.onRightClick: Instance of 'SearchbarEntryWidget' has no 'entry_menu' member
+E1101:267:SearchbarEntryWidget.onReturn: Instance of 'SearchbarEntryWidget' has no 'command' member
+W0107:403:pluginController.toggleSearchbarCommandClass.doCommand: Unnecessary pass statement
+W0611: 27: Unused import leoPlugins
+W0611: 30: Unused import sys
+W0611: 38: Unused import ImageTk
+W0611: 37: Unused import Image
+W0611: 29: Unused import re
+W0611: 31: Unused import os
+
+************* Module leo.plugins.searchbox
+E1101:241:QuickFind.__init__: Class 'leoTkinterFrame' has no 'leoTkTextWidget' member
+E1103:276:QuickFind.init_s_ctrl: Instance of 'searchWidget' has no 'mark_set' member (but some types could not be inferred)
+E1103:278:QuickFind.init_s_ctrl: Instance of 'searchWidget' has no 'toGuiIndex' member (but some types could not be inferred)
+E1103:279:QuickFind.init_s_ctrl: Instance of 'searchWidget' has no 'mark_set' member (but some types could not be inferred)
+
+************* Module leo.plugins.templates
+W0601: 95:initImages: Global variable 'templatePI' undefined at the module level
+W0601: 96:initImages: Global variable 'tempwizPI' undefined at the module level
+E0602:205:getTemplateDialog: Undefined variable 'bs'
+E0602:206:getTemplateDialog: Undefined variable 'hs'
+
+************* Module leo.plugins.toolbar
+W0511:725: FIXME:
+W0511:805: TODO: not ready yet
+E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'tkIconBarClass' has no 'getButton' member (but some types could not be inferred)
+E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'nullIconBarClass' has no 'getButton' member (but some types could not be inferred)
+W0221:467:ToolbarTkinterFrame.addIconWidget: Arguments number differs from overridden method
+W0221:475:ToolbarTkinterFrame.clearIconBar: Arguments number differs from overridden method
+E1101:479:ToolbarTkinterFrame.clearIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
+W0221:481:ToolbarTkinterFrame.createIconBar: Arguments number differs from overridden method
+E1101:495:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
+E1101:501:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
+E1101:504:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
+W0221:516:ToolbarTkinterFrame.hideIconBar: Arguments number differs from overridden method
+E1101:520:ToolbarTkinterFrame.hideIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
+E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'tkIconBarClass' has no 'getWidgetFrame' member (but some
+types could not be inferred)
+E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'nullIconBarClass' has no 'getWidgetFrame' member (but som
+e types could not be inferred)
+E1101:556:ToolbarTkinterFrame.getToolbarFrame: Instance of 'ToolbarTkinterFrame' has no 'toolBar' member
+E1101:619:ToolbarIconWidgetFrame.detachWidget: Instance of 'ToolbarIconWidgetFrame' has no 'leoIconBar' member
+E1101:624:ToolbarIconWidgetFrame.detachWidget: Instance of 'ToolbarIconWidgetFrame' has no 'leoIconBar' member
+E1101:834:ToolbarIconButton.detachWidget: Instance of 'ToolbarIconButton' has no 'leoIconBar' member
+E1101:839:ToolbarIconButton.detachWidget: Instance of 'ToolbarIconButton' has no 'leoIconBar' member
+E1101:971:ToolbarIconButton.setCommand: Instance of 'ToolbarIconButton' has no 'config' member
+E1101:1007:ToolbarScriptButton.__init__.<lambda>: Instance of 'ToolbarScriptButton' has no 'invoke' member
+W0221:1229:ToolbarScriptingController.executeScriptFromButton: Arguments number differs from overridden method
+W0221:1314:ToolbarScriptingController.createScriptButtonIconButton: Arguments number differs from overridden method
+E1103:1336:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptButton' has no 'configure'
+ member (but some types could not be inferred)
+W0221:1338:ToolbarScriptingController.addScriptButtonCommand: Arguments number differs from overridden method
+W0221:1816:ToolbarTkIconBarClass.addWidget: Arguments number differs from overridden method
+W0221:1992:ToolbarTkIconBarClass.pack: Arguments number differs from overridden method
+
+************* Module leo.plugins.xcc_nodes
+W0312:233: Found indentation with tabs instead of spaces
+W0312:403: Found indentation with tabs instead of spaces
+W0312:405: Found indentation with tabs instead of spaces
+W0312:406: Found indentation with tabs instead of spaces
+W0312:407: Found indentation with tabs instead of spaces
+W0312:409: Found indentation with tabs instead of spaces
+W0312:410: Found indentation with tabs instead of spaces
+W0312:414: Found indentation with tabs instead of spaces
+W0312:415: Found indentation with tabs instead of spaces
+W0312:420: Found indentation with tabs instead of spaces
+W0312:421: Found indentation with tabs instead of spaces
+W0312:422: Found indentation with tabs instead of spaces
+W0312:466: Found indentation with tabs instead of spaces
+W0312:468: Found indentation with tabs instead of spaces
+W0312:470: Found indentation with tabs instead of spaces
+W0312:471: Found indentation with tabs instead of spaces
+W0312:472: Found indentation with tabs instead of spaces
+W0312:475: Found indentation with tabs instead of spaces
+W0312:476: Found indentation with tabs instead of spaces
+W0312:491: Found indentation with tabs instead of spaces
+W0312:492: Found indentation with tabs instead of spaces
+W0312:493: Found indentation with tabs instead of spaces
+W0312:495: Found indentation with tabs instead of spaces
+W0312:496: Found indentation with tabs instead of spaces
+W0312:500: Found indentation with tabs instead of spaces
+W0312:501: Found indentation with tabs instead of spaces
+W0312:502: Found indentation with tabs instead of spaces
+W0312:503: Found indentation with tabs instead of spaces
+W0312:504: Found indentation with tabs instead of spaces
+W0312:505: Found indentation with tabs instead of spaces
+W0312:509: Found indentation with tabs instead of spaces
+W0312:510: Found indentation with tabs instead of spaces
+W0312:511: Found indentation with tabs instead of spaces
+W0312:512: Found indentation with tabs instead of spaces
+W0312:514: Found indentation with tabs instead of spaces
+W0312:518: Found indentation with tabs instead of spaces
+W0312:522: Found indentation with tabs instead of spaces
+W0312:523: Found indentation with tabs instead of spaces
+W0312:524: Found indentation with tabs instead of spaces
+W0312:525: Found indentation with tabs instead of spaces
+W0312:529: Found indentation with tabs instead of spaces
+W0312:530: Found indentation with tabs instead of spaces
+W0312:533: Found indentation with tabs instead of spaces
+W0312:534: Found indentation with tabs instead of spaces
+W0312:535: Found indentation with tabs instead of spaces
+W0312:536: Found indentation with tabs instead of spaces
+W0312:537: Found indentation with tabs instead of spaces
+W0312:539: Found indentation with tabs instead of spaces
+W0312:553: Found indentation with tabs instead of spaces
+W0312:554: Found indentation with tabs instead of spaces
+W0511:169: XXX to XxxClass.
+W0511:518: TODO: ","Add import code in ImportFiles function!")
+W0511:3339: TODO: Support precompiled header auto creation/inclusion."""
+W0511:3660: TODO: send a WATCHTASK if breaked
+E0602:336:OnStart2: Undefined variable 'XCC_INITED'
+E0602:338:OnStart2: Undefined variable 'InitXcc'
+E1101:415:linPause: Module 'os' has no 'kill' member
+E0601:420:AddText: Using variable 'c' before assignment
+E0602:421:AddText: Undefined variable 'LeoBody'
+E0602:422:AddText: Undefined variable 'LeoBody'
+E0602:471:DecompressIcon: Undefined variable 'Excetion'
+E0602:472:DecompressIcon: Undefined variable 'Traceback'
+E0602:533:ReplaceVars: Undefined variable 'NAME'
+E0602:534:ReplaceVars: Undefined variable 'EXT'
+E0602:535:ReplaceVars: Undefined variable 'ABS_PATH'
+E0602:536:ReplaceVars: Undefined variable 'REL_PATH'
+E0602:537:ReplaceVars: Undefined variable 'SRC_EXT'
+E1121:674:controllerClass.onIdle: Too many positional arguments for function call
+E1121:727:controllerClass.onQuit: Too many positional arguments for function call
+E0211:813:controllerClass.UpdateProcess: Method has no argument
+E0601:815:controllerClass.UpdateProcess: Using variable 'cc' before assignment
+E0602:817:controllerClass.UpdateProcess: Undefined variable 'self'
+E0211:992:controllerClass.sGetExecInfo: Method has no argument
+E0602:994:controllerClass.sGetExecInfo: Undefined variable 'self'
+E0602:1020:controllerClass.sGoToError: Undefined variable 'CPL'
+E1101:1178:controllerClass.sSetText: Instance of 'controllerClass' has no 'setBodyText' member
+E0602:1178:controllerClass.sSetText: Undefined variable 'SELECTED_NODE'
+E1101:1184:controllerClass.sAddText: Instance of 'controllerClass' has no 'setBodyText' member
+E0602:1184:controllerClass.sAddText: Undefined variable 'SELECTED_NODE'
+E1120:1249:controllerClass.aStop: No value passed for parameter 'pid' in function call
+E0602:1265:controllerClass.aStepIn: Undefined variable 'DBG'
+E0602:1280:controllerClass.aStepOver: Undefined variable 'DBG'
+E0602:1295:controllerClass.aStepOut: Undefined variable 'DBG'
+E1120:1308:controllerClass.aPause: No value passed for parameter 'pid' in function call
+E1101:1342:controllerClass.aSetText: Instance of 'controllerClass' has no 'setBodyText' member
+E0602:1342:controllerClass.aSetText: Undefined variable 'ACTIVE_NODE'
+E1101:1348:controllerClass.aAddText: Instance of 'controllerClass' has no 'ACTIVE_NOD' member
+E1101:1349:controllerClass.aAddText: Instance of 'controllerClass' has no 'setBodyText' member
+E0602:1352:controllerClass.aAddText: Undefined variable 'LeoBodyText'
+E1101:1379:controllerClass.Compile: Instance of 'controllerClass' has no 'ProcessClass' member
+E1101:1386:controllerClass.Compile: Instance of 'controllerClass' has no 'ProcessList' member
+E1101:1401:controllerClass.CplCmd: Instance of 'controllerClass' has no 'ReplaceVars' member
+E0602:1440:controllerClass.CplCmd: Undefined variable 'CPL'
+E1101:1457:controllerClass.Debug: Instance of 'controllerClass' has no 'GetDebugInfo' member
+E1101:1466:controllerClass.Debug: Instance of 'controllerClass' has no 'ProcessList' member
+E1101:1473:controllerClass.DbgCmd: Instance of 'controllerClass' has no 'ReplaceVars' member
+E1121:1483:controllerClass.Execute: Too many positional arguments for function call
+E1101:1495:controllerClass.Execute: Instance of 'controllerClass' has no 'ProcessList' member
+E1101:1507:controllerClass.CplStart: Instance of 'controllerClass' has no 'VProcessList' member
+E1101:1587:controllerClass.DbgStart: Instance of 'controllerClass' has no 'ProcessList' member
+E0602:1607:controllerClass.DbgStart: Undefined variable 'DBG'
+E0602:1614:controllerClass.DbgStart: Undefined variable 'DBG'
+E0213:1616:controllerClass.DbgOut: Method should have "self" as first argument
+E0602:1620:controllerClass.DbgOut: Undefined variable 'self'
+E0602:1625:controllerClass.DbgOut: Undefined variable 'OutBuff'
+E1101:1704:controllerClass.ProgStart: Instance of 'controllerClass' has no 'ProcessList' member
+E0602:1719:controllerClass.ProgOut: Undefined variable 'ExtractLines'
+E0602:1719:controllerClass.ProgOut: Undefined variable 'OutBuff'
+E0602:1736:controllerClass.ProgErr: Undefined variable 'ExtractLines'
+E0602:1736:controllerClass.ProgErr: Undefined variable 'ErrBuff'
+E0602:1772:DBGTASK.__init__: Undefined variable 'DBG_SD'
+E0602:1774:DBGTASK.__init__: Undefined variable 'DBG_SD'
+E1101:1780:DBGTASK.Send: Instance of 'DBGTASK' has no 'Command' member
+E1101:1781:DBGTASK.Send: Instance of 'DBGTASK' has no 'aWrite' member
+E1101:1781:DBGTASK.Send: Instance of 'DBGTASK' has no 'Command' member
+E1101:1782:DBGTASK.Send: Instance of 'DBGTASK' has no 'DBG_SD' member
+E0602:1858:BREAKTASK.__init__: Undefined variable 'aGet'
+E0602:1860:BREAKTASK.__init__: Undefined variable 'DBG'
+E0602:1862:BREAKTASK.__init__: Undefined variable 'Waning'
+E0602:1867:BREAKTASK.__init__: Undefined variable 'DBG'
+E0602:1881:BREAKTASK.Send: Undefined variable 'NAME'
+E0602:1882:BREAKTASK.Send: Undefined variable 'aWrite'
+E0602:1884:BREAKTASK.Send: Undefined variable 'DBG_SD'
+E0602:1885:BREAKTASK.Send: Undefined variable 'DBG_RD'
+E0602:1897:BREAKTASK.Receive: Undefined variable 'aAddText'
+E0602:1949:WATCHTASK.__init__: Undefined variable 'cc'
+E0602:1951:WATCHTASK.__init__: Undefined variable 'cc'
+E0602:1955:WATCHTASK.__init__: Undefined variable 'cc'
+E0602:1956:WATCHTASK.__init__: Undefined variable 'ccWatcher'
+E0602:1959:WATCHTASK.__init__: Undefined variable 'DBG_SD'
+W0601:1969:WATCHTASK.Cancel: Global variable 'WATCH_TASK' undefined at the module level
+E0602:1970:WATCHTASK.Cancel: Undefined variable 'DBG_SD'
+E0602:1971:WATCHTASK.Cancel: Undefined variable 'DBG_SD'
+E0602:1972:WATCHTASK.Cancel: Undefined variable 'DBG_RD'
+E0602:1973:WATCHTASK.Cancel: Undefined variable 'DBG_RD'
+E0602:1974:WATCHTASK.Cancel: Undefined variable 'PROMPT_RD'
+E0602:1975:WATCHTASK.Cancel: Undefined variable 'PROMPT_RD'
+E0602:1977:WATCHTASK.Cancel: Undefined variable 'Watcher'
+E0602:1983:WATCHTASK.Send: Undefined variable 'Watcher'
+E0602:1985:WATCHTASK.Send: Undefined variable 'aWrite'
+E0602:1985:WATCHTASK.Send: Undefined variable 'DBG'
+E0602:1986:WATCHTASK.Send: Undefined variable 'DBG_SD'
+E0602:1987:WATCHTASK.Send: Undefined variable 'DBG_RD'
+E0602:1988:WATCHTASK.Send: Undefined variable 'PROMPT_RD'
+E0602:1993:WATCHTASK.Receive: Undefined variable 'DBG_PROMPT'
+W0601:1997:WATCHTASK.OnPrompt: Global variable 'WATCH_TASK' undefined at the module level
+E0602:1999:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2005:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2010:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2011:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2014:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2015:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2017:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2020:WATCHTASK.OnPrompt: Undefined variable 'DBG_SD'
+E0602:2022:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
+E0602:2025:WATCHTASK.OnPrompt: Undefined variable 'PROMPT_RD'
+E0602:2026:WATCHTASK.OnPrompt: Undefined variable 'DBG_RD'
+E0602:2101:BREAKIDTASK.Send: Undefined variable 'aWrite'
+E0602:2102:BREAKIDTASK.Send: Undefined variable 'DBG_SD'
+E0602:2103:BREAKIDTASK.Send: Undefined variable 'DBG_RD'
+E0602:2554:ConfigClass.CplPageClass.Browse: Undefined variable 'e'
+E0602:2694:ConfigClass.DbgPageClass.Browse: Undefined variable 'e'
+E0602:3535:ToolbarClass.SyncDisplayToError: Undefined variable 'BreakBar'
+E0602:3536:ToolbarClass.SyncDisplayToError: Undefined variable 'BreakBar'
+E0602:3541:ToolbarClass.SyncDisplayToError: Undefined variable 'INSERT'
+E0602:3554:ToolbarClass.SyncDisplayToError: Undefined variable 'c'
+W0601:3558:ToolbarClass.SetError: Global variable 'PARSE_ERROR' undefined at the module level
+W0601:3558:ToolbarClass.SetError: Global variable 'PARSE_ERROR_NODE' undefined at the module level
+E0602:3590:ToolbarClass.Refresh: Undefined variable 'ACTIVE_NODE'
+E0602:3610:WatcherClass.__init__: Undefined variable 'c'
+E0602:3631:WatcherClass.__init__: Undefined variable 'c'
+E0602:3632:WatcherClass.__init__: Undefined variable 'c'
+E0602:3633:WatcherClass.__init__: Undefined variable 'c'
+E0602:3634:WatcherClass.__init__: Undefined variable 'c'
+E0602:3684:WatcherClass.OnDelete: Undefined variable 'sGet'
+W0221:3796:BreakbarClass.yview: Arguments number differs from overridden method
+E0602:3846:BreakbarClass.OnCut: Undefined variable 'LeoFrame'
+E0602:3850:BreakbarClass.OnPaste: Undefined variable 'LeoFrame'
+E1101:3855:BreakbarClass.OnRightClick: Instance of 'BreakbarClass' has no 'c' member
+E0602:3856:BreakbarClass.OnRightClick: Undefined variable 'Menu'
+E0602:3873:BreakbarClass.OnLeftClick: Undefined variable 'cGet'
+E0602:3875:BreakbarClass.OnLeftClick: Undefined variable 'CHILD_NODE'
+E0602:3888:BreakbarClass.OnLeftClick: Undefined variable 'SEL'
+E0602:3892:BreakbarClass.AddNodeBreak: Undefined variable 'cGet'
+E0602:3895:BreakbarClass.DeleteNodeBreak: Undefined variable 'cGet'
+E0602:3900:BreakbarClass.ClearNodeBreaks: Undefined variable 'cSet'
+E0602:4010:BreakbarClass.BreaksFromTags: Undefined variable 'CHILD_EXT'
+E0602:4010:BreakbarClass.BreaksFromTags: Undefined variable 'CHILD_LINE'
+E0602:4016:BreakbarClass.AddBreak: Undefined variable 'sGet'
+E0602:4057:BreakbarClass.DeleteNodeBreaks: Undefined variable 'cGet'
+E0602:4061:BreakbarClass.DeleteNodeBreaks: Undefined variable 'CHILD_EXT'
+E0602:4061:BreakbarClass.DeleteNodeBreaks: Undefined variable 'CHILD_LINE'
+E1101:4063:BreakbarClass.DeleteNodeBreaks: Instance of 'BreakbarClass' has no 'DeleteDbgBreaks' member
+E0602:4065:BreakbarClass.DeleteNodeBreaks: Undefined variable 'cSelect'
+E0602:4357:CppParserClass.FUNCRULE.DeclareFunc: Undefined variable 'ToolBar'
+E0602:4375:CppParserClass.FUNCRULE.DefineFunc: Undefined variable 'ToolBar'
+E0602:4513:CppParserClass.CLASSRULE.OnMatch: Undefined variable 'ToolBar'
+E1101:4703:CppParserClass.Docum: Instance of 'CppParserClass' has no 'CURRENT_DOC_LINE' member
+E0602:4727:CppParserClass.SetRealBodyDestination: Undefined variable 'EXT'
+E1101:4796:CppParserClass.CppParse: Instance of 'CppParserClass' has no 'cc' member
+E1102:4823:CppParserClass.CppParse: self.OnStart is not callable
+E0602:4830:CppParserClass.CppParse: Undefined variable 'NAME'
+E1102:4836:CppParserClass.CppParse: self.OnEnd is not callable
+E1101:4849:CppParserClass.ParseNode: Instance of 'CppParserClass' has no 'cc' member
+E0602:4939:WriterClass.OnWriteStart: Undefined variable 'REL_PATH'
+E0602:4940:WriterClass.OnWriteStart: Undefined variable 'REL_PATH'
+E0602:4940:WriterClass.OnWriteStart: Undefined variable 'NAME'
+E0602:4942:WriterClass.OnWriteStart: Undefined variable 'NAME'
+E0602:4945:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4946:WriterClass.OnWriteStart: Undefined variable 'sAddText'
+E0602:4950:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4951:WriterClass.OnWriteStart: Undefined variable 'sAddText'
+E0602:4956:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4956:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4957:WriterClass.OnWriteStart: Undefined variable 'sAddText'
+E0602:4957:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4958:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4961:WriterClass.OnWriteStart: Undefined variable 'EXT'
+E0602:4962:WriterClass.OnWriteStart: Undefined variable 'sAddText'
+E0602:5008:BreakFinderClass.__init__: Undefined variable 'controllerSELECTED_NODE'
+E0602:5008:BreakFinderClass.__init__: Undefined variable 'controllerEXT'
+E0602:5024:BreakFinderClass.OnFindStart: Undefined variable 'sSet'
+E0602:5025:BreakFinderClass.OnFindStart: Undefined variable 'sGet'
+E0602:5031:BreakFinderClass.OnFindEnd: Undefined variable 'sSet'
+E0602:5050:BreakFinderClass.BreakDef: Undefined variable 'SRC_EXT'
+W0611:206: Unused import tkSimpleDialog
+W0611:207: Unused import base64
+W0611:203: Unused import beep
+
+************* Module leo.plugins.active_path
+W0108:124:attachToCommander.<lambda>: Lambda may not be necessary
+E1101:399:openDir: Generator 'walk' has no 'next' member
+
+************* Module leo.plugins.attrib_edit
+W0311:816: Bad indentation. Found 3 spaces, expected 4
+W0311:819: Bad indentation. Found 3 spaces, expected 4
+W0311:822: Bad indentation. Found 3 spaces, expected 4
+W0311:825: Bad indentation. Found 3 spaces, expected 4
+W0311:828: Bad indentation. Found 3 spaces, expected 4
+W0511:289: FIXME type_ = {True: '_view', False: '_edit'}[readonly]
+W0511:304: FIXME self.attrPaths.add(tuple(ns))
+E1101:665:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'recSearch' member
+E1101:669:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'typeMap' member
+E1101:671:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'typeMap' member
+W0611:118: Unused import os
+W0611:114: Unused import re
+
+************* Module leo.plugins.backlink
+W0511: 23: TODO
+E1101:145:backlinkTkUI.updateTkTab: Instance of 'backlinkTkUI' has no 'c' member
+E1101:150:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'c' member
+E1123:161:backlinkTkUI.updateTkTabInt: Passing unexpected keyword argument 'optional' in function call
+E1101:169:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'vnode' member
+E1101:170:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'vnodePosition' member
+E1101:171:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'c' member
+E1123:179:backlinkTkUI.updateTkTabInt: Passing unexpected keyword argument 'optional' in function call
+E1101:186:backlinkTkUI.updateTkTabInt.delLink: Instance of 'backlinkTkUI' has no 'deleteLink' member
+W0101:787:backlinkController.vnodePosition: Unreachable code
+E1101:790:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
+E1101:791:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
+E1101:805:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
+
+************* Module leo.plugins.codewisecompleter
+E1111:244:codewise_lookup: Assigning to function call which doesn't return
+E0602:283:codewise_suggest: Undefined variable 'txt'
+W0611: 34: Unused import os
+
+************* Module leo.plugins.cursesGui
+W0311: 84: Bad indentation. Found 2 spaces, expected 4
+W0311: 85: Bad indentation. Found 4 spaces, expected 8
+W0311: 87: Bad indentation. Found 2 spaces, expected 4
+W0311: 92: Bad indentation. Found 2 spaces, expected 4
+W0311: 93: Bad indentation. Found 4 spaces, expected 8
+W0311: 95: Bad indentation. Found 4 spaces, expected 8
+W0311: 96: Bad indentation. Found 4 spaces, expected 8
+W0311: 99: Bad indentation. Found 2 spaces, expected 4
+W0311:103: Bad indentation. Found 6 spaces, expected 8
+W0311:105: Bad indentation. Found 2 spaces, expected 4
+W0311:106: Bad indentation. Found 4 spaces, expected 8
+W0311:107: Bad indentation. Found 4 spaces, expected 8
+W0311:108: Bad indentation. Found 4 spaces, expected 8
+W0311:110: Bad indentation. Found 2 spaces, expected 4
+W0311:111: Bad indentation. Found 4 spaces, expected 8
+W0311:114: Bad indentation. Found 2 spaces, expected 4
+W0311:115: Bad indentation. Found 4 spaces, expected 8
+W0311:117: Bad indentation. Found 2 spaces, expected 4
+W0311:118: Bad indentation. Found 4 spaces, expected 8
+W0311:120: Bad indentation. Found 2 spaces, expected 4
+W0311:122: Bad indentation. Found 6 spaces, expected 8
+W0311:124: Bad indentation. Found 6 spaces, expected 8
+W0311:126: Bad indentation. Found 2 spaces, expected 4
+W0311:127: Bad indentation. Found 4 spaces, expected 8
+W0311:129: Bad indentation. Found 2 spaces, expected 4
+W0311:130: Bad indentation. Found 4 spaces, expected 8
+W0311:132: Bad indentation. Found 2 spaces, expected 4
+W0311:133: Bad indentation. Found 4 spaces, expected 8
+W0311:135: Bad indentation. Found 4 spaces, expected 8
+W0311:137: Bad indentation. Found 4 spaces, expected 8
+W0311:138: Bad indentation. Found 4 spaces, expected 8
+W0311:140: Bad indentation. Found 4 spaces, expected 8
+W0311:142: Bad indentation. Found 4 spaces, expected 8
+W0311:143: Bad indentation. Found 6 spaces, expected 12
+W0311:144: Bad indentation. Found 4 spaces, expected 8
+W0311:146: Bad indentation. Found 2 spaces, expected 4
+W0311:147: Bad indentation. Found 4 spaces, expected 8
+W0311:149: Bad indentation. Found 2 spaces, expected 4
+W0311:150: Bad indentation. Found 4 spaces, expected 8
+W0311:152: Bad indentation. Found 2 spaces, expected 4
+W0311:153: Bad indentation. Found 4 spaces, expected 8
+W0311:155: Bad indentation. Found 4 spaces, expected 8
+W0311:156: Bad indentation. Found 4 spaces, expected 8
+W0311:158: Bad indentation. Found 4 spaces, expected 8
+W0311:161: Bad indentation. Found 6 spaces, expected 12
+W0311:162: Bad indentation. Found 8 spaces, expected 16
+W0311:163: Bad indentation. Found 6 spaces, expected 12
+W0311:164: Bad indentation. Found 6 spaces, expected 12
+W0311:167: Bad indentation. Found 6 spaces, expected 12
+W0311:169: Bad indentation. Found 6 spaces, expected 12
+W0311:170: Bad indentation. Found 8 spaces, expected 16
+W0311:171: Bad indentation. Found 6 spaces, expected 12
+W0311:172: Bad indentation. Found 10 spaces, expected 16
+W0311:174: Bad indentation. Found 2 spaces, expected 4
+W0311:176: Bad indentation. Found 4 spaces, expected 8
+W0311:177: Bad indentation. Found 6 spaces, expected 12
+W0311:178: Bad indentation. Found 4 spaces, expected 8
+W0311:179: Bad indentation. Found 6 spaces, expected 12
+W0311:180: Bad indentation. Found 4 spaces, expected 8
+W0311:181: Bad indentation. Found 6 spaces, expected 12
+W0311:182: Bad indentation. Found 4 spaces, expected 8
+W0311:183: Bad indentation. Found 6 spaces, expected 12
+W0311:184: Bad indentation. Found 8 spaces, expected 16
+W0311:185: Bad indentation. Found 6 spaces, expected 12
+W0311:186: Bad indentation. Found 6 spaces, expected 12
+W0311:187: Bad indentation. Found 8 spaces, expected 16
+W0311:188: Bad indentation. Found 6 spaces, expected 12
+W0311:189: Bad indentation. Found 8 spaces, expected 16
+W0311:190: Bad indentation. Found 6 spaces, expected 12
+W0311:191: Bad indentation. Found 8 spaces, expected 16
+W0311:192: Bad indentation. Found 4 spaces, expected 8
+W0311:193: Bad indentation. Found 6 spaces, expected 12
+W0311:194: Bad indentation. Found 4 spaces, expected 8
+W0311:195: Bad indentation. Found 6 spaces, expected 12
+W0311:197: Bad indentation. Found 2 spaces, expected 4
+W0311:198: Bad indentation. Found 4 spaces, expected 8
+W0311:199: Bad indentation. Found 6 spaces, expected 12
+W0311:200: Bad indentation. Found 4 spaces, expected 8
+W0311:206: Bad indentation. Found 2 spaces, expected 4
+W0311:208: Bad indentation. Found 4 spaces, expected 8
+W0311:210: Bad indentation. Found 4 spaces, expected 8
+W0311:213: Bad indentation. Found 2 spaces, expected 4
+W0311:215: Bad indentation. Found 4 spaces, expected 8
+W0311:217: Bad indentation. Found 4 spaces, expected 8
+W0311:218: Bad indentation. Found 4 spaces, expected 8
+W0311:219: Bad indentation. Found 4 spaces, expected 8
+W0311:221: Bad indentation. Found 4 spaces, expected 8
+W0311:222: Bad indentation. Found 4 spaces, expected 8
+W0311:223: Bad indentation. Found 4 spaces, expected 8
+W0311:236: Bad indentation. Found 2 spaces, expected 4
+W0311:237: Bad indentation. Found 2 spaces, expected 4
+W0311:239: Bad indentation. Found 2 spaces, expected 4
+W0311:240: Bad indentation. Found 6 spaces, expected 8
+W0311:242: Bad indentation. Found 2 spaces, expected 4
+W0311:243: Bad indentation. Found 4 spaces, expected 8
+W0311:245: Bad indentation. Found 4 spaces, expected 8
+W0311:246: Bad indentation. Found 4 spaces, expected 8
+W0311:247: Bad indentation. Found 4 spaces, expected 8
+W0311:248: Bad indentation. Found 4 spaces, expected 8
+W0311:250: Bad indentation. Found 4 spaces, expected 8
+W0311:251: Bad indentation. Found 6 spaces, expected 12
+W0311:253: Bad indentation. Found 4 spaces, expected 8
+W0311:254: Bad indentation. Found 4 spaces, expected 8
+W0311:257: Bad indentation. Found 4 spaces, expected 8
+W0311:260: Bad indentation. Found 4 spaces, expected 8
+W0311:262: Bad indentation. Found 2 spaces, expected 4
+W0311:264: Bad indentation. Found 2 spaces, expected 4
+W0311:265: Bad indentation. Found 4 spaces, expected 8
+W0311:267: Bad indentation. Found 2 spaces, expected 4
+W0311:268: Bad indentation. Found 4 spaces, expected 8
+W0311:270: Bad indentation. Found 2 spaces, expected 4
+W0311:271: Bad indentation. Found 4 spaces, expected 8
+W0311:273: Bad indentation. Found 4 spaces, expected 8
+W0311:274: Bad indentation. Found 4 spaces, expected 8
+W0311:276: Bad indentation. Found 4 spaces, expected 8
+W0311:277: Bad indentation. Found 4 spaces, expected 8
+W0311:279: Bad indentation. Found 4 spaces, expected 8
+W0311:280: Bad indentation. Found 8 spaces, expected 12
+W0311:281: Bad indentation. Found 12 spaces, expected 16
+W0311:282: Bad indentation. Found 12 spaces, expected 16
+W0311:283: Bad indentation. Found 12 spaces, expected 16
+W0311:284: Bad indentation. Found 12 spaces, expected 16
+W0311:285: Bad indentation. Found 12 spaces, expected 16
+W0311:291: Bad indentation. Found 4 spaces, expected 8
+W0311:292: Bad indentation. Found 4 spaces, expected 8
+W0311:293: Bad indentation. Found 4 spaces, expected 8
+W0311:295: Bad indentation. Found 4 spaces, expected 8
+W0311:296: Bad indentation. Found 4 spaces, expected 8
+W0311:298: Bad indentation. Found 2 spaces, expected 4
+W0311:299: Bad indentation. Found 2 spaces, expected 4
+W0311:305: Bad indentation. Found 2 spaces, expected 4
+W0311:306: Bad indentation. Found 4 spaces, expected 8
+W0311:308: Bad indentation. Found 4 spaces, expected 8
+W0311:310: Bad indentation. Found 4 spaces, expected 8
+W0311:311: Bad indentation. Found 4 spaces, expected 8
+W0311:314: Bad indentation. Found 2 spaces, expected 4
+W0311:317: Bad indentation. Found 4 spaces, expected 8
+W0311:321: Bad indentation. Found 2 spaces, expected 4
+W0311:322: Bad indentation. Found 2 spaces, expected 4
+W0311:324: Bad indentation. Found 2 spaces, expected 4
+W0311:326: Bad indentation. Found 4 spaces, expected 8
+W0311:327: Bad indentation. Found 4 spaces, expected 8
+W0311:328: Bad indentation. Found 4 spaces, expected 8
+W0311:329: Bad indentation. Found 4 spaces, expected 8
+W0311:333: Bad indentation. Found 2 spaces, expected 4
+W0311:338: Bad indentation. Found 2 spaces, expected 4
+W0311:339: Bad indentation. Found 4 spaces, expected 8
+W0311:340: Bad indentation. Found 4 spaces, expected 8
+W0311:341: Bad indentation. Found 4 spaces, expected 8
+W0311:343: Bad indentation. Found 2 spaces, expected 4
+W0311:344: Bad indentation. Found 4 spaces, expected 8
+W0311:345: Bad indentation. Found 4 spaces, expected 8
+W0311:346: Bad indentation. Found 6 spaces, expected 12
+W0311:347: Bad indentation. Found 4 spaces, expected 8
+W0311:353: Bad indentation. Found 2 spaces, expected 4
+W0311:354: Bad indentation. Found 4 spaces, expected 8
+W0311:355: Bad indentation. Found 4 spaces, expected 8
+W0311:356: Bad indentation. Found 4 spaces, expected 8
+W0311:357: Bad indentation. Found 4 spaces, expected 8
+W0311:359: Bad indentation. Found 2 spaces, expected 4
+W0311:360: Bad indentation. Found 4 spaces, expected 8
+W0311:366: Bad indentation. Found 2 spaces, expected 4
+W0311:367: Bad indentation. Found 4 spaces, expected 8
+W0311:374: Bad indentation. Found 2 spaces, expected 4
+W0311:377: Bad indentation. Found 6 spaces, expected 8
+W0311:378: Bad indentation. Found 6 spaces, expected 8
+W0311:381: Bad indentation. Found 6 spaces, expected 8
+W0311:383: Bad indentation. Found 2 spaces, expected 4
+W0311:385: Bad indentation. Found 4 spaces, expected 8
+W0311:387: Bad indentation. Found 4 spaces, expected 8
+W0311:389: Bad indentation. Found 4 spaces, expected 8
+W0311:391: Bad indentation. Found 2 spaces, expected 4
+W0311:393: Bad indentation. Found 4 spaces, expected 8
+W0311:398: Bad indentation. Found 4 spaces, expected 8
+W0311:399: Bad indentation. Found 4 spaces, expected 8
+W0311:400: Bad indentation. Found 4 spaces, expected 8
+W0311:402: Bad indentation. Found 2 spaces, expected 4
+W0311:406: Bad indentation. Found 4 spaces, expected 8
+W0311:407: Bad indentation. Found 8 spaces, expected 12
+W0311:408: Bad indentation. Found 4 spaces, expected 8
+W0311:412: Bad indentation. Found 2 spaces, expected 4
+W0311:417: Bad indentation. Found 4 spaces, expected 8
+W0311:421: Bad indentation. Found 4 spaces, expected 8
+W0311:422: Bad indentation. Found 6 spaces, expected 12
+W0311:424: Bad indentation. Found 4 spaces, expected 8
+W0311:425: Bad indentation. Found 4 spaces, expected 8
+W0311:426: Bad indentation. Found 4 spaces, expected 8
+W0311:427: Bad indentation. Found 4 spaces, expected 8
+W0311:430: Bad indentation. Found 4 spaces, expected 8
+W0311:431: Bad indentation. Found 4 spaces, expected 8
+W0311:433: Bad indentation. Found 2 spaces, expected 4
+W0311:434: Bad indentation. Found 4 spaces, expected 8
+W0311:436: Bad indentation. Found 2 spaces, expected 4
+W0311:438: Bad indentation. Found 4 spaces, expected 8
+W0311:440: Bad indentation. Found 2 spaces, expected 4
+W0311:441: Bad indentation. Found 4 spaces, expected 8
+W0311:443: Bad indentation. Found 4 spaces, expected 8
+W0311:444: Bad indentation. Found 6 spaces, expected 12
+W0311:446: Bad indentation. Found 6 spaces, expected 12
+W0311:447: Bad indentation. Found 8 spaces, expected 16
+W0311:448: Bad indentation. Found 6 spaces, expected 12
+W0311:450: Bad indentation. Found 6 spaces, expected 12
+W0311:451: Bad indentation. Found 6 spaces, expected 12
+W0311:452: Bad indentation. Found 6 spaces, expected 12
+W0311:454: Bad indentation. Found 6 spaces, expected 12
+W0311:455: Bad indentation. Found 8 spaces, expected 16
+W0311:456: Bad indentation. Found 6 spaces, expected 12
+W0311:458: Bad indentation. Found 8 spaces, expected 16
+W0311:459: Bad indentation. Found 8 spaces, expected 16
+W0311:460: Bad indentation. Found 10 spaces, expected 20
+W0311:461: Bad indentation. Found 14 spaces, expected 24
+W0311:462: Bad indentation. Found 8 spaces, expected 16
+W0311:464: Bad indentation. Found 6 spaces, expected 12
+W0311:465: Bad indentation. Found 8 spaces, expected 16
+W0311:466: Bad indentation. Found 6 spaces, expected 12
+W0311:467: Bad indentation. Found 8 spaces, expected 16
+W0311:469: Bad indentation. Found 6 spaces, expected 12
+W0311:470: Bad indentation. Found 6 spaces, expected 12
+W0311:471: Bad indentation. Found 8 spaces, expected 16
+W0311:472: Bad indentation. Found 8 spaces, expected 16
+W0311:473: Bad indentation. Found 6 spaces, expected 12
+W0311:474: Bad indentation. Found 8 spaces, expected 16
+W0311:475: Bad indentation. Found 6 spaces, expected 12
+W0311:476: Bad indentation. Found 8 spaces, expected 16
+W0311:483: Bad indentation. Found 2 spaces, expected 4
+W0311:484: Bad indentation. Found 4 spaces, expected 8
+W0311:486: Bad indentation. Found 2 spaces, expected 4
+W0311:487: Bad indentation. Found 4 spaces, expected 8
+W0311:489: Bad indentation. Found 2 spaces, expected 4
+W0311:490: Bad indentation. Found 4 spaces, expected 8
+W0311:493: Bad indentation. Found 2 spaces, expected 4
+W0311:494: Bad indentation. Found 2 spaces, expected 4
+W0311:496: Bad indentation. Found 2 spaces, expected 4
+W0311:504: Bad indentation. Found 2 spaces, expected 4
+W0311:505: Bad indentation. Found 4 spaces, expected 8
+W0311:507: Bad indentation. Found 2 spaces, expected 4
+W0311:508: Bad indentation. Found 4 spaces, expected 8
+W0311:510: Bad indentation. Found 2 spaces, expected 4
+W0311:511: Bad indentation. Found 4 spaces, expected 8
+W0311:512: Bad indentation. Found 6 spaces, expected 12
+W0311:514: Bad indentation. Found 2 spaces, expected 4
+W0311:515: Bad indentation. Found 4 spaces, expected 8
+W0311:517: Bad indentation. Found 2 spaces, expected 4
+W0311:518: Bad indentation. Found 4 spaces, expected 8
+W0311:519: Bad indentation. Found 6 spaces, expected 12
+W0311:522: Bad indentation. Found 2 spaces, expected 4
+W0311:524: Bad indentation. Found 4 spaces, expected 8
+W0311:526: Bad indentation. Found 4 spaces, expected 8
+W0311:528: Bad indentation. Found 2 spaces, expected 4
+W0311:531: Bad indentation. Found 4 spaces, expected 8
+W0311:532: Bad indentation. Found 4 spaces, expected 8
+W0311:534: Bad indentation. Found 4 spaces, expected 8
+W0311:538: Bad indentation. Found 4 spaces, expected 8
+W0311:541: Bad indentation. Found 2 spaces, expected 4
+W0311:542: Bad indentation. Found 4 spaces, expected 8
+W0311:544: Bad indentation. Found 2 spaces, expected 4
+W0311:545: Bad indentation. Found 4 spaces, expected 8
+W0311:547: Bad indentation. Found 2 spaces, expected 4
+W0311:550: Bad indentation. Found 4 spaces, expected 8
+W0311:551: Bad indentation. Found 4 spaces, expected 8
+W0311:553: Bad indentation. Found 2 spaces, expected 4
+W0311:555: Bad indentation. Found 4 spaces, expected 8
+W0311:557: Bad indentation. Found 6 spaces, expected 12
+W0311:558: Bad indentation. Found 8 spaces, expected 16
+W0311:559: Bad indentation. Found 6 spaces, expected 12
+W0311:560: Bad indentation. Found 8 spaces, expected 16
+W0311:562: Bad indentation. Found 6 spaces, expected 12
+W0311:568: Bad indentation. Found 6 spaces, expected 12
+W0311:570: Bad indentation. Found 6 spaces, expected 12
+W0311:571: Bad indentation. Found 8 spaces, expected 16
+W0511: 21: TODO >>
+W0511: 22: TODO >>
+W0511: 43: TODO >>
+W0511: 97: TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
+W0511:319: TODO Tkinter onBodyChanged undo call and many others. =(
+W0511:529: TODO Much more here: there's four hooks and all sorts of other things called in the TK version.
+W0221:267:textFrame.setTopGeometry: Arguments number differs from overridden method
+W0221:391:textLeoMenu.new_menu: Arguments number differs from overridden method
+W0221:412:textLeoMenu.add_command: Arguments number differs from overridden method
+W0221:436:textLeoMenu.delete_range: Arguments number differs from overridden method
+W0221:514:textTree.redraw: Arguments number differs from overridden method
+W0221:517:textTree.redraw_now: Arguments number differs from overridden method
+W0221:541:textTree.editLabel: Arguments number differs from overridden method
+
+************* Module leo.plugins.dtest
+W0611: 32: Unused import leoPlugins
+
+************* Module leo.plugins.leo_interface
+W0311: 42: Bad indentation. Found 3 spaces, expected 4
+W0311: 43: Bad indentation. Found 6 spaces, expected 8
+W0311: 45: Bad indentation. Found 3 spaces, expected 4
+W0311: 46: Bad indentation. Found 6 spaces, expected 8
+W0311: 52: Bad indentation. Found 3 spaces, expected 4
+W0311: 59: Bad indentation. Found 3 spaces, expected 4
+W0311: 60: Bad indentation. Found 7 spaces, expected 8
+W0311: 62: Bad indentation. Found 3 spaces, expected 4
+W0311: 63: Bad indentation. Found 7 spaces, expected 8
+W0311: 64: Bad indentation. Found 7 spaces, expected 8
+W0311: 66: Bad indentation. Found 3 spaces, expected 4
+W0311: 67: Bad indentation. Found 7 spaces, expected 8
+W0311: 69: Bad indentation. Found 3 spaces, expected 4
+W0311: 70: Bad indentation. Found 7 spaces, expected 8
+W0311: 71: Bad indentation. Found 11 spaces, expected 12
+W0311: 73: Bad indentation. Found 3 spaces, expected 4
+W0311: 74: Bad indentation. Found 7 spaces, expected 8
+W0311: 75: Bad indentation. Found 7 spaces, expected 8
+W0311: 76: Bad indentation. Found 11 spaces, expected 12
+W0311: 77: Bad indentation. Found 7 spaces, expected 8
+W0311: 78: Bad indentation. Found 7 spaces, expected 8
+W0311: 80: Bad indentation. Found 3 spaces, expected 4
+W0311: 81: Bad indentation. Found 7 spaces, expected 8
+W0311: 82: Bad indentation. Found 7 spaces, expected 8
+W0311: 83: Bad indentation. Found 7 spaces, expected 8
+W0311: 84: Bad indentation. Found 7 spaces, expected 8
+W0311: 85: Bad indentation. Found 7 spaces, expected 8
+W0311: 86: Bad indentation. Found 11 spaces, expected 12
+W0311: 87: Bad indentation. Found 7 spaces, expected 8
+W0311: 88: Bad indentation. Found 7 spaces, expected 8
+W0311: 89: Bad indentation. Found 11 spaces, expected 12
+W0311: 90: Bad indentation. Found 7 spaces, expected 8
+W0311: 91: Bad indentation. Found 7 spaces, expected 8
+W0311: 92: Bad indentation. Found 7 spaces, expected 8
+W0311: 93: Bad indentation. Found 11 spaces, expected 12
+W0311: 95: Bad indentation. Found 3 spaces, expected 4
+W0311: 96: Bad indentation. Found 7 spaces, expected 8
+W0311: 97: Bad indentation. Found 7 spaces, expected 8
+W0311: 98: Bad indentation. Found 7 spaces, expected 8
+W0311: 99: Bad indentation. Found 7 spaces, expected 8
+W0311:100: Bad indentation. Found 7 spaces, expected 8
+W0311:101: Bad indentation. Found 11 spaces, expected 12
+W0311:102: Bad indentation. Found 7 spaces, expected 8
+W0311:104: Bad indentation. Found 3 spaces, expected 4
+W0311:105: Bad indentation. Found 5 spaces, expected 8
+W0311:109: Bad indentation. Found 3 spaces, expected 4
+W0311:115: Bad indentation. Found 3 spaces, expected 4
+W0311:116: Bad indentation. Found 6 spaces, expected 8
+W0311:118: Bad indentation. Found 3 spaces, expected 4
+W0311:119: Bad indentation. Found 6 spaces, expected 8
+W0311:121: Bad indentation. Found 3 spaces, expected 4
+W0311:122: Bad indentation. Found 7 spaces, expected 8
+W0311:124: Bad indentation. Found 3 spaces, expected 4
+W0311:125: Bad indentation. Found 7 spaces, expected 8
+W0311:126: Bad indentation. Found 7 spaces, expected 8
+W0311:128: Bad indentation. Found 3 spaces, expected 4
+W0311:129: Bad indentation. Found 7 spaces, expected 8
+W0311:130: Bad indentation. Found 7 spaces, expected 8
+W0311:131: Bad indentation. Found 7 spaces, expected 8
+W0311:132: Bad indentation. Found 7 spaces, expected 8
+W0311:134: Bad indentation. Found 3 spaces, expected 4
+W0311:135: Bad indentation. Found 7 spaces, expected 8
+W0311:138: Bad indentation. Found 7 spaces, expected 8
+W0311:143: Bad indentation. Found 7 spaces, expected 8
+W0311:144: Bad indentation. Found 7 spaces, expected 8
+W0311:145: Bad indentation. Found 7 spaces, expected 8
+W0311:146: Bad indentation. Found 10 spaces, expected 12
+W0311:147: Bad indentation. Found 10 spaces, expected 12
+W0311:148: Bad indentation. Found 7 spaces, expected 8
+W0311:149: Bad indentation. Found 7 spaces, expected 8
+W0311:151: Bad indentation. Found 3 spaces, expected 4
+W0311:152: Bad indentation. Found 7 spaces, expected 8
+W0311:153: Bad indentation. Found 11 spaces, expected 12
+W0311:155: Bad indentation. Found 3 spaces, expected 4
+W0311:156: Bad indentation. Found 6 spaces, expected 8
+W0311:157: Bad indentation. Found 9 spaces, expected 12
+W0311:158: Bad indentation. Found 9 spaces, expected 12
+W0311:159: Bad indentation. Found 9 spaces, expected 12
+W0311:160: Bad indentation. Found 6 spaces, expected 8
+W0311:161: Bad indentation. Found 9 spaces, expected 12
+W0311:163: Bad indentation. Found 3 spaces, expected 4
+W0311:164: Bad indentation. Found 7 spaces, expected 8
+W0311:170: Bad indentation. Found 3 spaces, expected 4
+W0311:171: Bad indentation. Found 7 spaces, expected 8
+W0311:173: Bad indentation. Found 3 spaces, expected 4
+W0311:174: Bad indentation. Found 7 spaces, expected 8
+W0311:176: Bad indentation. Found 3 spaces, expected 4
+W0311:177: Bad indentation. Found 7 spaces, expected 8
+W0311:179: Bad indentation. Found 3 spaces, expected 4
+W0311:180: Bad indentation. Found 7 spaces, expected 8
+W0311:184: Bad indentation. Found 3 spaces, expected 4
+W0311:194: Bad indentation. Found 3 spaces, expected 4
+W0311:195: Bad indentation. Found 3 spaces, expected 4
+W0311:199: Bad indentation. Found 3 spaces, expected 4
+W0311:200: Bad indentation. Found 7 spaces, expected 8
+W0311:201: Bad indentation. Found 7 spaces, expected 8
+W0311:202: Bad indentation. Found 7 spaces, expected 8
+W0311:203: Bad indentation. Found 7 spaces, expected 8
+W0311:204: Bad indentation. Found 7 spaces, expected 8
+W0311:206: Bad indentation. Found 3 spaces, expected 4
+W0311:207: Bad indentation. Found 7 spaces, expected 8
+W0311:209: Bad indentation. Found 3 spaces, expected 4
+W0311:210: Bad indentation. Found 7 spaces, expected 8
+W0311:213: Bad indentation. Found 7 spaces, expected 8
+W0311:214: Bad indentation. Found 11 spaces, expected 12
+W0311:216: Bad indentation. Found 3 spaces, expected 4
+W0311:217: Bad indentation. Found 7 spaces, expected 8
+W0311:219: Bad indentation. Found 3 spaces, expected 4
+W0311:220: Bad indentation. Found 6 spaces, expected 8
+W0311:221: Bad indentation. Found 6 spaces, expected 8
+W0311:222: Bad indentation. Found 9 spaces, expected 12
+W0311:227: Bad indentation. Found 9 spaces, expected 12
+W0311:228: Bad indentation. Found 9 spaces, expected 12
+W0311:229: Bad indentation. Found 12 spaces, expected 16
+W0311:230: Bad indentation. Found 12 spaces, expected 16
+W0311:231: Bad indentation. Found 12 spaces, expected 16
+W0311:232: Bad indentation. Found 12 spaces, expected 16
+W0311:233: Bad indentation. Found 15 spaces, expected 20
+W0311:234: Bad indentation. Found 12 spaces, expected 16
+W0311:235: Bad indentation. Found 12 spaces, expected 16
+W0311:236: Bad indentation. Found 9 spaces, expected 12
+W0311:237: Bad indentation. Found 9 spaces, expected 12
+W0311:238: Bad indentation. Found 9 spaces, expected 12
+W0311:239: Bad indentation. Found 9 spaces, expected 12
+W0311:240: Bad indentation. Found 6 spaces, expected 8
+W0311:241: Bad indentation. Found 6 spaces, expected 8
+W0311:242: Bad indentation. Found 9 spaces, expected 12
+W0311:243: Bad indentation. Found 9 spaces, expected 12
+W0311:245: Bad indentation. Found 3 spaces, expected 4
+W0311:246: Bad indentation. Found 6 spaces, expected 8
+W0311:247: Bad indentation. Found 6 spaces, expected 8
+W0311:248: Bad indentation. Found 9 spaces, expected 12
+W0311:250: Bad indentation. Found 3 spaces, expected 4
+W0311:251: Bad indentation. Found 7 spaces, expected 8
+W0311:253: Bad indentation. Found 3 spaces, expected 4
+W0311:254: Bad indentation. Found 7 spaces, expected 8
+W0311:256: Bad indentation. Found 3 spaces, expected 4
+W0311:257: Bad indentation. Found 7 spaces, expected 8
+W0311:259: Bad indentation. Found 3 spaces, expected 4
+W0311:260: Bad indentation. Found 7 spaces, expected 8
+W0311:263: Bad indentation. Found 3 spaces, expected 4
+W0311:264: Bad indentation. Found 7 spaces, expected 8
+W0311:266: Bad indentation. Found 3 spaces, expected 4
+W0311:267: Bad indentation. Found 6 spaces, expected 8
+W0311:271: Bad indentation. Found 3 spaces, expected 4
+W0311:286: Bad indentation. Found 3 spaces, expected 4
+W0311:287: Bad indentation. Found 6 spaces, expected 8
+W0311:288: Bad indentation. Found 6 spaces, expected 8
+W0311:290: Bad indentation. Found 3 spaces, expected 4
+W0311:291: Bad indentation. Found 6 spaces, expected 8
+W0311:296: Bad indentation. Found 3 spaces, expected 4
+W0311:297: Bad indentation. Found 6 spaces, expected 8
+W0601:146:leo_file.gen1: Global variable 'vnode_count' undefined at the module level
+W0601:157:leo_file.gen_vnodes: Global variable 'allvnodes' undefined at the module level
+W0601:157:leo_file.gen_vnodes: Global variable 'vnode_stack' undefined at the module level
+W0105:226:leo_node.gen_vnodes: String statement has no effect
+W0601:236:leo_node.gen_vnodes: Global variable 'vnode_count' undefined at the module level
+
+************* Module leo.plugins.leo_pdf
+E0602:322:Bunch.__setitem__: Undefined variable 'operator'
+E0602:326:Bunch.__getitem__: Undefined variable 'operator'
+W0105:344:Writer: String statement has no effect
+W0105:372:Writer: String statement has no effect
+
+************* Module leo.plugins.leoOPML
+E1101:211:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_globals_attributes' member
+E1101:245:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_details' member
+E1101:261:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_body_text' member
+E1101:262:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_use_outline_elements' member
+E1101:334:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_write_ua_attributes' member
+E1101:336:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_expand_ua_dictionary' member
+E1101:338:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_skip_ua_dictionary_blanks' member
+E1101:430:opmlController.createVnode: Module 'leo.core.leoNodes' has no 'tnode' member
+E1101:434:opmlController.createVnode: Instance of 'vnode' has no 't' member
+W0221:778:contentHandler.ignorableWhitespace: Arguments number differs from overridden method
+
+************* Module leo.plugins.leoremote
+W0611: 41: Unused import sys
+
+************* Module leo.plugins.lineNumbers
+E1121: 51:init.putLineNumberDirective: Too many positional arguments for function call
+
+************* Module leo.plugins.macros
+E1103:135:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
+E1103:135:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
+
+************* Module leo.plugins.mod_autosave
+W0311: 86: Bad indentation. Found 9 spaces, expected 8
+W0611: 25: Unused import os
+
+************* Module leo.plugins.mod_leo2ascd
+E1120:143:GetAscFilename: No value passed for parameter 'vnode' in function call
+E1120:358:WriteTreeOfCurrentNode: No value passed for parameter 'vnode' in function call
+E1120:373:WriteAll: No value passed for parameter 'vnode' in function call
+E1120:433: No value passed for parameter 'c' in function call
+
+************* Module leo.plugins.mod_speedups
+W0611: 27: Unused import leoPlugins
+W0611: 46: Unused import leo
+
+************* Module leo.plugins.nav_buttons
+W0311:319: Bad indentation. Found 11 spaces, expected 12
+
+************* Module leo.plugins.nodeActions
+W0312:252: Found indentation with tabs instead of spaces
+W0312:253: Found indentation with tabs instead of spaces
+W0312:254: Found indentation with tabs instead of spaces
+W0312:255: Found indentation with tabs instead of spaces
+W0312:256: Found indentation with tabs instead of spaces
+W0312:257: Found indentation with tabs instead of spaces
+W0311:261: Bad indentation. Found 3 spaces, expected 4
+W0311:270: Bad indentation. Found 3 spaces, expected 4
+W0311:272: Bad indentation. Found 3 spaces, expected 4
+W0311:273: Bad indentation. Found 6 spaces, expected 8
+W0311:276: Bad indentation. Found 3 spaces, expected 4
+W0311:277: Bad indentation. Found 3 spaces, expected 4
+W0311:278: Bad indentation. Found 6 spaces, expected 8
+W0311:281: Bad indentation. Found 3 spaces, expected 4
+W0311:282: Bad indentation. Found 3 spaces, expected 4
+W0311:283: Bad indentation. Found 6 spaces, expected 8
+W0311:285: Bad indentation. Found 3 spaces, expected 4
+W0311:287: Bad indentation. Found 6 spaces, expected 8
+W0311:288: Bad indentation. Found 6 spaces, expected 8
+W0311:290: Bad indentation. Found 6 spaces, expected 8
+W0311:293: Bad indentation. Found 9 spaces, expected 12
+W0311:294: Bad indentation. Found 12 spaces, expected 16
+W0311:297: Bad indentation. Found 9 spaces, expected 12
+W0311:298: Bad indentation. Found 12 spaces, expected 16
+W0311:300: Bad indentation. Found 9 spaces, expected 12
+W0311:301: Bad indentation. Found 9 spaces, expected 12
+W0311:302: Bad indentation. Found 12 spaces, expected 16
+W0311:305: Bad indentation. Found 9 spaces, expected 12
+W0311:306: Bad indentation. Found 9 spaces, expected 12
+W0311:307: Bad indentation. Found 12 spaces, expected 16
+W0311:308: Bad indentation. Found 9 spaces, expected 12
+W0311:309: Bad indentation. Found 12 spaces, expected 16
+W0311:311: Bad indentation. Found 9 spaces, expected 12
+W0311:312: Bad indentation. Found 9 spaces, expected 12
+W0311:313: Bad indentation. Found 9 spaces, expected 12
+W0311:314: Bad indentation. Found 12 spaces, expected 16
+W0311:316: Bad indentation. Found 9 spaces, expected 12
+W0311:317: Bad indentation. Found 9 spaces, expected 12
+W0311:318: Bad indentation. Found 12 spaces, expected 16
+W0311:322: Bad indentation. Found 9 spaces, expected 12
+W0311:326: Bad indentation. Found 9 spaces, expected 12
+W0311:327: Bad indentation. Found 9 spaces, expected 12
+W0311:328: Bad indentation. Found 9 spaces, expected 12
+W0311:330: Bad indentation. Found 12 spaces, expected 16
+W0311:331: Bad indentation. Found 12 spaces, expected 16
+W0311:332: Bad indentation. Found 15 spaces, expected 20
+W0311:334: Bad indentation. Found 15 spaces, expected 20
+W0311:335: Bad indentation. Found 15 spaces, expected 20
+W0311:336: Bad indentation. Found 18 spaces, expected 24
+W0311:340: Bad indentation. Found 9 spaces, expected 12
+W0311:341: Bad indentation. Found 12 spaces, expected 16
+W0311:342: Bad indentation. Found 9 spaces, expected 12
+W0311:343: Bad indentation. Found 12 spaces, expected 16
+W0311:344: Bad indentation. Found 9 spaces, expected 12
+W0311:345: Bad indentation. Found 12 spaces, expected 16
+W0311:346: Bad indentation. Found 15 spaces, expected 20
+W0311:347: Bad indentation. Found 12 spaces, expected 16
+W0311:348: Bad indentation. Found 15 spaces, expected 20
+W0311:351: Bad indentation. Found 12 spaces, expected 16
+W0311:352: Bad indentation. Found 15 spaces, expected 20
+W0311:354: Bad indentation. Found 18 spaces, expected 24
+W0311:355: Bad indentation. Found 18 spaces, expected 24
+W0311:356: Bad indentation. Found 18 spaces, expected 24
+W0311:357: Bad indentation. Found 18 spaces, expected 24
+W0311:358: Bad indentation. Found 21 spaces, expected 28
+W0311:360: Bad indentation. Found 12 spaces, expected 16
+W0311:362: Bad indentation. Found 12 spaces, expected 16
+W0311:364: Bad indentation. Found 12 spaces, expected 16
+W0311:365: Bad indentation. Found 15 spaces, expected 20
+W0311:366: Bad indentation. Found 9 spaces, expected 12
+W0311:367: Bad indentation. Found 12 spaces, expected 16
+W0311:368: Bad indentation. Found 15 spaces, expected 20
+W0311:371: Bad indentation. Found 6 spaces, expected 8
+W0311:373: Bad indentation. Found 9 spaces, expected 12
+W0311:374: Bad indentation. Found 12 spaces, expected 16
+W0311:375: Bad indentation. Found 9 spaces, expected 12
+W0311:376: Bad indentation. Found 6 spaces, expected 8
+W0311:378: Bad indentation. Found 9 spaces, expected 12
+W0311:379: Bad indentation. Found 12 spaces, expected 16
+W0311:380: Bad indentation. Found 9 spaces, expected 12
+W0311:381: Bad indentation. Found 6 spaces, expected 8
+W0311:383: Bad indentation. Found 9 spaces, expected 12
+W0311:384: Bad indentation. Found 12 spaces, expected 16
+W0311:385: Bad indentation. Found 9 spaces, expected 12
+W0311:386: Bad indentation. Found 3 spaces, expected 4
+W0311:388: Bad indentation. Found 6 spaces, expected 8
+W0311:389: Bad indentation. Found 9 spaces, expected 12
+W0311:390: Bad indentation. Found 6 spaces, expected 8
+W0311:394: Bad indentation. Found 3 spaces, expected 4
+W0311:395: Bad indentation. Found 3 spaces, expected 4
+W0311:396: Bad indentation. Found 7 spaces, expected 8
+W0311:397: Bad indentation. Found 7 spaces, expected 8
+W0311:398: Bad indentation. Found 7 spaces, expected 8
+W0311:399: Bad indentation. Found 7 spaces, expected 8
+W0311:401: Bad indentation. Found 7 spaces, expected 8
+W0311:402: Bad indentation. Found 11 spaces, expected 12
+W0311:403: Bad indentation. Found 11 spaces, expected 12
+W0311:404: Bad indentation. Found 7 spaces, expected 8
+W0311:405: Bad indentation. Found 11 spaces, expected 12
+W0311:411: Bad indentation. Found 11 spaces, expected 12
+W0311:413: Bad indentation. Found 11 spaces, expected 12
+W0311:414: Bad indentation. Found 15 spaces, expected 16
+W0311:415: Bad indentation. Found 15 spaces, expected 16
+W0311:416: Bad indentation. Found 7 spaces, expected 8
+W0311:418: Bad indentation. Found 11 spaces, expected 12
+W0311:419: Bad indentation. Found 15 spaces, expected 16
+W0311:420: Bad indentation. Found 15 spaces, expected 16
+W0311:421: Bad indentation. Found 11 spaces, expected 12
+W0311:422: Bad indentation. Found 11 spaces, expected 12
+W0311:424: Bad indentation. Found 7 spaces, expected 8
+
+************* Module leo.plugins.nodebar
+W0601:179:initImages: Global variable 'clonePI' undefined at the module level
+W0601:180:initImages: Global variable 'copyPI' undefined at the module level
+W0601:181:initImages: Global variable 'cutPI' undefined at the module level
+W0601:182:initImages: Global variable 'dehoistPI' undefined at the module level
+W0601:183:initImages: Global variable 'deletePI' undefined at the module level
+W0601:184:initImages: Global variable 'demotePI' undefined at the module level
+W0601:185:initImages: Global variable 'hoistPI' undefined at the module level
+W0601:186:initImages: Global variable 'insertPI' undefined at the module level
+W0601:187:initImages: Global variable 'movedownPI' undefined at the module level
+W0601:188:initImages: Global variable 'moveleftPI' undefined at the module level
+W0601:189:initImages: Global variable 'moverightPI' undefined at the module level
+W0601:190:initImages: Global variable 'moveupPI' undefined at the module level
+W0601:191:initImages: Global variable 'nodedownPI' undefined at the module level
+W0601:192:initImages: Global variable 'nodeleftPI' undefined at the module level
+W0601:193:initImages: Global variable 'noderightPI' undefined at the module level
+W0601:194:initImages: Global variable 'nodeupPI' undefined at the module level
+W0601:195:initImages: Global variable 'pastePI' undefined at the module level
+W0601:196:initImages: Global variable 'pasteclonePI' undefined at the module level
+W0601:197:initImages: Global variable 'promotePI' undefined at the module level
+W0601:198:initImages: Global variable 'questionPI' undefined at the module level
+W0601:199:initImages: Global variable 'sortchildrenPI' undefined at the module level
+W0601:200:initImages: Global variable 'sortsiblingsPI' undefined at the module level
+W0611: 26: Unused import weakref
+
+************* Module leo.plugins.pretty_print
+W0233: 54:myPrettyPrinter.__init__: __init__ method from a non direct base class 'myPrettyPrinter' is called
+E0602: 64:myPrettyPrinter.putNormalToken: Undefined variable 'token'
+E0602:190:myPrettyPrinter.doOp: Undefined variable 'keyword'
+E0602:225:myPrettyPrinter.doOp: Undefined variable 'string'
+E0602:225:myPrettyPrinter.doOp: Undefined variable 'string'
+
+************* Module leo.plugins.quickMove
+W0311:219: Bad indentation. Found 16 spaces, expected 12
+W0311:224: Bad indentation. Found 16 spaces, expected 12
+W0611:105: Unused import types
+
+************* Module leo.plugins.quicksearch
+W0301:222: Unnecessary semicolon
+W0301:240: Unnecessary semicolon
+W0604: 73: Using the global statement at the module level
+W0611: 42: Unused import QListWidget
+
+************* Module leo.plugins.rClickBasePluginClasses
+E1101:134:pluginCommandClass.preDoCommand: Instance of 'pluginCommandClass' has no 'doCommand' member
+E1101:260:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandList' member
+E1101:267:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
+E1101:272:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
+E1101:310:basePluginController.getCommandList: Instance of 'basePluginController' has no 'commandList' member
+E1101:318:basePluginController.setDefaultContextMenus: Instance of 'basePluginController' has no 'defaultContextMenus' member
+
+************* Module leo.plugins.run_nodes
+E1120:211:OnQuit: No value passed for parameter 'c' in function call
+
+************* Module leo.plugins.rst3
+E1120:264:runUnitTests: No value passed for parameter 'headline' in function call
+E1120:1018:rstClass.initOptionsFromSettings: No value passed for parameter 'tag' in function call
+
+************* Module leo.plugins.scrolledmessage
+W0311:402: Bad indentation. Found 12 spaces, expected 8
+W0311:403: Bad indentation. Found 12 spaces, expected 8
+E1101:284:ScrolledMessageDialog.doActionOutlineShow: Instance of 'ScrolledMessageDialog' has no 'name' member
+W0107:309:ScrolledMessageDialog.doActionAbout: Unnecessary pass statement
+E1101:526:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
+E1101:527:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
+E1101:533:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'title' member
+E0211:537:ScrolledMessageDialog.afterDrawHandler: Method has no argument
+E0602:607:ScrolledMessageController.afterRedrawHandler: Undefined variable 'dialogs'
+E1120:608:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'tag' in function call
+E1120:608:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'keywords' in function call
+W0611: 86: Unused import inspect
+
+************* Module leo.plugins.todo
+E0102:258:todoController.addPopupMenu.func: function already defined line 249
+E0213:305:todoController.redrawer: Method should have "self" as first argument
+E1102:310:todoController.redrawer.new: fn is not callable
+E0213:320:todoController.projectChanger: Method should have "self" as first argument
+E1102:323:todoController.projectChanger.new: fn is not callable
+
+************* Module leo.external.ipy_leo
+W0601: 30:init_ipython: Global variable 'ip' undefined at the module level
+W0107: 90:es: Unnecessary pass statement
+W0108:231:LeoNode.<lambda>: Lambda may not be necessary
+W1001:398:LeoWorkbook: Use of "property" on an old style class
+E1101:438:workbook_complete: Function 'dispatch' has no 'when_type' member
+E1101:438:workbook_complete: Function 'complete_object' has no 'when_type' member
+E1101:589:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
+W0601:749:lleo_f: Global variable '_request_immediate_connect' undefined at the module level
+
+************* Module leo.external.lproto
+E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
+
+************* Module leo.plugins.toolbar
+E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'tkIconBarClass' has no 'getButton' member (but some types coul
+d not be inferred)
+E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'nullIconBarClass' has no 'getButton' member (but some types co
+uld not be inferred)
+E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'tkIconBarClass' has no 'getWidgetFrame' member (but some
+types could not be inferred)
+E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'nullIconBarClass' has no 'getWidgetFrame' member (but som
+e types could not be inferred)
+E1103:1336:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptButton' has no 'configure'
+ member (but some types could not be inferred)
 #@+node:ekr.20101028131948.5858: ** Pylint errors for minor plugins
 @killcolor
 
@@ -1375,1416 +2681,5 @@ W0601:749:lleo_f: Global variable '_request_immediate_connect' undefined at the 
 
 ************* Module leo.external.lproto
 E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
-#@+node:ekr.20101115092550.5825: ** Pylint reports
-@killcolor
-
-Wrong:
-************* Module leo.core.leoFileCommands
-E1120:833:baseFileCommands.getDiff: No value passed for parameter 'b' in function call
-E1101:1048:baseFileCommands.cleanSaxInputString: Class 'str' has no 'maketrans' member
-
-************* Module leo.plugins.qtGui
-W0311:7407: Bad indentation. Found 11 spaces, expected 12
-W0311:7417: Bad indentation. Found 11 spaces, expected 12
-W0311:7418: Bad indentation. Found 15 spaces, expected 16
-
-************* Module leo.plugins.tkGui
-E0602:288:tkinterGui.runOpenDirectoryDialog: Undefined variable 'titledialog'
-#@+node:ekr.20101115092550.5826: *3* Minor plugins
-************* Module leo.plugins.groupOperations
-W0601:190:initImages: Global variable 'groupOpPI' undefined at the module level
-W0601:191:initImages: Global variable 'bullseyePI' undefined at the module level
-W0601:192:initImages: Global variable 'copyPI' undefined at the module level
-W0601:193:initImages: Global variable 'clonePI' undefined at the module level
-W0601:194:initImages: Global variable 'movePI' undefined at the module level
-W0601:195:initImages: Global variable 'move_arrowPI' undefined at the module level
-W0601:196:initImages: Global variable 'copy_arrowPI' undefined at the module level
-W0601:197:initImages: Global variable 'clone_arrowPI' undefined at the module level
-W0601:198:initImages: Global variable 'markSpotPI' undefined at the module level
-W0601:199:initImages: Global variable 'markForPI' undefined at the module level
-W0601:200:initImages: Global variable 'operateOnMarkedPI' undefined at the module level
-W0601:201:initImages: Global variable 'clearMarksPI' undefined at the module level
-W0601:202:initImages: Global variable 'transferFromPI' undefined at the module level
-W0611: 33: Unused import copy
-W0611: 34: Unused import base64
-
-************* Module leo.plugins.leoupdate
-W0105: 59: String statement has no effect
-W0601: 85:onCreate: Global variable 'thePluginController' undefined at the module level
-W0601: 92:topLevelMenu: Global variable 'thePluginController' undefined at the module level
-E1101:132:LeoUpdater.showManagerDialog.HandlerDialog.initLocalCollection: Instance of 'HandlerDialog' has no 'c' member
-E1101:150:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'remote_plugin_list' member
-E1101:151:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
-E1101:155:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
-E1101:159:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'plugin_list' member
-E1101:160:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'plugin_list' member
-E1101:162:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'remote_plugin_list' member
-E1101:163:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
-W0611: 28: Unused import glob
-W0611: 27: Unused import sys
-W0611: 26: Unused import re
-
-************* Module leo.plugins.mod_labels
-W0311:113: Bad indentation. Found 3 spaces, expected 4
-W0311:114: Bad indentation. Found 6 spaces, expected 8
-W0311:121: Bad indentation. Found 6 spaces, expected 8
-W0311:123: Bad indentation. Found 3 spaces, expected 4
-W0311:124: Bad indentation. Found 6 spaces, expected 8
-W0311:128: Bad indentation. Found 3 spaces, expected 4
-W0311:129: Bad indentation. Found 6 spaces, expected 8
-W0311:130: Bad indentation. Found 6 spaces, expected 8
-W0311:135: Bad indentation. Found 6 spaces, expected 8
-W0311:137: Bad indentation. Found 3 spaces, expected 4
-W0311:138: Bad indentation. Found 6 spaces, expected 8
-W0311:201: Bad indentation. Found 20 spaces, expected 16
-W0311:202: Bad indentation. Found 20 spaces, expected 16
-W0311:203: Bad indentation. Found 20 spaces, expected 16
-W0311:204: Bad indentation. Found 28 spaces, expected 20
-W0311:205: Bad indentation. Found 20 spaces, expected 16
-W0311:207: Bad indentation. Found 20 spaces, expected 16
-W0311:221: Bad indentation. Found 20 spaces, expected 16
-W0311:223: Bad indentation. Found 20 spaces, expected 16
-W0311:231: Bad indentation. Found 20 spaces, expected 16
-E1123:537:labelsController.label_to_subnode: Passing unexpected keyword argument 'p' in function call
-E1120:537:labelsController.label_to_subnode: No value passed for parameter 'v' in function call
-E1101:566:labelsController.subnode_to_label: Instance of 'labelsController' has no 'get_labellist_for_node' member
-E0602:574:labelsController.subnode_to_label: Undefined variable 'v'
-E0602:600:labelsController.subnode_to_label: Undefined variable 'labels'
-E0602:601:labelsController.subnode_to_label: Undefined variable 'v'
-E0602:601:labelsController.subnode_to_label: Undefined variable 'labels'
-E0602:606:labelsController.subnode_to_label: Undefined variable 'v'
-E1120:618:labelsController.subnodes_to_label: No value passed for parameter 'title' in function call
-E0602:668:labelsController.subnodes_to_labels: Undefined variable 'v'
-W0611: 37: Unused import leoAtFile
-W0611: 38: Unused import leoCommands
-W0611: 48: Unused import os
-('EKR: exit status', 6)
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\mod_read_dir_outline.py', '')
-************* Module leo.plugins.mod_read_dir_outline
-E1103:105:controller.readDir: Instance of 'unitTestGui' has no 'runOpenDirectoryDialog' member (but some types could notbe inferred)
-E1103:105:controller.readDir: Instance of 'nullGui' has no 'runOpenDirectoryDialog' member (but some types could not beinferred)
-
-************* Module leo.plugins.multifile
-E1103:131:insertDirectoryString: Instance of 'unitTestGui' has no 'runOpenDirectoryDialog' member (but some types could not be inferred)
-E1103:131:insertDirectoryString: Instance of 'nullGui' has no 'runOpenDirectoryDialog' member (but some types could not be inferred)
-
-************* Module leo.plugins.newButtons
-E1101:246:UIHelperClass.addWidgets: Instance of 'FlatOptionMenu' has no 'pack' member
-E1111:359:HelperForm.formCommit: Assigning to function call which doesn't return
-
-************* Module leo.plugins.nodeActions
-W0312:252: Found indentation with tabs instead of spaces
-W0312:253: Found indentation with tabs instead of spaces
-W0312:254: Found indentation with tabs instead of spaces
-W0312:255: Found indentation with tabs instead of spaces
-W0312:256: Found indentation with tabs instead of spaces
-W0312:257: Found indentation with tabs instead of spaces
-W0311:261: Bad indentation. Found 3 spaces, expected 4
-W0311:270: Bad indentation. Found 3 spaces, expected 4
-W0311:272: Bad indentation. Found 3 spaces, expected 4
-W0311:273: Bad indentation. Found 6 spaces, expected 8
-W0311:276: Bad indentation. Found 3 spaces, expected 4
-W0311:277: Bad indentation. Found 3 spaces, expected 4
-W0311:278: Bad indentation. Found 6 spaces, expected 8
-W0311:281: Bad indentation. Found 3 spaces, expected 4
-W0311:282: Bad indentation. Found 3 spaces, expected 4
-W0311:283: Bad indentation. Found 6 spaces, expected 8
-W0311:285: Bad indentation. Found 3 spaces, expected 4
-W0311:287: Bad indentation. Found 6 spaces, expected 8
-W0311:288: Bad indentation. Found 6 spaces, expected 8
-W0311:290: Bad indentation. Found 6 spaces, expected 8
-W0311:293: Bad indentation. Found 9 spaces, expected 12
-W0311:294: Bad indentation. Found 12 spaces, expected 16
-W0311:297: Bad indentation. Found 9 spaces, expected 12
-W0311:298: Bad indentation. Found 12 spaces, expected 16
-W0311:300: Bad indentation. Found 9 spaces, expected 12
-W0311:301: Bad indentation. Found 9 spaces, expected 12
-W0311:302: Bad indentation. Found 12 spaces, expected 16
-W0311:305: Bad indentation. Found 9 spaces, expected 12
-W0311:306: Bad indentation. Found 9 spaces, expected 12
-W0311:307: Bad indentation. Found 12 spaces, expected 16
-W0311:308: Bad indentation. Found 9 spaces, expected 12
-W0311:309: Bad indentation. Found 12 spaces, expected 16
-W0311:311: Bad indentation. Found 9 spaces, expected 12
-W0311:312: Bad indentation. Found 9 spaces, expected 12
-W0311:313: Bad indentation. Found 9 spaces, expected 12
-W0311:314: Bad indentation. Found 12 spaces, expected 16
-W0311:316: Bad indentation. Found 9 spaces, expected 12
-W0311:317: Bad indentation. Found 9 spaces, expected 12
-W0311:318: Bad indentation. Found 12 spaces, expected 16
-W0311:322: Bad indentation. Found 9 spaces, expected 12
-W0311:326: Bad indentation. Found 9 spaces, expected 12
-W0311:327: Bad indentation. Found 9 spaces, expected 12
-W0311:328: Bad indentation. Found 9 spaces, expected 12
-W0311:330: Bad indentation. Found 12 spaces, expected 16
-W0311:331: Bad indentation. Found 12 spaces, expected 16
-W0311:332: Bad indentation. Found 15 spaces, expected 20
-W0311:334: Bad indentation. Found 15 spaces, expected 20
-W0311:335: Bad indentation. Found 15 spaces, expected 20
-W0311:336: Bad indentation. Found 18 spaces, expected 24
-W0311:340: Bad indentation. Found 9 spaces, expected 12
-W0311:341: Bad indentation. Found 12 spaces, expected 16
-W0311:342: Bad indentation. Found 9 spaces, expected 12
-W0311:343: Bad indentation. Found 12 spaces, expected 16
-W0311:344: Bad indentation. Found 9 spaces, expected 12
-W0311:345: Bad indentation. Found 12 spaces, expected 16
-W0311:346: Bad indentation. Found 15 spaces, expected 20
-W0311:347: Bad indentation. Found 12 spaces, expected 16
-W0311:348: Bad indentation. Found 15 spaces, expected 20
-W0311:351: Bad indentation. Found 12 spaces, expected 16
-W0311:352: Bad indentation. Found 15 spaces, expected 20
-W0311:354: Bad indentation. Found 18 spaces, expected 24
-W0311:355: Bad indentation. Found 18 spaces, expected 24
-W0311:356: Bad indentation. Found 18 spaces, expected 24
-W0311:357: Bad indentation. Found 18 spaces, expected 24
-W0311:358: Bad indentation. Found 21 spaces, expected 28
-W0311:360: Bad indentation. Found 12 spaces, expected 16
-W0311:362: Bad indentation. Found 12 spaces, expected 16
-W0311:364: Bad indentation. Found 12 spaces, expected 16
-W0311:365: Bad indentation. Found 15 spaces, expected 20
-W0311:366: Bad indentation. Found 9 spaces, expected 12
-W0311:367: Bad indentation. Found 12 spaces, expected 16
-W0311:368: Bad indentation. Found 15 spaces, expected 20
-W0311:371: Bad indentation. Found 6 spaces, expected 8
-W0311:373: Bad indentation. Found 9 spaces, expected 12
-W0311:374: Bad indentation. Found 12 spaces, expected 16
-W0311:375: Bad indentation. Found 9 spaces, expected 12
-W0311:376: Bad indentation. Found 6 spaces, expected 8
-W0311:378: Bad indentation. Found 9 spaces, expected 12
-W0311:379: Bad indentation. Found 12 spaces, expected 16
-W0311:380: Bad indentation. Found 9 spaces, expected 12
-W0311:381: Bad indentation. Found 6 spaces, expected 8
-W0311:383: Bad indentation. Found 9 spaces, expected 12
-W0311:384: Bad indentation. Found 12 spaces, expected 16
-W0311:385: Bad indentation. Found 9 spaces, expected 12
-W0311:386: Bad indentation. Found 3 spaces, expected 4
-W0311:388: Bad indentation. Found 6 spaces, expected 8
-W0311:389: Bad indentation. Found 9 spaces, expected 12
-W0311:390: Bad indentation. Found 6 spaces, expected 8
-W0311:394: Bad indentation. Found 3 spaces, expected 4
-W0311:395: Bad indentation. Found 3 spaces, expected 4
-W0311:396: Bad indentation. Found 7 spaces, expected 8
-W0311:397: Bad indentation. Found 7 spaces, expected 8
-W0311:398: Bad indentation. Found 7 spaces, expected 8
-W0311:399: Bad indentation. Found 7 spaces, expected 8
-W0311:401: Bad indentation. Found 7 spaces, expected 8
-W0311:402: Bad indentation. Found 11 spaces, expected 12
-W0311:403: Bad indentation. Found 11 spaces, expected 12
-W0311:404: Bad indentation. Found 7 spaces, expected 8
-W0311:405: Bad indentation. Found 11 spaces, expected 12
-W0311:411: Bad indentation. Found 11 spaces, expected 12
-W0311:413: Bad indentation. Found 11 spaces, expected 12
-W0311:414: Bad indentation. Found 15 spaces, expected 16
-W0311:415: Bad indentation. Found 15 spaces, expected 16
-W0311:416: Bad indentation. Found 7 spaces, expected 8
-W0311:418: Bad indentation. Found 11 spaces, expected 12
-W0311:419: Bad indentation. Found 15 spaces, expected 16
-W0311:420: Bad indentation. Found 15 spaces, expected 16
-W0311:421: Bad indentation. Found 11 spaces, expected 12
-W0311:422: Bad indentation. Found 11 spaces, expected 12
-W0311:424: Bad indentation. Found 7 spaces, expected 8
-
-************* Module leo.plugins.pie_menus
-E1101:104:PieMenu.drawString: Instance of 'PieMenu' has no 'l4' member
-E1101:104:PieMenu.drawString: Instance of 'PieMenu' has no 'l4' member
-E0602:134:PieMenu.construct: Undefined variable 'l1'
-E0602:138:PieMenu.construct: Undefined variable 'l1'
-E0602:142:PieMenu.construct: Undefined variable 'l1'
-E0602:147:PieMenu.construct: Undefined variable 'l1'
-E0602:151:PieMenu.construct: Undefined variable 'l1'
-E0602:166:PieMenu.construct: Undefined variable 'l1'
-E0602:179:PieMenu.construct: Undefined variable 'l3'
-E0602:185:PieMenu.construct: Undefined variable 'l3'
-E0602:192:PieMenu.construct: Undefined variable 'l3'
-E0602:200:PieMenu.construct: Undefined variable 'l2'
-E0602:206:PieMenu.construct: Undefined variable 'l2'
-E0602:212:PieMenu.construct: Undefined variable 'l2'
-E0602:219:PieMenu.construct: Undefined variable 'l2'
-E0602:225:PieMenu.construct: Undefined variable 'l2'
-E0602:233:PieMenu.construct: Undefined variable 'l4'
-E0602:239:PieMenu.construct: Undefined variable 'l4'
-E0602:246:PieMenu.construct: Undefined variable 'l4'
-E0602:254:PieMenu.construct: Undefined variable 'l5'
-E0602:262:PieMenu.construct: Undefined variable 'l6'
-E0602:270:PieMenu.construct: Undefined variable 'l7'
-E0602:276:PieMenu.construct: Undefined variable 'l7'
-E0602:282:PieMenu.construct: Undefined variable 'l7'
-E1101:381:PieMenu.clean: Instance of 'PieMenu' has no 'l1' member
-E1101:382:PieMenu.clean: Instance of 'PieMenu' has no 'l2' member
-E1101:383:PieMenu.clean: Instance of 'PieMenu' has no 'l3' member
-E1101:384:PieMenu.clean: Instance of 'PieMenu' has no 'l4' member
-E1101:385:PieMenu.clean: Instance of 'PieMenu' has no 'l5' member
-E1101:386:PieMenu.clean: Instance of 'PieMenu' has no 'l6' member
-E1101:387:PieMenu.clean: Instance of 'PieMenu' has no 'l7' member
-E1101:433:PieMenu.draw: Instance of 'PieMenu' has no 'l1' member
-E1101:434:PieMenu.draw: Instance of 'PieMenu' has no 'l3' member
-E1101:435:PieMenu.draw: Instance of 'PieMenu' has no 'l2' member
-E1101:436:PieMenu.draw: Instance of 'PieMenu' has no 'l4' member
-E1101:437:PieMenu.draw: Instance of 'PieMenu' has no 'l5' member
-E1101:438:PieMenu.draw: Instance of 'PieMenu' has no 'l6' member
-E1101:439:PieMenu.draw: Instance of 'PieMenu' has no 'l7' member
-E1101:440:PieMenu.draw: Instance of 'PieMenu' has no 'l1' member
-E1101:441:PieMenu.draw: Instance of 'PieMenu' has no 'l3' member
-E1101:442:PieMenu.draw: Instance of 'PieMenu' has no 'l2' member
-E1101:443:PieMenu.draw: Instance of 'PieMenu' has no 'l4' member
-E1101:444:PieMenu.draw: Instance of 'PieMenu' has no 'l5' member
-E1101:445:PieMenu.draw: Instance of 'PieMenu' has no 'l6' member
-E1101:446:PieMenu.draw: Instance of 'PieMenu' has no 'l7' member
-
-************* Module leo.plugins.read_only_nodes
-E0611: 73: No name 'parse' in module 'urllib'
-E0602:188:FTPurl.read: Undefined variable 'sys'
-E0602:222:FTPurl.write: Undefined variable 'sys'
-E0213:226:FTPurl.seek: Method should have "self" as first argument
-E0602:227:FTPurl.seek: Undefined variable 'self'
-E0211:229:FTPurl.flush: Method has no argument
-E0602:243:FTPurl.dir: Undefined variable 'sys'
-W0601:277:enable_body: Global variable 'insertOnTime' undefined at the module level
-W0601:277:enable_body: Global variable 'insertOffTime' undefined at the module level
-W0601:287:disable_body: Global variable 'insertOnTime' undefined at the module level
-W0601:287:disable_body: Global variable 'insertOffTime' undefined at the module level
-
-************* Module leo.plugins.rClick
-W0511:611: TODO:
-E1101:938:pluginController.getButtonHandlers: Instance of 'pluginController' has no 'button_handlers' member
-E1101:1567:pluginController.findButtonCommandClass.doCommand: Instance of 'findButtonCommandClass' has no 'data' member
-W0611:640: Unused import ImageTk
-W0611:639: Unused import Image
-
-************* Module leo.plugins.searchbar
-W0107: 89:onPreCreate: Unnecessary pass statement
-E1101:162:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'bg' member
-E1101:168:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'labelText' member
-E1101:170:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'command' member
-E1101:225:SearchbarEntryWidget.detachWidget: Instance of 'SearchbarEntryWidget' has no 'leoIconBar' member
-E1101:230:SearchbarEntryWidget.detachWidget: Instance of 'SearchbarEntryWidget' has no 'leoIconBar' member
-E1101:252:SearchbarEntryWidget.onTextChanged: Instance of 'SearchbarEntryWidget' has no 'slave' member
-E1101:261:SearchbarEntryWidget.onRightClick: Instance of 'SearchbarEntryWidget' has no 'entry_menu' member
-E1101:267:SearchbarEntryWidget.onReturn: Instance of 'SearchbarEntryWidget' has no 'command' member
-W0107:403:pluginController.toggleSearchbarCommandClass.doCommand: Unnecessary pass statement
-W0611: 27: Unused import leoPlugins
-W0611: 30: Unused import sys
-W0611: 38: Unused import ImageTk
-W0611: 37: Unused import Image
-W0611: 29: Unused import re
-W0611: 31: Unused import os
-
-************* Module leo.plugins.searchbox
-E1101:241:QuickFind.__init__: Class 'leoTkinterFrame' has no 'leoTkTextWidget' member
-E1103:276:QuickFind.init_s_ctrl: Instance of 'searchWidget' has no 'mark_set' member (but some types could not be inferred)
-E1103:278:QuickFind.init_s_ctrl: Instance of 'searchWidget' has no 'toGuiIndex' member (but some types could not be inferred)
-E1103:279:QuickFind.init_s_ctrl: Instance of 'searchWidget' has no 'mark_set' member (but some types could not be inferred)
-
-************* Module leo.plugins.templates
-W0601: 95:initImages: Global variable 'templatePI' undefined at the module level
-W0601: 96:initImages: Global variable 'tempwizPI' undefined at the module level
-E0602:205:getTemplateDialog: Undefined variable 'bs'
-E0602:206:getTemplateDialog: Undefined variable 'hs'
-
-************* Module leo.plugins.toolbar
-W0511:725: FIXME:
-W0511:805: TODO: not ready yet
-E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'tkIconBarClass' has no 'getButton' member (but some types could not be inferred)
-E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'nullIconBarClass' has no 'getButton' member (but some types could not be inferred)
-W0221:467:ToolbarTkinterFrame.addIconWidget: Arguments number differs from overridden method
-W0221:475:ToolbarTkinterFrame.clearIconBar: Arguments number differs from overridden method
-E1101:479:ToolbarTkinterFrame.clearIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-W0221:481:ToolbarTkinterFrame.createIconBar: Arguments number differs from overridden method
-E1101:495:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:501:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:504:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-W0221:516:ToolbarTkinterFrame.hideIconBar: Arguments number differs from overridden method
-E1101:520:ToolbarTkinterFrame.hideIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'tkIconBarClass' has no 'getWidgetFrame' member (but some
-types could not be inferred)
-E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'nullIconBarClass' has no 'getWidgetFrame' member (but som
-e types could not be inferred)
-E1101:556:ToolbarTkinterFrame.getToolbarFrame: Instance of 'ToolbarTkinterFrame' has no 'toolBar' member
-E1101:619:ToolbarIconWidgetFrame.detachWidget: Instance of 'ToolbarIconWidgetFrame' has no 'leoIconBar' member
-E1101:624:ToolbarIconWidgetFrame.detachWidget: Instance of 'ToolbarIconWidgetFrame' has no 'leoIconBar' member
-E1101:834:ToolbarIconButton.detachWidget: Instance of 'ToolbarIconButton' has no 'leoIconBar' member
-E1101:839:ToolbarIconButton.detachWidget: Instance of 'ToolbarIconButton' has no 'leoIconBar' member
-E1101:971:ToolbarIconButton.setCommand: Instance of 'ToolbarIconButton' has no 'config' member
-E1101:1007:ToolbarScriptButton.__init__.<lambda>: Instance of 'ToolbarScriptButton' has no 'invoke' member
-W0221:1229:ToolbarScriptingController.executeScriptFromButton: Arguments number differs from overridden method
-W0221:1314:ToolbarScriptingController.createScriptButtonIconButton: Arguments number differs from overridden method
-E1103:1336:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptButton' has no 'configure'
- member (but some types could not be inferred)
-W0221:1338:ToolbarScriptingController.addScriptButtonCommand: Arguments number differs from overridden method
-W0221:1816:ToolbarTkIconBarClass.addWidget: Arguments number differs from overridden method
-W0221:1992:ToolbarTkIconBarClass.pack: Arguments number differs from overridden method
-
-************* Module leo.plugins.xcc_nodes
-W0312:233: Found indentation with tabs instead of spaces
-W0312:403: Found indentation with tabs instead of spaces
-W0312:405: Found indentation with tabs instead of spaces
-W0312:406: Found indentation with tabs instead of spaces
-W0312:407: Found indentation with tabs instead of spaces
-W0312:409: Found indentation with tabs instead of spaces
-W0312:410: Found indentation with tabs instead of spaces
-W0312:414: Found indentation with tabs instead of spaces
-W0312:415: Found indentation with tabs instead of spaces
-W0312:420: Found indentation with tabs instead of spaces
-W0312:421: Found indentation with tabs instead of spaces
-W0312:422: Found indentation with tabs instead of spaces
-W0312:466: Found indentation with tabs instead of spaces
-W0312:468: Found indentation with tabs instead of spaces
-W0312:470: Found indentation with tabs instead of spaces
-W0312:471: Found indentation with tabs instead of spaces
-W0312:472: Found indentation with tabs instead of spaces
-W0312:475: Found indentation with tabs instead of spaces
-W0312:476: Found indentation with tabs instead of spaces
-W0312:491: Found indentation with tabs instead of spaces
-W0312:492: Found indentation with tabs instead of spaces
-W0312:493: Found indentation with tabs instead of spaces
-W0312:495: Found indentation with tabs instead of spaces
-W0312:496: Found indentation with tabs instead of spaces
-W0312:500: Found indentation with tabs instead of spaces
-W0312:501: Found indentation with tabs instead of spaces
-W0312:502: Found indentation with tabs instead of spaces
-W0312:503: Found indentation with tabs instead of spaces
-W0312:504: Found indentation with tabs instead of spaces
-W0312:505: Found indentation with tabs instead of spaces
-W0312:509: Found indentation with tabs instead of spaces
-W0312:510: Found indentation with tabs instead of spaces
-W0312:511: Found indentation with tabs instead of spaces
-W0312:512: Found indentation with tabs instead of spaces
-W0312:514: Found indentation with tabs instead of spaces
-W0312:518: Found indentation with tabs instead of spaces
-W0312:522: Found indentation with tabs instead of spaces
-W0312:523: Found indentation with tabs instead of spaces
-W0312:524: Found indentation with tabs instead of spaces
-W0312:525: Found indentation with tabs instead of spaces
-W0312:529: Found indentation with tabs instead of spaces
-W0312:530: Found indentation with tabs instead of spaces
-W0312:533: Found indentation with tabs instead of spaces
-W0312:534: Found indentation with tabs instead of spaces
-W0312:535: Found indentation with tabs instead of spaces
-W0312:536: Found indentation with tabs instead of spaces
-W0312:537: Found indentation with tabs instead of spaces
-W0312:539: Found indentation with tabs instead of spaces
-W0312:553: Found indentation with tabs instead of spaces
-W0312:554: Found indentation with tabs instead of spaces
-W0511:169: XXX to XxxClass.
-W0511:518: TODO: ","Add import code in ImportFiles function!")
-W0511:3339: TODO: Support precompiled header auto creation/inclusion."""
-W0511:3660: TODO: send a WATCHTASK if breaked
-E0602:336:OnStart2: Undefined variable 'XCC_INITED'
-E0602:338:OnStart2: Undefined variable 'InitXcc'
-E1101:415:linPause: Module 'os' has no 'kill' member
-E0601:420:AddText: Using variable 'c' before assignment
-E0602:421:AddText: Undefined variable 'LeoBody'
-E0602:422:AddText: Undefined variable 'LeoBody'
-E0602:471:DecompressIcon: Undefined variable 'Excetion'
-E0602:472:DecompressIcon: Undefined variable 'Traceback'
-E0602:533:ReplaceVars: Undefined variable 'NAME'
-E0602:534:ReplaceVars: Undefined variable 'EXT'
-E0602:535:ReplaceVars: Undefined variable 'ABS_PATH'
-E0602:536:ReplaceVars: Undefined variable 'REL_PATH'
-E0602:537:ReplaceVars: Undefined variable 'SRC_EXT'
-E1121:674:controllerClass.onIdle: Too many positional arguments for function call
-E1121:727:controllerClass.onQuit: Too many positional arguments for function call
-E0211:813:controllerClass.UpdateProcess: Method has no argument
-E0601:815:controllerClass.UpdateProcess: Using variable 'cc' before assignment
-E0602:817:controllerClass.UpdateProcess: Undefined variable 'self'
-E0211:992:controllerClass.sGetExecInfo: Method has no argument
-E0602:994:controllerClass.sGetExecInfo: Undefined variable 'self'
-E0602:1020:controllerClass.sGoToError: Undefined variable 'CPL'
-E1101:1178:controllerClass.sSetText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1178:controllerClass.sSetText: Undefined variable 'SELECTED_NODE'
-E1101:1184:controllerClass.sAddText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1184:controllerClass.sAddText: Undefined variable 'SELECTED_NODE'
-E1120:1249:controllerClass.aStop: No value passed for parameter 'pid' in function call
-E0602:1265:controllerClass.aStepIn: Undefined variable 'DBG'
-E0602:1280:controllerClass.aStepOver: Undefined variable 'DBG'
-E0602:1295:controllerClass.aStepOut: Undefined variable 'DBG'
-E1120:1308:controllerClass.aPause: No value passed for parameter 'pid' in function call
-E1101:1342:controllerClass.aSetText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1342:controllerClass.aSetText: Undefined variable 'ACTIVE_NODE'
-E1101:1348:controllerClass.aAddText: Instance of 'controllerClass' has no 'ACTIVE_NOD' member
-E1101:1349:controllerClass.aAddText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1352:controllerClass.aAddText: Undefined variable 'LeoBodyText'
-E1101:1379:controllerClass.Compile: Instance of 'controllerClass' has no 'ProcessClass' member
-E1101:1386:controllerClass.Compile: Instance of 'controllerClass' has no 'ProcessList' member
-E1101:1401:controllerClass.CplCmd: Instance of 'controllerClass' has no 'ReplaceVars' member
-E0602:1440:controllerClass.CplCmd: Undefined variable 'CPL'
-E1101:1457:controllerClass.Debug: Instance of 'controllerClass' has no 'GetDebugInfo' member
-E1101:1466:controllerClass.Debug: Instance of 'controllerClass' has no 'ProcessList' member
-E1101:1473:controllerClass.DbgCmd: Instance of 'controllerClass' has no 'ReplaceVars' member
-E1121:1483:controllerClass.Execute: Too many positional arguments for function call
-E1101:1495:controllerClass.Execute: Instance of 'controllerClass' has no 'ProcessList' member
-E1101:1507:controllerClass.CplStart: Instance of 'controllerClass' has no 'VProcessList' member
-E1101:1587:controllerClass.DbgStart: Instance of 'controllerClass' has no 'ProcessList' member
-E0602:1607:controllerClass.DbgStart: Undefined variable 'DBG'
-E0602:1614:controllerClass.DbgStart: Undefined variable 'DBG'
-E0213:1616:controllerClass.DbgOut: Method should have "self" as first argument
-E0602:1620:controllerClass.DbgOut: Undefined variable 'self'
-E0602:1625:controllerClass.DbgOut: Undefined variable 'OutBuff'
-E1101:1704:controllerClass.ProgStart: Instance of 'controllerClass' has no 'ProcessList' member
-E0602:1719:controllerClass.ProgOut: Undefined variable 'ExtractLines'
-E0602:1719:controllerClass.ProgOut: Undefined variable 'OutBuff'
-E0602:1736:controllerClass.ProgErr: Undefined variable 'ExtractLines'
-E0602:1736:controllerClass.ProgErr: Undefined variable 'ErrBuff'
-E0602:1772:DBGTASK.__init__: Undefined variable 'DBG_SD'
-E0602:1774:DBGTASK.__init__: Undefined variable 'DBG_SD'
-E1101:1780:DBGTASK.Send: Instance of 'DBGTASK' has no 'Command' member
-E1101:1781:DBGTASK.Send: Instance of 'DBGTASK' has no 'aWrite' member
-E1101:1781:DBGTASK.Send: Instance of 'DBGTASK' has no 'Command' member
-E1101:1782:DBGTASK.Send: Instance of 'DBGTASK' has no 'DBG_SD' member
-E0602:1858:BREAKTASK.__init__: Undefined variable 'aGet'
-E0602:1860:BREAKTASK.__init__: Undefined variable 'DBG'
-E0602:1862:BREAKTASK.__init__: Undefined variable 'Waning'
-E0602:1867:BREAKTASK.__init__: Undefined variable 'DBG'
-E0602:1881:BREAKTASK.Send: Undefined variable 'NAME'
-E0602:1882:BREAKTASK.Send: Undefined variable 'aWrite'
-E0602:1884:BREAKTASK.Send: Undefined variable 'DBG_SD'
-E0602:1885:BREAKTASK.Send: Undefined variable 'DBG_RD'
-E0602:1897:BREAKTASK.Receive: Undefined variable 'aAddText'
-E0602:1949:WATCHTASK.__init__: Undefined variable 'cc'
-E0602:1951:WATCHTASK.__init__: Undefined variable 'cc'
-E0602:1955:WATCHTASK.__init__: Undefined variable 'cc'
-E0602:1956:WATCHTASK.__init__: Undefined variable 'ccWatcher'
-E0602:1959:WATCHTASK.__init__: Undefined variable 'DBG_SD'
-W0601:1969:WATCHTASK.Cancel: Global variable 'WATCH_TASK' undefined at the module level
-E0602:1970:WATCHTASK.Cancel: Undefined variable 'DBG_SD'
-E0602:1971:WATCHTASK.Cancel: Undefined variable 'DBG_SD'
-E0602:1972:WATCHTASK.Cancel: Undefined variable 'DBG_RD'
-E0602:1973:WATCHTASK.Cancel: Undefined variable 'DBG_RD'
-E0602:1974:WATCHTASK.Cancel: Undefined variable 'PROMPT_RD'
-E0602:1975:WATCHTASK.Cancel: Undefined variable 'PROMPT_RD'
-E0602:1977:WATCHTASK.Cancel: Undefined variable 'Watcher'
-E0602:1983:WATCHTASK.Send: Undefined variable 'Watcher'
-E0602:1985:WATCHTASK.Send: Undefined variable 'aWrite'
-E0602:1985:WATCHTASK.Send: Undefined variable 'DBG'
-E0602:1986:WATCHTASK.Send: Undefined variable 'DBG_SD'
-E0602:1987:WATCHTASK.Send: Undefined variable 'DBG_RD'
-E0602:1988:WATCHTASK.Send: Undefined variable 'PROMPT_RD'
-E0602:1993:WATCHTASK.Receive: Undefined variable 'DBG_PROMPT'
-W0601:1997:WATCHTASK.OnPrompt: Global variable 'WATCH_TASK' undefined at the module level
-E0602:1999:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2005:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2010:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2011:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2014:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2015:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2017:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2020:WATCHTASK.OnPrompt: Undefined variable 'DBG_SD'
-E0602:2022:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2025:WATCHTASK.OnPrompt: Undefined variable 'PROMPT_RD'
-E0602:2026:WATCHTASK.OnPrompt: Undefined variable 'DBG_RD'
-E0602:2101:BREAKIDTASK.Send: Undefined variable 'aWrite'
-E0602:2102:BREAKIDTASK.Send: Undefined variable 'DBG_SD'
-E0602:2103:BREAKIDTASK.Send: Undefined variable 'DBG_RD'
-E0602:2554:ConfigClass.CplPageClass.Browse: Undefined variable 'e'
-E0602:2694:ConfigClass.DbgPageClass.Browse: Undefined variable 'e'
-E0602:3535:ToolbarClass.SyncDisplayToError: Undefined variable 'BreakBar'
-E0602:3536:ToolbarClass.SyncDisplayToError: Undefined variable 'BreakBar'
-E0602:3541:ToolbarClass.SyncDisplayToError: Undefined variable 'INSERT'
-E0602:3554:ToolbarClass.SyncDisplayToError: Undefined variable 'c'
-W0601:3558:ToolbarClass.SetError: Global variable 'PARSE_ERROR' undefined at the module level
-W0601:3558:ToolbarClass.SetError: Global variable 'PARSE_ERROR_NODE' undefined at the module level
-E0602:3590:ToolbarClass.Refresh: Undefined variable 'ACTIVE_NODE'
-E0602:3610:WatcherClass.__init__: Undefined variable 'c'
-E0602:3631:WatcherClass.__init__: Undefined variable 'c'
-E0602:3632:WatcherClass.__init__: Undefined variable 'c'
-E0602:3633:WatcherClass.__init__: Undefined variable 'c'
-E0602:3634:WatcherClass.__init__: Undefined variable 'c'
-E0602:3684:WatcherClass.OnDelete: Undefined variable 'sGet'
-W0221:3796:BreakbarClass.yview: Arguments number differs from overridden method
-E0602:3846:BreakbarClass.OnCut: Undefined variable 'LeoFrame'
-E0602:3850:BreakbarClass.OnPaste: Undefined variable 'LeoFrame'
-E1101:3855:BreakbarClass.OnRightClick: Instance of 'BreakbarClass' has no 'c' member
-E0602:3856:BreakbarClass.OnRightClick: Undefined variable 'Menu'
-E0602:3873:BreakbarClass.OnLeftClick: Undefined variable 'cGet'
-E0602:3875:BreakbarClass.OnLeftClick: Undefined variable 'CHILD_NODE'
-E0602:3888:BreakbarClass.OnLeftClick: Undefined variable 'SEL'
-E0602:3892:BreakbarClass.AddNodeBreak: Undefined variable 'cGet'
-E0602:3895:BreakbarClass.DeleteNodeBreak: Undefined variable 'cGet'
-E0602:3900:BreakbarClass.ClearNodeBreaks: Undefined variable 'cSet'
-E0602:4010:BreakbarClass.BreaksFromTags: Undefined variable 'CHILD_EXT'
-E0602:4010:BreakbarClass.BreaksFromTags: Undefined variable 'CHILD_LINE'
-E0602:4016:BreakbarClass.AddBreak: Undefined variable 'sGet'
-E0602:4057:BreakbarClass.DeleteNodeBreaks: Undefined variable 'cGet'
-E0602:4061:BreakbarClass.DeleteNodeBreaks: Undefined variable 'CHILD_EXT'
-E0602:4061:BreakbarClass.DeleteNodeBreaks: Undefined variable 'CHILD_LINE'
-E1101:4063:BreakbarClass.DeleteNodeBreaks: Instance of 'BreakbarClass' has no 'DeleteDbgBreaks' member
-E0602:4065:BreakbarClass.DeleteNodeBreaks: Undefined variable 'cSelect'
-E0602:4357:CppParserClass.FUNCRULE.DeclareFunc: Undefined variable 'ToolBar'
-E0602:4375:CppParserClass.FUNCRULE.DefineFunc: Undefined variable 'ToolBar'
-E0602:4513:CppParserClass.CLASSRULE.OnMatch: Undefined variable 'ToolBar'
-E1101:4703:CppParserClass.Docum: Instance of 'CppParserClass' has no 'CURRENT_DOC_LINE' member
-E0602:4727:CppParserClass.SetRealBodyDestination: Undefined variable 'EXT'
-E1101:4796:CppParserClass.CppParse: Instance of 'CppParserClass' has no 'cc' member
-E1102:4823:CppParserClass.CppParse: self.OnStart is not callable
-E0602:4830:CppParserClass.CppParse: Undefined variable 'NAME'
-E1102:4836:CppParserClass.CppParse: self.OnEnd is not callable
-E1101:4849:CppParserClass.ParseNode: Instance of 'CppParserClass' has no 'cc' member
-E0602:4939:WriterClass.OnWriteStart: Undefined variable 'REL_PATH'
-E0602:4940:WriterClass.OnWriteStart: Undefined variable 'REL_PATH'
-E0602:4940:WriterClass.OnWriteStart: Undefined variable 'NAME'
-E0602:4942:WriterClass.OnWriteStart: Undefined variable 'NAME'
-E0602:4945:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4946:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:4950:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4951:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:4956:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4956:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4957:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:4957:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4958:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4961:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:4962:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:5008:BreakFinderClass.__init__: Undefined variable 'controllerSELECTED_NODE'
-E0602:5008:BreakFinderClass.__init__: Undefined variable 'controllerEXT'
-E0602:5024:BreakFinderClass.OnFindStart: Undefined variable 'sSet'
-E0602:5025:BreakFinderClass.OnFindStart: Undefined variable 'sGet'
-E0602:5031:BreakFinderClass.OnFindEnd: Undefined variable 'sSet'
-E0602:5050:BreakFinderClass.BreakDef: Undefined variable 'SRC_EXT'
-W0611:206: Unused import tkSimpleDialog
-W0611:207: Unused import base64
-W0611:203: Unused import beep
-
-************* Module leo.plugins.active_path
-W0108:124:attachToCommander.<lambda>: Lambda may not be necessary
-E1101:399:openDir: Generator 'walk' has no 'next' member
-
-************* Module leo.plugins.attrib_edit
-W0311:816: Bad indentation. Found 3 spaces, expected 4
-W0311:819: Bad indentation. Found 3 spaces, expected 4
-W0311:822: Bad indentation. Found 3 spaces, expected 4
-W0311:825: Bad indentation. Found 3 spaces, expected 4
-W0311:828: Bad indentation. Found 3 spaces, expected 4
-W0511:289: FIXME type_ = {True: '_view', False: '_edit'}[readonly]
-W0511:304: FIXME self.attrPaths.add(tuple(ns))
-E1101:665:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'recSearch' member
-E1101:669:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'typeMap' member
-E1101:671:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'typeMap' member
-W0611:118: Unused import os
-W0611:114: Unused import re
-
-************* Module leo.plugins.backlink
-W0511: 23: TODO
-E1101:145:backlinkTkUI.updateTkTab: Instance of 'backlinkTkUI' has no 'c' member
-E1101:150:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'c' member
-E1123:161:backlinkTkUI.updateTkTabInt: Passing unexpected keyword argument 'optional' in function call
-E1101:169:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'vnode' member
-E1101:170:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'vnodePosition' member
-E1101:171:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'c' member
-E1123:179:backlinkTkUI.updateTkTabInt: Passing unexpected keyword argument 'optional' in function call
-E1101:186:backlinkTkUI.updateTkTabInt.delLink: Instance of 'backlinkTkUI' has no 'deleteLink' member
-W0101:787:backlinkController.vnodePosition: Unreachable code
-E1101:790:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
-E1101:791:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
-E1101:805:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
-
-************* Module leo.plugins.codewisecompleter
-E1111:244:codewise_lookup: Assigning to function call which doesn't return
-E0602:283:codewise_suggest: Undefined variable 'txt'
-W0611: 34: Unused import os
-
-************* Module leo.plugins.cursesGui
-W0311: 84: Bad indentation. Found 2 spaces, expected 4
-W0311: 85: Bad indentation. Found 4 spaces, expected 8
-W0311: 87: Bad indentation. Found 2 spaces, expected 4
-W0311: 92: Bad indentation. Found 2 spaces, expected 4
-W0311: 93: Bad indentation. Found 4 spaces, expected 8
-W0311: 95: Bad indentation. Found 4 spaces, expected 8
-W0311: 96: Bad indentation. Found 4 spaces, expected 8
-W0311: 99: Bad indentation. Found 2 spaces, expected 4
-W0311:103: Bad indentation. Found 6 spaces, expected 8
-W0311:105: Bad indentation. Found 2 spaces, expected 4
-W0311:106: Bad indentation. Found 4 spaces, expected 8
-W0311:107: Bad indentation. Found 4 spaces, expected 8
-W0311:108: Bad indentation. Found 4 spaces, expected 8
-W0311:110: Bad indentation. Found 2 spaces, expected 4
-W0311:111: Bad indentation. Found 4 spaces, expected 8
-W0311:114: Bad indentation. Found 2 spaces, expected 4
-W0311:115: Bad indentation. Found 4 spaces, expected 8
-W0311:117: Bad indentation. Found 2 spaces, expected 4
-W0311:118: Bad indentation. Found 4 spaces, expected 8
-W0311:120: Bad indentation. Found 2 spaces, expected 4
-W0311:122: Bad indentation. Found 6 spaces, expected 8
-W0311:124: Bad indentation. Found 6 spaces, expected 8
-W0311:126: Bad indentation. Found 2 spaces, expected 4
-W0311:127: Bad indentation. Found 4 spaces, expected 8
-W0311:129: Bad indentation. Found 2 spaces, expected 4
-W0311:130: Bad indentation. Found 4 spaces, expected 8
-W0311:132: Bad indentation. Found 2 spaces, expected 4
-W0311:133: Bad indentation. Found 4 spaces, expected 8
-W0311:135: Bad indentation. Found 4 spaces, expected 8
-W0311:137: Bad indentation. Found 4 spaces, expected 8
-W0311:138: Bad indentation. Found 4 spaces, expected 8
-W0311:140: Bad indentation. Found 4 spaces, expected 8
-W0311:142: Bad indentation. Found 4 spaces, expected 8
-W0311:143: Bad indentation. Found 6 spaces, expected 12
-W0311:144: Bad indentation. Found 4 spaces, expected 8
-W0311:146: Bad indentation. Found 2 spaces, expected 4
-W0311:147: Bad indentation. Found 4 spaces, expected 8
-W0311:149: Bad indentation. Found 2 spaces, expected 4
-W0311:150: Bad indentation. Found 4 spaces, expected 8
-W0311:152: Bad indentation. Found 2 spaces, expected 4
-W0311:153: Bad indentation. Found 4 spaces, expected 8
-W0311:155: Bad indentation. Found 4 spaces, expected 8
-W0311:156: Bad indentation. Found 4 spaces, expected 8
-W0311:158: Bad indentation. Found 4 spaces, expected 8
-W0311:161: Bad indentation. Found 6 spaces, expected 12
-W0311:162: Bad indentation. Found 8 spaces, expected 16
-W0311:163: Bad indentation. Found 6 spaces, expected 12
-W0311:164: Bad indentation. Found 6 spaces, expected 12
-W0311:167: Bad indentation. Found 6 spaces, expected 12
-W0311:169: Bad indentation. Found 6 spaces, expected 12
-W0311:170: Bad indentation. Found 8 spaces, expected 16
-W0311:171: Bad indentation. Found 6 spaces, expected 12
-W0311:172: Bad indentation. Found 10 spaces, expected 16
-W0311:174: Bad indentation. Found 2 spaces, expected 4
-W0311:176: Bad indentation. Found 4 spaces, expected 8
-W0311:177: Bad indentation. Found 6 spaces, expected 12
-W0311:178: Bad indentation. Found 4 spaces, expected 8
-W0311:179: Bad indentation. Found 6 spaces, expected 12
-W0311:180: Bad indentation. Found 4 spaces, expected 8
-W0311:181: Bad indentation. Found 6 spaces, expected 12
-W0311:182: Bad indentation. Found 4 spaces, expected 8
-W0311:183: Bad indentation. Found 6 spaces, expected 12
-W0311:184: Bad indentation. Found 8 spaces, expected 16
-W0311:185: Bad indentation. Found 6 spaces, expected 12
-W0311:186: Bad indentation. Found 6 spaces, expected 12
-W0311:187: Bad indentation. Found 8 spaces, expected 16
-W0311:188: Bad indentation. Found 6 spaces, expected 12
-W0311:189: Bad indentation. Found 8 spaces, expected 16
-W0311:190: Bad indentation. Found 6 spaces, expected 12
-W0311:191: Bad indentation. Found 8 spaces, expected 16
-W0311:192: Bad indentation. Found 4 spaces, expected 8
-W0311:193: Bad indentation. Found 6 spaces, expected 12
-W0311:194: Bad indentation. Found 4 spaces, expected 8
-W0311:195: Bad indentation. Found 6 spaces, expected 12
-W0311:197: Bad indentation. Found 2 spaces, expected 4
-W0311:198: Bad indentation. Found 4 spaces, expected 8
-W0311:199: Bad indentation. Found 6 spaces, expected 12
-W0311:200: Bad indentation. Found 4 spaces, expected 8
-W0311:206: Bad indentation. Found 2 spaces, expected 4
-W0311:208: Bad indentation. Found 4 spaces, expected 8
-W0311:210: Bad indentation. Found 4 spaces, expected 8
-W0311:213: Bad indentation. Found 2 spaces, expected 4
-W0311:215: Bad indentation. Found 4 spaces, expected 8
-W0311:217: Bad indentation. Found 4 spaces, expected 8
-W0311:218: Bad indentation. Found 4 spaces, expected 8
-W0311:219: Bad indentation. Found 4 spaces, expected 8
-W0311:221: Bad indentation. Found 4 spaces, expected 8
-W0311:222: Bad indentation. Found 4 spaces, expected 8
-W0311:223: Bad indentation. Found 4 spaces, expected 8
-W0311:236: Bad indentation. Found 2 spaces, expected 4
-W0311:237: Bad indentation. Found 2 spaces, expected 4
-W0311:239: Bad indentation. Found 2 spaces, expected 4
-W0311:240: Bad indentation. Found 6 spaces, expected 8
-W0311:242: Bad indentation. Found 2 spaces, expected 4
-W0311:243: Bad indentation. Found 4 spaces, expected 8
-W0311:245: Bad indentation. Found 4 spaces, expected 8
-W0311:246: Bad indentation. Found 4 spaces, expected 8
-W0311:247: Bad indentation. Found 4 spaces, expected 8
-W0311:248: Bad indentation. Found 4 spaces, expected 8
-W0311:250: Bad indentation. Found 4 spaces, expected 8
-W0311:251: Bad indentation. Found 6 spaces, expected 12
-W0311:253: Bad indentation. Found 4 spaces, expected 8
-W0311:254: Bad indentation. Found 4 spaces, expected 8
-W0311:257: Bad indentation. Found 4 spaces, expected 8
-W0311:260: Bad indentation. Found 4 spaces, expected 8
-W0311:262: Bad indentation. Found 2 spaces, expected 4
-W0311:264: Bad indentation. Found 2 spaces, expected 4
-W0311:265: Bad indentation. Found 4 spaces, expected 8
-W0311:267: Bad indentation. Found 2 spaces, expected 4
-W0311:268: Bad indentation. Found 4 spaces, expected 8
-W0311:270: Bad indentation. Found 2 spaces, expected 4
-W0311:271: Bad indentation. Found 4 spaces, expected 8
-W0311:273: Bad indentation. Found 4 spaces, expected 8
-W0311:274: Bad indentation. Found 4 spaces, expected 8
-W0311:276: Bad indentation. Found 4 spaces, expected 8
-W0311:277: Bad indentation. Found 4 spaces, expected 8
-W0311:279: Bad indentation. Found 4 spaces, expected 8
-W0311:280: Bad indentation. Found 8 spaces, expected 12
-W0311:281: Bad indentation. Found 12 spaces, expected 16
-W0311:282: Bad indentation. Found 12 spaces, expected 16
-W0311:283: Bad indentation. Found 12 spaces, expected 16
-W0311:284: Bad indentation. Found 12 spaces, expected 16
-W0311:285: Bad indentation. Found 12 spaces, expected 16
-W0311:291: Bad indentation. Found 4 spaces, expected 8
-W0311:292: Bad indentation. Found 4 spaces, expected 8
-W0311:293: Bad indentation. Found 4 spaces, expected 8
-W0311:295: Bad indentation. Found 4 spaces, expected 8
-W0311:296: Bad indentation. Found 4 spaces, expected 8
-W0311:298: Bad indentation. Found 2 spaces, expected 4
-W0311:299: Bad indentation. Found 2 spaces, expected 4
-W0311:305: Bad indentation. Found 2 spaces, expected 4
-W0311:306: Bad indentation. Found 4 spaces, expected 8
-W0311:308: Bad indentation. Found 4 spaces, expected 8
-W0311:310: Bad indentation. Found 4 spaces, expected 8
-W0311:311: Bad indentation. Found 4 spaces, expected 8
-W0311:314: Bad indentation. Found 2 spaces, expected 4
-W0311:317: Bad indentation. Found 4 spaces, expected 8
-W0311:321: Bad indentation. Found 2 spaces, expected 4
-W0311:322: Bad indentation. Found 2 spaces, expected 4
-W0311:324: Bad indentation. Found 2 spaces, expected 4
-W0311:326: Bad indentation. Found 4 spaces, expected 8
-W0311:327: Bad indentation. Found 4 spaces, expected 8
-W0311:328: Bad indentation. Found 4 spaces, expected 8
-W0311:329: Bad indentation. Found 4 spaces, expected 8
-W0311:333: Bad indentation. Found 2 spaces, expected 4
-W0311:338: Bad indentation. Found 2 spaces, expected 4
-W0311:339: Bad indentation. Found 4 spaces, expected 8
-W0311:340: Bad indentation. Found 4 spaces, expected 8
-W0311:341: Bad indentation. Found 4 spaces, expected 8
-W0311:343: Bad indentation. Found 2 spaces, expected 4
-W0311:344: Bad indentation. Found 4 spaces, expected 8
-W0311:345: Bad indentation. Found 4 spaces, expected 8
-W0311:346: Bad indentation. Found 6 spaces, expected 12
-W0311:347: Bad indentation. Found 4 spaces, expected 8
-W0311:353: Bad indentation. Found 2 spaces, expected 4
-W0311:354: Bad indentation. Found 4 spaces, expected 8
-W0311:355: Bad indentation. Found 4 spaces, expected 8
-W0311:356: Bad indentation. Found 4 spaces, expected 8
-W0311:357: Bad indentation. Found 4 spaces, expected 8
-W0311:359: Bad indentation. Found 2 spaces, expected 4
-W0311:360: Bad indentation. Found 4 spaces, expected 8
-W0311:366: Bad indentation. Found 2 spaces, expected 4
-W0311:367: Bad indentation. Found 4 spaces, expected 8
-W0311:374: Bad indentation. Found 2 spaces, expected 4
-W0311:377: Bad indentation. Found 6 spaces, expected 8
-W0311:378: Bad indentation. Found 6 spaces, expected 8
-W0311:381: Bad indentation. Found 6 spaces, expected 8
-W0311:383: Bad indentation. Found 2 spaces, expected 4
-W0311:385: Bad indentation. Found 4 spaces, expected 8
-W0311:387: Bad indentation. Found 4 spaces, expected 8
-W0311:389: Bad indentation. Found 4 spaces, expected 8
-W0311:391: Bad indentation. Found 2 spaces, expected 4
-W0311:393: Bad indentation. Found 4 spaces, expected 8
-W0311:398: Bad indentation. Found 4 spaces, expected 8
-W0311:399: Bad indentation. Found 4 spaces, expected 8
-W0311:400: Bad indentation. Found 4 spaces, expected 8
-W0311:402: Bad indentation. Found 2 spaces, expected 4
-W0311:406: Bad indentation. Found 4 spaces, expected 8
-W0311:407: Bad indentation. Found 8 spaces, expected 12
-W0311:408: Bad indentation. Found 4 spaces, expected 8
-W0311:412: Bad indentation. Found 2 spaces, expected 4
-W0311:417: Bad indentation. Found 4 spaces, expected 8
-W0311:421: Bad indentation. Found 4 spaces, expected 8
-W0311:422: Bad indentation. Found 6 spaces, expected 12
-W0311:424: Bad indentation. Found 4 spaces, expected 8
-W0311:425: Bad indentation. Found 4 spaces, expected 8
-W0311:426: Bad indentation. Found 4 spaces, expected 8
-W0311:427: Bad indentation. Found 4 spaces, expected 8
-W0311:430: Bad indentation. Found 4 spaces, expected 8
-W0311:431: Bad indentation. Found 4 spaces, expected 8
-W0311:433: Bad indentation. Found 2 spaces, expected 4
-W0311:434: Bad indentation. Found 4 spaces, expected 8
-W0311:436: Bad indentation. Found 2 spaces, expected 4
-W0311:438: Bad indentation. Found 4 spaces, expected 8
-W0311:440: Bad indentation. Found 2 spaces, expected 4
-W0311:441: Bad indentation. Found 4 spaces, expected 8
-W0311:443: Bad indentation. Found 4 spaces, expected 8
-W0311:444: Bad indentation. Found 6 spaces, expected 12
-W0311:446: Bad indentation. Found 6 spaces, expected 12
-W0311:447: Bad indentation. Found 8 spaces, expected 16
-W0311:448: Bad indentation. Found 6 spaces, expected 12
-W0311:450: Bad indentation. Found 6 spaces, expected 12
-W0311:451: Bad indentation. Found 6 spaces, expected 12
-W0311:452: Bad indentation. Found 6 spaces, expected 12
-W0311:454: Bad indentation. Found 6 spaces, expected 12
-W0311:455: Bad indentation. Found 8 spaces, expected 16
-W0311:456: Bad indentation. Found 6 spaces, expected 12
-W0311:458: Bad indentation. Found 8 spaces, expected 16
-W0311:459: Bad indentation. Found 8 spaces, expected 16
-W0311:460: Bad indentation. Found 10 spaces, expected 20
-W0311:461: Bad indentation. Found 14 spaces, expected 24
-W0311:462: Bad indentation. Found 8 spaces, expected 16
-W0311:464: Bad indentation. Found 6 spaces, expected 12
-W0311:465: Bad indentation. Found 8 spaces, expected 16
-W0311:466: Bad indentation. Found 6 spaces, expected 12
-W0311:467: Bad indentation. Found 8 spaces, expected 16
-W0311:469: Bad indentation. Found 6 spaces, expected 12
-W0311:470: Bad indentation. Found 6 spaces, expected 12
-W0311:471: Bad indentation. Found 8 spaces, expected 16
-W0311:472: Bad indentation. Found 8 spaces, expected 16
-W0311:473: Bad indentation. Found 6 spaces, expected 12
-W0311:474: Bad indentation. Found 8 spaces, expected 16
-W0311:475: Bad indentation. Found 6 spaces, expected 12
-W0311:476: Bad indentation. Found 8 spaces, expected 16
-W0311:483: Bad indentation. Found 2 spaces, expected 4
-W0311:484: Bad indentation. Found 4 spaces, expected 8
-W0311:486: Bad indentation. Found 2 spaces, expected 4
-W0311:487: Bad indentation. Found 4 spaces, expected 8
-W0311:489: Bad indentation. Found 2 spaces, expected 4
-W0311:490: Bad indentation. Found 4 spaces, expected 8
-W0311:493: Bad indentation. Found 2 spaces, expected 4
-W0311:494: Bad indentation. Found 2 spaces, expected 4
-W0311:496: Bad indentation. Found 2 spaces, expected 4
-W0311:504: Bad indentation. Found 2 spaces, expected 4
-W0311:505: Bad indentation. Found 4 spaces, expected 8
-W0311:507: Bad indentation. Found 2 spaces, expected 4
-W0311:508: Bad indentation. Found 4 spaces, expected 8
-W0311:510: Bad indentation. Found 2 spaces, expected 4
-W0311:511: Bad indentation. Found 4 spaces, expected 8
-W0311:512: Bad indentation. Found 6 spaces, expected 12
-W0311:514: Bad indentation. Found 2 spaces, expected 4
-W0311:515: Bad indentation. Found 4 spaces, expected 8
-W0311:517: Bad indentation. Found 2 spaces, expected 4
-W0311:518: Bad indentation. Found 4 spaces, expected 8
-W0311:519: Bad indentation. Found 6 spaces, expected 12
-W0311:522: Bad indentation. Found 2 spaces, expected 4
-W0311:524: Bad indentation. Found 4 spaces, expected 8
-W0311:526: Bad indentation. Found 4 spaces, expected 8
-W0311:528: Bad indentation. Found 2 spaces, expected 4
-W0311:531: Bad indentation. Found 4 spaces, expected 8
-W0311:532: Bad indentation. Found 4 spaces, expected 8
-W0311:534: Bad indentation. Found 4 spaces, expected 8
-W0311:538: Bad indentation. Found 4 spaces, expected 8
-W0311:541: Bad indentation. Found 2 spaces, expected 4
-W0311:542: Bad indentation. Found 4 spaces, expected 8
-W0311:544: Bad indentation. Found 2 spaces, expected 4
-W0311:545: Bad indentation. Found 4 spaces, expected 8
-W0311:547: Bad indentation. Found 2 spaces, expected 4
-W0311:550: Bad indentation. Found 4 spaces, expected 8
-W0311:551: Bad indentation. Found 4 spaces, expected 8
-W0311:553: Bad indentation. Found 2 spaces, expected 4
-W0311:555: Bad indentation. Found 4 spaces, expected 8
-W0311:557: Bad indentation. Found 6 spaces, expected 12
-W0311:558: Bad indentation. Found 8 spaces, expected 16
-W0311:559: Bad indentation. Found 6 spaces, expected 12
-W0311:560: Bad indentation. Found 8 spaces, expected 16
-W0311:562: Bad indentation. Found 6 spaces, expected 12
-W0311:568: Bad indentation. Found 6 spaces, expected 12
-W0311:570: Bad indentation. Found 6 spaces, expected 12
-W0311:571: Bad indentation. Found 8 spaces, expected 16
-W0511: 21: TODO >>
-W0511: 22: TODO >>
-W0511: 43: TODO >>
-W0511: 97: TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
-W0511:319: TODO Tkinter onBodyChanged undo call and many others. =(
-W0511:529: TODO Much more here: there's four hooks and all sorts of other things called in the TK version.
-W0221:267:textFrame.setTopGeometry: Arguments number differs from overridden method
-W0221:391:textLeoMenu.new_menu: Arguments number differs from overridden method
-W0221:412:textLeoMenu.add_command: Arguments number differs from overridden method
-W0221:436:textLeoMenu.delete_range: Arguments number differs from overridden method
-W0221:514:textTree.redraw: Arguments number differs from overridden method
-W0221:517:textTree.redraw_now: Arguments number differs from overridden method
-W0221:541:textTree.editLabel: Arguments number differs from overridden method
-
-************* Module leo.plugins.dtest
-W0611: 32: Unused import leoPlugins
-
-************* Module leo.plugins.leo_interface
-W0311: 42: Bad indentation. Found 3 spaces, expected 4
-W0311: 43: Bad indentation. Found 6 spaces, expected 8
-W0311: 45: Bad indentation. Found 3 spaces, expected 4
-W0311: 46: Bad indentation. Found 6 spaces, expected 8
-W0311: 52: Bad indentation. Found 3 spaces, expected 4
-W0311: 59: Bad indentation. Found 3 spaces, expected 4
-W0311: 60: Bad indentation. Found 7 spaces, expected 8
-W0311: 62: Bad indentation. Found 3 spaces, expected 4
-W0311: 63: Bad indentation. Found 7 spaces, expected 8
-W0311: 64: Bad indentation. Found 7 spaces, expected 8
-W0311: 66: Bad indentation. Found 3 spaces, expected 4
-W0311: 67: Bad indentation. Found 7 spaces, expected 8
-W0311: 69: Bad indentation. Found 3 spaces, expected 4
-W0311: 70: Bad indentation. Found 7 spaces, expected 8
-W0311: 71: Bad indentation. Found 11 spaces, expected 12
-W0311: 73: Bad indentation. Found 3 spaces, expected 4
-W0311: 74: Bad indentation. Found 7 spaces, expected 8
-W0311: 75: Bad indentation. Found 7 spaces, expected 8
-W0311: 76: Bad indentation. Found 11 spaces, expected 12
-W0311: 77: Bad indentation. Found 7 spaces, expected 8
-W0311: 78: Bad indentation. Found 7 spaces, expected 8
-W0311: 80: Bad indentation. Found 3 spaces, expected 4
-W0311: 81: Bad indentation. Found 7 spaces, expected 8
-W0311: 82: Bad indentation. Found 7 spaces, expected 8
-W0311: 83: Bad indentation. Found 7 spaces, expected 8
-W0311: 84: Bad indentation. Found 7 spaces, expected 8
-W0311: 85: Bad indentation. Found 7 spaces, expected 8
-W0311: 86: Bad indentation. Found 11 spaces, expected 12
-W0311: 87: Bad indentation. Found 7 spaces, expected 8
-W0311: 88: Bad indentation. Found 7 spaces, expected 8
-W0311: 89: Bad indentation. Found 11 spaces, expected 12
-W0311: 90: Bad indentation. Found 7 spaces, expected 8
-W0311: 91: Bad indentation. Found 7 spaces, expected 8
-W0311: 92: Bad indentation. Found 7 spaces, expected 8
-W0311: 93: Bad indentation. Found 11 spaces, expected 12
-W0311: 95: Bad indentation. Found 3 spaces, expected 4
-W0311: 96: Bad indentation. Found 7 spaces, expected 8
-W0311: 97: Bad indentation. Found 7 spaces, expected 8
-W0311: 98: Bad indentation. Found 7 spaces, expected 8
-W0311: 99: Bad indentation. Found 7 spaces, expected 8
-W0311:100: Bad indentation. Found 7 spaces, expected 8
-W0311:101: Bad indentation. Found 11 spaces, expected 12
-W0311:102: Bad indentation. Found 7 spaces, expected 8
-W0311:104: Bad indentation. Found 3 spaces, expected 4
-W0311:105: Bad indentation. Found 5 spaces, expected 8
-W0311:109: Bad indentation. Found 3 spaces, expected 4
-W0311:115: Bad indentation. Found 3 spaces, expected 4
-W0311:116: Bad indentation. Found 6 spaces, expected 8
-W0311:118: Bad indentation. Found 3 spaces, expected 4
-W0311:119: Bad indentation. Found 6 spaces, expected 8
-W0311:121: Bad indentation. Found 3 spaces, expected 4
-W0311:122: Bad indentation. Found 7 spaces, expected 8
-W0311:124: Bad indentation. Found 3 spaces, expected 4
-W0311:125: Bad indentation. Found 7 spaces, expected 8
-W0311:126: Bad indentation. Found 7 spaces, expected 8
-W0311:128: Bad indentation. Found 3 spaces, expected 4
-W0311:129: Bad indentation. Found 7 spaces, expected 8
-W0311:130: Bad indentation. Found 7 spaces, expected 8
-W0311:131: Bad indentation. Found 7 spaces, expected 8
-W0311:132: Bad indentation. Found 7 spaces, expected 8
-W0311:134: Bad indentation. Found 3 spaces, expected 4
-W0311:135: Bad indentation. Found 7 spaces, expected 8
-W0311:138: Bad indentation. Found 7 spaces, expected 8
-W0311:143: Bad indentation. Found 7 spaces, expected 8
-W0311:144: Bad indentation. Found 7 spaces, expected 8
-W0311:145: Bad indentation. Found 7 spaces, expected 8
-W0311:146: Bad indentation. Found 10 spaces, expected 12
-W0311:147: Bad indentation. Found 10 spaces, expected 12
-W0311:148: Bad indentation. Found 7 spaces, expected 8
-W0311:149: Bad indentation. Found 7 spaces, expected 8
-W0311:151: Bad indentation. Found 3 spaces, expected 4
-W0311:152: Bad indentation. Found 7 spaces, expected 8
-W0311:153: Bad indentation. Found 11 spaces, expected 12
-W0311:155: Bad indentation. Found 3 spaces, expected 4
-W0311:156: Bad indentation. Found 6 spaces, expected 8
-W0311:157: Bad indentation. Found 9 spaces, expected 12
-W0311:158: Bad indentation. Found 9 spaces, expected 12
-W0311:159: Bad indentation. Found 9 spaces, expected 12
-W0311:160: Bad indentation. Found 6 spaces, expected 8
-W0311:161: Bad indentation. Found 9 spaces, expected 12
-W0311:163: Bad indentation. Found 3 spaces, expected 4
-W0311:164: Bad indentation. Found 7 spaces, expected 8
-W0311:170: Bad indentation. Found 3 spaces, expected 4
-W0311:171: Bad indentation. Found 7 spaces, expected 8
-W0311:173: Bad indentation. Found 3 spaces, expected 4
-W0311:174: Bad indentation. Found 7 spaces, expected 8
-W0311:176: Bad indentation. Found 3 spaces, expected 4
-W0311:177: Bad indentation. Found 7 spaces, expected 8
-W0311:179: Bad indentation. Found 3 spaces, expected 4
-W0311:180: Bad indentation. Found 7 spaces, expected 8
-W0311:184: Bad indentation. Found 3 spaces, expected 4
-W0311:194: Bad indentation. Found 3 spaces, expected 4
-W0311:195: Bad indentation. Found 3 spaces, expected 4
-W0311:199: Bad indentation. Found 3 spaces, expected 4
-W0311:200: Bad indentation. Found 7 spaces, expected 8
-W0311:201: Bad indentation. Found 7 spaces, expected 8
-W0311:202: Bad indentation. Found 7 spaces, expected 8
-W0311:203: Bad indentation. Found 7 spaces, expected 8
-W0311:204: Bad indentation. Found 7 spaces, expected 8
-W0311:206: Bad indentation. Found 3 spaces, expected 4
-W0311:207: Bad indentation. Found 7 spaces, expected 8
-W0311:209: Bad indentation. Found 3 spaces, expected 4
-W0311:210: Bad indentation. Found 7 spaces, expected 8
-W0311:213: Bad indentation. Found 7 spaces, expected 8
-W0311:214: Bad indentation. Found 11 spaces, expected 12
-W0311:216: Bad indentation. Found 3 spaces, expected 4
-W0311:217: Bad indentation. Found 7 spaces, expected 8
-W0311:219: Bad indentation. Found 3 spaces, expected 4
-W0311:220: Bad indentation. Found 6 spaces, expected 8
-W0311:221: Bad indentation. Found 6 spaces, expected 8
-W0311:222: Bad indentation. Found 9 spaces, expected 12
-W0311:227: Bad indentation. Found 9 spaces, expected 12
-W0311:228: Bad indentation. Found 9 spaces, expected 12
-W0311:229: Bad indentation. Found 12 spaces, expected 16
-W0311:230: Bad indentation. Found 12 spaces, expected 16
-W0311:231: Bad indentation. Found 12 spaces, expected 16
-W0311:232: Bad indentation. Found 12 spaces, expected 16
-W0311:233: Bad indentation. Found 15 spaces, expected 20
-W0311:234: Bad indentation. Found 12 spaces, expected 16
-W0311:235: Bad indentation. Found 12 spaces, expected 16
-W0311:236: Bad indentation. Found 9 spaces, expected 12
-W0311:237: Bad indentation. Found 9 spaces, expected 12
-W0311:238: Bad indentation. Found 9 spaces, expected 12
-W0311:239: Bad indentation. Found 9 spaces, expected 12
-W0311:240: Bad indentation. Found 6 spaces, expected 8
-W0311:241: Bad indentation. Found 6 spaces, expected 8
-W0311:242: Bad indentation. Found 9 spaces, expected 12
-W0311:243: Bad indentation. Found 9 spaces, expected 12
-W0311:245: Bad indentation. Found 3 spaces, expected 4
-W0311:246: Bad indentation. Found 6 spaces, expected 8
-W0311:247: Bad indentation. Found 6 spaces, expected 8
-W0311:248: Bad indentation. Found 9 spaces, expected 12
-W0311:250: Bad indentation. Found 3 spaces, expected 4
-W0311:251: Bad indentation. Found 7 spaces, expected 8
-W0311:253: Bad indentation. Found 3 spaces, expected 4
-W0311:254: Bad indentation. Found 7 spaces, expected 8
-W0311:256: Bad indentation. Found 3 spaces, expected 4
-W0311:257: Bad indentation. Found 7 spaces, expected 8
-W0311:259: Bad indentation. Found 3 spaces, expected 4
-W0311:260: Bad indentation. Found 7 spaces, expected 8
-W0311:263: Bad indentation. Found 3 spaces, expected 4
-W0311:264: Bad indentation. Found 7 spaces, expected 8
-W0311:266: Bad indentation. Found 3 spaces, expected 4
-W0311:267: Bad indentation. Found 6 spaces, expected 8
-W0311:271: Bad indentation. Found 3 spaces, expected 4
-W0311:286: Bad indentation. Found 3 spaces, expected 4
-W0311:287: Bad indentation. Found 6 spaces, expected 8
-W0311:288: Bad indentation. Found 6 spaces, expected 8
-W0311:290: Bad indentation. Found 3 spaces, expected 4
-W0311:291: Bad indentation. Found 6 spaces, expected 8
-W0311:296: Bad indentation. Found 3 spaces, expected 4
-W0311:297: Bad indentation. Found 6 spaces, expected 8
-W0601:146:leo_file.gen1: Global variable 'vnode_count' undefined at the module level
-W0601:157:leo_file.gen_vnodes: Global variable 'allvnodes' undefined at the module level
-W0601:157:leo_file.gen_vnodes: Global variable 'vnode_stack' undefined at the module level
-W0105:226:leo_node.gen_vnodes: String statement has no effect
-W0601:236:leo_node.gen_vnodes: Global variable 'vnode_count' undefined at the module level
-
-************* Module leo.plugins.leo_pdf
-E0602:322:Bunch.__setitem__: Undefined variable 'operator'
-E0602:326:Bunch.__getitem__: Undefined variable 'operator'
-W0105:344:Writer: String statement has no effect
-W0105:372:Writer: String statement has no effect
-
-************* Module leo.plugins.leoOPML
-E1101:211:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_globals_attributes' member
-E1101:245:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_details' member
-E1101:261:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_body_text' member
-E1101:262:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_use_outline_elements' member
-E1101:334:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_write_ua_attributes' member
-E1101:336:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_expand_ua_dictionary' member
-E1101:338:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_skip_ua_dictionary_blanks' member
-E1101:430:opmlController.createVnode: Module 'leo.core.leoNodes' has no 'tnode' member
-E1101:434:opmlController.createVnode: Instance of 'vnode' has no 't' member
-W0221:778:contentHandler.ignorableWhitespace: Arguments number differs from overridden method
-
-************* Module leo.plugins.leoremote
-W0611: 41: Unused import sys
-
-************* Module leo.plugins.lineNumbers
-E1121: 51:init.putLineNumberDirective: Too many positional arguments for function call
-
-************* Module leo.plugins.macros
-E1103:135:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
-E1103:135:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
-
-************* Module leo.plugins.mod_autosave
-W0311: 86: Bad indentation. Found 9 spaces, expected 8
-W0611: 25: Unused import os
-
-************* Module leo.plugins.mod_leo2ascd
-E1120:143:GetAscFilename: No value passed for parameter 'vnode' in function call
-E1120:358:WriteTreeOfCurrentNode: No value passed for parameter 'vnode' in function call
-E1120:373:WriteAll: No value passed for parameter 'vnode' in function call
-E1120:433: No value passed for parameter 'c' in function call
-
-************* Module leo.plugins.mod_speedups
-W0611: 27: Unused import leoPlugins
-W0611: 46: Unused import leo
-
-************* Module leo.plugins.nav_buttons
-W0311:319: Bad indentation. Found 11 spaces, expected 12
-
-************* Module leo.plugins.nodeActions
-W0312:252: Found indentation with tabs instead of spaces
-W0312:253: Found indentation with tabs instead of spaces
-W0312:254: Found indentation with tabs instead of spaces
-W0312:255: Found indentation with tabs instead of spaces
-W0312:256: Found indentation with tabs instead of spaces
-W0312:257: Found indentation with tabs instead of spaces
-W0311:261: Bad indentation. Found 3 spaces, expected 4
-W0311:270: Bad indentation. Found 3 spaces, expected 4
-W0311:272: Bad indentation. Found 3 spaces, expected 4
-W0311:273: Bad indentation. Found 6 spaces, expected 8
-W0311:276: Bad indentation. Found 3 spaces, expected 4
-W0311:277: Bad indentation. Found 3 spaces, expected 4
-W0311:278: Bad indentation. Found 6 spaces, expected 8
-W0311:281: Bad indentation. Found 3 spaces, expected 4
-W0311:282: Bad indentation. Found 3 spaces, expected 4
-W0311:283: Bad indentation. Found 6 spaces, expected 8
-W0311:285: Bad indentation. Found 3 spaces, expected 4
-W0311:287: Bad indentation. Found 6 spaces, expected 8
-W0311:288: Bad indentation. Found 6 spaces, expected 8
-W0311:290: Bad indentation. Found 6 spaces, expected 8
-W0311:293: Bad indentation. Found 9 spaces, expected 12
-W0311:294: Bad indentation. Found 12 spaces, expected 16
-W0311:297: Bad indentation. Found 9 spaces, expected 12
-W0311:298: Bad indentation. Found 12 spaces, expected 16
-W0311:300: Bad indentation. Found 9 spaces, expected 12
-W0311:301: Bad indentation. Found 9 spaces, expected 12
-W0311:302: Bad indentation. Found 12 spaces, expected 16
-W0311:305: Bad indentation. Found 9 spaces, expected 12
-W0311:306: Bad indentation. Found 9 spaces, expected 12
-W0311:307: Bad indentation. Found 12 spaces, expected 16
-W0311:308: Bad indentation. Found 9 spaces, expected 12
-W0311:309: Bad indentation. Found 12 spaces, expected 16
-W0311:311: Bad indentation. Found 9 spaces, expected 12
-W0311:312: Bad indentation. Found 9 spaces, expected 12
-W0311:313: Bad indentation. Found 9 spaces, expected 12
-W0311:314: Bad indentation. Found 12 spaces, expected 16
-W0311:316: Bad indentation. Found 9 spaces, expected 12
-W0311:317: Bad indentation. Found 9 spaces, expected 12
-W0311:318: Bad indentation. Found 12 spaces, expected 16
-W0311:322: Bad indentation. Found 9 spaces, expected 12
-W0311:326: Bad indentation. Found 9 spaces, expected 12
-W0311:327: Bad indentation. Found 9 spaces, expected 12
-W0311:328: Bad indentation. Found 9 spaces, expected 12
-W0311:330: Bad indentation. Found 12 spaces, expected 16
-W0311:331: Bad indentation. Found 12 spaces, expected 16
-W0311:332: Bad indentation. Found 15 spaces, expected 20
-W0311:334: Bad indentation. Found 15 spaces, expected 20
-W0311:335: Bad indentation. Found 15 spaces, expected 20
-W0311:336: Bad indentation. Found 18 spaces, expected 24
-W0311:340: Bad indentation. Found 9 spaces, expected 12
-W0311:341: Bad indentation. Found 12 spaces, expected 16
-W0311:342: Bad indentation. Found 9 spaces, expected 12
-W0311:343: Bad indentation. Found 12 spaces, expected 16
-W0311:344: Bad indentation. Found 9 spaces, expected 12
-W0311:345: Bad indentation. Found 12 spaces, expected 16
-W0311:346: Bad indentation. Found 15 spaces, expected 20
-W0311:347: Bad indentation. Found 12 spaces, expected 16
-W0311:348: Bad indentation. Found 15 spaces, expected 20
-W0311:351: Bad indentation. Found 12 spaces, expected 16
-W0311:352: Bad indentation. Found 15 spaces, expected 20
-W0311:354: Bad indentation. Found 18 spaces, expected 24
-W0311:355: Bad indentation. Found 18 spaces, expected 24
-W0311:356: Bad indentation. Found 18 spaces, expected 24
-W0311:357: Bad indentation. Found 18 spaces, expected 24
-W0311:358: Bad indentation. Found 21 spaces, expected 28
-W0311:360: Bad indentation. Found 12 spaces, expected 16
-W0311:362: Bad indentation. Found 12 spaces, expected 16
-W0311:364: Bad indentation. Found 12 spaces, expected 16
-W0311:365: Bad indentation. Found 15 spaces, expected 20
-W0311:366: Bad indentation. Found 9 spaces, expected 12
-W0311:367: Bad indentation. Found 12 spaces, expected 16
-W0311:368: Bad indentation. Found 15 spaces, expected 20
-W0311:371: Bad indentation. Found 6 spaces, expected 8
-W0311:373: Bad indentation. Found 9 spaces, expected 12
-W0311:374: Bad indentation. Found 12 spaces, expected 16
-W0311:375: Bad indentation. Found 9 spaces, expected 12
-W0311:376: Bad indentation. Found 6 spaces, expected 8
-W0311:378: Bad indentation. Found 9 spaces, expected 12
-W0311:379: Bad indentation. Found 12 spaces, expected 16
-W0311:380: Bad indentation. Found 9 spaces, expected 12
-W0311:381: Bad indentation. Found 6 spaces, expected 8
-W0311:383: Bad indentation. Found 9 spaces, expected 12
-W0311:384: Bad indentation. Found 12 spaces, expected 16
-W0311:385: Bad indentation. Found 9 spaces, expected 12
-W0311:386: Bad indentation. Found 3 spaces, expected 4
-W0311:388: Bad indentation. Found 6 spaces, expected 8
-W0311:389: Bad indentation. Found 9 spaces, expected 12
-W0311:390: Bad indentation. Found 6 spaces, expected 8
-W0311:394: Bad indentation. Found 3 spaces, expected 4
-W0311:395: Bad indentation. Found 3 spaces, expected 4
-W0311:396: Bad indentation. Found 7 spaces, expected 8
-W0311:397: Bad indentation. Found 7 spaces, expected 8
-W0311:398: Bad indentation. Found 7 spaces, expected 8
-W0311:399: Bad indentation. Found 7 spaces, expected 8
-W0311:401: Bad indentation. Found 7 spaces, expected 8
-W0311:402: Bad indentation. Found 11 spaces, expected 12
-W0311:403: Bad indentation. Found 11 spaces, expected 12
-W0311:404: Bad indentation. Found 7 spaces, expected 8
-W0311:405: Bad indentation. Found 11 spaces, expected 12
-W0311:411: Bad indentation. Found 11 spaces, expected 12
-W0311:413: Bad indentation. Found 11 spaces, expected 12
-W0311:414: Bad indentation. Found 15 spaces, expected 16
-W0311:415: Bad indentation. Found 15 spaces, expected 16
-W0311:416: Bad indentation. Found 7 spaces, expected 8
-W0311:418: Bad indentation. Found 11 spaces, expected 12
-W0311:419: Bad indentation. Found 15 spaces, expected 16
-W0311:420: Bad indentation. Found 15 spaces, expected 16
-W0311:421: Bad indentation. Found 11 spaces, expected 12
-W0311:422: Bad indentation. Found 11 spaces, expected 12
-W0311:424: Bad indentation. Found 7 spaces, expected 8
-
-************* Module leo.plugins.nodebar
-W0601:179:initImages: Global variable 'clonePI' undefined at the module level
-W0601:180:initImages: Global variable 'copyPI' undefined at the module level
-W0601:181:initImages: Global variable 'cutPI' undefined at the module level
-W0601:182:initImages: Global variable 'dehoistPI' undefined at the module level
-W0601:183:initImages: Global variable 'deletePI' undefined at the module level
-W0601:184:initImages: Global variable 'demotePI' undefined at the module level
-W0601:185:initImages: Global variable 'hoistPI' undefined at the module level
-W0601:186:initImages: Global variable 'insertPI' undefined at the module level
-W0601:187:initImages: Global variable 'movedownPI' undefined at the module level
-W0601:188:initImages: Global variable 'moveleftPI' undefined at the module level
-W0601:189:initImages: Global variable 'moverightPI' undefined at the module level
-W0601:190:initImages: Global variable 'moveupPI' undefined at the module level
-W0601:191:initImages: Global variable 'nodedownPI' undefined at the module level
-W0601:192:initImages: Global variable 'nodeleftPI' undefined at the module level
-W0601:193:initImages: Global variable 'noderightPI' undefined at the module level
-W0601:194:initImages: Global variable 'nodeupPI' undefined at the module level
-W0601:195:initImages: Global variable 'pastePI' undefined at the module level
-W0601:196:initImages: Global variable 'pasteclonePI' undefined at the module level
-W0601:197:initImages: Global variable 'promotePI' undefined at the module level
-W0601:198:initImages: Global variable 'questionPI' undefined at the module level
-W0601:199:initImages: Global variable 'sortchildrenPI' undefined at the module level
-W0601:200:initImages: Global variable 'sortsiblingsPI' undefined at the module level
-W0611: 26: Unused import weakref
-
-************* Module leo.plugins.pretty_print
-W0233: 54:myPrettyPrinter.__init__: __init__ method from a non direct base class 'myPrettyPrinter' is called
-E0602: 64:myPrettyPrinter.putNormalToken: Undefined variable 'token'
-E0602:190:myPrettyPrinter.doOp: Undefined variable 'keyword'
-E0602:225:myPrettyPrinter.doOp: Undefined variable 'string'
-E0602:225:myPrettyPrinter.doOp: Undefined variable 'string'
-
-************* Module leo.plugins.quickMove
-W0311:219: Bad indentation. Found 16 spaces, expected 12
-W0311:224: Bad indentation. Found 16 spaces, expected 12
-W0611:105: Unused import types
-
-************* Module leo.plugins.quicksearch
-W0301:222: Unnecessary semicolon
-W0301:240: Unnecessary semicolon
-W0604: 73: Using the global statement at the module level
-W0611: 42: Unused import QListWidget
-
-************* Module leo.plugins.rClickBasePluginClasses
-E1101:134:pluginCommandClass.preDoCommand: Instance of 'pluginCommandClass' has no 'doCommand' member
-E1101:260:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandList' member
-E1101:267:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
-E1101:272:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
-E1101:310:basePluginController.getCommandList: Instance of 'basePluginController' has no 'commandList' member
-E1101:318:basePluginController.setDefaultContextMenus: Instance of 'basePluginController' has no 'defaultContextMenus' member
-
-************* Module leo.plugins.run_nodes
-E1120:211:OnQuit: No value passed for parameter 'c' in function call
-
-************* Module leo.plugins.rst3
-E1120:264:runUnitTests: No value passed for parameter 'headline' in function call
-E1120:1018:rstClass.initOptionsFromSettings: No value passed for parameter 'tag' in function call
-
-************* Module leo.plugins.scrolledmessage
-W0311:402: Bad indentation. Found 12 spaces, expected 8
-W0311:403: Bad indentation. Found 12 spaces, expected 8
-E1101:284:ScrolledMessageDialog.doActionOutlineShow: Instance of 'ScrolledMessageDialog' has no 'name' member
-W0107:309:ScrolledMessageDialog.doActionAbout: Unnecessary pass statement
-E1101:526:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
-E1101:527:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
-E1101:533:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'title' member
-E0211:537:ScrolledMessageDialog.afterDrawHandler: Method has no argument
-E0602:607:ScrolledMessageController.afterRedrawHandler: Undefined variable 'dialogs'
-E1120:608:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'tag' in function call
-E1120:608:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'keywords' in function call
-W0611: 86: Unused import inspect
-
-************* Module leo.plugins.todo
-E0102:258:todoController.addPopupMenu.func: function already defined line 249
-E0213:305:todoController.redrawer: Method should have "self" as first argument
-E1102:310:todoController.redrawer.new: fn is not callable
-E0213:320:todoController.projectChanger: Method should have "self" as first argument
-E1102:323:todoController.projectChanger.new: fn is not callable
-
-************* Module leo.external.ipy_leo
-W0601: 30:init_ipython: Global variable 'ip' undefined at the module level
-W0107: 90:es: Unnecessary pass statement
-W0108:231:LeoNode.<lambda>: Lambda may not be necessary
-W1001:398:LeoWorkbook: Use of "property" on an old style class
-E1101:438:workbook_complete: Function 'dispatch' has no 'when_type' member
-E1101:438:workbook_complete: Function 'complete_object' has no 'when_type' member
-E1101:589:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
-W0601:749:lleo_f: Global variable '_request_immediate_connect' undefined at the module level
-
-************* Module leo.external.lproto
-E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
-
-************* Module leo.plugins.toolbar
-E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'tkIconBarClass' has no 'getButton' member (but some types coul
-d not be inferred)
-E1103:463:ToolbarTkinterFrame.getIconButton: Instance of 'nullIconBarClass' has no 'getButton' member (but some types co
-uld not be inferred)
-E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'tkIconBarClass' has no 'getWidgetFrame' member (but some
-types could not be inferred)
-E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'nullIconBarClass' has no 'getWidgetFrame' member (but som
-e types could not be inferred)
-E1103:1336:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptButton' has no 'configure'
- member (but some types could not be inferred)
-#@+node:ekr.20101116150104.5831: ** 4.8 final
-#@+node:ekr.20101116150104.5830: *3* Fixed key redefinition message
-#@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
-def prettyPrintKey (self,stroke,brief=False,trace=False):
-
-    k = self
-    s = stroke and g.stripBrackets(stroke.strip())
-    if not s: return ''
-
-    shift = s.find("shift") >= 0 or s.find("shft") >= 0
-
-    # Replace all minus signs by plus signs, except a trailing minus:
-    if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
-    else:               s = s.replace('-','+')
-    fields = s.split('+')
-    last = fields and fields[-1]
-    if trace: g.trace('fields',fields)
-    if last and len(last) == 1:
-        prev = s[:-1]
-        if last.isalpha():
-            if last.isupper():
-                if not shift:
-                    s = prev + 'Shift+' + last
-            elif last.islower():
-                if not prev and not brief:
-                    s = 'Key+' + last.upper()
-                else:
-                    s = prev + last.upper()
-    else:
-        last = k.guiBindNamesInverseDict.get(last,last)
-        if fields and fields[:-1]:
-            s = '%s+%s' % ('+'.join(fields[:-1]),last)
-        else:
-            s = last
-    if s.endswith(' '):
-        s = s[:-1]+'Space' # 2010/11/06
-    # g.trace(stroke,s)
-    return g.choose(brief,s,'<%s>' % s)
-#@+node:ekr.20061031131434.89: *4* bindKey
-def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
-
-    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
-
-    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-
-    # g.trace(pane,shortcut,commandName)
-    if not shortcut:
-        # g.trace('No shortcut for %s' % commandName)
-        return False
-    << give warning and return if we try to bind to Enter or Leave >>
-    if pane.endswith('-mode'):
-        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
-        return False
-    bunchList = k.bindingsDict.get(shortcut,[])
-    if trace: g.trace(pane,shortcut,commandName)
-    try:
-        k.bindKeyToDict(pane,shortcut,callback,commandName)
-        b = g.bunch(pane=pane,func=callback,commandName=commandName)
-        << remove previous conflicting definitions from bunchList >>
-        bunchList.append(b)
-        shortcut = g.stripBrackets(shortcut.strip())
-        k.bindingsDict [shortcut] = bunchList
-        return True
-    except Exception: # Could be a user error.
-        if not g.app.menuWarningsGiven:
-            g.es_print('exception binding',shortcut,'to',commandName)
-            g.es_exception()
-            g.app.menuWarningsGiven = True
-        return False
-
-bindShortcut = bindKey # For compatibility
-#@+node:ekr.20061031131434.90: *5* << give warning and return if we try to bind to Enter or Leave >>
-if shortcut:
-    for s in ('enter','leave'):
-        if -1 != shortcut.lower().find(s):
-            g.es_print('ignoring invalid key binding:','%s = %s' % (
-                commandName,shortcut),color='blue')
-            return
-#@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
-if not modeFlag and self.warn_about_redefined_shortcuts:
-    redefs = [str(b2.commandName) for b2 in bunchList
-        if b2.commandName != commandName and pane in ('button','all',b2.pane)
-            and not b2.pane.endswith('-mode')]
-    for z in redefs:
-        shortcut = c.k.prettyPrintKey(shortcut)
-            # 2010/11/16: a significant bug fix.
-        g.es_print ('redefining shortcut %s from %s to %s in %s' % (
-            shortcut,
-            g.choose(pane=='button',z,commandName),
-            g.choose(pane=='button',commandName,z),
-            pane),color='red')
-
-if not modeFlag:
-    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
 #@-all
 #@-leo

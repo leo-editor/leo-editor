@@ -14247,8 +14247,7 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-#@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20101104091058.4975: *3* 4.8 rc1
+#@+node:ekr.20101104091058.4975: *4* 4.8 rc1
 @nocolor
 
 Leo 4.8 rc 1                               November 15, 2010
@@ -14290,7 +14289,7 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-#@+node:ekr.20101104091058.4976: *4* Known problems
+#@+node:ekr.20101104091058.4976: *5* Known problems
 There are at least 2 installer issues outstanding:
 
 1. Installing to the "Program Files" folder or the "Program Files
@@ -14300,12 +14299,12 @@ issues.  I don't think this is too serious.
 2. Installing to the "Program Files (x86)" folder can cause PyEnchant
 not to find the spellpyx.txt folder.  This looks like a bug in
 PyEnchant.
-#@+node:ekr.20101104173324.5140: *4* New in 4.8 a1
-#@+node:ekr.20101104091058.4977: *5* Bugs
-#@+node:ekr.20101104091058.4978: *6* Significant bugs
-#@+node:ekr.20101104091058.4979: *7* Fixed vampire nodes and created p.deletePositionsInList
+#@+node:ekr.20101104173324.5140: *5* New in 4.8 a1
+#@+node:ekr.20101104091058.4977: *6* Bugs
+#@+node:ekr.20101104091058.4978: *7* Significant bugs
+#@+node:ekr.20101104091058.4979: *8* Fixed vampire nodes and created p.deletePositionsInList
 # Also, created a "Resurrected Nodes" node to handle such nodes cleanly and safely.
-#@+node:ekr.20101104091058.4980: *8* Post re vampire nodes
+#@+node:ekr.20101104091058.4980: *9* Post re vampire nodes
 @language rest
 
 Vampire nodes from cvs
@@ -14434,7 +14433,7 @@ part of the problem is that somehow Leo thinks that it is reading an
 and missing tnode lists did happen.  It's quite a puzzle.
 
 Edward
-#@+node:ekr.20101104091058.4981: *7* Fixed bug 577047: Invalid @path directory does not warn user
+#@+node:ekr.20101104091058.4981: *8* Fixed bug 577047: Invalid @path directory does not warn user
 Specifying a @path directory causes Leo to save an "@thin file.ext" node below
 it in Leo's home directory without any warning. The next time Leo is opened it
 issues an error that it can not find the file.
@@ -14465,21 +14464,21 @@ putVnode if it is orphaned.
 
 Similarly, putVnode now forces writes of @auto and @shadow trees.
 
-#@+node:ekr.20101104091058.4986: *7* Fixed @shadow problem
+#@+node:ekr.20101104091058.4986: *8* Fixed @shadow problem
 http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
 
 The fixes are marked # 2010/10/22 in << handle the opcode >>.
-#@+node:ekr.20101104173324.4924: *7* Don't write tnodes of @file nodes!
+#@+node:ekr.20101104173324.4924: *8* Don't write tnodes of @file nodes!
 putVnode must test for @file just like @thin.
-#@+node:ekr.20101104091058.4988: *6* Minor bugs
-#@+node:ekr.20101104091058.4989: *7* Fixed the @test logic for external files
-#@+node:ekr.20101104091058.4990: *7* Fixed save scrolling bug
+#@+node:ekr.20101104091058.4988: *7* Minor bugs
+#@+node:ekr.20101104091058.4989: *8* Fixed the @test logic for external files
+#@+node:ekr.20101104091058.4990: *8* Fixed save scrolling bug
 - Open a node with long (multipage) body text
 - Move cursor towards the end of the node
 - Save (ctrl+s)
 - Observe how window is scrolled, cursor is moved
-#@+node:ekr.20101104091058.4991: *7* Fixed at-auto-rst crash
-#@+node:ekr.20101104091058.4992: *7* Don't put &nbsp; in redirected log
+#@+node:ekr.20101104091058.4991: *8* Fixed at-auto-rst crash
+#@+node:ekr.20101104091058.4992: *8* Don't put &nbsp; in redirected log
 https://bugs.launchpad.net/leo-editor/+bug/549319
 
 Leo 4.7.1 final, build 3005, February 26, 2010
@@ -14493,7 +14492,7 @@ everywhere there is supposed to be a space.
 For example, if I run print 'Hello World' I get Hello&nbsp;World in the Log
 pane. This is really hard to read when you have 50 or 100 lines of numbers from
 the output of a program.
-#@+node:ekr.20101104091058.4993: *7* Fixed crash in log pane
+#@+node:ekr.20101104091058.4993: *8* Fixed crash in log pane
 Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 366, in doCommand
     val = command(event)
@@ -14504,10 +14503,10 @@ Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2664, in handleDefaultChar
     if stroke.lower() == 'return': stroke = '\n'
 AttributeError: 'NoneType' object has no attribute 'lower'
-#@+node:ekr.20101104091058.4994: *7* Fixed at-auto-rst bug
-#@+node:ekr.20101104091058.4995: *7* Fixed erroneous error message in at-auto-rst read logic
-#@+node:ekr.20101104091058.4996: *7* Fixed crasher in openFileForReading
-#@+node:ekr.20101104091058.4997: *7* Fixed Java import problem
+#@+node:ekr.20101104091058.4994: *8* Fixed at-auto-rst bug
+#@+node:ekr.20101104091058.4995: *8* Fixed erroneous error message in at-auto-rst read logic
+#@+node:ekr.20101104091058.4996: *8* Fixed crasher in openFileForReading
+#@+node:ekr.20101104091058.4997: *8* Fixed Java import problem
 On Windows, using Leo trunk from a few days ago, I get "error: class
 class does not end in a newline; one will be added [nl]" on what seems
 to be every imported java chunk.
@@ -14515,9 +14514,9 @@ to be every imported java chunk.
 This issue seems to be line-ending related and I duplicated it with a
 simple test.  When I run the following code from within a Leo node, I
 get the same error as when I tried to import the file.
-#@+node:ekr.20101104091058.4999: *7* Fixed gloto-global-line
-#@+node:ekr.20101104091058.5000: *7* Fixed rst3 bug with docutils on py3k
-#@+node:ekr.20101104091058.5001: *7* fixed bug 618474: show_leo_directives
+#@+node:ekr.20101104091058.4999: *8* Fixed gloto-global-line
+#@+node:ekr.20101104091058.5000: *8* Fixed rst3 bug with docutils on py3k
+#@+node:ekr.20101104091058.5001: *8* fixed bug 618474: show_leo_directives
 https://bugs.launchpad.net/leo-editor/+bug/618474
 
 in core/leoRst the method removeLeoDirectives seems not to remove the leo directives.
@@ -14540,7 +14539,7 @@ changing the line to
   g.match_word(s, 1,key)
 
 let it work correctly in my installation (4.7.1)
-#@+node:ekr.20101104091058.5002: *7* fixed bug 618482: code-mode line feeds
+#@+node:ekr.20101104091058.5002: *8* fixed bug 618482: code-mode line feeds
 https://bugs.launchpad.net/leo-editor/+bug/618482
 
 in leoRst.py:
@@ -14562,17 +14561,17 @@ The method "rstripList" is responsible for the doubling linefeeds:
 
    The statement s = '\n'.join(theList).rstrip() doubles therefore the linefeeds
     replacing the line with s = ''.join(theList).rstrip() works.
-#@+node:ekr.20101104091058.5003: *7* Fixed weave (and many similar) commands
-#@+node:ekr.20101104091058.5004: *7* Shorter warnings about incompatible gui type
-#@+node:ekr.20101104091058.5005: *7* Improved @enabled-plugins: ignore lines starting with '@'
+#@+node:ekr.20101104091058.5003: *8* Fixed weave (and many similar) commands
+#@+node:ekr.20101104091058.5004: *8* Shorter warnings about incompatible gui type
+#@+node:ekr.20101104091058.5005: *8* Improved @enabled-plugins: ignore lines starting with '@'
 Also give calmer messages for non-existent plugins.
-#@+node:ekr.20101104091058.5006: *7* Fixed bug in runUnitTestLeoFile
+#@+node:ekr.20101104091058.5006: *8* Fixed bug in runUnitTestLeoFile
 Replace ';' by os.pathsep.
-#@+node:ekr.20101104091058.5007: *7* Fixed crasher with del in minibuffer
+#@+node:ekr.20101104091058.5007: *8* Fixed crasher with del in minibuffer
 Changed w to self in leoQLineEditWidget.setInsertPoint.
-#@+node:ekr.20101104091058.5008: *7* Ignore F-Keys & Ins in the minibuffer.
+#@+node:ekr.20101104091058.5008: *8* Ignore F-Keys & Ins in the minibuffer.
 k.fullCommand now ignores fkeys and Ins.
-#@+node:ekr.20101104091058.5009: *7* Fixed bug 618570: leoRst: option strip_at_file_prefixes...
+#@+node:ekr.20101104091058.5009: *8* Fixed bug 618570: leoRst: option strip_at_file_prefixes...
 leoRst: option strip_at_file_prefixes does not strip file prefixes in leo 4.7.1
 
 The problematic code is in method underline of class rstCommands.
@@ -14581,14 +14580,14 @@ The last statement:
   return '%s\n%s\n\n' % (p.h.strip(),ch*n)
 
 returns the full heading and not stripped one, (in the s parameter)
-#@+node:ekr.20101104091058.5010: *7* Fixed bug 622802: Go to clone" switches to the first chapter
+#@+node:ekr.20101104091058.5010: *8* Fixed bug 622802: Go to clone" switches to the first chapter
 If one or more chapters exist (other than main), "Go to clone" switches to the
 first chapter, whether or not the clone is in that chapter.
 
 The new code always selects the main chapter.
 This is the simplest thing that could possibly work.
 Other approaches are fraught with difficulties.
-#@+node:ekr.20101104091058.5011: *7* Fixed unicode bug in files
+#@+node:ekr.20101104091058.5011: *8* Fixed unicode bug in files
 I created a file time.leo. When it's in the dir d:/Dmitry it's being
 opened fine. But when I put it into the dir with russian characters:
 D:/Личное/Время leo prints squares at the window header and doesn't
@@ -14606,7 +14605,7 @@ UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position
 31: character maps to <undefined> path changed for @thin
 Unicode-Â-folder/unicode-Â-test2.txt created:
 C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
-#@+node:ekr.20101104091058.5012: *7* Eliminated check python syntax commands, but retained code
+#@+node:ekr.20101104091058.5012: *8* Eliminated check python syntax commands, but retained code
 @nocolor-node
 
 Removed the check-all-python-code and check-python code commands
@@ -14621,7 +14620,7 @@ function.
 
 Directives and section references are not the problem:
 they get translated to comments before the check.
-#@+node:ekr.20101104091058.5013: *7* Improved handling of history
+#@+node:ekr.20101104091058.5013: *8* Improved handling of history
 nav_qt.py just uses these:
 
     c.goPrevVisitedNode()
@@ -14638,16 +14637,16 @@ wherever body focus code is.
 
 The fix was to leoTree.selectHelper and qtBody.onFocusIn.
 
-#@+node:ekr.20101104091058.5014: *7* Remember whether @asis/@nosent existed at read time
+#@+node:ekr.20101104091058.5014: *8* Remember whether @asis/@nosent existed at read time
 Removed all traces of the "significant change" logic. The read code remembers
 whether a node existed when Leo loaded the outline.
 
 Leo will warn when writing a node that didn't previously exist. This is a nice
 simplification of the code.
-#@+node:ekr.20101104091058.5015: *7* Added g.app.config.config_iter
+#@+node:ekr.20101104091058.5015: *8* Added g.app.config.config_iter
 This simplifies the print-settings command.
-#@+node:ekr.20101104091058.5016: *5* Code features
-#@+node:ekr.20101104091058.5017: *6* Added g.findTestScript
+#@+node:ekr.20101104091058.5016: *6* Code features
+#@+node:ekr.20101104091058.5017: *7* Added g.findTestScript
 http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
 
 g.findTestScript is an important new pattern for sharing code in Leo scripts,
@@ -14671,25 +14670,25 @@ Now class Hello is available the test code!
 This is something that I've wanted to do forever.  It's almost too
 easy.  I suppose it's a small security problem, but so is every other
 @test node!
-#@+node:ekr.20101104091058.5018: *6* Added p.deletePositionsInList
+#@+node:ekr.20101104091058.5018: *7* Added p.deletePositionsInList
 http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#
 
 This is an important new helper.
-#@+node:ekr.20101104173324.4920: *6* Leo is more clever in putting up the Leo id dialog
+#@+node:ekr.20101104173324.4920: *7* Leo is more clever in putting up the Leo id dialog
 g.app.setLeoID now calls createDefaultGui instead of createTkGui.
 
 We can *not* put up the LeoID dialog later: it is needed to set
 g.app.nodeIndices, which is used in the read logic for outlines, so it *must* be
 set before we load any Leo file!
 
-#@+node:ekr.20101104173324.4921: *6* Simplified leoPlugins code
+#@+node:ekr.20101104173324.4921: *7* Simplified leoPlugins code
 There are some tricky issues here:
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/4da36f0d897a25e8
 
 Important: g.loadOnePlugin calls the plugins onCreate method to make up for
 events that have already been generated. pc.loadOnePlugin does not.
-#@+node:ekr.20101104173324.4923: *6* Patched @test logic
+#@+node:ekr.20101104173324.4923: *7* Patched @test logic
 # Begin patch
 
 === modified file 'leo/core/leoTest.py'
@@ -14705,13 +14704,13 @@ events that have already been generated. pc.loadOnePlugin does not.
 +    env = dict(os.environ)
 +    env['PYTHONPATH'] = env.get('PYTHONPATH', '')+';'+leoDir
 +    os.spawnve(os.P_NOWAIT,sys.executable,args,env)
-#@+node:ekr.20101104091058.5019: *5* Commands
-#@+node:ekr.20101104091058.5020: *6* Added legend for print-settings command
-#@+node:ekr.20101104091058.5021: *6* Added code-to-rst command
+#@+node:ekr.20101104091058.5019: *6* Commands
+#@+node:ekr.20101104091058.5020: *7* Added legend for print-settings command
+#@+node:ekr.20101104091058.5021: *7* Added code-to-rst command
 # And deprecated code mode.
-#@+node:ekr.20101104091058.5022: *6* Removed mark-clones command
+#@+node:ekr.20101104091058.5022: *7* Removed mark-clones command
 It is useless in the one-node world.
-#@+node:ekr.20101104091058.5023: *6* Improved abbreviation commands
+#@+node:ekr.20101104091058.5023: *7* Improved abbreviation commands
 http://groups.google.com/group/leo-editor/browse_thread/thread/24cb88a8c2a20a07#
 
 - Space activates abbreviations.
@@ -14734,8 +14733,8 @@ Note that defining any abbreviation automatically turns on abbreviation mode.
 The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
 selected text as the replacement value of the abbreviation. The minibuffer
 prompts you for the name of the abbreviation.
-#@+node:ekr.20101104091058.5150: *6* Completed cascade-windows and minimize-all-windows commands
-#@+node:ekr.20101104091058.5252: *6* Created head-to-prev-node and tail-to-next-node commands
+#@+node:ekr.20101104091058.5150: *7* Completed cascade-windows and minimize-all-windows commands
+#@+node:ekr.20101104091058.5252: *7* Created head-to-prev-node and tail-to-next-node commands
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/611413
@@ -14749,7 +14748,7 @@ function definition to the end of the previous sibling node.
 
 The tail-to-next-node command moves non-empty text following a class, method or
 function definition to the start of the next sibling node.
-#@+node:ekr.20101104091058.5253: *7* findClass (leoImport)
+#@+node:ekr.20101104091058.5253: *8* findClass (leoImport)
 def findClass(self,p):
 
     '''Return the index end of the class or def in a node, or -1.'''
@@ -14774,8 +14773,8 @@ def findClass(self,p):
         assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
     return None,-1,-1
-#@+node:ekr.20101104091058.5254: *7* Commands (leoImport)
-#@+node:ekr.20101104091058.5255: *8* @g.command(head-to-prev-node)
+#@+node:ekr.20101104091058.5254: *8* Commands (leoImport)
+#@+node:ekr.20101104091058.5255: *9* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):
 
@@ -14802,7 +14801,7 @@ def headToPrevNode(event):
             u.afterChangeNodeContents(p2,undoType,b2)
         u.afterChangeGroup(p,undoType)
         c.selectPosition(p2)
-#@+node:ekr.20101104091058.5256: *8* @g.command(tail-to-next-node)
+#@+node:ekr.20101104091058.5256: *9* @g.command(tail-to-next-node)
 @g.command('tail-to-next-node')
 def tailToNextNode(event=None):
 
@@ -14828,9 +14827,9 @@ def tailToNextNode(event=None):
             u.afterChangeNodeContents(p2,undoType,b2)
         u.afterChangeGroup(p,undoType)
         c.selectPosition(p2)
-#@+node:ekr.20101104091058.5024: *5* Documentation
-#@+node:ekr.20101104091058.5025: *6* Created introductory slide shows
-#@+node:ekr.20101104091058.5026: *6* Reorganized Users Guide
+#@+node:ekr.20101104091058.5024: *6* Documentation
+#@+node:ekr.20101104091058.5025: *7* Created introductory slide shows
+#@+node:ekr.20101104091058.5026: *7* Reorganized Users Guide
 http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
 
 I created my own copy of the home page:
@@ -14838,14 +14837,14 @@ I created my own copy of the home page:
     Files-->@edit leo_toc.html
 
 This allows me to group items without creating special pages.
-#@+node:ekr.20101104091058.5027: *5* Features
-#@+node:ekr.20101104091058.5028: *6* New sentinels
-#@+node:ekr.20101104091058.5029: *6* Don't create @chapter node for new file
+#@+node:ekr.20101104091058.5027: *6* Features
+#@+node:ekr.20101104091058.5028: *7* New sentinels
+#@+node:ekr.20101104091058.5029: *7* Don't create @chapter node for new file
 I think @chapters node shouldn't be in a new leo file, but it should
 be created when the first chapter is created.
 
 Ditto for the chapter selector toolbar button.
-#@+node:ekr.20101104091058.5030: *6* Improved install instructions & logic
+#@+node:ekr.20101104091058.5030: *7* Improved install instructions & logic
 http://groups.google.com/group/leo-editor/browse_thread/thread/a5a47afa65af9a37
 
 The following changes are on the trunk, and also on Leo's web site:
@@ -14895,13 +14894,13 @@ Clicking on the installer-created Windows link for Leo on the Start
 Menu did nothing. Eventually I found the Windows section under
 "Running Leo" and learned it was required to run Leo the first time
 from a console window and not by launching it from Windows.
-#@+node:ekr.20101104091058.5031: *6* DnD outline nodes
+#@+node:ekr.20101104091058.5031: *7* DnD outline nodes
 DnD creates @file or @auto nodes if appropriate
-#@+node:ekr.20101104091058.5032: *6* write @edit nodes like @nosent nodes
-#@+node:ekr.20101104091058.5033: *6* Leo now uses PyEnchant to check spelling
+#@+node:ekr.20101104091058.5032: *7* write @edit nodes like @nosent nodes
+#@+node:ekr.20101104091058.5033: *7* Leo now uses PyEnchant to check spelling
 http://groups.google.com/group/leo-editor/browse_thread/thread/62ac1977b3704590#
 
-#@+node:ekr.20101104091058.5034: *6* Improved @url nodes
+#@+node:ekr.20101104091058.5034: *7* Improved @url nodes
 Having to type the url after @url in headline is annoying.
 
 The @url handler should look into the first line of body for url, if the text in
@@ -14910,22 +14909,22 @@ descriptive.
 
 I know some plugin does this, but there is no reason why this couldn't be the
 default behavior.
-#@+node:ekr.20101104091058.5035: *6* Made sure that all @auto nodes end with a newline
+#@+node:ekr.20101104091058.5035: *7* Made sure that all @auto nodes end with a newline
 The fix was to the "if not trailingNewlineFlag:" code at the end of at.putBody.
-#@+node:ekr.20101104091058.5036: *6* Improved language support
+#@+node:ekr.20101104091058.5036: *7* Improved language support
 - improved support for elisp.
 
     - Use @language lisp instead of @language elisp.
 
 - added importer for .ini files.
-#@+node:ekr.20101104091058.5037: *5* Settings
-#@+node:ekr.20101104091058.5038: *6* Allow multiple files on the command line
+#@+node:ekr.20101104091058.5037: *6* Settings
+#@+node:ekr.20101104091058.5038: *7* Allow multiple files on the command line
 Refactored g.app.config.readSettingsFiles.
 
 Settings now honored in workbook.
 
 * Window size not honored when opened from menu.
-#@+node:ekr.20101104091058.5039: *6* Allow proportional fonts in plain text
+#@+node:ekr.20101104091058.5039: *7* Allow proportional fonts in plain text
 http://groups.google.com/group/leo-editor/browse_thread/thread/e6075a699909db53
 
 You can now set a proportional font to use in all "@language plain" nodes
@@ -14945,17 +14944,17 @@ except @font is ignored in the headline.
 Specify colors in @color nodes:
 
 @color plain null color = black
-#@+node:ekr.20101104091058.5040: *6* Allow changing minibuffer colors
+#@+node:ekr.20101104091058.5040: *7* Allow changing minibuffer colors
 Added the following options with the indicated defaults.
 
 \@color minibuffer_background_color = lightblue
 \@color minibuffer_warning_color = lightgrey
-#@+node:ekr.20101104091058.5041: *6* Added support for @string qt-toolbar-location
+#@+node:ekr.20101104091058.5041: *7* Added support for @string qt-toolbar-location
 Valid values are top,bottom,left,right
-#@+node:ekr.20101104091058.5042: *6* Support @bool write_expansion_bits_in_leo_files
-#@+node:ekr.20101104091058.5043: *6* Added support for slideshow plugin
+#@+node:ekr.20101104091058.5042: *7* Support @bool write_expansion_bits_in_leo_files
+#@+node:ekr.20101104091058.5043: *7* Added support for slideshow plugin
 Command-line args
-#@+node:ekr.20101104091058.5044: *6* New settings for abbreviations
+#@+node:ekr.20101104091058.5044: *7* New settings for abbreviations
 @bool enable-abbreviations (default: False)
 
   When true, enables substitution of abbreviations.
@@ -14977,17 +14976,17 @@ Command-line args
   files. Regardless of where they are defined, abbreviations in @data
   abbreviation nodes will override settings (with the same name) in @data
   global-abbreviations nodes.
-#@+node:ekr.20101104173324.5021: *4* New in 4.8 b1
-#@+node:ekr.20101104173324.5142: *5* Bugs
-#@+node:ekr.20101104173324.5023: *6* Fixed bug 603720: @auto parsing error on dedented triple quote string
+#@+node:ekr.20101104173324.5021: *5* New in 4.8 b1
+#@+node:ekr.20101104173324.5142: *6* Bugs
+#@+node:ekr.20101104173324.5023: *7* Fixed bug 603720: @auto parsing error on dedented triple quote string
 The code that calculates the end of a block of indented Python code now takes
 take more care with backslashes.
-#@+node:ekr.20101104173324.5028: *6* Fixed bug 597757: c.frame.body.getSelectedText() doesn't work in added editors
-#@+node:ekr.20101104173324.5102: *6* Fixed bug 604115: chapter-{clone,copy}-node-to broken
+#@+node:ekr.20101104173324.5028: *7* Fixed bug 597757: c.frame.body.getSelectedText() doesn't work in added editors
+#@+node:ekr.20101104173324.5102: *7* Fixed bug 604115: chapter-{clone,copy}-node-to broken
 - Added better prompts for move/copy/clone commands.
 
 - Undo/redo of these commands select the main chapter.
-#@+node:ekr.20101104173324.5138: *6* Made sure proper install.txt appears
+#@+node:ekr.20101104173324.5138: *7* Made sure proper install.txt appears
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
@@ -15001,14 +15000,14 @@ contain installation instructions and the one that contains the
 "Installing Leo" chapter.
 
 The solution was to change install.txt to installing.txt in the users guide.
-#@+node:ekr.20101104173324.5031: *5* Completed cascade-windows and minimize-all-windows commands
-#@+node:ekr.20101104173324.5032: *5* Improved present autocompleter
+#@+node:ekr.20101104173324.5031: *6* Completed cascade-windows and minimize-all-windows commands
+#@+node:ekr.20101104173324.5032: *6* Improved present autocompleter
 Allow "always on" operation:
 
 - Ctrl-space is now bound to force-auto-completion
 
 - Remove Alt-1 and Alt-2 default bindings.
-#@+node:ekr.20101104173324.5133: *5* Created head-to-prev-node and tail-to-next-node commands
+#@+node:ekr.20101104173324.5133: *6* Created head-to-prev-node and tail-to-next-node commands
 http://bugs.launchpad.net/leo-editor/+bug/611413
 
 These work around the lack of AI in Python's importer.
@@ -15018,13 +15017,13 @@ function definition to the end of the previous sibling node.
 
 The tail-to-next-node command moves non-empty text following a class, method or
 function definition to the start of the next sibling node.
-#@+node:ekr.20101105082829.4917: *5* Put non-def code in their own node
+#@+node:ekr.20101105082829.4917: *6* Put non-def code in their own node
 Fixed wishlist bug 670744: add a setting to put inter-def code in its own node
 
 Added support for @bool at_auto_separate_non_def_nodes option.
 The default (legacy mode) is False.
-#@+node:ekr.20101114081049.5090: *4* New in 4.8 rc1
-#@+node:ekr.20101114081049.5101: *5* Revised many plugins
+#@+node:ekr.20101114081049.5090: *5* New in 4.8 rc1
+#@+node:ekr.20101114081049.5101: *6* Revised many plugins
 @nocolor-node
 
 Removed the keybindings.py plugin.  The print-bindings command should suffice.
@@ -15047,13 +15046,13 @@ xsltWithNodes.py
 I also registered the menu2 event instead of the open2 event in all plugins that
 use this event to create menus. This is required because a relatively recent
 change creates menus *after* the open2 event happens.
-#@+node:ekr.20101114081049.5102: *5* Fixed crasher in UNL.py: recursiveUNLSearch
-#@+node:ekr.20101114081049.5103: *5* Big improvement to execute-script command
+#@+node:ekr.20101114081049.5102: *6* Fixed crasher in UNL.py: recursiveUNLSearch
+#@+node:ekr.20101114081049.5103: *6* Big improvement to execute-script command
 execute-script now calls execfile (or its equivalent when using Python 3k)
 when @bool write_script_file = True.
 
 This allows pdb to show the text of scripts!
-#@+node:ekr.20101114081049.5108: *5* Added extract-python-method command
+#@+node:ekr.20101114081049.5108: *6* Added extract-python-method command
 This should have been done *ages* ago. The command makes it easy to put python
 methods in separate nodes.
 
@@ -15068,12 +15067,842 @@ What happens:
 - The body of foo contains all the selected text, properly indented.
 
 The command is undoable.
-#@+node:ekr.20101115085632.4928: *5* Open the default leo file if possible
+#@+node:ekr.20101115085632.4928: *6* Open the default leo file if possible
 Leo opens the file specified by the default_leo_file setting if it exists.
 
 New in 4.8 rc1: if default (workbook) file does not exist Leo will
 open an empty file and name is to be the default file.
-#@+node:ekr.20101115085632.4930: *5* Fixed problems with installer
+#@+node:ekr.20101115085632.4930: *6* Fixed problems with installer
 The installer now makes proper entries in the Windows start menu.
+#@+node:edream.110203163054.63: ** Latest version
+#@+node:ekr.20101124102457.5135: *3* 4.8 final
+@nocolor
+
+Leo 4.8 final                               November 26, 2010
+
+Leo 4.8 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.8:
+--------------------------
+
+- Leo now uses the simplest possible sentinel lines in external files.
+  External files with sentinels now look like Emacs org-mode files.
+- Leo Qt gui now supports Drag and Drop.
+  This was one of the most frequently requested features.
+- Improved abbreviation commands.
+  You now define abbreviations in Leo settings nodes, not external files.
+- @url nodes may contain url's in body text.
+  This allows headlines to contain summaries: very useful.
+- Leo now uses PyEnchant to check spelling.
+- Leo can now open multiple files from the command line.
+- Leo's ancient Tangle and Untangle commands are now deprecated.
+  This will help newbies how to learn Leo.
+- Leo now shows "Resurrected" and "Recovered" nodes.
+  These protect data and show how data have changed.
+  These fix several long-standing data-related problems.
+- A new "screenshots" plugin for creating slide shows with Leo.
+  I used this plugin to create Leo's introductory slide shows.
+- Improved autocompletion: Ctrl-space starts a one-time completion.
+- A better installer.
+- Many bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+#@+node:ekr.20101124102457.5136: *4* Known problems
+There are at least 2 installer issues outstanding:
+
+1. Installing to the "Program Files" folder or the "Program Files
+(x86)" folder can cause some unit tests to fail due to permission
+issues.  I don't think this is too serious.
+
+2. Installing to the "Program Files (x86)" folder can cause PyEnchant
+not to find the spellpyx.txt folder.  This looks like a bug in
+PyEnchant.
+#@+node:ekr.20101124102457.5137: *4* New in 4.8 a1
+#@+node:ekr.20101124102457.5138: *5* Bugs
+#@+node:ekr.20101124102457.5139: *6* Significant bugs
+#@+node:ekr.20101124102457.5140: *7* Fixed vampire nodes and created p.deletePositionsInList
+# Also, created a "Resurrected Nodes" node to handle such nodes cleanly and safely.
+#@+node:ekr.20101124102457.5141: *8* Post re vampire nodes
+@language rest
+
+Vampire nodes from cvs
+
+I've just discovered a major problem with cvs updates.  It is a subtle
+consequence of how Leo writes outlines and reads derived files.  This
+is a big bug in Leo, not cvs.  The effect of the bug is that nodes can
+appear in derived files that were never written to them!
+
+The discovery of this 'big bug' came about as the result of the
+following Aha:
+
+**@thin files that contain @all directives should be a cvs binary (-kb) files.**
+
+The reason is straightforward:  cvs doesn't know enough to merge such
+files.  Maybe all @thin derived files should be -kb files, but Leo's
+users will never agree to that!
+
+Anyway, leoProjects.txt is now a binary file as far as cvs is
+concerned.  Other .txt files, like leoScripts.txt, should also be
+binary files.  As we shall see, the fact that leoProjects.txt is now a
+-kb file means that we can not possibly blame the cvs merge algorithm
+for what is about to happen.
+
+Ok, back to the 'big bug'.  Here is how I got bitten:
+
+- I changed leoProjects.txt in two sandboxes 1 and 2.  In sandbox 1 I
+added a node called 'changed in the main line'.  In sandbox 2 I added
+a node called 'changed2'.
+
+- I changed LeoPyRef.leo in sandbox 2, but *not* in sandbox 1.
+
+- I did a update in sandbox 2.
+
+As expected (now that leoProjects.txt is a binary file) I got the
+following from cvs:
+
+M src/LeoPyRef.leo
+...
+cvs update: nonmergeable file needs merge
+cvs update: revision 1.448 from repository is now in src/
+leoProjects.txt
+cvs update: file from working directory is now in .#leoProjects.txt.
+1.447
+
+To summarize the update:
+
+- LeoPyRef.leo has been marked as modified (M), but it has **not**
+been changed by cvs.
+
+- As expected, leoProjects.txt contains the version from sandbox **1**.
+
+So far, so good.  But when I opened LeoPyRef.leo I got a huge
+surprise: the outline contains **both** the node 'changed in main-
+line' and the node 'changed2'!
+
+How did this happen?  Well, obviously the 'changed in main-line' node
+came from the cvs update.  I expected that.  The 'changed2' line must
+have come from the local copy of LeoPyRef.leo.
+
+Once I knew what to look for it wasn't too hard to discover what had
+happened.  The 'changed2' is a descendant of a cloned node called '4.4
+projects'.
+
+- One clone of '4.4 projects' node is a descendant of the @thin
+leoProjects.txt node.
+
+- Another clone of the '4.4 project' is in the LeoPyRef.leo file but
+outside of any @thin node.
+
+So the 'resurrection' of the 'changed2' node happened while Leo was
+reading leoProjects.txt into LeoPyRef.leo.  The '4.4 projects' node
+**already existed in the outline** before Leo read leoProjects.txt,
+and the present atFile read logic only **adds** nodes, it never
+deletes nodes.  Thus, the 'changed2' node 'survived' the atFile read
+logic.  The 'changed2' node became a 'vampire' node that couldn't be
+killed.
+
+The problem is far from benign.  Because of clones, the vampire node
+became an orphan node in **another** file, namely leoKeys.py.  I tried
+two or three times to remove the vampire/orphan node before realizing
+what had happened.
+
+The fix (there is *always* a fix) will require some care.  The present
+atFile.read logic is robust because it *doesn't* delete nodes.  It is
+essential that the read logic remain robust.  I suspect the solutions
+will be as follows:
+
+A. The atFile.read code can not delete the subtree of @thin nodes
+initially, because it doesn't know whether there will be read errors
+later.  If there are read errors absolutely nothing must change.  This
+ensures that read errors never destroy information.
+
+B. A new post-pass will look for vampire nodes: nodes that were not
+actually read from the derived file.  I think (but haven't proven)
+that all descendents of vampire nodes are also vampire nodes.  If that
+is so the post-pass will simply delete vampire nodes without worrying
+about whether they have descendents.
+
+Warning: the new scheme will mean that cvs update can destroy
+information that previously existed in the outline.  I believe this is
+correct: we assume that derived files are the 'truly meaningful'
+files.  Hey, if we are wrong we can always get the old info from
+cvs :-)
+QQQ
+
+At present, atFile.read contains code to warn of "resurrected" nodes,
+and I did indeed get such a warning when the recent problem arose.
+
+After a quick look at atFile.read, I strongly suspect that the problem
+remains today pretty much exactly as it was in 2003.  The only
+difference is that the caching code (the call to
+root.v.createOutlineFromCacheList(c,aList)) doesn't do the check:
+\<\< advise user to delete all unvisited nodes \>\>
+that is done later in read(). That probably should be fixed.
+
+Finding a better solution to vampire nodes has been on the list since
+2003.  It's not easy because it involves the dreaded "multiple delete"
+problem.
+
+Hmm.  The present read code *does* delete the tree before reading thin
+external files.  So it appears that vampire nodes could only be
+expected in external files derived from @file nodes.  It may be that
+part of the problem is that somehow Leo thinks that it is reading an
+@file node?? That's pretty weird, but messages about resurrected nodes
+and missing tnode lists did happen.  It's quite a puzzle.
+
+Edward
+#@+node:ekr.20101124102457.5142: *7* Fixed bug 577047: Invalid @path directory does not warn user
+Specifying a @path directory causes Leo to save an "@thin file.ext" node below
+it in Leo's home directory without any warning. The next time Leo is opened it
+issues an error that it can not find the file.
+
+It should instead issue a warning that the @path directory does not exist.
+
+If this occurs when the saving of @thin nodes to files is performed as part of
+the user closing Leo, the closing of Leo should be aborted to prevent the loss
+of data.
+
+===== The Aha
+
+The computation of at./ic.default_directory **must not** attempt to create
+directories! It's too early for that!
+
+This simplifies all aspects of the code:
+
+- No need to report errors & no need to recover from errors.
+- at.scanAllDirectives can call c.
+
+===== The actual fix:
+
+Due to a previous fix, at.writeAllAtFileNodesHelper does *not* report errors.
+This causes Leo to clear all dirty bits.
+
+The proper fix, therefore, is to force a write of the entire @edit tree in
+putVnode if it is orphaned.
+
+Similarly, putVnode now forces writes of @auto and @shadow trees.
+
+#@+node:ekr.20101124102457.5143: *7* Fixed @shadow problem
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbe098206376ec8d
+
+The fixes are marked # 2010/10/22 in << handle the opcode >>.
+#@+node:ekr.20101124102457.5144: *7* Don't write tnodes of @file nodes!
+putVnode must test for @file just like @thin.
+#@+node:ekr.20101124102457.5145: *6* Minor bugs
+#@+node:ekr.20101124102457.5146: *7* Fixed the @test logic for external files
+#@+node:ekr.20101124102457.5147: *7* Fixed save scrolling bug
+- Open a node with long (multipage) body text
+- Move cursor towards the end of the node
+- Save (ctrl+s)
+- Observe how window is scrolled, cursor is moved
+#@+node:ekr.20101124102457.5148: *7* Fixed at-auto-rst crash
+#@+node:ekr.20101124102457.5149: *7* Don't put &nbsp; in redirected log
+https://bugs.launchpad.net/leo-editor/+bug/549319
+
+Leo 4.7.1 final, build 3005, February 26, 2010
+Python 2.6.2, qt version 4.5.2
+Windows 5, 1, 2600, 2, Service Pack 3
+
+When redirecting the output to the Log pane using g.redirectStderr() and
+g.redirectStdout(), the output displays non-breaking space characters (&nbsp;)
+everywhere there is supposed to be a space.
+
+For example, if I run print 'Hello World' I get Hello&nbsp;World in the Log
+pane. This is really hard to read when you have 50 or 100 lines of numbers from
+the output of a program.
+#@+node:ekr.20101124102457.5150: *7* Fixed crash in log pane
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 366, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 284, in autoComplete
+    k.masterCommand(event,func=None,stroke=None,commandName=None)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2606, in masterCommand
+    val = k.handleDefaultChar(event,stroke)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2664, in handleDefaultChar
+    if stroke.lower() == 'return': stroke = '\n'
+AttributeError: 'NoneType' object has no attribute 'lower'
+#@+node:ekr.20101124102457.5151: *7* Fixed at-auto-rst bug
+#@+node:ekr.20101124102457.5152: *7* Fixed erroneous error message in at-auto-rst read logic
+#@+node:ekr.20101124102457.5153: *7* Fixed crasher in openFileForReading
+#@+node:ekr.20101124102457.5154: *7* Fixed Java import problem
+On Windows, using Leo trunk from a few days ago, I get "error: class
+class does not end in a newline; one will be added [nl]" on what seems
+to be every imported java chunk.
+
+This issue seems to be line-ending related and I duplicated it with a
+simple test.  When I run the following code from within a Leo node, I
+get the same error as when I tried to import the file.
+#@+node:ekr.20101124102457.5155: *7* Fixed gloto-global-line
+#@+node:ekr.20101124102457.5156: *7* Fixed rst3 bug with docutils on py3k
+#@+node:ekr.20101124102457.5157: *7* fixed bug 618474: show_leo_directives
+https://bugs.launchpad.net/leo-editor/+bug/618474
+
+in core/leoRst the method removeLeoDirectives seems not to remove the leo directives.
+which results in @leo directives inside generated rst code.
+
+The problematic code line is the statement "g.match_word(s, 0,key)" in the following block:
+
+                for key in self.leoDirectivesList:
+                    if g.match_word(s, 0,key):
+                        #g.trace('removing %s' % s)
+                        break
+
+As far as I understand the function match_word, it returns 1 if s contains key at index 0,
+The self.leoDirectivesList contains all directive like color, language, ... (without @) but
+s is a complete body line that looks like:
+@language rest
+
+That means language starts at index 1 not at 0.
+changing the line to
+  g.match_word(s, 1,key)
+
+let it work correctly in my installation (4.7.1)
+#@+node:ekr.20101124102457.5158: *7* fixed bug 618482: code-mode line feeds
+https://bugs.launchpad.net/leo-editor/+bug/618482
+
+in leoRst.py:
+
+the method "handleCodeMode" does not preserve line linefeeds of the original code. While this is only annoying for code
+parts it is fatal for doc parts, because rst directives does not work anymore.
+
+The problem is in the line "elif not z.rstrip(): pass" of the following code block at the end of the method
+        for z in result:
+            if z == '': result2.append('\n\n')
+            elif not z.rstrip(): pass
+            elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+            else: result2.append('%s\n' % z.rstrip())
+
+Commenting this line out, preserves the linefeeds in the doc part but doubles them in the code part.
+
+The method "rstripList" is responsible for the doubling linefeeds:
+   The lines arguments is a list of lines with (!) trainling linefeeds (\n),
+
+   The statement s = '\n'.join(theList).rstrip() doubles therefore the linefeeds
+    replacing the line with s = ''.join(theList).rstrip() works.
+#@+node:ekr.20101124102457.5159: *7* Fixed weave (and many similar) commands
+#@+node:ekr.20101124102457.5160: *7* Shorter warnings about incompatible gui type
+#@+node:ekr.20101124102457.5161: *7* Improved @enabled-plugins: ignore lines starting with '@'
+Also give calmer messages for non-existent plugins.
+#@+node:ekr.20101124102457.5162: *7* Fixed bug in runUnitTestLeoFile
+Replace ';' by os.pathsep.
+#@+node:ekr.20101124102457.5163: *7* Fixed crasher with del in minibuffer
+Changed w to self in leoQLineEditWidget.setInsertPoint.
+#@+node:ekr.20101124102457.5164: *7* Ignore F-Keys & Ins in the minibuffer.
+k.fullCommand now ignores fkeys and Ins.
+#@+node:ekr.20101124102457.5165: *7* Fixed bug 618570: leoRst: option strip_at_file_prefixes...
+leoRst: option strip_at_file_prefixes does not strip file prefixes in leo 4.7.1
+
+The problematic code is in method underline of class rstCommands.
+The last statement:
+
+  return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+
+returns the full heading and not stripped one, (in the s parameter)
+#@+node:ekr.20101124102457.5166: *7* Fixed bug 622802: Go to clone" switches to the first chapter
+If one or more chapters exist (other than main), "Go to clone" switches to the
+first chapter, whether or not the clone is in that chapter.
+
+The new code always selects the main chapter.
+This is the simplest thing that could possibly work.
+Other approaches are fraught with difficulties.
+#@+node:ekr.20101124102457.5167: *7* Fixed unicode bug in files
+I created a file time.leo. When it's in the dir d:/Dmitry it's being
+opened fine. But when I put it into the dir with russian characters:
+D:/Личное/Время leo prints squares at the window header and doesn't
+open the file correctly. This problem existed in one of the revisions,
+then it was fixed in the last official release. Now it emerged again
+in my Leo 4.8 devel, build 3005
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 3307, in pr
+    sys.stdout.write(s2)
+  File "c:\python31\lib\encodings\cp437.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_map)[0]
+
+UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position
+31: character maps to <undefined> path changed for @thin
+Unicode-Â-folder/unicode-Â-test2.txt created:
+C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
+#@+node:ekr.20101124102457.5168: *7* Eliminated check python syntax commands, but retained code
+@nocolor-node
+
+Removed the check-all-python-code and check-python code commands
+(and removed the references to these commands in menus.)
+
+- Retained the actual code for scripts.
+- Retained automatic syntax checking of python files on saves
+
+The problem with separate commands is that they don't necessarily check an
+entire file: things like 'return' in a node that doesn't look it is in a
+function.
+
+Directives and section references are not the problem:
+they get translated to comments before the check.
+#@+node:ekr.20101124102457.5169: *7* Improved handling of history
+nav_qt.py just uses these:
+
+    c.goPrevVisitedNode()
+    c.goNextVisitedNode()
+
+and these subsequently use leoCommand.py / class nodeHistory.
+
+The fix would have to happen in leoFrame.py / selectHelper() which does this:
+
+    c.nodeHistory.update(p) # Remember this position.
+
+It shouldn't call update() there. Rather, the call should be moved to
+wherever body focus code is.
+
+The fix was to leoTree.selectHelper and qtBody.onFocusIn.
+
+#@+node:ekr.20101124102457.5170: *7* Remember whether @asis/@nosent existed at read time
+Removed all traces of the "significant change" logic. The read code remembers
+whether a node existed when Leo loaded the outline.
+
+Leo will warn when writing a node that didn't previously exist. This is a nice
+simplification of the code.
+#@+node:ekr.20101124102457.5171: *7* Added g.app.config.config_iter
+This simplifies the print-settings command.
+#@+node:ekr.20101124102457.5172: *5* Code features
+#@+node:ekr.20101124102457.5173: *6* Added g.findTestScript
+http://groups.google.com/group/leo-editor/browse_thread/thread/a108d70400b28dc9#
+
+g.findTestScript is an important new pattern for sharing code in Leo scripts,
+including scripts in @test nodes.
+
+Suppose there is common code that I want to include in several unit tests::
+
+    class Hello():
+        def __init__(self,name='john'):
+            self.name=name
+            print('hello %s' % name)
+
+I put this in a node called 'Common test code'.
+
+The unit tests can "import" the code as follows::
+
+    exec(g.findTestScript('Common test code'))
+
+Now class Hello is available the test code!
+
+This is something that I've wanted to do forever.  It's almost too
+easy.  I suppose it's a small security problem, but so is every other
+@test node!
+#@+node:ekr.20101124102457.5174: *6* Added p.deletePositionsInList
+http://groups.google.com/group/leo-editor/browse_thread/thread/e3c736bc9f545b7e#
+
+This is an important new helper.
+#@+node:ekr.20101124102457.5175: *6* Leo is more clever in putting up the Leo id dialog
+g.app.setLeoID now calls createDefaultGui instead of createTkGui.
+
+We can *not* put up the LeoID dialog later: it is needed to set
+g.app.nodeIndices, which is used in the read logic for outlines, so it *must* be
+set before we load any Leo file!
+
+#@+node:ekr.20101124102457.5176: *6* Simplified leoPlugins code
+There are some tricky issues here:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4da36f0d897a25e8
+
+Important: g.loadOnePlugin calls the plugins onCreate method to make up for
+events that have already been generated. pc.loadOnePlugin does not.
+#@+node:ekr.20101124102457.5177: *6* Patched @test logic
+# Begin patch
+
+=== modified file 'leo/core/leoTest.py'
+@@ -697,9 +696,10 @@
+
+     # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+     leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+-    os.chdir(leoDir)
+-
+-    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+
++    #os.chdir(leoDir)
++    env = dict(os.environ)
++    env['PYTHONPATH'] = env.get('PYTHONPATH', '')+';'+leoDir
++    os.spawnve(os.P_NOWAIT,sys.executable,args,env)
+#@+node:ekr.20101124102457.5178: *5* Commands
+#@+node:ekr.20101124102457.5179: *6* Added legend for print-settings command
+#@+node:ekr.20101124102457.5180: *6* Added code-to-rst command
+# And deprecated code mode.
+#@+node:ekr.20101124102457.5181: *6* Removed mark-clones command
+It is useless in the one-node world.
+#@+node:ekr.20101124102457.5182: *6* Improved abbreviation commands
+http://groups.google.com/group/leo-editor/browse_thread/thread/24cb88a8c2a20a07#
+
+- Space activates abbreviations.
+- Multi-line abbreviations handled properly.
+- add-global-abbrev command uses entire selected text as the value of the abbreviation.
+- Inserted abbreviations are undoable.
+- Added support for @data abbreviations and @data global-abbreviations.
+- Added support for @bool enable-abbreviations.
+
+apropos-abbreviations
+=====================
+
+When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
+abbreviations as you type. Type the name of an abbreviation, followed by a
+space. As soon as you type the space, Leo will replace the name by the
+abbreviations value. You can undo the replacement as usual.
+
+Note that defining any abbreviation automatically turns on abbreviation mode.
+
+The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the abbreviation. The minibuffer
+prompts you for the name of the abbreviation.
+#@+node:ekr.20101124102457.5183: *6* Completed cascade-windows and minimize-all-windows commands
+#@+node:ekr.20101124102457.5184: *6* Created head-to-prev-node and tail-to-next-node commands
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/611413
+
+These work around the lack of AI in Python's importer.
+
+Added leoImport.findClass helper.
+
+The head-to-prev-node command moves non-empty text preceding a class, method or
+function definition to the end of the previous sibling node.
+
+The tail-to-next-node command moves non-empty text following a class, method or
+function definition to the start of the next sibling node.
+#@+node:ekr.20101124102457.5185: *7* findClass (leoImport)
+def findClass(self,p):
+
+    '''Return the index end of the class or def in a node, or -1.'''
+
+    s,i = p.b,0
+    while i < len(s):
+        progress = i
+        if s[i] in (' ','\t','\n'):
+            i += 1
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif self.startsClass(s,i):
+            return 'class',self.sigStart,self.codeEnd
+        elif self.startsFunction(s,i):
+            return 'def',self.sigStart,self.codeEnd
+        elif self.startsId(s,i):
+            i = self.skipId(s,i)
+        else:
+            i += 1
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    return None,-1,-1
+#@+node:ekr.20101124102457.5186: *7* Commands (leoImport)
+#@+node:ekr.20101124102457.5187: *8* @g.command(head-to-prev-node)
+@g.command('head-to-prev-node')
+def headToPrevNode(event):
+
+    '''Move the code following a def to end of previous node.'''
+
+    # import leo.core.leoImport as leoImport
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    scanner = pythonScanner(c.importCommands,atAuto=False)
+    kind,i,junk = scanner.findClass(p)
+    p2 = p.back()
+
+    if p2 and kind in ('class','def') and i > 0:
+        u = c.undoer ; undoType = 'move-head-to-prev'
+        head = p.b[:i].rstrip()
+        u.beforeChangeGroup(p,undoType)
+        b  = u.beforeChangeNodeContents(p)
+        p.b = p.b[i:]
+        u.afterChangeNodeContents(p,undoType,b)
+        if head:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
+            u.afterChangeNodeContents(p2,undoType,b2)
+        u.afterChangeGroup(p,undoType)
+        c.selectPosition(p2)
+#@+node:ekr.20101124102457.5188: *8* @g.command(tail-to-next-node)
+@g.command('tail-to-next-node')
+def tailToNextNode(event=None):
+
+    '''Move the code following a def to end of previous node.'''
+
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    scanner = pythonScanner(c.importCommands,atAuto=False)
+    kind,junk,j = scanner.findClass(p)
+    p2 = p.next()
+
+    if p2 and kind in ('class','def') and j < len(p.b):
+        u = c.undoer ; undoType = 'move-tail-to-next'
+        tail = p.b[j:].rstrip()
+        u.beforeChangeGroup(p,undoType)
+        b  = u.beforeChangeNodeContents(p)
+        p.b = p.b[:j]
+        u.afterChangeNodeContents(p,undoType,b)
+        if tail:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = tail + '\n\n' + p2.b
+            u.afterChangeNodeContents(p2,undoType,b2)
+        u.afterChangeGroup(p,undoType)
+        c.selectPosition(p2)
+#@+node:ekr.20101124102457.5189: *5* Documentation
+#@+node:ekr.20101124102457.5190: *6* Created introductory slide shows
+#@+node:ekr.20101124102457.5191: *6* Reorganized Users Guide
+http://groups.google.com/group/leo-editor/browse_thread/thread/d02df89c0b831a7c
+
+I created my own copy of the home page:
+
+    Files-->@edit leo_toc.html
+
+This allows me to group items without creating special pages.
+#@+node:ekr.20101124102457.5192: *5* Features
+#@+node:ekr.20101124102457.5193: *6* New sentinels
+#@+node:ekr.20101124102457.5194: *6* Don't create @chapter node for new file
+I think @chapters node shouldn't be in a new leo file, but it should
+be created when the first chapter is created.
+
+Ditto for the chapter selector toolbar button.
+#@+node:ekr.20101124102457.5195: *6* Improved install instructions & logic
+http://groups.google.com/group/leo-editor/browse_thread/thread/a5a47afa65af9a37
+
+The following changes are on the trunk, and also on Leo's web site:
+
+- In home page, added link to Install page, just above the Beginner's Guide.
+
+- Added more explicit instructions for installing Tk and Qt.
+
+- In step 6 of the Windows install steps, the "assoc .leo=LeoFile"
+  is on a line by itself.
+
+- Updated home page to indicate that Leo requires Python and PyQt.
+  I also revised and simplified the introduction in other ways.
+  Ditto for description of Leo on SourceForge.
+
+- Changed "%1" to "%*" throughout the installation instructions.
+
+- Made batch files given in Installing Leo and Running Leo the same.
+
+- The dialogs that ask for the Leo ID now tells why Leo needs it.
+
+- Just before raising the dialog that asks for the Leo ID, Leo attempts
+  to create the Qt Qui first, and then the Tk Gui if Qt does not exist.
+  This should make it much less likely that a prompt for the id
+  will be sent to the console.
+
+
+2. The readme.txt file for 4.7.1-final does not mention that Python and PyQt is
+   required.
+
+readme.txt does say it has a new Windows installer. This
+led me to believe -- erroneously -- that the Windows installer is all
+I would need to download and install, since it's typical for most open
+source programs I've used to have everything needed for the install
+(for example. .NET) in the single Windows download.
+
+2b. And perhaps the readme.txt file as well?
+
+Can the [install] page be updated to make this clearer?
+
+4. When I first went to the Install page, I clicked on the link for
+"Installing Leo on Windows", got to the end of the steps and saw the
+next section was "Tracking the development version" which I wasn't
+interested in doing so I didn't read any further.
+
+Clicking on the installer-created Windows link for Leo on the Start
+Menu did nothing. Eventually I found the Windows section under
+"Running Leo" and learned it was required to run Leo the first time
+from a console window and not by launching it from Windows.
+#@+node:ekr.20101124102457.5196: *6* DnD outline nodes
+DnD creates @file or @auto nodes if appropriate
+#@+node:ekr.20101124102457.5197: *6* write @edit nodes like @nosent nodes
+#@+node:ekr.20101124102457.5198: *6* Leo now uses PyEnchant to check spelling
+http://groups.google.com/group/leo-editor/browse_thread/thread/62ac1977b3704590#
+
+#@+node:ekr.20101124102457.5199: *6* Improved @url nodes
+Having to type the url after @url in headline is annoying.
+
+The @url handler should look into the first line of body for url, if the text in
+the headline is not an url. This way, the headline could actually be
+descriptive.
+
+I know some plugin does this, but there is no reason why this couldn't be the
+default behavior.
+#@+node:ekr.20101124102457.5200: *6* Made sure that all @auto nodes end with a newline
+The fix was to the "if not trailingNewlineFlag:" code at the end of at.putBody.
+#@+node:ekr.20101124102457.5201: *6* Improved language support
+- improved support for elisp.
+
+    - Use @language lisp instead of @language elisp.
+
+- added importer for .ini files.
+#@+node:ekr.20101124102457.5202: *5* Settings
+#@+node:ekr.20101124102457.5203: *6* Allow multiple files on the command line
+Refactored g.app.config.readSettingsFiles.
+
+Settings now honored in workbook.
+
+* Window size not honored when opened from menu.
+#@+node:ekr.20101124102457.5204: *6* Allow proportional fonts in plain text
+http://groups.google.com/group/leo-editor/browse_thread/thread/e6075a699909db53
+
+You can now set a proportional font to use in all "@language plain" nodes
+
+Specify fonts in @font nodes:
+
+@font plain null font
+
+plain_null_font_family = Times New Roman
+plain_null_font_size = 16
+plain_null_font_slant = roman
+plain_null_font_weight = bold
+
+That is, the actual font specs are in the body text.  Everything
+except @font is ignored in the headline.
+
+Specify colors in @color nodes:
+
+@color plain null color = black
+#@+node:ekr.20101124102457.5205: *6* Allow changing minibuffer colors
+Added the following options with the indicated defaults.
+
+\@color minibuffer_background_color = lightblue
+\@color minibuffer_warning_color = lightgrey
+#@+node:ekr.20101124102457.5206: *6* Added support for @string qt-toolbar-location
+Valid values are top,bottom,left,right
+#@+node:ekr.20101124102457.5207: *6* Support @bool write_expansion_bits_in_leo_files
+#@+node:ekr.20101124102457.5208: *6* Added support for slideshow plugin
+Command-line args
+#@+node:ekr.20101124102457.5209: *6* New settings for abbreviations
+@bool enable-abbreviations (default: False)
+
+  When true, enables substitution of abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+  In both cases, body text contains lines of
+  the form::
+
+   name=value
+
+  name is the abbreviation name, value is the substituted text. Whitespace is
+  ignore around the name, but is significant in the value. Abbreviation names
+  may contain only alphabetic characters, but may start with the '@' sign.
+
+  By *convention* @data global-abbreviations setting should be defined in
+  myLeoSettings.leo, while @data abbreviations should be defined in other .leo
+  files. Regardless of where they are defined, abbreviations in @data
+  abbreviation nodes will override settings (with the same name) in @data
+  global-abbreviations nodes.
+#@+node:ekr.20101124102457.5210: *4* New in 4.8 b1
+#@+node:ekr.20101124102457.5211: *5* Bugs
+#@+node:ekr.20101124102457.5212: *6* Fixed bug 603720: @auto parsing error on dedented triple quote string
+The code that calculates the end of a block of indented Python code now takes
+take more care with backslashes.
+#@+node:ekr.20101124102457.5213: *6* Fixed bug 597757: c.frame.body.getSelectedText() doesn't work in added editors
+#@+node:ekr.20101124102457.5214: *6* Fixed bug 604115: chapter-{clone,copy}-node-to broken
+- Added better prompts for move/copy/clone commands.
+
+- Undo/redo of these commands select the main chapter.
+#@+node:ekr.20101124102457.5215: *6* Made sure proper install.txt appears
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dea95cd8ab976cac
+
+
+> > * The file 'INSTALL.TXT' contains the outline text with sentinels from
+> > 'Chapter 1: Installing Leo'
+
+There are *two* files called install.txt: the one that should
+contain installation instructions and the one that contains the
+"Installing Leo" chapter.
+
+The solution was to change install.txt to installing.txt in the users guide.
+#@+node:ekr.20101124102457.5216: *5* Completed cascade-windows and minimize-all-windows commands
+#@+node:ekr.20101124102457.5217: *5* Improved present autocompleter
+Allow "always on" operation:
+
+- Ctrl-space is now bound to force-auto-completion
+
+- Remove Alt-1 and Alt-2 default bindings.
+#@+node:ekr.20101124102457.5218: *5* Created head-to-prev-node and tail-to-next-node commands
+http://bugs.launchpad.net/leo-editor/+bug/611413
+
+These work around the lack of AI in Python's importer.
+
+The head-to-prev-node command moves non-empty text preceding a class, method or
+function definition to the end of the previous sibling node.
+
+The tail-to-next-node command moves non-empty text following a class, method or
+function definition to the start of the next sibling node.
+#@+node:ekr.20101124102457.5219: *5* Put non-def code in their own node
+Fixed wishlist bug 670744: add a setting to put inter-def code in its own node
+
+Added support for @bool at_auto_separate_non_def_nodes option.
+The default (legacy mode) is False.
+#@+node:ekr.20101124102457.5220: *4* New in 4.8 rc1
+#@+node:ekr.20101124102457.5221: *5* Revised many plugins
+@nocolor-node
+
+Removed the keybindings.py plugin.  The print-bindings command should suffice.
+
+The plugins_menu.py has been renamed old_plugin_menu.py to indicate that it
+needs a lot of work to become functional.
+
+The following plugins are now gui-independent (the used to be Tk only):
+
+at_produce.py
+chapter_hoist.py
+import_cisco_config.py
+macros.py
+mod_read_dir_outline.py
+multifile.py
+read_only_nodes.py
+word_count.py
+xsltWithNodes.py
+
+I also registered the menu2 event instead of the open2 event in all plugins that
+use this event to create menus. This is required because a relatively recent
+change creates menus *after* the open2 event happens.
+#@+node:ekr.20101124102457.5222: *5* Fixed crasher in UNL.py: recursiveUNLSearch
+#@+node:ekr.20101124102457.5223: *5* Big improvement to execute-script command
+execute-script now calls execfile (or its equivalent when using Python 3k)
+when @bool write_script_file = True.
+
+This allows pdb to show the text of scripts!
+#@+node:ekr.20101124102457.5224: *5* Added extract-python-method command
+This should have been done *ages* ago. The command makes it easy to put python
+methods in separate nodes.
+
+Select a range of text, the first line of which starts with 'def foo (...)'
+
+Do alt-x extract-python-method (or ctrl-p if you are repeating the command).
+
+What happens:
+
+- Creates a new child node whose headline is 'foo'.
+
+- The body of foo contains all the selected text, properly indented.
+
+The command is undoable.
+#@+node:ekr.20101124102457.5225: *5* Open the default leo file if possible
+Leo opens the file specified by the default_leo_file setting if it exists.
+
+New in 4.8 rc1: if default (workbook) file does not exist Leo will
+open an empty file and name is to be the default file.
+#@+node:ekr.20101124102457.5226: *5* Fixed problems with installer
+The installer now makes proper entries in the Windows start menu.
+#@+node:ekr.20101124102457.5227: *4* New in 4.8 final
+- Fixed key redefinition message.
 #@-all
 #@-leo

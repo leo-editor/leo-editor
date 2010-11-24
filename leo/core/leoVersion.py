@@ -5,11 +5,12 @@
 # Leo 4.5.1 final: September 14, 2008
 # Leo 4.6.1 final: July 30, 2009.
 # Leo 4.7.1 final: February 26, 2010.
+# Leo 4.8   final: November 26, 2010.
 
 #@@language python
 #@@tabwidth -4
 
-build = 3715
-date = "November 15, 2010"
-version = "4.8 rc1"
+build = 3752
+date = "November 26, 2010"
+version = "4.8 final"
 #@-leo
