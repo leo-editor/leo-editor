@@ -745,7 +745,7 @@ wxListManager.leo was written for the old rst2 plugin; it could be greatly
 simplified if adapted for the rst3 command.
 
 This documentation was created using the rst3 command. The source code for this
-documentation is in LeoFDocs.leo. The source code for the rst3 command is in
+documentation is in LeoDocs.leo. The source code for the rst3 command is in
 leoRst.py in leoPy.leo.
 .. @+node:ekr.20050818163826.16: *3* Acknowledgements
 Josef Dalcolmo wrote the initial rst plugin.
