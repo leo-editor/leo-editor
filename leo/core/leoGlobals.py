@@ -2230,7 +2230,12 @@ def openLeoOrZipFile (fileName):
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
 
-    """Create a Leo Frame for the indicated fileName if the file exists."""
+    """Create a Leo Frame for the indicated fileName if the file exists.
+
+    returns ok,frame
+
+    where frame.c is the commander of the newly-opened outline.
+    """
 
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
@@ -4333,8 +4338,8 @@ def findTopLevelNode(c,headline):
 def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
 
     '''Return the expansion of the selected text of node p.
-    Return the expansion of all of node p's body text if there
-    is p is not the current node or if there is no text selection.'''
+    Return the expansion of all of node p's body text if
+    p is not the current node or if there is no text selection.'''
 
     # New in Leo 4.6 b2: use a pristine atFile handler
     # so there can be no conflict with c.atFileCommands.
