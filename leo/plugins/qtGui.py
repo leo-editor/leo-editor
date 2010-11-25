@@ -7492,6 +7492,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         # Debugging.
         self.keyIsActive = False
+        self.trace_masterKeyHandler = c.config.getBool('trace_masterKeyHandler')
 
         # Pretend there is a binding for these characters.
         close_flashers = c.config.getString('close_flash_brackets') or ''
@@ -7566,10 +7567,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168: *4* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = False and not g.unitTesting
+        trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
         verbose = False
         traceEvent = False
-        traceKey = True
+        traceKey = (True or self.trace_masterKeyHandler)
         traceFocus = False
         c = self.c ; k = c.k
         eventType = event.type()

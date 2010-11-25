@@ -2815,7 +2815,7 @@ class keyHandlerClass:
 
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
-        trace = False and not g.app.unitTesting
+        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3000,7 +3000,7 @@ class keyHandlerClass:
     def handleMiniBindings (self,event,state,stroke):
 
         k = self ; c = k.c
-        trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
 
         # Special case for bindings handled in k.getArg:
         if state in ('getArg','full-command'):

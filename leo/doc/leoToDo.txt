@@ -1,23 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20101104191857.5820: ** Idea: presentation tool
+#@+node:ekr.20101125041212.5845: ** Small improvements
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-
-Ville:
-
-Create one QWebView window, zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html,
-and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and
-leo would be in your private computer. You can easily edit the text, or find new
-interesting slides to present in privacy of your own screen.
-
-#@+node:ekr.20101119030344.5838: ** script to turn all commands into @g.command nodes
+To be done early in the release cycle.
+#@+node:ekr.20101119030344.5838: *3* script to turn all commands into @g.command nodes
 '''Add @g.command(command_name) before all commands.'''
 
 @others
@@ -60,7 +48,7 @@ if 0:
         # name is the minibuffer command name, f_name is the function name.
         i,p = find(c,command,f_name)
         adjust(c,f_name,i,p)
-#@+node:ekr.20061031131434.3: *3* << about key dicts >>
+#@+node:ekr.20061031131434.3: *4* << about key dicts >>
 @nocolor
 @
 ivars:
@@ -89,7 +77,7 @@ not an ivar (computed by k.computeInverseBindingDict):
 
 inverseBindingDict
     Keys are emacs command names; values are *lists* of shortcuts.
-#@+node:ekr.20101119030344.5841: *3* find_all_defs
+#@+node:ekr.20101119030344.5841: *4* find_all_defs
 def find_all_defs (c):
 
     '''Return a dict containing all function defs.
@@ -122,7 +110,7 @@ def find_all_defs (c):
             i = j
             assert progress < i
     return d
-#@+node:ekr.20101119030344.5839: *3* find
+#@+node:ekr.20101119030344.5839: *4* find
 def find (c,command,f_name):
 
     g.trace('%30s %s' % (command,f_name))
@@ -130,16 +118,36 @@ def find (c,command,f_name):
     for p in c.all_unique_nodes():
         s = p.b
         i = s.find('def %s' % f_name)
-#@+node:ekr.20101119030344.5840: *3* adjust
+#@+node:ekr.20101119030344.5840: *4* adjust
 def adjust(f,i,p):
     pass
-#@+node:ekr.20100109214940.6225: ** 4.8 to do
+#@+node:ekr.20101125041212.5846: *3* Fix bug: ignore f-keys in find/replace patterns
+#@+node:ekr.20101124145006.5842: *3* Unify extract commands
 @nocolor-node
 
-For final:
-- Finish introductory slide shows.
-#@+node:ekr.20101024062147.6014: ** For 4.8.1 Autocompleter
-# This can be done in the trunk.
+http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
+
+I think this should be combined with extract-section (ctrl-shift-x), so that
+
+- if the first line of selection is << foo >>, it created a node with
+headline << foo >>
+
+- If the  first line is def foo, create a node with headline foo
+
+- Extend as appropriate.
+#@+node:ekr.20101124124316.5841: *3* Rename flatten command
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/626587
+
+I ask that you please look at this from the newbie perspective that I
+have.
+
+If the menu choice said Flatten Selected Outline, or even Flatten
+Selected Node, then I would have understood immediately what would
+happen on its execution. But the menu choice says neither of these -- it
+says Flatten Outline. That gives me a different expectation of what it
+will do.
 #@+node:ekr.20101123131018.5842: *3* Don't save expansion bits in uA if not saving expansion bits
 @nocolor-node
 
@@ -284,7 +292,6 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
     return result
 #@+node:ekr.20101116104701.5828: *3* Make promote-child-body an official command
-#@+node:ekr.20101116104701.5829: *3* Create a script to use @g.command for all commands
 #@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
 @nocolor-node
 
@@ -304,7 +311,25 @@ In the meantime, I strongly urge all script writers to set @bool write_script_fi
 
 Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
 @string script_file_path to some convenient place, say in your home directory.
-#@+node:ekr.20090131200406.14: *3* Notes
+#@+node:ekr.20101104191857.5820: *3* Idea: presentation tool
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+
+Ville:
+
+Create one QWebView window, zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html,
+and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and
+leo would be in your private computer. You can easily edit the text, or find new
+interesting slides to present in privacy of your own screen.
+
+#@+node:ekr.20101024062147.6014: ** Autocompleter
+# This can be done in the trunk.
+#@+node:ekr.20090131200406.14: *3* Auktocompleter notes
 #@+node:ekr.20080113165010: *4* About auto completion
 @nocolor
 
@@ -2475,7 +2500,7 @@ def start (self,event=None,w=None,prefix=None,chain=False):
             return self.tabList
     else:
         self.abort()
-#@+node:ekr.20080603052650.466: ** 4.9 Vim stuff
+#@+node:ekr.20080603052650.466: ** Vim stuff
 @nocolor
 
 4.8 vim, cleanups, your mission...
