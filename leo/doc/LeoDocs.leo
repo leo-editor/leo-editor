@@ -149,7 +149,8 @@
 marks="ekr.20101014110348.5299,"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>

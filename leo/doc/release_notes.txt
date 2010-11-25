@@ -13695,7 +13695,7 @@ We allow setting this vars in file reading code.
 
 - Removed thinFile arg from atFile.read.
   atFile.read can uncache *any* cached file.
-- Removed thinfile arg from initReadIvars.
+- Removed thinFile arg from initReadIvars.
 - self.thinFile ivar set only in readOpenFile.
 - atFile.read no longer calls scanHeaderForThin:
   we simply use the thinFile value returned by scanHeader.
