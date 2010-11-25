@@ -109,7 +109,7 @@ Leo's view has two parts:
    These are part of Leo's core.
 
 2. The classes in the tree 'Code-->Gui Tkinter classes'.
-   These are essentailly a gui plugin.
+   These are essentially a gui plugin.
 
 Leo's core consists of the Model, Controller and the gui base classes.
 
@@ -315,10 +315,10 @@ Plugins, @button nodes and @script nodes can create other kinds of special nodes
     @run command Double clicking the node’s icon executes the command.  Requires run_nodes plugin.
 .. @+node:ekr.20091107093823.6797: *5* Markup for scripts
 Leo’s Execute Script command **preprocesses** the script to be executed by scanning
-a node N and its descendents looking for markup. **Markup** is special syntax that
+a node N and its descendants looking for markup. **Markup** is special syntax that
 controls this preprocessing. If node N contains no markup, the resulting script
 is just N’s body text. Otherwise, the preprocessed script will include text from
-descendent nodes as described below. The main kinds of markup are **section
+descendant nodes as described below. The main kinds of markup are **section
 references**, **directives** and **doc parts**.
 
 1.  **Section references** have the form::
@@ -363,7 +363,7 @@ references**, **directives** and **doc parts**.
     Here is a list of all of Leo’s standard directives::
 
         @whitespace (or @doc)   Starts a doc part & ends code part.
-        @all                    Like @others, but includes all descendent nodes.
+        @all                    Like @others, but includes all descendant nodes.
         @c, @code               Starts a code part and ends a doc part.
         @color                  Enables syntax coloring.
         @delims                 Temporarily changes comment delims.
@@ -371,7 +371,7 @@ references**, **directives** and **doc parts**.
         @comment                Sets comment delimiters in external (derived) files.
         @language languagename  Sets language for syntax coloring and comments.
         @lineending lineending  Sets ending of lines in derived files.
-        @others                 Inserts body text of all descendents except definition nodes. 
+        @others                 Inserts body text of all descendants except definition nodes. 
         @pagewidth n            Sets page width for justifying comments in doc parts.
         @path path              Sets prefix to use in relative file names in @file nodes, etc.
         @raw, @end_raw          Inhibits sections references in a range of text. (@file only.)

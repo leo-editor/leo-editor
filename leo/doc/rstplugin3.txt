@@ -109,12 +109,12 @@ setting.
 The material covered so far in this chapter suffices to create most books
 and documentation, including Leo's own documentation.
 
-The rest of this chapter covers advanced typics. These can seem bewilderingly
+The rest of this chapter covers advanced topics. These can seem bewilderingly
 complex. Alas, they are complex! However, they all arose from a single problem::
 
     How to generate documentation from computer source code in a Leo outline.
 
-or quivalently::
+or equivalently::
 
     How to embed documentation in computer source code in a Leo outline.
 
@@ -142,7 +142,7 @@ In **doc_only_mode**, rst3 command outputs only regular doc parts and @
 
 The code_mode and doc_only_mode options determine the mode as follows:
 
-- By default (code_code=False; doc_only_mode=False), the rst3 command is in
+- By default (code_mode=False; doc_only_mode=False), the rst3 command is in
   rst mode.
 
 - Setting code_mode=True causes the rst3 command to enter code mode.
@@ -197,7 +197,7 @@ show_doc_parts_in_rst_mode [True,False or class names] (default: True)
     This option is most useful for rst documents which are not computer code.
     It allows you to use doc parts to make comments on the draft document
     which are either excluded from the output or formatted in a way that highlights
-    their nature as comments rather than contet.  For example, you're writing a book, and
+    their nature as comments rather than content.  For example, you're writing a book, and
     you want to use a doc part at the top of a section to remind yourself "need
     to explain how Ted got to Sally's".    Note: you may need to add
     CSS to have them formatted differently.
@@ -395,7 +395,7 @@ the following output:
 1. Each node becomes an rST/Sphinx section.
 
    The level of each section corresponds to the level of the node in the
-   headline. Children of the @rst node create level 1 sections. Grandchidren of
+   headline. Children of the @rst node create level 1 sections. Grandchildren of
    the \@rst node create level 2 sections, and so on.
 
 2. The headline of each node becomes the section heading.

@@ -476,13 +476,13 @@ If you install matplotlib and numpy, you can use ILeo to interactively edit and
 view your data. This is convenient for storing potentially valuable information
 in Leo document, and yields an interactive system that is comparable in
 convenience to various commercial mathematical packages (at least if you compare
-it agains plain IPython, that forgets the data on exit unless explicitly saved
+it against plain IPython, that forgets the data on exit unless explicitly saved
 to data files or %store:d).
 
 Startup
 -------
 
-It's probably safest to rely on TkAgg backend, to avoid two event loops running
+It's probably safest to rely on TkAgg back end, to avoid two event loops running
 in the same process. TkAgg is the default, so the only thing you need to do is
 to install numpy and matplotlib::
 

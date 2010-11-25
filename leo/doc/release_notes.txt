@@ -4733,7 +4733,7 @@ effect for a command:
 
 - k.getShortcutForCommand(self,f) returns the shortcut for f.
 #@+node:ekr.20051028051444.12: *7* Added registerCommand helper
-c.keyHandlerregisterCommand (self,commandName,shortcut,func)
+c.k.registerCommand (self,commandName,shortcut,func)
 
 This function make the func available as a minibuffer command, and optionally
 binds a shortcut to func. You can wrap any method in a function, so the
@@ -6261,7 +6261,7 @@ down.
 
 http://sourceforge.net/forum/message.php?msg_id=3639216
 
-g.os_path_dirname(self.output0FileName) with self.c.frame.openDirectory. This
+g.os_path_dirname(self.outputFileName) with self.c.frame.openDirectory. This
 makes the path relative to the project. Not 100% as the stylesheet filename
 would need a path embedded in it to move the location down the tree. However,
 it is consistent with the way the output file is named.
@@ -8384,7 +8384,7 @@ The statement::
 
     c = controller.openLeoFile(path)
 
-invisibly opens the .leo file given by the pathargument. This call returns a
+invisibly opens the .leo file given by the path argument. This call returns a
 completely standard Leo commander, properly inited. This is the big payoff from
 the leoBridge module: the host program gets instant access to c.config.getBool,
 etc. Do you see how sweet this is?
@@ -10750,7 +10750,7 @@ even then
 it only selects the word it does not move the cursor to it.
 
 
-goto-charachter
+goto-character
 ==============
 '''Put the cursor at the n'th character of the buffer.'''
 
@@ -11199,7 +11199,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -11312,7 +11312,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -11429,7 +11429,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -11544,7 +11544,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -11657,7 +11657,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -12095,10 +12095,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
 #@+node:ekr.20090620073906.11081: *6* Fixed back-to-home so it works as expected
 https://bugs.launchpad.net/leo-editor/+bug/367462
 
-The expected/customary behaviour (one you get used to in almost every editor) is:
+The expected/customary behavior (one you get used to in almost every editor) is:
 
 End: always move to end of line
-Home: Move to first visible chararacter on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
+Home: Move to first visible character on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
 
 This is also the way emacs behaves, though ctrl+a always moves to column zero.
 #@+node:ekr.20090620103431.5601: *6* Fixed bad @verbatim bug
@@ -12194,7 +12194,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
 #@+node:ekr.20090620073906.11349: *6* Fixed stubConfig problems
 #@+node:ekr.20090620073906.11107: *6* Fixed undo bug
 onTextChanged in the qt gui was calling setUndoTypingParams, in many case
-redundently and with bad params.
+redundantly and with bad params.
 
 It remains to be seen whether onTextChanged is ever needed. If it is, it may be
 difficult to set the old selection properly.
@@ -12428,10 +12428,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
 #@+node:ekr.20090717084250.10822: *7* Fixed back-to-home so it works as expected
 https://bugs.launchpad.net/leo-editor/+bug/367462
 
-The expected/customary behaviour (one you get used to in almost every editor) is:
+The expected/customary behavior (one you get used to in almost every editor) is:
 
 End: always move to end of line
-Home: Move to first visible chararacter on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
+Home: Move to first visible character on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
 
 This is also the way emacs behaves, though ctrl+a always moves to column zero.
 #@+node:ekr.20090717084250.10823: *7* Fixed bad @verbatim bug
@@ -12527,7 +12527,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
 #@+node:ekr.20090717084250.10844: *7* Fixed stubConfig problems
 #@+node:ekr.20090717084250.10845: *7* Fixed undo bug
 onTextChanged in the qt gui was calling setUndoTypingParams, in many case
-redundently and with bad params.
+redundantly and with bad params.
 
 It remains to be seen whether onTextChanged is ever needed. If it is, it may be
 difficult to set the old selection properly.
@@ -12858,10 +12858,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
 #@+node:ekr.20090718092032.10419: *7* Fixed back-to-home so it works as expected
 https://bugs.launchpad.net/leo-editor/+bug/367462
 
-The expected/customary behaviour (one you get used to in almost every editor) is:
+The expected/customary behavior (one you get used to in almost every editor) is:
 
 End: always move to end of line
-Home: Move to first visible chararacter on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
+Home: Move to first visible character on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
 
 This is also the way emacs behaves, though ctrl+a always moves to column zero.
 #@+node:ekr.20090718092032.10420: *7* Fixed bad @verbatim bug
@@ -12957,7 +12957,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
 #@+node:ekr.20090718092032.10441: *7* Fixed stubConfig problems
 #@+node:ekr.20090718092032.10442: *7* Fixed undo bug
 onTextChanged in the qt gui was calling setUndoTypingParams, in many case
-redundently and with bad params.
+redundantly and with bad params.
 
 It remains to be seen whether onTextChanged is ever needed. If it is, it may be
 difficult to set the old selection properly.
@@ -13262,7 +13262,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
   The default is False, needed for AltGr functionality on Windows.
 
 - Fixed unpickling problems in getDescendentUnknownAttributes
-  The old catcing wasn't extensive enough.
 
 - Plugins that fail to import Pmw no longer prevent Leo from launching.
 
@@ -13565,7 +13564,7 @@ The only bug was that redraw_after_head_changed must update icons.
 @nocolor-node
 
 It looks like you should be able to put the following in an
-@font node, and get restructured text bold to appear in bold onscreen:
+@font node, and get restructured text bold to appear in bold on screen:
 
 rest_keyword2_font_size = 16
 rest_keyword2_font_family = Bitstream Charter
@@ -13968,7 +13967,7 @@ What I did:
   avoiding g.utils_rename which does way too much:
   it calls g.makeAllNonExistentDirectories(!!)
 
-- Simplified g.utils_rename.  We can assuem shutils exists.
+- Simplified g.utils_rename.  We can assume shutils exists.
 
 - Removed an unwise call to g.utils_remove in g.utils_rename.
   This could cause havoc with the following call to
@@ -14032,7 +14031,7 @@ TypeError: must be str, not bytes
 #@+node:ekr.20100209160132.11773: *6* Fixed bug 518823: clone headline updates
 https://bugs.launchpad.net/leo-editor/+bug/518823
 
-Clone headline modification not propogated after edit
+Clone headline modification not propagated after edit
 #@+node:ekr.20100211125418.11596: *6* Removed duplicate can not open message for @auto file
 #@+node:ekr.20100211125418.11599: *6* Fixed minor bug involving insertion point
 This bug was highly annoying: it caused the newly-selected node to have the
@@ -14400,9 +14399,9 @@ ensures that read errors never destroy information.
 
 B. A new post-pass will look for vampire nodes: nodes that were not
 actually read from the derived file.  I think (but haven't proven)
-that all descendents of vampire nodes are also vampire nodes.  If that
+that all descendants of vampire nodes are also vampire nodes.  If that
 is so the post-pass will simply delete vampire nodes without worrying
-about whether they have descendents.
+about whether they have descendants.
 
 Warning: the new scheme will mean that cvs update can destroy
 information that previously existed in the outline.  I believe this is
@@ -14473,7 +14472,7 @@ putVnode must test for @file just like @thin.
 #@+node:ekr.20101104091058.4988: *7* Minor bugs
 #@+node:ekr.20101104091058.4989: *8* Fixed the @test logic for external files
 #@+node:ekr.20101104091058.4990: *8* Fixed save scrolling bug
-- Open a node with long (multipage) body text
+- Open a node with long (multi-page) body text
 - Move cursor towards the end of the node
 - Save (ctrl+s)
 - Observe how window is scrolled, cursor is moved
@@ -14557,7 +14556,7 @@ The problem is in the line "elif not z.rstrip(): pass" of the following code blo
 Commenting this line out, preserves the linefeeds in the doc part but doubles them in the code part.
 
 The method "rstripList" is responsible for the doubling linefeeds:
-   The lines arguments is a list of lines with (!) trainling linefeeds (\n),
+   The lines arguments is a list of lines with (!) trailing linefeeds (\n),
 
    The statement s = '\n'.join(theList).rstrip() doubles therefore the linefeeds
     replacing the line with s = ''.join(theList).rstrip() works.
@@ -14589,7 +14588,7 @@ This is the simplest thing that could possibly work.
 Other approaches are fraught with difficulties.
 #@+node:ekr.20101104091058.5011: *8* Fixed unicode bug in files
 I created a file time.leo. When it's in the dir d:/Dmitry it's being
-opened fine. But when I put it into the dir with russian characters:
+opened fine. But when I put it into the dir with Russian characters:
 D:/Личное/Время leo prints squares at the window header and doesn't
 open the file correctly. This problem existed in one of the revisions,
 then it was fixed in the last official release. Now it emerged again
@@ -14748,85 +14747,6 @@ function definition to the end of the previous sibling node.
 
 The tail-to-next-node command moves non-empty text following a class, method or
 function definition to the start of the next sibling node.
-#@+node:ekr.20101104091058.5253: *8* findClass (leoImport)
-def findClass(self,p):
-
-    '''Return the index end of the class or def in a node, or -1.'''
-
-    s,i = p.b,0
-    while i < len(s):
-        progress = i
-        if s[i] in (' ','\t','\n'):
-            i += 1
-        elif self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        elif self.startsString(s,i):
-            i = self.skipString(s,i)
-        elif self.startsClass(s,i):
-            return 'class',self.sigStart,self.codeEnd
-        elif self.startsFunction(s,i):
-            return 'def',self.sigStart,self.codeEnd
-        elif self.startsId(s,i):
-            i = self.skipId(s,i)
-        else:
-            i += 1
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    return None,-1,-1
-#@+node:ekr.20101104091058.5254: *8* Commands (leoImport)
-#@+node:ekr.20101104091058.5255: *9* @g.command(head-to-prev-node)
-@g.command('head-to-prev-node')
-def headToPrevNode(event):
-
-    '''Move the code following a def to end of previous node.'''
-
-    # import leo.core.leoImport as leoImport
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    scanner = pythonScanner(c.importCommands,atAuto=False)
-    kind,i,junk = scanner.findClass(p)
-    p2 = p.back()
-
-    if p2 and kind in ('class','def') and i > 0:
-        u = c.undoer ; undoType = 'move-head-to-prev'
-        head = p.b[:i].rstrip()
-        u.beforeChangeGroup(p,undoType)
-        b  = u.beforeChangeNodeContents(p)
-        p.b = p.b[i:]
-        u.afterChangeNodeContents(p,undoType,b)
-        if head:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
-            u.afterChangeNodeContents(p2,undoType,b2)
-        u.afterChangeGroup(p,undoType)
-        c.selectPosition(p2)
-#@+node:ekr.20101104091058.5256: *9* @g.command(tail-to-next-node)
-@g.command('tail-to-next-node')
-def tailToNextNode(event=None):
-
-    '''Move the code following a def to end of previous node.'''
-
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    scanner = pythonScanner(c.importCommands,atAuto=False)
-    kind,junk,j = scanner.findClass(p)
-    p2 = p.next()
-
-    if p2 and kind in ('class','def') and j < len(p.b):
-        u = c.undoer ; undoType = 'move-tail-to-next'
-        tail = p.b[j:].rstrip()
-        u.beforeChangeGroup(p,undoType)
-        b  = u.beforeChangeNodeContents(p)
-        p.b = p.b[:j]
-        u.afterChangeNodeContents(p,undoType,b)
-        if tail:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = tail + '\n\n' + p2.b
-            u.afterChangeNodeContents(p2,undoType,b2)
-        u.afterChangeGroup(p,undoType)
-        c.selectPosition(p2)
 #@+node:ekr.20101104091058.5024: *6* Documentation
 #@+node:ekr.20101104091058.5025: *7* Created introductory slide shows
 #@+node:ekr.20101104091058.5026: *7* Reorganized Users Guide
@@ -14867,7 +14787,7 @@ The following changes are on the trunk, and also on Leo's web site:
 - The dialogs that ask for the Leo ID now tells why Leo needs it.
 
 - Just before raising the dialog that asks for the Leo ID, Leo attempts
-  to create the Qt Qui first, and then the Tk Gui if Qt does not exist.
+  to create the Qt Gui first, and then the Tk Gui if Qt does not exist.
   This should make it much less likely that a prompt for the id
   will be sent to the console.
 
@@ -15228,9 +15148,9 @@ ensures that read errors never destroy information.
 
 B. A new post-pass will look for vampire nodes: nodes that were not
 actually read from the derived file.  I think (but haven't proven)
-that all descendents of vampire nodes are also vampire nodes.  If that
+that all descendants of vampire nodes are also vampire nodes.  If that
 is so the post-pass will simply delete vampire nodes without worrying
-about whether they have descendents.
+about whether they have descendants.
 
 Warning: the new scheme will mean that cvs update can destroy
 information that previously existed in the outline.  I believe this is
@@ -15301,7 +15221,7 @@ putVnode must test for @file just like @thin.
 #@+node:ekr.20101124102457.5145: *6* Minor bugs
 #@+node:ekr.20101124102457.5146: *7* Fixed the @test logic for external files
 #@+node:ekr.20101124102457.5147: *7* Fixed save scrolling bug
-- Open a node with long (multipage) body text
+- Open a node with long (multi-page) body text
 - Move cursor towards the end of the node
 - Save (ctrl+s)
 - Observe how window is scrolled, cursor is moved
@@ -15385,7 +15305,7 @@ The problem is in the line "elif not z.rstrip(): pass" of the following code blo
 Commenting this line out, preserves the linefeeds in the doc part but doubles them in the code part.
 
 The method "rstripList" is responsible for the doubling linefeeds:
-   The lines arguments is a list of lines with (!) trainling linefeeds (\n),
+   The lines arguments is a list of lines with (!) trailing linefeeds (\n),
 
    The statement s = '\n'.join(theList).rstrip() doubles therefore the linefeeds
     replacing the line with s = ''.join(theList).rstrip() works.
@@ -15417,7 +15337,7 @@ This is the simplest thing that could possibly work.
 Other approaches are fraught with difficulties.
 #@+node:ekr.20101124102457.5167: *7* Fixed unicode bug in files
 I created a file time.leo. When it's in the dir d:/Dmitry it's being
-opened fine. But when I put it into the dir with russian characters:
+opened fine. But when I put it into the dir with Russian characters:
 D:/Личное/Время leo prints squares at the window header and doesn't
 open the file correctly. This problem existed in one of the revisions,
 then it was fixed in the last official release. Now it emerged again
@@ -15576,85 +15496,6 @@ function definition to the end of the previous sibling node.
 
 The tail-to-next-node command moves non-empty text following a class, method or
 function definition to the start of the next sibling node.
-#@+node:ekr.20101124102457.5185: *7* findClass (leoImport)
-def findClass(self,p):
-
-    '''Return the index end of the class or def in a node, or -1.'''
-
-    s,i = p.b,0
-    while i < len(s):
-        progress = i
-        if s[i] in (' ','\t','\n'):
-            i += 1
-        elif self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        elif self.startsString(s,i):
-            i = self.skipString(s,i)
-        elif self.startsClass(s,i):
-            return 'class',self.sigStart,self.codeEnd
-        elif self.startsFunction(s,i):
-            return 'def',self.sigStart,self.codeEnd
-        elif self.startsId(s,i):
-            i = self.skipId(s,i)
-        else:
-            i += 1
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    return None,-1,-1
-#@+node:ekr.20101124102457.5186: *7* Commands (leoImport)
-#@+node:ekr.20101124102457.5187: *8* @g.command(head-to-prev-node)
-@g.command('head-to-prev-node')
-def headToPrevNode(event):
-
-    '''Move the code following a def to end of previous node.'''
-
-    # import leo.core.leoImport as leoImport
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    scanner = pythonScanner(c.importCommands,atAuto=False)
-    kind,i,junk = scanner.findClass(p)
-    p2 = p.back()
-
-    if p2 and kind in ('class','def') and i > 0:
-        u = c.undoer ; undoType = 'move-head-to-prev'
-        head = p.b[:i].rstrip()
-        u.beforeChangeGroup(p,undoType)
-        b  = u.beforeChangeNodeContents(p)
-        p.b = p.b[i:]
-        u.afterChangeNodeContents(p,undoType,b)
-        if head:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
-            u.afterChangeNodeContents(p2,undoType,b2)
-        u.afterChangeGroup(p,undoType)
-        c.selectPosition(p2)
-#@+node:ekr.20101124102457.5188: *8* @g.command(tail-to-next-node)
-@g.command('tail-to-next-node')
-def tailToNextNode(event=None):
-
-    '''Move the code following a def to end of previous node.'''
-
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    scanner = pythonScanner(c.importCommands,atAuto=False)
-    kind,junk,j = scanner.findClass(p)
-    p2 = p.next()
-
-    if p2 and kind in ('class','def') and j < len(p.b):
-        u = c.undoer ; undoType = 'move-tail-to-next'
-        tail = p.b[j:].rstrip()
-        u.beforeChangeGroup(p,undoType)
-        b  = u.beforeChangeNodeContents(p)
-        p.b = p.b[:j]
-        u.afterChangeNodeContents(p,undoType,b)
-        if tail:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = tail + '\n\n' + p2.b
-            u.afterChangeNodeContents(p2,undoType,b2)
-        u.afterChangeGroup(p,undoType)
-        c.selectPosition(p2)
 #@+node:ekr.20101124102457.5189: *5* Documentation
 #@+node:ekr.20101124102457.5190: *6* Created introductory slide shows
 #@+node:ekr.20101124102457.5191: *6* Reorganized Users Guide
@@ -15695,7 +15536,7 @@ The following changes are on the trunk, and also on Leo's web site:
 - The dialogs that ask for the Leo ID now tells why Leo needs it.
 
 - Just before raising the dialog that asks for the Leo ID, Leo attempts
-  to create the Qt Qui first, and then the Tk Gui if Qt does not exist.
+  to create the Qt Gui first, and then the Tk Gui if Qt does not exist.
   This should make it much less likely that a prompt for the id
   will be sent to the console.
 

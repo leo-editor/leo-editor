@@ -115,7 +115,7 @@ Leo detects such duplicate file names and only loads each settings file once.
 Leo remembers all the settings in settings files and does not reread those
 settings when reading another .leo file.
 
-**Caution**: This search order offers almost too much flexibilty. This can be
+**Caution**: This search order offers almost too much flexibility. This can be
 confusing, even for power users. It's important to choose the "simplest
 configuration scheme that could possibly work".  Something like:
 
@@ -164,8 +164,8 @@ You can use several other kinds of nodes to cause Leo to ignore parts of  an @se
 
 - @ifhostname *hostA,!hostB*
 
-  Evaluates to True iff: h=g.computeMachineName(); h==hostA and h!=hostB.
-  The "!" version allows matching to every machineName except the given one
+  Evaluates to True if and only if: h=g.computeMachineName(); h==hostA and h!=hostB.
+  The "!" version allows matching to every machine name except the given one
   to allow differing settings on only a few machines.
 .. @+node:ekr.20070317043727.2: *4* Simple settings nodes
 Simple settings nodes have headlines of the form::

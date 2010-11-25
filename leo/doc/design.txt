@@ -27,7 +27,7 @@ sites and any other complex data. The more complex your program or data, the
 more useful Leo becomes.
 
 Furthermore, the same features that help with design also help with
-implementation, maintanance and testing. In all cases, being able to organize,
+implementation, maintenance and testing. In all cases, being able to organize,
 understand and manipulate (script) complex data is what Leo does best.
 
 .. contents::
@@ -77,7 +77,7 @@ code into web format has created Aha's about my own code, with no special
 attention to recoding or redesign! Recasting a function as a web raises the real
 and apparent level of abstraction.
 
-Organizer nodes eliminate mundate comments
+Organizer nodes eliminate mundane comments
 The headline of an organizer node is often all that needs to be said.
 
 Nodes create places for comments
@@ -103,7 +103,7 @@ and no matter how much code each child contains.
 Typical browsers show you a fixed view of code. In contrast, Leo allows you to
 organize your programs as *you* want, and *Leo remembers your organizations*.
 
-Furthermore, Leo does not contrain you to a single "right" view of your data,
+Furthermore, Leo does not constrain you to a single "right" view of your data,
 programs or designs. By using clones, a single outline may contain dozens or
 even thousands of views of the nodes in the outline. You are free to create a
 new view for every new task or project.

@@ -73,15 +73,15 @@ navigation, there are ``expand-and-go-right`` and ``contract-or-go-up`` which
 are bound to Alt-Right and Alt-Left.
 
 The ``expand-all`` command expands every node in the outline. ``contract-all``
-contracts every node in the outline. Both commands are availble in the
-Outline->Expand/Contract... submenu. ``contract-all`` is bound to Atl-- (Alt
+contracts every node in the outline. Both commands are available in the
+Outline->Expand/Contract... submenu. ``contract-all`` is bound to Alt-- (Alt
 modifying a single hyphen). In all but the smallest outlines, ``expand-all`` is
 rarely used, and is does not have a key binding.
 .. @+node:EKR.20040524104904.36: *4* Creating and destroying nodes
 The ``insert-node`` command inserts a new node into the outline; it is bound to
 Control-I and the Insert key. When invoked, (from any pane), it inserts a new
 node below the presently selected node, and at the same level as that node, or
-at the child level if it has a child vissible. The ``delete-node`` command
+at the child level if it has a visible child. The ``delete-node`` command
 deletes a node and all its children; it is initially unbound. If you want to
 retain the children you must promote all the children before you do the delete.
 .. @+node:EKR.20040524104904.37: *4* Cutting, pasting and deleting nodes
@@ -144,7 +144,7 @@ You can mark nodes in several ways:
   Outline->Mark... submenu; ``mark`` is bound to Control-M .
 
 - With the Find or Change commands. The "mark changes" and "mark finds" options
-  are intially cleared; you can change them with the
+  are initially cleared; you can change them with the
   ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option``
   commands. Using those commands will put focus in the Find tab of the log pane.
   When the Find tab is visible, Alt in combination with the underlined option
@@ -352,7 +352,7 @@ When chapters are enabled, the Cmds->Chapters menu shows all available chapter c
 
 - The ``chapter-create`` command creates an @chapter node and populates it with a single node.
 - The ``chapter-remove`` command deletes the currently selected chapter.
-- The ``chapter-select`` command promptes for a chapter name and makes only the nodes of the selected chapter visible.
+- The ``chapter-select`` command prompts for a chapter name and makes only the nodes of the selected chapter visible.
 - The ``chapter-move-node-to``, ``chapter-clone-node-to`` and ``chapter-copy-node-to`` commands
   prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
 .. @-all
