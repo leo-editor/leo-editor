@@ -26,8 +26,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20101104090957.1488"><vh>Leo 4.8 b1</vh></v>
-<v t="ekr.20101115090518.1494"><vh>Leo 4.8 rc1</vh></v>
+<v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
@@ -259,9 +258,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.8 rc 1                               November 15, 2010
+<t tx="EKR.20040519090846.9">Leo 4.8 final                               November 26, 2010
 
-Leo 4.8 release candidate 1 is now available at:
+Leo 4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -434,16 +433,13 @@ Here are some tips that may make running Leo easier:
     where &lt;leopath&gt; is the path to the directory *containing* the leo directory. 
 
 **Windows**
-    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
-    You can also use a batch file.
-    Put the following .bat file in c:\\Windows::
+    You can associate Leo with .leo files using a batch file. Put the
+    following .bat file in c:\\Windows::
 
-        cd &lt;path-to-leo&gt;
-        c:\python25\python &lt;path-to-leo&gt;launchLeo.py %1
+        &lt;path-to-python&gt;/python &lt;path-to-leo&gt;/launchLeo.py %*
 
-    where &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory.
-
-    This opens the file specified by the first argument (%1).
+    Here &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory,
+    that is, the directory containing launchLeo.py.
 
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
@@ -1018,46 +1014,6 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
-<t tx="ekr.20101104090957.1488">Leo 4.8 beta 1                               November 8, 2010
-
-Leo 4.8 beta 1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.8:
---------------------------
-
-- Leo now uses the simplest possible sentinel lines in external files.
-  External files with sentinels now look like Emacs org-mode files.
-- Leo Qt gui now supports Drag and Drop.
-  This was one of the most frequently requested features.
-- Improved abbreviation commands.
-  You now define abbreviations in Leo settings nodes, not external files.
-- @url nodes may contain url's in body text.
-  This allows headlines to contain summaries: very useful.
-- Leo now uses PyEnchant to check spelling.
-  Much safer than using aspell.
-- Leo can now open multiple files from the command line.
-- Leo's ancient Tangle and Untangle commands are now deprecated.
-  This will help newbies how to learn Leo.
-- Leo now shows "Resurrected" and "Recovered" nodes.
-  These protect data and show how data have changed.
-  These fix several long-standing data-related problems.
-- A new "screenshots" plugin for creating slide shows with Leo.
-  I used this plugin to create Leo's introductory slide shows.
-- A better installer.
-- Many bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-</t>
 <t tx="ekr.20101105103524.1491">def make_manifest(self):
 
     '''Make bzr-manifest.txt.'''
@@ -1111,9 +1067,9 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
     return lines
 </t>
-<t tx="ekr.20101115090518.1494">Leo 4.8 rc 1                               November 15, 2010
+<t tx="ekr.20101115090518.1494">Leo 4.8 final                               November 26, 2010
 
-Leo 4.8 release candidate 1 is now available at:
+Leo 4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:

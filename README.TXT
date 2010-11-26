@@ -1,6 +1,6 @@
-Leo 4.8 rc 1                               November 15, 2010
+Leo 4.8 final                               November 26, 2010
 
-Leo 4.8 release candidate 1 is now available at:
+Leo 4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:

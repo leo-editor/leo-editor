@@ -145,16 +145,13 @@ Here are some tips that may make running Leo easier:
     where <leopath> is the path to the directory *containing* the leo directory. 
 
 **Windows**
-    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
-    You can also use a batch file.
-    Put the following .bat file in c:\\Windows::
+    You can associate Leo with .leo files using a batch file. Put the
+    following .bat file in c:\\Windows::
 
-        cd <path-to-leo>
-        c:\python25\python <path-to-leo>launchLeo.py %1
+        <path-to-python>/python <path-to-leo>/launchLeo.py %*
 
-    where <path-to-leo> is the path to the directory *containing* the leo directory.
-
-    This opens the file specified by the first argument (%1).
+    Here <path-to-leo> is the path to the directory *containing* the leo directory,
+    that is, the directory containing launchLeo.py.
 
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
