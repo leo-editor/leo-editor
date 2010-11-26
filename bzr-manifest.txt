@@ -1071,7 +1071,6 @@ leo/doc/default.css
 leo/doc/design.txt
 leo/doc/directives.txt
 leo/doc/doc-startup.txt
-leo/doc/doc-to-do.txt
 leo/doc/emacs.txt
 leo/doc/frontMatter.txt
 leo/doc/glossary.txt
