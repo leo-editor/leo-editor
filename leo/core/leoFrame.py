@@ -2389,40 +2389,13 @@ class leoTree:
         c = self.c
         s = p.h.strip()
         if g.match_word(s,0,"@url"): 
-            if p.b:
-                url = p.b.strip()
+            if p.b.strip():
+                lines = p.b.split('\n')
+                url = lines and lines[0].strip() or ''
             else:
                 url = s[4:].strip()
             # g.trace(url,g.callers())
-            if url.lstrip().startswith('--'):
-                # Get the url from the first body line.
-                lines = p.b.split('\n')
-                url = lines and lines[0] or ''
-            else:
-                #@+<< stop the url after any whitespace >>
-                #@+node:ekr.20031218072017.2313: *5* << stop the url after any whitespace  >>
-                # For safety, the URL string should end at the first whitespace, unless quoted.
-                # This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
 
-                url = url.replace('\t',' ')
-
-                # Strip quotes.
-                i = -1
-                if url and url[0] in ('"',"'"):
-                    i = url.find(url[0],1)
-                    if i > -1:
-                        url = url[1:i]
-
-                if i == -1:
-                    # Not quoted or no matching quote.
-                    i = url.find(' ')
-                    if i > -1:
-                        if 0: # No need for a warning.  Assume everything else is a comment.
-                            z_url = url[i:]
-                            g.es("ignoring characters after space in url:",z_url)
-                            g.es("use %20 instead of spaces")
-                        url = url[:i]
-                #@-<< stop the url after any whitespace >>
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):
                 g.handleUrlInUrlNode(url)
             g.doHook("@url2",c=c,p=p,v=p)

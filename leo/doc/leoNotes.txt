@@ -305,64 +305,6 @@ bzr pull
 It contains, on my machine, files called edgy-universe.list.x
 The prefix doesn't matter, but the contents of these files must contain the proper ubuntu distro name,
 for example, gutsy, hardy, intrepid.
-#@+node:ekr.20090502071837.103: ** Cool projects
-@nocolor
-
-These are projects that3 I'd like to follow up on.
-
-Scripts-->@thin leoScripts.txt-->Others-->
-Call hierarchy tracing (using python 'trace' module)
-
-- autosphinx.py plugin
-  http://groups.google.com/group/leo-editor/browse_thread/thread/f292f7c9f2fd66d8
-  bzr branch lp:~villemvainio/leo-editor/autosphinx 
-
-- Caliopy: integrate Leo with many scientific computing tools.
-  http://www.caliopywork.org/
-
-- Clone digger: find similar code
-  http://clonedigger.sourceforge.net/
-
-- Fuse (pyfuse) Leo as a file system.
-  http://leo.zwiki.org/LeoAsAFileSystem
-
-- Google wave: 
-  http://wave.google.com/
-
-- Thread: Leo forum proof of concept:
-  A few buttons turns Leo into a competitor for google groups :-)
-  http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
-
-- Manuel: rST testing tool
-  http://pypi.python.org/pypi/manuel/1.0.0a3
-  Manuel parses documents, evaluates their contents,
-  then formats the result of the evaluation.
-
-- objtrees: object trees for unit testing
-  http://groups.google.com/group/leo-editor/browse_thread/thread/32c3a295d2dae35b
-
-- pexpect: a Python module for spawning child applications and
-  controlling them automatically. 
-  http://pexpect.sourceforge.net/pexpect.html
-
-- Pyjamas: AJAX tool kit.
-  http://pyjs.org/
-
-- Pysmell: python IDE completion helper.
-  http://code.google.com/p/pysmell/
-
-- pythoscope: create unit tests automatically.
-  http://pythoscope.org/
-
-- rope: Python refactoring library.
-  http://rope.sourceforge.net/
-
-- rst2a: a web service that converts reStructuredText to pdf or other formats.
-  http://rst2a.com/
-
-- Tomboy: wiki-like notes
-  http://projects.gnome.org/tomboy/index.html
-  http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
 #@+node:ekr.20101024062147.6004: ** Documentation notes
 #@+node:ekr.20060306194040: *3* The curse of knowledge
 @nocolor
@@ -3938,5 +3880,751 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
+#@+node:ekr.20101127152442.5914: *3* From OnIconDoubleClick
+#@+node:ekr.20031218072017.2313: *4* << stop the url after any whitespace  >>
+# For safety, the URL string should end at the first whitespace, unless quoted.
+# This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
+
+url = url.replace('\t',' ')
+
+# Strip quotes.
+i = -1
+if url and url[0] in ('"',"'"):
+    i = url.find(url[0],1)
+    if i > -1:
+        url = url[1:i]
+
+if i == -1:
+    # Not quoted or no matching quote.
+    i = url.find(' ')
+    if i > -1:
+        if 0: # No need for a warning.  Assume everything else is a comment.
+            z_url = url[i:]
+            g.es("ignoring characters after space in url:",z_url)
+            g.es("use %20 instead of spaces")
+        url = url[:i]
+#@+node:ekr.20101127152442.5878: ** Url's
+@color
+
+@language rest
+#@+node:ekr.20101127154340.5929: *3*  To investigate first
+#@+node:ekr.20101127154340.5928: *4* @url pyexpect: spawn child apps
+http://pexpect.sourceforge.net/pexpect.html
+
+@language rest
+
+pexpect: a Python module for spawning child applications and
+controlling them automatically. 
+#@+node:ekr.20101127154340.5930: *4* @url pyjamas: AJAX tool kit
+http://pyjs.org/
+
+@language rest
+
+Pyjamas: AJAX tool kit.
+#@+node:ekr.20101127154340.5936: *4* @url proto of a Leo forum
+http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
+
+@language rest
+
+A few buttons turns Leo into a competitor for google groups.
+
+#@+node:ekr.20101127154340.5935: *3* Apps
+#@+node:ekr.20101127154340.6856: *4* @url lazysoft: cool db (sentences)
+http://www.lazysoft.com/
+
+@language rest
+#@+node:ekr.20101127154340.6806: *4* @url review board: code review
+http://www.reviewboard.org/
+
+@language rest
+#@+node:ekr.20101127154340.6824: *4* @url scrivener: cool MacOS outliner
+http://www.literatureandlatte.com/scrivener.html
+
+@language rest
+#@+node:ekr.20101127154340.5934: *4* @url tomboy: wiki-like notes
+http://projects.gnome.org/tomboy/index.html
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
+#@+node:ekr.20101127152442.5879: *3* Autocompletion
+#@+node:ekr.20101127154340.6852: *4* @url codewise: ville's code completer
+http://www.mail-archive.com/leo-editor@googlegroups.com/msg10145.html
+#@+node:ekr.20101127152442.5881: *4* @url ctagscompleter.py (Ville's suggestion)
+http://groups.google.com/group/leo-editor/browse_thread/thread/c537f3bc8328a938
+#@+node:ekr.20101127152442.5880: *4* @url pydiction (autocompletion for vim)
+http://www.vim.org/scripts/script.php?script_id=850
+#@+node:ekr.20101127154340.5931: *4* @url pysmell: python IDE completion helper
+http://code.google.com/p/pysmell/
+
+@language rest
+#@+node:ekr.20101127154340.6828: *4* @url SciTe Java api
+http://www.burgaud.com/scite-java-api/
+
+@language rest
+#@+node:ekr.20101127154340.6829: *5* @url tags2api.py: python
+http://www.scintilla.org/tags2api.py
+
+@language rest
+
+Produces a .api file for SciTE's identifier completion and calltip features.
+#@+node:ekr.20101127154340.6830: *5* @url generates python api for scite
+http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
+
+@language rest
+
+gen_python_api.py generates a python.api file for SciTE
+#@+node:ekr.20101127154340.6805: *3* Editors
+#@+node:ekr.20101127154340.6807: *4* @url pyxides
+http://groups.google.com/group/pyxides
+
+@language rest
+#@+node:ekr.20101127154340.6813: *4* Vim
+#@+node:ekr.20101127154340.6814: *5* @url vim cheat sheet
+http://www.fprintf.net/vimCheatSheet.html
+
+@language rest
+#@+node:ekr.20101127154340.6815: *5* @url vim reference guide
+http://www.dc.turkuamk.fi/docs/soft/vim/vim.html
+
+@language rest
+#@+node:ekr.20101127154340.6816: *5* @url slight advance intro to vim
+http://linuxgazette.net/152/srinivasan.html
+
+@language rest
+#@+node:ekr.20101127154340.6817: *5* @url voom: vim 2-page outliner
+http://vim-voom.webs.com/
+
+@language rest
+#@+node:ekr.20101127154340.6818: *5* @url why do those nutheads use vim
+http://www.viemu.com/a-why-vi-vim.html
+
+@language rest
+#@+node:ekr.20101127154340.6819: *5* @url viper
+http://www.delorie.com/gnu/docs/emacs/viper.html
+
+@language rest
+#@+node:ekr.20101127154340.6820: *5* @ulr learning vim the pragmatic way
+http://jrmiii.com/2009/03/06/learning-vim-the-pragmatic-way.html
+
+@language rest
+#@+node:ekr.20101127154340.6822: *4* @url python-UNO (Open Office)
+http://udk.openoffice.org/python/python-bridge.html
+
+@language rest
+
+http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO
+#@+node:ekr.20101127154340.6823: *4* @url open komodo forums
+http://community.activestate.com/forums/komodo/open-komodo
+
+@language rest
+
+archives:
+
+http://lists.openkomodo.com/pipermail/openkomodo-dev/
+#@+node:ekr.20101127154340.6825: *4* @url org-babel
+http://orgmode.org/worg/org-contrib/babel/intro.php
+
+@language rest
+#@+node:ekr.20101127152442.5884: *3* Feature requests
+#@+node:ekr.20101127152442.5885: *4* Better find/replace dialog
+For newbies (and for power users too, for that matter), it may be helpful to
+have a "Find and Replace" dialog box similar to the one below:
+
+@language rest
+
+.. image: c:/prog/findReplace.jpg
+
+#@+node:ekr.20101127152442.5886: *4* @image find/replace dialog
+c:/prog/findReplace.jpg
+#@+node:ekr.20101127154340.6808: *3* Graphics
+#@+node:ekr.20101127154340.6843: *4* @url inkscape: open source svg editor
+http://inkscape.org/
+
+@language rest
+
+#@+node:ekr.20101127154340.6835: *4* @url interactive map of Linux kernel
+http://www.makelinux.net/kernel_map
+
+@language rest
+#@+node:ekr.20101127154340.6836: *4* @url blender: open source content creation
+http://www.blender.org/
+
+@language rest
+#@+node:ekr.20101127154340.6809: *4* @url tinkerpop: graphics tools
+http://www.tinkerpop.com/
+#@+node:ekr.20101127152442.5887: *3* Gui
+#@+node:ekr.20101127152442.5888: *4* @url cool hack: detach body editor
+http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
+
+@language rest
+
+This features a long an important discussion of using Leo with vim.
+#@+node:ekr.20101127152442.5889: *4* @url fast syntax highlighting
+http://groups.google.com/group/leo-editor/browse_thread/thread/bdcbe3a4ffb5ac61/7dbeea85f671cfe9
+
+@language rest
+
+Source-highlight Qt Library 0.2.2
+http://srchiliteqt.sourceforge.net/source-highlight-qt.html
+
+This seems to be a (c++ based) syntax highlighting package that would
+allow us to avoid running any python code for syntax highlighting.
+Needless to say this is probably very fast.
+
+Investigation needed how easy this would be to deploy in python & leo.
+I might(!) make a plugin that allows you to use it instead of leo's
+own highlighters...
+
+t seems to support lots of languages already:
+
+http://www.gnu.org/software/src-highlite/
+
+seems you can define your own languages:
+
+http://www.gnu.org/software/src-highlite/source-highlight.html#Language-Definitions
+
+lots of stuff there, but the simple case (keywords) seem to be simple:
+
+http://www.gnu.org/software/src-highlite/source-highlight.html#Simple-definitions
+
+EKR: We would have to support coloring of Leo directives.
+
+#@+node:ekr.20101127152442.5890: *4* @url code bubbles: an alternative to clones
+http://groups.google.com/group/leo-editor/browse_thread/thread/d030a9eccfae2aa2/3a951894e0c15f72
+
+@language rest
+
+This is a cool video:
+
+http://www.cs.brown.edu/people/acb/codebubbles_site.htm
+#@+node:ekr.20101127154340.6840: *4* @url SIKULI: test gui's
+http://groups.csail.mit.edu/uid/sikuli/
+
+@language rest
+#@+node:ekr.20101127152442.5882: *3* Leo projects
+#@+node:ekr.20101127152442.5883: *4* @url @data contextmenu_commands
+http://groups.google.com/group/leo-editor/browse_thread/thread/e236feb5bd2a097a/d261f6dbdb7eb950
+
+@language rest
+
+As requested, there is now user-friendly way of adding minibuffer
+commands to context menu (in trunk, qt only).
+
+I also added example to quickstart.leo, but all you need to know is
+that you need to create
+
+@settings
+  @data contextmenu_commands
+
+And the content is like:
+
+# The format is <command> SPACE <description>
+
+stickynote Create a sticky note
+read-at-file-nodes Read file nodes 
+#@+node:ekr.20101127152442.5912: *4* @url fuse: Leo as a file system
+http://leo.zwiki.org/LeoAsAFileSystem
+
+@language rest
+
+#@+node:ekr.20101127154340.5936: *4* @url proto of a Leo forum
+http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
+
+@language rest
+
+A few buttons turns Leo into a competitor for google groups.
+
+#@+node:ekr.20101127152442.5903: *4* Ville
+#@+node:ekr.20101127152442.5904: *5* @url use json to represent trees
+http://mail.google.com/mail/#label/Cool/121a1f23e75fc348
+
+@language rest
+
+Often, it' useful to decouple node creation from data processing. Case
+in point is the read code & the hash based speedup scheme I described
+(and referred to again in previous thread!)
+
+(for every instance of 'json' below, you can substitute "hierarchical
+python object". I'm thinking of json because of interoperability &
+human-readablity of json vs. pickle).
+
+What I mean is:
+
+- Provide a way to create tree structure from json object. This is
+easy, just add function
+
+c.createSubTreeFromJson(p, json)
+
+The 'json' arg is just a string with subtree encoded in json. Something like
+
+[ ('h1', 'body1', 'gnx1', [ ('h1.1' , 'body1.1' , 'gnx1.1'), ('h1.2' ,
+'body1.2' , 'gnx1.2')], ('h2', ......]
+
+i.e. it's a recursive data structure with list of nodes as tuples (h,
+b, gnx, children) where 'children' is the recursive part. So far, so
+good. That's the easy part - it's just like xml, apart from the fact
+that xml is overkill for this problem, requiring nontrivial parser
+code (and thus being of lower usability & speed). Yes, the json is
+pretty much the same as repr(python_object).
+
+Now, for the important part.
+
+All code that creates trees (read code as the most relevant example!)
+probably shouldn't create the tree directly. Rather, it should use c
+and p to learn what it needs to, then compose a result json object and
+pass it on to c.createSubTreeFromJson(p, json). This is important &
+elegant distinction from current behaviour where the data processing
+code also modify the tree. We can basically have tests for most of the
+stuff without altering the tree in any way, allowing the tree to stay
+"read only" as long as possible.
+
+The hash speedup I've been talking about will execute the auto/thin
+parsing code exactly once for the particular file content, store away
+the json, and just read that json file on subsequent runs. There is no
+need to speculate on feasibility of this scheme, we've already had
+that particular discussion. It really is the simplest & fastest
+possible solution.
+
+We could also add lazy loading (though this is not as important), but
+*also this* will be easier with this scheme. Basically, the lazy
+loading would:
+
+- Run in a thread in the background, collecting stuff from external
+files to json objects
+- Every once in a while, do the "destructive" thing and update the
+tree from these json objects, redrawing if necessary.
+
+Also this will be perfectly safe - the background thread never does
+gui manipulation. At any given time, it's only reading a file, and
+writing the json obj to buffer. No communication with leo gui is
+necessary. If position with root obj no longer exist, we just throw
+the json away and rescan if needed.
+#@+node:ekr.20101127152442.5905: *5* @url dump snippets as yaml
+http://mail.google.com/mail/#label/Cool/121b225322eb0a6a
+
+@language rest
+
+I experimented with creating a "direct" recursive data structure for leo trees.
+
+It's pretty simple (who needs Haskell & friends when we have python):
+
+def p_to_obj(p):
+   return [p.h, p.b, p.gnx, [p_to_obj(po) for po in p.children_iter()]]
+
+Yes, I removed utf8 encoding to keep it more elegant ;-).
+
+The whole snippet is somewhat like this:
+
+http://pastebin.com/f6a30f859
+
+It creates a python object like this:
+
+http://pastebin.com/f17a3a285
+
+(list of p,h,gnx, children...)
+
+Now, the interesting part. This can be directly encoded as Yaml, to
+render the rather readable:
+
+http://pastebin.com/f3d750af3
+
+The part that needs work is the body text, it should probably be
+improvable by using "block scalars".
+
+This idea is related to my "jsonification" refactoring suggestion a
+while ago. If functions like read code emitted stuff that p_to_obj
+returns, the yaml structure could be used to debug / trace the data
+(but still in machine-readable form). This could also be used to
+communicate outline structure so that it can be both read, and copy
+pasted from emails to real tree structure.
+
+No need to take any action regarding this email. Just a food for
+thought, perhaps for inspiration...
+#@+node:ekr.20101127152442.5906: *5* @url creating debian packages
+http://groups.google.com/group/leo-editor/browse_thread/thread/f83704ecc4ba225a/9e75ecc105aab953
+
+@language rest
+
+> Would it be possible to publish somewhere the scripts or other files you use
+> to create the .deb files?
+
+It's somewhat of a nontrivial effort (that I do manually), but the
+debian/ directory is here:
+
+https://code.launchpad.net/~leo-editor-team/leo-editor/packaging-jaunty
+
+In order to build the package, I have set up the ubuntu "ppa" (you can
+register it at launchpad), use "debuild -S -sa" to build the package
+when everything is at correct place (it's picky about directory & file
+names and such), and use "dput" to upload it to launchpad servers.
+After a while (one hour?), the package is built.
+
+I have a .leo file that I use to trace these steps. I can push it to
+trunk. But there is no automatic script to do it; it's possible to
+just run "dpkg-buildpackage -rfakeroot" when the debian/ directory is
+at leo-editor directory, but that's not the "proper" way, as your
+environment is almost never clean enough to get a reliable package
+that directly reflects the source snapshot at that tag. 
+#@+node:ekr.20101127154340.5927: *5* @url objtrees: object trees for unit testing
+http://groups.google.com/group/leo-editor/browse_thread/thread/32c3a295d2dae35b
+#@+node:ekr.20101127154340.6852: *5* @url codewise: ville's code completer
+http://www.mail-archive.com/leo-editor@googlegroups.com/msg10145.html
+#@+node:ekr.20101127154340.6826: *3* Leo urls
+#@+node:ekr.20101127154340.6827: *4* @url NSIS manual
+http://nsis.sourceforge.net/Docs/Contents.html
+
+@language rest
+#@+node:ekr.20101127154340.6833: *4* @url leo-editor-files
+http://tinyurl.com/35ddr4w
+
+@language rest
+#@+node:ekr.20101127154340.6851: *4* @url upload to source forge
+https://sourceforge.net/project/admin/explorer.php?group_id=3458
+
+@language rest
+#@+node:ekr.20101127154340.6837: *3* Math
+#@+node:ekr.20101127154340.6838: *4* @url sage: mathematics software system
+http://sagemath.org/
+
+@language rest
+#@+node:ekr.20101127154340.6839: *4* @url viewdog: viewer for math functions
+http://gul.sourceforge.net/viewdog-manual/node3.html
+
+@language rest
+#@+node:ekr.20101127152442.5910: *3* Python tools
+#@+node:ekr.20101127152442.5911: *4* @url clonedigger: find similar code
+http://clonedigger.sourceforge.net/
+#@+node:ekr.20101127154340.5928: *4* @url pyexpect: spawn child apps
+http://pexpect.sourceforge.net/pexpect.html
+
+@language rest
+
+pexpect: a Python module for spawning child applications and
+controlling them automatically. 
+#@+node:ekr.20101127154340.6804: *4* @url python trace module
+http://docs.python.org/library/trace.html
+
+@language rest
+
+See the child node for a cool script.
+(It is also in scripts.leo).
+#@+node:ekr.20101127154340.6803: *5* Call hierarchy tracing (using python 'trace' module)
+@language python
+@tabwidth -4
+
+"""
+Analyzing program flow.
+
+Run (ctrl+b) this script after 
+
+cd ~/leo-editor
+python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+
+tracefile = '~/leo-editor/trace.txt'
+
+import os
+
+tr = open(os.path.expanduser(tracefile))
+print tr
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+cur = None
+no = None
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    else:
+        if no:
+            no.b += l.strip() + '\n'
+
+    print ".",
+#@+node:ekr.20101127154340.5932: *4* @url pythoscope: create unit tests automatically
+http://pythoscope.org/
+
+@language rest
+#@+node:ekr.20101127154340.5933: *4* @url rope: refactoring library
+http://rope.sourceforge.net/
+
+@language rest
+#@+node:ekr.20101127152442.5891: *3* Scientific
+#@+node:ekr.20101127152442.5892: *4* @url calioPY Scientific environment using Leo
+http://www.caliopywork.org/
+#@+node:ekr.20101127154340.6812: *4* @url reinteract: scientific platform
+http://fishsoup.net/software/reinteract/
+
+@language rest
+
+#@+node:ekr.20101127152442.5893: *3* Text
+#@+node:ekr.20101127152442.5894: *4* Related to viewrendered plugin
+#@+node:ekr.20101127152442.5895: *5* @url enthought editor for restructured text
+http://blog.enthought.com/?p=127
+
+rst project of interest 2009/07/14
+
+http://mail.google.com/mail/#label/Cool/1227cc2c66c976ec
+
+It may be that the codebase could be worth looking at.  I find the
+prospect of doing a full sphinx rendering of a document in real time
+quite fascinating :-).
+
+Requires ETS (Enthought Tool Suite)
+http://code.enthought.com/projects/index.php
+#@+node:ekr.20101127152442.5896: *5* @url autosphinx (related to enthought editor)
+https://code.launchpad.net/~villemvainio/leo-editor/autosphinx
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f292f7c9f2fd66d8
+
+bzr branch lp:~villemvainio/leo-editor/autosphinx 
+
+@language rest
+
+
+No, we want *another window*, like with @button rst-preview, that is
+updated in real time. The html output is not editable anyway.
+
+>> Now, the thing is to
+>> update this in real time (as you are editing, i.e. not on save or
+>> explicit tangle step).
+
+> How about doing it at idle time, that is, at most every half second?
+
+It needs to happen in another process in order to not bog down normal
+editing (if we stop doing that, the ui will hang). Generating sphinx
+output is somewhat expensive operation.
+
+> I don't want to involve any part of the file logic in rendering: it's too
+> complex as it is.
+
+With @auto-rst, we get this for free (i.e. rendering every time you
+save). Barring that, we could do the rendering just for current node,
+but that is not faithful to the final output.
+
+I think the best implementation is a new process that monitors a file.
+That way, it's not really leo-specific, and it's easy to do. Leo just
+needs to tell it what file to monitor.
+
+-- 
+#@+node:ekr.20101127152442.5913: *5* @url manuel: rST testing tool
+http://pypi.python.org/pypi/manuel
+
+@language rest
+
+Manuel parses documents, evaluates their contents,
+then formats the result of the evaluation.
+#@+node:ekr.20101127152442.5897: *4* @url controlling tex parameter from rst markup
+http://groups.google.com/group/leo-editor/browse_thread/thread/20ec9f3ec33eb174/dacfce8823e727c1
+
+@language rest
+
+#@+node:ekr.20101127152442.5898: *5* solution 1: use @raw
+@language rest
+
+> On a related note, is there a good example somewhere of embedding
+> LaTeX markup in rst?
+
+You can use the ..raw directive
+
+Here is a quote from another thread
+http://groups.google.com/group/leo-editor/browse_thread/thread/16272e...
+
+QQQ
+One of the difficulties was how to "convince" Leo to write raw code, I
+wanted to write some equations and tables, so it was necessary to use
+symbols like \, { }, and so on, i. e., what is required by LaTeX. The
+problem was that all these symbols were "interpreted" wrongly and
+replaced by an unreadable code. The solution was to use the raw
+directive. An example is much better to show this. Assume the
+following LaTeX code for an equation and a table in a Leo node:
+
+@
+.. raw:: latex html
+
+ \begin{equation}  f(x)=\frac{e^{X\beta}}{1-e^{X\beta}}  \end
+{equation}
+
+ \newline
+ \begin{tabular}[b]{|r|l||c|r|}
+    <content deleted ...>
+ \end{tabular}
+
+@c
+
+Attention: RsT code requires an indentation with respect to the raw
+directive. I didn't know it. It is here a leading blank space for all
+LaTeX code inside the raw directive. And then it worked fine.
+QQQ 
+#@+node:ekr.20101127152442.5899: *5* solution 2: use make
+I think you get the most control by having leo generate an rst file and
+then processing it yourself.
+
+Like this somewhat dated page (skip the first section):
+http://leo.zwiki.org/RstEmacs
+
+For a project I'm currently working on, currently :), my set up is like
+this:
+
+Edit rst in leo using an @auto-rst node.
+
+Run this script (it is (pointlessly) a Makefile):
+
+.. sourcecode:: make
+
+  all:
+        rst2html.py report2.rst report2.html
+        itex2MML < report2.html > report2.xhtml
+        rst2latex.py --documentoptions=letterpaper --stylesheet-path=myprefs.inc \
+          --reference-label="ref*" --use-latex-citations report2.rst report2.tex
+        echo | pdflatex -draftmode report2 >/dev/null 2>&1
+        echo | pdflatex -draftmode report2 >/dev/null 2>&1
+        echo | pdflatex report2 2>&1 | tr \\n \\r
+        rst2latex.py --documentoptions=letterpaper --stylesheet-path=myprefs.inc \
+          report2.rst report2.tex
+
+The two -draftmode parses take care of references etc. much quick than
+non-draft, because they don't chew up time turning pngs and pdfs into
+part of the pdf output.  I.e. they don't produce pdf output.
+
+``myprefs.inc`` looks like:
+
+.. sourcecode:: latex
+
+  \usepackage{pslatex}
+  \usepackage{mathptmx}
+  \usepackage[scaled=.90]{helvet}
+  \usepackage{courier}
+  \renewcommand\sfdefault{phv}%               use helvetica for sans serif
+  \renewcommand\familydefault{\sfdefault}%    use sans serif by default
+  \renewcommand{\topfraction}{0.85}
+  \renewcommand{\textfraction}{0.1}
+  \renewcommand{\floatpagefraction}{0.75}
+  \setcounter{bottomnumber}{2}
+  \renewcommand{\bottomfraction}{0.8}
+
+  \setlength{\parskip}{2ex}
+  \setlength{\parindent}{0pt}
+
+  \addtolength{\oddsidemargin}{-1.5cm}
+  \addtolength{\evensidemargin}{-1.5cm}
+  \addtolength{\textwidth}{3cm}
+  \addtolength{\topmargin}{-2cm}
+  \addtolength{\textheight}{4cm}
+
+  \usepackage{fancyhdr}
+  \pagestyle{fancy}
+  \lhead{Synoptic mapping of Native Plant Communities}
+  \rhead{}
+  \lfoot{\footnotesize 20091203-draft }
+
+itex2MML (referenced in the ``Makefile``) converts latex math notation to MathML in the .xhtml output.
+
+To insert raw latex in the latex output from rst, use
+
+.. sourcecode:: rst
+
+  .. raw:: latex
+
+     \some{latex here}
+
+Cheers -Terry 
+#@+node:ekr.20101127152442.5900: *4* @url rst to anything
+http://rst2a.com/
+
+@language rest
+
+A web service that converts reStructuredText to pdf or other formats.
+
+You can use that to, say, quickly generate pdf from an (@auto-) rst file.
+
+There is an api for the web service:
+
+http://rst2a.com/api/
+#@+node:ekr.20101127154340.6845: *4* @url mxTextTools: python text tools
+http://www.egenix.com/products/python/mxBase/mxTextTools/
+
+@language rest
+#@+node:ekr.20101127154340.6847: *4* @url 2die4 games: TL (very cool rst stuff)
+http://www.2die4games.com/
+#@+node:ekr.20101127152442.5901: *3* Video tools
+#@+node:ekr.20101127154340.6841: *4* @url screenr: instant screencasts for twitter
+http://screenr.com/
+#@+node:ekr.20101127154340.6842: *4* @url jing
+http://jingproject.com
+#@+node:ekr.20101127152442.5907: *3* Web technologies
+#@+node:ekr.20101127154340.6811: *4* @url 0mq: socket library
+http://www.zeromq.org/
+#@+node:ekr.20101127154340.6810: *4* @url flask: micro devel framework for python
+http://flask.pocoo.org/docs/
+
+@language rest
+#@+node:ekr.20101127154340.6848: *4* @url google app engine
+http://code.google.com/appengine/
+
+@language rest
+#@+node:ekr.20101127154340.6849: *4* @url browser shots: web page testing
+http://browsershots.org/
+
+@language rest
+#@+node:ekr.20101127154340.6850: *4* @url goosh: google shell
+http://goosh.org/
+
+@language rest
+#@+node:ekr.20101127152442.5908: *4* @url json
+http://www.json.org/
+
+@language rest
+
+**object**:
+
+{   string : value,
+    string : value,
+    ...
+} 
+
+**array**:
+
+[ value, value...]
+
+**value**: string object array true false null
+
+**number**: 
+    int
+    int frac
+    int e digits
+    int frac e digits 
+#@+node:ekr.20101127152442.5909: *4* @url places to ask questions
+serverfault.com
+stackoverflow.com
+
+@language rest
+
+Quora
+#@+node:ekr.20101127154340.5930: *4* @url pyjamas: AJAX tool kit
+http://pyjs.org/
+
+@language rest
+
+Pyjamas: AJAX tool kit.
+#@+node:ekr.20101127154340.6846: *4* @url w3c: web standards page
+http://www.w3.org/
+
+@language rest
+#@+node:ekr.20101127154340.6853: *3* Windows
+#@+node:ekr.20101127154340.6854: *4* @url cmd
+http://commandwindows.com/command1.htm
+
+@language rest
+#@+node:ekr.20101127154340.6844: *4* @url process monitor for windows
+http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
+
+@language rest
+#@+node:ekr.20101127154340.6855: *4* @url windows shortcuts
+http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
+
+@language rest
 #@-all
 #@-leo

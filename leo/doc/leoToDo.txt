@@ -327,6 +327,10 @@ Voila', instant presentation tool. The webview window would be on projector, and
 leo would be in your private computer. You can easily edit the text, or find new
 interesting slides to present in privacy of your own screen.
 
+#@+node:ekr.20101126123343.5845: ** Plugins and plugins manager
+Rewrite the plugins manager.
+
+Make all plugins gui-independent.
 #@+node:ekr.20101024062147.6014: ** Autocompleter
 # This can be done in the trunk.
 #@+node:ekr.20090131200406.14: *3* Auktocompleter notes

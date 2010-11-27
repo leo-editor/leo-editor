@@ -1,47 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file leoProjects.txt
 #@+all
-#@+node:ekr.20100907092144.5901: ** Unit tests
-# These are intended to be temporary tests,
-# to be copied eventually to unitTest.leo
-#@+node:ekr.20100907115157.5905: *3* @ignore
-#@+node:ekr.20100208095423.5940: *4* @test leoCache
-import leo.core.leoCache as leoCache
-
-cacher = leoCache.cacher(c)
-
-if 0:
-    import os
-    os.system('cls')
-
-assert cacher.test()
-#@+node:ekr.20100906165118.5915: *4* @test leoInkCommands
-ic = c.inkscapeCommands
-screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
-template_fn = r'c:\leo.repo\inkcall\template.svg'
-png_fn = r'c:\leo.repo\inkcall\output.png'
-svg_fn = r'c:\leo.repo\inkcall\temp.svg'
-callouts = [
-        "This goes here",
-        "These are those, but slightly longer",
-        "Then you pull this, but this text needs to be longer for testing",]
-ic.run(
-    screenshot,
-    callouts=callouts,
-    numbers=[2,4,17],
-    edit_flag = True, # True: call inkscape to edit the working file.
-    png_fn=png_fn, # Optional: Name of output png file.
-    svg_fn=svg_fn, # Optional: Name of working svg file.
-    template_fn=template_fn, # Optional: Name of template svg file.
-)
-#@+node:ekr.20101115092550.5825: ** Pylint reports
+#@+node:ekr.20101127152442.5916: ** Testing
+#@+node:ekr.20101115092550.5825: *3* Pylint reports
 @killcolor
 
 Wrong:
 ************* Module leo.core.leoFileCommands
 E1120:833:baseFileCommands.getDiff: No value passed for parameter 'b' in function call
 E1101:1048:baseFileCommands.cleanSaxInputString: Class 'str' has no 'maketrans' member
-#@+node:ekr.20101115092550.5826: *3* Minor plugins
+#@+node:ekr.20101115092550.5826: *4* Minor plugins
 ************* Module leo.plugins.groupOperations
 W0601:190:initImages: Global variable 'groupOpPI' undefined at the module level
 W0601:191:initImages: Global variable 'bullseyePI' undefined at the module level
@@ -1340,7 +1308,7 @@ E1103:538:ToolbarTkinterFrame.getIconWidgetFrame: Instance of 'nullIconBarClass'
 e types could not be inferred)
 E1103:1336:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptButton' has no 'configure'
  member (but some types could not be inferred)
-#@+node:ekr.20101028131948.5858: ** Pylint errors for minor plugins
+#@+node:ekr.20101028131948.5858: *3* Pylint errors for minor plugins
 @killcolor
 
 ************* Module leo.plugins.geotag
@@ -2681,5 +2649,63 @@ W0601:749:lleo_f: Global variable '_request_immediate_connect' undefined at the 
 
 ************* Module leo.external.lproto
 E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
+#@+node:ekr.20100907092144.5901: *3* Unit tests
+# These are intended to be temporary tests,
+# to be copied eventually to unitTest.leo
+#@+node:ekr.20100907115157.5905: *4* @ignore
+#@+node:ekr.20100208095423.5940: *5* @test leoCache
+import leo.core.leoCache as leoCache
+
+cacher = leoCache.cacher(c)
+
+if 0:
+    import os
+    os.system('cls')
+
+assert cacher.test()
+#@+node:ekr.20100906165118.5915: *5* @test leoInkCommands
+ic = c.inkscapeCommands
+screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
+template_fn = r'c:\leo.repo\inkcall\template.svg'
+png_fn = r'c:\leo.repo\inkcall\output.png'
+svg_fn = r'c:\leo.repo\inkcall\temp.svg'
+callouts = [
+        "This goes here",
+        "These are those, but slightly longer",
+        "Then you pull this, but this text needs to be longer for testing",]
+ic.run(
+    screenshot,
+    callouts=callouts,
+    numbers=[2,4,17],
+    edit_flag = True, # True: call inkscape to edit the working file.
+    png_fn=png_fn, # Optional: Name of output png file.
+    svg_fn=svg_fn, # Optional: Name of working svg file.
+    template_fn=template_fn, # Optional: Name of template svg file.
+)
+#@+node:ekr.20101127152442.5917: ** 4.9 a1
+#@+node:ekr.20101127152442.5915: *3* Improve handling of @url nodes
+@nocolor-node
+
+The first body line is the url if the body text is not empty.
+#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n')
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return 'break' # 11/19/06
 #@-all
 #@-leo
