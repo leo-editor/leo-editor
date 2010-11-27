@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915073259.1: * @file maximizeNewWindows.py
+#@+node:Dmitry.20101128013501.1256: * @thin maximizeNewWindows.py
 """Maximizes all new windows."""
 
 #@@language python
@@ -7,7 +7,7 @@
 
 __version__ = "1.4"
 #@+<< version history >>
-#@+node:ekr.20040915073259.2: ** << version history >>
+#@+node:Dmitry.20101128013501.1257: ** << version history >>
 #@+at
 # 
 # Original written by Jaakko Kourula.
@@ -21,23 +21,34 @@ __version__ = "1.4"
 #         if c and c.exists and c.frame and not c.frame.isNullFrame:
 #     - Added init function.
 # 1.3 EKR: Now works on Linux.
-# 1.4 EKR: Gui independent.
+# 1.4 Ivanov Dmitriy, Ville M. Vainio:
+#     Added the support for Qt UI, removed Tk check in init function
 #@-<< version history >>
-
+#@+<< imports >>
+#@+node:Dmitry.20101128013501.1258: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+
+#@-<< imports >>
 
 #@+others
-#@+node:ekr.20070602072200.1: ** init
+#@+node:Dmitry.20101128013501.1259: ** init
 def init():
 
-    g.registerHandler(('new','open2'), maximize_window)
+    leoPlugins.registerHandler("after-create-leo-frame", maximize_window)
     g.plugin_signon(__name__)
-    return True
-#@+node:ekr.20070602072200.2: ** maximize_window
+    return True`
+
+#@+node:Dmitry.20101128013501.1260: ** maximize_window
 def maximize_window(tag, keywords):
 
     c = keywords.get('c')
+
     if c and c.exists and c.frame and not c.frame.isNullFrame:
-        c.frame.resizeToScreen()
+        gui = g.app.gui.guiName()
+        if gui == 'qt':
+            c.frame.top.showMaximized()
+        elif gui == 'tkinter':
+            c.frame.resizeToScreen()
 #@-others
 #@-leo
