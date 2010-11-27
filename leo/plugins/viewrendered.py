@@ -4,10 +4,22 @@
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
 ''' Creates a window for *live* rendering of rst, html, etc.  (Qt only).
 
-viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
-which opens a new window where the current body text is rendered as HTML
-(if it starts with '<'), or otherwise reStructuredText.  reStructuredText
-errors and warnings may be shown.  For example, both::
+viewrendered.py creates the following (``Alt-X``) commands:
+
+``viewrendered``
+    opens a new window where the current body text is rendered as HTML
+    (if it starts with '<'), or otherwise reStructuredText.
+``viewrendered-big``
+    as above, but zoomed in, useful for presentations
+``viewrendered-html``
+    displays the html source generated from reStructuredText, useful for
+    debugging
+
+``viewrendered`` sets the process current directory (os.chdir()) to the path
+to the node being rendered, to allow relative paths to work in
+``.. image::`` directives.
+
+reStructuredText errors and warnings may be shown.  For example, both::
 
     Heading
     -------
@@ -175,7 +187,7 @@ def viewrendered(event):
 #@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html')
 @g.command('viewrendered-html')
 def viewrendered(event):
-    """Open render view for commander"""
+    """Open view of html which would be rendered"""
 
     c = event['c']
 
