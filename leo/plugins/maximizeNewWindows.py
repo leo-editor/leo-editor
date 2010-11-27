@@ -37,6 +37,7 @@ def init():
 
     leoPlugins.registerHandler("after-create-leo-frame", maximize_window)
     g.plugin_signon(__name__)
+    return True`
 
 #@+node:Dmitry.20101128013501.1260: ** maximize_window
 def maximize_window(tag, keywords):
