@@ -38,6 +38,7 @@ import leo.core.leoGlobals as g
 g.assertUi('qt')
 
 import sys
+import os
 import webbrowser
 
 try:
@@ -86,13 +87,14 @@ class ViewRendered(QTextEdit):
 
     #@+others
     #@+node:ekr.20101112195628.5429: *3* __init__ & __del__
-    def __init__(self, c):
+    def __init__(self, c, view_html=False):
 
         QTextEdit.__init__(self)
         self.length = 0
         self.gnx = 0
         self.setReadOnly(True)
         self.c = c
+        self.view_html = view_html
         c.viewrendered = self
         g.registerHandler('select2',self.update)
         g.registerHandler('idle',self.update)
@@ -139,6 +141,13 @@ class ViewRendered(QTextEdit):
         self.length = len(b)
 
         if got_docutils and not b.startswith('<'):
+
+            path = g.scanAllAtPathDirectives(self.c,p) or self.c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+
             try:
                 b = publish_string(b, writer_name='html')
             except SystemMessage as sm:
@@ -150,7 +159,10 @@ class ViewRendered(QTextEdit):
                     self.setPlainText(b)
                     return
 
-        self.setHtml(g.toUnicode(b))
+        if self.view_html:
+            self.setPlainText(b)
+        else:
+            self.setHtml(g.toUnicode(b))
     #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
@@ -160,7 +172,15 @@ def viewrendered(event):
     c = event['c']
 
     ViewRendered(c)
+#@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html')
+@g.command('viewrendered-html')
+def viewrendered(event):
+    """Open render view for commander"""
 
+    c = event['c']
+
+    ViewRendered(c, view_html=True)
+#@+node:tbrown.20101127112443.14854: ** g.command('viewrendered-big')
 @g.command('viewrendered-big')
 def viewrendered(event):
     """Open render view for commander, with big text
