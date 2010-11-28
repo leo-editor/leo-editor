@@ -433,6 +433,17 @@ def tabula_marked_f(event):
         if p.isMarked():
             t.add_note(p)
 
+#@+node:ville.20101128205511.6114: *3* @g.command('tabula-subtree')
+@g.command('tabula-subtree')
+def tabula_subtree_f(event):
+    """ Create tabula from all nodes in subtree """
+    c= event['c']
+
+    t=tabula_show(c)
+
+    for p in c.p.self_and_subtree():
+        t.add_note(p)
+
 #@+node:ville.20100703194946.5584: *3* class Tabula(QMainWindow)
 class Tabula(QMainWindow):
 
