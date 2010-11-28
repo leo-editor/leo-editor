@@ -71,7 +71,7 @@ from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
-        QPlainTextEdit, QInputDialog, QMainWindow, QMdiArea)
+        QPlainTextEdit, QInputDialog, QMainWindow, QMdiArea, QLineEdit)
 
 #@-<< imports >>
 
@@ -526,7 +526,7 @@ class Tabula(QMainWindow):
         def do_edit_h():
             p, w = self.get_current_pos()        
 
-            new, r = QInputDialog.getText(None, "Edit headline", "Old: " + p.h)
+            new, r = QInputDialog.getText(None, "Edit headline", "", QLineEdit.Normal, p.h)
             if not r: 
                 return
             new = g.u(new)
@@ -535,12 +535,13 @@ class Tabula(QMainWindow):
 
 
 
+
         self.tb.addAction("Tile", do_tile)
         self.tb.addAction("Cascade", do_cascade)
         self.tb.addAction("(Un)Tab", do_un_tab)
         self.tb.addAction("Go", do_go)
         self.tb.addAction("New", do_new)
-        self.tb.addAction("Title", do_edit_h)
+        self.tb.addAction("Headline", do_edit_h)
 
         self.tb.addSeparator()
         self.tb.addAction("Close All", do_close_all)
