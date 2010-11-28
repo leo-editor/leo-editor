@@ -490,7 +490,8 @@ class Tabula(QMainWindow):
         g.trace(event)
         event.accept() # EKR: doesn't help: we don't get the event.
 
-    #@+node:ekr.20101114061906.5444: *4* create_actions
+    #@+node:ekr.20101114061906.5444: *4* create_actions (has all toolbar commands!)
+
     def create_actions(self):
 
         self.tb = self.addToolBar("toolbar")
@@ -511,15 +512,9 @@ class Tabula(QMainWindow):
             for i in self.mdi.subWindowList():
                 self.mdi.removeSubWindow(i)
 
-        def do_go():
-            cur = self.mdi.activeSubWindow()
-            active = [gnx for (gnx, n) in self.notes.items() if n.parent() == cur]
-            if not active:
-                g.trace("no node")
-                return
-            tgt = active[0]
 
-            p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
+        def do_go():
+            p, _ = self.get_current_pos()
             self.c.selectPosition(p)
 
         def do_new():
@@ -528,11 +523,24 @@ class Tabula(QMainWindow):
             self.c.redraw()
             self.add_note(n)
 
+        def do_edit_h():
+            p, w = self.get_current_pos()        
+
+            new, r = QInputDialog.getText(None, "Edit headline", "Old: " + p.h)
+            if not r: 
+                return
+            new = g.u(new)
+            p.h = new
+            w.setWindowTitle(new)
+
+
+
         self.tb.addAction("Tile", do_tile)
         self.tb.addAction("Cascade", do_cascade)
         self.tb.addAction("(Un)Tab", do_un_tab)
         self.tb.addAction("Go", do_go)
         self.tb.addAction("New", do_new)
+        self.tb.addAction("Title", do_edit_h)
 
         self.tb.addSeparator()
         self.tb.addAction("Close All", do_close_all)
@@ -582,6 +590,18 @@ class Tabula(QMainWindow):
         # self.mdi.close()
         # self.close() # EKR
         # self.midi.delete() # EKR
+    #@+node:ville.20101128212002.6111: *4* get_current_pos
+    def get_current_pos(self):
+        cur = self.mdi.activeSubWindow()
+        active = [gnx for (gnx, n) in self.notes.items() if n.parent() == cur]
+        if not active:
+            g.trace("no node")
+            return
+        tgt = active[0]
+
+        p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
+        return p, cur
+
     #@+node:ekr.20101114061906.5441: *4* save_states
     def save_states(self):
 
