@@ -3928,11 +3928,17 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
 
 A few buttons turns Leo into a competitor for google groups.
 
-#@+node:ekr.20101127154340.5935: *3* Apps
-#@+node:ekr.20101127154340.6856: *4* @url lazysoft: cool db (sentences)
-http://www.lazysoft.com/
+#@+node:ekr.20101129064803.6060: *4* @url server code to interact with a running Leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/278aa85d7298a319/ef6446fcf6268c0d
 
-@language rest
+leoRemote.py
+#@+node:ekr.20101129064803.6061: *4* @url problem solving with graph traversals
+http://groups.google.com/group/leo-editor/browse_thread/thread/2e1b240b023b545e/8e9164b52ff25199
+
+Cool slide show: very technical, about graph traversals, from AT&T technical talk
+
+http://www.slideshare.net/slidarko/problemsolving-using-graph-traversals-searching-scoring-ranking-and-recommendation
+#@+node:ekr.20101127154340.5935: *3* Apps
 #@+node:ekr.20101127154340.6806: *4* @url review board: code review
 http://www.reviewboard.org/
 
@@ -3972,6 +3978,75 @@ http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=
 @language rest
 
 gen_python_api.py generates a python.api file for SciTE
+#@+node:ekr.20101127201907.5952: *3* Data bases
+#@+node:ekr.20101127154340.6856: *4* @url lazysoft: cool db (sentences)
+http://www.lazysoft.com/
+
+@language rest
+#@+node:ekr.20101127201907.5953: *4* @url persistent trees: couchDB
+http://eclipsesource.com/blogs/2009/12/13/persistent-trees-in-git-clojure-and-couchdb-data-structure-convergence/
+
+@language rest
+
+
+Thread: Interesting post on data tree design
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/e4646371478cd30/44eba97b45bd53b3
+#@+node:ekr.20101127201907.5947: *3* Docs
+#@+node:ekr.20101127201907.5949: *4* @url new design for colorer
+http://groups.google.com/group/leo-editor/browse_thread/thread/9fb569af95eee493/00c3bbe120567771
+
+Thread: A new design for the incremental colorer
+
+This long posting will discuss a new design for an incremental
+colorizer using QSyntaxHighlighter.  The essential features of this
+design became apparent during yesterday's walk. 
+#@+node:ekr.20101127201907.5945: *4* @url docs for my successor
+http://groups.google.com/group/leo-editor/browse_thread/thread/440bbf170787c5ed/c228a9fd1d429fa6
+
+@language rest
+#@+node:ekr.20101127201907.5946: *4* @url Leo's MVC architecture
+http://groups.google.com/group/leo-editor/browse_thread/thread/6b77a59a3a5c7cbb/f26164f24bee68d2
+
+@language rest
+#@+node:ekr.20101127201907.5948: *4* @url one damn fine checkin
+http://groups.google.com/group/leo-editor/browse_thread/thread/278442febf1a1965/6a6640976c23935f
+
+@language rest
+
+configure_tags killing performance again
+
+EKR:
+
+Rev 2119 contains what appears to be a major improvement in speed:
+
+- leoQTextEditWidget.SetAllText now sets a lockout that prevents a duplicate
+  recoloring of text. This doubles the speed of the syntax colorer, and almost
+  doubles the speed of unit tests!
+
+- updateSyntaxColorer and colorize set self.flag = False for large body text.
+  This doesn't prevent recolor from being called, but it does short-circuit
+  recolor.
+
+And yes, configure_tags is called only by the ctor, that is, just once. 
+
+Ville:
+
+Now that was one damn fine checkin... 
+#@+node:ekr.20101127201907.5951: *4* @url Stupendous Aha re unit tests
+http://groups.google.com/group/leo-editor/browse_thread/thread/47dfb2e1767d2cda/8e658c5b73406a8d
+
+@language rest
+
+I have gotten *zero* responses to my 42 post:
+http://groups.google.com/group/leo-and-pylint/browse_thread/thread/3c...
+
+I should have remembered that nobody reads long posts. So here is the
+Aha in a nutshell:
+
+Unit tests are not just for testing!  They are *the* master tool for
+programming, design, testing, refactoring, studying code, or *anything
+else*. 
 #@+node:ekr.20101127154340.6805: *3* Editors
 #@+node:ekr.20101127154340.6807: *4* @url pyxides
 http://groups.google.com/group/pyxides
@@ -4029,9 +4104,7 @@ http://orgmode.org/worg/org-contrib/babel/intro.php
 For newbies (and for power users too, for that matter), it may be helpful to
 have a "Find and Replace" dialog box similar to the one below:
 
-@language rest
-
-.. image: c:/prog/findReplace.jpg
+.. image:: c:/prog/findReplace.jpg
 
 #@+node:ekr.20101127152442.5886: *4* @image find/replace dialog
 c:/prog/findReplace.jpg
@@ -4051,6 +4124,12 @@ http://www.blender.org/
 @language rest
 #@+node:ekr.20101127154340.6809: *4* @url tinkerpop: graphics tools
 http://www.tinkerpop.com/
+#@+node:ekr.20101129064803.6061: *4* @url problem solving with graph traversals
+http://groups.google.com/group/leo-editor/browse_thread/thread/2e1b240b023b545e/8e9164b52ff25199
+
+Cool slide show: very technical, about graph traversals, from AT&T technical talk
+
+http://www.slideshare.net/slidarko/problemsolving-using-graph-traversals-searching-scoring-ranking-and-recommendation
 #@+node:ekr.20101127152442.5887: *3* Gui
 #@+node:ekr.20101127152442.5888: *4* @url cool hack: detach body editor
 http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
@@ -4133,6 +4212,139 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
 
 A few buttons turns Leo into a competitor for google groups.
 
+#@+node:ekr.20101129064803.6062: *4* @url stickynotes_plus and markdown
+http://groups.google.com/group/leo-editor/browse_thread/thread/f8234a8fdeb08d22/4f42eafa955eae9b
+
+Rich text editing in Leo
+
+markdown: http://www.freewisdom.org/projects/python-markdown/
+
+his is a Python implementation of John Gruber's Markdown. It is almost
+completely compliant with the reference implementation.
+
+http://daringfireball.net/projects/markdown/
+
+Markdown is a text-to-HTML conversion tool for web writers. Markdown allows you
+to write using an easy-to-read, easy-to-write plain text format, then convert it
+to structurally valid XHTML (or HTML).
+#@+node:ekr.20101129064803.6063: *4* @url leo+emacs+pida
+http://groups.google.com/group/leo-editor/browse_thread/thread/f65470074f6573ab/c73d5b313526d5af
+
+pida: http://pida.co.uk/
+
+PIDA is an IDE (integrated development environment). PIDA is different from
+other IDEs in that it will use the tools you already have available rather than
+attempting to reinvent each one. PIDA is written in Python with the PyGTK
+toolkit, and although is designed to be used to program in any language, PIDA
+has fancy Python IDE.
+#@+node:ekr.20101129064803.6065: *4* @url leoremote.py
+http://groups.google.com/group/leo-editor/browse_thread/thread/66bcdc5cac03f5ad/0528c66838f1726d
+
+communicating with a running Leo
+
+@language rest
+
+Terry Brown
+
+For some time I've wanted a simple way to make an running leo session
+load a file from the command line, like emacs-client.\
+
+Now, thanks to Ville, I also want a way to make an running leo session
+pop up a stickynote window (which would correspond to an automatically
+created node which would probably use current data and time as a
+headstring).
+
+Ville
+
+First working version of this (using qt) is now on trunk.
+
+Testing it requires some manual work:
+
+1. bzr pull
+2. Put this script (it's a simple example client) to your leo-editor
+directory: http://pastebin.com/f2bcbfd36
+3. Enable leoremote.py plugin
+4. Launch leo, do alt-x leoserv-start. The leo process where you last
+ran leoserv-start is always the session that will receive your
+commands
+5. Try running the script (it's a python script, not leo script) you
+created at #2 from another command prompt 
+
+Terry
+
+Very very cool Ville, thanks.
+
+Here http://pastebin.com/mf678e24 is my version of a functioning
+stickynote script. 
+
+And here: http://pastebin.com/m236194c
+
+is a quick hack at a script to edit (or create and edit) a file in leo
+from the command line. 
+
+Terry -> EKR
+
+> Can you explain in more detail.  I am totally lost about why this
+> gives us anything new.  Thanks.
+
+It's probably of little benefit to people who work with mouse, menus, and icons
+all the time. But if you do everything from the command line (i.e. your OS's
+shell), then it makes moving things into leo much smoother.
+
+Suppose I've run leo and checked my todo items for the day, and now
+leo's buried under some other window and I'm working in the shell in
+some directory I've just created where I've just unzipped something and
+now I want to edit a file that was in the .zip.
+
+I can either:
+
+  - find the leo window
+  - insert a node
+  - active the open file dialog
+  - navigate to the directory containing this file
+  - select the file
+  - and finally do the editing I want to do
+
+or, with Ville's communication to the running leo:
+
+  - enter on the command line `led foo.txt`
+  - and do the editing I want to do
+
+where led is a script which causes the running leo to create an @edit
+node containing foo.txt and pop to the front with the node selected.
+
+Previously I was much more likely to use emacs, just because it was
+easier to invoke that way from the command line.
+
+So, opening files, creating sticky notes, invoking leo to handle output
+from grep or diff or whatever - all these things are better now. 
+
+
+Matt Wilkie
+
+The corresponding point and click process for this scenario is
+
+a) select > r-click > Edit with Leo
+b) or drag'n'drop from folder to Leo icon on task bar (or window if visible)
+
+In short, I see this being a productivity boost for all users. 
+#@+node:ekr.20101129064803.6066: *5* @url  Ville's script
+http://pastebin.com/f2bcbfd36
+
+from leo.external import lproto
+import os
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+print "will connect to",addr
+pc  = lproto.LProtoClient(addr)
+pc.send('''
+
+g.es("hello world from remote") 
+c = g.app.commanders()[0]
+
+''')
+#@+node:ekr.20101129064803.6067: *5* @url Terry's led script
+http://pastebin.com/m236194c
 #@+node:ekr.20101127152442.5903: *4* Ville
 #@+node:ekr.20101127152442.5904: *5* @url use json to represent trees
 http://mail.google.com/mail/#label/Cool/121a1f23e75fc348
@@ -4268,6 +4480,10 @@ that directly reflects the source snapshot at that tag.
 http://groups.google.com/group/leo-editor/browse_thread/thread/32c3a295d2dae35b
 #@+node:ekr.20101127154340.6852: *5* @url codewise: ville's code completer
 http://www.mail-archive.com/leo-editor@googlegroups.com/msg10145.html
+#@+node:ekr.20101129064803.6060: *5* @url server code to interact with a running Leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/278aa85d7298a319/ef6446fcf6268c0d
+
+leoRemote.py
 #@+node:ekr.20101127154340.6826: *3* Leo urls
 #@+node:ekr.20101127154340.6827: *4* @url NSIS manual
 http://nsis.sourceforge.net/Docs/Contents.html
@@ -4300,6 +4516,21 @@ http://pexpect.sourceforge.net/pexpect.html
 
 pexpect: a Python module for spawning child applications and
 controlling them automatically. 
+#@+node:ekr.20101129064803.6059: *4* @url pynotify: wait for a file to change
+http://groups.google.com/group/leo-editor/browse_thread/thread/2b6cceebd7cd2e3/dddcb73e2a6469b9
+
+@language rest
+
+Linux only
+
+For using inotify from Python, I've used pyinotify; it seems to be a
+bit more mature: 
+
+http://pypi.python.org/pypi/pyinotify/0.9.1
+
+There's also inotifyx: (more portable?)
+
+http://pypi.python.org/pypi/inotifyx/0.1.1 
 #@+node:ekr.20101127154340.6804: *4* @url python trace module
 http://docs.python.org/library/trace.html
 
@@ -4549,6 +4780,205 @@ http://www.egenix.com/products/python/mxBase/mxTextTools/
 @language rest
 #@+node:ekr.20101127154340.6847: *4* @url 2die4 games: TL (very cool rst stuff)
 http://www.2die4games.com/
+
+Thread: TL's 2die4games web site
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cace15fe101e4844/6acd66a982bc063b
+#@+node:ekr.20101127201907.5950: *4* @url idea - presentation tool
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106/478c773f875815db
+
+@language rest
+
+- Create one QWebView window, zoom it in to have large fonts
+- Create @button that converts current node containing
+  restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and
+leo would be in your private computer. You can easily edit the text, or find new
+interesting slides to present in privacy of your own screen.
+
+=====
+
+Terry:
+#@+node:ekr.20101127201907.5954: *4* @url rst/html in email
+http://groups.google.com/group/leo-editor/browse_thread/thread/d119424cbccc96df/379a0600dfb8f4ca?lnk=gst&q=terry+brown#379a0600dfb8f4ca
+
+@language rest
+
+Was: "Anchors" as pseudo-persistent positions
+
+Now: OT: rst/html in email
+
+Important : You should try and view the HTML version of this message!
+
+On Thu, 10 Dec 2009 10:46:05 -0600 Terry Brown <terry_n_brown@yahoo.com> wrote:
+
+> Hey - would it be cool to have an email system which lets you write
+> in rst and then sends both text (rst) and html forms...
+
+Despite the fact y'all failed to chorus "Yes it would" ;-) I went ahead and set
+it up in Claws-mail
+
+   1.
+
+      Add an rst-preview button to the Claws-mail compose window. It just runs a
+      user command on the body text:
+
+      | rst2pyg >~/.tmp.html; x-www-browser ~/.tmp.html
+
+      rst2pyg is included below.
+   2.
+
+      Add an indent button to the Claws-mail compose window. It just runs a user command on the selected text:
+
+          | sed 's/^/  /' |
+
+   3.
+
+      Write rst2email, included below.
+   4.
+
+      Use Send Later for messages you want to process, so rst2email can get at them in the queue directory.
+   5.
+
+      You can get rst2email_pygments.py (as imported by both rst2email and rst2pyg) from my blog, it's the file at the end of this page.
+
+rst2email::
+
+    #!/usr/bin/python
+    """rst2email - look for messages in an email queue folder and
+    add an html part by processing the text part as rst
+
+    Terry Brown, terry_n_brown@yahoo.com
+    """
+
+    import email
+    import mailbox
+    from email.mime.text import MIMEText
+    from docutils.core import publish_string
+
+    # this import adds the sourcecode:: directive to rst
+    import rst2email_pygments
+
+    queue = "/home/tbrown/Mail/queue"
+
+    mbox = mailbox.MH(queue, email.message_from_file)
+
+    for msgkey in mbox.iterkeys():
+        # d = email.utils.parsedate(msg.get('Date'))
+
+        msg = mbox[msgkey]
+
+        if not msg.is_multipart():
+            txt = msg.get_payload()
+            html = publish_string(txt, writer_name='html')
+            part1 = MIMEText(txt, 'plain')
+            part2 = MIMEText(html, 'html')
+            part1["X-rst2email"] = "rst"
+            part2["X-rst2email"] = "html"
+            msg.set_type("multipart/alternative")
+            msg.set_payload([])
+            msg.attach(part1)
+            msg.attach(part2)
+            mbox[msgkey] = msg
+        else:
+            txtpart = None
+            htmlpart = None
+            for part in msg.walk():
+                if part.get_content_type() == "text/plain":
+                    if txtpart:  # can't handle more than one
+                        txtpart = None
+                        break
+                    txtpart = part
+                if part.get_content_type() == "text/html":
+                    if htmlpart:  # can't handle more than one
+                        htmlpart = None
+                        break
+                    htmlpart = part
+            if txtpart and htmlpart and not txtpart.is_multipart():
+                htmlpart.set_payload(
+                    publish_string(txtpart.get_payload(),
+    writer_name='html')) txtpart["X-rst2email"] = "rst"
+                htmlpart["X-rst2email"] = "html"
+                msg.set_type("multipart/alternative")
+                mbox[msgkey] = msg
+
+rst2pyg::
+
+
+
+    #!/usr/bin/python
+
+    from docutils.core import publish_string
+    import rst2email_pygments
+    import sys
+
+    print publish_string(sys.stdin.read(), writer_name='html')
+
+===== Ville M. Vainio	
+
+This kind of stuff makes me think html email is actually a somewhat tolerable concept.
+
+For thunderbird, there is pasteCode:
+
+https://addons.mozilla.org/en-US/thunderbird/addon/4046
+
+===== Terry Brown
+
+Maybe :-) even as I wrote it it was more because I thought email
+rendered (to html) from rst was cool, rather than that I think html
+email is necessary.  It's funny looking at postings in this list vs. my
+main inbox, here very very few msgs have html parts, whereas in the
+main inbox at least 50% do.
+
+Did occur to me that it would probably be possibly to set up some
+combination of unicode chrs and css which would render leo trees
+nicely in an html email.
+#@+node:ekr.20101129064803.6064: *4* @url rst/latex tricks
+http://groups.google.com/group/leo-editor/browse_thread/thread/d052979864a278bc/3ff8f82b2a80774d
+
+@language rest
+
+python in leo to generate rst
+
+Here's a fun example of rst / latex tricks.  I want (well, the report
+recipients want) 16 similar figures included.  I write a little python
+in an rst comment, use ``Ctrl-b`` to execute it, and then an rst ``..
+include::`` directive to include its output.  Here's the rst:
+
+.. sourcecode:: rst
+
+  The range of each input variable which occurs within each cluster
+  could be examined to assign a biological meaning to each cluster.
+  Figures `Upland cluster 1 and variables`_ through
+  `Wetland cluster 8 and variables`_ show the
+  relationships between clusters and variables.  The maps
+  give a more general view of the clusters, and
+  a variable by variable interpretation of each cluster may
+  not add much useful information.
+
+  ..  python
+
+    out = file('/home/tbrown/Desktop/Proj/AitkinMap/varvsclust.rst', 'w')
+    def pnt(x): out.write(x+'\n')
+    for uw in 'Upland', 'Wetland':
+      for i in range(1,9):
+        pnt(".. figure:: plots/%s_Cluster_%d.pdf" % (uw,i))
+        pnt("   :width: 95%")
+        pnt("")
+        pnt("   %s cluster %d and variables" % (uw,i))
+        pnt("")
+    out.close()
+
+  .. include:: varvsclust.rst
+
+Note: The .. python is just a comment.  "Empty" comments like::
+
+    ..
+      print 40+2
+      print 'done'
+
+don't work, because empty comments don't consume indented blocks
 #@+node:ekr.20101127152442.5901: *3* Video tools
 #@+node:ekr.20101127154340.6841: *4* @url screenr: instant screencasts for twitter
 http://screenr.com/
