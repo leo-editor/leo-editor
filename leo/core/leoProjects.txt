@@ -2686,7 +2686,21 @@ ic.run(
 #@+node:ekr.20101127152442.5915: *3* Improve handling of @url nodes
 @nocolor-node
 
-The first body line is the url if the body text is not empty.
+The new rule is simple: if the body text contains any text the first line of the
+body text is taken to be the url. There is no longer any need to put '--' in the
+headline.
+
+More importantly, you can put anything you like in the body text following the
+first line. Other url's, notes, even .. graphics:: directives for the
+viewrendered plugin.
+
+These improvements allow Leo to be what it should have been a long time ago: the
+world's best organizer of url's. My typical usage is::
+
+    @url fizbatz: short description of fizbatz (headline)
+    http://fizbatz.org (body text)
+    @language rest
+    Why I care about fizbatz.
 #@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
 def OnIconDoubleClick (self,p):
 
