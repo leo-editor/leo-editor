@@ -5,6 +5,7 @@
 @nocolor-node
 
 To be done early in the release cycle.
+#@+node:ekr.20101129095441.5963: *3* Improve screenshots page
 #@+node:ekr.20101119030344.5838: *3* script to turn all commands into @g.command nodes
 '''Add @g.command(command_name) before all commands.'''
 
