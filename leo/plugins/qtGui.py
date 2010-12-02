@@ -57,6 +57,16 @@ if QtCore is None:
         print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
         raise
 
+try:
+    from nested_splitter import NestedSplitter
+    splitter_class = NestedSplitter
+
+    # disable special behavior, turned back on by associated plugin,
+    # if the plugin's loaded
+    NestedSplitter.enabled = False
+except ImportError:
+    splitter_class = QtGui.QSplitter
+
 # remove scintilla dep for now    
 if 0:    
     try:
@@ -1835,7 +1845,7 @@ class DynamicWindow(QtGui.QMainWindow):
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
         # Splitter two is the "main" splitter, containing splitter.
-        splitter2 = QtGui.QSplitter(parent)
+        splitter2 = splitter_class(parent)
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
 
@@ -1843,7 +1853,7 @@ class DynamicWindow(QtGui.QMainWindow):
             QtCore.SIGNAL("splitterMoved(int,int)"),
             self.onSplitter2Moved)
 
-        splitter = QtGui.QSplitter(splitter2)
+        splitter = splitter_class(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
 

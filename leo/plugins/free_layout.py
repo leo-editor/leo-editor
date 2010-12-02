@@ -10,8 +10,7 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-from PyQt4 import QtCore, QtGui
-Qt = QtCore.Qt
+from PyQt4 import QtCore, QtGui, Qt
 
 from nested_splitter import NestedSplitter
 def init ():
@@ -29,32 +28,66 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if not c: return
 
-    gui_top = c.frame.top
+    NestedSplitter.enabled = True
 
-    old = gui_top.findChild(QtGui.QWidget, "splitter_2")
-    new = NestedSplitter()
-    new.setObjectName("splitter_2")
+    # define menu callbacks here where c is in scope
+    def offer_tabs(menu, splitter, index, button_mode):
 
-    def copy_splitter(old, new):
+        if not button_mode:
+            return
 
-        for w in [old.widget(i) for i in range(old.count())]:
+        top_splitter = c.frame.top.splitter_2.top()
+        logTabWidget = top_splitter.findChild(QtGui.QWidget, "logTabWidget")
 
-            if isinstance(w, QtGui.QSplitter):
+        for n in range(logTabWidget.count()):
 
-                new_child = NestedSplitter()
-                new_child.setObjectName(w.objectName())
+            act = QtGui.QAction("Add "+logTabWidget.tabText(n), splitter)
 
-                copy_splitter(w, new_child)
+            def wrapper(w=logTabWidget.widget(n), s=splitter,
+                        t=logTabWidget.tabText(n)):
+                w.setHidden(False)
+                w._is_from_tab = t
+                s.replace_widget(s.widget(index), w)
+            act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+            menu.addAction(act)
 
-                new.addWidget(new_child)
+    def offer_viewrendered(menu, splitter, index, button_mode):
 
-            else:
+        if not button_mode:
+            return
 
-                new.addWidget(w)
+        if hasattr(c, "viewrendered") and c.viewrendered:
 
-    copy_splitter(old, new)
+            act = QtGui.QAction("Add viewrendered", splitter)
 
-    gui_top.splitter_2 = new
-    gui_top.splitter = new.findChild(QtGui.QWidget, "splitter")
+            def wrapper(w=c.viewrendered, s=splitter):
+                s.replace_widget(s.widget(index), w)
+            act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+            menu.addAction(act)
 
-    old.parent().layout().addWidget(new)
+
+    splitter = c.frame.top.splitter_2.top()
+
+    # register menu callbacks
+    splitter.register(offer_tabs)
+    splitter.register(offer_viewrendered)
+
+    # when NestedSplitter disposes of children, it will either close
+    # them, or move them to another designated widget.  Here we set
+    # up two designated widgets
+
+    logTabWidget = splitter.findChild(QtGui.QWidget, "logTabWidget")
+    splitter.root.holders['_is_from_tab'] = logTabWidget
+    splitter.root.holders['_is_permanent'] = splitter
+
+    # allow body and tree widgets to be "removed" to tabs on the log tab panel    
+    bodyWidget = splitter.findChild(QtGui.QFrame, "bodyFrame")
+    bodyWidget._is_from_tab = "Body"
+    treeWidget = splitter.findChild(QtGui.QFrame, "outlineFrame")
+    treeWidget._is_from_tab = "Tree"
+    # also the other tabs will have _is_from_tab set on them by the
+    # offer_tabs menu callback above
+
+    # if the log tab panel is removed, move it back to the top splitter
+    logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
+    logWidget._is_permanent = True
