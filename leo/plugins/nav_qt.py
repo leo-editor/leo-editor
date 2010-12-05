@@ -65,8 +65,24 @@ class pluginController:
 
         self.c = c
         c._prev_next = self
+        self.popularity = {}
+        g.registerHandler("select2", self.update_popularity)
+        g.tree_popup_handlers.append(self.popular_nodes)
         self.makeButtons()
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
+    #@+node:ville.20090518182905.7868: *3* clickNext
+    def clickNext(self):
+        c = self.c
+        p = c.goNextVisitedNode()
+        # g.trace(p)
+        if p: c.selectPosition(p)
+    #@+node:ville.20090518182905.7867: *3* clickPrev
+    def clickPrev(self):
+        c = self.c
+        p = c.goPrevVisitedNode()
+        # g.trace(p)
+        #if p: c.selectPosition(p)
+
     #@+node:ville.20090518182905.5427: *3* makeButtons
     def makeButtons(self):
         ib_w = self.c.frame.iconBar.w
@@ -79,19 +95,47 @@ class pluginController:
         act_r.connect(act_r, QtCore.SIGNAL("triggered()"), self.clickNext)
         self.c.frame.iconBar.add(qaction = act_l, command = self.clickPrev)
         self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
-    #@+node:ville.20090518182905.7867: *3* clickPrev
-    def clickPrev(self):
-        c = self.c
-        p = c.goPrevVisitedNode()
-        # g.trace(p)
-        #if p: c.selectPosition(p)
 
-    #@+node:ville.20090518182905.7868: *3* clickNext
-    def clickNext(self):
+        # failed attempt to add custom context menu to prev/next button
+        # b = self.c.frame.iconBar.w.widgetForAction(act_l)
+        # b.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        #
+        #   def history(pos, b=b):
+        #     print 'running history'
+        #     menu = QtGui.QMenu(parent=b)
+        #     menu.addAction(act_l)
+        #     menu.addAction(QtGui.QAction('other', b))
+        #     menu.exec_(b.mapToGlobal(pos))
+        #
+        #   b.connect(b,
+        #     QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+        #     history)
+    #@+node:tbrown.20101205145115.14821: *3* popular_nodes
+    def popular_nodes(self, c, p, parent_menu):
+
+        menu = QtGui.QMenu("History...", parent_menu)
+
+        for i in sorted(self.popularity.values(), reverse=True)[:20]:
+            action = menu.addAction(i[1])
+            def wrapper(gnx=i[2]):
+                self.c.selectPosition(gnx)
+            action.connect(action, QtCore.SIGNAL("triggered()"), wrapper)
+
+        start = parent_menu.actions()
+        if start:
+            parent_menu.insertMenu(start[0], menu)
+        else:
+            parent_menu.addMenu(menu)
+    #@+node:tbrown.20101205145115.14820: *3* update_popularity
+    def update_popularity(self, tag, keywords):
+
+        if keywords['c'] != self.c:
+            return
+
         c = self.c
-        p = c.goNextVisitedNode()
-        # g.trace(p)
-        if p: c.selectPosition(p)
+
+        self.popularity[c.p.gnx] = (self.popularity.get(c.p.gnx, [0])[0]+1,
+            c.p.h, c.p)
     #@-others
 #@-others
 #@-leo
