@@ -113,6 +113,9 @@ class pluginController:
     #@+node:tbrown.20101205145115.14821: *3* popular_nodes
     def popular_nodes(self, c, p, parent_menu):
 
+        if c != self.c:
+            return
+
         menu = QtGui.QMenu("History...", parent_menu)
 
         for i in sorted(self.popularity.values(), reverse=True)[:20]:
