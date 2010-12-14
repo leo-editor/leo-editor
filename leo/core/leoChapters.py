@@ -890,7 +890,7 @@ class chapter:
         c.selectPosition(p)
         c.redraw_after_select(p)
         g.doHook('hoist-changed',c=c)
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20070317131708: *4* chapter.findPositionInChapter
     def findPositionInChapter (self,p1,strict=False):
 

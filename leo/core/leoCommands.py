@@ -171,7 +171,7 @@ class baseCommands (object):
             c.commandsDict = {}
 
         c.frame.log.finishCreate()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20051007143620: *5* printCommandsDict
     def printCommandsDict (self):
 
@@ -207,6 +207,7 @@ class baseCommands (object):
         c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
         c.fixed                 = c.config.getBool('fixedWindow',default=False)
         c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
+        c.outlineHasInitialFocus= c.config.getBool('outline_pane_has_initial_focus')
         c.showMinibuffer        = c.config.getBool('useMinibuffer')
             # This option is a bad idea.
         c.putBitsFlag           = c.config.getBool('put_expansion_bits_in_leo_files',default=True)
@@ -214,7 +215,8 @@ class baseCommands (object):
         c.sparse_move           = c.config.getBool('sparse_move_outline_left')
         c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
         c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
-        c.stayInTree            = c.config.getBool('stayInTreeAfterSelect')
+        c.stayInTreeAfterSelect = c.config.getBool('stayInTreeAfterSelect')
+        c.stayInTreeAfterEdit   = c.config.getBool('stayInTreeAfterEditHeadline')
         c.smart_tab             = c.config.getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
         c.tab_width             = c.config.getInt('tab_width') or -4
@@ -841,10 +843,11 @@ class baseCommands (object):
 
         # openWithFileName sets focus if ok.
         if not ok:
-            if c.config.getBool('outline_pane_has_initial_focus'):
-                c.treeWantsFocusNow()
-            else:
-                c.bodyWantsFocusNow()
+            c.initialFocusHelper()
+            ### if c.outlineHasInitialFocus:
+                # c.treeWantsFocus()
+            # else:
+                # c.bodyWantsFocus()
     #@+node:ekr.20090212054250.9: *7* c.createNodeFromExternalFile
     def createNodeFromExternalFile(self,fn):
 
@@ -1227,10 +1230,10 @@ class baseCommands (object):
 
         # *Safely* restore focus, without using the old w directly.
         if inBody:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
     #@+node:ekr.20031218072017.2835: *6* c.saveAs
     def saveAs (self,event=None):
 
@@ -1276,10 +1279,10 @@ class baseCommands (object):
 
         # *Safely* restore focus, without using the old w directly.
         if inBody:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
     #@+node:ekr.20070413045221: *6* saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
 
@@ -1340,10 +1343,10 @@ class baseCommands (object):
 
         # *Safely* restore focus, without using the old w directly.
         if inBody:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
     #@+node:ekr.20031218072017.2837: *6* revert
     def revert (self,event=None):
 
@@ -2599,7 +2602,7 @@ class baseCommands (object):
                     found,n,n2,p.h,repr(s[i:j])))  
 
             w.setInsertPoint(ins)
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             w.seeInsertPoint()
         #@-others
     #@+node:EKR.20040612232221: *6* c.goToScriptLineNumber
@@ -5144,7 +5147,8 @@ class baseCommands (object):
         c = self ; u = c.undoer
         p = c.p
         if not p or not p.hasNext():
-            c.treeFocusHelper() ; return
+            c.treeFocusHelper()
+            return
 
         # Make sure all the moves will be valid.
         next = p.next()
@@ -5391,7 +5395,6 @@ class baseCommands (object):
         c = self ; u = c.undoer ; p = c.p
         command = 'Promote'
         if not p or not p.hasChildren():
-            # c.treeWantsFocusNow()
             c.treeFocusHelper()
             return
 
@@ -5719,16 +5722,28 @@ class baseCommands (object):
         p.moveToVisNext(c)
         c.treeSelectHelper(p)
     #@+node:ekr.20070417112650: *6* utils
-    #@+node:ekr.20070226121510: *7*  treeFocusHelper
-    def treeFocusHelper (self):
-
+    #@+node:ekr.20070226121510: *7*  c.xFocusHelper
+    def treeEditFocusHelper (self):
         c = self
-
-        if c.config.getBool('stayInTreeAfterSelect'):
-            c.treeWantsFocusNow()
+        if c.stayInTreeAfterEdit:
+            c.treeWantsFocus()
         else:
-            c.bodyWantsFocusNow()
-    #@+node:ekr.20070226113916: *7*  treeSelectHelper
+            c.bodyWantsFocus()
+
+    def treeFocusHelper (self):
+        c = self
+        if c.stayInTreeAfterSelect:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+
+    def initialFocusHelper (self):
+        c = self
+        if c.outlineHasInitialFocus:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+    #@+node:ekr.20070226113916: *7*  c.treeSelectHelper
     def treeSelectHelper (self,p):
 
         c = self
@@ -7298,7 +7313,7 @@ class baseCommands (object):
         else:
             c.navTime = None
             c.navPrefix = ''
-        c.treeWantsFocusNow()
+        c.treeWantsFocus()
     #@+node:ekr.20061002095711.1: *5* c.navQuickKey
     def navQuickKey (self):
 

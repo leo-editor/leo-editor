@@ -520,7 +520,7 @@ class textTree(leoFrame.leoTree):
   #@+node:ekr.20081121105001.75: *3* endUpdate
   #@+node:ekr.20081121105001.76: *3* __init__
   def __init__(self, frame):
-    # undoc: openWithFileName -> treeWantsFocusNow -> c.frame.tree.canvas
+    # undoc: openWithFileName -> treeWantsFocus -> c.frame.tree.canvas
     self.canvas = None
 
     leoFrame.leoTree.__init__(self, frame)

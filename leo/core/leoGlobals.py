@@ -2303,10 +2303,11 @@ def finishOpen(c):
         c.chapterController.finishCreate()
     if k:
         k.setDefaultInputState()
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
+    c.initialFocusHelper()
+    ### if c.outlineHasInitialFocus:
+        # c.treeWantsFocus()
+    # else:
+        # c.bodyWantsFocus()
     if k:
         k.showStateAndMode()
     c.frame.initCompleteHint()

@@ -1911,22 +1911,22 @@ class editCommandsClass (baseEditCommandsClass):
     def focusToBody (self,event):
         '''Put the keyboard focus in Leo's body pane.'''
         c = self.c ; k = c.k
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         if k:
             k.setDefaultInputState()
             k.showStateAndMode()
 
     def focusToLog (self,event):
         '''Put the keyboard focus in Leo's log pane.'''
-        self.c.logWantsFocusNow()
+        self.c.logWantsFocus()
 
     def focusToMinibuffer (self,event):
         '''Put the keyboard focus in Leo's minibuffer.'''
-        self.c.minibufferWantsFocusNow()
+        self.c.minibufferWantsFocus()
 
     def focusToTree (self,event):
         '''Put the keyboard focus in Leo's outline pane.'''
-        self.c.treeWantsFocusNow()
+        self.c.treeWantsFocus()
     #@+node:ekr.20060211063744.1: *4* clicks in the headline
     # These call the actual event handlers so as to trigger hooks.
 
@@ -6542,7 +6542,7 @@ class macroCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k
 
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
 
         for event in macro:
             # New in Leo 4.6: macro entries are leoKeyEvents.
@@ -7407,7 +7407,7 @@ class minibufferFind (baseEditCommandsClass):
         c = self.c ; k = c.k ; h = self.finder ; w = h.change_ctrl
 
         c.frame.log.selectTab('Find')
-        c.minibufferWantsFocusNow()
+        c.minibufferWantsFocus()
 
         s = w.getAllText()
 
@@ -7421,7 +7421,7 @@ class minibufferFind (baseEditCommandsClass):
         c = self.c ; k = c.k ; h = self.finder ; w = h.find_ctrl
 
         c.frame.log.selectTab('Find')
-        c.minibufferWantsFocusNow()
+        c.minibufferWantsFocus()
 
         s = w.getAllText()
         while s.endswith('\n') or s.endswith('\r'):
@@ -8054,7 +8054,7 @@ class searchCommandsClass (baseEditCommandsClass):
         self.ifinder.in_headline = in_headline
         c.selectPosition(p)
         c.redraw_after_select(p)
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         w.setSelectionRange(i,j)
 
         # g.trace(p.h,i,j)
@@ -8065,7 +8065,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
         k.clearState()
         k.resetLabel()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20090204084607.2: *5* iSearch
     def iSearch (self,again=False):
 
@@ -8168,7 +8168,7 @@ class searchCommandsClass (baseEditCommandsClass):
         else:
             c.selectPosition(p)
             w = c.frame.body.bodyCtrl
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             if i > j: i,j = j,i
             w.setSelectionRange(i,j)
 
@@ -8216,7 +8216,7 @@ class searchCommandsClass (baseEditCommandsClass):
         else:
             w = bodyCtrl
         if w == bodyCtrl:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         return w
     #@+node:ekr.20050920084036.262: *5* startIncremental
     def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
@@ -8256,7 +8256,7 @@ class searchCommandsClass (baseEditCommandsClass):
             ),protect=True)
 
         k.setState('isearch',1,handler=self.iSearchStateHandler)
-        c.minibufferWantsFocusNow()
+        c.minibufferWantsFocus()
     #@-others
 #@+node:ekr.20051025071455: ** Spell classes
 #@+others
@@ -8407,12 +8407,12 @@ class spellTabHandler (leoFind.leoFind):
                 w.setSelectionRange(start,start+len(selection))
                 c.frame.body.onBodyChanged("Change",oldSel=oldSel)
                 c.invalidateFocus()
-                c.bodyWantsFocusNow()
+                c.bodyWantsFocus()
                 return True
 
         # The focus must never leave the body pane.
         c.invalidateFocus()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         return False
     #@+node:ekr.20051025071455.40: *5* find & helpers
     def find (self,event=None):
@@ -8438,7 +8438,7 @@ class spellTabHandler (leoFind.leoFind):
             i,j = w.getSelectionRange()
             self.tab.fillbox(alts,word)
             c.invalidateFocus()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             # Restore the selection range.
             w.setSelectionRange(i,j,insert=ins)
             w.see(ins)
@@ -8446,7 +8446,7 @@ class spellTabHandler (leoFind.leoFind):
             g.es("no more misspellings")
             self.tab.fillbox([])
             c.invalidateFocus()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
     #@+node:ekr.20051025071455.45: *6* findNextMisspelledWord
     def findNextMisspelledWord(self):
         """Find the next unknown word."""

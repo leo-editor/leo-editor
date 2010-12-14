@@ -818,7 +818,7 @@ class leoBody:
         self.selectLabel(w)
         self.selectEditor(w)
         self.updateEditors()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20060528132829: *6* assignPositionToEditor
     def assignPositionToEditor (self,p):
 
@@ -935,7 +935,7 @@ class leoBody:
         if w and w == self.c.frame.body.bodyCtrl:
             if w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
-                c.bodyWantsFocusNow()
+                c.bodyWantsFocus()
             return
 
         try:
@@ -1005,7 +1005,7 @@ class leoBody:
             except Exception:
                 pass
         #@-<< restore the selection, insertion point and the scrollbar >>
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         return 'break'
     #@+node:ekr.20060528131618: *6* updateEditors
     # Called from addEditor and assignPositionToEditor
@@ -1111,7 +1111,7 @@ class leoBody:
             if chapter != oldChapter:
                 # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
-                c.bodyWantsFocusNow()
+                c.bodyWantsFocus()
     #@+node:ekr.20070424092855: *6* updateInjectedIvars
     # Called from addEditor and assignPositionToEditor.
 
@@ -1776,15 +1776,16 @@ class leoFrame:
         else:
             c.endEditing()
             # g.trace('setting focus')
-            if c.config.getBool('stayInTreeAfterEditHeadline'):
-                c.treeWantsFocusNow()
-            else:
-                c.bodyWantsFocusNow()
+            c.treeEditFocusHelper() # 2010/12/14
+            ### if c.stayInTreeAfterEdit:
+                # c.treeWantsFocus()
+            # else:
+                # c.bodyWantsFocus()
 
-                if k:
-                    k.setDefaultInputState()
-                    # Recolor the *body* text, **not** the headline.
-                    k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            if k and not c.stayInTreeAfterEdit:
+                k.setDefaultInputState()
+                # Recolor the *body* text, **not** the headline.
+                k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@+node:ekr.20031218072017.3983: *5* insertHeadlineTime
     def insertHeadlineTime (self,event=None):
 
@@ -2101,7 +2102,7 @@ class leoTree:
 
         # Define these here to keep pylint happy.
         self.canvas = None
-        self.stayInTree = True
+        ### self.stayInTree = True
         self.trace_select = None
     #@+node:ekr.20081005065934.7: *4* leoTree.mustBeDefined
     # List of methods that must be defined either in the base class or a subclass.
@@ -2242,10 +2243,11 @@ class leoTree:
                 dirtyVnodeList=dirtyVnodeList)
         if changed:
             c.redraw_after_head_changed()
-            if self.stayInTree:
-                c.treeWantsFocus()
-            else:
-                c.bodyWantsFocus()
+            c.treeEditFocusHelper() # 2010/12/14
+            ### if self.stayInTree:
+                # c.treeWantsFocus()
+            # else:
+                # c.bodyWantsFocus()
         else:
             c.frame.tree.setSelectedLabelState(p)
 
@@ -2535,10 +2537,11 @@ class leoTree:
                 theChapter.p = p.copy()
                 # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
-        if self.stayInTree:
-            c.treeWantsFocus()
-        else:
-            c.bodyWantsFocus()
+        c.treeFocusHelper() # 2010/12/14
+        ### if self.stayInTree:
+            # c.treeWantsFocus()
+        # else:
+            # c.bodyWantsFocus()
         #@-<< set the current node >>
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.
@@ -3008,7 +3011,7 @@ class nullTree (leoTree):
         self.fontName = None
         self.canvas = None
         self.redrawCount = 0
-        self.stayInTree = True
+        ### self.stayInTree = True
         self.trace_edit = False
         self.trace_select = False
         self.updateCount = 0

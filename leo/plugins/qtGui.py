@@ -2571,7 +2571,7 @@ class leoQtBody (leoFrame.leoBody):
         self.selectLabel(wrapper)
         self.selectEditor(wrapper)
         self.updateEditors()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20081121105001.213: *7* createEditor
     def createEditor (self,name):
 
@@ -2740,7 +2740,7 @@ class leoQtBody (leoFrame.leoBody):
             if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
                 if trace: report('select')
                 c.selectPosition(w.leo_p)
-                c.bodyWantsFocusNow()
+                c.bodyWantsFocus()
             elif trace and verbose: report('no change')
             return
 
@@ -2814,7 +2814,7 @@ class leoQtBody (leoFrame.leoBody):
             except Exception:
                 pass
         #@-<< restore the selection, insertion point and the scrollbar >>
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20081121105001.226: *6* updateEditors
     # Called from addEditor and assignPositionToEditor
 
@@ -2840,7 +2840,7 @@ class leoQtBody (leoFrame.leoBody):
                 self.recolorWidget(p,wrapper)
                 sb.setSliderPosition(pos)
 
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         w0.setSelectionRange(i,j,ins=ins)
         sb0.setSliderPosition(pos0)
     #@+node:ekr.20081121105001.227: *5* utils
@@ -3008,7 +3008,7 @@ class leoQtBody (leoFrame.leoBody):
             if chapter != oldChapter:
                 if trace: g.trace('***old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
-                c.bodyWantsFocusNow()
+                c.bodyWantsFocus()
     #@+node:ekr.20081121105001.234: *6* updateInjectedIvars
     def updateInjectedIvars (self,w,p):
 
@@ -3484,7 +3484,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #### c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20081121105001.255: *6* createSplitterComponents (qtFrame)
     def createSplitterComponents (self):
 
@@ -4149,15 +4149,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.contractBodyPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         elif wname.startswith('log'):
             f.contractLogPane()
-            c.logWantsFocusNow()
+            c.logWantsFocus()
         else:
             for z in ('head','canvas','tree'):
                 if wname.startswith(z):
                     f.contractOutlinePane()
-                    c.treeWantsFocusNow()
+                    c.treeWantsFocus()
                     break
     #@+node:ekr.20081121105001.299: *6* expandPane
     def expandPane (self,event=None):
@@ -4174,15 +4174,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.expandBodyPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         elif wname.startswith('log'):
             f.expandLogPane()
-            c.logWantsFocusNow()
+            c.logWantsFocus()
         else:
             for z in ('head','canvas','tree'):
                 if wname.startswith(z):
                     f.expandOutlinePane()
-                    c.treeWantsFocusNow()
+                    c.treeWantsFocus()
                     break
     #@+node:ekr.20081121105001.300: *6* fullyExpandPane
     def fullyExpandPane (self,event=None):
@@ -4199,15 +4199,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.fullyExpandBodyPane()
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         elif wname.startswith('log'):
             f.fullyExpandLogPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         else:
             for z in ('head','canvas','tree'):
                 if wname.startswith(z):
                     f.fullyExpandOutlinePane()
-                    c.bodyWantsFocusNow()
+                    c.bodyWantsFocus()
                     break
     #@+node:ekr.20081121105001.301: *6* hidePane
     def hidePane (self,event=None):
@@ -4224,15 +4224,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.hideBodyPane()
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         elif wname.startswith('log'):
             f.hideLogPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         else:
             for z in ('head','canvas','tree'):
                 if wname.startswith(z):
                     f.hideOutlinePane()
-                    c.bodyWantsFocusNow()
+                    c.bodyWantsFocus()
                     break
     #@+node:ekr.20081121105001.302: *6* expand/contract/hide...Pane
     #@+at The first arg to divideLeoSplitter means the following:
@@ -4310,10 +4310,10 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace(w,c.frame.body.bodyCtrl.widget)
 
         if w == frame.body.bodyCtrl.widget:
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         else:
             c.endEditing()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
     #@+node:ekr.20081121105001.306: *6* cascade
     def cascade (self,event=None):
 
@@ -5654,7 +5654,7 @@ class leoQtSpellTab:
         self.handler.find()
         self.updateButtons()
         c.invalidateFocus()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20081121105001.390: *5* onHideButton
     def onHideButton(self):
 

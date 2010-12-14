@@ -25459,7 +25459,7 @@ This is the body of the section.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -25737,7 +25737,7 @@ This is the body of the section.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26015,7 +26015,7 @@ it has two lines.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26295,7 +26295,7 @@ it has two lines.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26578,7 +26578,7 @@ This is the body of the section.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 

@@ -358,7 +358,7 @@ def createFile(c,parent,d):
     if ok == 'no':
         return False
     c.setHeadString(parent, '@'+atType+' '+d)
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     return True
 #@+node:tbrown.20080613095157.9: ** openFile
 def openFile(c,parent,d, autoload=False):
@@ -389,7 +389,7 @@ def openFile(c,parent,d, autoload=False):
     atType = c.config.getString('active_path_attype') or 'auto'
     parent.h = '@' + atType + ' ' + parent.h
 
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
 #@+node:tbrown.20080613095157.10: ** openDir
 def openDir(c,parent,d):
     """Expand / refresh an existing folder"""

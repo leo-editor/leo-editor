@@ -1306,7 +1306,7 @@ class undoer:
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         # g.trace(i,j,ins)
         w.setSelectionRange(i,j,insert=ins)
         w.seeInsertPoint()
@@ -1584,11 +1584,11 @@ class undoer:
             v.setDirty()
 
         if u.newSel:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             i,j = u.newSel
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             c.frame.body.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* undo & helpers...
     def undo (self,event=None):
@@ -1627,7 +1627,7 @@ class undoer:
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         w.setSelectionRange(i,j,insert=ins)
         w.seeInsertPoint()
         u.undoing = False
@@ -1977,11 +1977,11 @@ class undoer:
             v.setDirty() # Bug fix: Leo 4.4.6.
 
         if u.oldSel:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             i,j = u.oldSel
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             c.frame.body.setYScrollPosition(u.yview)
     #@-others
 #@+node:ekr.20031218072017.2243: ** class nullUndoer (undoer)
