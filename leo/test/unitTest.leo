@@ -26839,11 +26839,17 @@ This is the body of the section.&lt;/p&gt;
 &lt;/html&gt;
 </t>
 <t tx="ekr.20100827183358.5957">def run(self):
+    import sys
+    if not sys.platform.startswith('win') and \
+        g.isPython3: return
+    def clean(s):
+        return s.replace('\r','')
     c,p = self.c,self.p
     rc = c.rstCommands
     expected,got,source = self.setup()
     rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
-    rst,html = rc.source,rc.stringOutput
+    rst = clean(rc.source)
+    html = clean(rc.stringOutput)
     assert rst,'rst'
     assert html,'html'
     # Kludge: disregard version of docutils.
@@ -26851,17 +26857,19 @@ This is the body of the section.&lt;/p&gt;
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
-        ok = rst == child1.b and html == child2.b
+        child1_b = clean(child1.b)
+        child2_b = clean(child2.b)
+        ok = rst == child1_b and html == child2_b
         if not ok:
             got_html,got_rst = self.set_got(expected,got)
             got_html.b = html
             got_rst.b = rst
-        if rst != child1.b:
+        if rst != child1_b:
             self.report(child1,got_rst)
-        if html != child2.b:
+        if html != child2_b:
             self.report(child2,got_html)
-        assert rst == child1.b,'rst mismatch'
-        assert html == child2.b,'html mismatch'
+        assert rst == child1_b,'rst mismatch'
+        assert html == child2_b,'html mismatch'
     else:
         child = expected.insertAsNthChild(0)
         child.h,child.b = 'rst',rst

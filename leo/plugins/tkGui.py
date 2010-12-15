@@ -7979,7 +7979,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 # The *canvas* (not the headline) gets the focus so that
                 # tree bindings take priority over text bindings.
                 c.treeWantsFocusNow() # Now. New in Leo 4.5.
-                c.outerUpdate()
+                ### c.outerUpdate()
                 self.active = False
                 returnVal = 'break'
             #@-<< activate this window >>

@@ -6161,6 +6161,7 @@ class baseCommands (object):
     def request_focus(self,w):
 
         c = self
+        # g.trace(w,g.callers())
         if w: c.requestedFocusWidget = w
 
     def set_focus (self,w,force=False):
@@ -6168,7 +6169,7 @@ class baseCommands (object):
         trace = False # and g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: print('c.set_focus:',repr(w))
+            if trace: print('c.set_focus:',repr(w),c.shortFileName())
             g.app.gui.set_focus(c,w)
         else:
             if trace: print('c.set_focus: no w')
@@ -6362,8 +6363,8 @@ class baseCommands (object):
         c.request_focus(log and log.logCtrl)
 
     def minibufferWantsFocus(self):
-        c = self ; k = c.k
-        if k: k.minibufferWantsFocus()
+        c = self
+        c.request_focus(c.miniBufferWidget)
 
     def treeWantsFocus(self):
         c = self ; tree = c.frame.tree
@@ -6378,13 +6379,26 @@ class baseCommands (object):
         c.request_focus(w)
         c.outerUpdate()
         # Re-request widget so we don't use the body by default.
-        c.request_focus(w) 
+        #### c.request_focus(w)
 
-    # All other "Now" methods wait.
-    bodyWantsFocusNow = bodyWantsFocus
-    logWantsFocusNow = logWantsFocus
-    minibufferWantsFocusNow = minibufferWantsFocus
-    treeWantsFocusNow = treeWantsFocus
+    if 1: # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
+        def bodyWantsFocusNow(self):
+            c = self ; body = c.frame.body
+            c.widgetWantsFocusNow(body and body.bodyCtrl)
+
+        def logWantsFocusNow(self):
+            c = self ; log = c.frame.log
+            c.widgetWantsFocusNow(log and log.logCtrl)
+
+        def treeWantsFocusNow(self):
+            c = self ; tree = c.frame.tree
+            c.widgetWantsFocusNow(tree and tree.canvas)
+
+    else: # Previously, all other FocusNow methods just made a request.
+        bodyWantsFocusNow = bodyWantsFocus
+        logWantsFocusNow = logWantsFocus
+        ### minibufferWantsFocusNow = minibufferWantsFocus
+        treeWantsFocusNow = treeWantsFocus
     #@+node:ekr.20031218072017.2955: *3* Enabling Menu Items
     #@+node:ekr.20040323172420: *4* Slow routines: no longer used
     #@+node:ekr.20031218072017.2966: *5* canGoToNextDirtyHeadline (slow)

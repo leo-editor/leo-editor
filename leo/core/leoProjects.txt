@@ -2721,5 +2721,88 @@ def OnIconDoubleClick (self,p):
         g.doHook("@url2",c=c,p=p,v=p)
 
     return 'break' # 11/19/06
+#@+node:ekr.20101214101416.5950: *3* Creating minimal outlines
+#@+node:ekr.20101214101416.5951: *4* script
+import leo.core.leoGui as leoGui
+nullGui = leoGui.nullGui("nullGui")
+c2,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,gui=nullGui)
+c2.frame.createFirstTreeNode()
+for p in c2.all_positions():
+    g.es(p.h)
+#@+node:ekr.20031218072017.1623: *4* c.new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    # Send all log messages to the new frame.
+    g.app.setLog(None)
+    g.app.lockLog()
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    g.app.unlockLog()
+
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+        # Resize the _new_ frame.
+    c.frame.createFirstTreeNode()
+    g.createMenu(c)
+    g.finishOpen(c)
+    g.app.writeWaitingLog(c)
+    c.setLog()
+    c.redraw()
+    return c # For unit test.
+#@+node:ekr.20031218072017.2188: *4* app.newLeoCommanderAndFrame
+def newLeoCommanderAndFrame(self,
+    fileName=None,
+    relativeFileName=None,
+    gui=None,initEditCommanders=True,updateRecentFiles=True):
+
+    """Create a commander and its view frame for the Leo main window."""
+
+    app = self
+
+    import leo.core.leoCommands as leoCommands
+
+    if not fileName: fileName = ''
+    if not relativeFileName: relativeFileName = ''
+    if not gui: gui = g.app.gui
+    << compute the window title >>
+
+    # g.trace(fileName,relativeFileName)
+
+    # Create an unfinished frame to pass to the commanders.
+    frame = gui.createLeoFrame(title)
+
+    # Create the commander and its subcommanders.
+    # This takes about 3/4 sec when called by the leoBridge module.
+    c = leoCommands.Commands(frame,fileName,
+        relativeFileName=relativeFileName)
+
+    if not app.initing:
+        g.doHook("before-create-leo-frame",c=c)
+            # Was 'onCreate': too confusing.
+
+    frame.finishCreate(c)
+    c.finishCreate(initEditCommanders)
+
+    # Finish initing the subcommanders.
+    c.undoer.clearUndoState() # Menus must exist at this point.
+
+    return c,frame
+#@+node:ekr.20031218072017.2189: *5* << compute the window title >>
+# Set the window title and fileName
+if fileName:
+    title = g.computeWindowTitle(fileName)
+else:
+    s = "untitled"
+    n = g.app.numberOfWindows
+    if n > 0:
+        s += str(n)
+    title = g.computeWindowTitle(s)
+    g.app.numberOfWindows = n+1
 #@-all
 #@-leo
