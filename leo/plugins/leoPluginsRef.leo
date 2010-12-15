@@ -21,6 +21,7 @@
 </v>
 </v>
 <v t="ekr.20060924180348"><vh>buttons</vh>
+<v t="ekr.20101215130741.16548"><vh>@button load-all</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 <v t="ekr.20101112124740.5432"><vh>@button preview</vh></v>
 </v>
@@ -40,7 +41,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -62,8 +63,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -72,7 +73,7 @@
 <v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2" a="E"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@shadow graphcanvas.py</vh></v>
 </v>
@@ -213,7 +214,7 @@
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
-<v t="ekr.20101110150056.9447" a="E"><vh>zz Tk only plugins</vh>
+<v t="ekr.20101110150056.9447"><vh>zz Tk only plugins</vh>
 <v t="ekr.20101110150056.9469"><vh>Require plugins manager</vh>
 <v t="pap.20041006184225"><vh>@file old_plugin_manager.py</vh></v>
 <v t="ekr.20050329082101"><vh> AutoTrees</vh>
@@ -362,7 +363,7 @@
 </v>
 <v t="pap.20050605183206"><vh>@file leoupdate.py</vh></v>
 </v>
-<v t="ekr.20101110150056.9467" a="E"><vh>Require Tk</vh>
+<v t="ekr.20101110150056.9467"><vh>Require Tk</vh>
 <v t="ekr.20050303080042"><vh> footprints</vh>
 <v t="ekr.20050303080042.1"><vh>@nosent footprints.ini</vh></v>
 <v t="pap.20041020001240"><vh>@file footprints.py</vh></v>
@@ -411,7 +412,7 @@
 <v t="ekr.20060513122450"><vh>@file xcc_nodes.py</vh></v>
 </v>
 <v t="mork.20041020082242.1"><vh>@file base64Packager.py</vh></v>
-<v t="tbrown.20060828111141" a="E"><vh>@file cleo.py</vh></v>
+<v t="tbrown.20060828111141"><vh>@file cleo.py</vh></v>
 <v t="edream.110403140857.8"><vh>@file color_markup.py</vh></v>
 <v t="ekr.20040916073636"><vh>@file ConceptualSort.py</vh></v>
 <v t="mork.20041018091414.1"><vh>@file fastGotoNode.py</vh></v>
@@ -3005,6 +3006,19 @@ else:
 <t tx="ekr.20101110150056.9467"># These plugins would have to be substantially rewritten to be made gui-independent.</t>
 <t tx="ekr.20101110150056.9469"></t>
 <t tx="ekr.20101112124740.5432">g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b + '\n\n')
+</t>
+<t tx="ekr.20101215130741.16548">table = (
+    'core/leoPy.leo',
+    'plugins/leoGuiPlugins.leo',
+    # 'test/unitTest.leo',
+    # 'doc/LeoDocs.leo',
+)
+
+for z in table:
+    fn = g.os_path_finalize_join(g.app.loadDir,'..',z)
+    ok,frame = g.openWithFileName(fn,c)
+    if not ok:
+        g.es('not found',z)
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
