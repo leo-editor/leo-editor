@@ -947,7 +947,7 @@ class leoSwingFrame (leoFrame.leoFrame):
         c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = f.createMiniBufferWidget()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20081121105001.657: *6* createOuterFrames
     def createOuterFrames (self):
 
@@ -2097,13 +2097,13 @@ class leoSwingFrame (leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.hideBodyPane()
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         elif wname.startswith('log'):
             f.hideLogPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         elif wname.startswith('head') or wname.startswith('canvas'):
             f.hideOutlinePane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
     #@+node:ekr.20081121105001.729: *6* expand/contract/hide...Pane
     #@+at The first arg to divideLeoSplitter means the following:
     # 
@@ -2171,10 +2171,10 @@ class leoSwingFrame (leoFrame.leoFrame):
         frame = self ; c = frame.c
 
         if c.get_focus() == frame.body.bodyCtrl: # 2007:10/25
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         else:
             c.endEditing()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
     #@+node:ekr.20081121105001.733: *6* cascade
     def cascade (self,event=None):
 
@@ -6788,7 +6788,7 @@ class leoSwingTree (leoFrame.leoTree):
         if c.doubleClickFlag:
             c.doubleClickFlag = False
         else:
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
 
         return 'break'
     #@+node:ekr.20081121105001.1012: *4* Incremental drawing...

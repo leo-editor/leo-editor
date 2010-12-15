@@ -1124,7 +1124,7 @@ class wxSpellTab:
         self.handler.find()
         self.updateButtons()
         c.invalidateFocus()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
     #@+node:ekr.20090126093408.69: *6* onHideButton
     def onHideButton(self):
 
@@ -2289,14 +2289,6 @@ class wxKeyHandlerClass (leoKeys.keyHandlerClass):
         self.widget = c.frame.minibuffer.ctrl
 
         self.setLabelGrey()
-    #@+node:ekr.20090126093408.193: *4* wxKey.minibufferWantsFocus/Now
-    def minibufferWantsFocus(self):
-
-        self.widget.setFocus()
-
-    def minibufferWantsFocusNow(self):
-
-        self.widget.setFocus()
     #@-others
 #@+node:ekr.20090126093408.194: *3* wxLeoApp class
 class wxLeoApp (wx.App):
@@ -2778,13 +2770,13 @@ class wxLeoFrame(leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.hideBodyPane()
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         elif wname.startswith('log'):
             f.hideLogPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         elif wname.startswith('head') or wname.startswith('canvas'):
             f.hideOutlinePane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
     #@+node:ekr.20090126093408.234: *6* expand/contract/hide...Pane
     #@+at The first arg to divideLeoSplitter means the following:
     # 

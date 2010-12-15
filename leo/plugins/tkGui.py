@@ -1161,7 +1161,7 @@ class leoTkinterDialog:
             self.focus_widget = self.top
 
         if c:
-            c.widgetWantsFocusNow(self.focus_widget)
+            c.widgetWantsFocus(self.focus_widget)
 
         self.root.wait_window(self.top)
 
@@ -2992,7 +2992,7 @@ class tkSpellTab:
         self.handler.find()
         self.updateButtons()
         c.invalidateFocus()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
         self.change_i, self.change_j = None,None
     #@+node:ekr.20081121110412.116: *5* onHideButton
     def onHideButton(self):
@@ -3520,7 +3520,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = f.createMiniBufferWidget()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
 
         # f.enableTclTraces()
     #@+node:ekr.20081121110412.153: *6* createOuterFrames
@@ -4578,7 +4578,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             w = c.get_focus()
             if w != c.frame.body.bodyCtrl:
                 frame.tree.OnDeactivate()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         except:
             g.es_event_exception("activate body")
 
@@ -4731,14 +4731,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         if wname.startswith('body'):
             f.hideBodyPane()
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         elif wname.startswith('log'):
             f.hideLogPane()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
         else:
             for z in ('head','canvas','tree'):
                 f.hideOutlinePane()
-                c.bodyWantsFocusNow()
+                c.bodyWantsFocus()
                 break
     #@+node:ekr.20081121110412.228: *6* expand/contract/hide...Pane
     #@+at The first arg to divideLeoSplitter means the following:
@@ -4807,10 +4807,10 @@ class leoTkinterFrame (leoFrame.leoFrame):
         frame = self ; c = frame.c
 
         if c.get_focus() == frame.body.bodyCtrl: # 2007/10/25
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
         else:
             c.endEditing()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
     #@+node:ekr.20081121110412.232: *6* cascade
     def cascade (self,event=None):
 
@@ -7979,7 +7979,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 # The *canvas* (not the headline) gets the focus so that
                 # tree bindings take priority over text bindings.
                 c.treeWantsFocusNow() # Now. New in Leo 4.5.
-                c.outerUpdate()
+                ### c.outerUpdate()
                 self.active = False
                 returnVal = 'break'
             #@-<< activate this window >>
@@ -8228,7 +8228,7 @@ class leoTkinterTree (leoFrame.leoTree):
         if c.doubleClickFlag:
             c.doubleClickFlag = False
         else:
-            c.treeWantsFocusNow()
+            c.treeWantsFocus()
 
         g.app.gui.killPopupMenu()
         c.outerUpdate()

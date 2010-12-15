@@ -705,7 +705,7 @@ def finishCreate (self,c):
     #### c.setLog()
     g.app.windowList.append(f)
     f.miniBufferWidget = leoQtMinibuffer(c)
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
 #@+node:ekr.20081121105001.255: *5* createSplitterComponents (qtFrame)
 def createSplitterComponents (self):
 

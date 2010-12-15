@@ -2493,7 +2493,7 @@ class keyHandlerClass:
         k = self
         k.setInputState('command')
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocusNow()
+        # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
     def setInsertState (self,event):
@@ -2502,7 +2502,7 @@ class keyHandlerClass:
         k = self
         k.setInputState('insert')
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocusNow()
+        # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
     def setOverwriteState (self,event):
@@ -2511,7 +2511,7 @@ class keyHandlerClass:
         k = self
         k.setInputState('overwrite')
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocusNow()
+        # k.c.bodyWantsFocus()
         k.showStateAndMode()
     #@+node:ekr.20061031131434.124: *4* toggle-input-state
     def toggleInputState (self,event=None):
@@ -2635,7 +2635,7 @@ class keyHandlerClass:
             k.afterGetArgState=returnKind,returnState,handler
             k.setState('getArg',1,k.getArg)
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-            if useMinibuffer: c.minibufferWantsFocusNow()
+            if useMinibuffer: c.minibufferWantsFocus()
         elif keysym == 'Escape':
             k.keyboardQuit(event)
         elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
@@ -3029,7 +3029,7 @@ class keyHandlerClass:
                             k.keyboardQuit(event,hideTabs=True)
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                            c.minibufferWantsFocusNow() # New in Leo 4.5.
+                            c.minibufferWantsFocus() # New in Leo 4.5.
                         # Pass this on for macro recording.
                         k.masterCommand(event,b.func,stroke,b.commandName)
                         # Careful: the command could exit.
@@ -3167,17 +3167,11 @@ class keyHandlerClass:
             return k.masterCommand(event,func,stroke,commandName)
     #@+node:ekr.20061031170011.3: *3* Minibuffer (keyHandler)
     # These may be overridden, but this code is now gui-independent.
-    #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus/Now
-    def minibufferWantsFocus(self):
+    #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
+    # def minibufferWantsFocus(self):
 
-        c = self.c
-        c.widgetWantsFocus(c.miniBufferWidget)
-
-
-    def minibufferWantsFocusNow(self):
-
-        c = self.c
-        c.widgetWantsFocusNow(c.miniBufferWidget)
+        # c = self.c
+        # c.widgetWantsFocus(c.miniBufferWidget)
     #@+node:ekr.20061031170011.5: *4* getLabel
     def getLabel (self,ignorePrompt=False):
 
@@ -3674,7 +3668,7 @@ class keyHandlerClass:
             k.setState(tag,1,k.getFileName)
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
             c.frame.log.clearTab(tabName)
-            c.minibufferWantsFocusNow()
+            c.minibufferWantsFocus()
         elif keysym == 'Return':
             k.arg = k.getLabel(ignorePrompt=True)
             handler = k.getFileNameHandler
@@ -3841,7 +3835,7 @@ class keyHandlerClass:
             if redraw:
                 k.computeCompletionList(defaultTabList,backspace=False)
 
-        c.minibufferWantsFocusNow()
+        c.minibufferWantsFocus()
     #@+node:ekr.20061031131434.180: *4* traceBinding
     def traceBinding (self,bunch,shortcut,w):
 

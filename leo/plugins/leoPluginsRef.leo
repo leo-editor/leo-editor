@@ -21,6 +21,7 @@
 </v>
 </v>
 <v t="ekr.20060924180348"><vh>buttons</vh>
+<v t="ekr.20101215130741.16548"><vh>@button load-all</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 <v t="ekr.20101112124740.5432"><vh>@button preview</vh></v>
 </v>
@@ -3007,6 +3008,19 @@ else:
 <t tx="ekr.20101110150056.9467"># These plugins would have to be substantially rewritten to be made gui-independent.</t>
 <t tx="ekr.20101110150056.9469"></t>
 <t tx="ekr.20101112124740.5432">g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b + '\n\n')
+</t>
+<t tx="ekr.20101215130741.16548">table = (
+    'core/leoPy.leo',
+    'plugins/leoGuiPlugins.leo',
+    # 'test/unitTest.leo',
+    # 'doc/LeoDocs.leo',
+)
+
+for z in table:
+    fn = g.os_path_finalize_join(g.app.loadDir,'..',z)
+    ok,frame = g.openWithFileName(fn,c)
+    if not ok:
+        g.es('not found',z)
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>

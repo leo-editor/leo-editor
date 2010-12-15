@@ -11408,7 +11408,7 @@ h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
-c.bodyWantsFocusNow()
+c.bodyWantsFocus()
 paste = '# Should be a comment'
 g.app.gui.replaceClipboardWith(paste)
 c.outerUpdate()
@@ -11528,7 +11528,7 @@ c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible and to set the icon.
 try:
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     n = c.frame.tree.redrawCount
     w = c.frame.body.bodyCtrl
     w.setInsertPoint('end')
@@ -11547,7 +11547,7 @@ assert p,'node not found: %s' % h
 c.setBodyString(p,'a')
 c.redraw(p) # To make node visible
 # print('after redraw_now')
-c.bodyWantsFocusNow()
+c.bodyWantsFocus()
 n = c.frame.tree.redrawCount
 try:
     c.frame.body.bodyCtrl.event_generate('a')
@@ -11672,7 +11672,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p)
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
     if 1: # New code calls pasteText directly.
@@ -11732,7 +11732,7 @@ if g.app.gui.guiName() != 'tkinter':
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     c.redraw(p) # To make node visible
     n = c.frame.tree.redrawCount
     assert not p.b, 'oops1'
@@ -11757,7 +11757,7 @@ c.selectPosition(p)
 s = 'ABC'
 c.setBodyString(p,s)
 try:
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     w = c.frame.body.bodyCtrl
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
@@ -23487,7 +23487,7 @@ finally:
         # Close the frame without prompt.
         g.app.destroyWindow(frame)
         c.setLog()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
 </t>
 <t tx="ekr.20100421102506.6282">@first # -*- coding: utf-8 -*-
 
@@ -25459,7 +25459,7 @@ This is the body of the section.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -25737,7 +25737,7 @@ This is the body of the section.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26015,7 +26015,7 @@ it has two lines.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26295,7 +26295,7 @@ it has two lines.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26578,7 +26578,7 @@ This is the body of the section.
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
 &lt;head&gt;
 &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-&lt;meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
 &lt;title&gt;Title&lt;/title&gt;
 &lt;style type="text/css"&gt;
 
@@ -26839,11 +26839,17 @@ This is the body of the section.&lt;/p&gt;
 &lt;/html&gt;
 </t>
 <t tx="ekr.20100827183358.5957">def run(self):
+    import sys
+    if not sys.platform.startswith('win') and \
+        g.isPython3: return
+    def clean(s):
+        return s.replace('\r','')
     c,p = self.c,self.p
     rc = c.rstCommands
     expected,got,source = self.setup()
     rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
-    rst,html = rc.source,rc.stringOutput
+    rst = clean(rc.source)
+    html = clean(rc.stringOutput)
     assert rst,'rst'
     assert html,'html'
     # Kludge: disregard version of docutils.
@@ -26851,17 +26857,19 @@ This is the body of the section.&lt;/p&gt;
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
-        ok = rst == child1.b and html == child2.b
+        child1_b = clean(child1.b)
+        child2_b = clean(child2.b)
+        ok = rst == child1_b and html == child2_b
         if not ok:
             got_html,got_rst = self.set_got(expected,got)
             got_html.b = html
             got_rst.b = rst
-        if rst != child1.b:
+        if rst != child1_b:
             self.report(child1,got_rst)
-        if html != child2.b:
+        if html != child2_b:
             self.report(child2,got_html)
-        assert rst == child1.b,'rst mismatch'
-        assert html == child2.b,'html mismatch'
+        assert rst == child1_b,'rst mismatch'
+        assert html == child2_b,'html mismatch'
     else:
         child = expected.insertAsNthChild(0)
         child.h,child.b = 'rst',rst

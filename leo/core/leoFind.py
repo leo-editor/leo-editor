@@ -1262,10 +1262,10 @@ class leoFind:
 
         if 1: # I prefer always putting the focus in the body.
             c.invalidateFocus()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocus()
             c.k.showStateAndMode(c.frame.body.bodyCtrl)
         else:
-            c.widgetWantsFocusNow(t)
+            c.widgetWantsFocus(t)
     #@+node:ekr.20031218072017.3090: *4* save (leoFind)
     def save (self):
 

@@ -752,7 +752,7 @@ class scriptingController:
         if button and self.buttonsDict.get(w):
             del self.buttonsDict[w]
             self.iconBar.deleteButton(w)
-            self.c.bodyWantsFocusNow()
+            self.c.bodyWantsFocus()
     #@+node:ekr.20080813064908.4: *4* getArgs
     def getArgs (self,h):
 
