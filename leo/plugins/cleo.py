@@ -4,6 +4,8 @@
 #@+node:tbrown.20060903211930: ** << docstring >>
 ''' Creates coloured Leo outlines.
 
+``cleo`` is a Tk plugin, the Qt version is called ``todo``.
+
 Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a
 branch can display progress and time required with dynamic updates.
