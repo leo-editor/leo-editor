@@ -11408,7 +11408,7 @@ h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
-c.bodyWantsFocusNow()
+c.bodyWantsFocus()
 paste = '# Should be a comment'
 g.app.gui.replaceClipboardWith(paste)
 c.outerUpdate()
@@ -11528,7 +11528,7 @@ c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible and to set the icon.
 try:
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     n = c.frame.tree.redrawCount
     w = c.frame.body.bodyCtrl
     w.setInsertPoint('end')
@@ -11547,7 +11547,7 @@ assert p,'node not found: %s' % h
 c.setBodyString(p,'a')
 c.redraw(p) # To make node visible
 # print('after redraw_now')
-c.bodyWantsFocusNow()
+c.bodyWantsFocus()
 n = c.frame.tree.redrawCount
 try:
     c.frame.body.bodyCtrl.event_generate('a')
@@ -11672,7 +11672,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p)
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
     if 1: # New code calls pasteText directly.
@@ -11732,7 +11732,7 @@ if g.app.gui.guiName() != 'tkinter':
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     c.redraw(p) # To make node visible
     n = c.frame.tree.redrawCount
     assert not p.b, 'oops1'
@@ -11757,7 +11757,7 @@ c.selectPosition(p)
 s = 'ABC'
 c.setBodyString(p,s)
 try:
-    c.bodyWantsFocusNow()
+    c.bodyWantsFocus()
     w = c.frame.body.bodyCtrl
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
@@ -23487,7 +23487,7 @@ finally:
         # Close the frame without prompt.
         g.app.destroyWindow(frame)
         c.setLog()
-        c.bodyWantsFocusNow()
+        c.bodyWantsFocus()
 </t>
 <t tx="ekr.20100421102506.6282">@first # -*- coding: utf-8 -*-
 
