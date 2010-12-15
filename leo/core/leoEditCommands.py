@@ -5799,7 +5799,7 @@ class helpCommandsClass (baseEditCommandsClass):
         c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
 
         if state == 0:
-            c.frame.minibufferWantsFocus()
+            c.minibufferWantsFocus()
             k.setLabelBlue('Python help: ',protect=True)
             k.getArg(event,tag,1,self.pythonHelp)
         else:

@@ -3167,16 +3167,11 @@ class keyHandlerClass:
             return k.masterCommand(event,func,stroke,commandName)
     #@+node:ekr.20061031170011.3: *3* Minibuffer (keyHandler)
     # These may be overridden, but this code is now gui-independent.
-    #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus/Now
-    def minibufferWantsFocus(self):
-
-        c = self.c
-        c.widgetWantsFocus(c.miniBufferWidget)
-
-    # def minibufferWantsFocusNow(self):
+    #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
+    # def minibufferWantsFocus(self):
 
         # c = self.c
-        # c.widgetWantsFocusNow(c.miniBufferWidget)
+        # c.widgetWantsFocus(c.miniBufferWidget)
     #@+node:ekr.20061031170011.5: *4* getLabel
     def getLabel (self,ignorePrompt=False):
 

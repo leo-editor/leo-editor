@@ -6494,9 +6494,7 @@ class TabbedFrameFactory:
         w.setFocus()
         f = self.leoFrames[w]
         c = f.c
-        c.bodyWantsFocusNow() # Same as bodyWantsFocus.
-        c.outerUpdate()
-        # g.trace(w,c)
+        c.bodyWantsFocusNow()
     #@+node:ville.20090803164510.3688: *4* createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
@@ -6538,8 +6536,6 @@ class TabbedFrameFactory:
                 cur = count -1
             elif cur >= count:
                 cur = 0
-            # if cur == count:
-                # cur = 0
             tabw.setCurrentIndex(cur)
             self.focusCurrentBody()
 
@@ -6603,7 +6599,7 @@ class leoQtGui(leoGui.leoGui):
         if c.exists and tag == 'body':
             if trace: g.trace(tag,c)
             c.bodyWantsFocusNow()
-            c.outerUpdate() # Required because this is an event handler.
+            ### c.outerUpdate() # Required because this is an event handler.
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20090320101733.16: *5* onDeactiveEvent (qtGui)
     def onDeactivateEvent (self,event,c,obj,tag):
