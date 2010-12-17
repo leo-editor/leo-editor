@@ -618,15 +618,41 @@ class baseCommands (object):
             g.trace('no such command: %s' % (commandName),color='red')
             return None
     #@+node:ekr.20091002083910.6106: *3* c.find...
+    #@+<< poslist doc >>
+    #@+node:bob.20101215134608.5898: *4* << poslist doc >>
+    """ List of positions 
+
+    Functions find_h() and find_b() both return an instance of poslist.
+
+    Methods filter_h() and filter_b() refine a poslist.
+
+    Method children() generates a new poslist by descending one level
+    from all the nodes in a poslist.
+
+    A chain of poslist method calls must begin with find_h() or find_b().
+    The rest of the chain can be any combination of filter_h(),
+    filter_b(), and children().  For example:
+
+        pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
+
+    For each position, pos, in the poslist returned, find_h() and filter_h() set attribute pos.mo
+    to the match object (see Python Regular Expression documentation) for the pattern match.
+
+    Caution:  The pattern given to find_h() or filter_h() must match zero or more characters
+    at the beginning of the headline.
+
+    For each position, pos, the postlist returned, find_b() and filter_b() set attribute
+    pos.matchiter to an iterator that will return a match object for each of the
+    non-overlapping matches of the pattern in the body of the node.
+
+    """
+    #@-<< poslist doc >>
     #@+node:ville.20090311190405.70: *4* c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
-        """ Return list (a poslist) of all nodes whose headline matches the regex
-
-        You can chain find_h / find_b with select_h / select_b like this
-        to refine an outline search::
-
-        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
+        """ Return list (a poslist) of all nodes where zero or more characters at
+        the beginning of the headline match regex
         """
+
         c = self
         pat = re.compile(regex, flags)
         res = leoNodes.poslist()
@@ -640,12 +666,9 @@ class baseCommands (object):
 
     #@+node:ville.20090311200059.1: *4* c.find_b
     def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
-        """ Return list (a poslist) of all nodes whose body matches the regex
+        """ Return list (a poslist) of all nodes whose body matches regex
+        one or more times.
 
-        You can chain find_h / find_b with select_h / select_b like this
-        to refine an outline search::
-
-        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
         """
 
         c = self
@@ -6344,6 +6367,7 @@ class baseCommands (object):
         c = self
 
         if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+            import pdb ; pdb.set_trace() # Drop into pdb.
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
     #@+node:ekr.20080514131122.17: *4* c.widget_name
