@@ -11,6 +11,7 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
+<v t="ekr.20101218103123.12443"><vh>@button load-all</vh></v>
 <v t="ekr.20090620052003.8505"><vh>@@button add-test</vh></v>
 <v t="ekr.20100210214809.5767"><vh>@@button compare old/new</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
@@ -97,7 +98,6 @@
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
-<v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
@@ -132,6 +132,14 @@
 <v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
 </v>
+<v t="ekr.20101218103123.5934"><vh>Fix redefinition messages</vh></v>
+<v t="ekr.20101218103123.5935"><vh>How does g.command work for new windows??</vh></v>
+<v t="ekr.20101218101041.8568"><vh>Improve qttabs</vh></v>
+<v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
+<v t="ekr.20101218103123.5938"><vh>Fix bug 690260: g.es sends to wrong tabbed pane</vh>
+<v t="ekr.20101218103123.5939"><vh>Report</vh></v>
+</v>
+<v t="ekr.20101218103123.12446"><vh>@button hi</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
@@ -888,5 +896,45 @@ g.es('delta',delta)
 g.es('d',d)
 </t>
 <t tx="ekr.20100902154544.5872"></t>
+<t tx="ekr.20101218101041.8568">@nocolor-node
+
+- Ctrl-w closes tab.
+- save-all-outlines command.</t>
+<t tx="ekr.20101218103123.12443">table = (
+    'core/leoPy.leo',
+    'plugins/leoGuiPlugins.leo',
+    'plugins/leoPlugins.leo',
+    # 'test/unitTest.leo',
+    # 'doc/LeoDocs.leo',
+)
+
+for z in table:
+    fn = g.os_path_finalize_join(g.app.loadDir,'..',z)
+    ok,frame = g.openWithFileName(fn,c)
+    if not ok:
+        g.es('not found',z)
+</t>
+<t tx="ekr.20101218103123.12446">g.es('hi')</t>
+<t tx="ekr.20101218103123.5934"></t>
+<t tx="ekr.20101218103123.5935">@g.command('print-hi')
+def printHi():
+    g.es('hi from %s' % c.shortFileName())</t>
+<t tx="ekr.20101218103123.5938"></t>
+<t tx="ekr.20101218103123.5939">@nocolor-node
+
+I start Leo with 3 filenames, they open in tabs.
+I execute a g.es() in the leftmost file tab, it writes to the
+log pane for the file with it's tab on the right.
+
+update:
+
+Doesn't happen via ctl-b, does happen if the g.es() is in a @button.
+Kent Tenney wrote on 2010-12-14: 	#2
+
+upupdate:
+
+doing a ctl-b in the left pane corrects it, after that the @button g.es()
+targets the correct pane.
+</t>
 </tnodes>
 </leo_file>

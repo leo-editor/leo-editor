@@ -6495,6 +6495,8 @@ class TabbedFrameFactory:
         f = self.leoFrames[w]
         c = f.c
         c.bodyWantsFocusNow()
+        # Fix bug 690260: correct the log.
+        g.app.log = f.log
     #@+node:ville.20090803164510.3688: *4* createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
