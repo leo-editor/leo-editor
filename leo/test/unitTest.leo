@@ -27073,10 +27073,10 @@ ic.run(
 <t tx="ekr.20100909082308.5990">pc = g.app.pluginsController
 
 table = (
-    ('x',               'leo.plugins.x'),
+    ('x',               'x'),
+    ('foo.bar',         'foo.bar'),
     ('x.py',            'leo.plugins.x'),
-    ('leo.plugins.x',   'leo.plugins.x'),
-    ('leo.plugins.x.py','leo.plugins.x'), # weird, but what the heck.
+    ('leo.plugins.x',   'leo.plugins.x')    
 )
 
 for fn,expected in table:
