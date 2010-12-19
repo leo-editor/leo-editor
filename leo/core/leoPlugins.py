@@ -464,10 +464,7 @@ class LeoPluginsController:
         '''Return the name used as a key to this modules dictionaries.'''
 
         if fn.endswith('.py'):
-            fn = fn [:-3]
-
-        if not fn.startswith('leo.plugins.'):
-            fn = 'leo.plugins.' + fn
+            fn = "leo.plugins." + fn [:-3]
 
         return fn
     #@+node:ekr.20100909104341.5979: *4* setLoaded
