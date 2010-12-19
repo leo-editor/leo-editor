@@ -2683,46 +2683,486 @@ ic.run(
     template_fn=template_fn, # Optional: Name of template svg file.
 )
 #@+node:ekr.20101127152442.5917: ** 4.9 a1
-#@+node:ekr.20101127152442.5915: *3* Improve handling of @url nodes
+#@+node:ekr.20101218101041.8570: *3* Bugs
+#@+node:ekr.20101218101041.5922: *4* Investigated bug 682561: pyenchant install problem
 @nocolor-node
 
-The new rule is simple: if the body text contains any text the first line of the
-body text is taken to be the url. There is no longer any need to put '--' in the
-headline.
+It's not clear that this bug if valid.
+#@+node:ekr.20101218101041.5923: *5* Report
+@nocolor-node
 
-More importantly, you can put anything you like in the body text following the
-first line. Other url's, notes, even .. graphics:: directives for the
-viewrendered plugin.
+Traceback (most recent call last):
+File "/usr/lib/pymodules/python2.6/leo/core/leoEditCommands.py", line 8574, in __init__
+self.d = enchant.DictWithPWL(language,fn)
+File "/usr/lib/pymodules/python2.6/enchant/__init__.py", line 708, in __init__
+self.pwl = self._broker.request_pwl_dict(pwl)
+File "/usr/lib/pymodules/python2.6/enchant/__init__.py", line 276, in request_pwl_dict
+self._raise_error(eStr % (pwl,))
+File "/usr/lib/pymodules/python2.6/enchant/__init__.py", line 216, in _raise_error
+raise eclass(err)
+Error: Couldn't open personal wordlist '/usr/share/pyshared/leo/plugins/spellpyx.txt'
+not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
+#@+node:ekr.20100904095239.5916: *5*  __init__ (EnchantClass)
+def __init__ (self,c):
 
-These improvements allow Leo to be what it should have been a long time ago: the
-world's best organizer of url's. My typical usage is::
+    """Ctor for the EnchantClass class."""
 
-    @url fizbatz: short description of fizbatz (headline)
-    http://fizbatz.org (body text)
-    @language rest
-    Why I care about fizbatz.
-#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
-def OnIconDoubleClick (self,p):
+    self.c = c
+    language = c.config.getString('enchant_language')
 
-    # Note: "icondclick" hooks handled by vnode callback routine.
+    # Set the base language
+    if language and not enchant.dict_exists(language):
+        g.es_print('Invalid language code for Enchant',
+            repr(language),color='blue')
+        g.es('Using "en_US" instead')
+        language = 'en_US'
 
-    c = self.c
-    s = p.h.strip()
-    if g.match_word(s,0,"@url"): 
-        if p.b.strip():
-            lines = p.b.split('\n')
-            url = lines and lines[0].strip() or ''
+    # Compute fn, the full path to the local dictionary.
+    fn = g.os_path_finalize(
+        c.config.getString('enchant_local_dictionary') or
+        os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+
+    if fn and g.os_path_exists(fn):
+        # Merge the local and global dictionaries.
+        try:
+            self.d = enchant.DictWithPWL(language,fn)
+        except Exception:
+            g.es_exception()
+            g.es_print('not a valid dictionary file',fn,color='red')
+            self.d = enchant.Dict(language) 
+    else:
+        self.d = enchant.Dict(language) 
+#@+node:ekr.20101218103123.5936: *4* Investigated bug 689314: @path does not create folder
+@nocolor-node
+
+This appears to be invalid.
+#@+node:ekr.20101218103123.5937: *5* Report
+@nocolor-node
+
+Steps to reproduce it:
+
+0) Make sure that there is no directory named 'test' in your home directory.
+1) Create new .leo file with File>New and save it as test.leo
+2) Create '@path test' headline.
+3) Create '@thin file.txt' headline as a child of the @path headline
+4) Save
+Log window content for step 4:
+
+created: /home/username/file.txt
+saved: test.leo
+
+suppose that file.txt should be found in ~/test/ but it is really in ~.
+
+5) Quit leo and open test.leo again
+Log window content:
+
+reading: /home/username/test.leo
+can not open: '@file /home/username/test/file.txt'
+
+6) Create directory test/ in your home directory (in file manager)
+7) Edit '@thin file.txt' content and save all.
+Log window content:
+
+created: /home/ss/test/file.txt
+saved: test.leo
+
+I think that in the case of directory absence the @path directive should either
+create it or raise an error message but should not create the file silently. I
+would prefer the first way.
+#@+node:ekr.20080827175609.39: *5* c.scanAllDirectives
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.p
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path'), # Redundant: or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
+#@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives
+def scanAtPathDirectives(self,aList):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        warning = d.get('@path_in_body')
+        if trace and path:
+            g.trace('**** d',d)
+            g.trace('**** @path path',path)
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and not warning:
+                paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose:
+        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+
+    path = c.os_path_finalize_join(*paths)
+
+    if trace and verbose: g.trace('joined path:',path)
+    if trace: g.trace('returns',path)
+
+    return path or g.getBaseDirectory(c)
+        # 2010/10/22: A useful default.
+#@+node:ekr.20080923070954.4: *5* at.scanAllDirectives
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+    createPath=True,
+    issuePathWarning=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = self.c
+    g.app.atPathInBodyWarning = None
+    << set ivars >>
+    lang_dict = {'language':at.language,'delims':delims,}
+    table = (
+        ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    if issuePathWarning and g.app.atPathInBodyWarning:
+        g.es('warning: ignoring @path directive in',
+            g.app.atPathInBodyWarning,color='red')
+
+    # Post process.
+    lang_dict   = d.get('lang-dict')
+    delims      = lang_dict.get('delims')
+    lineending  = d.get('lineending')
+
+    at.encoding             = d.get('encoding')
+    at.explicitLineEnding   = bool(lineending)
+    at.language             = lang_dict.get('language')
+    at.output_newline       = lineending or g.getOutputNewline(c=c)
+    at.page_width           = d.get('pagewidth')
+    at.default_directory    = d.get('path')
+    at.tab_width            = d.get('tabwidth')
+
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        << set comment strings from delims >>
+
+    # For unit testing.
+    d = {
+        "all"       : all,
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+    if trace: g.trace(d)
+    return d
+#@+node:ekr.20080923070954.14: *6* << Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower()
+
+delims = g.set_delims_from_language(c.target_language)
+at.language = c.target_language
+
+at.encoding = c.config.default_derived_file_encoding
+at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@+node:ekr.20080923070954.13: *6* << Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+else:
+    delim1,delim2,delim3 = delims
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@+node:ekr.20041005105605.144: *5* at.write & helper
+def write (self,root,
+    kind = '@unknown', # Should not happen.
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+):
+    """Write a 4.x derived file.
+    root is the position of an @<file> node"""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString)
+
+    # "look ahead" computation of eventual fileName.
+    eventualFileName = c.os_path_finalize_join(
+        at.default_directory,at.targetFileName)
+    exists = g.os_path_exists(eventualFileName)
+
+    if trace:
+        g.trace('default_dir',
+            g.os_path_exists(at.default_directory),
+            at.default_directory)
+        g.trace('eventual_fn',exists,eventualFileName)
+
+    if not scriptWrite and not toString:
+        # 2010/7/28: The read logic now sets the at_read bit for @nosent nodes,
+        # so we can just use promptForDangerousWrite.
+        if not hasattr(root.v,'at_read') and exists:
+            # Prompt if writing a new @file or @thin node would
+            # overwrite an existing file.
+            ok = self.promptForDangerousWrite(eventualFileName,kind)
+            if ok:
+                root.v.at_read = True # Create the attribute for all clones.
+            else:
+                g.es("not written:",eventualFileName)
+                << set dirty and orphan bits >> # 2010/10/21.
+                return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        assert root==at.root,'write'
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            if hasattr(self.root.v,'tnodeList'):
+                delattr(self.root.v,'tnodeList')
+            root.v._p_changed = True
         else:
-            url = s[4:].strip()
-        # g.trace(url,g.callers())
+            at.closeWriteFile()
+            if at.errors > 0 or root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
 
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url)
-        g.doHook("@url2",c=c,p=p,v=p)
+    except Exception:
+        if hasattr(self.root.v,'tnodeList'):
+            delattr(self.root.v,'tnodeList')
+        if toString:
+            at.exception("exception preprocessing script")
+            root.v._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+#@+node:ekr.20041005105605.145: *6* << set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+    if not at.targetFileName:
+        # We have an @file node.
+        at.targetFileName = root.atFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@+node:ekr.20041005105605.146: *6* << set dirty and orphan bits >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+self.remove(at.outputFileName) 
 
-    return 'break' # 11/19/06
-#@+node:ekr.20101214101416.5950: *3* Creating minimal outlines
-#@+node:ekr.20101214101416.5951: *4* script
+#@+node:ekr.20041005105605.15: *5* at.initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    atAuto=False,atEdit=False,atShadow=False,
+    nosentinels=False,thinFile=False,
+    scriptWrite=False,toString=False,
+    forcePythonSentinels=None,
+):
+    at = self ; c = at.c
+
+    assert root
+    self.initCommonIvars()
+
+    at.atAuto = atAuto
+    at.atEdit = atEdit
+    at.atShadow = atShadow
+    # at.default_directory: set by scanAllDirectives()
+    at.docKind = None
+    if forcePythonSentinels:
+        at.endSentinelComment = None
+    # else: at.endSentinelComment set by initCommonIvars.
+    # at.encoding: set by scanAllDirectives() below.
+    # at.explicitLineEnding # True: an @lineending directive specifies the ending.
+        # Set by scanAllDirectives() below.
+    at.fileChangedFlag = False # True: the file has actually been updated.
+    at.force_newlines_in_at_nosent_bodies = c.config.getBool(
+        'force_newlines_in_at_nosent_bodies')
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+    # at.language:      set by scanAllDirectives() below.
+    # at.outputFile:    set below.
+    # at.outputNewline: set below.
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        at.startSentinelComment = "#"
+    # else:                 set by initCommonIvars.
+    # at.stringOutput:      set below.
+    # at.outputFileName:    set below.
+    # at.output_newline:    set by scanAllDirectives() below.
+    # at.page_width:        set by scanAllDirectives() below.
+    at.sentinels = not nosentinels
+    at.shortFileName = ""   # For messages.
+    at.root = root
+    # at.tab_width:         set by scanAllDirectives() below.
+    at.targetFileName = targetFileName
+        # Must be None for @shadow.
+    at.thinFile = thinFile
+    at.toString = toString
+    at.writeVersion5 = at.new_write and not atShadow
+
+    at.scanAllDirectives(root,
+        scripting=scriptWrite,
+        forcePythonSentinels=forcePythonSentinels,
+        issuePathWarning=True)
+    # Sets the following ivars:
+        # at.default_directory
+        # at.encoding
+        # at.explicitLineEnding
+        # at.language
+        # at.output_newline
+        # at.page_width
+        # at.tab_width
+
+    if toString:
+        at.outputFile = g.fileLikeObject()
+        if g.app.unitTesting:
+            at.output_newline = '\n'
+        # else: at.output_newline set in initCommonIvars.
+        at.stringOutput = ""
+        at.outputFileName = "<string-file>"
+    else:
+        at.outputFile = None # The temporary output file.
+        # at.outputNewline set in initCommonIvars.
+        at.stringOutput = None
+        at.outputFileName = g.u('')
+
+    # Init all other ivars even if there is an error.
+    if not at.errors and at.root:
+        if hasattr(at.root.v,'tnodeList'):
+            delattr(at.root.v,'tnodeList')
+        at.root.v._p_changed = True
+#@+node:ekr.20101218103123.5932: *3* Docs
+#@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
+#@+node:ekr.20101214101416.5951: *5* script
 import leo.core.leoGui as leoGui
 nullGui = leoGui.nullGui("nullGui")
 c2,frame = g.app.newLeoCommanderAndFrame(
@@ -2730,7 +3170,7 @@ c2,frame = g.app.newLeoCommanderAndFrame(
 c2.frame.createFirstTreeNode()
 for p in c2.all_positions():
     g.es(p.h)
-#@+node:ekr.20031218072017.1623: *4* c.new
+#@+node:ekr.20031218072017.1623: *5* c.new
 def new (self,event=None,gui=None):
 
     '''Create a new Leo window.'''
@@ -2755,7 +3195,7 @@ def new (self,event=None,gui=None):
     c.setLog()
     c.redraw()
     return c # For unit test.
-#@+node:ekr.20031218072017.2188: *4* app.newLeoCommanderAndFrame
+#@+node:ekr.20031218072017.2188: *5* app.newLeoCommanderAndFrame
 def newLeoCommanderAndFrame(self,
     fileName=None,
     relativeFileName=None,
@@ -2793,7 +3233,7 @@ def newLeoCommanderAndFrame(self,
     c.undoer.clearUndoState() # Menus must exist at this point.
 
     return c,frame
-#@+node:ekr.20031218072017.2189: *5* << compute the window title >>
+#@+node:ekr.20031218072017.2189: *6* << compute the window title >>
 # Set the window title and fileName
 if fileName:
     title = g.computeWindowTitle(fileName)
@@ -2804,5 +3244,44 @@ else:
         s += str(n)
     title = g.computeWindowTitle(s)
     g.app.numberOfWindows = n+1
+#@+node:ekr.20101218103123.5931: *3* Features
+#@+node:ekr.20101127152442.5915: *4* Improve handling of @url nodes
+@nocolor-node
+
+The new rule is simple: if the body text contains any text the first line of the
+body text is taken to be the url. There is no longer any need to put '--' in the
+headline.
+
+More importantly, you can put anything you like in the body text following the
+first line. Other url's, notes, even .. graphics:: directives for the
+viewrendered plugin.
+
+These improvements allow Leo to be what it should have been a long time ago: the
+world's best organizer of url's. My typical usage is::
+
+    @url fizbatz: short description of fizbatz (headline)
+    http://fizbatz.org (body text)
+    @language rest
+    Why I care about fizbatz.
+#@+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n')
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return 'break' # 11/19/06
 #@-all
 #@-leo
