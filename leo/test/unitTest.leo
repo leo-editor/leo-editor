@@ -2558,7 +2558,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
+<v t="ville.20090312195309.2"><vh>@test find_h / find_b / filter_h / filter_b</vh></v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
 <v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 <v t="ekr.20041013062906"><vh>@test onHyperLinkControlClick</vh></v>
@@ -29556,7 +29556,7 @@ for h in sample:
 
 tests = c.find_h('@test(.*)')
 
-bm = tests.select_b('(.*)all_positions')
+bm = tests.filter_b('(.*)all_positions')
 forloops = 0
 for node in bm:   
     # many of these are for loops
@@ -29576,17 +29576,17 @@ itertest = c.find_h('@test p.iters and v.iters')
 assert len(itertest) &gt;= 1
 tn = itertest[0]
 assert tn.h == '@test p.iters and v.iters'
-assert len(itertest.select_b('notfound, really')) == 0
-assert len(itertest.select_b('leoNodes')) == 1
-chi = itertest.select_h('child?')
+assert len(itertest.filter_b('notfound, really')) == 0
+assert len(itertest.filter_b('leoNodes')) == 1
+chi = itertest.children().filter_h('child?')
 assert chi[0].h == 'child1'
 assert chi[1].h == 'child2'
 # twice, in clones
-chi_b = chi.select_h('a').select_h('b')
+chi_b = chi.children().filter_h('a').children().filter_h('b')
 assert len(chi_b) == 2
 
 assert chi_b[0].h == chi_b[1].h == 'b'
-chi_e = chi.select_h('d').select_h('e')
+chi_e = chi.children().filter_h('d').children().filter_h('e')
 assert len(chi_e) == 1
 assert chi_e[0].h == 'e'</t>
 <t tx="ville.20090602190735.4770">_foo = 0
