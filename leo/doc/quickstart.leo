@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="94" left="346" height="973" width="1105"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -67,7 +67,7 @@
 </v>
 </v>
 <v t="ville.20090701184416.1554"><vh>reStructuredText (@auto-rst)</vh>
-<v t="ville.20090701184416.1555"><vh>@path ~</vh>
+<v t="ville.20090701184416.1555" a="E"><vh>@path ~</vh>
 <v t="ville.20090701184416.1556"><vh>@@auto-rst myfile_rst.txt</vh>
 <v t="ville.20090701184416.1557"><vh>Main heading</vh>
 <v t="ville.20090701184416.1558"><vh>subheading 1</vh></v>
@@ -97,9 +97,14 @@
 </v>
 <v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
 <v t="ville.20090701182804.1551"><vh>Minibuffer</vh></v>
+<v t="ville.20101221125548.2199"><vh>Scripting Leo</vh>
+<v t="ville.20101221131940.2204"><vh>Executing scripts with ctrl+b</vh>
+<v t="ville.20101221131940.2211"><vh>Press ctrl+b here</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20090628091852.6030" str_leo_pos="1">This node contains settings and other "machinery" that you
+<t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you
 can usually ignore.</t>
 <t tx="ekr.20090628091852.6031"></t>
 <t tx="ekr.20090628091852.8471"></t>
@@ -110,62 +115,6 @@ Valid values: any nonzero positive integer.</t>
 of 60 for wrapping paragraphs.
 
 Created the startup node and its descendants.</t>
-<t tx="ville.20090627211608.5782">This is a brief tutorial for getting familiar with basic Leo
-functionality. Click around and experiment.
-
-Note that you probably want to save your own "working copy"
-of this file before proceeding further. Do that by "File -&gt;
-Save as".
-
-This guide is intentionally quite brief and minimal -
-therefore, it merely scratches the surface of what Leo can
-do. You can begin leveraging Leo for mindmapping-like tasks
-by just reading the node "Tree manipulation basics", and
-moving on to other topics after acquiring some basic
-familiarity. </t>
-<t tx="ville.20090627211608.5783"></t>
-<t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with
-some of the commands from the Outline menu:
-
-- Click the expansion box of nodes_ to show and hide their
-  children.
-
-- The ``Insert Node`` command (``Ctrl+I``) inserts a new
-  headline into the outline.
-
-- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a
-  headline and all its children, and copies the structure to
-  clipboard - ready to paste with ``Paste Node`` command
-  (``Ctrl+Shift+V``). Use ``Copy Node`` command
-  (``Ctrl+Shift+C``) to copy node to clipboard without
-  deleting it from outline. Copy-paste command family works
-  across different Leo documents and processes.
-
-- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
-  ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
-  commands move the currently selected node, along with all
-  its descendants.
-
-- The ``Promote`` (``Ctrl+}``) command makes all the
-  children of a headline siblings of the headline. The
-  ``Demote`` (``Ctrl+{``) command makes all following
-  siblings_ of a headline children of the headline.
-
-- Move around the tree and expand/collapse nodes by pressing
-  Alt + arrow keys. This also moves the focus to tree, so,
-  after pressing Alt + arrow, you can move around by using
-  arrow keys alone. Return the focus to the body control by
-  pressing ``Enter``.
-
-- To edit the headline, use press ``Ctrl+H``. This works
-  regardless of whether body or headline has focus.
-
-You enter `body text` for any node by selecting the node's
-headline in the outline pane and then typing in the body
-pane. Leo has a full range of `editing commands` that apply
-to the body pane.
-
-See Leo's documentation for more detailed discussion.</t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
 (ctrl+s) to create an "external" file which is directly
 usable outside leo - try opening the resulting myfile.py in
@@ -232,6 +181,62 @@ Do the same thing you did with @@thin - i.e.,
   this document), you'll note that  the outline structure was lost, 
   and the "parsed" structure is created instead. This is the cost
   of using @auto nodes.</t>
+<t tx="ville.20090627211608.5782">This is a brief tutorial for getting familiar with basic Leo
+functionality. Click around and experiment.
+
+Note that you probably want to save your own "working copy"
+of this file before proceeding further. Do that by "File -&gt;
+Save as".
+
+This guide is intentionally quite brief and minimal -
+therefore, it merely scratches the surface of what Leo can
+do. You can begin leveraging Leo for mindmapping-like tasks
+by just reading the node "Tree manipulation basics", and
+moving on to other topics after acquiring some basic
+familiarity. </t>
+<t tx="ville.20090627211608.5783"></t>
+<t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with
+some of the commands from the Outline menu:
+
+- Click the expansion box of nodes_ to show and hide their
+  children.
+
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new
+  headline into the outline.
+
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a
+  headline and all its children, and copies the structure to
+  clipboard - ready to paste with ``Paste Node`` command
+  (``Ctrl+Shift+V``). Use ``Copy Node`` command
+  (``Ctrl+Shift+C``) to copy node to clipboard without
+  deleting it from outline. Copy-paste command family works
+  across different Leo documents and processes.
+
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
+  ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all
+  its descendants.
+
+- The ``Promote`` (``Ctrl+}``) command makes all the
+  children of a headline siblings of the headline. The
+  ``Demote`` (``Ctrl+{``) command makes all following
+  siblings_ of a headline children of the headline.
+
+- Move around the tree and expand/collapse nodes by pressing
+  Alt + arrow keys. This also moves the focus to tree, so,
+  after pressing Alt + arrow, you can move around by using
+  arrow keys alone. Return the focus to the body control by
+  pressing ``Enter``.
+
+- To edit the headline, use press ``Ctrl+H``. This works
+  regardless of whether body or headline has focus.
+
+You enter `body text` for any node by selecting the node's
+headline in the outline pane and then typing in the body
+pane. Leo has a full range of `editing commands` that apply
+to the body pane.
+
+See Leo's documentation for more detailed discussion.</t>
 <t tx="ville.20090630145410.1509">@language python
 @others
 </t>
@@ -333,6 +338,8 @@ For large scale searches (classic "find in files"
 functionality for the whole tree), look for the "Nav" tab in
 the log pane (in upper right of the screen). Enter your
 search string and press enter, then click on the matches.
+
+You can also activate the "Nav" functionality with ctrl+shift+f.
 
 To perform find-and replace, press ctrl-f, enter the text
 to search, then press ctrl+shift+r, and enter the text to replace
@@ -770,5 +777,36 @@ XXQMenuBar {
 
 # stickynote Create a sticky note
 # read-at-file-nodes Read file node</t>
+<t tx="ville.20101221125548.2199">Eventually, you will want to add extra functionality to your
+Leo documents. There are a few simple ways, and more powerful ones
+
+</t>
+<t tx="ville.20101221131940.2204">You can write scripts in your document trees, and execute
+them with ctrl+b. Try it on the child of this node - it
+should display the list of nodes that have a headline
+starting with @ in the log pane.
+
+It will also append the summary as a new node under itself.
+
+</t>
+<t tx="ville.20101221131940.2211">@language python
+# c is "commander", central api object 
+
+# get a list of "position" objects
+nodes = c.find_h('^@')
+
+res = []
+for n in nodes:
+    # .b gets the body text, .h is headline
+    body = n.b
+    res.append("- " + n.h)
+    
+    res.append("   " + str(body.count('\n')) + " lines")
+    
+child = p.insertAsLastChild()    
+child.b = "\n".join(res)
+child.h = "Report"
+
+c.redraw()    </t>
 </tnodes>
 </leo_file>
