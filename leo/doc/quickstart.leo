@@ -101,6 +101,9 @@
 <v t="ville.20101221131940.2204"><vh>Executing scripts with ctrl+b</vh>
 <v t="ville.20101221131940.2211"><vh>Press ctrl+b here</vh></v>
 </v>
+<v t="ville.20101221131940.2217"><vh>Creating script buttons</vh>
+<v t="ville.20101221131940.2218"><vh>@button example-btn</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -778,7 +781,8 @@ XXQMenuBar {
 # stickynote Create a sticky note
 # read-at-file-nodes Read file node</t>
 <t tx="ville.20101221125548.2199">Eventually, you will want to add extra functionality to your
-Leo documents. There are a few simple ways, and more powerful ones
+Leo documents. There are a few simple ways, and unlimited 
+power for advanced users
 
 </t>
 <t tx="ville.20101221131940.2204">You can write scripts in your document trees, and execute
@@ -790,7 +794,7 @@ It will also append the summary as a new node under itself.
 
 </t>
 <t tx="ville.20101221131940.2211">@language python
-# c is "commander", central api object 
+# c is "commander", central api object specific to current document 
 
 # get a list of "position" objects
 nodes = c.find_h('^@')
@@ -803,10 +807,21 @@ for n in nodes:
     
     res.append("   " + str(body.count('\n')) + " lines")
     
+# 'p' is the 'current position'    
 child = p.insertAsLastChild()    
 child.b = "\n".join(res)
 child.h = "Report"
 
 c.redraw()    </t>
+<t tx="ville.20101221131940.2217">You can create buttons in the button bar by adding @button
+nodes to your outline.
+
+A button does not appear automatically when you add it - you
+need to reopen the document to make it appear.
+
+</t>
+<t tx="ville.20101221131940.2218"># p is current position
+
+g.es("p.h is " + p.h)</t>
 </tnodes>
 </leo_file>
