@@ -6378,7 +6378,16 @@ class SDIFrameFactory:
         dw.construct()
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
-        dw.show()
+
+        if g.app.start_minimized:
+            dw.showMinimized()
+        elif g.app.start_maximized:
+            dw.showMaximized()
+        elif g.app.start_fullscreen:
+            dw.showFullScreen()
+        else:
+            dw.show()
+
         return dw
 
     def deleteFrame(self, wdg):
@@ -6470,7 +6479,15 @@ class TabbedFrameFactory:
         mf.connect(mf,
             QtCore.SIGNAL('currentChanged(int)'),
             self.slotCurrentChanged)
-        mf.show()
+
+        if g.app.start_minimized:
+            mf.showMinimized()
+        elif g.app.start_maximized:
+            mf.showMaximized()
+        elif g.app.start_fullscreen:
+            mf.showFullScreen()
+        else:
+            mf.show()
     #@+node:ekr.20100101104934.3660: *4* signal handlers
     def slotCloseRequest(self,idx):
         tabw = self.masterFrame

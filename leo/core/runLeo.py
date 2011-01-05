@@ -313,7 +313,10 @@ def scanOptions():
     add('-c', '--config', dest="one_config_path")
     add('--debug',        action="store_true",dest="debug")
     add('-f', '--file',   dest="fileName")
-    add('--gui', dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    add('--gui',          help = 'gui to use (qt/tk/qttabs)')
+    add('--minimized',    help = 'start minimized (Qt only)', action="store_true")
+    add('--maximized',    help = 'start maximized (Qt only)', action="store_true")
+    add('--fullscreen',    help = 'start fullscreen (Qt only)', action="store_true")
     add('--ipython',      action="store_true",dest="use_ipython")
     add('--no-cache',     action="store_true",dest='no_cache')
     add('--silent',       action="store_true",dest="silent")
@@ -372,6 +375,13 @@ def scanOptions():
         gui = g.app.guiArgName = 'qt'
 
     assert gui == g.app.guiArgName
+
+    # --minimized
+    # --maximized
+    # --fullscreen
+    g.app.start_minimized = options.minimized
+    g.app.start_maximized = options.maximized
+    g.app.start_fullscreen = options.fullscreen
 
     # --ipython
     g.app.useIpython = options.use_ipython
