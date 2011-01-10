@@ -21,7 +21,6 @@
 </v>
 </v>
 <v t="ekr.20060924180348"><vh>buttons</vh>
-<v t="ekr.20101215130741.16548"><vh>@button load-all</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 <v t="ekr.20101112124740.5432"><vh>@button preview</vh></v>
 </v>
@@ -74,7 +73,8 @@
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
+<v t="tbrown.20100318101414.5990"
+expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@shadow graphcanvas.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
@@ -154,6 +154,7 @@
 <v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@file expfolder.py</vh></v>
 <v t="ekr.20040915105758.13"><vh>@file FileActions.py</vh></v>
+<v t="ekr.20110110105526.5463"><vh>@file ftp.py</vh></v>
 <v t="tbrown.20091214233510.5347"><vh>@file geotag.py</vh></v>
 <v t="tbrown.20100228141752.5691"><vh>@file leocursor.py</vh></v>
 <v t="dan.20090217132953.1"><vh>@file mime.py</vh></v>
@@ -3006,19 +3007,6 @@ else:
 <t tx="ekr.20101110150056.9467"># These plugins would have to be substantially rewritten to be made gui-independent.</t>
 <t tx="ekr.20101110150056.9469"></t>
 <t tx="ekr.20101112124740.5432">g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b + '\n\n')
-</t>
-<t tx="ekr.20101215130741.16548">table = (
-    'core/leoPy.leo',
-    'plugins/leoGuiPlugins.leo',
-    # 'test/unitTest.leo',
-    # 'doc/LeoDocs.leo',
-)
-
-for z in table:
-    fn = g.os_path_finalize_join(g.app.loadDir,'..',z)
-    ok,frame = g.openWithFileName(fn,c)
-    if not ok:
-        g.es('not found',z)
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
