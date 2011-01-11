@@ -1,6 +1,45 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
+#@+node:ekr.20110110110620.5989: ** First
+#@+node:ekr.20110111085801.5989: *3* Improve rst chapter
+@nocolor-node
+
+http://mail.google.com/mail/#label/Cool/12202df701e19a2b
+
+I added it to caliopy073.cpy.leo which you can download from
+
+http://www.caliopywork.org/main/page_files.html
+
+The half-dozen updates made in the last month are listed in the Notes
+section.
+#@+node:ekr.20101218103123.5934: *3* Fix redefinition messages
+#@+node:ekr.20101218103123.5935: *3* How does g.command work for new windows??
+@g.command('print-hi')
+def printHi():
+    g.es('hi from %s' % c.shortFileName())
+#@+node:ekr.20101218101041.8568: *3* Improve qttabs
+@nocolor-node
+
+- Ctrl-w closes tab.
+- save-all-outlines command.
+#@+node:ekr.20101218103123.5938: *3* Fix bug 690260: g.es sends to wrong tabbed pane
+#@+node:ekr.20101218103123.5939: *4* Report
+@nocolor-node
+
+I start Leo with 3 filenames, they open in tabs.
+I execute a g.es() in the leftmost file tab, it writes to the
+log pane for the file with it's tab on the right.
+
+update:
+
+Doesn't happen via ctl-b, does happen if the g.es() is in a @button.
+Kent Tenney wrote on 2010-12-14: 	#2
+
+upupdate:
+
+doing a ctl-b in the left pane corrects it, after that the @button g.es()
+targets the correct pane.
 #@+node:ekr.20101125041212.5845: ** Small improvements
 @nocolor-node
 

@@ -218,7 +218,9 @@ bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/
 
 bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
-===== creates branch on local machine: do this from leo.repo directory
+===== creates branch on local machine: do this from leo.repo directo
+
+bzr branch old-branch-name new-branch-name
 
 bzr branch lp:leo-editor new-branch-name 
 
