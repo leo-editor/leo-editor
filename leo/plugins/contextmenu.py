@@ -117,9 +117,12 @@ def refresh_rclick(c,p, menu):
     if len(split) < 2:
         return
 
-    typ = split[0]        
-    if not (typ.startswith('@auto') or typ in ['@thin', '@shadow', '@auto-rst']):
+    fname = p.anyAtFileNodeName()
+
+    if fname is None:
         return
+
+    typ = split[0]        
 
     action = menu.addAction("Refresh from disk")
 
@@ -130,6 +133,8 @@ def refresh_rclick(c,p, menu):
             c.readAtFileNodes()
         elif typ =='@shadow':
             c.readAtShadowNodes()
+        else:
+            c.readAtFileNodes()
 
         # UNSUPPORTED            
         #if typ =='@edit':
@@ -149,10 +154,6 @@ def editnode_rclick(c,p, menu):
         c.openWith(data = ('subprocess.Popen', [editor], None))
 
     action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
-
-
-
-
 #@+node:ville.20090702171015.5480: ** nextclone_rclick
 def nextclone_rclick(c,p, menu):
     """ Go to next clone """
