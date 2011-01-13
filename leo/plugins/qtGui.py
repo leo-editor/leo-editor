@@ -5529,7 +5529,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             p2 = p.insertAfter()
 
-        p.h = '@path ' + fn
+        p2.h = '@path ' + fn
 
         u.afterInsertNode(p2,undoType,undoData)
 
