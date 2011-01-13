@@ -40,7 +40,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -63,7 +63,7 @@
 </v>
 </v>
 <v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -144,8 +144,8 @@ expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 </v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
-<v t="edream.110203113231.872"><vh>Files and nodes</vh>
-<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
+<v t="tbrown.20080613095157.2" a="E"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
@@ -195,7 +195,7 @@ expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
 </v>
 </v>
-<v t="ekr.20040915073259"><vh>User interface</vh>
+<v t="ekr.20040915073259" a="E"><vh>User interface</vh>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
@@ -210,14 +210,16 @@ expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
-<v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
+<v t="EKR.20040517080555.2" a="E"
+expanded="ekr.20060107091318,EKR.20040517080555.24,EKR.20040517080555.23,pap.20050305152751,EKR.20040517080555.3,EKR.20040517080555.4,EKR.20040517080555.10,bob.20071208030419,bob.20071208030419.2,"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
-<v t="ekr.20101110150056.9447"><vh>zz Tk only plugins</vh>
-<v t="ekr.20101110150056.9469"><vh>Require plugins manager</vh>
-<v t="pap.20041006184225"><vh>@file old_plugin_manager.py</vh></v>
+<v t="ekr.20101110150056.9447" a="E"><vh>zz Tk only plugins</vh>
+<v t="ekr.20101110150056.9469" a="E"><vh>Require plugins manager</vh>
+<v t="pap.20041006184225" a="E"
+expanded="pap.20041009140132.1,pap.20041006190817,pap.20051002002852,"><vh>@file old_plugin_manager.py</vh></v>
 <v t="ekr.20050329082101"><vh> AutoTrees</vh>
 <v t="ekr.20050329082101.1"><vh>AutoTrees plugin</vh>
 <v t="ekr.20050329082101.2"><vh>Introduction</vh></v>
