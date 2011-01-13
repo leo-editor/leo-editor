@@ -5372,6 +5372,10 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 fn = fn[1:]
 
         changed = False
+        if os.path.isdir(fn):
+            self.doPathUrlHelper(fn,p)
+            return True
+
         if g.os_path_exists(fn):
             try:
                 f = open(fn,'r')
@@ -5511,6 +5515,25 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if p2.h == h and p2 != p:
                 g.es('Warning: duplicate node:',h,color='blue')
                 break
+    #@+node:ville.20110113151525.11644: *7* doPathUrlHelper
+    def doPathUrlHelper (self,fn,p):
+
+        '''Insert s in an @file, @auto or @edit node after p.'''
+
+        c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+        undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+        if p.hasChildren() and p.isExpanded():
+            p2 = p.insertAsNthChild(0)
+        else:
+            p2 = p.insertAfter()
+
+        p.h = '@path ' + fn
+
+        u.afterInsertNode(p2,undoType,undoData)
+
+        c.selectPosition(p2)
     #@+node:ekr.20100830205422.3724: *6* doHttpUrl
     def doHttpUrl (self,p,url):
 
