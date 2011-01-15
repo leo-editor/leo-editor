@@ -5235,12 +5235,25 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if trace or self.trace: g.trace('no p!')
             return
 
+
         md = ev.mimeData()
+        #print "drop md",mdl
         if not md:
             g.trace('no mimeData!') ; return
 
+        #print "t",str(md.text())
+        #print "h", str(md.html())
+        formats = set(str(f) for f in md.formats())
+        #print formats
+
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
+
+        hookres = g.doHook("outlinedrop", c=c, p=p, dropevent = ev, formats = formats)
+
+        if hookres:
+            # True => plugins handled the drop already
+            return
 
         if trace or self.trace: self.dump(ev,p,'drop ')
 
