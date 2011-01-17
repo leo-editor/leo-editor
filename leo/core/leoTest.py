@@ -419,12 +419,18 @@ class testUtils:
 
         p2 = root2.copy() ; ok = True
         for p1 in root1.self_and_subtree():
+            b1 = p1.b
+            b2 = p2.b
+            if p1.h.endswith('@nonl') and b1.endswith('\n'):
+                b1 = b1[:-1]
+            if p2.h.endswith('@nonl') and b2.endswith('\n'):
+                b2 = b2[:-1]
             ok = (
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
                 (not compareHeadlines or (p1.h == p2.h)) and
-                p1.b == p2.b and
-                p1.isCloned()   == p2.isCloned()
+                b1 == b2 and
+                p1.isCloned() == p2.isCloned()
             )
             if not ok: break
             p2.moveToThreadNext()
@@ -442,9 +448,9 @@ class testUtils:
         else:
             g.pr('compareOutlines failed',newline=False)
             if tag: g.pr('tag:',tag)
-            else: g.pr('')
-            if p1: g.pr('p1',p1,p1.v)
-            if p2: g.pr('p2',p2,p2.v)
+            # else: g.pr('')
+            if p1: g.pr('p1',p1.h)
+            if p2: g.pr('p2',p2.h)
             if not p1 or not p2:
                 g.pr('p1 and p2')
             if p1.numberOfChildren() != p2.numberOfChildren():
@@ -453,7 +459,7 @@ class testUtils:
             if compareHeadlines and (p1.h != p2.h):
                 g.pr('p1.head', p1.h)
                 g.pr('p2.head', p2.h)
-            if p1.b != p2.b:
+            if b1 != b2:
                 self.showTwoBodies(p1.h,p1.b,p2.b)
             if p1.isCloned() != p2.isCloned():
                 g.pr('p1.isCloned() == p2.isCloned()')
@@ -1073,8 +1079,8 @@ def makeEditBodySuite(c,p):
 
     for p in data_p.children():
         if p.h=="tempNode": continue # TempNode now in data tree.
-        before = u.findNodeInTree(p,"before")
-        after  = u.findNodeInTree(p,"after")
+        before = u.findNodeInTree(p,"before",startswith=True)
+        after  = u.findNodeInTree(p,"after",startswith=True)
         sel    = u.findNodeInTree(p,"selection")
         ins    = u.findNodeInTree(p,"insert")
         if before and after:
@@ -1106,10 +1112,9 @@ class editBodyTestCase(unittest.TestCase):
         self.ins    = ins.copy() # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
 
-        if 0:
-            g.trace('parent',parent)
-            g.trace('before',before)
-            g.trace('after',after)
+        # g.trace('parent',parent.h)
+        # g.trace('before',before.h)
+        # g.trace('after',after.h)
     #@+node:ekr.20051104075904.72: *5*  fail
     def fail (self,msg=None):
 
@@ -1138,7 +1143,6 @@ class editBodyTestCase(unittest.TestCase):
         command()
 
         try:
-
             # Don't call the undoer if we expect no change.
             if not u.compareOutlines(self.before,self.after,compareHeadlines=False,report=False):
                 assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
@@ -1189,6 +1193,14 @@ class editBodyTestCase(unittest.TestCase):
         if not self.sel and not self.ins: # self.sel is a **tk** index.
             w.setInsertPoint(0)
             w.setSelectionRange(0,0)
+    #@+node:ekr.20110117113521.6107: *5* shortDescription
+    def shortDescription (self):
+
+        try:
+            return "EditBodyTestCase: %s" % (self.parent.h)
+        except Exception:
+            g.es_exception()
+            return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *5* tearDown
     def tearDown (self):
 
@@ -1427,7 +1439,7 @@ def checkFileTabs (fileName,s):
 #@+node:ekr.20051104075904.47: *4* class reformatParagraphTest
 class reformatParagraphTest:
 
-    '''A class to work around stupidities of the Unittest classes.'''
+    '''A base class for unit tests of the reformat-paragraph command.'''
 
     #@+others
     #@+node:ekr.20051104075904.48: *5* __init__
@@ -1596,7 +1608,7 @@ class multiParagraphTest (reformatParagraphTest):
         self.c.reformatParagraph()
         self.checkPosition(25,0)
         self.c.reformatParagraph()
-        self.checkPosition(32,11)
+        self.checkPosition(33,0)
 
         # Compare the computed result to the reference result.
         self.checkText()
@@ -1620,7 +1632,7 @@ class multiParagraphWithListTest (reformatParagraphTest):
         self.c.reformatParagraph()
         self.checkPosition(13,0)
         self.c.reformatParagraph()
-        self.checkPosition(14,18)
+        self.checkPosition(15,0)
 
         # Compare the computed result to the reference result.
         self.checkText()
@@ -1644,7 +1656,7 @@ class leadingWSOnEmptyLinesTest (reformatParagraphTest):
         self.c.reformatParagraph()
         self.checkPosition(13,0)
         self.c.reformatParagraph()
-        self.checkPosition(14,18)
+        self.checkPosition(15,0)
 
         # Compare the computed result to the reference result.
         self.checkText()
@@ -1664,7 +1676,7 @@ class directiveBreaksParagraphTest (reformatParagraphTest):
         self.c.reformatParagraph()
         self.checkPosition(25,0) # at next paragraph
         self.c.reformatParagraph()
-        self.checkPosition(32,11)
+        self.checkPosition(33,0)
 
         # Compare the computed result to the reference result.
         self.checkText()

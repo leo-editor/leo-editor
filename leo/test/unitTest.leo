@@ -97,7 +97,25 @@
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31332e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31352e3571057d71065808000000616e6e6f7461746571077d7108735808000000302e372e392e313071097d710a5809000000756e69745f74657374710b580400000061626364710c735807000000302e342e302e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
-expanded="ekr.20071113194858,ekr.20061001114637,ekr.20061008162912,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20090529141856.4731,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4772,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20090529141856.4780,ekr.20090529141856.4784,ekr.20071113194424.1,ekr.20040802071519,ekr.20080501121449.1,ekr.20081001094920.2,ekr.20100131171342.5610,ekr.20091219122958.5066,ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTests.txt</vh></v>
+expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20090529141856.4731,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4772,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20090529141856.4780,ekr.20090529141856.4784,ekr.20071113194424.1,ekr.20040802071519,ekr.20080501121449.1,ekr.20081001094920.2,ekr.20100131171342.5610,ekr.20091219122958.5066,ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20110111143147.4437"><vh>Log of failures</vh></v>
+<v t="ekr.20110117112057.3475"><vh>Summary (23)</vh>
+<v t="ekr.20110117112057.3478"><vh>Commands (5)</vh></v>
+<v t="ekr.20110117141944.3491"><vh>Fixed</vh>
+<v t="ekr.20110117112057.3479"><vh>Utils (2) (Fixed)</vh></v>
+<v t="ekr.20110117112057.3476"><vh>File (2) (Fixed)</vh></v>
+<v t="ekr.20110117112057.3477"><vh>Reformat paragraph (7) (Fixed)</vh></v>
+<v t="ekr.20110117112057.3480"><vh>Html mismatch (5) (Fixed)</vh>
+<v t="ekr.20100812182942.5804"><vh>class rst3Test</vh>
+<v t="ekr.20100827194549.5963"><vh>report</vh></v>
+<v t="ekr.20100827183358.5957"><vh>run</vh></v>
+<v t="ekr.20100827183358.5958"><vh>setup</vh></v>
+<v t="ekr.20100827183358.5959"><vh>set_got</vh></v>
+</v>
+</v>
+<v t="ekr.20110117112057.3481"><vh>editBodyTestCase (2) (Fixed)</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -606,7 +624,257 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
+<t tx="ekr.20100812182942.5804">class rst3Test:
+
+    def __init__ (self,c,p):
+        self.c = c
+        self.p = p.copy()
+        self.run()
+
+    @others
+</t>
+<t tx="ekr.20100827183358.5957">def run(self):
+    import sys
+    if not sys.platform.startswith('win') and \
+        g.isPython3: return
+    def clean(s):
+        return s.replace('\r','')
+    c,p = self.c,self.p
+    rc = c.rstCommands
+    expected,got,source = self.setup()
+    rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
+    rst = clean(rc.source)
+    html = clean(rc.stringOutput)
+    assert rst,'rst'
+    assert html,'html'
+    # Kludge: disregard version of docutils.
+    html = html.replace('Docutils 0.6','Docutils 0.8')
+    if expected.hasChildren():
+        child1 = expected.firstChild()
+        child2 = expected.firstChild().next()
+        child1_b = clean(child1.b)
+        child2_b = clean(child2.b)
+        ok = rst == child1_b and html == child2_b
+        if not ok:
+            got_html,got_rst = self.set_got(expected,got)
+            got_html.b = html
+            got_rst.b = rst
+        if rst != child1_b:
+            self.report(child1,got_rst)
+        if html != child2_b:
+            self.report(child2,got_html)
+        assert rst == child1_b,'rst mismatch'
+        assert html == child2_b,'html mismatch'
+    else:
+        child = expected.insertAsNthChild(0)
+        child.h,child.b = 'rst',rst
+        child = expected.insertAsNthChild(1)
+        child.h,child.b = ' html',html
+</t>
+<t tx="ekr.20100827183358.5958">def setup (self):
+
+    c,p = self.c, self.p
+
+    expected = g.findNodeInTree(c,p,'expected')
+    got = g.findNodeInTree(c,p,'got')
+    source = g.findNodeInTree(c,p,'source')
+
+    assert source,'source'
+    assert expected,'expected'
+
+    return expected,got,source
+</t>
+<t tx="ekr.20100827183358.5959">def set_got (self,expected,got):
+
+    c,p = self.c, self.p
+
+    if got:
+        got_rst = g.findNodeInTree(c,got,'rst')
+        got_html = g.findNodeInTree(c,got,'html')
+        assert got_rst
+        assert got_html
+    else:
+        got = p.insertAsLastChild()
+        got.h = 'got'
+        got_rst = got.insertAsNthChild(0)
+        got_rst.h = 'rst'
+        got_html = got.insertAsNthChild(1)
+        got_html.h = 'html'
+
+    return got_html,got_rst
+</t>
+<t tx="ekr.20100827194549.5963">def report (self,expected,got):
+
+    verbose = True
+    expected_lines = g.splitLines(expected.b)
+    got_lines = g.splitLines(got.b)
+
+    for i in range(min(len(expected_lines),len(got_lines))):
+        match = expected_lines[i]==got_lines[i]
+        if verbose or not match:
+            tag = g.choose(match,'  ','**')
+            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+        if not verbose and not match:
+            break
+</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20110111143147.4437"></t>
+<t tx="ekr.20110117112057.3475">FAILED (failures=23)
+</t>
+<t tx="ekr.20110117112057.3476">======================================================================
+FAIL: @test @asis
+
+    assert result == expected
+AssertionError
+
+======================================================================
+FAIL: @test verbatim sentinel
+
+  File "&lt;string&gt;", line 13, in &lt;module&gt;
+AssertionError: 196
+</t>
+<t tx="ekr.20110117112057.3477">======================================================================
+FAIL: @test simpleHangingIndent
+
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 8
+
+======================================================================
+FAIL: @test testSimpleHangingIndentVar1
+
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 8
+
+======================================================================
+FAIL: @test simpleHangingIndentVar2
+
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 8
+
+======================================================================
+FAIL: @test multiParagraphTest
+
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 11
+
+======================================================================
+FAIL: @test multiParagraphWithListTest
+
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 1453, in checkPosition
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 18
+
+======================================================================
+FAIL: @test leadingWSOnEmptyLinesTest
+
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 1453, in checkPosition
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 18
+
+======================================================================
+FAIL: @test directiveBreaksParagraphTest
+
+    self.checkPosition(32,11)
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 1453, in checkPosition
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 11
+</t>
+<t tx="ekr.20110117112057.3478">======================================================================
+FAIL: @test fill-region (three paragraphs)
+
+    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+AssertionError: mismatch in sel
+expected: ('18.18', '18.18') = (1078, 1078), got: (1079, 1079)
+
+======================================================================
+FAIL: @test kill-line end-1
+
+    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
+AssertionError: mismatch in body
+expected: 'line 1\nline 2\n'
+     got: 'line 1\nline 2\n\n'
+
+======================================================================
+FAIL: @test kill-line end-2
+
+    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
+AssertionError: mismatch in body
+expected: 'line 1\nline 2\n'
+     got: 'line 1\nline 2'
+
+======================================================================
+FAIL: @test newline-and-indent
+
+AssertionError: mismatch in body
+expected: 'first line\nline 1\n\n    line a\n        line b\nline c\nlast line\n'
+     got: 'first line\nline 1\n    \n    line a\n        line b\nline c\nlast line\n'
+
+======================================================================
+FAIL: @test selfInsertCommand-2 (replacing tabs)
+
+AssertionError: result
+"@language python\n@tabwidth -4\n\ntry:\n    ec = c.editCommands ; w = c.frame.body.bodyCtrl\n    s = w.getAllText()\n
+  w.setSelectionRange(len(s)-9,len(s)-6)\n    event = g.Bunch(widget=w,char='\\t',keysym=None)\n    ec.selfInsertCommand
+(event)\n    result = w.getAllText()\n    # print('result %s' % result)\n    assert result.endswith('\\n    ###abcdef'),
+'result\\n%s' % (repr(result))\nfinally:\n    w.setAllText(s)\n    p.setBodyString(s)\n    c.recolor_now()\n\n    ###abc
+def\n"
+
+</t>
+<t tx="ekr.20110117112057.3479">======================================================================
+FAIL: @test leoBody.getInsertLines
+
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 177, in runTest
+    exec(script,d)
+  File "&lt;string&gt;", line 14, in &lt;module&gt;
+AssertionError
+
+======================================================================
+FAIL: @test find_h / find_b / filter_h / filter_b
+
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 177, in runTest
+    exec(script,d)
+  File "&lt;string&gt;", line 50, in &lt;module&gt;
+AssertionError
+
+</t>
+<t tx="ekr.20110117112057.3480">======================================================================
+FAIL: @test rst3 defaults
+
+AssertionError: html mismatch
+
+======================================================================
+FAIL: @test rst3 @no-head
+
+AssertionError: html mismatch
+
+======================================================================
+FAIL: @test doc_only_mode (set in headline)
+
+AssertionError: html mismatch
+
+======================================================================
+FAIL: @test doc_only_mode (set in options doc part)
+
+AssertionError: html mismatch
+
+======================================================================
+FAIL: @test show_leo_directives=False
+
+AssertionError: html mismatch
+</t>
+<t tx="ekr.20110117112057.3481">
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+
+AssertionError: extract: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+
+AssertionError: extractSection: before undo1
+</t>
+<t tx="ekr.20110117141944.3491"></t>
 </tnodes>
 </leo_file>

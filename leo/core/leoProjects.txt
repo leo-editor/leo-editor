@@ -2708,7 +2708,7 @@ def __init__ (self,c):
     """Ctor for the EnchantClass class."""
 
     self.c = c
-    language = c.config.getString('enchant_language')
+    language = g.toUnicode(c.config.getString('enchant_language'))
 
     # Set the base language
     if language and not enchant.dict_exists(language):
@@ -2776,6 +2776,7 @@ def scanAllDirectives(self,p=None):
 
     Returns a dict containing the results, including defaults.'''
 
+    trace = False and not g.unitTesting
     c = self ; p = p or c.p
 
     # Set defaults
@@ -2806,7 +2807,7 @@ def scanAllDirectives(self,p=None):
     # Post process: do *not* set commander ivars.
     lang_dict = d.get('lang-dict')
 
-    return {
+    d = {
         "delims"        : lang_dict.get('delims'),
         "encoding"      : d.get('encoding'),
         "language"      : lang_dict.get('language'),
@@ -2817,6 +2818,10 @@ def scanAllDirectives(self,p=None):
         "pluginsList"   : [], # No longer used.
         "wrap"          : d.get('wrap'),
     }
+
+    if trace: g.trace(lang_dict.get('language'),g.callers())
+
+    return d
 #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives
 def scanAtPathDirectives(self,aList):
 
