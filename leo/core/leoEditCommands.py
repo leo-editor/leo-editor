@@ -8554,7 +8554,7 @@ class EnchantClass:
         """Ctor for the EnchantClass class."""
 
         self.c = c
-        language = c.config.getString('enchant_language')
+        language = g.toUnicode(c.config.getString('enchant_language'))
 
         # Set the base language
         if language and not enchant.dict_exists(language):

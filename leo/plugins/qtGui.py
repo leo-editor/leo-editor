@@ -7705,12 +7705,29 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.172: *4* qtKey
     def qtKey (self,event):
 
-        '''Return the components of a Qt key event.'''
+        '''Return the components of a Qt key event.
+
+        Modifiers are handled separately.'''
 
         trace = False and not g.unitTesting
         keynum = event.key()
         text   = event.text() # This is the unicode text.
-        toString = QtGui.QKeySequence(keynum).toString()
+
+        qt = QtCore.Qt
+        d = {
+            qt.Key_Shift:   'Key_Shift',
+            qt.Key_Control: 'Key_Control',  # MacOS: Command key
+            qt.Key_Meta:	'Key_Meta',     # MacOS: Control key   
+            qt.Key_Alt:	    'Key_Alt',	 
+            qt.Key_AltGr:	'Key_AltGr',
+                # On Windows, when the KeyDown event for this key is sent,
+                # the Ctrl+Alt modifiers are also set.
+        }
+
+        if d.get(keynum):
+            toString = d.get(keynum)
+        else:
+            toString = QtGui.QKeySequence(keynum).toString()
 
         try:
             ch1 = chr(keynum)
@@ -7725,13 +7742,17 @@ class leoQtEventFilter(QtCore.QObject):
         text     = g.u(text)
         toString = g.u(toString)
 
-        if trace and self.keyIsActive: g.trace(
-            'keynum %s ch %s ch1 %s toString %s' % (
-                repr(keynum),repr(ch),repr(ch1),repr(toString)))
+        if trace and self.keyIsActive:
+            mods = '+'.join(self.qtMods(event))
+            g.trace(
+                'keynum %7x ch %3s toString %s %s' % (
+                keynum,repr(ch),mods,repr(toString)))
 
         return keynum,text,toString,ch
     #@+node:ekr.20081121105001.173: *4* qtMods
     def qtMods (self,event):
+
+        '''Return the text version of the modifiers of the key event.'''
 
         modifiers = event.modifiers()
 
@@ -7739,11 +7760,12 @@ class leoQtEventFilter(QtCore.QObject):
         # It must the order of modifiers in bindings
         # in k.masterGuiBindingsDict
 
+        qt = QtCore.Qt
         table = (
-            (QtCore.Qt.AltModifier,     'Alt'),
-            (QtCore.Qt.ControlModifier, 'Control'),
-            (QtCore.Qt.MetaModifier,    'Meta'),
-            (QtCore.Qt.ShiftModifier,   'Shift'),
+            (qt.AltModifier,     'Alt'),
+            (qt.ControlModifier, 'Control'),
+            (qt.MetaModifier,    'Meta'),
+            (qt.ShiftModifier,   'Shift'),
         )
 
         mods = [b for a,b in table if (modifiers & a)]
@@ -8013,7 +8035,7 @@ class leoQtColorizer:
 
     def kill (self):
         pass
-    #@+node:ekr.20090226105328.12: *4* scanColorDirectives (leoQtColorizer)
+    #@+node:ekr.20090226105328.12: *4* OLDscanColorDirectives (leoQtColorizer)
     def scanColorDirectives(self,p):
 
         trace = False and not g.unitTesting
@@ -8048,6 +8070,47 @@ class leoQtColorizer:
                     doc = c.config.at_root_bodies_start_in_doc_mode
                     self.rootMode = g.choose(doc,"doc","code")
             #@-<< Test for @root, @root-doc or @root-code >>
+
+        if trace: g.trace(self.language,g.callers(4))
+
+        return self.language # For use by external routines.
+    #@+node:ekr.20110117083659.3796: *4* scanColorDirectives (leoQtColorizer) (NEW)
+    def NEWscanColorDirectives(self,p):
+
+        trace = False and not g.unitTesting
+
+        p = p.copy() ; c = self.c
+        if c == None: return # self.c may be None for testing.
+
+        self.language = None ### language = c.target_language
+        self.rootMode = None # None, "code" or "doc"
+
+        for p in p.self_and_parents():
+            for lines in (g.splitLines(p.b),[p.h]):
+                #@+<< Test for @language >>
+                #@+node:ekr.20110117083659.3797: *5* << Test for @language >>
+                tag = '@langauge'
+                if g.match_word(s,0,tag):
+                    i = len(tag)
+                    i = g.skip_ws(s,i)
+                    j = g.skip_c_id(s,i)
+                    self.language = s[i:j].lower()
+                #@-<< Test for @language >>
+                #@+<< Test for @root, @root-doc or @root-code >>
+                #@+node:ekr.20110117083659.3798: *5* << Test for @root, @root-doc or @root-code >>
+                if self.rootMode:
+                    s = theDict["root"]
+                    if g.match_word(s,0,"@root-code"):
+                        self.rootMode = "code"
+                    elif g.match_word(s,0,"@root-doc"):
+                        self.rootMode = "doc"
+                    else:
+                        doc = c.config.at_root_bodies_start_in_doc_mode
+                        self.rootMode = g.choose(doc,"doc","code")
+                #@-<< Test for @root, @root-doc or @root-code >>
+
+        if not self.language:
+            self.language = c.target_language
 
         if trace: g.trace(self.language,g.callers(4))
 
@@ -8478,6 +8541,7 @@ class jEditColorizer:
                 # Debatable: Leo keywords override langauge keywords.
             ('@',  self.match_at_color,    True),
             ('@',  self.match_at_killcolor,True),
+            ('@',  self.match_at_language, True), # 2011/01/17
             ('@',  self.match_at_nocolor,  True),
             ('@',  self.match_at_nocolor_node,True),
             ('@',  self.match_doc_part,    True), 
@@ -8982,6 +9046,31 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,'leoKeyword')
             self.clearState()
             return j - i
+        else:
+            return 0
+    #@+node:ekr.20110117083659.3791: *6* match_at_language
+    def match_at_language (self,s,i):
+
+        if self.trace_leo_matches: g.trace(i,repr(s))
+
+        seq = '@language'
+
+        # Only matches at start of line.
+        if i != 0: return 0
+
+        if g.match_word(s,i,seq):
+            j = i + len(seq)
+            j = g.skip_ws(s,j)
+            k = g.skip_c_id(s,j)
+            name = s[j:k]
+            ok = self.init_mode(name)
+            # g.trace(ok,name)
+            if ok:
+                self.colorRangeWithTag(s,i,k,'leoKeyword')
+            else:
+                self.colorRangeWithTag(s,i,j,'leoKeyword')
+            self.clearState()
+            return k - i
         else:
             return 0
     #@+node:ekr.20090614134853.3719: *6* match_at_nocolor & restarter

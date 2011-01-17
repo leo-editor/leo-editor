@@ -3471,7 +3471,7 @@ class atFile:
         at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
         if not fromString:
             # 2010/10/08: cleanLines calls c.setChanged(!)
-            s = self.cleanLines(p,s)
+            pass ##### s = self.cleanLines(p,s)
         i = 0
         while i < len(s):
             next_i = g.skip_line(s,i)
@@ -3743,7 +3743,8 @@ class atFile:
         if trace: g.trace(self.atShadow,repr(line))
 
         # Don't put any whitespace in otherwise blank lines.
-        if line.strip(): # The line has non-empty content.
+        ### if line.strip(): # The line has non-empty content.
+        if len(line) > 1: # Preserve *anything* the user puts on the line!!!
             if not at.raw:
                 at.putIndent(at.indent,line)
 

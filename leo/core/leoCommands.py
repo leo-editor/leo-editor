@@ -395,6 +395,7 @@ class baseCommands (object):
 
         Returns a dict containing the results, including defaults.'''
 
+        trace = False and not g.unitTesting
         c = self ; p = p or c.p
 
         # Set defaults
@@ -425,7 +426,7 @@ class baseCommands (object):
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
 
-        return {
+        d = {
             "delims"        : lang_dict.get('delims'),
             "encoding"      : d.get('encoding'),
             "language"      : lang_dict.get('language'),
@@ -436,6 +437,10 @@ class baseCommands (object):
             "pluginsList"   : [], # No longer used.
             "wrap"          : d.get('wrap'),
         }
+
+        if trace: g.trace(lang_dict.get('language'),g.callers())
+
+        return d
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
     def scanAtPathDirectives(self,aList):
 
@@ -3413,7 +3418,7 @@ class baseCommands (object):
             #@-<< compute the leading whitespace >>
             #@+<< compute the result of wrapping all lines >>
             #@+node:ekr.20031218072017.1836: *7* << compute the result of wrapping all lines >>
-            trailingNL = lines and lines[-1].endswith('\n')
+            trailingNL = True ### lines and lines[-1].endswith('\n')
             lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
 
             # Wrap the lines, decreasing the page width by indent.
