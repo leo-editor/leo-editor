@@ -5093,7 +5093,7 @@ class atFile:
         }
         if trace: g.trace(d)
         return d
-    #@+node:ekr.20070529083836: *3* cleanLines
+    #@+node:ekr.20070529083836: *3* cleanLines (no longer used)
     def cleanLines (self,p,s):
 
         '''Return a copy of s, with all trailing whitespace removed.
