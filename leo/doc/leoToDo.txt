@@ -915,7 +915,7 @@ def promptForDangerousWrite (self,fileName,kind):
         message = message)
 
     return ok == 'yes'
-#@+node:ekr.20070529083836: *5* cleanLines
+#@+node:ekr.20070529083836: *5* cleanLines (no longer used)
 def cleanLines (self,p,s):
 
     '''Return a copy of s, with all trailing whitespace removed.
