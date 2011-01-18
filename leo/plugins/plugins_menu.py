@@ -178,8 +178,10 @@ def createPluginsMenu (tag,keywords):
     pc = g.app.pluginsController
     lmd = pc.loadedModules
     if lmd:
-        impModSpecList = lmd.keys()
-        impModSpecList.sort(cmp=lambda x, y: cmp(x.split('.')[-1].lower(), y.split('.')[-1].lower()))
+        impModSpecList = list(lmd.keys())
+        def key(aList):
+            return aList.split('.')[-1].lower()
+        impModSpecList.sort(key=key)
         plgObList = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
         PluginDatabase.setMenu("Default", pluginMenu)
