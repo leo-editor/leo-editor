@@ -8035,7 +8035,7 @@ class leoQtColorizer:
 
     def kill (self):
         pass
-    #@+node:ekr.20090226105328.12: *4* OLDscanColorDirectives (leoQtColorizer)
+    #@+node:ekr.20090226105328.12: *4* scanColorDirectives (leoQtColorizer)
     def scanColorDirectives(self,p):
 
         trace = False and not g.unitTesting
@@ -8070,47 +8070,6 @@ class leoQtColorizer:
                     doc = c.config.at_root_bodies_start_in_doc_mode
                     self.rootMode = g.choose(doc,"doc","code")
             #@-<< Test for @root, @root-doc or @root-code >>
-
-        if trace: g.trace(self.language,g.callers(4))
-
-        return self.language # For use by external routines.
-    #@+node:ekr.20110117083659.3796: *4* scanColorDirectives (leoQtColorizer) (NEW)
-    def NEWscanColorDirectives(self,p):
-
-        trace = False and not g.unitTesting
-
-        p = p.copy() ; c = self.c
-        if c == None: return # self.c may be None for testing.
-
-        self.language = None ### language = c.target_language
-        self.rootMode = None # None, "code" or "doc"
-
-        for p in p.self_and_parents():
-            for lines in (g.splitLines(p.b),[p.h]):
-                #@+<< Test for @language >>
-                #@+node:ekr.20110117083659.3797: *5* << Test for @language >>
-                tag = '@langauge'
-                if g.match_word(s,0,tag):
-                    i = len(tag)
-                    i = g.skip_ws(s,i)
-                    j = g.skip_c_id(s,i)
-                    self.language = s[i:j].lower()
-                #@-<< Test for @language >>
-                #@+<< Test for @root, @root-doc or @root-code >>
-                #@+node:ekr.20110117083659.3798: *5* << Test for @root, @root-doc or @root-code >>
-                if self.rootMode:
-                    s = theDict["root"]
-                    if g.match_word(s,0,"@root-code"):
-                        self.rootMode = "code"
-                    elif g.match_word(s,0,"@root-doc"):
-                        self.rootMode = "doc"
-                    else:
-                        doc = c.config.at_root_bodies_start_in_doc_mode
-                        self.rootMode = g.choose(doc,"doc","code")
-                #@-<< Test for @root, @root-doc or @root-code >>
-
-        if not self.language:
-            self.language = c.target_language
 
         if trace: g.trace(self.language,g.callers(4))
 
