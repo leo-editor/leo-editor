@@ -3170,6 +3170,156 @@ def initWriteIvars(self,root,targetFileName,
 
 Support @nonl in headlines in compareOutlines. This is another test of reformat
 paragraph. And this is some.
+#@+node:ekr.20110117145531.6151: *4* Don't change user's lines!
+#@+node:ekr.20041005105605.161: *5* at.putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.b)
+
+    p.v.setVisited()
+    if trace: g.trace('visit',p.h)
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+    if not at.thinFile:
+        p.v.setWriteBit() # Mark the vnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert next_i > i,'putBody'
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+
+    if not trailingNewlineFlag:
+        if at.writeVersion5:
+            if at.sentinels:
+                pass # Never write @nonl
+            elif at.atAuto and not at.atEdit:
+                at.onl() # 2010/08/01: bug fix: ensure newline here.
+        else:
+            if at.sentinels:
+                at.putSentinel("@nonl")
+            elif at.atAuto and not at.atEdit:
+                # Ensure all @auto nodes end in a newline!
+                at.onl()
+#@+node:ekr.20041005105605.162: *6* << Make sure all lines end in a newline >>
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if not trailingNewlineFlag:
+        if (at.sentinels or 
+            (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+        ):
+            # g.trace('Added newline',repr(s))
+            s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@+node:ekr.20041005105605.163: *6* << handle line at s[i] >> (putBody)
+if trace: g.trace(kind,repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            hasRef,n1,n2 = at.findSectionName(s,i)
+            if hasRef and not at.raw:
+                at.putRefLine(s,i,n1,n2,p)
+            else:
+                at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert not at.pending,'putBody at.pending'
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    at.raw = False
+    at.putSentinel("@@end_raw")
+    i = g.skip_line(s,i)
+elif kind == at.startVerbatim:
+    at.putSentinel("@verbatim")
+    at.putIndent(at.indent)
+    i = next_i
+    next_i = g.skip_line(s,i)
+    at.os(s[i:next_i])
+elif kind == at.miscDirective:
+    # g.trace('miscDirective')
+    at.putDirective(s,i)
+else:
+    assert 0,'putBody: unknown directive'
+#@+node:ekr.20041005105605.174: *5* putCodeLine (leoAtFile)
+def putCodeLine (self,s,i):
+
+    '''Put a normal code line.'''
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # Put @verbatim sentinel if required.
+    k = g.skip_ws(s,i)
+    if g.match(s,k,self.startSentinelComment + '@'):
+        self.putSentinel('@verbatim')
+
+    j = g.skip_line(s,i)
+    line = s[i:j]
+
+    if trace: g.trace(self.atShadow,repr(line))
+
+    # Don't put any whitespace in otherwise blank lines.
+    if len(line) > 1: # Preserve *anything* the user puts on the line!!!
+        if not at.raw:
+            at.putIndent(at.indent,line)
+
+        if line[-1:]=='\n':
+            at.os(line[:-1])
+            at.onl()
+        else:
+            at.os(line)
+    elif line and line[-1] == '\n':
+        at.onl()
+    else:
+        g.trace('Can not happen: completely empty line')
+
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -3255,7 +3405,7 @@ else:
     title = g.computeWindowTitle(s)
     g.app.numberOfWindows = n+1
 #@+node:ekr.20101218103123.5931: *3* Features
-#@+node:ekr.20101127152442.5915: *4* Improve handling of @url nodes
+#@+node:ekr.20101127152442.5915: *4* Improved handling of @url nodes
 @nocolor-node
 
 The new rule is simple: if the body text contains any text the first line of the
@@ -3293,5 +3443,76 @@ def OnIconDoubleClick (self,p):
         g.doHook("@url2",c=c,p=p,v=p)
 
     return 'break' # 11/19/06
+#@+node:ekr.20110119063247.6086: *4* Improved clean-all-lines command
+@nocolor-node
+
+It is now much faster and has better feedback.
+#@+node:ekr.20060415112257: *5* cleanLines
+def cleanLines (self,event):
+
+    '''Removes leading whitespace from otherwise blanks lines.'''
+
+    k = self.k ; w = self.editWidget(event)
+    if not w: return
+
+    if w.hasSelection():
+        s = w.getSelectedText()
+    else:
+        s = w.getAllText()
+
+    lines = [] ; changed = False
+    for line in g.splitlines(s):
+        if line.strip():
+            lines.append(line)
+        else:
+            if line.endswith('\n'):
+                lines.append('\n')
+            changed = changed or '\n' != line
+
+    if changed:
+        self.beginCommand(undoType='clean-lines')
+        result = ''.join(lines)
+        if w.hasSelection():
+            i,j = w.getSelectionRange()
+            w.delete(i,j)
+            w.insert(i,result)
+            w.setSelectionRange(i,j+len(result))
+        else:
+            w.delete(0,'end')
+            w.insert(0,result)
+        self.endCommand(changed=changed,setLabel=True)
+#@+node:ekr.20070325094935: *5* cleanAllLines
+def cleanAllLines (self,event):
+
+    '''Clean all lines in the selected tree.'''
+
+    c = self.c ; current = c.p ; u = c.undoer
+    w = c.frame.body.bodyCtrl
+    if not w: return
+
+    tag = 'clean-all-lines'
+    u.beforeChangeGroup(c.p,tag)
+    n = 0
+    # g.es('cleaning',c.p.h)
+    for p in c.p.self_and_subtree():
+        lines = []
+        for s in g.splitLines(p.b):
+            if s.strip():
+                lines.append(s)
+            else:
+                # Ensures a trailing newline.
+                lines.append('\n')
+        s2 = ''.join(lines)
+        if s2 != p.b:
+            print(p.h)
+            bunch = u.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+            p.b = s2
+            p.v.setDirty()
+            n += 1
+            u.afterChangeNodeContents(p,tag,bunch)
+
+    u.afterChangeGroup(c.p,tag)
+    c.redraw_after_icons_changed()
+    g.es('cleaned %s nodes' % n)
 #@-all
 #@-leo
