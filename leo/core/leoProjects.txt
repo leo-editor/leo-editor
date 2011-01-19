@@ -2684,10 +2684,7 @@ ic.run(
 )
 #@+node:ekr.20101127152442.5917: ** 4.9 a1
 #@+node:ekr.20101218101041.8570: *3* Bugs
-#@+node:ekr.20101218101041.5922: *4* Investigated bug 682561: pyenchant install problem
-@nocolor-node
-
-It's not clear that this bug if valid.
+#@+node:ekr.20101218101041.5922: *4* Fixed bug 682561: pyenchant install problem
 #@+node:ekr.20101218101041.5923: *5* Report
 @nocolor-node
 
