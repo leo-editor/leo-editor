@@ -228,6 +228,11 @@ The list of settings names is as shown in  @settings-->Colors-->Syntax colors & 
 for jEdit colorer-->Default colors, and as in the example above you can prepend any language name.
 
 HTH.  Please feel free to ask more questions as needed.  I've just made a note to improve the docs on the web site and also the comments in leoSettings.leo.
+#@+node:ekr.20101218101041.8568: *3* Improve --gui=qttabs feature
+@nocolor-node
+
+- Ctrl-w closes tab.
+- save-all-outlines command.
 #@+node:ekr.20101218103123.5934: *3* Fix redefinition messages
 #@+node:ekr.20110111100539.9731: *3* Leo customizations
 @language rest
@@ -4784,11 +4789,6 @@ followed by the delete-node command.
 @nocolor-node
 
 To be done early in the release cycle.
-#@+node:ekr.20101218101041.8568: *4* Improve qttabs
-@nocolor-node
-
-- Ctrl-w closes tab.
-- save-all-outlines command.
 #@+node:ekr.20101119030344.5838: *4* script to turn all commands into @g.command nodes
 '''Add @g.command(command_name) before all commands.'''
 
