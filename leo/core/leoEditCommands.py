@@ -2803,16 +2803,34 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Clean all lines in the selected tree.'''
 
-        c = self.c ; current = c.p
+        c = self.c ; current = c.p ; u = c.undoer
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        for p in current.self_and_subtree():
-            c.selectPosition(p)
-            w.setSelectionRange(0,0,insert=0)
-            c.editCommands.cleanLines(event)
-        c.selectPosition(current)
+        tag = 'clean-all-lines'
+        u.beforeChangeGroup(c.p,tag)
+        n = 0
+        # g.es('cleaning',c.p.h)
+        for p in c.p.self_and_subtree():
+            lines = []
+            for s in g.splitLines(p.b):
+                if s.strip():
+                    lines.append(s)
+                else:
+                    # Ensures a trailing newline.
+                    lines.append('\n')
+            s2 = ''.join(lines)
+            if s2 != p.b:
+                print(p.h)
+                bunch = u.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+                p.b = s2
+                p.v.setDirty()
+                n += 1
+                u.afterChangeNodeContents(p,tag,bunch)
+
+        u.afterChangeGroup(c.p,tag)
         c.redraw_after_icons_changed()
+        g.es('cleaned %s nodes' % n)
     #@+node:ekr.20060415112257: *4* cleanLines
     def cleanLines (self,event):
 
