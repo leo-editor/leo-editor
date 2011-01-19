@@ -1121,7 +1121,7 @@ class atFile:
     def findChild4 (self,headline):
 
         """Return the next vnode in at.root.tnodeLisft.
-        This is called only for @file nodes"""
+        This is called only for **legacy** @file nodes"""
 
         # tnodeLists are used *only* when reading @file (not @thin) nodes.
         # tnodeLists compensate for not having gnx's in derived files! 
