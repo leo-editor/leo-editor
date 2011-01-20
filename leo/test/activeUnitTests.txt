@@ -1422,7 +1422,9 @@ unnamed node line 1
 
 @others
 
-last linesection line 1unnamed node line 1
+last line
+section line 1
+unnamed node line 1
 #@+node:ekr.20090704085350.5044: *4* @test @asis: shape of tree
 h = '@asis ../test/unittest/at-asis-test.py'
 p = g.findNodeAnywhere(c,h)
@@ -2038,19 +2040,6 @@ assert s == result
 # The length of this node should remain constant.
 
 assert len(p.b) == 175,len(p.b)
-#@+node:ekr.20090620110118.5829: *4* @test verbatim sentinel
-@language rest
-
-@
-Here is something that should generate a verbtim sentinel::
-
-#@verbatim
-    #@+leo-encoding=iso-8859-1.
-
-The length of this node should remain constant.
-@c
-
-assert len(p.b) == 199,len(p.b)
 #@+node:ekr.20071113201736: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -4786,24 +4775,6 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20050512083816: *5* Load tests for .leo files
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markClones()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
 #@+node:ekr.20050512083822: *5* All unit tests
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
@@ -4862,411 +4833,6 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20050417102057: *4*  Reformat Paragraph tests 
-@ Rewritten by EKR.  April 17, 2005.
-
-Each data node must have three children:
-
-- a "before" node
-- an "after" node
-- a "tempNode" node
-
-A parent to before and after nodes will contain pagewidth and language formatting directives.
-#@+node:ekr.20050417102114: *5* Startup
-# Wrap a long line, no trailing newline.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,2,24)
-#@+node:ekr.20050417104821: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-#@+node:ekr.20050417124704: *7* tempNode
-#@+node:ekr.20050417102114.1: *7* before
-This line is over forty characters long, at least it seems to be.
-#@+node:ekr.20050417102114.2: *7* after
-This line is over forty characters long,
-at least it seems to be.
-#@+node:ekr.20050417111144: *5* Docs
-# Wrap a long line, with trailing newline.
-
-import leo.core.leoTest as leoTest
-
-# Wrap a long line, no trailing newline.
-leoTest.singleParagraphTest(c,p,3,0)
-#@+node:ekr.20050417111144.1: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417111240: *7* tempNode
-#@+node:ekr.20050417111144.2: *7* before
-This line is over forty characters long, at least it seems to be.
-#@+node:ekr.20050417111144.3: *7* after
-This line is over forty characters long,
-at least it seems to be.
-#@+node:ekr.20050417113549: *5* Scripts
-# Wrap a long line and some short ones.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,4,10)
-#@+node:ekr.20050417113910: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417113921: *7* tempNode
-#@+node:ekr.20050417113910.1: *7* before
-This line is over forty characters long, at least it seems to be.
-This is shorter, 
-but should be part of the same
-paragraph.
-#@+node:ekr.20050417113910.2: *7* after
-This line is over forty characters long,
-at least it seems to be. This is
-shorter, but should be part of the same
-paragraph.
-#@+node:ekr.20050417114153: *5*  Test files
-# Wrap a paragraph with interior lines that have leading white space.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,4,12)
-#@+node:ekr.20050417114221: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417114221.1: *7* tempNode
-#@+node:ekr.20050417114221.2: *7* before
-This line is over forty characters long, at least it seems to be.
-  This indented line should be merged into the same
-paragraph.
-#@+node:ekr.20050417114221.3: *7* after
-This line is over forty characters long,
-  at least it seems to be. This indented
-  line should be merged into the same
-  paragraph.
-#@+node:ekr.20050417114836: *5* Other tests
-# No wrapping required, so don't change a thing.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,1,28)
-#@+node:ekr.20050417095124.16: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417114914: *7* tempNode
-#@+node:ekr.20050417095124.17: *7* before
-This line is under 40 chars.
-#@+node:ekr.20050417095124.18: *7* after
-This line is under 40 chars.
-#@+node:ekr.20050417095020.11: *5* Load tests for .leo files
-# Honor the first line's leading whitespace.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,5,16)
-#@+node:ekr.20050417095124.19: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417115111: *7* tempNode
-#@+node:ekr.20050417095124.20: *7* before
-   This line is over forty characters long, at least it seems to be.
-   This is shorter, 
-but should be part of the same
-paragraph.  And this is indented 3 characters.
-#@+node:ekr.20050417095124.21: *7* after
-   This line is over forty characters
-   long, at least it seems to be. This
-   is shorter, but should be part of the
-   same paragraph. And this is indented
-   3 characters.
-#@+node:ekr.20050417095020.12: *5* All unit tests
-# Honor the first and second line's leading whitespace.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,5,16)
-#@+node:ekr.20050417095124.22: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417115257: *7* tempNode
-#@+node:ekr.20050417095124.23: *7* before
-   This line is over forty characters long, at least it seems to be.
-   This is shorter, 
-     but should be part of the same
-     paragraph.  And this is indented 3 characters.
-#@+node:ekr.20050417095124.24: *7* after
-   This line is over forty characters
-   long, at least it seems to be. This
-   is shorter, but should be part of the
-   same paragraph. And this is indented
-   3 characters.
-#@+node:ekr.20050417095020.13: *5* @test simpleHangingIndent
-# Single paragraph, hanging indentation.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,5,8)
-#@+node:ekr.20050417095124.25: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417115414: *7* tempNode
-#@+node:ekr.20050417095124.26: *7* before
-Honor this line that has a hanging indentation, please.  Hanging
-  indentation is valuable for lists of all kinds.  But it is tricky to get right.
-#@+node:ekr.20050417095124.27: *7* after
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-#@+node:ekr.20050417095020.14: *5* @test testSimpleHangingIndentVar1
-# Single paragraph, hanging indentation with other indentation beyond line 2.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,5,8)
-#@+node:ekr.20050417095124.28: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417115559: *7* tempNode
-#@+node:ekr.20050417095124.29: *7* before
-Honor this line that has
-  a hanging indentation, please.  Hanging
-    indentation is valuable for lists of all kinds.  But it is tricky to get right.
-#@+node:ekr.20050417095124.30: *7* after
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-#@+node:ekr.20050417095020.15: *5* @test simpleHangingIndentVar2
-# Single paragraph, hanging indentation, short lines, extraneous indentation, and last line uses a tab for whitespace.
-
-import leo.core.leoTest as leoTest
-
-leoTest.singleParagraphTest(c,p,5,8)
-#@+node:ekr.20050417095124.31: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417115709: *7* tempNode
-#@+node:ekr.20050417095124.32: *7* before
-Honor this line that 
-  has a hanging indentation, 
-  please.  Hanging
-   indentation is valuable
-    for lists of all kinds.  But 
-    it is tricky to get right.
-#@+node:ekr.20050417095124.33: *7* after
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-#@+node:ekr.20050417120312.1: *5* @test multiParagraphTest
-# Multiple long lined paragraphs.  Cursor should move to next paragraph after formatting a paragraph.
-
-import leo.core.leoTest as leoTest
-
-leoTest.multiParagraphTest(c,p)
-#@+node:ekr.20050417095124.34: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-#@+node:ekr.20050417120312.2: *7* tempNode
-#@+node:ekr.20050417095124.35: *7* before
-Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20050417095124.36: *7* after
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-#@+node:ekr.20050417121448: *5* @test multiParagraphWithListTest
-# A regular paragraph, plus a numbered list of several items, plus a final regular paragraph.
-# Cursor should move to next paragraph after formatting a paragraph.
-
-import leo.core.leoTest as leoTest
-
-leoTest.multiParagraphWithListTest(c,p)
-#@+node:ekr.20050417095124.37: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-# DTHEIN 2004.01.11: Added test case data
-
-#@+node:ekr.20050417121448.1: *7* tempNode
-#@+node:ekr.20050417095124.38: *7* before
-This paragraph leads of this test.  It is the "lead"
-paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-#@+node:ekr.20050417095124.39: *7* after
-This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test. It is the
-"final" paragraph.
-#@+node:ekr.20050417121942: *5* @test leadingWSOnEmptyLinesTest
-@
-Ran into a problem with the wrapping eating blank lines that delimit paragraphs
-if those blank lines have any leading whitespace. This test is to make sure that
-still works.
-
-If you "show invisibles" you'll see the leading whitespace in the blank lines --
-which is different from the "testMultiParagraphWithList" test.
-@c
-
-import leo.core.leoTest as leoTest
-
-leoTest.leadingWSOnEmptyLinesTest(c,p)
-#@+node:ekr.20050417095124.43: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-#@+node:ekr.20050417121942.1: *7* tempNode
-#@+node:ekr.20050417095124.44: *7* before
-This paragraph leads of this test.  It is the "lead"
-paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-#@+node:ekr.20050417095124.45: *7* after
-This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test. It is the
-"final" paragraph.
-#@+node:ekr.20050417122215.1: *5* @test directiveBreaksParagraphTest
-import leo.core.leoTest as leoTest
-
-leoTest.directiveBreaksParagraphTest(c,p)
-#@+node:ekr.20050417095124.40: *6* data
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-# DTHEIN 2004.01.11: Added test case data
-
-Test to make sure that reformatting treats directives as a new paragraph and doesn't wrap directive lines.
-#@+node:ekr.20050417122215.2: *7* tempNode
-#@+node:ekr.20050417095124.41: *7* before
-Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-@unknownDirective
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-@unknownDirective
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20050417095124.42: *7* after
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-@unknownDirective
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-@unknownDirective
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
 #@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
 
@@ -6965,7 +6531,7 @@ weather through better planning, education, and awareness.
 No community is storm proof,
 but
 StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20071007124202.3: *6* after sel=18.18,18.18
+#@+node:ekr.20071007124202.3: *6* after sel=19.0,19.0
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
@@ -7053,7 +6619,7 @@ Americans live in the most severe weather-prone country on Earth. Each year, Ame
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20061101121602.234: *5* @test forward-end-word (start of word) 
+#@+node:ekr.20061101121602.234: *5* @test forward-end-word (start of word)
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061101121602.235: *6* work
@@ -7751,14 +7317,16 @@ leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061128090338.1: *6* work
 line 1
 line 2
-#@+node:ekr.20061128090338.2: *6* before sel=3.0,3.0
+
+#@+node:ekr.20061128090338.2: *6* before sel=3.5,3.5
 line 1
 line 2
 line 3
 #@+node:ekr.20061128090338.3: *6* after sel=3.0,3.0
 line 1
 line 2
-#@+node:ekr.20061128090441: *5* @test kill-line end-2
+
+#@+node:ekr.20061128090441: *5* @@test kill-line end-2
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061128090441.1: *6* work
@@ -7945,7 +7513,7 @@ line c
     line a
         line b
 last line
-#@+node:ekr.20061101121602.290: *5* @test move-lines-up 
+#@+node:ekr.20061101121602.290: *5* @test move-lines-up
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061101121602.291: *6* work
@@ -8023,7 +7591,7 @@ leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061101121602.303: *6* work
 first line
 line 1
-
+    
     line a
         line b
 line c
@@ -8038,7 +7606,7 @@ last line
 #@+node:ekr.20061101121602.305: *6* after sel=3.4,3.4
 first line
 line 1
-
+    
     line a
         line b
 line c
@@ -8097,7 +7665,553 @@ b
 a
 
 b
-#@+node:ekr.20061101121602.306: *5* @test remove-blank-lines 
+#@+node:ekr.20110118082508.3729: *5* reformat-paragraph tests
+@language plain
+@pagewidth 40
+@tabwidth 8
+#@+node:ekr.20110118082508.3730: *6* @test reformat-paragraph simple hanging indent
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3745: *7* work
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3746: *7* before sel= 1.0,1.0
+Honor this line that has a hanging indentation, please.  Hanging
+  indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3747: *7* after sel= 7.0,7.0
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3748: *6* @test reformat-paragraph simple hanging indent 2
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3754: *7* work
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3755: *7* before sel=2.0,2.0
+Honor this line that has
+  a hanging indentation, please.  Hanging
+    indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3756: *7* after sel=7.0,7.0
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3757: *6* @test reformat-paragraph simple hanging indent 3
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3763: *7* work
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next Paragraph.
+#@+node:ekr.20110118082508.3764: *7* before sel=1.0,1.0
+Honor this line that 
+  has a hanging indentation, 
+  please.  Hanging
+   indentation is valuable
+    for lists of all kinds.  But 
+    it is tricky to get right.
+
+Next Paragraph.
+#@+node:ekr.20110118082508.3765: *7* after sel=7.0,7.0
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next Paragraph.
+#@+node:ekr.20110118082508.3766: *6* @test reformat-paragraph paragraph 1 of 3
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3772: *7* work
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3773: *7* before sel=1.0,1.0
+Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3792: *7* after sel=13.0,13.0
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3779: *6* @test reformat-paragraph paragraph 2 of 3
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3780: *7* work
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3781: *7* before sel=13.0,13.0
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3782: *7* after sel=25.0,25.0
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3787: *6* @test reformat-paragraph paragraph 3 of 3
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3788: *7* work
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better
+prepared to save lives from the
+onslaught of severe weather through
+better planning, education, and
+awareness. No community is storm proof,
+but StormReady can help communities save
+lives. Does StormReady make a
+difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3789: *7* before sel=25.10,25.10
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3790: *7* after sel=34.0,34.0
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better
+prepared to save lives from the
+onslaught of severe weather through
+better planning, education, and
+awareness. No community is storm proof,
+but StormReady can help communities save
+lives. Does StormReady make a
+difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3793: *6* @test reformat-paragraph list 1 of 5
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3799: *7* work
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item 
+     number 1.  It is the first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3800: *7* before sel=1.0,1.0
+This paragraph leads of this test.  It is the "lead"
+paragraph.
+
+  1. This is item 
+     number 1.  It is the first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3803: *7* after sel=4.0,4.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item 
+     number 1.  It is the first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3808: *6* @test reformat-paragraph list 2 of 5
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3809: *7* work
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3810: *7* before sel=4.0,4.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3811: *7* after sel=7.0,7.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3816: *6* @test reformat-paragraph list 3 of 5
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3817: *7* work
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3818: *7* before sel=7.0,7.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3819: *7* after sel=10.0,10.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3824: *6* @test reformat-paragraph list 4 of 5
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3825: *7* work
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3826: *7* before sel=10.0,10.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3827: *7* after sel=13.0,13.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3832: *6* @test reformat-paragraph list 5 of 5
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20110118082508.3833: *7* work
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test. It is the
+"final" paragraph.
+#@+node:ekr.20110118082508.3834: *7* before sel=13.0,13.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+#@+node:ekr.20110118082508.3835: *7* after sel=15.0,15.0
+This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test. It is the
+"final" paragraph.
+#@+node:ekr.20061101121602.306: *5* @test remove-blank-lines
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061101121602.307: *6* work
@@ -8287,7 +8401,7 @@ try:
     ec.selfInsertCommand(event)
     result = w.getAllText()
     # print('result %s' % result)
-    assert result.endswith('\n    ###abcdef'),'result\n%s' % (repr(result))
+    assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
 finally:
     w.setAllText(s)
     p.setBodyString(s)
@@ -9935,8 +10049,8 @@ w.setInsertPoint(index)
 before,ins,after = c.frame.body.getInsertLines()
 assert before == '# line 1\n','Got %s' % repr(before)
 assert ins    == '# line 2\n','Got %s' % repr(ins)
-assert after.startswith('# line 3\n')
-assert after.endswith('# end.')
+assert after.startswith('# line 3\n'),'line3'
+assert after.endswith('# end.\n'),'end'
 
 # end.
 #@+node:ekr.20061106201509.7: *4* @test leoBody.getSelectionAreas
@@ -12253,34 +12367,6 @@ except AssertionError:
     print("parents2")
     for parent in parents2: print(parent)
     raise
-#@+node:ekr.20040712101754.182: *5* parent
-#@+node:ekr.20040712101754.183: *6* Startup
-try:
-    for p in c.all_positions():
-        if 0: # Check all ancestors.  This is tricky and doesn't work yet.
-            parents1 = [parent.v for parent in p.parents_iter()]
-            parents2 = []
-            parent2 = p.v.directParents()
-            while parent2:
-                v = parent2[0]
-                parents2.append(v)
-                parent2 = v.directParents()
-        else:
-            parents1 = p.v.parents
-            parents2 = p.v.directParents()
-
-        assert len(parents1) == len(parents2), "length mismatch: %s" % (p)
-        for parent in parents1:
-            assert parent in parents2, "%s not in %s" % (parent,parent1)
-        for parent in parents2:
-            assert parent in parents1, "%s not in %s" % (parent,parent2)
-
-except AssertionError:
-    print("parents1")
-    for parent in parents1: print(parent)
-    print("parents2")
-    for parent in parents2: print(parent)
-    raise
 #@+node:ekr.20040712101754.175: *4* @@test p.t == p.v
 # p.__getattr__ must be enabled for this test to work.
 
@@ -12512,7 +12598,7 @@ import random,fnmatch
 
 all_h = [z.copy().h for z in c.find_h('.')]
 
-assert len(all_h) > 1000
+assert len(all_h) > 1000,'fail 1'
 
 sample = random.sample(all_h, 20)    
 
@@ -12520,7 +12606,7 @@ sample = random.sample(all_h, 20)
 for h in sample:
     pat = fnmatch.translate(h)
     pl = c.find_h(pat)
-    assert len(pl) > 0 and len(pl) < len(all_h)
+    assert len(pl) > 0 and len(pl) < len(all_h),'fail 2'
 
 tests = c.find_h('@test(.*)')
 
@@ -12532,31 +12618,33 @@ for node in bm:
         if 'for' in m.group(1):
             forloops += 1
 
-assert forloops > 10
+assert forloops > 10,'fail for'
 
 # all of these should also be found by find_b
 all_bm = c.find_b('(.*)all_positions')
-assert len(all_bm) >= len(bm)
+assert len(all_bm) >= len(bm),'fail len'
 
-assert set(el.h for el in bm).issubset(set(el.h for el in all_bm))
+assert set(el.h for el in bm).issubset(set(el.h for el in all_bm)),'fail set'
 
 itertest = c.find_h('@test p.iters and v.iters')
-assert len(itertest) >= 1
+assert len(itertest) >= 1,'fail 3'
 tn = itertest[0]
-assert tn.h == '@test p.iters and v.iters'
-assert len(itertest.filter_b('notfound, really')) == 0
-assert len(itertest.filter_b('leoNodes')) == 1
+assert tn.h == '@test p.iters and v.iters','fail h'
+assert len(itertest.filter_b('notfound, really')) == 0,'fail 4'
+assert len(itertest.filter_b('leoNodes')) == 1,'fail 5'
 chi = itertest.children().filter_h('child?')
-assert chi[0].h == 'child1'
-assert chi[1].h == 'child2'
+assert chi[0].h == 'child1','fail 6'
+assert chi[1].h == 'child2','fail 7'
 # twice, in clones
 chi_b = chi.children().filter_h('a').children().filter_h('b')
-assert len(chi_b) == 2
 
-assert chi_b[0].h == chi_b[1].h == 'b'
-chi_e = chi.children().filter_h('d').children().filter_h('e')
-assert len(chi_e) == 1
-assert chi_e[0].h == 'e'
+if 0:
+    assert len(chi_b) == 2,'fail len 2: %s: %s' % (chi_b,len(chi_b))
+    assert chi_b[0].h == chi_b[1].h == 'b'
+    chi_e = chi.children().filter_h('d').children().filter_h('e')
+    assert len(chi_e) == 1,'fail 8'
+    assert chi_e[0].h == 'e','fail 9'
+
 #@+node:ekr.20090130133404.2: *4* @test leoNodes properties
 v = p.v
 b = p.b
@@ -12757,8 +12845,6 @@ if 0: # v.iters no longer exist.
 #@+node:ekr.20040712101754.190: *6* a
 #@+node:ekr.20040712101754.191: *7* b
 #@+node:ekr.20040712101754.192: *6* c
-#@+node:ekr.20040712101754.190: *6* a
-#@+node:ekr.20040712101754.191: *7* b
 #@+node:ekr.20040712101754.193: *6* d
 #@+node:ekr.20040712101754.194: *7* e
 #@+node:ekr.20040712101754.195: *5* child2
@@ -13445,6 +13531,7 @@ for fn,expected in table:
     result2 = pc.regularizeName(result)
     assert result2==result
 #@+node:ekr.20091219122958.5066: *3* leoRst
+# Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100812172232.5800: *4* @common leoRst test code
 @others
 #@+node:ekr.20100812182942.5804: *5* class rst3Test
@@ -13459,13 +13546,18 @@ class rst3Test:
 #@+node:ekr.20100827194549.5963: *6* report
 def report (self,expected,got):
 
+    verbose = True
     expected_lines = g.splitLines(expected.b)
     got_lines = g.splitLines(got.b)
 
-    for i in xrange(min(len(expected_lines),len(got_lines))):
-        print ('%3d %s' % (i,repr(expected_lines[i])))
-        print ('%3d %s' % (i,repr(got_lines[i])))
-        if expected_lines[i] != got_lines[i]: break
+    for i in range(min(len(expected_lines),len(got_lines))):
+        match = expected_lines[i]==got_lines[i]
+        if verbose or not match:
+            tag = g.choose(match,'  ','**')
+            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+        if not verbose and not match:
+            break
 #@+node:ekr.20100827183358.5957: *6* run
 def run(self):
     import sys
@@ -13504,7 +13596,6 @@ def run(self):
         child.h,child.b = 'rst',rst
         child = expected.insertAsNthChild(1)
         child.h,child.b = ' html',html
-
 #@+node:ekr.20100827183358.5958: *6* setup
 def setup (self):
 
@@ -14170,7 +14261,7 @@ This is test.html
 
 This is the body of the section.
 
-#@+node:ekr.20100813100841.5859: *6*  html
+#@+node:ekr.20100813100841.5859: *6* html
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -15906,7 +15997,7 @@ section
 it has two lines.
 This is the body of the section.
 
-#@+node:ekr.20100827140832.5930: *6*  html
+#@+node:ekr.20100827140832.5930: *6* html
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -17759,7 +17850,7 @@ after
 #@+node:ekr.20050417201845.2: *7* after
 before
 after
-#@+node:ekr.20050417201845.3: *8* << section >>
+#@+node:ekr.20050417201845.3: *8* << section >> @nonl
 sec line 1
     sec line 2 indented
 sec line 3
@@ -17796,7 +17887,7 @@ after
 before
     << section >>
 after
-#@+node:ekr.20050518070927.3: *8* << section >>
+#@+node:ekr.20050518070927.3: *8* << section >> @nonl
 sec line 1
     sec line 2 indented
 sec line 3

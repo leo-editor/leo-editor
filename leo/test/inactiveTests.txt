@@ -142,11 +142,11 @@ def mungeKey (h,kind,substitute=True):
 
 
 #@+node:ekr.20080703104536.1: *3* Mini tests
-#@+node:ekr.20051104081502.108: *4* runProfile button mini-test 
+#@+node:ekr.20051104081502.108: *4* runProfile button mini-test
 for i in range(10000):
     if i and (i % 1000) == 0:
         g.pr(i)
-#@+node:ekr.20051104081502.109: *4* runTimeit mini-test 
+#@+node:ekr.20051104081502.109: *4* runTimeit mini-test
 i = 0
 for i in range(100000):
     i += 1
@@ -706,11 +706,11 @@ else:
 
 if suite:
     g.app.scriptDict['suite'] = suite
-#@+node:ekr.20051104081502.108: *5* runProfile button mini-test 
+#@+node:ekr.20051104081502.108: *5* runProfile button mini-test
 for i in range(10000):
     if i and (i % 1000) == 0:
         g.pr(i)
-#@+node:ekr.20051104081502.109: *5* runTimeit mini-test 
+#@+node:ekr.20051104081502.109: *5* runTimeit mini-test
 i = 0
 for i in range(100000):
     i += 1
@@ -834,7 +834,7 @@ positions1 = [p for p in c.allNodes_iter(copy=True)]
 positions2 = [p.copy() for p in c.allNodes_iter()]
 
 assert(len(positions1) == len(positions2))
-for i in xrange(len(positions1)):
+for i in range(len(positions1)):
     assert(positions1[i] == positions2[i])
 
 if 0:
@@ -1167,7 +1167,7 @@ for p in c.allNodes_iter():
         g.pr(p)
 
 g.pr("done")
-#@+node:ekr.20051104081502.146: *6* Print fundChildrenOf and 
+#@+node:ekr.20051104081502.146: *6* Print fundChildrenOf and
 import leoTest
 
 u = leoTest.testUtils(c)

@@ -503,7 +503,7 @@ def compute_directives_re ():
                 if z != 'others']
 
     if 0: # 2010/02/01
-        # The code never this, and this regex is broken
+        # The code never uses this, and this regex is broken
         # because it can confuse g.get_directives_dict.
         # @others can have leading whitespace.
         aList.append(r'^\s@others\s')

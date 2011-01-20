@@ -1121,7 +1121,7 @@ class atFile:
     def findChild4 (self,headline):
 
         """Return the next vnode in at.root.tnodeLisft.
-        This is called only for @file nodes"""
+        This is called only for **legacy** @file nodes"""
 
         # tnodeLists are used *only* when reading @file (not @thin) nodes.
         # tnodeLists compensate for not having gnx's in derived files! 
@@ -3469,9 +3469,6 @@ class atFile:
             trailingNewlineFlag = True # don't need to generate an @nonl
         #@-<< Make sure all lines end in a newline >>
         at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
-        if not fromString:
-            # 2010/10/08: cleanLines calls c.setChanged(!)
-            s = self.cleanLines(p,s)
         i = 0
         while i < len(s):
             next_i = g.skip_line(s,i)
@@ -3743,7 +3740,7 @@ class atFile:
         if trace: g.trace(self.atShadow,repr(line))
 
         # Don't put any whitespace in otherwise blank lines.
-        if line.strip(): # The line has non-empty content.
+        if len(line) > 1: # Preserve *anything* the user puts on the line!!!
             if not at.raw:
                 at.putIndent(at.indent,line)
 
@@ -5092,30 +5089,6 @@ class atFile:
         }
         if trace: g.trace(d)
         return d
-    #@+node:ekr.20070529083836: *3* cleanLines
-    def cleanLines (self,p,s):
-
-        '''Return a copy of s, with all trailing whitespace removed.
-        If a change was made, update p's body text and set c dirty.'''
-
-        c = self.c ; cleanLines = [] ; changed = False
-        lines = g.splitLines(s)
-        for line in lines:
-            if line.strip():
-                cleanLines.append(line)
-            elif line.endswith('\n'):
-                cleanLines.append('\n')
-                if line != '\n': changed = True
-            else:
-                cleanLines.append('')
-                if line != '': changed = True
-        s = g.joinLines(cleanLines)
-
-        if changed and not g.app.unitTesting:
-            p.setBodyString(s)
-            c.setChanged(True)
-
-        return s
     #@+node:ekr.20041005105605.221: *3* exception
     def exception (self,message):
 

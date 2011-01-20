@@ -2684,10 +2684,7 @@ ic.run(
 )
 #@+node:ekr.20101127152442.5917: ** 4.9 a1
 #@+node:ekr.20101218101041.8570: *3* Bugs
-#@+node:ekr.20101218101041.5922: *4* Investigated bug 682561: pyenchant install problem
-@nocolor-node
-
-It's not clear that this bug if valid.
+#@+node:ekr.20101218101041.5922: *4* Fixed bug 682561: pyenchant install problem
 #@+node:ekr.20101218101041.5923: *5* Report
 @nocolor-node
 
@@ -2708,7 +2705,7 @@ def __init__ (self,c):
     """Ctor for the EnchantClass class."""
 
     self.c = c
-    language = c.config.getString('enchant_language')
+    language = g.toUnicode(c.config.getString('enchant_language'))
 
     # Set the base language
     if language and not enchant.dict_exists(language):
@@ -2776,6 +2773,7 @@ def scanAllDirectives(self,p=None):
 
     Returns a dict containing the results, including defaults.'''
 
+    trace = False and not g.unitTesting
     c = self ; p = p or c.p
 
     # Set defaults
@@ -2806,7 +2804,7 @@ def scanAllDirectives(self,p=None):
     # Post process: do *not* set commander ivars.
     lang_dict = d.get('lang-dict')
 
-    return {
+    d = {
         "delims"        : lang_dict.get('delims'),
         "encoding"      : d.get('encoding'),
         "language"      : lang_dict.get('language'),
@@ -2817,6 +2815,10 @@ def scanAllDirectives(self,p=None):
         "pluginsList"   : [], # No longer used.
         "wrap"          : d.get('wrap'),
     }
+
+    if trace: g.trace(lang_dict.get('language'),g.callers())
+
+    return d
 #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives
 def scanAtPathDirectives(self,aList):
 
@@ -3160,6 +3162,289 @@ def initWriteIvars(self,root,targetFileName,
         if hasattr(at.root.v,'tnodeList'):
             delattr(at.root.v,'tnodeList')
         at.root.v._p_changed = True
+#@+node:ekr.20110117113521.6105: *4* Fixed unit tests
+@nocolor-node
+
+Support @nonl in headlines in compareOutlines. This is another test of reformat
+paragraph. And this is some.
+#@+node:ekr.20110117145531.6151: *4* Don't change user's lines!
+#@+node:ekr.20041005105605.161: *5* at.putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.b)
+
+    p.v.setVisited()
+    if trace: g.trace('visit',p.h)
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+    if not at.thinFile:
+        p.v.setWriteBit() # Mark the vnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert next_i > i,'putBody'
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+
+    if not trailingNewlineFlag:
+        if at.writeVersion5:
+            if at.sentinels:
+                pass # Never write @nonl
+            elif at.atAuto and not at.atEdit:
+                at.onl() # 2010/08/01: bug fix: ensure newline here.
+        else:
+            if at.sentinels:
+                at.putSentinel("@nonl")
+            elif at.atAuto and not at.atEdit:
+                # Ensure all @auto nodes end in a newline!
+                at.onl()
+#@+node:ekr.20041005105605.162: *6* << Make sure all lines end in a newline >>
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if not trailingNewlineFlag:
+        if (at.sentinels or 
+            (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+        ):
+            # g.trace('Added newline',repr(s))
+            s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@+node:ekr.20041005105605.163: *6* << handle line at s[i] >> (putBody)
+if trace: g.trace(kind,repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            hasRef,n1,n2 = at.findSectionName(s,i)
+            if hasRef and not at.raw:
+                at.putRefLine(s,i,n1,n2,p)
+            else:
+                at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert not at.pending,'putBody at.pending'
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    at.raw = False
+    at.putSentinel("@@end_raw")
+    i = g.skip_line(s,i)
+elif kind == at.startVerbatim:
+    at.putSentinel("@verbatim")
+    at.putIndent(at.indent)
+    i = next_i
+    next_i = g.skip_line(s,i)
+    at.os(s[i:next_i])
+elif kind == at.miscDirective:
+    # g.trace('miscDirective')
+    at.putDirective(s,i)
+else:
+    assert 0,'putBody: unknown directive'
+#@+node:ekr.20041005105605.174: *5* putCodeLine (leoAtFile)
+def putCodeLine (self,s,i):
+
+    '''Put a normal code line.'''
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # Put @verbatim sentinel if required.
+    k = g.skip_ws(s,i)
+    if g.match(s,k,self.startSentinelComment + '@'):
+        self.putSentinel('@verbatim')
+
+    j = g.skip_line(s,i)
+    line = s[i:j]
+
+    if trace: g.trace(self.atShadow,repr(line))
+
+    # Don't put any whitespace in otherwise blank lines.
+    if len(line) > 1: # Preserve *anything* the user puts on the line!!!
+        if not at.raw:
+            at.putIndent(at.indent,line)
+
+        if line[-1:]=='\n':
+            at.os(line[:-1])
+            at.onl()
+        else:
+            at.os(line)
+    elif line and line[-1] == '\n':
+        at.onl()
+    else:
+        g.trace('Can not happen: completely empty line')
+
+#@+node:ekr.20101218103123.5938: *4* Fixed bug 690260: g.es sends to wrong tabbed pane
+#@+node:ekr.20101218103123.5939: *5* Report
+@nocolor-node
+
+The fix was to save and restore g.app.log in c.executeScript.
+
+#@+node:ekr.20031218072017.2140: *5* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    writeScriptFile = c.config.getBool('write_script_file')
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            # g.pr('*** script',script)
+            try:
+                p = c.p
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                if args:
+                    # g.trace('setting sys.argv',args)
+                    sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                if writeScriptFile:
+                    scriptFile = self.writeScriptFile(script)
+                    if g.isPython3:
+                        exec(compile(script,scriptFile,'exec'),d)
+                    else:
+                        execfile(scriptFile,d)
+                else:
+                    exec(script,d)
+                if 0: # This message switches panes, and can be disruptive.
+                    if not script1 and not silent:
+                        # Careful: the script may have changed the log tab.
+                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                        g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143: *6* redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@+node:EKR.20040627100424: *6* unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@+node:ekr.20070115135502: *6* writeScriptFile (changed)
+def writeScriptFile (self,script):
+
+    trace = False and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')
+
+    if trace: g.trace(path)                
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@+node:ekr.20110119092537.10099: *5* @@button g.es test
+g.es('from leoPy.leo',g.app.log)
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -3244,8 +3529,16 @@ else:
         s += str(n)
     title = g.computeWindowTitle(s)
     g.app.numberOfWindows = n+1
+#@+node:ekr.20110111100539.9727: *4* Docs fixes
+@nocolor-node
+
+(Fixed) Using ZODB with Leo — Leo v4.8 documentation
+http://diigo.com/0dw79
+
+(Fixed) Embedding Leo with the leoBridge module — Leo v4.8 documentation
+http://diigo.com/0dw77
 #@+node:ekr.20101218103123.5931: *3* Features
-#@+node:ekr.20101127152442.5915: *4* Improve handling of @url nodes
+#@+node:ekr.20101127152442.5915: *4* Improved handling of @url nodes
 @nocolor-node
 
 The new rule is simple: if the body text contains any text the first line of the
@@ -3283,5 +3576,76 @@ def OnIconDoubleClick (self,p):
         g.doHook("@url2",c=c,p=p,v=p)
 
     return 'break' # 11/19/06
+#@+node:ekr.20110119063247.6086: *4* Improved clean-all-lines command
+@nocolor-node
+
+It is now much faster and has better feedback.
+#@+node:ekr.20060415112257: *5* cleanLines
+def cleanLines (self,event):
+
+    '''Removes leading whitespace from otherwise blanks lines.'''
+
+    k = self.k ; w = self.editWidget(event)
+    if not w: return
+
+    if w.hasSelection():
+        s = w.getSelectedText()
+    else:
+        s = w.getAllText()
+
+    lines = [] ; changed = False
+    for line in g.splitlines(s):
+        if line.strip():
+            lines.append(line)
+        else:
+            if line.endswith('\n'):
+                lines.append('\n')
+            changed = changed or '\n' != line
+
+    if changed:
+        self.beginCommand(undoType='clean-lines')
+        result = ''.join(lines)
+        if w.hasSelection():
+            i,j = w.getSelectionRange()
+            w.delete(i,j)
+            w.insert(i,result)
+            w.setSelectionRange(i,j+len(result))
+        else:
+            w.delete(0,'end')
+            w.insert(0,result)
+        self.endCommand(changed=changed,setLabel=True)
+#@+node:ekr.20070325094935: *5* cleanAllLines
+def cleanAllLines (self,event):
+
+    '''Clean all lines in the selected tree.'''
+
+    c = self.c ; current = c.p ; u = c.undoer
+    w = c.frame.body.bodyCtrl
+    if not w: return
+
+    tag = 'clean-all-lines'
+    u.beforeChangeGroup(c.p,tag)
+    n = 0
+    # g.es('cleaning',c.p.h)
+    for p in c.p.self_and_subtree():
+        lines = []
+        for s in g.splitLines(p.b):
+            if s.strip():
+                lines.append(s)
+            else:
+                # Ensures a trailing newline.
+                lines.append('\n')
+        s2 = ''.join(lines)
+        if s2 != p.b:
+            print(p.h)
+            bunch = u.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+            p.b = s2
+            p.v.setDirty()
+            n += 1
+            u.afterChangeNodeContents(p,tag,bunch)
+
+    u.afterChangeGroup(c.p,tag)
+    c.redraw_after_icons_changed()
+    g.es('cleaned %s nodes' % n)
 #@-all
 #@-leo

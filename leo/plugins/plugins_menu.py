@@ -79,7 +79,7 @@ import glob
 import os
 import sys
 #@-<< imports >>
-__version__ = "2.1"
+__version__ = "2.2"
 #@+<< version history >>
 #@+node:ekr.20050101100033: ** << version history >>
 #@@nocolor
@@ -112,6 +112,7 @@ __version__ = "2.1"
 # - Added 'Text to HTML' and 'RST to HTML' buttons to TkScrolledMessageDialog.
 # - Converted docstring to RST.
 # 2.0 EKR: Now works with Python 3.x.
+# 2.2 SegundoBob:  Allow plugins not in leo/plugins.
 #@-<< version history >>
 
 __plugin_name__ = "Plugins Menu"
@@ -122,6 +123,10 @@ __plugin_group__ = "Core"
 #@+node:ekr.20060107091318: ** Functions
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem
 def addPluginMenuItem (p,c):
+    """
+    @param p:  Plugin object for one currently loaded plugin
+    @param c:  Leo-editor "commander" for the current .leo file
+    """
 
     plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
 
@@ -170,51 +175,26 @@ def createPluginsMenu (tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    old_path = sys.path[:] # Make a _copy_ of the path.
+    pc = g.app.pluginsController
+    lmd = pc.loadedModules
+    if lmd:
+        impModSpecList = list(lmd.keys())
+        def key(aList):
+            return aList.split('.')[-1].lower()
+        impModSpecList.sort(key=key)
+        plgObList = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+        c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
+        PluginDatabase.setMenu("Default", pluginMenu)
+        #@+<< Add group menus >>
+        #@+node:pap.20050305152223: *4* << Add group menus >>
+        for group_name in PluginDatabase.getGroups():
 
-    path = os.path.join(g.app.loadDir,"..","plugins")
-    sys.path = path
-
-    if os.path.exists(path):
-        # Create a list of all active plugins.
-        files = glob.glob(os.path.join(path,"*.py"))
-        def lower(s): return s.lower()
-        files.sort(key=lower)
-        modules = ['leo.plugins.' + os.path.basename(f[:-3]) for f in files]
-        plugins = [PlugIn(m, c) for m in modules]
-        PluginDatabase.storeAllPlugins(modules)
-        loaded = [z.lower() for z in g.getLoadedPlugins()] # g.app.loadedPlugins]
-        #print "loaded",loaded
-        # items = [(p.name,p) for p in plugins if p.version]
-        items = [(p.name,p) for p in plugins if p.moduleName and p.moduleName.lower() in loaded]
-        #print "items", items
-        # g.trace('loaded',g.app.loadedPlugins)
-        # g.trace('realnames',[p.realname for p in plugins if p.realname])
-        # g.trace('names',[p.name for p in plugins if p.name])
-        # g.trace('moduleNamesnames',[p.moduleName for p in plugins if p.moduleName])
-        if items:
-            #@+<< Sort items >>
-            #@+node:pap.20041009133925: *4* << sort items >>
-            if 0:
-                dec = [(item[1].priority, item) for item in items]
-                dec.sort()
-                dec.reverse()
-                items = [item[1] for item in dec]
-            #@-<< Sort items >>
-            c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
-            PluginDatabase.setMenu("Default", pluginMenu)
-            #@+<< Add group menus >>
-            #@+node:pap.20050305152223: *4* << Add group menus >>
-            for group_name in PluginDatabase.getGroups():
-
-                PluginDatabase.setMenu(
-                    group_name,
-                    c.frame.menu.createNewMenu(group_name, "&Plugins"))
-            #@-<< Add group menus >>
-            for name,p in items:
-                addPluginMenuItem(p, c)
-
-    sys.path = old_path
+            PluginDatabase.setMenu(
+                group_name,
+                c.frame.menu.createNewMenu(group_name, "&Plugins"))
+        #@-<< Add group menus >>
+        for plgObj in plgObList:
+            addPluginMenuItem(plgObj, c)
 #@+node:ekr.20070302175530: *3* init
 def init ():
     if g.app.unitTesting: return None
@@ -244,7 +224,6 @@ class _PluginDatabase:
         self.plugins_by_group = {}
         self.groups_by_plugin = {}
         self.menus = {}
-        self.all_plugins = []
     #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item, group):
         """Add a plugin"""
@@ -268,11 +247,6 @@ class _PluginDatabase:
             return self.menus[item.group]
         except KeyError:
             return self.menus["Default"]
-    #@+node:pap.20051008005012: *3* storeAllPlugins
-    def storeAllPlugins(self, files):
-        """Store all the plugins for later reference if we need to enable them"""
-        self.all_plugins = dict(
-            [(g.os_path_splitext(g.os_path_basename(f))[0], f) for f in files])
     #@-others
 
 PluginDatabase = _PluginDatabase()
@@ -283,56 +257,40 @@ class PlugIn:
 
     #@+others
     #@+node:EKR.20040517080555.4: *3* __init__
-    def __init__(self, filename, c=None):
+    def __init__(self, plgMod, c=None):
+        """
+        @param plgMod: Module object for the plugin represented by this instance.
+        @param c:  Leo-editor "commander" for the current .leo file
+        """
 
-        """Initialize the plug-in"""
-
-        # 'filename' is now actually the fully qualified plugin name
         self.c = c
-
-        #print "Plugin",filename
-        # Import the file to find out some interesting stuff
-        # Do not use the imp module: we only want to import these files once!
-        self.name = self.realname = self.moduleName = None
-        self.mod = self.doc = self.version = None
-        self.filename = g.os_path_abspath(filename)
+        self.mod = plgMod
+        self.name = self.moduleName = None
+        self.doc = self.version = None
         try:
-            #self.mod = __import__(g.os_path_splitext(g.os_path_basename(filename))[0])
-            self.mod = sys.modules.get(filename)
-            if not self.mod: return
+            self.name = self.mod.__plugin_name__
+        except AttributeError:
+            self.name = self.getNiceName(self.mod.__name__)
 
-            try:
-                self.name = self.mod.__plugin_name__
-            except AttributeError:
-                self.name = self.getNiceName(self.mod.__name__)
+        self.moduleName = self.mod.__name__
 
-            self.moduleName = self.mod.__name__
-            self.realname = self.name
+        self.group = getattr(self.mod, "__plugin_group__", None)
+        PluginDatabase.addPlugin(self, self.group)
 
-            self.group = getattr(self.mod, "__plugin_group__", None)
-            PluginDatabase.addPlugin(self, self.group)
+        try:
+            self.priority = self.mod.__plugin_priority__
+        except AttributeError:
+            self.priority = 200 - ord(self.name[0])
+        #
 
-            try:
-                self.priority = self.mod.__plugin_priority__
-            except AttributeError:
-                self.priority = 200 - ord(self.name[0])
-            #
-            self.doc = self.mod.__doc__
-            self.version = self.mod.__dict__.get("__version__","<unknown>") # EKR: 3/17/05
-            # if self.version: g.pr(self.version,g.shortFileName(filename))
-        except ImportError:
-            # s = 'Can not import %s in plugins_menu plugin' % g.shortFileName(filename)
-            # g.es_print(s,color='blue')
-            return
-        # except Exception:
-            # s = 'Unexpected exception in plugins_menu plugin importing %s' % filename
-            # g.es_print(s,color='red')
-            # return
+        self.doc = self.mod.__doc__
+        self.version = self.mod.__dict__.get("__version__","<unknown>") # EKR: 3/17/05
+        # if self.version: g.pr(self.version,g.shortFileName(filename))
 
         #@+<< Check if this can be configured >>
         #@+node:EKR.20040517080555.5: *4* << Check if this can be configured >>
         # Look for a configuration file
-        self.configfilename = "%s.ini" % os.path.splitext(filename)[0]
+        self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
         self.hasconfig = os.path.isfile(self.configfilename)
         #@-<< Check if this can be configured >>
         #@+<< Check if this has an apply >>
@@ -342,7 +300,7 @@ class PlugIn:
         # This is used to apply changes in configuration from the properties window
         #@@c
 
-        self.hasapply = hasattr(self.mod, "applyConfiguration")
+        self.hasapply = hasattr(plgMod, "applyConfiguration")
         #@-<< Check if this has an apply >>
         #@+<< Look for additional commands >>
         #@+node:EKR.20040517080555.7: *4* << Look for additional commands >>

@@ -218,7 +218,9 @@ bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/
 
 bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
-===== creates branch on local machine: do this from leo.repo directory
+===== creates branch on local machine: do this from leo.repo directo
+
+bzr branch old-branch-name new-branch-name
 
 bzr branch lp:leo-editor new-branch-name 
 
@@ -3903,6 +3905,30 @@ if i == -1:
             g.es("ignoring characters after space in url:",z_url)
             g.es("use %20 instead of spaces")
         url = url[:i]
+#@+node:ekr.20070529083836: *3* cleanLines (no longer used)
+def cleanLines (self,p,s):
+
+    '''Return a copy of s, with all trailing whitespace removed.
+    If a change was made, update p's body text and set c dirty.'''
+
+    c = self.c ; cleanLines = [] ; changed = False
+    lines = g.splitLines(s)
+    for line in lines:
+        if line.strip():
+            cleanLines.append(line)
+        elif line.endswith('\n'):
+            cleanLines.append('\n')
+            if line != '\n': changed = True
+        else:
+            cleanLines.append('')
+            if line != '': changed = True
+    s = g.joinLines(cleanLines)
+
+    if changed and not g.app.unitTesting:
+        p.setBodyString(s)
+        c.setChanged(True)
+
+    return s
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

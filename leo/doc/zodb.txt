@@ -34,8 +34,8 @@ This chapter discusses how to write Leo scripts that store and retrieve data usi
 To enable zodb scripting within Leo, you must set use_zodb = True in the root node of leoNodes.py.
 You must also install ZODB itself.  See `Installing ZODB`_ for details.
 
-When ZODB is installed and use_zodb is True
-Leo's vnode classes becomes a subclasses of ZODB.Persistence.Persistent.
+When ZODB is installed and use_zodb is True,
+Leo's vnode class becomes a subclass of ZODB.Persistence.Persistent.
 This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.
 
 **Important notes**:
@@ -91,7 +91,7 @@ Notes:
   The following section discusses how to define reasonable zodb keys.
 .. @+node:ekr.20060913175437: *3* Defining zodb keys
 The keys used to store and retrieve data in connection.root() can be any string that uniquely identifies the data.
-The following are only suggestions: you are free to use any string you like.
+The following are only suggestions; you are free to use any string you like.
 
 1. When saving a file, you would probably use a key that is similar to a real file path.
    For example::
@@ -166,7 +166,7 @@ Only the first call for any path actually does anything:
 subsequent calls for a previously opened path simply return the same value as the first call.
 .. @+node:ekr.20060913165542.3: *4* v.detach()
 This vnode method returns v2, a copy of v that is completely detached from the
-outline. v2.fileIndex is unrelated to v.fileIndex initially, but is may be
+outline. v2.fileIndex is unrelated to v.fileIndex initially, but it may be
 convenient to copy this field::
 
     v2 = v.detach()

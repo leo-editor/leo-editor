@@ -73,7 +73,8 @@
 </v>
 <v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
-<v t="ekr.20100805165051.7165"><vh>@file coloring.txt</vh></v>
+<v t="ekr.20100805165051.7165"
+expanded="ekr.20060430221745.1,"><vh>@file coloring.txt</vh></v>
 </v>
 <v t="ekr.20050831184021.1"><vh>Creating documents with Leo</vh>
 <v t="ekr.20100805165051.7164"><vh>@file rstplugin3.txt</vh></v>
@@ -105,13 +106,15 @@
 <v t="ekr.20100805165051.7171"><vh>@file IpythonBridge.txt</vh></v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
-<v t="ekr.20100805165051.7169"><vh>@file leoBridge.txt</vh></v>
+<v t="ekr.20100805165051.7169"
+expanded="ekr.20070317033759.1,"><vh>@file leoBridge.txt</vh></v>
 </v>
 <v t="TL.20080804095315.1"><vh>Using Vim with Leo</vh>
 <v t="ekr.20100805165051.7172"><vh>@file vimBindings.txt</vh></v>
 </v>
 <v t="ekr.20060913164304"><vh>Using ZODB with Leo</vh>
-<v t="ekr.20100805165051.7167"><vh>@file zodb.txt</vh></v>
+<v t="ekr.20100805165051.7167"
+expanded="ekr.20060913165542.1,"><vh>@file zodb.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
@@ -150,7 +153,6 @@
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20101128120258.5086"><vh>Fix typos</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -312,24 +314,6 @@ Important files:
 - leo_toc.html.txt contains a list of all file to be included.
 </t>
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
-<t tx="ekr.20101128120258.5086">@nocolor-node
-
-Installation:
-(fixed) http://diigo.com/0dvua
-(fixed) http://diigo.com/0dvub
-(won't fix) http://diigo.com/0dvud
-
-(won't fix) http://diigo.com/0dvsz
-(fixed) http://diigo.com/0dvsy
-(fixed) http://diigo.com/0dvse
-(fixed) http://diigo.com/0dvsf
-(won't fix) http://diigo.com/0dvsg
-(later) http://diigo.com/0dvsh
-    External files
-    Add screen shot showing what myFile.py looks like with sentinels
-(won't fix) http://diigo.com/0dvsi
-(won't fix) http://diigo.com/0dvsj
-</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

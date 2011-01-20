@@ -310,19 +310,32 @@ def scanOptions():
     # Note: this automatically implements the --help option.
     parser = optparse.OptionParser()
     add = parser.add_option
-    add('-c', '--config', dest="one_config_path")
-    add('--debug',        action="store_true",dest="debug")
-    add('-f', '--file',   dest="fileName")
-    add('--gui',          help = 'gui to use (qt/tk/qttabs)')
-    add('--minimized',    help = 'start minimized (Qt only)', action="store_true")
-    add('--maximized',    help = 'start maximized (Qt only)', action="store_true")
-    add('--fullscreen',    help = 'start fullscreen (Qt only)', action="store_true")
-    add('--ipython',      action="store_true",dest="use_ipython")
-    add('--no-cache',     action="store_true",dest='no_cache')
-    add('--silent',       action="store_true",dest="silent")
-    add('--screen-shot',  dest='screenshot_fn')
-    add('--script',       dest="script")
-    add('--script-window',dest="script_window")
+    add('-c', '--config', dest="one_config_path",
+        help = 'use a single configuration file')
+    add('--debug',        action="store_true",dest="debug",
+        help = 'enable debugging support')
+    add('-f', '--file',   dest="fileName",
+        help = 'load a file at startup')
+    add('--gui',
+        help = 'gui to use (qt/tk/qttabs)')
+    add('--minimized',    action="store_true",
+        help = 'start minimized (Qt only)')
+    add('--maximized',    action="store_true",
+        help = 'start maximized (Qt only)')
+    add('--fullscreen',   action="store_true",
+        help = 'start fullscreen (Qt only)')
+    add('--ipython',      action="store_true",dest="use_ipython",
+        help = 'enable ipython support')
+    add('--no-cache',     action="store_true",dest='no_cache',
+        help = 'disable reading of cached files')
+    add('--silent',       action="store_true",dest="silent",
+        help = 'disable all log messages')
+    add('--screen-shot',  dest='screenshot_fn',
+        help = 'take a screen shot and then exit')
+    add('--script',       dest="script",
+        help = 'execute a script and then exit')
+    add('--script-window',dest="script_window",
+        help = 'open a window for scripts')
     add('--select',       dest='select',
         help='headline or gnx of node to select')
     add('--version',      action="store_true",dest="version",

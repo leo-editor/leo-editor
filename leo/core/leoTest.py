@@ -419,12 +419,18 @@ class testUtils:
 
         p2 = root2.copy() ; ok = True
         for p1 in root1.self_and_subtree():
+            b1 = p1.b
+            b2 = p2.b
+            if p1.h.endswith('@nonl') and b1.endswith('\n'):
+                b1 = b1[:-1]
+            if p2.h.endswith('@nonl') and b2.endswith('\n'):
+                b2 = b2[:-1]
             ok = (
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
                 (not compareHeadlines or (p1.h == p2.h)) and
-                p1.b == p2.b and
-                p1.isCloned()   == p2.isCloned()
+                b1 == b2 and
+                p1.isCloned() == p2.isCloned()
             )
             if not ok: break
             p2.moveToThreadNext()
@@ -442,9 +448,9 @@ class testUtils:
         else:
             g.pr('compareOutlines failed',newline=False)
             if tag: g.pr('tag:',tag)
-            else: g.pr('')
-            if p1: g.pr('p1',p1,p1.v)
-            if p2: g.pr('p2',p2,p2.v)
+            # else: g.pr('')
+            if p1: g.pr('p1',p1.h)
+            if p2: g.pr('p2',p2.h)
             if not p1 or not p2:
                 g.pr('p1 and p2')
             if p1.numberOfChildren() != p2.numberOfChildren():
@@ -453,7 +459,7 @@ class testUtils:
             if compareHeadlines and (p1.h != p2.h):
                 g.pr('p1.head', p1.h)
                 g.pr('p2.head', p2.h)
-            if p1.b != p2.b:
+            if b1 != b2:
                 self.showTwoBodies(p1.h,p1.b,p2.b)
             if p1.isCloned() != p2.isCloned():
                 g.pr('p1.isCloned() == p2.isCloned()')
@@ -1073,8 +1079,8 @@ def makeEditBodySuite(c,p):
 
     for p in data_p.children():
         if p.h=="tempNode": continue # TempNode now in data tree.
-        before = u.findNodeInTree(p,"before")
-        after  = u.findNodeInTree(p,"after")
+        before = u.findNodeInTree(p,"before",startswith=True)
+        after  = u.findNodeInTree(p,"after",startswith=True)
         sel    = u.findNodeInTree(p,"selection")
         ins    = u.findNodeInTree(p,"insert")
         if before and after:
@@ -1106,10 +1112,9 @@ class editBodyTestCase(unittest.TestCase):
         self.ins    = ins.copy() # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
 
-        if 0:
-            g.trace('parent',parent)
-            g.trace('before',before)
-            g.trace('after',after)
+        # g.trace('parent',parent.h)
+        # g.trace('before',before.h)
+        # g.trace('after',after.h)
     #@+node:ekr.20051104075904.72: *5*  fail
     def fail (self,msg=None):
 
@@ -1138,7 +1143,6 @@ class editBodyTestCase(unittest.TestCase):
         command()
 
         try:
-
             # Don't call the undoer if we expect no change.
             if not u.compareOutlines(self.before,self.after,compareHeadlines=False,report=False):
                 assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
@@ -1189,6 +1193,14 @@ class editBodyTestCase(unittest.TestCase):
         if not self.sel and not self.ins: # self.sel is a **tk** index.
             w.setInsertPoint(0)
             w.setSelectionRange(0,0)
+    #@+node:ekr.20110117113521.6107: *5* shortDescription
+    def shortDescription (self):
+
+        try:
+            return "EditBodyTestCase: %s" % (self.parent.h)
+        except Exception:
+            g.es_exception()
+            return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *5* tearDown
     def tearDown (self):
 
@@ -1422,253 +1434,6 @@ def checkFileTabs (fileName,s):
         g.trace("unexpected exception")
         g.es_exception()
         assert 0, "test failed"
-#@+node:ekr.20051104075904.46: *3* Reformat Paragraph test code (leoTest.py)
-# DTHEIN 2004.01.11: Added unit tests for reformatParagraph
-#@+node:ekr.20051104075904.47: *4* class reformatParagraphTest
-class reformatParagraphTest:
-
-    '''A class to work around stupidities of the Unittest classes.'''
-
-    #@+others
-    #@+node:ekr.20051104075904.48: *5* __init__
-    def __init__ (self,c,p):
-
-        self.c = c
-        self.p = p.copy()
-
-        self.go()
-    #@+node:ekr.20051104075904.49: *5* go
-    def go (self):
-
-        try:
-            self.setUp()
-            self.runTest()
-        finally:
-            self.tearDown()
-    #@+node:ekr.20051104075904.50: *5* checkPosition
-    def checkPosition(self,expRow,expCol):
-
-        row,col = self.getRowCol()
-
-        assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
-
-        assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-    #@+node:ekr.20051104075904.51: *5* checkText
-    def checkText(self):
-
-        new_text = self.tempChild.b
-        ref_text = self.after.b
-        newLines = new_text.splitlines(1)
-        refLines = ref_text.splitlines(1)
-        newLinesCount = len(newLines)
-        refLinesCount = len(refLines)
-        for i in range(min(newLinesCount,refLinesCount)):
-            assert newLines[i] == refLines[i], \
-                "Mismatch on line " + str(i) + "." \
-                + "\nExpected text: " + repr(refLines[i]) \
-                + "\n  Actual text: " + repr(newLines[i])
-
-        assert newLinesCount == refLinesCount, \
-            "Expected " + str(refLinesCount) + " lines, but " \
-            + "received " + str(newLinesCount) + " lines."
-    #@+node:ekr.20051104075904.52: *5* copyBeforeToTemp
-    # Used in a unit test.
-
-    def copyBeforeToTemp(self):
-
-        c = self.c ; tempNode = self.tempNode
-
-        # Delete all children of temp node.
-        while tempNode.firstChild():
-            tempNode.firstChild().doDelete()
-
-        # Copy the before node text to the temp node.
-        text = self.before.b
-        tempNode.setBodyString(text)
-
-        # create the child node that holds the text.
-        self.tempChild = self.tempNode.insertAsNthChild(0)
-        self.tempChild.setHeadString('tempChildNode')
-
-        # copy the before text to the temp text.
-        text = self.before.b
-        self.tempChild.setBodyString(text)
-
-        # Make the temp child node current, and put the cursor at the beginning.
-        c.selectPosition(self.tempChild)
-        w = c.frame.body.bodyCtrl
-        w.setSelectionRange(0,0)
-    #@+node:ekr.20051104075904.53: *5* getRowCol
-    def getRowCol(self):
-
-        c = self.c ; w = c.frame.body.bodyCtrl
-        tab_width = c.frame.tab_width
-
-        # Get the Tkinter row col position of the insert cursor.
-        s = w.getAllText()
-        index = w.getInsertPoint()
-        row,col = g.convertPythonIndexToRowCol(s,index)
-        row += 1
-        # g.trace(index,row,col)
-
-        # Adjust col position for tabs.
-        if col > 0:
-            s2 = s[index-col:index]
-            s2 = g.toUnicode(s2)
-            col = g.computeWidth(s2,tab_width)
-
-        return row,col
-    #@+node:ekr.20051104075904.54: *5* runTest
-    def runTest(self):
-
-        g.trace('must be overridden in subclasses')
-    #@+node:ekr.20051104075904.55: *5* setUp
-    def setUp(self):
-
-        c = self.c ; p = self.p
-        u = self.u = testUtils(c)
-
-        # self.undoMark = c.undoer.getMark()
-        c.undoer.clearUndoState()
-
-        assert(c.positionExists(p))
-        self.before = u.findNodeInTree(p,"before")
-        self.after  = u.findNodeInTree(p,"after")
-        self.tempNode = u.findNodeInTree(p,"tempNode")
-
-        assert self.tempNode,'no tempNode: ' + p
-        assert c.positionExists(self.tempNode),'tempNode does not exist'
-        self.tempChild = None
-
-        self.copyBeforeToTemp()
-    #@+node:ekr.20051104075904.56: *5* tearDown
-    def tearDown(self):
-
-        c = self.c ; tempNode = self.tempNode
-
-        # clear the temp node and mark it unchanged
-        tempNode.setBodyString("")
-        tempNode.clearDirty()
-
-        if 1: # Disabling this is good for debugging.
-            # Delete all children of temp node.
-            while tempNode.firstChild():
-                tempNode.firstChild().doDelete()
-
-        # c.undoer.rollbackToMark(self.undoMark)
-        c.undoer.clearUndoState()
-    #@-others
-#@+node:ekr.20051104075904.57: *4* class singleParagraphTest (reformatParagraphTest)
-class singleParagraphTest (reformatParagraphTest):
-
-    '''A class to work around stupidities of the Unittest classes.'''
-
-    #@+others
-    #@+node:ekr.20051104075904.58: *5* __init__
-    def __init__ (self,c,p,finalRow,finalCol):
-
-        self.finalCol = finalCol
-        self.finalRow = finalRow
-
-        # Call the base class.
-        reformatParagraphTest.__init__(self,c,p)
-    #@+node:ekr.20051104075904.59: *5* runTest
-    def runTest(self):
-
-        # Reformat the paragraph
-        self.c.reformatParagraph()
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-        self.checkPosition(self.finalRow,self.finalCol)
-    #@-others
-#@+node:ekr.20051104075904.60: *4* class multiParagraphTest (reformatParagraphTest)
-class multiParagraphTest (reformatParagraphTest):
-
-    #@+others
-    #@+node:ekr.20051104075904.61: *5* runTest
-    def runTest(self):
-
-        self.c.reformatParagraph()
-        self.checkPosition(13,0)
-
-        # Keep going, in the same manner
-        self.c.reformatParagraph()
-        self.checkPosition(25,0)
-        self.c.reformatParagraph()
-        self.checkPosition(32,11)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-others
-#@+node:ekr.20051104075904.62: *4* class multiParagraphWithListTest (reformatParagraphTest)
-class multiParagraphWithListTest (reformatParagraphTest):
-
-    #@+others
-    #@+node:ekr.20051104075904.63: *5* runTest
-    def runTest(self):
-
-        # reformat the paragraph and check insertion cursor position
-        self.c.reformatParagraph()
-        self.checkPosition(4,0)
-
-        # Keep going, in the same manner.
-        self.c.reformatParagraph()
-        self.checkPosition(7,0)
-        self.c.reformatParagraph()
-        self.checkPosition(10,0)
-        self.c.reformatParagraph()
-        self.checkPosition(13,0)
-        self.c.reformatParagraph()
-        self.checkPosition(14,18)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-others
-#@+node:ekr.20051104075904.64: *4* class leadingWSOnEmptyLinesTest (reformatParagraphTest)
-class leadingWSOnEmptyLinesTest (reformatParagraphTest):
-
-    #@+others
-    #@+node:ekr.20051104075904.65: *5* runTest
-    def runTest(self):
-
-        # reformat the paragraph and check insertion cursor position
-        self.c.reformatParagraph()
-        self.checkPosition(4,0)
-
-        # Keep going, in the same manner
-        self.c.reformatParagraph()
-        self.checkPosition(7,0)
-        self.c.reformatParagraph()
-        self.checkPosition(10,0)
-        self.c.reformatParagraph()
-        self.checkPosition(13,0)
-        self.c.reformatParagraph()
-        self.checkPosition(14,18)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-others
-#@+node:ekr.20051104075904.66: *4* class testDirectiveBreaksParagraph (reformatParagraphTest)
-class directiveBreaksParagraphTest (reformatParagraphTest):
-
-    #@+others
-    #@+node:ekr.20051104075904.67: *5* runTest
-    def runTest(self):
-
-        # reformat the paragraph and check insertion cursor position
-        self.c.reformatParagraph()
-        self.checkPosition(13,0) # at next paragraph
-
-        # Keep going, in the same manner
-        self.c.reformatParagraph()
-        self.checkPosition(25,0) # at next paragraph
-        self.c.reformatParagraph()
-        self.checkPosition(32,11)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-others
 #@+node:ekr.20061008140603: *3* runEditCommandTest
 def runEditCommandTest (c,p):
 
