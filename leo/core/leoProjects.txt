@@ -3529,6 +3529,14 @@ else:
         s += str(n)
     title = g.computeWindowTitle(s)
     g.app.numberOfWindows = n+1
+#@+node:ekr.20110111100539.9727: *4* Docs fixes
+@nocolor-node
+
+(Fixed) Using ZODB with Leo — Leo v4.8 documentation
+http://diigo.com/0dw79
+
+(Fixed) Embedding Leo with the leoBridge module — Leo v4.8 documentation
+http://diigo.com/0dw77
 #@+node:ekr.20101218103123.5931: *3* Features
 #@+node:ekr.20101127152442.5915: *4* Improved handling of @url nodes
 @nocolor-node

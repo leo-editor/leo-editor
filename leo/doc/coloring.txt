@@ -22,18 +22,15 @@
 Controlling Syntax Coloring
 ###########################
 
-This chapter discusses how to control Leo's new syntax colorer using Python
-files derived from jEdit_'s xml language description files. It also discusses
-settings related to syntax coloring.
+This chapter discusses the settings to control Leo's syntax colorers.
 
-**Important**: this material is for those who want to support Leo's colorizing
-code. You do *not* need to understand this chapter in order to use Leo's
-colorizers.
+This chapter also discusses how to extend Leo's colorizers by creating xml
+language descriptions files and corresponding Python files. **Important**: this
+material is for those who want to support Leo's colorizing code. To use Leo's
+colorizers you only need to know about syntax-coloring settings.
 
-The __jEdit_colorizer__.py plugin was an early prototype of the new colorizer.
-This code has been retired. The threading_colorizer.py plugin uses a separate
-helper thread to do the colorizing. Coding details for this plugin are discussed
-in this chapter.
+The colorizers discussed here are in the threading_colorizer plugin (Tk) and the
+qtGui plugin (Qt).
 
 .. contents::
     :depth: 3
@@ -45,8 +42,69 @@ in this chapter.
 .. Relative links...
 .. _`Ruleset name`:      `Ruleset names`_
 .. _`Customizing Leo`:           customizing.html
+.. @+node:ekr.20060830142929: *3* Syntax coloring settings
+This section discusses only those settings that affect syntax coloring.
+See `Customizing Leo`_ for a general discussion of Leo's settings.
+
+Both the old colorizer (in Leo's core) and the new colorizer (the
+threading_colorizer and qtGui plugins) now support \@color and \@font settings for colorizing
+options. The settings for the old colorizer are::
+
+    comment_font, cweb_section_name_font, directive_font,
+    doc_part_font, keyword_font, leo_keyword_font, section_name_font,
+    section_name_brackets_font, string_font, undefined_section_name_font,
+    latexBackground_font, and latex_background_font.
+
+The settings for the new colorizer are all of the above (except keyword_font) plus the following::
+
+    comment1_font, comment2_font, comment3_font, comment4_font, function_font,
+    keyword1_font, keyword2_font, keyword3_font, keyword4_font, label_font,
+    literal1_font, literal2_font, literal3_font, literal4_font, markup_font,
+    null_font, and operator_font.
+    
+To specify a color, say for comment1, for *all* languages, create an @color node::
+
+    @color comment1_color = blue
+    
+To specify a color for a **particular** language, say Python, prepend the setting name
+with the language name.  For example::
+
+    @color python_comment1_color = pink
+
+To specify a font, say for keyword_font, to be used as the default font for **all** languages,
+put the following in the body text of an @font node in leoSettings.leo::
+
+    # keyword_font_family = None
+    keyword_font_size = 16
+    keyword_font_slant = roman
+        # roman, italic
+    keyword_font_weight = bold
+        # normal, bold
+
+Comments are allowed and undefined settings are set to reasonable defaults. 
+At present, comments can not follow a setting: comments must start a line.
+
+You can specify per-language settings by preceding the settings names by a prefix x.
+Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer).
+For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
+
+    # php_keyword_font_family = None
+    php_keyword_font_size = 16
+    php_keyword_font_slant = roman
+        # roman, italic
+    php_keyword_font_weight = bold
+        # normal, bold
 .. @+node:ekr.20060430220749: *3* Files
 The jEdit_ editor drives its syntax colorer using xml **language description files.**
+Rather than using the xml language description files directly, Leo uses
+Python **colorer control files**, created automatically from the xml files by a
+script called jEdit2Py.  All these files reside in the leo/modes directory.
+
+These Python files contain all the information in the jEdit's xml files, so we
+can (loosely) speak of modes, rulesets, rules, properties and attributes in the
+Python colorer control files. Later sections of this documentation will make
+this loose correspondence exact.
+
 `jEdit's documentation`_ contain a complete description of these xml files.
 Each xml file describes one **colorizing mode**.
 A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**.
@@ -58,13 +116,6 @@ Rules are simply sub-elements of an enclosing <RULES> element.
 The element indicates the kind of rule that is specified,
 for example, <SPAN>, <SEQ>, etc.
 By the term **rule element** we shall mean any sub-element of the <RULES> element.
-
-Rather than using the xml language description files directly,
-Leo uses Python **colorer control files**,
-created automatically from the xml files by a script called jEdit2Py.
-These Python files contain all the information in the jEdit's xml files,
-so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. 
-Later sections of this documentation will make this loose correspondence exact.
 
 **Important**: throughout this documentation,
 **x.py** will refer to the Python colorer for language x,
@@ -619,49 +670,6 @@ match_terminate succeeds if s[i:] contains at least at_char more characters.
 
 If successful, match_terminate colors at_char characters
 with the color specified by kind.
-.. @+node:ekr.20060830142929: *3* Syntax coloring settings
-This section discusses only those settings that affect syntax coloring.
-See `Customizing Leo`_ for a general discussion of Leo's settings.
-
-Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer plugin)
-now support @font settings for colorizing options.
-The settings for the old colorizer are::
-
-    comment_font, cweb_section_name_font, directive_font,
-    doc_part_font, keyword_font, leo_keyword_font, section_name_font,
-    section_name_brackets_font, string_font, undefined_section_name_font,
-    latexBackground_font, and latex_background_font.
-
-The settings for the new colorizer are all of the above (except keyword_font) plus the following::
-
-    comment1, comment2_font, comment3_font, comment4_font, function_font,
-    keyword1_font, keyword2_font, keyword3_font, keyword4_font, label_font,
-    literal1_font, literal2_font, literal3_font, literal4_font, markup_font,
-    null_font, and operator_font.
-
-To specify a font, say for keyword_font, to be used as the default font for **all** languages,
-put the following in the body text of an @font node in leoSettings.leo::
-
-    # keyword_font_family = None
-    keyword_font_size = 16
-    keyword_font_slant = roman
-        # roman, italic
-    keyword_font_weight = bold
-        # normal, bold
-
-Comments are allowed and undefined settings are set to reasonable defaults. 
-At present, comments can not follow a setting: comments must start a line.
-
-You can specify per-language settings by preceding the settings names by a prefix x.
-Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer).
-For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
-
-    # php_keyword_font_family = None
-    php_keyword_font_size = 16
-    php_keyword_font_slant = roman
-        # roman, italic
-    php_keyword_font_weight = bold
-        # normal, bold
 .. @+node:ekr.20070724081553: *3* The threading_colorizer plugin
 This section contains code-level notes for the threading colorizer. You do not
 need to understand this material in order to use the threading colorizer.

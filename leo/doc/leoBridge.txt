@@ -22,9 +22,9 @@
 Embedding Leo with the leoBridge module
 #######################################
 
-The leoBridge module allows complete access to all aspects of Leo from programs
-running independently of Leo. Let us call such a program a **host** program.
-Using the leoBridge module, host programs can get access to:
+The leoBridge module allows complete access to all aspects of Leo from other
+Python programs running independently of Leo. Let us call such a program a
+**host** program. Using the leoBridge module, host programs can get access to:
 
 - all of Leo's source code,
 - the contents of any .leo file,
@@ -49,7 +49,7 @@ Let us look at these statements in detail.  The statements::
     controller = leoBridge.controller(gui='nullGui')
 
 import the leoBridge module and create a **bridge controller**. In effect, these
-statements embed an invisible copy Leo into the host program. This embedded
+statements embed an invisible copy of Leo into the host program. This embedded
 copy of Leo uses a null gui, which simulates all aspects of Leo's normal gui
 code without creating any screen objects.
 
@@ -126,7 +126,7 @@ Here it is, stripped of its sentinel lines::
 .. @+node:ekr.20071210094621: *3* Running leoBridge from within Leo
 This following is adapted from Terry Brown's entry in Leo's wiki.
 
-You can not just run leoBridge from Leo, because the leoBridge module is design
+You can not just run leoBridge from Leo, because the leoBridge module is designed
 to run a separate copy of Leo. However, it is possible to run leoBridge from a
 separate process. That turned out to be more, um, interesting than anticipated,
 so I'm recording the results here.
@@ -152,7 +152,7 @@ Setting PYTHONPATH in the environment seemed like the easiest way to let
 script B find leoBridge.py (which it needs to import).  But by setting the
 env parameter you limit script B's environment to be **only** PYTHONPATH,
 which causes leoBridge to fail because, in unix at least, it depends
-on USER in the environment.  So you need to pass that through too.
+on USER in the environment.  So you need to pass that through, too.
 
 Now, because passing stuff back on the clipboard seems unreliable, at least
 in XWindows, script B passes results back to script A via stdout (print),
@@ -175,8 +175,8 @@ the tree script A is running in.  That's relatively easy if you use::
     print g.app.gui.getTextFromClipboard()
     print '<!-- END_CLIPBOARD -->'
 
-at the end of script B, and back in script A, after you've rebuilt
-`response` as shown above, just::
+at the end of script B. Back in script A, after you've rebuilt
+`response` as shown above, do::
 
     g.app.gui.replaceClipboardWith(response)
     c.pasteOutline()

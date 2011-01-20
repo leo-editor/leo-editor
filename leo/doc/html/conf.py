@@ -172,11 +172,10 @@ html_use_smartypants = True
     
 
 html_sidebars = {
-   '**': ['relations.html',] 
-   # 'localtoc.html'],
+   '**': ['relations.html','searchbox.html',] 
+   # 'localtoc.html',
    # 'globaltoc.html',
    # 'sourcelink.html',
-   # 'searchbox.html'],
 }
 
 # Additional templates that should be rendered to pages, maps page names to
