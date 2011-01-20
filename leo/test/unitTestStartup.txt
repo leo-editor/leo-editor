@@ -1,0 +1,211 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20101220161557.6011: * @file unitTestStartup.txt
+#@@language python
+#@+all
+#@+node:ekr.20041001211817: ** Buttons
+#@+node:ekr.20070926090757: *3* Disabled buttons
+#@+node:ekr.20051025070722: *4* @@button Beautify
+c.prettyPrintPythonNode()
+#@+node:ekr.20070626153940: *4* @@button dynamic-tests @key=Alt-5
+'''
+This script runs all @test nodes as follows:
+
+- Copies all @suite and @tests nodes to dynamicUnitTests.leo.
+- Runs dynamicUnitTests.leo in a separate process.
+
+This ensures that all unit tests will be run with the latest Leo sources.
+'''
+
+import os,sys
+import leoGui
+
+@others
+
+path = g.os_path_abspath(g.os_path_join(
+    g.app.loadDir,'..','test','dynamicUnitTest.leo'))
+
+g.pr('-'*20)
+found = searchOutline(p.copy())
+if found:
+    gui = leoGui.nullGui("nullGui")
+    c2 = c.new(gui=gui)
+    found = createOutline(c,c2,p.copy())
+    createFileFromOutline(c2,path)
+    runDynamicTests(path)
+    c.selectPosition(p.copy())
+else:
+    g.es_print('no @test or @suite nodes in selected outline')
+#@+node:ekr.20070626153940.1: *5* searchOutline
+def searchOutline(p):
+
+    for p in p.self_and_subtree_iter():
+        h = p.h
+        if h.startswith('@test') or h.startswith('@suite'):
+            return True
+    else:
+        return False
+#@+node:ekr.20070626153940.2: *5* createOutline
+def createOutline(c,c2,p):
+
+    '''Create a unit test ouline containing all @test and @suite nodes in p's outline.'''
+
+    c2root = c2.rootPosition()
+    c2root.initHeadString('All unit tests')
+    c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+
+    c2root.expand()
+    for p in p.self_and_subtree_iter():
+        h = p.h
+        if h.startswith('@test') or h.startswith('@suite'):
+            # g.pr(h)
+            # c.copyOutline is too slow.
+            p2 = p.copyTreeAfter()
+            p2.unlink()
+            p2.moveToLastChildOf(c2root)
+
+
+#@+node:ekr.20070626153940.3: *5* createFileFromOutline
+def createFileFromOutline(c2,path):
+
+    c2.selectPosition(c2.rootPosition())
+    c2.mFileName = path
+    c2.fileCommands.save(path)
+    c2.close()
+#@+node:ekr.20070626153940.4: *5* runDynamicTests
+def runDynamicTests(path):
+
+    runDynamicTests = g.os_path_abspath(g.os_path_join(
+        g.app.loadDir,'..','test','leoDynamicTest.py'))
+
+    args = [sys.executable, runDynamicTests ]
+
+    # Use a pristine environment.
+    os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
+#@+node:ekr.20070201065053: *4* @@button goto tk index
+w = c.frame.body.bodyCtrl
+c.bodyWantsFocusNow()
+w.setSelectionRange('3.0','3.07')
+# w.setInsertPoint('3.169')
+#@+node:ekr.20070807104632: *4* @@button local-tests @key=Alt+6
+import leoTest
+leoTest.doTests (c,all=False)
+#@+node:ekr.20100131171342.5459: *4* @@button run-all-core-tests @key = Alt-7
+'''
+Run all the unit tests in the .leo file given by the path.
+The path is relative to the leo\test directory.
+'''
+
+# This button used to be in leoPy.leo
+
+import leo.core.leoTest as leoTest
+
+leoTest.runUnitTestLeoFile(gui='nullGui',path='../core/leoPy.leo')
+
+g.es_print('unit tests done',color='blue')
+#@+node:ekr.20080405082101.1: *4* @@button run-all-tests
+import leoTest
+leoTest.doTests(c, all=True)
+#@+node:ekr.20050911112310: *4* @@button Save
+c.save()
+c.redraw_now()
+#@+node:ekr.20051025091355: *4* @@button Spell
+c.spellCommands.openSpellTab()
+#@+node:ekr.20051104081502.554: *4* @@button test @key=alt-shift-ctrl-y
+g.es('hi',color='red')
+#@+node:ekr.20080529114722.1: *3* @button timeit
+import leo.core.leoTest as leoTest
+leoTest.runTimerOnNode(c,p,count=100)
+#@+node:ekr.20080529115911.1: *3* @button profile
+import leo.core.leoTest as leoTest
+leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
+#@+node:ekr.20080312090030.1: ** Commands
+#@+node:ekr.20051104081502.552: *3* @@command my-command @key = alt-shift-ctrl-z
+g.es('my-command',color='red')
+#@+node:ekr.20051107115231.1: *3* @@command unit-test-command1
+# This is used by a unit test.
+g.es_print('Test of @command')
+g.app.unitTestDict ['unit-test-command1'] = True
+#@+node:ekr.20051104081502.553: *3* @@command my-command2
+g.pr('This is my command 3')
+#@+node:ekr.20051104081502.555: *3* @@command rebind ctrl-e @key=shift-alt-e
+g.pr('Rebound control E')
+#@+node:ekr.20041001194357: *3* @@command Unit Test @key=Alt+4
+# You can run unit tests by selecting an outline containing unit tests.
+
+import leoTest
+
+leoTest.doTests(c,all=False)
+c.selectPosition(p)
+#@+node:ekr.20041121151002: ** @settings
+#@+node:ekr.20090629104856.4992: *3* @@bool big_outline_pane = True
+#@+node:ekr.20070303143846.1: *3* @@enabled-plugins
+# Plugin_manager.py needs plugins_menu.py
+# Plugins_manager is not functional at present.
+# plugin_manager.py
+
+# qtGui.py
+# tkGui.py
+
+plugins_menu.py
+
+# Standard plugins...
+open_with.py
+leo_to_html.py
+mod_scripting.py
+UNL.py
+
+# Other plugins...
+# vim.py
+
+# Tk plugins.
+# cleo.py
+# hoist.py
+# image.py
+# nav_buttons.py
+# rClick.py
+# threading_colorizer.py
+#@+node:ekr.20100507152400.5388: *3* @@string qt-toolbar-location=left
+#@+node:ekr.20080324133327.2: *3* @bool allow_middle_button_paste = True
+True: allow linux-like pastes using a mouse's middle button.
+
+Important: this may cause crashes on some platforms.
+#@+node:ekr.20101009105124.6195: *3* @bool put_expansion_bits_in_leo_files = False
+True (recommended):
+    Write "E" attribute bits in <v> elements.
+    Leo outlines will record the expansion state of all nodes.
+
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in <v> elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.
+#@+node:ekr.20051013162226: *3* @bool test_setting = True
+#@+node:ekr.20070503064257: *3* @bool use_chapters = True
+#@+node:ekr.20070528100318: *3* @bool write_strips_blank_lines = False
+# Required to make a typing test work.
+#@+node:ekr.20050328101834: *3* @page http plugin
+#@+node:ekr.20050328101834.1: *4* @bool http_active = False
+#@+node:ekr.20050328101834.2: *4* @int  port = 8080
+#@+node:ekr.20050328101834.3: *4* @string rst_http_attributename = ''
+#@+node:ekr.20070303143951: *3* unused
+#@+node:ekr.20051018071924: *4* @@color log_pane_Completion_tab_background_color = yellow
+
+#@+node:ekr.20060325072919: *4* @@ifgui tkinter
+#@+node:ekr.20060325072919.1: *5* @bool test_tkinter_setting = True
+#@+node:ekr.20060325072919.2: *4* @@ifgui wxWindows
+#@+node:ekr.20060325072919.3: *5* @bool test_wxWindows_setting = True
+#@+node:ekr.20050104095950: *4* @@shortcutsEqualSizedPanes
+# Switch EqualSizedPanes and ExecuteScript
+
+# EqualSizedPanes = Ctrl+E
+# ExecuteScript = Alt+Ctrl+E
+# Exit = alt-ctrl-Z
+
+# paste-text = Alt-Ctrl-V
+#@+node:ekr.20070515150433: ** @chapters
+#@+node:ekr.20070611081718: *3* @chapter unitTestChapter
+#@+node:ekr.20070611081718.1: *4* unitTestChapter node 1
+#@+node:ekr.20070611081718.2: *4* firstChild
+#@+node:ekr.20070611081718.4: *4* firstChild
+#@-all
+#@-leo

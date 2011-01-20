@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20070627082044.811:@thin ../test/unittest/batchTest.py
+#@+leo-ver=5-thin
+#@+node:ekr.20070627082044.811: * @thin ../test/unittest/batchTest.py
 # A file to be executed in batch mode as part of unit testing.
 # This file is defined in unitTest.leo
 
@@ -24,5 +24,4 @@ finally:
         f.close()
 
 assert(g.os_path_exists(path))
-#@-node:ekr.20070627082044.811:@thin ../test/unittest/batchTest.py
 #@-leo

@@ -1722,43 +1722,72 @@ class position (object):
     #@-others
 #@+node:ville.20090311190405.68: ** class poslist
 class poslist(list):
+    #@+<< poslist doc >>
+    #@+node:bob.20101215134608.5898: *3* << poslist doc >>
     """ List of positions 
 
-    This behaves like a normal list, with the distinction that it 
-    has select_h and select_b methods that can be used 
-    to search through immediate children of the nodes.
+    Functions find_h() and find_b() both return an instance of poslist.
+
+    Methods filter_h() and filter_b() refine a poslist.
+
+    Method children() generates a new poslist by descending one level
+    from all the nodes in a poslist.
+
+    A chain of poslist method calls must begin with find_h() or find_b().
+    The rest of the chain can be any combination of filter_h(),
+    filter_b(), and children().  For example:
+
+        pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
+
+    For each position, pos, in the poslist returned, find_h() and filter_h() set attribute pos.mo
+    to the match object (see Python Regular Expression documentation) for the pattern match.
+
+    Caution:  The pattern given to find_h() or filter_h() must match zero or more characters
+    at the beginning of the headline.
+
+    For each position, pos, the postlist returned, find_b() and filter_b() set attribute
+    pos.matchiter to an iterator that will return a match object for each of the
+    non-overlapping matches of the pattern in the body of the node.
 
     """
+    #@-<< poslist doc >>
+
     #@+others
-    #@+node:ville.20090311190405.69: *3* select_h
-    def select_h(self, regex, flags = re.IGNORECASE):
-        """ Find immediate child nodes of nodes in poslist with regex.
-
-        You can chain find_h / find_b with select_h / select_b like this
-        to refine an outline search::
-
-            pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+    #@+node:bob.20101215134608.5897: *3* children
+    def children(self):
+        """ Return a poslist instance containing pointers to
+        all the immediate children of nodes in poslist self.
 
         """
+
+        res = poslist()
+        for p in self:
+            for child_p in p.children():
+                res.append(child_p.copy())            
+        return res
+    #@+node:ville.20090311190405.69: *3* filter_h
+    def filter_h(self, regex, flags = re.IGNORECASE):
+        """ Find all the nodes in poslist self where zero or more characters at
+        the beginning of the headline match regex
+
+        """
+
         pat = re.compile(regex, flags)
         res = poslist()
         for p in self:
-            for child_p in p.children():            
-                m = re.match(pat, child_p.h)
-                if m:
-                    pc = child_p.copy()
-                    pc.mo = m
-                    res.append(pc)
+            mo = re.match(pat, p.h)
+            if mo:
+                pc = p.copy()
+                pc.mo = mo
+                res.append(pc)
         return res
-    #@+node:ville.20090311195550.1: *3* select_b
-    def select_b(self, regex, flags = re.IGNORECASE ):
-        """ Find all the nodes in poslist where body matches regex
+    #@+node:ville.20090311195550.1: *3* filter_b
+    def filter_b(self, regex, flags = re.IGNORECASE ):
+        """ Find all the nodes in poslist self where body matches regex
+        one or more times.
 
-        You can chain find_h / find_b with select_h / select_b like this
-        to refine an outline search::
-
-            pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
         """
+
         pat = re.compile(regex, flags)
         res = poslist()
         for p in self:
@@ -1778,6 +1807,7 @@ class poslist(list):
                 pass
 
         return res
+
     #@-others
 #@+node:ekr.20031218072017.3341: ** class vnode
 if use_zodb and ZODB:
