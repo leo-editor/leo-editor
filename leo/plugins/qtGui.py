@@ -4443,7 +4443,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace('qtFrame',repr(s))
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
-        # g.trace(x,y,w,y,g.callers(5))
+        #g.trace('gtFrame',x,y,w,y,g.callers(5))
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-others
 #@+node:ekr.20081121105001.318: *3* class leoQtLog
@@ -6500,7 +6500,8 @@ class TabbedFrameFactory:
     #@+node:ville.20090803132402.3684: *4* createMaster
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel()
-        mf.resize(1000, 700)
+        mf.resize(1000,1000) ### 1000, 700)
+        #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
 
