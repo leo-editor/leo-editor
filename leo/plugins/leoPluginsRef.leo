@@ -40,7 +40,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -62,8 +62,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -73,9 +73,9 @@
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="tbrown.20100318101414.5990"
+<v t="tbrown.20100318101414.5990" a="E"
 expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
-<v t="tbrown.20090206153748.1"><vh>@shadow graphcanvas.py</vh></v>
+<v t="tbrown.20090206153748.1" a="E"><vh>@shadow graphcanvas.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
@@ -131,13 +131,14 @@ expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
 </v>
 </v>
-<v t="EKR.20040517075715"><vh>External programs</vh>
+<v t="EKR.20040517075715" a="E"><vh>External programs</vh>
 <v t="ekr.20080201143145"><vh>@file ipython.py</vh></v>
 <v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
 <v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
 <v t="EKR.20040517075715.12"><vh>@file xemacs.py</vh></v>
+<v t="ville.20110121075405.6319" a="E"><vh>@file gitarchive.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
 <v t="EKR.20040517075715.14"><vh>@file word_export.py</vh></v>
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
