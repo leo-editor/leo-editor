@@ -7141,12 +7141,13 @@ table = (
     (3, grand11, 1),
     (4, grand12, 0),
     (5, grand12, 1),
-    (6, child2,  0),
-    (7, grand21, 0),
-    (8, grand21, 1),
-    (9, grand22, 0),
-    (10,grand22, 1),
-    (11,root,    3),
+    (6, child1,  2),
+    (7, child2,  0),
+    (8, grand21, 0),
+    (9, grand21, 1),
+    (10,grand22, 0),
+    (11,grand22, 1),
+    (12,root,    3),
 )
 
 # Test against actual lines of the file.
@@ -7161,16 +7162,19 @@ for n,node,index in table:
     n -= 1
         # Convert n to zero-based for the comparisons below.
     lines2 = g.splitLines(p2.b)
-    ok = lines2[n2].lstrip() == lines[n].lstrip() 
-    if not ok:
-        i = 0
-        for z in lines:
-            print('%2d %s' % (i,repr(z)))
-            i += 1
-    if not ok:
-        print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
-            n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
-    assert ok
+    if 0:
+        print('%2d %s' % (n,repr(lines[n])))
+    else:
+        ok = lines2[n2].lstrip() == lines[n].lstrip() 
+        if not ok:
+            i = 0
+            for z in lines:
+                print('%2d %s' % (i,repr(z)))
+                i += 1
+        if not ok:
+            print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
+                n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
+        assert ok
 #@+node:ekr.20100216142240.5372: *7* @auto ../test/at-auto-unit-test.py
 @language python
 @tabwidth -4
@@ -7179,6 +7183,7 @@ for n,node,index in table:
 #@+node:ekr.20100226073841.5348: *8* class child1
 class child1:
     @others
+    # After @others in child1.
 #@+node:ekr.20100226073841.5349: *9* child1_method1
 def child1_method1():
     pass
