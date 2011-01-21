@@ -26,15 +26,19 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ville.20110121075405.6323: ** init
 def init ():
-
     ok = True
 
     if ok:
         g.plugin_signon(__name__)
 
     return ok
-#@+node:ville.20110121075405.6324: ** g.command('git-dump')
+#@+node:ville.20110121191106.6335: ** contfile
+def contfile(c, p):
+    #name, date, num = p.v.fileIndex
+    fn = os.path.expanduser('~/.leo/dump/' + p.gnx)
 
+    return fn
+#@+node:ville.20110121075405.6324: ** g.command('git-dump')
 import os, codecs, hashlib
 
 @g.command('git-dump')
@@ -44,8 +48,10 @@ def git_dump_f(event):
 
     def dump_nodes():
         for p in c.all_unique_positions():
-            name, date, num = p.v.fileIndex
-            gnx = '%s%s%s' % (name, date, num)
+            #name, date, num = p.v.fileIndex
+            fname = contfile(c,p)
+            #gnx = '%s%s%s' % (name, date, num)
+            gnx = p.gnx
             hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
             fname = gnx
             codecs.open(fname,'w', encoding='utf-8').write(p.b)
@@ -83,14 +89,17 @@ def git_dump_f(event):
     g.es("committed")
     g.es(out)
     g.es('Outline in ' + os.path.abspath(titlename))
+#@+node:ville.20110121191854.6337: ** g.command('git-log')
+import os, codecs, hashlib
 
+@g.command('git-log')
+def git_log_f(event):
+    c = event['c']
+    p = c.p
+    os.chdir
 
-
-
-
-
-
-
-
+    inf = contfile(c,p)
+    print "f", inf
+    os.system("gitk %s" % inf)
 #@-others
 #@-leo
