@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47+devel r9015"
+   sodipodi:docname="GraphCanvas">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="96.820011"
+     inkscape:cy="492.87871"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1087"
+     inkscape:window-height="786"
+     inkscape:window-x="1800"
+     inkscape:window-y="117"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       y="515.21906"
+       x="35.714287"
+       height="19.286001"
+       width="19.285999"
+       id="rect3712"
+       style="color:#000000;fill:#99d85c;fill-opacity:1;fill-rule:nonzero;stroke:#408600;stroke-width:2.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       inkscape:export-filename="/home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/gcrect.png"
+       inkscape:export-xdpi="67.651031"
+       inkscape:export-ydpi="67.651031" />
+    <rect
+       style="color:#000000;fill:none;stroke:#408600;stroke-width:2;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:3.99999999, 7.99999998;stroke-dashoffset:2.2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2907"
+       width="20.63068"
+       height="19.738993"
+       x="45.398945"
+       y="484.99268"
+       inkscape:export-filename="/home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/gcnone.png"
+       inkscape:export-xdpi="67.651031"
+       inkscape:export-ydpi="67.651031" />
+    <path
+       sodipodi:type="arc"
+       style="color:#000000;fill:#99d85c;fill-opacity:1;fill-rule:nonzero;stroke:#408600;stroke-width:4.07721758;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="path3677"
+       sodipodi:cx="63.214287"
+       sodipodi:cy="572.00507"
+       sodipodi:rx="18.928572"
+       sodipodi:ry="8.9285717"
+       d="m 82.142859,572.00507 a 18.928572,8.9285717 0 1 1 -37.857144,0 18.928572,8.9285717 0 1 1 37.857144,0 z"
+       transform="matrix(0.53796136,0,0,0.69887761,29.207443,168.85068)"
+       inkscape:export-filename="/home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/gcoval.png"
+       inkscape:export-xdpi="67.651031"
+       inkscape:export-ydpi="67.651031" />
+    <rect
+       style="color:#000000;fill:#99d85c;fill-opacity:1;fill-rule:nonzero;stroke:#408600;stroke-width:2.50141215;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3704"
+       width="14.079905"
+       height="14.079905"
+       x="482.94662"
+       y="408.42947"
+       transform="matrix(0.72370663,0.69010776,-0.72370663,0.69010776,0,0)"
+       inkscape:export-filename="/home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/gcdia.png"
+       inkscape:export-xdpi="67.651031"
+       inkscape:export-ydpi="67.651031" />
+  </g>
+</svg>

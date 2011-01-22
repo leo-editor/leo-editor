@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>663</width>
+    <height>513</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <property name="margin">
+    <number>2</number>
+   </property>
+   <item>
+    <layout class="QVBoxLayout" name="canvasFrame"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Load:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoad">
+       <property name="toolTip">
+        <string>Add the node selected in the tree to the graph</string>
+       </property>
+       <property name="text">
+        <string>Node</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadSibs">
+       <property name="toolTip">
+        <string>Add the node selected in the tree and its siblings to the graph</string>
+       </property>
+       <property name="text">
+        <string>Sibs</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadRecur">
+       <property name="toolTip">
+        <string>Recursively add all the nodes below the node selected in the tree to the graph</string>
+       </property>
+       <property name="text">
+        <string>Recur</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadLinked">
+       <property name="toolTip">
+        <string>Add any nodes that are directly linked to nodes already in the graph</string>
+       </property>
+       <property name="text">
+        <string>Linked</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadAll">
+       <property name="toolTip">
+        <string>Add all nodes that are linked to nodes already in the graph.</string>
+       </property>
+       <property name="text">
+        <string>All</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="chkTrack">
+       <property name="toolTip">
+        <string>Alway select node in tree when node is selected in graph</string>
+       </property>
+       <property name="text">
+        <string>Track</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="btnUpdate">
+       <property name="toolTip">
+        <string>Update links, node names, etc.</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-refresh.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-refresh.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnGoto">
+       <property name="toolTip">
+        <string>Select node in tree</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/stock_right.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/stock_right.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLocate">
+       <property name="toolTip">
+        <string>Locate the node selected in the tree in the graph</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-find.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-find.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnUnLoad">
+       <property name="toolTip">
+        <string>Remove node from graph (links etc. not lost)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-remove.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-remove.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnReset">
+       <property name="toolTip">
+        <string>Remove node from graph (links etc. not lost) and forget its settings</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/exit.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/exit.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnClear">
+       <property name="toolTip">
+        <string>Remove all nodes from graph (links etc. not lost)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/filenew.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/filenew.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnRect">
+       <property name="toolTip">
+        <string>Node shape: rectangle</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcrect.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcrect.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnEllipse">
+       <property name="toolTip">
+        <string>Node shape: ellipse</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcoval.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcoval.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnDiamond">
+       <property name="toolTip">
+        <string>Node shape: diamond</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcdia.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcdia.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnNone">
+       <property name="toolTip">
+        <string>Node shape: text only</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcnone.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcnone.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnTextColor">
+       <property name="toolTip">
+        <string>Set the text color of the selected node</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/format-text-bold.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/format-text-bold.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnColor">
+       <property name="toolTip">
+        <string>Set the background color of the selected node</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/preferences-desktop-locale.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/preferences-desktop-locale.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnClearFormatting">
+       <property name="toolTip">
+        <string>Clear formatting</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-clear.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-clear.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
