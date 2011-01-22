@@ -36,22 +36,24 @@ def init ():
     g.plugin_signon(__name__)
 
     return True
-#@+node:bob.20110121094946.3410: ** colorize_headlines_visitor.
+#@+node:bob.20110121094946.3410: ** colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
 
     if '_bklnk' in p.v.u:
 
-        f = item.font(0)
-        f.setItalic(True)
-        f.setBold(True)
-        item.setFont(0,f)
-        item.setForeground(0, QtGui.QColor(100, 0, 0))
+        # f = item.font(0)
+        # f.setItalic(True)
+        # f.setBold(True)
+        # item.setFont(0,f)
+        # item.setForeground(0, QtGui.QColor(100, 0, 0))
         
         if 'color' in p.v.u['_bklnk']:
             item.setBackgroundColor(0, p.v.u['_bklnk']['color'])
         if 'tcolor' in p.v.u['_bklnk']:
             item.setForeground(0, p.v.u['_bklnk']['tcolor'])
-    
+            f = item.font(0)
+            f.setBold(True)
+
     raise leoPlugins.TryNext
 #@+node:bob.20110119123023.7394: ** onCreate
 def onCreate (tag, keys):
@@ -243,7 +245,12 @@ class graphcanvasController(object):
 
         self.c = c
         self.c.graphcanvasController = self
+        
+        self.selectPen = QtGui.QPen(QtGui.QColor(255,0,0))
+        self.selectPen.setWidth(2)
+        
         self.ui = graphcanvasUI(self)
+        
 
         g.registerHandler('headkey2', lambda a,b: self.update())
         g.registerHandler("select2", self.onSelect2)
@@ -257,11 +264,14 @@ class graphcanvasController(object):
     def initIvars(self):
         """initialize, called by __init__ and clear"""
 
-        self.node = {}
+        self.node = {}  # item to vnode map
         self.nodeItem = {}  # vnode to item map
         self.link = {}
         self.linkItem = {}
         self.lastNodeItem = None
+        
+        self.internal_select = False  
+        # avoid selection of a @graph node on the graph triggering onSelect2
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', pnt=None):
 
@@ -427,7 +437,6 @@ class graphcanvasController(object):
         if self.lastNodeItem == nodeItem:
             return
 
-
         #X node = self.node[nodeItem]
         #X node.u['_bklnk']['x'] = nodeItem.x()
         #X node.u['_bklnk']['y'] = nodeItem.y()
@@ -436,14 +445,14 @@ class graphcanvasController(object):
             self.lastNodeItem.bg.setPen(QtGui.QPen(Qt.NoPen))
             # self.lastNodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
 
-
         # nodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(240,200,200)))
-        nodeItem.bg.setPen(QtGui.QPen())
+        nodeItem.bg.setPen(self.selectPen)
 
         oldItem = self.lastNodeItem
         self.lastNodeItem = nodeItem  # needed for self.goto()
 
-        if self.ui.UI.chkTrack.isChecked():
+        if event and self.ui.UI.chkTrack.isChecked():
+            # event is none if this is an internal call
             self.goto()
 
         blc = getattr(self.c, 'backlinkController')
@@ -571,6 +580,7 @@ class graphcanvasController(object):
         v = self.node[self.lastNodeItem]
         p = self.c.vnode2position(v)
         if self.c.positionExists(p):
+            self.internal_select = True
             self.c.selectPosition(p)
     #@+node:bob.20110120111825.3352: *3* MY_IMPLEMENTATION
     #@+others
@@ -579,6 +589,10 @@ class graphcanvasController(object):
     def onSelect2 (self,tag,keywords):
 
         """Shows the UNL in the status line whenever a node gets selected."""
+        
+        if self.internal_select:
+            self.internal_select = False
+            return
         
         c = keywords.get("c")
         
@@ -594,6 +608,9 @@ class graphcanvasController(object):
             else:
                 x,y = new_p.v.u['_bklnk']['x'], new_p.v.u['_bklnk']['y']
                 self.ui.canvasView.centerOn(x, y)            
+
+        if c.p.v in self.nodeItem and self.ui.UI.chkTrack.isChecked():
+            self.locateNode()                
     #@+node:bob.20110121113659.3414: *4* Node Management
     #@+node:bob.20110119123023.7411: *5* locateNode
     def locateNode(self):
@@ -686,6 +703,8 @@ class graphcanvasController(object):
             del node.u['_bklnk']['color']
         if 'tcolor' in node.u['_bklnk']:
                 del node.u['_bklnk']['tcolor']
+
+        self.releaseNode(self.nodeItem[node])
     #@+node:bob.20110120233712.3407: *5* setRectangle
     def setRectangle(self):
 
@@ -697,6 +716,7 @@ class graphcanvasController(object):
             
         self.loadGraph()
         
+        self.releaseNode(self.nodeItem[node])
     #@+node:bob.20110120233712.3409: *5* setEllipse
     def setEllipse(self):
 
@@ -707,6 +727,8 @@ class graphcanvasController(object):
             node.u['_bklnk']['type'] = 1
             
         self.loadGraph()
+
+        self.releaseNode(self.nodeItem[node])
     #@+node:bob.20110120233712.3411: *5* setDiamond
     def setDiamond(self):
 
@@ -717,6 +739,8 @@ class graphcanvasController(object):
             node.u['_bklnk']['type'] = 2
             
         self.loadGraph()
+
+        self.releaseNode(self.nodeItem[node])
     #@+node:tbrown.20110122150504.1530: *5* setNone
     def setNone(self):
 
@@ -731,6 +755,8 @@ class graphcanvasController(object):
                 del node.u['_bklnk']['tcolor']
             
         self.loadGraph()
+
+        self.releaseNode(self.nodeItem[node])
     #@-others
     #@-others
 #@-others
