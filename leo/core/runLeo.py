@@ -508,6 +508,8 @@ def doPostPluginsInit(args,files,options):
 def createFrame (fileName,options):
 
     """Create a LeoFrame during Leo's startup process."""
+    
+    # g.trace('(runLeo.py)',fileName)
 
     script = options.get('script')
 

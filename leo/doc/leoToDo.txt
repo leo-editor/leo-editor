@@ -2,7 +2,6 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110110110620.5989: ** First
-#@+node:ekr.20110120114224.12563: *3* The first loaded file sets tabbed gui size
 #@+node:ekr.20110111100539.9718: *3* What to do with Terry's Scripts?
 @language python
 #@+node:ekr.20110111100539.9723: *4* docs
