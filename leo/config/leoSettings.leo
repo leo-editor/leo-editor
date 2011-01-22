@@ -3624,7 +3624,8 @@ slave-menu =
 vertical: body pane on the botton</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
-The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
+The @settings tree contains all active settings.  Settings outside this tree have no effect.
+</t>
 <t tx="ekr.20041119034357.10"></t>
 <t tx="ekr.20041119034357.11"></t>
 <t tx="ekr.20041119034357.12"></t>
@@ -7267,7 +7268,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2">cycle-focus                         = Ctrl-tab
+<t tx="ekr.20080510072134.2">cycle-focus                         = None # Ctrl-tab
 cycle-all-focus                     = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow

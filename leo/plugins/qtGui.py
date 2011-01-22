@@ -1638,8 +1638,10 @@ class DynamicWindow(QtGui.QMainWindow):
     def __init__(self,c,parent=None):
 
         '''Create Leo's main window, c.frame.top'''
+        
+        # For qttabs gui, parent is a LeoTabbedTopLevel.
 
-        # g.trace('(DynamicWindow)','parent',parent)
+        # g.trace('(DynamicWindow)',g.callers())
 
         QtGui.QMainWindow.__init__(self,parent)
 
@@ -1650,7 +1652,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         c = self.leo_c; top = c.frame.top
         self.master=master # A LeoTabbedTopLevel for tabbed windows.
-        # print('DynamicWindow.__init__ %s' % c)
+        # g.trace('(DynamicWindow)',g.callers())
 
         # Init the base class.
         ui_file_name = c.config.getString('qt_ui_file_name')
@@ -1959,7 +1961,7 @@ class DynamicWindow(QtGui.QMainWindow):
     def createContainer (self,parent):
 
         pass
-    #@+node:ekr.20090426083450.11: *6* createFrame
+    #@+node:ekr.20090426083450.11: *6* createFrame (qtGui)
     def createFrame (self,parent,name,
         hPolicy=None,vPolicy=None,
         lineWidth = 1,
@@ -1967,6 +1969,7 @@ class DynamicWindow(QtGui.QMainWindow):
         shape = QtGui.QFrame.NoFrame,
     ):
 
+        # g.trace(g.callers())
         w = QtGui.QFrame(parent)
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
@@ -2236,7 +2239,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:edward.20081129091117.1: *4* setSplitDirection (dynamicWindow)
+    #@+node:edward.20081129091117.1: *4* setSplitDirection (DynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
         vert = orientation and orientation.lower().startswith('v')
@@ -2297,6 +2300,17 @@ class DynamicWindow(QtGui.QMainWindow):
         """ Set icon visible in title bar and task bar """
         # xxx do not use 
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    #@+node:ekr.20110122055506.12567: *4* setGeometry (DynamicWindow)
+    def setGeometry (self,rect):
+        
+        # g.trace('(DynamicWindow)',rect)
+            
+        if hasattr(self,'master') and self.master:
+            # master is a LeoTabbedTopLevel
+            self.master.setLeoWindowSize(rect)
+        
+            ### Always the base-class method.
+            QtGui.QMainWindow.setGeometry(self,rect)
     #@+node:ekr.20100111143038.3727: *4* splitter event handlers
     def onSplitter1Moved (self,pos,index):
 
@@ -3453,6 +3467,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         return "<leoQtFrame: %s>" % self.title
     #@+node:ekr.20081121105001.254: *5* qtFrame.finishCreate & helpers
+    # Called from newLeoCommanderAndFrame
+
     def finishCreate (self,c):
 
         f = self ; f.c = c
@@ -4419,7 +4435,11 @@ class leoQtFrame (leoFrame.leoFrame):
     def getFocus(self):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
     def get_window_info(self):
-        rect = self.top.geometry()
+        if hasattr(self.top,'master') and self.top.master:
+            f = self.top.master
+        else:
+            f = self.top
+        rect = f.geometry()
         topLeft = rect.topLeft()
         x,y = topLeft.x(),topLeft.y()
         w,h = rect.width(),rect.height()
@@ -4437,13 +4457,14 @@ class leoQtFrame (leoFrame.leoFrame):
         pass
     def getTitle (self):
         s = g.u(self.top.windowTitle())
-        # g.trace('qtFrame',repr(s))
+        # g.trace('(qtFrame)',repr(s))
         return s
     def setTitle (self,s):
-        # g.trace('qtFrame',repr(s))
+        # g.trace('(qtFrame)',repr(s))
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
-        # g.trace(x,y,w,y,g.callers(5))
+        # self.top is a DynamicWindow.
+        # g.trace('(qtFrame)',x,y,w,h)
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-others
 #@+node:ekr.20081121105001.318: *3* class leoQtLog
@@ -6368,11 +6389,14 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             event.ignore()
         else:            
             event.accept()
+    #@+node:ekr.20110122055506.12568: *4* setLeoWindowSize (LeoTabbedTopLevel)
+    def setLeoWindowSize (self,rect):
+        
+        if not hasattr(self,'leo_inited'):
+            # g.trace('(TabbedFrameFactory)',rect)
+            self.leo_inited = True
+            self.setGeometry(rect)
     #@-others
-
-
-
-
 #@+node:ekr.20081121105001.469: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
@@ -6439,7 +6463,7 @@ class TabbedFrameFactory:
     """
 
     #@+others
-    #@+node:ville.20090803132402.3685: *4* ctor
+    #@+node:ville.20090803132402.3685: *4* ctor (TabbedFrameFactory)
     def __init__(self):
 
         # will be created when first frame appears 
@@ -6451,8 +6475,12 @@ class TabbedFrameFactory:
         self.leoFrames = {} 
         self.masterFrame = None
         self.createTabCommands()
-    #@+node:ekr.20100101104934.3658: *4* createFrame
+        
+        # g.trace('(TabbedFrameFactory)',g.callers())
+    #@+node:ekr.20100101104934.3658: *4* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
+
+        # g.trace('(TabbedFrameFactory)')
 
         c = leoFrame.c
         if self.masterFrame is None:
@@ -6468,8 +6496,6 @@ class TabbedFrameFactory:
         else:
             title = leoFrame.title
         tip = leoFrame.title
-
-        # g.trace('TabbedFrameFactory: title',title,'tip',tip)
 
         dw.setWindowTitle(tip) # 2010/1/1
         idx = tabw.addTab(dw, title)
@@ -6497,10 +6523,13 @@ class TabbedFrameFactory:
         del self.leoFrames[wdg]
         tabw.tabBar().setVisible(
             self.alwaysShowTabs or tabw.count() > 1)
-    #@+node:ville.20090803132402.3684: *4* createMaster
+    #@+node:ville.20090803132402.3684: *4* createMaster (TabbedFrameFactory)
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel()
-        mf.resize(1000, 700)
+        
+        if 1: ####
+            mf.resize(1000,1000) ### 1000, 700)
+        #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
 
