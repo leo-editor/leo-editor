@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110121075405.6319: * @file gitarchive.py
+#@+node:ville.20110122182424.6367: * @file gitarchive.py
 #@+<< docstring >>
 #@+node:ville.20110121075405.6320: ** << docstring >>
 ''' Store snapshots of outline in git
@@ -34,12 +34,11 @@ def init ():
     return ok
 #@+node:ville.20110121191106.6335: ** contfile
 def contfile(c, p):
-    #name, date, num = p.v.fileIndex
     fn = os.path.expanduser('~/.leo/dump/' + p.gnx)
 
     return fn
 #@+node:ville.20110121075405.6324: ** g.command('git-dump')
-import os, codecs, hashlib
+import os, codecs, hashlib, shutil
 
 @g.command('git-dump')
 def git_dump_f(event):
@@ -57,7 +56,7 @@ def git_dump_f(event):
             codecs.open(fname,'w', encoding='utf-8').write(p.b)
             print "wrote", fname
 
-    flatroot = os.path.expanduser('~/.leo/dump')
+    flatroot = g.os_path_finalize('~/.leo/dump')
     if not os.path.isdir(flatroot):
         g.es("Initializing git repo at " + flatroot)
         os.makedirs(flatroot)
@@ -66,6 +65,13 @@ def git_dump_f(event):
 
     assert os.path.isdir(flatroot)
 
+    comment = g.app.gui.runAskOkCancelStringDialog(c, "Checkin comment","Comment")
+    if not comment:
+        comment = "Leo dump"
+    wb = g.app.config.getString(c=None,setting='default_leo_file')
+    wb = g.os_path_finalize(wb)
+    shutil.copy2(wb, flatroot)
+    
     os.chdir(flatroot)
 
     dump_nodes()
@@ -75,6 +81,8 @@ def git_dump_f(event):
 
     #titlename = c.frame.getTitle() + '.html'
     pth, bname = os.path.split(c.mFileName)
+    
+    
 
     if pth and bname:
         dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()    
@@ -85,7 +93,7 @@ def git_dump_f(event):
     g.es("committing to " + flatroot)
 
     os.system('git add *')
-    out = os.popen('git commit -m "Leo autocommit"').read()
+    out = os.popen('git commit -m "%s"' % comment).read()
     g.es("committed")
     g.es(out)
     g.es('Outline in ' + os.path.abspath(titlename))
