@@ -319,7 +319,9 @@ class graphcanvasController(object):
     def layout(self, type_):
 
         G = pygraphviz.AGraph(strict=False,directed=True)
-        
+        G.graph_attr['rankdir']='LR'
+        G.graph_attr['ranksep']='0.125'
+
         for from_, to in self.link.values():
             G.add_edge(
                 (from_, from_.gnx),
@@ -329,12 +331,18 @@ class graphcanvasController(object):
             G.add_node( (i, i.gnx) )  
               
         G.layout(prog=type_)
-
+        
         for i in self.nodeItem:
             gn = G.get_node( (i, i.gnx) )
             x,y = map(int, gn.attr['pos'].split(','))
             i.u['_bklnk']['x'] = x
-            i.u['_bklnk']['y'] = y
+            i.u['_bklnk']['y'] = -y
+            self.nodeItem[i].setPos(x, -y)
+            self.nodeItem[i].update()
+        
+        self.update()
+        self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
+        self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), Qt.KeepAspectRatio)
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', pnt=None):
 
@@ -393,7 +401,7 @@ class graphcanvasController(object):
 
         self.update()
         
-        if len(collection) == 1:
+        if what == 'node':
             # then select it
             self.releaseNode(self.nodeItem[collection[0].v])
     #@+node:bob.20110119123023.7412: *3* loadLinked
@@ -677,7 +685,8 @@ class graphcanvasController(object):
             self.clear()
             self.loadGraph('node')
             if '_bklnk' in new_p.v.u:
-                self.loadLinked('all')
+                # self.loadLinked('all')
+                self.loadGraph('recur')
             else:
                 x,y = new_p.v.u['_bklnk']['x'], new_p.v.u['_bklnk']['y']
                 self.ui.canvasView.centerOn(x, y)            
