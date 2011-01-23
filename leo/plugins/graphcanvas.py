@@ -326,8 +326,13 @@ class graphcanvasController(object):
 
             txt.setPos(x,y)
             self.ui.canvas.addItem(txt)
+            
 
         self.update()
+        
+        if len(collection) == 1:
+            # then select it
+            self.releaseNode(self.nodeItem[collection[0].v])
     #@+node:bob.20110119123023.7412: *3* loadLinked
     def loadLinked(self, what='linked'):
 
@@ -547,7 +552,7 @@ class graphcanvasController(object):
                     ntype = i.u['_bklnk']['type']
 
             self.nodeItem[i].text.setPlainText(i.headString().replace(' ','\n'))
-            if ntype < 1:
+            if ntype < 1 or ntype == 3:
                 self.nodeItem[i].bg.setRect(-2, +2, 
                     self.nodeItem[i].text.document().size().width()+4, 
                     self.nodeItem[i].text.document().size().height()-2)
