@@ -72,13 +72,14 @@
 <v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2"
+expanded="tbrown.20090119215428.9,tbrown.20090119215428.11,tbrown.20090119215428.40,"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"
 expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1" a="E"
 expanded="bob.20110119123023.7395,bob.20110119123023.7397,bob.20110119123023.7400,bob.20110121161547.3424,bob.20110119123023.7408,bob.20110120111825.3352,bob.20110121113659.3412,bob.20110121113659.3414,bob.20110121113659.3413,"><vh>@file graphcanvas.py</vh></v>
 </v>
-<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
 <v t="ekr.20101110084839.5682"><vh>@file bzr_qcommands.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
@@ -94,7 +95,8 @@ expanded="bob.20110119123023.7395,bob.20110119123023.7397,bob.20110119123023.740
 <v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
 <v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
+<v t="tbrown.20070117104409"
+expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 </v>

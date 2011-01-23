@@ -23,6 +23,11 @@ g.assertUi('qt')
 
 from PyQt4 import QtCore, QtGui, uic
 Qt = QtCore.Qt
+
+try:
+    import pygraphviz
+except ImportError:
+    pygraphviz = None
 #@+node:bob.20110119123023.7393: ** init
 def init ():
 
@@ -119,7 +124,12 @@ class graphcanvasUI(QtGui.QWidget):
         self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), o.setEllipse)
         self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), o.setDiamond)
         self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), o.setNone)
-        
+
+        menu = QtGui.QMenu(u.btnLayout)
+        for name, func in o.layouts():
+            menu.addAction(name, func)
+        u.btnLayout.setMenu(menu)
+
     #@+node:tbrown.20110122085529.15400: *3* reset_zoom
     def reset_zoom(self):
         
@@ -141,7 +151,6 @@ class GraphicsView(QtGui.QGraphicsView):
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
         
-
         if int(event.modifiers() & Qt.ControlModifier):
             
             self.current_scale += event.delta() / 120
@@ -296,6 +305,36 @@ class graphcanvasController(object):
         
         self.internal_select = False  
         # avoid selection of a @graph node on the graph triggering onSelect2
+    #@+node:tbrown.20110122085529.15402: *3* layouts
+    def layouts(self):
+        
+        if not pygraphviz:
+            return [('install pygraphviz for layouts', lambda: None)]
+        
+        return [
+            ('neato', lambda: self.layout('neato')),
+            ('dot', lambda: self.layout('dot')),
+        ]
+    #@+node:tbrown.20110122085529.15403: *3* layout
+    def layout(self, type_):
+
+        G = pygraphviz.AGraph(strict=False,directed=True)
+        
+        for from_, to in self.link.values():
+            G.add_edge(
+                (from_, from_.gnx),
+                (to, to.gnx),
+            )
+        for i in self.nodeItem:
+            G.add_node( (i, i.gnx) )  
+              
+        G.layout(prog=type_)
+
+        for i in self.nodeItem:
+            gn = G.get_node( (i, i.gnx) )
+            x,y = map(int, gn.attr['pos'].split(','))
+            i.u['_bklnk']['x'] = x
+            i.u['_bklnk']['y'] = y
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', pnt=None):
 
