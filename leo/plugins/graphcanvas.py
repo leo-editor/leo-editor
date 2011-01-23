@@ -73,7 +73,8 @@ class graphcanvasUI(QtGui.QWidget):
         # a = QtGui.QApplication([]) # argc, argv );
 
         QtGui.QWidget.__init__(self)
-        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'GraphCanvas', 'GraphCanvas.ui')
+        uiPath = g.os_path_join(g.app.leoDir,
+            'plugins', 'GraphCanvas', 'GraphCanvas.ui')
         # uiPath = "GraphCanvas.ui"
         form_class, base_class = uic.loadUiType(uiPath)
         self.owner.c.frame.log.createTab('Graph', widget = self) 
@@ -118,6 +119,12 @@ class graphcanvasUI(QtGui.QWidget):
         self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), o.setEllipse)
         self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), o.setDiamond)
         self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), o.setNone)
+        
+    #@+node:tbrown.20110122085529.15400: *3* reset_zoom
+    def reset_zoom(self):
+        
+        self.canvasView.resetTransform()
+        self.canvasView.current_scale = 0
     #@-others
 #@+node:bob.20110119123023.7397: ** class GraphicsView
 class GraphicsView(QtGui.QGraphicsView):
@@ -125,11 +132,28 @@ class GraphicsView(QtGui.QGraphicsView):
     #@+node:bob.20110119123023.7398: *3* __init__
     def __init__(self, glue, *args, **kargs):
         self.glue = glue
+        self.current_scale = 0
         QtGui.QGraphicsView.__init__(self, *args)
     #@+node:bob.20110119123023.7399: *3* mouseDoubleClickEvent
     def mouseDoubleClickEvent(self, event):
         QtGui.QGraphicsView.mouseDoubleClickEvent(self, event)
         nn = self.glue.newNode(pnt=self.mapToScene(event.pos()))
+    #@+node:tbrown.20110122085529.15399: *3* wheelEvent
+    def wheelEvent(self, event):
+        
+
+        if int(event.modifiers() & Qt.ControlModifier):
+            
+            self.current_scale += event.delta() / 120
+            
+            scale = 1.+0.1*self.current_scale
+            
+            self.resetTransform()
+            self.scale(scale, scale)
+
+        else:
+        
+            QtGui.QGraphicsView.wheelEvent(self, event)
     #@-others
 #@+node:bob.20110119123023.7400: ** class nodeItem
 class nodeItem(QtGui.QGraphicsItemGroup):
@@ -536,9 +560,14 @@ class graphcanvasController(object):
             self.ui.canvas.removeItem(i)
 
         self.initIvars()
+        
+        self.ui.reset_zoom()
     #@+node:bob.20110119123023.7421: *3* update
     def update(self):
         """rescan name, links, extent"""
+        
+        self.ui.reset_zoom()
+        
         for i in self.linkItem:
             self.ui.canvas.removeItem(self.linkItem[i])
         self.linkItem = {}
