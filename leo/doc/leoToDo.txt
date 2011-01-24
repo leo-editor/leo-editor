@@ -2,32 +2,6 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110110110620.5989: ** First
-#@+node:ekr.20101218101041.8568: *3* Improve --gui=qttabs feature
-@nocolor-node
-
-- Ctrl-w closes tab.
-- save-all-outlines command.
-#@+node:ekr.20101218103123.5934: *3* Fix redefinition messages
-#@+node:ekr.20110111100539.9731: *3* Leo customizations
-@language rest
-
-Private email:
-http://mail.google.com/mail/#inbox/12c59d2d27380e52
-
-I've added some customizations in LEO, which can be useful. Please, see attached
-file (LEO_customizations.zip)
-
- All @file/thin headilnes are double-@.
-
-- Use an url in @image
-- Support expressions in @image
-- Support expressions in @url
-- Custom coloring of headlines
-- Relocating .leo_shadow directories - try to polish it
-
-Best Regards
-
-Bogomil
 #@+node:ekr.20110111100539.9718: *3* What to do with Terry's Scripts?
 @language python
 #@+node:ekr.20110111100539.9723: *4* docs
@@ -212,6 +186,27 @@ c.k.simulateCommand('stickynote')
 """.format(timestamp=time.asctime(), content=' '.join(sys.argv[1:]))
 pc.send(cmd)
 # print cmd
+#@+node:ekr.20101218103123.5934: *3* Fix redefinition messages
+#@+node:ekr.20110111100539.9731: *3* Leo customizations
+@language rest
+
+Private email:
+http://mail.google.com/mail/#inbox/12c59d2d27380e52
+
+I've added some customizations in LEO, which can be useful. Please, see attached
+file (LEO_customizations.zip)
+
+ All @file/thin headilnes are double-@.
+
+- Use an url in @image
+- Support expressions in @image
+- Support expressions in @url
+- Custom coloring of headlines
+- Relocating .leo_shadow directories - try to polish it
+
+Best Regards
+
+Bogomil
 #@+node:ekr.20100827114047.5895: ** Bugs
 #@+node:ekr.20101024062147.5994: *3* Minor
 #@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)

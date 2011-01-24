@@ -372,8 +372,8 @@ def scanOptions():
 
     # --gui
     gui = options.gui
-    g.app.qt_use_tabs = False
 
+    g.app.qt_use_tabs = True
     if gui:
         gui = gui.lower()
         if gui == 'qttabs':
@@ -381,6 +381,7 @@ def scanOptions():
             g.app.qt_use_tabs = True
         elif gui in ('curses','tk','qt','null'): # 'wx',
             g.app.guiArgName = gui
+            g.app.qt_use_tabs = False
         else:
             print('scanOptions: unknown gui: %s' % gui)
             g.app.guiArgName = gui = 'qt'
@@ -508,6 +509,8 @@ def doPostPluginsInit(args,files,options):
 def createFrame (fileName,options):
 
     """Create a LeoFrame during Leo's startup process."""
+    
+    # g.trace('(runLeo.py)',fileName)
 
     script = options.get('script')
 
