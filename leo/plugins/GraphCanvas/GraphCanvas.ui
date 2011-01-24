@@ -64,7 +64,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-refresh.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-refresh.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/gtk-refresh.png</normaloff>leo/plugins/GraphCanvas/gtk-refresh.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -81,7 +81,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/stock_right.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/stock_right.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/stock_right.png</normaloff>leo/plugins/GraphCanvas/stock_right.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -98,7 +98,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-find.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-find.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/edit-find.png</normaloff>leo/plugins/GraphCanvas/edit-find.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -115,7 +115,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-remove.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gtk-remove.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/gtk-remove.png</normaloff>leo/plugins/GraphCanvas/gtk-remove.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -132,7 +132,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/exit.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/exit.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/exit.png</normaloff>leo/plugins/GraphCanvas/exit.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -149,7 +149,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/filenew.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/filenew.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/filenew.png</normaloff>leo/plugins/GraphCanvas/filenew.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -173,7 +173,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcrect.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcrect.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/gcrect.png</normaloff>leo/plugins/GraphCanvas/gcrect.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -190,7 +190,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcoval.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcoval.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/gcoval.png</normaloff>leo/plugins/GraphCanvas/gcoval.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -207,7 +207,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcdia.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcdia.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/gcdia.png</normaloff>leo/plugins/GraphCanvas/gcdia.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -224,7 +224,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcnone.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/gcnone.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/gcnone.png</normaloff>leo/plugins/GraphCanvas/gcnone.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -241,7 +241,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/format-text-bold.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/format-text-bold.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/format-text-bold.png</normaloff>leo/plugins/GraphCanvas/format-text-bold.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -258,7 +258,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/preferences-desktop-locale.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/preferences-desktop-locale.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/preferences-desktop-locale.png</normaloff>leo/plugins/GraphCanvas/preferences-desktop-locale.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
@@ -275,7 +275,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-clear.png</normaloff>../../../../../../../../../../../../../../home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/GraphCanvas/edit-clear.png</iconset>
+         <normaloff>leo/plugins/GraphCanvas/edit-clear.png</normaloff>leo/plugins/GraphCanvas/edit-clear.png</iconset>
        </property>
        <property name="flat">
         <bool>false</bool>
