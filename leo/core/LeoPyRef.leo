@@ -83,12 +83,11 @@
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file leoProjects.txt</vh></v>
 </v>
-<v t="EKR.20040519090151.2" a="E"><vh>To do</vh>
+<v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
-<v t="ekr.20060207133601" a="E"
-expanded="ekr.20060824110846,ekr.20060813121814,ekr.20060227142119,EKR.20040512082621,ekr.20041228091154,ekr.20061021131443,ekr.20041022083833.1,ekr.20041022083226,ekr.20060527184335,ekr.20060213151918,ekr.20051207130144,ekr.20080807111553.1,ekr.20041228092223.4,ekr.20040908104644,ekr.20041228084143,ekr.20040123102724,ekr.20060329102951,ekr.20040329185649,ekr.20031218072017.663,ekr.20050202073944,ekr.20031218072017.673,ekr.20040105064959,ekr.20040115165036,ekr.20060228072202,"><vh>@file ../doc/leoToDoLater.txt</vh></v>
+<v t="ekr.20060207133601"><vh>@file ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
@@ -97,29 +96,28 @@ expanded="ekr.20060824110846,ekr.20060813121814,ekr.20060227142119,EKR.200405120
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 </v>
-<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810" a="E"
-expanded="ekr.20041118104831,ekr.20091002083910.6106,ekr.20080515053412.1,ekr.20060906211747,ekr.20060906211747.1,ekr.20060923202156,"><vh>@file leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
-<v t="ekr.20031218072017.3320" a="E"
-expanded="ville.20090311190405.68,"><vh>@file leoNodes.py</vh></v>
+<v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
+<v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -132,17 +130,9 @@ expanded="ville.20090311190405.68,"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
 </v>
-<v t="ekr.20101218103123.5934"><vh>Fix redefinition messages</vh></v>
-<v t="ekr.20101218103123.5935"><vh>How does g.command work for new windows??</vh></v>
-<v t="ekr.20101218101041.8568"><vh>Improve qttabs</vh></v>
-<v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
-<v t="ekr.20101218103123.5938"><vh>Fix bug 690260: g.es sends to wrong tabbed pane</vh>
-<v t="ekr.20101218103123.5939"><vh>Report</vh></v>
-</v>
-<v t="ekr.20101218103123.12446"><vh>@button hi</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
@@ -899,10 +889,6 @@ g.es('delta',delta)
 g.es('d',d)
 </t>
 <t tx="ekr.20100902154544.5872"></t>
-<t tx="ekr.20101218101041.8568">@nocolor-node
-
-- Ctrl-w closes tab.
-- save-all-outlines command.</t>
 <t tx="ekr.20101218103123.12443">table = (
     'core/leoPy.leo',
     'plugins/leoGuiPlugins.leo',
@@ -916,28 +902,6 @@ for z in table:
     ok,frame = g.openWithFileName(fn,c)
     if not ok:
         g.es('not found',z)
-</t>
-<t tx="ekr.20101218103123.12446">g.es('hi')</t>
-<t tx="ekr.20101218103123.5934"></t>
-<t tx="ekr.20101218103123.5935">@g.command('print-hi')
-def printHi():
-    g.es('hi from %s' % c.shortFileName())</t>
-<t tx="ekr.20101218103123.5938"></t>
-<t tx="ekr.20101218103123.5939">@nocolor-node
-
-I start Leo with 3 filenames, they open in tabs.
-I execute a g.es() in the leftmost file tab, it writes to the
-log pane for the file with it's tab on the right.
-
-update:
-
-Doesn't happen via ctl-b, does happen if the g.es() is in a @button.
-Kent Tenney wrote on 2010-12-14: 	#2
-
-upupdate:
-
-doing a ctl-b in the left pane corrects it, after that the @button g.es()
-targets the correct pane.
 </t>
 </tnodes>
 </leo_file>
