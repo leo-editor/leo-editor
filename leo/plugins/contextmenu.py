@@ -119,7 +119,8 @@ def refresh_rclick(c,p, menu):
 
     fname = p.anyAtFileNodeName()
 
-    if fname is None:
+    print "at file node", fname
+    if not fname:
         return
 
     typ = split[0]        
@@ -129,7 +130,7 @@ def refresh_rclick(c,p, menu):
     def refresh_rclick_cb():
         if typ.startswith('@auto'):
             c.readAtAutoNodes()
-        elif typ =='@thin':
+        elif typ =='@thin' or typ == '@file':
             c.readAtFileNodes()
         elif typ =='@shadow':
             c.readAtShadowNodes()
