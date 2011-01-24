@@ -2309,8 +2309,8 @@ class DynamicWindow(QtGui.QMainWindow):
             # master is a LeoTabbedTopLevel
             self.master.setLeoWindowSize(rect)
         
-            ### Always the base-class method.
-            QtGui.QMainWindow.setGeometry(self,rect)
+        # Always the base-class method.
+        QtGui.QMainWindow.setGeometry(self,rect)
     #@+node:ekr.20100111143038.3727: *4* splitter event handlers
     def onSplitter1Moved (self,pos,index):
 
@@ -4464,7 +4464,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         # self.top is a DynamicWindow.
-        # g.trace('(qtFrame)',x,y,w,h)
+        # g.trace('(qtFrame)',x,y,w,h,self.top)
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-others
 #@+node:ekr.20081121105001.318: *3* class leoQtLog
@@ -6393,7 +6393,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def setLeoWindowSize (self,rect):
         
         if not hasattr(self,'leo_inited'):
-            # g.trace('(TabbedFrameFactory)',rect)
+            # g.trace('(LeoTabbedTopLevel)',rect)
             self.leo_inited = True
             self.setGeometry(rect)
     #@-others
@@ -6472,7 +6472,8 @@ class TabbedFrameFactory:
         self.alwaysShowTabs = True
             # Set to true to workaround a problem
             # setting the window title when tabs are shown.
-        self.leoFrames = {} 
+        self.leoFrames = {}
+            # Keys are DynamicWindows, values are frames.
         self.masterFrame = None
         self.createTabCommands()
         
@@ -6526,9 +6527,6 @@ class TabbedFrameFactory:
     #@+node:ville.20090803132402.3684: *4* createMaster (TabbedFrameFactory)
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel()
-        
-        if 1: ####
-            mf.resize(1000,1000) ### 1000, 700)
         #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
@@ -6553,6 +6551,18 @@ class TabbedFrameFactory:
             mf.showFullScreen()
         else:
             mf.show()
+    #@+node:ekr.20110123112957.12593: *4* setTabForCommander (TabbedFrameFactory)
+    def setTabForCommander (self,c):
+        
+        tabw = self.masterFrame # a QTabWidget
+        for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
+            if dw.leo_c == c:
+                for i in range(tabw.count()):
+                    if tabw.widget(i) == dw:
+                        tabw.setCurrentIndex(i)
+                        break
+                break
+                
     #@+node:ekr.20100101104934.3660: *4* signal handlers
     def slotCloseRequest(self,idx):
         tabw = self.masterFrame
@@ -6719,6 +6729,8 @@ class leoQtGui(leoGui.leoGui):
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
+        
+        # g.trace(self.script,g.app.log)
 
         if self.script:
             log = g.app.log
