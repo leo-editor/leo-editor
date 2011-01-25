@@ -41,7 +41,7 @@ imagination ;-).
 
 ======
 
-#@+node:ekr.20110111100539.9724: *5* sn	
+#@+node:ekr.20110111100539.9724: *5* sn
 You can type(*), either in a shell window or the window manager's
 command line entry area, "sn lisa from accounting", and a node called
 "lisa from accounting" with an initial contents recording the current
@@ -187,26 +187,6 @@ c.k.simulateCommand('stickynote')
 pc.send(cmd)
 # print cmd
 #@+node:ekr.20101218103123.5934: *3* Fix redefinition messages
-#@+node:ekr.20110111100539.9731: *3* Leo customizations
-@language rest
-
-Private email:
-http://mail.google.com/mail/#inbox/12c59d2d27380e52
-
-I've added some customizations in LEO, which can be useful. Please, see attached
-file (LEO_customizations.zip)
-
- All @file/thin headilnes are double-@.
-
-- Use an url in @image
-- Support expressions in @image
-- Support expressions in @url
-- Custom coloring of headlines
-- Relocating .leo_shadow directories - try to polish it
-
-Best Regards
-
-Bogomil
 #@+node:ekr.20100827114047.5895: ** Bugs
 #@+node:ekr.20101024062147.5994: *3* Minor
 #@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
