@@ -14,7 +14,7 @@ g.assertUi('qt')
 
 from PyQt4 import QtCore, QtGui, Qt
 
-from nested_splitter import NestedSplitter
+from leo.plugins.nested_splitter import NestedSplitter
 def init ():
 
     if g.app.gui.guiName() != "qt":
