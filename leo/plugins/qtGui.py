@@ -32,14 +32,19 @@ import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.baseNativeTree as baseNativeTree
 
-import re
-import string
-
+import datetime
 import os
 import re # For colorizer
 import string
 import sys
-import datetime
+import tempfile
+
+if g.isPython3:
+    import urllib.request as urllib
+    import urllib.parse as urlparse
+else:
+    import urllib2 as urllib
+    import urlparse
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
@@ -1067,15 +1072,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         sb.setSliderPosition(pos)
     #@+node:ekr.20110125132417.18965: *6* download_image
     def url2name(self,url): 
-        return basename(urlsplit(url)[2]) 
+        return g.os_path_basename(urlparse.urlsplit(url)[2]) 
 
     def download_image(self,url): 
         localName = self.url2name(url) 
-        req = urllib2.Request(url) 
-        r = urllib2.urlopen(req) 
-        if r.info().has_key('Content-Disposition'): 
+        req = urllib.Request(url) 
+        r = urllib.urlopen(req) 
+        key = r.info().get('Content-Disposition')
+        if key:
             # If the response has Content-Disposition, we take file name from it 
-            localName = r.info()['Content-Disposition'].split('filename=')[1] 
+            localName = key.split('filename=')[1] 
             if localName[0] == '"' or localName[0] == "'": 
                localName = localName[1:-1] 
         elif r.url != url:  
@@ -1115,12 +1121,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             g.es('@image - html= ', html)
             return s
         elif s.startswith('http://'):
-            # 2011/01/25: bogomil: Download the image if starts with http
+            # 2011/01/25: bogomil: Download the image if url starts with http
             s = localName = self.download_image(s)
 
         s = s.replace('\\','/')
         s = s.strip("'").strip('"').strip()
-        s = g.os_path_expandExpression(s,c=c) # 2011/01/25: gogomil
+        s = g.os_path_expandExpression(s,c=c) # 2011/01/25: bogomil
 
         html = '''
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
