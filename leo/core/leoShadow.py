@@ -60,6 +60,7 @@ class shadowController:
         # Configuration...
         self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
         self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+        self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
 
         # Munch shadow_subdir
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
@@ -183,6 +184,19 @@ class shadowController:
 
         baseDir = x.baseDirName()
         fileDir = g.os_path_dirname(filename)
+
+        # 2011/01/26: bogomil: redirect shadow dir
+        if self.shadow_in_home_dir:
+
+           # Each .leo file has a separate shadow_cache in base dir
+           fname = "_".join([os.path.splitext(os.path.basename(c.mFileName))[0],"shadow_cache"])
+        
+           # On Windows incorporate the drive letter to the private file path
+           if os.name == "nt":
+               fileDir = fileDir.replace(':','%')
+        
+           # build the chache path as a subdir of the base dir            
+           fileDir = "/".join([baseDir, fname, fileDir])
 
         return baseDir and c.os_path_finalize_join(
                 baseDir,
