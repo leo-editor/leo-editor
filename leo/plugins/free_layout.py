@@ -1,3 +1,5 @@
+#@+leo-ver=5-thin
+#@+node:tbrown.20110125111321.5399: * @file free_layout.py
 """Adds flexible panel layout through context menus on the handles between panels.
 Requires Qt.
 """
@@ -91,3 +93,4 @@ def onCreate (tag, keys):
     # if the log tab panel is removed, move it back to the top splitter
     logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
     logWidget._is_permanent = True
+#@-leo
