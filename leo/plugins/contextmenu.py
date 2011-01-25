@@ -119,7 +119,7 @@ def refresh_rclick(c,p, menu):
 
     fname = p.anyAtFileNodeName()
 
-    print "at file node", fname
+    g.trace("at file node",fname)
     if not fname:
         return
 
