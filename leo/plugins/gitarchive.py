@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110122182424.6367: * @file gitarchive.py
+#@+node:ekr.20110125103904.12504: * @file gitarchive.py
 #@+<< docstring >>
 #@+node:ville.20110121075405.6320: ** << docstring >>
 ''' Store snapshots of outline in git
@@ -54,7 +54,7 @@ def git_dump_f(event):
             hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
             fname = gnx
             codecs.open(fname,'w', encoding='utf-8').write(p.b)
-            print "wrote", fname
+            print("wrote",fname)
 
     flatroot = g.os_path_finalize('~/.leo/dump')
     if not os.path.isdir(flatroot):
@@ -107,7 +107,7 @@ def git_log_f(event):
     os.chdir
 
     inf = contfile(c,p)
-    print "f", inf
+    print("f", inf)
     os.system("gitk %s" % inf)
 #@-others
 #@-leo
