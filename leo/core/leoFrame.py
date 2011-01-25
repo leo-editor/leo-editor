@@ -2384,6 +2384,8 @@ class leoTree:
 
             g.funcToMethod(f,leoNodes.position)
     #@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+    # Several plugins handle url's, especially UNL.py.
+
     def OnIconDoubleClick (self,p):
 
         # Note: "icondclick" hooks handled by vnode callback routine.
