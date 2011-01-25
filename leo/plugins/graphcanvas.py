@@ -334,7 +334,7 @@ class graphcanvasController(object):
         
         for i in self.nodeItem:
             gn = G.get_node( (i, i.gnx) )
-            x,y = map(int, gn.attr['pos'].split(','))
+            x,y = map(float, gn.attr['pos'].split(','))
             i.u['_bklnk']['x'] = x
             i.u['_bklnk']['y'] = -y
             self.nodeItem[i].setPos(x, -y)

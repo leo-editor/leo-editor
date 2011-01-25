@@ -461,7 +461,7 @@ def scanOptions():
         'windowFlag':windowFlag,
         'windowSize':windowSize,
     }
-#@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers
+#@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers (runLeo.py)
 def doPostPluginsInit(args,files,options):
 
     '''Return True if the frame was created properly.'''
@@ -473,20 +473,31 @@ def doPostPluginsInit(args,files,options):
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
 
     # Create the main frame.  Show it and all queued messages.
-    c,fileName = None,None
+    c,c1,fileName = None,None,None
     for fileName in files:
         c,frame = createFrame(fileName,options)
-        if not frame:
+        if frame:
+            if not c1: c1 = c
+        else:
             g.trace('createFrame failed',repr(fileName))
             return False
-
+          
+    # Put the focus in the first-opened file.  
     if not c:
         c,frame = createFrame(None,options)
+        c1 = c
         if c and frame:
             fileName = c.fileName()
         else:
             g.trace('createFrame failed 2')
             return False
+            
+    # For qttabs gui, select the first-loaded tab.
+    if hasattr(g.app.gui,'frameFactory'):
+        factory = g.app.gui.frameFactory
+        if factory and hasattr(factory,'setTabForCommander'):
+            c = c1
+            factory.setTabForCommander(c)
 
     # Do the final inits.
     c.setLog() # 2010/10/20

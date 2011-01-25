@@ -108,9 +108,9 @@ def match_at_language (self,s,i):
 
 For --gui==qttabs:
     
-c.frame.top        is a DynamicWindow
-c.frame.top.parent is a TabbedFrameFactory
-c.frame.top.master is a LeoTabbedTopLevel
+c.frame.top             is a DynamicWindow
+c.frame.top.master      is a LeoTabbedTopLevel
+g.app.gui.frameFactory  is a TabbedFrameFactory
 #@+node:ville.20090804182114.8400: *4* class LeoTabbedTopLevel (QtGui.QTabWidget)
 class LeoTabbedTopLevel(QtGui.QTabWidget):
     """ Toplevel frame for tabbed ui """
@@ -164,7 +164,7 @@ def closeEvent(self, event):
 def setLeoWindowSize (self,rect):
     
     if not hasattr(self,'leo_inited'):
-        # g.trace('(TabbedFrameFactory)',rect)
+        # g.trace('(LeoTabbedTopLevel)',rect)
         self.leo_inited = True
         self.setGeometry(rect)
 #@+node:ville.20090803130409.3685: *4* class TabbedFrameFactory
@@ -185,7 +185,8 @@ def __init__(self):
     self.alwaysShowTabs = True
         # Set to true to workaround a problem
         # setting the window title when tabs are shown.
-    self.leoFrames = {} 
+    self.leoFrames = {}
+        # Keys are DynamicWindows, values are frames.
     self.masterFrame = None
     self.createTabCommands()
     
@@ -239,9 +240,6 @@ def deleteFrame(self, wdg):
 #@+node:ville.20090803132402.3684: *5* createMaster (TabbedFrameFactory)
 def createMaster(self):
     mf = self.masterFrame = LeoTabbedTopLevel()
-    
-    if 1: ####
-        mf.resize(1000,1000) ### 1000, 700)
     #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
     g.app.gui.attachLeoIcon(mf)
     tabbar = mf.tabBar()
@@ -266,6 +264,18 @@ def createMaster(self):
         mf.showFullScreen()
     else:
         mf.show()
+#@+node:ekr.20110123112957.12593: *5* setTabForCommander (TabbedFrameFactory)
+def setTabForCommander (self,c):
+    
+    tabw = self.masterFrame # a QTabWidget
+    for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
+        if dw.leo_c == c:
+            for i in range(tabw.count()):
+                if tabw.widget(i) == dw:
+                    tabw.setCurrentIndex(i)
+                    break
+            break
+            
 #@+node:ekr.20100101104934.3660: *5* signal handlers
 def slotCloseRequest(self,idx):
     tabw = self.masterFrame
@@ -1046,8 +1056,8 @@ def setGeometry (self,rect):
         # master is a LeoTabbedTopLevel
         self.master.setLeoWindowSize(rect)
     
-        ### Always the base-class method.
-        QtGui.QMainWindow.setGeometry(self,rect)
+    # Always the base-class method.
+    QtGui.QMainWindow.setGeometry(self,rect)
 #@+node:ekr.20100111143038.3727: *5* splitter event handlers
 def onSplitter1Moved (self,pos,index):
 
@@ -1102,7 +1112,8 @@ def __init__(self):
     self.alwaysShowTabs = True
         # Set to true to workaround a problem
         # setting the window title when tabs are shown.
-    self.leoFrames = {} 
+    self.leoFrames = {}
+        # Keys are DynamicWindows, values are frames.
     self.masterFrame = None
     self.createTabCommands()
     
@@ -1307,14 +1318,11 @@ def setTitle (self,s):
     self.top.setWindowTitle(s)
 def setTopGeometry(self,w,h,x,y,adjustSize=True):
     # self.top is a DynamicWindow.
-    # g.trace('(qtFrame)',x,y,w,h)
+    # g.trace('(qtFrame)',x,y,w,h,self.top)
     self.top.setGeometry(QtCore.QRect(x,y,w,h))
 #@+node:ville.20090803132402.3684: *5* createMaster (TabbedFrameFactory)
 def createMaster(self):
     mf = self.masterFrame = LeoTabbedTopLevel()
-    
-    if 1: ####
-        mf.resize(1000,1000) ### 1000, 700)
     #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
     g.app.gui.attachLeoIcon(mf)
     tabbar = mf.tabBar()
@@ -1359,13 +1367,13 @@ def setGeometry (self,rect):
         # master is a LeoTabbedTopLevel
         self.master.setLeoWindowSize(rect)
     
-        ### Always the base-class method.
-        QtGui.QMainWindow.setGeometry(self,rect)
+    # Always the base-class method.
+    QtGui.QMainWindow.setGeometry(self,rect)
 #@+node:ekr.20110122055506.12568: *5* setLeoWindowSize (LeoTabbedTopLevel)
 def setLeoWindowSize (self,rect):
     
     if not hasattr(self,'leo_inited'):
-        # g.trace('(TabbedFrameFactory)',rect)
+        # g.trace('(LeoTabbedTopLevel)',rect)
         self.leo_inited = True
         self.setGeometry(rect)
 #@-all
