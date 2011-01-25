@@ -201,20 +201,12 @@ def onUrl1 (tag,keywords):
 #   http://localhost/MySiteUnderDevelopment/index.html
 #   file://home/me/todolist.html
 #@@c
-    if trace: g.trace(url)
+    if trace: logUrl(urlTuple)
 
     try:
         try:
             urlTuple = urlparse.urlsplit(url)
-            if trace:
-                #@+<< log url-stuff >>
-                #@+node:rogererens.20041125015212: *3* <<log url-stuff>>
-                g.trace("scheme  : " + urlTuple[0])
-                g.trace("network : " + urlTuple[1])
-                g.trace("path    : " + urlTuple[2])
-                g.trace("query   : " + urlTuple[3])
-                g.trace("fragment: " + urlTuple[4])
-                #@-<< log url-stuff >>
+            if trace: logUrl(ulrTuple)
         except:
             g.es("exception interpreting the url " + url)
             g.es_exception()
@@ -228,8 +220,12 @@ def onUrl1 (tag,keywords):
             if urlTuple[2].endswith(".leo"):
                 if hasattr(c.frame.top, 'update_idletasks'):
                     # this is Tk only - TNB
-                    c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
+                    c.frame.top.update_idletasks()
+                        # Clear remaining events, so they don't interfere.
                 filename = os.path.expanduser(urlTuple[2])
+                filename = g.os_path_expandExpression(filename,c=c)
+                    # 2011/01/25: bogomil
+    
                 if not os.path.isabs(filename):
                     filename = os.path.normpath(os.path.join(c.getNodePath(p),filename))
 
@@ -279,6 +275,14 @@ def onUrl1 (tag,keywords):
     except:
         g.es("exception opening " + url)
         g.es_exception()
+#@+node:rogererens.20041125015212: *3* logUrl
+def logUrl(urlTuple):
+
+    g.trace("scheme  : " + urlTuple[0])
+    g.trace("network : " + urlTuple[1])
+    g.trace("path    : " + urlTuple[2])
+    g.trace("query   : " + urlTuple[3])
+    g.trace("fragment: " + urlTuple[4])
 #@+node:rogererens.20041013084119: ** onSelect2
 def onSelect2 (tag,keywords):
 
