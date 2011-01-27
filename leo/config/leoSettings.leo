@@ -1978,7 +1978,7 @@ enter-tree-command-line-mode      ! tree = colon
 full-command                      = Ctrl-colon      #Enter Leo's command mode
 
 #undo/redo commands (vim commands using multiple Leo commands will need multiple undo commands)
-undo                              = u               #Undo last command
+undo                              ! body = u        #Undo last command
 enter-tree-undo-mode              ! tree = u
 redo                              ! body = Ctrl-r   #Re-do undone command
 enter-tree-redo-mode              ! tree = Ctrl-r

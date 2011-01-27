@@ -1651,8 +1651,10 @@ class keyHandlerClass:
 
         trace = False and not g.unitTesting
         k = self ; c = k.c
+        
+        if shortcut and shortcut.lower().startswith('key'):
+            g.trace(pane,shortcut,commandName)
 
-        # g.trace(pane,shortcut,commandName)
         if not shortcut:
             # g.trace('No shortcut for %s' % commandName)
             return False
@@ -1680,10 +1682,11 @@ class keyHandlerClass:
                     if b2.commandName != commandName and pane in ('button','all',b2.pane)
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
-                    shortcut = c.k.prettyPrintKey(shortcut)
-                        # 2010/11/16: a significant bug fix.
+                        
                     g.es_print ('redefining shortcut %s from %s to %s in %s' % (
-                        shortcut,
+                        c.k.prettyPrintKey(shortcut),
+                            # 2010/11/16: a significant bug fix.
+                            # 2011/01/26: use the prettyPrintKey only for the message!
                         g.choose(pane=='button',z,commandName),
                         g.choose(pane=='button',commandName,z),
                         pane),color='red')
@@ -1896,12 +1899,13 @@ class keyHandlerClass:
 
         '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
 
+        trace = True and not g.unitTesting
         k = self ; c = k.c ; f = c.frame
 
         bindStroke = k.tkbindingFromStroke(stroke)
 
-        # if stroke.lower()=='ctrl+v':
-            # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
+        if stroke.lower().startswith('key'):
+            g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),g.callers(5))
 
         if w:
             widgets = [w]
@@ -4020,6 +4024,7 @@ class keyHandlerClass:
                         s = prev + 'Shift+' + last
                 elif last.islower():
                     if not prev and not brief:
+                        # g.trace('*'*10,s,g.callers())
                         s = 'Key+' + last.upper()
                     else:
                         s = prev + last.upper()

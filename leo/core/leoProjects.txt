@@ -4157,7 +4157,7 @@ def OnIconDoubleClick (self,p):
     s = p.h.strip()
     if g.match_word(s,0,"@url"): 
         if p.b.strip():
-            lines = p.b.split('\n')
+            lines = p.b.split('\n',1)
             url = lines and lines[0].strip() or ''
         else:
             url = s[4:].strip()
