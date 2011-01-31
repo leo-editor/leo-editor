@@ -175,7 +175,14 @@ class quickMove(object):
                 if which:
                     which = " "+which.title()+" Child"
                 self.imps.append((func, fname, long+" "+short+which+" Button"))
-
+                cmdname = 'quickmove_'+long+" "+short+which
+                cmdname = cmdname.strip().lower().replace(' ', '_')
+                # tried to use g.command() but global commands all use the same c
+                # so register only at the c level, not g level
+                # g.command(cmdname)(func)
+                c.k.registerCommand(cmdname, shortcut = None, func = lambda e:func(),
+                    pane='all',verbose=False)        
+                
         self.c = c
 
         c.quickMove = self
@@ -227,7 +234,8 @@ class quickMove(object):
 
         '''Add a button that creates a target for future moves.'''
 
-        c = self.c ; p = c.p
+        c = self.c
+        p = c.p
         if v is None:
             v = p.v
         sc = scriptingController(c)
