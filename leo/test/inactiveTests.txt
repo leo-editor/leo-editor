@@ -6159,5 +6159,27 @@ assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
+#@+node:ekr.20100225094004.5405: *4* @@test loading .leo file with @file nodes
+# test/at-file-test.leo contains tnodeList.
+# test/at-file-test.py contains file-like sentinels.
+g.app.unitTestDict={}
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-file-test.leo')
+ok,frame = g.openWithFileName(fn,c)
+assert frame,'no frame'
+try:
+    ok = False
+    c2 = frame.c
+    assert c2.changed,'not changed'
+    p2 = g.findNodeAnywhere(c2,'@file at-file-test.py')
+    assert p2,'no p2'
+    assert p2.isDirty(),'not dirty'
+    assert g.app.unitTestDict.get('read-convert'),'not converted'
+    ok = True
+finally:
+    if True: # and ok:
+        # Close the frame without prompt.
+        g.app.destroyWindow(frame)
+        c.setLog()
+        c.bodyWantsFocus()
 #@-all
 #@-leo

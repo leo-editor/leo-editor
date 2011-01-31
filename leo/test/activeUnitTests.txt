@@ -9790,28 +9790,6 @@ for v,archivedPosition in table:
 #@+node:ekr.20080806072412.5: *6* grandChild 2
 #@+node:ekr.20080806080425.3: *7* greatGrandChild21
 #@+node:ekr.20080806080425.4: *7* greatGrandChild22
-#@+node:ekr.20100225094004.5405: *4* @test loading .leo file with @file nodes
-# test/at-file-test.leo contains tnodeList.
-# test/at-file-test.py contains file-like sentinels.
-g.app.unitTestDict={}
-fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-file-test.leo')
-ok,frame = g.openWithFileName(fn,c)
-assert frame,'no frame'
-try:
-    ok = False
-    c2 = frame.c
-    assert c2.changed,'not changed'
-    p2 = g.findNodeAnywhere(c2,'@file at-file-test.py')
-    assert p2,'no p2'
-    assert p2.isDirty(),'not dirty'
-    assert g.app.unitTestDict.get('read-convert'),'not converted'
-    ok = True
-finally:
-    if True: # and ok:
-        # Close the frame without prompt.
-        g.app.destroyWindow(frame)
-        c.setLog()
-        c.bodyWantsFocus()
 #@+node:ekr.20080805105541.1: *4* @test p.archivedPosition
 val = p.archivedPosition(root_p=p)
 assert val == [0],'expected %s, got %s' % ([0],val)

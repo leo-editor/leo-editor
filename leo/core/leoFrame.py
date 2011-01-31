@@ -2384,6 +2384,8 @@ class leoTree:
 
             g.funcToMethod(f,leoNodes.position)
     #@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+    # Several plugins handle url's, especially UNL.py.
+
     def OnIconDoubleClick (self,p):
 
         # Note: "icondclick" hooks handled by vnode callback routine.
@@ -2392,7 +2394,7 @@ class leoTree:
         s = p.h.strip()
         if g.match_word(s,0,"@url"): 
             if p.b.strip():
-                lines = p.b.split('\n')
+                lines = p.b.split('\n',1)
                 url = lines and lines[0].strip() or ''
             else:
                 url = s[4:].strip()

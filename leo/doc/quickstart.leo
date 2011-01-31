@@ -67,7 +67,7 @@
 </v>
 </v>
 <v t="ville.20090701184416.1554"><vh>reStructuredText (@auto-rst)</vh>
-<v t="ville.20090701184416.1555" a="E"><vh>@path ~</vh>
+<v t="ville.20090701184416.1555"><vh>@path ~</vh>
 <v t="ville.20090701184416.1556"><vh>@@auto-rst myfile_rst.txt</vh>
 <v t="ville.20090701184416.1557"><vh>Main heading</vh>
 <v t="ville.20090701184416.1558"><vh>subheading 1</vh></v>
@@ -220,9 +220,9 @@ some of the commands from the Outline menu:
   commands move the currently selected node, along with all
   its descendants.
 
-- The ``Promote`` (``Ctrl+}``) command makes all the
+- The ``Promote`` (``Ctrl+{``) command makes all the
   children of a headline siblings of the headline. The
-  ``Demote`` (``Ctrl+{``) command makes all following
+  ``Demote`` (``Ctrl+}``) command makes all following
   siblings_ of a headline children of the headline.
 
 - Move around the tree and expand/collapse nodes by pressing
@@ -370,7 +370,7 @@ just remove the first @ character from @@auto-rst and save,
 opening the external file afterwards.
 </t>
 <t tx="ville.20090701184416.1555"></t>
-<t tx="ville.20090701184416.1556" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e">@language rest
+<t tx="ville.20090701184416.1556" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e65733171036802752e">@language rest
 @tabwidth -4
 @others
 

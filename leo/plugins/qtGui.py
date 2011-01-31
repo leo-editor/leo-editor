@@ -32,14 +32,19 @@ import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.baseNativeTree as baseNativeTree
 
-import re
-import string
-
+import datetime
 import os
 import re # For colorizer
 import string
 import sys
-import datetime
+import tempfile
+
+if g.isPython3:
+    import urllib.request as urllib
+    import urllib.parse as urlparse
+else:
+    import urllib2 as urllib
+    import urlparse
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
@@ -1029,7 +1034,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def seeInsertPoint (self):
 
         self.widget.ensureCursorVisible()
-    #@+node:ekr.20081121105001.587: *5* setAllText (leoQTextEditWidget) & helper
+    #@+node:ekr.20110125132417.18964: *5* setAllText (leoQTextEditWidget) & helper
     def setAllText(self,s,insert=None,new_p=None):
 
         '''Set the text of the widget.
@@ -1061,7 +1066,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 w.setHtml(s)
                 w.setReadOnly(True)
             elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
-                s2 = self.urlToImageHtml(new_p,s)
+                s2 = self.urlToImageHtml(c,new_p,s)
                 w.setReadOnly(False)
                 w.setHtml(s2)
                 w.setReadOnly(True)
@@ -1075,8 +1080,33 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
-    #@+node:ekr.20091117092146.3671: *6* urlToImageHtml
-    def urlToImageHtml (self,p,s):
+    #@+node:ekr.20110125132417.18965: *6* download_image
+    def url2name(self,url): 
+        return g.os_path_basename(urlparse.urlsplit(url)[2]) 
+
+    def download_image(self,url): 
+        localName = self.url2name(url) 
+        req = urllib.Request(url) 
+        r = urllib.urlopen(req) 
+        key = r.info().get('Content-Disposition')
+        if key:
+            # If the response has Content-Disposition, we take file name from it 
+            localName = key.split('filename=')[1] 
+            if localName[0] == '"' or localName[0] == "'": 
+               localName = localName[1:-1] 
+        elif r.url != url:  
+            # if we were redirected, the real file name we take from the final URL 
+            localName = self.url2name(r.url) 
+
+        localName = os.path.join(tempfile.gettempdir(), localName)
+
+        f = open(localName, 'wb') 
+        f.write(r.read()) 
+        f.close() 
+
+        return localName
+    #@+node:ekr.20110125132417.18966: *6* urlToImageHtml
+    def urlToImageHtml (self,c,p,s):
 
         '''Create html that will display an image whose url is in s or p.h.'''
 
@@ -1096,9 +1126,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             else:
                 g.es('not found',s2)
                 return s # Don't render the image.
+        elif s.endswith('.html') or s.endswith('.htm'):
+            s = open(s).read()
+            g.es('@image - html= ', html)
+            return s
+        elif s.startswith('http://'):
+            # 2011/01/25: bogomil: Download the image if url starts with http
+            s = localName = self.download_image(s)
 
         s = s.replace('\\','/')
         s = s.strip("'").strip('"').strip()
+        s = g.os_path_expandExpression(s,c=c) # 2011/01/25: bogomil
 
         html = '''
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

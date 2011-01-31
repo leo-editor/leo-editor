@@ -1978,7 +1978,7 @@ enter-tree-command-line-mode      ! tree = colon
 full-command                      = Ctrl-colon      #Enter Leo's command mode
 
 #undo/redo commands (vim commands using multiple Leo commands will need multiple undo commands)
-undo                              = u               #Undo last command
+undo                              ! body = u        #Undo last command
 enter-tree-undo-mode              ! tree = u
 redo                              ! body = Ctrl-r   #Re-do undone command
 enter-tree-redo-mode              ! tree = Ctrl-r
@@ -4892,6 +4892,7 @@ insert-file                         = None
 insert-headline-time                = None         # Removed Shift-Ctrl-H: not useful enough.
 insert-newline                      = Control-o
 insert-node                         = Ctrl-I
+insert-node                         = Insert
 insert-parentheses                  = Alt-parenleft
 insert-register                     = None
 inverse-add-global-abbrev           = None
@@ -6243,6 +6244,7 @@ extract-names               = Shift-Ctrl-N
 extract-python-method       = None
 extract-section             = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection
 goto-next-clone             = Alt-N
+insert-child                = Ctrl-Insert
 insert-node                 = Ctrl-I
 insert-node                 = Insert
 mark                        = Ctrl-M
