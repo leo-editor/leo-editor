@@ -1085,9 +1085,31 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return g.os_path_basename(urlparse.urlsplit(url)[2]) 
 
     def download_image(self,url): 
+        proxy_support = urllib.ProxyHandler({})
+        no_proxy_opener = urllib.build_opener(proxy_support)
+        urllib.install_opener(no_proxy_opener)
+
         localName = self.url2name(url) 
         req = urllib.Request(url) 
-        r = urllib.urlopen(req) 
+        
+        try:
+            r = urllib.urlopen(req)
+        except IOError, e1:
+            proxy_opener = urllib.build_opener()
+            urllib.install_opener(proxy_opener)
+            
+            try:
+                r = urllib.urlopen(req)
+            except IOError, e3:
+                if hasattr(e3, 'reason'):
+                    print 'Failed to reach a server through default proxy.'
+                    print 'Reason: ', e3.reason
+                elif hasattr(e3, 'code'):
+                    print 'The server couldn\'t fulfill the request.'
+                    print 'Error code: ', e3.code
+                    
+                return ""
+                    
         key = r.info().get('Content-Disposition')
         if key:
             # If the response has Content-Disposition, we take file name from it 
