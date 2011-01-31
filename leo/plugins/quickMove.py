@@ -253,7 +253,9 @@ class quickMove(object):
                 g.es('Move to button parent not found, placing at top level')
                 parent = None
 
-        text = txt + ":" + v.h if txt else v.h
+        header = v.anyAtFileNodeName() or v.h  # drop @auto etc.
+
+        text = txt + ":" + header if txt else header
         # createButton truncates text.  
 
         if parent and g.app.gui.guiName() == "qt":
