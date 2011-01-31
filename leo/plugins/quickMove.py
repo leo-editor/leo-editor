@@ -175,6 +175,9 @@ class quickMove(object):
                 if which:
                     which = " "+which.title()+" Child"
                 self.imps.append((func, fname, long+" "+short+which+" Button"))
+                cmdname = 'quickmove_'+long+" "+short+which
+                cmdname = cmdname.strip().lower().replace(' ', '_')
+                g.command(cmdname)(lambda event: func())
 
         self.c = c
 
