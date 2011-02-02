@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20081121105001.188: * @file qtGui.py
+#@+node:bob.20110130191621.30757: * @file ../plugins/qtGui.py
 #@@first
 
 '''qt gui plugin.'''
@@ -1093,7 +1093,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if hasattr(eh, 'reason'):
                 g.trace('HTTP reason: ', eh.reason)
                 g.trace('Reason erno: ', eh.reason.errno)
-                return ''
+            return ''
 
         except urllib.URLError as eu:
             if hasattr(eu, 'reason') and eu.reason.errno != 11001:
@@ -1110,7 +1110,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 if hasattr(eh, 'reason'):
                     g.trace('HTTP reason: ', eh.reason)
                     g.trace('Reason erno: ', eh.reason.errno)
-                    return ''
+                return ''
         
             except IOError as eu:
                 if hasattr(eu, 'reason'):
@@ -1218,17 +1218,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     ''' % (s, descr)
 
         return html
-    #@+node:ekr.20081121105001.588: *5* setInsertPoint
-    def setInsertPoint(self,i):
-
-        w = self.widget
-
-        s = w.toPlainText()
-        i = self.toPythonIndex(i)
-        i = max(0,min(i,len(s)))
-        cursor = w.textCursor()
-        cursor.setPosition(i)
-        w.setTextCursor(cursor)
     #@+node:ekr.20081121105001.589: *5* setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
@@ -1697,6 +1686,17 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         pass
+#@+node:ekr.20081121105001.588: *3* setInsertPoint
+def setInsertPoint(self,i):
+
+    w = self.widget
+
+    s = w.toPlainText()
+    i = self.toPythonIndex(i)
+    i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+    cursor.setPosition(i)
+    w.setTextCursor(cursor)
 #@-others
 #@-<< define text widget classes >>
 
