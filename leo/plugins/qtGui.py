@@ -1145,9 +1145,32 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         '''Create html that will display an image whose url is in s or p.h.'''
 
+        # Try to exract the path from the first body line
+        if s.strip():
+            lst = s.strip().split('\n',1)
+            
+            if len(lst) < 2:
+                html = self.urlToImageHtmlHelper (c,p,lst[0].strip())
+            else:
+                html = self.urlToImageHtmlHelper (c,p,lst[0].strip(),lst[1].strip())
+            if html != None:
+                return html
+
+        # if the previous try  does not return a valid path
+        # try to exract the path from the headline
+        assert p.h.startswith('@image')
         if not s.strip():
-            assert p.h.startswith('@image')
-            s = p.h[6:].strip()
+            html = self.urlToImageHtmlHelper (c,p,p.h[6:].strip())
+        else:
+            html = self.urlToImageHtmlHelper (c,p,p.h[6:].strip(),s)
+        
+        return html
+
+    def urlToImageHtmlHelper (self,c,p,s,descr=''):
+
+        '''Create html that will display an image whose url is in s or p.h.
+          Returns None if it can not extract the valid path
+        '''
 
         if s.startswith('file://'):
             s2 = s[7:]
@@ -1160,10 +1183,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                     # return s
             else:
                 g.es('not found',s2)
-                return s # Don't render the image.
+                #return s # Don't render the image.
+                return None
         elif s.endswith('.html') or s.endswith('.htm'):
             s = open(s).read()
-            g.es('@image - html= ', html)
+            #g.es('@image - html= ', html)
             return s
         elif s.startswith('http://'):
             # 2011/01/25: bogomil: Download the image if url starts with http
@@ -1171,7 +1195,15 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         s = s.replace('\\','/')
         s = s.strip("'").strip('"').strip()
+        s1 = s
         s = g.os_path_expandExpression(s,c=c) # 2011/01/25: bogomil
+        if s1 == s:
+            s2 = '/'.join([c.getNodePath(p),s])
+            if g.os_path_exists(s2):
+                s = s2
+        
+        if not g.os_path_exists(s):
+            return None
 
         html = '''
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -1179,9 +1211,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     <head></head>
     <body bgcolor="#fffbdc">
     <img src="%s">
+    <br/>
+    <p>%s</p>
     </body>
     </html>
-    ''' % (s)
+    ''' % (s, descr)
 
         return html
     #@+node:ekr.20081121105001.588: *5* setInsertPoint
