@@ -1084,19 +1084,19 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         
         try:
             r = urllib.urlopen(req)
-        except IOError, e1:
+        except IOError as e1:
             proxy_opener = urllib.build_opener()
             urllib.install_opener(proxy_opener)
             
             try:
                 r = urllib.urlopen(req)
-            except IOError, e3:
+            except IOError as e3:
                 if hasattr(e3, 'reason'):
-                    print 'Failed to reach a server through default proxy.'
-                    print 'Reason: ', e3.reason
+                    g.trace('Failed to reach a server through default proxy.')
+                    g.trace('Reason: ', e3.reason)
                 elif hasattr(e3, 'code'):
-                    print 'The server couldn\'t fulfill the request.'
-                    print 'Error code: ', e3.code
+                    g.trace('The server couldn\'t fulfill the request.')
+                    g.trace('Error code: ', e3.code)
                     
                 return ""
                     
