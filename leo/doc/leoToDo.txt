@@ -1,8 +1,195 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110125142807.17267: ** First
+#@+node:ekr.20110201125110.12553: ** Minor/easy
+#@+node:ekr.20110111100539.9718: *3* What to do with Terry's Scripts?
+@language python
+#@+node:ekr.20110111100539.9723: *4* docs
+@language rest
+
+Two use cases spring to mind:
+
+Leo is already running (somewhere on my desktop) with 2-3 leo files loaded in
+tabs. I'm working in a console, and I want to edit a file in the current
+directory: `led foo.py` causes the running leo to create '@edit foo.py' and pop
+to the front with it loaded. Vs. finding the running version of leo, then
+navigating through the open file dialog to the directory I'm already in in the
+shell window.
+
+And of course with the new sticknotes plugin, set up a window manager hotkey to
+pop open a new stickynote from the running leo to jot something down.
+
+======
+
+Since I'm making it a two-way protocol (you can execute scripts in leo, and get
+results back), any kind of command line application will be possible. Something
+like having leo operations in shell pipeline or shell scripts will make sense.
+
+e.g. you could do
+
+make | leopaste "compilation results for tuesday"
+
+Or
+
+leocat | grep "frobbo"
+
+which could allow you to navigate around leo outline and press some
+kind of "paste" button to dump the current node to stdout.
+
+These are somewhat psychedelic for now, but lots of Leo is about
+imagination ;-).
+
+======
+
+#@+node:ekr.20110111100539.9724: *5* sn
+You can type(*), either in a shell window or the window manager's
+command line entry area, "sn lisa from accounting", and a node called
+"lisa from accounting" with an initial contents recording the current
+time is created at the top of the leo commander which started the
+server.  A stickynote window for editing that node pops up and becomes
+active.  If you just type "sn" a default node name of the current time
+is used.  Also a read-only attribute is set so the created date is
+shown if you're running the edit_attribs.py plugin ;-)
+
+(*) assuming you call the script 'sn' and put it on your path.
+#@+node:ekr.20110111100539.9725: *5* led
+Here is a quick hack at a script to edit (or create and edit) a file in leo
+from the command line.
+
+ - note the ugly sys.path.append, you don't need that line if you have
+  leo installed, but I only run it from bzr
+
+ - it attempts to find a previous editing of the file in leo, but it
+  could easily miss it leading you to have multiple edits of the same
+  file in leo, take care, or delete the @edit node when you're done
+  editing
+
+I've wanted to be able to pop up a file in leo like this for ages.  Now
+this script, called 'led' and made executable and placed on the path,
+will replace 'e', my emacs invocation script.
+
+...which is interesting I guess, that what was keeping me from
+replacing emacs almost completely with leo is not leo itself, but how
+leo's invoked to edit a simple file from the command line.
+
+Apart from nxml-mode, emacs's validating xml editing mode, I can't
+think what I'll use emacs for now.
+#@+node:ekr.20110111100539.9726: *5* led 2
+It's probably of little benefit to people who work with mouse, menus,
+and icons all the time.
+
+But if you do everything from the command line (i.e. your OS's shell),
+then it makes moving things into leo much smoother.
+
+Suppose I've run leo and checked my todo items for the day, and now
+leo's buried under some other window and I'm working in the shell in
+some directory I've just created where I've just unzipped something and
+now I want to edit a file that was in the .zip.
+
+I can either
+ - find the leo window
+ - insert a node
+ - active the open file dialog
+ - navigate to the directory containing this file
+ - select the file
+ - and finally do the editing I want to do
+or, with Ville's communication to the running leo
+ - enter on the command line `led foo.txt`
+ - and do the editing I want to do
+
+where led is a script which causes the running leo to create an @edit
+node containing foo.txt and pop to the front with the node selected.
+
+Previously I was much more likely to use emacs, just because it was
+easier to invoke that way from the command line.
+
+So, opening files, creating sticky notes, invoking leo to handle output
+from grep or diff or whatever - all these things are better now.
+
+=====
+
+The corresponding point and click process for this scenario is
+
+a) select > r-click > Edit with Leo
+b) or drag'n'drop from folder to Leo icon on task bar (or window if visible)
+
+In short, I see this being a productivity boost for all users.
+#@+node:ekr.20110111100539.9719: *4* led
+#!/usr/bin/python
+
+'''Edit a file in leo from the command line, adds an @edit node at the top of
+the outline of the first commander in the leo instance.'''
+
+import sys
+sys.path.append("/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk")
+from leo.external import lproto
+import os
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+pc  = lproto.LProtoClient(addr)
+pc.send("""
+import os
+fn = %s
+c = g.app.commanders()[0]
+h = "@edit "+fn
+n = g.findNodeAnywhere(c, h)
+if not n:
+ n = c.rootPosition().insertAfter()
+ n.moveToRoot(c.rootPosition())
+ n.h = h
+ if os.path.isfile(fn):
+     n.b = file(fn).read()
+c.selectPosition(n)
+c.redraw()
+c.bringToFront()
+""" % repr(os.path.join(os.getcwd(), sys.argv[1])) )
+#@+node:ekr.20110111100539.9720: *4* lo
+#!/usr/bin/python
+
+'''Load a .leo file from the command line into a running leo instance.'''
+
+import sys
+sys.path.append("/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk")
+from leo.external import lproto
+import os
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+pc  = lproto.LProtoClient(addr)
+pc.send("""
+c = g.app.commanders()[0]
+g.openWithFileName(%s, c)
+""" % repr(os.path.join(os.getcwd(), sys.argv[1])) )
+#@+node:ekr.20110111100539.9721: *4* sn
+#!/usr/bin/python
+
+'''Sticky note tie-in from command line/toolbar icon to take quick notes using
+a running leo.'''
+
+import sys
+sys.path.append("/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk")
+from leo.external import lproto
+import os
+import time
+import sys
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+pc  = lproto.LProtoClient(addr)
+cmd="""
+c = g.app.commanders()[0]
+n = c.rootPosition().insertAfter()
+n.moveToRoot(c.rootPosition())
+n.h = "{timestamp}"
+n.b = '''{content}\n\n# {timestamp}'''
+c.selectPosition(n)
+c.redraw()
+c.k.simulateCommand('stickynote')
+""".format(timestamp=time.asctime(), content=' '.join(sys.argv[1:]))
+pc.send(cmd)
+# print cmd
 #@+node:ekr.20110125142807.17268: *3* save-all-tabs command
+#@+node:ekr.20110201125110.12551: ** Important
+#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
+#@+node:ekr.20110125142807.17270: *3* Ask about QCompleter bindings
 #@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -14,174 +201,7 @@ These are marked with ###
 (found) lineend, linestart
 (found) sel.first, sel.last
 (found) w.insert, w.delete
-#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
-#@+node:ekr.20110125142807.17270: *3* Ask about QCompleter bindings
-#@+node:ekr.20100827114047.5895: ** Bugs
-#@+node:ekr.20101024062147.5994: *3* Minor
-#@+node:ekr.20101218103123.5934: *4* Fix redefinition messages
-#@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
-# Apparently, ctrl-e is not passed to Leo at all.
-#@+node:ekr.20110111100539.12258: *5* Report
-@nocolor-node
-
-http://mail.google.com/mail/#inbox/12c5646c646a90d2
-
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
-
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
-
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
-
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
-
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
-
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
-
-#@+node:ekr.20100109094541.6232: *5* within lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'start-line',extend=False)
-
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    self.moveWithinLineHelper(event,'start-line',extend=True)
-
-def endOfLine (self,event):
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'end-line',extend=False)
-
-def endOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    self.moveWithinLineHelper(event,'end-line',extend=True)
-#@+node:ekr.20100109094541.6231: *5* moveWithinLineHelper
-def moveWithinLineHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    # g.trace(hasattr(w,'leoMoveCursorHelper'))
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        extend = extend or self.extendMode
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        if spot == 'start-line':
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'end-line':
-            # if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,j,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20100522090453.5912: *4* Fix bugs with @verbatim, @raw and @end_raw
-@nocolor-node
-
-> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
-> not @root), you can prevent any interpretation of the immediately
-> following line with the "@verbatim" directive
-
-This is not true, although it might appear to be true.
-
-There is an @verbatim *sentinel*, but no @verbatim *directive*.
-
-For example, I have just verified that the following does not work:
-
-@verbatim
-<< undefined ref >>
-
-@raw and @end_raw do work as described.
-
-There appear to be several bugs in this area:
-
-1. Leo probably should warn that @verbatim does not exist as a
-directive, although technically Leo is supposed to write anything that
-looks like a sentinel but isn't "verbatim".
-
-2. Leo does appear to read @raw and @end_raw properly in @thin files,
-but Leo improperly issues the (red) log message,
-converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-#@+node:ekr.20100521090440.5885: *4* Fix mac unicode crasher
-#@+node:ekr.20100521090440.5886: *5* Report
-@nocolor-node
-
-I put the following in qtGui.py after
-
-# Last minute-munges to keysym.
-
-    if sys.platform.startswith('darwin'):
-        darwinmap = {
-            'Alt-Key-5': '[',
-            'Alt-Key-6': ']',
-            'Alt-Key-7': '|',
-            'Alt-slash': '\\',
-            'Alt-Key-8': '{',
-            'Alt-Key-9': '}',
-            'Alt-e': '€',
-            'Alt-l': '@',
-        }
-        if tkKey in darwinmap:
-            tkKey = stroke = darwinmap[tkKey]
-
-It works quite reasonabe. Sometimes (not really well reproducable)
-following message appears:
-
-/Users/tst/Leo-4.7-final/leo/core/leoKeys.py:3363: UnicodeWarning:
-Unicode equal comparison failed to convert both arguments to Unicode -
-interpreting them as being unequal
-  if k.abortAllModesKey and stroke == k.abortAllModesKey:
-/Users/scalet/Leo-4.7-final/leo/core/leoKeys.py:2521: UnicodeWarning:
-Unicode equal comparison failed to convert both arguments to Unicode -
-interpreting them as being unequal
-  if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-
-g'
-
-nonetheless the special characters were inserted as expected.
-
-I think all this is quite a hack, but ... thanks for the hack, most
-important for me it's working for now. 
-#@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect
-@nocolor-node
-
-Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
-is incorrect when there is an existing selection, which was created by some
-method other than Ctrl-Shift movement.
-
-Expected behavior: it should extend/contract the existing selection
-
-Actual behavior: it creates a new selection from the cursor position
-
-======
-
-This is a minor bug, but hard to fix because Leo doesn't always distinguish
-between the point and the mark.
-
-The fix would be in extendHelper, called from moveToHelper.
+#@+node:ekr.20110201125110.12552: *3* Convert plugins to Qt
 #@+node:ekr.20101024062147.5995: *3* Rst problems
 #@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
 @nocolor-node
@@ -475,1108 +495,11 @@ We can test any one of these solutions starting early in the Leo 4.8
 release cycle, but none  is safe enough to include in Leo 4.7 final.
 
 If you would, please test fix #3 and report your results.  Thanks.
-#@+node:ekr.20101024062147.5996: *3* Wishlist
-#@+node:ekr.20080922115725.1: *4* Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@+node:ekr.20081004102201.2: *5* Log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-
-How about a shadow.log file which Leo told what it thought of the relationship
-between the node, file and shadow? It might provide useful clues.
-#@+node:ekr.20081001062423.1: *5* Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@+node:ekr.20080708094444.38: *6* x.propagate_changed_lines
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-       New at 2010/01/07: Replacements preserve sentinel locations.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    trace = False and g.unitTesting
-    verbose = True
-    x = self
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    delim1,delim2 = marker.getDelims()
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,
-        new_private_lines_wtr,
-        marker,
-        limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40: *7* << init vars >>
-new_private_lines_wtr = self.sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = self.sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = self.sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@+node:ekr.20080708094444.39: *7* << define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@+node:ekr.20080708192807.2: *7* << about this loop >>
-@ This loop writes all output lines using a single writer:
-new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present
-  SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of
-  the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips
-(deletes) all previously unwritten non-sentinel lines in
-old_private_lines_rdr whose index is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from
-the old_private_lines_rdr explicitly. This explains why opcode
-handlers for the 'insert' and 'delete' opcodes are identical.
-#@+node:ekr.20080708192807.5: *7* << Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
-
-if tag == 'equal':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
-            tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag == 'insert':
-    if limit < old_private_lines_rdr.size():
-        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index() # Only used for tag.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag == 'replace':
-    # This case is new: it was the same as the 'insert' case.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while (
-        old_private_lines_rdr.index() <= mapping[old_j-1]
-        and new_public_lines_rdr.index() <  new_j
-            # 2010/10/22: the replacement lines can be shorter.
-    ):
-        old_line = old_private_lines_rdr.get()
-        if marker.isSentinel(old_line):
-            # Important: this should work for @verbatim sentinels
-            # because the next line will also be replaced.
-            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
-                'replace: copy sentinel',start,new_j))
-        else:
-            new_line = new_public_lines_rdr.get()
-            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
-                'replace: new line',start,new_j))
-
-    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # Leave new_public_lines_rdr unchanged.
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@+node:ekr.20080708094444.45: *7* << do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@+node:ekr.20090402072059.13: *5* Create a general mechanism for aux (shadow, _db) files
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
-
-On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-
-    When I tried to de-install Leo-4.6b1 I succeeded, but the program
-    reported that 5 directories
-    were not removed.
-
-    Three of the directories where
-
-    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
-    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
-    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
-
-    [containing]
-
-
-    a) .leoSettings.leo_db
-    b) .leoDocs.leo_db
-    c) .leo_shadow
-    d) .leoPluginsRef.leo_db
-
-
-Thanks for this report. I think it is important, and needs a good solution.
-
-I dislike all these files being sprayed around the file system. I'd like to see
-these files placed somewhere the ~/.leo directory. Is there a reason why this
-would be a bad idea?
-
-Similarly, we might also prefer to have shadow files place in, say,
-~/.leo/shadow_files.
-
-In both cases, I think we want to create files that indicate their location.
-Either that, or mirror their location in (subdirectories) ~/.leo. In other
-words, this is a general problem, and it would be good to have a robust, general
-solution.
-#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
-# Just make the test.  It doesn't have to pass.
-#@+node:ekr.20100826110728.5839: *4* Relocating .leo_shadow directories
-@nocolor-node
-
-2008
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
-
-May 10, 2010
-
-Kent
-
-I think there could be quite a bit of interest in moving
-the shadow files to their own tree, avoiding what might
-be considered 'pollution' of a tree of files in @shadow nodes.
-
-Edward has said that this would add a lot of complexity to Leo.
-
-It seems that a VCS back end for Leo might simplify the
-task of arbitrary shadow file location, as well as adding
-versioning capability.
-
-
-Those of us old enough to remember the Groucho Marx show will know what I am ...
-
-bogomil
- to me
-
-In order to relocate .leo_shadow directories in home dir, I have made
-the following changes leoShadow.py:
-1. Introduce new setting 'shadow_in_home_dir':
-   x.ctor:
-     ...
-     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
-
-=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
-or False
-    ...
-
-2. Make the following line:
-   x.shadowDirName and shadowPathName:
-      ...
-      fileDir = g.os_path_dirname(filename)
-
-=>   if self.shadow_in_home_dir:
-        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
-
-In this way I keep .leo_shadow dirs in a tree and it is ok if the user
-reorgs the original tree.
-
-=====================
-Edward K. Ream
- to bogomil
-
-Thanks for these suggestions.  I'll try them soon.
-
-A few minor comments about the code.
-
->  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
-
-This works (because c.config.getBool returns None if the setting does
-not exist). Thus, the "or False" part merely replaces None by False.
-I prefer the following:
-
-self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
-
->   if self.shadow_in_home_dir:
->         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
-
-This looks like a Windows-only solution because of ':'.  It might fail
-in strange ways on other platforms.
-#@+node:ekr.20100830120622.5829: *4* Fix python import problems
-@nocolor-node
-
-> > Hmm, I guess that would be more clear, although I think I'd like an option
-to include it in the following def to avoid
-
-> > Decoration
-> > index
-> > Decoration
-> > add_user
->
-> Sure.  Decorations must always be part of a definition.
-
-Well, personally I'd like to have them included in the definition, but I think
-Kent's preference for a separate node is reasonable to. If your function and
-hence definition node is called "pluralize", and it's decorated with something
-like "@authenticate_user", you may never check the innocent looking pluralize
-definition to find out what on earth's triggering the mysterious network
-database call. And this isn't a completely specious example, authentication may
-have been added to stop pluralize being used in a user existence detection
-exploit or something. OTOH in well behaved code like CherryPy apps you don't
-want a separate node for every @cherrypy.expose.
-
-Bottom line is I think we're asking for a set of @settings to fine tune python
-import behavior:
-
-@python_import_interdef = previous | next | own_node | ai
-@python_import_decoration = next | own_node
-
-I'm not sure I believe the AI option is possible / practical, and am not asking
-for it, just listing it :-)
-
-I'd also like
-
-@python_import_init_in_class_node = true | false
-
-as often there's more docs on a class in the __init__ than the class docstring.
-
-I think that's really all we're talking about, some @settings to test during import.
-#@+node:ekr.20100828074347.5827: ** Vim bindings
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
-
-Vim mode users: your top 3 complaints, please
-#@+node:ekr.20100521090440.5887: *3* Generalize minibuffer code
-@language python
-@color
-
-#Just playing with part of a template system, the (partial) mock up for "range()" is:
-
-def tabStopNaming (event=None):
-
-  stateName = 'naming'
-  k = c.k
-  state = k.getState(stateName)
-
-  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
-           'end-value -- required, -> fill-in.  ',
-           'step -- optional, ->fill-in or tab to eliminate.  ')
-  tabStop = ('start-value', 'end-value', 'step')
-
-  if state == 0:
-      k.setLabelBlue(help[0],protect=True)
-      k.getArg(event,stateName,1,tabStopNaming)
-      # g.es('does this ever executed?') # yes, imediately!
-  else:
-      k.clearState()
-      g.es_print('%s : %s' % (tabStop[0], k.arg))
-      k.setLabelBlue('')
-
-tabStopNaming()
-
-@nocolor
-
-=====================================================
-This is hardwired for the first parameter.  Things I need to expand
-this:
-
-1. put in a variable that cycles through the tabStops
-
-2. In this mock up, you are entering the parameters in the minibuffer,
-a more advanced version would collect each keypress and put it in the
-body at the current tabStop, a tab would finalize the entry and
-advance to the next stop, no text other than the 'help', ends up in
-the minibuffer.
-
-Sinc I'm only modifying existing code without real understanding of
-what Leo is doing, andy guidance would be appreciated.
-
-Tom
-
-=======================
-
-Generalizing the minibuffer code would be a good thing to do.  I
-suppose we could define some kind of language that would create, or
-rather simulate, hand-written code.  In a sense, @mode nodes are
-intended to do this also.
-
-As I look at leoKeys.py again I'll keep this example in the back of my
-mind as something that it would be good to support more easily.
-
-Edward
-#@+node:ekr.20100210102224.5744: *3* Design
-@nocolor-node
-
-Requirements:
-    - Existing bindings must still be valid.
-    - But @mode does not have to remain.
-
-Think data:
-    - Drive binding by tables.
-    *** Design these tables first.
-    - Table design should be flixible.
-      It can change without affecting user.
-
-keySequence class?
-    - Represents a sequence of keystrokes.
-
-bufferMode class?
-    - Might encapsulate directives, etc.
-
-bindHelper class?
-    - Would mediate various aspects of binding.
-    - c.bindHelper or k.bindHelper?
-#@+node:ekr.20060927173836.6: *3* Don't abort mode if there are problems with bindings
-# Or give a better message.
-#@+node:ekr.20100113075303.6270: *3* Vim problems
-#@+node:ekr.20100112051224.6229: *4* Binding Arrow keys (fixed?)
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-#@+node:ekr.20100112051224.6239: *4* Displaying mode help
-@nocolor-node
-
-The "--> mode-help" command has the following issues related to the
-display of the "Help" tab:
-
-1. Key label always capitalized.
-
-Vim commands are mapped to both lower-case and upper-case keys but always appear
-mapped to upper-case keys within the "Help" tab.
-
-2. Layout of tab's contents.
-
-To improve readability and better support narrow tab cards, display the mode's
-label without the "enter-" and "-mode" text and place the key label before the
-mode label.
-
-For example, the following entries would change from::
-    enter-vi-delete-line-mode d
-    enter-vi-delete-to-begin-of-word-mode b
-to::
-    d : vi-delete-line
-    b : vi-delete-to-begin-of-word
-#@+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
-Support the ';' key: repeat the last "To character" or "Find character" command.
-#@+node:ekr.20090629183608.8445: *4* Cursors
-Vi normally uses two different "current character" designators depending on the
-current state.
-
-Insert state:
-
-In the Insert state, a vertical bar is placed between two characters to indicate
-where the next key will be inserted. Leo's cursor is of this type.
-
-Command state: 
-
-In the Command state, vi expects that the cursor is highlighting a current
-character and provides commands to enter the insert state or paste text either
-before or after that current character. Leo's vi emulation currently does not
-support a "current character" cursor. As a result, inserting and pasting before
-or after is replaced by inserting or pasting "at" the current cursor location.
-For example, the 'i' and 'a' command are both mapped to enter the insert state
-at the current cursor location.
-#@+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
-Mapping a number to a command or an @mode node works but can not be used as it
-prevents the number from being entered as text while in Vi's insert state.
-
-Binding 'bksp' key to back-char to move back a character in command mode
-prevents 'bksp' from deleting characters in text edit mode.
-#@+node:ekr.20080616110054.2: *4* Support vim dot command
-The ability to repeat the last editing related command by pressing the period
-key is not supported and there is no workaround in place.
-
-Binding keys within nodes:
-
-Some commands can be "easily" repeated by having the command's mode
-bind itself to the period key.  This is not currently working.
-
-Support commands requesting input:
-
-Add companion commands that reuse input.  For example, a zap-to-
-character-again command could exist which will reuse the key entered
-in the last zap-to-character command.  With this support, the mode
-that performs the initial command would assign the period key to a
-companion mode that is identical to the initial mode but with the zap-
-to-character command replaced by the zap-to-character-again command.
-
-Commands requiring companion commands are:
-  zap-to-character
-  find-character
-  backward-find-character
-  (Any others?)
-
-Notes:
-
-- The copy of the character should be saved somewhere that does NOT affect the
-  contents of the clipboard.
-
-- The same or a separate storage location can be used for all commands to retain
-  a copy of the character entered by the user. It doesn't matter since only the
-  last command is assigned to the period key to be re-executed.
-#@+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
-Leo functions exist which unconditionally set focus to the body pane
-regardless of the active pane.
-
-For example, bracket matching commands ("%" key) do not work within
-a node's headline text.  Instead, the command is performed on the
-node's body text.
-
-Using the "undo" command (key 'u') to undo a change to a node's headline text
-only works correctly after another node has been selected. It appears that
-changes made to a node's headline text are not recorded in Leo's change history
-until the edited node has lost focus.
-#@+node:ekr.20100113075303.6272: *4* Argument handling
-#@+node:ekr.20100112051224.6222: *5* Commands requesting user input (hard?)
-Commands requesting user input must be the last command executed within an @mode
-node. This prevents the implementation of commands such as "yank to <character>"
-that requires a "copy to clipboard" operation after the "find-character"
-command.
-#@+node:ekr.20100112051224.6226: *5* Range prefix to commands (k.getArgs)
-The ability to specify a numeric range prefix is not supported. For example,
-entering "3dd" will not delete the next three lines and "20G" will not move the
-cursor to the 20th line in the file.
-
-#@+node:ekr.20100112051224.6227: *5* Range prefix to objects (k.getArgs)
-The ability to specify a numeric range prefix to an object is not supported. For
-example, the "d2fx" command should Delete up to and including the 2nd Found "x"
-character.
-#@+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
-Commands modifying or selecting headline text do not work correctly within a
-@mode node.
-
-This eliminates accurate implementation of vi's delete/change/substitute/yank
-object commands. As a workaround, the commands are currently written to only
-select the text. The user must perform the subsequent delete, change,
-substitute, and yank.
-#@+node:ekr.20100112051224.6237: *4* Fix forward and backward by sentences
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
-#@+node:ekr.20100112051224.6246: *4* Missing commands
-#@+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
-Leo provides support for switching to upper or lower case but no method exists
-to toggle between cases (used by Vi's "~" command).
-
-#@+node:ekr.20100112051224.6233: *5* Replace current character command
-Vi's "r" command allows user to replace the current character with the next
-entered character.
-#@+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
-Vi has a collection of "z<movement>" commands that will move the
-current line to the top, middle, and bottom of the screen.  They are
-not supported in Leo.
-#@+node:ekr.20100112051224.6235: *5* Move body text up/down
-Vi maps keys to scroll the text up/down one line and by half the
-number of visible lines.  Leo does not support this.
-
-#@+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
-#@+node:ekr.20100112051224.6236: *5* Two kinds of words
-Vi supports two types of words in its commands:
-
-1. Words that consist of only a subset of the character set and
-2. words that consist of all characters except the space and tab characters.
-
-Leo's always considers a word to consist of a subset of characters
-although some word related commands include different characters
-than others.
-#@+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
-Yank vs. Yank:
-Vi's "yank" commands copy the selected text TO the clipboard.
-Leo's "yank" commands insert text FROM the clipboard.
-
-copy-text in modes:
-Leo's copy-text command does not work within a mode.  As a result,
-all "copy to clipboard" capability is being implemented using the
-kill-<object> command followed by Leo's "yank" command to put the
-text back.
-
-paste-text in modes:
-The paste-text command does not work within an @mode node.  Leo's
-"yank" command is used instead.
-
-delete-node does not copy node to clipboard:
-A copy-node command is issued to copy the node to the clipboard
-followed by the delete-node command.
-#@+node:ekr.20100206074650.5844: ** Features
-#@+node:ekr.20090811141250.5955: *3*  Most important features
-@ Important: There is another features list for 4.9.
-#@+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-#@+node:ekr.20090816125009.5993: *5* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@+node:ekr.20090814190307.5983: *5* print all modes/*.py files
-import glob
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-
-aList = glob.glob(theDir)
-
-for z in aList:
-    print g.os_path_basename(z)
-
-@
-Exist:
-
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-"w"     : "cweb",
-"xml"   : "xml",
-"xsl"   : "xslt",
-
-Add first:
-
-
-ada95.py
-antlr.py
-apacheconf.py
-apdl.py
-applescript.py
-asp.py
-aspect_j.py
-assembly_macro32.py
-assembly_mcs51.py
-assembly_parrot.py
-assembly_r2000.py
-assembly_x86.py
-awk.py
-b.py
-batch.py
-bbj.py
-bcel.py
-bibtex.py
-c.py
-chill.py
-cobol.py
-coldfusion.py
-cplusplus.py
-csharp.py
-css.py
-cvs_commit.py
-d.py
-doxygen.py
-dsssl.py
-eiffel.py
-embperl.py
-erlang.py
-factor.py
-forth.py
-fortran.py
-fortran90.py
-foxpro.py
-freemarker.py
-gettext.py
-groovy.py
-haskell.py
-hex.py
-html.py
-i4gl.py
-icon.py
-idl.py
-inform.py
-ini.py
-inno_setup.py
-interlis.py
-io.py
-java.py
-javascript.py
-jcl.py
-jhtml.py
-jmk.py
-jsp.py
-latex.py
-lilypond.py
-lisp.py
-lotos.py
-lua.py
-mail.py
-makefile.py
-maple.py
-matlab.py
-ml.py
-modula3.py
-moin.py
-mqsc.py
-netrexx.py
-nqc.py
-nsis2.py
-objective_c.py
-objectrexx.py
-occam.py
-omnimark.py
-pascal.py
-patch.py
-perl.py
-php.py
-phpsection.py
-pike.py
-pl1.py
-plain.py
-plsql.py
-pop11.py
-postscript.py
-povray.py
-powerdynamo.py
-progress.py
-prolog.py
-props.py
-psp.py
-ptl.py
-pvwave.py
-pyrex.py
-python.py
-r.py
-rebol.py
-redcode.py
-relax_ng_compact.py
-rest.py
-rhtml.py
-rib.py
-rpmspec.py
-rtf.py
-ruby.py
-rview.py
-sas.py
-scheme.py
-sdl_pr.py
-sgml.py
-shell.py
-shellscript.py
-shtml.py
-smalltalk.py
-smi_mib.py
-splus.py
-sqr.py
-squidconf.py
-ssharp.py
-svn_commit.py
-swig.py
-tcl.py
-tex.py
-texinfo.py
-text.py
-tpl.py
-tsql.py
-uscript.py
-vbscript.py
-velocity.py
-verilog.py
-vhdl.py
-xml.py
-xsl.py
-zpt.py
-__init__.py
-#@+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090601083544.6052: *5* post
-@nocolor-node
-
-I want to write the documentation for the source program in a @rst3 subtree. In
-this @rst3 subtree I want to refer to fragments of the program, like:
-
-In the following code fragment::
-
-  <<code fragment>>
-
-Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
-get to this work, I should have <<code fragment>> under the @rst3 subtree as
-well, but this is then also treated as @rst3 input (which in this case, is not
-what I want).
-#@+node:ekr.20080918164844.12: *4* Improve headline navigation
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
-
-Now that the leo is more "modeless" (I'm speaking of switching between
-outline navigation and body editing modes), which btw is a clear improvement
-to how leo used to behave, here are some things that still feel a bit
-un-intuitive:
-
-- ctrl+H (edit-headline) "locks" the user into the mode way too much.
-
-   * The headline editing mode should be cancelled when the user does:
-      - cursor up/down
-      - ESC
-
-   * Even better alternative: I find myself constantly thinking that "ok,
-now I need to edit a headline (typically not the current headline), so now
-I'll press ctrl+H". I think perhaps pressing up/down should cancel the
-current headline editing, and select the next/previous headline for editing.
-That is, I wouldn't need to navigate to the headline I want to edit before I
-start editing it.
-
-  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
-intuitive assumption is that cut will select the node that "took the place
-of the
-    current node", instead of starting to travel upwards the set of nodes.
-
-   * Typical use case is the way you usually start deleting a set of items.
-You move to the first item and start cutting repeatedly. This wont work with
-the current behaviour. 
-#@+node:ekr.20080730212711.7: *4* Improve plugins handling
-@nocolor-node
-
-- Don't repeat "can not load <plugin>" messages.
-
-- Unify print-plugins and print-plugins-info commands, and make them more informative.
-
-- Fix the plugin mess.
-
-    - Create a way to unload a plugin.  This should be relatively easy.
-#@+node:ekr.20101126123343.5845: *5* Plugins and plugins manager
-Rewrite the plugins manager.
-
-Make all plugins gui-independent.
-#@+node:ekr.20090804105939.5993: *5* Possibly redo how plugins are loaded
-#@+node:ekr.20080313032655.2: *5* Once a plugin is enabled, it is always enabled
-#@+node:ekr.20080923200153.1: *5* Support scan-directives hook again?
-# This affects the add_directives plugin.
-# Also, the color_markup plugin doesn't work with the threading colorizer.
-#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-
-@color
-#@+node:ekr.20090724081340.5987: *4* Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@+node:ekr.20090907080624.6081: *4* Spell checker should check headlines
-#@+node:ekr.20071001052501: *4* Versioning for nodes
-@nocolor
-
-One feature I have not seen in SCS system is something which might be called
-"history compression": I might be interested in having both version 5 and 6
-in my source tree, when the current version is 7, but I am not really interested
-in the 2000 steps which transformed 5 into 6 (just suggested this feature to
-the bazaar people). This happens actually quite often to me, since I use the
-SCS as a back-up system, saving many (uninteresting) intermediate steps while
-implementing a new feature.
-#@+node:ekr.20101004092958.5914: *4* Write treepad scanner
-@ treepad.py is from the treepad website
-#@+node:ekr.20101004092958.5939: *5* treepad.py
-@first #! /usr/local/bin/python
-
-# treepad.py
-
-@language python
-@tabwidth -4
-@others
-if __name__ == '__main__':
-    Main().Run()
-
-#@+node:ekr.20101004092958.5940: *6* treepad declarations
-import sys, os, re, string
-
-# constants
-VERSION = "<Treepad version 2.7>"
-
-# regexes
-END_RE = re.compile(r'^<end node> ([^ ]+)$')
-#@+node:ekr.20101004092958.5941: *6* class Node
-class Node:
-    @others
-#@+node:ekr.20101004092958.5942: *7* __init__
-def __init__(self):
-    self.title    = ""
-    self.level    = 0
-    self.article  = []
-    self.children = []
-    self.parent   = None
-    self.end      = ""
-#@+node:ekr.20101004092958.5943: *7* __str__
-def __str__(self):
-    return "%s/%d" % (self.title, self.level)
-#@+node:ekr.20101004092958.5944: *7* addchild
-def addchild(self, node):
-    assert self.level == node.level-1 and node.parent is None
-    node.parent = self
-    self.children.append( node )
-#@+node:ekr.20101004092958.5945: *7* findparent
-def findparent(self, node):
-    if self.level == (node.level-1): return self
-    return self.parent.findparent(node)
-#@+node:ekr.20101004092958.5946: *7* writenode
-def writenode(self, fp):
-    fp.write("dt=Text\n")
-    fp.write("<node>\n")
-    fp.write("%s\n" % self.title)
-    fp.write("%s\n" % self.level)
-    for line in self.article:
-        fp.write("%s\n" % line)
-    fp.write("<end node> %s\n" % self.end)
-#@+node:ekr.20101004092958.5947: *7* writetree
-def writetree(self, fp):
-    self.writenode(fp)
-    for node in self.children:
-        node.writetree(fp)
-
-#@+node:ekr.20101004092958.5948: *6* class NodeReader
-class NodeReader:
-    @others
-#@+node:ekr.20101004092958.5949: *7* __init__
-def __init__(self, fname, fp):
-    self.fname    = fname
-    self.fp       = fp
-#@+node:ekr.20101004092958.5950: *7* expect
-def expect(self, text, line=None):
-    if line is None:
-        line = self.fp.readline().strip()
-    assert line == text, "expected " + line + " == " + text
-#@+node:ekr.20101004092958.5951: *7* readstart
-def readstart(self):
-    self.expect(VERSION)
-#@+node:ekr.20101004092958.5952: *7* readnode
-def readnode(self):
-    line = self.fp.readline()
-    if line is None:
-        return None
-    line = line.strip()
-    if len(line) < 1:
-        return None
-    self.expect("dt=Text", line)
-    self.expect("<node>")
-    node = Node()
-    node.title = self.fp.readline().strip()
-    node.level = int(self.fp.readline().strip())
-    while 1:
-        line = self.fp.readline()
-        m = re.match(END_RE, line)
-        if m:
-            node.end = m.group(1).strip()
-            break
-        node.article.append( line.strip() )
-    return node
-
-#@+node:ekr.20101004092958.5953: *6* class TreeReader
-class TreeReader:
-    @others
-#@+node:ekr.20101004092958.5954: *7* __init__
-def __init__(self, fname, fp=None):
-    if fp is None: fp = open(fname, 'r')
-    self.nodereader = NodeReader(fname, fp)
-    self.root = None
-    self.prev = None
-#@+node:ekr.20101004092958.5955: *7* add
-def add(self, node):
-    if self.prev is None:
-        assert node.level == 0
-        self.root = node
-    else:
-        assert node.level > 0
-        parent = self.prev.findparent(node)
-        parent.addchild( node )
-    self.prev = node
-#@+node:ekr.20101004092958.5956: *7* read
-def read(self):
-    self.nodereader.readstart()
-    prev = None
-    while 1:
-        node = self.nodereader.readnode()
-        if node is None: break
-        self.add(node)
-
-#@+node:ekr.20101004092958.5957: *6* class TreeWriter
-class TreeWriter:
-    @others
-#@+node:ekr.20101004092958.5958: *7* __init__
-def __init__(self, fname, fp=None):
-    if fp is None: fp = open(fname, 'w')
-    self.fname = fname
-    self.fp    = fp
-#@+node:ekr.20101004092958.5959: *7* write
-def write(self, root):
-    self.fp.write("%s\n" % VERSION)
-    root.writetree(self.fp)
-
-#@+node:ekr.20101004092958.5960: *6* class Main
-class Main:
-    @others
-#@+node:ekr.20101004092958.5961: *7* __init__
-def __init__(self):
-    self.infile  = sys.argv[1]
-    self.outfile = sys.argv[2]
-    self.reader  = TreeReader(self.infile)
-    self.writer  = TreeWriter(self.outfile)
-#@+node:ekr.20101004092958.5962: *7* Run
-
-def Run(self):
-    self.reader.read()
-    self.writer.write(self.reader.root)
-
-#@+node:ekr.20101024062147.6014: *3* Autocompleter
+#@+node:ekr.20101125041212.5846: *3* Fix bug: ignore f-keys in find/replace patterns
+#@+node:ekr.20101024062147.6014: ** Autocompleter
 # This can be done in the trunk.
-#@+node:ekr.20090131200406.14: *4* Autocompleter notes
-#@+node:ekr.20080113165010: *5* About auto completion
+#@+node:ekr.20090131200406.14: *3* Autocompleter notes
+#@+node:ekr.20080113165010: *4* About auto completion
 @nocolor
 
 Summary: inspect when possible, ask for types otherwise.
@@ -1597,7 +520,7 @@ Performance isn't too hard:
 Parsing:
     - Forgiving parser is essentially complete.
     - It's easy to parse python def lines.
-#@+node:ekr.20081005065934.12: *5* Links from Ville re Scintilla
+#@+node:ekr.20081005065934.12: *4* Links from Ville re Scintilla
 @nocolor-node
 
 It seems Scintilla relies on externally generated api description
@@ -1610,7 +533,7 @@ http://www.burgaud.com/scite-java-api/
 http://scintilla.sourceforge.net/tags2api.py
 
 http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
-#@+node:ekr.20060927173836.1: *5* Make calltips and autocompleter 'stateless'
+#@+node:ekr.20060927173836.1: *4* Make calltips and autocompleter 'stateless'
 @nocolor
 
 Disabled these binding:
@@ -1627,7 +550,7 @@ This is a complex problem, and not very serious now that there is an easy way of
 toggling autocompleter and calltips on and off.
 
 @color
-#@+node:ekr.20080110082845: *5* pyxides: code completion
+#@+node:ekr.20080110082845: *4* pyxides: code completion
 @nocolor
 
 Python code completion module
@@ -2231,7 +1154,7 @@ specific parts of rope, I'll be happy to answer.
 By the way, I tried to reply this mail to the group, but it seems that
 your group requires subscription for posting, so I've sent it to you,
 instead.
-#@+node:ekr.20071106083149: *5* Recent post
+#@+node:ekr.20071106083149: *4* Recent post
 @killcolor
 
 In general, autocompletion is a tricky problem. Consider:
@@ -2249,7 +1172,7 @@ or "os.path." for example.
 It might be possible to generalize c.k.defineObjectDict so that the user
 could specify autocompleter conventions, say in an @autocompleter node in an
 @settings tree.
-#@+node:ekr.20100506062734.5756: *5* Ville post re autocompleter
+#@+node:ekr.20100506062734.5756: *4* Ville post re autocompleter
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ee84e52fba476950
@@ -2283,8 +1206,8 @@ behave" on 2010, i.e. the way provided by QCompleter.
 
 -- 
 Ville M. Vainio 
-#@+node:ekr.20101004092958.6008: *4* codewise stuff
-#@+node:ekr.20101004092958.5964: *5* codewise crash
+#@+node:ekr.20101004092958.6008: *3* codewise stuff
+#@+node:ekr.20101004092958.5964: *4* codewise crash
 
 c:\leo.repo\trunk>python -m codewise setup
 
@@ -2359,7 +1282,7 @@ Traceback (most recent call last):
 IndexError: list index out of range
 
 c:\leo.repo\trunk>
-#@+node:ekr.20101004092958.6009: *5* codewise.py
+#@+node:ekr.20101004092958.6009: *4* codewise.py
 @first #!/usr/bin/env python
 
 << docstring >>
@@ -2373,7 +1296,7 @@ c:\leo.repo\trunk>
 
 if __name__ == "__main__":
     main()
-#@+node:ekr.20101004092958.6010: *6* << docstring >>
+#@+node:ekr.20101004092958.6010: *5* << docstring >>
 """ CodeWise - global code intelligence database
 
 Why codewise:
@@ -2387,7 +1310,7 @@ Why codewise:
 - This is usable as a python module, or a command line tool.
 
 """
-#@+node:ekr.20101004092958.6011: *6* << usage >>
+#@+node:ekr.20101004092958.6011: *5* << usage >>
 USAGE = """
 codewise setup
  (Optional - run this first to create template ~/.ctags)
@@ -2420,7 +1343,7 @@ codewise tags TAGS
  Dump already-created tagfile TAGS to database
 
 """ 
-#@+node:ekr.20101004092958.6012: *6* << decls >>
+#@+node:ekr.20101004092958.6012: *5* << decls >>
 import os,sys
 import sqlite3
 
@@ -2441,9 +1364,9 @@ CREATE INDEX idx_function_class ON function(class ASC);
 COMMIT;
 """
 
-#@+node:ekr.20101004092958.6013: *6* Top level
-#@+node:ekr.20101004092958.6014: *7* Commands
-#@+node:ekr.20101004092958.6015: *8* cmd_functions
+#@+node:ekr.20101004092958.6013: *5* Top level
+#@+node:ekr.20101004092958.6014: *6* Commands
+#@+node:ekr.20101004092958.6015: *7* cmd_functions
 def cmd_functions(args):
     cw = CodeWise()
 
@@ -2455,7 +1378,7 @@ def cmd_functions(args):
     lines.sort()
     printlines(lines)
     return lines # EKR
-#@+node:ekr.20101004092958.6016: *8* cmd_init
+#@+node:ekr.20101004092958.6016: *7* cmd_init
 def cmd_init(args):
 
     print("Initializing CodeWise db at", DEFAULT_DB)
@@ -2463,7 +1386,7 @@ def cmd_init(args):
         os.remove(DEFAULT_DB)
 
     cw = CodeWise()
-#@+node:ekr.20101004092958.6017: *8* cmd_members
+#@+node:ekr.20101004092958.6017: *7* cmd_members
 def cmd_members(args):
     cw = CodeWise()
     if not args:
@@ -2477,23 +1400,23 @@ def cmd_members(args):
     lines.sort()
     printlines(lines)
     return lines # EKR
-#@+node:ekr.20101004092958.6018: *8* cmd_parse
+#@+node:ekr.20101004092958.6018: *7* cmd_parse
 def cmd_parse(args):
     assert args
     cw = CodeWise()
     cw.parse(args)
-#@+node:ekr.20101004092958.6019: *8* cmd_parseall
+#@+node:ekr.20101004092958.6019: *7* cmd_parseall
 def cmd_parseall(args):
     cw = CodeWise()
     cw.parseall()
-#@+node:ekr.20101004092958.6020: *8* cmd_scintilla
+#@+node:ekr.20101004092958.6020: *7* cmd_scintilla
 def cmd_scintilla(args):
     cw = CodeWise()
     for fil in args:
         f = open(fil)
         cw.feed_scintilla(f)
         f.close()
-#@+node:ekr.20101004092958.6021: *8* cmd_setup
+#@+node:ekr.20101004092958.6021: *7* cmd_setup
 def cmd_setup(args):
 
     ctagsfile = os.path.expanduser("~/.ctags")
@@ -2501,11 +1424,11 @@ def cmd_setup(args):
     assert not os.path.isfile(ctagsfile)
     open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
     cmd_init(args)
-#@+node:ekr.20101004092958.6022: *8* cmd_tags
+#@+node:ekr.20101004092958.6022: *7* cmd_tags
 def cmd_tags(args):
     cw = CodeWise()
     cw.feed_ctags(open(args[0]))
-#@+node:ekr.20101004092958.6023: *7* main
+#@+node:ekr.20101004092958.6023: *6* main
 def main():
     if len(sys.argv) < 2:
         print(USAGE)
@@ -2529,23 +1452,23 @@ def main():
         cmd_init(args)
     elif cmd == 'setup':
         cmd_setup(args)
-#@+node:ekr.20101004092958.6024: *7* printlines
+#@+node:ekr.20101004092958.6024: *6* printlines
 def printlines(lines):
     for l in lines:
         try:
             print(l)
         except Exception: # EKR: UnicodeEncodeError:            
             pass
-#@+node:ekr.20101004092958.6025: *7* run_ctags
+#@+node:ekr.20101004092958.6025: *6* run_ctags
 def run_ctags(paths):
     cm = 'ctags -R --sort=no -f - ' + " ".join(paths)
     print(cm)
     f = os.popen(cm)
     return f
-#@+node:ekr.20101004092958.6026: *6* class CodeWise
+#@+node:ekr.20101004092958.6026: *5* class CodeWise
 class CodeWise:
     @others
-#@+node:ekr.20101004092958.6027: *7* __init__
+#@+node:ekr.20101004092958.6027: *6* __init__
 def __init__(self, dbpath = None):
 
     if dbpath is None:
@@ -2561,7 +1484,7 @@ def __init__(self, dbpath = None):
     else:
         self.dbconn = c = sqlite3.connect(dbpath)
         self.create_caches()
-#@+node:ekr.20101004092958.6028: *7* createdb
+#@+node:ekr.20101004092958.6028: *6* createdb
 def createdb(self, dbpath):
 
     self.dbconn = c = sqlite3.connect(dbpath)
@@ -2569,7 +1492,7 @@ def createdb(self, dbpath):
     c.executescript(DB_SCHEMA)
     c.commit()
     c.close()
-#@+node:ekr.20101004092958.6029: *7* create_caches
+#@+node:ekr.20101004092958.6029: *6* create_caches
 def create_caches(self):
     """ read existing db and create caches """
 
@@ -2585,16 +1508,16 @@ def create_caches(self):
 
     c.close()
     #print self.classcache
-#@+node:ekr.20101004092958.6030: *7* reset_caches
+#@+node:ekr.20101004092958.6030: *6* reset_caches
 def reset_caches(self):
     self.classcache = {}
     self.filecache = {}
 
     self.fileids_scanned = set()
-#@+node:ekr.20101004092958.6031: *7* cursor
+#@+node:ekr.20101004092958.6031: *6* cursor
 def cursor(self):
     return self.dbconn.cursor()
-#@+node:ekr.20101004092958.6032: *7* class_id
+#@+node:ekr.20101004092958.6032: *6* class_id
 def class_id(self, classname):
     """ return class id. May create new class """
 
@@ -2609,7 +1532,7 @@ def class_id(self, classname):
         idd = c.lastrowid
         self.classcache[classname] = idd
     return idd
-#@+node:ekr.20101004092958.6033: *7* get_members
+#@+node:ekr.20101004092958.6033: *6* get_members
 def get_members(self, classnames):
 
     clset = set(classnames)
@@ -2629,7 +1552,7 @@ def get_members(self, classnames):
                 res.append((name, pat))
 
     return res
-#@+node:ekr.20101004092958.6034: *7* get_functions
+#@+node:ekr.20101004092958.6034: *6* get_functions
 def get_functions(self, prefix = None):
 
     c = self.cursor()
@@ -2640,7 +1563,7 @@ def get_functions(self, prefix = None):
         c.execute('select name, class, file, searchpattern from function')
 
     return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-#@+node:ekr.20101004092958.6035: *7* file_id
+#@+node:ekr.20101004092958.6035: *6* file_id
 def file_id(self, fname):
     if fname == '':
         return 0
@@ -2665,7 +1588,7 @@ def file_id(self, fname):
         self.fileids_scanned.add(idd)
 
     return idd
-#@+node:ekr.20101004092958.6036: *7* feed_function
+#@+node:ekr.20101004092958.6036: *6* feed_function
 def feed_function(self, func_name, class_name, file_name, aux):
     """ insert one function
 
@@ -2676,7 +1599,7 @@ def feed_function(self, func_name, class_name, file_name, aux):
     c = self.cursor()
     c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
               [clid, func_name, aux, fid])
-#@+node:ekr.20101004092958.6037: *7* feed_scintilla
+#@+node:ekr.20101004092958.6037: *6* feed_scintilla
 def feed_scintilla(self, apifile_obj):
     """ handle scintilla api files
 
@@ -2705,7 +1628,7 @@ def feed_scintilla(self, apifile_obj):
         #print func, klass, desc
         self.feed_function(func.strip(), shortclass.strip(), '', desc.strip())
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6038: *7* feed_ctags
+#@+node:ekr.20101004092958.6038: *6* feed_ctags
 def feed_ctags(self,tagsfile_obj):
     for l in tagsfile_obj:
         #print l
@@ -2741,24 +1664,24 @@ def feed_ctags(self,tagsfile_obj):
 
     self.dbconn.commit()
     #c.commit()
-#@+node:ekr.20101004092958.6039: *7* add_source
+#@+node:ekr.20101004092958.6039: *6* add_source
 def add_source(self, type, src):
     c = self.cursor()
     c.execute('insert into datasource(type, src) values (?,?)', (type,src))
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6040: *7* sources
+#@+node:ekr.20101004092958.6040: *6* sources
 def sources(self):
     c = self.cursor()
     c.execute('select type, src from datasource')
     return list(c)
-#@+node:ekr.20101004092958.6041: *7* zap_symbols
+#@+node:ekr.20101004092958.6041: *6* zap_symbols
 def zap_symbols(self):
     c = self.cursor()
     tables = ['class', 'file', 'function']
     for t in tables:
         c.execute('delete from ' + t)
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6042: *7* parseall
+#@+node:ekr.20101004092958.6042: *6* parseall
 # high level commands        
 def parseall(self):
     sources = self.sources()
@@ -2767,7 +1690,7 @@ def parseall(self):
     tagdirs = [td for typ, td in sources if typ == 'tagdir']
     self.parse(tagdirs)
     self.dbconn.commit()
-#@+node:ekr.20101004092958.6043: *7* parse
+#@+node:ekr.20101004092958.6043: *6* parse
 def parse(self, paths):
     paths = set(os.path.abspath(p) for p in paths)
     f = run_ctags(paths)
@@ -2776,7 +1699,7 @@ def parse(self, paths):
     for a in paths:
         if ('tagdir', a) not in sources:            
             self.add_source('tagdir', a)
-#@+node:ekr.20101004092958.6044: *6* class ContextSniffer
+#@+node:ekr.20101004092958.6044: *5* class ContextSniffer
 class ContextSniffer:
     """ Class to analyze surrounding context and guess class
 
@@ -2784,18 +1707,18 @@ class ContextSniffer:
 
     """
     @others
-#@+node:ekr.20101004092958.6045: *7* __init__
+#@+node:ekr.20101004092958.6045: *6* __init__
 def __init__(self):
     # var name => list of classes
     self.vars = {}
-#@+node:ekr.20101004092958.6046: *7* declare
+#@+node:ekr.20101004092958.6046: *6* declare
 def declare(self, var, klass):
     print("declare",var,klass)
     vars = self.vars.get(var, [])
     if not vars:
         self.vars[var] = vars
     vars.append(klass)
-#@+node:ekr.20101004092958.6047: *7* push_declarations
+#@+node:ekr.20101004092958.6047: *6* push_declarations
 def push_declarations(self, body):
     for l in body.splitlines():
         l = l.lstrip()
@@ -2806,16 +1729,16 @@ def push_declarations(self, body):
         if len(parts) != 2:
             continue
         self.declare(parts[0].strip(), parts[1].strip())
-#@+node:ekr.20101004092958.6048: *7* set_small_context
+#@+node:ekr.20101004092958.6048: *6* set_small_context
 def set_small_context(self, body):
     """ Set immediate function """
     self.push_declarations(body)
-#@+node:ekr.20101004092958.6049: *5* codewise experiments
+#@+node:ekr.20101004092958.6049: *4* codewise experiments
 import codewise as cw
 # print(dir(cw))
 
 cw.cmd_init()
-#@+node:ekr.20101004092958.6050: *5* How to make codewise work
+#@+node:ekr.20101004092958.6050: *4* How to make codewise work
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
@@ -2884,9 +1807,9 @@ Also, try the explicit declarations:
 w.<alt+0>
 
 And self.<alt+0> 
-#@+node:ekr.20101025100847.5852: *4* @url ready to work on codewise
+#@+node:ekr.20101025100847.5852: *3* @url ready to work on codewise
 http://mail.google.com/mail/#inbox/12b7463d6c339406
-#@+node:ekr.20101029092426.5861: *4* Finish QCompleter
+#@+node:ekr.20101029092426.5861: *3* Finish QCompleter
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ba5748aad35deba0
@@ -2902,7 +1825,7 @@ handling works. That's the hard part. Rest can be handled by plugins.
 Every time the topic of autocompletion comes up, we end up solving the
 "fun" problems like scanning and ctags, and the most important part
 (gui) does not get done. 
-#@+node:ekr.20101002192824.5843: *4* test-new-ac
+#@+node:ekr.20101002192824.5843: *3* test-new-ac
 # To do:
 # - Fix findAnchor.
 # - Report duck type in completion tab: callable if calltips exist.
@@ -2928,13 +1851,13 @@ ac.start(event=event,w=w)
 
 # The cursor must be at the end
 # p.s
-#@+node:ekr.20101002192824.6019: *5* class AutoCompleterScanner
+#@+node:ekr.20101002192824.6019: *4* class AutoCompleterScanner
 class AutoCompleterScanner:
 
     '''A class that scans for autocompleter completions.'''
 
     @others
-#@+node:ekr.20101002192824.6020: *6*  ctor & helper (AutoCompleterScanner)
+#@+node:ekr.20101002192824.6020: *5*  ctor & helper (AutoCompleterScanner)
 def __init__ (self,c):
 
     self.c = c
@@ -2948,7 +1871,7 @@ def __init__ (self,c):
     self.watchwords = {}
 
     self.definePatterns()
-#@+node:ekr.20101002192824.6021: *7* definePatterns
+#@+node:ekr.20101002192824.6021: *6* definePatterns
 def definePatterns (self):
 
     self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
@@ -2972,7 +1895,7 @@ def definePatterns (self):
         okchars [z] = z
     okchars ['_'] = '_'
     self.okchars = okchars 
-#@+node:ekr.20101002192824.6022: *6* scan & dumps
+#@+node:ekr.20101002192824.6022: *5* scan & dumps
 def scan (self):
 
     '''Build the database from the outline'''
@@ -3005,7 +1928,7 @@ def scan (self):
             self.dumpWords()
         self.printSummary(t2-t1)
 
-#@+node:ekr.20101002192824.6023: *7* dumpTips
+#@+node:ekr.20101002192824.6023: *6* dumpTips
 def dumpTips (self):
 
     print('calltips...\n\n')
@@ -3031,7 +1954,7 @@ def dumpTips (self):
                 print('\n%s:\n\n' % (key),g.dictToString(d2))
             else:
                 print('\n%s:\n\n' % (key),g.dictToString(d))
-#@+node:ekr.20101002192824.6024: *7* dumpWords
+#@+node:ekr.20101002192824.6024: *6* dumpWords
 def dumpWords (self):
 
     print('autocompleter words...\n\n')
@@ -3042,7 +1965,7 @@ def dumpWords (self):
         aList.sort()
         print('\n%s:' % (key),g.listToString(aList)) #repr(aList))
     print()
-#@+node:ekr.20101002192824.6025: *7* printSummary
+#@+node:ekr.20101002192824.6025: *6* printSummary
 def printSummary (self,t):
 
     n  = len(list(self.watchwords.keys()))
@@ -3054,7 +1977,7 @@ def printSummary (self,t):
 
     g.es_print('scanned %s words, %s tips in %3.2fs sec.' % (
         n,n2,t))
-#@+node:ekr.20101002192824.6026: *6* scanForAutoCompleter & helper
+#@+node:ekr.20101002192824.6026: *5* scanForAutoCompleter & helper
 def scanForAutoCompleter (self,s):
 
     '''This function scans text for the autocompleter database.'''
@@ -3073,7 +1996,7 @@ def scanForAutoCompleter (self,s):
             if val not in aList2:
                 aList2.append(val)
                 self.watchwords [key] = aList2
-#@+node:ekr.20101002192824.6027: *7* makeAutocompletionList
+#@+node:ekr.20101002192824.6027: *6* makeAutocompletionList
 def makeAutocompletionList (self,a,b,glist):
 
     '''We have seen a.b, where a and b are arbitrary strings.
@@ -3103,7 +2026,7 @@ def makeAutocompletionList (self,a,b,glist):
 
     if b1:
         glist.append((a1,b1),)
-#@+node:ekr.20101002192824.6028: *6* scanForCallTip & helper
+#@+node:ekr.20101002192824.6028: *5* scanForCallTip & helper
 def scanForCallTip (self,s,language):
 
     '''this function scans text for calltip info'''
@@ -3128,7 +2051,7 @@ def scanForCallTip (self,s,language):
             d [a] = aList
 
     self.calltips [language] = d
-#@+node:ekr.20101002192824.6029: *7* cleanPythonTip
+#@+node:ekr.20101002192824.6029: *6* cleanPythonTip
 def cleanPythonTip (self,s):
 
     result = []
@@ -3147,7 +2070,7 @@ def cleanPythonTip (self,s):
             result.append(ch)
             i += 1
     return ''.join(result)
-#@+node:ekr.20101002192824.5915: *5* class NewAutoCompleter (New)
+#@+node:ekr.20101002192824.5915: *4* class NewAutoCompleter (New)
 class NewAutoCompleter:
 
     '''A class that inserts autocompleted and calltip text in text widgets.
@@ -3159,7 +2082,7 @@ class NewAutoCompleter:
     '''
 
     @others
-#@+node:ekr.20101002192824.5916: *6*  ctor (autocompleter)
+#@+node:ekr.20101002192824.5916: *5*  ctor (autocompleter)
 def __init__ (self,k):
 
     self.c = k.c
@@ -3182,8 +2105,8 @@ def __init__ (self,k):
     self.verbose = False # True: print all members.
     self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
     self.widget = None # The widget that should get focus after autocomplete is done.
-#@+node:ekr.20101002192824.5919: *6* Top level
-#@+node:ekr.20101002192824.5920: *7* autoComplete
+#@+node:ekr.20101002192824.5919: *5* Top level
+#@+node:ekr.20101002192824.5920: *6* autoComplete
 def autoComplete (self,event=None,force=False):
 
     '''An event handler called from k.masterKeyHanderlerHelper.'''
@@ -3205,13 +2128,13 @@ def autoComplete (self,event=None,force=False):
         self.start(event=event,w=w)
 
     return 'break'
-#@+node:ekr.20101002192824.5921: *7* autoCompleteForce
+#@+node:ekr.20101002192824.5921: *6* autoCompleteForce
 def autoCompleteForce (self,event=None):
 
     '''Show autocompletion, even if autocompletion is not presently enabled.'''
 
     return self.autoComplete(event,force=True)
-#@+node:ekr.20101002192824.5922: *7* autoCompleterStateHandler
+#@+node:ekr.20101002192824.5922: *6* autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
     trace = False and not g.app.unitTesting
@@ -3247,7 +2170,7 @@ def autoCompleterStateHandler (self,event):
     else:
         # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
-#@+node:ekr.20101002192824.5924: *7* enable/disable/toggleAutocompleter/Calltips
+#@+node:ekr.20101002192824.5924: *6* enable/disable/toggleAutocompleter/Calltips
 def disableAutocompleter (self,event=None):
     '''Disable the autocompleter.'''
     self.k.enable_autocompleter = False
@@ -3277,7 +2200,7 @@ def toggleCalltips (self,event=None):
     '''Toggle whether calltips are enabled.'''
     self.k.enable_calltips = not self.k.enable_calltips
     self.showCalltipsStatus()
-#@+node:ekr.20101002192824.5925: *7* showCalltips
+#@+node:ekr.20101002192824.5925: *6* showCalltips
 def showCalltips (self,event=None,force=False):
 
     '''Show the calltips at the cursor.'''
@@ -3298,13 +2221,13 @@ def showCalltips (self,event=None,force=False):
         k.masterCommand(event,func=None,stroke=None,commandName=None)
 
     return 'break'
-#@+node:ekr.20101002192824.5926: *7* showCalltipsForce
+#@+node:ekr.20101002192824.5926: *6* showCalltipsForce
 def showCalltipsForce (self,event=None):
 
     '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
 
     return self.showCalltips(event,force=True)
-#@+node:ekr.20101002192824.5927: *7* showAutocompleter/CalltipsStatus
+#@+node:ekr.20101002192824.5927: *6* showAutocompleter/CalltipsStatus
 def showAutocompleterStatus (self):
     '''Show the autocompleter status on the status line.'''
 
@@ -3319,8 +2242,8 @@ def showCalltipsStatus (self):
     if not g.unitTesting:
         s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
         g.es(s,color='red')
-#@+node:ekr.20101002192824.5928: *6* Helpers
-#@+node:ekr.20101002192824.5929: *7* .abort & exit (autocompleter)
+#@+node:ekr.20101002192824.5928: *5* Helpers
+#@+node:ekr.20101002192824.5929: *6* .abort & exit (autocompleter)
 def abort (self):
 
     k = self.k
@@ -3343,7 +2266,7 @@ def exit (self,restore=False): # Called from keyboard-quit.
 
     ### self.clear()
     ### self.theObject = None
-#@+node:ekr.20101002192824.5930: *7* append/begin/popTabName
+#@+node:ekr.20101002192824.5930: *6* append/begin/popTabName
 def appendTabName (self,word):
 
     self.setTabName(self.tabName + word + '.')
@@ -3375,7 +2298,7 @@ def setTabName (self,s):
             c.frame.log.deleteTab(self.tabName)
         self.tabName = s.replace('_','') or ''
         c.frame.log.clearTab(self.tabName)
-#@+node:ekr.20101002192824.5931: *7* appendToKnownObjects
+#@+node:ekr.20101002192824.5931: *6* appendToKnownObjects
 def appendToKnownObjects (self,obj):
 
     if 0:
@@ -3383,7 +2306,7 @@ def appendToKnownObjects (self,obj):
             if hasattr(obj,'__name__'):
                 self.knownObjects[obj.__name__] = obj
                 # g.trace('adding',obj.__name__)
-#@+node:ekr.20101002192824.5997: *7* calltip
+#@+node:ekr.20101002192824.5997: *6* calltip
 def calltip (self):
 
     c = self.c
@@ -3409,7 +2332,7 @@ def calltip (self):
     self.finish()
     c.widgetWantsFocusNow(w)
     w.setSelectionRange(j1,j2,insert=j2)
-#@+node:ekr.20101002192824.5988: *7* chain
+#@+node:ekr.20101002192824.5988: *6* chain
 def chain (self):
 
     c = self.c ; w = self.widget
@@ -3419,7 +2342,7 @@ def chain (self):
     w.setInsertPoint(j+1)
     self.finish()
     self.start(chain=True)
-#@+node:ekr.20101002192824.5940: *7* computeCompletionList
+#@+node:ekr.20101002192824.5940: *6* computeCompletionList
 def computeCompletionList (self,verbose=False):
 
     c = self.c ; w = self.widget
@@ -3448,7 +2371,7 @@ def computeCompletionList (self,verbose=False):
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
         g.es('','\n'.join(self.tabList),tabName=self.tabName)
-#@+node:ekr.20101002192824.5941: *7* doBackSpace (autocompleter)
+#@+node:ekr.20101002192824.5941: *6* doBackSpace (autocompleter)
 def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
@@ -3456,7 +2379,7 @@ def doBackSpace (self):
     s = self.prefixes and self.prefixes.pop() or ''
     self.setSelection(s)
     self.computeCompletionList()
-#@+node:ekr.20101002192824.5942: *7* doTabCompletion (autocompleter)
+#@+node:ekr.20101002192824.5942: *6* doTabCompletion (autocompleter)
 def doTabCompletion (self):
 
     '''Handle tab completion when the user hits a tab.'''
@@ -3475,7 +2398,7 @@ def doTabCompletion (self):
         self.computeCompletionList()
 
     c.widgetWantsFocusNow(w)
-#@+node:ekr.20101002192824.5943: *7* extendSelection
+#@+node:ekr.20101002192824.5943: *6* extendSelection
 def extendSelection (self,s):
 
     '''Append s to the presently selected text.'''
@@ -3488,7 +2411,7 @@ def extendSelection (self,s):
     j += 1
     w.setSelectionRange(i,j,insert=j)
     c.frame.body.onBodyChanged('Typing')
-#@+node:ekr.20101002192824.5944: *7* findCalltipWord
+#@+node:ekr.20101002192824.5944: *6* findCalltipWord
 def findCalltipWord (self,w):
 
     i = w.getInsertPoint()
@@ -3499,7 +2422,7 @@ def findCalltipWord (self,w):
         return word
     else:
         return ''
-#@+node:ekr.20101002192824.5946: *7* finish
+#@+node:ekr.20101002192824.5946: *6* finish
 def finish (self):
 
     c = self.c ; k = c.k
@@ -3514,7 +2437,7 @@ def finish (self):
     c.recolor()
     ### self.clear()
     ### self.theObject = None
-#@+node:ekr.20101002192824.5948: *7* getLeadinWord & helper
+#@+node:ekr.20101002192824.5948: *6* getLeadinWord & helper
 def getLeadinWord (self,w):
 
     i,word = self.findAnchor(w)
@@ -3528,7 +2451,7 @@ def getLeadinWord (self,w):
         self.membersList = []
         self.leadinWord = None
         return False
-#@+node:ekr.20101002192824.5945: *8* findAnchor
+#@+node:ekr.20101002192824.5945: *7* findAnchor
 def findAnchor (self,w):
 
     '''
@@ -3554,7 +2477,7 @@ def findAnchor (self,w):
     else:
         # g.trace(i,j,repr(word))
         return j,word
-#@+node:ekr.20101002192824.5949: *7* getMembersList
+#@+node:ekr.20101002192824.5949: *6* getMembersList
 def getMembersList (self,obj):
 
     '''Return a list of possible autocompletions for self.leadinWord.'''
@@ -3567,7 +2490,7 @@ def getMembersList (self,obj):
         return members
     else:
         return []
-#@+node:ekr.20101002192824.6005: *7* info (rewrite)
+#@+node:ekr.20101002192824.6005: *6* info (rewrite)
 def info (self):
 
     c = self.c ; doc = None ; obj = self.theObject ; w = self.widget
@@ -3594,7 +2517,7 @@ def info (self):
         g.es('',doc,tabName='Info')
     else:
         g.es('no docstring for',word,color='blue')
-#@+node:ekr.20101002192824.5951: *7* insertNormalChar
+#@+node:ekr.20101002192824.5951: *6* insertNormalChar
 def insertNormalChar (self,ch,keysym):
 
     k = self.k ; w = self.widget
@@ -3621,7 +2544,7 @@ def insertNormalChar (self,ch,keysym):
     else:
         self.extendSelection(ch)
         self.finish()
-#@+node:ekr.20101002192824.5952: *7* push, pop, clear, stackNames (To be deleted)
+#@+node:ekr.20101002192824.5952: *6* push, pop, clear, stackNames (To be deleted)
 if 0:
     def push (self,obj):
         if obj is not None:
@@ -3644,14 +2567,14 @@ if 0:
             else:
                 aList.append(str(z))
         return aList
-#@+node:ekr.20101002192824.5953: *7* setMembersList & helpers
+#@+node:ekr.20101002192824.5953: *6* setMembersList & helpers
 def setMembersList (self,word):
 
     self.membersList = self.watchwords.get(word)
     self.membersList.sort()
 
     # g.trace(word,self.membersList)
-#@+node:ekr.20101002192824.5954: *8* getObjectFromAttribute
+#@+node:ekr.20101002192824.5954: *7* getObjectFromAttribute
 def getObjectFromAttribute (self,word):
 
     obj = self.theObject
@@ -3666,7 +2589,7 @@ def getObjectFromAttribute (self,word):
         # Don't clear the stack here!
         self.membersList = []
         self.theObject = None
-#@+node:ekr.20101002192824.5956: *8* completeFromObject
+#@+node:ekr.20101002192824.5956: *7* completeFromObject
 def completeFromObject (self,obj):
 
     if obj:
@@ -3678,7 +2601,7 @@ def completeFromObject (self,obj):
         self.theObject = None
         self.clear()
         self.membersList = []
-#@+node:ekr.20101002192824.5957: *7* setSelection
+#@+node:ekr.20101002192824.5957: *6* setSelection
 def setSelection (self,s):
 
     g.trace(s,g.callers(2))
@@ -3704,7 +2627,7 @@ def setSelection (self,s):
     c.frame.body.recolor(c.p,incremental=True)
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
-#@+node:ekr.20101002192824.5958: *7* start
+#@+node:ekr.20101002192824.5958: *6* start
 def start (self,event=None,w=None,prefix=None,chain=False):
 
     c = self.c
@@ -3746,6 +2669,1276 @@ def start (self,event=None,w=None,prefix=None,chain=False):
             return self.tabList
     else:
         self.abort()
+#@+node:ekr.20100828074347.5827: ** Vim bindings
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
+
+Vim mode users: your top 3 complaints, please
+#@+node:ekr.20110202094848.12569: *3* Notes
+#@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
+@language python
+@color
+
+#Just playing with part of a template system, the (partial) mock up for "range()" is:
+
+def tabStopNaming (event=None):
+
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
+
+  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
+           'end-value -- required, -> fill-in.  ',
+           'step -- optional, ->fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
+
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
+
+tabStopNaming()
+
+@nocolor
+
+=====================================================
+This is hardwired for the first parameter.  Things I need to expand
+this:
+
+1. put in a variable that cycles through the tabStops
+
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
+
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, andy guidance would be appreciated.
+
+Tom
+
+=======================
+
+Generalizing the minibuffer code would be a good thing to do.  I
+suppose we could define some kind of language that would create, or
+rather simulate, hand-written code.  In a sense, @mode nodes are
+intended to do this also.
+
+As I look at leoKeys.py again I'll keep this example in the back of my
+mind as something that it would be good to support more easily.
+
+Edward
+#@+node:ekr.20100210102224.5744: *4* Design
+@nocolor-node
+
+Requirements:
+    - Existing bindings must still be valid.
+    - But @mode does not have to remain.
+
+Think data:
+    - Drive binding by tables.
+    *** Design these tables first.
+    - Table design should be flixible.
+      It can change without affecting user.
+
+keySequence class?
+    - Represents a sequence of keystrokes.
+
+bufferMode class?
+    - Might encapsulate directives, etc.
+
+bindHelper class?
+    - Would mediate various aspects of binding.
+    - c.bindHelper or k.bindHelper?
+#@+node:ekr.20100113075303.6270: *3* Vim problems
+#@+node:ekr.20110202094848.12568: *4* named marks
+@nocolor-node
+
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+
+Another is named marks, in Vim you can store a number of cursor
+locations, and recall them to jump around in your code.  This was also
+useful in filling out templates as each stop could be given a name
+mark.  This helped make filling out a template easier as you weren't
+stuck in a linear filling in the blanks in a set order, template stops
+where linked in rings, you could jump from the last stop back to the
+first and make and changes you wanted on a second go round.  Gravity
+of marks made things easier to inspect to determine what stops where
+used and which ones were being bypassed.
+
+As these things had an actual presence in the text buffer, it going to
+be a little harder to come up with a reasonable work around.
+
+Tom
+#@+node:ekr.20100112051224.6229: *4* Binding Arrow keys (fixed?)
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@+node:ekr.20100112051224.6239: *4* Displaying mode help
+@nocolor-node
+
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
+Support the ';' key: repeat the last "To character" or "Find character" command.
+#@+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+#@+node:ekr.20080616110054.2: *4* Support vim dot command
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
+
+Binding keys within nodes:
+
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.
+
+Support commands requesting input:
+
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
+#@+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@+node:ekr.20100113075303.6272: *4* Argument handling
+#@+node:ekr.20100112051224.6222: *5* Commands requesting user input (hard?)
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+#@+node:ekr.20100112051224.6226: *5* Range prefix to commands (k.getArgs)
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+#@+node:ekr.20100112051224.6227: *5* Range prefix to objects (k.getArgs)
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+#@+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+#@+node:ekr.20100112051224.6237: *4* Fix forward and backward by sentences
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+#@+node:ekr.20100112051224.6246: *4* Missing commands
+#@+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
+
+#@+node:ekr.20100112051224.6233: *5* Replace current character command
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+#@+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+#@+node:ekr.20100112051224.6235: *5* Move body text up/down
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+#@+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
+#@+node:ekr.20100112051224.6236: *5* Two kinds of words
+Vi supports two types of words in its commands:
+
+1. Words that consist of only a subset of the character set and
+2. words that consist of all characters except the space and tab characters.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+#@+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
+#@+node:ekr.20100827114047.5895: ** Bugs
+#@+node:ekr.20101024062147.5994: *3* Minor
+#@+node:ekr.20101218103123.5934: *4* Fix redefinition messages
+#@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
+# Apparently, ctrl-e is not passed to Leo at all.
+#@+node:ekr.20110111100539.12258: *5* Report
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
+
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
+
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
+
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
+
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
+
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
+
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
+
+#@+node:ekr.20100109094541.6232: *5* within lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'start-line',extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    self.moveWithinLineHelper(event,'start-line',extend=True)
+
+def endOfLine (self,event):
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'end-line',extend=False)
+
+def endOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    self.moveWithinLineHelper(event,'end-line',extend=True)
+#@+node:ekr.20100109094541.6231: *5* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
+#@+node:ekr.20100522090453.5912: *4* Fix bugs with @verbatim, @raw and @end_raw
+@nocolor-node
+
+> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
+> not @root), you can prevent any interpretation of the immediately
+> following line with the "@verbatim" directive
+
+This is not true, although it might appear to be true.
+
+There is an @verbatim *sentinel*, but no @verbatim *directive*.
+
+For example, I have just verified that the following does not work:
+
+@verbatim
+<< undefined ref >>
+
+@raw and @end_raw do work as described.
+
+There appear to be several bugs in this area:
+
+1. Leo probably should warn that @verbatim does not exist as a
+directive, although technically Leo is supposed to write anything that
+looks like a sentinel but isn't "verbatim".
+
+2. Leo does appear to read @raw and @end_raw properly in @thin files,
+but Leo improperly issues the (red) log message,
+converting @file format in @thin test_verbatim_sentinel.py
+#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
+#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
+
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@+node:ekr.20100521090440.5885: *4* Fix mac unicode crasher
+#@+node:ekr.20100521090440.5886: *5* Report
+@nocolor-node
+
+I put the following in qtGui.py after
+
+# Last minute-munges to keysym.
+
+    if sys.platform.startswith('darwin'):
+        darwinmap = {
+            'Alt-Key-5': '[',
+            'Alt-Key-6': ']',
+            'Alt-Key-7': '|',
+            'Alt-slash': '\\',
+            'Alt-Key-8': '{',
+            'Alt-Key-9': '}',
+            'Alt-e': '€',
+            'Alt-l': '@',
+        }
+        if tkKey in darwinmap:
+            tkKey = stroke = darwinmap[tkKey]
+
+It works quite reasonabe. Sometimes (not really well reproducable)
+following message appears:
+
+/Users/tst/Leo-4.7-final/leo/core/leoKeys.py:3363: UnicodeWarning:
+Unicode equal comparison failed to convert both arguments to Unicode -
+interpreting them as being unequal
+  if k.abortAllModesKey and stroke == k.abortAllModesKey:
+/Users/scalet/Leo-4.7-final/leo/core/leoKeys.py:2521: UnicodeWarning:
+Unicode equal comparison failed to convert both arguments to Unicode -
+interpreting them as being unequal
+  if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-
+g'
+
+nonetheless the special characters were inserted as expected.
+
+I think all this is quite a hack, but ... thanks for the hack, most
+important for me it's working for now. 
+#@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect
+@nocolor-node
+
+Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+is incorrect when there is an existing selection, which was created by some
+method other than Ctrl-Shift movement.
+
+Expected behavior: it should extend/contract the existing selection
+
+Actual behavior: it creates a new selection from the cursor position
+
+======
+
+This is a minor bug, but hard to fix because Leo doesn't always distinguish
+between the point and the mark.
+
+The fix would be in extendHelper, called from moveToHelper.
+#@+node:ekr.20101024062147.5996: *3* Wishlist
+#@+node:ekr.20080922115725.1: *4* Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@+node:ekr.20081004102201.2: *5* Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+
+How about a shadow.log file which Leo told what it thought of the relationship
+between the node, file and shadow? It might provide useful clues.
+#@+node:ekr.20081001062423.1: *5* Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@+node:ekr.20080708094444.38: *6* x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+       New at 2010/01/07: Replacements preserve sentinel locations.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    trace = False and g.unitTesting
+    verbose = True
+    x = self
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40: *7* << init vars >>
+new_private_lines_wtr = self.sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@+node:ekr.20080708094444.39: *7* << define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@+node:ekr.20080708192807.2: *7* << about this loop >>
+@ This loop writes all output lines using a single writer:
+new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present
+  SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of
+  the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips
+(deletes) all previously unwritten non-sentinel lines in
+old_private_lines_rdr whose index is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from
+the old_private_lines_rdr explicitly. This explains why opcode
+handlers for the 'insert' and 'delete' opcodes are identical.
+#@+node:ekr.20080708192807.5: *7* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
+
+if tag == 'equal':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+            tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag == 'insert':
+    if limit < old_private_lines_rdr.size():
+        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index() # Only used for tag.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag == 'replace':
+    # This case is new: it was the same as the 'insert' case.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while (
+        old_private_lines_rdr.index() <= mapping[old_j-1]
+        and new_public_lines_rdr.index() <  new_j
+            # 2010/10/22: the replacement lines can be shorter.
+    ):
+        old_line = old_private_lines_rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                'replace: copy sentinel',start,new_j))
+        else:
+            new_line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                'replace: new line',start,new_j))
+
+    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # Leave new_public_lines_rdr unchanged.
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@+node:ekr.20080708094444.45: *7* << do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@+node:ekr.20090402072059.13: *5* Create a general mechanism for aux (shadow, _db) files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+
+On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+
+    When I tried to de-install Leo-4.6b1 I succeeded, but the program
+    reported that 5 directories
+    were not removed.
+
+    Three of the directories where
+
+    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
+    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
+    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
+
+    [containing]
+
+
+    a) .leoSettings.leo_db
+    b) .leoDocs.leo_db
+    c) .leo_shadow
+    d) .leoPluginsRef.leo_db
+
+
+Thanks for this report. I think it is important, and needs a good solution.
+
+I dislike all these files being sprayed around the file system. I'd like to see
+these files placed somewhere the ~/.leo directory. Is there a reason why this
+would be a bad idea?
+
+Similarly, we might also prefer to have shadow files place in, say,
+~/.leo/shadow_files.
+
+In both cases, I think we want to create files that indicate their location.
+Either that, or mirror their location in (subdirectories) ~/.leo. In other
+words, this is a general problem, and it would be good to have a robust, general
+solution.
+#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
+# Just make the test.  It doesn't have to pass.
+#@+node:ekr.20100826110728.5839: *4* Relocating .leo_shadow directories
+@nocolor-node
+
+2008
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
+
+May 10, 2010
+
+Kent
+
+I think there could be quite a bit of interest in moving
+the shadow files to their own tree, avoiding what might
+be considered 'pollution' of a tree of files in @shadow nodes.
+
+Edward has said that this would add a lot of complexity to Leo.
+
+It seems that a VCS back end for Leo might simplify the
+task of arbitrary shadow file location, as well as adding
+versioning capability.
+
+
+Those of us old enough to remember the Groucho Marx show will know what I am ...
+
+bogomil
+ to me
+
+In order to relocate .leo_shadow directories in home dir, I have made
+the following changes leoShadow.py:
+1. Introduce new setting 'shadow_in_home_dir':
+   x.ctor:
+     ...
+     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
+or False
+    ...
+
+2. Make the following line:
+   x.shadowDirName and shadowPathName:
+      ...
+      fileDir = g.os_path_dirname(filename)
+
+=>   if self.shadow_in_home_dir:
+        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+In this way I keep .leo_shadow dirs in a tree and it is ok if the user
+reorgs the original tree.
+
+=====================
+Edward K. Ream
+ to bogomil
+
+Thanks for these suggestions.  I'll try them soon.
+
+A few minor comments about the code.
+
+>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
+
+This works (because c.config.getBool returns None if the setting does
+not exist). Thus, the "or False" part merely replaces None by False.
+I prefer the following:
+
+self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
+
+>   if self.shadow_in_home_dir:
+>         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+This looks like a Windows-only solution because of ':'.  It might fail
+in strange ways on other platforms.
+#@+node:ekr.20100830120622.5829: *4* Fix python import problems
+@nocolor-node
+
+> > Hmm, I guess that would be more clear, although I think I'd like an option
+to include it in the following def to avoid
+
+> > Decoration
+> > index
+> > Decoration
+> > add_user
+>
+> Sure.  Decorations must always be part of a definition.
+
+Well, personally I'd like to have them included in the definition, but I think
+Kent's preference for a separate node is reasonable to. If your function and
+hence definition node is called "pluralize", and it's decorated with something
+like "@authenticate_user", you may never check the innocent looking pluralize
+definition to find out what on earth's triggering the mysterious network
+database call. And this isn't a completely specious example, authentication may
+have been added to stop pluralize being used in a user existence detection
+exploit or something. OTOH in well behaved code like CherryPy apps you don't
+want a separate node for every @cherrypy.expose.
+
+Bottom line is I think we're asking for a set of @settings to fine tune python
+import behavior:
+
+@python_import_interdef = previous | next | own_node | ai
+@python_import_decoration = next | own_node
+
+I'm not sure I believe the AI option is possible / practical, and am not asking
+for it, just listing it :-)
+
+I'd also like
+
+@python_import_init_in_class_node = true | false
+
+as often there's more docs on a class in the __init__ than the class docstring.
+
+I think that's really all we're talking about, some @settings to test during import.
+#@+node:ekr.20100206074650.5844: ** Features
+#@+node:ekr.20090811141250.5955: *3*  Most important features
+@ Important: There is another features list for 4.9.
+#@+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+#@+node:ekr.20090816125009.5993: *5* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@+node:ekr.20090814190307.5983: *5* print all modes/*.py files
+import glob
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+
+aList = glob.glob(theDir)
+
+for z in aList:
+    print g.os_path_basename(z)
+
+@
+Exist:
+
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+"w"     : "cweb",
+"xml"   : "xml",
+"xsl"   : "xslt",
+
+Add first:
+
+
+ada95.py
+antlr.py
+apacheconf.py
+apdl.py
+applescript.py
+asp.py
+aspect_j.py
+assembly_macro32.py
+assembly_mcs51.py
+assembly_parrot.py
+assembly_r2000.py
+assembly_x86.py
+awk.py
+b.py
+batch.py
+bbj.py
+bcel.py
+bibtex.py
+c.py
+chill.py
+cobol.py
+coldfusion.py
+cplusplus.py
+csharp.py
+css.py
+cvs_commit.py
+d.py
+doxygen.py
+dsssl.py
+eiffel.py
+embperl.py
+erlang.py
+factor.py
+forth.py
+fortran.py
+fortran90.py
+foxpro.py
+freemarker.py
+gettext.py
+groovy.py
+haskell.py
+hex.py
+html.py
+i4gl.py
+icon.py
+idl.py
+inform.py
+ini.py
+inno_setup.py
+interlis.py
+io.py
+java.py
+javascript.py
+jcl.py
+jhtml.py
+jmk.py
+jsp.py
+latex.py
+lilypond.py
+lisp.py
+lotos.py
+lua.py
+mail.py
+makefile.py
+maple.py
+matlab.py
+ml.py
+modula3.py
+moin.py
+mqsc.py
+netrexx.py
+nqc.py
+nsis2.py
+objective_c.py
+objectrexx.py
+occam.py
+omnimark.py
+pascal.py
+patch.py
+perl.py
+php.py
+phpsection.py
+pike.py
+pl1.py
+plain.py
+plsql.py
+pop11.py
+postscript.py
+povray.py
+powerdynamo.py
+progress.py
+prolog.py
+props.py
+psp.py
+ptl.py
+pvwave.py
+pyrex.py
+python.py
+r.py
+rebol.py
+redcode.py
+relax_ng_compact.py
+rest.py
+rhtml.py
+rib.py
+rpmspec.py
+rtf.py
+ruby.py
+rview.py
+sas.py
+scheme.py
+sdl_pr.py
+sgml.py
+shell.py
+shellscript.py
+shtml.py
+smalltalk.py
+smi_mib.py
+splus.py
+sqr.py
+squidconf.py
+ssharp.py
+svn_commit.py
+swig.py
+tcl.py
+tex.py
+texinfo.py
+text.py
+tpl.py
+tsql.py
+uscript.py
+vbscript.py
+velocity.py
+verilog.py
+vhdl.py
+xml.py
+xsl.py
+zpt.py
+__init__.py
+#@+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@+node:ekr.20090601083544.6052: *5* post
+@nocolor-node
+
+I want to write the documentation for the source program in a @rst3 subtree. In
+this @rst3 subtree I want to refer to fragments of the program, like:
+
+In the following code fragment::
+
+  <<code fragment>>
+
+Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
+get to this work, I should have <<code fragment>> under the @rst3 subtree as
+well, but this is then also treated as @rst3 input (which in this case, is not
+what I want).
+#@+node:ekr.20080918164844.12: *4* Improve headline navigation
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
+
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
+
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@+node:ekr.20080730212711.7: *4* Improve plugins handling
+@nocolor-node
+
+- Don't repeat "can not load <plugin>" messages.
+
+- Unify print-plugins and print-plugins-info commands, and make them more informative.
+
+- Fix the plugin mess.
+
+    - Create a way to unload a plugin.  This should be relatively easy.
+#@+node:ekr.20101126123343.5845: *5* Plugins and plugins manager
+Rewrite the plugins manager.
+
+Make all plugins gui-independent.
+#@+node:ekr.20090804105939.5993: *5* Possibly redo how plugins are loaded
+#@+node:ekr.20080313032655.2: *5* Once a plugin is enabled, it is always enabled
+#@+node:ekr.20080923200153.1: *5* Support scan-directives hook again?
+# This affects the add_directives plugin.
+# Also, the color_markup plugin doesn't work with the threading colorizer.
+#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+@color
+#@+node:ekr.20090724081340.5987: *4* Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@+node:ekr.20090907080624.6081: *4* Spell checker should check headlines
+#@+node:ekr.20071001052501: *4* Versioning for nodes
+@nocolor
+
+One feature I have not seen in SCS system is something which might be called
+"history compression": I might be interested in having both version 5 and 6
+in my source tree, when the current version is 7, but I am not really interested
+in the 2000 steps which transformed 5 into 6 (just suggested this feature to
+the bazaar people). This happens actually quite often to me, since I use the
+SCS as a back-up system, saving many (uninteresting) intermediate steps while
+implementing a new feature.
+#@+node:ekr.20101004092958.5914: *4* Write treepad scanner
+@ treepad.py is from the treepad website
+#@+node:ekr.20101004092958.5939: *5* treepad.py
+@first #! /usr/local/bin/python
+
+# treepad.py
+
+@language python
+@tabwidth -4
+@others
+if __name__ == '__main__':
+    Main().Run()
+
+#@+node:ekr.20101004092958.5940: *6* treepad declarations
+import sys, os, re, string
+
+# constants
+VERSION = "<Treepad version 2.7>"
+
+# regexes
+END_RE = re.compile(r'^<end node> ([^ ]+)$')
+#@+node:ekr.20101004092958.5941: *6* class Node
+class Node:
+    @others
+#@+node:ekr.20101004092958.5942: *7* __init__
+def __init__(self):
+    self.title    = ""
+    self.level    = 0
+    self.article  = []
+    self.children = []
+    self.parent   = None
+    self.end      = ""
+#@+node:ekr.20101004092958.5943: *7* __str__
+def __str__(self):
+    return "%s/%d" % (self.title, self.level)
+#@+node:ekr.20101004092958.5944: *7* addchild
+def addchild(self, node):
+    assert self.level == node.level-1 and node.parent is None
+    node.parent = self
+    self.children.append( node )
+#@+node:ekr.20101004092958.5945: *7* findparent
+def findparent(self, node):
+    if self.level == (node.level-1): return self
+    return self.parent.findparent(node)
+#@+node:ekr.20101004092958.5946: *7* writenode
+def writenode(self, fp):
+    fp.write("dt=Text\n")
+    fp.write("<node>\n")
+    fp.write("%s\n" % self.title)
+    fp.write("%s\n" % self.level)
+    for line in self.article:
+        fp.write("%s\n" % line)
+    fp.write("<end node> %s\n" % self.end)
+#@+node:ekr.20101004092958.5947: *7* writetree
+def writetree(self, fp):
+    self.writenode(fp)
+    for node in self.children:
+        node.writetree(fp)
+
+#@+node:ekr.20101004092958.5948: *6* class NodeReader
+class NodeReader:
+    @others
+#@+node:ekr.20101004092958.5949: *7* __init__
+def __init__(self, fname, fp):
+    self.fname    = fname
+    self.fp       = fp
+#@+node:ekr.20101004092958.5950: *7* expect
+def expect(self, text, line=None):
+    if line is None:
+        line = self.fp.readline().strip()
+    assert line == text, "expected " + line + " == " + text
+#@+node:ekr.20101004092958.5951: *7* readstart
+def readstart(self):
+    self.expect(VERSION)
+#@+node:ekr.20101004092958.5952: *7* readnode
+def readnode(self):
+    line = self.fp.readline()
+    if line is None:
+        return None
+    line = line.strip()
+    if len(line) < 1:
+        return None
+    self.expect("dt=Text", line)
+    self.expect("<node>")
+    node = Node()
+    node.title = self.fp.readline().strip()
+    node.level = int(self.fp.readline().strip())
+    while 1:
+        line = self.fp.readline()
+        m = re.match(END_RE, line)
+        if m:
+            node.end = m.group(1).strip()
+            break
+        node.article.append( line.strip() )
+    return node
+
+#@+node:ekr.20101004092958.5953: *6* class TreeReader
+class TreeReader:
+    @others
+#@+node:ekr.20101004092958.5954: *7* __init__
+def __init__(self, fname, fp=None):
+    if fp is None: fp = open(fname, 'r')
+    self.nodereader = NodeReader(fname, fp)
+    self.root = None
+    self.prev = None
+#@+node:ekr.20101004092958.5955: *7* add
+def add(self, node):
+    if self.prev is None:
+        assert node.level == 0
+        self.root = node
+    else:
+        assert node.level > 0
+        parent = self.prev.findparent(node)
+        parent.addchild( node )
+    self.prev = node
+#@+node:ekr.20101004092958.5956: *7* read
+def read(self):
+    self.nodereader.readstart()
+    prev = None
+    while 1:
+        node = self.nodereader.readnode()
+        if node is None: break
+        self.add(node)
+
+#@+node:ekr.20101004092958.5957: *6* class TreeWriter
+class TreeWriter:
+    @others
+#@+node:ekr.20101004092958.5958: *7* __init__
+def __init__(self, fname, fp=None):
+    if fp is None: fp = open(fname, 'w')
+    self.fname = fname
+    self.fp    = fp
+#@+node:ekr.20101004092958.5959: *7* write
+def write(self, root):
+    self.fp.write("%s\n" % VERSION)
+    root.writetree(self.fp)
+
+#@+node:ekr.20101004092958.5960: *6* class Main
+class Main:
+    @others
+#@+node:ekr.20101004092958.5961: *7* __init__
+def __init__(self):
+    self.infile  = sys.argv[1]
+    self.outfile = sys.argv[2]
+    self.reader  = TreeReader(self.infile)
+    self.writer  = TreeWriter(self.outfile)
+#@+node:ekr.20101004092958.5962: *7* Run
+
+def Run(self):
+    self.reader.read()
+    self.writer.write(self.reader.root)
+
 #@+node:ekr.20100521090440.5890: *3* Cleanups
 #@+node:ekr.20100223123910.5930: *4* recentFilesController
 @
@@ -5116,7 +5309,6 @@ def find (c,command,f_name):
 #@+node:ekr.20101119030344.5840: *5* adjust
 def adjust(f,i,p):
     pass
-#@+node:ekr.20101125041212.5846: *4* Fix bug: ignore f-keys in find/replace patterns
 #@+node:ekr.20101124145006.5842: *4* Unify extract commands
 @nocolor-node
 
