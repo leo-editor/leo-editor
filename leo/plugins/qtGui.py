@@ -1057,9 +1057,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 w.setReadOnly(True)
             elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
                 s2 = self.urlToImageHtml(c,new_p,s)
-                w.setReadOnly(False)
-                w.setHtml(s2)
-                w.setReadOnly(True)
+                if s2 != None:
+                    w.setReadOnly(False)
+                    w.setHtml(s2)
+                    w.setReadOnly(True)
+                else:
+                    w.setPlainText(s)
             else:
                 w.setReadOnly(False)
                 w.setPlainText(s)
@@ -1075,6 +1078,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return g.os_path_basename(urlparse.urlsplit(url)[2]) 
 
     def download_image(self,url): 
+        proxy_opener = urllib.build_opener()
+
         proxy_support = urllib.ProxyHandler({})
         no_proxy_opener = urllib.build_opener(proxy_support)
         urllib.install_opener(no_proxy_opener)
@@ -1083,20 +1088,38 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         req = urllib.Request(url) 
         
         try:
-            r = urllib.urlopen(req)
-        except IOError, e1:
-            proxy_opener = urllib.build_opener()
+            r = urllib.urlopen(req, timeout=1)
+        except urllib.HTTPError, eh:
+            if hasattr(eh, 'reason'):
+                print 'HTTP reason: ', eh.reason
+                print 'Reason erno: ', eh.reason.errno
+                return ''
+
+        except urllib.URLError, eu:
+            if hasattr(eu, 'reason') and eu.reason.errno != 11001:
+                print 'Probbably wrong web address.'
+                print 'URLError reason: ', eu.reason
+                print 'Reason erno: ', eu.reason.errno
+                return ''
+
             urllib.install_opener(proxy_opener)
             
             try:
-                r = urllib.urlopen(req)
-            except IOError, e3:
-                if hasattr(e3, 'reason'):
+                r = urllib.urlopen(req, timeout=1)
+            except urllib.HTTPError, eh:
+                if hasattr(eh, 'reason'):
+                    print 'HTTP reason: ', eh.reason
+                    print 'Reason erno: ', eh.reason.errno
+                    return ''
+        
+            except IOError, eu:
+                if hasattr(eu, 'reason'):
                     print 'Failed to reach a server through default proxy.'
-                    print 'Reason: ', e3.reason
-                elif hasattr(e3, 'code'):
+                    print 'Reason: ', eu.reason
+                    print 'Reason erno: ', eu.reason.errno
+                if hasattr(eu, 'code'):
                     print 'The server couldn\'t fulfill the request.'
-                    print 'Error code: ', e3.code
+                    print 'Error code: ', eu.code
                     
                 return ""
                     
