@@ -4035,6 +4035,174 @@ def getCachedWindowPositionDict (self,fn):
 def startWinPos (self,attrs):
 
     self.global_window_position = self.getWindowPositionAttributes(attrs)
+#@+node:ekr.20110127085519.15074: *4* Fixed TL's Ctrl+U crash
+@nocolor-node
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 1937, in makeMasterGuiBinding
+    c.bind(w,bindStroke,masterBindKeyCallback)
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 6123, in bind
+    w.bind(pattern,bindCallback,*args,**keys)
+  File "c:\python26\lib\lib-tk\Tkinter.py", line 985, in bind
+    return self._bind(('bind', self._w), sequence, func, add)
+  File "c:\python26\lib\lib-tk\Tkinter.py", line 940, in _bind
+    self.tk.call(what + (sequence, cmd))
+TclError: bad event type or keysym "Key+U"
+#@+node:ekr.20061031131434.103: *5* k.makeMasterGuiBinding
+def makeMasterGuiBinding (self,stroke,w=None):
+
+    '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
+
+    trace = True and not g.unitTesting
+    k = self ; c = k.c ; f = c.frame
+
+    bindStroke = k.tkbindingFromStroke(stroke)
+
+    if stroke.lower().startswith('key'):
+        g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),g.callers(5))
+
+    if w:
+        widgets = [w]
+    else:
+        # New in Leo 4.5: we *must* make the binding in the binding widget.
+        bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
+        bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
+        canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
+        if 0: # Canvas and bindingWidget bindings are now set in tree.setBindings.
+            widgets = (c.miniBufferWidget,bodyCtrl)
+        else:
+            widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
+
+    # This is the only real key callback.
+    def masterBindKeyCallback (event,k=k,stroke=stroke):
+        # g.trace(stroke,event.w)
+        return k.masterKeyHandler(event,stroke=stroke)
+
+    if 0:
+        if stroke.lower().endswith('+s') or stroke.lower().endswith('-s'):
+            g.trace(sroke,widgets)
+        if stroke in ('s','S'):
+            g.trace(stroke,widgets)
+
+    for w in widgets:
+        if not w: continue
+        # Make the binding only if no binding for the stroke exists in the widget.
+        aList = k.masterGuiBindingsDict.get(bindStroke,[])
+        if w not in aList:
+            aList.append(w)
+            k.masterGuiBindingsDict [bindStroke] = aList
+            try:
+                c.bind(w,bindStroke,masterBindKeyCallback)
+                # g.trace(stroke,bindStroke,g.app.gui.widget_name(w))
+            except Exception:
+                if self.trace_bind_key_exceptions:
+                    g.es_exception()
+                g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
+
+                if g.app.unitTesting: raise
+#@+node:ekr.20110127085519.15075: *5* dump k.bindingsDict
+aList = list(c.k.bindingsDict.keys())
+aList.sort()
+for z in aList: print(z)
+#@+node:ekr.20061031131434.191: *5* k.prettyPrintKey
+def prettyPrintKey (self,stroke,brief=False,trace=False):
+
+    k = self
+    s = stroke and g.stripBrackets(stroke.strip())
+    if not s: return ''
+
+    shift = s.find("shift") >= 0 or s.find("shft") >= 0
+
+    # Replace all minus signs by plus signs, except a trailing minus:
+    if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
+    else:               s = s.replace('-','+')
+    fields = s.split('+')
+    last = fields and fields[-1]
+    if trace: g.trace('fields',fields)
+    if last and len(last) == 1:
+        prev = s[:-1]
+        if last.isalpha():
+            if last.isupper():
+                if not shift:
+                    s = prev + 'Shift+' + last
+            elif last.islower():
+                if not prev and not brief:
+                    # g.trace('*'*10,s,g.callers())
+                    s = 'Key+' + last.upper()
+                else:
+                    s = prev + last.upper()
+    else:
+        last = k.guiBindNamesInverseDict.get(last,last)
+        if fields and fields[:-1]:
+            s = '%s+%s' % ('+'.join(fields[:-1]),last)
+        else:
+            s = last
+    if s.endswith(' '):
+        s = s[:-1]+'Space' # 2010/11/06
+    # g.trace(stroke,s)
+    return g.choose(brief,s,'<%s>' % s)
+#@+node:ekr.20061031131434.89: *5* bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    if shortcut and shortcut.lower().startswith('key'):
+        g.trace(pane,shortcut,commandName)
+
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: g.trace(pane,shortcut,commandName)
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90: *6* << give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+            
+        g.es_print ('redefining shortcut %s from %s to %s in %s' % (
+            c.k.prettyPrintKey(shortcut),
+                # 2010/11/16: a significant bug fix.
+                # 2011/01/26: use the prettyPrintKey only for the message!
+            g.choose(pane=='button',z,commandName),
+            g.choose(pane=='button',commandName,z),
+            pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -4526,5 +4694,54 @@ def setCachedGlobalsElement(self,fn):
         str(top),str(left),str(height),str(width))
     if trace:
         g.trace('top',top,'left',left,'height',height,'width',width)
+#@+node:ekr.20110202094848.12571: *3* Vim...
+#@+node:ekr.20060927173836.6: *4* Give warning when unbound key ends a mode
+#@+node:ekr.20091230094319.6244: *5* doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if val != 'do-standard-keys':
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            # if trace: g.trace('unbound key ends mode',stroke,state)
+            g.warning('unbound key ends mode',stroke) # 2011/02/02
+            k.endMode(event)
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return True,'break'
 #@-all
 #@-leo

@@ -1089,37 +1089,37 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         
         try:
             r = urllib.urlopen(req, timeout=1)
-        except urllib.HTTPError, eh:
+        except urllib.HTTPError as eh:
             if hasattr(eh, 'reason'):
-                print 'HTTP reason: ', eh.reason
-                print 'Reason erno: ', eh.reason.errno
+                g.trace('HTTP reason: ', eh.reason)
+                g.trace('Reason erno: ', eh.reason.errno)
                 return ''
 
-        except urllib.URLError, eu:
+        except urllib.URLError as eu:
             if hasattr(eu, 'reason') and eu.reason.errno != 11001:
-                print 'Probbably wrong web address.'
-                print 'URLError reason: ', eu.reason
-                print 'Reason erno: ', eu.reason.errno
+                g.trace('Probbably wrong web address.')
+                g.trace('URLError reason: ', eu.reason)
+                g.trace('Reason erno: ', eu.reason.errno)
                 return ''
 
             urllib.install_opener(proxy_opener)
             
             try:
                 r = urllib.urlopen(req, timeout=1)
-            except urllib.HTTPError, eh:
+            except urllib.HTTPError as eh:
                 if hasattr(eh, 'reason'):
-                    print 'HTTP reason: ', eh.reason
-                    print 'Reason erno: ', eh.reason.errno
+                    g.trace('HTTP reason: ', eh.reason)
+                    g.trace('Reason erno: ', eh.reason.errno)
                     return ''
         
-            except IOError, eu:
+            except IOError as eu:
                 if hasattr(eu, 'reason'):
-                    print 'Failed to reach a server through default proxy.'
-                    print 'Reason: ', eu.reason
-                    print 'Reason erno: ', eu.reason.errno
+                    g.trace('Failed to reach a server through default proxy.')
+                    g.trace('Reason: ', eu.reason)
+                    g.trace('Reason erno: ', eu.reason.errno)
                 if hasattr(eu, 'code'):
-                    print 'The server couldn\'t fulfill the request.'
-                    print 'Error code: ', eu.code
+                    g.trace('The server couldn\'t fulfill the request.')
+                    g.trace('Error code: ', eu.code)
                     
                 return ""
                     
