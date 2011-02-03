@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20081121105001.188: * @file qtGui.py
+#@+node:bob.20110130191621.30757: * @file ../plugins/qtGui.py
 #@@first
 
 '''qt gui plugin.'''
@@ -1067,9 +1067,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 w.setReadOnly(True)
             elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
                 s2 = self.urlToImageHtml(c,new_p,s)
-                w.setReadOnly(False)
-                w.setHtml(s2)
-                w.setReadOnly(True)
+                if s2 != None:
+                    w.setReadOnly(False)
+                    w.setHtml(s2)
+                    w.setReadOnly(True)
+                else:
+                    w.setPlainText(s)
             else:
                 w.setReadOnly(False)
                 w.setPlainText(s)
@@ -1085,6 +1088,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return g.os_path_basename(urlparse.urlsplit(url)[2]) 
 
     def download_image(self,url): 
+        proxy_opener = urllib.build_opener()
+
         proxy_support = urllib.ProxyHandler({})
         no_proxy_opener = urllib.build_opener(proxy_support)
         urllib.install_opener(no_proxy_opener)
@@ -1093,20 +1098,38 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         req = urllib.Request(url) 
         
         try:
-            r = urllib.urlopen(req)
-        except IOError, e1:
-            proxy_opener = urllib.build_opener()
+            r = urllib.urlopen(req, timeout=1)
+        except urllib.HTTPError as eh:
+            if hasattr(eh, 'reason'):
+                g.trace('HTTP reason: ', eh.reason)
+                g.trace('Reason erno: ', eh.reason.errno)
+            return ''
+
+        except urllib.URLError as eu:
+            if hasattr(eu, 'reason') and eu.reason.errno != 11001:
+                g.trace('Probbably wrong web address.')
+                g.trace('URLError reason: ', eu.reason)
+                g.trace('Reason erno: ', eu.reason.errno)
+                return ''
+
             urllib.install_opener(proxy_opener)
             
             try:
-                r = urllib.urlopen(req)
-            except IOError, e3:
-                if hasattr(e3, 'reason'):
-                    print 'Failed to reach a server through default proxy.'
-                    print 'Reason: ', e3.reason
-                elif hasattr(e3, 'code'):
-                    print 'The server couldn\'t fulfill the request.'
-                    print 'Error code: ', e3.code
+                r = urllib.urlopen(req, timeout=1)
+            except urllib.HTTPError as eh:
+                if hasattr(eh, 'reason'):
+                    g.trace('HTTP reason: ', eh.reason)
+                    g.trace('Reason erno: ', eh.reason.errno)
+                return ''
+        
+            except IOError as eu:
+                if hasattr(eu, 'reason'):
+                    g.trace('Failed to reach a server through default proxy.')
+                    g.trace('Reason: ', eu.reason)
+                    g.trace('Reason erno: ', eu.reason.errno)
+                if hasattr(eu, 'code'):
+                    g.trace('The server couldn\'t fulfill the request.')
+                    g.trace('Error code: ', eu.code)
                     
                 return ""
                     
@@ -1132,9 +1155,32 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         '''Create html that will display an image whose url is in s or p.h.'''
 
+        # Try to exract the path from the first body line
+        if s.strip():
+            lst = s.strip().split('\n',1)
+            
+            if len(lst) < 2:
+                html = self.urlToImageHtmlHelper (c,p,lst[0].strip())
+            else:
+                html = self.urlToImageHtmlHelper (c,p,lst[0].strip(),lst[1].strip())
+            if html != None:
+                return html
+
+        # if the previous try  does not return a valid path
+        # try to exract the path from the headline
+        assert p.h.startswith('@image')
         if not s.strip():
-            assert p.h.startswith('@image')
-            s = p.h[6:].strip()
+            html = self.urlToImageHtmlHelper (c,p,p.h[6:].strip())
+        else:
+            html = self.urlToImageHtmlHelper (c,p,p.h[6:].strip(),s)
+        
+        return html
+
+    def urlToImageHtmlHelper (self,c,p,s,descr=''):
+
+        '''Create html that will display an image whose url is in s or p.h.
+          Returns None if it can not extract the valid path
+        '''
 
         if s.startswith('file://'):
             s2 = s[7:]
@@ -1147,10 +1193,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                     # return s
             else:
                 g.es('not found',s2)
-                return s # Don't render the image.
+                #return s # Don't render the image.
+                return None
         elif s.endswith('.html') or s.endswith('.htm'):
             s = open(s).read()
-            g.es('@image - html= ', html)
+            #g.es('@image - html= ', html)
             return s
         elif s.startswith('http://'):
             # 2011/01/25: bogomil: Download the image if url starts with http
@@ -1158,7 +1205,15 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         s = s.replace('\\','/')
         s = s.strip("'").strip('"').strip()
+        s1 = s
         s = g.os_path_expandExpression(s,c=c) # 2011/01/25: bogomil
+        if s1 == s:
+            s2 = '/'.join([c.getNodePath(p),s])
+            if g.os_path_exists(s2):
+                s = s2
+        
+        if not g.os_path_exists(s):
+            return None
 
         html = '''
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -1166,22 +1221,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     <head></head>
     <body bgcolor="#fffbdc">
     <img src="%s">
+    <br/>
+    <p>%s</p>
     </body>
     </html>
-    ''' % (s)
+    ''' % (s, descr)
 
         return html
-    #@+node:ekr.20081121105001.588: *5* setInsertPoint
-    def setInsertPoint(self,i):
-
-        w = self.widget
-
-        s = w.toPlainText()
-        i = self.toPythonIndex(i)
-        i = max(0,min(i,len(s)))
-        cursor = w.textCursor()
-        cursor.setPosition(i)
-        w.setTextCursor(cursor)
     #@+node:ekr.20081121105001.589: *5* setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
@@ -1650,6 +1696,17 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         pass
+#@+node:ekr.20081121105001.588: *3* setInsertPoint
+def setInsertPoint(self,i):
+
+    w = self.widget
+
+    s = w.toPlainText()
+    i = self.toPythonIndex(i)
+    i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+    cursor.setPosition(i)
+    w.setTextCursor(cursor)
 #@-others
 #@-<< define text widget classes >>
 

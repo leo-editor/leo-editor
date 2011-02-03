@@ -215,6 +215,40 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnComment">
+       <property name="toolTip">
+        <string>Node shape: Comment</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>leo/plugins/GraphCanvas/comment.png</normaloff>leo/plugins/GraphCanvas/comment.png</iconset>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnImage">
+       <property name="toolTip">
+        <string>Node shape: Image</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>leo/plugins/GraphCanvas/image.png</normaloff>leo/plugins/GraphCanvas/image.png</iconset>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnNone">
        <property name="toolTip">
         <string>Node shape: text only</string>
@@ -385,6 +419,29 @@
        </property>
        <property name="text">
         <string>All</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnExport">
+       <property name="toolTip">
+        <string>Add all nodes that are linked to nodes already in the graph.</string>
+       </property>
+       <property name="text">
+        <string>Export</string>
        </property>
       </widget>
      </item>
