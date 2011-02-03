@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:bob.20110127092345.6006: * @file ../plugins/graphcanvas.py
+#@+node:tbrown.20090206153748.1: * @file graphcanvas.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -18,6 +18,7 @@ import leo.core.leoPlugins as leoPlugins
 from math import atan2, sin, cos
 
 import time
+import os
 
 import os
 import tempfile
@@ -90,11 +91,21 @@ class graphcanvasUI(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         uiPath = g.os_path_join(g.app.leoDir,
             'plugins', 'GraphCanvas', 'GraphCanvas.ui')
-        # uiPath = "GraphCanvas.ui"
-        form_class, base_class = uic.loadUiType(uiPath)
-        self.owner.c.frame.log.createTab('Graph', widget = self) 
-        self.UI = form_class()
-        self.UI.setupUi(self)
+
+        # change directory for this to work
+        old_dir = os.getcwd()
+        try:
+            
+            os.chdir(g.os_path_join(g.computeLeoDir(), ".."))
+            
+            form_class, base_class = uic.loadUiType(uiPath)
+            self.owner.c.frame.log.createTab('Graph', widget = self) 
+            self.UI = form_class()
+            self.UI.setupUi(self)
+            
+        finally:
+            
+            os.chdir(old_dir)
 
         self.canvas = QtGui.QGraphicsScene()
 
@@ -202,7 +213,7 @@ class nodeItem(QtGui.QGraphicsItemGroup):
             if graph_text_max_width != None and self.text.document().size().width() > graph_text_max_width:
                 self.text.setTextWidth(graph_text_max_width)
             
-            self.setToolTip(node.bodyString())
+            self.setToolTip(node.b.strip())
             self.text.document().setDefaultTextOption(QtGui.QTextOption(Qt.AlignHCenter))
             self.text.setZValue(20)
             
@@ -228,13 +239,13 @@ class nodeItem(QtGui.QGraphicsItemGroup):
             f.setPointSize(7)
             self.text.setFont(f)
             if node.headString().startswith('@html '):
-                self.text.setHtml(node.bodyString())
+                self.text.setHtml(node.b.strip())
             else:
-                self.text.setPlainText(node.bodyString())
+                self.text.setPlainText(node.b.strip())
 
             self.setToolTip(node.headString())
         elif ntype == 5:
-            path, descr = self.urlToImageHtml (self.c, p, node.bodyString())
+            path, descr = self.urlToImageHtml (self.c, p, node.b.strip())
             if path == None:
                 path, descr = g.os_path_abspath(g.os_path_join(g.app.loadDir,'../plugins/GraphCanvas/no_image.png')), ''
             
@@ -437,11 +448,11 @@ class nodeItem(QtGui.QGraphicsItemGroup):
 
         if ntype == 4:
             if self.node.headString().startswith('@html '):
-                self.text.setHtml(self.node.bodyString())
+                self.text.setHtml(self.node.b.strip())
             else:
-                self.text.setPlainText(self.node.bodyString())
+                self.text.setPlainText(self.node.b.strip())
         elif ntype != 5:
-            self.text.setPlainText(self.node.headString())
+            self.text.setPlainText(self.node.h)
     #@-others
 #@+node:bob.20110121161547.3424: ** class linkItem
 class linkItem(QtGui.QGraphicsItemGroup):
