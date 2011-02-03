@@ -1218,6 +1218,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     ''' % (s, descr)
 
         return html
+    #@+node:ekr.20081121105001.588: *5* setInsertPoint
+    def setInsertPoint(self,i):
+
+        w = self.widget
+
+        s = w.toPlainText()
+        i = self.toPythonIndex(i)
+        i = max(0,min(i,len(s)))
+        cursor = w.textCursor()
+        cursor.setPosition(i)
+        w.setTextCursor(cursor)
     #@+node:ekr.20081121105001.589: *5* setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
@@ -1686,17 +1697,6 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         pass
-#@+node:ekr.20081121105001.588: *3* setInsertPoint
-def setInsertPoint(self,i):
-
-    w = self.widget
-
-    s = w.toPlainText()
-    i = self.toPythonIndex(i)
-    i = max(0,min(i,len(s)))
-    cursor = w.textCursor()
-    cursor.setPosition(i)
-    w.setTextCursor(cursor)
 #@-others
 #@-<< define text widget classes >>
 
