@@ -1,9 +1,10 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20110125111321.5399: * @file free_layout.py
+#@+node:tbrown.20110203111907.5519: * @file free_layout.py
 """Adds flexible panel layout through context menus on the handles between panels.
 Requires Qt.
 """
-
+#@+others
+#@+node:tbrown.20110203111907.5520: ** declarations
 __version__ = '0.1'
 # 
 # 0.1 - initial release - TNB
@@ -15,7 +16,8 @@ g.assertUi('qt')
 from PyQt4 import QtCore, QtGui, Qt
 
 from leo.plugins.nested_splitter import NestedSplitter
-def init ():
+#@+node:tbrown.20110203111907.5521: ** init
+def init():
 
     if g.app.gui.guiName() != "qt":
         return False
@@ -25,7 +27,8 @@ def init ():
     g.plugin_signon(__name__)
 
     return True
-def onCreate (tag, keys):
+#@+node:tbrown.20110203111907.5522: ** onCreate
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c: return
@@ -93,4 +96,5 @@ def onCreate (tag, keys):
     # if the log tab panel is removed, move it back to the top splitter
     logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
     logWidget._is_permanent = True
+#@-others
 #@-leo
