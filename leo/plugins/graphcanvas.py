@@ -550,12 +550,17 @@ class graphcanvasController(object):
         return [
             ('neato', lambda: self.layout('neato')),
             ('dot', lambda: self.layout('dot')),
+            ('dot LR', lambda: self.layout('dot LR')),
         ]
     #@+node:tbrown.20110122085529.15403: *3* layout
     def layout(self, type_):
 
         G = pygraphviz.AGraph(strict=False,directed=True)
-        G.graph_attr['rankdir']='LR'
+        if type_ == 'dot LR':
+            G.graph_attr['rankdir']='LR'
+            
+        type_ = type_.split()[0]
+        
         G.graph_attr['ranksep']='0.125'
 
         for from_, to in self.link.values():
