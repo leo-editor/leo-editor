@@ -178,14 +178,15 @@ class GraphicsView(QtGui.QGraphicsView):
     def wheelEvent(self, event):
         
         if int(event.modifiers() & Qt.ControlModifier):
+
+            scale = 1.+0.1*(event.delta() / 120)
             
-            self.current_scale += event.delta() / 120
-            
-            scale = 1.+0.1*self.current_scale
-            
-            self.resetTransform()
             self.scale(scale, scale)
 
+        elif int(event.modifiers() & Qt.AltModifier):
+            
+            self.glue.scale_centers(event.delta() / 120)
+            
         else:
         
             QtGui.QGraphicsView.wheelEvent(self, event)
@@ -582,8 +583,11 @@ class graphcanvasController(object):
             self.nodeItem[i].update()
         
         self.update()
-        self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
-        self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), Qt.KeepAspectRatio)
+        
+        self.center_graph()
+        
+        # self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
+        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), Qt.KeepAspectRatio)
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', create = True, pnt=None):
 
@@ -936,6 +940,64 @@ class graphcanvasController(object):
         if self.c.positionExists(p):
             self.internal_select = True
             self.c.selectPosition(p)
+    #@+node:tbrown.20110205084504.15370: *3* scale_centers
+    def scale_centers(self, direction):
+        
+        direction = 0.9 if direction < 0 else 1.1
+
+        minx = maxx = miny = maxy = None
+        
+        for i in self.nodeItem:
+            
+            if i.u['_bklnk']['x'] < minx or minx is None:
+                minx = i.u['_bklnk']['x']
+            if i.u['_bklnk']['x'] > maxx or maxx is None:
+                maxx = i.u['_bklnk']['x']
+            if i.u['_bklnk']['y'] < miny or miny is None:
+                miny = i.u['_bklnk']['y']
+            if i.u['_bklnk']['y'] > maxy or maxy is None:
+                maxy = i.u['_bklnk']['y']
+                
+        midx = (minx + maxx) / 2.
+        midy = (miny + maxy) / 2.
+            
+        bbox = self.ui.canvas.itemsBoundingRect()
+        midx = bbox.center().x()
+        midy = bbox.center().y()
+        
+        for i in self.nodeItem:
+            
+            i.u['_bklnk']['x'] = midx + (i.u['_bklnk']['x']-midx) * direction
+            i.u['_bklnk']['y'] = midy + (i.u['_bklnk']['y']-midy) * direction
+            self.nodeItem[i].setPos(i.u['_bklnk']['x'], i.u['_bklnk']['y'])
+            self.nodeItem[i].update()
+               
+        self.update()
+        
+        self.center_graph()
+    #@+node:tbrown.20110205084504.19507: *3* center_graph
+    def center_graph(self):
+        """scale and center current scene, and add space around it for movement
+        """
+        
+        # scale and center current scene
+        bbox = self.ui.canvas.itemsBoundingRect()           
+        self.ui.canvas.setSceneRect(bbox)      
+        self.ui.canvasView.updateSceneRect(bbox)
+        self.ui.canvasView.fitInView(bbox, Qt.KeepAspectRatio)
+        self.ui.canvasView.centerOn(bbox.center())
+        
+        # and add space around it for movement
+        adj = -bbox.width(), -bbox.height(), +bbox.width(), +bbox.height()
+        bbox.adjust(*adj)
+        self.ui.canvas.setSceneRect(bbox)      
+        self.ui.canvasView.updateSceneRect(bbox)
+
+        self.ui.canvas.setSceneRect(bbox)      
+        self.ui.canvasView.updateSceneRect(bbox)
+
+        self.ui.canvas.setSceneRect(bbox)      
+        self.ui.canvasView.updateSceneRect(bbox)
     #@+node:bob.20110120111825.3352: *3* MY_IMPLEMENTATION
     #@+others
     #@+node:bob.20110121113659.3412: *4* Events
