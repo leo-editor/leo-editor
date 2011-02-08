@@ -1517,7 +1517,9 @@ The following integer values are supported:
 place a copy this "@keys Vim bindings" node and its sub-nodes
 into your myLeoSettings.leo file under the "@settings" node.
 </t>
-<t tx="TL.20100307105950.3138">Vi emulation - User documentation:
+<t tx="TL.20100307105950.3138">@nocolor-node
+
+Vi emulation - User documentation:
 	Installation
 	| Place a copy of the "@keys Vim bindings" node and its sub-nodes,
 	| located in the leoSettings.leo file, under the "@settings" node
@@ -1715,7 +1717,9 @@ into your myLeoSettings.leo file under the "@settings" node.
 Vim Modeline (used by Vim for file specific settings)
 	| vim: noet filetype=otl foldcolumn=1
 </t>
-<t tx="TL.20100307105950.3140">Vi emulation - Developer documentation:
+<t tx="TL.20100307105950.3140">@nocolor-node
+
+Vi emulation - Developer documentation:
 	Realization:
 		Leo Configuration:
 		| The following configuration was used for all testing:

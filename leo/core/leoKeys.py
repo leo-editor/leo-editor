@@ -2819,15 +2819,15 @@ class keyHandlerClass:
 
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = True
+        verbose = False
 
         if keysym in special_keys:
             if trace and verbose: g.trace('keysym',keysym)
             return None
         if traceGC: g.printNewObjects('masterKey 1')
-        if trace: g.trace('stroke:',repr(stroke),'keysym:',
+        if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
             repr(event.keysym),'ch:',repr(event.char),'state',state)
 
         # Handle keyboard-quit first.
@@ -2837,24 +2837,30 @@ class keyHandlerClass:
                 return 'break'
             else:
                 return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+                
+        # if stroke == 'Tab': g.pdb()
 
         if k.inState():
+            if trace: g.trace('in state %s' % (state),stroke)
             done,val = k.doMode(event,state,stroke)
             if done: return val
 
         if traceGC: g.printNewObjects('masterKey 2')
+                
+        # 2011/02/08: An important simplification.
+        if isPlain and k.unboundKeyAction != 'command':
+            if trace: g.trace('inserted key',stroke,'(insert/overwrite mode)')
+            return k.handleUnboundKeys(event,char,keysym,stroke)
 
-        if stroke and isPlain:
-            done,b = k.doPlainKey(event,stroke,w)
-            if b: k.masterCommand(event,b.func,b.stroke,b.commandName)
-            if done: return 'break'
-
+        # 2011/02/08: Use getPandBindings for *all* keys.
         b = k.getPaneBinding(stroke,w)
         if b:
             if traceGC: g.printNewObjects('masterKey 3')
+            if trace: g.trace('  bound key',stroke)
             return k.masterCommand(event,b.func,b.stroke,b.commandName)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
+            if trace: g.trace('unbound key',stroke)
             return k.handleUnboundKeys(event,char,keysym,stroke)
     #@+node:ekr.20061031131434.108: *5* callStateFunction
     def callStateFunction (self,event):
@@ -2926,45 +2932,11 @@ class keyHandlerClass:
             else:
                 g.trace('No state handler for %s' % state)
             return True,'break'
-    #@+node:ekr.20091230094319.6242: *5* doPlainKey
-    def doPlainKey (self,event,stroke,w):
-
-        '''Handle a plain key.  Return done,b.'''
-
-        trace = False and not g.unitTesting
-        k = self ; c = k.c
-
-        # Important: only keys bound somewhere have a stroke.
-        # All unbound plain keys will be handled by handleUnboundKeys.
-        if k.unboundKeyAction in ('insert','overwrite'):
-            for key in (k.unboundKeyAction,'body','log','text','all'):
-                # Ignore bindings for all plain keys in insert/overwrite mode
-                # *except* auto-complete.
-                d = k.masterBindingsDict.get(key,{})
-                if d:
-                    b = d.get(stroke)
-                    if b and b.commandName == 'auto-complete':
-                        if trace: g.trace('%s: auto-complete key in %s mode' % (
-                            stroke,k.unboundKeyAction))
-                        return True,b
-
-            if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-            return True,g.bunch(func=None,stroke=stroke,commandName=None)
-
-        # Ignore all command-state keys if we are not in a text widget.
-        elif k.unboundKeyAction == 'command':
-            if g.app.gui.isTextWidget(w):
-                return False,None
-            else:
-                c.onCanvasKey(event)
-                return True,None
-        else:
-            return False,None
     #@+node:ekr.20091230094319.6240: *5* getPaneBinding
     def getPaneBinding (self,stroke,w):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         k = self ; w_name = k.c.widget_name(w)
         keyStatesTuple = ('command','insert','overwrite')
 
@@ -4140,6 +4112,7 @@ class keyHandlerClass:
 
         if w and g.app.gui.isTextWidget(w):
             k.showStateColors(inOutline,w)
+            k.showStateCursor(state,w)
     #@+node:ekr.20080512115455.1: *4* showStateColors
     def showStateColors (self,inOutline,w):
 
@@ -4179,6 +4152,14 @@ class keyHandlerClass:
                 w.configure(bg=bg,fg=fg)
             except Exception:
                 g.es_exception()
+    #@+node:ekr.20110202111105.15439: *4* showStateCursor
+    def showStateCursor (self,state,w):
+        
+        # g.trace(state,w)
+        
+        pass
+        
+        
     #@+node:ekr.20061031131434.200: *3* universalDispatcher & helpers
     def universalDispatcher (self,event):
 
