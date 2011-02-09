@@ -1301,6 +1301,7 @@
 <v t="TL.20100307105950.3140"><vh>Vim Developer Documentation</vh></v>
 <v t="TL.20100307105950.3141"><vh>Vim settings</vh>
 <v t="TL.20100307105950.3142"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20110209093958.15416"><vh>@strings [insert,overwrite] default_editing_state = insert</vh></v>
 <v t="TL.20100307105950.3143"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="TL.20100307105950.3144"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="TL.20100307105950.3145"><vh>@bool stayInTreeAfterSelect = True</vh></v>
@@ -8052,6 +8053,7 @@ False: (Good for files like unitTest.leo)
 <t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
 False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20101114064731.8352"></t>
+<t tx="ekr.20110209093958.15416"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
