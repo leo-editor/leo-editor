@@ -3532,7 +3532,8 @@ class baseCommands (object):
             return
 
         if k:
-            k.setDefaultInputState()
+            # k.setDefaultInputState()
+            k.setEditingState()
             k.showStateAndMode()
 
         tree.editLabel(c.p)

@@ -1269,6 +1269,7 @@ class keyHandlerClass:
         self.defineMultiLineCommands()
         self.autoCompleter = autoCompleterClass(self)
         self.setDefaultUnboundKeyAction()
+        self.setDefaultEditingAction() # 2011/02/09
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
     def finishCreate (self):
 
@@ -1344,6 +1345,19 @@ class keyHandlerClass:
         self.defaultUnboundKeyAction = self.unboundKeyAction
 
         k.setInputState(self.defaultUnboundKeyAction)
+    #@+node:ekr.20110209093958.15413: *4* setDefaultEditingKeyAction (New)
+    def setDefaultEditingAction (self):
+
+        k = self ; c = k.c
+
+        action = c.config.getString('default_editing_state') or 'insert'
+        action.lower()
+
+        if action not in ('insert','overwrite'):
+            g.trace('ignoring default_editing_state: %s' % (defaultAction))
+            action = 'insert'
+
+        self.defaultEditingAction = action
     #@+node:ekr.20070123143428: *4* k.defineTkNames
     def defineTkNames (self):
 
@@ -2839,7 +2853,7 @@ class keyHandlerClass:
             return None
         if traceGC: g.printNewObjects('masterKey 1')
         if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
+            repr(event.keysym),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -4076,8 +4090,19 @@ class keyHandlerClass:
     #@+node:ekr.20080511122507.4: *4* setDefaultInputState
     def setDefaultInputState (self):
 
-        k = self
-        k.setInputState(k.defaultUnboundKeyAction)
+        k = self ; state = k.defaultUnboundKeyAction
+        
+        # g.trace(state)
+        
+        k.setInputState(state)
+    #@+node:ekr.20110209093958.15411: *4* setEditingState
+    def setEditingState (self):
+
+        k = self ; state = k.defaultEditingAction
+        
+        # g.trace(state)
+        
+        k.setInputState(state)
     #@+node:ekr.20061031131434.133: *4* setInputState
     def setInputState (self,state):
 
