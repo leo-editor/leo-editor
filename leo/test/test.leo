@@ -1109,7 +1109,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,0,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9414,7 +9414,11 @@ c = g.app.commanders()[0]
 pc.send("""
 c.k.simulateCommand('stickynote')
 """)</t>
-<t tx="ekr.20110127090822.2451">aList = list(c.k.bindingsDict.keys())
+<t tx="ekr.20110127090822.2451">@language python
+
+
+
+aList = list(c.k.bindingsDict.keys())
 aList.sort()
 for z in aList: print(z)</t>
 </tnodes>

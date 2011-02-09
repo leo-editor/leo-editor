@@ -252,29 +252,40 @@ class autoCompleterClass:
                 if trace: g.trace(z,obj)
                 if obj:
                     self.objectDict[z]=obj
-    #@+node:ekr.20061031131434.8: *3* Top level
+    #@+node:ekr.20061031131434.8: *3* Top level (autocompleter)
     #@+node:ekr.20061031131434.9: *4* autoComplete
     def autoComplete (self,event=None,force=False):
 
         '''An event handler called from k.masterKeyHanderlerHelper.'''
 
-        c = self.c ; k = self.k ; gui = g.app.gui
+        trace = True and not g.unitTesting
+        c = self.c ; k = self.k ; state = k.unboundKeyAction
+        gui = g.app.gui
         w = gui.eventWidget(event) or c.get_focus()
 
         self.force = force
+        
+        if not state in ('insert','overwrite'):
+            if trace: g.trace('not in insert/overwrite mode')
+            return 'break'
 
         # First, handle the invocation character as usual.
         if not force:
             # 2010/11/01: ctrl-period does *not* insert a period.
+            if trace: g.trace('not force')
             k.masterCommand(event,func=None,stroke=None,commandName=None)
 
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
+            if trace: g.trace('not body')
             return 'break'
 
         self.language = g.scanForAtLanguage(c,c.p)
         if w and self.language == 'python' and (k.enable_autocompleter or force):
+            if trace: g.trace('starting')
             self.start(event=event,w=w)
+        else:
+            if trace: g.trace('not python')
 
         return 'break'
     #@+node:ekr.20061031131434.10: *4* autoCompleteForce
@@ -2821,7 +2832,7 @@ class keyHandlerClass:
         #@-<< define vars >>
         trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = False
+        verbose = True
 
         if keysym in special_keys:
             if trace and verbose: g.trace('keysym',keysym)
@@ -2849,8 +2860,11 @@ class keyHandlerClass:
                 
         # 2011/02/08: An important simplification.
         if isPlain and k.unboundKeyAction != 'command':
-            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
-            return k.handleUnboundKeys(event,char,keysym,stroke)
+            if self.isAutoCompleteChar(stroke):
+                if trace: g.trace('autocomplete key',stroke)
+            else:
+                if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+                return k.handleUnboundKeys(event,char,keysym,stroke)
 
         # 2011/02/08: Use getPandBindings for *all* keys.
         b = k.getPaneBinding(stroke,w)
@@ -3014,6 +3028,22 @@ class keyHandlerClass:
                             c.minibufferWantsFocus()
                         return True
 
+        return False
+    #@+node:ekr.20110209083917.16004: *5* isAutoCompleteChar
+    def isAutoCompleteChar (self,stroke):
+        
+        '''Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.'''
+
+        k = self ; state = k.unboundKeyAction
+        
+        if stroke and state in ('insert','overwrite'):
+            for key in (state,'body','log','text','all'):
+                d = k.masterBindingsDict.get(key,{})
+                if d:
+                    b = d.get(stroke)
+                    if b and b.commandName == 'auto-complete':
+                        return True
         return False
     #@+node:ekr.20080510095819.1: *5* k.handleUnboudKeys
     def handleUnboundKeys (self,event,char,keysym,stroke):
