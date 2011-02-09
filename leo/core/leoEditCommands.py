@@ -3735,7 +3735,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.extendMode = val
         if not g.unitTesting:
-            g.es('extend mode',g.choose(val,'on','off'),color='red')
+            # g.es('extend mode',g.choose(val,'on','off'),color='red')
+            c.k.showStateAndMode()
         c.widgetWantsFocusNow(w)
     #@+node:ekr.20050920084036.136: *4* exchangePointMark
     def exchangePointMark (self,event):

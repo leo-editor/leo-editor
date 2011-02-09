@@ -4105,6 +4105,8 @@ class keyHandlerClass:
             inOutline = True
         else:
             s = '%s State' % state.capitalize()
+            if state == 'command' and c.editCommands.extendMode:
+                s = s + ' (Extend Mode)'
 
         if s:
             # g.trace(s,w,g.callers(4))
