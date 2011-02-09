@@ -258,7 +258,7 @@ class autoCompleterClass:
 
         '''An event handler called from k.masterKeyHanderlerHelper.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; k = self.k ; state = k.unboundKeyAction
         gui = g.app.gui
         w = gui.eventWidget(event) or c.get_focus()
@@ -285,7 +285,7 @@ class autoCompleterClass:
             if trace: g.trace('starting')
             self.start(event=event,w=w)
         else:
-            if trace: g.trace('not python')
+            if trace: g.trace('not enabled')
 
         return 'break'
     #@+node:ekr.20061031131434.10: *4* autoCompleteForce
