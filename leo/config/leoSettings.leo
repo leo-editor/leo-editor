@@ -1118,8 +1118,7 @@
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="ekr.20090406071640.18"><vh>@@string selected-background-color = #fdf5f5</vh></v>
-<v t="ekr.20090406071640.19"><vh>@@string unselected-background-color = #f2fdff</vh></v>
+<v t="ekr.20090406071640.19"><vh>@string unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -7931,7 +7930,6 @@ print ('done')
 </t>
 <t tx="ekr.20090203134354.2"></t>
 <t tx="ekr.20090213065933.11"></t>
-<t tx="ekr.20090406071640.18">A kind of pink</t>
 <t tx="ekr.20090406071640.19">A kind of blue</t>
 <t tx="ekr.20090408091222.1"># These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
 

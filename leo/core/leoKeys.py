@@ -2841,7 +2841,7 @@ class keyHandlerClass:
         # if stroke == 'Tab': g.pdb()
 
         if k.inState():
-            if trace: g.trace('in state %s' % (state),stroke)
+            if trace: g.trace('   state %-10s %s' % (stroke,state))
             done,val = k.doMode(event,state,stroke)
             if done: return val
 
@@ -2849,18 +2849,18 @@ class keyHandlerClass:
                 
         # 2011/02/08: An important simplification.
         if isPlain and k.unboundKeyAction != 'command':
-            if trace: g.trace('inserted key',stroke,'(insert/overwrite mode)')
+            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
             return k.handleUnboundKeys(event,char,keysym,stroke)
 
         # 2011/02/08: Use getPandBindings for *all* keys.
         b = k.getPaneBinding(stroke,w)
         if b:
             if traceGC: g.printNewObjects('masterKey 3')
-            if trace: g.trace('  bound key',stroke)
+            if trace: g.trace('   bound',stroke)
             return k.masterCommand(event,b.func,b.stroke,b.commandName)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
-            if trace: g.trace('unbound key',stroke)
+            if trace: g.trace(' unbound',stroke)
             return k.handleUnboundKeys(event,char,keysym,stroke)
     #@+node:ekr.20061031131434.108: *5* callStateFunction
     def callStateFunction (self,event):
@@ -4116,19 +4116,20 @@ class keyHandlerClass:
     #@+node:ekr.20080512115455.1: *4* showStateColors
     def showStateColors (self,inOutline,w):
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; state = k.unboundKeyAction
 
         body = c.frame.body ; bodyCtrl = body.bodyCtrl
+        w_name = g.app.gui.widget_name(w)
 
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
 
-        # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
+        if trace: g.trace('%9s' % (state),w_name)
 
-        # if inOutline and w == bodyCtrl:
-            # return # Don't recolor the body.
-        if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+        if not w_name.startswith('body') and not w_name.startswith('head'):
             # Don't recolor the minibuffer, log panes, etc.
+            if trace: g.trace('not body or head')
             return
 
         if state == 'insert':
@@ -4143,15 +4144,14 @@ class keyHandlerClass:
         else:
             bg = fg = 'red'
 
-        # g.trace(id(w),bg,fg,self)
-
-        if w == bodyCtrl:
+        if hasattr(w,'setEditorColors'):
+            # Note: fg color has no effect on Qt at present.
             body.setEditorColors(bg=bg,fg=fg)
         else:
             try:
                 w.configure(bg=bg,fg=fg)
             except Exception:
-                g.es_exception()
+                pass # g.es_exception()
     #@+node:ekr.20110202111105.15439: *4* showStateCursor
     def showStateCursor (self,state,w):
         
