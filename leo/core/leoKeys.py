@@ -1353,8 +1353,8 @@ class keyHandlerClass:
         action = c.config.getString('default_editing_state') or 'insert'
         action.lower()
 
-        if action not in ('insert','overwrite'):
-            g.trace('ignoring default_editing_state: %s' % (defaultAction))
+        if action not in ('command','insert','overwrite'):
+            g.trace('ignoring default_editing_state: %s' % (action))
             action = 'insert'
 
         self.defaultEditingAction = action
@@ -1668,11 +1668,15 @@ class keyHandlerClass:
         g.trace('Should be defined in subclass:',g.callers(4))
     #@+node:ekr.20061031131434.88: *3* Binding (keyHandler)
     #@+node:ekr.20061031131434.89: *4* bindKey
-    def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+    def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
         '''Bind the indicated shortcut (a Tk keystroke) to the callback.
 
-        No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+        No actual gui bindings are made: only entries in k.masterBindingsDict.
+        
+        _hash gives the source of the binding.
+        
+        '''
 
         trace = False and not g.unitTesting
         k = self ; c = k.c
@@ -1699,7 +1703,7 @@ class keyHandlerClass:
         if trace: g.trace(pane,shortcut,commandName)
         try:
             k.bindKeyToDict(pane,shortcut,callback,commandName)
-            b = g.bunch(pane=pane,func=callback,commandName=commandName)
+            b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
             #@+<< remove previous conflicting definitions from bunchList >>
             #@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
             if not modeFlag and self.warn_about_redefined_shortcuts:
@@ -1904,6 +1908,7 @@ class keyHandlerClass:
 
         '''Add bindings for all entries in c.commandDict.'''
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; d = c.commandsDict
 
         for commandName in sorted(d):
@@ -1912,10 +1917,12 @@ class keyHandlerClass:
             # if commandName == 'keyboard-quit': g.trace(key,bunchList)
             for bunch in bunchList:
                 accel = bunch.val ; pane = bunch.pane
+                _hash = bunch.get('_hash') # 2011/02/10
+                if trace and not _hash: g.trace('**** no hash for',commandName)
                 # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
                 if accel and not pane.endswith('-mode'):
                     shortcut = k.shortcutFromSetting(accel)
-                    k.bindKey(pane,shortcut,command,commandName)
+                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
 
         # g.trace(g.listToString(sorted(k.bindingsDict))
         # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
@@ -2394,7 +2401,7 @@ class keyHandlerClass:
     def numberCommand9 (self,event):
         '''Execute command number 9.'''
         return self.numberCommand (event,None,9)
-    #@+node:ekr.20061031131434.119: *4* printBindings & helper
+    #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
     def printBindings (self,event=None):
 
         '''Print all the bindings presently in effect.'''
@@ -2402,6 +2409,16 @@ class keyHandlerClass:
         k = self ; c = k.c
         d = k.bindingsDict ; tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
+        legend = '''\
+    legend:
+    [S] leoSettings.leo
+    [ ] default binding
+    [F] loaded .leo File
+    [M] myLeoSettings.leo
+    [@] mode
+    '''
+        legend = g.adjustTripleString(legend,c.tab_width)
+
         data = [] ; n1 = 4 ; n2 = 20
         if not d: return g.es('no bindings')
         for key in sorted(d):
@@ -2411,12 +2428,14 @@ class keyHandlerClass:
                 s1 = pane
                 s2 = k.prettyPrintKey(key,brief=True)
                 s3 = b.commandName
+                s4 = b.get('_hash','<no hash>')
                 n1 = max(n1,len(s1))
                 n2 = max(n2,len(s2))
-                data.append((s1,s2,s3),)
+                data.append((s1,s2,s3,s4),)
 
         # Print keys by type:
         result = []
+        result.append('\n'+legend)
         sep = '-' * n1
         for prefix in (
             'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
@@ -2426,7 +2445,7 @@ class keyHandlerClass:
         ):
             data2 = []
             for item in data:
-                s1,s2,s3 = item
+                s1,s2,s3,s4 = item
                 if s2.startswith(prefix):
                     data2.append(item)
             # g.es('','%s %s' % (sep, prefix),tabName=tabName)
@@ -2451,6 +2470,7 @@ class keyHandlerClass:
 
         data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
             # The list of all items with only one character following the prefix.
+
         data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
             # The list of all other items.
 
@@ -2458,9 +2478,23 @@ class keyHandlerClass:
         for data in (data1,data2):
             data.sort(key=lambda x: x[1])
                 # key is a function that extracts args.
-            for s1,s2,s3 in data:
+            for s1,s2,s3,s4 in data:
+                
+                # 2011/02/10: Print the source of the binding: s4 is the _hash.
+                s4 = s4.lower()
+                if s4.endswith('myleosettings.leo'):
+                    letter = 'M'
+                elif s4.endswith('leosettings.leo'):
+                    letter = 'S'
+                elif s4.endswith('.leo'):
+                    letter = 'F'
+                elif s4.find('mode') != -1:
+                    letter = '@' # the full mode.
+                else:
+                    letter = ' '
+                
                 # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
-                result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
+                result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
     #@+node:ekr.20061031131434.121: *4* printCommands
     def printCommands (self,event=None):
 
@@ -2725,7 +2759,8 @@ class keyHandlerClass:
             k.setDefaultInputState()
             k.showStateAndMode()
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
-    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+    def registerCommand (self,commandName,shortcut,func,
+        pane='all',verbose=False, wrap=True):
 
         '''Make the function available as a minibuffer command,
         and optionally attempt to bind a shortcut.
@@ -2769,7 +2804,7 @@ class keyHandlerClass:
 
         if stroke:
             if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
-            ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
+            ok = k.bindKey (pane,stroke,func,commandName,_hash='register-command') # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if verbose and ok and not g.app.silentMode:
                 # g.trace(g.callers())
@@ -2956,9 +2991,10 @@ class keyHandlerClass:
             # New in 4.4b4.
             handler = k.getStateHandler()
             if handler:
+                if trace: g.trace('handler',handler)
                 handler(event)
             else:
-                g.trace('No state handler for %s' % state)
+                if trace: g.trace('No state handler for %s' % state)
             return True,'break'
     #@+node:ekr.20091230094319.6240: *5* getPaneBinding
     def getPaneBinding (self,stroke,w):
@@ -2966,7 +3002,8 @@ class keyHandlerClass:
         trace = False and not g.unitTesting
         verbose = True
         k = self ; w_name = k.c.widget_name(w)
-        keyStatesTuple = ('command','insert','overwrite')
+        # keyStatesTuple = ('command','insert','overwrite')
+        state = k.unboundKeyAction
 
         if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
             'isTextWidget(w)',g.app.gui.isTextWidget(w))
@@ -2989,12 +3026,15 @@ class keyHandlerClass:
             if (
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or
+                key in ('command','insert','overwrite') and state == key or # 2010/02/09
                 key in ('text','all') and g.app.gui.isTextWidget(w) or
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
                 if trace and verbose:
-                    g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                    # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                    g.trace('key: %7s name: %6s key: %10s in keys: %s' %
+                        (key,name,stroke,stroke in d))
                     # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
@@ -3371,6 +3411,7 @@ class keyHandlerClass:
 
         '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
+        trace = True and not g.unitTesting
         k = self ; c = k.c
 
         for commandName in d:
@@ -3387,7 +3428,7 @@ class keyHandlerClass:
                 # Important: bunch.val is a stroke returned from k.strokeFromSetting.
                 # Do not call k.strokeFromSetting again here!
                 if stroke and stroke not in ('None','none',None):
-                    if 0:
+                    if trace:
                         g.trace(
                             g.app.gui.widget_name(w), modeName,
                             '%10s' % (stroke),
@@ -3447,7 +3488,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         state = k.getState(modeName)
-        trace = False or c.config.getBool('trace_modes')
+        trace = True or c.config.getBool('trace_modes')
 
         if trace: g.trace(modeName,'state',state)
 
@@ -4155,9 +4196,9 @@ class keyHandlerClass:
                 if mode.endswith('-mode'):
                     mode = mode[:-5]
                 s = '%s Mode' % mode.capitalize()
-        elif w and (wname.startswith('canvas') or wname.startswith('head')):
-            s = 'In Outline'
-            inOutline = True
+        # elif (wname.startswith('canvas') or wname.startswith('head')):
+            # s = 'In Outline'
+            # inOutline = True
         else:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:

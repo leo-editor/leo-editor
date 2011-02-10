@@ -4481,14 +4481,21 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self ; c = frame.c
         w = c.get_focus()
+        w_name = g.app.gui.widget_name(w)
+        
+        # g.trace(w,w_name)
 
-        # g.trace(w,c.frame.body.bodyCtrl.widget)
-
-        if w == frame.body.bodyCtrl.widget:
-            c.treeWantsFocus()
-        else:
+        if w_name in ('canvas','tree','treeWidget'):
             c.endEditing()
             c.bodyWantsFocus()
+        else:
+            c.treeWantsFocus()
+
+        # if w == frame.body.bodyCtrl.widget:
+            # c.treeWantsFocus()
+        # else:
+            # c.endEditing()
+            # c.bodyWantsFocus()
     #@+node:ekr.20081121105001.306: *6* cascade
     def cascade (self,event=None):
 

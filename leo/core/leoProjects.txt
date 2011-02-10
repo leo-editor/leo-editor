@@ -4142,11 +4142,15 @@ def prettyPrintKey (self,stroke,brief=False,trace=False):
     # g.trace(stroke,s)
     return g.choose(brief,s,'<%s>' % s)
 #@+node:ekr.20061031131434.89: *5* bindKey
-def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     '''Bind the indicated shortcut (a Tk keystroke) to the callback.
 
-    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
@@ -4165,7 +4169,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
     if trace: g.trace(pane,shortcut,commandName)
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName)
-        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
         << remove previous conflicting definitions from bunchList >>
         bunchList.append(b)
         shortcut = g.stripBrackets(shortcut.strip())
@@ -4739,9 +4743,10 @@ def doMode (self,event,state,stroke):
         # New in 4.4b4.
         handler = k.getStateHandler()
         if handler:
+            if trace: g.trace('handler',handler)
             handler(event)
         else:
-            g.trace('No state handler for %s' % state)
+            if trace: g.trace('No state handler for %s' % state)
         return True,'break'
 #@-all
 #@-leo

@@ -12283,7 +12283,7 @@ if 0: # Test 2
     assert g.app.unitTestDict.get(commandName)
 #@+node:ekr.20100212110954.5359: *4* @test print-bindings
 lines = c.k.printBindings()
-assert lines[0].strip().endswith('Alt+Ctrl+Shift')
+# assert lines[0].strip().endswith('Alt+Ctrl+Shift')
 #@+node:ekr.20100131171342.5608: *4* @test strokeFromSetting
 # print('settingsNameDict',c.k.settingsNameDict)
 
