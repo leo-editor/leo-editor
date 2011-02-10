@@ -1936,7 +1936,7 @@ class configClass:
 
         """Read settings from a file that may contain an @settings tree."""
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace('localFlag: %5s %s' % (localFlag, c and c.shortFileName()))
 
         # Create a settings dict for c for set()

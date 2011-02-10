@@ -3415,7 +3415,7 @@ class keyHandlerClass:
         k = self ; c = k.c
 
         for commandName in d:
-            if commandName in ('*entry-commands*','*command-prompt*'):
+            if commandName in ('*entry-commands*','*command-prompt*','_hash'):
                 # These are special-purpose dictionary entries.
                 continue
             func = c.commandsDict.get(commandName)
@@ -3488,7 +3488,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         state = k.getState(modeName)
-        trace = True or c.config.getBool('trace_modes')
+        trace = False or c.config.getBool('trace_modes')
 
         if trace: g.trace(modeName,'state',state)
 
