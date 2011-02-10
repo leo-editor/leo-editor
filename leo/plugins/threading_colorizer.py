@@ -277,8 +277,8 @@ def match_section_ref (self,s,i):
 
     if not g.match(s,i,'<<'):
         return 0
-    k = g.find_on_line(s,i+2,'>>')
-    if k is not None:
+    k = g.find_on_line(s,i+2,'>>')  # returns -1 on failure
+    if k > -1:
         j = k + 2
         self.colorRangeWithTag(s,i,i+2,'nameBrackets')
         ref = g.findReference(c,s[i:j],self.p)
@@ -1414,6 +1414,7 @@ class colorizer:
                 n = f(self,s,i)
                 if n is None or n < 0:
                     g.trace('Can not happen: matcher returns: %s f = %s' % (repr(n),repr(f)))
+                    i += 1
                     break
                 elif n > 0:
                     i += n ; break
