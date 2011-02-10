@@ -1706,19 +1706,20 @@ class keyHandlerClass:
             b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
             #@+<< remove previous conflicting definitions from bunchList >>
             #@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
+            # b is the bunch for the new binding.
+
             if not modeFlag and self.warn_about_redefined_shortcuts:
-                redefs = [str(b2.commandName) for b2 in bunchList
+                
+                redefs = [b2 for b2 in bunchList
                     if b2.commandName != commandName and pane in ('button','all',b2.pane)
                         and not b2.pane.endswith('-mode')]
-                for z in redefs:
                         
-                    g.es_print ('redefining shortcut %s from %s to %s in %s' % (
-                        c.k.prettyPrintKey(shortcut),
-                            # 2010/11/16: a significant bug fix.
-                            # 2011/01/26: use the prettyPrintKey only for the message!
-                        g.choose(pane=='button',z,commandName),
-                        g.choose(pane=='button',commandName,z),
-                        pane),color='red')
+                # The problematic warnings are from makeBindingsFromCommandsDict.
+                if redefs:
+                    g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+                    g.es('%s in %s' % (commandName,pane))
+                    for z in redefs:
+                        g.es('%s in %s' % (z.commandName,z.pane))
 
             if not modeFlag:
                 bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -1914,7 +1915,8 @@ class keyHandlerClass:
         for commandName in sorted(d):
             command = d.get(commandName)
             key, bunchList = c.config.getShortcut(commandName)
-            # if commandName == 'keyboard-quit': g.trace(key,bunchList)
+            if trace and False and commandName in ('save-file','enter-ctrl-s-mode'):
+                g.trace(key,bunchList)
             for bunch in bunchList:
                 accel = bunch.val ; pane = bunch.pane
                 _hash = bunch.get('_hash') # 2011/02/10
