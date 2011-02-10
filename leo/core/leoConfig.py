@@ -458,7 +458,7 @@ class parserBaseClass:
 
         # Create a local shortcutsDict.
         old_d = self.shortcutsDict
-        d = self.shortcutsDict = {}
+        d = self.shortcutsDict = {'_hash':modeName,} # 2011/02/10
 
         s = p.b
         lines = g.splitLines(s)
@@ -523,6 +523,11 @@ class parserBaseClass:
 
         c = self.c ; d = self.shortcutsDict ; k = c.k
         trace = False or c.config.getBool('trace_bindings_verbose')
+        verbose = False
+        theHash = d.get('_hash')
+        theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+        if trace: g.trace('localFlag: %s d._hash: %s %s' % (
+            self.localFlag,theHash,c.shortFileName()))
         munge = k.shortcutFromSetting
         if s is None: s = p.b
         lines = g.splitLines(s)
@@ -532,16 +537,19 @@ class parserBaseClass:
                 name,bunch = self.parseShortcutLine(line)
                 # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
                 if bunch is not None:
+                    bunch._hash = theHash # 2011/02/10
                     if bunch.val not in (None,'none','None'):
                         # A regular shortcut.
                         bunchList = d.get(name,[])
                         if bunch.pane in ('kill','Kill'):
-                            if trace: g.trace('****** killing binding:',bunch.val,'to',name)
+                            if trace and verbose: g.trace('****** killing binding:',
+                                bunch.val,'to',name)
                             bunchList = [z for z in bunchList
                                 if munge(z.val) != munge(bunch.val)]
                             # g.trace(bunchList)
                         else:
-                            if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+                            if trace and verbose: g.trace('%6s %20s %s' % (
+                                bunch.pane,bunch.val,name))
                             bunchList.append(bunch)
                         d [name] = bunchList
                         self.set(p,"shortcut",name,bunchList)
@@ -955,6 +963,8 @@ class parserBaseClass:
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
     #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass)
     def setShortcut (self,name,bunchList):
+        
+        trace = False and not g.unitTesting
 
         c = self.c
 
@@ -963,9 +973,9 @@ class parserBaseClass:
         rawKey = key.replace('&','')
         self.set(c,rawKey,"shortcut",bunchList)
 
-        if 0:
+        if trace:
             for b in bunchList:
-                g.trace('%20s %45s %s' % (b.val,rawKey,b.pane))
+                g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
     #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
     def traverse (self):
 
@@ -977,7 +987,7 @@ class parserBaseClass:
             return None
 
         self.settingsDict = {}
-        self.shortcutsDict = {}
+        self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
@@ -1637,6 +1647,7 @@ class configClass:
         else:
             return c.nullPosition()
     #@+node:ekr.20100616083554.5922: *3* Iterators... (g.app.config)
+    #@+node:ekr.20110210081557.15388: *4* config_iter & helper (g.app.config)
     def config_iter(self,c):
 
         '''Letters:
@@ -1667,7 +1678,7 @@ class configClass:
             yield z
 
         raise StopIteration
-    #@+node:ekr.20100616083554.5923: *4* config_iter_helper
+    #@+node:ekr.20100616083554.5923: *5* config_iter_helper
     def config_iter_helper (self,d,names):
 
         if not d: return []
@@ -1926,7 +1937,7 @@ class configClass:
         """Read settings from a file that may contain an @settings tree."""
 
         trace = False and not g.unitTesting
-        if trace: g.trace('=' * 20, c and c.fileName())
+        if trace: g.trace('localFlag: %5s %s' % (localFlag, c and c.shortFileName()))
 
         # Create a settings dict for c for set()
         if c and self.localOptionsDict.get(c.hash()) is None:
@@ -2100,7 +2111,7 @@ class configClass:
         '''
 
         legend = '''\
-        legend:
+    legend:
         leoSettings.leo
     [D] default settings
     [F] loaded .leo File

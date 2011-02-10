@@ -620,7 +620,7 @@ class baseCommands (object):
             k.masterCommand(event,func,stroke)
             return k.funcReturn
         else:
-            g.trace('no such command: %s' % (commandName),color='red')
+            g.error('no such command: %s %s' % (commandName,g.callers()))
             return None
     #@+node:ekr.20091002083910.6106: *3* c.find...
     #@+<< poslist doc >>
@@ -3532,7 +3532,8 @@ class baseCommands (object):
             return
 
         if k:
-            k.setDefaultInputState()
+            # k.setDefaultInputState()
+            k.setEditingState()
             k.showStateAndMode()
 
         tree.editLabel(c.p)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:bob.20110130191621.30757: * @file ../plugins/qtGui.py
+#@+node:ekr.20081121105001.188: * @file qtGui.py
 #@@first
 
 '''qt gui plugin.'''
@@ -2468,8 +2468,8 @@ class leoQtBody (leoFrame.leoBody):
         assert c.frame == frame and frame.c == c
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.selectedBackgroundColor = c.config.getString('selected-background-color')
-        self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
+        self.unselectedBackgroundColor = c.config.getString(
+            'unselected-background-color')
 
         # Set the actual gui widget.
         if self.useScintilla:
@@ -2557,6 +2557,56 @@ class leoQtBody (leoFrame.leoBody):
     def getName (self):
 
         return 'body-widget'
+    #@+node:ekr.20110208115654.15915: *4* Colors (qtBody)
+    #@+node:ekr.20110208115654.15910: *5* setEditorColors (qtBody)
+    def setEditorColors (self,bg,fg):
+        
+        obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
+        
+        # g.trace(bg,fg)
+        
+        self.setBackgroundColorHelper(bg,obj)
+        self.setForegroundColorHelper(fg,obj)
+    #@+node:ekr.20110208115654.15914: *5* setBackgroundColorHelper (qtBody)
+    def setBackgroundColorHelper (self,colorName,obj):
+        
+        # obj is a QTextEdit or QTextBrowser.
+        
+        trace = False and not g.unitTesting
+        
+        if not colorName: return
+
+        styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
+            colorName)
+            
+        if trace: g.trace(colorName) # id(obj),obj,str(obj.objectName()))
+
+        if QtGui.QColor(colorName).isValid():
+            obj.setStyleSheet(styleSheet)
+        elif colorName not in self.badFocusColors:
+            self.badFocusColors.append(colorName)
+            g.es_print('invalid body background color: %s' % (colorName),color='blue')
+    #@+node:ekr.20110209080003.16015: *5* setForegroundColorHelper (qtBody)
+    def setForegroundColorHelper (self,colorName,obj):
+        
+        # obj is a QTextEdit or QTextBrowser.
+        
+        return ### Does not work, and interferes with setBackgroundColor.
+        
+        trace = False and not g.unitTesting
+        
+        if not colorName: return
+
+        styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
+            colorName)
+            
+        if trace: g.trace(colorName) # id(obj),obj,str(obj.objectName()))
+
+        if QtGui.QColor(colorName).isValid():
+            obj.setStyleSheet(styleSheet)
+        elif colorName not in self.badFocusColors:
+            self.badFocusColors.append(colorName)
+            g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
     #@+node:ekr.20081121105001.210: *4* Do-nothings (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -2600,7 +2650,6 @@ class leoQtBody (leoFrame.leoBody):
     def event_generate(self,stroke):            pass
     def getWidth (self):                        return 0
     def mark_set(self,markName,i):              pass
-    def setEditorColors (self,bg,fg):           pass
     def setWidth (self,width):                  pass
     def tag_add(self,tagName,i,j=None,*args):   pass
     def tag_config (self,colorName,**keys):     pass
@@ -3191,29 +3240,22 @@ class leoQtBody (leoFrame.leoBody):
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out',obj)
             obj.setReadOnly(True)
-    #@+node:ekr.20090608052916.3810: *5* onFocusColorHelper
+    #@+node:ekr.20090608052916.3810: *5* onFocusColorHelper (qtBody)
     badFocusColors = []
 
     def onFocusColorHelper(self,kind,obj):
 
         trace = False and not g.unitTesting
-
-        colorName = g.choose(kind=='focus-in',
-            self.selectedBackgroundColor,
-            self.unselectedBackgroundColor)
-
-        if not colorName: return
-
-        if trace: g.trace(id(obj),'%9s' % (kind),str(obj.objectName()))
-
-        styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
-            colorName)
-
-        if QtGui.QColor(colorName).isValid():
-            obj.setStyleSheet(styleSheet)
-        elif colorName not in self.badFocusColors:
-            self.badFocusColors.append(colorName)
-            g.es_print('invalid body background color: %s' % (colorName),color='blue')
+        
+        c = self.c
+        
+        if kind == 'focus-in':
+            # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
+            c.k.showStateColors(inOutline=False,w=self.widget)
+        else:
+            colorName = self.unselectedBackgroundColor
+            if trace: g.trace('%9s' % (kind),colorName)
+            self.setBackgroundColorHelper(colorName,obj)
     #@-others
 #@+node:ekr.20081121105001.235: *3* class leoQtFindTab (findTab)
 class leoQtFindTab (leoFind.findTab):
@@ -4439,14 +4481,21 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self ; c = frame.c
         w = c.get_focus()
+        w_name = g.app.gui.widget_name(w)
+        
+        # g.trace(w,w_name)
 
-        # g.trace(w,c.frame.body.bodyCtrl.widget)
-
-        if w == frame.body.bodyCtrl.widget:
-            c.treeWantsFocus()
-        else:
+        if w_name in ('canvas','tree','treeWidget'):
             c.endEditing()
             c.bodyWantsFocus()
+        else:
+            c.treeWantsFocus()
+
+        # if w == frame.body.bodyCtrl.widget:
+            # c.treeWantsFocus()
+        # else:
+            # c.endEditing()
+            # c.bodyWantsFocus()
     #@+node:ekr.20081121105001.306: *6* cascade
     def cascade (self,event=None):
 

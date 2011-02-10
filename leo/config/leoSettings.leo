@@ -1118,8 +1118,7 @@
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="ekr.20090406071640.18"><vh>@@string selected-background-color = #fdf5f5</vh></v>
-<v t="ekr.20090406071640.19"><vh>@@string unselected-background-color = #f2fdff</vh></v>
+<v t="ekr.20090406071640.19"><vh>@string unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1302,6 +1301,7 @@
 <v t="TL.20100307105950.3140"><vh>Vim Developer Documentation</vh></v>
 <v t="TL.20100307105950.3141"><vh>Vim settings</vh>
 <v t="TL.20100307105950.3142"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20110209093958.15416"><vh>@strings [insert,overwrite] default_editing_state = insert</vh></v>
 <v t="TL.20100307105950.3143"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="TL.20100307105950.3144"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="TL.20100307105950.3145"><vh>@bool stayInTreeAfterSelect = True</vh></v>
@@ -7931,7 +7931,6 @@ print ('done')
 </t>
 <t tx="ekr.20090203134354.2"></t>
 <t tx="ekr.20090213065933.11"></t>
-<t tx="ekr.20090406071640.18">A kind of pink</t>
 <t tx="ekr.20090406071640.19">A kind of blue</t>
 <t tx="ekr.20090408091222.1"># These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
 
@@ -8054,6 +8053,7 @@ False: (Good for files like unitTest.leo)
 <t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
 False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20101114064731.8352"></t>
+<t tx="ekr.20110209093958.15416"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

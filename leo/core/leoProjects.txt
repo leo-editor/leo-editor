@@ -4142,11 +4142,15 @@ def prettyPrintKey (self,stroke,brief=False,trace=False):
     # g.trace(stroke,s)
     return g.choose(brief,s,'<%s>' % s)
 #@+node:ekr.20061031131434.89: *5* bindKey
-def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     '''Bind the indicated shortcut (a Tk keystroke) to the callback.
 
-    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
@@ -4165,7 +4169,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
     if trace: g.trace(pane,shortcut,commandName)
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName)
-        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
         << remove previous conflicting definitions from bunchList >>
         bunchList.append(b)
         shortcut = g.stripBrackets(shortcut.strip())
@@ -4187,19 +4191,20 @@ if shortcut:
                 commandName,shortcut),color='blue')
             return
 #@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
+# b is the bunch for the new binding.
+
 if not modeFlag and self.warn_about_redefined_shortcuts:
-    redefs = [str(b2.commandName) for b2 in bunchList
+    
+    redefs = [b2 for b2 in bunchList
         if b2.commandName != commandName and pane in ('button','all',b2.pane)
             and not b2.pane.endswith('-mode')]
-    for z in redefs:
             
-        g.es_print ('redefining shortcut %s from %s to %s in %s' % (
-            c.k.prettyPrintKey(shortcut),
-                # 2010/11/16: a significant bug fix.
-                # 2011/01/26: use the prettyPrintKey only for the message!
-            g.choose(pane=='button',z,commandName),
-            g.choose(pane=='button',commandName,z),
-            pane),color='red')
+    # The problematic warnings are from makeBindingsFromCommandsDict.
+    if redefs:
+        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+        g.es('%s in %s' % (commandName,pane))
+        for z in redefs:
+            g.es('%s in %s' % (z.commandName,z.pane))
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -4694,6 +4699,972 @@ def setCachedGlobalsElement(self,fn):
         str(top),str(left),str(height),str(width))
     if trace:
         g.trace('top',top,'left',left,'height',height,'width',width)
+#@+node:ekr.20110210081557.15387: *4* Show sources in print-bindings
+#@+node:ekr.20061031131434.88: *5* Binding (keyHandler)
+#@+node:ekr.20061031131434.89: *6* bindKey
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    if shortcut and shortcut.lower().startswith('key'):
+        g.trace(pane,shortcut,commandName)
+
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: g.trace(pane,shortcut,commandName)
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90: *7* << give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
+# b is the bunch for the new binding.
+
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    
+    redefs = [b2 for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+            
+    # The problematic warnings are from makeBindingsFromCommandsDict.
+    if redefs:
+        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+        g.es('%s in %s' % (commandName,pane))
+        for z in redefs:
+            g.es('%s in %s' % (z.commandName,z.pane))
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@+node:ekr.20061031131434.93: *6* bindKeyToDict
+def bindKeyToDict (self,pane,stroke,func,commandName):
+
+    k = self
+    d =  k.masterBindingsDict.get(pane,{})
+
+    stroke = g.stripBrackets(stroke)
+
+    if 0:
+        g.trace('%-4s %-18s %-40s %s' % (
+            pane,repr(stroke),commandName,func and func.__name__))
+
+    # New in Leo 4.4.1: Allow redefintions.
+    d [stroke] = g.Bunch(commandName=commandName,func=func,pane=pane,stroke=stroke)
+    k.masterBindingsDict [pane] = d
+#@+node:ekr.20061031131434.94: *6* bindOpenWith
+def bindOpenWith (self,shortcut,name,data):
+
+    '''Register an open-with command.'''
+
+    k = self ; c = k.c
+
+    # The first parameter must be event, and it must default to None.
+    def openWithCallback(event=None,c=c,data=data):
+        return c.openWith(data=data)
+
+    # Use k.registerCommand to set the shortcuts in the various binding dicts.
+    commandName = 'open-with-%s' % name.lower()
+    k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
+#@+node:ekr.20061031131434.95: *6* checkBindings
+def checkBindings (self):
+
+    '''Print warnings if commands do not have any @shortcut entry.
+    The entry may be `None`, of course.'''
+
+    k = self ; c = k.c
+
+    if not c.config.getBool('warn_about_missing_settings'): return
+
+    for name in sorted(c.commandsDict):
+        abbrev = k.abbreviationsDict.get(name)
+        key = c.frame.menu.canonicalizeMenuName(abbrev or name)
+        key = key.replace('&','')
+        if not g.app.config.exists(c,key,'shortcut'):
+            if abbrev:
+                 g.trace('No shortcut for abbrev %s -> %s = %s' % (
+                    name,abbrev,key))
+            else:
+                g.trace('No shortcut for %s = %s' % (name,key))
+#@+node:ekr.20070218130238: *6* dumpMasterBindingsDict
+def dumpMasterBindingsDict (self):
+
+    k = self ; d = k.masterBindingsDict
+
+    g.pr('\nk.masterBindingsDict...\n')
+
+    for key in sorted(d):
+        g.pr(key, '-' * 40)
+        d2 = d.get(key)
+        for key2 in sorted(d2):
+            b = d2.get(key2)
+            g.pr('%20s %s' % (key2,b.commandName))
+#@+node:ekr.20061031131434.96: *6* k.completeAllBindingsForWidget
+def completeAllBindingsForWidget (self,w):
+
+    k = self ; d = k.bindingsDict
+
+    # g.trace('w',w,'Alt+Key-4' in d)
+
+    for stroke in d:
+        k.makeMasterGuiBinding(stroke,w=w)
+#@+node:ekr.20061031131434.97: *6* k.completeAllBindings
+def completeAllBindings (self,w=None):
+
+    '''New in 4.4b3: make an actual binding in *all* the standard places.
+
+    The event will go to k.masterKeyHandler as always, so nothing really changes.
+    except that k.masterKeyHandler will know the proper stroke.'''
+
+    # g.trace(w)
+
+    k = self
+    for stroke in k.bindingsDict:
+        k.makeMasterGuiBinding(stroke,w=w)
+#@+node:ekr.20061031131434.98: *6* k.makeAllBindings
+def makeAllBindings (self):
+
+    k = self ; c = k.c
+
+    # g.trace(c.fileName(),g.callers())
+
+    k.bindingsDict = {}
+    k.addModeCommands() 
+    k.makeBindingsFromCommandsDict()
+    k.initSpecialIvars()
+    k.initAbbrev()
+    c.frame.body.createBindings()
+    c.frame.log.setTabBindings('Log')
+    if c.frame.statusLine: c.frame.statusLine.setBindings()
+    c.frame.tree.setBindings()
+    c.frame.setMinibufferBindings()
+    k.completeAllBindings()
+    k.checkBindings()
+#@+node:ekr.20061031131434.99: *6* k.initAbbrev
+def initAbbrev (self):
+
+    k = self ; c = k.c ; d = c.config.getAbbrevDict()
+    if d:
+        for key in d:
+            commandName = d.get(key)
+            if commandName.startswith('press-') and commandName.endswith('-button'):
+                pass # Must be done later in k.registerCommand.
+            else:
+                self.initOneAbbrev(commandName,key)
+
+def initOneAbbrev (self,commandName,key):
+    k = self ; c = k.c
+    if c.commandsDict.get(key):
+        g.trace('ignoring duplicate abbrev: %s',key)
+    else:
+        func = c.commandsDict.get(commandName)
+        if func:
+            # g.trace(key,commandName,func.__name__)
+            c.commandsDict [key] = func
+            # k.inverseCommandsDict[func.__name__] = key
+        else:
+            g.es_print('bad abbrev:',key,'unknown command name:',commandName,color='blue')
+#@+node:ekr.20061031131434.100: *6* addModeCommands (enterModeCallback)
+def addModeCommands (self):
+
+    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+
+    k = self ; c = k.c
+    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+    for key in d:
+
+        def enterModeCallback (event=None,name=key):
+            k.enterNamedMode(event,name)
+
+        c.commandsDict[key] = f = enterModeCallback
+        k.inverseCommandsDict [f.__name__] = key
+        # g.trace('leoCommands %24s = %s' % (f.__name__,key))
+#@+node:ekr.20061031131434.101: *6* initSpecialIvars
+def initSpecialIvars (self):
+
+    '''Set ivars for special keystrokes from previously-existing bindings.'''
+
+    k = self ; c = k.c
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    warn  = c.config.getBool('warn_about_missing_settings')
+
+    for ivar,commandName in (
+        ('fullCommandKey',  'full-command'),
+        ('abortAllModesKey','keyboard-quit'),
+        ('universalArgKey', 'universal-argument'),
+    ):
+        junk, bunchList = c.config.getShortcut(commandName)
+        bunchList = bunchList or [] ; found = False
+        for pane in ('text','all'):
+            for bunch in bunchList:
+                if bunch.pane == pane:
+                    stroke = k.strokeFromSetting(bunch.val)
+                    if trace: g.trace(commandName,stroke)
+                    setattr(k,ivar,stroke) ; found = True ;break
+        if not found and warn:
+            g.trace('no setting for %s' % commandName)
+#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict
+def makeBindingsFromCommandsDict (self):
+
+    '''Add bindings for all entries in c.commandDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c ; d = c.commandsDict
+
+    for commandName in sorted(d):
+        command = d.get(commandName)
+        key, bunchList = c.config.getShortcut(commandName)
+        if trace and False and commandName in ('save-file','enter-ctrl-s-mode'):
+            g.trace(key,bunchList)
+        for bunch in bunchList:
+            accel = bunch.val ; pane = bunch.pane
+            _hash = bunch.get('_hash') # 2011/02/10
+            if trace and not _hash: g.trace('**** no hash for',commandName)
+            # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+            if accel and not pane.endswith('-mode'):
+                shortcut = k.shortcutFromSetting(accel)
+                k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+
+    # g.trace(g.listToString(sorted(k.bindingsDict))
+    # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
+#@+node:ekr.20061031131434.103: *6* k.makeMasterGuiBinding
+def makeMasterGuiBinding (self,stroke,w=None):
+
+    '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
+
+    trace = True and not g.unitTesting
+    k = self ; c = k.c ; f = c.frame
+
+    bindStroke = k.tkbindingFromStroke(stroke)
+
+    if stroke.lower().startswith('key'):
+        g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),g.callers(5))
+
+    if w:
+        widgets = [w]
+    else:
+        # New in Leo 4.5: we *must* make the binding in the binding widget.
+        bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
+        bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
+        canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
+        if 0: # Canvas and bindingWidget bindings are now set in tree.setBindings.
+            widgets = (c.miniBufferWidget,bodyCtrl)
+        else:
+            widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
+
+    # This is the only real key callback.
+    def masterBindKeyCallback (event,k=k,stroke=stroke):
+        # g.trace(stroke,event.w)
+        return k.masterKeyHandler(event,stroke=stroke)
+
+    if 0:
+        if stroke.lower().endswith('+s') or stroke.lower().endswith('-s'):
+            g.trace(sroke,widgets)
+        if stroke in ('s','S'):
+            g.trace(stroke,widgets)
+
+    for w in widgets:
+        if not w: continue
+        # Make the binding only if no binding for the stroke exists in the widget.
+        aList = k.masterGuiBindingsDict.get(bindStroke,[])
+        if w not in aList:
+            aList.append(w)
+            k.masterGuiBindingsDict [bindStroke] = aList
+            try:
+                c.bind(w,bindStroke,masterBindKeyCallback)
+                # g.trace(stroke,bindStroke,g.app.gui.widget_name(w))
+            except Exception:
+                if self.trace_bind_key_exceptions:
+                    g.es_exception()
+                g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
+
+                if g.app.unitTesting: raise
+#@+node:ekr.20110210081557.15393: *5* Printing...
+#@+node:ekr.20070418073400: *6* g.app.config.printSettings
+def printSettings (self,c):
+
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following shows where the active setting came from:
+
+    -     leoSettings.leo,
+    - [D] default settings.
+    - [F] indicates the file being loaded,
+    - [M] myLeoSettings.leo,
+
+    '''
+
+    legend = '''\
+legend:
+    leoSettings.leo
+[D] default settings
+[F] loaded .leo File
+[M] myLeoSettings.leo
+'''
+    legend = g.adjustTripleString(legend,c.tab_width)
+    result = []
+    for name,val,c,letter in self.config_iter(c):
+        kind = g.choose(letter==' ','   ','[%s]' % (letter))
+        result.append('%s %s = %s\n' % (kind,name,val))
+
+    # Use a single g.es statement.
+    result.append('\n'+legend)
+    g.es('',''.join(result),tabName='Settings')
+#@+node:ekr.20061031131434.119: *6* k.printBindings & helper
+def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    c.frame.log.clearTab(tabName)
+    legend = '''\
+legend:
+[S] leoSettings.leo
+[ ] default binding
+[F] loaded .leo File
+[M] myLeoSettings.leo
+[@] mode
+'''
+    legend = g.adjustTripleString(legend,c.tab_width)
+
+    data = [] ; n1 = 4 ; n2 = 20
+    if not d: return g.es('no bindings')
+    for key in sorted(d):
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = b.commandName
+            s4 = b.get('_hash','<no hash>')
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3,s4),)
+
+    # Print keys by type:
+    result = []
+    result.append('\n'+legend)
+    sep = '-' * n1
+    for prefix in (
+        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
+        'Ctrl+Shift', 'Ctrl', 'Shift',
+        'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
+        # Meta support
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3,s4 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        # g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        result.append('%s %s\n' % (sep, prefix))
+        self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    result.append('%s %s\n' % (sep, 'Plain Keys'))
+    self.printBindingsHelper(result,data,n1,n2,prefix=None)
+    if not g.unitTesting:
+        g.es('',''.join(result),tabName=tabName)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+    return result # for unit test.
+#@+node:ekr.20061031131434.120: *7* printBindingsHelper
+def printBindingsHelper (self,result,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        data.sort(key=lambda x: x[1])
+            # key is a function that extracts args.
+        for s1,s2,s3,s4 in data:
+            
+            # 2011/02/10: Print the source of the binding: s4 is the _hash.
+            s4 = s4.lower()
+            if s4.endswith('myleosettings.leo'):
+                letter = 'M'
+            elif s4.endswith('leosettings.leo'):
+                letter = 'S'
+            elif s4.endswith('.leo'):
+                letter = 'F'
+            elif s4.find('mode') != -1:
+                letter = '@' # the full mode.
+            else:
+                letter = ' '
+            
+            # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
+#@+node:ekr.20110210081557.15392: *5* Reading settings
+#@+node:ekr.20041119203941.3: *6* class settingsTreeParser (parserBaseClass)
+class settingsTreeParser (parserBaseClass):
+
+    '''A class that inits settings found in an @settings tree.
+
+    Used by read settings logic.'''
+
+    @others
+#@+node:ekr.20041119204103: *7* ctor
+def __init__ (self,c,localFlag=True):
+
+    # Init the base class.
+    parserBaseClass.__init__(self,c,localFlag)
+#@+node:ekr.20041119204714: *7* visitNode (settingsTreeParser)
+def visitNode (self,p):
+
+    """Init any settings found in node p."""
+
+    # g.trace(p.h)
+
+    munge = g.app.config.munge
+
+    kind,name,val = self.parseHeadline(p.h)
+    kind = munge(kind)
+
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
+    if kind is None: # Not an @x node. (New in Leo 4.4.4)
+        pass
+    if kind == "settings":
+        pass
+    # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+    elif kind in self.basic_types and isNone:
+        # None is valid for all basic types.
+        self.set(p,kind,name,None)
+    elif kind in self.control_types or kind in self.basic_types:
+        f = self.dispatchDict.get(kind)
+        if f:
+            try:
+                return f(p,kind,name,val)
+            except Exception:
+                g.es_exception()
+        else:
+            g.pr("*** no handler",kind)
+
+    return None
+#@+node:ekr.20041120064303: *6* readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    '''Read settings from one file or the standard settings files.'''
+
+    trace = False and not g.unitTesting
+    verbose = verbose or trace
+    giveMessage = (verbose and not g.app.unitTesting and
+        not self.silent and not g.app.batchMode)
+    if trace: g.trace(fileName,g.callers())
+    self.write_recent_files_as_needed = False # Will be set later.
+    localConfigFile = self.getLocalConfigFile(fileName)
+    table = self.defineSettingsTable(fileName,localConfigFile)
+    for path,localFlag in table:
+        assert path and g.os_path_exists(path)
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or path.endswith('.leo')
+        if isLeo:
+            if giveMessage:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.es_print(s,color='blue')
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+
+    self.readRecentFiles(localConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20101021041958.6008: *7* getLocalConfigFile
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+
+def getLocalConfigFile (self,fileName):
+
+    if not fileName:
+        return None
+
+    theDir = g.os_path_dirname(fileName)
+    path = g.os_path_join(theDir,'leoSettings.leo')
+
+    if g.os_path_exists(path):
+        return path
+    else:
+        return None
+#@+node:ekr.20101021041958.6004: *7* defineSettingsTable
+def defineSettingsTable (self,fileName,localConfigFile):
+
+    trace = False and not g.unitTesting
+
+    global_table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        # (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        # (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+    )
+
+    if fileName:
+        path = g.os_path_finalize(fileName)
+        theDir = g.os_path_dirname(fileName)
+        myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
+        local_table = (
+            (localConfigFile,False),
+            (myLocalConfigFile,False),
+        )
+        if trace:
+            g.trace('localConfigFile:  ',localConfigFile)
+            g.trace('myLocalConfigFile:',myLocalConfigFile)
+
+        table1 = [z for z in local_table if z not in global_table]
+        table1.append((path,True),)
+    else:
+        table1 = global_table
+
+    seen = [] ; table = []
+    for path,localFlag in table1:
+        if trace: g.trace('exists',g.os_path_exists(path),path)
+        if path and g.os_path_exists(path):
+            # Make sure we mark files seen no matter how they are specified.
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            if path.lower() not in seen:
+                seen.append(path.lower())
+                table.append((path,localFlag),)
+    if trace: g.trace(repr(fileName),table)
+    return table
+#@+node:ekr.20041117085625: *7* openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@+node:ekr.20051013161232: *7* updateSettings
+def updateSettings (self,c,localFlag):
+
+    # g.trace(localFlag,c)
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@+node:ekr.20041117083857.1: *6* g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c,localFlag):
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('localFlag: %5s %s' % (localFlag, c and c.shortFileName()))
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c,localFlag)
+    d = parser.traverse()
+
+    return d
+#@+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,name,val,s=None):
+
+    c = self.c ; d = self.shortcutsDict ; k = c.k
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    verbose = False
+    theHash = d.get('_hash')
+    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+    if trace: g.trace('localFlag: %s d._hash: %s %s' % (
+        self.localFlag,theHash,c.shortFileName()))
+    munge = k.shortcutFromSetting
+    if s is None: s = p.b
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
+            if bunch is not None:
+                bunch._hash = theHash # 2011/02/10
+                if bunch.val not in (None,'none','None'):
+                    # A regular shortcut.
+                    bunchList = d.get(name,[])
+                    if bunch.pane in ('kill','Kill'):
+                        if trace and verbose: g.trace('****** killing binding:',
+                            bunch.val,'to',name)
+                        bunchList = [z for z in bunchList
+                            if munge(z.val) != munge(bunch.val)]
+                        # g.trace(bunchList)
+                    else:
+                        if trace and verbose: g.trace('%6s %20s %s' % (
+                            bunch.pane,bunch.val,name))
+                        bunchList.append(bunch)
+                    d [name] = bunchList
+                    self.set(p,"shortcut",name,bunchList)
+                    self.setShortcut(name,bunchList)
+#@+node:ekr.20110210081557.15394: *5* Remembering the source of bindings
+#@+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,name,val,s=None):
+
+    c = self.c ; d = self.shortcutsDict ; k = c.k
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    verbose = False
+    theHash = d.get('_hash')
+    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+    if trace: g.trace('localFlag: %s d._hash: %s %s' % (
+        self.localFlag,theHash,c.shortFileName()))
+    munge = k.shortcutFromSetting
+    if s is None: s = p.b
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
+            if bunch is not None:
+                bunch._hash = theHash # 2011/02/10
+                if bunch.val not in (None,'none','None'):
+                    # A regular shortcut.
+                    bunchList = d.get(name,[])
+                    if bunch.pane in ('kill','Kill'):
+                        if trace and verbose: g.trace('****** killing binding:',
+                            bunch.val,'to',name)
+                        bunchList = [z for z in bunchList
+                            if munge(z.val) != munge(bunch.val)]
+                        # g.trace(bunchList)
+                    else:
+                        if trace and verbose: g.trace('%6s %20s %s' % (
+                            bunch.pane,bunch.val,name))
+                        bunchList.append(bunch)
+                    d [name] = bunchList
+                    self.set(p,"shortcut",name,bunchList)
+                    self.setShortcut(name,bunchList)
+#@+node:ekr.20051013161232: *6* updateSettings
+def updateSettings (self,c,localFlag):
+
+    # g.trace(localFlag,c)
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@+node:ekr.20041119204700.1: *6* traverse (parserBaseClass)
+def traverse (self):
+
+    c = self.c
+
+    p = g.app.config.settingsRoot(c)
+    if not p:
+        # g.trace('no settings tree for %s' % c)
+        return None
+
+    self.settingsDict = {}
+    self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
+    after = p.nodeAfterTree()
+    while p and p != after:
+        result = self.visitNode(p)
+        # if g.isPython3:
+            # g.trace(result,p.h)
+            # if p.h == 'Menus': g.pdb()
+        if result == "skip":
+            # g.es_print('skipping settings in',p.h,color='blue')
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    return self.settingsDict
+#@+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
+def doMode(self,p,kind,name,val):
+
+    '''Parse an @mode node and create the enter-<name>-mode command.'''
+
+    c = self.c ; k = c.k ; name1 = name
+
+    # g.trace('%20s' % (name),c.fileName())
+    modeName = self.computeModeName(name)
+
+    # Create a local shortcutsDict.
+    old_d = self.shortcutsDict
+    d = self.shortcutsDict = {'_hash':modeName,} # 2011/02/10
+
+    s = p.b
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            if not name:
+                # An entry command: put it in the special *entry-commands* key.
+                aList = d.get('*entry-commands*',[])
+                aList.append(bunch.entryCommandName)
+                d ['*entry-commands*'] = aList
+            elif bunch is not None:
+                # A regular shortcut.
+                bunch.val = k.strokeFromSetting(bunch.val)
+                bunch.pane = modeName
+                bunchList = d.get(name,[])
+                # Important: use previous bindings if possible.
+                key2,bunchList2 = c.config.getShortcut(name)
+                bunchList3 = [b for b in bunchList2 if b.pane != modeName]
+                if bunchList3:
+                    # g.trace('inheriting',[b.val for b in bunchList3])
+                    bunchList.extend(bunchList3)
+                bunchList.append(bunch)
+                d [name] = bunchList
+                self.set(p,"shortcut",name,bunchList)
+                self.setShortcut(name,bunchList)
+
+    # Restore the global shortcutsDict.
+    self.shortcutsDict = old_d
+
+    # Create the command, but not any bindings to it.
+    self.createModeCommand(modeName,name1,d)
+#@+node:ekr.20110210081557.15395: *5* Calls to k.bindKey
+# Added _hash keyword arg to bindKey.
+#@+node:ekr.20061031131434.89: *6* bindKey
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    if shortcut and shortcut.lower().startswith('key'):
+        g.trace(pane,shortcut,commandName)
+
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: g.trace(pane,shortcut,commandName)
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90: *7* << give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
+# b is the bunch for the new binding.
+
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    
+    redefs = [b2 for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+            
+    # The problematic warnings are from makeBindingsFromCommandsDict.
+    if redefs:
+        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+        g.es('%s in %s' % (commandName,pane))
+        for z in redefs:
+            g.es('%s in %s' % (z.commandName,z.pane))
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@+node:ekr.20061031131434.131: *6* k.registerCommand
+def registerCommand (self,commandName,shortcut,func,
+    pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            accel2 = bunch.val ; pane2 = bunch.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
+        ok = k.bindKey (pane,stroke,func,commandName,_hash='register-command') # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            # g.trace(g.callers())
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif trace and verbose and not g.app.silentMode:
+        g.trace(g.callers())
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in list(d.values()):
+            for key in d:
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict
+def makeBindingsFromCommandsDict (self):
+
+    '''Add bindings for all entries in c.commandDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c ; d = c.commandsDict
+
+    for commandName in sorted(d):
+        command = d.get(commandName)
+        key, bunchList = c.config.getShortcut(commandName)
+        if trace and False and commandName in ('save-file','enter-ctrl-s-mode'):
+            g.trace(key,bunchList)
+        for bunch in bunchList:
+            accel = bunch.val ; pane = bunch.pane
+            _hash = bunch.get('_hash') # 2011/02/10
+            if trace and not _hash: g.trace('**** no hash for',commandName)
+            # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+            if accel and not pane.endswith('-mode'):
+                shortcut = k.shortcutFromSetting(accel)
+                k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+
+    # g.trace(g.listToString(sorted(k.bindingsDict))
+    # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@+node:ekr.20110202094848.12571: *3* Vim...
 #@+node:ekr.20060927173836.6: *4* Give warning when unbound key ends a mode
 #@+node:ekr.20091230094319.6244: *5* doMode
@@ -4739,9 +5710,10 @@ def doMode (self,event,state,stroke):
         # New in 4.4b4.
         handler = k.getStateHandler()
         if handler:
+            if trace: g.trace('handler',handler)
             handler(event)
         else:
-            g.trace('No state handler for %s' % state)
+            if trace: g.trace('No state handler for %s' % state)
         return True,'break'
 #@-all
 #@-leo
