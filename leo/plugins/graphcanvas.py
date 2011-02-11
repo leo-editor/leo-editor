@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20090206153748.1: * @file graphcanvas.py
+#@+node:bob.20110127092345.6006: * @file ../plugins/graphcanvas.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -29,6 +29,12 @@ if g.isPython3:
 else:
     import urllib2 as urllib
     import urlparse
+
+try:
+    import pydot
+    import dot_parser
+except ImportError:
+    pydot = None
 
 g.assertUi('qt')
 
@@ -150,6 +156,8 @@ class graphcanvasUI(QtGui.QWidget):
         self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), o.setImage)
 
         self.connect(u.btnExport, QtCore.SIGNAL("clicked()"), o.exportGraph)
+
+        self.connect(u.chkHierarchy, QtCore.SIGNAL("clicked()"), o.update)
 
         menu = QtGui.QMenu(u.btnLayout)
         for name, func in o.layouts():
@@ -460,7 +468,7 @@ class linkItem(QtGui.QGraphicsItemGroup):
     """Node on the canvas"""
     #@+others
     #@+node:bob.20110119123023.7405: *3* __init__
-    def __init__(self, glue, *args, **kargs):
+    def __init__(self, glue, hierarchyLink=False, *args, **kargs):
         """:Parameters:
             - `glue`: glue object owning this
 
@@ -469,16 +477,28 @@ class linkItem(QtGui.QGraphicsItemGroup):
         self.glue = glue
         QtGui.QGraphicsItemGroup.__init__(self)
         self.line = QtGui.QGraphicsLineItem(*args)
-        self.line.setZValue(0)
 
-        self.setZValue(0)
         pen = QtGui.QPen()
-        pen.setWidth(2)
+
+        self.line.setZValue(0)
+        if not hierarchyLink:
+            self.setZValue(1)
+            pen.setWidth(2)
+        else:
+            self.setZValue(0)
+            pen.setColor(QtGui.QColor(240,240,240))
+            pen.setWidth(0.5)
+            
         self.line.setPen(pen)
         self.addToGroup(self.line)
 
         self.head = QtGui.QGraphicsPolygonItem()
-        self.head.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0)))
+        
+        if hierarchyLink:
+            self.head.setBrush(QtGui.QBrush(QtGui.QColor(230,230,230)))
+        else:
+            self.head.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0)))
+            
         self.head.setPen(QtGui.QPen(Qt.NoPen))
         self.addToGroup(self.head)
     #@+node:bob.20110119123023.7406: *3* mousePressEvent
@@ -486,12 +506,17 @@ class linkItem(QtGui.QGraphicsItemGroup):
         QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
         self.glue.pressLink(self, event)
     #@+node:bob.20110119123023.7407: *3* setLine
-    def setLine(self, x0, y0, x1, y1):
+    def setLine(self, x0, y0, x1, y1, hierarchyLink = False):
 
         self.line.setLine(x0, y0, x1, y1)
 
         x,y = x1-(x1-x0)/3., y1-(y1-y0)/3.
-        r = 12.
+        
+        if not hierarchyLink:
+            r = 12.
+        else:
+            r = 6.
+            
         a = atan2(y1-y0, x1-x0)
         w = 2.79252680
         pts = [
@@ -538,6 +563,8 @@ class graphcanvasController(object):
         self.nodeItem = {}  # vnode to item map
         self.link = {}
         self.linkItem = {}
+        self.hierarchyLink = {}
+        self.hierarchyLinkItem = {}
         self.lastNodeItem = None
         
         self.internal_select = False  
@@ -545,44 +572,105 @@ class graphcanvasController(object):
     #@+node:tbrown.20110122085529.15402: *3* layouts
     def layouts(self):
         
-        if not pygraphviz:
-            return [('install pygraphviz for layouts', lambda: None)]
-        
-        return [
-            ('neato', lambda: self.layout('neato')),
-            ('dot', lambda: self.layout('dot')),
-            ('dot LR', lambda: self.layout('dot LR')),
+        if pygraphviz:
+            return [
+                ('neato', lambda: self.layout('neato')),
+                ('dot', lambda: self.layout('dot')),
+                ('dot LR', lambda: self.layout('dot LR')),
+            ]
+        elif pydot:
+            return [
+                ('neato', lambda: self.layout('neato')),
+                ('dot', lambda: self.layout('dot')),
+                ('dot LR', lambda: self.layout('dot LR')),
+                ('fdp', lambda: self.layout('fdp')),
+                ('circo', lambda: self.layout('circo')),
+                ('osage', lambda: self.layout('osage')),
+                ('sfdp', lambda: self.layout('sfdp')),
         ]
+        else:
+            return [('install pygraphviz or pydot for layouts', lambda: None)]
+            
     #@+node:tbrown.20110122085529.15403: *3* layout
     def layout(self, type_):
 
-        G = pygraphviz.AGraph(strict=False,directed=True)
-        if type_ == 'dot LR':
-            G.graph_attr['rankdir']='LR'
+        if pygraphviz:
+            G = pygraphviz.AGraph(strict=False,directed=True)
             
-        type_ = type_.split()[0]
+            if type_ == 'dot LR':
+                G.graph_attr['rankdir']='LR'
+            
+            type_ = type_.split()[0]
+            G.graph_attr['ranksep']='0.125'
+
+        elif pydot:
+            G = pydot.Dot('graphname', graph_type='digraph')
+
+            if type_ == 'dot LR':
+                G.set_layout('dot')
+                G.set('rankdir', 'LR')
+            else:
+                G.set_layout(type_)
         
-        G.graph_attr['ranksep']='0.125'
+            G.set('ranksep', '0.125')
 
         for from_, to in self.link.values():
-            G.add_edge(
-                (from_, from_.gnx),
-                (to, to.gnx),
+            if pygraphviz:
+                G.add_edge(
+                    (from_, from_.gnx),
+                    (to, to.gnx),
             )
+            elif pydot:
+                G.add_edge(pydot.Edge( from_.gnx, to.gnx ))
+
         for i in self.nodeItem:
-            G.add_node( (i, i.gnx) )  
+            if pygraphviz:
+                G.add_node( (i, i.gnx) )  
+            elif pydot:
+                gnode = pydot.Node( i.gnx)
+                
+                rect = self.nodeItem[i].boundingRect()
+                G.add_node(gnode)
+                
+                for child in i.children:
+                    key = (i, child)
+                  
+                    if key not in self.hierarchyLinkItem or child not in self.nodeItem:
+                        continue
+                
+                    G.add_edge(pydot.Edge( i.gnx, child.gnx ))
               
-        G.layout(prog=type_)
+        if pygraphviz:
+            G.layout(prog=type_)
+        elif pydot:
+            tempName = tempfile.NamedTemporaryFile(dir=tempfile.gettempdir(), delete=False)
+            G.write_dot(tempName.name)
+            G = pydot.graph_from_dot_file(tempName.name)
         
         for i in self.nodeItem:
-            gn = G.get_node( (i, i.gnx) )
-            x,y = map(float, gn.attr['pos'].split(','))
-            i.u['_bklnk']['x'] = x
-            i.u['_bklnk']['y'] = -y
-            self.nodeItem[i].setPos(x, -y)
-            self.nodeItem[i].update()
+            if pygraphviz:
+                gn = G.get_node( (i, i.gnx) )
+                x,y = map(float, gn.attr['pos'].split(','))
+            
+                i.u['_bklnk']['x'] = x
+                i.u['_bklnk']['y'] = -y
+                self.nodeItem[i].setPos(x, -y)
+                self.nodeItem[i].update()
+            
+            elif pydot:
+                lst = G.get_node(''.join(['"', i.gnx, '"']))
+                if len(lst) > 0:
+                    x,y = map(float, lst[0].get_pos().strip('"').split(','))
+                    i.u['_bklnk']['x'] = x
+                    i.u['_bklnk']['y'] = -y
+                    self.nodeItem[i].setPos(x, -y)
+                    self.nodeItem[i].update()
         
-        self.update()
+        if pydot:
+            x,y,width,height = map(float, G.get_bb().strip('"').split(','))
+            self.ui.canvasView.setSceneRect(self.ui.canvas.sceneRect().adjusted(x,y,width,height))
+            
+        self.update(adjust=False)
         
         self.center_graph()
         
@@ -719,7 +807,7 @@ class graphcanvasController(object):
 
         self.update()
     #@+node:bob.20110119123023.7413: *3* addLinkItem
-    def addLinkItem(self, from_, to):
+    def addLinkItem(self, from_, to, hierarchyLink = False):
         if from_ not in self.nodeItem:
             return
         if to not in self.nodeItem:
@@ -727,15 +815,20 @@ class graphcanvasController(object):
         key = (from_, to)
         if key in self.linkItem:
             return
-        li = linkItem(self)
+
+        li = linkItem(self, hierarchyLink)
         self.setLinkItem(li, from_, to)
 
-        self.linkItem[key] = li
-        self.link[li] = key
+        if not hierarchyLink:
+            self.linkItem[key] = li
+            self.link[li] = key
+        else:
+            self.hierarchyLinkItem[key] = li
+            self.hierarchyLink[li] = key
 
         self.ui.canvas.addItem(li)
     #@+node:bob.20110119123023.7414: *3* setLinkItem
-    def setLinkItem(self, li, from_, to):
+    def setLinkItem(self, li, from_, to, hierarchyLink = False):
         
         if self.nodeItem[from_].getType() != 5:
             fromSize = self.nodeItem[from_].text.document().size()
@@ -751,8 +844,8 @@ class graphcanvasController(object):
             from_.u['_bklnk']['x'] + fromSize.width()/2, 
             from_.u['_bklnk']['y'] + fromSize.height()/2+self.nodeItem[from_].iconVPos, 
             to.u['_bklnk']['x'] + toSize.width()/2, 
-            to.u['_bklnk']['y'] + toSize.height()/2+self.nodeItem[to].iconVPos
-            )
+            to.u['_bklnk']['y'] + toSize.height()/2+self.nodeItem[to].iconVPos,
+            hierarchyLink)
     #@+node:bob.20110127092345.6036: *3* newPos
     def newPos(self, nodeItem, event):
         """nodeItem is telling us it has a new position"""
@@ -770,6 +863,13 @@ class graphcanvasController(object):
                 if (link, node) in self.linkItem:
                     self.setLinkItem(self.linkItem[(link, node)], link, node)
 
+        for parent in node.parents:
+            if (parent, node) in self.hierarchyLinkItem:
+                self.setLinkItem(self.hierarchyLinkItem[(parent, node)], parent, node)
+
+        for child in node.children:
+            if (node, child) in self.hierarchyLinkItem:
+                self.setLinkItem(self.hierarchyLinkItem[(node, child)], node, child)
     #@+node:bob.20110119123023.7416: *3* releaseNode
     def releaseNode(self, nodeItem, event=None):
         """nodeItem is telling us it has a new position"""
@@ -828,7 +928,8 @@ class graphcanvasController(object):
         if not (event.modifiers() & Qt.ControlModifier):
             return
 
-        link = self.link[linkItem]
+        if linkItem in self.link:
+            link = self.link[linkItem]
 
         v0, v1 = link
 
@@ -859,6 +960,13 @@ class graphcanvasController(object):
             self.ui.canvas.removeItem(self.linkItem[i])
             del self.linkItem[i]
 
+        culls = [i for i in self.hierarchyLinkItem if node in i]
+
+        for i in culls:
+            del self.hierarchyLink[self.hierarchyLinkItem[i]]
+            self.ui.canvas.removeItem(self.hierarchyLinkItem[i])
+            del self.hierarchyLinkItem[i]
+
         del self.nodeItem[node]
         del self.node[self.lastNodeItem]
 
@@ -870,12 +978,14 @@ class graphcanvasController(object):
             self.ui.canvas.removeItem(i)
         for i in self.link:
             self.ui.canvas.removeItem(i)
+        for i in self.hierarchyLink:
+            self.ui.canvas.removeItem(i)
 
         self.initIvars()
         
         self.ui.reset_zoom()
     #@+node:bob.20110119123023.7421: *3* update
-    def update(self):
+    def update(self, adjust=True):
         """rescan name, links, extent"""
         
         self.ui.reset_zoom()
@@ -883,6 +993,10 @@ class graphcanvasController(object):
         for i in self.linkItem:
             self.ui.canvas.removeItem(self.linkItem[i])
         self.linkItem = {}
+
+        for i in self.hierarchyLinkItem:
+            self.ui.canvas.removeItem(self.hierarchyLinkItem[i])
+        self.hierarchyLinkItem = {}
 
         blc = getattr(self.c, 'backlinkController')
 
@@ -894,12 +1008,6 @@ class graphcanvasController(object):
 
             self.nodeItem[i].update()
             
-            #if ntype == 0 or ntype == 3:
-            #    self.nodeItem[i].text.setTextWidth(100)
-            #    self.nodeItem[i].bg.setRect(-2, +2, 
-            #        #self.nodeItem[i].text.document().size().width()+4, 
-            #        100,
-            #        self.nodeItem[i].text.document().size().height()-2)
             if ntype == 0 or ntype == 3 or ntype == 4:
                 self.nodeItem[i].bg.setRect(-2, +2, 
                     self.nodeItem[i].text.document().size().width()+4, 
@@ -919,11 +1027,6 @@ class graphcanvasController(object):
                 poly.append(QtCore.QPointF(3*marginX, marginY))
                 poly.append(QtCore.QPointF(marginX, -marginY))
                 self.nodeItem[i].bg.setPolygon(poly)
-                #elif ntype == 5:
-                #marginX = self.nodeItem[i].bg.pixmap().size().width()/2
-                #marginY = self.nodeItem[i].bg.pixmap().size().height()/2
-                #self.nodeItem[i].bg.setX(0)
-                #self.nodeItem[i].bg.setY(0)
                             
             if blc:
                 for link in blc.linksFrom(i):
@@ -931,7 +1034,14 @@ class graphcanvasController(object):
                 for link in blc.linksTo(i):
                     self.addLinkItem(link, i)
 
-        self.ui.canvasView.setSceneRect(self.ui.canvas.sceneRect().adjusted(-50,-50,50,50))
+        if self.ui.UI.chkHierarchy.isChecked():
+            for i in self.nodeItem:
+                for child in i.children:
+                    if child in self.nodeItem:
+                        self.addLinkItem(i, child, hierarchyLink=True)
+                        
+        if adjust:
+            self.ui.canvasView.setSceneRect(self.ui.canvas.sceneRect().adjusted(-50,-50,50,50))
     #@+node:bob.20110119123023.7422: *3* goto
     def goto(self):
         """make outline select node"""

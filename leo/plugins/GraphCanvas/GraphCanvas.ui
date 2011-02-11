@@ -458,6 +458,19 @@
        </property>
       </widget>
      </item>
+          <item>
+            <widget class="QCheckBox" name="chkHierarchy">
+              <property name="toolTip">
+                <string>Show/hide hierarchy links</string>
+              </property>
+              <property name="text">
+                <string>Hierarchy</string>
+              </property>
+              <property name="checked">
+                <bool>true</bool>
+              </property>
+            </widget>
+          </item>
     </layout>
    </item>
   </layout>
