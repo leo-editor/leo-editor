@@ -5294,6 +5294,9 @@ def importModule (moduleName,pluginName=None,verbose=False):
     module = sys.modules.get(moduleName)
     if module:  return module
 
+    g.es('loading %s' % moduleName, color='blue')
+    exceptions = [] 
+
     try:
         theFile = None
         import imp
@@ -5312,10 +5315,14 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     if trace: g.trace(theFile,moduleName,pathname)
                     module = imp.load_module(moduleName,theFile,pathname,description)
                     if module: break
-                # except ImportError:
-                    # if trace: g.trace('not found',moduleName,findPath)
-                except Exception:
-                    g.es('Exception loading %s module' % (moduleName),color='blue')
+                except Exception as e:
+                    if trace: g.trace(e.message,moduleName,findPath)
+                    if e.message not in exceptions:
+                         exceptions.append(e.message)
+            else:
+                #unable to load module, display all exception messages
+                for e in exceptions:
+                    g.es(e, color='blue') 
         except Exception: # Importing a module can throw exceptions other than ImportError.
             g.es_exception()
     finally:
