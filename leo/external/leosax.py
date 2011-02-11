@@ -125,8 +125,13 @@ class LeoReader(ContentHandler):
                 
     def endElement(self, name):
         """decode unknownAttributes when t element is done"""
+
+	self.in_ = None
+        # could maintain a stack, but we only need to know for
+        # character collection, so it doesn't matter
+
         if name == 'v':
-            self.cur.h = ' '.join(self.cur.h)
+            self.cur.h = ''.join(self.cur.h)
             self.cur = self.cur.parent
             if self.path:
                 del self.path[-1]
@@ -144,11 +149,7 @@ class LeoReader(ContentHandler):
                 nd.u[k] = s
          
     def characters(self, content):
-        """collect body text and headlines, LOSES BLANK LINES"""
-        
-        content = content.strip()
-        if not content:
-            return
+        """collect body text and headlines"""
         
         if self.in_ == 'vh':
             self.cur.h.append(content)
