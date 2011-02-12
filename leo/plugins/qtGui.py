@@ -5396,6 +5396,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if trace or self.trace: g.trace('** already dragging')
         else:
             g.app.dragging = True
+            g.app.drag_source = c, c.p
             if self.trace: g.trace('set g.app.dragging')
             self.setText(md)
             if self.trace: self.dump(ev,c.p,'enter')
@@ -5485,6 +5486,23 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
             s,reassignIndices=True)
         if not pasted: return
+        
+        if c.config.getBool('inter_outline_drag_moves'):
+            src_c, src_p = g.app.drag_source
+            if src_p.hasVisNext(src_c):
+                nxt = src_p.getVisNext(src_c)
+            elif src_p.hasVisBack(src_c):
+                nxt = src_p.getVisBack(src_c)
+            else:
+                nxt = None
+                
+            if nxt is not None:
+                src_p.doDelete()
+                src_c.selectPosition(nxt)
+                src_c.setChanged(True)
+                src_c.redraw()
+            else:
+                g.es("Can't move last node out of outline")
 
         undoData = u.beforeInsertNode(p,
             pasteAsClone=False,copiedBunchList=[])
