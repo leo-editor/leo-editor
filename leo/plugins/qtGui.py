@@ -5519,15 +5519,15 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         if c.config.getBool('inter_outline_drag_moves'):
             src_c, src_p = g.app.drag_source
             if src_p.hasVisNext(src_c):
-                nxt = src_p.getVisNext(src_c)
+                nxt = src_p.getVisNext(src_c).v
             elif src_p.hasVisBack(src_c):
-                nxt = src_p.getVisBack(src_c)
+                nxt = src_p.getVisBack(src_c).v
             else:
                 nxt = None
                 
             if nxt is not None:
                 src_p.doDelete()
-                src_c.selectPosition(nxt)
+                src_c.selectPosition(src_c.vnode2position(nxt))
                 src_c.setChanged(True)
                 src_c.redraw()
             else:
