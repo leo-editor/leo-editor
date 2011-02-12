@@ -3530,13 +3530,15 @@ class baseCommands (object):
         if g.app.batchMode:
             c.notValidInBatchMode("Edit Headline")
             return
+            
+        e,wrapper = tree.editLabel(c.p)
 
         if k:
             # k.setDefaultInputState()
             k.setEditingState()
-            k.showStateAndMode()
+            k.showStateAndMode(w=wrapper)
 
-        tree.editLabel(c.p)
+        #### tree.editLabel(c.p)
     #@+node:ekr.20031218072017.2290: *6* toggleAngleBrackets
     def toggleAngleBrackets (self,event=None):
 

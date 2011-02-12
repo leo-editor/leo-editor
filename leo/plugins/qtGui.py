@@ -1563,6 +1563,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         leoQtBaseTextWidget.__init__(self,widget,name,c)
         self.item=item
         self.permanent = False # Warn the minibuffer that we can go away.
+        self.badFocusColors = []
 
     def __repr__ (self):
         return 'leoQtHeadlineWidget: %s' % id(self)
@@ -1638,6 +1639,29 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
+    #@+node:ekr.20110212012742.15418: *5* setEditorColors (leoQtHeadlineWidget)
+    def setEditorColors(self,bg,fg):
+     
+        self.setBackgroundColorHelper(bg)
+    #@+node:ekr.20110212012742.15420: *6* setBackgroundColorHelper (leoQtHeadlineWidget)
+    def setBackgroundColorHelper (self,colorName):
+        
+        trace = False and not g.unitTesting
+        
+        if not colorName: return
+        
+        w = self.widget # A QLineEdit
+
+        styleSheet = 'QTreeWidget QLineEdit { background-color: %s; }' % (
+            colorName)
+            
+        if trace: g.trace(colorName,w)
+
+        if QtGui.QColor(colorName).isValid():
+            w.setStyleSheet(styleSheet)
+        elif colorName not in self.badFocusColors:
+            self.badFocusColors.append(colorName)
+            g.warning('invalid headline background color: %s' % (colorName))
     #@+node:ekr.20090603073641.3862: *5* setFocus
     def setFocus (self):
 
@@ -2468,7 +2492,7 @@ class leoQtBody (leoFrame.leoBody):
         assert c.frame == frame and frame.c == c
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.unselectedBackgroundColor = c.config.getString(
+        self.unselectedBackgroundColor = c.config.getColor(
             'unselected-background-color')
 
         # Set the actual gui widget.
@@ -2563,7 +2587,7 @@ class leoQtBody (leoFrame.leoBody):
         
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
         
-        # g.trace(bg,fg)
+        # g.trace(bg,fg,g.callers())
         
         self.setBackgroundColorHelper(bg,obj)
         self.setForegroundColorHelper(fg,obj)
@@ -5371,6 +5395,11 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         self.setDragEnabled(True)
         self.c = c
         self.trace = False
+        
+    def __repr__(self):
+        return 'LeoQTreeWidget: %s' % id(self)
+        
+    __str__ = __repr__
 
     def dragMoveEvent(self,ev):
         pass
@@ -6187,6 +6216,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         e.connect(e,QtCore.SIGNAL(
             "editingFinished()"),
             editingFinishedCallback)
+            
+        return wrapper # 2011/02/12
     #@+node:ekr.20090124174652.18: *6* contractItem & expandItem
     def contractItem (self,item):
 
@@ -6235,6 +6266,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Called by nativeTree.editLabel to do
         gui-specific stuff.'''
 
+        trace = False and not g.unitTesting
         w = self.treeWidget
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
@@ -6254,9 +6286,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             e.setSelection(start,n)
             # e.setCursorPosition(ins) # Does not work.
             e.setFocus()
-            self.connectEditorWidget(e,item) # Hook up the widget.
+            wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
 
-        return e
+        if trace: g.trace(e,wrapper)
+        return e,wrapper # 2011/02/11
     #@+node:ekr.20090124174652.105: *6* getCurrentItem
     def getCurrentItem (self):
 
@@ -6293,16 +6326,23 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         '''Return headlineWrapper that wraps e (a QLineEdit).'''
 
+        trace = False and not g.unitTesting
         c = self.c
-
+        
         if e:
             wrapper = self.editWidgetsDict.get(e)
             if not wrapper:
-                wrapper = self.headlineWrapper(c,item,name='head',widget=e)
-                self.editWidgetsDict[e] = wrapper
-
+                if item:
+                    # 2011/02/12: item can be None.
+                    wrapper = self.headlineWrapper(c,item,name='head',widget=e)
+                    if trace: g.trace('new wrapper',e,wrapper)
+                    self.editWidgetsDict[e] = wrapper
+                else:
+                    if trace: g.trace('no item and no wrapper',
+                        e,self.editWidgetsDict)
             return wrapper
         else:
+            g.trace('no e')
             return None
     #@+node:ekr.20090124174652.69: *6* nthChildItem
     def nthChildItem (self,n,parent_item):

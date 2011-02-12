@@ -4154,9 +4154,6 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
-    
-    if shortcut and shortcut.lower().startswith('key'):
-        g.trace(pane,shortcut,commandName)
 
     if not shortcut:
         # g.trace('No shortcut for %s' % commandName)
@@ -4166,7 +4163,9 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
     bunchList = k.bindingsDict.get(shortcut,[])
-    if trace: g.trace(pane,shortcut,commandName)
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %30s %s' % (pane,shortcut,commandName,_hash))
+        g.trace(g.callers())
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName)
         b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
@@ -4193,18 +4192,24 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
+### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
     redefs = [b2 for b2 in bunchList
-        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+        if b2.commandName != commandName and
+            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
+            pane in ('button','all',b2.pane)
             and not b2.pane.endswith('-mode')]
-            
-    # The problematic warnings are from makeBindingsFromCommandsDict.
+
     if redefs:
+        def pr(commandName,pane,theHash):
+            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    
         g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-        g.es('%s in %s' % (commandName,pane))
+        pr(commandName,pane,_hash)
         for z in redefs:
-            g.es('%s in %s' % (z.commandName,z.pane))
+            pr(z.commandName,z.pane,z._hash)
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -4714,9 +4719,6 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
-    
-    if shortcut and shortcut.lower().startswith('key'):
-        g.trace(pane,shortcut,commandName)
 
     if not shortcut:
         # g.trace('No shortcut for %s' % commandName)
@@ -4726,7 +4728,9 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
     bunchList = k.bindingsDict.get(shortcut,[])
-    if trace: g.trace(pane,shortcut,commandName)
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %30s %s' % (pane,shortcut,commandName,_hash))
+        g.trace(g.callers())
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName)
         b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
@@ -4753,18 +4757,24 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
+### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
     redefs = [b2 for b2 in bunchList
-        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+        if b2.commandName != commandName and
+            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
+            pane in ('button','all',b2.pane)
             and not b2.pane.endswith('-mode')]
-            
-    # The problematic warnings are from makeBindingsFromCommandsDict.
+
     if redefs:
+        def pr(commandName,pane,theHash):
+            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    
         g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-        g.es('%s in %s' % (commandName,pane))
+        pr(commandName,pane,_hash)
         for z in redefs:
-            g.es('%s in %s' % (z.commandName,z.pane))
+            pr(z.commandName,z.pane,z._hash)
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -4776,9 +4786,9 @@ def bindKeyToDict (self,pane,stroke,func,commandName):
 
     stroke = g.stripBrackets(stroke)
 
-    if 0:
-        g.trace('%-4s %-18s %-40s %s' % (
-            pane,repr(stroke),commandName,func and func.__name__))
+    # if commandName == 'full-command':
+        # g.trace('%-4s %-18s %-40s %s' % (
+            # pane,repr(stroke),commandName,func and func.__name__),g.callers())
 
     # New in Leo 4.4.1: Allow redefintions.
     d [stroke] = g.Bunch(commandName=commandName,func=func,pane=pane,stroke=stroke)
@@ -4911,7 +4921,7 @@ def addModeCommands (self):
 
         c.commandsDict[key] = f = enterModeCallback
         k.inverseCommandsDict [f.__name__] = key
-        # g.trace('leoCommands %24s = %s' % (f.__name__,key))
+        # g.trace(f.__name__,key)
 #@+node:ekr.20061031131434.101: *6* initSpecialIvars
 def initSpecialIvars (self):
 
@@ -4936,30 +4946,109 @@ def initSpecialIvars (self):
                     setattr(k,ivar,stroke) ; found = True ;break
         if not found and warn:
             g.trace('no setting for %s' % commandName)
-#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict
+#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict & helper
 def makeBindingsFromCommandsDict (self):
 
     '''Add bindings for all entries in c.commandDict.'''
 
     trace = False and not g.unitTesting
-    k = self ; c = k.c ; d = c.commandsDict
-
+    k = self ; c = k.c
+    
+    # Step 1: Create d2.
+    # Keys are strokes. Values are lists of bunches b with b.val equal to the stroke.
+    d = c.commandsDict ; d2 = {} 
     for commandName in sorted(d):
         command = d.get(commandName)
         key, bunchList = c.config.getShortcut(commandName)
-        if trace and False and commandName in ('save-file','enter-ctrl-s-mode'):
-            g.trace(key,bunchList)
-        for bunch in bunchList:
-            accel = bunch.val ; pane = bunch.pane
-            _hash = bunch.get('_hash') # 2011/02/10
-            if trace and not _hash: g.trace('**** no hash for',commandName)
-            # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-            if accel and not pane.endswith('-mode'):
-                shortcut = k.shortcutFromSetting(accel)
-                k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+        # if commandName == 'move-outline-down': g.trace(bunchList)
+        for b in bunchList:
+            # Important: regularize the binding value here.
+            val = k.shortcutFromSetting(b.val)
+            b.commandName = commandName
+            aList = d2.get(val,[])
+            aList.append(b)
+            d2[val] = aList
+
+    # g.trace(list(d2.keys()))
+    
+    # Step 2: Remove overridden entries from the bunchlist for each stroke.
+    if self.new_bindings:
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            aList = self.mergeShortcutList(aList,stroke)
+            d2 [stroke] = aList
+
+    # Step 3: make the bindings.
+    if 1: # New code
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+            for bunch in aList:
+                commandName = bunch.commandName
+                command = c.commandsDict.get(commandName)
+                _hash = bunch.get('_hash') # 2011/02/10
+                pane = bunch.pane
+                if trace and not _hash:
+                    g.trace('**** no hash for',commandName)
+                if stroke and not pane.endswith('-mode'):
+                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
+    else: ### old code
+        d = c.commandsDict
+        for commandName in sorted(d):
+            command = d.get(commandName)
+            key, bunchList = c.config.getShortcut(commandName)
+            # if commandName in ('full-command'): g.trace(key,bunchList)
+            for bunch in bunchList:
+                accel = bunch.val ; pane = bunch.pane
+                _hash = bunch.get('_hash') # 2011/02/10
+                if trace and not _hash: g.trace('**** no hash for',commandName)
+                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+                if accel and not pane.endswith('-mode'):
+                    shortcut = k.shortcutFromSetting(accel)
+                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
+#@+node:ekr.20110211094454.15414: *7* mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
+
+    '''aList is a list of binding bunches for stroke.
+    
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    # if stroke == 'Alt-F4': g.pdb()
+    for b in aList:
+        _hash = b.get('_hash','<no hash>')
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(b)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(b)
+        elif _hash.endswith('.leo'):
+            fList.append(b)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (k.shortcutFromSetting(z.val),z.pane,z.commandName) for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
+    return result
 #@+node:ekr.20061031131434.103: *6* k.makeMasterGuiBinding
 def makeMasterGuiBinding (self,stroke,w=None):
 
@@ -5358,7 +5447,6 @@ def doShortcuts(self,p,kind,name,val,s=None):
         line = line.strip()
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(line)
-            # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
             if bunch is not None:
                 bunch._hash = theHash # 2011/02/10
                 if bunch.val not in (None,'none','None'):
@@ -5375,6 +5463,8 @@ def doShortcuts(self,p,kind,name,val,s=None):
                             bunch.pane,bunch.val,name))
                         bunchList.append(bunch)
                     d [name] = bunchList
+                    # if name in ('full-command'):
+                        # g.trace('id(self.shortcutsDict)',id(d),bunchList)
                     self.set(p,"shortcut",name,bunchList)
                     self.setShortcut(name,bunchList)
 #@+node:ekr.20110210081557.15394: *5* Remembering the source of bindings
@@ -5395,7 +5485,6 @@ def doShortcuts(self,p,kind,name,val,s=None):
         line = line.strip()
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(line)
-            # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
             if bunch is not None:
                 bunch._hash = theHash # 2011/02/10
                 if bunch.val not in (None,'none','None'):
@@ -5412,6 +5501,8 @@ def doShortcuts(self,p,kind,name,val,s=None):
                             bunch.pane,bunch.val,name))
                         bunchList.append(bunch)
                     d [name] = bunchList
+                    # if name in ('full-command'):
+                        # g.trace('id(self.shortcutsDict)',id(d),bunchList)
                     self.set(p,"shortcut",name,bunchList)
                     self.setShortcut(name,bunchList)
 #@+node:ekr.20051013161232: *6* updateSettings
@@ -5518,9 +5609,6 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
-    
-    if shortcut and shortcut.lower().startswith('key'):
-        g.trace(pane,shortcut,commandName)
 
     if not shortcut:
         # g.trace('No shortcut for %s' % commandName)
@@ -5530,7 +5618,9 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
     bunchList = k.bindingsDict.get(shortcut,[])
-    if trace: g.trace(pane,shortcut,commandName)
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %30s %s' % (pane,shortcut,commandName,_hash))
+        g.trace(g.callers())
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName)
         b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
@@ -5557,18 +5647,24 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
+### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
     redefs = [b2 for b2 in bunchList
-        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+        if b2.commandName != commandName and
+            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
+            pane in ('button','all',b2.pane)
             and not b2.pane.endswith('-mode')]
-            
-    # The problematic warnings are from makeBindingsFromCommandsDict.
+
     if redefs:
+        def pr(commandName,pane,theHash):
+            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    
         g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-        g.es('%s in %s' % (commandName,pane))
+        pr(commandName,pane,_hash)
         for z in redefs:
-            g.es('%s in %s' % (z.commandName,z.pane))
+            pr(z.commandName,z.pane,z._hash)
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -5597,6 +5693,7 @@ def registerCommand (self,commandName,shortcut,func,
     if f and f.__name__ != 'dummyCallback' and verbose:
         g.es_print('redefining',commandName, color='red')
 
+    # if commandName == 'full-command': g.trace(commandName,func.__name__)
     c.commandsDict [commandName] = func
     k.inverseCommandsDict [func.__name__] = commandName
     if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
@@ -5641,30 +5738,109 @@ def registerCommand (self,commandName,shortcut,func,
                 if d.get(key) == commandName:
                     c.commandsDict [key] = c.commandsDict.get(commandName)
                     break
-#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict
+#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict & helper
 def makeBindingsFromCommandsDict (self):
 
     '''Add bindings for all entries in c.commandDict.'''
 
     trace = False and not g.unitTesting
-    k = self ; c = k.c ; d = c.commandsDict
-
+    k = self ; c = k.c
+    
+    # Step 1: Create d2.
+    # Keys are strokes. Values are lists of bunches b with b.val equal to the stroke.
+    d = c.commandsDict ; d2 = {} 
     for commandName in sorted(d):
         command = d.get(commandName)
         key, bunchList = c.config.getShortcut(commandName)
-        if trace and False and commandName in ('save-file','enter-ctrl-s-mode'):
-            g.trace(key,bunchList)
-        for bunch in bunchList:
-            accel = bunch.val ; pane = bunch.pane
-            _hash = bunch.get('_hash') # 2011/02/10
-            if trace and not _hash: g.trace('**** no hash for',commandName)
-            # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-            if accel and not pane.endswith('-mode'):
-                shortcut = k.shortcutFromSetting(accel)
-                k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+        # if commandName == 'move-outline-down': g.trace(bunchList)
+        for b in bunchList:
+            # Important: regularize the binding value here.
+            val = k.shortcutFromSetting(b.val)
+            b.commandName = commandName
+            aList = d2.get(val,[])
+            aList.append(b)
+            d2[val] = aList
+
+    # g.trace(list(d2.keys()))
+    
+    # Step 2: Remove overridden entries from the bunchlist for each stroke.
+    if self.new_bindings:
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            aList = self.mergeShortcutList(aList,stroke)
+            d2 [stroke] = aList
+
+    # Step 3: make the bindings.
+    if 1: # New code
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+            for bunch in aList:
+                commandName = bunch.commandName
+                command = c.commandsDict.get(commandName)
+                _hash = bunch.get('_hash') # 2011/02/10
+                pane = bunch.pane
+                if trace and not _hash:
+                    g.trace('**** no hash for',commandName)
+                if stroke and not pane.endswith('-mode'):
+                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
+    else: ### old code
+        d = c.commandsDict
+        for commandName in sorted(d):
+            command = d.get(commandName)
+            key, bunchList = c.config.getShortcut(commandName)
+            # if commandName in ('full-command'): g.trace(key,bunchList)
+            for bunch in bunchList:
+                accel = bunch.val ; pane = bunch.pane
+                _hash = bunch.get('_hash') # 2011/02/10
+                if trace and not _hash: g.trace('**** no hash for',commandName)
+                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+                if accel and not pane.endswith('-mode'):
+                    shortcut = k.shortcutFromSetting(accel)
+                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
+#@+node:ekr.20110211094454.15414: *7* mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
+
+    '''aList is a list of binding bunches for stroke.
+    
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    # if stroke == 'Alt-F4': g.pdb()
+    for b in aList:
+        _hash = b.get('_hash','<no hash>')
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(b)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(b)
+        elif _hash.endswith('.leo'):
+            fList.append(b)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (k.shortcutFromSetting(z.val),z.pane,z.commandName) for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
+    return result
 #@+node:ekr.20110202094848.12571: *3* Vim...
 #@+node:ekr.20060927173836.6: *4* Give warning when unbound key ends a mode
 #@+node:ekr.20091230094319.6244: *5* doMode
@@ -5715,5 +5891,181 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
+#@+node:ekr.20110210115239.15392: *4* Improved redefining messages
+#@+node:ekr.20061031131434.102: *5* makeBindingsFromCommandsDict & helper
+def makeBindingsFromCommandsDict (self):
+
+    '''Add bindings for all entries in c.commandDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    # Step 1: Create d2.
+    # Keys are strokes. Values are lists of bunches b with b.val equal to the stroke.
+    d = c.commandsDict ; d2 = {} 
+    for commandName in sorted(d):
+        command = d.get(commandName)
+        key, bunchList = c.config.getShortcut(commandName)
+        # if commandName == 'move-outline-down': g.trace(bunchList)
+        for b in bunchList:
+            # Important: regularize the binding value here.
+            val = k.shortcutFromSetting(b.val)
+            b.commandName = commandName
+            aList = d2.get(val,[])
+            aList.append(b)
+            d2[val] = aList
+
+    # g.trace(list(d2.keys()))
+    
+    # Step 2: Remove overridden entries from the bunchlist for each stroke.
+    if self.new_bindings:
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            aList = self.mergeShortcutList(aList,stroke)
+            d2 [stroke] = aList
+
+    # Step 3: make the bindings.
+    if 1: # New code
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+            for bunch in aList:
+                commandName = bunch.commandName
+                command = c.commandsDict.get(commandName)
+                _hash = bunch.get('_hash') # 2011/02/10
+                pane = bunch.pane
+                if trace and not _hash:
+                    g.trace('**** no hash for',commandName)
+                if stroke and not pane.endswith('-mode'):
+                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
+    else: ### old code
+        d = c.commandsDict
+        for commandName in sorted(d):
+            command = d.get(commandName)
+            key, bunchList = c.config.getShortcut(commandName)
+            # if commandName in ('full-command'): g.trace(key,bunchList)
+            for bunch in bunchList:
+                accel = bunch.val ; pane = bunch.pane
+                _hash = bunch.get('_hash') # 2011/02/10
+                if trace and not _hash: g.trace('**** no hash for',commandName)
+                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+                if accel and not pane.endswith('-mode'):
+                    shortcut = k.shortcutFromSetting(accel)
+                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+
+    # g.trace(g.listToString(sorted(k.bindingsDict))
+    # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
+#@+node:ekr.20110211094454.15414: *6* mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
+
+    '''aList is a list of binding bunches for stroke.
+    
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    # if stroke == 'Alt-F4': g.pdb()
+    for b in aList:
+        _hash = b.get('_hash','<no hash>')
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(b)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(b)
+        elif _hash.endswith('.leo'):
+            fList.append(b)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (k.shortcutFromSetting(z.val),z.pane,z.commandName) for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
+    return result
+#@+node:ekr.20061031131434.89: *5* bindKey
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %30s %s' % (pane,shortcut,commandName,_hash))
+        g.trace(g.callers())
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90: *6* << give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
+# b is the bunch for the new binding.
+
+### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    
+    redefs = [b2 for b2 in bunchList
+        if b2.commandName != commandName and
+            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
+            pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+
+    if redefs:
+        def pr(commandName,pane,theHash):
+            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    
+        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+        pr(commandName,pane,_hash)
+        for z in redefs:
+            pr(z.commandName,z.pane,z._hash)
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
 #@-all
 #@-leo
