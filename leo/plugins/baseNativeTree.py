@@ -739,27 +739,24 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         """Start editing p's headline."""
 
         trace = False ; verbose = False
-
-        if self.busy():
-            return
-
+        if self.busy(): return
         c = self.c
-
-        if trace: g.trace('***',p and p.h,g.callers(4))
-
         c.outerUpdate()
             # Do any scheduled redraw.
             # This won't do anything in the new redraw scheme.
 
         item = self.position2item(p)
         if item:
-            e = self.editLabelHelper(item,selectAll,selection)
+            e,wrapper = self.editLabelHelper(item,selectAll,selection)
         else:
             e = None
             self.error('no item for %s' % p)
 
         # A nice hack: just set the focus request.
         if e: c.requestedFocusWidget = e
+        
+        if trace: g.trace(e,wrapper)
+        return e,wrapper # 2011/02/12
     #@+node:ekr.20090124174652.57: *3* editPosition (nativeTree)
     def editPosition(self):
 
