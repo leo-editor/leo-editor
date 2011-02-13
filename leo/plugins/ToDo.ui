@@ -400,7 +400,7 @@
           <bool>false</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -432,7 +432,7 @@
           <bool>false</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -648,38 +648,5 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>dueDateToggle</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>dueDateEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>122</x>
-     <y>89</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>54</x>
-     <y>89</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dueTimeToggle</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>dueTimeEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>334</x>
-     <y>87</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>234</x>
-     <y>87</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
