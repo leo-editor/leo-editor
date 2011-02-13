@@ -24,6 +24,7 @@ import leo.core.leoGlobals as g
 
 import os
 import re
+import datetime
 
 if g.app.gui.guiName() == "qt":
 
@@ -104,6 +105,17 @@ if g.app.gui.guiName() == "qt":
             self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
                 lambda v: o.set_progress(val=u.spinProg.value()))
 
+            # can't work out SIGNAL() names
+            u.dueDateEdit.dateChanged.connect(
+                lambda v: o.set_due_date(val=u.dueDateEdit.date()))
+            u.dueTimeEdit.timeChanged.connect(
+                lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
+
+            u.dueDateToggle.stateChanged.connect(
+                lambda v: o.set_due_date(val=u.dueDateEdit.date()))
+            u.dueTimeToggle.stateChanged.connect(
+                lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
+
             for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
                 "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
                 "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
@@ -131,6 +143,15 @@ if g.app.gui.guiName() == "qt":
         def setTime(self, timeReq):
             self.UI.spinTime.blockSignals(True)
             self.UI.spinTime.setValue(timeReq)
+            self.UI.spinTime.blockSignals(False)
+
+        def setDueDate(self, date_):
+            self.UI.spinTime.blockSignals(True)
+            self.UI.dueDateEdit.setDate(date_)
+            self.UI.spinTime.blockSignals(False)
+        def setDueTime(self, time_):
+            self.UI.spinTime.blockSignals(True)
+            self.UI.dueTimeEdit.setTime(time_)
             self.UI.spinTime.blockSignals(False)
 
         @staticmethod
@@ -672,6 +693,30 @@ class todoController:
     @redrawer
     def local_clear(self, p=None):
         self.recalc_time(p, clear=True)
+    #@+node:tbrown.20110213091328.16233: *4* set_due_date
+    def set_due_date(self,p=None, val=None):
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+
+        if val == None: return
+        
+        if self.ui.UI.dueDateToggle.checkState() == Qt.Unchecked:
+            self.setat(v, 'duedate', "")
+        else:
+            self.setat(v, 'duedate', val.toPyDate())
+    #@+node:tbrown.20110213091328.16235: *4* set_due_time
+    def set_due_time(self,p=None, val=None):
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+
+        if val == None: return
+
+        if self.ui.UI.dueTimeToggle.checkState() == Qt.Unchecked:
+            self.setat(v, 'duetime', "")
+        else:
+            self.setat(v, 'duetime', val.toPyTime())
     #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
     #@+node:tbrown.20090119215428.41: *4* childrenTodo
     @redrawer
@@ -835,6 +880,26 @@ class todoController:
         v = self.c.currentPosition().v
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
+        
+        date_ = self.getat(v, 'duedate')
+        if date_:
+            self.ui.UI.dueDateToggle.setCheckState(Qt.Checked)
+            self.ui.setDueDate(date_)
+            self.ui.UI.dueDateEdit.setEnabled(True)
+        else:
+            self.ui.setDueDate(datetime.date.today())
+            self.ui.UI.dueDateToggle.setCheckState(Qt.Unchecked)
+            self.ui.UI.dueDateEdit.setEnabled(False)
+
+        time_ = self.getat(v, 'duetime')
+        if time_:
+            self.ui.UI.dueTimeToggle.setCheckState(Qt.Checked)
+            self.ui.setDueTime(time_)
+            self.ui.UI.dueTimeEdit.setEnabled(True)
+        else:
+            self.ui.setDueTime(datetime.time(12))
+            self.ui.UI.dueTimeToggle.setCheckState(Qt.Unchecked)
+            self.ui.UI.dueTimeEdit.setEnabled(False)
     #@-others
 #@+node:tbrown.20100701093750.13800: ** command inc/dec priority
 @g.command('todo-dec-pri')
