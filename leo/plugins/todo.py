@@ -211,7 +211,8 @@ if g.app.gui.guiName() == "qt":
         def populateMenu(menu,o): 
             menu.addAction('Find next ToDo', o.find_todo)
             m = menu.addMenu("Priority")
-            m.addAction('Sort', o.priSort)
+            m.addAction('Priority Sort', o.priSort)
+            m.addAction('Due Date Sort', o.dueSort)
             m.addAction('Mark children todo', o.childrenTodo)
             m.addAction('Show distribution', o.showDist)
             m.addAction('Redistribute', o.reclassify)
@@ -831,6 +832,21 @@ class todoController:
             pa = -1
 
         return pa
+    #@+node:tbrown.20110213153425.16373: *4* duekey
+    def duekey(self, v):
+        """key function for sorting by due date/time"""
+
+        date_ = self.getat(v, 'duedate') or datetime.date(3000,1,1)
+        time_ = self.getat(v, 'duetime') or datetime.time(23, 59, 59)
+            
+        return date_, time_
+    #@+node:tbrown.20110213153425.16377: *4* dueSort
+    @redrawer
+    def dueSort(self, p=None):
+        if p is None:
+            p = self.c.currentPosition()
+        self.c.selectPosition(p)
+        self.c.sortSiblings(key=self.duekey)
     #@+node:tbrown.20090119215428.44: *4* priority_clear
     @redrawer
     def priority_clear(self,v=None):

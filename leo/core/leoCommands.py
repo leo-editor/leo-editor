@@ -3991,7 +3991,8 @@ class baseCommands (object):
     # New in Leo 4.7 final: this method no longer supports
     # the 'cmp' keyword arg.
 
-    def sortSiblings (self,event=None,key=None,p=None,sortChildren=False):
+    def sortSiblings (self, event=None, key= None, p=None, sortChildren=False,
+                      reverse=False):
 
         '''Sort the siblings of a node.'''
 
@@ -4012,7 +4013,7 @@ class baseCommands (object):
                 return (self.h.lower())
             key = lowerKey
 
-        newChildren.sort(key=key)
+        newChildren.sort(key=key, reverse=reverse)
 
         if oldChildren == newChildren:
             return
