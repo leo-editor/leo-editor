@@ -42,7 +42,7 @@ class node:
     def __str__(self, level=0):
         """Return long text representation of node and
         descendents with indentation"""
-        ans = [('  '*(level-1) + self.h)[:78]]
+        ans = [("%s%s (%s)" % ('  '*(level-1), self.h, self.gnx))[:78]]
         for k in self.u:
             s = self.u[k]
             ans.append(("%s@%s: %s"%('  '*(level+1), k, repr(s)))[:78])
@@ -164,10 +164,13 @@ def get_leo_data(source):
     return parser.root
 
 if __name__ == '__main__':
+    import sys
     import os
-    wb = os.path.expanduser(
-        os.path.join('~', '.leo', 'workbook.leo')
-    )
+    if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
+        wb = sys.argv[1]
+    else:
+        wb = os.path.expanduser(
+            os.path.join('~', '.leo', 'workbook.leo')
+        )
     leo_data = get_leo_data(wb)
-    for i in leo_data.flat():
-        print i.UNL()
+    print leo_data
