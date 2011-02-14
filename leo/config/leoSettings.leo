@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -423,14 +423,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -438,7 +438,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -1118,8 +1118,7 @@
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="ekr.20090406071640.18"><vh>@@string selected-background-color = #fdf5f5</vh></v>
-<v t="ekr.20090406071640.19"><vh>@@string unselected-background-color = #f2fdff</vh></v>
+<v t="ekr.20090406071640.19"><vh>@string unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1236,7 +1235,7 @@
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954"><vh>Window</vh>
+<v t="ekr.20041213105954" a="E"><vh>Window</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
@@ -1275,19 +1274,20 @@
 <v t="ekr.20041119034357.64"><vh>@int initial_window_top = 20</vh></v>
 <v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
 </v>
-<v t="ekr.20041119034357.54"><vh>Outline pane options</vh>
+<v t="ekr.20041119034357.54" a="E"><vh>Outline pane options</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="ekr.20061030092620"><vh>@bool center_selected_tree_node = True</vh></v>
 <v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
 <v t="ekr.20041119050749.5"><vh>@bool expanded_click_area = True</vh></v>
 <v t="ekr.20060528175513"><vh>@bool idle_redraw = False</vh></v>
 <v t="ekr.20060120123529"><vh>@bool initialClickExpandsOrContractsNode = True</vh></v>
+<v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
 <v t="ekr.20061030104734"><vh>@bool invisible_outline_navigation = False</vh></v>
 <v t="ekr.20041119050749.17"><vh>@bool look_for_control_drag_on_mouse_down = True</vh></v>
 <v t="ekr.20041119050749.18"><vh>@bool outline_pane_scrolls_horizontally = True</vh></v>
-<v t="ekr.20061002115414.1"></v>
-<v t="ekr.20070318065601"></v>
 <v t="ekr.20070604075218"></v>
+<v t="ekr.20070318065601"></v>
+<v t="ekr.20061002115414.1"></v>
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
@@ -1302,6 +1302,7 @@
 <v t="TL.20100307105950.3140"><vh>Vim Developer Documentation</vh></v>
 <v t="TL.20100307105950.3141"><vh>Vim settings</vh>
 <v t="TL.20100307105950.3142"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20110209093958.15416"><vh>@strings [insert,overwrite] default_editing_state = insert</vh></v>
 <v t="TL.20100307105950.3143"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="TL.20100307105950.3144"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="TL.20100307105950.3145"><vh>@bool stayInTreeAfterSelect = True</vh></v>
@@ -1517,7 +1518,9 @@ The following integer values are supported:
 place a copy this "@keys Vim bindings" node and its sub-nodes
 into your myLeoSettings.leo file under the "@settings" node.
 </t>
-<t tx="TL.20100307105950.3138">Vi emulation - User documentation:
+<t tx="TL.20100307105950.3138">@nocolor-node
+
+Vi emulation - User documentation:
 	Installation
 	| Place a copy of the "@keys Vim bindings" node and its sub-nodes,
 	| located in the leoSettings.leo file, under the "@settings" node
@@ -1715,7 +1718,9 @@ into your myLeoSettings.leo file under the "@settings" node.
 Vim Modeline (used by Vim for file specific settings)
 	| vim: noet filetype=otl foldcolumn=1
 </t>
-<t tx="TL.20100307105950.3140">Vi emulation - Developer documentation:
+<t tx="TL.20100307105950.3140">@nocolor-node
+
+Vi emulation - Developer documentation:
 	Realization:
 		Leo Configuration:
 		| The following configuration was used for all testing:
@@ -7927,7 +7932,6 @@ print ('done')
 </t>
 <t tx="ekr.20090203134354.2"></t>
 <t tx="ekr.20090213065933.11"></t>
-<t tx="ekr.20090406071640.18">A kind of pink</t>
 <t tx="ekr.20090406071640.19">A kind of blue</t>
 <t tx="ekr.20090408091222.1"># These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
 
@@ -8050,6 +8054,7 @@ False: (Good for files like unitTest.leo)
 <t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
 False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20101114064731.8352"></t>
+<t tx="ekr.20110209093958.15416"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
@@ -8097,6 +8102,9 @@ loading files</t>
 
 Unicode chars like ▾ and … can be used here.
 </t>
+<t tx="tbrown.20110212091818.20118">Set to False, dragging nodes between different outlines
+creates copies.  Set to True, the node is moved and no
+longer exists in the source outline.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

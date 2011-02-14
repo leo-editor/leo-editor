@@ -620,7 +620,7 @@ class baseCommands (object):
             k.masterCommand(event,func,stroke)
             return k.funcReturn
         else:
-            g.trace('no such command: %s' % (commandName),color='red')
+            g.error('no such command: %s %s' % (commandName,g.callers()))
             return None
     #@+node:ekr.20091002083910.6106: *3* c.find...
     #@+<< poslist doc >>
@@ -3530,12 +3530,15 @@ class baseCommands (object):
         if g.app.batchMode:
             c.notValidInBatchMode("Edit Headline")
             return
+            
+        e,wrapper = tree.editLabel(c.p)
 
         if k:
-            k.setDefaultInputState()
-            k.showStateAndMode()
+            # k.setDefaultInputState()
+            k.setEditingState()
+            k.showStateAndMode(w=wrapper)
 
-        tree.editLabel(c.p)
+        #### tree.editLabel(c.p)
     #@+node:ekr.20031218072017.2290: *6* toggleAngleBrackets
     def toggleAngleBrackets (self,event=None):
 
@@ -3988,7 +3991,8 @@ class baseCommands (object):
     # New in Leo 4.7 final: this method no longer supports
     # the 'cmp' keyword arg.
 
-    def sortSiblings (self,event=None,key=None,p=None,sortChildren=False):
+    def sortSiblings (self, event=None, key= None, p=None, sortChildren=False,
+                      reverse=False):
 
         '''Sort the siblings of a node.'''
 
@@ -4009,7 +4013,7 @@ class baseCommands (object):
                 return (self.h.lower())
             key = lowerKey
 
-        newChildren.sort(key=key)
+        newChildren.sort(key=key, reverse=reverse)
 
         if oldChildren == newChildren:
             return

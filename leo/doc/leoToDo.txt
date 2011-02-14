@@ -2670,11 +2670,70 @@ def start (self,event=None,w=None,prefix=None,chain=False):
     else:
         self.abort()
 #@+node:ekr.20100828074347.5827: ** Vim bindings
-@language rest
+@nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 
 Vim mode users: your top 3 complaints, please
+#@+node:ekr.20110202111105.15438: *3* Handling vim modes
+#@+node:ekr.20061031131434.123: *4* set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.133: *4* setInputState
+def setInputState (self,state):
+
+    k = self
+    k.unboundKeyAction = state
+
+
+
+#@+node:ekr.20110202111105.15433: *3* Vim settings
+#@+node:ekr.20110202111105.15434: *4* @strings [command,insert, overwrite] top_level_unbound_key_action = command
+@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+command:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.
+#@+node:ekr.20110202111105.15435: *4* @bool stayInTreeAfterEditHeadline = True
+This allows the newline character to switch from the outline pane to the body pane.
+#@+node:ekr.20110202111105.15436: *4* @bool outline_pane_has_initial_focus = True
+True:  Outline gets focus when a new window is opened.
+False: Body pane gets focus when a new window is opened.
+#@+node:ekr.20110202111105.15437: *4* @bool stayInTreeAfterSelect = True
+True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
+
+If this is False it will be harder to use the arrow keys in the headline.
+    
+False: (Legacy) Selecting an outline node transfers focus to the body pane.
 #@+node:ekr.20110202094848.12569: *3* Notes
 #@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
 @language python
@@ -2757,32 +2816,9 @@ bindHelper class?
     - Would mediate various aspects of binding.
     - c.bindHelper or k.bindHelper?
 #@+node:ekr.20100113075303.6270: *3* Vim problems
-#@+node:ekr.20110202094848.12568: *4* named marks
+#@+node:ekr.20100112051224.6229: *4* Binding Arrow keys (fixed?)
 @nocolor-node
 
-Having worked with Tk text canvases more that Qt, there still seem to
-be things that it had that have to be worked around as the Qt people
-just haven't seen the need for.
-
-One is the block cursor, I giving Leo Vim like functionality, it would
-be nice if one where supported, theses new kids just don't understand
-something so primitive I guess.
-
-Another is named marks, in Vim you can store a number of cursor
-locations, and recall them to jump around in your code.  This was also
-useful in filling out templates as each stop could be given a name
-mark.  This helped make filling out a template easier as you weren't
-stuck in a linear filling in the blanks in a set order, template stops
-where linked in rings, you could jump from the last stop back to the
-first and make and changes you wanted on a second go round.  Gravity
-of marks made things easier to inspect to determine what stops where
-used and which ones were being bypassed.
-
-As these things had an actual presence in the text buffer, it going to
-be a little harder to come up with a reasonable work around.
-
-Tom
-#@+node:ekr.20100112051224.6229: *4* Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
 commands or @mode nodes have no effect.
 #@+node:ekr.20100112051224.6239: *4* Displaying mode help
@@ -2809,21 +2845,27 @@ to::
     d : vi-delete-line
     b : vi-delete-to-begin-of-word
 #@+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
+@nocolor-node
+
 Support the ';' key: repeat the last "To character" or "Find character" command.
 #@+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
+@nocolor-node
+
 Mapping a number to a command or an @mode node works but can not be used as it
 prevents the number from being entered as text while in Vi's insert state.
 
 Binding 'bksp' key to back-char to move back a character in command mode
 prevents 'bksp' from deleting characters in text edit mode.
 #@+node:ekr.20080616110054.2: *4* Support vim dot command
+@nocolor-node
+
 The ability to repeat the last editing related command by pressing the period
 key is not supported and there is no workaround in place.
 
 Binding keys within nodes:
 
 Some commands can be "easily" repeated by having the command's mode
-bind itself to the period key.  This is not currently working.
+bind itself to the period key.  This is not currently working.  
 
 Support commands requesting input:
 
@@ -2849,6 +2891,8 @@ Notes:
   a copy of the character entered by the user. It doesn't matter since only the
   last command is assigned to the period key to be re-executed.
 #@+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
+@nocolor-node
+
 Leo functions exist which unconditionally set focus to the body pane
 regardless of the active pane.
 
@@ -2861,21 +2905,30 @@ only works correctly after another node has been selected. It appears that
 changes made to a node's headline text are not recorded in Leo's change history
 until the edited node has lost focus.
 #@+node:ekr.20100113075303.6272: *4* Argument handling
-#@+node:ekr.20100112051224.6222: *5* Commands requesting user input (hard?)
+#@+node:ekr.20100112051224.6222: *5* Commands requesting user input
+@nocolor-node
+
 Commands requesting user input must be the last command executed within an @mode
 node. This prevents the implementation of commands such as "yank to <character>"
 that requires a "copy to clipboard" operation after the "find-character"
 command.
-#@+node:ekr.20100112051224.6226: *5* Range prefix to commands (k.getArgs)
+
+======
+
+Maybe we just need more commands...
+#@+node:ekr.20100112051224.6226: *5* Range prefix to commands/objects (k.getArgs)
+@nocolor-node
+
 The ability to specify a numeric range prefix is not supported. For example,
 entering "3dd" will not delete the next three lines and "20G" will not move the
 cursor to the 20th line in the file.
 
-#@+node:ekr.20100112051224.6227: *5* Range prefix to objects (k.getArgs)
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
 #@+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
+@nocolor-node
+
 Commands modifying or selecting headline text do not work correctly within a
 @mode node.
 
@@ -2884,6 +2937,8 @@ object commands. As a workaround, the commands are currently written to only
 select the text. The user must perform the subsequent delete, change,
 substitute, and yank.
 #@+node:ekr.20100112051224.6237: *4* Fix forward and backward by sentences
+@nocolor-node
+
 Leo's sentence related functions:
 
 - do not stop at empty lines.
@@ -2892,22 +2947,55 @@ Leo's sentence related functions:
 - do not stop at the end or beginning of the buffer.
 
 Note: see forwardSentenceHelper and backSentenceHelper functions.
-#@+node:ekr.20100112051224.6246: *4* Missing commands
+#@+node:ekr.20100112051224.6246: *4* Missing commands/features
 #@+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
+@nocolor-node
+
 Leo provides support for switching to upper or lower case but no method exists
 to toggle between cases (used by Vi's "~" command).
 
 #@+node:ekr.20100112051224.6233: *5* Replace current character command
+@nocolor-node
+
 Vi's "r" command allows user to replace the current character with the next
 entered character.
 #@+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
+@nocolor-node
+
 Vi has a collection of "z<movement>" commands that will move the
 current line to the top, middle, and bottom of the screen.  They are
 not supported in Leo.
 #@+node:ekr.20100112051224.6235: *5* Move body text up/down
+@nocolor-node
+
 Vi maps keys to scroll the text up/down one line and by half the
 number of visible lines.  Leo does not support this.
 
+#@+node:ekr.20110202094848.12568: *5* Named marks
+@nocolor-node
+
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+
+Another is named marks, in Vim you can store a number of cursor
+locations, and recall them to jump around in your code.  This was also
+useful in filling out templates as each stop could be given a name
+mark.  This helped make filling out a template easier as you weren't
+stuck in a linear filling in the blanks in a set order, template stops
+where linked in rings, you could jump from the last stop back to the
+first and make and changes you wanted on a second go round.  Gravity
+of marks made things easier to inspect to determine what stops where
+used and which ones were being bypassed.
+
+As these things had an actual presence in the text buffer, it going to
+be a little harder to come up with a reasonable work around.
+
+Tom
 #@+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
 #@+node:ekr.20100112051224.6236: *5* Two kinds of words
 Vi supports two types of words in its commands:

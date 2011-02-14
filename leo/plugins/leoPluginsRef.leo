@@ -72,8 +72,8 @@
 <v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"
-expanded="tbrown.20090119215428.9,tbrown.20090119215428.11,tbrown.20090119215428.40,"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2" a="E"
+expanded="tbrown.20090119215428.9,tbrown.20090119215428.11,tbrown.20090119215428.19,tbrown.20090119215428.30,tbrown.20090119215428.40,"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"
 expanded="tbrown.20100318101414.5997,"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"
@@ -149,14 +149,14 @@ expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 </v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
-<v t="edream.110203113231.872"><vh>Files and nodes</vh>
+<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
 <v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
 <v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
-<v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
+<v t="ekr.20060807103814.1" a="E"><vh>@file datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@file expfolder.py</vh></v>
 <v t="ekr.20040915105758.13"><vh>@file FileActions.py</vh></v>
 <v t="ekr.20110110105526.5463"><vh>@file ftp.py</vh></v>

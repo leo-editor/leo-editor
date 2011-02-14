@@ -148,8 +148,12 @@ def createStatusLine(tag,keywords):
     statusLine.clear()
     statusLine.put("...")
 #@+node:tbrown.20070726135242: ** recursiveUNLSearch
-def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=9, maxp=None):
-    """try and move to unl in the commander c"""
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+    """try and move to unl in the commander c
+    
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how fast we will recurse.  So it should default to 0 (zero).
+    """
 
     def moveToP(c, p):
         c.expandAllAncestors(p) # 2009/11/07

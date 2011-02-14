@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:bob.20110130191621.30757: * @file ../plugins/qtGui.py
+#@+node:ekr.20081121105001.188: * @file qtGui.py
 #@@first
 
 '''qt gui plugin.'''
@@ -1228,6 +1228,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     ''' % (s, descr)
 
         return html
+    #@+node:ekr.20081121105001.588: *5* setInsertPoint
+    def setInsertPoint(self,i):
+
+        w = self.widget
+
+        s = w.toPlainText()
+        i = self.toPythonIndex(i)
+        i = max(0,min(i,len(s)))
+        cursor = w.textCursor()
+        cursor.setPosition(i)
+        w.setTextCursor(cursor)
     #@+node:ekr.20081121105001.589: *5* setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
@@ -1562,6 +1573,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         leoQtBaseTextWidget.__init__(self,widget,name,c)
         self.item=item
         self.permanent = False # Warn the minibuffer that we can go away.
+        self.badFocusColors = []
 
     def __repr__ (self):
         return 'leoQtHeadlineWidget: %s' % id(self)
@@ -1637,6 +1649,29 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
+    #@+node:ekr.20110212012742.15418: *5* setEditorColors (leoQtHeadlineWidget)
+    def setEditorColors(self,bg,fg):
+     
+        self.setBackgroundColorHelper(bg)
+    #@+node:ekr.20110212012742.15420: *6* setBackgroundColorHelper (leoQtHeadlineWidget)
+    def setBackgroundColorHelper (self,colorName):
+        
+        trace = False and not g.unitTesting
+        
+        if not colorName: return
+        
+        w = self.widget # A QLineEdit
+
+        styleSheet = 'QTreeWidget QLineEdit { background-color: %s; }' % (
+            colorName)
+            
+        if trace: g.trace(colorName,w)
+
+        if QtGui.QColor(colorName).isValid():
+            w.setStyleSheet(styleSheet)
+        elif colorName not in self.badFocusColors:
+            self.badFocusColors.append(colorName)
+            g.warning('invalid headline background color: %s' % (colorName))
     #@+node:ekr.20090603073641.3862: *5* setFocus
     def setFocus (self):
 
@@ -1696,17 +1731,6 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         pass
-#@+node:ekr.20081121105001.588: *3* setInsertPoint
-def setInsertPoint(self,i):
-
-    w = self.widget
-
-    s = w.toPlainText()
-    i = self.toPythonIndex(i)
-    i = max(0,min(i,len(s)))
-    cursor = w.textCursor()
-    cursor.setPosition(i)
-    w.setTextCursor(cursor)
 #@-others
 #@-<< define text widget classes >>
 
@@ -2478,8 +2502,8 @@ class leoQtBody (leoFrame.leoBody):
         assert c.frame == frame and frame.c == c
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.selectedBackgroundColor = c.config.getString('selected-background-color')
-        self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
+        self.unselectedBackgroundColor = c.config.getColor(
+            'unselected-background-color')
 
         # Set the actual gui widget.
         if self.useScintilla:
@@ -2567,6 +2591,56 @@ class leoQtBody (leoFrame.leoBody):
     def getName (self):
 
         return 'body-widget'
+    #@+node:ekr.20110208115654.15915: *4* Colors (qtBody)
+    #@+node:ekr.20110208115654.15910: *5* setEditorColors (qtBody)
+    def setEditorColors (self,bg,fg):
+        
+        obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
+        
+        # g.trace(bg,fg,g.callers())
+        
+        self.setBackgroundColorHelper(bg,obj)
+        self.setForegroundColorHelper(fg,obj)
+    #@+node:ekr.20110208115654.15914: *5* setBackgroundColorHelper (qtBody)
+    def setBackgroundColorHelper (self,colorName,obj):
+        
+        # obj is a QTextEdit or QTextBrowser.
+        
+        trace = False and not g.unitTesting
+        
+        if not colorName: return
+
+        styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
+            colorName)
+            
+        if trace: g.trace(colorName) # id(obj),obj,str(obj.objectName()))
+
+        if QtGui.QColor(colorName).isValid():
+            obj.setStyleSheet(styleSheet)
+        elif colorName not in self.badFocusColors:
+            self.badFocusColors.append(colorName)
+            g.es_print('invalid body background color: %s' % (colorName),color='blue')
+    #@+node:ekr.20110209080003.16015: *5* setForegroundColorHelper (qtBody)
+    def setForegroundColorHelper (self,colorName,obj):
+        
+        # obj is a QTextEdit or QTextBrowser.
+        
+        return ### Does not work, and interferes with setBackgroundColor.
+        
+        trace = False and not g.unitTesting
+        
+        if not colorName: return
+
+        styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
+            colorName)
+            
+        if trace: g.trace(colorName) # id(obj),obj,str(obj.objectName()))
+
+        if QtGui.QColor(colorName).isValid():
+            obj.setStyleSheet(styleSheet)
+        elif colorName not in self.badFocusColors:
+            self.badFocusColors.append(colorName)
+            g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
     #@+node:ekr.20081121105001.210: *4* Do-nothings (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -2610,7 +2684,6 @@ class leoQtBody (leoFrame.leoBody):
     def event_generate(self,stroke):            pass
     def getWidth (self):                        return 0
     def mark_set(self,markName,i):              pass
-    def setEditorColors (self,bg,fg):           pass
     def setWidth (self,width):                  pass
     def tag_add(self,tagName,i,j=None,*args):   pass
     def tag_config (self,colorName,**keys):     pass
@@ -3201,29 +3274,22 @@ class leoQtBody (leoFrame.leoBody):
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out',obj)
             obj.setReadOnly(True)
-    #@+node:ekr.20090608052916.3810: *5* onFocusColorHelper
+    #@+node:ekr.20090608052916.3810: *5* onFocusColorHelper (qtBody)
     badFocusColors = []
 
     def onFocusColorHelper(self,kind,obj):
 
         trace = False and not g.unitTesting
-
-        colorName = g.choose(kind=='focus-in',
-            self.selectedBackgroundColor,
-            self.unselectedBackgroundColor)
-
-        if not colorName: return
-
-        if trace: g.trace(id(obj),'%9s' % (kind),str(obj.objectName()))
-
-        styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
-            colorName)
-
-        if QtGui.QColor(colorName).isValid():
-            obj.setStyleSheet(styleSheet)
-        elif colorName not in self.badFocusColors:
-            self.badFocusColors.append(colorName)
-            g.es_print('invalid body background color: %s' % (colorName),color='blue')
+        
+        c = self.c
+        
+        if kind == 'focus-in':
+            # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
+            c.k.showStateColors(inOutline=False,w=self.widget)
+        else:
+            colorName = self.unselectedBackgroundColor
+            if trace: g.trace('%9s' % (kind),colorName)
+            self.setBackgroundColorHelper(colorName,obj)
     #@-others
 #@+node:ekr.20081121105001.235: *3* class leoQtFindTab (findTab)
 class leoQtFindTab (leoFind.findTab):
@@ -4449,14 +4515,21 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self ; c = frame.c
         w = c.get_focus()
+        w_name = g.app.gui.widget_name(w)
+        
+        # g.trace(w,w_name)
 
-        # g.trace(w,c.frame.body.bodyCtrl.widget)
-
-        if w == frame.body.bodyCtrl.widget:
-            c.treeWantsFocus()
-        else:
+        if w_name in ('canvas','tree','treeWidget'):
             c.endEditing()
             c.bodyWantsFocus()
+        else:
+            c.treeWantsFocus()
+
+        # if w == frame.body.bodyCtrl.widget:
+            # c.treeWantsFocus()
+        # else:
+            # c.endEditing()
+            # c.bodyWantsFocus()
     #@+node:ekr.20081121105001.306: *6* cascade
     def cascade (self,event=None):
 
@@ -5332,6 +5405,11 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         self.setDragEnabled(True)
         self.c = c
         self.trace = False
+        
+    def __repr__(self):
+        return 'LeoQTreeWidget: %s' % id(self)
+        
+    __str__ = __repr__
 
     def dragMoveEvent(self,ev):
         pass
@@ -5357,6 +5435,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if trace or self.trace: g.trace('** already dragging')
         else:
             g.app.dragging = True
+            g.app.drag_source = c, c.p
             if self.trace: g.trace('set g.app.dragging')
             self.setText(md)
             if self.trace: self.dump(ev,c.p,'enter')
@@ -5446,6 +5525,23 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
             s,reassignIndices=True)
         if not pasted: return
+        
+        if c.config.getBool('inter_outline_drag_moves'):
+            src_c, src_p = g.app.drag_source
+            if src_p.hasVisNext(src_c):
+                nxt = src_p.getVisNext(src_c).v
+            elif src_p.hasVisBack(src_c):
+                nxt = src_p.getVisBack(src_c).v
+            else:
+                nxt = None
+                
+            if nxt is not None:
+                src_p.doDelete()
+                src_c.selectPosition(src_c.vnode2position(nxt))
+                src_c.setChanged(True)
+                src_c.redraw()
+            else:
+                g.es("Can't move last node out of outline")
 
         undoData = u.beforeInsertNode(p,
             pasteAsClone=False,copiedBunchList=[])
@@ -6148,6 +6244,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         e.connect(e,QtCore.SIGNAL(
             "editingFinished()"),
             editingFinishedCallback)
+            
+        return wrapper # 2011/02/12
     #@+node:ekr.20090124174652.18: *6* contractItem & expandItem
     def contractItem (self,item):
 
@@ -6196,6 +6294,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Called by nativeTree.editLabel to do
         gui-specific stuff.'''
 
+        trace = False and not g.unitTesting
         w = self.treeWidget
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
@@ -6215,9 +6314,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             e.setSelection(start,n)
             # e.setCursorPosition(ins) # Does not work.
             e.setFocus()
-            self.connectEditorWidget(e,item) # Hook up the widget.
+            wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
 
-        return e
+        if trace: g.trace(e,wrapper)
+        return e,wrapper # 2011/02/11
     #@+node:ekr.20090124174652.105: *6* getCurrentItem
     def getCurrentItem (self):
 
@@ -6254,16 +6354,23 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         '''Return headlineWrapper that wraps e (a QLineEdit).'''
 
+        trace = False and not g.unitTesting
         c = self.c
-
+        
         if e:
             wrapper = self.editWidgetsDict.get(e)
             if not wrapper:
-                wrapper = self.headlineWrapper(c,item,name='head',widget=e)
-                self.editWidgetsDict[e] = wrapper
-
+                if item:
+                    # 2011/02/12: item can be None.
+                    wrapper = self.headlineWrapper(c,item,name='head',widget=e)
+                    if trace: g.trace('new wrapper',e,wrapper)
+                    self.editWidgetsDict[e] = wrapper
+                else:
+                    if trace: g.trace('no item and no wrapper',
+                        e,self.editWidgetsDict)
             return wrapper
         else:
+            g.trace('no e')
             return None
     #@+node:ekr.20090124174652.69: *6* nthChildItem
     def nthChildItem (self,n,parent_item):

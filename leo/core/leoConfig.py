@@ -458,7 +458,7 @@ class parserBaseClass:
 
         # Create a local shortcutsDict.
         old_d = self.shortcutsDict
-        d = self.shortcutsDict = {}
+        d = self.shortcutsDict = {'_hash':modeName,} # 2011/02/10
 
         s = p.b
         lines = g.splitLines(s)
@@ -523,6 +523,11 @@ class parserBaseClass:
 
         c = self.c ; d = self.shortcutsDict ; k = c.k
         trace = False or c.config.getBool('trace_bindings_verbose')
+        verbose = False
+        theHash = d.get('_hash')
+        theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+        if trace: g.trace('localFlag: %s d._hash: %s %s' % (
+            self.localFlag,theHash,c.shortFileName()))
         munge = k.shortcutFromSetting
         if s is None: s = p.b
         lines = g.splitLines(s)
@@ -530,20 +535,24 @@ class parserBaseClass:
             line = line.strip()
             if line and not g.match(line,0,'#'):
                 name,bunch = self.parseShortcutLine(line)
-                # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
                 if bunch is not None:
+                    bunch._hash = theHash # 2011/02/10
                     if bunch.val not in (None,'none','None'):
                         # A regular shortcut.
                         bunchList = d.get(name,[])
                         if bunch.pane in ('kill','Kill'):
-                            if trace: g.trace('****** killing binding:',bunch.val,'to',name)
+                            if trace and verbose: g.trace('****** killing binding:',
+                                bunch.val,'to',name)
                             bunchList = [z for z in bunchList
                                 if munge(z.val) != munge(bunch.val)]
                             # g.trace(bunchList)
                         else:
-                            if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+                            if trace and verbose: g.trace('%6s %20s %s' % (
+                                bunch.pane,bunch.val,name))
                             bunchList.append(bunch)
                         d [name] = bunchList
+                        # if name in ('full-command'):
+                            # g.trace('id(self.shortcutsDict)',id(d),bunchList)
                         self.set(p,"shortcut",name,bunchList)
                         self.setShortcut(name,bunchList)
     #@+node:ekr.20041217132028: *4* doString
@@ -903,7 +912,7 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        # g.trace(pane,name,val,s)
+        # if True and name == 'full-command': g.trace(pane,name,val,s)
         return name,g.bunch(nextMode=nextMode,pane=pane,val=val)
     #@+node:ekr.20060608222828: *4* parseAbbrevLine (g.app.config)
     def parseAbbrevLine (self,s):
@@ -951,10 +960,15 @@ class parserBaseClass:
         # N.B.  We can't use c here: it may be destroyed!
         # if key == 'shortcut':
             # g.trace('*****',key,val)
+            
+        # if name == 'full-command':
+            # g.trace('id(d)',id(d),name)
 
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
     #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass)
     def setShortcut (self,name,bunchList):
+        
+        trace = False and not g.unitTesting
 
         c = self.c
 
@@ -963,9 +977,9 @@ class parserBaseClass:
         rawKey = key.replace('&','')
         self.set(c,rawKey,"shortcut",bunchList)
 
-        if 0:
+        if trace:
             for b in bunchList:
-                g.trace('%20s %45s %s' % (b.val,rawKey,b.pane))
+                g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
     #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
     def traverse (self):
 
@@ -977,7 +991,7 @@ class parserBaseClass:
             return None
 
         self.settingsDict = {}
-        self.shortcutsDict = {}
+        self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
@@ -1332,8 +1346,7 @@ class configClass:
 
         """Get the setting and make sure its type matches the expected type."""
 
-        trace = False and not g.unitTesting and setting == 'create_nonexistent_directories'
-        if trace: g.pdb()
+        trace = False and not g.unitTesting
 
         isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
 
@@ -1350,9 +1363,9 @@ class configClass:
         for d in self.localOptionsList:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                kind = d.get('_hash','<no hash>')
+                # kind2 = d.get('_hash','<no hash>')
                 # if setting == 'targetlanguage':
-                    # g.trace(kind,setting,val,g.callers())
+                    # g.trace(kind2,setting,val,g.callers())
                 return val
 
         for d in self.dictList:
@@ -1602,22 +1615,74 @@ class configClass:
                     return bunch.path,bunch.val
         else:
             return 'unknown setting',None
-    #@+node:ekr.20041117062717.14: *4* getShortcut (config)
+    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (changed)
     def getShortcut (self,c,shortcutName):
 
         '''Return rawKey,accel for shortcutName'''
 
         key = c.frame.menu.canonicalizeMenuName(shortcutName)
         key = key.replace('&','') # Allow '&' in names.
-
-        bunchList = self.get(c,key,"shortcut")
-        # g.trace('bunchList',bunchList)
+        
+        if c.k.new_bindings:
+            bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+        else:
+            bunchList = self.get(c,key,'shortcut')
+        # g.trace(c.k.new_bindings) # 'bunchList',bunchList)
         if bunchList:
             bunchList = [bunch for bunch in bunchList
                 if bunch.val and bunch.val.lower() != 'none']
             return key,bunchList
         else:
             return key,[]
+    #@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config) (NEW)
+    def getShortcutHelper (self,c,key):
+        
+        '''Like get, but return *all* the found bunchLists's.'''
+
+        trace = False and not g.unitTesting
+        kind = 'shortcut'
+        isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+        result = []
+
+        if c and not isLeoSettings:
+            d = self.localOptionsDict.get(c.hash())
+            if d:
+                bunchList,junk = self.getValFromDict(d,key,kind)
+                if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+        for d in self.localOptionsList:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+        for d in self.dictList:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+        # Use settings in leoSettings.leo *last*.
+        if c and isLeoSettings:
+            d = self.localOptionsDict.get(c.hash())
+            if d:
+                bunchList,junk = self.getValFromDict(d,key,kind)
+                if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+        return result
+    #@+node:ekr.20110211041914.15418: *5* mergeShortcuts (NEW)
+    def mergeShortcuts (self,result,aList,key):
+            # key is for debugging.
+            # key is a conical command name, *not* a keystroke.
+        
+        '''Append all non-conflicting entries of aList to result.'''
+        
+        trace = False and not g.unitTesting
+        # If there is a real override, **earlier** entries take precedence.
+        # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+        
+        vals = [z.val for z in result]
+        aList = [z for z in aList if z.val not in vals]
+        result.extend(aList)
+
+        if trace and len(result) > 1:
+            g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
     #@+node:ekr.20041117081009.4: *4* getString
     def getString (self,c,setting):
 
@@ -1637,6 +1702,7 @@ class configClass:
         else:
             return c.nullPosition()
     #@+node:ekr.20100616083554.5922: *3* Iterators... (g.app.config)
+    #@+node:ekr.20110210081557.15388: *4* config_iter & helper (g.app.config)
     def config_iter(self,c):
 
         '''Letters:
@@ -1667,7 +1733,7 @@ class configClass:
             yield z
 
         raise StopIteration
-    #@+node:ekr.20100616083554.5923: *4* config_iter_helper
+    #@+node:ekr.20100616083554.5923: *5* config_iter_helper
     def config_iter_helper (self,d,names):
 
         if not d: return []
@@ -1926,7 +1992,7 @@ class configClass:
         """Read settings from a file that may contain an @settings tree."""
 
         trace = False and not g.unitTesting
-        if trace: g.trace('=' * 20, c and c.fileName())
+        if trace: g.trace('localFlag: %5s %s' % (localFlag, c and c.shortFileName()))
 
         # Create a settings dict for c for set()
         if c and self.localOptionsDict.get(c.hash()) is None:
@@ -2100,7 +2166,7 @@ class configClass:
         '''
 
         legend = '''\
-        legend:
+    legend:
         leoSettings.leo
     [D] default settings
     [F] loaded .leo File

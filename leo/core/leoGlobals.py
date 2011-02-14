@@ -3105,6 +3105,9 @@ def es(*args,**keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
+    # text1 = ' '.join([str(a) for a in args])
+    # print(text1)
+
     if not app or app.killed: return
     log = app.log
 
@@ -5294,6 +5297,9 @@ def importModule (moduleName,pluginName=None,verbose=False):
     module = sys.modules.get(moduleName)
     if module:  return module
 
+    g.es('loading %s' % moduleName, color='blue')
+    exceptions = [] 
+
     try:
         theFile = None
         import imp
@@ -5311,13 +5317,25 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     theFile,pathname,description = data
                     if trace: g.trace(theFile,moduleName,pathname)
                     module = imp.load_module(moduleName,theFile,pathname,description)
-                    if module: break
-                # except ImportError:
-                    # if trace: g.trace('not found',moduleName,findPath)
+                    if module: 
+                        g.es("%s loaded" % moduleName)
+                        break
                 except Exception:
-                    g.es('Exception loading %s module' % (moduleName),color='blue')
+                    t, v, tb = sys.exc_info()
+                    del tb  # don't need the traceback
+                    v = v or str(t) # in case v is empty, we'll at least have the execption type
+                    if trace: g.trace(v,moduleName,findPath)
+                    if v not in exceptions:
+                         exceptions.append(v)
+            else:
+                #unable to load module, display all exception messages
+                for e in exceptions:
+                    g.es(e, color='blue') 
         except Exception: # Importing a module can throw exceptions other than ImportError.
-            g.es_exception()
+            t, v, tb = sys.exc_info()
+            del tb  # don't need the traceback
+            v = v or str(t) # in case v is empty, we'll at least have the execption type
+            g.es_exception(v)
     finally:
         if theFile: theFile.close()
 
