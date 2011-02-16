@@ -172,6 +172,11 @@ def doPrePluginsInit(fileName,pymacs):
     g.app.setGlobalDb()
     createGui(pymacs,options)
 
+    # if no gui specified on command line, and qt not installed
+    # set options['gui'] to 'tk' to match reality
+    if g.app.guiArgName == 'tk':
+        options['gui'] = 'tk'
+
     # We can't print the signon until we know the gui.
     g.app.computeSignon() # Set app.signon/signon2 for commanders.
     versionFlag = options.get('versionFlag')
@@ -373,7 +378,6 @@ def scanOptions():
     # --gui
     gui = options.gui
 
-    g.app.qt_use_tabs = True
     if gui:
         gui = gui.lower()
         if gui == 'qttabs':
@@ -385,8 +389,10 @@ def scanOptions():
         else:
             print('scanOptions: unknown gui: %s' % gui)
             g.app.guiArgName = gui = 'qt'
+            g.app.qt_use_tabs = True
     else:
         gui = g.app.guiArgName = 'qt'
+        g.app.qt_use_tabs = True
 
     assert gui == g.app.guiArgName
 
