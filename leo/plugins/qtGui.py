@@ -5827,7 +5827,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         fn = ''
         # g.trace(type(md.text()))
-        s = str(md.text()) # Safe: md.text() is a QString.
+        s = unicode(md.text()) # Safe: md.text() is a QString.
 
         if s:
             i = s.find(',')
