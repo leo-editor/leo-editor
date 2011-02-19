@@ -6569,6 +6569,53 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     """ Toplevel frame for tabbed ui """
 
     #@+others
+    #@+node:tbrown.20110219092516.15291: *4* __init__
+    def __init__(self, *args, **kwargs):
+        
+        self.factory = kwargs['factory']
+        del kwargs['factory']
+        QtGui.QTabWidget.__init__(self, *args, **kwargs)
+        self.detached = []
+        
+        self.setMovable(True)
+        
+        def tabContextMenu(point):
+            index = self.tabBar().tabAt(point)
+            if index < 0 or (self.count() < 2 and not self.detached):
+                return
+            
+            menu = QtGui.QMenu()
+        
+            if self.count() > 1:
+                a = menu.addAction("Detach")
+                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.detach(index))
+            if self.detached:
+                a = menu.addAction("Re-attach All")
+                a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
+            
+            menu.exec_(self.mapToGlobal(point));
+        
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.connect(self,
+            QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
+    #@+node:tbrown.20110219092516.19433: *4* detach
+    def detach(self, index):
+        """detach tab (from tab's context menu)"""
+        w = self.widget(index)
+        self.detached.append((self.tabText(index), w))
+        self.factory.detachTab(w)
+    #@+node:tbrown.20110219092516.19434: *4* reattach_all
+    def reattach_all(self):
+        """reattach all detached tabs"""
+        for name, w in self.detached:
+            self.addTab(w, name)
+            self.factory.leoFrames[w] = w.leo_c.frame
+        self.detached = []
+    #@+node:tbrown.20110219092516.19435: *4* delete
+    def delete(self, w):
+        """called by TabbedFrameFactory to tell us a detached tab
+        has been deleted"""
+        self.detached = [i for i in self.detached if i[1] != w]
     #@+node:ekr.20100101104934.3662: *4* setChanged
     def setChanged (self,c,changed):
 
@@ -6738,9 +6785,10 @@ class TabbedFrameFactory:
         tabw.show()
         return dw
     #@+node:ekr.20100101104934.3659: *4* deleteFrame
-    def deleteFrame(self, wdg):
+    def deleteFrame(self, wdg):    
         if wdg not in self.leoFrames:
             # probably detached tab
+            self.masterFrame.delete(wdg)
             return
         tabw = self.masterFrame
         idx = tabw.indexOf(wdg)
@@ -6750,7 +6798,7 @@ class TabbedFrameFactory:
             self.alwaysShowTabs or tabw.count() > 1)
     #@+node:ville.20090803132402.3684: *4* createMaster (TabbedFrameFactory)
     def createMaster(self):
-        mf = self.masterFrame = LeoTabbedTopLevel()
+        mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
