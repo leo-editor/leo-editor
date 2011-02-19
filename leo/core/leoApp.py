@@ -376,11 +376,15 @@ class LeoApp:
             app.createQtGui(fileName,verbose=verbose)
             if not app.gui:
                 print('Can not create Qt gui: trying Tk gui')
-                app.createTkGui(fileName,verbose=verbose)  
+                argName = app.guiArgName = 'tk'
+                g.app.qt_use_tabs = False
+                app.createTkGui(fileName,verbose=verbose)
         elif argName == 'tk':
             app.createTkGui(fileName,verbose=verbose)
             if not app.gui:
                 print('Can not create Tk gui: trying Qt gui')
+                argName = app.guiArgName = 'qt'
+                g.app.qt_use_tabs = False
                 app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
             app.createNullGui()
