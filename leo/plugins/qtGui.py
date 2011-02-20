@@ -6574,7 +6574,8 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         
         self.factory = kwargs['factory']
         del kwargs['factory']
-        QtGui.QTabWidget.__init__(self, *args, **kwargs)
+        # QtGui.QTabWidget.__init__(self, *args, **kwargs)
+        # doesn't work in all versions of Qt
         self.detached = []
         
         self.setMovable(True)
