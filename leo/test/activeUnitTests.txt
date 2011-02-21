@@ -188,7 +188,8 @@ def removeFile(path):
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+    assert(tkGui)
 
     import leo.core.leoFrame as leoFrame
     import inspect,sys
@@ -226,7 +227,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect
@@ -254,7 +255,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
 
     import leo.core.leoGui as leoGui
     import inspect
@@ -285,7 +286,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect
@@ -10703,7 +10704,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
     import Tkinter as Tk
     w = tkGui.leoTkTextWidget()
     w.setAllText('abcdef\n')
