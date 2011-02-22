@@ -9668,7 +9668,7 @@ e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
 for attr,kind,expected,val in table:
     result = c.fileCommands.getSaxUa(attr,val,kind=kind)
     if expected is None: expected = val
-    assert expected==result,'expected %s got %s' % (
+    assert g.toEncodedString(expected)==result,'expected %s got %s' % (
         expected,result)
 #@+node:ekr.20100131180007.5463: *4* @test fc.handleTnodeSaxAttributes
 sax_node = g.bunch(

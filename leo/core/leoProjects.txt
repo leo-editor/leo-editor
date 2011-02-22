@@ -4213,6 +4213,198 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@+node:ekr.20110222090020.6060: *4* Fixed Python 3.2 ua problems
+#@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers
+def createSaxVnode (self,sax_node,parent_v,v=None):
+
+    c = self.c
+    trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
+    verbose = False
+    h = sax_node.headString
+    b = sax_node.bodyString
+
+    if v:
+        # The body of the later node overrides the earlier.
+        # Don't set t.h: h is always empty.
+        # This may be an internal error.
+        if v.b == b:
+            if trace and verbose: g.trace(
+                '***no update\nold: %s\nnew: %s' % (v.b,b))
+        else:
+            if trace: g.trace(
+                '***update\nold: %s\nnew: %s' % (v.b,b))
+            v.b = b 
+    else:
+        v = leoNodes.vnode(context=c)
+        v.setBodyString(b)
+        v.setHeadString(h)
+
+        if sax_node.tnx:
+            v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
+
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+    self.gnxDict [index] = v
+
+    if trace and verbose: g.trace(
+        'tnx','%-22s' % (index),'v',id(v),
+        'len(body)','%-4d' % (len(b)),h)
+
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,v)
+
+    return v
+#@+node:ekr.20060919110638.8: *6* handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.tnodeAttributes
+    if trace and d: g.trace(sax_node,list(d.keys()))
+
+    aDict = {}
+    for key in d:
+        val = g.toUnicode(d.get(key)) # 2011/02/22
+        val2 = self.getSaxUa(key,val)
+        # g.trace(key,val,val2)
+        aDict[key] = val2
+
+    if aDict:
+        if trace: g.trace('uA',v,list(aDict.keys()))
+        v.unknownAttributes = aDict
+#@+node:ekr.20061004053644: *6* handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.attributes
+
+    s = d.get('a')
+    if s:
+        if trace and 'E' in s: g.trace('expand',v)
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnodeList will be resolved later.
+        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s,v=v)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s,v=v)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v,aDict),)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+#@+node:EKR.20040627114602: *5* getDescendentUnknownAttributes
+# Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
+# New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
+
+def getDescendentUnknownAttributes (self,s,v=None):
+
+    '''Unhexlify and unpickle t/v.descendentUnknownAttribute field.'''
+
+    try:
+        # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
+        s = g.toEncodedString(s) # 2011/02/22
+        bin = binascii.unhexlify(s) # Throws a TypeError if val is not a hex string.
+        val = pickle.loads(bin)
+        return val
+
+    except:
+        g.es_exception()
+        g.trace('Can not unpickle',type(s),v and v.h,s[:40])
+        return None
+#@+node:ekr.20061003093021: *5* getSaxUa
+def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
+
+    """Parse an unknown attribute in a <v> or <t> element.
+    The unknown tag has been pickled and hexlify'd.
+    """
+
+    try:
+        # val = str(val)
+        val = g.toEncodedString(val) # 2011/02/22.
+    except Exception:
+        g.es_print('unexpected exception converting hexlified string to string')
+        g.es_exception()
+        return None
+
+
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if attr.startswith('str_') and type(val) == type(''):
+        # g.trace(attr,val)
+        return val
+
+    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
+    if 0: # Not ready yet.
+        if attr.startswith('b64_'):
+            try: pass
+            except Exception: pass
+
+    try:
+        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
+    except Exception:
+        # Python 2.x throws TypeError
+        # Python 3.x throws binascii.Error
+        # Assume that Leo 4.1 wrote the attribute.
+        if g.unitTesting:
+            assert kind == 'raw','unit test failed: kind=' % repr(kind)
+        else:
+            g.trace('can not unhexlify %s=%s' % (attr,val))
+        return val
+    try:
+        # No change needed to support protocols.
+        val2 = pickle.loads(binString)
+        # g.trace('v.3 val:',val2)
+        return val2
+    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+        g.trace('can not unpickle %s=%s' % (attr,val))
+        return val
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
