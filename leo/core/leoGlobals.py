@@ -44,9 +44,11 @@ if isPython3:
 if isPython3:
     import io
     StringIO = io.StringIO
+    from urllib.parse import urlparse
 else:
     import cStringIO
     StringIO = cStringIO.StringIO
+    from urlparse import urlparse
 
 import operator
 import re
@@ -2013,8 +2015,8 @@ Please set LEO_EDITOR or EDITOR environment variable,
 or do g.app.db['LEO_EDITOR'] = "gvim"''')
         return None
 #@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url):
-
+def handleUrlInUrlNode(url, c=None, p=None):
+    
     # Note 1: the UNL plugin has its own notion of what a good url is.
 
     # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
@@ -2033,18 +2035,18 @@ def handleUrlInUrlNode(url):
     #   $%&'()*+/0-9:=?@A-Z_a-z}~
     #@@c
 
-    urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+    # urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
 
     if not url or len(url) == 0:
         g.es("no url following @url")
         return
 
     # Add http:// if required.
-    if not re.match('^([a-z]{3,}:)',url):
-        url = 'http://' + url
-    if not re.match(urlPattern,url):
-        g.es("invalid url:",url)
-        return
+    # if not re.match('^([a-z]{3,}:)',url):
+    #     url = 'http://' + url
+    # if not re.match(urlPattern,url):
+    #     g.es("invalid url:",url)
+    #     return
     #@-<< check the url; return if bad >>
     #@+<< pass the url to the web browser >>
     #@+node:tbrown.20090219095555.63: *4* << pass the url to the web browser >>
@@ -2055,19 +2057,104 @@ def handleUrlInUrlNode(url):
     #@@c
 
     try:
-        import os
-        os.chdir(g.app.loadDir)
-        if g.match(url,0,"file:") and url[-4:]==".leo":
-            ok,frame = g.openWithFileName(url[5:],None)
-        else:
-            import webbrowser
-            # Mozilla throws a weird exception, then opens the file!
-            try: webbrowser.open(url)
-            except: pass
+        
+        parsed = urlparse(url)
+        
+        leo_path = parsed.path
+        if parsed.netloc:
+            leo_path = os.path.join(parsed.netloc, parsed.path)
+            # "readme.txt" gets parsed into .netloc...
+        
+        if c and parsed.scheme in ('', 'file'):
+            
+            # local UNLs like "node-->subnode", "-->node", and "#node"
+            if '-->' in parsed.path:
+                g.recursiveUNLSearch(parsed.path.split("-->"), c)
+                return
+            if not parsed.path and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                return
+
+            # leo aware path
+            leo_path = os.path.expanduser(leo_path)
+            leo_path = g.os_path_expandExpression(leo_path, c=c)
+            if p and not os.path.isabs(leo_path):
+                leo_path = os.path.normpath(
+                    os.path.join(c.getNodePath(p), leo_path))
+
+            # .leo file
+            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                ok,frame = g.openWithFileName(leo_path, c)
+                
+                # with UNL after path
+                if ok and parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                    
+                if ok:
+                    # Disable later call to c.onClick so
+                    # the focus stays in frame.c (DOESN'T WORK?)
+                    c.doubleClickFlag = True
+                    return
+                    
+        if parsed.scheme in ('', 'file'):
+            if os.path.exists(leo_path):
+                g.os_startfile(leo_path)
+                return
+            if parsed.scheme == 'file':
+                g.es("File '%s' does not exist"%leo_path)
+                return
+            
+        import webbrowser
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+        
     except:
         g.es("exception opening",url)
         g.es_exception()
     #@-<< pass the url to the web browser >>
+#@+node:tbrown.20110219154422.37469: *3* recursiveUNLSearch
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+    """try and move to unl in the commander c
+    
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how fast we will recurse.  So it should default to 0 (zero).
+    """
+
+    def moveToP(c, p):
+        c.expandAllAncestors(p) # 2009/11/07
+        c.selectPosition(p)
+        c.redraw()
+        c.frame.bringToFront()  # doesn't seem to work
+
+    if depth == 0:
+        nds = c.rootPosition().self_and_siblings()
+        unlList = [i for i in unlList if i.strip()]
+        # drop empty parts so "-->node name" works
+    else:
+        nds = p.children()
+
+    for i in nds:
+
+        if unlList[depth] == i.h:
+
+            if depth+1 == len(unlList):  # found it
+                moveToP(c, i)
+                return True, maxdepth, maxp
+            else:
+                if maxdepth < depth+1:
+                    maxdepth = depth+1
+                    maxp = i.copy()
+                found, maxdepth, maxp = g.recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
+                if found:
+                    return found, maxdepth, maxp
+                # else keep looking through nds
+
+    if depth == 0 and maxp:  # inexact match
+        moveToP(c, maxp)
+        g.es('Partial UNL match')
+
+    return False, maxdepth, maxp
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file
 def is_binary_file (f):
 

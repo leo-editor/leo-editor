@@ -381,9 +381,11 @@ def openFile(c,parent,d, autoload=False):
         start = open(path).read(100)
         for i in start:
             if ord(i) == 0:
-                if not query(c, "File may be binary, continue?"):
-                    return
-                break
+                g.es('Treating file as binary')
+                g.handleUrlInUrlNode(path)
+                # if not query(c, "File may be binary, continue?"):
+                #     return
+                return
 
     c.importCommands.createOutline(d,parent=parent,atAuto=True)
     atType = c.config.getString('active_path_attype') or 'auto'

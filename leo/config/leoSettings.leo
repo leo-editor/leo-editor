@@ -423,7 +423,7 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -1040,7 +1040,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1235,7 +1235,7 @@
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" a="E"><vh>Window</vh>
+<v t="ekr.20041213105954"><vh>Window</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
@@ -6478,7 +6478,7 @@ plugins_menu.py
 leo_to_html.py
 mod_scripting.py
 quicksearch.py
-UNL.py
+# UNL.py # moved to core, 20110220 TNB
 contextmenu.py
 nav_qt.py
 

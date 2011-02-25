@@ -2401,7 +2401,7 @@ class leoTree:
             # g.trace(url,g.callers())
 
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                g.handleUrlInUrlNode(url)
+                g.handleUrlInUrlNode(url, c=c, p=p)
             g.doHook("@url2",c=c,p=p,v=p)
 
         return 'break' # 11/19/06
@@ -2550,6 +2550,11 @@ class leoTree:
 
         if trace: g.trace('**** after old: %s new %s' % (
             old_p and len(old_p.b),len(p.b)))
+
+        # what UNL.py used to do
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine("-->".join(reversed(
+            [i.h for i in p.self_and_parents()])))
 
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
