@@ -188,7 +188,8 @@ def removeFile(path):
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+    assert(tkGui)
 
     import leo.core.leoFrame as leoFrame
     import inspect,sys
@@ -226,7 +227,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect
@@ -254,7 +255,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
 
     import leo.core.leoGui as leoGui
     import inspect
@@ -285,7 +286,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
 
     import leo.core.leoFrame as leoFrame
     import inspect
@@ -9667,7 +9668,7 @@ e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
 for attr,kind,expected,val in table:
     result = c.fileCommands.getSaxUa(attr,val,kind=kind)
     if expected is None: expected = val
-    assert expected==result,'expected %s got %s' % (
+    assert g.toEncodedString(expected)==result,'expected %s got %s' % (
         expected,result)
 #@+node:ekr.20100131180007.5463: *4* @test fc.handleTnodeSaxAttributes
 sax_node = g.bunch(
@@ -10703,7 +10704,7 @@ if g.app.gui.guiName() == 'tkinter':
 if g.app.gui.guiName() == 'tkinter':
 
     pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin ('tkGui',verbose=False)
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
     import Tkinter as Tk
     w = tkGui.leoTkTextWidget()
     w.setAllText('abcdef\n')
