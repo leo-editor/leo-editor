@@ -3273,7 +3273,7 @@ def internalError (*args):
 
     callers = g.callers(5).split(',')
     caller = callers[-1]
-    g.es_print('Internal Leo error in',caller,color='red')
+    g.es_print('\nInternal Leo error in',caller,color='red')
     g.es_print(*args)
     g.es_print('Called from',','.join(callers[:-1]))
 #@+node:ekr.20090128083459.82: *3* g.posList

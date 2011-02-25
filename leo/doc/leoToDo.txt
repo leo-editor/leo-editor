@@ -5674,7 +5674,7 @@ oldRoot = c.rootPosition()
 found = oldRoot.insertAfter()
 found.moveToRoot(oldRoot)
 c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
+c.setRootPosition() # New in Leo 4.5.
 #@+node:ekr.20090402072059.7: *6* << create a clone of p under the find node >>
 q = self.p.clone()
 q.moveToLastChildOf(found)

@@ -3941,6 +3941,20 @@ def doPlainKey (self,event,stroke,w):
             ### return True,None
     else:
         return False,None
+#@+node:ekr.20060906134053: *3* c.findRootPosition (no longer used)
+def findRootPosition (self,unused_p=None):
+
+    '''Return the root position of the outline.'''
+
+    c = self
+
+    # 2011/02/25: We don't need any argument to compute the root position.
+    if c.hiddenRootNode.children:
+        v = c.hiddenRootNode.children[0]
+        # g.trace(self._rootCount,v)
+        return leoNodes.position(v,childIndex=0,stack=None)
+    else:
+        return c.nullPosition()
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

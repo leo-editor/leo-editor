@@ -12974,7 +12974,7 @@ finally:
     if 1:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
-    c.redraw_now()
+    c.redraw_now(p)
 #@+node:ekr.20080503082625.3: *5* @test delete node
 root = p.copy()
 while p.hasChildren():
@@ -13019,7 +13019,7 @@ finally:
     if 1:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
+    c.redraw_now(root)
 #@+node:ekr.20080423110627.13: *5* @test deleting the root should select another node
 import leo.core.leoNodes as leoNodes
 
@@ -13093,7 +13093,7 @@ finally:
     if 1:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
+    c.redraw_now(root)
 #@+node:ekr.20080501121449.3: *5* @test insert node
 root = p.copy()
 while p.hasChildren():
@@ -13132,8 +13132,9 @@ finally:
     if 1:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
+    c.redraw_now(root)
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
+root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
 
@@ -13177,9 +13178,9 @@ try:
 
 finally:
     if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-    c.redraw_now()
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
 #@+node:ekr.20080503073030.1: *5* @test move-outline-left
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -13199,15 +13200,13 @@ try:
     c.undoer.undo()
     c.undoer.redo()
 
-
-
     moved.doDelete(newNode=p)
 
 finally:
     if 1:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
-        c.redraw_now()
+        c.redraw_now(p)
 #@+node:ekr.20080503073030.2: *5* @test move-outline-right
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -13234,7 +13233,7 @@ finally:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
     if 1:
-        c.redraw_now()
+        c.redraw_now(p)
 #@+node:ekr.20080423110627.12: *5* @test move-outline-up
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -13267,7 +13266,7 @@ finally:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
     if 1:
-        c.redraw_now()
+        c.redraw_now(p)
 #@+node:ekr.20080423110627.5: *5* @test paste-node
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -13306,7 +13305,7 @@ finally:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
     if 1:
-        c.redraw_now()
+        c.redraw_now(p)
 #@+node:ekr.20080423110627.8: *5* @test paste-retaining-clones
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -13332,7 +13331,7 @@ finally:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
     if 1:
-        c.redraw_now()
+        c.redraw_now(p)
 #@+node:ekr.20080503082625.4: *5* @test promote
 root = p.copy()
 while p.hasChildren():
@@ -13391,7 +13390,7 @@ finally:
     if 1:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
+    c.redraw_now(root)
 #@+node:ekr.20081001094920.2: *4* tests for p.textOffset()
 #@+node:ekr.20081001094920.3: *5* @test node that doesn't belong to a derived file
 root = p.copy()

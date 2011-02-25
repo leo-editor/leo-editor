@@ -144,10 +144,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if self.busy():
             return g.trace('*** full_redraw: busy!',g.callers(5))
 
-        if p is None:   p = c.currentPosition()
-        else:           c.setCurrentPosition(p)
+        if p is None:
+            p = c.currentPosition()
+        else:
+            c.setCurrentPosition(p)
 
-        # if trace: g.trace(p.isExpanded(),p.h)
+        # if trace: g.trace('root',c.rootPosition())
 
         self.redrawCount += 1
         if trace: t1 = g.getTime()
@@ -165,7 +167,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if trace:
             theTime = g.timeSince(t1)
             g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
-                self.redrawCount,scroll,self.nodeDrawCount,theTime),g.callers())
+                self.redrawCount,scroll,self.nodeDrawCount,theTime)) # ,g.callers(3))
 
     # Compatibility
     redraw = full_redraw 
@@ -220,7 +222,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         return item
     #@+node:ekr.20090129062500.12: *4* drawTopTree
     def drawTopTree (self,p):
-
+        
+        trace = False and not g.unitTesting
         c = self.c
         hPos,vPos = self.getScroll()
         self.clear()
@@ -237,6 +240,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.drawTree(p)
         else:
             p = c.rootPosition()
+            if trace: g.trace(p)
             while p:
                 self.drawTree(p)
                 p.moveToNext()
@@ -268,7 +272,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def rememberItem (self,p,item):
 
         trace = False and not g.unitTesting
-        if trace: g.trace(id(item),p.h)
+        if trace: g.trace('id',id(item),p)
 
         v = p.v
 
@@ -686,6 +690,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if not p:
             return self.error('no p')
+
         if p != c.currentPosition():
             return self.error('p is not c.currentPosition()')
 
@@ -844,9 +849,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c = self.c ; p = c.currentPosition()
 
-        if trace and verbose: g.trace(p,g.callers(5))
-
-
         if self.busy():
             if trace and verbose: g.trace('** busy')
             return None
@@ -875,7 +877,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 if trace and verbose: g.trace('setCurrentItem',self.traceItem(item),p.h)
                 self.setCurrentItemHelper(item)
                 if scroll:
-                    if trace: g.trace(self.traceItem(item),g.callers(4))
+                    if trace: g.trace(self.traceItem(item))
                     self.scrollToItem(item)
             finally:
                 self.selecting = False
@@ -1077,7 +1079,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
     def position2item(self,p):
         item = self.position2itemDict.get(p.key())
-        # g.trace(item and id(item) or '<no item>',p.key(),p.h)
         return item
 
     def vnode2items(self,v):
@@ -1086,7 +1087,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def isValidItem (self,item):
         itemHash = self.itemHash(item)
         return itemHash in self.item2vnodeDict # was item.
-
     #@+node:ekr.20090124174652.71: *3* Focus (nativeTree)
     def getFocus(self):
 

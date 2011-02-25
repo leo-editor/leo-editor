@@ -771,7 +771,7 @@ class baseFileCommands:
                 p = leoNodes.position(v)
                 p._linkAsRoot(oldRoot=None)
                 self.rootVnode = v
-                c.setRootPosition(p)
+                c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
@@ -1404,6 +1404,7 @@ class baseFileCommands:
     def archivedPositionToPosition (self,s):
 
         c = self.c
+        s = g.toUnicode(s) # 2011/02/25
         aList = s.split(',')
         try:
             aList = [int(z) for z in aList]
