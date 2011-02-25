@@ -52,7 +52,7 @@ def onDClick1 (tag,keywords):
         lines = p.b.split('\n')
         url = lines and lines[0] or ''
         if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url)
+            g.handleUrlInUrlNode(url,c=c,p=p)
         g.doHook("@url2",c=c,p=p,v=p)
         return 'break'
     else:
