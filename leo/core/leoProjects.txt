@@ -4406,299 +4406,6 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
         g.trace('can not unpickle %s=%s' % (attr,val))
         return val
 #@+node:ekr.20110225061928.15452: *4* Fixed bug in p._adjustPostionBeforeUnlink and simplified code
-#@+node:ekr.20110225061928.15453: *5*  Found: _currentPosition
-#@+node:ekr.20060906131836: *6* c.setRootVnode (changed)
-def setRootVnode (self, v):
-    
-    c = self
-    
-    # 2011/02/25: c.setRootPosition needs no arguments.
-    c.setRootPosition()
-#@+node:ekr.20040803140033.1: *6* c.setCurrentPosition
-_currentCount = 0
-
-def setCurrentPosition (self,p):
-
-    """Set the presently selected position. For internal use only.
-
-    Client code should use c.selectPosition instead."""
-
-    trace = False and not g.unitTesting
-    c = self ; cc = c.chapterController
-
-    if trace:
-        c._currentCount += 1
-        g.trace(c._currentCount,p)
-        
-    # Always recompute the root position.
-    c.setRootPosition()
-
-    if p and not c.positionExists(p): # 2011/02/25:
-        g.internalError('Invalid position',p)
-        c._currentPosition = c._rootPosition = c.rootPosition()
-        if g.unitTesting: assert False,p
-        return
-
-    if p:
-        # Important: p.equal requires c._currentPosition to be non-None.
-        if c._currentPosition and p == c._currentPosition:
-            pass # We have already made a copy.
-        else: # Must make a copy _now_
-            c._currentPosition = p.copy()
-    else:
-        c._currentPosition = None
-
-# For compatibiility with old scripts.
-setCurrentVnode = setCurrentPosition
-#@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
-def currentPositionIsRootPosition (self):
-
-    """Return True if the current position is the root position.
-
-    This method is called during idle time, so not generating positions
-    here fixes a major leak.
-    """
-
-    c = self
-
-    return (
-        c._currentPosition and c._rootPosition and
-        c._currentPosition == c._rootPosition)
-#@+node:ekr.20040803160656: *6* c.currentPositionHasNext
-def currentPositionHasNext (self):
-
-    """Return True if the current position is the root position.
-
-    This method is called during idle time, so not generating positions
-    here fixes a major leak.
-    """
-
-    c = self ; current = c._currentPosition 
-
-    return current and current.hasNext()
-#@+node:ekr.20040803112450: *6* c.isCurrentPosition
-def isCurrentPosition (self,p):
-
-    c = self
-
-    if p is None or c._currentPosition is None:
-        return False
-    else:
-        return p == c._currentPosition
-#@+node:ekr.20031218072017.2813: *6* << initialize ivars >> (commands)
-self._currentPosition = self.nullPosition()
-self._rootPosition    = self.nullPosition()
-self._topPosition     = self.nullPosition()
-
-# Delayed focus.
-self.doubleClickFlag = False
-self.hasFocusWidget = None
-self.requestedFocusWidget = None
-
-# Official ivars.
-self.gui = g.app.gui
-self.ipythonController = None # Set only by the ipython plugin.
-
-# Interlock to prevent setting c.changed when switching chapters.
-c.suppressHeadChanged = False
-
-# Interlocks to prevent premature closing of a window.
-self.inCommand = False
-self.requestCloseWindow = False
-
-# For emacs/vim key handling.
-self.commandsDict = None
-self.keyHandler = self.k = None
-self.miniBufferWidget = None
-
-# per-document info...
-self.changed = False # True if any data has been changed since the last save.
-self.disableCommandsMessage = ''
-    # The presence of this message disables all commands.
-self.expansionLevel = 0  # The expansion level of this outline.
-self.expansionNode = None # The last node we expanded or contracted.
-self.hookFunction = None
-self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
-self.loading = False # True if we are loading a file: disables c.setChanged()
-self.nodeConflictList = [] # List of nodes with conflicting read-time data.
-self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
-self.openDirectory = None
-self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
-self.promptingForClose = False # To lock out additional closing dialogs.
-self.timeStampDict = {} # New in Leo 4.6.
-
-# For tangle/untangle
-self.tangle_errors = 0
-
-# Global options: set later in initConfigSettings
-self.fixed = False
-self.page_width = 132
-self.sparse_find = True # 2010/02/02: created ivar.
-self.sparse_move = True # 2010/02/02: created ivar.
-self.sparse_spell = True # 2010/02/02: created ivar.
-self.tab_width = -4
-self.tangle_batch_flag = False
-self.untangle_batch_flag = False
-
-# Default Tangle options
-self.use_header_flag = False
-self.output_doc_flag = False
-
-# Default Target Language
-self.target_language = "python" # Required if leoConfig.txt does not exist.
-
-# For hoist/dehoist commands.
-self.hoistStack = []
-    # Stack of nodes to be root of drawn tree.
-    # Affects drawing routines and find commands.
-self.recentFiles = [] # List of recent files
-
-# For outline navigation.
-self.navPrefix = g.u('') # Must always be a string.
-self.navTime = None
-#@+node:ekr.20040803140033: *6* c.currentPosition (changed)
-def currentPosition (self):
-
-    """Return the presently selected position."""
-
-    c = self
-    
-    if hasattr(c,'_currentPosition') and getattr(c,'_currentPosition'):
-        # New in Leo 4.4.2: *always* return a copy.
-        return c._currentPosition.copy()
-    else:
-        return c.nullPosition()
-
-# For compatibiility with old scripts.
-currentVnode = currentPosition
-#@+node:ekr.20110225061928.15451: *5*  Found: _rootPosition
-#@+node:ekr.20040803140033.3: *6* c.setRootPosition
-def setRootPosition(self,unused_p=None):
-
-    """Set c._rootPosition."""
-
-    c = self
-    
-    # 2011/02/25: There is no need to make a copy of the position.
-    c._rootPosition = c.rootPosition()
-    
-    # Important: p.equal requires c._rootPosition to be non-None.
-    # c.rootPosition() returns c.nullPosition() instead of None.
-    assert c._rootPosition is not None
-#@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
-def currentPositionIsRootPosition (self):
-
-    """Return True if the current position is the root position.
-
-    This method is called during idle time, so not generating positions
-    here fixes a major leak.
-    """
-
-    c = self
-
-    return (
-        c._currentPosition and c._rootPosition and
-        c._currentPosition == c._rootPosition)
-#@+node:ekr.20040803112450.1: *6* c.isRootPosition
-def isRootPosition (self,p):
-
-    c = self
-
-    if p is None or c._rootPosition is None:
-        return False
-    else:
-        return p == c._rootPosition
-#@+node:ekr.20031218072017.2813: *6* << initialize ivars >> (commands)
-self._currentPosition = self.nullPosition()
-self._rootPosition    = self.nullPosition()
-self._topPosition     = self.nullPosition()
-
-# Delayed focus.
-self.doubleClickFlag = False
-self.hasFocusWidget = None
-self.requestedFocusWidget = None
-
-# Official ivars.
-self.gui = g.app.gui
-self.ipythonController = None # Set only by the ipython plugin.
-
-# Interlock to prevent setting c.changed when switching chapters.
-c.suppressHeadChanged = False
-
-# Interlocks to prevent premature closing of a window.
-self.inCommand = False
-self.requestCloseWindow = False
-
-# For emacs/vim key handling.
-self.commandsDict = None
-self.keyHandler = self.k = None
-self.miniBufferWidget = None
-
-# per-document info...
-self.changed = False # True if any data has been changed since the last save.
-self.disableCommandsMessage = ''
-    # The presence of this message disables all commands.
-self.expansionLevel = 0  # The expansion level of this outline.
-self.expansionNode = None # The last node we expanded or contracted.
-self.hookFunction = None
-self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
-self.loading = False # True if we are loading a file: disables c.setChanged()
-self.nodeConflictList = [] # List of nodes with conflicting read-time data.
-self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
-self.openDirectory = None
-self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
-self.promptingForClose = False # To lock out additional closing dialogs.
-self.timeStampDict = {} # New in Leo 4.6.
-
-# For tangle/untangle
-self.tangle_errors = 0
-
-# Global options: set later in initConfigSettings
-self.fixed = False
-self.page_width = 132
-self.sparse_find = True # 2010/02/02: created ivar.
-self.sparse_move = True # 2010/02/02: created ivar.
-self.sparse_spell = True # 2010/02/02: created ivar.
-self.tab_width = -4
-self.tangle_batch_flag = False
-self.untangle_batch_flag = False
-
-# Default Tangle options
-self.use_header_flag = False
-self.output_doc_flag = False
-
-# Default Target Language
-self.target_language = "python" # Required if leoConfig.txt does not exist.
-
-# For hoist/dehoist commands.
-self.hoistStack = []
-    # Stack of nodes to be root of drawn tree.
-    # Affects drawing routines and find commands.
-self.recentFiles = [] # List of recent files
-
-# For outline navigation.
-self.navPrefix = g.u('') # Must always be a string.
-self.navTime = None
-#@+node:ekr.20040803140033.2: *6* c.rootPosition
-def rootPosition(self):
-
-    """Return the root position.
-
-    Root position is the first position in the document. Other
-    top level positions are siblings of this node.
-    """
-
-    c = self
-
-    # 2011/02/25: Compute the position directly.
-    if c.hiddenRootNode.children:
-        v = c.hiddenRootNode.children[0]
-        return leoNodes.position(v,childIndex=0,stack=None)
-    else:
-        return c.nullPosition()
-
-# For compatibiility with old scripts.
-rootVnode = rootPosition
 #@+node:ekr.20110225061928.15456: *5*  Changed
 #@+node:ekr.20040803140033.2: *6* c.rootPosition
 def rootPosition(self):
@@ -4824,6 +4531,64 @@ def findRootPosition (self):
     p = self
     c = p.v.context
     return c.rootPosition()
+#@+node:ekr.20110225061928.15450: *4* Fixed crash in archivedPositionToPosition
+
+c:\leo.repo\trunk>python3 launchLeo.py --gui=qt leo\test\test.leo --gui=qttabs --no-cache
+@nocolor-node
+
+
+c:\leo.repo\trunk>c:\python32\python.exe launchLeo.py --gui=qt leo\test\test.leo --gui=qttabs --no-cache
+*** isPython3: True
+scanOptions: disabling caching
+Traceback (most recent call last):
+  File "launchLeo.py", line 8, in <module>
+    leo.core.runLeo.run()
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 121, in run
+    files,options = doPrePluginsInit(fileName,pymacs)
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 163, in doPrePluginsInit
+    g.app.config.readSettingsFiles(fn,verbose)
+  File "c:\leo.repo\trunk\leo\core\leoConfig.py", line 1876, in readSettingsFiles
+    c = self.openSettingsFile(path)
+  File "c:\leo.repo\trunk\leo\core\leoConfig.py", line 1963, in openSettingsFile
+    theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 882, in open
+    silent=silent)
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 743, in getLeoFile
+    self.setPositionsFromVnodes()
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 1400, in setPositionsFromVnodes
+    current = self.archivedPositionToPosition(str_pos)
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 1407, in archivedPositionToPosition
+    aList = s.split(',')
+TypeError: Type str doesn't support the buffer API
+
+c:\leo.repo\trunk>
+#@+node:ekr.20061006104837.1: *5* archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    s = g.toUnicode(s) # 2011/02/25
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
