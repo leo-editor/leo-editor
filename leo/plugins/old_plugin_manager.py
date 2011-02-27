@@ -1386,7 +1386,7 @@ class Plugin:
                     self.name, directive_text))    
         else: 
             # if isinstance(directive, (str,unicode)):
-            if g.isString(directive)
+            if g.isString(directive):
                 requires.append(directive)
             else:
                 requires.extend(directive)
