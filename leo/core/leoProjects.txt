@@ -4589,6 +4589,451 @@ def archivedPositionToPosition (self,s):
             p.moveToFirstChild()
             # g.trace('level',level,'index',aList[level],p.h)
     return p
+#@+node:ekr.20110227071546.15477: *4* Fixed top-level uA's
+# There was a misspelling of 'unknownAttributes' in putVnode.
+#@+node:ekr.20110227071546.15478: *5* Report
+@nocolor-node
+
+The uA for the first top level node in the outline is cleared on save
+and by some copy paste op.s etc.
+
+Easiest way to observe effect is to do Cmds -> Icons -> Insert-Icon and
+make several copies, incl. on positioned at the top of the outline.
+Depending on the order of copy paste you may have already seen the icon
+disappear, if not Ctrl-S save and it will vanish.  I don't think it's
+icon related though, I think uA is being cleared on this node.
+#@+node:ekr.20040324080819.1: *5* putLeoFile & helpers
+def putLeoFile (self):
+
+    self.updateFixedStatus()
+    self.putProlog()
+    self.putHeader()
+    self.putGlobals()
+    self.putPrefs()
+    self.putFindSettings()
+    #start = g.getTime()
+    self.putVnodes()
+    #start = g.printDiffTime("vnodes ",start)
+    self.putTnodes()
+    #start = g.printDiffTime("tnodes ",start)
+    self.putPostlog()
+#@+node:ekr.20031218072017.3035: *6* putFindSettings
+def putFindSettings (self):
+
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("<find_panel_settings/>")
+    self.put_nl()
+#@+node:ekr.20031218072017.3037: *6* putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    use_db = g.enableDB and c.mFileName
+    if use_db:
+        if trace: g.trace(c.mFileName)
+        c.cacher.setCachedGlobalsElement(c.mFileName)
+
+    # Always put positions, to trigger sax methods.
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20031218072017.3038: *7* << put the body/outline ratios >>
+self.put(" body_outline_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.ratio)))
+
+self.put(" body_secondary_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.secondary_ratio)))
+
+if trace: g.trace('fixed or use_db',c.fixed or use_db,
+    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+#@+node:ekr.20031218072017.3039: *7* << put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed or use_db:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@+node:ekr.20031218072017.3040: *7* << put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@+node:ekr.20031218072017.3041: *6* putHeader
+def putHeader (self):
+
+    tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
+
+    if 1: # For compatibility with versions before Leo 4.5.
+        self.put("<leo_header")
+        self.put(" file_format=") ; self.put_in_dquotes("2")
+        self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
+        self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
+        self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
+        self.put("/>") ; self.put_nl()
+
+    else:
+        self.put('<leo_header file_format="2"/>\n')
+#@+node:ekr.20031218072017.3042: *6* putPostlog
+def putPostlog (self):
+
+    self.put("</leo_file>") ; self.put_nl()
+#@+node:ekr.20031218072017.2066: *6* putPrefs
+def putPrefs (self):
+
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("<preferences/>")
+    self.put_nl()
+#@+node:ekr.20031218072017.1246: *6* putProlog
+def putProlog (self):
+
+    c = self.c
+
+    self.putXMLLine()
+
+    if c.config.stylesheet or c.frame.stylesheet:
+        self.putStyleSheetLine()
+
+    self.put("<leo_file>") ; self.put_nl()
+#@+node:ekr.20031218072017.1248: *6* putStyleSheetLine
+def putStyleSheetLine (self):
+
+    c = self.c
+
+    # The stylesheet in the .leo file takes precedence over the default stylesheet.
+    self.put("<?xml-stylesheet ")
+    self.put(c.frame.stylesheet or c.config.stylesheet)
+    self.put("?>")
+    self.put_nl()
+#@+node:ekr.20031218072017.1577: *6* putTnode
+def putTnode (self,v):
+
+    # Call put just once.
+    gnx = g.app.nodeIndices.toString(v.fileIndex)
+    ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
+    b = v.b
+    if b:
+        body = xml.sax.saxutils.escape(b)
+    else:
+        body = ''
+
+    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
+#@+node:ekr.20031218072017.1575: *6* putTnodes
+def putTnodes (self):
+
+    """Puts all tnodes as required for copy or save commands"""
+
+    c = self.c
+
+    self.put("<tnodes>\n")
+    << write only those tnodes that were referenced >>
+    self.put("</tnodes>\n")
+#@+node:ekr.20031218072017.1576: *7* << write only those tnodes that were referenced >>
+if self.usingClipboard: # write the current tree.
+    theIter = c.p.self_and_subtree()
+else: # write everything
+    theIter = c.all_unique_positions()
+
+# Populate tnodes
+tnodes = {}
+nodeIndices = g.app.nodeIndices
+for p in theIter:
+    # Make *sure* the file index has the proper form.
+    # g.trace(p.v.fileIndex)
+    try:
+        theId,t,n = p.v.fileIndex
+    except ValueError:
+        try:
+            theId,t,n = p.v.fileIndex,''
+        except Exception:
+            raise BadLeoFile('bad p.v.fileIndex' % repr(p.v.fileIndex))
+
+    if n is None:
+        n = g.u('0')
+    elif g.isPython3:
+        n = str(n)
+    else:
+        n = unicode(n)
+    index = theId,t,n
+    tnodes[index] = p.v
+
+# Put all tnodes in index order.
+for index in sorted(tnodes):
+    # g.trace(index)
+    v = tnodes.get(index)
+    if v:
+        # Write only those tnodes whose vnodes were written.
+        if v.isWriteBit():
+            self.putTnode(v)
+    else:
+        g.trace('can not happen: no vnode for',repr(index))
+        # This prevents the file from being written.
+        raise BadLeoFile('no vnode for %s' % repr(index))
+#@+node:ekr.20031218072017.1863: *6* putVnode
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # 2010/09/02: @edit nodes must not have children.
+        # If they do, the entire tree is written to the outline.
+    isFile   = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin   = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+    if   isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
+    elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+    elif isFile:   forceWrite = isOrphan  # Force write of orphan @file trees.
+    elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
+    else:          forceWrite = True      # Write all other @<file> trees.
+
+    << Set gnx = vnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s>' % (gnx,attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head+'</v>\n')
+    else:
+        fc.vnodesDict[gnx]=True
+        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            << issue informational messages >>
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('</v>\n')
+        else:
+            fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864: *7* << Set gnx = vnode index >>
+gnx = g.app.nodeIndices.toString(v.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@+node:ekr.20031218072017.1865: *7* << Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+        attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = v.u
+    str_pos = ','.join(aList)
+    if d.get('str_leo_pos'):
+        del d['str_leo_pos']
+    # Don't write the current position if we can cache it. 
+    if g.enableDB and c.mFileName:
+        c.cacher.setCachedStringPosition(str_pos)
+    elif c.fixed:
+        pass
+    else:
+        d['str_leo_pos'] = str_pos
+    v.u = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@+node:ekr.20040324082713: *7* << Append unKnownAttributes to attrs>> fc.put
+# v.unknownAttributes are now put in <t> elements.
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
+#@+node:ekr.20040702085529: *7* << issue informational messages >>
+if isOrphan and isThin:
+    g.es("writing erroneous:",p.h,color="blue")
+    p.clearOrphan()
+#@+node:ekr.20031218072017.1579: *6* putVnodes
+def putVnodes (self):
+
+    """Puts all <v> elements in the order in which they appear in the outline."""
+
+    c = self.c
+    c.clearAllVisited()
+
+    self.put("<vnodes>\n")
+
+    # Make only one copy for all calls.
+    self.currentPosition = c.p 
+    self.rootPosition    = c.rootPosition()
+    # self.topPosition     = c.topPosition()
+    self.vnodesDict = {}
+
+    if self.usingClipboard:
+        self.putVnode(self.currentPosition) # Write only current tree.
+    else:
+        for p in c.rootPosition().self_and_siblings():
+            # New in Leo 4.4.2 b2 An optimization:
+            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
+
+    self.put("</vnodes>\n")
+#@+node:ekr.20031218072017.1247: *6* putXMLLine
+def putXMLLine (self):
+
+    '''Put the **properly encoded** <?xml> element.'''
+
+    # Use self.leo_file_encoding encoding.
+    self.put('%s"%s"%s\n' % (
+        g.app.prolog_prefix_string,
+        self.leo_file_encoding,
+        g.app.prolog_postfix_string))
+#@+node:ekr.20031218072017.1863: *5* putVnode
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # 2010/09/02: @edit nodes must not have children.
+        # If they do, the entire tree is written to the outline.
+    isFile   = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin   = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+    if   isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
+    elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+    elif isFile:   forceWrite = isOrphan  # Force write of orphan @file trees.
+    elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
+    else:          forceWrite = True      # Write all other @<file> trees.
+
+    << Set gnx = vnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s>' % (gnx,attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head+'</v>\n')
+    else:
+        fc.vnodesDict[gnx]=True
+        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            << issue informational messages >>
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('</v>\n')
+        else:
+            fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864: *6* << Set gnx = vnode index >>
+gnx = g.app.nodeIndices.toString(v.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@+node:ekr.20031218072017.1865: *6* << Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+        attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = v.u
+    str_pos = ','.join(aList)
+    if d.get('str_leo_pos'):
+        del d['str_leo_pos']
+    # Don't write the current position if we can cache it. 
+    if g.enableDB and c.mFileName:
+        c.cacher.setCachedStringPosition(str_pos)
+    elif c.fixed:
+        pass
+    else:
+        d['str_leo_pos'] = str_pos
+    v.u = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@+node:ekr.20040324082713: *6* << Append unKnownAttributes to attrs>> fc.put
+# v.unknownAttributes are now put in <t> elements.
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
+#@+node:ekr.20040702085529: *6* << issue informational messages >>
+if isOrphan and isThin:
+    g.es("writing erroneous:",p.h,color="blue")
+    p.clearOrphan()
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -4718,7 +5163,7 @@ def OnIconDoubleClick (self,p):
         # g.trace(url,g.callers())
 
         if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url)
+            g.handleUrlInUrlNode(url, c=c, p=p)
         g.doHook("@url2",c=c,p=p,v=p)
 
     return 'break' # 11/19/06
@@ -6443,5 +6888,1077 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@+node:ekr.20110209083917.15999: ** Simple vim bindings
+@language python
+#@+node:ekr.20110209093958.15408: *3* To do
+@nocolor-node
+
+- Test with tk.  One test fails:  @test leoTree is a subset of leoTkTree.
+
+- (not needed) @shortcuts node that kills all bindings.
+
+- (done) Show source of bindings in print-bindings.
+
+- (done) Improve conflict messages.
+#@+node:ekr.20090629183608.8445: *3* Cursors
+@nocolor-node
+
+Vi normally uses two different "current character" designators depending on the
+current state.
+
+Insert state:
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
+
+Command state: 
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
+#@+node:ekr.20061031131434.123: *4* set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.133: *4* setInputState
+def setInputState (self,state):
+
+    k = self
+    k.unboundKeyAction = state
+
+
+
+#@+node:ekr.20061031131434.192: *4* showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+        
+    isText = g.app.gui.isTextWidget(w)
+
+    # This fixes a problem with the tk gui plugin.
+    if mode and mode.lower().startswith('isearch'):
+        return
+
+    wname = g.app.gui.widget_name(w).lower()
+    
+    # 2011/02/12: get the wrapper for the headline widget.
+    if wname.startswith('head'):
+        if hasattr(c.frame.tree,'getWrapper'):
+            if hasattr(w,'widget'): w2 = w.widget
+            else: w2 = w
+            w = c.frame.tree.getWrapper(w2,item=None)
+            isText = bool(w) # A benign hack.
+
+    if trace: g.trace('state: %s text?: %s w: %s' % (
+        state,isText,w))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    else:
+        s = '%s State' % state.capitalize()
+        if c.editCommands.extendMode:
+            s = s + ' (Extend Mode)'
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and isText:
+        k.showStateColors(inOutline,w)
+        k.showStateCursor(state,w)
+#@+node:ekr.20110202111105.15439: *4* showStateCursor
+def showStateCursor (self,state,w):
+    
+    # g.trace(state,w)
+    
+    pass
+    
+    
+#@+node:ekr.20061031131434.146: *3* masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
+        repr(event.keysym),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+            
+    # if stroke == 'Tab': g.pdb()
+
+    if k.inState():
+        if trace: g.trace('   state %-10s %s' % (stroke,state))
+        done,val = k.doMode(event,state,stroke)
+        if done: return val
+
+    if traceGC: g.printNewObjects('masterKey 2')
+            
+    # 2011/02/08: An important simplification.
+    if isPlain and k.unboundKeyAction != 'command':
+        if self.isAutoCompleteChar(stroke):
+            if trace: g.trace('autocomplete key',stroke)
+        else:
+            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+            return k.handleUnboundKeys(event,char,keysym,stroke)
+
+    # 2011/02/08: Use getPandBindings for *all* keys.
+    b = k.getPaneBinding(stroke,w)
+    if b:
+        if traceGC: g.printNewObjects('masterKey 3')
+        if trace: g.trace('   bound',stroke)
+        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    else:
+        if traceGC: g.printNewObjects('masterKey 4')
+        if trace: g.trace(' unbound',stroke)
+        return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147: *4* << define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+stroke = event.stroke ### 2010/10/18
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@+node:ekr.20061031131434.108: *4* callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@+node:ekr.20091230094319.6244: *4* doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if val != 'do-standard-keys':
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            # if trace: g.trace('unbound key ends mode',stroke,state)
+            g.warning('unbound key ends mode',stroke) # 2011/02/02
+            k.endMode(event)
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            if trace: g.trace('handler',handler)
+            handler(event)
+        else:
+            if trace: g.trace('No state handler for %s' % state)
+        return True,'break'
+#@+node:ekr.20091230094319.6240: *4* getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    k = self ; w_name = k.c.widget_name(w)
+    # keyStatesTuple = ('command','insert','overwrite')
+    state = k.unboundKeyAction
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('command','insert','overwrite') and state == key or # 2010/02/09
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace and verbose:
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key: %7s name: %6s key: %10s in keys: %s' %
+                    (key,name,stroke,stroke in d))
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    return b
+#@+node:ekr.20061031131434.152: *4* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','\t','Escape',):
+            return False
+        if k.isFKey(stroke): # 2010/10/23.
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@+node:ekr.20110209083917.16004: *4* isAutoCompleteChar
+def isAutoCompleteChar (self,stroke):
+    
+    '''Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.'''
+
+    k = self ; state = k.unboundKeyAction
+    
+    if stroke and state in ('insert','overwrite'):
+        for key in (state,'body','log','text','all'):
+            d = k.masterBindingsDict.get(key,{})
+            if d:
+                b = d.get(stroke)
+                if b and b.commandName == 'auto-complete':
+                    return True
+    return False
+#@+node:ekr.20080510095819.1: *4* k.handleUnboundKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+
+    if trace and verbose: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
+
+    # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        if trace: g.trace('ignoring unbound character in command mode',stroke)
+        return 'break'
+
+    elif k.isFKey(stroke):
+        if trace: g.trace('ignoring F-key',stroke)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+        # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke)
+        return 'break'
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        if trace: g.trace('ignoring unbound non-ascii key',repr(stroke))
+        return 'break'
+
+    elif (
+        keysym and keysym.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
+        # Never insert escape or insert characters.
+        if trace: g.trace('ignore Escape/Ignore',stroke)
+        return 'break'
+
+    else:
+        if trace: g.trace('no func',stroke)
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@+node:ekr.20110208115654.15911: *3* Body pane background colors
+These settings are no longer used:
+    
+    @string selected-background-color
+    @string selected-command-background-color
+#@+node:ekr.20061031131434.192: *4* showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+        
+    isText = g.app.gui.isTextWidget(w)
+
+    # This fixes a problem with the tk gui plugin.
+    if mode and mode.lower().startswith('isearch'):
+        return
+
+    wname = g.app.gui.widget_name(w).lower()
+    
+    # 2011/02/12: get the wrapper for the headline widget.
+    if wname.startswith('head'):
+        if hasattr(c.frame.tree,'getWrapper'):
+            if hasattr(w,'widget'): w2 = w.widget
+            else: w2 = w
+            w = c.frame.tree.getWrapper(w2,item=None)
+            isText = bool(w) # A benign hack.
+
+    if trace: g.trace('state: %s text?: %s w: %s' % (
+        state,isText,w))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    else:
+        s = '%s State' % state.capitalize()
+        if c.editCommands.extendMode:
+            s = s + ' (Extend Mode)'
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and isText:
+        k.showStateColors(inOutline,w)
+        k.showStateCursor(state,w)
+#@+node:ekr.20080512115455.1: *4* showStateColors
+def showStateColors (self,inOutline,w):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    w_name = g.app.gui.widget_name(w)
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if trace: g.trace('%9s' % (state),w_name)
+    
+    if w_name.startswith('body'):
+        w = c.frame.body
+    elif w_name.startswith('head'):
+        pass
+    else:
+        # Don't recolor the minibuffer, log panes, etc.
+        if trace: g.trace('not body or head')
+        return
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    if hasattr(w,'setEditorColors'):
+        # Note: fg color has no effect on Qt at present.
+        w.setEditorColors(bg=bg,fg=fg) ### Was body.
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            pass # g.es_exception()
+#@+node:ekr.20110209093958.15409: *3* Enter insert mode after ctrl-h
+#@+node:ekr.20031218072017.2886: *4* c.editHeadline
+def editHeadline (self,event=None):
+
+    '''Begin editing the headline of the selected node.'''
+
+    c = self ; k = c.k ; tree = c.frame.tree
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Edit Headline")
+        return
+        
+    e,wrapper = tree.editLabel(c.p)
+
+    if k:
+        # k.setDefaultInputState()
+        k.setEditingState()
+        k.showStateAndMode(w=wrapper)
+
+    #### tree.editLabel(c.p)
+#@+node:ekr.20110209093958.15411: *4* setEditingState
+def setEditingState (self):
+
+    k = self ; state = k.defaultEditingAction
+    
+    # g.trace(state)
+    
+    k.setInputState(state)
+#@+node:ekr.20110209093958.15413: *4* setDefaultEditingKeyAction (New)
+def setDefaultEditingAction (self):
+
+    k = self ; c = k.c
+
+    action = c.config.getString('default_editing_state') or 'insert'
+    action.lower()
+
+    if action not in ('command','insert','overwrite'):
+        g.trace('ignoring default_editing_state: %s' % (action))
+        action = 'insert'
+
+    self.defaultEditingAction = action
+#@+node:ekr.20110212012742.15416: *3* Colorize headline text depending on state
+#@+node:ekr.20031218072017.2886: *4* c.editHeadline
+def editHeadline (self,event=None):
+
+    '''Begin editing the headline of the selected node.'''
+
+    c = self ; k = c.k ; tree = c.frame.tree
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Edit Headline")
+        return
+        
+    e,wrapper = tree.editLabel(c.p)
+
+    if k:
+        # k.setDefaultInputState()
+        k.setEditingState()
+        k.showStateAndMode(w=wrapper)
+
+    #### tree.editLabel(c.p)
+#@+node:ekr.20061031131434.192: *4* showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+        
+    isText = g.app.gui.isTextWidget(w)
+
+    # This fixes a problem with the tk gui plugin.
+    if mode and mode.lower().startswith('isearch'):
+        return
+
+    wname = g.app.gui.widget_name(w).lower()
+    
+    # 2011/02/12: get the wrapper for the headline widget.
+    if wname.startswith('head'):
+        if hasattr(c.frame.tree,'getWrapper'):
+            if hasattr(w,'widget'): w2 = w.widget
+            else: w2 = w
+            w = c.frame.tree.getWrapper(w2,item=None)
+            isText = bool(w) # A benign hack.
+
+    if trace: g.trace('state: %s text?: %s w: %s' % (
+        state,isText,w))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    else:
+        s = '%s State' % state.capitalize()
+        if c.editCommands.extendMode:
+            s = s + ' (Extend Mode)'
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and isText:
+        k.showStateColors(inOutline,w)
+        k.showStateCursor(state,w)
+#@+node:ekr.20080512115455.1: *4* showStateColors
+def showStateColors (self,inOutline,w):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    w_name = g.app.gui.widget_name(w)
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if trace: g.trace('%9s' % (state),w_name)
+    
+    if w_name.startswith('body'):
+        w = c.frame.body
+    elif w_name.startswith('head'):
+        pass
+    else:
+        # Don't recolor the minibuffer, log panes, etc.
+        if trace: g.trace('not body or head')
+        return
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    if hasattr(w,'setEditorColors'):
+        # Note: fg color has no effect on Qt at present.
+        w.setEditorColors(bg=bg,fg=fg) ### Was body.
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            pass # g.es_exception()
+#@+node:ekr.20110211024010.15393: *3* colon destroys alt-x binding
+# This project reorganizes makeBindingFromCommandsDict
+#@+node:ekr.20061031131434.76: *4*  ctor (keyHandler)
+def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
+
+    '''Create a key handler for c.
+    c.frame.miniBufferWidget is a Tk.Label.
+
+    useGlobalRegisters and useGlobalKillbuffer indicate whether to use
+    global (class vars) or per-instance (ivars) for kill buffers and registers.'''
+
+    # g.trace('base keyHandler',g.callers())
+
+    self.c = c
+    self.dispatchEvent = None
+    self.inited = False # Set at end of finishCreate.
+    self.widget = c.frame.miniBufferWidget
+    self.new_bindings = True
+    self.useGlobalKillbuffer = useGlobalKillbuffer
+    self.useGlobalRegisters = useGlobalRegisters
+
+    # Generalize...
+    self.x_hasNumeric = ['sort-lines','sort-fields']
+
+    self.altX_prompt = 'full-command: '
+
+    # These must be defined here to avoid memory leaks.
+    getBool = c.config.getBool
+    getColor = c.config.getColor
+    self.enable_autocompleter           = getBool('enable_autocompleter_initially')
+    self.enable_calltips                = getBool('enable_calltips_initially')
+    self.ignore_caps_lock               = getBool('ignore_caps_lock')
+    self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
+    self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
+    self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
+    self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
+    self.swap_mac_keys                  = getBool('swap_mac_keys')
+    self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
+    self.trace_masterClickHandler       = getBool('trace_masterClickHandler')
+    self.traceMasterCommand             = getBool('trace_masterCommand')
+    self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
+    self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
+    self.trace_key_event                = getBool('trace_key_event')
+    self.trace_minibuffer               = getBool('trace_minibuffer')
+    self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+    # Has to be disabled (default) for AltGr support on Windows
+    self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
+    << define externally visible ivars >>
+    << define internal ivars >>
+
+    self.defineTkNames()
+    self.defineSpecialKeys()
+    self.defineSingleLineCommands()
+    self.defineMultiLineCommands()
+    self.autoCompleter = autoCompleterClass(self)
+    self.setDefaultUnboundKeyAction()
+    self.setDefaultEditingAction() # 2011/02/09
+#@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
+self.abbrevOn = False # True: abbreviations are on.
+self.arg = '' # The value returned by k.getArg.
+self.argSelectedText = '' # The selected text in state 0.
+self.commandName = None # The name of the command being executed.
+self.funcReturn = None # For k.simulateCommand
+self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
+self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+self.inputModeBindings = {}
+self.inputModeName = '' # The name of the input mode, or None.
+self.inverseCommandsDict = {}
+    # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
+self.modePrompt = '' # The mode promopt.
+self.negativeArg = False
+self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
+self.regx = g.bunch(iter=None,key=None)
+self.repeatCount = None
+self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
+self.state = g.bunch(kind=None,n=None,handler=None)
+#@+node:ekr.20061031131434.79: *5* << define internal ivars >>
+self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
+
+# Previously defined bindings.
+self.bindingsDict = {}
+    # Keys are Tk key names, values are lists of g.bunch(pane,func,commandName)
+# Previously defined binding tags.
+self.bindtagsDict = {}
+    # Keys are strings (the tag), values are 'True'
+self.masterBindingsDict = {}
+    # Keys are scope names: 'all','text',etc. or mode names.
+    # Values are dicts: keys are strokes, values are g.bunch(commandName,func,pane,stroke)
+self.masterGuiBindingsDict = {}
+    # Keys are strokes; value is True;
+
+# Special bindings for k.fullCommand.
+self.mb_copyKey = None
+self.mb_pasteKey = None
+self.mb_cutKey = None
+self.mb_help = False
+
+self.abortAllModesKey = None
+self.fullCommandKey = None
+self.universalArgKey = None
+
+# Keepting track of the characters in the mini-buffer.
+self.arg_completion = True
+self.mb_event = None
+self.mb_history = []
+self.mb_prefix = ''
+self.mb_tabListPrefix = ''
+self.mb_tabList = []
+self.mb_tabListIndex = -1
+self.mb_prompt = ''
+
+self.func = None
+self.previous = []
+self.stroke = None
+
+# For onIdleTime
+self.idleCount = 0
+
+# For modes
+self.afterGetArgState = None
+self.argTabList = []
+self.getArgEscapes = []
+self.modeBindingsDict = {}
+self.modeWidget = None
+self.silentMode = False
+
+# The actual values are set later in k.finishCreate.
+self.command_mode_bg_color = 'white'
+self.command_mode_fg_color = 'black'
+self.insert_mode_bg_color = 'white'
+self.insert_mode_fg_color = 'black'
+self.overwrite_mode_bg_color = 'white'
+self.overwrite_mode_fg_color = 'black'
+#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (changed)
+def getShortcut (self,c,shortcutName):
+
+    '''Return rawKey,accel for shortcutName'''
+
+    key = c.frame.menu.canonicalizeMenuName(shortcutName)
+    key = key.replace('&','') # Allow '&' in names.
+    
+    if c.k.new_bindings:
+        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+    else:
+        bunchList = self.get(c,key,'shortcut')
+    # g.trace(c.k.new_bindings) # 'bunchList',bunchList)
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        return key,bunchList
+    else:
+        return key,[]
+#@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config) (NEW)
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.'''
+
+    trace = False and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.localOptionsList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.dictList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    return result
+#@+node:ekr.20110211041914.15418: *5* mergeShortcuts (NEW)
+def mergeShortcuts (self,result,aList,key):
+        # key is for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = False and not g.unitTesting
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and len(result) > 1:
+        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
+#@+node:ekr.20061031131434.89: *4* bindKey
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %30s %s' % (pane,shortcut,commandName,_hash))
+        g.trace(g.callers())
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName,_hash=_hash)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90: *5* << give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
+# b is the bunch for the new binding.
+
+### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    
+    redefs = [b2 for b2 in bunchList
+        if b2.commandName != commandName and
+            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
+            pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+
+    if redefs:
+        def pr(commandName,pane,theHash):
+            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    
+        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+        pr(commandName,pane,_hash)
+        for z in redefs:
+            pr(z.commandName,z.pane,z._hash)
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@+node:ekr.20061031131434.102: *4* makeBindingsFromCommandsDict & helper
+def makeBindingsFromCommandsDict (self):
+
+    '''Add bindings for all entries in c.commandDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    # Step 1: Create d2.
+    # Keys are strokes. Values are lists of bunches b with b.val equal to the stroke.
+    d = c.commandsDict ; d2 = {} 
+    for commandName in sorted(d):
+        command = d.get(commandName)
+        key, bunchList = c.config.getShortcut(commandName)
+        # if commandName == 'move-outline-down': g.trace(bunchList)
+        for b in bunchList:
+            # Important: regularize the binding value here.
+            val = k.shortcutFromSetting(b.val)
+            b.commandName = commandName
+            aList = d2.get(val,[])
+            aList.append(b)
+            d2[val] = aList
+
+    # g.trace(list(d2.keys()))
+    
+    # Step 2: Remove overridden entries from the bunchlist for each stroke.
+    if self.new_bindings:
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            aList = self.mergeShortcutList(aList,stroke)
+            d2 [stroke] = aList
+
+    # Step 3: make the bindings.
+    if 1: # New code
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+            for bunch in aList:
+                commandName = bunch.commandName
+                command = c.commandsDict.get(commandName)
+                _hash = bunch.get('_hash') # 2011/02/10
+                pane = bunch.pane
+                if trace and not _hash:
+                    g.trace('**** no hash for',commandName)
+                if stroke and not pane.endswith('-mode'):
+                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
+    else: ### old code
+        d = c.commandsDict
+        for commandName in sorted(d):
+            command = d.get(commandName)
+            key, bunchList = c.config.getShortcut(commandName)
+            # if commandName in ('full-command'): g.trace(key,bunchList)
+            for bunch in bunchList:
+                accel = bunch.val ; pane = bunch.pane
+                _hash = bunch.get('_hash') # 2011/02/10
+                if trace and not _hash: g.trace('**** no hash for',commandName)
+                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+                if accel and not pane.endswith('-mode'):
+                    shortcut = k.shortcutFromSetting(accel)
+                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+
+    # g.trace(g.listToString(sorted(k.bindingsDict))
+    # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
+#@+node:ekr.20110211094454.15414: *5* mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
+
+    '''aList is a list of binding bunches for stroke.
+    
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    # if stroke == 'Alt-F4': g.pdb()
+    for b in aList:
+        _hash = b.get('_hash','<no hash>')
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(b)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(b)
+        elif _hash.endswith('.leo'):
+            fList.append(b)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (k.shortcutFromSetting(z.val),z.pane,z.commandName) for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
+    return result
 #@-all
 #@-leo

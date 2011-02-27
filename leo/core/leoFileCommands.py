@@ -1809,7 +1809,7 @@ class baseFileCommands:
         # Put the archived *current* position in the *root* positions <v> element.
         if p == self.rootPosition:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+            d = v.u
             str_pos = ','.join(aList)
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
@@ -1820,8 +1820,7 @@ class baseFileCommands:
                 pass
             else:
                 d['str_leo_pos'] = str_pos
-            # g.trace(aList,d)
-            v.unknownAttributes = d
+            v.u = d
         elif hasattr(v,"unknownAttributes"):
             d = v.unknownAttributes
             if d and not c.fixed and d.get('str_leo_pos'):

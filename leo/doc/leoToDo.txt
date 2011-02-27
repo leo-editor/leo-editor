@@ -4411,8 +4411,8 @@ def scanForAtIgnore(c,p):
 
     return False
 #@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url):
-
+def handleUrlInUrlNode(url, c=None, p=None):
+    
     # Note 1: the UNL plugin has its own notion of what a good url is.
 
     # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
@@ -4432,18 +4432,18 @@ followed by one of: (same as above, except no minus sign or comma).
   $%&'()*+/0-9:=?@A-Z_a-z}~
 @c
 
-urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
 
 if not url or len(url) == 0:
     g.es("no url following @url")
     return
 
 # Add http:// if required.
-if not re.match('^([a-z]{3,}:)',url):
-    url = 'http://' + url
-if not re.match(urlPattern,url):
-    g.es("invalid url:",url)
-    return
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
 #@+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
 @ Most browsers should handle the following urls:
   ftp://ftp.uu.net/public/whatever.
@@ -4452,15 +4452,58 @@ if not re.match(urlPattern,url):
 @c
 
 try:
-    import os
-    os.chdir(g.app.loadDir)
-    if g.match(url,0,"file:") and url[-4:]==".leo":
-        ok,frame = g.openWithFileName(url[5:],None)
-    else:
-        import webbrowser
-        # Mozilla throws a weird exception, then opens the file!
-        try: webbrowser.open(url)
-        except: pass
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                # Disable later call to c.onClick so
+                # the focus stays in frame.c (DOESN'T WORK?)
+                c.doubleClickFlag = True
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
 except:
     g.es("exception opening",url)
     g.es_exception()

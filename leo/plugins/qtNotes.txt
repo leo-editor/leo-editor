@@ -632,7 +632,7 @@ def createMainLayout (self,parent):
     vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
     # Splitter two is the "main" splitter, containing splitter.
-    splitter2 = QtGui.QSplitter(parent)
+    splitter2 = splitter_class(parent)
     splitter2.setOrientation(QtCore.Qt.Vertical)
     splitter2.setObjectName("splitter_2")
 
@@ -640,7 +640,7 @@ def createMainLayout (self,parent):
         QtCore.SIGNAL("splitterMoved(int,int)"),
         self.onSplitter2Moved)
 
-    splitter = QtGui.QSplitter(splitter2)
+    splitter = splitter_class(splitter2)
     splitter.setOrientation(QtCore.Qt.Horizontal)
     splitter.setObjectName("splitter")
 
