@@ -4246,6 +4246,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if len(sizes)!=2:
             g.trace('%s widget(s) in %s' % (len(sizes),id(splitter)))
+            return
 
         if frac > 1 or frac < 0:
             g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)

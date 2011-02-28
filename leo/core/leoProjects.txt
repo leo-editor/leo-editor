@@ -5034,6 +5034,46 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
 if isOrphan and isThin:
     g.es("writing erroneous:",p.h,color="blue")
     p.clearOrphan()
+#@+node:ekr.20110228083015.14114: *4* fixed bug in g.printGcAll
+@nocolor-node
+
+ERROR: runTest (leo.core.leoTest.generalTestCase)
+@test g.printGcAll
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 177, in runTest
+    exec(script,d)
+  File "<string>", line 3, in <module>
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2798, in printGcAll
+    d[t] = d.get(t,0) + 1
+TypeError: unhashable type: 'ProxyType'
+#@+node:ekr.20110228083015.14113: *4* mod_autosave plugin does not register redundant idle-time handlers
+@nocolor-node
+
+while I was experimenting with registering handler for "idle" events,
+I have noticed
+that there were about 40 registered handlers for "idle" event. What
+was most interesting is the fact that those handlers were all about
+the same function onIdle in mod_autosave plugin. At first I thought
+that handler is registering itself over and over, but when I looked in
+the source I couldn't find anything suspicious.
+
+So I made small script to print number of registered handlers and
+manually executed it from time to time to see when it increases.
+
+g.es(len(g.app.pluginsController.getHandlersForOneTag("idle")))
+
+Finally, I realized that every time when I invoke unit test command Alt
++5, number of registered handlers increased.
+
+From the above it is obvious that I have enabled plugin mod_autosave.
+From the Log
+Leo Log Window
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.6, qt version 4.7.0
+linux2
+
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
