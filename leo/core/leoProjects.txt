@@ -6667,6 +6667,483 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     if trace and verbose and len(result) > 1: g.trace(stroke,result)
     return result
+#@+node:ekr.20110227200312.15374: *4* Open leoSettings.leo only once
+#@+node:ekr.20090519143741.5915: *5* doPrePluginsInit & helpers
+def doPrePluginsInit(fileName,pymacs):
+
+    ''' Scan options, set directories and read settings.'''
+
+    trace = False
+    g.computeStandardDirectories()
+    adjustSysPath()
+    options = scanOptions()
+
+    # Post-process the options.
+    fileName2 = options.get('fileName')
+    if fileName2: fileName = fileName2
+
+    if pymacs:
+        options['script'] = script = None
+        options['windowFlag'] = False
+    else:
+        script = options.get('script')
+    verbose = script is None
+
+    # Init the app.
+    initApp(verbose)
+    files = getFiles(fileName2)
+    reportDirectories(verbose)
+
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(None,verbose)
+    for fn in files:
+        g.app.config.readSettingsFiles(fn,verbose)
+
+    if not files and not script:
+        # This must be done *after* the standard settings have been read.
+        fn = getDefaultFile()
+        if fn:
+            files = [fn]
+            g.app.config.readSettingsFiles(fn,verbose=True)
+
+    g.app.setGlobalDb()
+    createGui(pymacs,options)
+
+    # if no gui specified on command line, and qt not installed
+    # set options['gui'] to 'tk' to match reality
+    if g.app.guiArgName == 'tk':
+        options['gui'] = 'tk'
+
+    # We can't print the signon until we know the gui.
+    g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    versionFlag = options.get('versionFlag')
+    if versionFlag:
+        print(g.app.signon)
+    if versionFlag or not g.app.gui:
+        options['exit'] = True
+
+    return files,options
+#@+node:ekr.20100914142850.5892: *6* createGui & helper
+def createGui(pymacs,options):
+
+    gui = options.get('gui')
+    windowFlag = options.get('windowFlag')
+    script = options.get('script')
+
+    if g.app.gui:
+        pass # initApp (setLeoID) created the gui.
+    elif gui is None:
+        if script and not windowFlag:
+            # Always use null gui for scripts.
+            g.app.createNullGuiWithScript(script)
+        else:
+            g.app.createDefaultGui(__file__)
+    else:
+        createSpecialGui(gui,pymacs,script,windowFlag)
+
+#@+node:ekr.20080921060401.4: *6* createSpecialGui
+def createSpecialGui(gui,pymacs,script,windowFlag):
+
+    if pymacs:
+        g.app.createNullGuiWithScript(script=None)
+    elif script:
+        if windowFlag:
+            g.app.createDefaultGui()
+            g.app.gui.setScript(script=script)
+            sys.args = []
+        else:
+            g.app.createNullGuiWithScript(script=script)
+    else:
+        assert g.app.guiArgName
+        g.app.createDefaultGui() 
+#@+node:ekr.20070306085724: *6* adjustSysPath
+def adjustSysPath ():
+
+    '''Adjust sys.path to enable imports as usual with Leo.
+
+    This method is no longer needed:
+
+    1. g.importModule will import from the
+       'external' or 'extensions' folders as needed
+       without altering sys.path.
+
+    2  Plugins now do fully qualified imports.
+    '''
+#@+node:ekr.20041124083125: *6* completeFileName
+def completeFileName (fileName):
+
+    trace = False
+    if trace: print('completeFileName',fileName)
+
+    if not (fileName and fileName.strip()):
+        return None,None
+
+    fileName = g.toUnicode(fileName)
+    fileName = g.os_path_finalize(fileName)
+    junk,ext = g.os_path_splitext(fileName)
+
+    # Bug fix: don't add .leo to existing files.
+    if g.os_path_exists(fileName):
+        pass # use the fileName as is.
+    elif ext != '.leo':
+        fileName = fileName + ".leo"
+
+    if trace: print('completeFileName',fileName)
+
+    return fileName
+#@+node:ekr.20101021101942.6010: *6* getDefaultFile
+def getDefaultFile ():
+
+    # Get the name of the workbook.
+    fn = g.app.config.getString(c=None,setting='default_leo_file')
+    fn = g.os_path_finalize(fn)
+    if not fn: return
+
+    # g.trace(g.os_path_exists(fn),fn)
+
+    if g.os_path_exists(fn):
+        return fn
+    elif g.os_path_isabs(fn):
+        # Create the file.
+        g.es_print('Using default leo file name:\n%s' % (fn),color='red')
+        return fn
+    else:
+        # It's too risky to open a default file if it is relative.
+        return None
+#@+node:ekr.20101020125657.5976: *6* getFiles
+def getFiles(fileName):
+
+    files = []
+    if fileName:
+        files.append(fileName)
+
+    for arg in sys.argv[1:]:
+        if not arg.startswith('-'):
+            files.append(arg)
+
+    files = [completeFileName(z) for z in files]
+    return files
+#@+node:ekr.20080921091311.2: *6* initApp
+def initApp (verbose):
+
+    assert g.app.guiArgName
+
+    # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
+    g.app.config = leoConfig.configClass()
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.pluginsController.finishCreate() # 2010/09/09
+#@+node:ekr.20041130093254: *6* reportDirectories
+def reportDirectories(verbose):
+
+    if verbose:
+        for kind,theDir in (
+            ("load",g.app.loadDir),
+            ("global config",g.app.globalConfigDir),
+            ("home",g.app.homeDir),
+        ):
+            g.es("%s dir:" % (kind),theDir,color="blue")
+#@+node:ekr.20091007103358.6061: *6* scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+    trace = False
+
+    # Note: this automatically implements the --help option.
+    parser = optparse.OptionParser()
+    add = parser.add_option
+    add('-c', '--config', dest="one_config_path",
+        help = 'use a single configuration file')
+    add('--debug',        action="store_true",dest="debug",
+        help = 'enable debugging support')
+    add('-f', '--file',   dest="fileName",
+        help = 'load a file at startup')
+    add('--gui',
+        help = 'gui to use (qt/tk/qttabs)')
+    add('--minimized',    action="store_true",
+        help = 'start minimized (Qt only)')
+    add('--maximized',    action="store_true",
+        help = 'start maximized (Qt only)')
+    add('--fullscreen',   action="store_true",
+        help = 'start fullscreen (Qt only)')
+    add('--ipython',      action="store_true",dest="use_ipython",
+        help = 'enable ipython support')
+    add('--no-cache',     action="store_true",dest='no_cache',
+        help = 'disable reading of cached files')
+    add('--silent',       action="store_true",dest="silent",
+        help = 'disable all log messages')
+    add('--screen-shot',  dest='screenshot_fn',
+        help = 'take a screen shot and then exit')
+    add('--script',       dest="script",
+        help = 'execute a script and then exit')
+    add('--script-window',dest="script_window",
+        help = 'open a window for scripts')
+    add('--select',       dest='select',
+        help='headline or gnx of node to select')
+    add('--version',      action="store_true",dest="version",
+        help='print version number and exit')
+    add('--window-size',  dest='window_size',
+        help='initial window size in height x width format')
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    if trace: print('scanOptions:',sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --debug
+    if options.debug:
+        g.debug = True
+        print('scanOptions: *** debug mode on')
+
+    # -f or --file
+    fileName = options.fileName
+    if fileName:
+        fileName = fileName.strip('"')
+        if trace: print('scanOptions:',fileName)
+
+    # --gui
+    gui = options.gui
+
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            gui = g.app.guiArgName = 'qt'
+            g.app.qt_use_tabs = True
+        elif gui in ('curses','tk','qt','null'): # 'wx',
+            g.app.guiArgName = gui
+            g.app.qt_use_tabs = False
+        else:
+            print('scanOptions: unknown gui: %s' % gui)
+            g.app.guiArgName = gui = 'qt'
+            g.app.qt_use_tabs = True
+    else:
+        gui = g.app.guiArgName = 'qt'
+        g.app.qt_use_tabs = True
+
+    assert gui == g.app.guiArgName
+
+    # --minimized
+    # --maximized
+    # --fullscreen
+    g.app.start_minimized = options.minimized
+    g.app.start_maximized = options.maximized
+    g.app.start_fullscreen = options.fullscreen
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # --no-cache
+    if options.no_cache:
+        print('scanOptions: disabling caching')
+        g.enableDB = False
+
+    # --screen-shot=fn
+    screenshot_fn = options.screenshot_fn
+    if screenshot_fn:
+        screenshot_fn = screenshot_fn.strip('"')
+        if trace: print('scanOptions: screenshot_fn',screenshot_fn)
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        script,e = g.readFileIntoString(script_name,kind='script:')
+        # print('script_name',repr(script_name))
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+
+    # --select
+    select = options.select
+    if select:
+        select = select.strip('"')
+        if trace: print('scanOptions: select',repr(select))
+
+    # --silent
+    g.app.silentMode = options.silent
+    # print('scanOptions: silentMode',g.app.silentMode)
+
+    # --version: print the version and exit.
+    versionFlag = options.version
+
+    # --window-size
+    windowSize = options.window_size
+    if windowSize:
+        if trace: print('windowSize',repr(windowSize))
+        try:
+            h,w = windowSize.split('x')
+        except ValueError:
+            windowSize = None
+            g.trace('bad --window-size:',size)
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return {
+        'fileName':fileName,
+        'gui':gui,
+        'screenshot_fn':screenshot_fn,
+        'script':script,
+        'select':select,
+        'version':versionFlag,
+        'windowFlag':windowFlag,
+        'windowSize':windowSize,
+    }
+#@+node:ekr.20041120064303: *5* readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    '''Read settings from one file of the standard settings files.'''
+
+    trace = False and not g.unitTesting
+    verbose = verbose or trace
+    giveMessage = (verbose and not g.app.unitTesting and
+        not self.silent and not g.app.batchMode)
+    self.write_recent_files_as_needed = False # Will be set later.
+    localConfigFile = self.getLocalConfigFile(fileName)
+    if trace: g.trace(fileName,localConfigFile)
+    table = self.defineSettingsTable(fileName,localConfigFile)
+    for path,localFlag in table:
+        assert path and g.os_path_exists(path)
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or path.endswith('.leo')
+        if isLeo:
+            if giveMessage:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.es_print(s,color='blue')
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+
+    self.readRecentFiles(localConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20101021041958.6008: *6* getLocalConfigFile
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+
+def getLocalConfigFile (self,fileName):
+
+    if not fileName:
+        return None
+
+    theDir = g.os_path_dirname(fileName)
+    path = g.os_path_join(theDir,'leoSettings.leo')
+
+    if g.os_path_exists(path):
+        return path
+    else:
+        return None
+#@+node:ekr.20101021041958.6004: *6* defineSettingsTable
+def defineSettingsTable (self,fileName,localConfigFile):
+
+    trace = False and not g.unitTesting
+
+    global_table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        # (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        # (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+    )
+
+    if fileName:
+        if fileName.endswith('leoSettings.leo'):
+            # 2011/02/27: don't read leoSettings.leo twice.
+            # This allows myLeoSettings.leo to take precedence.
+            table1 = []
+        else:
+            path = g.os_path_finalize(fileName)
+            theDir = g.os_path_dirname(fileName)
+            myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
+            local_table = (
+                (localConfigFile,False),
+                (myLocalConfigFile,False),
+            )
+            if trace:
+                g.trace('localConfigFile:  ',localConfigFile)
+                g.trace('myLocalConfigFile:',myLocalConfigFile)
+    
+            table1 = [z for z in local_table if z not in global_table]
+            table1.append((path,True),)
+    else:
+        table1 = global_table
+
+    seen = [] ; table = []
+    for path,localFlag in table1:
+        if trace: g.trace('exists',g.os_path_exists(path),path)
+        if path and g.os_path_exists(path):
+            # Make sure we mark files seen no matter how they are specified.
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            if path.lower() not in seen:
+                seen.append(path.lower())
+                table.append((path,localFlag),)
+    if trace: g.trace(repr(fileName),table)
+    return table
+#@+node:ekr.20041117085625: *6* openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@+node:ekr.20051013161232: *6* updateSettings
+def updateSettings (self,c,localFlag):
+
+    # g.trace(localFlag,c)
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
 #@+node:ekr.20110202094848.12571: *3* Vim...
 #@+node:ekr.20060927173836.6: *4* Give warning when unbound key ends a mode
 #@+node:ekr.20091230094319.6244: *5* doMode
