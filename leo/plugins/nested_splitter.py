@@ -6,7 +6,6 @@ class DemoWidget(QtGui.QWidget):
 
     count = 0
 
-
     def __init__(self, parent=None, color=None):
 
         QtGui.QWidget.__init__(self, parent)
@@ -194,12 +193,8 @@ class NestedSplitter(QtGui.QSplitter):
 
 
     def __init__(self, parent=None, orientation=QtConst.Horizontal, root=None):
-        # QtGui.QSplitter.__init__(self, parent=parent, orientation=orientation)
-        
-        try: # 2011/02/28
-            QtGui.QSplitter.__init__(self,parent,orientation)
-        except TypeError:
-            QtGui.QSplitter.__init__(self,parent)
+
+        QtGui.QSplitter.__init__(self, orientation, parent)
 
         if not root:
             root = self.top()
@@ -208,6 +203,7 @@ class NestedSplitter(QtGui.QSplitter):
                 root.callbacks = []
                 root.holders = {}
         self.root = root
+        
     def add(self, side):
 
         orientation = self.other_orientation[self.orientation()]
