@@ -9869,19 +9869,6 @@ finally:
     c2.close()
 #@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same
 assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
-#@+node:ekr.20061008162912: *4* @test write .leo file with @ignore node
-assert p.firstChild(), 'no child node'
-assert p.firstChild().b.startswith('@ignore'), 'No @ignore in child'
-ok = c.fileCommands.write_Leo_file(
-    'file-name',outlineOnlyFlag=True,toString=True,toOPML=False)
-assert ok, 'error writing file'
-count = 0
-for line in g.splitLines(g.app.write_Leo_file_string):
-    if line.find('@ignore') != -1:
-        count += 1
-assert count >=1, "not enough @ignore's in written file"
-#@+node:ekr.20061008162912.1: *5* child
-@ignore # Test that this node gets written.
 #@+node:ekr.20071113202045: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
