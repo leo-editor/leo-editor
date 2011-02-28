@@ -2795,7 +2795,12 @@ def printGcAll (tag=''):
             except Exception: pass
         # if type(obj) == type(()):
             # g.pr(id(obj),repr(obj))
-        d[t] = d.get(t,0) + 1
+            
+        # 2011/02/28: Some types may not be hashable.
+        try:
+            d[t] = d.get(t,0) + 1
+        except TypeError:
+            d = {}
 
     if 1: # Sort by n
         items = list(d.items())
