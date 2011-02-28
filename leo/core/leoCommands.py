@@ -1262,6 +1262,22 @@ class baseCommands (object):
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocus()
+    #@+node:ekr.20110228162720.13980: *6* c.saveAll
+    def saveAll (self,event=None):
+        
+        '''Save all open tabs windows/tabs.'''
+        
+        # At present, only the presently selected tab gets its title changed.
+        # The may be a problem with QTabbedWidget.
+        
+        g.es('Not ready yet')
+        
+        if 0:
+            for f in g.app.windowList:
+                c = f.c
+                if c.isChanged():
+                    c.save()
+        
     #@+node:ekr.20031218072017.2835: *6* c.saveAs
     def saveAs (self,event=None):
 

@@ -168,6 +168,10 @@ def setChanged (self,c,changed):
 
     i = self.currentIndex()
     if i < 0: return
+    
+    # None of this focus code has any effect.
+    # w = QtGui.QApplication.focusWidget()
+    # self.setFocus()
 
     s = self.tabText(i)
     s = g.u(s)
@@ -182,6 +186,9 @@ def setChanged (self,c,changed):
             if s.startswith('* '):
                 title = s[2:]
                 self.setTabText(i,title)
+                
+    # self.update()
+    # if w: w.setFocus()
 #@+node:ekr.20100119113742.3714: *5* setTabName (LeoTabbedTopLevel)
 def setTabName (self,c,fileName):
 
@@ -1424,5 +1431,524 @@ def setLeoWindowSize (self,rect):
         # g.trace('(LeoTabbedTopLevel)',rect)
         self.leo_inited = True
         self.setGeometry(rect)
+#@+node:ekr.20110227193706.15354: *3* Mark external file dirty when dragging node
+#@+node:ekr.20100830205422.3715: *4* dragEnter
+def dragEnterEvent(self,ev):
+
+    '''Export c.p's tree as a Leo mime-data.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; tree = c.frame.tree
+    if not ev:
+        g.trace('no event!')
+        return
+
+    md = ev.mimeData()
+    if not md:
+        g.trace('No mimeData!') ; return
+
+    c.endEditing()
+    if g.app.dragging:
+        if trace or self.trace: g.trace('** already dragging')
+    else:
+        g.app.dragging = True
+        g.app.drag_source = c, c.p
+        if self.trace: g.trace('set g.app.dragging')
+        self.setText(md)
+        if self.trace: self.dump(ev,c.p,'enter')
+
+    # Always accept the drag, even if we are already dragging.
+    ev.accept()
+#@+node:ekr.20100830205422.3716: *4* dropEvent & helpers
+def dropEvent(self,ev):
+
+    trace = False and not g.unitTesting
+    if not ev: return
+    c = self.c ; tree = c.frame.tree ; u = c.undoer
+
+    # Always clear the dragging flag, no matter what happens.
+    g.app.dragging = False
+    if self.trace: g.trace('clear g.app.dragging')
+
+    # Set p to the target of the drop.
+    item = self.itemAt(ev.pos())
+    if not item: return
+    itemHash = tree.itemHash(item)
+    p = tree.item2positionDict.get(itemHash)
+    if not p:
+        if trace or self.trace: g.trace('no p!')
+        return
+
+
+    md = ev.mimeData()
+    #print "drop md",mdl
+    if not md:
+        g.trace('no mimeData!') ; return
+
+    #print "t",str(md.text())
+    #print "h", str(md.html())
+    formats = set(str(f) for f in md.formats())
+    #print formats
+
+    ev.setDropAction(QtCore.Qt.IgnoreAction)
+    ev.accept()
+
+    hookres = g.doHook("outlinedrop", c=c, p=p, dropevent = ev, formats = formats)
+
+    if hookres:
+        # True => plugins handled the drop already
+        return
+
+    if trace or self.trace: self.dump(ev,p,'drop ')
+
+    if md.hasUrls():
+        self.urlDrop(ev,p)
+    else:
+        self.outlineDrop(ev,p)
+#@+node:ekr.20100830205422.3720: *5* outlineDrop & helpers
+def outlineDrop (self,ev,p):
+
+    trace = False and not g.unitTesting
+    c = self.c ; tree = c.frame.tree
+    mods = ev.keyboardModifiers()
+    md = ev.mimeData()
+
+    fn,s = self.parseText(md)
+    if not s or not fn:
+        if trace or self.trace: g.trace('no fn or no s')
+        return
+
+    if fn == self.fileName():
+        if p and p == c.p:
+            if trace or self.trace: g.trace('same node')
+        else:
+            cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
+            self.intraFileDrop(cloneDrag,fn,c.p,p)
+    else:
+        # Clone dragging between files is not allowed.
+        self.interFileDrop(fn,p,s)
+#@+node:ekr.20100830205422.3718: *6* interFileDrop
+def interFileDrop (self,fn,p,s):
+
+    '''Paste the mime data after (or as the first child of) p.'''
+
+    c = self.c ; tree = c.frame.tree
+    u = c.undoer ; undoType = 'Drag Outline'
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    if not isLeo: return
+
+    c.selectPosition(p)
+    pasted = c.fileCommands.getLeoOutlineFromClipboard(
+        s,reassignIndices=True)
+    if not pasted: return
+    
+    if c.config.getBool('inter_outline_drag_moves'):
+        src_c, src_p = g.app.drag_source
+        if src_p.hasVisNext(src_c):
+            nxt = src_p.getVisNext(src_c).v
+        elif src_p.hasVisBack(src_c):
+            nxt = src_p.getVisBack(src_c).v
+        else:
+            nxt = None
+            
+        if nxt is not None:
+            src_p.doDelete()
+            src_c.selectPosition(src_c.vnode2position(nxt))
+            src_c.setChanged(True)
+            src_c.redraw()
+        else:
+            g.es("Can't move last node out of outline")
+
+    undoData = u.beforeInsertNode(p,
+        pasteAsClone=False,copiedBunchList=[])
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    pasted.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+    c.setChanged(True)
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted))
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw_now(pasted)
+    c.recolor()
+#@+node:ekr.20100830205422.3719: *6* intraFileDrop
+def intraFileDrop (self,cloneDrag,fn,p1,p2):
+
+    '''Move p1 after (or as the first child of) p2.'''
+
+    c = self.c ; u = c.undoer
+    c.selectPosition(p1)
+
+    if p2.hasChildren() and p2.isExpanded():
+        # Attempt to move p1 to the first child of p2.
+        parent = p2
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveToNthChildOf(p2,0)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+    else:
+        # Attempt to move p1 after p2.
+        parent = p2.parent()
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveAfter(p2)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+
+    ok = c.checkMoveWithParentWithWarning(p1,parent,True)
+    if ok:
+        undoData = u.beforeMoveNode(p1)
+        dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+        p1 = move(p1,p2)
+        if cloneDrag:
+            # Set dirty bits for ancestors of *all* cloned nodes.
+            # Note: the setDescendentsDirty flag does not do what we want.
+            for z in p1.self_and_subtree():
+                z.setAllAncestorAtFileNodesDirty(
+                    setDescendentsDirty=False)
+        c.setChanged(True)
+        u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
+        c.redraw_now(p1)
+    else:
+        g.trace('** move failed')
+#@+node:ekr.20100830205422.3721: *5* urlDrop & helpers
+def urlDrop (self,ev,p):
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
+    md = ev.mimeData()
+    urls = md.urls()
+    if not urls: return
+
+    c.undoer.beforeChangeGroup(c.p,undoType)
+
+    changed = False
+    for z in urls:
+        url = QtCore.QUrl(z)
+        scheme = url.scheme()
+        if scheme == 'file':
+            changed |= self.doFileUrl(p,url)
+        elif scheme in ('http',): # 'ftp','mailto',
+            changed |= self.doHttpUrl(p,url)
+        # else: g.trace(url.scheme(),url)
+
+    if changed:
+        c.setChanged(True)
+        u.afterChangeGroup(c.p,undoType,reportFlag=False,dirtyVnodeList=[])
+        c.redraw_now()
+#@+node:ekr.20100830205422.3722: *6* doFileUrl & helper
+def doFileUrl (self,p,url):
+
+    fn = str(url.path())
+    if sys.platform.lower().startswith('win'):
+        if fn.startswith('/'):
+            fn = fn[1:]
+
+    changed = False
+    if os.path.isdir(fn):
+        self.doPathUrlHelper(fn,p)
+        return True
+
+    if g.os_path_exists(fn):
+        try:
+            f = open(fn,'r')
+        except IOError:
+            f = None
+        if f:
+            s = f.read()
+            f.close()
+            self.doFileUrlHelper(fn,p,s)
+            return True
+
+    g.es_print('not found: %s' % (fn))
+    return False
+#@+node:ekr.20100830205422.3723: *7* doFileUrlHelper & helper
+def doFileUrlHelper (self,fn,p,s):
+
+    '''Insert s in an @file, @auto or @edit node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    self.createAtFileNode(fn,p2,s)
+
+    u.afterInsertNode(p2,undoType,undoData)
+
+    c.selectPosition(p2)
+#@+node:ekr.20100902095952.3740: *8* createAtFileNode & helpers
+def createAtFileNode (self,fn,p,s):
+
+    '''Set p's headline, body text and possibly descendants
+    based on the file's name fn and contents s.
+
+    If the file is an thin file, create an @file tree.
+    Othewise, create an @auto tree.
+    If all else fails, create an @auto node.
+
+    Give a warning if a node with the same headline already exists.
+    '''
+
+    c = self.c ; d = c.importCommands.importDispatchDict
+    if self.isThinFile(fn,s):
+        self.createAtFileTree(fn,p,s)
+    elif self.isAutoFile(fn,s):
+        self.createAtAutoTree(fn,p,s)
+    else:
+        self.createAtEditNode(fn,p,s)
+    self.warnIfNodeExists(p)
+#@+node:ekr.20100902095952.3744: *9* createAtAutoTree
+def createAtAutoTree (self,fn,p,s):
+
+    '''Make p an @auto node and create the tree using
+    s, the file's contents.
+    '''
+
+    c = self.c ; at = c.atFileCommands
+
+    p.h = '@auto %s' % (fn)
+
+    at.readOneAtAutoNode(fn,p)
+
+    # No error recovery should be needed here.
+
+    p.clearDirty() # Don't automatically rewrite this node.
+#@+node:ekr.20100902165040.3738: *9* createAtEditNode
+def createAtEditNode(self,fn,p,s):
+
+    c = self.c ; at = c.atFileCommands
+
+    # Use the full @edit logic, so dragging will be
+    # exactly the same as reading.
+    at.readOneAtEditNode(fn,p)
+    p.h = '@edit %s' % (fn)
+    p.clearDirty() # Don't automatically rewrite this node.
+#@+node:ekr.20100902095952.3743: *9* createAtFileTree
+def createAtFileTree (self,fn,p,s):
+
+    '''Make p an @file node and create the tree using
+    s, the file's contents.
+    '''
+
+    c = self.c ; at = c.atFileCommands
+
+    p.h = '@file %s' % (fn)
+
+    # Read the file into p.
+    ok = at.read(root=p.copy(),
+        importFileName=None,
+        fromString=s,
+        atShadow=False,
+        force=True) # Disable caching.
+
+    if not ok:
+        g.es_print('Error reading',fn,color='red')
+        p.b = '' # Safe: will not cause a write later.
+        p.clearDirty() # Don't automatically rewrite this node.
+#@+node:ekr.20100902095952.3741: *9* isThinFile
+def isThinFile (self,fn,s):
+
+    '''Return true if the file whose contents is s
+    was created from an @thin or @file tree.'''
+
+    c = self. c ; at = c.atFileCommands
+
+    # Skip lines before the @+leo line.
+    i = s.find('@+leo')
+    if i == -1:
+        return False
+    else:
+        # Like at.isFileLike.
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = at.parseLeoSentinel(line)
+        # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
+        return valid and new_df and isThin
+#@+node:ekr.20100902095952.3742: *9* isAutoFile
+def isAutoFile (self,fn,unused_s):
+
+    '''Return true if the file whose name is fn
+    can be parsed with an @auto parser.
+    '''
+
+    c = self.c
+    d = c.importCommands.importDispatchDict
+    junk,ext = g.os_path_splitext(fn)
+    return d.get(ext)
+#@+node:ekr.20100902095952.3745: *9* warnIfNodeExists
+def warnIfNodeExists (self,p):
+
+    c = self.c ; h = p.h
+    for p2 in c.all_unique_positions():
+        if p2.h == h and p2 != p:
+            g.es('Warning: duplicate node:',h,color='blue')
+            break
+#@+node:ville.20110113151525.11644: *7* doPathUrlHelper
+def doPathUrlHelper (self,fn,p):
+
+    '''Insert s in an @file, @auto or @edit node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    p2.h = '@path ' + fn
+
+    u.afterInsertNode(p2,undoType,undoData)
+
+    c.selectPosition(p2)
+#@+node:ekr.20100830205422.3724: *6* doHttpUrl
+def doHttpUrl (self,p,url):
+
+    '''Insert the url in an @url node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag Url'
+
+    s = str(url.toString()).strip()
+    if not s: return False
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    # p2.h,p2.b = '@url %s' % (s),''
+    p2.h = '@url'
+    p2.b = s
+    p2.clearDirty() # Don't automatically rewrite this node.
+
+    u.afterInsertNode(p2,undoType,undoData)
+    return True
+#@+node:ekr.20100830205422.3720: *4* outlineDrop & helpers
+def outlineDrop (self,ev,p):
+
+    trace = False and not g.unitTesting
+    c = self.c ; tree = c.frame.tree
+    mods = ev.keyboardModifiers()
+    md = ev.mimeData()
+
+    fn,s = self.parseText(md)
+    if not s or not fn:
+        if trace or self.trace: g.trace('no fn or no s')
+        return
+
+    if fn == self.fileName():
+        if p and p == c.p:
+            if trace or self.trace: g.trace('same node')
+        else:
+            cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
+            self.intraFileDrop(cloneDrag,fn,c.p,p)
+    else:
+        # Clone dragging between files is not allowed.
+        self.interFileDrop(fn,p,s)
+#@+node:ekr.20100830205422.3718: *5* interFileDrop
+def interFileDrop (self,fn,p,s):
+
+    '''Paste the mime data after (or as the first child of) p.'''
+
+    c = self.c ; tree = c.frame.tree
+    u = c.undoer ; undoType = 'Drag Outline'
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    if not isLeo: return
+
+    c.selectPosition(p)
+    pasted = c.fileCommands.getLeoOutlineFromClipboard(
+        s,reassignIndices=True)
+    if not pasted: return
+    
+    if c.config.getBool('inter_outline_drag_moves'):
+        src_c, src_p = g.app.drag_source
+        if src_p.hasVisNext(src_c):
+            nxt = src_p.getVisNext(src_c).v
+        elif src_p.hasVisBack(src_c):
+            nxt = src_p.getVisBack(src_c).v
+        else:
+            nxt = None
+            
+        if nxt is not None:
+            src_p.doDelete()
+            src_c.selectPosition(src_c.vnode2position(nxt))
+            src_c.setChanged(True)
+            src_c.redraw()
+        else:
+            g.es("Can't move last node out of outline")
+
+    undoData = u.beforeInsertNode(p,
+        pasteAsClone=False,copiedBunchList=[])
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    pasted.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+    c.setChanged(True)
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted))
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw_now(pasted)
+    c.recolor()
+#@+node:ekr.20100830205422.3719: *5* intraFileDrop
+def intraFileDrop (self,cloneDrag,fn,p1,p2):
+
+    '''Move p1 after (or as the first child of) p2.'''
+
+    c = self.c ; u = c.undoer
+    c.selectPosition(p1)
+
+    if p2.hasChildren() and p2.isExpanded():
+        # Attempt to move p1 to the first child of p2.
+        parent = p2
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveToNthChildOf(p2,0)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+    else:
+        # Attempt to move p1 after p2.
+        parent = p2.parent()
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveAfter(p2)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+
+    ok = c.checkMoveWithParentWithWarning(p1,parent,True)
+    if ok:
+        undoData = u.beforeMoveNode(p1)
+        dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+        p1 = move(p1,p2)
+        if cloneDrag:
+            # Set dirty bits for ancestors of *all* cloned nodes.
+            # Note: the setDescendentsDirty flag does not do what we want.
+            for z in p1.self_and_subtree():
+                z.setAllAncestorAtFileNodesDirty(
+                    setDescendentsDirty=False)
+        c.setChanged(True)
+        u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
+        c.redraw_now(p1)
+    else:
+        g.trace('** move failed')
 #@-all
 #@-leo

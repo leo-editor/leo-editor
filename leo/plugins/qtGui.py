@@ -6637,6 +6637,10 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 
         i = self.currentIndex()
         if i < 0: return
+        
+        # None of this focus code has any effect.
+        # w = QtGui.QApplication.focusWidget()
+        # self.setFocus()
 
         s = self.tabText(i)
         s = g.u(s)
@@ -6651,6 +6655,9 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
                 if s.startswith('* '):
                     title = s[2:]
                     self.setTabText(i,title)
+                    
+        # self.update()
+        # if w: w.setFocus()
     #@+node:ekr.20100119113742.3714: *4* setTabName (LeoTabbedTopLevel)
     def setTabName (self,c,fileName):
 

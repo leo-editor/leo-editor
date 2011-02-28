@@ -7184,6 +7184,133 @@ def updateSettings (self,c,localFlag):
         if localFlag:
             g.trace(c.fileName())
             g.trace(d and list(d.keys()))
+#@+node:ekr.20110125142807.17268: *4* Added save-all command
+@nocolor-node
+
+Saves all changed windows.
+
+Alas, it does not seem possible to properly update the changed mark in the tabbed gui, which means that this is too confusing.
+#@+node:ekr.20031218072017.2834: *5* c.save
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.p
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
+            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                c.frame.top.master.setTabName(c,c.mFileName)
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocus()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocus()
+#@+node:ekr.20110228162720.13980: *5* c.saveAll
+def saveAll (self,event=None):
+    
+    '''Save all open tabs windows/tabs.'''
+    
+    # At present, only the presently selected tab gets its title changed.
+    # The may be a problem with QTabbedWidget.
+    
+    g.es('Not ready yet')
+    
+    if 0:
+        for f in g.app.windowList:
+            c = f.c
+            if c.isChanged():
+                c.save()
+    
+#@+node:ekr.20031218072017.1720: *5* save (fileCommands)
+def save(self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
+
+    if ok is None:
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        c.cacher.save(fileName,changeName=True)
+        ok = c.checkFileTimeStamp(fileName)
+        if ok:
+            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+        if ok:
+            self.putSavedMessage(fileName)
+            c.setChanged(False) # Clears all dirty bits.
+            if c.config.save_clears_undo_buffer:
+                g.es("clearing undo")
+                c.undoer.clearUndoState()
+
+        c.redraw_after_icons_changed()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+    return ok
+#@+node:ekr.20031218072017.2989: *5* c.setChanged
+def setChanged (self,changedFlag):
+
+    trace = False and not g.unitTesting
+    c = self
+    if not c.frame: return
+    c.changed = changedFlag
+    if c.loading: return # don't update while loading.
+
+    if trace: g.trace(changedFlag,g.callers())
+
+    # Clear all dirty bits _before_ setting the caption.
+    if not changedFlag:
+        for v in c.all_unique_nodes():
+            if v.isDirty():
+                v.clearDirty()
+
+    if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+        c.frame.top.master.setChanged(c,changedFlag)
+
+    s = c.frame.getTitle()
+    if len(s) > 2:
+        if changedFlag:
+            if s [0] != '*': c.frame.setTitle("* " + s)
+        else:
+            if s[0:2]=="* ": c.frame.setTitle(s[2:])
 #@+node:ekr.20110202094848.12571: *3* Vim...
 #@+node:ekr.20060927173836.6: *4* Give warning when unbound key ends a mode
 #@+node:ekr.20091230094319.6244: *5* doMode
