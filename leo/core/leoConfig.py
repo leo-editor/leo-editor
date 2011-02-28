@@ -1917,8 +1917,8 @@ class configClass:
         )
 
         if fileName:
-            if fileName.endswith('leoSettings.leo'):
-                # 2011/02/27: don't read leoSettings.leo twice.
+            if fileName.lower().endswith('leosettings.leo'):
+                # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
                 # This allows myLeoSettings.leo to take precedence.
                 table1 = []
             else:
