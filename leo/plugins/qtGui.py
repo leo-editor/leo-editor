@@ -5548,6 +5548,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
+        pasted.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
         c.setChanged(True)
         back = pasted.back()
         if back and back.isExpanded():
@@ -5571,6 +5572,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             def move(p1,p2):
                 if cloneDrag: p1 = p1.clone()
                 p1.moveToNthChildOf(p2,0)
+                p1.setDirty()
+                p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
         else:
             # Attempt to move p1 after p2.
@@ -5578,6 +5581,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             def move(p1,p2):
                 if cloneDrag: p1 = p1.clone()
                 p1.moveAfter(p2)
+                p1.setDirty()
+                p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
 
         ok = c.checkMoveWithParentWithWarning(p1,parent,True)
