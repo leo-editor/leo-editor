@@ -1859,7 +1859,7 @@ class configClass:
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
         def message(s):
-            # This occurs early in startup, so use the following instead of g.es_print.
+            # This occurs early in startup, so use the following.
             if not g.isPython3:
                 s = g.toEncodedString(s,'ascii')
             g.es_print(s,color='blue')
