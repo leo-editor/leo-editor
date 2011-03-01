@@ -32,7 +32,8 @@
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20051110111150"
+expanded="ekr.20051104082026,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="edward.20081226095234.1"><vh>@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
