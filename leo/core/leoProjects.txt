@@ -7187,9 +7187,7 @@ def updateSettings (self,c,localFlag):
 #@+node:ekr.20110125142807.17268: *4* Added save-all command
 @nocolor-node
 
-Saves all changed windows.
-
-Alas, it does not seem possible to properly update the changed mark in the tabbed gui, which means that this is too confusing.
+Saves all changed windows. 
 #@+node:ekr.20031218072017.2834: *5* c.save
 def save (self,event=None):
 
@@ -7248,17 +7246,10 @@ def saveAll (self,event=None):
     
     '''Save all open tabs windows/tabs.'''
     
-    # At present, only the presently selected tab gets its title changed.
-    # The may be a problem with QTabbedWidget.
-    
-    g.es('Not ready yet')
-    
-    if 0:
-        for f in g.app.windowList:
-            c = f.c
-            if c.isChanged():
-                c.save()
-    
+    for f in g.app.windowList:
+        c = f.c
+        if c.isChanged():
+            c.save()
 #@+node:ekr.20031218072017.1720: *5* save (fileCommands)
 def save(self,fileName):
 

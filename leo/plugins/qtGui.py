@@ -6634,13 +6634,11 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         self.detached = [i for i in self.detached if i[1] != w]
     #@+node:ekr.20100101104934.3662: *4* setChanged
     def setChanged (self,c,changed):
-
-        i = self.currentIndex()
-        if i < 0: return
         
-        # None of this focus code has any effect.
-        # w = QtGui.QApplication.focusWidget()
-        # self.setFocus()
+        # 2011/03/01: Find the tab corresponding to c.
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
+        if i < 0: return
 
         s = self.tabText(i)
         s = g.u(s)
@@ -6655,21 +6653,16 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
                 if s.startswith('* '):
                     title = s[2:]
                     self.setTabText(i,title)
-                    
-        # self.update()
-        # if w: w.setFocus()
     #@+node:ekr.20100119113742.3714: *4* setTabName (LeoTabbedTopLevel)
     def setTabName (self,c,fileName):
 
         '''Set the tab name for c's tab to fileName.'''
 
-        tabw = self # self is a LeoTabbedTopLevel
+        # Find the tab corresponding to c.
         dw = c.frame.top # A DynamicWindow
-
-        # Find the tab in tabw corresponding to dw.
-        i = tabw.indexOf(dw)
+        i = self.indexOf(dw)
         if i > -1:
-            tabw.setTabText(i,g.shortFileName(fileName))
+            self.setTabText(i,g.shortFileName(fileName))
     #@+node:ville.20090804182114.8401: *4* closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
 

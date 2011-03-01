@@ -1267,17 +1267,10 @@ class baseCommands (object):
         
         '''Save all open tabs windows/tabs.'''
         
-        # At present, only the presently selected tab gets its title changed.
-        # The may be a problem with QTabbedWidget.
-        
-        g.es('Not ready yet')
-        
-        if 0:
-            for f in g.app.windowList:
-                c = f.c
-                if c.isChanged():
-                    c.save()
-        
+        for f in g.app.windowList:
+            c = f.c
+            if c.isChanged():
+                c.save()
     #@+node:ekr.20031218072017.2835: *6* c.saveAs
     def saveAs (self,event=None):
 
