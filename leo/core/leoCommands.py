@@ -1271,6 +1271,11 @@ class baseCommands (object):
             c = f.c
             if c.isChanged():
                 c.save()
+                
+        # Restore the present tab.
+        c = self
+        dw = c.frame.top # A DynamicWindow
+        dw.select(c)
     #@+node:ekr.20031218072017.2835: *6* c.saveAs
     def saveAs (self,event=None):
 

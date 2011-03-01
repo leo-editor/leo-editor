@@ -2390,6 +2390,18 @@ class DynamicWindow(QtGui.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
+    #@+node:ekr.20110301080146.13982: *4* select (DynamicWindow)
+    def select (self,c):
+        
+        '''Select the window or tab for c.'''
+        
+        if self.master:
+            # A LeoTabbedTopLevel.
+            self.master.select(c)
+        else:
+            w = c.frame.body.bodyCtrl
+            g.app.gui.set_focus(c,w)
+        
     #@+node:edward.20081129091117.1: *4* setSplitDirection (DynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
@@ -6676,6 +6688,15 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             event.ignore()
         else:            
             event.accept()
+    #@+node:ekr.20110301080146.13980: *4* select (leoTabbedTopLevel)
+    def select (self,c):
+
+        '''Select the tab for c.'''
+        
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
+        self.setCurrentIndex(i)
+        # g.trace(i,dw)
     #@+node:ekr.20110122055506.12568: *4* setLeoWindowSize (LeoTabbedTopLevel)
     def setLeoWindowSize (self,rect):
         

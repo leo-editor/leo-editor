@@ -7420,6 +7420,11 @@ def saveAll (self,event=None):
         c = f.c
         if c.isChanged():
             c.save()
+            
+    # Restore the present tab.
+    c = self
+    dw = c.frame.top # A DynamicWindow
+    dw.select(c)
 #@+node:ekr.20031218072017.1720: *5* save (fileCommands)
 def save(self,fileName):
 
