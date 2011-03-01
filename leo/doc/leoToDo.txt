@@ -15,7 +15,6 @@ These are marked with ###
 (found) sel.first, sel.last
 (found) w.insert, w.delete
 #@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
-#@+node:ekr.20101125041212.5846: *3* Fix bug: ignore f-keys in find/replace patterns
 #@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
 #@+node:ekr.20101024062147.6014: ** Autocompleter
 # This can be done in the trunk.

@@ -2804,6 +2804,9 @@ class keyHandlerClass:
         elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
             k.doBackSpace(k.argTabList,k.arg_completion)
             c.minibufferWantsFocus()
+        elif k.isFKey(stroke):
+            pass
+            # 2011/03/01: ignore F-keys. Ignoring all except plain keys would kill unicode searches.
         else:
             # Clear the list, any other character besides tab indicates that a new prefix is in effect.
             k.mb_tabList = []

@@ -5236,6 +5236,118 @@ def updateSettings (self,c,localFlag):
         if localFlag:
             g.trace(c.fileName())
             g.trace(d and list(d.keys()))
+#@+node:ekr.20101125041212.5846: *4* Fixed bug: ignore f-keys in find/replace patterns
+#@+node:ekr.20060125093807: *5* searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    # g.trace('state',state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+#@+node:ekr.20060210173041: *5* stateZeroHelper
+def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
+
+    k = self.k
+    self.w = self.editWidget(event)
+    if not self.w: return
+
+    k.setLabelBlue(prefix,protect=True)
+    self.addFindStringToLabel(protect=False)
+
+    # g.trace(escapes,g.callers())
+    if escapes is None: escapes = []
+    k.getArgEscapes = escapes
+    k.getArgEscape = None # k.getArg may set this.
+    k.getArg(event,tag,1,handler, # enter state 1
+        tabList=self.findTextList,completion=True,prefix=prefix)
+#@+node:ekr.20061031131434.128: *5* getArg
+def getArg (self,event,
+    returnKind=None,returnState=None,handler=None,
+    prefix=None,tabList=[],completion=True,oneCharacter=False,
+    stroke=None, # New in 4.4.1.
+    useMinibuffer=True # New in 4.4.1
+):
+
+    '''Accumulate an argument until the user hits return (or control-g).
+    Enter the given return state when done.
+    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
+    '''
+
+    k = self ; c = k.c ; gui  = g.app.gui
+    trace = (False or (c.config.getBool('trace_modes')) and not g.app.unitTesting)
+    state = k.getState('getArg')
+    keysym = gui.eventKeysym(event)
+    if trace: g.trace(
+        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'escapes',k.getArgEscapes,
+        'completion',state==0 and completion or state!=0 and k.arg_completion)
+    if state == 0:
+        k.arg = ''
+        << init altX vars >>
+        # Set the states.
+        bodyCtrl = c.frame.body.bodyCtrl
+        c.widgetWantsFocus(bodyCtrl)
+        k.afterGetArgState=returnKind,returnState,handler
+        k.setState('getArg',1,k.getArg)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        if useMinibuffer: c.minibufferWantsFocus()
+    elif keysym == 'Escape':
+        k.keyboardQuit(event)
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+        if k.oneCharacterArg:
+            k.arg = event.char
+        else:
+            k.arg = k.getLabel(ignorePrompt=True)
+        kind,n,handler = k.afterGetArgState
+        if kind: k.setState(kind,n,handler)
+        c.frame.log.deleteTab('Completion')
+        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
+        if handler: handler(event)
+    elif keysym in('Tab','\t'):
+        k.doTabCompletion(k.argTabList,k.arg_completion)
+    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+        k.doBackSpace(k.argTabList,k.arg_completion)
+        c.minibufferWantsFocus()
+    elif k.isFKey(stroke):
+        pass
+        # 2011/03/01: ignore F-keys. Ignoring all except plain keys would kill unicode searches.
+    else:
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+    return 'break'
+#@+node:ekr.20061031131434.129: *6* << init altX vars >>
+k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
+    # 2010/09/01: remember the selected text for abbreviations.
+k.argTabList = tabList and tabList[:] or []
+k.arg_completion = completion
+# g.trace('completion',completion,'tabList',tabList)
+
+k.mb_prefix = prefix or k.getLabel()
+k.mb_prompt = prefix or ''
+k.mb_tabList = []
+
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+k.mb_tabListPrefix = k.getLabel()
+k.oneCharacterArg = oneCharacter
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
