@@ -244,16 +244,8 @@ def find_or_create_stickynotes():
         p = pl[0]
         
     return p, wb
-            
-            
-    
-            
-    
-    
-    
-    
-    pass            
-print get_workbook()            
+                  
+# print(get_workbook())       
 #@+node:ville.20091023181249.5266: ** g.command('stickynoter')
 @g.command('stickynoter')
 def stickynoter_f(event):
