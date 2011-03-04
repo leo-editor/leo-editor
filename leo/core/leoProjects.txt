@@ -6713,8 +6713,6 @@ else:
     title = g.computeWindowTitle(s)
     g.app.numberOfWindows = n+1
 #@+node:ekr.20110111100539.9727: *4* Docs fixes
-@nocolor-node
-
 (Fixed) Using ZODB with Leo — Leo v4.8 documentation
 http://diigo.com/0dw79
 
@@ -6722,7 +6720,7 @@ http://diigo.com/0dw79
 http://diigo.com/0dw77
 #@+node:ekr.20101218103123.5931: *3* Features
 #@+node:ekr.20101127152442.5915: *4* Improved handling of @url nodes
-@nocolor-node
+@nocolor
 
 The new rule is simple: if the body text contains any text the first line of the
 body text is taken to be the url. There is no longer any need to put '--' in the
@@ -6733,7 +6731,11 @@ first line. Other url's, notes, even .. graphics:: directives for the
 viewrendered plugin.
 
 These improvements allow Leo to be what it should have been a long time ago: the
-world's best organizer of url's. My typical usage is::
+world's best organizer of url's.
+
+@color
+
+My typical usage is::
 
     @url fizbatz: short description of fizbatz (headline)
     http://fizbatz.org (body text)
@@ -10168,5 +10170,10 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
     if trace and verbose and len(result) > 1: g.trace(stroke,result)
     return result
 #@+node:ekr.20110304061301.14035: *4* Colorize url's in the qt gui
+@nocolor-node
+
+How did we ever live without this?
+
+You can open url's by control-clicking on them, or by using the open-url command.
 #@-all
 #@-leo

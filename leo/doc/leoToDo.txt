@@ -41,8 +41,6 @@ Parsing:
     - Forgiving parser is essentially complete.
     - It's easy to parse python def lines.
 #@+node:ekr.20081005065934.12: *4* Links from Ville re Scintilla
-@nocolor-node
-
 It seems Scintilla relies on externally generated api description
 files to provide autocompletion. Links that may be of interest:
 
@@ -142,7 +140,6 @@ Date: Wed, 6 Jun 2007 20:17:30 +0200
 For code-completion, I suppose astng[1] could be useful.
 
 1: http://www.logilab.org/project/eid/856
-
 
 
 From: Stani's Python Editor <spe.stani...@gmail.com>
