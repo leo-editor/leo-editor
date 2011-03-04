@@ -128,9 +128,10 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
     #@+node:ekr.20110304100725.14066: *4* onMouseUp
     def onMouseUp(self,event=None):
 
-        c = self.leo_c
-        event = {'c':c}
-        openURL(event)
+        # Open the url on a control-click.
+        if QtCore.Qt.ControlModifier & event.modifiers():
+            event = {'c':self.leo_c}
+            openURL(event)
     #@-others
 
     
