@@ -128,31 +128,9 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
     #@+node:ekr.20110304100725.14066: *4* onMouseUp
     def onMouseUp(self,event=None):
 
-        self.openURL()
-    #@+node:ekr.20110304061301.14044: *4* openURL()
-    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
-
-    def openURL(self):
         c = self.leo_c
-        w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = w.getSelectionRange()
-        if i != j: return # So find doesn't open the url.
-        row,col = g.convertPythonIndexToRowCol(s,ins)
-        i,j = g.getLine(s,ins)
-        line = s[i:j]
-        for match in self.url_regex.finditer(line):
-            if match.start() <= col < match.end(): # Don't open if we click after the url.
-                url = match.group()
-                if not g.app.unitTesting:
-                    try:
-                        import webbrowser
-                        webbrowser.open(url)
-                    except:
-                        g.es("exception opening " + url)
-                        g.es_exception()
-                return url
+        event = {'c':c}
+        openURL(event)
     #@-others
 
     
@@ -1779,6 +1757,30 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
+#@+node:ekr.20110304061301.14044: *3* openURL()
+@g.command('open-url')
+def openURL(event):
+    c = event.get('c')
+    w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if i != j: return # So find doesn't open the url.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+    for match in url_regex.finditer(line):
+        if match.start() <= col < match.end(): # Don't open if we click after the url.
+            url = match.group()
+            if not g.app.unitTesting:
+                try:
+                    import webbrowser
+                    webbrowser.open(url)
+                except:
+                    g.es("exception opening " + url)
+                    g.es_exception()
+            return url
 #@+node:ekr.20081121105001.194: ** Frame and component classes...
 #@+node:ekr.20081121105001.200: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
