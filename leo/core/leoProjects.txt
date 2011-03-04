@@ -4408,6 +4408,8 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 #@+node:ekr.20110225061928.15452: *4* Fixed bug in p._adjustPostionBeforeUnlink and simplified code
 #@+node:ekr.20110225061928.15456: *5*  Changed
 #@+node:ekr.20040803140033.2: *6* c.rootPosition
+_rootCount = 0
+
 def rootPosition(self):
 
     """Return the root position.
@@ -4417,6 +4419,8 @@ def rootPosition(self):
     """
 
     c = self
+    
+    # g.trace(self._rootCount) ; self._rootCount += 1
 
     # 2011/02/25: Compute the position directly.
     if c.hiddenRootNode.children:
@@ -5342,6 +5346,1288 @@ k.mb_tabList = []
 # Clear the list: any non-tab indicates that a new prefix is in effect.
 k.mb_tabListPrefix = k.getLabel()
 k.oneCharacterArg = oneCharacter
+#@+node:ekr.20110304061301.14034: *3* Code & cleanup
+#@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
+Also made c.findRootPosition() an alias for c.rootPosition()
+#@+node:ekr.20040803140033.2: *5* c.rootPosition
+_rootCount = 0
+
+def rootPosition(self):
+
+    """Return the root position.
+
+    Root position is the first position in the document. Other
+    top level positions are siblings of this node.
+    """
+
+    c = self
+    
+    # g.trace(self._rootCount) ; self._rootCount += 1
+
+    # 2011/02/25: Compute the position directly.
+    if c.hiddenRootNode.children:
+        v = c.hiddenRootNode.children[0]
+        return leoNodes.position(v,childIndex=0,stack=None)
+    else:
+        return c.nullPosition()
+
+# For compatibiility with old scripts.
+rootVnode = rootPosition
+findRootPosition = rootPosition
+#@+node:ekr.20110303210002.14032: *5* Found: _rootPosition
+#@+node:ekr.20031218072017.2813: *6* << initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+# self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.changed = False # True if any data has been changed since the last save.
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.hookFunction = None
+self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.nodeConflictList = [] # List of nodes with conflicting read-time data.
+self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
+self.openDirectory = None
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+self.timeStampDict = {} # New in Leo 4.6.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options: set later in initConfigSettings
+self.fixed = False
+self.page_width = 132
+self.sparse_find = True # 2010/02/02: created ivar.
+self.sparse_move = True # 2010/02/02: created ivar.
+self.sparse_spell = True # 2010/02/02: created ivar.
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+
+# Default Tangle options
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = g.u('') # Must always be a string.
+self.navTime = None
+#@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
+def currentPositionIsRootPosition (self):
+
+    """Return True if the current position is the root position.
+
+    This method is called during idle time, so not generating positions
+    here fixes a major leak.
+    """
+
+    c = self
+    
+    root = c.rootPosition()
+    return c._currentPosition and root and c._currentPosition == root
+
+    # return (
+        # c._currentPosition and c._rootPosition and
+        # c._currentPosition == c._rootPosition)
+#@+node:ekr.20040803112450.1: *6* c.isRootPosition
+def isRootPosition (self,p):
+
+    c = self
+    root = c.rootPosition()
+    
+    return p and root and p == root # 2011/03/03
+
+    # if p is None or c._rootPosition is None:
+        # return False
+    # else:
+        # return p == c._rootPosition
+#@+node:ekr.20040803140033.1: *6* c.setCurrentPosition
+_currentCount = 0
+
+def setCurrentPosition (self,p):
+
+    """Set the presently selected position. For internal use only.
+
+    Client code should use c.selectPosition instead."""
+
+    trace = False and not g.unitTesting
+    c = self ; cc = c.chapterController
+
+    if trace:
+        c._currentCount += 1
+        g.trace(c._currentCount,p)
+        
+    # Always recompute the root position.
+    # c.setRootPosition()
+
+    if p and not c.positionExists(p): # 2011/02/25:
+        g.internalError('Invalid position',p)
+        c._currentPosition = c.rootPosition()
+        if g.unitTesting: assert False,p
+        return
+
+    if p:
+        # Important: p.equal requires c._currentPosition to be non-None.
+        if c._currentPosition and p == c._currentPosition:
+            pass # We have already made a copy.
+        else: # Must make a copy _now_
+            c._currentPosition = p.copy()
+    else:
+        c._currentPosition = None
+
+# For compatibiility with old scripts.
+setCurrentVnode = setCurrentPosition
+#@+node:ekr.20040803140033.3: *6* c.setRootPosition (A do-nothing)
+def setRootPosition(self,unused_p=None):
+
+    """Set c._rootPosition."""
+    
+    # 2011/03/03: No longer used.
+#@+node:ekr.20110301172720.13971: *4* Investigated eliminating hasattr
+# It's probably not worthwhile to try to eliminate these.
+#@+node:ekr.20110301172720.13972: *5* qttabs...
+#@+node:ekr.20031218072017.2834: *6* c.save
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.p
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
+            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                c.frame.top.master.setTabName(c,c.mFileName)
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocus()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocus()
+#@+node:ekr.20031218072017.2989: *6* c.setChanged
+def setChanged (self,changedFlag):
+
+    trace = False and not g.unitTesting
+    c = self
+    if not c.frame: return
+    c.changed = changedFlag
+    if c.loading: return # don't update while loading.
+
+    if trace: g.trace(changedFlag,g.callers())
+
+    # Clear all dirty bits _before_ setting the caption.
+    if not changedFlag:
+        for v in c.all_unique_nodes():
+            if v.isDirty():
+                v.clearDirty()
+
+    if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+        c.frame.top.master.setChanged(c,changedFlag)
+
+    s = c.frame.getTitle()
+    if len(s) > 2:
+        if changedFlag:
+            if s [0] != '*': c.frame.setTitle("* " + s)
+        else:
+            if s[0:2]=="* ": c.frame.setTitle(s[2:])
+#@+node:ekr.20031218072017.2835: *6* c.saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ; p = c.p
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+            # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+            c.frame.top.master.setTabName(c,c.mFileName)
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+
+    # Done in fileCommands.saveAs.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocus()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocus()
+#@+node:ekr.20110301172720.13973: *5* qt gui
+#@+node:ekr.20040803140033: *6* c.currentPosition (changed)
+def currentPosition (self):
+
+    """Return the presently selected position."""
+
+    c = self
+    
+    if hasattr(c,'_currentPosition') and getattr(c,'_currentPosition'):
+        # New in Leo 4.4.2: *always* return a copy.
+        return c._currentPosition.copy()
+    else:
+        return c.nullPosition()
+
+# For compatibiility with old scripts.
+currentVnode = currentPosition
+#@+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    writeScriptFile = c.config.getBool('write_script_file')
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            # g.pr('*** script',script)
+            try:
+                p = c.p
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                if args:
+                    # g.trace('setting sys.argv',args)
+                    sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                if writeScriptFile:
+                    scriptFile = self.writeScriptFile(script)
+                    if g.isPython3:
+                        exec(compile(script,scriptFile,'exec'),d)
+                    else:
+                        execfile(scriptFile,d)
+                else:
+                    exec(script,d)
+                if 0: # This message switches panes, and can be disruptive.
+                    if not script1 and not silent:
+                        # Careful: the script may have changed the log tab.
+                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                        g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143: *7* redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@+node:EKR.20040627100424: *7* unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@+node:ekr.20070115135502: *7* writeScriptFile (changed)
+def writeScriptFile (self,script):
+
+    trace = False and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')
+
+    if trace: g.trace(path)                
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@+node:bobjack.20080509080123.2: *6* c.universalCallback
+def universalCallback(self, function):
+
+    """Create a universal command callback.
+
+    Create and return a callback that wraps a function with an rClick
+    signature in a callback which adapts standard minibufer command
+    callbacks to a compatible format.
+
+    This also serves to allow rClick callback functions to handle
+    minibuffer commands from sources other than rClick menus so allowing
+    a single function to handle calls from all sources.
+
+    A function wrapped in this wrapper can handle rclick generator
+    and invocation commands and commands typed in the minibuffer.
+
+    It will also be able to handle commands from the minibuffer even
+    if rclick is not installed.
+    """
+    def minibufferCallback(event, function=function):
+
+        # Avoid a pylint complaint.
+        if hasattr(self,'theContextMenuController'):
+            cm = getattr(self,'theContextMenuController')
+            keywords = cm.mb_keywords
+        else:
+            cm = keywords = None
+
+        if not keywords:
+            # If rClick is not loaded or no keywords dict was provided
+            #  then the command must have been issued in a minibuffer
+            #  context.
+            keywords = {'c': self, 'rc_phase': 'minibuffer'}
+
+        keywords['mb_event'] = event     
+
+        retval = None
+        try:
+            retval = function(keywords)
+        finally:
+            if cm:
+                # Even if there is an error:
+                #   clear mb_keywords prior to next command and
+                #   ensure mb_retval from last command is wiped
+                cm.mb_keywords = None
+                cm.mb_retval = retval
+
+    minibufferCallback.__doc__ = function.__doc__
+    return minibufferCallback
+
+#fix bobjacks spelling error
+universallCallback = universalCallback
+#@+node:ekr.20061031131434.112: *6* callAltXFunction
+def callAltXFunction (self,event):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c ; s = k.getLabel()
+    k.mb_tabList = []
+    commandName = s[len(k.mb_prefix):].strip()
+    func = c.commandsDict.get(commandName)
+    k.newMinibufferWidget = None
+
+    # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+    if func:
+        # These must be done *after* getting the command.
+        k.clearState()
+        k.resetLabel()
+        if commandName != 'repeat-complex-command':
+            k.mb_history.insert(0,commandName)
+        w = event.widget
+        if hasattr(w,'permanent') and not w.permanent:
+            g.es('Can not execute commands from headlines')
+        else:
+            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+            func(event)
+        k.endCommand(event,commandName)
+    else:
+        if 1: # Useful.
+            if trace: g.trace('*** tab completion')
+            k.doTabCompletion(list(c.commandsDict.keys()))
+        else: # Annoying.
+            k.keyboardQuit(event)
+            k.setLabel('Command does not exist: %s' % commandName)
+            c.bodyWantsFocus()
+#@+node:ekr.20070325063303.2: *6* cc.createChapterNode
+def createChapterNode (self,chapterName,p=None):
+
+    '''Create an @chapter node for the named chapter.
+    Use p for the first child, or create a first child if p is None.'''
+
+    cc = self ; c = cc.c
+    current = c.p or c.rootPosition()
+
+    # 2010/06/17: Create an @chapters node if necessary.
+    # This is no longer done automatically when creating a new window.
+    if not cc.chaptersNode and not cc.findChaptersNode():
+        cc.createChaptersNode()
+        if hasattr(c.frame.iconBar,'createChaptersIcon'):
+            c.frame.iconBar.createChaptersIcon()
+
+    # Create the node with a postion method
+    # so we don't involve the undo logic.
+    root = current.insertAsLastChild()
+    root.initHeadString('@chapter ' + chapterName)
+    root.moveToFirstChildOf(cc.chaptersNode)
+    if p:
+        # Clone p and move it to the first child of the root.
+        clone = p.clone()
+        clone.moveToFirstChildOf(root)
+    else:
+        cc.createChild(root,'%s node 1' % chapterName)
+    c.setChanged(True)
+
+    return root
+#@+node:ekr.20070325104904: *6* cc.finishCreate
+def finishCreate (self):
+
+    '''Find or make the @chapters and @chapter trash nodes.'''
+
+    # This must be called late in the init process:
+    # at present, called by g.openWithFileName and c.new.
+
+    # g.trace('(chapterController)',g.callers(4))
+
+    cc = self ; c = cc.c
+
+    # Create the @chapters node if needed, and set cc.chaptersNode.
+    if 0: # Now done in cc.createChapterNode.
+        if not cc.chaptersNode and not cc.findChaptersNode():
+            cc.createChaptersNode()
+
+    if cc.findChaptersNode():
+        if hasattr(c.frame.iconBar,'createChaptersIcon'):
+            c.frame.iconBar.createChaptersIcon()
+
+    # Create the main chapter
+    cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
+
+    tag = '@chapter'
+    for p in c.all_unique_positions():
+        h = p.h
+        if h.startswith(tag) and not h.startswith('@chapters'):
+            tabName = h[len(tag):].strip()
+            if tabName and tabName not in ('main',):
+                if cc.chaptersDict.get(tabName):
+                    self.error('duplicate chapter name: %s' % tabName)
+                else:
+                    cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
+
+    # Always select the main chapter.
+    # It can be alarming to open a small chapter in a large .leo file.
+    cc.selectChapterByName('main',collapse=False)
+        # 2010/10/09: an important bug fix!
+#@+node:ekr.20051025071455.38: *6* change (spellTab)
+def change(self,event=None):
+    """Make the selected change to the text"""
+
+    c = self.c ; body = self.body ; w = body.bodyCtrl
+
+    selection = self.tab.getSuggestion()
+    if selection:
+        if hasattr(self.tab,'change_i') and self.tab.change_i is not None:
+            start,end = oldSel = self.tab.change_i,self.tab.change_j
+            # g.trace('using',start,end)
+        else:
+            start,end = oldSel = w.getSelectionRange()
+        if start is not None:
+            if start > end: start,end = end,start
+            w.delete(start,end)
+            w.insert(start,selection)
+            w.setSelectionRange(start,start+len(selection))
+            c.frame.body.onBodyChanged("Change",oldSel=oldSel)
+            c.invalidateFocus()
+            c.bodyWantsFocus()
+            return True
+
+    # The focus must never leave the body pane.
+    c.invalidateFocus()
+    c.bodyWantsFocus()
+    return False
+#@+node:ekr.20070422093128: *6* computeLabel
+def computeLabel (self,w):
+
+    s = w.leo_label_s
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        s = '%s: %s' % (w.leo_chapter.name,s)
+
+    return s
+#@+node:ekr.20070422094710: *6* createChapterIvar
+def createChapterIvar (self,w):
+
+    c = self.c ; cc = c.chapterController
+
+    if not hasattr(w,'leo_chapter') or not w.leo_chapter:
+        if cc and self.use_chapters:
+            w.leo_chapter = cc.getSelectedChapter()
+        else:
+            w.leo_chapter = None
+#@+node:ekr.20051022144825.1: *6* cycleFocus
+def cycleFocus (self,event):
+
+    '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
+
+    c = self.c ; k = c.k ; w = event.widget
+
+    body = c.frame.body.bodyCtrl
+    log  = c.frame.log.logCtrl
+    tree = c.frame.tree.canvas
+
+    # A hack for the Qt gui.
+    if hasattr(w,'logCtrl'):
+        w = w.logCtrl
+
+    panes = [body,log,tree]
+
+    # g.trace(w in panes,event.widget,panes)
+
+    if w in panes:
+        i = panes.index(w) + 1
+        if i >= len(panes): i = 0
+        pane = panes[i]
+    else:
+        pane = body
+
+    # Warning: traces mess up the focus
+    # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
+
+    # This works from the minibuffer *only* if there is no typing completion.
+    c.widgetWantsFocusNow(pane)
+    k.newMinibufferWidget = pane
+    k.showStateAndMode()
+#@+node:tbrown.20080509212202.7: *6* deleteRecentFilesMenuItems
+def deleteRecentFilesMenuItems(self,menu):
+    """Delete recent file menu entries"""
+
+    toDrop = len(self.c.recentFiles)
+    if hasattr(self, 'recentFilesStatic'):
+        toDrop += len(self.recentFilesStatic)
+
+    self.delete_range(menu,0,toDrop)
+
+    if hasattr(self, 'groupedMenus'):
+        for i in self.groupedMenus:
+            menu = self.getMenu(i)
+            if menu:
+                self.destroy(menu)
+                self.destroyMenu(i)
+#@+node:ekr.20070301171901: *6* do nothings
+def alert (self,message):
+    pass
+
+def attachLeoIcon (self,w):
+    pass
+
+def createRootWindow(self):
+    pass
+
+def destroySelf (self):
+    pass
+
+def finishCreate (self):
+    pass
+
+def getIconImage (self, name):
+    return None
+
+def getTreeImage(self,c,path):
+    return None
+
+def getTextFromClipboard (self):
+    return self.clipboardContents
+
+def get_focus(self,frame=None):
+    if not frame: return None
+    return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
+
+def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+    return g.app.config.defaultFont
+
+def get_window_info (self,window):
+    return 0,0,0,0
+
+def replaceClipboardWith (self,s):
+    self.clipboardContents = s
+
+def set_focus(self,commander,widget):
+    self.focusWidget = widget
+#@+node:ekr.20070425180705: *6* findEditorForChapter (leoBody)
+def findEditorForChapter (self,chapter,p):
+
+    '''Return an editor to be assigned to chapter.'''
+
+    c = self.c ; d = self.editorWidgets ; values = list(d.values())
+
+    # First, try to match both the chapter and position.
+    if p:
+        for w in values:
+            if (
+                hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
+                hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+            ):
+                # g.trace('***',id(w),'match chapter and p',p.h)
+                return w
+
+    # Next, try to match just the chapter.
+    for w in values:
+        if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
+            # g.trace('***',id(w),'match only chapter',p.h)
+            return w
+
+    # As a last resort, return the present editor widget.
+    # g.trace('***',id(self.bodyCtrl),'no match',p.h)
+    return c.frame.body.bodyCtrl
+#@+node:ekr.20031218072017.3085: *6* initBatchText, initNextText & init_s_ctrl
+# Returns s_ctrl with "insert" point set properly for batch searches.
+def initBatchText(self,ins=None):
+    p = self.p
+    self.wrapping = False # Only interactive commands allow wrapping.
+    s = g.choose(self.in_headline,p.h, p.b)
+    self.init_s_ctrl(s,ins)
+
+# Call this routine when moving to the next node when a search fails.
+# Same as above except we don't reset wrapping flag.
+def initNextText(self,ins=None):
+    c,p = self.c,self.p
+    s = g.choose(self.in_headline,p.h, p.b)
+    if True:
+        tree = c.frame and c.frame.tree
+        if tree and hasattr(tree,'killEditing'):
+            # g.trace('kill editing before find')
+            tree.killEditing()
+    self.init_s_ctrl(s,ins)
+
+def init_s_ctrl (self,s,ins):
+
+    w = self.s_ctrl
+    w.setAllText(s)
+    if ins is None:
+        ins = g.choose(self.reverse,len(s),0)
+        # print(g.choose(self.reverse,'.','*'),)
+    else:
+        pass # g.trace('ins',ins)
+    w.setInsertPoint(ins)
+#@+node:ekr.20050920084036.147: *6* measure
+def measure (self,w):
+
+    if hasattr(w,'linesPerPage'):
+        # Preferred.  Qt implements this.
+        n = w.linesPerPage()
+        return max(2,n-3)
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        start, junk = g.convertPythonIndexToRowCol(s,ins)
+        start += 1 ; delta = 0
+        ustart = start - 1
+        while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
+            delta += 1 ; ustart -= 1
+
+        ustart = start + 1
+        while w.indexIsVisible('%s.0' % ustart):
+            delta += 1 ; ustart += 1
+
+        return delta
+#@+node:ekr.20100109094541.6231: *6* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20060530210057: *6* select/unselectLabel
+def unselectLabel (self,w):
+
+    self.createChapterIvar(w)
+    self.packEditorLabelWidget(w)
+    s = self.computeLabel(w)
+    if hasattr(w,'leo_label') and w.leo_label:
+        w.leo_label.configure(text=s,bg='LightSteelBlue1')
+
+def selectLabel (self,w):
+
+    if self.numberOfEditors > 1:
+        self.createChapterIvar(w)
+        self.packEditorLabelWidget(w)
+        s = self.computeLabel(w)
+        # g.trace(s,g.callers())
+        if hasattr(w,'leo_label') and w.leo_label:
+            w.leo_label.configure(text=s,bg='white')
+    elif hasattr(w,'leo_label') and w.leo_label:
+        w.leo_label.pack_forget()
+        w.leo_label = None
+#@+node:ekr.20070423102603: *6* selectEditorHelper
+def selectEditorHelper (self,w):
+
+    c = self.c ; cc = c.chapterController ; d = self.editorWidgets
+
+    trace = False
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    if trace:
+        g.trace('==1',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    self.inactivateActiveEditor(w)
+
+    # The actual switch.
+    c.frame.body.bodyCtrl = w
+    w.leo_active = True
+
+    self.switchToChapter(w)
+    self.selectLabel(w)
+
+    if not self.ensurePositionExists(w):
+        g.trace('***** no position editor!')
+        return 'break'
+
+    if trace:
+        g.trace('==2',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
+    c.redraw(w.leo_p)
+    c.recolor()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocus()
+    return 'break'
+#@+node:ekr.20061017083312.1: *7* << restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if w.leo_insertSpot:
+    w.setInsertPoint(w.leo_insertSpot)
+else:
+    w.setInsertPoint(0)
+
+if w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    w.yview('moveto',first)
+else:
+    w.seeInsertPoint()
+
+if w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        w.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@+node:ekr.20090608081524.6109: *6* setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s,new_p=p)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    p.restoreCursorAndScroll(w)
+#@+node:ekr.20061031131434.192: *6* showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+        
+    isText = g.app.gui.isTextWidget(w)
+
+    # This fixes a problem with the tk gui plugin.
+    if mode and mode.lower().startswith('isearch'):
+        return
+
+    wname = g.app.gui.widget_name(w).lower()
+    
+    # 2011/02/12: get the wrapper for the headline widget.
+    if wname.startswith('head'):
+        if hasattr(c.frame.tree,'getWrapper'):
+            if hasattr(w,'widget'): w2 = w.widget
+            else: w2 = w
+            w = c.frame.tree.getWrapper(w2,item=None)
+            isText = bool(w) # A benign hack.
+
+    if trace: g.trace('state: %s text?: %s w: %s' % (
+        state,isText,w))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    else:
+        s = '%s State' % state.capitalize()
+        if c.editCommands.extendMode:
+            s = s + ' (Extend Mode)'
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and isText:
+        k.showStateColors(inOutline,w)
+        k.showStateCursor(state,w)
+#@+node:ekr.20080512115455.1: *6* showStateColors
+def showStateColors (self,inOutline,w):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    w_name = g.app.gui.widget_name(w)
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if trace: g.trace('%9s' % (state),w_name)
+    
+    if w_name.startswith('body'):
+        w = c.frame.body
+    elif w_name.startswith('head'):
+        pass
+    else:
+        # Don't recolor the minibuffer, log panes, etc.
+        if trace: g.trace('not body or head')
+        return
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    if hasattr(w,'setEditorColors'):
+        # Note: fg color has no effect on Qt at present.
+        w.setEditorColors(bg=bg,fg=fg) ### Was body.
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            pass # g.es_exception()
+#@+node:ekr.20070424084012: *6* switchToChapter (leoBody)
+def switchToChapter (self,w):
+
+    '''select w.leo_chapter.'''
+
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
+            cc.selectChapterByName(name)
+            c.bodyWantsFocus()
+#@+node:ekr.20110301172720.13975: *6* Uses leoMoveCursorHelper
+#@+node:ekr.20060113105246.1: *7* moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    trace = False
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=direction,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        # Find the start of the next/prev line.
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        if trace:
+            gui_ins = w.toGuiIndex(ins)
+            bbox = w.bbox(gui_ins)
+            if bbox:
+                x,y,width,height = bbox
+                # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+                g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+                g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+                g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+                g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+        i,j = g.getLine(s,ins)
+        if direction == 'down':
+            i2,j2 = g.getLine(s,j)
+        else:
+            i2,j2 = g.getLine(s,i-1)
+
+        # The spot is the start of the line plus the column index.
+        n = max(0,j2-i2-1) # The length of the new line.
+        col2 = min(col,n)
+        spot = i2 + col2
+        if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+        self.extendHelper(w,extend,spot,upOrDown=True)
+#@+node:ekr.20100109094541.6227: *7* moveToBufferHelper
+def moveToBufferHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        if spot == 'home':
+            self.moveToHelper(event,0,extend=extend)
+        elif spot == 'end':
+            s = w.getAllText()
+            self.moveToHelper(event,len(s),extend=extend)
+        else:
+            g.trace('can not happen: bad spot',spot)
+#@+node:ekr.20100109094541.6228: *7* moveToCharacterHelper
+def moveToCharacterHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        i = w.getInsertPoint()
+        if spot == 'left':
+            i=max(0,i-1)
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'right':
+            i = min(i+1,len(w.getAllText()))
+            self.moveToHelper(event,i,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20050920084036.136: *7* exchangePointMark
+def exchangePointMark (self,event):
+
+    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        w.leoMoveCursorHelper(kind='exchange',extend=False)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        c.widgetWantsFocusNow(w)
+        i,j = w.getSelectionRange(sort=False)
+        if i == j: return
+
+        ins = w.getInsertPoint()
+        ins = g.choose(ins==i,j,i)
+        w.setInsertPoint(ins)
+        w.setSelectionRange(i,j,insert=None)
+#@+node:ekr.20090530181848.6035: *7* movePageHelper
+def movePageHelper(self,event,kind,extend): # kind in back/forward.
+
+    '''Move the cursor up/down one page, possibly extending the selection.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    linesPerPage = 15 # To do.
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(
+            kind=g.choose(kind=='forward','page-down','page-up'),
+            extend=extend,linesPerPage=linesPerPage)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+        lines = g.splitLines(s)
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        row2 = g.choose(kind=='back',
+            max(0,row-linesPerPage),
+            min(row+linesPerPage,len(lines)-1))
+        if row == row2: return
+        spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+        if trace: g.trace('spot',spot,'row2',row2)
+        self.extendHelper(w,extend,spot,upOrDown=True)
+#@+node:ekr.20110301172720.13976: *6* Uses scrollDelegate
+#@+node:ekr.20060113082917: *7* scrollHelper
+def scrollHelper (self,event,direction,distance):
+
+    '''Scroll the present pane up or down one page
+    kind is in ('up/down-half-page/line/page)'''
+
+    k = self.k ; c = k.c ; gui = g.app.gui
+    w = gui.eventWidget(event)
+
+    if not w: return
+
+    if hasattr(w,'scrollDelegate'):
+        kind = direction + '-' + distance
+        w.scrollDelegate(kind)
+    else:
+        self.tkScrollHelper(event,direction,distance)
+
+def tkScrollHelper (self,event,direction,distance,extend=None):
+    #Scroll body pane up/down (direction) by page/half-page/line (distance)
+    #Note: Currently moves cursor, scrolls if needed to keep cursor visible
+    k = self.k ; c = k.c ; gui = g.app.gui
+    w = gui.eventWidget(event)
+    if not w: return #  This does **not** require a text widget.
+
+    if gui.isTextWidget(w):
+        c.widgetWantsFocusNow(w)
+        # Remember the original insert point.  This may become the moveSpot.
+        ins1 = w.getInsertPoint()
+        s = w.getAllText()
+        row,col = g.convertPythonIndexToRowCol(s,ins1)
+        # Compute the spot.
+        # assume scroll by "page"
+        delta = self.measure(w)
+        if distance == 'half-page':
+            delta = delta / 2
+        elif distance == 'line':
+            delta = 1
+        row1 = g.choose(direction=='down',row+delta,row-delta)
+        row1 = max(0,row1)
+        spot = g.convertRowColToPythonIndex(s,row1,col)
+        # g.trace('spot',spot,'row1',row1)
+        self.extendHelper(w,extend,spot)
+        w.seeInsertPoint()
+#@+node:ekr.20060309060654.1: *7* scrollOutlineUp/Down/Line/Page
+def scrollOutlineDownLine (self,event=None):
+    '''Scroll the outline pane down one line.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('down-line')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if b < 1.0: tree.canvas.yview_scroll(1,"unit")
+
+def scrollOutlineDownPage (self,event=None):
+    '''Scroll the outline pane down one page.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('down-page')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if b < 1.0: tree.canvas.yview_scroll(1,"page")
+
+def scrollOutlineUpLine (self,event=None):
+    '''Scroll the outline pane up one line.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('up-line')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if a > 0.0: tree.canvas.yview_scroll(-1,"unit")
+
+def scrollOutlineUpPage (self,event=None):
+    '''Scroll the outline pane up one page.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('up-page')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if a > 0.0: tree.canvas.yview_scroll(-1,"page")
+#@+node:ekr.20060726154531: *7* scrollOutlineLeftRight
+def scrollOutlineLeft (self,event=None):
+    '''Scroll the outline left.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('left')
+    elif hasattr(tree.canvas,'xview_scroll'):
+        tree.canvas.xview_scroll(1,"unit")
+
+def scrollOutlineRight (self,event=None):
+    '''Scroll the outline left.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('right')
+    elif hasattr(tree.canvas,'xview_scroll'):
+        tree.canvas.xview_scroll(-1,"unit")
+#@+node:ekr.20051206103652: *6* widget_name (leoGui)
+def widget_name (self,w):
+
+    # First try the widget's getName method.
+    if not 'w':
+        return '<no widget>'
+    elif hasattr(w,'getName'):
+        return w.getName()
+    elif hasattr(w,'_name'):
+        return w._name
+    else:
+        return repr(w)
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -7583,9 +8869,9 @@ def setChanged (self,changedFlag):
             if s [0] != '*': c.frame.setTitle("* " + s)
         else:
             if s[0:2]=="* ": c.frame.setTitle(s[2:])
-#@+node:ekr.20110202094848.12571: *3* Vim...
-#@+node:ekr.20060927173836.6: *4* Give warning when unbound key ends a mode
-#@+node:ekr.20091230094319.6244: *5* doMode
+#@+node:ekr.20110202094848.12571: *4* Vim...
+#@+node:ekr.20060927173836.6: *5* Give warning when unbound key ends a mode
+#@+node:ekr.20091230094319.6244: *6* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -7633,8 +8919,8 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
-#@+node:ekr.20110210115239.15392: *4* Improved redefining messages
-#@+node:ekr.20061031131434.102: *5* makeBindingsFromCommandsDict & helper
+#@+node:ekr.20110210115239.15392: *5* Improved redefining messages
+#@+node:ekr.20061031131434.102: *6* makeBindingsFromCommandsDict & helper
 def makeBindingsFromCommandsDict (self):
 
     '''Add bindings for all entries in c.commandDict.'''
@@ -7697,7 +8983,7 @@ def makeBindingsFromCommandsDict (self):
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
-#@+node:ekr.20110211094454.15414: *6* mergeShortcutList
+#@+node:ekr.20110211094454.15414: *7* mergeShortcutList
 def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     '''aList is a list of binding bunches for stroke.
@@ -7737,7 +9023,7 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     if trace and verbose and len(result) > 1: g.trace(stroke,result)
     return result
-#@+node:ekr.20061031131434.89: *5* bindKey
+#@+node:ekr.20061031131434.89: *6* bindKey
 def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     '''Bind the indicated shortcut (a Tk keystroke) to the callback.
@@ -7778,14 +9064,14 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         return False
 
 bindShortcut = bindKey # For compatibility
-#@+node:ekr.20061031131434.90: *6* << give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.90: *7* << give warning and return if we try to bind to Enter or Leave >>
 if shortcut:
     for s in ('enter','leave'):
         if -1 != shortcut.lower().find(s):
             g.es_print('ignoring invalid key binding:','%s = %s' % (
                 commandName,shortcut),color='blue')
             return
-#@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
+#@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
 ### This warning should never happen with the new code in makeBindingsFromCommandsDict.
@@ -7809,9 +9095,9 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
-#@+node:ekr.20110209083917.15999: ** Simple vim bindings
+#@+node:ekr.20110209083917.15999: *5* Simple vim bindings
 @language python
-#@+node:ekr.20110209093958.15408: *3* To do
+#@+node:ekr.20110209093958.15408: *6* To do
 @nocolor-node
 
 - Test with tk.  One test fails:  @test leoTree is a subset of leoTkTree.
@@ -7821,7 +9107,7 @@ if not modeFlag:
 - (done) Show source of bindings in print-bindings.
 
 - (done) Improve conflict messages.
-#@+node:ekr.20090629183608.8445: *3* Cursors
+#@+node:ekr.20090629183608.8445: *6* Cursors
 @nocolor-node
 
 Vi normally uses two different "current character" designators depending on the
@@ -7841,7 +9127,7 @@ support a "current character" cursor. As a result, inserting and pasting before
 or after is replaced by inserting or pasting "at" the current cursor location.
 For example, the 'i' and 'a' command are both mapped to enter the insert state
 at the current cursor location.
-#@+node:ekr.20061031131434.123: *4* set-xxx-State
+#@+node:ekr.20061031131434.123: *7* set-xxx-State
 def setCommandState (self,event):
     '''Enter the 'command' editing state.'''
     # g.trace(g.callers())
@@ -7868,7 +9154,7 @@ def setOverwriteState (self,event):
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
-#@+node:ekr.20061031131434.133: *4* setInputState
+#@+node:ekr.20061031131434.133: *7* setInputState
 def setInputState (self,state):
 
     k = self
@@ -7876,7 +9162,7 @@ def setInputState (self,state):
 
 
 
-#@+node:ekr.20061031131434.192: *4* showStateAndMode
+#@+node:ekr.20061031131434.192: *7* showStateAndMode
 def showStateAndMode(self,w=None,prompt=None):
 
     trace = False and not g.unitTesting
@@ -7930,7 +9216,7 @@ def showStateAndMode(self,w=None,prompt=None):
     if w and isText:
         k.showStateColors(inOutline,w)
         k.showStateCursor(state,w)
-#@+node:ekr.20110202111105.15439: *4* showStateCursor
+#@+node:ekr.20110202111105.15439: *7* showStateCursor
 def showStateCursor (self,state,w):
     
     # g.trace(state,w)
@@ -7938,7 +9224,7 @@ def showStateCursor (self,state,w):
     pass
     
     
-#@+node:ekr.20061031131434.146: *3* masterKeyHandler & helpers
+#@+node:ekr.20061031131434.146: *6* masterKeyHandler & helpers
 master_key_count = 0
 
 def masterKeyHandler (self,event,stroke=None):
@@ -7992,7 +9278,7 @@ def masterKeyHandler (self,event,stroke=None):
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,keysym,stroke)
-#@+node:ekr.20061031131434.147: *4* << define vars >>
+#@+node:ekr.20061031131434.147: *7* << define vars >>
 k = self ; c = k.c ; gui = g.app.gui
 
 if event:
@@ -8021,7 +9307,7 @@ special_keys = (
 self.master_key_count += 1
 
 isPlain =  k.isPlainKey(stroke)
-#@+node:ekr.20061031131434.108: *4* callStateFunction
+#@+node:ekr.20061031131434.108: *7* callStateFunction
 def callStateFunction (self,event):
 
     k = self ; val = None ; ch = g.app.gui.eventChar(event)
@@ -8044,7 +9330,7 @@ def callStateFunction (self,event):
             g.es_print('no state function for',k.state.kind,color='red')
 
     return val
-#@+node:ekr.20091230094319.6244: *4* doMode
+#@+node:ekr.20091230094319.6244: *7* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -8092,7 +9378,7 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
-#@+node:ekr.20091230094319.6240: *4* getPaneBinding
+#@+node:ekr.20091230094319.6240: *7* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
@@ -8137,7 +9423,7 @@ def getPaneBinding (self,stroke,w):
                 if b:
                     if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
                     return b
-#@+node:ekr.20061031131434.152: *4* handleMiniBindings
+#@+node:ekr.20061031131434.152: *7* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
@@ -8179,7 +9465,7 @@ def handleMiniBindings (self,event,state,stroke):
                     return True
 
     return False
-#@+node:ekr.20110209083917.16004: *4* isAutoCompleteChar
+#@+node:ekr.20110209083917.16004: *7* isAutoCompleteChar
 def isAutoCompleteChar (self,stroke):
     
     '''Return True if stroke is bound to the auto-complete in
@@ -8195,7 +9481,7 @@ def isAutoCompleteChar (self,stroke):
                 if b and b.commandName == 'auto-complete':
                     return True
     return False
-#@+node:ekr.20080510095819.1: *4* k.handleUnboundKeys
+#@+node:ekr.20080510095819.1: *7* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
     trace = False and not g.unitTesting
@@ -8245,12 +9531,12 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace('no func',stroke)
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@+node:ekr.20110208115654.15911: *3* Body pane background colors
+#@+node:ekr.20110208115654.15911: *6* Body pane background colors
 These settings are no longer used:
     
     @string selected-background-color
     @string selected-command-background-color
-#@+node:ekr.20061031131434.192: *4* showStateAndMode
+#@+node:ekr.20061031131434.192: *7* showStateAndMode
 def showStateAndMode(self,w=None,prompt=None):
 
     trace = False and not g.unitTesting
@@ -8304,7 +9590,7 @@ def showStateAndMode(self,w=None,prompt=None):
     if w and isText:
         k.showStateColors(inOutline,w)
         k.showStateCursor(state,w)
-#@+node:ekr.20080512115455.1: *4* showStateColors
+#@+node:ekr.20080512115455.1: *7* showStateColors
 def showStateColors (self,inOutline,w):
 
     trace = False and not g.unitTesting
@@ -8347,8 +9633,8 @@ def showStateColors (self,inOutline,w):
             w.configure(bg=bg,fg=fg)
         except Exception:
             pass # g.es_exception()
-#@+node:ekr.20110209093958.15409: *3* Enter insert mode after ctrl-h
-#@+node:ekr.20031218072017.2886: *4* c.editHeadline
+#@+node:ekr.20110209093958.15409: *6* Enter insert mode after ctrl-h
+#@+node:ekr.20031218072017.2886: *7* c.editHeadline
 def editHeadline (self,event=None):
 
     '''Begin editing the headline of the selected node.'''
@@ -8367,7 +9653,7 @@ def editHeadline (self,event=None):
         k.showStateAndMode(w=wrapper)
 
     #### tree.editLabel(c.p)
-#@+node:ekr.20110209093958.15411: *4* setEditingState
+#@+node:ekr.20110209093958.15411: *7* setEditingState
 def setEditingState (self):
 
     k = self ; state = k.defaultEditingAction
@@ -8375,7 +9661,7 @@ def setEditingState (self):
     # g.trace(state)
     
     k.setInputState(state)
-#@+node:ekr.20110209093958.15413: *4* setDefaultEditingKeyAction (New)
+#@+node:ekr.20110209093958.15413: *7* setDefaultEditingKeyAction (New)
 def setDefaultEditingAction (self):
 
     k = self ; c = k.c
@@ -8388,8 +9674,8 @@ def setDefaultEditingAction (self):
         action = 'insert'
 
     self.defaultEditingAction = action
-#@+node:ekr.20110212012742.15416: *3* Colorize headline text depending on state
-#@+node:ekr.20031218072017.2886: *4* c.editHeadline
+#@+node:ekr.20110212012742.15416: *6* Colorize headline text depending on state
+#@+node:ekr.20031218072017.2886: *7* c.editHeadline
 def editHeadline (self,event=None):
 
     '''Begin editing the headline of the selected node.'''
@@ -8408,7 +9694,7 @@ def editHeadline (self,event=None):
         k.showStateAndMode(w=wrapper)
 
     #### tree.editLabel(c.p)
-#@+node:ekr.20061031131434.192: *4* showStateAndMode
+#@+node:ekr.20061031131434.192: *7* showStateAndMode
 def showStateAndMode(self,w=None,prompt=None):
 
     trace = False and not g.unitTesting
@@ -8462,7 +9748,7 @@ def showStateAndMode(self,w=None,prompt=None):
     if w and isText:
         k.showStateColors(inOutline,w)
         k.showStateCursor(state,w)
-#@+node:ekr.20080512115455.1: *4* showStateColors
+#@+node:ekr.20080512115455.1: *7* showStateColors
 def showStateColors (self,inOutline,w):
 
     trace = False and not g.unitTesting
@@ -8505,9 +9791,9 @@ def showStateColors (self,inOutline,w):
             w.configure(bg=bg,fg=fg)
         except Exception:
             pass # g.es_exception()
-#@+node:ekr.20110211024010.15393: *3* colon destroys alt-x binding
+#@+node:ekr.20110211024010.15393: *6* colon destroys alt-x binding
 # This project reorganizes makeBindingFromCommandsDict
-#@+node:ekr.20061031131434.76: *4*  ctor (keyHandler)
+#@+node:ekr.20061031131434.76: *7*  ctor (keyHandler)
 def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
 
     '''Create a key handler for c.
@@ -8562,7 +9848,7 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.autoCompleter = autoCompleterClass(self)
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
-#@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
+#@+node:ekr.20061031131434.78: *8* << define externally visible ivars >>
 self.abbrevOn = False # True: abbreviations are on.
 self.arg = '' # The value returned by k.getArg.
 self.argSelectedText = '' # The selected text in state 0.
@@ -8581,7 +9867,7 @@ self.regx = g.bunch(iter=None,key=None)
 self.repeatCount = None
 self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
 self.state = g.bunch(kind=None,n=None,handler=None)
-#@+node:ekr.20061031131434.79: *5* << define internal ivars >>
+#@+node:ekr.20061031131434.79: *8* << define internal ivars >>
 self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
 
 # Previously defined bindings.
@@ -8638,7 +9924,7 @@ self.insert_mode_bg_color = 'white'
 self.insert_mode_fg_color = 'black'
 self.overwrite_mode_bg_color = 'white'
 self.overwrite_mode_fg_color = 'black'
-#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (changed)
+#@+node:ekr.20041117062717.14: *7* getShortcut (g.app.config) (changed)
 def getShortcut (self,c,shortcutName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -8657,7 +9943,7 @@ def getShortcut (self,c,shortcutName):
         return key,bunchList
     else:
         return key,[]
-#@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config) (NEW)
+#@+node:ekr.20110211041914.15415: *8* getShortcutHelper(g.app.config) (NEW)
 def getShortcutHelper (self,c,key):
     
     '''Like get, but return *all* the found bunchLists's.'''
@@ -8689,7 +9975,7 @@ def getShortcutHelper (self,c,key):
             if bunchList: self.mergeShortcuts(result,bunchList,key)
 
     return result
-#@+node:ekr.20110211041914.15418: *5* mergeShortcuts (NEW)
+#@+node:ekr.20110211041914.15418: *8* mergeShortcuts (NEW)
 def mergeShortcuts (self,result,aList,key):
         # key is for debugging.
         # key is a conical command name, *not* a keystroke.
@@ -8706,7 +9992,7 @@ def mergeShortcuts (self,result,aList,key):
 
     if trace and len(result) > 1:
         g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-#@+node:ekr.20061031131434.89: *4* bindKey
+#@+node:ekr.20061031131434.89: *7* bindKey
 def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     '''Bind the indicated shortcut (a Tk keystroke) to the callback.
@@ -8747,14 +10033,14 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         return False
 
 bindShortcut = bindKey # For compatibility
-#@+node:ekr.20061031131434.90: *5* << give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.90: *8* << give warning and return if we try to bind to Enter or Leave >>
 if shortcut:
     for s in ('enter','leave'):
         if -1 != shortcut.lower().find(s):
             g.es_print('ignoring invalid key binding:','%s = %s' % (
                 commandName,shortcut),color='blue')
             return
-#@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
+#@+node:ekr.20061031131434.92: *8* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
 ### This warning should never happen with the new code in makeBindingsFromCommandsDict.
@@ -8778,7 +10064,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
-#@+node:ekr.20061031131434.102: *4* makeBindingsFromCommandsDict & helper
+#@+node:ekr.20061031131434.102: *7* makeBindingsFromCommandsDict & helper
 def makeBindingsFromCommandsDict (self):
 
     '''Add bindings for all entries in c.commandDict.'''
@@ -8841,7 +10127,7 @@ def makeBindingsFromCommandsDict (self):
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
-#@+node:ekr.20110211094454.15414: *5* mergeShortcutList
+#@+node:ekr.20110211094454.15414: *8* mergeShortcutList
 def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     '''aList is a list of binding bunches for stroke.
@@ -8881,5 +10167,6 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     if trace and verbose and len(result) > 1: g.trace(stroke,result)
     return result
+#@+node:ekr.20110304061301.14035: *4* Colorize url's in the qt gui
 #@-all
 #@-leo

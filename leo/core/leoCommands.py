@@ -6942,6 +6942,8 @@ class baseCommands (object):
 
         return False
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
+    _rootCount = 0
+
     def rootPosition(self):
 
         """Return the root position.
@@ -6951,6 +6953,8 @@ class baseCommands (object):
         """
 
         c = self
+        
+        # g.trace(self._rootCount) ; self._rootCount += 1
 
         # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:

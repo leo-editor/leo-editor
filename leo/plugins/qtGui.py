@@ -215,7 +215,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20090629160050.3737: *4* Mouse events
     # These are overrides of the base-class events.
 
-    #@+node:ekr.20081208041503.499: *5* onClick (qtText)
+    #@+node:ekr.20081208041503.499: *5* onClick (qtText) & helper
     def onClick(self,event=None):
 
         trace = False and not g.unitTesting
@@ -228,6 +228,30 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
+                
+            self.openURL()
+    #@+node:ekr.20110304061301.14044: *6* openURL()
+    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+
+    def openURL(self):
+        c = self.c
+        w = c.frame.body.bodyCtrl
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        i,j = g.getLine(s,ins)
+        line = s[i:j]
+        for match in self.url_regex.finditer(line):
+            if match.start() <= col < match.end(): # Don't open if we click after the url.
+                url = match.group()
+                if not g.app.unitTesting:
+                    try:
+                        import webbrowser
+                        webbrowser.open(url)
+                    except:
+                        g.es("exception opening " + url)
+                        g.es_exception()
+                return url
     #@+node:ekr.20081121105001.521: *4*  Must be defined in base class
     #@+node:ekr.20081121105001.522: *5*  Focus (leoQtBaseTextWidget)
     def getFocus(self):
@@ -8744,6 +8768,7 @@ class jEditColorizer:
             'string'         :('string_color',                '#00aa00'), # Used by IDLE.
             'name'           :('undefined_section_name_color','red'),
             'latexBackground':('latex_background_color',      'white'),
+            'url'            :('url_color',                   'purple'),
 
             # Tags used by forth.
             'bracketRange'   :('bracket_range_color','orange'),
@@ -8785,6 +8810,7 @@ class jEditColorizer:
             'name'          :'undefined_section_name_font',
             'latexBackground':'latex_background_font',
             'tab'           : 'tab_font',
+            'url'           : 'url_font',
 
             # Tags used by forth.
             'bracketRange'   :'bracketRange_font',
@@ -8853,7 +8879,9 @@ class jEditColorizer:
             ('@',  self.match_at_language, True), # 2011/01/17
             ('@',  self.match_at_nocolor,  True),
             ('@',  self.match_at_nocolor_node,True),
-            ('@',  self.match_doc_part,    True), 
+            ('@',  self.match_doc_part,    True),
+            ('f',  self.match_url_f,        True),
+            ('h',  self.match_url_h,       True),
             ('<',  self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ',  self.match_blanks,      False),
@@ -8887,6 +8915,7 @@ class jEditColorizer:
         traceColor = False
         traceFonts = True
         c = self.c ; w = self.w
+        isQt = g.app.gui.guiName().startswith('qt')
 
         if trace: g.trace(self.colorizer.language) # ,g.callers(5))
 
@@ -8912,7 +8941,7 @@ class jEditColorizer:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
-                # if trace: g.trace(name)
+                if trace: g.trace(name)
                 font = self.fonts.get(name)
                 if font:
                     if trace and traceFonts:
@@ -8940,12 +8969,15 @@ class jEditColorizer:
             else: # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
                     if trace and traceFonts:
-                        g.trace('default',key,)
+                        g.trace('default',key,font)
                     self.fonts[key] = font # 2010/02/19: Essential
                     w.tag_config(key,font=defaultBodyfont)
                 else:
                     if trace and traceFonts:
                         g.trace('no fonts')
+                        
+            if isQt and key == 'url' and font:
+                font.setUnderline(True) # 2011/03/04
 
         keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
@@ -9479,6 +9511,7 @@ class jEditColorizer:
         self.colorRangeWithTag(s,i,j,'leoKeyword')
         self.colorRangeWithTag(s,j,len(s),'docPart')
         self.setRestart(self.restartDocPart)
+
         return len(s)
     #@+node:ekr.20090614213243.3837: *7* restartDocPart
     def restartDocPart (self,s):
@@ -9492,6 +9525,7 @@ class jEditColorizer:
         else:
             self.setRestart(self.restartDocPart)
             self.colorRangeWithTag(s,0,len(s),'docPart')
+
             return len(s)
     #@+node:ekr.20090614134853.3724: *6* match_leo_keywords
     def match_leo_keywords(self,s,i):
@@ -9608,6 +9642,64 @@ class jEditColorizer:
             return j - i
         else:
             return 0
+    #@+node:ekr.20110304061301.14037: *6* match_url_any/f/h  (new)
+    url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
+    url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
+    url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+
+    def match_any_url(self,s,i):
+        
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex)
+            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+
+    def match_url_f(self,s,i):
+        
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_f)
+            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+        
+    def match_url_h(self,s,i):
+        
+         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
+            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+    #@+node:ekr.20110304061301.14040: *5* match_compiled_regexp (new)
+    def match_compiled_regexp (self,s,i,kind,regexp,delegate=''):
+
+        '''Succeed if the compiled regular expression regexp matches at s[i:].'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'regexp',regexp)
+
+        # if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        # if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        # if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
+
+        n = self.match_compiled_regexp_helper(s,i,regexp)
+        if n > 0:
+            j = i + n
+            assert (j-i == n)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@+node:ekr.20110304061301.14041: *6* match_compiled_regexp_helper
+    def match_compiled_regexp_helper (self,s,i,regex):
+        
+        '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
+
+        # Match succeeds or fails more quickly than search.
+        self.match_obj = mo = regex.match(s,i) # re_obj.search(s,i) 
+
+        if mo is None:
+            return 0
+        start, end = mo.start(), mo.end()
+        if start != i:
+            return 0
+        # if trace:
+            # g.trace('pattern',pattern)
+            # g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
+            # g.trace('groups',mo.groups())
+        return end - start
     #@+node:ekr.20090614134853.3728: *5* match_eol_span
     def match_eol_span (self,s,i,
         kind=None,seq='',
@@ -10230,7 +10322,18 @@ class jEditColorizer:
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
+            if trace: g.trace(tag,s,i,j)
             self.setTag(tag,s,i,j)
+            
+        if tag != 'url':
+            # Allow URL's *everywhere*.
+            j = min(j,len(s))
+            while i < j:
+                if s[i].lower() in 'fh': # file|ftp|http|https
+                    n = self.match_any_url(s,i)
+                    i += max(1,n)
+                else:
+                    i += 1
     #@+node:ekr.20090614134853.3754: *4* mainLoop & restart
     def mainLoop(self,n,s):
 
