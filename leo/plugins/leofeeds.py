@@ -2,15 +2,15 @@
 #@+node:ville.20110206142055.10640: * @file leofeeds.py
 #@+<< docstring >>
 #@+node:ville.20110206142055.10641: ** << docstring >>
-''' Allows imports of notes created in Tomboy / gnote.
+''' Read feeds from rss / atom / whatever sources
 
-Usage:
+Usage: Create node with a headline like:
+    
+    @feed http://www.planetqt.org/atom.xml
+    
+(or somesuch).
 
-* Create a node with the headline 'tomboy'
-* Select the node, and do alt+x act-on-node    
-* The notes will appear as children of 'tomboy' node
-* The next time you do act-on-node, existing notes will be updated (they don't need to 
-  be under 'tomboy' node anymore) and new notes added.
+Do alt-x act-on-node on that node to populate the subtree from the feed data. Requires "feedparser" python module
 
 '''
 #@-<< docstring >>
@@ -23,9 +23,7 @@ __version__ = '0.1'
 # 
 # 0.1 Ville M. Vainio:
 # 
-#     * Functional version, has unidirectional (import) support with
-#       updates. Strips html.
-# 
+#     * Functional version
 #@-<< version history >>
 
 #@+<< imports >>
@@ -36,6 +34,7 @@ from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
 
 import HTMLParser
+import pprint
 #@-<< imports >>
 
 #@+others
@@ -88,8 +87,15 @@ def emitfeed(url, p):
     r = p.insertAsLastChild()
     r.h = d.channel.title
     for ent in d.entries:
+        print "Entry"
+        #pprint.pprint(ent)
         e = chi(r)
-        e.b = strip_tags(ent.content[0].value)
+        try:
+            cnt = ent.content[0].value
+        except AttributeError:
+            cnt = ent['summary']
+                        
+        e.b = strip_tags(cnt)
         
         #e.b = str(ent)
         e.h = ent.title
@@ -97,6 +103,15 @@ def emitfeed(url, p):
             lnk = chi(e)
             lnk.h = '@url ' + li.rel
             lnk.b = li.href
+        if 'enclosures' in ent:            
+            for enc in ent.enclosures:
+                ec = chi(e)
+                ec.h = '@url Enclosure: ' +  enc.get('type','notype') + " " + enc.get('length','')
+                ec.b = enc.get('href', '')
+                
+        full = chi(e)
+        full.h = "orig"
+        full.b = cnt
         
 
 def feeds_act_on_node(c,p,event):
