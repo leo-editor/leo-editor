@@ -238,6 +238,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w = c.frame.body.bodyCtrl
         s = w.getAllText()
         ins = w.getInsertPoint()
+        sel = w.getSelectionRange()
+        if sel: return # So find doesn't open the url.
         row,col = g.convertPythonIndexToRowCol(s,ins)
         i,j = g.getLine(s,ins)
         line = s[i:j]
