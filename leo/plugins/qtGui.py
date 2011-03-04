@@ -100,46 +100,62 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
         self.leo_wrapper = wrapper
         self.htmlFlag = True
         QtGui.QTextBrowser.__init__(self,parent)
-
+        
+    #@+others
+    #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
-        trace = False and not g.unitTesting
-        button = event.button()
-        table = (
-            (QtCore.Qt.NoButton,'no button'),
-            (QtCore.Qt.LeftButton,'left-button'),
-            (QtCore.Qt.RightButton,'right-button'),
-            (QtCore.Qt.MidButton,'middle-button'),
-        )
-        for val,s in table:
-            if button == val:
-                kind = s; break
-        else: kind = 'unknown: %s' % repr(button)
-        if trace: g.trace(tag,kind)
-        return kind
+            trace = False and not g.unitTesting
+            button = event.button()
+            table = (
+                (QtCore.Qt.NoButton,'no button'),
+                (QtCore.Qt.LeftButton,'left-button'),
+                (QtCore.Qt.RightButton,'right-button'),
+                (QtCore.Qt.MidButton,'middle-button'),
+            )
+            for val,s in table:
+                if button == val:
+                    kind = s; break
+            else: kind = 'unknown: %s' % repr(button)
+            if trace: g.trace(tag,kind)
+            return kind
+    #@+node:ekr.20110304100725.14068: *4* mousePress/ReleaseEvent
+    # def mousePressEvent (self,event):
+        # QtGui.QTextBrowser.mousePressEvent(self,event)
+        
+    def mouseReleaseEvent(self,event):
+        self.onMouseUp(event)
+        QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+    #@+node:ekr.20110304100725.14066: *4* onMouseUp
+    def onMouseUp(self,event=None):
 
-    def mousePressEvent (self,event):
-        if 1:
-            QtGui.QTextBrowser.mousePressEvent(self,event)
-        else: # Not ready yet
-            kind = self.leo_dumpButton(event,'press')
-            if kind == 'right-button':
-                event.leo_widget = self # inject the widget.
-                result = self.leo_c.frame.OnBodyRClick(event=event)
-                # g.trace('result of OnBodyRClick',repr(result))
-                if result != 'break':
-                    QtGui.QTextBrowser.mousePressEvent(self,event)
-            elif kind == 'left-button':
-                event.leo_widget = self # inject the widget.
-                result = self.leo_c.frame.OnBodyClick(event=event)
-                # g.trace('result of OnBodyClick',repr(result))
-                if result != 'break':
-                    QtGui.QTextBrowser.mousePressEvent(self,event)
-            else:
-                QtGui.QTextBrowser.mousePressEvent(self,event)
+        self.openURL()
+    #@+node:ekr.20110304061301.14044: *4* openURL()
+    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
 
-    # def mouseReleaseEvent(self,event):
-        # kind = self.leo_dumpButton(event,'release')
-        # QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+    def openURL(self):
+        c = self.leo_c
+        w = c.frame.body.bodyCtrl
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = w.getSelectionRange()
+        if i != j: return # So find doesn't open the url.
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        i,j = g.getLine(s,ins)
+        line = s[i:j]
+        for match in self.url_regex.finditer(line):
+            if match.start() <= col < match.end(): # Don't open if we click after the url.
+                url = match.group()
+                if not g.app.unitTesting:
+                    try:
+                        import webbrowser
+                        webbrowser.open(url)
+                    except:
+                        g.es("exception opening " + url)
+                        g.es_exception()
+                return url
+    #@-others
+
+    
 #@-<< define QTextBrowserSubclass >>
 #@+<< define leoQtBaseTextWidget class >>
 #@+node:ekr.20081121105001.516: *3*  << define leoQtBaseTextWidget class >>
@@ -215,7 +231,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20090629160050.3737: *4* Mouse events
     # These are overrides of the base-class events.
 
-    #@+node:ekr.20081208041503.499: *5* onClick (qtText) & helper
+    #@+node:ekr.20081208041503.499: *5* onClick (qtText)
     def onClick(self,event=None):
 
         trace = False and not g.unitTesting
@@ -228,32 +244,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
-                
-            self.openURL()
-    #@+node:ekr.20110304061301.14044: *6* openURL()
-    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
-
-    def openURL(self):
-        c = self.c
-        w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = w.getSelectionRange()
-        if i != j: return # So find doesn't open the url.
-        row,col = g.convertPythonIndexToRowCol(s,ins)
-        i,j = g.getLine(s,ins)
-        line = s[i:j]
-        for match in self.url_regex.finditer(line):
-            if match.start() <= col < match.end(): # Don't open if we click after the url.
-                url = match.group()
-                if not g.app.unitTesting:
-                    try:
-                        import webbrowser
-                        webbrowser.open(url)
-                    except:
-                        g.es("exception opening " + url)
-                        g.es_exception()
-                return url
     #@+node:ekr.20081121105001.521: *4*  Must be defined in base class
     #@+node:ekr.20081121105001.522: *5*  Focus (leoQtBaseTextWidget)
     def getFocus(self):
@@ -7999,7 +7989,7 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
-        verbose = False
+        verbose = True
         traceEvent = False
         traceKey = (True or self.trace_masterKeyHandler)
         traceFocus = False
