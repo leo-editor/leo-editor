@@ -87,7 +87,7 @@ def emitfeed(url, p):
     r = p.insertAsLastChild()
     r.h = d.channel.title
     for ent in d.entries:
-        print "Entry"
+        #print "Entry"
         #pprint.pprint(ent)
         e = chi(r)
         try:
