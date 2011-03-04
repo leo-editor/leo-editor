@@ -771,7 +771,7 @@ class baseFileCommands:
                 p = leoNodes.position(v)
                 p._linkAsRoot(oldRoot=None)
                 self.rootVnode = v
-                c.setRootPosition()
+                # c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()

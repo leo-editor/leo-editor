@@ -1486,7 +1486,7 @@ class leoFrame:
         v.initHeadString("NewHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
-        c.setRootPosition() # New in 4.4.2.
+        # c.setRootPosition() # New in 4.4.2.
     #@+node:ekr.20061109125528.1: *3* Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* initialRatios (leoFrame)
     def initialRatios (self):

@@ -219,19 +219,8 @@ class textFrame(leoFrame.leoFrame):
     v.initHeadString("NewHeadline")
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
-    c.setRootPosition(p) # New in 4.4.2.
-    c.editPosition(p)
-
-
-    # f = self ; c = f.c
-
-    # t = leoNodes.tnode()
-    # v = leoNodes.vnode(context=c,t=t)
-    # p = leoNodes.position(v)
-    # v.initHeadString("NewHeadline")
-    # p.moveToRoot(oldRoot=None)
     # c.setRootPosition(p) # New in 4.4.2.
-    # c.editPosition(p)
+    c.editPosition(p)
   #@+node:ekr.20081121105001.36: *3* deiconify
   def deiconify(self): pass # N/A
   def lift(self): pass # N/A

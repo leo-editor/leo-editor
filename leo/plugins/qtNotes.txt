@@ -1584,7 +1584,7 @@ def interFileDrop (self,fn,p,s):
     back = pasted.back()
     if back and back.isExpanded():
         pasted.moveToNthChildOf(back,0)
-    c.setRootPosition(c.findRootPosition(pasted))
+    # c.setRootPosition(c.findRootPosition(pasted))
 
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw_now(pasted)
@@ -1916,7 +1916,7 @@ def interFileDrop (self,fn,p,s):
     back = pasted.back()
     if back and back.isExpanded():
         pasted.moveToNthChildOf(back,0)
-    c.setRootPosition(c.findRootPosition(pasted))
+    # c.setRootPosition(c.findRootPosition(pasted))
 
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw_now(pasted)

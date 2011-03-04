@@ -479,7 +479,7 @@ class chapterController:
         p = root.insertAsLastChild()
         p.initHeadString('@chapters')
         p.moveToRoot(oldRoot=root)
-        c.setRootPosition()
+        # c.setRootPosition()
         cc.chaptersNode = p.copy()
         v = p.v
         assert(v.fileIndex)

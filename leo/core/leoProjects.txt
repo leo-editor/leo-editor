@@ -4427,6 +4427,7 @@ def rootPosition(self):
 
 # For compatibiility with old scripts.
 rootVnode = rootPosition
+findRootPosition = rootPosition
 #@+node:ekr.20040803140033.1: *6* c.setCurrentPosition
 _currentCount = 0
 
@@ -4444,11 +4445,11 @@ def setCurrentPosition (self,p):
         g.trace(c._currentCount,p)
         
     # Always recompute the root position.
-    c.setRootPosition()
+    # c.setRootPosition()
 
     if p and not c.positionExists(p): # 2011/02/25:
         g.internalError('Invalid position',p)
-        c._currentPosition = c._rootPosition = c.rootPosition()
+        c._currentPosition = c.rootPosition()
         if g.unitTesting: assert False,p
         return
 
@@ -4463,19 +4464,12 @@ def setCurrentPosition (self,p):
 
 # For compatibiility with old scripts.
 setCurrentVnode = setCurrentPosition
-#@+node:ekr.20040803140033.3: *6* c.setRootPosition
+#@+node:ekr.20040803140033.3: *6* c.setRootPosition (A do-nothing)
 def setRootPosition(self,unused_p=None):
 
     """Set c._rootPosition."""
-
-    c = self
     
-    # 2011/02/25: There is no need to make a copy of the position.
-    c._rootPosition = c.rootPosition()
-    
-    # Important: p.equal requires c._rootPosition to be non-None.
-    # c.rootPosition() returns c.nullPosition() instead of None.
-    assert c._rootPosition is not None
+    # 2011/03/03: No longer used.
 #@+node:ekr.20080427062528.4: *6* p._adjustPositionBeforeUnlink
 def _adjustPositionBeforeUnlink (self,p2):
 

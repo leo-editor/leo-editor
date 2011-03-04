@@ -230,7 +230,7 @@ class baseCommands (object):
         #@+<< initialize ivars >>
         #@+node:ekr.20031218072017.2813: *5* << initialize ivars >> (commands)
         self._currentPosition = self.nullPosition()
-        self._rootPosition    = self.nullPosition()
+        # self._rootPosition    = self.nullPosition()
         self._topPosition     = self.nullPosition()
 
         # Delayed focus.
@@ -3749,7 +3749,7 @@ class baseCommands (object):
         back = pasted.back()
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
-        c.setRootPosition()
+        # c.setRootPosition()
 
         if pasteAsClone:
             # Set dirty bits for ancestors of *all* pasted nodes.
@@ -6849,10 +6849,13 @@ class baseCommands (object):
         """
 
         c = self
+        
+        root = c.rootPosition()
+        return c._currentPosition and root and c._currentPosition == root
 
-        return (
-            c._currentPosition and c._rootPosition and
-            c._currentPosition == c._rootPosition)
+        # return (
+            # c._currentPosition and c._rootPosition and
+            # c._currentPosition == c._rootPosition)
     #@+node:ekr.20040803160656: *6* c.currentPositionHasNext
     def currentPositionHasNext (self):
 
@@ -6878,11 +6881,14 @@ class baseCommands (object):
     def isRootPosition (self,p):
 
         c = self
+        root = c.rootPosition()
+        
+        return p and root and p == root # 2011/03/03
 
-        if p is None or c._rootPosition is None:
-            return False
-        else:
-            return p == c._rootPosition
+        # if p is None or c._rootPosition is None:
+            # return False
+        # else:
+            # return p == c._rootPosition
     #@+node:ekr.20031218072017.2987: *5* c.isChanged
     def isChanged (self):
 
@@ -6955,6 +6961,7 @@ class baseCommands (object):
 
     # For compatibiility with old scripts.
     rootVnode = rootPosition
+    findRootPosition = rootPosition
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit (self):
 
@@ -7138,11 +7145,11 @@ class baseCommands (object):
             g.trace(c._currentCount,p)
             
         # Always recompute the root position.
-        c.setRootPosition()
+        # c.setRootPosition()
 
         if p and not c.positionExists(p): # 2011/02/25:
             g.internalError('Invalid position',p)
-            c._currentPosition = c._rootPosition = c.rootPosition()
+            c._currentPosition = c.rootPosition()
             if g.unitTesting: assert False,p
             return
 
@@ -7189,26 +7196,21 @@ class baseCommands (object):
         c = self
         p.v.setMarked()
         g.doHook("set-mark",c=c,p=p,v=p)
-    #@+node:ekr.20040803140033.3: *5* c.setRootPosition
+    #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
     def setRootPosition(self,unused_p=None):
 
         """Set c._rootPosition."""
-
-        c = self
         
-        # 2011/02/25: There is no need to make a copy of the position.
-        c._rootPosition = c.rootPosition()
-        
-        # Important: p.equal requires c._rootPosition to be non-None.
-        # c.rootPosition() returns c.nullPosition() instead of None.
-        assert c._rootPosition is not None
-    #@+node:ekr.20060906131836: *5* c.setRootVnode (changed)
+        # 2011/03/03: No longer used.
+    #@+node:ekr.20060906131836: *5* c.setRootVnode (A do-nothing)
     def setRootVnode (self, v):
         
-        c = self
+        pass
         
-        # 2011/02/25: c.setRootPosition needs no arguments.
-        c.setRootPosition()
+        # c = self
+        
+        # # 2011/02/25: c.setRootPosition needs no arguments.
+        # c.setRootPosition()
     #@+node:ekr.20040311173238: *5* c.topPosition & c.setTopPosition
     def topPosition(self):
 

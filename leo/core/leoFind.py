@@ -659,7 +659,7 @@ class leoFind:
                     found = oldRoot.insertAfter()
                     found.moveToRoot(oldRoot)
                     c.setHeadString(found,'Found: ' + self.find_text)
-                    c.setRootPosition() # New in Leo 4.5.
+                    # c.setRootPosition() # New in Leo 4.5.
                     #@-<< create the found node >>
                 clones.append(self.p.v)
                 #@+<< create a clone of p under the find node >>

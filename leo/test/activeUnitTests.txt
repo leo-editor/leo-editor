@@ -347,7 +347,8 @@ ivars = (
     # Subcommanders...
     'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
     # Positions...
-    '_currentPosition','_rootPosition','_topPosition',
+    '_currentPosition','_topPosition',
+    # '_rootPosition'
     # Data structures...
     'hoistStack','recentFiles',
     # Args...
@@ -12787,10 +12788,8 @@ assert c.isCurrentPosition(None) is False
 assert c.isCurrentPosition(p) is True
 assert g.app.positions == n
 #@+node:ekr.20060106211922.1: *4* @test p.isRootPosition
-n = g.app.positions
-assert c.isRootPosition(None) is False
-assert c.isRootPosition(p) is False
-assert g.app.positions == n
+assert not c.isRootPosition(None),'fail 1'
+assert not c.isRootPosition(p),'fail 2'
 #@+node:ekr.20040712101754.188: *4* @test p.iters and v.iters
 import leo.core.leoNodes as leoNodes
 

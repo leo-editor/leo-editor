@@ -1029,7 +1029,7 @@ class leoSwingFrame (leoFrame.leoFrame):
         p = leoNodes.position(v,[])
         v.initHeadString("NewHeadline")
         p.moveToRoot(oldRoot=None)
-        c.setRootPosition(p) # New in 4.4.2.
+        # c.setRootPosition(p) # New in 4.4.2.
         c.editPosition(p)
     #@+node:ekr.20081121105001.660: *5* swingFrame.createCanvas & helpers
     def createCanvas (self,parentFrame,pack=True):

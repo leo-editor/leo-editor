@@ -2,6 +2,7 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110201125110.12551: ** Important
+#@+node:ekr.20110301092139.14881: *3* Remove calls to hasattr where possible
 #@+node:ekr.20110125142807.17270: *3* Ask about QCompleter bindings
 #@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
 @nocolor-node

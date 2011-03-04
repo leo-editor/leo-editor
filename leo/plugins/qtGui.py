@@ -5566,7 +5566,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         back = pasted.back()
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
-        c.setRootPosition(c.findRootPosition(pasted))
+        # c.setRootPosition(c.findRootPosition(pasted))
 
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw_now(pasted)
