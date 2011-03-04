@@ -214,6 +214,46 @@ def stickynote_f(event):
     nf = mknote(c,p)
 
     return
+#@+node:ville.20110304230157.6526: ** g.command('stickynote-new')
+@g.command('stickynote-new')
+def stickynote_f(event):
+    """ Launch editable 'sticky note' for the node """
+
+    c = event['c']
+    p,wb = find_or_create_stickynotes()
+    
+    n = p.insertAsLastChild()
+    n.h = time.asctime()
+    
+    nf = mknote(wb,n)
+
+    return
+#@+node:ville.20110304230157.6527: ** get_workbook
+def get_workbook():
+    for co in g.app.commanders():
+        if co.mFileName.endswith('workbook.leo'):
+            return co
+
+def find_or_create_stickynotes():
+    wb = get_workbook()
+    pl = wb.find_h('stickynotes')
+    if not pl:
+        p = wb.rootPosition().insertAfter()
+        p.h = "stickynotes"
+    else:
+        p = pl[0]
+        
+    return p, wb
+            
+            
+    
+            
+    
+    
+    
+    
+    pass            
+print get_workbook()            
 #@+node:ville.20091023181249.5266: ** g.command('stickynoter')
 @g.command('stickynoter')
 def stickynoter_f(event):

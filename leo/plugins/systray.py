@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110219221839.6549: * @file systray.py
+#@+node:ville.20110304230157.6513: * @file systray.py
 #@+<< docstring >>
 #@+node:ville.20110219221839.6550: ** << docstring >>
 ''' systray
@@ -34,7 +34,7 @@ def init ():
     ok = g.app.gui.guiName() == "qt"
 
     if ok:
-        
+
         if 0: # Use this if you want to create the commander class before the frame is fully created.
             g.registerHandler('before-create-leo-frame',onCreate)
         else: # Use this if you want to create the commander class after the frame is fully created.
@@ -42,7 +42,7 @@ def init ():
         createTrayIcon()
 
         g.plugin_signon(__name__)
-        
+
 
     return ok
 #@+node:ville.20110219221839.6560: ** createTrayIcon
@@ -50,15 +50,15 @@ def createTrayIcon():
     g.trayIconMenu = QtGui.QMenu();
     def new_note():
         c = g.app.commanders()[0]
-        c.k.simulateCommand('stickynote')
+        c.k.simulateCommand('stickynote-new')
 
-    g.trayIconMenu.addAction("Note",new_note);
+    g.trayIconMenu.addAction("New note",new_note);
 
     g.trayIcon = QtGui.QSystemTrayIcon();
     g.trayIcon.setContextMenu(g.trayIconMenu);
     g.trayIcon.setIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     g.trayIcon.setVisible(True)
-    
+
 #@+node:ville.20110219221839.6554: ** onCreate
 def onCreate (tag, keys):
 
@@ -74,9 +74,9 @@ class pluginController:
     def __init__ (self,c):
 
         self.c = c
-        
-        
-        
+
+
+
     #@+node:ville.20110219221839.6557: *3* makeButtons
     def makeButtons(self):
         ib_w = self.c.frame.iconBar.w
