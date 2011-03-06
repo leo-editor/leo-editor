@@ -207,13 +207,7 @@ def stickynote_f(event):
 
     c = event['c']
     p = c.p
-
-    c = event['c']
-    p = c.p
-
     nf = mknote(c,p)
-
-    return
 #@+node:ville.20110304230157.6526: ** g.command('stickynote-new')
 @g.command('stickynote-new')
 def stickynote_f(event):
@@ -223,11 +217,10 @@ def stickynote_f(event):
     p,wb = find_or_create_stickynotes()
     
     n = p.insertAsLastChild()
+    c.redraw(n)
     n.h = time.asctime()
     
     nf = mknote(wb,n)
-
-    return
 #@+node:ville.20110304230157.6527: ** get_workbook
 def get_workbook():
     for co in g.app.commanders():
@@ -236,9 +229,11 @@ def get_workbook():
 
 def find_or_create_stickynotes():
     wb = get_workbook()
+    assert wb,'no wb'
     pl = wb.find_h('stickynotes')
     if not pl:
         p = wb.rootPosition().insertAfter()
+        wb.redraw(p)
         p.h = "stickynotes"
     else:
         p = pl[0]

@@ -7152,8 +7152,9 @@ class baseCommands (object):
         # c.setRootPosition()
 
         if p and not c.positionExists(p): # 2011/02/25:
-            g.internalError('Invalid position',p)
+            g.warning('Invalid position',p)
             c._currentPosition = c.rootPosition()
+            # g.trace('does not exists',p,'\n',g.callers())
             if g.unitTesting: assert False,p
             return
 
