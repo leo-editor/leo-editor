@@ -1852,33 +1852,37 @@ class configClass:
     #@+node:ekr.20041120064303: *4* readSettingsFiles & helpers (g.app.config)
     def readSettingsFiles (self,fileName,verbose=True):
 
-        '''Read settings from one file or the standard settings files.'''
+        '''Read settings from one file of the standard settings files.'''
 
         trace = False and not g.unitTesting
         verbose = verbose or trace
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
-        if trace: g.trace(fileName,g.callers())
+        def message(s):
+            # This occurs early in startup, so use the following.
+            if not g.isPython3:
+                s = g.toEncodedString(s,'ascii')
+            g.es_print(s,color='blue')
         self.write_recent_files_as_needed = False # Will be set later.
         localConfigFile = self.getLocalConfigFile(fileName)
+        if trace: g.trace(fileName,localConfigFile)
         table = self.defineSettingsTable(fileName,localConfigFile)
         for path,localFlag in table:
             assert path and g.os_path_exists(path)
             isZipped = path and zipfile.is_zipfile(path)
             isLeo = isZipped or path.endswith('.leo')
             if isLeo:
-                if giveMessage:
-                    s = 'reading settings in %s' % path
-                    # This occurs early in startup, so use the following instead of g.es_print.
-                    if not g.isPython3:
-                        s = g.toEncodedString(s,'ascii')
-                    g.es_print(s,color='blue')
                 c = self.openSettingsFile(path)
                 if c:
+                    if giveMessage:
+                        message('reading settings in %s' % path)
                     self.updateSettings(c,localFlag)
                     g.app.destroyWindow(c.frame)
                     self.write_recent_files_as_needed = c.config.getBool(
                         'write_recent_files_as_needed')
+                else:
+                    if giveMessage:
+                        message('error reading settings in %s' % path)
 
         self.readRecentFiles(localConfigFile)
         self.inited = True
@@ -1917,19 +1921,24 @@ class configClass:
         )
 
         if fileName:
-            path = g.os_path_finalize(fileName)
-            theDir = g.os_path_dirname(fileName)
-            myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
-            local_table = (
-                (localConfigFile,False),
-                (myLocalConfigFile,False),
-            )
-            if trace:
-                g.trace('localConfigFile:  ',localConfigFile)
-                g.trace('myLocalConfigFile:',myLocalConfigFile)
-
-            table1 = [z for z in local_table if z not in global_table]
-            table1.append((path,True),)
+            if fileName.lower().endswith('leosettings.leo'):
+                # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
+                # This allows myLeoSettings.leo to take precedence.
+                table1 = []
+            else:
+                path = g.os_path_finalize(fileName)
+                theDir = g.os_path_dirname(fileName)
+                myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
+                local_table = (
+                    (localConfigFile,False),
+                    (myLocalConfigFile,False),
+                )
+                if trace:
+                    g.trace('localConfigFile:  ',localConfigFile)
+                    g.trace('myLocalConfigFile:',myLocalConfigFile)
+        
+                table1 = [z for z in local_table if z not in global_table]
+                table1.append((path,True),)
         else:
             table1 = global_table
 

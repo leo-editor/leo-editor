@@ -6399,6 +6399,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'remove-sentinels':             c.removeSentinels,
             'resize-to-screen':             f.resizeToScreen,
             'revert':                       c.revert,
+            'save-all':                     c.saveAll,
             'save-file':                    c.save,
             'save-file-as':                 c.saveAs,
             'save-file-as-unzipped':        c.saveAsUnzipped,

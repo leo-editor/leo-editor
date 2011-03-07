@@ -771,7 +771,7 @@ class baseFileCommands:
                 p = leoNodes.position(v)
                 p._linkAsRoot(oldRoot=None)
                 self.rootVnode = v
-                c.setRootPosition(p)
+                # c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
@@ -946,18 +946,20 @@ class baseFileCommands:
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
-    def getDescendentUnknownAttributes (self,s):
+    def getDescendentUnknownAttributes (self,s,v=None):
 
         '''Unhexlify and unpickle t/v.descendentUnknownAttribute field.'''
 
         try:
+            # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
+            s = g.toEncodedString(s) # 2011/02/22
             bin = binascii.unhexlify(s) # Throws a TypeError if val is not a hex string.
             val = pickle.loads(bin)
             return val
 
         except:
             g.es_exception()
-            g.trace('Can not unpickle',s)
+            g.trace('Can not unpickle',type(s),v and v.h,s[:40])
             return None
     #@+node:ekr.20060919142200.1: *4* initReadIvars
     def initReadIvars (self):
@@ -1128,7 +1130,7 @@ class baseFileCommands:
 
         aDict = {}
         for key in d:
-            val = d.get(key)
+            val = g.toUnicode(d.get(key)) # 2011/02/22
             val2 = self.getSaxUa(key,val)
             # g.trace(key,val,val2)
             aDict[key] = val2
@@ -1145,7 +1147,6 @@ class baseFileCommands:
 
         trace = False and not g.unitTesting
         d = sax_node.attributes
-        # if trace and d: g.trace(d)
 
         s = d.get('a')
         if s:
@@ -1169,14 +1170,14 @@ class baseFileCommands:
 
         s = d.get('descendentTnodeUnknownAttributes')
         if s: 
-            aDict = self.getDescendentUnknownAttributes(s)
+            aDict = self.getDescendentUnknownAttributes(s,v=v)
             if aDict:
                 # g.trace('descendentTnodeUaDictList',aDict)
                 self.descendentTnodeUaDictList.append(aDict)
 
         s = d.get('descendentVnodeUnknownAttributes')
         if s: 
-            aDict = self.getDescendentUnknownAttributes(s)
+            aDict = self.getDescendentUnknownAttributes(s,v=v)
             if aDict:
                 # g.trace('descendentVnodeUaDictList',aDict)
                 self.descendentVnodeUaDictList.append((v,aDict),)
@@ -1225,12 +1226,13 @@ class baseFileCommands:
         """
 
         try:
-            val = str(val)
-        except UnicodeError:
+            # val = str(val)
+            val = g.toEncodedString(val) # 2011/02/22.
+        except Exception:
             g.es_print('unexpected exception converting hexlified string to string')
             g.es_exception()
+            return None
 
-        # g.trace(attr,repr(val))
 
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if attr.startswith('str_') and type(val) == type(''):
@@ -1402,6 +1404,7 @@ class baseFileCommands:
     def archivedPositionToPosition (self,s):
 
         c = self.c
+        s = g.toUnicode(s) # 2011/02/25
         aList = s.split(',')
         try:
             aList = [int(z) for z in aList]
@@ -1806,7 +1809,7 @@ class baseFileCommands:
         # Put the archived *current* position in the *root* positions <v> element.
         if p == self.rootPosition:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+            d = v.u
             str_pos = ','.join(aList)
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
@@ -1817,8 +1820,7 @@ class baseFileCommands:
                 pass
             else:
                 d['str_leo_pos'] = str_pos
-            # g.trace(aList,d)
-            v.unknownAttributes = d
+            v.u = d
         elif hasattr(v,"unknownAttributes"):
             d = v.unknownAttributes
             if d and not c.fixed and d.get('str_leo_pos'):

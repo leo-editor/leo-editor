@@ -299,8 +299,10 @@ class position (object):
         p = self
 
         if p.v:
-            return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
-                id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
+            # return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
+                # id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
+            return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
+                id(p),p._childIndex,p.level(),p.key(),p.cleanHeadString())
         else:
             return "<pos %d [%d] None>" % (id(p),len(p.stack))
 
@@ -571,13 +573,11 @@ class position (object):
         return False
     #@+node:ekr.20060920203352: *4* p.findRootPosition
     def findRootPosition (self):
-
-        p = self.copy()
-        while p.hasParent():
-            p.moveToParent()
-        while p.hasBack():
-            p.moveToBack()
-        return p
+        
+        # 2011/02/25: always use c.rootPosition
+        p = self
+        c = p.v.context
+        return c.rootPosition()
     #@+node:ekr.20080416161551.194: *4* p.isAncestorOf
     def isAncestorOf (self, p2):
 
@@ -1577,7 +1577,11 @@ class position (object):
         trace = False and not g.unitTesting
         p = self ; sib = p.copy()
 
-        if trace: g.trace('entry',p.stack)
+        if trace:
+            g.trace('entry')
+            g.trace('p ',p)
+            g.trace('p2',p2)
+            g.trace('p.stack',p.stack)
 
         # A special case for previous siblings.
         # Adjust p._childIndex, not the stack's childIndex.
@@ -1595,7 +1599,9 @@ class position (object):
             v,childIndex = p.stack[i]
             p3 = position(v=v,childIndex=childIndex,stack=stack[:i])
             while p3:
-                if p2.v == p3.v: # A match with the to-be-moved node?
+                if p2 == p3:
+                    # 2011/02/25: compare full positions, not just vnodes.
+                    # A match with the to-be-moved node.
                     stack.append((v,childIndex-1),)
                     changed = True
                     break # terminate only the inner loop.
@@ -2124,7 +2130,11 @@ class vnode (baseVnode):
     def cleanHeadString (self):
 
         s = self._headString
-        return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
+        
+        if g.isPython3:
+            return s
+        else:
+            return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
     #@+node:ekr.20031218072017.3367: *4* v.Status Bits
     #@+node:ekr.20031218072017.3368: *5* v.isCloned
     def isCloned (self):

@@ -353,10 +353,13 @@ class backlinkController(object):
             self.showMessage("Error: no such link")
 
         self.updateTabInt()
-        gcc = getattr(self.c, 'graphcanvasController')
-        if gcc:
-            gcc.update()
-
+        
+        # gcc = getattr(self.c, 'graphcanvasController')
+        try:
+            gcc = self.c.graphcanvasController
+            if gcc: gcc.update()
+        except AttributeError:
+            pass
     #@+node:ekr.20090616105756.3945: *3* deleteSet
     def deleteSet(self, enabled):
         """UI informing us that delete mode has been set to value of 'enabled'"""
@@ -433,9 +436,13 @@ class backlinkController(object):
         v1.u['_bklnk']['links'].append( (linkType, v0.gnx) )
 
         self.updateTabInt()
-        gcc = getattr(self.c, 'graphcanvasController')
-        if gcc:
-            gcc.update()
+
+        # gcc = getattr(self.c, 'graphcanvasController')
+        try:
+            gcc = self.c.graphcanvasController
+            if gcc: gcc.update()
+        except AttributeError:
+            pass
 
     #@+node:ekr.20090616105756.3951: *3* linkClicked
     def linkClicked(self, selected):

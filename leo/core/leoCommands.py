@@ -230,7 +230,7 @@ class baseCommands (object):
         #@+<< initialize ivars >>
         #@+node:ekr.20031218072017.2813: *5* << initialize ivars >> (commands)
         self._currentPosition = self.nullPosition()
-        self._rootPosition    = self.nullPosition()
+        # self._rootPosition    = self.nullPosition()
         self._topPosition     = self.nullPosition()
 
         # Delayed focus.
@@ -1262,6 +1262,20 @@ class baseCommands (object):
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocus()
+    #@+node:ekr.20110228162720.13980: *6* c.saveAll
+    def saveAll (self,event=None):
+        
+        '''Save all open tabs windows/tabs.'''
+        
+        for f in g.app.windowList:
+            c = f.c
+            if c.isChanged():
+                c.save()
+                
+        # Restore the present tab.
+        c = self
+        dw = c.frame.top # A DynamicWindow
+        dw.select(c)
     #@+node:ekr.20031218072017.2835: *6* c.saveAs
     def saveAs (self,event=None):
 
@@ -3735,7 +3749,7 @@ class baseCommands (object):
         back = pasted.back()
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
-        c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+        # c.setRootPosition()
 
         if pasteAsClone:
             # Set dirty bits for ancestors of *all* pasted nodes.
@@ -5354,12 +5368,12 @@ class baseCommands (object):
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         n = back.numberOfChildren()
         p.moveToNthChildOf(back,n)
-        # g.trace(p,p.parent())
         # Moving an outline right can never bring it outside the range of @ignore.
         dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+        # g.trace(p)
         c.redraw_now(p,setFocus=True)
         c.recolor_now()
     #@+node:ekr.20031218072017.1772: *6* moveOutlineUp
@@ -6774,13 +6788,13 @@ class baseCommands (object):
         return False
     #@+node:ekr.20031218072017.2982: *3* Getters & Setters
     #@+node:ekr.20060906211747: *4* Getters
-    #@+node:ekr.20040803140033: *5* c.currentPosition
+    #@+node:ekr.20040803140033: *5* c.currentPosition (changed)
     def currentPosition (self):
 
         """Return the presently selected position."""
 
         c = self
-
+        
         if hasattr(c,'_currentPosition') and getattr(c,'_currentPosition'):
             # New in Leo 4.4.2: *always* return a copy.
             return c._currentPosition.copy()
@@ -6811,33 +6825,6 @@ class baseCommands (object):
         return g.shortFileName(self.mFileName)
 
     shortFilename = shortFileName
-    #@+node:ekr.20060906134053: *5* c.findRootPosition New in 4.4.2
-    #@+at Aha! The Commands class can easily recompute the root position::
-    # 
-    #     c.setRootPosition(c.findRootPosition(p))
-    # 
-    # Any command that changes the outline should call this code.
-    # 
-    # As a result, the fundamental p and v methods that alter trees need never
-    # convern themselves about reporting the changed root.  A big improvement.
-    #@@c
-
-    def findRootPosition (self,p):
-
-        '''Return the root position of the outline containing p.'''
-
-        c = self ; p = p.copy()
-
-        while p and p.hasParent():
-            p.moveToParent()
-            # g.trace(p.h,g.callers())
-
-        while p and p.hasBack():
-            p.moveToBack()
-
-        # g.trace(p and p.h)
-
-        return p
     #@+node:ekr.20070615070925.1: *5* c.firstVisible
     def firstVisible(self):
 
@@ -6862,10 +6849,13 @@ class baseCommands (object):
         """
 
         c = self
+        
+        root = c.rootPosition()
+        return c._currentPosition and root and c._currentPosition == root
 
-        return (
-            c._currentPosition and c._rootPosition and
-            c._currentPosition == c._rootPosition)
+        # return (
+            # c._currentPosition and c._rootPosition and
+            # c._currentPosition == c._rootPosition)
     #@+node:ekr.20040803160656: *6* c.currentPositionHasNext
     def currentPositionHasNext (self):
 
@@ -6891,11 +6881,14 @@ class baseCommands (object):
     def isRootPosition (self,p):
 
         c = self
+        root = c.rootPosition()
+        
+        return p and root and p == root # 2011/03/03
 
-        if p is None or c._rootPosition is None:
-            return False
-        else:
-            return p == c._rootPosition
+        # if p is None or c._rootPosition is None:
+            # return False
+        # else:
+            # return p == c._rootPosition
     #@+node:ekr.20031218072017.2987: *5* c.isChanged
     def isChanged (self):
 
@@ -6949,6 +6942,8 @@ class baseCommands (object):
 
         return False
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
+    _rootCount = 0
+
     def rootPosition(self):
 
         """Return the root position.
@@ -6958,14 +6953,19 @@ class baseCommands (object):
         """
 
         c = self
+        
+        # g.trace(self._rootCount) ; self._rootCount += 1
 
-        if hasattr(c,'_rootPosition') and getattr(c,'_rootPosition'):
-            return self._rootPosition.copy()
+        # 2011/02/25: Compute the position directly.
+        if c.hiddenRootNode.children:
+            v = c.hiddenRootNode.children[0]
+            return leoNodes.position(v,childIndex=0,stack=None)
         else:
-            return  c.nullPosition()
+            return c.nullPosition()
 
     # For compatibiility with old scripts.
     rootVnode = rootPosition
+    findRootPosition = rootPosition
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit (self):
 
@@ -7133,15 +7133,30 @@ class baseCommands (object):
             else:
                 if s[0:2]=="* ": c.frame.setTitle(s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
+    _currentCount = 0
+
     def setCurrentPosition (self,p):
 
         """Set the presently selected position. For internal use only.
 
         Client code should use c.selectPosition instead."""
 
+        trace = False and not g.unitTesting
         c = self ; cc = c.chapterController
 
-        # g.trace(p.h,g.callers())
+        if trace:
+            c._currentCount += 1
+            g.trace(c._currentCount,p)
+            
+        # Always recompute the root position.
+        # c.setRootPosition()
+
+        if p and not c.positionExists(p): # 2011/02/25:
+            g.warning('Invalid position',p)
+            c._currentPosition = c.rootPosition()
+            # g.trace('does not exists',p,'\n',g.callers())
+            if g.unitTesting: assert False,p
+            return
 
         if p:
             # Important: p.equal requires c._currentPosition to be non-None.
@@ -7149,14 +7164,6 @@ class baseCommands (object):
                 pass # We have already made a copy.
             else: # Must make a copy _now_
                 c._currentPosition = p.copy()
-
-            # New in Leo 4.4.2: always recompute the root position here.
-            # This *guarantees* that c.rootPosition always returns the proper value.
-            newRoot = c.findRootPosition(c._currentPosition)
-            if newRoot:
-                c.setRootPosition(newRoot)
-            # This is *not* an error: newRoot can be None when switching chapters.
-            # else: g.trace('******** no new root')
         else:
             c._currentPosition = None
 
@@ -7194,30 +7201,21 @@ class baseCommands (object):
         c = self
         p.v.setMarked()
         g.doHook("set-mark",c=c,p=p,v=p)
-    #@+node:ekr.20040803140033.3: *5* c.setRootPosition
-    def setRootPosition(self,p):
+    #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
+    def setRootPosition(self,unused_p=None):
 
-        """Set the root positioin."""
-
-        c = self
-
-        # g.trace(p and p.h,g.callers())
-
-        if p:
-            # Important: p.equal requires c._rootPosition to be non-None.
-            if c._rootPosition and p == c._rootPosition:
-                pass # We have already made a copy.
-            else:
-                # We must make a copy _now_.
-                c._rootPosition = p.copy()
-        else:
-            c._rootPosition = None
-    #@+node:ekr.20060906131836: *5* c.setRootVnode New in 4.4.2
+        """Set c._rootPosition."""
+        
+        # 2011/03/03: No longer used.
+    #@+node:ekr.20060906131836: *5* c.setRootVnode (A do-nothing)
     def setRootVnode (self, v):
-
-        c = self
-        newRoot = leoNodes.position(v)
-        c.setRootPosition(newRoot)
+        
+        pass
+        
+        # c = self
+        
+        # # 2011/02/25: c.setRootPosition needs no arguments.
+        # c.setRootPosition()
     #@+node:ekr.20040311173238: *5* c.topPosition & c.setTopPosition
     def topPosition(self):
 

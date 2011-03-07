@@ -49,7 +49,6 @@
 <v t="ekr.20100123172713.5114"><vh>Scripts</vh>
 <v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
 <v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
-<v t="ekr.20080405085247.2"><vh>@ignore</vh></v>
 <v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
 <v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
 <v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
@@ -531,7 +530,6 @@ for h in d2.keys():
     if not d1.get(h):
         g.pr(h)</t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20080405085247.2"></t>
 <t tx="ekr.20090704085350.5007">@language python
 @others</t>
 <t tx="ekr.20090704085350.5028">@language python

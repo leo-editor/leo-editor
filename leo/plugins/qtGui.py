@@ -62,6 +62,16 @@ if QtCore is None:
         print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
         raise
 
+try:
+    from nested_splitter import NestedSplitter
+    splitter_class = NestedSplitter
+
+    # disable special behavior, turned back on by associated plugin,
+    # if the plugin's loaded
+    NestedSplitter.enabled = False
+except ImportError:
+    splitter_class = QtGui.QSplitter
+
 # remove scintilla dep for now    
 if 0:    
     try:
@@ -90,46 +100,41 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
         self.leo_wrapper = wrapper
         self.htmlFlag = True
         QtGui.QTextBrowser.__init__(self,parent)
-
+        
+    #@+others
+    #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
-        trace = False and not g.unitTesting
-        button = event.button()
-        table = (
-            (QtCore.Qt.NoButton,'no button'),
-            (QtCore.Qt.LeftButton,'left-button'),
-            (QtCore.Qt.RightButton,'right-button'),
-            (QtCore.Qt.MidButton,'middle-button'),
-        )
-        for val,s in table:
-            if button == val:
-                kind = s; break
-        else: kind = 'unknown: %s' % repr(button)
-        if trace: g.trace(tag,kind)
-        return kind
+            trace = False and not g.unitTesting
+            button = event.button()
+            table = (
+                (QtCore.Qt.NoButton,'no button'),
+                (QtCore.Qt.LeftButton,'left-button'),
+                (QtCore.Qt.RightButton,'right-button'),
+                (QtCore.Qt.MidButton,'middle-button'),
+            )
+            for val,s in table:
+                if button == val:
+                    kind = s; break
+            else: kind = 'unknown: %s' % repr(button)
+            if trace: g.trace(tag,kind)
+            return kind
+    #@+node:ekr.20110304100725.14068: *4* mousePress/ReleaseEvent
+    # def mousePressEvent (self,event):
+        # QtGui.QTextBrowser.mousePressEvent(self,event)
+        
+    def mouseReleaseEvent(self,event):
+        self.onMouseUp(event)
+        QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+    #@+node:ekr.20110304100725.14066: *4* onMouseUp
+    def onMouseUp(self,event=None):
 
-    def mousePressEvent (self,event):
-        if 1:
-            QtGui.QTextBrowser.mousePressEvent(self,event)
-        else: # Not ready yet
-            kind = self.leo_dumpButton(event,'press')
-            if kind == 'right-button':
-                event.leo_widget = self # inject the widget.
-                result = self.leo_c.frame.OnBodyRClick(event=event)
-                # g.trace('result of OnBodyRClick',repr(result))
-                if result != 'break':
-                    QtGui.QTextBrowser.mousePressEvent(self,event)
-            elif kind == 'left-button':
-                event.leo_widget = self # inject the widget.
-                result = self.leo_c.frame.OnBodyClick(event=event)
-                # g.trace('result of OnBodyClick',repr(result))
-                if result != 'break':
-                    QtGui.QTextBrowser.mousePressEvent(self,event)
-            else:
-                QtGui.QTextBrowser.mousePressEvent(self,event)
+        # Open the url on a control-click.
+        if QtCore.Qt.ControlModifier & event.modifiers():
+            event = {'c':self.leo_c}
+            openURL(event)
+    #@-others
 
-    # def mouseReleaseEvent(self,event):
-        # kind = self.leo_dumpButton(event,'release')
-        # QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+    
 #@-<< define QTextBrowserSubclass >>
 #@+<< define leoQtBaseTextWidget class >>
 #@+node:ekr.20081121105001.516: *3*  << define leoQtBaseTextWidget class >>
@@ -1753,6 +1758,30 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
+#@+node:ekr.20110304061301.14044: *3* openURL()
+@g.command('open-url')
+def openURL(event):
+    c = event.get('c')
+    w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if i != j: return # So find doesn't open the url.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+    for match in url_regex.finditer(line):
+        if match.start() <= col < match.end(): # Don't open if we click after the url.
+            url = match.group()
+            if not g.app.unitTesting:
+                try:
+                    import webbrowser
+                    webbrowser.open(url)
+                except:
+                    g.es("exception opening " + url)
+                    g.es_exception()
+            return url
 #@+node:ekr.20081121105001.194: ** Frame and component classes...
 #@+node:ekr.20081121105001.200: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
@@ -1978,7 +2007,7 @@ class DynamicWindow(QtGui.QMainWindow):
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
         # Splitter two is the "main" splitter, containing splitter.
-        splitter2 = QtGui.QSplitter(parent)
+        splitter2 = splitter_class(parent)
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
 
@@ -1986,7 +2015,7 @@ class DynamicWindow(QtGui.QMainWindow):
             QtCore.SIGNAL("splitterMoved(int,int)"),
             self.onSplitter2Moved)
 
-        splitter = QtGui.QSplitter(splitter2)
+        splitter = splitter_class(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
 
@@ -2380,6 +2409,18 @@ class DynamicWindow(QtGui.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
+    #@+node:ekr.20110301080146.13982: *4* select (DynamicWindow)
+    def select (self,c):
+        
+        '''Select the window or tab for c.'''
+        
+        if self.master:
+            # A LeoTabbedTopLevel.
+            self.master.select(c)
+        else:
+            w = c.frame.body.bodyCtrl
+            g.app.gui.set_focus(c,w)
+        
     #@+node:edward.20081129091117.1: *4* setSplitDirection (DynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
@@ -4236,6 +4277,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if len(sizes)!=2:
             g.trace('%s widget(s) in %s' % (len(sizes),id(splitter)))
+            return
 
         if frac > 1 or frac < 0:
             g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
@@ -5538,11 +5580,12 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
+        pasted.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
         c.setChanged(True)
         back = pasted.back()
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
-        c.setRootPosition(c.findRootPosition(pasted))
+        # c.setRootPosition(c.findRootPosition(pasted))
 
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw_now(pasted)
@@ -5561,6 +5604,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             def move(p1,p2):
                 if cloneDrag: p1 = p1.clone()
                 p1.moveToNthChildOf(p2,0)
+                p1.setDirty()
+                p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
         else:
             # Attempt to move p1 after p2.
@@ -5568,6 +5613,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             def move(p1,p2):
                 if cloneDrag: p1 = p1.clone()
                 p1.moveAfter(p2)
+                p1.setDirty()
+                p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
 
         ok = c.checkMoveWithParentWithWarning(p1,parent,True)
@@ -6569,10 +6616,59 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     """ Toplevel frame for tabbed ui """
 
     #@+others
+    #@+node:tbrown.20110219092516.15291: *4* __init__
+    def __init__(self, *args, **kwargs):
+        
+        self.factory = kwargs['factory']
+        del kwargs['factory']
+        QtGui.QTabWidget.__init__(self)
+        self.detached = []
+        
+        self.setMovable(True)
+        
+        def tabContextMenu(point):
+            index = self.tabBar().tabAt(point)
+            if index < 0 or (self.count() < 2 and not self.detached):
+                return
+            
+            menu = QtGui.QMenu()
+        
+            if self.count() > 1:
+                a = menu.addAction("Detach")
+                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.detach(index))
+            if self.detached:
+                a = menu.addAction("Re-attach All")
+                a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
+            
+            menu.exec_(self.mapToGlobal(point));
+        
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.connect(self,
+            QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
+    #@+node:tbrown.20110219092516.19433: *4* detach
+    def detach(self, index):
+        """detach tab (from tab's context menu)"""
+        w = self.widget(index)
+        self.detached.append((self.tabText(index), w))
+        self.factory.detachTab(w)
+    #@+node:tbrown.20110219092516.19434: *4* reattach_all
+    def reattach_all(self):
+        """reattach all detached tabs"""
+        for name, w in self.detached:
+            self.addTab(w, name)
+            self.factory.leoFrames[w] = w.leo_c.frame
+        self.detached = []
+    #@+node:tbrown.20110219092516.19435: *4* delete
+    def delete(self, w):
+        """called by TabbedFrameFactory to tell us a detached tab
+        has been deleted"""
+        self.detached = [i for i in self.detached if i[1] != w]
     #@+node:ekr.20100101104934.3662: *4* setChanged
     def setChanged (self,c,changed):
-
-        i = self.currentIndex()
+        
+        # 2011/03/01: Find the tab corresponding to c.
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
         if i < 0: return
 
         s = self.tabText(i)
@@ -6593,13 +6689,11 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 
         '''Set the tab name for c's tab to fileName.'''
 
-        tabw = self # self is a LeoTabbedTopLevel
+        # Find the tab corresponding to c.
         dw = c.frame.top # A DynamicWindow
-
-        # Find the tab in tabw corresponding to dw.
-        i = tabw.indexOf(dw)
+        i = self.indexOf(dw)
         if i > -1:
-            tabw.setTabText(i,g.shortFileName(fileName))
+            self.setTabText(i,g.shortFileName(fileName))
     #@+node:ville.20090804182114.8401: *4* closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
 
@@ -6613,6 +6707,15 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             event.ignore()
         else:            
             event.accept()
+    #@+node:ekr.20110301080146.13980: *4* select (leoTabbedTopLevel)
+    def select (self,c):
+
+        '''Select the tab for c.'''
+        
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
+        self.setCurrentIndex(i)
+        # g.trace(i,dw)
     #@+node:ekr.20110122055506.12568: *4* setLeoWindowSize (LeoTabbedTopLevel)
     def setLeoWindowSize (self,rect):
         
@@ -6738,9 +6841,10 @@ class TabbedFrameFactory:
         tabw.show()
         return dw
     #@+node:ekr.20100101104934.3659: *4* deleteFrame
-    def deleteFrame(self, wdg):
+    def deleteFrame(self, wdg):    
         if wdg not in self.leoFrames:
             # probably detached tab
+            self.masterFrame.delete(wdg)
             return
         tabw = self.masterFrame
         idx = tabw.indexOf(wdg)
@@ -6750,7 +6854,7 @@ class TabbedFrameFactory:
             self.alwaysShowTabs or tabw.count() > 1)
     #@+node:ville.20090803132402.3684: *4* createMaster (TabbedFrameFactory)
     def createMaster(self):
-        mf = self.masterFrame = LeoTabbedTopLevel()
+        mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
@@ -7888,7 +7992,7 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
-        verbose = False
+        verbose = True
         traceEvent = False
         traceKey = (True or self.trace_masterKeyHandler)
         traceFocus = False
@@ -8659,6 +8763,7 @@ class jEditColorizer:
             'string'         :('string_color',                '#00aa00'), # Used by IDLE.
             'name'           :('undefined_section_name_color','red'),
             'latexBackground':('latex_background_color',      'white'),
+            'url'            :('url_color',                   'purple'),
 
             # Tags used by forth.
             'bracketRange'   :('bracket_range_color','orange'),
@@ -8700,6 +8805,7 @@ class jEditColorizer:
             'name'          :'undefined_section_name_font',
             'latexBackground':'latex_background_font',
             'tab'           : 'tab_font',
+            'url'           : 'url_font',
 
             # Tags used by forth.
             'bracketRange'   :'bracketRange_font',
@@ -8768,7 +8874,9 @@ class jEditColorizer:
             ('@',  self.match_at_language, True), # 2011/01/17
             ('@',  self.match_at_nocolor,  True),
             ('@',  self.match_at_nocolor_node,True),
-            ('@',  self.match_doc_part,    True), 
+            ('@',  self.match_doc_part,    True),
+            ('f',  self.match_url_f,        True),
+            ('h',  self.match_url_h,       True),
             ('<',  self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ',  self.match_blanks,      False),
@@ -8802,6 +8910,7 @@ class jEditColorizer:
         traceColor = False
         traceFonts = True
         c = self.c ; w = self.w
+        isQt = g.app.gui.guiName().startswith('qt')
 
         if trace: g.trace(self.colorizer.language) # ,g.callers(5))
 
@@ -8827,7 +8936,7 @@ class jEditColorizer:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
-                # if trace: g.trace(name)
+                if trace: g.trace(name)
                 font = self.fonts.get(name)
                 if font:
                     if trace and traceFonts:
@@ -8855,12 +8964,15 @@ class jEditColorizer:
             else: # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
                     if trace and traceFonts:
-                        g.trace('default',key,)
+                        g.trace('default',key,font)
                     self.fonts[key] = font # 2010/02/19: Essential
                     w.tag_config(key,font=defaultBodyfont)
                 else:
                     if trace and traceFonts:
                         g.trace('no fonts')
+                        
+            if isQt and key == 'url' and font:
+                font.setUnderline(True) # 2011/03/04
 
         keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
@@ -9394,6 +9506,7 @@ class jEditColorizer:
         self.colorRangeWithTag(s,i,j,'leoKeyword')
         self.colorRangeWithTag(s,j,len(s),'docPart')
         self.setRestart(self.restartDocPart)
+
         return len(s)
     #@+node:ekr.20090614213243.3837: *7* restartDocPart
     def restartDocPart (self,s):
@@ -9407,6 +9520,7 @@ class jEditColorizer:
         else:
             self.setRestart(self.restartDocPart)
             self.colorRangeWithTag(s,0,len(s),'docPart')
+
             return len(s)
     #@+node:ekr.20090614134853.3724: *6* match_leo_keywords
     def match_leo_keywords(self,s,i):
@@ -9523,6 +9637,64 @@ class jEditColorizer:
             return j - i
         else:
             return 0
+    #@+node:ekr.20110304061301.14037: *6* match_url_any/f/h  (new)
+    url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
+    url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
+    url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+
+    def match_any_url(self,s,i):
+        
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex)
+            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+
+    def match_url_f(self,s,i):
+        
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_f)
+            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+        
+    def match_url_h(self,s,i):
+        
+         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
+            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+    #@+node:ekr.20110304061301.14040: *5* match_compiled_regexp (new)
+    def match_compiled_regexp (self,s,i,kind,regexp,delegate=''):
+
+        '''Succeed if the compiled regular expression regexp matches at s[i:].'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'regexp',regexp)
+
+        # if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        # if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        # if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
+
+        n = self.match_compiled_regexp_helper(s,i,regexp)
+        if n > 0:
+            j = i + n
+            assert (j-i == n)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@+node:ekr.20110304061301.14041: *6* match_compiled_regexp_helper
+    def match_compiled_regexp_helper (self,s,i,regex):
+        
+        '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
+
+        # Match succeeds or fails more quickly than search.
+        self.match_obj = mo = regex.match(s,i) # re_obj.search(s,i) 
+
+        if mo is None:
+            return 0
+        start, end = mo.start(), mo.end()
+        if start != i:
+            return 0
+        # if trace:
+            # g.trace('pattern',pattern)
+            # g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
+            # g.trace('groups',mo.groups())
+        return end - start
     #@+node:ekr.20090614134853.3728: *5* match_eol_span
     def match_eol_span (self,s,i,
         kind=None,seq='',
@@ -10145,7 +10317,18 @@ class jEditColorizer:
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
+            if trace: g.trace(tag,s,i,j)
             self.setTag(tag,s,i,j)
+            
+        if tag != 'url':
+            # Allow URL's *everywhere*.
+            j = min(j,len(s))
+            while i < j:
+                if s[i].lower() in 'fh': # file|ftp|http|https
+                    n = self.match_any_url(s,i)
+                    i += max(1,n)
+                else:
+                    i += 1
     #@+node:ekr.20090614134853.3754: *4* mainLoop & restart
     def mainLoop(self,n,s):
 

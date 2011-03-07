@@ -1,194 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110201125110.12553: ** Minor/easy
-#@+node:ekr.20110111100539.9718: *3* What to do with Terry's Scripts?
-@language python
-#@+node:ekr.20110111100539.9723: *4* docs
-@language rest
-
-Two use cases spring to mind:
-
-Leo is already running (somewhere on my desktop) with 2-3 leo files loaded in
-tabs. I'm working in a console, and I want to edit a file in the current
-directory: `led foo.py` causes the running leo to create '@edit foo.py' and pop
-to the front with it loaded. Vs. finding the running version of leo, then
-navigating through the open file dialog to the directory I'm already in in the
-shell window.
-
-And of course with the new sticknotes plugin, set up a window manager hotkey to
-pop open a new stickynote from the running leo to jot something down.
-
-======
-
-Since I'm making it a two-way protocol (you can execute scripts in leo, and get
-results back), any kind of command line application will be possible. Something
-like having leo operations in shell pipeline or shell scripts will make sense.
-
-e.g. you could do
-
-make | leopaste "compilation results for tuesday"
-
-Or
-
-leocat | grep "frobbo"
-
-which could allow you to navigate around leo outline and press some
-kind of "paste" button to dump the current node to stdout.
-
-These are somewhat psychedelic for now, but lots of Leo is about
-imagination ;-).
-
-======
-
-#@+node:ekr.20110111100539.9724: *5* sn
-You can type(*), either in a shell window or the window manager's
-command line entry area, "sn lisa from accounting", and a node called
-"lisa from accounting" with an initial contents recording the current
-time is created at the top of the leo commander which started the
-server.  A stickynote window for editing that node pops up and becomes
-active.  If you just type "sn" a default node name of the current time
-is used.  Also a read-only attribute is set so the created date is
-shown if you're running the edit_attribs.py plugin ;-)
-
-(*) assuming you call the script 'sn' and put it on your path.
-#@+node:ekr.20110111100539.9725: *5* led
-Here is a quick hack at a script to edit (or create and edit) a file in leo
-from the command line.
-
- - note the ugly sys.path.append, you don't need that line if you have
-  leo installed, but I only run it from bzr
-
- - it attempts to find a previous editing of the file in leo, but it
-  could easily miss it leading you to have multiple edits of the same
-  file in leo, take care, or delete the @edit node when you're done
-  editing
-
-I've wanted to be able to pop up a file in leo like this for ages.  Now
-this script, called 'led' and made executable and placed on the path,
-will replace 'e', my emacs invocation script.
-
-...which is interesting I guess, that what was keeping me from
-replacing emacs almost completely with leo is not leo itself, but how
-leo's invoked to edit a simple file from the command line.
-
-Apart from nxml-mode, emacs's validating xml editing mode, I can't
-think what I'll use emacs for now.
-#@+node:ekr.20110111100539.9726: *5* led 2
-It's probably of little benefit to people who work with mouse, menus,
-and icons all the time.
-
-But if you do everything from the command line (i.e. your OS's shell),
-then it makes moving things into leo much smoother.
-
-Suppose I've run leo and checked my todo items for the day, and now
-leo's buried under some other window and I'm working in the shell in
-some directory I've just created where I've just unzipped something and
-now I want to edit a file that was in the .zip.
-
-I can either
- - find the leo window
- - insert a node
- - active the open file dialog
- - navigate to the directory containing this file
- - select the file
- - and finally do the editing I want to do
-or, with Ville's communication to the running leo
- - enter on the command line `led foo.txt`
- - and do the editing I want to do
-
-where led is a script which causes the running leo to create an @edit
-node containing foo.txt and pop to the front with the node selected.
-
-Previously I was much more likely to use emacs, just because it was
-easier to invoke that way from the command line.
-
-So, opening files, creating sticky notes, invoking leo to handle output
-from grep or diff or whatever - all these things are better now.
-
-=====
-
-The corresponding point and click process for this scenario is
-
-a) select > r-click > Edit with Leo
-b) or drag'n'drop from folder to Leo icon on task bar (or window if visible)
-
-In short, I see this being a productivity boost for all users.
-#@+node:ekr.20110111100539.9719: *4* led
-#!/usr/bin/python
-
-'''Edit a file in leo from the command line, adds an @edit node at the top of
-the outline of the first commander in the leo instance.'''
-
-import sys
-sys.path.append("/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk")
-from leo.external import lproto
-import os
-
-addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
-pc  = lproto.LProtoClient(addr)
-pc.send("""
-import os
-fn = %s
-c = g.app.commanders()[0]
-h = "@edit "+fn
-n = g.findNodeAnywhere(c, h)
-if not n:
- n = c.rootPosition().insertAfter()
- n.moveToRoot(c.rootPosition())
- n.h = h
- if os.path.isfile(fn):
-     n.b = file(fn).read()
-c.selectPosition(n)
-c.redraw()
-c.bringToFront()
-""" % repr(os.path.join(os.getcwd(), sys.argv[1])) )
-#@+node:ekr.20110111100539.9720: *4* lo
-#!/usr/bin/python
-
-'''Load a .leo file from the command line into a running leo instance.'''
-
-import sys
-sys.path.append("/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk")
-from leo.external import lproto
-import os
-
-addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
-pc  = lproto.LProtoClient(addr)
-pc.send("""
-c = g.app.commanders()[0]
-g.openWithFileName(%s, c)
-""" % repr(os.path.join(os.getcwd(), sys.argv[1])) )
-#@+node:ekr.20110111100539.9721: *4* sn
-#!/usr/bin/python
-
-'''Sticky note tie-in from command line/toolbar icon to take quick notes using
-a running leo.'''
-
-import sys
-sys.path.append("/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk")
-from leo.external import lproto
-import os
-import time
-import sys
-
-addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
-pc  = lproto.LProtoClient(addr)
-cmd="""
-c = g.app.commanders()[0]
-n = c.rootPosition().insertAfter()
-n.moveToRoot(c.rootPosition())
-n.h = "{timestamp}"
-n.b = '''{content}\n\n# {timestamp}'''
-c.selectPosition(n)
-c.redraw()
-c.k.simulateCommand('stickynote')
-""".format(timestamp=time.asctime(), content=' '.join(sys.argv[1:]))
-pc.send(cmd)
-# print cmd
-#@+node:ekr.20110125142807.17268: *3* save-all-tabs command
 #@+node:ekr.20110201125110.12551: ** Important
-#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
 #@+node:ekr.20110125142807.17270: *3* Ask about QCompleter bindings
 #@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
 @nocolor-node
@@ -201,301 +14,8 @@ These are marked with ###
 (found) lineend, linestart
 (found) sel.first, sel.last
 (found) w.insert, w.delete
-#@+node:ekr.20110201125110.12552: *3* Convert plugins to Qt
-#@+node:ekr.20101024062147.5995: *3* Rst problems
-#@+node:ekr.20101021160326.5948: *4* Fix rst3 unbounded recursion
-@nocolor-node
-
-on doing an Alt-X rst3 command
-
-Traceback (most recent call last):
-  File "leoCommands.py", line 359, in doCommand
-    val = command(event)
-  File "leoCommands.py", line 764, in minibufferCallback
-    retval = function(keywords)
-  File "mod_scripting.py", line 642, in __call__
-    self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
-  File "mod_scripting.py", line 667, in executeScriptFromButton
-    c.executeScript(args=args,p=p,silent=True)
-  File "leoCommands.py", line 1991, in executeScript
-    script = g.getScript(c,p,useSelectedText=useSelectedText)
-  File "leoGlobals.py", line 4358, in getScript
-    at = leoAtFile.atFile(c)
-  File "leoAtFile.py", line 145, in __init__
-    'check-python-code-on-write',default=True)
-  File "leoCommands.py", line 7436, in getBool
-    return g.app.config.getBool(self.c,setting,default=default)
-  File "leoConfig.py", line 1445, in getBool
-    val = self.get(c,setting,"bool")
-  File "leoConfig.py", line 1337, in get
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-  File "leoCommands.py", line 6673, in shortFileName
-    return g.shortFileName(self.mFileName)
-  File "leoGlobals.py", line 2548, in shortFileName
-    return g.os_path_basename(fileName)
-  File "leoGlobals.py", line 3401, in os_path_basename
-    path = g.toUnicodeFileEncoding(path)
-  File "leoGlobals.py", line 3643, in toUnicodeFileEncoding
-    return g.toUnicode(path)
-  File "leoGlobals.py", line 4636, in toUnicode
-    elif mustConvert(s):
-  File "leoGlobals.py", line 4632, in mustConvert
-    return type(s) != types.UnicodeType
-RuntimeError: maximum recursion depth exceeded while calling a Python object
-#@+node:ekr.20100827114047.5893: *4* Fix rst file problems
-@nocolor-node
-
-Reported by TL:
-
-When editing a Docutils file in an external editor (exported from
-Leo), I always get a "Replace changed outline with external changes?"
-dialog box when I save the file in the external editor. This appears
-to occur because a newline is added to the end of the file when it is
-imported back into Leo.
-
-Note: The addition of a newline occurs even if the imported file
-already has a newline at the end of the file.
-
-There appears to be two problems:
-
-1) Leo always adds a newline even if the already has one.
-2) After Leo has added the newline it mistakenly marks the buffer as
-modified.
-#@+node:ekr.20100220190251.5616: *5* Fix rst bug?
-# See handleCodeMode
-#@+node:ekr.20100220190251.5617: *6* report
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-
-The indentation of the second @doc causes the doc part to look like
-a continuation of the code:: directive.
-
-It's not clear whether this bug is worth fixing, and it's not clear whether
-there would be side effects of any potential fix.
-
-The simplest fix appears to be in handleCodeMode.
-#@+node:ekr.20090502071837.72: *6* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or (
-                self.getOption('show_doc_parts_as_paragraphs') and
-                self.isSpecialDocPart(s,None)
-            )
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            # A fix, perhaps dubious, to a bug discussed at
-            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-            # lines2 = [z.lstrip() for z in lines2]
-            # g.trace('lines2',lines2)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        elif not code: # Start the code block.
-            result.append('')
-            result.append(self.code_block_string)
-            code.append(s)
-        else: # Continue the code block.
-            code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-
-    # Munge the result so as to keep docutils happy.
-    # Don't use self.rstripList: it's not the same.
-    # g.trace(result)
-    result2 = []
-    for z in result:
-        if z == '': result2.append('\n\n')
-        # 2010/08/27: Fix bug 618482.
-        # elif not z.rstrip(): pass
-        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-        else: result2.append('%s\n' % z.rstrip())
-
-    return result2
-#@+node:ekr.20090502071837.73: *7* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-#@+node:ekr.20090502071837.74: *7* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    # 2010/08/27: fix bug 618482.
-    s = ''.join(theList).rstrip()
-    return s.split('\n')
-#@+node:ekr.20090502071837.75: *7* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-#@+node:ekr.20100220204150.5627: *6* @@rst hello.html
-@ @rst-options
-verbose=True
-code_mode=True
-show_doc_parts_as_paragraphs=True
-number_code_lines=True
-write_intermediate_file=True
-@c
-
-#@+node:ekr.20100220204150.5628: *7* Greet the world
-@
-Greet the world, politely
-@c
-
-g.es ("Hello, world")
-
-@
-    Was that polite enough?
-    Indentation.
-@c
-#@+node:ekr.20100826110728.5840: *4* rst with show-comments-as-paragraph
-@nocolor-node
-
-derwish
-
-It seems that this option only works as expected for comments at the
-beginning of a node.
-
-A Leo file with the following contents would be rendered with  the
-second comment inside the PRE-element of the code paragraph.
-
-I am using Leo 4.7b2, build 2404
-
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
-<leo_file>
-<leo_header file_format="2" tnodes="0" max_tnode_index="0"
-clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-       <global_window_position top="30" left="12" height="600" width="800"/>
-       <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="huesingjohannes.20090706083342.1221"
-str_leo_pos="2,0"><vh>@chapters</vh></v>
-<v t="huesingjohannes.20091022082006.1227"><vh>@url U:/leo/hello.html</
-vh></v>
-<v t="huesingjohannes.20090706083342.1220" a="E"><vh>@rst U:\leo
-\hello.html</vh>
-<v t="huesingjohannes.20090706083342.5924"><vh>Greet the world</vh></
-v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="huesingjohannes.20090706083342.1220">@ @rst-options
-verbose=True
-code_mode=True
-show_doc_parts_as_paragraphs=True
-number_code_lines=False
-
-@c
-
-</t>
-<t tx="huesingjohannes.20090706083342.1221"></t>
-<t tx="huesingjohannes.20090706083342.5924">@
-    Greet the world, politely
-@c
-
-g.es ("Hello, world")
-
-@
-   Was that polite enough?
-@c</t>
-<t tx="huesingjohannes.20091022082006.1227"></t>
-</tnodes>
-</leo_file>
-
-========================
-
-Is there anyone here who could help me on this? It would be really nice if I
-didn't have to restrain myself to comments only at the top of a node.
-
-
-==========================
-Thanks for this report.  Sorry for the delay in responding.  Please
-file an official bug report.  It does seem like a real bug.
-
-
-If I can fix it cleanly tomorrow before Leo 4.7 final I shall. Otherwise soon.
-
-=======================
-Ok. I have simple fixes, but none are safe enough to include in Leo 4.7 final...
-
-In the meantime, removing the leading whitespace from the first line
-of the second @doc part should be a good enough workaround.
-
-There are three possible fixes, all similar:
-
-1. In getDocPart (in leoRst.py), change::
-
-   result.append(s)
-
-to:
-
-   result.append(s.lstrip())
-
-There are two such lines in getDocPart.  Probably both should be
-changed.
-
-2. The same fix, conditional on a new 'stripLines' keyword arg.  Like
-this:
-
-   if stripLines:
-       result.append(s.lstrip())
-   else:
-       result.append(s)
-
-Again, this change affects two lines in getDocPart.
-
-The idea is that handleCodeMode would be the only method to set the
-stripLines arg:
-
-   n, lines2 = self.getDocPart(lines,n)
-
-3. A change to handleCodeMode.  After the line:
-
-   n, lines2 = self.getDocPart(lines,n)
-
-add the line:
-
-   lines2 = [z.lstrip() for z in lines2]
-
-As I write this, I am thinking that change #3 is the simplest change,
-with the fewest side effects.
-
-We can test any one of these solutions starting early in the Leo 4.8
-release cycle, but none  is safe enough to include in Leo 4.7 final.
-
-If you would, please test fix #3 and report your results.  Thanks.
-#@+node:ekr.20101125041212.5846: *3* Fix bug: ignore f-keys in find/replace patterns
+#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
+#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
 #@+node:ekr.20101024062147.6014: ** Autocompleter
 # This can be done in the trunk.
 #@+node:ekr.20090131200406.14: *3* Autocompleter notes
@@ -521,8 +41,6 @@ Parsing:
     - Forgiving parser is essentially complete.
     - It's easy to parse python def lines.
 #@+node:ekr.20081005065934.12: *4* Links from Ville re Scintilla
-@nocolor-node
-
 It seems Scintilla relies on externally generated api description
 files to provide autocompletion. Links that may be of interest:
 
@@ -622,7 +140,6 @@ Date: Wed, 6 Jun 2007 20:17:30 +0200
 For code-completion, I suppose astng[1] could be useful.
 
 1: http://www.logilab.org/project/eid/856
-
 
 
 From: Stani's Python Editor <spe.stani...@gmail.com>
@@ -2669,364 +2186,8 @@ def start (self,event=None,w=None,prefix=None,chain=False):
             return self.tabList
     else:
         self.abort()
-#@+node:ekr.20100828074347.5827: ** Vim bindings
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
-
-Vim mode users: your top 3 complaints, please
-#@+node:ekr.20110202111105.15438: *3* Handling vim modes
-#@+node:ekr.20061031131434.123: *4* set-xxx-State
-def setCommandState (self,event):
-    '''Enter the 'command' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('command')
-    # This command is also valid in headlines.
-    # k.c.bodyWantsFocus()
-    k.showStateAndMode()
-
-def setInsertState (self,event):
-    '''Enter the 'insert' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('insert')
-    # This command is also valid in headlines.
-    # k.c.bodyWantsFocus()
-    k.showStateAndMode()
-
-def setOverwriteState (self,event):
-    '''Enter the 'overwrite' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('overwrite')
-    # This command is also valid in headlines.
-    # k.c.bodyWantsFocus()
-    k.showStateAndMode()
-#@+node:ekr.20061031131434.133: *4* setInputState
-def setInputState (self,state):
-
-    k = self
-    k.unboundKeyAction = state
-
-
-
-#@+node:ekr.20110202111105.15433: *3* Vim settings
-#@+node:ekr.20110202111105.15434: *4* @strings [command,insert, overwrite] top_level_unbound_key_action = command
-@nocolor
-
-This setting determines the initial binding for otherwise-unbound keystrokes
-when no mode is in effect.  Note: the keyboard-quit command exits all modes.
-
-The valid values are::
-
-command:  Leo ignores the key (like Vim).
-insert:  Leo inserts the key at the cursor (like Emacs)
-overwrite: Leo replaces the character at the cursor.
-#@+node:ekr.20110202111105.15435: *4* @bool stayInTreeAfterEditHeadline = True
-This allows the newline character to switch from the outline pane to the body pane.
-#@+node:ekr.20110202111105.15436: *4* @bool outline_pane_has_initial_focus = True
-True:  Outline gets focus when a new window is opened.
-False: Body pane gets focus when a new window is opened.
-#@+node:ekr.20110202111105.15437: *4* @bool stayInTreeAfterSelect = True
-True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
-
-If this is False it will be harder to use the arrow keys in the headline.
-    
-False: (Legacy) Selecting an outline node transfers focus to the body pane.
-#@+node:ekr.20110202094848.12569: *3* Notes
-#@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
-@language python
-@color
-
-#Just playing with part of a template system, the (partial) mock up for "range()" is:
-
-def tabStopNaming (event=None):
-
-  stateName = 'naming'
-  k = c.k
-  state = k.getState(stateName)
-
-  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
-           'end-value -- required, -> fill-in.  ',
-           'step -- optional, ->fill-in or tab to eliminate.  ')
-  tabStop = ('start-value', 'end-value', 'step')
-
-  if state == 0:
-      k.setLabelBlue(help[0],protect=True)
-      k.getArg(event,stateName,1,tabStopNaming)
-      # g.es('does this ever executed?') # yes, imediately!
-  else:
-      k.clearState()
-      g.es_print('%s : %s' % (tabStop[0], k.arg))
-      k.setLabelBlue('')
-
-tabStopNaming()
-
-@nocolor
-
-=====================================================
-This is hardwired for the first parameter.  Things I need to expand
-this:
-
-1. put in a variable that cycles through the tabStops
-
-2. In this mock up, you are entering the parameters in the minibuffer,
-a more advanced version would collect each keypress and put it in the
-body at the current tabStop, a tab would finalize the entry and
-advance to the next stop, no text other than the 'help', ends up in
-the minibuffer.
-
-Sinc I'm only modifying existing code without real understanding of
-what Leo is doing, andy guidance would be appreciated.
-
-Tom
-
-=======================
-
-Generalizing the minibuffer code would be a good thing to do.  I
-suppose we could define some kind of language that would create, or
-rather simulate, hand-written code.  In a sense, @mode nodes are
-intended to do this also.
-
-As I look at leoKeys.py again I'll keep this example in the back of my
-mind as something that it would be good to support more easily.
-
-Edward
-#@+node:ekr.20100210102224.5744: *4* Design
-@nocolor-node
-
-Requirements:
-    - Existing bindings must still be valid.
-    - But @mode does not have to remain.
-
-Think data:
-    - Drive binding by tables.
-    *** Design these tables first.
-    - Table design should be flixible.
-      It can change without affecting user.
-
-keySequence class?
-    - Represents a sequence of keystrokes.
-
-bufferMode class?
-    - Might encapsulate directives, etc.
-
-bindHelper class?
-    - Would mediate various aspects of binding.
-    - c.bindHelper or k.bindHelper?
-#@+node:ekr.20100113075303.6270: *3* Vim problems
-#@+node:ekr.20100112051224.6229: *4* Binding Arrow keys (fixed?)
-@nocolor-node
-
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-#@+node:ekr.20100112051224.6239: *4* Displaying mode help
-@nocolor-node
-
-The "--> mode-help" command has the following issues related to the
-display of the "Help" tab:
-
-1. Key label always capitalized.
-
-Vim commands are mapped to both lower-case and upper-case keys but always appear
-mapped to upper-case keys within the "Help" tab.
-
-2. Layout of tab's contents.
-
-To improve readability and better support narrow tab cards, display the mode's
-label without the "enter-" and "-mode" text and place the key label before the
-mode label.
-
-For example, the following entries would change from::
-    enter-vi-delete-line-mode d
-    enter-vi-delete-to-begin-of-word-mode b
-to::
-    d : vi-delete-line
-    b : vi-delete-to-begin-of-word
-#@+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
-@nocolor-node
-
-Support the ';' key: repeat the last "To character" or "Find character" command.
-#@+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
-@nocolor-node
-
-Mapping a number to a command or an @mode node works but can not be used as it
-prevents the number from being entered as text while in Vi's insert state.
-
-Binding 'bksp' key to back-char to move back a character in command mode
-prevents 'bksp' from deleting characters in text edit mode.
-#@+node:ekr.20080616110054.2: *4* Support vim dot command
-@nocolor-node
-
-The ability to repeat the last editing related command by pressing the period
-key is not supported and there is no workaround in place.
-
-Binding keys within nodes:
-
-Some commands can be "easily" repeated by having the command's mode
-bind itself to the period key.  This is not currently working.  
-
-Support commands requesting input:
-
-Add companion commands that reuse input.  For example, a zap-to-
-character-again command could exist which will reuse the key entered
-in the last zap-to-character command.  With this support, the mode
-that performs the initial command would assign the period key to a
-companion mode that is identical to the initial mode but with the zap-
-to-character command replaced by the zap-to-character-again command.
-
-Commands requiring companion commands are:
-  zap-to-character
-  find-character
-  backward-find-character
-  (Any others?)
-
-Notes:
-
-- The copy of the character should be saved somewhere that does NOT affect the
-  contents of the clipboard.
-
-- The same or a separate storage location can be used for all commands to retain
-  a copy of the character entered by the user. It doesn't matter since only the
-  last command is assigned to the period key to be re-executed.
-#@+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
-@nocolor-node
-
-Leo functions exist which unconditionally set focus to the body pane
-regardless of the active pane.
-
-For example, bracket matching commands ("%" key) do not work within
-a node's headline text.  Instead, the command is performed on the
-node's body text.
-
-Using the "undo" command (key 'u') to undo a change to a node's headline text
-only works correctly after another node has been selected. It appears that
-changes made to a node's headline text are not recorded in Leo's change history
-until the edited node has lost focus.
-#@+node:ekr.20100113075303.6272: *4* Argument handling
-#@+node:ekr.20100112051224.6222: *5* Commands requesting user input
-@nocolor-node
-
-Commands requesting user input must be the last command executed within an @mode
-node. This prevents the implementation of commands such as "yank to <character>"
-that requires a "copy to clipboard" operation after the "find-character"
-command.
-
-======
-
-Maybe we just need more commands...
-#@+node:ekr.20100112051224.6226: *5* Range prefix to commands/objects (k.getArgs)
-@nocolor-node
-
-The ability to specify a numeric range prefix is not supported. For example,
-entering "3dd" will not delete the next three lines and "20G" will not move the
-cursor to the 20th line in the file.
-
-The ability to specify a numeric range prefix to an object is not supported. For
-example, the "d2fx" command should Delete up to and including the 2nd Found "x"
-character.
-#@+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
-@nocolor-node
-
-Commands modifying or selecting headline text do not work correctly within a
-@mode node.
-
-This eliminates accurate implementation of vi's delete/change/substitute/yank
-object commands. As a workaround, the commands are currently written to only
-select the text. The user must perform the subsequent delete, change,
-substitute, and yank.
-#@+node:ekr.20100112051224.6237: *4* Fix forward and backward by sentences
-@nocolor-node
-
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
-#@+node:ekr.20100112051224.6246: *4* Missing commands/features
-#@+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
-@nocolor-node
-
-Leo provides support for switching to upper or lower case but no method exists
-to toggle between cases (used by Vi's "~" command).
-
-#@+node:ekr.20100112051224.6233: *5* Replace current character command
-@nocolor-node
-
-Vi's "r" command allows user to replace the current character with the next
-entered character.
-#@+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
-@nocolor-node
-
-Vi has a collection of "z<movement>" commands that will move the
-current line to the top, middle, and bottom of the screen.  They are
-not supported in Leo.
-#@+node:ekr.20100112051224.6235: *5* Move body text up/down
-@nocolor-node
-
-Vi maps keys to scroll the text up/down one line and by half the
-number of visible lines.  Leo does not support this.
-
-#@+node:ekr.20110202094848.12568: *5* Named marks
-@nocolor-node
-
-Having worked with Tk text canvases more that Qt, there still seem to
-be things that it had that have to be worked around as the Qt people
-just haven't seen the need for.
-
-One is the block cursor, I giving Leo Vim like functionality, it would
-be nice if one where supported, theses new kids just don't understand
-something so primitive I guess.
-
-Another is named marks, in Vim you can store a number of cursor
-locations, and recall them to jump around in your code.  This was also
-useful in filling out templates as each stop could be given a name
-mark.  This helped make filling out a template easier as you weren't
-stuck in a linear filling in the blanks in a set order, template stops
-where linked in rings, you could jump from the last stop back to the
-first and make and changes you wanted on a second go round.  Gravity
-of marks made things easier to inspect to determine what stops where
-used and which ones were being bypassed.
-
-As these things had an actual presence in the text buffer, it going to
-be a little harder to come up with a reasonable work around.
-
-Tom
-#@+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
-#@+node:ekr.20100112051224.6236: *5* Two kinds of words
-Vi supports two types of words in its commands:
-
-1. Words that consist of only a subset of the character set and
-2. words that consist of all characters except the space and tab characters.
-
-Leo's always considers a word to consist of a subset of characters
-although some word related commands include different characters
-than others.
-#@+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
-Yank vs. Yank:
-Vi's "yank" commands copy the selected text TO the clipboard.
-Leo's "yank" commands insert text FROM the clipboard.
-
-copy-text in modes:
-Leo's copy-text command does not work within a mode.  As a result,
-all "copy to clipboard" capability is being implemented using the
-kill-<object> command followed by Leo's "yank" command to put the
-text back.
-
-paste-text in modes:
-The paste-text command does not work within an @mode node.  Leo's
-"yank" command is used instead.
-
-delete-node does not copy node to clipboard:
-A copy-node command is issued to copy the node to the clipboard
-followed by the delete-node command.
 #@+node:ekr.20100827114047.5895: ** Bugs
 #@+node:ekr.20101024062147.5994: *3* Minor
-#@+node:ekr.20101218103123.5934: *4* Fix redefinition messages
 #@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
 # Apparently, ctrl-e is not passed to Leo at all.
 #@+node:ekr.20110111100539.12258: *5* Report
@@ -3134,45 +2295,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
-#@+node:ekr.20100521090440.5885: *4* Fix mac unicode crasher
-#@+node:ekr.20100521090440.5886: *5* Report
-@nocolor-node
-
-I put the following in qtGui.py after
-
-# Last minute-munges to keysym.
-
-    if sys.platform.startswith('darwin'):
-        darwinmap = {
-            'Alt-Key-5': '[',
-            'Alt-Key-6': ']',
-            'Alt-Key-7': '|',
-            'Alt-slash': '\\',
-            'Alt-Key-8': '{',
-            'Alt-Key-9': '}',
-            'Alt-e': '€',
-            'Alt-l': '@',
-        }
-        if tkKey in darwinmap:
-            tkKey = stroke = darwinmap[tkKey]
-
-It works quite reasonabe. Sometimes (not really well reproducable)
-following message appears:
-
-/Users/tst/Leo-4.7-final/leo/core/leoKeys.py:3363: UnicodeWarning:
-Unicode equal comparison failed to convert both arguments to Unicode -
-interpreting them as being unequal
-  if k.abortAllModesKey and stroke == k.abortAllModesKey:
-/Users/scalet/Leo-4.7-final/leo/core/leoKeys.py:2521: UnicodeWarning:
-Unicode equal comparison failed to convert both arguments to Unicode -
-interpreting them as being unequal
-  if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-
-g'
-
-nonetheless the special characters were inserted as expected.
-
-I think all this is quite a hack, but ... thanks for the hack, most
-important for me it's working for now. 
 #@+node:ekr.20101024062147.6024: *4* bug 622819: Ctrl-Shift movement is incorrect
 @nocolor-node
 
@@ -3864,7 +2986,6 @@ Improve the recursive import script.
     - Minimize the path names
     - Option to include/exclude the @auto itself
 
-#@+node:ekr.20090907080624.6081: *4* Spell checker should check headlines
 #@+node:ekr.20071001052501: *4* Versioning for nodes
 @nocolor
 
@@ -4411,8 +3532,8 @@ def scanForAtIgnore(c,p):
 
     return False
 #@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url):
-
+def handleUrlInUrlNode(url, c=None, p=None):
+    
     # Note 1: the UNL plugin has its own notion of what a good url is.
 
     # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
@@ -4432,18 +3553,18 @@ followed by one of: (same as above, except no minus sign or comma).
   $%&'()*+/0-9:=?@A-Z_a-z}~
 @c
 
-urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
 
 if not url or len(url) == 0:
     g.es("no url following @url")
     return
 
 # Add http:// if required.
-if not re.match('^([a-z]{3,}:)',url):
-    url = 'http://' + url
-if not re.match(urlPattern,url):
-    g.es("invalid url:",url)
-    return
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
 #@+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
 @ Most browsers should handle the following urls:
   ftp://ftp.uu.net/public/whatever.
@@ -4452,15 +3573,58 @@ if not re.match(urlPattern,url):
 @c
 
 try:
-    import os
-    os.chdir(g.app.loadDir)
-    if g.match(url,0,"file:") and url[-4:]==".leo":
-        ok,frame = g.openWithFileName(url[5:],None)
-    else:
-        import webbrowser
-        # Mozilla throws a weird exception, then opens the file!
-        try: webbrowser.open(url)
-        except: pass
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                # Disable later call to c.onClick so
+                # the focus stays in frame.c (DOESN'T WORK?)
+                c.doubleClickFlag = True
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
 except:
     g.es("exception opening",url)
     g.es_exception()
@@ -5674,7 +4838,7 @@ oldRoot = c.rootPosition()
 found = oldRoot.insertAfter()
 found.moveToRoot(oldRoot)
 c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
+c.setRootPosition() # New in Leo 4.5.
 #@+node:ekr.20090402072059.7: *6* << create a clone of p under the find node >>
 q = self.p.clone()
 q.moveToLastChildOf(found)
@@ -5976,5 +5140,360 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@+node:ekr.20101129095441.5963: *3* Improve screenshots page
+#@+node:ekr.20100828074347.5827: *3* Vim bindings
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
+
+Vim mode users: your top 3 complaints, please
+#@+node:ekr.20110202111105.15438: *4* Handling vim modes
+#@+node:ekr.20061031131434.123: *5* set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.133: *5* setInputState
+def setInputState (self,state):
+
+    k = self
+    k.unboundKeyAction = state
+
+
+
+#@+node:ekr.20110202111105.15433: *4* Vim settings
+#@+node:ekr.20110202111105.15434: *5* @strings [command,insert, overwrite] top_level_unbound_key_action = command
+@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+command:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.
+#@+node:ekr.20110202111105.15435: *5* @bool stayInTreeAfterEditHeadline = True
+This allows the newline character to switch from the outline pane to the body pane.
+#@+node:ekr.20110202111105.15436: *5* @bool outline_pane_has_initial_focus = True
+True:  Outline gets focus when a new window is opened.
+False: Body pane gets focus when a new window is opened.
+#@+node:ekr.20110202111105.15437: *5* @bool stayInTreeAfterSelect = True
+True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
+
+If this is False it will be harder to use the arrow keys in the headline.
+    
+False: (Legacy) Selecting an outline node transfers focus to the body pane.
+#@+node:ekr.20110202094848.12569: *4* Notes
+#@+node:ekr.20100521090440.5887: *5* Generalize minibuffer code
+@language python
+@color
+
+#Just playing with part of a template system, the (partial) mock up for "range()" is:
+
+def tabStopNaming (event=None):
+
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
+
+  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
+           'end-value -- required, -> fill-in.  ',
+           'step -- optional, ->fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
+
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
+
+tabStopNaming()
+
+@nocolor
+
+=====================================================
+This is hardwired for the first parameter.  Things I need to expand
+this:
+
+1. put in a variable that cycles through the tabStops
+
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
+
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, andy guidance would be appreciated.
+
+Tom
+
+=======================
+
+Generalizing the minibuffer code would be a good thing to do.  I
+suppose we could define some kind of language that would create, or
+rather simulate, hand-written code.  In a sense, @mode nodes are
+intended to do this also.
+
+As I look at leoKeys.py again I'll keep this example in the back of my
+mind as something that it would be good to support more easily.
+
+Edward
+#@+node:ekr.20100210102224.5744: *5* Design
+@nocolor-node
+
+Requirements:
+    - Existing bindings must still be valid.
+    - But @mode does not have to remain.
+
+Think data:
+    - Drive binding by tables.
+    *** Design these tables first.
+    - Table design should be flixible.
+      It can change without affecting user.
+
+keySequence class?
+    - Represents a sequence of keystrokes.
+
+bufferMode class?
+    - Might encapsulate directives, etc.
+
+bindHelper class?
+    - Would mediate various aspects of binding.
+    - c.bindHelper or k.bindHelper?
+#@+node:ekr.20100113075303.6270: *4* Vim problems
+#@+node:ekr.20100112051224.6229: *5* Binding Arrow keys (fixed?)
+@nocolor-node
+
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@+node:ekr.20100112051224.6239: *5* Displaying mode help
+@nocolor-node
+
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@+node:ekr.20100112051224.6225: *5* Repeat last cursor movement command
+@nocolor-node
+
+Support the ';' key: repeat the last "To character" or "Find character" command.
+#@+node:ekr.20100113075303.6271: *5* Need mode-oriented bindings
+@nocolor-node
+
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+#@+node:ekr.20080616110054.2: *5* Support vim dot command
+@nocolor-node
+
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
+
+Binding keys within nodes:
+
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.  
+
+Support commands requesting input:
+
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
+#@+node:ekr.20100112051224.6238: *5* Some commands do not work in headline
+@nocolor-node
+
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@+node:ekr.20100113075303.6272: *5* Argument handling
+#@+node:ekr.20100112051224.6222: *6* Commands requesting user input
+@nocolor-node
+
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+
+======
+
+Maybe we just need more commands...
+#@+node:ekr.20100112051224.6226: *6* Range prefix to commands/objects (k.getArgs)
+@nocolor-node
+
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+#@+node:ekr.20100112051224.6223: *5* Editing node headlines using @mode nodes
+@nocolor-node
+
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+#@+node:ekr.20100112051224.6237: *5* Fix forward and backward by sentences
+@nocolor-node
+
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+#@+node:ekr.20100112051224.6246: *5* Missing commands/features
+#@+node:ekr.20100112051224.6232: *6* Toggle case command (easy)
+@nocolor-node
+
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
+
+#@+node:ekr.20100112051224.6233: *6* Replace current character command
+@nocolor-node
+
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+#@+node:ekr.20100112051224.6234: *6* Move current line (to screen position)
+@nocolor-node
+
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+#@+node:ekr.20100112051224.6235: *6* Move body text up/down
+@nocolor-node
+
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+#@+node:ekr.20110202094848.12568: *6* Named marks
+@nocolor-node
+
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+
+Another is named marks, in Vim you can store a number of cursor
+locations, and recall them to jump around in your code.  This was also
+useful in filling out templates as each stop could be given a name
+mark.  This helped make filling out a template easier as you weren't
+stuck in a linear filling in the blanks in a set order, template stops
+where linked in rings, you could jump from the last stop back to the
+first and make and changes you wanted on a second go round.  Gravity
+of marks made things easier to inspect to determine what stops where
+used and which ones were being bypassed.
+
+As these things had an actual presence in the text buffer, it going to
+be a little harder to come up with a reasonable work around.
+
+Tom
+#@+node:ekr.20110115062009.6025: *5* Commands that work differently in Vim
+#@+node:ekr.20100112051224.6236: *6* Two kinds of words
+Vi supports two types of words in its commands:
+
+1. Words that consist of only a subset of the character set and
+2. words that consist of all characters except the space and tab characters.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+#@+node:ekr.20090629183608.8446: *6* Copy/paste/yank/delete
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
 #@-all
 #@-leo
