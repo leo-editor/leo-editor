@@ -7922,8 +7922,10 @@ class leoQtEventFilter(QtCore.QObject):
         close_flashers = c.config.getString('close_flash_brackets') or ''
         open_flashers  = c.config.getString('open_flash_brackets') or ''
         self.flashers = open_flashers + close_flashers
-
-
+        
+        # Support for ctagscompleter.py plugin.
+        self.ctagscompleter_active = False
+        self.ctagscompleter_onKey = None
     #@+node:ekr.20090407101640.10: *4* char2tkName
     char2tkNameDict = {
         # Part 1: same as k.guiBindNamesDict
@@ -7992,7 +7994,7 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
-        verbose = True
+        verbose = False
         traceEvent = False
         traceKey = (True or self.trace_masterKeyHandler)
         traceFocus = False
@@ -8016,6 +8018,9 @@ class leoQtEventFilter(QtCore.QObject):
                 isEditWidget,
                 eventType == ev.KeyRelease,
                 eventType == ev.KeyPress)
+        elif eventType == ev.ShortcutOverride and self.ctagscompleter_active:
+            # Another hack: QCompleter generates ShortcutOverride.
+            self.keyIsActive = True
         else:
             self.keyIsActive = False
 
@@ -8049,7 +8054,11 @@ class leoQtEventFilter(QtCore.QObject):
 
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)
-            if override:
+            if self.ctagscompleter_active:
+                self.ctagscompleter_onKey(event,stroke)
+                # An apparent bug: the key *will* be inserted into the text.
+                override = False
+            elif override:
                 if trace and traceKey and not ignore:
                     g.trace('bound',repr(stroke)) # repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
