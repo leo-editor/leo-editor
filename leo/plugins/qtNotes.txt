@@ -4163,5 +4163,108 @@ def onMouseUp(self,event=None):
     if QtCore.Qt.ControlModifier & event.modifiers():
         event = {'c':self.leo_c}
         openURL(event)
+#@+node:ekr.20110307195735.14242: *3* Can clicking select the current position?
+#@+node:ekr.20090124174652.120: *4* qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemClicked(QTreeWidgetItem*, int)"),
+        self.onItemClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    w.connect(self.treeWidget, QtCore.SIGNAL(
+            "customContextMenuRequested(QPoint)"),
+        self.onContextMenu)    
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    # 2010/01/24: Do not set this here.
+    # The read logic sets c.changed to indicate nodes have changed.
+    # c.setChanged(False)
+#@+node:ekr.20090812211903.3641: *4* onItemClicked (nativeTree) (New in Leo 4.7)
+def onItemClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+            # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+#@verbatim
+            #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@+node:ekr.20090124174652.43: *4* onTreeSelect (nativeTree)
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    item = self.getCurrentItem()
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if trace: g.trace(self.traceItem(item))
+        self.select(p) # Calls before/afterSelectHint.
+    else:
+        self.error('no p for item: %s' % item)
+
+    c.outerUpdate()
 #@-all
 #@-leo
