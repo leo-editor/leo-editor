@@ -215,221 +215,6 @@ def cmd_tags(args):
     cw.feed_ctags(open(args[0]))
 
 #@+node:ekr.20110310093050.14234: *3* functions from leoGlobals
-#@+node:ekr.20110310093050.14280: *4* Unicode utils...
-#@+node:ekr.20110310093050.14281: *5* g.getPythonEncodingFromString
-def getPythonEncodingFromString(s):
-
-    '''Return the encoding given by Python's encoding line.
-    s is the entire file.
-    '''
-
-    encoding = None
-    tag,tag2 = '# -*- coding:','-*-'
-    n1,n2 = len(tag),len(tag2)
-
-    if s:
-        # For Python 3.x we must convert to unicode before calling startswith.
-        # The encoding doesn't matter: we only look at the first line, and if
-        # the first line is an encoding line, it will contain only ascii characters.
-        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
-        lines = g.splitLines(s)
-        line1 = lines[0].strip()
-        if line1.startswith(tag) and line1.endswith(tag2):
-            e = line1[n1:-n2].strip()
-            if e and g.isValidEncoding(e):
-                encoding = e
-
-    return encoding
-#@+node:ekr.20110310093050.14282: *5* g.isBytes, isCallable, isChar, isString & isUnicode
-# The syntax of these functions must be valid on Python2K and Python3K.
-
-def isBytes(s):
-    '''Return True if s is Python3k bytes type.'''
-    if g.isPython3:
-        # Generates a pylint warning, but that can't be helped.
-        return type(s) == type(bytes('a','utf-8'))
-    else:
-        return False
-
-def isCallable(obj):
-    if g.isPython3:
-        return hasattr(obj, '__call__')
-    else:
-        return callable(obj)
-
-def isChar(s):
-    '''Return True if s is a Python2K character type.'''
-    if g.isPython3:
-        return False
-    else:
-        return type(s) == types.StringType
-
-def isString(s):
-    '''Return True if s is any string, but not bytes.'''
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) in types.StringTypes
-
-def isUnicode(s):
-    '''Return True if s is a unicode string.'''
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) == types.UnicodeType
-#@+node:ekr.20110310093050.14283: *5* g.isValidEncoding
-def isValidEncoding (encoding):
-
-    if not encoding:
-        return False
-
-    if sys.platform == 'cli':
-        return True
-
-    import codecs
-
-    try:
-        codecs.lookup(encoding)
-        return True
-    except LookupError: # Windows.
-        return False
-    except AttributeError: # Linux.
-        return False
-#@+node:ekr.20110310093050.14284: *5* g.isWordChar & g.isWordChar1
-def isWordChar (ch):
-
-    '''Return True if ch should be considered a letter.'''
-
-    return ch and (ch.isalnum() or ch == '_')
-
-def isWordChar1 (ch):
-
-    return ch and (ch.isalpha() or ch == '_')
-#@+node:ekr.20110310093050.14285: *5* g.reportBadChars
-def reportBadChars (s,encoding):
-
-    if g.isPython3:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                print(s2)
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    print(s2)
-    else:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                print("%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace')))
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                print("%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace')))
-#@+node:ekr.20110310093050.14286: *5* g.toEncodedString
-def toEncodedString (s,encoding='utf-8',reportErrors=False):
-
-    if encoding is None:
-        encoding = 'utf-8'
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-    return s
-#@+node:ekr.20110310093050.14287: *5* g.toUnicode
-def toUnicode (s,encoding='utf-8',reportErrors=False):
-
-    # The encoding is usually 'utf-8'
-    # but is may be different while importing or reading files.
-    if encoding is None:
-        encoding = 'utf-8'
-
-    if isPython3:
-        f,mustConvert = str,g.isBytes
-    else:
-        f = unicode
-        def mustConvert (s):
-            return type(s) != types.UnicodeType
-
-    if not s:
-        s = g.u('')
-    elif mustConvert(s):
-        try:
-            s = f(s,encoding,'strict')
-        except (UnicodeError,Exception):
-            s = f(s,encoding,'replace')
-            if reportErrors: g.reportBadChars(s,encoding)
-    else:
-        pass
-
-    return s
-#@+node:ekr.20110310093050.14288: *5* g.u & g.ue
-if isPython3: # g.not defined yet.
-    def u(s):
-        return s
-    def ue(s,encoding):
-        return str(s,encoding)
-else:
-    def u(s):
-        return unicode(s)
-    def ue(s,encoding):
-        return unicode(s,encoding)
-#@+node:ekr.20110310093050.14289: *5* toEncodedStringWithErrorCode (for unit testing)
-def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
-
-    ok = True
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except Exception:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-            ok = False
-    return s, ok
-#@+node:ekr.20110310093050.14290: *5* toUnicodeWithErrorCode (for unit testing)
-def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
-
-    ok = True
-    if g.isPython3: f = str
-    else: f = unicode
-    if s is None:
-        s = g.u('')
-    if not g.isUnicode(s):
-        try:
-            s = f(s,encoding,'strict')
-        except Exception:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
-            s = f(s,encoding,'replace')
-            ok = False
-    return s,ok
 #@+node:ekr.20110310093050.14291: *4* Most common functions...
 #@+node:ekr.20110310093050.14296: *5* callers & _callerName
 def callers (n=4,count=0,excludeCaller=True,files=False):
@@ -635,6 +420,157 @@ def translateArgs(args,d):
             result.append(arg)
 
     return ''.join(result)
+#@+node:ekr.20110310093050.14280: *4* Unicode utils...
+#@+node:ekr.20110310093050.14282: *5* g.isBytes, isCallable, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
+
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
+    if g.isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
+def isCallable(obj):
+    if g.isPython3:
+        return hasattr(obj, '__call__')
+    else:
+        return callable(obj)
+
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
+
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@+node:ekr.20110310093050.14283: *5* g.isValidEncoding
+def isValidEncoding (encoding):
+
+    if not encoding:
+        return False
+
+    if sys.platform == 'cli':
+        return True
+
+    import codecs
+
+    try:
+        codecs.lookup(encoding)
+        return True
+    except LookupError: # Windows.
+        return False
+    except AttributeError: # Linux.
+        return False
+#@+node:ekr.20110310093050.14285: *5* g.reportBadChars
+def reportBadChars (s,encoding):
+
+    if g.isPython3:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                print(s2)
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    print(s2)
+    else:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                print("%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace')))
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                print("%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace')))
+#@+node:ekr.20110310093050.14286: *5* g.toEncodedString
+def toEncodedString (s,encoding='utf-8',reportErrors=False):
+
+    if encoding is None:
+        encoding = 'utf-8'
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+    return s
+#@+node:ekr.20110310093050.14287: *5* g.toUnicode
+def toUnicode (s,encoding='utf-8',reportErrors=False):
+
+    # The encoding is usually 'utf-8'
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = 'utf-8'
+
+    if isPython3:
+        f,mustConvert = str,g.isBytes
+    else:
+        f = unicode
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = g.u('')
+    elif mustConvert(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,Exception):
+            s = f(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@+node:ekr.20110310093050.14288: *5* g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
 
