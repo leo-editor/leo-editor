@@ -4794,6 +4794,7 @@ def findTestScript(c,h,where=None):
     if p:
         return g.getScript(c,p)
     else:
+        g.trace('Not found',h)
         return None
 #@+node:EKR.20040612114220: ** Utility classes, functions & objects...
 #@+node:ekr.20050315073003: *3*  Index utilities... (leoGlobals)
