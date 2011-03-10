@@ -44,44 +44,16 @@ with 'op' etc.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20110310091639.14293: ** << imports >>
+import codewise as g # Use this module as g
+
 import os
 import sqlite3
 import sys
 import types
+#@-<< imports >>
 
-# This must be defined here: it is used to define nullObject.
 isPython3 = sys.version_info >= (3,0,0)
 
-try:
-    import leo.core.leoGlobals as g
-except ImportError:
-    try:
-        import codewise as g # Use this module as g
-    except ImportError:
-        print('*** using do-nothing g')
-        g = nullObject()
-#@-<< imports >>
-#@+<< define the nullObject class >>
-#@+node:ekr.20110310093050.14233: ** << define the nullObject class >>
-# From the Python cookbook, recipe 5.23
-
-class nullObject:
-
-    """An object that does nothing, and does it very well."""
-
-    def __init__   (self,*args,**keys): pass
-    def __call__   (self,*args,**keys): return self
-    # def __len__    (self): return 0 # Debatable.
-    def __repr__   (self): return "nullObject"
-    def __str__    (self): return "nullObject"
-    if isPython3:
-        def __bool__(self): return False
-    else:
-        def __nonzero__(self): return 0
-    def __delattr__(self,attr):     return self
-    def __getattr__(self,attr):     return self
-    def __setattr__(self,attr,val): return self
-#@-<< define the nullObject class >>
 #@+<< define usage >>
 #@+node:ekr.20110310091639.14292: ** << define usage >>
 usage = """
