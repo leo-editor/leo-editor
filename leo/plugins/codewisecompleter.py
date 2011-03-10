@@ -37,7 +37,10 @@ __version__ = '0.2'
 #@+node:ville.20091204224145.5358: ** << imports >>
 import leo.core.leoGlobals as g
 
-import leo.external.codewise as codewise # The code that creates tag files.
+import leo.external.codewise as codewise
+    # The code that interfaces with ctags.
+    # It contains commands that can be run stand-alone,
+    # or imported as is done here.
 
 import os
 import re

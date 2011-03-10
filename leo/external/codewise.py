@@ -20,16 +20,71 @@ Why codewise:
 
 - This is usable as a python module, or a command line tool.
 
+To use, do the following:
+
+1. Make sure you have exuberant ctags (not just regular ctags) installed. It's
+an Ubuntu package, so easy if you're using Ubuntu.
+
+2. Enable the plugin by putting "codewisecompleter.py" on an
+uncommented line in your @enabled-plugins @settings node.
+
+3. Run leo\external\codewise from the command line::
+
+  codewise setup
+  codewise init
+  codewise parse .../path/to/leo/  # For completion on leo code
+  codewise parse .../some/other/project/
+
+Then, after restarting leo if necessary, type
+
+c.op<Alt-0> in the body editor to find all the c. methods starting
+with 'op' etc. 
+
 """
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20110310091639.14293: ** << imports >>
-import os,sys
+import os
 import sqlite3
+import sys
+import types
+
+# This must be defined here: it is used to define nullObject.
+isPython3 = sys.version_info >= (3,0,0)
+
+try:
+    import leo.core.leoGlobals as g
+except ImportError:
+    try:
+        import codewise as g # Use this module as g
+    except ImportError:
+        print('*** using do-nothing g')
+        g = nullObject()
 #@-<< imports >>
-#@+<< define USAGE >>
-#@+node:ekr.20110310091639.14292: ** << define USAGE >>
-USAGE = """
+#@+<< define the nullObject class >>
+#@+node:ekr.20110310093050.14233: ** << define the nullObject class >>
+# From the Python cookbook, recipe 5.23
+
+class nullObject:
+
+    """An object that does nothing, and does it very well."""
+
+    def __init__   (self,*args,**keys): pass
+    def __call__   (self,*args,**keys): return self
+    # def __len__    (self): return 0 # Debatable.
+    def __repr__   (self): return "nullObject"
+    def __str__    (self): return "nullObject"
+    if isPython3:
+        def __bool__(self): return False
+    else:
+        def __nonzero__(self): return 0
+    def __delattr__(self,attr):     return self
+    def __getattr__(self,attr):     return self
+    def __setattr__(self,attr,val): return self
+#@-<< define the nullObject class >>
+#@+<< define usage >>
+#@+node:ekr.20110310091639.14292: ** << define usage >>
+usage = """
 codewise setup
  (Optional - run this first to create template ~/.ctags)
 
@@ -61,7 +116,7 @@ codewise tags TAGS
  Dump already-created tagfile TAGS to database
 
 """ 
-#@-<< define USAGE >>
+#@-<< define usage >>
 #@+<< define DB_SCHEMA >>
 #@+node:ekr.20110310091639.14255: ** << define DB_SCHEMA >>
 DB_SCHEMA = """
@@ -78,7 +133,6 @@ COMMIT;
 """
 #@-<< define DB_SCHEMA >>
 
-isPython3 = sys.version_info >= (3,0,0) # EKR.
 DEFAULT_DB = os.path.expanduser("~/.codewise.db")
 
 #@+others
@@ -160,10 +214,432 @@ def cmd_tags(args):
     cw = CodeWise()
     cw.feed_ctags(open(args[0]))
 
+#@+node:ekr.20110310093050.14234: *3* functions from leoGlobals
+#@+node:ekr.20110310093050.14280: *4* Unicode utils...
+#@+node:ekr.20110310093050.14281: *5* g.getPythonEncodingFromString
+def getPythonEncodingFromString(s):
+
+    '''Return the encoding given by Python's encoding line.
+    s is the entire file.
+    '''
+
+    encoding = None
+    tag,tag2 = '# -*- coding:','-*-'
+    n1,n2 = len(tag),len(tag2)
+
+    if s:
+        # For Python 3.x we must convert to unicode before calling startswith.
+        # The encoding doesn't matter: we only look at the first line, and if
+        # the first line is an encoding line, it will contain only ascii characters.
+        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
+        lines = g.splitLines(s)
+        line1 = lines[0].strip()
+        if line1.startswith(tag) and line1.endswith(tag2):
+            e = line1[n1:-n2].strip()
+            if e and g.isValidEncoding(e):
+                encoding = e
+
+    return encoding
+#@+node:ekr.20110310093050.14282: *5* g.isBytes, isCallable, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
+
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
+    if g.isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
+def isCallable(obj):
+    if g.isPython3:
+        return hasattr(obj, '__call__')
+    else:
+        return callable(obj)
+
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
+
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@+node:ekr.20110310093050.14283: *5* g.isValidEncoding
+def isValidEncoding (encoding):
+
+    if not encoding:
+        return False
+
+    if sys.platform == 'cli':
+        return True
+
+    import codecs
+
+    try:
+        codecs.lookup(encoding)
+        return True
+    except LookupError: # Windows.
+        return False
+    except AttributeError: # Linux.
+        return False
+#@+node:ekr.20110310093050.14284: *5* g.isWordChar & g.isWordChar1
+def isWordChar (ch):
+
+    '''Return True if ch should be considered a letter.'''
+
+    return ch and (ch.isalnum() or ch == '_')
+
+def isWordChar1 (ch):
+
+    return ch and (ch.isalpha() or ch == '_')
+#@+node:ekr.20110310093050.14285: *5* g.reportBadChars
+def reportBadChars (s,encoding):
+
+    if g.isPython3:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                print(s2)
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    print(s2)
+    else:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                print("%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace')))
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                print("%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace')))
+#@+node:ekr.20110310093050.14286: *5* g.toEncodedString
+def toEncodedString (s,encoding='utf-8',reportErrors=False):
+
+    if encoding is None:
+        encoding = 'utf-8'
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+    return s
+#@+node:ekr.20110310093050.14287: *5* g.toUnicode
+def toUnicode (s,encoding='utf-8',reportErrors=False):
+
+    # The encoding is usually 'utf-8'
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = 'utf-8'
+
+    if isPython3:
+        f,mustConvert = str,g.isBytes
+    else:
+        f = unicode
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = g.u('')
+    elif mustConvert(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,Exception):
+            s = f(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@+node:ekr.20110310093050.14288: *5* g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
+#@+node:ekr.20110310093050.14289: *5* toEncodedStringWithErrorCode (for unit testing)
+def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except Exception:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+            ok = False
+    return s, ok
+#@+node:ekr.20110310093050.14290: *5* toUnicodeWithErrorCode (for unit testing)
+def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+    if g.isPython3: f = str
+    else: f = unicode
+    if s is None:
+        s = g.u('')
+    if not g.isUnicode(s):
+        try:
+            s = f(s,encoding,'strict')
+        except Exception:
+            if reportErrors:
+                g.reportBadChars(s,encoding)
+            s = f(s,encoding,'replace')
+            ok = False
+    return s,ok
+#@+node:ekr.20110310093050.14291: *4* Most common functions...
+#@+node:ekr.20110310093050.14296: *5* callers & _callerName
+def callers (n=4,count=0,excludeCaller=True,files=False):
+
+    '''Return a list containing the callers of the function that called g.callerList.
+
+    If the excludeCaller keyword is True (the default), g.callers is not on the list.
+
+    If the files keyword argument is True, filenames are included in the list.
+    '''
+
+    # sys._getframe throws ValueError in both cpython and jython if there are less than i entries.
+    # The jython stack often has less than 8 entries,
+    # so we must be careful to call g._callerName with smaller values of i first.
+    result = []
+    i = g.choose(excludeCaller,3,2)
+    while 1:
+        s = g._callerName(i,files=files)
+        if s:
+            result.append(s)
+        if not s or len(result) >= n: break
+        i += 1
+
+    result.reverse()
+    if count > 0: result = result[:count]
+    sep = g.choose(files,'\n',',')
+    return sep.join(result)
+#@+node:ekr.20110310093050.14297: *6* _callerName
+def _callerName (n=1,files=False):
+
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(n) # The stack frame, n levels up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name
+        if name == '__init__':
+            name = '__init__(%s,line %s)' % (
+                g.shortFileName(code1.co_filename),code1.co_firstlineno)
+        if files:
+            return '%s:%s' % (g.shortFilename(code1.co_filename),name)
+        else:
+            return name # The code name
+    except ValueError:
+        return '' # The stack is not deep enough.
+    except Exception:
+        g.es_exception()
+        return '' # "<no caller name>"
+#@+node:ekr.20110310093050.14252: *5* g.choose
+def choose(cond, a, b): # warning: evaluates all arguments
+
+    if cond: return a
+    else: return b
+#@+node:ekr.20110310093050.14253: *5* g.doKeywordArgs
+def doKeywordArgs (keys,d=None):
+
+    '''Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.'''
+
+    if d is None: d = {}
+
+    result = {}
+    for key,default_val in d.items():
+        isBool = default_val in (True,False)
+        val = keys.get(key)
+        if isBool and val in (True,'True','true'):
+            result[key] = True
+        elif isBool and val in (False,'False','false'):
+            result[key] = False
+        elif val is None:
+            result[key] = default_val
+        else:
+            result[key] = val
+
+    return result 
+#@+node:ekr.20110310093050.14293: *5* g.pdb
+def pdb (message=''):
+
+    """Fall into pdb."""
+
+    import pdb # Required: we have just defined pdb as a function!
+
+    if message:
+        print(message)
+    pdb.set_trace()
+#@+node:ekr.20110310093050.14263: *5* g.pr
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+pr_warning_given = False
+
+def pr(*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    nl = g.choose(newline,'\n','')
+    if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+        # sys.stdout is a TextIOWrapper with a particular encoding.
+        encoding = sys.stdout.encoding
+    else:
+        encoding = 'utf-8'
+
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
+    s = s + '\n'
+
+    if g.isPython3:
+        if encoding.lower() in ('utf-8','utf-16'):
+            s2 = s # There can be no problem.
+        else:
+            # 2010/10/21: Carefully convert s to the encoding.
+            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
+            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
+    else:
+        s2 = g.toEncodedString(s,encoding,reportErrors=False)
+
+    try: # We can't use any print keyword args in Python 2.x!
+        sys.stdout.write(s2)
+    except Exception:
+        # This can fail when running pythonw.ese.
+        # print('unexpected exception in g.pr')
+        print(s2)
+           
+#@+node:ekr.20110310093050.14268: *5* g.trace
+# Convert all args to strings.
+
+def trace (*args,**keys):
+
+    # Compute the effective args.
+    d = {'align':0,'newline':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    align = d.get('align')
+    if align is None: align = 0
+
+    # Compute the caller name.
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(1) # The stack frame, one level up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name # The code name
+    except Exception:
+        name = ''
+    if name == "?":
+        name = "<unknown>"
+
+    # Pad the caller name.
+    if align != 0 and len(name) < abs(align):
+        pad = ' ' * (abs(align) - len(name))
+        if align > 0: name = name + pad
+        else:         name = pad + name
+
+    # Munge *args into s.
+    # print ('g.trace:args...')
+    # for z in args: print (g.isString(z),repr(z))
+    result = [name]
+    for arg in args:
+        if g.isString(arg):
+            pass
+        elif g.isBytes(arg):
+            arg = g.toUnicode(arg)
+        else:
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = ''.join(result)
+
+    # 'print s,' is not valid syntax in Python 3.x.
+    g.pr(s,newline=newline)
+#@+node:ekr.20110310093050.14264: *5* g.translateArgs
+def translateArgs(args,d):
+
+    '''Return the concatenation of all args, with odd args translated.'''
+
+    if not hasattr(g,'consoleEncoding'):
+        e = sys.getdefaultencoding()
+        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+        # print 'translateArgs',g.consoleEncoding
+
+    result = [] ; n = 0 ; spaces = d.get('spaces')
+    for arg in args:
+        n += 1
+
+        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
+
+        # First, convert to unicode.
+        if type(arg) == type('a'):
+            arg = g.toUnicode(arg,g.consoleEncoding)
+
+        # Just do this for the stand-alone version.
+        if not g.isString(arg):
+            arg = repr(arg)
+
+        if arg:
+            if result and spaces: result.append(' ')
+            result.append(arg)
+
+    return ''.join(result)
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
+
     if len(sys.argv) < 2:
-        print(USAGE)
+        print(usage)
         return
     
     cmd = sys.argv[1]
@@ -188,8 +664,6 @@ def main():
         cmd_init(args)
     elif cmd == 'setup':
         cmd_setup(args)
-        
-
 #@+node:ekr.20110310091639.14287: *3* printlines
 def printlines(lines):
     for l in lines:
@@ -514,5 +988,4 @@ class ContextSniffer:
 
 if __name__ == "__main__":
     main()
-
 #@-leo
