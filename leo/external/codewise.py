@@ -44,12 +44,19 @@ with 'op' etc.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20110310091639.14293: ** << imports >>
-import codewise as g # Use this module as g
-
 import os
 import sqlite3
 import sys
 import types
+
+
+# A hack to get this module without actually importing it.
+def get_module():
+    pass
+
+g = sys.modules.get(get_module.__module__)
+assert g,'no g'
+# print(g)
 #@-<< imports >>
 
 isPython3 = sys.version_info >= (3,0,0)
@@ -545,6 +552,8 @@ else:
         return unicode(s,encoding)
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
+    
+    g.trace()
 
     if len(sys.argv) < 2:
         print(usage)
