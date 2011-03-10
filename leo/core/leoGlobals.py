@@ -1662,53 +1662,6 @@ def init_trace(args,echo=1):
                 g.pr("disabling:", arg)
         else:
             g.pr("ignoring:", prefix + arg)
-#@+node:ekr.20031218072017.2317: *4* g.trace (revised)
-# Convert all args to strings.
-
-def trace (*args,**keys):
-
-    # Compute the effective args.
-    d = {'align':0,'newline':True}
-    d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline')
-    align = d.get('align')
-    if align is None: align = 0
-
-    # Compute the caller name.
-    try: # get the function name from the call stack.
-        f1 = sys._getframe(1) # The stack frame, one level up.
-        code1 = f1.f_code # The code object
-        name = code1.co_name # The code name
-    except Exception:
-        name = ''
-    if name == "?":
-        name = "<unknown>"
-
-    # Pad the caller name.
-    if align != 0 and len(name) < abs(align):
-        pad = ' ' * (abs(align) - len(name))
-        if align > 0: name = name + pad
-        else:         name = pad + name
-
-    # Munge *args into s.
-    # print ('g.trace:args...')
-    # for z in args: print (g.isString(z),repr(z))
-    result = [name]
-    for arg in args:
-        if g.isString(arg):
-            pass
-        elif g.isBytes(arg):
-            arg = g.toUnicode(arg)
-        else:
-            arg = repr(arg)
-        if result:
-            result.append(" " + arg)
-        else:
-            result.append(arg)
-    s = ''.join(result)
-
-    # 'print s,' is not valid syntax in Python 3.x.
-    g.pr(s,newline=newline)
 #@+node:ekr.20031218072017.2318: *4* trace_tag
 # Convert all args to strings.
 # Print if tracing for name has been enabled.
@@ -3404,6 +3357,53 @@ def pr(*args,**keys):
             # sys.stdout.write(s2)
     else:
         app.printWaiting.append(s2)
+#@+node:ekr.20031218072017.2317: *3* g.trace
+# Convert all args to strings.
+
+def trace (*args,**keys):
+
+    # Compute the effective args.
+    d = {'align':0,'newline':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    align = d.get('align')
+    if align is None: align = 0
+
+    # Compute the caller name.
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(1) # The stack frame, one level up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name # The code name
+    except Exception:
+        name = ''
+    if name == "?":
+        name = "<unknown>"
+
+    # Pad the caller name.
+    if align != 0 and len(name) < abs(align):
+        pad = ' ' * (abs(align) - len(name))
+        if align > 0: name = name + pad
+        else:         name = pad + name
+
+    # Munge *args into s.
+    # print ('g.trace:args...')
+    # for z in args: print (g.isString(z),repr(z))
+    result = [name]
+    for arg in args:
+        if g.isString(arg):
+            pass
+        elif g.isBytes(arg):
+            arg = g.toUnicode(arg)
+        else:
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = ''.join(result)
+
+    # 'print s,' is not valid syntax in Python 3.x.
+    g.pr(s,newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 def translateArgs(args,d):
 
