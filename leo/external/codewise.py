@@ -689,20 +689,20 @@ class CodeWise:
                 c.execute('select name, class, file, searchpattern from function where class = (?)',(idd,))
                 for name, klassid, fileid, pat in c:
                     result.append((name, pat))
-        
-        # print('**** End of get_methods')
+
         return result
 
     #@+node:ekr.20110310091639.14264: *3* get_functions
     def get_functions(self, prefix = None):
-        c = self.cursor()        
-        if prefix is not None:
+
+        c = self.cursor()
+          
+        if prefix is None:
+            c.execute('select name, class, file, searchpattern from function')
+        else:
             c.execute('select name, class, file, searchpattern from function where name like (?)',(
                 prefix + '%',))
-        else:
-            c.execute('select name, class, file, searchpattern from function')
 
-        # print('**** End of get_functions')
         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
 
 

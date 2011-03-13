@@ -343,8 +343,11 @@ class CodewiseController:
         desc = []
         for h in hits:
             s = h[0]
-            sig = h[1].strip()[2:-4].strip()
-            desc.append(s + '\t' + sig)
+            if 1:
+                desc.append(s)
+            else:
+                sig = h[1].strip()[2:-4].strip()
+                desc.append(s + '\t' + sig)
 
         aList = list(set(desc))
         aList.sort()
@@ -395,13 +398,13 @@ class CodewiseController:
         # Show the completions.
         self.complete(event)
     #@+node:ekr.20110309051057.14272: *3* suggest
-    def suggest(self,event,pattern=''):
+    def suggest(self,event=None,pattern=''):
 
         trace = True
         c,w = self.c,self.w ; p = c.p
         
         if not pattern:
-            pattern, tail = self.get_current_line(w)
+            pattern,tail = self.get_current_line(w)
          
         m = self.get_attr_target_python(pattern)
 
@@ -420,7 +423,7 @@ class CodewiseController:
             hits = [h for h in hits if h.startswith(prefix)]
         else:
             # s = self.get_word()
-            if trace: g.trace('word: %s' % (prefix))
+            if trace: g.trace('prefix: %s' % (prefix))
             hits = self.lookup(prefix)
 
         if 0:

@@ -10018,7 +10018,10 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.defineSpecialKeys()
     self.defineSingleLineCommands()
     self.defineMultiLineCommands()
-    self.autoCompleter = autoCompleterClass(self)
+    if use_codewise:
+        self.autoCompleter = CodewiseCompleterClass(self)
+    else:
+        self.autoCompleter = AutoCompleterClass(self)
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
 #@+node:ekr.20061031131434.78: *8* << define externally visible ivars >>
