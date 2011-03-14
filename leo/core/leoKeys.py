@@ -1279,7 +1279,6 @@ class keyHandlerClass:
         use_codewise = not self.isLeoSourceFile()
         fn = c.shortFileName()
         if use_codewise:
-            # g.note('Using Codewise completer for %s' % (fn))
             self.autoCompleter = CodewiseCompleterClass(self)
         else:
             self.autoCompleter = AutoCompleterClass(self)
@@ -1682,19 +1681,20 @@ class keyHandlerClass:
         
         '''Return True if this is one of Leo's source files.
         
-        When True, we use the base AutoCompleterClass instead of the CodewiseCompleterClass.
+        When True, use AutoCompleterClass instead of CodewiseCompleterClass.
         '''
         
         c = self.c
-        table = (
-            'leoPy.leo', 'leoPyRef.leo',
-            'leoGui.leo', 'leoGuiPluginsRef.leo',
-            'leoPlugins.leo','leoPluginsRef.leo',
+
+        table = (z.lower() for z in (
+            'leoDocs.leo',
+            'leoGui.leo',       'leoGuiPluginsRef.leo',
+            'leoPlugins.leo',   'leoPluginsRef.leo',
+            'leoPy.leo',        'leoPyRef.leo',
             'myLeoSettings.leo', 'leoSettings.leo',
-        )
-        table = [z.lower() for z in table]
-        fn = c.shortFileName()
-        return fn.lower() in table
+        ))
+
+        return c.shortFileName().lower() in table
     #@+node:ekr.20061101071425: *4* oops
     def oops (self):
 

@@ -10023,7 +10023,6 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     use_codewise = not self.isLeoSourceFile()
     fn = c.shortFileName()
     if use_codewise:
-        # g.note('Using Codewise completer for %s' % (fn))
         self.autoCompleter = CodewiseCompleterClass(self)
     else:
         self.autoCompleter = AutoCompleterClass(self)
