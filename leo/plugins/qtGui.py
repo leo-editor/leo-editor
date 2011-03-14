@@ -2533,8 +2533,14 @@ class leoQtBody (leoFrame.leoBody):
         assert c.frame == frame and frame.c == c
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
+        
         self.unselectedBackgroundColor = c.config.getColor(
-            'unselected-background-color')
+            # 'unselected-background-color')
+            'unselected_body_bg_color')
+            
+        # 2011/03/14
+        self.unselectedForegroundColor = c.config.getColor(
+            'unselected_body_fg_color')
 
         # Set the actual gui widget.
         if self.useScintilla:
@@ -2630,8 +2636,8 @@ class leoQtBody (leoFrame.leoBody):
         
         # g.trace(bg,fg,g.callers())
         
-        self.setBackgroundColorHelper(bg,obj)
         self.setForegroundColorHelper(fg,obj)
+        self.setBackgroundColorHelper(bg,obj)
     #@+node:ekr.20110208115654.15914: *5* setBackgroundColorHelper (qtBody)
     def setBackgroundColorHelper (self,colorName,obj):
         
@@ -2644,7 +2650,7 @@ class leoQtBody (leoFrame.leoBody):
         styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
             colorName)
             
-        if trace: g.trace(colorName) # id(obj),obj,str(obj.objectName()))
+        if trace: g.trace(colorName,g.callers()) # id(obj),obj,str(obj.objectName()))
 
         if QtGui.QColor(colorName).isValid():
             obj.setStyleSheet(styleSheet)
@@ -2656,7 +2662,7 @@ class leoQtBody (leoFrame.leoBody):
         
         # obj is a QTextEdit or QTextBrowser.
         
-        return ### Does not work, and interferes with setBackgroundColor.
+        # return ### Does not work, and interferes with setBackgroundColor.
         
         trace = False and not g.unitTesting
         
@@ -2665,7 +2671,7 @@ class leoQtBody (leoFrame.leoBody):
         styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
             colorName)
             
-        if trace: g.trace(colorName) # id(obj),obj,str(obj.objectName()))
+        if trace: g.trace(colorName,g.callers()) # id(obj),obj,str(obj.objectName()))
 
         if QtGui.QColor(colorName).isValid():
             obj.setStyleSheet(styleSheet)
@@ -3318,6 +3324,11 @@ class leoQtBody (leoFrame.leoBody):
             # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
             c.k.showStateColors(inOutline=False,w=self.widget)
         else:
+            # 2011/03/14: Also set the foreground color.
+            colorName = self.unselectedForegroundColor
+            if trace: g.trace('%9s' % (kind),colorName)
+            self.setForegroundColorHelper(colorName,obj)
+            
             colorName = self.unselectedBackgroundColor
             if trace: g.trace('%9s' % (kind),colorName)
             self.setBackgroundColorHelper(colorName,obj)

@@ -157,7 +157,7 @@ class AutoCompleterClass:
             for z in gc.get_objects():
                 try:
                     name = z.__class__.__name__
-                    if not self.allClassesDict.get(name):
+                    if self.allClassesDict.get(name) is not None:
                         self.allClassesDict [name] = z
                         count += 1
                 except ReferenceError:
@@ -1154,6 +1154,8 @@ class keyHandlerClass:
         global (class vars) or per-instance (ivars) for kill buffers and registers.'''
 
         # g.trace('base keyHandler',g.callers())
+        
+        global use_codewise
 
         self.c = c
         self.dispatchEvent = None
@@ -1274,7 +1276,10 @@ class keyHandlerClass:
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
+        use_codewise = not self.isLeoSourceFile()
+        fn = c.shortFileName()
         if use_codewise:
+            # g.note('Using Codewise completer for %s' % (fn))
             self.autoCompleter = CodewiseCompleterClass(self)
         else:
             self.autoCompleter = AutoCompleterClass(self)
@@ -1672,6 +1677,24 @@ class keyHandlerClass:
         for key in k.guiBindNamesDict:
             k.guiBindNamesInverseDict [k.guiBindNamesDict.get(key)] = key
 
+    #@+node:ekr.20110314115639.14269: *4* k.isLeoSourceFile
+    def isLeoSourceFile (self):
+        
+        '''Return True if this is one of Leo's source files.
+        
+        When True, we use the base AutoCompleterClass instead of the CodewiseCompleterClass.
+        '''
+        
+        c = self.c
+        table = (
+            'leoPy.leo', 'leoPyRef.leo',
+            'leoGui.leo', 'leoGuiPluginsRef.leo',
+            'leoPlugins.leo','leoPluginsRef.leo',
+            'myLeoSettings.leo', 'leoSettings.leo',
+        )
+        table = [z.lower() for z in table]
+        fn = c.shortFileName()
+        return fn.lower() in table
     #@+node:ekr.20061101071425: *4* oops
     def oops (self):
 
@@ -4550,7 +4573,7 @@ class ContextSniffer:
         
         self.push_declarations(s)
 
-        aList = self.vars.get(varname,[])
+        aList = self.vars.get(varname,[])   
         
         return aList
     #@+node:ekr.20110312162243.14262: *3* set_small_context
@@ -4581,7 +4604,7 @@ class ContextSniffer:
 
         vars.append(klass)
     #@-others
-#@+node:ekr.20110312155404.14249: ** class CodewiseCompleterClass (autoCompleterClass)
+#@+node:ekr.20110312155404.14249: ** class CodewiseCompleterClass (AutoCompleterClass)
 class CodewiseCompleterClass (AutoCompleterClass):
     
     #@+others
@@ -4596,6 +4619,21 @@ class CodewiseCompleterClass (AutoCompleterClass):
         self.body = None    # Set in start: a QTextBrowserSubclass
         self.widget = None  # Set in start: a leoQTextEditWidget
         self.tabName = 'Completions'
+    #@+node:ekr.20110314123044.14271: *3* showAutocompleter/CalltipsStatus
+    def showAutocompleterStatus (self):
+        '''Show the autocompleter status.'''
+
+        k = self.k
+        if not g.unitTesting:
+            s = 'Codewise autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
+            g.es(s,color='red')
+
+    def showCalltipsStatus (self):
+        '''Show the autocompleter status.'''
+        k = self.k
+        if not g.unitTesting:
+            s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+            g.es(s,color='red')
     #@+node:ekr.20110312155404.14255: *3* complete & helpers
     def complete(self,event=None,s=None):
         
@@ -4634,7 +4672,8 @@ class CodewiseCompleterClass (AutoCompleterClass):
     #@+node:ekr.20110313103739.14270: *4* cleanup
     def clean (self,hits):
         
-        '''Clean up hits, a list of ctags patterns'''
+        '''Clean up hits, a list of ctags patterns, for display.'''
+        
         aList = []
         for h in hits:
             s = h[0]
