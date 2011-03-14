@@ -670,7 +670,7 @@ class AutoCompleterClass:
 
         trace = False and not g.unitTesting
         if trace: g.trace('(autocompleter)',
-            self.prefix,self.theObject,self.prevObjects)
+            repr(self.prefix),self.theObject,self.prevObjects)
 
         c = self.c ; w = self.widget
         if self.prefix:
@@ -707,6 +707,7 @@ class AutoCompleterClass:
                 if trace: g.trace(i,j,repr(word))
                 w.setSelectionRange(i,j,insert=j)
                 self.prefix = word
+                # if trace: g.trace('setting self.prefix',word)
                 self.popTabName()
                 self.membersList = self.getMembersList(obj)
                 # g.trace(len(self.membersList))
@@ -930,6 +931,7 @@ class AutoCompleterClass:
                 s = w.getSelectedText()
                 if s.startswith(self.prefix):
                     self.prefix = self.prefix + ch
+                    # g.trace('setting self.prefix',self.prefix)
                 self.computeCompletionList()
         else:
             word = w.getSelectedText()
@@ -4782,24 +4784,18 @@ class CodewiseCompleterClass (AutoCompleterClass):
         c = self.c
         self.body = c.frame.top.ui.richTextEdit # A QTextBrowserSubclass.
         self.widget = c.frame.body.bodyCtrl # A leoQTextEditWidget.
-        
-        ###
-        # We wait until now to define these dicts so that more classes and objects will exist.
-        # if not self.objectDict:
-            # self.defineClassesDict()
-            # self.defineObjectDict()
 
         self.prefix = g.choose(prefix is None,'',prefix)
         self.selection = w.getSelectionRange()
         self.selectedText = w.getSelectedText()
         
-        s = self.select_word() ### New
+        self.prefix = self.select_word() # New
         
         ###
         # if self.force:
             # partialWord = self.initForce()
         
-        self.membersList = self.complete(event) ### New code
+        self.membersList = self.complete(event) # New
 
         if not self.membersList:
             self.abort()
@@ -4812,7 +4808,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
     def select_word (self):
         
 
-        '''Select the word under the cursor.'''
+        '''Select the word under the cursor and return it.'''
 
         trace = False and not g.unitTesting
         w = self.widget
@@ -4824,7 +4820,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
             i -= 1
 
         w.setSelectionRange(i,j)
-        return i
+        return s[i:j]
     #@-others
 #@-others
 #@-leo
