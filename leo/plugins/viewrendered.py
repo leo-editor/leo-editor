@@ -162,19 +162,21 @@ class ViewRendered(QTextEdit):
 
             try:
                 b = publish_string(b, writer_name='html')
+                s = g.toUnicode(b) # 2011/03/15
             except SystemMessage as sm:
                 g.trace(sm)
                 print(sm.args)
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
-                    b = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,b)
-                    self.setPlainText(b)
+                    s = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,s)
+                    self.setPlainText(s)
                     return
 
         if self.view_html:
-            self.setPlainText(b)
+            self.setPlainText(s)
         else:
-            self.setHtml(g.toUnicode(b))
+            # self.setHtml(g.toUnicode(b))
+            self.setHtml(s)
     #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
