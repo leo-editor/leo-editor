@@ -38,7 +38,7 @@ class NestedSplitterChoice(QtGui.QWidget):
 
         self.setLayout(QtGui.QVBoxLayout())
 
-        button = QtGui.QPushButton("Action", parent=self)
+        button = QtGui.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
 
         button.setContextMenuPolicy(QtConst.CustomContextMenu)
