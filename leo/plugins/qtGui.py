@@ -63,13 +63,13 @@ if QtCore is None:
         raise
 
 try:
-    from nested_splitter import NestedSplitter
-    splitter_class = NestedSplitter
-
+    import leo.plugins.nested_splitter as nested_splitter
+    splitter_class = nested_splitter.NestedSplitter
     # disable special behavior, turned back on by associated plugin,
     # if the plugin's loaded
-    NestedSplitter.enabled = False
+    nested_splitter.NestedSplitter.enabled = False
 except ImportError:
+    print('Can not import nested_splitter')
     splitter_class = QtGui.QSplitter
 
 # remove scintilla dep for now    
