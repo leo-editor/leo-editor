@@ -3,12 +3,12 @@
 """Adds flexible panel layout through context menus on the handles between panels.
 Requires Qt.
 """
-#@+others
-#@+node:tbrown.20110203111907.5520: ** declarations
-__version__ = '0.1'
-# 
-# 0.1 - initial release - TNB
 
+__version__ = '0.1'
+    # 0.1 - initial release - TNB
+    
+#@+<< imports >>
+#@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
 
 g.assertUi('qt')
@@ -16,6 +16,9 @@ g.assertUi('qt')
 from PyQt4 import QtCore, QtGui, Qt
 
 from leo.plugins.nested_splitter import NestedSplitter
+#@-<< imports >>
+
+#@+others
 #@+node:tbrown.20110203111907.5521: ** init
 def init():
 
