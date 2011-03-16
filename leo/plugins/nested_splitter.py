@@ -18,6 +18,9 @@ from PyQt4.QtCore import Qt as QtConst
 #@+node:ekr.20110316094902.14430: ** init
 def init():
     
+    # Allow this to be imported as a plugin,
+    # but it should never be necessary to do so.
+    
     return True
 #@+node:ekr.20110316093303.14484: ** class DemoWidget
 class DemoWidget(QtGui.QWidget):

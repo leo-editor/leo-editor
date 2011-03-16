@@ -30,15 +30,16 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@+node:tbrown.20110203111907.5522: ** onCreate
+#@+node:tbrown.20110203111907.5522: ** onCreate & callbacks
 def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c: return
 
     NestedSplitter.enabled = True
-
-    # define menu callbacks here where c is in scope
+    
+    #@+others
+    #@+node:ekr.20110316100442.14371: *3* offer_tabs
     def offer_tabs(menu, splitter, index, button_mode):
 
         if not button_mode:
@@ -58,7 +59,7 @@ def onCreate(tag, keys):
                 s.replace_widget(s.widget(index), w)
             act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
             menu.addAction(act)
-
+    #@+node:ekr.20110316100442.14372: *3* offer_viewrendered
     def offer_viewrendered(menu, splitter, index, button_mode):
 
         if not button_mode:
@@ -72,7 +73,7 @@ def onCreate(tag, keys):
                 s.replace_widget(s.widget(index), w)
             act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
             menu.addAction(act)
-
+    #@-others
 
     splitter = c.frame.top.splitter_2.top()
 
