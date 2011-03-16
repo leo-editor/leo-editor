@@ -21,11 +21,17 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import leo.core.leoCommands as commands
 
+verbose = False
+
 try:
     import docutils
+    if verbose: print('docutils imported')
     import docutils.parsers.rst
+    if verbose: print('docutils.parsers.rst imported')
     import docutils.core
+    if verbose: print('docutils.core imported')
     import docutils.io
+    if verbose: print('docutils.io imported')
 except ImportError:
     docutils = None
 
@@ -1722,7 +1728,7 @@ class rstCommands:
         trace = False and not g.unitTesting
 
         if not docutils:
-            g.es('docutils not present',color='red')
+            g.trace('docutils not present',color='red')
             return None
 
         openDirectory = self.c.frame.openDirectory
