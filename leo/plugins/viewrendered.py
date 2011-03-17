@@ -125,7 +125,7 @@ class ViewRendered(QTextEdit):
     #@+node:ekr.20101112195628.5429: *3* __init__ & __del_& activate
     def __init__(self,c):  ###, view_html=False):
         
-        g.trace('(ViewRendered)',c)
+        # g.trace('(ViewRendered)',c)
 
         QTextEdit.__init__(self)
         self.inited = False
