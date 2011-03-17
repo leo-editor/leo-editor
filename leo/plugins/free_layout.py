@@ -57,28 +57,24 @@ def onCreate(tag, keys):
 
         for n in range(logTabWidget.count()):
 
-            def wrapper(w=logTabWidget.widget(n), s=splitter,
-                        t=logTabWidget.tabText(n)):
+            def wrapper(
+                w=logTabWidget.widget(n),
+                splitter=splitter,
+                s=logTabWidget.tabText(n)):
                 w.setHidden(False)
-                w._is_from_tab = t
-                s.replace_widget(s.widget(index), w)
-        
-            # act = QtGui.QAction("Add "+logTabWidget.tabText(n), splitter)
-            # act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
-            # menu.addAction(act)
+                w._is_from_tab = s
+                splitter.replace_widget(s.widget(index), w)
+
             add_item(wrapper,menu,"Add "+logTabWidget.tabText(n),splitter)
     #@+node:ekr.20110316100442.14372: *3* offer_viewrendered
     def offer_viewrendered(menu, splitter, index, button_mode):
 
         if button_mode and hasattr(c,"viewrendered") and c.viewrendered:
             
-            def wrapper(w=c.viewrendered, s=splitter):
-                s.replace_widget(s.widget(index), w)
-                w.activate()
-
-            # act = QtGui.QAction("Add viewrendered", splitter)
-            # act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
-            # menu.addAction(act)
+            def wrapper(c=c,splitter=splitter):
+                pc = c.viewrendered ; w = pc.w
+                splitter.replace_widget(splitter.widget(index),w)
+                pc.show()
             
             add_item(wrapper,menu,"Add Viewrendered",splitter)
     #@-others
