@@ -83,7 +83,8 @@ QPlainTextEdit {
 """
 #@-<< define stylesheet >>
 
-controllers = {} # Keys are c.hash(): values are PluginControllers
+controllers = {}
+    # Keys are c.hash(): values are PluginControllers
 
 #@+others
 #@+node:tbrown.20100318101414.5994: ** decorate_window
@@ -95,7 +96,8 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: ** init
 def init ():
 
-    g.viewrendered_count = 0
+    # g.viewrendered_count = 0
+    
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame',onCreate)
 
@@ -111,103 +113,90 @@ def onCreate (tag, keys):
 #@+node:ekr.20110317024548.14375: ** class PluginController
 class PluginController:
     
-    def __init__ (self,c):
-        
-        self.c = c
-        self.viewrendered = c.viewrendered = ViewRendered(c)
-        
-    def view (self,big=False,html=False):
-        self.viewrendered.view(big=big,html=html)
-#@+node:tbrown.20100318101414.5997: ** class ViewRendered(QTextEdit)
-class ViewRendered(QTextEdit):
-
+    '''A class to control rendering in a rendering pane.'''
+    
     #@+others
-    #@+node:ekr.20101112195628.5429: *3* __init__ & __del_& activate
-    def __init__(self,c):  ###, view_html=False):
-        
-        # g.trace('(ViewRendered)',c)
-
-        QTextEdit.__init__(self)
-        self.inited = False
-        self.length = 0
-        self.gnx = 0
-        self.setReadOnly(True)
+    #@+node:ekr.20110317080650.14380: *3* ctor
+    def __init__ (self,c):
+            
         self.c = c
-        ### self.view_html = None ### view_html
-        # c.viewrendered = self
+        self.w = w = QTextEdit()
+        w.setReadOnly(True)
         
+        # A kludge: set c.viewrendered for free_layout.
+        c.viewrendered = self
+
+        # self.count = 0 # The number of rendering panes.
+        self.inited = False
+        self.gnx = 0
+        self.length = 0
+    #@+node:ekr.20110317080650.14381: *3* activate
     def activate (self):
-        if not self.inited:
-            self.inited = True
-            g.registerHandler('select2',self.update)
-            g.registerHandler('idle',self.update)
-            g.enableIdleTimeHook(idleTimeDelay=1000)
-            g.viewrendered_count += 1
-            self.view()
-            # self.show()
-            # self.update(tag='activate', {'c':c})
-
-    def __del__(self):
-
-        self.close()
-    #@+node:ekr.20101112195628.5430: *3* close & closeEvent
-    def close(self):
-
-        if g.viewrendered_count > 0:
-            g.viewrendered_count -= 1
-        if g.viewrendered_count <= 0:
-            g.disableIdleTimeHook()
-        g.unregisterHandler('select2',self.update)
-        g.unregisterHandler('idle',self.update)
-        self.setVisible(False)
-        self.destroy()  # if this doesn't work, hopefully it's hidden
-        if hasattr(self.c, 'viewrendered'):
-            del self.c.viewrendered
-
-    def closeEvent(self, event):
-
-        event.accept()        
-        self.close()
-    #@+node:ekr.20110317024548.14379: *3* view (new)
-    def view(self,big=False,html=False):
         
-        if not self.inited:
-            self.activate()
+        pc = self
+        
+        if pc.inited: return
+        
+        pc.inited = True
+        
+        g.registerHandler('select2',pc.update)
+        g.registerHandler('idle',pc.update)
+        
+        # Enable the idle-time hook if it has not already been enabled.
+        if not g.app.idleTimeHook:
+            g.enableIdleTimeHook(idleTimeDelay=1000)
+    #@+node:ekr.20110317080650.14382: *3* deactivate
+    def deactivate (self):
+        
+        pc = self
+        
+        # Never disable the idle-time hook: other plugins may need it.
 
-        self.show()
-        self.update(tag='view',keywords={'c':self.c,'html':html})
-        if big:
-            self.zoomIn(4)
+        g.unregisterHandler('select2',pc.update)
+        g.unregisterHandler('idle',pc.update)
+        
+    #@+node:ekr.20110317080650.14384: *3* show & hide
+    def hide (self):
+        
+        pc = self ; w = pc.w
+        pc.deactivate()
+        w.hide()
+        
+    def show (self,html=False):
+        
+        pc = self ; w = pc.w
+        pc.activate()
+        pc.update(tag='view',keywords={'c':self.c,'html':html})
+        w.show()
     #@+node:ekr.20101112195628.5426: *3* update
     def update(self,tag,keywords):
         
         # if tag != 'idle': g.trace(tag,keywords)
+        pc = self ; c = pc.c ; w = pc.w
+        if c != keywords.get('c'): return
 
-        if keywords['c'] != self.c:
-            return  # not our problem
         html = keywords.get('html')
+        p = c.currentPosition()
+        s = p.b.strip()
+        w.setWindowTitle(p.h)
 
-        p = self.c.currentPosition()
-        b = p.b.strip()
-        self.setWindowTitle(p.h)
-
-        if self.gnx == p.v.gnx and len(b) == self.length:
+        if self.gnx == p.v.gnx and len(s) == self.length:
             return  # no change
 
         self.gnx = p.v.gnx
-        self.length = len(b)
+        self.length = len(s)
 
-        if got_docutils and not b.startswith('<'):
+        if got_docutils and not s.startswith('<'):
 
-            path = g.scanAllAtPathDirectives(self.c,p) or self.c.getNodePath(p)
+            path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
                 path = os.path.dirname(path)
             if os.path.isdir(path):
                 os.chdir(path)
 
             try:
-                b = publish_string(b, writer_name='html')
-                s = g.toUnicode(b) # 2011/03/15
+                s = publish_string(s,writer_name='html')
+                s = g.toUnicode(s) # 2011/03/15
             except SystemMessage as sm:
                 if 0:
                     g.trace(sm)
@@ -218,12 +207,21 @@ class ViewRendered(QTextEdit):
                 self.setPlainText(s)
                 return
 
-        if html: ### self.view_html:
-            self.setPlainText(s)
+        if html:
+            w.setPlainText(s)
         else:
-            # self.setHtml(g.toUnicode(b))
-            self.setHtml(s)
+            w.setHtml(s)
+    #@+node:ekr.20110317024548.14379: *3* view
+    def view(self,big=False,html=False):
+        
+        pc = self
+        
+        pc.show(html=html)
+        if big:
+            pc.w.zoomIn(4)
     #@-others
+    
+    
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
@@ -259,5 +257,25 @@ def viewrendered(event):
         # vr.zoomIn(4)
         pc = controllers.get(c.hash())
         if pc: pc.view(big=True)
+#@+node:ekr.20110317080650.14383: ** g.command('hide-rendering-pane')
+@g.command('hide-rendering-pane')
+def hide_rendering_pane(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc: pc.hide()
+#@+node:ekr.20110317080650.14386: ** g.command('show-rendering-pane')
+@g.command('show-rendering-pane')
+def show_rendering_pane(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc: pc.show()
 #@-others
 #@-leo
