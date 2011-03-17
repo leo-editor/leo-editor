@@ -6630,6 +6630,175 @@ def widget_name (self,w):
         return w._name
     else:
         return repr(w)
+#@+node:ekr.20110307195735.14243: *4* Can clicking an item set the current position?
+#@+node:ekr.20031218072017.2997: *5* c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.h,g.callers())
+
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@+node:ekr.20040803072955.128: *5* leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911: *6* selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if old_p:
+            g.trace('old: %s %s new: %s %s' % (
+                len(old_p.b),old_p.h,len(p.b),p.h))
+        else:
+            g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        # 2010/08/01: (qt only) update history when body text gets focus.
+        # This is done in qtGui.py: onFocusIn.
+        if g.app.gui.guiName() != 'qt':
+            c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    if trace: g.trace('**** after old: %s new %s' % (
+        old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine("-->".join(reversed(
+        [i.h for i in p.self_and_parents()])))
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129: *7* << unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
+    old_p.v.scrollBarSpot = yview
+    old_p.v.insertSpot = insertSpot
+#@+node:ekr.20040803072955.130: *7* << select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@+node:ekr.20040803072955.133: *7* << set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+### if self.stayInTree:
+    # c.treeWantsFocus()
+# else:
+    # c.bodyWantsFocus()
+#@+node:ekr.20090608081524.6109: *6* setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s,new_p=p)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    p.restoreCursorAndScroll(w)
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -9807,6 +9976,8 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     global (class vars) or per-instance (ivars) for kill buffers and registers.'''
 
     # g.trace('base keyHandler',g.callers())
+    
+    global use_codewise
 
     self.c = c
     self.dispatchEvent = None
@@ -9849,7 +10020,12 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.defineSpecialKeys()
     self.defineSingleLineCommands()
     self.defineMultiLineCommands()
-    self.autoCompleter = autoCompleterClass(self)
+    use_codewise = not self.isLeoSourceFile()
+    fn = c.shortFileName()
+    if use_codewise:
+        self.autoCompleter = CodewiseCompleterClass(self)
+    else:
+        self.autoCompleter = AutoCompleterClass(self)
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
 #@+node:ekr.20061031131434.78: *8* << define externally visible ivars >>

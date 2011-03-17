@@ -4160,7 +4160,7 @@ class atFile:
 
         at = self
 
-        if not inAtAll and p.isAtFileNode() and p != at.root:
+        if not inAtAll and p.isAtFileNode() and p != at.root and not at.toString:
             at.writeError("@file not valid in: " + p.h)
             return
 

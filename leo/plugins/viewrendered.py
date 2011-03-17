@@ -66,9 +66,8 @@ from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
         QPlainTextEdit, QInputDialog)
 #@-<< imports >>
-
-#@+others
-#@+node:tbrown.20100318101414.5994: ** styling
+#@+<< define stylesheet >>
+#@+node:ekr.20110317024548.14377: ** << define stylesheet >>
 stickynote_stylesheet = """
 /* The body pane */
 QPlainTextEdit {
@@ -82,8 +81,14 @@ QPlainTextEdit {
     font-style: normal; /* normal,italic,oblique */
 }
 """
+#@-<< define stylesheet >>
 
+controllers = {} # Keys are c.hash(): values are PluginControllers
+
+#@+others
+#@+node:tbrown.20100318101414.5994: ** decorate_window
 def decorate_window(w):
+    
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
@@ -92,28 +97,55 @@ def init ():
 
     g.viewrendered_count = 0
     g.plugin_signon(__name__)
+    g.registerHandler('after-create-leo-frame',onCreate)
 
     return True
+#@+node:ekr.20110317024548.14376: ** onCreate
+def onCreate (tag, keys):
+    
+    global controllers
+    
+    c = keys.get('c')
+    if c:
+        controllers[c.hash()] = PluginController(c)
+#@+node:ekr.20110317024548.14375: ** class PluginController
+class PluginController:
+    
+    def __init__ (self,c):
+        
+        self.c = c
+        self.viewrendered = c.viewrendered = ViewRendered(c)
+        
+    def view (self,big=False,html=False):
+        self.viewrendered.view(big=big,html=html)
 #@+node:tbrown.20100318101414.5997: ** class ViewRendered(QTextEdit)
 class ViewRendered(QTextEdit):
 
     #@+others
-    #@+node:ekr.20101112195628.5429: *3* __init__ & __del__
-    def __init__(self, c, view_html=False):
+    #@+node:ekr.20101112195628.5429: *3* __init__ & __del_& activate
+    def __init__(self,c):  ###, view_html=False):
+        
+        # g.trace('(ViewRendered)',c)
 
         QTextEdit.__init__(self)
+        self.inited = False
         self.length = 0
         self.gnx = 0
         self.setReadOnly(True)
         self.c = c
-        self.view_html = view_html
-        c.viewrendered = self
-        g.registerHandler('select2',self.update)
-        g.registerHandler('idle',self.update)
-        g.enableIdleTimeHook(idleTimeDelay=1000)
-        g.viewrendered_count += 1
-        self.show()
-        self.update(None, {'c':c})
+        ### self.view_html = None ### view_html
+        # c.viewrendered = self
+        
+    def activate (self):
+        if not self.inited:
+            self.inited = True
+            g.registerHandler('select2',self.update)
+            g.registerHandler('idle',self.update)
+            g.enableIdleTimeHook(idleTimeDelay=1000)
+            g.viewrendered_count += 1
+            self.view()
+            # self.show()
+            # self.update(tag='activate', {'c':c})
 
     def __del__(self):
 
@@ -136,11 +168,24 @@ class ViewRendered(QTextEdit):
 
         event.accept()        
         self.close()
+    #@+node:ekr.20110317024548.14379: *3* view (new)
+    def view(self,big=False,html=False):
+        
+        if not self.inited:
+            self.activate()
+
+        self.show()
+        self.update(tag='view',keywords={'c':self.c,'html':html})
+        if big:
+            self.zoomIn(4)
     #@+node:ekr.20101112195628.5426: *3* update
-    def update(self, tag, keywords):
+    def update(self,tag,keywords):
+        
+        # if tag != 'idle': g.trace(tag,keywords)
 
         if keywords['c'] != self.c:
             return  # not our problem
+        html = keywords.get('html')
 
         p = self.c.currentPosition()
         b = p.b.strip()
@@ -162,36 +207,43 @@ class ViewRendered(QTextEdit):
 
             try:
                 b = publish_string(b, writer_name='html')
+                s = g.toUnicode(b) # 2011/03/15
             except SystemMessage as sm:
-                g.trace(sm)
-                print(sm.args)
-                msg = sm.args[0]
-                if 'SEVERE' in msg or 'FATAL' in msg:
-                    b = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,b)
-                    self.setPlainText(b)
-                    return
+                if 0:
+                    g.trace(sm)
+                    print(sm.args)
+                    msg = sm.args[0]
+                    if 'SEVERE' in msg or 'FATAL' in msg:
+                        s = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,s)
+                self.setPlainText(s)
+                return
 
-        if self.view_html:
-            self.setPlainText(b)
+        if html: ### self.view_html:
+            self.setPlainText(s)
         else:
-            self.setHtml(g.toUnicode(b))
+            # self.setHtml(g.toUnicode(b))
+            self.setHtml(s)
     #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
     """Open render view for commander"""
 
-    c = event['c']
-
-    ViewRendered(c)
+    c = event.get('c')
+    if c:
+        # ViewRendered(c)
+        pc = controllers.get(c.hash())
+        if pc: pc.view()
 #@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html')
 @g.command('viewrendered-html')
 def viewrendered(event):
     """Open view of html which would be rendered"""
 
-    c = event['c']
-
-    ViewRendered(c, view_html=True)
+    c = event.get('c')
+    if c:
+        # ViewRendered(c, view_html=True)
+        pc = controllers.get(c.hash())
+        if pc: pc.view(html=True)
 #@+node:tbrown.20101127112443.14854: ** g.command('viewrendered-big')
 @g.command('viewrendered-big')
 def viewrendered(event):
@@ -201,9 +253,11 @@ def viewrendered(event):
 
     """
 
-    c = event['c']
-
-    vr = ViewRendered(c)
-    vr.zoomIn(4)
+    c = event.get('c')
+    if c:
+        # vr = ViewRendered(c)
+        # vr.zoomIn(4)
+        pc = controllers.get(c.hash())
+        if pc: pc.view(big=True)
 #@-others
 #@-leo

@@ -4163,5 +4163,1346 @@ def onMouseUp(self,event=None):
     if QtCore.Qt.ControlModifier & event.modifiers():
         event = {'c':self.leo_c}
         openURL(event)
+#@+node:ekr.20110307195735.14242: *3* Can clicking select the current position?
+#@+node:ekr.20090124174652.120: *4* qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemClicked(QTreeWidgetItem*, int)"),
+        self.onItemClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    w.connect(self.treeWidget, QtCore.SIGNAL(
+            "customContextMenuRequested(QPoint)"),
+        self.onContextMenu)    
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    # 2010/01/24: Do not set this here.
+    # The read logic sets c.changed to indicate nodes have changed.
+    # c.setChanged(False)
+#@+node:ekr.20090812211903.3641: *4* onItemClicked (nativeTree) (New in Leo 4.7)
+def onItemClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+            # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+#@verbatim
+            #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@+node:ekr.20090124174652.43: *4* onTreeSelect (nativeTree)
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    item = self.getCurrentItem()
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if trace: g.trace(self.traceItem(item))
+        self.select(p) # Calls before/afterSelectHint.
+    else:
+        self.error('no p for item: %s' % item)
+
+    c.outerUpdate()
+#@+node:ekr.20110315083610.14366: *3* Create renderer panes in the body
+#@+node:ekr.20081121105001.212: *4* Editors (qtBody)
+#@+node:ekr.20081121105001.215: *5* entries
+#@+node:ekr.20081121105001.216: *6* addEditor & helper (qtBody)
+# An override of leoFrame.addEditor.
+
+def addEditor (self,event=None):
+
+    '''Add another editor to the body pane.'''
+
+    trace = False and not g.unitTesting
+    bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
+    self.editorWidgets['1'] = bodyCtrl
+    c = self.c ; p = c.p
+    self.totalNumberOfEditors += 1
+    self.numberOfEditors += 1
+
+    if self.totalNumberOfEditors == 2:
+        # Pack the original body editor.
+        w = bodyCtrl.widget
+        self.packLabel(w,n=1)
+
+    name = '%d' % self.totalNumberOfEditors
+    f,wrapper = self.createEditor(name)
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+    assert isinstance(f,QtGui.QFrame),f
+    self.editorWidgets[name] = wrapper
+
+    if trace: g.trace('name %s wrapper %s w %s' % (
+        name,id(wrapper),id(w)))
+
+    if self.numberOfEditors == 2:
+        # Inject the ivars into the first editor.
+        # The name of the last editor need not be '1'
+        d = self.editorWidgets ; keys = list(d.keys())
+        old_name = keys[0]
+        old_wrapper = d.get(old_name)
+        old_w = old_wrapper.widget
+        self.injectIvars(f,old_name,p,old_wrapper)
+        self.updateInjectedIvars (old_w,p)
+        self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
+
+    # Switch editors.
+    c.frame.body.bodyCtrl = wrapper
+    self.selectLabel(wrapper)
+    self.selectEditor(wrapper)
+    self.updateEditors()
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.213: *7* createEditor
+def createEditor (self,name):
+
+    c = self.c ; p = c.p
+    f = c.frame.top.ui.leo_body_inner_frame
+        # Valid regardless of qtGui.useUI
+    n = self.numberOfEditors
+
+    # Step 1: create the editor.
+    # w = QtGui.QTextBrowser(f)
+    w = QTextBrowserSubclass(f,c,self)
+    w.setObjectName('richTextEdit') # Will be changed later.
+    wrapper = leoQTextEditWidget(w,name='body',c=c)
+    self.packLabel(w)
+
+    # Step 2: inject ivars, set bindings, etc.
+    self.injectIvars(f,name,p,wrapper)
+    self.updateInjectedIvars(w,p)
+    wrapper.setAllText(p.b)
+    wrapper.see(0)
+    self.createBindings(w=wrapper)
+    c.k.completeAllBindingsForWidget(wrapper)
+    self.recolorWidget(p,wrapper)
+
+    return f,wrapper
+#@+node:ekr.20081121105001.218: *6* assignPositionToEditor
+def assignPositionToEditor (self,p):
+
+    '''Called *only* from tree.select to select the present body editor.'''
+
+    c = self.c ; cc = c.chapterController
+    wrapper = c.frame.body.bodyCtrl
+    w = wrapper.widget
+
+    self.updateInjectedIvars(w,p)
+    self.selectLabel(wrapper)
+
+    # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
+#@+node:ekr.20081121105001.219: *6* cycleEditorFocus
+def cycleEditorFocus (self,event=None):
+
+    '''Cycle keyboard focus between the body text editors.'''
+
+    c = self.c ; d = self.editorWidgets
+    w = c.frame.body.bodyCtrl
+    values = list(d.values())
+    if len(values) > 1:
+        i = values.index(w) + 1
+        if i == len(values): i = 0
+        w2 = d.values()[i]
+        assert(w!=w2)
+        self.selectEditor(w2)
+        c.frame.body.bodyCtrl = w2
+        # g.trace('***',g.app.gui.widget_name(w2),id(w2))
+#@+node:ekr.20081121105001.220: *6* deleteEditor
+def deleteEditor (self,event=None):
+
+    '''Delete the presently selected body text editor.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; d = self.editorWidgets
+    wrapper = c.frame.body.bodyCtrl
+    w = wrapper.widget
+    name = w.leo_name
+    assert name
+    assert wrapper == d.get(name),'wrong wrapper'
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if len(list(d.keys())) <= 1: return
+
+    # At present, can not delete the first column.
+    if name == '1':
+        g.es('can not delete leftmost editor',color='blue')
+        return
+
+    # Actually delete the widget.
+    if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
+        name,id(wrapper),id(w)))
+
+    del d [name]
+    f = c.frame.top.ui.leo_body_inner_frame
+    layout = f.layout()
+    for z in (w,w.leo_label):
+        self.unpackWidget(layout,z)
+
+    # Select another editor.
+    new_wrapper = list(d.values())[0]
+    if trace: g.trace(wrapper,new_wrapper)
+    self.numberOfEditors -= 1
+    if self.numberOfEditors == 1:
+        w = new_wrapper.widget
+        self.unpackWidget(layout,w.leo_label)
+
+    self.selectEditor(new_wrapper)
+#@+node:ekr.20081121105001.221: *6* findEditorForChapter (leoBody)
+def findEditorForChapter (self,chapter,p):
+
+    '''Return an editor to be assigned to chapter.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; d = self.editorWidgets
+    values = list(d.values())
+
+    # First, try to match both the chapter and position.
+    if p:
+        for w in values:
+            if (
+                hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
+                hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+            ):
+                if trace: g.trace('***',id(w),'match chapter and p',p.h)
+                return w
+
+    # Next, try to match just the chapter.
+    for w in values:
+        if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
+            if trace: g.trace('***',id(w),'match only chapter',p.h)
+            return w
+
+    # As a last resort, return the present editor widget.
+    if trace: g.trace('***',id(self.bodyCtrl),'no match',p.h)
+    return c.frame.body.bodyCtrl
+#@+node:ekr.20081121105001.222: *6* select/unselectLabel (leoBody)
+def unselectLabel (self,wrapper):
+
+    pass
+    # self.createChapterIvar(wrapper)
+
+def selectLabel (self,wrapper):
+
+    c = self.c
+    w = wrapper.widget
+    lab = hasattr(w,'leo_label') and w.leo_label
+
+    if lab:
+        lab.setEnabled(True)
+        lab.setText(c.p.h)
+        lab.setEnabled(False)
+#@+node:ekr.20081121105001.223: *6* selectEditor & helpers
+selectEditorLockout = False
+
+def selectEditor(self,wrapper):
+
+    '''Select editor w and node w.leo_p.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+
+    if not wrapper: return bodyCtrl
+    if self.selectEditorLockout:
+        if trace: g.trace('**busy')
+        return
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    def report(s):
+        g.trace('*** %9s wrapper %s w %s %s' % (
+            s,id(wrapper),id(w),c.p.h))
+
+    if wrapper and wrapper == bodyCtrl:
+        self.deactivateEditors(wrapper)
+        if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
+            if trace: report('select')
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocus()
+        elif trace and verbose: report('no change')
+        return
+
+    try:
+        val = None
+        self.selectEditorLockout = True
+        val = self.selectEditorHelper(wrapper)
+    finally:
+        self.selectEditorLockout = False
+
+    return val # Don't put a return in a finally clause.
+#@+node:ekr.20081121105001.224: *7* selectEditorHelper
+def selectEditorHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    c.frame.body.bodyCtrl = wrapper
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+    if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
+        return g.trace('***** no w.leo_chapter',w)
+
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+        id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p) # Calls assignPositionToEditor.
+    c.redraw()
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.225: *8* << restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
+    wrapper.setInsertPoint(w.leo_insertSpot)
+else:
+    wrapper.setInsertPoint(0)
+
+if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    wrapper.see(first)
+else:
+    wrapper.seeInsertPoint()
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@+node:ekr.20081121105001.226: *6* updateEditors
+# Called from addEditor and assignPositionToEditor
+
+def updateEditors (self):
+
+    c = self.c ; p = c.p ; body = p.b
+    d = self.editorWidgets
+    if len(list(d.keys())) < 2: return # There is only the main widget
+
+    w0 = c.frame.body.bodyCtrl
+    i,j = w0.getSelectionRange()
+    ins = w0.getInsertPoint()
+    sb0 = w0.widget.verticalScrollBar()
+    pos0 = sb0.sliderPosition()
+    for key in d:
+        wrapper = d.get(key)
+        w = wrapper.widget
+        v = hasattr(w,'leo_p') and w.leo_p.v
+        if v and v == p.v and w != w0:
+            sb = w.verticalScrollBar()
+            pos = sb.sliderPosition()
+            wrapper.setAllText(body)
+            self.recolorWidget(p,wrapper)
+            sb.setSliderPosition(pos)
+
+    c.bodyWantsFocus()
+    w0.setSelectionRange(i,j,ins=ins)
+    sb0.setSliderPosition(pos0)
+#@+node:ekr.20081121105001.227: *5* utils
+#@+node:ekr.20081121105001.228: *6* computeLabel
+def computeLabel (self,w):
+
+    if hasattr(w,'leo_label'):
+        s = w.leo_label.text()
+    else:
+        s = ''
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        s = '%s: %s' % (w.leo_chapter.name,s)
+
+    return s
+#@+node:ekr.20081121105001.229: *6* createChapterIvar
+def createChapterIvar (self,w):
+
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        pass
+    elif cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+#@+node:ekr.20081121105001.231: *6* deactivateEditors
+def deactivateEditors(self,wrapper):
+
+    '''Deactivate all editors except wrapper's editor.'''
+
+    trace = False and not g.unitTesting
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        wrapper2 = d.get(key)
+        w2 = wrapper2.widget
+        if hasattr(w2,'leo_active'):
+            active = w2.leo_active
+        else:
+            active = True
+        if wrapper2 != wrapper and active:
+            w2.leo_active = False
+            self.unselectLabel(wrapper2)
+            w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
+            w2.leo_insertSpot = wrapper2.getInsertPoint()
+            w2.leo_selection = wrapper2.getSelectionRange()
+            if trace: g.trace('**deactivate wrapper %s w %s' % (
+                id(wrapper2),id(w2)))
+            self.onFocusOut(w2)
+#@+node:ekr.20081121105001.230: *6* ensurePositionExists
+def ensurePositionExists(self,w):
+
+    '''Return True if w.leo_p exists or can be reconstituted.'''
+
+    trace = True and not g.unitTesting
+    c = self.c
+
+    if c.positionExists(w.leo_p):
+        return True
+    else:
+        if trace: g.trace('***** does not exist',w.leo_name)
+        for p2 in c.all_unique_positions():
+            if p2.v and p2.v == w.leo_p.v:
+                if trace: g.trace(p2.h)
+                w.leo_p = p2.copy()
+                return True
+        else:
+            # This *can* happen when selecting a deleted node.
+            if trace: g.trace(p2.h)
+            w.leo_p = c.p.copy()
+            return False
+#@+node:ekr.20090318091009.14: *6* injectIvars
+def injectIvars (self,parentFrame,name,p,wrapper):
+
+    trace = False and not g.unitTesting
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if trace: g.trace(w)
+
+    # Inject ivars
+    if name == '1':
+        w.leo_p = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+
+    w.leo_active = True
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    # w.leo_colorizer = None # Set in leoQtColorizer ctor.
+    w.leo_frame = parentFrame
+    w.leo_insertSpot = None
+    # w.leo_label = None # Injected by packLabel.
+    w.leo_name = name
+    # w.leo_on_focus_in = onFocusInCallback
+    w.leo_scrollBarSpot = None
+    w.leo_selection = None
+    w.leo_wrapper = wrapper
+#@+node:ekr.20090613111747.3633: *6* packLabel
+def packLabel (self,w,n=None):
+
+    c = self.c
+    f = c.frame.top.ui.leo_body_inner_frame
+        # Valid regardless of qtGui.useUI
+
+    if n is None:n = self.numberOfEditors
+    layout = f.layout()
+    f.setObjectName('editorFrame')
+
+    # Create the text: to do: use stylesheet to set font, height.
+    lab = QtGui.QLineEdit(f)
+    lab.setObjectName('editorLabel')
+    lab.setText(c.p.h)
+
+    # Pack the label and the text widget.
+    # layout.setHorizontalSpacing(4)
+    layout.addWidget(lab,0,max(0,n-1),QtCore.Qt.AlignVCenter)
+    layout.addWidget(w,1,max(0,n-1))
+    layout.setRowStretch(0,0)
+    layout.setRowStretch(1,1) # Give row 1 as much as possible.
+
+    w.leo_label = lab # Inject the ivar.
+#@+node:ekr.20081121105001.232: *6* recolorWidget
+def recolorWidget (self,p,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # Save.
+    old_wrapper = c.frame.body.bodyCtrl
+    c.frame.body.bodyCtrl = wrapper
+    w = wrapper.widget
+
+    if not hasattr(w,'leo_colorizer'):
+        if trace: g.trace('*** creating colorizer for',w)
+        leoQtColorizer(c,w) # injects w.leo_colorizer
+        assert hasattr(w,'leo_colorizer'),w
+
+    c.frame.body.colorizer = w.leo_colorizer
+    if trace: g.trace(w,c.frame.body.colorizer)
+
+    try:
+        # c.recolor_now(interruptable=False) # Force a complete recoloring.
+        c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
+    finally:
+        # Restore.
+        c.frame.body.bodyCtrl = old_wrapper
+#@+node:ekr.20081121105001.233: *6* switchToChapter (leoBody)
+def switchToChapter (self,w):
+
+    '''select w.leo_chapter.'''
+
+    trace = True and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            if trace: g.trace('***old',oldChapter.name,'new',name,w.leo_p)
+            cc.selectChapterByName(name)
+            c.bodyWantsFocus()
+#@+node:ekr.20081121105001.234: *6* updateInjectedIvars
+def updateInjectedIvars (self,w,p):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('w %s len(p.b) %s %s' % (
+        id(w),len(p.b),p.h),g.callers(5))
+
+    c = self.c ; cc = c.chapterController
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+
+    w.leo_p = p.copy()
+#@+node:ekr.20090614060655.3660: *6* unpackWidget
+def unpackWidget (self,layout,w):
+
+    index = layout.indexOf(w)
+    item = layout.itemAt(index)
+    item.setGeometry(QtCore.QRect(0,0,0,0))
+    layout.removeItem(item)
+#@+node:ekr.20081121105001.207: *4*  ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    trace = False and not g.unitTesting
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    
+    self.unselectedBackgroundColor = c.config.getColor(
+        # 'unselected-background-color')
+        'unselected_body_bg_color')
+        
+    # 2011/03/14
+    self.unselectedForegroundColor = c.config.getColor(
+        'unselected_body_fg_color')
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = w = leoQScintillaWidget(
+            c.frame.top.textEdit,
+            name='body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+        self.colorizer = leoColor.nullColorizer(c)
+    else:
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A QTextEdit or QTextBrowser.
+        # g.trace(qtWidget)
+        sw.setCurrentIndex(1)
+        self.widget = w = leoQTextEditWidget(
+            qtWidget,name = 'body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+
+        # Hook up the QSyntaxHighlighter
+        self.colorizer = leoQtColorizer(c,w.widget)
+        qtWidget.setAcceptRichText(False)
+
+    # Config stuff.
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    self.setWrap(c.p)
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+    
+    # For renderer panes.
+    self.canvasRenderer = None
+    self.canvasRendererLabel = None
+    self.canvasRendererVisible = False
+    self.textRenderer = None
+    self.textRendererLabel = None
+    self.textRendererVisible = False
+    self.textRendererWrapper = None
+
+    if trace: print('qtBody.__init__ %s' % self.widget)
+#@+node:ekr.20100101172327.3661: *5* setWrap (qtBody)
+def setWrap (self,p):
+
+    if not p: return
+    if self.useScintilla: return
+
+    c = self.c
+    w = c.frame.body.widget.widget
+    if 1:
+        # Quicker, more self-contained.
+        wrap = g.scanAllAtWrapDirectives(c,p)
+    else:
+        d = c.scanAllDirectives(p)
+        if d is None: return
+        wrap = d.get('wrap')
+    w.setWordWrapMode(
+        g.choose(wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+#@+node:ekr.20081121105001.208: *5* createBindings (qtBody)
+def createBindings (self,w=None):
+
+    '''(qtBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    # frame = self.frame ; c = self.c ; k = c.k
+    # if not w: w = self.widget
+
+    # c.bind(w,'<Key>', k.masterKeyHandler)
+
+    # table = [
+        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # ]
+
+    # table2 = (
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    # for kind,func,handler in table:
+        # def bodyClickCallback(event,handler=handler,func=func):
+            # return handler(event,func)
+
+        # c.bind(w,kind,bodyClickCallback)
+#@+node:ekr.20081121105001.209: *5* get_name
+def getName (self):
+
+    return 'body-widget'
+#@+node:ekr.20110315083610.14341: *4* Renderer panes (qtBody)
+#@+node:ekr.20110315083610.14365: *5*  Not used
+if 0:
+    
+    @others
+#@+node:ekr.20110315083610.14345: *6* assignPositionToEditor
+def assignPositionToEditor (self,p):
+
+    '''Called *only* from tree.select to select the present body editor.'''
+
+    c = self.c ; cc = c.chapterController
+    wrapper = c.frame.body.bodyCtrl
+    w = wrapper.widget
+
+    self.updateInjectedIvars(w,p)
+    self.selectLabel(wrapper)
+
+    # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
+#@+node:ekr.20110315083610.14346: *6* cycleEditorFocus
+def cycleEditorFocus (self,event=None):
+
+    '''Cycle keyboard focus between the body text editors.'''
+
+    c = self.c ; d = self.editorWidgets
+    w = c.frame.body.bodyCtrl
+    values = list(d.values())
+    if len(values) > 1:
+        i = values.index(w) + 1
+        if i == len(values): i = 0
+        w2 = d.values()[i]
+        assert(w!=w2)
+        self.selectEditor(w2)
+        c.frame.body.bodyCtrl = w2
+        # g.trace('***',g.app.gui.widget_name(w2),id(w2))
+#@+node:ekr.20110315083610.14348: *6* findEditorForChapter (leoBody)
+def findEditorForChapter (self,chapter,p):
+
+    '''Return an editor to be assigned to chapter.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; d = self.editorWidgets
+    values = list(d.values())
+
+    # First, try to match both the chapter and position.
+    if p:
+        for w in values:
+            if (
+                hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
+                hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+            ):
+                if trace: g.trace('***',id(w),'match chapter and p',p.h)
+                return w
+
+    # Next, try to match just the chapter.
+    for w in values:
+        if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
+            if trace: g.trace('***',id(w),'match only chapter',p.h)
+            return w
+
+    # As a last resort, return the present editor widget.
+    if trace: g.trace('***',id(self.bodyCtrl),'no match',p.h)
+    return c.frame.body.bodyCtrl
+#@+node:ekr.20110315083610.14349: *6* select/unselectLabel (leoBody)
+def unselectLabel (self,wrapper):
+
+    pass
+    # self.createChapterIvar(wrapper)
+
+def selectLabel (self,wrapper):
+
+    c = self.c
+    w = wrapper.widget
+    lab = hasattr(w,'leo_label') and w.leo_label
+
+    if lab:
+        lab.setEnabled(True)
+        lab.setText(c.p.h)
+        lab.setEnabled(False)
+#@+node:ekr.20110315083610.14354: *6* utils
+#@+node:ekr.20110315083610.14355: *7* computeLabel
+def computeLabel (self,w):
+
+    if hasattr(w,'leo_label'):
+        s = w.leo_label.text()
+    else:
+        s = ''
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        s = '%s: %s' % (w.leo_chapter.name,s)
+
+    return s
+#@+node:ekr.20110315083610.14356: *7* createChapterIvar
+def createChapterIvar (self,w):
+
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        pass
+    elif cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+#@+node:ekr.20110315083610.14357: *7* deactivateEditors
+def deactivateEditors(self,wrapper):
+
+    '''Deactivate all editors except wrapper's editor.'''
+
+    trace = False and not g.unitTesting
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        wrapper2 = d.get(key)
+        w2 = wrapper2.widget
+        if hasattr(w2,'leo_active'):
+            active = w2.leo_active
+        else:
+            active = True
+        if wrapper2 != wrapper and active:
+            w2.leo_active = False
+            self.unselectLabel(wrapper2)
+            w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
+            w2.leo_insertSpot = wrapper2.getInsertPoint()
+            w2.leo_selection = wrapper2.getSelectionRange()
+            if trace: g.trace('**deactivate wrapper %s w %s' % (
+                id(wrapper2),id(w2)))
+            self.onFocusOut(w2)
+#@+node:ekr.20110315083610.14358: *7* ensurePositionExists
+def ensurePositionExists(self,w):
+
+    '''Return True if w.leo_p exists or can be reconstituted.'''
+
+    trace = True and not g.unitTesting
+    c = self.c
+
+    if c.positionExists(w.leo_p):
+        return True
+    else:
+        if trace: g.trace('***** does not exist',w.leo_name)
+        for p2 in c.all_unique_positions():
+            if p2.v and p2.v == w.leo_p.v:
+                if trace: g.trace(p2.h)
+                w.leo_p = p2.copy()
+                return True
+        else:
+            # This *can* happen when selecting a deleted node.
+            if trace: g.trace(p2.h)
+            w.leo_p = c.p.copy()
+            return False
+#@+node:ekr.20110315083610.14359: *7* injectIvars
+def injectIvars (self,parentFrame,name,p,wrapper):
+
+    trace = False and not g.unitTesting
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if trace: g.trace(w)
+
+    # Inject ivars
+    if name == '1':
+        w.leo_p = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+
+    w.leo_active = True
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    # w.leo_colorizer = None # Set in leoQtColorizer ctor.
+    w.leo_frame = parentFrame
+    w.leo_insertSpot = None
+    # w.leo_label = None # Injected by packLabel.
+    w.leo_name = name
+    # w.leo_on_focus_in = onFocusInCallback
+    w.leo_scrollBarSpot = None
+    w.leo_selection = None
+    w.leo_wrapper = wrapper
+#@+node:ekr.20110315083610.14361: *7* recolorWidget
+def recolorWidget (self,p,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # Save.
+    old_wrapper = c.frame.body.bodyCtrl
+    c.frame.body.bodyCtrl = wrapper
+    w = wrapper.widget
+
+    if not hasattr(w,'leo_colorizer'):
+        if trace: g.trace('*** creating colorizer for',w)
+        leoQtColorizer(c,w) # injects w.leo_colorizer
+        assert hasattr(w,'leo_colorizer'),w
+
+    c.frame.body.colorizer = w.leo_colorizer
+    if trace: g.trace(w,c.frame.body.colorizer)
+
+    try:
+        # c.recolor_now(interruptable=False) # Force a complete recoloring.
+        c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
+    finally:
+        # Restore.
+        c.frame.body.bodyCtrl = old_wrapper
+#@+node:ekr.20110315083610.14350: *7* selectRenderer & helper
+### selectCanvasLockout = False
+
+def selectRenderer(self,wrapper):
+
+    '''Select editor w and node w.leo_p.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+
+    if not wrapper: return bodyCtrl
+    if self.selectEditorLockout:
+        if trace: g.trace('**busy')
+        return
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    def report(s):
+        g.trace('*** %9s wrapper %s w %s %s' % (
+            s,id(wrapper),id(w),c.p.h))
+
+    if wrapper and wrapper == bodyCtrl:
+        self.deactivateEditors(wrapper)
+        if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
+            if trace: report('select')
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocus()
+        elif trace and verbose: report('no change')
+        return
+
+    try:
+        val = None
+        self.selectEditorLockout = True
+        val = self.selectEditorHelper(wrapper)
+    finally:
+        self.selectEditorLockout = False
+
+    return val # Don't put a return in a finally clause.
+#@+node:ekr.20110315083610.14351: *8* selectRendererHelper
+def selectRendererHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    c.frame.body.bodyCtrl = wrapper
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+    if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
+        return g.trace('***** no w.leo_chapter',w)
+
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+        id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p) # Calls assignPositionToEditor.
+    c.redraw()
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocus()
+#@+node:ekr.20110315083610.14352: *9* << restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
+    wrapper.setInsertPoint(w.leo_insertSpot)
+else:
+    wrapper.setInsertPoint(0)
+
+if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    wrapper.see(first)
+else:
+    wrapper.seeInsertPoint()
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@+node:ekr.20110315083610.14362: *7* switchToChapter (leoBody)
+def switchToChapter (self,w):
+
+    '''select w.leo_chapter.'''
+
+    trace = True and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            if trace: g.trace('***old',oldChapter.name,'new',name,w.leo_p)
+            cc.selectChapterByName(name)
+            c.bodyWantsFocus()
+#@+node:ekr.20110315083610.14364: *7* unpackWidget
+def unpackWidget (self,layout,w):
+
+    index = layout.indexOf(w)
+    item = layout.itemAt(index)
+    item.setGeometry(QtCore.QRect(0,0,0,0))
+    layout.removeItem(item)
+#@+node:ekr.20110315083610.14353: *7* updateEditor
+# Called from addEditor and assignPositionToEditor
+
+def updateEditor (self):
+
+    c = self.c ; p = c.p ; body = p.b
+    d = self.editorWidgets
+    if len(list(d.keys())) < 2: return # There is only the main widget
+
+    w0 = c.frame.body.bodyCtrl
+    i,j = w0.getSelectionRange()
+    ins = w0.getInsertPoint()
+    sb0 = w0.widget.verticalScrollBar()
+    pos0 = sb0.sliderPosition()
+    for key in d:
+        wrapper = d.get(key)
+        w = wrapper.widget
+        v = hasattr(w,'leo_p') and w.leo_p.v
+        if v and v == p.v and w != w0:
+            sb = w.verticalScrollBar()
+            pos = sb.sliderPosition()
+            wrapper.setAllText(body)
+            self.recolorWidget(p,wrapper)
+            sb.setSliderPosition(pos)
+
+    c.bodyWantsFocus()
+    w0.setSelectionRange(i,j,ins=ins)
+    sb0.setSliderPosition(pos0)
+#@+node:ekr.20110315083610.14363: *7* updateInjectedIvars
+def updateInjectedIvars (self,w,p):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('w %s len(p.b) %s %s' % (
+        id(w),len(p.b),p.h),g.callers(5))
+
+    c = self.c ; cc = c.chapterController
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+
+    w.leo_p = p.copy()
+#@+node:ekr.20110315083610.14347: *5* hideCanvasRenderer
+def hideCanvasRenderer (self,event=None):
+
+    '''Hide canvas pane.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; d = self.editorWidgets
+    wrapper = c.frame.body.bodyCtrl
+    w = wrapper.widget
+    name = w.leo_name
+    assert name
+    assert wrapper == d.get(name),'wrong wrapper'
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if len(list(d.keys())) <= 1: return
+
+    # At present, can not delete the first column.
+    if name == '1':
+        g.es('can not delete leftmost editor',color='blue')
+        return
+
+    # Actually delete the widget.
+    if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
+        name,id(wrapper),id(w)))
+
+    del d [name]
+    f = c.frame.top.ui.leo_body_inner_frame
+    layout = f.layout()
+    for z in (w,w.leo_label):
+        self.unpackWidget(layout,z)
+
+    # Select another editor.
+    new_wrapper = list(d.values())[0]
+    if trace: g.trace(wrapper,new_wrapper)
+    self.numberOfEditors -= 1
+    if self.numberOfEditors == 1:
+        w = new_wrapper.widget
+        self.unpackWidget(layout,w.leo_label)
+
+    self.selectEditor(new_wrapper)
+#@+node:ekr.20110315083610.14369: *5* hideTextRenderer
+def hideCanvas (self,event=None):
+
+    '''Hide canvas pane.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; d = self.editorWidgets
+    wrapper = c.frame.body.bodyCtrl
+    w = wrapper.widget
+    name = w.leo_name
+    assert name
+    assert wrapper == d.get(name),'wrong wrapper'
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if len(list(d.keys())) <= 1: return
+
+    # At present, can not delete the first column.
+    if name == '1':
+        g.es('can not delete leftmost editor',color='blue')
+        return
+
+    # Actually delete the widget.
+    if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
+        name,id(wrapper),id(w)))
+
+    del d [name]
+    f = c.frame.top.ui.leo_body_inner_frame
+    layout = f.layout()
+    for z in (w,w.leo_label):
+        self.unpackWidget(layout,z)
+
+    # Select another editor.
+    new_wrapper = list(d.values())[0]
+    if trace: g.trace(wrapper,new_wrapper)
+    self.numberOfEditors -= 1
+    if self.numberOfEditors == 1:
+        w = new_wrapper.widget
+        self.unpackWidget(layout,w.leo_label)
+
+    self.selectEditor(new_wrapper)
+#@+node:ekr.20110315083610.14360: *5* packRenderer
+def packRenderer (self,f,name,w):
+
+    c = self.c ; n = max(1,self.numberOfEditors)
+    assert isinstance(f,QtGui.QFrame),f
+
+    layout = f.layout()
+    f.setObjectName('%s Frame' % name)
+
+    # Create the text: to do: use stylesheet to set font, height.
+    lab = QtGui.QLineEdit(f)
+    lab.setObjectName('%s Label' % name)
+    lab.setText(name)
+
+    # Pack the label and the widget.
+    layout.addWidget(lab,0,max(0,n-1),QtCore.Qt.AlignVCenter)
+    layout.addWidget(w,1,max(0,n-1))
+    layout.setRowStretch(0,0)
+    layout.setRowStretch(1,1) # Give row 1 as much as possible.
+    
+    return lab
+
+#@+node:ekr.20110315083610.14343: *5* showCanvasRenderer
+# An override of leoFrame.addEditor.
+
+def showCanvasRenderer (self,event=None):
+
+    '''Show the canvas area in the body pane, creating it if necessary.'''
+
+    trace = False and not g.unitTesting
+    
+    bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
+
+    c = self.c
+    f = c.frame.top.ui.leo_body_inner_frame
+    assert isinstance(f,QtGui.QFrame),f
+
+    if not self.canvasRenderer:
+        name = 'Graphics Renderer'
+        self.canvasRenderer = w = QtGui.QGraphicsView(f)
+        w.setObjectName(name)
+    
+    if not self.canvasRendererVisible:
+        self.canvasRendererLabel = self.packRenderer(f,name,w)
+        self.canvasRendererVisible = True
+    
+    # self.editorWidgets[name] = wrapper
+
+    # if self.numberOfEditors == 2:
+        # # Inject the ivars into the first editor.
+        # # The name of the last editor need not be '1'
+        # d = self.editorWidgets ; keys = list(d.keys())
+        # old_name = keys[0]
+        # old_wrapper = d.get(old_name)
+        # old_w = old_wrapper.widget
+        # self.injectIvars(f,old_name,p,old_wrapper)
+        # self.updateInjectedIvars (old_w,p)
+        # self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
+
+    # # Switch editors.
+    # c.frame.body.bodyCtrl = wrapper
+    # self.selectLabel(wrapper)
+    # self.selectEditor(wrapper)
+    # self.updateEditors()
+    # c.bodyWantsFocus()
+#@+node:ekr.20110315083610.14372: *5* showTextRenderer
+# An override of leoFrame.addEditor.
+
+def showTextRenderer (self,event=None):
+
+    '''Show the canvas area in the body pane, creating it if necessary.'''
+
+    c = self.c
+    f = c.frame.top.ui.leo_body_inner_frame
+    assert isinstance(f,QtGui.QFrame),f
+
+    if not self.textRenderer:
+        name = 'Text Renderer'
+        self.textRenderer = w = QTextBrowserSubclass(f,c,self)
+        w.setObjectName(name)
+        self.textRendererWrapper = leoQTextEditWidget(
+            w,name='text-renderer',c=c)
+            
+    if not self.textRendererVisible:
+        self.textRendererLabel = self.packRenderer(f,name,w)
+        self.textRendererVisible = True
+        
+    # bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
+    # p = c.p
+
+    # if self.numberOfEditors == 2:
+        # # Inject the ivars into the first editor.
+        # # The name of the last editor need not be '1'
+        # d = self.editorWidgets ; keys = list(d.keys())
+        # old_name = keys[0]
+        # old_wrapper = d.get(old_name)
+        # old_w = old_wrapper.widget
+        # self.injectIvars(f,old_name,p,old_wrapper)
+        # self.updateInjectedIvars (old_w,p)
+        # self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
+
+    # # Switch editors.
+    # c.frame.body.bodyCtrl = wrapper
+    # self.selectLabel(wrapper)
+    # self.selectEditor(wrapper)
+    # self.updateEditors()
+    # c.bodyWantsFocus()
+#@+node:ekr.20110316155727.14374: *3* From splitter_menu
+
+# act = QtGui.QAction("Insert", self)
+# act.setObjectName('insert')
+# act.connect(act, Qt.SIGNAL('triggered()'), 
+    # lambda: splitter.insert(index))
+# menu.addAction(act)
+
+# act = QtGui.QAction("Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]), self)
+# act.setObjectName('swap')
+# act.connect(act, Qt.SIGNAL('triggered()'), 
+    # lambda: splitter.swap(index))
+# menu.addAction(act)
+
+# act = QtGui.QAction("Rotate all", self)
+# act.setObjectName('rotate')
+# act.connect(act, Qt.SIGNAL('triggered()'), splitter.rotate)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Remove %d %s"%(count[i], lr[i]), self)
+# act.setObjectName('remove %d'%i)
+# def wrapper(i=i): splitter.remove(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Split %s %s"%(lr[i], split_dir), self)
+# act.setObjectName('split %d'%i)
+# def wrapper(i=i): splitter.split(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Mark %d %s"%(count[i], lr[i]), self)
+# act.setObjectName('mark %d'%i)
+# def wrapper(i=i): splitter.mark(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Swap %d %s with marked"%(count[i], lr[i]), self)
+# act.setObjectName('swap mark %d'%i)
+# def wrapper(i=i): splitter.swap_with_marked(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Add %s"%ab[i], self)
+# act.setObjectName('add %d'%i)
+# def wrapper(i=i): splitter.add(i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+
 #@-all
 #@-leo

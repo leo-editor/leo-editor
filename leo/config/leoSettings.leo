@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -143,6 +143,7 @@
 <v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
 <v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
 <v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
+<v t="ekr.20090406071640.19"><vh>@@color unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
 <v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = #ffffec</vh></v>
@@ -430,7 +431,7 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -438,7 +439,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -1040,7 +1041,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1118,7 +1119,6 @@
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="ekr.20090406071640.19"><vh>@string unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1274,7 +1274,7 @@
 <v t="ekr.20041119034357.64"><vh>@int initial_window_top = 20</vh></v>
 <v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
 </v>
-<v t="ekr.20041119034357.54" a="E"><vh>Outline pane options</vh>
+<v t="ekr.20041119034357.54"><vh>Outline pane options</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="ekr.20061030092620"><vh>@bool center_selected_tree_node = True</vh></v>
 <v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>

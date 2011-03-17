@@ -3,12 +3,12 @@
 """Adds flexible panel layout through context menus on the handles between panels.
 Requires Qt.
 """
-#@+others
-#@+node:tbrown.20110203111907.5520: ** declarations
-__version__ = '0.1'
-# 
-# 0.1 - initial release - TNB
 
+__version__ = '0.1'
+    # 0.1 - initial release - TNB
+    
+#@+<< imports >>
+#@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
 
 g.assertUi('qt')
@@ -16,6 +16,9 @@ g.assertUi('qt')
 from PyQt4 import QtCore, QtGui, Qt
 
 from leo.plugins.nested_splitter import NestedSplitter
+#@-<< imports >>
+
+#@+others
 #@+node:tbrown.20110203111907.5521: ** init
 def init():
 
@@ -27,15 +30,23 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@+node:tbrown.20110203111907.5522: ** onCreate
+#@+node:tbrown.20110203111907.5522: ** onCreate & callbacks
 def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c: return
 
     NestedSplitter.enabled = True
-
-    # define menu callbacks here where c is in scope
+    
+    #@+others
+    #@+node:ekr.20110317024548.14380: *3* add_item
+    def add_item(func,menu,name,splitter):
+        
+        act = QtGui.QAction(name,splitter)
+        act.setObjectName(name.lower().replace(' ','-'))
+        act.connect(act, Qt.SIGNAL('triggered()'), func)
+        menu.addAction(act)
+    #@+node:ekr.20110316100442.14371: *3* offer_tabs
     def offer_tabs(menu, splitter, index, button_mode):
 
         if not button_mode:
@@ -46,34 +57,35 @@ def onCreate(tag, keys):
 
         for n in range(logTabWidget.count()):
 
-            act = QtGui.QAction("Add "+logTabWidget.tabText(n), splitter)
-
             def wrapper(w=logTabWidget.widget(n), s=splitter,
                         t=logTabWidget.tabText(n)):
                 w.setHidden(False)
                 w._is_from_tab = t
                 s.replace_widget(s.widget(index), w)
-            act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
-            menu.addAction(act)
-
+        
+            # act = QtGui.QAction("Add "+logTabWidget.tabText(n), splitter)
+            # act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+            # menu.addAction(act)
+            add_item(wrapper,menu,"Add "+logTabWidget.tabText(n),splitter)
+    #@+node:ekr.20110316100442.14372: *3* offer_viewrendered
     def offer_viewrendered(menu, splitter, index, button_mode):
 
-        if not button_mode:
-            return
-
-        if hasattr(c, "viewrendered") and c.viewrendered:
-
-            act = QtGui.QAction("Add viewrendered", splitter)
-
+        if button_mode and hasattr(c,"viewrendered") and c.viewrendered:
+            
             def wrapper(w=c.viewrendered, s=splitter):
                 s.replace_widget(s.widget(index), w)
-            act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
-            menu.addAction(act)
+                w.activate()
 
+            # act = QtGui.QAction("Add viewrendered", splitter)
+            # act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+            # menu.addAction(act)
+            
+            add_item(wrapper,menu,"Add Viewrendered",splitter)
+    #@-others
 
     splitter = c.frame.top.splitter_2.top()
 
-    # register menu callbacks
+    # Register menu callbacks
     splitter.register(offer_tabs)
     splitter.register(offer_viewrendered)
 

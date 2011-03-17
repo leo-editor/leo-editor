@@ -26,7 +26,7 @@ search.
 '''
 #@-<< docstring >>
 
-__version__ = '0.2'
+__version__ = '0.3'
 #@+<< version history >>
 #@+node:ville.20090317180704.9: ** << version history >>
 #@@nocolor-node
@@ -34,6 +34,8 @@ __version__ = '0.2'
 # 
 # 0.1 EKR: place helpers as children of callers.
 # 0.2 EKR: Don't crash if the ctags file doesn't exist.
+# 0.3 EKR: A complete refactoring using CtagsController class.
+#     This anticipates that eventFiler will call onKey during completion.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ville.20090317180704.10: ** << imports >>
@@ -48,6 +50,7 @@ import re
 #@-<< imports >>
 
 # Global variables
+controllers = {} # Keys are commanders, values are controllers.
 tagLines = []
     # The saved contents of the tags file.
     # This is used only if keep_tag_lines is True
@@ -61,9 +64,12 @@ keep_tag_lines = True
     #        results of running grep on the file.
     #        This saves lots of memory, but reads the
     #        tags file many times.
+    
+
 
 #@+others
-#@+node:ville.20090317180704.11: ** init & helper
+#@+node:ekr.20110307092028.14155: ** Module level...
+#@+node:ville.20090317180704.11: *3* init
 def init ():
 
     global tagLines
@@ -71,7 +77,6 @@ def init ():
     ok = g.app.gui.guiName() == "qt"
 
     if ok:
-
         if keep_tag_lines:
             tagLines = read_tags_file()
             if not tagLines:
@@ -83,13 +88,21 @@ def init ():
             g.plugin_signon(__name__)
 
     return ok
+#@+node:ville.20090317180704.12: *3* onCreate
+def onCreate (tag, keys):
+    
+    '''Register the ctags-complete command for the newly-created commander.'''
+
+    c = keys.get('c')
+    if c:
+        c.k.registerCommand('ctags-complete','Alt-0',start)
 #@+node:ekr.20091015185801.5245: *3* read_tags_file
 def read_tags_file():
 
     '''Return the lines of ~/.leo/tags.
     Return [] on error.'''
 
-    trace = True
+    trace = False ; verbose = True
     tagsFileName = os.path.expanduser('~/.leo/tags')
     if not os.path.exists(tagsFileName):
         return [] # EKR: 11/18/2009
@@ -102,83 +115,175 @@ def read_tags_file():
         if trace:
             print('ctagscomplter.py: ~/.leo/tags has %s lines' % (
                 len(lines)))
+            if verbose:
+                for z in lines[:30]:
+                    print(repr(z))
         return lines
     except IOError:
         return []
-#@+node:ville.20090317180704.12: ** onCreate & helper
-def onCreate (tag, keys):
-
-    c = keys.get('c')
-    if not c: return
-
-    install_ctags_completer(c)
-
-#@+node:ville.20090317180704.16: *3* install_ctags_completer
-def install_ctags_completer(c):
-
-    c.k.registerCommand(
-            'ctags-complete','Alt-0',ctags_complete)
-#@+node:ekr.20091015185801.5243: ** ctags_complete & helpers
-def ctags_complete(event):
+#@+node:ekr.20110307092028.14160: *3* start
+def start(event):
+    
+    '''Call cc.start() where cc is the CtagsController for event's commander.'''
+    
+    global conrollers
 
     c = event.get('c')
+    if c:
+        h = c.hash()
+        cc = controllers.get(h)
+        if not cc:
+            controllers[h] = cc = CtagsController(c)
+        cc.start(event)
+#@+node:ekr.20110307092028.14154: ** class CtagsController
+class CtagsController:
+    
+    # To do: put cursor at end of word initially.
+   
+    #@+others
+    #@+node:ekr.20110307092028.14161: *3*  ctor
+    def __init__ (self,c):
+            
+        self.active = False
+        self.body = c.frame.top.ui.richTextEdit
+        self.c = c
+        self.completer = None
+        self.popup = None
+        self.popup_filter = None
+        
+        # Init.
+        w = c.frame.body.bodyCtrl # A leoQTextEditWidget
+        self.ev_filter = w.ev_filter
+        
+        # g.trace('CtagsController',c.shortFileName(),self.body)
+    #@+node:ekr.20091015185801.5243: *3* complete
+    def complete(self,event):
 
-    body = c.frame.top.ui.richTextEdit    
-    tc = body.textCursor()
-    tc.select(QtGui.QTextCursor.WordUnderCursor)
-    txt = tc.selectedText()
+        c = self.c ; cpl = self.completer
 
-    hits = ctags_lookup(txt)
+        tc = self.body.textCursor()
+        tc.select(tc.WordUnderCursor)
+        prefix = tc.selectedText()
+        # g.trace(prefix)
 
-    cpl = c.frame.top.completer = QCompleter(hits)
-    cpl.setWidget(body)
-    f = mkins(cpl, body)
-    cpl.setCompletionPrefix(txt)
-    cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
-    cpl.complete()
-#@+node:ville.20090321223959.2: *3* ctags_lookup
-def ctags_lookup(prefix):
+        hits = self.lookup(prefix)
+        model = QtGui.QStringListModel(hits)
+        cpl.setModel(model)
+        cpl.setCompletionPrefix(prefix)  
+        cpl.complete()
+    #@+node:ekr.20110307141357.14195: *3* end
+    def end (self,completion=''):
+        
+        body = self.body ; cpl = self.completer
+        kill = not completion
 
-    trace = False ; verbose = False
-    global tagLines
+        if not completion:
+            completion = g.u(cpl.currentCompletion())
+        
+        if completion:
+            cmpl = g.u(completion).split(None,1)[0]
+            cmpl = g.u(cmpl)
+            prefix = g.u(cpl.completionPrefix())
+            # g.trace(completion,prefix)
+            tc = body.textCursor()
+            extra = len(cmpl) - len(prefix)
+            tc.movePosition(tc.Left)
+            tc.movePosition(tc.EndOfWord)
+            tc.insertText(cmpl[-extra:])
+            body.setTextCursor(tc)
+        
+        self.kill()
+    #@+node:ekr.20110307141357.14198: *3* kill
+    def kill (self):
+        
+        # Delete the completer.
+        # g.trace()
 
-    if keep_tag_lines:
-        # Use saved lines.
-        hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
-    else:
-        # Open the file in a separate process, then use grep to match lines.
-        # This will be slower, but grep returns very few lines.
-        hits = (z.split(None,1) for z in os.popen('grep "^%s" ~/.leo/tags' % prefix))
+        self.completer.deleteLater()
+        self.completer = None
+        self.active = False
+        self.ev_filter.ctagscompleter_active = False
+    #@+node:ville.20090321223959.2: *3* lookup
+    def lookup(self,prefix):
+        
+        '''Return a list of all items starting with prefix.'''
 
-    if trace:
-        g.trace('%s hits' % len(hits))
-        if verbose:
-            for z in hits: print(z)
+        trace = True ; verbose = False
+        global tagLines
 
-    desc = []
-    for h in hits:
-        s = h[0]
-        m = re.findall('class:(\w+)',h[1])
-        if m:
-            s+= "\t" + m[0]
-        desc.append(s)
+        if keep_tag_lines:
+            # Use saved lines. Split at first whitespace.
+            hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
+            if trace:
+                for z in tagLines:
+                    if z.startswith(prefix):
+                        aList = z.split('\t')
+                        print(aList[0],g.shortFileName(aList[1]))
+                        print(aList[2:],'\n')
+        else:
+            # Open the file in a separate process, then use grep to match lines.
+            # This will be slower, but grep returns very few lines.
+            hits = (z.split(None) for z in os.popen('grep "^%s" ~/.leo/tags' % prefix))
 
-    aList = list(set(desc))
-    aList.sort()
-    return aList
-#@+node:ekr.20091015185801.5242: *3* mkins
-def mkins(completer, body):
+        if trace:
+            g.trace('%s hits' % len(hits))
+            if verbose:
+                for z in hits: print(z)
 
-    def insertCompletion(completion):
-        cmpl = g.u(completion).split(None,1)[0]
+        desc = []
+        for h in hits:
+            s = h[0]
+            m = re.findall('class:(\w+)',h[1])
+            if m:
+                s+= "\t" + m[0]
+            desc.append(s)
 
-        tc = body.textCursor()
-        extra = len(cmpl) - completer.completionPrefix().length()
-        tc.movePosition(QtGui.QTextCursor.Left)
-        tc.movePosition(QtGui.QTextCursor.EndOfWord)
-        tc.insertText(cmpl[-extra:])
-        body.setTextCursor(tc)
+        aList = list(set(desc))
+        aList.sort()
+        return aList
+    #@+node:ekr.20110307092028.14159: *3* onKey
+    def onKey (self,event,stroke):
+        
+        # g.trace(stroke)
+        
+        stroke = stroke.lower()
+        
+        if stroke in ('space','return'):
+            event.accept() # Doesn't work.
+            self.end()
+        elif stroke in ('escape','ctrl+g'):
+            self.kill()
+        elif stroke in ('up','down'):
+            event.ignore() # Does work.
+        else:
+            self.complete(event)
+    #@+node:ekr.20110307092028.14157: *3* start
+    def start (self,event):
+        
+        c = self.c
+        
+        # Create the callback to insert the selected completion.
+        def completion_callback(completion,self=self):
+            self.end(completion)
+        
+        # Create the completer.
+        cpl = c.frame.top.completer = self.completer = QCompleter()
+        cpl.setWidget(self.body)
+        cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
+        
+        # Connect key strokes to the popup.
+        # self.popup = cpl.popup()
+        # self.popup_filter = PopupEventFilter(c,self.popup) # Required
+        # self.popup.installEventFilter(self.popup_filter)
+        # self.popup.setFocus()
 
-    return insertCompletion
+        # Set the flag for the event filter: all keystrokes will go to cc.onKey.
+        self.active = True
+        self.ev_filter.ctagscompleter_active = True
+        self.ev_filter.ctagscompleter_onKey = self.onKey
+        
+        # Show the completions.
+        self.complete(event)
+    #@-others
 #@-others
 #@-leo

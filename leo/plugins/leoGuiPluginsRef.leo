@@ -31,7 +31,8 @@
 <v t="ekr.20100102164747.3702"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"><vh>@file qtNotes.txt</vh></v>
+<v t="ekr.20081121105001.147"
+expanded="ekr.20081121105001.215,ekr.20081121105001.216,ekr.20081121105001.227,ekr.20110315083610.14354,"><vh>@file qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@file cursesGui.py</vh></v>
@@ -42,8 +43,10 @@
 </v>
 <v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
 <v t="ekr.20090124174652.7"><vh>@file baseNativeTree.py</vh></v>
+<v t="ekr.20110316093303.14482"><vh>@file nested_splitter.py</vh></v>
 <v t="ekr.20100103094733.3709"><vh>@file qtframecommands.py</vh></v>
-<v t="ekr.20081121105001.188"><vh>@file qtGui.py</vh></v>
+<v t="ekr.20081121105001.188"
+expanded="ekr.20081121105001.205,ekr.20081121105001.215,ekr.20081121105001.216,ekr.20081121105001.227,ekr.20110315083610.14354,ekr.20081121105001.400,ekr.20090124174652.109,"><vh>@file qtGui.py</vh></v>
 <v t="leohag.20081204085551.1"><vh>@file scrolledmessage.py</vh></v>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>

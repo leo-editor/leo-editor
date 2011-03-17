@@ -530,6 +530,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if p:
                 event = None
                 g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+                # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
     #@verbatim
                 #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
                 g.doHook("iconclick2",c=c,p=p,v=p,event=event)
