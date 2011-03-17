@@ -5454,5 +5454,55 @@ def showTextRenderer (self,event=None):
     # self.selectEditor(wrapper)
     # self.updateEditors()
     # c.bodyWantsFocus()
+#@+node:ekr.20110316155727.14374: *3* From splitter_menu
+
+# act = QtGui.QAction("Insert", self)
+# act.setObjectName('insert')
+# act.connect(act, Qt.SIGNAL('triggered()'), 
+    # lambda: splitter.insert(index))
+# menu.addAction(act)
+
+# act = QtGui.QAction("Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]), self)
+# act.setObjectName('swap')
+# act.connect(act, Qt.SIGNAL('triggered()'), 
+    # lambda: splitter.swap(index))
+# menu.addAction(act)
+
+# act = QtGui.QAction("Rotate all", self)
+# act.setObjectName('rotate')
+# act.connect(act, Qt.SIGNAL('triggered()'), splitter.rotate)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Remove %d %s"%(count[i], lr[i]), self)
+# act.setObjectName('remove %d'%i)
+# def wrapper(i=i): splitter.remove(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Split %s %s"%(lr[i], split_dir), self)
+# act.setObjectName('split %d'%i)
+# def wrapper(i=i): splitter.split(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Mark %d %s"%(count[i], lr[i]), self)
+# act.setObjectName('mark %d'%i)
+# def wrapper(i=i): splitter.mark(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Swap %d %s with marked"%(count[i], lr[i]), self)
+# act.setObjectName('swap mark %d'%i)
+# def wrapper(i=i): splitter.swap_with_marked(index, i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+# act = QtGui.QAction("Add %s"%ab[i], self)
+# act.setObjectName('add %d'%i)
+# def wrapper(i=i): splitter.add(i)
+# act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
+# menu.addAction(act)
+
+
 #@-all
 #@-leo
