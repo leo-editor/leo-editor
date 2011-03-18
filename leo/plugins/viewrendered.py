@@ -109,9 +109,9 @@ def onCreate (tag, keys):
     
     c = keys.get('c')
     if c:
-        controllers[c.hash()] = PluginController(c)
-#@+node:ekr.20110317024548.14375: ** class PluginController
-class PluginController:
+        controllers[c.hash()] = ViewRenderedController(c)
+#@+node:ekr.20110317024548.14375: ** class ViewRenderedController
+class ViewRenderedController:
     
     '''A class to control rendering in a rendering pane.'''
     
@@ -123,13 +123,14 @@ class PluginController:
         self.w = w = QTextEdit()
         w.setReadOnly(True)
         
-        # A kludge: set c.viewrendered for free_layout.
-        c.viewrendered = self
+        c.viewrendered = self # For free_layout
 
-        # self.count = 0 # The number of rendering panes.
+        self.active = False
         self.inited = False
         self.gnx = 0
         self.length = 0
+        self.renderer = None
+        self.splitter = None
     #@+node:ekr.20110317080650.14381: *3* activate
     def activate (self):
         
@@ -137,7 +138,13 @@ class PluginController:
         
         if pc.inited: return
         
+        # if not self.w:
+            # ### To be supplied by the free_layout plugin.
+            # w = QTextEdit()
+            # w.setReadOnly(True)
+        
         pc.inited = True
+        pc.active = True
         
         g.registerHandler('select2',pc.update)
         g.registerHandler('idle',pc.update)
@@ -151,10 +158,29 @@ class PluginController:
         pc = self
         
         # Never disable the idle-time hook: other plugins may need it.
-
         g.unregisterHandler('select2',pc.update)
         g.unregisterHandler('idle',pc.update)
         
+        pc.active = False
+    #@+node:ekr.20110318080425.14394: *3* embed
+    def embed (self):
+        
+        '''Use the free_layout plugin to embed self.w in a splitter.'''
+        
+        c = self.c
+        fl_pc = hasattr(c,'free_layout') and c.free_layout
+        if fl_pc:
+            fl_pc.create_renderer(self.w)
+    #@+node:ekr.20110318080425.14388: *3* has/set_renderer
+    def has_renderer (self):
+        
+        '''Return True if the renderer pane is visible.'''
+        
+        return self.renderer
+
+    def set_renderer (self,splitter):
+        
+        self.renderer = splitter
     #@+node:ekr.20110317080650.14384: *3* show & hide
     def hide (self):
         
@@ -216,12 +242,24 @@ class PluginController:
         
         pc = self
         
+        self.embed()
         pc.show(html=html)
         if big:
             pc.w.zoomIn(4)
     #@-others
+#@+node:ekr.20110317080650.14389: ** class RendererController
+class RendererController:
     
+    '''A class to control one renderer pane.'''
     
+    def __init__ (self,kind,pc,w):
+
+        self.kind = kind
+        self.pc = pc
+        self.w = w
+    
+    #@+others
+    #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):

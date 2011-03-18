@@ -5,6 +5,8 @@
 
 #@+<< imports >>
 #@+node:ekr.20110316093303.14483: ** << imports >>
+import leo.core.leoGlobals as g
+
 import sys
 
 from inspect import isclass
@@ -53,16 +55,16 @@ class DemoWidget(QtGui.QWidget):
         if color:
             self.setStyleSheet("background-color: %s;"%color)
     #@-others
-#@+node:ekr.20110316093303.14486: ** class NestedSplitterChoice
+#@+node:ekr.20110316093303.14486: ** class NestedSplitterChoice (QWidget)
 class NestedSplitterChoice(QtGui.QWidget):
     #@+others
     #@+node:ekr.20110316093303.14487: *3* __init__
-    def __init__(self, parent=None):
+    def __init__(self,parent=None):
 
         QtGui.QWidget.__init__(self, parent)
 
         self.setLayout(QtGui.QVBoxLayout())
-
+        
         button = QtGui.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
 
@@ -199,7 +201,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         for i in 0,1:
             widget[i].setStyleSheet(sheet[i])
     #@-others
-#@+node:ekr.20110316093303.14491: ** class NestedSplitter
+#@+node:ekr.20110316093303.14491: ** class NestedSplitter (QSplitter)
 class NestedSplitter(QtGui.QSplitter): 
 
     enabled = True
@@ -214,9 +216,12 @@ class NestedSplitter(QtGui.QSplitter):
 
     #@+others
     #@+node:ekr.20110316093303.14492: *3* __init__
-    def __init__(self, parent=None, orientation=QtConst.Horizontal, root=None):
+    def __init__(self,parent=None,orientation=QtConst.Horizontal,root=None):
 
         QtGui.QSplitter.__init__(self,orientation,parent)
+        
+        name = parent and parent.objectName() or '<no parent>'
+        g.trace(self)
 
         if not root:
             root = self.top()
@@ -226,31 +231,48 @@ class NestedSplitter(QtGui.QSplitter):
                 root.holders = {}
 
         self.root = root
+    #@+node:ekr.20110318080425.14395: *3* __repr__
+    def __repr__ (self):
+        
+        parent = self.parent()
+
+        return '(NestedSplitter): parent: %s at %s' % (
+            parent and parent.objectName() or '<no parent>',
+            id(self))
+
+    __str__ = __repr__
     #@+node:ekr.20110316093303.14493: *3* add
-    def add(self,side):
+    def add(self,side,button=True,w=None):
 
         orientation = self.other_orientation[self.orientation()]
+        
+        layout = self.parent().layout()
+        g.trace(layout)
 
-        if isinstance(self.parent(), NestedSplitter):
+        if isinstance(self.parent(),NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
             # only child of a previosly more populated splitter
             self.parent().insertWidget(
                 self.parent().indexOf(self) + side,
                 NestedSplitterChoice(self))
 
-        elif self.parent().layout():
-
-            new = NestedSplitter(None, orientation=orientation,
+        elif layout:
+            new = NestedSplitter(None,orientation=orientation,
                 root=self.root)
             # parent set by insertWidget() below
             old = self
-            pos = self.parent().layout().indexOf(old)
-            self.parent().layout().insertWidget(pos, new)
+            pos = layout.indexOf(old)
+            ### layout.insertWidget(pos,new)
             new.addWidget(old)
-            new.insertWidget(side, NestedSplitterChoice(new))
-
+            if button:
+                new.insertWidget(side,NestedSplitterChoice(new))
+            elif w:
+                new.insertWidget(side,w)
+            else:
+                g.trace('can not happen: no w')
         else:
             # fail - parent is not NestedSplitter and has no layout
+            g.trace('fail',self)
             pass
     #@+node:ekr.20110316093303.14494: *3* choice_menu
     def choice_menu(self, button, pos):
@@ -310,10 +332,19 @@ class NestedSplitter(QtGui.QSplitter):
                 count.append(1)
 
         return widget, neighbour, count
-    #@+node:ekr.20110316093303.14499: *3* insert
-    def insert(self, index):
+    #@+node:ekr.20110316093303.14499: *3* insert (changed)
+    def insert(self,index,button=True,w=None):
+        
+        if button:
+            w = NestedSplitterChoice(self)
+            # A QWidget, with self as parent.
+            # This creates the menu.
+        elif not w:
+            w = QtGui.QWidget(self) # Should never happen.
 
-        self.insertWidget(index, NestedSplitterChoice(self))
+        self.insertWidget(index,w)
+        
+        return w
     #@+node:ekr.20110316093303.14500: *3* invalid_swap
     def invalid_swap(self,w0,w1):
         
@@ -335,6 +366,8 @@ class NestedSplitter(QtGui.QSplitter):
 
     #@+node:ekr.20110316093303.14503: *3* register
     def register(self, cb):
+        
+        # g.trace(cb)
 
         self.root.callbacks.append(cb)
     #@+node:ekr.20110316093303.14504: *3* remove & helper
@@ -449,6 +482,7 @@ class NestedSplitter(QtGui.QSplitter):
         self.root.marked = self, self.indexOf(ow), 0, ow
     #@+node:ekr.20110316093303.14511: *3* top
     def top(self):
+
         """find top widget, which is not necessarily root"""
 
         top = self
