@@ -452,7 +452,7 @@ class NestedSplitter(QtGui.QSplitter):
     def split(self,index,side,w=None):
 
         old = self.widget(index+side-1)
-        old_name = old.objectName() or '<no name>'
+        old_name = old and old.objectName() or '<no name>'
         splitter_name = self.objectName() or '<no name>'
         
         if not w:
