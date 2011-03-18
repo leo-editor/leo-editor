@@ -1901,6 +1901,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.createCentralWidget()
         self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout, .splitter and .splitter_2.
+        # g.trace(self.bigTree)
         if self.bigTree:
             self.createBodyPane(self.splitter)
             self.createLogPane(self.splitter)
@@ -2112,7 +2113,7 @@ class DynamicWindow(QtGui.QMainWindow):
         MainWindow.setDockOptions(
             QtGui.QMainWindow.AllowTabbedDocks |
             QtGui.QMainWindow.AnimatedDocks)
-    #@+node:ekr.20090426183711.11: *5* widgets
+    #@+node:ekr.20090426183711.11: *5* widgets (DynamicWindow)
     #@+node:ekr.20090424085523.51: *6* createButton
     def createButton (self,parent,name,label):
 
@@ -2131,7 +2132,7 @@ class DynamicWindow(QtGui.QMainWindow):
     def createContainer (self,parent):
 
         pass
-    #@+node:ekr.20090426083450.11: *6* createFrame (qtGui)
+    #@+node:ekr.20090426083450.11: *6* createFrame
     def createFrame (self,parent,name,
         hPolicy=None,vPolicy=None,
         lineWidth = 1,
@@ -2139,7 +2140,7 @@ class DynamicWindow(QtGui.QMainWindow):
         shape = QtGui.QFrame.NoFrame,
     ):
 
-        # g.trace(g.callers())
+        # g.trace(name)
         w = QtGui.QFrame(parent)
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)

@@ -84,15 +84,24 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     #@+others
     #@+node:ekr.20110316093303.14489: *3* __init__
     def __init__(self, owner):
+        
+        # g.trace(self,'owner',owner)
 
         QtGui.QSplitterHandle.__init__(self, owner.orientation(), owner)
 
         self.setStyleSheet("background-color: green;")
 
         self.setContextMenuPolicy(QtConst.CustomContextMenu)
+
         self.connect(self,
             Qt.SIGNAL('customContextMenuRequested(QPoint)'),
             self.splitter_menu)
+    #@+node:ekr.20110318140136.14423: *3* __repr__
+    def __repr__ (self):
+        
+        return '(NestedSplitterHandle) at: %s' % (id(self))
+        
+    __str__ = __repr__
     #@+node:ekr.20110316155727.14373: *3* add_item
     def add_item (self,func,menu,name):
         
@@ -167,7 +176,8 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         # Split: only if not already split.
         for i in 0,1:
             if not neighbour[i] or neighbour[i].count() == 1:
-                def split_callback(i=i,index=index):
+                def split_callback(i=i,index=index,splitter=splitter):
+                    g.trace(splitter,index,i)
                     splitter.split(index,i)
                 self.add_item(split_callback,menu,'Split %s %s' % (lr[i], split_dir))
 
@@ -180,7 +190,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         if splitter.root.marked:
             for i in 0,1:
                 if not splitter.invalid_swap(widget[i],splitter.root.marked[2]):
-                    def swap_mark_callback(i=i,index=index):
+                    def swap_mark_callback(i=i,index=index,splitter=splitter):
                         splitter.swap_with_marked(index, i)
                     self.add_item(swap_mark_callback,menu,
                         'Swap %d %s With Marked' % (count[i], lr[i]))
@@ -189,7 +199,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             if (not isinstance(splitter.parent(), NestedSplitter) or
                 splitter.parent().indexOf(splitter) == [0,splitter.parent().count()-1][i]
             ):
-                def add_callback(i=i):
+                def add_callback(i=i,splitter=splitter):
                     splitter.add(i)
                 self.add_item(add_callback,menu,'Add %s' % (ab[i]))
 
@@ -217,11 +227,9 @@ class NestedSplitter(QtGui.QSplitter):
     #@+others
     #@+node:ekr.20110316093303.14492: *3* __init__
     def __init__(self,parent=None,orientation=QtConst.Horizontal,root=None):
-
-        QtGui.QSplitter.__init__(self,orientation,parent)
         
-        name = parent and parent.objectName() or '<no parent>'
-        g.trace(self)
+        QtGui.QSplitter.__init__(self,orientation,parent)
+            # This creates a NestedSplitterHandle.
 
         if not root:
             root = self.top()
@@ -235,12 +243,18 @@ class NestedSplitter(QtGui.QSplitter):
     def __repr__ (self):
         
         parent = self.parent()
-
-        return '(NestedSplitter): parent: %s at %s' % (
-            parent and parent.objectName() or '<no parent>',
-            id(self))
+        name = parent and parent.objectName() or '<no parent>'
+        
+        return '(NestedSplitter) parent %s at %s' % (name,id(self))
 
     __str__ = __repr__
+    #@+node:ekr.20110318140136.14420: *3* overrides of QSplitter methods
+    #@+node:ekr.20110316093303.14497: *4* createHandle
+    def createHandle(self, *args, **kargs):
+        
+        # g.trace(self,g.callers())
+
+        return NestedSplitterHandle(self)
     #@+node:ekr.20110316093303.14493: *3* add
     def add(self,side,w=None):
 
@@ -264,11 +278,9 @@ class NestedSplitter(QtGui.QSplitter):
             pos = layout.indexOf(old)
             ### layout.insertWidget(pos,new)
             new.addWidget(old)
-            if w:
-                new.insertWidget(side,w)
-            else:
-                new.insertWidget(side,NestedSplitterChoice(new))
-                
+            if not w:
+                w = NestedSplitterChoice(new)
+            new.insertWidget(side,w)
         else:
             # fail - parent is not NestedSplitter and has no layout
             g.trace('fail',self)
@@ -306,10 +318,6 @@ class NestedSplitter(QtGui.QSplitter):
                     return True
 
         return False
-    #@+node:ekr.20110316093303.14497: *3* createHandle
-    def createHandle(self, *args, **kargs):
-
-        return NestedSplitterHandle(self)
     #@+node:ekr.20110316093303.14498: *3* handle_context
     def handle_context(self, index):
 
@@ -331,7 +339,7 @@ class NestedSplitter(QtGui.QSplitter):
                 count.append(1)
 
         return widget, neighbour, count
-    #@+node:ekr.20110316093303.14499: *3* insert (changed)
+    #@+node:ekr.20110316093303.14499: *3* insert
     def insert(self,index,w=None):
         
         if not w:
@@ -441,20 +449,25 @@ class NestedSplitter(QtGui.QSplitter):
                     yield w
         yield self
     #@+node:ekr.20110316093303.14508: *3* split
-    def split(self, index, side):
+    def split(self,index,side,w=None):
 
         old = self.widget(index+side-1)
+        old_name = old.objectName() or '<no name>'
+        splitter_name = self.objectName() or '<no name>'
+        
+        if not w:
+            w = NestedSplitterChoice(self)
+        
+        # g.trace(splitter_name,old_name,old,w)
 
         if isinstance(old, NestedSplitter):
-            old.addWidget(NestedSplitterChoice(self))
-            return
-
-        orientation = self.other_orientation[self.orientation()]
-
-        new = NestedSplitter(self, orientation=orientation, root=self.root)
-        self.insertWidget(index+side-1, new)
-        new.addWidget(old)
-        new.addWidget(NestedSplitterChoice(self))
+            old.addWidget(w)
+        else:
+            orientation = self.other_orientation[self.orientation()]
+            new = NestedSplitter(self, orientation=orientation, root=self.root)
+            self.insertWidget(index+side-1, new)
+            new.addWidget(old)
+            new.addWidget(w)
     #@+node:ekr.20110316093303.14509: *3* swap
     def swap(self, index):
 

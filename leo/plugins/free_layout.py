@@ -66,20 +66,27 @@ class FreeLayoutController:
             w = c.viewrendered.w # Called from viewrender, so it must exist.
             index = 1
             
-            if 0:
-                parent = c.frame.top.leo_body_frame
-                splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
-                splitter.add(index,w=w)
-            else:
-                parent = c.frame.top.splitter # c.frame.top.splitter_2,
-                splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
-                splitter.insert(index,w=w)
+            dw = c.frame.top
+            splitter = dw.splitter_2
+            body = dw.leo_body_frame
+            index = splitter.indexOf(body)
+            splitter.split(index,side=1,w=w)
+            # if 0:
+                # parent = c.frame.top.leo_body_frame
+                # splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
+                # splitter.add(index,w=w)
+            # else:
+                # parent = c.frame.top.splitter # c.frame.top.splitter_2,
+                # splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
+                # splitter.insert(index,w=w)
                 
             # g.trace(parent)
            
             pc.renderer = splitter
             c.viewrendered.set_renderer(splitter)
+            c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
+            
     #@+node:tbrown.20110203111907.5522: *3* init
     def init(self):
 
@@ -156,7 +163,7 @@ class FreeLayoutController:
                 splitter.replace_widget(splitter.widget(index),w)
                 pc.show()
                 pc.set_renderer(splitter)
-                g.trace(index)
+                # g.trace(index)
             
             self.add_item(wrapper,menu,"Add Viewrendered",splitter)
     #@-others
