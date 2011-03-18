@@ -73,7 +73,7 @@ class FreeLayoutController:
             else:
                 parent = c.frame.top.splitter # c.frame.top.splitter_2,
                 splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
-                splitter.insert(index,button=False,w=w)
+                splitter.insert(index,w=w)
                 
             # g.trace(parent)
            

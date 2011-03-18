@@ -314,6 +314,6 @@ def show_rendering_pane(event):
     c = event.get('c')
     if c:
         pc = controllers.get(c.hash())
-        if pc: pc.show()
+        if pc: pc.view()
 #@-others
 #@-leo

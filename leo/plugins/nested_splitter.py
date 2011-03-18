@@ -242,7 +242,7 @@ class NestedSplitter(QtGui.QSplitter):
 
     __str__ = __repr__
     #@+node:ekr.20110316093303.14493: *3* add
-    def add(self,side,button=True,w=None):
+    def add(self,side,w=None):
 
         orientation = self.other_orientation[self.orientation()]
         
@@ -264,12 +264,11 @@ class NestedSplitter(QtGui.QSplitter):
             pos = layout.indexOf(old)
             ### layout.insertWidget(pos,new)
             new.addWidget(old)
-            if button:
-                new.insertWidget(side,NestedSplitterChoice(new))
-            elif w:
+            if w:
                 new.insertWidget(side,w)
             else:
-                g.trace('can not happen: no w')
+                new.insertWidget(side,NestedSplitterChoice(new))
+                
         else:
             # fail - parent is not NestedSplitter and has no layout
             g.trace('fail',self)
@@ -333,14 +332,12 @@ class NestedSplitter(QtGui.QSplitter):
 
         return widget, neighbour, count
     #@+node:ekr.20110316093303.14499: *3* insert (changed)
-    def insert(self,index,button=True,w=None):
+    def insert(self,index,w=None):
         
-        if button:
+        if not w:
             w = NestedSplitterChoice(self)
             # A QWidget, with self as parent.
             # This creates the menu.
-        elif not w:
-            w = QtGui.QWidget(self) # Should never happen.
 
         self.insertWidget(index,w)
         
