@@ -194,12 +194,13 @@ class ViewRenderedController:
         pc.activate()
         pc.update(tag='view',keywords={'c':self.c,'html':html})
         w.show()
-    #@+node:ekr.20101112195628.5426: *3* update
+    #@+node:ekr.20101112195628.5426: *3* update (can fail after deleted)
     def update(self,tag,keywords):
         
         # if tag != 'idle': g.trace(tag,keywords)
         pc = self ; c = pc.c ; w = pc.w
         if c != keywords.get('c'): return
+        if not pc.active: return
 
         html = keywords.get('html')
         p = c.currentPosition()
