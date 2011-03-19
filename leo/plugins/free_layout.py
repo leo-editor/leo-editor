@@ -23,6 +23,8 @@ controllers = {}  # Keys are c.hash(), values are PluginControllers.
 #@+others
 #@+node:tbrown.20110203111907.5521: ** init
 def init():
+    
+    # g.trace('free_layout.py')
 
     if g.app.gui.guiName() != "qt":
         return False
@@ -39,7 +41,9 @@ def onCreate (tag, keys):
     
     c = keys.get('c')
     if c:
-        controllers[c.hash()] = FreeLayoutController(c)
+        h = c.hash()
+        if not controllers.get(h):
+            controllers[h] = FreeLayoutController(c)
         
         NestedSplitter.enabled = True
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
@@ -72,11 +76,10 @@ class FreeLayoutController:
             index = splitter.indexOf(body)
             splitter.split(index,side=1,w=w)
            
-            pc.renderer = splitter
+            pc.splitter = splitter
             c.viewrendered.set_renderer(splitter,index)
             c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
-            
     #@+node:tbrown.20110203111907.5522: *3* init
     def init(self):
 
@@ -148,11 +151,11 @@ class FreeLayoutController:
 
         if button_mode and vr_pc and not vr_pc.has_renderer():
             
-            def wrapper(pc=vr_pc,splitter=splitter):
+            def wrapper(index=index,pc=vr_pc,splitter=splitter):
                 w = pc.w
                 splitter.replace_widget(splitter.widget(index),w)
                 pc.show()
-                pc.set_renderer(splitter)
+                pc.set_renderer(splitter,index)
                 # g.trace(index)
             
             self.add_item(wrapper,menu,"Add Viewrendered",splitter)

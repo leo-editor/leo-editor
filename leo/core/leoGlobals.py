@@ -3049,9 +3049,9 @@ class command:
 # Important: we can not define g.pc here!
 
 #@+node:ekr.20100910075900.5951: *4* Loading & registration
-def loadOnePlugin (pluginName):
+def loadOnePlugin (pluginName,verbose=False):
     pc = g.app.pluginsController
-    return pc.loadOnePlugin(pluginName)
+    return pc.loadOnePlugin(pluginName,verbose=verbose)
 
 def registerExclusiveHandler(tags,fn):
     pc = g.app.pluginsController

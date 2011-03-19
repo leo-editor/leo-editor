@@ -60,11 +60,9 @@ try:
 except ImportError:
     got_docutils = False
 
-from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
-from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
-        QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
-        QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
-        QPlainTextEdit, QInputDialog)
+# from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
+
+import PyQt4.QtGui as QtGui
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheet >>
@@ -85,10 +83,11 @@ QPlainTextEdit {
 
 #@+at
 # To do:
-# - Create rendering pane automatically on startup, loading free_layout as needed.
+# - (Done) Create rendering pane automatically on startup, loading & initing free_layout as needed.
+# - (Done) @bool view-rendered-auto-create
+# - (Failed) Make viewrendered-big work.
 # - Use the rendering pane for plugin docstrings.
-# - Make viewrendered-big/html work.
-# - Options: viewrendered-create-pane-on-startup, viewrendered-pane-color.
+# - @color viewrendered-pane-color.
 # - Save/restore viewrendered pane size.
 # - Generalize: allow registration of other kinds of renderers.
 #   In particular, allow different kinds of widgets in the viewrendered pane.
@@ -106,12 +105,12 @@ controllers = {}
 def decorate_window(w):
     
     w.setStyleSheet(stickynote_stylesheet)
-    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+    w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: ** init
 def init ():
-
-    # g.viewrendered_count = 0
+    
+    # g.trace('viewrendered.py')
     
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame',onCreate)
@@ -124,18 +123,20 @@ def onCreate (tag, keys):
     
     c = keys.get('c')
     if c:
-        controllers[c.hash()] = ViewRenderedController(c)
+        h = c.hash()
+        if not controllers.get(h):
+            controllers[h] = ViewRenderedController(c)
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
 class ViewRenderedController:
     
     '''A class to control rendering in a rendering pane.'''
     
     #@+others
-    #@+node:ekr.20110317080650.14380: *3* ctor
+    #@+node:ekr.20110317080650.14380: *3* ctor & helper
     def __init__ (self,c):
             
         self.c = c
-        self.w = w = QTextEdit()
+        self.w = w = QtGui.QTextEdit() # QtGui.QTextBrowser()
         w.setReadOnly(True)
         
         c.viewrendered = self # For free_layout
@@ -143,21 +144,37 @@ class ViewRenderedController:
         self.active = False
         self.inited = False
         self.gnx = 0
-        self.kind = 'normal'
+        self.kind = 'rst' # in ('big','html','rst',)
         self.length = 0         # The length of previous p.b.
         self.splitter = None    # The splitter containing the rendering pane.
         self.splitter_index = None  # The index of the rendering pane in the splitter.
+        
+        # User-options:
+        self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
+        self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
+        
+        # Init.
+        self.load_free_layout()
+
+        if self.auto_create:
+            self.view(self.default_kind)
+    #@+node:ekr.20110319013946.14467: *4* load_free_layout
+    def load_free_layout (self):
+        
+        c = self.c
+        
+        fl = hasattr(c,'free_layout') and c.free_layout
+
+        if not fl:
+            # g.trace('auto-loading free_layout.py')
+            m = g.loadOnePlugin('free_layout.py',verbose=False)
+            m.onCreate(tag='viewrendered',keys={'c':c})
     #@+node:ekr.20110317080650.14381: *3* activate
     def activate (self):
         
         pc = self
         
         if pc.inited: return
-        
-        # if not self.w:
-            # ### To be supplied by the free_layout plugin.
-            # w = QTextEdit()
-            # w.setReadOnly(True)
         
         pc.inited = True
         pc.active = True
@@ -184,9 +201,14 @@ class ViewRenderedController:
         '''Use the free_layout plugin to embed self.w in a splitter.'''
         
         c = self.c
-        fl_pc = hasattr(c,'free_layout') and c.free_layout
-        if fl_pc:
-            fl_pc.create_renderer(self.w)
+        
+        if self.splitter:
+            return
+
+        fl = hasattr(c,'free_layout') and c.free_layout
+        if fl:
+            fl.create_renderer(self.w)
+                # Calls set_renderer, which sets self.splitter.
     #@+node:ekr.20110318080425.14388: *3* has/set_renderer
     def has_renderer (self):
         
@@ -198,7 +220,6 @@ class ViewRenderedController:
         
         self.splitter = splitter
         self.splitter_index = index
-        g.trace(splitter,index)
     #@+node:ekr.20110317080650.14384: *3* show & hide
     def hide (self):
         
@@ -206,33 +227,39 @@ class ViewRenderedController:
         pc.deactivate()
         w.hide()
         
-    def show (self,html=False):
+    def show (self):
         
         pc = self ; w = pc.w
         pc.activate()
-        pc.update(tag='view',keywords={'c':self.c,'html':html})
+        pc.update(tag='view',keywords={'c':self.c})
         w.show()
     #@+node:ekr.20101112195628.5426: *3* update
     def update(self,tag,keywords):
         
-        # if tag != 'idle': g.trace(tag,keywords)
         pc = self ; c = pc.c ; w = pc.w
         if c != keywords.get('c'): return
         if not pc.active: return
 
-        html = keywords.get('html')
+        msg = '' # The error message from docutils.
         p = c.currentPosition()
         s = p.b.strip()
-        w.setWindowTitle(p.h)
+        
+        try:
+            # Can fail if the window has been deleted.
+            w.setWindowTitle(p.h)
+        except exception:
+            self.splitter = None
+            return
 
         if self.gnx == p.v.gnx and len(s) == self.length:
             return  # no change
+            
+        # g.trace(self.kind)
 
         self.gnx = p.v.gnx
         self.length = len(s)
-        msg = ''
 
-        if got_docutils and not s.startswith('<'):
+        if self.kind != 'big' and got_docutils and not s.startswith('<'):
 
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
@@ -252,19 +279,22 @@ class ViewRenderedController:
                     if 'SEVERE' in msg or 'FATAL' in msg:
                         s = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,s)
 
-        if html or msg:
-            w.setPlainText(s)
-        else:
+        if self.kind in ('rst','html'):
             w.setHtml(s)
+        else:
+            w.setPlainText(s)
+            if self.kind == 'big':
+                w.zoomIn(10) # Doesn't work.
     #@+node:ekr.20110317024548.14379: *3* view
-    def view(self,big=False,html=False):
+    def view(self,kind):
         
         pc = self
+        pc.kind = kind
         
         self.embed()
-        pc.show(html=html)
-        if big:
-            pc.w.zoomIn(4)
+        pc.show()
+        # if big:
+            # pc.w.zoomIn(4)
     #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')
@@ -275,7 +305,7 @@ def viewrendered(event):
     if c:
         # ViewRendered(c)
         pc = controllers.get(c.hash())
-        if pc: pc.view()
+        if pc: pc.view('rst')
 #@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html')
 @g.command('viewrendered-html')
 def viewrendered(event):
@@ -285,7 +315,7 @@ def viewrendered(event):
     if c:
         # ViewRendered(c, view_html=True)
         pc = controllers.get(c.hash())
-        if pc: pc.view(html=True)
+        if pc: pc.view('html')
 #@+node:tbrown.20101127112443.14854: ** g.command('viewrendered-big')
 @g.command('viewrendered-big')
 def viewrendered(event):
@@ -297,10 +327,11 @@ def viewrendered(event):
 
     c = event.get('c')
     if c:
-        # vr = ViewRendered(c)
-        # vr.zoomIn(4)
         pc = controllers.get(c.hash())
-        if pc: pc.view(big=True)
+        if pc:
+            w = pc.w
+            pc.view('big')
+            w.zoomIn(4)
 #@+node:ekr.20110317080650.14383: ** g.command('hide-rendering-pane')
 @g.command('hide-rendering-pane')
 def hide_rendering_pane(event):

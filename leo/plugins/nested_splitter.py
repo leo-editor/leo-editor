@@ -400,7 +400,6 @@ class NestedSplitter(QtGui.QSplitter):
 
         else:
             self.close_or_keep(widget)
-
     #@+node:ekr.20110316093303.14495: *4* close_or_keep
     def close_or_keep(self, widget):
 
