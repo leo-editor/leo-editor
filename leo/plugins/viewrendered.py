@@ -83,6 +83,18 @@ QPlainTextEdit {
 """
 #@-<< define stylesheet >>
 
+#@+at
+# To do:
+# - Create rendering pane automatically on startup, loading free_layout as needed.
+# - Use the rendering pane for plugin docstrings.
+# - Make viewrendered-big/html work.
+# - Options: viewrendered-create-pane-on-startup, viewrendered-pane-color.
+# - Save/restore viewrendered pane size.
+# - Generalize: allow registration of other kinds of renderers.
+# - Support @html, @graphic, @movie, @networkx.
+# - Support uA's that indicate the kind of rendering desired.
+#@@c
+
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 
@@ -194,7 +206,7 @@ class ViewRenderedController:
         pc.activate()
         pc.update(tag='view',keywords={'c':self.c,'html':html})
         w.show()
-    #@+node:ekr.20101112195628.5426: *3* update (can fail after deleted)
+    #@+node:ekr.20101112195628.5426: *3* update
     def update(self,tag,keywords):
         
         # if tag != 'idle': g.trace(tag,keywords)
