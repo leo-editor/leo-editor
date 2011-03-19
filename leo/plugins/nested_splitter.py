@@ -248,13 +248,6 @@ class NestedSplitter(QtGui.QSplitter):
         return '(NestedSplitter) parent %s at %s' % (name,id(self))
 
     __str__ = __repr__
-    #@+node:ekr.20110318140136.14420: *3* overrides of QSplitter methods
-    #@+node:ekr.20110316093303.14497: *4* createHandle
-    def createHandle(self, *args, **kargs):
-        
-        # g.trace(self,g.callers())
-
-        return NestedSplitterHandle(self)
     #@+node:ekr.20110316093303.14493: *3* add
     def add(self,side,w=None):
 
@@ -318,6 +311,30 @@ class NestedSplitter(QtGui.QSplitter):
                     return True
 
         return False
+    #@+node:tbrown.20110319152026.16928: *3* get_layout
+    def get_layout(self):
+        """return {'orientation':str, 'content':[], 'splitter':ns}
+        
+        Where content is a list of widgets, or if a widget is a NestedSplitter, the
+        result of that splitters call to get_layout().  splitter is the splitter
+        which generated the dict.
+        
+        Usually you would call ns.top().get_layout()
+        """
+        
+        ans = {
+            'orientation': self.orientation(),
+            'splitter': self,
+            'content': []
+        }
+        for i in range(self.count()):
+            w = self.widget(i)
+            if isinstance(w, NestedSplitter):
+                ans['content'].append(w.get_layout())
+            else:
+                ans['content'].append(w)
+                
+        return ans
     #@+node:ekr.20110316093303.14498: *3* handle_context
     def handle_context(self, index):
 
@@ -357,6 +374,35 @@ class NestedSplitter(QtGui.QSplitter):
             w0 == w1 or
             isinstance(w0,NestedSplitter) and w0.contains(w1) or
             isinstance(w1,NestedSplitter) and w1.contains(w0))
+    #@+node:tbrown.20110319152026.16929: *3* layout_to_text
+    def layout_to_text(self, layout, _depth=0, _ans=[]):
+        """convert the output from get_layout to indented human readable text
+        for development/debugging"""
+        
+        orientation = 'vertical'
+        if layout['orientation'] == QtConst.Horizontal:
+             orientation = 'horizontal'
+             
+        _ans.append("%s%s (%s) - %s" % (
+            '   '*_depth,
+            layout['splitter'].__class__.__name__,
+            layout['splitter'].objectName(),
+            orientation
+        ))
+        
+        _depth += 1
+        for n,i in enumerate(layout['content']):
+            if isinstance(i, dict):
+                self.layout_to_text(i, _depth, _ans)
+            else:
+                _ans.append("%s%s (%s)" % (
+                   '   '*_depth,
+                   i.__class__.__name__,
+                   str(i.objectName())  # not QString
+                ))
+                
+        if _depth == 1:
+            return '\n'.join(_ans)
     #@+node:ekr.20110316093303.14501: *3* mark
     def mark(self, index, side):
 
@@ -369,6 +415,13 @@ class NestedSplitter(QtGui.QSplitter):
 
         return max([i.count() for i in self.self_and_descendants()])
 
+    #@+node:ekr.20110318140136.14420: *3* overrides of QSplitter methods
+    #@+node:ekr.20110316093303.14497: *4* createHandle
+    def createHandle(self, *args, **kargs):
+        
+        # g.trace(self,g.callers())
+
+        return NestedSplitterHandle(self)
     #@+node:ekr.20110316093303.14503: *3* register
     def register(self, cb):
         
@@ -492,7 +545,7 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110316093303.14511: *3* top
     def top(self):
 
-        """find top widget, which is not necessarily root"""
+        """find top (outer) widget, which is not necessarily root"""
 
         top = self
         while isinstance(top.parent(), NestedSplitter):
