@@ -359,6 +359,7 @@ class PlugIn:
             msg = ''
 
         g.app.gui.runScrolledMessageDialog(
+            short_title = self.name,
             title="About Plugin ( " + self.name + " )",
             label="Version: " + self.version,
             msg=msg,

@@ -83,6 +83,7 @@ QPlainTextEdit {
 
 #@+at
 # To do:
+# - Plugin menu should add plugin name as a title to the scrolled message.
 # - Update docstring for this plugin: mention settings.
 # - @color viewrendered-pane-color.
 # - Save/restore viewrendered pane size.
@@ -232,6 +233,13 @@ class ViewRenderedController:
         pc.activate()
         pc.update(tag='view',keywords={'c':self.c})
         w.show()
+    #@+node:ekr.20110319143920.14466: *3* underline
+    def underline (self,s):
+        
+        ch = '#'
+        n = max(4,len(g.toEncodedString(s,reportErrors=False)))
+        # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
+        return '%s\n%s\n\n' % (s,ch*n)
     #@+node:ekr.20101112195628.5426: *3* update
     def update(self,tag,keywords):
         
@@ -276,6 +284,8 @@ class ViewRenderedController:
                 os.chdir(path)
 
             try:
+                if self.title:
+                    s = self.underline(self.title) + s
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
             except SystemMessage as sm:
@@ -295,7 +305,7 @@ class ViewRenderedController:
             w.setPlainText(s)
            
     #@+node:ekr.20110317024548.14379: *3* view
-    def view(self,kind,s=None):
+    def view(self,kind,s=None,title=None):
         
         pc = self
         pc.kind = kind
@@ -303,6 +313,7 @@ class ViewRenderedController:
         self.embed()
         self.s = s
         self.length = -1 # Force an update.
+        self.title = title
         pc.show()
         # if big:
             # pc.w.zoomIn(4)

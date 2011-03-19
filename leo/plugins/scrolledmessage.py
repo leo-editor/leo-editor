@@ -256,7 +256,9 @@ class ScrolledMessageDialog(object):
         self.use_viewrendered = pc and c.config.getBool('scrolledmessage_use_viewrendered',True)
 
         if self.use_viewrendered:
-            pc.view('rst',s=kw.get('msg'))
+            s=kw.get('msg')
+            title = kw.get('short_title','').strip()
+            pc.view('rst',s,title=title)
             return
         
         top = c.frame.top
@@ -567,7 +569,9 @@ class ScrolledMessageDialog(object):
         
         if self.use_viewrendered:
             pc = c.viewrendered
-            pc.view('rst',s=kw.get('msg'))
+            s=kw.get('msg')
+            title = kw.get('short_title','').strip()
+            pc.view('rst',s=s,title=title)
             return
 
         self.updateIvars(kw)
