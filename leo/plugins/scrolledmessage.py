@@ -11,6 +11,15 @@ The plugin can display messages supplied as plain text or formatted as html. In
 addition the plugin can accept messages in rst format and convert them to be
 displayed as html.
 
+There are two possible user interfaces, controlled by::
+    
+    @bool scrolledmessage_use_viewrendered = True
+    
+1. When True (the default) the plugin will use the rendering pane
+   created by the viewrendered plugin.
+   
+2. Otherwise, the plugin will use a separate pane as described below:
+
 The displayed format can be controlled by the user via check boxes, so rst
 messages may be viewed either as text or as html. Html messages can also be
 viewed as raw text, which will be a good debug feature when creating complex

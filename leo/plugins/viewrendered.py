@@ -4,6 +4,8 @@
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
 ''' Creates a window for *live* rendering of rst, html, etc.  (Qt only).
 
+**Commands**
+
 viewrendered.py creates the following (``Alt-X``) commands:
 
 ``viewrendered``
@@ -34,9 +36,19 @@ and::
 
 will look something like:
 
-**Heading**
+    **Heading**
 
-`This` is **really** a line of text.
+    `This` is **really** a line of text.
+
+**Settings**
+
+- \@string view-rendered-default-kind = rst
+  
+  The default kind of rendering.  One of (big,rst,html)
+    
+- \@bool view-rendered-auto-create = False
+  
+  When True, the plugin will create a rendering pane automatically.
 
 '''
 #@-<< docstring >>
@@ -64,6 +76,7 @@ except ImportError:
 
 import PyQt4.QtGui as QtGui
 #@-<< imports >>
+
 #@+<< define stylesheet >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheet >>
 stickynote_stylesheet = """
@@ -82,9 +95,9 @@ QPlainTextEdit {
 #@-<< define stylesheet >>
 
 #@+at
+# 
 # To do:
-# - Plugin menu should add plugin name as a title to the scrolled message.
-# - Update docstring for this plugin: mention settings.
+# 
 # - @color viewrendered-pane-color.
 # - Save/restore viewrendered pane size.
 # - Generalize: allow registration of other kinds of renderers.
@@ -94,6 +107,7 @@ QPlainTextEdit {
 # - Eliminate the call to c.frame.equalSizedPanes in create_renderer (in free_layout).
 #   That is, be able to specify the pane ratios from user options.
 # - (Failed) Make viewrendered-big work.
+# 
 #@@c
 
 controllers = {}
@@ -260,6 +274,7 @@ class ViewRenderedController:
             if self.s:
                 self.s = None
                 self.length = -1
+                self.title = ''
 
         try:
             # Can fail if the window has been deleted.
@@ -274,8 +289,10 @@ class ViewRenderedController:
         # g.trace(self.kind)
         self.gnx = p.v.gnx
         self.length = len(s)
+        
+        s = s.strip().strip('"""').strip("'''").strip()
 
-        if got_docutils and not s.startswith('<'):
+        if got_docutils and (not s.startswith('<') or s.startswith('<<')):
 
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
