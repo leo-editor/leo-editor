@@ -80,7 +80,7 @@ class FreeLayoutController:
             c.viewrendered.set_renderer(splitter,index)
             c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
-            g.trace(splitter)
+            # g.trace(splitter)
     #@+node:tbrown.20110203111907.5522: *3* init
     def init(self):
 

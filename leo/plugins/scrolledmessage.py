@@ -466,7 +466,7 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081206052547.36: *4* Help Menu
     #@+node:leohag.20081206052547.17: *5* About
     def doActionAbout(self, checked):
-        g.trace()
+
         pass
     #@+node:leohag.20081207032616.24: *4* RST3
     def doActionRST3(self, checked):
@@ -521,7 +521,7 @@ class ScrolledMessageDialog(object):
         
         '''Return self.msg converted to html.'''
         
-        g.trace(self.msg,g.callers())
+        # g.trace(self.msg,g.callers())
 
         s = self.msg
         f = self.controlFlags

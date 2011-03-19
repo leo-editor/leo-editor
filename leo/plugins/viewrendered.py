@@ -84,7 +84,6 @@ QPlainTextEdit {
 #@+at
 # To do:
 # - Update docstring for this plugin: mention settings.
-# - ?? Use the rendering pane for plugin docstrings? Or use scrolledmessage.py for this??
 # - @color viewrendered-pane-color.
 # - Save/restore viewrendered pane size.
 # - Generalize: allow registration of other kinds of renderers.
