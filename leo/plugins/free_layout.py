@@ -1,8 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20110203111907.5519: * @file free_layout.py
+#@+<< docstring >>
+#@+node:ekr.20110319161401.14467: ** << docstring >>
 """Adds flexible panel layout through context menus on the handles between panels.
 Requires Qt.
 """
+#@-<< docstring >>
 
 __version__ = '0.1'
     # 0.1 - initial release - TNB
