@@ -76,10 +76,11 @@ class FreeLayoutController:
             index = splitter.indexOf(body)
             splitter.split(index,side=1,w=w)
            
-            pc.splitter = splitter
+            pc.renderer = splitter # pc is a FreeLayoutController.
             c.viewrendered.set_renderer(splitter,index)
             c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
+            g.trace(splitter)
     #@+node:tbrown.20110203111907.5522: *3* init
     def init(self):
 

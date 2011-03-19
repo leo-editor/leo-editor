@@ -83,10 +83,8 @@ QPlainTextEdit {
 
 #@+at
 # To do:
-# - (Done) Create rendering pane automatically on startup, loading & initing free_layout as needed.
-# - (Done) @bool view-rendered-auto-create
-# - (Failed) Make viewrendered-big work.
-# - Use the rendering pane for plugin docstrings.
+# - Update docstring for this plugin: mention settings.
+# - ?? Use the rendering pane for plugin docstrings? Or use scrolledmessage.py for this??
 # - @color viewrendered-pane-color.
 # - Save/restore viewrendered pane size.
 # - Generalize: allow registration of other kinds of renderers.
@@ -95,6 +93,7 @@ QPlainTextEdit {
 # - Support uA's that indicate the kind of rendering desired.
 # - Eliminate the call to c.frame.equalSizedPanes in create_renderer (in free_layout).
 #   That is, be able to specify the pane ratios from user options.
+# - (Failed) Make viewrendered-big work.
 #@@c
 
 controllers = {}
@@ -146,6 +145,7 @@ class ViewRenderedController:
         self.gnx = 0
         self.kind = 'rst' # in ('big','html','rst',)
         self.length = 0         # The length of previous p.b.
+        self.s = ''
         self.splitter = None    # The splitter containing the rendering pane.
         self.splitter_index = None  # The index of the rendering pane in the splitter.
         
@@ -242,8 +242,18 @@ class ViewRenderedController:
 
         msg = '' # The error message from docutils.
         p = c.currentPosition()
-        s = p.b.strip()
+        # g.trace(self.s)
         
+        
+        if self.gnx == p.v.gnx:
+            s = self.s or p.b.strip()
+        else:
+            # A bit tricky:  Switch to p.b when we change nodes.
+            s = p.b.strip()
+            if self.s:
+                self.s = None
+                self.length = -1
+
         try:
             # Can fail if the window has been deleted.
             w.setWindowTitle(p.h)
@@ -255,11 +265,10 @@ class ViewRenderedController:
             return  # no change
             
         # g.trace(self.kind)
-
         self.gnx = p.v.gnx
         self.length = len(s)
 
-        if self.kind != 'big' and got_docutils and not s.startswith('<'):
+        if got_docutils and not s.startswith('<'):
 
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
@@ -279,19 +288,22 @@ class ViewRenderedController:
                     if 'SEVERE' in msg or 'FATAL' in msg:
                         s = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,s)
 
-        if self.kind in ('rst','html'):
+        if self.kind in ('big','rst','html'):
             w.setHtml(s)
+            if self.kind == 'big':
+                w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
-            if self.kind == 'big':
-                w.zoomIn(10) # Doesn't work.
+           
     #@+node:ekr.20110317024548.14379: *3* view
-    def view(self,kind):
+    def view(self,kind,s=None):
         
         pc = self
         pc.kind = kind
         
         self.embed()
+        self.s = s
+        self.length = -1 # Force an update.
         pc.show()
         # if big:
             # pc.w.zoomIn(4)

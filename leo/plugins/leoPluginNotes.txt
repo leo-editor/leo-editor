@@ -277,17 +277,16 @@ def replaceCodeBlockDirectives (self,lines):
 
     return result
 #@+node:ekr.20110317080650.14388: ** Unused code
-#@+node:ekr.20110319013946.14465: *3* class RendererController
-class RendererController:
-    
-    '''A class to control one renderer pane.'''
-    
-    def __init__ (self,kind,pc,w):
+#@+node:leohag.20081207032616.23: *3* afterDrawHandler (not used from scrolledmessage)
+# def afterDrawHandler():
 
-        self.kind = kind
-        self.pc = pc
-        self.w = w
+    # pass
+    #if self.ui.actionFollowOutline
+#@+node:leohag.20081203143921.18: *3* show (not used from scrolledmessage)
+def show(self):
     
-    @others
+    g.trace(g.callers())
+    
+    self.ui.show()
 #@-all
 #@-leo
