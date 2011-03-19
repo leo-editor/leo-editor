@@ -71,19 +71,9 @@ class FreeLayoutController:
             body = dw.leo_body_frame
             index = splitter.indexOf(body)
             splitter.split(index,side=1,w=w)
-            # if 0:
-                # parent = c.frame.top.leo_body_frame
-                # splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
-                # splitter.add(index,w=w)
-            # else:
-                # parent = c.frame.top.splitter # c.frame.top.splitter_2,
-                # splitter = NestedSplitter(parent,orientation=QtCore.Qt.Vertical)
-                # splitter.insert(index,w=w)
-                
-            # g.trace(parent)
            
             pc.renderer = splitter
-            c.viewrendered.set_renderer(splitter)
+            c.viewrendered.set_renderer(splitter,index)
             c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
             

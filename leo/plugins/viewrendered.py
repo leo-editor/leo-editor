@@ -91,8 +91,11 @@ QPlainTextEdit {
 # - Options: viewrendered-create-pane-on-startup, viewrendered-pane-color.
 # - Save/restore viewrendered pane size.
 # - Generalize: allow registration of other kinds of renderers.
+#   In particular, allow different kinds of widgets in the viewrendered pane.
 # - Support @html, @graphic, @movie, @networkx.
 # - Support uA's that indicate the kind of rendering desired.
+# - Eliminate the call to c.frame.equalSizedPanes in create_renderer (in free_layout).
+#   That is, be able to specify the pane ratios from user options.
 #@@c
 
 controllers = {}
@@ -140,9 +143,10 @@ class ViewRenderedController:
         self.active = False
         self.inited = False
         self.gnx = 0
-        self.length = 0
-        self.renderer = None
-        self.splitter = None
+        self.kind = 'normal'
+        self.length = 0         # The length of previous p.b.
+        self.splitter = None    # The splitter containing the rendering pane.
+        self.splitter_index = None  # The index of the rendering pane in the splitter.
     #@+node:ekr.20110317080650.14381: *3* activate
     def activate (self):
         
@@ -188,11 +192,13 @@ class ViewRenderedController:
         
         '''Return True if the renderer pane is visible.'''
         
-        return self.renderer
+        return self.splitter
 
-    def set_renderer (self,splitter):
+    def set_renderer (self,splitter,index):
         
-        self.renderer = splitter
+        self.splitter = splitter
+        self.splitter_index = index
+        g.trace(splitter,index)
     #@+node:ekr.20110317080650.14384: *3* show & hide
     def hide (self):
         
@@ -224,6 +230,7 @@ class ViewRenderedController:
 
         self.gnx = p.v.gnx
         self.length = len(s)
+        msg = ''
 
         if got_docutils and not s.startswith('<'):
 
@@ -240,13 +247,12 @@ class ViewRenderedController:
                 if 0:
                     g.trace(sm)
                     print(sm.args)
+                if 1:
                     msg = sm.args[0]
                     if 'SEVERE' in msg or 'FATAL' in msg:
                         s = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,s)
-                self.setPlainText(s)
-                return
 
-        if html:
+        if html or msg:
             w.setPlainText(s)
         else:
             w.setHtml(s)
@@ -259,19 +265,6 @@ class ViewRenderedController:
         pc.show(html=html)
         if big:
             pc.w.zoomIn(4)
-    #@-others
-#@+node:ekr.20110317080650.14389: ** class RendererController
-class RendererController:
-    
-    '''A class to control one renderer pane.'''
-    
-    def __init__ (self,kind,pc,w):
-
-        self.kind = kind
-        self.pc = pc
-        self.w = w
-    
-    #@+others
     #@-others
 #@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
 @g.command('viewrendered')

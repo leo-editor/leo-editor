@@ -277,33 +277,17 @@ def replaceCodeBlockDirectives (self,lines):
 
     return result
 #@+node:ekr.20110317080650.14388: ** Unused code
-#@+node:tbrown.20100318101414.5997: *3* class ViewRendered(QTextEdit) (not used)
-if 0: # Not used
-
-    class ViewRendered(QTextEdit):
+#@+node:ekr.20110319013946.14465: *3* class RendererController
+class RendererController:
     
-        @others
-#@+node:ekr.20101112195628.5429: *4* ctor
-def __init__(self,pc):
+    '''A class to control one renderer pane.'''
     
-    QTextEdit.__init__(self)
-    self.leo_pc = pc # Avoid conflicts with ivars.
-    self.setReadOnly(True)
-#@+node:ekr.20101112195628.5430: *4* Death
-def __del__(self):
+    def __init__ (self,kind,pc,w):
 
-    self.close()
-
-def close(self):
+        self.kind = kind
+        self.pc = pc
+        self.w = w
     
-    pc = self.leo_pc
-    pc.deactivate()
-    self.setVisible(False)
-    self.destroy()  # if this doesn't work, hopefully it's hidden
-
-def closeEvent(self, event):
-
-    event.accept()
-    self.close()
+    @others
 #@-all
 #@-leo
