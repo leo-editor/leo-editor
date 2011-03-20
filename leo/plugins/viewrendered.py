@@ -96,7 +96,6 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Support @svg, @html, @graphic, @movie, @networkx.
 # - Allow easy swapping of self.w widget, preparing for other renderers.
 # - @color viewrendered-pane-color.
 # - Generalize: allow registration of other kinds of renderers.
@@ -186,6 +185,7 @@ class ViewRenderedController:
             'html':     pc.update_rst,
             'graphic':  pc.update_graphic,
             'movie':    pc.update_movie,
+            'networkx': pc.update_networkx,
             'rst':      pc.update_rst,
             'svg':      pc.update_svg,
         }
@@ -276,30 +276,38 @@ class ViewRenderedController:
         
         pc = self ; c = pc.c ; p = c.p
         s, val = pc.must_update(keywords)
-        if not val:
-            # g.trace('exit')
-            return
-
+        if not val: return
+        
         # Suppress updates until we change nodes.  
         self.gnx = p.v.gnx
-        self.length = len(p.b) # Not s.
+        self.length = len(p.b) # Use p.b, not s.
         
-        # Compute the proper kind.
-        d = pc.dispatch_dict
-        h = p.h
-        kind = None
-        if h.startswith('@'):
-            i = g.skip_id(h,1)
-            kind = h[1:i]
-            if kind not in d:
-                kind = None
-            
-        # Dispatch.
-        f = d.get(kind or self.kind)
+        # Remove Leo directives.
+        s = pc.remove_directives(s)
+
+        # Dispatch based on the computed kind.
+        kind = self.get_kind(p)
+        f = pc.dispatch_dict.get(kind)
         if not f:
             g.trace('no handler for kind: %s' % kind)
             f = self.update_rst
         f(s,keywords)
+    #@+node:ekr.20110320120020.14483: *4* get_kind
+    def get_kind(self,p):
+        
+        '''Return the proper rendering kind for node p.'''
+        
+        pc = self ; h = p.h
+
+        if h.startswith('@'):
+            i = g.skip_id(h,1)
+            word = h[1:i].lower().strip()
+            if word in pc.dispatch_dict:
+                return word
+                
+        # To do: look at ancestors, or uA's.
+
+        return self.kind # The default.
     #@+node:ekr.20110320120020.14476: *4* must_update
     def must_update (self,keywords):
         
@@ -325,6 +333,20 @@ class ViewRenderedController:
             # except exception:
                 # self.splitter = None
                 # return
+    #@+node:ekr.20110320120020.14485: *4* remove_directives
+    def remove_directives (self,s):
+        
+        lines = g.splitLines(s)
+        result = []
+        for s in lines:
+            if s.startswith('@'):
+                i = g.skip_id(s,1)
+                word = s[1:i]
+                if word in g.globalDirectiveList:
+                    continue
+            result.append(s)
+        
+        return ''.join(result)
     #@+node:ekr.20110320120020.14482: *4* update_graphic
     def update_graphic (self,s,keywords):
 
@@ -369,6 +391,10 @@ class ViewRenderedController:
     def update_movie (self,s,keywords):
         
         self.w.setPlainText('Movie\n\n%s' % (s))
+    #@+node:ekr.20110320120020.14484: *4* update_networkx
+    def update_networkx (self,s,keywords):
+        
+        self.w.setPlainText('Networkx: len: %s' % (len(s)))
     #@+node:ekr.20110317024548.14379: *3* view
     def view(self,kind,s=None,title=None):
         
