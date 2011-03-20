@@ -72,8 +72,6 @@ try:
 except ImportError:
     got_docutils = False
 
-# from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
-
 import PyQt4.QtGui as QtGui
 #@-<< imports >>
 
@@ -98,12 +96,16 @@ QPlainTextEdit {
 # 
 # To do:
 # 
+# - Support @html, @graphic, @movie, @networkx.
+# - Allow easy swapping of self.w widget, preparing for other renderers.
 # - @color viewrendered-pane-color.
-# - Save/restore viewrendered pane size.
 # - Generalize: allow registration of other kinds of renderers.
 #   In particular, allow different kinds of widgets in the viewrendered pane.
-# - Support @html, @graphic, @movie, @networkx.
 # - Support uA's that indicate the kind of rendering desired.
+# 
+# Fix bugs:
+# 
+# - Save/restore viewrendered pane size.
 # - Eliminate the call to c.frame.equalSizedPanes in create_renderer (in free_layout).
 #   That is, be able to specify the pane ratios from user options.
 # - (Failed) Make viewrendered-big work.

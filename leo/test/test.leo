@@ -687,8 +687,9 @@
 </v>
 </v>
 </v>
-</v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
+</v>
+<v t="ekr.20110320051617.2475" a="O"><vh>Rendering svg files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -9421,5 +9422,30 @@ c.k.simulateCommand('stickynote')
 aList = list(c.k.bindingsDict.keys())
 aList.sort()
 for z in aList: print(z)</t>
+<t tx="ekr.20110320051617.2475"># http://doc.trolltech.com/4.4/qtsvg.html 
+# http://doc.trolltech.com/4.4/painting-svgviewer.html
+
+import PyQt4.QtCore as QtCore
+import PyQt4.QtSvg as QtSvg
+import PyQt4.QtGui as QtGui
+
+path = g.os_path_finalize_join(g.app.loadDir,'..','Icons','bubbles.svg')
+assert g.os_path_exists(path)
+
+class myWidget (QtSvg.QSvgWidget):
+
+    def __init__ (self,path):
+        QtGui.QWidget.__init__(self)
+        self.r = r = self.renderer()
+        r.load(path)
+        assert r.isValid(),'not valid'
+
+    def paintEvent(self,event):
+        painter = QtGui.QPainter(self) # Calls begin.
+        self.r.render(painter)
+        painter.end() # Destroys the paint engine.
+
+w = myWidget(path)
+w.show()</t>
 </tnodes>
 </leo_file>
