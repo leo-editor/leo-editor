@@ -1694,6 +1694,7 @@ class keyHandlerClass:
             'leoPlugins.leo',   'leoPluginsRef.leo',
             'leoPy.leo',        'leoPyRef.leo',
             'myLeoSettings.leo', 'leoSettings.leo',
+            'ekr.leo',
         ))
 
         return c.shortFileName().lower() in table
