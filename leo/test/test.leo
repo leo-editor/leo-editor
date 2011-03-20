@@ -9430,12 +9430,13 @@ import PyQt4.QtSvg as QtSvg
 import PyQt4.QtGui as QtGui
 
 path = g.os_path_finalize_join(g.app.loadDir,'..','Icons','bubbles.svg')
-assert g.os_path_exists(path)
 
 class myWidget (QtSvg.QSvgWidget):
 
     def __init__ (self,path):
         QtGui.QWidget.__init__(self)
+        self.path = path
+        assert g.os_path_exists(path)
         self.r = r = self.renderer()
         r.load(path)
         assert r.isValid(),'not valid'
