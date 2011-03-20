@@ -96,7 +96,8 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Support @html, @graphic, @movie, @networkx.
+# - Fix bug: selecting plugins menu the first time doesn't work.
+# - Support @svg, @html, @graphic, @movie, @networkx.
 # - Allow easy swapping of self.w widget, preparing for other renderers.
 # - @color viewrendered-pane-color.
 # - Generalize: allow registration of other kinds of renderers.
@@ -158,7 +159,7 @@ class ViewRenderedController:
 
         self.active = False
         self.inited = False
-        self.gnx = 0
+        self.gnx = None
         self.kind = 'rst' # in ('big','html','rst',)
         self.length = 0         # The length of previous p.b.
         self.s = ''
@@ -259,38 +260,29 @@ class ViewRenderedController:
     #@+node:ekr.20101112195628.5426: *3* update
     def update(self,tag,keywords):
         
-        pc = self ; c = pc.c ; w = pc.w
-        if c != keywords.get('c'): return
-        if not pc.active: return
-
+        pc = self ; c = pc.c ; p = c.p ; w = pc.w
         msg = '' # The error message from docutils.
-        p = c.currentPosition()
-        # g.trace(self.s)
         
+        if c != keywords.get('c') or not pc.active: return
         
-        if self.gnx == p.v.gnx:
-            s = self.s or p.b.strip()
+        if self.s:
+            s = self.s
+            self.s = None
         else:
-            # A bit tricky:  Switch to p.b when we change nodes.
-            s = p.b.strip()
-            if self.s:
-                self.s = None
-                self.length = -1
-                self.title = ''
+            s = p.b
+            if self.gnx == p.v.gnx and len(s) == self.length:
+                return
 
-        try:
-            # Can fail if the window has been deleted.
-            w.setWindowTitle(p.h)
-        except exception:
-            self.splitter = None
-            return
-
-        if self.gnx == p.v.gnx and len(s) == self.length:
-            return  # no change
-            
-        # g.trace(self.kind)
+            try:
+                # Can fail if the window has been deleted.
+                w.setWindowTitle(p.h)
+            except exception:
+                self.splitter = None
+                return
+                
+        # Suppress updates until we change nodes.  
         self.gnx = p.v.gnx
-        self.length = len(s)
+        self.length = len(p.b) # Not s.
         
         s = s.strip().strip('"""').strip("'''").strip()
 
@@ -305,6 +297,7 @@ class ViewRenderedController:
             try:
                 if self.title:
                     s = self.underline(self.title) + s
+                    self.title = None
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
             except SystemMessage as sm:
@@ -322,18 +315,19 @@ class ViewRenderedController:
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
-           
     #@+node:ekr.20110317024548.14379: *3* view
     def view(self,kind,s=None,title=None):
         
         pc = self
         pc.kind = kind
         
+        # g.trace(kind,len(s))
+        
         self.embed()
         self.s = s
-        self.length = -1 # Force an update.
         self.title = title
         pc.show()
+
         # if big:
             # pc.w.zoomIn(4)
     #@-others
@@ -344,35 +338,42 @@ def viewrendered(event):
 
     c = event.get('c')
     if c:
-        # ViewRendered(c)
         pc = controllers.get(c.hash())
         if pc: pc.view('rst')
-#@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html')
-@g.command('viewrendered-html')
+#@+node:ekr.20110320120020.14475: ** g.command('vr')
+@g.command('vr')
 def viewrendered(event):
-    """Open view of html which would be rendered"""
-
-    c = event.get('c')
-    if c:
-        # ViewRendered(c, view_html=True)
-        pc = controllers.get(c.hash())
-        if pc: pc.view('html')
-#@+node:tbrown.20101127112443.14854: ** g.command('viewrendered-big')
-@g.command('viewrendered-big')
-def viewrendered(event):
-    """Open render view for commander, with big text
-
-    (useful for presentations)
-
-    """
+    """A synonynm for the viewrendered command"""
 
     c = event.get('c')
     if c:
         pc = controllers.get(c.hash())
-        if pc:
-            w = pc.w
-            pc.view('big')
-            w.zoomIn(4)
+        if pc: pc.view('rst')
+#@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html') (not used)
+# @g.command('viewrendered-html')
+# def viewrendered(event):
+    # """Open view of html which would be rendered"""
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc: pc.view('html')
+#@+node:tbrown.20101127112443.14854: ** g.command('viewrendered-big') (not used)
+# @g.command('viewrendered-big')
+# def viewrendered(event):
+    # """Open render view for commander, with big text
+
+    # (useful for presentations)
+
+    # """
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc:
+            # w = pc.w
+            # pc.view('big')
+            # w.zoomIn(4)
 #@+node:ekr.20110317080650.14383: ** g.command('hide-rendering-pane')
 @g.command('hide-rendering-pane')
 def hide_rendering_pane(event):

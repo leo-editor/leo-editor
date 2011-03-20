@@ -7997,12 +7997,14 @@ class leoQtGui(leoGui.leoGui):
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
         return g.u(s)
     #@+node:ekr.20081121105001.490: *5* runScrolledMessageDialog
-    def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
+    def runScrolledMessageDialog (self,short_title= '',title='Message', label= '',msg='',c=None, **kw):
 
         if g.unitTesting: return None
 
         def send(title=title, label=label, msg=msg, c=c, kw=kw):
-            return g.doHook('scrolledMessage', title=title, label=label, msg=msg, c=c, **kw)
+            return g.doHook('scrolledMessage',
+                short_title=short_title,title=title,
+                label=label, msg=msg,c=c, **kw)
 
         if not c or not c.exists:
             #@+<< no c error>>
