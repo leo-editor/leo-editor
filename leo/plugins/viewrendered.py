@@ -96,7 +96,6 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Fix bug: selecting plugins menu the first time doesn't work.
 # - Support @svg, @html, @graphic, @movie, @networkx.
 # - Allow easy swapping of self.w widget, preparing for other renderers.
 # - @color viewrendered-pane-color.
@@ -169,12 +168,27 @@ class ViewRenderedController:
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
+        self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
         
         # Init.
+        self.create_dispatch_dict()
         self.load_free_layout()
 
         if self.auto_create:
             self.view(self.default_kind)
+    #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
+    def create_dispatch_dict (self):
+        
+        pc = self
+        
+        pc.dispatch_dict = {
+            'big':      pc.update_rst,
+            'html':     pc.update_rst,
+            'graphic':  pc.update_graphic,
+            'movie':    pc.update_movie,
+            'rst':      pc.update_rst,
+            'svg':      pc.update_svg,
+        }
     #@+node:ekr.20110319013946.14467: *4* load_free_layout
     def load_free_layout (self):
         
@@ -257,37 +271,71 @@ class ViewRenderedController:
         n = max(4,len(g.toEncodedString(s,reportErrors=False)))
         # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
         return '%s\n%s\n\n' % (s,ch*n)
-    #@+node:ekr.20101112195628.5426: *3* update
+    #@+node:ekr.20101112195628.5426: *3* update & helpers
     def update(self,tag,keywords):
         
-        pc = self ; c = pc.c ; p = c.p ; w = pc.w
-        msg = '' # The error message from docutils.
-        
-        if c != keywords.get('c') or not pc.active: return
-        
-        if self.s:
-            s = self.s
-            self.s = None
-        else:
-            s = p.b
-            if self.gnx == p.v.gnx and len(s) == self.length:
-                return
+        pc = self ; c = pc.c ; p = c.p
+        s, val = pc.must_update(keywords)
+        if not val:
+            # g.trace('exit')
+            return
 
-            try:
-                # Can fail if the window has been deleted.
-                w.setWindowTitle(p.h)
-            except exception:
-                self.splitter = None
-                return
-                
         # Suppress updates until we change nodes.  
         self.gnx = p.v.gnx
         self.length = len(p.b) # Not s.
         
+        # Compute the proper kind.
+        d = pc.dispatch_dict
+        h = p.h
+        kind = None
+        if h.startswith('@'):
+            i = g.skip_id(h,1)
+            kind = h[1:i]
+            if kind not in d:
+                kind = None
+            
+        # Dispatch.
+        f = d.get(kind or self.kind)
+        if not f:
+            g.trace('no handler for kind: %s' % kind)
+            f = self.update_rst
+        f(s,keywords)
+    #@+node:ekr.20110320120020.14476: *4* must_update
+    def must_update (self,keywords):
+        
+        '''Return True if we must update the rendering pane.'''
+        
+        pc = self ; c = pc.c ; p = c.p
+        
+        if c != keywords.get('c') or not pc.active:
+            return None,False
+        
+        if self.s:
+            s = self.s
+            self.s = None
+            return s,True
+        else:
+            s = p.b
+            val = self.gnx != p.v.gnx or len(s) != self.length
+            return s,val
+
+            # try:
+                # # Can fail if the window has been deleted.
+                # w.setWindowTitle(p.h)
+            # except exception:
+                # self.splitter = None
+                # return
+    #@+node:ekr.20110320120020.14482: *4* update_graphic
+    def update_graphic (self,s,keywords):
+
+        self.w.setPlainText('Graphic\n\n%s' % (s))
+    #@+node:ekr.20110320120020.14477: *4* update_rst
+    def update_rst (self,s,keywords):
+        
+        pc = self ; c = pc.c ;  p = c.p ; w = pc.w
         s = s.strip().strip('"""').strip("'''").strip()
 
         if got_docutils and (not s.startswith('<') or s.startswith('<<')):
-
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
                 path = os.path.dirname(path)
@@ -295,19 +343,17 @@ class ViewRenderedController:
                 os.chdir(path)
 
             try:
+                msg = '' # The error message from docutils.
                 if self.title:
                     s = self.underline(self.title) + s
                     self.title = None
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
             except SystemMessage as sm:
-                if 0:
-                    g.trace(sm)
-                    print(sm.args)
-                if 1:
-                    msg = sm.args[0]
-                    if 'SEVERE' in msg or 'FATAL' in msg:
-                        s = 'RST rendering failed with\n\n  %s\n\n%s' % (msg,s)
+                # g.trace(sm,sm.args)
+                msg = sm.args[0]
+                if 'SEVERE' in msg or 'FATAL' in msg:
+                    s = 'RST error:\n%s\n\n%s' % (msg,s)
 
         if self.kind in ('big','rst','html'):
             w.setHtml(s)
@@ -315,6 +361,14 @@ class ViewRenderedController:
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
+    #@+node:ekr.20110320120020.14479: *4* update_svg
+    def update_svg (self,s,keywords):
+        
+        self.w.setPlainText('Svg: len: %s' % (len(s)))
+    #@+node:ekr.20110320120020.14481: *4* update_movie
+    def update_movie (self,s,keywords):
+        
+        self.w.setPlainText('Movie\n\n%s' % (s))
     #@+node:ekr.20110317024548.14379: *3* view
     def view(self,kind,s=None,title=None):
         
