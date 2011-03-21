@@ -361,6 +361,15 @@
 <v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
 <v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
 <v t="ekr.20100521101729.2148"><vh>proto of template</vh></v>
+<v t="ekr.20110320205650.2495"><vh>Movie buttons</vh>
+<v t="ekr.20101014040509.2316"><vh>@@button load video</vh>
+<v t="ekr.20101014040509.2317"><vh>run</vh></v>
+</v>
+<v t="ekr.20101014040509.2318"><vh>@@button play/pause</vh></v>
+<v t="ekr.20101014040509.2319"><vh>@@button vid-stop</vh></v>
+<v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
+<v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
+</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
@@ -674,32 +683,21 @@
 </v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
 </v>
-<v t="ekr.20101014040509.2309"><vh>Images and movies</vh>
+<v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
+<v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
+<v t="ekr.20110321012354.2496"><vh>@button show-hide-renderer</vh></v>
+<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
+<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
+<v t="ekr.20110320203616.2493"><vh>Leo's home page</vh></v>
+<v t="ekr.20110320203616.2496"><vh>@graphic abc</vh></v>
+<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
+<v t="ekr.20110320203616.2498"><vh>@svg bubbles.svg</vh></v>
+<v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
 <v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
 <v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
 <v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
 <v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
-<v t="ekr.20101014040509.2315"><vh>@url Horse movie</vh></v>
-<v t="ekr.20110320205650.2495"><vh>Movie buttons</vh>
-<v t="ekr.20101014040509.2316"><vh>@button load video</vh>
-<v t="ekr.20101014040509.2317"><vh>run</vh></v>
-</v>
-<v t="ekr.20101014040509.2318"><vh>@button play/pause</vh></v>
-<v t="ekr.20101014040509.2319"><vh>@button vid-stop</vh></v>
-<v t="ekr.20101014040509.2320"><vh>@button show-stack</vh></v>
-<v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
-</v>
-</v>
-<v t="ekr.20110320203616.2489"><vh>viewrendered tests</vh>
-<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
-<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
-<v t="ekr.20110320203616.2493"><vh>Leo's home page</vh></v>
-<v t="ekr.20110320203616.2494"><vh>@url my url</vh></v>
-<v t="ekr.20110320203616.2495"><vh>@movie abc</vh></v>
-<v t="ekr.20110320203616.2496"><vh>@graphic abc</vh></v>
-<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
-<v t="ekr.20110320203616.2498"><vh>@svg bubbles.svg</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1121,7 +1119,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,6,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7252,27 +7250,12 @@ False:
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
-<t tx="ekr.20101014040509.2309">@nocolor-node
-
-On Oct 13, 11:24 am, "Edward K. Ream" &lt;edream...@gmail.com&gt; wrote:
-
-&gt; We only need upgrade Leo's body pane to show pictures, web sites and
-&gt; videos. This can be done with  QImage, QWebView and Qt.VideoWidget.
-&gt; Some of this is already in place.
-
-Indeed it is:
-
-top = c.frame.top is a DynamicWindow.
-top.ui = top
-top.stackedWidget is a QStackedWidget for the body pane.
-</t>
-<t tx="ekr.20101014040509.2310">file://../Icons/Lioness.jpg</t>
+<t tx="ekr.20101014040509.2310">../Icons/Lioness.jpg</t>
 <t tx="ekr.20101014040509.2311">C:\Users\Public\Videos\Sample Videos\Wildlife.wmv
 </t>
 <t tx="ekr.20101014040509.2312">C:\Users\edreamleo\Documents\Music\2001- A Space Odyssey [Rhino]\06 Gayane Ballet Suite.mp3</t>
 <t tx="ekr.20101014040509.2313">http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand</t>
 <t tx="ekr.20101014040509.2314">http://mail.google.com/mail/#inbox</t>
-<t tx="ekr.20101014040509.2315">file:///C:/Users\Public/Videos/Sample Videos/Wildlife.wmv</t>
 <t tx="ekr.20101014040509.2316">import PyQt4.phonon as phonon
 phonon = phonon.Phonon
 
@@ -9697,9 +9680,6 @@ When True, the plugin will create a rendering pane automatically.
 &lt;/html&gt;
 &lt;!--@-leo--&gt;
 </t>
-<t tx="ekr.20110320203616.2494">http://www.google.com/search?q=forever+war&amp;ie=utf-8&amp;oe=utf-8&amp;aq=t&amp;rls=org.mozilla:en-US:official&amp;client=firefox-a
-</t>
-<t tx="ekr.20110320203616.2495"></t>
 <t tx="ekr.20110320203616.2496" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104752e"></t>
 <t tx="ekr.20110320203616.2497"></t>
 <t tx="ekr.20110320203616.2498">@nocolor-node
@@ -9919,5 +9899,9 @@ When True, the plugin will create a rendering pane automatically.
    &lt;/g&gt;
 &lt;/svg&gt;</t>
 <t tx="ekr.20110320205650.2495"></t>
+<t tx="ekr.20110321010339.2496">../Icons/bubbles.svg
+</t>
+<t tx="ekr.20110321012354.2495">c.executeMinibufferCommand('pause-play-movie')</t>
+<t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('show-hide-rendering-pane')</t>
 </tnodes>
 </leo_file>

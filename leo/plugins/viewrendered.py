@@ -104,8 +104,7 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Allow URL's and file names in body text of @svg, etc.
-# - Render @url nodes as html.
+# - Render @url nodes as html?
 # - @color viewrendered-pane-color.
 # - Support uA's that indicate the kind of rendering desired.
 # 
@@ -192,33 +191,37 @@ def viewrendered(event):
             # w = pc.w
             # pc.view('big')
             # w.zoomIn(4)
-#@+node:ekr.20110317080650.14383: *3* g.command('hide-rendering-pane')
-@g.command('hide-rendering-pane')
-def hide_rendering_pane(event):
+#@+node:ekr.20110317080650.14383: *3* g.command('hide-rendering-pane') (not used)
+# @g.command('hide-rendering-pane')
+# def hide_rendering_pane(event):
     
-    '''Hide the rendering pane, but do not delete it.'''
+    # '''Hide the rendering pane, but do not delete it.'''
 
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.hide()
-#@+node:ekr.20110317080650.14386: *3* g.command('show-rendering-pane')
-@g.command('show-rendering-pane')
-def show_rendering_pane(event):
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc: pc.hide()
+#@+node:ekr.20110317080650.14386: *3* g.command('show-hide-rendering-pane')
+@g.command('show-hide-rendering-pane')
+def show_hide_rendering_pane(event):
     
-    '''Hide the rendering pane, but do not delete it.'''
+    '''Show or hide the rendering pane, but do not delete it.'''
 
     c = event.get('c')
     if c:
         pc = controllers.get(c.hash())
         if pc:
-            pc.length = -1
-            pc.s = None
-            pc.gnx = 0
-            pc.view('rst')
+            if pc.active:
+                pc.hide()
+            else:
+                # show
+                pc.length = -1
+                pc.s = None
+                pc.gnx = 0
+                pc.view('rst')
 #@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
 @g.command('pause-play-movie')
-def pauseMovie(event):
+def pause_play_movie(event):
     
     '''Pause or play a movie in the rendering pane.'''
 
@@ -276,12 +279,13 @@ class ViewRenderedController:
         
         pc.dispatch_dict = {
             'big':      pc.update_rst,
-            'html':     pc.update_rst,
-            'graphic':  pc.update_graphic,
+            'html':     pc.update_html,
+            'image':    pc.update_image,
             'movie':    pc.update_movie,
             'networkx': pc.update_networkx,
             'rst':      pc.update_rst,
             'svg':      pc.update_svg,
+            'url':      pc.update_url,
         }
     #@+node:ekr.20110319013946.14467: *4* load_free_layout
     def load_free_layout (self):
@@ -404,7 +408,8 @@ class ViewRenderedController:
         
         p = self.c.p
         fn = s or p.h[len(tag):]
-        path = g.os_path_finalize_join(g.app.loadDir,fn.strip())
+        fn = fn.strip()
+        path = g.os_path_finalize_join(g.app.loadDir,fn)
         ok = g.os_path_exists(path)
         return ok,path
     #@+node:ekr.20110320120020.14483: *4* get_kind
@@ -423,6 +428,13 @@ class ViewRenderedController:
         # To do: look at ancestors, or uA's.
 
         return self.kind # The default.
+    #@+node:ekr.20110321005148.14536: *4* get_url
+    def get_url (self,s,tag):
+        
+        p = self.c.p
+        url = s or p.h[len(tag):]
+        url = url.strip()
+        return url
     #@+node:ekr.20110320120020.14476: *4* must_update
     def must_update (self,keywords):
         
@@ -462,13 +474,82 @@ class ViewRenderedController:
             result.append(s)
         
         return ''.join(result)
-    #@+node:ekr.20110320120020.14482: *4* update_graphic
-    def update_graphic (self,s,keywords):
+    #@+node:ekr.20110321005148.14534: *4* update_html
+    def update_html (self,s,keywords):
+        
+        pc = self
+        self.embed_widget(self.text_class)
+        w = pc.w
+        
+        w.setReadOnly(False)
+        w.setHtml(s)
+        w.setReadOnly(True)
+    #@+node:ekr.20110320120020.14482: *4* update_image
+    def update_image (self,s,keywords):
+        
+        pc = self
+        self.embed_widget(self.text_class)
+        w = pc.w
+        
+        ok,path = pc.get_fn(s,'@image')
+        if not ok:
+            w.setPlainText('@image: file not found:\n%s' % (path))
+            return
+            
+        template = '''
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head></head>
+    <body bgcolor="#fffbdc">
+    <img src="%s">
+    </body>
+    </html>
+    ''' % (path)
+
+        w.setReadOnly(False)
+        w.setHtml(template)
+        w.setReadOnly(True)
+        
+    #@+node:ekr.20110320120020.14481: *4* update_movie
+    def update_movie (self,s,keywords):
+        
+        pc = self
+        
+        ok,path = pc.get_fn(s,'@movie')
+        if not ok:
+            pc.embed_widget(self.text_class)
+            pc.w.setPlainText('Movie\n\nfile not found: %s' % (path))
+            return
+        
+        if not phonon:
+            pc.embed_widget(pc.text_class)
+            pc.w.setPlainText('Movie\n\nno movie player: %s' % (path))
+            return
+
+        def delete_callback():
+            if pc.vp:
+                pc.vp.stop()
+                pc.vp = None
+            
+        def video_callback():
+            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+            vw = vp.videoWidget()
+            return vw
+            
+        self.embed_widget(phonon.VideoPlayer,
+            callback=video_callback,
+            delete_callback=delete_callback)
+
+        vp = pc.vp
+        vp.load(phonon.MediaSource(path))
+        vp.play()
+    #@+node:ekr.20110320120020.14484: *4* update_networkx
+    def update_networkx (self,s,keywords):
         
         self.embed_widget(self.text_class)
-
-        self.w.setPlainText('Graphic\n\n%s' % (s))
         
+        self.w.setPlainText('Networkx: len: %s' % (len(s)))
     #@+node:ekr.20110320120020.14477: *4* update_rst
     def update_rst (self,s,keywords):
         
@@ -526,45 +607,22 @@ class ViewRenderedController:
             if ok:
                 w.load(path)
                 w.show()
-    #@+node:ekr.20110320120020.14481: *4* update_movie
-    def update_movie (self,s,keywords):
+    #@+node:ekr.20110321005148.14537: *4* update_url
+    def update_url (self,s,keywords):
         
         pc = self
-        
-        ok,path = pc.get_fn(s,'@movie')
-        if not ok:
-            pc.embed_widget(self.text_class)
-            pc.w.setPlainText('Movie\n\nfile not found: %s' % (path))
-            return
-        
-        if not phonon:
-            pc.embed_widget(pc.text_class)
-            pc.w.setPlainText('Movie\n\nno movie player: %s' % (path))
-            return
-
-        def delete_callback():
-            if pc.vp:
-                pc.vp.stop()
-                pc.vp = None
-            
-        def video_callback():
-            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            vw = vp.videoWidget()
-            return vw
-            
-        self.embed_widget(phonon.VideoPlayer,
-            callback=video_callback,
-            delete_callback=delete_callback)
-
-        vp = pc.vp
-        vp.load(phonon.MediaSource(path))
-        vp.play()
-    #@+node:ekr.20110320120020.14484: *4* update_networkx
-    def update_networkx (self,s,keywords):
-        
         self.embed_widget(self.text_class)
+        w = pc.w
         
-        self.w.setPlainText('Networkx: len: %s' % (len(s)))
+        url = pc.get_url(s,'@url')
+        if url:
+            w.setPlainText('@url %s' % url)
+        else:
+            w.setPlainText('@url: no url given')
+            
+        # w.setReadOnly(False)
+        # w.setHtml(s)
+        # w.setReadOnly(True)
     #@+node:ekr.20110317024548.14379: *3* view & helper
     def view(self,kind,s=None,title=None):
         

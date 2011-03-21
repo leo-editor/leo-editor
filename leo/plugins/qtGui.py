@@ -1056,11 +1056,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         try:
             self.changingText = True # Disable onTextChanged
             colorizer.changingText = True
-            if w.htmlFlag and new_p and new_p.h.startswith('@html '):
+            if False and w.htmlFlag and new_p and new_p.h.startswith('@html '):
+                # This is done in the rendering pane.
                 w.setReadOnly(False)
                 w.setHtml(s)
                 w.setReadOnly(True)
-            elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
+            elif False and w.htmlFlag and new_p and new_p.h.startswith('@image'):
+                # This is now done in the rendering pane.
                 s2 = self.urlToImageHtml(c,new_p,s)
                 if s2 != None:
                     w.setReadOnly(False)
