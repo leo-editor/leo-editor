@@ -368,7 +368,7 @@ class ViewRenderedController:
             f = self.update_rst
         f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget
-    def embed_widget (self,widget_class,callback=None,delete_callback=None):
+    def embed_widget (self,widget_class,callback=None,delete_callback=None,opaque_resize=False):
         
         '''Embed widget w in the free_layout splitter.'''
         
@@ -387,7 +387,8 @@ class ViewRenderedController:
                 else:
                     self.w = w = widget_class()
                 pc.splitter.replace_widget_at_index(pc.splitter_index,w)
-                pc.splitter.setOpaqueResize(text_class) # Seems backwards, but works.
+                pc.splitter.setOpaqueResize(not opaque_resize)
+                    # Looks backwards, but it works.
                 if text_class:
                     w.setReadOnly(True)
         else:
@@ -528,7 +529,8 @@ class ViewRenderedController:
             
         self.embed_widget(phonon.VideoPlayer,
             callback=video_callback,
-            delete_callback=delete_callback)
+            delete_callback=delete_callback,
+            opaque_resize=True)
 
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
