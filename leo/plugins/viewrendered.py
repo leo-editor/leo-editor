@@ -336,6 +336,7 @@ class ViewRenderedController:
         self.length = 0 # The length of previous p.b.
         self.locked = False
         self.s = ''
+        self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
         self.splitter = None # The free_layout splitter containing the rendering pane.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
@@ -452,9 +453,14 @@ class ViewRenderedController:
     #@+node:ekr.20101112195628.5426: *3* update & helpers
     def update(self,tag,keywords):
         
-        pc = self ; c = pc.c ; p = c.p
+        pc = self ; c = pc.c ; p = c.p ; w = pc.w
         s, val = pc.must_update(keywords)
         if not val:
+            # Save the scroll position.
+            if w.__class__ == self.text_class:
+                sb = w.verticalScrollBar()
+                if sb:
+                    pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
             # g.trace('no update')
             return
         
@@ -707,10 +713,18 @@ class ViewRenderedController:
         self.embed_widget(self.text_class)
         w = self.w
         
-        if not self.node_changed:
-            # Save the scrollbars
-            sb = w.verticalScrollBar()
-            if sb: pos = sb.sliderPosition()
+        sb = w.verticalScrollBar()
+        if sb:
+            d = pc.scrollbar_pos_dict
+            if self.node_changed:
+                # Set the scrollbar.
+                pos = d.get(p.v,sb.sliderPosition())
+                sb.setSliderPosition(pos)
+                # g.trace('changed',pos)
+            else:
+                # Save the scrollbars
+                d[p.v] = pos = sb.sliderPosition()
+                # g.trace('no change',pos)
 
         if self.kind in ('big','rst','html'):
             w.setHtml(s)
@@ -719,9 +733,9 @@ class ViewRenderedController:
         else:
             w.setPlainText(s)
             
-        if not self.node_changed:
+        if sb and pos:
             # Restore the scrollbars
-            if sb: sb.setSliderPosition(pos)
+            sb.setSliderPosition(pos)
     #@+node:ekr.20110320120020.14479: *4* update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html 
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
