@@ -102,7 +102,12 @@ QPlainTextEdit {
 
 #@+at
 # 
-# To do (All minor)
+# - To do:
+#     
+# - commands are not created when rendering pane is created from the plugins menu.
+# - update the docstring for this plugin.
+# 
+# To do (minor):
 # 
 # - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
@@ -170,9 +175,9 @@ def pause_play_movie(event):
                 vp.pause()
             else:
                 vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('show-hide-rendering-pane')
-@g.command('show-hide-rendering-pane')
-def show_hide_rendering_pane(event):
+#@+node:ekr.20110317080650.14386: *3* g.command('toggle-rendering-pane')
+@g.command('toggle-rendering-pane')
+def toggle_rendering_pane(event):
     
     '''Show or hide the rendering pane, but do not delete it.'''
 
@@ -188,6 +193,32 @@ def show_hide_rendering_pane(event):
                 pc.s = None
                 pc.gnx = 0
                 pc.view('rst')
+#@+node:ekr.20110321085459.14462: *3* g.command('hide-rendering-pane')
+@g.command('hide-rendering-pane')
+def hide_rendering_pane(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc:
+            pc.hide()
+#@+node:ekr.20110321085459.14464: *3* g.command('show-rendering-pane')
+@g.command('show-rendering-pane')
+def show_rendering_pane(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc:
+            # show
+            pc.length = -1
+            pc.s = None
+            pc.gnx = 0
+            pc.view('rst')
 #@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):

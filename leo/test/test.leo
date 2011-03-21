@@ -685,7 +685,7 @@
 </v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
 <v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
-<v t="ekr.20110321012354.2496"><vh>@button show-hide-renderer</vh></v>
+<v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
 <v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
 <v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
 <v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
@@ -1118,7 +1118,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9684,7 +9684,7 @@ When True, the plugin will create a rendering pane automatically.
 <t tx="ekr.20110321010339.2496">../Icons/bubbles.svg
 </t>
 <t tx="ekr.20110321012354.2495">c.executeMinibufferCommand('pause-play-movie')</t>
-<t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('show-hide-rendering-pane')</t>
+<t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('toggle-rendering-pane')</t>
 <t tx="ekr.20110321073942.2490">c.executeMinibufferCommand('lock-unlock-rendering-pane')
 </t>
 </tnodes>
