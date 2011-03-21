@@ -372,13 +372,15 @@ class ViewRenderedController:
         
         '''Embed widget w in the free_layout splitter.'''
         
-        pc = self
+        pc = self ; splitter = pc.splitter
         
         if pc.splitter:
             same_class = self.w and self.w.__class__ == widget_class
             text_class = widget_class == self.text_class
-            w2 = pc.splitter.widget(pc.splitter_index)
+            # w2 = pc.splitter.widget(pc.splitter_index)
             if not same_class:
+                sizes = splitter.sizes()
+                # g.trace(sum(sizes),sizes)
                 if self.delete_callback:
                     self.delete_callback()
                 self.delete_callback = delete_callback
@@ -386,13 +388,15 @@ class ViewRenderedController:
                     self.w = w = callback()
                 else:
                     self.w = w = widget_class()
-                pc.splitter.replace_widget_at_index(pc.splitter_index,w)
-                pc.splitter.setOpaqueResize(not opaque_resize)
+                splitter.replace_widget_at_index(pc.splitter_index,w)
+                splitter.setOpaqueResize(not opaque_resize)
                     # Looks backwards, but it works.
                 if text_class:
                     w.setReadOnly(True)
+                # Restore the sizes.
+                splitter.setSizes(sizes)
         else:
-            g.trace('no splitter')
+            g.trace('can not happen: no splitter')
     #@+node:ekr.20110320233639.5776: *4* get_fn
     def get_fn (self,s,tag):
         
