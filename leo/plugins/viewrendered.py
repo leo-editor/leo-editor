@@ -104,14 +104,12 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Lock/unlock-rendering-pane command.
-# - Stabilize the pane: keep previous ratio when switching widgets.
-# - Set ratio initially.
 # - @color viewrendered-pane-color.
+# 
+# Minor:
 # - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
 # - (Failed) Make viewrendered-big work.
-# 
 # - Fix @button bug: create unique command name if it conflicts with existing command.
 #   This will prevent an unbounded recursion.
 # 
@@ -224,6 +222,7 @@ class ViewRenderedController:
             
         self.active = False
         self.c = c
+        self.badColors = []
         self.delete_callback = None
         self.gnx = None
         self.inited = False
@@ -242,6 +241,7 @@ class ViewRenderedController:
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
+        self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
         
         # Init.
@@ -367,7 +367,7 @@ class ViewRenderedController:
             g.trace('no handler for kind: %s' % kind)
             f = self.update_rst
         f(s,keywords)
-    #@+node:ekr.20110320120020.14486: *4* embed_widget
+    #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
     def embed_widget (self,widget_class,callback=None,delete_callback=None,opaque_resize=False):
         
         '''Embed widget w in the free_layout splitter.'''
@@ -377,6 +377,7 @@ class ViewRenderedController:
         if pc.splitter:
             same_class = self.w and self.w.__class__ == widget_class
             text_class = widget_class == self.text_class
+            text_name = 'text-renderer'
             # w2 = pc.splitter.widget(pc.splitter_index)
             if not same_class:
                 sizes = splitter.sizes()
@@ -388,15 +389,33 @@ class ViewRenderedController:
                     self.w = w = callback()
                 else:
                     self.w = w = widget_class()
+                if text_class:
+                    w.setObjectName(text_name)
                 splitter.replace_widget_at_index(pc.splitter_index,w)
                 splitter.setOpaqueResize(not opaque_resize)
                     # Looks backwards, but it works.
                 if text_class:
+                    pc.setBackgroundColor(pc.background_color,text_name,w)
                     w.setReadOnly(True)
                 # Restore the sizes.
                 splitter.setSizes(sizes)
         else:
             g.trace('can not happen: no splitter')
+    #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
+    def setBackgroundColor (self,colorName,name,w):
+        
+        if not colorName: return
+
+        styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name,colorName)
+            
+        # g.trace(name,colorName)
+
+        if QtGui.QColor(colorName).isValid():
+            w.setStyleSheet(styleSheet)
+
+        elif colorName not in self.badColors:
+            self.badColors.append(colorName)
+            g.es_print('invalid body background color: %s' % (colorName),color='blue')
     #@+node:ekr.20110320233639.5776: *4* get_fn
     def get_fn (self,s,tag):
         
@@ -529,6 +548,7 @@ class ViewRenderedController:
         def video_callback():
             pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
             vw = vp.videoWidget()
+            vw.setObjectName('video-renderer')
             return vw
             
         self.embed_widget(phonon.VideoPlayer,
