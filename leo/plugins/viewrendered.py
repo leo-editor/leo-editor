@@ -376,6 +376,7 @@ class ViewRenderedController:
         
         if pc.splitter:
             same_class = self.w and self.w.__class__ == widget_class
+            text_class = widget_class == self.text_class
             w2 = pc.splitter.widget(pc.splitter_index)
             if not same_class:
                 if self.delete_callback:
@@ -385,9 +386,9 @@ class ViewRenderedController:
                     self.w = w = callback()
                 else:
                     self.w = w = widget_class()
-                # g.trace(same_class,widget_class)
                 pc.splitter.replace_widget_at_index(pc.splitter_index,w)
-                if widget_class == self.text_class:
+                pc.splitter.setOpaqueResize(text_class) # Seems backwards, but works.
+                if text_class:
                     w.setReadOnly(True)
         else:
             g.trace('no splitter')
