@@ -71,6 +71,12 @@ try:
     got_docutils = True
 except ImportError:
     got_docutils = False
+    
+try:
+    import PyQt4.phonon as phonon
+    phonon = phonon.Phonon
+except ImportError:
+    phonon = None
 
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
@@ -98,7 +104,7 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Allow easy swapping of self.w widget, preparing for other renderers.
+# - Allow URL's and file names in body text of @svg, etc.
 # - @color viewrendered-pane-color.
 # - Generalize: allow registration of other kinds of renderers.
 #   In particular, allow different kinds of widgets in the viewrendered pane.
@@ -222,6 +228,7 @@ class ViewRenderedController:
             
         self.active = False
         self.c = c
+        self.delete_callback = None
         self.gnx = None
         self.inited = False
         self.free_layout_pc = None # Set later by embed.
@@ -232,7 +239,7 @@ class ViewRenderedController:
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
         self.text_class = QtGui.QTextEdit
-        # self.svg_widget = QtSvg.QSvgWidget()
+        self.vp = None # The present video player.
         self.w = None # w = QtGui.QTextEdit() # QtGui.QTextBrowser()
         
         # User-options:
@@ -355,7 +362,7 @@ class ViewRenderedController:
             f = self.update_rst
         f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget
-    def embed_widget (self,widget_class):
+    def embed_widget (self,widget_class,callback=None,delete_callback=None):
         
         '''Embed widget w in the free_layout splitter.'''
         
@@ -365,7 +372,13 @@ class ViewRenderedController:
             same_class = self.w and self.w.__class__ == widget_class
             w2 = pc.splitter.widget(pc.splitter_index)
             if not same_class:
-                self.w = w = widget_class()
+                if self.delete_callback:
+                    self.delete_callback()
+                self.delete_callback = delete_callback
+                if callback:
+                    self.w = w = callback()
+                else:
+                    self.w = w = widget_class()
                 # g.trace(same_class,widget_class)
                 pc.splitter.replace_widget_at_index(pc.splitter_index,w)
                 if widget_class == self.text_class:
@@ -490,9 +503,36 @@ class ViewRenderedController:
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
         
-        self.embed_widget(self.text_class)
+        if not phonon:
+            self.embed_widget(self.text_class)
+            self.w.setPlainText('Movie\n\n%s' % (s))
+            return
         
-        self.w.setPlainText('Movie\n\n%s' % (s))
+        pc = self ;  p = pc.c.p ; tag = '@movie'
+        fn = s or p.h[len(tag):]
+        fn = fn.strip()
+        path = g.os_path_finalize_join(g.app.loadDir,fn)
+
+        if not g.os_path_exists(path):
+            return g.es_print('Not found: %s' % (path))
+        
+        def delete_callback():
+            if self.vp:
+                self.vp.stop()
+                self.vp = None
+            
+        def video_callback():
+            self.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+            vw = vp.videoWidget()
+            return vw
+            
+        self.embed_widget(phonon.VideoPlayer,
+            callback=video_callback,
+            delete_callback=delete_callback)
+
+        vp = self.vp
+        vp.load(phonon.MediaSource(path))
+        vp.play()
     #@+node:ekr.20110320120020.14484: *4* update_networkx
     def update_networkx (self,s,keywords):
         

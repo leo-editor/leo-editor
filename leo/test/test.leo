@@ -682,12 +682,12 @@
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20101014040509.2315"><vh>@url Horse movie</vh></v>
 <v t="ekr.20110320205650.2495"><vh>Movie buttons</vh>
-<v t="ekr.20101014040509.2316"><vh>@@button load video</vh>
+<v t="ekr.20101014040509.2316"><vh>@button load video</vh>
 <v t="ekr.20101014040509.2317"><vh>run</vh></v>
 </v>
-<v t="ekr.20101014040509.2318"><vh>@@button play/pause</vh></v>
-<v t="ekr.20101014040509.2319"><vh>@@button vid-stop</vh></v>
-<v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
+<v t="ekr.20101014040509.2318"><vh>@button play/pause</vh></v>
+<v t="ekr.20101014040509.2319"><vh>@button vid-stop</vh></v>
+<v t="ekr.20101014040509.2320"><vh>@button show-stack</vh></v>
 <v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
 </v>
 </v>
@@ -1121,7 +1121,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,6,0,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7297,6 +7297,8 @@ run(p)
     path = g.os_path_finalize_join(g.app.loadDir,fn)
     if not g.os_path_exists(path):
         return g.es('Not found: %s' % (fn))
+        
+    g.trace(path)
 
     if hasattr(top,'video_player'):
         vp = top.video_player
