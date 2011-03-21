@@ -2,26 +2,60 @@
 #@+node:tbrown.20100318101414.5990: * @file viewrendered.py
 #@+<< docstring >>
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
-''' Creates a window for *live* rendering of rst, html, etc.  (Qt only).
+'''
 
-**Commands**
+Creates a window for *live* rendering of images, movies, sounds, rst, html, etc.  (Qt only).
+
+Commands
+========
 
 viewrendered.py creates the following (``Alt-X``) commands:
 
-``viewrendered``
-    opens a new window where the current body text is rendered as HTML
-    (if it starts with '<'), or otherwise reStructuredText.
-``viewrendered-big``
-    as above, but zoomed in, useful for presentations
-``viewrendered-html``
-    displays the html source generated from reStructuredText, useful for
-    debugging
+``viewrendered (abbreviated vr)``
+    Opens a new rendering window.
+    
+    By default, the rendering pane renders body text as reStructuredText,
+    with all Leo directives removed.
+    However, if the body text starts with ``<`` (after removing directives),
+    the body text is rendered as html.
+    
+    **Important**: The default rendering just described does not apply to nodes
+    whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
+    See the section called **Special Renderings** below.
 
-``viewrendered`` sets the process current directory (os.chdir()) to the path
-to the node being rendered, to allow relative paths to work in
-``.. image::`` directives.
+    Rendering sets the process current directory (os.chdir()) to the path
+    to the node being rendered, to allow relative paths to work in ``.. image::`` directives.
 
-reStructuredText errors and warnings may be shown.  For example, both::
+.. ``viewrendered-big``
+..    as above, but zoomed in, useful for presentations
+.. ``viewrendered-html``
+..    displays the html source generated from reStructuredText, useful for
+..    debugging
+
+``hide-rendering-pane``
+    Makes the rendering pane invisible, but does not destroy it.
+
+``lock-unlock-rendering-pane``
+    Toggles the locked state of the rendering pane.
+    When unlocked (the initial state), the rendering pane renders the contents
+    of the presently selected node.
+    When locked, the rendering pane does not change when other nodes are selected.
+    This is useful for playing movies in the rendering pane.
+    
+``pause-play-movie``
+    This command has effect only if the rendering pane is presently showing a movie.
+    It pauses the movie if playing, or resumes the movie if paused.
+
+``show-rendering-pane``
+    Makes the rendering pane visible.
+
+``toggle-rendering-pane``
+    Shows the rendering pane if invisible, otherwise hides it.
+    
+Rendering reStructuredText
+==========================
+
+For example, both::
 
     Heading
     -------
@@ -39,16 +73,63 @@ will look something like:
     **Heading**
 
     `This` is **really** a line of text.
-
-**Settings**
-
-- \@string view-rendered-default-kind = rst
-  
-  The default kind of rendering.  One of (big,rst,html)
     
-- \@bool view-rendered-auto-create = False
+**Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
+
+Special Renderings
+===================
+
+This plugin renders @image, @html, @movie, @networkx, @svg and @url nodes in special ways.
+
+For @image, @movie and @svg nodes, either the headline or the first line of body text may
+contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
+
+- ``@image`` renders the file as an image.
+
+
+- ``@html`` renders the body text as html.
+
+
+- ``@movie`` plays the file as a movie.  @movie also works for music files.
+
+- ``@networkx`` is non-functional at present.  It is intended to
+  render the body text as a networkx graph.
+  See http://networkx.lanl.gov/
+
+
+- ``@svg`` renders the file as a (possibly animated!) svg (Scalable Vector Image).
+  See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+  **Note**: if the first character of the body text is ``<`` after removing Leo directives,
+  the contents of body pane is taken to be an svg image.
+
+- ``@url`` is non-functional at present.  It merely renders the body text as plain text.
+
+
+Settings
+========
+
+- ``@color rendering-pane-background-color = white``
+  The background color the rendering pane when rendering text.
+
+- ``@bool view-rendered-auto-create = False``
+  When True, this plugin will create and show the rendering pane when Leo opens an outline.
+
+- ``@string view-rendered-default-kind = rst``
+  The default kind of rendering.  One of (big,rst,html)
+
+- ``@bool scrolledmessage_use_viewrendered = True``
+  When True the scrolledmessage dialog will use the rendering pane,
+  creating it as needed.  In particular, the plugins_menu plugin
+  will show plugin docstrings in the rendering pane.
   
-  When True, the plugin will create a rendering pane automatically.
+Acknowledgments
+================
+
+Terry Brown created this initial version of this plugin,
+and the free_layout and NestedSplitter plugins used by viewrendered.
+
+Edward K. Ream generalized this plugin and added communication
+and coordination between the free_layout, NestedSplitter and viewrendered plugins.
 
 '''
 #@-<< docstring >>
@@ -104,8 +185,7 @@ QPlainTextEdit {
 # 
 # - To do:
 #     
-# - commands are not created when rendering pane is created from the plugins menu.
-# - update the docstring for this plugin.
+# - Add Leo bindings to text renderer widgets.
 # 
 # To do (minor):
 # 
