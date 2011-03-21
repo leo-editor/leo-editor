@@ -134,7 +134,7 @@ and coordination between the free_layout, NestedSplitter and viewrendered plugin
 '''
 #@-<< docstring >>
 
-__version__ = '0.1'
+__version__ = '1.0'
 
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >>
@@ -184,11 +184,7 @@ QPlainTextEdit {
 
 #@+at
 # 
-# - To do:
-# - Add Leo bindings to text renderer widgets.
-# 
-# To do (minor):
-#     
+# To do:
 # - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
 # - (Failed) Make viewrendered-big work.
@@ -341,7 +337,7 @@ class ViewRenderedController:
         self.svg_class = QtSvg.QSvgWidget
         self.text_class = QtGui.QTextEdit
         self.vp = None # The present video player.
-        self.w = None # w = QtGui.QTextEdit() # QtGui.QTextBrowser()
+        self.w = None # The present widget in the rendering pane.
         
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
@@ -495,20 +491,21 @@ class ViewRenderedController:
                 elif text_class:
                     pc.w = w = widget_class()
                     w.setObjectName(text_name)
-            
+                    pc.setBackgroundColor(pc.background_color,text_name,w)
+                    w.setReadOnly(True)
+                    
+                    # Create the standard Leo bindings.
                     wrapper_name = 'rendering-pane-wrapper'
-                    pc.wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
-                    c.k.completeAllBindingsForWidget(pc.wrapper)
+                    wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
+                    c.k.completeAllBindingsForWidget(wrapper)
+                    w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
+                        # Restore the wrap mode: the wrapper messes with it.
                 else:
                     pc.w = w = widget_class()
                    
                 splitter.replace_widget_at_index(pc.splitter_index,w)
                 splitter.setOpaqueResize(not opaque_resize)
                     # Looks backwards, but it works.
-                if text_class:
-                    pc.setBackgroundColor(pc.background_color,text_name,w)
-                    w.setReadOnly(True)
-                # Restore the sizes.
                 splitter.setSizes(sizes)
         else:
             g.trace('can not happen: no splitter')
