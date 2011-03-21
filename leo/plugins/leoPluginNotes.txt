@@ -288,5 +288,41 @@ def show(self):
     g.trace(g.callers())
     
     self.ui.show()
+#@+node:ekr.20110321072702.14506: *3* Unused viewrendered commands
+#@+node:tbrown.20101127112443.14856: *4* g.command('viewrendered-html') (not used)
+# @g.command('viewrendered-html')
+# def viewrendered(event):
+    # """Open view of html which would be rendered"""
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc: pc.view('html')
+#@+node:tbrown.20101127112443.14854: *4* g.command('viewrendered-big') (not used)
+# @g.command('viewrendered-big')
+# def viewrendered(event):
+    # """Open render view for commander, with big text
+
+    # (useful for presentations)
+
+    # """
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc:
+            # w = pc.w
+            # pc.view('big')
+            # w.zoomIn(4)
+#@+node:ekr.20110317080650.14383: *4* g.command('hide-rendering-pane') (not used)
+# @g.command('hide-rendering-pane')
+# def hide_rendering_pane(event):
+    
+    # '''Hide the rendering pane, but do not delete it.'''
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc: pc.hide()
 #@-all
 #@-leo

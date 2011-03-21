@@ -104,16 +104,16 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# - Render @url nodes as html?
+# - Lock/unlock-rendering-pane command.
+# - Stabilize the pane: keep previous ratio when switching widgets.
+# - Set ratio initially.
 # - @color viewrendered-pane-color.
+# - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
-# 
-# Fix bugs:
-# 
-# - Save/restore viewrendered pane size.
-# - Eliminate the call to c.frame.equalSizedPanes in create_renderer (in free_layout).
-#   That is, be able to specify the pane ratios from user options.
 # - (Failed) Make viewrendered-big work.
+# 
+# - Fix @button bug: create unique command name if it conflicts with existing command.
+#   This will prevent an unbounded recursion.
 # 
 #@@c
 
@@ -148,59 +148,35 @@ def onCreate (tag, keys):
         if not controllers.get(h):
             controllers[h] = ViewRenderedController(c)
 #@+node:ekr.20110320120020.14490: ** Commands
-#@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
-@g.command('viewrendered')
-def viewrendered(event):
-    """Open render view for commander"""
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
-#@+node:ekr.20110320120020.14475: *3* g.command('vr')
-@g.command('vr')
-def viewrendered(event):
-    """A synonynm for the viewrendered command"""
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
-#@+node:tbrown.20101127112443.14856: *3* g.command('viewrendered-html') (not used)
-# @g.command('viewrendered-html')
-# def viewrendered(event):
-    # """Open view of html which would be rendered"""
-
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc: pc.view('html')
-#@+node:tbrown.20101127112443.14854: *3* g.command('viewrendered-big') (not used)
-# @g.command('viewrendered-big')
-# def viewrendered(event):
-    # """Open render view for commander, with big text
-
-    # (useful for presentations)
-
-    # """
-
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc:
-            # w = pc.w
-            # pc.view('big')
-            # w.zoomIn(4)
-#@+node:ekr.20110317080650.14383: *3* g.command('hide-rendering-pane') (not used)
-# @g.command('hide-rendering-pane')
-# def hide_rendering_pane(event):
+#@+node:ekr.20110321072702.14507: *3* g.command('lock-unlock-rendering-pane')
+@g.command('lock-unlock-rendering-pane')
+def lock_unlock_rendering_pane(event):
     
-    # '''Hide the rendering pane, but do not delete it.'''
+    '''Pause or play a movie in the rendering pane.'''
 
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc: pc.hide()
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc:
+            if pc.locked:
+                pc.unlock()
+            else:
+                pc.lock()
+#@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
+@g.command('pause-play-movie')
+def pause_play_movie(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc and pc.vp:
+            vp = pc.vp
+            if vp.isPlaying():
+                vp.pause()
+            else:
+                vp.play()
 #@+node:ekr.20110317080650.14386: *3* g.command('show-hide-rendering-pane')
 @g.command('show-hide-rendering-pane')
 def show_hide_rendering_pane(event):
@@ -219,21 +195,24 @@ def show_hide_rendering_pane(event):
                 pc.s = None
                 pc.gnx = 0
                 pc.view('rst')
-#@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
-@g.command('pause-play-movie')
-def pause_play_movie(event):
-    
-    '''Pause or play a movie in the rendering pane.'''
+#@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
+@g.command('viewrendered')
+def viewrendered(event):
+    """Open render view for commander"""
 
     c = event.get('c')
     if c:
         pc = controllers.get(c.hash())
-        if pc and pc.vp:
-            vp = pc.vp
-            if vp.isPlaying():
-                vp.pause()
-            else:
-                vp.play()
+        if pc: pc.view('rst')
+#@+node:ekr.20110320120020.14475: *3* g.command('vr')
+@g.command('vr')
+def viewrendered(event):
+    """A synonynm for the viewrendered command"""
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc: pc.view('rst')
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
 class ViewRenderedController:
     
@@ -251,6 +230,7 @@ class ViewRenderedController:
         self.free_layout_pc = None # Set later by embed.
         self.kind = 'rst' # in self.dispatch_dict.keys()
         self.length = 0 # The length of previous p.b.
+        self.locked = False
         self.s = ''
         self.splitter = None # The free_layout splitter containing the rendering pane.
         self.splitter_index = None # The index of the rendering pane in the splitter.
@@ -336,6 +316,14 @@ class ViewRenderedController:
         self.splitter = splitter
         self.splitter_index = index
         # g.trace(index,splitter)
+    #@+node:ekr.20110321072702.14508: *3* lock/unlock
+    def lock (self):
+        g.note('rendering pane locked')
+        self.locked = True
+        
+    def unlock (self):
+        g.note('rendering pane unlocked')
+        self.locked = False
     #@+node:ekr.20110317080650.14384: *3* show & hide
     def hide (self):
         
@@ -442,7 +430,7 @@ class ViewRenderedController:
         
         pc = self ; c = pc.c ; p = c.p
         
-        if c != keywords.get('c') or not pc.active:
+        if c != keywords.get('c') or not pc.active or pc.locked:
             return None,False
         
         if self.s:
