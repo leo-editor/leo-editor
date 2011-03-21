@@ -688,10 +688,8 @@
 <v t="ekr.20110321012354.2496"><vh>@button show-hide-renderer</vh></v>
 <v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
 <v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
-<v t="ekr.20110320203616.2493"><vh>Leo's home page</vh></v>
-<v t="ekr.20110320203616.2496"><vh>@graphic abc</vh></v>
+<v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
 <v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
-<v t="ekr.20110320203616.2498"><vh>@svg bubbles.svg</vh></v>
 <v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
 <v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
 <v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
@@ -1119,7 +1117,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9680,224 +9678,7 @@ When True, the plugin will create a rendering pane automatically.
 &lt;/html&gt;
 &lt;!--@-leo--&gt;
 </t>
-<t tx="ekr.20110320203616.2496" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104752e"></t>
 <t tx="ekr.20110320203616.2497"></t>
-<t tx="ekr.20110320203616.2498">@nocolor-node
-&lt;?xml version="1.0" standalone="no"?&gt;
-&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"&gt;
-&lt;svg width="20cm" height="15cm" viewBox="0 0 800 600"
-     xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlik/"
-     baseProfile="tiny" version="1.2"&gt;
-   &lt;title&gt;Spheres&lt;/title&gt;
-   &lt;desc&gt;Semi-transparent bubbles on a colored background.&lt;/desc&gt;
-     &lt;defs&gt;
-       &lt;!-- Create radial gradients for each bubble. --&gt;
-       &lt;radialGradient id="blueBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#cdcdff" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#cdaacd" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="redBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#ffcdcd" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#bbbb99" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="greenBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#cdffcd" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#99aaaa" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="yellowBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#ffffcd" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#bbbbaa" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="background" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="400" fx="250" fy="250"&gt;
-         &lt;stop offset="0%" stop-color="#ffffee" /&gt;
-         &lt;stop offset="100%" stop-color="#ccccaa" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;linearGradient id="surface" gradientUnits="userSpaceOnUse"
-                       x1="-100" y1="200" x2="400" y2="200"&gt;
-         &lt;stop offset="0%" stop-color="#ffffcc" /&gt;
-         &lt;stop offset="100%" stop-color="#bbbb88" /&gt;
-       &lt;/linearGradient&gt;
-
-       &lt;!-- Create radial gradients for each circle to make them look like
-            spheres. --&gt;
-       &lt;radialGradient id="blueSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="blue" /&gt;
-         &lt;stop offset="100%" stop-color="#222244" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="redSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="red" /&gt;
-         &lt;stop offset="100%" stop-color="#442222" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="greenSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="green" /&gt;
-         &lt;stop offset="100%" stop-color="#113311" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="yellowSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="yellow" /&gt;
-         &lt;stop offset="100%" stop-color="#444422" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="shadowGrad" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="50"&gt;
-         &lt;stop offset="0%" stop-color="black" stop-opacity="1.0" /&gt;
-         &lt;stop offset="100%" stop-color="black" stop-opacity="0.0" /&gt;
-       &lt;/radialGradient&gt;
-
-       &lt;!-- Define a shadow for each sphere. --&gt;
-       &lt;circle id="shadow" fill="url(#shadowGrad)" cx="0" cy="0" r="100" /&gt;
-       &lt;g id="bubble"&gt;
-         &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
-         &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
-         &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
-                               L -11,22 L -1,12 Z" /&gt;
-         &lt;circle cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/defs&gt;
-   &lt;g&gt;
-     &lt;rect fill="url(#background)" x="0" y="0" width="800" height="600" /&gt;
-   &lt;/g&gt;
-
-   &lt;g transform="translate(200,700)"&gt;
-     &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="1s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(315,700)"&gt;
-     &lt;g transform="scale(0.5,0.5)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="3s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(80,700)"&gt;
-     &lt;g transform="scale(0.65,0.65)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="5s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(255,700)"&gt;
-     &lt;g transform="scale(0.3,0.3)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="2s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(565,700)"&gt;
-     &lt;g transform="scale(0.4,0.4)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="4s" dur="8s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(715,700)"&gt;
-     &lt;g transform="scale(0.6,0.6)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="1s" dur="4s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(645,700)"&gt;
-     &lt;g transform="scale(0.375,0.375)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="0s" dur="11s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(555,700)"&gt;
-     &lt;g transform="scale(0.9,0.9)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="3s" dur="7.5s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-
-   &lt;g transform="translate(360,700)"&gt;
-     &lt;g transform="scale(0.5,0.5)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="3s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(215,700)"&gt;
-     &lt;g transform="scale(0.45,0.45)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="5.5s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(420,700)"&gt;
-     &lt;g transform="scale(0.75,0.75)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="1s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(815,700)"&gt;
-     &lt;g transform="scale(0.6,0.6)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="2s" dur="9.5s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-
-   &lt;g transform="translate(225,375)" &gt;
-     &lt;g transform="scale(1.0,0.5)" &gt;
-       &lt;path d="M 0 0 L 350 0 L 450 450 L -100 450 z"
-             fill="url(#surface)" stroke="none" /&gt;
-     &lt;/g&gt;
-   &lt;/g&gt;
-     &lt;g transform="translate(200,0)" &gt;
-     &lt;g transform="translate(200,490) scale(2.0,1.0) rotate(45)" &gt;
-       &lt;rect fill="#a6ce39" x="-69" y="-69" width="138" height="138" /&gt;
-       &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
-       &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
-       &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
-                             L -11,22 L -1,12 Z" /&gt;
-       &lt;animateTransform attributeName="transform"  type="rotate" additive="sum" values="0; 360"
-                  begin="0s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(200,375)"&gt;
-       &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-       &lt;circle fill="url(#blueSphere)" cx="0" cy="0" r="100" /&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(315,440)"&gt;
-       &lt;g transform="scale(0.5,0.5)"&gt;
-         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-         &lt;circle fill="url(#redSphere)" cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(80,475)"&gt;
-       &lt;g transform="scale(0.65,0.65)"&gt;
-         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-         &lt;circle fill="url(#greenSphere)" cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(255,525)"&gt;
-       &lt;g transform="scale(0.3,0.3)"&gt;
-         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-         &lt;circle fill="url(#yellowSphere)" cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/g&gt;
-   &lt;/g&gt;
-&lt;/svg&gt;</t>
 <t tx="ekr.20110320205650.2495"></t>
 <t tx="ekr.20110321010339.2496">../Icons/bubbles.svg
 </t>
