@@ -563,7 +563,7 @@ class ViewRenderedController:
         
         pc = self ; c = pc.c ; p = c.p
         
-        if c != keywords.get('c') or not pc.active or pc.locked:
+        if c != keywords.get('c') or not pc.active or pc.locked or g.unitTesting:
             return None,False
         
         if self.s:
