@@ -186,7 +186,7 @@ QPlainTextEdit {
 # 
 # To do:
 # 
-# * Resizing movies causes problems when locked?
+# - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
 # - Add dict to allow customize must_update.
 # - Lock movies automatically until they are finished?
 # - Render @url nodes as html?
@@ -272,6 +272,7 @@ def toggle_rendering_pane(event):
                 pc.s = None
                 pc.gnx = 0
                 pc.view('rst')
+                assert pc.active,'not active after toggle'
 #@+node:ekr.20110321085459.14462: *3* g.command('hide-rendering-pane')
 @g.command('hide-rendering-pane')
 def hide_rendering_pane(event):
@@ -337,6 +338,7 @@ class ViewRenderedController:
         self.locked = False
         self.s = ''
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
+        self.sizes = [] # Sizes of splitter panes.
         self.splitter = None # The free_layout splitter containing the rendering pane.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
@@ -435,6 +437,7 @@ class ViewRenderedController:
         
         pc = self
         pc.deactivate()
+        pc.sizes = pc.splitter.sizes()
         pc.w.hide()
         
     def show (self):
@@ -442,7 +445,10 @@ class ViewRenderedController:
         pc = self
         pc.activate()
         pc.update(tag='view',keywords={'c':self.c})
+        if pc.sizes:
+            pc.splitter.setSizes(pc.sizes)
         pc.w.show()
+            # This doesn't work well when Playing sounds.
     #@+node:ekr.20110319143920.14466: *3* underline
     def underline (self,s):
         
@@ -480,7 +486,7 @@ class ViewRenderedController:
             f = self.update_rst
         f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
-    def embed_widget (self,widget_class,callback=None,delete_callback=None,opaque_resize=False):
+    def embed_widget (self,widget_class,callback=None,delete_callback=None,opaque_resize=True):
         
         '''Embed widget w in the free_layout splitter.'''
         
@@ -496,6 +502,9 @@ class ViewRenderedController:
                 # g.trace(sum(sizes),sizes)
                 if pc.delete_callback:
                     pc.delete_callback()
+                elif pc.w:
+                    pc.w.deleteLater()
+                    
                 pc.delete_callback = delete_callback
                 if callback:
                     pc.w = w = callback()
@@ -515,8 +524,7 @@ class ViewRenderedController:
                     pc.w = w = widget_class()
                    
                 splitter.replace_widget_at_index(pc.splitter_index,w)
-                splitter.setOpaqueResize(not opaque_resize)
-                    # Looks backwards, but it works.
+                splitter.setOpaqueResize(opaque_resize)
                 splitter.setSizes(sizes)
         else:
             g.trace('can not happen: no splitter')
@@ -662,11 +670,13 @@ class ViewRenderedController:
         def delete_callback():
             if pc.vp:
                 pc.vp.stop()
+                pc.vp.deleteLater()
                 pc.vp = None
             
         def video_callback():
             pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
             vw = vp.videoWidget()
+            # g.trace(vw,vp.window())
             vw.setObjectName('video-renderer')
             return vw
             
