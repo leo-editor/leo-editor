@@ -564,21 +564,6 @@
 </v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
-<v t="ekr.20101014040509.2309"><vh>Images and movies</vh>
-<v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
-<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
-<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
-<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
-<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
-<v t="ekr.20101014040509.2315"><vh>@url Horse movie</vh></v>
-<v t="ekr.20101014040509.2316"><vh>@@button load video</vh>
-<v t="ekr.20101014040509.2317"><vh>run</vh></v>
-</v>
-<v t="ekr.20101014040509.2318"><vh>@@button play/pause</vh></v>
-<v t="ekr.20101014040509.2319"><vh>@@button vid-stop</vh></v>
-<v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
-<v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
-</v>
 <v t="ekr.20101103135707.2439"><vh>@@button move head to prev</vh></v>
 <v t="ekr.20101103170034.2445"><vh>@@button move tail to next</vh></v>
 <v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
@@ -689,7 +674,23 @@
 </v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
 </v>
-<v t="ekr.20110320051617.2475"><vh>Rendering svg files</vh></v>
+<v t="ekr.20101014040509.2309"><vh>Images and movies</vh>
+<v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
+<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
+<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
+<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
+<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
+<v t="ekr.20101014040509.2315"><vh>@url Horse movie</vh></v>
+<v t="ekr.20110320205650.2495"><vh>Movie buttons</vh>
+<v t="ekr.20101014040509.2316"><vh>@@button load video</vh>
+<v t="ekr.20101014040509.2317"><vh>run</vh></v>
+</v>
+<v t="ekr.20101014040509.2318"><vh>@@button play/pause</vh></v>
+<v t="ekr.20101014040509.2319"><vh>@@button vid-stop</vh></v>
+<v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
+<v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
+</v>
+</v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered tests</vh>
 <v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
 <v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
@@ -1120,7 +1121,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6,7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9433,19 +9434,6 @@ c.k.simulateCommand('stickynote')
 aList = list(c.k.bindingsDict.keys())
 aList.sort()
 for z in aList: print(z)</t>
-<t tx="ekr.20110320051617.2475"># http://doc.trolltech.com/4.4/qtsvg.html 
-# http://doc.trolltech.com/4.4/painting-svgviewer.html
-
-import PyQt4.QtCore as QtCore
-import PyQt4.QtSvg as QtSvg
-import PyQt4.QtGui as QtGui
-
-path = g.os_path_finalize_join(g.app.loadDir,'..','Icons','bubbles.svg')
-
-w = c.svg_widget = QtSvg.QSvgWidget()
-w.load(path)
-w.show()
-</t>
 <t tx="ekr.20110320203616.2489"></t>
 <t tx="ekr.20110320203616.2491">@language rest
 
@@ -9928,5 +9916,6 @@ When True, the plugin will create a rendering pane automatically.
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
+<t tx="ekr.20110320205650.2495"></t>
 </tnodes>
 </leo_file>
