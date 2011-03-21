@@ -72,7 +72,9 @@ try:
 except ImportError:
     got_docutils = False
 
+import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
+import PyQt4.QtSvg as QtSvg
 #@-<< imports >>
 
 #@+<< define stylesheet >>
@@ -115,13 +117,14 @@ controllers = {}
     # Keys are c.hash(): values are PluginControllers
 
 #@+others
-#@+node:tbrown.20100318101414.5994: ** decorate_window
+#@+node:ekr.20110320120020.14491: ** Top-level
+#@+node:tbrown.20100318101414.5994: *3* decorate_window
 def decorate_window(w):
     
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
-#@+node:tbrown.20100318101414.5995: ** init
+#@+node:tbrown.20100318101414.5995: *3* init
 def init ():
     
     # g.trace('viewrendered.py')
@@ -130,7 +133,7 @@ def init ():
     g.registerHandler('after-create-leo-frame',onCreate)
 
     return True
-#@+node:ekr.20110317024548.14376: ** onCreate
+#@+node:ekr.20110317024548.14376: *3* onCreate
 def onCreate (tag, keys):
     
     global controllers
@@ -140,29 +143,97 @@ def onCreate (tag, keys):
         h = c.hash()
         if not controllers.get(h):
             controllers[h] = ViewRenderedController(c)
+#@+node:ekr.20110320120020.14490: ** Commands
+#@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
+@g.command('viewrendered')
+def viewrendered(event):
+    """Open render view for commander"""
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc: pc.view('rst')
+#@+node:ekr.20110320120020.14475: *3* g.command('vr')
+@g.command('vr')
+def viewrendered(event):
+    """A synonynm for the viewrendered command"""
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc: pc.view('rst')
+#@+node:tbrown.20101127112443.14856: *3* g.command('viewrendered-html') (not used)
+# @g.command('viewrendered-html')
+# def viewrendered(event):
+    # """Open view of html which would be rendered"""
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc: pc.view('html')
+#@+node:tbrown.20101127112443.14854: *3* g.command('viewrendered-big') (not used)
+# @g.command('viewrendered-big')
+# def viewrendered(event):
+    # """Open render view for commander, with big text
+
+    # (useful for presentations)
+
+    # """
+
+    # c = event.get('c')
+    # if c:
+        # pc = controllers.get(c.hash())
+        # if pc:
+            # w = pc.w
+            # pc.view('big')
+            # w.zoomIn(4)
+#@+node:ekr.20110317080650.14383: *3* g.command('hide-rendering-pane')
+@g.command('hide-rendering-pane')
+def hide_rendering_pane(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc: pc.hide()
+#@+node:ekr.20110317080650.14386: *3* g.command('show-rendering-pane')
+@g.command('show-rendering-pane')
+def show_rendering_pane(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc:
+            pc.length = -1
+            pc.s = None
+            pc.gnx = 0
+            pc.view('rst')
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
 class ViewRenderedController:
     
     '''A class to control rendering in a rendering pane.'''
     
     #@+others
-    #@+node:ekr.20110317080650.14380: *3* ctor & helper
+    #@+node:ekr.20110317080650.14380: *3* ctor & helpers
     def __init__ (self,c):
             
-        self.c = c
-        self.w = w = QtGui.QTextEdit() # QtGui.QTextBrowser()
-        w.setReadOnly(True)
-        
-        c.viewrendered = self # For free_layout
-
         self.active = False
-        self.inited = False
+        self.c = c
         self.gnx = None
-        self.kind = 'rst' # in ('big','html','rst',)
-        self.length = 0         # The length of previous p.b.
+        self.inited = False
+        self.free_layout_pc = None # Set later by embed.
+        self.kind = 'rst' # in self.dispatch_dict.keys()
+        self.length = 0 # The length of previous p.b.
         self.s = ''
-        self.splitter = None    # The splitter containing the rendering pane.
-        self.splitter_index = None  # The index of the rendering pane in the splitter.
+        self.splitter = None # The free_layout splitter containing the rendering pane.
+        self.splitter_index = None # The index of the rendering pane in the splitter.
+        self.svg_class = QtSvg.QSvgWidget
+        self.text_class = QtGui.QTextEdit
+        # self.svg_widget = QtSvg.QSvgWidget()
+        self.w = None # w = QtGui.QTextEdit() # QtGui.QTextBrowser()
         
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
@@ -170,6 +241,8 @@ class ViewRenderedController:
         self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
         
         # Init.
+        c.viewrendered = self # For free_layout
+        # w.setReadOnly(True)
         self.create_dispatch_dict()
         self.load_free_layout()
 
@@ -205,7 +278,7 @@ class ViewRenderedController:
         
         pc = self
         
-        if pc.inited: return
+        if pc.active: return
         
         pc.inited = True
         pc.active = True
@@ -226,20 +299,6 @@ class ViewRenderedController:
         g.unregisterHandler('idle',pc.update)
         
         pc.active = False
-    #@+node:ekr.20110318080425.14394: *3* embed
-    def embed (self):
-        
-        '''Use the free_layout plugin to embed self.w in a splitter.'''
-        
-        c = self.c
-        
-        if self.splitter:
-            return
-
-        fl = hasattr(c,'free_layout') and c.free_layout
-        if fl:
-            fl.create_renderer(self.w)
-                # Calls set_renderer, which sets self.splitter.
     #@+node:ekr.20110318080425.14388: *3* has/set_renderer
     def has_renderer (self):
         
@@ -251,19 +310,20 @@ class ViewRenderedController:
         
         self.splitter = splitter
         self.splitter_index = index
+        # g.trace(index,splitter)
     #@+node:ekr.20110317080650.14384: *3* show & hide
     def hide (self):
         
-        pc = self ; w = pc.w
+        pc = self
         pc.deactivate()
-        w.hide()
+        pc.w.hide()
         
     def show (self):
         
-        pc = self ; w = pc.w
+        pc = self
         pc.activate()
         pc.update(tag='view',keywords={'c':self.c})
-        w.show()
+        pc.w.show()
     #@+node:ekr.20110319143920.14466: *3* underline
     def underline (self,s):
         
@@ -276,7 +336,9 @@ class ViewRenderedController:
         
         pc = self ; c = pc.c ; p = c.p
         s, val = pc.must_update(keywords)
-        if not val: return
+        if not val:
+            # g.trace('no update')
+            return
         
         # Suppress updates until we change nodes.  
         self.gnx = p.v.gnx
@@ -292,6 +354,24 @@ class ViewRenderedController:
             g.trace('no handler for kind: %s' % kind)
             f = self.update_rst
         f(s,keywords)
+    #@+node:ekr.20110320120020.14486: *4* embed_widget
+    def embed_widget (self,widget_class):
+        
+        '''Embed widget w in the free_layout splitter.'''
+        
+        pc = self
+        
+        if pc.splitter:
+            same_class = self.w and self.w.__class__ == widget_class
+            w2 = pc.splitter.widget(pc.splitter_index)
+            if not same_class:
+                self.w = w = widget_class()
+                # g.trace(same_class,widget_class)
+                pc.splitter.replace_widget_at_index(pc.splitter_index,w)
+                if widget_class == self.text_class:
+                    w.setReadOnly(True)
+        else:
+            g.trace('no splitter')
     #@+node:ekr.20110320120020.14483: *4* get_kind
     def get_kind(self,p):
         
@@ -349,12 +429,15 @@ class ViewRenderedController:
         return ''.join(result)
     #@+node:ekr.20110320120020.14482: *4* update_graphic
     def update_graphic (self,s,keywords):
+        
+        self.embed_widget(self.text_class)
 
         self.w.setPlainText('Graphic\n\n%s' % (s))
+        
     #@+node:ekr.20110320120020.14477: *4* update_rst
     def update_rst (self,s,keywords):
         
-        pc = self ; c = pc.c ;  p = c.p ; w = pc.w
+        pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
 
         if got_docutils and (not s.startswith('<') or s.startswith('<<')):
@@ -376,6 +459,9 @@ class ViewRenderedController:
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
+                    
+        self.embed_widget(self.text_class)
+        w = self.w
 
         if self.kind in ('big','rst','html'):
             w.setHtml(s)
@@ -384,18 +470,36 @@ class ViewRenderedController:
         else:
             w.setPlainText(s)
     #@+node:ekr.20110320120020.14479: *4* update_svg
+    # http://doc.trolltech.com/4.4/qtsvg.html 
+    # http://doc.trolltech.com/4.4/painting-svgviewer.html
+
     def update_svg (self,s,keywords):
-        
-        self.w.setPlainText('Svg: len: %s' % (len(s)))
+
+        self.embed_widget(self.svg_class)
+        w = self.w
+
+        if 0:
+            path = g.os_path_finalize_join(g.app.loadDir,'..','Icons','bubbles.svg')
+            w.load(path)
+        else:
+            s = g.adjustTripleString(s,self.c.tab_width).strip() # Sensitive to leading blank lines.
+            s = g.toEncodedString(s)
+            w.load(s)
+
+        w.show()
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
+        
+        self.embed_widget(self.text_class)
         
         self.w.setPlainText('Movie\n\n%s' % (s))
     #@+node:ekr.20110320120020.14484: *4* update_networkx
     def update_networkx (self,s,keywords):
         
+        self.embed_widget(self.text_class)
+        
         self.w.setPlainText('Networkx: len: %s' % (len(s)))
-    #@+node:ekr.20110317024548.14379: *3* view
+    #@+node:ekr.20110317024548.14379: *3* view & helper
     def view(self,kind,s=None,title=None):
         
         pc = self
@@ -403,76 +507,28 @@ class ViewRenderedController:
         
         # g.trace(kind,len(s))
         
-        self.embed()
+        self.embed_renderer()
         self.s = s
         self.title = title
         pc.show()
 
         # if big:
             # pc.w.zoomIn(4)
+    #@+node:ekr.20110318080425.14394: *4* embed_renderer
+    def embed_renderer (self):
+        
+        '''Use the free_layout plugin to embed self.w in a splitter.'''
+        
+        c = self.c
+        
+        if self.splitter:
+            return
+
+        pc = hasattr(c,'free_layout') and c.free_layout
+        if pc:
+            self.free_layout_pc = pc
+            pc.create_renderer(self.w)
+                # Calls set_renderer, which sets self.splitter.
     #@-others
-#@+node:tbrown.20100318101414.5998: ** g.command('viewrendered')
-@g.command('viewrendered')
-def viewrendered(event):
-    """Open render view for commander"""
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
-#@+node:ekr.20110320120020.14475: ** g.command('vr')
-@g.command('vr')
-def viewrendered(event):
-    """A synonynm for the viewrendered command"""
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
-#@+node:tbrown.20101127112443.14856: ** g.command('viewrendered-html') (not used)
-# @g.command('viewrendered-html')
-# def viewrendered(event):
-    # """Open view of html which would be rendered"""
-
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc: pc.view('html')
-#@+node:tbrown.20101127112443.14854: ** g.command('viewrendered-big') (not used)
-# @g.command('viewrendered-big')
-# def viewrendered(event):
-    # """Open render view for commander, with big text
-
-    # (useful for presentations)
-
-    # """
-
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc:
-            # w = pc.w
-            # pc.view('big')
-            # w.zoomIn(4)
-#@+node:ekr.20110317080650.14383: ** g.command('hide-rendering-pane')
-@g.command('hide-rendering-pane')
-def hide_rendering_pane(event):
-    
-    '''Hide the rendering pane, but do not delete it.'''
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.hide()
-#@+node:ekr.20110317080650.14386: ** g.command('show-rendering-pane')
-@g.command('show-rendering-pane')
-def show_rendering_pane(event):
-    
-    '''Hide the rendering pane, but do not delete it.'''
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view()
 #@-others
 #@-leo

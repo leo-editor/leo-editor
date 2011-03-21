@@ -70,17 +70,16 @@ class FreeLayoutController:
         pc = self ; c = pc.c
         
         if not pc.renderer:
-            w = c.viewrendered.w # Called from viewrender, so it must exist.
+            assert w == c.viewrendered.w,'widget mismatch'
+                # Called from viewrender, so it must exist.
             index = 1
-            
             dw = c.frame.top
             splitter = dw.splitter_2
             body = dw.leo_body_frame
             index = splitter.indexOf(body)
-            splitter.split(index,side=1,w=w)
-           
-            pc.renderer = splitter # pc is a FreeLayoutController.
-            c.viewrendered.set_renderer(splitter,index)
+            new_splitter,new_index = splitter.split(index,side=1,w=w,name='renderer-splitter')
+            pc.renderer = new_splitter # pc is a FreeLayoutController.
+            c.viewrendered.set_renderer(new_splitter,new_index)
             c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
             # g.trace(splitter)
