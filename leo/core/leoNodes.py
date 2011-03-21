@@ -2363,9 +2363,13 @@ class vnode (baseVnode):
 
         v = self
         if not w: return
-
-        v.scrollBarSpot = w.getYScrollPosition()
-        v.insertSpot = w.getInsertPoint()
+        
+        try:
+            v.scrollBarSpot = w.getYScrollPosition()
+            v.insertSpot = w.getInsertPoint()
+        except AttributeError:
+            # 2011/03/21: w may not support the high-level interface.
+            pass
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString (self,s):
 

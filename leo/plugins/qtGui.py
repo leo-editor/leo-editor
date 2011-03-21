@@ -148,7 +148,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.widget = widget
         self.c = c or self.widget.leo_c
 
-        # g.trace('leoQtBaseTextWidget',name)
+        g.trace('leoQtBaseTextWidget',name)
 
         # Init the base class.
         leoFrame.baseTextWidget.__init__(
@@ -167,7 +167,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         if not c: return # Can happen.
 
-        if name == 'body' or name.startswith('head'):
+        if name in ('body','rendering-pane-wrapper') or name.startswith('head'):
+            g.trace('hooking up qt events',name)
             # Hook up qt events.
             self.ev_filter = leoQtEventFilter(c,w=self,tag=name)
             self.widget.installEventFilter(self.ev_filter)

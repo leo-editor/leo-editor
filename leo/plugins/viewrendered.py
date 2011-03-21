@@ -139,6 +139,7 @@ __version__ = '0.1'
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.plugins.qtGui as qtGui
 
 g.assertUi('qt')
 
@@ -184,15 +185,13 @@ QPlainTextEdit {
 #@+at
 # 
 # - To do:
-#     
 # - Add Leo bindings to text renderer widgets.
 # 
 # To do (minor):
-# 
+#     
 # - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
 # - (Failed) Make viewrendered-big work.
-# 
 #@@c
 
 controllers = {}
@@ -478,25 +477,31 @@ class ViewRenderedController:
         
         '''Embed widget w in the free_layout splitter.'''
         
-        pc = self ; splitter = pc.splitter
+        pc = self ; c = pc.c ; splitter = pc.splitter
         
         if pc.splitter:
             same_class = self.w and self.w.__class__ == widget_class
             text_class = widget_class == self.text_class
-            text_name = 'text-renderer'
+            text_name = 'body-text-renderer'
             # w2 = pc.splitter.widget(pc.splitter_index)
             if not same_class:
                 sizes = splitter.sizes()
                 # g.trace(sum(sizes),sizes)
-                if self.delete_callback:
-                    self.delete_callback()
-                self.delete_callback = delete_callback
+                if pc.delete_callback:
+                    pc.delete_callback()
+                pc.delete_callback = delete_callback
                 if callback:
-                    self.w = w = callback()
-                else:
-                    self.w = w = widget_class()
-                if text_class:
+                    pc.w = w = callback()
+                elif text_class:
+                    pc.w = w = widget_class()
                     w.setObjectName(text_name)
+            
+                    wrapper_name = 'rendering-pane-wrapper'
+                    pc.wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
+                    c.k.completeAllBindingsForWidget(pc.wrapper)
+                else:
+                    pc.w = w = widget_class()
+                   
                 splitter.replace_widget_at_index(pc.splitter_index,w)
                 splitter.setOpaqueResize(not opaque_resize)
                     # Looks backwards, but it works.
