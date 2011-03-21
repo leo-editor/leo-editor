@@ -105,9 +105,8 @@ QPlainTextEdit {
 # To do:
 # 
 # - Allow URL's and file names in body text of @svg, etc.
+# - Render @url nodes as html.
 # - @color viewrendered-pane-color.
-# - Generalize: allow registration of other kinds of renderers.
-#   In particular, allow different kinds of widgets in the viewrendered pane.
 # - Support uA's that indicate the kind of rendering desired.
 # 
 # Fix bugs:
@@ -217,6 +216,21 @@ def show_rendering_pane(event):
             pc.s = None
             pc.gnx = 0
             pc.view('rst')
+#@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
+@g.command('pause-play-movie')
+def pauseMovie(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc and pc.vp:
+            vp = pc.vp
+            if vp.isPlaying():
+                vp.pause()
+            else:
+                vp.play()
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
 class ViewRenderedController:
     
@@ -385,6 +399,14 @@ class ViewRenderedController:
                     w.setReadOnly(True)
         else:
             g.trace('no splitter')
+    #@+node:ekr.20110320233639.5776: *4* get_fn
+    def get_fn (self,s,tag):
+        
+        p = self.c.p
+        fn = s or p.h[len(tag):]
+        path = g.os_path_finalize_join(g.app.loadDir,fn.strip())
+        ok = g.os_path_exists(path)
+        return ok,path
     #@+node:ekr.20110320120020.14483: *4* get_kind
     def get_kind(self,p):
         
@@ -488,41 +510,45 @@ class ViewRenderedController:
 
     def update_svg (self,s,keywords):
 
-        self.embed_widget(self.svg_class)
-        w = self.w
-
-        if 0:
-            path = g.os_path_finalize_join(g.app.loadDir,'..','Icons','bubbles.svg')
-            w.load(path)
-        else:
+        pc = self
+        pc.embed_widget(self.svg_class)
+        w = pc.w
+        
+        if s.strip().startswith('<'):
+            # Assume it is the svg (xml) source.
             s = g.adjustTripleString(s,self.c.tab_width).strip() # Sensitive to leading blank lines.
             s = g.toEncodedString(s)
             w.load(s)
-
-        w.show()
+            w.show()
+        else:
+            # Get a filename from the headline or body text.
+            ok,path = pc.get_fn(s,'@svg')
+            if ok:
+                w.load(path)
+                w.show()
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
         
-        if not phonon:
-            self.embed_widget(self.text_class)
-            self.w.setPlainText('Movie\n\n%s' % (s))
+        pc = self
+        
+        ok,path = pc.get_fn(s,'@movie')
+        if not ok:
+            pc.embed_widget(self.text_class)
+            pc.w.setPlainText('Movie\n\nfile not found: %s' % (path))
             return
         
-        pc = self ;  p = pc.c.p ; tag = '@movie'
-        fn = s or p.h[len(tag):]
-        fn = fn.strip()
-        path = g.os_path_finalize_join(g.app.loadDir,fn)
+        if not phonon:
+            pc.embed_widget(pc.text_class)
+            pc.w.setPlainText('Movie\n\nno movie player: %s' % (path))
+            return
 
-        if not g.os_path_exists(path):
-            return g.es_print('Not found: %s' % (path))
-        
         def delete_callback():
-            if self.vp:
-                self.vp.stop()
-                self.vp = None
+            if pc.vp:
+                pc.vp.stop()
+                pc.vp = None
             
         def video_callback():
-            self.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
             vw = vp.videoWidget()
             return vw
             
@@ -530,7 +556,7 @@ class ViewRenderedController:
             callback=video_callback,
             delete_callback=delete_callback)
 
-        vp = self.vp
+        vp = pc.vp
         vp.load(phonon.MediaSource(path))
         vp.play()
     #@+node:ekr.20110320120020.14484: *4* update_networkx
