@@ -149,6 +149,9 @@ __version__ = '2.5'
 # 2.5 EKR: call c.outerUpdate in callbacks.
 #@-<< version history >>
 
+# Fix bug: create new command if button command conflicts with existing command.
+# This would fix an unbounded recursion.
+
 #@+others
 #@+node:ekr.20060328125248.4: ** init
 def init ():

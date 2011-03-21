@@ -102,16 +102,11 @@ QPlainTextEdit {
 
 #@+at
 # 
-# To do:
+# To do (All minor)
 # 
-# - @color viewrendered-pane-color.
-# 
-# Minor:
 # - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
 # - (Failed) Make viewrendered-big work.
-# - Fix @button bug: create unique command name if it conflicts with existing command.
-#   This will prevent an unbounded recursion.
 # 
 #@@c
 
