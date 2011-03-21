@@ -185,6 +185,10 @@ QPlainTextEdit {
 #@+at
 # 
 # To do:
+# 
+# * Resizing movies causes problems when locked?
+# - Add dict to allow customize must_update.
+# - Lock movies automatically until they are finished?
 # - Render @url nodes as html?
 # - Support uA's that indicate the kind of rendering desired.
 # - (Failed) Make viewrendered-big work.
@@ -454,7 +458,8 @@ class ViewRenderedController:
             # g.trace('no update')
             return
         
-        # Suppress updates until we change nodes.  
+        # Suppress updates until we change nodes.
+        self.node_changed = self.gnx != p.v.gnx
         self.gnx = p.v.gnx
         self.length = len(p.b) # Use p.b, not s.
         
@@ -678,7 +683,7 @@ class ViewRenderedController:
         
         pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
-
+        
         if got_docutils and (not s.startswith('<') or s.startswith('<<')):
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
@@ -701,6 +706,11 @@ class ViewRenderedController:
                     
         self.embed_widget(self.text_class)
         w = self.w
+        
+        if not self.node_changed:
+            # Save the scrollbars
+            sb = w.verticalScrollBar()
+            if sb: pos = sb.sliderPosition()
 
         if self.kind in ('big','rst','html'):
             w.setHtml(s)
@@ -708,6 +718,10 @@ class ViewRenderedController:
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
+            
+        if not self.node_changed:
+            # Restore the scrollbars
+            if sb: sb.setSliderPosition(pos)
     #@+node:ekr.20110320120020.14479: *4* update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html 
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
