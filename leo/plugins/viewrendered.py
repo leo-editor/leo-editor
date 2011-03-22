@@ -487,63 +487,61 @@ class ViewRenderedController:
             return
         
         # Suppress updates until we change nodes.
-        self.node_changed = self.gnx != p.v.gnx
-        self.gnx = p.v.gnx
-        self.length = len(p.b) # Use p.b, not s.
+        pc.node_changed = self.gnx != p.v.gnx
+        pc.gnx = p.v.gnx
+        pc.length = len(p.b) # Use p.b, not s.
         
         # Remove Leo directives.
         s = pc.remove_directives(s)
 
         # Dispatch based on the computed kind.
-        kind = self.get_kind(p)
+        kind = pc.get_kind(p)
         f = pc.dispatch_dict.get(kind)
         if not f:
             g.trace('no handler for kind: %s' % kind)
             f = self.update_rst
         f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
-    def embed_widget (self,widget_class,callback=None,delete_callback=None,opaque_resize=True):
+    def embed_widget (self,w,delete_callback=None,opaque_resize=True):
         
         '''Embed widget w in the free_layout splitter.'''
         
         pc = self ; c = pc.c ; splitter = pc.splitter
         
-        if pc.splitter:
-            same_class = self.w and self.w.__class__ == widget_class
-            text_class = widget_class == self.text_class
+        assert splitter,'no splitter'
+        assert self.must_change_widget(w)
+        
+        # Call the previous delete callback if it exists.
+        if pc.delete_callback:
+            pc.delete_callback()
+        elif pc.w:
+            pc.w.deleteLater()
+
+        # Remember the new delete callback.
+        pc.delete_callback = delete_callback
+        
+        # Special inits for text widgets...
+        if w.__class__ == self.text_class:
             text_name = 'body-text-renderer'
-            # w2 = pc.splitter.widget(pc.splitter_index)
-            if not same_class:
-                sizes = splitter.sizes()
-                # g.trace(sum(sizes),sizes)
-                if pc.delete_callback:
-                    pc.delete_callback()
-                elif pc.w:
-                    pc.w.deleteLater()
-                    
-                pc.delete_callback = delete_callback
-                if callback:
-                    pc.w = w = callback()
-                elif text_class:
-                    pc.w = w = widget_class()
-                    w.setObjectName(text_name)
-                    pc.setBackgroundColor(pc.background_color,text_name,w)
-                    w.setReadOnly(True)
-                    
-                    # Create the standard Leo bindings.
-                    wrapper_name = 'rendering-pane-wrapper'
-                    wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
-                    c.k.completeAllBindingsForWidget(wrapper)
-                    w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-                        # Restore the wrap mode: the wrapper messes with it.
-                else:
-                    pc.w = w = widget_class()
-                   
-                splitter.replace_widget_at_index(pc.splitter_index,w)
-                splitter.setOpaqueResize(opaque_resize)
-                splitter.setSizes(sizes)
-        else:
-            g.trace('can not happen: no splitter')
+            # pc.w = w = widget_class()
+            w.setObjectName(text_name)
+            pc.setBackgroundColor(pc.background_color,text_name,w)
+            w.setReadOnly(True)
+            
+            # Create the standard Leo bindings.
+            wrapper_name = 'rendering-pane-wrapper'
+            wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
+            c.k.completeAllBindingsForWidget(wrapper)
+            w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
+           
+        # Insert w into the splitter, retaining the splitter ratio.
+        sizes = splitter.sizes()
+        splitter.replace_widget_at_index(pc.splitter_index,w)
+        splitter.setOpaqueResize(opaque_resize)
+        splitter.setSizes(sizes)
+        
+        # Set pc.w
+        pc.w = w
     #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
         
@@ -559,38 +557,6 @@ class ViewRenderedController:
         elif colorName not in self.badColors:
             self.badColors.append(colorName)
             g.es_print('invalid body background color: %s' % (colorName),color='blue')
-    #@+node:ekr.20110320233639.5776: *4* get_fn
-    def get_fn (self,s,tag):
-        
-        p = self.c.p
-        fn = s or p.h[len(tag):]
-        fn = fn.strip()
-        path = g.os_path_finalize_join(g.app.loadDir,fn)
-        ok = g.os_path_exists(path)
-        return ok,path
-    #@+node:ekr.20110320120020.14483: *4* get_kind
-    def get_kind(self,p):
-        
-        '''Return the proper rendering kind for node p.'''
-        
-        pc = self ; h = p.h
-
-        if h.startswith('@'):
-            i = g.skip_id(h,1,chars='-')
-            word = h[1:i].lower().strip()
-            if word in pc.dispatch_dict:
-                return word
-                
-        # To do: look at ancestors, or uA's.
-
-        return self.kind # The default.
-    #@+node:ekr.20110321005148.14536: *4* get_url
-    def get_url (self,s,tag):
-        
-        p = self.c.p
-        url = s or p.h[len(tag):]
-        url = url.strip()
-        return url
     #@+node:ekr.20110320120020.14476: *4* must_update
     def must_update (self,keywords):
         
@@ -616,20 +582,6 @@ class ViewRenderedController:
             # except exception:
                 # self.splitter = None
                 # return
-    #@+node:ekr.20110320120020.14485: *4* remove_directives
-    def remove_directives (self,s):
-        
-        lines = g.splitLines(s)
-        result = []
-        for s in lines:
-            if s.startswith('@'):
-                i = g.skip_id(s,1)
-                word = s[1:i]
-                if word in g.globalDirectiveList:
-                    continue
-            result.append(s)
-        
-        return ''.join(result)
     #@+node:ekr.20110321151523.14463: *4* update_graphics_script
     def update_graphics_script (self,s,keywords):
         
@@ -638,35 +590,30 @@ class ViewRenderedController:
         force = keywords.get('force')
         
         if self.gs and not force: return
-        
-        
-        def graphics_callback():
+
+        if not self.gs:
+            # Create the widgets.
             self.gs = QtGui.QGraphicsScene(pc.splitter)
             self.gv = QtGui.QGraphicsView(self.gs)
             w = self.gv.viewport() # A QWidget
-            return w
-
-        def delete_callback():
-            for w in (self.gs,self.gv):
-                w.deleteLater()
-            self.gs = self.gv = None
             
-        if not self.gs:
-            self.embed_widget(QtGui.QWidget, # gw.__class__,
-                callback=graphics_callback,
-                delete_callback = delete_callback)
+            # Embed the widgets.
+            def delete_callback():
+                for w in (self.gs,self.gv):
+                    w.deleteLater()
+                self.gs = self.gv = None
 
-        d = {'gs':self.gs,'gv':self.gv}
+            self.embed_widget(w,delete_callback=delete_callback)
 
-        c.executeScript(script=s,namespace=d,silent=True)
-        
+        c.executeScript(
+            script=s,
+            namespace={'gs':self.gs,'gv':self.gv})
     #@+node:ekr.20110321005148.14534: *4* update_html
     def update_html (self,s,keywords):
         
         pc = self
-        self.embed_widget(self.text_class)
-        w = pc.w
         
+        w = pc.ensure_text_widget()
         w.setReadOnly(False)
         w.setHtml(s)
         w.setReadOnly(True)
@@ -674,9 +621,8 @@ class ViewRenderedController:
     def update_image (self,s,keywords):
         
         pc = self
-        self.embed_widget(self.text_class)
-        w = pc.w
         
+        w = pc.ensure_text_widget()
         ok,path = pc.get_fn(s,'@image')
         if not ok:
             w.setPlainText('@image: file not found:\n%s' % (path))
@@ -704,32 +650,29 @@ class ViewRenderedController:
         
         ok,path = pc.get_fn(s,'@movie')
         if not ok:
-            pc.embed_widget(self.text_class)
-            pc.w.setPlainText('Movie\n\nfile not found: %s' % (path))
+            w = pc.ensure_text_widget()
+            w.setPlainText('Movie\n\nfile not found: %s' % (path))
             return
         
         if not phonon:
-            pc.embed_widget(pc.text_class)
-            pc.w.setPlainText('Movie\n\nno movie player: %s' % (path))
+            w = pc.ensure_text_widget()
+            w.setPlainText('Movie\n\nno movie player: %s' % (path))
             return
-
-        def delete_callback():
-            if pc.vp:
-                pc.vp.stop()
-                pc.vp.deleteLater()
-                pc.vp = None
             
-        def video_callback():
+        if not pc.vp:
+            # Create the widgets.
             pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
             vw = vp.videoWidget()
-            # g.trace(vw,vp.window())
             vw.setObjectName('video-renderer')
-            return vw
             
-        self.embed_widget(phonon.VideoPlayer,
-            callback=video_callback,
-            delete_callback=delete_callback,
-            opaque_resize=True)
+            # Embed the widgets
+            def delete_callback():
+                if pc.vp:
+                    pc.vp.stop()
+                    pc.vp.deleteLater()
+                    pc.vp = None
+
+            self.embed_widget(vp,delete_callback=delete_callback)
 
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
@@ -737,9 +680,8 @@ class ViewRenderedController:
     #@+node:ekr.20110320120020.14484: *4* update_networkx
     def update_networkx (self,s,keywords):
         
-        self.embed_widget(self.text_class)
-        
-        self.w.setPlainText('Networkx: len: %s' % (len(s)))
+        w = self.ensure_text_widget()
+        w.setPlainText('Networkx: len: %s' % (len(s)))
     #@+node:ekr.20110320120020.14477: *4* update_rst
     def update_rst (self,s,keywords):
         
@@ -766,8 +708,7 @@ class ViewRenderedController:
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
                     
-        self.embed_widget(self.text_class)
-        w = self.w
+        w = self.ensure_text_widget()
         
         sb = w.verticalScrollBar()
         if sb:
@@ -776,11 +717,9 @@ class ViewRenderedController:
                 # Set the scrollbar.
                 pos = d.get(p.v,sb.sliderPosition())
                 sb.setSliderPosition(pos)
-                # g.trace('changed',pos)
             else:
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
-                # g.trace('no change',pos)
 
         if self.kind in ('big','rst','html'):
             w.setHtml(s)
@@ -799,8 +738,13 @@ class ViewRenderedController:
     def update_svg (self,s,keywords):
 
         pc = self
-        pc.embed_widget(self.svg_class)
-        w = pc.w
+        
+        if pc.must_change_widget(pc.svg_class):
+            w = pc.svg_class()
+            pc.embed_widget(w)
+            assert (w == pc.w)
+        else:
+            w = pc.w
         
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
@@ -818,10 +762,10 @@ class ViewRenderedController:
     def update_url (self,s,keywords):
         
         pc = self
-        self.embed_widget(self.text_class)
-        w = pc.w
         
+        w = pc.ensure_text_widget()
         url = pc.get_url(s,'@url')
+        
         if url:
             w.setPlainText('@url %s' % url)
         else:
@@ -830,6 +774,71 @@ class ViewRenderedController:
         # w.setReadOnly(False)
         # w.setHtml(s)
         # w.setReadOnly(True)
+    #@+node:ekr.20110322031455.5765: *4* utils for update helpers...
+    #@+node:ekr.20110322031455.5764: *5* ensure_text_class
+    def ensure_text_widget (self):
+        
+        '''Swap a text widget into the rendering pane if necessary.'''
+        
+        pc = self
+        
+        if pc.must_change_widget(pc.text_class):
+            w = self.text_class()
+            self.embed_widget(w)
+            assert (w == pc.w)
+            return pc.w
+        else:
+            return pc.w
+    #@+node:ekr.20110320233639.5776: *5* get_fn
+    def get_fn (self,s,tag):
+        
+        p = self.c.p
+        fn = s or p.h[len(tag):]
+        fn = fn.strip()
+        path = g.os_path_finalize_join(g.app.loadDir,fn)
+        ok = g.os_path_exists(path)
+        return ok,path
+    #@+node:ekr.20110320120020.14483: *5* get_kind
+    def get_kind(self,p):
+        
+        '''Return the proper rendering kind for node p.'''
+        
+        pc = self ; h = p.h
+
+        if h.startswith('@'):
+            i = g.skip_id(h,1,chars='-')
+            word = h[1:i].lower().strip()
+            if word in pc.dispatch_dict:
+                return word
+                
+        # To do: look at ancestors, or uA's.
+
+        return self.kind # The default.
+    #@+node:ekr.20110321005148.14536: *5* get_url
+    def get_url (self,s,tag):
+        
+        p = self.c.p
+        url = s or p.h[len(tag):]
+        url = url.strip()
+        return url
+    #@+node:ekr.20110322031455.5763: *5* must_change_widget
+    def must_change_widget (self,widget_class):
+        
+        return not self.w or self.w.__class__ != widget_class
+    #@+node:ekr.20110320120020.14485: *5* remove_directives
+    def remove_directives (self,s):
+        
+        lines = g.splitLines(s)
+        result = []
+        for s in lines:
+            if s.startswith('@'):
+                i = g.skip_id(s,1)
+                word = s[1:i]
+                if word in g.globalDirectiveList:
+                    continue
+            result.append(s)
+        
+        return ''.join(result)
     #@+node:ekr.20110317024548.14379: *3* view & helper
     def view(self,kind,s=None,title=None):
         
