@@ -2026,7 +2026,8 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2862: *5* Edit top level
     #@+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
     def executeScript(self,event=None,args=None,p=None,script=None,
-        useSelectedText=True,define_g=True,define_name='__main__',silent=False):
+        useSelectedText=True,define_g=True,define_name='__main__',silent=False,
+        namespace=None):
 
         """This executes body text as a Python script.
 
@@ -2049,6 +2050,7 @@ class baseCommands (object):
                     p = c.p
                     d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                     if define_name: d['__name__'] = define_name
+                    if namespace: d.update(namespace)
                     if args:
                         # g.trace('setting sys.argv',args)
                         sys.argv = args
