@@ -344,9 +344,8 @@ class ViewRenderedController:
         self.gnx = None
         self.inited = False
         self.free_layout_pc = None # Set later by embed.
-        self.gs = None # For @graphics-script
-        self.gv = None # For @graphics-script
-        self.gw = None # For @graphics-script
+        self.gs = None # For @graphics-script: a QGraphicsScene 
+        self.gv = None # For @graphics-script: a QGraphicsView
         self.kind = 'rst' # in self.dispatch_dict.keys()
         self.length = 0 # The length of previous p.b.
         self.locked = False
@@ -638,28 +637,26 @@ class ViewRenderedController:
         
         force = keywords.get('force')
         
-        if self.gw and not force: return
+        if self.gs and not force: return
         
         
         def graphics_callback():
-            self.gs = gs = QtGui.QGraphicsScene(pc.splitter)
-            self.gv = gv = QtGui.QGraphicsView(gs)
-            self.gw = gw = gv.viewport() # A QWidget
-            return gw
+            self.gs = QtGui.QGraphicsScene(pc.splitter)
+            self.gv = QtGui.QGraphicsView(self.gs)
+            w = self.gv.viewport() # A QWidget
+            return w
 
         def delete_callback():
-            for w in (self.gs,self.gv,self.gw):
+            for w in (self.gs,self.gv):
                 w.deleteLater()
-            self.gs = self.gv = self.gw = None
+            self.gs = self.gv = None
             
-        if not self.gw:
+        if not self.gs:
             self.embed_widget(QtGui.QWidget, # gw.__class__,
                 callback=graphics_callback,
                 delete_callback = delete_callback)
-            
-        assert pc.w == pc.gw
 
-        d = {'gs':self.gs,'gv':self.gv,'gw':self.gw,'QtGui':QtGui}
+        d = {'gs':self.gs,'gv':self.gv}
 
         c.executeScript(script=s,namespace=d,silent=True)
         

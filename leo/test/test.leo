@@ -49,6 +49,10 @@
 <v t="ekr.20100910124218.2258"><vh>@bool edit-screenshots = True</vh></v>
 <v t="ekr.20100910124218.2259"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
+<v t="ekr.20110321213552.2500"><vh>viewrendered settings</vh>
+<v t="ekr.20110321213552.2497"><vh>@bool view-rendered-auto-create = True</vh></v>
+<v t="ekr.20110321213552.2499"><vh>@bool scrolledmessage_use_viewrendered = True</vh></v>
+</v>
 </v>
 <v t="ekr.20100118190256.2012"><vh>Syntax coloring</vh>
 <v t="ekr.20100118141712.2011"><vh>@@int qt_tab_width = 80</vh></v>
@@ -687,16 +691,20 @@
 <v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
 <v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
 <v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
+<v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
 <v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
 <v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
+<v t="ekr.20110321213552.2501"><vh>Movies...</vh>
+<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
+<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
+</v>
 <v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
 <v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
 <v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
 <v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
-<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
-<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
 <v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
+<v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1118,7 +1126,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -9687,5 +9695,18 @@ When True, the plugin will create a rendering pane automatically.
 <t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('toggle-rendering-pane')</t>
 <t tx="ekr.20110321073942.2490">c.executeMinibufferCommand('lock-unlock-rendering-pane')
 </t>
+<t tx="ekr.20110321213439.2493" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104752e">gs.clear()
+gs.addText('\n%s\n%s' % (gv,gs))
+
+if 0:
+    for i in range(50):
+        gs.addText('\n' * i +'More')
+</t>
+<t tx="ekr.20110321213439.2495">c.executeMinibufferCommand('update-rendering-pane')
+</t>
+<t tx="ekr.20110321213552.2497"># This should be done only for selected files.</t>
+<t tx="ekr.20110321213552.2499"></t>
+<t tx="ekr.20110321213552.2500"></t>
+<t tx="ekr.20110321213552.2501"></t>
 </tnodes>
 </leo_file>
