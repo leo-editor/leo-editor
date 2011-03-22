@@ -52,6 +52,11 @@ viewrendered.py creates the following (``Alt-X``) commands:
 ``toggle-rendering-pane``
     Shows the rendering pane if invisible, otherwise hides it.
     
+``update-rendering-pane``
+    Forces an update of the rendering pane.
+    This is especially useful for @graphics-script nodes:
+    the rendering is not updated automatically when body text changes.
+    
 Rendering reStructuredText
 ==========================
 
@@ -83,6 +88,14 @@ This plugin renders @image, @html, @movie, @networkx, @svg and @url nodes in spe
 
 For @image, @movie and @svg nodes, either the headline or the first line of body text may
 contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
+
+- ``@graphics-script`` executes the script in the body text in a context containing
+  two predefined variables:
+      
+    - gs is the QGraphicsScene for the rendering pane.
+    - gv is the QGraphicsView for the rendering pane.
+    
+  Using these variables, the script in the body text may create graphics to the rendering pane.
 
 - ``@image`` renders the file as an image.
 
