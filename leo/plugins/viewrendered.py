@@ -299,9 +299,9 @@ def show_rendering_pane(event):
             pc.s = None
             pc.gnx = 0
             pc.view('rst')
-#@+node:ekr.20110321151523.14464: *3* g.command('update-graphics-script')
-@g.command('update-graphics-script')
-def update_graphics_script(event):
+#@+node:ekr.20110321151523.14464: *3* g.command('update-rendering-pane')
+@g.command('update-rendering-pane')
+def update_rendering_pane (event):
     
     '''Hide the rendering pane, but do not delete it.'''
 
@@ -309,10 +309,7 @@ def update_graphics_script(event):
     if c:
         pc = controllers.get(c.hash())
         if pc:
-            if pc.gs:
-                pc.update(tag='view',keywords={'c':pc.c,'force':True})
-            else:
-                g.note('not in @graphics-script node')
+            pc.update(tag='view',keywords={'c':pc.c,'force':True})
 #@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
@@ -643,6 +640,7 @@ class ViewRenderedController:
         
         if self.gw and not force: return
         
+        
         def graphics_callback():
             self.gs = gs = QtGui.QGraphicsScene(pc.splitter)
             self.gv = gv = QtGui.QGraphicsView(gs)
@@ -653,13 +651,14 @@ class ViewRenderedController:
             for w in (self.gs,self.gv,self.gw):
                 w.deleteLater()
             self.gs = self.gv = self.gw = None
-        
-        self.embed_widget(QtGui.QWidget, # gw.__class__,
-            callback=graphics_callback,
-            delete_callback = delete_callback)
+            
+        if not self.gw:
+            self.embed_widget(QtGui.QWidget, # gw.__class__,
+                callback=graphics_callback,
+                delete_callback = delete_callback)
             
         assert pc.w == pc.gw
-        
+
         d = {'gs':self.gs,'gv':self.gv,'gw':self.gw,'QtGui':QtGui}
 
         c.executeScript(script=s,namespace=d,silent=True)
