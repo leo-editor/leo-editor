@@ -459,7 +459,7 @@ class ViewRenderedController:
         
         pc = self
         pc.activate()
-        pc.update(tag='view',keywords={'c':self.c})
+        pc.update(tag='view',keywords={'c':pc.c})
         if pc.sizes:
             pc.splitter.setSizes(pc.sizes)
         pc.w.show()
@@ -479,7 +479,7 @@ class ViewRenderedController:
         s, val = pc.must_update(keywords)
         if not force and not val:
             # Save the scroll position.
-            if w.__class__ == self.text_class:
+            if w.__class__ == pc.text_class:
                 sb = w.verticalScrollBar()
                 if sb:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
@@ -487,7 +487,7 @@ class ViewRenderedController:
             return
         
         # Suppress updates until we change nodes.
-        pc.node_changed = self.gnx != p.v.gnx
+        pc.node_changed = pc.gnx != p.v.gnx
         pc.gnx = p.v.gnx
         pc.length = len(p.b) # Use p.b, not s.
         
@@ -499,7 +499,7 @@ class ViewRenderedController:
         f = pc.dispatch_dict.get(kind)
         if not f:
             g.trace('no handler for kind: %s' % kind)
-            f = self.update_rst
+            f = pc.update_rst
         f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
     def embed_widget (self,w,delete_callback=None,opaque_resize=True):
@@ -509,7 +509,7 @@ class ViewRenderedController:
         pc = self ; c = pc.c ; splitter = pc.splitter
         
         assert splitter,'no splitter'
-        assert self.must_change_widget(w)
+        assert pc.must_change_widget(w)
         
         # Call the previous delete callback if it exists.
         if pc.delete_callback:
@@ -521,7 +521,7 @@ class ViewRenderedController:
         pc.delete_callback = delete_callback
         
         # Special inits for text widgets...
-        if w.__class__ == self.text_class:
+        if w.__class__ == pc.text_class:
             text_name = 'body-text-renderer'
             # pc.w = w = widget_class()
             w.setObjectName(text_name)
@@ -545,6 +545,8 @@ class ViewRenderedController:
     #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
         
+        pc = self
+        
         if not colorName: return
 
         styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name,colorName)
@@ -554,8 +556,8 @@ class ViewRenderedController:
         if QtGui.QColor(colorName).isValid():
             w.setStyleSheet(styleSheet)
 
-        elif colorName not in self.badColors:
-            self.badColors.append(colorName)
+        elif colorName not in pc.badColors:
+            pc.badColors.append(colorName)
             g.es_print('invalid body background color: %s' % (colorName),color='blue')
     #@+node:ekr.20110320120020.14476: *4* must_update
     def must_update (self,keywords):
@@ -567,20 +569,20 @@ class ViewRenderedController:
         if c != keywords.get('c') or not pc.active or pc.locked or g.unitTesting:
             return None,False
         
-        if self.s:
-            s = self.s
-            self.s = None
+        if pc.s:
+            s = pc.s
+            pc.s = None
             return s,True
         else:
             s = p.b
-            val = self.gnx != p.v.gnx or len(s) != self.length
+            val = pc.gnx != p.v.gnx or len(s) != pc.length
             return s,val
 
             # try:
                 # # Can fail if the window has been deleted.
                 # w.setWindowTitle(p.h)
             # except exception:
-                # self.splitter = None
+                # pc.splitter = None
                 # return
     #@+node:ekr.20110321151523.14463: *4* update_graphics_script
     def update_graphics_script (self,s,keywords):
@@ -589,25 +591,25 @@ class ViewRenderedController:
         
         force = keywords.get('force')
         
-        if self.gs and not force: return
+        if pc.gs and not force: return
 
-        if not self.gs:
+        if not pc.gs:
             # Create the widgets.
-            self.gs = QtGui.QGraphicsScene(pc.splitter)
-            self.gv = QtGui.QGraphicsView(self.gs)
-            w = self.gv.viewport() # A QWidget
+            pc.gs = QtGui.QGraphicsScene(pc.splitter)
+            pc.gv = QtGui.QGraphicsView(pc.gs)
+            w = pc.gv.viewport() # A QWidget
             
             # Embed the widgets.
             def delete_callback():
-                for w in (self.gs,self.gv):
+                for w in (pc.gs,pc.gv):
                     w.deleteLater()
-                self.gs = self.gv = None
+                pc.gs = pc.gv = None
 
-            self.embed_widget(w,delete_callback=delete_callback)
+            pc.embed_widget(w,delete_callback=delete_callback)
 
         c.executeScript(
             script=s,
-            namespace={'gs':self.gs,'gv':self.gv})
+            namespace={'gs':pc.gs,'gv':pc.gv})
     #@+node:ekr.20110321005148.14534: *4* update_html
     def update_html (self,s,keywords):
         
@@ -672,7 +674,7 @@ class ViewRenderedController:
                     pc.vp.deleteLater()
                     pc.vp = None
 
-            self.embed_widget(vp,delete_callback=delete_callback)
+            pc.embed_widget(vp,delete_callback=delete_callback)
 
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
@@ -681,7 +683,7 @@ class ViewRenderedController:
     def update_networkx (self,s,keywords):
         
         w = self.ensure_text_widget()
-        w.setPlainText('Networkx: len: %s' % (len(s)))
+        w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
     #@+node:ekr.20110320120020.14477: *4* update_rst
     def update_rst (self,s,keywords):
         
@@ -697,9 +699,9 @@ class ViewRenderedController:
 
             try:
                 msg = '' # The error message from docutils.
-                if self.title:
-                    s = self.underline(self.title) + s
-                    self.title = None
+                if pc.title:
+                    s = pc.underline(pc.title) + s
+                    pc.title = None
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
             except SystemMessage as sm:
@@ -708,12 +710,12 @@ class ViewRenderedController:
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
                     
-        w = self.ensure_text_widget()
+        w = pc.ensure_text_widget()
         
         sb = w.verticalScrollBar()
         if sb:
             d = pc.scrollbar_pos_dict
-            if self.node_changed:
+            if pc.node_changed:
                 # Set the scrollbar.
                 pos = d.get(p.v,sb.sliderPosition())
                 sb.setSliderPosition(pos)
@@ -721,9 +723,9 @@ class ViewRenderedController:
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
 
-        if self.kind in ('big','rst','html'):
+        if pc.kind in ('big','rst','html'):
             w.setHtml(s)
-            if self.kind == 'big':
+            if pc.kind == 'big':
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
@@ -748,7 +750,7 @@ class ViewRenderedController:
         
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = g.adjustTripleString(s,self.c.tab_width).strip() # Sensitive to leading blank lines.
+            s = g.adjustTripleString(s,pc.c.tab_width).strip() # Sensitive to leading blank lines.
             s = g.toEncodedString(s)
             w.load(s)
             w.show()
@@ -764,12 +766,16 @@ class ViewRenderedController:
         pc = self
         
         w = pc.ensure_text_widget()
-        url = pc.get_url(s,'@url')
         
-        if url:
-            w.setPlainText('@url %s' % url)
+        if 1:
+            w.setPlainText('')
         else:
-            w.setPlainText('@url: no url given')
+            url = pc.get_url(s,'@url')
+            
+            if url:
+                w.setPlainText('@url %s' % url)
+            else:
+                w.setPlainText('@url: no url given')
             
         # w.setReadOnly(False)
         # w.setHtml(s)
@@ -783,8 +789,8 @@ class ViewRenderedController:
         pc = self
         
         if pc.must_change_widget(pc.text_class):
-            w = self.text_class()
-            self.embed_widget(w)
+            w = pc.text_class()
+            pc.embed_widget(w)
             assert (w == pc.w)
             return pc.w
         else:
@@ -813,7 +819,7 @@ class ViewRenderedController:
                 
         # To do: look at ancestors, or uA's.
 
-        return self.kind # The default.
+        return pc.kind # The default.
     #@+node:ekr.20110321005148.14536: *5* get_url
     def get_url (self,s,tag):
         
@@ -847,9 +853,9 @@ class ViewRenderedController:
         
         # g.trace(kind,len(s))
         
-        self.embed_renderer()
-        self.s = s
-        self.title = title
+        pc.embed_renderer()
+        pc.s = s
+        pc.title = title
         pc.show()
 
         # if big:
@@ -859,16 +865,16 @@ class ViewRenderedController:
         
         '''Use the free_layout plugin to embed self.w in a splitter.'''
         
-        c = self.c
+        pc = self ; c = pc.c
         
-        if self.splitter:
+        if pc.splitter:
             return
 
-        pc = hasattr(c,'free_layout') and c.free_layout
-        if pc:
-            self.free_layout_pc = pc
-            pc.create_renderer(self.w)
-                # Calls set_renderer, which sets self.splitter.
+        fl_pc = hasattr(c,'free_layout') and c.free_layout
+        if fl_pc:
+            pc.free_layout_pc = fl_pc
+            fl_pc.create_renderer(pc.w)
+                # Calls set_renderer, which sets pc.splitter.
     #@-others
 #@-others
 #@-leo
