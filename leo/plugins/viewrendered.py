@@ -55,7 +55,8 @@ viewrendered.py creates the following (``Alt-X``) commands:
 ``update-rendering-pane``
     Forces an update of the rendering pane.
     This is especially useful for @graphics-script nodes:
-    the rendering is not updated automatically when body text changes.
+    such nodes are update automatically only when selected,
+    not when the body text changes.
     
 Rendering reStructuredText
 ==========================
@@ -115,8 +116,7 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
 
-- ``@url`` is non-functional at present.  It merely renders the body text as plain text.
-
+- ``@url`` is non-functional at present.
 
 Settings
 ========
