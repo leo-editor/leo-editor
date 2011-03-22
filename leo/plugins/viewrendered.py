@@ -299,6 +299,20 @@ def show_rendering_pane(event):
             pc.s = None
             pc.gnx = 0
             pc.view('rst')
+#@+node:ekr.20110321151523.14464: *3* g.command('update-graphics-script')
+@g.command('update-graphics-script')
+def update_graphics_script(event):
+    
+    '''Hide the rendering pane, but do not delete it.'''
+
+    c = event.get('c')
+    if c:
+        pc = controllers.get(c.hash())
+        if pc:
+            if pc.gs:
+                pc.update(tag='view',keywords={'c':pc.c,'force':True})
+            else:
+                g.note('not in @graphics-script node')
 #@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
@@ -333,6 +347,9 @@ class ViewRenderedController:
         self.gnx = None
         self.inited = False
         self.free_layout_pc = None # Set later by embed.
+        self.gs = None # For @graphics-script
+        self.gv = None # For @graphics-script
+        self.gw = None # For @graphics-script
         self.kind = 'rst' # in self.dispatch_dict.keys()
         self.length = 0 # The length of previous p.b.
         self.locked = False
@@ -343,6 +360,7 @@ class ViewRenderedController:
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
         self.text_class = QtGui.QTextEdit
+        self.graphics_class = QtGui.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
         
@@ -366,14 +384,15 @@ class ViewRenderedController:
         pc = self
         
         pc.dispatch_dict = {
-            'big':      pc.update_rst,
-            'html':     pc.update_html,
-            'image':    pc.update_image,
-            'movie':    pc.update_movie,
-            'networkx': pc.update_networkx,
-            'rst':      pc.update_rst,
-            'svg':      pc.update_svg,
-            'url':      pc.update_url,
+            'big':          pc.update_rst,
+            'html':         pc.update_html,
+            'graphics-script':  pc.update_graphics_script,
+            'image':        pc.update_image,
+            'movie':        pc.update_movie,
+            'networkx':     pc.update_networkx,
+            'rst':          pc.update_rst,
+            'svg':          pc.update_svg,
+            'url':          pc.update_url,
         }
     #@+node:ekr.20110319013946.14467: *4* load_free_layout
     def load_free_layout (self):
@@ -460,8 +479,9 @@ class ViewRenderedController:
     def update(self,tag,keywords):
         
         pc = self ; c = pc.c ; p = c.p ; w = pc.w
+        force = keywords.get('force')
         s, val = pc.must_update(keywords)
-        if not val:
+        if not force and not val:
             # Save the scroll position.
             if w.__class__ == self.text_class:
                 sb = w.verticalScrollBar()
@@ -560,7 +580,7 @@ class ViewRenderedController:
         pc = self ; h = p.h
 
         if h.startswith('@'):
-            i = g.skip_id(h,1)
+            i = g.skip_id(h,1,chars='-')
             word = h[1:i].lower().strip()
             if word in pc.dispatch_dict:
                 return word
@@ -614,6 +634,36 @@ class ViewRenderedController:
             result.append(s)
         
         return ''.join(result)
+    #@+node:ekr.20110321151523.14463: *4* update_graphics_script
+    def update_graphics_script (self,s,keywords):
+        
+        pc = self ; c = pc.c
+        
+        force = keywords.get('force')
+        
+        if self.gw and not force: return
+        
+        def graphics_callback():
+            self.gs = gs = QtGui.QGraphicsScene(pc.splitter)
+            self.gv = gv = QtGui.QGraphicsView(gs)
+            self.gw = gw = gv.viewport() # A QWidget
+            return gw
+
+        def delete_callback():
+            for w in (self.gs,self.gv,self.gw):
+                w.deleteLater()
+            self.gs = self.gv = self.gw = None
+        
+        self.embed_widget(QtGui.QWidget, # gw.__class__,
+            callback=graphics_callback,
+            delete_callback = delete_callback)
+            
+        assert pc.w == pc.gw
+        
+        d = {'gs':self.gs,'gv':self.gv,'gw':self.gw,'QtGui':QtGui}
+
+        c.executeScript(script=s,namespace=d,silent=True)
+        
     #@+node:ekr.20110321005148.14534: *4* update_html
     def update_html (self,s,keywords):
         
