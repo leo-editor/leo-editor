@@ -90,12 +90,16 @@ if 0:
 #@+<< define LeoQTextBrowser >>
 #@+node:ekr.20090629160050.3739: *3*  << define LeoQTextBrowser >>
 class LeoQTextBrowser (QtGui.QTextBrowser):
-
+    
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
-
+        
+    #@+others
+    #@+node:ekr.20110325075339.14478: *4*   ctor
     def __init__(self,parent,c,wrapper):
+        
         for attr in ('leo_c','leo_wrapper',):
             assert not hasattr(QtGui.QTextBrowser,attr),attr
+
         self.leo_c = c
         self.leo_wrapper = wrapper
         self.htmlFlag = True
@@ -104,7 +108,18 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         # For QCompleter
         self.q_completer = None
         
-    #@+others
+    #@+node:ekr.20110325075339.14479: *4*  __repr__ & __str__
+    def __repr__ (self):
+
+        return '(LeoQTextBrowser) %s' % id(self)
+        
+    __str__ = __repr__
+    #@+node:ekr.20110325075339.14476: *4* keyPressEvent LeoQTextBrowser
+    def keyPressEvent(self,event):
+        
+        '''A do-nothing event handler for QCompleter'''
+        
+        pass
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
             trace = False and not g.unitTesting
@@ -135,21 +150,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             openURL(event)
-    #@+node:ekr.20110325075339.14476: *4* keyPressEvent LeoQTextBrowser
-    def keyPressEvent(self,event):
-        
-        trace = False and not g.unitTesting
-        x = QtCore.Qt
-        key = event.key() ; s = event.text()
-        qc = self.q_completer
-        
-        active = qc and qc.popup().isVisible()
-        
-        if trace:g.trace('active',active,key,s,g.callers())
-        
-        # if key() in (
-        # x.Key_Enter,x.Key_Return,x.Key_Escape,x.Key_Tab,x.Key_Backtab):
-            # event.ignore()
     #@-others
 
     
