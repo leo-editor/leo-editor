@@ -618,7 +618,6 @@
 <v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
 <v t="ekr.20110325160920.2360"><vh>callback</vh></v>
 <v t="ekr.20110325142240.2509"><vh>connectCompleter</vh></v>
-<v t="ekr.20110325150734.2359"><vh>textUnderCursor (monkey-patched into LeoQTextBrowser)</vh></v>
 <v t="ekr.20110325144059.2354"><vh>keyPressEvent (monkey-patched into LeoQTextBrowser)</vh></v>
 </v>
 </v>
@@ -1046,7 +1045,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7843,7 +7842,6 @@ w = body.bodyCtrl.widget # w is a QTextBrowserSubclass.
 
 # Inject methods into LeoQTextBrowser.
 g.funcToMethod(keyPressEvent,qtGui.LeoQTextBrowser,name=None)
-g.funcToMethod(textUnderCursor,qtGui.LeoQTextBrowser,name=None)
 
 # Setup the QCompleter.
 qc = connectCompleter(w,callback,options) # qc is a QCompleter
@@ -7853,23 +7851,22 @@ qc.popup().show()
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
-# Testing area: c.frame.body</t>
+# Testing area: c.frame.bodyPane2</t>
 <t tx="ekr.20110325142240.2509">def connectCompleter(w,callback,options):
     
     '''Connect a QCompleter for w.'''
 
     qc = QtGui.QCompleter(options,w)
+    qc.setCompletionMode(qc.PopupCompletion)
+    qc.setWidget(w)
 
     # Sent when the user selects an item.
     qc.connect(qc,QtCore.SIGNAL("activated(QString)"),callback)
-
-    qc.setCompletionMode(qc.PopupCompletion)
-        # ac.InlineCompletion # Probably harder to use.
-        # ac.PopupCompletion
-        # ac.UnfilteredPopupCompletion
-
-    qc.setWidget(w)
-    w.q_completer = qc
+    
+    # Set the ivar in w.
+    w.leo_q_completer = qc
+    
+    # Show the initial completions.
     qc.complete()
     return qc
 </t>
@@ -8018,7 +8015,7 @@ if __name__ == "__main__":
     trace = False and not g.unitTesting
 
     qt = QtCore.Qt
-    qc = self.q_completer
+    qc = self.leo_q_completer
     # Key abbreviations.
     key = event.key()
     mods = event.modifiers()
@@ -8026,7 +8023,7 @@ if __name__ == "__main__":
     is_mod = mods != qt.NoModifier
    
     if not qc:
-        if trace: g.trace('empty q_completer')
+        if trace: g.trace('empty leo_q_completer')
         return
 
     popup = qc.popup()
@@ -8056,6 +8053,9 @@ if __name__ == "__main__":
         popup.hide()
         return
         
+    if key in (qt.Key_Tab, qt.Key_Backtab):
+        return
+        
     # Call the base class for all other keys, **including** tab and backspace keys.
     if trace: g.trace('calling base class')
     QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
@@ -8069,17 +8069,11 @@ if __name__ == "__main__":
     cr = self.cursorRect()
     cr.setWidth(popup.sizeHintForColumn(0) +
         popup.verticalScrollBar().sizeHint().width())</t>
-<t tx="ekr.20110325150734.2359">def textUnderCursor(self):
-
-    tc = self.textCursor()
-    tc.select(QtGui.QTextCursor.WordUnderCursor)
-    return tc.selectedText()
-</t>
 <t tx="ekr.20110325160920.2360">def callback(w=w):  
 
     '''Called when user selects an item.'''
 
-    qc = w.q_completer
+    qc = w.leo_q_completer
     model = qc.completionModel()
     i = qc.popup().currentIndex()
     data = model.itemData(i)
@@ -8089,7 +8083,7 @@ if __name__ == "__main__":
     if n &gt; 0:
         tc = w.textCursor()
         s2 = completion[-n:]
-        # g.trace('prefix',prefix,'completion',completion,'insert',s2)
+        g.trace('prefix',prefix,'completion',completion,'insert',s2)
         tc.movePosition(tc.Left)
         tc.movePosition(tc.EndOfWord)
         tc.insertText(s2)

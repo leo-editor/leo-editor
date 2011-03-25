@@ -150,6 +150,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             openURL(event)
+    #@+node:ekr.20110325185230.14514: *4* textUnderCursor
+    def textUnderCursor(self):
+
+        tc = self.textCursor()
+        tc.select(QtGui.QTextCursor.WordUnderCursor)
+        return tc.selectedText()
     #@-others
 
     
