@@ -87,9 +87,9 @@ if 0:
 #@+node:ekr.20081121105001.515: **  << define text widget classes >>
 # Order matters when defining base classes.
 
-#@+<< define QTextBrowserSubclass >>
-#@+node:ekr.20090629160050.3739: *3*  << define QTextBrowserSubclass >>
-class QTextBrowserSubclass (QtGui.QTextBrowser):
+#@+<< define LeoQTextBrowser >>
+#@+node:ekr.20090629160050.3739: *3*  << define LeoQTextBrowser >>
+class LeoQTextBrowser (QtGui.QTextBrowser):
 
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
 
@@ -100,6 +100,9 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
         self.leo_wrapper = wrapper
         self.htmlFlag = True
         QtGui.QTextBrowser.__init__(self,parent)
+        
+        # For QCompleter
+        self.q_completer = None
         
     #@+others
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
@@ -132,10 +135,25 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             openURL(event)
+    #@+node:ekr.20110325075339.14476: *4* keyPressEvent LeoQTextBrowser
+    def keyPressEvent(self,event):
+        
+        trace = False and not g.unitTesting
+        x = QtCore.Qt
+        key = event.key() ; s = event.text()
+        qc = self.q_completer
+        
+        active = qc and qc.popup().isVisible()
+        
+        if trace:g.trace('active',active,key,s,g.callers())
+        
+        # if key() in (
+        # x.Key_Enter,x.Key_Return,x.Key_Escape,x.Key_Tab,x.Key_Backtab):
+            # event.ignore()
     #@-others
 
     
-#@-<< define QTextBrowserSubclass >>
+#@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
 #@+node:ekr.20081121105001.516: *3*  << define leoQtBaseTextWidget class >>
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
@@ -2224,7 +2242,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # w = QtGui.QTextBrowser(parent)
         c = self.leo_c
-        w = QTextBrowserSubclass(parent,c,None)
+        w = LeoQTextBrowser(parent,c,None)
         # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
@@ -2556,11 +2574,12 @@ class leoQtBody (leoFrame.leoBody):
         else:
             top = c.frame.top
             sw = top.ui.stackedWidget
-            qtWidget = top.ui.richTextEdit # A QTextEdit or QTextBrowser.
-            # g.trace(qtWidget)
+            qtWidget = top.ui.richTextEdit # A LeoQTextBrowser
+            # g.trace('(qtBody)',qtWidget)
             sw.setCurrentIndex(1)
             self.widget = w = leoQTextEditWidget(
                 qtWidget,name = 'body',c=c)
+                # Sets w.widget = qtWidget.
             self.bodyCtrl = w # The widget as seen from Leo's core.
 
             # Hook up the QSyntaxHighlighter
@@ -2846,7 +2865,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # Step 1: create the editor.
         # w = QtGui.QTextBrowser(f)
-        w = QTextBrowserSubclass(f,c,self)
+        w = LeoQTextBrowser(f,c,self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
         self.packLabel(w)
@@ -3832,7 +3851,7 @@ class leoQtBody (leoFrame.leoBody):
 
         if not self.textRenderer:
             name = 'Text Renderer'
-            self.textRenderer = w = QTextBrowserSubclass(f,c,self)
+            self.textRenderer = w = LeoQTextBrowser(f,c,self)
             w.setObjectName(name)
             self.textRendererWrapper = leoQTextEditWidget(
                 w,name='text-renderer',c=c)
@@ -4919,7 +4938,7 @@ class leoQtFrame (leoFrame.leoFrame):
         pass
     #@+node:ekr.20081121105001.294: *5* OnBodyClick, OnBodyRClick (not used)
     # At present, these are not called,
-    # but they could be called by QTextBrowserSubclass.
+    # but they could be called by LeoQTextBrowser.
 
     def OnBodyClick (self,event=None):
 
@@ -5524,7 +5543,7 @@ class leoQtLog (leoFrame.leoLog):
 
         if widget is None:
             # widget = QtGui.QTextBrowser()
-            widget = QTextBrowserSubclass(parent=None,c=c,wrapper=self)
+            widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
             widget.leo_log_wrapper = contents # Inject an ivar.
             if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
@@ -8059,7 +8078,7 @@ class leoQtGui(leoGui.leoGui):
         """Returns the widget that has focus."""
 
         w = QtGui.QApplication.focusWidget()
-        if isinstance(w,QTextBrowserSubclass):
+        if isinstance(w,LeoQTextBrowser):
             w = w.leo_wrapper
             if c and not w:
                 # Kludge: DynamicWindow creates the body pane
@@ -8609,7 +8628,7 @@ class leoQtEventFilter(QtCore.QObject):
                 isEditWidget,
                 eventType == ev.KeyRelease,
                 eventType == ev.KeyPress)
-        elif eventType == ev.ShortcutOverride and self.ctagscompleter_active:
+        elif False: ### eventType == ev.ShortcutOverride and self.ctagscompleter_active:
             # Another hack: QCompleter generates ShortcutOverride.
             self.keyIsActive = True
         else:

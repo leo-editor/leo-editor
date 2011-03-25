@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.58" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.46" body_secondary_ratio="0.50">
 	<global_window_position top="96" left="225" height="887" width="1568"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -50,7 +50,7 @@
 <v t="ekr.20100910124218.2259"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20110321213552.2500"><vh>viewrendered settings</vh>
-<v t="ekr.20110321213552.2497"><vh>@bool view-rendered-auto-create = True</vh></v>
+<v t="ekr.20110321213552.2497"><vh>@bool view-rendered-auto-create = False</vh></v>
 <v t="ekr.20110321213552.2499"><vh>@bool scrolledmessage_use_viewrendered = True</vh></v>
 </v>
 </v>
@@ -579,114 +579,7 @@
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20101103135707.2439"><vh>@@button move head to prev</vh></v>
 <v t="ekr.20101103170034.2445"><vh>@@button move tail to next</vh></v>
-<v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
-<v t="ekr.20101101143333.2273"><vh>@@button autocompleter test @key=Alt-8</vh></v>
-<v t="ekr.20101101173931.2268"><vh>@url QComplter docs</vh></v>
-<v t="ekr.20101101173931.2269"><vh>autocompleter test</vh>
-<v t="ekr.20101101173931.2270"><vh>showCompleter</vh></v>
-</v>
-<v t="ekr.20101101174225.2322"><vh>Reference for completer override</vh>
-<v t="ekr.20101101174225.2323"><vh>class autoCompleterClass (existing)</vh>
-<v t="ekr.20101101174225.2324"><vh> ctor (autocompleter)</vh>
-<v t="ekr.20101101174225.2325"><vh>defineClassesDict</vh></v>
-<v t="ekr.20101101174225.2326"><vh>defineObjectDict</vh></v>
-</v>
-<v t="ekr.20101101174225.2327"><vh>Top level</vh>
-<v t="ekr.20101101174225.2328"><vh>autoComplete</vh></v>
-<v t="ekr.20101101174225.2329"><vh>autoCompleteForce</vh></v>
-<v t="ekr.20101101174225.2330"><vh>autoCompleterStateHandler</vh></v>
-<v t="ekr.20101101174225.2331"><vh>getExternalCompletions</vh></v>
-<v t="ekr.20101101174225.2332"><vh>enable/disable/toggleAutocompleter/Calltips</vh></v>
-<v t="ekr.20101101174225.2333"><vh>showCalltips</vh></v>
-<v t="ekr.20101101174225.2334"><vh>showCalltipsForce</vh></v>
-<v t="ekr.20101101174225.2335"><vh>showAutocompleter/CalltipsStatus</vh></v>
-</v>
-<v t="ekr.20101101174225.2336"><vh>Helpers</vh>
-<v t="ekr.20101101174225.2337"><vh>.abort &amp; exit (autocompleter) (test)</vh></v>
-<v t="ekr.20101101174225.2338"><vh>append/begin/popTabName</vh></v>
-<v t="ekr.20101101174225.2339"><vh>appendToKnownObjects</vh></v>
-<v t="ekr.20101101174225.2340"><vh>calltip</vh>
-<v t="ekr.20101101174225.2341"><vh>&lt;&lt; try to set s from a Python global function &gt;&gt;</vh></v>
-<v t="ekr.20101101174225.2342"><vh>&lt;&lt; get s using inspect &gt;&gt;</vh></v>
-<v t="ekr.20101101174225.2343"><vh>&lt;&lt; remove 'self' from s, but not from args &gt;&gt;</vh></v>
-<v t="ekr.20101101174225.2344"><vh>&lt;&lt; remove 's' from s *and* args &gt;&gt;</vh></v>
-<v t="ekr.20101101174225.2345"><vh>&lt;&lt; insert the text and set j1 and j2 &gt;&gt;</vh></v>
-<v t="ekr.20101101174225.2346"><vh>&lt;&lt; put the status line &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20101101174225.2347"><vh>chain</vh></v>
-<v t="ekr.20101101174225.2348"><vh>computeCompletionList</vh></v>
-<v t="ekr.20101101174225.2349"><vh>doBackSpace (autocompleter)</vh></v>
-<v t="ekr.20101101174225.2350"><vh>doTabCompletion (autocompleter)</vh></v>
-<v t="ekr.20101101174225.2351"><vh>extendSelection</vh></v>
-<v t="ekr.20101101174225.2352"><vh>findCalltipWord</vh></v>
-<v t="ekr.20101101174225.2353"><vh>findAnchor</vh></v>
-<v t="ekr.20101101174225.2354"><vh>finish</vh></v>
-<v t="ekr.20101101174225.2355"><vh>getAttr and hasAttr</vh></v>
-<v t="ekr.20101101174225.2356"><vh>getLeadinWord</vh></v>
-<v t="ekr.20101101174225.2357"><vh>getMembersList</vh></v>
-<v t="ekr.20101101174225.2358"><vh>info</vh></v>
-<v t="ekr.20101101174225.2359"><vh>insertNormalChar</vh></v>
-<v t="ekr.20101101174225.2360"><vh>push, pop, clear, stackNames</vh></v>
-<v t="ekr.20101101174225.2361"><vh>setObjectAndMembersList &amp; helpers</vh>
-<v t="ekr.20101101174225.2362"><vh>getObjectFromAttribute</vh></v>
-<v t="ekr.20101101174225.2363"><vh>completeFromObject</vh></v>
-</v>
-<v t="ekr.20101101174225.2364"><vh>setSelection</vh></v>
-<v t="ekr.20101101174225.2365"><vh>start &amp; startForce</vh>
-<v t="ekr.20101101174225.2366"><vh>initForce</vh></v>
-</v>
-</v>
-<v t="ekr.20101101174225.2367"><vh>Proxy classes and objects</vh>
-<v t="ekr.20101101174225.2368"><vh>createProxyObjectFromClass</vh></v>
-<v t="ekr.20101101174225.2369"><vh>createClassObjectFromString</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20101101174225.2272"><vh>qcompleter test</vh>
-<v t="ekr.20101102120712.2422"><vh>Not used</vh>
-<v t="ekr.20101101181525.2375"><vh>autoCompleterStateHandler</vh></v>
-<v t="ekr.20101101195800.2398"><vh>onActivated/onKey (not used)</vh></v>
-<v t="ekr.20101101174225.2371"><vh>append/begin/popTabName</vh></v>
-<v t="ekr.20101101181525.2376"><vh>Non-overrides for tracing</vh>
-<v t="ekr.20101101181525.2383"><vh>setSelection</vh></v>
-<v t="ekr.20101101181525.2385"><vh>extendSelection</vh></v>
-<v t="ekr.20101101182057.2392"><vh>push, pop, clear, stackNames</vh></v>
-<v t="ekr.20101101181525.2378"><vh>doBackSpace (autocompleter)</vh></v>
-<v t="ekr.20101101181525.2380"><vh>insertNormalChar</vh></v>
-<v t="ekr.20101101182057.2389"><vh>.abort &amp; exit (autocompleter) (test)</vh></v>
-</v>
-<v t="ekr.20101102133143.2427"><vh>Old code from ctor</vh></v>
-</v>
-<v t="ekr.20101101211859.2414"><vh>class keyEventFilter</vh>
-<v t="ekr.20101101211859.2416"><vh> ctor</vh></v>
-<v t="ekr.20101101211859.2418"><vh>eventFilter</vh></v>
-<v t="ekr.20101101211859.2427"><vh>unused</vh>
-<v t="ekr.20101101211859.2417"><vh>char2tkName</vh></v>
-<v t="ekr.20101101211859.2419"><vh>isSpecialOverride (simplified)</vh></v>
-<v t="ekr.20101101211859.2420"><vh>qtKey</vh></v>
-<v t="ekr.20101101211859.2421"><vh>qtMods</vh></v>
-<v t="ekr.20101101211859.2422"><vh>tkKey</vh></v>
-<v t="ekr.20101101211859.2423"><vh>toStroke</vh></v>
-<v t="ekr.20101101211859.2424"><vh>toTkKey</vh></v>
-<v t="ekr.20101101211859.2425"><vh>traceEvent</vh></v>
-<v t="ekr.20101101211859.2426"><vh>traceFocus</vh></v>
-</v>
-</v>
-<v t="ekr.20101101174225.2273"><vh>class newCompleter</vh>
-<v t="ekr.20101101195800.2397"><vh>ctor</vh></v>
-<v t="ekr.20101102124208.2424"><vh>exit &amp; finish</vh></v>
-<v t="ekr.20101101180223.2372"><vh>put</vh></v>
-<v t="ekr.20101102175958.2436"><vh>onActivated/onDestroyed</vh></v>
-<v t="ekr.20101102133143.2426"><vh>onUp/Down</vh></v>
-<v t="ekr.20101102171642.2433"><vh>onBackSpace</vh></v>
-<v t="ekr.20101102171642.2432"><vh>onChar</vh></v>
-<v t="ekr.20101102171642.2434"><vh>onReturn</vh></v>
-<v t="ekr.20101102171642.2431"><vh>autoCompleterStateHandler</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
-</v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
 <v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
 <v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
@@ -706,6 +599,22 @@
 <v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
+</v>
+</v>
+<v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
+<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
+<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
+<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
+<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
+<v t="ekr.20110325142419.2341"><vh>newHeadline</vh></v>
+<v t="ekr.20110325142419.2342"><vh>newHeadline</vh></v>
+<v t="ekr.20110325142419.2343"><vh>newHeadline</vh></v>
+</v>
+</v>
+<v t="ekr.20101101143333.2273"><vh>@@button autocompleter test @key=Alt-8</vh></v>
+<v t="ekr.20110325142240.2508"><vh>autocompleter test</vh>
+<v t="ekr.20110325142240.2509"><vh>showCompleter</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1127,7 +1036,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,0,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7385,2016 +7294,6 @@ ac.autoComplete(event=None,force=True)
 
 # c.frame.b</t>
 <t tx="ekr.20101101173931.2267"></t>
-<t tx="ekr.20101101173931.2268">http://doc.trolltech.com/4.4/qcompleter.html
-
-@nocolor-node
-
-Detailed Description
-
-The QCompleter class provides completions based on an item model.
-
-You can use QCompleter to provide auto completions in any Qt widget, such as
-QLineEdit and QComboBox. When the user starts typing a word, QCompleter suggests
-possible ways of completing the word, based on a word list. The word list is
-provided as a QAbstractItemModel. (For simple applications, where the word list
-is static, you can pass a QStringList to QCompleter's constructor.)
-
-Basic Usage
-
-A QCompleter is used typically with a QLineEdit or QComboBox. For example,
-here's how to provide auto completions from a simple word list in a QLineEdit:
-
- QStringList wordList;
- wordList &lt;&lt; "alpha" &lt;&lt; "omega" &lt;&lt; "omicron" &lt;&lt; "zeta";
-
- QLineEdit *lineEdit = new QLineEdit(this);
-
- QCompleter *completer = new QCompleter(wordList, this);
- completer-&gt;setCaseSensitivity(Qt::CaseInsensitive);
- lineEdit-&gt;setCompleter(completer);
-
-A QDirModel can be used to provide auto completion of file names. For example:
-
- QCompleter *completer = new QCompleter(this);
- completer-&gt;setModel(new QDirModel(completer));
- lineEdit-&gt;setCompleter(completer);
-
-To set the model on which QCompleter should operate, call setModel(). By
-default, QCompleter will attempt to match the completion prefix (i.e., the word
-that the user has started typing) against the Qt::EditRole data stored in column
-0 in the model case sensitively. This can be changed using setCompletionRole(),
-setCompletionColumn(), and setCaseSensitivity().
-
-If the model is sorted on the column and role that are used for completion, you
-can call setModelSorting() with either QCompleter::CaseSensitivelySortedModel or
-QCompleter::CaseInsensitivelySortedModel as the argument. On large models, this
-can lead to significant performance improvements, because QCompleter can then
-use binary search instead of linear search.
-
-The model can be a list model, a table model, or a tree model. Completion on
-tree models is slightly more involved and is covered in the Handling Tree Models
-section below.
-
-The completionMode() determines the mode used to provide completions to the
-user. Iterating Through Completions
-
-To retrieve a single candidate string, call setCompletionPrefix() with the text
-that needs to be completed and call currentCompletion(). You can iterate through
-the list of completions as below:
-
- for (int i = 0; completer-&gt;setCurrentRow(i); i++)
-     qDebug() &lt;&lt; completer-&gt;currentCompletion() &lt;&lt; " is match number " &lt;&lt; i;
-
-completionCount() returns the total number of completions for the current
-prefix. completionCount() should be avoided when possible, since it requires a
-scan of the entire model. The Completion Model
-
-completionModel() return a list model that contains all possible completions for
-the current completion prefix, in the order in which they appear in the model.
-This model can be used to display the current completions in a custom view.
-Calling setCompletionPrefix() automatically refreshes the completion model.
-Handling Tree Models
-
-QCompleter can look for completions in tree models, assuming that any item (or
-sub-item or sub-sub-item) can be unambiguously represented as a string by
-specifying the path to the item. The completion is then performed one level at a
-time.
-
-Let's take the example of a user typing in a file system path. The model is a
-(hierarchical) QDirModel. The completion occurs for every element in the path.
-For example, if the current text is C:\Wind, QCompleter might suggest Windows to
-complete the current path element. Similarly, if the current text is
-C:\Windows\Sy, QCompleter might suggest System.
-
-For this kind of completion to work, QCompleter needs to be able to split the
-path into a list of strings that are matched at each level. For C:\Windows\Sy,
-it needs to be split as "C:", "Windows" and "Sy". The default implementation of
-splitPath(), splits the completionPrefix using QDir::separator() if the model is
-a QDirModel.
-
-To provide completions, QCompleter needs to know the path from an index. This is
-provided by pathFromIndex(). The default implementation of pathFromIndex(),
-returns the data for the completionRole() for list models and the absolute file
-path if the mode is a QDirModel.
-
-See also QAbstractItemModel, QLineEdit, QComboBox, and Completer Example.</t>
-<t tx="ekr.20101101173931.2269">import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-
-options = (
-    'c.frame',
-    'c.frame.body',
-    'c.frame.body.bodyCtrl',
-)
-
-def callback (arg):
-    g.trace(arg)
-
-# Define a local copy for testing.
-@others
-
-wb = c.frame.body
-w = wb.bodyCtrl.widget
-ac = showCompleter(w,options,callback)
-s = wb.getAllText()
-wb.setInsertPoint(len(s))
-
-ac.setCompletionPrefix('c.frame.b')
-ac.complete()
-
-wp = ac.popup()
-wp.setFocus()
-print(wp)
-
-# Testing area: c.frame.b
-</t>
-<t tx="ekr.20101101173931.2270">def showCompleter(w,options,callback):
-
-    ''' Show 'autocompleter' widget for widget w::
-
-        options = ['hello', 'helloworld']
-
-        def myCallback(arg):
-            """insert arg into text for w."""
-            g.trace(arg)
-
-        showCompleter(w,options, myCallback )
-    '''
-
-    ac = QtGui.QCompleter(options,w)
-
-    # Sent when the user selects an item.
-    ac.connect(ac,QtCore.SIGNAL("activated(QString)"),callback)
-
-    # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
-    ac.setCompletionMode(ac.PopupCompletion)
-        # ac.InlineCompletion # Probably harder to use.
-        # ac.PopupCompletion
-        # ac.UnfilteredPopupCompletion
-    ac.setWidget(w)
-    return ac
-</t>
-<t tx="ekr.20101101174225.2272">import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-import leo.core.leoKeys as leoKeys
-import string
-
-@others
-
-ac = newCompleter(c.k)
-
-c.k.autoCompleter = ac # Patch the new code in.
-
-# Init the selection.
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-w.setInsertPoint(len(s))
-
-ac.autoComplete(event=None,force=True)
-
-# c.frame.</t>
-<t tx="ekr.20101101174225.2273">class newCompleter (leoKeys.autoCompleterClass):
-
-    @others
-</t>
-<t tx="ekr.20101101174225.2322"></t>
-<t tx="ekr.20101101174225.2323">class autoCompleterClass:
-
-    '''A class that inserts autocompleted and calltip text in text widgets.
-    This class shows alternatives in the tabbed log pane.
-
-    The keyHandler class contains hooks to support these characters:
-    invoke-autocompleter-character (default binding is '.')
-    invoke-calltips-character (default binding is '(')
-    '''
-
-    @others
-</t>
-<t tx="ekr.20101101174225.2324">def __init__ (self,k):
-
-    self.c = c = k.c
-    self.k = k
-    self.allClassesDict = {} # Will be completed after more classes exist.
-    self.attrDictDict = {}  # Keys are languages (strings); values are anonymous attrDicts.
-        # attrDicts: keys are strings; values are list of strings (attributes).
-    self.calltips = {} # Keys are language, values are dicts: keys are ids, values are signatures.
-    self.force = None
-    ###self.classScanner = self.classScannerClass(c)
-    ###self.forgivingParser = self.forgivingParserClass(c)
-    self.globalPythonFunctionsDict = {}
-    self.language = None
-    self.leadinWord = None
-    self.membersList = None
-    self.objectDict = {} # Created on first use of the autocompleter.
-    self.selection = None # The selection range on entry to autocompleter or calltips.
-    self.selectedText = None # The selected text on entry to autocompleter or calltips.
-    self.selfClassName = None
-    self.selfObjectsDict = {} # Keys are classNames, values are real proxy objects.
-    self.selfVnodesDict = {} # Keys are tnodes, values are real proxy objects.
-    self.prefix = None
-    self.prevObjects = []
-    self.tabList = []
-    self.tabListIndex = -1
-    self.tabName = None # The name of the main completion tab.
-    self.theObject = None # The previously found object, for . chaining.
-    self.useTabs = True # True: show results in autocompleter tab.
-    self.verbose = False # True: print all members.
-    self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
-    self.widget = None # The widget that should get focus after autocomplete is done.
-</t>
-<t tx="ekr.20101101174225.2325">def defineClassesDict (self):
-
-    trace = False ; verbose = True
-
-    self.allClassesDict = {}
-
-    # gc may not exist.
-    try:
-        import gc
-        # if trace: g.trace(gc)
-    except ImportError:
-        if trace: g.trace('no gc')
-        return
-
-    if g.isPython3:
-        count = 0
-        for z in gc.get_objects():
-            try:
-                name = z.__class__.__name__
-                if not self.allClassesDict.get(name):
-                    self.allClassesDict [name] = z
-                    count += 1
-            except ReferenceError:
-                pass
-        if trace:
-            g.trace('%s keys in allClassesDict' % (count))
-            if verbose:
-                keys = list(self.allClassesDict.keys())
-                keys.sort()
-                for z in keys:
-                    print(z)
-    else:
-        for z in gc.get_objects():
-            t = type(z)
-            if t == types.ClassType:
-                name = z.__name__
-            elif t == types.InstanceType:
-                name = z.__class__.__name__
-            elif repr(t).startswith('&lt;class'): # A wretched kludge.
-                name = z.__class__.__name__
-            elif t == types.TypeType:
-                name = z.__name__
-            else:
-                name = None
-            if name:
-                # if name == 'position': g.trace(t,z)
-                self.allClassesDict [name] = z
-
-    # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
-    # g.trace(len(list(self.allClassesDict.keys())))
-    # g.trace('position:',self.allClassesDict.get('position'))
-</t>
-<t tx="ekr.20101101174225.2326">def defineObjectDict (self,table=None):
-
-    trace = False
-
-    c = self.c ; k = c.k ; p = c.p
-
-    if trace: g.trace(g.callers(4))
-
-    if table is None: table = [
-        # Python globals...
-        (['aList','bList'],     'python','list'),
-        (['aString'],           'object','aString'), # An actual string object.
-        (['cc'],                'object',c.chapterController),
-        (['c','old_c','new_c'], 'object',c),            
-        (['d','d1','d2'],       'python','dict'),
-        (['f'],                 'object',c.frame), 
-        (['g'],                 'object',g),       
-        (['gui'],               'object',g.app.gui),
-        (['k'],                 'object',k),
-        (['p','p1','p2'],       'object',p.copy()), # 2009/12/21
-        (['s','s1','s2','ch'],  'object','aString'),
-        (['string'],            'object',string), # Python's string module.
-        # (['t','t1','t2'],       'object',p.v.t),  
-        (['v','v1','v2'],       'object',p.v),
-        (['w','widget'],        'object',c.frame.body.bodyCtrl),
-    ]
-
-    if 0: # Not useful at this point.
-        for key in __builtins__.keys():
-            obj = __builtins__.get(key)
-            if obj in (True,False,None): continue
-            data = [key],'object',obj
-            table.append(data)
-
-    d = {'dict':{},'int':1,'list':[],'string':''}
-
-    for idList,kind,nameOrObject in table:
-        if kind == 'object':
-            # Works, but hard to generalize for settings.
-            obj = nameOrObject
-        elif kind == 'python':
-            className = nameOrObject
-            o = d.get(className)
-            obj = o is not None and o.__class__
-        else:
-            module = g.importModule (kind,verbose=True)
-            if not module:
-                g.trace('Can not import ',nameOrObject)
-                continue
-            self.appendToKnownObjects(module)
-            if nameOrObject:
-                className = nameOrObject
-                obj = hasattr(module,className) and getattr(module,className) or None
-                if not obj:
-                    g.trace('%s module has no class %s' % (kind,nameOrObject))
-                else:
-                    self.appendToKnownObjects(getattr(module,className))
-            else:
-                obj = module
-        for z in idList:
-            if trace: g.trace(z,obj)
-            if obj:
-                self.objectDict[z]=obj
-</t>
-<t tx="ekr.20101101174225.2327"></t>
-<t tx="ekr.20101101174225.2328">def autoComplete (self,event=None,force=False):
-
-    '''An event handler called from k.masterKeyHanderlerHelper.'''
-
-    c = self.c ; k = self.k ; gui = g.app.gui
-    w = gui.eventWidget(event) or c.get_focus()
-
-    self.force = force
-
-    # First, handle the invocation character as usual.
-    if not force:
-        # 2010/11/01: ctrl-period does *not* insert a period.
-        k.masterCommand(event,func=None,stroke=None,commandName=None)
-
-    # Allow autocompletion only in the body pane.
-    if not c.widget_name(w).lower().startswith('body'):
-        return 'break'
-
-    self.language = g.scanForAtLanguage(c,c.p)
-    if w and self.language == 'python' and (k.enable_autocompleter or force):
-        self.start(event=event,w=w)
-
-    return 'break'
-</t>
-<t tx="ekr.20101101174225.2329">def autoCompleteForce (self,event=None):
-
-    '''Show autocompletion, even if autocompletion is not presently enabled.'''
-
-    return self.autoComplete(event,force=True)
-</t>
-<t tx="ekr.20101101174225.2330">def autoCompleterStateHandler (self,event):
-
-    trace = False and not g.app.unitTesting
-    c = self.c ; k = self.k ; gui = g.app.gui
-    tag = 'auto-complete' ; state = k.getState(tag)
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-
-    if trace: g.trace(repr(ch),repr(keysym),state)
-
-    if state == 0:
-        c.frame.log.clearTab(self.tabName)
-        self.computeCompletionList()
-        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
-    elif keysym in (' ','Return'):
-        self.finish()
-    elif keysym == 'Escape':
-        self.abort()
-    elif keysym == 'Tab':
-        self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
-        self.doBackSpace()
-    elif keysym == '.':
-        self.chain()
-    elif keysym == '?':
-        self.info()
-    elif keysym == '!':
-        # Toggle between verbose and brief listing.
-        self.verbose = not self.verbose
-        if type(self.theObject) == types.DictType:
-            self.membersList = list(self.theObject.keys())
-        elif type(self.theObject) in (type((),),type([])):
-            self.membersList = self.theObject
-        self.computeCompletionList(verbose=self.verbose)
-    elif ch and ch in string.printable:
-        self.insertNormalChar(ch,keysym)
-    else:
-        # if trace: g.trace('ignore',repr(ch))
-        return 'do-standard-keys'
-</t>
-<t tx="ekr.20101101174225.2331">def getExternalCompletions (self,s,p=None,language='python'):
-
-    '''Return the completions possible at the end of string 's'.
-    Return (theObject,completions):
-    - theObject is None unless the last character is 's' is a period.
-    - completions is the list of valid completions.'''
-
-    c = self.c ; k = c.k
-    if not p: p = c.p
-
-    # Use a separate widget containing just s.
-    self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
-    w.setAllText(s)
-
-    # A big kludge: scan back for the first period.
-    i = len(s)-1
-    while i &gt; 0 and s[i] != '.':
-        i -= 1
-    if s[i] == '.': i += 1
-    prefix = s[i:].strip()
-
-    # Remember the prefix, but put the insert before the period.
-    w.setSelectionRange(i, len(s)-1, insert=i)
-
-    # Init the ivars...
-    self.language = p and g.scanForAtLanguage(c,p) or language
-    self.tabName = ''
-    old_enable = c.k.enable_autocompleter
-
-    # Get the completions.
-    try:
-        c.k.enable_autocompleter = True
-        self.useTabs = False
-        self.start(prefix=prefix)
-    finally:
-        c.k.enable_autocompleter = old_enable
-        self.useTabs = True
-
-    theObject,tabList = self.theObject,self.tabList
-    self.abort()
-    return theObject,tabList
-</t>
-<t tx="ekr.20101101174225.2332">def disableAutocompleter (self,event=None):
-    '''Disable the autocompleter.'''
-    self.k.enable_autocompleter = False
-    self.showAutocompleterStatus()
-
-def disableCalltips (self,event=None):
-    '''Disable calltips.'''
-    self.k.enable_calltips = False
-    self.showCalltipsStatus()
-
-def enableAutocompleter (self,event=None):
-    '''Enable the autocompleter.'''
-    self.k.enable_autocompleter = True
-    self.showAutocompleterStatus()
-
-def enableCalltips (self,event=None):
-    '''Enable calltips.'''
-    self.k.enable_calltips = True
-    self.showCalltipsStatus()
-
-def toggleAutocompleter (self,event=None):
-    '''Toggle whether the autocompleter is enabled.'''
-    self.k.enable_autocompleter = not self.k.enable_autocompleter
-    self.showAutocompleterStatus()
-
-def toggleCalltips (self,event=None):
-    '''Toggle whether calltips are enabled.'''
-    self.k.enable_calltips = not self.k.enable_calltips
-    self.showCalltipsStatus()
-</t>
-<t tx="ekr.20101101174225.2333">def showCalltips (self,event=None,force=False):
-
-    '''Show the calltips at the cursor.'''
-
-    c = self.c ; k = c.k ; w = g.app.gui.eventWidget(event)
-    if not w: return
-
-    # Insert the calltip if possible, but not in headlines.
-    if (k.enable_calltips or force) and not c.widget_name(w).startswith('head'):
-        self.widget = w
-        self.prefix = ''
-        self.selection = w.getSelectionRange()
-        self.selectedText = w.getSelectedText()
-        self.leadinWord = self.findCalltipWord(w)
-        # g.trace(self.leadinWord)
-        self.theObject = None
-        self.membersList = None
-        self.calltip()
-    else:
-        # Just insert the invocation character as usual.
-        k.masterCommand(event,func=None,stroke=None,commandName=None)
-
-    return 'break'
-</t>
-<t tx="ekr.20101101174225.2334">def showCalltipsForce (self,event=None):
-
-    '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
-
-    return self.showCalltips(event,force=True)
-</t>
-<t tx="ekr.20101101174225.2335">def showAutocompleterStatus (self):
-    '''Show the autocompleter status on the status line.'''
-
-    k = self.k
-    if not g.unitTesting:
-        s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
-        g.es(s,color='red')
-
-def showCalltipsStatus (self):
-    '''Show the autocompleter status on the status line.'''
-    k = self.k
-    if not g.unitTesting:
-        s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
-        g.es(s,color='red')
-</t>
-<t tx="ekr.20101101174225.2336"></t>
-<t tx="ekr.20101101174225.2337">def abort (self):
-
-    k = self.k
-    k.keyboardQuit(event=None,setDefaultStatus=False)
-        # Stay in the present input state.
-    self.exit(restore=True)
-
-def exit (self,restore=False): # Called from keyboard-quit.
-
-    k = self ; c = self.c 
-    w = self.widget or c.frame.body.bodyCtrl
-    for name in (self.tabName,'Modules','Info'):
-        c.frame.log.deleteTab(name)
-    c.widgetWantsFocusNow(w)
-    i,j = w.getSelectionRange()
-    if restore:
-        if i != j: w.delete(i,j)
-        w.insert(i,self.selectedText)
-    w.setSelectionRange(j,j,insert=j)
-
-    self.clear()
-    self.theObject = None
-</t>
-<t tx="ekr.20101101174225.2338">def appendTabName (self,word):
-
-    self.setTabName(self.tabName + '.' + word) #  + '.')
-
-def beginTabName (self,word):
-
-    # g.trace(word,g.callers())
-    if word == 'self' and self.selfClassName:
-        word = '%s (%s)' % (word,self.selfClassName)
-    self.setTabName('AutoComplete ' + word) #  + '.')
-
-def clearTabName (self):
-
-    self.setTabName('AutoComplete ')
-
-def popTabName (self):
-
-    s = self.tabName
-    i = s.rfind('.',0,-1)
-    if i &gt; -1:
-        self.setTabName(s[0:i])
-
-# Underscores are not valid in Pmw tab names!
-def setTabName (self,s):
-
-    c = self.c
-    if self.useTabs:
-        if self.tabName:
-            c.frame.log.deleteTab(self.tabName)
-        self.tabName = s.replace('_','') or ''
-        c.frame.log.clearTab(self.tabName)
-</t>
-<t tx="ekr.20101101174225.2339">def appendToKnownObjects (self,obj):
-
-    if 0:
-        if type(obj) in (types.InstanceType,types.ModuleType,types):
-            if hasattr(obj,'__name__'):
-                self.knownObjects[obj.__name__] = obj
-                # g.trace('adding',obj.__name__)
-</t>
-<t tx="ekr.20101101174225.2340">def calltip (self,obj=None):
-
-    c = self.c
-    w = self.widget
-    isStringMethod = False ; s = None
-    # g.trace(self.leadinWord,obj)
-
-    if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
-        &lt;&lt; try to set s from a Python global function &gt;&gt;
-
-    if not s:
-        &lt;&lt; get s using inspect &gt;&gt;
-
-    &lt;&lt; remove 'self' from s, but not from args &gt;&gt;
-    if isStringMethod:
-        &lt;&lt; remove 's' from s *and* args &gt;&gt;
-
-    # s = s.rstrip(')') # Not so convenient.
-    &lt;&lt; insert the text and set j1 and j2 &gt;&gt;
-
-    # End autocompletion mode, putting the insertion point after the suggested calltip.
-    self.finish()
-    c.widgetWantsFocusNow(w)
-    if 1: # Seems to be more useful.
-        w.setSelectionRange(j1,j2,insert=j2)
-    else:
-        w.setInsertPoint(j2)
-    &lt;&lt; put the status line &gt;&gt;
-</t>
-<t tx="ekr.20101101174225.2341"># The first line of the docstring is good enough, except for classes.
-f = __builtins__.get(self.leadinWord)
-doc = f and type(f) != types.ClassType and f.__doc__
-if doc:
-    # g.trace(doc)
-    s = g.splitLines(doc)
-    s = args = s and s [0] or ''
-    i = s.find('(')
-    if i &gt; -1: s = s [i:]
-    else: s = '(' + s
-    s = s and s.strip() or ''
-</t>
-<t tx="ekr.20101101174225.2342">isStringMethod = (
-    self.prevObjects and
-    # type(self.prevObjects[-1]) == types.StringType
-    g.isString(self.prevObjects[-1]))
-
-# g.trace(self.prevObjects)
-
-if isStringMethod and hasattr(string,obj.__name__):
-    # A hack. String functions are builtins, and getargspec doesn't handle them.
-    # Get the corresponding string function instead, and remove the s arg later.
-    obj = getattr(string,obj.__name__)
-
-try:
-    s1,s2,s3,s4 = inspect.getargspec(obj)
-except:
-    self.extendSelection('(')
-    self.finish()
-    return # Not a function.  Just '('.
-
-s = args = inspect.formatargspec(s1,s2,s3,s4)
-</t>
-<t tx="ekr.20101101174225.2343">if g.match(s,1,'self,'):
-    s = s[0] + s[6:].strip()
-elif g.match_word(s,1,'self'):
-    s = s[0] + s[5:].strip()
-</t>
-<t tx="ekr.20101101174225.2344">if g.match(s,1,'s,'):
-    s = s[0] + s[3:]
-    args = args[0] + args[3:]
-elif g.match_word(s,1,'s'):
-    s = s[0] + s[2:]
-    args = args[0] + args[2:]
-</t>
-<t tx="ekr.20101101174225.2345">junk,j = w.getSelectionRange() # Returns insert point if no selection.
-w.insert(j,s)
-c.frame.body.onBodyChanged('Typing')
-j1 = j + 1 ; j2 = j + len(s)
-</t>
-<t tx="ekr.20101101174225.2346">c.frame.clearStatusLine()
-if obj:
-    name = hasattr(obj,'__name__') and obj.__name__ or repr(obj)
-else:
-    name = self.leadinWord
-c.frame.putStatusLine('%s %s' % (name,args))
-</t>
-<t tx="ekr.20101101174225.2347">def chain (self):
-
-    c = self.c ; w = self.widget
-    word = w.getSelectedText()
-    old_obj = self.theObject
-
-    if word and old_obj and type(old_obj) == type([]) and old_obj == sys.modules:
-        obj = old_obj.get(word)
-        if obj:
-            self.theObject = obj
-            self.clearTabName()
-    elif word and old_obj and self.hasAttr(old_obj,word):
-        self.push(old_obj)
-        self.theObject = obj = self.getAttr(old_obj,word)
-    else: obj = None
-
-    if obj:
-        self.appendToKnownObjects(obj)
-        self.leadinWord = word
-        self.membersList = self.getMembersList(obj)
-        self.appendTabName(word)
-        self.extendSelection('.')
-        i = w.getInsertPoint()
-        w.setSelectionRange(i,i,insert=i)
-        # g.trace('chaining to',word,self.theObject)
-        # Similar to start logic.
-        self.prefix = ''
-        self.selection = w.getSelectionRange()
-        self.selectedText = w.getSelectedText()
-        if self.membersList:
-            # self.autoCompleterStateHandler(event=None)
-            self.computeCompletionList()
-            return
-    self.extendSelection('.')
-    self.finish()
-</t>
-<t tx="ekr.20101101174225.2348">def computeCompletionList (self,backspace=False,verbose=False):
-
-    c = self.c ; w = self.widget
-    c.widgetWantsFocus(w)
-    s = w.getSelectedText()
-    self.tabList,common_prefix = g.itemsMatchingPrefixInList(
-        s,self.membersList,matchEmptyPrefix=True)
-
-    if not common_prefix:
-        if verbose or len(self.tabList) &lt; 25 or not self.useTabs:
-            self.tabList,common_prefix = g.itemsMatchingPrefixInList(
-                s,self.membersList,matchEmptyPrefix=True)
-        else: # Show the possible starting letters.
-            d = {}
-            for z in self.tabList:
-                ch = z and z[0] or ''
-                if ch:
-                    n = d.get(ch,0)
-                    d[ch] = n + 1
-            aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
-            self.tabList = aList
-
-    if self.useTabs:
-        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
-        if self.tabList:
-            self.tabListIndex = -1 # The next item will be item 0.
-            if not backspace:
-                self.setSelection(common_prefix)
-        g.es('','\n'.join(self.tabList),tabName=self.tabName)
-</t>
-<t tx="ekr.20101101174225.2349">def doBackSpace (self):
-
-    '''Cut back to previous prefix.'''
-
-    trace = False and not g.unitTesting
-    if trace: g.trace('(autocompleter)',
-        self.prefix,self.theObject,self.prevObjects)
-
-    c = self.c
-    if self.prefix:
-        self.prefix = self.prefix[:-1]
-        self.setSelection(self.prefix)
-        self.computeCompletionList(backspace=True)
-    elif self.theObject:
-        if self.prevObjects:
-            obj = self.pop()
-        else:
-            obj = self.theObject
-        if trace: g.trace(self.theObject,obj)
-        w = self.widget
-        s = w.getAllText()
-        i,junk = w.getSelectionRange()
-        ch = 0 &lt;= i-1 &lt; len(s) and s[i-1] or ''
-        # g.trace(ch)
-        if ch == '.':
-            self.theObject = obj
-            w.delete(i-1)
-            c.frame.body.onBodyChanged(undoType='Typing')
-            i,j = g.getWord(s,i-2)
-            word = s[i:j]
-            if trace: g.trace(i,j,repr(word))
-            w.setSelectionRange(i,j,insert=j)
-            self.prefix = word
-            self.popTabName()
-            self.membersList = self.getMembersList(obj)
-            # g.trace(len(self.membersList))
-            if self.membersList:
-                self.computeCompletionList(backspace=True)
-            else:
-                self.abort()
-        else:
-            self.abort() # should not happen.
-    else:
-        self.abort()            
-</t>
-<t tx="ekr.20101101174225.2350">def doTabCompletion (self):
-
-    '''Handle tab completion when the user hits a tab.'''
-
-    c = self.c ; w = self.widget
-    s = w.getSelectedText()
-
-    if s.startswith(self.prefix) and self.tabList:
-        # g.trace('cycle','prefix',repr(self.prefix),len(self.tabList),repr(s))
-        # Set the label to the next item on the tab list.
-        self.tabListIndex +=1
-        if self.tabListIndex &gt;= len(self.tabList):
-           self.tabListIndex = 0
-        self.setSelection(self.tabList[self.tabListIndex])
-    else:
-        self.computeCompletionList()
-
-    c.widgetWantsFocusNow(w)
-</t>
-<t tx="ekr.20101101174225.2351">def extendSelection (self,s):
-
-    '''Append s to the presently selected text.'''
-
-    c = self.c ; w = self.widget
-    c.widgetWantsFocusNow(w)
-
-    i,j = w.getSelectionRange()
-    w.insert(j,s)
-    j += 1
-    w.setSelectionRange(i,j,insert=j)
-    c.frame.body.onBodyChanged('Typing')
-</t>
-<t tx="ekr.20101101174225.2352">def findCalltipWord (self,w):
-
-    i = w.getInsertPoint()
-    s = w.getAllText()
-    if i &gt; 0:
-        i,j = g.getWord(s,i-1)
-        word = s[i:j]
-        return word
-    else:
-        return ''
-</t>
-<t tx="ekr.20101101174225.2353">def findAnchor (self,w):
-
-    '''Find the first word of a chain.
-
-    Returns (j,word) where j is a Python index.'''
-
-    trace = False and not g.unitTesting
-    i = j = w.getInsertPoint()
-    s = w.getAllText()
-
-    if self.force:
-        # Scan backward to the previous full word.
-        found = False
-        while i &gt; 1 and s[i-1] != '.':
-            i -= 1
-        if i == 0:
-            if trace: g.trace('force. fail')
-            return 0,None
-
-    # Find the base of the chain.
-    # New in Leo 4.5: Fix a hanger by stopping when i &lt;= 1.
-    while i &gt; 1 and s[i-1] == '.':
-        i,j = g.getWord(s,i-2)
-
-    word = s[i:j]
-    if word == '.': word = None
-
-    if trace: g.trace(i,j,repr(word))
-    return j,word
-</t>
-<t tx="ekr.20101101174225.2354">def finish (self):
-
-    c = self.c ; k = c.k
-
-    k.keyboardQuit(event=None,setDefaultStatus=False)
-        # Stay in the present input state.
-
-    for name in (self.tabName,'Modules','Info'):
-        c.frame.log.deleteTab(name)
-
-    c.frame.body.onBodyChanged('Typing')
-    c.recolor()
-    self.clear()
-    self.theObject = None
-</t>
-<t tx="ekr.20101101174225.2355"># The values of self.attrDictDic are anonymous attrDict's.
-# attrDicts: keys are strings, values are lists of strings.
-
-def getAttr (self,obj,attr):
-
-    '''Simulate getattr function, regardless of langauge.'''
-
-    if self.language == 'python':
-        return getattr(obj,attr)
-    else:
-        d = self.attrDictDict.get(self.language)
-        aList = d.get(obj,[])
-        return attr in aList and attr
-
-def hasAttr (self,obj,attr):
-
-    '''Simulate hasattr function, regardless of langauge.'''
-
-    if self.language == 'python':
-        return hasattr(obj,attr)
-    else:
-        d = self.attrDictDict.get(self.language)
-        aList = d.get(obj,[])
-        return attr in aList
-</t>
-<t tx="ekr.20101101174225.2356">def getLeadinWord (self,w):
-
-    trace = False and not g.unitTesting
-    self.verbose = False # User must explicitly ask for verbose.
-    self.leadinWord = None
-    start = w.getInsertPoint()
-    s = w.getAllText()
-    start -= 1
-    i,word = self.findAnchor(w)
-
-    if word and word.isdigit():
-        self.membersList = []
-        return False
-
-    self.setObjectAndMembersList(word)
-    if trace: g.trace(word,self.theObject,len(self.membersList),g.callers())
-
-    if not word:
-        self.membersList = []
-        return False
-    elif not self.theObject:
-        self.membersList = []
-        return False
-    else:
-        self.beginTabName(word)
-        while 0 &lt;= i &lt; start and i &lt;len(s):
-            if s[i] != '.':
-                return False
-            i,j = g.getWord(s,i+1)
-            word = s[i:j]
-            if trace: g.trace(word) #,i,j,start)
-            if not self.force:
-                # 2010/11/01: partial words are fine.
-                self.setObjectAndMembersList(word)
-                if not self.theObject:
-                    if trace: g.trace('unknown',word)
-                    return False
-            self.appendTabName(word)
-            i = j
-        self.leadinWord = word
-        return True
-</t>
-<t tx="ekr.20101101174225.2357">def getMembersList (self,obj):
-
-    '''Return a list of possible autocompletions for self.leadinWord.'''
-
-    if obj:
-        aList = inspect.getmembers(obj)
-        members = ['%s:%s' % (a,g.prettyPrintType(b))
-            for a,b in aList if not a.startswith('__')]
-        members.sort()
-        return members
-    else:
-        return []
-</t>
-<t tx="ekr.20101101174225.2358">def info (self):
-
-    c = self.c ; doc = None ; obj = self.theObject ; w = self.widget
-
-    word = w.getSelectedText()
-
-    if not word:
-        # Never gets called, but __builtin__.f will work.
-        word = self.findCalltipWord(w)
-        if word:
-            # Try to get the docstring for the Python global.
-            f = __builtins__.get(self.leadinWord)
-            doc = f and f.__doc__
-
-    if not doc:
-        if not self.hasAttr(obj,word):
-            g.es('no docstring for',word,color='blue')
-            return
-        obj = self.getAttr(obj,word)
-        doc = inspect.getdoc(obj)
-
-    if doc:
-        c.frame.log.clearTab('Info',wrap='word')
-        g.es('',doc,tabName='Info')
-    else:
-        g.es('no docstring for',word,color='blue')
-</t>
-<t tx="ekr.20101101174225.2359">def insertNormalChar (self,ch,keysym):
-
-    k = self.k ; w = self.widget
-
-    if g.isWordChar(ch):
-        # Look ahead to see if the character completes any item.
-        s = w.getSelectedText() + ch
-        tabList,common_prefix = g.itemsMatchingPrefixInList(
-            s,self.membersList,matchEmptyPrefix=True)
-        if tabList:
-            # Add the character.
-            self.tabList = tabList
-            self.extendSelection(ch)
-            s = w.getSelectedText()
-            if s.startswith(self.prefix):
-                self.prefix = self.prefix + ch
-            self.computeCompletionList()
-    else:
-        word = w.getSelectedText()
-        if ch == '(':
-            # Similar to chain logic.
-            obj = self.theObject
-            # g.trace(obj,word,self.hasAttr(obj,word))
-            if self.hasAttr(obj,word):
-                obj = self.getAttr(obj,word)
-                self.push(self.theObject)
-                self.theObject = obj
-                self.leadinWord = word
-                self.membersList = self.getMembersList(obj)
-                if k.enable_calltips:
-                    # This calls self.finish if the '(' is valid.
-                    self.calltip(obj)
-                    return
-        self.extendSelection(ch)
-        self.finish()
-</t>
-<t tx="ekr.20101101174225.2360">def push (self,obj):
-
-    if obj is not None:
-        self.prevObjects.append(obj)
-        # g.trace(self.stackNames())
-
-def pop (self):
-
-    obj = self.prevObjects.pop()
-    # g.trace(obj)
-    return obj
-
-def clear (self):
-
-    self.prevObjects = []
-    # g.trace(g.callers())
-
-def stackNames (self):
-
-    aList = []
-    for z in self.prevObjects:
-        if hasattr(z,'__name__'):
-            aList.append(z.__name__)
-        elif hasattr(z,'__class__'):
-            aList.append(z.__class__.__name__)
-        else:
-            aList.append(str(z))
-    return aList
-</t>
-<t tx="ekr.20101101174225.2361">def setObjectAndMembersList (self,word):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if not word:
-        # Leading dot shows all classes.
-        self.leadinWord = None
-        self.theObject = sys.modules
-        self.membersList = list(sys.modules.keys())
-        self.beginTabName('Modules')
-    elif word in ( "'",'"'):
-        word = 'aString' # This is in the objectsDict.
-        self.clear()
-        self.push(self.theObject)
-        self.theObject = 'aString'
-        self.membersList = self.getMembersList(self.theObject)
-    elif self.theObject:
-        self.getObjectFromAttribute(word)
-    # elif word == 'self':
-        # self.completeSelf()
-    else:
-        obj = self.objectDict.get(word) or sys.modules.get(word)
-        self.completeFromObject(obj)
-
-    if trace: g.trace(word,self.theObject,len(self.membersList))
-</t>
-<t tx="ekr.20101101174225.2362">def getObjectFromAttribute (self,word):
-
-    obj = self.theObject
-
-    if obj and self.hasAttr(obj,word):
-        self.push(self.theObject)
-        self.theObject = self.getAttr(obj,word)
-        self.appendToKnownObjects(self.theObject)
-        self.membersList = self.getMembersList(self.theObject)
-    else:
-        # No special support for 'self' here.
-        # Don't clear the stack here!
-        self.membersList = []
-        self.theObject = None
-</t>
-<t tx="ekr.20101101174225.2363">def completeFromObject (self,obj):
-
-    if obj:
-        self.appendToKnownObjects(obj)
-        self.push(self.theObject)
-        self.theObject = obj
-        self.membersList = self.getMembersList(obj=obj)
-    else:
-        self.theObject = None
-        self.clear()
-        self.membersList = []
-</t>
-<t tx="ekr.20101101174225.2364">def setSelection (self,s):
-
-    trace = False and not g.unitTesting
-    c = self.c ; w = self.widget
-    c.widgetWantsFocusNow(w)
-
-    if w.hasSelection():
-        i,j = w.getSelectionRange()
-        w.delete(i,j)
-    else:
-        i = w.getInsertPoint()
-
-    # Don't go past the ':' that separates the completion from the type.
-    n = s.find(':')
-    if n &gt; -1: s = s[:n]
-
-    w.insert(i,s)
-    j = i + len(s)
-    w.setSelectionRange(i,j,insert=j)
-    if trace: g.trace(i,j,s,g.callers())
-
-    # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-    c.frame.body.recolor(c.p,incremental=True)
-    # Usually this call will have no effect because the body text has not changed.
-    c.frame.body.onBodyChanged('Typing')
-</t>
-<t tx="ekr.20101101174225.2365">def start (self,event=None,w=None,prefix=None):
-
-    trace = False and not g.unitTesting
-    c = self.c
-    if w: self.widget = w
-    else: w = self.widget
-
-    # We wait until now to define these dicts so that more classes and objects will exist.
-    if not self.objectDict:
-        self.defineClassesDict()
-        self.defineObjectDict()
-
-    if trace: g.trace('force',self.force)
-
-    self.prefix = g.choose(prefix is None,'',prefix)
-    self.selection = w.getSelectionRange()
-    self.selectedText = w.getSelectedText()
-    flag = self.getLeadinWord(w)
-    if self.force:
-        partialWord = self.initForce()
-    if self.membersList:
-        if not flag:
-            # Remove the (leading) invocation character.
-            i = w.getInsertPoint()
-            s = w.getAllText()
-            if i &gt; 0 and s[i-1] == '.':
-                s = g.app.gui.stringDelete(s,i-1)
-                w.setAllText(s)
-                c.frame.body.onBodyChanged('Typing')
-        if self.useTabs:
-            self.autoCompleterStateHandler(event)
-        else:
-            self.computeCompletionList()
-            return self.tabList
-    else:
-        self.abort()
-</t>
-<t tx="ekr.20101101174225.2366">def initForce(self):
-
-    trace = False and not g.unitTesting
-    w = self.widget
-    i = j = w.getInsertPoint()
-    s = w.getAllText()
-
-    # Select the text from the insert point back to the next period.
-    while i &gt; 1 and s[i-1] != '.':
-        i -= 1
-
-    if i &gt; 0:
-        word = s[i:j]
-        w.setSelectionRange(i,j)
-        self.selectedText = word
-        self.selection = w.getSelectionRange()
-    else:
-        word = None
-
-    if trace: g.trace(word)
-    return word
-
-</t>
-<t tx="ekr.20101101174225.2367"></t>
-<t tx="ekr.20101101174225.2368">def createProxyObjectFromClass (self,className,theClass):
-
-    '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
-
-    if 0: # Calling the real ctor is way too dangerous.
-        # Set args to the list of required arguments.
-        args = inspect.getargs(theClass.__init__.im_func.func_code)
-        args = args[0] ; n = len(args)-1
-        args = [None for z in range(n)]
-
-    def dummyCtor (self):
-        pass
-
-    try:
-        obj = None
-        old_init = hasattr(theClass,'__init__') and theClass.__init__
-        theClass.__init__ = dummyCtor
-        obj = theClass()
-    finally:
-        if old_init:
-            theClass.__init__ = old_init
-        else:
-            delattr(theClass,'__init__')
-
-    g.trace(type(theClass),obj)
-
-    # Verify that it has all the proper attributes.
-    # g.trace(g.listToString(dir(obj)))
-    return obj
-</t>
-<t tx="ekr.20101101174225.2369">def computeClassObjectFromString (self,className,s):
-
-    try:
-        # Add the the class definition to the present environment.
-        exec(s) # Security violation!
-
-        # Get the newly created object from the locals dict.
-        theClass = locals().get(className)
-        return theClass
-
-    except Exception:
-        if 1: # Could be a weird kind of user error.
-            g.es_print('unexpected exception in',computeProxyObject)
-            g.es_exception()
-        return None
-</t>
-<t tx="ekr.20101101174225.2371">def appendTabName (self,word):
-    g.trace(word)
-    pass
-
-def beginTabName (self,word):
-    g.trace(word)
-    pass
-
-def clearTabName (self):
-    pass
-
-def popTabName (self):
-    pass
-
-def setTabName (self,s):
-    if self.useTabs:
-        self.tabName = s.replace('_','') or ''
-</t>
-<t tx="ekr.20101101180223.2372">def put (self,*args,tabName='Log'):
-
-    # args[1] contains a string.
-    trace = False and not g.unitTesting
-    aList = [z.rstrip() for z in g.splitLines(args[1])]
-
-    if trace:
-        print('newCompleter.put')
-        for s in aList:
-            print(s)
-
-    if 0: # Put the list to the named tab.
-        g.es(*args,tabName=tabName)
-
-    if 1:
-        ac = self.ac
-        ac.model().setStringList(aList)
-        g.trace('prefix',repr(self.prefix))
-        ac.setCompletionPrefix(self.prefix)
-        # ac.popup.setFocus()
-        ac.complete()
-    else: # Put the list to the QListView.
-        v = self.view
-        v.clear()
-        v.insertItems(0,aList)
-        self.numberOfItems = len(aList)
-        self.select(0)
-        v.show()
-</t>
-<t tx="ekr.20101101181525.2375">def autoCompleterStateHandler (self,event):
-
-    trace = True and not g.app.unitTesting
-
-    c = self.c ; k = self.k ; gui = g.app.gui
-    tag = 'auto-complete' ; state = k.getState(tag)
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-
-    if trace: g.trace(repr(ch),repr(keysym),state)
-
-    if state == 0:
-        ### c.frame.log.clearTab(self.tabName)
-        if trace: g.trace('========== clear tab ==========')
-        self.computeCompletionList()
-        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
-    elif keysym in (' ','Return'):
-        self.finish()
-    elif keysym == 'Escape':
-        self.abort()
-    elif keysym == 'Tab':
-        self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
-        self.doBackSpace()
-    elif keysym == '.':
-        self.chain()
-    elif keysym == '?':
-        self.info()
-    elif keysym == '!':
-        # Toggle between verbose and brief listing.
-        self.verbose = not self.verbose
-        if type(self.theObject) == types.DictType:
-            self.membersList = list(self.theObject.keys())
-        elif type(self.theObject) in (type((),),type([])):
-            self.membersList = self.theObject
-        self.computeCompletionList(verbose=self.verbose)
-    elif ch and ch in string.printable:
-        self.insertNormalChar(ch,keysym)
-    else:
-        # if trace: g.trace('ignore',repr(ch))
-        return 'do-standard-keys'
-</t>
-<t tx="ekr.20101101181525.2376">if 1:
-    @others
-</t>
-<t tx="ekr.20101101181525.2378">def doBackSpace (self):
-
-    '''Cut back to previous prefix.'''
-
-    trace = False and not g.unitTesting
-    if trace: g.trace('(autocompleter)',
-        self.prefix,self.theObject,self.prevObjects)
-
-    c = self.c
-    if self.prefix:
-        self.prefix = self.prefix[:-1]
-        self.setSelection(self.prefix)
-        self.computeCompletionList(backspace=True)
-    elif self.theObject:
-        if self.prevObjects:
-            obj = self.pop()
-        else:
-            obj = self.theObject
-        if trace: g.trace(self.theObject,obj)
-        w = self.widget
-        s = w.getAllText()
-        i,junk = w.getSelectionRange()
-        ch = 0 &lt;= i-1 &lt; len(s) and s[i-1] or ''
-        # g.trace(ch)
-        if ch == '.':
-            self.theObject = obj
-            w.delete(i-1)
-            c.frame.body.onBodyChanged(undoType='Typing')
-            i,j = g.getWord(s,i-2)
-            word = s[i:j]
-            if trace: g.trace(i,j,repr(word))
-            w.setSelectionRange(i,j,insert=j)
-            self.prefix = word
-            self.popTabName()
-            self.membersList = self.getMembersList(obj)
-            # g.trace(len(self.membersList))
-            if self.membersList:
-                self.computeCompletionList(backspace=True)
-            else:
-                self.abort()
-        else:
-            self.abort() # should not happen.
-    else:
-        self.abort()            
-</t>
-<t tx="ekr.20101101181525.2380">def insertNormalChar (self,ch,keysym):
-
-    k = self.k ; w = self.widget
-
-    if g.isWordChar(ch):
-        # Look ahead to see if the character completes any item.
-        s = w.getSelectedText() + ch
-        tabList,common_prefix = g.itemsMatchingPrefixInList(
-            s,self.membersList,matchEmptyPrefix=True)
-        if tabList:
-            # Add the character.
-            self.tabList = tabList
-            self.extendSelection(ch)
-            s = w.getSelectedText()
-            if s.startswith(self.prefix):
-                self.prefix = self.prefix + ch
-            self.computeCompletionList()
-    else:
-        word = w.getSelectedText()
-        if ch == '(':
-            # Similar to chain logic.
-            obj = self.theObject
-            # g.trace(obj,word,self.hasAttr(obj,word))
-            if self.hasAttr(obj,word):
-                obj = self.getAttr(obj,word)
-                self.push(self.theObject)
-                self.theObject = obj
-                self.leadinWord = word
-                self.membersList = self.getMembersList(obj)
-                if k.enable_calltips:
-                    # This calls self.finish if the '(' is valid.
-                    self.calltip(obj)
-                    return
-        self.extendSelection(ch)
-        self.finish()
-</t>
-<t tx="ekr.20101101181525.2383">def setSelection (self,s):
-
-    trace = True and not g.unitTesting
-    c = self.c ; w = self.widget
-    c.widgetWantsFocusNow(w)
-
-    if w.hasSelection():
-        i,j = w.getSelectionRange()
-        w.delete(i,j)
-    else:
-        i = w.getInsertPoint()
-
-    # Don't go past the ':' that separates the completion from the type.
-    n = s.find(':')
-    if n &gt; -1: s = s[:n]
-
-    w.insert(i,s)
-    j = i + len(s)
-    w.setSelectionRange(i,j,insert=j)
-    if trace: g.trace(i,j,s,g.callers())
-
-    # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-    c.frame.body.recolor(c.p,incremental=True)
-    # Usually this call will have no effect because the body text has not changed.
-    c.frame.body.onBodyChanged('Typing')
-</t>
-<t tx="ekr.20101101181525.2385">def extendSelection (self,s):
-
-    '''Append s to the presently selected text.'''
-
-    trace = True and not g.unitTesting
-    c = self.c ; w = self.widget
-    c.widgetWantsFocusNow(w)
-
-    i,j = w.getSelectionRange()
-    if trace: g.trace(i,j,s)
-    w.insert(j,s)
-    j += 1
-    w.setSelectionRange(i,j,insert=j)
-    c.frame.body.onBodyChanged('Typing')
-</t>
-<t tx="ekr.20101101182057.2389">def abort (self):
-
-    k = self.k
-    g.trace(g.callers())
-    k.keyboardQuit(event=None,setDefaultStatus=False)
-        # Stay in the present input state.
-    self.exit(restore=True)
-
-def exit (self,restore=False): # Called from keyboard-quit.
-
-    k = self ; c = self.c 
-    w = self.widget or c.frame.body.bodyCtrl
-    for name in (self.tabName,'Modules','Info'):
-        c.frame.log.deleteTab(name)
-    c.widgetWantsFocusNow(w)
-    i,j = w.getSelectionRange()
-    if restore:
-        if i != j: w.delete(i,j)
-        w.insert(i,self.selectedText)
-    w.setSelectionRange(j,j,insert=j)
-    g.trace(g.callers())
-
-    self.clear()
-    self.theObject = None
-</t>
-<t tx="ekr.20101101182057.2392">def push (self,obj):
-
-    if obj is not None:
-        self.prevObjects.append(obj)
-        g.trace(self.stackNames())
-
-def pop (self):
-
-    obj = self.prevObjects.pop()
-    g.trace(obj)
-    return obj
-
-def clear (self):
-
-    self.prevObjects = []
-    g.trace(g.callers())
-
-def stackNames (self):
-
-    aList = []
-    for z in self.prevObjects:
-        if hasattr(z,'__name__'):
-            aList.append(z.__name__)
-        elif hasattr(z,'__class__'):
-            aList.append(z.__class__.__name__)
-        else:
-            aList.append(str(z))
-    return aList
-</t>
-<t tx="ekr.20101101195800.2397">def __init__ (self,k):
-
-    # Init the base class.
-    leoKeys.autoCompleterClass.__init__(self,k)
-
-    self.numberOfItems = 0
-    self.w = w = self.c.frame.body.bodyCtrl.widget
-    c = self.c
-
-    if 1: # Use QCompleter
-        self.ac = ac = QtGui.QCompleter(w)
-        self.model = QtGui.QStringListModel()
-        # self.view = v = QtGui.QListWidget(w)
-        # ac.setPopup(v)
-        g.trace(ac.popup())
-        ac.setModel(self.model)
-        ac.setCompletionMode(ac.PopupCompletion) # ac.UnfilteredPopupCompletion
-        ac.setWidget(w)
-        # Hook up the popup to an event filter.
-        # ev = c.frame.body.bodyCtrl.ev_filter
-        # ev = keyEventFilter(completer=self)
-        # pu = ac.popup()
-        # pu.installEventFilter(ev)
-        ac.connect(ac,QtCore.SIGNAL("activated(QString)"),self.onActivated)
-        ac.connect(ac,QtCore.SIGNAL("destroyed(QObject)"),self.onDestroyed)
-        ac.connect(ac,QtCore.SIGNAL("activated(QString*)"),self.onActivated)
-        ac.connect(ac,QtCore.SIGNAL("destroyed(QObject*)"),self.onDestroyed)
-
-    else: # Use a QListWidget
-        self.view = v = QtGui.QListWidget(w)
-
-        # These don't seem to work.
-        v.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, # Horizontal policy.
-            QtGui.QSizePolicy.MinimumExpanding) # Vertical policy.
-
-        v.setResizeMode(QtGui.QListView.Adjust)
-</t>
-<t tx="ekr.20101101195800.2398"># def onActivated (self,*args,**keys):
-
-    # g.trace(*args,**keys)
-
-# def onKey (self,*args,**keys):
-
-    # g.trace(*args,**keys)
-
-</t>
-<t tx="ekr.20101101211859.2414">class keyEventFilter(QtCore.QObject):
-
-    @others
-</t>
-<t tx="ekr.20101101211859.2416">def __init__(self,completer):
-
-    # Init the base class.
-    QtCore.QObject.__init__(self)
-
-    self.c = completer.c
-    self.completer = completer
-
-    g.trace('keyEventFilter')</t>
-<t tx="ekr.20101101211859.2417">char2tkNameDict = {
-    # Part 1: same as k.guiBindNamesDict
-    "&amp;" : "ampersand",
-    "^" : "asciicircum",
-    "~" : "asciitilde",
-    "*" : "asterisk",
-    "@" : "at",
-    "\\": "backslash",
-    "|" : "bar",
-    "{" : "braceleft",
-    "}" : "braceright",
-    "[" : "bracketleft",
-    "]" : "bracketright",
-    ":" : "colon",  
-    "," : "comma",
-    "$" : "dollar",
-    "=" : "equal",
-    "!" : "exclam",
-    "&gt;" : "greater",
-    "&lt;" : "less",
-    "-" : "minus",
-    "#" : "numbersign",
-    '"' : "quotedbl",
-    "'" : "quoteright",
-    "(" : "parenleft",
-    ")" : "parenright", 
-    "%" : "percent",
-    "." : "period",     
-    "+" : "plus",
-    "?" : "question",
-    "`" : "quoteleft",
-    ";" : "semicolon",
-    "/" : "slash",
-    " " : "space",      
-    "_" : "underscore",
-    # Part 2: special Qt translations.
-    'Backspace':'BackSpace',
-    'Backtab':  'Tab', # The shift mod will convert to 'Shift+Tab',
-    'Esc':      'Escape',
-    'Del':      'Delete',
-    'Ins':      'Insert', # was 'Return',
-    # Comment these out to pass the key to the QTextWidget.
-    # Use these to enable Leo's page-up/down commands.
-    'PgDown':    'Next',
-    'PgUp':      'Prior',
-    # New entries.  These simplify code.
-    'Down':'Down','Left':'Left','Right':'Right','Up':'Up',
-    'End':'End',
-    'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5',
-    'F6':'F6','F7':'F7','F8':'F8','F9':'F9',
-    'F10':'F10','F11':'F11','F12':'F12',
-    'Home':'Home',
-    # 'Insert':'Insert',
-    'Return':'Return',
-    # 'Tab':'Tab',
-    'Tab':'\t', # A hack for QLineEdit.
-    # Unused: Break, Caps_Lock,Linefeed,Num_lock
-}
-
-def char2tkName (self,ch):
-    val = self.char2tkNameDict.get(ch)
-    # g.trace(repr(ch),repr(val))
-    return val
-</t>
-<t tx="ekr.20101101211859.2418">def eventFilter(self,obj,event):
-
-    trace = True and not g.unitTesting
-
-    ev = QtCore.QEvent
-
-    if event.type() == ev.KeyRelease: # ev.KeyPress,ev.ShortcutOverride
-
-        if trace: g.trace(event.text(),event.key())
-        # self.completer.autoCompleterStateHandler(event)
-
-        event.accept()
-        return True # Handled.
-    else:
-        return False # Not handled.
-</t>
-<t tx="ekr.20101101211859.2419">def isSpecialOverride (self,tkKey,ch):
-
-    '''Return True if tkKey is a special Tk key name.
-    '''
-
-    return tkKey or ch in self.flashers
-</t>
-<t tx="ekr.20101101211859.2420">def qtKey (self,event):
-
-    '''Return the components of a Qt key event.'''
-
-    trace = False and not g.unitTesting
-    keynum = event.key()
-    text   = event.text() # This is the unicode text.
-    toString = QtGui.QKeySequence(keynum).toString()
-
-    try:
-        ch1 = chr(keynum)
-    except ValueError:
-        ch1 = ''
-
-    try:
-        ch = g.u(ch1)
-    except UnicodeError:
-        ch = ch1
-
-    text     = g.u(text)
-    toString = g.u(toString)
-
-    if trace and self.keyIsActive: g.trace(
-        'keynum %s ch %s ch1 %s toString %s' % (
-            repr(keynum),repr(ch),repr(ch1),repr(toString)))
-
-    return keynum,text,toString,ch
-</t>
-<t tx="ekr.20101101211859.2421">def qtMods (self,event):
-
-    modifiers = event.modifiers()
-
-    # The order of this table is significant.
-    # It must the order of modifiers in bindings
-    # in k.masterGuiBindingsDict
-
-    table = (
-        (QtCore.Qt.AltModifier,     'Alt'),
-        (QtCore.Qt.ControlModifier, 'Control'),
-        (QtCore.Qt.MetaModifier,    'Meta'),
-        (QtCore.Qt.ShiftModifier,   'Shift'),
-    )
-
-    mods = [b for a,b in table if (modifiers &amp; a)]
-
-    return mods
-</t>
-<t tx="ekr.20101101211859.2422">def tkKey (self,event,mods,keynum,text,toString,ch):
-
-    '''Carefully convert the Qt key to a 
-    Tk-style binding compatible with Leo's core
-    binding dictionaries.'''
-
-    trace = False and not g.unitTesting
-    ch1 = ch # For tracing.
-    use_shift = (
-        'Home','End','Tab',
-        'Up','Down','Left','Right',
-        'Next','Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
-        # Dubious...
-        # 'Backspace','Delete','Ins',
-        # 'F1',...'F12',
-    )
-
-    # Convert '&amp;' to 'ampersand', etc.
-    # *Do* allow shift-bracketleft, etc.
-    ch2 = self.char2tkName(ch or toString)
-    if ch2: ch = ch2 
-    if not ch: ch = ''
-
-    if 'Shift' in mods:
-        if trace: g.trace(repr(ch))
-        if len(ch) == 1 and ch.isalpha():
-            mods.remove('Shift')
-            ch = ch.upper()
-        elif len(ch) &gt; 1 and ch not in use_shift:
-            # Experimental!
-            mods.remove('Shift')
-        # 2009/12/19: Speculative.
-        # if ch in ('parenright','parenleft','braceright','braceleft'):
-            # mods.remove('Shift')
-    elif len(ch) == 1:
-        ch = ch.lower()
-
-    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
-        mods.append('Key')
-
-    # *Do* allow bare mod keys, so they won't be passed on.
-    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-
-    if trace: g.trace(
-        'text: %s toString: %s ch1: %s ch: %s' % (
-        repr(text),repr(toString),repr(ch1),repr(ch)))
-
-    ignore = not ch # Essential
-    ch = text or toString
-    return tkKey,ch,ignore
-</t>
-<t tx="ekr.20101101211859.2423">def toStroke (self,tkKey,ch):
-
-    trace = False and not g.unitTesting
-    k = self.c.k ; s = tkKey
-
-    special = ('Alt','Ctrl','Control',)
-    isSpecial = [True for z in special if s.find(z) &gt; -1]
-
-    if 0:
-        if isSpecial:
-            pass # s = s.replace('Key-','')
-        else:
-            # Keep the Tk spellings for special keys.
-            ch2 = k.guiBindNamesDict.get(ch)
-            if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
-            if ch2: s = s.replace(ch,ch2)
-
-    table = (
-        ('Alt-','Alt+'),
-        ('Ctrl-','Ctrl+'),
-        ('Control-','Ctrl+'),
-        # Use Alt+Key-1, etc.  Sheesh.
-        # ('Key-','Key+'),
-        ('Shift-','Shift+')
-    )
-    for a,b in table:
-        s = s.replace(a,b)
-
-    if trace: g.trace('tkKey',tkKey,'--&gt;',s)
-    return s
-</t>
-<t tx="ekr.20101101211859.2424">def toTkKey (self,event):
-
-    mods = self.qtMods(event)
-
-    keynum,text,toString,ch = self.qtKey(event)
-
-    tkKey,ch,ignore = self.tkKey(
-        event,mods,keynum,text,toString,ch)
-
-    return tkKey,ch,ignore
-</t>
-<t tx="ekr.20101101211859.2425">def traceEvent (self,obj,event,tkKey,override):
-
-    if g.unitTesting: return
-
-    c = self.c ; e = QtCore.QEvent
-    keys = True ; traceAll = True 
-    eventType = event.type()
-
-    show = [
-        # (e.Enter,'enter'),(e.Leave,'leave'),
-        (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-        # (e.MouseMove,'mouse-move'),
-        (e.MouseButtonPress,'mouse-dn'),
-        (e.MouseButtonRelease,'mouse-up'),
-    ]
-
-    if keys:
-        show2 = [
-            (e.KeyPress,'key-press'),
-            (e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
-        ]
-        show.extend(show2)
-
-    ignore = (
-        1,16,67,70,
-        e.ChildPolished,
-        e.DeferredDelete,
-        e.DynamicPropertyChange,
-        e.Enter,e.Leave,
-        e.FocusIn,e.FocusOut,
-        e.FontChange,
-        e.Hide,e.HideToParent,
-        e.HoverEnter,e.HoverLeave,e.HoverMove,
-        e.LayoutRequest,
-        e.MetaCall,e.Move,e.Paint,e.Resize,
-        # e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
-        e.PaletteChange,
-        e.ParentChange,
-        e.Polish,e.PolishRequest,
-        e.Show,e.ShowToParent,
-        e.StyleChange,
-        e.ToolTip,
-        e.WindowActivate,e.WindowDeactivate,
-        e.WindowBlocked,e.WindowUnblocked,
-        e.ZOrderChange,
-    )
-
-    for val,kind in show:
-        if eventType == val:
-            g.trace(
-                '%5s %18s in-state: %5s key: %s override: %s' % (
-                self.tag,kind,repr(c.k.inState()),tkKey,override))
-            return
-
-    if traceAll and eventType not in ignore:
-        g.trace('%3s:%s' % (eventType,'unknown'))
-</t>
-<t tx="ekr.20101101211859.2426">def traceFocus (self,eventType,obj):
-
-    ev = QtCore.QEvent
-
-    table = (
-        (ev.FocusIn,        'focus-in'),
-        (ev.FocusOut,       'focus-out'),
-        (ev.WindowActivate, 'activate'),
-        (ev.WindowDeactivate,'deactivate'),
-    )
-
-    for evKind,kind in table:
-        if eventType == evKind:
-            g.trace('%11s %s %s %s' % (
-                (kind,id(obj),
-                # event.reason(),
-                obj.objectName(),obj)))
-                # g.app.gui.widget_name(obj) or obj)))
-
-    # else: g.trace('unknown kind: %s' % eventType)
-</t>
-<t tx="ekr.20101101211859.2427">if 0:
-
-    @others
-</t>
-<t tx="ekr.20101102120712.2422">if 0:
-    @others</t>
-<t tx="ekr.20101102124208.2424">def exit (self,restore=False): # Called from keyboard-quit.
-
-    # Call the base class.
-    leoKeys.autoCompleterClass.exit(self)
-    self.hide()
-    g.es_print('exit',g.callers())
-
-def finish (self):
-
-    # Call the base class.
-    leoKeys.autoCompleterClass.finish(self)
-    self.hide()
-    g.es_print('finish',g.callers())
-
-def hide (self):
-
-    if 1:
-        pass
-    else:
-        self.view.hide()
-</t>
-<t tx="ekr.20101102133143.2426">def getRow (self):
-
-    if 1:
-        w = self.ac.popup()
-        return w.currentIndex().row()
-    else:
-        return self.view.currentIndex().row()
-
-def onDown (self):
-    self.select(self.getRow()+1)
-
-def onUp (self):
-    self.select(self.getRow()-1)
-
-def select (self,n):
-    n = max(0,min(n,self.numberOfItems-1))
-
-
-    if 1:
-        w = self.ac.popup()
-        g.trace(n,w)
-        # setCurrentRow(n)
-    else:
-        self.view.setCurrentRow(n)
-</t>
-<t tx="ekr.20101102133143.2427">if 0: # Old code.
-    self.ac = ac = QtGui.QCompleter(w)
-    self.model = QtGui.QStringListModel()
-    ac.setModel(self.model)
-    self.popup = ap = ac.popup()
-
-    # Sent when the user selects an item.
-    # ap.connect(ap,QtCore.SIGNAL("activated(QString)"),self.onActivated)
-    # ap.connect(ap,QtCore.SIGNAL("press(QString)"),self.onKey)
-
-    self.ev_filter = keyEventFilter(completer=self)
-    ap.installEventFilter(self.ev_filter)
-
-    # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
-    ac.setCompletionMode(ac.PopupCompletion)
-        # ac.InlineCompletion # Probably harder to use.
-        # ac.PopupCompletion
-        # ac.UnfilteredPopupCompletion
-    ac.setWidget(w)
-</t>
-<t tx="ekr.20101102171642.2431">def autoCompleterStateHandler (self,event):
-
-    trace = True and not g.app.unitTesting
-    c = self.c ; k = self.k ; gui = g.app.gui
-    tag = 'auto-complete' ; state = k.getState(tag)
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-
-    if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
-        state,repr(ch),repr(keysym)),g.callers())
-
-    if state == 0:
-        c.frame.log.clearTab(self.tabName)
-        self.computeCompletionList(init=True)
-        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
-    elif keysym in (' ','Return'):
-        if hasattr(self,'onReturn'):
-            self.onReturn()
-        else:
-            self.finish()
-    elif keysym == 'Escape':
-        self.abort()
-    elif keysym == 'Tab':
-        self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
-        if hasattr(self,'onBackSpace'):
-            self.onBackSpace()
-        else:
-            self.doBackSpace()
-    elif keysym == '.':
-        self.chain()
-    elif keysym == '?':
-        self.info()
-    elif keysym == '!':
-        # Toggle between verbose and brief listing.
-        self.verbose = not self.verbose
-        c.frame.putStatusLine('verbose completions %s' % (
-            g.choose(self.verbose,'ON','OFF')),color='red')
-        if type(self.theObject) == types.DictType:
-            self.membersList = list(self.theObject.keys())
-        elif type(self.theObject) in (type((),),type([])):
-            self.membersList = self.theObject
-        self.computeCompletionList()
-    elif ch == 'Down' and hasattr(self,'onDown'):
-        self.onDown()
-    elif ch == 'Up' and hasattr(self,'onUp'):
-        self.onUp()
-    elif ch and ch in string.printable:
-        if hasattr(self,'onChar'):
-            self.onChar(ch,keysym)
-        else:
-            self.insertNormalChar(ch,keysym)
-    else:
-        # if trace: g.trace('ignore',repr(ch))
-        return 'do-standard-keys'
-</t>
-<t tx="ekr.20101102171642.2432">def onChar (self,ch,keysym):
-
-    g.trace(repr(ch),repr(keysym))
-</t>
-<t tx="ekr.20101102171642.2433">def onBackSpace (self):
-
-    g.trace()
-</t>
-<t tx="ekr.20101102171642.2434">def onReturn (self):
-
-    self.finish()</t>
-<t tx="ekr.20101102175958.2436">def onActivated (self,s):
-
-    g.trace(s)
-
-def onDestroyed (self):
-
-    g.trace()
-</t>
 <t tx="ekr.20101103135707.2439">import leo.core.leoImport as leoImport
 
 leoImport.headToPrevNode(event={'c':c})
@@ -9925,5 +7824,190 @@ if 0:
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
+<t tx="ekr.20110325142240.2508">import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+
+options = (
+    'c.frame',
+    'c.frame.body',
+    'c.frame.body.bodyCtrl',
+)
+
+def callback (arg):
+    # Called when user selects an item.
+    g.trace(arg)
+
+# Define a local copy for testing.
+@others
+
+wb = c.frame.body
+w = wb.bodyCtrl.widget
+# print('wb',wb,'w',w)
+    # w is a QTextBrowserSubclass.
+ac = showCompleter(w,options,callback)
+s = wb.getAllText()
+wb.setInsertPoint(len(s))
+
+ac.setCompletionPrefix('c.frame.b')
+ac.complete()
+
+wp = ac.popup()
+wp.setFocus()
+print(wp)
+
+# Testing area: c.frame.b
+</t>
+<t tx="ekr.20110325142240.2509">def showCompleter(w,options,callback):
+
+    ''' Show 'autocompleter' widget for widget w::
+
+        options = ['hello', 'helloworld']
+
+        def myCallback(arg):
+            """insert arg into text for w."""
+            g.trace(arg)
+
+        showCompleter(w,options, myCallback )
+    '''
+
+    ac = QtGui.QCompleter(options,w)
+
+    # Sent when the user selects an item.
+    ac.connect(ac,QtCore.SIGNAL("activated(QString)"),callback)
+
+    # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
+    ac.setCompletionMode(ac.PopupCompletion)
+        # ac.InlineCompletion # Probably harder to use.
+        # ac.PopupCompletion
+        # ac.UnfilteredPopupCompletion
+    ac.setWidget(w)
+    w.q_completer = ac
+    return ac
+</t>
+<t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
+
+
+@others
+
+
+
+if __name__ == "__main__":
+
+    app = QtGui.QApplication([])
+    completer = DictionaryCompleter()
+    te = CompletionTextEdit()
+    te.setCompleter(completer)
+    te.show()
+    app.exec_()
+</t>
+<t tx="ekr.20110325142419.2338">class DictionaryCompleter(QtGui.QCompleter):
+    def __init__(self, parent=None):
+        words = []
+        try:
+            f = open("/usr/share/dict/words","r")
+            for word in f:
+                words.append(word.strip())
+            f.close()
+        except IOError:
+            print "dictionary not in anticipated location"
+        QtGui.QCompleter.__init__(self, words, parent)
+</t>
+<t tx="ekr.20110325142419.2339">STARTTEXT = ('This TextEdit provides autocompletions for words that have ' +
+'more than 3 characters.\nYou can trigger autocompletion using %s\n\n'''% (
+QtGui.QKeySequence("Ctrl+E").toString(QtGui.QKeySequence.NativeText)))
+
+
+class CompletionTextEdit(QtGui.QTextEdit):
+    
+    @others</t>
+<t tx="ekr.20110325142419.2340">def __init__(self, parent=None):
+    super(CompletionTextEdit, self).__init__(parent)
+    self.setMinimumWidth(400)
+    self.setPlainText(STARTTEXT)
+    self.completer = None
+    self.moveCursor(QtGui.QTextCursor.End)
+
+def setCompleter(self, completer):
+    if self.completer:
+        self.disconnect(self.completer, 0, self, 0)
+    if not completer:
+        return
+
+    completer.setWidget(self)
+    completer.setCompletionMode(QtGui.QCompleter.PopupCompletion)
+    completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+    self.completer = completer
+    self.connect(self.completer,
+        QtCore.SIGNAL("activated(const QString&amp;)"), self.insertCompletion)
+
+def insertCompletion(self, completion):
+    tc = self.textCursor()
+    extra = (completion.length() -
+        self.completer.completionPrefix().length())
+    tc.movePosition(QtGui.QTextCursor.Left)
+    tc.movePosition(QtGui.QTextCursor.EndOfWord)
+    tc.insertText(completion.right(extra))
+    self.setTextCursor(tc)
+
+def textUnderCursor(self):
+    tc = self.textCursor()
+    tc.select(QtGui.QTextCursor.WordUnderCursor)
+    return tc.selectedText()
+
+def focusInEvent(self, event):
+    if self.completer:
+        self.completer.setWidget(self);
+    QtGui.QTextEdit.focusInEvent(self, event)
+
+def keyPressEvent(self, event):
+    if self.completer and self.completer.popup().isVisible():
+        if event.key() in (
+        QtCore.Qt.Key_Enter,
+        QtCore.Qt.Key_Return,
+        QtCore.Qt.Key_Escape,
+        QtCore.Qt.Key_Tab,
+        QtCore.Qt.Key_Backtab):
+            event.ignore()
+            return
+
+    ## has ctrl-E been pressed??
+    isShortcut = (event.modifiers() == QtCore.Qt.ControlModifier and
+                  event.key() == QtCore.Qt.Key_E)
+    if (not self.completer or not isShortcut):
+        QtGui.QTextEdit.keyPressEvent(self, event)
+
+    ## ctrl or shift key on it's own??
+    ctrlOrShift = event.modifiers() in (QtCore.Qt.ControlModifier ,
+            QtCore.Qt.ShiftModifier)
+    if ctrlOrShift and event.text().isEmpty():
+        # ctrl or shift key on it's own
+        return
+
+    eow = QtCore.QString("~!@#$%^&amp;*()_+{}|:\"&lt;&gt;?,./;'[]\\-=") #end of word
+
+    hasModifier = ((event.modifiers() != QtCore.Qt.NoModifier) and
+                    not ctrlOrShift)
+
+    completionPrefix = self.textUnderCursor()
+
+    if (not isShortcut and (hasModifier or event.text().isEmpty() or
+    completionPrefix.length() &lt; 3 or
+    eow.contains(event.text().right(1)))):
+        self.completer.popup().hide()
+        return
+
+    if (completionPrefix != self.completer.completionPrefix()):
+        self.completer.setCompletionPrefix(completionPrefix)
+        popup = self.completer.popup()
+        popup.setCurrentIndex(
+            self.completer.completionModel().index(0,0))
+
+    cr = self.cursorRect()
+    cr.setWidth(self.completer.popup().sizeHintForColumn(0)
+        + self.completer.popup().verticalScrollBar().sizeHint().width())
+    self.completer.complete(cr) ## popup it up!</t>
+<t tx="ekr.20110325142419.2341"></t>
+<t tx="ekr.20110325142419.2342"></t>
+<t tx="ekr.20110325142419.2343"></t>
 </tnodes>
 </leo_file>

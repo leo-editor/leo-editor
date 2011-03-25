@@ -10355,5 +10355,6 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 How did we ever live without this?
 
 You can open url's by control-clicking on them, or by using the open-url command.
+#@+node:ekr.20110325075339.14477: *4* Added namespace arg c.executeScript
 #@-all
 #@-leo
