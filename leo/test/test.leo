@@ -902,21 +902,25 @@ else:
     c.opmlCommands.writeOpmlCommand()
 else:
     g.es_print('opml plugin not loaded')</t>
-<t tx="ekr.20060918083159">put = g.es_print
+<t tx="ekr.20060918083159">put = print
+
+doit = True
 
 for p in c.allNodes_iter():
 
     if hasattr(p.v,"unknownAttributes"):
-        put("deleting v.unknownAttributes:",
+        put("v.uA:",
             p.headString(),
             g.listToString(p.v.unknownAttributes.keys()))
-        delattr(p.v,"unknownAttributes")
+        if doit:
+            delattr(p.v,"unknownAttributes")
 
-    if hasattr(p.v.t,"unknownAttributes"):
-        put("deleting t.unknownAttributes:",
-            p.headString(),
-            g.listToString(p.v.t.unknownAttributes.keys()))
-        delattr(p.v.t,"unknownAttributes")
+    # if hasattr(p.v.t,"unknownAttributes"):
+        # put("t.ua:",
+            # p.headString(),
+            # g.listToString(p.v.t.unknownAttributes.keys()))
+        # if doit:
+            # delattr(p.v.t,"unknownAttributes")
            
 put('done') 
 c.redraw()</t>
@@ -1036,7 +1040,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,0,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,1,0,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3704,21 +3708,21 @@ State of the prototype code:
   containing an icon-like script, would create *another* @button node,
   say "@button pat-find pat a" that would (interactively?) find all
   nodes matched by the script in "pat a".  This isn't going to be easy.</t>
-<t tx="ekr.20091217210235.1866" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358010000003d7104752e">@language rest
+<t tx="ekr.20091217210235.1866">@language rest
 @tabwidth -4
 @others
 
 .. Warning: this node is ignored when writing this file.
 .. However, @ @rst-options are recognized in this node.
 </t>
-<t tx="ekr.20091229092257.1930" rst-import="7d710028580b000000756e6465726c696e65733271015801000000237102580b000000756e6465726c696e657331710358020000002b2a7104752e">@language rest
+<t tx="ekr.20091229092257.1930">@language rest
 @tabwidth -4
 @others
 
 .. Warning: this node is ignored when writing this file.
 .. However, @ @rst-options are recognized in this node.
 </t>
-<t tx="ekr.20091229101227.1902" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2d607104752e">@language rest
+<t tx="ekr.20091229101227.1902">@language rest
 @tabwidth -4
 @others
 
@@ -3765,7 +3769,7 @@ for i,j in table2:
 @others
 </t>
 <t tx="ekr.20091230121016.1931"></t>
-<t tx="ekr.20091230160238.1922" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e65733171036802752e">@language rest
+<t tx="ekr.20091230160238.1922">@language rest
 @tabwidth -4
 @others
 
@@ -4007,7 +4011,7 @@ cursor.movePosition(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor,15)
 w.setTextCursor(cursor)
 c.bodyWantsFocusNow()</t>
 <t tx="ekr.20100109084336.1996"></t>
-<t tx="ekr.20100110151049.2004" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358010000003d7104752e">@language rest
+<t tx="ekr.20100110151049.2004">@language rest
 @tabwidth -4
 @others
 
@@ -5880,7 +5884,7 @@ def tabStopNaming (event=None):
       k.setLabelBlue('')
 
 tabStopNaming()</t>
-<t tx="ekr.20100526075442.2155" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2b2a7104752e">@language rest
+<t tx="ekr.20100526075442.2155">@language rest
 @tabwidth -4
 @others
 
@@ -7102,7 +7106,7 @@ def setOption (self,name,val,tag):
 &lt;/html&gt;
 &lt;!--@-leo--&gt;
 </t>
-<t tx="ekr.20100824124015.2195" lineYOffset="4b032e" icons="5d7100287d71012858020000006f6e71025805000000746e6f64657103580500000077686572657104580e0000006265666f7265486561646c696e6571055807000000796f666673657471064b00580400000066696c6571075837000000433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c6164642e706e67710858040000007870616471094b01580400000074797065710a68075807000000786f6666736574710b4b02580700000072656c50617468710c581b00000054616e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e2858020000006f6e710f6803580500000077686572657110580e0000006265666f7265486561646c696e6571115807000000796f666673657471124b00580400000066696c657113583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f74746f6d2e706e67711458040000007870616471154b01580400000074797065711668135807000000786f666673657471174b02580700000072656c506174687118581e00000054616e676f5c31367831365c616374696f6e735c626f74746f6d2e706e67711975652e">for p in c.allNodes_iter():
+<t tx="ekr.20100824124015.2195">for p in c.allNodes_iter():
     v = p.v
     icons = v.u and v.u.get('icons')
     if icons:
@@ -7595,7 +7599,7 @@ When True, the plugin will create a rendering pane automatically.
 <t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('toggle-rendering-pane')</t>
 <t tx="ekr.20110321073942.2490">c.executeMinibufferCommand('lock-unlock-rendering-pane')
 </t>
-<t tx="ekr.20110321213439.2493" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104752e">gs.clear()
+<t tx="ekr.20110321213439.2493">gs.clear()
 gs.addText('\n%s\n%s' % (gv,gs))
 
 if 0:
