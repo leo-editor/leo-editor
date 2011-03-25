@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.46" body_secondary_ratio="0.50">
-	<global_window_position top="96" left="225" height="887" width="1568"/>
+	<global_window_position top="156" left="347" height="887" width="1568"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -606,14 +606,20 @@
 <v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
 <v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
 <v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
-<v t="ekr.20110325142419.2341"><vh>newHeadline</vh></v>
-<v t="ekr.20110325142419.2342"><vh>newHeadline</vh></v>
-<v t="ekr.20110325142419.2343"><vh>newHeadline</vh></v>
+<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
+<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
+<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
+<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
+<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
 </v>
+<v t="ekr.20110325144059.2350"><vh>main</vh></v>
 </v>
-<v t="ekr.20101101143333.2273"><vh>@@button autocompleter test @key=Alt-8</vh></v>
-<v t="ekr.20110325142240.2508"><vh>autocompleter test</vh>
-<v t="ekr.20110325142240.2509"><vh>showCompleter</vh></v>
+<v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh>
+<v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
+<v t="ekr.20110325160920.2360"><vh>callback</vh></v>
+<v t="ekr.20110325142240.2509"><vh>connectCompleter</vh></v>
+<v t="ekr.20110325150734.2359"><vh>textUnderCursor (monkey-patched into LeoQTextBrowser)</vh></v>
+<v t="ekr.20110325144059.2354"><vh>keyPressEvent (monkey-patched into LeoQTextBrowser)</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1040,7 +1046,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,1,0,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7290,13 +7296,6 @@ else:
     run(p)
 g.es('crash test done')
 </t>
-<t tx="ekr.20101101143333.2273">ac = c.k.autoCompleter
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-w.setInsertPoint(len(s))
-ac.autoComplete(event=None,force=True)
-
-# c.frame.b</t>
 <t tx="ekr.20101101173931.2267"></t>
 <t tx="ekr.20101103135707.2439">import leo.core.leoImport as leoImport
 
@@ -7828,102 +7827,84 @@ if 0:
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
-<t tx="ekr.20110325142240.2508">import PyQt4.QtCore as QtCore
+<t tx="ekr.20110325142240.2508"># import os ; os.system('cls')
+
+import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as qtGui
 
-options = (
-    'c.frame',
-    'c.frame.body',
-    'c.frame.body.bodyCtrl',
-)
+&lt;&lt; define options &gt;&gt;
 
-def callback (arg):
-    # Called when user selects an item.
-    g.trace(arg)
+# Define vars.
+body = c.frame.body
+w = body.bodyCtrl.widget # w is a QTextBrowserSubclass.
 
-# Define a local copy for testing.
 @others
 
-wb = c.frame.body
-w = wb.bodyCtrl.widget
-# print('wb',wb,'w',w)
-    # w is a QTextBrowserSubclass.
-ac = showCompleter(w,options,callback)
-s = wb.getAllText()
-wb.setInsertPoint(len(s))
+# Inject methods into LeoQTextBrowser.
+g.funcToMethod(keyPressEvent,qtGui.LeoQTextBrowser,name=None)
+g.funcToMethod(textUnderCursor,qtGui.LeoQTextBrowser,name=None)
 
-ac.setCompletionPrefix('c.frame.b')
-ac.complete()
+# Setup the QCompleter.
+qc = connectCompleter(w,callback,options) # qc is a QCompleter
+qc.popup().show()
 
-wp = ac.popup()
-wp.setFocus()
-print(wp)
+# Put the cursor at the end for testing.
+s = body.getAllText()
+body.setInsertPoint(len(s))
 
-# Testing area: c.frame.b
-</t>
-<t tx="ekr.20110325142240.2509">def showCompleter(w,options,callback):
+# Testing area: c.frame.body</t>
+<t tx="ekr.20110325142240.2509">def connectCompleter(w,callback,options):
+    
+    '''Connect a QCompleter for w.'''
 
-    ''' Show 'autocompleter' widget for widget w::
-
-        options = ['hello', 'helloworld']
-
-        def myCallback(arg):
-            """insert arg into text for w."""
-            g.trace(arg)
-
-        showCompleter(w,options, myCallback )
-    '''
-
-    ac = QtGui.QCompleter(options,w)
+    qc = QtGui.QCompleter(options,w)
 
     # Sent when the user selects an item.
-    ac.connect(ac,QtCore.SIGNAL("activated(QString)"),callback)
+    qc.connect(qc,QtCore.SIGNAL("activated(QString)"),callback)
 
-    # For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.
-    ac.setCompletionMode(ac.PopupCompletion)
+    qc.setCompletionMode(qc.PopupCompletion)
         # ac.InlineCompletion # Probably harder to use.
         # ac.PopupCompletion
         # ac.UnfilteredPopupCompletion
-    ac.setWidget(w)
-    w.q_completer = ac
-    return ac
+
+    qc.setWidget(w)
+    w.q_completer = qc
+    qc.complete()
+    return qc
 </t>
 <t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
 
-
 @others
 
-
-
 if __name__ == "__main__":
+    main()</t>
+<t tx="ekr.20110325142419.2338">if 0: # Not used:  We'll use QCompleter instead.
 
-    app = QtGui.QApplication([])
-    completer = DictionaryCompleter()
-    te = CompletionTextEdit()
-    te.setCompleter(completer)
-    te.show()
-    app.exec_()
-</t>
-<t tx="ekr.20110325142419.2338">class DictionaryCompleter(QtGui.QCompleter):
-    def __init__(self, parent=None):
-        words = []
-        try:
-            f = open("/usr/share/dict/words","r")
-            for word in f:
-                words.append(word.strip())
-            f.close()
-        except IOError:
-            print "dictionary not in anticipated location"
-        QtGui.QCompleter.__init__(self, words, parent)
-</t>
-<t tx="ekr.20110325142419.2339">STARTTEXT = ('This TextEdit provides autocompletions for words that have ' +
-'more than 3 characters.\nYou can trigger autocompletion using %s\n\n'''% (
-QtGui.QKeySequence("Ctrl+E").toString(QtGui.QKeySequence.NativeText)))
-
-
-class CompletionTextEdit(QtGui.QTextEdit):
+    class DictionaryCompleter(QtGui.QCompleter):
     
-    @others</t>
+        def __init__(self, parent=None):
+            words = []
+            try:
+                f = open("/usr/share/dict/words","r")
+                for word in f:
+                    words.append(word.strip())
+                f.close()
+            except IOError:
+                print "dictionary not in anticipated location"
+    
+            QtGui.QCompleter.__init__(self, words, parent)
+</t>
+<t tx="ekr.20110325142419.2339">if 0: # Not used:  We'll use LeoQTextBrowser instead.
+
+    STARTTEXT = ('This TextEdit provides autocompletions for words that have ' +
+    'more than 3 characters.\nYou can trigger autocompletion using %s\n\n'''% (
+    QtGui.QKeySequence("Ctrl+E").toString(QtGui.QKeySequence.NativeText)))
+    
+    
+    class CompletionTextEdit(QtGui.QTextEdit):
+        
+        @others</t>
 <t tx="ekr.20110325142419.2340">def __init__(self, parent=None):
     super(CompletionTextEdit, self).__init__(parent)
     self.setMinimumWidth(400)
@@ -7931,7 +7912,8 @@ class CompletionTextEdit(QtGui.QTextEdit):
     self.completer = None
     self.moveCursor(QtGui.QTextCursor.End)
 
-def setCompleter(self, completer):
+</t>
+<t tx="ekr.20110325142419.2341">def setCompleter(self, completer):
     if self.completer:
         self.disconnect(self.completer, 0, self, 0)
     if not completer:
@@ -7944,26 +7926,43 @@ def setCompleter(self, completer):
     self.connect(self.completer,
         QtCore.SIGNAL("activated(const QString&amp;)"), self.insertCompletion)
 
-def insertCompletion(self, completion):
+</t>
+<t tx="ekr.20110325142419.2342">def insertCompletion(self, completion):
+
     tc = self.textCursor()
     extra = (completion.length() -
         self.completer.completionPrefix().length())
+    
     tc.movePosition(QtGui.QTextCursor.Left)
     tc.movePosition(QtGui.QTextCursor.EndOfWord)
     tc.insertText(completion.right(extra))
     self.setTextCursor(tc)
 
-def textUnderCursor(self):
+</t>
+<t tx="ekr.20110325142419.2343">def textUnderCursor(self):
+
     tc = self.textCursor()
     tc.select(QtGui.QTextCursor.WordUnderCursor)
     return tc.selectedText()
 
-def focusInEvent(self, event):
+</t>
+<t tx="ekr.20110325144059.2350">def main():
+    
+    app = QtGui.QApplication([])
+    completer = DictionaryCompleter()
+    te = CompletionTextEdit()
+    te.setCompleter(completer)
+    te.show()
+    app.exec_()
+</t>
+<t tx="ekr.20110325144059.2351">def focusInEvent(self, event):
+
     if self.completer:
         self.completer.setWidget(self);
-    QtGui.QTextEdit.focusInEvent(self, event)
 
-def keyPressEvent(self, event):
+    QtGui.QTextEdit.focusInEvent(self, event)
+</t>
+<t tx="ekr.20110325144059.2352">def keyPressEvent(self, event):
     if self.completer and self.completer.popup().isVisible():
         if event.key() in (
         QtCore.Qt.Key_Enter,
@@ -8010,8 +8009,101 @@ def keyPressEvent(self, event):
     cr.setWidth(self.completer.popup().sizeHintForColumn(0)
         + self.completer.popup().verticalScrollBar().sizeHint().width())
     self.completer.complete(cr) ## popup it up!</t>
-<t tx="ekr.20110325142419.2341"></t>
-<t tx="ekr.20110325142419.2342"></t>
-<t tx="ekr.20110325142419.2343"></t>
+<t tx="ekr.20110325144059.2354">def keyPressEvent(self, event):
+    
+    '''Handle a key event from QCompleter.
+    Except for bare modifier key events,
+    this gets called *only* when the popup is showing!'''
+    
+    trace = False and not g.unitTesting
+
+    qt = QtCore.Qt
+    qc = self.q_completer
+    # Key abbreviations.
+    key = event.key()
+    mods = event.modifiers()
+    text = event.text()
+    is_mod = mods != qt.NoModifier
+   
+    if not qc:
+        if trace: g.trace('empty q_completer')
+        return
+
+    popup = qc.popup()
+    active = popup and popup.isVisible()
+    
+    if not active:
+        if trace: g.trace('not active: calling base class')
+        QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
+        return
+    
+    if trace:g.trace('text',repr(text))
+    
+    if is_mod and not text:
+        # A modifier key on it's own.
+        if trace: g.trace('bare mod key')
+        return
+    
+    if key in ('\r','\n',qt.Key_Enter,qt.Key_Return):
+        prefix = qc.completionPrefix()
+        if trace: g.trace('*** Select: %s' % prefix)
+        callback()
+        popup.hide()
+        return
+        
+    if key == qt.Key_Escape:
+        if trace: g.trace('*** Abort')
+        popup.hide()
+        return
+        
+    # Call the base class for all other keys, **including** tab and backspace keys.
+    if trace: g.trace('calling base class')
+    QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
+
+    prefix = self.textUnderCursor()
+    
+    if prefix != qc.completionPrefix():
+        qc.setCompletionPrefix(prefix)
+        popup.setCurrentIndex(qc.completionModel().index(0,0))
+
+    cr = self.cursorRect()
+    cr.setWidth(popup.sizeHintForColumn(0) +
+        popup.verticalScrollBar().sizeHint().width())</t>
+<t tx="ekr.20110325150734.2359">def textUnderCursor(self):
+
+    tc = self.textCursor()
+    tc.select(QtGui.QTextCursor.WordUnderCursor)
+    return tc.selectedText()
+</t>
+<t tx="ekr.20110325160920.2360">def callback(w=w):  
+
+    '''Called when user selects an item.'''
+
+    qc = w.q_completer
+    model = qc.completionModel()
+    i = qc.popup().currentIndex()
+    data = model.itemData(i)
+    completion = data.get(0,'')
+    prefix = qc.completionPrefix()
+    n = len(completion) - len(prefix)
+    if n &gt; 0:
+        tc = w.textCursor()
+        s2 = completion[-n:]
+        # g.trace('prefix',prefix,'completion',completion,'insert',s2)
+        tc.movePosition(tc.Left)
+        tc.movePosition(tc.EndOfWord)
+        tc.insertText(s2)
+        w.setTextCursor(tc)
+</t>
+<t tx="ekr.20110325160920.2361">options = (
+    'c.frame',
+    'c.frame.body',
+    'c.frame.body.bodyCtrl',
+    'bodyCtrl',
+    'bodyPane',
+    'bodyPane2',
+    'bodyView',
+)
+</t>
 </tnodes>
 </leo_file>
