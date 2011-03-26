@@ -103,23 +103,130 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         self.leo_c = c
         self.leo_wrapper = wrapper
         self.htmlFlag = True
+
         QtGui.QTextBrowser.__init__(self,parent)
         
         # For QCompleter
-        self.q_completer = None
-        
+        self.leo_q_completer = None
+        self.leo_q_callback = None
     #@+node:ekr.20110325075339.14479: *4*  __repr__ & __str__
     def __repr__ (self):
 
         return '(LeoQTextBrowser) %s' % id(self)
         
     __str__ = __repr__
-    #@+node:ekr.20110325075339.14476: *4* keyPressEvent LeoQTextBrowser
-    def keyPressEvent(self,event):
+    #@+node:ekr.20110325185230.14518: *4* Auto completion
+    #@+node:ekr.20110325185230.14521: *5* initCompleter
+    def initCompleter(self,options):
         
-        '''A do-nothing event handler for QCompleter'''
+        '''Connect a QCompleter.'''
         
-        pass
+        w = self
+        
+        qc = QtGui.QCompleter(options,w)
+        qc.setCompletionMode(qc.PopupCompletion)
+        qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        qc.setWidget(w)
+        
+        # Set the ivars.
+        w.leo_q_completer = qc
+        w.leo_q_callback = w.selectCallback
+
+        # Sent when the user selects an item.
+        qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
+
+        # Show the initial completions.
+        qc.popup().show()
+        qc.complete()
+        return qc
+    #@+node:ekr.20110325185230.14516: *5* keyPressEvent (LeoQTextBrowser)
+    def keyPressEvent(self, event):
+        
+        '''Handle a key event from QCompleter.
+        Except for bare modifier key events,
+        this gets called *only* when the popup is showing!'''
+        
+        trace = False and not g.unitTesting
+
+        qt = QtCore.Qt
+        callback = self.leo_q_callback
+        qc = self.leo_q_completer
+        # Key abbreviations.
+        key = event.key()
+        mods = event.modifiers()
+        text = event.text()
+        is_mod = mods != qt.NoModifier
+       
+        if not qc:
+            if trace: g.trace('empty leo_q_completer')
+            return
+
+        popup = qc.popup()
+        active = popup and popup.isVisible()
+        
+        if not active:
+            if trace: g.trace('not active: calling base class')
+            QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
+            return
+        
+        if trace:g.trace('text',repr(text))
+        
+        if is_mod and not text:
+            # A modifier key on it's own.
+            if trace: g.trace('bare mod key')
+            return
+        
+        if key in ('\r','\n',qt.Key_Enter,qt.Key_Return):
+            prefix = qc.completionPrefix()
+            if trace: g.trace('*** Select: %s' % prefix)
+            callback()
+            popup.hide()
+            return
+            
+        if key == qt.Key_Escape:
+            if trace: g.trace('*** Abort')
+            popup.hide()
+            return
+            
+        if key in (qt.Key_Tab, qt.Key_Backtab):
+            return
+            
+        # Call the base class for all other keys, **including** tab and backspace keys.
+        if trace: g.trace('calling base class')
+        QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
+
+        prefix = self.textUnderCursor()
+        
+        if prefix != qc.completionPrefix():
+            qc.setCompletionPrefix(prefix)
+            popup.setCurrentIndex(qc.completionModel().index(0,0))
+
+        cr = self.cursorRect()
+        cr.setWidth(popup.sizeHintForColumn(0) +
+            popup.verticalScrollBar().sizeHint().width())
+    #@+node:ekr.20110325185230.14523: *5* selectCallback
+    def selectCallback(self):  
+
+        '''Called when user selects an item in the QCompleter.'''
+
+        w = self
+        qc = w.leo_q_completer
+        model = qc.completionModel()
+        i = qc.popup().currentIndex()
+        data = model.itemData(i)
+        completion = data.get(0,'') # A hack.
+
+        # Replace the entire word under the cursor with completion.
+        tc = w.textCursor()
+        tc.select(tc.WordUnderCursor)
+        tc.insertText(completion)
+        w.setTextCursor(tc)
+    #@+node:ekr.20110325185230.14514: *5* textUnderCursor
+    def textUnderCursor(self):
+
+        tc = self.textCursor()
+        tc.select(QtGui.QTextCursor.WordUnderCursor)
+        return tc.selectedText()
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
             trace = False and not g.unitTesting
@@ -136,29 +243,22 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             else: kind = 'unknown: %s' % repr(button)
             if trace: g.trace(tag,kind)
             return kind
-    #@+node:ekr.20110304100725.14068: *4* mousePress/ReleaseEvent
+    #@+node:ekr.20110325185230.14519: *4* url support
+    #@+node:ekr.20110304100725.14068: *5* mousePress/ReleaseEvent
     # def mousePressEvent (self,event):
         # QtGui.QTextBrowser.mousePressEvent(self,event)
         
     def mouseReleaseEvent(self,event):
         self.onMouseUp(event)
         QtGui.QTextBrowser.mouseReleaseEvent(self,event)
-    #@+node:ekr.20110304100725.14066: *4* onMouseUp
+    #@+node:ekr.20110304100725.14066: *5* onMouseUp
     def onMouseUp(self,event=None):
 
         # Open the url on a control-click.
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             openURL(event)
-    #@+node:ekr.20110325185230.14514: *4* textUnderCursor
-    def textUnderCursor(self):
-
-        tc = self.textCursor()
-        tc.select(QtGui.QTextCursor.WordUnderCursor)
-        return tc.selectedText()
     #@-others
-
-    
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
 #@+node:ekr.20081121105001.516: *3*  << define leoQtBaseTextWidget class >>
@@ -2788,30 +2888,6 @@ class leoQtBody (leoFrame.leoBody):
     def toPythonIndex (self,index):         return self.widget.toPythonIndex(index)
     toGuiIndex = toPythonIndex
     def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
-    #@+node:vivainio.20091223153142.4072: *4* Completer (qtBody)
-    def showCompleter(self, alternatives, selected_cb):
-        """ Show 'autocompleter' widget in body
-
-        For example::
-
-            w.showCompleter(['hello', 'helloworld'], mycallback )
-
-        Here, 'hello' and 'helloworld' are the presented options.
-
-        selected_cb should typically insert the selected text (it receives as arg) to 
-        the body
-
-        """
-        wdg = self.widget.widget
-
-        # wdg:QTextEdit
-
-        cpl = self.completer = QtGui.QCompleter(alternatives)
-        cpl.setWidget(wdg)
-        f = selected_cb
-        cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
-        cpl.complete()
-        return cpl
     #@+node:ekr.20081121105001.212: *4* Editors (qtBody)
     #@+node:ekr.20081121105001.215: *5* entries
     #@+node:ekr.20081121105001.216: *6* addEditor & helper (qtBody)
@@ -8634,9 +8710,6 @@ class leoQtEventFilter(QtCore.QObject):
                 isEditWidget,
                 eventType == ev.KeyRelease,
                 eventType == ev.KeyPress)
-        elif False: ### eventType == ev.ShortcutOverride and self.ctagscompleter_active:
-            # Another hack: QCompleter generates ShortcutOverride.
-            self.keyIsActive = True
         else:
             self.keyIsActive = False
 

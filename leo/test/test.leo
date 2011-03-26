@@ -617,9 +617,6 @@
 <v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh>
 <v t="ekr.20110325185926.2360"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
-<v t="ekr.20110325160920.2360"><vh>callback</vh></v>
-<v t="ekr.20110325142240.2509"><vh>connectCompleter</vh></v>
-<v t="ekr.20110325144059.2354"><vh>keyPressEvent (monkey-patched into LeoQTextBrowser)</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1046,7 +1043,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7830,43 +7827,16 @@ if 0:
 <t tx="ekr.20110325142240.2508">&lt;&lt; imports &gt;&gt;
 &lt;&lt; define options &gt;&gt;
 
-# Define vars.
-body = c.frame.body
-w = body.bodyCtrl.widget # w is a QTextBrowserSubclass.
-
-@others
-
-# Inject methods into LeoQTextBrowser.
-g.funcToMethod(keyPressEvent,qtGui.LeoQTextBrowser,name=None)
-
 # Setup the QCompleter.
-qc = connectCompleter(w,callback,options) # qc is a QCompleter
-qc.popup().show()
+w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
+qc = w.initCompleter(options) # A QCompleter
 
 # Put the cursor at the end for testing.
+body = c.frame.body
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
-# Testing area: c.frame.bodyPane</t>
-<t tx="ekr.20110325142240.2509">def connectCompleter(w,callback,options):
-    
-    '''Connect a QCompleter for w.'''
-
-    qc = QtGui.QCompleter(options,w)
-    qc.setCompletionMode(qc.PopupCompletion)
-    qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-    qc.setWidget(w)
-
-    # Sent when the user selects an item.
-    qc.connect(qc,QtCore.SIGNAL("activated(QString)"),callback)
-    
-    # Set the ivar in w.
-    w.leo_q_completer = qc
-    
-    # Show the initial completions.
-    qc.complete()
-    return qc
-</t>
+# Testing area: c.frame.bodyPane2</t>
 <t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
 
 @others
@@ -8003,89 +7973,6 @@ if __name__ == "__main__":
     cr.setWidth(self.completer.popup().sizeHintForColumn(0)
         + self.completer.popup().verticalScrollBar().sizeHint().width())
     self.completer.complete(cr) ## popup it up!</t>
-<t tx="ekr.20110325144059.2354">def keyPressEvent(self, event):
-    
-    '''Handle a key event from QCompleter.
-    Except for bare modifier key events,
-    this gets called *only* when the popup is showing!'''
-    
-    trace = False and not g.unitTesting
-
-    qt = QtCore.Qt
-    qc = self.leo_q_completer
-    # Key abbreviations.
-    key = event.key()
-    mods = event.modifiers()
-    text = event.text()
-    is_mod = mods != qt.NoModifier
-   
-    if not qc:
-        if trace: g.trace('empty leo_q_completer')
-        return
-
-    popup = qc.popup()
-    active = popup and popup.isVisible()
-    
-    if not active:
-        if trace: g.trace('not active: calling base class')
-        QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
-        return
-    
-    if trace:g.trace('text',repr(text))
-    
-    if is_mod and not text:
-        # A modifier key on it's own.
-        if trace: g.trace('bare mod key')
-        return
-    
-    if key in ('\r','\n',qt.Key_Enter,qt.Key_Return):
-        prefix = qc.completionPrefix()
-        if trace: g.trace('*** Select: %s' % prefix)
-        callback()
-        popup.hide()
-        return
-        
-    if key == qt.Key_Escape:
-        if trace: g.trace('*** Abort')
-        popup.hide()
-        return
-        
-    if key in (qt.Key_Tab, qt.Key_Backtab):
-        return
-        
-    # Call the base class for all other keys, **including** tab and backspace keys.
-    if trace: g.trace('calling base class')
-    QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
-
-    prefix = self.textUnderCursor()
-    
-    if prefix != qc.completionPrefix():
-        qc.setCompletionPrefix(prefix)
-        popup.setCurrentIndex(qc.completionModel().index(0,0))
-
-    cr = self.cursorRect()
-    cr.setWidth(popup.sizeHintForColumn(0) +
-        popup.verticalScrollBar().sizeHint().width())</t>
-<t tx="ekr.20110325160920.2360">def callback(w=w):  
-
-    '''Called when user selects an item.'''
-
-    qc = w.leo_q_completer
-    model = qc.completionModel()
-    i = qc.popup().currentIndex()
-    data = model.itemData(i)
-    completion = data.get(0,'')
-    prefix = qc.completionPrefix()
-    # n = len(completion) - len(prefix)
-    # if n &gt; 0:
-
-    # Replace entire word with completion.
-    tc = w.textCursor()
-    # g.trace('prefix',prefix,'completion',completion)
-    tc.select(tc.WordUnderCursor)
-    tc.insertText(completion)
-    w.setTextCursor(tc)
-</t>
 <t tx="ekr.20110325160920.2361">options = (
     'c.frame',
     'c.frame.body',

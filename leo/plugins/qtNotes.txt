@@ -26,12 +26,6 @@ def cascade (self,event=None):
                 x = 10 + delta ; y = 40 + delta
                 delta += 10
 #@+node:ekr.20100223114506.3698: *3* Should leoQtMenu.index do something?
-#@+node:ekr.20090429101847.10: *3* Support canvas widgets in all panes
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
-
-add-canvas: Like add-editor, but it creates a canvas area, not a text area.
 #@+node:ekr.20081215162017.4: *3* Allow coloring of script buttons
 @nocolor-node
 
@@ -67,13 +61,6 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@+node:ekr.20110119065600.3895: ** Leo 4.9 devel
-#@+node:ekr.20101007215714.3751: *3* Qcompleter test
-w = c.frame.body
-
-def callback(val):
-    g.trace(val)
-
-w.showCompleter(['hello','helloworld'],callback)
 #@+node:ekr.20110117083659.3792: *3* Allow multiple @language directives
 @nocolor-node
 
@@ -5456,5 +5443,30 @@ def showTextRenderer (self,event=None):
     # self.selectEditor(wrapper)
     # self.updateEditors()
     # c.bodyWantsFocus()
+#@+node:ekr.20110325185230.14517: ** Unused code
+#@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
+def showCompleter(self, alternatives, selected_cb):
+    """ Show 'autocompleter' widget in body
+
+    For example::
+
+        w.showCompleter(['hello', 'helloworld'], mycallback )
+
+    Here, 'hello' and 'helloworld' are the presented options.
+
+    selected_cb should typically insert the selected text (it receives as arg) to 
+    the body
+
+    """
+    wdg = self.widget.widget
+
+    # wdg:QTextEdit
+
+    cpl = self.completer = QtGui.QCompleter(alternatives)
+    cpl.setWidget(wdg)
+    f = selected_cb
+    cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
+    cpl.complete()
+    return cpl
 #@-all
 #@-leo
