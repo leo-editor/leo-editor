@@ -7835,7 +7835,7 @@ body.setInsertPoint(len(s))
 w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
 w.initCompleter()
 
-# Testing area: c.frame.W</t>
+# Testing area: c.frame.a</t>
 <t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
 
 @others

@@ -151,9 +151,15 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 # A leoQTextEditWidget
             
             # Computer the initial options.
-            codewiseCompleter.prefix = w.getPrefix()
-            w.leo_options = options = codewiseCompleter.complete()
+            codewiseCompleter.prefix = '' # w.getPrefix()
+            
             # g.trace(len(options))
+            
+            if g.isPython3:
+                w.leo_options = options = codewiseCompleter.complete()
+            else:
+                # Work around a codewise bug.
+                w.leo_options = options = ('abc:abc','pdq:pdq','xyz:xyz',)
             
             if 1:
                 w.leo_q_completer = qc = QtGui.QCompleter(options,w)
@@ -262,6 +268,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         i = popup.currentIndex()
         data = model.itemData(i)
         completion = data.get(0,'') # A hack.
+        
+        # g.trace(type(completion))
+
+        if isinstance(completion,QtCore.QVariant):
+            # This is only true with Python 2K.
+            # For Python 2K the type is str.
+            completion = g.toUnicode(completion.toString())
 
         # Replace the completion by what precedes the first colon.
         completion,junk = completion.split(':',1)
