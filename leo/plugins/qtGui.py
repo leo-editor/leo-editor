@@ -196,7 +196,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if key in (qt.Key_Tab, qt.Key_Backtab):
             return
             
-        # Call the base class for all other keys, **including** tab and backspace keys.
+        # Call the base class for all other keys, including backspace keys.
         if trace: g.trace('calling base class')
         QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
 
