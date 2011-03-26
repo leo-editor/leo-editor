@@ -108,7 +108,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         # For QCompleter
         self.leo_q_completer = None
-        self.leo_q_callback = None
     #@+node:ekr.20110325075339.14479: *4*  __repr__ & __str__
     def __repr__ (self):
 
@@ -116,6 +115,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
     __str__ = __repr__
     #@+node:ekr.20110325185230.14518: *4* Auto completion
+    #@+node:ekr.20110325185230.14524: *5* endCompleter
+    def endCompleter(self):
+        
+        w = self
+        qc = w.leo_q_completer
+        
+        qc.popup().hide()
+        w.leo_q_completer = None
     #@+node:ekr.20110325185230.14521: *5* initCompleter
     def initCompleter(self,options):
         
@@ -123,14 +130,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         w = self
         
-        qc = QtGui.QCompleter(options,w)
-        qc.setCompletionMode(qc.PopupCompletion)
-        qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        qc.setWidget(w)
+        if not w.leo_q_completer:
         
-        # Set the ivars.
-        w.leo_q_completer = qc
-        w.leo_q_callback = w.selectCallback
+            w.leo_q_completer = qc = QtGui.QCompleter(options,w)
+            qc.setCompletionMode(qc.PopupCompletion)
+            qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+            qc.setWidget(w)
 
         # Sent when the user selects an item.
         qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
@@ -148,8 +153,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         trace = False and not g.unitTesting
 
+        w = self
         qt = QtCore.Qt
-        callback = self.leo_q_callback
         qc = self.leo_q_completer
         # Key abbreviations.
         key = event.key()
@@ -167,6 +172,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if not active:
             if trace: g.trace('not active: calling base class')
             QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
+            w.endCompleter()
             return
         
         if trace:g.trace('text',repr(text))
@@ -179,13 +185,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if key in ('\r','\n',qt.Key_Enter,qt.Key_Return):
             prefix = qc.completionPrefix()
             if trace: g.trace('*** Select: %s' % prefix)
-            callback()
-            popup.hide()
+            w.selectCallback()
             return
             
         if key == qt.Key_Escape:
             if trace: g.trace('*** Abort')
-            popup.hide()
+            self.endCompleter()
             return
             
         if key in (qt.Key_Tab, qt.Key_Backtab):
@@ -212,7 +217,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         w = self
         qc = w.leo_q_completer
         model = qc.completionModel()
-        i = qc.popup().currentIndex()
+        popup = qc.popup()
+        i = popup.currentIndex()
         data = model.itemData(i)
         completion = data.get(0,'') # A hack.
 
@@ -221,6 +227,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         tc.select(tc.WordUnderCursor)
         tc.insertText(completion)
         w.setTextCursor(tc)
+        
+        # Finish.
+        w.endCompleter()
     #@+node:ekr.20110325185230.14514: *5* textUnderCursor
     def textUnderCursor(self):
 
