@@ -1043,7 +1043,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7829,14 +7829,14 @@ if 0:
 
 # Setup the QCompleter.
 w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
-qc = w.initCompleter(options) # A QCompleter
+w.initCompleter(options)
 
 # Put the cursor at the end for testing.
 body = c.frame.body
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
-# Testing area: c.frame.bodyPane2</t>
+# Testing area: c.frame.bod</t>
 <t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
 
 @others
