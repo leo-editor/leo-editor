@@ -7825,18 +7825,17 @@ if 0:
    &lt;/g&gt;
 &lt;/svg&gt;</t>
 <t tx="ekr.20110325142240.2508">&lt;&lt; imports &gt;&gt;
-&lt;&lt; define options &gt;&gt;
-
-# Setup the QCompleter.
-w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
-w.initCompleter(options)
 
 # Put the cursor at the end for testing.
 body = c.frame.body
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
-# Testing area: c.frame.bod</t>
+# Setup the QCompleter.
+w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
+w.initCompleter()
+
+# Testing area: c.frame.W</t>
 <t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
 
 @others

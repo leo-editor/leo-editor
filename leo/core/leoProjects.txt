@@ -10024,10 +10024,13 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.defineMultiLineCommands()
     use_codewise = not self.isLeoSourceFile()
     fn = c.shortFileName()
+    # 2011/03/26: always define .codewiseCompleter for QCompleter.
     if use_codewise:
         self.autoCompleter = CodewiseCompleterClass(self)
+        self.codewiseCompleter = self.autoCompleter
     else:
         self.autoCompleter = AutoCompleterClass(self)
+        self.codewiseCompleter = CodewiseCompleterClass(self)
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
 #@+node:ekr.20061031131434.78: *8* << define externally visible ivars >>

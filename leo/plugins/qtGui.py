@@ -108,6 +108,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         # For QCompleter
         self.leo_q_completer = None
+        self.leo_options = None
+        self.leo_model = None
     #@+node:ekr.20110325075339.14479: *4*  __repr__ & __str__
     def __repr__ (self):
 
@@ -118,25 +120,53 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20110325185230.14524: *5* endCompleter
     def endCompleter(self):
         
-        w = self
-        qc = w.leo_q_completer
+        w = self ; qc = w.leo_q_completer
+        
+        qc.disconnect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
         
         qc.popup().hide()
+        
+        # qc.destroyLater does not exist.
+        
         w.leo_q_completer = None
+    #@+node:ekr.20110326063921.14459: *5* getPrefix
+    def getPrefix (self):
+        
+        return self.textUnderCursor()[:1] # Just use the first character.
     #@+node:ekr.20110325185230.14521: *5* initCompleter
-    def initCompleter(self,options):
+    def initCompleter(self):
         
         '''Connect a QCompleter.'''
         
-        w = self
+        w = self ; c = w.leo_c ; k = c.k
         
-        if not w.leo_q_completer:
+        codewiseCompleter = k.codewiseCompleter
         
-            w.leo_q_completer = qc = QtGui.QCompleter(options,w)
+        if w.leo_q_completer:
+            g.trace('can not happen: leo_q_completer exists')
+        else:
+            # A hack: these are also set in completer.start.
+            codewiseCompleter.body = self # A LeoQTextBrowser.
+            codewiseCompleter.widget = c.frame.body.bodyCtrl
+                # A leoQTextEditWidget
+            
+            # Computer the initial options.
+            codewiseCompleter.prefix = w.getPrefix()
+            w.leo_options = options = codewiseCompleter.complete()
+            # g.trace(len(options))
+            
+            if 1:
+                w.leo_q_completer = qc = QtGui.QCompleter(options,w)
+            else:
+                # Crashes.
+                w.leo_q_completer = qc = QtGui.QCompleter(w)
+                w.leo_model = QtGui.QStringListModel(options)
+                qc.setModel(w.leo_model)
+
             qc.setCompletionMode(qc.PopupCompletion)
             qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
             qc.setWidget(w)
-
+        
         # Sent when the user selects an item.
         qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
 
@@ -153,7 +183,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         trace = False and not g.unitTesting
 
-        w = self
+        w = self ; c = w.leo_c ; k = c.k
+        codewiseCompleter = k.codewiseCompleter
         qt = QtCore.Qt
         qc = self.leo_q_completer
         # Key abbreviations.
@@ -202,6 +233,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         prefix = self.textUnderCursor()
         
+        # Check whether we must recompute all options...
+        # codewiseCompleter.prefix = w.getPrefix()
+        # options = codewiseCompleter.complete()
+        
+        # if options != w.leo_options:
+            # g.trace('*** calling qc.setModel()',options)
+            # w.leo_options = options
+            # model = QtGui.QStringListModel(w.leo_options)
+            # qc.setModel(model)
+
         if prefix != qc.completionPrefix():
             qc.setCompletionPrefix(prefix)
             popup.setCurrentIndex(qc.completionModel().index(0,0))
@@ -214,7 +255,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         '''Called when user selects an item in the QCompleter.'''
 
-        w = self
+        w = self ; c = w.leo_c
         qc = w.leo_q_completer
         model = qc.completionModel()
         popup = qc.popup()
@@ -222,12 +263,19 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         data = model.itemData(i)
         completion = data.get(0,'') # A hack.
 
+        # Replace the completion by what precedes the first colon.
+        completion,junk = completion.split(':',1)
+        completion = completion.strip()
+
         # Replace the entire word under the cursor with completion.
         tc = w.textCursor()
         tc.select(tc.WordUnderCursor)
         tc.insertText(completion)
         w.setTextCursor(tc)
         
+        # Mark c changed.
+        c.setChanged(True)
+
         # Finish.
         w.endCompleter()
     #@+node:ekr.20110325185230.14514: *5* textUnderCursor

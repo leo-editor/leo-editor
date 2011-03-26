@@ -1280,10 +1280,13 @@ class keyHandlerClass:
         self.defineMultiLineCommands()
         use_codewise = not self.isLeoSourceFile()
         fn = c.shortFileName()
+        # 2011/03/26: always define .codewiseCompleter for QCompleter.
         if use_codewise:
             self.autoCompleter = CodewiseCompleterClass(self)
+            self.codewiseCompleter = self.autoCompleter
         else:
             self.autoCompleter = AutoCompleterClass(self)
+            self.codewiseCompleter = CodewiseCompleterClass(self)
         self.setDefaultUnboundKeyAction()
         self.setDefaultEditingAction() # 2011/02/09
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
@@ -4619,7 +4622,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
         
         c = self.c
         
-        self.body = None    # Set in start: a QTextBrowserSubclass
+        self.body = None    # Set in start: a LeoQTextBrowser
         self.widget = None  # Set in start: a leoQTextEditWidget
         self.tabName = 'Completions'
     #@+node:ekr.20110314123044.14271: *3* showAutocompleter/CalltipsStatus
@@ -4783,7 +4786,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
     def start (self,event=None,w=None,prefix=None):
 
         c = self.c
-        self.body = c.frame.top.ui.richTextEdit # A QTextBrowserSubclass.
+        self.body = c.frame.top.ui.richTextEdit # A LeoQTextBrowser.
         self.widget = c.frame.body.bodyCtrl # A leoQTextEditWidget.
 
         self.prefix = g.choose(prefix is None,'',prefix)
