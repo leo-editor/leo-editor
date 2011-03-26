@@ -615,6 +615,7 @@
 <v t="ekr.20110325144059.2350"><vh>main</vh></v>
 </v>
 <v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh>
+<v t="ekr.20110325185926.2360"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
 <v t="ekr.20110325160920.2360"><vh>callback</vh></v>
 <v t="ekr.20110325142240.2509"><vh>connectCompleter</vh></v>
@@ -1045,7 +1046,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7826,12 +7827,7 @@ if 0:
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
-<t tx="ekr.20110325142240.2508"># import os ; os.system('cls')
-
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-import leo.plugins.qtGui as qtGui
-
+<t tx="ekr.20110325142240.2508">&lt;&lt; imports &gt;&gt;
 &lt;&lt; define options &gt;&gt;
 
 # Define vars.
@@ -7851,13 +7847,14 @@ qc.popup().show()
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
-# Testing area: c.frame.bodyPane2</t>
+# Testing area: c.frame.bodyPane</t>
 <t tx="ekr.20110325142240.2509">def connectCompleter(w,callback,options):
     
     '''Connect a QCompleter for w.'''
 
     qc = QtGui.QCompleter(options,w)
     qc.setCompletionMode(qc.PopupCompletion)
+    qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     qc.setWidget(w)
 
     # Sent when the user selects an item.
@@ -8079,15 +8076,15 @@ if __name__ == "__main__":
     data = model.itemData(i)
     completion = data.get(0,'')
     prefix = qc.completionPrefix()
-    n = len(completion) - len(prefix)
-    if n &gt; 0:
-        tc = w.textCursor()
-        s2 = completion[-n:]
-        g.trace('prefix',prefix,'completion',completion,'insert',s2)
-        tc.movePosition(tc.Left)
-        tc.movePosition(tc.EndOfWord)
-        tc.insertText(s2)
-        w.setTextCursor(tc)
+    # n = len(completion) - len(prefix)
+    # if n &gt; 0:
+
+    # Replace entire word with completion.
+    tc = w.textCursor()
+    # g.trace('prefix',prefix,'completion',completion)
+    tc.select(tc.WordUnderCursor)
+    tc.insertText(completion)
+    w.setTextCursor(tc)
 </t>
 <t tx="ekr.20110325160920.2361">options = (
     'c.frame',
@@ -8098,6 +8095,12 @@ if __name__ == "__main__":
     'bodyPane2',
     'bodyView',
 )
+</t>
+<t tx="ekr.20110325185926.2360"># import os ; os.system('cls')
+
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as qtGui
 </t>
 </tnodes>
 </leo_file>
