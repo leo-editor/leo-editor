@@ -117,18 +117,28 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
     __str__ = __repr__
     #@+node:ekr.20110325185230.14518: *4* Auto completion
+    #@+node:ekr.20110326063921.14465: *5* destroyedCallback
+    def destroyedCallback(self,obj):
+        
+        w = self ; c = w.leo_c
+        
+        # g.trace(obj)
+        
+        w.setFocus() # Does not work.
+        c.bodyWantsFocusNow() # Does not work.
     #@+node:ekr.20110325185230.14524: *5* endCompleter
     def endCompleter(self):
         
-        w = self ; qc = w.leo_q_completer
+        w = self ; c = w.leo_c ; qc = w.leo_q_completer
         
         qc.disconnect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
         
         qc.popup().hide()
-        
-        # qc.destroyLater does not exist.
-        
+        qc.deleteLater()
         w.leo_q_completer = None
+        
+        w.setFocus() # Does not work.
+        c.bodyWantsFocus() # Does not work.
     #@+node:ekr.20110326063921.14459: *5* getPrefix
     def getPrefix (self):
         
@@ -151,9 +161,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 # A leoQTextEditWidget
             
             # Computer the initial options.
-            codewiseCompleter.prefix = '' # w.getPrefix()
-            
-            # g.trace(len(options))
+            codewiseCompleter.prefix = w.getPrefix()
             
             if g.isPython3:
                 w.leo_options = options = codewiseCompleter.complete()
@@ -161,7 +169,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 # Work around a codewise bug.
                 w.leo_options = options = ('abc:abc','pdq:pdq','xyz:xyz',)
             
-            if 1:
+            if 0:
                 w.leo_q_completer = qc = QtGui.QCompleter(options,w)
             else:
                 # Crashes.
@@ -175,6 +183,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         # Sent when the user selects an item.
         qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
+        qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),w.destroyedCallback)
 
         # Show the initial completions.
         qc.popup().show()
@@ -277,20 +286,25 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             completion = g.toUnicode(completion.toString())
 
         # Replace the completion by what precedes the first colon.
-        completion,junk = completion.split(':',1)
+        try:
+            completion,junk = completion.split(':',1)
+        except Exception:
+            pass # Use the entire completion.
+
         completion = completion.strip()
 
         # Replace the entire word under the cursor with completion.
+        w.setFocus()
         tc = w.textCursor()
         tc.select(tc.WordUnderCursor)
         tc.insertText(completion)
         w.setTextCursor(tc)
         
-        # Mark c changed.
-        c.setChanged(True)
-
         # Finish.
         w.endCompleter()
+        
+        # Mark c changed.
+        c.setChanged(True)
     #@+node:ekr.20110325185230.14514: *5* textUnderCursor
     def textUnderCursor(self):
 
