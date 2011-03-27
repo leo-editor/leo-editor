@@ -1648,7 +1648,7 @@ class rstCommands:
             if not toString:
                 self.createIntermediateFile(fn,self.source)
 
-        if callDocutils and ext in ('.htm','.html','.tex','.pdf'):
+        if callDocutils and ext in ('.htm','.html','.tex','.pdf','.s5','.odt'):
             self.stringOutput = s = self.writeToDocutils(self.source,ext)
             if s and isHtml:
                  self.stringOutput = s = self.addTitleToHtml(s)
@@ -1742,6 +1742,8 @@ class rstCommands:
             ('.htm','html'),
             ('.tex','latex'),
             ('.pdf','leo_pdf'),
+            ('.s5','s5'), # 2011/03/27
+            ('.odt','odt'), # 2011/03/27
         ):
             if ext2 == ext:
                 break
