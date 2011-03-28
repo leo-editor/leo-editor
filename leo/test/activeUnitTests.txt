@@ -5090,8 +5090,8 @@ if sys.platform == 'win32':
     assert(not darwin)
 
 elif sys.platform== 'darwin':
-    assert(win32)
-    assert(not darwin)
+    assert(not win32)
+    assert(darwin)
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 # g.es(c.page_width)
