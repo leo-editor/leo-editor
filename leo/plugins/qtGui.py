@@ -8770,7 +8770,7 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
-        verbose = False
+        verbose = True
         traceEvent = False
         traceKey = (True or self.trace_masterKeyHandler)
         traceFocus = False
@@ -8868,7 +8868,7 @@ class leoQtEventFilter(QtCore.QObject):
         d = {
             qt.Key_Shift:   'Key_Shift',
             qt.Key_Control: 'Key_Control',  # MacOS: Command key
-            qt.Key_Meta:	'Key_Meta',     # MacOS: Control key   
+            qt.Key_Meta:	'Key_Meta',     # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
             qt.Key_Alt:	    'Key_Alt',	 
             qt.Key_AltGr:	'Key_AltGr',
                 # On Windows, when the KeyDown event for this key is sent,
@@ -8912,14 +8912,27 @@ class leoQtEventFilter(QtCore.QObject):
         # in k.masterGuiBindingsDict
 
         qt = QtCore.Qt
-        table = (
-            (qt.AltModifier,     'Alt'),
-            (qt.ControlModifier, 'Control'),
-            (qt.MetaModifier,    'Meta'),
-            (qt.ShiftModifier,   'Shift'),
-        )
+        
+        if sys.platform.startswith('darwin'):
+            # Yet another MacOS hack:
+            table = (
+                (qt.AltModifier,     'Alt'), # For Apple keyboard.
+                (qt.MetaModifier,    'Alt'), # For Microsoft keyboard.
+                (qt.ControlModifier, 'Control'),
+                # No way to generate Meta.
+                (qt.ShiftModifier,   'Shift'),
+            )
+            
+        else:
+            table = (
+                (qt.AltModifier,     'Alt'),
+                (qt.ControlModifier, 'Control'),
+                (qt.MetaModifier,    'Meta'),
+                (qt.ShiftModifier,   'Shift'),
+            )
 
         mods = [b for a,b in table if (modifiers & a)]
+        #g.trace(mods)
 
         return mods
     #@+node:ekr.20081121105001.174: *4* tkKey
