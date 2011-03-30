@@ -5443,6 +5443,22 @@ def showTextRenderer (self,event=None):
     # self.selectEditor(wrapper)
     # self.updateEditors()
     # c.bodyWantsFocus()
+#@+node:edward.20110330154504.3866: *3* Fixed MacOS Command-C bug
+# k.masterMenuHandler is called instead of k.masterKeyHandler.
+#@+node:edward.20110330105340.3843: *4* wrapQLineEdit (nativeTree)
+def wrapQLineEdit (self,w):
+    
+    '''A wretched kludge for MacOs k.masterMenuHandler.'''
+    c = self.c
+    
+    if isinstance(w,QtGui.QLineEdit):
+        wrapper = self.edit_widget(c.p)
+    else:
+        wrapper = w
+        
+    # g.trace(wrapper)
+    return wrapper
+        
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):

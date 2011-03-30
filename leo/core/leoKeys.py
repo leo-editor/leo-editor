@@ -3352,8 +3352,13 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         w = c.frame.getFocus()
-
-        # g.trace('focus',w)
+        
+        if (sys.platform.startswith('darwin') and
+            g.app.gui.guiName().lower().startswith('qt')
+        ):
+            # A wretched kludge for MacOS Command-C, etc.
+            w = c.frame.tree.wrapQLineEdit(w)
+            
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.

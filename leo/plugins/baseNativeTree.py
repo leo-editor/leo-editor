@@ -13,6 +13,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 
+import PyQt4.QtGui as QtGui
+
 class baseNativeTreeWidget (leoFrame.leoTree):
 
     """The base class for native tree widgets.
@@ -729,7 +731,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if e:
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e,item)
-                # if trace: g.trace(e,p and p.h)
+                if trace: g.trace(e,p and p.h,g.callers())
                 return w
             else:
                 # This is not an error
@@ -1062,6 +1064,20 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
     def setVScroll (self,vPos):
         pass
+    #@+node:edward.20110330105340.3843: *3* wrapQLineEdit (nativeTree)
+    def wrapQLineEdit (self,w):
+        
+        '''A wretched kludge for MacOs k.masterMenuHandler.'''
+        c = self.c
+        
+        if isinstance(w,QtGui.QLineEdit):
+            wrapper = self.edit_widget(c.p)
+        else:
+            wrapper = w
+            
+        # g.trace(wrapper)
+        return wrapper
+            
     #@+node:ekr.20090124174652.62: ** Widget-independent helpers
     #@+node:ekr.20090124174652.63: *3* Associating items and positions
     #@+node:ekr.20090124174652.64: *4* item dict getters

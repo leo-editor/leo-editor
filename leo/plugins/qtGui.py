@@ -7170,11 +7170,13 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         
         if e:
             wrapper = self.editWidgetsDict.get(e)
-            if not wrapper:
+            if wrapper:
+                if trace: g.trace('old wrapper',e,wrapper,g.callers())
+            else:
                 if item:
                     # 2011/02/12: item can be None.
                     wrapper = self.headlineWrapper(c,item,name='head',widget=e)
-                    if trace: g.trace('new wrapper',e,wrapper)
+                    if trace: g.trace('new wrapper',e,wrapper,g.callers())
                     self.editWidgetsDict[e] = wrapper
                 else:
                     if trace: g.trace('no item and no wrapper',
@@ -8769,10 +8771,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168: *4* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+        trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
         traceEvent = False
-        traceKey = (True or self.trace_masterKeyHandler)
+        traceKey = (False or self.trace_masterKeyHandler)
         traceFocus = False
         c = self.c ; k = c.k
         eventType = event.type()
@@ -8785,15 +8787,18 @@ class leoQtEventFilter(QtCore.QObject):
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
         if trace and traceFocus: self.traceFocus(eventType,obj)
-
-        # A hack. QLineEdit generates ev.KeyRelease only.
-        if eventType in (ev.KeyPress,ev.KeyRelease):
+        
+        # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+        lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+            
+        if eventType in lineEditKeyKinds:
             p = c.currentPosition()
             isEditWidget = obj == c.frame.tree.edit_widget(p)
             self.keyIsActive = g.choose(
                 isEditWidget,
                 eventType == ev.KeyRelease,
                 eventType == ev.KeyPress)
+            # g.trace(isEditWidget,eventType,obj)
         else:
             self.keyIsActive = False
 
@@ -8815,8 +8820,8 @@ class leoQtEventFilter(QtCore.QObject):
                 override = not ignore # allow all keystrokes.
             else:
                 override = len(aList) > 0
-            if trace and verbose: g.trace(
-                tkKey,len(aList),'ignore',ignore,'override',override)
+            # if trace and verbose: g.trace(
+                # tkKey,len(aList),'ignore',ignore,'override',override)
         else:
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
@@ -8834,16 +8839,22 @@ class leoQtEventFilter(QtCore.QObject):
             elif override:
                 if trace and traceKey and not ignore:
                     g.trace('bound',repr(stroke)) # repr(aList))
+                # g.trace('** using wrapper',self.w)
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-                # g.trace(repr(ret))
                 c.outerUpdate()
             else:
                 if trace and traceKey and verbose:
                     g.trace(self.tag,'unbound',tkKey,stroke)
+            
+            if trace and traceKey:
+                # Trace key events.
+                self.traceEvent(obj,event,tkKey,override)
 
-        if trace and traceEvent: self.traceEvent(obj,event,tkKey,override)
+        elif trace and traceEvent:
+            # Trace non-key events.
+            self.traceEvent(obj,event,tkKey,override)
 
         return override
     #@+node:ekr.20081121105001.182: *4* isSpecialOverride (simplified)
@@ -9039,7 +9050,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         show = [
             # (e.Enter,'enter'),(e.Leave,'leave'),
-            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            # (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
             # (e.MouseMove,'mouse-move'),
             (e.MouseButtonPress,'mouse-dn'),
             (e.MouseButtonRelease,'mouse-up'),
@@ -9065,7 +9076,8 @@ class leoQtEventFilter(QtCore.QObject):
             e.HoverEnter,e.HoverLeave,e.HoverMove,
             e.LayoutRequest,
             e.MetaCall,e.Move,e.Paint,e.Resize,
-            # e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+            e.MouseMove,
+            #e.MouseButtonPress,e.MouseButtonRelease,
             e.PaletteChange,
             e.ParentChange,
             e.Polish,e.PolishRequest,
@@ -9080,12 +9092,12 @@ class leoQtEventFilter(QtCore.QObject):
         for val,kind in show:
             if eventType == val:
                 g.trace(
-                    '%5s %18s in-state: %5s key: %s override: %s' % (
-                    self.tag,kind,repr(c.k.inState()),tkKey,override))
+                    '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
+                    self.tag,kind,repr(c.k.inState()),tkKey,override,obj))
                 return
 
         if traceAll and eventType not in ignore:
-            g.trace('%3s:%s' % (eventType,'unknown'))
+            g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
     #@+node:ekr.20090407080217.1: *4* traceFocus
     def traceFocus (self,eventType,obj):
 

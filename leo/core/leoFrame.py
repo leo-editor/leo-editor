@@ -1643,7 +1643,9 @@ class leoFrame:
         '''Copy the selected text from the widget to the clipboard.'''
 
         f = self ; c = f.c ; w = event and event.widget
-        # g.trace(w,g.callers(5))
+        
+        # g.trace(w,g.app.gui.isTextWidget(w),g.callers())
+
         if not w or not g.app.gui.isTextWidget(w): return
 
         # Set the clipboard text.
