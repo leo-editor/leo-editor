@@ -4318,41 +4318,37 @@ class editCommandsClass (baseEditCommandsClass):
 
         s = w.getAllText()
         sel_1,sel_2 = w.getSelectionRange()
+        insert_pt = w.getInsertPoint() # 2011/04/01
         i,junk = g.getLine(s,sel_1)
         i2,j   = g.getLine(s,sel_2)
         lines  = s[i:j]
+
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        n = i2-i 
-        # g.trace('lines',repr(lines))
-
+        n = i2-i
+        # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
+        #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
         self.beginCommand(undoType='move-lines-down')
         changed = False
         try:
             if j < len(s):
-                next_i,next_j = g.getLine(s,j+1)
+                next_i,next_j = g.getLine(s,j) # 2011/04/01: was j+1
                 next_line = s[next_i:next_j]
                 n2 = next_j-next_i
                 w.delete(i,next_j)
-                w.insert(i,next_line+lines)
-                w.setSelectionRange(i+n2,i+n2+n,insert=i+n2+n)
-                changed = True
-            elif g.app.gui.widget_name(w).startswith('body'):
-                p = c.p
-                if not p.hasThreadNext(): return
-                w.delete(i,j)
-                c.setBodyString(p,w.getAllText())
-                p = p.threadNext()
-                c.redraw(p)
-
-                s = w.getAllText()
-                w.insert(0,lines)
-                if not lines.endswith('\n'): w.insert(len(lines),'\n')
-                s = w.getAllText()
-                w.setSelectionRange(0,n,insert=n)
+                if next_line.endswith('\n'):
+                    # Simply swap positions with next line
+                    new_lines = next_line+lines
+                else:
+                    # Last line of the body to be moved up doesn't end in a newline
+                    # while we have to remove the newline from the line above moving down.
+                    new_lines = next_line+'\n'+lines[:-1]
+                    n2 += 1
+                w.insert(i,new_lines)
+                w.setSelectionRange(sel_1+n2,sel_2+n2,insert=insert_pt+n2)
                 changed = True
         finally:
-            self.endCommand(changed=changed,setLabel=True)
+           self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20060417183606.1: *4* moveLinesUp
     def moveLinesUp (self,event):
 
@@ -4364,41 +4360,30 @@ class editCommandsClass (baseEditCommandsClass):
 
         s = w.getAllText()
         sel_1,sel_2 = w.getSelectionRange()
+        insert_pt = w.getInsertPoint() # 2011/04/01     
         i,junk = g.getLine(s,sel_1)
         i2,j   = g.getLine(s,sel_2)
         lines  = s[i:j]
-        # Select from start of the first line to the *start* of the last line.
-        # This prevents selection creep.
-        n = i2-i 
-        # g.trace('lines',repr(lines))
-
+        n = i2-i
+        # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
+        #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
         self.beginCommand(undoType='move-lines-up')
         changed = False
         try:
-            if i > 0:
+            if i>0:
                 prev_i,prev_j = g.getLine(s,i-1)
                 prev_line = s[prev_i:prev_j]
+                n2 = prev_j - prev_i
                 w.delete(prev_i,j)
-                w.insert(prev_i,lines+prev_line)
-                w.setSelectionRange(prev_i,prev_i+n,insert=prev_i+n)
-                changed = True
-            elif g.app.gui.widget_name(w).startswith('body'):
-                p = c.p
-                if not p.hasThreadBack(): return
-                w.delete(i,j)
-                c.setBodyString(p,w.getAllText())
-                p = p.threadBack()
-
-                c.redraw(p)
-
-                s = w.getAllText()
-                if not s.endswith('\n'):
-                    i = w.getInsertPoint()
-                    w.insert(i,'\n')
-                w.insert('end',lines)
-                s = w.getAllText()
-                ins = len(s)-len(lines)+n
-                w.setSelectionRange(len(s)-len(lines),ins,insert=ins)
+                if lines.endswith('\n'):
+                    # Simply swap positions with next line
+                    new_lines = lines+prev_line
+                else:
+                    # Lines to be moved up don't end in a newline while the
+                    # previous line going down needs its newline taken off.
+                    new_lines = lines+'\n'+prev_line[:-1]
+                w.insert(prev_i,new_lines)
+                w.setSelectionRange(sel_1-n2,sel_2-n2,insert=insert_pt-n2)
                 changed = True
         finally:
             self.endCommand(changed=changed,setLabel=True)

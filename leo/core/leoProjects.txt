@@ -5347,6 +5347,1179 @@ k.mb_tabList = []
 # Clear the list: any non-tab indicates that a new prefix is in effect.
 k.mb_tabListPrefix = k.getLabel()
 k.oneCharacterArg = oneCharacter
+#@+node:ekr.20110401084027.14476: *4* Inserting non-ascii characters
+#@+node:ekr.20061031131434.108: *5* callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and # 2011/04/01
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@+node:ekr.20061031131434.182: *5* isPlainKey
+def isPlainKey (self,shortcut):
+
+    '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
+
+    k = self ; shortcut = shortcut or ''
+
+    # altgr combos (Alt+Ctrl) are always plain keys
+    if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+        return True
+
+    for s in ('Alt','Ctrl','Command','Meta'):
+        if shortcut.find(s) != -1:            
+            return False
+    else:
+        # Careful, allow bare angle brackets for unit tests.
+        if shortcut.startswith('<') and shortcut.endswith('>'):
+            shortcut = shortcut[1:-1]
+
+        isPlain = (
+            len(shortcut) == 1 or
+            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
+            # A hack: allow Return to be bound to command.
+            shortcut in ('Tab','\t')
+        )
+
+        # g.trace(isPlain,repr(shortcut))
+        return isPlain and not self.isFKey(shortcut)
+#@+node:ekr.20051125080855: *5* selfInsertCommand, helpers
+def selfInsertCommand(self,event,action='insert'):
+
+    '''Insert a character in the body pane.
+    This is the default binding for all keys in the body pane.'''
+
+    trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+    verbose = True
+    w = self.editWidget(event)
+    if not w: return 'break'
+    << set local vars >>
+    if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
+    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
+        return "break" # The hook claims to have handled the event.
+    if ch == '\t':
+        self.updateTab(p,w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key. 
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r','\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w,oldSel,undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p,w,ch,oldSel)
+    elif ch: # Null chars must not delete the selection.
+        i,j = oldSel
+        if i > j: i,j = j,i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:                  w.delete(i,j)
+        elif action == 'overwrite': w.delete(i)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+        if inBrackets and self.flashMatchingBrackets:
+            self.flashMatchingBracketsHelper(w,i,ch)               
+    else:
+        return 'break' # This method *always* returns 'break'
+
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w,spot)
+
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    if trace and verbose:
+        g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+    if changed:
+        # g.trace('ins',w.getInsertPoint())
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel,oldText=oldText,oldYview=None)
+
+    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
+    return 'break'
+#@+node:ekr.20061103114242: *6* << set local vars >>
+c = self.c
+p = c.p
+gui = g.app.gui
+ch = gui.eventChar(event)
+keysym = gui.eventKeysym(event)
+# stroke = gui.eventStroke(event)
+if keysym == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if keysym == 'Tab': # Support for wx_alt_gui plugin.
+    ch = '\t'
+name = c.widget_name(w)
+oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+oldText = name.startswith('body') and p.b or ''
+undoType = 'Typing'
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch) in brackets
+# if trace: g.trace(name,repr(ch),ch and ch in brackets)
+#@+node:ekr.20090213065933.14: *6* doPlainTab
+def doPlainTab(self,s,i,tab_width,w):
+
+    '''Insert spaces equivalent to one tab.'''
+
+    start,end = g.getLine(s,i)
+    s2 = s[start:i]
+    width = g.computeWidth(s2,tab_width)
+
+    if tab_width > 0:
+        w.insert(i,'\t')
+        ins = i+1
+    else:
+        n = abs(tab_width) - (width % abs(tab_width))
+        w.insert(i,' ' * n)
+        ins = i+n
+
+    w.setSelectionRange(ins,ins,insert=ins)
+#@+node:ekr.20060627091557: *6* flashCharacter
+def flashCharacter(self,w,i):
+
+    bg      = self.bracketsFlashBg or 'DodgerBlue1'
+    fg      = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 3
+    delay   = self.bracketsFlashDelay or 75
+
+    w.flashCharacter(i,bg,fg,flashes,delay)
+#@+node:ekr.20060627083506: *6* flashMatchingBracketsHelper
+def flashMatchingBracketsHelper (self,w,i,ch):
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+
+    s = w.getAllText()
+    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    if j != -1:
+        self.flashCharacter(w,j)
+#@+node:ekr.20060804095512: *6* initBracketMatcher
+def initBracketMatcher (self,c):
+
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList  = '([{'
+        self.closeBracketsList = ')]}'
+
+    # g.trace('self.openBrackets',openBrackets)
+    # g.trace('self.closeBrackets',closeBrackets)
+#@+node:ekr.20051026171121: *6* insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    i,j = oldSel ; ch = '\n'
+    if trace:
+        s = w.widget.toPlainText()
+        g.trace(i,j,len(s),w)
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        if (c.autoindent_in_nocolor or 
+            (c.frame.body.colorizer.useSyntaxColoring(p) and
+            undoType != "Change")
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@+node:ekr.20051026171121.1: *6* updateAutoIndent (leoEditCommands)
+def updateAutoIndent (self,p,w):
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+    # g.trace(i,j,repr(s))
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.findLanguageDirectives(c,p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+#@+node:ekr.20051027172949: *6* updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+#@+node:ekr.20051026092433: *6* updateTab
+def updateTab (self,p,w,smartTab=True):
+
+    c = self.c
+
+    # g.trace('tab_width',tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        # w.delete(i,j)
+        c.indentBody()
+    else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
+        # Get the preceeding characters.
+        s = w.getAllText()
+        # start = g.skip_to_start_of_line(s,i)
+        start,end = g.getLine(s,i)
+        before = s[start:i]
+        after = s[i:end]
+        if after.endswith('\n'): after = after[:-1]
+        ws = g.get_leading_ws(before)
+        s2 = s[start:i] # The characters before the insert point.
+
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+        if doSmartTab:
+            self.updateAutoIndent(p,w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s,i,tab_width,w)
+        else:
+            self.doPlainTab(s,i,tab_width,w)
+#@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    
+    # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
+
+    if trace and verbose: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
+
+    # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        if trace: g.trace('ignoring unbound character in command mode',stroke)
+        return 'break'
+
+    elif k.isFKey(stroke):
+        if trace: g.trace('ignoring F-key',stroke)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif (not self.enable_alt_ctrl_bindings and
+        (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+    ):
+        # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,keysym)
+        return 'break'
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        if trace: g.trace('ignoring unbound non-ascii key',repr(stroke))
+        return 'break'
+
+    elif (
+        keysym and keysym.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
+        # Never insert escape or insert characters.
+        if trace: g.trace('ignore Escape/Ignore',stroke)
+        return 'break'
+
+    else:
+        if trace: g.trace('no func',stroke)
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        not self.enable_alt_ctrl_bindings and
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    elif name.startswith('log'):
+        if g.app.gui.guiName() == 'tkinter':
+            return None
+        else:
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event.stroke # 2010/05/04.
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            elif stroke.lower() == 'period': stroke = '.'
+            w.logCtrl.insert(i,stroke)
+
+            return None
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
+        return None
+#@+node:ekr.20061031131434.105: *5* masterCommand & helpers
+def masterCommand (self,event,func,stroke,commandName=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = (False or k.traceMasterCommand) and not g.unitTesting
+    verbose = False
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+    keysym = gui.eventKeysym(event)
+    ch = gui.eventChar(event)
+    w = gui.eventWidget(event)
+    state = event and hasattr(event,'state') and event.state or 0
+    k.func = func
+    k.funcReturn = None # For unit testing.
+    commandName = commandName or func and func.__name__ or '<no function>'
+    << define specialKeysyms >>
+    special = keysym in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: #  and interesting:
+        g.trace(
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'w:',w and c.widget_name(w),'func:',func and func.__name__
+        )
+
+    if inserted:
+        # g.trace(stroke,keysym)
+        << add character to history >>
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startKbdMacro(event)
+        return 'break'
+
+    # g.trace(stroke,k.abortAllModesKey)
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit(event)
+        k.endCommand(event,commandName)
+        return 'break'
+
+    if special: # Don't pass these on.
+        return 'break' 
+
+    if 0: # *** This is now handled by k.masterKeyHandler.
+        if k.inState():
+            val = k.callStateFunction(event) # Calls end-command.
+            if val != 'do-func': return 'break'
+            g.trace('Executing key outside of mode')
+
+    if k.regx.iter:
+        try:
+            k.regXKey = keysym
+            k.regx.iter.next() # EKR: next() may throw StopIteration.
+        except StopIteration:
+            pass
+        return 'break'
+
+    if k.abbrevOn and ch == ' ':
+        expanded = c.abbrevCommands.expandAbbrev(event)
+        if expanded: return 'break'
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            # if commandName == 'select-all': g.pdb()
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(event,commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return 'break'
+    elif k.inState():
+        return 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+#@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+#@+node:ekr.20061031131434.107: *6* << add character to history >>
+if stroke or len(ch) > 0:
+    if len(keyHandlerClass.lossage) > 99:
+        keyHandlerClass.lossage.pop()
+
+    # This looks like a memory leak, but isn't.
+    keyHandlerClass.lossage.insert(0,(ch,stroke),)
+#@+node:ekr.20061031131434.109: *6* callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(event,commandName)
+
+    return func
+#@+node:ekr.20061031131434.110: *6* k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        not self.enable_alt_ctrl_bindings and
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    elif name.startswith('log'):
+        if g.app.gui.guiName() == 'tkinter':
+            return None
+        else:
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event.stroke # 2010/05/04.
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            elif stroke.lower() == 'period': stroke = '.'
+            w.logCtrl.insert(i,stroke)
+
+            return None
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
+        return None
+#@+node:ekr.20061031131434.146: *5* masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
+        repr(event.keysym),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+            
+    # if stroke == 'Tab': g.pdb()
+
+    if k.inState():
+        if trace: g.trace('   state %-10s %s' % (stroke,state))
+        done,val = k.doMode(event,state,stroke)
+        if done: return val
+
+    if traceGC: g.printNewObjects('masterKey 2')
+            
+    # 2011/02/08: An important simplification.
+    if isPlain and k.unboundKeyAction != 'command':
+        if self.isAutoCompleteChar(stroke):
+            if trace: g.trace('autocomplete key',stroke)
+        else:
+            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+            return k.handleUnboundKeys(event,char,keysym,stroke)
+
+    # 2011/02/08: Use getPandBindings for *all* keys.
+    b = k.getPaneBinding(stroke,w)
+    if b:
+        if traceGC: g.printNewObjects('masterKey 3')
+        if trace: g.trace('   bound',stroke)
+        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    else:
+        if traceGC: g.printNewObjects('masterKey 4')
+        if trace: g.trace(' unbound',stroke)
+        return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147: *6* << define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+stroke = event.stroke ### 2010/10/18
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@+node:ekr.20061031131434.108: *6* callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and # 2011/04/01
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@+node:ekr.20091230094319.6244: *6* doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if val != 'do-standard-keys':
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            # if trace: g.trace('unbound key ends mode',stroke,state)
+            g.warning('unbound key ends mode',stroke) # 2011/02/02
+            k.endMode(event)
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            if trace: g.trace('handler',handler)
+            handler(event)
+        else:
+            if trace: g.trace('No state handler for %s' % state)
+        return True,'break'
+#@+node:ekr.20091230094319.6240: *6* getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    k = self ; w_name = k.c.widget_name(w)
+    # keyStatesTuple = ('command','insert','overwrite')
+    state = k.unboundKeyAction
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('command','insert','overwrite') and state == key or # 2010/02/09
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace and verbose:
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key: %7s name: %6s key: %10s in keys: %s' %
+                    (key,name,stroke,stroke in d))
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    return b
+#@+node:ekr.20061031131434.152: *6* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','\t','Escape',):
+            return False
+        if k.isFKey(stroke): # 2010/10/23.
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@+node:ekr.20110209083917.16004: *6* isAutoCompleteChar
+def isAutoCompleteChar (self,stroke):
+    
+    '''Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.'''
+
+    k = self ; state = k.unboundKeyAction
+    
+    if stroke and state in ('insert','overwrite'):
+        for key in (state,'body','log','text','all'):
+            d = k.masterBindingsDict.get(key,{})
+            if d:
+                b = d.get(stroke)
+                if b and b.commandName == 'auto-complete':
+                    return True
+    return False
+#@+node:ekr.20080510095819.1: *6* k.handleUnboundKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    
+    # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
+
+    if trace and verbose: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
+
+    # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        if trace: g.trace('ignoring unbound character in command mode',stroke)
+        return 'break'
+
+    elif k.isFKey(stroke):
+        if trace: g.trace('ignoring F-key',stroke)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif (not self.enable_alt_ctrl_bindings and
+        (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+    ):
+        # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,keysym)
+        return 'break'
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        if trace: g.trace('ignoring unbound non-ascii key',repr(stroke))
+        return 'break'
+
+    elif (
+        keysym and keysym.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
+        # Never insert escape or insert characters.
+        if trace: g.trace('ignore Escape/Ignore',stroke)
+        return 'break'
+
+    else:
+        if trace: g.trace('no func',stroke)
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@+node:ekr.20110401123306.14504: *4* Fixed bugs in moveLinesUp/Down
+def moveLinesDown (self,event):
+
+    '''Move all lines containing any selected text down one line,
+    moving to the next node if the lines are the last lines of the body.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1,sel_2 = w.getSelectionRange()
+    insert_pt = w.getInsertPoint() # 2011/04/01
+    i,junk = g.getLine(s,sel_1)
+    i2,j   = g.getLine(s,sel_2)
+    lines  = s[i:j]
+
+    # Select from start of the first line to the *start* of the last line.
+    # This prevents selection creep.
+    n = i2-i
+    # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
+    #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
+
+    self.beginCommand(undoType='move-lines-down')
+    changed = False
+    try:
+        if j < len(s):
+            next_i,next_j = g.getLine(s,j) # 2011/04/01: was j+1
+            next_line = s[next_i:next_j]
+            n2 = next_j-next_i
+            w.delete(i,next_j)
+            if next_line.endswith('\n'):
+                # Simply swap positions with next line
+                new_lines = next_line+lines
+            else:
+                # Last line of the body to be moved up doesn't end in a newline
+                # while we have to remove the newline from the line above moving down.
+                new_lines = next_line+'\n'+lines[:-1]
+                n2 += 1
+            w.insert(i,new_lines)
+            w.setSelectionRange(sel_1+n2,sel_2+n2,insert=insert_pt+n2)
+            changed = True
+    finally:
+       self.endCommand(changed=changed,setLabel=True)
+
+#@verbatim
+#@+node:ekr.20060417183606.1: *4* moveLinesUp
+
+def moveLinesUp (self,event):
+
+    '''Move all lines containing any selected text up one line,
+    moving to the previous node as needed.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1,sel_2 = w.getSelectionRange()
+    insert_pt = w.getInsertPoint() # 2011/04/01     
+    i,junk = g.getLine(s,sel_1)
+    i2,j   = g.getLine(s,sel_2)
+    lines  = s[i:j]
+    n = i2-i
+    # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
+    #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
+
+    self.beginCommand(undoType='move-lines-up')
+    changed = False
+    try:
+        if i>0:
+            prev_i,prev_j = g.getLine(s,i-1)
+            prev_line = s[prev_i:prev_j]
+            n2 = prev_j - prev_i
+            w.delete(prev_i,j)
+            if lines.endswith('\n'):
+                # Simply swap positions with next line
+                new_lines = lines+prev_line
+            else:
+                # Lines to be moved up don't end in a newline while the
+                # previous line going down needs its newline taken off.
+                new_lines = lines+'\n'+prev_line[:-1]
+            w.insert(prev_i,new_lines)
+            w.setSelectionRange(sel_1-n2,sel_2-n2,insert=insert_pt-n2)
+            changed = True
+    finally:
+        self.endCommand(changed=changed,setLabel=True)
+#@+node:ekr.20110401123306.14505: *5* Old code
+def moveLinesDown (self,event):
+
+    '''Move all lines containing any selected text down one line,
+    moving to the next node if the lines are the last lines of the body.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1,sel_2 = w.getSelectionRange()
+    insert_pt = w.getInsertPoint() # 2011/04/01
+    i,junk = g.getLine(s,sel_1)
+    i2,j   = g.getLine(s,sel_2)
+    lines  = s[i:j]
+    # Select from start of the first line to the *start* of the last line.
+    # This prevents selection creep.
+    n = i2-i 
+    # g.trace('lines',repr(lines))
+
+    self.beginCommand(undoType='move-lines-down')
+    changed = False
+    try:
+        if j < len(s):
+            # next_i,next_j = g.getLine(s,j+1)
+            next_i,next_j = g.getLine(s,j) # 2011/04/01
+            next_line = s[next_i:next_j]
+            n2 = next_j-next_i
+            w.delete(i,next_j)
+            w.insert(i,next_line+lines)
+            w.setSelectionRange(i+n2,i+n2+n,insert=i+n2+n)
+            changed = True
+        elif g.app.gui.widget_name(w).startswith('body'):
+            p = c.p
+            if not p.hasThreadNext(): return
+            w.delete(i,j)
+            c.setBodyString(p,w.getAllText())
+            p = p.threadNext()
+            c.redraw(p)
+
+            s = w.getAllText()
+            w.insert(0,lines)
+            if not lines.endswith('\n'): w.insert(len(lines),'\n')
+            s = w.getAllText()
+            w.setSelectionRange(0,n,insert=n)
+            changed = True
+    finally:
+        self.endCommand(changed=changed,setLabel=True)
+        
+def moveLinesUp (self,event):
+
+    '''Move all lines containing any selected text up one line,
+    moving to the previous node as needed.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1,sel_2 = w.getSelectionRange()
+    insert_pt = w.getInsertPoint() 
+    i,junk = g.getLine(s,sel_1)
+    i2,j   = g.getLine(s,sel_2)
+    lines  = s[i:j]
+    # Select from start of the first line to the *start* of the last line.
+    # This prevents selection creep.
+    n = i2-i 
+    # g.trace('lines',repr(lines))
+
+    self.beginCommand(undoType='move-lines-up')
+    changed = False
+    try:
+        if i > 0:
+            prev_i,prev_j = g.getLine(s,i-1)
+            prev_line = s[prev_i:prev_j]
+            w.delete(prev_i,j)
+            w.insert(prev_i,lines+prev_line)
+            w.setSelectionRange(prev_i,prev_i+n,insert=prev_i+n)
+            changed = True
+        elif g.app.gui.widget_name(w).startswith('body'):
+            p = c.p
+            if not p.hasThreadBack(): return
+            w.delete(i,j)
+            c.setBodyString(p,w.getAllText())
+            p = p.threadBack()
+
+            c.redraw(p)
+
+            s = w.getAllText()
+            if not s.endswith('\n'):
+                i = w.getInsertPoint()
+                w.insert(i,'\n')
+            w.insert('end',lines)
+            s = w.getAllText()
+            ins = len(s)-len(lines)+n
+            w.setSelectionRange(len(s)-len(lines),ins,insert=ins)
+            changed = True
+    finally:
+        self.endCommand(changed=changed,setLabel=True)
+
+#@+node:ekr.20060417183606: *5* moveLinesDown
+def moveLinesDown (self,event):
+
+    '''Move all lines containing any selected text down one line,
+    moving to the next node if the lines are the last lines of the body.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1,sel_2 = w.getSelectionRange()
+    insert_pt = w.getInsertPoint() # 2011/04/01
+    i,junk = g.getLine(s,sel_1)
+    i2,j   = g.getLine(s,sel_2)
+    lines  = s[i:j]
+
+    # Select from start of the first line to the *start* of the last line.
+    # This prevents selection creep.
+    n = i2-i
+    # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
+    #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
+    self.beginCommand(undoType='move-lines-down')
+    changed = False
+    try:
+        if j < len(s):
+            next_i,next_j = g.getLine(s,j) # 2011/04/01: was j+1
+            next_line = s[next_i:next_j]
+            n2 = next_j-next_i
+            w.delete(i,next_j)
+            if next_line.endswith('\n'):
+                # Simply swap positions with next line
+                new_lines = next_line+lines
+            else:
+                # Last line of the body to be moved up doesn't end in a newline
+                # while we have to remove the newline from the line above moving down.
+                new_lines = next_line+'\n'+lines[:-1]
+                n2 += 1
+            w.insert(i,new_lines)
+            w.setSelectionRange(sel_1+n2,sel_2+n2,insert=insert_pt+n2)
+            changed = True
+    finally:
+       self.endCommand(changed=changed,setLabel=True)
+#@+node:ekr.20060417183606.1: *5* moveLinesUp
+def moveLinesUp (self,event):
+
+    '''Move all lines containing any selected text up one line,
+    moving to the previous node as needed.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1,sel_2 = w.getSelectionRange()
+    insert_pt = w.getInsertPoint() # 2011/04/01     
+    i,junk = g.getLine(s,sel_1)
+    i2,j   = g.getLine(s,sel_2)
+    lines  = s[i:j]
+    n = i2-i
+    # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
+    #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
+    self.beginCommand(undoType='move-lines-up')
+    changed = False
+    try:
+        if i>0:
+            prev_i,prev_j = g.getLine(s,i-1)
+            prev_line = s[prev_i:prev_j]
+            n2 = prev_j - prev_i
+            w.delete(prev_i,j)
+            if lines.endswith('\n'):
+                # Simply swap positions with next line
+                new_lines = lines+prev_line
+            else:
+                # Lines to be moved up don't end in a newline while the
+                # previous line going down needs its newline taken off.
+                new_lines = lines+'\n'+prev_line[:-1]
+            w.insert(prev_i,new_lines)
+            w.setSelectionRange(sel_1-n2,sel_2-n2,insert=insert_pt-n2)
+            changed = True
+    finally:
+        self.endCommand(changed=changed,setLabel=True)
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

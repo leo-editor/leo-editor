@@ -7513,7 +7513,7 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20061101121602.289: *6* after sel=4.0,5.0
+#@+node:ekr.20061101121602.289: *6* after sel=4.3,5.3
 first line
 line 1
 line c
@@ -7537,7 +7537,7 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20061101121602.293: *6* after sel=1.0,1.0
+#@+node:ekr.20061101121602.293: *6* after sel=1.2,1.2
 line 1
 first line
     line a
