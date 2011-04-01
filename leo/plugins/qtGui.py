@@ -195,7 +195,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         Except for bare modifier key events,
         this gets called *only* when the popup is showing!'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         w = self ; c = w.leo_c ; k = c.k
         codewiseCompleter = k.codewiseCompleter
@@ -8770,7 +8770,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168: *4* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
+        trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
         traceEvent = False
         traceKey = (False or self.trace_masterKeyHandler)
