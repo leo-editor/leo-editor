@@ -3064,6 +3064,7 @@ class keyHandlerClass:
         if k.state.kind:
             if (
                 k.ignore_unbound_non_ascii_keys and
+                len(ch) == 1 and # 2011/04/01
                 ch and ch not in ('\b','\n','\r','\t') and
                 (ord(ch) < 32 or ord(ch) > 128)
             ):
@@ -3356,13 +3357,8 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         w = c.frame.getFocus()
-        
-        if (sys.platform.startswith('darwin') and
-            g.app.gui.guiName().lower().startswith('qt')
-        ):
-            # A wretched kludge for MacOS Command-C, etc.
-            w = c.frame.tree.wrapQLineEdit(w)
-            
+
+        # g.trace('focus',w)
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.

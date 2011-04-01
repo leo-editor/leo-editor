@@ -5347,46 +5347,6 @@ k.mb_tabList = []
 # Clear the list: any non-tab indicates that a new prefix is in effect.
 k.mb_tabListPrefix = k.getLabel()
 k.oneCharacterArg = oneCharacter
-#@+node:edward.20110330154829.6063: *4* Fixed MacOS Command-C bug
-#@+node:ekr.20070130115927.5: *5* copyText
-def copyText (self,event=None):
-
-    '''Copy the selected text from the widget to the clipboard.'''
-
-    f = self ; c = f.c ; w = event and event.widget
-    
-    # g.trace(w,g.app.gui.isTextWidget(w),g.callers())
-
-    if not w or not g.app.gui.isTextWidget(w): return
-
-    # Set the clipboard text.
-    i,j = w.getSelectionRange()
-    if i != j:
-        s = w.get(i,j)
-        g.app.gui.replaceClipboardWith(s)
-
-OnCopyFromMenu = copyText
-#@+node:ekr.20061031131434.155: *5* masterMenuHandler
-def masterMenuHandler (self,stroke,func,commandName):
-
-    k = self ; c = k.c
-    w = c.frame.getFocus()
-    
-    if (sys.platform.startswith('darwin') and
-        g.app.gui.guiName().lower().startswith('qt')
-    ):
-        # A wretched kludge for MacOS Command-C, etc.
-        w = c.frame.tree.wrapQLineEdit(w)
-        
-    # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
-
-    # Create a minimal event for commands that require them.
-    event = g.Bunch(c=c,char='',keysym='',widget=w)
-
-    if stroke:
-        return k.masterKeyHandler(event,stroke=stroke)
-    else:
-        return k.masterCommand(event,func,stroke,commandName)
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -9532,6 +9492,7 @@ def callStateFunction (self,event):
     if k.state.kind:
         if (
             k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and # 2011/04/01
             ch and ch not in ('\b','\n','\r','\t') and
             (ord(ch) < 32 or ord(ch) > 128)
         ):
