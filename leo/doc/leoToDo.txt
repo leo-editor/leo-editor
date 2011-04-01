@@ -169,6 +169,7 @@ EndUpdate = endUpdate # Compatibility with old scripts
 def bringToFront(self,set_focus=True):
 
     c = self
+    c.requestBringToFront = True
     c.requestedIconify = 'deiconify'
     c.requestedFocusWidget = c.frame.body.bodyCtrl
 
@@ -239,6 +240,11 @@ def outerUpdate (self):
     # Suppress any requested redraw until we have iconified or diconified.
     redrawFlag = c.requestRedrawFlag
     c.requestRedrawFlag = False
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            c.frame.bringToFront()
+        c.requestBringToFront = False
 
     # The iconify requests are made only by c.bringToFront.
     if c.requestedIconify == 'iconify':

@@ -63,6 +63,7 @@ class baseCommands (object):
         trace = False
         c = self ; tag = 'Commands.__init__'
 
+        self.requestBringToFront = False
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
         self.requestedIconify = '' # 'iconify','deiconify'
@@ -6191,6 +6192,7 @@ class baseCommands (object):
     def bringToFront(self,set_focus=True):
 
         c = self
+        c.requestBringToFront = True
         c.requestedIconify = 'deiconify'
         c.requestedFocusWidget = c.frame.body.bodyCtrl
 
@@ -6261,6 +6263,11 @@ class baseCommands (object):
         # Suppress any requested redraw until we have iconified or diconified.
         redrawFlag = c.requestRedrawFlag
         c.requestRedrawFlag = False
+        
+        if c.requestBringToFront:
+            if hasattr(c.frame,'bringToFront'):
+                c.frame.bringToFront()
+            c.requestBringToFront = False
 
         # The iconify requests are made only by c.bringToFront.
         if c.requestedIconify == 'iconify':
