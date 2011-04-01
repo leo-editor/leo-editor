@@ -15142,8 +15142,8 @@ storage = ZODB.FileStorage.FileStorage(r"c:\prog\zopeTemp\leo.fs")
 db = ZODB.DB(storage)
 try:
     try:
-        print '-' * 20
-        print 'opening ZODB'
+        print('-' * 20)
+        print('opening ZODB')
         connection = db.open()
         g.trace(connection)
         root = connection.root()
@@ -15153,12 +15153,12 @@ try:
             # root.clear()
             root ['count'] = root.get('count',0) + 1
             t.commit()
-        g.trace(root)
+        print(root)
         connection.close()
     except Exception:
         g.es_exception()
 finally:
-    print 'closing ZODB'
+    print('closing ZODB')
     db.close()
 #@+node:ville.20090508224531.9800: *3* pos_to_archive, archive_to_pos
 def pos_to_archive(p):

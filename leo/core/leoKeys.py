@@ -3008,7 +3008,7 @@ class keyHandlerClass:
 
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3235,6 +3235,8 @@ class keyHandlerClass:
         verbose = False
         k = self ; c = k.c
         modesTuple = ('insert','overwrite')
+        
+        # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
 
         if trace and verbose: g.trace('ch: %s keysym: %s stroke %s' % (
             repr(event.char),repr(event.keysym),repr(stroke)))
@@ -3258,9 +3260,11 @@ class keyHandlerClass:
             if trace: g.trace('plain key in insert mode',repr(stroke))
             return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
 
-        elif stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+        elif (not self.enable_alt_ctrl_bindings and
+            (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+        ):
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
-            if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke)
+            if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,keysym)
             return 'break'
 
         elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
