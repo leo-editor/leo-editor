@@ -1199,10 +1199,9 @@ class undoer:
                         # The new and old characters are not contiguous.
                         newBead = True
                     else:
-                        old_row,old_col = old_start.split('.')
-                        new_row,new_col = new_start.split('.')
-                        old_row,old_col = int(old_row),int(old_col)
-                        new_row,new_col = int(new_row),int(new_col)
+                        # 2011/04/01: Patch by Sam Hartsfield
+                        old_row,old_col = g.convertPythonIndexToRowCol(oldText,old_start)
+                        new_row,new_col = g.convertPythonIndexToRowCol(newText,new_start)
                         old_lines = g.splitLines(oldText)
                         new_lines = g.splitLines(newText)
                         # g.trace('old',old_row,old_col,len(old_lines))
@@ -1214,17 +1213,18 @@ class undoer:
                         elif old_col == 0 or new_col == 0:
                             pass # We have just inserted a line.
                         else:
-                            old_s = old_lines[old_row-1]
-                            new_s = new_lines[new_row-1]
+                            # 2011/04/01: Patch by Sam Hartsfield
+                            old_s = old_lines[old_row]
+                            new_s = new_lines[new_row]
                             # New in 4.3b2:
                             # Guard against invalid oldSel or newSel params.
                             if old_col-1 >= len(old_s) or new_col-1 >= len(new_s):
                                 newBead = True
                             else:
                                 # g.trace(new_col,len(new_s),repr(new_s))
-                                # g.trace(repr(old_ch),repr(new_ch))
                                 old_ch = old_s[old_col-1]
                                 new_ch = new_s[new_col-1]
+                                # g.trace(repr(old_ch),repr(new_ch))
                                 newBead = self.recognizeStartOfTypingWord(
                                     old_lines,old_row,old_col,old_ch,
                                     new_lines,new_row,new_col,new_ch)
@@ -1233,7 +1233,7 @@ class undoer:
                     if 0:
                         g.trace('old_lines',old_lines)
                         g.trace('new_lines',new_lines)
-                    g.es('exception in','setUndoRedoTypingParams',color='blue')
+                    g.trace('Unexpected exception...',color='blue')
                     g.es_exception()
                     newBead = True
         #@-<< set newBead if we can't share the previous bead >>
