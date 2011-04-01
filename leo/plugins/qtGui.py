@@ -172,7 +172,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if 0:
                 w.leo_q_completer = qc = QtGui.QCompleter(options,w)
             else:
-                # Crashes.
                 w.leo_q_completer = qc = QtGui.QCompleter(w)
                 w.leo_model = QtGui.QStringListModel(options)
                 qc.setModel(w.leo_model)
@@ -196,7 +195,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         Except for bare modifier key events,
         this gets called *only* when the popup is showing!'''
         
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         w = self ; c = w.leo_c ; k = c.k
         codewiseCompleter = k.codewiseCompleter
@@ -208,17 +207,17 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         text = event.text()
         is_mod = mods != qt.NoModifier
        
-        if not qc:
-            if trace: g.trace('empty leo_q_completer')
-            return
+        # if not qc:
+            # if trace: g.trace('empty leo_q_completer')
+            # return
 
-        popup = qc.popup()
-        active = popup and popup.isVisible()
+        popup = qc and qc.popup()
+        active = qc and popup and popup.isVisible()
         
         if not active:
             if trace: g.trace('not active: calling base class')
             QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
-            w.endCompleter()
+            # w.endCompleter()
             return
         
         if trace:g.trace('text',repr(text))
@@ -8832,11 +8831,14 @@ class leoQtEventFilter(QtCore.QObject):
 
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)
-            if self.ctagscompleter_active:
-                self.ctagscompleter_onKey(event,stroke)
-                # An apparent bug: the key *will* be inserted into the text.
-                override = False
-            elif override:
+            # if self.ctagscompleter_active:
+                # g.trace('ctags_completer_active')
+                # self.ctagscompleter_onKey(event,stroke)
+                # # An apparent bug: the key *will* be inserted into the text.
+                # override = False
+            # el
+            
+            if override:
                 if trace and traceKey and not ignore:
                     g.trace('bound',repr(stroke)) # repr(aList))
                 # g.trace('** using wrapper',self.w)

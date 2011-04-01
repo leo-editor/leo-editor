@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110201125110.12551: ** Important
-#@+node:ekr.20110125142807.17270: *3* Ask about QCompleter bindings
+#@+node:ekr.20110201125110.12551: ** Important/first
+#@+node:ekr.20110401062119.14494: *3* Remove @bool swap_mac_keys
 #@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -16,10 +16,1684 @@ These are marked with ###
 (found) w.insert, w.delete
 #@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
 #@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
-#@+node:ekr.20101024062147.6014: ** Autocompleter
-# This can be done in the trunk.
-#@+node:ekr.20090131200406.14: *3* Autocompleter notes
-#@+node:ekr.20080113165010: *4* About auto completion
+#@+node:ekr.20110401062119.14493: *3* problems with c.bringToFront and focus
+#@+node:ekr.20031218072017.2817: *4*  doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.p
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.app.commandInterruptFlag = True
+        g.es('ignoring command: already executing a command.',color='red')
+        return 'break'
+
+    g.app.commandInterruptFlag = False
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: g.pr('c no longer exists',c)
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return "break" # Inhibit all other handlers.
+#@+node:ekr.20031218072017.2949: *4* Drawing Utilities (commands)
+#@+node:ekr.20080515053412.1: *5* c.add_command, c.bind, c.bind2 & c.tag_bind
+# These wrappers ensure that c.outerUpdate get called.
+#@+node:ekr.20080610085158.2: *6* c.add_command
+def add_command (self,menu,**keys):
+
+    c = self ; command = keys.get('command')
+
+    if command:
+
+        def add_commandCallback(c=c,command=command):
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
+
+        keys ['command'] = add_commandCallback
+
+        menu.add_command(**keys)
+
+    else:
+        g.trace('can not happen: no "command" arg')
+#@+node:ekr.20080610085158.3: *6* c.bind and c.bind2
+def bind (self,w,pattern,func,*args,**keys):
+
+    c = self ; callers = g.callers()
+
+    def bindCallback(event,c=c,func=func,callers=callers):
+        # g.trace('func',func.__name__)
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback,*args,**keys)
+
+def bind2 (self,w,pattern,func,*args,**keys):
+
+    c = self
+
+    def bindCallback2(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback2,*args,**keys)
+#@+node:ekr.20080610085158.4: *6* c.tag_bind
+def tag_bind (self,w,tag,event_kind,func):
+
+    c = self
+    def tag_bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.tag_bind(tag,event_kind,tag_bindCallback)
+#@+node:ekr.20080514131122.7: *5* c.begin/endUpdate
+
+def beginUpdate(self):
+
+    '''Deprecated: does nothing.'''
+
+    g.trace('***** c.beginUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
+
+def endUpdate(self,flag=True):
+
+    '''Request a redraw of the screen if flag is True.'''
+
+    g.trace('***** c.endUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
+
+    c = self
+    if flag:
+        c.requestRedrawFlag = True
+        # g.trace('flag is True',c.shortFileName(),g.callers())
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@+node:ekr.20080514131122.8: *5* c.bringToFront
+def bringToFront(self,set_focus=True):
+
+    c = self
+    c.requestedIconify = 'deiconify'
+    c.requestedFocusWidget = c.frame.body.bodyCtrl
+
+BringToFront = bringToFront # Compatibility with old scripts
+#@+node:ekr.20040803072955.143: *5* c.expandAllAncestors
+def expandAllAncestors (self,p):
+
+    '''Expand all ancestors without redrawing.
+
+    Return a flag telling whether a redraw is needed.'''
+
+    trace = False and not g.unitTesting
+    c = self ; cc = c.chapterController
+    redraw_flag = False
+
+    for p in p.parents():
+        if not p.isExpanded():
+            p.expand()
+            redraw_flag = True
+
+    if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
+    return redraw_flag
+#@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget
+
+def request_focus(self,w):
+
+    c = self
+    # g.trace(w,g.callers())
+    if w: c.requestedFocusWidget = w
+
+def set_focus (self,w,force=False):
+
+    trace = False # and g.unitTesting
+    c = self
+    if w and g.app.gui:
+        if trace: print('c.set_focus:',repr(w),c.shortFileName())
+        g.app.gui.set_focus(c,w)
+    else:
+        if trace: print('c.set_focus: no w')
+
+    c.requestedFocusWidget = None
+#@+node:ekr.20080514131122.10: *5* c.invalidateFocus
+def invalidateFocus (self):
+
+    '''Indicate that the focus is in an invalid location, or is unknown.'''
+
+    # c = self
+    # c.requestedFocusWidget = None
+    pass
+#@+node:ekr.20080514131122.20: *5* c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = True ; traceFocus = False
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@+node:ekr.20080514131122.12: *5* c.recolor & requestRecolor
+def requestRecolor (self):
+
+    c = self
+    # g.trace(g.callers(4))
+    c.requestRecolorFlag = True
+
+recolor = requestRecolor
+#@+node:ekr.20080514131122.14: *5* c.redrawing...
+#@+node:ekr.20090110073010.1: *6* c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if not p: p = c.p or c.rootPosition()
+
+    c.expandAllAncestors(p)
+    c.frame.tree.redraw(p)
+    c.selectPosition(p)
+
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
+def redraw_after_contract (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    if p.isCloned():
+        c.redraw(p=p,setFocus=setFocus)
+    else:
+        c.frame.tree.redraw_after_contract(p)
+        if setFocus: c.treeFocusHelper()
+#@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
+def redraw_after_expand (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    if p.isCloned():
+        c.redraw(p=p,setFocus=setFocus)
+    else:
+        c.frame.tree.redraw_after_expand(p)
+        if setFocus: c.treeFocusHelper()
+#@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
+def redraw_after_head_changed(self):
+
+    '''Redraw the screen (if needed) when editing ends.
+    This may be a do-nothing for some gui's.'''
+
+    return self.frame.tree.redraw_after_head_changed()
+#@+node:ekr.20090110073010.3: *6* c.redraw_afer_icons_changed
+def redraw_after_icons_changed(self):
+
+    '''Update the icon for the presently selected node,
+    or all icons if the 'all' flag is true.'''
+
+    c = self
+
+    c.frame.tree.redraw_after_icons_changed()
+
+    # c.treeFocusHelper()
+#@+node:ekr.20090110073010.4: *6* c.redraw_after_select
+def redraw_after_select(self,p):
+
+    '''Redraw the screen after node p has been selected.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
+    c = self
+
+    flag = c.expandAllAncestors(p)
+    if flag:
+        c.frame.tree.redraw_after_select(p)
+#@+node:ekr.20080514131122.13: *5* c.recolor_now
+def recolor_now(self,p=None,incremental=False,interruptable=True):
+
+    c = self
+    if p is None:
+        p = c.p
+
+    # g.trace('incremental',incremental,p and p.h,g.callers(4))
+
+    c.frame.body.colorizer.colorize(p,
+        incremental=incremental,interruptable=interruptable)
+#@+node:ekr.20080514131122.16: *5* c.traceFocus
+def traceFocus (self,w):
+
+    c = self
+
+    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        import pdb ; pdb.set_trace() # Drop into pdb.
+        c.trace_focus_count += 1
+        g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
+#@+node:ekr.20080514131122.17: *5* c.widget_name
+def widget_name (self,widget):
+
+    c = self
+
+    return g.app.gui and g.app.gui.widget_name(widget) or ''
+#@+node:ekr.20080514131122.18: *5* c.xWantsFocus
+
+def bodyWantsFocus(self):
+    c = self ; body = c.frame.body
+    c.request_focus(body and body.bodyCtrl)
+
+def logWantsFocus(self):
+    c = self ; log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self):
+    c = self
+    c.request_focus(c.miniBufferWidget)
+
+def treeWantsFocus(self):
+    c = self ; tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self,w):
+    c = self ; c.request_focus(w)
+#@+node:ekr.20080514131122.19: *5* c.xWantsFocusNow
+# widgetWantsFocusNow does an automatic update.
+def widgetWantsFocusNow(self,w):
+    c = self
+    c.request_focus(w)
+    c.outerUpdate()
+    # Re-request widget so we don't use the body by default.
+    #### c.request_focus(w)
+
+if 1: # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
+    def bodyWantsFocusNow(self):
+        c = self ; body = c.frame.body
+        c.widgetWantsFocusNow(body and body.bodyCtrl)
+
+    def logWantsFocusNow(self):
+        c = self ; log = c.frame.log
+        c.widgetWantsFocusNow(log and log.logCtrl)
+
+    def treeWantsFocusNow(self):
+        c = self ; tree = c.frame.tree
+        c.widgetWantsFocusNow(tree and tree.canvas)
+
+else: # Previously, all other FocusNow methods just made a request.
+    bodyWantsFocusNow = bodyWantsFocus
+    logWantsFocusNow = logWantsFocus
+    ### minibufferWantsFocusNow = minibufferWantsFocus
+    treeWantsFocusNow = treeWantsFocus
+#@+node:ekr.20110314123359.14272: *3* New completer
+@nocolor-node
+#@+node:ekr.20110326063921.14462: *4* codewise crash
+InterfaceError: Error binding parameter 0 - probably unsupported type.
+--------------------
+  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
+* line 704:                 prefix + '%',))
+  line 705: 
+  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
+#@+node:ekr.20061031131434.4: *4* class AutoCompleterClass
+class AutoCompleterClass:
+
+    '''A class that inserts autocompleted and calltip text in text widgets.
+    This class shows alternatives in the tabbed log pane.
+
+    The keyHandler class contains hooks to support these characters:
+    invoke-autocompleter-character (default binding is '.')
+    invoke-calltips-character (default binding is '(')
+    '''
+
+    @others
+#@+node:ekr.20061031131434.5: *5*  ctor (autocompleter)
+def __init__ (self,k):
+
+    self.c = c = k.c
+    self.k = k
+    self.allClassesDict = {} # Will be completed after more classes exist.
+    self.attrDictDict = {}  # Keys are languages (strings); values are anonymous attrDicts.
+        # attrDicts: keys are strings; values are list of strings (attributes).
+    self.calltips = {} # Keys are language, values are dicts: keys are ids, values are signatures.
+    self.force = None
+    self.globalPythonFunctionsDict = {}
+    self.language = None
+    self.leadinWord = None
+    self.membersList = None
+    self.objectDict = {} # Created on first use of the autocompleter.
+    self.selection = None # The selection range on entry to autocompleter or calltips.
+    self.selectedText = None # The selected text on entry to autocompleter or calltips.
+    self.selfClassName = None
+    self.selfObjectsDict = {} # Keys are classNames, values are real proxy objects.
+    self.selfVnodesDict = {} # Keys are tnodes, values are real proxy objects.
+    self.prefix = None
+    self.prevObjects = []
+    self.tabList = []
+    self.tabListIndex = -1
+    self.tabName = None # The name of the main completion tab.
+    self.theObject = None # The previously found object, for . chaining.
+    self.useTabs = True # True: show results in autocompleter tab.
+    self.verbose = False # True: print all members.
+    self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
+    self.widget = None # The widget that should get focus after autocomplete is done.
+#@+node:ekr.20061031131434.6: *6* defineClassesDict
+def defineClassesDict (self):
+
+    trace = False ; verbose = True
+
+    self.allClassesDict = {}
+
+    # gc may not exist.
+    try:
+        import gc
+        # if trace: g.trace(gc)
+    except ImportError:
+        if trace: g.trace('no gc')
+        return
+
+    if g.isPython3:
+        count = 0
+        for z in gc.get_objects():
+            try:
+                name = z.__class__.__name__
+                if self.allClassesDict.get(name) is not None:
+                    self.allClassesDict [name] = z
+                    count += 1
+            except ReferenceError:
+                pass
+        if trace:
+            g.trace('%s keys in allClassesDict' % (count))
+            if verbose:
+                keys = list(self.allClassesDict.keys())
+                keys.sort()
+                for z in keys:
+                    print(z)
+    else:
+        for z in gc.get_objects():
+            t = type(z)
+            if t == types.ClassType:
+                name = z.__name__
+            elif t == types.InstanceType:
+                name = z.__class__.__name__
+            elif repr(t).startswith('<class'): # A wretched kludge.
+                name = z.__class__.__name__
+            elif t == types.TypeType:
+                name = z.__name__
+            else:
+                name = None
+            if name:
+                # if name == 'position': g.trace(t,z)
+                self.allClassesDict [name] = z
+
+    # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
+    # g.trace(len(list(self.allClassesDict.keys())))
+    # g.trace('position:',self.allClassesDict.get('position'))
+#@+node:ekr.20061031131434.7: *6* defineObjectDict
+def defineObjectDict (self,table=None):
+
+    trace = False
+
+    c = self.c ; k = c.k ; p = c.p
+
+    if trace: g.trace(g.callers(4))
+
+    if table is None: table = [
+        # Python globals...
+        (['aList','bList'],     'python','list'),
+        (['aString'],           'object','aString'), # An actual string object.
+        (['cc'],                'object',c.chapterController),
+        (['c','old_c','new_c'], 'object',c),            
+        (['d','d1','d2'],       'python','dict'),
+        (['f'],                 'object',c.frame), 
+        (['g'],                 'object',g),       
+        (['gui'],               'object',g.app.gui),
+        (['k'],                 'object',k),
+        (['p','p1','p2'],       'object',p.copy()), # 2009/12/21
+        (['s','s1','s2','ch'],  'object','aString'),
+        (['string'],            'object',string), # Python's string module.
+        # (['t','t1','t2'],       'object',p.v.t),  
+        (['v','v1','v2'],       'object',p.v),
+        (['w','widget'],        'object',c.frame.body.bodyCtrl),
+    ]
+
+    if 0: # Not useful at this point.
+        for key in __builtins__.keys():
+            obj = __builtins__.get(key)
+            if obj in (True,False,None): continue
+            data = [key],'object',obj
+            table.append(data)
+
+    d = {'dict':{},'int':1,'list':[],'string':''}
+
+    for idList,kind,nameOrObject in table:
+        if kind == 'object':
+            # Works, but hard to generalize for settings.
+            obj = nameOrObject
+        elif kind == 'python':
+            className = nameOrObject
+            o = d.get(className)
+            obj = o is not None and o.__class__
+        else:
+            module = g.importModule (kind,verbose=True)
+            if not module:
+                g.trace('Can not import ',nameOrObject)
+                continue
+            self.appendToKnownObjects(module)
+            if nameOrObject:
+                className = nameOrObject
+                obj = hasattr(module,className) and getattr(module,className) or None
+                if not obj:
+                    g.trace('%s module has no class %s' % (kind,nameOrObject))
+                else:
+                    self.appendToKnownObjects(getattr(module,className))
+            else:
+                obj = module
+        for z in idList:
+            if trace: g.trace(z,obj)
+            if obj:
+                self.objectDict[z]=obj
+#@+node:ekr.20061031131434.8: *5* Top level (autocompleter)
+#@+node:ekr.20061031131434.9: *6* autoComplete
+def autoComplete (self,event=None,force=False):
+
+    '''An event handler called from k.masterKeyHanderlerHelper.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k ; state = k.unboundKeyAction
+    gui = g.app.gui
+    w = gui.eventWidget(event) or c.get_focus()
+
+    self.force = force
+    
+    if not state in ('insert','overwrite'):
+        if trace: g.trace('not in insert/overwrite mode')
+        return 'break'
+
+    # First, handle the invocation character as usual.
+    if not force:
+        # 2010/11/01: ctrl-period does *not* insert a period.
+        if trace: g.trace('not force')
+        k.masterCommand(event,func=None,stroke=None,commandName=None)
+
+    # Allow autocompletion only in the body pane.
+    if not c.widget_name(w).lower().startswith('body'):
+        if trace: g.trace('not body')
+        return 'break'
+
+    self.language = g.scanForAtLanguage(c,c.p)
+    if w and self.language == 'python' and (k.enable_autocompleter or force):
+        if trace: g.trace('starting')
+        self.start(event=event,w=w)
+    else:
+        if trace: g.trace('not enabled')
+
+    return 'break'
+#@+node:ekr.20061031131434.10: *6* autoCompleteForce
+def autoCompleteForce (self,event=None):
+
+    '''Show autocompletion, even if autocompletion is not presently enabled.'''
+
+    return self.autoComplete(event,force=True)
+#@+node:ekr.20061031131434.11: *6* autoCompleterStateHandler
+def autoCompleterStateHandler (self,event):
+
+    trace = False and not g.app.unitTesting
+    c = self.c ; k = self.k ; gui = g.app.gui
+    tag = 'auto-complete' ; state = k.getState(tag)
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
+    if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
+        state,repr(ch),repr(keysym)))
+
+    if state == 0:
+        c.frame.log.clearTab(self.tabName)
+        self.computeCompletionList(init=True)
+        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
+    elif keysym in (' ','Return'):
+        self.finish()
+    elif keysym == 'Escape':
+        self.abort()
+    elif keysym == 'Tab':
+        self.doTabCompletion()
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
+        self.doBackSpace()
+    elif keysym == '.':
+        self.chain()
+    elif keysym == '?':
+        self.info()
+    elif keysym == '!':
+        # Toggle between verbose and brief listing.
+        self.verbose = not self.verbose
+        c.frame.putStatusLine('verbose completions %s' % (
+            g.choose(self.verbose,'ON','OFF')),color='red')
+        if use_codewise:
+            self.membersList = self.complete()
+        else:
+            if type(self.theObject) == types.DictType:
+                self.membersList = list(self.theObject.keys())
+            elif type(self.theObject) in (type((),),type([])):
+                self.membersList = self.theObject
+        self.computeCompletionList()
+    elif ch == 'Down' and hasattr(self,'onDown'):
+        self.onDown()
+    elif ch == 'Up' and hasattr(self,'onUp'):
+        self.onUp()
+    elif ch and ch in string.printable:
+        self.insertNormalChar(ch,keysym)
+    else:
+        # if trace: g.trace('ignore',repr(ch))
+        return 'do-standard-keys'
+#@+node:ekr.20061031131434.12: *6* enable/disable/toggleAutocompleter/Calltips
+def disableAutocompleter (self,event=None):
+    '''Disable the autocompleter.'''
+    self.k.enable_autocompleter = False
+    self.showAutocompleterStatus()
+
+def disableCalltips (self,event=None):
+    '''Disable calltips.'''
+    self.k.enable_calltips = False
+    self.showCalltipsStatus()
+
+def enableAutocompleter (self,event=None):
+    '''Enable the autocompleter.'''
+    self.k.enable_autocompleter = True
+    self.showAutocompleterStatus()
+
+def enableCalltips (self,event=None):
+    '''Enable calltips.'''
+    self.k.enable_calltips = True
+    self.showCalltipsStatus()
+
+def toggleAutocompleter (self,event=None):
+    '''Toggle whether the autocompleter is enabled.'''
+    self.k.enable_autocompleter = not self.k.enable_autocompleter
+    self.showAutocompleterStatus()
+
+def toggleCalltips (self,event=None):
+    '''Toggle whether calltips are enabled.'''
+    self.k.enable_calltips = not self.k.enable_calltips
+    self.showCalltipsStatus()
+#@+node:ekr.20061031131434.13: *6* showCalltips
+def showCalltips (self,event=None,force=False):
+
+    '''Show the calltips at the cursor.'''
+
+    c = self.c ; k = c.k ; w = g.app.gui.eventWidget(event)
+    if not w: return
+
+    # Insert the calltip if possible, but not in headlines.
+    if (k.enable_calltips or force) and not c.widget_name(w).startswith('head'):
+        self.widget = w
+        self.prefix = ''
+        self.selection = w.getSelectionRange()
+        self.selectedText = w.getSelectedText()
+        self.leadinWord = self.findCalltipWord(w)
+        # g.trace(self.leadinWord)
+        self.theObject = None
+        self.membersList = None
+        self.calltip()
+    else:
+        # Just insert the invocation character as usual.
+        k.masterCommand(event,func=None,stroke=None,commandName=None)
+
+    return 'break'
+#@+node:ekr.20061031131434.14: *6* showCalltipsForce
+def showCalltipsForce (self,event=None):
+
+    '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
+
+    return self.showCalltips(event,force=True)
+#@+node:ekr.20061031131434.15: *6* showAutocompleter/CalltipsStatus
+def showAutocompleterStatus (self):
+    '''Show the autocompleter status.'''
+
+    k = self.k
+    if not g.unitTesting:
+        s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
+        g.es(s,color='red')
+
+def showCalltipsStatus (self):
+    '''Show the autocompleter status.'''
+    k = self.k
+    if not g.unitTesting:
+        s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+        g.es(s,color='red')
+#@+node:ekr.20061031131434.16: *5* Helpers
+#@+node:ekr.20061031131434.17: *6* abort & exit (autocompleter)
+def abort (self):
+
+    k = self.k
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+    g.es('No completions',color='blue') # 2010/11/02.
+    self.exit(restore=True)
+
+def exit (self,restore=False): # Called from keyboard-quit.
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('restore: %s, selected: %s' % (
+        restore,self.selectedText),g.callers())
+
+    k = self ; c = k.c 
+    w = self.widget or c.frame.body.bodyCtrl
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange()
+    w.setSelectionRange(j,j,insert=j)
+    self.clear()
+    self.theObject = None
+#@+node:ekr.20061031131434.18: *6* append/begin/popTabName
+def appendTabName (self,word):
+
+    self.setTabName(self.tabName + '.' + word) #  + '.')
+
+def beginTabName (self,word):
+
+    # g.trace(word,g.callers())
+    if word == 'self' and self.selfClassName:
+        word = '%s (%s)' % (word,self.selfClassName)
+    self.setTabName('AutoComplete ' + word) #  + '.')
+
+def clearTabName (self):
+
+    self.setTabName('AutoComplete ')
+
+def popTabName (self):
+
+    s = self.tabName
+    i = s.rfind('.',0,-1)
+    if i > -1:
+        self.setTabName(s[0:i])
+
+# Underscores are not valid in Pmw tab names!
+def setTabName (self,s):
+
+    c = self.c
+    if self.useTabs:
+        if self.tabName:
+            c.frame.log.deleteTab(self.tabName)
+        self.tabName = s.replace('_','') or ''
+        c.frame.log.clearTab(self.tabName)
+#@+node:ekr.20061031131434.19: *6* appendToKnownObjects
+def appendToKnownObjects (self,obj):
+
+    if 0:
+        if type(obj) in (types.InstanceType,types.ModuleType,types):
+            if hasattr(obj,'__name__'):
+                self.knownObjects[obj.__name__] = obj
+                # g.trace('adding',obj.__name__)
+#@+node:ekr.20061031131434.20: *6* calltip
+def calltip (self,obj=None):
+
+    c = self.c
+    w = self.widget
+    isStringMethod = False ; s = None
+    # g.trace(self.leadinWord,obj)
+
+    if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
+        << try to set s from a Python global function >>
+
+    if not s:
+        << get s using inspect >>
+
+    << remove 'self' from s, but not from args >>
+    if isStringMethod:
+        << remove 's' from s *and* args >>
+
+    # s = s.rstrip(')') # Not so convenient.
+    << insert the text and set j1 and j2 >>
+
+    # End autocompletion mode, putting the insertion point after the suggested calltip.
+    self.finish()
+    c.widgetWantsFocusNow(w)
+    if 1: # Seems to be more useful.
+        w.setSelectionRange(j1,j2,insert=j2)
+    else:
+        w.setInsertPoint(j2)
+    << put the status line >>
+#@+node:ekr.20061031131434.21: *7* << try to set s from a Python global function >>
+# The first line of the docstring is good enough, except for classes.
+f = __builtins__.get(self.leadinWord)
+doc = f and type(f) != types.ClassType and f.__doc__
+if doc:
+    # g.trace(doc)
+    s = g.splitLines(doc)
+    s = args = s and s [0] or ''
+    i = s.find('(')
+    if i > -1: s = s [i:]
+    else: s = '(' + s
+    s = s and s.strip() or ''
+#@+node:ekr.20061031131434.22: *7* << get s using inspect >>
+isStringMethod = (
+    self.prevObjects and
+    # type(self.prevObjects[-1]) == types.StringType
+    g.isString(self.prevObjects[-1]))
+
+# g.trace(self.prevObjects)
+
+if isStringMethod and hasattr(string,obj.__name__):
+    # A hack. String functions are builtins, and getargspec doesn't handle them.
+    # Get the corresponding string function instead, and remove the s arg later.
+    obj = getattr(string,obj.__name__)
+
+try:
+    s1,s2,s3,s4 = inspect.getargspec(obj)
+except:
+    self.extendSelection('(')
+    self.finish()
+    return # Not a function.  Just '('.
+
+s = args = inspect.formatargspec(s1,s2,s3,s4)
+#@+node:ekr.20061031131434.23: *7* << remove 'self' from s, but not from args >>
+if g.match(s,1,'self,'):
+    s = s[0] + s[6:].strip()
+elif g.match_word(s,1,'self'):
+    s = s[0] + s[5:].strip()
+#@+node:ekr.20061031131434.24: *7* << remove 's' from s *and* args >>
+if g.match(s,1,'s,'):
+    s = s[0] + s[3:]
+    args = args[0] + args[3:]
+elif g.match_word(s,1,'s'):
+    s = s[0] + s[2:]
+    args = args[0] + args[2:]
+#@+node:ekr.20061031131434.25: *7* << insert the text and set j1 and j2 >>
+junk,j = w.getSelectionRange() # Returns insert point if no selection.
+w.insert(j,s)
+c.frame.body.onBodyChanged('Typing')
+j1 = j + 1 ; j2 = j + len(s)
+#@+node:ekr.20061031131434.26: *7* << put the status line >>
+c.frame.clearStatusLine()
+if obj:
+    name = hasattr(obj,'__name__') and obj.__name__ or repr(obj)
+else:
+    name = self.leadinWord
+c.frame.putStatusLine('%s %s' % (name,args))
+#@+node:ekr.20061031131434.27: *6* chain
+def chain (self):
+
+    '''The user has just typed period.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.widget
+    word = w.getSelectedText()
+    old_obj = self.theObject
+
+    if (word and old_obj and
+        type(old_obj) == type([]) and
+        old_obj == sys.modules
+    ):
+        obj = old_obj.get(word)
+        if obj:
+            self.theObject = obj
+            self.clearTabName()
+    elif word and old_obj and self.hasAttr(old_obj,word):
+        self.push(old_obj)
+        self.theObject = obj = self.getAttr(old_obj,word)
+    elif word:
+        obj = old_obj # 2010//11/02
+    else:
+        obj = None
+
+    if trace: g.trace('word: %s, prefix: %s, old obj: %s, new obj: %s' % (
+        word,self.prefix,old_obj,obj))
+
+    if obj:
+        self.appendToKnownObjects(obj)
+        self.leadinWord = word
+        self.membersList = self.getMembersList(obj)
+        self.appendTabName(word)
+        self.extendSelection('.')
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i,insert=i)
+        # g.trace('chaining to',word,self.theObject)
+        # Similar to start logic.
+        self.prefix = ''
+        self.selection = w.getSelectionRange()
+        self.selectedText = w.getSelectedText()
+        if self.membersList:
+            # self.autoCompleterStateHandler(event=None)
+            self.computeCompletionList()
+            return
+    # Otherwise we are done.
+    self.extendSelection('.')
+    self.finish()
+#@+node:ekr.20061031131434.28: *6* computeCompletionList
+def computeCompletionList (self,backspace=False,init=False):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.widget
+    c.widgetWantsFocus(w)
+    s = w.getSelectedText()
+
+    self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+        s,self.membersList,matchEmptyPrefix=False)
+
+    if not common_prefix:
+        self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+            s,self.membersList,matchEmptyPrefix=True)
+
+    if trace: g.trace('common',common_prefix,'len(tabList)',len(self.tabList))
+
+    if not self.verbose and len(self.tabList) > 20:
+        # Show the possible starting letters.
+        # 2011/03/13: but only if there are more than one.
+        d = {}
+        for z in self.tabList:
+            ch = z and z[0] or ''
+            if ch:
+                n = d.get(ch,0)
+                d[ch] = n + 1
+        aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
+        if len(aList) > 1:
+            self.tabList = aList
+
+    if self.useTabs:
+        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
+        if self.tabList:
+            self.tabListIndex = -1 # The next item will be item 0.
+            if not backspace and not init:
+                self.setSelection(common_prefix)
+        self.put('','\n'.join(self.tabList),tabName=self.tabName)
+#@+node:ekr.20061031131434.29: *6* doBackSpace (autocompleter)
+def doBackSpace (self):
+
+    '''Cut back to previous prefix.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(autocompleter)',
+        repr(self.prefix),self.theObject,self.prevObjects)
+
+    c = self.c ; w = self.widget
+    if self.prefix:
+        self.prefix = self.prefix[:-1]
+        if not self.prefix:
+            i,j = w.getSelectionRange()
+            if i != j:
+                if trace: g.trace('delete',i,j)
+                w.delete(i,j)
+
+    if trace:
+        if trace: g.trace('prefix: %s, obj: %s' % (
+            self.prefix,self.theObject))
+
+    if self.prefix: # 2010/11/02.
+        self.setSelection(self.prefix)
+        self.computeCompletionList(backspace=True)
+    elif self.theObject:
+        if self.prevObjects:
+            obj = self.pop()
+        else:
+            obj = self.theObject
+        if trace: g.trace(self.theObject,obj)
+        s = w.getAllText()
+        i,junk = w.getSelectionRange()
+        ch = 0 <= i-1 < len(s) and s[i-1] or ''
+        if trace: g.trace(ch)
+        if ch == '.':
+            self.theObject = obj
+            w.delete(i-1)
+            c.frame.body.onBodyChanged(undoType='Typing')
+            i,j = g.getWord(s,i-2)
+            word = s[i:j]
+            if trace: g.trace(i,j,repr(word))
+            w.setSelectionRange(i,j,insert=j)
+            self.prefix = word
+            # if trace: g.trace('setting self.prefix',word)
+            self.popTabName()
+            self.membersList = self.getMembersList(obj)
+            # g.trace(len(self.membersList))
+            if self.membersList:
+                self.computeCompletionList(backspace=True)
+            else:
+                self.abort()
+        else:
+            self.abort() # should not happen.
+    else:
+        self.abort()            
+#@+node:ekr.20061031131434.30: *6* doTabCompletion (autocompleter)
+def doTabCompletion (self):
+
+    '''Handle tab completion when the user hits a tab.'''
+
+    c = self.c ; w = self.widget
+    s = w.getSelectedText()
+
+    if s.startswith(self.prefix) and self.tabList:
+        # g.trace('cycle','prefix',repr(self.prefix),len(self.tabList),repr(s))
+        # Set the label to the next item on the tab list.
+        self.tabListIndex +=1
+        if self.tabListIndex >= len(self.tabList):
+           self.tabListIndex = 0
+        self.setSelection(self.tabList[self.tabListIndex])
+    else:
+        self.computeCompletionList()
+
+    c.widgetWantsFocusNow(w)
+#@+node:ekr.20061031131434.31: *6* extendSelection
+def extendSelection (self,s):
+
+    '''Append s to the presently selected text.'''
+
+    c = self.c ; w = self.widget
+    c.widgetWantsFocusNow(w)
+
+    i,j = w.getSelectionRange()
+    w.insert(j,s)
+    j += 1
+    w.setSelectionRange(i,j,insert=j)
+    c.frame.body.onBodyChanged('Typing')
+#@+node:ekr.20061031131434.33: *6* findCalltipWord
+def findCalltipWord (self,w):
+
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    if i > 0:
+        i,j = g.getWord(s,i-1)
+        word = s[i:j]
+        return word
+    else:
+        return ''
+#@+node:ekr.20080924032842.5: *6* findAnchor
+def findAnchor (self,w):
+
+    '''Find the first word of a chain.
+
+    Returns (j,word) where j is a Python index.'''
+
+    trace = False and not g.unitTesting
+    i = j = w.getInsertPoint()
+    s = w.getAllText()
+
+    if self.force:
+        # Scan backward to the previous full word.
+        # while i > 1 and s[i-1] != '.':
+        while i > 1 and g.isWordChar(s[i-1]):
+            i -= 1
+
+    # Find the base of the chain.
+    # New in Leo 4.5: Fix a hanger by stopping when i <= 1.
+    while i > 1 and s[i-1] == '.':
+        i,j = g.getWord(s,i-2)
+
+    word = s[i:j]
+    if word == '.': word = None
+
+    if trace: g.trace(i,j,repr(word))
+    return j,word
+#@+node:ekr.20061031131434.34: *6* finish
+def finish (self):
+
+    c = self.c ; k = c.k
+
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+
+    c.frame.body.onBodyChanged('Typing')
+    c.recolor()
+    self.clear()
+    self.theObject = None
+#@+node:ekr.20061031131434.35: *6* getAttr and hasAttr
+# The values of self.attrDictDic are anonymous attrDict's.
+# attrDicts: keys are strings, values are lists of strings.
+
+def getAttr (self,obj,attr):
+
+    '''Simulate getattr function, regardless of langauge.'''
+
+    if self.language == 'python':
+        return getattr(obj,attr)
+    else:
+        d = self.attrDictDict.get(self.language)
+        aList = d.get(obj,[])
+        return attr in aList and attr
+
+def hasAttr (self,obj,attr):
+
+    '''Simulate hasattr function, regardless of langauge.'''
+
+    if self.language == 'python':
+        return hasattr(obj,attr)
+    else:
+        d = self.attrDictDict.get(self.language)
+        aList = d.get(obj,[])
+        return attr in aList
+#@+node:ekr.20061031131434.36: *6* getLeadinWord
+def getLeadinWord (self,w):
+
+    trace = False and not g.unitTesting
+    self.verbose = False # User must explicitly ask for verbose.
+    self.leadinWord = None
+    start = w.getInsertPoint()
+    s = w.getAllText()
+    if 0 < start and s[start-1] == '.':
+        start -= 1
+    i,word = self.findAnchor(w)
+    if trace: g.trace('word',word)
+
+    self.membersList = []
+    if not word:
+        return False
+
+    if word.isdigit():
+        return False
+
+    self.setObjectAndMembersList(word)
+    if trace: g.trace('obj: %s, members: %s' % (
+        self.theObject,len(self.membersList)))
+
+    if not self.theObject:
+        self.membersList = []
+        return False
+    else:
+        self.beginTabName(word)
+        while 0 <= i < start and i <len(s):
+            if s[i] != '.':
+                return False
+            i,j = g.getWord(s,i+1)
+            word = s[i:j]
+            if trace: g.trace(word) #,i,j,start)
+            if not self.force:
+                # 2010/11/01: partial words are fine.
+                self.setObjectAndMembersList(word)
+                if not self.theObject:
+                    if trace: g.trace('unknown',word)
+                    return False
+            self.appendTabName(word)
+            i = j
+        self.leadinWord = word
+        return True
+#@+node:ekr.20061031131434.37: *6* getMembersList
+def getMembersList (self,obj):
+
+    '''Return a list of possible autocompletions for self.leadinWord.'''
+
+    if obj:
+        aList = inspect.getmembers(obj)
+        members = ['%s:%s' % (a,g.prettyPrintType(b))
+            for a,b in aList if not a.startswith('__')]
+        members.sort()
+        return members
+    else:
+        return []
+#@+node:ekr.20061031131434.38: *6* info
+def info (self):
+
+    c = self.c ; doc = None ; obj = self.theObject ; w = self.widget
+
+    word = w.getSelectedText()
+
+    if not word:
+        # Never gets called, but __builtin__.f will work.
+        word = self.findCalltipWord(w)
+        if word:
+            # Try to get the docstring for the Python global.
+            f = __builtins__.get(self.leadinWord)
+            doc = f and f.__doc__
+
+    if not doc:
+        if not self.hasAttr(obj,word):
+            g.es('no docstring for',word,color='blue')
+            return
+        obj = self.getAttr(obj,word)
+        doc = inspect.getdoc(obj)
+
+    if doc:
+        c.frame.log.clearTab('Info',wrap='word')
+        self.put('',doc,tabName='Info')
+    else:
+        g.es('no docstring for',word,color='blue')
+#@+node:ekr.20061031131434.39: *6* insertNormalChar
+def insertNormalChar (self,ch,keysym):
+
+    k = self.k ; w = self.widget
+
+    if g.isWordChar(ch):
+        # Look ahead to see if the character completes any item.
+        s = w.getSelectedText() + ch
+        tabList,common_prefix = g.itemsMatchingPrefixInList(
+            s,self.membersList,matchEmptyPrefix=True)
+        if tabList:
+            # Add the character.
+            self.tabList = tabList
+            self.extendSelection(ch)
+            s = w.getSelectedText()
+            if s.startswith(self.prefix):
+                self.prefix = self.prefix + ch
+                # g.trace('setting self.prefix',self.prefix)
+            self.computeCompletionList()
+    else:
+        word = w.getSelectedText()
+        if ch == '(':
+            # Similar to chain logic.
+            obj = self.theObject
+            # g.trace(obj,word,self.hasAttr(obj,word))
+            if self.hasAttr(obj,word):
+                obj = self.getAttr(obj,word)
+                self.push(self.theObject)
+                self.theObject = obj
+                self.leadinWord = word
+                self.membersList = self.getMembersList(obj)
+                if k.enable_calltips:
+                    # This calls self.finish if the '(' is valid.
+                    self.calltip(obj)
+                    return
+        self.extendSelection(ch)
+        self.finish()
+#@+node:ekr.20061031131434.40: *6* push, pop, clear, stackNames
+def push (self,obj):
+
+    if obj is not None:
+        self.prevObjects.append(obj)
+        # g.trace(self.stackNames())
+
+def pop (self):
+
+    obj = self.prevObjects.pop()
+    # g.trace(obj)
+    return obj
+
+def clear (self):
+
+    self.prevObjects = []
+    # g.trace(g.callers())
+
+def stackNames (self):
+
+    aList = []
+    for z in self.prevObjects:
+        if hasattr(z,'__name__'):
+            aList.append(z.__name__)
+        elif hasattr(z,'__class__'):
+            aList.append(z.__class__.__name__)
+        else:
+            aList.append(str(z))
+    return aList
+#@+node:ekr.20101101175644.5891: *6* put
+def put (self,*args,**keys):
+
+    '''Put s to the given tab.
+
+    May be overridden in subclasses.'''
+
+    # print('autoCompleter.put',args,keys)
+
+    g.es(*args,**keys)
+#@+node:ekr.20061031131434.41: *6* setObjectAndMembersList & helpers
+def setObjectAndMembersList (self,word):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not word:
+        # Leading dot shows all classes.
+        self.leadinWord = None
+        self.theObject = sys.modules
+        self.membersList = list(sys.modules.keys())
+        self.beginTabName('Modules')
+    elif word in ( "'",'"'):
+        word = 'aString' # This is in the objectsDict.
+        self.clear()
+        self.push(self.theObject)
+        self.theObject = 'aString'
+        self.membersList = self.getMembersList(self.theObject)
+    elif self.theObject:
+        self.getObjectFromAttribute(word)
+    # elif word == 'self':
+        # self.completeSelf()
+    else:
+        obj = self.objectDict.get(word) or sys.modules.get(word)
+        self.completeFromObject(obj)
+
+    if trace: g.trace(word,self.theObject,len(self.membersList))
+#@+node:ekr.20061031131434.42: *7* getObjectFromAttribute
+def getObjectFromAttribute (self,word):
+
+    obj = self.theObject
+
+    if obj and self.hasAttr(obj,word):
+        self.push(self.theObject)
+        self.theObject = self.getAttr(obj,word)
+        self.appendToKnownObjects(self.theObject)
+        self.membersList = self.getMembersList(self.theObject)
+    else:
+        # No special support for 'self' here.
+        # Don't clear the stack here!
+        self.membersList = []
+        self.theObject = None
+#@+node:ekr.20061031131434.44: *7* completeFromObject
+def completeFromObject (self,obj):
+
+    if obj:
+        self.appendToKnownObjects(obj)
+        self.push(self.theObject)
+        self.theObject = obj
+        self.membersList = self.getMembersList(obj=obj)
+    else:
+        self.theObject = None
+        self.clear()
+        self.membersList = []
+#@+node:ekr.20061031131434.45: *6* setSelection
+def setSelection (self,s):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.widget
+    c.widgetWantsFocusNow(w)
+
+    if w.hasSelection():
+        i,j = w.getSelectionRange()
+        w.delete(i,j)
+    else:
+        i = w.getInsertPoint()
+
+    # Don't go past the ':' that separates the completion from the type.
+    n = s.find(':')
+    if n > -1: s = s[:n]
+
+    w.insert(i,s)
+    j = i + len(s)
+    w.setSelectionRange(i,j,insert=j)
+    if trace: g.trace(i,j,s,g.callers())
+
+    # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
+    c.frame.body.recolor(c.p,incremental=True)
+    # Usually this call will have no effect because the body text has not changed.
+    c.frame.body.onBodyChanged('Typing')
+#@+node:ekr.20061031131434.46: *6* start & initForce
+def start (self,event=None,w=None,prefix=None):
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if w: self.widget = w
+    else: w = self.widget
+
+    # We wait until now to define these dicts so that more classes and objects will exist.
+    if not self.objectDict:
+        self.defineClassesDict()
+        self.defineObjectDict()
+
+    self.prefix = g.choose(prefix is None,'',prefix)
+    self.selection = w.getSelectionRange()
+    self.selectedText = w.getSelectedText()
+
+    flag = self.getLeadinWord(w)
+    if self.force:
+        partialWord = self.initForce()
+
+    if trace: g.trace(flag,len(self.membersList))
+
+    if not self.membersList:
+        self.abort()
+    elif self.useTabs:
+        self.autoCompleterStateHandler(event)
+    else:
+        self.computeCompletionList()
+        return self.tabList
+
+#@+node:ekr.20101101114615.8450: *7* initForce
+def initForce(self):
+
+    trace = True and not g.unitTesting
+    w = self.widget
+    i = j = w.getInsertPoint()
+    s = w.getAllText()
+
+    # Select the text from the insert point back to
+    # the next period or other word terminator.
+    while i > 1 and g.isWordChar(s[i-1]):
+        i -= 1
+
+    if i < j:
+        word = s[i:j]
+        w.setSelectionRange(i,j)
+        self.selectedText = word
+        self.selection = w.getSelectionRange()
+    else:
+        word = None
+
+    if trace: g.trace(word)
+    return word
+
+#@+node:ekr.20110312155404.14249: *4* class CodewiseCompleterClass (AutoCompleterClass)
+class CodewiseCompleterClass (AutoCompleterClass):
+    
+    @others
+#@+node:ekr.20110312155404.14260: *5*  ctor (CodewiseCompleterClass)
+def __init__ (self,k):
+    
+    # Init the base class
+    AutoCompleterClass.__init__(self,k)
+    
+    c = self.c
+    
+    self.body = None    # Set in start: a LeoQTextBrowser
+    self.widget = None  # Set in start: a leoQTextEditWidget
+    self.tabName = 'Completions'
+#@+node:ekr.20110314123044.14271: *5* showAutocompleter/CalltipsStatus
+def showAutocompleterStatus (self):
+    '''Show the autocompleter status.'''
+
+    k = self.k
+    if not g.unitTesting:
+        s = 'Codewise autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
+        g.es(s,color='red')
+
+def showCalltipsStatus (self):
+    '''Show the autocompleter status.'''
+    k = self.k
+    if not g.unitTesting:
+        s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+        g.es(s,color='red')
+#@+node:ekr.20110312155404.14255: *5* complete & helpers
+def complete(self,event=None,s=None):
+    
+    '''Use codewise to generate a list of hits.'''
+
+    c = self.c
+    p = c.p
+    w = self.widget # A leoQTextEditWidget
+    
+    if s:
+        head = s
+    else:
+        head,junk = self.get_current_line(w)
+        s = self.get_word()
+
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", head.lstrip())
+    if m:
+        obj = m.group(1)
+        prefix = m.group(3)
+        g.trace('obj',obj,'prefix',prefix)
+        kind,aList = self.guess_class(c,p, obj)
+    else:
+        kind,aList = 'none',[]
+        
+    if aList:
+        if kind == 'class':
+            hits = self.lookup_methods(aList,prefix)
+        elif kind == 'module':
+            hits = self.lookup_modules(aList,prefix)
+    else:
+        hits = self.lookup(s)
+        
+    # g.trace(aList,repr(s),len(hits))
+    
+    return hits
+#@+node:ekr.20110313103739.14270: *6* cleanup
+def clean (self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for display.'''
+    
+    aList = []
+    for h in hits:
+        s = h[0]
+        fn = h[1].strip()
+        if fn.startswith('/'):
+            sig = fn[2:-4].strip()
+        else:
+            sig = fn
+        aList.append('%s: %s' % (s,sig))
+
+    aList = list(set(aList))
+    aList.sort()
+    return aList
+#@+node:ekr.20110312155404.14257: *6* get_current_line
+def get_current_line(self,w):
+    
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getLine(s,ins)
+    head, tail = s[i:ins], s[ins:j]
+
+    return head, tail
+#@+node:ekr.20110312162243.14254: *6* guess_class
+def guess_class(self,c,p,varname):
+    
+    '''Return kind, class_list'''
+
+    # if varname == 'g':
+        # return 'module',['leoGlobals']
+    if varname == 'p':
+        return 'class',['position']
+    if varname == 'c':
+        return 'class',['baseCommands']
+    if varname == 'self':
+        # Return the nearest enclosing class.
+        for par in p.parents():
+            h = par.h
+            m = re.search('class\s+(\w+)', h)
+            if m:
+                return 'class',[m.group(1)]
+
+    # Do a 'real' analysis
+    aList = ContextSniffer().get_classes(p.b,varname)
+    # g.trace(varname,aList)
+    return 'class',aList
+#@+node:ekr.20110312162243.14268: *6* lookup
+def lookup(self,prefix):
+
+    aList = codewise.cmd_functions([prefix])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+    
+    # # Clean up the ctags info.
+    # aList = []
+    # for h in hits:
+        # s = h[0]
+        # sig = h[1].strip()[2:-4].strip()
+        # aList.append('%s: %s' % (s,sig))
+
+    # aList = list(set(aList))
+    # aList.sort()
+    # return aList
+#@+node:ekr.20110312162243.14273: *6* lookup_methods
+def lookup_methods(self,aList,prefix):
+    
+    aList = codewise.cmd_members([aList[0]])
+    hits = (z.split(None,1) for z in aList if z.strip())
+    return self.clean(aList)
+
+    # # Clean up the ctags pattern.
+    # aList = []
+    # for h in hits:
+        # s = h[0]
+        # fn = h[1].strip()
+        # if fn.startswith('/'):
+            # sig = fn[2:-4].strip()
+        # else:
+            # sig = fn
+        # aList.append('%s: %s' % (s,sig))
+
+    # aList = list(set(aList))
+    # aList.sort()
+    # return aList
+#@+node:ekr.20110313103739.14269: *6* lookup_modules
+def lookup_modules (self,aList,prefix):
+    
+    g.trace(prefix,aList)
+    
+    aList = codewise.cmd_functions([aList[0]])
+    hits = (z.split(None,1) for z in aList if z.strip())
+    return self.clean(hits)
+
+    
+    
+#@+node:ekr.20110312162243.14266: *6* get_word
+def get_word (self):
+    
+    body = self.body 
+    tc = body.textCursor()
+    tc.select(tc.WordUnderCursor)
+    s = tc.selectedText()
+    return s
+#@+node:ekr.20110312155404.14252: *5* start & helper
+def start (self,event=None,w=None,prefix=None):
+
+    c = self.c
+    self.body = c.frame.top.ui.richTextEdit # A LeoQTextBrowser.
+    self.widget = c.frame.body.bodyCtrl # A leoQTextEditWidget.
+
+    self.prefix = g.choose(prefix is None,'',prefix)
+    self.selection = w.getSelectionRange()
+    self.selectedText = w.getSelectedText()
+    
+    self.prefix = self.select_word() # New
+    
+    ###
+    # if self.force:
+        # partialWord = self.initForce()
+    
+    self.membersList = self.complete(event) # New
+
+    if not self.membersList:
+        self.abort()
+    elif self.useTabs:
+        self.autoCompleterStateHandler(event)
+    else:
+        self.computeCompletionList()
+        return self.tabList
+#@+node:ekr.20110312162243.14287: *6* select_word
+def select_word (self):
+    
+
+    '''Select the word under the cursor and return it.'''
+
+    trace = False and not g.unitTesting
+    w = self.widget
+    i = j = w.getInsertPoint()
+    s = w.getAllText()
+
+    # Scan backward to the previous full word.
+    while i > 0 and g.isWordChar(s[i-1]):
+        i -= 1
+
+    w.setSelectionRange(i,j)
+    return s[i:j]
+#@+node:ekr.20090131200406.14: *4* Autocompleter notes
+#@+node:ekr.20080113165010: *5* About auto completion
 @nocolor
 
 Summary: inspect when possible, ask for types otherwise.
@@ -40,7 +1714,7 @@ Performance isn't too hard:
 Parsing:
     - Forgiving parser is essentially complete.
     - It's easy to parse python def lines.
-#@+node:ekr.20081005065934.12: *4* Links from Ville re Scintilla
+#@+node:ekr.20081005065934.12: *5* Links from Ville re Scintilla
 It seems Scintilla relies on externally generated api description
 files to provide autocompletion. Links that may be of interest:
 
@@ -51,7 +1725,7 @@ http://www.burgaud.com/scite-java-api/
 http://scintilla.sourceforge.net/tags2api.py
 
 http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
-#@+node:ekr.20060927173836.1: *4* Make calltips and autocompleter 'stateless'
+#@+node:ekr.20060927173836.1: *5* Make calltips and autocompleter 'stateless'
 @nocolor
 
 Disabled these binding:
@@ -68,7 +1742,7 @@ This is a complex problem, and not very serious now that there is an easy way of
 toggling autocompleter and calltips on and off.
 
 @color
-#@+node:ekr.20080110082845: *4* pyxides: code completion
+#@+node:ekr.20080110082845: *5* pyxides: code completion
 @nocolor
 
 Python code completion module
@@ -671,7 +2345,7 @@ specific parts of rope, I'll be happy to answer.
 By the way, I tried to reply this mail to the group, but it seems that
 your group requires subscription for posting, so I've sent it to you,
 instead.
-#@+node:ekr.20071106083149: *4* Recent post
+#@+node:ekr.20071106083149: *5* Recent post
 @killcolor
 
 In general, autocompletion is a tricky problem. Consider:
@@ -689,7 +2363,7 @@ or "os.path." for example.
 It might be possible to generalize c.k.defineObjectDict so that the user
 could specify autocompleter conventions, say in an @autocompleter node in an
 @settings tree.
-#@+node:ekr.20100506062734.5756: *4* Ville post re autocompleter
+#@+node:ekr.20100506062734.5756: *5* Ville post re autocompleter
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ee84e52fba476950
@@ -723,539 +2397,7 @@ behave" on 2010, i.e. the way provided by QCompleter.
 
 -- 
 Ville M. Vainio 
-#@+node:ekr.20101004092958.6008: *3* codewise stuff
-#@+node:ekr.20101004092958.5964: *4* codewise crash
-
-c:\leo.repo\trunk>python -m codewise setup
-
-c:\leo.repo\trunk>c:\Python31\python.exe -m codewise setup
-Creating template c:\Users\edreamleo/.ctags
-Initializing CodeWise db at c:\Users\edreamleo/.codewise.db
-c:\Users\edreamleo/.codewise.db
-<sqlite3.Connection object at 0x02B881A0>
-
-c:\leo.repo\trunk>python -m codewise init
-
-c:\leo.repo\trunk>c:\Python31\python.exe -m codewise init
-Initializing CodeWise db at c:\Users\edreamleo/.codewise.db
-c:\Users\edreamleo/.codewise.db
-<sqlite3.Connection object at 0x02BA21A0>
-
-c:\leo.repo\trunk>python -m codewise parse c:\leo.repo\trunk
-
-c:\leo.repo\trunk>c:\Python31\python.exe -m codewise parse
-Traceback (most recent call last):
-  File "c:\Python31\lib\runpy.py", line 128, in _run_module_as_main
-    "__main__", fname, loader, pkg_name)
-  File "c:\Python31\lib\runpy.py", line 34, in _run_code
-    exec(code, run_globals)
-  File "c:\Python31\lib\site-packages\codewise.py", line 454, in <module>
-    main()
-  File "c:\Python31\lib\site-packages\codewise.py", line 440, in main
-    cmd_parse(args)
-  File "c:\Python31\lib\site-packages\codewise.py", line 368, in cmd_parse
-    assert args
-AssertionError
-
-c:\leo.repo\trunk>scripts
-
-c:\leo.repo\trunk>cd c:\Scripts
-
-c:\Scripts>ed python.bat
-
-c:\Scripts>echo off
-Could Not Find c:\Scripts\*.~?~
-
-c:\Scripts>tr
-
-c:\Scripts>cd c:\leo.repo\trunk
-
-c:\leo.repo\trunk>python -m codewise parse c:\leo.repo\trunk
-
-c:\leo.repo\trunk>c:\Python31\python.exe -m codewise parse c:\leo.repo\trunk
-c:\Users\edreamleo/.codewise.db
-ctags -R --sort=no -f - c:\leo.repo\trunk
-
-c:\leo.repo\trunk>python -m codewise parse c:\python31\lib
-
-c:\leo.repo\trunk>c:\Python31\python.exe -m codewise parse c:\python31\lib
-c:\Users\edreamleo/.codewise.db
-ctags -R --sort=no -f - c:\python31\lib
-Traceback (most recent call last):
-  File "c:\Python31\lib\runpy.py", line 128, in _run_module_as_main
-    "__main__", fname, loader, pkg_name)
-  File "c:\Python31\lib\runpy.py", line 34, in _run_code
-    exec(code, run_globals)
-  File "c:\Python31\lib\site-packages\codewise.py", line 454, in <module>
-    main()
-  File "c:\Python31\lib\site-packages\codewise.py", line 440, in main
-    cmd_parse(args)
-  File "c:\Python31\lib\site-packages\codewise.py", line 370, in cmd_parse
-    cw.parse(args)
-  File "c:\Python31\lib\site-packages\codewise.py", line 307, in parse
-    self.feed_ctags(f)
-  File "c:\Python31\lib\site-packages\codewise.py", line 250, in feed_ctags
-    fil = fields[1]
-IndexError: list index out of range
-
-c:\leo.repo\trunk>
-#@+node:ekr.20101004092958.6009: *4* codewise.py
-@first #!/usr/bin/env python
-
-<< docstring >>
-<< usage >>
-<< decls >>
-
-@language python
-@tabwidth -4
-
-@others
-
-if __name__ == "__main__":
-    main()
-#@+node:ekr.20101004092958.6010: *5* << docstring >>
-""" CodeWise - global code intelligence database
-
-Why codewise:
-
-- Exuberant ctags is an excellent code scanner
-- Unfortunately, TAGS file lookup sucks for "find methods of this class"
-- TAGS files can be all around the hard drive. CodeWise database is
-  just one file (by default ~/.codewise.db)
-- I wanted to implement modern code completion for Leo editor
-
-- This is usable as a python module, or a command line tool.
-
-"""
-#@+node:ekr.20101004092958.6011: *5* << usage >>
-USAGE = """
-codewise setup
- (Optional - run this first to create template ~/.ctags)
-
-codewise init
- Create/recreate the global database
-
-codewise parse /my/project /other/project
- Parse specified directories (with recursion) and add results to db
-
-codewise m
- List all classes
-
-codewise m MyClass
- Show all methods in MyClass
-
-codewise f PREFIX
- Show all symbols (also nonmember functiosn) starting with PREFIX.
- PREFIX can be omitted to get a list of all symbols
-
-codewise parseall
- Clear database, reparse all paths previously added by 'codewise parse'
-
-codewise sciapi pyqt.api
- Parse an api file (as supported by scintilla, eric4...)
-
-Commands you don't probably need:
-
-codewise tags TAGS
- Dump already-created tagfile TAGS to database
-
-""" 
-#@+node:ekr.20101004092958.6012: *5* << decls >>
-import os,sys
-import sqlite3
-
-isPython3 = sys.version_info >= (3,0,0) # EKR.
-
-DEFAULT_DB = os.path.expanduser("~/.codewise.db")
-
-DB_SCHEMA = """
-BEGIN TRANSACTION;
-CREATE TABLE class (id INTEGER PRIMARY KEY, file INTEGER,  name TEXT, searchpattern TEXT);
-CREATE TABLE file (id INTEGER PRIMARY KEY, path TEXT);
-CREATE TABLE function (id INTEGER PRIMARY KEY, class INTEGER, file INTEGER, name TEXT, searchpattern TEXT);
-CREATE TABLE datasource (type TEXT, src TEXT);
-
-CREATE INDEX idx_class_name ON class(name ASC);
-CREATE INDEX idx_function_class ON function(class ASC);
-
-COMMIT;
-"""
-
-#@+node:ekr.20101004092958.6013: *5* Top level
-#@+node:ekr.20101004092958.6014: *6* Commands
-#@+node:ekr.20101004092958.6015: *7* cmd_functions
-def cmd_functions(args):
-    cw = CodeWise()
-
-    if args:
-        funcs = cw.get_functions(args[0])
-    else:
-        funcs = cw.get_functions()
-    lines = list(set(el[0] + "\t" + el[1] for el in funcs))
-    lines.sort()
-    printlines(lines)
-    return lines # EKR
-#@+node:ekr.20101004092958.6016: *7* cmd_init
-def cmd_init(args):
-
-    print("Initializing CodeWise db at", DEFAULT_DB)
-    if os.path.isfile(DEFAULT_DB):
-        os.remove(DEFAULT_DB)
-
-    cw = CodeWise()
-#@+node:ekr.20101004092958.6017: *7* cmd_members
-def cmd_members(args):
-    cw = CodeWise()
-    if not args:
-        lines = cw.classcache.keys()
-        lines.sort()
-        printlines(lines)        
-        return [] # EKR
-
-    mems = cw.get_members([args[0]])
-    lines = list(set(el + "\t" + pat for el, pat in mems))
-    lines.sort()
-    printlines(lines)
-    return lines # EKR
-#@+node:ekr.20101004092958.6018: *7* cmd_parse
-def cmd_parse(args):
-    assert args
-    cw = CodeWise()
-    cw.parse(args)
-#@+node:ekr.20101004092958.6019: *7* cmd_parseall
-def cmd_parseall(args):
-    cw = CodeWise()
-    cw.parseall()
-#@+node:ekr.20101004092958.6020: *7* cmd_scintilla
-def cmd_scintilla(args):
-    cw = CodeWise()
-    for fil in args:
-        f = open(fil)
-        cw.feed_scintilla(f)
-        f.close()
-#@+node:ekr.20101004092958.6021: *7* cmd_setup
-def cmd_setup(args):
-
-    ctagsfile = os.path.expanduser("~/.ctags")
-    print("Creating template",ctagsfile)
-    assert not os.path.isfile(ctagsfile)
-    open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
-    cmd_init(args)
-#@+node:ekr.20101004092958.6022: *7* cmd_tags
-def cmd_tags(args):
-    cw = CodeWise()
-    cw.feed_ctags(open(args[0]))
-#@+node:ekr.20101004092958.6023: *6* main
-def main():
-    if len(sys.argv) < 2:
-        print(USAGE)
-        return
-    cmd = sys.argv[1]
-    #print "cmd",cmd
-    args = sys.argv[2:]
-    if cmd == 'tags':
-        cmd_tags(args)
-    elif cmd == 'm':
-        cmd_members(args)
-    elif cmd == 'f':
-        cmd_functions(args)        
-    elif cmd =='parse':
-        cmd_parse(args)
-    elif cmd =='parseall':
-        cmd_parseall(args)
-    elif cmd =='sciapi':
-        cmd_scintilla(args)
-    elif cmd == 'init':
-        cmd_init(args)
-    elif cmd == 'setup':
-        cmd_setup(args)
-#@+node:ekr.20101004092958.6024: *6* printlines
-def printlines(lines):
-    for l in lines:
-        try:
-            print(l)
-        except Exception: # EKR: UnicodeEncodeError:            
-            pass
-#@+node:ekr.20101004092958.6025: *6* run_ctags
-def run_ctags(paths):
-    cm = 'ctags -R --sort=no -f - ' + " ".join(paths)
-    print(cm)
-    f = os.popen(cm)
-    return f
-#@+node:ekr.20101004092958.6026: *5* class CodeWise
-class CodeWise:
-    @others
-#@+node:ekr.20101004092958.6027: *6* __init__
-def __init__(self, dbpath = None):
-
-    if dbpath is None:
-        # use "current" db from env var
-        dbpath = DEFAULT_DB
-
-    print(dbpath)
-
-    self.reset_caches()
-
-    if not os.path.exists(dbpath):
-        self.createdb(dbpath)
-    else:
-        self.dbconn = c = sqlite3.connect(dbpath)
-        self.create_caches()
-#@+node:ekr.20101004092958.6028: *6* createdb
-def createdb(self, dbpath):
-
-    self.dbconn = c = sqlite3.connect(dbpath)
-    print(self.dbconn)
-    c.executescript(DB_SCHEMA)
-    c.commit()
-    c.close()
-#@+node:ekr.20101004092958.6029: *6* create_caches
-def create_caches(self):
-    """ read existing db and create caches """
-
-    c = self.cursor()
-
-    c.execute('select id, name from class')
-    for idd, name in c:
-        self.classcache[name] = idd
-
-    c.execute('select id, path from file')
-    for idd, name in c:
-        self.filecache[name] = idd
-
-    c.close()
-    #print self.classcache
-#@+node:ekr.20101004092958.6030: *6* reset_caches
-def reset_caches(self):
-    self.classcache = {}
-    self.filecache = {}
-
-    self.fileids_scanned = set()
-#@+node:ekr.20101004092958.6031: *6* cursor
-def cursor(self):
-    return self.dbconn.cursor()
-#@+node:ekr.20101004092958.6032: *6* class_id
-def class_id(self, classname):
-    """ return class id. May create new class """
-
-    if classname is None:
-        return 0
-
-    idd = self.classcache.get(classname)
-    if idd is None:
-        c = self.cursor()
-        c.execute('insert into class(name) values (?)' , [classname])
-        c.close()
-        idd = c.lastrowid
-        self.classcache[classname] = idd
-    return idd
-#@+node:ekr.20101004092958.6033: *6* get_members
-def get_members(self, classnames):
-
-    clset = set(classnames)
-
-    class_by_id = dict((v,k) for k,v in self.classcache.items())
-    file_by_id = dict((v,k) for k,v in self.filecache.items())
-
-
-    res = []
-    for name, idd in self.classcache.items():
-        if name in clset:
-            c = self.cursor()
-            #print idd
-            c.execute('select name, class, file, searchpattern from function where class = (?)',(idd,))
-
-            for name, klassid, fileid, pat in c:
-                res.append((name, pat))
-
-    return res
-#@+node:ekr.20101004092958.6034: *6* get_functions
-def get_functions(self, prefix = None):
-
-    c = self.cursor()
-
-    if prefix is not None:
-        c.execute('select name, class, file, searchpattern from function where name like (?)',( prefix + '%',))
-    else:
-        c.execute('select name, class, file, searchpattern from function')
-
-    return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-#@+node:ekr.20101004092958.6035: *6* file_id
-def file_id(self, fname):
-    if fname == '':
-        return 0
-
-    idd = self.filecache.get(fname)
-    if idd is None:
-        c = self.cursor()
-        c.execute('insert into file(path) values (?)', [fname] )
-        idd = c.lastrowid
-
-        self.filecache[fname] = idd
-        self.fileids_scanned.add(idd)
-    else:
-        if idd in self.fileids_scanned:
-            return idd
-
-        # we are rescanning a file with old entries - nuke old entries
-        #print "rescan", fname
-        c = self.cursor()
-        c.execute("delete from function where file = (?)", (idd, ))
-        #self.dbconn.commit()
-        self.fileids_scanned.add(idd)
-
-    return idd
-#@+node:ekr.20101004092958.6036: *6* feed_function
-def feed_function(self, func_name, class_name, file_name, aux):
-    """ insert one function
-
-    'aux' can be a search pattern (as with ctags), signature, or description.
-    """
-    clid = self.class_id(class_name)
-    fid = self.file_id(file_name)
-    c = self.cursor()
-    c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
-              [clid, func_name, aux, fid])
-#@+node:ekr.20101004092958.6037: *6* feed_scintilla
-def feed_scintilla(self, apifile_obj):
-    """ handle scintilla api files
-
-    Syntax is like:
-
-    qt.QApplication.style?4() -> QStyle
-    """
-
-    for l in apifile_obj:
-        if not isPython3:
-            l = unicode(l, 'utf8', 'replace')
-        parts = l.split('?')
-        fullsym = parts[0].rsplit('.',1)
-        klass, func = fullsym
-
-        if len(parts) == 2:
-            desc = parts[1]
-        else:
-            desc = ''
-
-        # now our class is like qt.QApplication. We do the dirty trick and
-        # remove all but actual class name
-
-        shortclass = klass.rsplit('.',1)[-1]
-
-        #print func, klass, desc
-        self.feed_function(func.strip(), shortclass.strip(), '', desc.strip())
-    self.dbconn.commit()
-#@+node:ekr.20101004092958.6038: *6* feed_ctags
-def feed_ctags(self,tagsfile_obj):
-    for l in tagsfile_obj:
-        #print l
-        if not isPython3:
-            l = unicode(l, 'utf8', 'replace')
-        if l.startswith('!'):
-            continue
-        fields = l.split('\t')
-        m = fields[0]
-        fil = fields[1]
-        pat = fields[2]
-        typ = fields[3]
-        klass = None
-        try:
-            ext = fields[4]
-            if ext and ext.startswith('class:'):
-                klass = ext.split(':',1)[1].strip()
-                idd = self.class_id(klass)
-                #print "klass",klass, idd
-
-        except IndexError:
-            ext = None
-            # class id 0 = function
-            idd = 0
-
-        c = self.cursor()
-        #print fields
-
-        fid = self.file_id(fil)
-
-        c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
-                  [idd, m, pat, fid])
-
-    self.dbconn.commit()
-    #c.commit()
-#@+node:ekr.20101004092958.6039: *6* add_source
-def add_source(self, type, src):
-    c = self.cursor()
-    c.execute('insert into datasource(type, src) values (?,?)', (type,src))
-    self.dbconn.commit()
-#@+node:ekr.20101004092958.6040: *6* sources
-def sources(self):
-    c = self.cursor()
-    c.execute('select type, src from datasource')
-    return list(c)
-#@+node:ekr.20101004092958.6041: *6* zap_symbols
-def zap_symbols(self):
-    c = self.cursor()
-    tables = ['class', 'file', 'function']
-    for t in tables:
-        c.execute('delete from ' + t)
-    self.dbconn.commit()
-#@+node:ekr.20101004092958.6042: *6* parseall
-# high level commands        
-def parseall(self):
-    sources = self.sources()
-    self.reset_caches()
-    self.zap_symbols()
-    tagdirs = [td for typ, td in sources if typ == 'tagdir']
-    self.parse(tagdirs)
-    self.dbconn.commit()
-#@+node:ekr.20101004092958.6043: *6* parse
-def parse(self, paths):
-    paths = set(os.path.abspath(p) for p in paths)
-    f = run_ctags(paths)
-    self.feed_ctags(f)
-    sources = self.sources()
-    for a in paths:
-        if ('tagdir', a) not in sources:            
-            self.add_source('tagdir', a)
-#@+node:ekr.20101004092958.6044: *5* class ContextSniffer
-class ContextSniffer:
-    """ Class to analyze surrounding context and guess class
-
-    For simple dynamic code completion engines
-
-    """
-    @others
-#@+node:ekr.20101004092958.6045: *6* __init__
-def __init__(self):
-    # var name => list of classes
-    self.vars = {}
-#@+node:ekr.20101004092958.6046: *6* declare
-def declare(self, var, klass):
-    print("declare",var,klass)
-    vars = self.vars.get(var, [])
-    if not vars:
-        self.vars[var] = vars
-    vars.append(klass)
-#@+node:ekr.20101004092958.6047: *6* push_declarations
-def push_declarations(self, body):
-    for l in body.splitlines():
-        l = l.lstrip()
-        if not l.startswith('#'):
-            continue
-        l = l.lstrip('#')
-        parts = l.strip(':')
-        if len(parts) != 2:
-            continue
-        self.declare(parts[0].strip(), parts[1].strip())
-#@+node:ekr.20101004092958.6048: *6* set_small_context
-def set_small_context(self, body):
-    """ Set immediate function """
-    self.push_declarations(body)
-#@+node:ekr.20101004092958.6049: *4* codewise experiments
-import codewise as cw
-# print(dir(cw))
-
-cw.cmd_init()
-#@+node:ekr.20101004092958.6050: *4* How to make codewise work
+#@+node:ekr.20101004092958.6050: *5* How to make codewise work
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
@@ -1324,25 +2466,7 @@ Also, try the explicit declarations:
 w.<alt+0>
 
 And self.<alt+0> 
-#@+node:ekr.20101025100847.5852: *3* @url ready to work on codewise
-http://mail.google.com/mail/#inbox/12b7463d6c339406
-#@+node:ekr.20101029092426.5861: *3* Finish QCompleter
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ba5748aad35deba0
-
-Here's my modest proposal for autocompletion work:
-
-Please ensure that autocompletion works for c. and p. and g.
-
-That's it.
-
-The important thing is that it uses QCompleter and keyboard event
-handling works. That's the hard part. Rest can be handled by plugins.
-Every time the topic of autocompletion comes up, we end up solving the
-"fun" problems like scanning and ctags, and the most important part
-(gui) does not get done. 
-#@+node:ekr.20101002192824.5843: *3* test-new-ac
+#@+node:ekr.20101002192824.5843: *4* test-new-ac
 # To do:
 # - Fix findAnchor.
 # - Report duck type in completion tab: callable if calltips exist.
@@ -1368,13 +2492,13 @@ ac.start(event=event,w=w)
 
 # The cursor must be at the end
 # p.s
-#@+node:ekr.20101002192824.6019: *4* class AutoCompleterScanner
+#@+node:ekr.20101002192824.6019: *5* class AutoCompleterScanner
 class AutoCompleterScanner:
 
     '''A class that scans for autocompleter completions.'''
 
     @others
-#@+node:ekr.20101002192824.6020: *5*  ctor & helper (AutoCompleterScanner)
+#@+node:ekr.20101002192824.6020: *6*  ctor & helper (AutoCompleterScanner)
 def __init__ (self,c):
 
     self.c = c
@@ -1388,7 +2512,7 @@ def __init__ (self,c):
     self.watchwords = {}
 
     self.definePatterns()
-#@+node:ekr.20101002192824.6021: *6* definePatterns
+#@+node:ekr.20101002192824.6021: *7* definePatterns
 def definePatterns (self):
 
     self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
@@ -1412,7 +2536,7 @@ def definePatterns (self):
         okchars [z] = z
     okchars ['_'] = '_'
     self.okchars = okchars 
-#@+node:ekr.20101002192824.6022: *5* scan & dumps
+#@+node:ekr.20101002192824.6022: *6* scan & dumps
 def scan (self):
 
     '''Build the database from the outline'''
@@ -1445,7 +2569,7 @@ def scan (self):
             self.dumpWords()
         self.printSummary(t2-t1)
 
-#@+node:ekr.20101002192824.6023: *6* dumpTips
+#@+node:ekr.20101002192824.6023: *7* dumpTips
 def dumpTips (self):
 
     print('calltips...\n\n')
@@ -1471,7 +2595,7 @@ def dumpTips (self):
                 print('\n%s:\n\n' % (key),g.dictToString(d2))
             else:
                 print('\n%s:\n\n' % (key),g.dictToString(d))
-#@+node:ekr.20101002192824.6024: *6* dumpWords
+#@+node:ekr.20101002192824.6024: *7* dumpWords
 def dumpWords (self):
 
     print('autocompleter words...\n\n')
@@ -1482,7 +2606,7 @@ def dumpWords (self):
         aList.sort()
         print('\n%s:' % (key),g.listToString(aList)) #repr(aList))
     print()
-#@+node:ekr.20101002192824.6025: *6* printSummary
+#@+node:ekr.20101002192824.6025: *7* printSummary
 def printSummary (self,t):
 
     n  = len(list(self.watchwords.keys()))
@@ -1494,7 +2618,7 @@ def printSummary (self,t):
 
     g.es_print('scanned %s words, %s tips in %3.2fs sec.' % (
         n,n2,t))
-#@+node:ekr.20101002192824.6026: *5* scanForAutoCompleter & helper
+#@+node:ekr.20101002192824.6026: *6* scanForAutoCompleter & helper
 def scanForAutoCompleter (self,s):
 
     '''This function scans text for the autocompleter database.'''
@@ -1513,7 +2637,7 @@ def scanForAutoCompleter (self,s):
             if val not in aList2:
                 aList2.append(val)
                 self.watchwords [key] = aList2
-#@+node:ekr.20101002192824.6027: *6* makeAutocompletionList
+#@+node:ekr.20101002192824.6027: *7* makeAutocompletionList
 def makeAutocompletionList (self,a,b,glist):
 
     '''We have seen a.b, where a and b are arbitrary strings.
@@ -1543,7 +2667,7 @@ def makeAutocompletionList (self,a,b,glist):
 
     if b1:
         glist.append((a1,b1),)
-#@+node:ekr.20101002192824.6028: *5* scanForCallTip & helper
+#@+node:ekr.20101002192824.6028: *6* scanForCallTip & helper
 def scanForCallTip (self,s,language):
 
     '''this function scans text for calltip info'''
@@ -1568,7 +2692,7 @@ def scanForCallTip (self,s,language):
             d [a] = aList
 
     self.calltips [language] = d
-#@+node:ekr.20101002192824.6029: *6* cleanPythonTip
+#@+node:ekr.20101002192824.6029: *7* cleanPythonTip
 def cleanPythonTip (self,s):
 
     result = []
