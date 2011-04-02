@@ -40,6 +40,28 @@ Then, after restarting leo if necessary, type
 c.op<Alt-0> in the body editor to find all the c. methods starting
 with 'op' etc. 
 
+Theory of operation:
+    
+- ~/.codewise.db is an sqlite database with following tables:
+
+CLASS maps class id's to names.
+
+FILE maps file id's to file names
+
+DATASOURCE contains places where data has been parsed from, to enable reparse
+
+FUNCTION, the most important one, contains functions/methods, along 
+ with CLASS and FILE it was found in. Additionally, it has SEARCHPATTERN
+ field that can be used to give calltips, or used as a regexp to find the 
+ method from file quickly.
+
+You can browse the data by installing sqlitebrovser and doing 
+'sqlitebrowser ~/codewise.db'
+
+If you know the class name you want to find the methods for, CodeWise.get_members with a list of classes to match. 
+
+If you want to match a function without a class, call CodeWise.get_functions. This can be much slower if you have a huge database.
+    
 """
 #@-<< docstring >>
 #@+<< imports >>
