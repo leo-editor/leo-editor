@@ -770,17 +770,7 @@ See the configSettings in leoCommands.py for details::
 
 These methods return None if no setting exists.
 The getBool 'default' argument to getBool gives the value to be returned if the setting does not exist.
-
-You can set any *existing* item in an @settings tree with c.config.set(p,setting,val).
-For example::
-
-    for val in (False,True):
-        c.config.set(p,'rst3_format_headlines',val)
-        format_headlines = c.config.getBool('rst3_format_headlines')
-        print('format_headlines',format_headlines)
-
-c.config.set does not change the @settings tree; it simply changes the values returned by the getters.
-.. @+node:ekr.20040403173920.19: *4* Getting and setting preferences
+.. @+node:ekr.20040403173920.19: *4* Preferences ivars
 Each commander maintains its own preferences.
 Your scripts can get the following ivars::
 

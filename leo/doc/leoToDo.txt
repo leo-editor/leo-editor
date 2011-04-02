@@ -2,21 +2,9 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110201125110.12551: ** Important/first
+#@+node:ekr.20110401135840.6184: *3* Clean up new bringToFront logic in c.outerUpdate
 #@+node:ekr.20110401062119.14494: *3* Remove @bool swap_mac_keys
-#@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
-@nocolor-node
-
-Eliminate all tk-indices from leoEditCommands.py
-
-These are marked with ###
-
-(found) wordend, wordstart
-(found) lineend, linestart
-(found) sel.first, sel.last
-(found) w.insert, w.delete
-#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
-#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
-#@+node:ekr.20110401062119.14493: *3* problems with c.bringToFront and focus
+#@+node:ekr.20110401062119.14493: *3* problems with focus
 #@+node:ekr.20031218072017.2817: *4*  doCommand
 command_count = 0
 
@@ -450,6 +438,19 @@ else: # Previously, all other FocusNow methods just made a request.
     logWantsFocusNow = logWantsFocus
     ### minibufferWantsFocusNow = minibufferWantsFocus
     treeWantsFocusNow = treeWantsFocus
+#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
+#@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
+@nocolor-node
+
+Eliminate all tk-indices from leoEditCommands.py
+
+These are marked with ###
+
+(found) wordend, wordstart
+(found) lineend, linestart
+(found) sel.first, sel.last
+(found) w.insert, w.delete
+#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
 #@+node:ekr.20110314123359.14272: *3* New completer
 @nocolor-node
 #@+node:ekr.20110326063921.14462: *4* codewise crash
