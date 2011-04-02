@@ -5998,6 +5998,30 @@ class baseCommands (object):
             return
         except:
             g.es("not found:",url)
+    #@+node:ekr.20110402084740.14490: *4* Icon bar
+    def goToNextHistory (self,event=None):
+        
+        c = self
+        p = c.nodeHistory.goNext()
+            # Returns None if the position does not exist.
+        if not p: return
+        c.nodeHistory.skipBeadUpdate = True
+        try:
+            c.selectPosition(p)
+        finally:
+            c.nodeHistory.skipBeadUpdate = False
+        
+    def goToPrevHistory (self,event=None):
+        
+        c = self
+        p = c.nodeHistory.goPrev()
+            # Returns None if the position does not exist.
+        if not p: return
+        c.nodeHistory.skipBeadUpdate = True
+        try:
+            c.selectPosition(p)
+        finally:
+            c.nodeHistory.skipBeadUpdate = False
     #@+node:ekr.20031218072017.2945: *3* Dragging (commands)
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self,p,after):
@@ -7674,8 +7698,8 @@ class nodeHistory:
             # list of (position,chapter) tuples for
             # nav_buttons and nodenavigator plugins.
         self.beadPointer = -1
-        self.trace = False
         self.skipBeadUpdate = False
+        self.trace = False
     #@+node:ekr.20070615131604.3: *3* canGoToNext/Prev
     def canGoToNextVisited (self):
 
@@ -7702,13 +7726,18 @@ class nodeHistory:
     def goNext (self):
 
         '''Return the next visited node, or None.'''
+        
+        trace = (False or self.trace) and not g.unitTesting
 
         c = self.c
         while self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p,chapter = self.beadList[self.beadPointer]
             if c.positionExists(p):
+                if trace: g.trace(p and p.h)
                 break
+            else:
+                if trace: g.trace('does not exist',p and p.h)
         else:
             return None
 
@@ -7719,15 +7748,18 @@ class nodeHistory:
 
         '''Return the previous visited node, or None.'''
 
+        trace = (False or self.trace) and not g.unitTesting
         c = self.c
         while self.beadPointer > 0:
             self.beadPointer -= 1
             p,chapter = self.beadList[self.beadPointer]
             if c.positionExists(p):
+                if trace: g.trace(p and p.h)
                 break
+            else:
+                if trace: g.trace('does not exist',p and p.h)
         else:
             return None
-
 
         self.selectChapter(chapter)
         return p
@@ -7759,7 +7791,9 @@ class nodeHistory:
             cc.selectChapterByName(chapter.name)
     #@+node:ville.20090724234020.14676: *3* update
     def update (self,p):
-
+        
+        trace = (False or self.trace) and not g.unitTesting
+        
         c = self.c
         if self.skipBeadUpdate:
             return
@@ -7768,21 +7802,25 @@ class nodeHistory:
         if self.beadList and self.beadList[-1][0] == p:
             # do not re-append the same node
             return
+            
+        if trace: g.trace(p and p.h)
 
         cc = c.chapterController
         theChapter = cc and cc.getSelectedChapter()
         data = (p,theChapter)
 
-        if self.beadPointer < len(self.beadList) - 1:
-            # if we came to new node, truncate bead list
-            self.beadList = self.beadList[0:self.beadPointer]
+        if 0: # This makes no sense.
+            if self.beadPointer < len(self.beadList) - 1:
+                # if we came to new node, truncate bead list
+                self.beadList = self.beadList[0:self.beadPointer]
+                if True or trace: g.trace('truncating')
 
         self.beadList.append(data)
         self.beadPointer = len(self.beadList) - 1
 
-        if self.trace:    
-            g.trace('bead list',p.h)
-            g.pr([z[0].h for z in self.beadList])
+        if trace:    
+            # g.trace('bead list',p.h)
+            g.trace([z[0].h for z in self.beadList])
     #@+node:ekr.20070615140655: *3* visitedPositions
     def visitedPositions (self):
 
