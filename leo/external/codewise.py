@@ -553,7 +553,7 @@ else:
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
     
-    g.trace()
+    #g.trace()
 
     if len(sys.argv) < 2:
         print(usage)
@@ -695,17 +695,20 @@ class CodeWise:
     #@+node:ekr.20110310091639.14264: *3* get_functions
     def get_functions(self, prefix = None):
 
+        
         c = self.cursor()
-          
+              
         if prefix is None:
             c.execute('select name, class, file, searchpattern from function')
         else:
+            prefix = str(prefix)
             c.execute('select name, class, file, searchpattern from function where name like (?)',(
                 prefix + '%',))
 
         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
 
 
+    #@+node:ville.20110402213648.7090: *3* newHeadline
     #@+node:ekr.20110310091639.14265: *3* file_id
     def file_id(self, fname):
         if fname == '':
