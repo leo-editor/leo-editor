@@ -4056,7 +4056,8 @@ class leoQtBody (leoFrame.leoBody):
         if trace: g.trace(c.p.h) # obj,obj.objectName())
 
         # 2010/08/01: Update the history only on focus in events.
-        c.nodeHistory.update(c.p)
+        # 2011/04/02: Update history only in leoframe.tree.select.
+        # c.nodeHistory.update(c.p)
 
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper

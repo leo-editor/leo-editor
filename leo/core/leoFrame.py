@@ -2525,7 +2525,9 @@ class leoTree:
                 except Exception: pass
             # 2010/08/01: (qt only) update history when body text gets focus.
             # This is done in qtGui.py: onFocusIn.
-            if g.app.gui.guiName() != 'qt':
+            # 2011/04/02: Undo the change in rev 3194:
+            # I have absolutely no idea what I was thinking about.
+            if True: # g.app.gui.guiName() != 'qt':
                 c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@+<< set the current node >>
