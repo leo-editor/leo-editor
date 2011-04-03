@@ -2,8 +2,6 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110201125110.12551: ** Important/first
-#@+node:ekr.20110401135840.6184: *3* Clean up new bringToFront logic in c.outerUpdate
-#@+node:ekr.20110401062119.14494: *3* Remove @bool swap_mac_keys
 #@+node:ekr.20110401062119.14493: *3* problems with focus
 #@+node:ekr.20031218072017.2817: *4*  doCommand
 command_count = 0

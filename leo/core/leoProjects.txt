@@ -6589,6 +6589,482 @@ def bringToFront(self,set_focus=True):
     c.requestedFocusWidget = c.frame.body.bodyCtrl
 
 BringToFront = bringToFront # Compatibility with old scripts
+#@+node:ekr.20110402084740.14489: *4* Fixed nav_qt plutin
+#@+node:ekr.20110402084740.14490: *5* Icon bar
+def goToNextHistory (self,event=None):
+    
+    c = self
+    p = c.nodeHistory.goNext()
+        # Returns None if the position does not exist.
+    if not p: return
+    c.nodeHistory.skipBeadUpdate = True
+    try:
+        c.selectPosition(p)
+    finally:
+        c.nodeHistory.skipBeadUpdate = False
+    
+def goToPrevHistory (self,event=None):
+    
+    c = self
+    p = c.nodeHistory.goPrev()
+        # Returns None if the position does not exist.
+    if not p: return
+    c.nodeHistory.skipBeadUpdate = True
+    try:
+        c.selectPosition(p)
+    finally:
+        c.nodeHistory.skipBeadUpdate = False
+#@+node:ekr.20050920084036.188: *5* leoCommands.getPublicCommands
+def getPublicCommands (self):
+
+    '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
+
+    k = self.k ; d2 = {}
+
+    << define dictionary d of names and Leo commands >>
+
+    # Create a callback for each item in d.
+    for name in sorted(d):
+        f = d.get(name)
+        d2 [name] = f
+        k.inverseCommandsDict [f.__name__] = name
+        # g.trace('leoCommands %24s = %s' % (f.__name__,name))
+
+    return d2
+#@+node:ekr.20050920084036.189: *6* << define dictionary d of names and Leo commands >>
+c = self.c ; f = c.frame
+
+d = {
+    'abort-edit-headline':          f.abortEditLabelCommand,
+    'about-leo':                    c.about,
+    'add-comments':                 c.addComments,     
+    'beautify':                     c.beautifyPythonCode,
+    'beautify-all':                 c.beautifyAllPythonCode,
+    'beautify-tree':                c.beautifyPythonTree,
+    'cascade-windows':              f.cascade,
+    # 'check-all-python-code':      c.checkAllPythonCode,
+    'check-derived-file':           c.atFileCommands.checkDerivedFile,
+    'check-leo-file':               c.fileCommands.checkLeoFile,
+    'check-outline':                c.checkOutline,
+    # 'check-python-code':          c.checkPythonCode,
+    'clean-recent-files':           c.cleanRecentFiles,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clone-node':                   c.clone,
+    'close-window':                 c.close,
+    'contract-all':                 c.contractAllHeadlines,
+    'contract-all-other-nodes':     c.contractAllOtherNodes,
+    'contract-node':                c.contractNode,
+    'contract-or-go-left':          c.contractNodeOrGoToParent,
+    'contract-parent':              c.contractParent,
+    'convert-all-blanks':           c.convertAllBlanks,
+    'convert-all-tabs':             c.convertAllTabs,
+    'convert-blanks':               c.convertBlanks,
+    'convert-tabs':                 c.convertTabs,
+    'copy-node':                    c.copyOutline,
+    'copy-text':                    f.copyText,
+    'cut-node':                     c.cutOutline,
+    'cut-text':                     f.cutText,
+    'de-hoist':                     c.dehoist,
+    'delete-comments':              c.deleteComments,
+    'delete-node':                  c.deleteOutline,
+    'demote':                       c.demote,
+    'dump-outline':                 c.dumpOutline,
+    'edit-headline':                c.editHeadline,
+    'end-edit-headline':            f.endEditLabelCommand,
+    'equal-sized-panes':            f.equalSizedPanes,
+    'execute-script':               c.executeScript,
+    'exit-leo':                     g.app.onQuit,
+    'expand-all':                   c.expandAllHeadlines,
+    'expand-all-subheads':          c.expandAllSubheads,
+        # Fixes bug 604037 Status of expandAllSubheads
+    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+    'expand-next-level':            c.expandNextLevel,
+    'expand-node':                  c.expandNode,
+    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+    'expand-prev-level':            c.expandPrevLevel,
+    'expand-to-level-1':            c.expandLevel1,
+    'expand-to-level-2':            c.expandLevel2,
+    'expand-to-level-3':            c.expandLevel3,
+    'expand-to-level-4':            c.expandLevel4,
+    'expand-to-level-5':            c.expandLevel5,
+    'expand-to-level-6':            c.expandLevel6,
+    'expand-to-level-7':            c.expandLevel7,
+    'expand-to-level-8':            c.expandLevel8,
+    'expand-to-level-9':            c.expandLevel9,
+    'export-headlines':             c.exportHeadlines,
+    'extract':                      c.extract,
+    'extract-names':                c.extractSectionNames,
+    'extract-python-method':        c.extractPythonMethod,
+    'extract-section':              c.extractSection,
+    'find-next-clone':              c.findNextClone,
+    'flatten-outline':              c.flattenOutline,
+    'go-back':                      c.goPrevVisitedNode,
+    'go-forward':                   c.goNextVisitedNode,
+    'goto-first-node':              c.goToFirstNode,
+    'goto-first-sibling':           c.goToFirstSibling,
+    'goto-first-visible-node':      c.goToFirstVisibleNode,
+    'goto-last-node':               c.goToLastNode,
+    'goto-last-sibling':            c.goToLastSibling,
+    'goto-last-visible-node':       c.goToLastVisibleNode,
+    'goto-next-changed':            c.goToNextDirtyHeadline,
+    'goto-next-clone':              c.goToNextClone,
+    'goto-next-history-node':       c.goToNextHistory,
+    'goto-next-marked':             c.goToNextMarkedHeadline,
+    'goto-next-node':               c.selectThreadNext,
+    'goto-next-sibling':            c.goToNextSibling,
+    'goto-next-visible':            c.selectVisNext,
+    'goto-parent':                  c.goToParent,
+    'goto-prev-history-node':       c.goToPrevHistory,
+    'goto-prev-node':               c.selectThreadBack,
+    'goto-prev-sibling':            c.goToPrevSibling,
+    'goto-prev-visible':            c.selectVisBack,
+    'hide-invisibles':              c.hideInvisibles,
+    'hoist':                        c.hoist,
+    'import-at-file':               c.importAtFile,
+    'import-at-root':               c.importAtRoot,
+    'import-cweb-files':            c.importCWEBFiles,
+    'import-derived-file':          c.importDerivedFile,
+    'import-flattened-outline':     c.importFlattenedOutline,
+    'import-noweb-files':           c.importNowebFiles,
+    'indent-region':                c.indentBody,
+    'insert-body-time':             c.insertBodyTime,
+    'insert-child':                 c.insertChild,
+    'insert-headline-time':         f.insertHeadlineTime,
+    'insert-node':                  c.insertHeadline,
+    'mark':                         c.markHeadline,
+    'mark-changed-items':           c.markChangedHeadlines,
+    # 'mark-changed-roots':           c.markChangedRoots,
+    # 'mark-clones':                c.markClones,
+    'mark-subheads':                c.markSubheads,
+    'match-brackets':               c.findMatchingBracket,
+    'minimize-all':                 f.minimizeAll,
+    'move-outline-down':            c.moveOutlineDown,
+    'move-outline-left':            c.moveOutlineLeft,
+    'move-outline-right':           c.moveOutlineRight,
+    'move-outline-up':              c.moveOutlineUp,
+    'new':                          c.new,
+    'open-compare-window':          c.openCompareWindow,
+    'open-find-dialog':             c.showFindPanel, # Deprecated.
+    'open-leoDocs-leo':             c.leoDocumentation,
+    'open-leoPlugins-leo':          c.openLeoPlugins,
+    'open-leoSettings-leo':         c.openLeoSettings,
+    'open-myLeoSettings-leo':       c.openMyLeoSettings,
+    'open-offline-tutorial':        f.leoHelp,
+    'open-online-home':             c.leoHome,
+    'open-online-tutorial':         c.leoTutorial,
+    'open-outline':                 c.open,
+    'open-python-window':           c.openPythonWindow,
+    'open-quickstart-leo':          c.leoQuickStart,
+    'open-scripts-leo':             c.openLeoScripts,
+    'open-users-guide':             c.leoUsersGuide,
+    'open-with':                    c.openWith,
+    'outline-to-cweb':              c.outlineToCWEB,
+    'outline-to-noweb':             c.outlineToNoweb,
+    'paste-node':                   c.pasteOutline,
+    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+    'paste-text':                   f.pasteText,
+    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+    'pretty-print-python-code':     c.prettyPrintPythonCode,
+    'promote':                      c.promote,
+    'read-at-auto-nodes':           c.readAtAutoNodes,
+    'read-at-file-nodes':           c.readAtFileNodes,
+    'read-at-shadow-nodes':         c.readAtShadowNodes,
+    'read-file-into-node':          c.readFileIntoNode,
+    'read-outline-only':            c.readOutlineOnly,
+    'redo':                         c.undoer.redo,
+    'reformat-paragraph':           c.reformatParagraph,
+    'remove-sentinels':             c.removeSentinels,
+    'resize-to-screen':             f.resizeToScreen,
+    'revert':                       c.revert,
+    'save-all':                     c.saveAll,
+    'save-file':                    c.save,
+    'save-file-as':                 c.saveAs,
+    'save-file-as-unzipped':        c.saveAsUnzipped,
+    'save-file-as-zipped':          c.saveAsZipped,
+    'save-file-to':                 c.saveTo,
+    'set-colors':                   c.colorPanel,
+    'set-font':                     c.fontPanel,
+    'settings':                     c.preferences,
+    'show-invisibles':              c.showInvisibles,
+    'sort-children':                c.sortChildren,
+    'sort-recent-files':            c.sortRecentFiles,
+    'sort-siblings':                c.sortSiblings,
+    'tangle':                       c.tangle,
+    'tangle-all':                   c.tangleAll,
+    'tangle-marked':                c.tangleMarked,
+    'toggle-active-pane':           f.toggleActivePane,
+    'toggle-angle-brackets':        c.toggleAngleBrackets,
+    'toggle-invisibles':            c.toggleShowInvisibles,
+    'toggle-sparse-move':           c.toggleSparseMove,
+    'toggle-split-direction':       f.toggleSplitDirection,
+    'undo':                         c.undoer.undo,
+    'unindent-region':              c.dedentBody,
+    'unmark-all':                   c.unmarkAll,
+    'untangle':                     c.untangle,
+    'untangle-all':                 c.untangleAll,
+    'untangle-marked':              c.untangleMarked,
+    'weave':                        c.weave,
+    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+    'write-file-from-node':         c.writeFileFromNode,
+    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+    'write-outline-only':           c.fileCommands.writeOutlineOnly,
+}
+#@+node:ekr.20070423101911: *5* selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if old_p:
+            g.trace('old: %s %s new: %s %s' % (
+                len(old_p.b),old_p.h,len(p.b),p.h))
+        else:
+            g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        # 2010/08/01: (qt only) update history when body text gets focus.
+        # This is done in qtGui.py: onFocusIn.
+        # 2011/04/02: Undo the change in rev 3194:
+        # I have absolutely no idea what I was thinking about.
+        if True: # g.app.gui.guiName() != 'qt':
+            c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    if trace: g.trace('**** after old: %s new %s' % (
+        old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine("-->".join(reversed(
+        [i.h for i in p.self_and_parents()])))
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129: *6* << unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
+    old_p.v.scrollBarSpot = yview
+    old_p.v.insertSpot = insertSpot
+#@+node:ekr.20040803072955.130: *6* << select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@+node:ekr.20040803072955.133: *6* << set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+### if self.stayInTree:
+    # c.treeWantsFocus()
+# else:
+    # c.bodyWantsFocus()
+#@+node:ekr.20070615131604: *5* class nodeHistory
+class nodeHistory:
+
+    '''A class encapsulating knowledge of visited nodes.'''
+
+    @others
+#@+node:ekr.20070615131604.1: *6*  ctor (nodeHistory)
+def __init__ (self,c):
+
+    self.c = c
+    self.beadList = []
+        # list of (position,chapter) tuples for
+        # nav_buttons and nodenavigator plugins.
+    self.beadPointer = -1
+    self.skipBeadUpdate = False
+    self.trace = False
+#@+node:ekr.20070615131604.3: *6* canGoToNext/Prev
+def canGoToNextVisited (self):
+
+    if self.trace:
+        g.trace(
+            self.beadPointer + 1 < len(self.beadList),
+            self.beadPointer,len(self.beadList))
+
+    return self.beadPointer + 1 < len(self.beadList)
+
+def canGoToPrevVisited (self):
+
+    if self.trace:
+        g.trace(self.beadPointer > 0,
+            self.beadPointer,len(self.beadList))
+
+    return self.beadPointer > 0
+#@+node:ekr.20070615132939: *6* clear
+def clear (self):
+
+    self.beadList = []
+    self.beadPointer = -1
+#@+node:ekr.20070615134813: *6* goNext/Prev
+def goNext (self):
+
+    '''Return the next visited node, or None.'''
+    
+    trace = (False or self.trace) and not g.unitTesting
+
+    c = self.c
+    while self.beadPointer + 1 < len(self.beadList):
+        self.beadPointer += 1
+        p,chapter = self.beadList[self.beadPointer]
+        if c.positionExists(p):
+            if trace: g.trace(p and p.h)
+            break
+        else:
+            if trace: g.trace('does not exist',p and p.h)
+    else:
+        return None
+
+    self.selectChapter(chapter)
+    return p
+
+def goPrev (self):
+
+    '''Return the previous visited node, or None.'''
+
+    trace = (False or self.trace) and not g.unitTesting
+    c = self.c
+    while self.beadPointer > 0:
+        self.beadPointer -= 1
+        p,chapter = self.beadList[self.beadPointer]
+        if c.positionExists(p):
+            if trace: g.trace(p and p.h)
+            break
+        else:
+            if trace: g.trace('does not exist',p and p.h)
+    else:
+        return None
+
+    self.selectChapter(chapter)
+    return p
+#@+node:ekr.20070615132939.1: *6* remove
+def remove (self,p):
+
+    '''Remove an item from the nav_buttons list.'''
+
+    c = self.c
+    target = self.beadPointer > -1 and self.beadList[self.beadPointer]
+
+    self.beadList = [z for z in self.beadList
+                        if z[0] != p and c.positionExists(z[0])]
+
+    try:
+        self.beadPointer = self.beadList.index(target)
+    except ValueError:
+        self.beadPointer = max(0,self.beadPointer-1)
+
+    if self.trace:
+        g.trace('bead list',p.h)
+        g.pr([z[0].h for z in self.beadList])
+#@+node:ekr.20070615140032: *6* selectChapter
+def selectChapter (self,chapter):
+
+    c = self.c ; cc = c.chapterController
+
+    if cc and chapter and chapter != cc.getSelectedChapter():
+        cc.selectChapterByName(chapter.name)
+#@+node:ville.20090724234020.14676: *6* update
+def update (self,p):
+    
+    trace = (False or self.trace) and not g.unitTesting
+    
+    c = self.c
+    if self.skipBeadUpdate:
+        return
+
+    p = p.copy()
+    if self.beadList and self.beadList[-1][0] == p:
+        # do not re-append the same node
+        return
+        
+    if trace: g.trace(p and p.h)
+
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    data = (p,theChapter)
+
+    if 0: # This makes no sense.
+        if self.beadPointer < len(self.beadList) - 1:
+            # if we came to new node, truncate bead list
+            self.beadList = self.beadList[0:self.beadPointer]
+            if True or trace: g.trace('truncating')
+
+    self.beadList.append(data)
+    self.beadPointer = len(self.beadList) - 1
+
+    if trace:    
+        # g.trace('bead list',p.h)
+        g.trace([z[0].h for z in self.beadList])
+#@+node:ekr.20070615140655: *6* visitedPositions
+def visitedPositions (self):
+
+    return [p.copy() for p,chapter in self.beadList]
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

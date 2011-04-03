@@ -3057,7 +3057,7 @@ class leoQtBody (leoFrame.leoBody):
         self.updateInjectedIvars(w,p)
         self.selectLabel(wrapper)
 
-        # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
+        # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
     #@+node:ekr.20081121105001.219: *6* cycleEditorFocus
     def cycleEditorFocus (self,event=None):
 
@@ -3227,14 +3227,15 @@ class leoQtBody (leoFrame.leoBody):
             return g.trace('***** no position editor!')
         if not (hasattr(w,'leo_p') and w.leo_p):
             return g.trace('***** no w.leo_p',w)
-        if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
-            return g.trace('***** no w.leo_chapter',w)
+            
+        # if not (hasattr(w,'leo_chapter') and w.leo_chapter):
+            # return g.trace('***** no w.leo_chapter',w)
 
         p = w.leo_p
         assert p,p
 
         if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
-            id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+            id(wrapper),w.leo_chapter,c.p.h,p.h))
 
         c.expandAllAncestors(p)
         c.selectPosition(p) # Calls assignPositionToEditor.
@@ -3301,7 +3302,7 @@ class leoQtBody (leoFrame.leoBody):
             s = ''
 
         if hasattr(w,'leo_chapter') and w.leo_chapter:
-            s = '%s: %s' % (w.leo_chapter.name,s)
+            s = '%s: %s' % (w.leo_chapter,s)
 
         return s
     #@+node:ekr.20081121105001.229: *6* createChapterIvar
@@ -3497,7 +3498,7 @@ class leoQtBody (leoFrame.leoBody):
             self.updateInjectedIvars(w,p)
             self.selectLabel(wrapper)
 
-            # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
+            # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
         #@+node:ekr.20110315083610.14346: *6* cycleEditorFocus
         def cycleEditorFocus (self,event=None):
 
@@ -3752,14 +3753,15 @@ class leoQtBody (leoFrame.leoBody):
                 return g.trace('***** no position editor!')
             if not (hasattr(w,'leo_p') and w.leo_p):
                 return g.trace('***** no w.leo_p',w)
-            if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
-                return g.trace('***** no w.leo_chapter',w)
+
+            # if not (hasattr(w,'leo_chapter') and w.leo_chapter):
+                # return g.trace('***** no w.leo_chapter',w)
 
             p = w.leo_p
             assert p,p
 
             if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
-                id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+                id(wrapper),w.leo_chapter and w.leo_chapter.name,c.p.h,p.h))
 
             c.expandAllAncestors(p)
             c.selectPosition(p) # Calls assignPositionToEditor.
