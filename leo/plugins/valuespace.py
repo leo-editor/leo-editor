@@ -63,37 +63,37 @@ def let(var, val):
     print "Let ",var,val
     g.vs.__dict__[var] = val
 
+def runblock(block):
+    print "Runblock"
+    print block
+    exec block in g.vs.__dict__
+
 def parse_body(c,p):
     body = g.getScript(c,p)
     print "Body"
     print body
     
     backop = None
-    segs = re.finditer('^@x (.*)$', body,  re.MULTILINE)
+    segs = re.finditer('^(@x (.*))$', body,  re.MULTILINE)
     
     for mo in segs:
-        op = mo.group(1).strip()
+        op = mo.group(2).strip()
         print "Oper",op
         if op.startswith('='):
             print "Assign", op
-            backop = ('=', mo.group(1).rstrip('{').lstrip('='), mo.end(1))
-        if op == '{':
+            backop = ('=', mo.group(2).rstrip('{').lstrip('='), mo.end(1))
+        elif op == '{':
             backop = ('runblock', mo.end(1))
-        if op == '}':
+        elif op == '}':
             bo = backop[0]
             print "backop",bo
             if bo == '=':
                 let(backop[1], body[backop[2] : mo.start(1)])
-                
-                    
+            elif bo == 'runblock':
+                runblock(body[backop[1] : mo.start(1)])
+        else:
+            runblock(op)
             
-            
-            
-            
-        
-    
-        
-    print list(segs)
   
 def update_vs(c, root_p = None):
     if root_p is not None:
@@ -122,6 +122,7 @@ def update_vs(c, root_p = None):
         #g.es(p)
         
     #g.es(it)
+    print g.vs.__dict__
     g.es(g.vs.__dict__)
         
 def test():
