@@ -60,36 +60,39 @@ def init ():
 import re
 
 def let(var, val):
-    print "Let ",var,val
+    #print "Let ",var,val
     g.vs.__dict__[var] = val
+
+def untangle(c,p):
+    return g.getScript(c,p, useSelectedText=False, useSentinels = False)
 
 def let_body(var, val):
     let(var, SList(val.strip().split("\n")))
 
 def runblock(block):
-    print "Runblock"
-    print block
+    #print "Runblock"
+    #print block
     exec block in g.vs.__dict__
 
 def parse_body(c,p):
-    body = g.getScript(c,p)
-    print "Body"
-    print body
+    body = untangle(c,p)
+    #print "Body"
+    #print body
 
     backop = None
     segs = re.finditer('^(@x (.*))$', body,  re.MULTILINE)
 
     for mo in segs:
         op = mo.group(2).strip()
-        print "Oper",op
+        #print "Oper",op
         if op.startswith('='):
-            print "Assign", op
+            #print "Assign", op
             backop = ('=', op.rstrip('{').lstrip('='), mo.end(1))
         elif op == '{':
             backop = ('runblock', mo.end(1))
         elif op == '}':
             bo = backop[0]
-            print "backop",bo
+            #print "backop",bo
             if bo == '=':
                 let_body(backop[1].strip(), body[backop[2] : mo.start(1)])
             elif bo == 'runblock':
@@ -111,13 +114,13 @@ def update_vs(c, root_p = None):
 
         if h.startswith('@= '):
             var = h[3:].strip()
-            let_body(var, p.b)
+            let_body(var, untangle(c, p))
 
         if h == '@a' or h.startswith('@a '):                
             tail = h[2:].strip()
             parent = p.parent()
             if tail:
-                let_body(tail, parent.b)                
+                let_body(tail, untangle(c, parent))                
 
             parse_body(c,parent)
 
@@ -125,8 +128,8 @@ def update_vs(c, root_p = None):
         #g.es(p)
 
     #g.es(it)
-    print g.vs.__dict__
-    g.es(g.vs.__dict__)
+    #print g.vs.__dict__.keys()
+    #g.es(g.vs.__dict__)
 
 def render_value(p, value):
     if isinstance(value, SList):
@@ -150,7 +153,7 @@ def render_phase(c, root_p = None):
         expr = h[3:].strip()
 
         res = eval(expr, g.vs.__dict__)
-        print "Eval", expr, "res", `res`
+        #print "Eval", expr, "res", `res`
         render_value(p, res)
 
 def test():
@@ -162,52 +165,10 @@ def test():
 
 @g.command('vs-update')
 def vs_update(event):
-    print "update valuespace"
+    #print "update valuespace"
     c = event['c']
     update_vs(c)
     render_phase(c)
 
-#@+node:ville.20110403122307.5659: *3* @= foo
-
-"""
-@x a = 12
-
-@x =foo {
-
-Some content
-for foo
-
-@x }
-
-
-@x {
-
-print "block"
-print "of commands"
-
-@x }
-
-"""
-#@+node:ville.20110403122307.10351: *3* @a anch
-#@+node:ville.20110403175941.11348: *3* @r foo
-"""
-@x a = 12
-
-@x =foo {
-
-Some content
-for foo
-
-@x }
-
-
-@x {
-
-print "block"
-print "of commands"
-
-@x }
-
-"""
 #@-others
 #@-leo
