@@ -33,7 +33,7 @@ import leo.core.leoPlugins as leoPlugins
 #@+node:ville.20110403115003.10353: ** colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
     """ Changes @thin, @auto, @shadow to bold """
-    
+
     if p.h.startswith("!= "):    
         f = item.font(0)
         f.setBold(True)
@@ -46,15 +46,15 @@ import types, sys
 def vs_reset():    
     g.vs = types.ModuleType('vs')
     sys.modules['vs'] = g.vs
-    
+
 def init ():
     vs_reset()
 
     g.visit_tree_item.add(colorize_headlines_visitor)
-    
+
     return True
 
-init()
+#init()
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20110403115003.10356: *3* vs-update
 import re
@@ -72,10 +72,10 @@ def parse_body(c,p):
     body = g.getScript(c,p)
     print "Body"
     print body
-    
+
     backop = None
     segs = re.finditer('^(@x (.*))$', body,  re.MULTILINE)
-    
+
     for mo in segs:
         op = mo.group(2).strip()
         print "Oper",op
@@ -93,19 +93,19 @@ def parse_body(c,p):
                 runblock(body[backop[1] : mo.start(1)])
         else:
             runblock(op)
-            
-  
+
+
 def update_vs(c, root_p = None):
     if root_p is not None:
         it = root_p.subtree()
     else:
         it = c.all_unique_positions()
-        
+
     for p in it:       
         h = p.h.strip()
         if not h.startswith('@'):
             continue
-            
+
         if h.startswith('@= '):
             var = h[3:].strip()
             g.vs.__dict__[var] = p.b.strip()
@@ -114,29 +114,29 @@ def update_vs(c, root_p = None):
             parent = p.parent()
             if tail:
                 g.vs.__dict__[tail] = parent.b.strip()
-                
+
             parse_body(c,parent)
-            
-                                
-        
+
+
+
         #g.es(p)
-        
+
     #g.es(it)
     print g.vs.__dict__
     g.es(g.vs.__dict__)
-        
+
 def test():
     update_vs(c)
-    
+
 test()    
-        
-    
-    
+
+
+
 
 @g.command('vs-update')
 def vs_update(event):
     print "update valuaspace"
-    
+
 #@+node:ville.20110403122307.5659: *3* @= foo
 
 """
