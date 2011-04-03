@@ -2,11 +2,8 @@
 #@+node:ville.20110403115003.10348: * @file valuespace.py
 #@+<< docstring >>
 #@+node:ville.20110403115003.10349: ** << docstring >>
-''' Manipulates appearance of individual tree widget items. (Qt only).
+''' Support g.vs manipulations throught @x <expr>, @= foo, etc.
 
-This plugin is mostly an example of how to change the appearance of headlines. As
-such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
-nodes in bold.
 
 '''
 #@-<< docstring >>
@@ -28,7 +25,8 @@ from leo.external.stringlist import SList
     # Uses leoPlugins.TryNext.
 
 import pprint
-#import types
+import types, sys
+
 #@-<< imports >>
 
 #@+others
@@ -42,7 +40,6 @@ def colorize_headlines_visitor(c,p, item):
         item.setFont(0,f)
     raise leoPlugins.TryNext
 #@+node:ville.20110403115003.10352: ** init
-import types, sys
 
 @g.command('vs-reset')
 def vs_reset(event):    
@@ -50,7 +47,7 @@ def vs_reset(event):
     sys.modules['vs'] = g.vs
 
 def init ():
-    vs_reset()
+    vs_reset(None)
 
     g.visit_tree_item.add(colorize_headlines_visitor)
 
@@ -59,6 +56,7 @@ def init ():
 #init()
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20110403115003.10356: *3* vs-update
+
 import re
 
 def let(var, val):
@@ -67,7 +65,7 @@ def let(var, val):
 
 def let_body(var, val):
     let(var, SList(val.strip().split("\n")))
-        
+
 def runblock(block):
     print "Runblock"
     print block
@@ -86,14 +84,14 @@ def parse_body(c,p):
         print "Oper",op
         if op.startswith('='):
             print "Assign", op
-            backop = ('=', mo.group(2).rstrip('{').lstrip('='), mo.end(1))
+            backop = ('=', op.rstrip('{').lstrip('='), mo.end(1))
         elif op == '{':
             backop = ('runblock', mo.end(1))
         elif op == '}':
             bo = backop[0]
             print "backop",bo
             if bo == '=':
-                let(backop[1], body[backop[2] : mo.start(1)])
+                let_body(backop[1].strip(), body[backop[2] : mo.start(1)])
             elif bo == 'runblock':
                 runblock(body[backop[1] : mo.start(1)])
         else:
@@ -114,7 +112,7 @@ def update_vs(c, root_p = None):
         if h.startswith('@= '):
             var = h[3:].strip()
             let_body(var, p.b)
-            
+
         if h == '@a' or h.startswith('@a '):                
             tail = h[2:].strip()
             parent = p.parent()
@@ -137,7 +135,7 @@ def render_value(p, value):
         p.b = value
     else:
         p.b = pprint.pformat(value)
-    
+
 
 def render_phase(c, root_p = None):
     if root_p is not None:
@@ -150,23 +148,22 @@ def render_phase(c, root_p = None):
         if not h.startswith('@r '):
             continue
         expr = h[3:].strip()
-        
+
         res = eval(expr, g.vs.__dict__)
         print "Eval", expr, "res", `res`
         render_value(p, res)
-        
+
 def test():
     update_vs(c)
     render_phase(c)
 
-test()    
-
-
+#test()    
 
 
 @g.command('vs-update')
 def vs_update(event):
     print "update valuespace"
+    c = event['c']
     update_vs(c)
     render_phase(c)
 
