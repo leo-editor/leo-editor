@@ -24,8 +24,10 @@ __version__ = '0.1'
 #@+node:ville.20110403115003.10351: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+from leo.external.stringlist import SList
     # Uses leoPlugins.TryNext.
 
+import pprint
 #import types
 #@-<< imports >>
 
@@ -43,7 +45,7 @@ def colorize_headlines_visitor(c,p, item):
 import types, sys
 
 @g.command('vs-reset')
-def vs_reset():    
+def vs_reset(event):    
     g.vs = types.ModuleType('vs')
     sys.modules['vs'] = g.vs
 
@@ -63,6 +65,9 @@ def let(var, val):
     print "Let ",var,val
     g.vs.__dict__[var] = val
 
+def let_body(var, val):
+    let(var, SList(val.strip().split("\n")))
+        
 def runblock(block):
     print "Runblock"
     print block
@@ -108,15 +113,15 @@ def update_vs(c, root_p = None):
 
         if h.startswith('@= '):
             var = h[3:].strip()
-            g.vs.__dict__[var] = p.b.strip()
+            let_body(var, p.b)
+            
         if h == '@a' or h.startswith('@a '):                
-            tail = h[2:]
+            tail = h[2:].strip()
             parent = p.parent()
             if tail:
-                g.vs.__dict__[tail] = parent.b.strip()
+                let_body(tail, parent.b)                
 
             parse_body(c,parent)
-
 
 
         #g.es(p)
@@ -125,8 +130,34 @@ def update_vs(c, root_p = None):
     print g.vs.__dict__
     g.es(g.vs.__dict__)
 
+def render_value(p, value):
+    if isinstance(value, SList):
+        p.b = value.n
+    elif isinstance(value, basestring):
+        p.b = value
+    else:
+        p.b = pprint.pformat(value)
+    
+
+def render_phase(c, root_p = None):
+    if root_p is not None:
+        it = root_p.subtree()
+    else:
+        it = c.all_unique_positions()
+
+    for p in it:       
+        h = p.h.strip()
+        if not h.startswith('@r '):
+            continue
+        expr = h[3:].strip()
+        
+        res = eval(expr, g.vs.__dict__)
+        print "Eval", expr, "res", `res`
+        render_value(p, res)
+        
 def test():
     update_vs(c)
+    render_phase(c)
 
 test()    
 
@@ -135,7 +166,9 @@ test()
 
 @g.command('vs-update')
 def vs_update(event):
-    print "update valuaspace"
+    print "update valuespace"
+    update_vs(c)
+    render_phase(c)
 
 #@+node:ville.20110403122307.5659: *3* @= foo
 
@@ -158,6 +191,26 @@ print "of commands"
 @x }
 
 """
-#@+node:ville.20110403122307.10351: *4* @a anch
+#@+node:ville.20110403122307.10351: *3* @a anch
+#@+node:ville.20110403175941.11348: *3* @r foo
+"""
+@x a = 12
+
+@x =foo {
+
+Some content
+for foo
+
+@x }
+
+
+@x {
+
+print "block"
+print "of commands"
+
+@x }
+
+"""
 #@-others
 #@-leo

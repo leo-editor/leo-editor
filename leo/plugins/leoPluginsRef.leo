@@ -75,9 +75,9 @@
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="tbrown.20110203111907.5519" a="E"><vh>@file free_layout.py</vh></v>
+<v t="tbrown.20110203111907.5519"><vh>@file free_layout.py</vh></v>
 <v t="ville.20110403115003.10348" a="E"
-expanded="ville.20110403115003.10355,ville.20110403122307.5659,"><vh>@file valuespace.py</vh></v>
+expanded="ville.20110403115003.10355,"><vh>@file valuespace.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
