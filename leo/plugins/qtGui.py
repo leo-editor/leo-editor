@@ -3346,7 +3346,7 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Return True if w.leo_p exists or can be reconstituted.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         if c.positionExists(w.leo_p):
@@ -3360,7 +3360,6 @@ class leoQtBody (leoFrame.leoBody):
                     return True
             else:
                 # This *can* happen when selecting a deleted node.
-                if trace: g.trace(p2.h)
                 w.leo_p = c.p.copy()
                 return False
     #@+node:ekr.20090318091009.14: *6* injectIvars
