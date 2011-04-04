@@ -72,7 +72,7 @@ if g.isPython3:
 else:
     import urlparse
 
-import exceptions
+# import exceptions
 import os
 import posixpath
 import select
@@ -82,7 +82,6 @@ import socket
 import sys
 import time
 import urllib
-
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20050328104558: ** << version history >>
