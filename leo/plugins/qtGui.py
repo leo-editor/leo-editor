@@ -521,10 +521,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def getLastPosition(self):
 
         return len(self.getAllText())
-    #@+node:ekr.20081121105001.530: *6* getSelectedText
+    #@+node:ekr.20081121105001.530: *6* getSelectedText (leoQtBaseTextWidget)
     def getSelectedText(self):
 
         w = self.widget
+        
+        # g.trace(w,self)
 
         i,j = self.getSelectionRange()
         if i == j:
@@ -1136,17 +1138,19 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def getInsertPoint(self):
 
         return self.widget.textCursor().position()
-    #@+node:ekr.20081121105001.582: *5* getSelectionRange
+    #@+node:ekr.20081121105001.582: *5* getSelectionRange (leoQTextEditWidget)
     def getSelectionRange(self,sort=True):
 
-        trace = False and not g.unitTesting
         w = self.widget
         tc = w.textCursor()
         i,j = tc.selectionStart(),tc.selectionEnd()
+
         # s = tc.selectedText()
         # if s: n = len(s)
         # else: n = 0
-        if trace: g.trace(i,j)
+        
+        # g.trace(i,j,w)
+        
         return i,j
     #@+node:ekr.20081121105001.583: *5* getYScrollPosition
     def getYScrollPosition(self):
@@ -1157,9 +1161,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # Return a tuple, only the first of which is used.
         return i,i 
-    #@+node:ekr.20081121105001.584: *5* hasSelection
+    #@+node:ekr.20081121105001.584: *5* hasSelection (leoQTextEditWidget)
     def hasSelection(self):
-
+        
+        # g.trace('self widget',self.widget)
+        
         return self.widget.textCursor().hasSelection()
     #@+node:ekr.20090531084925.3773: *5* scrolling (QTextEdit)
     #@+node:ekr.20090531084925.3775: *6* indexIsVisible and linesPerPage
@@ -2774,6 +2780,8 @@ class leoQtBody (leoFrame.leoBody):
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
             qtWidget.setAcceptRichText(False)
+            
+        # g.trace('(leoQtBody)',self,'self.widget',self.widget)
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
@@ -3176,6 +3184,7 @@ class leoQtBody (leoFrame.leoBody):
             return
 
         w = wrapper.widget
+        # g.trace('widget',w)
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
 
@@ -3217,7 +3226,11 @@ class leoQtBody (leoFrame.leoBody):
         # The actual switch.
         self.deactivateEditors(wrapper)
         self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+        # g.trace('c.frame.body',c.frame.body)
+        # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
+        # g.trace('wrapper',wrapper)
         c.frame.body.bodyCtrl = wrapper
+        c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
         w.leo_active = True
 
         self.switchToChapter(wrapper)

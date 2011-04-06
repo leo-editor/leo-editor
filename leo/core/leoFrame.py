@@ -396,13 +396,13 @@ class baseTextWidget:
         w.virtualInsertPoint = i
 
         return i
-    #@+node:ekr.20070228074312.21: *5* getSelectedText
+    #@+node:ekr.20070228074312.21: *5* getSelectedText (baseTextWidget)
     def getSelectedText (self):
 
         w = self
         s = w._getSelectedText()
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.22: *5* getSelectionRange
+    #@+node:ekr.20070228074312.22: *5* getSelectionRange (baseTextWidget)
     def getSelectionRange (self,sort=True):
 
         """Return a tuple representing the selected range of the widget.

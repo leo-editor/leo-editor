@@ -4460,6 +4460,7 @@ def selectEditor(self,wrapper):
         return
 
     w = wrapper.widget
+    # g.trace('widget',w)
     assert isinstance(wrapper,leoQTextEditWidget),wrapper
     assert isinstance(w,QtGui.QTextEdit),w
 
@@ -4501,7 +4502,11 @@ def selectEditorHelper (self,wrapper):
     # The actual switch.
     self.deactivateEditors(wrapper)
     self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    # g.trace('c.frame.body',c.frame.body)
+    # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
+    # g.trace('wrapper',wrapper)
     c.frame.body.bodyCtrl = wrapper
+    c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
     w.leo_active = True
 
     self.switchToChapter(wrapper)
@@ -4805,6 +4810,8 @@ def __init__ (self,frame,parentFrame):
         # Hook up the QSyntaxHighlighter
         self.colorizer = leoQtColorizer(c,w.widget)
         qtWidget.setAcceptRichText(False)
+        
+    # g.trace('(leoQtBody)',self,'self.widget',self.widget)
 
     # Config stuff.
     self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
@@ -5460,6 +5467,395 @@ def wrapQLineEdit (self,w):
     # g.trace(wrapper)
     return wrapper
         
+#@+node:ekr.20110406082808.18155: *3* Fixed focus problems
+#@+node:ekr.20081121105001.317: *4* Qt bindings... (qtFrame)
+def bringToFront (self):
+    self.lift()
+def deiconify (self):
+    if self.top.isMinimized(): # Bug fix: 400739.
+        self.lift()
+def getFocus(self):
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
+def get_window_info(self):
+    if hasattr(self.top,'master') and self.top.master:
+        f = self.top.master
+    else:
+        f = self.top
+    rect = f.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    # g.trace(w,h,x,y)
+    return w,h,x,y
+def iconify(self):
+    self.top.showMinimized()
+def lift (self):
+    # g.trace(self.c,'\n',g.callers(9))
+    if self.top.isMinimized(): # Bug 379141
+        self.top.showNormal()
+    self.top.activateWindow()
+    self.top.raise_()
+def update (self):
+    pass
+def getTitle (self):
+    s = g.u(self.top.windowTitle())
+    # g.trace('(qtFrame)',repr(s))
+    return s
+def setTitle (self,s):
+    # g.trace('(qtFrame)',repr(s))
+    self.top.setWindowTitle(s)
+def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    # self.top is a DynamicWindow.
+    # g.trace('(qtFrame)',x,y,w,h,self.top)
+    self.top.setGeometry(QtCore.QRect(x,y,w,h))
+#@+node:ekr.20090406071640.13: *4* Event handlers (qtBody)
+def onFocusIn (self,obj):
+
+    '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+
+    c = self.c
+    if trace: g.trace(c.p.h) # obj,obj.objectName())
+
+    # 2010/08/01: Update the history only on focus in events.
+    # 2011/04/02: Update history only in leoframe.tree.select.
+    # c.nodeHistory.update(c.p)
+
+    if obj.objectName() == 'richTextEdit':
+        wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+        if wrapper and wrapper != self.bodyCtrl:
+            self.selectEditor(wrapper)
+        self.onFocusColorHelper('focus-in',obj)
+        obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
+
+def onFocusOut (self,obj):
+
+    '''Handle a focus-out event in the body pane.'''
+
+    if obj.objectName() == 'richTextEdit':
+        self.onFocusColorHelper('focus-out',obj)
+        obj.setReadOnly(True)
+#@+node:ekr.20090608052916.3810: *5* onFocusColorHelper (qtBody)
+badFocusColors = []
+
+def onFocusColorHelper(self,kind,obj):
+
+    trace = False and not g.unitTesting
+    
+    c = self.c
+    
+    if kind == 'focus-in':
+        # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
+        c.k.showStateColors(inOutline=False,w=self.widget)
+    else:
+        # 2011/03/14: Also set the foreground color.
+        colorName = self.unselectedForegroundColor
+        if trace: g.trace('%9s' % (kind),colorName)
+        self.setForegroundColorHelper(colorName,obj)
+        
+        colorName = self.unselectedBackgroundColor
+        if trace: g.trace('%9s' % (kind),colorName)
+        self.setBackgroundColorHelper(colorName,obj)
+#@+node:ekr.20110406082808.18156: *3* Fixed major problem with multiple body editors
+@nocolor-node
+
+The high-level interface uses c.frame.body.widget instead of c.frame.body.bodyCtrl,
+so selectionEditorHelper must set *both* ivars.
+#@+node:ekr.20081121105001.207: *4*  ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    trace = False and not g.unitTesting
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    
+    self.unselectedBackgroundColor = c.config.getColor(
+        # 'unselected-background-color')
+        'unselected_body_bg_color')
+        
+    # 2011/03/14
+    self.unselectedForegroundColor = c.config.getColor(
+        'unselected_body_fg_color')
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = w = leoQScintillaWidget(
+            c.frame.top.textEdit,
+            name='body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+        self.colorizer = leoColor.nullColorizer(c)
+    else:
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A LeoQTextBrowser
+        # g.trace('(qtBody)',qtWidget)
+        sw.setCurrentIndex(1)
+        self.widget = w = leoQTextEditWidget(
+            qtWidget,name = 'body',c=c)
+            # Sets w.widget = qtWidget.
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+
+        # Hook up the QSyntaxHighlighter
+        self.colorizer = leoQtColorizer(c,w.widget)
+        qtWidget.setAcceptRichText(False)
+        
+    # g.trace('(leoQtBody)',self,'self.widget',self.widget)
+
+    # Config stuff.
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    self.setWrap(c.p)
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+    
+    # For renderer panes.
+    self.canvasRenderer = None
+    self.canvasRendererLabel = None
+    self.canvasRendererVisible = False
+    self.textRenderer = None
+    self.textRendererLabel = None
+    self.textRendererVisible = False
+    self.textRendererWrapper = None
+
+    if trace: print('qtBody.__init__ %s' % self.widget)
+#@+node:ekr.20100101172327.3661: *5* setWrap (qtBody)
+def setWrap (self,p):
+
+    if not p: return
+    if self.useScintilla: return
+
+    c = self.c
+    w = c.frame.body.widget.widget
+    if 1:
+        # Quicker, more self-contained.
+        wrap = g.scanAllAtWrapDirectives(c,p)
+    else:
+        d = c.scanAllDirectives(p)
+        if d is None: return
+        wrap = d.get('wrap')
+    w.setWordWrapMode(
+        g.choose(wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+#@+node:ekr.20081121105001.208: *5* createBindings (qtBody)
+def createBindings (self,w=None):
+
+    '''(qtBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    # frame = self.frame ; c = self.c ; k = c.k
+    # if not w: w = self.widget
+
+    # c.bind(w,'<Key>', k.masterKeyHandler)
+
+    # table = [
+        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # ]
+
+    # table2 = (
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    # for kind,func,handler in table:
+        # def bodyClickCallback(event,handler=handler,func=func):
+            # return handler(event,func)
+
+        # c.bind(w,kind,bodyClickCallback)
+#@+node:ekr.20081121105001.209: *5* get_name
+def getName (self):
+
+    return 'body-widget'
+#@+node:ekr.20081121105001.211: *4* High-level interface (qtBody)
+# Part 1: Corresponding to mustBeDefinedInSubclasses.
+def appendText (self,s):            return self.widget.appendText(s)
+def delete(self,i,j=None):          self.widget.delete(i,j)
+def insert(self,i,s):               return self.widget.insert(i,s)
+def get(self,i,j=None):             return self.widget.get(i,j)
+def getAllText (self):              return self.widget.getAllText()
+def getFocus (self):                return self.widget.getFocus()
+def getInsertPoint(self):           return self.widget.getInsertPoint()
+def getSelectedText (self):         return self.widget.getSelectedText()
+def getSelectionRange(self):        return self.widget.getSelectionRange()
+def getYScrollPosition (self):      return self.widget.getYScrollPosition()
+def hasSelection (self):            return self.widget.hasSelection()
+def scrollLines (self,n):           return self.widget.scrollLines(n)
+def see(self,index):                return self.widget.see(index)
+def seeInsertPoint(self):           return self.widget.seeInsertPoint()
+def setAllText (self,s,new_p=None): return self.widget.setAllText(s,new_p=new_p)
+def setBackgroundColor (self,color):return self.widget.setBackgroundColor(color)
+def setFocus (self):                return self.widget.setFocus()
+set_focus = setFocus
+def setForegroundColor (self,color):return self.widget.setForegroundColor(color)
+def setInsertPoint (self,pos):      return self.widget.setInsertPoint(pos)
+def setSelectionRange(self,*args,**keys):
+    self.widget.setSelectionRange(*args,**keys)
+def setYScrollPosition (self,i):    return self.widget.setYScrollPosition(i)
+
+# Part 2: corresponding to mustBeDefinedInBaseClass.
+def clipboard_append(self,s):   return self.widget.clipboard_append(s)
+def clipboard_clear(self):      return self.widget.clipboard_append()
+def onChar (self, event):       return self.widget.onChar(event)
+
+# Part 3: do-nothings in mayBeDefinedInSubclasses.
+def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
+def event_generate(self,stroke):            pass
+def getWidth (self):                        return 0
+def mark_set(self,markName,i):              pass
+def setWidth (self,width):                  pass
+def tag_add(self,tagName,i,j=None,*args):   pass
+def tag_config (self,colorName,**keys):     pass
+def tag_configure (self,colorName,**keys):  pass
+def tag_delete (self,tagName,*args,**keys): pass
+def tag_names (self, *args):                return []
+def tag_ranges(self,tagName):               return tuple()
+def tag_remove(self,tagName,i,j=None,*args):pass
+def update (self,*args,**keys):             pass
+def update_idletasks (self,*args,**keys):   pass
+def xyToPythonIndex (self,x,y):             return 0
+def yview (self,*args):                     return 0,0
+
+# Part 4: corresponding to mayBeDefinedInSubclasses.
+
+def deleteTextSelection (self): return self.widget.deleteTextSelection()
+
+def indexIsVisible(self,i):  # Added: 2009/7/9.
+    return self.widget.indexIsVisible(i)
+
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    return self.widget(i,bg,fg,flashes,delay)
+
+def replace (self,i,j,s):               self.widget.replace (i,j,s)
+def rowColToGuiIndex (self,s,row,col):  return self.widget.rowColToGuiIndex(s,row,col)
+def selectAllText (self,insert=None):   self.widget.selectAllText(insert)
+def toPythonIndex (self,index):         return self.widget.toPythonIndex(index)
+toGuiIndex = toPythonIndex
+def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
+#@+node:ekr.20081121105001.223: *4* selectEditor & helpers
+selectEditorLockout = False
+
+def selectEditor(self,wrapper):
+
+    '''Select editor w and node w.leo_p.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+
+    if not wrapper: return bodyCtrl
+    if self.selectEditorLockout:
+        if trace: g.trace('**busy')
+        return
+
+    w = wrapper.widget
+    # g.trace('widget',w)
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    def report(s):
+        g.trace('*** %9s wrapper %s w %s %s' % (
+            s,id(wrapper),id(w),c.p.h))
+
+    if wrapper and wrapper == bodyCtrl:
+        self.deactivateEditors(wrapper)
+        if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
+            if trace: report('select')
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocus()
+        elif trace and verbose: report('no change')
+        return
+
+    try:
+        val = None
+        self.selectEditorLockout = True
+        val = self.selectEditorHelper(wrapper)
+    finally:
+        self.selectEditorLockout = False
+
+    return val # Don't put a return in a finally clause.
+#@+node:ekr.20081121105001.224: *5* selectEditorHelper
+def selectEditorHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    # g.trace('c.frame.body',c.frame.body)
+    # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
+    # g.trace('wrapper',wrapper)
+    c.frame.body.bodyCtrl = wrapper
+    c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+        
+    # if not (hasattr(w,'leo_chapter') and w.leo_chapter):
+        # return g.trace('***** no w.leo_chapter',w)
+
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+        id(wrapper),w.leo_chapter,c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p) # Calls assignPositionToEditor.
+    c.redraw()
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.225: *6* << restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
+    wrapper.setInsertPoint(w.leo_insertSpot)
+else:
+    wrapper.setInsertPoint(0)
+
+if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    wrapper.see(first)
+else:
+    wrapper.seeInsertPoint()
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):
