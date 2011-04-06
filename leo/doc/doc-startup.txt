@@ -282,6 +282,8 @@ for p2 in p.subtree():
 s = '\n'.join(result)
 
 g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + s)
+#@+node:ekr.20110406082808.18151: *3* @button rst3
+c.rstCommands.rst3()
 #@+node:ekr.20101009111520.4525: *3*  Slideshow Buttons
 #@+node:ekr.20101008061729.4443: *4* @@button copy-@screenshot-node
 '''

@@ -833,6 +833,10 @@
 <v t="ekr.20070925144534.316"><vh>@item p&amp;repend-to-register</vh></v>
 <v t="ekr.20070925144534.317"><vh>@item &amp;view-register</vh></v>
 </v>
+<v t="ekr.20110406082808.18152"><vh>@menu Rst commands...</vh>
+<v t="ekr.20110406082808.18154"><vh>@item &amp;code-to-rst</vh></v>
+<v t="ekr.20110406082808.18153"><vh>@item &amp;rst3</vh></v>
+</v>
 <v t="ekr.20070925144534.318"><vh>@menu Run Script/Tests...</vh>
 <v t="ekr.20070925144534.319"><vh>@item &amp;execute-script</vh></v>
 <v t="ekr.20070925144534.320"><vh>@item &amp;run-unit-tests</vh></v>
@@ -8055,6 +8059,9 @@ False: (Good for files like unitTest.leo)
 False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20101114064731.8352"></t>
 <t tx="ekr.20110209093958.15416"></t>
+<t tx="ekr.20110406082808.18152"></t>
+<t tx="ekr.20110406082808.18153"></t>
+<t tx="ekr.20110406082808.18154"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
