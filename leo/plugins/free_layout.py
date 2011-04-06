@@ -120,7 +120,7 @@ class FreeLayoutController:
     def add_item(self,func,menu,name,splitter):
         
         act = QtGui.QAction(name,splitter)
-        act.setObjectName(name.lower().replace(' ','-'))
+        act.setObjectName(str(name).lower().replace(' ','-'))
         act.connect(act, Qt.SIGNAL('triggered()'), func)
         menu.addAction(act)
     #@+node:ekr.20110316100442.14371: *4* offer_tabs
