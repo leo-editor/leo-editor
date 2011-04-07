@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>663</width>
+    <width>824</width>
     <height>513</height>
    </rect>
   </property>
@@ -266,6 +266,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnTable">
+       <property name="toolTip">
+        <string>Node shape: table</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnTextColor">
        <property name="toolTip">
         <string>Set the text color of the selected node</string>
@@ -458,19 +468,19 @@
        </property>
       </widget>
      </item>
-          <item>
-            <widget class="QCheckBox" name="chkHierarchy">
-              <property name="toolTip">
-                <string>Show/hide hierarchy links</string>
-              </property>
-              <property name="text">
-                <string>Hierarchy</string>
-              </property>
-              <property name="checked">
-                <bool>true</bool>
-              </property>
-            </widget>
-          </item>
+     <item>
+      <widget class="QCheckBox" name="chkHierarchy">
+       <property name="toolTip">
+        <string>Show/hide hierarchy links</string>
+       </property>
+       <property name="text">
+        <string>Hierarchy</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
