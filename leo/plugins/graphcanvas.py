@@ -434,6 +434,7 @@ class nodeItem(QtGui.QGraphicsItemGroup):
         return s
     #@+node:bob.20110119123023.7402: *3* mouseMoveEvent
     def mouseMoveEvent(self, event):
+        
         QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
         self.glue.newPos(self, event)
     #@+node:bob.20110119123023.7403: *3* mouseReleaseEvent
@@ -487,24 +488,27 @@ class nodeBase(QtGui.QGraphicsItemGroup):
         
         self.iconHPos = 0
         self.iconVPos = 0
-#@+node:tbrown.20110407091036.17539: *3* do_update
-def do_update(self):
+    
+    #@+others
+    #@+node:tbrown.20110407091036.17539: *3* do_update
+    def do_update(self):
 
-    raise NotImplemented
-#@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
-def mouseMoveEvent(self, event):
-    print 'nodeBase moving'
-    QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
-    self.owner.newPos(self, event)
-#@+node:tbrown.20110407091036.17537: *3* mouseReleaseEvent
-def mouseReleaseEvent(self, event):
-    QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
-    self.owner.releaseNode(self, event)
-#@+node:tbrown.20110407091036.17538: *3* focusOutEvent
-def focusOutEvent(self, event):
-    QtGui.QGraphicsItemGroup.focusOutEvent(self, event)
-    self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
-    g.es("focusOutEvent")
+        raise NotImplemented
+    #@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
+    def mouseMoveEvent(self, event):
+        print 'nodeBase moving'
+        QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
+        self.owner.newPos(self, event)
+    #@+node:tbrown.20110407091036.17537: *3* mouseReleaseEvent
+    def mouseReleaseEvent(self, event):
+        QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
+        self.owner.releaseNode(self, event)
+    #@+node:tbrown.20110407091036.17538: *3* focusOutEvent
+    def focusOutEvent(self, event):
+        QtGui.QGraphicsItemGroup.focusOutEvent(self, event)
+        self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
+        g.es("focusOutEvent")
+    #@-others
 #@+node:tbrown.20110407091036.17533: ** class nodeRect
 class nodeRect(nodeBase):
     """text with shape behind it node type"""

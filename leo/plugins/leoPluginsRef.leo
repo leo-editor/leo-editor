@@ -79,7 +79,7 @@ expanded="leohag.20081203143921.9,ekr.20110319081254.14462,leohag.20081203143921
 expanded="bob.20110119123023.7395,bob.20110119123023.7397,bob.20110119123023.7400,tbrown.20110407091036.17531,bob.20110121161547.3424,bob.20110119123023.7408,bob.20110120111825.3352,bob.20110121113659.3412,bob.20110121113659.3414,bob.20110121113659.3413,"><vh>@file graphcanvas.py</vh></v>
 <v t="tbrown.20110203111907.5519"
 expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_layout.py</vh></v>
-<v t="ville.20110403115003.10348" a="E"
+<v t="ville.20110403115003.10348"
 expanded="ville.20110403115003.10355,"><vh>@file valuespace.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
@@ -129,7 +129,7 @@ expanded="ville.20110403115003.10355,"><vh>@file valuespace.py</vh></v>
 <v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
-<v t="ekr.20100103093121.5339" a="E"
+<v t="ekr.20100103093121.5339"
 expanded="ekr.20100103100944.5396,"><vh>@file stickynotes_plus.py</vh></v>
 <v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
