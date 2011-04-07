@@ -60,8 +60,11 @@ def init ():
 import re
 
 def let(var, val):
-    #print "Let ",var,val
-    g.vs.__dict__[var] = val
+    print "Let [%s] = [%s]" % (var,val)
+    g.vs.__dict__['__vstemp'] = val
+    exec var + " = __vstemp" in g.vs.__dict__
+    del g.vs.__dict__['__vstemp']
+    
 
 def untangle(c,p):
     return g.getScript(c,p, useSelectedText=False, useSentinels = False)
