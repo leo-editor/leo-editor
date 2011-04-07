@@ -55,7 +55,7 @@ def init ():
 
 #init()
 #@+node:ville.20110403115003.10355: ** Commands
-#@+node:ville.20110403115003.10356: *3* vs-update
+#@+node:ville.20110403115003.10356: *3* vs-update and helpers
 
 import re
 
@@ -173,5 +173,27 @@ def vs_update(event):
     update_vs(c)
     render_phase(c)
 
+#@+node:ville.20110407210441.5691: *3* vs-create-tree
+@g.command('vs-create-tree')
+def vs_create_tree(event):
+    """ create tree from all variables """
+    c = event['c']
+    p = c.p
+    tag = 'valuespace'
+    if p.h != tag:
+        r = p.insertAsLastChild()
+        r.h = tag
+    else:
+        r = p
+        
+    for k,v in g.vs.__dict__.items():
+        if k.startswith('__'):
+            continue
+        chi = r.insertAsLastChild()
+        chi.h = '@@r ' + k
+        render_value(chi, v)
+    c.redraw()        
+        
+    
 #@-others
 #@-leo
