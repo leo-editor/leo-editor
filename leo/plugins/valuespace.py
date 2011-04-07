@@ -61,14 +61,14 @@ import re
 
 def let(var, val):
     
-    print "Let [%s] = [%s]" % (var,val)
+    print("Let [%s] = [%s]" % (var,val))
     g.vs.__dict__['__vstemp'] = val
     if var.endswith('+'):
         rvar = var.rstrip('+')
         # .. obj = eval(rvar, g.vs.__dict__)        
-        exec "%s.append(__vstemp)" % rvar in g.vs.__dict__
+        exec("%s.append(__vstemp)" % rvar,g.vs.__dict__)
     else:
-        exec var + " = __vstemp" in g.vs.__dict__
+        exec(var + " = __vstemp",g.vs.__dict__)
     
     del g.vs.__dict__['__vstemp']
     
@@ -80,29 +80,28 @@ def let_body(var, val):
     let(var, SList(val.strip().split("\n")))
 
 def runblock(block):
-    #print "Runblock"
-    #print block
-    exec block in g.vs.__dict__
+    #g.trace(block)
+    exec(block,g.vs.__dict__)
 
 def parse_body(c,p):
     body = untangle(c,p)
-    #print "Body"
-    #print body
+    #print("Body")
+    #print(body)
 
     backop = None
     segs = re.finditer('^(@x (.*))$', body,  re.MULTILINE)
 
     for mo in segs:
         op = mo.group(2).strip()
-        #print "Oper",op
+        #print("Oper",op)
         if op.startswith('='):
-            #print "Assign", op
+            #print("Assign", op)
             backop = ('=', op.rstrip('{').lstrip('='), mo.end(1))
         elif op == '{':
             backop = ('runblock', mo.end(1))
         elif op == '}':
             bo = backop[0]
-            #print "backop",bo
+            #print("backop",bo)
             if bo == '=':
                 let_body(backop[1].strip(), body[backop[2] : mo.start(1)])
             elif bo == 'runblock':
@@ -138,7 +137,7 @@ def update_vs(c, root_p = None):
         #g.es(p)
 
     #g.es(it)
-    #print g.vs.__dict__.keys()
+    #print(g.vs.__dict__.keys())
     #g.es(g.vs.__dict__)
 
 def render_value(p, value):
@@ -163,7 +162,7 @@ def render_phase(c, root_p = None):
         expr = h[3:].strip()
 
         res = eval(expr, g.vs.__dict__)
-        #print "Eval", expr, "res", `res`
+        #print("Eval", expr, "res", `res`)
         render_value(p, res)
 
 def test():
@@ -175,7 +174,7 @@ def test():
 
 @g.command('vs-update')
 def vs_update(event):
-    #print "update valuespace"
+    #print("update valuespace")
     c = event['c']
     update_vs(c)
     render_phase(c)
