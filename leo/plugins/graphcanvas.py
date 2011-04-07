@@ -124,7 +124,7 @@ class graphcanvasUI(QtGui.QWidget):
         u = self.UI
         o = self.owner
 
-        self.connect(u.btnUpdate, QtCore.SIGNAL("clicked()"), o.update)
+        self.connect(u.btnUpdate, QtCore.SIGNAL("clicked()"), o.do_update)
         self.connect(u.btnGoto, QtCore.SIGNAL("clicked()"), o.goto)
 
         self.connect(u.btnLoad, QtCore.SIGNAL("clicked()"), o.loadGraph)
@@ -159,7 +159,7 @@ class graphcanvasUI(QtGui.QWidget):
 
         self.connect(u.btnExport, QtCore.SIGNAL("clicked()"), o.exportGraph)
 
-        self.connect(u.chkHierarchy, QtCore.SIGNAL("clicked()"), o.update)
+        self.connect(u.chkHierarchy, QtCore.SIGNAL("clicked()"), o.do_update)
 
         menu = QtGui.QMenu(u.btnLayout)
         for name, func in o.layouts():
@@ -305,7 +305,7 @@ class nodeItem(QtGui.QGraphicsItemGroup):
             
         self.bg.setPos(QtCore.QPointF(0, self.iconVPos))
         self.addToGroup(self.bg)
-    #@+node:bob.20110202125047.4172: *4* download_image
+    #@+node:bob.20110202125047.4172: *3* download_image
     def url2name(self,url): 
         return g.os_path_basename(urlparse.urlsplit(url)[2]) 
 
@@ -372,7 +372,7 @@ class nodeItem(QtGui.QGraphicsItemGroup):
         f.close() 
 
         return localName
-    #@+node:bob.20110202125047.4173: *4* urlToImageHtml
+    #@+node:bob.20110202125047.4173: *3* urlToImageHtml
     def urlToImageHtml (self,c,p,s):
 
         '''Create html that will display an image whose url is in s or p.h.'''
@@ -453,8 +453,8 @@ class nodeItem(QtGui.QGraphicsItemGroup):
             ntype = self.node.u['_bklnk']['type']
             
         return ntype
-    #@+node:tbrown.20110407091036.17540: *3* update
-    def update(self):
+    #@+node:tbrown.20110407091036.17540: *3* do_update
+    def do_update(self):
 
         ntype = 0
         if '_bklnk' in self.node.u and 'type' in self.node.u['_bklnk']:
@@ -487,12 +487,13 @@ class nodeBase(QtGui.QGraphicsItemGroup):
         
         self.iconHPos = 0
         self.iconVPos = 0
-#@+node:tbrown.20110407091036.17539: *3* update
-def update(self):
+#@+node:tbrown.20110407091036.17539: *3* do_update
+def do_update(self):
 
     raise NotImplemented
 #@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
 def mouseMoveEvent(self, event):
+    print 'nodeBase moving'
     QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
     self.owner.newPos(self, event)
 #@+node:tbrown.20110407091036.17537: *3* mouseReleaseEvent
@@ -538,17 +539,23 @@ class nodeRect(nodeBase):
         """return text content for the text in the foreground"""
         return self.node.h
         
-    def update(self):
+    def do_update(self):
     
         self.text.setPlainText(self.get_text())
 
-        
+        self.bg.setRect(-2, +2, 
+            self.text.document().size().width()+4, 
+            self.text.document().size().height()-2)  
+                      
 nodeBase.node_types[nodeRect.__name__] = nodeRect
 #@+node:tbrown.20110407091036.17530: ** class nodeTable
 class nodeTable(nodeRect):
     
     def __init__(self, *args, **kargs):
         nodeRect.__init__(self, *args, **kargs)
+        
+        print self.mouseReleaseEvent
+        print self.mouseMoveEvent
 
 nodeBase.node_types[nodeTable.__name__] = nodeTable
 #@+node:bob.20110121161547.3424: ** class linkItem
@@ -635,7 +642,7 @@ class graphcanvasController(object):
         self.ui = graphcanvasUI(self)
         
 
-        g.registerHandler('headkey2', lambda a,b: self.update())
+        g.registerHandler('headkey2', lambda a,b: self.do_update())
         g.registerHandler("select2", self.onSelect2)
         
         self.initIvars()
@@ -743,7 +750,7 @@ class graphcanvasController(object):
                 i.u['_bklnk']['x'] = x
                 i.u['_bklnk']['y'] = -y
                 self.nodeItem[i].setPos(x, -y)
-                self.nodeItem[i].update()
+                self.nodeItem[i].do_update()
             
             elif pydot:
                 lst = G.get_node(''.join(['"', i.gnx, '"']))
@@ -752,13 +759,13 @@ class graphcanvasController(object):
                     i.u['_bklnk']['x'] = x
                     i.u['_bklnk']['y'] = -y
                     self.nodeItem[i].setPos(x, -y)
-                    self.nodeItem[i].update()
+                    self.nodeItem[i].do_update()
         
         if pydot:
             x,y,width,height = map(float, G.get_bb().strip('"').split(','))
             self.ui.canvasView.setSceneRect(self.ui.canvas.sceneRect().adjusted(x,y,width,height))
             
-        self.update(adjust=False)
+        self.do_update(adjust=False)
         
         self.center_graph()
         
@@ -831,7 +838,7 @@ class graphcanvasController(object):
             self.ui.canvas.addItem(node_obj)
             
 
-        self.update()
+        self.do_update()
         
         if what == 'node' and collection[0].v in self.nodeItem:
             # then select it
@@ -865,8 +872,12 @@ class graphcanvasController(object):
                 elif node.headString().startswith('@image '):
                     ntype = 5
                     node.u['_bklnk']['type'] = ntype
-                        
-                node_obj = nodeItem(self, self.c, self.c.p, node, ntype)
+
+                if isinstance(ntype, int):
+                    # old style
+                    node_obj = nodeItem(self, self.c, self.c.p, node, ntype)
+                else:
+                    node_obj = nodeBase.make_node(self, node, ntype)
             
                 self.node[node_obj] = node
                 self.nodeItem[node] = node_obj
@@ -896,7 +907,7 @@ class graphcanvasController(object):
                 # none added, or doing just one round
                 break
 
-        self.update()
+        self.do_update()
     #@+node:bob.20110119123023.7413: *3* addLinkItem
     def addLinkItem(self, from_, to, hierarchyLink = False):
         if from_ not in self.nodeItem:
@@ -944,7 +955,7 @@ class graphcanvasController(object):
     def newPos(self, nodeItem, event):
         """nodeItem is telling us it has a new position
         
-        need to update links to reflect new position, while still dragging
+        need to do_update links to reflect new position, while still dragging
         """
         node = self.node[nodeItem]
         node.u['_bklnk']['x'] = nodeItem.x()
@@ -1003,7 +1014,7 @@ class graphcanvasController(object):
             links = blc.linksFrom(self.node[oldItem])
             if self.node[nodeItem] not in links:
                 blc.vlink(self.node[oldItem], self.node[nodeItem])
-                # blc will call our update(), so in retaliation...
+                # blc will call our do_update(), so in retaliation...
                 blc.updateTabInt()
     #@+node:bob.20110119123023.7417: *3* newNode
     def newNode(self, pnt):
@@ -1036,7 +1047,7 @@ class graphcanvasController(object):
         blc.deleteLink(v0, id1, 'S')
         blc.deleteLink(v1, id0, 'S')
 
-        # blc will call our update(), so in retaliation...
+        # blc will call our do_update(), so in retaliation...
         blc.updateTabInt()
 
         print('done')
@@ -1081,8 +1092,8 @@ class graphcanvasController(object):
         self.initIvars()
         
         self.ui.reset_zoom()
-    #@+node:bob.20110119123023.7421: *3* update
-    def update(self, adjust=True):
+    #@+node:bob.20110119123023.7421: *3* do_update
+    def do_update(self, adjust=True):
         """rescan name, links, extent"""
         
         self.ui.reset_zoom()
@@ -1103,7 +1114,7 @@ class graphcanvasController(object):
                 if 'type' in i.u['_bklnk']:
                     ntype = i.u['_bklnk']['type']
 
-            self.nodeItem[i].update()
+            self.nodeItem[i].do_update()
             
             if ntype == 0 or ntype == 3 or ntype == 4:
                 self.nodeItem[i].bg.setRect(-2, +2, 
@@ -1177,9 +1188,9 @@ class graphcanvasController(object):
             i.u['_bklnk']['x'] = midx + (i.u['_bklnk']['x']-midx) * direction
             i.u['_bklnk']['y'] = midy + (i.u['_bklnk']['y']-midy) * direction
             self.nodeItem[i].setPos(i.u['_bklnk']['x'], i.u['_bklnk']['y'])
-            self.nodeItem[i].update()
+            self.nodeItem[i].do_update()
                
-        self.update()
+        self.do_update()
         
         self.center_graph()
     #@+node:tbrown.20110205084504.19507: *3* center_graph
