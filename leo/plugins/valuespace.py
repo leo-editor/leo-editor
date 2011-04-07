@@ -60,9 +60,16 @@ def init ():
 import re
 
 def let(var, val):
+    
     print "Let [%s] = [%s]" % (var,val)
     g.vs.__dict__['__vstemp'] = val
-    exec var + " = __vstemp" in g.vs.__dict__
+    if var.endswith('+'):
+        rvar = var.rstrip('+')
+        # .. obj = eval(rvar, g.vs.__dict__)        
+        exec "%s.append(__vstemp)" % rvar in g.vs.__dict__
+    else:
+        exec var + " = __vstemp" in g.vs.__dict__
+    
     del g.vs.__dict__['__vstemp']
     
 
