@@ -578,7 +578,7 @@ class nodeTable(nodeRect):
                     child.u['_bklnk'] = {}
                 if 'x' not in child.u['_bklnk']:
                     child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 10
-                    child.u['_bklnk']['y'] = self.node.u['_bklnk']['x'] + dy * (n+1)
+                    child.u['_bklnk']['y'] = self.node.u['_bklnk']['y'] + dy * (n+1)
                 child.u['_bklnk']['type'] = nodeRect.__name__
                 what.append(child)
                 
