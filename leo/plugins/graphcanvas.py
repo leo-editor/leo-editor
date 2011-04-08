@@ -496,11 +496,12 @@ class nodeBase(QtGui.QGraphicsItemGroup):
         raise NotImplemented
     #@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
     def mouseMoveEvent(self, event):
-        print 'nodeBase moving'
+        
         QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
         self.owner.newPos(self, event)
     #@+node:tbrown.20110407091036.17537: *3* mouseReleaseEvent
     def mouseReleaseEvent(self, event):
+        
         QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
         self.owner.releaseNode(self, event)
     #@+node:tbrown.20110407091036.17538: *3* focusOutEvent
@@ -558,8 +559,30 @@ class nodeTable(nodeRect):
     def __init__(self, *args, **kargs):
         nodeRect.__init__(self, *args, **kargs)
         
-        print self.mouseReleaseEvent
-        print self.mouseMoveEvent
+        # can't load children here, because we don't know where we are yet
+        
+        self.updating = False
+        
+    def do_update(self):
+        
+        if self.updating:
+            return
+
+        what = []
+        for n, child in enumerate(self.node.children):
+            if child not in self.owner.nodeItem:
+                if '_bklnk' not in child.u:
+                    child.u['_bklnk'] = {}
+                child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 10
+                child.u['_bklnk']['y'] = self.node.u['_bklnk']['x'] + 16 * (n+1)
+                child.u['_bklnk']['type'] = nodeRect.__name__
+                what.append(child)
+                
+        if what:
+            self.updating = True
+            self.owner.loadGraph(what=what)
+            self.updating = False
+                
 
 nodeBase.node_types[nodeTable.__name__] = nodeTable
 #@+node:bob.20110121161547.3424: ** class linkItem
@@ -783,12 +806,17 @@ class graphcanvasController(object):
             collection = self.c.currentPosition().self_and_siblings()
         elif what == 'recur':
             collection = self.c.currentPosition().subtree()
-        else:
+        elif what == 'node':
             collection = [self.c.currentPosition()]
+        else:
+            collection = what
 
         for pos in collection:
 
-            node = pos.v
+            try:
+                node = pos.v
+            except AttributeError:
+                node = pos
 
             if node in self.nodeItem:
                 continue
@@ -841,7 +869,6 @@ class graphcanvasController(object):
             node_obj.setPos(x,y)
             self.ui.canvas.addItem(node_obj)
             
-
         self.do_update()
         
         if what == 'node' and collection[0].v in self.nodeItem:
@@ -1112,7 +1139,8 @@ class graphcanvasController(object):
 
         blc = getattr(self.c, 'backlinkController')
 
-        for i in self.nodeItem:
+        for i in list(self.nodeItem):  
+            # can't iterate dict because nodeTable can add items on update
             ntype = 0
             if '_bklnk' in i.u:
                 if 'type' in i.u['_bklnk']:
