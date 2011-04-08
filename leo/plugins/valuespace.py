@@ -2,11 +2,80 @@
 #@+node:ville.20110403115003.10348: * @file valuespace.py
 #@+<< docstring >>
 #@+node:ville.20110403115003.10349: ** << docstring >>
-''' Support g.vs manipulations through @x <expr>, @= foo, etc.
+'''Supports Leo scripting using per-Leo-outline namespaces.
 
-SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
+Commands
+========
+
+This plugin supports the following four commands:
+    
+vs-create-tree
+--------------
+
+Creates a tree whose root node is named 'valuespace' containing one child node
+for every entry in the namespace. The headline of each child is *@@r <key>*,
+where *<key>* is one of the keys of the namespace. The body text of the child
+node is the value for *<key>*.
+
+vs-dump
+-------
+
+Prints key/value pairs of the namespace.
+
+vs-reset
+--------
+
+Clears the namespace.
+
+vs-update
+---------
+
+Scans the entire Leo outline twice, processing *@=*, *@a* and *@r* nodes.
+
+Pass 1
+++++++
+
+Pass 1 evaluates all *@=* and *@a* nodes in the outline as follows:
+    
+*@=* (assignment) nodes should have headlines of the the form::
+    
+    @= <var>
+    
+Pass 1 evaluates the body text and assigns the result to *<var>*.
+
+*@a* (anchor) nodes should have headlines of one of two forms::
+    
+    @a
+    @a <var>
+    
+The first form evaluates the script in the **parent** node of the *@a* node. Such
+**bare** @a nodes serve as markers that the parent contains code to be executed.
+    
+The second form evaluates the body of the *@a* node and assigns the result to *<var>*.
+
+Pass 2
+++++++
+
+Pass 2 "renders" all *@r* nodes in the outline into body text. *@r* nodes should
+have the form::
+    
+    @r <expression>
+    
+Pass 2 evaluates *<expression>* and places the result in the body pane.
+
+**TODO**: discuss SList expressions.
+
+Evaluating expressions
+======================
+
+All expression are evaluated in a context that predefines Leo's *c*, *g* and *p*
+vars. In addition, *g.vs* is a dictionary whose keys are *c.hash()* and whose
+values are the namespaces for each commander. This allows communication between
+different namespaces, while keeping namespaces generally separate.
 
 '''
+
+# SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
 #@-<< docstring >>
 
 __version__ = '0.1'
@@ -73,8 +142,8 @@ def onCreate (tag,key):
         vc = controllers.get(h)
         if not vc:
             controllers [h] = vc = ValueSpaceController(c)
-#@+node:ville.20110403115003.10355: *3* Commands
-#@+node:ville.20110407210441.5691: *4* vs-create-tree
+#@+node:ville.20110403115003.10355: ** Commands
+#@+node:ville.20110407210441.5691: *3* vs-create-tree
 @g.command('vs-create-tree')
 def vs_create_tree(event):
     
@@ -86,7 +155,7 @@ def vs_create_tree(event):
         vc = controllers.get(c.hash())
         if vc:
             vc.create_tree()
-#@+node:ekr.20110408065137.14227: *4* vs-dump
+#@+node:ekr.20110408065137.14227: *3* vs-dump
 @g.command('vs-dump')
 def vs_dump(event):
     
@@ -98,7 +167,7 @@ def vs_dump(event):
         vc = controllers.get(c.hash())
         if vc:
             vc.dump()
-#@+node:ekr.20110408065137.14220: *4* vs-reset
+#@+node:ekr.20110408065137.14220: *3* vs-reset
 @g.command('vs-reset')
 def vs_reset(event):
 
@@ -111,7 +180,7 @@ def vs_reset(event):
         vc = controllers.get(c.hash())
         if vc:
             vc.reset()
-#@+node:ville.20110403115003.10356: *4* vs-update
+#@+node:ville.20110403115003.10356: *3* vs-update
 @g.command('vs-update')
 def vs_update(event):
     
@@ -156,7 +225,7 @@ class ValueSpaceController:
             r = p.insertAsLastChild()
             r.h = tag
             
-        # Create a child of r for all items of g.vs.
+        # Create a child of r for all items of self.d
         for k,v in self.d.items():
             if not k.startswith('__'):
                 child = r.insertAsLastChild()
@@ -195,8 +264,6 @@ class ValueSpaceController:
         
         '''The vs-update command.'''
         
-        g.trace()
-        
         self.render_phase() # Pass 1
         self.update_vs()    # Pass 2
     #@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) & helpers
@@ -227,8 +294,8 @@ class ValueSpaceController:
     #@+node:ekr.20110407174428.5777: *5* let & let_body
     def let(self,var,val):
         
-        '''Enter var into g.vs with the given value.
-        both var and val must be strings.'''
+        '''Enter var into self.d with the given value.
+        Both var and val must be strings.'''
         
         if self.trace:
             print("Let [%s] = [%s]" % (var,val))
@@ -310,10 +377,10 @@ class ValueSpaceController:
         else:
             p.b = pprint.pformat(value)
     #@+node:ekr.20110407174428.5783: *3* test
-    def test():
+    def test(self):
         self.update()
 
-    #test()
+    # test()
     #@-others
 #@-others
 #@-leo
