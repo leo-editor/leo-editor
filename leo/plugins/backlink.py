@@ -357,7 +357,7 @@ class backlinkController(object):
         # gcc = getattr(self.c, 'graphcanvasController')
         try:
             gcc = self.c.graphcanvasController
-            if gcc: gcc.update()
+            if gcc: gcc.do_update()
         except AttributeError:
             pass
     #@+node:ekr.20090616105756.3945: *3* deleteSet
@@ -440,7 +440,7 @@ class backlinkController(object):
         # gcc = getattr(self.c, 'graphcanvasController')
         try:
             gcc = self.c.graphcanvasController
-            if gcc: gcc.update()
+            if gcc: gcc.do_update()
         except AttributeError:
             pass
 

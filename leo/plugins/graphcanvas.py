@@ -565,6 +565,8 @@ class nodeTable(nodeRect):
         
     def do_update(self):
         
+        nodeRect.do_update(self)
+        
         if self.updating:
             return
 
