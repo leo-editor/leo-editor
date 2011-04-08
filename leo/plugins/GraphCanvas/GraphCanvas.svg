@@ -13,8 +13,8 @@
    height="1052.3622047"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47+devel r9015"
-   sodipodi:docname="GraphCanvas">
+   inkscape:version="0.48+devel r9870"
+   sodipodi:docname="GraphCanvas.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="96.820011"
-     inkscape:cy="492.87871"
+     inkscape:zoom="4.8763077"
+     inkscape:cx="62.50347"
+     inkscape:cy="521.25"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -95,5 +95,33 @@
        inkscape:export-filename="/home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/gcdia.png"
        inkscape:export-xdpi="67.651031"
        inkscape:export-ydpi="67.651031" />
+    <g
+       id="g3104"
+       inkscape:export-filename="/mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/graphcanvas_table/leo/plugins/GraphCanvas/gctable.png"
+       inkscape:export-xdpi="66.111908"
+       inkscape:export-ydpi="66.111908">
+      <rect
+         y="527.00476"
+         x="81.785713"
+         height="19.286001"
+         width="19.285999"
+         id="rect3079"
+         style="color:#000000;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#408600;stroke-width:2.50000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         inkscape:export-filename="/home/tbrown/Desktop/Package/leo/bzr/leo.repo/bogo_gc/leo/plugins/gcrect.png"
+         inkscape:export-xdpi="67.651031"
+         inkscape:export-ydpi="67.651031" />
+      <path
+         style="color:#000000;fill:none;stroke:#408600;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="m 82.089854,533.66388 18.214966,0"
+         id="path3102"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path3083"
+         d="m 82.294928,540.02115 18.214982,0"
+         style="color:#000000;fill:none;stroke:#408600;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    </g>
   </g>
 </svg>

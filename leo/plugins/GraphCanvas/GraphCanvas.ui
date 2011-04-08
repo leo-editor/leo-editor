@@ -273,6 +273,10 @@
        <property name="text">
         <string/>
        </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>leo/plugins/GraphCanvas/gctable.png</normaloff>leo/plugins/GraphCanvas/gctable.png</iconset>
+       </property>
       </widget>
      </item>
      <item>
