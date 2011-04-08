@@ -48,10 +48,28 @@ Pass 1 evaluates the body text and assigns the result to *<var>*.
     @a
     @a <var>
     
-The first form evaluates the script in the **parent** node of the *@a* node. Such
-**bare** @a nodes serve as markers that the parent contains code to be executed.
+The first form evaluates the script in the **parent** node of the *@a* node.
+Such **bare** @a nodes serve as markers that the parent contains code to be
+executed.
     
-The second form evaluates the body of the *@a* node and assigns the result to *<var>*.
+The second form evaluates the body of the **parent** of the *@a* node and
+assigns the result to *<var>*.
+
+**Important**: Both forms of *@a* nodes support the following **@x convention**
+when evaluating the parent's body text. Before evaluating the body text, pass1
+scans the body text looking for *@x* lines. Such lines have two forms:
+    
+1. *@x <python statement>*
+
+Pass 1 executes *<python statement>*.
+
+2. The second form spans multiple lines of the body text::
+    
+    @x {
+    python statements
+    @x }
+    
+Pass 1 executes all the python statements between the *@x {* and the *@x }*
 
 Pass 2
 ++++++
@@ -201,7 +219,7 @@ class ValueSpaceController:
     #@+node:ekr.20110408065137.14223: *3*  ctor
     def __init__ (self,c):
         
-        g.trace('(ValueSpaceController)',c)
+        # g.trace('(ValueSpaceController)',c)
         
         self.c = c
         self.d = {} # The namespace dictionary for this commander.
@@ -224,13 +242,15 @@ class ValueSpaceController:
         else:
             r = p.insertAsLastChild()
             r.h = tag
-            
+
         # Create a child of r for all items of self.d
         for k,v in self.d.items():
             if not k.startswith('__'):
                 child = r.insertAsLastChild()
                 child.h = '@@r ' + k
-                render_value(child,v) # Create child.b from child.h
+                self.render_value(child,v) # Create child.b from child.h
+                
+        c.bodyWantsFocus()
         c.redraw()        
     #@+node:ekr.20110408065137.14228: *3* dump
     def dump (self):
@@ -253,6 +273,8 @@ class ValueSpaceController:
             val = d.get(key)
             pad = max(0,max_s-len(key))*' '
             print('%s%s = %s' % (pad,key,val))
+            
+        c.bodyWantsFocus()
     #@+node:ekr.20110408065137.14225: *3* reset
     def reset (self):
         
@@ -266,6 +288,7 @@ class ValueSpaceController:
         
         self.render_phase() # Pass 1
         self.update_vs()    # Pass 2
+        self.c.bodyWantsFocus()
     #@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) & helpers
     def render_phase(self):
         '''Update p's tree (or the entire tree) as follows:
@@ -372,7 +395,7 @@ class ValueSpaceController:
 
         if isinstance(value, SList):
             p.b = value.n
-        elif isinstance(value, basestring):
+        elif g.isString(value): # Works with Python 3.x.
             p.b = value
         else:
             p.b = pprint.pformat(value)
