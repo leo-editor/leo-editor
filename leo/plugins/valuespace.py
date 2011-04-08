@@ -31,8 +31,12 @@ import types, sys
 
 #@-<< imports >>
 
+controllers = {}
+    # Keys are c.hash(), values are ValueSpaceControllers.
+
 #@+others
-#@+node:ville.20110403115003.10353: ** colorize_headlines_visitor
+#@+node:ekr.20110408065137.14221: ** Module level
+#@+node:ville.20110403115003.10353: *3* colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
     """ Changes @thin, @auto, @shadow to bold """
 
@@ -41,177 +45,275 @@ def colorize_headlines_visitor(c,p, item):
         f.setBold(True)
         item.setFont(0,f)
     raise leoPlugins.TryNext
-#@+node:ville.20110403115003.10352: ** init
-@g.command('vs-reset')
-def vs_reset(event):    
-    g.vs = types.ModuleType('vs')
-    sys.modules['vs'] = g.vs
-
+#@+node:ville.20110403115003.10352: *3* init
 def init ():
-    vs_reset(None)
+    
+    # vs_reset(None)
+    
+    g.vs = {} # A dictionary of dictionaries, one for each commander.
 
     g.visit_tree_item.add(colorize_headlines_visitor)
+    
+    g.registerHandler('after-create-leo-frame',onCreate)
+
+    g.plugin_signon(__name__)
 
     return True
 
 #init()
-#@+node:ville.20110403115003.10355: ** Commands
-#@+node:ville.20110403115003.10356: *3* vs-update
-@g.command('vs-update')
-def vs_update(event):
-    #print("update valuespace")
-    c = event['c']
-    update_vs(c)
-    render_phase(c)
+#@+node:ekr.20110408065137.14222: *3* onCreate
+def onCreate (tag,key):
+    
+    global controllers
 
-#@+node:ville.20110407210441.5691: *3* vs-create-tree
+    c = key.get('c')
+    
+    if c:
+        h = c.hash()
+        vc = controllers.get(h)
+        if not vc:
+            controllers [h] = vc = ValueSpaceController(c)
+#@+node:ville.20110403115003.10355: *3* Commands
+#@+node:ville.20110407210441.5691: *4* vs-create-tree
 @g.command('vs-create-tree')
 def vs_create_tree(event):
     
     """Create tree from all variables."""
     
-    c = event['c'] ; p = c.p ; tag = 'valuespace'
+    global controllers
+    c = event.get('c')
+    if c:
+        vc = controllers.get(c.hash())
+        if vc:
+            vc.create_tree()
+#@+node:ekr.20110408065137.14227: *4* vs-dump
+@g.command('vs-dump')
+def vs_dump(event):
+    
+    """Dump the valuespace for this commander."""
+    
+    global controllers
+    c = event.get('c')
+    if c:
+        vc = controllers.get(c.hash())
+        if vc:
+            vc.dump()
+#@+node:ekr.20110408065137.14220: *4* vs-reset
+@g.command('vs-reset')
+def vs_reset(event):
 
-    # Create a 'valuespace' node if it not the presently selected node.
-    if p.h == tag:
-        r = p
-    else:
-        r = p.insertAsLastChild()
-        r.h = tag
+    # g.vs = types.ModuleType('vs')
+    # sys.modules['vs'] = g.vs
+    
+    global controllers
+    c = event.get('c')
+    if c:
+        vc = controllers.get(c.hash())
+        if vc:
+            vc.reset()
+#@+node:ville.20110403115003.10356: *4* vs-update
+@g.command('vs-update')
+def vs_update(event):
+    
+    global controllers
+    c = event.get('c')
+    if c:
+        vc = controllers.get(c.hash())
+        if vc:
+            vc.update()
+#@+node:ekr.20110408065137.14219: ** class ValueSpaceController
+class ValueSpaceController:
+    
+    '''A class supporting per-commander evaluation spaces
+    containing @a, @r and @= nodes.
+    '''
+    
+    #@+others
+    #@+node:ekr.20110408065137.14223: *3*  ctor
+    def __init__ (self,c):
         
-    # Create a child of the valuespace node for all items of g.vs.
-    for k,v in g.vs.__dict__.items():
-        if k.startswith('__'):
-            continue
-        child = r.insertAsLastChild()
-        child.h = '@@r ' + k
-        render_value(child,v)
-    
-    c.redraw()        
-#@+node:ekr.20110407174428.5785: *3* Helpers
-#@+node:ekr.20110407174428.5782: *4* render_phase & helper
-def render_phase(c,root_p=None):
-    
-    '''Render the expression in @r nodes in the body text of that node.'''
+        g.trace('(ValueSpaceController)',c)
+        
+        self.c = c
+        self.d = {} # The namespace dictionary for this commander.
+        self.trace = True
+        self.verbose = False
+        
+        # changed g.vs.__dict__ to self.d
+        # Not strictly necessary, but allows cross-commander communication.
+        g.vs [c.hash()] = self.d
+    #@+node:ekr.20110408065137.14224: *3* create_tree
+    def create_tree (self):
+        
+        '''The vs-create-tree command.'''
+        
+        c = self.c ; p = c.p ; tag = 'valuespace'
 
-    if root_p:
-        it = root_p.subtree()
-    else:
-        it = c.all_unique_positions()
-
-    for p in it:
-        h = p.h.strip()
-        if h.startswith('@r '):
-            expr = h[3:].strip()
-            result = eval(expr, g.vs.__dict__)
-            #print("Eval", expr, "result", `res`)
-            render_value(p,result)
-#@+node:ekr.20110407174428.5784: *5* render_value
-def render_value(p,value):
-    
-    '''Put the rendered value in p's body pane.'''
-
-    if isinstance(value, SList):
-        p.b = value.n
-    elif isinstance(value, basestring):
-        p.b = value
-    else:
-        p.b = pprint.pformat(value)
-#@+node:ekr.20110407174428.5783: *4* test
-def test():
-
-    update_vs(c)
-    render_phase(c)
-
-#test()
-#@+node:ekr.20110407174428.5781: *4* update_vs & helpers
-def update_vs(c,root_p=None):
-    
-    '''Update p's tree (or the entire tree) by
-    evaluating all @= and @a nodes.'''
-    
-    g.vs.c = c # rev 3958.
-    g.vs.g = g # rev 3958.
-    
-    if root_p:
-        it = root_p.subtree()
-    else:
-        it = c.all_unique_positions()
-
-    for p in it:       
-        h = p.h.strip()
-        if h.startswith('@= '):
-            g.vs.p = p.copy() # rev 3958.
-            var = h[3:].strip()
-            let_body(var,untangle(c, p))
-        elif h == '@a' or h.startswith('@a '):                
-            tail = h[2:].strip()
-            parent = p.parent()
-            if tail:
-                let_body(tail,untangle(c,parent))                
-            parse_body(c,parent)
-    # g.trace(g.vs.__dict__)
-#@+node:ekr.20110407174428.5777: *5* let & let_body
-def let(var,val):
-    
-    '''Enter var into g.vs with the given value.
-    both var and val must be strings.'''
-    
-    print("Let [%s] = [%s]" % (var,val))
-
-    g.vs.__dict__['__vstemp'] = val
-
-    if var.endswith('+'):
-        rvar = var.rstrip('+')
-        # .. obj = eval(rvar, g.vs.__dict__)        
-        exec("%s.append(__vstemp)" % rvar, g.vs.__dict__)
-    else:
-        exec(var + " = __vstemp", g.vs.__dict__)
-    
-    del g.vs.__dict__['__vstemp']
-    
-
-def let_body(var,val):
-    
-    # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
-
-    let(var,SList(val.strip().split("\n")))
-#@+node:ekr.20110407174428.5780: *5* parse_body & helpers
-def parse_body(c,p):
-    
-    body = untangle(c,p) # body is the script in p's body.
-    # print("Body")
-    # print(body)
-    g.vs.p = p # rev 3958.
-    backop = None
-    segs = re.finditer('^(@x (.*))$',body,re.MULTILINE)
-
-    for mo in segs:
-        op = mo.group(2).strip()
-        # print("Oper",op)
-        if op.startswith('='):
-            # print("Assign", op)
-            backop = ('=', op.rstrip('{').lstrip('='), mo.end(1))
-        elif op == '{':
-            backop = ('runblock', mo.end(1))
-        elif op == '}':
-            bo = backop[0]
-            # print("backop",bo)
-            if bo == '=':
-                let_body(backop[1].strip(), body[backop[2] : mo.start(1)])
-            elif bo == 'runblock':
-                runblock(body[backop[1] : mo.start(1)])
+        # Create a 'valuespace' node if p's headline is not 'valuespace'.
+        if p.h == tag:
+            r = p
         else:
-            runblock(op)
-#@+node:ekr.20110407174428.5779: *6* runblock
-def runblock(block):
+            r = p.insertAsLastChild()
+            r.h = tag
+            
+        # Create a child of r for all items of g.vs.
+        for k,v in self.d.items():
+            if not k.startswith('__'):
+                child = r.insertAsLastChild()
+                child.h = '@@r ' + k
+                render_value(child,v) # Create child.b from child.h
+        c.redraw()        
+    #@+node:ekr.20110408065137.14228: *3* dump
+    def dump (self):
+        
+        c,d = self.c,self.d
+        
+        exclude = (
+            '__builtins__',
+            # 'c','g','p',
+        )
+        
+        print('Valuespace for %s...' % c.shortFileName())
+        keys = list(d.keys())
+        keys = [z for z in keys if z not in exclude]
+        keys.sort()
+        max_s = 5
+        for key in keys:
+            max_s = max(max_s,len(key))
+        for key in keys:
+            val = d.get(key)
+            pad = max(0,max_s-len(key))*' '
+            print('%s%s = %s' % (pad,key,val))
+    #@+node:ekr.20110408065137.14225: *3* reset
+    def reset (self):
+        
+        '''The vs-reset command.'''
+        
+        self.d = {}
+    #@+node:ekr.20110408065137.14226: *3* update & helpers
+    def update (self):
+        
+        '''The vs-update command.'''
+        
+        g.trace()
+        
+        self.render_phase() # Pass 1
+        self.update_vs()    # Pass 2
+    #@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) & helpers
+    def render_phase(self):
+        '''Update p's tree (or the entire tree) as follows:
+        - Evaluate all @= nodes and the *headlines* of all @a <expr> nodes.
+        - Evaluate the body of the *parent* nodes for all "bare" @a nodes.
+        '''
+        
+        c = self.c
+        self.d['c'] = c # g.vs.c = c
+        self.d['g'] = g # g.vs.g = g
+        for p in c.all_unique_positions():       
+            h = p.h.strip()
+            if h.startswith('@= '):
+                if self.trace and self.verbose: g.trace('pass1',p.h)
+                self.d['p'] = p.copy() # g.vs.p = p.copy()
+                var = h[3:].strip()
+                self.let_body(var,self.untangle(p))
+            elif h == '@a' or h.startswith('@a '):
+                if self.trace and self.verbose: g.trace('pass1',p.h)  
+                tail = h[2:].strip()
+                parent = p.parent()
+                if tail:
+                    self.let_body(tail,untangle(parent))                
+                self.parse_body(parent)
+        # g.trace(self.d)
+    #@+node:ekr.20110407174428.5777: *5* let & let_body
+    def let(self,var,val):
+        
+        '''Enter var into g.vs with the given value.
+        both var and val must be strings.'''
+        
+        if self.trace:
+            print("Let [%s] = [%s]" % (var,val))
+        self.d ['__vstemp'] = val
+        if var.endswith('+'):
+            rvar = var.rstrip('+')
+            # .. obj = eval(rvar,self.d)        
+            exec("%s.append(__vstemp)" % rvar,self.d)
+        else:
+            exec(var + " = __vstemp",self.d)
+        del self.d ['__vstemp']
+        
+    def let_body(self,var,val):
+        # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
+        self.let(var,SList(val.strip().split("\n")))
+    #@+node:ekr.20110407174428.5780: *5* parse_body & helpers
+    def parse_body(self,p):
+        
+        body = self.untangle(p) # body is the script in p's body.
+        # print("Body")
+        # print(body)
+        if self.trace and self.verbose: g.trace('pass1',p.h,'\n',body)
+        self.d ['p'] = p.copy()
+        backop = None
+        segs = re.finditer('^(@x (.*))$',body,re.MULTILINE)
+        for mo in segs:
+            op = mo.group(2).strip()
+            # print("Oper",op)
+            if op.startswith('='):
+                # print("Assign", op)
+                backop = ('=', op.rstrip('{').lstrip('='), mo.end(1))
+            elif op == '{':
+                backop = ('runblock', mo.end(1))
+            elif op == '}':
+                bo = backop[0]
+                # print("backop",bo)
+                if bo == '=':
+                    self.let_body(backop[1].strip(), body[backop[2] : mo.start(1)])
+                elif bo == 'runblock':
+                    self.runblock(body[backop[1] : mo.start(1)])
+            else:
+                self.runblock(op)
+    #@+node:ekr.20110407174428.5779: *6* runblock
+    def runblock(self,block):
 
-    #g.trace(block)
-    exec(block,g.vs.__dict__)
+        if self.trace and self.verbose:
+            g.trace('pass1',block)
 
-#@+node:ekr.20110407174428.5778: *6* untangle (getScript)
-def untangle(c,p):
-    
-    return g.getScript(c,p,useSelectedText=False,useSentinels=False)
+        exec(block,self.d)
+    #@+node:ekr.20110407174428.5778: *6* untangle (getScript)
+    def untangle(self,p):
+        
+        return g.getScript(self.c,p,
+            useSelectedText=False,
+            useSentinels=False)
+    #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
+    def update_vs(self):
+        
+        '''Evaluate @r <expr> nodes, puting the result in their body text.'''
+        
+        c = self.c
+        for p in c.all_unique_positions():
+            h = p.h.strip()
+            if h.startswith('@r '):
+                if self.trace and self.verbose: g.trace('pass2:',p.h)
+                expr = h[3:].strip()
+                result = eval(expr,self.d)
+                if self.trace: print("Eval:",expr,"result:",repr(result))
+                self.render_value(p,result)
+    #@+node:ekr.20110407174428.5784: *5* render_value
+    def render_value(self,p,value):
+        
+        '''Put the rendered value in p's body pane.'''
+
+        if isinstance(value, SList):
+            p.b = value.n
+        elif isinstance(value, basestring):
+            p.b = value
+        else:
+            p.b = pprint.pformat(value)
+    #@+node:ekr.20110407174428.5783: *3* test
+    def test():
+        self.update()
+
+    #test()
+    #@-others
 #@-others
 #@-leo
