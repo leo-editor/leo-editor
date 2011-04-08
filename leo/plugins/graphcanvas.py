@@ -1025,7 +1025,7 @@ class graphcanvasController(object):
         # text only node needs pen used to indicate selection removed
         lastNode = self.lastNodeItem
         if (lastNode and 
-            not isinstance(lastNode, nodeBase) and lastNode.getType() != 5):
+            (isinstance(lastNode, nodeBase) or lastNode.getType() != 5)):
             lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
 
         if  isinstance(nodeItem, nodeBase) or nodeItem.getType() != 5:
