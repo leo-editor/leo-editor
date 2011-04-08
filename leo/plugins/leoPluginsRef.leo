@@ -40,7 +40,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -62,8 +62,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -76,7 +76,7 @@
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="tbrown.20110203111907.5519"><vh>@file free_layout.py</vh></v>
-<v t="ville.20110403115003.10348" a="E"
+<v t="ville.20110403115003.10348"
 expanded="ville.20110403115003.10355,"><vh>@file valuespace.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
@@ -214,7 +214,6 @@ expanded="ville.20110403115003.10355,"><vh>@file valuespace.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
-<v t="ekr.20110304185833.14141"><vh>@file qt_plugin_manager.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
