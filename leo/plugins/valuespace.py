@@ -42,7 +42,6 @@ def colorize_headlines_visitor(c,p, item):
         item.setFont(0,f)
     raise leoPlugins.TryNext
 #@+node:ville.20110403115003.10352: ** init
-
 @g.command('vs-reset')
 def vs_reset(event):    
     g.vs = types.ModuleType('vs')
@@ -65,7 +64,6 @@ def vs_update(event):
     update_vs(c)
     render_phase(c)
 
-#test()
 #@+node:ville.20110407210441.5691: *3* vs-create-tree
 @g.command('vs-create-tree')
 def vs_create_tree(event):
@@ -124,6 +122,8 @@ def test():
 
     update_vs(c)
     render_phase(c)
+
+#test()
 #@+node:ekr.20110407174428.5781: *4* update_vs & helpers
 def update_vs(c,root_p=None):
     
