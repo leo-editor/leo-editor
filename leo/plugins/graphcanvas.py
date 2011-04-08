@@ -571,12 +571,14 @@ class nodeTable(nodeRect):
             return
 
         what = []
+        dy = self.text.document().size().height()
         for n, child in enumerate(self.node.children):
             if child not in self.owner.nodeItem:
                 if '_bklnk' not in child.u:
                     child.u['_bklnk'] = {}
-                child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 10
-                child.u['_bklnk']['y'] = self.node.u['_bklnk']['x'] + 16 * (n+1)
+                if 'x' not in child.u['_bklnk']:
+                    child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 10
+                    child.u['_bklnk']['y'] = self.node.u['_bklnk']['x'] + dy * (n+1)
                 child.u['_bklnk']['type'] = nodeRect.__name__
                 what.append(child)
                 
@@ -584,6 +586,21 @@ class nodeTable(nodeRect):
             self.updating = True
             self.owner.loadGraph(what=what)
             self.updating = False
+            
+    def mouseMoveEvent(self, event):
+        
+        ox, oy = self.x(), self.y()
+        
+        nodeRect.mouseMoveEvent(self, event)
+        
+        dx, dy = self.x()-ox, self.y()-oy
+        
+        for n, child in enumerate(self.node.children):
+            if child in self.owner.nodeItem:
+                childItem = self.owner.nodeItem[child]
+                childItem.setX(childItem.x()+dx)
+                childItem.setY(childItem.y()+dy)
+                self.owner.newPos(childItem, None)
                 
 
 nodeBase.node_types[nodeTable.__name__] = nodeTable
@@ -1135,10 +1152,6 @@ class graphcanvasController(object):
             self.ui.canvas.removeItem(self.linkItem[i])
         self.linkItem = {}
 
-        for i in self.hierarchyLinkItem:
-            self.ui.canvas.removeItem(self.hierarchyLinkItem[i])
-        self.hierarchyLinkItem = {}
-
         blc = getattr(self.c, 'backlinkController')
 
         for i in list(self.nodeItem):  
@@ -1175,6 +1188,10 @@ class graphcanvasController(object):
                     self.addLinkItem(i, link)
                 for link in blc.linksTo(i):
                     self.addLinkItem(link, i)
+
+        for i in self.hierarchyLinkItem:
+            self.ui.canvas.removeItem(self.hierarchyLinkItem[i])
+        self.hierarchyLinkItem = {}
 
         if self.ui.UI.chkHierarchy.isChecked():
             for i in self.nodeItem:
