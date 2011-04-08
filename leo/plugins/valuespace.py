@@ -87,7 +87,7 @@ def parse_body(c,p):
     body = untangle(c,p)
     #print("Body")
     #print(body)
-
+    g.vs.p = p
     backop = None
     segs = re.finditer('^(@x (.*))$', body,  re.MULTILINE)
 
@@ -111,6 +111,10 @@ def parse_body(c,p):
 
 
 def update_vs(c, root_p = None):
+    
+    g.vs.c = c
+    g.vs.g = g
+
     if root_p is not None:
         it = root_p.subtree()
     else:
@@ -120,8 +124,9 @@ def update_vs(c, root_p = None):
         h = p.h.strip()
         if not h.startswith('@'):
             continue
-
+        
         if h.startswith('@= '):
+            g.vs.p = p.copy()
             var = h[3:].strip()
             let_body(var, untangle(c, p))
 
