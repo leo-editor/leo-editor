@@ -337,7 +337,7 @@ class ValueSpaceController:
                 tail = h[2:].strip()
                 parent = p.parent()
                 if tail:
-                    self.let_body(tail,untangle(parent))                
+                    self.let_body(tail,self.untangle(parent))                
                 self.parse_body(parent)
         # g.trace(self.d)
     #@+node:ekr.20110407174428.5777: *5* let & let_body
@@ -357,9 +357,26 @@ class ValueSpaceController:
             exec(var + " = __vstemp",self.d)
         del self.d ['__vstemp']
         
+    def let_cl(self, var, lines):
+        """ handle @cl node """
+        print "let_cl"
+        assert lines[0].startswith('@cl ')
+        rest = lines[0][4:].strip()
+        translator = eval(rest, self.d)
+        translated = translator(SList(lines[1:]))
+        self.let(var, translated)
+        
     def let_body(self,var,val):
         # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
-        self.let(var,SList(val.strip().split("\n")))
+        
+        lines = val.strip().split('\n')
+        if lines and lines[0].startswith('@cl '):        
+            self.let_cl(var, lines)
+            return
+            
+        self.let(var,SList(lines))
+        
+        
     #@+node:ekr.20110407174428.5780: *5* parse_body & helpers
     def parse_body(self,p):
         
