@@ -75,9 +75,23 @@ def jinja_act_on_node(c,p, event):
     fullpath = g.os_path_finalize_join(pth, tail)
     g.es("Rendering "+ fullpath)
     body = untangle(c,p)
-    jinja_render(body, fullpath, g.vs.get(c.hash()))
+    jinja_render(body, fullpath, c.vs)
         
 def jinja_install():
     g.act_on_node.add(jinja_act_on_node, 50)
+
+class JinjaCl:
+    def __init__(self, c):
+        self.c = c
+    def __call__(self,body):
+        """ Render body through jinja
+        
+        To be used from @cl nodes
+        """
+        #print "jinja called on",body
+        tmpl = Template(body)
+        out = tmpl.render(self.c.vs)
+        return out
+            
 #@-others
 #@-leo
