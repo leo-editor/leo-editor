@@ -46,8 +46,6 @@ from jinja2 import Template
 #@+others
 #@+node:ville.20110409151021.5703: ** init
 def init ():
-
-    print "init jinja"
     g.plugin_signon(__name__)
     jinja_install()
 
@@ -81,7 +79,5 @@ def jinja_act_on_node(c,p, event):
         
 def jinja_install():
     g.act_on_node.add(jinja_act_on_node, 50)
-#@+node:ville.20110409151021.10398: ** run
-#init()
 #@-others
 #@-leo
