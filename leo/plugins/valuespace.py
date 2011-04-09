@@ -255,7 +255,7 @@ class ValueSpaceController:
         
         # changed g.vs.__dict__ to self.d
         # Not strictly necessary, but allows cross-commander communication.
-        g.vs [c.hash()] = self.d
+        #g.vs [c.hash()] = self.d
     #@+node:ekr.20110408065137.14224: *3* create_tree
     def create_tree (self):
         
@@ -309,14 +309,18 @@ class ValueSpaceController:
         
         self.d = {}
         self.init_ns(self.d)
+        self.c.vs = self.d
     #@+node:ville.20110409221110.5755: *3* init_ns
     def init_ns(self,ns):
         """ Add 'builtin' methods to namespace """
+        
         def slist(body):
             """ Return body as SList (string list) """
             return SList(body.split("\n"))
 
         ns['slist'] = slist
+        
+        # xxx todo perhaps add more?
             
     #@+node:ekr.20110408065137.14226: *3* update & helpers
     def update (self):
