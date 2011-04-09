@@ -13,7 +13,7 @@ Create headline like this:
 Select the node and do alt-x act-on-node
 
 Conceptually, acts like @nosent - tree is parsed,
-template is expanded and content is written. 
+template is expanded and content is written to the file.
 
 Requires "valuespace" plugin. Fetches vars from valuespace.
 
