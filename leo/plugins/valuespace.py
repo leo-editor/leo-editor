@@ -248,7 +248,8 @@ class ValueSpaceController:
         # g.trace('(ValueSpaceController)',c)
         
         self.c = c
-        self.d = {} # The namespace dictionary for this commander.
+        self.d = {}
+        self.reset()    
         self.trace = True
         self.verbose = False
         
@@ -307,6 +308,16 @@ class ValueSpaceController:
         '''The vs-reset command.'''
         
         self.d = {}
+        self.init_ns(self.d)
+    #@+node:ville.20110409221110.5755: *3* init_ns
+    def init_ns(self,ns):
+        """ Add 'builtin' methods to namespace """
+        def slist(body):
+            """ Return body as SList (string list) """
+            return SList(body.split("\n"))
+
+        ns['slist'] = slist
+            
     #@+node:ekr.20110408065137.14226: *3* update & helpers
     def update (self):
         
@@ -357,24 +368,30 @@ class ValueSpaceController:
             exec(var + " = __vstemp",self.d)
         del self.d ['__vstemp']
         
-    def let_cl(self, var, lines):
+    def let_cl(self, var, body):
         """ handle @cl node """
         print "let_cl"
-        assert lines[0].startswith('@cl ')
-        rest = lines[0][4:].strip()
+        lend = body.find('\n')
+        firstline = body[0:lend]
+        rest = firstline[4:].strip()
+        print "rest",rest    
         translator = eval(rest, self.d)
-        translated = translator(SList(lines[1:]))
+        translated = translator(body[lend+1:])
         self.let(var, translated)
         
     def let_body(self,var,val):
         # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
         
-        lines = val.strip().split('\n')
-        if lines and lines[0].startswith('@cl '):        
-            self.let_cl(var, lines)
+        #lend = val.find('\n')
+        #firstline = val[0:lend]
+        
+        #lines = val.strip().split('\n')
+        if val.startswith('@cl '):
+            self.let_cl(var, val)
             return
             
-        self.let(var,SList(lines))
+        #self.let(var,SList(lines))
+        self.let(var,val)
         
         
     #@+node:ekr.20110407174428.5780: *5* parse_body & helpers
