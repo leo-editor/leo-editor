@@ -68,8 +68,34 @@ Pass 1 executes *<python statement>*.
     @x {
     python statements
     @x }
-    
+            
 Pass 1 executes all the python statements between the *@x {* and the *@x }*
+
+3. Assign block of text to variable::
+
+    @x =<var> {    
+    Some
+    Text    
+    @x }
+    
+Pass 1 assigns the block of text to <var>. The type of value is SList,
+a special sublass of standard 'list' that makes operating with string 
+lists convenient. Notably, you can do <var>.n to get the content as plain
+string.
+
+A special case of this is the "list append" notation::
+    
+    @x =<var>+ {
+    Some
+    Text
+    @x }
+    
+This assumes that <var> is a list, and appends the content as SList to this
+list. You will typically do '@x var = []' earlier in the document to make this
+construct work.
+
+<var> in all contructs above can be arbitrary expression that can be on left hand
+side of assignment. E.g. you can use foo.bar, foo['bar'], foo().bar etc.
 
 Pass 2
 ++++++
@@ -293,7 +319,7 @@ class ValueSpaceController:
     def render_phase(self):
         '''Update p's tree (or the entire tree) as follows:
         - Evaluate all @= nodes and the *headlines* of all @a <expr> nodes.
-        - Evaluate the body of the *parent* nodes for all "bare" @a nodes.
+        - Evaluate the body of the *parent* nodes for all @a nodes.
         '''
         
         c = self.c
