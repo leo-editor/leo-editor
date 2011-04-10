@@ -122,8 +122,8 @@ def openwith_rclick(c,p, menu):
             action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
             action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
     
-        action = menu.addAction("Open " + path)
-        action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
+    action = menu.addAction("Open " + path)
+    action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
 #@+node:ville.20090630221949.5462: ** refresh_rclick
 def refresh_rclick(c,p, menu):
     h = p.h
