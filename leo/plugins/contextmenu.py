@@ -91,11 +91,13 @@ def openwith_rclick(c,p, menu):
 
     # g.trace(repr(path),repr(fname))
 
+    absp = g.os_path_finalize_join(path, fname)
+    
     def openwith_rclick_cb():
         #print "Editing", path, fname        
         if not editor:
             return
-        absp = g.os_path_finalize_join(path, fname)
+        
         cmd = '%s "%s"' % (editor, absp)
         g.es('Edit: %s' % cmd)
         p = subprocess.Popen(cmd, shell=True)
@@ -103,6 +105,16 @@ def openwith_rclick(c,p, menu):
 
     def openfolder_rclick_cb():
         g.os_startfile(path)
+
+    def create_rclick_cb():
+        assert not os.path.exists(absp)
+        os.makedirs(absp)
+        g.es("Created " + absp)
+
+    if not os.path.exists(absp):
+        action = menu.addAction("Create dir " + absp + "/" )
+        action.triggered.connect(create_rclick_cb)
+        
 
     if editor:
         action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
