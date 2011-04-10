@@ -93,6 +93,8 @@ def openwith_rclick(c,p, menu):
 
     absp = g.os_path_finalize_join(path, fname)
     
+    exists = os.path.exists(absp)
+    
     def openwith_rclick_cb():
         #print "Editing", path, fname        
         if not editor:
@@ -107,21 +109,21 @@ def openwith_rclick(c,p, menu):
         g.os_startfile(path)
 
     def create_rclick_cb():
-        assert not os.path.exists(absp)
         os.makedirs(absp)
         g.es("Created " + absp)
 
-    if not os.path.exists(absp):
+    if not exists and head == "@path":
         action = menu.addAction("Create dir " + absp + "/" )
         action.triggered.connect(create_rclick_cb)
         
 
-    if editor:
-        action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
-        action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
-
-    action = menu.addAction("Open " + path)
-    action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
+    if head != "@path":
+        if editor:
+            action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
+            action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
+    
+        action = menu.addAction("Open " + path)
+        action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
 #@+node:ville.20090630221949.5462: ** refresh_rclick
 def refresh_rclick(c,p, menu):
     h = p.h
