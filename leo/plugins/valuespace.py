@@ -374,11 +374,11 @@ class ValueSpaceController:
         
     def let_cl(self, var, body):
         """ handle @cl node """
-        print "let_cl"
+        # g.trace()
         lend = body.find('\n')
         firstline = body[0:lend]
         rest = firstline[4:].strip()
-        print "rest",rest    
+        print("rest",rest)  
         translator = eval(rest, self.d)
         translated = translator(body[lend+1:])
         self.let(var, translated)
