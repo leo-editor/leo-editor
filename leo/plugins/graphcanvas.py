@@ -520,7 +520,7 @@ class GetImage:
             # file on local file system
             testpath = g.os_path_finalize_join(path, testpath)
             if g.os_path_exists(testpath):
-                return "<img src=%s/>" % quoteattr('file://%s'%testpath)
+                return "<img src=%s/>" % quoteattr('%s'%testpath)
                 
             # explicit file://, but no such file exists
             if src.startswith('file://'):
@@ -742,6 +742,8 @@ class nodeComment(nodeRect):
     def text_item(self):
         """return a canvas item for the text in the foreground"""
         item = QtGui.QGraphicsTextItem()
+        
+        item.setOpenExternalLinks(True)
 
         f = item.font()
         f.setPointSize(7)
