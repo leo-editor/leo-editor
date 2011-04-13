@@ -147,14 +147,19 @@ class graphcanvasUI(QtGui.QWidget):
         self.connect(u.btnTextColor, QtCore.SIGNAL("clicked()"), o.setTextColor)
         self.connect(u.btnClearFormatting, QtCore.SIGNAL("clicked()"), o.clearFormatting)
 
-        self.connect(u.btnRect, QtCore.SIGNAL("clicked()"), o.setRectangle)
-        self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), o.setEllipse)
-        self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), o.setDiamond)
+        self.connect(u.btnRect, QtCore.SIGNAL("clicked()"),
+            lambda: o.setNode(nodeRect))
+        self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeEllipse))
+        self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeDiamond))
         self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), o.setNone)
         self.connect(u.btnTable, QtCore.SIGNAL("clicked()"), 
             lambda: o.setNode(nodeTable))
 
-        self.connect(u.btnComment, QtCore.SIGNAL("clicked()"), o.setComment)
+        self.connect(u.btnComment, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeComment))
+
         self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), o.setImage)
 
         self.connect(u.btnExport, QtCore.SIGNAL("clicked()"), o.exportGraph)
@@ -517,8 +522,9 @@ class nodeRect(nodeBase):
     def __init__(self, *args, **kargs):
         nodeBase.__init__(self, *args, **kargs)
         
+        self.text = self.text_item()  
+        # .text must be first for nodeComment, see its bg_item()
         self.bg = self.bg_item()
-        self.text = self.text_item()
         self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
         
         self.setZValue(20)
@@ -553,6 +559,75 @@ class nodeRect(nodeBase):
             self.text.document().size().height()-2)  
                       
 nodeBase.node_types[nodeRect.__name__] = nodeRect
+#@+node:tbrown.20110412222027.19250: ** class nodeEllipse
+class nodeEllipse(nodeRect):
+    """text with shape behind it node type"""
+
+    def bg_item(self):
+        """return a canvas item for the shape in the background"""
+        return QtGui.QGraphicsEllipseItem(-5,+5,30,20)
+           
+    def do_update(self):
+        marginX = self.text.document().size().width()/2
+        marginY = self.text.document().size().height()/2
+        self.bg.setRect(-marginX, 0, 
+            self.text.document().size().width()*2, 
+            self.text.document().size().height())
+
+nodeBase.node_types[nodeEllipse.__name__] = nodeEllipse
+#@+node:tbrown.20110412222027.19252: ** class nodeDiamond
+class nodeDiamond(nodeRect):
+    """text with shape behind it node type"""
+
+    def bg_item(self):
+        """return a canvas item for the shape in the background"""
+        bg = QtGui.QGraphicsPolygonItem()
+        poly = QtGui.QPolygonF()
+        poly.append(QtCore.QPointF(-5, 5))
+        poly.append(QtCore.QPointF(15, -5))
+        poly.append(QtCore.QPointF(35, 5))
+        poly.append(QtCore.QPointF(15, 15))
+        bg.setPolygon(poly)
+        return bg
+        
+    def do_update(self):
+        poly = QtGui.QPolygonF()
+        marginX = self.text.document().size().width()/2
+        marginY = self.text.document().size().height()/2
+        poly.append(QtCore.QPointF(-marginX, marginY))
+        poly.append(QtCore.QPointF(marginX, 3*marginY))
+        poly.append(QtCore.QPointF(3*marginX, marginY))
+        poly.append(QtCore.QPointF(marginX, -marginY))
+        self.bg.setPolygon(poly)
+
+nodeBase.node_types[nodeDiamond.__name__] = nodeDiamond
+#@+node:tbrown.20110412222027.19253: ** class nodeComment
+class nodeComment(nodeRect):
+    
+    def get_text(self):
+        """return text content for the text in the foreground"""
+        return self.node.b
+
+    def text_item(self):
+        """return a canvas item for the text in the foreground"""
+        text = QtGui.QGraphicsTextItem(self.get_text())
+
+        f = text.font()
+        f.setPointSize(7)
+        text.setFont(f)
+        if self.node.h.startswith('@html '):
+            text.setHtml(self.node.b.strip())
+        else:
+            text.setPlainText(self.node.b.strip())
+
+        return text
+        
+    def do_update(self):
+        
+        nodeRect.do_update(self)
+        self.setToolTip(self.node.h)
+        
+nodeBase.node_types[nodeComment.__name__] = nodeComment
 #@+node:tbrown.20110407091036.17530: ** class nodeTable
 class nodeTable(nodeRect):
     
@@ -577,7 +652,7 @@ class nodeTable(nodeRect):
                 if '_bklnk' not in child.u:
                     child.u['_bklnk'] = {}
                 if 'x' not in child.u['_bklnk']:
-                    child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 10
+                    child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 16
                     child.u['_bklnk']['y'] = self.node.u['_bklnk']['y'] + dy * (n+1)
                 child.u['_bklnk']['type'] = nodeRect.__name__
                 what.append(child)
