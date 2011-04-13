@@ -29,6 +29,8 @@ if g.isPython3:
 else:
     import urllib2 as urllib
     import urlparse
+    
+from xml.sax.saxutils import quoteattr
 
 try:
     import pydot
@@ -161,7 +163,8 @@ class graphcanvasUI(QtGui.QWidget):
         self.connect(u.btnComment, QtCore.SIGNAL("clicked()"), 
             lambda: o.setNode(nodeComment))
 
-        self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), o.setImage)
+        self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeImage))
 
         self.connect(u.btnExport, QtCore.SIGNAL("clicked()"), o.exportGraph)
 
@@ -475,6 +478,92 @@ class nodeItem(QtGui.QGraphicsItemGroup):
         elif ntype != 5:
             self.text.setPlainText(self.node.h)
     #@-others
+#@+node:tbrown.20110413094721.24681: ** class GetImage
+class GetImage:
+    """Image handling functions"""
+    
+    @staticmethod
+    def get_image_html(path, head, body):
+        """relative to path (if needed), get html to display the image referenced
+        in the head or body string"""
+        
+        print path, head, body
+        
+        if head.startswith('@image'):
+            head = head[6:].strip()
+        
+        # first try to get image url from body
+        bsplit = body.strip().split('\n', 1)
+        if len(bsplit) > 1:
+            src, descr = bsplit  # description on subsequent lines
+        else:
+            src, descr = bsplit[0], head
+            
+        if src:
+            html = GetImage.make_image_html(path, src, fail_ok=True)
+            if html:
+                return html, descr.strip()
+            
+        # then try using head string
+        html = GetImage.make_image_html(path, head, fail_ok=False)
+        
+        return html, body.strip()
+        
+    @staticmethod
+    def make_image_html(path, src, fail_ok=False):
+        
+        if '//' not in src or src.startswith('file://'):
+            testpath = src
+            if '//' in testpath:
+                testpath = testpath.split('//',1)[-1]
+                
+            # file on local file system
+            testpath = g.os_path_finalize_join(path, testpath)
+            if g.os_path_exists(testpath):
+                return "<img src=%s/>" % quoteattr('file://%s'%testpath)
+                
+            # explicit file://, but no such file exists
+            if src.startswith('file://'):
+                if fail_ok:
+                    return None
+                else:
+                    return GetImage._no_image()  
+                        
+        # no explict file://, so try other protocols
+            
+        if '//' not in src:
+            testpath = 'http://%s' % src
+        else:
+            testpath = src
+            
+        if GetImage.check_url(testpath):
+            return "<img src=%s/>" % quoteattr(testpath)
+        
+        if fail_ok:
+            return None
+            
+        return GetImage._no_image()  
+            
+    @staticmethod
+    def check_url(url):
+        try:
+            response = urllib.urlopen(GetImage.HeadRequest(url))
+        except urllib.URLError:  # hopefully not including redirection
+            return False
+        
+        return True
+
+    # http://stackoverflow.com/questions/107405/how-do-you-send-a-head-http-request-in-python
+    class HeadRequest(urllib.Request):
+        def get_method(self):
+            return "HEAD"
+        
+    @staticmethod
+    def _no_image():
+        testpath = g.os_path_abspath(g.os_path_join(
+            g.app.loadDir,'../plugins/GraphCanvas/no_image.png'))
+        return "<img src=%s/>" % quoteattr('file://%s'%testpath)
+           
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtGui.QGraphicsItemGroup):
 
@@ -551,6 +640,9 @@ class nodeRect(nodeBase):
         """return text content for the text in the foreground"""
         return self.node.h
         
+    def size(self):
+        return self.text.document().size()
+        
     def do_update(self):
     
         self.text.setPlainText(self.get_text())
@@ -583,6 +675,9 @@ class nodeNone(nodeBase):
         """return text content for the text in the foreground"""
         return self.node.h
         
+    def size(self):
+        return self.text.document().size()
+     
     def do_update(self):
     
         self.text.setPlainText(self.get_text())
@@ -635,25 +730,34 @@ class nodeComment(nodeRect):
     
     def get_text(self):
         """return text content for the text in the foreground"""
-        return self.node.b
+        return self.node.b.strip()
 
+    def _set_text(self, what):
+        text = self.get_text()
+        if self.node.h.startswith('@html ') or text[0] == '<':
+            what.setHtml(text)
+        else:
+            what.setPlainText(text)
+            
     def text_item(self):
         """return a canvas item for the text in the foreground"""
-        text = QtGui.QGraphicsTextItem(self.get_text())
+        item = QtGui.QGraphicsTextItem()
 
-        f = text.font()
+        f = item.font()
         f.setPointSize(7)
-        text.setFont(f)
-        if self.node.h.startswith('@html '):
-            text.setHtml(self.node.b.strip())
-        else:
-            text.setPlainText(self.node.b.strip())
+        item.setFont(f)
+        self._set_text(item)
 
-        return text
-        
+        return item
+
     def do_update(self):
-        
-        nodeRect.do_update(self)
+    
+        self._set_text(self.text)
+
+        self.bg.setRect(-2, +2, 
+            self.text.document().size().width()+4, 
+            self.text.document().size().height()-2)  
+
         self.setToolTip(self.node.h)
         
 nodeBase.node_types[nodeComment.__name__] = nodeComment
@@ -708,6 +812,37 @@ class nodeTable(nodeRect):
                 
 
 nodeBase.node_types[nodeTable.__name__] = nodeTable
+#@+node:tbrown.20110413094721.20407: ** class nodeImage
+class nodeImage(nodeBase):
+
+    def __init__(self, *args, **kargs):
+        nodeBase.__init__(self, *args, **kargs)
+        
+        self.bg = self.bg_item()
+        
+        self.setZValue(20)
+        self.bg.setZValue(10)
+    
+        self.bg.setPos(QtCore.QPointF(0, self.iconVPos))
+        self.addToGroup(self.bg)  
+          
+    def bg_item(self):
+
+        html, descr = GetImage.get_image_html('/', self.node.h, self.node.b)
+        bg = QtGui.QGraphicsTextItem()
+        bg.setHtml("<h4>test</h4>%s"%html)
+        print html
+        self.setToolTip(descr)
+        
+        return bg
+        
+    def size(self):
+        return self.bg.document().size()
+
+    def do_update(self):
+        pass
+  
+nodeBase.node_types[nodeImage.__name__] = nodeImage
 #@+node:bob.20110121161547.3424: ** class linkItem
 class linkItem(QtGui.QGraphicsItemGroup):
     """Node on the canvas"""
@@ -1089,15 +1224,21 @@ class graphcanvasController(object):
         def is_txt(x):  # transitional during nodeBase migration
             return not isinstance(x, nodeBase) and x.getType() == 5
         
-        if not is_txt(self.nodeItem[from_]):
-            fromSize = self.nodeItem[from_].text.document().size()
+        if isinstance(self.nodeItem[from_], nodeBase):
+            fromSize = self.nodeItem[from_].size()
         else:
-            fromSize = self.nodeItem[from_].bg.pixmap().size()
-
-        if  not is_txt(self.nodeItem[to]):
-            toSize = self.nodeItem[to].text.document().size()
+            if self.nodeItem[from_].getType() == 5:
+                fromSize = self.nodeItem[from_].bg.pixmap().size()
+            else:
+                fromSize = self.nodeItem[from_].text.document().size()
+        
+        if isinstance(self.nodeItem[to], nodeBase):
+            toSize = self.nodeItem[to].size()
         else:
-            toSize = self.nodeItem[to].bg.pixmap().size()
+            if self.nodeItem[to].getType() == 5:
+                toSize = self.nodeItem[to].bg.pixmap().size()
+            else:
+                toSize = self.nodeItem[to].text.document().size()
 
         li.setLine(
             from_.u['_bklnk']['x'] + fromSize.width()/2, 
@@ -1147,14 +1288,16 @@ class graphcanvasController(object):
         lastNode = self.lastNodeItem
         if (lastNode and 
             (isinstance(lastNode, nodeBase) and
-             not isinstance(lastNode, nodeNone)
+             not isinstance(lastNode, nodeNone) and
+             not isinstance(lastNode, nodeImage)
              or
              not isinstance(lastNode, nodeBase) and
              lastNode.getType() != 5)):
             lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
 
         if  (isinstance(nodeItem, nodeBase) and
-             not isinstance(nodeItem, nodeNone)
+             not isinstance(nodeItem, nodeNone) and
+             not isinstance(nodeItem, nodeImage)
              or
              not isinstance(nodeItem, nodeBase) and
              nodeItem.getType() != 5):
