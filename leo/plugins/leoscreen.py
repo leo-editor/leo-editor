@@ -330,7 +330,7 @@ class leoscreen_Controller:
         c.selectPosition(n)
         c.redraw()
     #@+node:tbrown.20100424115939.5735: *3* show
-    def show(self, what, title=None):
+    def show(self, what, title=None, plain=False):
 
         try:
             from PyQt4.QtGui import QTextEdit, QTextCursor
@@ -343,7 +343,10 @@ class leoscreen_Controller:
 
         te = QTextEdit()
         te.setReadOnly(True)
-        te.setHtml("<pre>%s</pre>" % what)
+        if plain:
+            te.setText(what)
+        else:
+            te.setHtml("<pre>%s</pre>" % what)
         te.setLineWrapMode(QTextEdit.NoWrap)
         te.resize(800, 600)
         te.setWindowTitle(title)
