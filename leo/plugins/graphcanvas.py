@@ -153,7 +153,8 @@ class graphcanvasUI(QtGui.QWidget):
             lambda: o.setNode(nodeEllipse))
         self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), 
             lambda: o.setNode(nodeDiamond))
-        self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), o.setNone)
+        self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeNone))
         self.connect(u.btnTable, QtCore.SIGNAL("clicked()"), 
             lambda: o.setNode(nodeTable))
 
@@ -559,6 +560,34 @@ class nodeRect(nodeBase):
             self.text.document().size().height()-2)  
                       
 nodeBase.node_types[nodeRect.__name__] = nodeRect
+#@+node:tbrown.20110413094721.20406: ** class nodeNone
+class nodeNone(nodeBase):
+    """text with shape behind it node type"""
+    
+    def __init__(self, *args, **kargs):
+        nodeBase.__init__(self, *args, **kargs)
+        
+        self.text = self.text_item()  
+
+        self.setZValue(20)
+        self.text.setZValue(15)
+    
+        self.text.setPos(QtCore.QPointF(0, self.iconVPos))
+        self.addToGroup(self.text)
+          
+    def text_item(self):
+        """return a canvas item for the text in the foreground"""
+        return QtGui.QGraphicsTextItem(self.get_text())
+
+    def get_text(self):
+        """return text content for the text in the foreground"""
+        return self.node.h
+        
+    def do_update(self):
+    
+        self.text.setPlainText(self.get_text())
+   
+nodeBase.node_types[nodeNone.__name__] = nodeNone
 #@+node:tbrown.20110412222027.19250: ** class nodeEllipse
 class nodeEllipse(nodeRect):
     """text with shape behind it node type"""
@@ -1117,10 +1146,18 @@ class graphcanvasController(object):
         # text only node needs pen used to indicate selection removed
         lastNode = self.lastNodeItem
         if (lastNode and 
-            (isinstance(lastNode, nodeBase) or lastNode.getType() != 5)):
+            (isinstance(lastNode, nodeBase) and
+             not isinstance(lastNode, nodeNone)
+             or
+             not isinstance(lastNode, nodeBase) and
+             lastNode.getType() != 5)):
             lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
 
-        if  isinstance(nodeItem, nodeBase) or nodeItem.getType() != 5:
+        if  (isinstance(nodeItem, nodeBase) and
+             not isinstance(nodeItem, nodeNone)
+             or
+             not isinstance(nodeItem, nodeBase) and
+             nodeItem.getType() != 5):
             nodeItem.bg.setPen(self.selectPen)
 
         oldItem = self.lastNodeItem
