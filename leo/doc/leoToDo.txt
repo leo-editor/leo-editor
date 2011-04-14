@@ -2,6 +2,8 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110201125110.12551: ** Important/first
+#@+node:ekr.20110414065052.6100: *3* Treat gnx's as strings: don't parse them
+http://mail.google.com/mail/#inbox/12f3d4950fbabeea
 #@+node:ekr.20110401062119.14493: *3* problems with focus
 #@+node:ekr.20031218072017.2817: *4*  doCommand
 command_count = 0

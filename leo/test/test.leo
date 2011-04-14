@@ -635,6 +635,7 @@
 <v t="ekr.20110414063538.2381"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
+<v t="ekr.20110414073628.2389"><vh>write utils</vh></v>
 </v>
 </v>
 </vnodes>
@@ -8023,13 +8024,12 @@ TestClass(c).main()
 </t>
 <t tx="ekr.20110414063538.2373">def putFile(self):
     
+    self.put('[\n')
     self.putVnodes()
-    s1 = ''.join(self.result)
-    self.result = []
+    self.put(',\n')
     self.putTnodes()
-    s2 = ''.join(self.result)
-    
-    return '[\n%s,\n%s]' % (s1,s2)
+    self.put(']\n')
+    return ''.join(self.result)
 </t>
 <t tx="ekr.20110414063538.2374">def putTnode (self,v):
 
@@ -8287,23 +8287,19 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
 <t tx="ekr.20110414063538.2383">class TestClass:
     
     def __init__(self,c):
+
+        # These ivars are from the fileCommands class.
         self.c = c
+        self.usingClipboard = True # True: write only the current tree.
+        
+        # Ivars added for this class.
         self.json = True
         self.level = 0
         self.needJsonComma = False
         self.result = []
-        self.usingClipboard = True # True: write only the current tree.
-        
-    def put(self,s):
-        self.result.append(s)
-        
-    def indent(self):
-        return ' '*self.level
-        
-    def putUnknownAttributes(self,v):
-        pass
-        
-    @others</t>
+
+    @others
+</t>
 <t tx="ekr.20110414063538.2384">def main (self):
     
     tc = self
@@ -8323,5 +8319,14 @@ import pprint
 import xml.sax
 import xml.sax.saxutils
 import os</t>
+<t tx="ekr.20110414073628.2389">def indent(self):
+    return ' '*self.level
+
+def put(self,s):
+    self.result.append(s)
+
+def putUnknownAttributes(self,v):
+    pass
+</t>
 </tnodes>
 </leo_file>
