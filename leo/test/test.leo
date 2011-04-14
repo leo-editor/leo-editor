@@ -1097,7 +1097,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,1,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8349,7 +8349,7 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
     p = g.findNodeAnywhere(self.c,tag)
     assert p,'not found: %s' % tag
     c.selectPosition(p)
-    c.redraw_now()
+    # c.redraw_now()
     
     s = tc.putFile()
     # if trace: print(s)
@@ -8363,7 +8363,7 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
         assert(aList==aList2)
     
     tc.read_json_data(aList)
-</t>
+    c.redraw_now()</t>
 <t tx="ekr.20110414063538.2385">import leo.core.leoNodes as leoNodes
 
 import json
