@@ -1099,7 +1099,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8050,8 +8050,9 @@ import leo.plugins.qtGui as qtGui
 
 &lt;&lt; imports &gt;&gt;
 
-# To do: convert Python objects returned from json.loads to vnodes &amp; tnodes.
+# To do: *** create proper gnx's in nodes
 # To do: proper json escapes for strings.
+# To do: write entire body string in json.
 
 @others
 
@@ -8808,23 +8809,10 @@ def handle_json_vnode_attributes (self,sax_node,v):
     aList = vnodes.get('vnodes',[])
     assert aList
     
-    # Create a dummy node for the children aList.
+    # Create a dummy node so all we have to do is call create_json_children.
     dummy_json_node = { "children":aList }
     parent_v = parent_p.v
-    
-    if 1:
-        children = fc.create_json_children(dummy_json_node,parent_v)
-    else:
-        parent_v = parent_p.v
-        n = 0
-        for json_vnode in json_vnodes:
-            gnx = json_vnode.get('id')
-            # json_tnode = self.t_dict.get(gnx)
-            # g.trace(json_tnode.get('head'))
-            v = fc.create_json_vnode(json_vnode,parent_v)
-            fc.create_json_children(json_vnode,v)
-            v._linkAsNthChild (parent_v,n) ### Causing clone problems.
-            n += 1
+    children = fc.create_json_children(dummy_json_node,parent_v)
         
     assert parent_v.children == children,'parent_p.children: %s, children: %s' % (
         parent_v.children,children)
