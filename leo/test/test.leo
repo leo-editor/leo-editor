@@ -1099,7 +1099,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,1,2,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8416,11 +8416,10 @@ def putUnknownAttributes(self,v):
     children = []
     json_children = json_node.get('children',[])
     g.trace(json_children)
-    return ### 
 
     for json_child in json_children:
         gnx = json_child.get('id')
-        v = self.id_dict.get(gnx)
+        v = self.v_dict.get(gnx)
 
         if v: # A clone.
             if trace: g.trace('**clone',v)
