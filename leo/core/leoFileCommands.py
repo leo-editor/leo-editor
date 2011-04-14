@@ -1735,7 +1735,7 @@ class baseFileCommands:
                 try:
                     theId,t,n = p.v.fileIndex,''
                 except Exception:
-                    raise BadLeoFile('bad p.v.fileIndex' % repr(p.v.fileIndex))
+                    raise BadLeoFile('bad p.v.fileIndex: %s' % repr(p.v.fileIndex))
 
             if n is None:
                 n = g.u('0')

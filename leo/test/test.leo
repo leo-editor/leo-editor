@@ -8436,7 +8436,7 @@ def putUnknownAttributes(self,v):
             g.trace('*** added parent %s to %s len(child.parents) %s' % (
                 parent_v,child,len(child.parents)))
 
-    # return children
+    return children
 </t>
 <t tx="ekr.20110414094917.2409">def create_json_vnode (self,json_node,parent_v,v=None):
 
@@ -8813,7 +8813,7 @@ def handle_json_vnode_attributes (self,sax_node,v):
     parent_v = parent_p.v
     
     if 1:
-        fc.create_json_children(dummy_json_node,parent_v)
+        children = fc.create_json_children(dummy_json_node,parent_v)
     else:
         parent_v = parent_p.v
         n = 0
@@ -8825,14 +8825,12 @@ def handle_json_vnode_attributes (self,sax_node,v):
             fc.create_json_children(json_vnode,v)
             v._linkAsNthChild (parent_v,n) ### Causing clone problems.
             n += 1
-
-    return None ###
         
-    # assert parent_v.children == children,'parent_p.children: %s, children: %s' % (
-        # parent_v.children,children)
+    assert parent_v.children == children,'parent_p.children: %s, children: %s' % (
+        parent_v.children,children)
         
-    # v = children and children[0] or None
-    # return v
+    v = children and children[0] or None
+    return v
 </t>
 <t tx="ekr.20110414094917.2423"># The root node for testing read_json_data.</t>
 <t tx="ekr.20110414094917.2424"></t>
