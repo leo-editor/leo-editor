@@ -1099,7 +1099,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8453,22 +8453,14 @@ def putUnknownAttributes(self,v):
 
     if v:
         # The body of the later node overrides the earlier.
-        # Don't set t.h: h is always empty.
-        # This may be an internal error.
-        if v.b == b:
-            if trace: g.trace(
-                '***no update\nold: %s\nnew: %s' % (v.b,b))
-        else:
-            if trace: g.trace(
-                '***update\nold: %s\nnew: %s' % (v.b,b))
+        if v.b != b:
+            if trace: g.trace('***update\nold: %s\nnew: %s' % (v.b,b))
             v.b = b 
     else:
         v = leoNodes.vnode(context=c)
         v.setBodyString(b)
         v.setHeadString(h)
-        # v.fileIndex = g.app.nodeIndices.scanGnx(json_node.tnx,0)
-        v.fileIndex = gnx
-        # index = self.canonicalTnodeIndex(json_node.tnx)
+        v.fileIndex = g.app.nodeIndices.scanGnx(gnx,0)
         self.v_dict [gnx] = v
 
     if trace:
