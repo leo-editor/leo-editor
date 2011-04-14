@@ -672,6 +672,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20110414094917.2409"></v>
+<v t="ekr.20110414094917.2408"></v>
 <v t="ekr.20110414094917.2422"></v>
 </vnodes>
 <tnodes>
@@ -1097,7 +1099,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,1,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8412,8 +8414,11 @@ def putUnknownAttributes(self,v):
     c = self.c
     trace = True and not g.unitTesting
     children = []
+    json_children = json_node.get('children',[])
+    g.trace(json_children)
+    return ### 
 
-    for json_child in json_node.get('children',[]):
+    for json_child in json_children:
         gnx = json_child.get('id')
         v = self.id_dict.get(gnx)
 
@@ -8433,7 +8438,7 @@ def putUnknownAttributes(self,v):
             g.trace('*** added parent %s to %s len(child.parents) %s' % (
                 parent_v,child,len(child.parents)))
 
-    return children
+    # return children
 </t>
 <t tx="ekr.20110414094917.2409">def create_json_vnode (self,json_node,parent_v,v=None):
 
@@ -8441,11 +8446,11 @@ def putUnknownAttributes(self,v):
     trace = True and not g.unitTesting
     if trace: g.trace(json_node)
     gnx = json_node.get('id','')
-    tnode = self.t_dict.get(gnx)
-    assert tnode
-    assert tnode.get('id') == gnx
-    h = tnode.get('head','')
-    b = tnode.get('body','')
+    json_tnode = self.t_dict.get(gnx)
+    assert json_tnode
+    assert json_tnode.get('id') == gnx
+    h = json_tnode.get('head','')
+    b = json_tnode.get('body','')
 
     if v:
         # The body of the later node overrides the earlier.
@@ -8809,13 +8814,13 @@ def handle_json_vnode_attributes (self,sax_node,v):
     n = 0
     for json_vnode in json_vnodes:
         gnx = json_vnode.get('id')
-        tnode = self.t_dict.get(gnx)
-        g.trace(tnode.get('head'))
+        # json_tnode = self.t_dict.get(gnx)
+        # g.trace(json_tnode.get('head'))
         v = fc.create_json_vnode(json_vnode,parent_v)
+        fc.create_json_children(json_vnode,v)
         v._linkAsNthChild (parent_v,n)
         n += 1
-        # children = fc.create_json_children(json_vnode,parent_v)
-        
+
     return None ###
         
     # assert parent_v.children == children,'parent_p.children: %s, children: %s' % (
