@@ -580,6 +580,12 @@ class nodeBase(QtGui.QGraphicsItemGroup):
         
         self.iconHPos = 0
         self.iconVPos = 0
+        
+    def set_text_color(self, color):
+        pass
+    
+    def set_bg_color(self, color):
+        pass
     
     #@+others
     #@+node:tbrown.20110407091036.17539: *3* do_update
@@ -639,7 +645,13 @@ class nodeRect(nodeBase):
         
     def size(self):
         return self.text.document().size()
-        
+
+    def set_text_color(self, color):
+        self.text.setDefaultTextColor(color)
+    
+    def set_bg_color(self, color):
+        self.bg.setBrush(QtGui.QBrush(color))
+    
     def do_update(self):
     
         self.text.setPlainText(self.get_text())
@@ -675,6 +687,9 @@ class nodeNone(nodeBase):
     def size(self):
         return self.text.document().size()
      
+    def set_text_color(self, color):
+        self.text.setDefaultTextColor(color)
+    
     def do_update(self):
     
         self.text.setPlainText(self.get_text())
@@ -1054,7 +1069,6 @@ class graphcanvasController(object):
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', create = True, pnt=None):
 
-
         if what == 'sibs':
             collection = self.c.currentPosition().self_and_siblings()
         elif what == 'recur':
@@ -1078,36 +1092,43 @@ class graphcanvasController(object):
                 if '_bklnk' not in node.u and not create:
                     continue
             
-            ntype = 0
-            if '_bklnk' in node.u:
-                if 'type' in node.u['_bklnk']:
-                    ntype = node.u['_bklnk']['type']
-                elif node.headString().startswith('@image '):
-                    ntype = 5
-                    node.u['_bklnk']['type'] = ntype
-
+            # use class name rather than class to avoid saving pickled
+            # class in .leo file
+            ntype = nodeRect.__name__
+            if '_bklnk' not in node.u:
+                node.u['_bklnk'] = {}
+            if 'type' in node.u['_bklnk']:
+                ntype = node.u['_bklnk']['type']
+            elif node.h.startswith('@image '):
+                ntype = nodeImage.__name__
+                    
             if isinstance(ntype, int):
                 # old style
-                node_obj = nodeItem(self, self.c, pos, node, ntype)
-            else:
-                node_obj = nodeBase.make_node(self, node, ntype)
+                ntype = {
+                    0: nodeRect.__name__,
+                    1: nodeEllipse.__name__,
+                    2: nodeDiamond.__name__,
+                    3: nodeNone.__name__,
+                    4: nodeComment.__name__,
+                    5: nodeImage.__name__,
+                }[ntype]
+
+            node.u['_bklnk']['type'] = ntype  # updates old graphs
+
+            node_obj = nodeBase.make_node(self, node, ntype)
 
             self.node[node_obj] = node
             self.nodeItem[node] = node_obj
      
-            if '_bklnk' not in node.u:
-                node.u['_bklnk'] = {}
+            if 'x' not in node.u['_bklnk']:
                 node.u['_bklnk']['x'] = 0
                 node.u['_bklnk']['y'] = 0
-            elif ntype != 5:
-                if 'color' in node.u['_bklnk']:
-                    node_obj.bg.setBrush(node.u['_bklnk']['color'])
-                if 'tcolor' in node.u['_bklnk']:
-                    node_obj.text.setDefaultTextColor(node.u['_bklnk']['tcolor'])
+
+            if 'color' in node.u['_bklnk']:
+                node_obj.set_bg_color(node.u['_bklnk']['color'])
+            if 'tcolor' in node.u['_bklnk']:
+                node_obj.set_text_color(node.u['_bklnk']['tcolor'])
                     
-                if 'type' in node.u['_bklnk']:
-                    ntype = node.u['_bklnk']['type']
-     
             x,y = 0,0
             if pnt:
                 x,y = pnt.x(), pnt.y()
@@ -1621,8 +1642,8 @@ class graphcanvasController(object):
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
         
-        if item.getType() == 5:
-            return
+        # if item.getType() == 5:
+        #     return
             
         if 'color' in node.u['_bklnk']:
             color = node.u['_bklnk']['color']
@@ -1631,7 +1652,8 @@ class graphcanvasController(object):
             newcolor = QtGui.QColorDialog.getColor()
 
         if QtGui.QColor.isValid(newcolor):
-            item.bg.setBrush(QtGui.QBrush(newcolor))
+            item.set_bg_color(newcolor)
+            # item.bg.setBrush(QtGui.QBrush(newcolor))
             node.u['_bklnk']['color'] = newcolor
             
         self.releaseNode(item)  # reselect
@@ -1642,8 +1664,8 @@ class graphcanvasController(object):
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
         
-        if item.getType() == 5:
-            return
+        # if item.getType() == 5:
+        #     return
             
         if 'tcolor' in node.u['_bklnk']:
             color = node.u['_bklnk']['tcolor']
@@ -1652,7 +1674,8 @@ class graphcanvasController(object):
             newcolor = QtGui.QColorDialog.getColor()
             
         if QtGui.QColor.isValid(newcolor):
-            item.text.setDefaultTextColor(newcolor)
+            # item.text.setDefaultTextColor(newcolor)
+            item.set_text_color(newcolor)
             node.u['_bklnk']['tcolor'] = newcolor
             
         self.releaseNode(item)  # reselect
