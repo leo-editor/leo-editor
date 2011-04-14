@@ -29,6 +29,8 @@ if g.isPython3:
 else:
     import urllib2 as urllib
     import urlparse
+    
+from xml.sax.saxutils import quoteattr
 
 try:
     import pydot
@@ -70,9 +72,9 @@ def colorize_headlines_visitor(c,p, item):
         # item.setForeground(0, QtGui.QColor(100, 0, 0))
         
         if 'color' in p.v.u['_bklnk']:
-            item.setBackgroundColor(0, p.v.u['_bklnk']['color'])
+            item.setBackgroundColor(0, QtGui.QColor(p.v.u['_bklnk']['color']))
         if 'tcolor' in p.v.u['_bklnk']:
-            item.setForeground(0, p.v.u['_bklnk']['tcolor'])
+            item.setForeground(0, QtGui.QColor(p.v.u['_bklnk']['tcolor']))
             f = item.font(0)
             f.setBold(True)
 
@@ -147,15 +149,22 @@ class graphcanvasUI(QtGui.QWidget):
         self.connect(u.btnTextColor, QtCore.SIGNAL("clicked()"), o.setTextColor)
         self.connect(u.btnClearFormatting, QtCore.SIGNAL("clicked()"), o.clearFormatting)
 
-        self.connect(u.btnRect, QtCore.SIGNAL("clicked()"), o.setRectangle)
-        self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), o.setEllipse)
-        self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), o.setDiamond)
-        self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), o.setNone)
+        self.connect(u.btnRect, QtCore.SIGNAL("clicked()"),
+            lambda: o.setNode(nodeRect))
+        self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeEllipse))
+        self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeDiamond))
+        self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeNone))
         self.connect(u.btnTable, QtCore.SIGNAL("clicked()"), 
             lambda: o.setNode(nodeTable))
 
-        self.connect(u.btnComment, QtCore.SIGNAL("clicked()"), o.setComment)
-        self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), o.setImage)
+        self.connect(u.btnComment, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeComment))
+
+        self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), 
+            lambda: o.setNode(nodeImage))
 
         self.connect(u.btnExport, QtCore.SIGNAL("clicked()"), o.exportGraph)
 
@@ -201,274 +210,94 @@ class GraphicsView(QtGui.QGraphicsView):
         
             QtGui.QGraphicsView.wheelEvent(self, event)
     #@-others
-#@+node:bob.20110119123023.7400: ** class nodeItem
-class nodeItem(QtGui.QGraphicsItemGroup):
-    """Node on the canvas"""
-
-    #@+others
-    #@+node:bob.20110119123023.7401: *3* __init__
-    def __init__(self, glue, c, p, node, ntype=0, *args, **kargs):
-        """:Parameters:
-            - `glue`: glue object owning this
-
-        pass glue object and let it key nodeItems to leo nodes
-        """
-        graph_text_max_width = c.config.getInt('graph-text-max-width')
+#@+node:tbrown.20110413094721.24681: ** class GetImage
+class GetImage:
+    """Image handling functions"""
+    
+    @staticmethod
+    def get_image(path, head, body):
+        """relative to path (if needed), get the image referenced
+        in the head or body string"""
         
-        self.c = c
-        self.node = node
-        self.glue = glue
-        QtGui.QGraphicsItemGroup.__init__(self, *args)
-
-        if ntype != 5:
-            self.text = QtGui.QGraphicsTextItem(node.headString(), *args)
-            if graph_text_max_width != None and self.text.document().size().width() > graph_text_max_width:
-                self.text.setTextWidth(graph_text_max_width)
-            
-            self.setToolTip(node.b.strip())
-            self.text.document().setDefaultTextOption(QtGui.QTextOption(Qt.AlignHCenter))
-            self.text.setZValue(20)
-            
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-
-        if ntype == 0:
-            self.bg = QtGui.QGraphicsRectItem(-2,+2,30,20)
-        elif ntype == 1:
-            self.bg = QtGui.QGraphicsEllipseItem(-5,+5,30,20)
-        elif ntype == 2:
-            self.bg = QtGui.QGraphicsPolygonItem()
-            poly = QtGui.QPolygonF()
-            poly.append(QtCore.QPointF(-5, 5))
-            poly.append(QtCore.QPointF(15, -5))
-            poly.append(QtCore.QPointF(35, 5))
-            poly.append(QtCore.QPointF(15, 15))
-            self.bg.setPolygon(poly)
-        elif ntype == 3:
-            self.bg = QtGui.QGraphicsRectItem(-2,+2,30,20)
-        elif ntype == 4:
-            self.bg = QtGui.QGraphicsRectItem(-2,+2,30,20)
-            f = self.text.font()
-            f.setPointSize(7)
-            self.text.setFont(f)
-            if node.headString().startswith('@html '):
-                self.text.setHtml(node.b.strip())
-            else:
-                self.text.setPlainText(node.b.strip())
-
-            self.setToolTip(node.headString())
-        elif ntype == 5:
-            path, descr = self.urlToImageHtml (self.c, p, node.b.strip())
-            if path == None:
-                path, descr = g.os_path_abspath(g.os_path_join(g.app.loadDir,'../plugins/GraphCanvas/no_image.png')), ''
-            
-            pixmap = QtGui.QPixmap(path)
-            self.bg = QtGui.QGraphicsPixmapItem(pixmap)
-            self.setToolTip(descr)
-
-        if ntype == 3:
-            self.bg.setBrush(QtGui.QBrush(Qt.NoBrush))
-        elif  ntype == 4:
-            self.bg.setBrush(QtGui.QBrush(QtGui.QColor(230,230,230)))
-        elif ntype != 5:
-            self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
-     
-        self.iconHPos = 0
-        self.iconVPos = 0
-
-        iconlist = self.c.editCommands.getIconList(p)
-
-        for icon in iconlist:
-            pixmap = QtGui.QPixmap(icon['file'])
-            pixmapItem = QtGui.QGraphicsPixmapItem(pixmap)
-            pixmapItem.setPos(QtCore.QPointF(self.iconHPos, 0))
-            self.iconHPos = self.iconHPos + pixmap.size().width()
-            if pixmap.size().height() > self.iconVPos:
-                self.iconVPos = pixmap.size().height()
-            
-            self.addToGroup(pixmapItem)
-
-        if ntype == 5:
-            self.setZValue(5)
-            self.bg.setZValue(10)
+        if head.startswith('@image'):
+            head = head[6:].strip()
+        
+        # first try to get image url from body
+        bsplit = body.strip().split('\n', 1)
+        if len(bsplit) > 1:
+            src, descr = bsplit  # description on subsequent lines
         else:
-            if ntype == 4:
-                self.setZValue(1)
-                self.bg.setZValue(10)
-                self.bg.setPen(QtGui.QPen(Qt.NoPen))
-            else:
-                self.setZValue(20)
-                self.bg.setZValue(10)
-                self.bg.setPen(QtGui.QPen(Qt.NoPen))
-        
-            self.text.setPos(QtCore.QPointF(0, self.iconVPos))
-            self.addToGroup(self.text)
+            src, descr = bsplit[0], head
             
-        self.bg.setPos(QtCore.QPointF(0, self.iconVPos))
-        self.addToGroup(self.bg)
-    #@+node:bob.20110202125047.4172: *3* download_image
-    def url2name(self,url): 
-        return g.os_path_basename(urlparse.urlsplit(url)[2]) 
-
-    def download_image(self,url): 
-        proxy_opener = urllib.build_opener()
-
-        proxy_support = urllib.ProxyHandler({})
-        no_proxy_opener = urllib.build_opener(proxy_support)
-        urllib.install_opener(no_proxy_opener)
-
-        localName = self.url2name(url) 
-        req = urllib.Request(url) 
+        if src:
+            img = GetImage.make_image(path, src, fail_ok=True)
+            if img:
+                return img, descr.strip()
+            
+        # then try using head string
+        img = GetImage.make_image(path, head, fail_ok=False)
         
+        return img, body.strip()
+        
+    @staticmethod
+    def make_image(path, src, fail_ok=False):
+        """relative to path (if needed), make a QGraphicsPixmapItem
+        for the image named in src, returning None if not available,
+        or an 'No Image' image if fail_ok == False"""
+        
+        if '//' not in src or src.startswith('file://'):
+            testpath = src
+            if '//' in testpath:
+                testpath = testpath.split('//',1)[-1]
+                
+            # file on local file system
+            testpath = g.os_path_finalize_join(path, testpath)
+            if g.os_path_exists(testpath):
+                return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))                
+
+            # explicit file://, but no such file exists
+            if src.startswith('file://'):
+                if fail_ok:
+                    return None
+                else:
+                    return GetImage._no_image()  
+                        
+        # no explict file://, so try other protocols
+            
+        if '//' not in src:
+            testpath = 'http://%s' % src
+        else:
+            testpath = src
+            
+        data = GetImage.get_url(testpath)
+
+        if data:
+            img = QtGui.QPixmap()
+            if img.loadFromData(data):
+                return QtGui.QGraphicsPixmapItem(img)
+        
+        if fail_ok:
+            return None
+            
+        return GetImage._no_image()  
+            
+    @staticmethod
+    def get_url(url):
+        """return data from url"""
         try:
-            r = urllib.urlopen(req, timeout=1)
-        except urllib.HTTPError as eh:
-            if hasattr(eh, 'reason'):
-                g.trace('HTTP reason: ', eh.reason)
-                g.trace('Reason erno: ', eh.reason.errno)
-            return None
-
-        except urllib.URLError as eu:
-            if hasattr(eu, 'reason') and eu.reason.errno != 11001:
-                g.trace('Probbably wrong web address.')
-                g.trace('URLError reason: ', eu.reason)
-                g.trace('Reason erno: ', eu.reason.errno)
-                return None
-
-            urllib.install_opener(proxy_opener)
-            
-            try:
-                r = urllib.urlopen(req, timeout=1)
-            except urllib.HTTPError as eh:
-                if hasattr(eh, 'reason'):
-                    g.trace('HTTP reason: ', eh.reason)
-                    g.trace('Reason erno: ', eh.reason.errno)
-                return None
+            response = urllib.urlopen(url)
+        except urllib.URLError:  # hopefully not including redirection
+            return False
         
-            except IOError as eu:
-                if hasattr(eu, 'reason'):
-                    g.trace('Failed to reach a server through default proxy.')
-                    g.trace('Reason: ', eu.reason)
-                    g.trace('Reason erno: ', eu.reason.errno)
-                if hasattr(eu, 'code'):
-                    g.trace('The server couldn\'t fulfill the request.')
-                    g.trace('Error code: ', eu.code)
-                    
-                return None
-                    
-        key = r.info().get('Content-Disposition')
-        if key:
-            # If the response has Content-Disposition, we take file name from it 
-            localName = key.split('filename=')[1] 
-            if localName[0] == '"' or localName[0] == "'": 
-               localName = localName[1:-1] 
-        elif r.url != url:  
-            # if we were redirected, the real file name we take from the final URL 
-            localName = self.url2name(r.url) 
-
-        localName = os.path.join(tempfile.gettempdir(), localName)
-
-        f = open(localName, 'wb') 
-        f.write(r.read()) 
-        f.close() 
-
-        return localName
-    #@+node:bob.20110202125047.4173: *3* urlToImageHtml
-    def urlToImageHtml (self,c,p,s):
-
-        '''Create html that will display an image whose url is in s or p.h.'''
-
-        # Try to exract the path from the first body line
-        if s.strip():
-            lst = s.strip().split('\n',1)
-            
-            if len(lst) < 2:
-                path, descr = self.urlToImageHtmlHelper (c,p, lst[0].strip()), ''
-            else:
-                path, descr = self.urlToImageHtmlHelper (c,p,lst[0].strip()), lst[1].strip()
-            if path != None:
-                return path, descr
-
-        # if the previous try  does not return a valid path
-        # try to exract the path from the headline
-        assert p.h.startswith('@image')
-        if not s.strip():
-            path, descr = self.urlToImageHtmlHelper (c,p,p.h[6:].strip()), ''
-        else:
-            path, descr = self.urlToImageHtmlHelper (c,p,p.h[6:].strip()), s
-        
-        return path, s
-
-    def urlToImageHtmlHelper (self,c,p,s):
-
-        '''Create html that will display an image whose url is in s or p.h.
-          Returns None if it can not extract the valid path
-        '''
-
-        if s.startswith('file://'):
-            s2 = s[7:]
-            s2 = g.os_path_finalize_join(g.app.loadDir,s2)
-            if g.os_path_exists(s2):
-                s = 'file:///' + s2
-            else:
-                return None
-        elif s.endswith('.html') or s.endswith('.htm'):
-            s = open(s).read()
-            return s
-        elif s.startswith('http://'):
-            s = localName = self.download_image(s)
-            if s == None:
-                return None
-
-        s = s.replace('\\','/')
-        s = s.strip("'").strip('"').strip()
-        s1 = s
-        s = g.os_path_expandExpression(s,c=c) # 2011/01/25: bogomil
-        if s1 == s:
-            s2 = '/'.join([c.getNodePath(p),s])
-            if g.os_path_exists(s2):
-                s = s2
-        
-        if not g.os_path_exists(s):
-            return None
-
-        return s
-    #@+node:bob.20110119123023.7402: *3* mouseMoveEvent
-    def mouseMoveEvent(self, event):
-        
-        QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
-        self.glue.newPos(self, event)
-    #@+node:bob.20110119123023.7403: *3* mouseReleaseEvent
-    def mouseReleaseEvent(self, event):
-        QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
-        self.glue.releaseNode(self, event)
-    #@+node:bob.20110120080624.3289: *3* focusOutEvent
-    def focusOutEvent(self, event):
-        QtGui.QGraphicsItemGroup.focusOutEvent(self, event)
-        self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
-        g.es("focusOutEvent")
-    #@+node:tbrown.20110407091036.17541: *3* getType
-    def getType(self):
-
-        ntype = 0
-        if '_bklnk' in self.node.u and 'type' in self.node.u['_bklnk']:
-            ntype = self.node.u['_bklnk']['type']
-            
-        return ntype
-    #@+node:tbrown.20110407091036.17540: *3* do_update
-    def do_update(self):
-
-        ntype = 0
-        if '_bklnk' in self.node.u and 'type' in self.node.u['_bklnk']:
-            ntype = self.node.u['_bklnk']['type']
-
-        if ntype == 4:
-            if self.node.headString().startswith('@html '):
-                self.text.setHtml(self.node.b.strip())
-            else:
-                self.text.setPlainText(self.node.b.strip())
-        elif ntype != 5:
-            self.text.setPlainText(self.node.h)
-    #@-others
+        return response.read()
+ 
+    @staticmethod
+    def _no_image():
+        """return QGraphicsPixmapItem with "No Image" image loaded"""
+        testpath = g.os_path_abspath(g.os_path_join(
+            g.app.loadDir,'../plugins/GraphCanvas/no_image.png'))
+        return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
+           
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtGui.QGraphicsItemGroup):
 
@@ -488,6 +317,12 @@ class nodeBase(QtGui.QGraphicsItemGroup):
         
         self.iconHPos = 0
         self.iconVPos = 0
+        
+    def set_text_color(self, color):
+        pass
+    
+    def set_bg_color(self, color):
+        pass
     
     #@+others
     #@+node:tbrown.20110407091036.17539: *3* do_update
@@ -517,8 +352,9 @@ class nodeRect(nodeBase):
     def __init__(self, *args, **kargs):
         nodeBase.__init__(self, *args, **kargs)
         
+        self.text = self.text_item()  
+        # .text must be first for nodeComment, see its bg_item()
         self.bg = self.bg_item()
-        self.text = self.text_item()
         self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
         
         self.setZValue(20)
@@ -544,6 +380,15 @@ class nodeRect(nodeBase):
         """return text content for the text in the foreground"""
         return self.node.h
         
+    def size(self):
+        return self.text.document().size()
+
+    def set_text_color(self, color):
+        self.text.setDefaultTextColor(QtGui.QColor(color))
+    
+    def set_bg_color(self, color):
+        self.bg.setBrush(QtGui.QBrush(QtGui.QColor(color)))
+    
     def do_update(self):
     
         self.text.setPlainText(self.get_text())
@@ -553,6 +398,118 @@ class nodeRect(nodeBase):
             self.text.document().size().height()-2)  
                       
 nodeBase.node_types[nodeRect.__name__] = nodeRect
+#@+node:tbrown.20110413094721.20406: ** class nodeNone
+class nodeNone(nodeBase):
+    """text with shape behind it node type"""
+    
+    def __init__(self, *args, **kargs):
+        nodeBase.__init__(self, *args, **kargs)
+        
+        self.text = self.text_item()  
+
+        self.setZValue(20)
+        self.text.setZValue(15)
+    
+        self.text.setPos(QtCore.QPointF(0, self.iconVPos))
+        self.addToGroup(self.text)
+          
+    def text_item(self):
+        """return a canvas item for the text in the foreground"""
+        return QtGui.QGraphicsTextItem(self.get_text())
+
+    def get_text(self):
+        """return text content for the text in the foreground"""
+        return self.node.h
+        
+    def size(self):
+        return self.text.document().size()
+     
+    def set_text_color(self, color):
+        self.text.setDefaultTextColor(QtGui.QColor(color))
+    
+    def do_update(self):
+    
+        self.text.setPlainText(self.get_text())
+   
+nodeBase.node_types[nodeNone.__name__] = nodeNone
+#@+node:tbrown.20110412222027.19250: ** class nodeEllipse
+class nodeEllipse(nodeRect):
+    """text with shape behind it node type"""
+
+    def bg_item(self):
+        """return a canvas item for the shape in the background"""
+        return QtGui.QGraphicsEllipseItem(-5,+5,30,20)
+           
+    def do_update(self):
+        marginX = self.text.document().size().width()/2
+        marginY = self.text.document().size().height()/2
+        self.bg.setRect(-marginX, 0, 
+            self.text.document().size().width()*2, 
+            self.text.document().size().height())
+
+nodeBase.node_types[nodeEllipse.__name__] = nodeEllipse
+#@+node:tbrown.20110412222027.19252: ** class nodeDiamond
+class nodeDiamond(nodeRect):
+    """text with shape behind it node type"""
+
+    def bg_item(self):
+        """return a canvas item for the shape in the background"""
+        bg = QtGui.QGraphicsPolygonItem()
+        poly = QtGui.QPolygonF()
+        poly.append(QtCore.QPointF(-5, 5))
+        poly.append(QtCore.QPointF(15, -5))
+        poly.append(QtCore.QPointF(35, 5))
+        poly.append(QtCore.QPointF(15, 15))
+        bg.setPolygon(poly)
+        return bg
+        
+    def do_update(self):
+        poly = QtGui.QPolygonF()
+        marginX = self.text.document().size().width()/2
+        marginY = self.text.document().size().height()/2
+        poly.append(QtCore.QPointF(-marginX, marginY))
+        poly.append(QtCore.QPointF(marginX, 3*marginY))
+        poly.append(QtCore.QPointF(3*marginX, marginY))
+        poly.append(QtCore.QPointF(marginX, -marginY))
+        self.bg.setPolygon(poly)
+
+nodeBase.node_types[nodeDiamond.__name__] = nodeDiamond
+#@+node:tbrown.20110412222027.19253: ** class nodeComment
+class nodeComment(nodeRect):
+    
+    def get_text(self):
+        """return text content for the text in the foreground"""
+        return self.node.b.strip()
+
+    def _set_text(self, what):
+        text = self.get_text()
+        if self.node.h.startswith('@html ') or text and text[0] == '<':
+            what.setHtml(text)
+        else:
+            what.setPlainText(text)
+            
+    def text_item(self):
+        """return a canvas item for the text in the foreground"""
+        item = QtGui.QGraphicsTextItem()
+        
+        f = item.font()
+        f.setPointSize(7)
+        item.setFont(f)
+        self._set_text(item)
+
+        return item
+
+    def do_update(self):
+    
+        self._set_text(self.text)
+
+        self.bg.setRect(-2, +2, 
+            self.text.document().size().width()+4, 
+            self.text.document().size().height()-2)  
+
+        self.setToolTip(self.node.h)
+        
+nodeBase.node_types[nodeComment.__name__] = nodeComment
 #@+node:tbrown.20110407091036.17530: ** class nodeTable
 class nodeTable(nodeRect):
     
@@ -577,7 +534,7 @@ class nodeTable(nodeRect):
                 if '_bklnk' not in child.u:
                     child.u['_bklnk'] = {}
                 if 'x' not in child.u['_bklnk']:
-                    child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 10
+                    child.u['_bklnk']['x'] = self.node.u['_bklnk']['x'] + 16
                     child.u['_bklnk']['y'] = self.node.u['_bklnk']['y'] + dy * (n+1)
                 child.u['_bklnk']['type'] = nodeRect.__name__
                 what.append(child)
@@ -604,6 +561,35 @@ class nodeTable(nodeRect):
                 
 
 nodeBase.node_types[nodeTable.__name__] = nodeTable
+#@+node:tbrown.20110413094721.20407: ** class nodeImage
+class nodeImage(nodeBase):
+
+    def __init__(self, *args, **kargs):
+        nodeBase.__init__(self, *args, **kargs)
+        
+        self.bg = self.bg_item()
+        
+        self.setZValue(20)
+        self.bg.setZValue(10)
+    
+        self.bg.setPos(QtCore.QPointF(0, self.iconVPos))
+        self.addToGroup(self.bg)  
+          
+    def bg_item(self):
+
+        img, descr = GetImage.get_image('/', self.node.h, self.node.b)
+
+        self.setToolTip(descr)
+        
+        return img
+        
+    def size(self):
+        return self.bg.pixmap().size()
+
+    def do_update(self):
+        pass
+  
+nodeBase.node_types[nodeImage.__name__] = nodeImage
 #@+node:bob.20110121161547.3424: ** class linkItem
 class linkItem(QtGui.QGraphicsItemGroup):
     """Node on the canvas"""
@@ -820,7 +806,6 @@ class graphcanvasController(object):
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', create = True, pnt=None):
 
-
         if what == 'sibs':
             collection = self.c.currentPosition().self_and_siblings()
         elif what == 'recur':
@@ -844,36 +829,43 @@ class graphcanvasController(object):
                 if '_bklnk' not in node.u and not create:
                     continue
             
-            ntype = 0
-            if '_bklnk' in node.u:
-                if 'type' in node.u['_bklnk']:
-                    ntype = node.u['_bklnk']['type']
-                elif node.headString().startswith('@image '):
-                    ntype = 5
-                    node.u['_bklnk']['type'] = ntype
-
+            # use class name rather than class to avoid saving pickled
+            # class in .leo file
+            ntype = nodeRect.__name__
+            if '_bklnk' not in node.u:
+                node.u['_bklnk'] = {}
+            if 'type' in node.u['_bklnk']:
+                ntype = node.u['_bklnk']['type']
+            elif node.h.startswith('@image '):
+                ntype = nodeImage.__name__
+                    
             if isinstance(ntype, int):
                 # old style
-                node_obj = nodeItem(self, self.c, pos, node, ntype)
-            else:
-                node_obj = nodeBase.make_node(self, node, ntype)
+                ntype = {
+                    0: nodeRect.__name__,
+                    1: nodeEllipse.__name__,
+                    2: nodeDiamond.__name__,
+                    3: nodeNone.__name__,
+                    4: nodeComment.__name__,
+                    5: nodeImage.__name__,
+                }[ntype]
+
+            node.u['_bklnk']['type'] = ntype  # updates old graphs
+
+            node_obj = nodeBase.make_node(self, node, ntype)
 
             self.node[node_obj] = node
             self.nodeItem[node] = node_obj
      
-            if '_bklnk' not in node.u:
-                node.u['_bklnk'] = {}
+            if 'x' not in node.u['_bklnk']:
                 node.u['_bklnk']['x'] = 0
                 node.u['_bklnk']['y'] = 0
-            elif ntype != 5:
-                if 'color' in node.u['_bklnk']:
-                    node_obj.bg.setBrush(node.u['_bklnk']['color'])
-                if 'tcolor' in node.u['_bklnk']:
-                    node_obj.text.setDefaultTextColor(node.u['_bklnk']['tcolor'])
+
+            if 'color' in node.u['_bklnk']:
+                node_obj.set_bg_color(node.u['_bklnk']['color'])
+            if 'tcolor' in node.u['_bklnk']:
+                node_obj.set_text_color(node.u['_bklnk']['tcolor'])
                     
-                if 'type' in node.u['_bklnk']:
-                    ntype = node.u['_bklnk']['type']
-     
             x,y = 0,0
             if pnt:
                 x,y = pnt.x(), pnt.y()
@@ -914,50 +906,13 @@ class graphcanvasController(object):
                         linked.add(j)
 
             for node in linked:
-
-                ntype = 0
-                if '_bklnk' in node.u:
-                    if 'type' in node.u['_bklnk']:
-                        ntype = node.u['_bklnk']['type']
-                elif node.headString().startswith('@image '):
-                    ntype = 5
-                    node.u['_bklnk']['type'] = ntype
-
-                if isinstance(ntype, int):
-                    # old style
-                    node_obj = nodeItem(self, self.c, self.c.p, node, ntype)
-                else:
-                    node_obj = nodeBase.make_node(self, node, ntype)
-            
-                self.node[node_obj] = node
-                self.nodeItem[node] = node_obj
-
-                if '_bklnk' not in node.u:
-                    node.u['_bklnk'] = {}
-                    node.u['_bklnk']['x'] = 0
-                    node.u['_bklnk']['y'] = 0
-                elif ntype != 5:
-                    if 'color' in node.u['_bklnk']:
-                        node_obj.bg.setBrush(node.u['_bklnk']['color'])
-                    if 'tcolor' in node.u['_bklnk']:
-                        node_obj.text.setDefaultTextColor(node.u['_bklnk']['tcolor'])
-            
-                if '_bklnk' in node.u and 'x' in node.u['_bklnk']:
-                    node_obj.setPos(node.u['_bklnk']['x'], node.u['_bklnk']['y'])
-                else:
-                    node.u.setdefault('_bklnk',{})
-                    # very important not to just node.u['_bklnk'] = {}
-                    # as this would overwrite a backlinks.py dict with no x/y
-                    node.u['_bklnk']['x'] = 0
-                    node.u['_bklnk']['y'] = 0
-
-                self.ui.canvas.addItem(node_obj)
+                
+                self.loadGraph(what=[node])
 
             if not linked or what != 'all':
                 # none added, or doing just one round
                 break
 
-        self.do_update()
     #@+node:bob.20110119123023.7413: *3* addLinkItem
     def addLinkItem(self, from_, to, hierarchyLink = False):
         if from_ not in self.nodeItem:
@@ -980,20 +935,10 @@ class graphcanvasController(object):
 
         self.ui.canvas.addItem(li)
     #@+node:bob.20110119123023.7414: *3* setLinkItem
-    def setLinkItem(self, li, from_, to, hierarchyLink = False):
+    def setLinkItem(self, li, from_, to, hierarchyLink=False):
         
-        def is_txt(x):  # transitional during nodeBase migration
-            return not isinstance(x, nodeBase) and x.getType() == 5
-        
-        if not is_txt(self.nodeItem[from_]):
-            fromSize = self.nodeItem[from_].text.document().size()
-        else:
-            fromSize = self.nodeItem[from_].bg.pixmap().size()
-
-        if  not is_txt(self.nodeItem[to]):
-            toSize = self.nodeItem[to].text.document().size()
-        else:
-            toSize = self.nodeItem[to].bg.pixmap().size()
+        fromSize = self.nodeItem[from_].size()
+        toSize = self.nodeItem[to].size()
 
         li.setLine(
             from_.u['_bklnk']['x'] + fromSize.width()/2, 
@@ -1042,10 +987,12 @@ class graphcanvasController(object):
         # text only node needs pen used to indicate selection removed
         lastNode = self.lastNodeItem
         if (lastNode and 
-            (isinstance(lastNode, nodeBase) or lastNode.getType() != 5)):
+            not isinstance(lastNode, nodeNone) and
+            not isinstance(lastNode, nodeImage)):
             lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
 
-        if  isinstance(nodeItem, nodeBase) or nodeItem.getType() != 5:
+        if  (not isinstance(nodeItem, nodeNone) and
+             not isinstance(nodeItem, nodeImage)):
             nodeItem.bg.setPen(self.selectPen)
 
         oldItem = self.lastNodeItem
@@ -1156,33 +1103,9 @@ class graphcanvasController(object):
 
         for i in list(self.nodeItem):  
             # can't iterate dict because nodeTable can add items on update
-            ntype = 0
-            if '_bklnk' in i.u:
-                if 'type' in i.u['_bklnk']:
-                    ntype = i.u['_bklnk']['type']
 
             self.nodeItem[i].do_update()
             
-            if ntype == 0 or ntype == 3 or ntype == 4:
-                self.nodeItem[i].bg.setRect(-2, +2, 
-                    self.nodeItem[i].text.document().size().width()+4, 
-                    self.nodeItem[i].text.document().size().height()-2)
-            elif ntype == 1:
-                marginX = self.nodeItem[i].text.document().size().width()/2
-                marginY = self.nodeItem[i].text.document().size().height()/2
-                self.nodeItem[i].bg.setRect(-marginX, 0, 
-                    self.nodeItem[i].text.document().size().width()*2, 
-                    self.nodeItem[i].text.document().size().height())
-            elif ntype == 2:
-                poly = QtGui.QPolygonF()
-                marginX = self.nodeItem[i].text.document().size().width()/2
-                marginY = self.nodeItem[i].text.document().size().height()/2
-                poly.append(QtCore.QPointF(-marginX, marginY))
-                poly.append(QtCore.QPointF(marginX, 3*marginY))
-                poly.append(QtCore.QPointF(3*marginX, marginY))
-                poly.append(QtCore.QPointF(marginX, -marginY))
-                self.nodeItem[i].bg.setPolygon(poly)
-                            
             if blc:
                 for link in blc.linksFrom(i):
                     self.addLinkItem(i, link)
@@ -1370,10 +1293,7 @@ class graphcanvasController(object):
 
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
-        
-        if item.getType() == 5:
-            return
-            
+
         if 'color' in node.u['_bklnk']:
             color = node.u['_bklnk']['color']
             newcolor = QtGui.QColorDialog.getColor(color)
@@ -1381,7 +1301,8 @@ class graphcanvasController(object):
             newcolor = QtGui.QColorDialog.getColor()
 
         if QtGui.QColor.isValid(newcolor):
-            item.bg.setBrush(QtGui.QBrush(newcolor))
+            newcolor = str(newcolor.name())  # store strings not objects
+            item.set_bg_color(newcolor)
             node.u['_bklnk']['color'] = newcolor
             
         self.releaseNode(item)  # reselect
@@ -1391,10 +1312,7 @@ class graphcanvasController(object):
 
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
-        
-        if item.getType() == 5:
-            return
-            
+             
         if 'tcolor' in node.u['_bklnk']:
             color = node.u['_bklnk']['tcolor']
             newcolor = QtGui.QColorDialog.getColor(color)
@@ -1402,7 +1320,8 @@ class graphcanvasController(object):
             newcolor = QtGui.QColorDialog.getColor()
             
         if QtGui.QColor.isValid(newcolor):
-            item.text.setDefaultTextColor(newcolor)
+            newcolor = str(newcolor.name())  # store strings not objects
+            item.set_text_color(newcolor)
             node.u['_bklnk']['tcolor'] = newcolor
             
         self.releaseNode(item)  # reselect
@@ -1412,98 +1331,16 @@ class graphcanvasController(object):
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
         
-        if item.getType() != 5:
+        # FIXME: need node.clear_formatting()
+        if hasattr(item, 'bg'):
             item.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
-        item.text.setDefaultTextColor(QtGui.QColor(0,0,0))
+        if hasattr(item, 'text'):
+            item.text.setDefaultTextColor(QtGui.QColor(0,0,0))
 
         if 'color' in node.u['_bklnk']:
             del node.u['_bklnk']['color']
         if 'tcolor' in node.u['_bklnk']:
                 del node.u['_bklnk']['tcolor']
-
-        self.releaseNode(self.nodeItem[node])
-    #@+node:bob.20110120233712.3407: *5* setRectangle
-    def setRectangle(self):
-
-        node = self.node[self.lastNodeItem]
-        self.unLoad()
-
-        if '_bklnk' in node.u:
-            node.u['_bklnk']['type'] = 0
-            
-        self.loadGraph()
-        
-        self.releaseNode(self.nodeItem[node])
-    #@+node:bob.20110120233712.3409: *5* setEllipse
-    def setEllipse(self):
-
-        node = self.node[self.lastNodeItem]
-        self.unLoad()
-
-        if '_bklnk' in node.u:
-            node.u['_bklnk']['type'] = 1
-            
-        self.loadGraph()
-
-        self.releaseNode(self.nodeItem[node])
-    #@+node:bob.20110120233712.3411: *5* setDiamond
-    def setDiamond(self):
-
-        node = self.node[self.lastNodeItem]
-        self.unLoad()
-
-        if '_bklnk' in node.u:
-            node.u['_bklnk']['type'] = 2
-            
-        self.loadGraph()
-
-        self.releaseNode(self.nodeItem[node])
-    #@+node:tbrown.20110122150504.1530: *5* setNone
-    def setNone(self):
-
-        node = self.node[self.lastNodeItem]
-        self.unLoad()
-
-        if '_bklnk' in node.u:
-            node.u['_bklnk']['type'] = 3
-            if 'color' in node.u['_bklnk']:
-                del node.u['_bklnk']['color']
-            if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
-            
-        self.loadGraph()
-
-        self.releaseNode(self.nodeItem[node])
-    #@+node:bob.20110202125047.4168: *5* setComment
-    def setComment(self):
-
-        node = self.node[self.lastNodeItem]
-        self.unLoad()
-
-        if '_bklnk' in node.u:
-            node.u['_bklnk']['type'] = 4
-            if 'color' in node.u['_bklnk']:
-                del node.u['_bklnk']['color']
-            if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
-            
-        self.loadGraph()
-
-        self.releaseNode(self.nodeItem[node])
-    #@+node:bob.20110202125047.4169: *5* setImage
-    def setImage(self):
-
-        node = self.node[self.lastNodeItem]
-        self.unLoad()
-
-        if '_bklnk' in node.u:
-            node.u['_bklnk']['type'] = 5
-            if 'color' in node.u['_bklnk']:
-                del node.u['_bklnk']['color']
-            if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
-            
-        self.loadGraph()
 
         self.releaseNode(self.nodeItem[node])
     #@-others
