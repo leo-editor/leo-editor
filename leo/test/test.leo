@@ -8813,7 +8813,7 @@ def handle_json_vnode_attributes (self,sax_node,v):
     parent_v = parent_p.v
     
     if 1:
-        fc.create_json_children(dummy_json_vnode,parent_v)
+        fc.create_json_children(dummy_json_node,parent_v)
     else:
         parent_v = parent_p.v
         n = 0
