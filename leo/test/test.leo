@@ -672,6 +672,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20110414094917.2422"></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1096,7 +1097,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8805,12 +8806,14 @@ def handle_json_vnode_attributes (self,sax_node,v):
     assert json_vnodes
 
     parent_v = parent_p.v
+    n = 0
     for json_vnode in json_vnodes:
         gnx = json_vnode.get('id')
         tnode = self.t_dict.get(gnx)
         g.trace(tnode.get('head'))
         v = fc.create_json_vnode(json_vnode,parent_v)
-        parent_v.insertAsLastChild(v)
+        v._linkAsNthChild (parent_v,n)
+        n += 1
         # children = fc.create_json_children(json_vnode,parent_v)
         
     return None ###
