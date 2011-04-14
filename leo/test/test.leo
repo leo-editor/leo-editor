@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.46" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.64" body_secondary_ratio="0.47">
 	<global_window_position top="156" left="347" height="887" width="1568"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -619,10 +619,21 @@
 <v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20110414094917.2423"><vh>@json-outline</vh></v>
+<v t="ekr.20110414094917.2424"><vh>@input-tree</vh>
+<v t="ekr.20110414094917.2425"><vh>child1</vh>
+<v t="ekr.20110414094917.2427"><vh>grandchild11</vh></v>
+<v t="ekr.20110414094917.2428"><vh>grandchild12</vh></v>
+</v>
+<v t="ekr.20110414094917.2426"><vh>child2</vh>
+<v t="ekr.20110414094917.2429"><vh>grandchild21</vh></v>
+</v>
+</v>
 <v t="ekr.20110414063538.2372"><vh>@button json r/w @key=Alt-8</vh>
 <v t="ekr.20110414063538.2385"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20110414063538.2383"><vh>TestClass</vh>
 <v t="ekr.20110414063538.2384"><vh>main</vh></v>
+<v t="ekr.20110414094917.2391"><vh>Writing...</vh>
 <v t="ekr.20110414063538.2373"><vh>putFile</vh></v>
 <v t="ekr.20110414063538.2374"><vh>putTnode</vh></v>
 <v t="ekr.20110414063538.2375"><vh>putTnodes</vh>
@@ -636,6 +647,29 @@
 </v>
 <v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
 <v t="ekr.20110414073628.2389"><vh>write utils</vh></v>
+</v>
+<v t="ekr.20110414094917.2406"><vh>Reading...</vh>
+<v t="ekr.20110414094917.2420"><vh>Not used</vh>
+<v t="ekr.20110414094917.2407"><vh>cleanSaxInputString</vh></v>
+<v t="ekr.20110414094917.2412"><vh>dumpSaxTree</vh></v>
+<v t="ekr.20110414094917.2414"><vh>parse_leo_file</vh></v>
+<v t="ekr.20110414094917.2415"><vh>readSaxFile</vh></v>
+<v t="ekr.20110414094917.2418"><vh>setPositionsFromVnodes &amp; helper</vh>
+<v t="ekr.20110414094917.2419"><vh>archivedPositionToPosition</vh></v>
+</v>
+<v t="ekr.20110414094917.2416"><vh>resolve_tnode_lists</vh></v>
+<v t="ekr.20110414094917.2417"><vh>resolve_archived_position</vh></v>
+</v>
+<v t="ekr.20110414094917.2422"><vh>read_json_data &amp; helper</vh>
+<v t="ekr.20110414094917.2432"><vh>create_t_dict</vh></v>
+</v>
+<v t="ekr.20110414094917.2408"><vh>create_json_children</vh></v>
+<v t="ekr.20110414094917.2409"><vh>create_json_vnode &amp; helpers</vh>
+<v t="ekr.20110414094917.2410"><vh>handle_json_tnode_attributes</vh></v>
+<v t="ekr.20110414094917.2411"><vh>handle_json_vnode_attributes</vh></v>
+</v>
+<v t="ekr.20110414094917.2413"><vh>get_json_ua</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1062,7 +1096,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8292,6 +8326,10 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
         self.c = c
         self.usingClipboard = True # True: write only the current tree.
         
+        # Read ivars.
+        self.t_dict = {} # Keys are id strings, values are tnodes.
+        # self.v_dict = {} # Keys are id strings, values are vnodes.
+        
         # Ivars added for this class.
         self.json = True
         self.level = 0
@@ -8302,16 +8340,28 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
 </t>
 <t tx="ekr.20110414063538.2384">def main (self):
     
+    trace = True
     tc = self
     
+    # tag = '@button json r/w @key=Alt-8'
+    tag = '@input-tree'
+    p = g.findNodeAnywhere(self.c,tag)
+    assert p,'not found: %s' % tag
+    c.selectPosition(p)
+    c.redraw_now()
+    
     s = tc.putFile()
-    print(s)
+    # if trace: print(s)
     aList = json.loads(s)
-    pprint.pprint(aList)
-    s2 = json.dumps(aList)
-    print(s2)
-    aList2 = json.loads(s2)
-    assert(aList==aList2)
+    if trace: pprint.pprint(aList)
+    
+    if 0: # A consistency check.
+        s2 = json.dumps(aList)
+        if trace: print(s2)
+        aList2 = json.loads(s2)
+        assert(aList==aList2)
+    
+    tc.read_json_data(aList)
 </t>
 <t tx="ekr.20110414063538.2385">
 import json
@@ -8328,5 +8378,452 @@ def put(self,s):
 def putUnknownAttributes(self,v):
     pass
 </t>
+<t tx="ekr.20110414094917.2391"></t>
+<t tx="ekr.20110414094917.2406"></t>
+<t tx="ekr.20110414094917.2407">def cleanSaxInputString(self,s):
+
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+
+    # Note: form-feed ('\f') is 12 decimal.
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+
+    if g.isPython3:
+        flatten = bytes(flatten,'utf-8')
+        pad = bytes(pad,'utf-8')
+        transtable = bytes.maketrans(flatten,pad)
+    else:
+        transtable = string.maketrans(flatten,pad)
+
+    return s.translate(transtable)
+
+# for i in range(32): print i,repr(chr(i))
+</t>
+<t tx="ekr.20110414094917.2408">def create_json_children (self,json_node,parent_v):
+
+    c = self.c
+    trace = True and not g.unitTesting
+    children = []
+
+    for json_child in json_node.get('children',[]):
+        gnx = json_child.get('id')
+        v = self.id_dict.get(gnx)
+
+        if v: # A clone.
+            if trace: g.trace('**clone',v)
+            v = self.create_json_vnode(json_child,parent_v,v=v)   
+        else:
+            v = self.create_json_vnode(json_child,parent_v)
+            self.create_json_children(json_child,v)
+
+        children.append(v)
+
+    parent_v.children = children
+    for child in children:
+        child.parents.append(parent_v)
+        if trace:
+            g.trace('*** added parent %s to %s len(child.parents) %s' % (
+                parent_v,child,len(child.parents)))
+
+    return children
+</t>
+<t tx="ekr.20110414094917.2409">def create_json_vnode (self,json_node,parent_v,v=None):
+
+    c = self.c
+    trace = True and not g.unitTesting
+    if trace: g.trace(json_node)
+    gnx = json_node.get('id','')
+    tnode = self.t_dict.get(gnx)
+    assert tnode
+    assert tnode.get('id') == gnx
+    h = tnode.get('head','')
+    b = tnode.get('body','')
+
+    if v:
+        # The body of the later node overrides the earlier.
+        # Don't set t.h: h is always empty.
+        # This may be an internal error.
+        if v.b == b:
+            if trace: g.trace(
+                '***no update\nold: %s\nnew: %s' % (v.b,b))
+        else:
+            if trace: g.trace(
+                '***update\nold: %s\nnew: %s' % (v.b,b))
+            v.b = b 
+    else:
+        v = leoNodes.vnode(context=c)
+        v.setBodyString(b)
+        v.setHeadString(h)
+        # v.fileIndex = g.app.nodeIndices.scanGnx(json_node.tnx,0)
+        v.fileIndex = gnx
+        # index = self.canonicalTnodeIndex(json_node.tnx)
+        # self.v_dict [gnx] = v
+
+    if trace:
+        g.trace('gnx: %-22s v: %s len(body): %-4d %s' % (
+            gnx,id(v),len(b),h))
+
+    self.handle_json_tnode_attributes(json_node,v)
+    self.handle_json_tnode_attributes(json_node,v)
+    return v
+</t>
+<t tx="ekr.20110414094917.2410">def handle_json_tnode_attributes (self,json_node,v):
+
+    trace = False and not g.unitTesting
+    d = json_node.get('tnodeAttributes',{})
+    if trace and d: g.trace(json_node,list(d.keys()))
+
+    aDict = {}
+    for key in d:
+        val = g.toUnicode(d.get(key)) # 2011/02/22
+        val2 = self.get_json_ua(key,val)
+        # g.trace(key,val,val2)
+        aDict[key] = val2
+
+    if aDict:
+        if trace: g.trace('uA',v,list(aDict.keys()))
+        v.unknownAttributes = aDict
+</t>
+<t tx="ekr.20110414094917.2411"># The native attributes of &lt;v&gt; elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
+
+def handle_json_vnode_attributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.attributes
+
+    s = d.get('a')
+    if s:
+        if trace and 'E' in s: g.trace('expand',v)
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnodeList will be resolved later.
+        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s,v=v)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s,v=v)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v,aDict),)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+</t>
+<t tx="ekr.20110414094917.2412">def dumpSaxTree (self,root,dummy):
+
+    if not root:
+        g.pr('dumpSaxTree: empty tree')
+        return
+    if not dummy:
+        root.dump()
+    for child in root.children:
+        self.dumpSaxTree(child,dummy=False)
+</t>
+<t tx="ekr.20110414094917.2413">def get_json_ua(self,attr,val,kind=None): # Kind is for unit testing.
+
+    """Parse an unknown attribute in a &lt;v&gt; or &lt;t&gt; element.
+    The unknown tag has been pickled and hexlify'd.
+    """
+
+    try:
+        # val = str(val)
+        val = g.toEncodedString(val) # 2011/02/22.
+    except Exception:
+        g.es_print('unexpected exception converting hexlified string to string')
+        g.es_exception()
+        return None
+
+
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if attr.startswith('str_') and type(val) == type(''):
+        # g.trace(attr,val)
+        return val
+
+    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
+    if 0: # Not ready yet.
+        if attr.startswith('b64_'):
+            try: pass
+            except Exception: pass
+
+    try:
+        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
+    except Exception:
+        # Python 2.x throws TypeError
+        # Python 3.x throws binascii.Error
+        # Assume that Leo 4.1 wrote the attribute.
+        if g.unitTesting:
+            assert kind == 'raw','unit test failed: kind=' % repr(kind)
+        else:
+            g.trace('can not unhexlify %s=%s' % (attr,val))
+        return val
+    try:
+        # No change needed to support protocols.
+        val2 = pickle.loads(binString)
+        # g.trace('v.3 val:',val2)
+        return val2
+    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+        g.trace('can not unpickle %s=%s' % (attr,val))
+        return val
+</t>
+<t tx="ekr.20110414094917.2414">def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the &lt;?xml&gt; element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+</t>
+<t tx="ekr.20110414094917.2415">def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
+
+    dump = False and not g.unitTesting
+    fc = self ; c = fc.c
+
+    # Pass one: create the intermediate nodes.
+    saxRoot = fc.parse_leo_file(theFile,fileName,
+        silent=silent,inClipboard=inClipboard,s=s)
+
+    if dump: fc.dumpSaxTree(saxRoot,dummy=True)
+
+    # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
+    if saxRoot:
+        parent_v = c.hiddenRootNode
+        children = fc.create_json_children(saxRoot,parent_v)
+        assert c.hiddenRootNode.children == children
+        v = children and children[0] or None
+        return v
+    else:
+        return None
+</t>
+<t tx="ekr.20110414094917.2416">def resolve_tnode_lists (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    for p in c.all_unique_positions():
+        if hasattr(p.v,'tempTnodeList'):
+            # g.trace(p.v.headString())
+            result = []
+            for tnx in p.v.tempTnodeList:
+                index = self.canonicalTnodeIndex(tnx)
+                v = self.gnxDict.get(index)
+                if v:
+                    if trace: g.trace(tnx,v)
+                    result.append(v)
+                else:
+                    g.trace('*** No vnode for %s' % tnx)
+            if result:
+                p.v.tnodeList = result
+                # g.trace('*** tnodeList for',p.h,result)
+            delattr(p.v,'tempTnodeList')
+</t>
+<t tx="ekr.20110414094917.2417">def resolve_archived_position(self,archivedPosition,root_v):
+
+    '''Return a vnode corresponding to the archived position relative to root node root_v.'''
+
+    def oops (message):
+        if not g.app.unitTesting:
+            g.es_print('bad archived position: %s' % (message),color='red')
+
+    try:
+        aList = [int(z) for z in archivedPosition.split('.')]
+        aList.reverse()
+    except Exception:
+        return oops('"%s"' % archivedPosition)
+
+    if not aList:
+        return oops('empty')
+
+    last_v = root_v
+    n = aList.pop()
+    if n != 0:
+        return oops('root index="%s"' % n )
+
+    while aList:
+        n = aList.pop()
+        children = last_v.children
+        if n &lt; len(children):
+            last_v = children[n]
+        else:
+            return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
+
+    return last_v
+</t>
+<t tx="ekr.20110414094917.2418">def setPositionsFromVnodes (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.rootPosition()
+    current,str_pos = None,None
+
+    use_db = g.enableDB and c.mFileName
+    if use_db:
+        str_pos = c.cacher.getCachedStringPosition()
+
+    if not str_pos:
+        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('from p.v.u',str_pos)
+
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
+
+    c.setCurrentPosition(current or c.rootPosition())
+</t>
+<t tx="ekr.20110414094917.2419">def archivedPositionToPosition (self,s):
+
+    c = self.c
+    s = g.toUnicode(s) # 2011/02/25
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level &lt; len(aList):
+        i = aList[level]
+        while i &gt; 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level &lt; len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+</t>
+<t tx="ekr.20110414094917.2420">if 0:
+    @others</t>
+<t tx="ekr.20110414094917.2422">def read_json_data (self,json_list,reassignIndices=True):
+    
+    '''Create Leo's vnodes from data, a Python object created by json.loads.'''
+
+    trace = True and not g.unitTesting
+    fc = self ; c = fc.c ; tag = '@json-outline'
+    if not json_list: return None
+    
+    vnodes,tnodes = json_list
+    if trace: g.trace('\n',vnodes,'\n')
+        
+    fc.create_t_dict(tnodes)
+
+    parent_p = g.findNodeAnywhere(c,'@json-outline')
+        ### parent_v = c.hiddenRootNode
+
+    if parent_p:
+        parent_v = p.v
+        children = fc.create_json_children(vnodes,parent_v)
+        assert parent_p.v.children == children,'parent_p.children: %s, children: %s' % (
+            parent_p.children,children)
+            
+        v = children and children[0] or None
+        return v
+    else:
+        return g.trace('not found: %s' % tag)
+   </t>
+<t tx="ekr.20110414094917.2423"># The root node for testing read_json_data.</t>
+<t tx="ekr.20110414094917.2424"></t>
+<t tx="ekr.20110414094917.2425"></t>
+<t tx="ekr.20110414094917.2426"></t>
+<t tx="ekr.20110414094917.2427"></t>
+<t tx="ekr.20110414094917.2428"></t>
+<t tx="ekr.20110414094917.2429"></t>
+<t tx="ekr.20110414094917.2432">def create_t_dict(self,json_node):
+    
+    tnodes = json_node.get('tnodes',[])
+    assert tnodes
+    
+    for z in tnodes:
+        gnx = z.get('id')
+        assert gnx
+        self.t_dict[gnx] = z
+        </t>
 </tnodes>
 </leo_file>
