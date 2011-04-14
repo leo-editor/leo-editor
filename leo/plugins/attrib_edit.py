@@ -590,7 +590,10 @@ class attrib_edit_Controller:
             g.registerHandler(i[0], i[1])
 
         # 'body' or 'tab' mode
-        self.guiMode = c.config.getString('attrib_edit_placement') or 'body'
+        # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
+        
+        self.guiMode = 'tab'  
+        # body mode in not compatible with nested_splitter, causes hard crash
 
         if self.guiMode == 'body':
             self.holder = QtGui.QSplitter(QtCore.Qt.Vertical)
@@ -615,7 +618,7 @@ class attrib_edit_Controller:
 
         w = self.holder
 
-        for i in w.findChildren(QtCore.QObject):
+        for i in w.parent().findChildren(QtCore.QObject):
             if i.objectName() == self.pname:
                 i.hide()
                 i.deleteLater()
