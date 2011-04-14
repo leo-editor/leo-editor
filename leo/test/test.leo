@@ -1096,7 +1096,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8328,7 +8328,7 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
         
         # Read ivars.
         self.t_dict = {} # Keys are id strings, values are tnodes.
-        # self.v_dict = {} # Keys are id strings, values are vnodes.
+        self.v_dict = {} # Keys are id strings, values are vnodes.
         
         # Ivars added for this class.
         self.json = True
@@ -8463,7 +8463,7 @@ def putUnknownAttributes(self,v):
         # v.fileIndex = g.app.nodeIndices.scanGnx(json_node.tnx,0)
         v.fileIndex = gnx
         # index = self.canonicalTnodeIndex(json_node.tnx)
-        # self.v_dict [gnx] = v
+        self.v_dict [gnx] = v
 
     if trace:
         g.trace('gnx: %-22s v: %s len(body): %-4d %s' % (
@@ -8790,24 +8790,36 @@ def handle_json_vnode_attributes (self,sax_node,v):
     if not json_list: return None
     
     vnodes,tnodes = json_list
-    if trace: g.trace('\n',vnodes,'\n')
-        
+    assert vnodes
+    assert tnodes
     fc.create_t_dict(tnodes)
 
     parent_p = g.findNodeAnywhere(c,'@json-outline')
         ### parent_v = c.hiddenRootNode
 
-    if parent_p:
-        parent_v = p.v
-        children = fc.create_json_children(vnodes,parent_v)
-        assert parent_p.v.children == children,'parent_p.children: %s, children: %s' % (
-            parent_p.children,children)
-            
-        v = children and children[0] or None
-        return v
-    else:
+    if not parent_p:
         return g.trace('not found: %s' % tag)
-   </t>
+        
+    json_vnodes = vnodes.get('vnodes',[])
+    assert json_vnodes
+
+    parent_v = parent_p.v
+    for json_vnode in json_vnodes:
+        gnx = json_vnode.get('id')
+        tnode = self.t_dict.get(gnx)
+        g.trace(tnode.get('head'))
+        v = fc.create_json_vnode(json_vnode,parent_v)
+        parent_v.insertAsLastChild(v)
+        # children = fc.create_json_children(json_vnode,parent_v)
+        
+    return None ###
+        
+    # assert parent_v.children == children,'parent_p.children: %s, children: %s' % (
+        # parent_v.children,children)
+        
+    # v = children and children[0] or None
+    # return v
+</t>
 <t tx="ekr.20110414094917.2423"># The root node for testing read_json_data.</t>
 <t tx="ekr.20110414094917.2424"></t>
 <t tx="ekr.20110414094917.2425"></t>
