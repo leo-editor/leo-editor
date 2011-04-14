@@ -619,6 +619,24 @@
 <v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20110414063538.2372"><vh>@button json r/w @key=Alt-8</vh>
+<v t="ekr.20110414063538.2385"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2383"><vh>TestClass</vh>
+<v t="ekr.20110414063538.2384"><vh>main</vh></v>
+<v t="ekr.20110414063538.2373"><vh>putFile</vh></v>
+<v t="ekr.20110414063538.2374"><vh>putTnode</vh></v>
+<v t="ekr.20110414063538.2375"><vh>putTnodes</vh>
+<v t="ekr.20110414063538.2376"><vh>&lt;&lt; write only those tnodes that were referenced &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110414063538.2377"><vh>putVnode</vh>
+<v t="ekr.20110414063538.2378"><vh>&lt;&lt; Set gnx = vnode index &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2379"><vh>&lt;&lt; Append attribute bits to attrs &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2380"><vh>&lt;&lt; Append unKnownAttributes to attrs&gt;&gt; fc.put</vh></v>
+<v t="ekr.20110414063538.2381"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1043,7 +1061,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7988,5 +8006,322 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import leo.plugins.qtGui as qtGui
 </t>
+<t tx="ekr.20110414063538.2372">@first # -*- coding: utf-8 -*-
+
+'''A script that writes/reads .leo files in JSON format.'''
+
+&lt;&lt; imports &gt;&gt;
+
+# To do: convert Python objects returned from json.loads to vnodes &amp; tnodes.
+# To do: proper json escapes for strings.
+
+@others
+
+os.system('cls')
+        
+TestClass(c).main()
+</t>
+<t tx="ekr.20110414063538.2373">def putFile(self):
+    
+    self.putVnodes()
+    s1 = ''.join(self.result)
+    self.result = []
+    self.putTnodes()
+    s2 = ''.join(self.result)
+    
+    return '[\n%s,\n%s]' % (s1,s2)
+</t>
+<t tx="ekr.20110414063538.2374">def putTnode (self,v):
+
+    # Call put just once.
+    gnx = g.app.nodeIndices.toString(v.fileIndex)
+    ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
+    b = v.b
+    if b:
+        body = xml.sax.saxutils.escape(b)
+    else:
+        body = ''
+
+    if self.json:
+        # h = xml.sax.saxutils.escape(v.headString()) or ''
+        comma = g.choose(self.needJsonComma,',\n','')
+        if ua:
+            self.put('%s{"id":"%s","head":"%s","ua":"%s","body":"%s"}' % (
+                comma,gnx,v.h,ua,len(body)))
+        else:
+            self.put('%s{"id":"%s","head":"%s","body":"%s"}' % (
+                comma,gnx,v.h,len(body)))
+        self.needJsonComma = True
+    else:
+        self.put('&lt;t tx="%s"%s&gt;%s&lt;/t&gt;\n' % (gnx,ua,body))
+</t>
+<t tx="ekr.20110414063538.2375">def putTnodes (self):
+
+    """Puts all tnodes as required for copy or save commands"""
+
+    c = self.c
+    
+    if self.json:
+        self.needJsonComma = False
+        self.put('{"tnodes":[\n')
+    else:
+        self.put("&lt;tnodes&gt;\n")
+    &lt;&lt; write only those tnodes that were referenced &gt;&gt;
+    if self.json:
+        self.put('\n]}\n')
+    else:
+        self.put("&lt;/tnodes&gt;\n")
+</t>
+<t tx="ekr.20110414063538.2376">if self.usingClipboard: # write the current tree.
+    theIter = c.p.self_and_subtree()
+else: # write everything
+    theIter = c.all_unique_positions()
+
+# Populate tnodes
+tnodes = {}
+nodeIndices = g.app.nodeIndices
+for p in theIter:
+    # Make *sure* the file index has the proper form.
+    # g.trace(p.v.fileIndex)
+    try:
+        theId,t,n = p.v.fileIndex
+    except ValueError:
+        try:
+            theId,t,n = p.v.fileIndex,''
+        except Exception:
+            raise BadLeoFile('bad p.v.fileIndex' % repr(p.v.fileIndex))
+
+    if n is None:
+        n = g.u('0')
+    elif g.isPython3:
+        n = str(n)
+    else:
+        n = unicode(n)
+    index = theId,t,n
+    tnodes[index] = p.v
+
+# Put all tnodes in index order.
+for index in sorted(tnodes):
+    # g.trace(index)
+    v = tnodes.get(index)
+    if v:
+        # Write only those tnodes whose vnodes were written.
+        if v.isWriteBit():
+            self.putTnode(v)
+    else:
+        g.trace('can not happen: no vnode for',repr(index))
+        # This prevents the file from being written.
+        raise BadLeoFile('no vnode for %s' % repr(index))
+</t>
+<t tx="ekr.20110414063538.2377">def putVnode (self,p,isIgnore=False):
+
+    """Write a &lt;v&gt; element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    json = fc.json
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # 2010/09/02: @edit nodes must not have children.
+        # If they do, the entire tree is written to the outline.
+    isFile   = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin   = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+    if   isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
+    elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+    elif isFile:   forceWrite = isOrphan  # Force write of orphan @file trees.
+    elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
+    else:          forceWrite = True      # Write all other @&lt;file&gt; trees.
+
+    &lt;&lt; Set gnx = vnode index &gt;&gt;
+    attrs = []
+    &lt;&lt; Append attribute bits to attrs &gt;&gt;
+    &lt;&lt; Append unKnownAttributes to attrs &gt;&gt;
+    attrs = ''.join(attrs)
+
+    if json:
+        comma = g.choose(self.needJsonComma,',\n','')
+        if attrs:
+            v_head = '%s%s{"id":"%s","%s"' % (comma,self.indent(),gnx,attrs)
+        else:
+            v_head = '%s%s{"id":"%s"' % (comma,self.indent(),gnx)
+        self.needJsonComma = True
+    else:
+        v_head = '&lt;v t="%s"%s&gt;' % (gnx,attrs)
+        
+    h = xml.sax.saxutils.escape(p.v.headString()) or ''
+    if gnx in fc.vnodesDict:
+        if json:
+            # v_head += ',head:"%s"' % v.h  # Testing
+            fc.put('%s}' % v_head)
+        else:
+            fc.put(v_head+'&lt;/v&gt;\n')
+    else:
+        fc.vnodesDict[gnx]=True
+        
+        if json:
+            # v_head += ',head:"%s"' % v.h  # Testing
+            pass
+        else:
+            v_head += '&lt;vh&gt;%s&lt;/vh&gt;' % (h)
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            &lt;&lt; issue informational messages &gt;&gt;
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            if json:
+                fc.put('%s,"children":[\n' % v_head) # Newline is good here.
+            else:
+                fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            oldNeedComma = self.needJsonComma
+            self.needJsonComma = False
+            self.level += 1
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            self.level -= 1
+            p.moveToParent() # Restore p in the caller.
+            self.needJsonComma = oldNeedComma
+            if json:
+                fc.put(']}')
+            else:
+                fc.put('&lt;/v&gt;\n')
+        else:
+            if json:
+                fc.put('%s}' % v_head)
+            else:
+                fc.put('%s&lt;/v&gt;\n' % v_head) # Call put only once.
+</t>
+<t tx="ekr.20110414063538.2378">gnx = g.app.nodeIndices.toString(v.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.setWriteBit() # 4.2: Indicate we wrote the body text.
+</t>
+<t tx="ekr.20110414063538.2379"># These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+        attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        if json:
+            attrs.append(',a="%s"' % attr)
+        else:
+            attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions &lt;v&gt; element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = v.u
+    str_pos = ','.join(aList)
+    if d.get('str_leo_pos'):
+        del d['str_leo_pos']
+    # Don't write the current position if we can cache it. 
+    if g.enableDB and c.mFileName:
+        c.cacher.setCachedStringPosition(str_pos)
+    elif c.fixed:
+        pass
+    else:
+        d['str_leo_pos'] = str_pos
+    v.u = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+</t>
+<t tx="ekr.20110414063538.2380"># v.unknownAttributes are now put in &lt;t&gt; elements.
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
+</t>
+<t tx="ekr.20110414063538.2381">if isOrphan and isThin:
+    g.es("writing erroneous:",p.h,color="blue")
+    p.clearOrphan()
+</t>
+<t tx="ekr.20110414063538.2382">def putVnodes (self):
+
+    """Puts all &lt;v&gt; elements in the order in which they appear in the outline."""
+
+    c = self.c
+    c.clearAllVisited()
+
+    if self.json:
+        self.needJsonComma = False
+        self.put('{"vnodes":[\n')
+    else:
+        self.put("&lt;vnodes&gt;\n")
+
+    # Make only one copy for all calls.
+    self.currentPosition = c.p 
+    self.rootPosition    = c.rootPosition()
+    # self.topPosition     = c.topPosition()
+    self.vnodesDict = {}
+
+    if self.usingClipboard:
+        self.putVnode(self.currentPosition) # Write only current tree.
+    else:
+        for p in c.rootPosition().self_and_siblings():
+            # New in Leo 4.4.2 b2 An optimization:
+            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
+
+    if self.json:
+        self.put('\n]}')
+    else:
+        self.put("&lt;/vnodes&gt;\n")
+</t>
+<t tx="ekr.20110414063538.2383">class TestClass:
+    
+    def __init__(self,c):
+        self.c = c
+        self.json = True
+        self.level = 0
+        self.needJsonComma = False
+        self.result = []
+        self.usingClipboard = True # True: write only the current tree.
+        
+    def put(self,s):
+        self.result.append(s)
+        
+    def indent(self):
+        return ' '*self.level
+        
+    def putUnknownAttributes(self,v):
+        pass
+        
+    @others</t>
+<t tx="ekr.20110414063538.2384">def main (self):
+    
+    tc = self
+    
+    s = tc.putFile()
+    print(s)
+    aList = json.loads(s)
+    pprint.pprint(aList)
+    s2 = json.dumps(aList)
+    print(s2)
+    aList2 = json.loads(s2)
+    assert(aList==aList2)
+</t>
+<t tx="ekr.20110414063538.2385">
+import json
+import pprint
+import xml.sax
+import xml.sax.saxutils
+import os</t>
 </tnodes>
 </leo_file>
