@@ -1096,7 +1096,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8363,7 +8363,8 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
     
     tc.read_json_data(aList)
 </t>
-<t tx="ekr.20110414063538.2385">
+<t tx="ekr.20110414063538.2385">import leo.core.leoNodes as leoNodes
+
 import json
 import pprint
 import xml.sax
