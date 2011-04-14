@@ -650,9 +650,6 @@
 </v>
 <v t="ekr.20110414094917.2406"><vh>Reading...</vh>
 <v t="ekr.20110414094917.2420"><vh>Not used</vh>
-<v t="ekr.20110414094917.2407"><vh>cleanSaxInputString</vh></v>
-<v t="ekr.20110414094917.2412"><vh>dumpSaxTree</vh></v>
-<v t="ekr.20110414094917.2414"><vh>parse_leo_file</vh></v>
 <v t="ekr.20110414094917.2415"><vh>readSaxFile</vh></v>
 <v t="ekr.20110414094917.2418"><vh>setPositionsFromVnodes &amp; helper</vh>
 <v t="ekr.20110414094917.2419"><vh>archivedPositionToPosition</vh></v>
@@ -672,9 +669,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20110414094917.2409"></v>
-<v t="ekr.20110414094917.2408"></v>
-<v t="ekr.20110414094917.2422"></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1099,7 +1093,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8050,14 +8044,13 @@ import leo.plugins.qtGui as qtGui
 
 &lt;&lt; imports &gt;&gt;
 
-# To do: *** create proper gnx's in nodes
 # To do: proper json escapes for strings.
-# To do: write entire body string in json.
+# To do: clones don't show up until this file is reloaded.
+#   (The code should really create a new outline.)
 
 @others
 
-os.system('cls')
-        
+# os.system('cls')
 TestClass(c).main()
 </t>
 <t tx="ekr.20110414063538.2373">def putFile(self):
@@ -8085,10 +8078,10 @@ TestClass(c).main()
         comma = g.choose(self.needJsonComma,',\n','')
         if ua:
             self.put('%s{"id":"%s","head":"%s","ua":"%s","body":"%s"}' % (
-                comma,gnx,v.h,ua,len(body)))
+                comma,gnx,v.h,ua,body))
         else:
             self.put('%s{"id":"%s","head":"%s","body":"%s"}' % (
-                comma,gnx,v.h,len(body)))
+                comma,gnx,v.h,body))
         self.needJsonComma = True
     else:
         self.put('&lt;t tx="%s"%s&gt;%s&lt;/t&gt;\n' % (gnx,ua,body))
@@ -8195,7 +8188,6 @@ for index in sorted(tnodes):
     h = xml.sax.saxutils.escape(p.v.headString()) or ''
     if gnx in fc.vnodesDict:
         if json:
-            # v_head += ',head:"%s"' % v.h  # Testing
             fc.put('%s}' % v_head)
         else:
             fc.put(v_head+'&lt;/v&gt;\n')
@@ -8203,7 +8195,6 @@ for index in sorted(tnodes):
         fc.vnodesDict[gnx]=True
         
         if json:
-            # v_head += ',head:"%s"' % v.h  # Testing
             pass
         else:
             v_head += '&lt;vh&gt;%s&lt;/vh&gt;' % (h)
@@ -8344,22 +8335,19 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
 </t>
 <t tx="ekr.20110414063538.2384">def main (self):
     
-    trace = True
+    trace = False
     tc = self
     
-    # tag = '@button json r/w @key=Alt-8'
     tag = '@input-tree'
     p = g.findNodeAnywhere(self.c,tag)
     assert p,'not found: %s' % tag
     c.selectPosition(p)
-    # c.redraw_now()
     
     s = tc.putFile()
-    # if trace: print(s)
     aList = json.loads(s)
     if trace: pprint.pprint(aList)
     
-    if 0: # A consistency check.
+    if 1: # A consistency check.
         s2 = json.dumps(aList)
         if trace: print(s2)
         aList2 = json.loads(s2)
@@ -8385,35 +8373,10 @@ def putUnknownAttributes(self,v):
 </t>
 <t tx="ekr.20110414094917.2391"></t>
 <t tx="ekr.20110414094917.2406"></t>
-<t tx="ekr.20110414094917.2407">def cleanSaxInputString(self,s):
-
-    '''Clean control characters from s.
-    s may be a bytes or a (unicode) string.'''
-
-    # Note: form-feed ('\f') is 12 decimal.
-    badchars = [chr(ch) for ch in range(32)]
-    badchars.remove('\t')
-    badchars.remove('\r')
-    badchars.remove('\n')
-
-    flatten = ''.join(badchars)
-    pad = ' ' * len(flatten)
-
-    if g.isPython3:
-        flatten = bytes(flatten,'utf-8')
-        pad = bytes(pad,'utf-8')
-        transtable = bytes.maketrans(flatten,pad)
-    else:
-        transtable = string.maketrans(flatten,pad)
-
-    return s.translate(transtable)
-
-# for i in range(32): print i,repr(chr(i))
-</t>
 <t tx="ekr.20110414094917.2408">def create_json_children (self,json_node,parent_v):
 
     c = self.c
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     children = []
     json_children = json_node.get('children',[])
 
@@ -8442,8 +8405,7 @@ def putUnknownAttributes(self,v):
 <t tx="ekr.20110414094917.2409">def create_json_vnode (self,json_node,parent_v,v=None):
 
     c = self.c
-    trace = True and not g.unitTesting
-    # if trace: g.trace(json_node)
+    trace = False and not g.unitTesting
     gnx = json_node.get('id','')
     json_tnode = self.t_dict.get(gnx)
     assert json_tnode
@@ -8558,16 +8520,6 @@ def handle_json_vnode_attributes (self,sax_node,v):
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
 </t>
-<t tx="ekr.20110414094917.2412">def dumpSaxTree (self,root,dummy):
-
-    if not root:
-        g.pr('dumpSaxTree: empty tree')
-        return
-    if not dummy:
-        root.dump()
-    for child in root.children:
-        self.dumpSaxTree(child,dummy=False)
-</t>
 <t tx="ekr.20110414094917.2413">def get_json_ua(self,attr,val,kind=None): # Kind is for unit testing.
 
     """Parse an unknown attribute in a &lt;v&gt; or &lt;t&gt; element.
@@ -8614,47 +8566,6 @@ def handle_json_vnode_attributes (self,sax_node,v):
         g.trace('can not unpickle %s=%s' % (attr,val))
         return val
 </t>
-<t tx="ekr.20110414094917.2414">def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
-
-    c = self.c
-    try:
-        if g.isPython3:
-            if theFile:
-                # Use the open binary file, opened by g.openLeoOrZipFile.
-                s = theFile.read() # type(s) is bytes.
-                s = self.cleanSaxInputString(s)
-                theFile = BytesIO(s)
-            else:
-                s = str(s,encoding='utf-8')
-                s = self.cleanSaxInputString(s)
-                theFile = StringIO(s)
-        else:
-            if theFile: s = theFile.read()
-            s = self.cleanSaxInputString(s)
-            theFile = cStringIO.StringIO(s)
-        parser = xml.sax.make_parser()
-        parser.setFeature(xml.sax.handler.feature_external_ges,1)
-            # Include external general entities, esp. xml-stylesheet lines.
-        if 0: # Expat does not read external features.
-            parser.setFeature(xml.sax.handler.feature_external_pes,1)
-                # Include all external parameter entities
-                # Hopefully the parser can figure out the encoding from the &lt;?xml&gt; element.
-        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
-        parser.setContentHandler(handler)
-        parser.parse(theFile) # expat does not support parseString
-        # g.trace('parsing done')
-        sax_node = handler.getRootNode()
-    except xml.sax.SAXParseException:
-        g.es_print('error parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-    except Exception:
-        g.es_print('unexpected exception parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-
-    return sax_node
-</t>
 <t tx="ekr.20110414094917.2415">def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
     dump = False and not g.unitTesting
@@ -8669,7 +8580,7 @@ def handle_json_vnode_attributes (self,sax_node,v):
     # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
     if saxRoot:
         parent_v = c.hiddenRootNode
-        children = fc.create_json_children(saxRoot,parent_v)
+        children = fc.createSaxChildren(saxRoot,parent_v)
         assert c.hiddenRootNode.children == children
         v = children and children[0] or None
         return v
@@ -8814,11 +8725,11 @@ def handle_json_vnode_attributes (self,sax_node,v):
 </t>
 <t tx="ekr.20110414094917.2423"># The root node for testing read_json_data.</t>
 <t tx="ekr.20110414094917.2424"></t>
-<t tx="ekr.20110414094917.2425"></t>
-<t tx="ekr.20110414094917.2426"></t>
-<t tx="ekr.20110414094917.2427"></t>
-<t tx="ekr.20110414094917.2428"></t>
-<t tx="ekr.20110414094917.2429"></t>
+<t tx="ekr.20110414094917.2425"># child1 body</t>
+<t tx="ekr.20110414094917.2426"># child1 body</t>
+<t tx="ekr.20110414094917.2427"># grandchild11 body</t>
+<t tx="ekr.20110414094917.2428"># grandchild12 body</t>
+<t tx="ekr.20110414094917.2429"># grandchild21 body</t>
 <t tx="ekr.20110414094917.2432">def create_t_dict(self,json_node):
     
     tnodes = json_node.get('tnodes',[])
