@@ -632,22 +632,8 @@
 <v t="ekr.20110414063538.2372"><vh>@button json r/w @key=Alt-8</vh>
 <v t="ekr.20110414063538.2385"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20110414063538.2383"><vh>TestClass</vh>
+<v t="ekr.20110414073628.2389"><vh> utils</vh></v>
 <v t="ekr.20110414063538.2384"><vh>main</vh></v>
-<v t="ekr.20110414094917.2391"><vh>Writing...</vh>
-<v t="ekr.20110414063538.2373"><vh>putFile</vh></v>
-<v t="ekr.20110414063538.2374"><vh>putTnode</vh></v>
-<v t="ekr.20110414063538.2375"><vh>putTnodes</vh>
-<v t="ekr.20110414063538.2376"><vh>&lt;&lt; write only those tnodes that were referenced &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110414063538.2377"><vh>putVnode</vh>
-<v t="ekr.20110414063538.2378"><vh>&lt;&lt; Set gnx = vnode index &gt;&gt;</vh></v>
-<v t="ekr.20110414063538.2379"><vh>&lt;&lt; Append attribute bits to attrs &gt;&gt;</vh></v>
-<v t="ekr.20110414063538.2380"><vh>&lt;&lt; Append unKnownAttributes to attrs&gt;&gt; fc.put</vh></v>
-<v t="ekr.20110414063538.2381"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
-<v t="ekr.20110414073628.2389"><vh>write utils</vh></v>
-</v>
 <v t="ekr.20110414094917.2406"><vh>Reading...</vh>
 <v t="ekr.20110414094917.2420"><vh>Not used</vh>
 <v t="ekr.20110414094917.2415"><vh>readSaxFile</vh></v>
@@ -666,6 +652,20 @@
 <v t="ekr.20110414094917.2411"><vh>handle_json_vnode_attributes</vh></v>
 </v>
 <v t="ekr.20110414094917.2413"><vh>get_json_ua</vh></v>
+</v>
+<v t="ekr.20110414094917.2391"><vh>Writing...</vh>
+<v t="ekr.20110414063538.2373"><vh>putFile</vh></v>
+<v t="ekr.20110414063538.2374"><vh>putTnode</vh></v>
+<v t="ekr.20110414063538.2375"><vh>putTnodes</vh>
+<v t="ekr.20110414063538.2376"><vh>&lt;&lt; write only those tnodes that were referenced &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110414063538.2377"><vh>putVnode</vh>
+<v t="ekr.20110414063538.2378"><vh>&lt;&lt; Set gnx = vnode index &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2379"><vh>&lt;&lt; Append attribute bits to attrs &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2380"><vh>&lt;&lt; Append unKnownAttributes to attrs&gt;&gt; fc.put</vh></v>
+<v t="ekr.20110414063538.2381"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
 </v>
 </v>
 </v>
@@ -1093,7 +1093,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,1,2,3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8044,7 +8044,6 @@ import leo.plugins.qtGui as qtGui
 
 &lt;&lt; imports &gt;&gt;
 
-# To do: proper json escapes for strings.
 # To do: clones don't show up until this file is reloaded.
 #   (The code should really create a new outline.)
 
@@ -8067,23 +8066,19 @@ TestClass(c).main()
     # Call put just once.
     gnx = g.app.nodeIndices.toString(v.fileIndex)
     ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
-    b = v.b
-    if b:
-        body = xml.sax.saxutils.escape(b)
-    else:
-        body = ''
+    b = v.b or ''
 
     if self.json:
-        # h = xml.sax.saxutils.escape(v.headString()) or ''
         comma = g.choose(self.needJsonComma,',\n','')
         if ua:
             self.put('%s{"id":"%s","head":"%s","ua":"%s","body":"%s"}' % (
-                comma,gnx,v.h,ua,body))
+                comma,gnx,self.escape(v.h),self.escape(ua),self.escape(body)))
         else:
             self.put('%s{"id":"%s","head":"%s","body":"%s"}' % (
-                comma,gnx,v.h,body))
+                comma,gnx,self.escape(v.h),self.escape(body)))
         self.needJsonComma = True
     else:
+        body = xml.sax.saxutils.escape(b)
         self.put('&lt;t tx="%s"%s&gt;%s&lt;/t&gt;\n' % (gnx,ua,body))
 </t>
 <t tx="ekr.20110414063538.2375">def putTnodes (self):
@@ -8362,7 +8357,10 @@ import pprint
 import xml.sax
 import xml.sax.saxutils
 import os</t>
-<t tx="ekr.20110414073628.2389">def indent(self):
+<t tx="ekr.20110414073628.2389">def escape(self,s):
+    return s.replace('\\','\\\\').replace('"','\\"')
+
+def indent(self):
     return ' '*self.level
 
 def put(self,s):
@@ -8370,6 +8368,9 @@ def put(self,s):
 
 def putUnknownAttributes(self,v):
     pass
+    
+def unescape(self,s):
+    return s.replace('\\"','"').replace('\\\\','\\)
 </t>
 <t tx="ekr.20110414094917.2391"></t>
 <t tx="ekr.20110414094917.2406"></t>
@@ -8420,8 +8421,8 @@ def putUnknownAttributes(self,v):
             v.b = b 
     else:
         v = leoNodes.vnode(context=c)
-        v.setBodyString(b)
-        v.setHeadString(h)
+        v.setBodyString(self.unescape(b))
+        v.setHeadString(self.unescape(h))
         v.fileIndex = g.app.nodeIndices.scanGnx(gnx,0)
         self.v_dict [gnx] = v
 
