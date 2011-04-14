@@ -1099,7 +1099,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,1,2,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8415,7 +8415,6 @@ def putUnknownAttributes(self,v):
     trace = True and not g.unitTesting
     children = []
     json_children = json_node.get('children',[])
-    g.trace(json_children)
 
     for json_child in json_children:
         gnx = json_child.get('id')
@@ -8443,7 +8442,7 @@ def putUnknownAttributes(self,v):
 
     c = self.c
     trace = True and not g.unitTesting
-    if trace: g.trace(json_node)
+    # if trace: g.trace(json_node)
     gnx = json_node.get('id','')
     json_tnode = self.t_dict.get(gnx)
     assert json_tnode
@@ -8806,19 +8805,26 @@ def handle_json_vnode_attributes (self,sax_node,v):
     if not parent_p:
         return g.trace('not found: %s' % tag)
         
-    json_vnodes = vnodes.get('vnodes',[])
-    assert json_vnodes
-
+    aList = vnodes.get('vnodes',[])
+    assert aList
+    
+    # Create a dummy node for the children aList.
+    dummy_json_node = { "children":aList }
     parent_v = parent_p.v
-    n = 0
-    for json_vnode in json_vnodes:
-        gnx = json_vnode.get('id')
-        # json_tnode = self.t_dict.get(gnx)
-        # g.trace(json_tnode.get('head'))
-        v = fc.create_json_vnode(json_vnode,parent_v)
-        fc.create_json_children(json_vnode,v)
-        v._linkAsNthChild (parent_v,n)
-        n += 1
+    
+    if 1:
+        fc.create_json_children(dummy_json_vnode,parent_v)
+    else:
+        parent_v = parent_p.v
+        n = 0
+        for json_vnode in json_vnodes:
+            gnx = json_vnode.get('id')
+            # json_tnode = self.t_dict.get(gnx)
+            # g.trace(json_tnode.get('head'))
+            v = fc.create_json_vnode(json_vnode,parent_v)
+            fc.create_json_children(json_vnode,v)
+            v._linkAsNthChild (parent_v,n) ### Causing clone problems.
+            n += 1
 
     return None ###
         
