@@ -483,11 +483,9 @@ class GetImage:
     """Image handling functions"""
     
     @staticmethod
-    def get_image_html(path, head, body):
-        """relative to path (if needed), get html to display the image referenced
+    def get_image(path, head, body):
+        """relative to path (if needed), get the image referenced
         in the head or body string"""
-        
-        print path, head, body
         
         if head.startswith('@image'):
             head = head[6:].strip()
@@ -500,17 +498,17 @@ class GetImage:
             src, descr = bsplit[0], head
             
         if src:
-            html = GetImage.make_image_html(path, src, fail_ok=True)
-            if html:
-                return html, descr.strip()
+            img = GetImage.make_image(path, src, fail_ok=True)
+            if img:
+                return img, descr.strip()
             
         # then try using head string
-        html = GetImage.make_image_html(path, head, fail_ok=False)
+        img = GetImage.make_image(path, head, fail_ok=False)
         
-        return html, body.strip()
+        return img, body.strip()
         
     @staticmethod
-    def make_image_html(path, src, fail_ok=False):
+    def make_image(path, src, fail_ok=False):
         
         if '//' not in src or src.startswith('file://'):
             testpath = src
@@ -520,8 +518,8 @@ class GetImage:
             # file on local file system
             testpath = g.os_path_finalize_join(path, testpath)
             if g.os_path_exists(testpath):
-                return "<img src=%s/>" % quoteattr('%s'%testpath)
-                
+                return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))                
+
             # explicit file://, but no such file exists
             if src.startswith('file://'):
                 if fail_ok:
@@ -536,8 +534,12 @@ class GetImage:
         else:
             testpath = src
             
-        if GetImage.check_url(testpath):
-            return "<img src=%s/>" % quoteattr(testpath)
+        data = GetImage.get_url(testpath)
+
+        if data:
+            img = QtGui.QPixmap()
+            if img.loadFromData(data):
+                return QtGui.QGraphicsPixmapItem(img)
         
         if fail_ok:
             return None
@@ -545,24 +547,19 @@ class GetImage:
         return GetImage._no_image()  
             
     @staticmethod
-    def check_url(url):
+    def get_url(url):
         try:
-            response = urllib.urlopen(GetImage.HeadRequest(url))
+            response = urllib.urlopen(url)
         except urllib.URLError:  # hopefully not including redirection
             return False
         
-        return True
-
-    # http://stackoverflow.com/questions/107405/how-do-you-send-a-head-http-request-in-python
-    class HeadRequest(urllib.Request):
-        def get_method(self):
-            return "HEAD"
-        
+        return response.read()
+ 
     @staticmethod
     def _no_image():
         testpath = g.os_path_abspath(g.os_path_join(
             g.app.loadDir,'../plugins/GraphCanvas/no_image.png'))
-        return "<img src=%s/>" % quoteattr('file://%s'%testpath)
+        return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
            
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtGui.QGraphicsItemGroup):
@@ -734,7 +731,7 @@ class nodeComment(nodeRect):
 
     def _set_text(self, what):
         text = self.get_text()
-        if self.node.h.startswith('@html ') or text[0] == '<':
+        if self.node.h.startswith('@html ') or text and text[0] == '<':
             what.setHtml(text)
         else:
             what.setPlainText(text)
@@ -743,8 +740,6 @@ class nodeComment(nodeRect):
         """return a canvas item for the text in the foreground"""
         item = QtGui.QGraphicsTextItem()
         
-        item.setOpenExternalLinks(True)
-
         f = item.font()
         f.setPointSize(7)
         item.setFont(f)
@@ -830,16 +825,14 @@ class nodeImage(nodeBase):
           
     def bg_item(self):
 
-        html, descr = GetImage.get_image_html('/', self.node.h, self.node.b)
-        bg = QtGui.QGraphicsTextItem()
-        bg.setHtml("<h4>test</h4>%s"%html)
-        print html
+        img, descr = GetImage.get_image('/', self.node.h, self.node.b)
+
         self.setToolTip(descr)
         
-        return bg
+        return img
         
     def size(self):
-        return self.bg.document().size()
+        return self.bg.pixmap().size()
 
     def do_update(self):
         pass
