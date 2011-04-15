@@ -580,7 +580,7 @@ class baseFileCommands:
         self.copiedTree = None
         self.gnxDict = {}
             # keys are gnx strings as returned by canonicalTnodeIndex.
-            # Values are gnx's.
+            # Values are vnodes.
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: ** Reading
