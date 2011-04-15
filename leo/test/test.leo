@@ -1094,7 +1094,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8435,7 +8435,7 @@ def putUnknownAttributes(self,v):
             gnx,id(v),len(b),h))
 
     self.handle_json_tnode_attributes(json_node,v)
-    self.handle_json_tnode_attributes(json_node,v)
+    self.handle_json_vnode_attributes(json_node,v)
     return v
 </t>
 <t tx="ekr.20110414094917.2410">def handle_json_tnode_attributes (self,json_node,v):
@@ -8462,7 +8462,7 @@ def putUnknownAttributes(self,v):
 def handle_json_vnode_attributes (self,sax_node,v):
 
     trace = False and not g.unitTesting
-    d = sax_node.attributes
+    d = sax_node.get('attributes',{})
 
     s = d.get('a')
     if s:
@@ -8749,7 +8749,7 @@ def handle_json_vnode_attributes (self,sax_node,v):
     
     '''A kludge so we can properly link nodes during testing.
     
-    (In actual practice, is would not be needed because
+    (In actual practice, this would not be needed because
     there would be no previously existing nodes.)'''
     
     c = self.c
