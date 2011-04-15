@@ -411,7 +411,7 @@ The v.u Python property allows plugins to get and set v.unknownAttributes easily
     d = v.u # gets uA (the outer dict) for v
     v.u = d # sets uA (the outer dict) for v
 
-For example:
+For example::
 
     plugin_name = 'xyzzy'
     d = v.u # Get the outer dict.
