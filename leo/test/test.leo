@@ -1094,7 +1094,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8044,6 +8044,11 @@ import leo.plugins.qtGui as qtGui
 '''A script that writes/reads .leo files in JSON format.'''
 
 &lt;&lt; imports &gt;&gt;
+
+# To do:
+# Create putDescendentVnodeUas, putDescendentAttributes.
+# Write "marked" item if the node is marked.
+# Decide on the final names for all items.
 
 @others
 
