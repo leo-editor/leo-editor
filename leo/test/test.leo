@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.64" body_secondary_ratio="0.47">
-	<global_window_position top="156" left="347" height="887" width="1568"/>
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.39">
+	<global_window_position top="82" left="221" height="887" width="1568"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -643,6 +643,7 @@
 <v t="ekr.20110414094917.2416"><vh>resolve_tnode_lists</vh></v>
 <v t="ekr.20110414094917.2417"><vh>resolve_archived_position</vh></v>
 </v>
+<v t="ekr.20110414185051.2435"><vh>create_v_dict</vh></v>
 <v t="ekr.20110414094917.2422"><vh>read_json_data &amp; helper</vh>
 <v t="ekr.20110414094917.2432"><vh>create_t_dict</vh></v>
 </v>
@@ -1093,7 +1094,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,1,2,3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8044,12 +8045,10 @@ import leo.plugins.qtGui as qtGui
 
 &lt;&lt; imports &gt;&gt;
 
-# To do: clones don't show up until this file is reloaded.
-#   (The code should really create a new outline.)
-
 @others
 
 # os.system('cls')
+
 TestClass(c).main()
 </t>
 <t tx="ekr.20110414063538.2373">def putFile(self):
@@ -8071,11 +8070,11 @@ TestClass(c).main()
     if self.json:
         comma = g.choose(self.needJsonComma,',\n','')
         if ua:
-            self.put('%s{"id":"%s","head":"%s","ua":"%s","body":"%s"}' % (
-                comma,gnx,self.escape(v.h),self.escape(ua),self.escape(body)))
+            self.put('%s{"id":%s,"head":%s,"ua":%s,"body":%s}' % (
+                comma,self.escape(gnx),self.escape(v.h),self.escape(ua),self.escape(b)))
         else:
-            self.put('%s{"id":"%s","head":"%s","body":"%s"}' % (
-                comma,gnx,self.escape(v.h),self.escape(body)))
+            self.put('%s{"id":%s,"head":%s,"body":%s}' % (
+                comma,self.escape(gnx),self.escape(v.h),self.escape(b)))
         self.needJsonComma = True
     else:
         body = xml.sax.saxutils.escape(b)
@@ -8339,6 +8338,7 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
     c.selectPosition(p)
     
     s = tc.putFile()
+    if trace: g.trace(repr(s))
     aList = json.loads(s)
     if trace: pprint.pprint(aList)
     
@@ -8348,6 +8348,7 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
         aList2 = json.loads(s2)
         assert(aList==aList2)
     
+    tc.create_v_dict()
     tc.read_json_data(aList)
     c.redraw_now()</t>
 <t tx="ekr.20110414063538.2385">import leo.core.leoNodes as leoNodes
@@ -8358,7 +8359,8 @@ import xml.sax
 import xml.sax.saxutils
 import os</t>
 <t tx="ekr.20110414073628.2389">def escape(self,s):
-    return s.replace('\\','\\\\').replace('"','\\"')
+    '''Perform the json string escapes on s, enclosing the result in double quotes.'''
+    return json.dumps(s)
 
 def indent(self):
     return ' '*self.level
@@ -8368,9 +8370,6 @@ def put(self,s):
 
 def putUnknownAttributes(self,v):
     pass
-    
-def unescape(self,s):
-    return s.replace('\\"','"').replace('\\\\','\\)
 </t>
 <t tx="ekr.20110414094917.2391"></t>
 <t tx="ekr.20110414094917.2406"></t>
@@ -8421,8 +8420,8 @@ def unescape(self,s):
             v.b = b 
     else:
         v = leoNodes.vnode(context=c)
-        v.setBodyString(self.unescape(b))
-        v.setHeadString(self.unescape(h))
+        v.setBodyString(b)
+        v.setHeadString(h)
         v.fileIndex = g.app.nodeIndices.scanGnx(gnx,0)
         self.v_dict [gnx] = v
 
@@ -8726,11 +8725,11 @@ def handle_json_vnode_attributes (self,sax_node,v):
 </t>
 <t tx="ekr.20110414094917.2423"># The root node for testing read_json_data.</t>
 <t tx="ekr.20110414094917.2424"></t>
-<t tx="ekr.20110414094917.2425"># child1 body</t>
-<t tx="ekr.20110414094917.2426"># child1 body</t>
-<t tx="ekr.20110414094917.2427"># grandchild11 body</t>
-<t tx="ekr.20110414094917.2428"># grandchild12 body</t>
-<t tx="ekr.20110414094917.2429"># grandchild21 body</t>
+<t tx="ekr.20110414094917.2425"># child 1 text: test of escapes: "\"</t>
+<t tx="ekr.20110414094917.2426"></t>
+<t tx="ekr.20110414094917.2427"># grandchild11 body.</t>
+<t tx="ekr.20110414094917.2428"></t>
+<t tx="ekr.20110414094917.2429"></t>
 <t tx="ekr.20110414094917.2432">def create_t_dict(self,json_node):
     
     tnodes = json_node.get('tnodes',[])
@@ -8741,5 +8740,17 @@ def handle_json_vnode_attributes (self,sax_node,v):
         assert gnx
         self.t_dict[gnx] = z
         </t>
+<t tx="ekr.20110414185051.2435">def create_v_dict(self):
+    
+    '''A kludge so we can properly link nodes during testing.
+    
+    (In actual practice, is would not be needed because
+    there would be no previously existing nodes.)'''
+    
+    c = self.c
+    
+    for v in c.all_unique_nodes():
+        self.v_dict[v.gnx] = v
+</t>
 </tnodes>
 </leo_file>
