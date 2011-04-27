@@ -127,11 +127,6 @@ def run(theDir,fn,suppress,rpython=False):
 #@+node:ekr.20100221142603.5645: ** << defines >>
 coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
-guiPluginsTable = (
-    ('qtGui','W0221,W0233'),
-        # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-    ('tkGui','W0221,W0222'),
-)
 passList = getPassList()
 pluginsTable = getPluginsTable()
 tkPass = getTkPass()
@@ -155,6 +150,13 @@ recentCoreList = (
         # E0611: no name 'parse' in urllib.
 )
 
+guiPluginsTable = (
+    ('qtGui','E0611,W0221,W0233'),
+        # E0611: No name 'xxx' in module 'urllib'
+        # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
+    ('tkGui','W0221,W0222'),
+)
+
 recentPluginsList = (
     # 'screenshots',
     # 'tkGui','codewisecompleter',
@@ -171,8 +173,8 @@ tables_table = (
     # (rpythonList,'core'),
     # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    (coreList,'core'),
-    # (guiPluginsTable,'plugins'),
+    # (coreList,'core'),
+    (guiPluginsTable,'plugins'),
     #(tkPass,'plugins'),
     #(passList,'plugins'),
     #(externalList,'external'),

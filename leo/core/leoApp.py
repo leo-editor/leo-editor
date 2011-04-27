@@ -99,6 +99,9 @@ class LeoApp:
             # For communication between Execute Script command and scripts.
         self.signon_printed = False
         self.silentMode = False # True if signon is more silent.
+        self.start_fullscreen = False # For qtGui plugin.
+        self.start_maximized = False # For qtGui plugin.
+        self.start_minimized = False # For qtGui plugin.
         self.statsDict = {}
             # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
         self.trace = False # True: enable debugging traces.

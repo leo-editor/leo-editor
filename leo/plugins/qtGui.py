@@ -1349,7 +1349,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             # If the response has Content-Disposition, we take file name from it 
             localName = key.split('filename=')[1] 
             if localName[0] == '"' or localName[0] == "'": 
-               localName = localName[1:-1] 
+                localName = localName[1:-1] 
         elif r.url != url:  
             # if we were redirected, the real file name we take from the final URL 
             localName = self.url2name(r.url) 
@@ -10102,7 +10102,7 @@ class jEditColorizer:
         
     def match_url_h(self,s,i):
         
-         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
             # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
     #@+node:ekr.20110304061301.14040: *5* match_compiled_regexp (new)
     def match_compiled_regexp (self,s,i,kind,regexp,delegate=''):
