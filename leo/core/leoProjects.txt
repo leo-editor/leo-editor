@@ -7667,8 +7667,11 @@ def change(self,event=None):
 
     selection = self.tab.getSuggestion()
     if selection:
-        if hasattr(self.tab,'change_i') and self.tab.change_i is not None:
-            start,end = oldSel = self.tab.change_i,self.tab.change_j
+        # Use getattr to keep pylint happy.
+        if hasattr(self.tab,'change_i') and getattr(self.tab,'change_i') is not None:
+            start = getattr(self.tab,'change_i')
+            end   = getattr(self.tab,'change_j')
+            oldSel = start,end
             # g.trace('using',start,end)
         else:
             start,end = oldSel = w.getSelectionRange()

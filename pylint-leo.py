@@ -20,10 +20,14 @@ def getCoreList():
         ('leoChapters',     ''),
         ('leoCommands',     ''),
         ('leoEditCommands', ''),
-        ('leoFileCommands', ''),
+        ('leoFileCommands', 'E1120'),
+            # E1120: no value passed for param.
+            # E1101: (dangerous) Class 'str' has no 'maketrans' member
         ('leoFind',         ''),
         ('leoFrame',        ''),
-        ('leoGlobals',      ''),
+        ('leoGlobals',      ''), 
+            # E1103: (dangerous) Instance of 'ParseResult' has no 'xxx' member,
+            # (but some types could not be inferred)
         ('leoGui',          ''),
         ('leoImport',       ''),
         ('leoMenu',         ''),
@@ -111,7 +115,10 @@ def run(theDir,fn,suppress,rpython=False):
     if not fn.endswith('.py'): fn = fn+'.py'
     args.append(fn)
     if os.path.exists(fn):
-        print('pylint-leo.py: %s' % fn)
+        if suppress:
+            print('pylint-leo.py: %s suppress: %s' % (fn,suppress))
+        else:
+            print('pylint-leo.py: %s' % fn)
         lint.Run(args)
     else:
         print('file not found:',fn)
@@ -141,8 +148,11 @@ no_suppressions = ''
 recentCoreList = (
     # ('leoAtFile',no_suppressions),
     # ('leoEditCommands',no_suppressions),
-    ('leoFileCommands',no_suppressions),
-    ('leoGlobals',no_suppressions),
+    ('leoFileCommands','E1120,E1101'),
+        # E1120: no value passed for param.
+        # #1101: (dangerous) Class 'str' has no 'maketrans' member
+    ('leoGlobals','E0611'),
+        # E0611: no name 'parse' in urllib.
 )
 
 recentPluginsList = (
@@ -159,9 +169,9 @@ recentPluginsList = (
 
 tables_table = (
     # (rpythonList,'core'),
-    (recentCoreList,'core'),
+    # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    # (coreList,'core'),
+    (coreList,'core'),
     # (guiPluginsTable,'plugins'),
     #(tkPass,'plugins'),
     #(passList,'plugins'),

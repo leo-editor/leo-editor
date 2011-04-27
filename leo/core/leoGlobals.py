@@ -135,7 +135,8 @@ def createStandAloneTkApp(pluginName=''):
         import Tkinter as Tk
         Pmw = g.importExtension('Pmw',pluginName=pluginName,verbose=True)
         if Tk and Pmw:
-            import leo.core.leoApp as leoApp, leoGui
+            import leo.core.leoApp as leoApp
+            import leo.core.leoGui as leoGui
             g.app = leoApp.LeoApp()
             g.app.root = Tk.Tk()
             Pmw.initialise(g.app.root)
