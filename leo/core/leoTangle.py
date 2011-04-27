@@ -487,34 +487,6 @@ class baseTangleCommands:
 
         c = self.c
 
-        if self.errors + g.app.scanErrors == 0:
-            #@+<< call tangle_done.run() or untangle_done.run() >>
-            #@+node:ekr.20031218072017.3469: *5* << call tangle_done.run() or untangle_done.run() >>
-            # Create a list of root names:
-            root_names = []
-            theDir = self.tangle_directory # Bug fix: 12/04/02
-            if not theDir: theDir = ""
-            for section in self.root_list:
-                for part in section.parts:
-                    if part.is_root:
-                        root_names.append(c.os_path_finalize_join(theDir,part.name))
-
-            if self.tangling and self.tangle_batch_flag:
-                try:
-                    import tangle_done
-                    tangle_done.run(root_names)
-                except:
-                    g.es("can not execute","tangle_done.run()")
-                    g.es_exception()
-            if not self.tangling and self.untangle_batch_flag:
-                try:
-                    import untangle_done
-                    untangle_done.run(root_names)
-                except:
-                    g.es("can not execute","tangle_done.run()")
-                    g.es_exception()
-            #@-<< call tangle_done.run() or untangle_done.run() >>
-
         # Reinitialize the symbol tables and lists.
         self.tst = {}
         self.ust = {}
