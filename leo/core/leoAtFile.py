@@ -18,10 +18,10 @@ new_write = True
 #@+node:ekr.20041005105605.2: ** << imports >>
 import leo.core.leoGlobals as g
 
-if g.app and g.app.use_psyco:
-    # print("enabled psyco classes",__file__)
-    try: from psyco.classes import *
-    except ImportError: pass
+# if g.app and g.app.use_psyco:
+    # # print("enabled psyco classes",__file__)
+    # try: from psyco.classes import *
+    # except ImportError: pass
 
 import leo.core.leoNodes as leoNodes
 
@@ -1386,7 +1386,9 @@ class atFile:
                 # Terminate a previous clone if it exists.
                 # Do not use the full terminateNode logic!
                 if hasattr(v,'tempBodyList'):
-                    v.tempBodyString = ''.join(v.tempBodyList)
+                    # v.tempBodyString = ''.join(v.tempBodyList)
+                    # To keep pylint happy.
+                    v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
                     delattr(v,'tempBodyList')
                 else:
                     # Major bug fix: 2010/07/6:

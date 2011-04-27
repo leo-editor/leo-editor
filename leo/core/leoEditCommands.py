@@ -4348,7 +4348,7 @@ class editCommandsClass (baseEditCommandsClass):
                 w.setSelectionRange(sel_1+n2,sel_2+n2,insert=insert_pt+n2)
                 changed = True
         finally:
-           self.endCommand(changed=changed,setLabel=True)
+            self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20060417183606.1: *4* moveLinesUp
     def moveLinesUp (self,event):
 

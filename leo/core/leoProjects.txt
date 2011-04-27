@@ -6481,7 +6481,7 @@ def moveLinesDown (self,event):
             w.setSelectionRange(sel_1+n2,sel_2+n2,insert=insert_pt+n2)
             changed = True
     finally:
-       self.endCommand(changed=changed,setLabel=True)
+        self.endCommand(changed=changed,setLabel=True)
 #@+node:ekr.20060417183606.1: *5* moveLinesUp
 def moveLinesUp (self,event):
 
@@ -8735,7 +8735,7 @@ def doPostPluginsInit(args,files,options):
     '''Return True if the frame was created properly.'''
 
     g.init_sherlock(args)  # Init tracing and statistics.
-    if g.app and g.app.use_psyco: startPsyco()
+    # if g.app and g.app.use_psyco: startPsyco()
 
     # Clear g.app.initing _before_ creating the frame.
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
@@ -8905,26 +8905,6 @@ def make_screen_shot(fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
-#@+node:ekr.20040411081633: *7* startPsyco
-def startPsyco ():
-
-    try:
-        import psyco
-        if 0:
-            theFile = r"c:\prog\test\psycoLog.txt"
-            g.es("psyco now logging to:",theFile,color="blue")
-            psyco.log(theFile)
-            psyco.profile()
-        psyco.full()
-        g.es("psyco now running",color="blue")
-
-    except ImportError:
-        g.app.use_psyco = False
-
-    except:
-        g.pr("unexpected exception importing psyco")
-        g.es_exception()
-        g.app.use_psyco = False
 #@+node:ekr.20110122083721.12583: *5* Writing...
 #@+node:ekr.20031218072017.3037: *6* putGlobals
 # Changed for Leo 4.0.

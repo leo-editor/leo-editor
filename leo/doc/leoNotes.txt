@@ -4727,6 +4727,26 @@ if not self.tangling and self.untangle_batch_flag:
     except:
         g.es("can not execute","tangle_done.run()")
         g.es_exception()
+#@+node:ekr.20040411081633: *3* startPsyco
+def startPsyco ():
+
+    try:
+        import psyco
+        if 0:
+            theFile = r"c:\prog\test\psycoLog.txt"
+            g.es("psyco now logging to:",theFile,color="blue")
+            psyco.log(theFile)
+            psyco.profile()
+        psyco.full()
+        g.es("psyco now running",color="blue")
+
+    except ImportError:
+        g.app.use_psyco = False
+
+    except:
+        g.pr("unexpected exception importing psyco")
+        g.es_exception()
+        g.app.use_psyco = False
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

@@ -14,10 +14,24 @@ from pylint import lint
 def getCoreList():
 
     return (
-        'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
-        'leoEditCommands','leoFileCommands','leoFind','leoFrame',
-        'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
-        'leoPlugins','leoShadow','leoTangle','leoUndo',
+        ('leoApp',          ''),
+        ('leoAtFile',       ''),
+        ('leoCache',        ''),
+        ('leoChapters',     ''),
+        ('leoCommands',     ''),
+        ('leoEditCommands', ''),
+        ('leoFileCommands', ''),
+        ('leoFind',         ''),
+        ('leoFrame',        ''),
+        ('leoGlobals',      ''),
+        ('leoGui',          ''),
+        ('leoImport',       ''),
+        ('leoMenu',         ''),
+        ('leoNodes',        ''),
+        ('leoPlugins',      ''),
+        ('leoShadow',       ''),
+        ('leoTangle',       ''),
+        ('leoUndo',         ''),
     )
 #@+node:ekr.20100221142603.5641: ** getPassList
 def getPassList():
@@ -116,12 +130,19 @@ pluginsTable = getPluginsTable()
 tkPass = getTkPass()
 #@-<< defines >>
 
-all_suppressions = 'C0111,C0301,C0321,C0322,C0323,C0324,R0201,R0903,W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
+all_suppressions = 'C0111,C0301,C0321,C0322,C0323,C0324,\
+F0401,\
+R0201,R0903,\
+W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,\
+W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
+
 no_suppressions = ''
 
 recentCoreList = (
-    ('leoCache',no_suppressions),
-    ('leoImport',no_suppressions),
+    # ('leoAtFile',no_suppressions),
+    # ('leoEditCommands',no_suppressions),
+    ('leoFileCommands',no_suppressions),
+    ('leoGlobals',no_suppressions),
 )
 
 recentPluginsList = (
@@ -138,10 +159,10 @@ recentPluginsList = (
 
 tables_table = (
     # (rpythonList,'core'),
-    # (recentCoreList,'core'),
+    (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    (coreList,'core'),
-    (guiPluginsTable,'plugins'),
+    # (coreList,'core'),
+    # (guiPluginsTable,'plugins'),
     #(tkPass,'plugins'),
     #(passList,'plugins'),
     #(externalList,'external'),
@@ -152,12 +173,11 @@ for table,theDir in tables_table:
     #if table in (rpythonList,):
         # for fn in table:
             # run(theDir,fn,suppress='',rpython=True) 
-    if table in (pluginsTable,guiPluginsTable,recentCoreList):
+    if table in (coreList,pluginsTable,guiPluginsTable,recentCoreList):
         # These tables have suppressions.
         for fn,suppress in table:
             run(theDir,fn,suppress) 
     else:
         for fn in table:
             run(theDir,fn,suppress='')
-
 #@-leo

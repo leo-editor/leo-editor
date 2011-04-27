@@ -8,10 +8,10 @@
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 import leo.core.leoGlobals as g
 
-if g.app and g.app.use_psyco:
-    # g.pr("enabled psyco classes",__file__)
-    try: from psyco.classes import *
-    except ImportError: pass
+# if g.app and g.app.use_psyco:
+    # # g.pr("enabled psyco classes",__file__)
+    # try: from psyco.classes import *
+    # except ImportError: pass
 
 import leo.core.leoNodes as leoNodes
 
