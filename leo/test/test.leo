@@ -670,6 +670,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1094,7 +1095,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8756,6 +8757,11 @@ def handle_json_vnode_attributes (self,sax_node,v):
     
     for v in c.all_unique_nodes():
         self.v_dict[v.gnx] = v
+</t>
+<t tx="ekr.20110416065515.2437">from jinja2 import Template
+t = Template('Hello {{ name }}!')
+s = t.render(name='Edward K. Ream')
+print(s)
 </t>
 </tnodes>
 </leo_file>

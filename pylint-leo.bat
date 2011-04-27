@@ -15,8 +15,18 @@ REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
+goto rpython
 goto errors
 goto all
+
+:rpython
+
+echo pylint --rpython-mode
+
+echo leoAtFile.py
+call pylint.bat leo\core\leoAtFile.py   --rcfile=leo\test\pylint-leo-rc.txt
+
+goto done
 
 :errors
 

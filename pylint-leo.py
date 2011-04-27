@@ -83,15 +83,21 @@ def getTkPass():
         'xcc_nodes',
     )
 #@+node:ekr.20100221142603.5644: ** run
-def run(theDir,fn,suppress):
+# Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
+# From: sys.exit(self.linter.msg_status)
+# To:   print('EKR: exit status',self.linter.msg_status)
+def run(theDir,fn,suppress,rpython=False):
     fn = os.path.join('leo',theDir,fn)
-    args = ['--rcfile=leo/test/pylint-leo-rc.txt']
-    if suppress: args.append('--disable-msg=%s' % (suppress))
+    rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
+    assert os.path.exists(rc_fn)
+    args = ['--rcfile=%s' % (rc_fn)]
+    if suppress: args.append('--disable=%s' % (suppress))
+    # if rpython: args.append('--rpython-mode') # Probably does not exist.
     fn = os.path.abspath(fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     args.append(fn)
     if os.path.exists(fn):
-        print('*****',fn,suppress)
+        print('pylint-leo.py: %s' % fn)
         lint.Run(args)
     else:
         print('file not found:',fn)
@@ -110,9 +116,12 @@ pluginsTable = getPluginsTable()
 tkPass = getTkPass()
 #@-<< defines >>
 
+all_suppressions = 'C0111,C0301,C0321,C0322,C0323,C0324,R0201,R0903,W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
+no_suppressions = ''
+
 recentCoreList = (
-    'leoCache',
-    'leoImport',
+    ('leoCache',no_suppressions),
+    ('leoImport',no_suppressions),
 )
 
 recentPluginsList = (
@@ -123,7 +132,12 @@ recentPluginsList = (
     # 'trace_gc_plugin',
 )
 
+# rpythonList = (
+#    'leoApp',
+# )
+
 tables_table = (
+    # (rpythonList,'core'),
     # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
     (coreList,'core'),
@@ -135,7 +149,10 @@ tables_table = (
 )
 
 for table,theDir in tables_table:
-    if table in (pluginsTable,guiPluginsTable):
+    #if table in (rpythonList,):
+        # for fn in table:
+            # run(theDir,fn,suppress='',rpython=True) 
+    if table in (pluginsTable,guiPluginsTable,recentCoreList):
         # These tables have suppressions.
         for fn,suppress in table:
             run(theDir,fn,suppress) 

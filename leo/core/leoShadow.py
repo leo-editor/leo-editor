@@ -188,15 +188,15 @@ class shadowController:
         # 2011/01/26: bogomil: redirect shadow dir
         if self.shadow_in_home_dir:
 
-           # Each .leo file has a separate shadow_cache in base dir
-           fname = "_".join([os.path.splitext(os.path.basename(c.mFileName))[0],"shadow_cache"])
+            # Each .leo file has a separate shadow_cache in base dir
+            fname = "_".join([os.path.splitext(os.path.basename(c.mFileName))[0],"shadow_cache"])
         
-           # On Windows incorporate the drive letter to the private file path
-           if os.name == "nt":
-               fileDir = fileDir.replace(':','%')
+            # On Windows incorporate the drive letter to the private file path
+            if os.name == "nt":
+                fileDir = fileDir.replace(':','%')
         
-           # build the chache path as a subdir of the base dir            
-           fileDir = "/".join([baseDir, fname, fileDir])
+            # build the chache path as a subdir of the base dir            
+            fileDir = "/".join([baseDir, fname, fileDir])
 
         return baseDir and c.os_path_finalize_join(
                 baseDir,

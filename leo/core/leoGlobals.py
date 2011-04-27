@@ -5419,7 +5419,7 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     v = v or str(t) # in case v is empty, we'll at least have the execption type
                     if trace: g.trace(v,moduleName,findPath)
                     if v not in exceptions:
-                         exceptions.append(v)
+                        exceptions.append(v)
             else:
                 #unable to load module, display all exception messages
                 for e in exceptions:
