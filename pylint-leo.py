@@ -174,11 +174,11 @@ tables_table = (
     # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
     # (coreList,'core'),
-    (guiPluginsTable,'plugins'),
-    #(tkPass,'plugins'),
-    #(passList,'plugins'),
-    #(externalList,'external'),
-    #(pluginsTable,'plugins'),
+    # (guiPluginsTable,'plugins'),
+    # (tkPass,'plugins'),
+    # (passList,'plugins'),
+    # (externalList,'external'),
+    (pluginsTable,'plugins'),
 )
 
 for table,theDir in tables_table:

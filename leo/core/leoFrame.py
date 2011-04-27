@@ -2828,6 +2828,7 @@ class nullIconBarClass:
     def __init__ (self,c,parentFrame):
 
         self.c = c
+        self.iconFrame = None
         self.parentFrame = parentFrame
         self.w = g.nullObject()
     #@+node:ekr.20070301164543.2: *3* add

@@ -1823,126 +1823,116 @@ class ToolbarTkIconBarClass(iconbar, object):
         first be removed
 
         """
-
+        
+        # 2011/04/27: Don't return inside a 'finally' block!
+        c = self.c
+        #@+<< remove from current bar >>
+        #@+node:bobjack.20080508125414.13: *5* << remove from current bar >>
         try:
-            c = self.c
-            #@+<< remove from current bar >>
-            #@+node:bobjack.20080508125414.13: *5* << remove from current bar >>
+            bar = widget.leoIconBar
+        except:
+            bar = None
+
+        if bar:
+            bar.removeWidget(widget, repack=False)
+        #@-<< remove from current bar >>
+
+        barHead = self.barHead
+        buttons = barHead._buttons
+
+        #@+<< validate index >>
+        #@+node:bobjack.20080508125414.12: *5* << validate index >>
+        if index is not None:
             try:
-                bar = widget.leoIconBar
+                idx = int(index)
             except:
-                bar = None
+                idx = None
 
-            if bar:
-                bar.removeWidget(widget, repack=False)
-            #@-<< remove from current bar >>
+            if idx is None:
+                if index in buttons:
+                    idx = buttons.index(index)
 
-            barHead = self.barHead
-            buttons = barHead._buttons
-
-            #@+<< validate index >>
-            #@+node:bobjack.20080508125414.12: *5* << validate index >>
-            if index is not None:
-                try:
-                    idx = int(index)
-                except:
-                    idx = None
-
-                if idx is None:
-                    if index in buttons:
-                        idx = buttons.index(index)
-
-                index = idx
-
-                if index is None: g.es('Icon Bar index out of range')
-
-
-
-
-            #@-<< validate index >>
-
-            #@+<< bind widget and drag handles >>
-            #@+node:bobjack.20080506090043.2: *5* << bind widget and drag handles >>
-
-            c.bind(widget,'<ButtonPress-1>', barHead.onPress)
-            c.bind(widget,'<ButtonRelease-1>', barHead.onRelease)
-
-            try:
-                drag = widget.leoDragHandle
-            except AttributeError:
-                drag = None
-
-            if drag:
-                if not isinstance(drag, (tuple, list)):
-                    drag = (drag,)
-
-                for dw in drag:
-
-                    dw.leoDragMaster = widget
-
-                    c.bind(dw,'<ButtonPress-1>', barHead.onPress )
-                    c.bind(dw,'<ButtonRelease-1>', barHead.onRelease)
-
-            widget.c = self.c
-            widget.leoIconBar = barHead
-            #@-<< bind widget and drag handles >>
-
-            if index is not None:
-                try:
-                    buttons.insert(index, widget)
-                except IndexError:
-                    index = None
+            index = idx
 
             if index is None:
-                buttons.append(widget)
+                g.es('Icon Bar index out of range')
+        #@-<< validate index >>
 
-            if repack:
-                self.repackButtons()
+        #@+<< bind widget and drag handles >>
+        #@+node:bobjack.20080506090043.2: *5* << bind widget and drag handles >>
+        c.bind(widget,'<ButtonPress-1>', barHead.onPress)
+        c.bind(widget,'<ButtonRelease-1>', barHead.onRelease)
 
-        finally:
-            return widget
+        try:
+            drag = widget.leoDragHandle
+        except AttributeError:
+            drag = None
 
+        if drag:
+            if not isinstance(drag, (tuple, list)):
+                drag = (drag,)
+
+            for dw in drag:
+
+                dw.leoDragMaster = widget
+
+                c.bind(dw,'<ButtonPress-1>', barHead.onPress )
+                c.bind(dw,'<ButtonRelease-1>', barHead.onRelease)
+
+        widget.c = self.c
+        widget.leoIconBar = barHead
+        #@-<< bind widget and drag handles >>
+
+        if index is not None:
+            try:
+                buttons.insert(index, widget)
+            except IndexError:
+                index = None
+
+        if index is None:
+            buttons.append(widget)
+
+        if repack:
+            self.repackButtons()
+
+        return widget
     #@+node:bobjack.20080501181134.3: *4* removeWidget
     def removeWidget(self, widget, repack=True):
 
         """Remove widget from the list of manged widgets and repack the buttons."""
 
+        # 2011/04/27: Don't return inside a 'finally' block!
+        barHead = self.barHead
+        barHead._buttons.remove(widget)
+        #@+<< unbind widget and drag handles >>
+        #@+node:bobjack.20080506090043.3: *5* << unbind widget and drag handles >>
+        widget.unbind('<ButtonPress-1>')
+        widget.unbind('<ButtonRelease-1>')
+
         try:
-            barHead = self.barHead
+            drag = widget.leoDragHandlle
+        except AttributeError:
+            drag = None
 
-            barHead._buttons.remove(widget)
+        if drag:
+            if not isinstance(drag, (tuple, list)):
+                drag = (drag,)
 
-            #@+<< unbind widget and drag handles >>
-            #@+node:bobjack.20080506090043.3: *5* << unbind widget and drag handles >>
-            widget.unbind('<ButtonPress-1>')
-            widget.unbind('<ButtonRelease-1>')
+            for dw in drag:
+                try:
+                    del dw.leoDragMaster
+                    dw.unbind('<ButtonPress-1>')
+                    dw.unbind('<ButtonRelease-1>')
+                except AttributeError:
+                    g.es_exception()
 
-            try:
-                drag = widget.leoDragHandlle
-            except AttributeError:
-                drag = None
+        #@-<< unbind widget and drag handles >>
+        widget.leoIconBar = None
 
-            if drag:
-                if not isinstance(drag, (tuple, list)):
-                    drag = (drag,)
+        if repack:
+            self.repackButtons()
 
-                for dw in drag:
-                    try:
-                        del dw.leoDragMaster
-                        dw.unbind('<ButtonPress-1>')
-                        dw.unbind('<ButtonRelease-1>')
-                    except AttributeError:
-                        g.es_exception()
-
-            #@-<< unbind widget and drag handles >>
-
-            widget.leoIconBar = None
-
-            if repack:
-                self.repackButtons()
-
-        finally:
-            return widget
+        return widget
     #@+node:bobjack.20080508125414.4: *4* clear
     def clear(self):
 

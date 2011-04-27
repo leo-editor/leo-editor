@@ -205,15 +205,14 @@ def onUrl1 (tag,keywords):
 #   http://localhost/MySiteUnderDevelopment/index.html
 #   file://home/me/todolist.html
 #@@c
-    if trace: logUrl(urlTuple)
-
     try:
         try:
             urlTuple = urlparse.urlsplit(url)
-            if trace: logUrl(ulrTuple)
+            if trace: logUrl(urlTuple)
         except:
             g.es("exception interpreting the url " + url)
             g.es_exception()
+            return False
 
         if not urlTuple[0]:
             urlProtocol = "file" # assume this protocol by default
@@ -279,6 +278,7 @@ def onUrl1 (tag,keywords):
     except:
         g.es("exception opening " + url)
         g.es_exception()
+        return False
 #@+node:rogererens.20041125015212: *3* logUrl
 def logUrl(urlTuple):
 
