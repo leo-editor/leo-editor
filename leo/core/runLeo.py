@@ -102,8 +102,9 @@ def profile_leo ():
     p = pstats.Stats(name)
     p.strip_dirs()
     p.sort_stats('module','calls','time','name')
-    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
-    p.print_stats(reFiles)
+    #reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
+    #p.print_stats(reFiles)
+    p.print_stats()
 
 prof = profile_leo
 #@+node:ekr.20031218072017.1934: ** run & helpers
