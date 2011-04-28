@@ -117,6 +117,34 @@ def openwith_rclick(c,p, menu):
         action.triggered.connect(create_rclick_cb)
         
 
+    def importfiles_rclick_cb():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList) + "/"
+
+        table = [("All files","*"),
+            ("Python files","*.py"),]
+        fnames = g.app.gui.runOpenFileDialog(
+            title = "Import files",filetypes = table, 
+            defaultextension = '.notused',
+            multiple=True, startpath = path)
+        
+        
+        def shorten(pth, prefix):
+            if not pth.startswith(prefix):
+                return pth
+            return pth[len(prefix):]
+            
+        adds = [shorten(pth, path) for pth in fnames]
+        print "opening",adds
+            
+
+        
+    if exists and head == "@path":
+        action = menu.addAction("Import files")
+        action.triggered.connect(importfiles_rclick_cb)
+        
+        
+
     if head != "@path":
         if editor:
             action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
@@ -125,6 +153,7 @@ def openwith_rclick(c,p, menu):
     action = menu.addAction("Open " + path)
     action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
 #@+node:ville.20090630221949.5462: ** refresh_rclick
+   
 def refresh_rclick(c,p, menu):
     h = p.h
     split = h.split(None,1)

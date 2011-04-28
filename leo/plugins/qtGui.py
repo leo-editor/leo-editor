@@ -8164,18 +8164,21 @@ class leoQtGui(leoGui.leoGui):
         s = QtGui.QFileDialog.getExistingDirectory (parent,title,startdir)
         return g.u(s)
     #@+node:ekr.20081121105001.488: *5* runOpenFileDialog
-    def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False):
+    def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, startpath = None):
 
         """Create and run an Qt open file dialog ."""
 
+        if startpath is None:
+            startpath = os.curdir
+            
         parent = None
         filter = self.makeFilter(filetypes)
 
         if multiple:
-            lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
+            lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
             return [g.u(s) for s in lst]
         else:
-            s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
+            s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
             return g.u(s)
     #@+node:ekr.20090722094828.3653: *5* runPropertiesDialog (qtGui)
     def runPropertiesDialog(self,
