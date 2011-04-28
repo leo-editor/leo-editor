@@ -13,6 +13,10 @@ This plugin creates a frame for editing attributes similar to::
 ``attrib_edit`` is also intended to provide attribute editing for
 other plugins, see below.
 
+The editor panel appears in the Log pane in its own tab.  If the free_layout
+system is active you can move it into its own pane (e.g. below the body text)
+by right clicking the pane dividers.
+
 The attributes can be stored in different ways, three modes are implemented
 currently:
 
@@ -94,13 +98,6 @@ plugins. Here are some points of interest:
   in v.u.  When other plugins can register to manipulate the
   attribute list each plugin could address this, with unordered
   presentation in the absence of the client plugin.
-
-- There's code to have the editor appear in a tab instead
-  of its own area under the body editor, but (a) this is
-  always being buried by output in the log window, and
-  (b) there's a bug which leaves some (harmless) ghost 
-  widgets in the background.  Enable by @setting
-  ``attrib_edit_placement`` to 'tab'.
 
 '''
 #@-<< docstring >>
