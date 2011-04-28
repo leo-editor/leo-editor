@@ -326,14 +326,17 @@ class ValueSpaceController:
     def update (self):
         
         '''The vs-update command.'''
-        
+
+
+        # names are reversed, xxx TODO fix later    
         self.render_phase() # Pass 1
         self.update_vs()    # Pass 2
         self.c.bodyWantsFocus()
     #@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) & helpers
     def render_phase(self):
         '''Update p's tree (or the entire tree) as follows:
-        - Evaluate all @= nodes and the *headlines* of all @a <expr> nodes.
+
+        - Evaluate all @= nodes and assign them to variables
         - Evaluate the body of the *parent* nodes for all @a nodes.
         '''
         
