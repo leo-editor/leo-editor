@@ -64,6 +64,16 @@ import subprocess, os
 #@+node:ville.20090630210947.10190: ** globals
 # print "Importing contextmenu"
 inited = False
+#@+node:ville.20110428163751.7685: ** guess_file_type
+def guess_file_type(fname):
+    base, ext = os.path.splitext(fname)
+    ext = ext.lower()
+    
+    if ext in ['.txt']:
+        return "@edit"
+    return "@auto"
+        
+            
 #@+node:ville.20090630210947.5465: ** openwith_rclick
 def openwith_rclick(c,p, menu):
     """ Show "Edit with" in context menu for external file root nodes (@thin, @auto...) 
@@ -134,9 +144,12 @@ def openwith_rclick(c,p, menu):
                 return pth
             return pth[len(prefix):]
             
-        adds = [shorten(pth, path) for pth in fnames]
-        print "opening",adds
+        adds = [guess_file_type(pth) + " " + shorten(pth, path) for pth in fnames]
+        for a in adds:
+            chi = p.insertAsLastChild()
+            chi.h = a
             
+        c.readAtFileNodes()
 
         
     if exists and head == "@path":
