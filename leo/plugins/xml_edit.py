@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20110428102237.20321: * @file xml_edit.py
+#@+node:tbrown.20110428144124.29061: * @file xml_edit.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -127,6 +127,8 @@ def append_element(xml_node, to_leo_node):
         name = [get_tag(xml_node)]
         if xml_node.get('name'):
             name.append(xml_node.get('name'))
+        if xml_node.xpath("./*[name()='name']"):
+            name.append(xml_node.xpath("./*[name()='name']")[0].text)
         if xml_node.text:  # first 9 words from text
             name.extend(xml_node.text.split(None, 10)[:9])
         
