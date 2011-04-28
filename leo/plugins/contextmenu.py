@@ -64,6 +64,16 @@ import subprocess, os
 #@+node:ville.20090630210947.10190: ** globals
 # print "Importing contextmenu"
 inited = False
+#@+node:ville.20110428163751.7685: ** guess_file_type
+def guess_file_type(fname):
+    base, ext = os.path.splitext(fname)
+    ext = ext.lower()
+    
+    if ext in ['.txt']:
+        return "@edit"
+    return "@auto"
+        
+            
 #@+node:ville.20090630210947.5465: ** openwith_rclick
 def openwith_rclick(c,p, menu):
     """ Show "Edit with" in context menu for external file root nodes (@thin, @auto...) 
@@ -117,6 +127,37 @@ def openwith_rclick(c,p, menu):
         action.triggered.connect(create_rclick_cb)
         
 
+    def importfiles_rclick_cb():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList) + "/"
+
+        table = [("All files","*"),
+            ("Python files","*.py"),]
+        fnames = g.app.gui.runOpenFileDialog(
+            title = "Import files",filetypes = table, 
+            defaultextension = '.notused',
+            multiple=True, startpath = path)
+        
+        
+        def shorten(pth, prefix):
+            if not pth.startswith(prefix):
+                return pth
+            return pth[len(prefix):]
+            
+        adds = [guess_file_type(pth) + " " + shorten(pth, path) for pth in fnames]
+        for a in adds:
+            chi = p.insertAsLastChild()
+            chi.h = a
+            
+        c.readAtFileNodes()
+
+        
+    if exists and head == "@path":
+        action = menu.addAction("Import files")
+        action.triggered.connect(importfiles_rclick_cb)
+        
+        
+
     if head != "@path":
         if editor:
             action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
@@ -125,6 +166,7 @@ def openwith_rclick(c,p, menu):
     action = menu.addAction("Open " + path)
     action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
 #@+node:ville.20090630221949.5462: ** refresh_rclick
+   
 def refresh_rclick(c,p, menu):
     h = p.h
     split = h.split(None,1)
