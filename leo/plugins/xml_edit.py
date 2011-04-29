@@ -303,6 +303,8 @@ def xml_for_subtree(nd):
     for ele in elements:
         ans.append(etree.tostring(ele, pretty_print=True))
         
+    ans = [g.toUnicode(z) for z in ans] # EKR: 2011/04/29
+        
     return '\n'.join(ans)
     
 #@-others
