@@ -128,7 +128,7 @@ def append_element(xml_node, to_leo_node):
         if xml_node.get('name'):
             name.append(xml_node.get('name'))
         if xml_node.xpath("./*[name()='name']"):
-            name.append(xml_node.xpath("./*[name()='name']")[0].text)
+            name.append(xml_node.xpath("./*[name()='name']")[0].text or '')
         if xml_node.text:  # first 9 words from text
             name.extend(xml_node.text.split(None, 10)[:9])
         
