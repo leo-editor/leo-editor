@@ -10,7 +10,10 @@ reStructuredText.
 
 ``xml2leo`` imports an .xml file into the node following the currently
 selected node.  ``leo2xml`` exports the current subtree to an .xml file
-the user selects.
+the user selects.  ``xml_validate``, if executed on the top node in the
+Leo xml tree, reports any errors in XML generation or DTD validation,
+based on the DTD referenced from the XML itself.  If there's no DTD
+it reports that as an error.
 
 Conventions
 ===========
@@ -86,6 +89,7 @@ These commands attempt to deal with all of this.
 
 import time
 import os
+import traceback  # for XML parse error display
 import leo.core.leoGlobals as g
 from lxml import etree
 
@@ -149,6 +153,15 @@ def append_element(xml_node, to_leo_node):
         for xml_child in xml_node:
             append_element(xml_child, leo_node)
         
+#@+node:tbrown.20110429155827.20762: ** cd_here
+def cd_here(c,p):
+    """attempt to cd to the directory in effect at p according
+    to Leo's @path concept
+    """
+    try:
+        os.chdir(c.getNodePath(p))
+    except Exception:
+        pass # well, at least we tried
 #@+node:tbrown.20110428102237.20327: ** get_element
 def get_element(leo_node):
     """recursively read from leo nodes and write into an Element tree
@@ -207,6 +220,7 @@ def leo2xml(event):
     
     ans = xml_for_subtree(p)
     
+    cd_here(c,p)
     file_name = g.app.gui.runSaveFileDialog(
             title="Open", filetypes=table, defaultextension=".xml")
     if not file_name:
@@ -234,6 +248,7 @@ def xml2leo(event):
     c = event['c']
     p = c.p
 
+    cd_here(c,p)
     file_name = g.app.gui.runOpenFileDialog(
             title="Open", filetypes=table, defaultextension=".xml")
     
@@ -307,5 +322,39 @@ def xml_for_subtree(nd):
         
     return '\n'.join(ans)
     
+#@+node:tbrown.20110429140247.20760: ** xml_validate
+@g.command('xml_validate')
+def xml_validate(event):
+    """Perform DTD validation on the xml and return error output
+    or an empty string if there is none"""
+    
+    c = event['c']
+    p = c.p
+    
+    # first just try and create the XML
+    try:
+        xml_ = xml_for_subtree(p)
+    except ValueError:
+        g.es('ERROR generating XML')
+        g.es(traceback.format_exc())
+        return
+    
+    g.es('XML generated, attempting DTD validation')
+    
+    if xml_.startswith('<?xml '):
+        # Unicode strings with encoding declaration are not supported
+        # so cut off the xml declaration
+        xml_ = xml_.split('\n', 1)[1]
+        
+    # set cwd so local .dtd files can be found
+    cd_here(c,p)
+
+    parser = etree.XMLParser(dtd_validation=True)
+    try:
+        dom = etree.fromstring(xml_, parser=parser)
+        g.es('No errors found')
+    except etree.XMLSyntaxError:
+        g.es('ERROR validating XML')
+        g.es(traceback.format_exc())
 #@-others
 #@-leo
