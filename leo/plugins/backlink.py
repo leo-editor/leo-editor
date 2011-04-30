@@ -1,6 +1,34 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20081223111325.3: * @file backlink.py
-''' Allows arbitrary links between nodes.'''
+"""Allows arbitrary links between nodes.
+
+FIXME: add more docs.
+
+@Settings
+^^^^^^^^^
+
+@int backlink_name_levels = 0
+-----------------------------
+
+When displaying the other end of a link in the list of links
+backlink uses the headline of the other node.  This setting
+prepends (negative values) or appends (positive values) the
+required number of parent names to the other nodes name.
+
+So for example, you may see links listed as::
+    
+    <- taxa
+    <- taxa
+    <- taxa
+
+which is not helpful.  By setting this value to 1, you would see::
+
+    <- taxa < source_field
+    <- taxa < observation
+    <- taxa < record
+
+where the extra information is the name of the linked node's parent.
+"""
 
 # **Important**: this plugin is gui-independent.
 
@@ -285,6 +313,8 @@ class backlinkController(object):
         self.c = c
         self.c.backlinkController = self
         self.initIvars()
+        
+        self.name_levels = c.config.getInt('backlink_name_levels') or 0
 
         self.fixIDs(c)
 
@@ -779,7 +809,24 @@ class backlinkController(object):
                 self.showMessage('Click a link to follow it', optional=True)
                 for i in dests:
                     def goThere(where = i[1]): c.selectPosition(where)
-                    txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
+                    
+                    name = i[1].h
+                    # add self.name_levels worth of ancestor names on left or right
+                    nl = self.name_levels
+                    nl_src = i[1]
+                    while nl != 0:
+                        nl_src = nl_src.parent()
+                        if not nl_src:
+                            break
+                        nl_txt = nl_src.h
+                        if nl < 0:
+                            nl += 1
+                            name = nl_txt + ' > ' + name
+                        else:
+                            nl -= 1
+                            name += ' < ' + nl_txt
+                        
+                    txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + name
                     texts.append(txt)
 
         self.ui.loadList(texts) 

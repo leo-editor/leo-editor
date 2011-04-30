@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -1054,6 +1054,22 @@
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
 <v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
+<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
+<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
+<v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
+<v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
+<v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
+<v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
+<v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
+</v>
+<v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
+<v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
+<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 300</vh></v>
+</v>
+<v t="tbrown.20110430104941.30247"><vh>backlink</vh>
+<v t="tbrown.20110430104941.30250"><vh>@int backlink_name_levels = 0</vh></v>
+</v>
 <v t="ekr.20080328105334.1"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
@@ -1066,7 +1082,7 @@
 <v t="ekr.20080328105334.9"><vh>@string cleo_time_name = days</vh></v>
 <v t="tbrown.20090430112929.1"><vh>@string cleo_icon_path = cleo</vh></v>
 </v>
-<v t="ekr.20060807103220"><vh>datenodes plugin</vh>
+<v t="ekr.20060807103220" a="E"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
 <v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
@@ -1205,19 +1221,6 @@
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
-</v>
-<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
-<v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
-<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
-<v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
-<v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
-<v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
-<v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
-<v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
-</v>
-<v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
-<v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
-<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 300</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.28"><vh>Preferences panel</vh>
@@ -8112,6 +8115,26 @@ Unicode chars like ▾ and … can be used here.
 <t tx="tbrown.20110212091818.20118">Set to False, dragging nodes between different outlines
 creates copies.  Set to True, the node is moved and no
 longer exists in the source outline.</t>
+<t tx="tbrown.20110430104941.30247"></t>
+<t tx="tbrown.20110430104941.30250">When displaying the other end of a link in the list of links
+backlink uses the headline of the other node.  This setting
+prepends (negative values) or appends (positive values) the
+required number of parent names to the other nodes name.
+
+So for example, you may see links listed as:
+    
+    &lt;- taxa
+    &lt;- taxa
+    &lt;- taxa
+
+which is not helpful.  By setting this value to 1, you would see
+
+    &lt;- taxa &lt; source_field
+    &lt;- taxa &lt; observation
+    &lt;- taxa &lt; record
+
+where the extra information is the name of the linked node's parent.
+</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
