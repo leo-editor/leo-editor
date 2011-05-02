@@ -12894,10 +12894,6 @@ assert v3.h == 'node 2',v3.h
 # Node 1
 #@+node:ekr.20110502130500.3473: *6* node 2
 # node 3
-#@+node:ekr.20110502130500.3472: *5* node 1
-# Node 1
-#@+node:ekr.20110502130500.3473: *6* node 2
-# node 3
 #@+node:ekr.20100131180007.5391: *4* @test v.atAutoNodeName & v.atAutoRstNodeName
 table = (
     ('@auto-rst rst-file','rst-file','rst-file'),

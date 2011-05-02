@@ -1025,6 +1025,7 @@ class position (object):
                 seen.add(p.v)
                 yield p.v
                 p.moveToThreadNext()
+        raise StopIteration
 
     # Compatibility with old code.
     unique_tnodes_iter = unique_nodes
