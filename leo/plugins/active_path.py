@@ -584,7 +584,9 @@ def cond(p):
     return p.h.startswith('*') and p.h.endswith('*')
 
 def condunl(p):
-    return isFileNode(p) and not p.b.strip()
+    return (isFileNode(p) and not p.b.strip()
+            or
+            isDirNode(p) and not p.hasChildren())
 
 def dtor(p):
     # g.es(p.h)
@@ -605,14 +607,14 @@ def cmd_PurgeVanishedFilesRecursive(c):
     c.redraw(p)
 
 def cmd_PurgeUnloadedFilesHere(c):
-    """Remove files no longer present, i.e. "*filename*" entries."""
+    """Remove files never loaded, i.e. no kind of @file node."""
     p = c.p.getParent()
     n = deleteChildren(p, condunl, dtor=dtor)
     g.es('Deleted %d nodes' % n)
     c.redraw(p)
 
 def cmd_PurgeUnloadedFilesRecursive(c):
-    """Remove files no longer present, i.e. "*filename*" entries."""
+    """Remove files never loaded, i.e. no kind of @file node."""
     p = c.p
     n = deleteDescendents(p, condunl, dtor=dtor)
     g.es('Deleted at least %d nodes' % n)
