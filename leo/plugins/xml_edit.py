@@ -10,10 +10,19 @@ reStructuredText.
 
 ``xml2leo`` imports an .xml file into the node following the currently
 selected node.  ``leo2xml`` exports the current subtree to an .xml file
-the user selects.  ``xml_validate``, if executed on the top node in the
+the user selects.
+
+``xml_validate``, if executed on the top node in the
 Leo xml tree, reports any errors in XML generation or DTD validation,
 based on the DTD referenced from the XML itself.  If there's no DTD
 it reports that as an error.
+
+``leo2xml2leo`` takes the selected Leo subtree representing an XML file,
+converts it to XML internally, and then creates a new Leo subtree from
+that XML after the original, with 'NEW ' at the start of the top node's
+name.  This updates all the headlines, so that the convenience only
+previews (see below) are updated.  The original can be deleted if the
+new subtree seems correct.
 
 Conventions
 ===========
@@ -229,6 +238,22 @@ def leo2xml(event):
     open(file_name, 'w').write(ans)
     
     c.redraw()
+#@+node:tbrown.20110501200908.19857: ** leo2xml2leo
+@g.command('leo2xml2leo')
+def leo2xml2leo(event):
+    """wrapper to cycle leo->xml->leo, mostly to clean up headers
+    """
+    
+    c = event['c']
+    p = c.p
+    oh = p.h
+    
+    nd = xml2leo({'c': c}, from_string=xml_for_subtree(p))
+    
+    nd.h = 'NEW '+oh
+    
+    c.selectPosition(nd)
+    c.redraw()
 #@+node:tbrown.20110428102237.20324: ** make_tag
 def make_tag(tag):
     """replace  fns:element with {http://full.name.space.com/}element
@@ -242,26 +267,36 @@ def make_tag(tag):
     return '{%s}%s' % (NSMAP[ns], tag)
 #@+node:tbrown.20110428102237.20326: ** xml2leo
 @g.command('xml2leo')
-def xml2leo(event):
+def xml2leo(event, from_string=None):
     """handle import of an .xml file, places new subtree after c.p
     """
     c = event['c']
     p = c.p
 
-    cd_here(c,p)
-    file_name = g.app.gui.runOpenFileDialog(
-            title="Open", filetypes=table, defaultextension=".xml")
-    
-    if not file_name:
-        raise Exception("No file selected")
+    if from_string:
+        parser_func = etree.fromstring
+        file_name = from_string
+    else:
+        parser_func = etree.parse
+        cd_here(c,p)
+        file_name = g.app.gui.runOpenFileDialog(
+                title="Open", filetypes=table, defaultextension=".xml")
+        
+        if not file_name:
+            raise Exception("No file selected")
     
     try:
-        xml_ = etree.parse(file_name)
+        xml_ = parser_func(file_name)
     except etree.XMLSyntaxError:
-        xml_ = etree.parse(file_name, parser=etree.HTMLParser())
+        xml_ = parser_func(file_name, parser=etree.HTMLParser())
     except Exception:
         g.es("Failed to read '%s'"%file_name)
         raise
+        
+    if from_string:
+        # etree.fromstring and etree.parse return Element and
+        # ElementTree respectively
+        xml_ = etree.ElementTree(xml_)
 
     nd = p.insertAfter()
     nd.h = os.path.basename(file_name)
@@ -292,6 +327,8 @@ def xml2leo(event):
     nd.b += xml_.docinfo.doctype + '\n'
     
     c.redraw()
+    
+    return nd
 #@+node:tbrown.20110428102237.20328: ** xml_for_subtree
 def xml_for_subtree(nd):
     """get the xml for the subtree at nd
