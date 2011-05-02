@@ -248,7 +248,13 @@ def leo2xml2leo(event):
     p = c.p
     oh = p.h
     
-    nd = xml2leo({'c': c}, from_string=xml_for_subtree(p))
+    xml_ = xml_for_subtree(p)
+    if xml_.startswith('<?xml '):
+        # Unicode strings with encoding declaration are not supported
+        # so cut off the xml declaration
+        xml_ = xml_.split('\n', 1)[1]
+        
+    nd = xml2leo({'c': c}, from_string=xml_)
     
     nd.h = 'NEW '+oh
     
@@ -335,8 +341,14 @@ def xml_for_subtree(nd):
     """
     lines = nd.b.split('\n')
     
-    xml_dec = lines.pop(0)
-    
+    line0 = 0
+    while line0 < len(lines) and not lines[line0].strip():
+        line0 += 1
+        
+    xml_dec = None
+    if line0 < len(lines) and lines[line0].startswith('<?xml '):
+        xml_dec = lines.pop(0)
+        
     while lines and lines[0].strip() and not lines[0].startswith('<'):
         kv = lines.pop(0).split(': ', 1)
         if len(kv) == 1:
@@ -348,7 +360,9 @@ def xml_for_subtree(nd):
     
     elements = [get_element(i) for i in nd.children()]
     
-    ans = [xml_dec]
+    ans = []
+    if xml_dec is not None:
+        ans.append(xml_dec)
     if dtd:
         ans.append(dtd)
         
@@ -358,7 +372,6 @@ def xml_for_subtree(nd):
     ans = [g.toUnicode(z) for z in ans] # EKR: 2011/04/29
         
     return '\n'.join(ans)
-    
 #@+node:tbrown.20110429140247.20760: ** xml_validate
 @g.command('xml_validate')
 def xml_validate(event):
