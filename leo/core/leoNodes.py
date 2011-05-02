@@ -1017,7 +1017,8 @@ class position (object):
         p = self
         p = p.copy()
         seen = set()
-        while p:
+        after = p.nodeAfterTree()
+        while p and p != after: # 2011/05/02
             if p.v in seen:
                 p.moveToNodeAfterTree()
             else:
