@@ -453,6 +453,25 @@ These are marked with ###
 #@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
 #@+node:ekr.20110314123359.14272: *3* New completer
 @nocolor-node
+
+Status:
+    
+1. The gui part of the QCompleter code is ready
+   The key-handling problem http://developer.qt.nokia.com/forums/viewthread/4317
+   has been resolved by overriding keyEvent in LeoQTextBrowser.
+   
+2. The AutoCompleter test in test.leo invokes the completer by calling w.initCompleter.
+
+
+To do (by EKR)
+    
+1. Fix the focus problem.
+   
+2. Make a trivial completer than can complete after c,p,g using
+   QCompleter and eval(). The rest will fall into place after that.
+   
+   The code in the children of this node might have been a start,
+   but it is preliminary.
 #@+node:ekr.20110326063921.14462: *4* codewise crash
 InterfaceError: Error binding parameter 0 - probably unsupported type.
 --------------------

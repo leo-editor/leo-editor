@@ -601,24 +601,6 @@
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 </v>
-<v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
-<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
-<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
-<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
-<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
-<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
-<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
-<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
-<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
-<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
-</v>
-<v t="ekr.20110325144059.2350"><vh>main</vh></v>
-</v>
-<v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh>
-<v t="ekr.20110325185926.2360"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
-</v>
-</v>
 <v t="ekr.20110414094917.2423"><vh>@json-outline</vh></v>
 <v t="ekr.20110414094917.2424"><vh>@input-tree</vh>
 <v t="ekr.20110414094917.2425"><vh>child1</vh>
@@ -671,6 +653,24 @@
 </v>
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
+<v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
+<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
+<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
+<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
+<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
+<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
+<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
+<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
+<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
+<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
+</v>
+<v t="ekr.20110325144059.2350"><vh>main</vh></v>
+</v>
+<v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh>
+<v t="ekr.20110325185926.2360"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -7883,11 +7883,11 @@ body = c.frame.body
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
-# Setup the QCompleter.
+# Setup the QCompleter in LeoQTextBrowser.
 w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
 w.initCompleter()
 
-# Testing area: c.frame.body.bodyC</t>
+# Testing area: c.frame.body.Bool</t>
 <t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
 
 @others
