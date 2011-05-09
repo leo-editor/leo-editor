@@ -11825,6 +11825,81 @@ def createLastChildOf (v,headline):
     child = v.insertAsLastChild()
     child.initHeadString(headline)
     return child
+#@+node:ekr.20110508132538.3431: *3* Recursive create @auto nodes
+import os
+
+@others
+
+types = ('.py',)
+
+theDir = r'C:\prog\lib2to3-copy'
+importFiles(theDir,types,kind=None,recursive=True)
+c.redraw()
+
+g.es("done",color="blue")
+#@+node:ekr.20110508132538.3432: *4* importFiles
+def importFiles (theDir,type=None,kind="@file",recursive=False):
+
+    v = c.currentVnode()
+
+    # Check the params.
+    if kind not in ('@file',None):
+        g.es("kind must be @file or None: " + repr(kind))
+        return
+
+    if not g.os_path_exists(theDir):
+        g.es("directory does not exist: " + theDir)
+        return
+
+    root = createLastChildOf(v,"imported files")
+    try:
+        importDir (theDir,type,kind,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+    c.redraw()
+#@+node:ekr.20110508132538.3433: *4* importDir
+def importDir (theDir,types,kind,recursive,root):
+
+    g.es("theDir: " + theDir,color="blue")
+
+    try:
+        files = os.listdir(theDir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(theDir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) > 0 or len(dirs) > 0:
+            import_root = createLastChildOf(root,theDir)
+        else:
+            import_root = root
+        
+        c.selectVnode(import_root)
+        
+        ### if len(files2) > 0:
+            ### c.importCommands.importFilesCommand(files2,kind)
+        if len(files2) > 0:
+            for fn in files2:
+                p2 = createLastChildOf(import_root,'@auto %s' % (fn))
+                
+        if len(dirs) > 0:
+            dirs.sort()
+            for theDir in dirs:
+                importDir(theDir,types,kind,recursive,import_root)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+#@+node:ekr.20110508132538.3434: *4* createLastChildOf
+def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline.replace('\\','/'))
+    return child
 #@+node:ekr.20060209173725: *3* rst-to-leo
 '''A script to import rst files into Leo.
 
