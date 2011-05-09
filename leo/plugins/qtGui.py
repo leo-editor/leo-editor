@@ -116,20 +116,25 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         return '(LeoQTextBrowser) %s' % id(self)
         
     __str__ = __repr__
-    #@+node:ekr.20110325185230.14518: *4* Auto completion
+    #@+node:ekr.20110325185230.14518: *4* Auto completion LeoQTextBrowser
+
     #@+node:ekr.20110326063921.14465: *5* destroyedCallback
     def destroyedCallback(self,obj):
         
-        w = self ; c = w.leo_c
-        
-        # g.trace(obj)
+        w = self
+        c = w.leo_c
         
         w.setFocus() # Does not work.
         c.bodyWantsFocusNow() # Does not work.
     #@+node:ekr.20110325185230.14524: *5* endCompleter
     def endCompleter(self):
         
-        w = self ; c = w.leo_c ; qc = w.leo_q_completer
+        w = self
+        
+        # Get the data from the injected ivars.
+        c = w.leo_c
+        qc = w.leo_q_completer
+        assert(qc)
         
         qc.disconnect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
         
@@ -139,52 +144,35 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         w.setFocus() # Does not work.
         c.bodyWantsFocus() # Does not work.
-    #@+node:ekr.20110326063921.14459: *5* getPrefix
-    def getPrefix (self):
-        
-        return self.textUnderCursor()[:1] # Just use the first character.
-    #@+node:ekr.20110325185230.14521: *5* initCompleter
-    def initCompleter(self):
+    #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
+    def initCompleter(self,options):
         
         '''Connect a QCompleter.'''
         
         w = self ; c = w.leo_c ; k = c.k
         
-        codewiseCompleter = k.codewiseCompleter
-        
-        if w.leo_q_completer:
-            g.trace('can not happen: leo_q_completer exists')
-        else:
-            # A hack: these are also set in completer.start.
-            codewiseCompleter.body = self # A LeoQTextBrowser.
-            codewiseCompleter.widget = c.frame.body.bodyCtrl
-                # A leoQTextEditWidget
-            
-            # Computer the initial options.
-            codewiseCompleter.prefix = w.getPrefix()
-            
-            if g.isPython3:
-                w.leo_options = options = codewiseCompleter.complete()
-            else:
-                # Work around a codewise bug.
-                w.leo_options = options = ('abc:abc','pdq:pdq','xyz:xyz',)
-            
-            if 0:
-                w.leo_q_completer = qc = QtGui.QCompleter(options,w)
-            else:
-                w.leo_q_completer = qc = QtGui.QCompleter(w)
-                w.leo_model = QtGui.QStringListModel(options)
-                qc.setModel(w.leo_model)
-
+        # A hack: these are also set in completer.start.
+        k.codewiseCompleter.body = self # A LeoQTextBrowser.
+        k.codewiseCompleter.widget = c.frame.body.bodyCtrl
+            # A leoQTextEditWidget
+                
+        if not w.leo_q_completer:
+            # Create the completer.
+            qc = QtGui.QCompleter(w)
             qc.setCompletionMode(qc.PopupCompletion)
             qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
             qc.setWidget(w)
-        
-        # Sent when the user selects an item.
-        qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
-        qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),w.destroyedCallback)
+            # Sent when the user selects an item.
+            qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
+            qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),w.destroyedCallback)
 
+        # Inject ivars for the keyPressEvent and selectCallback.
+        w.leo_q_completer = qc
+        w.leo_options = options
+        w.leo_model = QtGui.QStringListModel(options)
+        
         # Show the initial completions.
+        qc.setModel(w.leo_model)
         qc.popup().show()
         qc.complete()
         return qc
@@ -206,10 +194,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         mods = event.modifiers()
         text = event.text()
         is_mod = mods != qt.NoModifier
-       
-        # if not qc:
-            # if trace: g.trace('empty leo_q_completer')
-            # return
 
         popup = qc and qc.popup()
         active = qc and popup and popup.isVisible()
@@ -305,11 +289,11 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         # Mark c changed.
         c.setChanged(True)
     #@+node:ekr.20110325185230.14514: *5* textUnderCursor
-    def textUnderCursor(self):
+    # def textUnderCursor(self):
 
-        tc = self.textCursor()
-        tc.select(QtGui.QTextCursor.WordUnderCursor)
-        return tc.selectedText()
+        # tc = self.textCursor()
+        # tc.select(QtGui.QTextCursor.WordUnderCursor)
+        # return tc.selectedText()
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
         trace = False and not g.unitTesting

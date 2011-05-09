@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.45" body_secondary_ratio="0.39">
-	<global_window_position top="82" left="221" height="887" width="1568"/>
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.24">
+	<global_window_position top="81" left="403" height="887" width="1033"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -600,6 +600,18 @@
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
+<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
+<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
+<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
+<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
+<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
+<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
+<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
+<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
+<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
+</v>
+<v t="ekr.20110325144059.2350"><vh>main</vh></v>
+</v>
 </v>
 <v t="ekr.20110414094917.2423"><vh>@json-outline</vh></v>
 <v t="ekr.20110414094917.2424"><vh>@input-tree</vh>
@@ -653,24 +665,7 @@
 </v>
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
-<v t="ekr.20101101173931.2267"><vh>Autocompleter stuff</vh>
-<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
-<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
-<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
-<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
-<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
-<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
-<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
-<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
-<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
-</v>
-<v t="ekr.20110325144059.2350"><vh>main</vh></v>
-</v>
-<v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh>
-<v t="ekr.20110325185926.2360"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20110325160920.2361"><vh>&lt;&lt; define options &gt;&gt;</vh></v>
-</v>
-</v>
+<v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -7345,7 +7340,6 @@ else:
     run(p)
 g.es('crash test done')
 </t>
-<t tx="ekr.20101101173931.2267"></t>
 <t tx="ekr.20101103135707.2439">import leo.core.leoImport as leoImport
 
 leoImport.headToPrevNode(event={'c':c})
@@ -7876,19 +7870,25 @@ if 0:
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
-<t tx="ekr.20110325142240.2508">&lt;&lt; imports &gt;&gt;
-
-# Put the cursor at the end for testing.
+<t tx="ekr.20110325142240.2508"># Put the cursor at the end for testing.
 body = c.frame.body
 s = body.getAllText()
 body.setInsertPoint(len(s))
 
 # Setup the QCompleter in LeoQTextBrowser.
-w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
-w.initCompleter()
+w = c.frame.body.bodyCtrl
+w2 = w.widget # A LeoQTextBrowser.
+prefix = c.k.get_autocompleter_prefix(w)
+assert prefix
+print('prefix',prefix)
+options = c.k.get_leo_completions(prefix)
+print('options',options)
+qc = w2.initCompleter(options)
 
-# Testing area: c.frame.body.Bool</t>
-<t tx="ekr.20110325142419.2337">from PyQt4 import QtGui, QtCore
+# Testing area: c.frame.body</t>
+<t tx="ekr.20110325142419.2337"># This has been superceded by Autocompleter test node in this file.
+
+from PyQt4 import QtGui, QtCore
 
 @others
 
@@ -8024,22 +8024,6 @@ if __name__ == "__main__":
     cr.setWidth(self.completer.popup().sizeHintForColumn(0)
         + self.completer.popup().verticalScrollBar().sizeHint().width())
     self.completer.complete(cr) ## popup it up!</t>
-<t tx="ekr.20110325160920.2361">options = (
-    'c.frame',
-    'c.frame.body',
-    'c.frame.body.bodyCtrl',
-    'bodyCtrl',
-    'bodyPane',
-    'bodyPane2',
-    'bodyView',
-)
-</t>
-<t tx="ekr.20110325185926.2360"># import os ; os.system('cls')
-
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-import leo.plugins.qtGui as qtGui
-</t>
 <t tx="ekr.20110414063538.2372">@first # -*- coding: utf-8 -*-
 
 '''A script that writes/reads .leo files in JSON format.'''

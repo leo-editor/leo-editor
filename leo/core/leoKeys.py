@@ -1145,7 +1145,7 @@ class keyHandlerClass:
         # A case could be made for per-instance lossage, but this is not supported.
 
     #@+others
-    #@+node:ekr.20061031131434.75: *3*  Birth (keyHandler)
+    #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4*  ctor (keyHandler)
     def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
 
@@ -1280,7 +1280,6 @@ class keyHandlerClass:
         self.defineMultiLineCommands()
         use_codewise = not self.isLeoSourceFile()
         fn = c.shortFileName()
-        # 2011/03/26: always define .codewiseCompleter for QCompleter.
         if use_codewise:
             self.autoCompleter = CodewiseCompleterClass(self)
             self.codewiseCompleter = self.autoCompleter
@@ -1705,7 +1704,70 @@ class keyHandlerClass:
     def oops (self):
 
         g.trace('Should be defined in subclass:',g.callers(4))
-    #@+node:ekr.20061031131434.88: *3* Binding (keyHandler)
+    #@+node:ekr.20110509064011.14555: *3* k.Autocompleter support
+    #@+node:ekr.20110509064011.14556: *4* k.attr_matches
+    def attr_matches(self,s,namespace):
+        
+        """Compute matches when string s is of the form name.name....name.
+        
+        Evaluates s using eval(s,namespace) 
+
+        Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+        the namespace, it will be evaluated and its attributes (as revealed by
+        dir()) are used as possible completions.
+        
+        For class instances, class members are are also considered.)
+        
+        **Warning**: this can still invoke arbitrary C code, if an object
+        with a __getattr__ hook is evaluated.
+        
+        """
+        
+        trace = False and not g.app.unitTesting
+
+        # Seems to work great. Catches things like ''.<tab>
+        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
+        if not m:
+            return []
+
+        expr,attr = m.group(1,3)
+        if trace: g.trace(s,expr,attr)
+        try:
+            obj = eval(expr,namespace)
+        except Exception:
+            return []
+
+        # Build the result.
+        words = dir(obj)
+        n = len(attr)
+        result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
+
+        if trace: g.trace(s,result)
+        return result
+    #@+node:ekr.20110509064011.14557: *4* k.get_leo_completions
+    def get_leo_completions(self,prefix):
+        
+        k = self
+        d = {'c':k.c, 'p':k.c.p, 'g':g}
+        aList = self.attr_matches(prefix,d)
+        aList.sort()
+        return aList
+    #@+node:ekr.20110509064011.14561: *4* k.get_autocompleter_prefix
+    def get_autocompleter_prefix (self,w):
+        
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i = j = min(i,len(s)-1)
+        
+        while i > 0:
+            ch = s[i]
+            if ch.isalnum() or ch in '._':
+                i -= 1
+            else:
+                break
+                
+        return s[i:j+1].strip()
+    #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* bindKey
     def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
@@ -2103,7 +2165,7 @@ class keyHandlerClass:
                     g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
 
                     if g.app.unitTesting: raise
-    #@+node:ekr.20061031131434.104: *3* Dispatching (keyHandler)
+    #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
     def masterCommand (self,event,func,stroke,commandName=None):
 
@@ -2414,7 +2476,7 @@ class keyHandlerClass:
                 c.widgetWantsFocusNow(k.newMinibufferWidget)
                 # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
                 k.newMinibufferWidget = None
-    #@+node:ekr.20061031131434.114: *3* Externally visible commands
+    #@+node:ekr.20061031131434.114: *3* k.Externally visible commands
     #@+node:ekr.20061031131434.115: *4* digitArgument & universalArgument
     def universalArgument (self,event):
 
@@ -2719,7 +2781,7 @@ class keyHandlerClass:
 
         k.setInputState(state)
         k.showStateAndMode()
-    #@+node:ekr.20061031131434.125: *3* Externally visible helpers
+    #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
     #@+node:ekr.20061031131434.126: *4* manufactureKeyPressForCommandName
     def manufactureKeyPressForCommandName (self,w,commandName):
 
@@ -2969,7 +3031,7 @@ class keyHandlerClass:
                 if b.commandName == commandName:
                     b.func=func
                     d2[key2] = b
-    #@+node:ekr.20061031131434.145: *3* Master event handlers (keyHandler)
+    #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
     master_key_count = 0
 
@@ -3368,7 +3430,7 @@ class keyHandlerClass:
             return k.masterKeyHandler(event,stroke=stroke)
         else:
             return k.masterCommand(event,func,stroke,commandName)
-    #@+node:ekr.20061031170011.3: *3* Minibuffer (keyHandler)
+    #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
     # def minibufferWantsFocus(self):
@@ -3539,7 +3601,7 @@ class keyHandlerClass:
 
         trace and g.trace(i,j)
         return i,j
-    #@+node:ekr.20061031131434.156: *3* Modes
+    #@+node:ekr.20061031131434.156: *3* k.Modes
     #@+node:ekr.20061031131434.157: *4* badMode
     def badMode(self,modeName):
 
@@ -3785,7 +3847,7 @@ class keyHandlerClass:
         # This isn't perfect in variable-width fonts.
         for s1,s2 in data:
             g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
-    #@+node:ekr.20061031131434.167: *3* Shared helpers
+    #@+node:ekr.20061031131434.167: *3* k.Shared helpers
     #@+node:ekr.20061031131434.175: *4* k.computeCompletionList
     # Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
 
@@ -4054,7 +4116,7 @@ class keyHandlerClass:
 
         if not pane_filter or pane_filter.lower() == bunch.pane:
              g.trace(bunch.pane,shortcut,bunch.commandName,gui.widget_name(w))
-    #@+node:ekr.20061031131434.181: *3* Shortcuts (keyHandler)
+    #@+node:ekr.20061031131434.181: *3* k.Shortcuts
     #@+node:ekr.20090518072506.8494: *4* isFKey
     def isFKey (self,shortcut):
 
@@ -4238,7 +4300,7 @@ class keyHandlerClass:
             s = s[:-1]+'Space' # 2010/11/06
         # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
-    #@+node:ekr.20061031131434.193: *3* States
+    #@+node:ekr.20061031131434.193: *3* k.States
     #@+node:ekr.20061031131434.194: *4* clearState
     def clearState (self):
 
@@ -4412,7 +4474,7 @@ class keyHandlerClass:
         pass
         
         
-    #@+node:ekr.20061031131434.200: *3* universalDispatcher & helpers
+    #@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers
     def universalDispatcher (self,event):
 
         '''Handle accumulation of universal argument.'''

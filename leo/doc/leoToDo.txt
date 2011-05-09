@@ -1,539 +1,1840 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110201125110.12551: ** Important/first
-#@+node:ekr.20110414065052.6100: *3* Treat gnx's as strings: don't parse them
-http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-#@+node:ekr.20110401062119.14493: *3* problems with focus
-#@+node:ekr.20031218072017.2817: *4*  doCommand
-command_count = 0
+#@+node:ekr.20110509064011.14554: ** First
+#@+node:ekr.20110502085000.6113: *3* URGENT: FAQ entry re cross-file clones
+#@+node:ekr.20110427135155.14306: *3* New file format
+#@+node:ekr.20110414164347.6082: *4* Reference for json stuff
+#@+node:ekr.20031218072017.1997: *5* scanGnx
+def scanGnx (self,s,i):
 
-def doCommand (self,command,label,event=None):
+    """Create a gnx from its string representation"""
 
-    """Execute the given command, invoking hooks and catching exceptions.
+    if not g.isString(s):
+        g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
+        return None,None,None
 
-    The code assumes that the "command1" hook has completely handled the command if
-    g.doHook("command1") returns False.
-    This provides a simple mechanism for overriding commands."""
+    s = s.strip()
 
-    c = self ; p = c.p
-    commandName = command and command.__name__
-    c.setLog()
+    theId,t,n = None,None,None
+    i,theId = g.skip_to_char(s,i,'.')
+    if g.match(s,i,'.'):
+        i,t = g.skip_to_char(s,i+1,'.')
+        if g.match(s,i,'.'):
+            i,n = g.skip_to_char(s,i+1,'.')
+    # Use self.defaultId for missing id entries.
+    if theId == None or len(theId) == 0:
+        theId = self.defaultId
+    # Convert n to int.
+    if n:
+        try: n = int(n)
+        except Exception: pass
 
-    self.command_count += 1
-    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
-        g.trace(commandName)
+    return theId,t,n
+#@+node:ekr.20060919104530: *5* Sax (reading)
+#@+node:ekr.20090525144314.6526: *6* cleanSaxInputString
+def cleanSaxInputString(self,s):
 
-    # The presence of this message disables all commands.
-    if c.disableCommandsMessage:
-        g.es(c.disableCommandsMessage,color='blue')
-        return 'break' # Inhibit all other handlers.
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
 
-    if c.exists and c.inCommand and not g.unitTesting:
-        # g.trace('inCommand',c)
-        g.app.commandInterruptFlag = True
-        g.es('ignoring command: already executing a command.',color='red')
-        return 'break'
+    # Note: form-feed ('\f') is 12 decimal.
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
 
-    g.app.commandInterruptFlag = False
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
 
-    if label and event is None: # Do this only for legacy commands.
-        if label == "cantredo": label = "redo"
-        if label == "cantundo": label = "undo"
-        g.app.commandName = label
-
-    if not g.doHook("command1",c=c,p=p,v=p,label=label):
-        try:
-            c.inCommand = True
-            val = command(event)
-            if c and c.exists: # Be careful: the command could destroy c.
-                c.inCommand = False
-                c.k.funcReturn = val
-            # else: g.pr('c no longer exists',c)
-        except Exception:
-            c.inCommand = False
-            if g.app.unitTesting:
-                raise
-            else:
-                g.es_print("exception executing command")
-                g.es_exception(c=c)
-
-        if c and c.exists:
-            if c.requestCloseWindow:
-                g.trace('Closing window after command')
-                c.requestCloseWindow = False
-                g.app.closeLeoWindow(c.frame)
-            else:
-                c.outerUpdate()
-
-    # Be careful: the command could destroy c.
-    if c and c.exists:
-        p = c.p
-        g.doHook("command2",c=c,p=p,v=p,label=label)
-
-    return "break" # Inhibit all other handlers.
-#@+node:ekr.20031218072017.2949: *4* Drawing Utilities (commands)
-#@+node:ekr.20080515053412.1: *5* c.add_command, c.bind, c.bind2 & c.tag_bind
-# These wrappers ensure that c.outerUpdate get called.
-#@+node:ekr.20080610085158.2: *6* c.add_command
-def add_command (self,menu,**keys):
-
-    c = self ; command = keys.get('command')
-
-    if command:
-
-        def add_commandCallback(c=c,command=command):
-            val = command()
-            # Careful: func may destroy c.
-            if c.exists: c.outerUpdate()
-            return val
-
-        keys ['command'] = add_commandCallback
-
-        menu.add_command(**keys)
-
+    if g.isPython3:
+        flatten = bytes(flatten,'utf-8')
+        pad = bytes(pad,'utf-8')
+        transtable = bytes.maketrans(flatten,pad)
     else:
-        g.trace('can not happen: no "command" arg')
-#@+node:ekr.20080610085158.3: *6* c.bind and c.bind2
-def bind (self,w,pattern,func,*args,**keys):
+        transtable = string.maketrans(flatten,pad)
 
-    c = self ; callers = g.callers()
+    return s.translate(transtable)
 
-    def bindCallback(event,c=c,func=func,callers=callers):
-        # g.trace('func',func.__name__)
-        val = func(event)
-        # Careful: func may destroy c.
-        if c.exists: c.outerUpdate()
-        return val
+# for i in range(32): print i,repr(chr(i))
+#@+node:ekr.20060919110638.5: *6* fc.createSaxChildren & helpers
+def createSaxChildren (self, sax_node, parent_v):
 
-    w.bind(pattern,bindCallback,*args,**keys)
+    c = self.c
+    trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
+    children = []
 
-def bind2 (self,w,pattern,func,*args,**keys):
+    for sax_child in sax_node.children:
+        tnx = sax_child.tnx
+        v = self.gnxDict.get(tnx)
 
-    c = self
+        if v: # A clone.
+            if trace: g.trace('**clone',v)
+            v = self.createSaxVnode(sax_child,parent_v,v=v)   
+        else:
+            v = self.createSaxVnode(sax_child,parent_v)
+            self.createSaxChildren(sax_child,v)
 
-    def bindCallback2(event,c=c,func=func):
-        val = func(event)
-        # Careful: func may destroy c.
-        if c.exists: c.outerUpdate()
-        return val
+        children.append(v)
 
-    w.bind(pattern,bindCallback2,*args,**keys)
-#@+node:ekr.20080610085158.4: *6* c.tag_bind
-def tag_bind (self,w,tag,event_kind,func):
+    parent_v.children = children
+    for child in children:
+        child.parents.append(parent_v)
+        if trace: g.trace(
+            '*** added parent',parent_v,'to',child,
+            'len(child.parents)',len(child.parents))
 
-    c = self
-    def tag_bindCallback(event,c=c,func=func):
-        val = func(event)
-        # Careful: func may destroy c.
-        if c.exists: c.outerUpdate()
-        return val
+    return children
+#@+node:ekr.20060919110638.7: *7* fc.createSaxVnode & helpers
+def createSaxVnode (self,sax_node,parent_v,v=None):
 
-    w.tag_bind(tag,event_kind,tag_bindCallback)
-#@+node:ekr.20080514131122.7: *5* c.begin/endUpdate
+    c = self.c
+    trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
+    verbose = False
+    h = sax_node.headString
+    b = sax_node.bodyString
 
-def beginUpdate(self):
+    if v:
+        # The body of the later node overrides the earlier.
+        # Don't set t.h: h is always empty.
+        # This may be an internal error.
+        if v.b == b:
+            if trace and verbose: g.trace(
+                '***no update\nold: %s\nnew: %s' % (v.b,b))
+        else:
+            if trace: g.trace(
+                '***update\nold: %s\nnew: %s' % (v.b,b))
+            v.b = b 
+    else:
+        v = leoNodes.vnode(context=c)
+        v.setBodyString(b)
+        v.setHeadString(h)
 
-    '''Deprecated: does nothing.'''
+        if sax_node.tnx:
+            v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    g.trace('***** c.beginUpdate is deprecated',g.callers())
-    if g.app.unitTesting: assert(False)
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+    self.gnxDict [index] = v
 
-def endUpdate(self,flag=True):
+    if trace and verbose: g.trace(
+        'tnx','%-22s' % (index),'v',id(v),
+        'len(body)','%-4d' % (len(b)),h)
 
-    '''Request a redraw of the screen if flag is True.'''
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,v)
 
-    g.trace('***** c.endUpdate is deprecated',g.callers())
-    if g.app.unitTesting: assert(False)
-
-    c = self
-    if flag:
-        c.requestRedrawFlag = True
-        # g.trace('flag is True',c.shortFileName(),g.callers())
-
-BeginUpdate = beginUpdate # Compatibility with old scripts
-EndUpdate = endUpdate # Compatibility with old scripts
-#@+node:ekr.20080514131122.8: *5* c.bringToFront
-def bringToFront(self,set_focus=True):
-
-    c = self
-    c.requestBringToFront = True
-    c.requestedIconify = 'deiconify'
-    c.requestedFocusWidget = c.frame.body.bodyCtrl
-
-BringToFront = bringToFront # Compatibility with old scripts
-#@+node:ekr.20040803072955.143: *5* c.expandAllAncestors
-def expandAllAncestors (self,p):
-
-    '''Expand all ancestors without redrawing.
-
-    Return a flag telling whether a redraw is needed.'''
+    return v
+#@+node:ekr.20060919110638.8: *8* handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,v):
 
     trace = False and not g.unitTesting
-    c = self ; cc = c.chapterController
-    redraw_flag = False
+    d = sax_node.tnodeAttributes
+    if trace and d: g.trace(sax_node,list(d.keys()))
 
-    for p in p.parents():
-        if not p.isExpanded():
-            p.expand()
-            redraw_flag = True
+    aDict = {}
+    for key in d:
+        val = g.toUnicode(d.get(key)) # 2011/02/22
+        val2 = self.getSaxUa(key,val)
+        # g.trace(key,val,val2)
+        aDict[key] = val2
 
-    if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
-    return redraw_flag
-#@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
-def get_focus (self):
+    if aDict:
+        if trace: g.trace('uA',v,list(aDict.keys()))
+        v.unknownAttributes = aDict
+#@+node:ekr.20061004053644: *8* handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
 
-    c = self
-    return g.app.gui and g.app.gui.get_focus(c)
-
-def get_requested_focus (self):
-
-    c = self
-    return c.requestedFocusWidget
-
-def request_focus(self,w):
-
-    c = self
-    # g.trace(w,g.callers())
-    if w: c.requestedFocusWidget = w
-
-def set_focus (self,w,force=False):
-
-    trace = False # and g.unitTesting
-    c = self
-    if w and g.app.gui:
-        if trace: print('c.set_focus:',repr(w),c.shortFileName())
-        g.app.gui.set_focus(c,w)
-    else:
-        if trace: print('c.set_focus: no w')
-
-    c.requestedFocusWidget = None
-#@+node:ekr.20080514131122.10: *5* c.invalidateFocus
-def invalidateFocus (self):
-
-    '''Indicate that the focus is in an invalid location, or is unknown.'''
-
-    # c = self
-    # c.requestedFocusWidget = None
-    pass
-#@+node:ekr.20080514131122.20: *5* c.outerUpdate
-def outerUpdate (self):
+def handleVnodeSaxAttributes (self,sax_node,v):
 
     trace = False and not g.unitTesting
-    verbose = True ; traceFocus = False
-    c = self ; aList = []
-    if not c.exists or not c.k:
+    d = sax_node.attributes
+
+    s = d.get('a')
+    if s:
+        if trace and 'E' in s: g.trace('expand',v)
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnodeList will be resolved later.
+        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s,v=v)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s,v=v)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v,aDict),)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+#@+node:ekr.20060919110638.2: *6* dumpSaxTree
+def dumpSaxTree (self,root,dummy):
+
+    if not root:
+        g.pr('dumpSaxTree: empty tree')
         return
+    if not dummy:
+        root.dump()
+    for child in root.children:
+        self.dumpSaxTree(child,dummy=False)
+#@+node:ekr.20061003093021: *6* getSaxUa
+def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
-    # Suppress any requested redraw until we have iconified or diconified.
-    redrawFlag = c.requestRedrawFlag
-    c.requestRedrawFlag = False
-    
-    if c.requestBringToFront:
-        if hasattr(c.frame,'bringToFront'):
-            c.frame.bringToFront()
-        c.requestBringToFront = False
+    """Parse an unknown attribute in a <v> or <t> element.
+    The unknown tag has been pickled and hexlify'd.
+    """
 
-    # The iconify requests are made only by c.bringToFront.
-    if c.requestedIconify == 'iconify':
-        if verbose: aList.append('iconify')
-        c.frame.iconify()
+    try:
+        # val = str(val)
+        val = g.toEncodedString(val) # 2011/02/22.
+    except Exception:
+        g.es_print('unexpected exception converting hexlified string to string')
+        g.es_exception()
+        return None
 
-    if c.requestedIconify == 'deiconify':
-        if verbose: aList.append('deiconify')
-        c.frame.deiconify()
 
-    if redrawFlag:
-        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
-        # A hack: force the redraw, even if we are dragging.
-        aList.append('*** redraw')
-        c.frame.tree.redraw_now(forceDraw=True)
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if attr.startswith('str_') and type(val) == type(''):
+        # g.trace(attr,val)
+        return val
 
-    if c.requestRecolorFlag:
-        if verbose: aList.append('%srecolor' % (
-            g.choose(c.incrementalRecolorFlag,'','full ')))
-        # This should be the only call to c.recolor_now.
-        c.recolor_now(incremental=c.incrementalRecolorFlag)
+    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
+    if 0: # Not ready yet.
+        if attr.startswith('b64_'):
+            try: pass
+            except Exception: pass
 
-    if c.requestedFocusWidget:
-        w = c.requestedFocusWidget
-        if traceFocus: aList.append('focus: %s' % (
-            g.app.gui.widget_name(w)))
-        c.set_focus(w)
+    try:
+        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
+    except Exception:
+        # Python 2.x throws TypeError
+        # Python 3.x throws binascii.Error
+        # Assume that Leo 4.1 wrote the attribute.
+        if g.unitTesting:
+            assert kind == 'raw','unit test failed: kind=' % repr(kind)
+        else:
+            g.trace('can not unhexlify %s=%s' % (attr,val))
+        return val
+    try:
+        # No change needed to support protocols.
+        val2 = pickle.loads(binString)
+        # g.trace('v.3 val:',val2)
+        return val2
+    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+        g.trace('can not unpickle %s=%s' % (attr,val))
+        return val
+#@+node:ekr.20060919110638.14: *6* parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@+node:ekr.20060919110638.3: *6* readSaxFile
+def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
+
+    dump = False and not g.unitTesting
+    fc = self ; c = fc.c
+
+    # Pass one: create the intermediate nodes.
+    saxRoot = fc.parse_leo_file(theFile,fileName,
+        silent=silent,inClipboard=inClipboard,s=s)
+
+    if dump: fc.dumpSaxTree(saxRoot,dummy=True)
+
+    # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
+    if saxRoot:
+        parent_v = c.hiddenRootNode
+        children = fc.createSaxChildren(saxRoot,parent_v)
+        assert c.hiddenRootNode.children == children
+        v = children and children[0] or None
+        return v
     else:
-        # We can not set the focus to the body pane:
-        # That would make nested calls to c.outerUpdate significant.
-        pass
-
-    if trace and aList:
-        g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
-
-    c.incrementalRecolorFlag = False
-    c.requestRecolorFlag = None
-    c.requestRedrawFlag = False
-    c.requestedFocusWidget = None
-    c.requestedIconify = ''
-
-    # g.trace('after')
-#@+node:ekr.20080514131122.12: *5* c.recolor & requestRecolor
-def requestRecolor (self):
-
-    c = self
-    # g.trace(g.callers(4))
-    c.requestRecolorFlag = True
-
-recolor = requestRecolor
-#@+node:ekr.20080514131122.14: *5* c.redrawing...
-#@+node:ekr.20090110073010.1: *6* c.redraw
-def redraw (self,p=None,setFocus=False):
-    '''Redraw the screen immediately.'''
-
-    c = self
-    if not p: p = c.p or c.rootPosition()
-
-    c.expandAllAncestors(p)
-    c.frame.tree.redraw(p)
-    c.selectPosition(p)
-
-    if setFocus: c.treeFocusHelper()
-
-# Compatibility with old scripts
-force_redraw = redraw
-redraw_now = redraw
-#@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
-def redraw_after_contract (self,p=None,setFocus=False):
-
-    c = self
-
-    c.endEditing()
-
-    if p:
-        c.setCurrentPosition(p)
-    else:
-        p = c.currentPosition()
-
-    if p.isCloned():
-        c.redraw(p=p,setFocus=setFocus)
-    else:
-        c.frame.tree.redraw_after_contract(p)
-        if setFocus: c.treeFocusHelper()
-#@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
-def redraw_after_expand (self,p=None,setFocus=False):
-
-    c = self
-
-    c.endEditing()
-
-    if p:
-        c.setCurrentPosition(p)
-    else:
-        p = c.currentPosition()
-
-    if p.isCloned():
-        c.redraw(p=p,setFocus=setFocus)
-    else:
-        c.frame.tree.redraw_after_expand(p)
-        if setFocus: c.treeFocusHelper()
-#@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
-def redraw_after_head_changed(self):
-
-    '''Redraw the screen (if needed) when editing ends.
-    This may be a do-nothing for some gui's.'''
-
-    return self.frame.tree.redraw_after_head_changed()
-#@+node:ekr.20090110073010.3: *6* c.redraw_afer_icons_changed
-def redraw_after_icons_changed(self):
-
-    '''Update the icon for the presently selected node,
-    or all icons if the 'all' flag is true.'''
-
-    c = self
-
-    c.frame.tree.redraw_after_icons_changed()
-
-    # c.treeFocusHelper()
-#@+node:ekr.20090110073010.4: *6* c.redraw_after_select
-def redraw_after_select(self,p):
-
-    '''Redraw the screen after node p has been selected.'''
+        return None
+#@+node:ekr.20060919110638.11: *6* resolveTnodeLists
+def resolveTnodeLists (self):
 
     trace = False and not g.unitTesting
-    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+    c = self.c
 
-    c = self
+    for p in c.all_unique_positions():
+        if hasattr(p.v,'tempTnodeList'):
+            # g.trace(p.v.headString())
+            result = []
+            for tnx in p.v.tempTnodeList:
+                index = self.canonicalTnodeIndex(tnx)
+                v = self.gnxDict.get(index)
+                if v:
+                    if trace: g.trace(tnx,v)
+                    result.append(v)
+                else:
+                    g.trace('*** No vnode for %s' % tnx)
+            if result:
+                p.v.tnodeList = result
+                # g.trace('*** tnodeList for',p.h,result)
+            delattr(p.v,'tempTnodeList')
+#@+node:ekr.20080805132422.3: *6* resolveArchivedPosition  (New in Leo 4.5)
+def resolveArchivedPosition(self,archivedPosition,root_v):
 
-    flag = c.expandAllAncestors(p)
-    if flag:
-        c.frame.tree.redraw_after_select(p)
-#@+node:ekr.20080514131122.13: *5* c.recolor_now
-def recolor_now(self,p=None,incremental=False,interruptable=True):
+    '''Return a vnode corresponding to the archived position relative to root node root_v.'''
 
-    c = self
-    if p is None:
-        p = c.p
+    def oops (message):
+        if not g.app.unitTesting:
+            g.es_print('bad archived position: %s' % (message),color='red')
 
-    # g.trace('incremental',incremental,p and p.h,g.callers(4))
+    try:
+        aList = [int(z) for z in archivedPosition.split('.')]
+        aList.reverse()
+    except Exception:
+        return oops('"%s"' % archivedPosition)
 
-    c.frame.body.colorizer.colorize(p,
-        incremental=incremental,interruptable=interruptable)
-#@+node:ekr.20080514131122.16: *5* c.traceFocus
-def traceFocus (self,w):
+    if not aList:
+        return oops('empty')
 
-    c = self
+    last_v = root_v
+    n = aList.pop()
+    if n != 0:
+        return oops('root index="%s"' % n )
 
-    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-        import pdb ; pdb.set_trace() # Drop into pdb.
-        c.trace_focus_count += 1
-        g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
-#@+node:ekr.20080514131122.17: *5* c.widget_name
-def widget_name (self,widget):
+    while aList:
+        n = aList.pop()
+        children = last_v.children
+        if n < len(children):
+            last_v = children[n]
+        else:
+            return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
-    c = self
+    return last_v
+#@+node:ekr.20060919110638.13: *6* setPositionsFromVnodes & helper (sax read)
+def setPositionsFromVnodes (self):
 
-    return g.app.gui and g.app.gui.widget_name(widget) or ''
-#@+node:ekr.20080514131122.18: *5* c.xWantsFocus
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.rootPosition()
+    current,str_pos = None,None
 
-def bodyWantsFocus(self):
-    c = self ; body = c.frame.body
-    c.request_focus(body and body.bodyCtrl)
+    use_db = g.enableDB and c.mFileName
+    if use_db:
+        str_pos = c.cacher.getCachedStringPosition()
 
-def logWantsFocus(self):
-    c = self ; log = c.frame.log
-    c.request_focus(log and log.logCtrl)
+    if not str_pos:
+        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('from p.v.u',str_pos)
 
-def minibufferWantsFocus(self):
-    c = self
-    c.request_focus(c.miniBufferWidget)
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
 
-def treeWantsFocus(self):
-    c = self ; tree = c.frame.tree
-    c.request_focus(tree and tree.canvas)
+    c.setCurrentPosition(current or c.rootPosition())
+#@+node:ekr.20061006104837.1: *7* archivedPositionToPosition
+def archivedPositionToPosition (self,s):
 
-def widgetWantsFocus(self,w):
-    c = self ; c.request_focus(w)
-#@+node:ekr.20080514131122.19: *5* c.xWantsFocusNow
-# widgetWantsFocusNow does an automatic update.
-def widgetWantsFocusNow(self,w):
-    c = self
-    c.request_focus(w)
-    c.outerUpdate()
-    # Re-request widget so we don't use the body by default.
-    #### c.request_focus(w)
+    c = self.c
+    s = g.toUnicode(s) # 2011/02/25
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+#@+node:ekr.20110415173840.6098: *4* new uA's
+#@+node:ekr.20040701065235.2: *5* putDescendentAttributes
+def putDescendentAttributes (self,p):
 
-if 1: # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
-    def bodyWantsFocusNow(self):
-        c = self ; body = c.frame.body
-        c.widgetWantsFocusNow(body and body.bodyCtrl)
+    nodeIndices = g.app.nodeIndices
 
-    def logWantsFocusNow(self):
-        c = self ; log = c.frame.log
-        c.widgetWantsFocusNow(log and log.logCtrl)
+    # Create lists of all tnodes whose vnodes are marked or expanded.
+    marks = [] ; expanded = []
+    for p in p.subtree():
+        v = p.v
+        if p.isMarked() and p.v not in marks:
+            marks.append(v)
+        if p.hasChildren() and p.isExpanded() and v not in expanded:
+            expanded.append(v)
 
-    def treeWantsFocusNow(self):
-        c = self ; tree = c.frame.tree
-        c.widgetWantsFocusNow(tree and tree.canvas)
+    result = []
+    for theList,tag in ((marks,"marks"),(expanded,"expanded")):
+        if theList:
+            sList = []
+            for v in theList:
+                sList.append("%s," % nodeIndices.toString(v.fileIndex))
+            s = ''.join(sList)
+            # g.trace(tag,[str(p.h) for p in theList])
+            result.append('\n%s="%s"' % (tag,s))
 
-else: # Previously, all other FocusNow methods just made a request.
-    bodyWantsFocusNow = bodyWantsFocus
-    logWantsFocusNow = logWantsFocus
-    ### minibufferWantsFocusNow = minibufferWantsFocus
-    treeWantsFocusNow = treeWantsFocus
-#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
-#@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
+    return ''.join(result)
+#@+node:ekr.20080805071954.2: *5* putDescendentVnodeUas
+def putDescendentVnodeUas (self,p):
+
+    '''Return the a uA field for descendent vnode attributes,
+    suitable for reconstituting uA's for anonymous vnodes.'''
+
+    trace = False
+    if trace: g.trace(p.h)
+
+    # Create aList of tuples (p,v) having a valid unknownAttributes dict.
+    # Create dictionary: keys are vnodes, values are corresonding archived positions.
+    pDict = {} ; aList = []
+    for p2 in p.self_and_subtree():
+        if hasattr(p2.v,"unknownAttributes"):
+            aList.append((p2.copy(),p2.v),)
+            pDict[p2.v] = p2.archivedPosition(root_p=p)
+
+    # Create aList of pairs (v,d) where d contains only pickleable entries.
+    if aList: aList = self.createUaList(aList)
+    if not aList: return ''
+
+    # Create d, an enclosing dict to hold all the inner dicts.
+    d = {}
+    for v,d2 in aList:
+        aList2 = [str(z) for z in pDict.get(v)]
+        # g.trace(aList2)
+        key = '.'.join(aList2)
+        d[key]=d2
+
+    if trace: g.trace(p.h,g.dictToString(d))
+
+    # Pickle and hexlify d
+    return d and self.pickle(
+        torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
+#@+node:EKR.20040526202501: *5* putUnknownAttributes
+def putUnknownAttributes (self,torv):
+
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+
+    attrDict = torv.unknownAttributes
+    if type(attrDict) != type({}):
+        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        return ''
+    else:
+        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+        # g.trace(torv,attrDict)
+        return val
+#@+node:ekr.20090130114732.6: *5* v.u Property
+def __get_u(self):
+    v = self
+    if not hasattr(v,'unknownAttributes'):
+        v.unknownAttributes = {}
+    return v.unknownAttributes
+
+def __set_u(self,val):
+    v = self
+    if val is None:
+        if hasattr(v,'unknownAttributes'):
+            delattr(v,'unknownAttributes')
+    elif type(val) == type({}):
+        v.unknownAttributes = val
+    else:
+        raise ValueError
+
+u = property(
+    __get_u, __set_u,
+    doc = "vnode unknownAttribute property")
+#@+node:ekr.20110419083918.6104: *4* File format, v3 graphml
+@language rest
+@pagewidth 65
+
+This draft is intended to reflect our recent discussions, with no
+new invention from me. All comments and corrections welcome.
+
+The draft is also intended to be compatible with graphml.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+I am willing to change "type" to "key" in <edge> elements if that
+would be preferable.
+
+Recent changes
+==============
+
+- Added <graphml> element defining the default namespace.
+
+- Defined the leo namespace for leo-only elements.
+    - Renamed <leo_file> to <leo:outline>
+    - Renamed <descendant-attributes> to <leo:at-file-attributes>
+
+- Used <leo:at-file-attributes> for marks, removing the special case.
+
+- Enclosed <leo:descendant-attributes> in a (graphml) <data> element.
+
+- Changed the format of the "marked" attribute to be a string-valued attribute.
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo:file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear
+somewhere within <node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo:outline file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
+    <graph>
+    <nodes>
+        <!-- marked attribute appears only if the vnode is marked -->
+        <node id="gnx"> 
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </node>
+        ...
+        <!-- @file nodes contain a <data> package -->
+        <node id="gnx">
+            <head>@file x.py</head>
+            ...
+            <data>
+                <leo:at-file-attributes>
+                    <attr>key="ua-name"
+                        format="(empty)/json/pickle/binhex"
+                        gnx="gnx">value
+                    </attr>
+                    ...
+                </leo:at-file-attributes>
+            </data>
+        </node>
+        ...
+    </nodes>
+    <edges>
+        <edge type="child" from="gnx" to="gnx"</edge>
+        ...
+    </edges>
+    </graph>
+    </graphml>
+    </leo:outline>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+That is, the value will be a string by default.
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+
+<edge> elements
+===============
+
+<edge> elements will have the form::
+
+    <edge type="child" from="gnx" to="gnx"/>
+    
+Leo will use type="child" to represent Leo's official edges.
+Plugins are free to define any type except "child". Examples::
+
+    <edge type="undirected" from="gnx" to="gnx"/>
+    <edge type="bidirectional" from="gnx" to="gnx"/>
+    <edge type="backlink" from="gnx" to="gnx"/>
+    <edge type="myPlugin" from="gnx" to="gnx"/>
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <leo:at-file-attributes> element may be contained in the
+<node> element for @file nodes. For compatibility with graphml,
+it will enclosed in a data element::
+    
+    <data>
+        <leo:at-file-attributes>
+            <attr>key="ua-name"
+                format="(empty)/json/pickle/binhex"
+                gnx="gnx">value
+            </attr>
+            ...
+        </leo:at-file-attributes>
+    </data>
+    
+In other words, we use the graphml <attr> element, extended with the
+gnx attribute, to represent all the uA's in the descendants of @file nodes.
+#@+node:ekr.20110421132230.6107: *4* File format
+@language rest
+@pagewidth 65
+
+Here is the latest version, with the graphml stuff removed.
+
+This draft is intended to reflect our recent discussions, with no
+new invention from me. All comments and corrections welcome.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+Recent changes
+==============
+
+- Removed graphml stuff, including leo: prefixes.
+
+- Used "key" in <attr> elements (and "type" in <edge> elements.)
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear
+somewhere within <node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graph>
+    <nodes>
+        <!-- marked attribute appears only if the vnode is marked -->
+        <node id="gnx"> 
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </node>
+        ...
+        <!-- @file nodes contain a <data> package -->
+        <node id="gnx">
+            <head>@file x.py</head>
+            ...
+            <at-file-attributes>
+                <attr>key="ua-name"
+                    format="(empty)/json/pickle/binhex"
+                    gnx="gnx">value
+                </attr>
+                ...
+            </at-file-attributes>
+        </node>
+        ...
+    </nodes>
+    <edges>
+        <edge type="child" from="gnx" to="gnx"</edge>
+        ...
+    </edges>
+    </graph>
+    </leo_file>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+That is, the value will be a string by default.
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+
+<edge> elements
+===============
+
+<edge> elements will have the form::
+
+    <edge type="child" from="gnx" to="gnx"/>
+    
+Leo will use type="child" to represent Leo's official edges.
+Plugins are free to define any type except "child". Examples::
+
+    <edge type="undirected" from="gnx" to="gnx"/>
+    <edge type="bidirectional" from="gnx" to="gnx"/>
+    <edge type="backlink" from="gnx" to="gnx"/>
+    <edge type="myPlugin" from="gnx" to="gnx"/>
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <at-file-attributes> element may be contained in the
+<node> element for @file nodes::
+
+    <at-file-attributes>
+        <attr>key="ua-name"
+            format="(empty)/json/pickle/binhex"
+            gnx="gnx">value
+        </attr>
+        ...
+    </at-file-attributes>
+    
+In other words, we use the graphml <attr> element, extended with the
+gnx attribute, to represent all the uA's in the descendants of @file nodes.
+#@+node:ekr.20110314123359.14272: *3* New completer
 @nocolor-node
 
-Eliminate all tk-indices from leoEditCommands.py
+To do (by EKR)
 
-These are marked with ###
-
-(found) wordend, wordstart
-(found) lineend, linestart
-(found) sel.first, sel.last
-(found) w.insert, w.delete
-#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
-#@+node:ekr.20110314123359.14272: *3* New completer
+- Complete the code in "AutoCompleter test" in test.leo.
+    
+** Fix the focus problem:
+   
+   - put the focus in the body pane when the QCompleter goes away.
+   
+- Fix the codewise crash.
+   
+#@+node:ekr.20090131200406.14: *4*  Notes
+#@+node:ekr.20110509064011.14559: *5* Status
 @nocolor-node
 
 Status:
     
-1. The gui part of the QCompleter code is ready
-   The key-handling problem http://developer.qt.nokia.com/forums/viewthread/4317
-   has been resolved by overriding keyEvent in LeoQTextBrowser.
-   
-2. The AutoCompleter test in test.leo invokes the completer by calling w.initCompleter.
-
-
-To do (by EKR)
+- The most current code is the node "AutoCompleter test" in test.leo
     
-1. Fix the focus problem.
+- The gui part of the QCompleter code is ready The key-handling problem
+  http://developer.qt.nokia.com/forums/viewthread/4317 has been resolved by
+  overriding keyEvent in LeoQTextBrowser.
    
-2. Make a trivial completer than can complete after c,p,g using
-   QCompleter and eval(). The rest will fall into place after that.
-   
-   The code in the children of this node might have been a start,
-   but it is preliminary.
-#@+node:ekr.20110508031108.6194: *4* The IPython code to complete chains of id's
-import re
+#@+node:ekr.20081005065934.12: *5* Links from Ville re Scintilla
+It seems Scintilla relies on externally generated api description
+files to provide autocompletion. Links that may be of interest:
 
-import leo.core.leoGlobals as g
+http://www.riverbankcomputing.co.uk/static/Docs/QScintilla2/classQsciAPIs.html#b0f824492bb0f3ca54edb4d46945a3de
+
+http://www.burgaud.com/scite-java-api/
+
+http://scintilla.sourceforge.net/tags2api.py
+
+http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
+#@+node:ekr.20060927173836.1: *5* Make calltips and autocompleter 'stateless'
+@nocolor
+
+Disabled these binding:
+
+auto-complete-force = None # This command needs work before it is useful. Ctrl-period
+show-calltips-force = None # This command needs work before it is useful. Alt-parenleft
+
+The problem is that autocompletion depends on state: self.leadinWord,
+prevObjects, etc. Thus, it's not presently possible to start the proces
+anywhere. Similar remarks apply to calltips, which relies on autocompleter
+state.
+
+This is a complex problem, and not very serious now that there is an easy way of
+toggling autocompleter and calltips on and off.
+
+@color
+#@+node:ekr.20080110082845: *5* pyxides: code completion
+@nocolor
+
+Python code completion module
 
 
-def attr_matches( text, namespace):
-    """Compute matches when text contains a dot.
+From: "Tal Einat" <talei...@gmail.com>
+Date: Wed, 6 Jun 2007 20:57:18 +0300
 
-Assuming the text is of the form NAME.NAME....[NAME], and is
-evaluatable in self.namespace or self.global_namespace, it will be
-evaluated and its attributes (as revealed by dir()) are used as
-possible completions. (For class instances, class members are are
-also considered.)
+I've been developing IDLE over the past 2 years or so. Even before
+that, I helped a friend of mine, Noam Raphael, write IDLE's
+auto-completion, which is included in recent versions of IDLE.
 
-WARNING: this can still invoke arbitrary C code, if an object
-with a __getattr__ hook is evaluated.
+Noam wrote the original completion code from scratch, and AFAIK every
+Python IDE which features code completion has done the same. Surely
+there is -some- functionality which could be useful cross-IDE?
+Retrieving possible completions from the namespace, for example. And
+we should be learning from each-others' ideas and experiences.
+
+So how about we design a generic Python completion module, that
+each IDE could extend, and use for the completion logic?
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Wed, 6 Jun 2007 19:06:01 +0100
+
+I am very keen for this. I will help where it is required. PIDA
+currently has no code completion (outside what vim/emacs provide),
+
+
+
+From: "phil jones" <inters...@gmail.com>
+Date: Wed, 6 Jun 2007 11:07:33 -0700
+
+What functions would we ask for a code completion module?
+
+Presumably recognition of the beginnings of
+- a) python keywords
+- b) classes and functions defined earlier in this file?
+- c) in scope variables?
+
+As python is dynamically typed, I guess we can't expect to know the
+names of methods of objects?
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Wed, 6 Jun 2007 19:13:10 +0100
+
+> Presumably recognition of the beginnings of
+> - a) python keywords
+> - b) classes and functions defined earlier in this file?
+> - c) in scope variables?
+
+does c) include: d) imported modules
+
+
+
+From: Nicolas Chauvat <nicolas.chau...@logilab.fr>
+Date: Wed, 6 Jun 2007 20:17:30 +0200
+
+> >Presumably recognition of the beginnings of
+> >- a) python keywords
+> >- b) classes and functions defined earlier in this file?
+> >- c) in scope variables?
+
+> does c) include: d) imported modules
+
+For code-completion, I suppose astng[1] could be useful.
+
+1: http://www.logilab.org/project/eid/856
+
+
+From: Stani's Python Editor <spe.stani...@gmail.com>
+Date: Wed, 06 Jun 2007 20:48:41 +0200
+
+A good point. I think we all have been thinking about this. Important
+issues for the design is the extraction method and the sources.
+
+*the method*
+Importing is a lazy, but accurate way of importing, but is security wise
+not such a good idea. Parsing throught an AST compiler is better,
+however more difficult. Here are two options.
+
+From version 2.5 the standard Python compiler converts internally the
+source code to an abstract syntax tree (AST) before producing the
+bytecode. So probably that is a good way to go as every python
+distribution has this battery included.
+
+As Nicolas suggested earlier on this mailing list, there is another
+option: the AST compiler in python or PyPy:
+
+On Mar 14 2006, 12:16 am, Nicolas Chauvat <nicolas.chau...@logilab.fr>
+wrote:
+
+> > WingIDE use anASTgenerator written in C (but cross-platform),
+> > lightningly quick, and open sourced. This could be a potential
+> > starting point.
+
+> > Additionally isn't Python2.5 planned to have a C-written compiler?
+
+> PyPy also produced an improved parser/compiler.
+
+> http://codespeak.net/pypy/dist/pypy/doc/index.html
+> http://codespeak.net/pypy/dist/pypy/module/recparser/
+
+But if it could be done with the standard one it is one dependency less.
+
+*the sources*
+In the design we could define first the sources:
+1 external imported modules from the pythonpath
+2 local modules relative to the current file or context dependent
+(Blender, Gimp, ...)
+3 inner code
+
+For 1:
+It might be a good idea to have a function which scans all the modules
+from the pythonpath or one specific module to cache all autocompletion
+and calltip information of all classes, methods and doc strings. Why?
+Modules in the pythonpath don't change so often. With some criteria
+(file name, time stamp, size, ...) you could check if updates are
+necessary at startup. Having a readymade 'database' (could be python
+dictionary or sqlite database) for autocompletion/call tips would speed
+up things (and is also more secure if you are importing rather than
+parsing. For example trying to provide gtk autocompletion in a wxPython
+by importing is problematic).
+
+For 2:
+Here you load the parser on demand. Autocompletion/calltip information
+can be added to the database.
+
+For 3:
+A different kind of parser needs to be used here as per definition code
+you edit contains errors while typing. External modules are retrieved
+from 1 and 2, for internal code you can scan all the words and add them
+to the autocomplete database. As a refinement you can give special
+attention to 'self'. Also for calltips you can inherit when there are
+assignments, eg
+frame = Frame()
+than frame inherits autocomplete & calltip information from Frame.
+
+So autocompletion & calltips deals with two steps: extraction and
+'database'. If someone has a good parser already, we could use it.
+Otherwise we can define an API for the extraction and maybe lazily
+implement it first with importing and concentrate first on the
+'database'. When the database is ready we can implement the parsing. You
+could also implement the parsing first, but than it takes longer before
+you have results. Of course the library is GUI independent, it only
+works with strings or lists.
+
+What concerns SPE, it uses importing for autocompletion (1+2) and does
+internal code analysis for local code (however without the inheriting).
+
+Tal, how does IDLE's autocompletion works?
+
+Stani
+
+
+
+From: Stani's Python Editor <spe.stani...@gmail.com>
+Date: Wed, 06 Jun 2007 20:53:10 +0200
+
+Nicolas Chauvat wrote:
+> On Wed, Jun 06, 2007 at 07:13:10PM +0100, Ali Afshar wrote:
+>>> Presumably recognition of the beginnings of
+>>> - a) python keywords
+>>> - b) classes and functions defined earlier in this file?
+>>> - c) in scope variables?
+>> does c) include: d) imported modules
+
+> For code-completion, I suppose astng[1] could be useful.
+
+> 1: http://www.logilab.org/project/eid/856
+
+How dependent/independent is this from the standard AST compiler or
+PyPy? Is it more IDE friendly? Is it based on it or a total independent
+implementation?
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Wed, 6 Jun 2007 19:59:13 +0100
+
+> A good point. I think we all have been thinking about this. Important
+> issues for the design is the extraction method and the sources.
+
+> *the method*
+> Importing is a lazy, but accurate way of importing, but is security wise
+> not such a good idea. Parsing throught an AST compiler is better,
+> however more difficult. Here are two options.
+
+> From version 2.5 the standard Python compiler converts internally the
+> source code to an abstract syntax tree (AST) before producing the
+> bytecode. So probably that is a good way to go as every python
+> distribution has this battery included.
+
+> As Nicolas suggested earlier on this mailing list, there is another
+> option: the AST compiler in python or PyPy:
+
+What concerns me about these is whether they would work in a module
+which has a syntax error.
+
+I believe Wing's compiler bit of their code completion is open source.
+I remember having seen the code.
+
+
+
+From: Stani <spe.stani...@gmail.com>
+Date: Wed, 06 Jun 2007 12:08:00 -0700
+
+> What concerns me about these is whether they would work in a module
+> which has a syntax error.
+
+> I believe Wing's compiler bit of their code completion is open source.
+> I remember having seen the code.
+
+It is indeed, but is implemented in C, which means an extra dependency
+and not a 100% python solution. Normally modules (especially in the
+pythonpath) which you import don't have syntax errors. Maybe logilabs
+implementation handles syntax errors well as it is developed for
+PyLint. Nicolas?
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Wed, 6 Jun 2007 22:34:41 +0300
+
+> As python is dynamically typed, I guess we can't expect to know the
+> names of methods of objects?
+
+Well, the dir() builtin does just that, though there can be attributes
+which won't be included therein. However, the builtin dir() can be
+overridden... and ignoring it can break libraries like RPyC which
+define a custom dir() function just for this purpose.
+
+This issue has already been run in to by RPyC (an Python RPC lib). The
+main developr went ahead and suggested adding a __dir__ method which
+will return a list of attributes, and IIRC he has already implemented
+a patch for this, and it will likely enter Python2.6.
+
+Until then, I guess we're going to have to rely on dir for this.
+
+
+
+From: "Josiah Carlson" <josiah.carl...@gmail.com>
+Date: Wed, 6 Jun 2007 12:42:01 -0700
+
+For reference, PyPE auto-parses source code in the background, generating
+(among other things) a function/class/method hierarchy.  Its autocomplete
+generally sticks to global functions and keywords, but when doing
+self.method lookups, it checks the current source code line, looks up in its
+index of classes/methods, and trims the results based on known methods in
+the current class in the current source file.
+
+It certainly isn't complete (it should try to check base classes of the
+class in the same file, it could certainly pay attention to names assigned
+in the current scope, the global scope, imports, types of objects as per
+WingIDE's assert isinstance(obj, type), etc.), but it also makes the
+computation fairly straightforward, fast, and only in reference to the
+current document.
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Wed, 6 Jun 2007 22:52:08 +0300
+
+> Tal, how does IDLE's autocompletion works?
+
+Much like Stani said, since Python is interpreted, collection of
+possible completions splits into two methods:
+1) source code analysis
+2) dynamic introspection
+
+Of course, we could do either or a combination of both.
+
+IDLE just uses introspection: since IDLE always has a python shell
+running, it just completes according to the shell's state (plus
+built-in keywords and modules). This is a very simple method,
+obviously lacking. It does allow the user some control of the
+completion, though - just import whatever you want to be completable
+in the shell. However, introspection is all that is needed in a Python
+shell, which is the major reason this is the method used in IDLE.
+
+
+
+From: Nicolas Chauvat <nicolas.chau...@logilab.fr>
+Date: Wed, 6 Jun 2007 23:59:32 +0200
+
+
+> How dependent/independent is this from the standard AST compiler or
+> PyPy? Is it more IDE friendly? Is it based on it or a total independent
+> implementation?
+
+It is independent from PyPy.
+
+The above web page says:
 
 """
+Python Abstract Syntax Tree New Generation
 
-    # Another option, seems to work great. Catches things like ''.<tab>
-    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", text)
+The aim of this module is to provide a common base representation of
+python source code for projects such as pychecker, pyreverse,
+pylint... Well, actually the development of this library is essentialy
+governed by pylint's needs.
 
-    if not m:
-        return []
+It extends class defined in the compiler.ast [1] module with some
+additional methods and attributes. Instance attributes are added by a
+builder object, which can either generate extended ast (let's call
+them astng ;) by visiting an existant ast tree or by inspecting living
+object. Methods are added by monkey patching ast classes.Python
+Abstract Syntax Tree New Generation
 
-    expr, attr = m.group(1, 3)
-    try:
-        obj = eval(expr, namespace)
-    except:
-        return []
+The aim of this module is to provide a common base representation of
+python source code for projects such as pychecker, pyreverse,
+pylint... Well, actually the development of this library is essentialy
+governed by pylint's needs.
 
-    words = dir(obj)
+It extends class defined in the compiler.ast [1] module with some
+additional methods and attributes. Instance attributes are added by a
+builder object, which can either generate extended ast (let's call
+them astng ;) by visiting an existant ast tree or by inspecting living
+object. Methods are added by monkey patching ast classes.
+"""
 
-    # Build match list to return
-    n = len(attr)
-    res = ["%s.%s" % (expr, w) for w in words if w[:n] == attr ]
-    return res
+From: "Sylvain Thénault" <thena...@gmail.com>
+Date: Wed, 13 Jun 2007 10:51:04 +0200
 
-def complete_live_objects(c,p, expr):
-    ns = { 'c' : c, 'p': p, 'g': g }
-    print(g.listToString(attr_matches(expr, ns),sort=True))
+> Please let me involve Sylvain in the discussion. As the main author of
+> pylint and astng, he will provide better answers.
 
-def test(c,p):
-    pats = ['c.all',
-            'p.ins',
-            'c.B',
-            'g.com',
-            'c.frame.top.',
-    ]
-    
-    for pat in pats:
-        complete_live_objects(c,p, pat)
+well logilab-astng is basically a big monkey patching of the compiler
+package from the stdlib, so you can't get an astng representation from a
+module with syntax errors in. However inference and most others
+navigation methods (which are basically the value added by astng) are
+"syntax error resilient" : if a dependency module (direct or indirect)
+contains a syntax error, you don't get any exception, though since some
+information is missing you can miss some results you'ld get if the
+faulting module were parseable.
 
-test(c,p)
-#@+node:ekr.20110326063921.14462: *4* codewise crash
-InterfaceError: Error binding parameter 0 - probably unsupported type.
---------------------
-  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
-* line 704:                 prefix + '%',))
-  line 705: 
-  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 10:33:33 +0300
+
+Since astng already does some inference (which we definitely want!)
+and is based on the standard Python AST compiler, it sounds like our
+#1 candidate. I think we should give the code a serious once-over and
+see how well it fits our requirements, and if it can be adapted to
+better handle errors. Any volunteers?
+
+Also, has anyone used astng for completion, calltips, or something
+similar? Or the standard AST compiler, for that matter?
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 10:40:11 +0300
+
+How does PyPE parse code? Home-rolled, standard AST compiler, something else?
+
+It seems to me we should try to come up with an algorithm for parsing,
+before getting to the code. All of the details you mentioned -
+noticing assignments, using base-class methods, etc. - could be better
+defined and organized this way. Perhaps we could brainstorm on this in
+a wiki?
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 11:38:40 +0300
+
+Sorry for being away for such a long time. I hope we can get this
+conversation rolling again, and get started with the actual work.
+
+I'll try to sum up what has been said so far, and how I see things.
+
+== Top Priorities ==
+* Can we implement a parser based on the standard Python AST compiler
+(or astng)? For example, can syntax errors be handled well?
+* Is importing reasonable security-wise? If not, can it be made secure?
+
+== General issues ==
+* Do we aim for just completion, or also calltips? Perhaps also other
+meta-data, e.g. place defined, source code, ... (see IPython's '??')
+* Dependencies - do we want to allow C-extensions, or are we going for
+a Python-only solution? (IDLE would only use such a Python-only tool.)
+It seems that we want to pre-process most of the data in the
+background, so I don't see why we would want to do this in C for
+efficiency reasons.
+
+== Completion sources ==
+1) Importing "external" modules
+2) Importing/Parsing "local" modules
+3) Parsing the current file
+4) Using objects/modules from the shell (e.g. IDLE has both editor
+windows and a Python shell)
+
+== Importing ==
+* Stani mentioned that importing is problematic from a security point
+of view. What are the security issues? Are they really an issue for an
+IDE? If so, perhaps we could overcome this by importing in some kind
+of "sandbox"?
+* What are the pros and cons of Importing vs. Parsing?
+* If importing is always preferable to parsing unless there's a syntax
+error, perhaps try to import and parse on failure?
+
+== Parsing ==
+* This is going to be the most complex method - I think we should have
+a general idea of how this should work before starting an
+implementation. I suggest hashing ideas out on a wiki, since there a
+lot of details to consider.
+* Can a parser based on the standard AST compiler (or astng) work? Is
+there a way to deal with errors? (HIGH PRIORITY!)
+* There are other existing, open-source implementations out there -
+WingIDE, PyPE have been mentioned. Any others? We should collect these
+so we can use the code for learning, and perhaps direct use (if
+possible license-wise).
+
+== Shell ==
+This is relatively straight-forward - just use dir(). This should be
+optional, for use by IDEs which have a shell (support multiple
+shells?).
+
+Some known issues from IDLE and PyCrust:
+* Handle object proxies such as RPC proxies (e.g. RPyC)
+* Handle ZODB "ghost" objects
+* Watch out for circular references
+* Watch out for objects with special __getattr__/__hasattr__
+implementations (for example xmlrpc, soap)
+
+== Persistence ==
+* Stani mentioned a 'database'. I feel Sqlite should be at most
+optional, to reduce dependencies.
+* Do we really want to have the data persistent (between IDE
+sessiosns)? If so, we need to support simultaneous instances of the
+IDE so they don't corrupt the data. Any other issues? (I have a
+feeling this would better be left for later stages of development.)
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 12:22:59 +0300
+
+One more note: We should distinguish between completion in an editor
+and completion in a shell. The conversation up until now has focused
+on editors, which is reasonable since that is the problematic scene. I
+think a generic Python completion library should support completion in
+both contexts, especially if it uses can use a shell's namespace for
+completion in the editor.
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Tue, 31 Jul 2007 11:20:19 +0100
+
+I have just implemented a completion mockup using Rope (which is a
+refactoring library). It works quite nicely, and definitely worth a
+look.
+
+http://rope.sourceforge.net/
+
+It even achieves this kind of completion:
+
+class Banana(object):
+    def do_something(self):
+         return
+
+def foo():
+    return [Banana(), Banana()]
+
+foo()[0].<complete> includes do_something
+
+Which seems pretty impressive to me.
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 20:12:50 +0300
+
+Wow, Rope does look very impressive! A quick look at the code tells me
+that a lot of work has been invested in it.
+
+So we have one existing Python-only solution. We should evaluate it -
+see what it can and can't do, and perhaps take a look at the overall
+design.
+
+I'm CC-ing Rope's developer, Ali. Hopefully Ali can help us quickly
+understand Rope's code analysis capabilities.
+
+Ali, could you elaborate a bit on what kinds of completion Rope can
+do, and the methods it uses? We would especially like to know how your
+static and dynamic inference work, what they can accomplish, and what
+their limitations are.
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Tue, 31 Jul 2007 19:45:15 +0100
+
+> Ali, could you elaborate a bit on what kinds of completion Rope can
+> do, and the methods it uses? We would especially like to know how your
+> static and dynamic inference work, what they can accomplish, and what
+> their limitations are.
+
+Well, I haven't really looked at the code. But I can tell you this:
+
+from rope.ide.codeassist import PythonCodeAssist
+from rope.base.project import Project
+for compl in PythonCodeAssist(Project(package_root)).assist(buffer,
+offset).completions:
+    print compl
+
+And that is as far as I really got. I expect to get a better look at
+it later in the week though...
+
+
+From: "Josiah Carlson" <josiah.carl...@gmail.com>
+Date: Wed, 1 Aug 2007 00:26:14 -0700
+
+> How does PyPE parse code? Home-rolled, standard AST compiler, something else?
+
+The compiler for syntactically correct Python, a line-based compiler
+for broken Python.  TO generate a method list for self.methods, using
+the current line number, I discover the enclosing class, check the
+listing of methods for that class (generated by the compiler or
+line-based parsers), and return a valid list for the specified prefix.
+ It doesn't walk the inheritance tree, it doesn't do imports, etc.
+
+> It seems to me we should try to come up with an algorithm for parsing,
+> before getting to the code. All of the details you mentioned -
+> noticing assignments, using base-class methods, etc. - could be better
+> defined and organized this way. Perhaps we could brainstorm on this in
+> a wiki?
+
+A wiki would be fine, the one for this mailing list would likely be
+best (if it is still up and working).  Then again, Rope looks quite
+nifty.  I may have to borrow some of that source ;)
+
+
+Discussion subject changed to "Fwd: Python code completion module" by Tal Einat
+
+From: Ali Gholami Rudi <aligr...@gmail.com>
+Date: Aug 1, 2007 5:50 PM
+
+First of all I should note that rope's main goal was being a
+refactoring tool and a refactoring tool needs to know a lot about
+python modules.  `rope.base` package provides information about python
+modules.
+
+Actually what ropeide provides as auto-completion is defined in
+`rope.ide.codeassist` module.  This module almost does nothing but use
+`rope.base`.  Since `rope.ide` package is not included in the rope
+library (which has been separated from ropeide since 0.6m4) it lacks
+good documentation and the API might not be easy to use (most of it is
+written in the first months of rope's birth).
+
+> ..., could you elaborate a bit on what kinds of completion Rope can
+> do, ...
+
+I don't know what to say here.  Well, actually it tries to use the
+source code as much as possible and infer things from it.  So I can
+say that it can complete any obvious thing that can be inferred by a
+human.  Like this is the first parameter of a method and after dots
+its attributes can appear or these modules are imported so their names
+and contents are available or this is an instance of some known type
+and we know its attributes and ... .  Try ropeide (it uses emacs-like
+keybinding, C-/ for completion; see ~/.rope if you want to change
+that); it completes common cases (and sometimes completes things you
+don't expect it to!).
+
+> ..., and the methods it uses?
+
+Rope analyzes python source code and AST.  Rope used to use the
+`compiler` module till 0.5 and now it uses `_ast` module.
+
+> We would especially like to know how your
+> static and dynamic inference work, what they can accomplish
+
+There are a few examples in docs/overview.txt.  Unit-test modules like
+`ropetest.base.objectinfertest` and `advanced_oi_test` might help,
+too.  Also have a look at `rope.base.oi.__init__` pydoc for an
+overview of how they work; (I'm afraid it is a bit out of date and
+carelessly written.)  The idea behind rope's object inference is to
+guess what references (names in source-code) hold.  They collect
+information about code when they can and use them later.
+
+>..., and what their limitations are.
+
+Many things in rope are approximations that might be exact if some
+conditions hold.  For instance rope might assume that every normal
+reference in module scope holds only one kind of object.  Apart from
+these assumptions both SOI and DOI have their own disadvantages; For
+instance SOI fails when dynamic code is evaluated while DOI does not.
+Or DOI is slower than SOI.  (Well, after recent enhancements to rope's
+SOI I rarely use DOI).
+
+I tried to answer as short as possible.  If there are questions on
+specific parts of rope, I'll be happy to answer.
+
+By the way, I tried to reply this mail to the group, but it seems that
+your group requires subscription for posting, so I've sent it to you,
+instead.
+#@+node:ekr.20071106083149: *5* Recent post
+@killcolor
+
+In general, autocompletion is a tricky problem. Consider:
+
+- There may be no 'clean' version of the source code that you want to
+auto-complete: you may be creating a new node, or a new file, and the source
+code, being incomplete, will not parse correctly.
+
+- Except in special circumstances, there is no 'real' object corresponding to s,
+so there is no way to use Python's inspect module on s. Modules are an
+exception: the autocompleter can handle existing modules fairly well. Try "os."
+or "os.path." for example.
+
+
+It might be possible to generalize c.k.defineObjectDict so that the user
+could specify autocompleter conventions, say in an @autocompleter node in an
+@settings tree.
+#@+node:ekr.20101004092958.6050: *5* How to make codewise work
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
+
+1. Make sure you have exuberant ctags (not just regular ctags)
+installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
+
+2. Install Ville's python module "codewise".  This is a small module on
+which the Leo plugin relies.
+
+   bzr branch lp:codewise
+   cd codewise
+   sudo python setup.py install
+
+3. You need a recent trunk version of leo to get the plugin which uses
+the above module.
+
+4. Enable the plugin by putting "codewisecompleter.py" on an
+uncommented line in your @enabled-plugins @settings node.
+
+5. On the command line:
+
+if you have an existing ~/.ctags for some reason, and it's nothing you
+need to keep:
+
+  rm ~/.ctags
+
+then
+
+  codewise setup
+  codewise init
+  codewise parse .../path/to/leo/  # assuming you want completion on
+                                   # leo code
+  codewise parse .../some/other/project/
+
+Then, after restarting leo if necessary, type
+
+c.op<Alt-0> in the body editor to find all the c. methods starting
+with 'op' etc.
+
+Nice work Ville, thanks.
+
+==================
+
+Thanks for this, I hope others will take a stab at it as well, given
+sane instructions (I burned my free cycles frantically coding this
+thing and neglected the all-important HOWTO). This is important
+because functional completion is the single most important thing still
+missing from Leo. Or, well, was ;-).
+
+Especially the presentation part (QCompleter) needs some care, so you
+can operate it from your keyboard alone. It should probably be moved
+to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
+just invoke w.complete(list_of_completions) that will bring up the
+QCompleter popup.
+
+> Then, after restarting leo if necessary, type
+
+> c.op<Alt-0> in the body editor to find all the c. methods starting
+> with 'op' etc.
+
+Also, try the explicit declarations:
+
+# w : SomeClass
+
+w.<alt+0>
+
+And self.<alt+0> 
+#@+node:ekr.20110509064011.14560: *4*  Unused
+#@+node:ekr.20101002192824.5843: *5* test-new-ac
+# To do:
+# - Fix findAnchor.
+# - Report duck type in completion tab: callable if calltips exist.
+# - What to do about library files and imports?
+
+import re
+import string
+import sys
+import time
+
+@others
+
+ac = NewAutoCompleter(c.k)
+w = c.frame.body.bodyCtrl
+event = g.bunch(char='e',keysym='e')
+n = len(p.b)
+if 0:
+    w.setSelectionRange(n-7,n)
+else:
+    w.setInsertPoint(n)
+
+ac.start(event=event,w=w)
+
+# The cursor must be at the end
+# p.s
+#@+node:ekr.20101002192824.6019: *6* class AutoCompleterScanner
+class AutoCompleterScanner:
+
+    '''A class that scans for autocompleter completions.'''
+
+    @others
+#@+node:ekr.20101002192824.6020: *7*  ctor & helper (AutoCompleterScanner)
+def __init__ (self,c):
+
+    self.c = c
+
+    # Set by definePatterns...
+    self.okchars = None
+    self.pats = {}
+
+    # Set by scanners...
+    self.calltips = {}
+    self.watchwords = {}
+
+    self.definePatterns()
+#@+node:ekr.20101002192824.6021: *8* definePatterns
+def definePatterns (self):
+
+    self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
+    self.end = r'\w+\s*\([^)]*\)' # word (\w) ws ( any ) (can cross lines)
+
+    # Define re patterns for various languages.
+    # These patterns match method/function definitions.
+    self.pats = {}
+    self.pats ['python'] = re.compile(r'def\s+%s' % self.end)
+        # def ws word ( any ) # Can cross line boundaries.
+    self.pats ['java'] = re.compile(
+        r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % (
+            self.space,self.space,self.end))
+    self.pats ['perl'] = re.compile(r'sub\s+%s' % self.end)
+    self.pats ['c++'] = re.compile(r'((virtual\s+)?\w+%s%s)' % (self.space,self.end))
+    self.pats ['c'] = re.compile(r'\w+%s%s' % (self.space,self.end))
+
+    # Define self.okchars.
+    okchars = {}
+    for z in string.ascii_letters:
+        okchars [z] = z
+    okchars ['_'] = '_'
+    self.okchars = okchars 
+#@+node:ekr.20101002192824.6022: *7* scan & dumps
+def scan (self):
+
+    '''Build the database from the outline'''
+
+    trace = True and not g.unitTesting
+    verbose = False
+    if trace: t1 = time.time()
+    c = self.c
+    for p in c.all_unique_positions():
+        self.scanForAutoCompleter(p.b)
+
+    p = c.rootPosition()
+    seen = {}
+    while p:
+        key = p.key()
+        if not key in seen:
+            seen[key] = True
+            if p.isAnyAtFileNode():
+                # scanForAtLanguage is expensive!
+                language = g.scanForAtLanguage(c,p)
+                for p2 in p.self_and_subtree():
+                    seen[p2.key()] = True
+                    self.scanForCallTip(p2.b,language)
+        p.moveToThreadNext()
+
+    if trace:
+        t2 = time.time()
+        if verbose:
+            self.dumpTips()
+            self.dumpWords()
+        self.printSummary(t2-t1)
+
+#@+node:ekr.20101002192824.6023: *8* dumpTips
+def dumpTips (self):
+
+    print('calltips...\n\n')
+    for key in sorted(self.calltips):
+        d = self.calltips.get(key)
+        if d:
+            if 1:
+                d2 = {}
+                for key2 in list(d.keys()):
+                    aList = d.get(key2)
+                    if len(aList) == 1:
+                        s = aList[0]
+                        if s.startswith(key2):
+                            s = s[len(key2):].strip()
+                        d2[key2] = s
+                    else:
+                        aList2 = []
+                        for s in aList:
+                            if s.startswith(key2):
+                                s = s[len(key2):].strip()
+                            aList2.append(s)
+                        d2[key2] = aList2
+                print('\n%s:\n\n' % (key),g.dictToString(d2))
+            else:
+                print('\n%s:\n\n' % (key),g.dictToString(d))
+#@+node:ekr.20101002192824.6024: *8* dumpWords
+def dumpWords (self):
+
+    print('autocompleter words...\n\n')
+    show = ['aList','c','d','f','g','gui','k','m','p','s','t','v','w']
+    keys = show or sorted(self.watchwords)
+    for key in keys:
+        aList = self.watchwords.get(key)
+        aList.sort()
+        print('\n%s:' % (key),g.listToString(aList)) #repr(aList))
+    print()
+#@+node:ekr.20101002192824.6025: *8* printSummary
+def printSummary (self,t):
+
+    n  = len(list(self.watchwords.keys()))
+
+    n2 = 0
+    for language in list(self.calltips.keys()):
+        d = self.calltips.get(language)
+        n2 += len(list(d.keys()))
+
+    g.es_print('scanned %s words, %s tips in %3.2fs sec.' % (
+        n,n2,t))
+#@+node:ekr.20101002192824.6026: *7* scanForAutoCompleter & helper
+def scanForAutoCompleter (self,s):
+
+    '''This function scans text for the autocompleter database.'''
+
+    aList = []
+    strings = s.split('.')
+    if not strings: return
+
+    for i in range(len(strings)-1):
+        self.makeAutocompletionList(strings[i],strings[i+1],aList)
+
+    if aList:
+        for key,val in aList:
+            aList2 = self.watchwords.get(key,[])
+            # val = str(val)
+            if val not in aList2:
+                aList2.append(val)
+                self.watchwords [key] = aList2
+#@+node:ekr.20101002192824.6027: *8* makeAutocompletionList
+def makeAutocompletionList (self,a,b,glist):
+
+    '''We have seen a.b, where a and b are arbitrary strings.
+    Append (a1.b1) to glist.
+    To compute a1, scan backwards in a until finding whitespace.
+    To compute b1, scan forwards in b until finding a char not in okchars.
+    '''
+
+    # Compute reverseFindWhitespace inline.
+    i = len(a) -1
+    while i >= 0:
+        # if a[i].isspace() or a [i] == '.':
+        if a[i] not in self.okchars:
+            a1 = a [i+1:] ; break
+        i -= 1
+    else:
+        a1 = a
+
+    # Compute getCleanString inline.
+    i = 0
+    for ch in b:
+        if ch not in self.okchars:
+            b1 = b[:i] ; break
+        i += 1
+    else:
+        b1 = b
+
+    if b1:
+        glist.append((a1,b1),)
+#@+node:ekr.20101002192824.6028: *7* scanForCallTip & helper
+def scanForCallTip (self,s,language):
+
+    '''this function scans text for calltip info'''
+
+    d = self.calltips.get(language,{})
+    pat = self.pats.get(language or 'python')
+
+    # Set results to a list of all the function/method defintions in s.
+    results = pat and pat.findall(s) or []
+
+    for z in results:
+        if isinstance(z,tuple): z = z [0]
+        if language == 'python':
+            z = self.cleanPythonTip(z)
+        pieces2 = z.split('(')
+        # g.trace(pieces2)
+        pieces2 [0] = pieces2 [0].split() [-1]
+        a, junk = pieces2 [0], pieces2 [1]
+        aList = d.get(a,[])
+        if z not in aList:
+            aList.append(z)
+            d [a] = aList
+
+    self.calltips [language] = d
+#@+node:ekr.20101002192824.6029: *8* cleanPythonTip
+def cleanPythonTip (self,s):
+
+    result = []
+    i = g.skip_ws(s,3)
+    while i < len(s):
+        ch = s[i]
+        if ch in ' \t\n':
+            i += 1
+        elif ch == '#':
+            # Remove comment.
+            i += 1
+            while i < len(s):
+                i += 1
+                if s[i-1] == '\n': break
+        else:
+            result.append(ch)
+            i += 1
+    return ''.join(result)
 #@+node:ekr.20061031131434.4: *4* class AutoCompleterClass
 class AutoCompleterClass:
 
@@ -1773,1025 +3074,463 @@ def select_word (self):
 
     w.setSelectionRange(i,j)
     return s[i:j]
-#@+node:ekr.20090131200406.14: *4* Autocompleter notes
-#@+node:ekr.20080113165010: *5* About auto completion
-@nocolor
-
-Summary: inspect when possible, ask for types otherwise.
-
-    os.? gives a list of all instances of os module.
-    x.? gives a list of all known classes.
-    x.# gives list of all known functions.
-    self.? gives all known methods and ivars of the enclosing class.
-    The user will be able to specify type conventsions, like Leo's c,g,p,t,v vars.
-
-Completed (mostly): user interface stuff.
-
-Performance isn't too hard:
-    - Do all scanning in separate threads.
-    - Associate node info with tnodes.
-    - Update node info when deselecting a node (in tree base class)
-
-Parsing:
-    - Forgiving parser is essentially complete.
-    - It's easy to parse python def lines.
-#@+node:ekr.20081005065934.12: *5* Links from Ville re Scintilla
-It seems Scintilla relies on externally generated api description
-files to provide autocompletion. Links that may be of interest:
-
-http://www.riverbankcomputing.co.uk/static/Docs/QScintilla2/classQsciAPIs.html#b0f824492bb0f3ca54edb4d46945a3de
-
-http://www.burgaud.com/scite-java-api/
-
-http://scintilla.sourceforge.net/tags2api.py
-
-http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
-#@+node:ekr.20060927173836.1: *5* Make calltips and autocompleter 'stateless'
-@nocolor
-
-Disabled these binding:
-
-auto-complete-force = None # This command needs work before it is useful. Ctrl-period
-show-calltips-force = None # This command needs work before it is useful. Alt-parenleft
-
-The problem is that autocompletion depends on state: self.leadinWord,
-prevObjects, etc. Thus, it's not presently possible to start the proces
-anywhere. Similar remarks apply to calltips, which relies on autocompleter
-state.
-
-This is a complex problem, and not very serious now that there is an easy way of
-toggling autocompleter and calltips on and off.
-
-@color
-#@+node:ekr.20080110082845: *5* pyxides: code completion
-@nocolor
-
-Python code completion module
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Wed, 6 Jun 2007 20:57:18 +0300
-
-I've been developing IDLE over the past 2 years or so. Even before
-that, I helped a friend of mine, Noam Raphael, write IDLE's
-auto-completion, which is included in recent versions of IDLE.
-
-Noam wrote the original completion code from scratch, and AFAIK every
-Python IDE which features code completion has done the same. Surely
-there is -some- functionality which could be useful cross-IDE?
-Retrieving possible completions from the namespace, for example. And
-we should be learning from each-others' ideas and experiences.
-
-So how about we design a generic Python completion module, that
-each IDE could extend, and use for the completion logic?
-
-
-
-From: "Ali Afshar" <aafs...@gmail.com>
-Date: Wed, 6 Jun 2007 19:06:01 +0100
-
-I am very keen for this. I will help where it is required. PIDA
-currently has no code completion (outside what vim/emacs provide),
-
-
-
-From: "phil jones" <inters...@gmail.com>
-Date: Wed, 6 Jun 2007 11:07:33 -0700
-
-What functions would we ask for a code completion module?
-
-Presumably recognition of the beginnings of
-- a) python keywords
-- b) classes and functions defined earlier in this file?
-- c) in scope variables?
-
-As python is dynamically typed, I guess we can't expect to know the
-names of methods of objects?
-
-
-
-From: "Ali Afshar" <aafs...@gmail.com>
-Date: Wed, 6 Jun 2007 19:13:10 +0100
-
-> Presumably recognition of the beginnings of
-> - a) python keywords
-> - b) classes and functions defined earlier in this file?
-> - c) in scope variables?
-
-does c) include: d) imported modules
-
-
-
-From: Nicolas Chauvat <nicolas.chau...@logilab.fr>
-Date: Wed, 6 Jun 2007 20:17:30 +0200
-
-> >Presumably recognition of the beginnings of
-> >- a) python keywords
-> >- b) classes and functions defined earlier in this file?
-> >- c) in scope variables?
-
-> does c) include: d) imported modules
-
-For code-completion, I suppose astng[1] could be useful.
-
-1: http://www.logilab.org/project/eid/856
-
-
-From: Stani's Python Editor <spe.stani...@gmail.com>
-Date: Wed, 06 Jun 2007 20:48:41 +0200
-
-A good point. I think we all have been thinking about this. Important
-issues for the design is the extraction method and the sources.
-
-*the method*
-Importing is a lazy, but accurate way of importing, but is security wise
-not such a good idea. Parsing throught an AST compiler is better,
-however more difficult. Here are two options.
-
-From version 2.5 the standard Python compiler converts internally the
-source code to an abstract syntax tree (AST) before producing the
-bytecode. So probably that is a good way to go as every python
-distribution has this battery included.
-
-As Nicolas suggested earlier on this mailing list, there is another
-option: the AST compiler in python or PyPy:
-
-On Mar 14 2006, 12:16 am, Nicolas Chauvat <nicolas.chau...@logilab.fr>
-wrote:
-
-> > WingIDE use anASTgenerator written in C (but cross-platform),
-> > lightningly quick, and open sourced. This could be a potential
-> > starting point.
-
-> > Additionally isn't Python2.5 planned to have a C-written compiler?
-
-> PyPy also produced an improved parser/compiler.
-
-> http://codespeak.net/pypy/dist/pypy/doc/index.html
-> http://codespeak.net/pypy/dist/pypy/module/recparser/
-
-But if it could be done with the standard one it is one dependency less.
-
-*the sources*
-In the design we could define first the sources:
-1 external imported modules from the pythonpath
-2 local modules relative to the current file or context dependent
-(Blender, Gimp, ...)
-3 inner code
-
-For 1:
-It might be a good idea to have a function which scans all the modules
-from the pythonpath or one specific module to cache all autocompletion
-and calltip information of all classes, methods and doc strings. Why?
-Modules in the pythonpath don't change so often. With some criteria
-(file name, time stamp, size, ...) you could check if updates are
-necessary at startup. Having a readymade 'database' (could be python
-dictionary or sqlite database) for autocompletion/call tips would speed
-up things (and is also more secure if you are importing rather than
-parsing. For example trying to provide gtk autocompletion in a wxPython
-by importing is problematic).
-
-For 2:
-Here you load the parser on demand. Autocompletion/calltip information
-can be added to the database.
-
-For 3:
-A different kind of parser needs to be used here as per definition code
-you edit contains errors while typing. External modules are retrieved
-from 1 and 2, for internal code you can scan all the words and add them
-to the autocomplete database. As a refinement you can give special
-attention to 'self'. Also for calltips you can inherit when there are
-assignments, eg
-frame = Frame()
-than frame inherits autocomplete & calltip information from Frame.
-
-So autocompletion & calltips deals with two steps: extraction and
-'database'. If someone has a good parser already, we could use it.
-Otherwise we can define an API for the extraction and maybe lazily
-implement it first with importing and concentrate first on the
-'database'. When the database is ready we can implement the parsing. You
-could also implement the parsing first, but than it takes longer before
-you have results. Of course the library is GUI independent, it only
-works with strings or lists.
-
-What concerns SPE, it uses importing for autocompletion (1+2) and does
-internal code analysis for local code (however without the inheriting).
-
-Tal, how does IDLE's autocompletion works?
-
-Stani
-
-
-
-From: Stani's Python Editor <spe.stani...@gmail.com>
-Date: Wed, 06 Jun 2007 20:53:10 +0200
-
-Nicolas Chauvat wrote:
-> On Wed, Jun 06, 2007 at 07:13:10PM +0100, Ali Afshar wrote:
->>> Presumably recognition of the beginnings of
->>> - a) python keywords
->>> - b) classes and functions defined earlier in this file?
->>> - c) in scope variables?
->> does c) include: d) imported modules
-
-> For code-completion, I suppose astng[1] could be useful.
-
-> 1: http://www.logilab.org/project/eid/856
-
-How dependent/independent is this from the standard AST compiler or
-PyPy? Is it more IDE friendly? Is it based on it or a total independent
-implementation?
-
-
-
-From: "Ali Afshar" <aafs...@gmail.com>
-Date: Wed, 6 Jun 2007 19:59:13 +0100
-
-> A good point. I think we all have been thinking about this. Important
-> issues for the design is the extraction method and the sources.
-
-> *the method*
-> Importing is a lazy, but accurate way of importing, but is security wise
-> not such a good idea. Parsing throught an AST compiler is better,
-> however more difficult. Here are two options.
-
-> From version 2.5 the standard Python compiler converts internally the
-> source code to an abstract syntax tree (AST) before producing the
-> bytecode. So probably that is a good way to go as every python
-> distribution has this battery included.
-
-> As Nicolas suggested earlier on this mailing list, there is another
-> option: the AST compiler in python or PyPy:
-
-What concerns me about these is whether they would work in a module
-which has a syntax error.
-
-I believe Wing's compiler bit of their code completion is open source.
-I remember having seen the code.
-
-
-
-From: Stani <spe.stani...@gmail.com>
-Date: Wed, 06 Jun 2007 12:08:00 -0700
-
-> What concerns me about these is whether they would work in a module
-> which has a syntax error.
-
-> I believe Wing's compiler bit of their code completion is open source.
-> I remember having seen the code.
-
-It is indeed, but is implemented in C, which means an extra dependency
-and not a 100% python solution. Normally modules (especially in the
-pythonpath) which you import don't have syntax errors. Maybe logilabs
-implementation handles syntax errors well as it is developed for
-PyLint. Nicolas?
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Wed, 6 Jun 2007 22:34:41 +0300
-
-> As python is dynamically typed, I guess we can't expect to know the
-> names of methods of objects?
-
-Well, the dir() builtin does just that, though there can be attributes
-which won't be included therein. However, the builtin dir() can be
-overridden... and ignoring it can break libraries like RPyC which
-define a custom dir() function just for this purpose.
-
-This issue has already been run in to by RPyC (an Python RPC lib). The
-main developr went ahead and suggested adding a __dir__ method which
-will return a list of attributes, and IIRC he has already implemented
-a patch for this, and it will likely enter Python2.6.
-
-Until then, I guess we're going to have to rely on dir for this.
-
-
-
-From: "Josiah Carlson" <josiah.carl...@gmail.com>
-Date: Wed, 6 Jun 2007 12:42:01 -0700
-
-For reference, PyPE auto-parses source code in the background, generating
-(among other things) a function/class/method hierarchy.  Its autocomplete
-generally sticks to global functions and keywords, but when doing
-self.method lookups, it checks the current source code line, looks up in its
-index of classes/methods, and trims the results based on known methods in
-the current class in the current source file.
-
-It certainly isn't complete (it should try to check base classes of the
-class in the same file, it could certainly pay attention to names assigned
-in the current scope, the global scope, imports, types of objects as per
-WingIDE's assert isinstance(obj, type), etc.), but it also makes the
-computation fairly straightforward, fast, and only in reference to the
-current document.
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Wed, 6 Jun 2007 22:52:08 +0300
-
-> Tal, how does IDLE's autocompletion works?
-
-Much like Stani said, since Python is interpreted, collection of
-possible completions splits into two methods:
-1) source code analysis
-2) dynamic introspection
-
-Of course, we could do either or a combination of both.
-
-IDLE just uses introspection: since IDLE always has a python shell
-running, it just completes according to the shell's state (plus
-built-in keywords and modules). This is a very simple method,
-obviously lacking. It does allow the user some control of the
-completion, though - just import whatever you want to be completable
-in the shell. However, introspection is all that is needed in a Python
-shell, which is the major reason this is the method used in IDLE.
-
-
-
-From: Nicolas Chauvat <nicolas.chau...@logilab.fr>
-Date: Wed, 6 Jun 2007 23:59:32 +0200
-
-
-> How dependent/independent is this from the standard AST compiler or
-> PyPy? Is it more IDE friendly? Is it based on it or a total independent
-> implementation?
-
-It is independent from PyPy.
-
-The above web page says:
-
-"""
-Python Abstract Syntax Tree New Generation
-
-The aim of this module is to provide a common base representation of
-python source code for projects such as pychecker, pyreverse,
-pylint... Well, actually the development of this library is essentialy
-governed by pylint's needs.
-
-It extends class defined in the compiler.ast [1] module with some
-additional methods and attributes. Instance attributes are added by a
-builder object, which can either generate extended ast (let's call
-them astng ;) by visiting an existant ast tree or by inspecting living
-object. Methods are added by monkey patching ast classes.Python
-Abstract Syntax Tree New Generation
-
-The aim of this module is to provide a common base representation of
-python source code for projects such as pychecker, pyreverse,
-pylint... Well, actually the development of this library is essentialy
-governed by pylint's needs.
-
-It extends class defined in the compiler.ast [1] module with some
-additional methods and attributes. Instance attributes are added by a
-builder object, which can either generate extended ast (let's call
-them astng ;) by visiting an existant ast tree or by inspecting living
-object. Methods are added by monkey patching ast classes.
-"""
-
-From: "Sylvain Thénault" <thena...@gmail.com>
-Date: Wed, 13 Jun 2007 10:51:04 +0200
-
-> Please let me involve Sylvain in the discussion. As the main author of
-> pylint and astng, he will provide better answers.
-
-well logilab-astng is basically a big monkey patching of the compiler
-package from the stdlib, so you can't get an astng representation from a
-module with syntax errors in. However inference and most others
-navigation methods (which are basically the value added by astng) are
-"syntax error resilient" : if a dependency module (direct or indirect)
-contains a syntax error, you don't get any exception, though since some
-information is missing you can miss some results you'ld get if the
-faulting module were parseable.
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Tue, 31 Jul 2007 10:33:33 +0300
-
-Since astng already does some inference (which we definitely want!)
-and is based on the standard Python AST compiler, it sounds like our
-#1 candidate. I think we should give the code a serious once-over and
-see how well it fits our requirements, and if it can be adapted to
-better handle errors. Any volunteers?
-
-Also, has anyone used astng for completion, calltips, or something
-similar? Or the standard AST compiler, for that matter?
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Tue, 31 Jul 2007 10:40:11 +0300
-
-How does PyPE parse code? Home-rolled, standard AST compiler, something else?
-
-It seems to me we should try to come up with an algorithm for parsing,
-before getting to the code. All of the details you mentioned -
-noticing assignments, using base-class methods, etc. - could be better
-defined and organized this way. Perhaps we could brainstorm on this in
-a wiki?
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Tue, 31 Jul 2007 11:38:40 +0300
-
-Sorry for being away for such a long time. I hope we can get this
-conversation rolling again, and get started with the actual work.
-
-I'll try to sum up what has been said so far, and how I see things.
-
-== Top Priorities ==
-* Can we implement a parser based on the standard Python AST compiler
-(or astng)? For example, can syntax errors be handled well?
-* Is importing reasonable security-wise? If not, can it be made secure?
-
-== General issues ==
-* Do we aim for just completion, or also calltips? Perhaps also other
-meta-data, e.g. place defined, source code, ... (see IPython's '??')
-* Dependencies - do we want to allow C-extensions, or are we going for
-a Python-only solution? (IDLE would only use such a Python-only tool.)
-It seems that we want to pre-process most of the data in the
-background, so I don't see why we would want to do this in C for
-efficiency reasons.
-
-== Completion sources ==
-1) Importing "external" modules
-2) Importing/Parsing "local" modules
-3) Parsing the current file
-4) Using objects/modules from the shell (e.g. IDLE has both editor
-windows and a Python shell)
-
-== Importing ==
-* Stani mentioned that importing is problematic from a security point
-of view. What are the security issues? Are they really an issue for an
-IDE? If so, perhaps we could overcome this by importing in some kind
-of "sandbox"?
-* What are the pros and cons of Importing vs. Parsing?
-* If importing is always preferable to parsing unless there's a syntax
-error, perhaps try to import and parse on failure?
-
-== Parsing ==
-* This is going to be the most complex method - I think we should have
-a general idea of how this should work before starting an
-implementation. I suggest hashing ideas out on a wiki, since there a
-lot of details to consider.
-* Can a parser based on the standard AST compiler (or astng) work? Is
-there a way to deal with errors? (HIGH PRIORITY!)
-* There are other existing, open-source implementations out there -
-WingIDE, PyPE have been mentioned. Any others? We should collect these
-so we can use the code for learning, and perhaps direct use (if
-possible license-wise).
-
-== Shell ==
-This is relatively straight-forward - just use dir(). This should be
-optional, for use by IDEs which have a shell (support multiple
-shells?).
-
-Some known issues from IDLE and PyCrust:
-* Handle object proxies such as RPC proxies (e.g. RPyC)
-* Handle ZODB "ghost" objects
-* Watch out for circular references
-* Watch out for objects with special __getattr__/__hasattr__
-implementations (for example xmlrpc, soap)
-
-== Persistence ==
-* Stani mentioned a 'database'. I feel Sqlite should be at most
-optional, to reduce dependencies.
-* Do we really want to have the data persistent (between IDE
-sessiosns)? If so, we need to support simultaneous instances of the
-IDE so they don't corrupt the data. Any other issues? (I have a
-feeling this would better be left for later stages of development.)
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Tue, 31 Jul 2007 12:22:59 +0300
-
-One more note: We should distinguish between completion in an editor
-and completion in a shell. The conversation up until now has focused
-on editors, which is reasonable since that is the problematic scene. I
-think a generic Python completion library should support completion in
-both contexts, especially if it uses can use a shell's namespace for
-completion in the editor.
-
-
-
-From: "Ali Afshar" <aafs...@gmail.com>
-Date: Tue, 31 Jul 2007 11:20:19 +0100
-
-I have just implemented a completion mockup using Rope (which is a
-refactoring library). It works quite nicely, and definitely worth a
-look.
-
-http://rope.sourceforge.net/
-
-It even achieves this kind of completion:
-
-class Banana(object):
-    def do_something(self):
-         return
-
-def foo():
-    return [Banana(), Banana()]
-
-foo()[0].<complete> includes do_something
-
-Which seems pretty impressive to me.
-
-
-
-From: "Tal Einat" <talei...@gmail.com>
-Date: Tue, 31 Jul 2007 20:12:50 +0300
-
-Wow, Rope does look very impressive! A quick look at the code tells me
-that a lot of work has been invested in it.
-
-So we have one existing Python-only solution. We should evaluate it -
-see what it can and can't do, and perhaps take a look at the overall
-design.
-
-I'm CC-ing Rope's developer, Ali. Hopefully Ali can help us quickly
-understand Rope's code analysis capabilities.
-
-Ali, could you elaborate a bit on what kinds of completion Rope can
-do, and the methods it uses? We would especially like to know how your
-static and dynamic inference work, what they can accomplish, and what
-their limitations are.
-
-
-
-From: "Ali Afshar" <aafs...@gmail.com>
-Date: Tue, 31 Jul 2007 19:45:15 +0100
-
-> Ali, could you elaborate a bit on what kinds of completion Rope can
-> do, and the methods it uses? We would especially like to know how your
-> static and dynamic inference work, what they can accomplish, and what
-> their limitations are.
-
-Well, I haven't really looked at the code. But I can tell you this:
-
-from rope.ide.codeassist import PythonCodeAssist
-from rope.base.project import Project
-for compl in PythonCodeAssist(Project(package_root)).assist(buffer,
-offset).completions:
-    print compl
-
-And that is as far as I really got. I expect to get a better look at
-it later in the week though...
-
-
-From: "Josiah Carlson" <josiah.carl...@gmail.com>
-Date: Wed, 1 Aug 2007 00:26:14 -0700
-
-> How does PyPE parse code? Home-rolled, standard AST compiler, something else?
-
-The compiler for syntactically correct Python, a line-based compiler
-for broken Python.  TO generate a method list for self.methods, using
-the current line number, I discover the enclosing class, check the
-listing of methods for that class (generated by the compiler or
-line-based parsers), and return a valid list for the specified prefix.
- It doesn't walk the inheritance tree, it doesn't do imports, etc.
-
-> It seems to me we should try to come up with an algorithm for parsing,
-> before getting to the code. All of the details you mentioned -
-> noticing assignments, using base-class methods, etc. - could be better
-> defined and organized this way. Perhaps we could brainstorm on this in
-> a wiki?
-
-A wiki would be fine, the one for this mailing list would likely be
-best (if it is still up and working).  Then again, Rope looks quite
-nifty.  I may have to borrow some of that source ;)
-
-
-Discussion subject changed to "Fwd: Python code completion module" by Tal Einat
-
-From: Ali Gholami Rudi <aligr...@gmail.com>
-Date: Aug 1, 2007 5:50 PM
-
-First of all I should note that rope's main goal was being a
-refactoring tool and a refactoring tool needs to know a lot about
-python modules.  `rope.base` package provides information about python
-modules.
-
-Actually what ropeide provides as auto-completion is defined in
-`rope.ide.codeassist` module.  This module almost does nothing but use
-`rope.base`.  Since `rope.ide` package is not included in the rope
-library (which has been separated from ropeide since 0.6m4) it lacks
-good documentation and the API might not be easy to use (most of it is
-written in the first months of rope's birth).
-
-> ..., could you elaborate a bit on what kinds of completion Rope can
-> do, ...
-
-I don't know what to say here.  Well, actually it tries to use the
-source code as much as possible and infer things from it.  So I can
-say that it can complete any obvious thing that can be inferred by a
-human.  Like this is the first parameter of a method and after dots
-its attributes can appear or these modules are imported so their names
-and contents are available or this is an instance of some known type
-and we know its attributes and ... .  Try ropeide (it uses emacs-like
-keybinding, C-/ for completion; see ~/.rope if you want to change
-that); it completes common cases (and sometimes completes things you
-don't expect it to!).
-
-> ..., and the methods it uses?
-
-Rope analyzes python source code and AST.  Rope used to use the
-`compiler` module till 0.5 and now it uses `_ast` module.
-
-> We would especially like to know how your
-> static and dynamic inference work, what they can accomplish
-
-There are a few examples in docs/overview.txt.  Unit-test modules like
-`ropetest.base.objectinfertest` and `advanced_oi_test` might help,
-too.  Also have a look at `rope.base.oi.__init__` pydoc for an
-overview of how they work; (I'm afraid it is a bit out of date and
-carelessly written.)  The idea behind rope's object inference is to
-guess what references (names in source-code) hold.  They collect
-information about code when they can and use them later.
-
->..., and what their limitations are.
-
-Many things in rope are approximations that might be exact if some
-conditions hold.  For instance rope might assume that every normal
-reference in module scope holds only one kind of object.  Apart from
-these assumptions both SOI and DOI have their own disadvantages; For
-instance SOI fails when dynamic code is evaluated while DOI does not.
-Or DOI is slower than SOI.  (Well, after recent enhancements to rope's
-SOI I rarely use DOI).
-
-I tried to answer as short as possible.  If there are questions on
-specific parts of rope, I'll be happy to answer.
-
-By the way, I tried to reply this mail to the group, but it seems that
-your group requires subscription for posting, so I've sent it to you,
-instead.
-#@+node:ekr.20071106083149: *5* Recent post
-@killcolor
-
-In general, autocompletion is a tricky problem. Consider:
-
-- There may be no 'clean' version of the source code that you want to
-auto-complete: you may be creating a new node, or a new file, and the source
-code, being incomplete, will not parse correctly.
-
-- Except in special circumstances, there is no 'real' object corresponding to s,
-so there is no way to use Python's inspect module on s. Modules are an
-exception: the autocompleter can handle existing modules fairly well. Try "os."
-or "os.path." for example.
-
-
-It might be possible to generalize c.k.defineObjectDict so that the user
-could specify autocompleter conventions, say in an @autocompleter node in an
-@settings tree.
-#@+node:ekr.20100506062734.5756: *5* Ville post re autocompleter
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee84e52fba476950
-
-> Some of the UI's I've worked with involved going into a state where
-> you picked from a numbered, or lettered list of possibilities
-> generated based on the currently typed "trigger".  e.g. and expansion
-> of trigger "ct" puts a ine like the following in, say, the status
-> line:
-
-Note that all design work is unnecessary - this is basically a simple
-matter of bugfixing.
-
-qtGui has this method:
-
-http://pastebin.com/GmhZJqDd
-
-Once you can call
-
-w.showCompleter(['hello', 'helloworld'], mycallback )
-
-and select the correct alternative naturally with keyboard (now you
-need mouse), almost all of the work is done.
-
-The rest can be provided by codewisecompleter, or any other kind of
-completer we may wish to add (e.g. hippie-expand, abbrev expand...).
-
-All discussion regarding the ui design only helps to sidetrack us from
-getting a completer that behaves the way completers are "supposed to
-behave" on 2010, i.e. the way provided by QCompleter.
-
--- 
-Ville M. Vainio 
-#@+node:ekr.20101004092958.6050: *5* How to make codewise work
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
-
-1. Make sure you have exuberant ctags (not just regular ctags)
-installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
-
-2. Install Ville's python module "codewise".  This is a small module on
-which the Leo plugin relies.
-
-   bzr branch lp:codewise
-   cd codewise
-   sudo python setup.py install
-
-3. You need a recent trunk version of leo to get the plugin which uses
-the above module.
-
-4. Enable the plugin by putting "codewisecompleter.py" on an
-uncommented line in your @enabled-plugins @settings node.
-
-5. On the command line:
-
-if you have an existing ~/.ctags for some reason, and it's nothing you
-need to keep:
-
-  rm ~/.ctags
-
-then
-
-  codewise setup
-  codewise init
-  codewise parse .../path/to/leo/  # assuming you want completion on
-                                   # leo code
-  codewise parse .../some/other/project/
-
-Then, after restarting leo if necessary, type
-
-c.op<Alt-0> in the body editor to find all the c. methods starting
-with 'op' etc.
-
-Nice work Ville, thanks.
-
-==================
-
-Thanks for this, I hope others will take a stab at it as well, given
-sane instructions (I burned my free cycles frantically coding this
-thing and neglected the all-important HOWTO). This is important
-because functional completion is the single most important thing still
-missing from Leo. Or, well, was ;-).
-
-Especially the presentation part (QCompleter) needs some care, so you
-can operate it from your keyboard alone. It should probably be moved
-to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
-just invoke w.complete(list_of_completions) that will bring up the
-QCompleter popup.
-
-> Then, after restarting leo if necessary, type
-
-> c.op<Alt-0> in the body editor to find all the c. methods starting
-> with 'op' etc.
-
-Also, try the explicit declarations:
-
-# w : SomeClass
-
-w.<alt+0>
-
-And self.<alt+0> 
-#@+node:ekr.20101002192824.5843: *4* test-new-ac
-# To do:
-# - Fix findAnchor.
-# - Report duck type in completion tab: callable if calltips exist.
-# - What to do about library files and imports?
-
-import re
-import string
-import sys
-import time
-
-@others
-
-ac = NewAutoCompleter(c.k)
-w = c.frame.body.bodyCtrl
-event = g.bunch(char='e',keysym='e')
-n = len(p.b)
-if 0:
-    w.setSelectionRange(n-7,n)
-else:
-    w.setInsertPoint(n)
-
-ac.start(event=event,w=w)
-
-# The cursor must be at the end
-# p.s
-#@+node:ekr.20101002192824.6019: *5* class AutoCompleterScanner
-class AutoCompleterScanner:
-
-    '''A class that scans for autocompleter completions.'''
-
-    @others
-#@+node:ekr.20101002192824.6020: *6*  ctor & helper (AutoCompleterScanner)
-def __init__ (self,c):
-
-    self.c = c
-
-    # Set by definePatterns...
-    self.okchars = None
-    self.pats = {}
-
-    # Set by scanners...
-    self.calltips = {}
-    self.watchwords = {}
-
-    self.definePatterns()
-#@+node:ekr.20101002192824.6021: *7* definePatterns
-def definePatterns (self):
-
-    self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
-    self.end = r'\w+\s*\([^)]*\)' # word (\w) ws ( any ) (can cross lines)
-
-    # Define re patterns for various languages.
-    # These patterns match method/function definitions.
-    self.pats = {}
-    self.pats ['python'] = re.compile(r'def\s+%s' % self.end)
-        # def ws word ( any ) # Can cross line boundaries.
-    self.pats ['java'] = re.compile(
-        r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % (
-            self.space,self.space,self.end))
-    self.pats ['perl'] = re.compile(r'sub\s+%s' % self.end)
-    self.pats ['c++'] = re.compile(r'((virtual\s+)?\w+%s%s)' % (self.space,self.end))
-    self.pats ['c'] = re.compile(r'\w+%s%s' % (self.space,self.end))
-
-    # Define self.okchars.
-    okchars = {}
-    for z in string.ascii_letters:
-        okchars [z] = z
-    okchars ['_'] = '_'
-    self.okchars = okchars 
-#@+node:ekr.20101002192824.6022: *6* scan & dumps
-def scan (self):
-
-    '''Build the database from the outline'''
-
-    trace = True and not g.unitTesting
-    verbose = False
-    if trace: t1 = time.time()
-    c = self.c
-    for p in c.all_unique_positions():
-        self.scanForAutoCompleter(p.b)
-
-    p = c.rootPosition()
-    seen = {}
-    while p:
-        key = p.key()
-        if not key in seen:
-            seen[key] = True
-            if p.isAnyAtFileNode():
-                # scanForAtLanguage is expensive!
-                language = g.scanForAtLanguage(c,p)
-                for p2 in p.self_and_subtree():
-                    seen[p2.key()] = True
-                    self.scanForCallTip(p2.b,language)
-        p.moveToThreadNext()
-
-    if trace:
-        t2 = time.time()
-        if verbose:
-            self.dumpTips()
-            self.dumpWords()
-        self.printSummary(t2-t1)
-
-#@+node:ekr.20101002192824.6023: *7* dumpTips
-def dumpTips (self):
-
-    print('calltips...\n\n')
-    for key in sorted(self.calltips):
-        d = self.calltips.get(key)
-        if d:
-            if 1:
-                d2 = {}
-                for key2 in list(d.keys()):
-                    aList = d.get(key2)
-                    if len(aList) == 1:
-                        s = aList[0]
-                        if s.startswith(key2):
-                            s = s[len(key2):].strip()
-                        d2[key2] = s
-                    else:
-                        aList2 = []
-                        for s in aList:
-                            if s.startswith(key2):
-                                s = s[len(key2):].strip()
-                            aList2.append(s)
-                        d2[key2] = aList2
-                print('\n%s:\n\n' % (key),g.dictToString(d2))
+#@+node:ekr.20110326063921.14462: *4* codewise crash
+InterfaceError: Error binding parameter 0 - probably unsupported type.
+--------------------
+  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
+* line 704:                 prefix + '%',))
+  line 705: 
+  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
+#@+node:ekr.20110201125110.12551: ** Next
+#@+node:ekr.20110414065052.6100: *3* Treat gnx's as strings: don't parse them
+http://mail.google.com/mail/#inbox/12f3d4950fbabeea
+#@+node:ekr.20110401062119.14493: *3* problems with focus
+#@+node:ekr.20031218072017.2817: *4*  doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.p
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.app.commandInterruptFlag = True
+        g.es('ignoring command: already executing a command.',color='red')
+        return 'break'
+
+    g.app.commandInterruptFlag = False
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: g.pr('c no longer exists',c)
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
             else:
-                print('\n%s:\n\n' % (key),g.dictToString(d))
-#@+node:ekr.20101002192824.6024: *7* dumpWords
-def dumpWords (self):
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
 
-    print('autocompleter words...\n\n')
-    show = ['aList','c','d','f','g','gui','k','m','p','s','t','v','w']
-    keys = show or sorted(self.watchwords)
-    for key in keys:
-        aList = self.watchwords.get(key)
-        aList.sort()
-        print('\n%s:' % (key),g.listToString(aList)) #repr(aList))
-    print()
-#@+node:ekr.20101002192824.6025: *7* printSummary
-def printSummary (self,t):
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
 
-    n  = len(list(self.watchwords.keys()))
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2",c=c,p=p,v=p,label=label)
 
-    n2 = 0
-    for language in list(self.calltips.keys()):
-        d = self.calltips.get(language)
-        n2 += len(list(d.keys()))
+    return "break" # Inhibit all other handlers.
+#@+node:ekr.20031218072017.2949: *4* Drawing Utilities (commands)
+#@+node:ekr.20080515053412.1: *5* c.add_command, c.bind, c.bind2 & c.tag_bind
+# These wrappers ensure that c.outerUpdate get called.
+#@+node:ekr.20080610085158.2: *6* c.add_command
+def add_command (self,menu,**keys):
 
-    g.es_print('scanned %s words, %s tips in %3.2fs sec.' % (
-        n,n2,t))
-#@+node:ekr.20101002192824.6026: *6* scanForAutoCompleter & helper
-def scanForAutoCompleter (self,s):
+    c = self ; command = keys.get('command')
 
-    '''This function scans text for the autocompleter database.'''
+    if command:
 
-    aList = []
-    strings = s.split('.')
-    if not strings: return
+        def add_commandCallback(c=c,command=command):
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
 
-    for i in range(len(strings)-1):
-        self.makeAutocompletionList(strings[i],strings[i+1],aList)
+        keys ['command'] = add_commandCallback
 
-    if aList:
-        for key,val in aList:
-            aList2 = self.watchwords.get(key,[])
-            # val = str(val)
-            if val not in aList2:
-                aList2.append(val)
-                self.watchwords [key] = aList2
-#@+node:ekr.20101002192824.6027: *7* makeAutocompletionList
-def makeAutocompletionList (self,a,b,glist):
+        menu.add_command(**keys)
 
-    '''We have seen a.b, where a and b are arbitrary strings.
-    Append (a1.b1) to glist.
-    To compute a1, scan backwards in a until finding whitespace.
-    To compute b1, scan forwards in b until finding a char not in okchars.
-    '''
-
-    # Compute reverseFindWhitespace inline.
-    i = len(a) -1
-    while i >= 0:
-        # if a[i].isspace() or a [i] == '.':
-        if a[i] not in self.okchars:
-            a1 = a [i+1:] ; break
-        i -= 1
     else:
-        a1 = a
+        g.trace('can not happen: no "command" arg')
+#@+node:ekr.20080610085158.3: *6* c.bind and c.bind2
+def bind (self,w,pattern,func,*args,**keys):
 
-    # Compute getCleanString inline.
-    i = 0
-    for ch in b:
-        if ch not in self.okchars:
-            b1 = b[:i] ; break
-        i += 1
+    c = self ; callers = g.callers()
+
+    def bindCallback(event,c=c,func=func,callers=callers):
+        # g.trace('func',func.__name__)
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback,*args,**keys)
+
+def bind2 (self,w,pattern,func,*args,**keys):
+
+    c = self
+
+    def bindCallback2(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback2,*args,**keys)
+#@+node:ekr.20080610085158.4: *6* c.tag_bind
+def tag_bind (self,w,tag,event_kind,func):
+
+    c = self
+    def tag_bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.tag_bind(tag,event_kind,tag_bindCallback)
+#@+node:ekr.20080514131122.7: *5* c.begin/endUpdate
+
+def beginUpdate(self):
+
+    '''Deprecated: does nothing.'''
+
+    g.trace('***** c.beginUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
+
+def endUpdate(self,flag=True):
+
+    '''Request a redraw of the screen if flag is True.'''
+
+    g.trace('***** c.endUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
+
+    c = self
+    if flag:
+        c.requestRedrawFlag = True
+        # g.trace('flag is True',c.shortFileName(),g.callers())
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@+node:ekr.20080514131122.8: *5* c.bringToFront
+def bringToFront(self,set_focus=True):
+
+    c = self
+    c.requestBringToFront = True
+    c.requestedIconify = 'deiconify'
+    c.requestedFocusWidget = c.frame.body.bodyCtrl
+
+BringToFront = bringToFront # Compatibility with old scripts
+#@+node:ekr.20040803072955.143: *5* c.expandAllAncestors
+def expandAllAncestors (self,p):
+
+    '''Expand all ancestors without redrawing.
+
+    Return a flag telling whether a redraw is needed.'''
+
+    trace = False and not g.unitTesting
+    c = self ; cc = c.chapterController
+    redraw_flag = False
+
+    for p in p.parents():
+        if not p.isExpanded():
+            p.expand()
+            redraw_flag = True
+
+    if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
+    return redraw_flag
+#@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget
+
+def request_focus(self,w):
+
+    c = self
+    # g.trace(w,g.callers())
+    if w: c.requestedFocusWidget = w
+
+def set_focus (self,w,force=False):
+
+    trace = False # and g.unitTesting
+    c = self
+    if w and g.app.gui:
+        if trace: print('c.set_focus:',repr(w),c.shortFileName())
+        g.app.gui.set_focus(c,w)
     else:
-        b1 = b
+        if trace: print('c.set_focus: no w')
 
-    if b1:
-        glist.append((a1,b1),)
-#@+node:ekr.20101002192824.6028: *6* scanForCallTip & helper
-def scanForCallTip (self,s,language):
+    c.requestedFocusWidget = None
+#@+node:ekr.20080514131122.10: *5* c.invalidateFocus
+def invalidateFocus (self):
 
-    '''this function scans text for calltip info'''
+    '''Indicate that the focus is in an invalid location, or is unknown.'''
 
-    d = self.calltips.get(language,{})
-    pat = self.pats.get(language or 'python')
+    # c = self
+    # c.requestedFocusWidget = None
+    pass
+#@+node:ekr.20080514131122.20: *5* c.outerUpdate
+def outerUpdate (self):
 
-    # Set results to a list of all the function/method defintions in s.
-    results = pat and pat.findall(s) or []
+    trace = False and not g.unitTesting
+    verbose = True ; traceFocus = False
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
 
-    for z in results:
-        if isinstance(z,tuple): z = z [0]
-        if language == 'python':
-            z = self.cleanPythonTip(z)
-        pieces2 = z.split('(')
-        # g.trace(pieces2)
-        pieces2 [0] = pieces2 [0].split() [-1]
-        a, junk = pieces2 [0], pieces2 [1]
-        aList = d.get(a,[])
-        if z not in aList:
-            aList.append(z)
-            d [a] = aList
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            c.frame.bringToFront()
+        c.requestBringToFront = False
 
-    self.calltips [language] = d
-#@+node:ekr.20101002192824.6029: *7* cleanPythonTip
-def cleanPythonTip (self,s):
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
 
-    result = []
-    i = g.skip_ws(s,3)
-    while i < len(s):
-        ch = s[i]
-        if ch in ' \t\n':
-            i += 1
-        elif ch == '#':
-            # Remove comment.
-            i += 1
-            while i < len(s):
-                i += 1
-                if s[i-1] == '\n': break
-        else:
-            result.append(ch)
-            i += 1
-    return ''.join(result)
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@+node:ekr.20080514131122.12: *5* c.recolor & requestRecolor
+def requestRecolor (self):
+
+    c = self
+    # g.trace(g.callers(4))
+    c.requestRecolorFlag = True
+
+recolor = requestRecolor
+#@+node:ekr.20080514131122.14: *5* c.redrawing...
+#@+node:ekr.20090110073010.1: *6* c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if not p: p = c.p or c.rootPosition()
+
+    c.expandAllAncestors(p)
+    c.frame.tree.redraw(p)
+    c.selectPosition(p)
+
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
+def redraw_after_contract (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    if p.isCloned():
+        c.redraw(p=p,setFocus=setFocus)
+    else:
+        c.frame.tree.redraw_after_contract(p)
+        if setFocus: c.treeFocusHelper()
+#@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
+def redraw_after_expand (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    if p.isCloned():
+        c.redraw(p=p,setFocus=setFocus)
+    else:
+        c.frame.tree.redraw_after_expand(p)
+        if setFocus: c.treeFocusHelper()
+#@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
+def redraw_after_head_changed(self):
+
+    '''Redraw the screen (if needed) when editing ends.
+    This may be a do-nothing for some gui's.'''
+
+    return self.frame.tree.redraw_after_head_changed()
+#@+node:ekr.20090110073010.3: *6* c.redraw_afer_icons_changed
+def redraw_after_icons_changed(self):
+
+    '''Update the icon for the presently selected node,
+    or all icons if the 'all' flag is true.'''
+
+    c = self
+
+    c.frame.tree.redraw_after_icons_changed()
+
+    # c.treeFocusHelper()
+#@+node:ekr.20090110073010.4: *6* c.redraw_after_select
+def redraw_after_select(self,p):
+
+    '''Redraw the screen after node p has been selected.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
+    c = self
+
+    flag = c.expandAllAncestors(p)
+    if flag:
+        c.frame.tree.redraw_after_select(p)
+#@+node:ekr.20080514131122.13: *5* c.recolor_now
+def recolor_now(self,p=None,incremental=False,interruptable=True):
+
+    c = self
+    if p is None:
+        p = c.p
+
+    # g.trace('incremental',incremental,p and p.h,g.callers(4))
+
+    c.frame.body.colorizer.colorize(p,
+        incremental=incremental,interruptable=interruptable)
+#@+node:ekr.20080514131122.16: *5* c.traceFocus
+def traceFocus (self,w):
+
+    c = self
+
+    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        import pdb ; pdb.set_trace() # Drop into pdb.
+        c.trace_focus_count += 1
+        g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
+#@+node:ekr.20080514131122.17: *5* c.widget_name
+def widget_name (self,widget):
+
+    c = self
+
+    return g.app.gui and g.app.gui.widget_name(widget) or ''
+#@+node:ekr.20080514131122.18: *5* c.xWantsFocus
+
+def bodyWantsFocus(self):
+    c = self ; body = c.frame.body
+    c.request_focus(body and body.bodyCtrl)
+
+def logWantsFocus(self):
+    c = self ; log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self):
+    c = self
+    c.request_focus(c.miniBufferWidget)
+
+def treeWantsFocus(self):
+    c = self ; tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self,w):
+    c = self ; c.request_focus(w)
+#@+node:ekr.20080514131122.19: *5* c.xWantsFocusNow
+# widgetWantsFocusNow does an automatic update.
+def widgetWantsFocusNow(self,w):
+    c = self
+    c.request_focus(w)
+    c.outerUpdate()
+    # Re-request widget so we don't use the body by default.
+    #### c.request_focus(w)
+
+if 1: # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
+    def bodyWantsFocusNow(self):
+        c = self ; body = c.frame.body
+        c.widgetWantsFocusNow(body and body.bodyCtrl)
+
+    def logWantsFocusNow(self):
+        c = self ; log = c.frame.log
+        c.widgetWantsFocusNow(log and log.logCtrl)
+
+    def treeWantsFocusNow(self):
+        c = self ; tree = c.frame.tree
+        c.widgetWantsFocusNow(tree and tree.canvas)
+
+else: # Previously, all other FocusNow methods just made a request.
+    bodyWantsFocusNow = bodyWantsFocus
+    logWantsFocusNow = logWantsFocus
+    ### minibufferWantsFocusNow = minibufferWantsFocus
+    treeWantsFocusNow = treeWantsFocus
+#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
+#@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
+@nocolor-node
+
+Eliminate all tk-indices from leoEditCommands.py
+
+These are marked with ###
+
+(found) wordend, wordstart
+(found) lineend, linestart
+(found) sel.first, sel.last
+(found) w.insert, w.delete
+#@+node:ekr.20110125142807.17269: *3* Rewrite all tk plugins
 #@+node:ekr.20100827114047.5895: ** Bugs
 #@+node:ekr.20101024062147.5994: *3* Minor
 #@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)

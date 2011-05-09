@@ -8998,7 +8998,7 @@ def setCachedGlobalsElement(self,fn):
     if trace:
         g.trace('top',top,'left',left,'height',height,'width',width)
 #@+node:ekr.20110210081557.15387: *4* Show sources in print-bindings
-#@+node:ekr.20061031131434.88: *5* Binding (keyHandler)
+#@+node:ekr.20061031131434.88: *5* k.Binding
 #@+node:ekr.20061031131434.89: *6* bindKey
 def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
@@ -11732,7 +11732,6 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.defineMultiLineCommands()
     use_codewise = not self.isLeoSourceFile()
     fn = c.shortFileName()
-    # 2011/03/26: always define .codewiseCompleter for QCompleter.
     if use_codewise:
         self.autoCompleter = CodewiseCompleterClass(self)
         self.codewiseCompleter = self.autoCompleter
