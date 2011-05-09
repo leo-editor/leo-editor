@@ -12211,7 +12211,42 @@ g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=False)
 #@+node:ekr.20100131171342.5604: *3* leoKeys
-#@+node:ekr.20100131171342.5605: *4* @test isPlainKey
+#@+node:ekr.20100131171342.5606: *4* @test k.autoCompleterClass.calltip
+try:
+    k = c.k ; ac = k.autoCompleter
+    w = c.frame.body.bodyCtrl
+    ac.widget = w
+    s = w.getAllText()
+    import string
+    # Just test that this doesn't crash.
+    for obj in (None,g,string,c,p):
+        w.setInsertPoint('end')
+        c.k.autoCompleter.calltip(obj=g)
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor()
+
+# end:
+#@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
+table = (
+    ( 12,'c.all'),
+    (  3,'p.ins'),
+    (  2,'c.B'),
+    ( 12,'g.com'),
+    (400,'c.frame.top.'),
+)
+
+for expected,prefix in table:
+    
+    aList = c.k.get_leo_completions(prefix)
+    assert len(aList) >= expected
+    
+    if 0:
+        print()
+        for z in aList:
+            print(z)
+#@+node:ekr.20100131171342.5605: *4* @test k.isPlainKey
 import string
 
 k = c.k
@@ -12235,23 +12270,9 @@ special = (
 
 for ch in special:
     assert not k.isPlainKey(ch), 'wrong: is plain: %s' % (ch)
-#@+node:ekr.20100131171342.5606: *4* @test k.autoCompleterClass.calltip
-try:
-    k = c.k ; ac = k.autoCompleter
-    w = c.frame.body.bodyCtrl
-    ac.widget = w
-    s = w.getAllText()
-    import string
-    # Just test that this doesn't crash.
-    for obj in (None,g,string,c,p):
-        w.setInsertPoint('end')
-        c.k.autoCompleter.calltip(obj=g)
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-
-# end:
+#@+node:ekr.20100212110954.5359: *4* @test k.print-bindings
+lines = c.k.printBindings()
+# assert lines[0].strip().endswith('Alt+Ctrl+Shift')
 #@+node:ekr.20100131171342.5607: *4* @test k.registerCommand
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k ; p = c.p ; w = c.edit_widget(p)
@@ -12270,10 +12291,7 @@ if 0: # Test 2
     g.app.unitTestDict[commandName] = False
     k.manufactureKeyPressForCommandName(w,commandName)
     assert g.app.unitTestDict.get(commandName)
-#@+node:ekr.20100212110954.5359: *4* @test print-bindings
-lines = c.k.printBindings()
-# assert lines[0].strip().endswith('Alt+Ctrl+Shift')
-#@+node:ekr.20100131171342.5608: *4* @test strokeFromSetting
+#@+node:ekr.20100131171342.5608: *4* @test k.strokeFromSetting
 # print('settingsNameDict',c.k.settingsNameDict)
 
 table = (
