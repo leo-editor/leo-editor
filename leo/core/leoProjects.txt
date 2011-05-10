@@ -8539,6 +8539,79 @@ def setBodyTextAfterSelect (self,p,old_p):
         self.frame.body.recolor(p)
 
     p.restoreCursorAndScroll(w)
+#@+node:ekr.20110510052422.14617: *4* Use c.alert rather than g.alert
+#@+node:ekr.20040310062332.1: *5* p.invalidOutline
+def invalidOutline (self, message):
+
+    p = self
+
+    if p.hasParent():
+        node = p.parent()
+    else:
+        node = p
+
+    p.v.context.alert("invalid outline: %s\n%s" % (message,node))
+#@+node:ekr.20070910105044.1: *5* c.checkDrag
+def checkDrag (self,root,target):
+
+    """Return False if target is any descendant of root."""
+
+    c = self
+    message = "Can not drag a node into its descendant tree."
+
+    for z in root.subtree():
+        if z == target:
+            if g.app.unitTesting:
+                g.app.unitTestDict['checkMoveWithParentWithWarning']=True
+            else:
+                c.alert(message)
+            return False
+    return True
+#@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
+def checkMoveWithParentWithWarning (self,root,parent,warningFlag):
+
+    """Return False if root or any of root's descedents is a clone of
+    parent or any of parents ancestors."""
+    
+    c = self
+
+    message = "Illegal move or drag: no clone may contain a clone of itself"
+
+    # g.trace("root",root,"parent",parent)
+    clonedVnodes = {}
+    for ancestor in parent.self_and_parents():
+        if ancestor.isCloned():
+            v = ancestor.v
+            clonedVnodes[v] = v
+
+    if not clonedVnodes:
+        return True
+
+    for p in root.self_and_subtree():
+        if p.isCloned() and clonedVnodes.get(p.v):
+            if g.app.unitTesting:
+                g.app.unitTestDict['checkMoveWithParentWithWarning']=True
+            elif warningFlag:
+                c.alert(message)
+            return False
+    return True
+#@+node:ekr.20031218072017.3105: *5* g.alert
+def alert(message,c=None):
+    
+    '''Raise an alert.
+    
+    This method is deprecated: use c.alert instead.
+    '''
+
+    g.es(message)
+    g.app.gui.alert(c,message)
+#@+node:ekr.20110510052422.14618: *5* c.alert
+def alert(self,message):
+    
+    c = self
+
+    g.es(message)
+    g.app.gui.alert(c,message)
 #@+node:ekr.20101218103123.5932: *3* Docs
 #@+node:ekr.20101214101416.5950: *4* Creating minimal outlines
 #@+node:ekr.20101214101416.5951: *5* script
@@ -12080,6 +12153,476 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 How did we ever live without this?
 
 You can open url's by control-clicking on them, or by using the open-url command.
-#@+node:ekr.20110325075339.14477: *4* Added namespace arg c.executeScript
+#@+node:ekr.20110325075339.14477: *4* Added namespace arg in c.executeScript
+#@+node:ekr.20110510070638.14645: *4* Autocompleter
+#@+node:ekr.20110509064011.14562: *5* Fixed completer focus problem
+@nocolor-node
+
+To do:
+    
+- Clean up the allow_idle_time_hook code in runLeo.py.
+  Remove the setting?
+  
+- Repackage the QCompleter code.
+    - Allow either eval-related or codewise completions.
+    
+- Make sure the code does not interfere with Tk code.
+#@+node:ekr.20110510070638.14644: *6* What I did
+@nocolor-node
+
+- Created c.idle_focus_helper.
+
+- Always call g.enableIdleTimeHook in runLeo.py:doPostPluginsInit.
+    (That is, removed @bool allow_idle_time_hook setting.)
+
+- Added c.in_qt_dialog flag: used only by c.idle_focus_helper.
+
+- Improved tracing in c.outerUpdate.
+
+- Improved tracing in various focus methods.
+#@+node:ekr.20031218072017.2812: *6* c.__init__
+def __init__(self,frame,fileName,relativeFileName=None):
+
+    trace = False
+    c = self ; tag = 'Commands.__init__'
+
+    self.requestBringToFront = False
+    self.requestedFocusWidget = None
+    self.requestRedrawFlag = False
+    self.requestedIconify = '' # 'iconify','deiconify'
+    self.requestRecolorFlag = False
+
+    if trace:
+        print(tag)
+        import time ; t1 = time.clock()
+    self.exists = True # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+
+    # Init ivars with self.x instead of c.x to keep pylint happy
+
+    # Debugging.
+    self.command_count = 0
+    self.scanAtPathDirectivesCount = 0
+    self.trace_focus_count = 0
+
+    # Data.
+    self.chapterController = None
+    self.frame = frame
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.in_qt_dialog = False # True when in a qt dialog.
+    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.mFileName = fileName
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName
+
+    self.initIvars()
+    self.nodeHistory = nodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
+
+    # initialize the sub-commanders.
+    # c.finishCreate creates the sub-commanders for edit commands.
+
+    # Break circular import dependencies by importing here.
+    # These imports take almost 3/4 sec in the leoBridge.
+    import leo.core.leoAtFile as leoAtFile
+    import leo.core.leoCache as leoCache
+    import leo.core.leoEditCommands as leoEditCommands
+    import leo.core.leoFileCommands as leoFileCommands
+    import leo.core.leoImport as leoImport
+    import leo.core.leoRst as leoRst
+    import leo.core.leoShadow as leoShadow
+    import leo.core.leoTangle as leoTangle
+    import leo.core.leoUndo as leoUndo
+
+    if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+
+    self.shadowController = leoShadow.shadowController(c)
+    self.fileCommands   = leoFileCommands.fileCommands(c)
+    self.atFileCommands = leoAtFile.atFile(c)
+    self.importCommands = leoImport.leoImportCommands(c)
+    self.rstCommands    = leoRst.rstCommands(c)
+    self.tangleCommands = leoTangle.tangleCommands(c)
+    leoEditCommands.createEditCommanders(c)
+    self.rstCommands = leoRst.rstCommands(c)
+
+    c.cacher = leoCache.cacher(c)
+    c.cacher.initFileDB(self.mFileName)
+
+    if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
+
+    if 0:
+        g.pr("\n*** using Null undoer ***\n")
+        self.undoer = leoUndo.nullUndoer(self)
+    else:
+        self.undoer = leoUndo.undoer(self)
+        
+#@+node:ekr.20090519143741.5917: *6* doPostPluginsInit & helpers (runLeo.py)
+def doPostPluginsInit(args,files,options):
+
+    '''Return True if the frame was created properly.'''
+
+    g.init_sherlock(args)  # Init tracing and statistics.
+    # if g.app and g.app.use_psyco: startPsyco()
+
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+
+    # Create the main frame.  Show it and all queued messages.
+    c,c1,fileName = None,None,None
+    for fileName in files:
+        c,frame = createFrame(fileName,options)
+        if frame:
+            if not c1: c1 = c
+        else:
+            g.trace('createFrame failed',repr(fileName))
+            return False
+          
+    # Put the focus in the first-opened file.  
+    if not c:
+        c,frame = createFrame(None,options)
+        c1 = c
+        if c and frame:
+            fileName = c.fileName()
+        else:
+            g.trace('createFrame failed 2')
+            return False
+            
+    # For qttabs gui, select the first-loaded tab.
+    if hasattr(g.app.gui,'frameFactory'):
+        factory = g.app.gui.frameFactory
+        if factory and hasattr(factory,'setTabForCommander'):
+            c = c1
+            factory.setTabForCommander(c)
+
+    # Do the final inits.
+    c.setLog() # 2010/10/20
+    g.app.logInited = True # 2010/10/20
+    finishInitApp(c)
+    p = c.p
+    g.app.initComplete = True
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    g.enableIdleTimeHook(idleTimeDelay=500)
+        # 2011/05/10: always enable this.
+    initFocusAndDraw(c,fileName)
+
+    screenshot_fn = options.get('screenshot_fn')
+    if screenshot_fn:
+        make_screen_shot(screenshot_fn)
+        return False # Force an immediate exit.
+
+    return True
+#@+node:ekr.20031218072017.1624: *7* createFrame & helpers (runLeo.py)
+def createFrame (fileName,options):
+
+    """Create a LeoFrame during Leo's startup process."""
+    
+    # g.trace('(runLeo.py)',fileName)
+
+    script = options.get('script')
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(fileName,None)
+        c2 = frame.c
+        select = options.get('select')
+        windowSize = options.get('windowSize')
+        if select: doSelect(c2,select)
+        if windowSize: doWindowSize(c2,windowSize)
+        if ok: return c2,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        initEditCommanders=True)
+
+    if not script:
+        g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
+
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False)
+            # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    g.createMenu(c,fileName)
+    g.finishOpen(c) # Calls c.redraw.
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es_print("file not found:",fileName,color='red')
+
+    return c,frame
+#@+node:ekr.20100913171604.5888: *8* doSelect
+def doSelect (c,s):
+
+    '''Select the node with key s.'''
+
+    p = findNode(c,s)
+
+    if p:
+        c.selectPosition(p)
+    else:
+        g.es_print('--select: not found:',s)
+#@+node:ekr.20100913171604.5885: *8* doWindowSize
+def doWindowSize (c,windowSize):
+
+    w = c.frame.top
+
+    try:
+        h,w2 = windowSize.split('x')
+        h,w2 = int(h.strip()),int(w2.strip())
+        w.resize(w2,h) # 2010/10/08.
+        c.k.simulateCommand('equal-sized-panes')
+        c.redraw()
+        w.repaint() # Essential
+    except Exception:
+        print('doWindowSize:unexpected exception')
+        g.es_exception()
+#@+node:ekr.20100913171604.5889: *8* findNode
+def findNode (c,s):
+
+    s = s.strip()
+
+    # First, assume s is a gnx.
+    for p in c.all_unique_positions():
+        if p.gnx.strip() == s:
+            return p
+
+    for p in c.all_unique_positions():
+        # g.trace(p.h.strip())
+        if p.h.strip() == s:
+            return p
+
+    return None
+#@+node:ekr.20080921060401.5: *7* finishInitApp (runLeo.py)
+def finishInitApp(c):
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+#@+node:ekr.20080921060401.6: *7* initFocusAndDraw
+def initFocusAndDraw(c,fileName):
+
+    w = g.app.gui.get_focus(c)
+
+    if not fileName:
+        c.redraw()
+
+    # Respect c's focus wishes if posssible.
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+
+    c.outerUpdate()
+#@+node:ekr.20100914142850.5894: *7* make_screen_shot
+def make_screen_shot(fn):
+
+    '''Create a screenshot of the present Leo outline and save it to path.'''
+
+    # g.trace('runLeo.py',fn)
+
+    if g.app.gui.guiName() == 'qt':
+        m = g.loadOnePlugin('screenshots')
+        m.make_screen_shot(fn)
+#@+node:ekr.20110509064011.14555: *6* k.Autocompleter support
+#@+node:ekr.20110509064011.14556: *7* k.attr_matches
+def attr_matches(self,s,namespace):
+    
+    """Compute matches when string s is of the form name.name....name.
+    
+    Evaluates s using eval(s,namespace) 
+
+    Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+    the namespace, it will be evaluated and its attributes (as revealed by
+    dir()) are used as possible completions.
+    
+    For class instances, class members are are also considered.)
+    
+    **Warning**: this can still invoke arbitrary C code, if an object
+    with a __getattr__ hook is evaluated.
+    
+    """
+    
+    trace = False and not g.app.unitTesting
+
+    # Seems to work great. Catches things like ''.<tab>
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
+    if not m:
+        return []
+
+    expr,attr = m.group(1,3)
+    if trace: g.trace(s,expr,attr)
+    try:
+        obj = eval(expr,namespace)
+    except Exception:
+        return []
+
+    # Build the result.
+    words = dir(obj)
+    n = len(attr)
+    result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
+
+    if trace: g.trace(s,result)
+    return result
+#@+node:ekr.20110509064011.14557: *7* k.get_leo_completions
+def get_leo_completions(self,prefix):
+    
+    k = self
+    d = {'c':k.c, 'p':k.c.p, 'g':g}
+    aList = self.attr_matches(prefix,d)
+    aList.sort()
+    return aList
+#@+node:ekr.20110509064011.14561: *7* k.get_autocompleter_prefix
+def get_autocompleter_prefix (self,w):
+    
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = j = min(i,len(s)-1)
+    
+    while i > 0 and s[i].isalnum() or s[i] in '._':
+        i -= 1
+    i += 1
+    j += 1
+    prefix = s[i:j]
+    # g.trace(repr(prefix))
+    return i,j,prefix
+#@+node:ekr.20080514131122.9: *6* c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget
+
+def request_focus(self,w):
+
+    trace = False and not g.unitTesting
+    c = self
+    if trace: g.trace(g.app.gui.widget_name(w),w,g.callers(2))
+    if w: c.requestedFocusWidget = w
+
+def set_focus (self,w,force=False):
+
+    trace = False and not g.unitTesting
+    c = self
+    if w and g.app.gui:
+        if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,c.shortFileName())
+        g.app.gui.set_focus(c,w)
+    else:
+        if trace: print('c.set_focus: no w')
+
+    c.requestedFocusWidget = None
+#@+node:ekr.20080514131122.20: *6* c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = True ; traceFocus = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+    
+    if trace and (verbose or aList):
+        g.trace('**start') # ,g.callers(2))
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            c.frame.bringToFront()
+        c.requestBringToFront = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+        
+        # # However, make sure that one of the standard panes has focus.
+        # w = g.app.gui.get_focus()
+        # name = w and g.app.gui.widget_name(w)
+        # if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
+            # w = c.frame.body and c.frame.body.bodyCtrl
+            # if w:
+                # if traceFocus: aList.append('focus override: %s' % (
+                    # g.app.gui.widget_name(w)))
+                # c.set_focus(w)
+
+    if trace and (verbose or aList):
+        g.trace('** end',aList)
+            # ','.join(aList)
+            # ,c.shortFileName() or '<no name>'
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@+node:ekr.20110509064011.14563: *6* c.idle_focus_helper
+idle_focus_count = 0
+
+def idle_focus_helper (self,tag,keys):
+    
+    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    
+    trace = False and not g.unitTesting ; verbose = False
+    
+    c = self
+    assert tag == 'idle'
+
+    if g.app.unitTesting or keys.get('c') != c:
+        return
+        
+    self.idle_focus_count += 1
+        
+    if c.in_qt_dialog:
+        if trace: g.trace('in_qt_dialog')
+        return
+
+    w = g.app.gui.get_focus()
+    if not w:
+        if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
+        c.bodyWantsFocusNow()
 #@-all
 #@-leo
