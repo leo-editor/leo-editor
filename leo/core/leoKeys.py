@@ -133,7 +133,7 @@ class AutoCompleterClass:
         self.tabListIndex = -1
         self.tabName = None # The name of the main completion tab.
         self.theObject = None # The previously found object, for . chaining.
-        self.useTabs = not c.config.getBool('use_qcompleter',False)
+        self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
         self.verbose = False # True: print all members.
@@ -1080,7 +1080,10 @@ class AutoCompleterClass:
         
         if trace: g.trace(prefix)
             
-        if self.useTabs:
+        if self.use_qcompleter:
+            k = self.k
+            k.init_completer()
+        else:
             # We wait until now to define these dicts so that more classes and objects will exist.
             if not self.objectDict:
                 self.defineClassesDict()
@@ -1100,9 +1103,6 @@ class AutoCompleterClass:
                 self.autoCompleterStateHandler(event)
             else:
                 self.abort()
-        else:
-            k = self.k
-            k.init_completer()
     #@+node:ekr.20101101114615.8450: *5* initForce
     def initForce(self):
 
@@ -4878,8 +4878,10 @@ class CodewiseCompleterClass (AutoCompleterClass):
             # A leoQTextEditWidget.
             # The widget that should get focus after we are done.
 
-        if self.useTabs:
-        
+        if self.use_qcompleter:
+            k = self.k
+            k.init_completer()
+        else:
             self.prefix = g.choose(prefix is None,'',prefix)
             self.selection = w.getSelectionRange()
             self.selectedText = w.getSelectedText()
@@ -4891,9 +4893,6 @@ class CodewiseCompleterClass (AutoCompleterClass):
                 self.autoCompleterStateHandler(event)
             else:
                 self.abort()
-        else:
-            k = self.k
-            k.init_completer()
     #@+node:ekr.20110312162243.14287: *4* select_word
     def select_word (self):
         
