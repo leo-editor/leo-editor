@@ -1033,11 +1033,16 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
     # g.trace(result)
     return result
 #@+node:ekr.20031218072017.3104: ** Debugging, Dumping, Timing, Tracing & Sherlock
-#@+node:ekr.20031218072017.3105: *3* alert
-def alert(message):
+#@+node:ekr.20031218072017.3105: *3* g.alert
+def alert(message,c=None):
+    
+    '''Raise an alert.
+    
+    This method is deprecated: use c.alert instead.
+    '''
 
     g.es(message)
-    g.app.gui.alert(message)
+    g.app.gui.alert(c,message)
 #@+node:ekr.20051023083258: *3* callers & _callerName
 def callers (n=4,count=0,excludeCaller=True,files=False):
 
@@ -2919,6 +2924,8 @@ def printGcVerbose(tag=''):
 #@@c
 
 def enableIdleTimeHook(idleTimeDelay=500):
+    
+    # g.trace(idleTimeDelay)
 
     if not g.app.idleTimeHook:
         # g.trace('start idle-time hook: %d msec.' % idleTimeDelay)

@@ -87,6 +87,7 @@ class baseCommands (object):
         self.frame = frame
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
+        self.in_qt_dialog = False # True when in a qt dialog.
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -197,25 +198,29 @@ class baseCommands (object):
         else:
             return 0
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper
+    idle_focus_count = 0
+
     def idle_focus_helper (self,tag,keys):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting ; verbose = False
         
         c = self
         assert tag == 'idle'
 
         if g.app.unitTesting or keys.get('c') != c:
             return
+            
+        self.idle_focus_count += 1
+            
+        if c.in_qt_dialog:
+            if trace: g.trace('in_qt_dialog')
+            return
 
         w = g.app.gui.get_focus()
-        name = w and g.app.gui.widget_name(w)
-        
-        # Important: name can be none in dialogs.
-        if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
-            if trace and name:
-                g.trace('forcing focus from %s to body' % (repr(name)))
+        if not w:
+            if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
             c.bodyWantsFocusNow()
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad (self):
@@ -412,6 +417,13 @@ class baseCommands (object):
             g.doHook("command2",c=c,p=p,v=p,label=label)
 
         return "break" # Inhibit all other handlers.
+    #@+node:ekr.20110510052422.14618: *3* c.alert
+    def alert(self,message):
+        
+        c = self
+
+        g.es(message)
+        g.app.gui.alert(c,message)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
@@ -3839,11 +3851,13 @@ class baseCommands (object):
             g.doHook('hoist-changed',c=c)
     #@+node:ekr.20031218072017.1759: *6* Insert, Delete & Clone (Commands)
     #@+node:ekr.20031218072017.1760: *7* c.checkMoveWithParentWithWarning & c.checkDrag
-    #@+node:ekr.20070910105044: *8* checkMoveWithParentWithWarning
+    #@+node:ekr.20070910105044: *8* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning (self,root,parent,warningFlag):
 
         """Return False if root or any of root's descedents is a clone of
         parent or any of parents ancestors."""
+        
+        c = self
 
         message = "Illegal move or drag: no clone may contain a clone of itself"
 
@@ -3862,24 +3876,23 @@ class baseCommands (object):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning']=True
                 elif warningFlag:
-                    g.alert(message)
+                    c.alert(message)
                 return False
         return True
-    #@+node:ekr.20070910105044.1: *8* checkDrag
+    #@+node:ekr.20070910105044.1: *8* c.checkDrag
     def checkDrag (self,root,target):
 
         """Return False if target is any descendant of root."""
 
+        c = self
         message = "Can not drag a node into its descendant tree."
-
-        # g.trace('root',root.h,'target',target.h)
 
         for z in root.subtree():
             if z == target:
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning']=True
                 else:
-                    g.alert(message)
+                    c.alert(message)
                 return False
         return True
     #@+node:ekr.20031218072017.1193: *7* c.deleteOutline

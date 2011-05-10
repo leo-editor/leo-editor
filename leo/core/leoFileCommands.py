@@ -777,7 +777,7 @@ class baseFileCommands:
             junk, message, junk = sys.exc_info()
             if not silent:
                 g.es_exception()
-                g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+                c.alert(self.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
 
         return ok

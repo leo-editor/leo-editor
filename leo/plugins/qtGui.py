@@ -118,7 +118,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     __str__ = __repr__
     #@+node:ekr.20110325185230.14518: *4* Auto completion LeoQTextBrowser
 
-    #@+node:ekr.20110326063921.14465: *5* destroyedCallback
+    #@+node:ekr.20110326063921.14465: *5* destroyedCallback 
     def destroyedCallback(self,obj):
         
         w = self
@@ -136,14 +136,15 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         qc = w.leo_q_completer
         assert(qc)
         
-        qc.disconnect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
-        
-        qc.popup().hide()
-        qc.deleteLater()
-        w.leo_q_completer = None
-        
-        # Important: the focus gets cleared very late by QCompleter.
-        # It is restored to the body pane by c.idle_focus_helper.
+        if 1: # Just hide the completer.
+            qc.popup().hide()
+        else:
+            qc.disconnect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
+            qc.popup().hide()
+            qc.deleteLater()
+            w.leo_q_completer = None
+            # Important: the focus gets cleared very late by QCompleter.
+            # It is restored to the body pane by c.idle_focus_helper.
     #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
     def initCompleter(self):
         
@@ -167,7 +168,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             qc.setWidget(w)
             # Sent when the user selects an item.
             qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
-            qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),w.destroyedCallback)
+            # qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),w.destroyedCallback)
             
         # Compute the prefix and select it.
         w2 = c.frame.body.bodyCtrl
@@ -196,7 +197,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         Except for bare modifier key events,
         this gets called *only* when the popup is showing!'''
         
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting ; verbose = False
 
         w = self ; c = w.leo_c ; k = c.k
         codewiseCompleter = k.codewiseCompleter
@@ -268,11 +269,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         popup = qc.popup()
         i = popup.currentIndex()
         data = model.itemData(i)
-        
         completion = data.get(0,'') # A hack.
-        if trace: g.trace('completion1',completion)
-        
-        # g.trace(type(completion))
 
         if isinstance(completion,QtCore.QVariant):
             # This is only true with Python 2K.
@@ -287,28 +284,21 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         completion = completion.strip()
 
-        # Replace the entire word under the cursor with completion.
-        w.setFocus()
+        # Replace the prefix with the completion.
+        w.setFocus() # QTextBrowser.setFocus.
         w2 = c.frame.body
         i,j,prefix = c.k.get_autocompleter_prefix(w2)
         if trace: g.trace(i,j,repr(prefix))
-        w2.delete(i,j)
-        w2.insert(i,completion)
-        j = i+len(completion)
-        # w2.setSelectionRange(i,j,insert=j)
-        w2.setInsertPoint(j)
+
+        if prefix != completion:
+            w2.delete(i,j)
+            w2.insert(i,completion)
+            j = i+len(completion)
+            c.setChanged(True)
+            w2.setInsertPoint(j)
 
         # Finish.
         w.endCompleter()
-        
-        # Mark c changed.
-        c.setChanged(True)
-    #@+node:ekr.20110325185230.14514: *5* textUnderCursor (No longer used)
-    # def textUnderCursor(self):
-
-        # tc = self.textCursor()
-        # tc.select(QtGui.QTextCursor.WordUnderCursor)
-        # return tc.selectedText()
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
         trace = False and not g.unitTesting
@@ -6291,8 +6281,12 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Parse md.text() into (fn,s)'''
 
         fn = ''
+
         # g.trace(type(md.text()))
-        s = unicode(md.text()) # Safe: md.text() is a QString.
+        # s = unicode(md.text())
+            # Safe: md.text() is a QString.
+            # But not Python 3.x compatible.
+        s = g.u(md.text())
 
         if s:
             i = s.find(',')
@@ -7551,7 +7545,7 @@ class leoQtGui(leoGui.leoGui):
 
     #@+node:ekr.20081121105001.479: *4* Dialogs & panels (qtGui)
     #@+node:ekr.20081122170423.1: *5* alert (qtGui)
-    def alert (self,message):
+    def alert (self,c,message):
 
         if g.unitTesting: return
 
@@ -7561,7 +7555,9 @@ class leoQtGui(leoGui.leoGui):
         d.setText(message)
         d.setIcon(b.Warning)
         yes = d.addButton('Ok',b.YesRole)
+        c.in_qt_dialog = True
         d.exec_()
+        c.in_qt_dialog = False
     #@+node:ekr.20081121105001.480: *5* makeFilter
     def makeFilter (self,filetypes):
 
@@ -7628,7 +7624,9 @@ class leoQtGui(leoGui.leoGui):
         d.setIcon(b.Information)
         yes = d.addButton('Ok',b.YesRole)
         d.setDefaultButton(yes)
+        c.in_qt_dialog = True
         d.exec_()
+        c.in_qt_dialog = False
     #@+node:ekr.20081121105001.484: *5* runAskLeoIDDialog
     def runAskLeoIDDialog(self):
 
@@ -7661,7 +7659,9 @@ class leoQtGui(leoGui.leoGui):
         if message: d.setText(message)
         d.setIcon(b.Information)
         yes = d.addButton(text,b.YesRole)
+        c.in_qt_dialog = True
         d.exec_()
+        c.in_qt_dialog = False
 
     #@+node:tbrown.20100912184720.12469: *5* runAskDateTimeDialog
     def runAskDateTimeDialog(self, c, title, 
@@ -7733,8 +7733,12 @@ class leoQtGui(leoGui.leoGui):
         d = b(c.frame.top, message=message, init=init, step_min=step_min)
 
         d.setWindowTitle(title)
+        
+        c.in_qt_dialog = True
+        val = d.exec_()
+        c.in_qt_dialog = False
 
-        if d.exec_() != d.Accepted:
+        if val != d.Accepted:
             return None
         else:
             return d.dt.dateTime().toPyDateTime()
@@ -7760,7 +7764,9 @@ class leoQtGui(leoGui.leoGui):
         if   defaultButton == "Yes": d.setDefaultButton(yes)
         elif defaultButton == "No": d.setDefaultButton(no)
         else: d.setDefaultButton(cancel)
+        c.in_qt_dialog = True
         val = d.exec_()
+        c.in_qt_dialog = False
 
         if   val == 0: val = 'yes'
         elif val == 1: val = 'no'
@@ -7782,7 +7788,9 @@ class leoQtGui(leoGui.leoGui):
         yes = d.addButton('&Yes',b.YesRole)
         no  = d.addButton('&No',b.NoRole)
         d.setDefaultButton(yes)
+        c.in_qt_dialog = True
         val = d.exec_()
+        c.in_qt_dialog = False
         return g.choose(val == 0,'yes','no')
 
     #@+node:ekr.20101111103251.3821: *5* runOpenDirectoryDialog (qtGui)
@@ -7885,7 +7893,9 @@ class leoQtGui(leoGui.leoGui):
         if msg: d.setText(msg)
         d.setIcon(b.Information)
         yes = d.addButton('Ok',b.YesRole)
+        c.in_qt_dialog = True
         d.exec_()
+        c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20081121105001.491: *4* Focus (qtGui)
     def get_focus(self,c=None):

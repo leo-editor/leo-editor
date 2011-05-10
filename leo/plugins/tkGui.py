@@ -268,7 +268,9 @@ class tkinterGui(leoGui.leoGui):
 
         return dialog.result 
     #@+node:ekr.20081122170423.2: *4* tkGui.alert
-    def alert (self,message):
+    def alert (self,c,message):
+        
+        if g.unitTesting: return
 
         import tkMessageBox
 

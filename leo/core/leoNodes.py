@@ -1188,7 +1188,7 @@ class position (object):
         else:
             node = p
 
-        g.alert("invalid outline: %s\n%s" % (message,node))
+        p.v.context.alert("invalid outline: %s\n%s" % (message,node))
     #@+node:ekr.20040303175026.10: *4* p.moveAfter
     def moveAfter (self,a):
 

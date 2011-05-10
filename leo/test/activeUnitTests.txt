@@ -4835,6 +4835,8 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
+#@+node:ekr.20110510054817.3475: *4* @test c.alert
+c.alert('test of c.alert')
 #@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
 
@@ -10089,6 +10091,8 @@ c
     assert result == s2,repr(result)
 
 
+#@+node:ekr.20110510054817.3476: *4* @test g.alert
+g.alert(c,'test of g.alert')
 #@+node:ekr.20040917062206: *4* @test g.cantImport returns None
 assert(g.cantImport("xyzzy","during unit testing") is None)
 #@+node:ekr.20060921115303: *4* @test g.checkVersion

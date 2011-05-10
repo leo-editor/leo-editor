@@ -1,6 +1,6 @@
 
 #@+leo-ver=5-thin
-#@+node:ekr.20101104190737.5629: * @file scrolledmessage.py
+#@+node:leohag.20081204085551.1: * @file scrolledmessage.py
 #@@first
 
 #@+<< docstring >>
@@ -386,7 +386,9 @@ class ScrolledMessageDialog(object):
 
         dialog = QtGui.QPageSetupDialog(getGlobalPrinter(), self.ui)
 
+        c.in_qt_dialog = True
         dialog.exec_()
+        c.in_qt_dialog = False
     #@+node:leohag.20081206052547.15: *5* Print
     def doActionPrint(self, checked):
 
@@ -394,16 +396,23 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081206052547.24: *5* PrintDialog
     def doActionPrintDialog(self, checked):
 
-        dialog = QtGui.QPrintDialog(getGlobalPrinter(),self.ui)
+        d = QtGui.QPrintDialog(getGlobalPrinter(),self.ui)
+        
+        c.in_qt_dialog = True
+        val = d.exec_()
+        c.in_qt_dialog = False
 
-        if dialog.exec_() == QtGui.QDialog.Accepted:
+        if val == QtGui.QDialog.Accepted:
             self._print(getGlobalPrinter())
     #@+node:leohag.20081206052547.23: *5* PrintPreview
     def doActionPrintPreview(self, checked):
 
-        dialog = QtGui.QPrintPreviewDialog(getGlobalPrinter(),self.ui)
-        dialog.connect(dialog, QtCore.SIGNAL('paintRequested(QPrinter*)'), self._print )
-        dialog.exec_()
+        d = QtGui.QPrintPreviewDialog(getGlobalPrinter(),self.ui)
+        d.connect(dialog, QtCore.SIGNAL('paintRequested(QPrinter*)'), self._print )
+        
+        c.in_qt_dialog = True
+        d.exec_()
+        c.in_qt_dialog = False
     #@+node:leohag.20081206052547.16: *5* Save
     def doActionSave(self):
 
