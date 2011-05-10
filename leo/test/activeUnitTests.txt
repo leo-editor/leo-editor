@@ -12243,7 +12243,7 @@ table = (
 
 for expected,prefix in table:
     
-    aList = c.k.get_leo_completions(prefix)
+    aList = c.k.autoCompleter.get_leo_completions(prefix)
     assert len(aList) >= expected
     
     if 0:
