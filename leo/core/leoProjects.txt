@@ -11773,10 +11773,6 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     useGlobalRegisters and useGlobalKillbuffer indicate whether to use
     global (class vars) or per-instance (ivars) for kill buffers and registers.'''
 
-    # g.trace('base keyHandler',g.callers())
-    
-    global use_codewise
-
     self.c = c
     self.dispatchEvent = None
     self.inited = False # Set at end of finishCreate.
@@ -11818,14 +11814,8 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.defineSpecialKeys()
     self.defineSingleLineCommands()
     self.defineMultiLineCommands()
-    use_codewise = not self.isLeoSourceFile()
     fn = c.shortFileName()
-    if use_codewise:
-        self.autoCompleter = CodewiseCompleterClass(self)
-        self.codewiseCompleter = self.autoCompleter
-    else:
-        self.autoCompleter = AutoCompleterClass(self)
-        self.codewiseCompleter = CodewiseCompleterClass(self)
+    self.autoCompleter = AutoCompleterClass(self)
     self.qcompleter = None # Set by AutoCompleter.start.
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09

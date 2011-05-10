@@ -92,8 +92,6 @@ import types
 #     Keys are emacs command names; values are *lists* of shortcuts.
 #@-<< about key dicts >>
 
-use_codewise = True
-
 #@+others
 #@+node:ekr.20061031131434.4: ** class AutoCompleterClass
 class AutoCompleterClass:
@@ -133,6 +131,7 @@ class AutoCompleterClass:
         self.tabListIndex = -1
         self.tabName = None # The name of the main completion tab.
         self.theObject = None # The previously found object, for . chaining.
+        self.use_codewise = c.config.getBool('use_codewise',False) and not self.isLeoSourceFile()
         self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
@@ -255,6 +254,167 @@ class AutoCompleterClass:
                 if trace: g.trace(z,obj)
                 if obj:
                     self.objectDict[z]=obj
+    #@+node:ekr.20110314115639.14269: *4* isLeoSourceFile
+    def isLeoSourceFile (self):
+        
+        '''Return True if this is one of Leo's source files.'''
+        
+        c = self.c
+
+        table = (z.lower() for z in (
+            'leoDocs.leo',
+            'leoGui.leo',       'leoGuiPluginsRef.leo',
+            'leoPlugins.leo',   'leoPluginsRef.leo',
+            'leoPy.leo',        'leoPyRef.leo',
+            'myLeoSettings.leo', 'leoSettings.leo',
+            'ekr.leo',
+            'test.leo',
+        ))
+
+        return c.shortFileName().lower() in table
+    #@+node:ekr.20110510120621.14539: *3* codewise_complete & helpers
+    def codewise_complete(self,event=None,s=None):
+        
+        '''Use codewise to generate a list of hits.'''
+
+        c = self.c
+        p = c.p
+        w = self.w # A leoQTextEditWidget
+        
+        if s:
+            head = s
+        else:
+            head,junk = self.get_current_line(w)
+            s = self.get_word()
+
+        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", head.lstrip())
+        if m:
+            obj = m.group(1)
+            prefix = m.group(3)
+            g.trace('obj',obj,'prefix',prefix)
+            kind,aList = self.guess_class(c,p, obj)
+        else:
+            kind,aList = 'none',[]
+            
+        if aList:
+            if kind == 'class':
+                hits = self.lookup_methods(aList,prefix)
+            elif kind == 'module':
+                hits = self.lookup_modules(aList,prefix)
+        else:
+            hits = self.lookup(s)
+            
+        # g.trace(aList,repr(s),len(hits))
+        
+        return hits
+    #@+node:ekr.20110510120621.14540: *4* cleanup
+    def clean (self,hits):
+        
+        '''Clean up hits, a list of ctags patterns, for display.'''
+        
+        aList = []
+        for h in hits:
+            s = h[0]
+            fn = h[1].strip()
+            if fn.startswith('/'):
+                sig = fn[2:-4].strip()
+            else:
+                sig = fn
+            aList.append('%s: %s' % (s,sig))
+
+        aList = list(set(aList))
+        aList.sort()
+        return aList
+    #@+node:ekr.20110510120621.14541: *4* get_current_line
+    def get_current_line(self,w):
+        
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        head, tail = s[i:ins], s[ins:j]
+
+        return head, tail
+    #@+node:ekr.20110510120621.14542: *4* guess_class
+    def guess_class(self,c,p,varname):
+        
+        '''Return kind, class_list'''
+
+        # if varname == 'g':
+            # return 'module',['leoGlobals']
+        if varname == 'p':
+            return 'class',['position']
+        if varname == 'c':
+            return 'class',['baseCommands']
+        if varname == 'self':
+            # Return the nearest enclosing class.
+            for par in p.parents():
+                h = par.h
+                m = re.search('class\s+(\w+)', h)
+                if m:
+                    return 'class',[m.group(1)]
+
+        # Do a 'real' analysis
+        aList = ContextSniffer().get_classes(p.b,varname)
+        # g.trace(varname,aList)
+        return 'class',aList
+    #@+node:ekr.20110510120621.14543: *4* lookup
+    def lookup(self,prefix):
+
+        aList = codewise.cmd_functions([prefix])
+        hits = [z.split(None,1) for z in aList if z.strip()]
+        return self.clean(hits)
+        
+        # # Clean up the ctags info.
+        # aList = []
+        # for h in hits:
+            # s = h[0]
+            # sig = h[1].strip()[2:-4].strip()
+            # aList.append('%s: %s' % (s,sig))
+
+        # aList = list(set(aList))
+        # aList.sort()
+        # return aList
+    #@+node:ekr.20110510120621.14544: *4* lookup_methods
+    def lookup_methods(self,aList,prefix):
+        
+        aList = codewise.cmd_members([aList[0]])
+        hits = (z.split(None,1) for z in aList if z.strip())
+        return self.clean(aList)
+
+        # # Clean up the ctags pattern.
+        # aList = []
+        # for h in hits:
+            # s = h[0]
+            # fn = h[1].strip()
+            # if fn.startswith('/'):
+                # sig = fn[2:-4].strip()
+            # else:
+                # sig = fn
+            # aList.append('%s: %s' % (s,sig))
+
+        # aList = list(set(aList))
+        # aList.sort()
+        # return aList
+    #@+node:ekr.20110510120621.14545: *4* lookup_modules
+    def lookup_modules (self,aList,prefix):
+        
+        g.trace(prefix,aList)
+        
+        aList = codewise.cmd_functions([aList[0]])
+        hits = (z.split(None,1) for z in aList if z.strip())
+        return self.clean(hits)
+
+        
+        
+    #@+node:ekr.20110510120621.14546: *4* get_word
+    def get_word (self):
+        
+        w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
+        tc = w.textCursor()
+        tc.select(tc.WordUnderCursor)
+        s = tc.selectedText()
+        return s
     #@+node:ekr.20110509064011.14555: *3* qcompleter support
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self):
@@ -409,7 +569,7 @@ class AutoCompleterClass:
             self.verbose = not self.verbose
             c.frame.putStatusLine('verbose completions %s' % (
                 g.choose(self.verbose,'ON','OFF')),color='red')
-            if use_codewise:
+            if self.use_codewise:
                 self.membersList = self.complete()
             else:
                 if type(self.theObject) == types.DictType:
@@ -492,7 +652,9 @@ class AutoCompleterClass:
 
         k = self.k
         if not g.unitTesting:
-            s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
+            s = '%sautocompleter %s' % (
+                g.choose(self.use_codewise,'codewise ',''),
+                g.choose(k.enable_autocompleter,'On','Off'))
             g.es(s,color='red')
 
     def showCalltipsStatus (self):
@@ -1152,7 +1314,7 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.46: *4* start & initForce (autocompleter)
     def start (self,event=None,w=None,prefix=None):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         if w: self.w = w
         else: w = self.w
@@ -1170,10 +1332,14 @@ class AutoCompleterClass:
             self.prefix = g.choose(prefix is None,'',prefix)
             self.selection = w.getSelectionRange()
             self.selectedText = w.getSelectedText()
-        
-            flag = self.getLeadinWord(w)
-            if self.force:
-                partialWord = self.initForce()
+            
+            if self.use_codewise:
+                self.prefix = self.select_word()
+                self.membersList = self.codewise_complete(event)
+            else:
+                flag = self.getLeadinWord(w)
+                if self.force:
+                    partialWord = self.initForce()
         
             if trace: g.trace(flag,len(self.membersList))
         
@@ -1233,10 +1399,6 @@ class keyHandlerClass:
 
         useGlobalRegisters and useGlobalKillbuffer indicate whether to use
         global (class vars) or per-instance (ivars) for kill buffers and registers.'''
-
-        # g.trace('base keyHandler',g.callers())
-        
-        global use_codewise
 
         self.c = c
         self.dispatchEvent = None
@@ -1357,14 +1519,8 @@ class keyHandlerClass:
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
-        use_codewise = not self.isLeoSourceFile()
         fn = c.shortFileName()
-        if use_codewise:
-            self.autoCompleter = CodewiseCompleterClass(self)
-            self.codewiseCompleter = self.autoCompleter
-        else:
-            self.autoCompleter = AutoCompleterClass(self)
-            self.codewiseCompleter = CodewiseCompleterClass(self)
+        self.autoCompleter = AutoCompleterClass(self)
         self.qcompleter = None # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
         self.setDefaultEditingAction() # 2011/02/09
@@ -1760,27 +1916,6 @@ class keyHandlerClass:
         for key in k.guiBindNamesDict:
             k.guiBindNamesInverseDict [k.guiBindNamesDict.get(key)] = key
 
-    #@+node:ekr.20110314115639.14269: *4* k.isLeoSourceFile
-    def isLeoSourceFile (self):
-        
-        '''Return True if this is one of Leo's source files.
-        
-        When True, use AutoCompleterClass instead of CodewiseCompleterClass.
-        '''
-        
-        c = self.c
-
-        table = (z.lower() for z in (
-            'leoDocs.leo',
-            'leoGui.leo',       'leoGuiPluginsRef.leo',
-            'leoPlugins.leo',   'leoPluginsRef.leo',
-            'leoPy.leo',        'leoPyRef.leo',
-            'myLeoSettings.leo', 'leoSettings.leo',
-            'ekr.leo',
-            'test.leo',
-        ))
-
-        return c.shortFileName().lower() in table
     #@+node:ekr.20061101071425: *4* oops
     def oops (self):
 
@@ -4694,219 +4829,6 @@ class ContextSniffer:
             self.vars[var] = vars
 
         vars.append(klass)
-    #@-others
-#@+node:ekr.20110312155404.14249: ** class CodewiseCompleterClass (AutoCompleterClass)
-class CodewiseCompleterClass (AutoCompleterClass):
-    
-    #@+others
-    #@+node:ekr.20110312155404.14260: *3*  ctor (CodewiseCompleterClass)
-    def __init__ (self,k):
-        
-        # Init the base class
-        AutoCompleterClass.__init__(self,k)
-        
-        c = self.c
-        
-        self.w = None  # Set in start: a leoQTextEditWidget
-        self.tabName = 'Completions'
-    #@+node:ekr.20110314123044.14271: *3* showAutocompleter/CalltipsStatus
-    def showAutocompleterStatus (self):
-        '''Show the autocompleter status.'''
-
-        k = self.k
-        if not g.unitTesting:
-            s = 'Codewise autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
-            g.es(s,color='red')
-
-    def showCalltipsStatus (self):
-        '''Show the autocompleter status.'''
-        k = self.k
-        if not g.unitTesting:
-            s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
-            g.es(s,color='red')
-    #@+node:ekr.20110312155404.14255: *3* complete & helpers
-    def complete(self,event=None,s=None):
-        
-        '''Use codewise to generate a list of hits.'''
-
-        c = self.c
-        p = c.p
-        w = self.w # A leoQTextEditWidget
-        
-        if s:
-            head = s
-        else:
-            head,junk = self.get_current_line(w)
-            s = self.get_word()
-
-        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", head.lstrip())
-        if m:
-            obj = m.group(1)
-            prefix = m.group(3)
-            g.trace('obj',obj,'prefix',prefix)
-            kind,aList = self.guess_class(c,p, obj)
-        else:
-            kind,aList = 'none',[]
-            
-        if aList:
-            if kind == 'class':
-                hits = self.lookup_methods(aList,prefix)
-            elif kind == 'module':
-                hits = self.lookup_modules(aList,prefix)
-        else:
-            hits = self.lookup(s)
-            
-        # g.trace(aList,repr(s),len(hits))
-        
-        return hits
-    #@+node:ekr.20110313103739.14270: *4* cleanup
-    def clean (self,hits):
-        
-        '''Clean up hits, a list of ctags patterns, for display.'''
-        
-        aList = []
-        for h in hits:
-            s = h[0]
-            fn = h[1].strip()
-            if fn.startswith('/'):
-                sig = fn[2:-4].strip()
-            else:
-                sig = fn
-            aList.append('%s: %s' % (s,sig))
-
-        aList = list(set(aList))
-        aList.sort()
-        return aList
-    #@+node:ekr.20110312155404.14257: *4* get_current_line
-    def get_current_line(self,w):
-        
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        head, tail = s[i:ins], s[ins:j]
-
-        return head, tail
-    #@+node:ekr.20110312162243.14254: *4* guess_class
-    def guess_class(self,c,p,varname):
-        
-        '''Return kind, class_list'''
-
-        # if varname == 'g':
-            # return 'module',['leoGlobals']
-        if varname == 'p':
-            return 'class',['position']
-        if varname == 'c':
-            return 'class',['baseCommands']
-        if varname == 'self':
-            # Return the nearest enclosing class.
-            for par in p.parents():
-                h = par.h
-                m = re.search('class\s+(\w+)', h)
-                if m:
-                    return 'class',[m.group(1)]
-
-        # Do a 'real' analysis
-        aList = ContextSniffer().get_classes(p.b,varname)
-        # g.trace(varname,aList)
-        return 'class',aList
-    #@+node:ekr.20110312162243.14268: *4* lookup
-    def lookup(self,prefix):
-
-        aList = codewise.cmd_functions([prefix])
-        hits = [z.split(None,1) for z in aList if z.strip()]
-        return self.clean(hits)
-        
-        # # Clean up the ctags info.
-        # aList = []
-        # for h in hits:
-            # s = h[0]
-            # sig = h[1].strip()[2:-4].strip()
-            # aList.append('%s: %s' % (s,sig))
-
-        # aList = list(set(aList))
-        # aList.sort()
-        # return aList
-    #@+node:ekr.20110312162243.14273: *4* lookup_methods
-    def lookup_methods(self,aList,prefix):
-        
-        aList = codewise.cmd_members([aList[0]])
-        hits = (z.split(None,1) for z in aList if z.strip())
-        return self.clean(aList)
-
-        # # Clean up the ctags pattern.
-        # aList = []
-        # for h in hits:
-            # s = h[0]
-            # fn = h[1].strip()
-            # if fn.startswith('/'):
-                # sig = fn[2:-4].strip()
-            # else:
-                # sig = fn
-            # aList.append('%s: %s' % (s,sig))
-
-        # aList = list(set(aList))
-        # aList.sort()
-        # return aList
-    #@+node:ekr.20110313103739.14269: *4* lookup_modules
-    def lookup_modules (self,aList,prefix):
-        
-        g.trace(prefix,aList)
-        
-        aList = codewise.cmd_functions([aList[0]])
-        hits = (z.split(None,1) for z in aList if z.strip())
-        return self.clean(hits)
-
-        
-        
-    #@+node:ekr.20110312162243.14266: *4* get_word
-    def get_word (self):
-        
-        w = self.c.frame.body.bodyCtrl.widget
-            # A LeoQTextBrowser.
-        tc = w.textCursor()
-        tc.select(tc.WordUnderCursor)
-        s = tc.selectedText()
-        return s
-    #@+node:ekr.20110312155404.14252: *3* start & helper (CodewiseCompleterClass)
-    def start (self,event=None,w=None,prefix=None):
-
-        c = self.c
-        
-        self.w = c.frame.body.bodyCtrl
-            # A leoQTextEditWidget.
-            # The widget that should get focus after we are done.
-
-        if self.use_qcompleter:
-            self.init_qcompleter()
-        else:
-            self.prefix = g.choose(prefix is None,'',prefix)
-            self.selection = w.getSelectionRange()
-            self.selectedText = w.getSelectedText()
-            
-            self.prefix = self.select_word()
-            self.membersList = self.complete(event)
-        
-            if self.membersList:
-                self.autoCompleterStateHandler(event)
-            else:
-                self.abort()
-    #@+node:ekr.20110312162243.14287: *4* select_word
-    def select_word (self):
-        
-
-        '''Select the word under the cursor and return it.'''
-
-        trace = False and not g.unitTesting
-        w = self.w
-        i = j = w.getInsertPoint()
-        s = w.getAllText()
-
-        # Scan backward to the previous full word.
-        while i > 0 and g.isWordChar(s[i-1]):
-            i -= 1
-
-        w.setSelectionRange(i,j)
-        return s[i:j]
     #@-others
 #@-others
 #@-leo
