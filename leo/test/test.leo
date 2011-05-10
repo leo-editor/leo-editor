@@ -13,6 +13,9 @@
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20110510110227.2439"><vh>Autocompleter</vh>
+<v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = True</vh></v>
+</v>
 <v t="ekr.20100118190256.2014"><vh>Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
@@ -190,6 +193,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
+<v t="ekr.20110510110227.2440"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -1091,7 +1095,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7875,12 +7879,11 @@ if 0:
 w = c.frame.body
 s = w.getAllText()
 w.setInsertPoint(len(s))
-# print('ins',len(s))
 
 # The penultimate step before removing this test completely.
 c.k.init_completer()
 
-# Testing area: c.frame.</t>
+# Testing area: c.frame.body.bodyCtrl</t>
 <t tx="ekr.20110325142419.2337"># This has been superceded by Autocompleter test node in this file.
 
 from PyQt4 import QtGui, QtCore
@@ -8742,6 +8745,8 @@ t = Template('Hello {{ name }}!')
 s = t.render(name='Edward K. Ream')
 print(s)
 </t>
-<t tx="ekr.20110510093130.2434">c.</t>
+<t tx="ekr.20110510093130.2434">c.frame.body.bodyCtrl</t>
+<t tx="ekr.20110510110227.2439"></t>
+<t tx="ekr.20110510110227.2440"></t>
 </tnodes>
 </leo_file>

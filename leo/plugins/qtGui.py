@@ -136,17 +136,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Important: the focus gets cleared very late by QCompleter.
             # It is restored to the body pane by c.idle_focus_helper.
     #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
-    def initCompleter(self):
+    def initCompleter(self,options):
         
         '''Connect a QCompleter.'''
         
         trace = False and not g.unitTesting
         c = self.leo_c ; k = c.k
-        
-        # A hack: these are also set in completer.start.
-        k.codewiseCompleter.body = self # A LeoQTextBrowser.
-        k.codewiseCompleter.widget = c.frame.body.bodyCtrl
-            # A leoQTextEditWidget
                 
         if self.leo_q_completer:
             qc = self.leo_q_completer
@@ -159,12 +154,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Sent when the user selects an item.
             qc.connect(qc,QtCore.SIGNAL("activated(QString)"),self.selectCallback)
             # qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),self.destroyedCallback)
-            
-        # Compute the prefix and the list of options.
-        i,j,prefix = c.k.get_autocompleter_prefix()
-        options = c.k.get_leo_completions(prefix)
-        
-        if trace: g.trace('prefix: %s, options:...\n%s', (prefix,options))
 
         # Inject ivars for the keyPressEvent and selectCallback.
         self.leo_q_completer = qc
@@ -222,6 +211,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         QtGui.QTextBrowser.keyPressEvent(self,event)
 
         i,j,prefix = c.k.get_autocompleter_prefix()
+        g.trace(prefix)
 
         if prefix != qc.completionPrefix():
             qc.setCompletionPrefix(prefix)

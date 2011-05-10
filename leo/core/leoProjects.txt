@@ -11826,6 +11826,7 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     else:
         self.autoCompleter = AutoCompleterClass(self)
         self.codewiseCompleter = CodewiseCompleterClass(self)
+    self.qcompleter = None # Set by AutoCompleter.start.
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
 #@+node:ekr.20061031131434.78: *8* << define externally visible ivars >>
@@ -12439,11 +12440,17 @@ def make_screen_shot(fn):
 def init_completer (self):
     
     k = self
-    
     w = self.c.frame.body.bodyCtrl.widget
         # A LeoQTextBrowser.
+        
+    # Compute the prefix and the list of options.
+    i,j,prefix = k.get_autocompleter_prefix()
+    options = k.get_leo_completions(prefix)
 
-    w.initCompleter()
+    # g.trace('prefix: %s, options:...\n%s' % (prefix,options))
+    g.trace('prefix: %s' % (prefix))
+
+    self.qcompleter = w.initCompleter(options)
 #@+node:ekr.20110509064011.14556: *7* k.attr_matches
 def attr_matches(self,s,namespace):
     
@@ -12502,7 +12509,7 @@ def get_autocompleter_prefix (self):
     i = w.getInsertPoint()
     i = j = min(i,len(s)-1)
     
-    while i > 0 and s[i].isalnum() or s[i] in '._':
+    while i >= 0 and (s[i].isalnum() or s[i] in '._'):
         i -= 1
     i += 1
     j += 1

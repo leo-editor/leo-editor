@@ -133,7 +133,7 @@ class AutoCompleterClass:
         self.tabListIndex = -1
         self.tabName = None # The name of the main completion tab.
         self.theObject = None # The previously found object, for . chaining.
-        self.useTabs = True
+        self.useTabs = not c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
         self.verbose = False # True: print all members.
@@ -474,11 +474,10 @@ class AutoCompleterClass:
     def setTabName (self,s):
 
         c = self.c
-        if self.useTabs:
-            if self.tabName:
-                c.frame.log.deleteTab(self.tabName)
-            self.tabName = s.replace('_','') or ''
-            c.frame.log.clearTab(self.tabName)
+        if self.tabName:
+            c.frame.log.deleteTab(self.tabName)
+        self.tabName = s.replace('_','') or ''
+        c.frame.log.clearTab(self.tabName)
     #@+node:ekr.20061031131434.19: *4* appendToKnownObjects
     def appendToKnownObjects (self,obj):
 
@@ -658,13 +657,12 @@ class AutoCompleterClass:
             if len(aList) > 1:
                 self.tabList = aList
 
-        if self.useTabs:
-            c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
-            if self.tabList:
-                self.tabListIndex = -1 # The next item will be item 0.
-                if not backspace and not init:
-                    self.setSelection(common_prefix)
-            self.put('','\n'.join(self.tabList),tabName=self.tabName)
+        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
+        if self.tabList:
+            self.tabListIndex = -1 # The next item will be item 0.
+            if not backspace and not init:
+                self.setSelection(common_prefix)
+        self.put('','\n'.join(self.tabList),tabName=self.tabName)
     #@+node:ekr.20061031131434.29: *4* doBackSpace (autocompleter)
     def doBackSpace (self):
 
@@ -1072,37 +1070,39 @@ class AutoCompleterClass:
         c.frame.body.recolor(c.p,incremental=True)
         # Usually this call will have no effect because the body text has not changed.
         c.frame.body.onBodyChanged('Typing')
-    #@+node:ekr.20061031131434.46: *4* start & initForce
+    #@+node:ekr.20061031131434.46: *4* start & initForce (autocompleter)
     def start (self,event=None,w=None,prefix=None):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         if w: self.w = w
         else: w = self.w
+        
+        if trace: g.trace(prefix)
+            
+        if self.useTabs:
+            # We wait until now to define these dicts so that more classes and objects will exist.
+            if not self.objectDict:
+                self.defineClassesDict()
+                self.defineObjectDict()
 
-        # We wait until now to define these dicts so that more classes and objects will exist.
-        if not self.objectDict:
-            self.defineClassesDict()
-            self.defineObjectDict()
-
-        self.prefix = g.choose(prefix is None,'',prefix)
-        self.selection = w.getSelectionRange()
-        self.selectedText = w.getSelectedText()
-
-        flag = self.getLeadinWord(w)
-        if self.force:
-            partialWord = self.initForce()
-
-        if trace: g.trace(flag,len(self.membersList))
-
-        if not self.membersList:
-            self.abort()
-        elif self.useTabs:
-            self.autoCompleterStateHandler(event)
+            self.prefix = g.choose(prefix is None,'',prefix)
+            self.selection = w.getSelectionRange()
+            self.selectedText = w.getSelectedText()
+        
+            flag = self.getLeadinWord(w)
+            if self.force:
+                partialWord = self.initForce()
+        
+            if trace: g.trace(flag,len(self.membersList))
+        
+            if self.membersList:
+                self.autoCompleterStateHandler(event)
+            else:
+                self.abort()
         else:
-            self.computeCompletionList()
-            return self.tabList
-
+            k = self.k
+            k.init_completer()
     #@+node:ekr.20101101114615.8450: *5* initForce
     def initForce(self):
 
@@ -1126,7 +1126,6 @@ class AutoCompleterClass:
 
         if trace: g.trace(word)
         return word
-
     #@-others
 #@+node:ekr.20061031131434.74: ** class keyHandlerClass
 class keyHandlerClass:
@@ -1288,6 +1287,7 @@ class keyHandlerClass:
         else:
             self.autoCompleter = AutoCompleterClass(self)
             self.codewiseCompleter = CodewiseCompleterClass(self)
+        self.qcompleter = None # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
         self.setDefaultEditingAction() # 2011/02/09
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
@@ -1699,6 +1699,7 @@ class keyHandlerClass:
             'leoPy.leo',        'leoPyRef.leo',
             'myLeoSettings.leo', 'leoSettings.leo',
             'ekr.leo',
+            'test.leo',
         ))
 
         return c.shortFileName().lower() in table
@@ -1711,11 +1712,17 @@ class keyHandlerClass:
     def init_completer (self):
         
         k = self
-        
         w = self.c.frame.body.bodyCtrl.widget
             # A LeoQTextBrowser.
+            
+        # Compute the prefix and the list of options.
+        i,j,prefix = k.get_autocompleter_prefix()
+        options = k.get_leo_completions(prefix)
 
-        w.initCompleter()
+        # g.trace('prefix: %s, options:...\n%s' % (prefix,options))
+        g.trace('prefix: %s' % (prefix))
+
+        self.qcompleter = w.initCompleter(options)
     #@+node:ekr.20110509064011.14556: *4* k.attr_matches
     def attr_matches(self,s,namespace):
         
@@ -1774,7 +1781,7 @@ class keyHandlerClass:
         i = w.getInsertPoint()
         i = j = min(i,len(s)-1)
         
-        while i > 0 and s[i].isalnum() or s[i] in '._':
+        while i >= 0 and (s[i].isalnum() or s[i] in '._'):
             i -= 1
         i += 1
         j += 1
@@ -4862,7 +4869,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
         tc.select(tc.WordUnderCursor)
         s = tc.selectedText()
         return s
-    #@+node:ekr.20110312155404.14252: *3* start & helper
+    #@+node:ekr.20110312155404.14252: *3* start & helper (CodewiseCompleterClass)
     def start (self,event=None,w=None,prefix=None):
 
         c = self.c
@@ -4880,15 +4887,13 @@ class CodewiseCompleterClass (AutoCompleterClass):
             self.prefix = self.select_word()
             self.membersList = self.complete(event)
         
-            if not self.membersList:
-                self.abort()
-            elif self.useTabs:
+            if self.membersList:
                 self.autoCompleterStateHandler(event)
             else:
-                self.computeCompletionList()
-                return self.tabList
+                self.abort()
         else:
-            pass ###
+            k = self.k
+            k.init_completer()
     #@+node:ekr.20110312162243.14287: *4* select_word
     def select_word (self):
         

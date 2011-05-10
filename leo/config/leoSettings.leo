@@ -118,6 +118,10 @@
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
 </v>
+<v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
+<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = False</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
+</v>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
@@ -8063,6 +8067,14 @@ False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20110406082808.18152"></t>
 <t tx="ekr.20110406082808.18153"></t>
 <t tx="ekr.20110406082808.18154"></t>
+<t tx="ekr.20110510071925.14588"></t>
+<t tx="ekr.20110510071925.14589">True:  show completions in a QCompleter popup.
+False: show completions in Leo's Completions tab.
+
+**Note**: this option has effect only when using the qt or qttabs gui's.
+</t>
+<t tx="ekr.20110510071925.14590">True: use codewise completions.
+False: use leo-specific completions.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
