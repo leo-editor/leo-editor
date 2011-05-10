@@ -1759,14 +1759,13 @@ class keyHandlerClass:
         i = w.getInsertPoint()
         i = j = min(i,len(s)-1)
         
-        while i > 0:
-            ch = s[i]
-            if ch.isalnum() or ch in '._':
-                i -= 1
-            else:
-                break
-                
-        return s[i:j+1].strip()
+        while i > 0 and s[i].isalnum() or s[i] in '._':
+            i -= 1
+        i += 1
+        j += 1
+        prefix = s[i:j]
+        # g.trace(repr(prefix))
+        return i,j,prefix
     #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* bindKey
     def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):

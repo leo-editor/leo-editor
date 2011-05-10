@@ -1371,7 +1371,7 @@ for func in table:
     if func == c.logWantsFocusNow:
         assert ratio2 != f.secondary_ratio,'fail 1'
     else:
-        assert ratio != f.ratio,'fail 2'
+        assert ratio != f.ratio,'fail 2: %s, %s' % (ratio,f.ratio)
     func()
     f.expandPane()
     assert closeEnough(ratio,f.ratio),'fail 3 %s != %s' % (
@@ -17931,6 +17931,7 @@ c.contractParent()
 c.selectPosition(p.parent())
 c.save() # Only good way to save the present expansion/selection state.
 g.app.unitTestDict['restoreSelectedNode']=False
+c.bodyWantsFocus()
 
 # Print does not work: it is redirected.
 g.es('all unit tests done',color='blue')

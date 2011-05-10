@@ -133,6 +133,7 @@ class baseCommands (object):
             self.undoer = leoUndo.nullUndoer(self)
         else:
             self.undoer = leoUndo.undoer(self)
+            
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__ (self):
 
@@ -170,6 +171,9 @@ class baseCommands (object):
         else:
             # A leoSettings.leo file.
             c.commandsDict = {}
+            
+        if g.app.gui.guiName().lower().startswith('qt'):
+            g.registerHandler('idle',c.idle_focus_helper)
 
         c.frame.log.finishCreate()
         c.bodyWantsFocus()
@@ -192,6 +196,27 @@ class baseCommands (object):
             return c.os_path_finalize(c.mFileName).lower()
         else:
             return 0
+    #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper
+    def idle_focus_helper (self,tag,keys):
+        
+        '''An idle-tme handler that ensures that focus is *somewhere*.'''
+        
+        trace = True and not g.unitTesting ; verbose = False
+        
+        c = self
+        assert tag == 'idle'
+
+        if g.app.unitTesting or keys.get('c') != c:
+            return
+
+        w = g.app.gui.get_focus()
+        name = w and g.app.gui.widget_name(w)
+        
+        # Important: name can be none in dialogs.
+        if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
+            if trace and name:
+                g.trace('forcing focus from %s to body' % (repr(name)))
+            c.bodyWantsFocusNow()
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad (self):
 
@@ -6254,16 +6279,17 @@ class baseCommands (object):
 
     def request_focus(self,w):
 
+        trace = False and not g.unitTesting
         c = self
-        # g.trace(w,g.callers())
+        if trace: g.trace(g.app.gui.widget_name(w),w,g.callers(2))
         if w: c.requestedFocusWidget = w
 
     def set_focus (self,w,force=False):
 
-        trace = False # and g.unitTesting
+        trace = False and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: print('c.set_focus:',repr(w),c.shortFileName())
+            if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,c.shortFileName())
             g.app.gui.set_focus(c,w)
         else:
             if trace: print('c.set_focus: no w')
@@ -6281,7 +6307,7 @@ class baseCommands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = True ; traceFocus = False
+        verbose = True ; traceFocus = True
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -6289,6 +6315,9 @@ class baseCommands (object):
         # Suppress any requested redraw until we have iconified or diconified.
         redrawFlag = c.requestRedrawFlag
         c.requestRedrawFlag = False
+        
+        if trace and (verbose or aList):
+            g.trace('**start') # ,g.callers(2))
         
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):
@@ -6325,9 +6354,21 @@ class baseCommands (object):
             # We can not set the focus to the body pane:
             # That would make nested calls to c.outerUpdate significant.
             pass
+            
+            # # However, make sure that one of the standard panes has focus.
+            # w = g.app.gui.get_focus()
+            # name = w and g.app.gui.widget_name(w)
+            # if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
+                # w = c.frame.body and c.frame.body.bodyCtrl
+                # if w:
+                    # if traceFocus: aList.append('focus override: %s' % (
+                        # g.app.gui.widget_name(w)))
+                    # c.set_focus(w)
 
-        if trace and aList:
-            g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
+        if trace and (verbose or aList):
+            g.trace('** end',aList)
+                # ','.join(aList)
+                # ,c.shortFileName() or '<no name>'
 
         c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None

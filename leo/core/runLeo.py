@@ -513,7 +513,7 @@ def doPostPluginsInit(args,files,options):
     p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-    if c.config.getBool('allow_idle_time_hook'):
+    if True: ### c.config.getBool('allow_idle_time_hook'):
         g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
 

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.45" body_secondary_ratio="0.24">
-	<global_window_position top="81" left="403" height="887" width="1033"/>
+	<global_window_position top="118" left="549" height="887" width="1033"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -7871,21 +7871,16 @@ if 0:
    &lt;/g&gt;
 &lt;/svg&gt;</t>
 <t tx="ekr.20110325142240.2508"># Put the cursor at the end for testing.
-body = c.frame.body
-s = body.getAllText()
-body.setInsertPoint(len(s))
+w = c.frame.body
+s = w.getAllText()
+w.setInsertPoint(len(s))
+# print('ins',len(s))
 
-# Setup the QCompleter in LeoQTextBrowser.
-w = c.frame.body.bodyCtrl
-w2 = w.widget # A LeoQTextBrowser.
-prefix = c.k.get_autocompleter_prefix(w)
-assert prefix
-print('prefix',prefix)
-options = c.k.get_leo_completions(prefix)
-print('options',options)
-qc = w2.initCompleter(options)
+# To do: use c.k.initCompleter.
+w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
+qc = w.initCompleter()
 
-# Testing area: c.frame.body</t>
+# Testing area: c.frame.body.bodyCtrl</t>
 <t tx="ekr.20110325142419.2337"># This has been superceded by Autocompleter test node in this file.
 
 from PyQt4 import QtGui, QtCore

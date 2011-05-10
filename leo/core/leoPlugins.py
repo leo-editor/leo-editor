@@ -355,6 +355,8 @@ class LeoPluginsController:
 
         return None
     #@+node:ekr.20100908125007.6018: *4* doPlugins
+    # This is the default g.app.hookFunction.
+
     def doPlugins(self,tag,keywords):
 
         if g.app.killed:

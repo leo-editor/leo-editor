@@ -6525,7 +6525,7 @@ def moveLinesUp (self,event):
 def outerUpdate (self):
 
     trace = False and not g.unitTesting
-    verbose = True ; traceFocus = False
+    verbose = True ; traceFocus = True
     c = self ; aList = []
     if not c.exists or not c.k:
         return
@@ -6533,6 +6533,9 @@ def outerUpdate (self):
     # Suppress any requested redraw until we have iconified or diconified.
     redrawFlag = c.requestRedrawFlag
     c.requestRedrawFlag = False
+    
+    if trace and (verbose or aList):
+        g.trace('**start') # ,g.callers(2))
     
     if c.requestBringToFront:
         if hasattr(c.frame,'bringToFront'):
@@ -6569,9 +6572,21 @@ def outerUpdate (self):
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
         pass
+        
+        # # However, make sure that one of the standard panes has focus.
+        # w = g.app.gui.get_focus()
+        # name = w and g.app.gui.widget_name(w)
+        # if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
+            # w = c.frame.body and c.frame.body.bodyCtrl
+            # if w:
+                # if traceFocus: aList.append('focus override: %s' % (
+                    # g.app.gui.widget_name(w)))
+                # c.set_focus(w)
 
-    if trace and aList:
-        g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
+    if trace and (verbose or aList):
+        g.trace('** end',aList)
+            # ','.join(aList)
+            # ,c.shortFileName() or '<no name>'
 
     c.incrementalRecolorFlag = False
     c.requestRecolorFlag = None
@@ -8777,7 +8792,7 @@ def doPostPluginsInit(args,files,options):
     p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-    if c.config.getBool('allow_idle_time_hook'):
+    if True: ### c.config.getBool('allow_idle_time_hook'):
         g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
 

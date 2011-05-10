@@ -124,8 +124,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         w = self
         c = w.leo_c
         
-        w.setFocus() # Does not work.
-        c.bodyWantsFocusNow() # Does not work.
+        # print('LeoQTextBrowser.destroyedCallback',g.app.gui.get_focus())
+        
     #@+node:ekr.20110325185230.14524: *5* endCompleter
     def endCompleter(self):
         
@@ -142,13 +142,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         qc.deleteLater()
         w.leo_q_completer = None
         
-        w.setFocus() # Does not work.
-        c.bodyWantsFocus() # Does not work.
+        # Important: the focus gets cleared very late by QCompleter.
+        # It is restored to the body pane by c.idle_focus_helper.
     #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
-    def initCompleter(self,options):
+    def initCompleter(self):
         
         '''Connect a QCompleter.'''
         
+        trace = False and not g.unitTesting
         w = self ; c = w.leo_c ; k = c.k
         
         # A hack: these are also set in completer.start.
@@ -156,7 +157,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         k.codewiseCompleter.widget = c.frame.body.bodyCtrl
             # A leoQTextEditWidget
                 
-        if not w.leo_q_completer:
+        if w.leo_q_completer:
+            qc = w.leo_q_completer
+        else:
             # Create the completer.
             qc = QtGui.QCompleter(w)
             qc.setCompletionMode(qc.PopupCompletion)
@@ -165,6 +168,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Sent when the user selects an item.
             qc.connect(qc,QtCore.SIGNAL("activated(QString)"),w.selectCallback)
             qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),w.destroyedCallback)
+            
+        # Compute the prefix and select it.
+        w2 = c.frame.body.bodyCtrl
+        i,j,prefix = c.k.get_autocompleter_prefix(w2)
+        ### w2.setSelectionRange(i,j,insert=j)
+        if trace: g.trace('prefix',repr(prefix))
+        
+        # Compute the options.
+        options = c.k.get_leo_completions(prefix)
+        if trace: g.trace('options',options)
 
         # Inject ivars for the keyPressEvent and selectCallback.
         w.leo_q_completer = qc
@@ -183,7 +196,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         Except for bare modifier key events,
         this gets called *only* when the popup is showing!'''
         
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting ; verbose = False
 
         w = self ; c = w.leo_c ; k = c.k
         codewiseCompleter = k.codewiseCompleter
@@ -199,26 +212,26 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         active = qc and popup and popup.isVisible()
         
         if not active:
-            if trace: g.trace('not active: calling base class')
+            if trace and verbose: g.trace('not active: calling base class')
             QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
             # w.endCompleter()
             return
         
-        if trace:g.trace('text',repr(text))
+        if trace and verbose: g.trace('text',repr(text))
         
         if is_mod and not text:
             # A modifier key on it's own.
-            if trace: g.trace('bare mod key')
+            if trace and verbose: g.trace('bare mod key')
             return
         
         if key in ('\r','\n',qt.Key_Enter,qt.Key_Return):
             prefix = qc.completionPrefix()
-            if trace: g.trace('*** Select: %s' % prefix)
+            if trace and verbose: g.trace('*** Select: %s' % prefix)
             w.selectCallback()
             return
             
         if key == qt.Key_Escape:
-            if trace: g.trace('*** Abort')
+            if trace and verbose: g.trace('*** Abort')
             self.endCompleter()
             return
             
@@ -226,22 +239,15 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             return
             
         # Call the base class for all other keys, including backspace keys.
-        if trace: g.trace('calling base class')
+        if trace and verbose: g.trace('calling base class')
         QtGui.QTextBrowser.keyPressEvent(self,event) # Call the base class.
 
-        prefix = self.textUnderCursor()
-        
-        # Check whether we must recompute all options...
-        # codewiseCompleter.prefix = w.getPrefix()
-        # options = codewiseCompleter.complete()
-        
-        # if options != w.leo_options:
-            # g.trace('*** calling qc.setModel()',options)
-            # w.leo_options = options
-            # model = QtGui.QStringListModel(w.leo_options)
-            # qc.setModel(model)
+        w = c.frame.body.bodyCtrl
+        i,j,prefix = c.k.get_autocompleter_prefix(w)
+        if trace: g.trace(i,j,repr(prefix))
 
         if prefix != qc.completionPrefix():
+            ### w.setSelectionRange(i,j,insert=j)
             qc.setCompletionPrefix(prefix)
             popup.setCurrentIndex(qc.completionModel().index(0,0))
 
@@ -253,13 +259,18 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         '''Called when user selects an item in the QCompleter.'''
 
+        trace = False
         w = self ; c = w.leo_c
         qc = w.leo_q_completer
+        
+        # Compute the completion...
         model = qc.completionModel()
         popup = qc.popup()
         i = popup.currentIndex()
         data = model.itemData(i)
+        
         completion = data.get(0,'') # A hack.
+        if trace: g.trace('completion1',completion)
         
         # g.trace(type(completion))
 
@@ -278,17 +289,21 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         # Replace the entire word under the cursor with completion.
         w.setFocus()
-        tc = w.textCursor()
-        tc.select(tc.WordUnderCursor)
-        tc.insertText(completion)
-        w.setTextCursor(tc)
-        
+        w2 = c.frame.body
+        i,j,prefix = c.k.get_autocompleter_prefix(w2)
+        if trace: g.trace(i,j,repr(prefix))
+        w2.delete(i,j)
+        w2.insert(i,completion)
+        j = i+len(completion)
+        # w2.setSelectionRange(i,j,insert=j)
+        w2.setInsertPoint(j)
+
         # Finish.
         w.endCompleter()
         
         # Mark c changed.
         c.setChanged(True)
-    #@+node:ekr.20110325185230.14514: *5* textUnderCursor
+    #@+node:ekr.20110325185230.14514: *5* textUnderCursor (No longer used)
     # def textUnderCursor(self):
 
         # tc = self.textCursor()
@@ -431,9 +446,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         return val
 
     def setFocus (self):
+        
+        trace = False and not g.unitTesting
 
-        # g.trace('leoQtBody',self.widget,g.callers(4))
-        g.app.gui.set_focus(self.c,self.widget)
+        if trace: print('leoQtBaseTextWidget.setFocus',
+            # g.app.gui.widget_name(self.widget),
+            self.widget,g.callers(3))
+        
+        # Call the base class
+        assert isinstance(self.widget,QtGui.QTextBrowser) or isinstance(self.widget,QtGui.QLineEdit),self.widget
+        QtGui.QTextBrowser.setFocus(self.widget)
     #@+node:ekr.20081121105001.523: *5*  Indices
     #@+node:ekr.20090320101733.13: *6* toPythonIndex
     def toPythonIndex (self,index):
@@ -569,13 +591,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def setSelectionRangeHelper(self,i,j,insert):
 
         self.oops()
-    #@+node:ekr.20081121105001.535: *5* getName (baseTextWidget)
+    #@+node:ekr.20081121105001.535: *5* getName (leoQtBaseTextWidget)
     def getName (self):
 
         # g.trace('leoQtBaseTextWidget',self.name,g.callers())
 
         return self.name
-    #@+node:ekr.20081121105001.536: *5* onTextChanged (qtText)
+    #@+node:ekr.20081121105001.536: *5* onTextChanged (leoQtBaseTextWidget)
     def onTextChanged (self):
 
         '''Update Leo after the body has been changed.
@@ -693,7 +715,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def setBackgroundColor(self,color):     pass
     def setEditorColors (self,bg,fg):       pass
     def setForegroundColor(self,color):     pass
-    #@+node:ekr.20081121105001.540: *5* Idle time
+    #@+node:ekr.20081121105001.540: *5* Idle time (leoQtBaseTextWidget)
     def after_idle(self,func,threadCount):
         # g.trace(func.__name__,'threadCount',threadCount)
         return func(threadCount)
@@ -708,7 +730,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         g.trace()
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
-    #@+node:ekr.20081121105001.541: *5* Coloring (baseTextWidget)
+    #@+node:ekr.20081121105001.541: *5* Coloring (leoQtBaseTextWidget)
     # These *are* used.
 
     def removeAllTags(self):
@@ -963,7 +985,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
-    #@+node:ekr.20100109082023.3734: *4* leoMoveCursorHelper (Qt)
+    #@+node:ekr.20100109082023.3734: *4* leoMoveCursorHelper (leoTextEditWidget)
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
         '''Move the cursor in a QTextEdit.'''
@@ -1009,7 +1031,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
-    #@+node:ekr.20081121105001.578: *4* Widget-specific overrides (QTextEdit)
+    #@+node:ekr.20081121105001.578: *4* Widget-specific overrides (leoQTextEditWidget)
     #@+node:ekr.20090205153624.11: *5* delete (avoid call to setAllText)
     def delete(self,i,j=None):
 
@@ -7869,15 +7891,21 @@ class leoQtGui(leoGui.leoGui):
     def get_focus(self,c=None):
 
         """Returns the widget that has focus."""
-
-        w = QtGui.QApplication.focusWidget()
-        if isinstance(w,LeoQTextBrowser):
-            w = w.leo_wrapper
-            if c and not w:
+        
+        trace = False and not g.unitTesting
+        verbose = False
+        app = QtGui.QApplication
+        w = app.focusWidget() or app.activeWindow()
+        if w and isinstance(w,LeoQTextBrowser):
+            has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
+            if has_w:
+                if trace: g.trace(w)
+            elif c:
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the leoQtBody.
                 w = c.frame.body
-        # g.trace('leoQtGui',w,c,g.callers(5))
+
+        if trace: g.trace('***',w,g.callers())
         return w
 
     def set_focus(self,c,w):
@@ -7885,9 +7913,10 @@ class leoQtGui(leoGui.leoGui):
         """Put the focus on the widget."""
 
         trace = False and not g.unitTesting
+        gui = self
 
         if w:
-            if trace: g.trace('leoQtGui',w,g.callers(4))
+            if trace: print('qtGui.set_focus',gui.widget_name(w),w,g.callers(2))
             w.setFocus()
     #@+node:ekr.20081121105001.492: *4* Font
     #@+node:ekr.20081121105001.493: *5* qtGui.getFontFromParams
