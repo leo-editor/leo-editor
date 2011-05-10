@@ -255,6 +255,85 @@ class AutoCompleterClass:
                 if trace: g.trace(z,obj)
                 if obj:
                     self.objectDict[z]=obj
+    #@+node:ekr.20110509064011.14555: *3* qcompleter support
+    #@+node:ekr.20110510071925.14586: *4* init_qcompleter
+    def init_qcompleter (self):
+        
+        w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
+            
+        # Compute the prefix and the list of options.
+        i,j,prefix = self.get_autocompleter_prefix()
+        options = self.get_leo_completions(prefix)
+
+        # g.trace('prefix: %s, options:...\n%s' % (prefix,options))
+        g.trace('prefix: %s' % (prefix))
+
+        self.qcompleter = w.initCompleter(options)
+    #@+node:ekr.20110509064011.14556: *4* attr_matches
+    def attr_matches(self,s,namespace):
+        
+        """Compute matches when string s is of the form name.name....name.
+        
+        Evaluates s using eval(s,namespace) 
+
+        Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+        the namespace, it will be evaluated and its attributes (as revealed by
+        dir()) are used as possible completions.
+        
+        For class instances, class members are are also considered.)
+        
+        **Warning**: this can still invoke arbitrary C code, if an object
+        with a __getattr__ hook is evaluated.
+        
+        """
+        
+        trace = False and not g.app.unitTesting
+
+        # Seems to work great. Catches things like ''.<tab>
+        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
+        if not m:
+            return []
+
+        expr,attr = m.group(1,3)
+        if trace: g.trace(s,expr,attr)
+        try:
+            obj = eval(expr,namespace)
+        except Exception:
+            return []
+
+        # Build the result.
+        words = dir(obj)
+        n = len(attr)
+        result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
+
+        if trace: g.trace(s,result)
+        return result
+    #@+node:ekr.20110509064011.14557: *4* get_leo_completions
+    def get_leo_completions(self,prefix):
+        
+        '''Return completions in an environment defining c, g and p.'''
+        
+        k = self.k
+        d = {'c':k.c, 'p':k.c.p, 'g':g}
+        aList = self.attr_matches(prefix,d)
+        aList.sort()
+        return aList
+    #@+node:ekr.20110509064011.14561: *4* get_autocompleter_prefix
+    def get_autocompleter_prefix (self):
+        
+        # Only the body pane supports auto-completion.
+        w = self.c.frame.body
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i = j = min(i,len(s)-1)
+        
+        while i >= 0 and (s[i].isalnum() or s[i] in '._'):
+            i -= 1
+        i += 1
+        j += 1
+        prefix = s[i:j]
+        return i,j,prefix
     #@+node:ekr.20061031131434.8: *3* Top level (autocompleter)
     #@+node:ekr.20061031131434.9: *4* autoComplete
     def autoComplete (self,event=None,force=False):
@@ -1081,8 +1160,7 @@ class AutoCompleterClass:
         if trace: g.trace(prefix)
             
         if self.use_qcompleter:
-            k = self.k
-            k.init_completer()
+            self.init_qcompleter()
         else:
             # We wait until now to define these dicts so that more classes and objects will exist.
             if not self.objectDict:
@@ -1707,86 +1785,6 @@ class keyHandlerClass:
     def oops (self):
 
         g.trace('Should be defined in subclass:',g.callers(4))
-    #@+node:ekr.20110509064011.14555: *3* k.Autocompleter support
-    #@+node:ekr.20110510071925.14586: *4* k.init_completer
-    def init_completer (self):
-        
-        k = self
-        w = self.c.frame.body.bodyCtrl.widget
-            # A LeoQTextBrowser.
-            
-        # Compute the prefix and the list of options.
-        i,j,prefix = k.get_autocompleter_prefix()
-        options = k.get_leo_completions(prefix)
-
-        # g.trace('prefix: %s, options:...\n%s' % (prefix,options))
-        g.trace('prefix: %s' % (prefix))
-
-        self.qcompleter = w.initCompleter(options)
-    #@+node:ekr.20110509064011.14556: *4* k.attr_matches
-    def attr_matches(self,s,namespace):
-        
-        """Compute matches when string s is of the form name.name....name.
-        
-        Evaluates s using eval(s,namespace) 
-
-        Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
-        the namespace, it will be evaluated and its attributes (as revealed by
-        dir()) are used as possible completions.
-        
-        For class instances, class members are are also considered.)
-        
-        **Warning**: this can still invoke arbitrary C code, if an object
-        with a __getattr__ hook is evaluated.
-        
-        """
-        
-        trace = False and not g.app.unitTesting
-
-        # Seems to work great. Catches things like ''.<tab>
-        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
-        if not m:
-            return []
-
-        expr,attr = m.group(1,3)
-        if trace: g.trace(s,expr,attr)
-        try:
-            obj = eval(expr,namespace)
-        except Exception:
-            return []
-
-        # Build the result.
-        words = dir(obj)
-        n = len(attr)
-        result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
-
-        if trace: g.trace(s,result)
-        return result
-    #@+node:ekr.20110509064011.14557: *4* k.get_leo_completions
-    def get_leo_completions(self,prefix):
-        
-        '''Return completions in an environment defining c, g and p.'''
-        
-        k = self
-        d = {'c':k.c, 'p':k.c.p, 'g':g}
-        aList = self.attr_matches(prefix,d)
-        aList.sort()
-        return aList
-    #@+node:ekr.20110509064011.14561: *4* k.get_autocompleter_prefix
-    def get_autocompleter_prefix (self):
-        
-        # Only the body pane supports auto-completion.
-        w = self.c.frame.body
-        s = w.getAllText()
-        i = w.getInsertPoint()
-        i = j = min(i,len(s)-1)
-        
-        while i >= 0 and (s[i].isalnum() or s[i] in '._'):
-            i -= 1
-        i += 1
-        j += 1
-        prefix = s[i:j]
-        return i,j,prefix
     #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* bindKey
     def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
@@ -4863,7 +4861,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
     #@+node:ekr.20110312162243.14266: *4* get_word
     def get_word (self):
         
-        w = c.frame.body.bodyCtrl.widget
+        w = self.c.frame.body.bodyCtrl.widget
             # A LeoQTextBrowser.
         tc = w.textCursor()
         tc.select(tc.WordUnderCursor)
@@ -4879,8 +4877,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
             # The widget that should get focus after we are done.
 
         if self.use_qcompleter:
-            k = self.k
-            k.init_completer()
+            self.init_qcompleter()
         else:
             self.prefix = g.choose(prefix is None,'',prefix)
             self.selection = w.getSelectionRange()

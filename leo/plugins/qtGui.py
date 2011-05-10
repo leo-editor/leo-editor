@@ -210,7 +210,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         # Call the base class for all other keys, including backspace.
         QtGui.QTextBrowser.keyPressEvent(self,event)
 
-        i,j,prefix = c.k.get_autocompleter_prefix()
+        i,j,prefix = c.k.autoCompleter.get_autocompleter_prefix()
         g.trace(prefix)
 
         if prefix != qc.completionPrefix():
@@ -251,7 +251,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         # Replace the prefix with the completion.
         self.setFocus() # QTextBrowser.setFocus.
-        i,j,prefix = c.k.get_autocompleter_prefix()
+        i,j,prefix = c.k.autoCompleter.get_autocompleter_prefix()
         if trace: g.trace(i,j,repr(prefix))
 
         if prefix != completion:
