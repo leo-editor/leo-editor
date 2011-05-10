@@ -112,7 +112,7 @@
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -301,7 +301,6 @@
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
 <v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20060201110016"><vh>@bool allow_idle_time_hook = False</vh></v>
 <v t="ekr.20060212101234"></v>
 <v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
 <v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
@@ -1082,7 +1081,7 @@
 <v t="ekr.20080328105334.9"><vh>@string cleo_time_name = days</vh></v>
 <v t="tbrown.20090430112929.1"><vh>@string cleo_icon_path = cleo</vh></v>
 </v>
-<v t="ekr.20060807103220" a="E"><vh>datenodes plugin</vh>
+<v t="ekr.20060807103220"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
 <v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
@@ -5755,7 +5754,6 @@ Non-zero: limit the maximum stack size to the given number.</t>
 <t tx="ekr.20060131071612">
 </t>
 <t tx="ekr.20060131071947"></t>
-<t tx="ekr.20060201110016"></t>
 <t tx="ekr.20060201111002"></t>
 <t tx="ekr.20060202092911"></t>
 <t tx="ekr.20060202113731"></t>

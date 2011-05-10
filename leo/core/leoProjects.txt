@@ -8792,8 +8792,8 @@ def doPostPluginsInit(args,files,options):
     p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-    if True: ### c.config.getBool('allow_idle_time_hook'):
-        g.enableIdleTimeHook()
+    g.enableIdleTimeHook(idleTimeDelay=500)
+        # 2011/05/10: always enable this.
     initFocusAndDraw(c,fileName)
 
     screenshot_fn = options.get('screenshot_fn')
