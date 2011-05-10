@@ -11780,7 +11780,7 @@ def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
     self.c = c
     self.dispatchEvent = None
     self.inited = False # Set at end of finishCreate.
-    self.widget = c.frame.miniBufferWidget
+    self.w = c.frame.miniBufferWidget
     self.new_bindings = True
     self.useGlobalKillbuffer = useGlobalKillbuffer
     self.useGlobalRegisters = useGlobalRegisters
@@ -12435,6 +12435,15 @@ def make_screen_shot(fn):
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
 #@+node:ekr.20110509064011.14555: *6* k.Autocompleter support
+#@+node:ekr.20110510071925.14586: *7* k.init_completer
+def init_completer (self):
+    
+    k = self
+    
+    w = self.c.frame.body.bodyCtrl.widget
+        # A LeoQTextBrowser.
+
+    w.initCompleter()
 #@+node:ekr.20110509064011.14556: *7* k.attr_matches
 def attr_matches(self,s,namespace):
     
@@ -12477,14 +12486,18 @@ def attr_matches(self,s,namespace):
 #@+node:ekr.20110509064011.14557: *7* k.get_leo_completions
 def get_leo_completions(self,prefix):
     
+    '''Return completions in an environment defining c, g and p.'''
+    
     k = self
     d = {'c':k.c, 'p':k.c.p, 'g':g}
     aList = self.attr_matches(prefix,d)
     aList.sort()
     return aList
 #@+node:ekr.20110509064011.14561: *7* k.get_autocompleter_prefix
-def get_autocompleter_prefix (self,w):
+def get_autocompleter_prefix (self):
     
+    # Only the body pane supports auto-completion.
+    w = self.c.frame.body
     s = w.getAllText()
     i = w.getInsertPoint()
     i = j = min(i,len(s)-1)
@@ -12494,7 +12507,6 @@ def get_autocompleter_prefix (self,w):
     i += 1
     j += 1
     prefix = s[i:j]
-    # g.trace(repr(prefix))
     return i,j,prefix
 #@+node:ekr.20080514131122.9: *6* c.get/request/set_focus
 def get_focus (self):

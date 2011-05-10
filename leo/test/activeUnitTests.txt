@@ -12219,7 +12219,7 @@ runner.compareHelper(lines1,lines2,i,strict=False)
 try:
     k = c.k ; ac = k.autoCompleter
     w = c.frame.body.bodyCtrl
-    ac.widget = w
+    ac.w = w
     s = w.getAllText()
     import string
     # Just test that this doesn't crash.

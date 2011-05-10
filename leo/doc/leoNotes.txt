@@ -2615,6 +2615,75 @@ Paul
 - Using the Control Panel, System, Advanced tab, environment variables,
   add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
 #@+node:ekr.20051129084430.1: *5* @url http://www.jython.org/install.html
+#@+node:ekr.20101004092958.6050: *4* How to make codewise work
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
+
+1. Make sure you have exuberant ctags (not just regular ctags)
+installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
+
+2. Install Ville's python module "codewise".  This is a small module on
+which the Leo plugin relies.
+
+   bzr branch lp:codewise
+   cd codewise
+   sudo python setup.py install
+
+3. You need a recent trunk version of leo to get the plugin which uses
+the above module.
+
+4. Enable the plugin by putting "codewisecompleter.py" on an
+uncommented line in your @enabled-plugins @settings node.
+
+5. On the command line:
+
+if you have an existing ~/.ctags for some reason, and it's nothing you
+need to keep:
+
+  rm ~/.ctags
+
+then
+
+  codewise setup
+  codewise init
+  codewise parse .../path/to/leo/  # assuming you want completion on
+                                   # leo code
+  codewise parse .../some/other/project/
+
+Then, after restarting leo if necessary, type
+
+c.op<Alt-0> in the body editor to find all the c. methods starting
+with 'op' etc.
+
+Nice work Ville, thanks.
+
+==================
+
+Thanks for this, I hope others will take a stab at it as well, given
+sane instructions (I burned my free cycles frantically coding this
+thing and neglected the all-important HOWTO). This is important
+because functional completion is the single most important thing still
+missing from Leo. Or, well, was ;-).
+
+Especially the presentation part (QCompleter) needs some care, so you
+can operate it from your keyboard alone. It should probably be moved
+to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
+just invoke w.complete(list_of_completions) that will bring up the
+QCompleter popup.
+
+> Then, after restarting leo if necessary, type
+
+> c.op<Alt-0> in the body editor to find all the c. methods starting
+> with 'op' etc.
+
+Also, try the explicit declarations:
+
+# w : SomeClass
+
+w.<alt+0>
+
+And self.<alt+0> 
 #@+node:ekr.20070623150151: *4* How to make Leo commands undoable
 The chapter commands provide a good example.  In this file, see the node:
 
@@ -2934,6 +3003,17 @@ General:
 
 #@+node:ekr.20080113061130: *4*  gtk: what I did
 - Added code to Leo's code to do nothing it the compare panel and stand-alone find panel do not exist.
+#@+node:ekr.20081005065934.12: *3* Links from Ville re Scintilla
+It seems Scintilla relies on externally generated api description
+files to provide autocompletion. Links that may be of interest:
+
+http://www.riverbankcomputing.co.uk/static/Docs/QScintilla2/classQsciAPIs.html#b0f824492bb0f3ca54edb4d46945a3de
+
+http://www.burgaud.com/scite-java-api/
+
+http://scintilla.sourceforge.net/tags2api.py
+
+http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
 #@+node:ekr.20050214055018: *3* Mac Notes
 #@+node:ekr.20050221054932: *4* How to make monolithic Leo app on MacOS X
  @killcolor
@@ -3242,6 +3322,609 @@ It's for running python scripts on windows, without having to type:
 and almost takes the place of the "shabang" line at the top of *nix
 scripts.
 
+#@+node:ekr.20080110082845: *3* pyxides: code completion
+@nocolor
+
+Python code completion module
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Wed, 6 Jun 2007 20:57:18 +0300
+
+I've been developing IDLE over the past 2 years or so. Even before
+that, I helped a friend of mine, Noam Raphael, write IDLE's
+auto-completion, which is included in recent versions of IDLE.
+
+Noam wrote the original completion code from scratch, and AFAIK every
+Python IDE which features code completion has done the same. Surely
+there is -some- functionality which could be useful cross-IDE?
+Retrieving possible completions from the namespace, for example. And
+we should be learning from each-others' ideas and experiences.
+
+So how about we design a generic Python completion module, that
+each IDE could extend, and use for the completion logic?
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Wed, 6 Jun 2007 19:06:01 +0100
+
+I am very keen for this. I will help where it is required. PIDA
+currently has no code completion (outside what vim/emacs provide),
+
+
+
+From: "phil jones" <inters...@gmail.com>
+Date: Wed, 6 Jun 2007 11:07:33 -0700
+
+What functions would we ask for a code completion module?
+
+Presumably recognition of the beginnings of
+- a) python keywords
+- b) classes and functions defined earlier in this file?
+- c) in scope variables?
+
+As python is dynamically typed, I guess we can't expect to know the
+names of methods of objects?
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Wed, 6 Jun 2007 19:13:10 +0100
+
+> Presumably recognition of the beginnings of
+> - a) python keywords
+> - b) classes and functions defined earlier in this file?
+> - c) in scope variables?
+
+does c) include: d) imported modules
+
+
+
+From: Nicolas Chauvat <nicolas.chau...@logilab.fr>
+Date: Wed, 6 Jun 2007 20:17:30 +0200
+
+> >Presumably recognition of the beginnings of
+> >- a) python keywords
+> >- b) classes and functions defined earlier in this file?
+> >- c) in scope variables?
+
+> does c) include: d) imported modules
+
+For code-completion, I suppose astng[1] could be useful.
+
+1: http://www.logilab.org/project/eid/856
+
+
+From: Stani's Python Editor <spe.stani...@gmail.com>
+Date: Wed, 06 Jun 2007 20:48:41 +0200
+
+A good point. I think we all have been thinking about this. Important
+issues for the design is the extraction method and the sources.
+
+*the method*
+Importing is a lazy, but accurate way of importing, but is security wise
+not such a good idea. Parsing throught an AST compiler is better,
+however more difficult. Here are two options.
+
+From version 2.5 the standard Python compiler converts internally the
+source code to an abstract syntax tree (AST) before producing the
+bytecode. So probably that is a good way to go as every python
+distribution has this battery included.
+
+As Nicolas suggested earlier on this mailing list, there is another
+option: the AST compiler in python or PyPy:
+
+On Mar 14 2006, 12:16 am, Nicolas Chauvat <nicolas.chau...@logilab.fr>
+wrote:
+
+> > WingIDE use anASTgenerator written in C (but cross-platform),
+> > lightningly quick, and open sourced. This could be a potential
+> > starting point.
+
+> > Additionally isn't Python2.5 planned to have a C-written compiler?
+
+> PyPy also produced an improved parser/compiler.
+
+> http://codespeak.net/pypy/dist/pypy/doc/index.html
+> http://codespeak.net/pypy/dist/pypy/module/recparser/
+
+But if it could be done with the standard one it is one dependency less.
+
+*the sources*
+In the design we could define first the sources:
+1 external imported modules from the pythonpath
+2 local modules relative to the current file or context dependent
+(Blender, Gimp, ...)
+3 inner code
+
+For 1:
+It might be a good idea to have a function which scans all the modules
+from the pythonpath or one specific module to cache all autocompletion
+and calltip information of all classes, methods and doc strings. Why?
+Modules in the pythonpath don't change so often. With some criteria
+(file name, time stamp, size, ...) you could check if updates are
+necessary at startup. Having a readymade 'database' (could be python
+dictionary or sqlite database) for autocompletion/call tips would speed
+up things (and is also more secure if you are importing rather than
+parsing. For example trying to provide gtk autocompletion in a wxPython
+by importing is problematic).
+
+For 2:
+Here you load the parser on demand. Autocompletion/calltip information
+can be added to the database.
+
+For 3:
+A different kind of parser needs to be used here as per definition code
+you edit contains errors while typing. External modules are retrieved
+from 1 and 2, for internal code you can scan all the words and add them
+to the autocomplete database. As a refinement you can give special
+attention to 'self'. Also for calltips you can inherit when there are
+assignments, eg
+frame = Frame()
+than frame inherits autocomplete & calltip information from Frame.
+
+So autocompletion & calltips deals with two steps: extraction and
+'database'. If someone has a good parser already, we could use it.
+Otherwise we can define an API for the extraction and maybe lazily
+implement it first with importing and concentrate first on the
+'database'. When the database is ready we can implement the parsing. You
+could also implement the parsing first, but than it takes longer before
+you have results. Of course the library is GUI independent, it only
+works with strings or lists.
+
+What concerns SPE, it uses importing for autocompletion (1+2) and does
+internal code analysis for local code (however without the inheriting).
+
+Tal, how does IDLE's autocompletion works?
+
+Stani
+
+
+
+From: Stani's Python Editor <spe.stani...@gmail.com>
+Date: Wed, 06 Jun 2007 20:53:10 +0200
+
+Nicolas Chauvat wrote:
+> On Wed, Jun 06, 2007 at 07:13:10PM +0100, Ali Afshar wrote:
+>>> Presumably recognition of the beginnings of
+>>> - a) python keywords
+>>> - b) classes and functions defined earlier in this file?
+>>> - c) in scope variables?
+>> does c) include: d) imported modules
+
+> For code-completion, I suppose astng[1] could be useful.
+
+> 1: http://www.logilab.org/project/eid/856
+
+How dependent/independent is this from the standard AST compiler or
+PyPy? Is it more IDE friendly? Is it based on it or a total independent
+implementation?
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Wed, 6 Jun 2007 19:59:13 +0100
+
+> A good point. I think we all have been thinking about this. Important
+> issues for the design is the extraction method and the sources.
+
+> *the method*
+> Importing is a lazy, but accurate way of importing, but is security wise
+> not such a good idea. Parsing throught an AST compiler is better,
+> however more difficult. Here are two options.
+
+> From version 2.5 the standard Python compiler converts internally the
+> source code to an abstract syntax tree (AST) before producing the
+> bytecode. So probably that is a good way to go as every python
+> distribution has this battery included.
+
+> As Nicolas suggested earlier on this mailing list, there is another
+> option: the AST compiler in python or PyPy:
+
+What concerns me about these is whether they would work in a module
+which has a syntax error.
+
+I believe Wing's compiler bit of their code completion is open source.
+I remember having seen the code.
+
+
+
+From: Stani <spe.stani...@gmail.com>
+Date: Wed, 06 Jun 2007 12:08:00 -0700
+
+> What concerns me about these is whether they would work in a module
+> which has a syntax error.
+
+> I believe Wing's compiler bit of their code completion is open source.
+> I remember having seen the code.
+
+It is indeed, but is implemented in C, which means an extra dependency
+and not a 100% python solution. Normally modules (especially in the
+pythonpath) which you import don't have syntax errors. Maybe logilabs
+implementation handles syntax errors well as it is developed for
+PyLint. Nicolas?
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Wed, 6 Jun 2007 22:34:41 +0300
+
+> As python is dynamically typed, I guess we can't expect to know the
+> names of methods of objects?
+
+Well, the dir() builtin does just that, though there can be attributes
+which won't be included therein. However, the builtin dir() can be
+overridden... and ignoring it can break libraries like RPyC which
+define a custom dir() function just for this purpose.
+
+This issue has already been run in to by RPyC (an Python RPC lib). The
+main developr went ahead and suggested adding a __dir__ method which
+will return a list of attributes, and IIRC he has already implemented
+a patch for this, and it will likely enter Python2.6.
+
+Until then, I guess we're going to have to rely on dir for this.
+
+
+
+From: "Josiah Carlson" <josiah.carl...@gmail.com>
+Date: Wed, 6 Jun 2007 12:42:01 -0700
+
+For reference, PyPE auto-parses source code in the background, generating
+(among other things) a function/class/method hierarchy.  Its autocomplete
+generally sticks to global functions and keywords, but when doing
+self.method lookups, it checks the current source code line, looks up in its
+index of classes/methods, and trims the results based on known methods in
+the current class in the current source file.
+
+It certainly isn't complete (it should try to check base classes of the
+class in the same file, it could certainly pay attention to names assigned
+in the current scope, the global scope, imports, types of objects as per
+WingIDE's assert isinstance(obj, type), etc.), but it also makes the
+computation fairly straightforward, fast, and only in reference to the
+current document.
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Wed, 6 Jun 2007 22:52:08 +0300
+
+> Tal, how does IDLE's autocompletion works?
+
+Much like Stani said, since Python is interpreted, collection of
+possible completions splits into two methods:
+1) source code analysis
+2) dynamic introspection
+
+Of course, we could do either or a combination of both.
+
+IDLE just uses introspection: since IDLE always has a python shell
+running, it just completes according to the shell's state (plus
+built-in keywords and modules). This is a very simple method,
+obviously lacking. It does allow the user some control of the
+completion, though - just import whatever you want to be completable
+in the shell. However, introspection is all that is needed in a Python
+shell, which is the major reason this is the method used in IDLE.
+
+
+
+From: Nicolas Chauvat <nicolas.chau...@logilab.fr>
+Date: Wed, 6 Jun 2007 23:59:32 +0200
+
+
+> How dependent/independent is this from the standard AST compiler or
+> PyPy? Is it more IDE friendly? Is it based on it or a total independent
+> implementation?
+
+It is independent from PyPy.
+
+The above web page says:
+
+"""
+Python Abstract Syntax Tree New Generation
+
+The aim of this module is to provide a common base representation of
+python source code for projects such as pychecker, pyreverse,
+pylint... Well, actually the development of this library is essentialy
+governed by pylint's needs.
+
+It extends class defined in the compiler.ast [1] module with some
+additional methods and attributes. Instance attributes are added by a
+builder object, which can either generate extended ast (let's call
+them astng ;) by visiting an existant ast tree or by inspecting living
+object. Methods are added by monkey patching ast classes.Python
+Abstract Syntax Tree New Generation
+
+The aim of this module is to provide a common base representation of
+python source code for projects such as pychecker, pyreverse,
+pylint... Well, actually the development of this library is essentialy
+governed by pylint's needs.
+
+It extends class defined in the compiler.ast [1] module with some
+additional methods and attributes. Instance attributes are added by a
+builder object, which can either generate extended ast (let's call
+them astng ;) by visiting an existant ast tree or by inspecting living
+object. Methods are added by monkey patching ast classes.
+"""
+
+From: "Sylvain Thénault" <thena...@gmail.com>
+Date: Wed, 13 Jun 2007 10:51:04 +0200
+
+> Please let me involve Sylvain in the discussion. As the main author of
+> pylint and astng, he will provide better answers.
+
+well logilab-astng is basically a big monkey patching of the compiler
+package from the stdlib, so you can't get an astng representation from a
+module with syntax errors in. However inference and most others
+navigation methods (which are basically the value added by astng) are
+"syntax error resilient" : if a dependency module (direct or indirect)
+contains a syntax error, you don't get any exception, though since some
+information is missing you can miss some results you'ld get if the
+faulting module were parseable.
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 10:33:33 +0300
+
+Since astng already does some inference (which we definitely want!)
+and is based on the standard Python AST compiler, it sounds like our
+#1 candidate. I think we should give the code a serious once-over and
+see how well it fits our requirements, and if it can be adapted to
+better handle errors. Any volunteers?
+
+Also, has anyone used astng for completion, calltips, or something
+similar? Or the standard AST compiler, for that matter?
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 10:40:11 +0300
+
+How does PyPE parse code? Home-rolled, standard AST compiler, something else?
+
+It seems to me we should try to come up with an algorithm for parsing,
+before getting to the code. All of the details you mentioned -
+noticing assignments, using base-class methods, etc. - could be better
+defined and organized this way. Perhaps we could brainstorm on this in
+a wiki?
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 11:38:40 +0300
+
+Sorry for being away for such a long time. I hope we can get this
+conversation rolling again, and get started with the actual work.
+
+I'll try to sum up what has been said so far, and how I see things.
+
+== Top Priorities ==
+* Can we implement a parser based on the standard Python AST compiler
+(or astng)? For example, can syntax errors be handled well?
+* Is importing reasonable security-wise? If not, can it be made secure?
+
+== General issues ==
+* Do we aim for just completion, or also calltips? Perhaps also other
+meta-data, e.g. place defined, source code, ... (see IPython's '??')
+* Dependencies - do we want to allow C-extensions, or are we going for
+a Python-only solution? (IDLE would only use such a Python-only tool.)
+It seems that we want to pre-process most of the data in the
+background, so I don't see why we would want to do this in C for
+efficiency reasons.
+
+== Completion sources ==
+1) Importing "external" modules
+2) Importing/Parsing "local" modules
+3) Parsing the current file
+4) Using objects/modules from the shell (e.g. IDLE has both editor
+windows and a Python shell)
+
+== Importing ==
+* Stani mentioned that importing is problematic from a security point
+of view. What are the security issues? Are they really an issue for an
+IDE? If so, perhaps we could overcome this by importing in some kind
+of "sandbox"?
+* What are the pros and cons of Importing vs. Parsing?
+* If importing is always preferable to parsing unless there's a syntax
+error, perhaps try to import and parse on failure?
+
+== Parsing ==
+* This is going to be the most complex method - I think we should have
+a general idea of how this should work before starting an
+implementation. I suggest hashing ideas out on a wiki, since there a
+lot of details to consider.
+* Can a parser based on the standard AST compiler (or astng) work? Is
+there a way to deal with errors? (HIGH PRIORITY!)
+* There are other existing, open-source implementations out there -
+WingIDE, PyPE have been mentioned. Any others? We should collect these
+so we can use the code for learning, and perhaps direct use (if
+possible license-wise).
+
+== Shell ==
+This is relatively straight-forward - just use dir(). This should be
+optional, for use by IDEs which have a shell (support multiple
+shells?).
+
+Some known issues from IDLE and PyCrust:
+* Handle object proxies such as RPC proxies (e.g. RPyC)
+* Handle ZODB "ghost" objects
+* Watch out for circular references
+* Watch out for objects with special __getattr__/__hasattr__
+implementations (for example xmlrpc, soap)
+
+== Persistence ==
+* Stani mentioned a 'database'. I feel Sqlite should be at most
+optional, to reduce dependencies.
+* Do we really want to have the data persistent (between IDE
+sessiosns)? If so, we need to support simultaneous instances of the
+IDE so they don't corrupt the data. Any other issues? (I have a
+feeling this would better be left for later stages of development.)
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 12:22:59 +0300
+
+One more note: We should distinguish between completion in an editor
+and completion in a shell. The conversation up until now has focused
+on editors, which is reasonable since that is the problematic scene. I
+think a generic Python completion library should support completion in
+both contexts, especially if it uses can use a shell's namespace for
+completion in the editor.
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Tue, 31 Jul 2007 11:20:19 +0100
+
+I have just implemented a completion mockup using Rope (which is a
+refactoring library). It works quite nicely, and definitely worth a
+look.
+
+http://rope.sourceforge.net/
+
+It even achieves this kind of completion:
+
+class Banana(object):
+    def do_something(self):
+         return
+
+def foo():
+    return [Banana(), Banana()]
+
+foo()[0].<complete> includes do_something
+
+Which seems pretty impressive to me.
+
+
+
+From: "Tal Einat" <talei...@gmail.com>
+Date: Tue, 31 Jul 2007 20:12:50 +0300
+
+Wow, Rope does look very impressive! A quick look at the code tells me
+that a lot of work has been invested in it.
+
+So we have one existing Python-only solution. We should evaluate it -
+see what it can and can't do, and perhaps take a look at the overall
+design.
+
+I'm CC-ing Rope's developer, Ali. Hopefully Ali can help us quickly
+understand Rope's code analysis capabilities.
+
+Ali, could you elaborate a bit on what kinds of completion Rope can
+do, and the methods it uses? We would especially like to know how your
+static and dynamic inference work, what they can accomplish, and what
+their limitations are.
+
+
+
+From: "Ali Afshar" <aafs...@gmail.com>
+Date: Tue, 31 Jul 2007 19:45:15 +0100
+
+> Ali, could you elaborate a bit on what kinds of completion Rope can
+> do, and the methods it uses? We would especially like to know how your
+> static and dynamic inference work, what they can accomplish, and what
+> their limitations are.
+
+Well, I haven't really looked at the code. But I can tell you this:
+
+from rope.ide.codeassist import PythonCodeAssist
+from rope.base.project import Project
+for compl in PythonCodeAssist(Project(package_root)).assist(buffer,
+offset).completions:
+    print compl
+
+And that is as far as I really got. I expect to get a better look at
+it later in the week though...
+
+
+From: "Josiah Carlson" <josiah.carl...@gmail.com>
+Date: Wed, 1 Aug 2007 00:26:14 -0700
+
+> How does PyPE parse code? Home-rolled, standard AST compiler, something else?
+
+The compiler for syntactically correct Python, a line-based compiler
+for broken Python.  TO generate a method list for self.methods, using
+the current line number, I discover the enclosing class, check the
+listing of methods for that class (generated by the compiler or
+line-based parsers), and return a valid list for the specified prefix.
+ It doesn't walk the inheritance tree, it doesn't do imports, etc.
+
+> It seems to me we should try to come up with an algorithm for parsing,
+> before getting to the code. All of the details you mentioned -
+> noticing assignments, using base-class methods, etc. - could be better
+> defined and organized this way. Perhaps we could brainstorm on this in
+> a wiki?
+
+A wiki would be fine, the one for this mailing list would likely be
+best (if it is still up and working).  Then again, Rope looks quite
+nifty.  I may have to borrow some of that source ;)
+
+
+Discussion subject changed to "Fwd: Python code completion module" by Tal Einat
+
+From: Ali Gholami Rudi <aligr...@gmail.com>
+Date: Aug 1, 2007 5:50 PM
+
+First of all I should note that rope's main goal was being a
+refactoring tool and a refactoring tool needs to know a lot about
+python modules.  `rope.base` package provides information about python
+modules.
+
+Actually what ropeide provides as auto-completion is defined in
+`rope.ide.codeassist` module.  This module almost does nothing but use
+`rope.base`.  Since `rope.ide` package is not included in the rope
+library (which has been separated from ropeide since 0.6m4) it lacks
+good documentation and the API might not be easy to use (most of it is
+written in the first months of rope's birth).
+
+> ..., could you elaborate a bit on what kinds of completion Rope can
+> do, ...
+
+I don't know what to say here.  Well, actually it tries to use the
+source code as much as possible and infer things from it.  So I can
+say that it can complete any obvious thing that can be inferred by a
+human.  Like this is the first parameter of a method and after dots
+its attributes can appear or these modules are imported so their names
+and contents are available or this is an instance of some known type
+and we know its attributes and ... .  Try ropeide (it uses emacs-like
+keybinding, C-/ for completion; see ~/.rope if you want to change
+that); it completes common cases (and sometimes completes things you
+don't expect it to!).
+
+> ..., and the methods it uses?
+
+Rope analyzes python source code and AST.  Rope used to use the
+`compiler` module till 0.5 and now it uses `_ast` module.
+
+> We would especially like to know how your
+> static and dynamic inference work, what they can accomplish
+
+There are a few examples in docs/overview.txt.  Unit-test modules like
+`ropetest.base.objectinfertest` and `advanced_oi_test` might help,
+too.  Also have a look at `rope.base.oi.__init__` pydoc for an
+overview of how they work; (I'm afraid it is a bit out of date and
+carelessly written.)  The idea behind rope's object inference is to
+guess what references (names in source-code) hold.  They collect
+information about code when they can and use them later.
+
+>..., and what their limitations are.
+
+Many things in rope are approximations that might be exact if some
+conditions hold.  For instance rope might assume that every normal
+reference in module scope holds only one kind of object.  Apart from
+these assumptions both SOI and DOI have their own disadvantages; For
+instance SOI fails when dynamic code is evaluated while DOI does not.
+Or DOI is slower than SOI.  (Well, after recent enhancements to rope's
+SOI I rarely use DOI).
+
+I tried to answer as short as possible.  If there are questions on
+specific parts of rope, I'll be happy to answer.
+
+By the way, I tried to reply this mail to the group, but it seems that
+your group requires subscription for posting, so I've sent it to you,
+instead.
 #@+node:ekr.20070308062440: *3* Thread notes
 #@+node:ekr.20070308062440.1: *4* Posting 2
 On 2/26/07, Edward Ream <edreamleo@charter.net> wrote:

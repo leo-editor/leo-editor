@@ -133,10 +133,12 @@ class AutoCompleterClass:
         self.tabListIndex = -1
         self.tabName = None # The name of the main completion tab.
         self.theObject = None # The previously found object, for . chaining.
-        self.useTabs = True # True: show results in autocompleter tab.
+        self.useTabs = True
+            # True: show results in autocompleter tab.
+            # False: show results in a QCompleter widget.
         self.verbose = False # True: print all members.
         self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
-        self.widget = None # The widget that should get focus after autocomplete is done.
+        self.w = None # The widget that should get focus after autocomplete is done.
     #@+node:ekr.20061031131434.6: *4* defineClassesDict
     def defineClassesDict (self):
 
@@ -385,7 +387,7 @@ class AutoCompleterClass:
 
         # Insert the calltip if possible, but not in headlines.
         if (k.enable_calltips or force) and not c.widget_name(w).startswith('head'):
-            self.widget = w
+            self.w = w
             self.prefix = ''
             self.selection = w.getSelectionRange()
             self.selectedText = w.getSelectedText()
@@ -437,7 +439,7 @@ class AutoCompleterClass:
             restore,self.selectedText),g.callers())
 
         k = self ; c = k.c 
-        w = self.widget or c.frame.body.bodyCtrl
+        w = self.w or c.frame.body.bodyCtrl
         for name in (self.tabName,'Modules','Info'):
             c.frame.log.deleteTab(name)
         c.widgetWantsFocusNow(w)
@@ -489,7 +491,7 @@ class AutoCompleterClass:
     def calltip (self,obj=None):
 
         c = self.c
-        w = self.widget
+        w = self.w
         isStringMethod = False ; s = None
         # g.trace(self.leadinWord,obj)
 
@@ -583,7 +585,7 @@ class AutoCompleterClass:
         '''The user has just typed period.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; w = self.widget
+        c = self.c ; w = self.w
         word = w.getSelectedText()
         old_obj = self.theObject
 
@@ -630,7 +632,7 @@ class AutoCompleterClass:
     def computeCompletionList (self,backspace=False,init=False):
 
         trace = False and not g.unitTesting
-        c = self.c ; w = self.widget
+        c = self.c ; w = self.w
         c.widgetWantsFocus(w)
         s = w.getSelectedText()
 
@@ -672,7 +674,7 @@ class AutoCompleterClass:
         if trace: g.trace('(autocompleter)',
             repr(self.prefix),self.theObject,self.prevObjects)
 
-        c = self.c ; w = self.widget
+        c = self.c ; w = self.w
         if self.prefix:
             self.prefix = self.prefix[:-1]
             if not self.prefix:
@@ -724,7 +726,7 @@ class AutoCompleterClass:
 
         '''Handle tab completion when the user hits a tab.'''
 
-        c = self.c ; w = self.widget
+        c = self.c ; w = self.w
         s = w.getSelectedText()
 
         if s.startswith(self.prefix) and self.tabList:
@@ -743,7 +745,7 @@ class AutoCompleterClass:
 
         '''Append s to the presently selected text.'''
 
-        c = self.c ; w = self.widget
+        c = self.c ; w = self.w
         c.widgetWantsFocusNow(w)
 
         i,j = w.getSelectionRange()
@@ -890,7 +892,7 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.38: *4* info
     def info (self):
 
-        c = self.c ; doc = None ; obj = self.theObject ; w = self.widget
+        c = self.c ; doc = None ; obj = self.theObject ; w = self.w
 
         word = w.getSelectedText()
 
@@ -917,7 +919,7 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.39: *4* insertNormalChar
     def insertNormalChar (self,ch,keysym):
 
-        k = self.k ; w = self.widget
+        k = self.k ; w = self.w
 
         if g.isWordChar(ch):
             # Look ahead to see if the character completes any item.
@@ -1048,7 +1050,7 @@ class AutoCompleterClass:
     def setSelection (self,s):
 
         trace = False and not g.unitTesting
-        c = self.c ; w = self.widget
+        c = self.c ; w = self.w
         c.widgetWantsFocusNow(w)
 
         if w.hasSelection():
@@ -1075,8 +1077,8 @@ class AutoCompleterClass:
 
         trace = False and not g.unitTesting
         c = self.c
-        if w: self.widget = w
-        else: w = self.widget
+        if w: self.w = w
+        else: w = self.w
 
         # We wait until now to define these dicts so that more classes and objects will exist.
         if not self.objectDict:
@@ -1105,7 +1107,7 @@ class AutoCompleterClass:
     def initForce(self):
 
         trace = True and not g.unitTesting
-        w = self.widget
+        w = self.w
         i = j = w.getInsertPoint()
         s = w.getAllText()
 
@@ -1162,7 +1164,7 @@ class keyHandlerClass:
         self.c = c
         self.dispatchEvent = None
         self.inited = False # Set at end of finishCreate.
-        self.widget = c.frame.miniBufferWidget
+        self.w = c.frame.miniBufferWidget
         self.new_bindings = True
         self.useGlobalKillbuffer = useGlobalKillbuffer
         self.useGlobalRegisters = useGlobalRegisters
@@ -1705,6 +1707,15 @@ class keyHandlerClass:
 
         g.trace('Should be defined in subclass:',g.callers(4))
     #@+node:ekr.20110509064011.14555: *3* k.Autocompleter support
+    #@+node:ekr.20110510071925.14586: *4* k.init_completer
+    def init_completer (self):
+        
+        k = self
+        
+        w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
+
+        w.initCompleter()
     #@+node:ekr.20110509064011.14556: *4* k.attr_matches
     def attr_matches(self,s,namespace):
         
@@ -1747,14 +1758,18 @@ class keyHandlerClass:
     #@+node:ekr.20110509064011.14557: *4* k.get_leo_completions
     def get_leo_completions(self,prefix):
         
+        '''Return completions in an environment defining c, g and p.'''
+        
         k = self
         d = {'c':k.c, 'p':k.c.p, 'g':g}
         aList = self.attr_matches(prefix,d)
         aList.sort()
         return aList
     #@+node:ekr.20110509064011.14561: *4* k.get_autocompleter_prefix
-    def get_autocompleter_prefix (self,w):
+    def get_autocompleter_prefix (self):
         
+        # Only the body pane supports auto-completion.
+        w = self.c.frame.body
         s = w.getAllText()
         i = w.getInsertPoint()
         i = j = min(i,len(s)-1)
@@ -1764,7 +1779,6 @@ class keyHandlerClass:
         i += 1
         j += 1
         prefix = s[i:j]
-        # g.trace(repr(prefix))
         return i,j,prefix
     #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* bindKey
@@ -3439,7 +3453,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.5: *4* getLabel
     def getLabel (self,ignorePrompt=False):
 
-        k = self ; w = self.widget
+        k = self ; w = self.w
         if not w: return ''
 
         s = w.getAllText()
@@ -3452,7 +3466,7 @@ class keyHandlerClass:
     def killLine (self,protect=True):
 
         k = self ; c = self.c
-        w = self.widget
+        w = self.w
         s = w.getAllText()
         s = s[:len(k.mb_prefix)]
 
@@ -3465,7 +3479,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.6: *4* protectLabel
     def protectLabel (self):
 
-        k = self ; w = self.widget
+        k = self ; w = self.w
         if not w: return
 
         k.mb_prefix = w.getAllText()
@@ -3473,7 +3487,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.7: *4* resetLabel
     def resetLabel (self):
 
-        k = self ; w = self.widget
+        k = self ; w = self.w
         k.setLabelGrey('')
         k.mb_prefix = ''
 
@@ -3485,7 +3499,7 @@ class keyHandlerClass:
     def setLabel (self,s,protect=False):
 
         trace = (False or self.trace_minibuffer) and not g.app.unitTesting
-        k = self ; c = k.c ; w = self.widget
+        k = self ; c = k.c ; w = self.w
         if not w: return
 
         if trace: g.trace(repr(s),g.callers(4))
@@ -3499,7 +3513,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.9: *4* extendLabel
     def extendLabel(self,s,select=False,protect=False):
 
-        k = self ; c = k.c ; w = self.widget
+        k = self ; c = k.c ; w = self.w
         if not w: return
         trace = self.trace_minibuffer and not g.app.unitTesting
 
@@ -3520,7 +3534,7 @@ class keyHandlerClass:
 
         '''Select all the user-editable text of the minibuffer.'''
 
-        w = self.widget
+        w = self.w
         i,j = self.getEditableTextRange()
         w.setSelectionRange(i,j,insert=j)
 
@@ -3528,7 +3542,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.10: *4* setLabelBlue
     def setLabelBlue (self,label=None,protect=False):
 
-        k = self ; w = k.widget
+        k = self ; w = k.w
         if not w: return
 
         w.setBackgroundColor(self.minibuffer_background_color) # 'lightblue')
@@ -3538,7 +3552,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.11: *4* setLabelGrey
     def setLabelGrey (self,label=None):
 
-        k = self ; w = self.widget
+        k = self ; w = self.w
         if not w: return
 
         w.setBackgroundColor(self.minibuffer_warning_color) # 'lightgrey')
@@ -3550,7 +3564,7 @@ class keyHandlerClass:
     #@+node:ekr.20080510153327.2: *4* setLabelRed
     def setLabelRed (self,label=None,protect=False):
 
-        k = self ; w = self.widget
+        k = self ; w = self.w
         if not w: return
 
         w.setForegroundColor(self.minibuffer_error_color) # 'red')
@@ -3564,7 +3578,7 @@ class keyHandlerClass:
         instead of plain accumalation.'''
 
         trace = False or self.trace_minibuffer and not g.app.unitTesting
-        k = self ; c = k.c ; w = self.widget
+        k = self ; c = k.c ; w = self.w
         ch = (event and event.char) or ''
         keysym = (event and event.keysym) or ''
 
@@ -3589,7 +3603,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.13: *4* getEditableTextRange
     def getEditableTextRange (self):
 
-        k = self ; w = self.widget
+        k = self ; w = self.w
         trace = self.trace_minibuffer and not g.app.unitTesting
 
         s = w.getAllText()
@@ -3778,7 +3792,7 @@ class keyHandlerClass:
                     return
 
         # Create bindings after we know whether we are in silent mode.
-        w = g.choose(k.silentMode,k.modeWidget,k.widget)
+        w = g.choose(k.silentMode,k.modeWidget,k.w)
         k.createModeBindings(modeName,d,w)
         k.showStateAndMode(prompt=prompt)
     #@+node:ekr.20061031131434.164: *4* reinitMode
@@ -3789,7 +3803,7 @@ class keyHandlerClass:
         d = k.modeBindingsDict
 
         k.inputModeName = modeName
-        w = g.choose(k.silentMode,k.modeWidget,k.widget)
+        w = g.choose(k.silentMode,k.modeWidget,k.w)
         k.createModeBindings(modeName,d,w)
 
         if k.silentMode:
@@ -4054,7 +4068,7 @@ class keyHandlerClass:
         '''Cut back to previous prefix and update prefix.'''
 
         trace = False and not g.unitTesting
-        k = self ; c = k.c ; w = self.widget
+        k = self ; c = k.c ; w = self.w
 
         # Step 1: actually delete the character.
         ins = w.getInsertPoint()
@@ -4688,8 +4702,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
         
         c = self.c
         
-        self.body = None    # Set in start: a LeoQTextBrowser
-        self.widget = None  # Set in start: a leoQTextEditWidget
+        self.w = None  # Set in start: a leoQTextEditWidget
         self.tabName = 'Completions'
     #@+node:ekr.20110314123044.14271: *3* showAutocompleter/CalltipsStatus
     def showAutocompleterStatus (self):
@@ -4713,7 +4726,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
 
         c = self.c
         p = c.p
-        w = self.widget # A leoQTextEditWidget
+        w = self.w # A leoQTextEditWidget
         
         if s:
             head = s
@@ -4843,8 +4856,9 @@ class CodewiseCompleterClass (AutoCompleterClass):
     #@+node:ekr.20110312162243.14266: *4* get_word
     def get_word (self):
         
-        body = self.body 
-        tc = body.textCursor()
+        w = c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
+        tc = w.textCursor()
         tc.select(tc.WordUnderCursor)
         s = tc.selectedText()
         return s
@@ -4852,28 +4866,29 @@ class CodewiseCompleterClass (AutoCompleterClass):
     def start (self,event=None,w=None,prefix=None):
 
         c = self.c
-        self.body = c.frame.top.ui.richTextEdit # A LeoQTextBrowser.
-        self.widget = c.frame.body.bodyCtrl # A leoQTextEditWidget.
+        
+        self.w = c.frame.body.bodyCtrl
+            # A leoQTextEditWidget.
+            # The widget that should get focus after we are done.
 
-        self.prefix = g.choose(prefix is None,'',prefix)
-        self.selection = w.getSelectionRange()
-        self.selectedText = w.getSelectedText()
+        if self.useTabs:
         
-        self.prefix = self.select_word() # New
+            self.prefix = g.choose(prefix is None,'',prefix)
+            self.selection = w.getSelectionRange()
+            self.selectedText = w.getSelectedText()
+            
+            self.prefix = self.select_word()
+            self.membersList = self.complete(event)
         
-        ###
-        # if self.force:
-            # partialWord = self.initForce()
-        
-        self.membersList = self.complete(event) # New
-
-        if not self.membersList:
-            self.abort()
-        elif self.useTabs:
-            self.autoCompleterStateHandler(event)
+            if not self.membersList:
+                self.abort()
+            elif self.useTabs:
+                self.autoCompleterStateHandler(event)
+            else:
+                self.computeCompletionList()
+                return self.tabList
         else:
-            self.computeCompletionList()
-            return self.tabList
+            pass ###
     #@+node:ekr.20110312162243.14287: *4* select_word
     def select_word (self):
         
@@ -4881,7 +4896,7 @@ class CodewiseCompleterClass (AutoCompleterClass):
         '''Select the word under the cursor and return it.'''
 
         trace = False and not g.unitTesting
-        w = self.widget
+        w = self.w
         i = j = w.getInsertPoint()
         s = w.getAllText()
 

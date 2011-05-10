@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.45" body_secondary_ratio="0.24">
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.48">
 	<global_window_position top="118" left="549" height="887" width="1033"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -665,7 +665,8 @@
 </v>
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
-<v t="ekr.20110325142240.2508"><vh>AutoCompleter test</vh></v>
+<v t="ekr.20110325142240.2508"><vh>AutoCompleter test script</vh></v>
+<v t="ekr.20110510093130.2434"><vh>AutoCompletion test area</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1090,7 +1091,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7876,11 +7877,10 @@ s = w.getAllText()
 w.setInsertPoint(len(s))
 # print('ins',len(s))
 
-# To do: use c.k.initCompleter.
-w = c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
-qc = w.initCompleter()
+# The penultimate step before removing this test completely.
+c.k.init_completer()
 
-# Testing area: c.frame.body.bodyCtrl</t>
+# Testing area: c.frame.</t>
 <t tx="ekr.20110325142419.2337"># This has been superceded by Autocompleter test node in this file.
 
 from PyQt4 import QtGui, QtCore
@@ -8742,5 +8742,6 @@ t = Template('Hello {{ name }}!')
 s = t.render(name='Edward K. Ream')
 print(s)
 </t>
+<t tx="ekr.20110510093130.2434">c.</t>
 </tnodes>
 </leo_file>
