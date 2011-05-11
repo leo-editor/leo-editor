@@ -119,7 +119,7 @@
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = False</vh></v>
+<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 <v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
 </v>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>

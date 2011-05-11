@@ -136,20 +136,23 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Important: the focus gets cleared very late by QCompleter.
             # It is restored to the body pane by c.idle_focus_helper.
     #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
-    def initCompleter(self,options):
+    def initCompleter(self,prefix,options):
         
         '''Connect a QCompleter.'''
         
         trace = False and not g.unitTesting
         c = self.leo_c ; k = c.k
-                
+
+        if trace: g.trace('(qc) ***** prefix: %s, len(options): %s' % (
+            repr(prefix),len(options)))
+        
         if self.leo_q_completer:
             qc = self.leo_q_completer
         else:
             # Create the completer.
             qc = QtGui.QCompleter(self)
             qc.setCompletionMode(qc.PopupCompletion)
-            qc.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+            qc.setCaseSensitivity(QtCore.Qt.CaseSensitive) # CaseInsensitive)
             qc.setWidget(self)
             # Sent when the user selects an item.
             qc.connect(qc,QtCore.SIGNAL("activated(QString)"),self.selectCallback)
@@ -159,6 +162,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         self.leo_q_completer = qc
         self.leo_options = options
         self.leo_model = QtGui.QStringListModel(options)
+        self.leo_prefix = prefix
         
         # Show the initial completions.
         qc.setModel(self.leo_model)
@@ -173,10 +177,25 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         this gets called *only* when the popup is showing!'''
         
         trace = False and not g.unitTesting
+        verbose = False
+        auto_extend = True
 
-        c = self.leo_c ; k = c.k
+        c = self.leo_c ; ac = c.k.autoCompleter
         qt = QtCore.Qt
         qc = self.leo_q_completer
+        
+        def do_tab():
+            i,j,prefix1 = ac.get_autocompleter_prefix()
+            prefix = ac.do_qcompleter_tab(prefix1,self.leo_options)
+            if len(prefix) > len(prefix1):
+                extend = prefix[len(prefix1):]
+                # g.trace('** extend',extend)
+                w = c.frame.body.bodyCtrl
+                ins = w.getInsertPoint()
+                w.insert(ins,extend)
+                return prefix
+            else:
+                return prefix1
 
         # Key abbreviations.
         key = event.key()
@@ -194,9 +213,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if is_mod and not s: # A modifier key on it's own.
             return
         
-        if key in ('\r','\n',qt.Key_Enter,qt.Key_Return):
+        if key in (qt.Key_Enter,qt.Key_Return):
             prefix = qc.completionPrefix()
-            if trace: g.trace('*** Select: %s' % prefix)
             self.selectCallback()
             return
             
@@ -204,18 +222,41 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             self.endCompleter()
             return
             
-        if key in (qt.Key_Tab, qt.Key_Backtab):
+        if key == qt.Key_Period:
+            # A hack.  Don't enter the period.
+            # Calling qc.setModel is a no-no's here.
+            self.endCompleter()
             return
             
-        # Call the base class for all other keys, including backspace.
-        QtGui.QTextBrowser.keyPressEvent(self,event)
-
-        i,j,prefix = c.k.autoCompleter.get_autocompleter_prefix()
-        g.trace(prefix)
-
-        if prefix != qc.completionPrefix():
-            qc.setCompletionPrefix(prefix)
-            popup.setCurrentIndex(qc.completionModel().index(0,0))
+        # Insert all keys except tab.
+        if key != qt.Key_Tab:
+            QtGui.QTextBrowser.keyPressEvent(self,event)
+            
+        if auto_extend:
+            if key == qt.Key_Tab:
+                return
+            elif key == qt.Key_Backspace:
+                i,j,prefix = ac.get_autocompleter_prefix()
+            else:
+                prefix = do_tab()
+        else:
+            # The tab key explicitly extends the prefix.
+            if key == qt.Key_Tab:
+                prefix = do_tab()
+            else:
+                i,j,prefix = ac.get_autocompleter_prefix()
+        
+        if prefix.endswith('.'):
+            # Calling qc.setModel is a no-no's here.
+            if trace: g.trace('*** end of prefix',prefix)
+            self.endCompleter()
+            return
+        else:
+            if trace: g.trace(repr(prefix))
+        
+        # The qc prefix never matches the ac prefix.
+        qc.setCompletionPrefix(prefix)
+        popup.setCurrentIndex(qc.completionModel().index(0,0))
 
         cr = self.cursorRect()
         cr.setWidth(popup.sizeHintForColumn(0) +
@@ -7870,7 +7911,7 @@ class leoQtGui(leoGui.leoGui):
         trace = False and not g.unitTesting
         verbose = False
         app = QtGui.QApplication
-        w = app.focusWidget() or app.activeWindow()
+        w = app.focusWidget() ### or app.activeWindow()
         if w and isinstance(w,LeoQTextBrowser):
             has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
             if has_w:

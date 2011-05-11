@@ -419,6 +419,8 @@ class AutoCompleterClass:
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self):
         
+        trace = False and not g.unitTesting
+        
         w = self.c.frame.body.bodyCtrl.widget
             # A LeoQTextBrowser.
             
@@ -427,9 +429,12 @@ class AutoCompleterClass:
         options = self.get_leo_completions(prefix)
 
         # g.trace('prefix: %s, options:...\n%s' % (prefix,options))
-        g.trace('prefix: %s' % (prefix))
+        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+        
+        # Remember the prefix.
+        self.prefix = prefix
 
-        self.qcompleter = w.initCompleter(options)
+        self.qcompleter = w.initCompleter(prefix,options)
     #@+node:ekr.20110509064011.14556: *4* attr_matches
     def attr_matches(self,s,namespace):
         
@@ -448,7 +453,8 @@ class AutoCompleterClass:
         
         """
         
-        trace = False and not g.app.unitTesting
+        trace = False and not g.unitTesting
+        verbose = False
 
         # Seems to work great. Catches things like ''.<tab>
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
@@ -456,7 +462,7 @@ class AutoCompleterClass:
             return []
 
         expr,attr = m.group(1,3)
-        if trace: g.trace(s,expr,attr)
+        
         try:
             obj = eval(expr,namespace)
         except Exception:
@@ -467,32 +473,61 @@ class AutoCompleterClass:
         n = len(attr)
         result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
 
-        if trace: g.trace(s,result)
+        if trace:
+            if verbose:
+                g.trace(s,result)
+            else:
+                g.trace(repr(s))
         return result
+    #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
+    def do_qcompleter_tab(self,prefix,options):
+        
+        '''Return the longest common prefix of all the options.'''
+        
+        trace = False and not g.unitTesting
+        
+        matches,common_prefix = g.itemsMatchingPrefixInList(
+            prefix,options,matchEmptyPrefix=False)
+
+        # g.trace(g.listToString(matches,sort=True))
+        if trace: g.trace(repr(common_prefix))
+        
+        return common_prefix
     #@+node:ekr.20110509064011.14557: *4* get_leo_completions
     def get_leo_completions(self,prefix):
         
         '''Return completions in an environment defining c, g and p.'''
         
+        trace = False and not g.unitTesting
+        verbose = False
+        
         k = self.k
         d = {'c':k.c, 'p':k.c.p, 'g':g}
         aList = self.attr_matches(prefix,d)
         aList.sort()
+        if trace:
+            if verbose:
+                g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
+            else:
+                g.trace('prefix',repr(prefix),'len(aList)',len(aList))
         return aList
     #@+node:ekr.20110509064011.14561: *4* get_autocompleter_prefix
     def get_autocompleter_prefix (self):
+        
+        trace = False and not g.unitTesting
         
         # Only the body pane supports auto-completion.
         w = self.c.frame.body
         s = w.getAllText()
         i = w.getInsertPoint()
-        i = j = min(i,len(s)-1)
+        i1 = i = j = min(i,len(s)-1)
         
         while i >= 0 and (s[i].isalnum() or s[i] in '._'):
             i -= 1
         i += 1
         j += 1
         prefix = s[i:j]
+        if trace: g.trace(repr(prefix),'ins',s[i1:])
         return i,j,prefix
     #@+node:ekr.20061031131434.8: *3* Top level (autocompleter)
     #@+node:ekr.20061031131434.9: *4* autoComplete

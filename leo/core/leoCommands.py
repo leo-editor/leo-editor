@@ -204,7 +204,9 @@ class baseCommands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = False and not g.unitTesting ; verbose = False
+        return ###
+        
+        trace = False and not g.unitTesting ; verbose = True
         
         c = self
         assert tag == 'idle'
@@ -219,7 +221,11 @@ class baseCommands (object):
             return
 
         w = g.app.gui.get_focus()
-        if not w:
+
+        if w:
+            if trace and verbose:
+                g.trace(self.idle_focus_count,w)
+        else:
             if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
             c.bodyWantsFocusNow()
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
