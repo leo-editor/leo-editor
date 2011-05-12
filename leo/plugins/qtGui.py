@@ -189,15 +189,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         w = c.frame.body.bodyCtrl
         ev = w.ev_filter
         
-        def do_tab():
+        def do_tab(force=False):
             i,j,prefix1 = ac.get_autocompleter_prefix()
             prefix = ac.do_qcompleter_tab(prefix1,self.leo_options)
-            if auto_extend and len(prefix) > len(prefix1):
+            if (auto_extend or force) and len(prefix) > len(prefix1):
                 extend = prefix[len(prefix1):]
                 # g.trace('** extend',extend)
                 w = c.frame.body.bodyCtrl
                 ins = w.getInsertPoint()
                 w.insert(ins,extend)
+                c.frame.body.onBodyChanged('Typing')
                 return prefix
             else:
                 return prefix1
@@ -253,11 +254,11 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             elif key == qt.Key_Backspace:
                 i,j,prefix = ac.get_autocompleter_prefix()
             else:
-                prefix = do_tab()
+                prefix = do_tab(force=True)
         else:
             # The tab key explicitly extends the prefix.
             if key == qt.Key_Tab:
-                prefix = do_tab()
+                prefix = do_tab(force=True)
             else:
                 i,j,prefix = ac.get_autocompleter_prefix()
         
@@ -317,6 +318,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             j = i+len(completion)
             c.setChanged(True)
             w.setInsertPoint(j)
+            c.frame.body.onBodyChanged('Typing')
 
         # Finish.
         self.endCompleter()
