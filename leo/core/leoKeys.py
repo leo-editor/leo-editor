@@ -556,7 +556,7 @@ class AutoCompleterClass:
             
         self.finish()
         c.frame.clearStatusLine()
-        c.widgetWantsFocusNow(w)
+        c.widgetWantsFocusNow(self.w)
     #@+node:ekr.20110512090917.14468: *5* calltip_fail
     def calltip_fail(self,prefix):
         
@@ -731,7 +731,7 @@ class AutoCompleterClass:
         
         if len(aList) == 0:
             if trace: g.trace('no completion list for: %s' % (prefix1))
-            return
+            return None,prefix1
         elif len(aList) == 1:
             prefix = aList[0]
         else:
