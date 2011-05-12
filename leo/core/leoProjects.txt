@@ -12570,25 +12570,25 @@ You can open url's by control-clicking on them, or by using the open-url command
 #@+node:ekr.20110314123359.14272: *4* New autocompleter
 #@+node:ekr.20110511133940.14562: *5* To do & what I did
 @nocolor-node
+@
 
-@ To do:
+To do:
 
-- Handle wrap-around a bit more smoothly in QCompleter.
+- Fix codewise completer crash:
+    
+    InterfaceError: Error binding parameter 0 - probably unsupported type.
+--------------------
+  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
+* line 704:                 prefix + '%',))
+  line 705: 
+  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
 
-- Fix codewise completer crash: see the child node.
 
 What I did:
     
 - Added @bool use_qcompleter setting.
 - Added @bool use_codewise setting.
 - Added auto_tab_complete setting.
-#@+node:ekr.20110326063921.14462: *6* Fix codewise crash
-InterfaceError: Error binding parameter 0 - probably unsupported type.
---------------------
-  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
-* line 704:                 prefix + '%',))
-  line 705: 
-  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
 #@+node:ekr.20110511133940.14556: *5* Changed or new...
 #@+node:ekr.20061031131434.5: *6*  ctor (autocompleter)
 def __init__ (self,k):
