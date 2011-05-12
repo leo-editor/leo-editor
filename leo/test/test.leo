@@ -673,6 +673,7 @@
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110325142240.2508"><vh>AutoCompleter test script</vh></v>
 <v t="ekr.20110510093130.2434"><vh>AutoCompletion test area</vh></v>
+<v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -8747,7 +8748,8 @@ t = Template('Hello {{ name }}!')
 s = t.render(name='Edward K. Ream')
 print(s)
 </t>
-<t tx="ekr.20110510093130.2434">c.frame.bo</t>
+<t tx="ekr.20110510093130.2434">c.frame.body.bodyCtrl.widget
+</t>
 <t tx="ekr.20110510110227.2439"></t>
 <t tx="ekr.20110510110227.2440"></t>
 <t tx="ekr.20110511061102.5232">True:  enable autocompletion initially.
@@ -8759,5 +8761,17 @@ commands to enable or disable autocompletion at any time.
 Note: The 'initially' prefix is needed to distinguish this setting from
 enable-autocompleter command. Otherwised they would get 'munged' to the same
 configuration value.</t>
+<t tx="ekr.20110511140347.2445">from PyQt4 import QtCore
+
+timer = QtCore.QTimer()
+timer.setSingleShot(True)
+
+def callBack():
+    g.trace('atIdleCallBack')
+
+# Use a QTimer with 0 timeout.
+timer.connect(timer,QtCore.SIGNAL("timeout()"),callBack)
+timer.start(0)
+</t>
 </tnodes>
 </leo_file>

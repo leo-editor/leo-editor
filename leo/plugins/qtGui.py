@@ -226,6 +226,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # A hack.  Don't enter the period.
             # Calling qc.setModel is a no-no's here.
             self.endCompleter()
+            # Creating a QTimer is also a no-no here.
+            ### This does work.
+            ### c.idle_callback = self.keyCallback
             return
             
         # Insert all keys except tab.
@@ -305,6 +308,10 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         # Finish.
         self.endCompleter()
+    #@+node:ekr.20110511133940.14548: *5* keyCallback
+    def keyCallback(self):
+                
+        print('keyCallback',self)
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
         trace = False and not g.unitTesting
@@ -8067,6 +8074,25 @@ class leoQtGui(leoGui.leoGui):
             timer.start(1000)
 
     setIdleTimeHookAfterDelay = setIdleTimeHook
+    #@+node:ekr.20110511133940.14547: *5* qtGui.runAtIdle
+    def runAtIdle (self,aFunc):
+        
+        
+        '''This can not be called in some contexts.'''
+        
+        timer = QtCore.QTimer()
+        timer.setSingleShot(True)
+        
+        # print('runAtIdle',aFunc)
+
+        def atIdleCallBack(aFunc=aFunc):
+            # print('atIdleCallBack')
+            aFunc()
+
+        timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallBack)
+
+        # To make your application perform idle processing, use a QTimer with 0 timeout.
+        timer.start(0)
     #@+node:ekr.20081121105001.501: *4* isTextWidget
     def isTextWidget (self,w):
 

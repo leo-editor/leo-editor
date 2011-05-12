@@ -87,6 +87,7 @@ class baseCommands (object):
         self.frame = frame
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
+        self.idle_callback = None # For c.idle_focus_helper.
         self.in_qt_dialog = False # True when in a qt dialog.
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
@@ -204,8 +205,6 @@ class baseCommands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        return ###
-        
         trace = False and not g.unitTesting ; verbose = True
         
         c = self
@@ -218,6 +217,11 @@ class baseCommands (object):
             
         if c.in_qt_dialog:
             if trace: g.trace('in_qt_dialog')
+            return
+            
+        if c.idle_callback:
+            c.idle_callback()
+            c.idle_callback = None
             return
 
         w = g.app.gui.get_focus()
