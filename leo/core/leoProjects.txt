@@ -12572,14 +12572,8 @@ You can open url's by control-clicking on them, or by using the open-url command
 @nocolor-node
 
 @ To do:
-    
-* Handle calltips.
 
-- Rewrite or eliminate info.
-    
 - Make completions undoable.
-
-- Support ctrl-g.
 
 - Handle wrap-around a bit more smoothly in QCompleter.
     
@@ -12821,37 +12815,18 @@ def calltip (self):
     '''
 
     trace = False and not g.unitTesting
-    c,w = self.c,self.w
-    
-    common_prefix,prefix1,aList = self.compute_completion_list()
-    
-    if len(aList) == 0:
-        if trace: g.trace('no completion list for: %s' % (prefix1))
-        return
-    elif len(aList) == 1:
-        prefix = aList[0]
-    else:
-        prefix = common_prefix
 
-    if trace: g.trace(repr(prefix))
+    c = self.c
+    obj,prefix = self.get_object()
     
-    try:
-        d = self.get_leo_namespace(prefix)
-        obj = eval(prefix,d)
+    if obj:
         self.calltip_success(prefix,obj)
-    except AttributeError:
-        self.calltip_fail(prefix)
-    except SyntaxError:
-        self.calltip_fail(prefix)
-    except Exception:
-        g.es_exception()
+    else:
         self.calltip_fail(prefix)
         
     self.finish()
     c.frame.clearStatusLine()
     c.widgetWantsFocusNow(w)
-
-
 #@+node:ekr.20110512090917.14468: *7* calltip_fail
 def calltip_fail(self,prefix):
     
@@ -12958,6 +12933,38 @@ def get_leo_completions(self,prefix):
             g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
 
     return aList
+#@+node:ekr.20110512170111.14472: *6* get_object
+def get_object (self):
+    
+    '''Return the object corresponding to the current prefix.'''
+    
+    trace = False and not g.unitTesting
+    
+    common_prefix,prefix1,aList = self.compute_completion_list()
+    
+    if len(aList) == 0:
+        if trace: g.trace('no completion list for: %s' % (prefix1))
+        return
+    elif len(aList) == 1:
+        prefix = aList[0]
+    else:
+        prefix = common_prefix
+
+    if trace: g.trace(repr(prefix))
+    
+    try:
+        d = self.get_leo_namespace(prefix)
+        safe_prefix = self.strip_brackets(prefix)
+        obj = eval(safe_prefix,d)
+    except AttributeError:
+        obj = None
+    except SyntaxError:
+        obj = None
+    except Exception:
+        g.es_exception()
+        obj = None
+        
+    return obj,prefix
 #@+node:ekr.20110510071925.14586: *6* init_qcompleter
 def init_qcompleter (self):
     
@@ -12970,7 +12977,7 @@ def init_qcompleter (self):
     i,j,prefix = self.get_autocompleter_prefix()
     options = self.get_leo_completions(prefix)
 
-    if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+    if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
 
     self.qcompleter = w.initCompleter(prefix,options)
 #@+node:ekr.20110511133940.14552: *6* init_tabcompleter
@@ -12982,26 +12989,12 @@ def init_tabcompleter (self,event=None):
     i,j,prefix = self.get_autocompleter_prefix()
     options = self.get_leo_completions(prefix)
 
-    if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (
-        repr(prefix),len(options)))
-
     if options:
         self.clearTabName() # Creates the tabbed pane.
         self.autoCompleterStateHandler(event)
     else:
+        g.es('No completions',color='blue')
         self.abort()
-#@+node:ekr.20061031131434.31: *6* insert_string
-def insert_string (self,s):
-
-    '''Insert s at the insertion point.'''
-
-    c = self.c ; w = self.w
-    
-    c.widgetWantsFocusNow(w)
-    j = w.getInsertPoint()
-    w.insert(j,s)
-   
-    c.frame.body.onBodyChanged('Typing')
 #@+node:ekr.20061031131434.39: *6* insert_general_char
 def insert_general_char (self,ch,keysym):
 
@@ -13028,6 +13021,18 @@ def insert_general_char (self,ch,keysym):
         else:
             self.insert_string(ch)
             self.finish()
+#@+node:ekr.20061031131434.31: *6* insert_string
+def insert_string (self,s):
+
+    '''Insert s at the insertion point.'''
+
+    c = self.c ; w = self.w
+    
+    c.widgetWantsFocusNow(w)
+    j = w.getInsertPoint()
+    w.insert(j,s)
+   
+    c.frame.body.onBodyChanged('Typing')
 #@+node:ekr.20110511133940.14561: *6* show_completion_list
 def show_completion_list (self,common_prefix,prefix,tabList):
     
@@ -13069,5 +13074,19 @@ def start (self,event=None,w=None,prefix=None):
         self.init_qcompleter()
     else:
         self.init_tabcompleter(event)
+#@+node:ekr.20061031131434.38: *6* info
+def info (self):
+
+    c = self.c
+    
+    obj,prefix = self.get_object()
+
+    doc = inspect.getdoc(obj)
+
+    if doc:
+        c.frame.log.clearTab('Info',wrap='word')
+        self.put('',doc,tabName='Info')
+    else:
+        g.es('no docstring for',word,color='blue')
 #@-all
 #@-leo

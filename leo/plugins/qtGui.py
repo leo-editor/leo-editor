@@ -119,12 +119,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20110325185230.14518: *4* Auto completion (LeoQTextBrowser)
 
     #@+node:ekr.20110325185230.14524: *5* endCompleter
-    def endCompleter(self):
+    def endCompleter(self,message=None):
         
         # Get the data from the injected ivars.
         c = self.leo_c
         qc = self.leo_q_completer
         assert(qc)
+        
+        if message: g.es(message,color='blue')
         
         if 1: # Just hide the completer.
             qc.popup().hide()
@@ -178,13 +180,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         trace = False and not g.unitTesting
         verbose = False
-        
 
         c = self.leo_c
         ac = c.k.autoCompleter
         auto_extend = ac.auto_tab
         qt = QtCore.Qt
         qc = self.leo_q_completer
+        w = c.frame.body.bodyCtrl
+        ev = w.ev_filter
         
         def do_tab():
             i,j,prefix1 = ac.get_autocompleter_prefix()
@@ -214,6 +217,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         if is_mod and not s: # A modifier key on it's own.
             return
+            
+        # Check for ctrl-q
+        tkKey,ch,ignore = ev.toTkKey(event)
+        stroke = ev.toStroke(tkKey,ch)
+        if stroke == c.k.abortAllModesKey:
+            # g.trace(tkKey,ch,stroke)
+            self.endCompleter('keyboard-quit')
+            return
         
         if key in (qt.Key_Enter,qt.Key_Return):
             prefix = qc.completionPrefix()
@@ -221,7 +232,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             return
             
         if key == qt.Key_Escape:
-            self.endCompleter()
+            self.endCompleter('keyboard-quit')
             return
             
         if key == qt.Key_Period:
@@ -229,7 +240,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Calling qc.setModel is a no-no's here.
             self.endCompleter()
             # Creating a QTimer is also a no-no here.
-            ### This does work: c.idle_callback = self.keyCallback
+            # This does work: c.idle_callback = self.keyCallback
             return
             
         # Insert all keys except tab.

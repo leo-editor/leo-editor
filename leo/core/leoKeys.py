@@ -521,7 +521,8 @@ class AutoCompleterClass:
         expr,attr = m.group(1,3)
         
         try:
-            obj = eval(expr,namespace)
+            safe_expr = self.strip_brackets(expr)
+            obj = eval(safe_expr,namespace)
         except Exception:
             return []
 
@@ -544,37 +545,18 @@ class AutoCompleterClass:
         '''
 
         trace = False and not g.unitTesting
-        c,w = self.c,self.w
-        
-        common_prefix,prefix1,aList = self.compute_completion_list()
-        
-        if len(aList) == 0:
-            if trace: g.trace('no completion list for: %s' % (prefix1))
-            return
-        elif len(aList) == 1:
-            prefix = aList[0]
-        else:
-            prefix = common_prefix
 
-        if trace: g.trace(repr(prefix))
+        c = self.c
+        obj,prefix = self.get_object()
         
-        try:
-            d = self.get_leo_namespace(prefix)
-            obj = eval(prefix,d)
+        if obj:
             self.calltip_success(prefix,obj)
-        except AttributeError:
-            self.calltip_fail(prefix)
-        except SyntaxError:
-            self.calltip_fail(prefix)
-        except Exception:
-            g.es_exception()
+        else:
             self.calltip_fail(prefix)
             
         self.finish()
         c.frame.clearStatusLine()
         c.widgetWantsFocusNow(w)
-
-
     #@+node:ekr.20110512090917.14468: *5* calltip_fail
     def calltip_fail(self,prefix):
         
@@ -738,27 +720,46 @@ class AutoCompleterClass:
                 
         # g.trace(list(d.keys()))
         return d
+    #@+node:ekr.20110512170111.14472: *4* get_object
+    def get_object (self):
+        
+        '''Return the object corresponding to the current prefix.'''
+        
+        trace = False and not g.unitTesting
+        
+        common_prefix,prefix1,aList = self.compute_completion_list()
+        
+        if len(aList) == 0:
+            if trace: g.trace('no completion list for: %s' % (prefix1))
+            return
+        elif len(aList) == 1:
+            prefix = aList[0]
+        else:
+            prefix = common_prefix
+
+        if trace: g.trace(repr(prefix))
+        
+        try:
+            d = self.get_leo_namespace(prefix)
+            safe_prefix = self.strip_brackets(prefix)
+            obj = eval(safe_prefix,d)
+        except AttributeError:
+            obj = None
+        except SyntaxError:
+            obj = None
+        except Exception:
+            g.es_exception()
+            obj = None
+            
+        return obj,prefix
     #@+node:ekr.20061031131434.38: *4* info
     def info (self):
 
-        c = self.c ; doc = None ; obj = None ; w = self.w
+        c = self.c
+        
+        obj,prefix = self.get_object()
 
-        word = w.getSelectedText()
-
-        if not word:
-            # Never gets called, but __builtin__.f will work.
-            word = self.findCalltipWord(w)
-            if word:
-                # Try to get the docstring for the Python global.
-                f = __builtins__.get(self.leadinWord)
-                doc = f and f.__doc__
-
-        if not doc:
-            if not self.hasAttr(obj,word):
-                g.es('no docstring for',word,color='blue')
-                return
-            obj = self.getAttr(obj,word)
-            doc = inspect.getdoc(obj)
+        doc = inspect.getdoc(obj)
 
         if doc:
             c.frame.log.clearTab('Info',wrap='word')
@@ -777,7 +778,7 @@ class AutoCompleterClass:
         i,j,prefix = self.get_autocompleter_prefix()
         options = self.get_leo_completions(prefix)
 
-        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+        if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
 
         self.qcompleter = w.initCompleter(prefix,options)
     #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
@@ -789,13 +790,11 @@ class AutoCompleterClass:
         i,j,prefix = self.get_autocompleter_prefix()
         options = self.get_leo_completions(prefix)
 
-        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (
-            repr(prefix),len(options)))
-
         if options:
             self.clearTabName() # Creates the tabbed pane.
             self.autoCompleterStateHandler(event)
         else:
+            g.es('No completions',color='blue')
             self.abort()
     #@+node:ekr.20061031131434.39: *4* insert_general_char
     def insert_general_char (self,ch,keysym):
@@ -886,6 +885,18 @@ class AutoCompleterClass:
             self.init_qcompleter()
         else:
             self.init_tabcompleter(event)
+    #@+node:ekr.20110512170111.14471: *4* strip_brackets
+    def strip_brackets(self,s):
+        
+        '''Return s with all brackets removed.
+        
+        This (mostly) ensures that eval will not execute function calls, etc.
+        '''
+        
+        for ch in '[]{}()':
+            s = s.replace(ch,'')
+
+        return s
     #@-others
 #@+node:ekr.20061031131434.74: ** class keyHandlerClass
 class keyHandlerClass:

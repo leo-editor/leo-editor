@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.45" body_secondary_ratio="0.58">
-	<global_window_position top="118" left="549" height="887" width="1033"/>
+	<global_window_position top="118" left="549" height="887" width="1157"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -8749,7 +8749,7 @@ s = t.render(name='Edward K. Ream')
 print(s)
 </t>
 <t tx="ekr.20110510093130.2434"></t>
-<t tx="ekr.20110510110227.2439"></t>
+<t tx="ekr.20110510110227.2439">c.fr</t>
 <t tx="ekr.20110510110227.2440"></t>
 <t tx="ekr.20110511061102.5232">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
