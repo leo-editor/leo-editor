@@ -432,8 +432,10 @@ class baseCommands (object):
         
         c = self
 
-        g.es(message)
-        g.app.gui.alert(c,message)
+        # The unit tests just tests the args.
+        if not g.unitTesting:
+            g.es(message)
+            g.app.gui.alert(c,message)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives

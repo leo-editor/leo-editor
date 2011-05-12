@@ -12217,34 +12217,35 @@ runner.compareHelper(lines1,lines2,i,strict=False)
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @test k.autoCompleterClass.calltip
 try:
-    k = c.k ; ac = k.autoCompleter
+    k = c.k
     w = c.frame.body.bodyCtrl
-    ac.w = w
+    ac = k.autoCompleter
+    # Set the insertion point.
     s = w.getAllText()
-    import string
+    w.setInsertPoint(len(s)-1)
     # Just test that this doesn't crash.
-    for obj in (None,g,string,c,p):
-        w.setInsertPoint('end')
-        c.k.autoCompleter.calltip(obj=g)
+    ac.w = w
+    ac.calltip()
 finally:
     w.setAllText(s)
     p.setBodyString(s)
     c.recolor()
 
-# end:
+# c.frame
 #@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
 table = (
-    ( 12,'c.all'),
+    ( 50,'c.'),
     (  3,'p.ins'),
-    (  2,'c.B'),
     ( 12,'g.com'),
-    (400,'c.frame.top.'),
 )
+
+ac = c.k.autoCompleter
+ac.w = c.frame.body.bodyCtrl
 
 for expected,prefix in table:
     
-    aList = c.k.autoCompleter.get_leo_completions(prefix)
-    assert len(aList) >= expected
+    aList = ac.get_leo_completions(prefix)
+    assert len(aList) >= expected,'len(aList): %s, prefix: %s' % (len(aList),prefix)
     
     if 0:
         print()

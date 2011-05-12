@@ -1754,7 +1754,8 @@ class rstCommands:
         if ext in ('.html','.htm') and not SilverCity:
             if not self.silverCityWarningGiven:
                 self.silverCityWarningGiven = True
-                g.es('SilverCity not present so no syntax highlighting')
+                if not g.unitTesting:
+                    g.es('SilverCity not present so no syntax highlighting')
 
         # Make the stylesheet path relative to the directory containing the output file.
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''

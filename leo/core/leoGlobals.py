@@ -1041,8 +1041,10 @@ def alert(message,c=None):
     This method is deprecated: use c.alert instead.
     '''
 
-    g.es(message)
-    g.app.gui.alert(c,message)
+    # The unit tests just tests the args.
+    if not g.unitTesting:
+        g.es(message)
+        g.app.gui.alert(c,message)
 #@+node:ekr.20051023083258: *3* callers & _callerName
 def callers (n=4,count=0,excludeCaller=True,files=False):
 

@@ -367,16 +367,39 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
         verbose = False
         
-        k = self.k
-        d = {'c':k.c, 'p':k.c.p, 'g':g}
+        d = self.get_leo_namespace(prefix)
+        if trace: g.trace(list(d.keys()))
+
         aList = self.attr_matches(prefix,d)
         aList.sort()
+        
         if trace:
             if verbose:
                 g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
             else:
                 g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
+
         return aList
+    #@+node:ekr.20110512090917.14466: *4* get_leo_namespace
+    def get_leo_namespace (self,prefix):
+        
+        '''Return an environment in which to evaluate prefix.
+        
+        Add some common standard library modules as needed.'''
+        
+        
+        k = self.k
+        d = {'c':k.c, 'p':k.c.p, 'g':g}
+        
+        aList = prefix.split('.')
+        if len(aList) > 1:
+            name = aList[0]
+            m = sys.modules.get(name)
+            if m:
+                d[name]= m
+                
+        # g.trace(list(d.keys()))
+        return d
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self):
         
@@ -476,7 +499,7 @@ class AutoCompleterClass:
         elif keysym in ('\b','BackSpace'):
             self.do_back_space()
         elif keysym == '.':
-            self.insert_char('.')
+            self.insert_string('.')
             self.compute_completion_list()
         elif keysym == '?':
             self.info()
@@ -534,9 +557,10 @@ class AutoCompleterClass:
         c = self.c ; k = c.k
         w = g.app.gui.eventWidget(event)
         if not w: return
+        is_headline = c.widget_name(w).startswith('head')
 
         # Insert the calltip if possible, but not in headlines.
-        if (k.enable_calltips or force) and not c.widget_name(w).startswith('head'):
+        if (k.enable_calltips or force) and not is_headline:
             self.w = w
             self.calltip()
         else:
@@ -620,94 +644,154 @@ class AutoCompleterClass:
             c.frame.log.deleteTab(self.tabName)
         self.tabName = s.replace('_','') or ''
         c.frame.log.clearTab(self.tabName)
-    #@+node:ekr.20061031131434.20: *4* calltip
-    def calltip (self,obj=None):
+    #@+node:ekr.20061031131434.20: *4* calltip & helpers
+    def calltip (self):
+        
+        '''Show the calltips for the present prefix.
+        ch is '(' if the user has just typed it.
+        '''
 
-        c = self.c
-        w = self.w
-        isStringMethod = False ; s = None
+        trace = False and not g.unitTesting
+        c,w = self.c,self.w
+        
+        common_prefix,prefix1,aList = self.compute_completion_list()
+        
+        if len(aList) == 0:
+            if trace: g.trace('no completion list for: %s' % (prefix1))
+            return
+        elif len(aList) == 1:
+            prefix = aList[0]
+        else:
+            prefix = common_prefix
 
-        if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
-            #@+<< try to set s from a Python global function >>
-            #@+node:ekr.20061031131434.21: *5* << try to set s from a Python global function >>
-            # The first line of the docstring is good enough, except for classes.
-            f = __builtins__.get(self.leadinWord)
-            doc = f and type(f) != types.ClassType and f.__doc__
-            if doc:
-                # g.trace(doc)
-                s = g.splitLines(doc)
-                s = args = s and s [0] or ''
-                i = s.find('(')
-                if i > -1: s = s [i:]
-                else: s = '(' + s
-                s = s and s.strip() or ''
-            #@-<< try to set s from a Python global function >>
+        if trace: g.trace(repr(prefix))
+        
+        try:
+            d = self.get_leo_namespace(prefix)
+            obj = eval(prefix,d)
+            self.calltip_success(prefix,obj)
+        except AttributeError:
+            self.calltip_fail(prefix)
+        except SyntaxError:
+            self.calltip_fail(prefix)
+        except Exception:
+            g.es_exception()
+            self.calltip_fail(prefix)
+            
+        self.finish()
+        c.frame.clearStatusLine()
+        c.widgetWantsFocusNow(w)
 
-        if not s:
-            #@+<< get s using inspect >>
-            #@+node:ekr.20061031131434.22: *5* << get s using inspect >>
-            isStringMethod = False
-                # self.prevObjects and
-                # g.isString(self.prevObjects[-1]))
 
-            if isStringMethod and hasattr(string,obj.__name__):
-                # A hack. String functions are builtins, and getargspec doesn't handle them.
-                # Get the corresponding string function instead, and remove the s arg later.
-                obj = getattr(string,obj.__name__)
+        if 0: # old code
+        
+            isStringMethod = False ; s = None
 
-            try:
-                s1,s2,s3,s4 = inspect.getargspec(obj)
-            except:
-                self.insert_char('(')
-                self.finish()
-                return # Not a function.  Just '('.
+            if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
+                #@+<< try to set s from a Python global function >>
+                #@+node:ekr.20061031131434.21: *5* << try to set s from a Python global function >>
+                # The first line of the docstring is good enough, except for classes.
+                f = __builtins__.get(self.leadinWord)
+                doc = f and type(f) != types.ClassType and f.__doc__
+                if doc:
+                    # g.trace(doc)
+                    s = g.splitLines(doc)
+                    s = args = s and s [0] or ''
+                    i = s.find('(')
+                    if i > -1: s = s [i:]
+                    else: s = '(' + s
+                    s = s and s.strip() or ''
+                #@-<< try to set s from a Python global function >>
+            
+            if not s:
+                #@+<< get s using inspect >>
+                #@+node:ekr.20061031131434.22: *5* << get s using inspect >>
+                isStringMethod = False
+                    # self.prevObjects and
+                    # g.isString(self.prevObjects[-1]))
 
-            s = args = inspect.formatargspec(s1,s2,s3,s4)
-            #@-<< get s using inspect >>
+                if isStringMethod and hasattr(string,obj.__name__):
+                    # A hack. String functions are builtins, and getargspec doesn't handle them.
+                    # Get the corresponding string function instead, and remove the s arg later.
+                    obj = getattr(string,obj.__name__)
 
-        #@+<< remove 'self' from s, but not from args >>
-        #@+node:ekr.20061031131434.23: *5* << remove 'self' from s, but not from args >>
+                try:
+                    s1,s2,s3,s4 = inspect.getargspec(obj)
+                except:
+                    self.insert_string('(')
+                    self.finish()
+                    return # Not a function.  Just '('.
+
+                s = args = inspect.formatargspec(s1,s2,s3,s4)
+                #@-<< get s using inspect >>
+            
+            #@+<< remove 'self' from s, but not from args >>
+            #@+node:ekr.20061031131434.23: *5* << remove 'self' from s, but not from args >>
+            if g.match(s,1,'self,'):
+                s = s[0] + s[6:].strip()
+            elif g.match_word(s,1,'self'):
+                s = s[0] + s[5:].strip()
+            #@-<< remove 'self' from s, but not from args >>
+            if isStringMethod:
+                #@+<< remove 's' from s *and* args >>
+                #@+node:ekr.20061031131434.24: *5* << remove 's' from s *and* args >>
+                if g.match(s,1,'s,'):
+                    s = s[0] + s[3:]
+                    args = args[0] + args[3:]
+                elif g.match_word(s,1,'s'):
+                    s = s[0] + s[2:]
+                    args = args[0] + args[2:]
+                #@-<< remove 's' from s *and* args >>
+            
+            # s = s.rstrip(')') # Not so convenient.
+            #@+<< insert the text and set j1 and j2 >>
+            #@+node:ekr.20061031131434.25: *5* << insert the text and set j1 and j2 >>
+            junk,j = w.getSelectionRange() # Returns insert point if no selection.
+            w.insert(j,s)
+            c.frame.body.onBodyChanged('Typing')
+            j1 = j + 1 ; j2 = j + len(s)
+            #@-<< insert the text and set j1 and j2 >>
+
+            # End autocompletion mode, putting the insertion point after the suggested calltip.
+            self.finish()
+            c.widgetWantsFocusNow(w)
+            # if 1: # Seems to be more useful.
+                # w.setSelectionRange(j1,j2,insert=j2)
+            # else:
+                # w.setInsertPoint(j2)
+            c.frame.clearStatusLine()
+    #@+node:ekr.20110512090917.14468: *5* calltip_fail
+    def calltip_fail(self,prefix):
+        
+        '''Evaluation of prefix failed.'''
+        
+       
+        if not g.unitTesting:
+            g.es('eval failed for "%s"' % repr(prefix))
+
+        self.insert_string('(')
+    #@+node:ekr.20110512090917.14469: *5* calltip_success
+    def calltip_success(self,prefix,obj):
+        
+        trace = False and not g.unitTesting
+        
+        try:
+            # Get the parenthesized argument list.
+            s1,s2,s3,s4 = inspect.getargspec(obj)
+            s = inspect.formatargspec(s1,s2,s3,s4)
+            if trace: g.trace(obj,repr(s))
+        except Exception:
+            if trace: g.trace('inspect failed. obj: %s' % (obj))
+            self.insert_string('(')
+            return
+
+        # Clean s and insert it.
         if g.match(s,1,'self,'):
             s = s[0] + s[6:].strip()
         elif g.match_word(s,1,'self'):
             s = s[0] + s[5:].strip()
-        #@-<< remove 'self' from s, but not from args >>
-        if isStringMethod:
-            #@+<< remove 's' from s *and* args >>
-            #@+node:ekr.20061031131434.24: *5* << remove 's' from s *and* args >>
-            if g.match(s,1,'s,'):
-                s = s[0] + s[3:]
-                args = args[0] + args[3:]
-            elif g.match_word(s,1,'s'):
-                s = s[0] + s[2:]
-                args = args[0] + args[2:]
-            #@-<< remove 's' from s *and* args >>
 
-        # s = s.rstrip(')') # Not so convenient.
-        #@+<< insert the text and set j1 and j2 >>
-        #@+node:ekr.20061031131434.25: *5* << insert the text and set j1 and j2 >>
-        junk,j = w.getSelectionRange() # Returns insert point if no selection.
-        w.insert(j,s)
-        c.frame.body.onBodyChanged('Typing')
-        j1 = j + 1 ; j2 = j + len(s)
-        #@-<< insert the text and set j1 and j2 >>
-
-        # End autocompletion mode, putting the insertion point after the suggested calltip.
-        self.finish()
-        c.widgetWantsFocusNow(w)
-        if 1: # Seems to be more useful.
-            w.setSelectionRange(j1,j2,insert=j2)
-        else:
-            w.setInsertPoint(j2)
-        #@+<< put the status line >>
-        #@+node:ekr.20061031131434.26: *5* << put the status line >>
-        c.frame.clearStatusLine()
-        if obj:
-            name = hasattr(obj,'__name__') and obj.__name__ or repr(obj)
-        else:
-            name = self.leadinWord
-        c.frame.putStatusLine('%s %s' % (name,args))
-        #@-<< put the status line >>
+        self.insert_string(s)
     #@+node:ekr.20061031131434.28: *4* compute_completion_list
     def compute_completion_list (self):
 
@@ -795,8 +879,8 @@ class AutoCompleterClass:
             self.put('',doc,tabName='Info')
         else:
             g.es('no docstring for',word,color='blue')
-    #@+node:ekr.20061031131434.31: *4* insert_char
-    def insert_char (self,s):
+    #@+node:ekr.20061031131434.31: *4* insert_string
+    def insert_string (self,s):
 
         '''Insert s at the insertion point.'''
 
@@ -816,9 +900,10 @@ class AutoCompleterClass:
         if trace: g.trace(repr(ch))
 
         if g.isWordChar(ch):
-            self.insert_char(ch)
+            self.insert_string(ch)
             common_prefix,prefix,aList = self.compute_completion_list()
             if not aList:
+                # Delete the character we just inserted.
                 self.do_back_space()
             elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix):]
@@ -826,15 +911,12 @@ class AutoCompleterClass:
                 ins = w.getInsertPoint()
                 w.insert(ins,extend)
         else:
-            word = w.getSelectedText()
-            if ch == '(':
-                #### XXX To do XXX.
-                if k.enable_calltips:
-                    # This calls self.finish if the '(' is valid.
-                    self.calltip(obj)
-                    return
-            self.insert_char(ch)
-            self.finish()
+            if ch == '(' and k.enable_calltips:
+                # This calls self.finish if the '(' is valid.
+                self.calltip()
+            else:
+                self.insert_string(ch)
+                self.finish()
     #@+node:ekr.20101101175644.5891: *4* put
     def put (self,*args,**keys):
 
