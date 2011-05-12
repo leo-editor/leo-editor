@@ -178,16 +178,18 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         trace = False and not g.unitTesting
         verbose = False
-        auto_extend = True
+        
 
-        c = self.leo_c ; ac = c.k.autoCompleter
+        c = self.leo_c
+        ac = c.k.autoCompleter
+        auto_extend = ac.auto_tab
         qt = QtCore.Qt
         qc = self.leo_q_completer
         
         def do_tab():
             i,j,prefix1 = ac.get_autocompleter_prefix()
             prefix = ac.do_qcompleter_tab(prefix1,self.leo_options)
-            if len(prefix) > len(prefix1):
+            if auto_extend and len(prefix) > len(prefix1):
                 extend = prefix[len(prefix1):]
                 # g.trace('** extend',extend)
                 w = c.frame.body.bodyCtrl
@@ -268,7 +270,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         '''Called when user selects an item in the QCompleter.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.leo_c
         qc = self.leo_q_completer
         

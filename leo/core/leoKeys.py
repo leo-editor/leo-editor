@@ -110,145 +110,18 @@ class AutoCompleterClass:
 
         self.c = c = k.c
         self.k = k
-        self.allClassesDict = {} # Will be completed after more classes exist.
-        self.attrDictDict = {}  # Keys are languages (strings); values are anonymous attrDicts.
-            # attrDicts: keys are strings; values are list of strings (attributes).
-        self.calltips = {} # Keys are language, values are dicts: keys are ids, values are signatures.
         self.force = None
-        self.globalPythonFunctionsDict = {}
         self.language = None
-        self.leadinWord = None
-        self.membersList = None
-        self.objectDict = {} # Created on first use of the autocompleter.
-        self.selection = None # The selection range on entry to autocompleter or calltips.
-        # self.selectedText = None # The selected text on entry to autocompleter or calltips.
-        self.selfClassName = None
-        self.prevObjects = []
         self.tabName = None # The name of the main completion tab.
-        self.theObject = None # The previously found object, for . chaining.
-        self.use_codewise = c.config.getBool('use_codewise',False) and not self.isLeoSourceFile()
+        self.verbose = False # True: print all members, regardless of how many there are.
+        self.w = None # The widget that gets focus after autocomplete is done.
+        
+        # Options...
+        self.auto_tab       = c.config.getBool('auto_tab_complete',False)
+        self.use_codewise   = c.config.getBool('use_codewise',False) and not self.isLeoSourceFile()
         self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
-        self.verbose = False # True: print all members.
-        self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
-        self.w = None # The widget that should get focus after autocomplete is done.
-    #@+node:ekr.20061031131434.6: *4* defineClassesDict
-    def defineClassesDict (self):
-
-        trace = False ; verbose = True
-
-        self.allClassesDict = {}
-
-        # gc may not exist.
-        try:
-            import gc
-            # if trace: g.trace(gc)
-        except ImportError:
-            if trace: g.trace('no gc')
-            return
-
-        if g.isPython3:
-            count = 0
-            for z in gc.get_objects():
-                try:
-                    name = z.__class__.__name__
-                    if self.allClassesDict.get(name) is not None:
-                        self.allClassesDict [name] = z
-                        count += 1
-                except ReferenceError:
-                    pass
-            if trace:
-                g.trace('%s keys in allClassesDict' % (count))
-                if verbose:
-                    keys = list(self.allClassesDict.keys())
-                    keys.sort()
-                    for z in keys:
-                        print(z)
-        else:
-            for z in gc.get_objects():
-                t = type(z)
-                if t == types.ClassType:
-                    name = z.__name__
-                elif t == types.InstanceType:
-                    name = z.__class__.__name__
-                elif repr(t).startswith('<class'): # A wretched kludge.
-                    name = z.__class__.__name__
-                elif t == types.TypeType:
-                    name = z.__name__
-                else:
-                    name = None
-                if name:
-                    # if name == 'position': g.trace(t,z)
-                    self.allClassesDict [name] = z
-
-        # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
-        # g.trace(len(list(self.allClassesDict.keys())))
-        # g.trace('position:',self.allClassesDict.get('position'))
-    #@+node:ekr.20061031131434.7: *4* defineObjectDict
-    def defineObjectDict (self,table=None):
-
-        trace = False
-
-        c = self.c ; k = c.k ; p = c.p
-
-        if trace: g.trace(g.callers(4))
-
-        if table is None: table = [
-            # Python globals...
-            (['aList','bList'],     'python','list'),
-            (['aString'],           'object','aString'), # An actual string object.
-            (['cc'],                'object',c.chapterController),
-            (['c','old_c','new_c'], 'object',c),            
-            (['d','d1','d2'],       'python','dict'),
-            (['f'],                 'object',c.frame), 
-            (['g'],                 'object',g),       
-            (['gui'],               'object',g.app.gui),
-            (['k'],                 'object',k),
-            (['p','p1','p2'],       'object',p.copy()), # 2009/12/21
-            (['s','s1','s2','ch'],  'object','aString'),
-            (['string'],            'object',string), # Python's string module.
-            # (['t','t1','t2'],       'object',p.v.t),  
-            (['v','v1','v2'],       'object',p.v),
-            (['w','widget'],        'object',c.frame.body.bodyCtrl),
-        ]
-
-        if 0: # Not useful at this point.
-            for key in __builtins__.keys():
-                obj = __builtins__.get(key)
-                if obj in (True,False,None): continue
-                data = [key],'object',obj
-                table.append(data)
-
-        d = {'dict':{},'int':1,'list':[],'string':''}
-
-        for idList,kind,nameOrObject in table:
-            if kind == 'object':
-                # Works, but hard to generalize for settings.
-                obj = nameOrObject
-            elif kind == 'python':
-                className = nameOrObject
-                o = d.get(className)
-                obj = o is not None and o.__class__
-            else:
-                module = g.importModule (kind,verbose=True)
-                if not module:
-                    g.trace('Can not import ',nameOrObject)
-                    continue
-                self.appendToKnownObjects(module)
-                if nameOrObject:
-                    className = nameOrObject
-                    obj = hasattr(module,className) and getattr(module,className) or None
-                    if not obj:
-                        g.trace('%s module has no class %s' % (kind,nameOrObject))
-                    else:
-                        self.appendToKnownObjects(getattr(module,className))
-                else:
-                    obj = module
-            for z in idList:
-                if trace: g.trace(z,obj)
-                if obj:
-                    self.objectDict[z]=obj
     #@+node:ekr.20110314115639.14269: *4* isLeoSourceFile
     def isLeoSourceFile (self):
         
@@ -658,18 +531,13 @@ class AutoCompleterClass:
 
         '''Show the calltips at the cursor.'''
 
-        c = self.c ; k = c.k ; w = g.app.gui.eventWidget(event)
+        c = self.c ; k = c.k
+        w = g.app.gui.eventWidget(event)
         if not w: return
 
         # Insert the calltip if possible, but not in headlines.
         if (k.enable_calltips or force) and not c.widget_name(w).startswith('head'):
             self.w = w
-            self.selection = w.getSelectionRange()
-            # self.selectedText = w.getSelectedText()
-            self.leadinWord = self.findCalltipWord(w)
-            # g.trace(self.leadinWord)
-            self.theObject = None
-            self.membersList = None
             self.calltip()
         else:
             # Just insert the invocation character as usual.
@@ -706,7 +574,7 @@ class AutoCompleterClass:
         k = self.k
         k.keyboardQuit(event=None,setDefaultStatus=False)
             # Stay in the present input state.
-        g.es('No completions',color='blue') # 2010/11/02.
+        # g.es('No completions',color='blue')
         self.exit(restore=True)
 
     def exit (self,restore=False): # Called from keyboard-quit.
@@ -718,22 +586,20 @@ class AutoCompleterClass:
         w = self.w or c.frame.body.bodyCtrl
         for name in (self.tabName,'Modules','Info'):
             c.frame.log.deleteTab(name)
+            
+        # Restore the selection range that may have been destroyed by changing tabs.
         c.widgetWantsFocusNow(w)
         i,j = w.getSelectionRange()
         w.setSelectionRange(j,j,insert=j)
-        self.clear()
-        self.theObject = None
+
     #@+node:ekr.20061031131434.18: *4* append/begin/popTabName
     def appendTabName (self,word):
 
-        self.setTabName(self.tabName + '.' + word) #  + '.')
+        self.setTabName(self.tabName + '.' + word)
 
     def beginTabName (self,word):
 
-        # g.trace(word,g.callers())
-        if word == 'self' and self.selfClassName:
-            word = '%s (%s)' % (word,self.selfClassName)
-        self.setTabName('AutoComplete ' + word) #  + '.')
+        self.setTabName('AutoComplete ' + word)
 
     def clearTabName (self):
 
@@ -760,7 +626,6 @@ class AutoCompleterClass:
         c = self.c
         w = self.w
         isStringMethod = False ; s = None
-        # g.trace(self.leadinWord,obj)
 
         if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
             #@+<< try to set s from a Python global function >>
@@ -781,12 +646,9 @@ class AutoCompleterClass:
         if not s:
             #@+<< get s using inspect >>
             #@+node:ekr.20061031131434.22: *5* << get s using inspect >>
-            isStringMethod = (
-                self.prevObjects and
-                # type(self.prevObjects[-1]) == types.StringType
-                g.isString(self.prevObjects[-1]))
-
-            # g.trace(self.prevObjects)
+            isStringMethod = False
+                # self.prevObjects and
+                # g.isString(self.prevObjects[-1]))
 
             if isStringMethod and hasattr(string,obj.__name__):
                 # A hack. String functions are builtins, and getargspec doesn't handle them.
@@ -906,12 +768,10 @@ class AutoCompleterClass:
 
         c.frame.body.onBodyChanged('Typing')
         c.recolor()
-        self.clear()
-        self.theObject = None
     #@+node:ekr.20061031131434.38: *4* info
     def info (self):
 
-        c = self.c ; doc = None ; obj = self.theObject ; w = self.w
+        c = self.c ; doc = None ; obj = None ; w = self.w
 
         word = w.getSelectedText()
 
@@ -960,7 +820,7 @@ class AutoCompleterClass:
             common_prefix,prefix,aList = self.compute_completion_list()
             if not aList:
                 self.do_back_space()
-            elif len(common_prefix) > len(prefix):
+            elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix):]
                 if trace: g.trace('*** extend',extend)
                 ins = w.getInsertPoint()
@@ -968,50 +828,13 @@ class AutoCompleterClass:
         else:
             word = w.getSelectedText()
             if ch == '(':
-                # Similar to chain logic.
-                obj = self.theObject
-                # g.trace(obj,word,self.hasAttr(obj,word))
-                if self.hasAttr(obj,word):
-                    obj = self.getAttr(obj,word)
-                    self.push(self.theObject)
-                    self.theObject = obj
-                    self.leadinWord = word
-                    self.membersList = self.getMembersList(obj)
-                    if k.enable_calltips:
-                        # This calls self.finish if the '(' is valid.
-                        self.calltip(obj)
-                        return
+                #### XXX To do XXX.
+                if k.enable_calltips:
+                    # This calls self.finish if the '(' is valid.
+                    self.calltip(obj)
+                    return
             self.insert_char(ch)
             self.finish()
-    #@+node:ekr.20061031131434.40: *4* push, pop, clear, stackNames
-    def push (self,obj):
-
-        if obj is not None:
-            self.prevObjects.append(obj)
-            # g.trace(self.stackNames())
-
-    def pop (self):
-
-        obj = self.prevObjects.pop()
-        # g.trace(obj)
-        return obj
-
-    def clear (self):
-
-        self.prevObjects = []
-        # g.trace(g.callers())
-
-    def stackNames (self):
-
-        aList = []
-        for z in self.prevObjects:
-            if hasattr(z,'__name__'):
-                aList.append(z.__name__)
-            elif hasattr(z,'__class__'):
-                aList.append(z.__class__.__name__)
-            else:
-                aList.append(str(z))
-        return aList
     #@+node:ekr.20101101175644.5891: *4* put
     def put (self,*args,**keys):
 

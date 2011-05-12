@@ -12569,16 +12569,17 @@ You can open url's by control-clicking on them, or by using the open-url command
 
 @ To do:
     
+- Disable auto-tab.
+    
 * Make completions undoable.
 
 - Handle calltips.
 
+- Rewrite or eliminate info.
+
 - Support ctrl-g.
 
 - Handle wrap-around a bit more smoothly in QCompleter.
-
-- To be removed:
-    self.membersList (Used by calltips at present)
     
 - Fix codewise completer crash: see the child node.
     
@@ -12599,11 +12600,173 @@ What I did:
 - Folded CodewiseCompleterClass into AutoComplterClass.
   
 - Removed ivars: (Make stateless)
-    (done) self.prefix
-    (done) self.selectedText
-    (done) self.tabList
-    (done) self.tabListIndex
 #@+node:ekr.20110511133940.14556: *5* Changed or new...
+#@+node:ekr.20061031131434.5: *6*  ctor (autocompleter)
+def __init__ (self,k):
+
+    self.c = c = k.c
+    self.k = k
+    self.force = None
+    self.language = None
+    self.tabName = None # The name of the main completion tab.
+    self.verbose = False # True: print all members, regardless of how many there are.
+    self.w = None # The widget that gets focus after autocomplete is done.
+    
+    # Options...
+    self.auto_tab       = c.config.getBool('auto_tab_complete',False)
+    self.use_codewise   = c.config.getBool('use_codewise',False) and not self.isLeoSourceFile()
+    self.use_qcompleter = c.config.getBool('use_qcompleter',False)
+        # True: show results in autocompleter tab.
+        # False: show results in a QCompleter widget.
+#@+node:ekr.20110314115639.14269: *7* isLeoSourceFile
+def isLeoSourceFile (self):
+    
+    '''Return True if this is one of Leo's source files.'''
+    
+    c = self.c
+
+    table = (z.lower() for z in (
+        'leoDocs.leo',
+        'leoGui.leo',       'leoGuiPluginsRef.leo',
+        'leoPlugins.leo',   'leoPluginsRef.leo',
+        'leoPy.leo',        'leoPyRef.leo',
+        'myLeoSettings.leo', 'leoSettings.leo',
+        'ekr.leo',
+        'test.leo',
+    ))
+
+    return c.shortFileName().lower() in table
+#@+node:ekr.20061031131434.76: *6*  ctor (keyHandler)
+def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
+
+    '''Create a key handler for c.
+    c.frame.miniBufferWidget is a Tk.Label.
+
+    useGlobalRegisters and useGlobalKillbuffer indicate whether to use
+    global (class vars) or per-instance (ivars) for kill buffers and registers.'''
+
+    self.c = c
+    self.dispatchEvent = None
+    self.inited = False # Set at end of finishCreate.
+    self.w = c.frame.miniBufferWidget
+    self.new_bindings = True
+    self.useGlobalKillbuffer = useGlobalKillbuffer
+    self.useGlobalRegisters = useGlobalRegisters
+
+    # Generalize...
+    self.x_hasNumeric = ['sort-lines','sort-fields']
+
+    self.altX_prompt = 'full-command: '
+
+    # These must be defined here to avoid memory leaks.
+    getBool = c.config.getBool
+    getColor = c.config.getColor
+    self.enable_autocompleter           = getBool('enable_autocompleter_initially')
+    self.enable_calltips                = getBool('enable_calltips_initially')
+    self.ignore_caps_lock               = getBool('ignore_caps_lock')
+    self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
+    self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
+    self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
+    self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
+    self.swap_mac_keys                  = getBool('swap_mac_keys')
+    self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
+    self.trace_masterClickHandler       = getBool('trace_masterClickHandler')
+    self.traceMasterCommand             = getBool('trace_masterCommand')
+    self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
+    self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
+    self.trace_key_event                = getBool('trace_key_event')
+    self.trace_minibuffer               = getBool('trace_minibuffer')
+    self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+    # Has to be disabled (default) for AltGr support on Windows
+    self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
+    << define externally visible ivars >>
+    << define internal ivars >>
+
+    self.defineTkNames()
+    self.defineSpecialKeys()
+    self.defineSingleLineCommands()
+    self.defineMultiLineCommands()
+    fn = c.shortFileName()
+    self.autoCompleter = AutoCompleterClass(self)
+    self.qcompleter = None # Set by AutoCompleter.start.
+    self.setDefaultUnboundKeyAction()
+    self.setDefaultEditingAction() # 2011/02/09
+#@+node:ekr.20061031131434.78: *7* << define externally visible ivars >>
+self.abbrevOn = False # True: abbreviations are on.
+self.arg = '' # The value returned by k.getArg.
+self.argSelectedText = '' # The selected text in state 0.
+self.commandName = None # The name of the command being executed.
+self.funcReturn = None # For k.simulateCommand
+self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
+self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+self.inputModeBindings = {}
+self.inputModeName = '' # The name of the input mode, or None.
+self.inverseCommandsDict = {}
+    # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
+self.modePrompt = '' # The mode promopt.
+self.negativeArg = False
+self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
+self.regx = g.bunch(iter=None,key=None)
+self.repeatCount = None
+self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
+self.state = g.bunch(kind=None,n=None,handler=None)
+#@+node:ekr.20061031131434.79: *7* << define internal ivars >>
+self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
+
+# Previously defined bindings.
+self.bindingsDict = {}
+    # Keys are Tk key names, values are lists of g.bunch(pane,func,commandName)
+# Previously defined binding tags.
+self.bindtagsDict = {}
+    # Keys are strings (the tag), values are 'True'
+self.masterBindingsDict = {}
+    # Keys are scope names: 'all','text',etc. or mode names.
+    # Values are dicts: keys are strokes, values are g.bunch(commandName,func,pane,stroke)
+self.masterGuiBindingsDict = {}
+    # Keys are strokes; value is True;
+
+# Special bindings for k.fullCommand.
+self.mb_copyKey = None
+self.mb_pasteKey = None
+self.mb_cutKey = None
+self.mb_help = False
+
+self.abortAllModesKey = None
+self.fullCommandKey = None
+self.universalArgKey = None
+
+# Keepting track of the characters in the mini-buffer.
+self.arg_completion = True
+self.mb_event = None
+self.mb_history = []
+self.mb_prefix = ''
+self.mb_tabListPrefix = ''
+self.mb_tabList = []
+self.mb_tabListIndex = -1
+self.mb_prompt = ''
+
+self.func = None
+self.previous = []
+self.stroke = None
+
+# For onIdleTime
+self.idleCount = 0
+
+# For modes
+self.afterGetArgState = None
+self.argTabList = []
+self.getArgEscapes = []
+self.modeBindingsDict = {}
+self.modeWidget = None
+self.silentMode = False
+
+# The actual values are set later in k.finishCreate.
+self.command_mode_bg_color = 'white'
+self.command_mode_fg_color = 'black'
+self.insert_mode_bg_color = 'white'
+self.insert_mode_fg_color = 'black'
+self.overwrite_mode_bg_color = 'white'
+self.overwrite_mode_fg_color = 'black'
 #@+node:ekr.20061031131434.11: *6* autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
@@ -12777,7 +12940,7 @@ def insert_general_char (self,ch,keysym):
         common_prefix,prefix,aList = self.compute_completion_list()
         if not aList:
             self.do_back_space()
-        elif len(common_prefix) > len(prefix):
+        elif self.auto_tab and len(common_prefix) > len(prefix):
             extend = common_prefix[len(prefix):]
             if trace: g.trace('*** extend',extend)
             ins = w.getInsertPoint()
@@ -12785,19 +12948,11 @@ def insert_general_char (self,ch,keysym):
     else:
         word = w.getSelectedText()
         if ch == '(':
-            # Similar to chain logic.
-            obj = self.theObject
-            # g.trace(obj,word,self.hasAttr(obj,word))
-            if self.hasAttr(obj,word):
-                obj = self.getAttr(obj,word)
-                self.push(self.theObject)
-                self.theObject = obj
-                self.leadinWord = word
-                self.membersList = self.getMembersList(obj)
-                if k.enable_calltips:
-                    # This calls self.finish if the '(' is valid.
-                    self.calltip(obj)
-                    return
+            #### XXX To do XXX.
+            if k.enable_calltips:
+                # This calls self.finish if the '(' is valid.
+                self.calltip(obj)
+                return
         self.insert_char(ch)
         self.finish()
 #@+node:ekr.20110511133940.14561: *6* show_completion_list

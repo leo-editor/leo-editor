@@ -121,6 +121,7 @@
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 <v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
+<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 </v>
 <v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
@@ -8075,6 +8076,7 @@ False: show completions in Leo's Completions tab.
 </t>
 <t tx="ekr.20110510071925.14590">True: use codewise completions.
 False: use leo-specific completions.</t>
+<t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
