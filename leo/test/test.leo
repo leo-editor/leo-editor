@@ -8748,8 +8748,7 @@ t = Template('Hello {{ name }}!')
 s = t.render(name='Edward K. Ream')
 print(s)
 </t>
-<t tx="ekr.20110510093130.2434">c.frame.body.bodyCtrl.widget
-</t>
+<t tx="ekr.20110510093130.2434"></t>
 <t tx="ekr.20110510110227.2439"></t>
 <t tx="ekr.20110510110227.2440"></t>
 <t tx="ekr.20110511061102.5232">True:  enable autocompletion initially.

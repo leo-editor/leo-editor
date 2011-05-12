@@ -142,7 +142,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         trace = False and not g.unitTesting
         c = self.leo_c ; k = c.k
-
+        
         if trace: g.trace('(qc) ***** prefix: %s, len(options): %s' % (
             repr(prefix),len(options)))
         
@@ -227,8 +227,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Calling qc.setModel is a no-no's here.
             self.endCompleter()
             # Creating a QTimer is also a no-no here.
-            ### This does work.
-            ### c.idle_callback = self.keyCallback
+            ### This does work: c.idle_callback = self.keyCallback
             return
             
         # Insert all keys except tab.
@@ -269,7 +268,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         '''Called when user selects an item in the QCompleter.'''
 
-        trace = False
+        trace = True and not g.unitTesting
         c = self.leo_c
         qc = self.leo_q_completer
         
