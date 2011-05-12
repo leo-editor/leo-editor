@@ -12852,31 +12852,6 @@ def calltip (self):
     c.widgetWantsFocusNow(w)
 
 
-    if 0: # old code
-    
-        isStringMethod = False ; s = None
-
-        if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
-            << try to set s from a Python global function >>
-        
-        if not s:
-            << get s using inspect >>
-        
-        << remove 'self' from s, but not from args >>
-        if isStringMethod:
-            << remove 's' from s *and* args >>
-        
-        # s = s.rstrip(')') # Not so convenient.
-        << insert the text and set j1 and j2 >>
-
-        # End autocompletion mode, putting the insertion point after the suggested calltip.
-        self.finish()
-        c.widgetWantsFocusNow(w)
-        # if 1: # Seems to be more useful.
-            # w.setSelectionRange(j1,j2,insert=j2)
-        # else:
-            # w.setInsertPoint(j2)
-        c.frame.clearStatusLine()
 #@+node:ekr.20110512090917.14468: *7* calltip_fail
 def calltip_fail(self,prefix):
     
@@ -12909,53 +12884,6 @@ def calltip_success(self,prefix,obj):
         s = s[0] + s[5:].strip()
 
     self.insert_string(s)
-#@+node:ekr.20061031131434.21: *7* << try to set s from a Python global function >>
-# The first line of the docstring is good enough, except for classes.
-f = __builtins__.get(self.leadinWord)
-doc = f and type(f) != types.ClassType and f.__doc__
-if doc:
-    # g.trace(doc)
-    s = g.splitLines(doc)
-    s = args = s and s [0] or ''
-    i = s.find('(')
-    if i > -1: s = s [i:]
-    else: s = '(' + s
-    s = s and s.strip() or ''
-#@+node:ekr.20061031131434.22: *7* << get s using inspect >>
-isStringMethod = False
-    # self.prevObjects and
-    # g.isString(self.prevObjects[-1]))
-
-if isStringMethod and hasattr(string,obj.__name__):
-    # A hack. String functions are builtins, and getargspec doesn't handle them.
-    # Get the corresponding string function instead, and remove the s arg later.
-    obj = getattr(string,obj.__name__)
-
-try:
-    s1,s2,s3,s4 = inspect.getargspec(obj)
-except:
-    self.insert_string('(')
-    self.finish()
-    return # Not a function.  Just '('.
-
-s = args = inspect.formatargspec(s1,s2,s3,s4)
-#@+node:ekr.20061031131434.23: *7* << remove 'self' from s, but not from args >>
-if g.match(s,1,'self,'):
-    s = s[0] + s[6:].strip()
-elif g.match_word(s,1,'self'):
-    s = s[0] + s[5:].strip()
-#@+node:ekr.20061031131434.24: *7* << remove 's' from s *and* args >>
-if g.match(s,1,'s,'):
-    s = s[0] + s[3:]
-    args = args[0] + args[3:]
-elif g.match_word(s,1,'s'):
-    s = s[0] + s[2:]
-    args = args[0] + args[2:]
-#@+node:ekr.20061031131434.25: *7* << insert the text and set j1 and j2 >>
-junk,j = w.getSelectionRange() # Returns insert point if no selection.
-w.insert(j,s)
-c.frame.body.onBodyChanged('Typing')
-j1 = j + 1 ; j2 = j + len(s)
 #@+node:ekr.20061031131434.28: *6* compute_completion_list
 def compute_completion_list (self):
 

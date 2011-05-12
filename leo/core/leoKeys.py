@@ -147,7 +147,7 @@ class AutoCompleterClass:
 
         c = self.c
         p = c.p
-        w = self.w # A leoQTextEditWidget
+        w = self.w
         
         if s:
             head = s
@@ -173,7 +173,6 @@ class AutoCompleterClass:
             hits = self.lookup(s)
             
         # g.trace(aList,repr(s),len(hits))
-        
         return hits
     #@+node:ekr.20110510120621.14540: *4* cleanup
     def clean (self,hits):
@@ -283,155 +282,6 @@ class AutoCompleterClass:
         tc.select(tc.WordUnderCursor)
         s = tc.selectedText()
         return s
-    #@+node:ekr.20110511133940.14553: *3* New methods
-    #@+node:ekr.20110509064011.14556: *4* attr_matches
-    def attr_matches(self,s,namespace):
-        
-        """Compute matches when string s is of the form name.name....name.
-        
-        Evaluates s using eval(s,namespace) 
-
-        Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
-        the namespace, it will be evaluated and its attributes (as revealed by
-        dir()) are used as possible completions.
-        
-        For class instances, class members are are also considered.)
-        
-        **Warning**: this can still invoke arbitrary C code, if an object
-        with a __getattr__ hook is evaluated.
-        
-        """
-        
-        trace = False and not g.unitTesting
-        verbose = False
-
-        # Seems to work great. Catches things like ''.<tab>
-        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
-        if not m:
-            return []
-
-        expr,attr = m.group(1,3)
-        
-        try:
-            obj = eval(expr,namespace)
-        except Exception:
-            return []
-
-        # Build the result.
-        words = dir(obj)
-        n = len(attr)
-        result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
-
-        if trace:
-            if verbose:
-                g.trace(s,result)
-            else:
-                g.trace(repr(s))
-        return result
-    #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
-    def do_qcompleter_tab(self,prefix,options):
-        
-        '''Return the longest common prefix of all the options.'''
-        
-        trace = False and not g.unitTesting
-        
-        matches,common_prefix = g.itemsMatchingPrefixInList(
-            prefix,options,matchEmptyPrefix=False)
-
-        # g.trace(g.listToString(matches,sort=True))
-        if trace: g.trace(repr(common_prefix))
-        
-        return common_prefix
-    #@+node:ekr.20110509064011.14561: *4* get_autocompleter_prefix
-    def get_autocompleter_prefix (self):
-        
-        trace = False and not g.unitTesting
-        
-        # Only the body pane supports auto-completion.
-        w = self.c.frame.body
-        s = w.getAllText()
-        i = w.getInsertPoint() - 1
-        i1 = i = j = max(0,i)
-        while i >= 0 and (s[i].isalnum() or s[i] in '._'):
-            i -= 1
-        i += 1
-        j += 1
-        prefix = s[i:j]
-        if trace: g.trace(repr(prefix),'ins',s[i1:])
-        return i,j,prefix
-    #@+node:ekr.20110509064011.14557: *4* get_leo_completions
-    def get_leo_completions(self,prefix):
-        
-        '''Return completions in an environment defining c, g and p.'''
-        
-        trace = False and not g.unitTesting
-        verbose = False
-        
-        d = self.get_leo_namespace(prefix)
-        if trace: g.trace(list(d.keys()))
-
-        aList = self.attr_matches(prefix,d)
-        aList.sort()
-        
-        if trace:
-            if verbose:
-                g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
-            else:
-                g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
-
-        return aList
-    #@+node:ekr.20110512090917.14466: *4* get_leo_namespace
-    def get_leo_namespace (self,prefix):
-        
-        '''Return an environment in which to evaluate prefix.
-        
-        Add some common standard library modules as needed.'''
-        
-        
-        k = self.k
-        d = {'c':k.c, 'p':k.c.p, 'g':g}
-        
-        aList = prefix.split('.')
-        if len(aList) > 1:
-            name = aList[0]
-            m = sys.modules.get(name)
-            if m:
-                d[name]= m
-                
-        # g.trace(list(d.keys()))
-        return d
-    #@+node:ekr.20110510071925.14586: *4* init_qcompleter
-    def init_qcompleter (self):
-        
-        trace = False and not g.unitTesting
-        
-        w = self.c.frame.body.bodyCtrl.widget
-            # A LeoQTextBrowser.
-            
-        # Compute the prefix and the list of options.
-        i,j,prefix = self.get_autocompleter_prefix()
-        options = self.get_leo_completions(prefix)
-
-        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (repr(prefix),len(options)))
-
-        self.qcompleter = w.initCompleter(prefix,options)
-    #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
-    def init_tabcompleter (self,event=None):
-        
-        trace = False and not g.unitTesting
-            
-        # Compute the prefix and the list of options.
-        i,j,prefix = self.get_autocompleter_prefix()
-        options = self.get_leo_completions(prefix)
-
-        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (
-            repr(prefix),len(options)))
-
-        if options:
-            self.clearTabName() # Creates the tabbed pane.
-            self.autoCompleterStateHandler(event)
-        else:
-            self.abort()
     #@+node:ekr.20061031131434.8: *3* Top level (autocompleter)
     #@+node:ekr.20061031131434.9: *4* autoComplete
     def autoComplete (self,event=None,force=False):
@@ -451,7 +301,7 @@ class AutoCompleterClass:
 
         # First, handle the invocation character as usual.
         if not force:
-            # 2010/11/01: ctrl-period does *not* insert a period.
+            # Ctrl-period does *not* insert a period.
             if trace: g.trace('not force')
             k.masterCommand(event,func=None,stroke=None,commandName=None)
 
@@ -598,7 +448,6 @@ class AutoCompleterClass:
         k = self.k
         k.keyboardQuit(event=None,setDefaultStatus=False)
             # Stay in the present input state.
-        # g.es('No completions',color='blue')
         self.exit(restore=True)
 
     def exit (self,restore=False): # Called from keyboard-quit.
@@ -615,7 +464,6 @@ class AutoCompleterClass:
         c.widgetWantsFocusNow(w)
         i,j = w.getSelectionRange()
         w.setSelectionRange(j,j,insert=j)
-
     #@+node:ekr.20061031131434.18: *4* append/begin/popTabName
     def appendTabName (self,word):
 
@@ -644,6 +492,50 @@ class AutoCompleterClass:
             c.frame.log.deleteTab(self.tabName)
         self.tabName = s.replace('_','') or ''
         c.frame.log.clearTab(self.tabName)
+    #@+node:ekr.20110509064011.14556: *4* attr_matches
+    def attr_matches(self,s,namespace):
+        
+        """Compute matches when string s is of the form name.name....name.
+        
+        Evaluates s using eval(s,namespace) 
+
+        Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+        the namespace, it will be evaluated and its attributes (as revealed by
+        dir()) are used as possible completions.
+        
+        For class instances, class members are are also considered.)
+        
+        **Warning**: this can still invoke arbitrary C code, if an object
+        with a __getattr__ hook is evaluated.
+        
+        """
+        
+        trace = False and not g.unitTesting
+        verbose = False
+
+        # Seems to work great. Catches things like ''.<tab>
+        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
+        if not m:
+            return []
+
+        expr,attr = m.group(1,3)
+        
+        try:
+            obj = eval(expr,namespace)
+        except Exception:
+            return []
+
+        # Build the result.
+        words = dir(obj)
+        n = len(attr)
+        result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
+
+        if trace:
+            if verbose:
+                g.trace(s,result)
+            else:
+                g.trace(repr(s))
+        return result
     #@+node:ekr.20061031131434.20: *4* calltip & helpers
     def calltip (self):
         
@@ -683,83 +575,6 @@ class AutoCompleterClass:
         c.widgetWantsFocusNow(w)
 
 
-        if 0: # old code
-        
-            isStringMethod = False ; s = None
-
-            if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
-                #@+<< try to set s from a Python global function >>
-                #@+node:ekr.20061031131434.21: *5* << try to set s from a Python global function >>
-                # The first line of the docstring is good enough, except for classes.
-                f = __builtins__.get(self.leadinWord)
-                doc = f and type(f) != types.ClassType and f.__doc__
-                if doc:
-                    # g.trace(doc)
-                    s = g.splitLines(doc)
-                    s = args = s and s [0] or ''
-                    i = s.find('(')
-                    if i > -1: s = s [i:]
-                    else: s = '(' + s
-                    s = s and s.strip() or ''
-                #@-<< try to set s from a Python global function >>
-            
-            if not s:
-                #@+<< get s using inspect >>
-                #@+node:ekr.20061031131434.22: *5* << get s using inspect >>
-                isStringMethod = False
-                    # self.prevObjects and
-                    # g.isString(self.prevObjects[-1]))
-
-                if isStringMethod and hasattr(string,obj.__name__):
-                    # A hack. String functions are builtins, and getargspec doesn't handle them.
-                    # Get the corresponding string function instead, and remove the s arg later.
-                    obj = getattr(string,obj.__name__)
-
-                try:
-                    s1,s2,s3,s4 = inspect.getargspec(obj)
-                except:
-                    self.insert_string('(')
-                    self.finish()
-                    return # Not a function.  Just '('.
-
-                s = args = inspect.formatargspec(s1,s2,s3,s4)
-                #@-<< get s using inspect >>
-            
-            #@+<< remove 'self' from s, but not from args >>
-            #@+node:ekr.20061031131434.23: *5* << remove 'self' from s, but not from args >>
-            if g.match(s,1,'self,'):
-                s = s[0] + s[6:].strip()
-            elif g.match_word(s,1,'self'):
-                s = s[0] + s[5:].strip()
-            #@-<< remove 'self' from s, but not from args >>
-            if isStringMethod:
-                #@+<< remove 's' from s *and* args >>
-                #@+node:ekr.20061031131434.24: *5* << remove 's' from s *and* args >>
-                if g.match(s,1,'s,'):
-                    s = s[0] + s[3:]
-                    args = args[0] + args[3:]
-                elif g.match_word(s,1,'s'):
-                    s = s[0] + s[2:]
-                    args = args[0] + args[2:]
-                #@-<< remove 's' from s *and* args >>
-            
-            # s = s.rstrip(')') # Not so convenient.
-            #@+<< insert the text and set j1 and j2 >>
-            #@+node:ekr.20061031131434.25: *5* << insert the text and set j1 and j2 >>
-            junk,j = w.getSelectionRange() # Returns insert point if no selection.
-            w.insert(j,s)
-            c.frame.body.onBodyChanged('Typing')
-            j1 = j + 1 ; j2 = j + len(s)
-            #@-<< insert the text and set j1 and j2 >>
-
-            # End autocompletion mode, putting the insertion point after the suggested calltip.
-            self.finish()
-            c.widgetWantsFocusNow(w)
-            # if 1: # Seems to be more useful.
-                # w.setSelectionRange(j1,j2,insert=j2)
-            # else:
-                # w.setInsertPoint(j2)
-            c.frame.clearStatusLine()
     #@+node:ekr.20110512090917.14468: *5* calltip_fail
     def calltip_fail(self,prefix):
         
@@ -828,6 +643,19 @@ class AutoCompleterClass:
         w.delete(i-1,i)
         w.setInsertPoint(i-1)
         self.compute_completion_list()
+    #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
+    def do_qcompleter_tab(self,prefix,options):
+        
+        '''Return the longest common prefix of all the options.'''
+        
+        trace = False and not g.unitTesting
+        
+        matches,common_prefix = g.itemsMatchingPrefixInList(
+            prefix,options,matchEmptyPrefix=False)
+
+        if trace: g.trace(repr(common_prefix))
+        
+        return common_prefix
     #@+node:ekr.20061031131434.33: *4* findCalltipWord
     def findCalltipWord (self,w):
 
@@ -852,6 +680,64 @@ class AutoCompleterClass:
 
         c.frame.body.onBodyChanged('Typing')
         c.recolor()
+    #@+node:ekr.20110509064011.14561: *4* get_autocompleter_prefix
+    def get_autocompleter_prefix (self):
+        
+        trace = False and not g.unitTesting
+        
+        # Only the body pane supports auto-completion.
+        w = self.c.frame.body
+        s = w.getAllText()
+        i = w.getInsertPoint() - 1
+        i1 = i = j = max(0,i)
+        while i >= 0 and (s[i].isalnum() or s[i] in '._'):
+            i -= 1
+        i += 1
+        j += 1
+        prefix = s[i:j]
+        if trace: g.trace(repr(prefix),'ins',s[i1:])
+        return i,j,prefix
+    #@+node:ekr.20110509064011.14557: *4* get_leo_completions
+    def get_leo_completions(self,prefix):
+        
+        '''Return completions in an environment defining c, g and p.'''
+        
+        trace = False and not g.unitTesting
+        verbose = False
+        
+        d = self.get_leo_namespace(prefix)
+        if trace: g.trace(list(d.keys()))
+
+        aList = self.attr_matches(prefix,d)
+        aList.sort()
+        
+        if trace:
+            if verbose:
+                g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
+            else:
+                g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
+
+        return aList
+    #@+node:ekr.20110512090917.14466: *4* get_leo_namespace
+    def get_leo_namespace (self,prefix):
+        
+        '''Return an environment in which to evaluate prefix.
+        
+        Add some common standard library modules as needed.'''
+        
+        
+        k = self.k
+        d = {'c':k.c, 'p':k.c.p, 'g':g}
+        
+        aList = prefix.split('.')
+        if len(aList) > 1:
+            name = aList[0]
+            m = sys.modules.get(name)
+            if m:
+                d[name]= m
+                
+        # g.trace(list(d.keys()))
+        return d
     #@+node:ekr.20061031131434.38: *4* info
     def info (self):
 
@@ -879,18 +765,38 @@ class AutoCompleterClass:
             self.put('',doc,tabName='Info')
         else:
             g.es('no docstring for',word,color='blue')
-    #@+node:ekr.20061031131434.31: *4* insert_string
-    def insert_string (self,s):
-
-        '''Insert s at the insertion point.'''
-
-        c = self.c ; w = self.w
+    #@+node:ekr.20110510071925.14586: *4* init_qcompleter
+    def init_qcompleter (self):
         
-        c.widgetWantsFocusNow(w)
-        j = w.getInsertPoint()
-        w.insert(j,s)
-       
-        c.frame.body.onBodyChanged('Typing')
+        trace = False and not g.unitTesting
+        
+        w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
+            
+        # Compute the prefix and the list of options.
+        i,j,prefix = self.get_autocompleter_prefix()
+        options = self.get_leo_completions(prefix)
+
+        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+
+        self.qcompleter = w.initCompleter(prefix,options)
+    #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
+    def init_tabcompleter (self,event=None):
+        
+        trace = False and not g.unitTesting
+            
+        # Compute the prefix and the list of options.
+        i,j,prefix = self.get_autocompleter_prefix()
+        options = self.get_leo_completions(prefix)
+
+        if trace: g.trace('(ac) *** prefix: %s, len(options): %s' % (
+            repr(prefix),len(options)))
+
+        if options:
+            self.clearTabName() # Creates the tabbed pane.
+            self.autoCompleterStateHandler(event)
+        else:
+            self.abort()
     #@+node:ekr.20061031131434.39: *4* insert_general_char
     def insert_general_char (self,ch,keysym):
 
@@ -917,6 +823,18 @@ class AutoCompleterClass:
             else:
                 self.insert_string(ch)
                 self.finish()
+    #@+node:ekr.20061031131434.31: *4* insert_string
+    def insert_string (self,s):
+
+        '''Insert s at the insertion point.'''
+
+        c = self.c ; w = self.w
+        
+        c.widgetWantsFocusNow(w)
+        j = w.getInsertPoint()
+        w.insert(j,s)
+       
+        c.frame.body.onBodyChanged('Typing')
     #@+node:ekr.20101101175644.5891: *4* put
     def put (self,*args,**keys):
 
