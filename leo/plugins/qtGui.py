@@ -120,7 +120,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
     #@+node:ekr.20110513104728.14452: *5* class LeoQListWidget(QListWidget)
     class LeoQListWidget(QtGui.QListWidget):
-        
+                
+        #@+others
+        #@+node:ekr.20110513144933.14531: *6* ctor (LeoQListWidget)
         def __init__(self,c,w):
             
             if 1:
@@ -132,316 +134,122 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
             self.leo_c = c
             self.leo_w = w # a LeoQTextBrowser.
-                
-        #@+others
+            
+            self.connect(self,QtCore.SIGNAL(
+                "itemClicked(QListWidgetItem *)"),self.selectCallback)
+        #@+node:ekr.20110513144933.14526: *6* endCompleter
+        def endCompleter(self):
+
+            # g.trace('(LeoQListWidget)')
+
+            c = self.leo_c
+            c.in_qt_dialog = False
+
+            self.hide()
+
+            # This is important: it clears the autocompletion state.
+            c.k.keyboardQuit(event=None,hideTabs=False)
+                # hideTabs = False prevents a recursive call here.
         #@+node:ekr.20110325185230.14516: *6* keyPressEvent (LeoQListWidget)
         def keyPressEvent(self,event):
             
-            '''Handle a key event from QCompleter.
-            Except for bare modifier key events,
-            this gets called *only* when the popup is showing!'''
+            '''Handle a key event from QListWidget.'''
             
-            trace = True and not g.unitTesting
-
+            trace = False and not g.unitTesting
             c = self.leo_c
-            qt = QtCore.Qt
-            ac = c.k.autoCompleter
             w = c.frame.body.bodyCtrl
-
-            # Key abbreviations.
+            qt = QtCore.Qt
             key = event.key()
-            mods = event.modifiers()
-            s = event.text()
-            is_mod = mods != qt.NoModifier
             
-            if is_mod and not s:
+            if event.modifiers() != qt.NoModifier and not event.text():
                 # A modifier key on it's own.
-                return
-
-            w.ev_filter.eventFilter(obj=self,event=event)
-            # QtGui.QListWidget.keyPressEvent(self,event) 
-            return
-                
-            # # Check for ctrl-q
-            # tkKey,ch,ignore = ev.toTkKey(event)
-            # stroke = ev.toStroke(tkKey,ch)
-            # if stroke == c.k.abortAllModesKey:
-                # if trace: g.trace('keyboard-quit')
-                # self.endCompleter('keyboard-quit')
-                # return
-            
-            # if key in (qt.Key_Enter,qt.Key_Return):
-                # if trace: g.trace('<return>')
-                # prefix = qc.completionPrefix()
-                # self.selectCallback()
-                # return
-                
-            # if key == qt.Key_Escape:
-                # if trace: g.trace('<esc>')
-                # self.endCompleter('keyboard-quit')
-                # return
-                
-            # # Insert all keys except tab.
-            # if key == qt.Key_Tab:
-                # if trace: g.trace('<tab'>
-                # return
-                
-            # Pass everything on.
-            if trace: g.trace('key',key)
-            QtGui.QTextBrowser.keyPressEvent(self,event)
-                
-        #@-others
-    #@+node:ekr.20110325185230.14524: *5* endCompleter
-    def endCompleter(self,message=None):
-        
-        # Get the data from the injected ivars.
-        c = self.leo_c
-        qc = self.leo_q_completer
-        assert(qc)
-        
-        if message: g.es(message,color='blue')
-        
-        g.trace('(qc)',g.callers())
-        
-        if 1: # Just hide the completer.
-            c.in_qt_dialog = False
-            if self.leo_q_completer:
-                qc.hide()
+                pass
+            elif key in (qt.Key_Up,qt.Key_Down):
+                QtGui.QListWidget.keyPressEvent(self,event)
+            elif key == qt.Key_Tab:
+                if trace: g.trace('<tab>')
+                pass
+            elif key in (qt.Key_Enter,qt.Key_Return):
+                if trace: g.trace('<return>')
+                self.selectCallback()
             else:
-                qc.popup().hide()
-        else:
-            qc.disconnect(qc,QtCore.SIGNAL("activated(QString)"),self.selectCallback)
-            qc.popup().hide()
-            qc.deleteLater()
-            self.leo_q_completer = None
-            # Important: the focus gets cleared very late by QCompleter.
-            # It is restored to the body pane by c.idle_focus_helper.
+                # Pass all other keys to the autocompleter via the event filter.
+                w.ev_filter.eventFilter(obj=self,event=event)
+        #@+node:ekr.20110513144933.14524: *6* selectCallback
+        def selectCallback(self):  
+
+            '''Called when user selects an item in the QListWidget.'''
+
+            trace = False and not g.unitTesting
+            c = self.leo_c ; w = c.frame.body
+
+            # Replace the tail of the prefix with the completion.
+            completion = self.currentItem().text()
+            prefix = c.k.autoCompleter.get_autocompleter_prefix()
+            
+            parts = prefix.split('.')
+            if len(parts) > 1:
+                tail = parts[-1]
+            else:
+                tail = prefix
+                
+            if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
+
+            if tail != completion:
+                j = w.getInsertPoint()
+                i = j - len(tail)
+                w.delete(i,j)
+                w.insert(i,completion)
+                j = i+len(completion)
+                c.setChanged(True)
+                w.setInsertPoint(j)
+                c.frame.body.onBodyChanged('Typing')
+
+            self.endCompleter()
+        #@+node:ekr.20110513144933.14528: *6* showCompletions
+        def showCompletions(self,aList):
+            
+            '''Set the QListView contents to aList.'''
+            
+            # g.trace('(qc) len(aList)',len(aList))
+
+            self.clear()
+            self.addItems(aList)
+            self.setCurrentRow(0)
+            self.activateWindow()
+            self.setFocus()
+        #@-others
     #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
-    def initCompleter(self,prefix,options):
+    def initCompleter(self,options):
         
         '''Connect a QCompleter.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.leo_c ; k = c.k
         
-        if trace: g.trace('(qc) ***** prefix: %s, len(options): %s' % (
-            repr(prefix),len(options)))
-            
-        # The master switch, chooding between QCompleter and QListView
-        self.leo_new_code = True
+        if trace:
+            g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
         
-        if self.leo_q_completer:
-            qc = self.leo_q_completer
-        elif self.leo_new_code:
-            # Create a QListView.
-            # qc = QtGui.QListWidget(self)
-            qc = self.LeoQListWidget(c,self)
+        if hasattr(self,'leo_qc') and self.leo_qc:
+            qc = self.leo_qc
         else:
-            # Create the completer.
-            qc = QtGui.QCompleter(self)
-            qc.setCompletionMode(qc.PopupCompletion)
-            qc.setCaseSensitivity(QtCore.Qt.CaseSensitive) # CaseInsensitive)
-            qc.setWidget(self)
-            # Sent when the user selects an item.
-            qc.connect(qc,QtCore.SIGNAL("activated(QString)"),self.selectCallback)
-            # qc.connect(qc,QtCore.SIGNAL("destroyed(QObject *)"),self.destroyedCallback)
+            self.leo_qc = qc = self.LeoQListWidget(c,self)
 
-        # Inject ivars for the keyPressEvent and selectCallback.
-        self.leo_q_completer = qc
-        self.leo_options = options
-        self.leo_model = QtGui.QStringListModel(options)
-        self.leo_prefix = prefix
-        
         # Show the initial completions.
-        if self.leo_new_code:
-            c.in_qt_dialog = True
-            qc.show()
-            qc.activateWindow()
-            qc.setFocus()
-            c.widgetWantsFocusNow(qc)
-            self.showCompletions(options)
-        else:
-            qc.setModel(self.leo_model)
-            qc.popup().show()
-            qc.complete()
+        c.in_qt_dialog = True
+        qc.show()
+        qc.activateWindow()
+        c.widgetWantsFocusNow(qc)
+        qc.showCompletions(options)
         return qc
-    #@+node:ekr.20110513104728.14451: *5* old keyPressEvent (LeoQTextBrowser)
-
-    # def keyPressEvent(self, event):
+    #@+node:ekr.20110325185230.14524: *5* redirections to LeoQListWidget
+    def endCompleter(self):
         
-        # '''Handle a key event from QCompleter.
-        # Except for bare modifier key events,
-        # this gets called *only* when the popup is showing!'''
-        
-        # trace = False and not g.unitTesting
-        # verbose = False
+        self.leo_qc.endCompleter()
 
-        # # has_new = hasattr(self,'leo_new_code')
-        # # if not has_new or has_new and self.leo_new_code:
-            # # # Just call the base class.
-            # # QtGui.QTextBrowser.keyPressEvent(self,event) 
-            # # return
-
-        # c = self.leo_c
-        # ac = c.k.autoCompleter
-        # auto_extend = ac.auto_tab
-        # qt = QtCore.Qt
-        # qc = self.leo_q_completer
-        # w = c.frame.body.bodyCtrl
-        # ev = w.ev_filter
-        
-        # def do_tab(force=False):
-            # prefix1 = ac.get_autocompleter_prefix()
-            # prefix = ac.do_qcompleter_tab(prefix1,self.leo_options)
-            # if (auto_extend or force) and len(prefix) > len(prefix1):
-                # extend = prefix[len(prefix1):]
-                # # g.trace('** extend',extend)
-                # w = c.frame.body.bodyCtrl
-                # ins = w.getInsertPoint()
-                # w.insert(ins,extend)
-                # c.frame.body.onBodyChanged('Typing')
-                # return prefix
-            # else:
-                # return prefix1
-
-        # # Key abbreviations.
-        # key = event.key()
-        # mods = event.modifiers()
-        # s = event.text()
-        # is_mod = mods != qt.NoModifier
-
-        # popup = qc and qc.popup()
-        # active = qc and popup and popup.isVisible()
-        
-        # if not active: # Call the base class.
-            # QtGui.QTextBrowser.keyPressEvent(self,event) 
-            # return
-        
-        # if is_mod and not s: # A modifier key on it's own.
-            # return
-            
-        # # Check for ctrl-q
-        # tkKey,ch,ignore = ev.toTkKey(event)
-        # stroke = ev.toStroke(tkKey,ch)
-        # if stroke == c.k.abortAllModesKey:
-            # # g.trace(tkKey,ch,stroke)
-            # self.endCompleter('keyboard-quit')
-            # return
-        
-        # if key in (qt.Key_Enter,qt.Key_Return):
-            # prefix = qc.completionPrefix()
-            # self.selectCallback()
-            # return
-            
-        # if key == qt.Key_Escape:
-            # self.endCompleter('keyboard-quit')
-            # return
-            
-        # if key == qt.Key_Period:
-            # # A hack.  Don't enter the period.
-            # # Calling qc.setModel is a no-no's here.
-            # self.endCompleter()
-            # # Creating a QTimer is also a no-no here.
-            # # This does work: c.idle_callback = self.keyCallback
-            # return
-            
-        # # Insert all keys except tab.
-        # if key != qt.Key_Tab:
-            # QtGui.QTextBrowser.keyPressEvent(self,event)
-            
-        # if auto_extend:
-            # if key == qt.Key_Tab:
-                # return
-            # elif key == qt.Key_Backspace:
-                # prefix = ac.get_autocompleter_prefix()
-            # else:
-                # prefix = do_tab(force=True)
-        # else:
-            # # The tab key explicitly extends the prefix.
-            # if key == qt.Key_Tab:
-                # prefix = do_tab(force=True)
-            # else:
-                # prefix = ac.get_autocompleter_prefix()
-        
-        # if prefix.endswith('.'):
-            # # Calling qc.setModel is a no-no's here.
-            # if trace: g.trace('*** end of prefix',prefix)
-            # self.endCompleter()
-            # return
-        # else:
-            # if trace: g.trace(repr(prefix))
-        
-        # # The qc prefix never matches the ac prefix.
-        # qc.setCompletionPrefix(prefix)
-        # popup.setCurrentIndex(qc.completionModel().index(0,0))
-
-        # cr = self.cursorRect()
-        # cr.setWidth(popup.sizeHintForColumn(0) +
-            # popup.verticalScrollBar().sizeHint().width())
-    #@+node:ekr.20110325185230.14523: *5* selectCallback
-    def selectCallback(self):  
-
-        '''Called when user selects an item in the QCompleter.'''
-
-        trace = False and not g.unitTesting
-        c = self.leo_c
-        qc = self.leo_q_completer
-        
-        # Compute the completion...
-        model = qc.completionModel()
-        popup = qc.popup()
-        i = popup.currentIndex()
-        data = model.itemData(i)
-        completion = data.get(0,'') # A hack.
-
-        if isinstance(completion,QtCore.QVariant):
-            # This is only true with Python 2K.
-            # For Python 2K the type is str.
-            completion = g.toUnicode(completion.toString())
-
-        # Replace the completion by what precedes the first colon.
-        try:
-            completion,junk = completion.split(':',1)
-        except Exception:
-            pass # Use the entire completion.
-
-        completion = completion.strip()
-
-        # Replace the prefix with the completion.
-        self.setFocus() # QTextBrowser.setFocus.
-        prefix = c.k.autoCompleter.get_autocompleter_prefix()
-        if trace: g.trace(i,j,repr(prefix))
-
-        if prefix != completion:
-            w = c.frame.body
-            j = w.getInsertPoint()
-            i = j - len(prefix)
-            w.delete(i,j)
-            w.insert(i,completion)
-            j = i+len(completion)
-            c.setChanged(True)
-            w.setInsertPoint(j)
-            c.frame.body.onBodyChanged('Typing')
-
-        # Finish.
-        self.endCompleter()
-    #@+node:ekr.20110513104728.14449: *5* showCompletions
     def showCompletions(self,aList):
         
-        '''Put the completions, in aList, in the QListView.'''
-        
-        # g.trace('(qc) len(aList)',len(aList))
-        
-        qc = self.leo_q_completer
-        qc.clear()
-        qc.addItems(aList)
-        qc.setCurrentRow(0)
-        qc.activateWindow()
-        qc.setFocus()
-    #@+node:ekr.20110511133940.14548: *5* keyCallback (not used)
-    # def keyCallback(self):
-                
-        # print('keyCallback',self)
+        self.leo_qc.showCompletions(aList)
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
         trace = False and not g.unitTesting

@@ -788,7 +788,7 @@ class AutoCompleterClass:
         if options:
             self.qw = w = self.c.frame.body.bodyCtrl.widget
                 # A LeoQTextBrowser.
-            self.qcompleter = w.initCompleter(prefix,options)
+            self.qcompleter = w.initCompleter(options)
             self.auto_completer_state_handler(event)
         else:
             g.es('No completions',color='blue')
@@ -886,7 +886,7 @@ class AutoCompleterClass:
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
         
-        if self.verbose or len(tabList) < 20:
+        if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header,tabList,)
         else:
             tabList = self.get_summary_list(header,tabList)
