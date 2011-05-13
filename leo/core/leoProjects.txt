@@ -12568,13 +12568,13 @@ How did we ever live without this?
 You can open url's by control-clicking on them, or by using the open-url command.
 #@+node:ekr.20110325075339.14477: *4* Added namespace arg in c.executeScript
 #@+node:ekr.20110314123359.14272: *4* New autocompleter
-#@+node:ekr.20110511133940.14562: *5* To do & what I did
+What I did:
+    
+- Added @bool use_qcompleter setting.
+- Added @bool use_codewise setting.
+- Added auto_tab_complete setting.
+#@+node:ekr.20110511133940.14562: *5* Fix codewise crash
 @nocolor-node
-@
-
-To do:
-
-- Fix codewise completer crash:
     
     InterfaceError: Error binding parameter 0 - probably unsupported type.
 --------------------
@@ -12584,503 +12584,475 @@ To do:
   line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
 
 
-What I did:
-    
-- Added @bool use_qcompleter setting.
-- Added @bool use_codewise setting.
-- Added auto_tab_complete setting.
-#@+node:ekr.20110511133940.14556: *5* Changed or new...
-#@+node:ekr.20061031131434.5: *6*  ctor (autocompleter)
-def __init__ (self,k):
+#@+node:ekr.20110512212836.14473: *5* Debug codewise completer
+#@+node:ekr.20110310091639.14256: *6* class CodeWise
+class CodeWise:
+    @others
+#@+node:ekr.20110310091639.14257: *7* __init__
+def __init__(self, dbpath = None):
 
-    self.c = c = k.c
-    self.k = k
-    self.force = None
-    self.language = None
-    self.tabName = None # The name of the main completion tab.
-    self.verbose = False # True: print all members, regardless of how many there are.
-    self.w = None # The widget that gets focus after autocomplete is done.
-    
-    # Options...
-    self.auto_tab       = c.config.getBool('auto_tab_complete',False)
-    self.use_codewise   = c.config.getBool('use_codewise',False) and not self.isLeoSourceFile()
-    self.use_qcompleter = c.config.getBool('use_qcompleter',False)
-        # True: show results in autocompleter tab.
-        # False: show results in a QCompleter widget.
-#@+node:ekr.20110314115639.14269: *7* isLeoSourceFile
-def isLeoSourceFile (self):
-    
-    '''Return True if this is one of Leo's source files.'''
-    
-    c = self.c
-
-    table = (z.lower() for z in (
-        'leoDocs.leo',
-        'leoGui.leo',       'leoGuiPluginsRef.leo',
-        'leoPlugins.leo',   'leoPluginsRef.leo',
-        'leoPy.leo',        'leoPyRef.leo',
-        'myLeoSettings.leo', 'leoSettings.leo',
-        'ekr.leo',
-        'test.leo',
-    ))
-
-    return c.shortFileName().lower() in table
-#@+node:ekr.20061031131434.76: *6*  ctor (keyHandler)
-def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
-
-    '''Create a key handler for c.
-    c.frame.miniBufferWidget is a Tk.Label.
-
-    useGlobalRegisters and useGlobalKillbuffer indicate whether to use
-    global (class vars) or per-instance (ivars) for kill buffers and registers.'''
-
-    self.c = c
-    self.dispatchEvent = None
-    self.inited = False # Set at end of finishCreate.
-    self.w = c.frame.miniBufferWidget
-    self.new_bindings = True
-    self.useGlobalKillbuffer = useGlobalKillbuffer
-    self.useGlobalRegisters = useGlobalRegisters
-
-    # Generalize...
-    self.x_hasNumeric = ['sort-lines','sort-fields']
-
-    self.altX_prompt = 'full-command: '
-
-    # These must be defined here to avoid memory leaks.
-    getBool = c.config.getBool
-    getColor = c.config.getColor
-    self.enable_autocompleter           = getBool('enable_autocompleter_initially')
-    self.enable_calltips                = getBool('enable_calltips_initially')
-    self.ignore_caps_lock               = getBool('ignore_caps_lock')
-    self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
-    self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
-    self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
-    self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
-    self.swap_mac_keys                  = getBool('swap_mac_keys')
-    self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
-    self.trace_masterClickHandler       = getBool('trace_masterClickHandler')
-    self.traceMasterCommand             = getBool('trace_masterCommand')
-    self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
-    self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
-    self.trace_key_event                = getBool('trace_key_event')
-    self.trace_minibuffer               = getBool('trace_minibuffer')
-    self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
-    # Has to be disabled (default) for AltGr support on Windows
-    self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
-    << define externally visible ivars >>
-    << define internal ivars >>
-
-    self.defineTkNames()
-    self.defineSpecialKeys()
-    self.defineSingleLineCommands()
-    self.defineMultiLineCommands()
-    fn = c.shortFileName()
-    self.autoCompleter = AutoCompleterClass(self)
-    self.qcompleter = None # Set by AutoCompleter.start.
-    self.setDefaultUnboundKeyAction()
-    self.setDefaultEditingAction() # 2011/02/09
-#@+node:ekr.20061031131434.78: *7* << define externally visible ivars >>
-self.abbrevOn = False # True: abbreviations are on.
-self.arg = '' # The value returned by k.getArg.
-self.argSelectedText = '' # The selected text in state 0.
-self.commandName = None # The name of the command being executed.
-self.funcReturn = None # For k.simulateCommand
-self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
-self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
-self.inputModeBindings = {}
-self.inputModeName = '' # The name of the input mode, or None.
-self.inverseCommandsDict = {}
-    # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
-self.modePrompt = '' # The mode promopt.
-self.negativeArg = False
-self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
-self.regx = g.bunch(iter=None,key=None)
-self.repeatCount = None
-self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
-self.state = g.bunch(kind=None,n=None,handler=None)
-#@+node:ekr.20061031131434.79: *7* << define internal ivars >>
-self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
-
-# Previously defined bindings.
-self.bindingsDict = {}
-    # Keys are Tk key names, values are lists of g.bunch(pane,func,commandName)
-# Previously defined binding tags.
-self.bindtagsDict = {}
-    # Keys are strings (the tag), values are 'True'
-self.masterBindingsDict = {}
-    # Keys are scope names: 'all','text',etc. or mode names.
-    # Values are dicts: keys are strokes, values are g.bunch(commandName,func,pane,stroke)
-self.masterGuiBindingsDict = {}
-    # Keys are strokes; value is True;
-
-# Special bindings for k.fullCommand.
-self.mb_copyKey = None
-self.mb_pasteKey = None
-self.mb_cutKey = None
-self.mb_help = False
-
-self.abortAllModesKey = None
-self.fullCommandKey = None
-self.universalArgKey = None
-
-# Keepting track of the characters in the mini-buffer.
-self.arg_completion = True
-self.mb_event = None
-self.mb_history = []
-self.mb_prefix = ''
-self.mb_tabListPrefix = ''
-self.mb_tabList = []
-self.mb_tabListIndex = -1
-self.mb_prompt = ''
-
-self.func = None
-self.previous = []
-self.stroke = None
-
-# For onIdleTime
-self.idleCount = 0
-
-# For modes
-self.afterGetArgState = None
-self.argTabList = []
-self.getArgEscapes = []
-self.modeBindingsDict = {}
-self.modeWidget = None
-self.silentMode = False
-
-# The actual values are set later in k.finishCreate.
-self.command_mode_bg_color = 'white'
-self.command_mode_fg_color = 'black'
-self.insert_mode_bg_color = 'white'
-self.insert_mode_fg_color = 'black'
-self.overwrite_mode_bg_color = 'white'
-self.overwrite_mode_fg_color = 'black'
-#@+node:ekr.20061031131434.11: *6* autoCompleterStateHandler
-def autoCompleterStateHandler (self,event):
-
-    trace = False and not g.app.unitTesting
-    c = self.c ; k = self.k ; gui = g.app.gui
-    tag = 'auto-complete' ; state = k.getState(tag)
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-
-    if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
-        state,repr(ch),repr(keysym)))
-
-    if state == 0:
-        c.frame.log.clearTab(self.tabName)
-        self.compute_completion_list()
-        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
-    elif keysym in (' ','Return'):
-        self.finish()
-    elif keysym == 'Escape':
-        self.abort()
-    elif keysym == 'Tab':
-        self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'):
-        self.do_back_space()
-    elif keysym == '.':
-        self.insert_string('.')
-        self.compute_completion_list()
-    elif keysym == '?':
-        self.info()
-    elif keysym == '!':
-        # Toggle between verbose and brief listing.
-        self.verbose = not self.verbose
-        kind = g.choose(self.verbose,'ON','OFF')
-        c.frame.putStatusLine('verbose completions %s' % (
-            kind),color='red')
-        self.compute_completion_list()
-    elif ch == 'Down' and hasattr(self,'onDown'):
-        self.onDown()
-    elif ch == 'Up' and hasattr(self,'onUp'):
-        self.onUp()
-    elif ch and ch in string.printable:
-        self.insert_general_char(ch,keysym)
-    else:
-        # if trace: g.trace('ignore',repr(ch))
-        return 'do-standard-keys'
-#@+node:ekr.20061031131434.20: *6* calltip & helpers
-def calltip (self):
-    
-    '''Show the calltips for the present prefix.
-    ch is '(' if the user has just typed it.
-    '''
-
-    trace = False and not g.unitTesting
-
-    c = self.c
-    obj,prefix = self.get_object()
-    
-    if obj:
-        self.calltip_success(prefix,obj)
-    else:
-        self.calltip_fail(prefix)
+    if dbpath is None:
+        # use "current" db from env var
+        dbpath = DEFAULT_DB
         
-    self.finish()
-    c.frame.clearStatusLine()
-    c.widgetWantsFocusNow(self.w)
-#@+node:ekr.20110512090917.14468: *7* calltip_fail
-def calltip_fail(self,prefix):
+    # print(dbpath)
+
+    self.reset_caches()
     
-    '''Evaluation of prefix failed.'''
+    if not os.path.exists(dbpath):
+        self.createdb(dbpath)
+    else:
+        self.dbconn = c = sqlite3.connect(dbpath)
+        self.create_caches()
+    
+
+#@+node:ekr.20110310091639.14258: *7* createdb
+def createdb(self, dbpath):
+    self.dbconn = c = sqlite3.connect(dbpath)
+    # print(self.dbconn)
+    c.executescript(DB_SCHEMA)
+    c.commit()
+    c.close()
+
+#@+node:ekr.20110310091639.14259: *7* create_caches
+def create_caches(self):
+    """ read existing db and create caches """
+    
+    c = self.cursor()
+    
+    c.execute('select id, name from class')
+    for idd, name in c:
+        self.classcache[name] = idd
+        
+    c.execute('select id, path from file')
+    for idd, name in c:
+        self.filecache[name] = idd
+        
+    c.close()
+    #print self.classcache
+        
+#@+node:ekr.20110310091639.14260: *7* reset_caches
+def reset_caches(self):
+    self.classcache = {}
+    self.filecache = {}
+    
+    self.fileids_scanned = set()
+    
+
+#@+node:ekr.20110310091639.14261: *7* cursor
+def cursor(self):
+    return self.dbconn.cursor()
+    
+#@+node:ekr.20110310091639.14262: *7* class_id
+def class_id(self, classname):
+    """ return class id. May create new class """
+    
+    if classname is None:
+        return 0
+    
+    idd = self.classcache.get(classname)
+    if idd is None:
+        c = self.cursor()
+        c.execute('insert into class(name) values (?)' , [classname])
+        c.close()
+        idd = c.lastrowid
+        self.classcache[classname] = idd
+    return idd
+
+#@+node:ekr.20110310091639.14263: *7* get_members
+def get_members(self, classnames):
+    
+    clset = set(classnames)
+    class_by_id = dict((v,k) for k,v in self.classcache.items())
+    file_by_id = dict((v,k) for k,v in self.filecache.items())
+    
+    result = []
+    for name, idd in self.classcache.items():
+        if name in clset:
+            c = self.cursor()
+            #print idd
+            c.execute('select name, class, file, searchpattern from function where class = (?)',(idd,))
+            for name, klassid, fileid, pat in c:
+                result.append((name, pat))
+
+    return result
+
+#@+node:ekr.20110310091639.14264: *7* get_functions
+def get_functions(self, prefix = None):
+
+    c = self.cursor()
+          
+    if prefix is None:
+        c.execute('select name, class, file, searchpattern from function')
+    else:
+        prefix = str(prefix)
+        c.execute('select name, class, file, searchpattern from function where name like (?)',(
+            prefix + '%',))
+
+    return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
+#@+node:ekr.20110310091639.14265: *7* file_id
+def file_id(self, fname):
+    if fname == '':
+        return 0
+    
+    idd = self.filecache.get(fname)
+    if idd is None:
+        c = self.cursor()
+        c.execute('insert into file(path) values (?)', [fname] )
+        idd = c.lastrowid
+        
+        self.filecache[fname] = idd
+        self.fileids_scanned.add(idd)
+    else:
+        if idd in self.fileids_scanned:
+            return idd
+                    
+        # we are rescanning a file with old entries - nuke old entries
+        #print "rescan", fname
+        c = self.cursor()
+        c.execute("delete from function where file = (?)", (idd, ))
+        #self.dbconn.commit()
+        self.fileids_scanned.add(idd)
+        
+    return idd
+
+#@+node:ekr.20110310091639.14266: *7* feed_function
+def feed_function(self, func_name, class_name, file_name, aux):
+    """ insert one function
+    
+    'aux' can be a search pattern (as with ctags), signature, or description
+    
+    
+    """
+    clid = self.class_id(class_name)
+    fid = self.file_id(file_name)
+    c = self.cursor()
+    c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
+              [clid, func_name, aux, fid])
+
+#@+node:ekr.20110310091639.14267: *7* feed_scintilla
+def feed_scintilla(self, apifile_obj):
+    """ handle scintilla api files
+    
+    Syntax is like:
+    
+    qt.QApplication.style?4() -> QStyle
+    """
+    
+    for l in apifile_obj:
+        if not isPython3:
+            l = unicode(l, 'utf8', 'replace')
+        parts = l.split('?')
+        fullsym = parts[0].rsplit('.',1)
+        klass, func = fullsym
+        
+        if len(parts) == 2:
+            desc = parts[1]
+        else:
+            desc = ''
+            
+        # now our class is like qt.QApplication. We do the dirty trick and
+        # remove all but actual class name
+        
+        shortclass = klass.rsplit('.',1)[-1]
+        
+        
+        #print func, klass, desc
+        self.feed_function(func.strip(), shortclass.strip(), '', desc.strip())
+    self.dbconn.commit()
+
+
+#@+node:ekr.20110310091639.14268: *7* feed_ctags
+def feed_ctags(self,tagsfile_obj):
+    for l in tagsfile_obj:
+        #print l
+        if not isPython3:
+            l = unicode(l, 'utf8', 'replace')
+        if l.startswith('!'):
+            continue
+        fields = l.split('\t')
+        m = fields[0]
+        fil = fields[1]
+        pat = fields[2]
+        typ = fields[3]
+        klass = None
+        try:
+            ext = fields[4]
+            if ext and ext.startswith('class:'):
+                klass = ext.split(':',1)[1].strip()
+                idd = self.class_id(klass)
+                #print "klass",klass, idd
+            
+        except IndexError:
+            ext = None
+            # class id 0 = function
+            idd = 0
+
+        c = self.cursor()
+        #print fields
+
+        fid = self.file_id(fil)
+        
+        c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
+                  [idd, m, pat, fid])
+    
+    self.dbconn.commit()
+    #c.commit()
+    #print fields
+
+#@+node:ekr.20110310091639.14269: *7* add_source
+def add_source(self, type, src):
+    c = self.cursor()
+    c.execute('insert into datasource(type, src) values (?,?)', (type,src))
+    self.dbconn.commit()
+    
+#@+node:ekr.20110310091639.14270: *7* sources
+def sources(self):
+    c = self.cursor()
+    c.execute('select type, src from datasource')
+    return list(c)
+    
+#@+node:ekr.20110310091639.14271: *7* zap_symbols
+def zap_symbols(self):
+    c = self.cursor()
+    tables = ['class', 'file', 'function']
+    for t in tables:
+        c.execute('delete from ' + t)
+    self.dbconn.commit()
+    
+#@+node:ekr.20110310091639.14272: *7* # high level commands
+# high level commands        
+#@+node:ekr.20110310091639.14273: *7* parseall
+def parseall(self):
+    sources = self.sources()
+    self.reset_caches()
+    self.zap_symbols()
+    tagdirs = [td for typ, td in sources if typ == 'tagdir']
+    self.parse(tagdirs)
+    self.dbconn.commit()
+
+#@+node:ekr.20110310091639.14274: *7* parse
+def parse(self, paths):
+    paths = set(os.path.abspath(p) for p in paths)
+    f = run_ctags(paths)
+    self.feed_ctags(f)
+    sources = self.sources()
+    for a in paths:
+        if ('tagdir', a) not in sources:            
+            self.add_source('tagdir', a)
+
+#@+node:ekr.20110310091639.14294: *6* codewise cmd wrappers
+#@+node:ekr.20110310091639.14289: *7* cmd_functions
+def cmd_functions(args):
+    cw = CodeWise()
+    
+    if args:
+        funcs = cw.get_functions(args[0])
+    else:
+        funcs = cw.get_functions()
+
+    lines = list(set(el[0] + "\t" + el[1] for el in funcs))
+    lines.sort()
+    return lines # EKR
+
+#@+node:ekr.20110310091639.14285: *7* cmd_init
+def cmd_init(args):
+    
+    print("Initializing CodeWise db at", DEFAULT_DB)
+
+    if os.path.isfile(DEFAULT_DB):
+        os.remove(DEFAULT_DB)
+    
+    cw = CodeWise()
+
+#@+node:ekr.20110310091639.14288: *7* cmd_members
+def cmd_members(args):
+
+    cw = CodeWise()
+
+    if args:
+        mems = cw.get_members([args[0]])
+        lines = list(set(el + "\t" + pat for el, pat in mems))
+    else:
+        lines = cw.classcache.keys()
+        
+    lines.sort()
+    return lines # EKR
     
    
-    if not g.unitTesting:
-        g.es('eval failed for "%s"' % repr(prefix))
 
-    self.insert_string('(')
-#@+node:ekr.20110512090917.14469: *7* calltip_success
-def calltip_success(self,prefix,obj):
+#@+node:ekr.20110310091639.14283: *7* cmd_parse
+def cmd_parse(args):
+
+    assert args
+    cw = CodeWise()
+    cw.parse(args)
+
+#@+node:ekr.20110310091639.14282: *7* cmd_parseall
+def cmd_parseall(args):
     
-    trace = False and not g.unitTesting
+    cw = CodeWise()
+    cw.parseall()
     
-    try:
-        # Get the parenthesized argument list.
-        s1,s2,s3,s4 = inspect.getargspec(obj)
-        s = inspect.formatargspec(s1,s2,s3,s4)
-        if trace: g.trace(obj,repr(s))
-    except Exception:
-        if trace: g.trace('inspect failed. obj: %s' % (obj))
-        self.insert_string('(')
-        return
+#@+node:ekr.20110310091639.14281: *7* cmd_scintilla
+def cmd_scintilla(args):
 
-    # Clean s and insert it.
-    if g.match(s,1,'self,'):
-        s = s[0] + s[6:].strip()
-    elif g.match_word(s,1,'self'):
-        s = s[0] + s[5:].strip()
+    cw = CodeWise()
+    for fil in args:
+        f = open(fil)
+        cw.feed_scintilla(f)
+        f.close()
 
-    self.insert_string(s)
+#@+node:ekr.20110310091639.14286: *7* cmd_setup
+def cmd_setup(args):
+    
+    ctagsfile = os.path.expanduser("~/.ctags")
+    print("Creating template",ctagsfile)
+    assert not os.path.isfile(ctagsfile)
+    open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
+    cmd_init(args)
+
+#@+node:ekr.20110310091639.14284: *7* cmd_tags
+def cmd_tags(args):
+
+    cw = CodeWise()
+    cw.feed_ctags(open(args[0]))
+
 #@+node:ekr.20061031131434.28: *6* compute_completion_list
 def compute_completion_list (self):
 
     trace = False and not g.unitTesting
+    verbose = True
     
-    i,j,prefix = self.get_autocompleter_prefix()
-    membersList = self.get_leo_completions(prefix)
+    prefix = self.get_autocompleter_prefix()
+    options = self.get_completions(prefix)
     
     tabList,common_prefix = g.itemsMatchingPrefixInList(
-        prefix,membersList,matchEmptyPrefix=False)
+        prefix,options,matchEmptyPrefix=False)
 
     if not common_prefix:
         tabList,common_prefix = g.itemsMatchingPrefixInList(
-            prefix,membersList,matchEmptyPrefix=True)
+            prefix,options,matchEmptyPrefix=True)
             
-    if trace: g.trace('common: %s, len(tabList): %s' % (
-        repr(common_prefix),len(tabList)))
+    if trace:
+        g.trace('prefix: %s, common: %s, len(tabList): %s' % (
+            repr(prefix),repr(common_prefix),len(tabList)))
+        if verbose: g.trace('options[:10]...\n',
+            g.listToString(options[:10],sort=True))
         
     if tabList:
         self.show_completion_list(common_prefix,prefix,tabList)
     
     return common_prefix,prefix,tabList
-#@+node:ekr.20061031131434.29: *6* do_back_space
-def do_back_space (self):
+#@+node:ekr.20110510120621.14539: *6* get_codewise_completions & helpers
+def get_codewise_completions(self,prefix):
+    
+    '''Use codewise to generate a list of hits.'''
 
-    '''Delete the character and recompute the completion list.'''
-    
     trace = False and not g.unitTesting
+    c = self.c
     
-    w = self.w
-    i = w.getInsertPoint()
-    if i <= 0: return
+    # w = self.w
+    ### head,junk = self.get_current_line(w)
+    ### s = self.get_word() # The word under the cursor.
+
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
+    if m:
+        varname = m.group(1)
+        ivar = m.group(3)
+        kind,aList = self.guess_class(c,varname)
+    else:
+        kind,aList = 'none',[]
+        varname,ivar = None,None
+
+    if aList:
+        if kind == 'class':
+            hits = self.lookup_methods(aList,ivar)
+        elif kind == 'module':
+            hits = self.lookup_modules(aList,ivar)
+    else:
+        aList2 = prefix.split('.')
+        if aList2:
+            func = aList2[-1]
+            hits = self.lookup_functions(func) ### Was s
+        else:
+            hits = []
+
+    if 1: # A kludge: add the prefix to each hit.
+        hits = ['%s.%s' % (varname,z) for z in hits]
         
-    w.delete(i-1,i)
-    w.setInsertPoint(i-1)
-    self.compute_completion_list()
-#@+node:ekr.20110509064011.14561: *6* get_autocompleter_prefix
-def get_autocompleter_prefix (self):
-    
-    trace = False and not g.unitTesting
-    
-    # Only the body pane supports auto-completion.
-    w = self.c.frame.body
-    s = w.getAllText()
-    i = w.getInsertPoint() - 1
-    i1 = i = j = max(0,i)
-    while i >= 0 and (s[i].isalnum() or s[i] in '._'):
-        i -= 1
-    i += 1
-    j += 1
-    prefix = s[i:j]
-    if trace: g.trace(repr(prefix),'ins',s[i1:])
-    return i,j,prefix
-#@+node:ekr.20110509064011.14557: *6* get_leo_completions
-def get_leo_completions(self,prefix):
-    
-    '''Return completions in an environment defining c, g and p.'''
-    
-    trace = False and not g.unitTesting
-    verbose = False
-    
-    d = self.get_leo_namespace(prefix)
-    if trace: g.trace(list(d.keys()))
-
-    aList = self.attr_matches(prefix,d)
-    aList.sort()
-    
     if trace:
-        if verbose:
-            g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
-        else:
-            g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
+        g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+        g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
 
+    return hits
+#@+node:ekr.20110510120621.14540: *7* clean
+def clean (self,hits):
+    
+    '''Clean up hits, a list of ctags patterns.'''
+    
+    trace = False and not g.unitTesting
+    aList = []
+    for h in hits:
+        s = h[0]
+        if 1:
+            # Just add the first entry: good for completion list.
+            aList.append(s)
+        else:
+            # Display oriented: no good for completion list.
+            fn = h[1].strip()
+            if fn.startswith('/'):
+                sig = fn[2:-4].strip()
+            else:
+                sig = fn
+            aList.append('%s: %s' % (s,sig))
+
+    aList = list(set(aList))
+    aList.sort()
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
     return aList
-#@+node:ekr.20110512170111.14472: *6* get_object
-def get_object (self):
+#@+node:ekr.20110510120621.14542: *7* guess_class
+def guess_class(self,c,varname):
     
-    '''Return the object corresponding to the current prefix.'''
+    '''Return kind, class_list'''
+
+    # if varname == 'g':
+        # return 'module',['leoGlobals']
+    if varname == 'p':
+        return 'class',['position']
+    if varname == 'c':
+        return 'class',['baseCommands']
+    if varname == 'self':
+        # Return the nearest enclosing class.
+        for par in p.parents():
+            h = par.h
+            m = re.search('class\s+(\w+)', h)
+            if m:
+                return 'class',[m.group(1)]
+
+    # Do a 'real' analysis
+    aList = ContextSniffer().get_classes(c.p.b,varname)
+    # g.trace(varname,aList)
+    return 'class',aList
+#@+node:ekr.20110510120621.14543: *7* lookup_functions/methods/modules
+def lookup_functions(self,prefix):
+
+    aList = codewise.cmd_functions([prefix])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
     
-    trace = False and not g.unitTesting
+    aList = codewise.cmd_members([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
     
-    common_prefix,prefix1,aList = self.compute_completion_list()
-    
-    if len(aList) == 0:
-        if trace: g.trace('no completion list for: %s' % (prefix1))
-        return None,prefix1
-    elif len(aList) == 1:
-        prefix = aList[0]
-    else:
-        prefix = common_prefix
-
-    if trace: g.trace(repr(prefix))
-    
-    try:
-        d = self.get_leo_namespace(prefix)
-        safe_prefix = self.strip_brackets(prefix)
-        obj = eval(safe_prefix,d)
-    except AttributeError:
-        obj = None
-    except SyntaxError:
-        obj = None
-    except Exception:
-        g.es_exception()
-        obj = None
-        
-    return obj,prefix
-#@+node:ekr.20110510071925.14586: *6* init_qcompleter
-def init_qcompleter (self):
-    
-    trace = False and not g.unitTesting
-    
-    w = self.c.frame.body.bodyCtrl.widget
-        # A LeoQTextBrowser.
-        
-    # Compute the prefix and the list of options.
-    i,j,prefix = self.get_autocompleter_prefix()
-    options = self.get_leo_completions(prefix)
-
-    if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
-
-    self.qcompleter = w.initCompleter(prefix,options)
-#@+node:ekr.20110511133940.14552: *6* init_tabcompleter
-def init_tabcompleter (self,event=None):
-    
-    trace = False and not g.unitTesting
-        
-    # Compute the prefix and the list of options.
-    i,j,prefix = self.get_autocompleter_prefix()
-    options = self.get_leo_completions(prefix)
-
-    if options:
-        self.clearTabName() # Creates the tabbed pane.
-        self.autoCompleterStateHandler(event)
-    else:
-        g.es('No completions',color='blue')
-        self.abort()
-#@+node:ekr.20061031131434.39: *6* insert_general_char
-def insert_general_char (self,ch,keysym):
-
-    trace = False and not g.unitTesting
-    k = self.k ; w = self.w
-    
-    if trace: g.trace(repr(ch))
-
-    if g.isWordChar(ch):
-        self.insert_string(ch)
-        common_prefix,prefix,aList = self.compute_completion_list()
-        if not aList:
-            # Delete the character we just inserted.
-            self.do_back_space()
-        elif self.auto_tab and len(common_prefix) > len(prefix):
-            extend = common_prefix[len(prefix):]
-            if trace: g.trace('*** extend',extend)
-            ins = w.getInsertPoint()
-            w.insert(ins,extend)
-    else:
-        if ch == '(' and k.enable_calltips:
-            # This calls self.finish if the '(' is valid.
-            self.calltip()
-        else:
-            self.insert_string(ch)
-            self.finish()
-#@+node:ekr.20061031131434.31: *6* insert_string
-def insert_string (self,s):
-
-    '''Insert s at the insertion point.'''
-
-    c = self.c ; w = self.w
-    
-    c.widgetWantsFocusNow(w)
-    j = w.getInsertPoint()
-    w.insert(j,s)
-   
-    c.frame.body.onBodyChanged('Typing')
-#@+node:ekr.20110511133940.14561: *6* show_completion_list
-def show_completion_list (self,common_prefix,prefix,tabList):
-    
-    c = self.c
-    c.widgetWantsFocus(self.w)
-        
-    aList = common_prefix.split('.')
-    header = '.'.join(aList[:-1])
-
-    if not self.verbose and len(tabList) > 20:
-        # Show the possible starting letters,
-        # but only if there are more than one.
-        d = {}
-        for z in tabList:
-            tail = z and z[len(header):] or ''
-            if tail.startswith('.'): tail = tail[1:]
-            ch = tail and tail[0] or ''
-            if ch:
-                n = d.get(ch,0)
-                d[ch] = n + 1
-        aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
-        if len(aList) > 1:
-            tabList = aList
-            tabList.append('common prefix: %s' % (common_prefix))
-
-    c.frame.log.clearTab(self.tabName)
-        # Creates the tab if necessary.
-        
-    s = '\n'.join(tabList)
-    self.put('',s,tabName=self.tabName)
-#@+node:ekr.20061031131434.46: *6* start
-def start (self,event=None,w=None,prefix=None):
-
-    assert not prefix,prefix
-    
-    if w: self.w = w
-        
-    if self.use_qcompleter:
-        self.init_qcompleter()
-    else:
-        self.init_tabcompleter(event)
-#@+node:ekr.20061031131434.38: *6* info
-def info (self):
-
-    c = self.c
-    
-    obj,prefix = self.get_object()
-
-    doc = inspect.getdoc(obj)
-
-    if doc:
-        c.frame.log.clearTab('Info',wrap='word')
-        self.put('',doc,tabName='Info')
-    else:
-        g.es('no docstring for',word,color='blue')
+    aList = codewise.cmd_functions([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
 #@-all
 #@-leo

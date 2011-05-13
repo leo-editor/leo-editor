@@ -190,7 +190,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         ev = w.ev_filter
         
         def do_tab(force=False):
-            i,j,prefix1 = ac.get_autocompleter_prefix()
+            prefix1 = ac.get_autocompleter_prefix()
             prefix = ac.do_qcompleter_tab(prefix1,self.leo_options)
             if (auto_extend or force) and len(prefix) > len(prefix1):
                 extend = prefix[len(prefix1):]
@@ -252,7 +252,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if key == qt.Key_Tab:
                 return
             elif key == qt.Key_Backspace:
-                i,j,prefix = ac.get_autocompleter_prefix()
+                prefix = ac.get_autocompleter_prefix()
             else:
                 prefix = do_tab(force=True)
         else:
@@ -260,7 +260,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if key == qt.Key_Tab:
                 prefix = do_tab(force=True)
             else:
-                i,j,prefix = ac.get_autocompleter_prefix()
+                prefix = ac.get_autocompleter_prefix()
         
         if prefix.endswith('.'):
             # Calling qc.setModel is a no-no's here.
@@ -308,11 +308,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         # Replace the prefix with the completion.
         self.setFocus() # QTextBrowser.setFocus.
-        i,j,prefix = c.k.autoCompleter.get_autocompleter_prefix()
+        prefix = c.k.autoCompleter.get_autocompleter_prefix()
         if trace: g.trace(i,j,repr(prefix))
 
         if prefix != completion:
             w = c.frame.body
+            j = w.getInsertPoint()
+            i = j - len(prefix)
             w.delete(i,j)
             w.insert(i,completion)
             j = i+len(completion)

@@ -14,9 +14,11 @@
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
-<v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = True</vh></v>
+<v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = True</vh></v>
-<v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = False</vh></v>
+<v t="ekr.20110512225930.2456"><vh>@bool enable_calltips_initially = False</vh></v>
+<v t="ekr.20110512220530.2454"><vh>@bool use_codewise = True</vh></v>
+<v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = False</vh></v>
 </v>
 <v t="ekr.20100118190256.2014"><vh>Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -1098,7 +1100,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8750,7 +8752,7 @@ print(s)
 </t>
 <t tx="ekr.20110510093130.2434"></t>
 <t tx="ekr.20110510110227.2439"></t>
-<t tx="ekr.20110510110227.2440"></t>
+<t tx="ekr.20110510110227.2440">c.</t>
 <t tx="ekr.20110511061102.5232">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
 
@@ -8773,5 +8775,7 @@ timer.connect(timer,QtCore.SIGNAL("timeout()"),callBack)
 timer.start(0)
 </t>
 <t tx="ekr.20110512085154.2447"></t>
+<t tx="ekr.20110512220530.2454"></t>
+<t tx="ekr.20110512225930.2456"></t>
 </tnodes>
 </leo_file>

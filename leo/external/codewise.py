@@ -138,7 +138,7 @@ DEFAULT_DB = os.path.expanduser("~/.codewise.db")
 
 #@+others
 #@+node:ekr.20110310091639.14295: ** top level...
-#@+node:ekr.20110310091639.14294: *3* cmd wrappers
+#@+node:ekr.20110310091639.14294: *3* codewise cmd wrappers
 #@+node:ekr.20110310091639.14289: *4* cmd_functions
 def cmd_functions(args):
     cw = CodeWise()
@@ -147,9 +147,9 @@ def cmd_functions(args):
         funcs = cw.get_functions(args[0])
     else:
         funcs = cw.get_functions()
+
     lines = list(set(el[0] + "\t" + el[1] for el in funcs))
     lines.sort()
-    # printlines(lines)
     return lines # EKR
 
 #@+node:ekr.20110310091639.14285: *4* cmd_init
@@ -166,17 +166,17 @@ def cmd_init(args):
 def cmd_members(args):
 
     cw = CodeWise()
-    if not args:
+
+    if args:
+        mems = cw.get_members([args[0]])
+        lines = list(set(el + "\t" + pat for el, pat in mems))
+    else:
         lines = cw.classcache.keys()
-        lines.sort()
-        # printlines(lines)        
-        return [] # EKR
-    
-    mems = cw.get_members([args[0]])
-    lines = list(set(el + "\t" + pat for el, pat in mems))
+        
     lines.sort()
-    # printlines(lines)
     return lines # EKR
+    
+   
 
 #@+node:ekr.20110310091639.14283: *4* cmd_parse
 def cmd_parse(args):
@@ -717,7 +717,6 @@ class CodeWise:
     #@+node:ekr.20110310091639.14264: *3* get_functions
     def get_functions(self, prefix = None):
 
-        
         c = self.cursor()
               
         if prefix is None:
@@ -728,9 +727,6 @@ class CodeWise:
                 prefix + '%',))
 
         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-
-
-    #@+node:ville.20110402213648.7090: *3* newHeadline
     #@+node:ekr.20110310091639.14265: *3* file_id
     def file_id(self, fname):
         if fname == '':

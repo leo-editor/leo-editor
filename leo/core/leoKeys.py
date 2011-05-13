@@ -118,170 +118,10 @@ class AutoCompleterClass:
         
         # Options...
         self.auto_tab       = c.config.getBool('auto_tab_complete',False)
-        self.use_codewise   = c.config.getBool('use_codewise',False) and not self.isLeoSourceFile()
+        self.use_codewise   = c.config.getBool('use_codewise',False) and not self.is_leo_source_file()
         self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
-    #@+node:ekr.20110314115639.14269: *4* isLeoSourceFile
-    def isLeoSourceFile (self):
-        
-        '''Return True if this is one of Leo's source files.'''
-        
-        c = self.c
-
-        table = (z.lower() for z in (
-            'leoDocs.leo',
-            'leoGui.leo',       'leoGuiPluginsRef.leo',
-            'leoPlugins.leo',   'leoPluginsRef.leo',
-            'leoPy.leo',        'leoPyRef.leo',
-            'myLeoSettings.leo', 'leoSettings.leo',
-            'ekr.leo',
-            'test.leo',
-        ))
-
-        return c.shortFileName().lower() in table
-    #@+node:ekr.20110510120621.14539: *3* codewise_complete & helpers
-    def codewise_complete(self,event=None,s=None):
-        
-        '''Use codewise to generate a list of hits.'''
-
-        c = self.c
-        p = c.p
-        w = self.w
-        
-        if s:
-            head = s
-        else:
-            head,junk = self.get_current_line(w)
-            s = self.get_word()
-
-        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", head.lstrip())
-        if m:
-            obj = m.group(1)
-            prefix = m.group(3)
-            g.trace('obj',obj,'prefix',prefix)
-            kind,aList = self.guess_class(c,p, obj)
-        else:
-            kind,aList = 'none',[]
-            
-        if aList:
-            if kind == 'class':
-                hits = self.lookup_methods(aList,prefix)
-            elif kind == 'module':
-                hits = self.lookup_modules(aList,prefix)
-        else:
-            hits = self.lookup(s)
-            
-        # g.trace(aList,repr(s),len(hits))
-        return hits
-    #@+node:ekr.20110510120621.14540: *4* cleanup
-    def clean (self,hits):
-        
-        '''Clean up hits, a list of ctags patterns, for display.'''
-        
-        aList = []
-        for h in hits:
-            s = h[0]
-            fn = h[1].strip()
-            if fn.startswith('/'):
-                sig = fn[2:-4].strip()
-            else:
-                sig = fn
-            aList.append('%s: %s' % (s,sig))
-
-        aList = list(set(aList))
-        aList.sort()
-        return aList
-    #@+node:ekr.20110510120621.14541: *4* get_current_line
-    def get_current_line(self,w):
-        
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        head, tail = s[i:ins], s[ins:j]
-
-        return head, tail
-    #@+node:ekr.20110510120621.14542: *4* guess_class
-    def guess_class(self,c,p,varname):
-        
-        '''Return kind, class_list'''
-
-        # if varname == 'g':
-            # return 'module',['leoGlobals']
-        if varname == 'p':
-            return 'class',['position']
-        if varname == 'c':
-            return 'class',['baseCommands']
-        if varname == 'self':
-            # Return the nearest enclosing class.
-            for par in p.parents():
-                h = par.h
-                m = re.search('class\s+(\w+)', h)
-                if m:
-                    return 'class',[m.group(1)]
-
-        # Do a 'real' analysis
-        aList = ContextSniffer().get_classes(p.b,varname)
-        # g.trace(varname,aList)
-        return 'class',aList
-    #@+node:ekr.20110510120621.14543: *4* lookup
-    def lookup(self,prefix):
-
-        aList = codewise.cmd_functions([prefix])
-        hits = [z.split(None,1) for z in aList if z.strip()]
-        return self.clean(hits)
-        
-        # # Clean up the ctags info.
-        # aList = []
-        # for h in hits:
-            # s = h[0]
-            # sig = h[1].strip()[2:-4].strip()
-            # aList.append('%s: %s' % (s,sig))
-
-        # aList = list(set(aList))
-        # aList.sort()
-        # return aList
-    #@+node:ekr.20110510120621.14544: *4* lookup_methods
-    def lookup_methods(self,aList,prefix):
-        
-        aList = codewise.cmd_members([aList[0]])
-        hits = (z.split(None,1) for z in aList if z.strip())
-        return self.clean(aList)
-
-        # # Clean up the ctags pattern.
-        # aList = []
-        # for h in hits:
-            # s = h[0]
-            # fn = h[1].strip()
-            # if fn.startswith('/'):
-                # sig = fn[2:-4].strip()
-            # else:
-                # sig = fn
-            # aList.append('%s: %s' % (s,sig))
-
-        # aList = list(set(aList))
-        # aList.sort()
-        # return aList
-    #@+node:ekr.20110510120621.14545: *4* lookup_modules
-    def lookup_modules (self,aList,prefix):
-        
-        g.trace(prefix,aList)
-        
-        aList = codewise.cmd_functions([aList[0]])
-        hits = (z.split(None,1) for z in aList if z.strip())
-        return self.clean(hits)
-
-        
-        
-    #@+node:ekr.20110510120621.14546: *4* get_word
-    def get_word (self):
-        
-        w = self.c.frame.body.bodyCtrl.widget
-            # A LeoQTextBrowser.
-        tc = w.textCursor()
-        tc.select(tc.WordUnderCursor)
-        s = tc.selectedText()
-        return s
     #@+node:ekr.20061031131434.8: *3* Top level (autocompleter)
     #@+node:ekr.20061031131434.9: *4* autoComplete
     def autoComplete (self,event=None,force=False):
@@ -313,7 +153,8 @@ class AutoCompleterClass:
         self.language = g.scanForAtLanguage(c,c.p)
         if w and self.language == 'python' and (k.enable_autocompleter or force):
             if trace: g.trace('starting')
-            self.start(event=event,w=w)
+            self.w = w
+            self.start(event)
         else:
             if trace: g.trace('not enabled')
 
@@ -442,14 +283,15 @@ class AutoCompleterClass:
             s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
             g.es(s,color='red')
     #@+node:ekr.20061031131434.16: *3* Helpers
-    #@+node:ekr.20061031131434.17: *4* abort & exit (autocompleter)
+    #@+node:ekr.20110512212836.14469: *4* abort, exit & finish
+    #@+node:ekr.20061031131434.17: *5* abort
     def abort (self):
 
         k = self.k
         k.keyboardQuit(event=None,setDefaultStatus=False)
             # Stay in the present input state.
         self.exit(restore=True)
-
+    #@+node:ekr.20110512212836.14470: *5* exit
     def exit (self,restore=False): # Called from keyboard-quit.
 
         trace = False and not g.unitTesting
@@ -464,6 +306,19 @@ class AutoCompleterClass:
         c.widgetWantsFocusNow(w)
         i,j = w.getSelectionRange()
         w.setSelectionRange(j,j,insert=j)
+    #@+node:ekr.20061031131434.34: *5* finish
+    def finish (self):
+
+        c = self.c ; k = c.k
+
+        k.keyboardQuit(event=None,setDefaultStatus=False)
+            # Stay in the present input state.
+
+        for name in (self.tabName,'Modules','Info'):
+            c.frame.log.deleteTab(name)
+
+        c.frame.body.onBodyChanged('Typing')
+        c.recolor()
     #@+node:ekr.20061031131434.18: *4* append/begin/popTabName
     def appendTabName (self,word):
 
@@ -593,19 +448,23 @@ class AutoCompleterClass:
     def compute_completion_list (self):
 
         trace = False and not g.unitTesting
+        verbose = True
         
-        i,j,prefix = self.get_autocompleter_prefix()
-        membersList = self.get_leo_completions(prefix)
+        prefix = self.get_autocompleter_prefix()
+        options = self.get_completions(prefix)
         
         tabList,common_prefix = g.itemsMatchingPrefixInList(
-            prefix,membersList,matchEmptyPrefix=False)
+            prefix,options,matchEmptyPrefix=False)
 
         if not common_prefix:
             tabList,common_prefix = g.itemsMatchingPrefixInList(
-                prefix,membersList,matchEmptyPrefix=True)
+                prefix,options,matchEmptyPrefix=True)
                 
-        if trace: g.trace('common: %s, len(tabList): %s' % (
-            repr(common_prefix),len(tabList)))
+        if trace:
+            g.trace('prefix: %s, common: %s, len(tabList): %s' % (
+                repr(prefix),repr(common_prefix),len(tabList)))
+            if verbose: g.trace('options[:10]...\n',
+                g.listToString(options[:10],sort=True))
             
         if tabList:
             self.show_completion_list(common_prefix,prefix,tabList)
@@ -638,30 +497,6 @@ class AutoCompleterClass:
         if trace: g.trace(repr(common_prefix))
         
         return common_prefix
-    #@+node:ekr.20061031131434.33: *4* findCalltipWord
-    def findCalltipWord (self,w):
-
-        i = w.getInsertPoint()
-        s = w.getAllText()
-        if i > 0:
-            i,j = g.getWord(s,i-1)
-            word = s[i:j]
-            return word
-        else:
-            return ''
-    #@+node:ekr.20061031131434.34: *4* finish
-    def finish (self):
-
-        c = self.c ; k = c.k
-
-        k.keyboardQuit(event=None,setDefaultStatus=False)
-            # Stay in the present input state.
-
-        for name in (self.tabName,'Modules','Info'):
-            c.frame.log.deleteTab(name)
-
-        c.frame.body.onBodyChanged('Typing')
-        c.recolor()
     #@+node:ekr.20110509064011.14561: *4* get_autocompleter_prefix
     def get_autocompleter_prefix (self):
         
@@ -670,6 +505,7 @@ class AutoCompleterClass:
         # Only the body pane supports auto-completion.
         w = self.c.frame.body
         s = w.getAllText()
+        if not s: return ''
         i = w.getInsertPoint() - 1
         i1 = i = j = max(0,i)
         while i >= 0 and (s[i].isalnum() or s[i] in '._'):
@@ -678,8 +514,125 @@ class AutoCompleterClass:
         j += 1
         prefix = s[i:j]
         if trace: g.trace(repr(prefix),'ins',s[i1:])
-        return i,j,prefix
-    #@+node:ekr.20110509064011.14557: *4* get_leo_completions
+        return prefix
+    #@+node:ekr.20110512212836.14471: *4* get_completions & helpers
+    def get_completions(self,prefix):
+        
+        if self.use_codewise:
+            return self.get_codewise_completions(prefix)
+        else:
+            return self.get_leo_completions(prefix)
+    #@+node:ekr.20110510120621.14539: *5* get_codewise_completions & helpers
+    def get_codewise_completions(self,prefix):
+        
+        '''Use codewise to generate a list of hits.'''
+
+        trace = False and not g.unitTesting
+        c = self.c
+        
+        # w = self.w
+        ### head,junk = self.get_current_line(w)
+        ### s = self.get_word() # The word under the cursor.
+
+        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
+        if m:
+            varname = m.group(1)
+            ivar = m.group(3)
+            kind,aList = self.guess_class(c,varname)
+        else:
+            kind,aList = 'none',[]
+            varname,ivar = None,None
+
+        if aList:
+            if kind == 'class':
+                hits = self.lookup_methods(aList,ivar)
+            elif kind == 'module':
+                hits = self.lookup_modules(aList,ivar)
+        else:
+            aList2 = prefix.split('.')
+            if aList2:
+                func = aList2[-1]
+                hits = self.lookup_functions(func) ### Was s
+            else:
+                hits = []
+
+        if 1: # A kludge: add the prefix to each hit.
+            hits = ['%s.%s' % (varname,z) for z in hits]
+            
+        if trace:
+            g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+            g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+
+        return hits
+    #@+node:ekr.20110510120621.14540: *6* clean
+    def clean (self,hits):
+        
+        '''Clean up hits, a list of ctags patterns.'''
+        
+        trace = False and not g.unitTesting
+        aList = []
+        for h in hits:
+            s = h[0]
+            if 1:
+                # Just add the first entry: good for completion list.
+                aList.append(s)
+            else:
+                # Display oriented: no good for completion list.
+                fn = h[1].strip()
+                if fn.startswith('/'):
+                    sig = fn[2:-4].strip()
+                else:
+                    sig = fn
+                aList.append('%s: %s' % (s,sig))
+
+        aList = list(set(aList))
+        aList.sort()
+        if trace:
+            # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+            g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+        return aList
+    #@+node:ekr.20110510120621.14542: *6* guess_class
+    def guess_class(self,c,varname):
+        
+        '''Return kind, class_list'''
+
+        # if varname == 'g':
+            # return 'module',['leoGlobals']
+        if varname == 'p':
+            return 'class',['position']
+        if varname == 'c':
+            return 'class',['baseCommands']
+        if varname == 'self':
+            # Return the nearest enclosing class.
+            for par in p.parents():
+                h = par.h
+                m = re.search('class\s+(\w+)', h)
+                if m:
+                    return 'class',[m.group(1)]
+
+        # Do a 'real' analysis
+        aList = ContextSniffer().get_classes(c.p.b,varname)
+        # g.trace(varname,aList)
+        return 'class',aList
+    #@+node:ekr.20110510120621.14543: *6* lookup_functions/methods/modules
+    def lookup_functions(self,prefix):
+
+        aList = codewise.cmd_functions([prefix])
+        hits = [z.split(None,1) for z in aList if z.strip()]
+        return self.clean(hits)
+
+    def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
+        
+        aList = codewise.cmd_members([aList[0]])
+        hits = [z.split(None,1) for z in aList if z.strip()]
+        return self.clean(hits)
+
+    def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
+        
+        aList = codewise.cmd_functions([aList[0]])
+        hits = [z.split(None,1) for z in aList if z.strip()]
+        return self.clean(hits)
+    #@+node:ekr.20110509064011.14557: *5* get_leo_completions
     def get_leo_completions(self,prefix):
         
         '''Return completions in an environment defining c, g and p.'''
@@ -775,8 +728,8 @@ class AutoCompleterClass:
             # A LeoQTextBrowser.
             
         # Compute the prefix and the list of options.
-        i,j,prefix = self.get_autocompleter_prefix()
-        options = self.get_leo_completions(prefix)
+        prefix = self.get_autocompleter_prefix()
+        options = self.get_completions(prefix)
 
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
 
@@ -787,8 +740,8 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
             
         # Compute the prefix and the list of options.
-        i,j,prefix = self.get_autocompleter_prefix()
-        options = self.get_leo_completions(prefix)
+        prefix = self.get_autocompleter_prefix()
+        options = self.get_completions(prefix)
 
         if options:
             self.clearTabName() # Creates the tabbed pane.
@@ -834,6 +787,24 @@ class AutoCompleterClass:
         w.insert(j,s)
        
         c.frame.body.onBodyChanged('Typing')
+    #@+node:ekr.20110314115639.14269: *4* is_leo_source_file
+    def is_leo_source_file (self):
+        
+        '''Return True if this is one of Leo's source files.'''
+        
+        c = self.c
+
+        table = (z.lower() for z in (
+            'leoDocs.leo',
+            'leoGui.leo',       'leoGuiPluginsRef.leo',
+            'leoPlugins.leo',   'leoPluginsRef.leo',
+            'leoPy.leo',        'leoPyRef.leo',
+            'myLeoSettings.leo', 'leoSettings.leo',
+            'ekr.leo',
+            # 'test.leo',
+        ))
+
+        return c.shortFileName().lower() in table
     #@+node:ekr.20101101175644.5891: *4* put
     def put (self,*args,**keys):
 
@@ -875,12 +846,8 @@ class AutoCompleterClass:
         s = '\n'.join(tabList)
         self.put('',s,tabName=self.tabName)
     #@+node:ekr.20061031131434.46: *4* start
-    def start (self,event=None,w=None,prefix=None):
+    def start (self,event):
 
-        assert not prefix,prefix
-        
-        if w: self.w = w
-            
         if self.use_qcompleter:
             self.init_qcompleter()
         else:
