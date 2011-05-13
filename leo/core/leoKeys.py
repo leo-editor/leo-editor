@@ -122,7 +122,6 @@ class AutoCompleterClass:
             # The (global) completions for "self."
         self.codewiseDict = {}
             # Keys are prefixes, values are completion lists.
-            # This is cleared by start, so that it relates to the current postition.
         
         # Options...
         self.auto_tab       = c.config.getBool('auto_tab_complete',False)
@@ -895,23 +894,26 @@ class AutoCompleterClass:
             aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
             if len(aList) > 1:
                 tabList = aList
-                tabList.append('\ncommon prefix: %s' % (common_prefix))
+                # tabList.append('\ncommon prefix: %s' % (common_prefix))
             else:
                 tabList = clean(tabList,header)
-                if len(tabList) > 10:
-                    tabList.append('\ncommon prefix: %s' % (common_prefix))
+                # if len(tabList) > 10:
+                    # tabList.append('\ncommon prefix: %s' % (common_prefix))
         else:
             tabList = clean(tabList,header)
 
         c.frame.log.clearTab(self.tabName)
             # Creates the tab if necessary.
             
+        self.beginTabName(g.choose(header,header+'.',''))
+            
         s = '\n'.join(tabList)
         self.put('',s,tabName=self.tabName)
     #@+node:ekr.20061031131434.46: *4* start
     def start (self,event):
         
-        self.codewiseDict = {}
+        # We don't need to clear this now that we don't use ContextSniffer.
+        # self.codewiseDict = {}
 
         if self.use_qcompleter:
             self.init_qcompleter()

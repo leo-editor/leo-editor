@@ -1100,7 +1100,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="1,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8752,7 +8752,7 @@ print(s)
 </t>
 <t tx="ekr.20110510093130.2434"></t>
 <t tx="ekr.20110510110227.2439"></t>
-<t tx="ekr.20110510110227.2440">c.</t>
+<t tx="ekr.20110510110227.2440"></t>
 <t tx="ekr.20110511061102.5232">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
 

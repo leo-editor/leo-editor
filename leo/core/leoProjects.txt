@@ -12611,7 +12611,6 @@ def __init__ (self,k):
         # The (global) completions for "self."
     self.codewiseDict = {}
         # Keys are prefixes, values are completion lists.
-        # This is cleared by start, so that it relates to the current postition.
     
     # Options...
     self.auto_tab       = c.config.getBool('auto_tab_complete',False)
@@ -12619,6 +12618,34 @@ def __init__ (self,k):
     self.use_qcompleter = c.config.getBool('use_qcompleter',False)
         # True: show results in autocompleter tab.
         # False: show results in a QCompleter widget.
+#@+node:ekr.20061031131434.18: *6* append/begin/popTabName
+def appendTabName (self,word):
+
+    self.setTabName(self.tabName + '.' + word)
+
+def beginTabName (self,word):
+
+    self.setTabName('AutoComplete ' + word)
+
+def clearTabName (self):
+
+    self.setTabName('AutoComplete ')
+
+def popTabName (self):
+
+    s = self.tabName
+    i = s.rfind('.',0,-1)
+    if i > -1:
+        self.setTabName(s[0:i])
+
+# Underscores are not valid in Pmw tab names!
+def setTabName (self,s):
+
+    c = self.c
+    if self.tabName:
+        c.frame.log.deleteTab(self.tabName)
+    self.tabName = s.replace('_','') or ''
+    c.frame.log.clearTab(self.tabName)
 #@+node:ekr.20061031131434.11: *6* auto_completer_state_handler
 def auto_completer_state_handler (self,event):
 
@@ -13338,15 +13365,6 @@ def get_leo_completions(self,prefix):
             g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
 
     return aList
-#@+node:ekr.20061031131434.46: *6* start
-def start (self,event):
-    
-    self.codewiseDict = {}
-
-    if self.use_qcompleter:
-        self.init_qcompleter()
-    else:
-        self.init_tabcompleter(event)
 #@+node:ekr.20110511133940.14561: *6* show_completion_list
 def show_completion_list (self,common_prefix,prefix,tabList):
     
@@ -13376,18 +13394,30 @@ def show_completion_list (self,common_prefix,prefix,tabList):
         aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
         if len(aList) > 1:
             tabList = aList
-            tabList.append('\ncommon prefix: %s' % (common_prefix))
+            # tabList.append('\ncommon prefix: %s' % (common_prefix))
         else:
             tabList = clean(tabList,header)
-            if len(tabList) > 10:
-                tabList.append('\ncommon prefix: %s' % (common_prefix))
+            # if len(tabList) > 10:
+                # tabList.append('\ncommon prefix: %s' % (common_prefix))
     else:
         tabList = clean(tabList,header)
 
     c.frame.log.clearTab(self.tabName)
         # Creates the tab if necessary.
         
+    self.beginTabName(g.choose(header,header+'.',''))
+        
     s = '\n'.join(tabList)
     self.put('',s,tabName=self.tabName)
+#@+node:ekr.20061031131434.46: *6* start
+def start (self,event):
+    
+    # We don't need to clear this now that we don't use ContextSniffer.
+    # self.codewiseDict = {}
+
+    if self.use_qcompleter:
+        self.init_qcompleter()
+    else:
+        self.init_tabcompleter(event)
 #@-all
 #@-leo
