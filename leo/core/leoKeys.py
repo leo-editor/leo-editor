@@ -113,6 +113,7 @@ class AutoCompleterClass:
         self.k = k
         self.force = None
         self.language = None
+        self.qw = None # The object that supports qcompletion methods.
         self.tabName = None # The name of the main completion tab.
         self.verbose = False # True: print all members, regardless of how many there are.
         self.w = None # The widget that gets focus after autocomplete is done.
@@ -250,9 +251,12 @@ class AutoCompleterClass:
     def abort (self):
 
         k = self.k
+        
         k.keyboardQuit(event=None,setDefaultStatus=False)
             # Stay in the present input state.
-        self.exit(restore=True)
+        
+        if 0: # keyoardQuit calls k.autocompleter.exit.
+            self.exit(restore=True)
     #@+node:ekr.20110512212836.14470: *5* exit
     def exit (self,restore=False): # Called from keyboard-quit.
 
@@ -261,8 +265,12 @@ class AutoCompleterClass:
 
         k = self ; c = k.c 
         w = self.w or c.frame.body.bodyCtrl
-        for name in (self.tabName,'Modules','Info'):
-            c.frame.log.deleteTab(name)
+        
+        if self.use_qcompleter:
+            self.qw.endCompleter()
+        else:
+            for name in (self.tabName,'Modules','Info'):
+                c.frame.log.deleteTab(name)
             
         # Restore the selection range that may have been destroyed by changing tabs.
         c.widgetWantsFocusNow(w)
@@ -767,7 +775,7 @@ class AutoCompleterClass:
         else:
             g.es('no docstring for',word,color='blue')
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
-    def init_qcompleter (self):
+    def init_qcompleter (self,event=None):
         
         trace = False and not g.unitTesting
 
@@ -778,8 +786,10 @@ class AutoCompleterClass:
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
 
         if options:
-            w = self.c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
+            self.qw = w = self.c.frame.body.bodyCtrl.widget
+                # A LeoQTextBrowser.
             self.qcompleter = w.initCompleter(prefix,options)
+            self.auto_completer_state_handler(event)
         else:
             g.es('No completions',color='blue')
             self.abort()
@@ -837,6 +847,9 @@ class AutoCompleterClass:
         w.insert(j,s)
        
         c.frame.body.onBodyChanged('Typing')
+        
+        if self.use_qcompleter:
+            c.widgetWantsFocusNow(self.qw)
     #@+node:ekr.20110314115639.14269: *4* is_leo_source_file
     def is_leo_source_file (self):
         
@@ -865,45 +878,58 @@ class AutoCompleterClass:
         # print('autoCompleter.put',args,keys)
 
         g.es(*args,**keys)
-    #@+node:ekr.20110511133940.14561: *4* show_completion_list
+    #@+node:ekr.20110511133940.14561: *4* show_completion_list & helpers
     def show_completion_list (self,common_prefix,prefix,tabList):
-        
+
         c = self.c
         
-        def clean(aList,header):
-            return [
-                g.choose(z.startswith(header),z[len(header)+1:],z)
-                for z in tabList]
-        
-        c.widgetWantsFocus(self.w)
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
-
-        if not self.verbose and len(tabList) > 20:
-            # Show the possible starting letters,
-            # but only if there are more than one.
-            d = {}
-            for z in tabList:
-                tail = z and z[len(header):] or ''
-                if tail.startswith('.'): tail = tail[1:]
-                ch = tail and tail[0] or ''
-                if ch:
-                    n = d.get(ch,0)
-                    d[ch] = n + 1
-            aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
-            if len(aList) > 1:
-                tabList = aList
-            else:
-                tabList = clean(tabList,header)
+        
+        if self.verbose or len(tabList) < 20:
+            tabList = self.clean_completion_list(header,tabList,)
         else:
-            tabList = clean(tabList,header)
-
-        # Update the tab name, creating the tab if necessary.
-        c.frame.log.clearTab(self.tabName)
-        self.beginTabName(g.choose(header,header+'.',''))
+            tabList = self.get_summary_list(header,tabList)
             
-        s = '\n'.join(tabList)
-        self.put('',s,tabName=self.tabName)
+        if self.use_qcompleter:
+            # Put the completions in the QListView.
+            self.qw.showCompletions(tabList)
+        else:
+            # Update the tab name, creating the tab if necessary.
+            c.widgetWantsFocus(self.w)
+            c.frame.log.clearTab(self.tabName)
+            self.beginTabName(g.choose(header,header+'.',''))
+            s = '\n'.join(tabList)
+            self.put('',s,tabName=self.tabName)
+    #@+node:ekr.20110513104728.14453: *5* clean_completion_list
+    def clean_completion_list(self,header,tabList):
+        
+        '''Return aList with header removed from the start of each list item.'''
+        
+        return [
+            g.choose(z.startswith(header),z[len(header)+1:],z)
+                for z in tabList]
+    #@+node:ekr.20110513104728.14454: *5* get_summary_list
+    def get_summary_list (self,header,tabList):
+
+        '''Show the possible starting letters,
+        but only if there are more than one.
+        '''
+
+        d = {}
+        for z in tabList:
+            tail = z and z[len(header):] or ''
+            if tail.startswith('.'): tail = tail[1:]
+            ch = tail and tail[0] or ''
+            if ch:
+                n = d.get(ch,0)
+                d[ch] = n + 1
+        aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
+        if len(aList) > 1:
+            tabList = aList
+        else:
+            tabList = self.clean_completion_list(header,tabList)
+        return tabList
     #@+node:ekr.20061031131434.46: *4* start
     def start (self,event):
         
@@ -911,7 +937,7 @@ class AutoCompleterClass:
         # self.codewiseDict = {}
 
         if self.use_qcompleter:
-            self.init_qcompleter()
+            self.init_qcompleter(event)
         else:
             self.init_tabcompleter(event)
     #@+node:ekr.20110512170111.14471: *4* strip_brackets

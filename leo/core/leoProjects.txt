@@ -6569,24 +6569,12 @@ def outerUpdate (self):
             g.app.gui.widget_name(w)))
         c.set_focus(w)
     else:
-        # We can not set the focus to the body pane:
+        # We must not set the focus to the body pane here!
         # That would make nested calls to c.outerUpdate significant.
         pass
-        
-        # # However, make sure that one of the standard panes has focus.
-        # w = g.app.gui.get_focus()
-        # name = w and g.app.gui.widget_name(w)
-        # if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
-            # w = c.frame.body and c.frame.body.bodyCtrl
-            # if w:
-                # if traceFocus: aList.append('focus override: %s' % (
-                    # g.app.gui.widget_name(w)))
-                # c.set_focus(w)
 
     if trace and (verbose or aList):
         g.trace('** end',aList)
-            # ','.join(aList)
-            # ,c.shortFileName() or '<no name>'
 
     c.incrementalRecolorFlag = False
     c.requestRecolorFlag = None
@@ -7092,19 +7080,73 @@ To do:
     - Allow either eval-related or codewise completions.
     
 - Make sure the code does not interfere with Tk code.
-#@+node:ekr.20110510070638.14644: *5* What I did
-@nocolor-node
+#@+node:ekr.20031218072017.2817: *5*  doCommand
+command_count = 0
 
-- Created c.idle_focus_helper.
+def doCommand (self,command,label,event=None):
 
-- Always call g.enableIdleTimeHook in runLeo.py:doPostPluginsInit.
-    (That is, removed @bool allow_idle_time_hook setting.)
+    """Execute the given command, invoking hooks and catching exceptions.
 
-- Added c.in_qt_dialog flag: used only by c.idle_focus_helper.
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
 
-- Improved tracing in c.outerUpdate.
+    c = self ; p = c.p
+    commandName = command and command.__name__
+    c.setLog()
 
-- Improved tracing in various focus methods.
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.app.commandInterruptFlag = True
+        g.es('ignoring command: already executing a command.',color='red')
+        return 'break'
+
+    g.app.commandInterruptFlag = False
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: g.pr('c no longer exists',c)
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return "break" # Inhibit all other handlers.
 #@+node:ekr.20031218072017.2812: *5* c.__init__
 def __init__(self,frame,fileName,relativeFileName=None):
 
@@ -7184,6 +7226,133 @@ def __init__(self,frame,fileName,relativeFileName=None):
     else:
         self.undoer = leoUndo.undoer(self)
         
+#@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget
+
+def request_focus(self,w):
+
+    trace = False and not g.unitTesting
+    c = self
+    if trace: g.trace(g.app.gui.widget_name(w),w,g.callers())
+    if w: c.requestedFocusWidget = w
+
+def set_focus (self,w,force=False):
+
+    trace = False and not g.unitTesting
+    c = self
+    if w and g.app.gui:
+        if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,g.callers())
+            # w,c.shortFileName())
+        g.app.gui.set_focus(c,w)
+    else:
+        if trace: print('c.set_focus: no w')
+
+    c.requestedFocusWidget = None
+#@+node:ekr.20110509064011.14563: *5* c.idle_focus_helper
+idle_focus_count = 0
+
+def idle_focus_helper (self,tag,keys):
+    
+    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    
+    trace = True and not g.unitTesting ; verbose = False
+    
+    c = self
+    assert tag == 'idle'
+
+    if g.app.unitTesting or keys.get('c') != c:
+        return
+        
+    self.idle_focus_count += 1
+        
+    if c.in_qt_dialog:
+        if trace and verbose: g.trace('in_qt_dialog')
+        return
+        
+    if c.idle_callback:
+        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
+        c.idle_callback()
+        c.idle_callback = None
+        return
+
+    w = g.app.gui.get_focus()
+
+    if w:
+        if trace and verbose:
+            g.trace(self.idle_focus_count,w)
+    else:
+        if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
+        c.bodyWantsFocusNow()
+#@+node:ekr.20080514131122.20: *5* c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = True ; traceFocus = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+    
+    if trace and (verbose or aList):
+        g.trace('**start') # ,g.callers(2))
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            c.frame.bringToFront()
+        c.requestBringToFront = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We must not set the focus to the body pane here!
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and (verbose or aList):
+        g.trace('** end',aList)
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
 #@+node:ekr.20090519143741.5917: *5* doPostPluginsInit & helpers (runLeo.py)
 def doPostPluginsInit(args,files,options):
 
@@ -7361,143 +7530,19 @@ def make_screen_shot(fn):
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
 #@+node:ekr.20110509064011.14555: *5* qcompleter support
-#@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
-def get_focus (self):
+#@+node:ekr.20110510070638.14644: *5* What I did
+@nocolor-node
 
-    c = self
-    return g.app.gui and g.app.gui.get_focus(c)
+- Created c.idle_focus_helper.
 
-def get_requested_focus (self):
+- Always call g.enableIdleTimeHook in runLeo.py:doPostPluginsInit.
+    (That is, removed @bool allow_idle_time_hook setting.)
 
-    c = self
-    return c.requestedFocusWidget
+- Added c.in_qt_dialog flag: used only by c.idle_focus_helper.
 
-def request_focus(self,w):
+- Improved tracing in c.outerUpdate.
 
-    trace = False and not g.unitTesting
-    c = self
-    if trace: g.trace(g.app.gui.widget_name(w),w,g.callers(2))
-    if w: c.requestedFocusWidget = w
-
-def set_focus (self,w,force=False):
-
-    trace = False and not g.unitTesting
-    c = self
-    if w and g.app.gui:
-        if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,c.shortFileName())
-        g.app.gui.set_focus(c,w)
-    else:
-        if trace: print('c.set_focus: no w')
-
-    c.requestedFocusWidget = None
-#@+node:ekr.20080514131122.20: *5* c.outerUpdate
-def outerUpdate (self):
-
-    trace = False and not g.unitTesting
-    verbose = True ; traceFocus = True
-    c = self ; aList = []
-    if not c.exists or not c.k:
-        return
-
-    # Suppress any requested redraw until we have iconified or diconified.
-    redrawFlag = c.requestRedrawFlag
-    c.requestRedrawFlag = False
-    
-    if trace and (verbose or aList):
-        g.trace('**start') # ,g.callers(2))
-    
-    if c.requestBringToFront:
-        if hasattr(c.frame,'bringToFront'):
-            c.frame.bringToFront()
-        c.requestBringToFront = False
-
-    # The iconify requests are made only by c.bringToFront.
-    if c.requestedIconify == 'iconify':
-        if verbose: aList.append('iconify')
-        c.frame.iconify()
-
-    if c.requestedIconify == 'deiconify':
-        if verbose: aList.append('deiconify')
-        c.frame.deiconify()
-
-    if redrawFlag:
-        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
-        # A hack: force the redraw, even if we are dragging.
-        aList.append('*** redraw')
-        c.frame.tree.redraw_now(forceDraw=True)
-
-    if c.requestRecolorFlag:
-        if verbose: aList.append('%srecolor' % (
-            g.choose(c.incrementalRecolorFlag,'','full ')))
-        # This should be the only call to c.recolor_now.
-        c.recolor_now(incremental=c.incrementalRecolorFlag)
-
-    if c.requestedFocusWidget:
-        w = c.requestedFocusWidget
-        if traceFocus: aList.append('focus: %s' % (
-            g.app.gui.widget_name(w)))
-        c.set_focus(w)
-    else:
-        # We can not set the focus to the body pane:
-        # That would make nested calls to c.outerUpdate significant.
-        pass
-        
-        # # However, make sure that one of the standard panes has focus.
-        # w = g.app.gui.get_focus()
-        # name = w and g.app.gui.widget_name(w)
-        # if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
-            # w = c.frame.body and c.frame.body.bodyCtrl
-            # if w:
-                # if traceFocus: aList.append('focus override: %s' % (
-                    # g.app.gui.widget_name(w)))
-                # c.set_focus(w)
-
-    if trace and (verbose or aList):
-        g.trace('** end',aList)
-            # ','.join(aList)
-            # ,c.shortFileName() or '<no name>'
-
-    c.incrementalRecolorFlag = False
-    c.requestRecolorFlag = None
-    c.requestRedrawFlag = False
-    c.requestedFocusWidget = None
-    c.requestedIconify = ''
-
-    # g.trace('after')
-#@+node:ekr.20110509064011.14563: *5* c.idle_focus_helper
-idle_focus_count = 0
-
-def idle_focus_helper (self,tag,keys):
-    
-    '''An idle-tme handler that ensures that focus is *somewhere*.'''
-    
-    trace = False and not g.unitTesting ; verbose = True
-    
-    c = self
-    assert tag == 'idle'
-
-    if g.app.unitTesting or keys.get('c') != c:
-        return
-        
-    self.idle_focus_count += 1
-        
-    if c.in_qt_dialog:
-        if trace: g.trace('in_qt_dialog')
-        return
-        
-    if c.idle_callback:
-        c.idle_callback()
-        c.idle_callback = None
-        return
-
-    w = g.app.gui.get_focus()
-
-    if w:
-        if trace and verbose:
-            g.trace(self.idle_focus_count,w)
-    else:
-        if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
-        c.bodyWantsFocusNow()
+- Improved tracing in various focus methods.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -12581,6 +12626,7 @@ def __init__ (self,k):
     self.k = k
     self.force = None
     self.language = None
+    self.qw = None # The object that supports qcompletion methods.
     self.tabName = None # The name of the main completion tab.
     self.verbose = False # True: print all members, regardless of how many there are.
     self.w = None # The widget that gets focus after autocomplete is done.
@@ -12597,6 +12643,49 @@ def __init__ (self,k):
     self.use_qcompleter = c.config.getBool('use_qcompleter',False)
         # True: show results in autocompleter tab.
         # False: show results in a QCompleter widget.
+#@+node:ekr.20110512212836.14469: *5* abort, exit & finish
+#@+node:ekr.20061031131434.17: *6* abort
+def abort (self):
+
+    k = self.k
+    
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+    
+    if 0: # keyoardQuit calls k.autocompleter.exit.
+        self.exit(restore=True)
+#@+node:ekr.20110512212836.14470: *6* exit
+def exit (self,restore=False): # Called from keyboard-quit.
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('restore: %s' % (restore),g.callers())
+
+    k = self ; c = k.c 
+    w = self.w or c.frame.body.bodyCtrl
+    
+    if self.use_qcompleter:
+        self.qw.endCompleter()
+    else:
+        for name in (self.tabName,'Modules','Info'):
+            c.frame.log.deleteTab(name)
+        
+    # Restore the selection range that may have been destroyed by changing tabs.
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange()
+    w.setSelectionRange(j,j,insert=j)
+#@+node:ekr.20061031131434.34: *6* finish
+def finish (self):
+
+    c = self.c ; k = c.k
+
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+
+    c.frame.body.onBodyChanged('Typing')
+    c.recolor()
 #@+node:ekr.20061031131434.18: *5* append/begin/popTabName
 def appendTabName (self,word):
 
@@ -13344,45 +13433,127 @@ def get_leo_completions(self,prefix):
             g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
 
     return aList
-#@+node:ekr.20110511133940.14561: *5* show_completion_list
-def show_completion_list (self,common_prefix,prefix,tabList):
+#@+node:ekr.20110510071925.14586: *5* init_qcompleter
+def init_qcompleter (self,event=None):
     
+    trace = False and not g.unitTesting
+
+    # Compute the prefix and the list of options.
+    prefix = self.get_autocompleter_prefix()
+    options = self.get_completions(prefix)
+
+    if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+
+    if options:
+        self.qw = w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
+        self.qcompleter = w.initCompleter(prefix,options)
+        self.auto_completer_state_handler(event)
+    else:
+        g.es('No completions',color='blue')
+        self.abort()
+#@+node:ekr.20061031131434.31: *5* insert_string
+def insert_string (self,s):
+
+    '''Insert s at the insertion point.'''
+
+    c = self.c ; w = self.w
+    
+    c.widgetWantsFocusNow(w)
+    j = w.getInsertPoint()
+    w.insert(j,s)
+   
+    c.frame.body.onBodyChanged('Typing')
+    
+    if self.use_qcompleter:
+        c.widgetWantsFocusNow(self.qw)
+#@+node:ekr.20061031131434.130: *5* keyboardQuit
+def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if hideTabs:
+        k.autoCompleter.exit()
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    # Completely clear the mode.
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    c.endEditing()
+    c.bodyWantsFocus()
+
+    if setDefaultStatus:
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
+#@+node:ekr.20110511133940.14561: *5* show_completion_list & helpers
+def show_completion_list (self,common_prefix,prefix,tabList):
+
     c = self.c
     
-    def clean(aList,header):
-        return [
-            g.choose(z.startswith(header),z[len(header)+1:],z)
-            for z in tabList]
-    
-    c.widgetWantsFocus(self.w)
     aList = common_prefix.split('.')
     header = '.'.join(aList[:-1])
-
-    if not self.verbose and len(tabList) > 20:
-        # Show the possible starting letters,
-        # but only if there are more than one.
-        d = {}
-        for z in tabList:
-            tail = z and z[len(header):] or ''
-            if tail.startswith('.'): tail = tail[1:]
-            ch = tail and tail[0] or ''
-            if ch:
-                n = d.get(ch,0)
-                d[ch] = n + 1
-        aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
-        if len(aList) > 1:
-            tabList = aList
-        else:
-            tabList = clean(tabList,header)
+    
+    if self.verbose or len(tabList) < 20:
+        tabList = self.clean_completion_list(header,tabList,)
     else:
-        tabList = clean(tabList,header)
-
-    # Update the tab name, creating the tab if necessary.
-    c.frame.log.clearTab(self.tabName)
-    self.beginTabName(g.choose(header,header+'.',''))
+        tabList = self.get_summary_list(header,tabList)
         
-    s = '\n'.join(tabList)
-    self.put('',s,tabName=self.tabName)
+    if self.use_qcompleter:
+        # Put the completions in the QListView.
+        self.qw.showCompletions(tabList)
+    else:
+        # Update the tab name, creating the tab if necessary.
+        c.widgetWantsFocus(self.w)
+        c.frame.log.clearTab(self.tabName)
+        self.beginTabName(g.choose(header,header+'.',''))
+        s = '\n'.join(tabList)
+        self.put('',s,tabName=self.tabName)
+#@+node:ekr.20110513104728.14453: *6* clean_completion_list
+def clean_completion_list(self,header,tabList):
+    
+    '''Return aList with header removed from the start of each list item.'''
+    
+    return [
+        g.choose(z.startswith(header),z[len(header)+1:],z)
+            for z in tabList]
+#@+node:ekr.20110513104728.14454: *6* get_summary_list
+def get_summary_list (self,header,tabList):
+
+    '''Show the possible starting letters,
+    but only if there are more than one.
+    '''
+
+    d = {}
+    for z in tabList:
+        tail = z and z[len(header):] or ''
+        if tail.startswith('.'): tail = tail[1:]
+        ch = tail and tail[0] or ''
+        if ch:
+            n = d.get(ch,0)
+            d[ch] = n + 1
+    aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
+    if len(aList) > 1:
+        tabList = aList
+    else:
+        tabList = self.clean_completion_list(header,tabList)
+    return tabList
 #@+node:ekr.20061031131434.46: *5* start
 def start (self,event):
     
@@ -13390,7 +13561,7 @@ def start (self,event):
     # self.codewiseDict = {}
 
     if self.use_qcompleter:
-        self.init_qcompleter()
+        self.init_qcompleter(event)
     else:
         self.init_tabcompleter(event)
 #@-all

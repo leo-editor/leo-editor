@@ -205,7 +205,7 @@ class baseCommands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = False and not g.unitTesting ; verbose = True
+        trace = True and not g.unitTesting ; verbose = False
         
         c = self
         assert tag == 'idle'
@@ -216,10 +216,11 @@ class baseCommands (object):
         self.idle_focus_count += 1
             
         if c.in_qt_dialog:
-            if trace: g.trace('in_qt_dialog')
+            if trace and verbose: g.trace('in_qt_dialog')
             return
             
         if c.idle_callback:
+            if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
             c.idle_callback()
             c.idle_callback = None
             return
@@ -6306,7 +6307,7 @@ class baseCommands (object):
 
         trace = False and not g.unitTesting
         c = self
-        if trace: g.trace(g.app.gui.widget_name(w),w,g.callers(2))
+        if trace: g.trace(g.app.gui.widget_name(w),w,g.callers())
         if w: c.requestedFocusWidget = w
 
     def set_focus (self,w,force=False):
@@ -6314,7 +6315,8 @@ class baseCommands (object):
         trace = False and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,c.shortFileName())
+            if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,g.callers())
+                # w,c.shortFileName())
             g.app.gui.set_focus(c,w)
         else:
             if trace: print('c.set_focus: no w')
@@ -6376,24 +6378,12 @@ class baseCommands (object):
                 g.app.gui.widget_name(w)))
             c.set_focus(w)
         else:
-            # We can not set the focus to the body pane:
+            # We must not set the focus to the body pane here!
             # That would make nested calls to c.outerUpdate significant.
             pass
-            
-            # # However, make sure that one of the standard panes has focus.
-            # w = g.app.gui.get_focus()
-            # name = w and g.app.gui.widget_name(w)
-            # if name not in ('lineEdit','richTextEdit','log-widget','treeWidget'):
-                # w = c.frame.body and c.frame.body.bodyCtrl
-                # if w:
-                    # if traceFocus: aList.append('focus override: %s' % (
-                        # g.app.gui.widget_name(w)))
-                    # c.set_focus(w)
 
         if trace and (verbose or aList):
             g.trace('** end',aList)
-                # ','.join(aList)
-                # ,c.shortFileName() or '<no name>'
 
         c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None
