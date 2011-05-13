@@ -411,7 +411,7 @@ class DynamicWindow(QtGui.QMainWindow):
     '''A class representing all parts of the main Qt window
     as created by Designer.
 
-    c.frame.top is a DynamciWindow object.
+    c.frame.top is a DynamicWindow object.
 
     For --gui==qttabs:
         c.frame.top.parent is a TabbedFrameFactory

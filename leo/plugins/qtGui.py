@@ -124,27 +124,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         #@+others
         #@+node:ekr.20110513144933.14531: *6* ctor (LeoQListWidget)
         def __init__(self,c,w):
-            
-            if 1:
-                # Freestanding
-                QtGui.QListWidget.__init__(self)
-                wg = w.geometry()
-                sg = self.geometry()
-                
-                # qc = QtGui.QCompleter()
-                # self.setFrameStyle(qc.popup().frameStyle())
-                # self.setGeometry(wg.x(),wg.y()+50,sg.width(),sg.height())
-                # self.move(0,sg.y()+50)
-                    # x,y,w,h
-            else:
-                # Attached to body pane.
-                QtGui.QListWidget.__init__(self,w)
-                #g.trace(w,c.frame.tree.treeWidget)
-                # h = self.geometry().height()
-                # g.trace(h)
 
+            splitter2 = c.frame.top.splitter_2
+            QtGui.QListWidget.__init__(self)
+            splitter2.insertWidget(1,self)
+
+            # Inject the ivar.
             self.leo_c = c
-            self.leo_w = w # a LeoQTextBrowser.
             
             self.connect(self,QtCore.SIGNAL(
                 "itemClicked(QListWidgetItem *)"),self.selectCallback)
@@ -161,6 +147,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # This is important: it clears the autocompletion state.
             c.k.keyboardQuit(event=None,hideTabs=False)
                 # hideTabs = False prevents a recursive call here.
+                
+            c.bodyWantsFocusNow()
         #@+node:ekr.20110325185230.14516: *6* keyPressEvent (LeoQListWidget)
         def keyPressEvent(self,event):
             
@@ -256,11 +244,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20110325185230.14524: *5* redirections to LeoQListWidget
     def endCompleter(self):
         
-        self.leo_qc.endCompleter()
+        if hasattr(self,'leo_qc'):
+            self.leo_qc.endCompleter()
 
     def showCompletions(self,aList):
         
-        self.leo_qc.showCompletions(aList)
+        if hasattr(self,'leo_qc'):
+            self.leo_qc.showCompletions(aList)
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
         trace = False and not g.unitTesting
@@ -1965,7 +1955,7 @@ class DynamicWindow(QtGui.QMainWindow):
     '''A class representing all parts of the main Qt window
     as created by Designer.
 
-    c.frame.top is a DynamciWindow object.
+    c.frame.top is a DynamicWindow object.
 
     For --gui==qttabs:
         c.frame.top.parent is a TabbedFrameFactory
