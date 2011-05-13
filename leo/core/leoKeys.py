@@ -567,24 +567,36 @@ class AutoCompleterClass:
     #@+node:ekr.20110510120621.14540: *6* clean
     def clean (self,hits):
         
-        '''Clean up hits, a list of ctags patterns.'''
+        '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
+        
+        trace = False and not g.unitTesting
+                
+        # Just take the function name: ignore the signature & file.
+        aList = list(set([z[0] for z in hits]))
+        aList.sort()
+
+        if trace:
+            # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+            g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+
+        return aList
+    #@+node:ekr.20110512232915.14481: *6* clean_for_display (not used)
+    def clean_for_display(self,hits):
+        
+        '''Clean up hits, a list of ctags patterns, for display purposes.'''
         
         trace = False and not g.unitTesting
         aList = []
         for h in hits:
             s = h[0]
-            if 1:
-                # Just add the first entry: good for completion list.
-                aList.append(s)
+            # Display oriented: no good for completion list.
+            fn = h[1].strip()
+            if fn.startswith('/'):
+                sig = fn[2:-4].strip()
             else:
-                # Display oriented: no good for completion list.
-                fn = h[1].strip()
-                if fn.startswith('/'):
-                    sig = fn[2:-4].strip()
-                else:
-                    sig = fn
-                aList.append('%s: %s' % (s,sig))
-
+                sig = fn
+            aList.append('%s: %s' % (s,sig))
+            
         aList = list(set(aList))
         aList.sort()
         if trace:
