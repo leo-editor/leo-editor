@@ -173,51 +173,6 @@ class AutoCompleterClass:
         '''Show autocompletion, even if autocompletion is not presently enabled.'''
 
         return self.autoComplete(event,force=True)
-    #@+node:ekr.20061031131434.11: *4* autoCompleterStateHandler
-    def autoCompleterStateHandler (self,event):
-
-        trace = False and not g.app.unitTesting
-        c = self.c ; k = self.k ; gui = g.app.gui
-        tag = 'auto-complete' ; state = k.getState(tag)
-        ch = gui.eventChar(event)
-        keysym = gui.eventKeysym(event)
-
-        if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
-            state,repr(ch),repr(keysym)))
-
-        if state == 0:
-            c.frame.log.clearTab(self.tabName)
-            self.compute_completion_list()
-            k.setState(tag,1,handler=self.autoCompleterStateHandler) 
-        elif keysym in (' ','Return'):
-            self.finish()
-        elif keysym == 'Escape':
-            self.abort()
-        elif keysym == 'Tab':
-            self.doTabCompletion()
-        elif keysym in ('\b','BackSpace'):
-            self.do_back_space()
-        elif keysym == '.':
-            self.insert_string('.')
-            self.compute_completion_list()
-        elif keysym == '?':
-            self.info()
-        elif keysym == '!':
-            # Toggle between verbose and brief listing.
-            self.verbose = not self.verbose
-            kind = g.choose(self.verbose,'ON','OFF')
-            c.frame.putStatusLine('verbose completions %s' % (
-                kind),color='red')
-            self.compute_completion_list()
-        elif ch == 'Down' and hasattr(self,'onDown'):
-            self.onDown()
-        elif ch == 'Up' and hasattr(self,'onUp'):
-            self.onUp()
-        elif ch and ch in string.printable:
-            self.insert_general_char(ch,keysym)
-        else:
-            # if trace: g.trace('ignore',repr(ch))
-            return 'do-standard-keys'
     #@+node:ekr.20061031131434.12: *4* enable/disable/toggleAutocompleter/Calltips
     def disableAutocompleter (self,event=None):
         '''Disable the autocompleter.'''
@@ -400,6 +355,54 @@ class AutoCompleterClass:
             else:
                 g.trace(repr(s))
         return result
+    #@+node:ekr.20061031131434.11: *4* auto_completer_state_handler
+    def auto_completer_state_handler (self,event):
+
+        trace = False and not g.app.unitTesting
+        c = self.c ; k = self.k ; gui = g.app.gui
+        tag = 'auto-complete' ; state = k.getState(tag)
+        ch = gui.eventChar(event)
+        keysym = gui.eventKeysym(event)
+
+        if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
+            state,repr(ch),repr(keysym)))
+
+        if state == 0:
+            c.frame.log.clearTab(self.tabName)
+            common_prefix,prefix,tabList = self.compute_completion_list()
+            if tabList:
+                k.setState(tag,1,handler=self.auto_completer_state_handler)
+            else:
+                self.abort()
+        elif keysym in (' ','Return'):
+            self.finish()
+        elif keysym == 'Escape':
+            self.abort()
+        elif keysym == 'Tab':
+            self.doTabCompletion()
+        elif keysym in ('\b','BackSpace'):
+            self.do_backspace()
+        elif keysym == '.':
+            self.insert_string('.')
+            self.compute_completion_list()
+        elif keysym == '?':
+            self.info()
+        elif keysym == '!':
+            # Toggle between verbose and brief listing.
+            self.verbose = not self.verbose
+            kind = g.choose(self.verbose,'ON','OFF')
+            c.frame.putStatusLine('verbose completions %s' % (
+                kind),color='red')
+            self.compute_completion_list()
+        elif ch == 'Down' and hasattr(self,'onDown'):
+            self.onDown()
+        elif ch == 'Up' and hasattr(self,'onUp'):
+            self.onUp()
+        elif ch and ch in string.printable:
+            self.insert_general_char(ch,keysym)
+        else:
+            # if trace: g.trace('ignore',repr(ch))
+            return 'do-standard-keys'
     #@+node:ekr.20061031131434.20: *4* calltip & helpers
     def calltip (self):
         
@@ -456,7 +459,7 @@ class AutoCompleterClass:
     def compute_completion_list (self):
 
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         
         prefix = self.get_autocompleter_prefix()
         options = self.get_completions(prefix)
@@ -478,20 +481,27 @@ class AutoCompleterClass:
             self.show_completion_list(common_prefix,prefix,tabList)
         
         return common_prefix,prefix,tabList
-    #@+node:ekr.20061031131434.29: *4* do_back_space
-    def do_back_space (self):
+    #@+node:ekr.20061031131434.29: *4* do_backspace
+    def do_backspace (self):
 
         '''Delete the character and recompute the completion list.'''
         
-        trace = False and not g.unitTesting
+        c,w = self.c,self.w
+        c.bodyWantsFocusNow()
         
-        w = self.w
         i = w.getInsertPoint()
-        if i <= 0: return
-            
+        if i <= 0:
+            self.abort()
+            return
+
         w.delete(i-1,i)
         w.setInsertPoint(i-1)
-        self.compute_completion_list()
+        
+        if i <= 1:
+            self.abort()
+        else:
+            # Update the list, but do not abort here.
+            common_prefix,prefix,tabList = self.compute_completion_list()
     #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
     def do_qcompleter_tab(self,prefix,options):
         
@@ -552,12 +562,8 @@ class AutoCompleterClass:
         
         '''Use codewise to generate a list of hits.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
-        
-        # w = self.w
-        ### head,junk = self.get_current_line(w)
-        ### s = self.get_word() # The word under the cursor.
 
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
         if m:
@@ -649,9 +655,12 @@ class AutoCompleterClass:
                 if m:
                     return 'class',[m.group(1)]
 
-        # Do a 'real' analysis
-        aList = ContextSniffer().get_classes(c.p.b,varname)
-        # g.trace(varname,aList)
+        if 1:
+            aList = []
+        else:
+            # This is not needed now that we add the completions for 'self'.
+            aList = ContextSniffer().get_classes(c.p.b,varname)
+        
         return 'class',aList
     #@+node:ekr.20110510120621.14543: *6* lookup_functions/methods/modules
     def lookup_functions(self,prefix):
@@ -762,17 +771,19 @@ class AutoCompleterClass:
     def init_qcompleter (self):
         
         trace = False and not g.unitTesting
-        
-        w = self.c.frame.body.bodyCtrl.widget
-            # A LeoQTextBrowser.
-            
+
         # Compute the prefix and the list of options.
         prefix = self.get_autocompleter_prefix()
         options = self.get_completions(prefix)
 
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
 
-        self.qcompleter = w.initCompleter(prefix,options)
+        if options:
+            w = self.c.frame.body.bodyCtrl.widget # A LeoQTextBrowser.
+            self.qcompleter = w.initCompleter(prefix,options)
+        else:
+            g.es('No completions',color='blue')
+            self.abort()
     #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
     def init_tabcompleter (self,event=None):
         
@@ -784,7 +795,7 @@ class AutoCompleterClass:
 
         if options:
             self.clearTabName() # Creates the tabbed pane.
-            self.autoCompleterStateHandler(event)
+            self.auto_completer_state_handler(event)
         else:
             g.es('No completions',color='blue')
             self.abort()
@@ -800,8 +811,9 @@ class AutoCompleterClass:
             self.insert_string(ch)
             common_prefix,prefix,aList = self.compute_completion_list()
             if not aList:
-                # Delete the character we just inserted.
-                self.do_back_space()
+                if 0: # Annoying. Let the user type "by hand".
+                    # Delete the character we just inserted.
+                    self.do_backspace()
             elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix):]
                 if trace: g.trace('*** extend',extend)
@@ -858,10 +870,16 @@ class AutoCompleterClass:
     def show_completion_list (self,common_prefix,prefix,tabList):
         
         c = self.c
+        
+        def clean(aList,header):
+            return [
+                g.choose(z.startswith(header),z[len(header)+1:],z)
+                for z in tabList]
+        
         c.widgetWantsFocus(self.w)
-            
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
+        # g.trace('header',header)
 
         if not self.verbose and len(tabList) > 20:
             # Show the possible starting letters,
@@ -877,7 +895,13 @@ class AutoCompleterClass:
             aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
             if len(aList) > 1:
                 tabList = aList
-                tabList.append('common prefix: %s' % (common_prefix))
+                tabList.append('\ncommon prefix: %s' % (common_prefix))
+            else:
+                tabList = clean(tabList,header)
+                if len(tabList) > 10:
+                    tabList.append('\ncommon prefix: %s' % (common_prefix))
+        else:
+            tabList = clean(tabList,header)
 
         c.frame.log.clearTab(self.tabName)
             # Creates the tab if necessary.
