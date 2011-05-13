@@ -878,7 +878,6 @@ class AutoCompleterClass:
         c.widgetWantsFocus(self.w)
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
-        # g.trace('header',header)
 
         if not self.verbose and len(tabList) > 20:
             # Show the possible starting letters,
@@ -894,17 +893,13 @@ class AutoCompleterClass:
             aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
             if len(aList) > 1:
                 tabList = aList
-                # tabList.append('\ncommon prefix: %s' % (common_prefix))
             else:
                 tabList = clean(tabList,header)
-                # if len(tabList) > 10:
-                    # tabList.append('\ncommon prefix: %s' % (common_prefix))
         else:
             tabList = clean(tabList,header)
 
+        # Update the tab name, creating the tab if necessary.
         c.frame.log.clearTab(self.tabName)
-            # Creates the tab if necessary.
-            
         self.beginTabName(g.choose(header,header+'.',''))
             
         s = '\n'.join(tabList)

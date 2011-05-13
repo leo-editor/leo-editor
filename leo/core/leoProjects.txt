@@ -12567,34 +12567,13 @@ How did we ever live without this?
 
 You can open url's by control-clicking on them, or by using the open-url command.
 #@+node:ekr.20110325075339.14477: *4* Added namespace arg in c.executeScript
-#@+node:ekr.20110314123359.14272: *4* New autocompleter
+#@+node:ekr.20110314123359.14272: *4* Completed the autocompleter
 What I did:
     
 - Added @bool use_qcompleter setting.
 - Added @bool use_codewise setting.
 - Added auto_tab_complete setting.
-#@+node:ekr.20110511133940.14562: *5* Fix codewise crash
-@nocolor-node
-    
-    InterfaceError: Error binding parameter 0 - probably unsupported type.
---------------------
-  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
-* line 704:                 prefix + '%',))
-  line 705: 
-  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-
-
-#@+node:ekr.20110512212836.14473: *5* Finish codewise completer
-@nocolor-node
-
-To do:
-    
-- Must add "self" args to all classes.
-
-- Abort or do something more clever when the prefix is empty.
-
-- The completer is slow.
-#@+node:ekr.20061031131434.5: *6*  ctor (autocompleter)
+#@+node:ekr.20061031131434.5: *5*  ctor (autocompleter)
 def __init__ (self,k):
 
     # Ivars...
@@ -12618,7 +12597,7 @@ def __init__ (self,k):
     self.use_qcompleter = c.config.getBool('use_qcompleter',False)
         # True: show results in autocompleter tab.
         # False: show results in a QCompleter widget.
-#@+node:ekr.20061031131434.18: *6* append/begin/popTabName
+#@+node:ekr.20061031131434.18: *5* append/begin/popTabName
 def appendTabName (self,word):
 
     self.setTabName(self.tabName + '.' + word)
@@ -12646,7 +12625,7 @@ def setTabName (self,s):
         c.frame.log.deleteTab(self.tabName)
     self.tabName = s.replace('_','') or ''
     c.frame.log.clearTab(self.tabName)
-#@+node:ekr.20061031131434.11: *6* auto_completer_state_handler
+#@+node:ekr.20061031131434.11: *5* auto_completer_state_handler
 def auto_completer_state_handler (self,event):
 
     trace = False and not g.app.unitTesting
@@ -12694,10 +12673,10 @@ def auto_completer_state_handler (self,event):
     else:
         # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
-#@+node:ekr.20110310091639.14256: *6* class CodeWise
+#@+node:ekr.20110310091639.14256: *5* class CodeWise
 class CodeWise:
     @others
-#@+node:ekr.20110310091639.14257: *7* __init__
+#@+node:ekr.20110310091639.14257: *6* __init__
 def __init__(self, dbpath = None):
 
     if dbpath is None:
@@ -12715,7 +12694,7 @@ def __init__(self, dbpath = None):
         self.create_caches()
     
 
-#@+node:ekr.20110310091639.14258: *7* createdb
+#@+node:ekr.20110310091639.14258: *6* createdb
 def createdb(self, dbpath):
     self.dbconn = c = sqlite3.connect(dbpath)
     # print(self.dbconn)
@@ -12723,7 +12702,7 @@ def createdb(self, dbpath):
     c.commit()
     c.close()
 
-#@+node:ekr.20110310091639.14259: *7* create_caches
+#@+node:ekr.20110310091639.14259: *6* create_caches
 def create_caches(self):
     """ read existing db and create caches """
     
@@ -12740,7 +12719,7 @@ def create_caches(self):
     c.close()
     #print self.classcache
         
-#@+node:ekr.20110310091639.14260: *7* reset_caches
+#@+node:ekr.20110310091639.14260: *6* reset_caches
 def reset_caches(self):
     self.classcache = {}
     self.filecache = {}
@@ -12748,11 +12727,11 @@ def reset_caches(self):
     self.fileids_scanned = set()
     
 
-#@+node:ekr.20110310091639.14261: *7* cursor
+#@+node:ekr.20110310091639.14261: *6* cursor
 def cursor(self):
     return self.dbconn.cursor()
     
-#@+node:ekr.20110310091639.14262: *7* class_id
+#@+node:ekr.20110310091639.14262: *6* class_id
 def class_id(self, classname):
     """ return class id. May create new class """
     
@@ -12768,7 +12747,7 @@ def class_id(self, classname):
         self.classcache[classname] = idd
     return idd
 
-#@+node:ekr.20110310091639.14263: *7* get_members
+#@+node:ekr.20110310091639.14263: *6* get_members
 def get_members(self, classnames):
     
     clset = set(classnames)
@@ -12786,7 +12765,7 @@ def get_members(self, classnames):
 
     return result
 
-#@+node:ekr.20110310091639.14264: *7* get_functions
+#@+node:ekr.20110310091639.14264: *6* get_functions
 def get_functions(self, prefix = None):
 
     c = self.cursor()
@@ -12799,7 +12778,7 @@ def get_functions(self, prefix = None):
             prefix + '%',))
 
     return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-#@+node:ekr.20110310091639.14265: *7* file_id
+#@+node:ekr.20110310091639.14265: *6* file_id
 def file_id(self, fname):
     if fname == '':
         return 0
@@ -12825,7 +12804,7 @@ def file_id(self, fname):
         
     return idd
 
-#@+node:ekr.20110310091639.14266: *7* feed_function
+#@+node:ekr.20110310091639.14266: *6* feed_function
 def feed_function(self, func_name, class_name, file_name, aux):
     """ insert one function
     
@@ -12839,7 +12818,7 @@ def feed_function(self, func_name, class_name, file_name, aux):
     c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
               [clid, func_name, aux, fid])
 
-#@+node:ekr.20110310091639.14267: *7* feed_scintilla
+#@+node:ekr.20110310091639.14267: *6* feed_scintilla
 def feed_scintilla(self, apifile_obj):
     """ handle scintilla api files
     
@@ -12871,7 +12850,7 @@ def feed_scintilla(self, apifile_obj):
     self.dbconn.commit()
 
 
-#@+node:ekr.20110310091639.14268: *7* feed_ctags
+#@+node:ekr.20110310091639.14268: *6* feed_ctags
 def feed_ctags(self,tagsfile_obj):
     for l in tagsfile_obj:
         #print l
@@ -12909,19 +12888,19 @@ def feed_ctags(self,tagsfile_obj):
     #c.commit()
     #print fields
 
-#@+node:ekr.20110310091639.14269: *7* add_source
+#@+node:ekr.20110310091639.14269: *6* add_source
 def add_source(self, type, src):
     c = self.cursor()
     c.execute('insert into datasource(type, src) values (?,?)', (type,src))
     self.dbconn.commit()
     
-#@+node:ekr.20110310091639.14270: *7* sources
+#@+node:ekr.20110310091639.14270: *6* sources
 def sources(self):
     c = self.cursor()
     c.execute('select type, src from datasource')
     return list(c)
     
-#@+node:ekr.20110310091639.14271: *7* zap_symbols
+#@+node:ekr.20110310091639.14271: *6* zap_symbols
 def zap_symbols(self):
     c = self.cursor()
     tables = ['class', 'file', 'function']
@@ -12929,9 +12908,9 @@ def zap_symbols(self):
         c.execute('delete from ' + t)
     self.dbconn.commit()
     
-#@+node:ekr.20110310091639.14272: *7* # high level commands
+#@+node:ekr.20110310091639.14272: *6* # high level commands
 # high level commands        
-#@+node:ekr.20110310091639.14273: *7* parseall
+#@+node:ekr.20110310091639.14273: *6* parseall
 def parseall(self):
     sources = self.sources()
     self.reset_caches()
@@ -12940,7 +12919,7 @@ def parseall(self):
     self.parse(tagdirs)
     self.dbconn.commit()
 
-#@+node:ekr.20110310091639.14274: *7* parse
+#@+node:ekr.20110310091639.14274: *6* parse
 def parse(self, paths):
     paths = set(os.path.abspath(p) for p in paths)
     f = run_ctags(paths)
@@ -12950,8 +12929,8 @@ def parse(self, paths):
         if ('tagdir', a) not in sources:            
             self.add_source('tagdir', a)
 
-#@+node:ekr.20110310091639.14294: *6* codewise cmd wrappers
-#@+node:ekr.20110310091639.14289: *7* cmd_functions
+#@+node:ekr.20110310091639.14294: *5* codewise cmd wrappers
+#@+node:ekr.20110310091639.14289: *6* cmd_functions
 def cmd_functions(args):
     cw = CodeWise()
     
@@ -12964,7 +12943,7 @@ def cmd_functions(args):
     lines.sort()
     return lines # EKR
 
-#@+node:ekr.20110310091639.14285: *7* cmd_init
+#@+node:ekr.20110310091639.14285: *6* cmd_init
 def cmd_init(args):
     
     print("Initializing CodeWise db at", DEFAULT_DB)
@@ -12974,7 +12953,7 @@ def cmd_init(args):
     
     cw = CodeWise()
 
-#@+node:ekr.20110310091639.14288: *7* cmd_members
+#@+node:ekr.20110310091639.14288: *6* cmd_members
 def cmd_members(args):
 
     cw = CodeWise()
@@ -12990,20 +12969,20 @@ def cmd_members(args):
     
    
 
-#@+node:ekr.20110310091639.14283: *7* cmd_parse
+#@+node:ekr.20110310091639.14283: *6* cmd_parse
 def cmd_parse(args):
 
     assert args
     cw = CodeWise()
     cw.parse(args)
 
-#@+node:ekr.20110310091639.14282: *7* cmd_parseall
+#@+node:ekr.20110310091639.14282: *6* cmd_parseall
 def cmd_parseall(args):
     
     cw = CodeWise()
     cw.parseall()
     
-#@+node:ekr.20110310091639.14281: *7* cmd_scintilla
+#@+node:ekr.20110310091639.14281: *6* cmd_scintilla
 def cmd_scintilla(args):
 
     cw = CodeWise()
@@ -13012,7 +12991,7 @@ def cmd_scintilla(args):
         cw.feed_scintilla(f)
         f.close()
 
-#@+node:ekr.20110310091639.14286: *7* cmd_setup
+#@+node:ekr.20110310091639.14286: *6* cmd_setup
 def cmd_setup(args):
     
     ctagsfile = os.path.expanduser("~/.ctags")
@@ -13021,13 +13000,13 @@ def cmd_setup(args):
     open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
     cmd_init(args)
 
-#@+node:ekr.20110310091639.14284: *7* cmd_tags
+#@+node:ekr.20110310091639.14284: *6* cmd_tags
 def cmd_tags(args):
 
     cw = CodeWise()
     cw.feed_ctags(open(args[0]))
 
-#@+node:ekr.20061031131434.28: *6* compute_completion_list
+#@+node:ekr.20061031131434.28: *5* compute_completion_list
 def compute_completion_list (self):
 
     trace = False and not g.unitTesting
@@ -13053,7 +13032,7 @@ def compute_completion_list (self):
         self.show_completion_list(common_prefix,prefix,tabList)
     
     return common_prefix,prefix,tabList
-#@+node:ekr.20061031131434.29: *6* do_backspace
+#@+node:ekr.20061031131434.29: *5* do_backspace
 def do_backspace (self):
 
     '''Delete the character and recompute the completion list.'''
@@ -13074,6 +13053,153 @@ def do_backspace (self):
     else:
         # Update the list, but do not abort here.
         common_prefix,prefix,tabList = self.compute_completion_list()
+#@+node:ekr.20110510120621.14539: *5* get_codewise_completions & helpers
+def get_codewise_completions(self,prefix):
+    
+    '''Use codewise to generate a list of hits.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
+    if m:
+        varname = m.group(1)
+        ivar = m.group(3)
+        kind,aList = self.guess_class(c,varname)
+    else:
+        kind,aList = 'none',[]
+        varname,ivar = None,None
+
+    if aList:
+        if kind == 'class':
+            hits = self.lookup_methods(aList,ivar)
+            hits.extend(self.codewiseSelfList)
+        elif kind == 'module':
+            hits = self.lookup_modules(aList,ivar)
+    else:
+        aList2 = prefix.split('.')
+        if aList2:
+            func = aList2[-1]
+            hits = self.lookup_functions(func) ### Was s
+        else:
+            hits = []
+
+    if 1: # A kludge: add the prefix to each hit.
+        hits = ['%s.%s' % (varname,z) for z in hits]
+        
+    if trace:
+        g.trace('kind',kind,'varname',varname,'ivar',ivar,'prefix',prefix)
+        # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+        # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+
+    return hits
+#@+node:ekr.20110510120621.14540: *6* clean
+def clean (self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
+    
+    trace = False and not g.unitTesting
+            
+    # Just take the function name: ignore the signature & file.
+    aList = list(set([z[0] for z in hits]))
+    aList.sort()
+
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+
+    return aList
+#@+node:ekr.20110512232915.14481: *6* clean_for_display (not used)
+def clean_for_display(self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for display purposes.'''
+    
+    trace = False and not g.unitTesting
+    aList = []
+    for h in hits:
+        s = h[0]
+        # Display oriented: no good for completion list.
+        fn = h[1].strip()
+        if fn.startswith('/'):
+            sig = fn[2:-4].strip()
+        else:
+            sig = fn
+        aList.append('%s: %s' % (s,sig))
+        
+    aList = list(set(aList))
+    aList.sort()
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+    return aList
+#@+node:ekr.20110510120621.14542: *6* guess_class
+def guess_class(self,c,varname):
+    
+    '''Return kind, class_list'''
+
+    # if varname == 'g':
+        # return 'module',['leoGlobals']
+    if varname == 'p':
+        return 'class',['position']
+    if varname == 'c':
+        return 'class',['baseCommands']
+    if varname == 'self':
+        # Return the nearest enclosing class.
+        for p in c.p.parents():
+            h = p.h
+            m = re.search('class\s+(\w+)', h)
+            if m:
+                return 'class',[m.group(1)]
+
+    if 1:
+        aList = []
+    else:
+        # This is not needed now that we add the completions for 'self'.
+        aList = ContextSniffer().get_classes(c.p.b,varname)
+    
+    return 'class',aList
+#@+node:ekr.20110510120621.14543: *6* lookup_functions/methods/modules
+def lookup_functions(self,prefix):
+
+    aList = codewise.cmd_functions([prefix])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
+    
+    aList = codewise.cmd_members([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
+    
+    aList = codewise.cmd_functions([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+#@+node:ekr.20110512212836.14471: *5* get_completions & helpers
+def get_completions(self,prefix):
+    
+    if self.use_codewise:
+        
+        d = self.codewiseDict
+        
+        if not self.codewiseSelfList:
+            # Get the completions for '.self'
+            # Strip the leading '.self' from all entries.
+            aList = self.get_codewise_completions('self.')
+            self.codewiseSelfList = [z[5:] for z in aList]
+            d ['self.'] = self.codewiseSelfList
+            # g.trace(g.listToString(self.codewiseSelfList[:50]))
+
+        # Use the cached list if it exists.
+        # This speeds the handling of backspace.
+        aList = d.get(prefix)
+        if not aList:
+            aList = self.get_codewise_completions(prefix)
+            d [prefix] = aList
+        return aList
+    else:
+        return self.get_leo_completions(prefix)
 #@+node:ekr.20110510120621.14539: *6* get_codewise_completions & helpers
 def get_codewise_completions(self,prefix):
     
@@ -13197,154 +13323,7 @@ def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
     aList = codewise.cmd_functions([aList[0]])
     hits = [z.split(None,1) for z in aList if z.strip()]
     return self.clean(hits)
-#@+node:ekr.20110512212836.14471: *6* get_completions & helpers
-def get_completions(self,prefix):
-    
-    if self.use_codewise:
-        
-        d = self.codewiseDict
-        
-        if not self.codewiseSelfList:
-            # Get the completions for '.self'
-            # Strip the leading '.self' from all entries.
-            aList = self.get_codewise_completions('self.')
-            self.codewiseSelfList = [z[5:] for z in aList]
-            d ['self.'] = self.codewiseSelfList
-            # g.trace(g.listToString(self.codewiseSelfList[:50]))
-
-        # Use the cached list if it exists.
-        # This speeds the handling of backspace.
-        aList = d.get(prefix)
-        if not aList:
-            aList = self.get_codewise_completions(prefix)
-            d [prefix] = aList
-        return aList
-    else:
-        return self.get_leo_completions(prefix)
-#@+node:ekr.20110510120621.14539: *7* get_codewise_completions & helpers
-def get_codewise_completions(self,prefix):
-    
-    '''Use codewise to generate a list of hits.'''
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
-    if m:
-        varname = m.group(1)
-        ivar = m.group(3)
-        kind,aList = self.guess_class(c,varname)
-    else:
-        kind,aList = 'none',[]
-        varname,ivar = None,None
-
-    if aList:
-        if kind == 'class':
-            hits = self.lookup_methods(aList,ivar)
-            hits.extend(self.codewiseSelfList)
-        elif kind == 'module':
-            hits = self.lookup_modules(aList,ivar)
-    else:
-        aList2 = prefix.split('.')
-        if aList2:
-            func = aList2[-1]
-            hits = self.lookup_functions(func) ### Was s
-        else:
-            hits = []
-
-    if 1: # A kludge: add the prefix to each hit.
-        hits = ['%s.%s' % (varname,z) for z in hits]
-        
-    if trace:
-        g.trace('kind',kind,'varname',varname,'ivar',ivar,'prefix',prefix)
-        # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
-        # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
-
-    return hits
-#@+node:ekr.20110510120621.14540: *8* clean
-def clean (self,hits):
-    
-    '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
-    
-    trace = False and not g.unitTesting
-            
-    # Just take the function name: ignore the signature & file.
-    aList = list(set([z[0] for z in hits]))
-    aList.sort()
-
-    if trace:
-        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
-        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
-
-    return aList
-#@+node:ekr.20110512232915.14481: *8* clean_for_display (not used)
-def clean_for_display(self,hits):
-    
-    '''Clean up hits, a list of ctags patterns, for display purposes.'''
-    
-    trace = False and not g.unitTesting
-    aList = []
-    for h in hits:
-        s = h[0]
-        # Display oriented: no good for completion list.
-        fn = h[1].strip()
-        if fn.startswith('/'):
-            sig = fn[2:-4].strip()
-        else:
-            sig = fn
-        aList.append('%s: %s' % (s,sig))
-        
-    aList = list(set(aList))
-    aList.sort()
-    if trace:
-        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
-        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
-    return aList
-#@+node:ekr.20110510120621.14542: *8* guess_class
-def guess_class(self,c,varname):
-    
-    '''Return kind, class_list'''
-
-    # if varname == 'g':
-        # return 'module',['leoGlobals']
-    if varname == 'p':
-        return 'class',['position']
-    if varname == 'c':
-        return 'class',['baseCommands']
-    if varname == 'self':
-        # Return the nearest enclosing class.
-        for p in c.p.parents():
-            h = p.h
-            m = re.search('class\s+(\w+)', h)
-            if m:
-                return 'class',[m.group(1)]
-
-    if 1:
-        aList = []
-    else:
-        # This is not needed now that we add the completions for 'self'.
-        aList = ContextSniffer().get_classes(c.p.b,varname)
-    
-    return 'class',aList
-#@+node:ekr.20110510120621.14543: *8* lookup_functions/methods/modules
-def lookup_functions(self,prefix):
-
-    aList = codewise.cmd_functions([prefix])
-    hits = [z.split(None,1) for z in aList if z.strip()]
-    return self.clean(hits)
-
-def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
-    
-    aList = codewise.cmd_members([aList[0]])
-    hits = [z.split(None,1) for z in aList if z.strip()]
-    return self.clean(hits)
-
-def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
-    
-    aList = codewise.cmd_functions([aList[0]])
-    hits = [z.split(None,1) for z in aList if z.strip()]
-    return self.clean(hits)
-#@+node:ekr.20110509064011.14557: *7* get_leo_completions
+#@+node:ekr.20110509064011.14557: *6* get_leo_completions
 def get_leo_completions(self,prefix):
     
     '''Return completions in an environment defining c, g and p.'''
@@ -13365,7 +13344,7 @@ def get_leo_completions(self,prefix):
             g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
 
     return aList
-#@+node:ekr.20110511133940.14561: *6* show_completion_list
+#@+node:ekr.20110511133940.14561: *5* show_completion_list
 def show_completion_list (self,common_prefix,prefix,tabList):
     
     c = self.c
@@ -13378,7 +13357,6 @@ def show_completion_list (self,common_prefix,prefix,tabList):
     c.widgetWantsFocus(self.w)
     aList = common_prefix.split('.')
     header = '.'.join(aList[:-1])
-    # g.trace('header',header)
 
     if not self.verbose and len(tabList) > 20:
         # Show the possible starting letters,
@@ -13394,22 +13372,18 @@ def show_completion_list (self,common_prefix,prefix,tabList):
         aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
         if len(aList) > 1:
             tabList = aList
-            # tabList.append('\ncommon prefix: %s' % (common_prefix))
         else:
             tabList = clean(tabList,header)
-            # if len(tabList) > 10:
-                # tabList.append('\ncommon prefix: %s' % (common_prefix))
     else:
         tabList = clean(tabList,header)
 
+    # Update the tab name, creating the tab if necessary.
     c.frame.log.clearTab(self.tabName)
-        # Creates the tab if necessary.
-        
     self.beginTabName(g.choose(header,header+'.',''))
         
     s = '\n'.join(tabList)
     self.put('',s,tabName=self.tabName)
-#@+node:ekr.20061031131434.46: *6* start
+#@+node:ekr.20061031131434.46: *5* start
 def start (self,event):
     
     # We don't need to clear this now that we don't use ContextSniffer.
