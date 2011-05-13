@@ -205,7 +205,7 @@ class baseCommands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting ; verbose = False
         
         c = self
         assert tag == 'idle'

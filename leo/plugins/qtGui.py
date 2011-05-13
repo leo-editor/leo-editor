@@ -121,8 +121,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20110513104728.14452: *5* class LeoQListWidget(QListWidget)
     class LeoQListWidget(QtGui.QListWidget):
         
-        # def __init__(self):
-            # QtQui.QListWidget.__init__(self):
+        def __init__(self,c,w):
+
+            QtGui.QListWidget.__init__(self,w)
+
+            self.leo_c = c
+            self.leo_w = w # a LeoQTextBrowser.
                 
         #@+others
         #@+node:ekr.20110325185230.14516: *6* keyPressEvent (LeoQListWidget)
@@ -133,27 +137,11 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             this gets called *only* when the popup is showing!'''
             
             trace = True and not g.unitTesting
-            
-            g.trace(event)
-            return ###
-            
-            if hasattr(self,'leo_q_completer'):
-                qc = self.leo_q_completer
-            else:
-                if trace: g.trace('not inited')
-                QtGui.QTextBrowser.keyPressEvent(self,event) 
-                return
-                
-            if not qc.isVisible(): # Call the base class.
-                if trace: g.trace('not visible')
-                QtGui.QTextBrowser.keyPressEvent(self,event) 
-                return
 
             c = self.leo_c
             qt = QtCore.Qt
-            # ac = c.k.autoCompleter
-            # w = c.frame.body.bodyCtrl
-            # ev = w.ev_filter
+            ac = c.k.autoCompleter
+            w = c.frame.body.bodyCtrl
 
             # Key abbreviations.
             key = event.key()
@@ -164,6 +152,10 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if is_mod and not s:
                 # A modifier key on it's own.
                 return
+
+            w.ev_filter.eventFilter(obj=self,event=event)
+            # QtGui.QListWidget.keyPressEvent(self,event) 
+            return
                 
             # # Check for ctrl-q
             # tkKey,ch,ignore = ev.toTkKey(event)
@@ -194,7 +186,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             QtGui.QTextBrowser.keyPressEvent(self,event)
                 
         #@-others
-                
     #@+node:ekr.20110325185230.14524: *5* endCompleter
     def endCompleter(self,message=None):
         
@@ -239,7 +230,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         elif self.leo_new_code:
             # Create a QListView.
             # qc = QtGui.QListWidget(self)
-            qc = self.LeoQListWidget(self)
+            qc = self.LeoQListWidget(c,self)
         else:
             # Create the completer.
             qc = QtGui.QCompleter(self)
