@@ -108,6 +108,7 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.5: *3*  ctor (autocompleter)
     def __init__ (self,k):
 
+        # Ivars...
         self.c = c = k.c
         self.k = k
         self.force = None
@@ -115,6 +116,13 @@ class AutoCompleterClass:
         self.tabName = None # The name of the main completion tab.
         self.verbose = False # True: print all members, regardless of how many there are.
         self.w = None # The widget that gets focus after autocomplete is done.
+        
+        # Codewise pre-computes...
+        self.codewiseSelfList = []
+            # The (global) completions for "self."
+        self.codewiseDict = {}
+            # Keys are prefixes, values are completion lists.
+            # This is cleared by start, so that it relates to the current postition.
         
         # Options...
         self.auto_tab       = c.config.getBool('auto_tab_complete',False)
@@ -519,7 +527,24 @@ class AutoCompleterClass:
     def get_completions(self,prefix):
         
         if self.use_codewise:
-            return self.get_codewise_completions(prefix)
+            
+            d = self.codewiseDict
+            
+            if not self.codewiseSelfList:
+                # Get the completions for '.self'
+                # Strip the leading '.self' from all entries.
+                aList = self.get_codewise_completions('self.')
+                self.codewiseSelfList = [z[5:] for z in aList]
+                d ['self.'] = self.codewiseSelfList
+                # g.trace(g.listToString(self.codewiseSelfList[:50]))
+
+            # Use the cached list if it exists.
+            # This speeds the handling of backspace.
+            aList = d.get(prefix)
+            if not aList:
+                aList = self.get_codewise_completions(prefix)
+                d [prefix] = aList
+            return aList
         else:
             return self.get_leo_completions(prefix)
     #@+node:ekr.20110510120621.14539: *5* get_codewise_completions & helpers
@@ -527,7 +552,7 @@ class AutoCompleterClass:
         
         '''Use codewise to generate a list of hits.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         
         # w = self.w
@@ -546,6 +571,7 @@ class AutoCompleterClass:
         if aList:
             if kind == 'class':
                 hits = self.lookup_methods(aList,ivar)
+                hits.extend(self.codewiseSelfList)
             elif kind == 'module':
                 hits = self.lookup_modules(aList,ivar)
         else:
@@ -560,8 +586,9 @@ class AutoCompleterClass:
             hits = ['%s.%s' % (varname,z) for z in hits]
             
         if trace:
-            g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
-            g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+            g.trace('kind',kind,'varname',varname,'ivar',ivar,'prefix',prefix)
+            # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+            # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
 
         return hits
     #@+node:ekr.20110510120621.14540: *6* clean
@@ -616,8 +643,8 @@ class AutoCompleterClass:
             return 'class',['baseCommands']
         if varname == 'self':
             # Return the nearest enclosing class.
-            for par in p.parents():
-                h = par.h
+            for p in c.p.parents():
+                h = p.h
                 m = re.search('class\s+(\w+)', h)
                 if m:
                     return 'class',[m.group(1)]
@@ -859,6 +886,8 @@ class AutoCompleterClass:
         self.put('',s,tabName=self.tabName)
     #@+node:ekr.20061031131434.46: *4* start
     def start (self,event):
+        
+        self.codewiseDict = {}
 
         if self.use_qcompleter:
             self.init_qcompleter()

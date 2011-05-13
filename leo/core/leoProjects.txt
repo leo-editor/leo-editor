@@ -12584,7 +12584,41 @@ What I did:
   line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
 
 
-#@+node:ekr.20110512212836.14473: *5* Debug codewise completer
+#@+node:ekr.20110512212836.14473: *5* Finish codewise completer
+@nocolor-node
+
+To do:
+    
+- Must add "self" args to all classes.
+
+- Abort or do something more clever when the prefix is empty.
+
+- The completer is slow.
+#@+node:ekr.20061031131434.5: *6*  ctor (autocompleter)
+def __init__ (self,k):
+
+    # Ivars...
+    self.c = c = k.c
+    self.k = k
+    self.force = None
+    self.language = None
+    self.tabName = None # The name of the main completion tab.
+    self.verbose = False # True: print all members, regardless of how many there are.
+    self.w = None # The widget that gets focus after autocomplete is done.
+    
+    # Codewise pre-computes...
+    self.codewiseSelfList = []
+        # The (global) completions for "self."
+    self.codewiseDict = {}
+        # Keys are prefixes, values are completion lists.
+        # This is cleared by start, so that it relates to the current postition.
+    
+    # Options...
+    self.auto_tab       = c.config.getBool('auto_tab_complete',False)
+    self.use_codewise   = c.config.getBool('use_codewise',False) and not self.is_leo_source_file()
+    self.use_qcompleter = c.config.getBool('use_qcompleter',False)
+        # True: show results in autocompleter tab.
+        # False: show results in a QCompleter widget.
 #@+node:ekr.20110310091639.14256: *6* class CodeWise
 class CodeWise:
     @others
@@ -12949,7 +12983,7 @@ def get_codewise_completions(self,prefix):
     
     '''Use codewise to generate a list of hits.'''
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     c = self.c
     
     # w = self.w
@@ -12968,6 +13002,7 @@ def get_codewise_completions(self,prefix):
     if aList:
         if kind == 'class':
             hits = self.lookup_methods(aList,ivar)
+            hits.extend(self.codewiseSelfList)
         elif kind == 'module':
             hits = self.lookup_modules(aList,ivar)
     else:
@@ -12982,8 +13017,9 @@ def get_codewise_completions(self,prefix):
         hits = ['%s.%s' % (varname,z) for z in hits]
         
     if trace:
-        g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
-        g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+        g.trace('kind',kind,'varname',varname,'ivar',ivar,'prefix',prefix)
+        # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+        # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
 
     return hits
 #@+node:ekr.20110510120621.14540: *7* clean
@@ -13038,8 +13074,8 @@ def guess_class(self,c,varname):
         return 'class',['baseCommands']
     if varname == 'self':
         # Return the nearest enclosing class.
-        for par in p.parents():
-            h = par.h
+        for p in c.p.parents():
+            h = p.h
             m = re.search('class\s+(\w+)', h)
             if m:
                 return 'class',[m.group(1)]
@@ -13066,5 +13102,183 @@ def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
     aList = codewise.cmd_functions([aList[0]])
     hits = [z.split(None,1) for z in aList if z.strip()]
     return self.clean(hits)
+#@+node:ekr.20110512212836.14471: *6* get_completions & helpers
+def get_completions(self,prefix):
+    
+    if self.use_codewise:
+        
+        d = self.codewiseDict
+        
+        if not self.codewiseSelfList:
+            # Get the completions for '.self'
+            # Strip the leading '.self' from all entries.
+            aList = self.get_codewise_completions('self.')
+            self.codewiseSelfList = [z[5:] for z in aList]
+            d ['self.'] = self.codewiseSelfList
+            # g.trace(g.listToString(self.codewiseSelfList[:50]))
+
+        # Use the cached list if it exists.
+        # This speeds the handling of backspace.
+        aList = d.get(prefix)
+        if not aList:
+            aList = self.get_codewise_completions(prefix)
+            d [prefix] = aList
+        return aList
+    else:
+        return self.get_leo_completions(prefix)
+#@+node:ekr.20110510120621.14539: *7* get_codewise_completions & helpers
+def get_codewise_completions(self,prefix):
+    
+    '''Use codewise to generate a list of hits.'''
+
+    trace = True and not g.unitTesting
+    c = self.c
+    
+    # w = self.w
+    ### head,junk = self.get_current_line(w)
+    ### s = self.get_word() # The word under the cursor.
+
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
+    if m:
+        varname = m.group(1)
+        ivar = m.group(3)
+        kind,aList = self.guess_class(c,varname)
+    else:
+        kind,aList = 'none',[]
+        varname,ivar = None,None
+
+    if aList:
+        if kind == 'class':
+            hits = self.lookup_methods(aList,ivar)
+            hits.extend(self.codewiseSelfList)
+        elif kind == 'module':
+            hits = self.lookup_modules(aList,ivar)
+    else:
+        aList2 = prefix.split('.')
+        if aList2:
+            func = aList2[-1]
+            hits = self.lookup_functions(func) ### Was s
+        else:
+            hits = []
+
+    if 1: # A kludge: add the prefix to each hit.
+        hits = ['%s.%s' % (varname,z) for z in hits]
+        
+    if trace:
+        g.trace('kind',kind,'varname',varname,'ivar',ivar,'prefix',prefix)
+        # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+        # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+
+    return hits
+#@+node:ekr.20110510120621.14540: *8* clean
+def clean (self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
+    
+    trace = False and not g.unitTesting
+            
+    # Just take the function name: ignore the signature & file.
+    aList = list(set([z[0] for z in hits]))
+    aList.sort()
+
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+
+    return aList
+#@+node:ekr.20110512232915.14481: *8* clean_for_display (not used)
+def clean_for_display(self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for display purposes.'''
+    
+    trace = False and not g.unitTesting
+    aList = []
+    for h in hits:
+        s = h[0]
+        # Display oriented: no good for completion list.
+        fn = h[1].strip()
+        if fn.startswith('/'):
+            sig = fn[2:-4].strip()
+        else:
+            sig = fn
+        aList.append('%s: %s' % (s,sig))
+        
+    aList = list(set(aList))
+    aList.sort()
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+    return aList
+#@+node:ekr.20110510120621.14542: *8* guess_class
+def guess_class(self,c,varname):
+    
+    '''Return kind, class_list'''
+
+    # if varname == 'g':
+        # return 'module',['leoGlobals']
+    if varname == 'p':
+        return 'class',['position']
+    if varname == 'c':
+        return 'class',['baseCommands']
+    if varname == 'self':
+        # Return the nearest enclosing class.
+        for p in c.p.parents():
+            h = p.h
+            m = re.search('class\s+(\w+)', h)
+            if m:
+                return 'class',[m.group(1)]
+
+    # Do a 'real' analysis
+    aList = ContextSniffer().get_classes(c.p.b,varname)
+    # g.trace(varname,aList)
+    return 'class',aList
+#@+node:ekr.20110510120621.14543: *8* lookup_functions/methods/modules
+def lookup_functions(self,prefix):
+
+    aList = codewise.cmd_functions([prefix])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
+    
+    aList = codewise.cmd_members([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
+    
+    aList = codewise.cmd_functions([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+#@+node:ekr.20110509064011.14557: *7* get_leo_completions
+def get_leo_completions(self,prefix):
+    
+    '''Return completions in an environment defining c, g and p.'''
+    
+    trace = False and not g.unitTesting
+    verbose = False
+    
+    d = self.get_leo_namespace(prefix)
+    if trace: g.trace(list(d.keys()))
+
+    aList = self.attr_matches(prefix,d)
+    aList.sort()
+    
+    if trace:
+        if verbose:
+            g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
+        else:
+            g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
+
+    return aList
+#@+node:ekr.20061031131434.46: *6* start
+def start (self,event):
+    
+    self.codewiseDict = {}
+
+    if self.use_qcompleter:
+        self.init_qcompleter()
+    else:
+        self.init_tabcompleter(event)
 #@-all
 #@-leo
