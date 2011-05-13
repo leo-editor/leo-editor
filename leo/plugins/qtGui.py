@@ -131,8 +131,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 wg = w.geometry()
                 sg = self.geometry()
                 
-                qc = QtGui.QCompleter()
-                self.setFrameStyle(qc.popup().frameStyle())
+                # qc = QtGui.QCompleter()
+                # self.setFrameStyle(qc.popup().frameStyle())
                 # self.setGeometry(wg.x(),wg.y()+50,sg.width(),sg.height())
                 # self.move(0,sg.y()+50)
                     # x,y,w,h
