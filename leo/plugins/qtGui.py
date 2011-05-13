@@ -122,8 +122,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     class LeoQListWidget(QtGui.QListWidget):
         
         def __init__(self,c,w):
-
-            QtGui.QListWidget.__init__(self,w)
+            
+            if 1:
+                # Freestanding (no parent): just for testing:
+                QtGui.QListWidget.__init__(self)
+            else:
+                # Attached to body pane.
+                QtGui.QListWidget.__init__(self,w)
 
             self.leo_c = c
             self.leo_w = w # a LeoQTextBrowser.
@@ -425,7 +430,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         '''Put the completions, in aList, in the QListView.'''
         
-        g.trace('(qc) len(aList)',len(aList))
+        # g.trace('(qc) len(aList)',len(aList))
         
         qc = self.leo_q_completer
         qc.clear()
