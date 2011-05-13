@@ -126,11 +126,22 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         def __init__(self,c,w):
             
             if 1:
-                # Freestanding (no parent): just for testing:
+                # Freestanding
                 QtGui.QListWidget.__init__(self)
+                wg = w.geometry()
+                sg = self.geometry()
+                
+                qc = QtGui.QCompleter()
+                self.setFrameStyle(qc.popup().frameStyle())
+                # self.setGeometry(wg.x(),wg.y()+50,sg.width(),sg.height())
+                # self.move(0,sg.y()+50)
+                    # x,y,w,h
             else:
                 # Attached to body pane.
                 QtGui.QListWidget.__init__(self,w)
+                #g.trace(w,c.frame.tree.treeWidget)
+                # h = self.geometry().height()
+                # g.trace(h)
 
             self.leo_c = c
             self.leo_w = w # a LeoQTextBrowser.
