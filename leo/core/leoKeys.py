@@ -267,7 +267,7 @@ class AutoCompleterClass:
         w = self.w or c.frame.body.bodyCtrl
         
         if self.use_qcompleter:
-            self.qw.endCompleter()
+            self.qw.end_completer()
         else:
             for name in (self.tabName,'Modules','Info'):
                 c.frame.log.deleteTab(name)
@@ -819,11 +819,12 @@ class AutoCompleterClass:
         options = self.get_completions(prefix)
 
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+        
+        self.qw = w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.
 
         if options:
-            self.qw = w = self.c.frame.body.bodyCtrl.widget
-                # A LeoQTextBrowser.
-            self.qcompleter = w.initCompleter(options)
+            self.qcompleter = w.init_completer(options)
             self.auto_completer_state_handler(event)
         else:
             g.es('No completions',color='blue')
@@ -928,7 +929,7 @@ class AutoCompleterClass:
             
         if self.use_qcompleter:
             # Put the completions in the QListView.
-            self.qw.showCompletions(tabList)
+            self.qw.show_completions(tabList)
         else:
             # Update the tab name, creating the tab if necessary.
             c.widgetWantsFocus(self.w)

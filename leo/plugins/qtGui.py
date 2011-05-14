@@ -81,7 +81,6 @@ if 0:
         print('\nqtGui.py: can not import scintilla for Qt')
         print('\nqtGui.py: qt-scintilla may be a separate package on your system')
         print('\nqtGui.py: e.g. "python-qscintilla2" or similar\n')
-
 #@-<< qt imports >>
 #@+<< define text widget classes >>
 #@+node:ekr.20081121105001.515: **  << define text widget classes >>
@@ -124,18 +123,27 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         #@+others
         #@+node:ekr.20110513144933.14531: *6* ctor (LeoQListWidget)
         def __init__(self,c):
+            
 
-            splitter2 = c.frame.top.splitter_2
             QtGui.QListWidget.__init__(self)
-            splitter2.insertWidget(1,self)
 
-            # Inject the ivar.
+            if 0:
+                # embed the window in a splitter.
+                splitter2 = c.frame.top.splitter_2
+                splitter2.insertWidget(1,self)
+
+            # Inject the ivars
+            self.leo_w = c.frame.body.bodyCtrl.widget
+                # A LeoQTextBrowser, a subclass of QtGui.QTextBrowser.
             self.leo_c = c
             
+            # A weird hack.
+            self.leo_geom_set = False # When true, self.geom returns global coords!
+            
             self.connect(self,QtCore.SIGNAL(
-                "itemClicked(QListWidgetItem *)"),self.selectCallback)
-        #@+node:ekr.20110513144933.14526: *6* endCompleter
-        def endCompleter(self):
+                "itemClicked(QListWidgetItem *)"),self.select_callback)
+        #@+node:ekr.20110513144933.14526: *6* end_completer
+        def end_completer(self):
 
             # g.trace('(LeoQListWidget)')
 
@@ -170,12 +178,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 pass
             elif key in (qt.Key_Enter,qt.Key_Return):
                 if trace: g.trace('<return>')
-                self.selectCallback()
+                self.select_callback()
             else:
                 # Pass all other keys to the autocompleter via the event filter.
                 w.ev_filter.eventFilter(obj=self,event=event)
-        #@+node:ekr.20110513144933.14524: *6* selectCallback
-        def selectCallback(self):  
+        #@+node:ekr.20110513144933.14524: *6* select_callback
+        def select_callback(self):  
 
             '''Called when user selects an item in the QListWidget.'''
 
@@ -204,9 +212,68 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 w.setInsertPoint(j)
                 c.frame.body.onBodyChanged('Typing')
 
-            self.endCompleter()
-        #@+node:ekr.20110513144933.14528: *6* showCompletions
-        def showCompletions(self,aList):
+            self.end_completer()
+        #@+node:ekr.20110514134640.14522: *6* set_position (LeoQListWidget)
+        def set_position (self,c):
+            
+            trace = False and not g.unitTesting
+            w = self.leo_w
+            
+            def glob(obj,pt):
+                '''Convert pt from obj's local coordinates to global coordinates.'''
+                return obj.mapToGlobal(pt)
+            
+            vp = self.viewport()
+            r = w.cursorRect()
+            geom = self.geometry() # In viewport coordinates.
+                
+            gr_topLeft = glob(w,r.topLeft())
+                
+            if self.leo_geom_set:
+                # Unbelievable: geom is now in *global* coords.
+                gg_topLeft = geom.topLeft()
+            else:
+                # Per documentation, geom in local (viewport) coords.
+                gg_topLeft = glob(vp,geom.topLeft())
+
+            delta_x = gr_topLeft.x() - gg_topLeft.x() 
+            delta_y = gr_topLeft.y() - gg_topLeft.y()
+            
+            x_offset,y_offset = 10,60
+            
+            # Compute the new geometry, setting the size by hand.
+            geom2_topLeft = QtCore.QPoint(
+                geom.x()+delta_x+x_offset,
+                geom.y()+delta_y+y_offset)
+
+            geom2_size = QtCore.QSize(400,100)
+
+            geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
+                    
+            # These assert's fail once offsets are added.
+            if x_offset == 0 and y_offset == 0:
+                if self.leo_geom_set:
+                    assert geom2.topLeft() == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
+                        geom2.topLeft(),glob(w,r.topLeft()))
+                else:
+                    assert glob(vp,geom2.topLeft()) == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
+                        glob(vp,geom2.topLeft()),glob(w,r.topLeft()))
+
+            self.setGeometry(geom2)
+            self.leo_geom_set = True
+
+            if trace:
+                g.trace(self,
+                    # '\n viewport:',vp,
+                    # '\n size:    ',geom.size(),
+                    '\n delta_x',delta_x,
+                    '\n delta_y',delta_y,
+                    '\n r:     ',r.x(),r.y(),         glob(w,r.topLeft()),
+                    '\n geom:  ',geom.x(),geom.y(),   glob(vp,geom.topLeft()),
+                    '\n geom2: ',geom2.x(),geom2.y(), glob(vp,geom2.topLeft()),
+                )
+        #@+node:ekr.20110513144933.14528: *6* show_completions
+        def show_completions(self,aList):
             
             '''Set the QListView contents to aList.'''
             
@@ -218,8 +285,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             self.activateWindow()
             self.setFocus()
         #@-others
-    #@+node:ekr.20110325185230.14521: *5* initCompleter (LeoQTextBrowser)
-    def initCompleter(self,options):
+    #@+node:ekr.20110325185230.14521: *5* init_completer (LeoQTextBrowser)
+    def init_completer(self,options):
         
         '''Connect a QCompleter.'''
         
@@ -233,24 +300,27 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             qc = self.leo_qc
         else:
             self.leo_qc = qc = self.LeoQListWidget(c)
+            
+        # Move the window near the body pane's cursor.
+        qc.set_position(c)
 
         # Show the initial completions.
         c.in_qt_dialog = True
         qc.show()
         qc.activateWindow()
         c.widgetWantsFocusNow(qc)
-        qc.showCompletions(options)
+        qc.show_completions(options)
         return qc
     #@+node:ekr.20110325185230.14524: *5* redirections to LeoQListWidget
-    def endCompleter(self):
+    def end_completer(self):
         
         if hasattr(self,'leo_qc'):
-            self.leo_qc.endCompleter()
+            self.leo_qc.end_completer()
 
-    def showCompletions(self,aList):
+    def show_completions(self,aList):
         
         if hasattr(self,'leo_qc'):
-            self.leo_qc.showCompletions(aList)
+            self.leo_qc.show_completions(aList)
     #@+node:ekr.20110304100725.14067: *4* leo_dumpButton
     def leo_dumpButton(self,event,tag):
         trace = False and not g.unitTesting
