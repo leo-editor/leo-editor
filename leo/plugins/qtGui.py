@@ -123,7 +123,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 
         #@+others
         #@+node:ekr.20110513144933.14531: *6* ctor (LeoQListWidget)
-        def __init__(self,c,w):
+        def __init__(self,c):
 
             splitter2 = c.frame.top.splitter_2
             QtGui.QListWidget.__init__(self)
@@ -232,7 +232,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if hasattr(self,'leo_qc') and self.leo_qc:
             qc = self.leo_qc
         else:
-            self.leo_qc = qc = self.LeoQListWidget(c,self)
+            self.leo_qc = qc = self.LeoQListWidget(c)
 
         # Show the initial completions.
         c.in_qt_dialog = True

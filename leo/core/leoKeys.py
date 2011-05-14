@@ -121,7 +121,7 @@ class AutoCompleterClass:
         # Codewise pre-computes...
         self.codewiseSelfList = []
             # The (global) completions for "self."
-        self.codewiseDict = {}
+        self.completionsDict = {}
             # Keys are prefixes, values are completion lists.
         
         # Options...
@@ -462,14 +462,22 @@ class AutoCompleterClass:
             s = s[0] + s[5:].strip()
 
         self.insert_string(s)
-    #@+node:ekr.20061031131434.28: *4* compute_completion_list
+    #@+node:ekr.20061031131434.28: *4* compute_completion_list & helper
     def compute_completion_list (self):
 
         trace = False and not g.unitTesting
         verbose = False
+            # True: report hits and misses.
+            # False: report misses.
         
         prefix = self.get_autocompleter_prefix()
-        options = self.get_completions(prefix)
+        
+        key,options = self.get_cached_options(prefix)
+        if options:
+            if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix,key))
+        else:
+            if trace: g.trace('**prefix miss: %s, %s' % (prefix,key))
+            options = self.get_completions(prefix)
         
         tabList,common_prefix = g.itemsMatchingPrefixInList(
             prefix,options,matchEmptyPrefix=False)
@@ -478,16 +486,41 @@ class AutoCompleterClass:
             tabList,common_prefix = g.itemsMatchingPrefixInList(
                 prefix,options,matchEmptyPrefix=True)
                 
-        if trace:
+        if trace and verbose:
             g.trace('prefix: %s, common: %s, len(tabList): %s' % (
                 repr(prefix),repr(common_prefix),len(tabList)))
-            if verbose: g.trace('options[:10]...\n',
-                g.listToString(options[:10],sort=True))
+            # if verbose: g.trace('options[:10]...\n',
+                # g.listToString(options[:10],sort=True))
             
         if tabList:
             self.show_completion_list(common_prefix,prefix,tabList)
         
         return common_prefix,prefix,tabList
+    #@+node:ekr.20110514051607.14524: *5* get_cached_options
+    def get_cached_options(self,prefix):
+        
+        trace = False and not g.unitTesting
+        d = self.completionsDict
+        
+        # Search the completions Dict for shorter and shorter prefixes.
+        i = len(prefix)
+        
+        while i > 0:
+            key = prefix[:i]
+            i -= 1
+            # Make sure we report hits only of real objects.
+            if key.endswith('.'):
+                if trace: g.trace('== period: %s' % (key))
+                return key,[]
+            options = d.get(key)
+            if options:
+                if trace: g.trace('== hit: %s len: %s' % (
+                    key,len(options)))
+                return key,options
+            else:
+                if trace: g.trace('== miss: %s' % (key))
+
+        return None,[]
     #@+node:ekr.20061031131434.29: *4* do_backspace
     def do_backspace (self):
 
@@ -543,27 +576,29 @@ class AutoCompleterClass:
     #@+node:ekr.20110512212836.14471: *4* get_completions & helpers
     def get_completions(self,prefix):
         
-        if self.use_codewise:
+        trace = False and not g.unitTesting
+        verbose = False # True: report hits and misses.  False: report misses.
+        d = self.completionsDict
             
-            d = self.codewiseDict
-            
-            if not self.codewiseSelfList:
-                # Get the completions for '.self'
-                # Strip the leading '.self' from all entries.
-                aList = self.get_codewise_completions('self.')
-                self.codewiseSelfList = [z[5:] for z in aList]
-                d ['self.'] = self.codewiseSelfList
-                # g.trace(g.listToString(self.codewiseSelfList[:50]))
+        # Precompute the codewise completions for '.self'.
+        if not self.codewiseSelfList:
+            aList = self.get_codewise_completions('self.')
+            self.codewiseSelfList = [z[5:] for z in aList]
+            d ['self.'] = self.codewiseSelfList
 
-            # Use the cached list if it exists.
-            # This speeds the handling of backspace.
-            aList = d.get(prefix)
-            if not aList:
-                aList = self.get_codewise_completions(prefix)
-                d [prefix] = aList
+        # Use the cached list if it exists.
+        aList = d.get(prefix)
+        if aList:
+            if trace and verbose: g.trace('**cache hit: %s' % (prefix))
             return aList
+        elif self.use_codewise:
+            aList = self.get_codewise_completions(prefix)
         else:
-            return self.get_leo_completions(prefix)
+            aList = self.get_leo_completions(prefix)
+        
+        if trace: g.trace('**cash miss: %s' % (prefix))
+        d [prefix] = aList
+        return aList
     #@+node:ekr.20110510120621.14539: *5* get_codewise_completions & helpers
     def get_codewise_completions(self,prefix):
         
@@ -934,7 +969,7 @@ class AutoCompleterClass:
     def start (self,event):
         
         # We don't need to clear this now that we don't use ContextSniffer.
-        # self.codewiseDict = {}
+        # self.completionsDict = {}
 
         if self.use_qcompleter:
             self.init_qcompleter(event)
