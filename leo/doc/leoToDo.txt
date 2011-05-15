@@ -1376,6 +1376,191 @@ I'd also like
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
+#@+node:ekr.20110514231951.14492: ** Docs
+#@+node:ekr.20110514134640.14520: *3* Doc: summary of autocompleter (do not delete)
+@language rest
+
+There has been a lot of work on autocompletion recently. Here, I'll summarize
+the present status and indicate future directions.
+
+Terminology: the *legacy* (aka tabbed) autocompleter shows completions in Leo's
+tabbed pane. The *new* (aka qcompleter) autocompleter shows completions in or
+near the body pane.
+
+Appearance
+==========
+
+There is little change to the legacy completer, except that no text is
+highlighted in the body pane during completion. This is calmer than before.
+Furthermore, there is no longer any need for highlighting, because when the user
+types a backspace the legacy completer now simply deletes a single character
+instead of the highlighted text.
+
+One more minor change: the legacy completer now *does* insert characters that do
+not match the start of any possible completion. This is an experimental feature,
+but it might play well with using codewise completions as a fallback to
+leo-related completions.
+
+The appearance of the qcompleter is in flux. Previously, the QCompleter ctor
+created a wretched-looking window in or near the body pane. The present code
+creates a new temporary splitter above the body pane. It looks good, but has the
+unpleasant effect of shifting the body pane done.
+
+The consensus seems to be that the completion window should float near the
+to-be-completed text, without obscuring it. I'll do this immediately.
+
+Function and design
+===================
+
+Both the legacy and new completer now work *exactly* the same way, because they
+both use the AutoCompleterClass to compute the list of completions.
+
+In other words, the qcompleter code in qtGui.py deals *only* with gui- related
+matters. All policy matters are delegated to AutoCompleterClass.
+
+All completion-related code is stateless, or as stateless as possible. In
+practice, this means that ac.compute_completion_list must be called on every
+keystroke. That's not a problem: it is extremely fast.
+
+Yesterday I realized that the strict "stateless" requirement means that the
+"intermediate" completions must be entered into the body pane while completion
+is active. This might be a debatable user-interface choice. It works well as a
+visual cue when using the tabbed completer: indeed, the tabbed completer would
+be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter. Adding code before the
+user accepts the completion might be considered an "advanced" feature. However,
+it does have two important advantages, especially when "chaining" across
+periods: it indicates the status of the chaining and it limits what must appear
+in the qcompleter window.
+
+It would be possible *not* to add the intermediate text into the body pane when
+using the qcompleter, but that would have the following disadvantages:
+
+- It would require internal state somewhere, probably in AutoCompleterClass.
+
+- It would require that the complete prefix be visible in the qcompleter window.
+
+For these reasons, I would prefer to have the code remains stateless for both
+the legacy and new completers.
+
+Codewise completions
+====================
+
+I agree with Ville that the @bool use_codewise setting should be eliminated, or
+at the very least made the default. The problem with eliminating the setting
+completely is that it might give incorrect results if c, g and p do not mean
+what they mean in Leo. Perhaps this is not worth worrying about. In any case,
+the codewise completions should be used whenever the eval-oriented approach
+fails.
+
+The present codewise-oriented completions appear to work well. In large part,
+this is due to adding the global "self." completions to all class-related
+completions (kind == 'class' in ac.get_codewise_completions). This looks like a
+really good hack, and it eliminates the need for the ContextSniffer class.
+
+Performance
+===========
+
+Performance of leo-related completions is *much* better than before. The old
+code used Python's inspect module and was horribly complex. The new code uses
+eval and is perfectly straightforward.
+
+The present codewise-related code caches completions for all previously-seen
+prefixes. This dramatically speeds up backspacing. Global caching is possible
+because completions depend *only* one the present prefix, *not* on the presently
+selected node. If ContextSniffer were used, completions would depend on the
+selected node and caching would likely be impractical.
+
+Despite these improvements, the performance of codewise-oriented completions is
+now noticeably slower than leo-related completions.
+
+The present qcompleter code avoids the QCompleter class entirely. This
+dramatically speeds up completions and simplifies the code in qtGui.py.
+
+Future directions
+=============
+
+Appearance-related issues will soon be completely resolved. When that happens I
+shall consider autocompletion to be "complete enough".
+
+I am completely happy with the leo-oriented completions. I'm not looking for
+anything better :-)
+
+Falling back to codewise-completions when leo-related completions fail may have
+some promise. In fact, the slowness of computing the codewise-oriented
+completions in that case might be a subtle clue that something is amiss :-) We
+shall see. In any case, it's a small point with no global implications.
+
+The "final frontier" is, as it has always been, improving codewise completions.
+As always, this is an open-ended project. The question are, how much AI is
+reasonable, and how can performance be improved? Having said that, I am pleased
+with ac.get_codewise_completions. It, and its helpers, guess_class and clean,
+are relatively straightforward.
+
+I have always considered the codewise completions (or whatever replaces them) to
+be the "hard part". There is still a sense in which this is true, but perhaps as
+a practical matter Ville was correct in calling this week's work the hard part
+:-)
+
+In any case, the codewise completions work surprisingly well. For example, it
+suggests all parts of the chain c.frame.body.bodyCtrl.widget except the bodyCtrl
+part, and after I type the bodyCtrl part by hand the codewise completer does
+suggest widget.
+
+This is all a bit of a hack. The codewise completer suggests far more
+completions than are actually valid. Happily, these extra suggestions cause no
+pain: typing just a few letters of the next part of the chain quickly removes
+most extraneous completions.
+
+The performance and flexibility of the codewise completer are greater concerns.
+Now that leo-related completions are so fast, the slower speed of the codewise
+completer is just a bit annoying. Caching helps somewhat, but not enough.
+
+By "flexibility" I mean that the user must run ctags periodically to update
+completions. One could imagine Leo doing this automatically from time to time,
+but such a project would not be trivial.
+
+Summary
+=======
+
+User interface issues are nearly resolved: I'll make the qcompleter float today.
+
+Performance of Leo completions are excellent; codewise completions not bad.
+
+Improving codewise completions would be an interesting project, but not urgent.
+#@+node:ekr.20110514134640.14521: *3* Doc: the new completion caching scheme (do not delete)
+@language rest
+
+QQQ
+The completer should calculate all possible completions at that time. now, as
+you enter letters b a r, (to get foo.bar), completions should not be calculated
+- rather, the original completion list calculated earlier should be pruned
+according to the letters typed.
+QQQ
+
+The change was elegant: see ac.get_cached_options. This method cuts back the
+prefix until it finds a cached prefix. ac.compute_completion_list then uses this
+(perhaps-way-too-long-list) as a starting point, and computes the final
+completion list by calling g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much simpler and more
+robust than attempting to do "prefix AI" based on comparing old and new
+prefixes. Furthermore, this scheme is completely independent of the how
+completions are actually computed. The autocompleter now caches options lists,
+regardless of whether using eval or codewise.
+
+And in most cases the scheme is extremely fast: calls to get_completions replace
+calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that
+g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large
+lists can't be helped in any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the completionDict does
+*not* define state (it is valid everywhere) and no state variables had to be
+added.
+
+In short, the new caching scheme is much better than before, and it probably is
+close to optimal in most situations.
 #@+node:ekr.20100206074650.5844: ** Features
 #@+node:ekr.20090811141250.5955: *3*  Most important features
 @ Important: There is another features list for 4.9.

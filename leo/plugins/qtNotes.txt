@@ -5903,6 +5903,301 @@ def setFocus (self):
     # Call the base class
     assert isinstance(self.widget,QtGui.QTextBrowser) or isinstance(self.widget,QtGui.QLineEdit),self.widget
     QtGui.QTextBrowser.setFocus(self.widget)
+#@+node:ekr.20110509064011.14558: *3* Finished the QCompleter
+#@+node:ekr.20110325185230.14518: *4* Auto completion (LeoQTextBrowser)
+#@+node:ekr.20110513104728.14452: *5* class LeoQListWidget(QListWidget)
+class LeoQListWidget(QtGui.QListWidget):
+            
+    @others
+#@+node:ekr.20110513144933.14531: *6* ctor (LeoQListWidget)
+def __init__(self,c):
+    
+
+    QtGui.QListWidget.__init__(self)
+    
+    # Make this window a modal window.
+    # self.setWindowModality(QtCore.Qt.WindowModal)
+
+    if 0:
+        # embed the window in a splitter.
+        splitter2 = c.frame.top.splitter_2
+        splitter2.insertWidget(1,self)
+
+    # Inject the ivars
+    self.leo_w = c.frame.body.bodyCtrl.widget
+        # A LeoQTextBrowser, a subclass of QtGui.QTextBrowser.
+    self.leo_c = c
+    
+    # A weird hack.
+    self.leo_geom_set = False # When true, self.geom returns global coords!
+    
+    self.connect(self,QtCore.SIGNAL(
+        "itemClicked(QListWidgetItem *)"),self.select_callback)
+#@+node:ekr.20110514231951.14490: *6* closeEvent
+def closeEvent(self,event):
+    
+    '''Kill completion and close the window.'''
+    
+    self.leo_c.k.autoCompleter.abort()
+#@+node:ekr.20110513144933.14526: *6* end_completer
+def end_completer(self):
+
+    # g.trace('(LeoQListWidget)')
+
+    c = self.leo_c
+    c.in_qt_dialog = False
+
+    # This is important: it clears the autocompletion state.
+    c.k.keyboardQuit(event=None,hideTabs=False)
+        # hideTabs = False prevents a recursive call here.
+        
+    c.bodyWantsFocusNow()
+    
+    self.deleteLater()
+#@+node:ekr.20110325185230.14516: *6* keyPressEvent (LeoQListWidget)
+def keyPressEvent(self,event):
+    
+    '''Handle a key event from QListWidget.'''
+    
+    trace = False and not g.unitTesting
+    c = self.leo_c
+    w = c.frame.body.bodyCtrl
+    qt = QtCore.Qt
+    key = event.key()
+    
+    if event.modifiers() != qt.NoModifier and not event.text():
+        # A modifier key on it's own.
+        pass
+    elif key in (qt.Key_Up,qt.Key_Down):
+        QtGui.QListWidget.keyPressEvent(self,event)
+    elif key == qt.Key_Tab:
+        if trace: g.trace('<tab>')
+        pass
+    elif key in (qt.Key_Enter,qt.Key_Return):
+        if trace: g.trace('<return>')
+        self.select_callback()
+    else:
+        # Pass all other keys to the autocompleter via the event filter.
+        w.ev_filter.eventFilter(obj=self,event=event)
+#@+node:ekr.20110513144933.14524: *6* select_callback
+def select_callback(self):  
+
+    '''Called when user selects an item in the QListWidget.'''
+
+    trace = False and not g.unitTesting
+    c = self.leo_c ; w = c.frame.body
+
+    # Replace the tail of the prefix with the completion.
+    completion = self.currentItem().text()
+    prefix = c.k.autoCompleter.get_autocompleter_prefix()
+    
+    parts = prefix.split('.')
+    if len(parts) > 1:
+        tail = parts[-1]
+    else:
+        tail = prefix
+        
+    if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
+
+    if tail != completion:
+        j = w.getInsertPoint()
+        i = j - len(tail)
+        w.delete(i,j)
+        w.insert(i,completion)
+        j = i+len(completion)
+        c.setChanged(True)
+        w.setInsertPoint(j)
+        c.frame.body.onBodyChanged('Typing')
+
+    self.end_completer()
+#@+node:ekr.20110514134640.14522: *6* set_position (LeoQListWidget)
+def set_position (self,c):
+    
+    trace = False and not g.unitTesting
+    w = self.leo_w
+    
+    def glob(obj,pt):
+        '''Convert pt from obj's local coordinates to global coordinates.'''
+        return obj.mapToGlobal(pt)
+    
+    vp = self.viewport()
+    r = w.cursorRect()
+    geom = self.geometry() # In viewport coordinates.
+        
+    gr_topLeft = glob(w,r.topLeft())
+    
+    # As a workaround to the setGeometry bug,
+    # The window is destroyed instead of being hidden.
+    assert not self.leo_geom_set
+        
+    # This code illustrates the bug...
+    # if self.leo_geom_set:
+        # # Unbelievable: geom is now in *global* coords.
+        # gg_topLeft = geom.topLeft()
+    # else:
+        # # Per documentation, geom in local (viewport) coords.
+        # gg_topLeft = glob(vp,geom.topLeft())
+    
+    gg_topLeft = glob(vp,geom.topLeft())
+
+    delta_x = gr_topLeft.x() - gg_topLeft.x() 
+    delta_y = gr_topLeft.y() - gg_topLeft.y()
+    
+    # These offset are reasonable.
+    # Perhaps they should depend on font size.
+    x_offset,y_offset = 10,60
+    
+    # Compute the new geometry, setting the size by hand.
+    geom2_topLeft = QtCore.QPoint(
+        geom.x()+delta_x+x_offset,
+        geom.y()+delta_y+y_offset)
+
+    geom2_size = QtCore.QSize(400,100)
+
+    geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
+            
+    # These assert's fail once offsets are added.
+    if x_offset == 0 and y_offset == 0:
+        if self.leo_geom_set:
+            assert geom2.topLeft() == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
+                geom2.topLeft(),glob(w,r.topLeft()))
+        else:
+            assert glob(vp,geom2.topLeft()) == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
+                glob(vp,geom2.topLeft()),glob(w,r.topLeft()))
+
+    self.setGeometry(geom2)
+    self.leo_geom_set = True
+
+    if trace:
+        g.trace(self,
+            # '\n viewport:',vp,
+            # '\n size:    ',geom.size(),
+            '\n delta_x',delta_x,
+            '\n delta_y',delta_y,
+            '\n r:     ',r.x(),r.y(),         glob(w,r.topLeft()),
+            '\n geom:  ',geom.x(),geom.y(),   glob(vp,geom.topLeft()),
+            '\n geom2: ',geom2.x(),geom2.y(), glob(vp,geom2.topLeft()),
+        )
+#@+node:ekr.20110513144933.14528: *6* show_completions
+def show_completions(self,aList):
+    
+    '''Set the QListView contents to aList.'''
+    
+    # g.trace('(qc) len(aList)',len(aList))
+
+    self.clear()
+    self.addItems(aList)
+    self.setCurrentRow(0)
+    self.activateWindow()
+    self.setFocus()
+#@+node:ekr.20110325185230.14521: *5* init_completer (LeoQTextBrowser)
+def init_completer(self,options):
+    
+    '''Connect a QCompleter.'''
+    
+    trace = False and not g.unitTesting
+    c = self.leo_c ; k = c.k
+    
+    if trace:
+        g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
+    
+    # if hasattr(self,'leo_qc') and self.leo_qc:
+        # qc = self.leo_qc
+    # else:
+        # self.leo_qc = qc = self.LeoQListWidget(c)
+        
+    assert not hasattr(self,'leo_qc')
+    self.leo_qc = qc = self.LeoQListWidget(c)
+        
+    # Move the window near the body pane's cursor.
+    qc.set_position(c)
+
+    # Show the initial completions.
+    c.in_qt_dialog = True
+    qc.show()
+    qc.activateWindow()
+    c.widgetWantsFocusNow(qc)
+    qc.show_completions(options)
+    return qc
+#@+node:ekr.20110325185230.14524: *5* redirections to LeoQListWidget
+def end_completer(self):
+    
+    if hasattr(self,'leo_qc'):
+        self.leo_qc.end_completer()
+        delattr(self,'leo_qc')
+
+def show_completions(self,aList):
+    
+    if hasattr(self,'leo_qc'):
+        self.leo_qc.show_completions(aList)
+#@+node:ekr.20110514134640.14522: *4* set_position (LeoQListWidget)
+def set_position (self,c):
+    
+    trace = False and not g.unitTesting
+    w = self.leo_w
+    
+    def glob(obj,pt):
+        '''Convert pt from obj's local coordinates to global coordinates.'''
+        return obj.mapToGlobal(pt)
+    
+    vp = self.viewport()
+    r = w.cursorRect()
+    geom = self.geometry() # In viewport coordinates.
+        
+    gr_topLeft = glob(w,r.topLeft())
+    
+    # As a workaround to the setGeometry bug,
+    # The window is destroyed instead of being hidden.
+    assert not self.leo_geom_set
+        
+    # This code illustrates the bug...
+    # if self.leo_geom_set:
+        # # Unbelievable: geom is now in *global* coords.
+        # gg_topLeft = geom.topLeft()
+    # else:
+        # # Per documentation, geom in local (viewport) coords.
+        # gg_topLeft = glob(vp,geom.topLeft())
+    
+    gg_topLeft = glob(vp,geom.topLeft())
+
+    delta_x = gr_topLeft.x() - gg_topLeft.x() 
+    delta_y = gr_topLeft.y() - gg_topLeft.y()
+    
+    # These offset are reasonable.
+    # Perhaps they should depend on font size.
+    x_offset,y_offset = 10,60
+    
+    # Compute the new geometry, setting the size by hand.
+    geom2_topLeft = QtCore.QPoint(
+        geom.x()+delta_x+x_offset,
+        geom.y()+delta_y+y_offset)
+
+    geom2_size = QtCore.QSize(400,100)
+
+    geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
+            
+    # These assert's fail once offsets are added.
+    if x_offset == 0 and y_offset == 0:
+        if self.leo_geom_set:
+            assert geom2.topLeft() == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
+                geom2.topLeft(),glob(w,r.topLeft()))
+        else:
+            assert glob(vp,geom2.topLeft()) == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
+                glob(vp,geom2.topLeft()),glob(w,r.topLeft()))
+
+    self.setGeometry(geom2)
+    self.leo_geom_set = True
+
+    if trace:
+        g.trace(self,
+            # '\n viewport:',vp,
+            # '\n size:    ',geom.size(),
+            '\n delta_x',delta_x,
+            '\n delta_y',delta_y,
+            '\n r:     ',r.x(),r.y(),         glob(w,r.topLeft()),
+            '\n geom:  ',geom.x(),geom.y(),   glob(vp,geom.topLeft()),
+            '\n geom2: ',geom2.x(),geom2.y(), glob(vp,geom2.topLeft()),
+        )
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):

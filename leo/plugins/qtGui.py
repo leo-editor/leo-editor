@@ -116,7 +116,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
     __str__ = __repr__
     #@+node:ekr.20110325185230.14518: *4* Auto completion (LeoQTextBrowser)
-
     #@+node:ekr.20110513104728.14452: *5* class LeoQListWidget(QListWidget)
     class LeoQListWidget(QtGui.QListWidget):
                 
@@ -159,13 +158,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             c = self.leo_c
             c.in_qt_dialog = False
 
-            self.hide()
-
             # This is important: it clears the autocompletion state.
             c.k.keyboardQuit(event=None,hideTabs=False)
                 # hideTabs = False prevents a recursive call here.
                 
             c.bodyWantsFocusNow()
+            
+            self.deleteLater()
         #@+node:ekr.20110325185230.14516: *6* keyPressEvent (LeoQListWidget)
         def keyPressEvent(self,event):
             
@@ -237,17 +236,26 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             geom = self.geometry() # In viewport coordinates.
                 
             gr_topLeft = glob(w,r.topLeft())
+            
+            # As a workaround to the setGeometry bug,
+            # The window is destroyed instead of being hidden.
+            assert not self.leo_geom_set
                 
-            if self.leo_geom_set:
-                # Unbelievable: geom is now in *global* coords.
-                gg_topLeft = geom.topLeft()
-            else:
-                # Per documentation, geom in local (viewport) coords.
-                gg_topLeft = glob(vp,geom.topLeft())
+            # This code illustrates the bug...
+            # if self.leo_geom_set:
+                # # Unbelievable: geom is now in *global* coords.
+                # gg_topLeft = geom.topLeft()
+            # else:
+                # # Per documentation, geom in local (viewport) coords.
+                # gg_topLeft = glob(vp,geom.topLeft())
+            
+            gg_topLeft = glob(vp,geom.topLeft())
 
             delta_x = gr_topLeft.x() - gg_topLeft.x() 
             delta_y = gr_topLeft.y() - gg_topLeft.y()
             
+            # These offset are reasonable.
+            # Perhaps they should depend on font size.
             x_offset,y_offset = 10,60
             
             # Compute the new geometry, setting the size by hand.
@@ -305,10 +313,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if trace:
             g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
         
-        if hasattr(self,'leo_qc') and self.leo_qc:
-            qc = self.leo_qc
-        else:
-            self.leo_qc = qc = self.LeoQListWidget(c)
+        # if hasattr(self,'leo_qc') and self.leo_qc:
+            # qc = self.leo_qc
+        # else:
+            # self.leo_qc = qc = self.LeoQListWidget(c)
+            
+        assert not hasattr(self,'leo_qc')
+        self.leo_qc = qc = self.LeoQListWidget(c)
             
         # Move the window near the body pane's cursor.
         qc.set_position(c)
@@ -325,6 +336,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         if hasattr(self,'leo_qc'):
             self.leo_qc.end_completer()
+            delattr(self,'leo_qc')
 
     def show_completions(self,aList):
         
