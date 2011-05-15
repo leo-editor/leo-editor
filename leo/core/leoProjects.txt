@@ -13057,5 +13057,902 @@ added.
 
 In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
+#@+node:ekr.20061031131434.4: *4* class AutoCompleterClass
+class AutoCompleterClass:
+
+    '''A class that inserts autocompleted and calltip text in text widgets.
+    This class shows alternatives in the tabbed log pane.
+
+    The keyHandler class contains hooks to support these characters:
+    invoke-autocompleter-character (default binding is '.')
+    invoke-calltips-character (default binding is '(')
+    '''
+
+    @others
+#@+node:ekr.20061031131434.5: *5*  ctor (autocompleter)
+def __init__ (self,k):
+
+    # Ivars...
+    self.c = c = k.c
+    self.k = k
+    self.force = None
+    self.language = None
+    self.qw = None # The object that supports qcompletion methods.
+    self.tabName = None # The name of the main completion tab.
+    self.verbose = False # True: print all members, regardless of how many there are.
+    self.w = None # The widget that gets focus after autocomplete is done.
+    
+    # Codewise pre-computes...
+    self.codewiseSelfList = []
+        # The (global) completions for "self."
+    self.completionsDict = {}
+        # Keys are prefixes, values are completion lists.
+    
+    # Options...
+    self.auto_tab       = c.config.getBool('auto_tab_complete',False)
+    self.use_codewise   = c.config.getBool('use_codewise',False) and not self.is_leo_source_file()
+    self.use_qcompleter = c.config.getBool('use_qcompleter',False)
+        # True: show results in autocompleter tab.
+        # False: show results in a QCompleter widget.
+#@+node:ekr.20061031131434.8: *5* Top level (autocompleter)
+#@+node:ekr.20061031131434.9: *6* autoComplete
+def autoComplete (self,event=None,force=False):
+
+    '''An event handler called from k.masterKeyHanderlerHelper.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k ; state = k.unboundKeyAction
+    gui = g.app.gui
+    w = gui.eventWidget(event) or c.get_focus()
+
+    self.force = force
+    
+    if not state in ('insert','overwrite'):
+        if trace: g.trace('not in insert/overwrite mode')
+        return 'break'
+
+    # First, handle the invocation character as usual.
+    if not force:
+        # Ctrl-period does *not* insert a period.
+        if trace: g.trace('not force')
+        k.masterCommand(event,func=None,stroke=None,commandName=None)
+
+    # Allow autocompletion only in the body pane.
+    if not c.widget_name(w).lower().startswith('body'):
+        if trace: g.trace('not body')
+        return 'break'
+
+    self.language = g.scanForAtLanguage(c,c.p)
+    if w and self.language == 'python' and (k.enable_autocompleter or force):
+        if trace: g.trace('starting')
+        self.w = w
+        self.start(event)
+    else:
+        if trace: g.trace('not enabled')
+
+    return 'break'
+#@+node:ekr.20061031131434.10: *6* autoCompleteForce
+def autoCompleteForce (self,event=None):
+
+    '''Show autocompletion, even if autocompletion is not presently enabled.'''
+
+    return self.autoComplete(event,force=True)
+#@+node:ekr.20061031131434.12: *6* enable/disable/toggleAutocompleter/Calltips
+def disableAutocompleter (self,event=None):
+    '''Disable the autocompleter.'''
+    self.k.enable_autocompleter = False
+    self.showAutocompleterStatus()
+
+def disableCalltips (self,event=None):
+    '''Disable calltips.'''
+    self.k.enable_calltips = False
+    self.showCalltipsStatus()
+
+def enableAutocompleter (self,event=None):
+    '''Enable the autocompleter.'''
+    self.k.enable_autocompleter = True
+    self.showAutocompleterStatus()
+
+def enableCalltips (self,event=None):
+    '''Enable calltips.'''
+    self.k.enable_calltips = True
+    self.showCalltipsStatus()
+
+def toggleAutocompleter (self,event=None):
+    '''Toggle whether the autocompleter is enabled.'''
+    self.k.enable_autocompleter = not self.k.enable_autocompleter
+    self.showAutocompleterStatus()
+
+def toggleCalltips (self,event=None):
+    '''Toggle whether calltips are enabled.'''
+    self.k.enable_calltips = not self.k.enable_calltips
+    self.showCalltipsStatus()
+#@+node:ekr.20061031131434.13: *6* showCalltips
+def showCalltips (self,event=None,force=False):
+
+    '''Show the calltips at the cursor.'''
+
+    c = self.c ; k = c.k
+    w = g.app.gui.eventWidget(event)
+    if not w: return
+    is_headline = c.widget_name(w).startswith('head')
+
+    # Insert the calltip if possible, but not in headlines.
+    if (k.enable_calltips or force) and not is_headline:
+        self.w = w
+        self.calltip()
+    else:
+        # Just insert the invocation character as usual.
+        k.masterCommand(event,func=None,stroke=None,commandName=None)
+
+    return 'break'
+#@+node:ekr.20061031131434.14: *6* showCalltipsForce
+def showCalltipsForce (self,event=None):
+
+    '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
+
+    return self.showCalltips(event,force=True)
+#@+node:ekr.20061031131434.15: *6* showAutocompleter/CalltipsStatus
+def showAutocompleterStatus (self):
+    '''Show the autocompleter status.'''
+
+    k = self.k
+    if not g.unitTesting:
+        s = '%sautocompleter %s' % (
+            g.choose(self.use_codewise,'codewise ',''),
+            g.choose(k.enable_autocompleter,'On','Off'))
+        g.es(s,color='red')
+
+def showCalltipsStatus (self):
+    '''Show the autocompleter status.'''
+    k = self.k
+    if not g.unitTesting:
+        s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+        g.es(s,color='red')
+#@+node:ekr.20061031131434.16: *5* Helpers
+#@+node:ekr.20110512212836.14469: *6* abort, exit & finish
+#@+node:ekr.20061031131434.17: *7* abort
+def abort (self):
+
+    k = self.k
+    
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+    
+    if 0: # keyoardQuit calls k.autocompleter.exit.
+        self.exit(restore=True)
+#@+node:ekr.20110512212836.14470: *7* exit
+def exit (self,restore=False): # Called from keyboard-quit.
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('restore: %s' % (restore),g.callers())
+
+    k = self ; c = k.c 
+    w = self.w or c.frame.body.bodyCtrl
+    
+    if self.use_qcompleter:
+        self.qw.end_completer()
+    else:
+        for name in (self.tabName,'Modules','Info'):
+            c.frame.log.deleteTab(name)
+        
+    # Restore the selection range that may have been destroyed by changing tabs.
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange()
+    w.setSelectionRange(j,j,insert=j)
+#@+node:ekr.20061031131434.34: *7* finish
+def finish (self):
+
+    c = self.c ; k = c.k
+
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+
+    c.frame.body.onBodyChanged('Typing')
+    c.recolor()
+#@+node:ekr.20061031131434.18: *6* append/begin/popTabName
+def appendTabName (self,word):
+
+    self.setTabName(self.tabName + '.' + word)
+
+def beginTabName (self,word):
+
+    self.setTabName('AutoComplete ' + word)
+
+def clearTabName (self):
+
+    self.setTabName('AutoComplete ')
+
+def popTabName (self):
+
+    s = self.tabName
+    i = s.rfind('.',0,-1)
+    if i > -1:
+        self.setTabName(s[0:i])
+
+# Underscores are not valid in Pmw tab names!
+def setTabName (self,s):
+
+    c = self.c
+    if self.tabName:
+        c.frame.log.deleteTab(self.tabName)
+    self.tabName = s.replace('_','') or ''
+    c.frame.log.clearTab(self.tabName)
+#@+node:ekr.20110509064011.14556: *6* attr_matches
+def attr_matches(self,s,namespace):
+    
+    """Compute matches when string s is of the form name.name....name.
+    
+    Evaluates s using eval(s,namespace) 
+
+    Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+    the namespace, it will be evaluated and its attributes (as revealed by
+    dir()) are used as possible completions.
+    
+    For class instances, class members are are also considered.)
+    
+    **Warning**: this can still invoke arbitrary C code, if an object
+    with a __getattr__ hook is evaluated.
+    
+    """
+    
+    trace = False and not g.unitTesting
+    verbose = False
+
+    # Seems to work great. Catches things like ''.<tab>
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$",s)
+    if not m:
+        return []
+
+    expr,attr = m.group(1,3)
+    
+    try:
+        safe_expr = self.strip_brackets(expr)
+        obj = eval(safe_expr,namespace)
+    except Exception:
+        return []
+
+    # Build the result.
+    words = dir(obj)
+    n = len(attr)
+    result = ["%s.%s" % (expr,w) for w in words if w[:n] == attr]
+
+    if trace:
+        if verbose:
+            g.trace(s,result)
+        else:
+            g.trace(repr(s))
+    return result
+#@+node:ekr.20061031131434.11: *6* auto_completer_state_handler
+def auto_completer_state_handler (self,event):
+
+    trace = False and not g.app.unitTesting
+    c = self.c ; k = self.k ; gui = g.app.gui
+    tag = 'auto-complete' ; state = k.getState(tag)
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
+    if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
+        state,repr(ch),repr(keysym)))
+
+    if state == 0:
+        c.frame.log.clearTab(self.tabName)
+        common_prefix,prefix,tabList = self.compute_completion_list()
+        if tabList:
+            k.setState(tag,1,handler=self.auto_completer_state_handler)
+        else:
+            self.abort()
+    elif keysym in (' ','Return'):
+        self.finish()
+    elif keysym == 'Escape':
+        self.abort()
+    elif keysym == 'Tab':
+        self.doTabCompletion()
+    elif keysym in ('\b','BackSpace'):
+        self.do_backspace()
+    elif keysym == '.':
+        self.insert_string('.')
+        self.compute_completion_list()
+    elif keysym == '?':
+        self.info()
+    elif keysym == '!':
+        # Toggle between verbose and brief listing.
+        self.verbose = not self.verbose
+        kind = g.choose(self.verbose,'ON','OFF')
+        c.frame.putStatusLine('verbose completions %s' % (
+            kind),color='red')
+        self.compute_completion_list()
+    elif ch == 'Down' and hasattr(self,'onDown'):
+        self.onDown()
+    elif ch == 'Up' and hasattr(self,'onUp'):
+        self.onUp()
+    elif ch and ch in string.printable:
+        self.insert_general_char(ch,keysym)
+    else:
+        # if trace: g.trace('ignore',repr(ch))
+        return 'do-standard-keys'
+#@+node:ekr.20061031131434.20: *6* calltip & helpers
+def calltip (self):
+    
+    '''Show the calltips for the present prefix.
+    ch is '(' if the user has just typed it.
+    '''
+
+    trace = False and not g.unitTesting
+
+    c = self.c
+    obj,prefix = self.get_object()
+    
+    if obj:
+        self.calltip_success(prefix,obj)
+    else:
+        self.calltip_fail(prefix)
+        
+    self.finish()
+    c.frame.clearStatusLine()
+    c.widgetWantsFocusNow(self.w)
+#@+node:ekr.20110512090917.14468: *7* calltip_fail
+def calltip_fail(self,prefix):
+    
+    '''Evaluation of prefix failed.'''
+    
+   
+    if not g.unitTesting:
+        g.es('eval failed for "%s"' % repr(prefix))
+
+    self.insert_string('(')
+#@+node:ekr.20110512090917.14469: *7* calltip_success
+def calltip_success(self,prefix,obj):
+    
+    trace = False and not g.unitTesting
+    
+    try:
+        # Get the parenthesized argument list.
+        s1,s2,s3,s4 = inspect.getargspec(obj)
+        s = inspect.formatargspec(s1,s2,s3,s4)
+        if trace: g.trace(obj,repr(s))
+    except Exception:
+        if trace: g.trace('inspect failed. obj: %s' % (obj))
+        self.insert_string('(')
+        return
+
+    # Clean s and insert it.
+    if g.match(s,1,'self,'):
+        s = s[0] + s[6:].strip()
+    elif g.match_word(s,1,'self'):
+        s = s[0] + s[5:].strip()
+
+    self.insert_string(s)
+#@+node:ekr.20061031131434.28: *6* compute_completion_list & helper
+def compute_completion_list (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+        # True: report hits and misses.
+        # False: report misses.
+    
+    prefix = self.get_autocompleter_prefix()
+    
+    key,options = self.get_cached_options(prefix)
+    if options:
+        if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix,key))
+    else:
+        if trace: g.trace('**prefix miss: %s, %s' % (prefix,key))
+        options = self.get_completions(prefix)
+    
+    tabList,common_prefix = g.itemsMatchingPrefixInList(
+        prefix,options,matchEmptyPrefix=False)
+
+    if not common_prefix:
+        tabList,common_prefix = g.itemsMatchingPrefixInList(
+            prefix,options,matchEmptyPrefix=True)
+            
+    if trace and verbose:
+        g.trace('prefix: %s, common: %s, len(tabList): %s' % (
+            repr(prefix),repr(common_prefix),len(tabList)))
+        # if verbose: g.trace('options[:10]...\n',
+            # g.listToString(options[:10],sort=True))
+        
+    if tabList:
+        self.show_completion_list(common_prefix,prefix,tabList)
+    
+    return common_prefix,prefix,tabList
+#@+node:ekr.20110514051607.14524: *7* get_cached_options
+def get_cached_options(self,prefix):
+    
+    trace = False and not g.unitTesting
+    d = self.completionsDict
+    
+    # Search the completions Dict for shorter and shorter prefixes.
+    i = len(prefix)
+    
+    while i > 0:
+        key = prefix[:i]
+        i -= 1
+        # Make sure we report hits only of real objects.
+        if key.endswith('.'):
+            if trace: g.trace('== period: %s' % (key))
+            return key,[]
+        options = d.get(key)
+        if options:
+            if trace: g.trace('== hit: %s len: %s' % (
+                key,len(options)))
+            return key,options
+        else:
+            if trace: g.trace('== miss: %s' % (key))
+
+    return None,[]
+#@+node:ekr.20061031131434.29: *6* do_backspace
+def do_backspace (self):
+
+    '''Delete the character and recompute the completion list.'''
+    
+    c,w = self.c,self.w
+    c.bodyWantsFocusNow()
+    
+    i = w.getInsertPoint()
+    if i <= 0:
+        self.abort()
+        return
+
+    w.delete(i-1,i)
+    w.setInsertPoint(i-1)
+    
+    if i <= 1:
+        self.abort()
+    else:
+        # Update the list. Abort if there is no prefix.
+        common_prefix,prefix,tabList = self.compute_completion_list()
+        if not prefix:
+            self.abort()
+#@+node:ekr.20110510133719.14548: *6* do_qcompleter_tab
+def do_qcompleter_tab(self,prefix,options):
+    
+    '''Return the longest common prefix of all the options.'''
+    
+    trace = False and not g.unitTesting
+    
+    matches,common_prefix = g.itemsMatchingPrefixInList(
+        prefix,options,matchEmptyPrefix=False)
+
+    if trace: g.trace(repr(common_prefix))
+    
+    return common_prefix
+#@+node:ekr.20110509064011.14561: *6* get_autocompleter_prefix
+def get_autocompleter_prefix (self):
+    
+    trace = False and not g.unitTesting
+    
+    # Only the body pane supports auto-completion.
+    w = self.c.frame.body
+    s = w.getAllText()
+    if not s: return ''
+    i = w.getInsertPoint() - 1
+    i1 = i = j = max(0,i)
+    while i >= 0 and (s[i].isalnum() or s[i] in '._'):
+        i -= 1
+    i += 1
+    j += 1
+    prefix = s[i:j]
+    if trace: g.trace(repr(prefix),'ins',s[i1:])
+    return prefix
+#@+node:ekr.20110512212836.14471: *6* get_completions & helpers
+def get_completions(self,prefix):
+    
+    trace = False and not g.unitTesting
+    verbose = False # True: report hits and misses.  False: report misses.
+    d = self.completionsDict
+        
+    # Precompute the codewise completions for '.self'.
+    if not self.codewiseSelfList:
+        aList = self.get_codewise_completions('self.')
+        self.codewiseSelfList = [z[5:] for z in aList]
+        d ['self.'] = self.codewiseSelfList
+
+    # Use the cached list if it exists.
+    aList = d.get(prefix)
+    if aList:
+        if trace and verbose: g.trace('**cache hit: %s' % (prefix))
+        return aList
+    elif self.use_codewise:
+        aList = self.get_codewise_completions(prefix)
+    else:
+        aList = self.get_leo_completions(prefix)
+    
+    if trace: g.trace('**cash miss: %s' % (prefix))
+    d [prefix] = aList
+    return aList
+#@+node:ekr.20110510120621.14539: *7* get_codewise_completions & helpers
+def get_codewise_completions(self,prefix):
+    
+    '''Use codewise to generate a list of hits.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
+    if m:
+        varname = m.group(1)
+        ivar = m.group(3)
+        kind,aList = self.guess_class(c,varname)
+    else:
+        kind,aList = 'none',[]
+        varname,ivar = None,None
+
+    if aList:
+        if kind == 'class':
+            hits = self.lookup_methods(aList,ivar)
+            hits.extend(self.codewiseSelfList)
+        elif kind == 'module':
+            hits = self.lookup_modules(aList,ivar)
+    else:
+        aList2 = prefix.split('.')
+        if aList2:
+            func = aList2[-1]
+            hits = self.lookup_functions(func) ### Was s
+        else:
+            hits = []
+
+    if 1: # A kludge: add the prefix to each hit.
+        hits = ['%s.%s' % (varname,z) for z in hits]
+        
+    if trace:
+        g.trace('kind',kind,'varname',varname,'ivar',ivar,'prefix',prefix)
+        # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
+        # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+
+    return hits
+#@+node:ekr.20110510120621.14540: *8* clean
+def clean (self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
+    
+    trace = False and not g.unitTesting
+            
+    # Just take the function name: ignore the signature & file.
+    aList = list(set([z[0] for z in hits]))
+    aList.sort()
+
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+
+    return aList
+#@+node:ekr.20110512232915.14481: *8* clean_for_display (not used)
+def clean_for_display(self,hits):
+    
+    '''Clean up hits, a list of ctags patterns, for display purposes.'''
+    
+    trace = False and not g.unitTesting
+    aList = []
+    for h in hits:
+        s = h[0]
+        # Display oriented: no good for completion list.
+        fn = h[1].strip()
+        if fn.startswith('/'):
+            sig = fn[2:-4].strip()
+        else:
+            sig = fn
+        aList.append('%s: %s' % (s,sig))
+        
+    aList = list(set(aList))
+    aList.sort()
+    if trace:
+        # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
+        g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
+    return aList
+#@+node:ekr.20110510120621.14542: *8* guess_class
+def guess_class(self,c,varname):
+    
+    '''Return kind, class_list'''
+
+    # if varname == 'g':
+        # return 'module',['leoGlobals']
+    if varname == 'p':
+        return 'class',['position']
+    if varname == 'c':
+        return 'class',['baseCommands']
+    if varname == 'self':
+        # Return the nearest enclosing class.
+        for p in c.p.parents():
+            h = p.h
+            m = re.search('class\s+(\w+)', h)
+            if m:
+                return 'class',[m.group(1)]
+
+    if 1:
+        aList = []
+    else:
+        # This is not needed now that we add the completions for 'self'.
+        aList = ContextSniffer().get_classes(c.p.b,varname)
+    
+    return 'class',aList
+#@+node:ekr.20110510120621.14543: *8* lookup_functions/methods/modules
+def lookup_functions(self,prefix):
+
+    aList = codewise.cmd_functions([prefix])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
+    
+    aList = codewise.cmd_members([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
+    
+    aList = codewise.cmd_functions([aList[0]])
+    hits = [z.split(None,1) for z in aList if z.strip()]
+    return self.clean(hits)
+#@+node:ekr.20110509064011.14557: *7* get_leo_completions
+def get_leo_completions(self,prefix):
+    
+    '''Return completions in an environment defining c, g and p.'''
+    
+    trace = False and not g.unitTesting
+    verbose = False
+    
+    d = self.get_leo_namespace(prefix)
+    if trace: g.trace(list(d.keys()))
+
+    aList = self.attr_matches(prefix,d)
+    aList.sort()
+    
+    if trace:
+        if verbose:
+            g.trace('prefix',repr(prefix),'aList...\n',g.listToString(aList))
+        else:
+            g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
+
+    return aList
+#@+node:ekr.20110512090917.14466: *6* get_leo_namespace
+def get_leo_namespace (self,prefix):
+    
+    '''Return an environment in which to evaluate prefix.
+    
+    Add some common standard library modules as needed.'''
+    
+    
+    k = self.k
+    d = {'c':k.c, 'p':k.c.p, 'g':g}
+    
+    aList = prefix.split('.')
+    if len(aList) > 1:
+        name = aList[0]
+        m = sys.modules.get(name)
+        if m:
+            d[name]= m
+            
+    # g.trace(list(d.keys()))
+    return d
+#@+node:ekr.20110512170111.14472: *6* get_object
+def get_object (self):
+    
+    '''Return the object corresponding to the current prefix.'''
+    
+    trace = False and not g.unitTesting
+    
+    common_prefix,prefix1,aList = self.compute_completion_list()
+    
+    if len(aList) == 0:
+        if trace: g.trace('no completion list for: %s' % (prefix1))
+        return None,prefix1
+    elif len(aList) == 1:
+        prefix = aList[0]
+    else:
+        prefix = common_prefix
+
+    if trace: g.trace(repr(prefix))
+    
+    try:
+        d = self.get_leo_namespace(prefix)
+        safe_prefix = self.strip_brackets(prefix)
+        obj = eval(safe_prefix,d)
+    except AttributeError:
+        obj = None
+    except SyntaxError:
+        obj = None
+    except Exception:
+        g.es_exception()
+        obj = None
+        
+    return obj,prefix
+#@+node:ekr.20061031131434.38: *6* info
+def info (self):
+
+    c = self.c
+    
+    obj,prefix = self.get_object()
+
+    doc = inspect.getdoc(obj)
+
+    if doc:
+        c.frame.log.clearTab('Info',wrap='word')
+        self.put('',doc,tabName='Info')
+    else:
+        g.es('no docstring for',word,color='blue')
+#@+node:ekr.20110510071925.14586: *6* init_qcompleter
+def init_qcompleter (self,event=None):
+    
+    trace = False and not g.unitTesting
+
+    # Compute the prefix and the list of options.
+    prefix = self.get_autocompleter_prefix()
+    options = self.get_completions(prefix)
+
+    if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
+    
+    self.qw = w = self.c.frame.body.bodyCtrl.widget
+        # A LeoQTextBrowser.
+
+    if options:
+        self.qcompleter = w.init_completer(options)
+        self.auto_completer_state_handler(event)
+    else:
+        g.es('No completions',color='blue')
+        self.abort()
+#@+node:ekr.20110511133940.14552: *6* init_tabcompleter
+def init_tabcompleter (self,event=None):
+    
+    trace = False and not g.unitTesting
+        
+    # Compute the prefix and the list of options.
+    prefix = self.get_autocompleter_prefix()
+    options = self.get_completions(prefix)
+
+    if options:
+        self.clearTabName() # Creates the tabbed pane.
+        self.auto_completer_state_handler(event)
+    else:
+        g.es('No completions',color='blue')
+        self.abort()
+#@+node:ekr.20061031131434.39: *6* insert_general_char
+def insert_general_char (self,ch,keysym):
+
+    trace = False and not g.unitTesting
+    k = self.k ; w = self.w
+    
+    if trace: g.trace(repr(ch))
+
+    if g.isWordChar(ch):
+        self.insert_string(ch)
+        common_prefix,prefix,aList = self.compute_completion_list()
+        if not aList:
+            if 0: # Annoying. Let the user type "by hand".
+                # Delete the character we just inserted.
+                self.do_backspace()
+        elif self.auto_tab and len(common_prefix) > len(prefix):
+            extend = common_prefix[len(prefix):]
+            if trace: g.trace('*** extend',extend)
+            ins = w.getInsertPoint()
+            w.insert(ins,extend)
+    else:
+        if ch == '(' and k.enable_calltips:
+            # This calls self.finish if the '(' is valid.
+            self.calltip()
+        else:
+            self.insert_string(ch)
+            self.finish()
+#@+node:ekr.20061031131434.31: *6* insert_string
+def insert_string (self,s):
+
+    '''Insert s at the insertion point.'''
+
+    c = self.c ; w = self.w
+    
+    c.widgetWantsFocusNow(w)
+    j = w.getInsertPoint()
+    w.insert(j,s)
+   
+    c.frame.body.onBodyChanged('Typing')
+    
+    if self.use_qcompleter:
+        c.widgetWantsFocusNow(self.qw)
+#@+node:ekr.20110314115639.14269: *6* is_leo_source_file
+def is_leo_source_file (self):
+    
+    '''Return True if this is one of Leo's source files.'''
+    
+    c = self.c
+
+    table = (z.lower() for z in (
+        'leoDocs.leo',
+        'leoGui.leo',       'leoGuiPluginsRef.leo',
+        'leoPlugins.leo',   'leoPluginsRef.leo',
+        'leoPy.leo',        'leoPyRef.leo',
+        'myLeoSettings.leo', 'leoSettings.leo',
+        'ekr.leo',
+        # 'test.leo',
+    ))
+
+    return c.shortFileName().lower() in table
+#@+node:ekr.20101101175644.5891: *6* put
+def put (self,*args,**keys):
+
+    '''Put s to the given tab.
+
+    May be overridden in subclasses.'''
+
+    # print('autoCompleter.put',args,keys)
+
+    g.es(*args,**keys)
+#@+node:ekr.20110511133940.14561: *6* show_completion_list & helpers
+def show_completion_list (self,common_prefix,prefix,tabList):
+
+    c = self.c
+    
+    aList = common_prefix.split('.')
+    header = '.'.join(aList[:-1])
+    
+    if self.verbose or self.use_qcompleter or len(tabList) < 20:
+        tabList = self.clean_completion_list(header,tabList,)
+    else:
+        tabList = self.get_summary_list(header,tabList)
+        
+    if self.use_qcompleter:
+        # Put the completions in the QListView.
+        self.qw.show_completions(tabList)
+    else:
+        # Update the tab name, creating the tab if necessary.
+        c.widgetWantsFocus(self.w)
+        c.frame.log.clearTab(self.tabName)
+        self.beginTabName(g.choose(header,header+'.',''))
+        s = '\n'.join(tabList)
+        self.put('',s,tabName=self.tabName)
+#@+node:ekr.20110513104728.14453: *7* clean_completion_list
+def clean_completion_list(self,header,tabList):
+    
+    '''Return aList with header removed from the start of each list item.'''
+    
+    return [
+        g.choose(z.startswith(header),z[len(header)+1:],z)
+            for z in tabList]
+#@+node:ekr.20110513104728.14454: *7* get_summary_list
+def get_summary_list (self,header,tabList):
+
+    '''Show the possible starting letters,
+    but only if there are more than one.
+    '''
+
+    d = {}
+    for z in tabList:
+        tail = z and z[len(header):] or ''
+        if tail.startswith('.'): tail = tail[1:]
+        ch = tail and tail[0] or ''
+        if ch:
+            n = d.get(ch,0)
+            d[ch] = n + 1
+    aList = ['%s %d' % (ch,d.get(ch)) for ch in sorted(d)]
+    if len(aList) > 1:
+        tabList = aList
+    else:
+        tabList = self.clean_completion_list(header,tabList)
+    return tabList
+#@+node:ekr.20061031131434.46: *6* start
+def start (self,event):
+    
+    # We don't need to clear this now that we don't use ContextSniffer.
+    # self.completionsDict = {}
+
+    if self.use_qcompleter:
+        self.init_qcompleter(event)
+    else:
+        self.init_tabcompleter(event)
+#@+node:ekr.20110512170111.14471: *6* strip_brackets
+def strip_brackets(self,s):
+    
+    '''Return s with all brackets removed.
+    
+    This (mostly) ensures that eval will not execute function calls, etc.
+    '''
+    
+    for ch in '[]{}()':
+        s = s.replace(ch,'')
+
+    return s
 #@-all
 #@-leo

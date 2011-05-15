@@ -126,6 +126,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             
 
             QtGui.QListWidget.__init__(self)
+            
+            # Make this window a modal window.
+            # self.setWindowModality(QtCore.Qt.WindowModal)
 
             if 0:
                 # embed the window in a splitter.
@@ -142,6 +145,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             
             self.connect(self,QtCore.SIGNAL(
                 "itemClicked(QListWidgetItem *)"),self.select_callback)
+        #@+node:ekr.20110514231951.14490: *6* closeEvent
+        def closeEvent(self,event):
+            
+            '''Kill completion and close the window.'''
+            
+            self.leo_c.k.autoCompleter.abort()
         #@+node:ekr.20110513144933.14526: *6* end_completer
         def end_completer(self):
 

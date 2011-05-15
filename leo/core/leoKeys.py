@@ -540,8 +540,10 @@ class AutoCompleterClass:
         if i <= 1:
             self.abort()
         else:
-            # Update the list, but do not abort here.
+            # Update the list. Abort if there is no prefix.
             common_prefix,prefix,tabList = self.compute_completion_list()
+            if not prefix:
+                self.abort()
     #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
     def do_qcompleter_tab(self,prefix,options):
         
