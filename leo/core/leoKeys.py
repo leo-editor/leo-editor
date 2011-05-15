@@ -126,7 +126,7 @@ class AutoCompleterClass:
         
         # Options...
         self.auto_tab       = c.config.getBool('auto_tab_complete',False)
-        self.use_codewise   = c.config.getBool('use_codewise',False) and not self.is_leo_source_file()
+        # self.use_codewise   = c.config.getBool('use_codewise',False) and not self.is_leo_source_file()
         self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
@@ -234,8 +234,7 @@ class AutoCompleterClass:
 
         k = self.k
         if not g.unitTesting:
-            s = '%sautocompleter %s' % (
-                g.choose(self.use_codewise,'codewise ',''),
+            s = 'autocompleter %s' % (
                 g.choose(k.enable_autocompleter,'On','Off'))
             g.es(s,color='red')
 
@@ -593,10 +592,18 @@ class AutoCompleterClass:
         if aList:
             if trace and verbose: g.trace('**cache hit: %s' % (prefix))
             return aList
-        elif self.use_codewise:
-            aList = self.get_codewise_completions(prefix)
-        else:
-            aList = self.get_leo_completions(prefix)
+
+        # elif self.use_codewise:
+            # aList = self.get_codewise_completions(prefix)
+        # else:
+            # aList = self.get_leo_completions(prefix)
+            
+        # Always try the Leo completions first.
+        # Fall back to the codewise completions.
+        aList = (
+            self.get_leo_completions(prefix) or
+            self.get_codewise_completions(prefix)
+        )
         
         if trace: g.trace('**cash miss: %s' % (prefix))
         d [prefix] = aList

@@ -12278,20 +12278,14 @@ How did we ever live without this?
 
 You can open url's by control-clicking on them, or by using the open-url command.
 #@+node:ekr.20110325075339.14477: *4* Added namespace arg in c.executeScript
-#@+node:ekr.20110314123359.14272: *3* Improved the autocompleter
+#@+node:ekr.20110314123359.14272: *4* Improved the autocompleter
 @nocolor-node
-
-To do:
     
-- Clean up the allow_idle_time_hook code in runLeo.py.
-  Remove the setting?
-    
-- Make sure the code does not interfere with Tk code.
-
 What I did:
     
 - Added @bool use_qcompleter setting.
-- Added @bool use_codewise setting.
 - Added auto_tab_complete setting.
+
+- Removed @bool use_codewise setting.
 #@-all
 #@-leo
