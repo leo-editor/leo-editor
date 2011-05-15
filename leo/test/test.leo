@@ -17,7 +17,6 @@
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = True</vh></v>
 <v t="ekr.20110512225930.2456"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20110512220530.2454"><vh>@bool use_codewise = True</vh></v>
 <v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = False</vh></v>
 </v>
 <v t="ekr.20100118190256.2014"><vh>Chapters</vh>
@@ -8775,7 +8774,6 @@ timer.connect(timer,QtCore.SIGNAL("timeout()"),callBack)
 timer.start(0)
 </t>
 <t tx="ekr.20110512085154.2447"></t>
-<t tx="ekr.20110512220530.2454"></t>
 <t tx="ekr.20110512225930.2456"></t>
 </tnodes>
 </leo_file>
